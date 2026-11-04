@@ -64,6 +64,9 @@ TERMINAL_GUARD_REASONS = {
         "personal_quiet_clock_uncertain", "android_expired_before_response", "client_declined_before_post"},
     "telegram": COMMON_GUARD_REASONS | {"telegram_expired", "telegram_content_owner_changed",
         "telegram_content_target_invalid", "telegram_template_disabled", "telegram_template_invalid"},
+    "pwa": COMMON_GUARD_REASONS | {"pwa_job_not_due", "pwa_preference_changed", "pwa_review_unavailable",
+        "pwa_study_unavailable", "pwa_capability_unavailable", "pwa_job_not_claimable",
+        "pwa_lease_outcome_unknown", "admin_study_disabled"},
 }
 # Missing-calibration is an early native gate, with no terminal source write.
 ANDROID_GUARD_CAPTURE = TERMINAL_GUARD_REASONS["android"] - {"cadence_calibration_unconfigured"}
@@ -181,7 +184,9 @@ class SmartReminderAnalysisService:
         def unavailable(reason):
             return None, None, {}, reason
         channel = job["selected_channel"]
-        if channel not in {"android", "telegram"} or not job["policy_version"].startswith("smart-" + channel + "-v1:"):
+        if channel not in {"android", "telegram", "pwa"} or not (
+                job["policy_version"].startswith("smart-pwa-v1") if channel == "pwa" else
+                job["policy_version"].startswith("smart-" + channel + "-v1:")):
             return unavailable("learning_source_unsupported")
         reference = f"v3-part:{job['course_key']}:{job['lesson_order']}:complete"
         if _LESSON_REF.fullmatch(reference) is None:
@@ -206,7 +211,7 @@ class SmartReminderAnalysisService:
                     not _utc(job["scheduled_at"]) <= at < _utc(job["expires_at"]) or
                     not _utc(job["created_at"]) <= _utc(attempt["prepared_at"]) <= at < _utc(attempt["expires_at"])):
                 continue
-            if channel == "telegram" and attempt["state"] == "provider_accepted":
+            if channel in {"telegram", "pwa"} and attempt["state"] == "provider_accepted":
                 boundaries[attempt["id"]] = at
             elif channel == "android" and attempt["state"] == "client_posted_unverified":
                 if any(g["attempt_id"] == attempt["id"] and
@@ -291,7 +296,7 @@ class SmartReminderAnalysisService:
         return (pg_insert if dialect == "postgresql" else sqlite_insert)(table)
 
     async def _fact(self, session, job, source_id, stage, at, channel, now, *, reason=None):
-        if at is None or channel not in {"none", "telegram", "android"}:
+        if at is None or channel not in {"none", "telegram", "android", "pwa"}:
             return 0
         at = _utc(at)
         if not now - RAW_RETENTION < at <= now:
@@ -331,8 +336,9 @@ class SmartReminderAnalysisService:
                 # they never become delivery or negative-learning evidence.
                 channel = job["selected_channel"]
                 shadow = job["policy_version"] == QUEUE_VERSION
-                if not shadow and (channel not in {"android", "telegram"} or not job["policy_version"].startswith(
-                        "smart-" + channel + "-v1:")):
+                if not shadow and (channel not in {"android", "telegram", "pwa"} or not (
+                        job["policy_version"].startswith("smart-pwa-v1") if channel == "pwa" else
+                        job["policy_version"].startswith("smart-" + channel + "-v1:"))):
                     return 0
                 attempts = (await session.execute(select(SmartReminderAttempt.__table__).where(
                     SmartReminderAttempt.job_id == job_id).order_by(SmartReminderAttempt.id).with_for_update())).mappings().all()
@@ -451,6 +457,7 @@ class SmartReminderAnalysisService:
             job, attempt, grant = SmartReminderJob, SmartReminderAttempt, SmartReminderAndroidGrant
             reviewed = or_(and_(job.selected_channel == "android", job.policy_version.startswith("smart-android-v1:")),
                 and_(job.selected_channel == "telegram", job.policy_version.startswith("smart-telegram-v1:")),
+                and_(job.selected_channel == "pwa", job.policy_version == "smart-pwa-v1"),
                 and_(job.policy_version == QUEUE_VERSION, job.selected_channel.is_(None), job.selected_device_id.is_(None),
                     or_(and_(job.state == "shadow", recent(job.created_at)),
                         and_(job.state.in_(("completed", "cancelled", "expired")), recent(job.updated_at)))))

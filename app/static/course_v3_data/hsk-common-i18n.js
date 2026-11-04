@@ -129,6 +129,10 @@ if (typeof window !== "undefined") {
   "navigation.profile": "Profil",
   "navigation.rating": "Reyting",
   "navigation.subscription": "Obuna",
+  "pwaAuth.choose": "Kirish yoki yangi hisob ochish usulini tanlang",
+  "pwaAuth.tagline": "Yaxshiroq kelajak — bilim bilan",
+  "pwaAuth.telegramPending": "Telegram botida ushbu brauzerga kirishni tasdiqlang, so‘ng HSK AI sahifasiga qayting.",
+  "pwaAuth.welcome": "Xush kelibsiz",
   "smartPreferences.deletionPending": "Hisobni o‘chirish so‘rovi ko‘rib chiqilmoqda. Hozir dars eslatmalarini o‘zgartirib bo‘lmaydi.",
   "state.loading": "Yuklanmoqda…"
 }),
@@ -259,6 +263,10 @@ if (typeof window !== "undefined") {
   "navigation.profile": "Профиль",
   "navigation.rating": "Рейтинг",
   "navigation.subscription": "Подписка",
+  "pwaAuth.choose": "Выберите способ входа или создания аккаунта",
+  "pwaAuth.tagline": "Лучшее будущее — со знаниями",
+  "pwaAuth.telegramPending": "Подтвердите вход для этого браузера в боте Telegram, затем вернитесь на страницу HSK AI.",
+  "pwaAuth.welcome": "Добро пожаловать",
   "smartPreferences.deletionPending": "Запрос на удаление аккаунта рассматривается. Сейчас изменить учебные напоминания нельзя.",
   "state.loading": "Загрузка…"
 }),
@@ -389,6 +397,10 @@ if (typeof window !== "undefined") {
   "navigation.profile": "Профил",
   "navigation.rating": "Рейтинг",
   "navigation.subscription": "Обуна",
+  "pwaAuth.choose": "Усули вуруд ё сохтани ҳисоби навро интихоб кунед",
+  "pwaAuth.tagline": "Ояндаи беҳтар — бо дониш",
+  "pwaAuth.telegramPending": "Дар боти Telegram воридшавиро барои ин браузер тасдиқ кунед ва ба саҳифаи HSK AI баргардед.",
+  "pwaAuth.welcome": "Хуш омадед",
   "smartPreferences.deletionPending": "Дархости ҳазфи ҳисоб баррасӣ мешавад. Ҳоло танзими ёдрасониҳои дарсро тағйир додан мумкин нест.",
   "state.loading": "Боргирӣ…"
 })

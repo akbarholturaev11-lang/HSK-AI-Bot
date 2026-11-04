@@ -18,7 +18,7 @@ from html import escape
 from typing import Annotated, Any, Callable, Literal
 
 from fastapi import APIRouter, Request
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints
 
 from app.bot.generated.common_i18n import COMMON_MESSAGES
@@ -42,6 +42,10 @@ from app.repositories.user_repo import UserRepository
 from app.services.identity_link_service import IdentityLinkError, IdentityLinkService
 from app.services.telegram_webapp_auth import extract_fresh_verified_webapp_user_id
 from app.services.account_deletion_service import AccountDeletionService, STATE_PREFIX, BROWSER_COOKIE
+from app.services.pwa_auth_service import (
+    PWA_OAUTH_COOKIE, PWA_TELEGRAM_COOKIE, PWA_SESSION_COOKIE, PWA_SESSION_AGE_SECONDS,
+    PwaAuthError, PwaAuthService,
+)
 from app.services.native_oauth_service import (
     BROWSER_REDIRECT_MODE,
     NATIVE_ID_TOKEN_MODE,
@@ -350,15 +354,26 @@ def create_native_oauth_router(
             logger.exception("OAuth assert failed")
             return _unavailable()
 
-    async def provider_callback_error(provider: str, state: str | None):
+    async def provider_callback_error(provider: str, state: str | None, request: Request):
         # Account deletion has its own browser-bound proof and nonce lifecycle.
         if not state or state.startswith(STATE_PREFIX):
             return _page("&#10005;", "oauth_cancelled")
         try:
             async with session_factory() as session:
+                # Even an OAuth cancellation cannot burn another browser's
+                # still-pending PWA row when a state value leaked to a referrer.
+                is_pwa = await PwaAuthService(session, settings_obj).before_callback(
+                    provider=provider, state=state, proof=request.cookies.get(PWA_OAUTH_COOKIE)
+                )
                 await service_factory(session, settings_obj).cancel_callback(provider=provider, state=state)
+            if is_pwa:
+                # Return only the proven originating browser to the fixed login
+                # path; never follow a callback parameter or issue a session.
+                page = RedirectResponse("/iphone-pwa?auth=cancelled", status_code=303, headers=_NO_STORE)
+                page.delete_cookie(PWA_OAUTH_COOKIE, path="/", secure=True, httponly=True, samesite="none")
+                return page
             return _page("&#10005;", "oauth_cancelled")
-        except (NativeOAuthError, IdentityLinkError, DesktopAuthError) as exc:
+        except (NativeOAuthError, IdentityLinkError, DesktopAuthError, PwaAuthError) as exc:
             return _page("&#10005;", exc.code)
         except Exception:
             logger.exception("Provider OAuth cancellation failed")
@@ -379,7 +394,7 @@ def create_native_oauth_router(
         error: str | None = None,
     ):
         if error:
-            return await provider_callback_error("google", state)
+            return await provider_callback_error("google", state, request)
         if not state or not code:
             return _page("&#10005;", "oauth_cancelled")
         try:
@@ -390,12 +405,31 @@ def create_native_oauth_router(
                         browser=request.cookies.get(BROWSER_COOKIE))
                     return _deletion_page()
                 else:
+                    browser = PwaAuthService(session, settings_obj)
+                    is_pwa = await browser.before_callback(
+                        provider="google", state=state, proof=request.cookies.get(PWA_OAUTH_COOKIE)
+                    )
                     completed = await service_factory(session, settings_obj).complete_callback(
                         provider="google", state=state, code=code
                     )
+                    if is_pwa:
+                        cookie = await browser.consume_callback(
+                            provider="google", state=state, proof=request.cookies.get(PWA_OAUTH_COOKIE),
+                            replace_cookie=request.cookies.get(PWA_SESSION_COOKIE),
+                        )
+            if completed.get("platform") == "pwa" and is_pwa:
+                # Fixed same-origin path. Never redirect to caller-supplied URLs.
+                page = RedirectResponse("/iphone-pwa", status_code=303, headers=_NO_STORE)
+                page.set_cookie(PWA_SESSION_COOKIE, cookie, max_age=PWA_SESSION_AGE_SECONDS,
+                                secure=True, httponly=True, samesite="lax", path="/")
+                page.delete_cookie(PWA_OAUTH_COOKIE, path="/", secure=True, httponly=True, samesite="none")
+                page.delete_cookie(PWA_TELEGRAM_COOKIE, path="/", secure=True, httponly=True, samesite="lax")
+                return page
             return _page("&#10003;", "ok", return_scheme=(
                 getattr(settings_obj, "OAUTH_NATIVE_RETURN_SCHEME", "pomp-hsk-ai")
                 if completed.get("platform") in {"android", "macos", "windows"} else None))
+        except PwaAuthError as exc:
+            return _page("&#10005;", exc.code)
         except (NativeOAuthError, IdentityLinkError, DesktopAuthError) as exc:
             return callback_failure(exc)
         except Exception:
@@ -411,7 +445,7 @@ def create_native_oauth_router(
         state = form.get("state") or ""
         code = form.get("code") or ""
         if form.get("error"):
-            return await provider_callback_error("apple", state)
+            return await provider_callback_error("apple", state, request)
         if not state or not code:
             return _page("&#10005;", "oauth_cancelled")
         try:
@@ -422,15 +456,34 @@ def create_native_oauth_router(
                         browser=request.cookies.get(BROWSER_COOKIE))
                     return _deletion_page()
                 else:
+                    browser = PwaAuthService(session, settings_obj)
+                    is_pwa = await browser.before_callback(
+                        provider="apple", state=state, proof=request.cookies.get(PWA_OAUTH_COOKIE)
+                    )
                     completed = await service_factory(session, settings_obj).complete_callback(
                         provider="apple",
                         state=state,
                         code=code,
                         apple_user=form.get("user"),
                     )
+                    if is_pwa:
+                        cookie = await browser.consume_callback(
+                            provider="apple", state=state, proof=request.cookies.get(PWA_OAUTH_COOKIE),
+                            replace_cookie=request.cookies.get(PWA_SESSION_COOKIE),
+                        )
+            if completed.get("platform") == "pwa" and is_pwa:
+                # Fixed same-origin path. Never redirect to caller-supplied URLs.
+                page = RedirectResponse("/iphone-pwa", status_code=303, headers=_NO_STORE)
+                page.set_cookie(PWA_SESSION_COOKIE, cookie, max_age=PWA_SESSION_AGE_SECONDS,
+                                secure=True, httponly=True, samesite="lax", path="/")
+                page.delete_cookie(PWA_OAUTH_COOKIE, path="/", secure=True, httponly=True, samesite="none")
+                page.delete_cookie(PWA_TELEGRAM_COOKIE, path="/", secure=True, httponly=True, samesite="lax")
+                return page
             return _page("&#10003;", "ok", return_scheme=(
                 getattr(settings_obj, "OAUTH_NATIVE_RETURN_SCHEME", "pomp-hsk-ai")
                 if completed.get("platform") in {"android", "macos", "windows"} else None))
+        except PwaAuthError as exc:
+            return _page("&#10005;", exc.code)
         except (NativeOAuthError, IdentityLinkError, DesktopAuthError) as exc:
             return callback_failure(exc)
         except Exception:

@@ -4,6 +4,7 @@ from datetime import datetime, timedelta, timezone
 import json
 import unittest
 from unittest.mock import AsyncMock
+from uuid import uuid4
 
 from sqlalchemy import delete, event, insert, select, update
 
@@ -12,6 +13,7 @@ from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.course_progress import CourseProgress
 from app.db.models.course_xp_event import CourseXpEvent
 from app.db.models.desktop import DesktopDevice, DesktopSession
+from app.db.models.learner_pwa_push import LearnerPwaPushSubscription
 from app.db.models.smart_reminder import SmartReminderCapability, SmartReminderConsent, SmartReminderPreference
 from app.db.models.user import User
 from app.services.course_gamification_service import CourseGamificationService
@@ -32,6 +34,9 @@ class DestinationPolicyTests(unittest.TestCase):
     def phone(self, name, **changes):
         return replace(Destination(1, "android", name, NOW + timedelta(hours=1), NOW), **changes)
 
+    def pwa(self, name, **changes):
+        return replace(Destination(1, "pwa", name, NOW + timedelta(hours=1), NOW), **changes)
+
     def choose(self, endpoints, studies=(), **changes):
         return choose_destination(**(dict(user_id=1, destinations=endpoints,
             evidence=DestinationEvidence(tuple(studies)), observed_at=NOW,
@@ -47,6 +52,14 @@ class DestinationPolicyTests(unittest.TestCase):
         self.assertFalse(result.dispatch_allowed)
         with self.assertRaises(ValueError):
             replace(result, dispatch_allowed=True)
+
+    def test_pwa_is_a_single_selected_destination_and_manual_native_lock_excludes_it(self):
+        pwa = self.pwa("pwa-device")
+        result = self.choose((pwa,), master_enabled=True)
+        self.assertEqual((result.channel, result.device_id), ("pwa", "pwa-device"))
+        self.assertFalse(result.dispatch_allowed)
+        self.assertEqual(self.choose((pwa,), master_enabled=True,
+            channel_mode="manual_locked", preferred_channel="telegram").channel, None)
 
     def test_more_original_study_results_win_over_recent_app_activity(self):
         endpoints = (self.phone("a"), self.phone("b", last_active_at=NOW-timedelta(days=1)))
@@ -125,6 +138,47 @@ class DestinationSourceChecks:
             options = {"study_reader": reader} if reader is not None else {}
             return await SmartReminderDestinationService(session, clock=lambda: self.tick, **options).select(
                 actor or self.actor, job_id=job or self.case.job_id, history_since=self.tick-timedelta(days=30))
+
+    async def add_pwa_install(self):
+        async with self.case.sessions.begin() as session:
+            session.add(DesktopDevice(id="pwa-device", user_id=1, platform="pwa",
+                installation_key_hash="p"*64, app_version="synthetic", last_seen_at=self.tick))
+            session.add(DesktopSession(id="pwa-session", device_id="pwa-device",
+                refresh_token_hash="r"*64, expires_at=self.tick+timedelta(days=1)))
+            session.add(LearnerPwaPushSubscription(id=str(uuid4()), device_id="pwa-device",
+                endpoint_hash="e"*64, encrypted_payload="synthetic-only",
+                created_at=self.tick, updated_at=self.tick))
+            await session.execute(update(SmartReminderConsent).where(
+                SmartReminderConsent.channel == "android").values(state="off"))
+
+    async def choose_with_pwa(self):
+        async with self.case.sessions.begin() as session:
+            return await SmartReminderDestinationService(session, clock=lambda: self.tick,
+                pwa_push_ready=True).select(self.actor, job_id=self.case.job_id,
+                    history_since=self.tick-timedelta(days=30))
+
+    async def test_current_push_subscription_needs_existing_smart_master_opt_in(self):
+        await self.add_pwa_install()
+        async with self.case.sessions.begin() as session:
+            await session.execute(update(SmartReminderPreference).where(
+                SmartReminderPreference.user_id == 1).values(master_enabled=None))
+        choice = await self.choose_with_pwa()
+        self.assertIsNone(choice.channel)
+        self.assertIn(choice.reason, {"no_eligible_destination", "manual_channel_unavailable"})
+
+    async def test_current_pwa_endpoint_can_be_selected_when_smart_is_on_and_other_channels_are_off(self):
+        await self.add_pwa_install()
+        choice = await self.choose_with_pwa()
+        self.assertEqual((choice.channel, choice.device_id), ("pwa", "pwa-device"))
+
+    async def test_manual_android_channel_lock_blocks_pwa_destination(self):
+        await self.add_pwa_install()
+        async with self.case.sessions.begin() as session:
+            await session.execute(update(SmartReminderPreference).where(
+                SmartReminderPreference.user_id == 1).values(
+                    channel_mode="manual_locked", preferred_channel="android"))
+        choice = await self.choose_with_pwa()
+        self.assertIsNone(choice.channel)
 
     async def second_phone(self):
         await self.case.second_installation()

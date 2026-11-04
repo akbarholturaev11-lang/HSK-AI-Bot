@@ -101,11 +101,23 @@ def contract(sources: dict[str, str]) -> dict:
             ),
             "lesson_access_is_non_consuming": _has(
                 backend_miniapp,
-                r'v3_course_lesson_content\([\s\S]{0,2200}LessonAccessService\(session\)\.status\([\s\S]{0,250}consume=False',
+                r'async def _lesson_content_for_user\([\s\S]{0,2450}LessonAccessService\(session\)\.status\([\s\S]{0,250}consume=False',
             ),
             "lesson_sequence_is_checked": _has(
                 backend_miniapp,
-                r'v3_course_lesson_content\([\s\S]{0,2000}lesson_order > completed \+ 1',
+                r'async def _lesson_content_for_user\([\s\S]{0,2000}lesson_order > completed \+ 1',
+            ),
+            "telegram_content_calls_owner_checked_shared_gate": _has(
+                backend_miniapp,
+                r'async def v3_course_lesson_content\([\s\S]{0,1200}'
+                r'get_by_telegram_id\(telegram_id\)[\s\S]{0,400}'
+                r'return await _lesson_content_for_user\(\s*session, user, normalized_level, lesson_order',
+            ),
+            "pwa_content_calls_owner_checked_shared_gate": _has(
+                backend_miniapp,
+                r'async def pwa_course_lesson_content\([\s\S]{0,900}'
+                r'PwaAuthService\(session, settings_obj\)\.actor\([\s\S]{0,450}'
+                r'return await _lesson_content_for_user\(\s*session, user, str\(level or ""\)',
             ),
             "skip_test_uses_signed_canonical_account": _has(
                 skip_test,

@@ -10,8 +10,8 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 LOCALES = ("uz", "ru", "tj")
-VERSION = "hsk-course-i18n.js?v=20261021-88bfab42686b"
-DICTIONARY_VERSION = "hsk-course-i18n.js?v=20261021-88bfab42686b"
+VERSION = "hsk-course-i18n.js?v=20261021-6431aaf27e2a"
+DICTIONARY_VERSION = "hsk-course-i18n.js?v=20261021-6431aaf27e2a"
 KEY_RE = re.compile(r"([{,]\s*)([A-Za-z_]\w*)(\s*:)")
 
 
@@ -46,7 +46,9 @@ def snippet(page, source):
     if page == "voice":
         return "var L=" + source.split("var L=", 1)[1].split("\nvar tg=", 1)[0]
     if page == "memorize":
-        return "var LIM=" + source.split("var LIM=", 1)[1].split("\nfunction goPremium()", 1)[0]
+        return ("var LIM=" + source.split("var LIM=", 1)[1]
+                .split("var PWA_MEMORIZE_HOST=", 1)[0]
+                .split("\nfunction goPremium()", 1)[0])
     return ("var practiceLabels = "
             + source.split("  var practiceLabels = ", 1)[1]
                     .split("\n  function normalizeLang(value)", 1)[0])
@@ -66,7 +68,7 @@ class VoiceMemorizeDictionaryUIAdoptionTests(unittest.TestCase):
                 messages = json.loads(
                     (ROOT / f"localization/ui/{locale}/course.json").read_text(encoding="utf-8")
                 )["messages"]
-                self.assertEqual(len(messages), 978)
+                self.assertEqual(len(messages), 1021)
                 for key, value in voice[locale].items():
                     self.assertEqual(messages["voicePage." + key], value)
                 for key, labels in limit.items():

@@ -151,7 +151,8 @@ class ShadowAnalysisChecks:
             await session.execute(update(queue_fixture.JOB).values(policy_version=queue_fixture.QUEUE_VERSION,
                 state="completed", reason_code="shadow_candidate"))
             await session.execute(insert(queue_fixture.ATTEMPT).values(id="existing-attempt", job_id=reserved.job_id,
-                attempt_key="x" * 64, channel="telegram", state="definite_failure", grant_epoch=1, expires_at=self.q.expiry))
+                attempt_key="x" * 64, channel="telegram", state="definite_failure", grant_epoch=1,
+                prepared_at=self.q.tick, expires_at=self.q.expiry))
         self.assertEqual(await self.observer.service.capture_job(1, reserved.job_id), 0)
         self.assertEqual(await self.rows(EVENT), [])
 

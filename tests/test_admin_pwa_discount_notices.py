@@ -10,11 +10,13 @@ from uuid import uuid4
 from sqlalchemy import event, func, select
 
 from app.admin_api import pwa_campaigns as api, pwa_discount_notices as notices, pwa_outbound as outbound
+from app.config import settings
 from app.db.models.account_notice_delivery import AccountNoticeDelivery
 from app.db.models.admin_pwa_command import AdminPwaCommandAudit
 from app.db.models.admin_pwa_outbound import AdminPwaOutboundJob as Job, AdminPwaOutboundRecipient as Recipient
 from app.db.models.admin_pwa_step_up import AdminPwaStepUp
 from app.db.models.android_push import AndroidPushToken
+from app.db.models.course_user_notification import CourseUserNotification
 from app.db.models.desktop import DesktopDevice
 from app.db.models.discount_campaign import DiscountCampaign
 from app.db.models.payment import Payment
@@ -156,6 +158,35 @@ class DiscountNoticeTests(fixtures.fixtures.PaymentFixtures,unittest.IsolatedAsy
             self.assertEqual(await NotificationDeliveryService(db,self.settings).send_due_fallbacks(bot,
                 now=datetime.now(timezone.utc)+timedelta(hours=1)),0)
         bot.send_message.assert_not_awaited()
+
+    async def test_signed_discount_only_enqueues_the_account_push(self):
+        self.settings.PWA_AUTH_ENABLED = True
+        self.settings.PWA_PUSH_ENABLED = True
+        result = await self.queued(await self.offer())
+        bot = SimpleNamespace(send_message=AsyncMock())
+
+        async def emit(message):
+            return await notices.emit_discount_notice(
+                message, session_factory=self.sessions, settings_obj=self.settings, bot=bot,
+            )
+
+        with (
+            patch.multiple(settings, PWA_AUTH_ENABLED=True, PWA_PUSH_ENABLED=True),
+            patch("app.services.learner_pwa_push.active_subscriptions",
+                  new_callable=AsyncMock, return_value=[("subscription", "device")]),
+            patch("app.services.learner_pwa_push.enqueue_event",
+                  new_callable=AsyncMock, return_value=1) as enqueue,
+        ):
+            await outbound.dispatch_message_batch(
+                job_id=result["job_id"], session_factory=self.sessions,
+                settings_obj=self.settings, emit=emit,
+            )
+
+        enqueue.assert_awaited_once()
+        self.assertEqual(enqueue.await_args.kwargs["source"], "account")
+        async with self.sessions() as db:
+            course_notice = await db.scalar(select(CourseUserNotification))
+            self.assertEqual(course_notice.key, "subscription_offer")
 
     async def test_bounded_sql_matches_shared_repeat_quota_and_canonical_legacy_usage(self):
         campaign_id=await self.offer(target_user_id=None,quota_total=2,repeat_interval_days=2)

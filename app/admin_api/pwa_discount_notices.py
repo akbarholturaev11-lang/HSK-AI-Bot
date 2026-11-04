@@ -118,7 +118,7 @@ async def emit_discount_notice(message, *, session_factory, settings_obj, bot):
         if outcome in DELIVERED:
             await CourseNotificationService(db).record_from_text(user,key='subscription_offer',lang=message.language,
                 text=message.text,action='subscription',source='discount_notification',
-                dedupe_key='discount_campaign:'+str(message.notice_campaign_id))
+                dedupe_key='discount_campaign:'+str(message.notice_campaign_id),pwa_push_suppressed=True)
         await db.commit()
     if outcome not in DELIVERED:
         raise RuntimeError('Notice outcome requires operator review')

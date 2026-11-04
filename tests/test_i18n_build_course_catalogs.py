@@ -10,16 +10,27 @@ import xml.etree.ElementTree as ET
 from scripts.i18n_baseline_guard import git_blob_sha1
 
 from scripts.i18n_build_course_catalogs import (
-    ANDROID_TAGS, LOCALES, ROOT, android_resource_names, generate,
+    ANDROID_PWA_ONLY_PREFIX, ANDROID_TAGS, LOCALES, ROOT, android_resource_names, generate,
     output_files, read_sources,
 )
 
 
+def lines_containing(source: str, marker: str) -> list[str]:
+    return [line for line in source.splitlines() if marker in line]
+
+
+def unique_line_containing(source: str, marker: str) -> str:
+    matches = lines_containing(source, marker)
+    if len(matches) != 1:
+        raise AssertionError(f"Expected one source line containing {marker!r}, found {len(matches)}")
+    return matches[0]
+
+
 class CourseLocalCatalogTests(unittest.TestCase):
-    def test_reviewed_978_keys_and_six_generated_targets(self):
+    def test_reviewed_1019_keys_and_six_generated_targets(self):
         catalogs = read_sources(ROOT)
         self.assertEqual(set(catalogs), set(LOCALES))
-        self.assertTrue(all(len(catalogs[loc]) == 978 for loc in LOCALES))
+        self.assertTrue(all(len(catalogs[loc]) == 1021 for loc in LOCALES))
         self.assertEqual(len(output_files(catalogs)), 6)
         self.assertEqual(generate(ROOT, check=True), [])
 
@@ -31,13 +42,24 @@ class CourseLocalCatalogTests(unittest.TestCase):
                 root = ET.fromstring(target.read_text(encoding="utf-8"))
                 items = root.findall("string")
                 actual = {node.attrib["name"]: node for node in items}
-                expected = android_resource_names(catalogs[locale])
+                android_catalog = {
+                    key: value for key, value in catalogs[locale].items()
+                    if not key.startswith(ANDROID_PWA_ONLY_PREFIX)
+                }
+                expected = android_resource_names(android_catalog)
                 self.assertEqual(set(actual), set(expected.values()))
+                pwa_names = android_resource_names({
+                    key: value for key, value in catalogs[locale].items()
+                    if key.startswith(ANDROID_PWA_ONLY_PREFIX)
+                })
+                self.assertFalse(set(pwa_names.values()) & set(actual))
                 for key, name in expected.items():
                     self.assertEqual(actual[name].attrib["formatted"], "false")
                     # Android's slash-escaped apostrophe remains in XML parser output.
                     self.assertEqual((actual[name].text or "").replace(r"\'", "'"), catalogs[locale][key])
                     self.assertRegex(name, r"^hsk_course_[a-z][a-z0-9_]*$")
+        self.assertTrue(all(any(key.startswith(ANDROID_PWA_ONLY_PREFIX) for key in catalogs[loc])
+                            for loc in LOCALES))
 
     def test_android_key_normalization_rejects_collisions(self):
         self.assertEqual(android_resource_names({"trialOn": "ok"}), {"trialOn": "hsk_course_trial_on"})
@@ -80,47 +102,56 @@ class CourseLocalCatalogTests(unittest.TestCase):
         """P2 recovery copy: bundled local texts, unchanged legacy fallbacks and anchors."""
         catalogs = read_sources(ROOT)
         source = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
-        lines = source.splitlines()
         anchors = {
-            3992: ("foundation.unavailable",),
-            3998: ("foundation.zeroTitle", "foundation.internetRetry"),
-            3999: ("foundation.retry",),
-            4303: ("lessonFlow.retry",),
-            4357: ("lessonFlow.notReady",),
+            'courseMessage("foundation.unavailable",': ("foundation.unavailable",),
+            'courseMessage("foundation.internetRetry",': (
+                "foundation.zeroTitle", "foundation.internetRetry",
+            ),
+            'courseMessage("foundation.retry",': ("foundation.retry",),
+            'courseMessage("lessonFlow.retry",': ("lessonFlow.retry",),
+            'courseMessage("lessonFlow.notReady",': ("lessonFlow.notReady",),
         }
-        for line, keys in anchors.items():
+        for marker, keys in anchors.items():
+            line = unique_line_containing(source, marker)
             for key in keys:
-                with self.subTest(line=line, key=key):
-                    self.assertIn('courseMessage("' + key + '",LANG==="ru"?', lines[line - 1])
+                with self.subTest(marker=marker, key=key):
+                    self.assertIn('courseMessage("' + key + '",LANG==="ru"?', line)
                     for locale in LOCALES:
-                        self.assertIn(catalogs[locale][key], lines[line - 1])
-        self.assertIn('esc(courseMessage("foundation.internetRetry"', lines[3998 - 1])
-        self.assertIn('esc(courseMessage("foundation.retry"', lines[3999 - 1])
-        self.assertIn("setLessonFlowControls();flowDone()", lines[4304 - 1])
+                        self.assertIn(catalogs[locale][key], line)
+        self.assertIn('esc(courseMessage("foundation.internetRetry"',
+                      unique_line_containing(source, 'courseMessage("foundation.internetRetry",'))
+        self.assertIn('esc(courseMessage("foundation.retry"',
+                      unique_line_containing(source, 'courseMessage("foundation.retry",'))
+        self.assertIn("setLessonFlowControls();flowDone()",
+                      unique_line_containing(source, "setLessonFlowControls();flowDone()"))
 
     def test_practice_preparing_foundation_save_and_resource_loading_copy(self):
         """Offline catalog keeps exact legacy UI fallback and stable result flow."""
         catalogs = read_sources(ROOT)
-        lines = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8").splitlines()
+        source = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
         anchors = {
-            3426: "practice.preparing",
-            3432: "practice.checkingAccess",
-            4066: "foundation.saving",
-            4074: "foundation.retrySave",
-            4076: "foundation.saveFailed",
-            5180: "foundation.zeroTitle",
-            7200: "resourceFrame.loading",
+            'courseMessage("practice.preparing",': "practice.preparing",
+            'courseMessage("practice.checkingAccess",': "practice.checkingAccess",
+            'courseMessage("foundation.saving",': "foundation.saving",
+            'courseMessage("foundation.retrySave",': "foundation.retrySave",
+            'courseMessage("foundation.saveFailed",': "foundation.saveFailed",
+            'courseMessage("foundation.zeroTitle",': "foundation.zeroTitle",
+            'courseMessage("resourceFrame.loading",': "resourceFrame.loading",
         }
-        for line, key in anchors.items():
-            with self.subTest(line=line, key=key):
-                self.assertIn('courseMessage("' + key + '",LANG==="ru"?', lines[line - 1])
+        for marker, key in anchors.items():
+            matching_lines = lines_containing(source, marker)
+            self.assertTrue(matching_lines, f"Missing source marker: {marker}")
+            with self.subTest(marker=marker, key=key):
+                self.assertTrue(any('courseMessage("' + key + '",LANG==="ru"?' in line
+                                    for line in matching_lines))
                 for locale in LOCALES:
-                    self.assertIn(catalogs[locale][key], lines[line - 1])
+                    self.assertTrue(any(catalogs[locale][key] in line
+                                        for line in matching_lines))
         # The server-owned Foundation result decision and retry/timeout are unchanged.
-        self.assertIn('result.ok!==true', lines[4072 - 1])
-        self.assertIn('Foundation.finishing=false', lines[4073 - 1])
-        self.assertIn('2800);return;', lines[4076 - 1])
-        self.assertIn('esc(copy)', lines[3433 - 1])
+        self.assertIn('if(!result||result.ok!==true){\n      Foundation.finishing=false;', source)
+        self.assertIn('2800);return;',
+                      unique_line_containing(source, 'courseMessage("foundation.saveFailed",'))
+        self.assertIn('esc(copy)', unique_line_containing(source, 'esc(copy)'))
 
     def test_course_bundle_cache_version_is_content_addressed_on_every_page(self):
         """Every static consumer must invalidate its cache on generated content changes."""

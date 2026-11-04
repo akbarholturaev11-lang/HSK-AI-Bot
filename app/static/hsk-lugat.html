@@ -13,8 +13,8 @@
   }
 })();
 </script>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script src="/course_v3_data/hsk-course-i18n.js?v=20261021-88bfab42686b"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script>
+<script src="/assets/telegram-web-app.js?v=20261019-1"></script>
+<script src="/course_v3_data/hsk-course-i18n.js?v=20261021-6431aaf27e2a"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script>
 <script defer src="/audio/words/index.js?v=20261014-offline-1"></script>
 <script defer src="/audio/words/client.js?v=20261014-persist-1"></script>
 <link rel="stylesheet" href="/course_v3_data/design-tokens.css?v=20261005">
@@ -110,7 +110,7 @@ html.hsk-embedded .view{top:0}
 .writer-strokes{font-size:12.5px;color:var(--ink);font-weight:800;letter-spacing:.2px;margin-top:1px}
 .writer-toolbar-end{display:flex;align-items:center;justify-content:flex-end;gap:8px;min-width:0}
 .stroke-close{width:44px;height:44px;border-radius:50%;color:var(--text2);font-size:25px;line-height:1;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.char-box-lg{position:relative;width:min(330px,86vw);height:min(330px,86vw);margin-top:14px;border-radius:20px;background:var(--bg2);border:1px solid var(--border);overflow:hidden;flex-shrink:0;touch-action:pan-y}
+.char-box-lg{position:relative;width:min(330px,86vw);height:min(330px,86vw);margin-top:14px;border-radius:20px;background:var(--bg2);border:1px solid var(--border);overflow:hidden;flex-shrink:0;touch-action:pan-y pinch-zoom}
 .char-box-lg .grid-bg{position:absolute;inset:0;width:100%;height:100%}
 .char-box-lg .grid-bg line{stroke:rgba(255,255,255,.09);stroke-width:1}
 .char-box-lg .writer-target{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
@@ -230,7 +230,7 @@ html.fast-writer-sheet #app{max-width:none;overflow:hidden}
 .fw-character{min-width:0;font-family:var(--cjk);font-size:clamp(40px,10vw,52px);font-weight:700;line-height:1.1;color:var(--hsk-ink)}
 .fw-count{font-size:16px;font-weight:600;color:var(--hsk-ink-secondary);white-space:nowrap}
 .fw-close{justify-self:end;width:44px;height:44px;border-radius:50%;font-size:29px;line-height:1;color:var(--hsk-ink-secondary);display:flex;align-items:center;justify-content:center}
-.fw-box{width:min(560px,calc(100vw - 40px));height:auto;aspect-ratio:1;margin-top:12px;border-radius:22px;background:var(--hsk-paper-raised);border:1px solid rgba(181,146,98,.28);touch-action:pan-y}
+.fw-box{width:min(560px,calc(100vw - 40px));height:auto;aspect-ratio:1;margin-top:12px;border-radius:22px;background:var(--hsk-paper-raised);border:1px solid rgba(181,146,98,.28);touch-action:pan-y pinch-zoom}
 .fw-box .grid-bg line{stroke:rgba(181,146,98,.2);stroke-width:1}
 .fw-box .plain-char{font-family:var(--cjk);font-size:clamp(112px,34vw,170px);font-weight:600;color:var(--hsk-ink)}
 .fw-controls{gap:20px;margin-top:18px;margin-bottom:0}
@@ -261,7 +261,8 @@ html.fast-writer-sheet #app{max-width:none;overflow:hidden}
 }
 /* Hide duplicate navigation only inside an authenticated Telegram WebApp. */
 html.hsk-telegram-back-active .hsk-native-back-duplicate,
-html.hsk-embedded .hsk-native-back-duplicate{display:none!important}
+html.hsk-embedded:not(.hsk-pwa-embedded) .hsk-native-back-duplicate{display:none!important}
+html.hsk-pwa-embedded .hsk-native-back-duplicate{display:flex!important}
 /* Mirror Course V3 NavBack visuals for nested dictionary detail/stroke layers. */
 html.hsk-embedded .view.nb-drag,html.hsk-embedded .stroke-modal.nb-drag{
   z-index:60;transition:none!important;will-change:transform;box-shadow:-12px 0 28px rgba(20,17,13,.16)
@@ -411,10 +412,16 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     document.documentElement.classList.add('fast-writer-sheet');
   }
   if(!window.HSK_FAST_WRITER){
-    document.write('<script src="hsk-words.js?v=20260720"><\/script>');
+    document.write('<script src="/hsk-words.js?v=20260720"><\/script>');
     document.write('<script src="/course_v3_data/hsk30-words.js?v=20260930"><\/script>');
     document.write('<script src="/course_v3_data/hsk30-dictionary-examples.js?v=20261001"><\/script>');
-    document.write('<script src="hsk-extra.js?v=20260720"><\/script>');
+    /* Strokes, examples and HSK 4 grammar (~1.1 MB gzip) are read only inside
+       a word's detail, and every reader tolerates their absence. Loading them
+       without blocking lets the word list appear first on a slow network. */
+    var extra = document.createElement('script');
+    extra.src = '/hsk-extra.js?v=20260720';
+    extra.async = true;
+    document.head.appendChild(extra);
   }
 })();
 </script>
@@ -423,6 +430,12 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   var validLangs = ['uz', 'ru', 'tj'];
   var params = new URLSearchParams(location.search || '');
   document.documentElement.classList.toggle('hsk-embedded', params.get('embedded') === '1');
+  var pwaEmbedded = false;
+  try {
+    pwaEmbedded = params.get('embedded') === '1' && window.parent !== window &&
+      window.parent.document.documentElement.classList.contains('hsk-pwa-browser');
+  } catch (e) {}
+  document.documentElement.classList.toggle('hsk-pwa-embedded', pwaEmbedded);
   if(window.HSK_FAST_WRITER){ initFastWriter(params); return; }
   function dictionaryPluralMessage(key,n,lang,params,fallback){var amount=Math.abs(Math.floor(Number(n)||0)),mod10=amount%10,mod100=amount%100,category=lang==="ru"?(mod10===1&&mod100!==11?"one":mod10>=2&&mod10<=4&&(mod100<12||mod100>14)?"few":"many"):"many",bundle=(window.HSKAI_COURSE_I18N&&window.HSKAI_COURSE_I18N[lang])||{},template=bundle[key+"."+category];if(typeof template!=="string"||!template)return fallback;return template.replace(/\{([A-Za-z][A-Za-z0-9_]*)\}/g,function(match,name){return Object.prototype.hasOwnProperty.call(params,name)?String(params[name]):match})}function dictionaryMessage(key,fallback){var messages=(window.HSKAI_COURSE_I18N&&window.HSKAI_COURSE_I18N[currentLang])||{},value=messages[key];return typeof value==="string"&&value?value:fallback}  var UI = {
     uz: {

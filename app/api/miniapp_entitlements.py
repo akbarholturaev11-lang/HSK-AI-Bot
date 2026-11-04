@@ -40,6 +40,7 @@ from app.services.miniapp_hint_service import MiniAppHintService
 from app.services.pro_trial_service import ProTrialService, REASON_NOT_APPLICABLE
 from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
 from app.services.trial_risk_service import TrialRiskService
+from app.services.pwa_auth_service import PWA_SESSION_COOKIE, PwaAuthError, PwaAuthService, require_same_origin
 
 
 logger = logging.getLogger(__name__)
@@ -225,6 +226,15 @@ def create_miniapp_entitlements_router(
             "X-Content-Type-Options": "nosniff",
         })
 
+    def _foundation_content():
+        lesson = _read_course_lesson("hsk1", 1)
+        foundation = lesson.get("foundation") if lesson else None
+        if not isinstance(foundation, dict) or not foundation.get("cards"):
+            return _private_content_response(
+                {"ok": False, "error": "foundation_unavailable"}, status_code=503,
+            )
+        return _private_content_response({"ok": True, "foundation": foundation})
+
     @router.get("/api/v3/lesson/foundation")
     async def v3_course_lesson_foundation(request: Request):
         telegram_id, _ = await _authenticated(request)
@@ -238,13 +248,72 @@ def create_miniapp_entitlements_router(
                 return _private_content_response(
                     {"ok": False, "error": "access_start_first"}, status_code=403,
                 )
-            lesson = _read_course_lesson("hsk1", 1)
-            foundation = lesson.get("foundation") if lesson else None
-            if not isinstance(foundation, dict) or not foundation.get("cards"):
-                return _private_content_response(
-                    {"ok": False, "error": "foundation_unavailable"}, status_code=503,
+            return _foundation_content()
+
+    @router.get("/api/v3/pwa/lesson/foundation")
+    async def pwa_course_lesson_foundation(request: Request):
+        async with session_factory() as session:
+            try:
+                await PwaAuthService(session, settings_obj).actor(
+                    request.cookies.get(PWA_SESSION_COOKIE)
                 )
-            return _private_content_response({"ok": True, "foundation": foundation})
+            except PwaAuthError as exc:
+                return _private_content_response(
+                    {"ok": False, "error": exc.code}, status_code=exc.status_code,
+                )
+            return _foundation_content()
+
+    async def _lesson_content_for_user(session, user, normalized_level: str, lesson_order: int):
+        # One shared server-authoritative access policy for signed Telegram and
+        # verified PWA actors; never trust caller-provided user or grade data.
+        if normalized_level not in COURSE_LEVELS or lesson_order < 1:
+            return _private_content_response(
+                {"ok": False, "error": "course_lesson_not_found"}, status_code=404,
+            )
+        user_level = content_level(getattr(user, "level", None))
+        if normalized_level != user_level:
+            return _private_content_response(
+                {"ok": False, "error": "course_level_not_allowed"}, status_code=403,
+            )
+        total = total_parts(normalized_level)
+        if not total or lesson_order > total:
+            return _private_content_response(
+                {"ok": False, "error": "course_lesson_not_found"}, status_code=404,
+            )
+        progress = await CourseProgressRepository(session).get_by_user_id(user.id)
+        completed = (
+            int(getattr(progress, "completed_lessons_count", 0) or 0)
+            if progress and getattr(progress, "level", None) == normalized_level
+            else 0
+        )
+        if lesson_order > completed + 1:
+            return _private_content_response(
+                {"ok": False, "error": "course_lesson_not_unlocked"}, status_code=403,
+            )
+        if await _foundation_is_blocked(session, user, normalized_level):
+            return _private_content_response(
+                {"ok": False, "error": "android_foundation_required"}, status_code=403,
+            )
+        access = await LessonAccessService(session).status(
+            user, level=normalized_level, lesson_order=lesson_order,
+            completed=completed, consume=False,
+        )
+        if not access.get("allowed"):
+            return _private_content_response(access, status_code=403)
+        unlimited_access = access.get("unlimited") or resolve_state(user) in {
+            EntitlementState.PRO_ACTIVE, EntitlementState.TEMP_ACCESS,
+        }
+        if (lesson_order > completed and not access.get("idempotent")
+                and not access.get("policy_free") and not unlimited_access):
+            return _private_content_response(
+                {"ok": False, "error": "lesson_start_required"}, status_code=403,
+            )
+        lesson = _read_course_lesson(normalized_level, lesson_order)
+        if not lesson:
+            return _private_content_response(
+                {"ok": False, "error": "course_lesson_not_found"}, status_code=404,
+            )
+        return _private_content_response(lesson)
 
     @router.get("/api/v3/lesson/content/{level}/{lesson_order}")
     async def v3_course_lesson_content(request: Request, level: str, lesson_order: int):
@@ -264,50 +333,24 @@ def create_miniapp_entitlements_router(
                 return _private_content_response(
                     {"ok": False, "error": "access_start_first"}, status_code=403,
                 )
-            user_level = content_level(getattr(user, "level", None))
-            if normalized_level != user_level:
-                return _private_content_response(
-                    {"ok": False, "error": "course_level_not_allowed"}, status_code=403,
-                )
-            total = total_parts(normalized_level)
-            if not total or lesson_order > total:
-                return _private_content_response(
-                    {"ok": False, "error": "course_lesson_not_found"}, status_code=404,
-                )
-            progress = await CourseProgressRepository(session).get_by_user_id(user.id)
-            completed = (
-                int(getattr(progress, "completed_lessons_count", 0) or 0)
-                if progress and getattr(progress, "level", None) == normalized_level
-                else 0
+            return await _lesson_content_for_user(
+                session, user, normalized_level, lesson_order,
             )
-            if lesson_order > completed + 1:
-                return _private_content_response(
-                    {"ok": False, "error": "course_lesson_not_unlocked"}, status_code=403,
+
+    @router.get("/api/v3/pwa/lesson/content/{level}/{lesson_order}")
+    async def pwa_course_lesson_content(request: Request, level: str, lesson_order: int):
+        async with session_factory() as session:
+            try:
+                user, _ = await PwaAuthService(session, settings_obj).actor(
+                    request.cookies.get(PWA_SESSION_COOKIE)
                 )
-            if await _foundation_is_blocked(session, user, normalized_level):
+            except PwaAuthError as exc:
                 return _private_content_response(
-                    {"ok": False, "error": "android_foundation_required"}, status_code=403,
+                    {"ok": False, "error": exc.code}, status_code=exc.status_code,
                 )
-            access = await LessonAccessService(session).status(
-                user, level=normalized_level, lesson_order=lesson_order,
-                completed=completed, consume=False,
+            return await _lesson_content_for_user(
+                session, user, str(level or "").strip().lower(), lesson_order,
             )
-            if not access.get("allowed"):
-                return _private_content_response(access, status_code=403)
-            unlimited_access = access.get("unlimited") or resolve_state(user) in {
-                EntitlementState.PRO_ACTIVE, EntitlementState.TEMP_ACCESS,
-            }
-            if (lesson_order > completed and not access.get("idempotent")
-                    and not access.get("policy_free") and not unlimited_access):
-                return _private_content_response(
-                    {"ok": False, "error": "lesson_start_required"}, status_code=403,
-                )
-            lesson = _read_course_lesson(normalized_level, lesson_order)
-            if not lesson:
-                return _private_content_response(
-                    {"ok": False, "error": "course_lesson_not_found"}, status_code=404,
-                )
-            return _private_content_response(lesson)
 
     @router.post("/api/v3/lesson/skip-test")
     async def v3_course_lesson_skip_test(request: Request):
@@ -373,6 +416,84 @@ def create_miniapp_entitlements_router(
                 "questions": questions,
             })
 
+    async def _practice_gate_for_user(session, user, feature: str, ref: str | None, telegram_id: int | None):
+        # One shared lifetime-limit policy for signed Telegram and verified
+        # browser actors: caller authentication must happen BEFORE consumption.
+        access = CourseMiniAppAccessService(session)
+        # Admin "vaqtincha free" rejimini yoqqan bo'lsa Mashq bo'limlari ham
+        # ochiq bo'lishi kerak — ilgari policy faqat kurs darslariga ta'sir
+        # qilardi va user baribir "obuna kerak" devoriga urilardi.
+        # Umrlik bepul foydalanish SARFLANMAYDI: rejim tugagach user o'z
+        # bepul urinishini yo'qotmasin.
+        if getattr(user, "status", "") != "blocked" and (await CourseAccessPolicyService(session).get_policy()).free_active:
+            return JSONResponse(
+                content={
+                    "ok": True,
+                    "allowed": True,
+                    "is_paid": access.is_paid_user(user),
+                    "remaining": None,
+                    "policy_free": True,
+                }
+            )
+        # Bepul: UMRDA 1 marta (lifetime=True — kunlik yangilanmaydi).
+        result = await access.consume_daily_use(
+            user, feature_key=feature, ref=ref, lifetime=True
+        )
+        # Asosiy limit qarori avval saqlanadi. Shadow — faqat diagnostika;
+        # sekin DB yoki yangi dvigatel mashqni boshlashni ushlab turmasin.
+        await session.commit()
+        try:
+            await asyncio.wait_for(
+                shadow_compare_gate(
+                    session, user=user, feature=feature, legacy=result, client=CLIENT
+                ),
+                timeout=SHADOW_COMPARE_TIMEOUT_SECONDS,
+            )
+        except asyncio.TimeoutError:
+            logger.warning(
+                "Skipping slow entitlement shadow comparison for %s/%s",
+                telegram_id,
+                feature,
+            )
+
+        if not result.get("allowed"):
+            # Bepul tugadi — endi faqat obuna yoki 7 kunlik trial.
+            #
+            # Ilgari bu yerda "reklama bor" deb javob qaytardi va AI
+            # bo'limi bo'lmasa u DOIM `available: true` edi. Mashq
+            # reklamalari olib tashlangan bo'lsa ham klientlar shu
+            # bayroqqa qarab "Reklama bilan davom etish" tugmasini
+            # ko'rsatishda davom etardi — foydalanuvchi aynan shuni
+            # ko'rgan.
+            #
+            # Kalit SAQLANADI va doim "yo'q" deydi: mustaqil mashq
+            # sahifalari (`course_v3_recognition.html` va boshqalar)
+            # o'sha kalitni o'qiydi, va ular yangilanmasidan oldin ham
+            # to'g'ri ishlashi kerak.
+            ad_info = {"available": False, "limited": False}
+            return JSONResponse(
+                status_code=403,
+                content={
+                    "ok": False,
+                    "error": result.get("error") or "free_feature_limit_reached",
+                    "is_paid": bool(result.get("is_paid", False)),
+                    "ad": ad_info,
+                    # Mini App ilgari buni OLMASDI, Android esa olardi.
+                    # Endi ikkala klient bir xil javob ko'radi.
+                    **result,
+                    "reset_at": result.get("reset_at"),
+                },
+            )
+        return JSONResponse(
+            content={
+                "ok": True,
+                "allowed": True,
+                "is_paid": bool(result.get("is_paid", False)),
+                **result,
+                "remaining": result.get("remaining"),
+            }
+        )
+
     @router.post("/api/v3/practice/daily-gate")
     async def v3_practice_daily_gate(request: Request):
         """Mashq bo'limining BEPUL foydalanishi (bepul userga UMRDA 1 marta,
@@ -399,80 +520,139 @@ def create_miniapp_entitlements_router(
                 return JSONResponse(
                     status_code=403, content={"ok": False, "error": "access_start_first"}
                 )
-            access = CourseMiniAppAccessService(session)
-            # Admin "vaqtincha free" rejimini yoqqan bo'lsa Mashq bo'limlari ham
-            # ochiq bo'lishi kerak — ilgari policy faqat kurs darslariga ta'sir
-            # qilardi va user baribir "obuna kerak" devoriga urilardi.
-            # Umrlik bepul foydalanish SARFLANMAYDI: rejim tugagach user o'z
-            # bepul urinishini yo'qotmasin.
-            if getattr(user, "status", "") != "blocked" and (await CourseAccessPolicyService(session).get_policy()).free_active:
-                return JSONResponse(
-                    content={
-                        "ok": True,
-                        "allowed": True,
-                        "is_paid": access.is_paid_user(user),
-                        "remaining": None,
-                        "policy_free": True,
-                    }
-                )
-            # Bepul: UMRDA 1 marta (lifetime=True — kunlik yangilanmaydi).
-            result = await access.consume_daily_use(
-                user, feature_key=feature, ref=ref, lifetime=True
-            )
-            # Asosiy limit qarori avval saqlanadi. Shadow — faqat diagnostika;
-            # sekin DB yoki yangi dvigatel mashqni boshlashni ushlab turmasin.
-            await session.commit()
-            try:
-                await asyncio.wait_for(
-                    shadow_compare_gate(
-                        session, user=user, feature=feature, legacy=result, client=CLIENT
-                    ),
-                    timeout=SHADOW_COMPARE_TIMEOUT_SECONDS,
-                )
-            except asyncio.TimeoutError:
-                logger.warning(
-                    "Skipping slow entitlement shadow comparison for %s/%s",
-                    telegram_id,
-                    feature,
-                )
+            return await _practice_gate_for_user(session, user, feature, ref, telegram_id)
 
-            if not result.get("allowed"):
-                # Bepul tugadi — endi faqat obuna yoki 7 kunlik trial.
-                #
-                # Ilgari bu yerda "reklama bor" deb javob qaytardi va AI
-                # bo'limi bo'lmasa u DOIM `available: true` edi. Mashq
-                # reklamalari olib tashlangan bo'lsa ham klientlar shu
-                # bayroqqa qarab "Reklama bilan davom etish" tugmasini
-                # ko'rsatishda davom etardi — foydalanuvchi aynan shuni
-                # ko'rgan.
-                #
-                # Kalit SAQLANADI va doim "yo'q" deydi: mustaqil mashq
-                # sahifalari (`course_v3_recognition.html` va boshqalar)
-                # o'sha kalitni o'qiydi, va ular yangilanmasidan oldin ham
-                # to'g'ri ishlashi kerak.
-                ad_info = {"available": False, "limited": False}
+    @router.post("/api/v3/pwa/practice/daily-gate")
+    async def pwa_practice_daily_gate(request: Request):
+        """Consume the same lifetime free attempt through verified PWA actor.
+
+        POST-only and CSRF-protected: this is not a free read endpoint.
+        """
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                return _private_content_response(
+                    {"ok": False, "error": "invalid_feature"}, status_code=422,
+                )
+            if request.headers.get("Content-Type", "").split(";", 1)[0].strip().lower() != "application/json":
+                return _private_content_response(
+                    {"ok": False, "error": "invalid_feature"}, status_code=415,
+                )
+            body = bytearray()
+            async for chunk in request.stream():
+                body.extend(chunk)
+                if len(body) > 1024:
+                    return _private_content_response(
+                        {"ok": False, "error": "invalid_feature"}, status_code=413,
+                    )
+            payload = json.loads(bytes(body))
+            if not isinstance(payload, dict) or set(payload) - {"feature", "ref"}:
+                raise ValueError("unexpected field")
+            feature = str(payload.get("feature") or "").strip().lower()
+            if feature not in COURSE_DAILY_GATE_FEATURES:
+                return _private_content_response(
+                    {"ok": False, "error": "invalid_feature"}, status_code=400,
+                )
+            ref = _ref(payload)
+            async with session_factory() as session:
+                browser = PwaAuthService(session, settings_obj)
+                actor, _ = await browser.mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                user = await UserRepository(session).get_by_user_id(actor.id, lock=True)
+                if not user or str(user.status or "").lower() == "blocked":
+                    raise PwaAuthError("pwa_session_required")
+                response = await _practice_gate_for_user(
+                    session, user, feature, ref,
+                    int(user.telegram_id) if user.telegram_id else None,
+                )
+                response.headers["Cache-Control"] = "no-store"
+                return response
+        except PwaAuthError as exc:
+            return _private_content_response(
+                {"ok": False, "error": exc.code}, status_code=exc.status_code,
+            )
+        except (TypeError, ValueError, UnicodeDecodeError, json.JSONDecodeError):
+            return _private_content_response(
+                {"ok": False, "error": "invalid_feature"}, status_code=400,
+            )
+
+    async def _start_lesson_for_user(session, user, payload: dict, order: int):
+        # Shared entitlement, quota, proof and progress logic; both transports
+        # resolve their own canonical actor before reaching this function.
+        level = content_level(user.level)
+        if (payload.get("level") is not None
+                and str(payload["level"]).strip().lower() != level):
+            return _private_content_response(
+                {"ok": False, "error": "course_context_changed"}, status_code=409,
+            )
+        progress = await CourseProgressRepository(session).get_by_user_id(user.id, for_update=True)
+        completed = int(progress.completed_lessons_count or 0) if progress and progress.level == level else 0
+        # Completed lessons may be revisited without re-consuming a
+        # limited free lesson. This read-only localization path requires
+        # the same signed identity and server-stored completed progress.
+        if payload.get("review_only") is True:
+            if level != "nhsk2" or order < 1 or order > completed or order > total_parts(level):
                 return JSONResponse(
                     status_code=403,
-                    content={
-                        "ok": False,
-                        "error": result.get("error") or "free_feature_limit_reached",
-                        "is_paid": bool(result.get("is_paid", False)),
-                        "ad": ad_info,
-                        # Mini App ilgari buni OLMASDI, Android esa olardi.
-                        # Endi ikkala klient bir xil javob ko'radi.
-                        **result,
-                        "reset_at": result.get("reset_at"),
-                    },
+                    content={"ok": False, "error": "course_lesson_not_unlocked"},
+                    headers={"Cache-Control": "no-store"},
                 )
-            return JSONResponse(
-                content={
-                    "ok": True,
-                    "allowed": True,
-                    "is_paid": bool(result.get("is_paid", False)),
-                    **result,
-                    "remaining": result.get("remaining"),
-                }
+            # A signed completed-lesson read is quota-free, but must
+            # still pass the SAME blocked-user and HSK 3.0 track gates
+            # as native/Desktop. Progress alone is not an entitlement.
+            review_status = await LessonAccessService(session).status(
+                user, level=level, lesson_order=order,
+                completed=completed, consume=False,
             )
+            if not review_status["allowed"]:
+                return JSONResponse(
+                    status_code=403, content=review_status,
+                    headers={"Cache-Control": "no-store"},
+                )
+            localized = miniapp_reserved_grammar_patch(level=level, lesson_order=order)
+            response = {"ok": True, "allowed": True}
+            if localized is not None:
+                response["p3_grammar"] = localized
+            return JSONResponse(content=response, headers={"Cache-Control": "no-store"})
+        if order < 1 or order > total_parts(level) or order > completed + 1:
+            return JSONResponse(status_code=403, content={"ok": False, "error": "course_lesson_not_unlocked"})
+        if await _foundation_is_blocked(session, user, level):
+            return _private_content_response(
+                {"ok": False, "error": "android_foundation_required"}, status_code=403,
+            )
+        result = await LessonAccessService(session).status(
+            user, level=level, lesson_order=order, completed=completed, consume=True,
+        )
+        if result["allowed"]:
+            if order == completed + 1:
+                # Cached Mini Apps do not echo completion_proof. This trusted
+                # DB grant lets them finish ONLY after an authorized start.
+                await remember_authorized_lesson_start(
+                    session, user=user, level=level, lesson_order=order,
+                )
+            result = {
+                **result,
+                "completion_proof": issue_lesson_completion_proof(
+                    user_id=user.id, level=level, lesson_order=order,
+                    secret=settings_obj.BOT_TOKEN,
+                ),
+            }
+        await session.commit()
+        # Display-only grammar translations are returned ONLY after the
+        # existing authenticated, unlocked, successful consume=True gate.
+        # Denials, direct static GETs and speculative prefetch get none.
+        if result["allowed"] and level == "nhsk2":
+            localized = miniapp_reserved_grammar_patch(
+                level=level, lesson_order=order,
+            )
+            if localized is not None:
+                result = {**result, "p3_grammar": localized}
+        return JSONResponse(
+            status_code=200 if result["allowed"] else 403,
+            content=result, headers={"Cache-Control": "no-store"},
+        )
 
     @router.post("/api/v3/lesson/start")
     async def v3_course_lesson_start(request: Request):
@@ -488,84 +668,61 @@ def create_miniapp_entitlements_router(
         except (TypeError, ValueError):
             return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_lesson_payload"})
         async with session_factory() as session:
-            # Match course-track changes: lock the account before progress or
-            # quota, then reject a request prepared for a different course.
             user = await UserRepository(session).get_by_telegram_id_for_update(telegram_id)
             if not user:
                 return JSONResponse(status_code=403, content={"ok": False, "error": "access_start_first"})
-            level = content_level(user.level)
-            if (payload.get("level") is not None
-                    and str(payload["level"]).strip().lower() != level):
-                return _private_content_response(
-                    {"ok": False, "error": "course_context_changed"}, status_code=409,
-                )
-            progress = await CourseProgressRepository(session).get_by_user_id(user.id, for_update=True)
-            completed = int(progress.completed_lessons_count or 0) if progress and progress.level == level else 0
-            # Completed lessons may be revisited without re-consuming a
-            # limited free lesson. This read-only localization path requires
-            # the same signed identity and server-stored completed progress.
-            if payload.get("review_only") is True:
-                if level != "nhsk2" or order < 1 or order > completed or order > total_parts(level):
-                    return JSONResponse(
-                        status_code=403,
-                        content={"ok": False, "error": "course_lesson_not_unlocked"},
-                        headers={"Cache-Control": "no-store"},
-                    )
-                # A signed completed-lesson read is quota-free, but must
-                # still pass the SAME blocked-user and HSK 3.0 track gates
-                # as native/Desktop. Progress alone is not an entitlement.
-                review_status = await LessonAccessService(session).status(
-                    user, level=level, lesson_order=order,
-                    completed=completed, consume=False,
-                )
-                if not review_status["allowed"]:
-                    return JSONResponse(
-                        status_code=403, content=review_status,
-                        headers={"Cache-Control": "no-store"},
-                    )
-                localized = miniapp_reserved_grammar_patch(level=level, lesson_order=order)
-                response = {"ok": True, "allowed": True}
-                if localized is not None:
-                    response["p3_grammar"] = localized
-                return JSONResponse(content=response, headers={"Cache-Control": "no-store"})
-            if order < 1 or order > total_parts(level) or order > completed + 1:
-                return JSONResponse(status_code=403, content={"ok": False, "error": "course_lesson_not_unlocked"})
-            if await _foundation_is_blocked(session, user, level):
-                return _private_content_response(
-                    {"ok": False, "error": "android_foundation_required"}, status_code=403,
-                )
-            result = await LessonAccessService(session).status(
-                user, level=level, lesson_order=order, completed=completed, consume=True,
-            )
-            if result["allowed"]:
-                if order == completed + 1:
-                    # Cached Mini Apps do not echo completion_proof. This trusted
-                    # DB grant lets them finish ONLY after an authorized start.
-                    await remember_authorized_lesson_start(
-                        session, user=user, level=level, lesson_order=order,
-                    )
-                result = {
-                    **result,
-                    "completion_proof": issue_lesson_completion_proof(
-                        user_id=user.id, level=level, lesson_order=order,
-                        secret=settings_obj.BOT_TOKEN,
-                    ),
-                }
-            await session.commit()
-            # Display-only grammar translations are returned ONLY after the
-            # existing authenticated, unlocked, successful consume=True gate.
-            # Denials, direct static GETs and speculative prefetch get none.
-            if result["allowed"] and level == "nhsk2":
-                localized = miniapp_reserved_grammar_patch(
-                    level=level, lesson_order=order,
-                )
-                if localized is not None:
-                    result = {**result, "p3_grammar": localized}
-            return JSONResponse(
-                status_code=200 if result["allowed"] else 403,
-                content=result, headers={"Cache-Control": "no-store"},
-            )
+            return await _start_lesson_for_user(session, user, payload, order)
 
+    @router.post("/api/v3/pwa/lesson/start")
+    async def pwa_course_lesson_start(request: Request):
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("Content-Type", "").split(";", 1)[0].strip().lower() != "application/json":
+                return _private_content_response(
+                    {"ok": False, "error": "invalid_lesson_payload"}, status_code=415,
+                )
+            body = bytearray()
+            async for chunk in request.stream():
+                body.extend(chunk)
+                if len(body) > 4096:
+                    return _private_content_response(
+                        {"ok": False, "error": "invalid_lesson_payload"}, status_code=413,
+                    )
+            payload = json.loads(bytes(body))
+            if not isinstance(payload, dict) or set(payload) - {"lesson_id", "level", "review_only"}:
+                raise ValueError("invalid fields")
+            order = int(payload.get("lesson_id") or 0)
+        except PwaAuthError as exc:
+            return _private_content_response(
+                {"ok": False, "error": exc.code}, status_code=exc.status_code,
+            )
+        except (TypeError, ValueError, UnicodeDecodeError, json.JSONDecodeError):
+            return _private_content_response(
+                {"ok": False, "error": "invalid_lesson_payload"}, status_code=400,
+            )
+        async with session_factory() as session:
+            try:
+                browser = PwaAuthService(session, settings_obj)
+                actor, _ = await browser.mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+            except PwaAuthError as exc:
+                return _private_content_response(
+                    {"ok": False, "error": exc.code}, status_code=exc.status_code,
+                )
+            user = await UserRepository(session).get_by_user_id(actor.id, lock=True)
+            if not user or str(user.status or "").strip().lower() == "blocked":
+                return _private_content_response(
+                    {"ok": False, "error": "pwa_session_required"}, status_code=401,
+                )
+            return await _start_lesson_for_user(session, user, payload, order)
+
+    async def _limits_for_user(session, user, feature: str):
+        if feature == "mistake_review":
+            feature = "training_test"
+        result = await CourseMiniAppAccessService(session).configured_decision(user, feature)
+        return JSONResponse(content={**result, "ok": True}, headers={"Cache-Control": "no-store"})
 
     @router.post("/api/v3/limits/status")
     async def limits_status(request: Request):
@@ -579,10 +736,50 @@ def create_miniapp_entitlements_router(
             user = await UserRepository(session).get_by_telegram_id(telegram_id)
             if not user:
                 return JSONResponse(status_code=403, content={"ok": False, "error": "access_start_first"})
-            if feature == "mistake_review":
-                feature = "training_test"
-            result = await CourseMiniAppAccessService(session).configured_decision(user, feature)
-            return JSONResponse(content={**result, "ok": True}, headers={"Cache-Control": "no-store"})
+            return await _limits_for_user(session, user, feature)
+
+    @router.post("/api/v3/pwa/limits/status")
+    async def pwa_limits_status(request: Request):
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("Content-Type", "").split(";", 1)[0].strip().lower() != "application/json":
+                return _private_content_response(
+                    {"ok": False, "error": "invalid_feature"}, status_code=415,
+                )
+            body = bytearray()
+            async for chunk in request.stream():
+                body.extend(chunk)
+                if len(body) > 1024:
+                    return _private_content_response(
+                        {"ok": False, "error": "invalid_feature"}, status_code=413,
+                    )
+            payload = json.loads(bytes(body))
+            if not isinstance(payload, dict) or set(payload) - {"feature"}:
+                raise ValueError("unexpected field")
+            feature = str(payload.get("feature") or "lesson").strip()
+            if feature not in COURSE_AD_GATE_FEATURES | {"voice"}:
+                return _private_content_response(
+                    {"ok": False, "error": "invalid_feature"}, status_code=400,
+                )
+        except PwaAuthError as exc:
+            return _private_content_response(
+                {"ok": False, "error": exc.code}, status_code=exc.status_code,
+            )
+        except (TypeError, ValueError, UnicodeDecodeError, json.JSONDecodeError):
+            return _private_content_response(
+                {"ok": False, "error": "invalid_feature"}, status_code=400,
+            )
+        async with session_factory() as session:
+            try:
+                actor, _ = await PwaAuthService(session, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+            except PwaAuthError as exc:
+                return _private_content_response(
+                    {"ok": False, "error": exc.code}, status_code=exc.status_code,
+                )
+            return await _limits_for_user(session, actor, feature)
 
     @router.post("/api/v3/trial/start")
     async def v3_trial_start(request: Request):

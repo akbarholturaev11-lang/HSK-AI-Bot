@@ -47,7 +47,6 @@ class MiniAppLessonSettingsLocalUIAdoptionTests(unittest.TestCase):
         }
 
     def test_exact_three_locale_copy_and_fallback_calls(self):
-        self.assertEqual(len(self.html.split("\n")), 9096)
         self.assertLess(
             self.html.index("hsk-course-i18n.js"),
             self.html.index("function courseMessage(key,fallback)"),
@@ -65,7 +64,7 @@ class MiniAppLessonSettingsLocalUIAdoptionTests(unittest.TestCase):
                     self.assertEqual(original, expected)
                     for locale in LOCALES:
                         self.assertEqual(self.catalogs[locale][key], expected[locale])
-                        self.assertEqual(len(self.catalogs[locale]), 978)
+                        self.assertEqual(len(self.catalogs[locale]), 1021)
 
     def test_existing_sheet_accessibility_and_exit_flow_remain(self):
         source = self.html

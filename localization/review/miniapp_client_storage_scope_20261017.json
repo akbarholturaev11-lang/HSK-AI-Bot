@@ -87,16 +87,6 @@
     {
       "source": "course",
       "storage": "sessionStorage",
-      "key": "hsk_mistake_review_ref",
-      "expected_operations": [
-        "removeItem"
-      ],
-      "category": "session_access_ref_cleared",
-      "account_data_review": true
-    },
-    {
-      "source": "course",
-      "storage": "sessionStorage",
       "key": "hsk_v3_resource_return",
       "expected_operations": [
         "getItem",
@@ -107,15 +97,14 @@
       "account_data_review": false
     },
     {
-      "source": "memorize",
-      "storage": "localStorage",
-      "key": "hsk_memo_pref",
+      "source": "course",
+      "storage": "sessionStorage",
+      "key": "hskai.pwa.telegram.pending",
       "expected_operations": [
-        "getItem",
-        "setItem"
+        "removeItem"
       ],
-      "category": "unscoped_practice_style_preference",
-      "account_data_review": false
+      "category": "ephemeral_pwa_telegram_link_request_cleanup",
+      "account_data_review": true
     }
   ],
   "dynamic_key_contracts": [
@@ -160,6 +149,13 @@
       "expected_identity_scope": true,
       "purpose": "persistent_personal_character_mastery",
       "privacy_review": "Signed Telegram user id scopes mastery; unauthenticated preview retains the existing hsk_memo key. Old shared account state is not migrated."
+    },
+    {
+      "source": "memorize",
+      "function": "memoPrefKey",
+      "expected_identity_scope": true,
+      "purpose": "persistent_memorize_user_pref_in_PWA",
+      "privacy_review": "Old Telegram global UI-only preference stays compatible. PWA preference uses localUserScope() which derives from the server verified PWA session, not initDataUnsafe; runtime account switch still needs QA."
     }
   ],
   "risks": [
@@ -170,5 +166,15 @@
       "scope": "tg.initDataUnsafe is unverified client data; server entitlement cannot rely on it"
     }
   ],
-  "limitations": "Source key inventory only. Does not prove data leak, browser origin shared between Telegram sessions, user authorization, expiry behavior, race conditions, or existing device artifacts; no sensitive contents or user identifiers emitted."
+  "limitations": "Source key inventory only. Does not prove data leak, browser origin shared between Telegram sessions, user authorization, expiry behavior, race conditions, or existing device artifacts; no sensitive contents or user identifiers emitted.",
+  "pwa_dynamic_storage_review": {
+    "reason": "PWA branch moves mistake access_ref removal from a quoted literal to a user-scoped ternary and moves memorize preference from a quoted literal to memoPrefKey(). Neither is a dropped operation; both require explicit source guard and identity-switch QA. PWA course logout also clears the pre-existing Telegram link request id from the same-tab session store; this explicit cleanup is separately classified.",
+    "moved_literal_keys": [
+      "course:sessionStorage:hsk_mistake_review_ref",
+      "memorize:localStorage:hsk_memo_pref"
+    ],
+    "remaining_literal_keys": 9,
+    "remaining_literal_calls": 18,
+    "dynamic_functions": 7
+  }
 }

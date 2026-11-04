@@ -20,6 +20,8 @@ from app.services.smart_reminder_policy import _aware_utc, day_window
 from app.services.smart_reminder_policy_context import read_observed_learning
 from app.services.smart_reminder_preferences import SmartReminderPreferencesService, _utc
 from app.services.smart_reminder_shadow_queue import JOB
+from app.services.smart_reminder_destination import PWA_POLICY_VERSION
+from app.services.smart_reminder_pwa import SmartReminderPwaService
 from app.services.smart_reminder_shadow_worker import SmartReminderShadowWorker
 from app.services.smart_reminder_telegram_content import send_telegram_content
 
@@ -54,6 +56,11 @@ class SmartReminderRuntime:
         return callable(self.telegram_send) and getattr(self.settings, 'SMART_REMINDER_TELEGRAM_ENABLED', False) is True
 
     @property
+    def pwa_ready(self):
+        from app.services.learner_pwa_push import sender_config
+        return sender_config(self.settings) is not None
+
+    @property
     def ready(self):
         return (self.enabled is True and self.calibration is not None and self.history_window is not None and
                 callable(self.coverage_reader) and (callable(self.android_admission_reader) or self.telegram_ready) and
@@ -85,7 +92,8 @@ class SmartReminderRuntime:
         routing = SmartReminderRouting
         query = select(routing.user_id).where(routing.verified_at <= now, routing.verified_until > now,
             or_(and_(routing.state == 'held', callable(self.android_admission_reader)),
-                and_(routing.state == 'telegram', self.telegram_ready))).order_by(routing.user_id).limit(self.batch)
+                and_(routing.state == 'telegram', or_(self.telegram_ready, self.pwa_ready)))).order_by(
+                    routing.user_id).limit(self.batch)
         async with self.sessions() as session:
             rows = (await session.scalars(query.where(routing.user_id > self._cursor))).all()
             if not rows and self._cursor:
@@ -103,13 +111,13 @@ class SmartReminderRuntime:
             level = await session.scalar(select(User.level).where(User.id == user_id))
             reviewed_until = await session.scalar(select(SmartReminderRouting.verified_until).where(
                 SmartReminderRouting.user_id == user_id))
-            versions = (self.android(session).policy_version, planner.telegram.policy_version)
+            versions = (self.android(session).policy_version, planner.telegram.policy_version, PWA_POLICY_VERSION)
             # Existing due work must not depend on another successful reserve:
             # reserve intentionally refuses a newly requested time in the past.
             pending = (await session.execute(select(JOB).where(JOB.c.user_id == user_id,
                 JOB.c.category == 'study', JOB.c.state.in_(('pending', 'claimed')),
                 JOB.c.policy_version.in_(versions), JOB.c.expires_at > self.clock(),
-                JOB.c.selected_channel.in_(('android', 'telegram')))
+                JOB.c.selected_channel.in_(('android', 'telegram', 'pwa')))
                 .order_by(JOB.c.scheduled_at, JOB.c.id).limit(1))).mappings().first()
         if not self.ready: return PlanningResult('runtime_disabled')
         if pending is not None:
@@ -122,8 +130,13 @@ class SmartReminderRuntime:
             expiry = min(end, _utc(reviewed_until))
             if expiry <= now: return PlanningResult('planner_review_unavailable')
             result = await planner.prepare(actor, history_since=since, expected_level=level, expires_at=expiry)
-        if (result.reason not in {'planned', 'already_planned'} or result.channel != 'telegram' or
-                not self.ready or not self.telegram_ready):
+        if result.reason not in {'planned', 'already_planned'} or not self.ready:
+            return result
+        if result.channel == 'pwa':
+            return await SmartReminderPwaService(self.settings, self.sessions,
+                clock=self.clock).dispatch(planner, actor, result.job_id, result.device_id,
+                    history_since=since)
+        if result.channel != 'telegram' or not self.telegram_ready:
             return result
         async with self.sessions() as session:
             telegram_actor = await planner._telegram_actor(session, user_id)

@@ -12,7 +12,8 @@ class BotFeedback(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(Integer, index=True, nullable=False)
-    telegram_id: Mapped[int] = mapped_column(BigInteger, index=True, nullable=False)
+    # Optional Telegram transport; canonical feedback owner is users.id.
+    telegram_id: Mapped[Optional[int]] = mapped_column(BigInteger, index=True, nullable=True)
     language: Mapped[str] = mapped_column(String(8), default="ru", nullable=False)
 
     status: Mapped[str] = mapped_column(String(16), default="pending", index=True, nullable=False)

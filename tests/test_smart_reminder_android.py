@@ -21,6 +21,7 @@ from app.db.models.course_miniapp_profile import CourseMiniAppProfile
 from app.db.models.course_progress import CourseProgress
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.course_xp_event import CourseXpEvent
+from app.db.models.course_user_notification import CourseUserNotification
 from app.db.models.android_push import AndroidPushToken
 from app.db.models.desktop import DesktopDevice, DesktopSession
 from app.db.models.smart_reminder import SmartReminderCapability, SmartReminderConsent, SmartReminderPreference, SmartReminderRouting
@@ -279,6 +280,8 @@ class AndroidChecks:
         self.assertFalse(result['dispatch_allowed'])
         self.assertEqual((await self.rows(ATTEMPT))[0]['state'],'client_posted_unverified')
         self.assertEqual((await self.rows(JOB))[0]['state'],'unknown')
+        self.assertEqual(await self.rows(CourseUserNotification),[])
+        self.assertEqual(await self.rows(CourseUserNotification),[])
         await self.receipt(grant,body=body|{'outcome':'client_declined_before_post'},status=409)
         await self.receipt(grant,body=body|{'receipt_id':str(uuid4())},status=409)
         for outcome in ('verified_shown','read','lesson_completed'):
@@ -299,6 +302,7 @@ class AndroidChecks:
         grant = await self.claim()
         await self.receipt(grant,'client_declined_before_post')
         self.assertEqual((await self.rows(ATTEMPT))[0]['state'],'confirmed_not_displayed')
+        self.assertEqual(await self.rows(CourseUserNotification),[])
         self.assertFalse((await self.claim())['dispatch_allowed'])
         self.assertEqual(len(await self.rows(GRANT)),1)
 

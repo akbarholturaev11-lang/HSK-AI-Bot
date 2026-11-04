@@ -15,6 +15,7 @@ from app.bot.fsm.desktop_auth import DesktopLinkStates
 from app.config import settings
 from app.repositories.user_repo import UserRepository
 from app.bot.utils.i18n import bot_locale_map, t
+from app.bot.generated.bot_i18n import bot_message
 from app.services.onboarding_service import (
     ONBOARDING_MODE_CHOICE_MODE,
     OnboardingService,
@@ -294,6 +295,102 @@ async def _send_android_confirmation(
         parse_mode="HTML",
         reply_markup=_android_confirmation_keyboard(language, request_id),
     )
+
+
+def _pwa_copy(key: str, language: str) -> str:
+    return bot_message(
+        "inline.handlers.desktop_auth.pwa." + key,
+        language if language in {"uz", "ru", "tj"} else "ru",
+    )
+
+
+@router.message(
+    CommandStart(deep_link=True),
+    F.text.regexp(r"^/start(?:@\w+)?\s+pwa_link_[0-9a-fA-F-]{36}(?:_(?:uz|ru|tj))?\s*$"),
+)
+async def begin_pwa_telegram_login(message: Message, state: FSMContext, session) -> None:
+    """Private Telegram approval for an iPhone PWA cookie, not native bearer auth."""
+    if not getattr(settings, "PWA_AUTH_ENABLED", False) or not _private_identity_event(message):
+        return
+    raw = str(message.text or "").strip().split()[-1][len("pwa_link_"):]
+    request_id = raw[:36]
+    language_choice = raw[37:] if len(raw) > 37 and raw[36] == "_" else None
+    if language_choice not in {"uz", "ru", "tj"}:
+        language_choice = None
+    service = DesktopAuthService(session, settings)
+    try:
+        preview = await service.link_request_preview(
+            link_request_id=request_id, platform="pwa",
+        )
+    except DesktopAuthError:
+        await message.answer(_pwa_copy("invalid", language_choice or "ru"), parse_mode="HTML")
+        return
+    onboarding = OnboardingService(session)
+    user, created = await onboarding.get_or_create_user(
+        telegram_id=message.from_user.id,
+        full_name=message.from_user.full_name if message.from_user else None,
+        username=message.from_user.username if message.from_user else None,
+        referral_code=preview.get("referral_code"),
+        bot=message.bot,
+        new_account_referral_only=True,
+    )
+    if created and language_choice:
+        user.language = language_choice
+        user.learning_mode = ONBOARDING_MODE_CHOICE_MODE
+        await session.commit()
+    language = language_choice if created and language_choice else _android_language(user)
+    try:
+        await service.link_request_confirmation(
+            link_request_id=request_id, telegram_id=message.from_user.id, platform="pwa",
+        )
+    except DesktopAuthError:
+        await message.answer(_pwa_copy("invalid", language), parse_mode="HTML")
+        return
+    await state.clear()
+    await message.answer(
+        _pwa_copy("confirm", language),
+        reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(
+                text=_ANDROID_COPY[language]["approve"],
+                callback_data=f"pwa_link:approve:{request_id}",
+            )],
+            [InlineKeyboardButton(
+                text=_ANDROID_COPY[language]["cancel"],
+                callback_data=f"pwa_link:cancel:{request_id}",
+            )],
+        ]),
+        parse_mode="HTML",
+    )
+
+
+@router.callback_query(F.data.regexp(r"^pwa_link:(?:approve|cancel):[0-9a-fA-F-]{36}$"))
+async def confirm_pwa_telegram_login(callback: CallbackQuery, session) -> None:
+    if not getattr(settings, "PWA_AUTH_ENABLED", False) or not _private_identity_event(callback):
+        await callback.answer()
+        return
+    _, action, request_id = str(callback.data or "").split(":", 2)
+    language = await _android_language_for(session, callback.from_user.id)
+    service = DesktopAuthService(session, settings)
+    try:
+        if action == "approve":
+            await service.approve_link_request(
+                link_request_id=request_id, telegram_id=callback.from_user.id,
+                platform="pwa",
+            )
+        else:
+            await service.cancel_link_request(
+                link_request_id=request_id, telegram_id=callback.from_user.id,
+                platform="pwa",
+            )
+    except DesktopAuthError:
+        await callback.answer(_pwa_copy("invalid", language), show_alert=True)
+        return
+    if callback.message:
+        await callback.message.edit_text(
+            _pwa_copy("success" if action == "approve" else "denied", language),
+            parse_mode="HTML",
+        )
+    await callback.answer()
 
 
 @router.message(

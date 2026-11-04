@@ -169,6 +169,7 @@ class UniversalPersonalDiscountTests(unittest.IsolatedAsyncioTestCase):
             owner = delivery.deliver.await_args.args[1]
             self.assertEqual((owner.id, owner.telegram_id), (1, None))
             self.assertEqual(notices.record_from_text.await_args.args[0].id, 1)
+            self.assertTrue(notices.record_from_text.await_args.kwargs["pwa_push_suppressed"])
 
 
 if __name__ == "__main__":

@@ -63,11 +63,16 @@ def test_checkout_telemetry_requires_ack_and_retries_only_transient_failures():
     start = html.index("async function trackSubscriptionStage(stage){")
     end = html.index("/* Sekin internetda", start)
     snippet = html[start:end]
+    transport_start = html.index("function checkoutTransport(path,body,signal,keepalive){")
+    transport_end = html.index("\n}\n/* Course checkout runs", transport_start) + 2
+    transport = html[transport_start:transport_end]
     script = (
         'const state={preview:false,plan:"1_month",method:"visa"};'
-        'const INIT_DATA="signed-test";const API={event:"/api/subscription-miniapp/event"};'
+        'const INIT_DATA="signed-test";const PWA_CHECKOUT_HOST=false;'
+        'const API={event:"/api/subscription-miniapp/event"};'
         'function contextPayload(){return {attempt_id:"sub-test"}};'
         'const warnings=[];console.warn=(...parts)=>warnings.push(parts);'
+        + transport + "\n"
         + snippet
         + """
 async function check(items){
@@ -102,6 +107,50 @@ async function check(items){
         "noAck": {"success": True, "count": 2},
         "offline": {"success": True, "count": 2},
     }
+
+
+def test_browser_checkout_returns_only_to_original_allowlisted_practice_pages():
+    """Exercise the actual checkout return URL builder in both browser hosts."""
+    html = _html()
+    start = html.index('const RETURN_TO_COURSE=PARAMS.get("return_to")==="course"')
+    end = html.index("function initTelegramCourseReturn(){", start)
+    return_source = html[start:end]
+    script = (
+        'let PARAMS=new URLSearchParams();let PWA_CHECKOUT_HOST=true;'
+        'const window={location:{replace:(url)=>{window.result=url}}};'
+        + return_source
+        + """
+const paths=[
+  ["course_v3_voice.html","voice"],
+  ["course_v3_recognition.html","recognition"],
+  ["course_v3_memorize.html","memorize"],
+  ["course_v3_pronunciation.html","pronunciation"],
+  ["course_v3_mistakes.html","mistakes"],
+  ["course_v3_test.html","test"],
+];
+const actual=[];
+for(const [page,slug] of paths){
+  PARAMS=new URLSearchParams({lang:"tj",return_to:"course",return_page:page,return_level:"nhsk2"});
+  PWA_CHECKOUT_HOST=true;
+  const pwa=courseReturnUrl();
+  returnToCourseFromCheckout();
+  const replaced=window.result;
+  PWA_CHECKOUT_HOST=false;
+  const telegram=courseReturnUrl();
+  actual.push({page,slug,pwa,telegram,replaced});
+}
+PARAMS=new URLSearchParams({lang:"evil",return_to:"course",return_page:"https://evil.test",return_level:"../../",return_tab:"mashq"});
+PWA_CHECKOUT_HOST=true;
+const forged=courseReturnUrl();
+process.stdout.write(JSON.stringify({actual,forged}));
+"""
+    )
+    result = json.loads(subprocess.check_output(["node", "-e", script], text=True))
+    for case in result["actual"]:
+        assert case["pwa"] == f'/iphone-pwa/practice/{case["slug"]}?lang=tj&level=nhsk2'
+        assert case["telegram"] == f'/{case["page"]}?lang=tj&level=nhsk2'
+        assert case["replaced"] == case["pwa"]
+    assert result["forged"] == "/iphone-pwa/course?lang=uz&tab=mashq"
 
 
 def test_server_reports_failed_checkout_event_write_as_503():

@@ -11,6 +11,7 @@ bo'lardi va dedupe uni ushlab qololmasdi.
 
 import unittest
 from datetime import datetime, timedelta, timezone
+from unittest.mock import patch
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
@@ -20,6 +21,7 @@ from app.db import models  # noqa: F401
 from app.db.base import Base
 from app.db.models.course_user_notification import CourseUserNotification
 from app.db.models.user import User
+from app.services.course_notification_service import CourseNotificationService
 from app.services.trial_reminder_service import REMINDER_DAYS, TrialReminderService
 
 from tests.test_entitlement_engine_limits import _user
@@ -68,13 +70,23 @@ class TrialReminderTests(unittest.IsolatedAsyncioTestCase):
     async def test_a_reminder_goes_out_two_days_before(self):
         await self._seed(days_left=2)
         bot = _BotSpy()
+        record_from_text = CourseNotificationService.record_from_text
+        course_notice_calls = []
 
-        async with self.sessions() as session:
-            sent = await TrialReminderService(session).send_due_reminders(
-                bot, now=self.now
-            )
+        async def record_course_notice(service, *args, **kwargs):
+            course_notice_calls.append(kwargs.copy())
+            return await record_from_text(service, *args, **kwargs)
+
+        with patch.object(
+            CourseNotificationService, "record_from_text", record_course_notice
+        ):
+            async with self.sessions() as session:
+                sent = await TrialReminderService(session).send_due_reminders(
+                    bot, now=self.now
+                )
 
         self.assertEqual(1, sent)
+        self.assertTrue(course_notice_calls[0]["pwa_push_suppressed"])
         self.assertEqual(1, len(bot.sent))
         self.assertIn("2", bot.sent[0][1])
 

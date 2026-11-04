@@ -42,20 +42,22 @@
       };
     }
 
-    connect(sessionId, initData) {
+    connect(sessionId, initData, pwaCsrf) {
       if (this.closed) return Promise.reject(new Error("cancelled"));
       return new Promise((resolve, reject) => {
         let settled = false;
         this.rejectConnect = code => {
           if (!settled) { settled = true; reject(new Error(code)); }
         };
-        const url = new URL("/api/voice-practice/live", root.location.href);
+        const pwa = typeof pwaCsrf === "string" && pwaCsrf.length > 0;
+        const url = new URL(pwa ? "/api/v3/pwa/voice/live" : "/api/voice-practice/live", root.location.href);
         url.protocol = url.protocol === "https:" ? "wss:" : "ws:";
         const socket = this.socket = new WebSocket(url.href);
         this.timer = setTimeout(() => this.fail("live_connection_timeout"), 10000);
         socket.onopen = () => {
           if (this.closed) { socket.close(); return; }
-          socket.send(JSON.stringify({ type: "auth", session_id: sessionId, initData: initData }));
+          const proof = pwa ? { csrf: pwaCsrf } : { initData };
+          socket.send(JSON.stringify({ type: "auth", session_id: sessionId, ...proof }));
         };
         socket.onmessage = event => {
           if (this.closed) return;

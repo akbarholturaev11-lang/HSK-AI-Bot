@@ -67,7 +67,12 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn("getSelectedLevel()", html)
         self.assertIn("localStorage.getItem(\"hsk_v3_level\")", html)
         self.assertIn('"/api/v3/map?lang="+LANG+"&level="+lv', html)
-        self.assertIn("if(!INIT_DATA){showAuthGate();finishHskLaunchSplash();return;}", html)
+        # Telegram still requires signed initData. The only alternative is
+        # the exact, server-verified iPhone browser route; never a URL preview.
+        self.assertIn('if(!INIT_DATA&&!PWA_COURSE_HOST){showAuthGate();finishHskLaunchSplash();return;}', html)
+        self.assertIn('PWA_COURSE_HOST=location.pathname==="/iphone-pwa/course"', html)
+        self.assertIn('method:"POST",headers:{"X-HSK-PWA-CSRF":actor.csrf}', html)
+        self.assertIn('url.replace("/api/v3/map?","/api/v3/pwa/map?")', html)
         self.assertIn("function lessonDataUrl(lv,n)", html)
         self.assertIn('"/api/v3/lesson/content/"+level+"/"+String(Number(n)||0)', html)
         self.assertIn('fetch(lessonDataUrl(lv,n),{headers:{"X-Telegram-Init-Data":INIT_DATA},cache:"no-store"})', html)
@@ -466,9 +471,12 @@ class CourseV3StaticMapTests(unittest.TestCase):
 
         code = _re.sub(r"/\*.*?\*/", "", html, flags=_re.S)  # izohlar hisobga olinmasin
         self.assertEqual(
-            code.count("NavBack.goBack()"), 3,
-            "goBack faqat 3 kirish nuqtasidan: BackButton, popstate, swipe",
+            code.count("NavBack.goBack()"), 4,
+            "goBack faqat 4 kirish nuqtasidan: BackButton, popstate, swipe va "
+            "iPhone PWA Sozlamalar sarlavhasidagi orqaga tugmasi",
         )
+        self.assertIn('class="pwa-settings-head"><button type="button" class="hsk-pwa-close" '
+                      'onclick="NavBack.goBack()"', code)
 
         # Access/monetizatsiya gate'lari hech qachon swipe bilan yopilmasin.
         # Ro'yxat SELEKTORLARdan iborat: reklamani `ads.js` chizadi va uning
@@ -507,6 +515,20 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn('onclick="App.requestExitFlow()"', html)
         self.assertIn('onclick="App.confirmExitFlow()"', html)
         self.assertIn('onclick="closeUserProfile()"', html)
+
+    def test_pwa_navigation_keeps_screen_history_and_enables_dictionary_back_controls(self):
+        """PWA-only gestures return to the previous view; Telegram remains unchanged."""
+        course = Path("app/static/course-v3.html").read_text(encoding="utf-8")
+        dictionary = Path("app/static/hsk-lugat.html").read_text(encoding="utf-8")
+        self.assertIn('if(PWA_COURSE_HOST&&previous!==s&&!NAVBACK_SCREEN_CHANGE)', course)
+        self.assertIn('var destination=PWA_COURSE_HOST?(SCREEN_HISTORY.pop()||"course"):"course"', course)
+        self.assertIn('if(!PWA_COURSE_HOST&&t.clientX>NavBack.EDGE)return', course)
+        self.assertIn('PWA_COURSE_HOST?Math.min(56,Math.max(32,width-t.clientX-8)):NavBack.MIN', course)
+        self.assertIn('dx<12||dx<Math.abs(dy)*1.25', course)
+        self.assertIn('hsk-pwa-embedded', dictionary)
+        self.assertIn('html.hsk-embedded:not(.hsk-pwa-embedded) .hsk-native-back-duplicate', dictionary)
+        self.assertIn('html.hsk-pwa-embedded .hsk-native-back-duplicate{display:flex!important}', dictionary)
+        self.assertIn('window.parent.RESOURCE.close();return;', dictionary)
 
     def test_free_parts_end_on_a_whole_hsk_lesson_for_hsk1_and_hsk2(self):
         """Bepul chegara yarim darsda emas, to'liq HSK darsligi darsi oxirida.
@@ -572,8 +594,11 @@ class CourseV3StaticMapTests(unittest.TestCase):
         html = Path("app/static/course_v3_test.html").read_text(encoding="utf-8")
         ads = Path("app/static/course_v3_data/ads.js").read_text(encoding="utf-8")
 
-        self.assertIn('fetch("/api/v3/exams/start"', html)
-        self.assertIn('fetch("/api/v3/exams/complete"', html)
+        self.assertIn('testPost("/api/v3/exams/start"', html)
+        self.assertIn('testPost("/api/v3/exams/complete"', html)
+        self.assertIn('"/api/v3/exams/start":"/api/v3/pwa/exams/start"', html)
+        self.assertIn('"/api/v3/exams/complete":"/api/v3/pwa/exams/complete"', html)
+        self.assertIn('"X-HSK-PWA-CSRF":s.csrf', html)
         self.assertIn("selected_index:k", html)
         self.assertNotIn('fetch("/course_v3_data/exams/"', html)
         self.assertIn('if(!o.ok||!o.j||!o.j.ok){showEmpty();return}', html)
@@ -614,7 +639,9 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertNotIn('CourseAds.play(', html)
         self.assertIn("access_ref:accessRef", html)
         self.assertIn("clearReviewAccessRef()", html)
-        self.assertIn('fetch("/api/miniapp/mistakes/review/answer"', html)
+        self.assertIn('mistakesPost("/api/miniapp/mistakes/review/answer"', html)
+        self.assertIn('"/api/miniapp/mistakes/review/answer":"/api/v3/pwa/mistakes/review/answer"', html)
+        self.assertIn('"X-HSK-PWA-CSRF":s.csrf', html)
         self.assertNotIn("q.answer_index", html)
         self.assertNotIn("q.explanation", html)
         self.assertNotIn('.catch(function(){startReview(true)', html)

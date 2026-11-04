@@ -49,7 +49,7 @@ class PreferencesError(RuntimeError):
         self.status_code = status_code
 
 
-class PreferencesRequest(BaseModel):
+class CoursePreferencesUpdate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     # Maqsad savoli onboardingga keyin qo'shilgani uchun eski o'quvchilardan
@@ -61,7 +61,6 @@ class PreferencesRequest(BaseModel):
     # yubormaslik "tegma" degani. Avtoga qaytarish uchun `auto` yuboriladi.
     daily_goal_xp: Optional[Annotated[int, Field(ge=10, le=500)]] = None
     daily_goal_auto: bool = False
-    initData: str = Field(default="", max_length=MAX_INIT_DATA_CHARS)
 
     @model_validator(mode="after")
     def _at_least_one_change(self):
@@ -80,7 +79,13 @@ class PreferencesRequest(BaseModel):
         return self
 
 
-async def _validated_payload(request: Request) -> PreferencesRequest:
+class PreferencesRequest(CoursePreferencesUpdate):
+    initData: str = Field(default="", max_length=MAX_INIT_DATA_CHARS)
+
+
+async def validated_preferences_payload(
+    request: Request, model: type[CoursePreferencesUpdate]
+) -> CoursePreferencesUpdate:
     content_type = str(request.headers.get("Content-Type", "") or "")
     if content_type.split(";", 1)[0].strip().lower() != "application/json":
         raise PreferencesError("preferences_request_invalid", status_code=415)
@@ -91,12 +96,40 @@ async def _validated_payload(request: Request) -> PreferencesRequest:
         if len(body) > MAX_PREFERENCES_BODY_BYTES:
             raise PreferencesError("preferences_request_too_large", status_code=413)
     try:
-        return PreferencesRequest.model_validate_json(bytes(body))
+        return model.model_validate_json(bytes(body))
     except (ValidationError, ValueError, TypeError) as exc:
         raise PreferencesError("preferences_request_invalid", status_code=422) from exc
 
 
-def _profile_payload(profile) -> dict:
+async def apply_course_preferences(service, user_id: int, payload: CoursePreferencesUpdate):
+    profile = await service.get_or_create(user_id)
+    if payload.goal is not None:
+        profile.goal = payload.goal
+        # O'quvchi maqsadni O'ZI tanladi — endi qayta so'ralmaydi.
+        if getattr(profile, "goal_chosen_at", None) is None:
+            profile.goal_chosen_at = datetime.now(timezone.utc)
+    if payload.daily_minutes is not None:
+        profile.daily_minutes = int(payload.daily_minutes)
+    if payload.preferred_focus is not None:
+        profile.preferred_focus = payload.preferred_focus
+    if payload.daily_goal_auto:
+        await service.set_daily_goal_xp(profile, None)
+    elif payload.daily_goal_xp is not None:
+        await service.set_daily_goal_xp(profile, payload.daily_goal_xp)
+    # Sozlama o'zgarsa bugungi reja qayta qurilishi kerak: aks
+    # holda o'quvchi kunlik vaqtni qisqartirib ham eski, uzun
+    # rejani ko'rib turaverardi.
+    if (
+        payload.goal is not None
+        or payload.daily_minutes is not None
+        or payload.preferred_focus is not None
+    ):
+        profile.daily_plan_key = None
+        profile.daily_plan_json = None
+    return profile
+
+
+def course_preferences_payload(profile) -> dict:
     return {
         "goal": profile.goal,
         "goal_chosen": getattr(profile, "goal_chosen_at", None) is not None,
@@ -135,7 +168,7 @@ def create_miniapp_preferences_router(
     @router.post("/api/v3/preferences")
     async def miniapp_preferences(request: Request):
         try:
-            payload = await _validated_payload(request)
+            payload = await validated_preferences_payload(request, PreferencesRequest)
             telegram_id = _telegram_id(request, payload)
             async with session_factory() as session:
                 user = await UserRepository(session).get_by_telegram_id(telegram_id)
@@ -146,32 +179,9 @@ def create_miniapp_preferences_router(
                         headers={"Cache-Control": "no-store"},
                     )
                 service = profile_service_factory(session)
-                profile = await service.get_or_create(user.id)
-                if payload.goal is not None:
-                    profile.goal = payload.goal
-                    # O'quvchi maqsadni O'ZI tanladi — endi qayta so'ralmaydi.
-                    if getattr(profile, "goal_chosen_at", None) is None:
-                        profile.goal_chosen_at = datetime.now(timezone.utc)
-                if payload.daily_minutes is not None:
-                    profile.daily_minutes = int(payload.daily_minutes)
-                if payload.preferred_focus is not None:
-                    profile.preferred_focus = payload.preferred_focus
-                if payload.daily_goal_auto:
-                    await service.set_daily_goal_xp(profile, None)
-                elif payload.daily_goal_xp is not None:
-                    await service.set_daily_goal_xp(profile, payload.daily_goal_xp)
-                # Sozlama o'zgarsa bugungi reja qayta qurilishi kerak: aks
-                # holda o'quvchi kunlik vaqtni qisqartirib ham eski, uzun
-                # rejani ko'rib turaverardi.
-                if (
-                    payload.goal is not None
-                    or payload.daily_minutes is not None
-                    or payload.preferred_focus is not None
-                ):
-                    profile.daily_plan_key = None
-                    profile.daily_plan_json = None
+                profile = await apply_course_preferences(service, user.id, payload)
                 await session.commit()
-                body = _profile_payload(profile)
+                body = course_preferences_payload(profile)
             return JSONResponse(
                 content={"ok": True, "profile": body},
                 headers={"Cache-Control": "no-store"},

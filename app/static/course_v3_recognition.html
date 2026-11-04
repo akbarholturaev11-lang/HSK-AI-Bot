@@ -2,11 +2,11 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Ieroglif tanish</title>
 <link rel="icon" href="/assets/hsk-ai-avatar.webp" type="image/webp">
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script src="/course_v3_data/hsk-course-i18n.js?v=20261021-88bfab42686b"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script>
+<script src="/assets/telegram-web-app.js?v=20261019-1"></script>
+<script src="/course_v3_data/hsk-course-i18n.js?v=20261021-6431aaf27e2a"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script>
 <script defer src="/audio/words/index.js?v=20261014-offline-1"></script>
 <script defer src="/audio/words/client.js?v=20261014-persist-1"></script>
 <style>
@@ -43,13 +43,14 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
 <link rel="stylesheet" href="/assets/characters/hsk-practice-coach.css?v=20260921a">
 <link href="/course_v3_data/desktop-download.css?v=20261003-1" rel="stylesheet">
 <link rel="stylesheet" href="/assets/characters/hsk-scene-background.css?v=20261009-preparing-compact-1">
+<link rel="stylesheet" href="/course_v3_data/iphone-pwa-practice-boot.css?v=20261105-598f142318cf">
 </head>
 <body class="hsk-scene-page">
 <div class="wrap">
   <div class="top"><button class="ix" onclick="goBack()" aria-label="Orqaga"><i class="ti ti-arrow-left"></i></button><div class="pbar"><i id="prog"></i></div><span class="pill" id="score">0 ✓</span></div>
   <div class="body" id="body"><div class="loading">…</div></div>
 </div>
-<script defer src="hsk-words.js?v=20260905"></script>
+<script defer src="/hsk-words.js?v=20260905"></script>
 <script defer src="/course_v3_data/hsk30-words.js?v=20260930"></script>
 <script defer src="/course_v3_data/lesson_gate.js?v=20260905"></script>
 <script defer src="/course_v3_data/lesson_gate_hsk30.js?v=20260930"></script>
@@ -59,6 +60,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
 <script defer src="/assets/characters/hsk-study-preparing.js?v=20261009-compact-1"></script>
 <script defer src="/assets/characters/hsk-character-motion.js?v=20260921c"></script>
 <script defer src="/assets/characters/hsk-practice-coach.js?v=20260921a"></script>
+<script src="/course_v3_data/iphone-pwa-practice-boot.js?v=20261105-08ffb7481617"></script>
 <script>
 /* Og'ir skriptlar (`defer`) HTML parse tugagach ishga tushadi. Server
    so'rovlari esa darhol ketadi — shu bilan JS yuklanishi va tarmoq
@@ -76,24 +78,100 @@ var L={ru:{review:"повтор",listen:"Послушать",lead:"Найдит�
 var RECOGNITION_UI=(window.HSKAI_COURSE_I18N&&window.HSKAI_COURSE_I18N[LANG])||{};
 Object.keys(L).forEach(function(k){var v=RECOGNITION_UI["recognition."+k];if(typeof v==="string"&&v)L[k]=v});
 var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}document.querySelector(".top .ix").setAttribute("aria-label",L.back);
-function goBack(){location.href="/course-v3.html?lang="+LANG+"&tab=mashq"}
-function initData(){return (tg&&tg.initData)?tg.initData:""}
+function initData(){return location.pathname==="/iphone-pwa/practice/recognition"?"":((tg&&tg.initData)?tg.initData:"")}
+var PWA_RECOGNITION_HOST=location.pathname==="/iphone-pwa/practice/recognition";
+var PWA_RECOGNITION_SESSION=null,PWA_RECOGNITION_PROMISE=null;
+function practiceSignIn(){if(window.HskPwaPracticeBoot)HskPwaPracticeBoot.signIn();else location.replace("/iphone-pwa")}
+function recognitionPwaSession(){
+  if(!PWA_RECOGNITION_HOST)return Promise.reject(new Error("pwa_host_required"));
+  if(!PWA_RECOGNITION_PROMISE){
+    PWA_RECOGNITION_PROMISE=fetch("/api/v3/pwa-auth/session",{
+      credentials:"same-origin",cache:"no-store",redirect:"error"
+    }).then(function(r){
+      if(r.status===401){practiceSignIn();throw new Error("pwa_session_required")}
+      if(!r.ok)throw new Error("pwa_session_unavailable");
+      return r.json();
+    }).then(function(s){
+      if(!s||s.ok!==true||typeof s.csrf!=="string"||!s.csrf||
+         !Number.isSafeInteger(Number(s.user_id))||Number(s.user_id)<=0)
+        throw new Error("pwa_session_invalid");
+      if(window.HskPwaPracticeBoot&&!HskPwaPracticeBoot.acceptActor(s.user_id))throw new Error("pwa_actor_changed");
+      if(PWA_RECOGNITION_SESSION&&PWA_RECOGNITION_SESSION.user_id!==s.user_id){
+        practiceSignIn();throw new Error("pwa_actor_changed");
+      }
+      PWA_RECOGNITION_SESSION=s;return s;
+    }).catch(function(e){PWA_RECOGNITION_PROMISE=null;throw e});
+  }
+  return PWA_RECOGNITION_PROMISE;
+}
+// A restored Home Screen/BFCache document must not keep an old browser actor.
+// Keep the owner snapshot so a different signed-in account fails closed.
+function verifyPwaReturn(){
+  if(!PWA_RECOGNITION_HOST)return;
+  PWA_RECOGNITION_PROMISE=null;
+  recognitionPwaSession().catch(function(error){
+    // A connectivity/5xx failure is not a logout. 401 or an account change
+    // already redirects inside the session verifier; malformed actors fail closed.
+    if(error&&error.message==="pwa_session_invalid")practiceSignIn();
+  });
+}
+if(PWA_RECOGNITION_HOST){
+  window.addEventListener("pageshow",function(ev){if(ev.persisted)verifyPwaReturn()});
+  document.addEventListener("visibilitychange",function(){
+    if(document.visibilityState==="visible")verifyPwaReturn();
+  });
+}
+function recognitionPost(url,body,keepalive){
+  if(!PWA_RECOGNITION_HOST)return fetch(url,{
+    method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify(body),keepalive:!!keepalive
+  });
+  var mapped={
+    "/api/v3/practice/daily-gate":"/api/v3/pwa/practice/daily-gate",
+    "/api/v3/practice/words":"/api/v3/pwa/practice/words",
+    "/api/v3/practice/report":"/api/v3/pwa/practice/report"
+  }[url];
+  if(!mapped)return Promise.reject(new Error("pwa_route_unavailable"));
+  var payload=Object.assign({},body||{});
+  delete payload.initData;delete payload.user_id;delete payload.telegram_id;
+  return recognitionPwaSession().then(function(s){
+    return fetch(mapped,{
+      method:"POST",headers:{"Content-Type":"application/json","X-HSK-PWA-CSRF":s.csrf},
+      credentials:"same-origin",cache:"no-store",redirect:"error",
+      body:JSON.stringify(payload),keepalive:!!keepalive
+    });
+  });
+}
+function goBack(){
+  if(PWA_RECOGNITION_HOST&&window.HskPwaPracticeBoot){HskPwaPracticeBoot.back();return}
+  location.href=(PWA_RECOGNITION_HOST?"/iphone-pwa/course":"/course-v3.html")+"?lang="+LANG+"&tab=mashq";
+}
 /* Foydalanuvchi darajasi: URL param faqat boshlang'ich qiymat, server (users.level)
    asosiy manba — mashq har doim userning haqiqiy HSK darajasiga mos chiqadi.
    CUR — joriy dars (tugatilgan+1): faqat O'RGANILGAN darslar so'zlari chiqadi. */
 function normLv(v){v=String(v||"").toLowerCase();if(v.indexOf("hsk4")===0)return "hsk4";return ["hsk1","hsk2","hsk3","nhsk1","nhsk2","nhsk3"].indexOf(v)>=0?v:""}
 var LV=normLv(params.get("level")),CUR=999;
-var LV_READY=(function(){var idt=initData();if(!idt)return Promise.resolve();
-  return fetch("/api/voice-practice/me?initData="+encodeURIComponent(idt)).then(function(r){return r.json()}).then(function(j){var s=normLv(j&&j.level);if(s)LV=s;if(j&&typeof j.completed_lessons==="number")CUR=Math.max(1,j.completed_lessons+1)}).catch(function(){})})();
+var LV_READY=(function(){
+  var idt=initData(),request=PWA_RECOGNITION_HOST?recognitionPwaSession().then(function(){
+    return fetch("/api/v3/pwa/practice/profile",{credentials:"same-origin",cache:"no-store",redirect:"error"});
+  }):idt?fetch("/api/voice-practice/me?initData="+encodeURIComponent(idt)):null;
+  if(!request)return Promise.resolve();
+  return request.then(function(r){if(!r.ok)throw new Error("practice_profile_unavailable");return r.json()})
+    .then(function(j){var s=normLv(j&&j.level);if(s)LV=s;if(j&&typeof j.completed_lessons==="number")CUR=Math.max(1,j.completed_lessons+1)})
+    .catch(function(e){if(PWA_RECOGNITION_HOST)throw e});
+})();
 function lvNum(){var m=String(LV||"hsk1").match(/(\d+)$/);return m?parseInt(m[1],10):1}
 function wordLvNum(w){return parseInt(String(w.lv||"").replace(/[^0-9]/g,"").slice(0,1),10)||0}
 function isHsk30(){return /^nhsk[1-3]$/.test(LV||"")}
 function wordSource(){return isHsk30()?(window.HSK30_WORDS||[]):(typeof WORDS!=="undefined"?WORDS:[])}
 function wordGate(h){return (isHsk30()?(window.HSK30_WORD_GATE||{}):(window.HSK_WORD_GATE||{}))[h]}
-function goPremium(){location.href="/subscription.html?lang="+LANG+"&source=v3_recognition_limit&mode=subscription&return_to=course&return_page=course_v3_recognition.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"")}
+function goPremium(){
+  if(PWA_RECOGNITION_HOST&&window.HskPwaPracticeBoot&&HskPwaPracticeBoot.checkout("v3_recognition_limit"))return;
+  location.href=(PWA_RECOGNITION_HOST?"/iphone-pwa/checkout":"/subscription.html")+"?lang="+LANG+"&source=v3_recognition_limit&mode=subscription&return_to=course&return_page=course_v3_recognition.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"");
+}
 /* Reklama moduli: kunlik bepul limit tugagach, user reklama ko'rib yana kira
    oladi (bo'limga kuniga 2 marta). Reklama sessiya boshi/o'rtasi/oxirida. */
-SCRIPTS_READY.then(function(){if(window.CourseAds)CourseAds.config({lang:LANG,initData:initData(),feature:"recognition",level:(params.get("level")||"hsk1"),onSubscribe:goPremium})});
+SCRIPTS_READY.then(function(){if(!PWA_RECOGNITION_HOST&&window.CourseAds)CourseAds.config({lang:LANG,initData:initData(),feature:"recognition",level:(params.get("level")||"hsk1"),onSubscribe:goPremium})});
 /* Reklama-ruxsatidan bitta slot band qilish (server tomonda hisoblanadi). */
 /* "Reklama bilan davom etish" bosilganda: slot band qilib, boshlang'ich
    reklamani ko'rsatib, sessiyani ochamiz (reklama xato bersa ham davom). */
@@ -113,18 +191,18 @@ function practiceGateErrorCopy(){var copy=({
   tj:{body:"Дастрасӣ санҷида нашуд. Интернетро санҷед ва боз кӯшиш кунед.",retry:"Боз кӯшиш кардан",back:"Бозгашт"}
 })[LANG];var dict=(window.HSKAI_COURSE_I18N&&window.HSKAI_COURSE_I18N[LANG])||{};Object.keys(copy).forEach(function(key){var value=dict["practiceGate."+key];if(typeof value==="string"&&value)copy[key]=value});return copy}
 function runGate(ref){
-  return fetch("/api/v3/practice/daily-gate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:initData(),feature:"recognition",ref:ref})})
+  return recognitionPost("/api/v3/practice/daily-gate",{initData:initData(),feature:"recognition",ref:ref})
     .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}}).catch(function(){return {ok:r.ok,status:r.status,j:{}}})}).then(validatePracticeGate);
 }
 function showLimit(j){LIMIT_REASON=(j&&j.limit_text)||"";SCRIPTS_READY.then(showLimitNow)}
-function showLimitNow(){
+function showLimitNow(){if(window.HskPwaPracticeBoot)HskPwaPracticeBoot.hide();
   /* Murabbiy shu yerda QOLIB KETMASIN: limit ekrani boshqa holat,
      unda savol ham, personaj ham yo'q. */
   if(window.PracticeCoach){PracticeCoach.hide();PracticeCoach.reset()}
-  if(window.CourseAds&&CourseAds.showLimitPromo){CourseAds.showLimitPromo({reason:LIMIT_REASON,onSubscribe:goPremium,onBack:goBack});return}
+  if(!PWA_RECOGNITION_HOST&&window.CourseAds&&CourseAds.showLimitPromo){CourseAds.showLimitPromo({reason:LIMIT_REASON,onSubscribe:goPremium,onBack:goBack});return}
   var adBtn="";
   var sub=gateEscape(LIMIT_REASON||L.limitSub);
-  document.getElementById("body").innerHTML='<div class="done"><div class="st" style="background:var(--gold)"><i class="ti ti-lock"></i></div><h3>'+L.limitTitle+'</h3><p>'+sub+'</p>'+adBtn+'<button onclick="goPremium()" style="width:100%;max-width:300px;background:transparent;border:1px solid var(--line);color:var(--cin2);border-radius:14px;padding:14px;font-family:inherit;font-size:15px;font-weight:500;margin-top:8px">'+L.premiumBtn+'</button><button onclick="goBack()" style="width:100%;max-width:300px;background:transparent;border:1px solid var(--line);color:var(--ink2);border-radius:14px;padding:14px;font-family:inherit;font-size:15px;margin-top:8px">'+L.back+'</button></div>';
+  document.getElementById("body").innerHTML='<div class="done"><div class="st" style="background:var(--gold)"><i class="ti ti-lock"></i></div><h3>'+L.limitTitle+'</h3><p>'+sub+'</p>'+adBtn+'<button onclick="goPremium()" style="width:100%;max-width:300px;background:transparent;border:1px solid var(--line);color:var(--cin2);border-radius:14px;padding:14px;font-family:inherit;font-size:15px;font-weight:500;margin-top:8px">'+L.premiumBtn+'</button>'+'<button onclick="goBack()" style="width:100%;max-width:300px;background:transparent;border:1px solid var(--line);color:var(--ink2);border-radius:14px;padding:14px;font-family:inherit;font-size:15px;margin-top:8px">'+L.back+'</button></div>';
 }
 /* Sessiya ochish (sahifa yuklanganda) — reload xavfsiz token bilan. */
 function gateStart(newAttempt){
@@ -133,13 +211,14 @@ function gateStart(newAttempt){
   SCRIPTS_READY.then(function(){
     if(preparing&&ref===ATTEMPT_REF)document.getElementById("body").innerHTML=HSKStudyPreparing.render(LANG);
   });
-  runGate(ref).then(function(o){
+  LV_READY.then(function(){return runGate(ref)}).then(function(o){
     preparing=false;
     if(ref!==ATTEMPT_REF)return;
     if(o.status===403){showLimit(o.j);return}start();
   }).catch(function(){
     preparing=false;
     if(ref!==ATTEMPT_REF)return;
+    if(window.HskPwaPracticeBoot)HskPwaPracticeBoot.hide();
     var t=practiceGateErrorCopy();
     document.getElementById("body").innerHTML='<div class="done"><p>'+gateEscape(t.body)+'</p><button onclick="gateStart(false)">'+gateEscape(t.retry)+'</button><button class="ghost" onclick="goBack()">'+gateEscape(t.back)+'</button></div>';
   });
@@ -207,8 +286,7 @@ function reportWrong(){
   if(RESULTS.length)body.results=RESULTS.slice(0,30);
   WRONG=[];RESULTS=[];
   try{
-    fetch("/api/v3/practice/report",{method:"POST",headers:{"Content-Type":"application/json"},
-      body:JSON.stringify(body),keepalive:true}).catch(function(){});
+    recognitionPost("/api/v3/practice/report",body,true).catch(function(){});
   }catch(e){}
 }
 /* Mashqni yarmida tashlab ketsa ham natijalar yo'qolmasin. */
@@ -222,10 +300,9 @@ document.addEventListener("visibilitychange",function(){if(document.visibilitySt
 var PLAN=null;
 function fetchPlan(){
   var idt=initData();
-  if(!idt)return Promise.resolve(null);
+  if(!idt&&!PWA_RECOGNITION_HOST)return Promise.resolve(null);
   var body={feature:"recognition",limit:TOTAL,initData:idt};
-  var call=fetch("/api/v3/practice/words",{method:"POST",
-    headers:{"Content-Type":"application/json"},body:JSON.stringify(body)})
+  var call=recognitionPost("/api/v3/practice/words",body)
     .then(function(r){return r.ok?r.json():null})
     .then(function(j){return (j&&j.ok&&j.words&&j.words.length)?j.words:null})
     .catch(function(){return null});
@@ -351,12 +428,13 @@ function finish(){
   if(window.PracticeCoach)PracticeCoach.finish(score,quiz.length,L.doneSub);
   beep([523,659,784,1046]);haptic(true);
 }
-function start(){Promise.all([LV_READY,SCRIPTS_READY,planReady()]).then(function(res){buildPool();if(!pool.length){document.getElementById("body").innerHTML='<div class="loading">'+practiceMessage("practice.dataNotLoaded",(window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.course_v3_recognition.start.copy1",{uz:"Ma'lumot yuklanmadi",ru:"Не удалось загрузить данные",tj:"Маълумот бор нашуд"}))+'</div>';return}/* Server ro'yxati faqat pool yetarli bo'lganda ishlatiladi: 4 tadan kam bo'lsa chalg'ituvchi topilmaydi. */
+function start(){Promise.all([LV_READY,SCRIPTS_READY,planReady()]).then(function(res){buildPool();if(!pool.length){if(window.HskPwaPracticeBoot)HskPwaPracticeBoot.hide();document.getElementById("body").innerHTML='<div class="loading">'+practiceMessage("practice.dataNotLoaded",(window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.course_v3_recognition.start.copy1",{uz:"Ma'lumot yuklanmadi",ru:"Не удалось загрузить данные",tj:"Маълумот бор нашуд"}))+'</div>';return}/* Server ro'yxati faqat pool yetarli bo'lganda ishlatiladi: 4 tadan kam bo'lsa chalg'ituvchi topilmaydi. */
 var targets=pool.length>=4?planTargets(res&&res[2]):[];makeQuiz(targets);qi=0;score=0;document.getElementById("score").textContent="0 ✓";
 if(window.PracticeCoach){PracticeCoach.init({after:".top",lang:LANG});PracticeCoach.reset()}
-render()})}
+render();if(window.HskPwaPracticeBoot)HskPwaPracticeBoot.hide()})}
 gateStart();
 </script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
+<script src="/course_v3_data/iphone-pwa-shake-report.js?v=20261105-e878b00bfc8a"></script>
 </body>
 </html>

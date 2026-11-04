@@ -668,7 +668,11 @@
     "inline.services.entitlements.decision.limit_text.copy3.case1": "{value1}: без ограничений.",
     "inline.services.entitlements.decision.limit_text.copy4": "в день",
     "inline.services.entitlements.decision.limit_text.copy5": "всего",
-    "inline.services.entitlements.decision.limit_text.copy6.case1": "{plan} {period}: {limit} {noun}. Осталось: {value5}."
+    "inline.services.entitlements.decision.limit_text.copy6.case1": "{plan} {period}: {limit} {noun}. Осталось: {value5}.",
+    "inline.handlers.desktop_auth.pwa.confirm": "🌐 <b>HSK AI iPhone PWA — вход через Telegram</b>\n\nПодтвердите, только если вы сами начали вход в браузере. Подтверждение откроет в этом браузере ваш аккаунт с курсом и подпиской.",
+    "inline.handlers.desktop_auth.pwa.denied": "Вход отменён. Эта ссылка больше не работает.",
+    "inline.handlers.desktop_auth.pwa.invalid": "Ссылка входа в PWA недействительна или устарела. Начните заново в браузере.",
+    "inline.handlers.desktop_auth.pwa.success": "✅ <b>Вход подтверждён</b>\n\nВернитесь на страницу HSK AI в браузере iPhone."
   },
   "namespace": "bot",
   "references": {

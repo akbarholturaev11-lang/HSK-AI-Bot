@@ -20,6 +20,13 @@ COPY_CATEGORIES = {
 NONCOPY_CATEGORIES = {"locale_adapter", "locale_grammar", "tts_language_adapter"}
 
 
+def unique_source_line(lines, marker):
+    matches = [line for line in lines if marker in line]
+    if len(matches) != 1:
+        raise AssertionError(f"Expected one course source line containing {marker!r}, found {len(matches)}")
+    return matches[0]
+
+
 class CourseHotspotTriageTests(unittest.TestCase):
     def test_manually_reviewed_source_anchors_remain_current(self):
         triage = json.loads(TRIAGE.read_text(encoding="utf-8"))
@@ -27,7 +34,7 @@ class CourseHotspotTriageTests(unittest.TestCase):
         self.assertEqual(triage["status"],
                          "SOURCE_CLASSIFIED_ALL_EXPLICIT_LANG_EQUALS_BRANCH_LINES_NOT_RUNTIME_VALIDATION")
         self.assertEqual(triage["source"], "app/static/course-v3.html")
-        self.assertEqual(len(triage["classifications"]), 61)
+        self.assertEqual(len(triage["classifications"]), 62)
         counts = Counter()
         for line, text in enumerate(src, start=1):
             counts[line] = len(re.findall(r"""\bLANG\s*===?\s*['"](?:ru|tj|uz)['"]""", text))
@@ -54,15 +61,15 @@ class CourseHotspotTriageTests(unittest.TestCase):
         self.assertIn("assessment_ui_copy", categories)
         self.assertEqual(lines, actual_lines,
                          "All explicit LANG equality conditions require reviewed classifications")
-        self.assertEqual(sum(counts.values()), 128)
+        self.assertEqual(sum(counts.values()), 130)
         self.assertEqual(sum(item["predicate_occurrences"]
-                             for item in triage["classifications"]), 128)
+                             for item in triage["classifications"]), 130)
 
     def test_do_not_treat_all_locale_conditions_as_translation_literals(self):
         triage = json.loads(TRIAGE.read_text(encoding="utf-8"))
         by_category = {item["category"] for item in triage["classifications"]}
         self.assertTrue(NONCOPY_CATEGORIES <= by_category)
-        self.assertIn("61 unique physical source lines", triage["counting_note"])
+        self.assertIn("62 unique physical source lines", triage["counting_note"])
         self.assertIn("All other localized source expressions", triage["coverage_note"])
 
 
@@ -82,7 +89,7 @@ class CourseHotspotTriageTests(unittest.TestCase):
                     catalog = json.loads((ROOT / "localization/ui" / locale /
                                          "course.json").read_text(encoding="utf-8"))["messages"]
                     self.assertEqual(catalog[key], value)
-                    self.assertEqual(len(catalog), 978)
+                    self.assertEqual(len(catalog), 1021)
         self.assertIn('setSheetBackgroundInert(true)', html)
         self.assertIn('focusSheetStart(sheet)', html)
         self.assertIn('App.requestExitFlow()', html)
@@ -114,8 +121,7 @@ class CourseHotspotTriageTests(unittest.TestCase):
                 self.assertEqual(html.count('courseMessage("' + key + '",' + fallback + ')'), calls)
                 for locale, value in (("uz", uz), ("ru", ru), ("tj", tj)):
                     self.assertEqual(catalogs[locale][key], value)
-                    self.assertEqual(len(catalogs[locale]), 978)
-        self.assertEqual(len(html.split("\n")), 9096)
+                    self.assertEqual(len(catalogs[locale]), 1021)
         self.assertIn("challengeSending=false", html)
         self.assertIn("ratingRetryText()", html)
 
@@ -169,8 +175,7 @@ class CourseHotspotTriageTests(unittest.TestCase):
                     self.assertIn('courseMessage("' + key + '",', html)
                 for locale, value in zip(("uz", "ru", "tj"), values):
                     self.assertEqual(catalogs[locale][key], value)
-                    self.assertEqual(len(catalogs[locale]), 978)
-        self.assertEqual(len(html.split("\n")), 9096)
+                    self.assertEqual(len(catalogs[locale]), 1021)
 
     def test_remaining_shared_lesson_labels_use_local_first_catalog(self):
         """Keep exact inline translations as fallback for the remaining shared labels."""
@@ -187,28 +192,29 @@ class CourseHotspotTriageTests(unittest.TestCase):
             "today.go": ("Reja bo'yicha davom etish", "Продолжить по плану", "Идома аз рӯи нақша"),
         }
         anchors = {
-            2771: 'cont:courseMessage("cont",T().cont)',
-            4982: 'courseMessage("cont",T().cont):courseMessage("check",T().check)',
-            5060: 'courseMessage("cont",T().cont)',
-            5251: 'courseMessage("cont",T().cont)',
-            5292: 'courseMessage("grammar",T().grammar)',
-            5456: 'esc(courseMessage("say",T().say))',
-            4882: 'esc(courseMessage("today.go",todayT().go))',
+            'cont:courseMessage("cont",T().cont)': 1,
+            'Flow.i<Flow.queue.length-1?courseMessage("cont",T().cont):courseMessage("check",T().check)': 1,
+            'var cta=$("#f-cta");cta.style.display="flex";cta.innerHTML=\'<i class="ti ti-arrow-right"></i> \'+courseMessage("cont",T().cont);': 1,
+            'c.type==="result"?courseMessage("check",T().check):courseMessage("cont",T().cont)': 1,
+            'courseMessage("grammar",T().grammar)': 1,
+            'esc(courseMessage("say",T().say))': 2,
+            'esc(courseMessage("today.go",todayT().go))': 1,
         }
-        for line_no, anchor in anchors.items():
-            with self.subTest(line=line_no):
-                self.assertIn(anchor, lines[line_no - 1])
+        for anchor, expected_lines in anchors.items():
+            matches = [line for line in lines if anchor in line]
+            with self.subTest(anchor=anchor):
+                self.assertEqual(len(matches), expected_lines,
+                                 f"Unexpected course source anchor count for {anchor}")
         for key, values in expected.items():
             for lang, value in zip(("uz", "ru", "tj"), values):
                 with self.subTest(key=key, locale=lang):
                     self.assertEqual(catalogs[lang][key], value)
-                    self.assertEqual(len(catalogs[lang]), 978)
-        self.assertEqual(len(lines), 9095)
+                    self.assertEqual(len(catalogs[lang]), 1021)
 
     def test_foundation_pronunciation_labels_use_local_first_catalog(self):
         """Centralize the two labels while keeping Chinese and pinyin content intact."""
         lines = SOURCE.read_text(encoding="utf-8").splitlines()
-        source_line = lines[5271 - 1]
+        source_line = unique_source_line(lines, 'ex.pinyin||"nǐ hǎo"')
         expected = {
             "foundation.writtenForm": ("yozilishi", "на письме", "навишт"),
             "foundation.naturalPronunciation": (
@@ -224,10 +230,9 @@ class CourseHotspotTriageTests(unittest.TestCase):
                         .read_text(encoding="utf-8")
                     )["messages"]
                     self.assertEqual(catalog[key], value)
-                    self.assertEqual(len(catalog), 978)
+                    self.assertEqual(len(catalog), 1021)
         self.assertIn('ex.pinyin||"nǐ hǎo"', source_line)
         self.assertIn('c.natural_pinyin||"ní hǎo"', source_line)
-        self.assertEqual(len(lines), 9095)
 
 if __name__ == "__main__":
     unittest.main()

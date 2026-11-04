@@ -54,6 +54,10 @@ class ReleaseFeedbackDelivery(Base):
             "user_telegram_id",
             name="uq_release_feedback_deliveries_campaign_user",
         ),
+        UniqueConstraint(
+            "campaign_id", "user_id",
+            name="uq_release_feedback_deliveries_campaign_account",
+        ),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -62,7 +66,13 @@ class ReleaseFeedbackDelivery(Base):
         index=True,
         nullable=False,
     )
-    user_telegram_id: Mapped[int] = mapped_column(BigInteger, index=True, nullable=False)
+    # The same canonical owner can answer from Telegram or iPhone PWA.
+    user_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=True,
+    )
+    user_telegram_id: Mapped[Optional[int]] = mapped_column(
+        BigInteger, index=True, nullable=True,
+    )
     status: Mapped[str] = mapped_column(String(16), nullable=False)
     message_id: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     error: Mapped[Optional[str]] = mapped_column(String(300), nullable=True)
@@ -83,6 +93,10 @@ class ReleaseFeedbackResponse(Base):
             "user_telegram_id",
             name="uq_release_feedback_responses_campaign_user",
         ),
+        UniqueConstraint(
+            "campaign_id", "user_id",
+            name="uq_release_feedback_responses_campaign_account",
+        ),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -91,7 +105,13 @@ class ReleaseFeedbackResponse(Base):
         index=True,
         nullable=False,
     )
-    user_telegram_id: Mapped[int] = mapped_column(BigInteger, index=True, nullable=False)
+    # The same canonical owner can answer from Telegram or iPhone PWA.
+    user_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=True,
+    )
+    user_telegram_id: Mapped[Optional[int]] = mapped_column(
+        BigInteger, index=True, nullable=True,
+    )
     rating: Mapped[int] = mapped_column(Integer, nullable=False)
     comment_text: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     attachment_file_id: Mapped[Optional[str]] = mapped_column(String(256), nullable=True)
