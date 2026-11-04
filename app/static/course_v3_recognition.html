@@ -107,7 +107,11 @@ function recognitionPwaSession(){
 function verifyPwaReturn(){
   if(!PWA_RECOGNITION_HOST)return;
   PWA_RECOGNITION_PROMISE=null;
-  recognitionPwaSession().catch(function(){location.replace("/iphone-pwa")});
+  recognitionPwaSession().catch(function(error){
+    // A connectivity/5xx failure is not a logout. 401 or an account change
+    // already redirects inside the session verifier; malformed actors fail closed.
+    if(error&&error.message==="pwa_session_invalid")location.replace("/iphone-pwa");
+  });
 }
 if(PWA_RECOGNITION_HOST){
   window.addEventListener("pageshow",function(ev){if(ev.persisted)verifyPwaReturn()});
