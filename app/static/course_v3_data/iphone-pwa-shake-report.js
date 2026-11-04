@@ -391,7 +391,9 @@
       l("allow") + '</button>' : "";
     return '<button type="button" class="srow" onclick="HskPwaShake.toggle()">' +
       '<i class="ti ti-device-mobile-vibration"></i> ' + l("setting") +
-      '<span class="sv">' + label + '</span></button>' + extra;
+      '<span class="sv">' + label + '</span></button>' + extra +
+      '<button type="button" class="srow" onclick="HskPwaShake.manual()">' +
+      '<i class="ti ti-bug"></i> ' + l("formTitle") + '</button>';
   }
   function toggle() {
     desired = !desired;
@@ -429,6 +431,7 @@
   }
   window.HskPwaShake = {
     settingsRowHtml: settingsRowHtml, toggle: toggle, request: request,
+    manual: startReport,
     isListening: function () { return listening; }
   };
   document.addEventListener("visibilitychange", function () {
