@@ -245,7 +245,7 @@
     reportScreen = typeof SCREEN === "string" ? SCREEN.slice(0,80) : "course";
     reportDescription = "";
     captureViewport().catch(function () { return null; }).then(function (image) {
-      if (generation !== epoch || !owner || !desired) return;
+      if (generation !== epoch || !owner) return;
       snapshot = image;
       confirmReport();
     });
