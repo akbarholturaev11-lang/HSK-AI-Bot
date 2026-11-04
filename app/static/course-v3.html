@@ -2401,6 +2401,21 @@ function courseVoiceMessage(fd){
     });
   });
 }
+// Pronunciation scoring: browser lessons use the verified PWA session, never
+// Telegram initData (which would answer INVALID_INIT_DATA outside Telegram).
+function coursePronounce(fd,signal){
+  if(!PWA_COURSE_HOST)return fetch("/api/voice-practice/pronounce",{method:"POST",body:fd,signal:signal});
+  var payload=new FormData();
+  payload.append("target",fd.get("target")||"");
+  payload.append("target_pinyin",fd.get("target_pinyin")||"");
+  payload.append("audio",fd.get("audio"));
+  return pwaCourseActor().then(function(actor){
+    return fetch("/api/v3/pwa/voice/pronounce",{
+      method:"POST",headers:{"X-HSK-PWA-CSRF":actor.csrf},
+      credentials:"same-origin",cache:"no-store",redirect:"error",body:payload,signal:signal
+    });
+  });
+}
 /* Mini App yopilganda botga signal: chatdagi menyu bar tiklanadi. Telegram
    yopilish haqida botga xabar bermaydi, shuning uchun signal shu yerdan ketadi.
    sendBeacon custom header qo'ya olmaydi (init-data kerak) — keepalive'li
@@ -5574,7 +5589,7 @@ Foundation.tryMic=function(){
       var blob=new Blob(chunks,{type:rec.mimeType||"audio/webm"});if(blob.size<500){Foundation._micSession=null;ready();say(_prL().retry);return}
       say(_prL().analyzing);var fd=new FormData(),target=c.audio_text||((c.example||{}).zh)||"你好",mt=(blob.type||rec.mimeType||mime||"audio/webm").toLowerCase(),ext=/mp4|m4a|aac/.test(mt)?"mp4":(/ogg/.test(mt)?"ogg":(/mpeg|mp3/.test(mt)?"mp3":(/wav/.test(mt)?"wav":"webm")));fd.append("initData",initData());fd.append("target",target);fd.append("target_pinyin",((c.example||{}).pinyin)||"");fd.append("language",LANG);fd.append("level","hsk1");fd.append("audio",blob,"voice."+ext);
       session.controller=window.AbortController?new AbortController():null;
-      fetch("/api/voice-practice/pronounce",{method:"POST",body:fd,signal:session.controller?session.controller.signal:undefined}).then(function(r){return r.json().then(function(j){return{ok:r.ok,j:j}})}).then(function(o){
+      coursePronounce(fd,session.controller?session.controller.signal:undefined).then(function(r){return r.json().then(function(j){return{ok:r.ok,j:j}})}).then(function(o){
         if(session.cancelled||Foundation._micSession!==session)return;Foundation._micSession=null;ready();var score=Number(o.j&&o.j.score||0);if(o.ok&&o.j&&o.j.ok===true&&score>=60){Foundation.speakingBonus=true;Foundation.save();say(courseMessage("correct",T().correct)+" "+score+"%");beep([523,659,784]);haptic("ok")}else say((o.j&&o.j.message)||_prL().retry);
       }).catch(function(err){if(session.cancelled||err&&err.name==="AbortError")return;Foundation._micSession=null;ready();say(_prL().netErr)});
     };rec.start();session.timer=setTimeout(function(){try{if(!session.cancelled&&rec.state!=="inactive")rec.stop()}catch(e){}},2600);
@@ -5827,7 +5842,7 @@ function cardPron(c){
         if(blob.size<1200){st.busy=false;setBtn(courseMessage("say",T().say));hint(_prL().retry);return;}
         var _e=(blob.type||_mt).toLowerCase(),_ext=/mp4|m4a|aac/.test(_e)?"mp4":(/ogg/.test(_e)?"ogg":(/mpeg|mp3/.test(_e)?"mp3":(/wav/.test(_e)?"wav":"webm")));
         var fd=new FormData();fd.append("initData",initData());fd.append("target",c.phrase||"");fd.append("target_pinyin",c.pinyin||"");fd.append("language",LANG);fd.append("level",MAP&&MAP.level||"");fd.append("audio",blob,"voice."+_ext);
-        fetch("/api/voice-practice/pronounce",{method:"POST",body:fd})
+        coursePronounce(fd)
           .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j}})})
           .then(function(o){
             if(st.cancelled)return;st.busy=false;
@@ -8087,7 +8102,7 @@ var PRON=(function(){
     busy=true;
     var w=list[idx],fd=new FormData(),_ext=extFromMime(blob.type||mt);
     fd.append("initData",INIT_DATA);fd.append("target",w.h);fd.append("target_pinyin",w.p||"");fd.append("language",LANG);fd.append("level",(MAP&&MAP.level)||"");fd.append("audio",blob,"voice."+_ext);
-    fetch("/api/voice-practice/pronounce",{method:"POST",body:fd})
+    coursePronounce(fd)
       .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j}})})
       .then(function(o){
         busy=false;if(!live())return;
