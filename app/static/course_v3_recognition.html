@@ -183,7 +183,7 @@ function runGate(ref){
     .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}}).catch(function(){return {ok:r.ok,status:r.status,j:{}}})}).then(validatePracticeGate);
 }
 function showLimit(j){LIMIT_REASON=(j&&j.limit_text)||"";SCRIPTS_READY.then(showLimitNow)}
-function showLimitNow(){
+function showLimitNow(){if(window.HskPwaPracticeBoot)HskPwaPracticeBoot.hide();
   /* Murabbiy shu yerda QOLIB KETMASIN: limit ekrani boshqa holat,
      unda savol ham, personaj ham yo'q. */
   if(window.PracticeCoach){PracticeCoach.hide();PracticeCoach.reset()}
@@ -206,6 +206,7 @@ function gateStart(newAttempt){
   }).catch(function(){
     preparing=false;
     if(ref!==ATTEMPT_REF)return;
+    if(window.HskPwaPracticeBoot)HskPwaPracticeBoot.hide();
     var t=practiceGateErrorCopy();
     document.getElementById("body").innerHTML='<div class="done"><p>'+gateEscape(t.body)+'</p><button onclick="gateStart(false)">'+gateEscape(t.retry)+'</button><button class="ghost" onclick="goBack()">'+gateEscape(t.back)+'</button></div>';
   });
@@ -415,10 +416,10 @@ function finish(){
   if(window.PracticeCoach)PracticeCoach.finish(score,quiz.length,L.doneSub);
   beep([523,659,784,1046]);haptic(true);
 }
-function start(){Promise.all([LV_READY,SCRIPTS_READY,planReady()]).then(function(res){buildPool();if(!pool.length){document.getElementById("body").innerHTML='<div class="loading">'+practiceMessage("practice.dataNotLoaded",(window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.course_v3_recognition.start.copy1",{uz:"Ma'lumot yuklanmadi",ru:"Не удалось загрузить данные",tj:"Маълумот бор нашуд"}))+'</div>';return}/* Server ro'yxati faqat pool yetarli bo'lganda ishlatiladi: 4 tadan kam bo'lsa chalg'ituvchi topilmaydi. */
+function start(){Promise.all([LV_READY,SCRIPTS_READY,planReady()]).then(function(res){buildPool();if(!pool.length){if(window.HskPwaPracticeBoot)HskPwaPracticeBoot.hide();document.getElementById("body").innerHTML='<div class="loading">'+practiceMessage("practice.dataNotLoaded",(window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.course_v3_recognition.start.copy1",{uz:"Ma'lumot yuklanmadi",ru:"Не удалось загрузить данные",tj:"Маълумот бор нашуд"}))+'</div>';return}/* Server ro'yxati faqat pool yetarli bo'lganda ishlatiladi: 4 tadan kam bo'lsa chalg'ituvchi topilmaydi. */
 var targets=pool.length>=4?planTargets(res&&res[2]):[];makeQuiz(targets);qi=0;score=0;document.getElementById("score").textContent="0 ✓";
 if(window.PracticeCoach){PracticeCoach.init({after:".top",lang:LANG});PracticeCoach.reset()}
-render()})}
+render();if(window.HskPwaPracticeBoot)HskPwaPracticeBoot.hide()})}
 gateStart();
 </script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
