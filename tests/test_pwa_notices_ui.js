@@ -8,9 +8,11 @@ const vm = require("node:vm");
 const source = fs.readFileSync("app/static/course_v3_data/iphone-pwa-notices.js", "utf8");
 const shell = fs.readFileSync("app/static/course-v3.html", "utf8");
 const css = fs.readFileSync("app/static/course_v3_data/iphone-pwa-glass.css", "utf8");
-assert(shell.includes('src="/course_v3_data/iphone-pwa-notices.js?v=20261104-9aaae52d1860"'));
+assert(shell.includes('src="/course_v3_data/iphone-pwa-notices.js?v=20261104-b2923983a5a6"'));
 assert(shell.includes('href="/course_v3_data/iphone-pwa-glass.css?v=20261104-175a0ec6f920'));
 assert(shell.includes('PWA_COURSE_HOST?\'<button class="pwa-notices-button"'));
+assert(shell.includes('pwaPushSettingsRowHtml()'));
+assert(!shell.includes('class="pwa-feedback-button"'),"profile feedback shortcut is removed");
 assert(css.includes("#hsk-pwa-notice-root [hidden] {display:none!important}"));
 assert(css.includes("html.hsk-pwa-browser .nav"));
 assert(!source.includes("X-Telegram-Init-Data"));
@@ -106,6 +108,8 @@ function harness({path = "/iphone-pwa/course", href = null, action = null, accou
       ? {ok:true, user_id:accountId}
       : url.endsWith("/account-notices")
         ? {ok:true, notices:[{id:2, title:"Account notice", body:"Stored on server", action:"course"}],
+           payment_reviews:[{payment_id:30,status:"approved",plan_type:"1_month"},
+             {payment_id:31,status:"rejected",plan_type:"1_month"}],
            payment_action:currentAction}
         : {ok:true, notifications:[{id:1,title:"Lesson available",body:"HSK 3",action:"course"}]};
     if (url.endsWith("/push/subscribe")) serverSubscribed = true;
@@ -147,6 +151,13 @@ async function main(){
   const list = standard.root().querySelector("#hsk-pwa-notice-list");
   assert.equal(list.children.length, 1);
   assert.equal(list.children[0].children[0].textContent, "Lesson available");
+  standard.root().listeners.click({target:{closest:(selector)=>selector==='[data-pwa-tab]'
+    ? {dataset:{pwaTab:"account"}} : null}});
+  const accountRows = standard.root().querySelector("#hsk-pwa-notice-list").children;
+  assert(accountRows.some((row)=>row.attrs["data-payment-status"]==="approved"&&row.className.includes("is-approved")),
+    "confirmed subscription receipts use the success color");
+  assert(accountRows.some((row)=>row.attrs["data-payment-status"]==="rejected"&&row.className.includes("is-rejected")),
+    "rejected subscription receipts use the error color");
   assert.equal(standard.requests.length, 3, "two owned feeds + session validation");
   assert(standard.requests.every((q) => q.options.credentials === "same-origin"));
   assert.equal(standard.navigation.length, 0, "reading inbox cannot navigate or grant access");
@@ -241,15 +252,34 @@ async function main(){
 
   const browserTab = harness({standalone:false});
   await browserTab.window.HskPwaInbox.open();
-  assert.equal(browserTab.root().querySelector("#hsk-pwa-push-control").hidden,true,
+  assert.equal(browserTab.root().querySelector("#hsk-pwa-push-view").hidden,true,
     "push consent control is hidden outside installed standalone mode");
   assert(!browserTab.requests.some((request)=>request.url.endsWith("/push/status")),
     "ordinary Safari tab does not query for push subscription state");
 
+  const firstOpenStorage = new Map();
+  const firstOpen = harness({standalone:true,sharedStorage:firstOpenStorage});
+  await firstOpen.loadAndTick();
+  assert.equal(firstOpen.root().querySelector("#hsk-pwa-push-view").hidden,false,
+    "first installed PWA open automatically offers the in-app push consent screen");
+  assert.equal(firstOpen.permissionFetchCount(),null,
+    "first-load prompt does not open the iOS permission sheet without a tap");
+  assert.equal(firstOpenStorage.get("hskai:pwa:push-prompt-seen:v1:7"),"1",
+    "first prompt state is scoped to the verified account");
+
+  const delayedFirstOpen = harness({standalone:true,splashReady:false});
+  await delayedFirstOpen.loadAndTick();
+  assert.equal(delayedFirstOpen.root().querySelector("#hsk-pwa-push-view").hidden,true,
+    "permission prompt waits while the course splash is active");
+  delayedFirstOpen.setSplashDone();
+  await delayedFirstOpen.flushTimers();
+  assert.equal(delayedFirstOpen.root().querySelector("#hsk-pwa-push-view").hidden,false,
+    "first-load prompt resumes once the course is ready");
+
   const androidPwa = harness({standalone:true,vendor:"Google Inc."});
   await androidPwa.window.HskPwaInbox.open();
   await new Promise(resolve=>setImmediate(resolve));
-  assert.equal(androidPwa.root().querySelector("#hsk-pwa-push-control").hidden,true,
+  assert.equal(androidPwa.root().querySelector("#hsk-pwa-push-view").hidden,true,
     "Apple-only Web Push consent is hidden in installed Android PWA");
   assert(!androidPwa.requests.some((request)=>request.url.endsWith("/push/status")),
     "installed Android PWA does not request Apple push configuration");
@@ -257,16 +287,27 @@ async function main(){
   const installed = harness({standalone:true});
   await installed.window.HskPwaInbox.open();
   await new Promise(resolve=>setImmediate(resolve));
-  const pushControl = installed.root().querySelector("#hsk-pwa-push-control");
-  assert.equal(pushControl.hidden,false,"installed PWA can manage push consent");
-  assert.equal(installed.permissionFetchCount(),null,"permission is not requested before the learner taps");
+  const pushControl = installed.root().querySelector("#hsk-pwa-push-view");
+  assert.equal(pushControl.hidden,true,"the one-screen inbox never contains push access controls");
+  assert.equal(installed.root().querySelector("#hsk-pwa-notice-list").hidden,false,
+    "the inbox remains visible when push permission is missing");
+  assert.equal(installed.permissionFetchCount(),null,"opening the inbox never requests OS permission");
+  await installed.window.HskPwaInbox.openPushSettings();
+  assert.equal(pushControl.hidden,false,"the Settings preference opens the separate push access screen");
+  assert.equal(installed.root().querySelector("#hsk-pwa-notice-list").hidden,true,
+    "push access controls stay outside the one-screen inbox");
+  const requestCountBeforeEnable = installed.requests.length;
+  assert.equal(installed.permissionFetchCount(),null,"permission is not requested before the Settings action tap");
   installed.root().listeners.click({target:{closest:(selector)=>selector==="#hsk-pwa-push-action"?{}:null}});
   for(let i=0;i<8 && !installed.requests.some((request)=>request.url.endsWith("/push/subscribe"));i++)
     await new Promise(resolve=>setImmediate(resolve));
-  assert.deepEqual(installed.pushCalls[0],"permission","permission prompt starts in the trusted button gesture");
-  assert.equal(installed.permissionFetchCount(),4,"permission starts before any network request for subscription");
-  assert(installed.pushCalls.some((call)=>Array.isArray(call)&&call[0]==="register"&&call[2]==="/iphone-pwa/"),
-    "service worker is scoped only to the iPhone PWA");
+  assert(installed.pushCalls.includes("permission"),"permission prompt starts in the trusted button gesture");
+  assert(installed.pushCalls.indexOf("permission")<installed.pushCalls.findIndex((call)=>Array.isArray(call)&&call[0]==="subscribe"),
+    "native permission is requested before browser subscription creation");
+  assert.equal(installed.permissionFetchCount(),requestCountBeforeEnable,
+    "the system permission prompt is requested directly from the Settings tap before subscription calls");
+  assert(installed.pushCalls.some((call)=>Array.isArray(call)&&call[0]==="getRegistration"&&call[1]==="/iphone-pwa/"),
+    "push manager is warmed only under the iPhone PWA scope");
   assert(installed.requests.some((request)=>request.url.endsWith("/push/subscribe")&&request.options.headers["X-HSK-PWA-CSRF"]==="csrf-token"),
     "subscription is sent through the existing CSRF-protected account session");
   for(let i=0;i<8 && installed.root().querySelector("#hsk-pwa-push-action").textContent!=="pwaPush.disable";i++)
@@ -283,9 +324,26 @@ async function main(){
   const denied = harness({standalone:true,permission:"denied"});
   await denied.window.HskPwaInbox.open();
   await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(denied.root().querySelector("#hsk-pwa-push-view").hidden,true,
+    "a blocked permission never inserts an access card into the inbox");
+  assert.equal(denied.root().querySelector("#hsk-pwa-notice-list").hidden,false,
+    "the denied-permission inbox still shows its notices");
+  await denied.window.HskPwaInbox.openPushSettings();
   assert.equal(denied.root().querySelector("#hsk-pwa-push-status").textContent,"pwaPush.blocked",
-    "blocked browser permission is announced accessibly without a fake retry button");
+    "blocked browser permission is announced accessibly without requesting OS permission again");
   assert.equal(denied.root().querySelector("#hsk-pwa-push-action").hidden,true);
+  denied.root().listeners.click({target:{closest:(selector)=>selector==="#hsk-pwa-push-later"?{}:null}});
+  await denied.window.HskPwaInbox.open();
+  assert.equal(denied.root().querySelector("#hsk-pwa-push-view").hidden,true,
+    "reopening the inbox never moves the Settings access screen into notices");
+  assert(!denied.pushCalls.includes("permission"),
+    "a blocked iOS permission is never re-requested without the user going to Settings");
+  const settingsPush = harness({standalone:true});
+  await settingsPush.window.HskPwaInbox.openPushSettings();
+  assert.equal(settingsPush.root().querySelector("#hsk-pwa-push-view").hidden,false,
+    "the Settings row opens the same existing push preference screen");
+  assert.equal(settingsPush.permissionFetchCount(),null,
+    "opening Settings never requests iOS permission before the enable tap");
 
   const pushRoute = harness({href:"https://app.example.test/iphone-pwa/course?notice=1&lang=uz#lesson",
     action:{payment_id:120,status:"rejected",plan_type:"1_month"}});

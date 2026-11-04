@@ -563,6 +563,8 @@
     <string name="hsk_course_pronunciation_retry" formatted="false">Нажмите ещё раз</string>
     <string name="hsk_course_pronunciation_review" formatted="false">повтор</string>
     <string name="hsk_course_pronunciation_skip" formatted="false">Пропустить</string>
+    <string name="hsk_course_pwa_feedback_body" formatted="false">Коротко поделитесь впечатлением об уроке, который только что прошли.</string>
+    <string name="hsk_course_pwa_feedback_title" formatted="false">{level} · отзыв об уроке {n}</string>
     <string name="hsk_course_rank" formatted="false">место</string>
     <string name="hsk_course_rating_challenge_cooldown" formatted="false">Дуэль можно отправлять раз в 15 минут. Попробуйте через {minutes} мин.</string>
     <string name="hsk_course_rating_challenge_not_allowed" formatted="false">Этому пользователю нельзя бросить вызов</string>
