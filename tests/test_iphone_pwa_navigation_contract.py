@@ -44,7 +44,7 @@ class IphonePwaNavigationContractTests(unittest.TestCase):
         body = COURSE.split("function schedulePracticeBackgroundLoad()", 1)[1].split(
             "/* Limit holatini", 1
         )[0]
-        self.assertIn("if(window.RESOURCE&&!PWA_COURSE_HOST)RESOURCE.warm()", body)
+        self.assertIn("if(!PWA_COURSE_HOST){if(window.RESOURCE)RESOURCE.warm();}", body)
         self.assertIn('if(SCREEN!=="mashq")return', body)
         # On-demand dictionary entry remains available in both hosts.
         self.assertIn('openDict:function(){RESOURCE.open("dict")}', COURSE)
