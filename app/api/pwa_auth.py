@@ -1778,7 +1778,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                     )
                 except (ValueError, binascii.Error):
                     raise PwaAuthError("pwa_request_invalid", status_code=422)
-                if len(screenshot) > 550 * 1024 or not screenshot.startswith(b"\\xff\\xd8\\xff"):
+                if len(screenshot) > 550 * 1024 or not screenshot.startswith(b"\xff\xd8\xff"):
                     raise PwaAuthError("pwa_request_invalid", status_code=422)
             try:
                 admission = await reserve_native_report(
@@ -1797,9 +1797,9 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                 raise PwaAuthError("pwa_report_unavailable", status_code=503)
             title = "🐞 HSK AI iPhone PWA — muammo xabari"
             message = (
-                f"{title}\\n🆔 User ID: {actor.id}\\n"
-                f"📱 Versiya: {escape(report.app_version)}\\n"
-                f"📍 Ekran: {escape(report.screen)}\\n\\n"
+                f"{title}\n🆔 User ID: {actor.id}\n"
+                f"📱 Versiya: {escape(report.app_version)}\n"
+                f"📍 Ekran: {escape(report.screen)}\n\n"
                 f"📝 {escape(description)}"
             )
             delivered = 0
