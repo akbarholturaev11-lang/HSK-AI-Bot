@@ -9,15 +9,17 @@ from unittest.mock import patch
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
 from pydantic import ValidationError
-from sqlalchemy import event, func, select
+from sqlalchemy import event, func, select, text
 
 from app.admin_api import pwa_notifications as api
 from app.admin_api.pwa_sessions import ADMIN_PWA_COOKIE_NAME
 from app.db.models.admin_pwa_command import AdminPwaCommandAudit
 from app.db.models.admin_pwa_step_up import AdminPwaStepUp
 from app.db.models.notification_template import NotificationTemplate
+from app.db.models.smart_reminder import SmartReminderRouting
 from app.db.models.smart_reminder_analysis import SmartReminderAnalysisMonthly
 from app.services.notification_template_service import NotificationTemplateService, default_text
+from app.services.smart_reminder_runtime import build_rules_runtime
 from app.repositories.bot_setting_repo import BotSettingRepository
 from tests import test_admin_pwa_payment_review as fixtures
 from tests import test_admin_pwa_settings as proofs
@@ -46,6 +48,7 @@ class NotificationTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
                     request=api.NoticeRead(key='smart_study'),settings_obj=self.settings)
         finally: event.remove(self.engine.sync_engine,'before_cursor_execute',collect)
         self.assertEqual(result['smart'],dict(month=month.strftime('%Y-%m'),observation_enabled=False,
+            android_ready=False,telegram_ready=False,current_reviews=0,
             counts=dict(study_day_after_attempt=0,contact_study_24h=5,study_unit_24h=None)))
         self.assertTrue(result['template']['enabled'])
         json.dumps(result)  # PostgreSQL SUM(bigint) must also be JSON-safe.
@@ -55,6 +58,38 @@ class NotificationTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
         async with self.sessions() as db:
             on=await api.read_notices(db,session_cookie=fixtures.COOKIE,request=api.NoticeRead(key='smart_study'),settings_obj=self.settings)
         self.assertTrue(on['smart']['observation_enabled'])
+
+    async def test_smart_status_uses_registered_runtime_and_only_unexpired_review_count(self):
+        now = datetime.now(timezone.utc)
+        async with self.sessions.begin() as db:
+            owners = list(await db.scalars(select(api.User.id).order_by(api.User.id).limit(2)))
+            self.assertEqual(len(owners), 2)
+            for owner, until in zip(owners, (now+timedelta(hours=1), now-timedelta(seconds=1))):
+                db.add(SmartReminderRouting(user_id=owner, state='held', generation=1,
+                    preference_revision=0, grant_epoch=0, telegram_binding='a'*64,
+                    inventory_sha256='b'*64, held_at=now-timedelta(days=2),
+                    verified_at=now-timedelta(days=1), verified_until=until, evidence_sha256='c'*64))
+        self.settings.SMART_REMINDER_ENABLED = True
+        self.settings.SMART_REMINDER_TELEGRAM_ENABLED = False
+        app = FastAPI()
+        app.include_router(api.create_admin_pwa_notifications_router(settings_obj=self.settings,
+            session_factory=self.sessions))
+        async with AsyncClient(transport=ASGITransport(app=app), base_url='https://hskai.app',
+                headers={'origin':'https://hskai.app'}, cookies={ADMIN_PWA_COOKIE_NAME:fixtures.COOKIE}) as client:
+            async def read():
+                response = await client.post('/api/admin/v1/notifications/read',json={'key':'smart_study'})
+                self.assertEqual(response.status_code, 200)
+                return response.json()['smart']
+            self.assertFalse((await read())['android_ready'])
+            runtime = build_rules_runtime(self.settings, self.sessions, object())
+            runtime.bind(app)
+            app.state.smart_reminder_runtime = runtime
+            status = await read()
+            self.assertTrue(status['android_ready'])
+            self.assertFalse(status['telegram_ready'])
+            self.assertEqual(status['current_reviews'], 1)
+            self.settings.SMART_REMINDER_TELEGRAM_ENABLED = True
+            self.assertTrue((await read())['telegram_ready'])
 
     async def test_smart_pause_uses_real_signed_cas_and_cannot_be_replayed_or_bypass_revocation(self):
         command=await self.prepare(key='smart_study',enabled=False,text_uz='',text_ru='',text_tj='')
@@ -204,6 +239,58 @@ class NotificationPostgresTests(fixtures.PaymentFixtures, unittest.IsolatedAsync
     proof = NotificationTests.proof
     execute = NotificationTests.execute
     test_smart_readout_only_uses_current_anonymous_month_and_preserves_missing_vs_zero = NotificationTests.test_smart_readout_only_uses_current_anonymous_month_and_preserves_missing_vs_zero
+
+    async def test_final_authorization_waits_for_signed_pause_to_commit(self):
+        command = await self.prepare(key='smart_study',enabled=False,text_uz='',text_ru='',text_tj='')
+        proof = await self.proof(command,signed=True)
+        changed = asyncio.Event()
+        release = asyncio.Event()
+        authorizing = asyncio.Event()
+        update = NotificationTemplateService.update_text
+        lock = BotSettingRepository.lock_key
+
+        async def wait_before_commit(service,*args,**kwargs):
+            row = await update(service,*args,**kwargs)
+            changed.set()
+            await release.wait()
+            return row
+
+        async def observe(repo,key,*,shared=False):
+            if shared:
+                authorizing.set()
+            return await lock(repo,key,shared=shared)
+
+        async def authorize():
+            async with self.sessions.begin() as db:
+                return await NotificationTemplateService(db).is_enabled('smart_study',authorize=True)
+
+        tasks = []
+        try:
+            with patch.object(NotificationTemplateService,'update_text',wait_before_commit), \
+                    patch.object(BotSettingRepository,'lock_key',observe):
+                saving = asyncio.create_task(self.execute(command,proof))
+                tasks.append(saving)
+                await asyncio.wait_for(changed.wait(), 5)
+                checking = asyncio.create_task(authorize())
+                tasks.append(checking)
+                await asyncio.wait_for(authorizing.wait(), 5)
+                async with self.sessions() as probe:
+                    async with asyncio.timeout(3):
+                        while not await probe.scalar(text(
+                                "SELECT EXISTS (SELECT 1 FROM pg_locks WHERE locktype = 'advisory'"
+                                " AND mode = 'ShareLock' AND NOT granted AND database = "
+                                "(SELECT oid FROM pg_database WHERE datname = current_database()))")):
+                            await asyncio.sleep(0.02)
+                self.assertFalse(checking.done())
+                release.set()
+                self.assertFalse((await asyncio.wait_for(saving, 5))['template']['enabled'])
+                self.assertFalse(await asyncio.wait_for(checking, 5))
+        finally:
+            release.set()
+            for task in tasks:
+                if not task.done():
+                    task.cancel()
+            await asyncio.gather(*tasks,return_exceptions=True)
 
     async def test_legacy_first_insert_serializes_and_rejects_old_absent_snapshot(self):
         command = await self.prepare(); proof = await self.proof(command)

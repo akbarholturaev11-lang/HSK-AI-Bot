@@ -24,12 +24,14 @@ from app.db.models.admin_pwa import AdminPwaSession
 from app.db.models.admin_pwa_command import AdminPwaCommandAudit
 from app.db.models.admin_pwa_step_up import AdminPwaStepUp
 from app.db.models.notification_template import NotificationTemplate
+from app.db.models.smart_reminder import SmartReminderRouting
 from app.db.models.smart_reminder_analysis import SmartReminderAnalysisMonthly
 from app.db.models.user import User
 from app.repositories.bot_setting_repo import BotSettingRepository
 from app.services.notification_template_service import (
     KEY_SMART_STUDY,TEMPLATE_KEYS,TEMPLATE_META,CAPTION_MAX,TEXT_MAX,NotificationTemplateService,default_text,
 )
+from app.services.smart_reminder_runtime import registered_runtime
 
 logger=logging.getLogger(__name__)
 _LANGS=('uz','ru','tj')
@@ -131,19 +133,27 @@ async def _authenticate(db,cookie,settings_obj):
     return actor
 
 
-async def read_notices(db,*,session_cookie,request,settings_obj):
+async def read_notices(db,*,session_cookie,request,settings_obj,runtime=None):
     if not _enabled(settings_obj):raise CommandError('not_found',404)
     async with read_transaction(db):
         await _authenticate(db,session_cookie,settings_obj)
         if request.key is not None:
             result={'template':_preview(request.key,await _row(db,request.key))}
             if request.key == KEY_SMART_STUDY:
-                month=datetime.now(timezone.utc).date().replace(day=1)
+                now=datetime.now(timezone.utc)
+                month=now.date().replace(day=1)
                 stages=('study_day_after_attempt','contact_study_24h','study_unit_24h')
                 table=SmartReminderAnalysisMonthly
                 counts={stage:int(count) for stage,count in (await db.execute(select(table.stage,func.sum(table.fact_count))
                     .where(table.month==month,table.stage.in_(stages)).group_by(table.stage))).all()}
+                routing=SmartReminderRouting
+                current_reviews=await db.scalar(select(func.count()).select_from(routing)
+                    .where(routing.verified_at <= now, routing.verified_until > now))
+                running=runtime is not None and runtime.ready
                 result['smart']={'month':month.strftime('%Y-%m'),
+                    'android_ready':running and callable(runtime.android_admission_reader),
+                    'telegram_ready':running and runtime.telegram_ready,
+                    'current_reviews':current_reviews,
                     'observation_enabled':getattr(settings_obj,'SMART_REMINDER_ANALYSIS_ENABLED',False) is True,
                     'counts':{stage:counts.get(stage) for stage in stages}}
         else:
@@ -203,7 +213,10 @@ def create_admin_pwa_notifications_router(*,settings_obj,session_factory):
         except ValidationError:return _reply(400,'admin_pwa_invalid_payload')
         try:
             async with session_factory() as db:
-                result=await task(db,session_cookie=cookie,request=parsed,settings_obj=settings_obj)
+                kwargs={}
+                if task is read_notices:
+                    kwargs['runtime']=registered_runtime(request.app,settings_obj,session_factory)
+                result=await task(db,session_cookie=cookie,request=parsed,settings_obj=settings_obj,**kwargs)
         except CommandError as exc:return _reply(exc.status,str(exc))
         except Exception:
             logger.error('Admin PWA notification template command unavailable');return _reply(503,'admin_pwa_command_unavailable')
