@@ -999,4 +999,6 @@ The existing signed Smart editor remains the runtime permission surface. Show li
 
 Serialize final Android grant and Telegram attempt authorization with the existing template setting transaction lock. Readers share the lock. The admin writer acquires it exclusively. Once the save commits, a later authorization must observe the new value. Previously committed authorizations remain governed by their original attempt and expiry.
 
+The Telegram motivation scheduler checks sticky routing before its evening goal, streak and unfinished-lesson decision. The check applies to existing held accounts. D1 and rating keep their separate paths. A scheduler that already passed the check remains part of the legacy drain.
+
 Public cutover requires a server-owned barrier covering every competing study sender, followed by a drain of outstanding legacy delivery and a verifiable migration condition for older Android clients. A version string, missing device rows or a startup flag alone supplies no proof. Reuse the existing review and account-day ledger only after those conditions are established. Preserve explicit learner OFF and keep unknown outcomes in their original day budget.

@@ -33,6 +33,7 @@ from app.services.notification_template_service import (
     KEY_STREAK,
     NotificationTemplateService,
 )
+from app.services.smart_reminder_lifecycle import SmartReminderLifecycleService
 
 # On-disk root for admin-uploaded reminder media (see /uploads/notifications route).
 MEDIA_ROOT = "app/static/uploads/notifications"
@@ -651,6 +652,7 @@ class MotivationReminderService:
             stats[key] = stats.get(key, 0) + 1
 
         stats["considered"] = len(rows)
+        routing = SmartReminderLifecycleService(self.session)
         for profile, user in rows:
             # Keep all canonical learners in the league ranking above, but
             # only Telegram-linked learners can receive these bot messages.
@@ -697,6 +699,9 @@ class MotivationReminderService:
             now_min = local_now.hour * 60 + local_now.minute
             if not (GOAL_WINDOW_START_MIN <= now_min <= GOAL_WINDOW_END_MIN):
                 bump("skip_outside_evening_window")
+                continue
+            if await routing.has_routing_hold(user.id):
+                bump("skip_smart_routing_hold")
                 continue
 
             day_start, day_end = self._local_day_bounds_utc(local_day, offset)
