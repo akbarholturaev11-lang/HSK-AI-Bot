@@ -2636,7 +2636,28 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
                 self.assertIn('function verifyPwaReturn(){', html)
                 self.assertIn(f'  if(!{host})return;', html)
                 self.assertIn(f'  {cache}=null;', html)
-                self.assertIn(f'  {verifier}().catch(function(){{location.replace("/iphone-pwa")}});', html)
+                if name in {
+                    "subscription.html", "course_v3_recognition.html",
+                    "course_v3_memorize.html", "course_v3_pronunciation.html",
+                    "course_v3_mistakes.html", "course_v3_test.html",
+                }:
+                    # A temporary network/5xx failure on Home Screen resume
+                    # is not an authenticated logout. Real 401/owner changes
+                    # still redirect within each session verifier.
+                    self.assertIn(f'  {verifier}().catch(function(error){{', html)
+                    self.assertIn(
+                        'if(error&&error.message==="pwa_session_invalid")'
+                        'location.replace("/iphone-pwa");', html
+                    )
+                    self.assertIn(
+                        'if(r.status===401){location.replace("/iphone-pwa");'
+                        'throw new Error("pwa_session_required")}', html
+                    )
+                else:
+                    self.assertIn(
+                        f'  {verifier}().catch(function(){{location.replace("/iphone-pwa")}});',
+                        html
+                    )
                 self.assertIn('window.addEventListener("pageshow",function(ev){if(ev.persisted)verifyPwaReturn()})', html)
                 self.assertIn('document.visibilityState==="visible"', html)
                 self.assertNotIn("user-scalable=no", html)

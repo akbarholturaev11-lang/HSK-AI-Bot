@@ -1610,6 +1610,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 }
 </style>
 <link rel="stylesheet" href="/course_v3_data/iphone-pwa-glass.css?v=20261104-175a0ec6f920">
+<link rel="stylesheet" href="/course_v3_data/iphone-pwa-shake-report.css?v=20261104-2">
 <link href="/course_v3_data/desktop-download.css?v=20261003-1" rel="stylesheet">
 <link href="/course_v3_data/profile-carousel.css?v=20261017-link-cards-1" rel="stylesheet">
 <link href="/course_v3_data/rating-podium.css?v=20261014-2" rel="stylesheet">
@@ -1707,7 +1708,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 <link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
 <!-- Reklama moduli: dars yakuni bloki uchun (mashq bo'limlari ham shu moduldan foydalanadi) -->
 <script src="/voice-live.js?v=1"></script>
-<script defer src="/course_v3_data/ads.js?v=20261021-785974bb437c"></script><script src="/course_v3_data/hsk-common-i18n.js?v=20261019-1c672dcfb10d"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261021-e6ffe6e07de9"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script><script src="/course_v3_data/p3-grammar-reservation.js?v=20261019-p3-2"></script>
+<script defer src="/course_v3_data/ads.js?v=20261021-785974bb437c"></script><script src="/course_v3_data/hsk-common-i18n.js?v=20261019-1c672dcfb10d"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261021-a4cda8e3aa73"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script><script src="/course_v3_data/p3-grammar-reservation.js?v=20261019-p3-2"></script>
 <script>
 /* ---------- i18n (default RU) ---------- */
 var I18N={
@@ -7106,6 +7107,7 @@ function settingsSheetHtml(){
     +pwaPushSettingsRowHtml()
     +'<button class="srow" onclick="App.goalPicker()"><i class="ti ti-target"></i> '+p.goalSet+'<span class="sv">'+dailyGoal+' XP <i class="ti ti-chevron-right"></i></span></button>'
     +signInMethodsRowsHtml()
+    +(PWA_COURSE_HOST && window.HskPwaShake ? window.HskPwaShake.settingsRowHtml() : "")
     +pwaLogoutSettingsRowHtml()
     +'<button class="srow" onclick="App.openHelp()"><i class="ti ti-help-circle"></i> '+courseMessage("help",t.help)+'<span class="sv"><i class="ti ti-chevron-right"></i></span></button>'
     +'</div>'+socialLinksHtml();
@@ -7548,6 +7550,26 @@ var RESOURCE=(function(){
       var target=new URL(src,location.origin);
       if(target.origin!==location.origin)return;
       src=safePaths[path]+target.search;
+    }
+    if(PWA_COURSE_HOST){
+      // Paint the same panda preparing state at the tap site. Waiting until
+      // the next HTML document parses is the visible blank/half-cut gap.
+      var oldOverlay=document.getElementById("pwa-practice-navigation-overlay");
+      if(oldOverlay)oldOverlay.remove();
+      var overlay=document.createElement("div");
+      overlay.id="pwa-practice-navigation-overlay";
+      overlay.setAttribute("role","status");
+      overlay.setAttribute("aria-live","polite");
+      overlay.style.cssText="position:fixed;inset:0;z-index:20000;display:flex;align-items:center;justify-content:center;box-sizing:border-box;background:var(--paper,#FDF9F0);padding:env(safe-area-inset-top,0px) 18px env(safe-area-inset-bottom,0px);text-align:center";
+      overlay.innerHTML=renderStudyPreparing();
+      document.body.appendChild(overlay);
+      close();beginInternalNavigation();
+      // One paint turn for the overlay; no change to the gated destination.
+      setTimeout(function(){location.href=src},32);
+      // A failed navigation must not leave the learner trapped on an overlay.
+      setTimeout(function(){if(overlay.isConnected)overlay.remove()},15000);
+      window.addEventListener("pageshow",function(){if(overlay.isConnected)overlay.remove()},{once:true});
+      return;
     }
     close();beginInternalNavigation();location.href=src;
   }
@@ -9059,6 +9081,17 @@ var finishHskLaunchSplash=(function(){
   /* Returning from the dictionary/phrasebook is not a fresh app launch. */
   var returning=false;
   try{returning=sessionStorage.getItem("hsk_v3_resource_return")==="1";if(returning)sessionStorage.removeItem("hsk_v3_resource_return")}catch(e){}
+  if(PWA_COURSE_HOST){
+    var internalReturn=false;
+    try{
+      var key="hskai.pwa.course.launch.seen";
+      var q=new URLSearchParams(location.search);
+      internalReturn=sessionStorage.getItem(key)==="1" ||
+        q.has("tab") || q.has("return_to") || q.has("return_tab");
+      sessionStorage.setItem(key,"1");
+    }catch(_){internalReturn=new URLSearchParams(location.search).has("tab")}
+    if(internalReturn){root.classList.add("is-done");root.remove();return function(){}}
+  }
   if(returning){root.classList.add("is-done");root.remove();return function(){}}
   var bootReady=false,animationReady=false,closed=false;
   var motionReduced=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -9416,5 +9449,6 @@ window.addEventListener("pageshow",function(ev){
 <script src="/course_v3_data/profile-carousel.js?v=20261021-bbc40872c23c"></script>
 <script src="/course_v3_data/iphone-pwa-notices.js?v=20261104-b2923983a5a6"></script>
 <script src="/course_v3_data/iphone-pwa-feedback.js?v=20261103-1"></script>
+<script src="/course_v3_data/iphone-pwa-shake-report.js?v=20261104-2"></script>
 </body>
 </html>

@@ -95,7 +95,7 @@ result.absent=vm.runInNewContext('(window.HSKAILocaleMap||function(_,fallback){r
         self.assertIn('"hsk-miniapp-i18n.js": "application/javascript"', source)
         # Updated after merging main's 2026-11-04 course shell changes and the
         # reviewed PWA host adapter, while source-hash guards remain canonical.
-        self.assertEqual(len((ROOT / "app/static/course-v3.html").read_text().splitlines()), 9420)
+        self.assertEqual(len((ROOT / "app/static/course-v3.html").read_text().splitlines()), 9454)
 
     def test_graded_placement_blocks_remain_byte_identical(self):
         proof = json.loads((ROOT / "localization/review/miniapp_inline_map_migration.json").read_text())

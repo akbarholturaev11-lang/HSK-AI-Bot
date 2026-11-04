@@ -42,10 +42,10 @@ class PracticeUIAdoptionTests(unittest.TestCase):
                         (ROOT / f"localization/ui/{locale}/course.json").read_text(encoding="utf-8")
                     )["messages"]
                     self.assertEqual(len(old), count)
-                    self.assertEqual(len(catalog), 990)
+                    self.assertEqual(len(catalog), 1019)
                     for key, label in old.items():
                         self.assertEqual(catalog[f"{'mistakesPage' if page == 'mistakes' else page}.{key}"], label)
-            self.assertLess(source.index("hsk-course-i18n.js?v=20261021-e6ffe6e07de9"),
+            self.assertLess(source.index("hsk-course-i18n.js?v=20261021-a4cda8e3aa73"),
                             source.index("var L={"))
             self.assertEqual(source.count("var L={"), 1)
 
