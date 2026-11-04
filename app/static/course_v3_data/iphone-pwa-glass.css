@@ -148,6 +148,12 @@ html.hsk-pwa-browser #paywall .si {
 }
 @media(prefers-reduced-motion:reduce){#hsk-pwa-notice-root *{animation:none!important;transition:none!important}}
 
+/* A linked account may retain a Telegram avatar, but iPhone PWA cannot
+   edit it through Telegram WebApp APIs. Avoid an inert pencil and misleading
+   "edit Telegram avatar" gesture; canonical account image remains read-only. */
+html.hsk-pwa-browser .phero .pav {cursor:default;pointer-events:none}
+html.hsk-pwa-browser .phero .pav .ed {display:none!important}
+
 /* Keep the original Mini App dialog flow, but display iPhone Settings as
    a dedicated full-screen page. Nested pickers revert to normal sheets. */
 html.hsk-pwa-browser #sheet.pwa-settings-page {
