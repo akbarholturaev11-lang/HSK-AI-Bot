@@ -149,6 +149,15 @@ class PwaCheckoutEvent(PwaCheckoutContext):
     plan_type: str | None = None
     payment_method: str | None = None
 
+class PwaBugReport(BaseModel):
+    """Authenticated learner PWA bug report; no caller-supplied owner ID."""
+    model_config = ConfigDict(extra="forbid")
+    description: str
+    screenshot_data_url: str = ""
+    app_version: str = ""
+    screen: str = ""
+
+
 class PwaFeedbackPrepare(BaseModel):
     """No user, identity or campaign selector is supplied by the browser."""
     model_config = ConfigDict(extra="forbid")
@@ -1723,6 +1732,111 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
             )
         except PwaAuthError as exc:
             return _error(exc)
+
+    @router.post("/api/v3/pwa/bug-report")
+    async def pwa_bug_report(request: Request):
+        """PWA session/CSRF-specific transport to the existing native report inbox.
+
+        Images are strictly opt-in at Send; shakes never create network writes.
+        """
+        import base64
+        import binascii
+        import logging
+        from html import escape
+
+        from aiogram.types import BufferedInputFile
+        from app.services.admin_notify_service import AdminNotifyService
+        from app.services.admin_pwa_native_reports import (
+            NativeReportRateLimited, finish_native_report, reserve_native_report,
+        )
+
+        admission = None
+        try:
+            require_pwa_enabled(settings_obj)
+            require_same_origin(request, settings_obj)
+            if request.query_params or request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            if not getattr(settings_obj, "ADMIN_PWA_ENABLED", False):
+                raise PwaAuthError("pwa_report_unavailable", status_code=503)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                report = await _small_json(request, PwaBugReport, max_bytes=800 * 1024)
+            description = report.description.strip()
+            if not 5 <= len(description) <= 2000 or len(report.app_version) > 40 or len(report.screen) > 80:
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            screenshot = None
+            if report.screenshot_data_url:
+                prefix = "data:image/jpeg;base64,"
+                if not report.screenshot_data_url.startswith(prefix) or len(report.screenshot_data_url) > 750_000:
+                    raise PwaAuthError("pwa_request_invalid", status_code=422)
+                try:
+                    screenshot = base64.b64decode(
+                        report.screenshot_data_url[len(prefix):], validate=True,
+                    )
+                except (ValueError, binascii.Error):
+                    raise PwaAuthError("pwa_request_invalid", status_code=422)
+                if len(screenshot) > 550 * 1024 or not screenshot.startswith(b"\\xff\\xd8\\xff"):
+                    raise PwaAuthError("pwa_request_invalid", status_code=422)
+            try:
+                admission = await reserve_native_report(
+                    session_factory, user_id=actor.id, description=description,
+                    app_version=report.app_version, screen=report.screen,
+                    screenshot=screenshot,
+                )
+            except NativeReportRateLimited:
+                raise PwaAuthError("pwa_report_rate_limited", status_code=429)
+            if admission.already_sent:
+                return JSONResponse({"ok": True}, headers=_NO_STORE)
+            if bot is None:
+                raise PwaAuthError("pwa_report_unavailable", status_code=503)
+            recipients = AdminNotifyService()._feedback_recipient_ids()
+            if not recipients:
+                raise PwaAuthError("pwa_report_unavailable", status_code=503)
+            title = "🐞 HSK AI iPhone PWA — muammo xabari"
+            message = (
+                f"{title}\\n🆔 User ID: {actor.id}\\n"
+                f"📱 Versiya: {escape(report.app_version)}\\n"
+                f"📍 Ekran: {escape(report.screen)}\\n\\n"
+                f"📝 {escape(description)}"
+            )
+            delivered = 0
+            for recipient in recipients:
+                try:
+                    if screenshot is not None:
+                        await bot.send_photo(
+                            chat_id=recipient,
+                            photo=BufferedInputFile(screenshot, filename="iphone-pwa-report.jpg"),
+                            caption=title,
+                        )
+                    await bot.send_message(chat_id=recipient, text=message)
+                    delivered += 1
+                except Exception as exc:
+                    logging.getLogger(__name__).error(
+                        "PWA report delivery failed (%s)", type(exc).__name__,
+                    )
+            if not delivered:
+                raise PwaAuthError("pwa_report_unavailable", status_code=503)
+            await finish_native_report(session_factory, admission.report_id, delivered=True)
+            return JSONResponse({"ok": True}, headers=_NO_STORE)
+        except PwaAuthError as exc:
+            failure = exc
+        except Exception as exc:
+            # Never log report text, image bytes, cookies or CSRF.
+            logging.getLogger(__name__).error(
+                "PWA bug report failed (%s)", type(exc).__name__,
+            )
+            failure = PwaAuthError("pwa_report_unavailable", status_code=503)
+        if admission is not None:
+            try:
+                await finish_native_report(session_factory, admission.report_id, delivered=False)
+            except Exception as exc:
+                logging.getLogger(__name__).error(
+                    "PWA report outcome failed (%s)", type(exc).__name__,
+                )
+        return _error(failure)
 
     @router.get("/api/v3/pwa/feedback/available")
     async def pwa_feedback_available(request: Request):
