@@ -15,7 +15,7 @@ PLURAL_KEYS = [
     for name in ("countAll", "countResults", "strokeCount")
     for category in ("one", "few", "many")
 ]
-VERSION = "hsk-course-i18n.js?v=20261021-88bfab42686b"
+VERSION = "hsk-course-i18n.js?v=20261021-1a6eeac38a05"
 
 
 def source():
@@ -60,7 +60,7 @@ class DictionaryUIAdoptionTests(unittest.TestCase):
                 (ROOT / f"localization/ui/{locale}/course.json").read_text(encoding="utf-8")
             )["messages"]
             with self.subTest(locale=locale):
-                self.assertEqual(len(catalog), 978)
+                self.assertEqual(len(catalog), 983)
                 for namespace, required in EXPECTED.items():
                     data = original[locale][namespace]
                     self.assertEqual(len(data), required)
