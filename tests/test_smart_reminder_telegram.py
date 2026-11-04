@@ -14,6 +14,7 @@ from alembic.operations import Operations
 from sqlalchemy import event, func, insert, inspect, select, update
 
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
+from app.db.models.course_miniapp_profile import CourseMiniAppProfile
 from app.db.models.course_progress import CourseProgress
 from app.db.models.course_xp_event import CourseXpEvent
 from app.db.models.desktop import DesktopDevice, DesktopSession
@@ -22,6 +23,7 @@ from app.db.models.smart_reminder import SmartReminderRouting, SmartReminderPref
 from app.db.models.user import User
 from app.repositories.user_repo import UserRepository
 from app.services.course_reminder_service import CourseReminderService
+from app.services.motivation_reminder_service import MotivationReminderService
 from app.services.notification_template_service import KEY_SMART_STUDY, NotificationTemplateService
 from app.services.smart_reminder_lifecycle import SmartReminderLifecycleService
 from app.services.smart_reminder_preferences import SmartReminderActor, SmartReminderError, SmartReminderPatch, SmartReminderPreferencesService
@@ -254,6 +256,32 @@ class TelegramChecks:
                 with patch.object(CourseReminderService,"_build_reminder_text",AsyncMock(return_value=("Synthetic",{}))):
                     await CourseReminderService(s).send_due_reminders(self.bot)
         self.bot.send_message.assert_not_awaited()
+
+    async def test_evening_motivation_skips_sticky_hold_after_review_expires(self):
+        await self.active()
+        now = self.tick.replace(hour=20, minute=30)
+        self.assertGreater(now, self.expiry)
+        async with self.sessions.begin() as s:
+            await s.execute(update(User).where(User.id==1).values(last_active_at=now))
+            s.add(User(id=42, telegram_id=3042, status="free", last_active_at=now))
+            await s.flush()
+            s.add(CourseMiniAppProfile(user_id=42, timezone_offset_minutes=0))
+            held = await s.scalar(select(CourseMiniAppProfile).where(CourseMiniAppProfile.user_id==1))
+            if held is None:
+                s.add(CourseMiniAppProfile(user_id=1, timezone_offset_minutes=0))
+            else:
+                held.timezone_offset_minutes = 0
+        async with self.sessions() as s:
+            service = MotivationReminderService(s)
+            with patch("app.services.motivation_reminder_service.datetime",wraps=datetime) as clock, \
+                    patch.object(service,"_maybe_overtaken",AsyncMock(return_value=False)) as rating:
+                clock.now.return_value = now
+                await service.send_due_reminders(self.bot)
+            self.assertIn(1, {call.args[2].id for call in rating.await_args_list})
+        self.assertEqual([call.args[0] for call in self.bot.send_message.await_args_list], [3042])
+        async with self.sessions() as s:
+            profile = await s.scalar(select(CourseMiniAppProfile).where(CourseMiniAppProfile.user_id==42))
+            self.assertEqual(profile.motivation_goal_date,now.date())
 
     async def test_current_time_intent_is_preserved_while_legacy_delivery_stays_owned(self):
         from app.bot.handlers.course import course_set_reminder_time_handler
