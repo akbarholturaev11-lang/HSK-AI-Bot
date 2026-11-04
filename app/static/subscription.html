@@ -485,7 +485,20 @@ function courseReturnUrl(){
   return (PWA_CHECKOUT_HOST?"/iphone-pwa/course":"/course-v3.html")+"?"+query.toString();
 }
 function returnToCourseFromCheckout(){
-  /* replace avoids a course -> checkout -> course -> checkout browser-history loop. */
+  /* On an actual Course -> Checkout visit, restoring the previous document
+     through browser history avoids a heavy full Course HTML/script download.
+     The Course pageshow handler revalidates account access and progress.
+     A deep-linked checkout never navigates to an unknown prior website. */
+  if(PWA_CHECKOUT_HOST&&window.history&&window.history.length>1){
+    try{
+      var from=new URL(document.referrer||"",location.href);
+      if(from.origin===location.origin&&from.pathname==="/iphone-pwa/course"){
+        window.history.back();
+        return;
+      }
+    }catch(e){}
+  }
+  /* Direct checkout visits and Telegram retain deterministic safe return. */
   window.location.replace(courseReturnUrl());
 }
 function initTelegramCourseReturn(){
