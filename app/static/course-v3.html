@@ -2369,11 +2369,14 @@ try{
     syncCourseTelegramChrome();
     if(!e||!e.persisted)return;
     INTERNAL_NAVIGATING_UNTIL=0;EXIT_PINGED=false;clearDeferredCourseUnlock();
-    if(!INIT_DATA||!MAP)return;
+    // iOS may BFCache-restore Course after a checkout swipe. Release the
+    // one-shot checkout guard and refresh browser-authorized access/progress.
+    CHECKOUT_NAVIGATING=false;
+    if((!INIT_DATA&&!PWA_COURSE_HOST)||!MAP)return;
     _fetchCourseMap(MAP.level||getSelectedLevel()).then(function(d){
       if(isHsk30AccessError(d,MAP.level||getSelectedLevel())){showCourseMapFailure({hsk30Gate:true,level:d.level||MAP.level});return}
-      if(!d||d._parseFail||d.authenticated===false||!d.units)return;
-      MAP=rememberLimitText(d);if(d.user)PROF=d.user;syncNotify();renderAll();
+      if(!d||d._parseFail||d._status>=400||d.authenticated===false||!d.units)return;
+      MAP=rememberLimitText(d);if(d.user)PROF=d.user;adoptStudySetup(d);syncNotify();renderAll();
     }).catch(function(){});
   });
 }catch(e){}
@@ -2613,7 +2616,7 @@ function syncNotify(){if(MAP&&MAP.notify&&typeof MAP.notify.enabled==="boolean")
    objects. A completion arriving during a refresh queues one newer read. */
 var PROGRESS_REFRESH=null,PROGRESS_REFRESH_QUEUED=false;
 function refreshCourseProgress(afterWrite){
-  if(!INIT_DATA||!MAP||!Array.isArray(MAP.units))return Promise.resolve(false);
+  if((!INIT_DATA&&!PWA_COURSE_HOST)||!MAP||!Array.isArray(MAP.units))return Promise.resolve(false);
   if(PROGRESS_REFRESH){if(afterWrite)PROGRESS_REFRESH_QUEUED=true;return PROGRESS_REFRESH}
   var snapshot=MAP,level=MAP.level||getSelectedLevel();
   var controller=window.AbortController?new AbortController():null,timer;
@@ -3383,7 +3386,10 @@ function schedulePracticeBackgroundLoad(){
         PRACTICE_BACKGROUND_SCHEDULED=false;
         if(SCREEN!=="mashq")return;
         prefetchPracticeAssets();
-        if(window.RESOURCE)RESOURCE.warm();
+        // The standalone PWA opens the two large dictionary iframes on demand.
+        // Warm-up on every Practice visit competes with navigation and checkout
+        // over slow iPhone connections. Keep Telegram's existing preload.
+        if(window.RESOURCE&&!PWA_COURSE_HOST)RESOURCE.warm();
       };
       if(typeof requestIdleCallback==="function")
         requestIdleCallback(warmInIdle,{timeout:1800});
