@@ -563,6 +563,8 @@
     <string name="hsk_course_pronunciation_retry" formatted="false">Qayta bosing</string>
     <string name="hsk_course_pronunciation_review" formatted="false">takror</string>
     <string name="hsk_course_pronunciation_skip" formatted="false">O\'tkazib yuborish</string>
+    <string name="hsk_course_pwa_feedback_body" formatted="false">Hozirgina tugatgan darsingiz haqida qisqa fikr qoldiring.</string>
+    <string name="hsk_course_pwa_feedback_title" formatted="false">{level} · {n}-dars haqida fikringiz</string>
     <string name="hsk_course_rank" formatted="false">o\'rin</string>
     <string name="hsk_course_rating_challenge_cooldown" formatted="false">Bellashuvni 15 daqiqada bir marta yuborish mumkin. {minutes} daqiqadan keyin urinib ko\'ring.</string>
     <string name="hsk_course_rating_challenge_not_allowed" formatted="false">Bu foydalanuvchiga chaqiruv yuborib bo\'lmaydi</string>

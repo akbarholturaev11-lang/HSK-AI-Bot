@@ -1707,7 +1707,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 <link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
 <!-- Reklama moduli: dars yakuni bloki uchun (mashq bo'limlari ham shu moduldan foydalanadi) -->
 <script src="/voice-live.js?v=1"></script>
-<script defer src="/course_v3_data/ads.js?v=20261021-785974bb437c"></script><script src="/course_v3_data/hsk-common-i18n.js?v=20261019-1c672dcfb10d"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261021-1a6eeac38a05"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script><script src="/course_v3_data/p3-grammar-reservation.js?v=20261019-p3-2"></script>
+<script defer src="/course_v3_data/ads.js?v=20261021-785974bb437c"></script><script src="/course_v3_data/hsk-common-i18n.js?v=20261019-1c672dcfb10d"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261021-e6ffe6e07de9"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script><script src="/course_v3_data/p3-grammar-reservation.js?v=20261019-p3-2"></script>
 <script>
 /* ---------- i18n (default RU) ---------- */
 var I18N={
@@ -2590,7 +2590,7 @@ function haptic(t){try{tg&&tg.HapticFeedback&&(t==="ok"?tg.HapticFeedback.notifi
 var ac;function beep(seq){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();var t=ac.currentTime;seq.forEach(function(f,k){var o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;o.connect(g);g.connect(ac.destination);var s=t+k*0.09;g.gain.setValueAtTime(0.0001,s);g.gain.exponentialRampToValueAtTime(0.12,s+0.02);g.gain.exponentialRampToValueAtTime(0.0001,s+0.16);o.start(s);o.stop(s+0.18)})}catch(e){}}
 
 /* ---------- App ---------- */
-var MAP=null,SCREEN="course",HP=5,notifOn=true,dailyGoal=50,PROF={},ratingLoaded=false,pendingRankUp=null;
+var MAP=null,SCREEN="course",SCREEN_HISTORY=[],NAVBACK_SCREEN_CHANGE=false,HP=5,notifOn=true,dailyGoal=50,PROF={},ratingLoaded=false,pendingRankUp=null;
 /* Kunlik reja sozlamalari serverdan (map javobidagi `study_setup`).
    Ilgari `dailyGoal` faqat shu yerdagi o'zgaruvchi edi va ilova qayta
    ochilganda foydalanuvchi tanlovi yo'qolardi. */
@@ -2673,8 +2673,9 @@ var App={
     syncCourseTelegramChrome();
     if(s==="mashq"&&isHsk30Level((MAP&&MAP.level)||getSelectedLevel())){
       var status=COURSE_TRACK_STATE,access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
-      if(!access||!access.allowed||Date.now()-COURSE_TRACK_CHECKED_AT>3000){
-        /* Refresh cached denial after checkout, but never bypass server authorization. */
+      if(!access||!access.allowed){
+        /* Refresh cached denials after checkout. Actual practice still passes
+           its server daily gate, so stale display state cannot grant access. */
         if(MASHQ_ACCESS_PENDING)return;
         MASHQ_ACCESS_PENDING=courseTrackStatus(true).then(function(loaded){
           var refreshed=loaded&&loaded.tracks&&loaded.tracks.hsk30&&loaded.tracks.hsk30.access;
@@ -2687,7 +2688,12 @@ var App={
         return;
       }
     }
-    var previous=SCREEN;SCREEN=s;document.querySelectorAll(".scr").forEach(function(e){e.classList.toggle("on",e.id==="s-"+s)});
+    var previous=SCREEN;
+    if(PWA_COURSE_HOST&&previous!==s&&!NAVBACK_SCREEN_CHANGE){
+      SCREEN_HISTORY.push(previous);
+      if(SCREEN_HISTORY.length>12)SCREEN_HISTORY.shift();
+    }
+    SCREEN=s;document.querySelectorAll(".scr").forEach(function(e){e.classList.toggle("on",e.id==="s-"+s)});
     document.querySelectorAll("#nav button").forEach(function(b){var selected=b.dataset.s===s;b.classList.toggle("on",selected);if(selected)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
     renderFloatHint(s);
     /* kurs ekrani: yo'lakcha boshidan emas, user turgan darsdan ochiladi */
@@ -2999,6 +3005,16 @@ var App={
          reklama va desktop promo'dan KEYIN, ya'ni hech biri bilan
          to'qnashmaydi. Server javob bermaguncha so'ralmaydi. */
       if(studySetupPending())setTimeout(askPendingStudySetup,700);
+      var lessonFeedback=window._pendingPwaLessonFeedback||null;
+      window._pendingPwaLessonFeedback=null;
+      if(PWA_COURSE_HOST&&lessonFeedback&&!dest&&document.visibilityState==="visible"){
+        setTimeout(function(){
+          if(SCREEN==="course"&&document.visibilityState==="visible"&&
+             !document.querySelector("#flow.on,#sheet.on,#paywall.on,#resourceov.on")&&
+             window.HskPwaFeedback&&typeof HskPwaFeedback.open==="function")
+            HskPwaFeedback.open(lessonFeedback);
+        },900);
+      }
     };
     /* Bepul userga dars yakuni reklamasi — bayram/streak/reyting ekranlaridan
        KEYIN, xaritaga qaytishdan oldin. Reklama yo'q yoki yuklanmasa jim o'tadi. */
@@ -3111,10 +3127,10 @@ var App={
   toggleTourVoice:function(){TOURV=!TOURV;if(!TOURV){stopTourAudio()}tourRender(!TOURV)},
   openDict:function(){RESOURCE.open("dict")},
   openPhrases:function(){RESOURCE.open("phrases")},
-  openRecog:function(){RECOG.open()},
-  openPron:function(){PRON.open()},
-  openTest:function(){if(isHsk30Level((MAP&&MAP.level)||getSelectedLevel())){showHsk30TestSoon();return}TEST.open()},
-  openMistakes:function(){MIST.open()},
+  openRecog:function(){if(PWA_COURSE_HOST){RESOURCE.openPractice("/course_v3_recognition.html?lang="+encodeURIComponent(LANG)+"&level="+encodeURIComponent((MAP&&MAP.level)||getSelectedLevel()));return}RECOG.open()},
+  openPron:function(){if(PWA_COURSE_HOST){RESOURCE.openPractice("/course_v3_pronunciation.html?lang="+encodeURIComponent(LANG)+"&level="+encodeURIComponent((MAP&&MAP.level)||getSelectedLevel()));return}PRON.open()},
+  openTest:function(){if(isHsk30Level((MAP&&MAP.level)||getSelectedLevel())){showHsk30TestSoon();return}if(PWA_COURSE_HOST){RESOURCE.openPractice("/course_v3_test.html?lang="+encodeURIComponent(LANG)+"&level="+encodeURIComponent((MAP&&MAP.level)||getSelectedLevel()));return}TEST.open()},
+  openMistakes:function(){if(PWA_COURSE_HOST){RESOURCE.openPractice("/course_v3_mistakes.html?lang="+encodeURIComponent(LANG)+"&level="+encodeURIComponent((MAP&&MAP.level)||getSelectedLevel()));return}MIST.open()},
   openHelp:function(){var t=T();var c=(MAP&&MAP.admin_contact)||"";
     var btn=c?'<button class="scta" onclick="App.contactAdmin()"><i class="ti ti-brand-telegram"></i> '+esc(courseMessage("helpBtn",t.helpBtn))+'</button>'
       :'<div class="tr" style="margin-top:6px;color:var(--ink2)">'+esc(courseMessage("helpNoContact",t.helpNoContact))+'</div>';
@@ -3129,6 +3145,8 @@ var App={
      klient hech qachon ixtiyoriy manzil ochmaydi. */
   openSettings:function(){
     SETTINGS_SHEET=true;App.openSheet(settingsSheetHtml());
+    if(PWA_COURSE_HOST&&window.HskPwaInbox&&typeof HskPwaInbox.refreshPushStatus==="function")
+      HskPwaInbox.refreshPushStatus().catch(function(){});
     if(!COURSE_TRACK_STATE){
       courseTrackStatus(false).then(function(){if(SETTINGS_SHEET)App.openSheet(settingsSheetHtml())}).catch(function(){});
     }
@@ -5903,6 +5921,10 @@ function loadLevel(lv){
 }
 function applyLessonDone(cur,d){
   var rankBefore=Number(d&&d.rank_before)||0;
+  if(PWA_COURSE_HOST&&d&&d.ok===true){
+    window._pendingPwaLessonFeedback={confirmed:true,lessonId:Number(cur&&cur.n)||0,
+      level:String((MAP&&MAP.level)||getSelectedLevel())};
+  }
   clearLessonResume((MAP&&MAP.level)||"hsk1",cur&&cur.n);
   clearLessonMastery((MAP&&MAP.level)||"hsk1",cur&&cur.n);
   var al=allLessons();
@@ -5964,7 +5986,7 @@ function flowDone(){
   flowProg();$("#f-cta").style.display="none";hideBar();setWriteBtn("");
   var cur=typeof Flow.lessonIdx==="number"?allLessons()[Flow.lessonIdx]:allLessons().find(function(l){return l.status==="current"});
   if(!cur){App.showLevelUp("lesson");return}
-  if(!INIT_DATA){applyLessonDone(cur,null);return}
+  if(!INIT_DATA&&!PWA_COURSE_HOST){applyLessonDone(cur,null);return}
   var doneIdx=Flow.lessonIdx;
   _apiPost("/api/v3/lesson/complete",{lesson_id:cur.n,level:MAP.level||"hsk1",lang:LANG,session_id:COURSE_SESSION_ID,completion_proof:LESSON_COMPLETION_PROOF,mistakes:(Flow.mistakes||[]).slice(0,50)})
     .then(function(r){return r.json().then(function(d){d._status=r.status;return d})})
@@ -7067,6 +7089,12 @@ function pwaLogoutSettingsRowHtml(){
   return '<button class="srow pwa-logout-row" type="button" onclick="App.logoutPwa()"><i class="ti ti-logout"></i> '
     +esc(commonMessage("action.logout",""))+'</button>';
 }
+function pwaPushSettingsRowHtml(){
+  if(!PWA_COURSE_HOST)return "";
+  return '<button class="srow pwa-push-settings-row" type="button" onclick="window.HskPwaInbox&&window.HskPwaInbox.openPushSettings()">'
+    +'<i class="ti ti-device-mobile-notifications"></i> '+esc(courseMessage("pwaPush.title","iPhone push notifications"))
+    +'<span class="sv" id="pwa-push-settings-status">'+esc(courseMessage("pwaPush.off","Off"))+' <i class="ti ti-chevron-right"></i></span></button>';
+}
 function settingsSheetHtml(){
   var t=T(),p=pl();
   return '<div class="shead"><div class="tr" style="font-size:16px;color:var(--ink)">'+esc(p.settings)+'</div></div>'
@@ -7075,6 +7103,7 @@ function settingsSheetHtml(){
     +courseVersionSettingsRowHtml()
     +'<button class="srow" onclick="App.notifToggle()"><i class="ti ti-bell"></i> '+courseMessage("notif",t.notif)+'<span class="toggle '+(notifOn?"on":"")+'"></span></button>'
     +(notifOn?'<div class="srow-note">'+notifTimesHtml()+'</div>':'')
+    +pwaPushSettingsRowHtml()
     +'<button class="srow" onclick="App.goalPicker()"><i class="ti ti-target"></i> '+p.goalSet+'<span class="sv">'+dailyGoal+' XP <i class="ti ti-chevron-right"></i></span></button>'
     +signInMethodsRowsHtml()
     +pwaLogoutSettingsRowHtml()
@@ -7205,7 +7234,6 @@ function renderProfile(){
   var nickname=esc(PROF.name||courseMessage("you",t.you));
   $("#s-profile").innerHTML='<div class="htop profile-head"><h1 class="profile-title">'+esc(courseMessage("nav.profile",LANG==="ru"?"Профиль":LANG==="tj"?"Профил":"Profil"))+'</h1><div class="profile-head-actions">'
     +(PWA_COURSE_HOST?'<button class="pwa-notices-button" type="button" aria-label="'+esc(commonMessage("desktopA11y.notifications",""))+'" onclick="window.HskPwaInbox&&window.HskPwaInbox.open()"><i class="ti ti-bell" aria-hidden="true"></i></button>':'')
-    +(PWA_COURSE_HOST?'<button class="pwa-feedback-button" type="button" aria-label="'+esc(commonMessage("bot.releaseFeedback.commentButton",""))+'" onclick="window.HskPwaFeedback&&window.HskPwaFeedback.open()"><i class="ti ti-message-circle" aria-hidden="true"></i></button>':'')
     +'<button class="profile-settings" type="button" aria-label="'+esc(p.settings)+'" onclick="App.openSettings()"><i class="ti ti-settings" aria-hidden="true"></i></button></div></div>'
     +'<div class="phero"><div class="pav'+(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han")+'" onclick="App.avatarEdit()">'+(PROF.avatar||"阿")+myAvatarImgHtml()+'<span class="ed"><i class="ti ti-pencil"></i></span></div>'
     +'<div class="profile-hero-content"><div class="profile-identity-row"><strong class="profile-display-name">'+nickname+'</strong><span class="profile-access-badge'+(paid||trialActive?' pro':'')+'">'+(paid?'<i class="ti ti-crown"></i> Pro':trialActive?'<i class="ti ti-crown"></i> '+esc(c.trial):esc(c.free))+'</span></div>'
@@ -7394,7 +7422,7 @@ var RESOURCE=(function(){
       // Preserve horizontal scrolling of dictionary filters and phrase categories.
       if(target&&target.closest&&target.closest(".filters,.filter-row"))return;
       var t=ev.touches[0];
-      if(t.clientX>NavBack.EDGE)return;
+      if(!PWA_COURSE_HOST&&t.clientX>NavBack.EDGE)return;
       gesture={x:t.clientX,y:t.clientY,
         sx:Number.isFinite(t.screenX)?t.screenX:t.clientX,
         sy:Number.isFinite(t.screenY)?t.screenY:t.clientY};
@@ -7501,7 +7529,7 @@ var RESOURCE=(function(){
   }
   function openPractice(src){
     // Keep the established exercise gates and its return path unchanged.
-    var allowed=["/course_v3_pronunciation.html","/course_v3_recognition.html","/course_v3_memorize.html"];
+    var allowed=["/course_v3_pronunciation.html","/course_v3_recognition.html","/course_v3_memorize.html","/course_v3_test.html","/course_v3_mistakes.html"];
     var path=String(src||"").split("?")[0];
     if(allowed.indexOf(path)<0)return;
     if(PWA_COURSE_HOST){
@@ -7509,7 +7537,9 @@ var RESOURCE=(function(){
       var safePaths={
         "/course_v3_recognition.html":"/iphone-pwa/practice/recognition",
         "/course_v3_memorize.html":"/iphone-pwa/practice/memorize",
-        "/course_v3_pronunciation.html":"/iphone-pwa/practice/pronunciation"
+        "/course_v3_pronunciation.html":"/iphone-pwa/practice/pronunciation",
+        "/course_v3_test.html":"/iphone-pwa/practice/test",
+        "/course_v3_mistakes.html":"/iphone-pwa/practice/mistakes"
       };
       if(!safePaths[path]){
         toast(courseMessage("courseLoadError.title",LANG==="ru"?"Курс не загрузился":LANG==="tj"?"Курс бор нашуд":"Kurs yuklanmadi"),2600);
@@ -9189,8 +9219,8 @@ function flushPendingCenterAd(){
    mantig'i yaratilmaydi: har bir qatlam o'zining MAVJUD yopish funksiyasini
    ishlatadi, shuning uchun `×` tugmasi bilan swipe bir xil natija beradi. */
 var NavBack={
-  EDGE:24,   /* faqat ekran chap chetidagi shu zonadan boshlangan swipe */
-  MIN:88,    /* shu masofadan keyin qaytish bajariladi (70-100px talabi) */
+  EDGE:24,   /* Telegram Mini App keeps its existing left-edge gesture zone. */
+  MIN:88,    /* The browser PWA uses a shorter, position-aware horizontal threshold. */
   /* Qatlamlar ustkisidan boshlab tekshiriladi. */
   LAYERS:[
     {id:"tour",    close:function(){App.tourEnd()}},
@@ -9225,11 +9255,15 @@ var NavBack={
     var l=NavBack.top();
     if(l){try{l.close()}catch(e){}return true}
     if(SCREEN!=="course"){
-      try{App.show("course")}catch(e){return false}
+      var destination=PWA_COURSE_HOST?(SCREEN_HISTORY.pop()||"course"):"course";
+      if(destination===SCREEN)destination="course";
+      NAVBACK_SCREEN_CHANGE=true;
+      try{App.show(destination)}catch(e){NAVBACK_SCREEN_CHANGE=false;return false}
+      NAVBACK_SCREEN_CHANGE=false;
       /* Oldingi sahifa chapdan yengil kirib keladi (jonli peek emas —
          tab ekranlari `display` bilan almashadi, ularni gesture paytida
          bir vaqtda ko'rsatish document scroll holatini buzardi). */
-      var c=$("#s-course");
+      var c=$("#s-"+destination);
       if(c&&!NavBack._reduced()){
         c.classList.add("nb-drag");c.style.transform="translateX(-22%)";c.style.opacity=".6";
         requestAnimationFrame(function(){requestAnimationFrame(function(){
@@ -9288,10 +9322,12 @@ var NavBack={
   start:function(ev){
     if(NavBack._s||ev.touches.length!==1)return;
     var t=ev.touches[0];
-    if(t.clientX>NavBack.EDGE)return;              /* faqat chap chet */
+    if(!PWA_COURSE_HOST&&t.clientX>NavBack.EDGE)return;
     if(!NavBack.canGoBack())return;
     var el=NavBack.target();if(!el)return;
-    NavBack._s={x:t.clientX,y:t.clientY,el:el,live:false,dead:false,w:window.innerWidth||360};
+    var width=window.innerWidth||360;
+    NavBack._s={x:t.clientX,y:t.clientY,el:el,live:false,dead:false,w:width,
+      min:PWA_COURSE_HOST?Math.min(56,Math.max(32,width-t.clientX-8)):NavBack.MIN};
   },
   move:function(ev){
     var s=NavBack._s;if(!s||s.dead)return;
@@ -9300,8 +9336,13 @@ var NavBack={
     if(!s.live){
       /* Yo'nalish hal bo'lguncha kutamiz: vertikal harakat bo'lsa gesture
          bekor qilinadi va sahifa odatdagidek scroll bo'ladi. */
-      if(Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>8){s.dead=true;return}
-      if(dx<10)return;
+      if(!PWA_COURSE_HOST){
+        if(Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>8){s.dead=true;return}
+        if(dx<10)return;
+      }else{
+        if(Math.abs(dy)>8&&Math.abs(dy)>=Math.abs(dx)*1.15){s.dead=true;return}
+        if(dx<12||dx<Math.abs(dy)*1.25)return;
+      }
       s.live=true;s.el.classList.add("nb-drag");
       RESOURCE.swipePreview(true,s.el);
       s.scrim=document.createElement("div");s.scrim.className="nb-scrim";
@@ -9317,7 +9358,7 @@ var NavBack={
   end:function(){
     var s=NavBack._s;if(!s)return;
     if(!s.live||s.dead){NavBack._s=null;return}
-    var done=(s.dx||0)>=NavBack.MIN;
+    var done=(s.dx||0)>=s.min;
     var el=s.el,scrim=s.scrim;
     el.classList.remove("nb-drag");el.classList.add("nb-snap");
     el.style.transform=done?"translateX("+s.w+"px)":"";

@@ -18,8 +18,7 @@ html.hsk-pwa-browser .profile-quick-links {
   }
 }
 html.hsk-pwa-browser .profile-head .profile-settings,
-html.hsk-pwa-browser .profile-head .pwa-notices-button,
-html.hsk-pwa-browser .profile-head .pwa-feedback-button {
+html.hsk-pwa-browser .profile-head .pwa-notices-button {
   flex:0 0 44px;
   border-radius:16px;
 }
@@ -105,16 +104,17 @@ html.hsk-pwa-browser #paywall .si {
   color:var(--hsk-ink-secondary);font:650 13px var(--hsk-font-ui)}
 .hsk-pwa-notice-tabs button[aria-selected="true"]{background:rgba(255,255,255,.9);
   color:var(--hsk-cinnabar-ink);box-shadow:0 2px 8px rgba(33,29,23,.09)}
-.hsk-pwa-push-control{display:flex;align-items:center;justify-content:space-between;gap:10px;
-  margin:0 1px 10px;padding:7px 9px;border:1px solid var(--hsk-divider);border-radius:15px;
-  background:rgba(255,255,255,.52)}
-.hsk-pwa-push-control p{flex:1 1 auto;min-width:0;margin:0;color:var(--hsk-ink-secondary);
-  font-size:12px;line-height:1.35;overflow-wrap:anywhere}
-.hsk-pwa-push-control p:empty{display:none}
-.hsk-pwa-push-control button{flex:0 0 auto;min-height:44px;max-width:58%;padding:0 13px;
-  border:1px solid rgba(178,53,48,.2);border-radius:12px;background:rgba(255,255,255,.86);
-  color:var(--hsk-cinnabar-ink);font:700 12px var(--hsk-font-ui);overflow-wrap:anywhere}
-.hsk-pwa-push-control button:disabled{opacity:.58;cursor:wait}
+.hsk-pwa-push-view{margin:8px 2px 4px;padding:18px 14px 12px;border:1px solid var(--hsk-divider);
+  border-radius:20px;background:rgba(255,255,255,.58);text-align:center}
+.hsk-pwa-push-view p{margin:0 auto 10px;max-width:300px;color:var(--hsk-ink-secondary);
+  font-size:13px;line-height:1.45;overflow-wrap:anywhere}
+.hsk-pwa-push-view #hsk-pwa-push-status:empty{display:none}
+.hsk-pwa-push-view button{display:block;width:100%;min-height:48px;margin-top:8px;padding:8px 13px;
+  border:1px solid rgba(178,53,48,.2);border-radius:15px;background:rgba(255,255,255,.88);
+  color:var(--hsk-cinnabar-ink);font:700 13px var(--hsk-font-ui);overflow-wrap:anywhere}
+.hsk-pwa-push-view #hsk-pwa-push-action{border:0;background:var(--hsk-cinnabar);
+  color:var(--hsk-on-cinnabar);box-shadow:0 5px 13px rgba(178,53,48,.18)}
+.hsk-pwa-push-view button:disabled{opacity:.58;cursor:wait}
 .hsk-pwa-notice-list{overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
   padding:2px 2px 6px;min-height:90px}
 .hsk-pwa-notice-row{display:block;width:100%;text-align:left;border:1px solid var(--hsk-divider);
@@ -123,6 +123,10 @@ html.hsk-pwa-browser #paywall .si {
 .hsk-pwa-notice-row strong{display:block;font-size:14px;line-height:1.35;font-weight:750}
 .hsk-pwa-notice-row small{display:block;max-width:100%;font-size:12px;line-height:1.5;
   margin-top:4px;color:var(--hsk-ink-secondary);white-space:normal;overflow-wrap:anywhere}
+.hsk-pwa-notice-row.is-approved{border-color:rgba(47,160,106,.32);background:rgba(227,244,234,.74)}
+.hsk-pwa-notice-row.is-approved strong{color:var(--hsk-jade-ink)}
+.hsk-pwa-notice-row.is-rejected{border-color:rgba(178,53,48,.32);background:rgba(253,235,231,.76)}
+.hsk-pwa-notice-row.is-rejected strong{color:var(--hsk-cinnabar-ink)}
 .hsk-pwa-notice-row:disabled{cursor:default}
 .hsk-pwa-notice-empty{padding:30px 10px;text-align:center;color:var(--hsk-ink-secondary);font-size:18px}
 .hsk-pwa-notice-urgent{text-align:center;align-items:center;padding:11px 10px 8px}
@@ -144,13 +148,6 @@ html.hsk-pwa-browser #paywall .si {
 }
 @media(prefers-reduced-motion:reduce){#hsk-pwa-notice-root *{animation:none!important;transition:none!important}}
 
-/* Same Liquid Glass family for source-backed ordinary/release feedback. */
-html.hsk-pwa-browser .pwa-feedback-button{min-width:44px;min-height:44px;display:grid;
-  place-items:center;border:1px solid var(--hsk-divider);border-radius:16px;
-  background:rgba(255,255,255,.64);color:var(--hsk-ink);
-  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
-  box-shadow:inset 0 1px rgba(255,255,255,.9),0 3px 10px rgba(33,29,23,.05)}
-html.hsk-pwa-browser .pwa-feedback-button i{font-size:21px}
 #hsk-pwa-feedback-root[hidden],#hsk-pwa-feedback-root [hidden]{display:none!important}
 #hsk-pwa-feedback-root{position:fixed;z-index:19001;inset:0;display:grid;place-items:center;
   padding:calc(20px + env(safe-area-inset-top,0px)) 16px
@@ -170,6 +167,8 @@ html.hsk-pwa-browser .pwa-feedback-button i{font-size:21px}
 .hsk-pwa-feedback-head{display:flex;align-items:center;justify-content:space-between;
   gap:10px;margin-bottom:15px}
 .hsk-pwa-feedback-title{font-size:20px;line-height:1.22;font-weight:750;margin:0;overflow-wrap:anywhere}
+.hsk-pwa-feedback-context{margin:-5px 0 13px;color:var(--hsk-ink-secondary);
+  font-size:14px;line-height:1.45;text-align:center}
 .hsk-pwa-feedback-close{width:44px;height:44px;flex:0 0 44px;border:1px solid var(--hsk-divider);
   border-radius:50%;background:rgba(255,255,255,.73);font-size:23px;color:var(--hsk-ink)}
 .hsk-pwa-feedback-field{display:block;margin:0 0 12px}
@@ -195,7 +194,7 @@ html.hsk-pwa-browser .pwa-feedback-button i{font-size:21px}
   min-height:0;text-align:center;margin:8px 0}
 .hsk-pwa-feedback-status:empty{display:none}
 @media(prefers-reduced-transparency:reduce){.hsk-pwa-feedback-card,
-  html.hsk-pwa-browser .pwa-feedback-button{background:var(--hsk-paper);
+  html.hsk-pwa-browser .pwa-notices-button{background:var(--hsk-paper);
   -webkit-backdrop-filter:none;backdrop-filter:none}}
 
 /* Existing checkout's centered renewal confirmation, browser-only. The same
@@ -208,6 +207,9 @@ html.hsk-pwa-browser .renewal-backdrop {
   -webkit-backdrop-filter:blur(5px);
   backdrop-filter:blur(5px)
 }
+
+/* Browser PWA back controls stay visible when Telegram's native button is absent. */
+html.hsk-pwa-browser .hsk-native-back-duplicate{display:flex;align-items:center;justify-content:center}
 html.hsk-pwa-browser .renewal-card {
   max-width:420px;max-height:88dvh;overflow-y:auto;
   border-radius:26px;border:1px solid rgba(255,255,255,.84);

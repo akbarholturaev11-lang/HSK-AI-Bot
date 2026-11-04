@@ -154,6 +154,13 @@ class PwaFeedbackPrepare(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
 
+class PwaLessonFeedbackPrepare(BaseModel):
+    """Context for an existing feedback prompt after a server-saved lesson."""
+    model_config = ConfigDict(extra="forbid")
+    lesson_id: int
+    level: Literal["hsk1", "hsk2", "hsk3", "hsk4", "nhsk1", "nhsk2", "nhsk3"]
+
+
 class PwaReleaseFeedbackReply(BaseModel):
     model_config = ConfigDict(extra="forbid")
     campaign_id: int
@@ -1853,6 +1860,60 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
             return JSONResponse(
                 {"ok": True, "ordinary": payload}, headers=_NO_STORE,
             )
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.post("/api/v3/pwa/feedback/lesson/prepare")
+    async def pwa_prepare_lesson_feedback(request: Request):
+        """Prepare the existing learner feedback only for saved course lessons."""
+        from datetime import datetime, timezone
+        from sqlalchemy import select
+        from app.db.models.user import User
+        from app.repositories.course_progress_repo import CourseProgressRepository
+        from app.services.bot_feedback_service import BotFeedbackService
+        from app.services.user_access_state_service import UserAccessStateService
+
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                payload = await _small_json(
+                    request, PwaLessonFeedbackPrepare, max_bytes=256,
+                )
+                if not 1 <= payload.lesson_id <= 500:
+                    raise PwaAuthError("pwa_request_invalid", status_code=422)
+                learner = (await db.execute(
+                    select(User).where(User.id == actor.id).with_for_update()
+                )).scalar_one()
+                progress = await CourseProgressRepository(db).get_by_user_id(learner.id)
+                if (not progress or str(progress.level or "").lower() != payload.level
+                        or int(progress.completed_lessons_count or 0) < payload.lesson_id):
+                    raise PwaAuthError("lesson_not_completed", status_code=409)
+
+                now = datetime.now(timezone.utc)
+                service = BotFeedbackService(db)
+                feedback = None
+                if _pwa_feedback_prompt_eligible(learner, service, now):
+                    feedback = await service._get_or_create_due_feedback(learner, now)
+                    if feedback and not service._is_prompt_due(feedback, now):
+                        feedback = None
+                await db.commit()
+                ordinary = ({
+                    "feedback_id": feedback.id,
+                    "paid": UserAccessStateService.is_paid(learner),
+                    "liked_code": feedback.liked_code,
+                    "disliked_code": feedback.disliked_code,
+                    "choices": _pwa_feedback_choices(
+                        learner.language,
+                        paid=UserAccessStateService.is_paid(learner),
+                    ),
+                } if feedback else None)
+            return JSONResponse({"ok": True, "ordinary": ordinary}, headers=_NO_STORE)
         except PwaAuthError as exc:
             return _error(exc)
 

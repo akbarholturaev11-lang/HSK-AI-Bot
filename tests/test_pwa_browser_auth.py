@@ -32,6 +32,7 @@ from app.db.models.desktop import DesktopDevice, DesktopLinkRequest, DesktopSess
 from app.db.models.learner_pwa_push import LearnerPwaPushOutbox, LearnerPwaPushSubscription
 from app.db.models.account_notice_delivery import AccountNoticeDelivery
 from app.db.models.course_user_notification import CourseUserNotification
+from app.db.models.course_progress import CourseProgress
 from app.db.models.payment import Payment
 from app.db.models.smart_reminder import SmartReminderAttempt, SmartReminderConsent, SmartReminderJob, SmartReminderPreference
 from app.db.models.conversion_funnel_event import ConversionFunnelEvent
@@ -1273,6 +1274,66 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         prepared = await self.client.post(post_url, headers=headers, json={})
         self.assertEqual(prepared.status_code, 200, prepared.text)
         self.assertEqual(prepared.json()["ordinary"]["feedback_id"], feedback_id)
+
+    async def test_pwa_lesson_feedback_requires_server_saved_lesson_and_existing_eligibility(self):
+        """Course feedback cannot be opened from a client-only completion claim."""
+        from app.db.models.bot_feedback import BotFeedback
+
+        path = "/api/v3/pwa/feedback/lesson/prepare"
+        payload = {"lesson_id": 1, "level": "hsk1"}
+        self.assertEqual((await self.client.post(
+            path, headers={"Origin": ORIGIN}, json=payload,
+        )).status_code, 401)
+        state = await self.begin()
+        await self.callback(state)
+        csrf = (await self.client.get("/api/v3/pwa-auth/session")).json()["csrf"]
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf}
+        self.assertEqual((await self.client.post(
+            path, headers={**headers, "X-Telegram-Init-Data": "forged"}, json=payload,
+        )).status_code, 422)
+        self.assertEqual((await self.client.post(
+            path, headers={"Origin": "https://evil.test", "X-HSK-PWA-CSRF": csrf},
+            json=payload,
+        )).status_code, 403)
+        self.assertEqual((await self.client.post(
+            path, headers=headers, json={**payload, "user_id": 2},
+        )).status_code, 422)
+
+        async with self.sessions() as db:
+            owner = await db.get(User, 1)
+            owner.created_at = datetime.now(timezone.utc) - timedelta(days=3)
+            owner.last_active_at = datetime.now(timezone.utc)
+            db.add(CourseProgress(
+                user_id=1, level="hsk1", completed_lessons_count=0,
+            ))
+            await db.commit()
+        incomplete = await self.client.post(path, headers=headers, json=payload)
+        self.assertEqual(incomplete.status_code, 409, incomplete.text)
+        self.assertEqual(incomplete.json()["error"], "lesson_not_completed")
+
+        async with self.sessions() as db:
+            progress = await db.get(CourseProgress, 1)
+            progress.completed_lessons_count = 1
+            await db.commit()
+        wrong_level = await self.client.post(
+            path, headers=headers, json={"lesson_id": 1, "level": "hsk2"},
+        )
+        self.assertEqual(wrong_level.status_code, 409, wrong_level.text)
+        future_lesson = await self.client.post(
+            path, headers=headers, json={"lesson_id": 2, "level": "hsk1"},
+        )
+        self.assertEqual(future_lesson.status_code, 409, future_lesson.text)
+
+        prepared = await self.client.post(path, headers=headers, json=payload)
+        self.assertEqual(prepared.status_code, 200, prepared.text)
+        feedback_id = prepared.json()["ordinary"]["feedback_id"]
+        repeated = await self.client.post(path, headers=headers, json=payload)
+        self.assertEqual(repeated.json()["ordinary"]["feedback_id"], feedback_id)
+        async with self.sessions() as db:
+            rows = (await db.execute(
+                select(BotFeedback).where(BotFeedback.user_id == 1)
+            )).scalars().all()
+            self.assertEqual(len(rows), 1, "existing BotFeedback remains idempotent per learner")
 
     async def test_pwa_feedback_administrator_reply_uses_current_linked_account(self):
         """Admin reply never tries a provider-only NULL or historical TG ID."""

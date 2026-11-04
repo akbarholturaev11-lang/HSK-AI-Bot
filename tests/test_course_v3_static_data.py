@@ -513,6 +513,20 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn('onclick="App.confirmExitFlow()"', html)
         self.assertIn('onclick="closeUserProfile()"', html)
 
+    def test_pwa_navigation_keeps_screen_history_and_enables_dictionary_back_controls(self):
+        """PWA-only gestures return to the previous view; Telegram remains unchanged."""
+        course = Path("app/static/course-v3.html").read_text(encoding="utf-8")
+        dictionary = Path("app/static/hsk-lugat.html").read_text(encoding="utf-8")
+        self.assertIn('if(PWA_COURSE_HOST&&previous!==s&&!NAVBACK_SCREEN_CHANGE)', course)
+        self.assertIn('var destination=PWA_COURSE_HOST?(SCREEN_HISTORY.pop()||"course"):"course"', course)
+        self.assertIn('if(!PWA_COURSE_HOST&&t.clientX>NavBack.EDGE)return', course)
+        self.assertIn('PWA_COURSE_HOST?Math.min(56,Math.max(32,width-t.clientX-8)):NavBack.MIN', course)
+        self.assertIn('dx<12||dx<Math.abs(dy)*1.25', course)
+        self.assertIn('hsk-pwa-embedded', dictionary)
+        self.assertIn('html.hsk-embedded:not(.hsk-pwa-embedded) .hsk-native-back-duplicate', dictionary)
+        self.assertIn('html.hsk-pwa-embedded .hsk-native-back-duplicate{display:flex!important}', dictionary)
+        self.assertIn('window.parent.RESOURCE.close();return;', dictionary)
+
     def test_free_parts_end_on_a_whole_hsk_lesson_for_hsk1_and_hsk2(self):
         """Bepul chegara yarim darsda emas, to'liq HSK darsligi darsi oxirida.
 

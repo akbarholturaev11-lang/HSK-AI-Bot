@@ -30,6 +30,9 @@ def bootstrap(page, *, notices=None, account=None, release=None, ordinary=None):
     account = account if account is not None else {
         "ok": True, "notices": [
             {"id": 4, "title": "Hisob xabari", "body": "Qabul qilindi", "action": "course"},
+        ], "payment_reviews": [
+            {"payment_id": 40, "status": "approved", "plan_type": "1_month"},
+            {"payment_id": 41, "status": "rejected", "plan_type": "1_month"},
         ], "payment_action": None,
     }
     release = release or []
@@ -64,6 +67,18 @@ def bootstrap(page, *, notices=None, account=None, release=None, ordinary=None):
         elif path == "/api/v3/pwa/feedback/ordinary/prepare":
             route.fulfill(content_type="application/json", body=json.dumps({
                 "ok": True, "ordinary": None,
+            }))
+        elif path == "/api/v3/pwa/feedback/lesson/prepare":
+            route.fulfill(content_type="application/json", body=json.dumps({
+                "ok": True, "ordinary": ordinary,
+            }))
+        elif path == "/api/v3/pwa/feedback/ordinary/submit":
+            posts.append({
+                "headers": route.request.headers,
+                "body": json.loads(route.request.post_data),
+            })
+            route.fulfill(content_type="application/json", body=json.dumps({
+                "ok": True, "completed": True,
             }))
         elif path == "/api/v3/pwa/feedback/release/respond":
             posts.append({
@@ -132,6 +147,12 @@ def test_real_browser_inbox_glass_and_safe_width(width, height):
         assert page.locator("#hsk-pwa-notice-list").get_attribute("aria-labelledby") == "hsk-pwa-tab-course"
         page.locator('[data-pwa-tab="account"]').click()
         assert page.get_by_text("Hisob xabari").is_visible()
+        assert page.locator('[data-payment-status="approved"]').evaluate(
+            "node => node.classList.contains('is-approved')"
+        )
+        assert page.locator('[data-payment-status="rejected"]').evaluate(
+            "node => node.classList.contains('is-rejected')"
+        )
         page.locator(".hsk-pwa-close").click()
         assert not page.locator("#hsk-pwa-notice-root").is_visible()
         context.close()
@@ -164,28 +185,36 @@ def test_rejected_receipt_centered_with_original_locale_and_one_action():
         browser.close()
 
 
-def test_release_feedback_low_rating_requires_comment_and_csrf():
+def test_feedback_is_lesson_contextual_and_uses_csrf():
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch()
         page = browser.new_page(
             viewport={"width": 390, "height": 844},
             device_scale_factor=2, is_mobile=True, has_touch=True,
         )
-        posts = bootstrap(page, release=[{
-            "campaign_id": 19,
-            "title": "Yangi kurs versiyasi",
-            "message_text": "Yangi darslarni sinab ko'ring",
-        }])
+        ordinary = {
+            "feedback_id": 71,
+            "paid": False,
+            "choices": {
+                "liked": [{"code": "course", "label": "Kurs"}],
+                "liked_sub": {},
+                "disliked": [{"code": "price", "label": "Narx"}],
+                "disliked_detail_required": [],
+            },
+        }
+        posts = bootstrap(page, ordinary=ordinary)
         page.evaluate("window.HskPwaFeedback.open()")
+        assert not page.locator("#hsk-pwa-feedback-root").is_visible(), (
+            "feedback without a confirmed completed lesson stays closed"
+        )
+        page.evaluate("window.HskPwaFeedback.open({confirmed:true,lessonId:3,level:'hsk1'})")
         dialog = page.locator("#hsk-pwa-feedback-root .hsk-pwa-feedback-card")
         assert dialog.is_visible()
-        assert page.locator("#hsk-pwa-feedback-title").inner_text() == "Yangi kurs versiyasi"
-        page.locator(".hsk-pwa-feedback-stars button").first.click()
-        page.locator("#hsk-pwa-feedback-submit").click()
-        assert not posts, "invalid feedback must never reach POST"
-        textarea = page.locator(".hsk-pwa-feedback-field textarea")
-        assert textarea.evaluate("(node) => getComputedStyle(node).fontSize") == "16px"
-        textarea.fill("Dars yuklanishi sekin.")
+        assert "3-dars" in page.locator("#hsk-pwa-feedback-title").inner_text()
+        assert "Hozirgina tugatgan darsingiz" in page.locator("#hsk-pwa-feedback-context").inner_text()
+        fields = page.locator("#hsk-pwa-feedback-form select")
+        fields.nth(0).select_option("course")
+        fields.nth(1).select_option("price")
         page.locator("#hsk-pwa-feedback-submit").click()
         page.wait_for_function(
             "document.querySelector('#hsk-pwa-feedback-submit').hidden === true"
@@ -193,7 +222,8 @@ def test_release_feedback_low_rating_requires_comment_and_csrf():
         assert len(posts) == 1
         assert posts[0]["headers"].get("x-hsk-pwa-csrf") == "browser-csrf"
         assert posts[0]["body"] == {
-            "campaign_id": 19, "rating": 1, "comment_text": "Dars yuklanishi sekin.",
+            "feedback_id": 71, "liked_code": "course", "liked_sub_code": None,
+            "liked_other_text": None, "disliked_code": "price", "disliked_detail_text": None,
         }
         assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth + 1")
         browser.close()
@@ -215,11 +245,21 @@ def test_rejected_payment_never_interrupts_feedback():
                 "plan_type": "1_month",
                 "reviewed_at": "2026-11-03T13:00:00+00:00",
             }},
-            release=[{"campaign_id": 19, "title": "Yangi kurs", "message_text": "Sinang"}],
+            ordinary={
+                "feedback_id": 72,
+                "paid": False,
+                "choices": {
+                    "liked": [{"code": "course", "label": "Kurs"}],
+                    "liked_sub": {},
+                    "disliked": [{"code": "other", "label": "Boshqa"}],
+                    "disliked_detail_required": ["other"],
+                },
+            },
         )
-        page.evaluate("window.HskPwaFeedback.open()")
+        page.evaluate("window.HskPwaFeedback.open({confirmed:true,lessonId:3,level:'hsk1'})")
         card = page.locator("#hsk-pwa-feedback-root .hsk-pwa-feedback-card")
         assert card.is_visible()
+        page.locator("#hsk-pwa-feedback-form select").nth(1).select_option("other")
         page.locator(".hsk-pwa-feedback-field textarea").focus()
         page.evaluate("window.dispatchEvent(new Event('load'))")
         page.wait_for_timeout(2300)

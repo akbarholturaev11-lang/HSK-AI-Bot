@@ -16,9 +16,11 @@
       '<div class="hsk-pwa-notice-tabs" role="tablist">' +
       '<button type="button" id="hsk-pwa-tab-course" role="tab" data-pwa-tab="course" aria-controls="hsk-pwa-notice-list"></button>' +
       '<button type="button" id="hsk-pwa-tab-account" role="tab" data-pwa-tab="account" aria-controls="hsk-pwa-notice-list"></button></div>' +
-      '<div class="hsk-pwa-push-control" id="hsk-pwa-push-control" hidden>' +
+      '<div class="hsk-pwa-push-view" id="hsk-pwa-push-view" hidden>' +
         '<p id="hsk-pwa-push-status" role="status" aria-live="polite"></p>' +
-        '<button type="button" id="hsk-pwa-push-action"></button></div>' +
+        '<p id="hsk-pwa-push-body"></p>' +
+        '<button type="button" id="hsk-pwa-push-action"></button>' +
+        '<button type="button" id="hsk-pwa-push-later"></button></div>' +
       '<div class="hsk-pwa-notice-list" id="hsk-pwa-notice-list" role="tabpanel" tabindex="0"></div>' +
       '<div class="hsk-pwa-notice-urgent" hidden>' +
         '<div class="hsk-pwa-notice-icon" aria-hidden="true"><i class="ti ti-credit-card-off"></i></div>' +
@@ -37,9 +39,11 @@
   var tabs = overlay.querySelector(".hsk-pwa-notice-tabs");
   var heading = overlay.querySelector("#hsk-pwa-notice-title");
   var urgent = overlay.querySelector(".hsk-pwa-notice-urgent");
-  var pushControl = overlay.querySelector("#hsk-pwa-push-control");
+  var pushControl = overlay.querySelector("#hsk-pwa-push-view");
   var pushStatus = overlay.querySelector("#hsk-pwa-push-status");
+  var pushBody = overlay.querySelector("#hsk-pwa-push-body");
   var pushButton = overlay.querySelector("#hsk-pwa-push-action");
+  var pushLater = overlay.querySelector("#hsk-pwa-push-later");
   var activeTab = "course";
   var activeMode = null;
   var owner = null;
@@ -54,6 +58,9 @@
   var displayedPaymentId = null;
   var pushState = null;
   var pushBusy = false;
+  var pushReturnMode = "close";
+  var pushRegistrationPromise = null;
+  var firstPushPromptRetries = 0;
 
   // These strings are already authored in the shared UZ/RU/TJ catalogs.
   // Do not create a second per-page translation dictionary.
@@ -74,6 +81,11 @@
       retry: courseLabel("subscriptionPage.retryPayment"),
       pushEnable: courseLabel("pwaPush.enable"),
       pushDisable: courseLabel("pwaPush.disable"),
+      pushTitle: courseLabel("pwaPush.title"),
+      pushBody: courseLabel("pwaPush.promptBody"),
+      pushLater: courseLabel("pwaPush.later"),
+      pushOff: courseLabel("pwaPush.off"),
+      pushInstallRequired: courseLabel("pwaPush.installRequired"),
       pushEnabled: courseLabel("pwaPush.enabled"),
       pushBlocked: courseLabel("pwaPush.blocked"),
       pushError: courseLabel("pwaPush.error")
@@ -131,26 +143,32 @@
     overlay.hidden = false;
     var t = labels();
     var isUrgent = mode === "urgent";
+    var isPush = mode === "push";
     panel.setAttribute("aria-labelledby", isUrgent ? "hsk-pwa-urgent-title" : "hsk-pwa-notice-title");
     overlay.querySelector(".hsk-pwa-notice-head").hidden = isUrgent;
-    tabs.hidden = isUrgent;
-    list.hidden = isUrgent;
+    tabs.hidden = isUrgent || isPush;
+    list.hidden = isUrgent || isPush;
+    pushControl.hidden = !isPush;
     urgent.hidden = !isUrgent;
     if (isUrgent) {
       overlay.querySelector("#hsk-pwa-urgent-title").textContent = rejectedTitle(latestData && latestData.account && latestData.account.payment_action);
       overlay.querySelector("[data-pwa-retry]").textContent = t.retry;
       urgent.querySelector("[data-pwa-close]").textContent = t.close;
     } else {
-      heading.textContent = t.title;
+      heading.textContent = isPush ? t.pushTitle : t.title;
       overlay.querySelector(".hsk-pwa-close").setAttribute("aria-label", t.close);
     }
     panel.focus();
   }
-  function putMessage(title, body, action) {
+  function putMessage(title, body, action, paymentStatus) {
     var isAction = action === "course" || action === "subscription" ||
       action === "rating" || action === "profile";
     var row = document.createElement(isAction ? "button" : "div");
     row.className = "hsk-pwa-notice-row";
+    if (paymentStatus === "approved" || paymentStatus === "rejected") {
+      row.className += " is-" + paymentStatus;
+      row.setAttribute("data-payment-status", paymentStatus);
+    }
     if (isAction) {
       row.type = "button";
       row.addEventListener("click", function () { navigate(action); });
@@ -175,6 +193,13 @@
   }
   function render() {
     var t = labels();
+    if (activeMode === "push") {
+      heading.textContent = t.pushTitle;
+      pushBody.textContent = t.pushBody;
+      pushLater.textContent = t.pushLater;
+      paintPushControl();
+      return;
+    }
     overlay.querySelector("#hsk-pwa-tab-course").textContent = t.course;
     overlay.querySelector("#hsk-pwa-tab-account").textContent = t.account;
     ["course", "account"].forEach(function (kind) {
@@ -206,12 +231,12 @@
       var title = review.status === "rejected"
         ? (hsk30 ? labels().hsk30Rejected : labels().rejected)
         : (hsk30 ? labels().hsk30Approved : labels().approved);
-      putMessage(title, "", review.status === "rejected" ? "subscription" : "course");
+      putMessage(title, "", review.status === "rejected" ? "subscription" : "course", review.status);
     });
     var activePayment = activeTab === "account" && latestData.account.payment_action;
     if (activePayment && activePayment.status === "rejected" &&
         !reviews.some(function (review) { return Number(review.payment_id) === Number(activePayment.payment_id); })) {
-      putMessage(rejectedTitle(activePayment), "", "subscription");
+      putMessage(rejectedTitle(activePayment), "", "subscription", "rejected");
     }
     (Array.isArray(items) ? items : []).slice(0, 20).forEach(function (item) {
       if (item && typeof item === "object") putMessage(item.title, item.body, item.action);
@@ -260,33 +285,65 @@
     return isStandalonePwa() && !!window.navigator &&
       window.navigator.vendor === "Apple Computer, Inc.";
   }
-  function paintPushControl() {
-    var supported = isAppleStandalonePwa() && window.isSecureContext &&
+  function pushSupported() {
+    return isAppleStandalonePwa() && window.isSecureContext &&
       window.navigator && "serviceWorker" in window.navigator &&
       window.PushManager && window.Notification;
-    if (!supported || !pushState || !pushState.enabled) {
-      pushControl.hidden = true;
-      return;
-    }
-    pushControl.hidden = false;
-    pushButton.disabled = pushBusy;
+  }
+  function updateSettingsPushStatus() {
+    var node = document.getElementById("pwa-push-settings-status");
+    if (!node) return;
     var t = labels();
-    if (!pushState.subscribed && Notification.permission === "denied") {
-      pushStatus.textContent = t.pushBlocked;
-      pushButton.hidden = true;
-      return;
+    var value = !pushSupported() ? t.pushInstallRequired
+      : !pushState || !pushState.enabled ? t.pushOff
+        : Notification.permission === "denied" ? t.pushBlocked
+          : pushState.subscribed ? t.pushEnabled : t.pushOff;
+    node.textContent = value;
+  }
+  function paintPushControl() {
+    var t = labels();
+    var supported = pushSupported();
+    var enabled = !!(pushState && pushState.enabled);
+    var denied = supported && Notification.permission === "denied";
+    var subscribed = !!(pushState && pushState.subscribed);
+    pushControl.hidden = activeMode !== "push";
+    pushStatus.textContent = !supported ? t.pushInstallRequired
+      : !enabled ? t.pushOff : denied && !subscribed ? t.pushBlocked
+        : subscribed ? t.pushEnabled : "";
+    pushButton.hidden = !supported || !enabled || (denied && !subscribed);
+    pushButton.disabled = pushBusy;
+    pushButton.textContent = subscribed ? t.pushDisable : t.pushEnable;
+    pushLater.hidden = false;
+    updateSettingsPushStatus();
+  }
+  async function preparePushRegistration() {
+    if (!pushRegistrationPromise) {
+      pushRegistrationPromise = (async function () {
+        var registration = await navigator.serviceWorker.getRegistration("/iphone-pwa/");
+        if (!registration) registration = await navigator.serviceWorker.register(
+          "/iphone-pwa/sw.js", {scope:"/iphone-pwa/"}
+        );
+        await navigator.serviceWorker.ready;
+        return registration;
+      }()).catch(function (error) {
+        pushRegistrationPromise = null;
+        throw error;
+      });
     }
-    pushButton.hidden = false;
-    pushStatus.textContent = pushState.subscribed ? t.pushEnabled : "";
-    pushButton.textContent = pushState.subscribed ? t.pushDisable : t.pushEnable;
+    return pushRegistrationPromise;
   }
   async function refreshPushStatus() {
-    if (!isAppleStandalonePwa() || !window.isSecureContext || !window.navigator ||
-        !("serviceWorker" in window.navigator) || !window.PushManager || !window.Notification) {
-      pushControl.hidden = true;
+    if (!pushSupported()) {
+      pushState = {enabled:false,subscribed:false,unsupported:true};
+      paintPushControl();
       return;
     }
     var actor = await pwaCourseActor();
+    var verifiedOwner = actorId(actor);
+    if (!verifiedOwner || (owner && owner !== verifiedOwner)) {
+      close(); location.replace("/iphone-pwa"); throw new Error("pwa_actor_changed");
+    }
+    owner = verifiedOwner;
     var response = await fetch("/api/v3/pwa/push/status", {
       credentials: "same-origin", cache: "no-store", redirect: "error"
     });
@@ -296,6 +353,8 @@
     }
     pushState = data;
     paintPushControl();
+    if (data.enabled && !data.subscribed && Notification.permission !== "denied")
+      preparePushRegistration().catch(function () {});
   }
   function base64UrlBytes(value) {
     var padded = String(value || "").replace(/-/g, "+").replace(/_/g, "/");
@@ -323,7 +382,6 @@
       : Promise.resolve(Notification.permission);
     pushBusy = true;
     paintPushControl();
-    pushStatus.textContent = "";
     var failed = false;
     try {
       var actor = await pwaCourseActor();
@@ -345,10 +403,7 @@
           paintPushControl();
           return;
         }
-        var registration = await navigator.serviceWorker.register("/iphone-pwa/sw.js", {
-          scope: "/iphone-pwa/"
-        });
-        await navigator.serviceWorker.ready;
+        var registration = await preparePushRegistration();
         var subscription = await registration.pushManager.getSubscription();
         if (!subscription) {
           subscription = await registration.pushManager.subscribe({
@@ -365,7 +420,54 @@
       pushBusy = false;
       paintPushControl();
       if (failed) pushStatus.textContent = labels().pushError;
+      if (activeMode === "push") render();
     }
+  }
+  function needsPushConsent() {
+    return pushSupported() && pushState && pushState.enabled &&
+      (!pushState.subscribed || Notification.permission !== "granted");
+  }
+  function firstPushPromptKey() {
+    return "hskai:pwa:push-prompt-seen:v1:" + String(owner || "");
+  }
+  function markFirstPushPromptSeen() {
+    try { if (owner) localStorage.setItem(firstPushPromptKey(), "1"); } catch (_) {}
+  }
+  function openPushPrompt(returnMode) {
+    markFirstPushPromptSeen();
+    pushReturnMode = returnMode === "inbox" ? "inbox" : "close";
+    openMode("push");
+    render();
+  }
+  async function openPushSettings() {
+    urgentPending = null;
+    ++checkGeneration;
+    pushReturnMode = "close";
+    openMode("push");
+    render();
+    try { await refreshPushStatus(); }
+    catch (_) { pushStatus.textContent = labels().pushError; }
+    if (!overlay.hidden && activeMode === "push") render();
+  }
+  function presentFirstPushPromptWhenReady() {
+    var seen = false;
+    try { seen = localStorage.getItem(firstPushPromptKey()) === "1"; } catch (_) {}
+    if (seen || !needsPushConsent()) return;
+    if (!canInterrupt()) {
+      if (firstPushPromptRetries++ < 20)
+        window.setTimeout(presentFirstPushPromptWhenReady, 1000);
+      return;
+    }
+    openPushPrompt("close");
+  }
+  async function maybeShowFirstPushPrompt() {
+    if (!owner) return;
+    var seen = false;
+    try { seen = localStorage.getItem(firstPushPromptKey()) === "1"; } catch (_) {}
+    if (seen) return;
+    try { await refreshPushStatus(); } catch (_) { return; }
+    firstPushPromptRetries = 0;
+    presentFirstPushPromptWhenReady();
   }
   async function open(fromPush) {
     // If the learner intentionally opens the inbox, never reopen its alert
@@ -376,14 +478,19 @@
     latestData = null;
     openMode("inbox");
     render();
-    refreshPushStatus().catch(function () { pushControl.hidden = true; });
     try {
-      await fetchData();
+      var results = await Promise.all([
+        fetchData().then(function (data) { return {data:data}; }, function (error) { return {error:error}; }),
+        refreshPushStatus().then(function () { return {push:true}; }, function (error) { return {pushError:error}; })
+      ]);
+      if (results[0].error) throw results[0].error;
       render();
       var activePayment = latestData && latestData.account && latestData.account.payment_action;
       if (fromPush && activePayment && activePayment.status === "rejected" &&
           owner && !wasDismissed(activePayment.payment_id)) {
         openMode("urgent");
+      } else if (needsPushConsent()) {
+        openPushPrompt("inbox");
       }
     }
     catch (_) {
@@ -394,7 +501,7 @@
   function canInterrupt() {
     if (document.visibilityState === "hidden" || !overlay.hidden) return false;
     // Never obscure lessons, other sheets, onboarding or browser restores.
-    if (document.querySelector("#flow.on,#sheet.on,#paywall.on,#secov.on,#tour.on,#upov.on,#writeov.on,#levelup.on,#hsk-pwa-feedback-root:not([hidden])")) return false;
+    if (document.querySelector("#flow.on,#sheet.on,#paywall.on,#secov.on,#resourceov.on,#tour.on,#upov.on,#writeov.on,#levelup.on,#hsk-pwa-feedback-root:not([hidden])")) return false;
     // A payment alert must never steal the iOS keyboard or a learner's input focus.
     if (document.activeElement && typeof document.activeElement.matches === "function" &&
         document.activeElement.matches('input,textarea,select,[contenteditable="true"]')) return false;
@@ -459,6 +566,10 @@
   overlay.addEventListener("click", function (ev) {
     if (ev.target.closest("[data-pwa-close]")) close();
     if (ev.target.closest("#hsk-pwa-push-action")) changePushSubscription();
+    if (ev.target.closest("#hsk-pwa-push-later")) {
+      if (pushReturnMode === "inbox") { openMode("inbox"); render(); }
+      else close();
+    }
     var tab = ev.target.closest("[data-pwa-tab]");
     if (tab && activeMode === "inbox") {
       activeTab = tab.dataset.pwaTab === "account" ? "account" : "course";
@@ -498,7 +609,8 @@
       ev.preventDefault(); first.focus();
     }
   });
-  window.HskPwaInbox = {open:open,close:close};
+  window.HskPwaInbox = {open:open,close:close,openPushSettings:openPushSettings,
+    refreshPushStatus:refreshPushStatus};
   // Only the latest actionable rejected receipt may interrupt, once per
   // verified owner + payment. Ordinary/new-content notices never pop up.
   window.addEventListener("load", function () {
@@ -515,7 +627,8 @@
       // Browsers ignore the callback result, while deterministic harnesses
       // can await the scheduled refresh instead of racing its network reads.
       if (pushRoute) return open(true);
-      return scheduleRecheck(true);
+      var check = scheduleRecheck(true);
+      return Promise.resolve(check).then(maybeShowFirstPushPrompt);
     }, 1900);
   }, {once:true});
   // Installed iOS Home Screen apps and Safari may resume from BFCache without

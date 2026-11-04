@@ -16,6 +16,7 @@
         '<h2 class="hsk-pwa-feedback-title" id="hsk-pwa-feedback-title">HSK AI</h2>' +
         '<button type="button" class="hsk-pwa-feedback-close" data-pwa-feedback-close>×</button>' +
       '</div>' +
+      '<p class="hsk-pwa-feedback-context" id="hsk-pwa-feedback-context"></p>' +
       '<div id="hsk-pwa-feedback-form"></div>' +
       '<p class="hsk-pwa-feedback-status" id="hsk-pwa-feedback-status" role="status" aria-live="polite"></p>' +
       '<button type="button" class="hsk-pwa-feedback-primary" id="hsk-pwa-feedback-submit" hidden></button>' +
@@ -25,6 +26,7 @@
   var panel = root.querySelector('[role="dialog"]');
   var form = root.querySelector("#hsk-pwa-feedback-form");
   var heading = root.querySelector("#hsk-pwa-feedback-title");
+  var contextCopy = root.querySelector("#hsk-pwa-feedback-context");
   var status = root.querySelector("#hsk-pwa-feedback-status");
   var submitButton = root.querySelector("#hsk-pwa-feedback-submit");
   var closeButton = root.querySelector(".hsk-pwa-feedback-close");
@@ -35,9 +37,16 @@
   var selected = null;
   var busy = false;
   var draft = {};
+  var activeLessonContext = null;
 
   function common(key) { return commonMessage(key, ""); }
   function course(key) { return courseMessage(key, ""); }
+  function lessonTitle(level, lessonId) {
+    var label = String(level || "").toUpperCase()
+      .replace(/^NHSK([1-3])$/, "HSK 3.0 $1")
+      .replace(/^HSK([1-4])$/, "HSK $1");
+    return course("pwaFeedback.title").replace("{level}", label).replace("{n}", String(lessonId));
+  }
   function setStatus(text) { status.textContent = text || ""; }
   function numberId(value) {
     var id = Number(value);
@@ -66,6 +75,7 @@
     busy = false;
     submitButton.disabled = false;
     draft = {};
+    activeLessonContext = null;
     if (lastFocus && lastFocus.isConnected && typeof lastFocus.focus === "function") {
       lastFocus.focus();
     }
@@ -277,15 +287,22 @@
     renderForm();
   }
 
-  async function open() {
+  async function open(context) {
     if (busy) return;
+    var lessonId = Number(context && context.lessonId);
+    var level = String(context && context.level || "");
+    if (!context || context.confirmed !== true || !Number.isSafeInteger(lessonId) ||
+        lessonId < 1 || lessonId > 500 || !/^(hsk[1-4]|nhsk[1-3])$/.test(level) ||
+        document.visibilityState === "hidden") return;
     var token = ++generation;
+    activeLessonContext = {lessonId:lessonId,level:level};
     lastFocus = document.activeElement;
     root.hidden = false;
     kind = null;
     selected = null;
     restoreDraft();
-    heading.textContent = "HSK AI";
+    heading.textContent = lessonTitle(level, lessonId);
+    contextCopy.textContent = course("pwaFeedback.body");
     form.replaceChildren();
     submitButton.hidden = true;
     submitButton.disabled = false;
@@ -294,16 +311,17 @@
     panel.focus();
     try {
       var active = function () { return token === generation && !root.hidden; };
-      var data = await request("/api/v3/pwa/feedback/available", undefined, active);
+      var data = await request("/api/v3/pwa/feedback/lesson/prepare", {
+        lesson_id:lessonId,level:level
+      }, active);
       if (token !== generation || root.hidden) return;
-      if (!data.ordinary && (!Array.isArray(data.release) || !data.release.length)) {
-        // A user-initiated feedback tap may request the original, eligible
-        // ordinary prompt. The server decides if a row can be prepared.
-        var prepared = await request("/api/v3/pwa/feedback/ordinary/prepare", {}, active);
-        if (token !== generation || root.hidden) return;
-        data.ordinary = prepared.ordinary;
+      if (!data.ordinary || !numberId(data.ordinary.feedback_id)) {
+        close();
+        return;
       }
-      showAvailable(data);
+      showAvailable({ordinary:data.ordinary,release:[]});
+      heading.textContent = lessonTitle(level, lessonId);
+      contextCopy.textContent = course("pwaFeedback.body");
     } catch (_) {
       if (token !== generation || root.hidden) return;
       form.replaceChildren();

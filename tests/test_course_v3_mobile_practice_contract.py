@@ -30,8 +30,10 @@ class CourseMobilePracticeContractTests(unittest.TestCase):
         self.assertIn("function renderStudyPreparing(){", SOURCE)
         self.assertIn('typeof window.HSKStudyPreparing.render==="function"', SOURCE)
         self.assertIn('class="hsk-study-preparing"', SOURCE)
-        # Four practice/lesson startup sites are protected by the same fallback.
-        self.assertEqual(SOURCE.count("'+renderStudyPreparing()"), 2)
+        # Both practice entry points render the fallback directly into their
+        # stage after the server-side access check succeeds.
+        self.assertIn('el("rc-body").innerHTML=renderStudyPreparing();', SOURCE)
+        self.assertIn('el("pr-stage").innerHTML=renderStudyPreparing();', SOURCE)
         self.assertEqual(SOURCE.count('=renderStudyPreparing();'), 2)
 
     def test_unauthenticated_practice_cannot_skip_the_server_gate(self):
@@ -44,7 +46,7 @@ class CourseMobilePracticeContractTests(unittest.TestCase):
         self.assertEqual(SOURCE.count('=renderStudyPreparing();'), 2)
 
     def test_hsk30_practice_rechecks_stale_denial(self):
-        start = SOURCE.index("  show:function(s){")
+        start = SOURCE.index("  show:function(s,ratingSource){")
         end = SOURCE.index("    var previous=SCREEN;", start)
         show = SOURCE[start:end]
         self.assertIn("courseTrackStatus(true)", show)

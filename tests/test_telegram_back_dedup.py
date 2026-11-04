@@ -26,14 +26,17 @@ class TelegramBackDedupTests(unittest.TestCase):
         self.assertIn('id="back-btn"', DICT)
 
     def test_only_hide_when_native_telegram_back_is_bound(self):
+        self.assertIn("html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}", COURSE)
+        self.assertIn("html.hsk-telegram-back-active .hsk-native-back-duplicate,", DICT)
         for source in (COURSE, DICT):
-            self.assertIn("html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}", source)
             self.assertIn("tg.initData", source)
             self.assertIn("BackButton.onClick", source)
             self.assertIn("classList.toggle", source)
         self.assertIn("NavBack._telegramBackBound=true", COURSE)
         self.assertIn("can&&NavBack._telegramBackBound&&tg.initData", COURSE)
         self.assertIn("nativeBackBound=true", DICT)
+        self.assertIn("html.hsk-embedded:not(.hsk-pwa-embedded) .hsk-native-back-duplicate{display:none!important}", DICT)
+        self.assertIn("html.hsk-pwa-embedded .hsk-native-back-duplicate{display:flex!important}", DICT)
 
     def test_course_checkout_preserves_safe_return_context(self):
         self.assertIn('function courseCheckoutReturnParams()', COURSE)
@@ -50,7 +53,7 @@ class TelegramBackDedupTests(unittest.TestCase):
         self.assertIn('back.onClick(returnToCourseFromCheckout)', subscription)
         self.assertIn('back.show();', subscription)
         self.assertIn('window.location.replace(courseReturnUrl())', subscription)
-        self.assertIn('return "/course-v3.html?"+query.toString()', subscription)
+        self.assertIn('return (PWA_CHECKOUT_HOST?"/iphone-pwa/course":"/course-v3.html")+"?"+query.toString()', subscription)
         self.assertIn('const tab=["course","mashq","voice","rating","profile"].includes(requestedTab)?requestedTab:"course";', subscription)
         self.assertIn('if(/^(?:hsk[1-4]|nhsk[1-3])$/.test(level||""))query.set("level",level)', subscription)
         # The wizard's own step-back button remains independent of Telegram's Back.
@@ -61,8 +64,8 @@ class TelegramBackDedupTests(unittest.TestCase):
         self.assertIn('if(reviewOpen()){closeReview();return}', COURSE)
         self.assertIn('if(SECTION&&SECTION.close)SECTION.close()', COURSE)
         self.assertIn('BLOCK:["#paywall.on","#levelup.on",".caa-ov.on",".caa-app.on"]', COURSE)
-        self.assertIn('if(!strokeModal.classList.contains(\'hidden\')) closeStrokeOrder()', DICT)
-        self.assertIn('else closeDetailView()', DICT)
+        self.assertIn("if(!strokeModal.classList.contains('hidden')){ closeStrokeOrder(); return; }", DICT)
+        self.assertIn("if(!viewDetail.classList.contains('hidden')){ closeDetailView(); return; }", DICT)
         self.assertIn('goBackToStudy()', DICT)
 
 

@@ -8,7 +8,8 @@ const source = fs.readFileSync("app/static/course_v3_data/iphone-pwa-feedback.js
 const originalCourse = fs.readFileSync("app/static/course-v3.html", "utf8");
 const css = fs.readFileSync("app/static/course_v3_data/iphone-pwa-glass.css", "utf8");
 assert(originalCourse.includes('src="/course_v3_data/iphone-pwa-feedback.js'));
-assert(originalCourse.includes('window.HskPwaFeedback&&window.HskPwaFeedback.open()'));
+assert(originalCourse.includes('HskPwaFeedback.open(lessonFeedback)'));
+assert(!originalCourse.includes('class="pwa-feedback-button"'),"profile feedback icon is removed");
 assert(css.includes("#hsk-pwa-feedback-root[hidden]"));
 assert(!source.includes("X-Telegram-Init-Data"));
 assert(!source.includes("bot.releaseFeedback.lowRatingComment"),
@@ -46,7 +47,7 @@ function makeHarness({page = "/iphone-pwa/course",ordinary = null,release = [],
   const window={};
   const routes={
     "/api/v3/pwa/feedback/available": {ok:true,ordinary,release},
-    "/api/v3/pwa/feedback/ordinary/prepare": {ok:true,ordinary:prepared},
+    "/api/v3/pwa/feedback/lesson/prepare": {ok:true,ordinary:prepared===null?ordinary:prepared},
     "/api/v3/pwa/feedback/ordinary/submit": {ok:true,completed:true},
     "/api/v3/pwa/feedback/release/respond": {ok:true,response_id:9}
   };
@@ -97,6 +98,7 @@ function makeHarness({page = "/iphone-pwa/course",ordinary = null,release = [],
 }
 function choices(items) {return items.map(([code,label])=>({code,label}));}
 async function main(){
+  const lessonContext={confirmed:true,lessonId:3,level:"hsk1"};
   const mini=makeHarness({page:"/course-v3.html"});
   assert.equal(mini.root(),undefined);
   assert.equal(mini.window.HskPwaFeedback,undefined,"Mini App retains its original UX");
@@ -106,32 +108,21 @@ async function main(){
   assert.equal(idle.requests.length,0,"no background feedback reads or writes");
 
   const none=makeHarness({prepared:null});
-  await none.window.HskPwaFeedback.open();
-  assert.equal(none.requests.filter(r=>r.url.endsWith("/ordinary/prepare")).length,1);
+  await none.window.HskPwaFeedback.open(lessonContext);
+  assert.equal(none.requests.filter(r=>r.url.endsWith("/lesson/prepare")).length,1);
+  assert.equal(none.root().hidden,true,"no eligible feedback closes silently instead of showing an empty alert");
   assert.equal(none.root().querySelector("#hsk-pwa-feedback-submit").hidden,true);
-  assert(none.status().includes("notFoundAlert"));
   assert.equal(none.requests.filter(r=>r.url.endsWith("/submit")).length,0);
+  const contextless=makeHarness({ordinary:{feedback_id:20,paid:false,choices:{}}});
+  await contextless.window.HskPwaFeedback.open();
+  assert.equal(contextless.requests.length,0,"generic/profile entry cannot trigger feedback");
+  assert(contextless.root().hidden);
 
-  const campaign=makeHarness({release:[{
+  const campaignOnly=makeHarness({release:[{
     campaign_id:31,title:"New feature",message_text:"Stored announcement"
   }]});
-  await campaign.window.HskPwaFeedback.open();
-  assert.equal(campaign.root().querySelector("#hsk-pwa-feedback-title").textContent,"New feature");
-  assert.equal(campaign.stars().length,5);
-  await campaign.send();
-  assert.equal(campaign.requests.filter(r=>r.url.endsWith("/respond")).length,0,"rating required");
-  campaign.stars()[0].listeners.click();
-  await campaign.send();
-  assert.equal(campaign.requests.filter(r=>r.url.endsWith("/respond")).length,0,"1-star rating requires comment");
-  campaign.type("bot.releaseFeedback.commentButton","An issue");
-  await campaign.send();
-  const releasePost=campaign.requests.filter(r=>r.url.endsWith("/respond"));
-  assert.equal(releasePost.length,1);
-  assert.equal(JSON.parse(releasePost[0].opt.body).rating,1);
-  assert.equal(JSON.parse(releasePost[0].opt.body).campaign_id,31);
-  assert.equal(campaign.status(),"bot.releaseFeedback.thanks");
-  await campaign.send();
-  assert.equal(campaign.requests.filter(r=>r.url.endsWith("/respond")).length,1,"success cannot resubmit");
+  await campaignOnly.window.HskPwaFeedback.open(lessonContext);
+  assert(campaignOnly.root().hidden,"unrelated feature campaign is not shown as feedback about a lesson");
 
   const ordinary=makeHarness({ordinary:{
     feedback_id:41,paid:false,choices:{
@@ -141,7 +132,11 @@ async function main(){
       disliked_detail_required:["other"]
     }
   }});
-  await ordinary.window.HskPwaFeedback.open();
+  await ordinary.window.HskPwaFeedback.open(lessonContext);
+  assert.equal(ordinary.root().querySelector("#hsk-pwa-feedback-title").textContent,"pwaFeedback.title");
+  const contextRequest=ordinary.requests.find(r=>r.url.endsWith("/lesson/prepare"));
+  assert.deepEqual(JSON.parse(contextRequest.opt.body),{lesson_id:3,level:"hsk1"},
+    "feedback request is bound to the confirmed lesson context");
   await ordinary.send();
   assert.equal(ordinary.requests.filter(r=>r.url.endsWith("/ordinary/submit")).length,0);
   ordinary.choose("👍","course");
@@ -164,7 +159,7 @@ async function main(){
       disliked_detail_required:["other"]
     }
   }});
-  await partial.window.HskPwaFeedback.open();
+  await partial.window.HskPwaFeedback.open(lessonContext);
   assert.equal(partial.selects().find(f=>f.symbol==="👍").input.value,"course");
   assert.equal(partial.selects().find(f=>f.symbol==="👎").input.value,"price");
   partial.choose("›","lessons");
@@ -179,7 +174,7 @@ async function main(){
       paid_sub_negative:choices([["other","Other"]])
     }
   }});
-  await paid.window.HskPwaFeedback.open();
+  await paid.window.HskPwaFeedback.open(lessonContext);
   paid.choose("✓","regret");
   paid.choose("›","other");
   await paid.send();
@@ -191,11 +186,11 @@ async function main(){
   assert.equal(JSON.parse(paidPost[0].opt.body).paid_sub_code,"other");
   assert.equal(JSON.parse(paidPost[0].opt.body).paid_other_text,"Slow");
 
-  const cancellation = makeHarness({release:[{
-    campaign_id:55,title:"QA",message_text:"A real delivered release"
-  }]});
-  await cancellation.window.HskPwaFeedback.open();
-  cancellation.stars()[4].listeners.click();
+  const cancellation = makeHarness({ordinary:{
+    feedback_id:45,paid:false,choices:{liked:choices([["course","Course"]]),disliked:choices([["price","Price"]])}
+  }});
+  await cancellation.window.HskPwaFeedback.open(lessonContext);
+  cancellation.choose("👍","course");cancellation.choose("👎","price");
   cancellation.pauseSession();
   const pendingSubmit = cancellation.send();
   await Promise.resolve();
@@ -203,16 +198,16 @@ async function main(){
   cancellation.window.HskPwaFeedback.close();
   cancellation.releaseSession();
   await pendingSubmit;
-  assert.equal(cancellation.requests.filter(r=>r.url.endsWith("/respond")).length,0,
+  assert.equal(cancellation.requests.filter(r=>r.url.endsWith("/ordinary/submit")).length,0,
     "a closed dialog must not submit after delayed authenticated session");
-  await cancellation.window.HskPwaFeedback.open();
+  await cancellation.window.HskPwaFeedback.open(lessonContext);
   assert.equal(cancellation.root().querySelector("#hsk-pwa-feedback-submit").disabled,false,
     "reopened dialog must not keep stale busy state");
-  cancellation.stars()[4].listeners.click();
+  cancellation.choose("👍","course");cancellation.choose("👎","price");
   await cancellation.send();
-  assert.equal(cancellation.requests.filter(r=>r.url.endsWith("/respond")).length,1,
+  assert.equal(cancellation.requests.filter(r=>r.url.endsWith("/ordinary/submit")).length,1,
     "reopened dialog should still accept its authorized feedback");
 
-  console.log("PWA feedback UI: 9 authorization/ordinary/release/validation scenarios passed");
+  console.log("PWA feedback UI: 10 contextual/authentication/ordinary scenarios passed");
 }
 main().catch(err=>{console.error(err);process.exitCode=1;});
