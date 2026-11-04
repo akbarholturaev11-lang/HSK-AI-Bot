@@ -8464,7 +8464,7 @@ var LIVE_TEXT={
   tj:{startLive:"Барои гуфтугӯи зинда пахш кунед",stopLive:"Микрофон фаъол · Барои анҷом пахш кунед",liveFallback:"Live дастрас нест. Барои гап задан микрофонро нигоҳ доред."}
 };
 Object.keys(LIVE_TEXT).forEach(function(k){Object.assign(LD[k],LIVE_TEXT[k])});var COURSE_VOICE_CATALOG=window.HSKAI_COURSE_I18N||{};Object.keys(LD).forEach(function(locale){var messages=COURSE_VOICE_CATALOG[locale]||{};Object.keys(LD[locale]).forEach(function(key){var value=messages["courseVoiceInline."+key];if(typeof value==="string"&&value)LD[locale][key]=value})});
-var L=LD[LANG]||LD.ru;
+if(PWA_COURSE_HOST)Object.keys(LD).forEach(function(locale){var copy=(COURSE_VOICE_CATALOG[locale]||{});LD[locale].micDeny=copy["pronunciation.micDeny"]||LD[locale].micDeny});var L=LD[LANG]||LD.ru;
 var tg=window.Telegram&&window.Telegram.WebApp;
 var $=function(id){return document.getElementById("vc-"+id)};
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]})}
