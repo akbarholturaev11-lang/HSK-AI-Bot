@@ -1,6 +1,8 @@
 package com.pomp.hskai.feature.profile
 
 import android.content.res.Configuration
+import androidx.activity.OnBackPressedDispatcherOwner
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
@@ -25,7 +27,6 @@ import androidx.compose.ui.test.performTextReplacement
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeDown
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.espresso.Espresso
 import androidx.test.platform.app.InstrumentationRegistry
 import com.pomp.hskai.R
 import com.pomp.hskai.core.auth.AuthProvider
@@ -53,6 +54,11 @@ class ProfileSettingsUxTest {
     @get:Rule val compose = createComposeRule()
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private fun text(id: Int) = context.getString(id)
+    private fun pressSystemBack(owner: OnBackPressedDispatcherOwner?) {
+        // Exercise Compose's registered BackHandler directly. A synthetic
+        // KEYCODE_BACK is focus-sensitive on headless CI emulators.
+        compose.runOnIdle { checkNotNull(owner).onBackPressedDispatcher.onBackPressed() }
+    }
 
     @Composable
     private fun Profile(
@@ -108,13 +114,17 @@ class ProfileSettingsUxTest {
     }
 
     @Test fun systemBackNavigatesSettingsSubpageThenReturnsToProfile() {
-        compose.setContent { PompHskAiTheme { Profile() } }
+        var backOwner: OnBackPressedDispatcherOwner? = null
+        compose.setContent {
+            backOwner = LocalOnBackPressedDispatcherOwner.current
+            PompHskAiTheme { Profile() }
+        }
         compose.onNodeWithContentDescription(text(R.string.profile_mini_settings)).performClick()
         compose.onNodeWithText(text(R.string.profile_appearance)).performClick()
         compose.onNodeWithText(text(R.string.profile_theme_dark)).assertIsDisplayed()
-        Espresso.pressBack()
+        pressSystemBack(backOwner)
         compose.onNodeWithText(text(R.string.hsk_course_lang)).assertIsDisplayed()
-        Espresso.pressBack()
+        pressSystemBack(backOwner)
         compose.onNodeWithTag("profile-settings-surface").assertDoesNotExist()
         compose.onNodeWithContentDescription(text(R.string.profile_mini_settings)).assertIsDisplayed()
     }

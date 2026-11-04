@@ -27,6 +27,18 @@ SPEC = importlib.util.spec_from_file_location(
     "smart_storage_migration", ROOT / "alembic/versions/0133_smart_reminder_storage.py")
 MIGRATION = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(MIGRATION)
+PWA_SPEC = importlib.util.spec_from_file_location(
+    "smart_pwa_channel_migration", ROOT / "alembic/versions/0148_smart_reminder_pwa_channel.py")
+PWA_MIGRATION = importlib.util.module_from_spec(PWA_SPEC)
+PWA_SPEC.loader.exec_module(PWA_MIGRATION)
+ANALYSIS_SPEC = importlib.util.spec_from_file_location(
+    "smart_analysis_migration", ROOT / "alembic/versions/0137_smart_analysis.py")
+ANALYSIS_MIGRATION = importlib.util.module_from_spec(ANALYSIS_SPEC)
+ANALYSIS_SPEC.loader.exec_module(ANALYSIS_MIGRATION)
+PWA_ANALYSIS_SPEC = importlib.util.spec_from_file_location(
+    "smart_pwa_analysis_channel_migration", ROOT / "alembic/versions/0149_smart_pwa_analysis_channel.py")
+PWA_ANALYSIS_MIGRATION = importlib.util.module_from_spec(PWA_ANALYSIS_SPEC)
+PWA_ANALYSIS_SPEC.loader.exec_module(PWA_ANALYSIS_MIGRATION)
 TABLES = {name: Base.metadata.tables[name] for name in MIGRATION.TABLES}
 PREF = SmartReminderPreference.__table__
 CONSENT = SmartReminderConsent.__table__
@@ -70,8 +82,22 @@ class StorageChecks:
 
     @staticmethod
     def migrate(connection, operation):
-        with Operations.context(MigrationContext.configure(connection)):
-            getattr(MIGRATION, operation)()
+        # Match alembic/env.py so batch constraint operations exercise the
+        # production metadata naming convention, including op.f() behavior.
+        context = MigrationContext.configure(
+            connection, opts={"target_metadata": Base.metadata},
+        )
+        with Operations.context(context):
+            if operation == "upgrade":
+                MIGRATION.upgrade()
+                ANALYSIS_MIGRATION.upgrade()
+                PWA_MIGRATION.upgrade()
+                PWA_ANALYSIS_MIGRATION.upgrade()
+            else:
+                PWA_ANALYSIS_MIGRATION.downgrade()
+                PWA_MIGRATION.downgrade()
+                ANALYSIS_MIGRATION.downgrade()
+                MIGRATION.downgrade()
 
     async def asyncTearDown(self):
         await self.engine.dispose()
@@ -159,6 +185,18 @@ class StorageChecks:
             await c.execute(insert(ATTEMPT).values(**attempt))
             await self.reject(c, ATTEMPT, self.attempt(other["id"], attempt_key=attempt["attempt_key"]))
             self.assertEqual(await c.scalar(select(ATTEMPT.c.state)), "unknown")
+
+    async def test_pwa_channel_accepts_device_bound_job_and_attempt_and_preserves_downgrade_data(self):
+        async with self.engine.begin() as c:
+            job = self.job(policy_version="smart-pwa-v1", selected_channel="pwa",
+                selected_device_id="qa-device-1", state="pending")
+            await c.execute(insert(JOB).values(**job))
+            attempt = self.attempt(job["id"], channel="pwa", device_id="qa-device-1", state="unknown")
+            await c.execute(insert(ATTEMPT).values(**attempt))
+            with self.assertRaisesRegex(RuntimeError, "Archive Smart Reminder state"):
+                await c.run_sync(self.migrate, "downgrade")
+            self.assertEqual(await c.scalar(select(func.count()).select_from(JOB)), 1)
+            self.assertEqual(await c.scalar(select(func.count()).select_from(ATTEMPT)), 1)
 
     async def test_source_key_dedupes_without_fabricating_off_action_time(self):
         async with self.engine.begin() as c:

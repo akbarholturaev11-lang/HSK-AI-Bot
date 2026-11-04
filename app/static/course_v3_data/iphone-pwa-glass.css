@@ -1,0 +1,285 @@
+/* Keep original cards and course hierarchy; give only the iPhone browser
+   host the approved warm-paper optical glass treatment. */
+html.hsk-pwa-browser .row-card,
+html.hsk-pwa-browser .card2,
+html.hsk-pwa-browser .mashq-group,
+html.hsk-pwa-browser .profile-quick-links {
+  border-color: rgba(234,224,204,.83);
+  background: rgba(255,255,255,.67);
+  box-shadow: 0 4px 12px rgba(33,29,23,.045), inset 0 1px 0 rgba(255,255,255,.78);
+}
+@supports ((-webkit-backdrop-filter:blur(2px)) or (backdrop-filter:blur(2px))) {
+  html.hsk-pwa-browser .row-card,
+  html.hsk-pwa-browser .card2,
+  html.hsk-pwa-browser .mashq-group,
+  html.hsk-pwa-browser .profile-quick-links {
+    -webkit-backdrop-filter: blur(12px) saturate(120%);
+    backdrop-filter: blur(12px) saturate(120%);
+  }
+}
+html.hsk-pwa-browser .profile-head .profile-settings,
+html.hsk-pwa-browser .profile-head .pwa-notices-button {
+  flex:0 0 44px;
+  border-radius:16px;
+}
+@media (max-width:360px) {
+  html.hsk-pwa-browser .profile-head-actions {gap:4px}
+  html.hsk-pwa-browser .profile-title {font-size:21px}
+}
+@media (prefers-reduced-transparency: reduce) {
+  html.hsk-pwa-browser .row-card,
+  html.hsk-pwa-browser .card2,
+  html.hsk-pwa-browser .mashq-group,
+  html.hsk-pwa-browser .profile-quick-links {
+    background: var(--hsk-card-surface);
+    -webkit-backdrop-filter:none;backdrop-filter:none;
+  }
+}
+
+/* Browser PWA-only presentation. Reuses original course, tokens and native Mini App nav.
+   It never changes Telegram/Android/Desktop UX, access rules, or notification delivery. */
+html.hsk-pwa-browser .nav {
+  border-color: rgba(255,255,255,.87);
+  background: rgba(253,249,240,.87);
+  -webkit-backdrop-filter: blur(26px) saturate(165%);
+  backdrop-filter: blur(26px) saturate(165%);
+  box-shadow: 0 10px 25px rgba(40,31,23,.12), inset 0 1px rgba(255,255,255,.95);
+}
+html.hsk-pwa-browser .profile-head-actions { display:flex; align-items:center; gap:8px; }
+/* Inbox uses the same quiet icon button as the Settings gear beside it. */
+html.hsk-pwa-browser .pwa-notices-button {
+  min-width:44px; min-height:44px; display:inline-flex; align-items:center; justify-content:center;
+  border:0; border-radius:16px; background:transparent; color:var(--ink2,var(--hsk-ink));
+  box-shadow:none;
+}
+html.hsk-pwa-browser .pwa-notices-button i {font-size:21px}
+html.hsk-pwa-browser .pwa-notices-button:focus-visible,
+#hsk-pwa-notice-root button:focus-visible {outline:3px solid var(--hsk-jade);outline-offset:3px}
+html.hsk-pwa-browser #sheet.hsk30-promo-center .si,
+html.hsk-pwa-browser #paywall .si {
+  border:1px solid rgba(255,255,255,.82);
+  background:rgba(253,249,240,.94);
+  box-shadow:0 20px 55px rgba(33,29,23,.19),inset 0 1px rgba(255,255,255,.9);
+}
+@supports ((-webkit-backdrop-filter:blur(2px)) or (backdrop-filter:blur(2px))) {
+  html.hsk-pwa-browser #sheet.hsk30-promo-center .si,
+  html.hsk-pwa-browser #paywall .si {
+    background:linear-gradient(140deg,rgba(255,255,255,.81),rgba(253,249,240,.81));
+    -webkit-backdrop-filter:blur(24px) saturate(140%);
+    backdrop-filter:blur(24px) saturate(140%);
+  }
+}
+#hsk-pwa-notice-root[hidden] {display:none!important}
+#hsk-pwa-notice-root [hidden] {display:none!important}
+#hsk-pwa-notice-root {position:fixed;z-index:19000;inset:0;display:flex;align-items:center;
+  justify-content:center;padding:calc(22px + env(safe-area-inset-top,0px)) 16px
+  calc(22px + env(safe-area-inset-bottom,0px));font-family:var(--hsk-font-ui);
+  color:var(--hsk-ink)}
+#hsk-pwa-notice-root *{box-sizing:border-box}
+.hsk-pwa-notice-scrim{position:absolute;inset:0;touch-action:none;background:rgba(28,25,23,.36);
+  -webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px)}
+.hsk-pwa-notice-card{position:relative;isolation:isolate;width:100%;max-width:420px;
+  max-height:min(690px,calc(100dvh - 44px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px)));
+  display:flex;flex-direction:column;overflow:hidden;
+  padding:20px 16px 18px;border-radius:28px;border:1px solid rgba(255,255,255,.86);
+  background:var(--hsk-paper);box-shadow:0 20px 60px rgba(33,29,23,.22),
+  inset 0 1px 1px rgba(255,255,255,.95)}
+.hsk-pwa-notice-card:before{content:"";pointer-events:none;position:absolute;inset:0;
+  border-radius:inherit;background:linear-gradient(160deg,rgba(255,255,255,.6),transparent 37%);
+  z-index:-1}
+@supports ((-webkit-backdrop-filter:blur(2px)) or (backdrop-filter:blur(2px))) {
+  .hsk-pwa-notice-card{background:rgba(253,249,240,.84);
+    -webkit-backdrop-filter:blur(28px) saturate(160%);
+    backdrop-filter:blur(28px) saturate(160%)}
+}
+.hsk-pwa-notice-head{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:14px}
+.hsk-pwa-notice-head h2{font-size:19px;line-height:1.25;font-weight:750;margin:0;min-width:0;overflow-wrap:anywhere}
+.hsk-pwa-close{display:grid;place-items:center;width:44px;height:44px;flex:0 0 44px;border-radius:50%;border:1px solid var(--hsk-divider);
+  background:rgba(255,255,255,.7);font:inherit;font-size:23px;color:var(--hsk-ink)}
+html.hsk-pwa-browser:has(#hsk-pwa-notice-root:not([hidden])){overflow:hidden}
+#hsk-pwa-notice-root.is-page{padding:0}
+.is-page > .hsk-pwa-notice-scrim,.is-page .hsk-pwa-notice-card::before{display:none}
+.is-page .hsk-pwa-notice-card{
+  width:100%;height:100%;max-width:none;max-height:none;border:0;border-radius:0;box-shadow:none;
+  padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px)
+    env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px);
+  background:var(--hsk-paper);-webkit-backdrop-filter:none;backdrop-filter:none;
+  touch-action:pan-y;
+}
+.is-page .hsk-pwa-notice-head,.pwa-settings-head{
+  display:flex;justify-content:flex-start;align-items:center;gap:12px;
+  padding:10px 16px 12px;margin:0;border-bottom:1px solid var(--hsk-divider);
+}
+.is-page .hsk-pwa-close{order:-1}
+.is-page .hsk-pwa-notice-head h2,.pwa-settings-head h1{
+  margin:0;font-size:22px;font-weight:750;line-height:1.2;overflow-wrap:anywhere;
+}
+.is-page .hsk-pwa-notice-list{flex:1;padding:12px 16px 20px;min-height:0}
+.is-page .hsk-pwa-notice-row{
+  max-width:var(--read,480px);margin:0 auto;border:0;border-bottom:1px solid var(--hsk-divider);
+  border-radius:0;box-shadow:none;background:transparent;
+}
+.is-page .hsk-pwa-notice-row.is-approved,.is-page .hsk-pwa-notice-row.is-rejected{
+  background:transparent;
+}
+.is-page .hsk-pwa-notice-empty{font-size:15px}
+.is-page .hsk-pwa-push-view{
+  width:min(calc(100% - 32px),var(--read,480px));margin:20px auto;padding:0;
+  border:0;border-radius:0;background:transparent;text-align:start;
+}
+.is-page .hsk-pwa-push-view p{max-width:none}
+html.hsk-pwa-browser #s-settings{
+  position:fixed;inset:0;z-index:12;overflow:auto;overscroll-behavior:contain;touch-action:pan-y;
+  background:var(--hsk-paper);padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px)
+    env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px);
+}
+html.hsk-pwa-browser #s-settings.on ~ #nav{display:none}
+.pwa-settings-head{position:sticky;top:0;z-index:1;background:var(--hsk-paper)}
+#hsk-pwa-settings-rows{max-width:var(--read,480px);margin:auto;padding:14px 16px 24px}
+#hsk-pwa-settings-rows .srow{text-align:start;min-height:52px}
+#hsk-pwa-settings-rows .pwa-push-settings-row .sv{
+  display:flex;align-items:center;gap:4px;max-width:42%;text-align:end;white-space:normal;
+}
+.pwa-settings-head button:focus-visible{outline:3px solid var(--hsk-jade);outline-offset:3px}
+.hsk-pwa-push-view{margin:8px 2px 4px;padding:18px 14px 12px;border:1px solid var(--hsk-divider);
+  border-radius:20px;background:rgba(255,255,255,.58);text-align:center}
+.hsk-pwa-push-view p{margin:0 auto 10px;max-width:300px;color:var(--hsk-ink-secondary);
+  font-size:13px;line-height:1.45;overflow-wrap:anywhere}
+.hsk-pwa-push-view #hsk-pwa-push-status:empty{display:none}
+.hsk-pwa-push-view button{display:block;width:100%;min-height:48px;margin-top:8px;padding:8px 13px;
+  border:1px solid rgba(178,53,48,.2);border-radius:15px;background:rgba(255,255,255,.88);
+  color:var(--hsk-cinnabar-ink);font:700 13px var(--hsk-font-ui);overflow-wrap:anywhere}
+.hsk-pwa-push-view #hsk-pwa-push-action{border:0;background:var(--hsk-cinnabar);
+  color:var(--hsk-on-cinnabar);box-shadow:0 5px 13px rgba(178,53,48,.18)}
+.hsk-pwa-push-view button:disabled{opacity:.58;cursor:wait}
+.hsk-pwa-notice-list{overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+  padding:2px 2px 6px;min-height:90px}
+.hsk-pwa-notice-row{display:block;width:100%;text-align:left;border:1px solid var(--hsk-divider);
+  border-radius:18px;padding:13px 14px;margin-bottom:9px;color:var(--hsk-ink);
+  background:rgba(255,255,255,.64);font:inherit;box-shadow:0 4px 12px rgba(33,29,23,.04)}
+.hsk-pwa-notice-row strong{display:block;font-size:14px;line-height:1.35;font-weight:750}
+.hsk-pwa-notice-row small{display:block;max-width:100%;font-size:12px;line-height:1.5;
+  margin-top:4px;color:var(--hsk-ink-secondary);white-space:normal;overflow-wrap:anywhere}
+.hsk-pwa-notice-row.is-approved{border-color:rgba(47,160,106,.32);background:rgba(227,244,234,.74)}
+.hsk-pwa-notice-row.is-approved strong{color:var(--hsk-jade-ink)}
+.hsk-pwa-notice-row.is-rejected{border-color:rgba(178,53,48,.32);background:rgba(253,235,231,.76)}
+.hsk-pwa-notice-row.is-rejected strong{color:var(--hsk-cinnabar-ink)}
+.hsk-pwa-notice-row:disabled{cursor:default}
+.hsk-pwa-notice-empty{padding:30px 10px;text-align:center;color:var(--hsk-ink-secondary);font-size:18px}
+.hsk-pwa-notice-urgent{text-align:center;align-items:center;padding:11px 10px 8px}
+.hsk-pwa-notice-urgent .hsk-pwa-notice-icon{width:64px;height:64px;border-radius:22px;
+  display:grid;place-items:center;margin:0 auto 13px;background:var(--hsk-cinnabar-soft);
+  color:var(--hsk-cinnabar-ink);font-size:30px}
+.hsk-pwa-notice-urgent h2{font-size:21px;line-height:1.25;max-width:270px;margin:0 auto 8px}
+.hsk-pwa-notice-urgent p{font-size:13px;line-height:1.45;color:var(--hsk-ink-secondary);
+  max-width:275px;margin:0 auto}
+.hsk-pwa-notice-primary{display:block;width:100%;min-height:50px;border:0;border-radius:16px;
+  background:var(--hsk-cinnabar);color:var(--hsk-on-cinnabar);font:750 15px var(--hsk-font-ui);
+  margin-top:19px;box-shadow:0 5px 13px rgba(178,53,48,.19)}
+.hsk-pwa-notice-secondary{display:block;width:100%;min-height:44px;border:0;
+  background:transparent;color:var(--hsk-ink-secondary);font:650 14px var(--hsk-font-ui);margin-top:6px}
+#hsk-pwa-notice-root button{cursor:pointer;touch-action:manipulation}
+@media(prefers-reduced-transparency:reduce){
+  html.hsk-pwa-browser .nav,html.hsk-pwa-browser .pwa-notices-button,
+  .hsk-pwa-notice-card,.hsk-pwa-notice-row{background:var(--hsk-paper);-webkit-backdrop-filter:none;backdrop-filter:none}
+}
+@media(prefers-reduced-motion:reduce){#hsk-pwa-notice-root *{animation:none!important;transition:none!important}}
+
+/* A linked account may retain a Telegram avatar, but iPhone PWA cannot
+   edit it through Telegram WebApp APIs. Avoid an inert pencil and misleading
+   "edit Telegram avatar" gesture; canonical account image remains read-only. */
+html.hsk-pwa-browser .phero .pav {cursor:default;pointer-events:none}
+html.hsk-pwa-browser .phero .pav .ed {display:none!important}
+
+#hsk-pwa-feedback-root[hidden],#hsk-pwa-feedback-root [hidden]{display:none!important}
+#hsk-pwa-feedback-root{position:fixed;z-index:19001;inset:0;display:grid;place-items:center;
+  padding:calc(20px + env(safe-area-inset-top,0px)) 16px
+  calc(20px + env(safe-area-inset-bottom,0px));font-family:var(--hsk-font-ui);color:var(--hsk-ink)}
+.hsk-pwa-feedback-scrim{position:absolute;inset:0;touch-action:none;background:rgba(28,25,23,.36);
+  -webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px)}
+.hsk-pwa-feedback-card{position:relative;width:100%;max-width:420px;
+  max-height:min(720px,calc(100dvh - 40px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px)));
+  overflow-y:auto;overscroll-behavior:contain;
+  border:1px solid rgba(255,255,255,.83);border-radius:28px;
+  background:var(--hsk-paper);padding:20px 18px 17px;
+  box-shadow:0 20px 55px rgba(33,29,23,.2),inset 0 1px rgba(255,255,255,.94)}
+@supports ((-webkit-backdrop-filter:blur(2px)) or (backdrop-filter:blur(2px))){
+  .hsk-pwa-feedback-card{background:rgba(253,249,240,.86);
+    -webkit-backdrop-filter:blur(26px) saturate(150%);backdrop-filter:blur(26px) saturate(150%)}
+}
+.hsk-pwa-feedback-head{display:flex;align-items:center;justify-content:space-between;
+  gap:10px;margin-bottom:15px}
+.hsk-pwa-feedback-title{font-size:20px;line-height:1.22;font-weight:750;margin:0;overflow-wrap:anywhere}
+.hsk-pwa-feedback-context{margin:-5px 0 13px;color:var(--hsk-ink-secondary);
+  font-size:14px;line-height:1.45;text-align:center}
+.hsk-pwa-feedback-close{width:44px;height:44px;flex:0 0 44px;border:1px solid var(--hsk-divider);
+  border-radius:50%;background:rgba(255,255,255,.73);font-size:23px;color:var(--hsk-ink)}
+.hsk-pwa-feedback-field{display:block;margin:0 0 12px}
+.hsk-pwa-feedback-field>span{display:block;font-size:13px;font-weight:700;margin-bottom:6px;
+  color:var(--hsk-ink-secondary)}
+.hsk-pwa-feedback-field select,.hsk-pwa-feedback-field textarea{display:block;width:100%;
+  max-width:100%;min-height:48px;padding:11px 13px;border:1px solid var(--hsk-divider);
+  border-radius:16px;background:rgba(255,255,255,.76);
+  color:var(--hsk-ink);font:400 16px var(--hsk-font-ui);outline-offset:3px}
+.hsk-pwa-feedback-field textarea{min-height:98px;resize:vertical;line-height:1.45}
+.hsk-pwa-feedback-field select:focus-visible,.hsk-pwa-feedback-field textarea:focus-visible,
+#hsk-pwa-feedback-root button:focus-visible{outline:3px solid var(--hsk-jade);outline-offset:2px}
+.hsk-pwa-feedback-stars{display:flex;justify-content:center;gap:5px;margin:4px 0 17px}
+.hsk-pwa-feedback-stars button{width:48px;height:52px;flex:1 1 0;max-width:62px;
+  border:0;background:transparent;color:var(--hsk-ink-disabled);font-size:35px}
+.hsk-pwa-feedback-stars button[aria-pressed="true"]{color:var(--hsk-gold-ink)}
+.hsk-pwa-feedback-primary{width:100%;min-height:50px;border:0;border-radius:16px;
+  background:var(--hsk-cinnabar);color:var(--hsk-on-cinnabar);
+  font:750 15px var(--hsk-font-ui);margin-top:8px;
+  box-shadow:0 4px 13px rgba(178,53,48,.17)}
+.hsk-pwa-feedback-primary:disabled{opacity:.56}
+.hsk-pwa-feedback-status{font-size:13px;line-height:1.45;color:var(--hsk-ink-secondary);
+  min-height:0;text-align:center;margin:8px 0}
+.hsk-pwa-feedback-status:empty{display:none}
+@media(prefers-reduced-transparency:reduce){.hsk-pwa-feedback-card{background:var(--hsk-paper);
+  -webkit-backdrop-filter:none;backdrop-filter:none}}
+
+/* Existing checkout's centered renewal confirmation, browser-only. The same
+   original copy/actions and payment decisions remain in subscription.html. */
+html.hsk-pwa-browser .renewal-modal {padding:
+  calc(20px + env(safe-area-inset-top,0px)) 16px
+  calc(20px + env(safe-area-inset-bottom,0px))}
+html.hsk-pwa-browser .renewal-backdrop {
+  background:rgba(28,25,23,.37);
+  -webkit-backdrop-filter:blur(5px);
+  backdrop-filter:blur(5px)
+}
+
+/* Browser PWA back controls stay visible when Telegram's native button is absent. */
+html.hsk-pwa-browser .hsk-native-back-duplicate{display:flex;align-items:center;justify-content:center}
+html.hsk-pwa-browser .renewal-card {
+  max-width:420px;max-height:88dvh;overflow-y:auto;
+  border-radius:26px;border:1px solid rgba(255,255,255,.84);
+  background:var(--hsk-paper);
+  box-shadow:0 20px 55px rgba(33,29,23,.19),inset 0 1px rgba(255,255,255,.92)
+}
+html.hsk-pwa-browser .renewal-card h3 {
+  font-size:19px;line-height:1.25;font-weight:750
+}
+html.hsk-pwa-browser .renewal-card p {
+  font-size:13px;line-height:1.45;max-width:100%
+}
+html.hsk-pwa-browser .renewal-actions button {
+  min-height:48px;border-radius:15px;
+  font-family:var(--hsk-font-ui);font-size:14px;font-weight:700
+}
+@supports ((-webkit-backdrop-filter:blur(2px)) or (backdrop-filter:blur(2px))){
+  html.hsk-pwa-browser .renewal-card {
+    background:linear-gradient(145deg,rgba(255,255,255,.85),
+      rgba(253,249,240,.78));
+    -webkit-backdrop-filter:blur(26px) saturate(155%);
+    backdrop-filter:blur(26px) saturate(155%)
+  }
+}
+@media(prefers-reduced-transparency:reduce){
+  html.hsk-pwa-browser .renewal-card{background:var(--hsk-paper);
+    -webkit-backdrop-filter:none;backdrop-filter:none}
+}
+@media(prefers-reduced-motion:reduce){
+  html.hsk-pwa-browser .renewal-card{animation:none!important}
+}

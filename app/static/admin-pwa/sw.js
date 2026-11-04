@@ -28,7 +28,7 @@ self.addEventListener('fetch', event => {
 self.addEventListener('push', event => {
   const labels = {
     payment: {title: '🧾 Yangi to‘lov cheki', body: 'Chekni tekshirish kerak.'},
-    android: {title: '📱 Android xatoligi', body: 'Android ilovasidan xatolik hisoboti keldi.'},
+    android: {title: '🐞 HSK AI xatolik hisoboti', body: 'Android yoki iPhone PWA foydalanuvchisidan yangi xatolik xabari keldi.'},
     technical: {title: '⚠️ Texnik xatolik', body: 'Tizimda xatolik qayd etildi.'},
     bot: {title: '💬 Bot fikr-mulohazasi', body: 'Muhim belgilangan fikr keldi.'},
     release: {title: '🚀 Reliz xabari', body: 'Muhim reliz xabari keldi.'},

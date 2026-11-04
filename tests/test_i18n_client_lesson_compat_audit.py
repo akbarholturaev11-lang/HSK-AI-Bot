@@ -7,7 +7,7 @@ from scripts.i18n_client_lesson_compat_audit import FILES, audit, contract
 class ClientLessonTransportTests(unittest.TestCase):
     def test_current_client_transport_contracts(self):
         report = audit()
-        self.assertEqual(report["status"], "SOURCE_CONTRACT_OK_AUTHENTICATED_MINIAPP_REVIEW")
+        self.assertEqual(report["status"], "SOURCE_CONTRACT_OK_AUTHENTICATED_MINIAPP_REVIEW", report["failures"])
         self.assertEqual(report["failures"], [])
         self.assertTrue(all(all(v for v in checks.values())
                             for checks in report["checks"].values()))

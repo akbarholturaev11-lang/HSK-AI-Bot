@@ -1920,7 +1920,9 @@ async function uploadPriceQrInline(scope){
       extraHeaders:{'X-Admin-PWA-Command':JSON.stringify({...prepared.execute_payload||operation.payload,step_up_id:options.step_up_id})},
       timeoutMs:30000});
     if(current!==drawerId||at!==epoch||draft!==managementDraft)return;
-    if(message)message.textContent=t('paymentQrSet');
+    // Do not show "installed" until finally clears the upload lock and a
+    // fresh server read confirms the exact amount/scope. Otherwise the next
+    // file-change event can be dropped while priceQrBusy is still true.
   }catch(error){
     if(current!==drawerId||at!==epoch||draft!==managementDraft)return;
     if(!submitted&&['NotAllowedError','AbortError'].includes(error.name))showNotice('passkeyCancelled');

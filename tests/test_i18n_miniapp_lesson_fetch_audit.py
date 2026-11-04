@@ -29,7 +29,7 @@ class MiniAppLessonFetchIntentTests(unittest.TestCase):
         self.assertTrue(all(row["cost_sensitive"] for row in report["calls"]))
         self.assertEqual(
             [row["line"] for row in report["calls"]],
-            [2419, 3238, 4321],
+            [2635, 3570, 4663],
         )
         self.assertIn('fetch("/api/v3/lesson/sales-preview"', self.source)
         self.assertIn('fetch("/api/v3/lesson/foundation"', self.source)
@@ -94,6 +94,7 @@ const env={
   normalizeLevel:x=>String(x||"hsk1"),
   cloneJson:x=>JSON.parse(JSON.stringify(x)),
   INIT_DATA:"signed-test-initdata",
+  PWA_COURSE_HOST:false,  // This fixture verifies the original signed Mini App transport.
   lessonDataUrl:(level,n)=>"/api/v3/lesson/content/"+level+"/"+n,
   fetch:(url,options)=>{
     if(url!=="/api/v3/lesson/content/nhsk2/16")throw new Error("unexpected lesson URL: "+url);

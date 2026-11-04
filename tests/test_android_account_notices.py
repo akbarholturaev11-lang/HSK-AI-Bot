@@ -23,6 +23,7 @@ from app.db.models.account_notice_delivery import AccountNoticeDelivery
 from app.db.models.android_push import AndroidPushToken
 from app.db.models.course_user_notification import CourseUserNotification
 from app.db.models.user import User
+from app.services.course_notification_service import CourseNotificationService
 from app.services.android_push_service import AndroidPushResult, AndroidPushService
 from app.services.admin_feedback_resolution import enqueue_android_fix_notice, fixed_notice_copy, published_version_is_newer
 from app.services.desktop_auth_service import DesktopAuthService
@@ -220,6 +221,39 @@ class DeliveryTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(published_version_is_newer("1.7.9", "1.7.21"))
         self.assertFalse(published_version_is_newer("1.7.21", "1.7.9"))
         self.assertFalse(published_version_is_newer("QA", "1.7.21"))
+
+    async def test_android_fix_notice_queues_existing_pwa_push_when_enabled(self):
+        now = datetime.now(timezone.utc)
+        with patch("app.services.admin_feedback_resolution.settings.PWA_AUTH_ENABLED", True), \
+             patch("app.services.admin_feedback_resolution.settings.PWA_PUSH_ENABLED", True), \
+             patch("app.services.learner_pwa_push.enqueue_event", new_callable=AsyncMock,
+                   return_value=1) as enqueue:
+            async with self.sessions() as session:
+                notice_id = await enqueue_android_fix_notice(
+                    session, user_id=1, source_id=877, revision=2,
+                    mode="server", now=now,
+                )
+                await session.commit()
+
+        self.assertEqual(enqueue.await_count, 1)
+        self.assertEqual(enqueue.await_args.kwargs["user_id"], 1)
+        self.assertEqual(enqueue.await_args.kwargs["source"], "account")
+        self.assertEqual(enqueue.await_args.kwargs["source_id"], notice_id)
+        self.assertEqual(enqueue.await_args.kwargs["language"], "uz")
+
+    async def test_android_fix_notice_does_not_enable_pwa_push_by_itself(self):
+        now = datetime.now(timezone.utc)
+        with patch("app.services.admin_feedback_resolution.settings.PWA_AUTH_ENABLED", False), \
+             patch("app.services.admin_feedback_resolution.settings.PWA_PUSH_ENABLED", True), \
+             patch("app.services.learner_pwa_push.enqueue_event", new_callable=AsyncMock) as enqueue:
+            async with self.sessions() as session:
+                await enqueue_android_fix_notice(
+                    session, user_id=1, source_id=878, revision=2,
+                    mode="server", now=now,
+                )
+                await session.commit()
+
+        enqueue.assert_not_awaited()
 
     async def test_update_fixed_notice_claim_has_safe_opt_in_route_for_new_apks(self):
         """Older clients keep course; new Android APK sees only an optional hint."""
@@ -488,7 +522,15 @@ class DeliveryTests(unittest.IsolatedAsyncioTestCase):
             await session.commit()
 
         bot = _Bot()
+        record_from_text = CourseNotificationService.record_from_text
+        course_notice_calls = []
+
+        async def record_course_notice(service, *args, **kwargs):
+            course_notice_calls.append(kwargs.copy())
+            return await record_from_text(service, *args, **kwargs)
+
         with (
+            patch.object(CourseNotificationService, "record_from_text", record_course_notice),
             patch.object(
                 NotificationDeliveryService, "android_enabled",
                 new_callable=PropertyMock, return_value=True,
@@ -504,6 +546,7 @@ class DeliveryTests(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(0, await ExpiryReminderService(session).send_expiry_reminders(bot))
 
         self.assertEqual([], bot.messages)
+        self.assertTrue(course_notice_calls[0]["pwa_push_suppressed"])
         [row] = await self._rows()
         self.assertEqual(("Obuna tugayapti", "Obunangiz ertaga tugaydi."), (row.title, row.body))
         async with self.sessions() as session:

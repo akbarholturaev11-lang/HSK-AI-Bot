@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#FDF9F0">
+<script>if(location.pathname==="/iphone-pwa/course")document.documentElement.classList.add("hsk-pwa-browser");</script>
 <title>HSK AI</title>
 <link rel="icon" href="/assets/hsk-ai-avatar.webp" type="image/webp">
 <script src="/assets/telegram-web-app.js?v=20261019-1"></script>
@@ -19,6 +20,8 @@
 <script src="/assets/characters/hsk-study-preparing.js?v=20261009-compact-1"></script>
 <script src="/assets/characters/hsk-lesson-presentation.js?v=20260921c"></script>
 <style>
+html.hsk-pwa-browser input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+html.hsk-pwa-browser textarea,html.hsk-pwa-browser select{font-size:16px!important}
 :root{
   --ink:var(--hsk-ink);--ink2:var(--hsk-ink-secondary);--ink3:var(--hsk-ink-disabled);--paper:var(--hsk-paper);--card:var(--hsk-paper-raised);--line:var(--hsk-divider);
   --cin:var(--hsk-cinnabar);--cin2:var(--hsk-cinnabar-ink);--cinbg:var(--hsk-cinnabar-soft);--cin-ink:var(--hsk-on-cinnabar);
@@ -40,8 +43,26 @@ html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-famil
 .wrap{max-width:var(--shell);margin:0 auto;min-height:100vh;position:relative;padding-top:var(--safe-t)}
 .scr{display:none;padding-bottom:calc(82px + var(--safe-b))}
 .scr.on{display:block}
+#pwa-practice-layer{position:fixed;inset:0;z-index:9600;display:flex;flex-direction:column;overscroll-behavior:contain;background:var(--paper);padding:var(--safe-t) 0 var(--safe-b)}
+#pwa-practice-layer[hidden],#pwa-practice-layer [hidden]{display:none!important}
+#pwa-practice-layer iframe{width:100%;flex:1;min-height:0;border:0}
+.pwa-practice-entry{position:relative;flex:1;display:grid;place-items:center}
+.pwa-practice-entry .pwa-practice-back{position:absolute;top:5px;left:12px;width:44px;height:44px;border:1px solid var(--line);border-radius:50%;background:var(--card);color:var(--ink);display:grid;place-items:center;font-size:20px}
+html.hsk-pwa-browser:has(#pwa-practice-layer:not([hidden])){overflow:hidden}
 #hsk-launch-splash{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;padding:var(--safe-t) 16px var(--safe-b);background:var(--paper);opacity:1;visibility:visible;transition:opacity .24s ease,visibility .24s ease}
 #hsk-launch-splash.is-done{opacity:0;visibility:hidden;pointer-events:none}
+html.hsk-pwa-browser #hsk-launch-splash .hsk-launch-knot{animation-duration:140ms;animation-delay:300ms}
+html.hsk-pwa-browser #hsk-launch-splash .hsk-launch-spin{animation-duration:420ms;animation-delay:380ms}
+html.hsk-pwa-browser #hsk-launch-splash.is-playing .hsk-launch-flat{animation-duration:260ms}
+html.hsk-pwa-browser #hsk-launch-splash.is-playing .hsk-launch-diagonal{animation-duration:270ms;animation-delay:40ms}
+html.hsk-pwa-browser #hsk-launch-splash.is-playing .hsk-launch-crossings{animation-duration:120ms;animation-delay:280ms}
+html.hsk-pwa-browser #hsk-launch-splash.is-playing .hsk-launch-brandline,
+html.hsk-pwa-browser #hsk-launch-splash.is-playing .hsk-launch-book{animation-duration:300ms;animation-delay:390ms}
+html.hsk-pwa-browser #hsk-launch-splash.is-playing .hsk-launch-title{animation-duration:360ms;animation-delay:520ms}
+#pwa-checkout-layer{position:fixed;inset:0;z-index:9700;background:var(--paper);padding:var(--safe-t) 0 var(--safe-b);display:flex;flex-direction:column;overscroll-behavior:contain}
+#pwa-checkout-layer iframe{flex:1;min-height:0;width:100%;border:0}
+#pwa-checkout-back{margin:5px 12px;flex:none;width:44px;height:44px;border:1px solid var(--line);border-radius:50%;background:var(--card);color:var(--ink);display:grid;place-items:center;touch-action:manipulation}
+html.hsk-pwa-browser:has(#pwa-checkout-layer){overflow:hidden}
 .hsk-launch-stage{position:relative;display:flex;flex-direction:column;align-items:center}
 .hsk-launch-halo{position:absolute;top:48px;left:50%;width:132px;height:132px;border-radius:50%;background:radial-gradient(circle,rgba(224,74,64,.24),rgba(224,74,64,0));opacity:.1;transform:translate(-50%,-50%) scale(.84);animation:hsk-launch-halo-breathe 1.45s ease-in-out infinite alternate}
 .hsk-launch-seal{position:relative;display:grid;place-items:center;width:96px;height:96px;overflow:hidden;border-radius:18px;background:linear-gradient(135deg,#F0614C,#C02F32);box-shadow:0 10px 26px rgba(158,48,39,.25);animation:hsk-launch-seal-breathe 1.1s ease-in-out infinite alternate}
@@ -1607,6 +1628,8 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
   .nav::before,.nav::after { display:none; }
 }
 </style>
+<link rel="stylesheet" href="/course_v3_data/iphone-pwa-glass.css?v=20261105-b4b9a9cbc312">
+<link rel="stylesheet" href="/course_v3_data/iphone-pwa-shake-report.css?v=20261105-83778161c05b">
 <link href="/course_v3_data/desktop-download.css?v=20261003-1" rel="stylesheet">
 <link href="/course_v3_data/profile-carousel.css?v=20261017-link-cards-1" rel="stylesheet">
 <link href="/course_v3_data/rating-podium.css?v=20261014-2" rel="stylesheet">
@@ -1654,6 +1677,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
   <div class="scr" id="s-voice"></div>
   <div class="scr" id="s-rating"></div>
   <div class="scr" id="s-profile"></div>
+  <section class="scr" id="s-settings" aria-labelledby="hsk-pwa-settings-title"></section>
 
   <!-- Bo'lim tanishtiruvi: ekran USTIDA suzadi, layoutdan joy egallamaydi va
        bo'limning o'ziga o'xshab turmaydi. Bo'lim almashganda yangilanadi. -->
@@ -1701,10 +1725,20 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
   <div id="pomp-desktop-promo-root" hidden></div>
 </div>
 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
+<script>
+(function(){
+  var icons=document.createElement("link");icons.rel="stylesheet";
+  icons.href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css";
+  if(location.pathname==="/iphone-pwa/course"){
+    // Icons can finish after the course shell. A slow CDN must not block boot JS.
+    icons.media="print";icons.onload=function(){icons.media="all"};
+  }
+  document.head.appendChild(icons);
+})();
+</script>
 <!-- Reklama moduli: dars yakuni bloki uchun (mashq bo'limlari ham shu moduldan foydalanadi) -->
-<script src="/voice-live.js?v=1"></script>
-<script defer src="/course_v3_data/ads.js?v=20261021-785974bb437c"></script><script src="/course_v3_data/hsk-common-i18n.js?v=20261019-25e72d6d5518"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261021-88bfab42686b"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script><script src="/course_v3_data/p3-grammar-reservation.js?v=20261019-p3-2"></script>
+<script src="/voice-live.js?v=2"></script>
+<script defer src="/course_v3_data/ads.js?v=20261021-785974bb437c"></script><script src="/course_v3_data/hsk-common-i18n.js?v=20261019-1c672dcfb10d"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261021-6431aaf27e2a"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script><script src="/course_v3_data/p3-grammar-reservation.js?v=20261019-p3-2"></script>
 <script>
 /* ---------- i18n (default RU) ---------- */
 var I18N={
@@ -1729,7 +1763,7 @@ function hsk30LiveLevels(){
 }
 function trackLevels(v){return isHsk30Level(v)?hsk30LiveLevels():LEGACY_LEVELS}
 function lessonGateUrl(){return isHsk30Level((MAP&&MAP.level)||getSelectedLevel())?"/course_v3_data/lesson_gate_hsk30.js?v=20260930":"/course_v3_data/lesson_gate.js?v=20260719"}
-function practiceWordsUrl(){return isHsk30Level((MAP&&MAP.level)||getSelectedLevel())?"/course_v3_data/hsk30-words.js?v=20260930":"hsk-words.js?v=20260720"}
+function practiceWordsUrl(){return isHsk30Level((MAP&&MAP.level)||getSelectedLevel())?"/course_v3_data/hsk30-words.js?v=20260930":"/hsk-words.js?v=20260905"}
 function practiceWords(){return isHsk30Level((MAP&&MAP.level)||getSelectedLevel())?(window.HSK30_WORDS||[]):(typeof WORDS!=="undefined"?WORDS:[])}
 function practiceWordGate(){return isHsk30Level((MAP&&MAP.level)||getSelectedLevel())?(window.HSK30_WORD_GATE||{}):(window.HSK_WORD_GATE||{})}
 var TRACK_UI={
@@ -1773,10 +1807,10 @@ function trackUi(){return TRACK_UI[LANG]||TRACK_UI.uz}
 function currentCourseTrack(){return isHsk30Level((MAP&&MAP.level)||getSelectedLevel())?"hsk30":"hsk20"}
 var COURSE_TRACK_STATE=null,COURSE_TRACK_PROMISE=null,COURSE_TRACK_CHECKED_AT=0;
 function courseTrackStatus(force){
-  if(!INIT_DATA)return Promise.reject(new Error("auth"));
+  if(!INIT_DATA&&!PWA_COURSE_HOST)return Promise.reject(new Error("auth"));
   if(COURSE_TRACK_STATE&&!force)return Promise.resolve(COURSE_TRACK_STATE);
   if(COURSE_TRACK_PROMISE)return COURSE_TRACK_PROMISE;
-  COURSE_TRACK_PROMISE=fetch("/api/v3/course-tracks",{headers:{"X-Telegram-Init-Data":INIT_DATA},cache:"no-store"})
+  COURSE_TRACK_PROMISE=_apiGet("/api/v3/course-tracks")
     .then(function(r){return r.json().then(function(d){if(!r.ok||!d.ok)throw new Error(d.error||"course_track_failed");return d})})
     .then(function(d){COURSE_TRACK_STATE=d;COURSE_TRACK_CHECKED_AT=Date.now();COURSE_TRACK_PROMISE=null;return d})
     .catch(function(e){COURSE_TRACK_PROMISE=null;throw e});
@@ -1808,7 +1842,7 @@ function prepareHsk30AccessBoundary(status){
   ["s-course","s-mashq"].forEach(function(id){document.getElementById(id).innerHTML=html});
 }
 function refreshHsk30Access(){
-  if(!INIT_DATA||!MAP||currentCourseTrack()!=="hsk30"||document.visibilityState==="hidden"||CHECKOUT_NAVIGATING||internalNavigationActive())return Promise.resolve(false);
+  if((!INIT_DATA&&!PWA_COURSE_HOST)||!MAP||currentCourseTrack()!=="hsk30"||document.visibilityState==="hidden"||CHECKOUT_NAVIGATING||internalNavigationActive())return Promise.resolve(false);
   if(HSK30_ACCESS_CHECK)return HSK30_ACCESS_CHECK;
   var level=MAP.level;
   HSK30_ACCESS_CHECK=courseTrackStatus(true).then(function(status){
@@ -1827,7 +1861,7 @@ function refreshHsk30Access(){
   return HSK30_ACCESS_CHECK;
 }
 function startHsk30AccessMonitor(){
-  if(!INIT_DATA||HSK30_ACCESS_TIMER)return;
+  if((!INIT_DATA&&!PWA_COURSE_HOST)||HSK30_ACCESS_TIMER)return;
   HSK30_ACCESS_TIMER=setInterval(function(){
     var access=COURSE_TRACK_STATE&&COURSE_TRACK_STATE.tracks&&COURSE_TRACK_STATE.tracks.hsk30&&COURSE_TRACK_STATE.tracks.hsk30.access;
     // Only pending review needs foreground polling. Paid/free users keep
@@ -1851,6 +1885,7 @@ function openHsk30UnlockCheckout(){
   var q=new URLSearchParams();
   q.set("mode","hsk30_unlock");q.set("plan","hsk30_unlock");q.set("source","hsk30_unlock");q.set("lang",LANG);
   courseCheckoutReturnParams().forEach(function(value,key){q.set(key,value)});
+  if(PWA_COURSE_HOST){App.openPwaCheckout(q);return}
   location.href="/subscription.html?"+q.toString();
 }
 function renderHsk30AccessGate(status){
@@ -1908,11 +1943,18 @@ function switchCourseTrack(target,requestedLevel){
   target=target==="hsk30"?"hsk30":"hsk20";
   requestedLevel=requestedLevel?normalizeLevel(requestedLevel):"";
   if(target===currentCourseTrack()&&(!requestedLevel||requestedLevel===normalizeLevel((MAP&&MAP.level)||getSelectedLevel()))){App.closeSheet();return}
+  if(PWA_COURSE_HOST&&COURSE_TRACK_SWITCH_PREPARING)return;
   var t=trackUi();
-  courseTrackStatus(true).then(function(status){
+  var cachedAccess=COURSE_TRACK_STATE&&COURSE_TRACK_STATE.tracks&&COURSE_TRACK_STATE.tracks.hsk30&&COURSE_TRACK_STATE.tracks.hsk30.access;
+  // The switch mutation rechecks access. A known allowed PWA track, or the
+  // return to HSK 2.0, can proceed without a second status round trip.
+  var statusRequest=PWA_COURSE_HOST&&(target==="hsk20"||cachedAccess&&cachedAccess.allowed)
+    ?Promise.resolve(COURSE_TRACK_STATE):courseTrackStatus(true);
+  if(PWA_COURSE_HOST)showCourseTrackSwitchPreparing(target);
+  statusRequest.then(function(status){
     var access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
-    if(target==="hsk30"&&(!access||!access.allowed)){renderHsk30AccessGate(status);return null}
-    showCourseTrackSwitchPreparing(target);
+    if(target==="hsk30"&&(!access||!access.allowed)){hideCourseTrackSwitchPreparing();renderHsk30AccessGate(status);return null}
+    if(!PWA_COURSE_HOST)showCourseTrackSwitchPreparing(target);
     var switchPayload={target_track:target};
     if(requestedLevel)switchPayload.level=requestedLevel;
     return _apiPost("/api/v3/course-tracks/switch",switchPayload).then(function(r){
@@ -2164,18 +2206,96 @@ function setSelectedLevel(lv){
   try{var u=new URL(location.href);u.searchParams.set("level",lv);history.replaceState(null,"",u.pathname+"?"+u.searchParams.toString()+u.hash)}catch(e){}
   return lv;
 }
-var tg=window.Telegram&&window.Telegram.WebApp;
+var PWA_COURSE_HOST=location.pathname==="/iphone-pwa/course";
+var tg=PWA_COURSE_HOST?null:window.Telegram&&window.Telegram.WebApp;
 function syncCourseTelegramChrome(){
   /* Telegram header state is native and may be reset between HTML documents. */
   try{if(tg){tg.setHeaderColor("#FDF9F0");tg.setBackgroundColor("#FDF9F0")}}catch(e){}
 }
 if(tg){try{tg.ready();tg.expand()}catch(e){}syncCourseTelegramChrome()}
 var INIT_DATA=(tg&&tg.initData)||"";
+// Browser-only course host reuses the exact Mini App HTML and course map.
+// This is not an identity signal: only the server-verified HttpOnly PWA
+// session + Origin/CSRF can authorize its read/write map endpoint.
+if(PWA_COURSE_HOST){
+  document.documentElement.classList.add("hsk-pwa-browser");
+  // Original Mini App document, with Home Screen identity only for the
+  // canonical iPhone PWA route. Telegram never gets an install manifest.
+  (function(){
+    var meta=document.createElement("meta");meta.name="apple-mobile-web-app-capable";meta.content="yes";document.head.appendChild(meta);
+    meta=document.createElement("meta");meta.name="apple-mobile-web-app-status-bar-style";meta.content="default";document.head.appendChild(meta);
+    meta=document.createElement("meta");meta.name="apple-mobile-web-app-title";meta.content="HSK AI";document.head.appendChild(meta);
+    var touch=document.createElement("link");touch.rel="apple-touch-icon";touch.href="/assets/hsk-ai-logo-256.png";document.head.appendChild(touch);
+    var manifest=document.createElement("link");manifest.rel="manifest";manifest.href="/iphone-pwa/manifest.webmanifest";document.head.appendChild(manifest);
+  })();
+}
+// An installed browser PWA never becomes a Telegram client, even if an SDK
+// shim injects initData. Identity is exclusively the verified PWA cookie.
+if(PWA_COURSE_HOST)INIT_DATA="";
+var PWA_COURSE_ACTOR_PROMISE=null,PWA_COURSE_USER_ID=null,PWA_LOGOUT_PENDING=false;
+function pwaCourseActor(){
+  if(!PWA_COURSE_HOST)return Promise.reject(new Error("pwa_host_required"));
+  if(!PWA_COURSE_ACTOR_PROMISE){
+    PWA_COURSE_ACTOR_PROMISE=fetch("/api/v3/pwa-auth/session",{
+      credentials:"same-origin",cache:"no-store",redirect:"error"
+    }).then(function(res){
+      if(res.status===401){location.replace("/iphone-pwa");throw new Error("pwa_session_required")}
+      if(!res.ok)throw new Error("pwa_session_unavailable");
+      return res.json();
+    }).then(function(data){
+      if(!data||data.ok!==true||typeof data.csrf!=="string"||!data.csrf||
+         !Number.isSafeInteger(Number(data.user_id))||Number(data.user_id)<=0)
+        throw new Error("pwa_session_invalid");
+      var ownerId=Number(data.user_id);
+      if(PWA_COURSE_USER_ID&&PWA_COURSE_USER_ID!==ownerId){
+        location.replace("/iphone-pwa");
+        throw new Error("pwa_actor_changed");
+      }
+      PWA_COURSE_USER_ID=ownerId;
+      return data;
+    }).catch(function(err){PWA_COURSE_ACTOR_PROMISE=null;throw err});
+  }
+  return PWA_COURSE_ACTOR_PROMISE;
+}
+// Re-authenticate on Home Screen resume/BFCache restore; never treat a
+// cached browser actor or app screenshot as proof of an active session.
+function verifyPwaReturn(){
+  if(!PWA_COURSE_HOST)return;
+  PWA_COURSE_ACTOR_PROMISE=null;
+  pwaCourseActor().catch(function(error){
+    // Only invalid proof is a reason to leave the current course. A slow
+    // connection may recover while the verified view remains in memory.
+    if(error&&error.message==="pwa_session_invalid")location.replace("/iphone-pwa");
+  });
+}
+if(PWA_COURSE_HOST){
+  window.addEventListener("pageshow",function(ev){if(ev.persisted)verifyPwaReturn()});
+  document.addEventListener("visibilitychange",function(){
+    if(document.visibilityState==="visible")verifyPwaReturn();
+  });
+  // Version-pinned dictionary/practice assets: Cache First in the worker and
+  // a sequential background warm once the course is idle. Never on first paint.
+  (function warmPwaStaticCache(){
+    if(!window.isSecureContext||!navigator.serviceWorker)return;
+    function start(){
+      navigator.serviceWorker.register("/iphone-pwa/sw.js",{scope:"/iphone-pwa/"}).then(function(){
+        return navigator.serviceWorker.ready;
+      }).then(function(reg){
+        if(reg&&reg.active)reg.active.postMessage({type:"hsk-pwa-warm"});
+      }).catch(function(){});
+    }
+    window.addEventListener("load",function(){
+      setTimeout(function(){
+        if(typeof requestIdleCallback==="function")requestIdleCallback(start,{timeout:4000});else start();
+      },3000);
+    },{once:true});
+  })();
+}
 // Smart reminder open observation: optional, authenticated and independent of navigation.
 (function observeSmartReminderOpen(){
   try{
     var q=new URLSearchParams(location.search),f=new URLSearchParams(location.hash.slice(1));
-    if(!INIT_DATA||q.getAll("source").length!==1||q.get("source")!=="smart_study"||
+    if(PWA_COURSE_HOST||!INIT_DATA||q.getAll("source").length!==1||q.get("source")!=="smart_study"||
        f.getAll("smart_job").length!==1||f.getAll("smart_proof").length!==1)return;
     var job=f.get("smart_job"),proof=f.get("smart_proof"),sent=false;
     if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(job)||
@@ -2207,8 +2327,81 @@ var SALES_VALUE_STATE={outcome:null,nextOutcome:null,nextIdx:-1,bridgeAction:""}
 var SALES_PAYWALL_ACTIVE=false,SALES_PAYWALL_IMPRESSION="";
 var SALES_VALUE_PRIME_PROMISE=null,SALES_VALUE_PRIME_DONE=false;
 function _apiHeaders(){return{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA}}
-function _apiGet(url){return fetch(url,{headers:{"X-Telegram-Init-Data":INIT_DATA}})}
-function _apiPost(url,body,opts){var init={method:"POST",headers:_apiHeaders(),body:JSON.stringify(body)};if(opts&&opts.keepalive)init.keepalive=true;return fetch(url,init)}
+var PWA_COURSE_GET_PATHS={
+  "/api/v3/course-tracks":"/api/v3/pwa/course-tracks",
+  "/api/v3/lesson/foundation":"/api/v3/pwa/lesson/foundation","/api/v3/invite":"/api/v3/pwa/invite",
+  "/api/miniapp/mistakes":"/api/v3/pwa/mistakes", "/api/miniapp/profile":"/api/v3/pwa/profile"
+};
+var PWA_COURSE_POST_PATHS={
+  "/api/v3/course-tracks/switch":"/api/v3/pwa/course-tracks/switch",
+  "/api/v3/course-tracks/promo-shown":"/api/v3/pwa/course-tracks/promo-shown",
+  "/api/miniapp/gamification":"/api/v3/pwa/gamification",
+  "/api/v3/limits/status":"/api/v3/pwa/limits/status",
+  "/api/v3/lesson/start":"/api/v3/pwa/lesson/start",
+  "/api/v3/lesson/complete":"/api/v3/pwa/lesson/complete",
+  "/api/v3/language":"/api/v3/pwa/language",
+  "/api/v3/preferences":"/api/v3/pwa/preferences",
+  "/api/miniapp/mistakes/review/start":"/api/v3/pwa/mistakes/review/start",
+  "/api/miniapp/mistakes/review/answer":"/api/v3/pwa/mistakes/review/answer",
+  "/api/miniapp/mistakes/review/complete":"/api/v3/pwa/mistakes/review/complete",
+  "/api/v3/exams/start":"/api/v3/pwa/exams/start",
+  "/api/v3/exams/complete":"/api/v3/pwa/exams/complete",
+  "/api/voice-practice/session/start":"/api/v3/pwa/voice/session/start",
+  "/api/voice-practice/session/mode":"/api/v3/pwa/voice/session/mode",
+  "/api/voice-practice/session/end":"/api/v3/pwa/voice/session/end"
+};
+function _apiGet(url){
+  if(!PWA_COURSE_HOST)return fetch(url,{headers:{"X-Telegram-Init-Data":INIT_DATA}});
+  var parsed=new URL(url,location.href);
+  if(parsed.origin!==location.origin)return Promise.reject(new Error("pwa_route_unavailable"));
+  var mapped=PWA_COURSE_GET_PATHS[parsed.pathname];
+  if(!mapped&&/^\/api\/v3\/lesson\/content\/(?:hsk[1-4]|nhsk[1-3])\/[1-9][0-9]*$/.test(parsed.pathname))
+    mapped=parsed.pathname.replace("/api/v3/lesson/content/","/api/v3/pwa/lesson/content/");
+  if(!mapped)return Promise.reject(new Error("pwa_route_unavailable"));
+  return pwaCourseActor().then(function(){
+    return fetch(mapped+parsed.search,{credentials:"same-origin",cache:"no-store",redirect:"error"});
+  });
+}
+function _apiPost(url,body,opts){
+  if(!PWA_COURSE_HOST){
+    var init={method:"POST",headers:_apiHeaders(),body:JSON.stringify(body)};
+    if(opts&&opts.keepalive)init.keepalive=true;
+    return fetch(url,init);
+  }
+  // Never let a new browser transport call the legacy Telegram mutation
+  // endpoints or accept identity from initData, language, or user_id payloads.
+  var mapped=PWA_COURSE_POST_PATHS[url];
+  if(!mapped)return Promise.reject(new Error("pwa_route_unavailable"));
+  var payload=Object.assign({},body||{});
+  delete payload.initData;delete payload.user_id;delete payload.telegram_id;
+  if(url==="/api/v3/lesson/start")delete payload.lang;
+  return pwaCourseActor().then(function(actor){
+    return fetch(mapped,{
+      method:"POST",headers:{"Content-Type":"application/json","X-HSK-PWA-CSRF":actor.csrf},
+      body:JSON.stringify(payload),credentials:"same-origin",cache:"no-store",redirect:"error",
+      keepalive:!!(opts&&opts.keepalive)
+    });
+  });
+}
+// The original VOICE view stays intact; only its audio/text transport changes.
+// Turn-based browser voice uses its own session and CSRF transport.
+function courseVoiceMessage(fd){
+  if(!PWA_COURSE_HOST)return fetch("/api/voice-practice/message",{
+    method:"POST",body:fd
+  });
+  var fields=new FormData();
+  var sessionId=fd.get("session_id"),message=fd.get("text"),audio=fd.get("audio");
+  if(typeof sessionId!=="string"||!sessionId)return Promise.reject(new Error("voice_session_missing"));
+  fields.append("session_id",sessionId);
+  if(typeof message==="string"&&message)fields.append("text",message);
+  if(audio&&typeof audio!=="string")fields.append("audio",audio,typeof audio.name==="string"?audio.name:"voice.mp4");
+  return pwaCourseActor().then(function(actor){
+    return fetch("/api/v3/pwa/voice/message",{
+      method:"POST",headers:{"X-HSK-PWA-CSRF":actor.csrf},
+      credentials:"same-origin",cache:"no-store",redirect:"error",body:fields
+    });
+  });
+}
 /* Mini App yopilganda botga signal: chatdagi menyu bar tiklanadi. Telegram
    yopilish haqida botga xabar bermaydi, shuning uchun signal shu yerdan ketadi.
    sendBeacon custom header qo'ya olmaydi (init-data kerak) — keepalive'li
@@ -2236,11 +2429,11 @@ try{
     syncCourseTelegramChrome();
     if(!e||!e.persisted)return;
     INTERNAL_NAVIGATING_UNTIL=0;EXIT_PINGED=false;clearDeferredCourseUnlock();
-    if(!INIT_DATA||!MAP)return;
+CHECKOUT_NAVIGATING=false; if((!INIT_DATA&&!PWA_COURSE_HOST)||!MAP)return;
     _fetchCourseMap(MAP.level||getSelectedLevel()).then(function(d){
       if(isHsk30AccessError(d,MAP.level||getSelectedLevel())){showCourseMapFailure({hsk30Gate:true,level:d.level||MAP.level});return}
-      if(!d||d._parseFail||d.authenticated===false||!d.units)return;
-      MAP=rememberLimitText(d);if(d.user)PROF=d.user;syncNotify();renderAll();
+      if(!d||d._parseFail||d._status>=400||d.authenticated===false||!d.units)return;
+      MAP=rememberLimitText(d);if(d.user)PROF=d.user;adoptStudySetup(d);syncNotify();renderAll();
     }).catch(function(){});
   });
 }catch(e){}
@@ -2458,7 +2651,7 @@ function haptic(t){try{tg&&tg.HapticFeedback&&(t==="ok"?tg.HapticFeedback.notifi
 var ac;function beep(seq){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();var t=ac.currentTime;seq.forEach(function(f,k){var o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;o.connect(g);g.connect(ac.destination);var s=t+k*0.09;g.gain.setValueAtTime(0.0001,s);g.gain.exponentialRampToValueAtTime(0.12,s+0.02);g.gain.exponentialRampToValueAtTime(0.0001,s+0.16);o.start(s);o.stop(s+0.18)})}catch(e){}}
 
 /* ---------- App ---------- */
-var MAP=null,SCREEN="course",HP=5,notifOn=true,dailyGoal=50,PROF={},ratingLoaded=false,pendingRankUp=null;
+var MAP=null,SCREEN="course",SCREEN_HISTORY=[],NAVBACK_SCREEN_CHANGE=false,HP=5,notifOn=true,dailyGoal=50,PROF={},ratingLoaded=false,pendingRankUp=null;
 /* Kunlik reja sozlamalari serverdan (map javobidagi `study_setup`).
    Ilgari `dailyGoal` faqat shu yerdagi o'zgaruvchi edi va ilova qayta
    ochilganda foydalanuvchi tanlovi yo'qolardi. */
@@ -2468,9 +2661,8 @@ function adoptStudySetup(d){
   if(STUDY_SETUP&&Number(STUDY_SETUP.daily_goal_xp)>0)dailyGoal=Number(STUDY_SETUP.daily_goal_xp);
 }
 function savePreferences(body){
-  if(!INIT_DATA)return Promise.resolve(null);
-  return fetch("/api/v3/preferences",{method:"POST",headers:{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA},
-    body:JSON.stringify(body)}).then(function(r){return r.json()}).then(function(j){
+  if(!INIT_DATA&&!PWA_COURSE_HOST)return Promise.resolve(null);
+  return _apiPost("/api/v3/preferences",body).then(function(r){return r.json()}).then(function(j){
       if(j&&j.ok&&j.profile){STUDY_SETUP=j.profile;if(Number(j.profile.daily_goal_xp)>0)dailyGoal=Number(j.profile.daily_goal_xp)}
       return j;
     }).catch(function(){return null});
@@ -2480,7 +2672,7 @@ function syncNotify(){if(MAP&&MAP.notify&&typeof MAP.notify.enabled==="boolean")
    objects. A completion arriving during a refresh queues one newer read. */
 var PROGRESS_REFRESH=null,PROGRESS_REFRESH_QUEUED=false;
 function refreshCourseProgress(afterWrite){
-  if(!INIT_DATA||!MAP||!Array.isArray(MAP.units))return Promise.resolve(false);
+  if((!INIT_DATA&&!PWA_COURSE_HOST)||!MAP||!Array.isArray(MAP.units))return Promise.resolve(false);
   if(PROGRESS_REFRESH){if(afterWrite)PROGRESS_REFRESH_QUEUED=true;return PROGRESS_REFRESH}
   var snapshot=MAP,level=MAP.level||getSelectedLevel();
   var controller=window.AbortController?new AbortController():null,timer;
@@ -2534,15 +2726,53 @@ document.addEventListener("keydown",function(event){
   }
 });
 var MASHQ_ACCESS_PENDING=null;
+var PWA_CHECKOUT_FRAME=null,PWA_CHECKOUT_RETURN_FOCUS=null;
+function pwaCheckoutBack(){
+  if(!PWA_CHECKOUT_FRAME)return false;
+  try{
+    var child=PWA_CHECKOUT_FRAME.contentWindow;
+    if(typeof child.hskPwaCheckoutBack==="function"){child.hskPwaCheckoutBack();return true}
+  }catch(e){}
+  return App.closePwaCheckout(PWA_CHECKOUT_FRAME.contentWindow);
+}
 var App={
+  openPwaCheckout:function(query){
+    if(!PWA_COURSE_HOST||PWA_CHECKOUT_FRAME)return;
+    if($("#paywall").classList.contains("on"))App.closePaywall();
+    if($("#sheet").classList.contains("on"))App.closeSheet();
+    var layer=document.createElement("section"),back=document.createElement("button"),frame=document.createElement("iframe");
+    layer.id="pwa-checkout-layer";layer.setAttribute("role","dialog");layer.setAttribute("aria-modal","true");
+    layer.setAttribute("aria-label","HSK AI Pro");
+    back.type="button";back.id="pwa-checkout-back";back.setAttribute("aria-label",commonMessage("action.back",""));
+    back.innerHTML='<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg>';
+    back.onclick=pwaCheckoutBack;
+    frame.title="HSK AI Pro";query.set("embedded","1");frame.src="/iphone-pwa/checkout?"+query.toString();
+    PWA_CHECKOUT_FRAME=frame;PWA_CHECKOUT_RETURN_FOCUS=document.activeElement;
+    layer.append(back,frame);document.body.appendChild(layer);$(".wrap").inert=true;
+    back.focus({preventScroll:true});NavBack.sync();
+  },
+  closePwaCheckout:function(child){
+    if(!PWA_CHECKOUT_FRAME||PWA_CHECKOUT_FRAME.contentWindow!==child)return false;
+    var focus=PWA_CHECKOUT_RETURN_FOCUS;
+    PWA_CHECKOUT_FRAME=null;PWA_CHECKOUT_RETURN_FOCUS=null;CHECKOUT_NAVIGATING=false;INTERNAL_NAVIGATING_UNTIL=0;
+    $("#pwa-checkout-layer").remove();$(".wrap").inert=false;
+    if(focus&&focus.isConnected)focus.focus({preventScroll:true});
+    NavBack.sync();
+    // The current screen is interactive immediately. Refresh server-owned
+    // access/plan after closing, never while a lesson/checkout is drawing.
+    pwaCourseActor().then(function(){return refreshPwaCheckoutMap()}).catch(function(){});
+    return true;
+  },
   setLang:function(l){if(!I18N[l])return;LANG=l;syncDocumentLanguage();renderAll()},
   show:function(s,ratingSource){
+    if(s==="settings"&&!PWA_COURSE_HOST)s="profile";
     if(s==="rating")ratingTabCur=ratingSource==="friends"?"friends":"league";
     syncCourseTelegramChrome();
     if(s==="mashq"&&isHsk30Level((MAP&&MAP.level)||getSelectedLevel())){
       var status=COURSE_TRACK_STATE,access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
-      if(!access||!access.allowed||Date.now()-COURSE_TRACK_CHECKED_AT>3000){
-        /* Refresh cached denial after checkout, but never bypass server authorization. */
+      if(!access||!access.allowed){
+        /* Refresh cached denials after checkout. Actual practice still passes
+           its server daily gate, so stale display state cannot grant access. */
         if(MASHQ_ACCESS_PENDING)return;
         MASHQ_ACCESS_PENDING=courseTrackStatus(true).then(function(loaded){
           var refreshed=loaded&&loaded.tracks&&loaded.tracks.hsk30&&loaded.tracks.hsk30.access;
@@ -2555,11 +2785,20 @@ var App={
         return;
       }
     }
-    var previous=SCREEN;SCREEN=s;document.querySelectorAll(".scr").forEach(function(e){e.classList.toggle("on",e.id==="s-"+s)});
+    var previous=SCREEN;
+    if(PWA_COURSE_HOST&&previous!==s&&!NAVBACK_SCREEN_CHANGE){
+      SCREEN_HISTORY.push(previous);
+      if(SCREEN_HISTORY.length>12)SCREEN_HISTORY.shift();
+    }
+    SCREEN=s;document.querySelectorAll(".scr").forEach(function(e){e.classList.toggle("on",e.id==="s-"+s)});
+    if(PWA_COURSE_HOST){
+      SETTINGS_SHEET=s==="settings";
+      if(SETTINGS_SHEET)renderPwaSettings();
+    }
     document.querySelectorAll("#nav button").forEach(function(b){var selected=b.dataset.s===s;b.classList.toggle("on",selected);if(selected)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
     renderFloatHint(s);
     /* kurs ekrani: yo'lakcha boshidan emas, user turgan darsdan ochiladi */
-    if(s==="course"){drawTrails();scrollToCurrentNode()}else{window.scrollTo(0,0)}
+    if(s==="course"){       if(PWA_COURSE_HOST&&typeof requestAnimationFrame==="function"){         requestAnimationFrame(function(){requestAnimationFrame(function(){           if(SCREEN!=="course")return;           drawTrails();scrollToCurrentNode();         })});       }else{drawTrails();scrollToCurrentNode()}     }else{window.scrollTo(0,0)}
     if(s==="course"&&previous!=="course"){refreshCourseProgress();queueHsk30PromoCheck()}
     if(s==="mashq"){
       /* The bundled Practice cards do not depend on local preloads finishing.
@@ -2572,6 +2811,7 @@ var App={
     if(s!=="profile"&&window.HskProfileCarousel)window.HskProfileCarousel.pause();
     if(s==="profile"){
       renderProfile();
+      if(previous==="settings")$("#s-profile .profile-settings").focus({preventScroll:true});
       loadProfileDetail();
       if(!TRIAL_LOADED)trialFetchStatus().then(function(){if(SCREEN==="profile")renderProfile()});
     }
@@ -2585,7 +2825,7 @@ var App={
     if(s==="course"&&window._pendingXpFly){var fx=window._pendingXpFly;window._pendingXpFly=0;setTimeout(function(){flyXp(fx)},350)}},
   openSheet:function(html){var sheet=$("#sheet");if(!sheet.classList.contains("on"))SHEET_RETURN_FOCUS=document.activeElement;sheet.classList.remove("hsk30-promo-center","hsk30-book-card","course-choice-sheet","profile-apps-choice","lesson-exit-confirm");sheet.removeAttribute("aria-label");sheet.removeAttribute("aria-labelledby");$("#sheet-body").innerHTML=html;var title=sheet.querySelector("#sheet-body h1,#sheet-body h2,#sheet-body h3,#sheet-body [role='heading'],#sheet-body .shead .tr");if(title){if(!title.id)title.id="hsk-sheet-title";sheet.setAttribute("aria-labelledby",title.id)}else{sheet.setAttribute("aria-label",courseMessage("sheet.dialogLabel",LANG==="ru"?"Диалог HSK AI":LANG==="tj"?"Муколамаи HSK AI":"HSK AI oynasi"))}var close=sheet.querySelector(".sx");if(close)close.setAttribute("aria-label",courseMessage("sheet.closeLabel",LANG==="ru"?"Закрыть":LANG==="tj"?"Пӯшидан":"Yopish"));sheet.setAttribute("role","dialog");sheet.setAttribute("aria-modal","true");sheet.classList.add("on");setSheetBackgroundInert(true);focusSheetStart(sheet);startSheetPromo("#sheet")},
   closeSheet:function(){
-    SETTINGS_SHEET=false;
+    SETTINGS_SHEET=PWA_COURSE_HOST&&SCREEN==="settings";
     var sheet=$("#sheet");sheet.classList.remove("on","hsk30-promo-center","hsk30-book-card","course-choice-sheet","profile-apps-choice","lesson-exit-confirm");sheet.removeAttribute("role");sheet.removeAttribute("aria-modal");sheet.removeAttribute("aria-label");sheet.removeAttribute("aria-labelledby");sheet.removeAttribute("tabindex");stopSheetPromo();setSheetBackgroundInert(false);var returnFocus=SHEET_RETURN_FOCUS;SHEET_RETURN_FOCUS=null;if(returnFocus&&returnFocus.isConnected&&typeof returnFocus.focus==="function")returnFocus.focus({preventScroll:true});
     var revealUnlock=!!window._pendingUnlockAfterSheet;window._pendingUnlockAfterSheet=false;
     /* Qulf ochilishi animatsiyasi ustiga reklama chiqmaydi — u o'quvchi
@@ -2595,7 +2835,7 @@ var App={
     flushPendingCenterAd();
   },
   openPaywall:function(ctx){
-    if(isLimitPaywallContext(ctx)&&window.CourseAds&&CourseAds.showLimitPromo){
+    if(!PWA_COURSE_HOST&&isLimitPaywallContext(ctx)&&window.CourseAds&&CourseAds.showLimitPromo){
       var isPron=ctx==="pronLimit",feature=isPron?"pronunciation":"lesson";
       var source=isPron?"v3_pronunciation_limit":"v3_locked_lesson";
       PAY_SOURCE=source;
@@ -2638,10 +2878,11 @@ var App={
     CHECKOUT_NAVIGATING=true;
     var source=src||PAY_SOURCE||"v3_paywall";
     SALES_PAYWALL_ACTIVE=false;SALES_PAYWALL_IMPRESSION="";
+    if(PWA_COURSE_HOST){var query=courseCheckoutReturnParams();query.set("lang",LANG);query.set("source",source);query.set("mode","subscription");App.openPwaCheckout(query);return}
     var url="/subscription.html?lang="+LANG+"&source="+encodeURIComponent(source)+"&mode=subscription"
       +"&"+courseCheckoutReturnParams().toString();
     var clickId=["checkout",COURSE_SESSION_ID,Date.now(),Math.random().toString(36).slice(2,8)].join(":");
-    trackCheckoutOpenedForRedirect(source,clickId);
+    if(!PWA_COURSE_HOST)trackCheckoutOpenedForRedirect(source,clickId);
     /* Same-origin subscription page: navigate inside the Telegram Mini App webview.
        This is not a Mini App exit, so pagehide must not notify the bot. */
     beginInternalNavigation();
@@ -2867,6 +3108,17 @@ var App={
          reklama va desktop promo'dan KEYIN, ya'ni hech biri bilan
          to'qnashmaydi. Server javob bermaguncha so'ralmaydi. */
       if(studySetupPending())setTimeout(askPendingStudySetup,700);
+      var lessonFeedback=window._pendingPwaLessonFeedback||null;
+      window._pendingPwaLessonFeedback=null;
+      if(PWA_COURSE_HOST&&lessonFeedback&&!dest&&document.visibilityState==="visible"){
+        lessonFeedback.canOpen=function(){
+          return SCREEN==="course"&&MAP&&MAP.level===lessonFeedback.level&&
+            document.visibilityState==="visible"&&!NavBack.blocked()&&!NavBack.top();
+        };
+        setTimeout(function(){
+          if(lessonFeedback.canOpen()&&window.HskPwaFeedback)HskPwaFeedback.open(lessonFeedback);
+        },900);
+      }
     };
     /* Bepul userga dars yakuni reklamasi — bayram/streak/reyting ekranlaridan
        KEYIN, xaritaga qaytishdan oldin. Reklama yo'q yoki yuklanmasa jim o'tadi. */
@@ -2979,14 +3231,16 @@ var App={
   toggleTourVoice:function(){TOURV=!TOURV;if(!TOURV){stopTourAudio()}tourRender(!TOURV)},
   openDict:function(){RESOURCE.open("dict")},
   openPhrases:function(){RESOURCE.open("phrases")},
-  openRecog:function(){RECOG.open()},
-  openPron:function(){PRON.open()},
-  openTest:function(){if(isHsk30Level((MAP&&MAP.level)||getSelectedLevel())){showHsk30TestSoon();return}TEST.open()},
-  openMistakes:function(){MIST.open()},
+  openRecog:function(){if(PWA_COURSE_HOST){RESOURCE.openPractice("/course_v3_recognition.html?lang="+encodeURIComponent(LANG)+"&level="+encodeURIComponent((MAP&&MAP.level)||getSelectedLevel()));return}RECOG.open()},
+  openPron:function(){if(PWA_COURSE_HOST){RESOURCE.openPractice("/course_v3_pronunciation.html?lang="+encodeURIComponent(LANG)+"&level="+encodeURIComponent((MAP&&MAP.level)||getSelectedLevel()));return}PRON.open()},
+  openTest:function(){if(isHsk30Level((MAP&&MAP.level)||getSelectedLevel())){showHsk30TestSoon();return}if(PWA_COURSE_HOST){RESOURCE.openPractice("/course_v3_test.html?lang="+encodeURIComponent(LANG)+"&level="+encodeURIComponent((MAP&&MAP.level)||getSelectedLevel()));return}TEST.open()},
+  openMistakes:function(){if(PWA_COURSE_HOST){RESOURCE.openPractice("/course_v3_mistakes.html?lang="+encodeURIComponent(LANG)+"&level="+encodeURIComponent((MAP&&MAP.level)||getSelectedLevel()));return}MIST.open()},
   openHelp:function(){var t=T();var c=(MAP&&MAP.admin_contact)||"";
-    var btn=c?'<button class="scta" onclick="App.contactAdmin()"><i class="ti ti-brand-telegram"></i> '+esc(courseMessage("helpBtn",t.helpBtn))+'</button>'
+    var helpIcon=PWA_COURSE_HOST?"ti-message-circle":"ti-brand-telegram";
+    var helpText=PWA_COURSE_HOST?courseMessage("pwaSettings.helpText",""):courseMessage("helpText",t.helpText);
+    var btn=c?'<button class="scta" onclick="App.contactAdmin()"><i class="ti '+helpIcon+'"></i> '+esc(courseMessage("helpBtn",t.helpBtn))+'</button>'
       :'<div class="tr" style="margin-top:6px;color:var(--ink2)">'+esc(courseMessage("helpNoContact",t.helpNoContact))+'</div>';
-    App.openSheet('<div class="shead"><div style="width:52px;height:52px;border-radius:15px;background:var(--card);border:1px solid var(--line);color:var(--cin);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 10px"><i class="ti ti-lifebuoy"></i></div><div class="tr" style="font-size:16px;color:var(--ink)">'+esc(courseMessage("helpTitle",t.helpTitle))+'</div><div class="tr">'+esc(courseMessage("helpText",t.helpText))+'</div></div>'+btn);},
+    App.openSheet('<div class="shead"><div style="width:52px;height:52px;border-radius:15px;background:var(--card);border:1px solid var(--line);color:var(--cin);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 10px"><i class="ti ti-lifebuoy"></i></div><div class="tr" style="font-size:16px;color:var(--ink)">'+esc(courseMessage("helpTitle",t.helpTitle))+'</div><div class="tr">'+esc(helpText)+'</div></div>'+btn);},
   contactAdmin:function(){var c=(MAP&&MAP.admin_contact)||"";if(!c){return}App.closeSheet();
     try{if(tg&&tg.openTelegramLink&&/^https:\/\/t\.me\//i.test(c)){tg.openTelegramLink(c);return}}catch(e){}
     try{if(tg&&tg.openLink){tg.openLink(c);return}}catch(e){}
@@ -2996,10 +3250,49 @@ var App={
   /* HSK AI rasmiy sahifasini tashqarida ochadi. URL ro'yxatdan olinadi —
      klient hech qachon ixtiyoriy manzil ochmaydi. */
   openSettings:function(){
+    if(PWA_COURSE_HOST){
+      if($("#sheet").classList.contains("on"))App.closeSheet();
+      if(SCREEN==="settings"){renderPwaSettings();return}
+      App.show("settings");
+      $("#hsk-pwa-settings-title").focus({preventScroll:true});
+      if(window.HskPwaInbox)HskPwaInbox.refreshPushStatus().catch(function(){});
+      if(!COURSE_TRACK_STATE)courseTrackStatus(false).then(function(){
+        if(SCREEN==="settings")renderPwaSettings();
+      }).catch(function(){});
+      return;
+    }
     SETTINGS_SHEET=true;App.openSheet(settingsSheetHtml());
     if(!COURSE_TRACK_STATE){
       courseTrackStatus(false).then(function(){if(SETTINGS_SHEET)App.openSheet(settingsSheetHtml())}).catch(function(){});
     }
+  },
+  logoutPwa:function(){
+    if(!PWA_COURSE_HOST||PWA_LOGOUT_PENDING)return;
+    PWA_LOGOUT_PENDING=true;
+    var button=document.activeElement;
+    if(button&&button.classList&&button.classList.contains("pwa-logout-row"))button.disabled=true;
+    pwaCourseActor().then(function(actor){
+      return fetch("/api/v3/pwa-auth/logout",{
+        method:"POST",credentials:"same-origin",cache:"no-store",redirect:"error",
+        headers:{"X-HSK-PWA-CSRF":actor.csrf}
+      }).then(function(response){
+        if(response.status===401||response.status===403){location.replace("/iphone-pwa");return null}
+        return response.json().then(function(data){
+          if(!response.ok||!data||data.ok!==true)throw new Error("pwa_logout_failed");
+          return data;
+        });
+      });
+    }).then(function(data){
+      if(!data)return;
+      PWA_COURSE_ACTOR_PROMISE=null;
+      PWA_COURSE_USER_ID=null;
+      try{sessionStorage.removeItem("hskai.pwa.telegram.pending")}catch(e){}
+      location.replace("/iphone-pwa?lang="+encodeURIComponent(LANG));
+    }).catch(function(){
+      PWA_LOGOUT_PENDING=false;
+      if(button&&button.isConnected)button.disabled=false;
+      toast(courseMessage("subscriptionPage.error",serverSaveErrorText()),2200);
+    });
   },
   openSocial:function(id){
     var item=null;
@@ -3077,9 +3370,23 @@ var App={
     App.openSheet('<div class="shead"><div class="tr" style="font-size:16px;color:var(--ink)">'+p.goalSet+'</div></div>'
       +opts.map(function(v){return '<button class="opt-row'+(v===dailyGoal?" on":"")+'" onclick="App.pickGoal('+v+')"><i class="ti ti-target"></i> '+v+' XP'+(v===dailyGoal?'<span class="chk"><i class="ti ti-check"></i></span>':'')+'</button>'}).join(""))},
   /* Tanlov endi SERVERDA saqlanadi — ilgari u faqat shu sessiyada yashardi. */
-  pickGoal:function(v){var back=SETTINGS_SHEET;dailyGoal=v;renderProfile();
+  pickGoal:function(v){
+    if(PWA_COURSE_HOST){
+      if(App._goalSavePending)return;
+      App.closeSheet();
+      if(v===dailyGoal)return;
+      App._goalSavePending=savePreferences({daily_goal_xp:v}).then(function(saved){
+        if(!saved||!saved.ok||!saved.profile||Number(saved.profile.daily_goal_xp)!==v){
+          toast(serverSaveErrorText(),2200);return;
+        }
+        if(SCREEN==="settings")renderPwaSettings();
+        refreshCourseProgress(true);
+      }).finally(function(){App._goalSavePending=null});
+      return;
+    }
+    var back=SETTINGS_SHEET,previous=dailyGoal;dailyGoal=v;renderProfile();
     if(back)App.openSettings();else App.closeSheet();
-    savePreferences({daily_goal_xp:v}).then(function(){renderProfile();if(SETTINGS_SHEET)App.openSettings()})},
+    savePreferences({daily_goal_xp:v}).then(function(saved){       if(!saved||saved.ok!==true){dailyGoal=previous;toast(serverSaveErrorText(),2200)}       renderProfile();if(SETTINGS_SHEET)App.openSettings()     })},
   /* Birinchi darsdan keyingi ikki savol: vaqt -> fokus. Ikkinchi savol
      birinchisi saqlangach ochiladi, shunda bir vaqtda bitta savol turadi. */
   pickStudyGoal:function(k){App.closeSheet();
@@ -3125,7 +3432,7 @@ var App={
   pickLang:function(l){if(!I18N[l])return;var back=SETTINGS_SHEET,oldLang=LANG;App.closeSheet();App.setLang(l);
     if(back)App.openSettings();
     /* Keep optimistic local UI, but save through a serialized queue to prevent out-of-order language writes. */
-    if(!INIT_DATA)return;if(!App._languagePendingCount)App._languageServerLang=oldLang;App._languagePendingCount=(App._languagePendingCount||0)+1;var tail=App._languageSaveTail||Promise.resolve();App._languageSaveTail=tail.catch(function(){}).then(function(){return _apiPost("/api/v3/language",{language:l}).then(function(r){if(!r.ok)throw Error("language_save_http");return r.json()}).then(function(d){if(!d||d.ok!==true||d.language!==l)throw Error("language_save_rejected");App._languageServerLang=l}).catch(function(){if(LANG===l){App.setLang(App._languageServerLang||oldLang);if(back)App.openSettings()}toast(courseMessage("onboarding.saveError",serverSaveErrorText()),2200)}).then(function(){App._languagePendingCount--})});return App._languageSaveTail}
+    if(!INIT_DATA&&!PWA_COURSE_HOST)return;if(!App._languagePendingCount)App._languageServerLang=oldLang;App._languagePendingCount=(App._languagePendingCount||0)+1;var tail=App._languageSaveTail||Promise.resolve();App._languageSaveTail=tail.catch(function(){}).then(function(){return _apiPost("/api/v3/language",{language:l}).then(function(r){if(!r.ok)throw Error("language_save_http");return r.json()}).then(function(d){if(!d||d.ok!==true||d.language!==l)throw Error("language_save_rejected");App._languageServerLang=l}).catch(function(){if(LANG===l){App.setLang(App._languageServerLang||oldLang);if(back){if(!PWA_COURSE_HOST)App.openSettings();else if(SCREEN==="settings")renderPwaSettings()}}toast(courseMessage("onboarding.saveError",serverSaveErrorText()),2200)}).then(function(){App._languagePendingCount--})});return App._languageSaveTail}
 };
 function navInit(){document.querySelectorAll("#nav button").forEach(function(b){b.onclick=function(){App.show(b.dataset.s)}})
   var nav=document.getElementById("nav");
@@ -3155,7 +3462,9 @@ function loadLessonData(lv,n){
   var key=lessonDataKey(lv,n),scope=localUserScope();
   if(LESSON_DATA_CACHE[key])return Promise.resolve(cloneJson(LESSON_DATA_CACHE[key]));
   if(LESSON_DATA_PROMISES[key])return LESSON_DATA_PROMISES[key].then(cloneJson);
-  LESSON_DATA_PROMISES[key]=fetch(lessonDataUrl(lv,n),{headers:{"X-Telegram-Init-Data":INIT_DATA},cache:"no-store"}).then(function(r){
+  var lessonRequest=PWA_COURSE_HOST?_apiGet(lessonDataUrl(lv,n)):
+    fetch(lessonDataUrl(lv,n),{headers:{"X-Telegram-Init-Data":INIT_DATA},cache:"no-store"});
+  LESSON_DATA_PROMISES[key]=lessonRequest.then(function(r){
     if(!r.ok)throw new Error("not_found");
     return r.json();
   }).then(function(d){
@@ -3202,7 +3511,7 @@ function schedulePracticeBackgroundLoad(){
         PRACTICE_BACKGROUND_SCHEDULED=false;
         if(SCREEN!=="mashq")return;
         prefetchPracticeAssets();
-        if(window.RESOURCE)RESOURCE.warm();
+        if(!PWA_COURSE_HOST){if(window.RESOURCE)RESOURCE.warm();}
       };
       if(typeof requestIdleCallback==="function")
         requestIdleCallback(warmInIdle,{timeout:1800});
@@ -3621,7 +3930,13 @@ function foundationMapState(){
   var s=(MAP&&MAP.foundation)||(PROF&&PROF.foundation)||{};
   return s&&typeof s==="object"?s:{};
 }
-function localUserScope(){try{var u=tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user;if(u&&u.id)return String(u.id)}catch(e){}return"preview"}
+function localUserScope(){
+  // Never share a browser learner's resume/mastery/foundation cache with
+  // another canonical account or with the old anonymous "preview" scope.
+  if(PWA_COURSE_HOST)return "pwa:"+String(PWA_COURSE_USER_ID||"unbound");
+  try{var u=tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user;if(u&&u.id)return String(u.id)}catch(e){}
+  return"preview"
+}
 function foundationCacheKey(id,version){return"hsk_v3_foundation:"+localUserScope()+":"+String(id||"starter0_hsk1")+":v"+Number(version||1)}
 function foundationCachedState(id,version){try{return JSON.parse(localStorage.getItem(foundationCacheKey(id,version))||"null")||{}}catch(e){return{}}}
 function foundationIsComplete(){
@@ -3809,7 +4124,9 @@ function showCourseMapFailure(res){
   if(res&&res.blocked)showBlockedGate(res.support_url);
   else if(res&&res.hsk30Soon)showHsk30LevelSoon(res.level);
   else if(res&&res.hsk30Gate){setSelectedLevel(res.level||"nhsk1");if(MAP)MAP.level=getSelectedLevel();showHsk30AccessGate()}
-  else if(res&&res.auth===false)showAuthGate();
+  // A browser session has no bot to return to: an expired PWA session goes
+  // back to the iPhone sign-in page instead of the Telegram auth gate.
+  else if(res&&res.auth===false){if(PWA_COURSE_HOST)location.replace("/iphone-pwa");else showAuthGate()}
   else showCourseLoadError();
   return true;
 }
@@ -4011,7 +4328,9 @@ Foundation.start=function(data,opts){
 };
 function startFoundationFromMap(restart,afterComplete){
   var s=foundationMapState(),required=!!((s.required||s.foundation_required)&&!foundationIsComplete());
-  return fetch("/api/v3/lesson/foundation",{headers:{"X-Telegram-Init-Data":INIT_DATA},cache:"no-store"}).then(function(r){if(!r.ok)throw new Error("foundation_unavailable");return r.json()}).then(function(d){if(!d||!d.foundation)throw new Error("foundation_unavailable");Foundation.start(d.foundation,{restart:!!restart,required:required,afterComplete:afterComplete})}).catch(function(){
+  var foundationRequest=PWA_COURSE_HOST?_apiGet("/api/v3/lesson/foundation"):
+    fetch("/api/v3/lesson/foundation",{headers:{"X-Telegram-Init-Data":INIT_DATA},cache:"no-store"});
+  return foundationRequest.then(function(r){if(!r.ok)throw new Error("foundation_unavailable");return r.json()}).then(function(d){if(!d||!d.foundation)throw new Error("foundation_unavailable");Foundation.start(d.foundation,{restart:!!restart,required:required,afterComplete:afterComplete})}).catch(function(){
     var unavailable=courseMessage("foundation.unavailable",LANG==="ru"?"Основы пока недоступны":LANG==="tj"?"Асосҳо ҳоло дастрас нестанд":"Asoslar hozircha ochilmadi");
     toast(unavailable,2600);
     if(required){
@@ -4293,7 +4612,7 @@ function setLessonFlowControls(){
   var close=document.querySelector("#flow .fx");if(close)close.style.visibility="visible";
 }
 function reserveLessonStart(l){P3_RESERVED_GRAMMAR=null;LESSON_COMPLETION_PROOF="";if(INIT_DATA&&l&&l.status==="done"&&normalizeLevel((MAP&&MAP.level)||getSelectedLevel())==="nhsk2")return reserveCompletedP3Grammar(l);
-  if(!INIT_DATA||!l||l.status!=="current")return Promise.resolve({ok:true,allowed:true});
+  if((!INIT_DATA&&!PWA_COURSE_HOST)||!l||l.status!=="current")return Promise.resolve({ok:true,allowed:true});
   return _apiPost("/api/v3/lesson/start",{lesson_id:l.n,level:(MAP&&MAP.level)||"hsk1",lang:LANG})
     .then(function(r){return r.json().catch(function(){return{}}).then(function(d){
       d._status=r.status;
@@ -5660,35 +5979,85 @@ function _fetchCourseMap(lv,signal){
   var entrySource="";try{entrySource=new URLSearchParams(location.search||"").get("source")||""}catch(e){}
   var url="/api/v3/map?lang="+LANG+"&level="+lv+"&tz="+encodeURIComponent(-new Date().getTimezoneOffset())
     +"&sid="+encodeURIComponent(COURSE_SESSION_ID)+"&source="+encodeURIComponent(entrySource);
-  return fetch(url,{headers:{"X-Telegram-Init-Data":INIT_DATA},cache:"no-store",signal:signal}).then(function(r){
-    return r.json().then(function(d){d._status=r.status;return d}).catch(function(){return {_status:r.status,_parseFail:true}});
+  var request=PWA_COURSE_HOST?pwaCourseActor().then(function(actor){
+    return fetch(url.replace("/api/v3/map?","/api/v3/pwa/map?"),{
+      method:"POST",headers:{"X-HSK-PWA-CSRF":actor.csrf},
+      credentials:"same-origin",cache:"no-store",signal:signal,redirect:"error"
+    });
+  }):fetch(url,{headers:{"X-Telegram-Init-Data":INIT_DATA},cache:"no-store",signal:signal});
+  return request.then(function(r){
+    if(PWA_COURSE_HOST){
+      if(r.status===401){
+        PWA_COURSE_ACTOR_PROMISE=null;
+        location.replace("/iphone-pwa");
+      }else if(r.ok&&PWA_COURSE_USER_ID&&
+               r.headers.get("X-HSK-PWA-User-ID")!==String(PWA_COURSE_USER_ID)){
+        // Another tab may have replaced the HttpOnly account cookie. Never
+        // render the next user's map using the first user's local cache.
+        PWA_COURSE_ACTOR_PROMISE=null;
+        location.replace("/iphone-pwa");
+        throw new Error("pwa_actor_changed");
+      }
+    }
+    return r.json().then(function(d){
+      if(PWA_COURSE_HOST&&r.status===403&&d&&d.error==="pwa_csrf_invalid"){
+        // A session cookie replaced in another tab changes its CSRF secret.
+        // Never keep rendering the previous learner's local browser state.
+        PWA_COURSE_ACTOR_PROMISE=null;
+        location.replace("/iphone-pwa");
+        throw new Error("pwa_actor_changed");
+      }
+      d._status=r.status;return d;
+    }).catch(function(){return {_status:r.status,_parseFail:true}});
   });
 }
-function loadCourseMap(lv,tries){
+function refreshPwaCheckoutMap(){
+  if(!MAP||PWA_CHECKOUT_FRAME)return Promise.resolve(false);
+  var snapshot=MAP,level=MAP.level||getSelectedLevel();
+  var controller=new AbortController(),timer=setTimeout(function(){controller.abort()},10000);
+  return _fetchCourseMap(level,controller.signal).then(function(data){
+    if(MAP!==snapshot||PWA_CHECKOUT_FRAME||$("#flow").classList.contains("on"))return false;
+    if(isHsk30AccessError(data,level)){showCourseMapFailure({hsk30Gate:true,level:data.level||level});return false}
+    if(!data||data._parseFail||data._status>=400||data.authenticated===false||!Array.isArray(data.units)||data.level!==level)return false;
+    MAP=rememberLimitText(data);if(data.user)PROF=data.user;
+    adoptStudySetup(data);syncNotify();ratingLoaded=false;renderAll();
+    return true;
+  }).finally(function(){clearTimeout(timer)});
+}
+function loadCourseMap(lv,tries,signal){
+  if(signal&&signal.aborted)return Promise.resolve({cancelled:true});
   tries=tries||0;
-  return _fetchCourseMap(lv).then(function(d){
+  // PWA: one bounded attempt. A newer level choice aborts this request
+  // through `signal`; a stalled connection aborts it after 8 s.
+  var controller=PWA_COURSE_HOST&&window.AbortController?new AbortController():null,timer,onAbort;
+  if(controller&&signal){onAbort=function(){controller.abort()};signal.addEventListener("abort",onAbort)}
+  var request=_fetchCourseMap(lv,controller?controller.signal:signal);
+  if(controller)request=Promise.race([request,new Promise(function(resolve){
+    timer=setTimeout(function(){controller.abort();resolve({_parseFail:true})},8000);
+  })]);
+  return request.then(function(d){
     if(d&&d._status===403&&d.error==="user_blocked")return {blocked:true,support_url:d.support_url||""};
     if(d&&d._status===403&&(d.error==="hsk30_level_not_live"||d.error==="hsk30_no_live_levels"))return {hsk30Soon:true,error:d.error,level:lv};
     if(isHsk30AccessError(d,d.level||lv))return {hsk30Gate:true,error:d.error,level:d.level||lv};
     if(d&&(d.authenticated===false||d._status===401))return {auth:false};
     if(!d||d._parseFail||(d._status&&d._status>=500)){
-      if(tries<3)return _retryCourseMap(lv,tries);
+      if(signal&&signal.aborted)return {cancelled:true};if(!PWA_COURSE_HOST&&tries<3)return _retryCourseMap(lv,tries,signal);
       return {error:true};
     }
     if(d._status>=400||!Array.isArray(d.units))return {error:true};
     if(d.smart_preferences_available===true)_ensureSmartTimezone(); // Best effort; learning/navigation never waits for Smart metadata.
     return {data:d};
   }).catch(function(){
-    if(tries<3)return _retryCourseMap(lv,tries);
+    if(signal&&signal.aborted)return {cancelled:true};if(!PWA_COURSE_HOST&&tries<3)return _retryCourseMap(lv,tries,signal);
     return {error:true};
-  });
+  }).finally(function(){clearTimeout(timer);if(onAbort)signal.removeEventListener("abort",onAbort)});
 }
-function _retryCourseMap(lv,tries){return new Promise(function(res){setTimeout(res,500*(tries+1))}).then(function(){return loadCourseMap(lv,tries+1)})}
-function loadLevel(lv){
+function _retryCourseMap(lv,tries,signal){return new Promise(function(res){setTimeout(res,500*(tries+1))}).then(function(){return signal&&signal.aborted?{cancelled:true}:loadCourseMap(lv,tries+1,signal)})}
+var PWA_LEVEL_REQUEST_SEQ=0,PWA_LEVEL_ABORT=null; function loadLevel(lv){if(PWA_COURSE_HOST&&PWA_LEVEL_ABORT)PWA_LEVEL_ABORT.abort();PWA_LEVEL_ABORT=PWA_COURSE_HOST&&window.AbortController?new AbortController():null;var reqSignal=PWA_LEVEL_ABORT?PWA_LEVEL_ABORT.signal:undefined,requestId=PWA_COURSE_HOST?++PWA_LEVEL_REQUEST_SEQ:0;
   clearDeferredCourseUnlock();
   lv=setSelectedLevel(lv);
-  if(!INIT_DATA){hideCourseTrackSwitchPreparing();showAuthGate();return;}
-  return loadCourseMap(lv).then(function(res){
+  if(!INIT_DATA&&!PWA_COURSE_HOST){hideCourseTrackSwitchPreparing();showAuthGate();return;}
+  return loadCourseMap(lv,0,reqSignal).then(function(res){if(PWA_COURSE_HOST&&requestId!==PWA_LEVEL_REQUEST_SEQ)return;
     // On failure dismiss the loader before opening the error/paywall sheet.
     if(!res||!res.data)hideCourseTrackSwitchPreparing();
     if(showCourseMapFailure(res))return;
@@ -5698,13 +6067,17 @@ function loadLevel(lv){
     hideAuthGate();MAP=rememberLimitText(d);adoptServerLang(d);adoptBotUsername(d);setSelectedLevel(MAP.level||lv);if(d.user)PROF=d.user;syncNotify();ratingLoaded=false;renderAll();App.show("course");
     hideCourseTrackSwitchPreparing();
     prefetchNearbyLessons();
-  }).catch(function(){
+  }).catch(function(){if(PWA_COURSE_HOST&&requestId!==PWA_LEVEL_REQUEST_SEQ)return;
     hideCourseTrackSwitchPreparing();
     showCourseLoadError();
   });
 }
 function applyLessonDone(cur,d){
   var rankBefore=Number(d&&d.rank_before)||0;
+  if(PWA_COURSE_HOST&&d&&d.ok===true&&!d.duplicate){
+    window._pendingPwaLessonFeedback={confirmed:true,lessonId:Number(cur&&cur.n)||0,
+      level:String((MAP&&MAP.level)||getSelectedLevel())};
+  }
   clearLessonResume((MAP&&MAP.level)||"hsk1",cur&&cur.n);
   clearLessonMastery((MAP&&MAP.level)||"hsk1",cur&&cur.n);
   var al=allLessons();
@@ -5766,7 +6139,7 @@ function flowDone(){
   flowProg();$("#f-cta").style.display="none";hideBar();setWriteBtn("");
   var cur=typeof Flow.lessonIdx==="number"?allLessons()[Flow.lessonIdx]:allLessons().find(function(l){return l.status==="current"});
   if(!cur){App.showLevelUp("lesson");return}
-  if(!INIT_DATA){applyLessonDone(cur,null);return}
+  if(!INIT_DATA&&!PWA_COURSE_HOST){applyLessonDone(cur,null);return}
   var doneIdx=Flow.lessonIdx;
   _apiPost("/api/v3/lesson/complete",{lesson_id:cur.n,level:MAP.level||"hsk1",lang:LANG,session_id:COURSE_SESSION_ID,completion_proof:LESSON_COMPLETION_PROOF,mistakes:(Flow.mistakes||[]).slice(0,50)})
     .then(function(r){return r.json().then(function(d){d._status=r.status;return d})})
@@ -5833,9 +6206,16 @@ function renderVoice(){
   var t=T();
   $("#s-voice").innerHTML='<div class="htop"><h1 class="section-title">AI Voice</h1></div>'
     +'<div class="voicebox"><div class="pd">'+pandaChar("talk")+'</div><h3>'+courseMessage("voiceTitle",t.voiceTitle)+'</h3><p>'+courseMessage("voiceSub",t.voiceSub)+'</p><p class="voice-quota" id="voice-quota" role="status" aria-live="polite" hidden></p><button onclick="App.openVoiceCall()"><i class="ti ti-phone"></i> '+courseMessage("voiceStart",t.voiceStart)+'</button></div>';
-  if(INIT_DATA&&window.CourseLimitStatus){
-    CourseLimitStatus.get("voice").then(function(status){
-      var quota=document.getElementById("voice-quota");
+  var quota=document.getElementById("voice-quota");
+  var voiceStatus=PWA_COURSE_HOST?(SCREEN==="voice"?pwaCourseActor().then(function(){
+    return fetch("/api/v3/pwa/voice/me",{credentials:"same-origin",cache:"no-store",redirect:"error"});
+  }).then(function(res){return res.ok?res.json():null}).then(function(data){
+    if(!data||typeof data.remaining_voice_limit!=="number")return null;
+    return {remaining:data.remaining_voice_limit<0?null:data.remaining_voice_limit};
+  }):null):(INIT_DATA&&window.CourseLimitStatus?CourseLimitStatus.get("voice"):null);
+  if(voiceStatus){
+    voiceStatus.then(function(status){
+      if(!quota.isConnected)return;
       if(!quota||SCREEN!=="voice"||!status)return;
       var unlimited=!!status.is_paid||status.remaining==null;
       var copy=courseMessage(unlimited?"voicePage.quotaUnlimited":"voicePage.quotaRemaining",LANG==="ru"
@@ -6176,9 +6556,10 @@ function ratingCountdownText(){
 	}
 	/* Haqiqiy Telegram avatarlari: harf zaxira bo'lib qoladi, rasm ustidan yopadi.
 	   Rasm topilmasa (404) img o'chadi va harf ko'rinaveradi. */
-	function avatarImgHtml(tgId){return tgId?'<img class="avp" alt="" loading="lazy" src="/api/v3/avatar/'+Number(tgId)+'" onerror="this.remove()">':""}
+	function avatarImgHtml(tgId){return !PWA_COURSE_HOST&&tgId?'<img class="avp" alt="" loading="lazy" src="/api/v3/avatar/'+Number(tgId)+'" onerror="this.remove()">':""}
 	function myTgUser(){try{return (tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user)||{}}catch(e){return{}}}
 	function myAvatarImgHtml(){
+	  if(PWA_COURSE_HOST)return "";
 	  var u=myTgUser();
 	  var src=u.photo_url?String(u.photo_url):(u.id?"/api/v3/avatar/"+Number(u.id):"");
 	  return src?'<img class="avp" alt="" src="'+esc(src)+'" onerror="this.remove()">':"";
@@ -6188,7 +6569,7 @@ function ratingCountdownText(){
 	  return {
 	    rank:Number(u.rank||0),
 	    me:!!u.is_current_user,
-	    a:(u.name||"?")[0].toUpperCase(),
+	    a:(Array.from(u.name||"?")[0]||"?").toUpperCase(),
 	    n:u.name||"?",
 	    xp:Number(u.total_xp||0),
 	    totalXp:Number(u.total_xp||0),
@@ -6197,6 +6578,7 @@ function ratingCountdownText(){
 	    username:u.username||"",
 	    tgId:u.telegram_id||0,
 	    level:u.course_level||"",
+	    league:u.league||"",
 	    completedLessons:u.completed_lessons||0,
 	    refStatus:u.status||""
 	  };
@@ -6237,7 +6619,11 @@ function applyRatingPayload(d){
 	}
 	function invitePayloadUrl(){return "/api/v3/invite?lang="+LANG+"&tz="+encodeURIComponent(-new Date().getTimezoneOffset())}
 	function loadLatestRating(){
-	  return _apiGet("/api/miniapp/gamification?tz="+encodeURIComponent(-new Date().getTimezoneOffset())).then(function(r){return r.json()}).then(function(d){
+	  var timezoneOffset=-new Date().getTimezoneOffset();
+	  var request=PWA_COURSE_HOST
+	    ? _apiPost("/api/miniapp/gamification",{timezone_offset_minutes:timezoneOffset})
+	    : _apiGet("/api/miniapp/gamification?tz="+encodeURIComponent(timezoneOffset));
+	  return request.then(function(r){return r.json()}).then(function(d){
 	    if(!d||!d.ok)throw new Error("rating_failed");
 	    applyRatingPayload(d);
 	    return d;
@@ -6257,7 +6643,7 @@ function applyRatingPayload(d){
 function renderRating(){
   // Friends fetches referrals directly; it must not wait for a leaderboard request.
   if(ratingTabCur==="friends"){_renderRatingContent();return}
-  if(!ratingLoaded&&INIT_DATA){
+  if(!ratingLoaded&&(INIT_DATA||PWA_COURSE_HOST)){
     ratingLoaded=true;
     var t=T();
     $("#s-rating").innerHTML='<div style="padding:60px 0;text-align:center;color:var(--ink3)">…</div>';
@@ -6292,15 +6678,15 @@ function ratingCupSvg(metal,isCenter){
     +'<rect x="37" y="137" width="76" height="12" rx="4" fill="url(#'+id+')" stroke="'+palette[2]+'" stroke-width="1.5"/>'
     +'<ellipse cx="75" cy="140" rx="34" ry="3" fill="'+palette[0]+'" opacity=".5"/></svg>';
 }
+var RATING_LEAGUES=["Bronze","Silver","Gold","Sapphire"],RATING_GLYPHS=["玄武","朱雀","青龙","凤凰"];
 function ratingPodiumHtml(memberCount){
-  var r=rl(),lang=LANG||"ru",leagues=["Bronze","Silver","Gold","Sapphire"];
-  var index=leagues.indexOf(ratingMeta.league);
+  var r=rl(),lang=LANG||"ru";
+  var index=RATING_LEAGUES.indexOf(ratingMeta.league);
   if(index<0)index=0;
   var sideIndices=index<=1?[index+1,index+2]:[index-1,index===2?index+1:index-2];
-  var glyphs=["玄武","朱雀","青龙","凤凰"];
   function tierName(i){
     var noun=lang==="ru"?"Лига ":lang==="tj"?"Лигаи ":"Ligasi ";
-    return courseMessage("rating.leagueName",lang==="uz"?"{league} ligasi":noun+"{league}").replace("{league}",glyphs[i]);
+    return courseMessage("rating.leagueName",lang==="uz"?"{league} ligasi":noun+"{league}").replace("{league}",RATING_GLYPHS[i]);
   }
   function item(i,metal,center){
     return '<div class="rating-podium-item'+(center?' main':'')+'"><div class="rating-cup">'+ratingCupSvg(metal,center)+'</div><div class="rating-pedestal"><span class="rating-cup-label han">'+esc(tierName(i))+'</span>'+''+'</div></div>';
@@ -6318,7 +6704,7 @@ function _renderRatingContent(){
   var memberCount=Number(ratingMeta.leagueSize||ratingUsers.length||0);
   var h=ratingTabCur==="friends"?'<h1 class="rating-friends-heading">'+esc(r.friends)+'</h1>':'<h1 class="section-title rating-title">'+esc(commonMessage("navigation.rating",LANG==="ru"?"Рейтинг":LANG==="tj"?"Рейтинг":"Reyting"))+'</h1>';
 	  if(ratingTabCur==="friends"){
-	    if(!referralMeta.loaded&&INIT_DATA){
+	    if(!referralMeta.loaded&&(INIT_DATA||PWA_COURSE_HOST)){
 	      referralMeta.loaded=true;
 	      $("#s-rating").innerHTML=h+'<div style="padding:60px 0;text-align:center;color:var(--ink3)">…</div>';
 	      loadReferrals().then(function(){_renderRatingContent()}).catch(function(){referralMeta={loaded:true,error:true,joined:0,active:0,required:0};referralUsers=[];_renderRatingContent()});
@@ -6357,7 +6743,7 @@ function _renderRatingContent(){
 
     var rk=i<3?'<span class="med '+med[i]+'">'+(i+1)+'</span>':'<span class="rk">'+(i+1)+'</span>';
     var pm=u.p?'<span class="pm"><i class="ti ti-crown"></i></span>':'';
-	    h+='<button type="button" class="lr'+(u.me?' me':'')+'" onclick="openRatingUser('+i+',\'rating\')">'+rk+'<span class="av'+(u.me?' han':'')+'">'+u.a+(u.me?myAvatarImgHtml():avatarImgHtml(u.tgId))+'</span><span class="nm">'+esc(u.n)+pm+'</span><span class="xp">'+ratingScore(u).toLocaleString("ru")+'</span></button>';
+	    h+='<button type="button" class="lr'+(u.me?' me':'')+'" onclick="openRatingUser('+i+',\'rating\')">'+rk+'<span class="av'+(u.me?' han':'')+'">'+esc(u.a)+(u.me?myAvatarImgHtml():avatarImgHtml(u.tgId))+'</span><span class="nm">'+esc(u.n)+pm+'</span><span class="xp">'+ratingScore(u).toLocaleString("ru")+'</span></button>';
 	  });
   $("#s-rating").innerHTML=h;
 }
@@ -6585,7 +6971,7 @@ function finishChallengeRound(){
 /* ---------- Invite friend sheet ---------- */
 var _invitePayload=null;
 function renderInviteSheet(d){
-  _invitePayload=d;
+  _invitePayload=d;if(PWA_COURSE_HOST&&window.HskPwaInvite){HskPwaInvite.open(d);return}
   var sendLbl=courseMessage("rating.inviteSend",LANG==="ru"?"Отправить сообщение":LANG==="tj"?"Паём фиристодан":"Xabar yuborish");
   var title=courseMessage("rating.inviteTitle",LANG==="ru"?"Пригласить друга":LANG==="tj"?"Дӯстро даъват кардан":"Do'st chaqirish");
   var hint=courseMessage("rating.inviteHint",LANG==="ru"?"Готовый текст откроется в Telegram. Выберите друга и отправьте.":LANG==="tj"?"Матни тайёр дар Telegram кушода мешавад. Дӯстро интихоб кунед ва фиристед.":"Tayyor matn Telegramda ochiladi. Do'stni tanlab yuboring.");
@@ -6598,7 +6984,7 @@ function renderInviteSheet(d){
 function openInviteSheet(){
   var loading=courseMessage("rating.inviteLoading",LANG==="ru"?"Готовим ссылку…":LANG==="tj"?"Силка омода мешавад…":"Link tayyorlanyapti…");
 	  App.openSheet('<div class="shead"><div class="zh han" style="font-size:34px">友</div><div class="tr">'+loading+'</div></div>');
-	  if(INIT_DATA){
+	  if(INIT_DATA||PWA_COURSE_HOST){
 	    _apiGet(invitePayloadUrl()).then(function(r){return r.json()}).then(function(d){
 	      if(d&&d.ok){renderInviteSheet(d);return}
 	      throw new Error("invite_failed");
@@ -6639,19 +7025,20 @@ function openInviteSheet(){
 	      +'<div class="note">'+esc(rivNote)+'</div></div>';
 	  }
 
-	  var acts=u.me?""
+	  var acts=u.me||PWA_COURSE_HOST?""
 	    :'<div class="upacts">'
 	    +'<button class="b-ch" onclick="friendChallenge('+i+',\''+src+'\')"><i class="ti ti-swords"></i> '+r.ch+'</button>'
 	    +'<button class="b-tg" aria-label="'+esc(r.msg)+'" title="'+esc(r.msg)+'" onclick="openUserChat('+i+',\''+src+'\')"><i class="ti ti-message-circle"></i></button>'
 	    +'</div>';
 
+  var leagueGlyph=PWA_COURSE_HOST?RATING_GLYPHS[RATING_LEAGUES.indexOf(u.league)]:"朱雀";
   $("#upov").innerHTML=
     '<div class="uptop"><button class="upx hsk-native-back-duplicate" onclick="closeUserProfile()"><i class="ti ti-arrow-left"></i></button>'
     +'<span style="font-size:14px;font-weight:500">'+esc(u.n)+'</span><div style="width:34px"></div></div>'
-    +'<div class="uphero"><div class="av'+(isHan?" han":"")+'">'+u.a+(u.me?myAvatarImgHtml():avatarImgHtml(u.tgId))+(u.p?'<span class="cr"><i class="ti ti-crown" style="font-size:11px"></i></span>':'')+'</div>'
+    +'<div class="uphero"><div class="av'+(isHan?" han":"")+'">'+esc(u.a)+(u.me?myAvatarImgHtml():avatarImgHtml(u.tgId))+(u.p?'<span class="cr"><i class="ti ti-crown" style="font-size:11px"></i></span>':'')+'</div>'
     +'<div class="nm">'+esc(u.n)+'</div><div class="un">'+esc(courseMessage("league",t.league))+'</div>'
 	    +'<div class="badges"><span class="bg bg-lv"><i class="ti ti-bolt" style="font-size:10px"></i> '+esc(uLevel)+'</span>'
-	    +'<span class="bg bg-lg han" style="font-size:12px">朱雀</span>'
+	    +(leagueGlyph?'<span class="bg bg-lg han" style="font-size:12px">'+leagueGlyph+'</span>':'')
 	    +(u.p?'<span class="bg" style="background:var(--goldbg);color:var(--gold)"><i class="ti ti-crown" style="font-size:10px"></i> Premium</span>':'')+'</div></div>'
 	    +'<div class="stats" style="margin:14px 0 0">'
 	    +'<div class="stat"><b style="color:var(--cin)">'+userXp.toLocaleString("ru")+'</b><small>'+courseMessage("xp",t.xp)+'</small></div>'
@@ -6860,18 +7247,46 @@ function courseVersionSettingsRowHtml(){
   return '<button class="srow" onclick="App.profileCourseVersionBook()"><i class="ti ti-switch-horizontal"></i> '+esc(t.courseVersion)
     +'<span class="sv">'+esc(track==="hsk30"?t.hsk30:t.hsk20)+' <i class="ti ti-chevron-right"></i></span></button>';
 }
+function pwaLogoutSettingsRowHtml(){
+  if(!PWA_COURSE_HOST)return "";
+  return '<button class="srow pwa-logout-row" type="button" onclick="App.logoutPwa()"><i class="ti ti-logout"></i> '
+    +esc(commonMessage("action.logout",""))+'</button>';
+}
+function pwaPushSettingsRowHtml(){
+  if(!PWA_COURSE_HOST)return "";
+  return '<button class="srow pwa-push-settings-row" type="button" onclick="window.HskPwaInbox&&window.HskPwaInbox.openPushSettings()">'
+    +'<i class="ti ti-bell-ringing"></i> '+esc(courseMessage("pwaPush.title","iPhone push notifications"))
+    +'<span class="sv"><span id="pwa-push-settings-status"></span><i class="ti ti-chevron-right"></i></span></button>';
+}
 function settingsSheetHtml(){
+  return '<div class="shead"><div class="tr" style="font-size:16px;color:var(--ink)">'+esc(pl().settings)+'</div></div>'
+    +settingsRowsHtml();
+}
+function settingsRowsHtml(){
   var t=T(),p=pl();
-  return '<div class="shead"><div class="tr" style="font-size:16px;color:var(--ink)">'+esc(p.settings)+'</div></div>'
-    +'<div class="set" style="margin:0">'
+  return '<div class="set" style="margin:0">'
     +'<button class="srow" onclick="App.langPicker()"><i class="ti ti-language"></i> '+courseMessage("lang",t.lang)+'<span class="sv">'+LANG.toUpperCase()+' <i class="ti ti-chevron-right"></i></span></button>'
     +courseVersionSettingsRowHtml()
-    +'<button class="srow" onclick="App.notifToggle()"><i class="ti ti-bell"></i> '+courseMessage("notif",t.notif)+'<span class="toggle '+(notifOn?"on":"")+'"></span></button>'
-    +(notifOn?'<div class="srow-note">'+notifTimesHtml()+'</div>':'')
+    +(!PWA_COURSE_HOST?'<button class="srow" onclick="App.notifToggle()"><i class="ti ti-bell"></i> '+courseMessage("notif",t.notif)+'<span class="toggle '+(notifOn?"on":"")+'"></span></button>'
+      +(notifOn?'<div class="srow-note">'+notifTimesHtml()+'</div>':''):"")
+    +pwaPushSettingsRowHtml()
     +'<button class="srow" onclick="App.goalPicker()"><i class="ti ti-target"></i> '+p.goalSet+'<span class="sv">'+dailyGoal+' XP <i class="ti ti-chevron-right"></i></span></button>'
     +signInMethodsRowsHtml()
+    +(PWA_COURSE_HOST && window.HskPwaShake ? window.HskPwaShake.settingsRowHtml() : "")
     +'<button class="srow" onclick="App.openHelp()"><i class="ti ti-help-circle"></i> '+courseMessage("help",t.help)+'<span class="sv"><i class="ti ti-chevron-right"></i></span></button>'
+    +pwaLogoutSettingsRowHtml()
     +'</div>'+socialLinksHtml();
+}
+function renderPwaSettings(){
+  var page=$("#s-settings");
+  if(!page.firstElementChild){
+    page.innerHTML='<header class="pwa-settings-head"><button type="button" class="hsk-pwa-close" onclick="NavBack.goBack()"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg></button>'
+      +'<h1 id="hsk-pwa-settings-title" tabindex="-1"></h1></header><div id="hsk-pwa-settings-rows"></div>';
+  }
+  $("#hsk-pwa-settings-title").textContent=pl().settings;
+  page.querySelector(".hsk-pwa-close").setAttribute("aria-label",commonMessage("action.back",""));
+  $("#hsk-pwa-settings-rows").innerHTML=settingsRowsHtml();
+  if(window.HskPwaInbox)HskPwaInbox.updateSettingsPushStatus();
 }
 
 /* Varaq ichidan boshqa varaq ochilsa (til, maqsad, bildirishnoma tasdig'i),
@@ -6996,8 +7411,9 @@ function renderProfile(){
   var showProLink=!paid&&!trialActive;
   var nickname=esc(PROF.name||courseMessage("you",t.you));
   $("#s-profile").innerHTML='<div class="htop profile-head"><h1 class="profile-title">'+esc(courseMessage("nav.profile",LANG==="ru"?"Профиль":LANG==="tj"?"Профил":"Profil"))+'</h1><div class="profile-head-actions">'
+    +(PWA_COURSE_HOST?'<button class="pwa-notices-button" type="button" aria-label="'+esc(commonMessage("desktopA11y.notifications",""))+'" onclick="window.HskPwaInbox&&window.HskPwaInbox.open()"><i class="ti ti-bell" aria-hidden="true"></i></button>':'')
     +'<button class="profile-settings" type="button" aria-label="'+esc(p.settings)+'" onclick="App.openSettings()"><i class="ti ti-settings" aria-hidden="true"></i></button></div></div>'
-    +'<div class="phero"><div class="pav'+(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han")+'" onclick="App.avatarEdit()">'+(PROF.avatar||"阿")+myAvatarImgHtml()+'<span class="ed"><i class="ti ti-pencil"></i></span></div>'
+    +'<div class="phero"><div class="pav'+(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han")+'"'+(PWA_COURSE_HOST?'':' onclick="App.avatarEdit()"')+'>'+esc(PROF.avatar||"阿")+(PWA_COURSE_HOST?'':myAvatarImgHtml()+'<span class="ed"><i class="ti ti-pencil"></i></span>')+'</div>'
     +'<div class="profile-hero-content"><div class="profile-identity-row"><strong class="profile-display-name">'+nickname+'</strong><span class="profile-access-badge'+(paid||trialActive?' pro':'')+'">'+(paid?'<i class="ti ti-crown"></i> Pro':trialActive?'<i class="ti ti-crown"></i> '+esc(c.trial):esc(c.free))+'</span></div>'
     +(goalLabel()?'<div class="profile-goal-row"><span class="lvb goal"><i class="ti ti-target"></i> '+esc(goalLabel())+'</span></div>':'')+'</div></div>'
     +'<button type="button" class="profile-friends-link" onclick="App.openFriends()"><i class="ti ti-users" aria-hidden="true"></i><span>'+esc(courseMessage("friends",t.friends))+'</span><i class="ti ti-chevron-right" aria-hidden="true"></i></button>'
@@ -7158,7 +7574,7 @@ function closeSection(){
 /* ---------- Dictionary + phrasebook: cached in-app resource screens ---------- */
 var RESOURCE=(function(){
   var TYPES=["dict","phrases"],STATE={dict:{frame:null,url:"",loaded:false},phrases:{frame:null,url:"",loaded:false}};
-  var ACTIVE=null,WARMED=false;
+  var ACTIVE=null,WARMED=false,PRACTICE=null;
   function host(){return document.getElementById("resourceov")}
   function pane(k){return document.getElementById("resource-"+k)}function resourceLabel(k){return k==="dict"?courseMessage("dict",T().dict):courseMessage("readyPhrases",T().readyPhrases)}
   function url(k){
@@ -7166,9 +7582,9 @@ var RESOURCE=(function(){
     if(k==="dict"){
       var level=normalizeLevel((MAP&&MAP.level)||getSelectedLevel());
       q.set("level",level);q.set("filter",level);
-      return "/hsk-lugat.html?"+q.toString();
+      return (PWA_COURSE_HOST?"/iphone-pwa/dictionary?":"/hsk-lugat.html?")+q.toString();
     }
-    return "/hsk-gaplar.html?"+q.toString();
+    return (PWA_COURSE_HOST?"/iphone-pwa/phrases?":"/hsk-gaplar.html?")+q.toString();
   }
   /* Same-origin iframe touch events do not bubble to the course document.
      Forward their physical coordinates into the existing animated NavBack. */
@@ -7184,7 +7600,7 @@ var RESOURCE=(function(){
       // Preserve horizontal scrolling of dictionary filters and phrase categories.
       if(target&&target.closest&&target.closest(".filters,.filter-row"))return;
       var t=ev.touches[0];
-      if(t.clientX>NavBack.EDGE)return;
+      if(!PWA_COURSE_HOST&&t.clientX>NavBack.EDGE)return;
       gesture={x:t.clientX,y:t.clientY,
         sx:Number.isFinite(t.screenX)?t.screenX:t.clientX,
         sy:Number.isFinite(t.screenY)?t.screenY:t.clientY};
@@ -7289,10 +7705,94 @@ var RESOURCE=(function(){
     }
     close();return true;
   }
+  function practiceBackTarget(){return PRACTICE&&PRACTICE.layer}
+  function isPracticeFrame(child){return !!(PRACTICE&&PRACTICE.frame.contentWindow===child)}
+  function closePracticeFrame(child,next){
+    if(!isPracticeFrame(child))return false;
+    var current=PRACTICE;
+    try{if(child.HskPwaPracticeBoot)child.HskPwaPracticeBoot.beforeClose()}catch(e){}
+    PRACTICE=null;current.layer.hidden=true;
+    current.background.forEach(function(node){node.inert=false});
+    if(next==="course"){close();App.show("course")}
+    else if(current.focus&&current.focus.isConnected)current.focus.focus({preventScroll:true});
+    NavBack.sync();
+    // Let a completed/partial attempt queue its existing keepalive report
+    // before discarding the child document. The course is already usable.
+    setTimeout(function(){current.layer.remove();refreshCourseProgress(true)},0);
+    return true;
+  }
+  function practiceBack(){
+    if(!PRACTICE)return false;
+    var child=PRACTICE.frame.contentWindow;
+    try{if(child.HskPwaPracticeBoot){child.HskPwaPracticeBoot.swipeBack();return true}}catch(e){}
+    return closePracticeFrame(child);
+  }
+  function revealPracticeFrame(child){
+    if(!isPracticeFrame(child)||PRACTICE.entry.hidden)return;
+    PRACTICE.entry.hidden=true;PRACTICE.frame.hidden=false;
+    PRACTICE.frame.focus({preventScroll:true});
+  }
+  function signInFromPractice(child){
+    if(isPracticeFrame(child))location.replace("/iphone-pwa");
+  }
+  function acceptPracticeActor(child,userId){
+    if(!isPracticeFrame(child))return false;
+    if(Number(userId)===PWA_COURSE_USER_ID)return true;
+    signInFromPractice(child);return false;
+  }
+  function openPracticeCheckout(child,source){
+    if(!isPracticeFrame(child)||!/^v3_(?:recognition_limit|pronunciation_limit|memorize_limit|test_limit|mistake_review)$/.test(source))return false;
+    App.goPay(source);return true;
+  }
+  function mountPracticeFrame(target,label){
+    if(PRACTICE)return;
+    var wrap=$(".wrap"),layer=document.createElement("section"),frame=document.createElement("iframe");
+    var entry=document.createElement("div"),backButton=document.createElement("button");
+    layer.id="pwa-practice-layer";layer.setAttribute("role","dialog");layer.setAttribute("aria-modal","true");layer.setAttribute("aria-label",label);
+    entry.className="pwa-practice-entry";entry.innerHTML=renderStudyPreparing();
+    backButton.type="button";backButton.className="pwa-practice-back";
+    backButton.setAttribute("aria-label",commonMessage("action.back",""));backButton.innerHTML='<i class="ti ti-arrow-left" aria-hidden="true"></i>';
+    backButton.onclick=practiceBack;entry.appendChild(backButton);
+    var background=Array.from(wrap.children).filter(function(node){return !node.inert});
+    PRACTICE={layer:layer,entry:entry,frame:frame,background:background,focus:document.activeElement};
+    background.forEach(function(node){node.inert=true});
+    frame.title=label;frame.hidden=true;
+    if(target.pathname==="/iphone-pwa/practice/pronunciation")frame.allow="microphone 'self'";
+    frame.addEventListener("load",function(){
+      if(!isPracticeFrame(frame.contentWindow)||entry.hidden)return;
+      try{if(frame.contentWindow.HskPwaPracticeBoot)return}catch(e){}
+      // Initial actor rejection can redirect before the child scripts load.
+      // Revalidate the parent session without hiding the entry's Back action.
+      PWA_COURSE_ACTOR_PROMISE=null;pwaCourseActor().catch(function(){});
+    });
+    target.searchParams.set("embedded","1");frame.src=target.href;
+    layer.append(entry,frame);wrap.appendChild(layer);
+    backButton.focus({preventScroll:true});NavBack.sync();
+  }
   function openPractice(src){
     // Keep the established exercise gates and its return path unchanged.
-    var allowed=["/course_v3_pronunciation.html","/course_v3_recognition.html","/course_v3_memorize.html"];
-    if(allowed.indexOf(String(src||"").split("?")[0])<0)return;
+    var allowed=["/course_v3_pronunciation.html","/course_v3_recognition.html","/course_v3_memorize.html","/course_v3_test.html","/course_v3_mistakes.html"];
+    var path=String(src||"").split("?")[0];
+    if(allowed.indexOf(path)<0)return;
+    if(PWA_COURSE_HOST){
+      // Only explicitly ported pages may open under a verified PWA session.
+      var safePaths={
+        "/course_v3_recognition.html":"/iphone-pwa/practice/recognition",
+        "/course_v3_memorize.html":"/iphone-pwa/practice/memorize",
+        "/course_v3_pronunciation.html":"/iphone-pwa/practice/pronunciation",
+        "/course_v3_test.html":"/iphone-pwa/practice/test",
+        "/course_v3_mistakes.html":"/iphone-pwa/practice/mistakes"
+      };
+      if(!safePaths[path]){
+        toast(courseMessage("courseLoadError.title",LANG==="ru"?"Курс не загрузился":LANG==="tj"?"Курс бор нашуд":"Kurs yuklanmadi"),2600);
+        return;
+      }
+      var source=new URL(src,location.origin);
+      if(source.origin!==location.origin)return;
+      var target=new URL(safePaths[path]+source.search,location.origin);
+      mountPracticeFrame(target,courseMessage("nav.mashq",T().nav.mashq));
+      return;
+    }
     close();beginInternalNavigation();location.href=src;
   }
   function warm(){
@@ -7311,6 +7811,9 @@ var RESOURCE=(function(){
     },2500);
   }
   return {open:open,close:close,back:back,warm:warm,openPractice:openPractice,
+    practiceBackTarget:practiceBackTarget,practiceBack:practiceBack,isPracticeFrame:isPracticeFrame,
+    closePracticeFrame:closePracticeFrame,revealPracticeFrame:revealPracticeFrame,signInFromPractice:signInFromPractice,
+    acceptPracticeActor:acceptPracticeActor,openPracticeCheckout:openPracticeCheckout,
     swipeTarget:swipeTarget,swipePreview:swipePreview};
 })();
 window.RESOURCE=RESOURCE;
@@ -7364,7 +7867,7 @@ var RECOG=(function(){
   function close(){closeSection();App.show("mashq")}
 
   function showLimit(adAvailable){
-    if(window.CourseAds&&CourseAds.showLimitPromo){
+    if(!PWA_COURSE_HOST&&window.CourseAds&&CourseAds.showLimitPromo){
       CourseAds.showLimitPromo({trialEligible:trialEligibilityValue(),reason:SECTION_LIMIT_TEXT||"",onSubscribe:premium,onTrial:function(){trialStart("paywall_practice")},onBack:close});return;
     }
     var t=L();
@@ -7532,7 +8035,7 @@ var PRON=(function(){
   function close(){releaseMic();closeSection();App.show("mashq")}
 
   function showLimit(adAvailable){
-    if(window.CourseAds&&CourseAds.showLimitPromo){
+    if(!PWA_COURSE_HOST&&window.CourseAds&&CourseAds.showLimitPromo){
       CourseAds.showLimitPromo({trialEligible:trialEligibilityValue(),reason:SECTION_LIMIT_TEXT||"",onSubscribe:premium,onTrial:function(){trialStart("paywall_practice")},onBack:close});return;
     }
     var t=L(),d=el("pr-done");if(!d)return;
@@ -7774,7 +8277,7 @@ var MIST=(function(){
     var t=L(),offset=append?ITEMS.length:0;
     if(!append)el("mk-content").innerHTML='<div class="state"><i class="ti ti-loader-2"></i><div>'+esc(t.loading)+'</div></div>';
     var url="/api/miniapp/mistakes?limit=30&offset="+offset+(CAT!=="all"?"&category="+encodeURIComponent(CAT):"");
-    fetch(url,{headers:{"X-Telegram-Init-Data":INIT_DATA}}).then(function(r){if(!r.ok)throw new Error("load");return r.json()}).then(function(d){
+    _apiGet(url).then(function(r){if(!r.ok)throw new Error("load");return r.json()}).then(function(d){
       LOADING=false;if(!live())return;
       var incoming=(d&&d.items)||[];ITEMS=append?ITEMS.concat(incoming):incoming;
       SUM=(d&&d.summary)||{total:ITEMS.length,categories:{}};
@@ -7785,8 +8288,8 @@ var MIST=(function(){
 
   /* ---- review ---- */
   function newRef(){try{if(window.crypto&&crypto.randomUUID)return crypto.randomUUID()}catch(e){}return Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,12)}
-  function accessRef(create){var k="hsk_mistake_review_ref",v="";try{v=sessionStorage.getItem(k)||""}catch(e){v=REF_MEM}if(!v&&create){v=newRef();REF_MEM=v;try{sessionStorage.setItem(k,v)}catch(e){}}return v}
-  function clearRef(){REF_MEM="";try{sessionStorage.removeItem("hsk_mistake_review_ref")}catch(e){}}
+  function accessRef(create){var k=PWA_COURSE_HOST?("hsk_mistake_review_ref:pwa:"+String(PWA_COURSE_USER_ID||"unbound")):"hsk_mistake_review_ref",v="";try{v=sessionStorage.getItem(k)||""}catch(e){v=REF_MEM}if(!v&&create){v=newRef();REF_MEM=v;try{sessionStorage.setItem(k,v)}catch(e){}}return v}
+  function clearRef(){REF_MEM="";try{sessionStorage.removeItem(PWA_COURSE_HOST?("hsk_mistake_review_ref:pwa:"+String(PWA_COURSE_USER_ID||"unbound")):"hsk_mistake_review_ref")}catch(e){}}
   function premium(){App.goPay("v3_mistake_review")}
   function reviewOpen(){return !!(el("mk-review")&&!el("mk-review").hidden)}
   function openReview(){el("mk-review").hidden=false}
@@ -7796,7 +8299,7 @@ var MIST=(function(){
     if(busy())return;RV={loading:true};
     if(window.CourseLimitStatus)CourseLimitStatus.invalidate("mistake_review");
     var ref=accessRef(true);
-    fetch("/api/miniapp/mistakes/review/start",{method:"POST",headers:{"X-Telegram-Init-Data":INIT_DATA,"Content-Type":"application/json"},body:JSON.stringify({ad_supported:false,access_ref:ref})})
+    _apiPost("/api/miniapp/mistakes/review/start",{ad_supported:false,access_ref:ref})
     .then(function(r){return r.json().then(function(d){return{status:r.status,d:d}})})
     .then(function(res){
       if(!live()){RV=null;return}
@@ -7830,8 +8333,7 @@ var MIST=(function(){
     var t=L(),q=RV.questions[RV.idx];
     var btns=el("mk-rv-opts").querySelectorAll(".rv-opt");
     for(var k=0;k<btns.length;k++)btns[k].disabled=true;
-    fetch("/api/miniapp/mistakes/review/answer",{method:"POST",headers:{"X-Telegram-Init-Data":INIT_DATA,"Content-Type":"application/json"},
-      body:JSON.stringify({session_id:RV.session,question_id:q.id,selected_index:i})})
+    _apiPost("/api/miniapp/mistakes/review/answer",{session_id:RV.session,question_id:q.id,selected_index:i})
     .then(function(r){return r.json()}).then(function(d){
       if(!live()||!RV)return;
       if(!d||!d.ok)throw new Error("answer_failed");
@@ -7861,8 +8363,7 @@ var MIST=(function(){
     var t=L();RV.loading=true;
     el("mk-rv-fill").style.width="100%";
     el("mk-rv-foot").innerHTML='<button disabled>'+esc(t.loading)+'</button>';
-    fetch("/api/miniapp/mistakes/review/complete",{method:"POST",headers:{"X-Telegram-Init-Data":INIT_DATA,"Content-Type":"application/json"},
-      body:JSON.stringify({session_id:RV.session,answers:RV.answers})})
+    _apiPost("/api/miniapp/mistakes/review/complete",{session_id:RV.session,answers:RV.answers})
     .then(function(r){return r.json()}).then(function(d){
       if(d&&d.ok)refreshCourseProgress(true);
       if(!live())return;
@@ -7881,9 +8382,10 @@ var MIST=(function(){
 
   function showLimit(adAvailable){
     var t=L();
-    if(window.CourseAds&&CourseAds.showLimitPromo){
+    if(!PWA_COURSE_HOST&&window.CourseAds&&CourseAds.showLimitPromo){
       CourseAds.showLimitPromo({trialEligible:trialEligibilityValue(),reason:SECTION_LIMIT_TEXT||t.limitWhy,onSubscribe:premium,onTrial:function(){trialStart("paywall_pronunciation")},onBack:function(){}});return;
     }
+    // PWA and Telegram both retain the original Pro CTA with server-owned checkout.
     el("mk-lim-text").textContent=SECTION_LIMIT_TEXT||t.limitText;
     el("mk-limit").hidden=false;
   }
@@ -7899,7 +8401,7 @@ var MIST=(function(){
     $("#secov").innerHTML=shell();
     openSection(API);
     RV=null;CAT="all";ITEMS=[];
-    if(window.CourseAds)CourseAds.config({lang:LANG,initData:INIT_DATA,feature:"mistake_review",level:(MAP&&MAP.level)||"hsk1",onSubscribe:premium});
+    if(!PWA_COURSE_HOST&&window.CourseAds)CourseAds.config({lang:LANG,initData:INIT_DATA,feature:"mistake_review",level:(MAP&&MAP.level)||"hsk1",onSubscribe:premium});
     load(false);
   }
 
@@ -7961,10 +8463,11 @@ var TEST=(function(){
 
   /* ---- gate ---- */
   function newRef(){try{if(window.crypto&&crypto.randomUUID)return crypto.randomUUID()}catch(e){}return Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,12)}
-  function gateRef(key,create){var k="hsk_gate_"+key,v="";try{v=sessionStorage.getItem(k)||""}catch(e){v=GATE_REFS[k]||""}if(!v&&create){v=newRef();GATE_REFS[k]=v;try{sessionStorage.setItem(k,v)}catch(e){}}return v}
-  function clearGateRef(key){var k="hsk_gate_"+key;delete GATE_REFS[k];try{sessionStorage.removeItem(k)}catch(e){}}
+  function gateRef(key,create){var k=(PWA_COURSE_HOST?"hsk_gate_pwa:"+String(PWA_COURSE_USER_ID||"unbound")+":":"hsk_gate_")+key,v="";try{v=sessionStorage.getItem(k)||""}catch(e){v=GATE_REFS[k]||""}if(!v&&create){v=newRef();GATE_REFS[k]=v;try{sessionStorage.setItem(k,v)}catch(e){}}return v}
+  function clearGateRef(key){var k=(PWA_COURSE_HOST?"hsk_gate_pwa:"+String(PWA_COURSE_USER_ID||"unbound")+":":"hsk_gate_")+key;delete GATE_REFS[k];try{sessionStorage.removeItem(k)}catch(e){}}
   function runGate(feature,ref){
     if(window.CourseLimitStatus)CourseLimitStatus.invalidate(feature);
+    if(PWA_COURSE_HOST)return Promise.reject(new Error("pwa_placement_unavailable"));
     return fetch("/api/v3/practice/daily-gate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:INIT_DATA,feature:feature,ref:ref})})
       .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}}).catch(function(){return {ok:r.ok,status:r.status,j:{}}})}).then(validatePracticeGate);
   }
@@ -7976,6 +8479,7 @@ var TEST=(function(){
     el("tc-title").textContent=t.title;el("tc-sub").textContent=t.sub;
     el("tc-ptitle").textContent=t.pTitle;el("tc-psub").textContent=t.pSub;el("tc-pbtn").textContent=t.pBtn;
     el("tc-exhead").textContent=t.exHead;
+    if(PWA_COURSE_HOST){var placement=el("tc-hub").querySelector(".place");if(placement)placement.hidden=true}
     var myN=lvNum(),mine_t=courseMessage("testHub.mineLevel",MINE_T[LANG]||MINE_T.uz);
     var list=EXAMS.slice().sort(function(a,b){return (Number(b.lvl)===myN)-(Number(a.lvl)===myN)});
     el("tc-exlist").innerHTML=list.map(function(e){
@@ -8002,7 +8506,7 @@ var TEST=(function(){
   }
   function showLimit(adAvailable){
     var t=L();
-    if(window.CourseAds&&CourseAds.showLimitPromo){
+    if(!PWA_COURSE_HOST&&window.CourseAds&&CourseAds.showLimitPromo){
       CourseAds.showLimitPromo({trialEligible:trialEligibilityValue(),reason:SECTION_LIMIT_TEXT||"",onSubscribe:premium,onTrial:function(){trialStart("paywall_test")},onBack:showHub});return;
     }
     el("tc-hub").style.display="none";el("tc-placement").classList.remove("on");el("tc-exam").classList.remove("on");
@@ -8019,6 +8523,7 @@ var TEST=(function(){
     PENDING={which:which,feature:feature,accessRef:ref};
     showGateLoading();
     if(which!=="placement"){openExam2(which,false);return}
+    if(PWA_COURSE_HOST){showEmpty();return}
     runGate(feature,ref).then(function(o){
       if(!live())return;
       if(o.status===403){rememberSectionLimit(o.j);showLimit(o.j&&o.j.ad&&o.j.ad.available);return}
@@ -8029,7 +8534,7 @@ var TEST=(function(){
   function openExam2(which,adSupported){
     if(which==="placement")return runPlacement();
     var ref=(PENDING&&PENDING.accessRef)||gateRef("training_test:"+which,true);
-    fetch("/api/v3/exams/start",{method:"POST",headers:{"X-Telegram-Init-Data":INIT_DATA,"Content-Type":"application/json"},body:JSON.stringify({level:which,lang:LANG,access_ref:ref,ad_supported:false})})
+    _apiPost("/api/v3/exams/start",{level:which,lang:LANG,access_ref:ref,ad_supported:false})
       .then(function(r){return r.json().then(function(d){return {ok:r.ok,status:r.status,d:d}})})
       .then(function(o){
         if(!live())return;
@@ -8087,7 +8592,7 @@ var TEST=(function(){
     if(EX_SUBMITTING)return;EX_SUBMITTING=true;
     var m=EM();
     el("tc-exam").innerHTML='<div class="res"><div class="lvl"><small>'+esc(m.result)+'</small><b><i class="ti ti-loader-2"></i></b></div><h3>'+esc(m.saving)+'</h3></div>';
-    fetch("/api/v3/exams/complete",{method:"POST",headers:{"X-Telegram-Init-Data":INIT_DATA,"Content-Type":"application/json"},body:JSON.stringify({session_id:EXD.id,answers:eans})})
+    _apiPost("/api/v3/exams/complete",{session_id:EXD.id,answers:eans})
       .then(function(r){return r.json().then(function(d){return {ok:r.ok,d:d}})})
       .then(function(o){
         if(!o.ok||!o.d||!o.d.ok)throw new Error("exam_complete");
@@ -8157,7 +8662,7 @@ var TEST=(function(){
     $("#secov").innerHTML=shell();
     openSection(API);
     PENDING=null;EXD=null;EQ=[];EX_SUBMITTING=false;
-    if(window.CourseAds)CourseAds.config({lang:LANG,initData:INIT_DATA,feature:"training_test",level:(MAP&&MAP.level)||"hsk1",onSubscribe:premium});
+    if(!PWA_COURSE_HOST&&window.CourseAds)CourseAds.config({lang:LANG,initData:INIT_DATA,feature:"training_test",level:(MAP&&MAP.level)||"hsk1",onSubscribe:premium});
     renderHub();showHub();
   }
 
@@ -8184,7 +8689,7 @@ var LIVE_TEXT={
   tj:{startLive:"Барои гуфтугӯи зинда пахш кунед",stopLive:"Микрофон фаъол · Барои анҷом пахш кунед",liveFallback:"Live дастрас нест. Барои гап задан микрофонро нигоҳ доред."}
 };
 Object.keys(LIVE_TEXT).forEach(function(k){Object.assign(LD[k],LIVE_TEXT[k])});var COURSE_VOICE_CATALOG=window.HSKAI_COURSE_I18N||{};Object.keys(LD).forEach(function(locale){var messages=COURSE_VOICE_CATALOG[locale]||{};Object.keys(LD[locale]).forEach(function(key){var value=messages["courseVoiceInline."+key];if(typeof value==="string"&&value)LD[locale][key]=value})});
-var L=LD[LANG]||LD.ru;
+var L=LD[LANG]||LD.ru;if(PWA_COURSE_HOST)Object.keys(LD).forEach(function(locale){var copy=(COURSE_VOICE_CATALOG[locale]||{});LD[locale].micDeny=copy["pronunciation.micDeny"]||LD[locale].micDeny});
 var tg=window.Telegram&&window.Telegram.WebApp;
 var $=function(id){return document.getElementById("vc-"+id)};
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]})}
@@ -8281,7 +8786,7 @@ function initData(){return INIT_DATA}
 var PERS={bao:{role:"friend",voice:"female",name:L.baoName},li:{role:"teacher_li",voice:"male",name:L.liName}};
 var persona="bao";
 var ME={level:"hsk1",language:LANG,is_paid:false};
-var sess=null,turn=0,maxDialogs=0,busy=false,started=false;
+var sess=null,turn=0,maxDialogs=0,busy=false,started=false,endPending=false;
 var scenarioInfo=null;
 var liveClient=null,liveAvailable=false,liveStarting=false,liveRecovering=false,liveUntil=0,liveTimer=null,voiceEpoch=0;
 /* Server har javobda `remaining_limit` qaytaradi (-1 = cheksiz), lekin klient
@@ -8374,7 +8879,7 @@ function closeHints(){$("hintSheet").classList.remove("on")}
 
 /* ---- keyboard panel ---- */
 function openKb(){$("ctrlRow").classList.add("off");$("kbPanel").classList.add("on");setHold("");$("kbText").focus()}
-function closeKb(){$("kbPanel").classList.remove("on");$("ctrlRow").classList.remove("off");setHold(started?micHint():"")}
+function closeKb(){$("kbText").blur();$("kbPanel").classList.remove("on");$("ctrlRow").classList.remove("off");setHold(started?micHint():"")}
 function syncSend(){$("kbSend").disabled=!$("kbText").value.trim()}
 
 /* ---- session ---- */
@@ -8394,8 +8899,7 @@ function init(){
 function startSession(){
   var epoch=voiceEpoch;
   busy=true;micBusy(true);setStatus(L.connecting);setChar("talk");
-  return fetch("/api/voice-practice/session/start",{method:"POST",headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({initData:initData(),role:PERS[persona].role,level:ME.level,language:ME.language,voice:PERS[persona].voice})}).then(jr)
+  return _apiPost("/api/voice-practice/session/start",{initData:initData(),role:PERS[persona].role,level:ME.level,language:ME.language,voice:PERS[persona].voice}).then(jr)
    .then(function(o){
       if(epoch!==voiceEpoch)return false;
       busy=false;micBusy(false);
@@ -8409,7 +8913,7 @@ function startSession(){
       chatClear();dropEmpty();
       addAi(op.chinese_reply||"",op.pinyin||"",op.translation||"");
       setChar("talk");setStatus(L.speaking);speak(op.chinese_reply||"");ring([587,740]);
-      setTimeout(function(){if(started&&!liveStarting&&!(liveClient&&liveClient.ready)){setChar("happy");setStatus("");setHold(micHint())}},1100);
+      setTimeout(function(){if(epoch===voiceEpoch&&started&&!liveStarting&&!(liveClient&&liveClient.ready)){setChar("happy");setStatus("");setHold(micHint())}},1100);
       return true;
    }).catch(function(){if(epoch!==voiceEpoch)return false;busy=false;micBusy(false);setChar("happy");setStatus(L.sendErr);return false});
 }
@@ -8417,7 +8921,7 @@ function onStartError(o){
   setChar("happy");
   var code=o.j&&o.j.code;
   if(code==="LIMIT_EXCEEDED"||o.status===403){showPaywall();return;}
-  if(code==="USER_NOT_FOUND"){setStatus(L.startBot);return;}
+  if(code==="USER_NOT_FOUND"&&!PWA_COURSE_HOST){setStatus(L.startBot);return;}
   setStatus(L.sendErr);
 }
 
@@ -8433,8 +8937,7 @@ function stopLive(){
   clearInterval(liveTimer);liveTimer=null;liveUntil=0;liveIndicator(false);
 }
 function changeVoiceMode(mode,sid,attempt){
-  return fetch("/api/voice-practice/session/mode",{method:"POST",headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({initData:initData(),session_id:sid,mode:mode})}).then(jr).then(function(o){
+  return _apiPost("/api/voice-practice/session/mode",{initData:initData(),session_id:sid,mode:mode}).then(jr).then(function(o){
       if(!o.ok&&o.j&&o.j.code==="LIVE_SESSION_BUSY"&&(attempt||0)<4){
         return new Promise(function(resolve){setTimeout(resolve,150)}).then(function(){return changeVoiceMode(mode,sid,(attempt||0)+1)});
       }
@@ -8474,7 +8977,9 @@ async function startLiveCall(){
     var o=await changeVoiceMode("live",sid);
     if(epoch!==voiceEpoch||sess!==sid){client.stop();return}
     if(!o.ok)throw new Error((o.j&&o.j.code)||"live_voice_unavailable");
-    var ready=await client.connect(sid,initData());
+    var pwaCsrf=PWA_COURSE_HOST?(await pwaCourseActor()).csrf:null;
+    if(epoch!==voiceEpoch||sess!==sid){client.stop();return}
+    var ready=await client.connect(sid,initData(),pwaCsrf);
     if(epoch!==voiceEpoch||sess!==sid){client.stop();return}
     liveStarting=false;busy=false;micBusy(false);liveIndicator(true);
     liveUntil=Date.now()+Math.max(0,Number(ready.max_seconds)||0)*1000;setCnt();
@@ -8502,7 +9007,7 @@ function endHoldEvent(e){
   stopRecording();
 }
 function beginHold(){holdOk=true;recAt=0;startRecording()}
-function micStream(){
+function micStream(epoch,pressedAt){
   /* Oqim navbatlar ORASIDA ochiq qoladi. iOS'da har bosishda getUserMedia
      qayta so'ralsa 300-800ms ketadi va o'sha vaqt ichida aytilgan gap YOZILMAY
      qolardi — "bot meni eshitmadi" muammosining asosiy sababi shu edi.
@@ -8510,7 +9015,10 @@ function micStream(){
      butun sessiya davomida yonib turmaydi. */
   clearTimeout(micIdle);
   if(mediaStream&&mediaStream.active)return Promise.resolve(mediaStream);
-  return navigator.mediaDevices.getUserMedia({audio:true}).then(function(st){mediaStream=st;return st});
+  return navigator.mediaDevices.getUserMedia({audio:true}).then(function(st){
+    if(epoch!==voiceEpoch||holdAt!==pressedAt){st.getTracks().forEach(function(track){track.stop()});return null}
+    mediaStream=st;return st;
+  });
 }
 function releaseMicSoon(){clearTimeout(micIdle);micIdle=setTimeout(function(){
   try{if(mediaStream)mediaStream.getTracks().forEach(function(t){t.stop()})}catch(e){}mediaStream=null;
@@ -8524,17 +9032,24 @@ function startRecording(){
   /* Panda hali gapirayotgan bo'lsa mikrofon UNING ovozini yozib olardi va
      transkripsiyaga o'quvchi gapi o'rniga panda gapi tushardi. */
   stopSpeak();
-  micStream().then(function(stream){
-    if(!holdOk)return;
+  var epoch=voiceEpoch,pressedAt=holdAt;
+  micStream(epoch,pressedAt).then(function(stream){
+    if(epoch!==voiceEpoch||!stream)return;
+    if(!holdOk||holdAt!==pressedAt){releaseMicSoon();return}
     var mime=pickMime();chunks=[];
     var opts={audioBitsPerSecond:32000};if(mime)opts.mimeType=mime;
     try{mediaRecorder=new MediaRecorder(stream,opts)}catch(_){mediaRecorder=mime?new MediaRecorder(stream,{mimeType:mime}):new MediaRecorder(stream)}
-    mediaRecorder.ondataavailable=function(e){if(e.data&&e.data.size>0)chunks.push(e.data)};
-    mediaRecorder.onstop=onStopped;mediaRecorder.start(250);recAt=Date.now();
+    var recorder=mediaRecorder;
+    recorder.ondataavailable=function(e){if(epoch===voiceEpoch&&recorder===mediaRecorder&&e.data&&e.data.size>0)chunks.push(e.data)};
+    recorder.onstop=function(){if(epoch===voiceEpoch&&recorder===mediaRecorder)onStopped()};
+    recorder.start(250);recAt=Date.now();
     try{navigator.vibrate&&navigator.vibrate(20)}catch(e){}
     mic.classList.add("rec");setChar("listen");setStatus(L.listening);setHold(L.releaseMic);
     clearTimeout(autoStop);autoStop=setTimeout(function(){holdAt=0;stopRecording()},MAX_REC_MS);
-  }).catch(function(err){clog("mic_deny",(err&&err.name)||"",{});holdOk=false;mic.classList.remove("rec");setStatus(L.micDeny)});
+  }).catch(function(err){
+    if(epoch!==voiceEpoch||holdAt!==pressedAt)return;
+    clog("mic_deny",(err&&err.name)||"",{});holdOk=false;mic.classList.remove("rec");setStatus(L.micDeny)
+  });
 }
 function stopRecording(){
   clearTimeout(autoStop);mic.classList.remove("rec");holdOk=false;recAt=0;
@@ -8545,9 +9060,15 @@ function cancelRecording(){
   try{if(mediaRecorder&&mediaRecorder.state!=="inactive"){mediaRecorder.onstop=null;mediaRecorder.stop()}}catch(e){}
   mediaRecorder=null;releaseMicSoon();setChar("happy");
 }
-function stopHard(){stopLive();clearTimeout(autoStop);clearTimeout(micIdle);holdAt=0;holdOk=false;recAt=0;try{if(mediaRecorder&&mediaRecorder.state!=="inactive")mediaRecorder.stop()}catch(e){}try{if(mediaStream)mediaStream.getTracks().forEach(function(t){t.stop()})}catch(e){}mediaStream=null}
+function stopHard(){
+  stopLive();clearTimeout(autoStop);clearTimeout(micIdle);holdAt=0;holdOk=false;recAt=0;
+  var recorder=mediaRecorder;mediaRecorder=null;chunks=[];
+  try{if(recorder){recorder.onstop=null;recorder.ondataavailable=null;if(recorder.state!=="inactive")recorder.stop()}}catch(e){}
+  try{if(mediaStream)mediaStream.getTracks().forEach(function(t){t.stop()})}catch(e){}mediaStream=null;
+}
 function extFromMime(mt){mt=(mt||"").toLowerCase();if(/mp4|m4a|aac/.test(mt))return"mp4";if(/ogg/.test(mt))return"ogg";if(/mpeg|mp3/.test(mt))return"mp3";if(/wav/.test(mt))return"wav";return"webm"}
 function onStopped(){
+  var epoch=voiceEpoch;
   var mt=(mediaRecorder&&mediaRecorder.mimeType)||"audio/webm";
   var blob=new Blob(chunks,{type:mt});
   releaseMicSoon();
@@ -8555,9 +9076,9 @@ function onStopped(){
   busy=true;micBusy(true);setChar("talk");setStatus(L.analyzing);addTyping();
   var _ext=extFromMime(blob.type||mt);
   var fd=new FormData();fd.append("initData",initData());fd.append("session_id",sess);fd.append("audio",blob,"voice."+_ext);
-  fetch("/api/voice-practice/message",{method:"POST",body:fd}).then(jr)
-    .then(function(o){busy=false;micBusy(false);dropTyping();var heard=(o&&o.j&&o.j.transcription)||"";clog("mic_result",(o&&o.ok)?"ok":"fail",{mime:blob.type||mt,ext:_ext,size:blob.size,heard:(""+heard).slice(0,24)});if(!o.ok){onMsgError(o);return}renderReply(o.j)})
-    .catch(function(){busy=false;micBusy(false);dropTyping();clog("mic_neterr","",{mime:blob.type||mt,ext:_ext,size:blob.size});setChar("happy");setStatus(L.sendErr);setHold(L.holdMic)});
+  courseVoiceMessage(fd).then(jr)
+    .then(function(o){if(epoch!==voiceEpoch)return;busy=false;micBusy(false);dropTyping();clog("mic_result",(o&&o.ok)?"ok":"fail",{mime:blob.type||mt,ext:_ext,size:blob.size});if(!o.ok){onMsgError(o);return}renderReply(o.j)})
+    .catch(function(){if(epoch!==voiceEpoch)return;busy=false;micBusy(false);dropTyping();clog("mic_neterr","",{mime:blob.type||mt,ext:_ext,size:blob.size});setChar("happy");setStatus(L.sendErr);setHold(L.holdMic)});
 }
 
 /* ---- typed message ---- */
@@ -8568,12 +9089,13 @@ function sendMessage(txt){
   if(busy||!txt)return;
   if(liveClient&&liveClient.ready){liveClient.sendText(txt);return}
   if(!started){startSession().then(function(ok){if(ok)sendMessage(txt)});return;}
+  var epoch=voiceEpoch;
   busy=true;micBusy(true);setChar("talk");setStatus(L.analyzing);
   addMe(txt,"");addTyping();
   var fd=new FormData();fd.append("initData",initData());fd.append("session_id",sess);fd.append("text",txt);
-  fetch("/api/voice-practice/message",{method:"POST",body:fd}).then(jr)
-    .then(function(o){busy=false;micBusy(false);dropTyping();if(!o.ok){onMsgError(o);return}renderReply(o.j,true)})
-    .catch(function(){busy=false;micBusy(false);dropTyping();setChar("happy");setStatus(L.sendErr)});
+  courseVoiceMessage(fd).then(jr)
+    .then(function(o){if(epoch!==voiceEpoch)return;busy=false;micBusy(false);dropTyping();if(!o.ok){onMsgError(o);return}renderReply(o.j,true)})
+    .catch(function(){if(epoch!==voiceEpoch)return;busy=false;micBusy(false);dropTyping();setChar("happy");setStatus(L.sendErr)});
 }
 function sendText(){
   var t=$("kbText"),txt=(t.value||"").trim();
@@ -8602,18 +9124,21 @@ function renderReply(res,skipUser,streamed){
   addAi(res.chinese_reply||"",res.pinyin||"",res.translation||"");
   if(streamed)return;
   setChar("talk");setStatus(L.speaking);speak(res.chinese_reply||"");ring(persona==="li"?[523,659]:[587,740]);
-  if(res.session_should_end){setTimeout(endCall,1300);return;}
-  setTimeout(function(){if(started&&!liveStarting&&!(liveClient&&liveClient.ready)){setChar("happy");setStatus("");setHold(micHint())}},1100);
+  var epoch=voiceEpoch;
+  if(res.session_should_end){setTimeout(function(){if(epoch===voiceEpoch)endCall()},1300);return;}
+  setTimeout(function(){if(epoch===voiceEpoch&&started&&!liveStarting&&!(liveClient&&liveClient.ready)){setChar("happy");setStatus("");setHold(micHint())}},1100);
 }
 function endCall(){
-  voiceEpoch++;stopLive();liveRecovering=false;busy=false;micBusy(false);
+  if(endPending)return;
+  var epoch=++voiceEpoch;
+  stopHard();stopSpeak();liveRecovering=false;busy=false;micBusy(false);
   closeSettings();closeHints();
   if(!started||!sess){showDoneResult({message_count:turn});return;}
-  stopHard();stopSpeak();var sid=sess;started=false;sess=null;
-  fetch("/api/voice-practice/session/end",{method:"POST",headers:{"Content-Type":"application/json"},
-    keepalive:true,body:JSON.stringify({initData:initData(),session_id:sid})}).then(function(r){return r.json()})
-   .then(function(j){if(j&&j.ok)refreshCourseProgress(true);showDoneResult(j||{})})
-   .catch(function(){showDoneResult({message_count:turn})});
+  var sid=sess;started=false;sess=null;endPending=true;busy=true;micBusy(true);
+  _apiPost("/api/voice-practice/session/end",{initData:initData(),session_id:sid},{keepalive:true}).then(function(r){return r.json()})
+   .then(function(j){if(j&&j.ok)refreshCourseProgress(true);if(epoch===voiceEpoch)showDoneResult(j||{})})
+   .catch(function(){if(epoch===voiceEpoch)showDoneResult({message_count:turn})})
+   .finally(function(){if(epoch===voiceEpoch){endPending=false;busy=false;micBusy(false)}});
 }
 function txRow(t){
   var good=!!t.good;
@@ -8676,7 +9201,7 @@ function toggleDialog(){
   $("dtoggleic").className=on?"ti ti-chevron-up":"ti ti-messages";
 }
 function showPaywall(){
-  if(window.CourseAds&&CourseAds.showLimitPromo){
+  if(!PWA_COURSE_HOST&&window.CourseAds&&CourseAds.showLimitPromo){
     CourseAds.config({lang:LANG,initData:INIT_DATA,feature:"voice",level:(MAP&&MAP.level)||"hsk1"});
     CourseAds.showLimitPromo({feature:"voice",reason:L.limitWhy||"",onSubscribe:function(){App.goPay("v3_voice_limit")},onBack:function(){$("paywall").classList.remove("on")}});
     return;
@@ -8684,7 +9209,7 @@ function showPaywall(){
   $("pwchar").innerHTML=chr("happy",persona);
   $("pwh").textContent=L.limitTitle;$("pwp").textContent=L.limitSub;
   if(L.limitWhy){$("pwwhyt").textContent=L.limitWhy;$("pwwhy").hidden=false}else{$("pwwhy").hidden=true}
-  $("pwb").textContent=L.premiumBtn;$("pwb2").textContent=L.exit;
+  $("pwb").textContent=L.premiumBtn;$("pwb").hidden=false;$("pwb2").textContent=L.exit;
   $("paywall").classList.add("on");
 }
 function goPremium(){App.goPay("v3_voice_limit")}
@@ -8697,7 +9222,7 @@ function reset(){$("done").classList.remove("on");softReset()}
 function swap(){
   if(busy)return;
   stopHard();stopSpeak();closeSettings();
-  if(sess){fetch("/api/voice-practice/session/end",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:initData(),session_id:sess})}).then(function(r){if(r.ok)refreshCourseProgress(true)}).catch(function(){})}
+  if(sess){_apiPost("/api/voice-practice/session/end",{initData:initData(),session_id:sess}).then(function(r){if(r.ok)refreshCourseProgress(true)}).catch(function(){})}
   persona=(persona==="bao"?"li":"bao");softReset();
 }
 
@@ -8757,10 +9282,30 @@ function leave(){
   try{stopHard()}catch(e){}try{stopSpeak()}catch(e){}
   if(vpOff){vpOff();vpOff=null}
   try{closeSettings();closeHints();closeKb()}catch(e){}
-  if(sess){try{fetch("/api/voice-practice/session/end",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:INIT_DATA,session_id:sess})}).then(function(r){if(r.ok)refreshCourseProgress(true)}).catch(function(){})}catch(e){}}
-  started=false;sess=null;
+  if(sess){try{_apiPost("/api/voice-practice/session/end",{initData:INIT_DATA,session_id:sess},{keepalive:true}).then(function(r){if(r.ok)refreshCourseProgress(true)}).catch(function(){})}catch(e){}}
+  started=false;sess=null;endPending=false;
   if(window.CourseLimitStatus)CourseLimitStatus.invalidate("voice");
-  closeSection();App.show("voice");
+  closeSection();
+  if(!PWA_COURSE_HOST||SCREEN==="voice")App.show("voice");
+}
+function backLayer(){
+  var layers=["paywall","done","hintSheet","setSheet","kbPanel"];
+  for(var i=0;i<layers.length;i++){
+    var panel=$(layers[i]);
+    if(panel&&panel.classList.contains("on"))return panel;
+  }
+  return null;
+}
+function backTarget(){
+  var panel=backLayer();
+  return panel&&(panel.querySelector(".pane,.dcard")||panel);
+}
+function back(){
+  var panel=backLayer(),id=panel&&panel.id;
+  if(id==="vc-hintSheet")closeHints();
+  else if(id==="vc-setSheet")closeSettings();
+  else if(id==="vc-kbPanel")closeKb();
+  else leave();
 }
 function open(role){
   voiceEpoch++;stopLive();liveAvailable=false;liveRecovering=false;
@@ -8774,7 +9319,7 @@ function open(role){
   var ov=document.getElementById("secov");
   ov.innerHTML=VOICE_HTML;ov.classList.add("vc-open");
   openSection(API);
-  sess=null;turn=0;started=false;busy=false;scenarioInfo=null;
+  sess=null;turn=0;started=false;busy=false;endPending=false;scenarioInfo=null;
   wire();init();
   /* Panda kirgan ZAHOTI salomlashadi. Ilgari sessiya faqat mikrofon bosilganda
      boshlanardi, chunki sessiya ochilishi bepul kunlik limitni YOQIB yuborardi.
@@ -8782,7 +9327,7 @@ function open(role){
      boshlash xavfsiz. */
   startSession();
 }
-var API={open:open,close:leave,endCall:endCall,openSettings:openSettings,closeSettings:closeSettings,
+var API={open:open,close:leave,back:back,backTarget:backTarget,endCall:endCall,openSettings:openSettings,closeSettings:closeSettings,
   swap:swap,toggleSub:toggleSub,toggleRate:toggleRate,openHints:openHints,closeHints:closeHints,
   openKb:openKb,closeKb:closeKb,sendText:sendText,toggleDialog:toggleDialog,reset:reset,
   goBack:goBack,goPremium:goPremium};
@@ -8792,7 +9337,7 @@ window.VOICE=VOICE;
 
 function renderAll(){
   document.querySelectorAll("#nav [data-i]").forEach(function(s){s.textContent=courseMessage("nav."+s.dataset.i,T().nav[s.dataset.i])});
-  if(MAP){renderCourse();renderMashq();if(SCREEN==="rating")renderRating();renderProfile();if(SCREEN==="voice")renderVoice()}
+  if(MAP){renderCourse();renderMashq();if(SCREEN==="rating")renderRating();if(!PWA_COURSE_HOST||SCREEN==="profile")renderProfile();if(SCREEN==="voice")renderVoice()}
 }
 navInit();
 $("#sheet").onclick=function(){App.closeSheet()};
@@ -8803,6 +9348,17 @@ var finishHskLaunchSplash=(function(){
   /* Returning from the dictionary/phrasebook is not a fresh app launch. */
   var returning=false;
   try{returning=sessionStorage.getItem("hsk_v3_resource_return")==="1";if(returning)sessionStorage.removeItem("hsk_v3_resource_return")}catch(e){}
+  if(PWA_COURSE_HOST){
+    var internalReturn=false;
+    try{
+      var key="hskai.pwa.course.launch.seen";
+      var q=new URLSearchParams(location.search);
+      internalReturn=sessionStorage.getItem(key)==="1" ||
+        q.has("tab") || q.has("return_to") || q.has("return_tab");
+      sessionStorage.setItem(key,"1");
+    }catch(_){internalReturn=new URLSearchParams(location.search).has("tab")}
+    if(internalReturn){root.classList.add("is-done");root.remove();return function(){}}
+  }
   if(returning){root.classList.add("is-done");root.remove();return function(){}}
   var bootReady=false,animationReady=false,closed=false;
   var motionReduced=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -8829,13 +9385,13 @@ var finishHskLaunchSplash=(function(){
   }
   document.addEventListener("visibilitychange",function(){if(document.visibilityState==="hidden")stopLaunchEffects()},{once:true});
   function closeIfReady(){if(!bootReady||!animationReady||closed)return;closed=true;clearTimeout(safetyTimer);stopLaunchEffects();root.classList.add("is-done");setTimeout(function(){if(root.parentNode)root.parentNode.removeChild(root)},260)}
-  var safetyTimer=setTimeout(function(){bootReady=true;animationReady=true;closeIfReady()},7000);
-  setTimeout(function(){animationReady=true;closeIfReady()},motionReduced?250:2920);
+  var safetyTimer=setTimeout(function(){bootReady=true;animationReady=true;closeIfReady()},PWA_COURSE_HOST?3000:7000);
+  setTimeout(function(){animationReady=true;closeIfReady()},motionReduced?250:(PWA_COURSE_HOST?900:2920));
   return function(){bootReady=true;closeIfReady()};
 })();
 (function(){
   var bootLevel=getSelectedLevel();
-  if(!INIT_DATA){showAuthGate();finishHskLaunchSplash();return;}
+  if(!INIT_DATA&&!PWA_COURSE_HOST){showAuthGate();finishHskLaunchSplash();return;}
   startHsk30AccessMonitor();
   loadCourseMap(bootLevel).then(function(res){
     if(showCourseMapFailure(res)){finishHskLaunchSplash();return;}
@@ -8846,16 +9402,18 @@ var finishHskLaunchSplash=(function(){
        qurilma yoki cache tozalanganda server holati noto'g'ri redirectni to'xtatadi. */
     if(d.user&&d.user.onboarding_completed===false){
       var onbQuery=new URLSearchParams(bootParams.toString());onbQuery.set("lang",LANG);
-      finishHskLaunchSplash();beginInternalNavigation();location.replace("/course_v3_onboarding.html?"+onbQuery.toString()+location.hash);return;
+      var onboardingPath=PWA_COURSE_HOST?"/iphone-pwa/onboarding":"/course_v3_onboarding.html";
+      finishHskLaunchSplash();beginInternalNavigation();
+      location.replace(onboardingPath+"?"+onbQuery.toString()+location.hash);return;
     }
-    if(d.user&&typeof d.user.onboarding_completed!=="boolean"){
+    if(!PWA_COURSE_HOST&&d.user&&typeof d.user.onboarding_completed!=="boolean"){
       var cachedOnboarding=false;try{cachedOnboarding=!!localStorage.getItem("hsk_v3_onb")}catch(e){}
       if(!cachedOnboarding&&!bootParams.get("onboarded")){
         var fallbackQuery=new URLSearchParams(bootParams.toString());fallbackQuery.set("lang",LANG);
         finishHskLaunchSplash();beginInternalNavigation();location.replace("/course_v3_onboarding.html?"+fallbackQuery.toString()+location.hash);return;
       }
     }
-    if(d.user&&d.user.onboarding_completed===true){try{localStorage.setItem("hsk_v3_onb","1")}catch(e){}}
+    if(!PWA_COURSE_HOST&&d.user&&d.user.onboarding_completed===true){try{localStorage.setItem("hsk_v3_onb","1")}catch(e){}}
     renderAll();
     /* Oddiy startup trial eligibility'ni so'ramaydi: map joriy access holatini
        allaqachon beradi. Faqat onboardingdan qaytishda tanlov uchun darhol kerak. */
@@ -8961,10 +9519,15 @@ function flushPendingCenterAd(){
    mantig'i yaratilmaydi: har bir qatlam o'zining MAVJUD yopish funksiyasini
    ishlatadi, shuning uchun `×` tugmasi bilan swipe bir xil natija beradi. */
 var NavBack={
-  EDGE:24,   /* faqat ekran chap chetidagi shu zonadan boshlangan swipe */
-  MIN:88,    /* shu masofadan keyin qaytish bajariladi (70-100px talabi) */
+  EDGE:24,   /* Telegram Mini App keeps its existing left-edge gesture zone. */
+  MIN:88,    /* The browser PWA uses a shorter, position-aware horizontal threshold. */
   /* Qatlamlar ustkisidan boshlab tekshiriladi. */
   LAYERS:[
+    {id:"pwa-checkout-layer",target:function(){return $("#pwa-checkout-layer")},close:pwaCheckoutBack},
+    {id:"pwa-practice-layer",target:function(){return PWA_COURSE_HOST&&RESOURCE.practiceBackTarget()},close:function(){RESOURCE.practiceBack()}},
+    {id:"pwa-inbox",target:function(){return PWA_COURSE_HOST&&window.HskPwaInbox&&HskPwaInbox.backTarget&&HskPwaInbox.backTarget()},close:function(){HskPwaInbox.back()}},
+    {id:"pwa-feedback",target:function(){return PWA_COURSE_HOST&&window.HskPwaFeedback&&HskPwaFeedback.backTarget()},close:function(){HskPwaFeedback.close()}},
+    {id:"pwa-voice",target:function(){return PWA_COURSE_HOST&&window.VOICE&&VOICE.backTarget&&VOICE.backTarget()},close:function(){VOICE.back()}},
     {id:"tour",    close:function(){App.tourEnd()}},
     {id:"sheet",   close:function(){App.closeSheet()}},
     {id:"upov",    close:function(){closeUserProfile()}},
@@ -8984,7 +9547,10 @@ var NavBack={
   blocked:function(){for(var i=0;i<NavBack.BLOCK.length;i++)if(document.querySelector(NavBack.BLOCK[i]))return true;return false},
   top:function(){
     if(NavBack.blocked())return null;
-    for(var i=0;i<NavBack.LAYERS.length;i++)if(NavBack._on(NavBack.LAYERS[i].id))return NavBack.LAYERS[i];
+    for(var i=0;i<NavBack.LAYERS.length;i++){
+      var layer=NavBack.LAYERS[i];
+      if(layer.target?layer.target():NavBack._on(layer.id))return layer;
+    }
     return null;
   },
   /* "history bo'lmasa hech narsa qilmasin" — qaytadigan joy bo'lmasa false. */
@@ -8997,11 +9563,15 @@ var NavBack={
     var l=NavBack.top();
     if(l){try{l.close()}catch(e){}return true}
     if(SCREEN!=="course"){
-      try{App.show("course")}catch(e){return false}
+      var destination=PWA_COURSE_HOST?(SCREEN_HISTORY.pop()||"course"):"course";
+      if(destination===SCREEN)destination="course";
+      NAVBACK_SCREEN_CHANGE=true;
+      try{App.show(destination)}catch(e){NAVBACK_SCREEN_CHANGE=false;return false}
+      NAVBACK_SCREEN_CHANGE=false;
       /* Oldingi sahifa chapdan yengil kirib keladi (jonli peek emas —
          tab ekranlari `display` bilan almashadi, ularni gesture paytida
          bir vaqtda ko'rsatish document scroll holatini buzardi). */
-      var c=$("#s-course");
+      var c=$("#s-"+destination);
       if(c&&!NavBack._reduced()){
         c.classList.add("nb-drag");c.style.transform="translateX(-22%)";c.style.opacity=".6";
         requestAnimationFrame(function(){requestAnimationFrame(function(){
@@ -9048,6 +9618,7 @@ var NavBack={
   target:function(){
     var l=NavBack.top();
     if(l){
+      if(l.target)return l.target();
       if(l.id==="resourceov"){
         var nested=RESOURCE.swipeTarget();
         if(nested)return nested;
@@ -9060,10 +9631,12 @@ var NavBack={
   start:function(ev){
     if(NavBack._s||ev.touches.length!==1)return;
     var t=ev.touches[0];
-    if(t.clientX>NavBack.EDGE)return;              /* faqat chap chet */
+    if(!PWA_COURSE_HOST&&t.clientX>NavBack.EDGE)return;
     if(!NavBack.canGoBack())return;
     var el=NavBack.target();if(!el)return;
-    NavBack._s={x:t.clientX,y:t.clientY,el:el,live:false,dead:false,w:window.innerWidth||360};
+    var width=window.innerWidth||360;
+    NavBack._s={x:t.clientX,y:t.clientY,el:el,live:false,dead:false,w:width,
+      min:PWA_COURSE_HOST?Math.min(56,Math.max(32,width-t.clientX-8)):NavBack.MIN};
   },
   move:function(ev){
     var s=NavBack._s;if(!s||s.dead)return;
@@ -9072,8 +9645,13 @@ var NavBack={
     if(!s.live){
       /* Yo'nalish hal bo'lguncha kutamiz: vertikal harakat bo'lsa gesture
          bekor qilinadi va sahifa odatdagidek scroll bo'ladi. */
-      if(Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>8){s.dead=true;return}
-      if(dx<10)return;
+      if(!PWA_COURSE_HOST){
+        if(Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>8){s.dead=true;return}
+        if(dx<10)return;
+      }else{
+        if(Math.abs(dy)>8&&Math.abs(dy)>=Math.abs(dx)*1.15){s.dead=true;return}
+        if(dx<12||dx<Math.abs(dy)*1.25)return;
+      }
       s.live=true;s.el.classList.add("nb-drag");
       RESOURCE.swipePreview(true,s.el);
       s.scrim=document.createElement("div");s.scrim.className="nb-scrim";
@@ -9089,7 +9667,7 @@ var NavBack={
   end:function(){
     var s=NavBack._s;if(!s)return;
     if(!s.live||s.dead){NavBack._s=null;return}
-    var done=(s.dx||0)>=NavBack.MIN;
+    var done=(s.dx||0)>=s.min;
     var el=s.el,scrim=s.scrim;
     el.classList.remove("nb-drag");el.classList.add("nb-snap");
     el.style.transform=done?"translateX("+s.w+"px)":"";
@@ -9098,7 +9676,7 @@ var NavBack={
     setTimeout(function(){
       el.classList.remove("nb-snap");el.style.transform="";
       if(scrim&&scrim.parentNode)scrim.parentNode.removeChild(scrim);
-      if(done){NavBack.goBack();NavBack.sync()}
+      if(done&&(!PWA_COURSE_HOST||NavBack.target()===el)){NavBack.goBack();NavBack.sync()}
       RESOURCE.swipePreview(false,el);
     },done?200:220);
     if(done)haptic("light");
@@ -9136,7 +9714,7 @@ var NavBack={
     NavBack.sync();
   }
 };
-NavBack.init();
+window.NavBack=NavBack; NavBack.init();
 window.addEventListener("pageshow",function(ev){
   if(!ev.persisted)return;
   try{sessionStorage.removeItem("hsk_v3_resource_return")}catch(e){}
@@ -9145,5 +9723,8 @@ window.addEventListener("pageshow",function(ev){
 </script>
 <script src="/course_v3_data/desktop-download.js?v=20261021-c61abddcc057"></script>
 <script src="/course_v3_data/profile-carousel.js?v=20261021-bbc40872c23c"></script>
+<script src="/course_v3_data/iphone-pwa-notices.js?v=20261105-5d418875fa00"></script>
+<script src="/course_v3_data/iphone-pwa-feedback.js?v=20261105-b0984f8ed9a6"></script>
+<script src="/course_v3_data/iphone-pwa-shake-report.js?v=20261105-e878b00bfc8a"></script><script>if(location.pathname==="/iphone-pwa/course"){var hskPwaInvite=document.createElement("script");hskPwaInvite.src="/course_v3_data/iphone-pwa-invite.js?v=20261105-f6bf81e66fe4";document.head.appendChild(hskPwaInvite)}</script><script>if(location.pathname==="/iphone-pwa/course"&&new URLSearchParams(location.search).get("pwa_perf")==="1"){var hskPwaPerfScript=document.createElement("script");hskPwaPerfScript.src="/course_v3_data/iphone-pwa-perf.js?v=20261105-0dbef5d08a9d";document.head.appendChild(hskPwaPerfScript)}</script>
 </body>
 </html>

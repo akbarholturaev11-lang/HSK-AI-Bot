@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import html
+import logging
 import re
 from datetime import date, datetime, timezone
 from typing import Any
@@ -24,6 +25,7 @@ from app.services.notification_template_service import (
 
 
 MAX_FEED_ITEMS = 8
+logger = logging.getLogger(__name__)
 _TAG_RE = re.compile(r"<[^>]+>")
 _SPACE_RE = re.compile(r"[ \t\r\f\v]+")
 
@@ -279,6 +281,7 @@ class CourseNotificationService:
         lesson_order: int | None = None,
         dedupe_key: str | None = None,
         params: dict[str, Any] | None = None,
+        pwa_push_suppressed: bool = False,
     ) -> bool:
         key = str(key or "").strip()[:64]
         if not key:
@@ -312,6 +315,26 @@ class CourseNotificationService:
             async with self.session.begin_nested():
                 self.session.add(row)
                 await self.session.flush()
+            # PWA push is a transport for this existing inbox row, never a
+            # second notification source. Keep the course write successful if
+            # the opt-in transport is temporarily unavailable.
+            from app.config import settings
+            if (
+                not pwa_push_suppressed
+                and getattr(settings, "PWA_AUTH_ENABLED", False) is True
+                and getattr(settings, "PWA_PUSH_ENABLED", False) is True
+                and row.key != KEY_SMART_STUDY
+                and type(row.user_id) is int
+            ):
+                try:
+                    from app.services.learner_pwa_push import enqueue_event
+                    async with self.session.begin_nested():
+                        await enqueue_event(
+                            self.session, user_id=row.user_id, source="course",
+                            source_id=row.id, language=lang,
+                        )
+                except Exception:  # noqa: BLE001 - transport must not block course notice creation
+                    logger.warning("Learner PWA push enqueue unavailable for course notice")
             return True
         except IntegrityError:
             return False
@@ -329,6 +352,7 @@ class CourseNotificationService:
         lesson_order: int | None = None,
         dedupe_key: str | None = None,
         params: dict[str, Any] | None = None,
+        pwa_push_suppressed: bool = False,
     ) -> bool:
         title, body = notification_copy(key, lang, text)
         return await self.record(
@@ -343,4 +367,5 @@ class CourseNotificationService:
             lesson_order=lesson_order,
             dedupe_key=dedupe_key,
             params=params,
+            pwa_push_suppressed=pwa_push_suppressed,
         )

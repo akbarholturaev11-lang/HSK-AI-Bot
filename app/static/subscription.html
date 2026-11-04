@@ -5,10 +5,12 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<script src="https://telegram.org/js/telegram-web-app.js"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261021-88bfab42686b"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script>
+<script src="/assets/telegram-web-app.js?v=20261019-1"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261021-6431aaf27e2a"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script>
 <link rel="stylesheet" href="/course_v3_data/design-tokens.css?v=20261005">
 <title>HSK AI Pro</title>
 <style>
+html.hsk-pwa-browser input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+html.hsk-pwa-browser textarea,html.hsk-pwa-browser select{font-size:16px!important}
 :root{
   color-scheme:light;
   --bg:var(--hsk-paper);
@@ -43,6 +45,7 @@ button:active{transform:scale(.98)}
 .kicker{font-size:11px;color:var(--accent-ink);font-weight:800;text-transform:uppercase;letter-spacing:.14em}
 h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 .top-actions{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+#pwaCheckoutBackBtn[hidden]{display:none}
 .help-btn{display:grid;place-items:center;width:44px;height:44px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--accent-ink)}
 .status{display:none;margin:0 0 12px;border:1px solid var(--gold-line);border-radius:var(--radius-sm);background:var(--gold-soft);padding:11px 13px;color:var(--gold-ink);font-size:12px;line-height:1.4;font-weight:750}
 .status.show{display:block}
@@ -226,6 +229,7 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
       <h1 id="title">HSK AI Pro</h1>
     </div>
     <div class="top-actions">
+      <button class="help-btn" type="button" id="pwaCheckoutBackBtn" hidden><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></button>
       <button class="help-btn" type="button" id="helpBtn" aria-label="Yordam"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 14v-3a9 9 0 0 1 18 0v3"/><path d="M3 14v4a2 2 0 0 0 2 2h2v-8H5a2 2 0 0 0-2 2Zm18 0v4a2 2 0 0 1-2 2h-2v-8h2a2 2 0 0 1 2 2Z"/><path d="M17 20c0 2-2 3-5 3h-2"/><rect x="8" y="21" width="3" height="2" rx="1"/></svg></button>
     </div>
   </header>
@@ -365,11 +369,31 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 <div class="loading" id="loading"><div class="spinner"></div></div>
 
 <script>
-const tg=window.Telegram?.WebApp;
+const PWA_CHECKOUT_HOST=location.pathname==="/iphone-pwa/checkout";
+const tg=PWA_CHECKOUT_HOST?null:window.Telegram?.WebApp;
 try{tg?.ready?.();tg?.expand?.();}catch(e){}
 try{tg?.setHeaderColor?.("#ffffff");tg?.setBackgroundColor?.("#ffffff");}catch(e){}
 
-const API={
+if(PWA_CHECKOUT_HOST){
+  document.documentElement.classList.add("hsk-pwa-browser");
+  // Keep the original checkout; add only the browser-only installed-app
+  // identity so an iPhone can navigate between course and receipt safely.
+  (function(){
+    var meta=document.createElement("meta");meta.name="apple-mobile-web-app-title";meta.content="HSK AI";document.head.appendChild(meta);
+    meta=document.createElement("meta");meta.name="apple-mobile-web-app-status-bar-style";meta.content="default";document.head.appendChild(meta);
+    var touch=document.createElement("link");touch.rel="apple-touch-icon";touch.href="/assets/hsk-ai-logo-256.png";document.head.appendChild(touch);
+    var manifest=document.createElement("link");manifest.rel="manifest";manifest.href="/iphone-pwa/manifest.webmanifest";document.head.appendChild(manifest);
+    var glass=document.createElement("link");glass.rel="stylesheet";glass.href="/course_v3_data/iphone-pwa-glass.css?v=20261105-b4b9a9cbc312";document.head.appendChild(glass);
+  })();
+}
+const API=PWA_CHECKOUT_HOST?{
+  overview:"/api/v3/pwa/subscription/overview",
+  paymentStatus:"/api/v3/pwa/subscription/payment-status",
+  discountStart:"/api/v3/pwa/subscription/discount-start",
+  quote:"/api/v3/pwa/subscription/quote",
+  event:"/api/v3/pwa/subscription/event",
+  submit:"/api/v3/pwa/subscription/submit"
+}:{
   overview:"/api/subscription-miniapp/overview",
   paymentStatus:"/api/subscription-miniapp/payment-status",
   discountStart:"/api/subscription-miniapp/discount-start",
@@ -378,10 +402,65 @@ const API={
   submit:"/api/subscription-miniapp/submit"
 };
 const PARAMS=new URLSearchParams(window.location.search);
-const INIT_DATA=tg?.initData||"";
+const INIT_DATA=PWA_CHECKOUT_HOST?"":(tg?.initData||"");
+let PWA_CHECKOUT_ACTOR=null,PWA_CHECKOUT_PROMISE=null;
+function checkoutPwaActor(){
+  if(!PWA_CHECKOUT_HOST)return Promise.reject(new Error("pwa_host_required"));
+  if(!PWA_CHECKOUT_PROMISE){
+    PWA_CHECKOUT_PROMISE=fetch("/api/v3/pwa-auth/session",{
+      credentials:"same-origin",cache:"no-store",redirect:"error"
+    }).then(async function(r){
+      if(r.status===401){location.replace("/iphone-pwa");throw new Error("pwa_session_required")}
+      if(!r.ok)throw new Error("pwa_session_unavailable");
+      return r.json();
+    }).then(function(a){
+      if(!a||a.ok!==true||!Number.isSafeInteger(Number(a.user_id))||
+         Number(a.user_id)<=0||typeof a.csrf!=="string"||!a.csrf)
+        throw new Error("pwa_session_invalid");
+      if(PWA_CHECKOUT_ACTOR&&PWA_CHECKOUT_ACTOR.user_id!==a.user_id){
+        location.replace("/iphone-pwa");throw new Error("pwa_actor_changed");
+      }
+      PWA_CHECKOUT_ACTOR=a;return a;
+    }).catch(function(err){PWA_CHECKOUT_PROMISE=null;throw err});
+  }
+  return PWA_CHECKOUT_PROMISE;
+}
+function checkoutTransport(path,body,signal,keepalive){
+  if(!PWA_CHECKOUT_HOST)return fetch(path,{
+    method:"POST",headers:{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA},
+    body,signal:signal,keepalive:!!keepalive
+  });
+  if(Object.values(API).indexOf(path)<0)return Promise.reject(new Error("pwa_route_unavailable"));
+  return checkoutPwaActor().then(function(actor){
+    return fetch(path,{
+      method:"POST",
+      headers:{"Content-Type":"application/json","X-HSK-PWA-CSRF":actor.csrf},
+      credentials:"same-origin",cache:"no-store",redirect:"error",
+      body,signal:signal,keepalive:!!keepalive
+    });
+  });
+}
+// Re-authenticate on Home Screen resume/BFCache restore; never treat a
+// cached browser actor or app screenshot as proof of an active session.
+function verifyPwaReturn(){
+  if(!PWA_CHECKOUT_HOST)return;
+  PWA_CHECKOUT_PROMISE=null;
+  checkoutPwaActor().catch(function(error){
+    // A connectivity/5xx failure is not a logout. 401 or an account change
+    // already redirects inside the session verifier; malformed actors fail closed.
+    if(error&&error.message==="pwa_session_invalid")location.replace("/iphone-pwa");
+  });
+}
+if(PWA_CHECKOUT_HOST){
+  window.addEventListener("pageshow",function(ev){if(ev.persisted)verifyPwaReturn()});
+  document.addEventListener("visibilitychange",function(){
+    if(document.visibilityState==="visible")verifyPwaReturn();
+  });
+}
 /* Course checkout runs in the same Telegram WebView. The Telegram header Back
    must return to Course V3, not close the Mini App or step through payment. */
 const RETURN_TO_COURSE=PARAMS.get("return_to")==="course";
+const PWA_CHECKOUT_EMBEDDED=PWA_CHECKOUT_HOST&&PARAMS.get("embedded")==="1"&&window.parent!==window;
 function courseReturnUrl(){
   const lang=PARAMS.get("lang");
   const requestedTab=PARAMS.get("return_tab");
@@ -393,11 +472,27 @@ function courseReturnUrl(){
   const practicePages=["course_v3_voice.html","course_v3_recognition.html","course_v3_memorize.html","course_v3_pronunciation.html","course_v3_mistakes.html","course_v3_test.html"];
   if(practicePages.includes(requestedPage)){
     query.delete("tab");
+    if(PWA_CHECKOUT_HOST){
+      const map={
+        "course_v3_voice.html":"/iphone-pwa/practice/voice",
+        "course_v3_recognition.html":"/iphone-pwa/practice/recognition",
+        "course_v3_memorize.html":"/iphone-pwa/practice/memorize",
+        "course_v3_pronunciation.html":"/iphone-pwa/practice/pronunciation",
+        "course_v3_mistakes.html":"/iphone-pwa/practice/mistakes",
+        "course_v3_test.html":"/iphone-pwa/practice/test"
+      };
+      return map[requestedPage]+"?"+query.toString();
+    }
     return "/"+requestedPage+"?"+query.toString();
   }
-  return "/course-v3.html?"+query.toString();
+  return (PWA_CHECKOUT_HOST?"/iphone-pwa/course":"/course-v3.html")+"?"+query.toString();
 }
 function returnToCourseFromCheckout(){
+  if(PWA_CHECKOUT_EMBEDDED){
+    try{if(window.parent.App?.closePwaCheckout(window))return}catch(e){}
+  }
+  /* A direct checkout and Telegram never navigate to an unknown previous
+     website. The fallback remains deterministic. */
   /* replace avoids a course -> checkout -> course -> checkout browser-history loop. */
   window.location.replace(courseReturnUrl());
 }
@@ -426,12 +521,14 @@ const CARD_BANK_NAMES={dc_city:"Dushanbe City",alif:"Alif"};
    «Orqaga» orqali o'zgartirish mumkin — yangi tanlov ham shu yerga yoziladi. */
 const REGION_STORAGE_KEY="hsk_sub_region_v1:"+String(tg?.initDataUnsafe?.user?.id||"guest");
 function savedRegion(){
+  if(PWA_CHECKOUT_HOST)return "";
   try{
     const region=localStorage.getItem(REGION_STORAGE_KEY)||"";
     return REGION_ORDER.includes(region)?region:"";
   }catch(e){return ""}
 }
 function saveRegion(region){
+  if(PWA_CHECKOUT_HOST)return;
   try{if(REGION_ORDER.includes(region))localStorage.setItem(REGION_STORAGE_KEY,region)}catch(e){}
 }
 /* Havola Xitoy usulini so'rasa (method=alipay/wechat) — havola ustun. */
@@ -439,6 +536,7 @@ const REMEMBERED_REGION=CHINA_METHODS.includes(PARAMS.get("method"))?"":savedReg
 const MODE_ORDER=["subscription","referral_discount","admin_discount","feedback_discount","hsk30_unlock"];
 const CHECKOUT_ATTEMPT_ID=(function(){
   const key="hsk_subscription_attempt_v1",now=Date.now();
+  if(PWA_CHECKOUT_HOST)return "sub-"+now+"-"+Math.random().toString(36).slice(2,10);
   try{
     const saved=JSON.parse(sessionStorage.getItem(key)||"null");
     if(saved&&saved.id&&now-Number(saved.at||0)<2*60*60*1000)return String(saved.id);
@@ -912,13 +1010,13 @@ const I18N={
 
 const HSK30_UNLOCK_MODE=PARAMS.get("mode")==="hsk30_unlock"||PARAMS.get("plan")==="hsk30_unlock";
 const state={
-  lang:normalizeLang(tg?.initDataUnsafe?.user?.language_code||"uz"),
+  lang:normalizeLang(PARAMS.get("lang")||tg?.initDataUnsafe?.user?.language_code||"uz"),
   source:String(PARAMS.get("source")||"").trim(),
   attemptId:CHECKOUT_ATTEMPT_ID,
   mode:HSK30_UNLOCK_MODE?"hsk30_unlock":normalizeMode(PARAMS.get("mode")),
   campaignId:positiveParam(PARAMS.get("campaign_id")),
   feedbackId:positiveParam(PARAMS.get("feedback_id")),
-  preview:!INIT_DATA,
+  preview:!INIT_DATA&&!PWA_CHECKOUT_HOST,
   overview:null,
   plan:HSK30_UNLOCK_MODE?"hsk30_unlock":(PLAN_ORDER.includes(PARAMS.get("plan"))?PARAMS.get("plan"):"1_month"),
   method:METHOD_ORDER.includes(PARAMS.get("method"))?PARAMS.get("method"):"visa",
@@ -944,6 +1042,7 @@ const state={
   pendingPayment:null,
   paymentDecision:"",
   paymentStatusChecking:false,
+  paymentSubmitting:false,
   paymentStillPending:false,
   offerExpired:false,
   qrActionsOpen:false,
@@ -1097,7 +1196,7 @@ function focusContent(text){
   return key&&text.focus?text.focus[key]||null:null;
 }
 async function trackSubscriptionStage(stage){
-  if(state.preview||!INIT_DATA)return false;
+  if(state.preview||(!INIT_DATA&&!PWA_CHECKOUT_HOST))return false;
   const body=JSON.stringify({
     ...contextPayload(),stage,
     plan_type:state.plan,
@@ -1108,11 +1207,7 @@ async function trackSubscriptionStage(stage){
   for(let attempt=0;attempt<2;attempt++){
     let status=0;
     try{
-      const response=await fetch(API.event,{
-        method:"POST",
-        headers:{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA},
-        body,keepalive:true
-      });
+      const response=await checkoutTransport(API.event,body,undefined,true);
       status=response.status;
       if(response.ok){
         const result=await response.json();
@@ -1139,12 +1234,7 @@ function api(path,body,timeoutMs){
   const controller=typeof AbortController==="function"?new AbortController():null;
   const timer=controller?setTimeout(()=>controller.abort(),limit):null;
   const clear=()=>{if(timer)clearTimeout(timer)};
-  return fetch(path,{
-    method:"POST",
-    headers:{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA},
-    body:JSON.stringify(body||{}),
-    signal:controller?controller.signal:undefined
-  }).catch(error=>{
+  return checkoutTransport(path,JSON.stringify(body||{}),controller?controller.signal:undefined,false).catch(error=>{
     clear();
     /* Tarmoq xatosi brauzerdan inglizcha keladi ("Failed to fetch") —
        foydalanuvchiga o'z tilidagi sabab ko'rsatiladi. */
@@ -1168,12 +1258,12 @@ function apiError(code,supportUrl,reason){
 function errorText(code){
   const text=tr();
   const errors={
-    invalid_telegram_init_data:text.invalidTelegram,
+    invalid_telegram_init_data:PWA_CHECKOUT_HOST?text.loadError:text.invalidTelegram,
     payment_details_missing:text.paymentDetailsMissing,
     admin_notification_failed:text.adminNotificationFailed,
     qr_not_ready:text.qrMissing,
     payment_invalid_plan:text.offerExpired,
-    access_start_first:text.invalidTelegram,
+    access_start_first:PWA_CHECKOUT_HOST?text.loadError:text.invalidTelegram,
     invalid_screenshot:text.screenshotInvalid,
     user_blocked:text.userBlocked,
     payment_submit_failed:text.serverError,
@@ -1318,7 +1408,7 @@ async function loadOverview(){
       state.loadError=false;
     }
   }catch(error){
-    if(!INIT_DATA){
+    if(!INIT_DATA&&!PWA_CHECKOUT_HOST){
       state.preview=true;
       applyOverview(mockOverview());
     }else{
@@ -1416,8 +1506,10 @@ function render(){
   renderRenewalDialog(text);
   renderQrPreview(text);
   $("#backBtn").textContent=text.back;
+  $("#pwaCheckoutBackBtn").hidden=!PWA_CHECKOUT_HOST||PWA_CHECKOUT_EMBEDDED;
+  $("#pwaCheckoutBackBtn").setAttribute("aria-label",text.back);
   $("#nextBtn").textContent=nextCtaText(text,screen);
-  $("#backBtn").classList.toggle("hide",state.step===0);
+  $("#backBtn").classList.toggle("hide",PWA_CHECKOUT_HOST||state.step===0);
   $("#nextBtn").disabled=state.busy||!hasCurrentPrice()||(!state.preview&&state.loadError)||(screen==="country"&&!state.region)||(screen==="pay"&&!state.preview&&!state.quote);
 }
 function nextCtaText(text,screen){
@@ -1559,10 +1651,10 @@ function renderDone(text){
   $("#doneTitle").textContent=rejected?(hsk30?text.paymentRejectedTitle:text.proRejectedTitle):approved?(hsk30?text.paymentApprovedTitle:text.proApprovedTitle):
     (provisional?(hsk30?text.provisionalTitle:text.proReviewTitle):(pending?text.pendingTitle:text.doneTitle));
   $("#doneText").textContent=rejected?text.paymentRejectedText:approved?(hsk30?text.paymentApprovedText:text.proApprovedText):
-    (provisional?(hsk30?text.provisionalText:text.proReviewAccess):(pending?text.pendingText:text.doneText));
+    (provisional?(hsk30?text.provisionalText:text.proReviewAccess):(pending||PWA_CHECKOUT_HOST?text.pendingText:text.doneText));
   $("#botReturnBtn").textContent=state.paymentStatusChecking?text.checkingPayment:
     (rejected?text.retryPayment:(waiting?text.refreshPayment:
-      ((hsk30&&(pending||approved))?text.openHsk30:(approved?text.proReturn:(pending?(provisional?text.proReturn:text.supportButton):text.returnToBot)))));
+      ((hsk30&&(pending||approved))?text.openHsk30:(approved?text.proReturn:(pending?(provisional?text.proReturn:text.supportButton):(PWA_CHECKOUT_HOST?text.proReturn:text.returnToBot))))));
   $("#botReturnBtn").disabled=state.paymentStatusChecking;
 }
 function renderCountry(text){
@@ -1843,6 +1935,7 @@ async function copyReferralLink(link){
   }
 }
 function closeMiniApp(){
+  if(PWA_CHECKOUT_HOST){returnToCourseFromCheckout();return}
   if(tg&&typeof tg.close==="function"){
     tg.close();
     return;
@@ -1888,6 +1981,7 @@ async function submitPayment(){
     toast(tr().previewSubmit);
     return;
   }
+  state.paymentSubmitting=true;
   setBusy(true);
   try{
     const data=await api(API.submit,{
@@ -1931,13 +2025,14 @@ async function submitPayment(){
     }
     offerSupport(error);
   }finally{
+    state.paymentSubmitting=false;
     setBusy(false);
     render();
   }
 }
 async function refreshPaymentStatus(){
   const paymentId=Number(state.pendingPayment?.id||0);
-  if(!INIT_DATA||paymentId<=0||state.paymentStatusChecking)return;
+  if((!INIT_DATA&&!PWA_CHECKOUT_HOST)||paymentId<=0||state.paymentStatusChecking)return;
   state.paymentStatusChecking=true;
   state.paymentStillPending=false;
   render();
@@ -1962,7 +2057,9 @@ async function refreshPaymentStatus(){
 }
 function openHsk30Course(){
   const query=new URLSearchParams({lang:state.lang,level:"nhsk1",tab:"course",source:"hsk30_payment"});
-  window.location.assign("/course-v3.html?"+query.toString());
+  const target=(PWA_CHECKOUT_HOST?"/iphone-pwa/course":"/course-v3.html")+"?"+query.toString();
+  if(PWA_CHECKOUT_EMBEDDED){window.parent.location.assign(target);return}
+  window.location.assign(target);
 }
 document.addEventListener("click",event=>{
   const retryQuote=event.target.closest("[data-retry-quote]");
@@ -2027,6 +2124,37 @@ $("#nextBtn").addEventListener("click",()=>{
   setStep(state.step+1);
 });
 $("#backBtn").addEventListener("click",()=>setStep(state.step-1));
+if(PWA_CHECKOUT_HOST){
+  function checkoutBack(){
+    if(state.paymentSubmitting)return;
+    if(state.qrPreviewOpen){closeQrPreview();return}
+    if(state.supportOpen){hideSupportSheet();return}
+    if(state.inviteOpen){hideInviteSheet();return}
+    if(state.renewalOpen){state.renewalOpen=false;render();return}
+    if(state.step>0&&!state.pending&&!state.done){setStep(state.step-1);return}
+    returnToCourseFromCheckout();
+  }
+  window.hskPwaCheckoutBack=checkoutBack;
+  $("#pwaCheckoutBackBtn").addEventListener("click",checkoutBack);
+  let origin=null;
+  document.addEventListener("touchstart",function(event){
+    if(event.touches.length!==1||event.target.closest("input,textarea,select")){origin=null;return}
+    const touch=event.touches[0];origin={x:touch.clientX,y:touch.clientY};
+  },{passive:true});
+  document.addEventListener("touchmove",function(event){
+    if(!origin||event.touches.length!==1){origin=null;return}
+    const touch=event.touches[0],dx=touch.clientX-origin.x,dy=Math.abs(touch.clientY-origin.y);
+    if(dy>14&&dy>dx){origin=null;return}
+    if(dx>18&&dx>dy*1.4&&event.cancelable)event.preventDefault();
+  },{passive:false});
+  document.addEventListener("touchend",function(event){
+    const start=origin;origin=null;
+    if(!start||event.changedTouches.length!==1)return;
+    const touch=event.changedTouches[0],dx=touch.clientX-start.x;
+    if(dx>=55&&dx>Math.abs(touch.clientY-start.y)*1.5)checkoutBack();
+  },{passive:true});
+  document.addEventListener("touchcancel",function(){origin=null},{passive:true});
+}
 $("#renewalBackdrop").addEventListener("click",()=>{state.renewalOpen=false;render()});
 $("#renewalEditBtn").addEventListener("click",()=>{state.renewalOpen=false;render()});
 $("#renewalConfirmBtn").addEventListener("click",()=>{
@@ -2061,6 +2189,13 @@ $("#qrPreviewBackBtn").addEventListener("click",closeQrPreview);
 function shareReferral(link){
   if(!link){toast(tr().error);return}
   const url="https://t.me/share/url?url="+encodeURIComponent(link)+"&text="+encodeURIComponent(tr().shareText);
+  if(PWA_CHECKOUT_HOST){
+    if(navigator.share){navigator.share({text:tr().shareText,url:link}).catch(error=>{
+      if(error?.name!=="AbortError")copyReferralLink(link);
+    });}
+    else copyReferralLink(link);
+    return;
+  }
   if(tg&&tg.openTelegramLink){tg.openTelegramLink(url)}
   else{window.open(url,"_blank")}
 }
@@ -2193,5 +2328,6 @@ $("#receiptInput").addEventListener("change",async event=>{
 render();
 loadOverview();
 </script>
+<script src="/course_v3_data/iphone-pwa-shake-report.js?v=20261105-e878b00bfc8a"></script>
 </body>
 </html>

@@ -7,7 +7,10 @@ on:
     branches:
       - codex/i18n-local-first-foundation-20261017
       - codex/p3-main-integration-20261020
+      - feat/iphone-pwa-browser-auth-p1-20261102
     paths:
+      - ".github/workflows/backend-ci.yml"
+      - "localization/baselines/reviewed_ui_changes.json"
       - "app/main.py"
       - "app/bot/handlers/start.py"
       - "app/bot/handlers/commands.py"
@@ -15,6 +18,9 @@ on:
       - "app/static/*.html"
       - "app/static/course_v3_data/*.js"
       - "app/static/course_v3_data/*.css"
+      - "tests/test_pwa_*.py"
+      - "tests/test_pwa_*.js"
+      - "localization/baselines/reviewed_ui_changes.json"
       - "tests/test_telegram_sdk_asset.py"
       - "app/api/miniapp_entitlements.py"
       - "app/api/desktop_course.py"
@@ -141,7 +147,9 @@ concurrency:
 jobs:
   targeted-tests:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    # The sequential browser-auth, course, checkout and migration regressions
+    # exceeded the old budget when the PR workflows ran concurrently.
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -216,6 +224,13 @@ jobs:
             tests.test_desktop_provider_accounts \
             tests.test_native_oauth_lifecycle \
             tests.test_identity_link_service
+      - name: Test isolated iPhone PWA browser and Telegram sign-in
+        run: python -m unittest tests.test_pwa_browser_auth tests.test_pwa_telegram_bot tests.test_pwa_shake_report
+      - name: Validate iPhone PWA inbox, payment and feedback dialogs
+        run: |
+          node tests/test_pwa_notices_ui.js
+          node tests/test_pwa_feedback_ui.js
+          node tests/test_pwa_shake_report_ui.js
       - name: Test 0108 native audit facts and personal discount account isolation
         run: |
           python -m unittest \
@@ -447,6 +462,8 @@ jobs:
         run: |
           python -m pip install pytest playwright
           python -m playwright install --with-deps chromium
+      - name: Verify real browser iPhone PWA glass dialogs at mobile widths
+        run: python -m pytest -q tests/e2e/test_iphone_pwa_glass.py
       - name: Preserve current main navigation, preload and desktop dialog behavior
         run: >-
           python -m pytest -q tests/e2e/test_practice_bootstrap.py

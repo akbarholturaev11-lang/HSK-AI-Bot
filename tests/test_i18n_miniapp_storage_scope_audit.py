@@ -20,12 +20,13 @@ class MiniAppStorageScopeTests(unittest.TestCase):
     def test_current_key_classification_is_complete_for_literal_calls(self):
         report = audit()
         self.assertEqual(report["status"], "SOURCE_IDENTITY_SCOPE_RUNTIME_QA_REQUIRED")
-        self.assertEqual(report["classified_literal_keys"], 10)
-        self.assertEqual(report["literal_storage_calls"], 20)
+        self.assertEqual(report["classified_literal_keys"], 9)
+        self.assertEqual(report["literal_storage_calls"], 18)
         self.assertEqual(report["regressions"], [])
         self.assertEqual(set(report["dynamic_cache_key_functions"]), {
             "lessonDataKey", "lessonResumeKey", "lessonMasteryKey",
             "foundationCacheKey", "studySetupTimeKey", "memorizationStateKey",
+            "memoPrefKey",
         })
 
     def test_identity_contrasts_are_preserved_and_flagged_for_qa(self):
@@ -46,6 +47,29 @@ class MiniAppStorageScopeTests(unittest.TestCase):
         self.assertEqual({r["id"] for r in report["risks"]}, {
             "unverified_user_scope_source",
         })
+
+    def test_new_browser_scoped_keys_fail_closed_on_account_scope_regression(self):
+        source = dict(self.sources)
+        scoped = '("hsk_memo_pref:"+localUserScope())'
+        self.assertIn(scoped, source["memorize"])
+        source["memorize"] = source["memorize"].replace(scoped, '"hsk_memo_pref"', 1)
+        report = audit_source(source, self.registry)
+        self.assertIn(
+            "pwa_memo_preference_scope_missing",
+            {row["kind"] for row in report["regressions"]},
+        )
+
+        source = dict(self.sources)
+        scoped = '"hsk_mistake_review_ref:pwa:"+String(PWA_COURSE_USER_ID||"unbound")'
+        self.assertIn(scoped, source["course"])
+        source["course"] = source["course"].replace(
+            scoped, '"hsk_mistake_review_ref"', 1,
+        )
+        report = audit_source(source, self.registry)
+        self.assertIn(
+            "pwa_mistake_review_ref_scope_missing",
+            {row["kind"] for row in report["regressions"]},
+        )
 
     def test_new_storage_key_requires_classification(self):
         source = dict(self.sources)

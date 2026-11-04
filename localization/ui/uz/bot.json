@@ -668,7 +668,11 @@
     "inline.services.entitlements.decision.limit_text.copy3.case1": "{value1}: cheksiz.",
     "inline.services.entitlements.decision.limit_text.copy4": "kuniga",
     "inline.services.entitlements.decision.limit_text.copy5": "jami",
-    "inline.services.entitlements.decision.limit_text.copy6.case1": "{plan} {period} {limit} ta {noun}. Qoldi: {value5}."
+    "inline.services.entitlements.decision.limit_text.copy6.case1": "{plan} {period} {limit} ta {noun}. Qoldi: {value5}.",
+    "inline.handlers.desktop_auth.pwa.confirm": "🌐 <b>HSK AI iPhone PWA — Telegram orqali kirish</b>\n\nBrauzerda kirish so‘rovini o‘zingiz boshlagan bo‘lsangizgina tasdiqlang. Tasdiqlash hisobingizdagi kurs va obunani shu brauzerda ochishga ruxsat beradi.",
+    "inline.handlers.desktop_auth.pwa.denied": "Kirish bekor qilindi. Bu havola endi ishlamaydi.",
+    "inline.handlers.desktop_auth.pwa.invalid": "Bu PWA kirish havolasi eskirgan yoki noto‘g‘ri. Brauzerdan qaytadan boshlang.",
+    "inline.handlers.desktop_auth.pwa.success": "✅ <b>Kirish tasdiqlandi</b>\n\niPhone brauzeridagi HSK AI sahifasiga qayting."
   },
   "namespace": "bot",
   "references": {

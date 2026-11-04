@@ -3,6 +3,8 @@
   "namespace": "notifications",
   "locale": "ru",
   "messages": {
+    "pwa.push.body": "У вас новое уведомление. Откройте HSK AI.",
+    "pwa.push.title": "HSK AI",
     "course.title.d1_lesson_recovery": "Вернуться к уроку",
     "course.title.daily_goal": "Цель на сегодня",
     "course.title.lesson_time": "Время урока",

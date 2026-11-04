@@ -6,6 +6,8 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models.payment import Payment
+from app.db.models.user import User
+from app.services.account_identity import actual_telegram_id, owner_clause
 from app.services.admin_analytics_identity import analytics_account_key
 from app.db.models.release_feedback import (
     ReleaseFeedbackCampaign,
@@ -147,24 +149,57 @@ class ReleaseFeedbackRepository:
         await self.session.flush()
 
     async def list_delivery_user_ids(self, campaign_id: int) -> set[int]:
+        """Only real Telegram transport IDs; PWA-only deliveries have NULL."""
         result = await self.session.execute(
             select(ReleaseFeedbackDelivery.user_telegram_id)
             .where(ReleaseFeedbackDelivery.campaign_id == campaign_id)
+            .where(ReleaseFeedbackDelivery.user_telegram_id.is_not(None))
         )
         return {int(item) for item in result.scalars().all()}
+
+    async def list_delivery_account_ids(self, campaign_id: int) -> set[int]:
+        """An already-targeted native owner must not be sent the same
+        campaign again just because a Telegram identity was later linked.
+        """
+        result = await self.session.execute(
+            select(ReleaseFeedbackDelivery.user_id)
+            .where(ReleaseFeedbackDelivery.campaign_id == campaign_id)
+            .where(ReleaseFeedbackDelivery.user_id.is_not(None))
+        )
+        return {int(item) for item in result.scalars().all()}
+
+    async def _canonical_owner(
+        self, *, user: Optional[User], user_telegram_id: Optional[int],
+    ) -> User:
+        """Resolve a real account, never synthesize a Telegram ID from users.id."""
+        tid = actual_telegram_id(user_telegram_id)
+        if user is None and tid is not None:
+            user = (await self.session.execute(
+                select(User).where(User.telegram_id == tid)
+            )).scalar_one_or_none()
+        if user is None or not isinstance(user.id, int) or user.id <= 0:
+            raise ValueError("feedback_account_not_found")
+        if tid is not None and actual_telegram_id(user) != tid:
+            raise ValueError("feedback_transport_owner_mismatch")
+        return user
 
     async def create_delivery(
         self,
         *,
         campaign_id: int,
-        user_telegram_id: int,
+        user_telegram_id: Optional[int] = None,
+        user: Optional[User] = None,
         status: str,
         message_id: Optional[int] = None,
         error: Optional[str] = None,
     ) -> ReleaseFeedbackDelivery:
+        owner = await self._canonical_owner(
+            user=user, user_telegram_id=user_telegram_id,
+        )
         delivery = ReleaseFeedbackDelivery(
             campaign_id=campaign_id,
-            user_telegram_id=user_telegram_id,
+            user_id=owner.id,
+            user_telegram_id=actual_telegram_id(owner),
             status=status,
             message_id=message_id,
             error=(error or "")[:300] or None,
@@ -177,12 +212,25 @@ class ReleaseFeedbackRepository:
         self,
         *,
         campaign_id: int,
-        user_telegram_id: int,
+        user_telegram_id: Optional[int] = None,
+        user: Optional[User] = None,
     ) -> Optional[ReleaseFeedbackDelivery]:
+        actor = user if user is not None else actual_telegram_id(user_telegram_id)
+        if actor is None:
+            return None
         result = await self.session.execute(
             select(ReleaseFeedbackDelivery)
             .where(ReleaseFeedbackDelivery.campaign_id == campaign_id)
-            .where(ReleaseFeedbackDelivery.user_telegram_id == user_telegram_id)
+            .where(owner_clause(
+                ReleaseFeedbackDelivery, actor, telegram_column="user_telegram_id",
+            ))
+            # An unowned historical TG row might be linked later to an
+            # account that already answered in the browser. Canonical wins.
+            .order_by(
+                ReleaseFeedbackDelivery.user_id.is_(None),
+                ReleaseFeedbackDelivery.id.desc(),
+            )
+            .limit(1)
         )
         return result.scalar_one_or_none()
 
@@ -190,23 +238,27 @@ class ReleaseFeedbackRepository:
         self,
         *,
         campaign_id: int,
-        user_telegram_id: int,
+        user_telegram_id: Optional[int] = None,
+        user: Optional[User] = None,
         trial_granted_until: Optional[datetime] = None,
     ) -> ReleaseFeedbackDelivery:
+        owner = await self._canonical_owner(
+            user=user, user_telegram_id=user_telegram_id,
+        )
         now = datetime.now(timezone.utc)
         delivery = await self.get_delivery(
-            campaign_id=campaign_id,
-            user_telegram_id=user_telegram_id,
+            campaign_id=campaign_id, user=owner,
         )
         if not delivery:
             delivery = ReleaseFeedbackDelivery(
                 campaign_id=campaign_id,
-                user_telegram_id=user_telegram_id,
+                user_id=owner.id,
+                user_telegram_id=actual_telegram_id(owner),
                 status="clicked",
             )
             self.session.add(delivery)
         delivery.try_clicked_at = delivery.try_clicked_at or now
-        if trial_granted_until:
+        if trial_granted_until and delivery.trial_granted_until is None:
             delivery.trial_granted_until = trial_granted_until
         await self.session.flush()
         return delivery
@@ -215,12 +267,25 @@ class ReleaseFeedbackRepository:
         self,
         *,
         campaign_id: int,
-        user_telegram_id: int,
+        user_telegram_id: Optional[int] = None,
+        user: Optional[User] = None,
     ) -> Optional[ReleaseFeedbackResponse]:
+        actor = user if user is not None else actual_telegram_id(user_telegram_id)
+        if actor is None:
+            return None
         result = await self.session.execute(
             select(ReleaseFeedbackResponse)
             .where(ReleaseFeedbackResponse.campaign_id == campaign_id)
-            .where(ReleaseFeedbackResponse.user_telegram_id == user_telegram_id)
+            .where(owner_clause(
+                ReleaseFeedbackResponse, actor, telegram_column="user_telegram_id",
+            ))
+            # An unowned historical TG row might be linked later to an
+            # account that already answered in the browser. Canonical wins.
+            .order_by(
+                ReleaseFeedbackResponse.user_id.is_(None),
+                ReleaseFeedbackResponse.id.desc(),
+            )
+            .limit(1)
         )
         return result.scalar_one_or_none()
 
@@ -228,17 +293,22 @@ class ReleaseFeedbackRepository:
         self,
         *,
         campaign_id: int,
-        user_telegram_id: int,
         rating: int,
+        user_telegram_id: Optional[int] = None,
+        user: Optional[User] = None,
         comment_text: Optional[str] = None,
         attachment_file_id: Optional[str] = None,
         attachment_type: Optional[str] = None,
         discount_campaign_id: Optional[int] = None,
     ) -> ReleaseFeedbackResponse:
+        owner = await self._canonical_owner(
+            user=user, user_telegram_id=user_telegram_id,
+        )
         now = datetime.now(timezone.utc)
         response = ReleaseFeedbackResponse(
             campaign_id=campaign_id,
-            user_telegram_id=user_telegram_id,
+            user_id=owner.id,
+            user_telegram_id=actual_telegram_id(owner),
             rating=rating,
             comment_text=comment_text,
             attachment_file_id=attachment_file_id,

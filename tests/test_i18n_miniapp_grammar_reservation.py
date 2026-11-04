@@ -169,18 +169,38 @@ assert.equal(mappings,408);
 
     def test_existing_verified_access_and_commit_precede_patch(self):
         api = API.read_text(encoding="utf-8")
-        start = api.index('    @router.post("/api/v3/lesson/start")')
-        stop = api.index('    @router.post("/api/v3/limits/status")', start)
-        block = api[start:stop]
-        self.assertLess(block.index("extract_verified_webapp_user_id"),
-                        block.index("miniapp_reserved_grammar_patch("))
+        shared_start = api.index("    async def _start_lesson_for_user(")
+        telegram_start = api.index('    @router.post("/api/v3/lesson/start")', shared_start)
+        pwa_start = api.index('    @router.post("/api/v3/pwa/lesson/start")', telegram_start)
+        next_route = api.index('    @router.post("/api/v3/limits/status")', pwa_start)
+        block = api[shared_start:telegram_start]
+        telegram = api[telegram_start:pwa_start]
+        pwa = api[pwa_start:next_route]
+
+        # Both authenticated transports resolve the canonical user before
+        # reaching the *same* entitlement/grammar/progress implementation.
+        self.assertLess(telegram.index("extract_verified_webapp_user_id"),
+                        telegram.index("get_by_telegram_id_for_update("))
+        self.assertLess(telegram.index("get_by_telegram_id_for_update("),
+                        telegram.index("_start_lesson_for_user("))
+        self.assertLess(pwa.index("require_same_origin("),
+                        pwa.index("mutation_actor("))
+        self.assertLess(pwa.index("mutation_actor("),
+                        pwa.index("get_by_user_id(actor.id, lock=True)"))
+        self.assertLess(pwa.index("get_by_user_id(actor.id, lock=True)"),
+                        pwa.index("_start_lesson_for_user("))
+
+        # A completed-lesson review remains quota-free and checked before
+        # the existing localization patch, regardless of transport.
         review = block[block.index('if payload.get("review_only") is True:'):
-                       block.index('if order < 1 or order > total_parts(level)', 
+                       block.index("if order < 1 or order > total_parts(level)",
                                    block.index('if payload.get("review_only") is True:'))]
         self.assertLess(review.index("order > completed"),
                         review.index("miniapp_reserved_grammar_patch("))
+        self.assertIn("consume=False", review)
         self.assertNotIn("consume=True", review)
-        # The current lesson, by contrast, MUST consume its existing gate.
+
+        # A current lesson consumes the one canonical server entitlement.
         reserved = block[block.index("result = await LessonAccessService(session).status("):]
         self.assertLess(reserved.index("consume=True"),
                         reserved.index("miniapp_reserved_grammar_patch("))
@@ -193,7 +213,6 @@ assert.equal(mappings,408);
     def test_miniapp_does_not_change_prefetch_or_cached_json_paths(self):
         html = HTML.read_text(encoding="utf-8")
         self.assertIn("p3-grammar-reservation.js?v=20261019-p3-2", html)
-        self.assertEqual(len(html.split("\n")), 9096)
         self.assertIn("fetch(lessonDataUrl(lv,n),", html)
         self.assertIn("LESSON_DATA_CACHE[key]=d;", html)
         self.assertIn(

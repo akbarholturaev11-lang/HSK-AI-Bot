@@ -61,6 +61,8 @@ class StandaloneQAInitializerTests(unittest.TestCase):
         self.assertEqual(ScriptDirectory.from_config(config).get_heads(),
                          [mod.EXPECTED_HEAD])
         self.assertEqual(mod.EXPECTED_BASELINE, "0102_payment_review_preview")
+        # This is an explicit reviewed upgrade, not an arbitrary accepted head.
+        self.assertEqual(mod.EXPECTED_HEAD, "0149_smart_pwa_analysis_channel")
 
     def test_new_or_multiple_heads_stop_before_any_schema_creation_or_stamp(self):
         for heads in ([], ["0110_unreviewed"], [mod.EXPECTED_HEAD, "other_head"]):
@@ -98,6 +100,7 @@ class StandaloneQAInitializerTests(unittest.TestCase):
             "admin_pwa_mcp_audit", "admin_pwa_mcp_quotas",
             "admin_pwa_native_reports", "admin_pwa_inbox_triage", "admin_pwa_inbox_triage_audit",
             "admin_pwa_push_subscriptions", "admin_pwa_push_outbox", "admin_pwa_command_audit",
+            "learner_pwa_push_subscriptions", "learner_pwa_push_outbox",
         }
         self.assertEqual(set(metadata.tables) - initial, expected)
         self.assertIn("user_identities", initial)

@@ -141,3 +141,77 @@ def test_recognition_completes_and_submits_correct_answers_after_bootstrap(page)
     assert all(item["correct"] for item in reports[0]["results"])
     assert "mistakes" not in reports[0]
     assert_browser_errors(errors)
+
+
+def test_pwa_recognition_swipe_keeps_course_and_reports_answer(page):
+    """A same-origin child returns locally while progress refresh is pending."""
+    course_path = "/iphone-pwa/course"
+    practice_path = "/iphone-pwa/practice/recognition"
+    errors, course_reads, map_refreshes = [], [], []
+    page.on("pageerror", lambda error: errors.append(str(error)))
+    page.route("**/api/**", lambda route: json_response(route, {"ok": True}))
+
+    def course_document(route):
+        course_reads.append(route.request.url)
+        route.fulfill(status=200, content_type="text/html",
+                      body=(STATIC_ROOT / "course-v3.html").read_text())
+
+    def practice_document(route):
+        assert "embedded=1" in route.request.url
+        route.fulfill(status=200, content_type="text/html",
+                      headers={"Content-Security-Policy": "frame-ancestors 'self'"},
+                      body=(STATIC_ROOT / "course_v3_recognition.html").read_text())
+
+    page.route(f"**{course_path}?*", course_document)
+    page.route(f"**{practice_path}?*", practice_document)
+    page.route("**/api/v3/pwa-auth/session", lambda route: json_response(
+        route, {"ok": True, "user_id": 7, "csrf": "practice-actor"}))
+    course_map = json.loads((STATIC_ROOT / "course_v3_data/hsk1.json").read_text())
+    course_map.update(
+        authenticated=True,
+        user={"name": "Browser learner", "language": "uz", "onboarding_completed": True},
+    )
+
+    def fetch_map(route):
+        if len(course_reads) == 1 and map_refreshes:
+            map_refreshes.append(route)
+            return
+        map_refreshes.append(route)
+        json_response(route, course_map, headers={"X-HSK-PWA-User-ID": "7"})
+
+    page.route("**/api/v3/pwa/map?*", fetch_map)
+    page.route("**/api/v3/pwa/practice/profile", lambda route: json_response(
+        route, {"ok": True, "level": "hsk1", "completed_lessons": 40}))
+    page.route("**/api/v3/pwa/practice/daily-gate", lambda route: json_response(
+        route, {"ok": True, "allowed": True}))
+    page.route("**/api/v3/pwa/practice/words", lambda route: json_response(
+        route, {"ok": True, "words": [{"zh": "你", "kind": "new", "box": 0},
+                                     {"zh": "好", "kind": "new", "box": 0}]}))
+
+    page.goto(app_url(course_path + "?lang=uz&level=hsk1&tab=mashq"), wait_until="domcontentloaded")
+    page.locator("#m-recog").click()
+    frame = page.frame_locator("#pwa-practice-layer iframe")
+    expect(frame.locator(".tile")).to_have_count(4)
+    wrong = frame.locator("body").evaluate("() => quiz[qi].opts.findIndex(option => !option.ok)")
+    frame.locator(".tile").nth(wrong).click()
+    with page.expect_request("**/api/v3/pwa/practice/report") as sent:
+        frame.locator("body").evaluate("""body => {
+            for (const [type, touches] of [
+                ['touchstart', [{clientX: 35, clientY: 150}]],
+                ['touchmove', [{clientX: 145, clientY: 150}]],
+                ['touchend', []],
+            ]) {
+                const event = new Event(type, {bubbles: true, cancelable: true});
+                Object.defineProperty(event, 'touches', {value: touches});
+                body.dispatchEvent(event);
+            }
+        }""")
+    expect(page.locator("#pwa-practice-layer")).to_have_count(0)
+    expect(page.locator("#s-mashq.on #m-recog")).to_be_visible()
+    assert len(course_reads) == 1
+    request = sent.value
+    assert request.headers["x-hsk-pwa-csrf"] == "practice-actor"
+    report = request.post_data_json
+    assert report["feature"] == "recognition"
+    assert len(report["results"]) == 1 and report["results"][0]["correct"] is False
+    assert errors == []

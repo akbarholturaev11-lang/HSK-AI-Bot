@@ -129,6 +129,10 @@
     "navigation.profile": "Профил",
     "navigation.rating": "Рейтинг",
     "navigation.subscription": "Обуна",
+    "pwaAuth.choose": "Усули вуруд ё сохтани ҳисоби навро интихоб кунед",
+    "pwaAuth.tagline": "Ояндаи беҳтар — бо дониш",
+    "pwaAuth.telegramPending": "Дар боти Telegram воридшавиро барои ин браузер тасдиқ кунед ва ба саҳифаи HSK AI баргардед.",
+    "pwaAuth.welcome": "Хуш омадед",
     "smartPreferences.deletionPending": "Дархости ҳазфи ҳисоб баррасӣ мешавад. Ҳоло танзими ёдрасониҳои дарсро тағйир додан мумкин нест.",
     "state.loading": "Боргирӣ…"
   }

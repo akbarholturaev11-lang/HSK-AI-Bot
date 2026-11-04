@@ -7,7 +7,10 @@ app language used to leave Uzbek reminders sitting inside a Tajik interface.
 
 import unittest
 from datetime import datetime, timezone
+from types import SimpleNamespace
+from unittest.mock import AsyncMock, patch
 
+from app.db.models.course_user_notification import CourseUserNotification
 from app.services.course_notification_service import CourseNotificationService
 
 
@@ -101,6 +104,51 @@ class NotificationLanguageTests(unittest.TestCase):
         payload = CourseNotificationService.payload(row, "tj")
         self.assertTrue(payload["title"])
         self.assertTrue(payload["body"])
+
+
+class PwaPushSuppressionTests(unittest.IsolatedAsyncioTestCase):
+    async def test_mirrored_course_notice_keeps_its_feed_row_without_second_push(self):
+        class Transaction:
+            async def __aenter__(self):
+                return self
+
+            async def __aexit__(self, *_exc):
+                return False
+
+        class Session:
+            def __init__(self):
+                self.rows = []
+
+            def begin_nested(self):
+                return Transaction()
+
+            def add(self, row):
+                self.rows.append(row)
+
+            async def flush(self):
+                self.rows[-1].id = 41
+
+        session = Session()
+        user = SimpleNamespace(id=7, telegram_id=7001)
+        with (
+            patch("app.config.settings", SimpleNamespace(
+                PWA_AUTH_ENABLED=True, PWA_PUSH_ENABLED=True,
+            )),
+            patch("app.services.learner_pwa_push.enqueue_event", new_callable=AsyncMock) as enqueue,
+        ):
+            recorded = await CourseNotificationService(session).record_from_text(
+                user,
+                key="trial_expiring",
+                lang="uz",
+                text="Sinov muddati tugayapti",
+                source="trial_reminder",
+                pwa_push_suppressed=True,
+            )
+
+        self.assertTrue(recorded)
+        self.assertEqual(len(session.rows), 1)
+        self.assertIsInstance(session.rows[0], CourseUserNotification)
+        enqueue.assert_not_awaited()
 
 
 if __name__ == "__main__":

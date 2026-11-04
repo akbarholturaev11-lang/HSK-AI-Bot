@@ -80,10 +80,14 @@ class MiniAppReservationBoundaryTests(unittest.TestCase):
         )
 
     def test_start_reservation_sequence_guard_change_is_detected(self):
-        start = self.api.index("async def v3_course_lesson_start(")
-        changed = self.api[:start] + self.api[start:].replace(
-            "order > completed + 1", "order > completed + 999", 1,
-        )
+        start = self.api.index("async def _start_lesson_for_user(")
+        end = self.api.index('    @router.post("/api/v3/lesson/start")', start)
+        shared = self.api[start:end]
+        self.assertIn("order > completed + 1", shared)
+        changed = (self.api[:start]
+                   + shared.replace("order > completed + 1",
+                                    "order > completed + 999", 1)
+                   + self.api[end:])
         result = audit_source(changed, self.client)
         self.assertIn(
             "server.rejects_out_of_sequence_lesson",

@@ -7,6 +7,8 @@
 <script src="/assets/telegram-web-app.js?v=20261019-1"></script>
 <link rel="stylesheet" href="/course_v3_data/design-tokens.css?v=20261005">
 <style>
+html.hsk-pwa-browser input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+html.hsk-pwa-browser textarea,html.hsk-pwa-browser select{font-size:16px!important}
 /* HSK AI palette + course mascot; the reference supplies the screen hierarchy. */
 :root{--ink:var(--hsk-ink);--ink2:var(--hsk-ink-secondary);--paper:var(--hsk-paper);--card:var(--hsk-paper-raised);--line:var(--hsk-divider);--cin:var(--hsk-cinnabar);--cin2:var(--hsk-cinnabar-ink);--cinbg:var(--hsk-cinnabar-soft);--cin-ink:var(--hsk-on-cinnabar);--gold:var(--hsk-gold);--goldbg:var(--hsk-gold-soft);--jade:var(--hsk-jade);--safe-t:max(env(safe-area-inset-top,0px),var(--tg-top,0px));--safe-b:max(env(safe-area-inset-bottom,0px),var(--tg-bottom,0px));--display:-apple-system,"SF Pro Text","Segoe UI",Roboto,sans-serif}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -135,7 +137,7 @@ button:disabled{cursor:default}
     <button class="cta" id="cta" type="button" onclick="nextBtn()">Boshlash</button>
   </footer>
 </div>
-<script src="/course_v3_data/hsk-course-i18n.js?v=20261021-88bfab42686b"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script>
+<script src="/course_v3_data/hsk-course-i18n.js?v=20261021-6431aaf27e2a"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script>
 <script>
 var params=new URLSearchParams(location.search||"");
 var LANG=(params.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru";
@@ -265,20 +267,85 @@ function adoptOnboardingOptionCopy(){
 adoptOnboardingOptionCopy();
 var step=0,track="hsk30",sel="nhsk1",goalSel="hsk_exam",submitting=false,hasSavedTrack=false,userSelectedTrack=false;
 var HSK30_STATUS=null;
-var INIT_DATA=(tg&&tg.initData)||"";
+var PWA_ONBOARDING_HOST=location.pathname==="/iphone-pwa/onboarding";
+if(PWA_ONBOARDING_HOST)document.documentElement.classList.add("hsk-pwa-browser");
+var PWA_ONBOARDING_SESSION=null,PWA_ONBOARDING_PROMISE=null;
+var INIT_DATA=PWA_ONBOARDING_HOST?"":((tg&&tg.initData)||"");
+function onboardingPwaActor(){
+  if(!PWA_ONBOARDING_HOST)return Promise.reject(new Error("pwa_host_required"));
+  if(!PWA_ONBOARDING_PROMISE){
+    PWA_ONBOARDING_PROMISE=fetch("/api/v3/pwa-auth/session",{
+      credentials:"same-origin",cache:"no-store",redirect:"error"
+    }).then(function(r){
+      if(r.status===401){location.replace("/iphone-pwa");throw new Error("pwa_session_required")}
+      if(!r.ok)throw new Error("pwa_session_unavailable");
+      return r.json();
+    }).then(function(s){
+      if(!s||s.ok!==true||!Number.isSafeInteger(Number(s.user_id))||
+         Number(s.user_id)<=0||typeof s.csrf!=="string"||!s.csrf)
+        throw new Error("pwa_session_invalid");
+      if(PWA_ONBOARDING_SESSION&&PWA_ONBOARDING_SESSION.user_id!==s.user_id){
+        location.replace("/iphone-pwa");throw new Error("pwa_actor_changed");
+      }
+      PWA_ONBOARDING_SESSION=s;return s;
+    }).catch(function(e){PWA_ONBOARDING_PROMISE=null;throw e});
+  }
+  return PWA_ONBOARDING_PROMISE;
+}
+// A restored Home Screen/BFCache document must not keep an old browser actor.
+// Keep the owner snapshot so a different signed-in account fails closed.
+function verifyPwaReturn(){
+  if(!PWA_ONBOARDING_HOST)return;
+  PWA_ONBOARDING_PROMISE=null;
+  onboardingPwaActor().catch(function(){location.replace("/iphone-pwa")});
+}
+if(PWA_ONBOARDING_HOST){
+  window.addEventListener("pageshow",function(ev){if(ev.persisted)verifyPwaReturn()});
+  document.addEventListener("visibilitychange",function(){
+    if(document.visibilityState==="visible")verifyPwaReturn();
+  });
+}
+function onboardingTrackRequest(){
+  if(!PWA_ONBOARDING_HOST)return fetch("/api/v3/course-tracks",{
+    headers:{"X-Telegram-Init-Data":INIT_DATA},cache:"no-store"
+  });
+  return onboardingPwaActor().then(function(){
+    return fetch("/api/v3/pwa/course-tracks",{
+      credentials:"same-origin",cache:"no-store",redirect:"error"
+    });
+  });
+}
 try{
+  if(!PWA_ONBOARDING_HOST){
   var savedTrack=localStorage.getItem("hsk_v3_onb_track");
   var savedLevel=localStorage.getItem("hsk_v3_onb_level");
   var savedGoal=localStorage.getItem("hsk_v3_onb_goal");
   if(savedTrack==="hsk30"||savedTrack==="hsk20"){track=savedTrack;hasSavedTrack=true}
   if(savedLevel)sel=savedLevel;
   if(savedGoal&&GOALS.some(function(o){return o.k===savedGoal}))goalSel=savedGoal;
+  }
 }catch(e){}
 var pendingHsk30Draft=INIT_DATA&&track==="hsk30"?{level:sel,restore:hasSavedTrack}:null;
 if(pendingHsk30Draft){track="hsk20";sel="beginner"}
 var ONB_SESSION_ID=(function(){try{var k="hsk_v3_onb_session_id",v=sessionStorage.getItem(k);if(!v){v="onb-"+Date.now()+"-"+Math.random().toString(36).slice(2,8);sessionStorage.setItem(k,v)}return v}catch(e){return"onb-"+Date.now()}})();
 function apiHeaders(){return{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA}}
-function postJson(url,body,signal,keepalive){return fetch(url,{method:"POST",headers:apiHeaders(),body:JSON.stringify(body),keepalive:keepalive!==false,signal:signal})}
+function postJson(url,body,signal,keepalive){
+  if(!PWA_ONBOARDING_HOST)return fetch(url,{
+    method:"POST",headers:apiHeaders(),
+    body:JSON.stringify(body),keepalive:keepalive!==false,signal:signal
+  });
+  if(url!=="/api/miniapp/onboarding")return Promise.reject(new Error("pwa_route_unavailable"));
+  var payload=Object.assign({},body||{});
+  delete payload.daily_time;delete payload.start_point;
+  delete payload.initData;delete payload.user_id;delete payload.telegram_id;
+  return onboardingPwaActor().then(function(actor){
+    return fetch("/api/v3/pwa/onboarding",{
+      method:"POST",headers:{"Content-Type":"application/json","X-HSK-PWA-CSRF":actor.csrf},
+      credentials:"same-origin",cache:"no-store",redirect:"error",
+      body:JSON.stringify(payload),signal:signal
+    });
+  });
+}
 function trackOnboardingEvent(event,payload){
   if(!INIT_DATA)return Promise.resolve({ok:false,skipped:true});
   payload=payload||{};
@@ -296,7 +363,7 @@ function onboardingPayload(){
   var dailyMinutes=10,startMode="lesson_1";
   /* V1 da placement/continue tanlovi yo'q. Eski cache beginner Starter'ni
      chetlab o'tkazmasligi uchun boshlanish nuqtasi qat'iy lesson_1. */
-  try{localStorage.removeItem("hsk_v3_start_mode")}catch(e){}
+  if(!PWA_ONBOARDING_HOST)try{localStorage.removeItem("hsk_v3_start_mode")}catch(e){}
   return {
     level:sel,
     goal:goalSel,
@@ -317,7 +384,7 @@ function hsk30Access(){
 }
 function hsk30Enabled(){
   var access=hsk30Access();
-  return !!access&&access.feature_enabled!==false||!INIT_DATA&&!HSK30_STATUS;
+  return !!access&&access.feature_enabled!==false||(!INIT_DATA&&!PWA_ONBOARDING_HOST&&!HSK30_STATUS);
 }
 function hsk30LiveLevels(){
   var row=hsk30TrackState(),raw=row&&Array.isArray(row.live_levels)?row.live_levels:["nhsk1"];
@@ -356,6 +423,7 @@ function updateTrackSwitcher(){
 }
 function isHsk30Level(value){return /^nhsk[1-3]$/.test(String(value||""))}
 function saveDraft(){
+  if(PWA_ONBOARDING_HOST)return;
   try{
     localStorage.setItem("hsk_v3_onb_track",track);
     localStorage.setItem("hsk_v3_onb_level",sel);
@@ -496,11 +564,18 @@ function confirmSavedOnServer(payload){
   var timeout=setTimeout(function(){if(controller)controller.abort()},5000);
   var query=new URLSearchParams();
   query.set("_",String(Date.now()));
-  return fetch("/api/miniapp/onboarding/status?"+query.toString(),{
-    headers:{"X-Telegram-Init-Data":INIT_DATA},
-    cache:"no-store",
+  var url=PWA_ONBOARDING_HOST?"/api/v3/pwa/onboarding/status?"+query.toString()
+       :"/api/miniapp/onboarding/status?"+query.toString();
+  var req=PWA_ONBOARDING_HOST?onboardingPwaActor().then(function(){
+    return fetch(url,{
+      credentials:"same-origin",cache:"no-store",redirect:"error",
+      signal:controller?controller.signal:undefined
+    });
+  }):fetch(url,{
+    headers:{"X-Telegram-Init-Data":INIT_DATA},cache:"no-store",
     signal:controller?controller.signal:undefined
-  }).then(function(response){
+  });
+  return req.then(function(response){
     if(!response.ok)throw new Error("save_status_http_"+response.status);
     return response.json();
   }).then(function(data){
@@ -538,14 +613,14 @@ function finish(){
     if(moved)return;moved=true;saveNeedsVerification=false;
     var launch=result&&result.ok?result:{};
     var chosenLevel=isHsk30Level(sel)?sel:String(launch.level||(sel==="beginner"?"hsk1":sel));
-    try{localStorage.setItem("hsk_v3_onb","1");localStorage.setItem("hsk_v3_learner_level",sel);localStorage.setItem("hsk_v3_level",chosenLevel);localStorage.removeItem("hsk_v3_onb_track");localStorage.removeItem("hsk_v3_onb_level");localStorage.removeItem("hsk_v3_onb_goal")}catch(e){}
+    if(!PWA_ONBOARDING_HOST)try{localStorage.setItem("hsk_v3_onb","1");localStorage.setItem("hsk_v3_learner_level",sel);localStorage.setItem("hsk_v3_level",chosenLevel);localStorage.removeItem("hsk_v3_onb_track");localStorage.removeItem("hsk_v3_onb_level");localStorage.removeItem("hsk_v3_onb_goal")}catch(e){}
     var query=new URLSearchParams(params.toString());
     query.set("lang",LANG);query.set("level",chosenLevel);query.set("tab",String(launch.tab||"course"));query.set("onboarded","1");
     if(launch.foundation_required)query.set("foundation","1");else query.delete("foundation");
     var lesson=Number(launch.lesson||1);
     if(isHsk30Level(sel)){query.delete("lesson");query.delete("autostart")}
     else if(lesson>0&&!launch.placement){query.set("lesson",String(lesson));query.set("autostart","1")}
-    location.href="/course-v3.html?"+query.toString()+location.hash;
+    location.href=(PWA_ONBOARDING_HOST?"/iphone-pwa/course":"/course-v3.html")+"?"+query.toString()+location.hash;
   }
   function fail(reason){
     saveNeedsVerification=true;
@@ -597,7 +672,7 @@ function finish(){
         reconcile(reason);
       });
   }
-  if(!INIT_DATA){go({ok:true,level:sel==="beginner"?"hsk1":sel,lesson:1,tab:"course",foundation_required:sel==="beginner"});return}
+  if(!INIT_DATA&&!PWA_ONBOARDING_HOST){go({ok:true,level:sel==="beginner"?"hsk1":sel,lesson:1,tab:"course",foundation_required:sel==="beginner"});return}
   if(saveNeedsVerification){
     // "Try again" first rechecks persistence; don't immediately repeat a successful POST.
     confirmSavedOnServer(payload).then(function(saved){
@@ -607,8 +682,8 @@ function finish(){
   }else submit();
 }
 trackOnboardingEvent("onboarding_started",{dedupe_key:"started:"+ONB_SESSION_ID,event_id:"started:"+ONB_SESSION_ID});
-if(INIT_DATA){
-  fetch("/api/v3/course-tracks",{headers:{"X-Telegram-Init-Data":INIT_DATA},cache:"no-store"})
+if(INIT_DATA||PWA_ONBOARDING_HOST){
+  onboardingTrackRequest()
     .then(function(r){return r.ok?r.json():null})
     .then(function(d){
       if(!d||!d.ok)throw new Error("course_track_unavailable");

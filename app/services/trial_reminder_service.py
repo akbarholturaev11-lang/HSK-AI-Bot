@@ -99,6 +99,7 @@ class TrialReminderService:
                 source="trial_reminder",
                 dedupe_key=dedupe,
                 params={"days_left": days_left},
+                pwa_push_suppressed=True,
             ):
                 continue
 

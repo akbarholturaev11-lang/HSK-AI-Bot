@@ -2,11 +2,17 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>AI Voice</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script src="/course_v3_data/hsk-course-i18n.js?v=20261021-88bfab42686b"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script>
+<script>
+var PWA_VOICE_HOST=location.pathname==="/iphone-pwa/practice/voice";
+if(PWA_VOICE_HOST)document.documentElement.classList.add("hsk-pwa-browser");
+else document.write('<script src="/assets/telegram-web-app.js?v=20261019-1"><\/script>');
+</script>
+<script src="/course_v3_data/hsk-course-i18n.js?v=20261021-6431aaf27e2a"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script>
 <style>
+html.hsk-pwa-browser input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+html.hsk-pwa-browser textarea,html.hsk-pwa-browser select{font-size:16px!important}
 :root{--ink:#211D17;--ink2:#665D50;--ink3:#A89E8E;--paper:#FDF9F0;--card:#FFFFFF;--line:#EAE0CC;--cin:#E04A40;--cin2:#B23530;--cinbg:#FDEBE7;--gold:#E9A916;--jade:#2FA06A;--safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;background:#CDB792;font-family:-apple-system,"SF Pro Text","Segoe UI",Roboto,sans-serif;color:var(--ink)}
@@ -145,7 +151,7 @@ button{font-family:inherit;border:none;background:none;color:inherit}
 
   <div class="top">
     <button class="ic" onclick="endCall()" aria-label="yopish"><i class="ti ti-x"></i></button>
-    <div class="tinfo"><div class="tn" id="nm">阿宝 · Aobao</div><div class="tc" id="cnt">对话 1 / 7</div></div>
+    <div class="tinfo"><div class="tn" id="nm">阿宝 · Aobao</div><div class="tc" id="cnt"></div></div>
     <button class="ic" onclick="openSettings()" aria-label="sozlamalar"><i class="ti ti-settings"></i></button>
   </div>
 
@@ -232,7 +238,7 @@ function toggleSub(){try{localStorage.setItem(SUB_KEY,subOn()?"0":"1")}catch(e){
 function slowOn(){try{return localStorage.getItem(RATE_KEY)==="slow"}catch(e){return false}}
 function applyRate(){$("setRateV").textContent=slowOn()?L.rateSlow:L.rateNormal}
 function toggleRate(){try{localStorage.setItem(RATE_KEY,slowOn()?"normal":"slow")}catch(e){}applyRate()}
-function goBack(){location.href="/course-v3.html?lang="+LANG+"&tab=voice"}
+function goBack(){location.href=(PWA_VOICE_HOST?"/iphone-pwa/course":"/course-v3.html")+"?lang="+LANG+"&tab=voice"}
 
 /* ---- TTS ---- */
 var _ttsAudio=null,_ttsCache={},_ttsPend={};
@@ -275,7 +281,112 @@ function chr(mood,p){
 }
 
 /* ---- backend wiring (STT + AI reply via /api/voice-practice) ---- */
-function initData(){return (tg&&tg.initData)?tg.initData:""}
+var PWA_VOICE_SESSION=null,PWA_VOICE_PROMISE=null;
+function initData(){return PWA_VOICE_HOST?"":((tg&&tg.initData)?tg.initData:"")}
+function voicePwaActor(){
+  if(!PWA_VOICE_HOST)return Promise.reject(new Error("pwa_host_required"));
+  if(!PWA_VOICE_PROMISE){
+    PWA_VOICE_PROMISE=fetch("/api/v3/pwa-auth/session",{
+      credentials:"same-origin",cache:"no-store",redirect:"error"
+    }).then(function(r){
+      if(r.status===401){location.replace("/iphone-pwa");throw new Error("pwa_session_required")}
+      if(!r.ok)throw new Error("pwa_session_unavailable");
+      return r.json();
+    }).then(function(s){
+      if(!s||s.ok!==true||!Number.isSafeInteger(Number(s.user_id))||
+         Number(s.user_id)<=0||typeof s.csrf!=="string"||!s.csrf)
+        throw new Error("pwa_session_invalid");
+      if(PWA_VOICE_SESSION&&PWA_VOICE_SESSION.user_id!==s.user_id){
+        location.replace("/iphone-pwa");throw new Error("pwa_actor_changed");
+      }
+      PWA_VOICE_SESSION=s;return s;
+    }).catch(function(e){PWA_VOICE_PROMISE=null;throw e});
+  }
+  return PWA_VOICE_PROMISE;
+}
+function voiceStatus(){
+  if(!PWA_VOICE_HOST)return fetch("/api/voice-practice/me?initData="+encodeURIComponent(initData()));
+  return voicePwaActor().then(function(){
+    return fetch("/api/v3/pwa/voice/me",{credentials:"same-origin",cache:"no-store",redirect:"error"});
+  });
+}
+function voicePost(url,body,keepalive){
+  if(!PWA_VOICE_HOST)return fetch(url,{
+    method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)
+  });
+  var mapped={
+    "/api/voice-practice/session/start":"/api/v3/pwa/voice/session/start",
+    "/api/voice-practice/session/end":"/api/v3/pwa/voice/session/end"
+  }[url];
+  if(!mapped)return Promise.reject(new Error("pwa_route_unavailable"));
+  var payload=Object.assign({},body||{});
+  delete payload.initData;delete payload.user_id;delete payload.telegram_id;
+  if(url==="/api/voice-practice/session/start"){
+    delete payload.level;delete payload.language;
+  }
+  return voicePwaActor().then(function(s){
+    return fetch(mapped,{
+      method:"POST",headers:{"Content-Type":"application/json","X-HSK-PWA-CSRF":s.csrf},
+      credentials:"same-origin",cache:"no-store",redirect:"error",body:JSON.stringify(payload),keepalive:!!keepalive
+    });
+  });
+}
+function voiceMessage(fd){
+  if(!PWA_VOICE_HOST)return fetch("/api/voice-practice/message",{method:"POST",body:fd});
+  var fields=new FormData(),sid=fd.get("session_id"),
+      msg=fd.get("text"),media=fd.get("audio");
+  if(typeof sid!=="string"||!sid)return Promise.reject(new Error("voice_session_required"));
+  fields.append("session_id",sid);
+  if(typeof msg==="string"&&msg)fields.append("text",msg);
+  if(media&&typeof media!=="string")fields.append("audio",media,
+    typeof media.name==="string"?media.name:"voice.mp4");
+  return voicePwaActor().then(function(s){
+    return fetch("/api/v3/pwa/voice/message",{
+      method:"POST",headers:{"X-HSK-PWA-CSRF":s.csrf},
+      credentials:"same-origin",cache:"no-store",redirect:"error",body:fields
+    });
+  });
+}
+// Re-authenticate on Home Screen resume/BFCache restore; never treat a
+// cached browser actor or app screenshot as proof of an active session.
+function verifyPwaReturn(){
+  if(!PWA_VOICE_HOST)return;
+  PWA_VOICE_PROMISE=null;
+  voicePwaActor().catch(function(){location.replace("/iphone-pwa")});
+}
+if(PWA_VOICE_HOST){
+  window.addEventListener("pageshow",function(ev){if(ev.persisted)verifyPwaReturn()});
+  document.addEventListener("visibilitychange",function(){
+    if(document.visibilityState==="visible")verifyPwaReturn();
+  });
+  window.addEventListener("pagehide",function(){
+    stopHard();stopSpeak();
+    if(!sess)return;
+    var sid=sess;sess=null;started=false;
+    voicePost("/api/voice-practice/session/end",{session_id:sid},true).catch(function(){});
+  });
+  var voiceSwipe=null;
+  document.addEventListener("touchstart",function(ev){
+    if(ev.touches.length!==1||ev.target.closest("textarea,#mic")){voiceSwipe=null;return}
+    var touch=ev.touches[0];
+    voiceSwipe={x:touch.clientX,y:touch.clientY,dx:0};
+  },{passive:true});
+  document.addEventListener("touchmove",function(ev){
+    if(!voiceSwipe||ev.touches.length!==1){voiceSwipe=null;return}
+    var touch=ev.touches[0],dx=touch.clientX-voiceSwipe.x,dy=Math.abs(touch.clientY-voiceSwipe.y);
+    if(dy>8&&dy>=Math.abs(dx)*1.15){voiceSwipe=null;return}
+    if(dx>=12&&dx>=dy*1.25){voiceSwipe.dx=dx;if(ev.cancelable)ev.preventDefault()}
+  },{passive:false});
+  document.addEventListener("touchend",function(){
+    var start=voiceSwipe;voiceSwipe=null;
+    if(!start||start.dx<Math.min(56,Math.max(32,window.innerWidth-start.x-8)))return;
+    if($("hintSheet").classList.contains("on"))closeHints();
+    else if($("setSheet").classList.contains("on"))closeSettings();
+    else if($("kbPanel").classList.contains("on"))closeKb();
+    else goBack();
+  },{passive:true});
+  document.addEventListener("touchcancel",function(){voiceSwipe=null},{passive:true});
+}
 var PERS={bao:{role:"friend",voice:"female",name:L.baoName},li:{role:"teacher_li",voice:"male",name:L.liName}};
 var persona="bao";
 var ME={level:"hsk1",language:LANG,is_paid:false};
@@ -293,7 +404,11 @@ function mtr(m){return !m?"":(typeof m==="string"?m:(m[LANG]||m.ru||m.uz||""))}
 
 function setChar(m){$("char").innerHTML=chr(m,persona);$("char").className="charwrap"+(m==="talk"?" speaking":"")}
 function setStatus(t){$("status").textContent=t||""}
-function setCnt(){$("cnt").textContent="对话 "+Math.min(turn+1,maxDialogs)+" / "+maxDialogs}
+function setCnt(){
+  $("cnt").textContent=PWA_VOICE_HOST
+    ?String(VOICE_PAGE_UI["courseVoiceInline.turnOf"]||"{n}").replace("{n}",turn+1)
+    :"对话 "+Math.min(turn+1,maxDialogs)+" / "+maxDialogs;
+}
 function setName(){$("nm").textContent=PERS[persona].name;$("setPersonaV").textContent=PERS[persona].name}
 function setHold(t){$("holdhint").textContent=t||""}
 function micBusy(on){$("mic").disabled=!!on}
@@ -352,7 +467,7 @@ $("hintBody").addEventListener("click",function(e){
 
 /* ---- keyboard panel ---- */
 function openKb(){$("ctrlRow").classList.add("off");$("kbPanel").classList.add("on");setHold("");$("kbText").focus()}
-function closeKb(){$("kbPanel").classList.remove("on");$("ctrlRow").classList.remove("off");setHold(started?L.holdMic:"")}
+function closeKb(){$("kbText").blur();$("kbPanel").classList.remove("on");$("ctrlRow").classList.remove("off");setHold(started?L.holdMic:"")}
 function syncSend(){$("kbSend").disabled=!$("kbText").value.trim()}
 $("kbText").addEventListener("input",function(){var t=$("kbText");t.style.height="auto";t.style.height=Math.min(t.scrollHeight,96)+"px";syncSend()});
 $("kbText").addEventListener("focus",function(){setTimeout(chatScroll,250)});
@@ -363,7 +478,7 @@ function init(){
   $("tipt").textContent=L.whatToSay;$("setTitle").textContent=L.settings;
   $("setPersona").textContent=L.optPersona;$("setSub").textContent=L.optSub;$("setRate").textContent=L.optRate;
   $("kbText").placeholder=L.kbPlaceholder;syncSend();
-  fetch("/api/voice-practice/me?initData="+encodeURIComponent(initData())).then(jr)
+  voiceStatus().then(jr)
     .then(function(o){if(o.ok&&o.j){ME.level=o.j.level||"hsk1";ME.language=o.j.language||LANG;ME.is_paid=!!o.j.is_paid}
       setChar("happy");setStatus("");setHold(L.holdMic)})
     .catch(function(){setChar("happy");setStatus("");setHold(L.holdMic)});
@@ -371,8 +486,7 @@ function init(){
 
 function startSession(){
   busy=true;micBusy(true);setStatus(L.connecting);setChar("talk");
-  return fetch("/api/voice-practice/session/start",{method:"POST",headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({initData:initData(),role:PERS[persona].role,level:ME.level,language:ME.language,voice:PERS[persona].voice})}).then(jr)
+  return voicePost("/api/voice-practice/session/start",{initData:initData(),role:PERS[persona].role,level:ME.level,language:ME.language,voice:PERS[persona].voice}).then(jr)
    .then(function(o){busy=false;micBusy(false);
       if(!o.ok){onStartError(o);return false;}
       sess=o.j.session_id;maxDialogs=Number(o.j.max_dialogs)||7;turn=0;started=true;setCnt();
@@ -389,7 +503,7 @@ function onStartError(o){
   setChar("happy");
   var code=o.j&&o.j.code;
   if(code==="LIMIT_EXCEEDED"||o.status===403){showPaywall();return;}
-  if(code==="USER_NOT_FOUND"){setStatus(L.startBot);return;}
+  if(code==="USER_NOT_FOUND"&&!PWA_VOICE_HOST){setStatus(L.startBot);return;}
   setStatus(L.sendErr);
 }
 
@@ -446,7 +560,7 @@ function cancelRecording(){
   try{if(mediaStream)mediaStream.getTracks().forEach(function(t){t.stop()})}catch(e){}
   mediaStream=null;mediaRecorder=null;setChar("happy");
 }
-function stopHard(){clearTimeout(autoStop);holdAt=0;holdOk=false;recAt=0;try{if(mediaRecorder&&mediaRecorder.state!=="inactive")mediaRecorder.stop()}catch(e){}try{if(mediaStream)mediaStream.getTracks().forEach(function(t){t.stop()})}catch(e){}mediaStream=null}
+function stopHard(){clearTimeout(autoStop);holdAt=0;holdOk=false;recAt=0;try{if(mediaRecorder){if(PWA_VOICE_HOST)mediaRecorder.onstop=null;if(mediaRecorder.state!=="inactive")mediaRecorder.stop()}}catch(e){}try{if(mediaStream)mediaStream.getTracks().forEach(function(t){t.stop()})}catch(e){}mediaStream=null}
 function extFromMime(mt){mt=(mt||"").toLowerCase();if(/mp4|m4a|aac/.test(mt))return"mp4";if(/ogg/.test(mt))return"ogg";if(/mpeg|mp3/.test(mt))return"mp3";if(/wav/.test(mt))return"wav";return"webm"}
 function onStopped(){
   var mt=(mediaRecorder&&mediaRecorder.mimeType)||"audio/webm";
@@ -456,7 +570,7 @@ function onStopped(){
   busy=true;micBusy(true);setChar("talk");setStatus(L.analyzing);addTyping();
   var _ext=extFromMime(blob.type||mt);
   var fd=new FormData();fd.append("initData",initData());fd.append("session_id",sess);fd.append("audio",blob,"voice."+_ext);
-  fetch("/api/voice-practice/message",{method:"POST",body:fd}).then(jr)
+  voiceMessage(fd).then(jr)
     .then(function(o){busy=false;micBusy(false);dropTyping();var heard=(o&&o.j&&o.j.heard)||"";clog("mic_result",(o&&o.ok)?"ok":"fail",{mime:blob.type||mt,ext:_ext,size:blob.size,heard:(""+heard).slice(0,24)});if(!o.ok){onMsgError(o);return}renderReply(o.j)})
     .catch(function(){busy=false;micBusy(false);dropTyping();clog("mic_neterr","",{mime:blob.type||mt,ext:_ext,size:blob.size});setChar("happy");setStatus(L.sendErr);setHold(L.holdMic)});
 }
@@ -470,7 +584,7 @@ function sendText(){
   busy=true;micBusy(true);setChar("talk");setStatus(L.analyzing);
   addMe(txt,"");addTyping();
   var fd=new FormData();fd.append("initData",initData());fd.append("session_id",sess);fd.append("text",txt);
-  fetch("/api/voice-practice/message",{method:"POST",body:fd}).then(jr)
+  voiceMessage(fd).then(jr)
     .then(function(o){busy=false;micBusy(false);dropTyping();if(!o.ok){onMsgError(o);return}renderReply(o.j,true)})
     .catch(function(){busy=false;micBusy(false);dropTyping();setChar("happy");setStatus(L.sendErr)});
 }
@@ -497,8 +611,7 @@ function endCall(){
   closeSettings();closeHints();
   if(!started||!sess){showDoneResult({message_count:turn});return;}
   stopHard();stopSpeak();var sid=sess;started=false;sess=null;
-  fetch("/api/voice-practice/session/end",{method:"POST",headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({initData:initData(),session_id:sid})}).then(function(r){return r.json()})
+  voicePost("/api/voice-practice/session/end",{initData:initData(),session_id:sid}).then(function(r){return r.json()})
    .then(function(j){showDoneResult(j||{})})
    .catch(function(){showDoneResult({message_count:turn})});
 }
@@ -546,7 +659,7 @@ function toggleDialog(){
   $("dtoggleic").className=on?"ti ti-chevron-up":"ti ti-messages";
 }
 function showPaywall(){
-  if(window.CourseAds&&CourseAds.showLimitPromo){
+  if(!PWA_VOICE_HOST&&window.CourseAds&&CourseAds.showLimitPromo){
     CourseAds.config({lang:LANG,initData:(tg&&tg.initData)||"",feature:"voice",level:(params.get("level")||"hsk1")});
     CourseAds.showLimitPromo({feature:"voice",reason:L.limitWhy||"",onSubscribe:goPremium,onBack:goBack});
     return;
@@ -554,10 +667,10 @@ function showPaywall(){
   $("pwchar").innerHTML=chr("happy",persona);
   $("pwh").textContent=L.limitTitle;$("pwp").textContent=L.limitSub;
   if(L.limitWhy){$("pwwhyt").textContent=L.limitWhy;$("pwwhy").hidden=false}else{$("pwwhy").hidden=true}
-  $("pwb").textContent=L.premiumBtn;$("pwb2").textContent=L.exit;
+  $("pwb").textContent=L.premiumBtn;$("pwb").hidden=false;$("pwb2").textContent=L.exit;
   $("paywall").classList.add("on");
 }
-function goPremium(){location.href="/subscription.html?lang="+LANG+"&source=v3_voice_limit&mode=subscription&return_to=course&return_page=course_v3_voice.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"")}
+function goPremium(){location.href=(PWA_VOICE_HOST?"/iphone-pwa/checkout":"/subscription.html")+"?lang="+LANG+"&source=v3_voice_limit&mode=subscription&return_to=course&return_page=course_v3_voice.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"")}
 function softReset(){
   started=false;sess=null;turn=0;lessonWords=[];reviewWords=[];
   closeKb();setName();setChar("happy");setStatus("");setHold(L.holdMic);chatClear();setCnt();
@@ -566,7 +679,7 @@ function reset(){$("done").classList.remove("on");softReset()}
 function swap(){
   if(busy)return;
   stopHard();stopSpeak();closeSettings();
-  if(sess){fetch("/api/voice-practice/session/end",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:initData(),session_id:sess})}).catch(function(){})}
+  if(sess){voicePost("/api/voice-practice/session/end",{initData:initData(),session_id:sess}).catch(function(){})}
   persona=(persona==="bao"?"li":"bao");softReset();
 }
 init();

@@ -129,6 +129,10 @@
     "navigation.profile": "Профиль",
     "navigation.rating": "Рейтинг",
     "navigation.subscription": "Подписка",
+    "pwaAuth.choose": "Выберите способ входа или создания аккаунта",
+    "pwaAuth.tagline": "Лучшее будущее — со знаниями",
+    "pwaAuth.telegramPending": "Подтвердите вход для этого браузера в боте Telegram, затем вернитесь на страницу HSK AI.",
+    "pwaAuth.welcome": "Добро пожаловать",
     "smartPreferences.deletionPending": "Запрос на удаление аккаунта рассматривается. Сейчас изменить учебные напоминания нельзя.",
     "state.loading": "Загрузка…"
   }

@@ -668,7 +668,11 @@
     "inline.services.entitlements.decision.limit_text.copy3.case1": "{value1}: бемаҳдуд.",
     "inline.services.entitlements.decision.limit_text.copy4": "дар як рӯз",
     "inline.services.entitlements.decision.limit_text.copy5": "ҳамагӣ",
-    "inline.services.entitlements.decision.limit_text.copy6.case1": "{plan} {period}: {limit} {noun}. Боқӣ монд: {value5}."
+    "inline.services.entitlements.decision.limit_text.copy6.case1": "{plan} {period}: {limit} {noun}. Боқӣ монд: {value5}.",
+    "inline.handlers.desktop_auth.pwa.confirm": "🌐 <b>HSK AI iPhone PWA — воридшавӣ тавассути Telegram</b>\n\nТанҳо агар худатон воридшавиро дар браузер оғоз карда бошед, тасдиқ кунед. Пас аз тасдиқ курс ва обунаи ҳисоби шумо дар ҳамин браузер кушода мешаванд.",
+    "inline.handlers.desktop_auth.pwa.denied": "Воридшавӣ бекор шуд. Ин пайванд дигар кор намекунад.",
+    "inline.handlers.desktop_auth.pwa.invalid": "Пайванди воридшавӣ ба PWA нодуруст ё куҳна аст. Аз браузер аз нав оғоз кунед.",
+    "inline.handlers.desktop_auth.pwa.success": "✅ <b>Воридшавӣ тасдиқ шуд</b>\n\nБа саҳифаи HSK AI дар браузери iPhone баргардед."
   },
   "namespace": "bot",
   "references": {

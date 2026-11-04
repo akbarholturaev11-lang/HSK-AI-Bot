@@ -129,6 +129,10 @@ Yangilikni sinab ko\'ring va 1-5 ball bering. Fikr qoldirsangiz, obunangiz bo\'l
     <string name="hsk_common_navigation_profile" formatted="false">Profil</string>
     <string name="hsk_common_navigation_rating" formatted="false">Reyting</string>
     <string name="hsk_common_navigation_subscription" formatted="false">Obuna</string>
+    <string name="hsk_common_pwaAuth_choose" formatted="false">Kirish yoki yangi hisob ochish usulini tanlang</string>
+    <string name="hsk_common_pwaAuth_tagline" formatted="false">Yaxshiroq kelajak — bilim bilan</string>
+    <string name="hsk_common_pwaAuth_telegramPending" formatted="false">Telegram botida ushbu brauzerga kirishni tasdiqlang, so‘ng HSK AI sahifasiga qayting.</string>
+    <string name="hsk_common_pwaAuth_welcome" formatted="false">Xush kelibsiz</string>
     <string name="hsk_common_smartPreferences_deletionPending" formatted="false">Hisobni o‘chirish so‘rovi ko‘rib chiqilmoqda. Hozir dars eslatmalarini o‘zgartirib bo‘lmaydi.</string>
     <string name="hsk_common_state_loading" formatted="false">Yuklanmoqda…</string>
 </resources>

@@ -5,7 +5,6 @@ HTTP request immediately before a worker crashes. Leases, capped retries and
 a per-device cooldown limit duplicates; never promise exactly-once delivery.
 No private inbox text or recipient details are sent or logged.
 """
-import asyncio
 import hashlib
 import json
 import logging
@@ -78,18 +77,8 @@ async def _webpush(subscription, encoded_key, subject, *, source):
     if source not in _PUSH_SOURCES:
         raise ValueError('invalid_push_source')
     public_data = json.dumps({'kind': 'important', 'source': source}, separators=(',', ':'))
-    from pywebpush import webpush
-    from py_vapid import Vapid
-    # pywebpush is blocking and must never block the async DB/event loop.
-    def send():
-        result = webpush(
-            subscription_info=subscription, data=public_data,
-            vapid_private_key=Vapid.from_raw(encoded_key.encode("ascii")),
-            vapid_claims={"sub": subject}, content_encoding="aes128gcm",
-            ttl=180, timeout=8, verbose=False,
-        )
-        return int(result.status_code)
-    return await asyncio.wait_for(asyncio.to_thread(send), timeout=12)
+    from app.services.webpush_transport import send_webpush
+    return await send_webpush(subscription, public_data, encoded_key, subject, ttl=180, timeout=8)
 
 
 def _http_status(exception):

@@ -563,6 +563,10 @@
     <string name="hsk_course_pronunciation_retry" formatted="false">Боз пахш кунед</string>
     <string name="hsk_course_pronunciation_review" formatted="false">такрор</string>
     <string name="hsk_course_pronunciation_skip" formatted="false">Гузарондан</string>
+    <string name="hsk_course_pwa_feedback_body" formatted="false">Дар бораи дарсе, ки ҳозир анҷом додед, кӯтоҳ фикр нависед.</string>
+    <string name="hsk_course_pwa_feedback_title" formatted="false">{level} · фикр дар бораи дарси {n}</string>
+    <string name="hsk_course_pwa_inbox_empty" formatted="false">Ҳоло огоҳӣ нест.</string>
+    <string name="hsk_course_pwa_settings_help_text" formatted="false">Агар дар барнома мушкиле пайдо шавад, ба дастгирӣ кӯтоҳ нависед. Агар имкон бошад, акси экранро ҳам фиристед.</string>
     <string name="hsk_course_rank" formatted="false">ҷой</string>
     <string name="hsk_course_rating_challenge_cooldown" formatted="false">Рақобатро дар 15 дақиқа як бор фиристодан мумкин. Пас аз {minutes} дақиқа кӯшиш кунед.</string>
     <string name="hsk_course_rating_challenge_not_allowed" formatted="false">Ба ин корбар даъват фиристодан мумкин нест</string>

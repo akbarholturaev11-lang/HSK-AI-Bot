@@ -338,7 +338,15 @@ class SubscriptionMiniAppErrorCopyTests(unittest.TestCase):
         self.assertIn("request_timeout:text.timeoutError", SUBSCRIPTION_HTML)
         self.assertIn("network_error:text.networkError", SUBSCRIPTION_HTML)
         self.assertIn("SUBMIT_TIMEOUT_MS", SUBSCRIPTION_HTML)
-        self.assertIn("signal:controller?controller.signal:undefined", SUBSCRIPTION_HTML)
+        # The original Telegram fetch and authenticated PWA fetch now share
+        # checkoutTransport; keep AbortController forwarding on BOTH branches.
+        self.assertIn(
+            "checkoutTransport(path,JSON.stringify(body||{}),controller?controller.signal:undefined,false)",
+            SUBSCRIPTION_HTML,
+        )
+        self.assertEqual(
+            SUBSCRIPTION_HTML.count("body,signal:signal,keepalive:!!keepalive"), 2,
+        )
 
     def test_screenshot_is_compressed_to_a_size_a_slow_phone_can_upload(self):
         self.assertIn("SCREENSHOT_TARGET_CHARS=300*1024", SUBSCRIPTION_HTML)

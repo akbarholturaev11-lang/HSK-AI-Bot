@@ -129,6 +129,10 @@
     "navigation.profile": "Profil",
     "navigation.rating": "Reyting",
     "navigation.subscription": "Obuna",
+    "pwaAuth.choose": "Kirish yoki yangi hisob ochish usulini tanlang",
+    "pwaAuth.tagline": "Yaxshiroq kelajak — bilim bilan",
+    "pwaAuth.telegramPending": "Telegram botida ushbu brauzerga kirishni tasdiqlang, so‘ng HSK AI sahifasiga qayting.",
+    "pwaAuth.welcome": "Xush kelibsiz",
     "smartPreferences.deletionPending": "Hisobni o‘chirish so‘rovi ko‘rib chiqilmoqda. Hozir dars eslatmalarini o‘zgartirib bo‘lmaydi.",
     "state.loading": "Yuklanmoqda…"
   }

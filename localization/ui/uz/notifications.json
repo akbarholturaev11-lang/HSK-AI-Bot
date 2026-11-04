@@ -3,6 +3,8 @@
   "namespace": "notifications",
   "locale": "uz",
   "messages": {
+    "pwa.push.body": "Yangi bildirishnoma. HSK AI'ni oching.",
+    "pwa.push.title": "HSK AI",
     "course.title.d1_lesson_recovery": "Darsga qaytish",
     "course.title.daily_goal": "Bugungi maqsad",
     "course.title.lesson_time": "Dars vaqti keldi",
