@@ -126,6 +126,9 @@ class SmartReminderLifecycleService:
         """Routing affects sends, never silently edits consent/settings mirrors."""
         if await self.legacy_veto(user_id, channel, device_id=device_id):
             return True
+        return await self.has_routing_hold(user_id)
+
+    async def has_routing_hold(self, user_id):
         with self.session.no_autoflush:
             # Sticky even when review expires or the new switch is off.
             return await self.session.scalar(select(SmartReminderRouting.user_id).where(
