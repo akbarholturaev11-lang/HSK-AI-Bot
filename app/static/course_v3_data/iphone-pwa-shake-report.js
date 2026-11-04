@@ -4,12 +4,13 @@
  */
 (function () {
   "use strict";
-  if (location.pathname !== "/iphone-pwa/course") return;
+  var onCourse = location.pathname === "/iphone-pwa/course";
+  if (!onCourse && !/^\/iphone-pwa\/(?:checkout|practice\/(?:recognition|pronunciation|memorize|test|mistakes))$/.test(location.pathname)) return;
   var standalone = !!(navigator.standalone ||
     (window.matchMedia && matchMedia("(display-mode: standalone)").matches));
   if (!standalone) return;
 
-  var owner = null, desired = true, seen = false, permitted = false;
+  var owner = null, desired = true, seen = false, permitted = false, previouslyGranted = false;
   var permissionRequired = true, listening = false, busy = false, epoch = 0;
   var sampleReady = false, gx = 0, gy = 0, gz = 0, above = false;
   var firstPeak = null, lastShake = -100000, snapshot = null;
@@ -29,18 +30,33 @@
   var status = root.querySelector("#hsk-shake-status");
   var actions = root.querySelector("#hsk-shake-actions");
   var dialog = root.querySelector(".hsk-shake-dialog");
-  function l(key) { return courseMessage("pwaShake." + key, ""); }
+  function l(key) {
+    if (typeof courseMessage === "function") return courseMessage("pwaShake." + key, "");
+    var lang = typeof LANG === "string" ? LANG : (new URLSearchParams(location.search).get("lang") || "ru");
+    var catalog = (window.HSKAI_COURSE_I18N || {})[lang] || {};
+    return catalog["pwaShake." + key] || "";
+  }
+  function verifiedActor() {
+    if (onCourse && typeof pwaCourseActor === "function") return pwaCourseActor();
+    return fetch("/api/v3/pwa-auth/session", {
+      credentials:"same-origin", cache:"no-store", redirect:"error"
+    }).then(function (res) {
+      if (!res.ok) throw Error("pwa_session_required");
+      return res.json();
+    });
+  }
   function storageKey() { return "hskai.pwa.shake.v1." + owner; }
   function readPreference() {
     try {
       var value = JSON.parse(localStorage.getItem(storageKey()) || "{}");
       desired = value.enabled !== false;
       seen = value.seen === true;
+      previouslyGranted = value.motionGranted === true;
     } catch (_) { desired = true; seen = false; }
   }
   function savePreference() {
     if (!owner) return;
-    try { localStorage.setItem(storageKey(), JSON.stringify({enabled:desired,seen:seen})); }
+    try { localStorage.setItem(storageKey(), JSON.stringify({enabled:desired,seen:seen,motionGranted:previouslyGranted})); }
     catch (_) { /* Storage failure never grants sensor permission. */ }
   }
   function showMessage(text) { status.textContent = text || ""; }
@@ -154,6 +170,7 @@
         return;
       }
       permitted = true;
+      previouslyGranted = true;
       permissionRequired = false;
       seen = true;
       savePreference();
@@ -211,7 +228,7 @@
   }
   async function captureViewport() {
     // Profile, voice transcripts, purchase/auth screens may contain private data.
-    if (["profile", "voice"].indexOf(typeof SCREEN === "string" ? SCREEN : "") >= 0 ||
+    if (!onCourse || ["profile", "voice"].indexOf(typeof SCREEN === "string" ? SCREEN : "") >= 0 ||
         document.querySelector("#sheet.on .pwa-payment, #sheet.on [class*=receipt], #sheet.on [class*=checkout]")) return null;
     var renderer = await loadRenderer();
     var width = Math.max(1, Math.min(window.innerWidth, 1200));
@@ -242,7 +259,7 @@
     busy = true;
     stopListening();
     var generation = ++epoch;
-    reportScreen = typeof SCREEN === "string" ? SCREEN.slice(0,80) : "course";
+    reportScreen = typeof SCREEN === "string" ? SCREEN.slice(0,80) : location.pathname.replace("/iphone-pwa/","").slice(0,80);
     reportDescription = "";
     captureViewport().catch(function () { return null; }).then(function (image) {
       if (generation !== epoch || !owner) return;
@@ -405,14 +422,13 @@
   }
   function request() { if (desired) showSettingsPermission(); }
   function initialize() {
-    if (typeof pwaCourseActor !== "function") return;
-    pwaCourseActor().then(function (session) {
+    verifiedActor().then(function (session) {
       var id = Number(session.user_id);
       if (!Number.isSafeInteger(id) || id <= 0) return;
       if (owner && owner !== id) { stopListening(); snapshot = null; epoch++; }
       owner = id;
       readPreference();
-      if (!seen) {
+      if (!seen && onCourse) {
         var attempts = 0;
         var promptWhenIdle = function () {
           if (!owner || seen || document.visibilityState === "hidden") return;
@@ -426,6 +442,17 @@
       }
       // OS permission cannot be inferred from stored settings. On next
       // browser session, the learner may need to re-enable explicitly.
+      if (previouslyGranted && !permitted && desired && !onCourse) {
+        // A new HTML document can reuse only a browser-remembered OS grant.
+        // Observe delivered events; never call requestPermission without a tap.
+        var probe = function (event) {
+          if (!event.accelerationIncludingGravity || !Number.isFinite(event.accelerationIncludingGravity.x)) return;
+          window.removeEventListener("devicemotion", probe);
+          permitted = true;
+          restartListening();
+        };
+        window.addEventListener("devicemotion", probe, {passive:true});
+      }
       restartListening();
     }).catch(function () { stopListening(); });
   }
@@ -439,7 +466,7 @@
       stopListening(); epoch++; snapshot = null;
     } else {
       // Do not assume same account after background / OAuth transitions.
-      pwaCourseActor().then(function (session) {
+      verifiedActor().then(function (session) {
         if (owner && Number(session.user_id) !== owner) {
           stopListening(); epoch++; snapshot = null;
           location.replace("/iphone-pwa");
