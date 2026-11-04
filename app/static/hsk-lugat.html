@@ -13,8 +13,8 @@
   }
 })();
 </script>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script src="/course_v3_data/hsk-course-i18n.js?v=20261021-a4cda8e3aa73"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script>
+<script src="/assets/telegram-web-app.js?v=20261019-1"></script>
+<script src="/course_v3_data/hsk-course-i18n.js?v=20261021-6431aaf27e2a"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script>
 <script defer src="/audio/words/index.js?v=20261014-offline-1"></script>
 <script defer src="/audio/words/client.js?v=20261014-persist-1"></script>
 <link rel="stylesheet" href="/course_v3_data/design-tokens.css?v=20261005">
@@ -412,10 +412,16 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     document.documentElement.classList.add('fast-writer-sheet');
   }
   if(!window.HSK_FAST_WRITER){
-    document.write('<script src="hsk-words.js?v=20260720"><\/script>');
+    document.write('<script src="/hsk-words.js?v=20260720"><\/script>');
     document.write('<script src="/course_v3_data/hsk30-words.js?v=20260930"><\/script>');
     document.write('<script src="/course_v3_data/hsk30-dictionary-examples.js?v=20261001"><\/script>');
-    document.write('<script src="hsk-extra.js?v=20260720"><\/script>');
+    /* Strokes, examples and HSK 4 grammar (~1.1 MB gzip) are read only inside
+       a word's detail, and every reader tolerates their absence. Loading them
+       without blocking lets the word list appear first on a slow network. */
+    var extra = document.createElement('script');
+    extra.src = '/hsk-extra.js?v=20260720';
+    extra.async = true;
+    document.head.appendChild(extra);
   }
 })();
 </script>

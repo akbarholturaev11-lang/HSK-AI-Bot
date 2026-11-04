@@ -471,9 +471,12 @@ class CourseV3StaticMapTests(unittest.TestCase):
 
         code = _re.sub(r"/\*.*?\*/", "", html, flags=_re.S)  # izohlar hisobga olinmasin
         self.assertEqual(
-            code.count("NavBack.goBack()"), 3,
-            "goBack faqat 3 kirish nuqtasidan: BackButton, popstate, swipe",
+            code.count("NavBack.goBack()"), 4,
+            "goBack faqat 4 kirish nuqtasidan: BackButton, popstate, swipe va "
+            "iPhone PWA Sozlamalar sarlavhasidagi orqaga tugmasi",
         )
+        self.assertIn('class="pwa-settings-head"><button type="button" class="hsk-pwa-close" '
+                      'onclick="NavBack.goBack()"', code)
 
         # Access/monetizatsiya gate'lari hech qachon swipe bilan yopilmasin.
         # Ro'yxat SELEKTORLARdan iborat: reklamani `ads.js` chizadi va uning

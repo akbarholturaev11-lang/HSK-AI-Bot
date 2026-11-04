@@ -46,12 +46,11 @@ html.hsk-pwa-browser .nav {
   box-shadow: 0 10px 25px rgba(40,31,23,.12), inset 0 1px rgba(255,255,255,.95);
 }
 html.hsk-pwa-browser .profile-head-actions { display:flex; align-items:center; gap:8px; }
+/* Inbox uses the same quiet icon button as the Settings gear beside it. */
 html.hsk-pwa-browser .pwa-notices-button {
   min-width:44px; min-height:44px; display:inline-flex; align-items:center; justify-content:center;
-  border:1px solid var(--hsk-divider); border-radius:16px;
-  background:rgba(255,255,255,.64); color:var(--hsk-ink);
-  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
-  box-shadow:inset 0 1px rgba(255,255,255,.93), 0 3px 10px rgba(33,29,23,.05);
+  border:0; border-radius:16px; background:transparent; color:var(--ink2,var(--hsk-ink));
+  box-shadow:none;
 }
 html.hsk-pwa-browser .pwa-notices-button i {font-size:21px}
 html.hsk-pwa-browser .pwa-notices-button:focus-visible,
@@ -237,8 +236,7 @@ html.hsk-pwa-browser .phero .pav .ed {display:none!important}
 .hsk-pwa-feedback-status{font-size:13px;line-height:1.45;color:var(--hsk-ink-secondary);
   min-height:0;text-align:center;margin:8px 0}
 .hsk-pwa-feedback-status:empty{display:none}
-@media(prefers-reduced-transparency:reduce){.hsk-pwa-feedback-card,
-  html.hsk-pwa-browser .pwa-notices-button{background:var(--hsk-paper);
+@media(prefers-reduced-transparency:reduce){.hsk-pwa-feedback-card{background:var(--hsk-paper);
   -webkit-backdrop-filter:none;backdrop-filter:none}}
 
 /* Existing checkout's centered renewal confirmation, browser-only. The same

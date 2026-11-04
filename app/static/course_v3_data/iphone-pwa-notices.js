@@ -291,7 +291,8 @@
     var node = document.getElementById("pwa-push-settings-status");
     if (!node) return;
     var t = labels();
-    var value = !pushSupported() ? t.pushInstallRequired
+    // The row shows a short state. Install instructions stay in the push view.
+    var value = !pushSupported() ? t.pushOff
       : !pushState || !pushState.enabled ? t.pushOff
         : Notification.permission === "denied" ? t.pushBlocked
           : pushState.subscribed ? t.pushEnabled : t.pushOff;

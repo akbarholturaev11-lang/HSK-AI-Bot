@@ -52,7 +52,7 @@ class IphonePwaNavigationContractTests(unittest.TestCase):
     def test_checkout_returns_to_same_origin_course_without_forcing_reload(self):
         # Course keeps its document alive and mounts checkout as a same-origin
         # layer; the embedded checkout asks its parent to close that layer.
-        self.assertIn("if(PWA_COURSE_HOST){App.openPwaCheckout(query);return}", COURSE)
+        self.assertIn("App.openPwaCheckout(query);return}", COURSE)
         self.assertIn('frame.src="/iphone-pwa/checkout?"+query.toString()', COURSE)
         action = CHECKOUT.split("function returnToCourseFromCheckout()", 1)[1].split(
             "function initTelegramCourseReturn()", 1

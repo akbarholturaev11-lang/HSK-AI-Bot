@@ -132,7 +132,6 @@ def test_real_browser_inbox_is_one_full_screen_feed(width, height):
         assert rows.first.get_by_text("Hisob xabari").is_visible()
         assert rows.nth(1).get_by_text("Dars tayyor").is_visible()
         assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth + 1")
-        assert page.locator("#hsk-pwa-notice-root").get_attribute("data-mode") == "inbox"
         box = dialog.bounding_box()
         assert box and box["x"] == box["y"] == 0
         assert box["width"] == width

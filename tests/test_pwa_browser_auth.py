@@ -208,7 +208,9 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(response.status_code, 200)
             self.assertEqual(response.headers["x-frame-options"], frame_options)
             self.assertEqual(response.headers["content-security-policy"], ancestors)
-            self.assertIn("no-store", response.headers["cache-control"])
+            # Authorized HTML shells revalidate (ETag) instead of re-downloading.
+            self.assertEqual(response.headers.get("cache-control"), "private, no-cache")
+            self.assertTrue(response.headers.get("etag", "").startswith('W/"'))
 
     async def test_practice_frames_require_verified_actor_and_allow_only_same_origin(self):
         for feature in ("recognition", "pronunciation", "memorize", "test", "mistakes"):
@@ -229,7 +231,44 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
                     self.assertEqual(response.status_code, 200)
                     self.assertEqual(response.headers["x-frame-options"], frame_options)
                     self.assertEqual(response.headers["content-security-policy"], ancestors)
-                    self.assertEqual(response.headers["cache-control"], "no-store")
+                    # Authorized HTML shells revalidate (ETag) instead of re-downloading.
+                    self.assertEqual(response.headers.get("cache-control"), "private, no-cache")
+                    self.assertTrue(response.headers.get("etag", "").startswith('W/"'))
+
+    async def test_course_shell_revalidates_with_etag_only_for_a_verified_session(self):
+        path = "/iphone-pwa/course"
+        state = await self.begin()
+        await self.callback(state)
+        first = await self.client.get(path)
+        self.assertEqual(first.status_code, 200)
+        etag = first.headers["etag"]
+        again = await self.client.get(path, headers={"If-None-Match": etag})
+        self.assertEqual(again.status_code, 304)
+        self.assertEqual(again.content, b"")
+        self.assertEqual(again.headers["etag"], etag)
+        self.assertEqual(again.headers["cache-control"], "private, no-cache")
+        self.assertEqual(again.headers["x-frame-options"], "DENY")
+        changed = await self.client.get(path, headers={"If-None-Match": 'W/"other"'})
+        self.assertEqual(changed.status_code, 200)
+        # Without a session the cached validator never yields the shell.
+        self.client.cookies.clear()
+        anonymous = await self.client.get(path, headers={"If-None-Match": etag},
+                                          follow_redirects=False)
+        self.assertEqual(anonymous.status_code, 303)
+        self.assertEqual(anonymous.headers["location"], "/iphone-pwa")
+
+    async def test_dictionary_and_phrases_are_served_inside_the_worker_scope(self):
+        for path, marker in (("/iphone-pwa/dictionary", "hsk-extra.js"),
+                             ("/iphone-pwa/phrases", 'backButton.id = "back"')):
+            with self.subTest(path=path):
+                page = await self.client.get(path, params={"embedded": "1"})
+                self.assertEqual(page.status_code, 200)
+                self.assertIn(marker, page.text)
+                self.assertNotIn("telegram.org", page.text)
+                self.assertEqual(page.headers["x-frame-options"], "SAMEORIGIN")
+                self.assertEqual(page.headers["content-security-policy"], "frame-ancestors 'self'")
+        self.settings.PWA_AUTH_ENABLED = False
+        self.assertEqual((await self.client.get("/iphone-pwa/dictionary")).status_code, 503)
 
     async def test_pwa_limits_reuses_canonical_user_and_rejects_forged_requests(self):
         path = "/api/v3/pwa/limits/status"
@@ -629,7 +668,9 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         await self.callback(state)
         page = await self.client.get(path)
         self.assertEqual(page.status_code, 200, page.text[:200])
-        self.assertEqual(page.headers["cache-control"], "no-store")
+        # Authorized HTML shells revalidate (ETag) instead of re-downloading.
+        self.assertEqual(page.headers.get("cache-control"), "private, no-cache")
+        self.assertTrue(page.headers.get("etag", "").startswith('W/"'))
         self.assertEqual(page.headers["x-frame-options"], "DENY")
         self.assertIn("var PWA_COURSE_HOST=", page.text)
         self.assertIn('location.pathname==="/iphone-pwa/course"', page.text)
@@ -712,7 +753,7 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         ))
         self.assertEqual(response.headers["cache-control"], "no-store")
         manifest = response.json()
-        self.assertEqual(manifest["start_url"], "/iphone-pwa")
+        self.assertEqual(manifest["start_url"], "/iphone-pwa/course")
         self.assertEqual(manifest["scope"], "/iphone-pwa")
         self.assertEqual(manifest["display"], "standalone")
         self.assertEqual(manifest["background_color"], "#FDF9F0")
@@ -2123,7 +2164,9 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         await self.callback(state)
         page = await self.client.get(path)
         self.assertEqual(page.status_code, 200, page.text[:150])
-        self.assertEqual(page.headers["cache-control"], "no-store")
+        # Authorized HTML shells revalidate (ETag) instead of re-downloading.
+        self.assertEqual(page.headers.get("cache-control"), "private, no-cache")
+        self.assertTrue(page.headers.get("etag", "").startswith('W/"'))
         self.assertEqual(page.headers["x-frame-options"], "DENY")
         self.assertIn('location.pathname==="/iphone-pwa/practice/recognition"', page.text)
         self.assertIn('function initData()', page.text)
@@ -2140,7 +2183,9 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         await self.callback(state)
         page = await self.client.get(path)
         self.assertEqual(page.status_code, 200, page.text[:160])
-        self.assertEqual(page.headers.get("cache-control"), "no-store")
+        # Authorized HTML shells revalidate (ETag) instead of re-downloading.
+        self.assertEqual(page.headers.get("cache-control"), "private, no-cache")
+        self.assertTrue(page.headers.get("etag", "").startswith('W/"'))
         self.assertEqual(page.headers.get("x-frame-options"), "DENY")
         self.assertIn('PWA_MEMORIZE_HOST=location.pathname==="/iphone-pwa/practice/memorize"', page.text)
         self.assertIn('LV_READY.then(function(){return runGate(ref)}).then', page.text)
@@ -2169,7 +2214,9 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         await self.callback(state)
         page = await self.client.get(page_url)
         self.assertEqual(page.status_code, 200, page.text[:150])
-        self.assertEqual(page.headers.get("cache-control"), "no-store")
+        # Authorized HTML shells revalidate (ETag) instead of re-downloading.
+        self.assertEqual(page.headers.get("cache-control"), "private, no-cache")
+        self.assertTrue(page.headers.get("etag", "").startswith('W/"'))
         self.assertEqual(page.headers.get("x-frame-options"), "DENY")
         self.assertIn('PWA_PRONUNCIATION_HOST=location.pathname==="/iphone-pwa/practice/pronunciation"', page.text)
         self.assertIn('LV_READY.then(function(){return runGate(ref)})', page.text)
@@ -2239,7 +2286,9 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         await self.callback(state)
         page = await self.client.get(path)
         self.assertEqual(page.status_code, 200, page.text[:160])
-        self.assertEqual(page.headers.get("cache-control"), "no-store")
+        # Authorized HTML shells revalidate (ETag) instead of re-downloading.
+        self.assertEqual(page.headers.get("cache-control"), "private, no-cache")
+        self.assertTrue(page.headers.get("etag", "").startswith('W/"'))
         self.assertEqual(page.headers.get("x-frame-options"), "DENY")
         csrf = (await self.client.get("/api/v3/pwa-auth/session")).json()["csrf"]
         headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf}
@@ -2337,7 +2386,9 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         await self.callback(state)
         page = await self.client.get(page_url)
         self.assertEqual(page.status_code, 200, page.text[:180])
-        self.assertEqual(page.headers.get("cache-control"), "no-store")
+        # Authorized HTML shells revalidate (ETag) instead of re-downloading.
+        self.assertEqual(page.headers.get("cache-control"), "private, no-cache")
+        self.assertTrue(page.headers.get("etag", "").startswith('W/"'))
         self.assertEqual(page.headers.get("x-frame-options"), "DENY")
         self.assertNotIn("maximum-scale=1", page.text)
         session = await self.client.get("/api/v3/pwa-auth/session")
@@ -2773,7 +2824,9 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         page = await self.client.get(url)
         self.assertEqual(page.status_code, 200, page.text[:200])
         self.assertIn("HSK AI Pro", page.text)
-        self.assertEqual(page.headers.get("cache-control"), "no-store")
+        # Authorized HTML shells revalidate (ETag) instead of re-downloading.
+        self.assertEqual(page.headers.get("cache-control"), "private, no-cache")
+        self.assertTrue(page.headers.get("etag", "").startswith('W/"'))
         self.assertEqual(page.headers.get("x-frame-options"), "DENY")
         csrf = (await self.client.get("/api/v3/pwa-auth/session")).json()["csrf"]
         headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf}
@@ -3028,7 +3081,7 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn('hidden=PWA_COURSE_HOST', course)
         self.assertNotIn('if(window.CourseAds&&CourseAds.showLimitPromo){', course)
         self.assertGreaterEqual(course.count('if(!PWA_COURSE_HOST&&window.CourseAds&&CourseAds.showLimitPromo){'), 5)
-        self.assertIn('if(PWA_COURSE_HOST){App.openPwaCheckout(query);return}', course)
+        self.assertIn('App.openPwaCheckout(query);return}', course)
         self.assertIn('frame.src="/iphone-pwa/checkout?"+query.toString()', course)
 
     def test_existing_checkout_ui_never_enters_fake_pwa_preview(self):
@@ -3043,7 +3096,7 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('"X-HSK-PWA-CSRF":actor.csrf', html)
         self.assertIn('const response=await checkoutTransport(API.event', html)
         self.assertIn('"/iphone-pwa/practice/voice"', html)
-        self.assertIn('if(PWA_COURSE_HOST){App.openPwaCheckout(query);return}', course)
+        self.assertIn('App.openPwaCheckout(query);return}', course)
         self.assertIn('frame.src="/iphone-pwa/checkout?"+query.toString()', course)
 
     async def test_pwa_language_updates_canonical_learner_only_with_csrf(self):
@@ -4808,8 +4861,14 @@ const settle = () => new Promise(resolve => setImmediate(resolve));
         self.assertEqual(worker.headers.get("service-worker-allowed"), "/iphone-pwa/")
         self.assertIn('addEventListener("push"', worker.text)
         self.assertIn('addEventListener("notificationclick"', worker.text)
-        self.assertNotRegex(worker.text, r'addEventListener\(\s*["\']fetch["\']')
-        self.assertNotIn("caches.open", worker.text)
+        # The worker caches only same-origin, version-pinned static assets.
+        # HTML documents, API calls and the worker's own subtree stay network.
+        self.assertIn("if (!isVersionedAsset(url)) return;", worker.text)
+        self.assertIn('url.searchParams.has("v")', worker.text)
+        self.assertIn('url.pathname.indexOf("/api/") !== 0', worker.text)
+        self.assertIn('url.pathname.indexOf("/iphone-pwa") !== 0', worker.text)
+        self.assertIn("url.origin === self.location.origin", worker.text)
+        self.assertNotRegex(worker.text, r"\.html|text/html|request\.mode")
 
     async def test_native_and_telegram_routes_never_accept_pwa_cookie_as_auth(self):
         state = await self.begin()

@@ -6,11 +6,13 @@ routes must explicitly resolve the actor and enforce CSRF on state mutation.
 
 from __future__ import annotations
 
+import hashlib
+import os
 from typing import Literal
 from uuid import UUID
 
 from fastapi import APIRouter, Request
-from fastapi.responses import JSONResponse, FileResponse, RedirectResponse
+from fastapi.responses import JSONResponse, FileResponse, RedirectResponse, Response
 from pydantic import BaseModel, ConfigDict, ValidationError
 
 from app.services.native_oauth_service import NativeOAuthError, available_providers
@@ -42,6 +44,39 @@ def _embeddable_pwa_page_headers(request: Request) -> dict[str, str]:
             "frame-ancestors 'self'" if embedded else "frame-ancestors 'none'"
         ),
     }
+
+
+_PWA_HTML_ETAGS: dict[tuple[str, int, int], str] = {}
+
+
+def _pwa_html(request: Request, path: str, headers: dict[str, str]) -> Response:
+    """Serve an already-authorized learner HTML shell with revalidation.
+
+    Every caller verifies the browser session before calling this, so a 304
+    never skips authentication. ``private, no-cache`` keeps shared caches out
+    and makes the browser revalidate on each launch; an unchanged course shell
+    (~760 KB) then costs one round trip instead of a full download on a slow
+    connection. The ETag is derived from the file bytes, so a deploy that does
+    not change this page keeps the learner's cached copy valid.
+    """
+    stat = os.stat(path)
+    key = (path, stat.st_mtime_ns, stat.st_size)
+    etag = _PWA_HTML_ETAGS.get(key)
+    if etag is None:
+        with open(path, "rb") as handle:
+            digest = hashlib.sha256(handle.read()).hexdigest()[:32]
+        etag = f'W/"{digest}"'
+        _PWA_HTML_ETAGS[key] = etag
+    response_headers = {
+        **headers, "Cache-Control": "private, no-cache", "ETag": etag,
+    }
+    candidates = {
+        tag.strip().removeprefix("W/")
+        for tag in request.headers.get("if-none-match", "").split(",")
+    }
+    if etag.removeprefix("W/") in candidates:
+        return Response(status_code=304, headers=response_headers)
+    return FileResponse(path, media_type="text/html", headers=response_headers)
 
 
 class PwaLoginStart(BaseModel):
@@ -360,20 +395,40 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                 await PwaAuthService(db, settings_obj).actor(
                     request.cookies.get(PWA_SESSION_COOKIE)
                 )
-            return FileResponse(
-                "app/static/course-v3.html",
-                media_type="text/html",
-                headers={
-                    **_NO_STORE,
-                    "X-Content-Type-Options": "nosniff",
-                    "X-Frame-Options": "DENY",
-                },
-            )
+            return _pwa_html(request, "app/static/course-v3.html", {
+                "Referrer-Policy": "no-referrer",
+                "X-Content-Type-Options": "nosniff",
+                "X-Frame-Options": "DENY",
+            })
         except PwaAuthError as exc:
             if exc.code == "pwa_session_required":
                 return RedirectResponse(
                     "/iphone-pwa", status_code=303, headers=_NO_STORE,
                 )
+            return _error(exc)
+
+    @router.get("/iphone-pwa/dictionary")
+    async def learner_dictionary_page(request: Request):
+        """Public dictionary shell inside the learner PWA service-worker scope.
+
+        Same bytes as /hsk-lugat.html (no learner data). Serving it under
+        /iphone-pwa/ lets the worker reuse versioned dictionary assets.
+        """
+        try:
+            require_pwa_enabled(settings_obj)
+            return _pwa_html(request, "app/static/hsk-lugat.html",
+                             _embeddable_pwa_page_headers(request))
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.get("/iphone-pwa/phrases")
+    async def learner_phrases_page(request: Request):
+        """Public ready-phrases shell inside the learner PWA worker scope."""
+        try:
+            require_pwa_enabled(settings_obj)
+            return _pwa_html(request, "app/static/hsk-gaplar.html",
+                             _embeddable_pwa_page_headers(request))
+        except PwaAuthError as exc:
             return _error(exc)
 
     @router.get("/iphone-pwa/practice/recognition")
@@ -385,11 +440,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                 await PwaAuthService(db, settings_obj).actor(
                     request.cookies.get(PWA_SESSION_COOKIE)
                 )
-            return FileResponse(
-                "app/static/course_v3_recognition.html",
-                media_type="text/html",
-                headers=_embeddable_pwa_page_headers(request),
-            )
+            return _pwa_html(request, "app/static/course_v3_recognition.html", _embeddable_pwa_page_headers(request))
         except PwaAuthError as exc:
             if exc.code == "pwa_session_required":
                 return RedirectResponse(
@@ -406,11 +457,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                 await PwaAuthService(db, settings_obj).actor(
                     request.cookies.get(PWA_SESSION_COOKIE)
                 )
-            return FileResponse(
-                "app/static/course_v3_memorize.html",
-                media_type="text/html",
-                headers=_embeddable_pwa_page_headers(request),
-            )
+            return _pwa_html(request, "app/static/course_v3_memorize.html", _embeddable_pwa_page_headers(request))
         except PwaAuthError as exc:
             if exc.code == "pwa_session_required":
                 return RedirectResponse(
@@ -427,11 +474,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                 await PwaAuthService(db, settings_obj).actor(
                     request.cookies.get(PWA_SESSION_COOKIE)
                 )
-            return FileResponse(
-                "app/static/course_v3_pronunciation.html",
-                media_type="text/html",
-                headers=_embeddable_pwa_page_headers(request),
-            )
+            return _pwa_html(request, "app/static/course_v3_pronunciation.html", _embeddable_pwa_page_headers(request))
         except PwaAuthError as exc:
             if exc.code == "pwa_session_required":
                 return RedirectResponse(
@@ -540,10 +583,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                 await PwaAuthService(db, settings_obj).actor(
                     request.cookies.get(PWA_SESSION_COOKIE)
                 )
-            return FileResponse(
-                "app/static/course_v3_mistakes.html", media_type="text/html",
-                headers=_embeddable_pwa_page_headers(request),
-            )
+            return _pwa_html(request, "app/static/course_v3_mistakes.html", _embeddable_pwa_page_headers(request))
         except PwaAuthError as exc:
             if exc.code == "pwa_session_required":
                 return RedirectResponse(
@@ -678,10 +718,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                 await PwaAuthService(db, settings_obj).actor(
                     request.cookies.get(PWA_SESSION_COOKIE)
                 )
-            return FileResponse(
-                "app/static/course_v3_test.html", media_type="text/html",
-                headers=_embeddable_pwa_page_headers(request),
-            )
+            return _pwa_html(request, "app/static/course_v3_test.html", _embeddable_pwa_page_headers(request))
         except PwaAuthError as exc:
             if exc.code == "pwa_session_required":
                 return RedirectResponse(
@@ -1182,10 +1219,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                 )
             # The course shell can host the existing checkout after the same
             # actor check. Direct checkout links remain unframeable.
-            return FileResponse(
-                "app/static/subscription.html", media_type="text/html",
-                headers=_embeddable_pwa_page_headers(request),
-            )
+            return _pwa_html(request, "app/static/subscription.html", _embeddable_pwa_page_headers(request))
         except PwaAuthError as exc:
             if exc.code == "pwa_session_required":
                 return RedirectResponse(
@@ -1513,7 +1547,9 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                 {
                     "name": "HSK AI",
                     "short_name": "HSK AI",
-                    "start_url": "/iphone-pwa",
+                    # Signed-in learners open the course directly; the course
+                    # route sends anyone without a session to sign-in.
+                    "start_url": "/iphone-pwa/course",
                     "scope": "/iphone-pwa",
                     "display": "standalone",
                     "background_color": "#FDF9F0",
