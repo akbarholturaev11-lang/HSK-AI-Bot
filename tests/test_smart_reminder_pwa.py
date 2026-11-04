@@ -14,7 +14,7 @@ from sqlalchemy import select, update
 from app.db.models.course_user_notification import CourseUserNotification
 from app.db.models.desktop import DesktopDevice, DesktopSession
 from app.db.models.learner_pwa_push import LearnerPwaPushOutbox, LearnerPwaPushSubscription
-from app.db.models.smart_reminder import SmartReminderAttempt, SmartReminderJob
+from app.db.models.smart_reminder import SmartReminderAttempt, SmartReminderJob, SmartReminderPreference
 from app.services.smart_reminder_pwa import SmartReminderPwaService
 from app.services.smart_reminder_preferences import SmartReminderActor
 from app.services.smart_reminder_shadow_queue import ATTEMPT, JOB
@@ -139,6 +139,45 @@ class SmartReminderPwaDeliveryTests(unittest.IsolatedAsyncioTestCase):
         result = await self._dispatch(sender)
         self.assertEqual((result.reason, result.state), ("pwa_unknown", "unknown"))
         sender.assert_awaited_once()
+
+    async def test_off_unknown_and_manual_lock_are_rechecked_before_provider(self):
+        sender = AsyncMock(return_value=201)
+        preferences = (
+            {"master_enabled": False, "channel_mode": "auto", "preferred_channel": None},
+            {"master_enabled": None, "channel_mode": "auto", "preferred_channel": None},
+            {"master_enabled": True, "channel_mode": "manual_locked", "preferred_channel": "android"},
+        )
+        for values in preferences:
+            async with self.case.sessions.begin() as session:
+                await session.execute(update(SmartReminderPreference).where(
+                    SmartReminderPreference.user_id == 1).values(**values))
+                await session.execute(update(JOB).where(JOB.c.id == self.job_id).values(
+                    state="pending", reason_code=None, lease_token=None, lease_expires_at=None,
+                    selected_channel="pwa", selected_device_id=self.device_id))
+            result = await self._dispatch(sender)
+            self.assertEqual((result.reason, result.state), ("pwa_preference_changed", "cancelled"))
+        sender.assert_not_awaited()
+        async with self.case.sessions() as session:
+            job = await session.get(SmartReminderJob, self.job_id)
+            attempts = (await session.scalars(select(SmartReminderAttempt).where(
+                SmartReminderAttempt.job_id == self.job_id))).all()
+        self.assertEqual(job.state, "cancelled")
+        self.assertEqual(attempts, [])
+
+    async def test_expired_pwa_session_cancels_before_provider(self):
+        async with self.case.sessions.begin() as session:
+            await session.execute(update(DesktopSession).where(
+                DesktopSession.id == "pwa-session").values(expires_at=self.tick))
+        sender = AsyncMock(return_value=201)
+        result = await self._dispatch(sender)
+        self.assertEqual((result.reason, result.state), ("pwa_capability_unavailable", "cancelled"))
+        sender.assert_not_awaited()
+        async with self.case.sessions() as session:
+            job = await session.get(SmartReminderJob, self.job_id)
+            attempts = (await session.scalars(select(SmartReminderAttempt).where(
+                SmartReminderAttempt.job_id == self.job_id))).all()
+        self.assertEqual(job.state, "cancelled")
+        self.assertEqual(attempts, [])
 
 
 if __name__ == "__main__":
