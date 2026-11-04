@@ -26,6 +26,7 @@ class SmartPreferenceBridgeTest {
         var store = WidgetStore(disk)
         var generation = 1L
         var online = true
+        var readError: ApiError? = null
         var lostAck = false
         var stops = 0
         var queued = 0
@@ -42,7 +43,7 @@ class SmartPreferenceBridgeTest {
             invalidate = { if (it == generation) { generation++; store.clear() } },
             read = {
                 reads++
-                if (online) ApiResult.Success(pref) else ApiResult.Failure(ApiError.Offline)
+                readError?.let { ApiResult.Failure(it) } ?: if (online) ApiResult.Success(pref) else ApiResult.Failure(ApiError.Offline)
             },
             patch = { _, body ->
                 bodies += body
@@ -52,7 +53,7 @@ class SmartPreferenceBridgeTest {
                     assertEquals(old.first, body)
                     ApiResult.Success(old.second)
                 } else if (body.expectedRevision != pref.revision) {
-                    ApiResult.Failure(ApiError.Server("smart_revision_conflict", 0))
+                    ApiResult.Failure(ApiError.fromCode("smart_revision_conflict"))
                 } else {
                     pref = pref.copy(revision = pref.revision + 1,
                         timezoneName = body.timezoneName ?: pref.timezoneName,
@@ -64,6 +65,22 @@ class SmartPreferenceBridgeTest {
                 }
             },
             stopLocal = { stops++ }, queueSync = { queued++ }, zone = { "Asia/Tashkent" })
+    }
+
+    @Test fun `deletion refusal rolls back ON and preserves immediate OFF`() = runTest {
+        val f = Fixture()
+        f.setup()
+        f.readError = ApiError.fromCode("smart_account_deletion_pending")
+        val result = f.bridge().setEnabled(true)
+        assertEquals("smart_account_deletion_pending", ((result as ApiResult.Failure).error as ApiError.Server).code)
+        assertNull(f.store.read().pendingStudyPreference)
+        assertFalse(f.store.read().reminderEnabled)
+        assertTrue(f.bodies.isEmpty())
+
+        f.bridge().setEnabled(false)
+        assertEquals(false, f.store.read().pendingStudyPreference?.enabled)
+        assertFalse(f.store.read().reminderEnabled)
+        assertTrue(f.bodies.isEmpty())
     }
 
     @Test fun `first use initializes actual zone without importing legacy local ON`() = runTest {
