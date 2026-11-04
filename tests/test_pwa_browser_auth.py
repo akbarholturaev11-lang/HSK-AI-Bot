@@ -3137,6 +3137,40 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual((await self.client.get("/iphone-pwa-login.js")).status_code, 503)
         self.assertEqual((await self.client.get("/api/v3/pwa-auth/providers")).status_code, 503)
 
+    async def test_pwa_site_origin_is_separate_from_oauth_callback_origin(self):
+        site_origin = "https://pwa.example.test"
+        callback_origin = "https://oauth.example.test"
+        self.settings.PUBLIC_SITE_URL = site_origin
+        self.settings.OAUTH_REDIRECT_BASE_URL = callback_origin
+
+        started = await self.client.post(
+            f"{site_origin}/api/v3/pwa-auth/start",
+            headers={"Origin": site_origin},
+            json={"provider": "google", "language": "uz"},
+        )
+        self.assertEqual(started.status_code, 200, started.text)
+        redirect_uri = parse_qs(
+            urlparse(started.json()["authorize_url"]).query
+        )["redirect_uri"][0]
+        self.assertEqual(
+            redirect_uri,
+            callback_origin + "/api/v3/native-auth/oauth/callback/google",
+        )
+
+        legacy_origin = await self.client.post(
+            f"{callback_origin}/api/v3/pwa-auth/start",
+            headers={"Origin": callback_origin},
+            json={"provider": "google", "language": "uz"},
+        )
+        self.assertEqual(legacy_origin.status_code, 200, legacy_origin.text)
+
+        wrong_origin = await self.client.post(
+            f"{site_origin}/api/v3/pwa-auth/start",
+            headers={"Origin": "https://attacker.example.test"},
+            json={"provider": "google", "language": "uz"},
+        )
+        self.assertEqual(wrong_origin.status_code, 403)
+
     async def test_pwa_only_rollback_fences_existing_sessions_without_account_deletion(self):
         """Feature OFF must close both browser HTML and API routes, not Telegram.
 

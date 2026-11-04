@@ -17,6 +17,7 @@ from sqlalchemy import select, update, or_
 from app.db.models.desktop import DesktopDevice, DesktopLinkRequest, DesktopSession
 from app.db.models.user import User
 from app.db.models.user_identity import UserIdentity
+from app.public_site.render import public_origin
 from app.services.desktop_auth_service import DesktopAuthService
 from app.services.native_oauth_service import NativeOAuthService, redirect_base_url
 from app.services.user_access_state_service import UserAccessState, UserAccessStateService
@@ -47,6 +48,15 @@ def _aware(value: datetime | None) -> datetime | None:
 
 
 def pwa_origin(settings_obj) -> str:
+    # The page's same-origin/CSRF boundary is the canonical public website.
+    # OAuth providers may use a different registered callback host; keep that
+    # redirect configuration isolated in NativeOAuthService.
+    public_site_url = str(getattr(settings_obj, "PUBLIC_SITE_URL", "") or "").strip()
+    if public_site_url:
+        try:
+            return public_origin(settings_obj)
+        except ValueError:
+            return ""
     return redirect_base_url(settings_obj)
 
 
@@ -60,8 +70,11 @@ def require_pwa_enabled(settings_obj) -> None:
 
 
 def require_same_origin(request, settings_obj) -> None:
-    expected = pwa_origin(settings_obj)
-    if not expected or request.headers.get("Origin") != expected:
+    allowed = {origin for origin in (
+        pwa_origin(settings_obj),
+        redirect_base_url(settings_obj),
+    ) if origin}
+    if not allowed or request.headers.get("Origin") not in allowed:
         raise PwaAuthError("pwa_origin_invalid", status_code=403)
 
 
