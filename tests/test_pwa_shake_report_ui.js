@@ -65,4 +65,31 @@ harness.disable();
 harness.feed(0,0,9.81,7000);
 harness.feed(0,0,31,7200);
 assert.equal(harness.count(),1,"OFF disables detector");
+// PWA-only session revalidation: network/5xx must not turn into logout.
+// An actual 401/owner switch still redirects inside each verifier.
+for (const [file, verifier] of [
+  ["course_v3_recognition.html", "recognitionPwaSession"],
+  ["course_v3_pronunciation.html", "pronunciationPwaSession"],
+  ["course_v3_memorize.html", "memorizePwaSession"],
+  ["course_v3_test.html", "testPwaActor"],
+  ["course_v3_mistakes.html", "mistakesPwaSession"],
+  ["subscription.html", "checkoutPwaActor"],
+]) {
+  const html = fs.readFileSync("app/static/" + file, "utf8");
+  assert(html.includes(verifier + '().catch(function(error){'),file + ": explicit retry guard");
+  assert(html.includes('if(error&&error.message==="pwa_session_invalid")location.replace("/iphone-pwa")'),
+    file + ": invalid actor fails closed");
+  assert(html.includes('if(r.status===401){location.replace("/iphone-pwa")'),
+    file + ": confirmed 401 must redirect");
+  assert(html.includes('src="/course_v3_data/iphone-pwa-shake-report.js'),
+    file + ": reporting must be available beyond course");
+}
+for (const file of [
+  "course_v3_recognition.html", "course_v3_pronunciation.html",
+  "course_v3_memorize.html", "course_v3_test.html", "course_v3_mistakes.html",
+]) {
+  const html = fs.readFileSync("app/static/" + file, "utf8");
+  assert(html.includes('src="/course_v3_data/iphone-pwa-practice-boot.js'),
+    file + ": panda preparing should cover the initial exercise load");
+}
 console.log("PWA shake report: syntax, gesture trace, permission, capture and API wiring checks passed");
