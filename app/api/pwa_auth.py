@@ -740,6 +740,55 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
         except PwaAuthError as exc:
             return _error(exc)
 
+    @router.post("/api/v3/pwa/preferences")
+    async def pwa_save_preferences(request: Request):
+        """Save canonical course preferences for the verified browser learner.
+
+        Reuse Mini App validation/profile semantics, but NEVER accept Telegram
+        initData as browser identity. PWA session + CSRF are mandatory.
+        """
+        from datetime import datetime, timezone
+        from app.api.miniapp_preferences import PreferencesRequest, _profile_payload
+        from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
+
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            payload = await _small_json(request, PreferencesRequest, max_bytes=4096)
+            if payload.initData:
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                service = CourseMiniAppProfileService(db)
+                profile = await service.get_or_create(actor.id)
+                if payload.goal is not None:
+                    profile.goal = payload.goal
+                    if profile.goal_chosen_at is None:
+                        profile.goal_chosen_at = datetime.now(timezone.utc)
+                if payload.daily_minutes is not None:
+                    profile.daily_minutes = int(payload.daily_minutes)
+                if payload.preferred_focus is not None:
+                    profile.preferred_focus = payload.preferred_focus
+                if payload.daily_goal_auto:
+                    await service.set_daily_goal_xp(profile, None)
+                elif payload.daily_goal_xp is not None:
+                    await service.set_daily_goal_xp(profile, payload.daily_goal_xp)
+                if (payload.goal is not None or payload.daily_minutes is not None
+                        or payload.preferred_focus is not None):
+                    profile.daily_plan_key = None
+                    profile.daily_plan_json = None
+                await db.commit()
+                result = _profile_payload(profile)
+            return JSONResponse({"ok": True, "profile": result}, headers=_NO_STORE)
+        except PwaAuthError as exc:
+            return _error(exc)
+        except ValueError:
+            return _error(PwaAuthError("pwa_request_invalid", status_code=422))
+
     @router.get("/iphone-pwa/onboarding")
     async def learner_onboarding_page(request: Request):
         """The single original Mini App course onboarding UI."""
