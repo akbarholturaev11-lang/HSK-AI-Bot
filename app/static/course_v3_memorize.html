@@ -269,7 +269,7 @@ function runGate(ref){
     .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}}).catch(function(){return {ok:r.ok,status:r.status,j:{}}})}).then(validatePracticeGate);
 }
 function showLimit(j){LIMIT_REASON=(j&&j.limit_text)||"";SCRIPTS_READY.then(showLimitNow)}
-function showLimitNow(){
+function showLimitNow(){if(window.HskPwaPracticeBoot)HskPwaPracticeBoot.hide();
   if(!PWA_MEMORIZE_HOST&&window.CourseAds&&CourseAds.showLimitPromo){CourseAds.showLimitPromo({reason:LIMIT_REASON,onSubscribe:goPremium,onBack:goBack});return}
   var adBtn="";
   var sub=gateEscape(LIMIT_REASON||t(LIM.sub));
@@ -514,8 +514,9 @@ function nextChar(){DI++;startChar()}
 /* boot */
 function boot(){Promise.all([LV_READY,SCRIPTS_READY]).then(function(){
   loadData();
-  if(!KEYS.length){B.innerHTML='<div class="loading">'+memoMessage("practice.dataNotLoaded",(window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.course_v3_memorize.boot.copy1",{uz:"Ma'lumot yuklanmadi",ru:"Не удалось загрузить данные",tj:"Маълумот бор нашуд"}))+'</div>';return}
+  if(!KEYS.length){if(window.HskPwaPracticeBoot)HskPwaPracticeBoot.hide();B.innerHTML='<div class="loading">'+memoMessage("practice.dataNotLoaded",(window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.course_v3_memorize.boot.copy1",{uz:"Ma'lumot yuklanmadi",ru:"Не удалось загрузить данные",tj:"Маълумот бор нашуд"}))+'</div>';return}
   buildDeck();DI=0;startChar();
+  if(window.HskPwaPracticeBoot)HskPwaPracticeBoot.hide();
 })}
 /* Sessiya boshlashdan oldin kunlik limitni tekshiramiz (server tomonda). */
 function gateStart(newAttempt){
@@ -531,6 +532,7 @@ function gateStart(newAttempt){
   }).catch(function(){
     preparing=false;
     if(ref!==ATTEMPT_REF)return;
+    if(window.HskPwaPracticeBoot)HskPwaPracticeBoot.hide();
     var t=practiceGateErrorCopy();
     B.innerHTML='<div class="done"><p>'+gateEscape(t.body)+'</p><button onclick="gateStart(false)">'+gateEscape(t.retry)+'</button><button class="ghost" onclick="goBack()">'+gateEscape(t.back)+'</button></div>';
   });
