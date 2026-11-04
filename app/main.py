@@ -2432,6 +2432,10 @@ async def course_v3_data_file(filename: str):
         "iphone-pwa-glass.css": "text/css",
         "iphone-pwa-notices.js": "application/javascript",
         "iphone-pwa-feedback.js": "application/javascript",
+        "iphone-pwa-shake-report.js": "application/javascript",
+        "iphone-pwa-shake-report.css": "text/css",
+        "iphone-pwa-practice-boot.js": "application/javascript",
+        "iphone-pwa-practice-boot.css": "text/css",
         "desktop-download.css": "text/css",
         "desktop-download.js": "application/javascript",
         "profile-carousel.css": "text/css",
@@ -2455,6 +2459,15 @@ async def course_v3_data_file(filename: str):
     if filename not in COURSE_V3_PUBLIC_MAP_FILES:
         return JSONResponse(status_code=404, content={"error": "not_found"})
     return static_json_response(f"app/static/course_v3_data/{filename}")
+
+
+@app.get("/course_v3_data/vendor/html2canvas.min.js")
+async def course_v3_html2canvas_vendor():
+    """Serve the only audited, self-hosted DOM snapshot renderer."""
+    return static_asset_response(
+        "app/static/course_v3_data/vendor/html2canvas.min.js",
+        "application/javascript",
+    )
 
 
 @app.get("/course_v3_data/exams/{filename}")
