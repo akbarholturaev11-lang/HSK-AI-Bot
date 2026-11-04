@@ -6397,9 +6397,9 @@ function ratingCountdownText(){
 	}
 	/* Haqiqiy Telegram avatarlari: harf zaxira bo'lib qoladi, rasm ustidan yopadi.
 	   Rasm topilmasa (404) img o'chadi va harf ko'rinaveradi. */
-	function avatarImgHtml(tgId){return tgId?'<img class="avp" alt="" loading="lazy" src="/api/v3/avatar/'+Number(tgId)+'" onerror="this.remove()">':""}
+	function avatarImgHtml(tgId){return !PWA_COURSE_HOST&&tgId?'<img class="avp" alt="" loading="lazy" src="/api/v3/avatar/'+Number(tgId)+'" onerror="this.remove()">':""}
 	function myTgUser(){try{return (tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user)||{}}catch(e){return{}}}
-	function myAvatarImgHtml(){
+	function myAvatarImgHtml(){if(PWA_COURSE_HOST)return "";
 	  var u=myTgUser();
 	  var src=u.photo_url?String(u.photo_url):(u.id?"/api/v3/avatar/"+Number(u.id):"");
 	  return src?'<img class="avp" alt="" src="'+esc(src)+'" onerror="this.remove()">':"";
@@ -7237,7 +7237,7 @@ function renderProfile(){
   $("#s-profile").innerHTML='<div class="htop profile-head"><h1 class="profile-title">'+esc(courseMessage("nav.profile",LANG==="ru"?"Профиль":LANG==="tj"?"Профил":"Profil"))+'</h1><div class="profile-head-actions">'
     +(PWA_COURSE_HOST?'<button class="pwa-notices-button" type="button" aria-label="'+esc(commonMessage("desktopA11y.notifications",""))+'" onclick="window.HskPwaInbox&&window.HskPwaInbox.open()"><i class="ti ti-bell" aria-hidden="true"></i></button>':'')
     +'<button class="profile-settings" type="button" aria-label="'+esc(p.settings)+'" onclick="App.openSettings()"><i class="ti ti-settings" aria-hidden="true"></i></button></div></div>'
-    +'<div class="phero"><div class="pav'+(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han")+'" onclick="App.avatarEdit()">'+(PROF.avatar||"阿")+myAvatarImgHtml()+'<span class="ed"><i class="ti ti-pencil"></i></span></div>'
+    +'<div class="phero"><div class="pav'+(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han")+'"'+(PWA_COURSE_HOST?'': ' onclick="App.avatarEdit()"')+'>'+(PROF.avatar||"阿")+myAvatarImgHtml()+(PWA_COURSE_HOST?'':'<span class="ed"><i class="ti ti-pencil"></i></span>')+'</div>'
     +'<div class="profile-hero-content"><div class="profile-identity-row"><strong class="profile-display-name">'+nickname+'</strong><span class="profile-access-badge'+(paid||trialActive?' pro':'')+'">'+(paid?'<i class="ti ti-crown"></i> Pro':trialActive?'<i class="ti ti-crown"></i> '+esc(c.trial):esc(c.free))+'</span></div>'
     +(goalLabel()?'<div class="profile-goal-row"><span class="lvb goal"><i class="ti ti-target"></i> '+esc(goalLabel())+'</span></div>':'')+'</div></div>'
     +'<button type="button" class="profile-friends-link" onclick="App.openFriends()"><i class="ti ti-users" aria-hidden="true"></i><span>'+esc(courseMessage("friends",t.friends))+'</span><i class="ti ti-chevron-right" aria-hidden="true"></i></button>'
