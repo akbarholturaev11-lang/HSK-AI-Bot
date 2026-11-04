@@ -29,7 +29,7 @@ class MiniAppLessonFetchIntentTests(unittest.TestCase):
         self.assertTrue(all(row["cost_sensitive"] for row in report["calls"]))
         self.assertEqual(
             [row["line"] for row in report["calls"]],
-            [2573, 3422, 4513],
+            [2575, 3442, 4533],
         )
         self.assertIn('fetch("/api/v3/lesson/sales-preview"', self.source)
         self.assertIn('fetch("/api/v3/lesson/foundation"', self.source)
