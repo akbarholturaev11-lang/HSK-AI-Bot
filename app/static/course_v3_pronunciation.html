@@ -449,7 +449,13 @@ function onStopped(){
     .then(function(o){busy=false;var heard=(o&&o.j&&o.j.heard)||"";clog("mic_result",(o&&o.j&&o.j.ok===true)?"ok":"fail",{mime:blob.type||mt,ext:_ext,size:blob.size,heard:heard.slice(0,24),code:(o&&o.j&&o.j.code)||""});if(!o.ok||!o.j||o.j.ok!==true){onErr(o);return;}applyScore(Number(o.j.score)||0,heard)})
     .catch(function(){busy=false;clog("mic_neterr","",{mime:blob.type||mt,ext:_ext,size:blob.size});setHint(L.netErr)});
 }
-	function onErr(o){var code=o&&o.j&&o.j.code;if(code==="PRONOUNCE_LIMIT_EXCEEDED"){showLimit();return;}setHint(code==="INVALID_INIT_DATA"?L.needTg:(o&&o.j&&o.j.message)||L.netErr)}
+function onErr(o){
+  var code=o&&o.j&&o.j.code;
+  if(code==="PRONOUNCE_LIMIT_EXCEEDED"){showLimit();return;}
+  if(code==="INVALID_INIT_DATA"){setHint(L.needTg);return;}
+  if(PWA_PRONUNCIATION_HOST&&(code==="AI_TIMEOUT"||code==="AI_FAILED")){setHint(L.netErr);return;}
+  setHint((o&&o.j&&o.j.message)||L.netErr);
+}
 function applyScore(score,heard){
   var ok=score>=60,word=document.getElementById('word'),fb=document.getElementById('fb');
   var he=document.getElementById('heard');if(he)he.textContent=heard?(L.heard+' '+heard):"";

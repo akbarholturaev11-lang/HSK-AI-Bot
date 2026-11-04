@@ -2058,6 +2058,10 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
     def test_pronunciation_pwa_client_does_not_inject_telegram_identity(self):
         source = (Path("app/static") / "course_v3_pronunciation.html").read_text(encoding="utf-8")
         course = (Path("app/static") / "course-v3.html").read_text(encoding="utf-8")
+        self.assertIn(
+            'if(PWA_PRONUNCIATION_HOST&&(code==="AI_TIMEOUT"||code==="AI_FAILED")){setHint(L.netErr);return;}',
+            source,
+        )
         self.assertIn('"/api/v3/practice/daily-gate":"/api/v3/pwa/practice/daily-gate"', source)
         self.assertIn('"/api/v3/practice/words":"/api/v3/pwa/practice/words"', source)
         self.assertIn('"/api/v3/practice/report":"/api/v3/pwa/practice/report"', source)
