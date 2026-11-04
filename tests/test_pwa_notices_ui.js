@@ -8,8 +8,8 @@ const vm = require("node:vm");
 const source = fs.readFileSync("app/static/course_v3_data/iphone-pwa-notices.js", "utf8");
 const shell = fs.readFileSync("app/static/course-v3.html", "utf8");
 const css = fs.readFileSync("app/static/course_v3_data/iphone-pwa-glass.css", "utf8");
-assert(shell.includes('src="/course_v3_data/iphone-pwa-notices.js?v=20261104-b2923983a5a6"'));
-assert(shell.includes('href="/course_v3_data/iphone-pwa-glass.css?v=20261104-175a0ec6f920'));
+assert(shell.includes('src="/course_v3_data/iphone-pwa-notices.js?v=20261104-dbecc7d0d720"'));
+assert(shell.includes('href="/course_v3_data/iphone-pwa-glass.css?v=20261104-0242c58f7fb7'));
 assert(shell.includes('PWA_COURSE_HOST?\'<button class="pwa-notices-button"'));
 assert(shell.includes('pwaPushSettingsRowHtml()'));
 assert(!shell.includes('class="pwa-feedback-button"'),"profile feedback shortcut is removed");
@@ -149,10 +149,12 @@ async function main(){
     "dismiss button uses the canonical localized accessibility label");
   await standard.window.HskPwaInbox.open();
   const list = standard.root().querySelector("#hsk-pwa-notice-list");
-  assert.equal(list.children.length, 1);
-  assert.equal(list.children[0].children[0].textContent, "Lesson available");
-  standard.root().listeners.click({target:{closest:(selector)=>selector==='[data-pwa-tab]'
-    ? {dataset:{pwaTab:"account"}} : null}});
+  assert.equal(list.children.length, 4, "course, account and two reviewed receipts are merged");
+  assert(list.children.some(row=>row.children[0]?.textContent==="Lesson available"));
+  assert(list.children.some(row=>row.children[0]?.textContent==="Account notice"));
+  assert.equal(standard.root().getAttribute("data-mode"),"inbox",
+    "unified notification view uses its own full-screen presentation");
+  assert(!source.includes('data-pwa-tab="course"'),"no course/profile switch remains");
   const accountRows = standard.root().querySelector("#hsk-pwa-notice-list").children;
   assert(accountRows.some((row)=>row.attrs["data-payment-status"]==="approved"&&row.className.includes("is-approved")),
     "confirmed subscription receipts use the success color");
