@@ -82,7 +82,7 @@ class IphonePwaNavigationContractTests(unittest.TestCase):
         logic = COURSE.split("function loadLevel(lv){", 1)[1].split(
             "function applyLessonDone(", 1
         )[0]
-        self.assertIn("var PWA_LEVEL_REQUEST_SEQ=0;", COURSE)
+        self.assertIn("var PWA_LEVEL_REQUEST_SEQ=0,PWA_LEVEL_ABORT=null;", COURSE)
         self.assertIn("++PWA_LEVEL_REQUEST_SEQ", logic)
         self.assertIn("PWA_LEVEL_ABORT.abort()", logic)
         self.assertIn("loadCourseMap(lv,0,reqSignal)", logic)
