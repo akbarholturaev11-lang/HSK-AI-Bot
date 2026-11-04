@@ -2281,6 +2281,7 @@ var PWA_COURSE_POST_PATHS={
   "/api/v3/lesson/start":"/api/v3/pwa/lesson/start",
   "/api/v3/lesson/complete":"/api/v3/pwa/lesson/complete",
   "/api/v3/language":"/api/v3/pwa/language",
+  "/api/v3/preferences":"/api/v3/pwa/preferences",
   "/api/miniapp/mistakes/review/start":"/api/v3/pwa/mistakes/review/start",
   "/api/miniapp/mistakes/review/answer":"/api/v3/pwa/mistakes/review/answer",
   "/api/miniapp/mistakes/review/complete":"/api/v3/pwa/mistakes/review/complete",
@@ -2604,9 +2605,11 @@ function adoptStudySetup(d){
   if(STUDY_SETUP&&Number(STUDY_SETUP.daily_goal_xp)>0)dailyGoal=Number(STUDY_SETUP.daily_goal_xp);
 }
 function savePreferences(body){
-  if(!INIT_DATA)return Promise.resolve(null);
-  return fetch("/api/v3/preferences",{method:"POST",headers:{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA},
-    body:JSON.stringify(body)}).then(function(r){return r.json()}).then(function(j){
+  if(!INIT_DATA&&!PWA_COURSE_HOST)return Promise.resolve(null);
+  var request=PWA_COURSE_HOST?_apiPost("/api/v3/preferences",body):
+    fetch("/api/v3/preferences",{method:"POST",headers:{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA},
+      body:JSON.stringify(body)});
+  return request.then(function(r){return r.json()}).then(function(j){
       if(j&&j.ok&&j.profile){STUDY_SETUP=j.profile;if(Number(j.profile.daily_goal_xp)>0)dailyGoal=Number(j.profile.daily_goal_xp)}
       return j;
     }).catch(function(){return null});
@@ -2725,10 +2728,10 @@ var App={
       if(SIGNIN_STATE.busy&&!SIGNIN_PENDING){SIGNIN_STATE.generation++;SIGNIN_STATE.busy=""}
     }else if(SIGNIN_PENDING&&!signInPollTimer){pollSignInLink(SIGNIN_PENDING,SIGNIN_PENDING.deadline)}
     if(s==="course"&&window._pendingXpFly){var fx=window._pendingXpFly;window._pendingXpFly=0;setTimeout(function(){flyXp(fx)},350)}},
-  openSheet:function(html){var sheet=$("#sheet");if(!sheet.classList.contains("on"))SHEET_RETURN_FOCUS=document.activeElement;sheet.classList.remove("hsk30-promo-center","hsk30-book-card","course-choice-sheet","profile-apps-choice","lesson-exit-confirm");sheet.removeAttribute("aria-label");sheet.removeAttribute("aria-labelledby");$("#sheet-body").innerHTML=html;var title=sheet.querySelector("#sheet-body h1,#sheet-body h2,#sheet-body h3,#sheet-body [role='heading'],#sheet-body .shead .tr");if(title){if(!title.id)title.id="hsk-sheet-title";sheet.setAttribute("aria-labelledby",title.id)}else{sheet.setAttribute("aria-label",courseMessage("sheet.dialogLabel",LANG==="ru"?"Диалог HSK AI":LANG==="tj"?"Муколамаи HSK AI":"HSK AI oynasi"))}var close=sheet.querySelector(".sx");if(close)close.setAttribute("aria-label",courseMessage("sheet.closeLabel",LANG==="ru"?"Закрыть":LANG==="tj"?"Пӯшидан":"Yopish"));sheet.setAttribute("role","dialog");sheet.setAttribute("aria-modal","true");sheet.classList.add("on");setSheetBackgroundInert(true);focusSheetStart(sheet);startSheetPromo("#sheet")},
+  openSheet:function(html){var sheet=$("#sheet");if(!sheet.classList.contains("on"))SHEET_RETURN_FOCUS=document.activeElement;sheet.classList.remove("hsk30-promo-center","hsk30-book-card","course-choice-sheet","profile-apps-choice","lesson-exit-confirm","pwa-settings-page");sheet.removeAttribute("aria-label");sheet.removeAttribute("aria-labelledby");$("#sheet-body").innerHTML=html;var title=sheet.querySelector("#sheet-body h1,#sheet-body h2,#sheet-body h3,#sheet-body [role='heading'],#sheet-body .shead .tr");if(title){if(!title.id)title.id="hsk-sheet-title";sheet.setAttribute("aria-labelledby",title.id)}else{sheet.setAttribute("aria-label",courseMessage("sheet.dialogLabel",LANG==="ru"?"Диалог HSK AI":LANG==="tj"?"Муколамаи HSK AI":"HSK AI oynasi"))}var close=sheet.querySelector(".sx");if(close)close.setAttribute("aria-label",courseMessage("sheet.closeLabel",LANG==="ru"?"Закрыть":LANG==="tj"?"Пӯшидан":"Yopish"));sheet.setAttribute("role","dialog");sheet.setAttribute("aria-modal","true");sheet.classList.add("on");setSheetBackgroundInert(true);focusSheetStart(sheet);startSheetPromo("#sheet")},
   closeSheet:function(){
     SETTINGS_SHEET=false;
-    var sheet=$("#sheet");sheet.classList.remove("on","hsk30-promo-center","hsk30-book-card","course-choice-sheet","profile-apps-choice","lesson-exit-confirm");sheet.removeAttribute("role");sheet.removeAttribute("aria-modal");sheet.removeAttribute("aria-label");sheet.removeAttribute("aria-labelledby");sheet.removeAttribute("tabindex");stopSheetPromo();setSheetBackgroundInert(false);var returnFocus=SHEET_RETURN_FOCUS;SHEET_RETURN_FOCUS=null;if(returnFocus&&returnFocus.isConnected&&typeof returnFocus.focus==="function")returnFocus.focus({preventScroll:true});
+    var sheet=$("#sheet");sheet.classList.remove("on","hsk30-promo-center","hsk30-book-card","course-choice-sheet","profile-apps-choice","lesson-exit-confirm","pwa-settings-page");sheet.removeAttribute("role");sheet.removeAttribute("aria-modal");sheet.removeAttribute("aria-label");sheet.removeAttribute("aria-labelledby");sheet.removeAttribute("tabindex");stopSheetPromo();setSheetBackgroundInert(false);var returnFocus=SHEET_RETURN_FOCUS;SHEET_RETURN_FOCUS=null;if(returnFocus&&returnFocus.isConnected&&typeof returnFocus.focus==="function")returnFocus.focus({preventScroll:true});
     var revealUnlock=!!window._pendingUnlockAfterSheet;window._pendingUnlockAfterSheet=false;
     /* Qulf ochilishi animatsiyasi ustiga reklama chiqmaydi — u o'quvchi
        kutgan mukofot. Kechiktirilgan markaz reklamasi keyingi safar
@@ -3149,10 +3152,11 @@ var App={
      klient hech qachon ixtiyoriy manzil ochmaydi. */
   openSettings:function(){
     SETTINGS_SHEET=true;App.openSheet(settingsSheetHtml());
+    if(PWA_COURSE_HOST)$("#sheet").classList.add("pwa-settings-page");
     if(PWA_COURSE_HOST&&window.HskPwaInbox&&typeof HskPwaInbox.refreshPushStatus==="function")
       HskPwaInbox.refreshPushStatus().catch(function(){});
     if(!COURSE_TRACK_STATE){
-      courseTrackStatus(false).then(function(){if(SETTINGS_SHEET)App.openSheet(settingsSheetHtml())}).catch(function(){});
+      courseTrackStatus(false).then(function(){if(SETTINGS_SHEET){App.openSheet(settingsSheetHtml());if(PWA_COURSE_HOST)$("#sheet").classList.add("pwa-settings-page")}}).catch(function(){});
     }
   },
   logoutPwa:function(){
@@ -3259,9 +3263,12 @@ var App={
     App.openSheet('<div class="shead"><div class="tr" style="font-size:16px;color:var(--ink)">'+p.goalSet+'</div></div>'
       +opts.map(function(v){return '<button class="opt-row'+(v===dailyGoal?" on":"")+'" onclick="App.pickGoal('+v+')"><i class="ti ti-target"></i> '+v+' XP'+(v===dailyGoal?'<span class="chk"><i class="ti ti-check"></i></span>':'')+'</button>'}).join(""))},
   /* Tanlov endi SERVERDA saqlanadi — ilgari u faqat shu sessiyada yashardi. */
-  pickGoal:function(v){var back=SETTINGS_SHEET;dailyGoal=v;renderProfile();
+  pickGoal:function(v){var back=SETTINGS_SHEET,previous=dailyGoal;dailyGoal=v;renderProfile();
     if(back)App.openSettings();else App.closeSheet();
-    savePreferences({daily_goal_xp:v}).then(function(){renderProfile();if(SETTINGS_SHEET)App.openSettings()})},
+    savePreferences({daily_goal_xp:v}).then(function(saved){
+      if(!saved||saved.ok!==true){dailyGoal=previous;toast(serverSaveErrorText(),2200)}
+      renderProfile();if(SETTINGS_SHEET)App.openSettings()
+    })},
   /* Birinchi darsdan keyingi ikki savol: vaqt -> fokus. Ikkinchi savol
      birinchisi saqlangach ochiladi, shunda bir vaqtda bitta savol turadi. */
   pickStudyGoal:function(k){App.closeSheet();
@@ -7108,8 +7115,8 @@ function settingsSheetHtml(){
     +'<div class="set" style="margin:0">'
     +'<button class="srow" onclick="App.langPicker()"><i class="ti ti-language"></i> '+courseMessage("lang",t.lang)+'<span class="sv">'+LANG.toUpperCase()+' <i class="ti ti-chevron-right"></i></span></button>'
     +courseVersionSettingsRowHtml()
-    +'<button class="srow" onclick="App.notifToggle()"><i class="ti ti-bell"></i> '+courseMessage("notif",t.notif)+'<span class="toggle '+(notifOn?"on":"")+'"></span></button>'
-    +(notifOn?'<div class="srow-note">'+notifTimesHtml()+'</div>':'')
+    +(!PWA_COURSE_HOST?'<button class="srow" onclick="App.notifToggle()"><i class="ti ti-bell"></i> '+courseMessage("notif",t.notif)+'<span class="toggle '+(notifOn?"on":"")+'"></span></button>':'')
+    +(!PWA_COURSE_HOST&&notifOn?'<div class="srow-note">'+notifTimesHtml()+'</div>':'')
     +pwaPushSettingsRowHtml()
     +'<button class="srow" onclick="App.goalPicker()"><i class="ti ti-target"></i> '+p.goalSet+'<span class="sv">'+dailyGoal+' XP <i class="ti ti-chevron-right"></i></span></button>'
     +signInMethodsRowsHtml()
