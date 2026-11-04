@@ -740,6 +740,66 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
         except PwaAuthError as exc:
             return _error(exc)
 
+    @router.get("/api/v3/pwa/invite")
+    async def pwa_invite(request: Request):
+        """Read canonical referrals for this verified PWA account only.
+
+        The legacy Mini App includes Telegram IDs and usernames; the browser
+        UI needs neither. Do not export either identifier or trust client
+        language/level as an identity claim.
+        """
+        from app.services.referral_service import (
+            ReferralService, REFERRAL_TRIAL_REQUIRED_ACTIVE, public_apps_url,
+        )
+
+        try:
+            require_pwa_enabled(settings_obj)
+            if set(request.query_params) - {"lang", "tz"}:
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            lang = str(request.query_params.get("lang") or "uz").lower()
+            if lang not in {"uz", "ru", "tj"}:
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            tz_str = request.query_params.get("tz")
+            tz = 0 if tz_str is None else int(tz_str)
+            if not -720 <= tz <= 840:
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).actor(
+                    request.cookies.get(PWA_SESSION_COOKIE)
+                )
+                service = ReferralService(db)
+                await service.user_repo.ensure_referral_code(actor)
+                joined = await service.referral_repo.count_by_referrer(actor)
+                active = await service.get_trial_activation_progress(actor)
+                source = await service.list_miniapp_referrals(
+                    actor, timezone_offset_minutes=tz, limit=30,
+                )
+                code = str(actor.referral_code or "")
+                await db.commit()
+            public = [{
+                "rank": int(item.get("rank") or 0),
+                "name": str(item.get("name") or "").strip()[:40],
+                "status": str(item.get("status") or "pending")[:20],
+                "xp": int(item.get("xp") or 0),
+                "total_xp": int(item.get("total_xp") or 0),
+                "course_level": str(item.get("course_level") or "")[:32],
+                "completed_lessons": int(item.get("completed_lessons") or 0),
+                "is_paid": bool(item.get("is_paid")),
+                "is_current_user": False,
+            } for item in source if isinstance(item, dict)]
+            return JSONResponse({
+                "ok": True,
+                "link": public_apps_url(settings_obj, code, trial=True),
+                "joined_count": int(joined),
+                "active_count": int(active),
+                "required": int(REFERRAL_TRIAL_REQUIRED_ACTIVE),
+                "referrals": public,
+            }, headers=_NO_STORE)
+        except PwaAuthError as exc:
+            return _error(exc)
+        except (TypeError, ValueError):
+            return _error(PwaAuthError("pwa_request_invalid", status_code=422))
+
     @router.post("/api/v3/pwa/preferences")
     async def pwa_save_preferences(request: Request):
         """Save canonical course preferences for the verified browser learner.
