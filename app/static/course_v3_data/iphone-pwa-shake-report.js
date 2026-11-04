@@ -440,7 +440,7 @@
         var promptWhenIdle = function () {
           if (!owner || seen || document.visibilityState === "hidden") return;
           if (attempts++ < 12 &&
-              (document.querySelector("#sheet.on, #tour.on, #hsk-pwa-notice-root:not([hidden]), #hsk-pwa-feedback-root:not([hidden])"))) {
+              (document.querySelector("#hsk-launch-splash:not(.is-done), #sheet.on, #tour.on, #hsk-pwa-notice-root:not([hidden]), #hsk-pwa-feedback-root:not([hidden])"))) {
             setTimeout(promptWhenIdle,1000); return;
           }
           introduction();
