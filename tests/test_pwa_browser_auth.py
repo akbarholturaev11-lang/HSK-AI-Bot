@@ -459,6 +459,21 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('manifest.rel="manifest"', checkout)
         self.assertIn('glass.href="/course_v3_data/iphone-pwa-glass.css', checkout)
 
+    async def test_iphone_pwa_home_redirects_verified_cookie_before_login_html(self):
+        # An existing learner should not briefly see the welcome/login UI
+        # before JavaScript detects a valid HttpOnly session.
+        anonymous = await self.client.get("/iphone-pwa", follow_redirects=False)
+        self.assertEqual(anonymous.status_code, 200, anonymous.text)
+        self.assertIn('id="title">Xush kelibsiz', anonymous.text)
+
+        state = await self.begin()
+        await self.callback(state)
+        returning = await self.client.get("/iphone-pwa", follow_redirects=False)
+        self.assertEqual(returning.status_code, 303, returning.text)
+        self.assertEqual(returning.headers["location"], "/iphone-pwa/course")
+        self.assertEqual(returning.headers["cache-control"], "no-store")
+        self.assertNotIn("Xush kelibsiz", returning.text)
+
     async def test_shared_course_entry_needs_valid_pwa_session_and_flag(self):
         path = "/iphone-pwa/course"
         anonymous = await self.client.get(path, follow_redirects=False)
