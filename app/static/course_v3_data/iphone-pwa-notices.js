@@ -13,15 +13,12 @@
     '<section class="hsk-pwa-notice-card" role="dialog" aria-modal="true" aria-labelledby="hsk-pwa-notice-title" tabindex="-1">' +
       '<div class="hsk-pwa-notice-head"><h2 id="hsk-pwa-notice-title"></h2>' +
         '<button type="button" class="hsk-pwa-close" data-pwa-close aria-label="Close">×</button></div>' +
-      '<div class="hsk-pwa-notice-tabs" role="tablist">' +
-      '<button type="button" id="hsk-pwa-tab-course" role="tab" data-pwa-tab="course" aria-controls="hsk-pwa-notice-list"></button>' +
-      '<button type="button" id="hsk-pwa-tab-account" role="tab" data-pwa-tab="account" aria-controls="hsk-pwa-notice-list"></button></div>' +
       '<div class="hsk-pwa-push-view" id="hsk-pwa-push-view" hidden>' +
         '<p id="hsk-pwa-push-status" role="status" aria-live="polite"></p>' +
         '<p id="hsk-pwa-push-body"></p>' +
         '<button type="button" id="hsk-pwa-push-action"></button>' +
         '<button type="button" id="hsk-pwa-push-later"></button></div>' +
-      '<div class="hsk-pwa-notice-list" id="hsk-pwa-notice-list" role="tabpanel" tabindex="0"></div>' +
+      '<div class="hsk-pwa-notice-list" id="hsk-pwa-notice-list" role="region" aria-labelledby="hsk-pwa-notice-title" tabindex="0"></div>' +
       '<div class="hsk-pwa-notice-urgent" hidden>' +
         '<div class="hsk-pwa-notice-icon" aria-hidden="true"><i class="ti ti-credit-card-off"></i></div>' +
         '<h2 id="hsk-pwa-urgent-title"></h2>' +
@@ -36,7 +33,6 @@
 
   var panel = overlay.querySelector('[role="dialog"]');
   var list = overlay.querySelector("#hsk-pwa-notice-list");
-  var tabs = overlay.querySelector(".hsk-pwa-notice-tabs");
   var heading = overlay.querySelector("#hsk-pwa-notice-title");
   var urgent = overlay.querySelector(".hsk-pwa-notice-urgent");
   var pushControl = overlay.querySelector("#hsk-pwa-push-view");
@@ -44,7 +40,6 @@
   var pushBody = overlay.querySelector("#hsk-pwa-push-body");
   var pushButton = overlay.querySelector("#hsk-pwa-push-action");
   var pushLater = overlay.querySelector("#hsk-pwa-push-later");
-  var activeTab = "course";
   var activeMode = null;
   var owner = null;
   var latestData = null;
@@ -125,17 +120,23 @@
     try { localStorage.setItem(key, "1"); } catch (_) { /* Safari private mode */ }
   }
 
+  function syncBrowserBack() {
+    if (window.NavBack && typeof window.NavBack.sync === "function") window.NavBack.sync();
+  }
   function close() {
     if (overlay.hidden) return;
     markDismissed();
     overlay.hidden = true;
+    overlay.setAttribute("data-mode", "");
     activeMode = null;
+    syncBrowserBack();
     displayedPaymentId = null;
     if (lastFocus && lastFocus.isConnected && typeof lastFocus.focus === "function") lastFocus.focus();
   }
   function openMode(mode) {
     if (overlay.hidden) lastFocus = document.activeElement;
     activeMode = mode;
+    overlay.setAttribute("data-mode", mode);
     displayedPaymentId = mode === "urgent" && latestData && latestData.account &&
       latestData.account.payment_action
       ? latestData.account.payment_action.payment_id : null;
@@ -145,7 +146,6 @@
     var isPush = mode === "push";
     panel.setAttribute("aria-labelledby", isUrgent ? "hsk-pwa-urgent-title" : "hsk-pwa-notice-title");
     overlay.querySelector(".hsk-pwa-notice-head").hidden = isUrgent;
-    tabs.hidden = isUrgent || isPush;
     list.hidden = isUrgent || isPush;
     pushControl.hidden = !isPush;
     urgent.hidden = !isUrgent;
@@ -158,6 +158,7 @@
       overlay.querySelector(".hsk-pwa-close").setAttribute("aria-label", t.close);
     }
     panel.focus();
+    syncBrowserBack();
   }
   function putMessage(title, body, action, paymentStatus) {
     var isAction = action === "course" || action === "subscription" ||
@@ -199,15 +200,7 @@
       paintPushControl();
       return;
     }
-    overlay.querySelector("#hsk-pwa-tab-course").textContent = t.course;
-    overlay.querySelector("#hsk-pwa-tab-account").textContent = t.account;
-    ["course", "account"].forEach(function (kind) {
-      var tab = overlay.querySelector('[data-pwa-tab="' + kind + '"]');
-      tab.setAttribute("aria-selected", String(activeTab === kind));
-      tab.tabIndex = activeTab === kind ? 0 : -1;
-    });
-    list.setAttribute("aria-labelledby", activeTab === "account"
-      ? "hsk-pwa-tab-account" : "hsk-pwa-tab-course");
+    // One unified account-owned notification feed.
     list.replaceChildren();
     if (!latestData) {
       var loading = document.createElement("p");
@@ -220,26 +213,30 @@
       putMessage(t.error, "", "");
       return;
     }
-    var items = activeTab === "course"
-      ? latestData.course.notifications : latestData.account.notices;
-    var reviews = activeTab === "account" && Array.isArray(latestData.account.payment_reviews)
-      ? latestData.account.payment_reviews : [];
-    reviews.slice(0, 10).forEach(function (review) {
-      if (!review || !["approved", "rejected"].includes(review.status)) return;
-      var hsk30 = review.plan_type === "hsk30_unlock";
-      var title = review.status === "rejected"
-        ? (hsk30 ? labels().hsk30Rejected : labels().rejected)
-        : (hsk30 ? labels().hsk30Approved : labels().approved);
-      putMessage(title, "", review.status === "rejected" ? "subscription" : "course", review.status);
+    var course = latestData.course || {}, account = latestData.account || {};
+    var reviews = Array.isArray(account.payment_reviews) ? account.payment_reviews : [];
+    var entries = [], order = 0;
+    function when(value) { var n = Date.parse(value || ""); return Number.isFinite(n) ? n : 0; }
+    reviews.slice(0,10).forEach(function (review) {
+      if (!review || !["approved","rejected"].includes(review.status)) return;
+      var hsk30=review.plan_type==="hsk30_unlock";
+      entries.push({date:when(review.reviewed_at),order:order++,title:review.status==="rejected"
+        ? (hsk30?t.hsk30Rejected:t.rejected) : (hsk30?t.hsk30Approved:t.approved),
+        body:"",action:review.status==="rejected"?"subscription":"course",status:review.status});
     });
-    var activePayment = activeTab === "account" && latestData.account.payment_action;
-    if (activePayment && activePayment.status === "rejected" &&
-        !reviews.some(function (review) { return Number(review.payment_id) === Number(activePayment.payment_id); })) {
-      putMessage(rejectedTitle(activePayment), "", "subscription", "rejected");
+    var activePayment=account.payment_action;
+    if(activePayment&&activePayment.status==="rejected"&&
+        !reviews.some(function(r){return Number(r.payment_id)===Number(activePayment.payment_id)})) {
+      entries.push({date:when(activePayment.reviewed_at),order:order++,title:rejectedTitle(activePayment),body:"",action:"subscription",status:"rejected"});
     }
-    (Array.isArray(items) ? items : []).slice(0, 20).forEach(function (item) {
-      if (item && typeof item === "object") putMessage(item.title, item.body, item.action);
+    [course.notifications, account.notices].forEach(function(items){
+      (Array.isArray(items)?items:[]).slice(0,20).forEach(function(item){
+        if(!item||typeof item!=="object")return;
+        entries.push({date:when(item.created_at),order:order++,title:item.title,body:item.body,action:item.action,status:""});
+      });
     });
+    entries.sort(function(a,b){return b.date-a.date||a.order-b.order});
+    entries.forEach(function(item){putMessage(item.title,item.body,item.action,item.status)});
     if (!list.children.length) {
       var empty = document.createElement("p");
       empty.className = "hsk-pwa-notice-empty";
@@ -471,7 +468,6 @@
     // immediately after the inbox is closed.
     urgentPending = null;
     ++checkGeneration;
-    activeTab = "course";
     latestData = null;
     openMode("inbox");
     render();
@@ -560,30 +556,10 @@
     if (ev.target.closest("#hsk-pwa-push-later")) {
       close();
     }
-    var tab = ev.target.closest("[data-pwa-tab]");
-    if (tab && activeMode === "inbox") {
-      activeTab = tab.dataset.pwaTab === "account" ? "account" : "course";
-      render();
-    }
     if (ev.target.closest("[data-pwa-retry]")) {
       markDismissed();
       location.assign(checkoutPath());
     }
-  });
-  tabs.addEventListener("keydown", function (ev) {
-    if (["ArrowLeft", "ArrowRight", "Home", "End"].indexOf(ev.key) < 0) return;
-    var order = ["course", "account"];
-    var current = ev.target.closest("[data-pwa-tab]");
-    var selected = current ? current.dataset.pwaTab : activeTab;
-    var index = Math.max(0, order.indexOf(selected));
-    if (ev.key === "Home") index = 0;
-    else if (ev.key === "End") index = order.length - 1;
-    else if (ev.key === "ArrowRight") index = (index + 1) % order.length;
-    else index = (index + order.length - 1) % order.length;
-    ev.preventDefault();
-    activeTab = order[index];
-    render();
-    overlay.querySelector('[data-pwa-tab="' + activeTab + '"]').focus();
   });
   document.addEventListener("keydown", function (ev) {
     if (overlay.hidden) return;
