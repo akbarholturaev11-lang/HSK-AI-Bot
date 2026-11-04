@@ -474,6 +474,28 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(returning.headers["cache-control"], "no-store")
         self.assertNotIn("Xush kelibsiz", returning.text)
 
+    async def test_browser_friends_use_verified_account_not_telegram_identity(self):
+        endpoint = "/api/v3/pwa/invite"
+        denied = await self.client.get(endpoint)
+        self.assertEqual(denied.status_code, 401, denied.text)
+        state = await self.begin()
+        await self.callback(state)
+        malformed = await self.client.get(endpoint, params={"lang": "xx"})
+        self.assertEqual(malformed.status_code, 422, malformed.text)
+        extra = await self.client.get(endpoint, params={"telegram_id": "999"})
+        self.assertEqual(extra.status_code, 422, extra.text)
+        allowed = await self.client.get(endpoint, params={"lang": "uz", "tz": 480})
+        self.assertEqual(allowed.status_code, 200, allowed.text)
+        self.assertEqual(allowed.headers["cache-control"], "no-store")
+        body = allowed.json()
+        self.assertTrue(body["ok"])
+        self.assertEqual(body["joined_count"], 0)
+        self.assertEqual(body["active_count"], 0)
+        self.assertEqual(body["referrals"], [])
+        self.assertNotIn("telegram_id", allowed.text)
+        self.assertNotIn("user_id", allowed.text)
+        self.assertNotIn("username", allowed.text)
+
     async def test_browser_settings_goal_requires_verified_actor_and_csrf(self):
         path = "/api/v3/pwa/preferences"
         anonymous = await self.client.post(
