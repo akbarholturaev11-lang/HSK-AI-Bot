@@ -525,6 +525,25 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(valid.json()["profile"]["daily_goal_xp"], 40)
         self.assertEqual(valid.headers["cache-control"], "no-store")
 
+    async def test_browser_profile_analytics_use_verified_account_not_telegram(self):
+        path = "/api/v3/pwa/profile"
+        unauthenticated = await self.client.get(path)
+        self.assertEqual(unauthenticated.status_code, 401, unauthenticated.text)
+        state = await self.begin()
+        await self.callback(state)
+        response = await self.client.get(path)
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertEqual(response.headers["cache-control"], "no-store")
+        data = response.json()
+        self.assertTrue(data["ok"])
+        self.assertEqual(data["user"]["name"], "Existing learner")
+        self.assertNotIn("telegram_username", data["user"])
+        self.assertIn("answer_accuracy", data["stats"])
+        self.assertIn("overall", data["stats"]["answer_accuracy"])
+        self.assertIn("is_paid", data["subscription"])
+        self.assertNotIn("telegram_id", response.text)
+        self.assertNotIn("initData", response.text)
+
     async def test_shared_course_entry_needs_valid_pwa_session_and_flag(self):
         path = "/iphone-pwa/course"
         anonymous = await self.client.get(path, follow_redirects=False)
