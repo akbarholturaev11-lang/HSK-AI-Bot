@@ -228,7 +228,7 @@
   }
   async function captureViewport() {
     // Profile, voice transcripts, purchase/auth screens may contain private data.
-    if (!onCourse || ["profile", "voice"].indexOf(typeof SCREEN === "string" ? SCREEN : "") >= 0 ||
+    if (location.pathname === "/iphone-pwa/checkout" || ["profile", "voice"].indexOf(typeof SCREEN === "string" ? SCREEN : "") >= 0 ||
         document.querySelector("#sheet.on .pwa-payment, #sheet.on [class*=receipt], #sheet.on [class*=checkout]")) return null;
     var renderer = await loadRenderer();
     var width = Math.max(1, Math.min(window.innerWidth, 1200));
