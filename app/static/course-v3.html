@@ -5901,11 +5901,11 @@ function loadCourseMap(lv,tries){
   });
 }
 function _retryCourseMap(lv,tries){return new Promise(function(res){setTimeout(res,500*(tries+1))}).then(function(){return loadCourseMap(lv,tries+1)})}
-function loadLevel(lv){
+var PWA_LEVEL_REQUEST_SEQ=0; function loadLevel(lv){var requestId=PWA_COURSE_HOST?++PWA_LEVEL_REQUEST_SEQ:0;
   clearDeferredCourseUnlock();
   lv=setSelectedLevel(lv);
   if(!INIT_DATA&&!PWA_COURSE_HOST){hideCourseTrackSwitchPreparing();showAuthGate();return;}
-  return loadCourseMap(lv).then(function(res){
+  return loadCourseMap(lv).then(function(res){if(PWA_COURSE_HOST&&requestId!==PWA_LEVEL_REQUEST_SEQ)return;
     // On failure dismiss the loader before opening the error/paywall sheet.
     if(!res||!res.data)hideCourseTrackSwitchPreparing();
     if(showCourseMapFailure(res))return;
@@ -5915,7 +5915,7 @@ function loadLevel(lv){
     hideAuthGate();MAP=rememberLimitText(d);adoptServerLang(d);adoptBotUsername(d);setSelectedLevel(MAP.level||lv);if(d.user)PROF=d.user;syncNotify();ratingLoaded=false;renderAll();App.show("course");
     hideCourseTrackSwitchPreparing();
     prefetchNearbyLessons();
-  }).catch(function(){
+  }).catch(function(){if(PWA_COURSE_HOST&&requestId!==PWA_LEVEL_REQUEST_SEQ)return;
     hideCourseTrackSwitchPreparing();
     showCourseLoadError();
   });
