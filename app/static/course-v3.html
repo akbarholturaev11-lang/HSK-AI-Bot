@@ -1610,6 +1610,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 }
 </style>
 <link rel="stylesheet" href="/course_v3_data/iphone-pwa-glass.css?v=20261104-175a0ec6f920">
+<link rel="stylesheet" href="/course_v3_data/iphone-pwa-shake-report.css?v=260-1">
 <link href="/course_v3_data/desktop-download.css?v=20261003-1" rel="stylesheet">
 <link href="/course_v3_data/profile-carousel.css?v=20261017-link-cards-1" rel="stylesheet">
 <link href="/course_v3_data/rating-podium.css?v=20261014-2" rel="stylesheet">
@@ -7077,6 +7078,7 @@ function settingsSheetHtml(){
     +(notifOn?'<div class="srow-note">'+notifTimesHtml()+'</div>':'')
     +'<button class="srow" onclick="App.goalPicker()"><i class="ti ti-target"></i> '+p.goalSet+'<span class="sv">'+dailyGoal+' XP <i class="ti ti-chevron-right"></i></span></button>'
     +signInMethodsRowsHtml()
+    +(PWA_COURSE_HOST && window.HskPwaShake ? window.HskPwaShake.settingsRowHtml() : "")
     +pwaLogoutSettingsRowHtml()
     +'<button class="srow" onclick="App.openHelp()"><i class="ti ti-help-circle"></i> '+courseMessage("help",t.help)+'<span class="sv"><i class="ti ti-chevron-right"></i></span></button>'
     +'</div>'+socialLinksHtml();
@@ -9375,5 +9377,6 @@ window.addEventListener("pageshow",function(ev){
 <script src="/course_v3_data/profile-carousel.js?v=20261021-bbc40872c23c"></script>
 <script src="/course_v3_data/iphone-pwa-notices.js?v=20261104-9aaae52d1860"></script>
 <script src="/course_v3_data/iphone-pwa-feedback.js?v=20261103-1"></script>
+<script src="/course_v3_data/iphone-pwa-shake-report.js?v=260-1"></script>
 </body>
 </html>
