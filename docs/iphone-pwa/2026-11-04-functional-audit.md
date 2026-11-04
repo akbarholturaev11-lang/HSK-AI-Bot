@@ -2,7 +2,7 @@
 
 **Repository:** `akbarholturaev11-lang/HSK-AI-Bot`. **Baseline:** `main` on 2026-11-04. **Patch branch:** `codex/iphone-pwa-navigation-audit-20261104`.
 
-**Scope and evidence boundary.** This is a source audit of the real learner PWA, not an iOS device test. There is no authenticated production browser/iPhone, user session, server logs, or measured network waterfall in this run. Therefore **no screen is marked runtime PASS**, and no fabricated timing or "fixed on iPhone" statement is valid. Execute the test matrix below on an installed iPhone PWA with a QA account, 4G and throttled network before approving the PR. Avoid modifying production user entitlements to test.
+**Scope and evidence boundary.** This is a source audit of the real learner PWA, not an iOS device test. There is no authenticated production browser/iPhone, user session, or measured iPhone network waterfall in this run. A later follow-up inspected a small aggregate Railway HTTP log sample; those metrics do not represent device timing. Therefore **no screen is marked runtime PASS**, and no fabricated timing or "fixed on iPhone" statement is valid. Execute the test matrix below on an installed iPhone PWA with a QA account, 4G and throttled network before approving the PR. Avoid modifying production user entitlements to test.
 
 ## Confirmed source issues and initial fixes
 
@@ -90,3 +90,10 @@ Status **NEEDS DEVICE QA** means code path identified but not exercised on a rea
 | `/api/v3/pwa/subscription/overview` | 1 | 221 |
 
 These are not iPhone first-paint, RTT, JS parse, media, layout, page freeze or true user-visible load times. Do not infer frontend speed from them, particularly with n=1 for checkout. The observed rejected push subscribe was one request, not a confirmed universal failure.
+
+## 2026-11-05 follow-up: account profile and slow-level navigation
+
+- **PWA-11 (P1 fixed in source):** `loadProfileDetail()` requested `/api/miniapp/profile`, but the standalone PWA's explicit GET allowlist did not map it. The browser rejected the call locally, leaving accuracy indicators unpopulated. Added `/api/v3/pwa/profile`, backed by the existing `StudyMiniAppService.get_profile_payload(actor)`, with a verified HttpOnly PWA session, account ownership, no-store response, and no Telegram username in PWA output. The original Telegram API is unchanged. Browser auth and identity tests were added; backend CI and actual iPhone QA are still required.
+- **PWA-12 (P2 fixed in source):** Profile and leaderboard templates displayed Telegram-avatar image URLs despite the PWA having independent identity. PWA now avoids Telegram avatar requests and does not expose an inactive avatar-edit affordance. Original Telegram UI is preserved; there is no fabricated alternate avatar.
+- **PWA-13 (P1 fixed in source):** Rapid HSK-level switches could race under poor connectivity: a slower older map load could replace a newly selected map or open an outdated error sheet. Browser-only monotonic request generation rejects obsolete completions. An `AbortController` actively cancels the earlier request, and cancellation prevents its subsequent exponential retry requests. Telegram-level loading is unchanged. Review with rapid level changes, partial access, and a slow network on iOS; treat source test as a guard, not a device measurement.
+- **Runtime verification still missing:** `pwa/profile` account-owned statistics, BFCache checkout behavior, full-screen Inbox/Settings gestures, successful Apple Web Push delivery, and Live RTC. The Live voice provider is still deliberately disabled on PWA (`live_available=False`), not falsely advertised as implemented.
