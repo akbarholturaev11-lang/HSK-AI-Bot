@@ -2280,8 +2280,7 @@ var PWA_COURSE_POST_PATHS={
   "/api/v3/limits/status":"/api/v3/pwa/limits/status",
   "/api/v3/lesson/start":"/api/v3/pwa/lesson/start",
   "/api/v3/lesson/complete":"/api/v3/pwa/lesson/complete",
-  "/api/v3/language":"/api/v3/pwa/language",
-  "/api/v3/preferences":"/api/v3/pwa/preferences",
+  "/api/v3/language":"/api/v3/pwa/language", "/api/v3/preferences":"/api/v3/pwa/preferences",
   "/api/miniapp/mistakes/review/start":"/api/v3/pwa/mistakes/review/start",
   "/api/miniapp/mistakes/review/answer":"/api/v3/pwa/mistakes/review/answer",
   "/api/miniapp/mistakes/review/complete":"/api/v3/pwa/mistakes/review/complete",
@@ -2370,10 +2369,7 @@ try{
     syncCourseTelegramChrome();
     if(!e||!e.persisted)return;
     INTERNAL_NAVIGATING_UNTIL=0;EXIT_PINGED=false;clearDeferredCourseUnlock();
-    // iOS may BFCache-restore Course after a checkout swipe. Release the
-    // one-shot checkout guard and refresh browser-authorized access/progress.
-    CHECKOUT_NAVIGATING=false;
-    if((!INIT_DATA&&!PWA_COURSE_HOST)||!MAP)return;
+CHECKOUT_NAVIGATING=false; if((!INIT_DATA&&!PWA_COURSE_HOST)||!MAP)return;
     _fetchCourseMap(MAP.level||getSelectedLevel()).then(function(d){
       if(isHsk30AccessError(d,MAP.level||getSelectedLevel())){showCourseMapFailure({hsk30Gate:true,level:d.level||MAP.level});return}
       if(!d||d._parseFail||d._status>=400||d.authenticated===false||!d.units)return;
@@ -2606,9 +2602,7 @@ function adoptStudySetup(d){
 }
 function savePreferences(body){
   if(!INIT_DATA&&!PWA_COURSE_HOST)return Promise.resolve(null);
-  var request=PWA_COURSE_HOST?_apiPost("/api/v3/preferences",body):
-    fetch("/api/v3/preferences",{method:"POST",headers:{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA},
-      body:JSON.stringify(body)});
+  var request=PWA_COURSE_HOST?_apiPost("/api/v3/preferences",body):     fetch("/api/v3/preferences",{method:"POST",headers:{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA},       body:JSON.stringify(body)});
   return request.then(function(r){return r.json()}).then(function(j){
       if(j&&j.ok&&j.profile){STUDY_SETUP=j.profile;if(Number(j.profile.daily_goal_xp)>0)dailyGoal=Number(j.profile.daily_goal_xp)}
       return j;
@@ -2704,17 +2698,7 @@ var App={
     document.querySelectorAll("#nav button").forEach(function(b){var selected=b.dataset.s===s;b.classList.toggle("on",selected);if(selected)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
     renderFloatHint(s);
     /* kurs ekrani: yo'lakcha boshidan emas, user turgan darsdan ochiladi */
-    if(s==="course"){
-      // The PWA should paint its tab immediately before the synchronous
-      // geometry pass. Two frames keep trail layout off the tap's first paint.
-      // Mini App/Telegram rendering and course layout remain unchanged.
-      if(PWA_COURSE_HOST&&typeof requestAnimationFrame==="function"){
-        requestAnimationFrame(function(){requestAnimationFrame(function(){
-          if(SCREEN!=="course")return;
-          drawTrails();scrollToCurrentNode();
-        })});
-      }else{drawTrails();scrollToCurrentNode()}
-    }else{window.scrollTo(0,0)}
+    if(s==="course"){       if(PWA_COURSE_HOST&&typeof requestAnimationFrame==="function"){         requestAnimationFrame(function(){requestAnimationFrame(function(){           if(SCREEN!=="course")return;           drawTrails();scrollToCurrentNode();         })});       }else{drawTrails();scrollToCurrentNode()}     }else{window.scrollTo(0,0)}
     if(s==="course"&&previous!=="course"){refreshCourseProgress();queueHsk30PromoCheck()}
     if(s==="mashq"){
       /* The bundled Practice cards do not depend on local preloads finishing.
@@ -2793,18 +2777,8 @@ var App={
     CHECKOUT_NAVIGATING=true;
     var source=src||PAY_SOURCE||"v3_paywall";
     SALES_PAYWALL_ACTIVE=false;SALES_PAYWALL_IMPRESSION="";
-    // Course has Referrer-Policy:no-referrer. A one-time same-tab nonce,
-    // not document.referrer, proves that checkout has a Course history entry.
-    var pwaReturnToken="";
-    if(PWA_COURSE_HOST){
-      try{
-        pwaReturnToken=Date.now().toString(36)+"-"+Math.random().toString(36).slice(2);
-        sessionStorage.setItem("hskai.pwa.checkout.return",JSON.stringify({token:pwaReturnToken,at:Date.now()}));
-      }catch(e){pwaReturnToken=""}
-    }
-    var url=(PWA_COURSE_HOST?"/iphone-pwa/checkout":"/subscription.html")+"?lang="+LANG+"&source="+encodeURIComponent(source)+"&mode=subscription"
-      +"&"+courseCheckoutReturnParams().toString()
-      +(pwaReturnToken?"&pwa_return="+encodeURIComponent(pwaReturnToken):"");
+    var pwaReturnToken="";     if(PWA_COURSE_HOST){       try{         pwaReturnToken=Date.now().toString(36)+"-"+Math.random().toString(36).slice(2);         sessionStorage.setItem("hskai.pwa.checkout.return",JSON.stringify({token:pwaReturnToken,at:Date.now()}));       }catch(e){pwaReturnToken=""}     }     var url=(PWA_COURSE_HOST?"/iphone-pwa/checkout":"/subscription.html")+"?lang="+LANG+"&source="+encodeURIComponent(source)+"&mode=subscription"
+      +"&"+courseCheckoutReturnParams().toString()       +(pwaReturnToken?"&pwa_return="+encodeURIComponent(pwaReturnToken):"");
     var clickId=["checkout",COURSE_SESSION_ID,Date.now(),Math.random().toString(36).slice(2,8)].join(":");
     if(!PWA_COURSE_HOST)trackCheckoutOpenedForRedirect(source,clickId);
     /* Same-origin subscription page: navigate inside the Telegram Mini App webview.
@@ -3171,8 +3145,7 @@ var App={
   /* HSK AI rasmiy sahifasini tashqarida ochadi. URL ro'yxatdan olinadi —
      klient hech qachon ixtiyoriy manzil ochmaydi. */
   openSettings:function(){
-    SETTINGS_SHEET=true;App.openSheet(settingsSheetHtml());
-    if(PWA_COURSE_HOST)$("#sheet").classList.add("pwa-settings-page");
+    SETTINGS_SHEET=true;App.openSheet(settingsSheetHtml()); if(PWA_COURSE_HOST)$("#sheet").classList.add("pwa-settings-page");
     if(PWA_COURSE_HOST&&window.HskPwaInbox&&typeof HskPwaInbox.refreshPushStatus==="function")
       HskPwaInbox.refreshPushStatus().catch(function(){});
     if(!COURSE_TRACK_STATE){
@@ -3285,10 +3258,7 @@ var App={
   /* Tanlov endi SERVERDA saqlanadi — ilgari u faqat shu sessiyada yashardi. */
   pickGoal:function(v){var back=SETTINGS_SHEET,previous=dailyGoal;dailyGoal=v;renderProfile();
     if(back)App.openSettings();else App.closeSheet();
-    savePreferences({daily_goal_xp:v}).then(function(saved){
-      if(!saved||saved.ok!==true){dailyGoal=previous;toast(serverSaveErrorText(),2200)}
-      renderProfile();if(SETTINGS_SHEET)App.openSettings()
-    })},
+    savePreferences({daily_goal_xp:v}).then(function(saved){       if(!saved||saved.ok!==true){dailyGoal=previous;toast(serverSaveErrorText(),2200)}       renderProfile();if(SETTINGS_SHEET)App.openSettings()     })},
   /* Birinchi darsdan keyingi ikki savol: vaqt -> fokus. Ikkinchi savol
      birinchisi saqlangach ochiladi, shunda bir vaqtda bitta savol turadi. */
   pickStudyGoal:function(k){App.closeSheet();
@@ -3413,10 +3383,7 @@ function schedulePracticeBackgroundLoad(){
         PRACTICE_BACKGROUND_SCHEDULED=false;
         if(SCREEN!=="mashq")return;
         prefetchPracticeAssets();
-        // The standalone PWA opens the two large dictionary iframes on demand.
-        // Warm-up on every Practice visit competes with navigation and checkout
-        // over slow iPhone connections. Keep Telegram's existing preload.
-        if(window.RESOURCE&&!PWA_COURSE_HOST)RESOURCE.warm();
+        if(!PWA_COURSE_HOST){if(window.RESOURCE)RESOURCE.warm();}
       };
       if(typeof requestIdleCallback==="function")
         requestIdleCallback(warmInIdle,{timeout:1800});
@@ -9308,12 +9275,7 @@ var NavBack={
   blocked:function(){for(var i=0;i<NavBack.BLOCK.length;i++)if(document.querySelector(NavBack.BLOCK[i]))return true;return false},
   top:function(){
     if(NavBack.blocked())return null;
-    // Inbox and push preference are browser-only independent navigation
-    // surfaces; their visible state is [hidden], not Mini App .on classes.
-    var notice=document.getElementById("hsk-pwa-notice-root");
-    if(PWA_COURSE_HOST&&notice&&!notice.hidden&&window.HskPwaInbox)
-      return {id:"hsk-pwa-notice-root",close:function(){window.HskPwaInbox.close()}};
-    for(var i=0;i<NavBack.LAYERS.length;i++)if(NavBack._on(NavBack.LAYERS[i].id))return NavBack.LAYERS[i];
+var notice=document.getElementById("hsk-pwa-notice-root"); if(PWA_COURSE_HOST&&notice&&!notice.hidden&&window.HskPwaInbox) return {id:"hsk-pwa-notice-root",close:function(){window.HskPwaInbox.close()}};     for(var i=0;i<NavBack.LAYERS.length;i++)if(NavBack._on(NavBack.LAYERS[i].id))return NavBack.LAYERS[i];
     return null;
   },
   /* "history bo'lmasa hech narsa qilmasin" — qaytadigan joy bo'lmasa false. */
@@ -9476,8 +9438,7 @@ var NavBack={
     NavBack.sync();
   }
 };
-window.NavBack=NavBack;
-NavBack.init();
+window.NavBack=NavBack; NavBack.init();
 window.addEventListener("pageshow",function(ev){
   if(!ev.persisted)return;
   try{sessionStorage.removeItem("hsk_v3_resource_return")}catch(e){}
