@@ -293,9 +293,25 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
     # A login-only source-aligned shell; protected course routes are P2.
     # Do not serve it until a verified provider origin is configured.
     @router.get("/iphone-pwa")
-    async def login_page():
+    async def login_page(request: Request):
         try:
             require_pwa_enabled(settings_obj)
+            # A returning learner already has an authenticated browser session.
+            # Redirect on the server so the login welcome screen never flashes
+            # before its JavaScript notices the valid HttpOnly cookie.
+            cookie = request.cookies.get(PWA_SESSION_COOKIE)
+            if cookie:
+                try:
+                    async with session_factory() as db:
+                        await PwaAuthService(db, settings_obj).actor(cookie)
+                except PwaAuthError:
+                    # Expired/revoked sessions still see the real login page;
+                    # never treat an unverified cookie as a signed-in learner.
+                    pass
+                else:
+                    return RedirectResponse(
+                        "/iphone-pwa/course", status_code=303, headers=_NO_STORE,
+                    )
             return FileResponse(
                 "app/static/iphone-pwa-login.html", media_type="text/html",
                 headers={**_NO_STORE,
