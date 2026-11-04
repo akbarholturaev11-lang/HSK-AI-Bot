@@ -10,6 +10,7 @@ from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.course_progress import CourseProgress
 from app.db.models.course_xp_event import CourseXpEvent
 from app.db.models.desktop import DesktopDevice, DesktopSession
+from app.db.models.learner_pwa_push import LearnerPwaPushSubscription
 from app.db.models.smart_reminder import SmartReminderCapability, SmartReminderConsent, SmartReminderPreference
 from app.services.smart_reminder_policy import _aware_utc
 from app.services.smart_reminder_policy_context import MAX_POLICY_ROWS, _LESSON_REF, verified_studies
@@ -18,6 +19,7 @@ from app.services.smart_reminder_shadow_queue import ATTEMPT, JOB, QUEUE_VERSION
 
 MAX_DESTINATIONS = 128  # Work bound only, not a learning/confidence threshold.
 VERSION = "smart-destination-v1"
+PWA_POLICY_VERSION = "smart-pwa-v1"
 
 
 @dataclass(frozen=True)
@@ -83,8 +85,11 @@ def choose_destination(*, user_id, destinations, evidence, observed_at, history_
     candidates = {}
     for endpoint in destinations:
         if (not isinstance(endpoint, Destination) or type(endpoint.user_id) is not int or endpoint.user_id != user_id or
-                type(endpoint.channel) is not str or endpoint.channel not in {"android", "telegram"} or
+                type(endpoint.channel) is not str or endpoint.channel not in {"android", "telegram", "pwa"} or
+                (endpoint.channel == "pwa" and master_enabled is not True) or
                 (endpoint.channel == "android" and (not isinstance(endpoint.device_id, str) or
+                    not endpoint.device_id or endpoint.valid_until is None)) or
+                (endpoint.channel == "pwa" and (not isinstance(endpoint.device_id, str) or
                     not endpoint.device_id or endpoint.valid_until is None)) or
                 (endpoint.channel == "telegram" and endpoint.device_id is not None) or
                 (endpoint.valid_until is not None and _aware_utc(endpoint.valid_until) <= now)):
@@ -183,9 +188,19 @@ async def read_native_lesson_destinations(session, user_id, *, level, history_si
 
 
 class SmartReminderDestinationService:
-    def __init__(self, session, *, clock=None, study_reader=read_native_lesson_destinations):
+    def __init__(self, session, *, clock=None, study_reader=read_native_lesson_destinations,
+                 pwa_push_ready=None, telegram_ready=True):
         self.session, self.study_reader = session, study_reader
+        self.pwa_push_ready = pwa_push_ready
+        self.telegram_ready = telegram_ready is True
         self.clock = clock or (lambda: datetime.now(timezone.utc))
+
+    def _pwa_sender_ready(self):
+        if self.pwa_push_ready is not None:
+            return self.pwa_push_ready is True
+        from app.config import settings
+        from app.services.learner_pwa_push import sender_config
+        return sender_config(settings) is not None
 
     async def select(self, actor, *, job_id, history_since):
         since = _aware_utc(history_since)
@@ -237,7 +252,7 @@ class SmartReminderDestinationService:
                 until = min(until, _aware_utc(actor.access_expires_at))
             destinations = []
             telegram = pref["channels"]["telegram"]
-            if telegram["consent"] == "on" and telegram["transport_available"]:
+            if telegram["consent"] == "on" and telegram["transport_available"] and self.telegram_ready:
                 destinations.append(Destination(actor.user_id, "telegram", valid_until=until))
             for device in devices:
                 if _state([r for r in consents if r["channel"] == "android" and r["device_id"] == device["id"]],
@@ -246,6 +261,31 @@ class SmartReminderDestinationService:
                 active = [_utc(v) for v in (device["last_seen_at"], device["observed_at"]) if v is not None and _utc(v) <= now]
                 destinations.append(Destination(actor.user_id, "android", device["id"],
                     min(until, _utc(device["expires_at"]), _utc(device["session_until"])), max(active, default=None)))
+            if pref["master_enabled"] is True and self._pwa_sender_ready():
+                pwa_sessions = select(
+                    DesktopSession.device_id.label("device_id"),
+                    func.max(DesktopSession.expires_at).label("session_until"),
+                ).where(
+                    DesktopSession.revoked_at.is_(None), DesktopSession.expires_at > now,
+                    DesktopSession.device_id.in_(select(DesktopDevice.id).where(
+                        DesktopDevice.user_id == actor.user_id, DesktopDevice.platform == "pwa",
+                        DesktopDevice.revoked_at.is_(None))),
+                ).group_by(DesktopSession.device_id).subquery()
+                pwa_rows = (await self.session.execute(select(
+                    DesktopDevice.id, DesktopDevice.last_seen_at,
+                    pwa_sessions.c.session_until,
+                ).join(LearnerPwaPushSubscription,
+                    LearnerPwaPushSubscription.device_id == DesktopDevice.id
+                ).join(pwa_sessions, pwa_sessions.c.device_id == DesktopDevice.id).where(
+                    DesktopDevice.user_id == actor.user_id, DesktopDevice.platform == "pwa",
+                    DesktopDevice.revoked_at.is_(None), LearnerPwaPushSubscription.revoked_at.is_(None),
+                ).order_by(DesktopDevice.last_seen_at.desc(), DesktopDevice.id).limit(5))).mappings().all()
+                if len(pwa_rows) > 4:
+                    return refused("destination_inventory_over_limit")
+                for device in pwa_rows:
+                    active = _utc(device["last_seen_at"]) if device["last_seen_at"] is not None else None
+                    destinations.append(Destination(actor.user_id, "pwa", device["id"],
+                        min(until, _utc(device["session_until"])), active))
             permitted = [d for d in destinations if pref["channel_mode"] != "manual_locked" or d.channel == pref["preferred_channel"]]
             evidence = (await self.study_reader(self.session, actor.user_id, level=job["course_key"],
                 history_since=since, observed_at=now) if len(permitted) > 1 else DestinationEvidence())

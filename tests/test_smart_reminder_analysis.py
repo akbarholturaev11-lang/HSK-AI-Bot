@@ -66,6 +66,10 @@ spec_baseline_outcomes = importlib.util.spec_from_file_location("analysis_0145",
     "alembic/versions/0145_smart_baseline_outcomes.py")
 baseline_outcomes_migration = importlib.util.module_from_spec(spec_baseline_outcomes)
 spec_baseline_outcomes.loader.exec_module(baseline_outcomes_migration)
+spec_pwa_analysis = importlib.util.spec_from_file_location("analysis_0149", Path(__file__).resolve().parents[1] /
+    "alembic/versions/0149_smart_pwa_analysis_channel.py")
+pwa_analysis_migration = importlib.util.module_from_spec(spec_pwa_analysis)
+spec_pwa_analysis.loader.exec_module(pwa_analysis_migration)
 from app.db.models.smart_reminder_analysis import SmartReminderBaselineMember, SmartReminderBaselineTotal
 BASELINE_MEMBER, BASELINE_TOTAL = SmartReminderBaselineMember.__table__, SmartReminderBaselineTotal.__table__
 
@@ -109,7 +113,9 @@ class AnalysisChecks:
                 return_migration.upgrade()
                 baseline_migration.upgrade()
                 baseline_outcomes_migration.upgrade()
+                pwa_analysis_migration.upgrade()
             else:
+                pwa_analysis_migration.downgrade()
                 baseline_outcomes_migration.downgrade()
                 baseline_migration.downgrade()
                 return_migration.downgrade()
@@ -308,6 +314,38 @@ class AnalysisChecks:
             async with self.engine.begin() as connection:
                 await connection.run_sync(self.migrate, "downgrade")
 
+    async def test_pwa_provider_acceptance_is_analyzed_once_and_blocks_evidence_downgrade(self):
+        device_id, attempt_id = "pwa-analysis-device", str(uuid4())
+        async with self.sessions.begin() as session:
+            session.add(android.DesktopDevice(id=device_id, user_id=1, platform="pwa",
+                installation_key_hash="p" * 64, app_version="synthetic"))
+            await session.flush()
+            await session.execute(update(JOB).where(JOB.c.id == self.case.job_id).values(
+                state="provider_accepted", policy_version="smart-pwa-v1",
+                selected_channel="pwa", selected_device_id=device_id, updated_at=self.moment))
+            await session.execute(insert(ATTEMPT).values(
+                id=attempt_id, job_id=self.case.job_id, attempt_key="p" * 64,
+                channel="pwa", device_id=device_id, grant_epoch=1,
+                state="provider_accepted", prepared_at=self.moment-timedelta(seconds=2),
+                started_at=self.moment-timedelta(seconds=1), resolved_at=self.moment,
+                expires_at=self.moment+timedelta(minutes=5), reason_code="pwa_provider_accepted"))
+
+        self.assertEqual(await self.capture(), 3)
+        self.assertEqual(await self.capture(), 0)
+        events = await self.rows(EVENT)
+        monthly = await self.rows(MONTHLY)
+        self.assertEqual({row["channel"] for row in events}, {"pwa"})
+        self.assertIn("provider_accepted", {row["stage"] for row in events})
+        self.assertEqual({row["channel"] for row in monthly}, {"pwa"})
+
+        with self.assertRaisesRegex(RuntimeError, "Refusing Smart PWA analysis downgrade"):
+            async with self.engine.begin() as connection:
+                def downgrade_pwa_analysis(sync_connection):
+                    with Operations.context(MigrationContext.configure(sync_connection)):
+                        pwa_analysis_migration.downgrade()
+                await connection.run_sync(downgrade_pwa_analysis)
+        self.assertEqual(len(await self.rows(EVENT)), 3)
+
     async def test_shadow_stage_upgrade_preserves_populated_delivery_analysis(self):
         grant = await self.case.claim()
         await self.case.receipt(grant)
@@ -315,6 +353,7 @@ class AnalysisChecks:
         before = [await self.rows(table) for table in (EVENT, MONTHLY, JOB, ATTEMPT, GRANT)]
         def roundtrip(connection):
             with Operations.context(MigrationContext.configure(connection)):
+                pwa_analysis_migration.downgrade()
                 baseline_outcomes_migration.downgrade()
                 baseline_migration.downgrade()
                 return_migration.downgrade()
@@ -331,6 +370,7 @@ class AnalysisChecks:
                 return_migration.upgrade()
                 baseline_migration.upgrade()
                 baseline_outcomes_migration.upgrade()
+                pwa_analysis_migration.upgrade()
             return compare_metadata(MigrationContext.configure(connection), Base.metadata)
         async with self.engine.begin() as connection:
             self.assertEqual(await connection.run_sync(roundtrip), [])

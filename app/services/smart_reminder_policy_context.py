@@ -569,6 +569,15 @@ class SmartReminderPolicyContextService:
             if (actor.kind == "android" and android["this_device_consent"] == "on" and
                     android["study_os_permission"] == "allowed"):
                 channels.append("android")
+            # The existing account-level Smart opt-in and the independently
+            # user-enabled, live PWA Push endpoint are both required. A generic
+            # PWA subscription alone never grants Smart study consent.
+            if pref["master_enabled"] is True:
+                from app.config import settings
+                from app.services.learner_pwa_push import active_subscriptions, sender_config
+                if (sender_config(settings) is not None and
+                        await active_subscriptions(self.session, uid, now=now, limit=1)):
+                    channels.append("pwa")
             context = PolicyContext(
                 observed_at=now, level=level, progress_level=progress_level,
                 expected_level=content_level(expected_level, default=""), completed_parts=completed,

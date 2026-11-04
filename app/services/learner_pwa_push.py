@@ -28,9 +28,6 @@ from app.db.models.desktop import DesktopDevice, DesktopSession
 from app.db.models.learner_pwa_push import LearnerPwaPushOutbox, LearnerPwaPushSubscription
 from app.db.models.user import User
 from app.db.models.payment import Payment
-from app.db.models.smart_reminder import (
-    SmartReminderAttempt, SmartReminderConsent, SmartReminderJob, SmartReminderPreference,
-)
 from app.services.user_access_state_service import UserAccessState, UserAccessStateService
 from app.services.webpush_transport import send_webpush
 
@@ -341,62 +338,8 @@ def _http_status(exception):
 
 
 async def _smart_study_event_allowed(session, notification) -> bool:
-    """Recheck the original Smart channel consent before mirroring to PWA."""
-    source = notification.source
-    if source not in {"smart_telegram", "smart_android"}:
-        return False
-    dedupe = str(notification.dedupe_key or "")
-    if not dedupe.startswith("job:"):
-        return False
-    job_id = dedupe[4:]
-    if not re.fullmatch(r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", job_id):
-        return False
-    channel = "telegram" if source == "smart_telegram" else "android"
-    job = await session.get(SmartReminderJob, job_id)
-    if (job is None or job.user_id != notification.user_id or job.selected_channel != channel
-            or job.state != ("provider_accepted" if channel == "telegram" else "unknown")):
-        return False
-    if channel == "android" and (not job.selected_device_id):
-        return False
-    attempts = (await session.scalars(select(SmartReminderAttempt).where(
-        SmartReminderAttempt.job_id == job_id,
-        SmartReminderAttempt.channel == channel,
-        SmartReminderAttempt.device_id == (job.selected_device_id if channel == "android" else None),
-    ))).all()
-    expected_attempt_state = "provider_accepted" if channel == "telegram" else "client_posted_unverified"
-    if len(attempts) != 1 or attempts[0].state != expected_attempt_state:
-        return False
-
-    preference = await session.get(SmartReminderPreference, notification.user_id)
-    if (preference is None or preference.master_enabled is not True
-            or preference.grant_epoch != job.grant_epoch):
-        return False
-    if preference.channel_mode == "manual_locked" and preference.preferred_channel != channel:
-        return False
-
-    # Match the existing Smart preference reader's conservative consent rule:
-    # an explicit current endpoint consent must be ON, any OFF wins, and an
-    # unrelated non-legacy consent makes ownership ambiguous and fails closed.
-    consent_query = select(SmartReminderConsent).where(
-        SmartReminderConsent.user_id == notification.user_id,
-        SmartReminderConsent.channel == channel,
-    )
-    if channel == "telegram":
-        consent_query = consent_query.where(SmartReminderConsent.device_id.is_(None))
-        source_key = "intent:telegram"
-    else:
-        consent_query = consent_query.where(SmartReminderConsent.device_id == job.selected_device_id)
-        source_key = "intent:android:" + str(job.selected_device_id)
-    consents = (await session.scalars(consent_query)).all()
-    intents = [item for item in consents if item.source_key == source_key and item.source == "user_intent"]
-    other = [item for item in consents if item not in intents and not str(item.source).startswith("legacy_")]
-    if any(item.state == "off" for item in other) or other:
-        return False
-    effective = intents or consents
-    return bool(effective) and all(
-        item.state == "on" and item.revision <= job.preference_revision
-        for item in effective
-    )
+    """Smart reminders use their selected adapter and never generic fanout."""
+    return False
 
 
 async def _event_exists(session, row) -> bool:

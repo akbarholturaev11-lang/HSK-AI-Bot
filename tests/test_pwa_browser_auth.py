@@ -370,8 +370,8 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             self.assertNotIn("user-scalable=no", html)
             self.assertNotIn("maximum-scale=1", html)
 
-    def test_pwa_stays_unsupported_as_smart_reminder_destination(self):
-        """An in-app inbox is not a Smart/Web Push delivery capability."""
+    def test_pwa_smart_destination_requires_existing_opt_in_and_push_capability(self):
+        """An inbox alone is not Smart consent; an active PWA device may be selected."""
         from app.services.smart_reminder_destination import (
             Destination, DestinationEvidence, choose_destination,
         )
@@ -388,8 +388,33 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertIsNone(unsupported.channel)
         self.assertFalse(unsupported.dispatch_allowed)
 
-        # Even when a valid native endpoint exists, an added PWA candidate
-        # cannot supersede Android or grant posting authority from this chooser.
+        pwa = Destination(7, "pwa", device_id="pwa-device-7",
+            valid_until=now + timedelta(hours=1))
+        for existing_smart_opt_in in (None, False):
+            refused = choose_destination(
+                user_id=7,
+                destinations=[pwa],
+                evidence=DestinationEvidence(),
+                observed_at=now,
+                history_since=now - timedelta(days=7),
+                master_enabled=existing_smart_opt_in,
+            )
+            self.assertEqual(refused.reason,
+                "master_off" if existing_smart_opt_in is False else "no_eligible_destination")
+            self.assertIsNone(refused.channel)
+
+        selected = choose_destination(
+            user_id=7,
+            destinations=[pwa],
+            evidence=DestinationEvidence(),
+            observed_at=now,
+            history_since=now - timedelta(days=7),
+            master_enabled=True,
+        )
+        self.assertEqual((selected.channel, selected.device_id), ("pwa", "pwa-device-7"))
+        self.assertFalse(selected.dispatch_allowed)
+
+        # A current Android-only manual lock still excludes PWA.
         eligible = choose_destination(
             user_id=7,
             destinations=[
@@ -402,6 +427,9 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             evidence=DestinationEvidence(),
             observed_at=now,
             history_since=now - timedelta(days=7),
+            master_enabled=True,
+            channel_mode="manual_locked",
+            preferred_channel="android",
         )
         self.assertEqual(eligible.channel, "android")
         self.assertFalse(eligible.dispatch_allowed)
@@ -4175,7 +4203,7 @@ const settle = () => new Promise(resolve => setImmediate(resolve));
             subscription_row = (await db.scalars(select(LearnerPwaPushSubscription))).one()
             self.assertIsNotNone(subscription_row.revoked_at)
 
-    async def test_smart_reminder_push_requires_original_consent_and_accepted_terminal_event(self):
+    async def test_accepted_telegram_smart_reminder_is_not_mirrored_to_pwa(self):
         from app.services.learner_pwa_push import _smart_study_event_allowed
 
         now = datetime.now(timezone.utc)
@@ -4215,7 +4243,7 @@ const settle = () => new Promise(resolve => setImmediate(resolve));
                 resolved_at=now, expires_at=now+timedelta(hours=1), reason_code="accepted",
             ))
             await db.flush()
-            self.assertTrue(await _smart_study_event_allowed(db, notice))
+            self.assertFalse(await _smart_study_event_allowed(db, notice))
 
             # Turning the original channel consent off suppresses a queued push.
             consent.state = "off"
@@ -4233,7 +4261,7 @@ const settle = () => new Promise(resolve => setImmediate(resolve));
             await db.flush()
             self.assertFalse(await _smart_study_event_allowed(db, notice))
 
-    async def test_android_smart_push_requires_the_selected_android_consent(self):
+    async def test_android_smart_reminder_is_not_mirrored_to_pwa(self):
         from app.services.learner_pwa_push import _smart_study_event_allowed
 
         now = datetime.now(timezone.utc)
@@ -4279,7 +4307,7 @@ const settle = () => new Promise(resolve => setImmediate(resolve));
                 resolved_at=now, expires_at=now+timedelta(hours=1), reason_code="client_posted_unverified",
             ))
             await db.flush()
-            self.assertTrue(await _smart_study_event_allowed(db, notice))
+            self.assertFalse(await _smart_study_event_allowed(db, notice))
             consent.state = "off"
             consent.revision = 4
             await db.flush()

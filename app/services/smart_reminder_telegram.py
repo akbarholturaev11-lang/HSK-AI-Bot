@@ -511,6 +511,5 @@ class SmartReminderTelegramService:
                         key=KEY_SMART_STUDY, lang=content.language, text=content.text,
                         action="course", source="smart_telegram", level=job["course_key"],
                         lesson_order=job["lesson_order"], dedupe_key="job:"+job_id,
-                        params={"template_service": KEY_SMART_STUDY, "lesson": content.lesson_order},
-                        pwa_push_authorized=True)
+                        params={"template_service": KEY_SMART_STUDY, "lesson": content.lesson_order})
             return TelegramResult("telegram_"+state, job_id, state)

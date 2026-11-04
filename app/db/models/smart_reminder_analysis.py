@@ -24,7 +24,7 @@ class SmartReminderAnalysisEvent(Base):
     __tablename__ = "smart_reminder_analysis_events"
     __table_args__ = (
         CheckConstraint(STAGE_CHECK, name="stage"),
-        CheckConstraint("channel IN ('none', 'telegram', 'android')", name="channel"),
+        CheckConstraint("channel IN ('none', 'telegram', 'android', 'pwa')", name="channel"),
         CheckConstraint("length(event_key) = 64", name="event_key"),
         CheckConstraint("expires_at > occurred_at", name="expiry"),
         Index("ix_smart_analysis_expiry", "expires_at", "user_id", "event_key"),
@@ -44,7 +44,7 @@ class SmartReminderAnalysisMonthly(Base):
     __tablename__ = "smart_reminder_analysis_monthly"
     __table_args__ = (
         CheckConstraint(MONTHLY_CHECK, name="stage"),
-        CheckConstraint("channel IN ('none', 'telegram', 'android')", name="channel"),
+        CheckConstraint("channel IN ('none', 'telegram', 'android', 'pwa')", name="channel"),
         CheckConstraint("fact_count >= 0", name="fact_count"),
     )
     month: Mapped[date] = mapped_column(Date, primary_key=True)

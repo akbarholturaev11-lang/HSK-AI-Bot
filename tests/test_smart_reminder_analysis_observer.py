@@ -365,6 +365,8 @@ class LifespanObservationTests(unittest.IsolatedAsyncioTestCase):
             "settings": SimpleNamespace(SMART_REMINDER_SHADOW_ENABLED=False, SMART_REMINDER_ANALYSIS_ENABLED=enabled,
                 ADMIN_PWA_ENABLED=False, ADMIN_PWA_PUSH_ENABLED=False), "async_session_maker": Mock(),
             "SmartReminderAnalysisObserver": observer, "sender_config": lambda settings: None,
+            "learner_pwa_sender_config": lambda settings: None,
+            "dispatch_learner_pwa_push_batch": AsyncMock(return_value={"claimed": 0}),
             "_study_ai_tasks": set(), "admin_pwa_due_campaigns": SimpleNamespace(close=AsyncMock()),
             "engine": SimpleNamespace(dispose=AsyncMock())}
         for name in ("statistics", "analytics", "feedback"):

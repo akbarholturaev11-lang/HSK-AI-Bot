@@ -137,6 +137,7 @@ class HostTests(unittest.IsolatedAsyncioTestCase):
             bot=SimpleNamespace(session=SimpleNamespace(close=AsyncMock())),_background_scheduler=block,
             _desktop_auth_retention_scheduler=block,settings=settings,async_session_maker=sessions,
             registered_runtime=registered_runtime,build_rules_runtime=build_rules_runtime,SmartReminderShadowWorker=shadow,sender_config=lambda s:None,
+            learner_pwa_sender_config=lambda s:None,dispatch_learner_pwa_push_batch=AsyncMock(return_value={"claimed":0}),
             _study_ai_tasks=set(),admin_pwa_due_campaigns=SimpleNamespace(close=AsyncMock()),
             engine=SimpleNamespace(dispose=AsyncMock()))
         for name in ('statistics','analytics','feedback'):

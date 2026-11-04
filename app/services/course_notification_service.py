@@ -281,7 +281,6 @@ class CourseNotificationService:
         lesson_order: int | None = None,
         dedupe_key: str | None = None,
         params: dict[str, Any] | None = None,
-        pwa_push_authorized: bool = False,
         pwa_push_suppressed: bool = False,
     ) -> bool:
         key = str(key or "").strip()[:64]
@@ -324,8 +323,7 @@ class CourseNotificationService:
                 not pwa_push_suppressed
                 and getattr(settings, "PWA_AUTH_ENABLED", False) is True
                 and getattr(settings, "PWA_PUSH_ENABLED", False) is True
-                and (row.key != KEY_SMART_STUDY or pwa_push_authorized
-                     and row.source in {"smart_telegram", "smart_android"})
+                and row.key != KEY_SMART_STUDY
                 and type(row.user_id) is int
             ):
                 try:
@@ -354,7 +352,6 @@ class CourseNotificationService:
         lesson_order: int | None = None,
         dedupe_key: str | None = None,
         params: dict[str, Any] | None = None,
-        pwa_push_authorized: bool = False,
         pwa_push_suppressed: bool = False,
     ) -> bool:
         title, body = notification_copy(key, lang, text)
@@ -370,6 +367,5 @@ class CourseNotificationService:
             lesson_order=lesson_order,
             dedupe_key=dedupe_key,
             params=params,
-            pwa_push_authorized=pwa_push_authorized,
             pwa_push_suppressed=pwa_push_suppressed,
         )

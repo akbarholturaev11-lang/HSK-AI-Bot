@@ -144,8 +144,8 @@ class SmartReminderJob(Base):
         CheckConstraint("state IN ('shadow', 'pending', 'claimed', 'provider_accepted', 'unknown', 'cancelled', 'expired', 'completed')", name="state"),
         CheckConstraint("grant_epoch >= 0 AND preference_revision >= 0", name="versions"),
         CheckConstraint("day_start_utc <= scheduled_at AND scheduled_at < expires_at AND expires_at <= day_end_utc", name="day_window"),
-        CheckConstraint("selected_channel IS NULL OR selected_channel IN ('telegram', 'android')", name="channel"),
-        CheckConstraint("selected_device_id IS NULL OR (selected_channel IS NOT NULL AND selected_channel = 'android')", name="device_channel"),
+        CheckConstraint("selected_channel IS NULL OR selected_channel IN ('telegram', 'android', 'pwa')", name="channel"),
+        CheckConstraint("selected_device_id IS NULL OR (selected_channel IS NOT NULL AND selected_channel IN ('android', 'pwa'))", name="device_channel"),
         CheckConstraint("lesson_order IS NULL OR lesson_order >= 1", name="lesson_order"),
         CheckConstraint("(lease_token IS NULL AND lease_expires_at IS NULL) OR (lease_token IS NOT NULL AND lease_expires_at IS NOT NULL)", name="lease_pair"),
         Index("ix_smart_job_due", "state", "scheduled_at", "expires_at", "id"),
@@ -181,11 +181,11 @@ class SmartReminderAttempt(Base):
     __tablename__ = "smart_reminder_attempts"
     __table_args__ = (
         UniqueConstraint("attempt_key", name="uq_smart_attempt_key"),
-        CheckConstraint("channel IN ('telegram', 'android')", name="channel"),
+        CheckConstraint("channel IN ('telegram', 'android', 'pwa')", name="channel"),
         CheckConstraint("state IN ('prepared', 'in_flight', 'provider_accepted', 'client_posted_unverified', 'verified_shown', 'confirmed_not_displayed', 'definite_failure', 'unknown', 'cancelled')", name="state"),
         CheckConstraint("grant_epoch >= 0", name="epoch"),
         CheckConstraint("expires_at > prepared_at", name="expiry"),
-        CheckConstraint("device_id IS NULL OR channel = 'android'", name="device_channel"),
+        CheckConstraint("device_id IS NULL OR channel IN ('android', 'pwa')", name="device_channel"),
         Index("ix_smart_attempt_job", "job_id"),
         Index("ix_smart_attempt_device", "device_id"),
     )

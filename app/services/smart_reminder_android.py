@@ -440,7 +440,6 @@ class SmartReminderAndroidService:
                                     action="course", source="smart_android", level=row["course_key"],
                                     lesson_order=row["lesson_order"], dedupe_key="job:" + job_id,
                                     params={"template_service": KEY_SMART_STUDY, "lesson": row["lesson_order"]},
-                                    pwa_push_authorized=True,
                                 )
                         except Exception:  # noqa: BLE001 - optional PWA Push must not reject an Android receipt
                             logger.warning("Learner PWA Smart push enqueue unavailable")
