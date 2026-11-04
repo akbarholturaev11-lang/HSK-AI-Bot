@@ -148,6 +148,35 @@ html.hsk-pwa-browser #paywall .si {
 }
 @media(prefers-reduced-motion:reduce){#hsk-pwa-notice-root *{animation:none!important;transition:none!important}}
 
+/* Keep the original Mini App dialog flow, but display iPhone Settings as
+   a dedicated full-screen page. Nested pickers revert to normal sheets. */
+html.hsk-pwa-browser #sheet.pwa-settings-page {
+  inset:0;
+  padding:0;
+  align-items:stretch;
+  justify-content:stretch;
+  background:var(--hsk-paper);
+}
+html.hsk-pwa-browser #sheet.pwa-settings-page .ov {display:none}
+html.hsk-pwa-browser #sheet.pwa-settings-page .si {
+  width:100%;
+  max-width:none;
+  height:100dvh;
+  min-height:100dvh;
+  max-height:none;
+  border:0;
+  border-radius:0;
+  padding:calc(16px + env(safe-area-inset-top,0px)) 18px
+    calc(20px + env(safe-area-inset-bottom,0px));
+  background:var(--hsk-paper);
+  box-shadow:none;
+  overscroll-behavior:contain;
+}
+html.hsk-pwa-browser #sheet.pwa-settings-page .grip {display:none}
+html.hsk-pwa-browser #sheet.pwa-settings-page #sheet-body {
+  padding-top:8px;
+}
+
 /* A real full-height Inbox page, not a floating card. Urgent payment and
    explicit push-permission prompts remain separate dialog modes. */
 #hsk-pwa-notice-root[data-mode="inbox"] {
