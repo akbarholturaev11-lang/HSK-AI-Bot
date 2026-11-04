@@ -442,7 +442,7 @@
       }
       // OS permission cannot be inferred from stored settings. On next
       // browser session, the learner may need to re-enable explicitly.
-      if (previouslyGranted && !permitted && desired && !onCourse) {
+      if (previouslyGranted && !permitted && desired) {
         // A new HTML document can reuse only a browser-remembered OS grant.
         // Observe delivered events; never call requestPermission without a tap.
         var probe = function (event) {
