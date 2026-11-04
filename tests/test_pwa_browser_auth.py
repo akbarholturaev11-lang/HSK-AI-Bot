@@ -3384,7 +3384,12 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         for url in paths:
             with self.subTest(enabled=url):
                 result = await self.client.get(url, follow_redirects=False)
-                self.assertEqual(result.status_code, 200, (url, result.text[:160]))
+                self.assertEqual(
+                    result.status_code, 303 if url == "/iphone-pwa" else 200,
+                    (url, result.text[:160]),
+                )
+                if url == "/iphone-pwa":
+                    self.assertEqual(result.headers["location"], "/iphone-pwa/course")
 
         self.settings.PWA_AUTH_ENABLED = False
         for url in (session_url, *paths, "/api/v3/pwa/notifications"):
