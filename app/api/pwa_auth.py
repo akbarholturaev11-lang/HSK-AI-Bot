@@ -800,6 +800,27 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
         except (TypeError, ValueError):
             return _error(PwaAuthError("pwa_request_invalid", status_code=422))
 
+    @router.get("/api/v3/pwa/profile")
+    async def pwa_profile(request: Request):
+        """Account-owned profile analytics without a Telegram client identity."""
+        from app.services.study_miniapp_service import StudyMiniAppService
+
+        try:
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                )
+                result = await StudyMiniAppService(db).get_profile_payload(actor)
+                if result.get("ok"):
+                    # Provider usernames are not PWA profile identities.
+                    if isinstance(result.get("user"), dict):
+                        result["user"].pop("telegram_username", None)
+                    await db.commit()
+            return JSONResponse(result, status_code=200 if result.get("ok") else 404,
+                                headers=_NO_STORE)
+        except PwaAuthError as exc:
+            return _error(exc)
+
     @router.post("/api/v3/pwa/preferences")
     async def pwa_save_preferences(request: Request):
         """Save canonical course preferences for the verified browser learner.
