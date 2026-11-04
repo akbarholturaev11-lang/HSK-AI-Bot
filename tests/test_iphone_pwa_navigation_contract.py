@@ -99,6 +99,15 @@ class IphonePwaNavigationContractTests(unittest.TestCase):
         self.assertIn("_retryCourseMap(lv,tries,signal)", loader)
         self.assertIn("signal&&signal.aborted?{cancelled:true}", loader)
 
+    def test_pwa_does_not_render_hidden_profile_carousel_on_map_refresh(self):
+        render = COURSE.split("function renderAll(){", 1)[1].split("navInit();", 1)[0]
+        self.assertIn('if(!PWA_COURSE_HOST||SCREEN==="profile")renderProfile()', render)
+        # The Profile tab still owns and refreshes its complete UI on entry.
+        show = COURSE.split('show:function(s,ratingSource){', 1)[1].split('openSheet:function', 1)[0]
+        self.assertIn('if(s==="profile"){', show)
+        self.assertIn('renderProfile();', show)
+        self.assertIn('loadProfileDetail();', show)
+
     def test_course_tab_paints_before_expensive_trails(self):
         open_course = COURSE.split('if(s==="course"){', 1)[1].split(
             'if(s==="course"&&previous!=="course")', 1
