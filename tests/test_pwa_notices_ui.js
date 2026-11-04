@@ -8,7 +8,7 @@ const vm = require("node:vm");
 const source = fs.readFileSync("app/static/course_v3_data/iphone-pwa-notices.js", "utf8");
 const shell = fs.readFileSync("app/static/course-v3.html", "utf8");
 const css = fs.readFileSync("app/static/course_v3_data/iphone-pwa-glass.css", "utf8");
-assert(shell.includes('src="/course_v3_data/iphone-pwa-notices.js?v=20261104-0a68a6704a78"'));
+assert(shell.includes('src="/course_v3_data/iphone-pwa-notices.js?v=20261105-0022e1e89b2f"'));
 assert(shell.includes('href="/course_v3_data/iphone-pwa-glass.css?v=20261105-5421046cea3a'));
 assert(shell.includes('PWA_COURSE_HOST?\'<button class="pwa-notices-button"'));
 assert(shell.includes('pwaPushSettingsRowHtml()'));
