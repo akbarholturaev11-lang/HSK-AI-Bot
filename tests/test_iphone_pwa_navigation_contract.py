@@ -84,9 +84,20 @@ class IphonePwaNavigationContractTests(unittest.TestCase):
         )[0]
         self.assertIn("var PWA_LEVEL_REQUEST_SEQ=0;", COURSE)
         self.assertIn("++PWA_LEVEL_REQUEST_SEQ", logic)
+        self.assertIn("PWA_LEVEL_ABORT.abort()", logic)
+        self.assertIn("loadCourseMap(lv,0,reqSignal)", logic)
         self.assertIn("requestId!==PWA_LEVEL_REQUEST_SEQ", logic)
         self.assertGreaterEqual(logic.count("requestId!==PWA_LEVEL_REQUEST_SEQ"), 2)
         self.assertIn("setSelectedLevel(MAP.level||lv)", logic)
+
+    def test_cancelled_hsk_map_request_is_not_retried(self):
+        loader = COURSE.split("function loadCourseMap(lv,tries,signal)", 1)[1].split(
+            "var PWA_LEVEL_REQUEST_SEQ=", 1
+        )[0]
+        self.assertIn("signal&&signal.aborted", loader)
+        self.assertIn("_fetchCourseMap(lv,signal)", loader)
+        self.assertIn("_retryCourseMap(lv,tries,signal)", loader)
+        self.assertIn("signal&&signal.aborted?{cancelled:true}", loader)
 
     def test_course_tab_paints_before_expensive_trails(self):
         open_course = COURSE.split('if(s==="course"){', 1)[1].split(
