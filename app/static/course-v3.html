@@ -1631,7 +1631,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 <link rel="stylesheet" href="/course_v3_data/iphone-pwa-shake-report.css?v=20261105-83778161c05b">
 <link href="/course_v3_data/desktop-download.css?v=20261003-1" rel="stylesheet">
 <link href="/course_v3_data/profile-carousel.css?v=20261017-link-cards-1" rel="stylesheet">
-<link href="/course_v3_data/rating-podium.css?v=20261014-2" rel="stylesheet">
+<link href="/course_v3_data/rating-podium.css?v=20261105-1" rel="stylesheet">
 <link rel="stylesheet" href="/assets/characters/hsk-scene-background.css?v=20261009-preparing-compact-1">
 </head>
 <body class="hsk-scene-page">
@@ -3180,7 +3180,7 @@ var App={
     });
   },
   closeChest:function(){var ov=$("#levelup");ov.classList.remove("on");ov.classList.remove("cine");var c=$("#lu-cine");if(c)c.innerHTML="";renderAll()},
-  runTour:function(){var t=(window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.course_v3.t.copy1",{
+  runTour:function(){try{localStorage.setItem("hsk_v3_tour","1")}catch(e){}var t=(window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.course_v3.t.copy1",{
     ru:{
       c:"Вот ваш курс! Каждый кружок — это урок. Нажми на узел и начни учиться.",
       cNode:"Это твой текущий урок — нажми и начни! Внутри урока появится кнопка ✏️ — нажми, чтобы увидеть как пишется иероглиф.",
@@ -9639,10 +9639,23 @@ var NavBack={
     if(SCREEN!=="course"){var e=$("#s-"+SCREEN);if(e&&e.classList.contains("on"))return e}
     return null;
   },
+  ownsHorizontalSwipe:function(node){
+    try{
+      for(var el=node&&node.nodeType===1?node:node&&node.parentElement;el&&el!==document.body;el=el.parentElement){
+        if(el.hasAttribute&&el.hasAttribute("data-nb-ignore"))return true;
+        if(el.classList&&(el.classList.contains("hp-promo-track")||el.classList.contains("rating-podium")))return true;
+        if(el.scrollWidth>el.clientWidth+4){var ox=getComputedStyle(el).overflowX;if(ox==="auto"||ox==="scroll")return true}
+      }
+    }catch(e){}
+    return false;
+  },
   start:function(ev){
     if(NavBack._s||ev.touches.length!==1)return;
     var t=ev.touches[0];
     if(!PWA_COURSE_HOST&&t.clientX>NavBack.EDGE)return;
+    /* Horizontal widgets (profile promo carousel, rating cups, scrollers) own
+       their swipes; they must never drag the whole screen back. */
+    if(PWA_COURSE_HOST&&NavBack.ownsHorizontalSwipe(ev.target))return;
     if(!NavBack.canGoBack())return;
     var el=NavBack.target();if(!el)return;
     var width=window.innerWidth||360;
