@@ -474,6 +474,35 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(returning.headers["cache-control"], "no-store")
         self.assertNotIn("Xush kelibsiz", returning.text)
 
+    async def test_browser_settings_goal_requires_verified_actor_and_csrf(self):
+        path = "/api/v3/pwa/preferences"
+        anonymous = await self.client.post(
+            path, headers={"Origin": ORIGIN}, json={"daily_goal_xp": 40},
+        )
+        self.assertEqual(anonymous.status_code, 401, anonymous.text)
+        state = await self.begin()
+        await self.callback(state)
+        csrf = (await self.client.get("/api/v3/pwa-auth/session")).json()["csrf"]
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf}
+
+        forged = await self.client.post(
+            path, headers={**headers, "X-Telegram-Init-Data": "forged"},
+            json={"daily_goal_xp": 40},
+        )
+        self.assertEqual(forged.status_code, 422, forged.text)
+        wrong_csrf = await self.client.post(
+            path, headers={"Origin": ORIGIN, "X-HSK-PWA-CSRF": "invalid"},
+            json={"daily_goal_xp": 40},
+        )
+        self.assertEqual(wrong_csrf.status_code, 403, wrong_csrf.text)
+        invalid = await self.client.post(path, headers=headers, json={"daily_goal_xp": 900})
+        self.assertEqual(invalid.status_code, 422, invalid.text)
+        valid = await self.client.post(path, headers=headers, json={"daily_goal_xp": 40})
+        self.assertEqual(valid.status_code, 200, valid.text)
+        self.assertTrue(valid.json()["ok"])
+        self.assertEqual(valid.json()["profile"]["daily_goal_xp"], 40)
+        self.assertEqual(valid.headers["cache-control"], "no-store")
+
     async def test_shared_course_entry_needs_valid_pwa_session_and_flag(self):
         path = "/iphone-pwa/course"
         anonymous = await self.client.get(path, follow_redirects=False)
