@@ -167,6 +167,28 @@ def test_browser_qa_profiler_collects_only_coarse_tab_timing():
         browser.close()
 
 
+
+def test_iphone_share_uses_public_referral_link_not_telegram_identity():
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page(viewport={"width": 390, "height": 844})
+        bootstrap(page)
+        page.evaluate("""() => {
+          window.App.openSheet = html => {window.__inviteHtml = html;};
+        }""")
+        page.add_script_tag(content=asset("course_v3_data/iphone-pwa-invite.js"))
+        page.evaluate("""() => window.HskPwaInvite.open({
+          link: 'https://hskai.app/apps?ref=abcd1234&mode=trial',
+          joined_count: 3, active_count: 1, required: 5
+        })""")
+        html = page.evaluate("window.__inviteHtml")
+        assert "hskai.app/apps?ref=abcd1234" in html
+        assert "Telegram" not in html
+        assert "telegram_id" not in html
+        assert "window.HskPwaInvite.share()" in html
+        browser.close()
+
+
 def test_pwa_read_only_avatar_has_no_telegram_edit_affordance():
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch()
