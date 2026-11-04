@@ -26,11 +26,11 @@
     if (ready) return;
     ready = true;
     overlay.hidden = true;
-    overlay.remove();
     document.documentElement.classList.remove("hsk-pwa-practice-loading");
   }
   function show() {
-    if (ready) return;
+    ready = false;
+    overlay.hidden = false;
     document.documentElement.classList.add("hsk-pwa-practice-loading");
     update();
   }
