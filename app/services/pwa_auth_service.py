@@ -334,7 +334,7 @@ class PwaAuthService:
         Telegram-signed and native bearer transports do not use this method.
         """
         user, session = await self.actor(cookie)
-        if not isinstance(csrf, str) or not hmac.compare_digest(
+        if not isinstance(csrf, str) or not csrf.isascii() or not hmac.compare_digest(
             self.csrf(cookie), csrf
         ):
             raise PwaAuthError("pwa_csrf_invalid", status_code=403)

@@ -156,6 +156,81 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
                 params={"state": state, "code": "auth-code"},
             )
 
+    async def test_pwa_course_goal_is_saved_to_verified_canonical_profile(self):
+        from app.db.models.course_miniapp_profile import CourseMiniAppProfile
+
+        path = "/api/v3/pwa/preferences"
+        payload = {"daily_goal_xp": 80}
+        response = await self.client.post(path, headers={"Origin": ORIGIN}, json=payload)
+        self.assertEqual(response.status_code, 401)
+        await self.callback(await self.begin())
+        actor = (await self.client.get("/api/v3/pwa-auth/session")).json()
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": actor["csrf"]}
+        response = await self.client.post(path, headers={"Origin": ORIGIN}, json=payload)
+        self.assertEqual(response.status_code, 403)
+        response = await self.client.post(path, headers={**headers, "Origin": "https://other.test"}, json=payload)
+        self.assertEqual(response.status_code, 403)
+        for invalid in ({"daily_goal_xp": 501}, {**payload, "user_id": 2}, {**payload, "initData": ""}):
+            response = await self.client.post(path, headers=headers, json=invalid)
+            self.assertEqual(response.status_code, 422, response.text)
+        response = await self.client.post(path, headers=headers, json=payload)
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertEqual(response.json()["profile"]["daily_goal_xp"], 80)
+        async with self.sessions() as db:
+            profile = (await db.scalars(select(CourseMiniAppProfile))).one()
+            self.assertEqual(profile.user_id, actor["user_id"])
+            self.assertEqual(profile.daily_goal_xp, 80)
+
+    async def test_home_screen_entry_skips_login_only_for_verified_browser(self):
+        self.assertEqual((await self.client.get("/iphone-pwa")).status_code, 200)
+        self.client.cookies.set(PWA_SESSION_COOKIE, "unverified-browser-cookie" * 3)
+        self.assertEqual((await self.client.get("/iphone-pwa")).status_code, 200)
+        self.client.cookies.clear()
+        state = await self.begin()
+        await self.callback(state)
+        response = await self.client.get("/iphone-pwa", follow_redirects=False)
+        self.assertEqual(response.status_code, 303)
+        self.assertEqual(response.headers["location"], "/iphone-pwa/course")
+        self.assertIn("no-store", response.headers["cache-control"])
+
+    async def test_only_authenticated_embedded_checkout_allows_same_origin_frame(self):
+        path = "/iphone-pwa/checkout"
+        response = await self.client.get(path, params={"embedded": "1"}, follow_redirects=False)
+        self.assertEqual(response.status_code, 303)
+        self.assertEqual(response.headers["location"], "/iphone-pwa")
+        state = await self.begin()
+        await self.callback(state)
+        for embedded, frame_options, ancestors in (
+            ("0", "DENY", "frame-ancestors 'none'"),
+            ("1", "SAMEORIGIN", "frame-ancestors 'self'"),
+        ):
+            response = await self.client.get(path, params={"embedded": embedded})
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.headers["x-frame-options"], frame_options)
+            self.assertEqual(response.headers["content-security-policy"], ancestors)
+            self.assertIn("no-store", response.headers["cache-control"])
+
+    async def test_practice_frames_require_verified_actor_and_allow_only_same_origin(self):
+        for feature in ("recognition", "pronunciation", "memorize", "test", "mistakes"):
+            response = await self.client.get(f"/iphone-pwa/practice/{feature}?embedded=1")
+            self.assertEqual(response.status_code, 303)
+            self.assertEqual(response.headers["location"], "/iphone-pwa")
+        state = await self.begin()
+        await self.callback(state)
+        for feature in ("recognition", "pronunciation", "memorize", "test", "mistakes"):
+            with self.subTest(feature=feature):
+                path = f"/iphone-pwa/practice/{feature}"
+                for query, frame_options, ancestors in (
+                    ("", "DENY", "frame-ancestors 'none'"),
+                    ("?embedded=1", "SAMEORIGIN", "frame-ancestors 'self'"),
+                    ("?embedded=1&embedded=1", "DENY", "frame-ancestors 'none'"),
+                ):
+                    response = await self.client.get(path + query)
+                    self.assertEqual(response.status_code, 200)
+                    self.assertEqual(response.headers["x-frame-options"], frame_options)
+                    self.assertEqual(response.headers["content-security-policy"], ancestors)
+                    self.assertEqual(response.headers["cache-control"], "no-store")
+
     async def test_pwa_limits_reuses_canonical_user_and_rejects_forged_requests(self):
         path = "/api/v3/pwa/limits/status"
         self.assertEqual((await self.client.post(
@@ -2413,6 +2488,134 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             start_url, headers=headers, json=start_data,
         )).status_code, 503)
 
+    async def test_pwa_live_voice_requires_origin_cookie_csrf_flag_and_session_owner(self):
+        import asyncio
+        from contextlib import asynccontextmanager
+
+        from app.api.android_live_voice import create_android_live_voice_router
+        from app.db.models.voice_practice_session import VoicePracticeSession
+        from app.services.pwa_auth_service import PwaAuthService
+
+        self.settings.ANDROID_VOICE_LIVE_ENABLED = True
+        self.settings.ANDROID_VOICE_LIVE_ALLOWED_USERS = "*"
+        self.settings.ANDROID_VOICE_LIVE_MODEL = "gemini-3.8-live"
+        self.settings.ANDROID_VOICE_LIVE_SESSION_BUDGET_USD = 0.15
+        self.settings.GEMINI_API_KEY = "fixture-only"
+        self.settings.PWA_VOICE_LIVE_ENABLED = False
+
+        own_id = "provider-only-live"
+        other_id = "another-learner-live"
+        async with self.sessions() as db:
+            owner = user(2, None)
+            db.add(owner)
+            await db.flush()
+            db.add_all([
+                VoicePracticeSession(
+                    id=own_id, user_id=owner.id, role="friend", level="hsk1",
+                    language="uz", voice="female", mode="turn",
+                ),
+                VoicePracticeSession(
+                    id=other_id, user_id=1, role="friend", level="hsk1",
+                    language="uz", voice="female", mode="live",
+                ),
+            ])
+            auth = PwaAuthService(db, self.settings)
+            cookie = await auth._mint_session(owner, SimpleNamespace(
+                installation_key_hash="a" * 64, bind_session_id=None,
+            ))
+            csrf = auth.csrf(cookie)
+        self.client.cookies.set(PWA_SESSION_COOKIE, cookie)
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf}
+        mode_path = "/api/v3/pwa/voice/session/mode"
+        mode_payload = {"session_id": own_id, "mode": "live"}
+        provider_sessions = []
+
+        class SilentProvider:
+            async def receive(self):
+                await asyncio.Event().wait()
+                yield
+
+        @asynccontextmanager
+        async def provider(settings_obj, live_item):
+            async with self.sessions() as db:
+                row = await db.get(VoicePracticeSession, live_item.id)
+                self.assertEqual(row.user_id, 2)
+                self.assertIsNone(row.user_telegram_id)
+                self.assertIsNotNone(row.live_connection_token)
+            provider_sessions.append(live_item.id)
+            yield SilentProvider()
+
+        websocket_app = FastAPI()
+        websocket_app.include_router(create_android_live_voice_router(
+            session_factory=self.sessions, settings_obj=self.settings,
+            provider_connector=provider,
+        ))
+
+        async def connect(frame, *, origin=ORIGIN, session_cookie=cookie):
+            path = "/api/v3/pwa/voice/live"
+            queue = asyncio.Queue()
+            queue.put_nowait({"type": "websocket.connect"})
+            queue.put_nowait({"type": "websocket.receive", "text": json.dumps(frame)})
+            sent = []
+
+            async def send(message):
+                sent.append(message)
+                if message.get("text") and json.loads(message["text"]).get("type") == "ready":
+                    queue.put_nowait({"type": "websocket.receive", "text": '{"type":"stop"}'})
+
+            ws_headers = [(b"host", b"api.example.test"), (b"origin", origin.encode())]
+            if session_cookie:
+                ws_headers.append((b"cookie", f"{PWA_SESSION_COOKIE}={session_cookie}".encode()))
+            await asyncio.wait_for(websocket_app({
+                "type": "websocket", "path": path, "root_path": "", "scheme": "wss",
+                "query_string": b"", "headers": ws_headers, "subprotocols": [],
+                "client": ("127.0.0.1", 54321), "server": ("api.example.test", 443),
+                "http_version": "1.1", "asgi": {"version": "3.0", "spec_version": "2.4"},
+            }, queue.get, send), timeout=2)
+            return sent
+
+        frame = {"type": "auth", "session_id": own_id, "csrf": csrf}
+        disabled = await self.client.post(mode_path, headers=headers, json=mode_payload)
+        self.assertEqual((disabled.status_code, disabled.json()["code"]), (403, "live_voice_unavailable"))
+        self.assertEqual((await connect(frame))[0]["type"], "websocket.close")
+        self.settings.PWA_VOICE_LIVE_ENABLED = True
+        self.assertEqual((await connect(frame, origin="https://attacker.invalid"))[0]["type"], "websocket.close")
+        for test_headers, body, status in (
+            ({"Origin": ORIGIN}, mode_payload, 403),
+            ({**headers, "Origin": "https://attacker.invalid"}, mode_payload, 403),
+            (headers, {**mode_payload, "user_id": 1}, 422),
+            (headers, {**mode_payload, "session_id": other_id}, 404),
+        ):
+            with self.subTest(body=body, status=status):
+                response = await self.client.post(mode_path, headers=test_headers, json=body)
+                self.assertEqual(response.status_code, status, response.text)
+        upgraded = await self.client.post(mode_path, headers=headers, json=mode_payload)
+        self.assertEqual(upgraded.json()["mode"], "live", upgraded.text)
+
+        for auth_frame, ws_cookie, expected in (
+            (frame, None, "pwa_session_required"),
+            ({**frame, "csrf": "mismatch"}, cookie, "pwa_csrf_invalid"),
+            ({**frame, "csrf": "é"}, cookie, "pwa_csrf_invalid"),
+            ({**frame, "session_id": other_id}, cookie, "SESSION_NOT_FOUND"),
+            ({**frame, "user_id": 1}, cookie, "pwa_request_invalid"),
+        ):
+            with self.subTest(expected=expected):
+                sent = await connect(auth_frame, session_cookie=ws_cookie)
+                self.assertEqual(json.loads(sent[1]["text"]), {"type": "error", "code": expected})
+                self.assertEqual(sent[-1]["code"], 1008)
+        self.assertEqual(provider_sessions, [])
+        sent = await connect(frame)
+        self.assertEqual(json.loads(sent[1]["text"])["type"], "ready")
+        self.assertEqual(sent[-1]["code"], 1000)
+        self.assertEqual(provider_sessions, [own_id])
+        fallback = await self.client.post(mode_path, headers=headers, json={
+            **mode_payload, "mode": "turn",
+        })
+        self.assertEqual(fallback.json()["mode"], "turn", fallback.text)
+        async with self.sessions() as db:
+            self.assertIsNone((await db.get(VoicePracticeSession, own_id)).live_connection_token)
+            self.assertEqual((await db.get(VoicePracticeSession, other_id)).mode, "live")
+
     async def test_pwa_standalone_voice_keeps_original_page_without_telegram_session(self):
         path = "/iphone-pwa/practice/voice"
         self.assertEqual(
@@ -2641,22 +2844,27 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
                 self.assertIn(f'  if(!{host})return;', html)
                 self.assertIn(f'  {cache}=null;', html)
                 if name in {
-                    "subscription.html", "course_v3_recognition.html",
+                    "course-v3.html", "subscription.html", "course_v3_recognition.html",
                     "course_v3_memorize.html", "course_v3_pronunciation.html",
                     "course_v3_mistakes.html", "course_v3_test.html",
                 }:
                     # A temporary network/5xx failure on Home Screen resume
                     # is not an authenticated logout. Real 401/owner changes
                     # still redirect within each session verifier.
-                    self.assertIn(f'  {verifier}().catch(function(error){{', html)
-                    self.assertIn(
-                        'if(error&&error.message==="pwa_session_invalid")'
-                        'location.replace("/iphone-pwa");', html
+                    self.assertIn(f'  {verifier}()', html)
+                    self.assertIn('.catch(function(error){', html)
+                    sign_in = (
+                        'practiceSignIn()' if name.startswith("course_v3_")
+                        else 'location.replace("/iphone-pwa")'
                     )
+                    self.assertIn(f'if(error&&error.message==="pwa_session_invalid"){sign_in};', html)
+                    status = 'res.status' if name == "course-v3.html" else 'r.status'
                     self.assertIn(
-                        'if(r.status===401){location.replace("/iphone-pwa");'
-                        'throw new Error("pwa_session_required")}', html
+                        f'if({status}===401){{{sign_in};throw new Error("pwa_session_required")}}', html,
                     )
+                    if sign_in == 'practiceSignIn()':
+                        self.assertIn('HskPwaPracticeBoot.signIn()', html)
+                        self.assertIn('HskPwaPracticeBoot.acceptActor(s.user_id)', html)
                 else:
                     self.assertIn(
                         f'  {verifier}().catch(function(){{location.replace("/iphone-pwa")}});',
@@ -2709,10 +2917,13 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         for filename, host, handler, source in cases:
             with self.subTest(page=filename):
                 html = (Path("app/static") / filename).read_text(encoding="utf-8")
+                self.assertIn(f'function {handler}(){{', html)
                 self.assertIn(
-                    f'function {handler}(){{location.href=({host}?"/iphone-pwa/checkout":"/subscription.html")+"?lang="+LANG',
+                    f'location.href=({host}?"/iphone-pwa/checkout":"/subscription.html")+"?lang="+LANG',
                     html,
                 )
+                if host != "PWA_VOICE_HOST":
+                    self.assertIn(f'HskPwaPracticeBoot.checkout("{source}")', html)
                 self.assertIn(f'&source={source}&', html)
                 self.assertIn(f'&return_page={filename}&', html)
                 self.assertIn(f'"{filename}":"/iphone-pwa/practice/', checkout)
@@ -2732,7 +2943,8 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn('hidden=PWA_COURSE_HOST', course)
         self.assertNotIn('if(window.CourseAds&&CourseAds.showLimitPromo){', course)
         self.assertGreaterEqual(course.count('if(!PWA_COURSE_HOST&&window.CourseAds&&CourseAds.showLimitPromo){'), 5)
-        self.assertIn('PWA_COURSE_HOST?"/iphone-pwa/checkout":"/subscription.html"', course)
+        self.assertIn('if(PWA_COURSE_HOST){App.openPwaCheckout(query);return}', course)
+        self.assertIn('frame.src="/iphone-pwa/checkout?"+query.toString()', course)
 
     def test_existing_checkout_ui_never_enters_fake_pwa_preview(self):
         html = (Path("app/static") / "subscription.html").read_text(encoding="utf-8")
@@ -2746,7 +2958,8 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('"X-HSK-PWA-CSRF":actor.csrf', html)
         self.assertIn('const response=await checkoutTransport(API.event', html)
         self.assertIn('"/iphone-pwa/practice/voice"', html)
-        self.assertIn('PWA_COURSE_HOST?"/iphone-pwa/checkout":"/subscription.html"', course)
+        self.assertIn('if(PWA_COURSE_HOST){App.openPwaCheckout(query);return}', course)
+        self.assertIn('frame.src="/iphone-pwa/checkout?"+query.toString()', course)
 
     async def test_pwa_language_updates_canonical_learner_only_with_csrf(self):
         path = "/api/v3/pwa/language"
@@ -2829,7 +3042,9 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('"X-HSK-PWA-CSRF":s.csrf', source)
         self.assertIn('if(!PWA_RECOGNITION_HOST&&window.CourseAds)', source)
         self.assertIn('"/course_v3_recognition.html":"/iphone-pwa/practice/recognition"', course)
-        self.assertIn("src=safePaths[path]+target.search;", course)
+        self.assertIn("var target=new URL(safePaths[path]+source.search,location.origin);", course)
+        self.assertIn('target.searchParams.set("embedded","1");frame.src=target.href;', course)
+        self.assertIn("mountPracticeFrame(target,courseMessage", course)
         self.assertIn('"/course_v3_recognition.html":"/iphone-pwa/practice/recognition"', course)
         self.assertIn('"/course_v3_memorize.html":"/iphone-pwa/practice/memorize"', course)
         self.assertIn("if(!safePaths[path])", course)
@@ -3201,6 +3416,9 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(len(payload["leaderboard"]), 1)
         self.assertEqual(payload["leaderboard"][0]["user_id"], 1)
         self.assertTrue(payload["leaderboard"][0]["is_current_user"])
+        self.assertEqual(payload["leaderboard"][0]["league"], payload["league"])
+        self.assertNotIn("telegram_id", payload["leaderboard"][0])
+        self.assertNotIn("username", payload["leaderboard"][0])
 
     async def test_pwa_course_track_mutations_require_origin_csrf_and_canonical_actor(self):
         state = await self.begin()

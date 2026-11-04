@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<script src="https://telegram.org/js/telegram-web-app.js"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261021-a4cda8e3aa73"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script>
+<script src="/assets/telegram-web-app.js?v=20261019-1"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261021-a4cda8e3aa73"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script>
 <link rel="stylesheet" href="/course_v3_data/design-tokens.css?v=20261005">
 <title>HSK AI Pro</title>
 <style>
@@ -45,6 +45,7 @@ button:active{transform:scale(.98)}
 .kicker{font-size:11px;color:var(--accent-ink);font-weight:800;text-transform:uppercase;letter-spacing:.14em}
 h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 .top-actions{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+#pwaCheckoutBackBtn[hidden]{display:none}
 .help-btn{display:grid;place-items:center;width:44px;height:44px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--accent-ink)}
 .status{display:none;margin:0 0 12px;border:1px solid var(--gold-line);border-radius:var(--radius-sm);background:var(--gold-soft);padding:11px 13px;color:var(--gold-ink);font-size:12px;line-height:1.4;font-weight:750}
 .status.show{display:block}
@@ -228,6 +229,7 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
       <h1 id="title">HSK AI Pro</h1>
     </div>
     <div class="top-actions">
+      <button class="help-btn" type="button" id="pwaCheckoutBackBtn" hidden><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></button>
       <button class="help-btn" type="button" id="helpBtn" aria-label="Yordam"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 14v-3a9 9 0 0 1 18 0v3"/><path d="M3 14v4a2 2 0 0 0 2 2h2v-8H5a2 2 0 0 0-2 2Zm18 0v4a2 2 0 0 1-2 2h-2v-8h2a2 2 0 0 1 2 2Z"/><path d="M17 20c0 2-2 3-5 3h-2"/><rect x="8" y="21" width="3" height="2" rx="1"/></svg></button>
     </div>
   </header>
@@ -367,11 +369,11 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 <div class="loading" id="loading"><div class="spinner"></div></div>
 
 <script>
-const tg=window.Telegram?.WebApp;
+const PWA_CHECKOUT_HOST=location.pathname==="/iphone-pwa/checkout";
+const tg=PWA_CHECKOUT_HOST?null:window.Telegram?.WebApp;
 try{tg?.ready?.();tg?.expand?.();}catch(e){}
 try{tg?.setHeaderColor?.("#ffffff");tg?.setBackgroundColor?.("#ffffff");}catch(e){}
 
-const PWA_CHECKOUT_HOST=location.pathname==="/iphone-pwa/checkout";
 if(PWA_CHECKOUT_HOST){
   document.documentElement.classList.add("hsk-pwa-browser");
   // Keep the original checkout; add only the browser-only installed-app
@@ -458,6 +460,7 @@ if(PWA_CHECKOUT_HOST){
 /* Course checkout runs in the same Telegram WebView. The Telegram header Back
    must return to Course V3, not close the Mini App or step through payment. */
 const RETURN_TO_COURSE=PARAMS.get("return_to")==="course";
+const PWA_CHECKOUT_EMBEDDED=PWA_CHECKOUT_HOST&&PARAMS.get("embedded")==="1"&&window.parent!==window;
 function courseReturnUrl(){
   const lang=PARAMS.get("lang");
   const requestedTab=PARAMS.get("return_tab");
@@ -485,6 +488,9 @@ function courseReturnUrl(){
   return (PWA_CHECKOUT_HOST?"/iphone-pwa/course":"/course-v3.html")+"?"+query.toString();
 }
 function returnToCourseFromCheckout(){
+  if(PWA_CHECKOUT_EMBEDDED){
+    try{if(window.parent.App?.closePwaCheckout(window))return}catch(e){}
+  }
   /* replace avoids a course -> checkout -> course -> checkout browser-history loop. */
   window.location.replace(courseReturnUrl());
 }
@@ -1034,6 +1040,7 @@ const state={
   pendingPayment:null,
   paymentDecision:"",
   paymentStatusChecking:false,
+  paymentSubmitting:false,
   paymentStillPending:false,
   offerExpired:false,
   qrActionsOpen:false,
@@ -1249,12 +1256,12 @@ function apiError(code,supportUrl,reason){
 function errorText(code){
   const text=tr();
   const errors={
-    invalid_telegram_init_data:text.invalidTelegram,
+    invalid_telegram_init_data:PWA_CHECKOUT_HOST?text.loadError:text.invalidTelegram,
     payment_details_missing:text.paymentDetailsMissing,
     admin_notification_failed:text.adminNotificationFailed,
     qr_not_ready:text.qrMissing,
     payment_invalid_plan:text.offerExpired,
-    access_start_first:text.invalidTelegram,
+    access_start_first:PWA_CHECKOUT_HOST?text.loadError:text.invalidTelegram,
     invalid_screenshot:text.screenshotInvalid,
     user_blocked:text.userBlocked,
     payment_submit_failed:text.serverError,
@@ -1497,8 +1504,10 @@ function render(){
   renderRenewalDialog(text);
   renderQrPreview(text);
   $("#backBtn").textContent=text.back;
+  $("#pwaCheckoutBackBtn").hidden=!PWA_CHECKOUT_HOST||PWA_CHECKOUT_EMBEDDED;
+  $("#pwaCheckoutBackBtn").setAttribute("aria-label",text.back);
   $("#nextBtn").textContent=nextCtaText(text,screen);
-  $("#backBtn").classList.toggle("hide",state.step===0);
+  $("#backBtn").classList.toggle("hide",PWA_CHECKOUT_HOST||state.step===0);
   $("#nextBtn").disabled=state.busy||!hasCurrentPrice()||(!state.preview&&state.loadError)||(screen==="country"&&!state.region)||(screen==="pay"&&!state.preview&&!state.quote);
 }
 function nextCtaText(text,screen){
@@ -1640,10 +1649,10 @@ function renderDone(text){
   $("#doneTitle").textContent=rejected?(hsk30?text.paymentRejectedTitle:text.proRejectedTitle):approved?(hsk30?text.paymentApprovedTitle:text.proApprovedTitle):
     (provisional?(hsk30?text.provisionalTitle:text.proReviewTitle):(pending?text.pendingTitle:text.doneTitle));
   $("#doneText").textContent=rejected?text.paymentRejectedText:approved?(hsk30?text.paymentApprovedText:text.proApprovedText):
-    (provisional?(hsk30?text.provisionalText:text.proReviewAccess):(pending?text.pendingText:text.doneText));
+    (provisional?(hsk30?text.provisionalText:text.proReviewAccess):(pending||PWA_CHECKOUT_HOST?text.pendingText:text.doneText));
   $("#botReturnBtn").textContent=state.paymentStatusChecking?text.checkingPayment:
     (rejected?text.retryPayment:(waiting?text.refreshPayment:
-      ((hsk30&&(pending||approved))?text.openHsk30:(approved?text.proReturn:(pending?(provisional?text.proReturn:text.supportButton):text.returnToBot)))));
+      ((hsk30&&(pending||approved))?text.openHsk30:(approved?text.proReturn:(pending?(provisional?text.proReturn:text.supportButton):(PWA_CHECKOUT_HOST?text.proReturn:text.returnToBot))))));
   $("#botReturnBtn").disabled=state.paymentStatusChecking;
 }
 function renderCountry(text){
@@ -1970,6 +1979,7 @@ async function submitPayment(){
     toast(tr().previewSubmit);
     return;
   }
+  state.paymentSubmitting=true;
   setBusy(true);
   try{
     const data=await api(API.submit,{
@@ -2013,6 +2023,7 @@ async function submitPayment(){
     }
     offerSupport(error);
   }finally{
+    state.paymentSubmitting=false;
     setBusy(false);
     render();
   }
@@ -2044,7 +2055,9 @@ async function refreshPaymentStatus(){
 }
 function openHsk30Course(){
   const query=new URLSearchParams({lang:state.lang,level:"nhsk1",tab:"course",source:"hsk30_payment"});
-  window.location.assign((PWA_CHECKOUT_HOST?"/iphone-pwa/course":"/course-v3.html")+"?"+query.toString());
+  const target=(PWA_CHECKOUT_HOST?"/iphone-pwa/course":"/course-v3.html")+"?"+query.toString();
+  if(PWA_CHECKOUT_EMBEDDED){window.parent.location.assign(target);return}
+  window.location.assign(target);
 }
 document.addEventListener("click",event=>{
   const retryQuote=event.target.closest("[data-retry-quote]");
@@ -2109,6 +2122,37 @@ $("#nextBtn").addEventListener("click",()=>{
   setStep(state.step+1);
 });
 $("#backBtn").addEventListener("click",()=>setStep(state.step-1));
+if(PWA_CHECKOUT_HOST){
+  function checkoutBack(){
+    if(state.paymentSubmitting)return;
+    if(state.qrPreviewOpen){closeQrPreview();return}
+    if(state.supportOpen){hideSupportSheet();return}
+    if(state.inviteOpen){hideInviteSheet();return}
+    if(state.renewalOpen){state.renewalOpen=false;render();return}
+    if(state.step>0&&!state.pending&&!state.done){setStep(state.step-1);return}
+    returnToCourseFromCheckout();
+  }
+  window.hskPwaCheckoutBack=checkoutBack;
+  $("#pwaCheckoutBackBtn").addEventListener("click",checkoutBack);
+  let origin=null;
+  document.addEventListener("touchstart",function(event){
+    if(event.touches.length!==1||event.target.closest("input,textarea,select")){origin=null;return}
+    const touch=event.touches[0];origin={x:touch.clientX,y:touch.clientY};
+  },{passive:true});
+  document.addEventListener("touchmove",function(event){
+    if(!origin||event.touches.length!==1){origin=null;return}
+    const touch=event.touches[0],dx=touch.clientX-origin.x,dy=Math.abs(touch.clientY-origin.y);
+    if(dy>14&&dy>dx){origin=null;return}
+    if(dx>18&&dx>dy*1.4&&event.cancelable)event.preventDefault();
+  },{passive:false});
+  document.addEventListener("touchend",function(event){
+    const start=origin;origin=null;
+    if(!start||event.changedTouches.length!==1)return;
+    const touch=event.changedTouches[0],dx=touch.clientX-start.x;
+    if(dx>=55&&dx>Math.abs(touch.clientY-start.y)*1.5)checkoutBack();
+  },{passive:true});
+  document.addEventListener("touchcancel",function(){origin=null},{passive:true});
+}
 $("#renewalBackdrop").addEventListener("click",()=>{state.renewalOpen=false;render()});
 $("#renewalEditBtn").addEventListener("click",()=>{state.renewalOpen=false;render()});
 $("#renewalConfirmBtn").addEventListener("click",()=>{
@@ -2143,6 +2187,13 @@ $("#qrPreviewBackBtn").addEventListener("click",closeQrPreview);
 function shareReferral(link){
   if(!link){toast(tr().error);return}
   const url="https://t.me/share/url?url="+encodeURIComponent(link)+"&text="+encodeURIComponent(tr().shareText);
+  if(PWA_CHECKOUT_HOST){
+    if(navigator.share){navigator.share({text:tr().shareText,url:link}).catch(error=>{
+      if(error?.name!=="AbortError")copyReferralLink(link);
+    });}
+    else copyReferralLink(link);
+    return;
+  }
   if(tg&&tg.openTelegramLink){tg.openTelegramLink(url)}
   else{window.open(url,"_blank")}
 }

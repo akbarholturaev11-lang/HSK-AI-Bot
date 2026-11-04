@@ -24,11 +24,24 @@ from app.services.pwa_auth_service import (
     PWA_SESSION_AGE_SECONDS,
     PwaAuthError,
     PwaAuthService,
+    pwa_origin,
     require_same_origin,
     require_pwa_enabled,
 )
 
 _NO_STORE = {"Cache-Control": "no-store", "Referrer-Policy": "no-referrer"}
+
+
+def _embeddable_pwa_page_headers(request: Request) -> dict[str, str]:
+    embedded = request.query_params.getlist("embedded") == ["1"]
+    return {
+        **_NO_STORE,
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "SAMEORIGIN" if embedded else "DENY",
+        "Content-Security-Policy": (
+            "frame-ancestors 'self'" if embedded else "frame-ancestors 'none'"
+        ),
+    }
 
 
 class PwaLoginStart(BaseModel):
@@ -100,6 +113,12 @@ class PwaVoiceStart(BaseModel):
     voice: Literal["female", "male"] = "female"
     level: str | None = None
     language: Literal["uz", "ru", "tj"] | None = None
+
+
+class PwaVoiceMode(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    session_id: str
+    mode: Literal["turn", "live"]
 
 
 class PwaVoiceEnd(BaseModel):
@@ -293,9 +312,19 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
     # A login-only source-aligned shell; protected course routes are P2.
     # Do not serve it until a verified provider origin is configured.
     @router.get("/iphone-pwa")
-    async def login_page():
+    async def login_page(request: Request):
         try:
             require_pwa_enabled(settings_obj)
+            cookie = request.cookies.get(PWA_SESSION_COOKIE)
+            if cookie:
+                try:
+                    async with session_factory() as db:
+                        await PwaAuthService(db, settings_obj).actor(cookie)
+                except PwaAuthError as exc:
+                    if exc.code != "pwa_session_required":
+                        raise
+                else:
+                    return RedirectResponse("/iphone-pwa/course", status_code=303, headers=_NO_STORE)
             return FileResponse(
                 "app/static/iphone-pwa-login.html", media_type="text/html",
                 headers={**_NO_STORE,
@@ -353,11 +382,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
             return FileResponse(
                 "app/static/course_v3_recognition.html",
                 media_type="text/html",
-                headers={
-                    **_NO_STORE,
-                    "X-Content-Type-Options": "nosniff",
-                    "X-Frame-Options": "DENY",
-                },
+                headers=_embeddable_pwa_page_headers(request),
             )
         except PwaAuthError as exc:
             if exc.code == "pwa_session_required":
@@ -378,11 +403,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
             return FileResponse(
                 "app/static/course_v3_memorize.html",
                 media_type="text/html",
-                headers={
-                    **_NO_STORE,
-                    "X-Content-Type-Options": "nosniff",
-                    "X-Frame-Options": "DENY",
-                },
+                headers=_embeddable_pwa_page_headers(request),
             )
         except PwaAuthError as exc:
             if exc.code == "pwa_session_required":
@@ -403,9 +424,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
             return FileResponse(
                 "app/static/course_v3_pronunciation.html",
                 media_type="text/html",
-                headers={**_NO_STORE,
-                         "X-Content-Type-Options": "nosniff",
-                         "X-Frame-Options": "DENY"},
+                headers=_embeddable_pwa_page_headers(request),
             )
         except PwaAuthError as exc:
             if exc.code == "pwa_session_required":
@@ -517,9 +536,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                 )
             return FileResponse(
                 "app/static/course_v3_mistakes.html", media_type="text/html",
-                headers={**_NO_STORE,
-                         "X-Content-Type-Options": "nosniff",
-                         "X-Frame-Options": "DENY"},
+                headers=_embeddable_pwa_page_headers(request),
             )
         except PwaAuthError as exc:
             if exc.code == "pwa_session_required":
@@ -657,9 +674,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                 )
             return FileResponse(
                 "app/static/course_v3_test.html", media_type="text/html",
-                headers={**_NO_STORE,
-                         "X-Content-Type-Options": "nosniff",
-                         "X-Frame-Options": "DENY"},
+                headers=_embeddable_pwa_page_headers(request),
             )
         except PwaAuthError as exc:
             if exc.code == "pwa_session_required":
@@ -866,6 +881,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
 
     @router.post("/api/v3/pwa/voice/session/start")
     async def pwa_voice_start(request: Request):
+        from app.services.android_live_voice_service import pwa_live_voice_available
         from app.services.voice_practice_service import VoicePracticeService, VoicePracticeError
         from app.services.course_miniapp_analytics_service import (
             CourseMiniAppAnalyticsService,
@@ -887,7 +903,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                     language=str(actor.language or "ru"), voice=payload.voice,
                     mode="turn",
                 )
-                result["live_available"] = False  # Browser PWA turn-based flow only.
+                result["live_available"] = pwa_live_voice_available(settings_obj, actor)
                 await CourseMiniAppAnalyticsService(db).record_server_event(
                     event_name="voice_started",
                     telegram_id=int(actor.telegram_id) if actor.telegram_id else None,
@@ -902,6 +918,38 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                     },
                 )
                 await db.commit()
+            return JSONResponse(result, headers=_NO_STORE)
+        except PwaAuthError as exc:
+            return _error(exc)
+        except VoicePracticeError as exc:
+            return JSONResponse(
+                {"ok": False, "code": exc.code, "message": exc.message},
+                status_code=exc.status_code, headers=_NO_STORE,
+            )
+
+    @router.post("/api/v3/pwa/voice/session/mode")
+    async def pwa_voice_mode(request: Request):
+        from app.services.android_live_voice_service import pwa_live_voice_available
+        from app.services.voice_practice_service import VoicePracticeError, VoicePracticeService
+
+        try:
+            if request.headers.get("Origin") != pwa_origin(settings_obj):
+                raise PwaAuthError("pwa_origin_invalid", status_code=403)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            payload = await _small_json(request, PwaVoiceMode, max_bytes=1024)
+            if not 8 <= len(payload.session_id) <= 120:
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                if payload.mode == "live" and not pwa_live_voice_available(settings_obj, actor):
+                    raise VoicePracticeError("live_voice_unavailable", "Live voice is unavailable.", 403)
+                result = await VoicePracticeService(db).set_session_mode(
+                    actor, session_id=payload.session_id, mode=payload.mode,
+                )
             return JSONResponse(result, headers=_NO_STORE)
         except PwaAuthError as exc:
             return _error(exc)
@@ -1045,12 +1093,11 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                 await PwaAuthService(db, settings_obj).actor(
                     request.cookies.get(PWA_SESSION_COOKIE)
                 )
+            # The course shell can host the existing checkout after the same
+            # actor check. Direct checkout links remain unframeable.
             return FileResponse(
                 "app/static/subscription.html", media_type="text/html",
-                headers={
-                    **_NO_STORE, "X-Content-Type-Options": "nosniff",
-                    "X-Frame-Options": "DENY",
-                },
+                headers=_embeddable_pwa_page_headers(request),
             )
         except PwaAuthError as exc:
             if exc.code == "pwa_session_required":
@@ -1317,6 +1364,36 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
         except ValueError:
             return _error(PwaAuthError("pwa_request_invalid", status_code=422))
 
+    @router.post("/api/v3/pwa/preferences")
+    async def pwa_set_preferences(request: Request):
+        from app.api.miniapp_preferences import (
+            CoursePreferencesUpdate, PreferencesError, apply_course_preferences,
+            course_preferences_payload, validated_preferences_payload,
+        )
+        from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
+
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            payload = await validated_preferences_payload(request, CoursePreferencesUpdate)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                profile = await apply_course_preferences(CourseMiniAppProfileService(db), actor.id, payload)
+                await db.commit()
+                return JSONResponse(
+                    {"ok": True, "profile": course_preferences_payload(profile)}, headers=_NO_STORE,
+                )
+        except PwaAuthError as exc:
+            return _error(exc)
+        except PreferencesError as exc:
+            return _error(PwaAuthError(exc.code, status_code=exc.status_code))
+        except ValueError:
+            return _error(PwaAuthError("preferences_request_invalid", status_code=422))
+
     @router.post("/api/v3/pwa/language")
     async def pwa_set_language(request: Request):
         """Save the very same users.language consumed by Telegram course/QA."""
@@ -1537,6 +1614,10 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                     timezone_offset_minutes=payload.timezone_offset_minutes,
                 )
                 await db.commit()
+            for member in result["leaderboard"]:
+                member.pop("telegram_id", None)
+                member.pop("username", None)
+                member["league"] = CourseGamificationService.league_for_xp(member["total_xp"])
             return JSONResponse({"ok": True, **result}, headers=_NO_STORE)
         except PwaAuthError as exc:
             return _error(exc)
@@ -1650,6 +1731,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
             from app.db.models.account_notice_delivery import AccountNoticeDelivery
             from app.db.models.payment import Payment
             from app.services.account_identity import owner_clause
+            from app.services.learner_pwa_push import ACCOUNT_RESTRICTION_KEY
             async with session_factory() as db:
                 actor, _ = await PwaAuthService(db, settings_obj).actor(
                     request.cookies.get(PWA_SESSION_COOKIE)
@@ -1659,6 +1741,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                     .where(owner_clause(
                         AccountNoticeDelivery, actor, telegram_column="telegram_id",
                     ))
+                    .where(AccountNoticeDelivery.key != ACCOUNT_RESTRICTION_KEY)
                     .order_by(
                         AccountNoticeDelivery.created_at.desc(),
                         AccountNoticeDelivery.id.desc(),

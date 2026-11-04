@@ -1,4 +1,4 @@
-"""Shared Live relay with Android bearer and Telegram Mini App authentication."""
+"""Shared Live relay for Android, Telegram Mini App, and the learner PWA."""
 
 from __future__ import annotations
 
@@ -12,7 +12,8 @@ import time
 import uuid
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
-from typing import Callable
+from types import SimpleNamespace
+from typing import Callable, Literal
 from urllib.parse import urlparse
 
 from fastapi import APIRouter, Request, WebSocket, WebSocketDisconnect
@@ -21,13 +22,17 @@ from starlette.websockets import WebSocketState
 from sqlalchemy import or_, select, update
 
 from app.db.models.voice_practice_session import VoicePracticeSession
-from app.services.account_identity import owner_clause, actual_telegram_id
+from app.services.account_identity import account_user_id, actual_telegram_id, owner_clause
 from app.services.android_live_voice_service import (
     connect_gemini_live,
     live_voice_available,
+    pwa_live_voice_available,
 )
 from app.services.ai_service import AIUsageResult
 from app.services.desktop_auth_service import DesktopAuthError, DesktopAuthService
+from app.services.pwa_auth_service import (
+    PWA_SESSION_COOKIE, PwaAuthError, PwaAuthService, pwa_enabled, pwa_origin,
+)
 from app.services.telegram_webapp_auth import extract_fresh_verified_webapp_user_id
 from app.services.voice_practice_service import (
     MAX_DIALOGS_PER_SESSION,
@@ -154,24 +159,34 @@ def create_android_live_voice_router(
 
     @router.websocket("/api/v3/android/voice/live")
     async def android_live_voice(websocket: WebSocket):
-        await relay(websocket, miniapp=False)
+        await relay(websocket, transport="android")
 
     @router.websocket("/api/voice-practice/live")
     async def miniapp_live_voice(websocket: WebSocket):
-        await relay(websocket, miniapp=True)
+        await relay(websocket, transport="miniapp")
 
-    async def relay(websocket: WebSocket, *, miniapp: bool):
+    @router.websocket("/api/v3/pwa/voice/live")
+    async def pwa_live_voice(websocket: WebSocket):
+        if (not pwa_enabled(settings_obj)
+                or not getattr(settings_obj, "PWA_VOICE_LIVE_ENABLED", False)
+                or websocket.headers.get("origin") != pwa_origin(settings_obj)):
+            await websocket.close(code=1008)
+            return
+        await relay(websocket, transport="pwa")
+
+    async def relay(websocket: WebSocket, *, transport: Literal["android", "miniapp", "pwa"]):
         await websocket.accept()
         token = _bearer_token(websocket.headers.get("Authorization"))
         session_id = str(websocket.query_params.get("session_id") or "").strip()
         miniapp_telegram_id = None
-        if miniapp:
-            # Browser WebSockets cannot set Authorization headers. Keep signed
-            # Telegram data in the first frame, never in URLs or access logs.
+        pwa_csrf = None
+        if transport != "android":
+            # Browser credentials stay in the first frame, never in URLs or logs.
             try:
-                origin = urlparse(websocket.headers.get("origin", ""))
-                if origin.scheme not in {"http", "https"} or origin.netloc.lower() != websocket.headers.get("host", "").lower():
-                    raise ValueError("Invalid origin")
+                if transport == "miniapp":
+                    origin = urlparse(websocket.headers.get("origin", ""))
+                    if origin.scheme not in {"http", "https"} or origin.netloc.lower() != websocket.headers.get("host", "").lower():
+                        raise ValueError("Invalid origin")
                 frame = await asyncio.wait_for(websocket.receive(), timeout=5)
                 auth = frame.get("text")
                 if not isinstance(auth, str) or len(auth) > 16384:
@@ -179,13 +194,22 @@ def create_android_live_voice_router(
                 payload = json.loads(auth)
                 if not isinstance(payload, dict) or payload.get("type") != "auth":
                     raise ValueError("Expected auth frame")
-                miniapp_telegram_id = miniapp_user_id(str(payload.get("initData") or ""))
-                session_id = str(payload.get("session_id") or "").strip()
-                if not miniapp_telegram_id or not 8 <= len(session_id) <= 120:
+                if transport == "miniapp":
+                    miniapp_telegram_id = miniapp_user_id(str(payload.get("initData") or ""))
+                    if not miniapp_telegram_id:
+                        raise ValueError("Invalid auth")
+                else:
+                    if set(payload) != {"type", "session_id", "csrf"} or not isinstance(payload["csrf"], str):
+                        raise ValueError("Invalid auth")
+                    pwa_csrf = payload["csrf"]
+                session_id = (str(payload.get("session_id") or "").strip()
+                              if transport == "miniapp" else payload.get("session_id"))
+                if not isinstance(session_id, str) or not 8 <= len(session_id) <= 120:
                     raise ValueError("Invalid auth")
             except (ValueError, TypeError, asyncio.TimeoutError, WebSocketDisconnect):
                 try:
-                    await websocket.send_json({"type": "error", "code": "INVALID_INIT_DATA"})
+                    code = "pwa_request_invalid" if transport == "pwa" else "INVALID_INIT_DATA"
+                    await websocket.send_json({"type": "error", "code": code})
                     await websocket.close(code=1008)
                 except WebSocketDisconnect:
                     pass
@@ -196,7 +220,7 @@ def create_android_live_voice_router(
             return
 
         connection_token = str(uuid.uuid4())
-        telegram_id = 0
+        actor = None
         live_item = None
         configured_max_seconds = max(
             30,
@@ -206,19 +230,29 @@ def create_android_live_voice_router(
         expires_at = datetime.now(timezone.utc) + timedelta(seconds=max_seconds + 20)
         try:
             async with session_factory() as session:
-                if miniapp:
-                    telegram_id = int(miniapp_telegram_id)
-                    await voice_service_factory(session).validate_live_session(telegram_id, session_id=session_id)
+                if transport == "pwa":
+                    owner, _ = await PwaAuthService(session, settings_obj).mutation_actor(
+                        websocket.cookies.get(PWA_SESSION_COOKIE), pwa_csrf,
+                    )
+                    actor = SimpleNamespace(id=owner.id, telegram_id=owner.telegram_id)
+                    allowed = pwa_live_voice_available(settings_obj, actor)
+                    if allowed:
+                        await voice_service_factory(session).validate_live_session(actor, session_id=session_id)
+                elif transport == "miniapp":
+                    actor = int(miniapp_telegram_id)
+                    await voice_service_factory(session).validate_live_session(actor, session_id=session_id)
+                    allowed = live_voice_available(settings_obj, actor)
                 else:
                     context = await DesktopAuthService(session, settings_obj).authenticate(token)
-                    telegram_id = context.user
-                if not live_voice_available(settings_obj, telegram_id):
+                    actor = context.user
+                    allowed = live_voice_available(settings_obj, actor)
+                if not allowed:
                     raise DesktopAuthError("live_voice_unavailable", status_code=403)
                 claimed = await session.execute(
                     update(VoicePracticeSession)
                     .where(
                         VoicePracticeSession.id == session_id,
-                        owner_clause(VoicePracticeSession, telegram_id),
+                        owner_clause(VoicePracticeSession, actor),
                         VoicePracticeSession.mode == "live",
                         VoicePracticeSession.status == "active",
                         or_(
@@ -237,7 +271,7 @@ def create_android_live_voice_router(
                 result = await session.execute(
                     select(VoicePracticeSession).where(
                         VoicePracticeSession.id == session_id,
-                        owner_clause(VoicePracticeSession, telegram_id),
+                        owner_clause(VoicePracticeSession, actor),
                         VoicePracticeSession.live_connection_token == connection_token,
                     )
                 )
@@ -246,7 +280,7 @@ def create_android_live_voice_router(
                     raise VoicePracticeError("SESSION_NOT_FOUND", "Voice session not found.", 404)
                 live_item = LiveSessionContext(
                     id=row.id,
-                    user_telegram_id=actual_telegram_id(telegram_id),
+                    user_telegram_id=actual_telegram_id(actor),
                     mode=row.mode,
                     role=row.role,
                     level=row.level,
@@ -370,7 +404,7 @@ def create_android_live_voice_router(
                                     update(VoicePracticeSession)
                                     .where(
                                         VoicePracticeSession.id == session_id,
-                                        owner_clause(VoicePracticeSession, telegram_id),
+                                        owner_clause(VoicePracticeSession, actor),
                                         VoicePracticeSession.live_connection_token == connection_token,
                                     )
                                     .values(live_resumption_handle=resumption_handle)
@@ -441,8 +475,14 @@ def create_android_live_voice_router(
                                         total_tokens=prompt_tokens + output_tokens,
                                     )
                                 async with session_factory() as session:
+                                    if transport == "pwa":
+                                        # Recheck after provider I/O so a logout/account
+                                        # switch during the call cannot persist a turn.
+                                        await PwaAuthService(session, settings_obj).mutation_actor(
+                                            websocket.cookies.get(PWA_SESSION_COOKIE), pwa_csrf,
+                                        )
                                     turn = await voice_service_factory(session).process_live_turn(
-                                        telegram_id,
+                                        actor,
                                         session_id=session_id,
                                         transcription=user_text,
                                         assistant_text=assistant_text,
@@ -489,7 +529,7 @@ def create_android_live_voice_router(
                         raise error
                 if websocket.client_state == WebSocketState.CONNECTED:
                     await websocket.close(code=1000)
-        except (DesktopAuthError, VoicePracticeError) as exc:
+        except (DesktopAuthError, PwaAuthError, VoicePracticeError) as exc:
             code = getattr(exc, "code", "live_voice_unavailable")
             logger.info("Live Voice refused: %s", code)
             try:
@@ -500,14 +540,14 @@ def create_android_live_voice_router(
         except WebSocketDisconnect:
             pass
         except Exception:  # noqa: BLE001
-            logger.exception("Live Voice relay failed for user %s", telegram_id or "unknown")
+            logger.exception("Live Voice relay failed for user %s", account_user_id(actor) or actual_telegram_id(actor) or "unknown")
             try:
                 await websocket.send_json({"type": "error", "code": "live_voice_unavailable"})
                 await websocket.close(code=1011)
             except Exception:  # noqa: BLE001
                 pass
         finally:
-            if connection_token and telegram_id:
+            if actor is not None:
                 try:
                     with anyio.CancelScope(shield=True):
                         async with session_factory() as session:
@@ -515,7 +555,7 @@ def create_android_live_voice_router(
                                 update(VoicePracticeSession)
                                 .where(
                                     VoicePracticeSession.id == session_id,
-                                    owner_clause(VoicePracticeSession, telegram_id),
+                                    owner_clause(VoicePracticeSession, actor),
                                     VoicePracticeSession.live_connection_token == connection_token,
                                 )
                                 .values(

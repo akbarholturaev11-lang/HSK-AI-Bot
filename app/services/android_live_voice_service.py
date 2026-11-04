@@ -44,6 +44,12 @@ def live_voice_available(settings_obj, telegram_id: int) -> bool:
     )
 
 
+def pwa_live_voice_available(settings_obj, actor) -> bool:
+    return bool(getattr(settings_obj, "PWA_VOICE_LIVE_ENABLED", False)) and live_voice_available(
+        settings_obj, actor,
+    )
+
+
 def live_voice_system_instruction(item) -> str:
     plan = item.plan_json if isinstance(item.plan_json, dict) else {}
     scenario = VOICE_SCENARIOS.get(str(plan.get("scenario_id") or ""), {})

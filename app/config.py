@@ -60,6 +60,7 @@ class Settings(BaseSettings):
     MINI_APP_BASE_URL: str = "https://telegram-chinese-bot-production.up.railway.app/course-v3.html"
     # Dedicated learner browser OAuth; launch only after iPhone/login security QA.
     PWA_AUTH_ENABLED: bool = False
+    PWA_VOICE_LIVE_ENABLED: bool = False
     # Learner iPhone Web Push stays independently disabled until explicit QA/release gates pass.
     PWA_PUSH_ENABLED: bool = False
     PWA_PUSH_SEND_ENABLED: bool = False

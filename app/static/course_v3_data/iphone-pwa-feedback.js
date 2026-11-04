@@ -37,7 +37,6 @@
   var selected = null;
   var busy = false;
   var draft = {};
-  var activeLessonContext = null;
 
   function common(key) { return commonMessage(key, ""); }
   function course(key) { return courseMessage(key, ""); }
@@ -75,10 +74,10 @@
     busy = false;
     submitButton.disabled = false;
     draft = {};
-    activeLessonContext = null;
     if (lastFocus && lastFocus.isConnected && typeof lastFocus.focus === "function") {
-      lastFocus.focus();
+      lastFocus.focus({preventScroll:true});
     }
+    if (window.NavBack) NavBack.sync();
   }
 
   async function ownedSession() {
@@ -274,59 +273,49 @@
       }
       heading.textContent = "HSK AI";
     }
-    if (!kind) {
-      heading.textContent = "HSK AI";
-      form.replaceChildren();
-      setStatus(common("bot.releaseFeedback.notFoundAlert"));
-      submitButton.hidden = true;
-      return;
-    }
+    if (!kind) return false;
     setStatus("");
     submitButton.textContent = course("subscriptionPage.submit");
     submitButton.hidden = false;
     renderForm();
+    return true;
   }
 
   async function open(context) {
-    if (busy) return;
+    if (busy || !root.hidden) return;
     var lessonId = Number(context && context.lessonId);
     var level = String(context && context.level || "");
     if (!context || context.confirmed !== true || !Number.isSafeInteger(lessonId) ||
         lessonId < 1 || lessonId > 500 || !/^(hsk[1-4]|nhsk[1-3])$/.test(level) ||
         document.visibilityState === "hidden") return;
     var token = ++generation;
-    activeLessonContext = {lessonId:lessonId,level:level};
-    lastFocus = document.activeElement;
-    root.hidden = false;
-    kind = null;
-    selected = null;
-    restoreDraft();
-    heading.textContent = lessonTitle(level, lessonId);
-    contextCopy.textContent = course("pwaFeedback.body");
-    form.replaceChildren();
-    submitButton.hidden = true;
-    submitButton.disabled = false;
-    closeButton.setAttribute("aria-label", course("subscriptionPage.close"));
-    setStatus(course("subscriptionPage.loading"));
-    panel.focus();
+    function current() {
+      return token === generation && root.hidden && document.visibilityState !== "hidden" &&
+        (typeof context.canOpen !== "function" || context.canOpen());
+    }
     try {
-      var active = function () { return token === generation && !root.hidden; };
       var data = await request("/api/v3/pwa/feedback/lesson/prepare", {
         lesson_id:lessonId,level:level
-      }, active);
-      if (token !== generation || root.hidden) return;
-      if (!data.ordinary || !numberId(data.ordinary.feedback_id)) {
-        close();
-        return;
-      }
-      showAvailable({ordinary:data.ordinary,release:[]});
+      }, current);
+      if (!current()) return;
+      var feedback = data.ordinary;
+      var choices = feedback && feedback.choices;
+      // No due feedback and ineligible/unavailable responses are expected
+      // after some lessons. The course stays in focus until a form is ready.
+      if (!feedback || !numberId(feedback.feedback_id) || !choices) return;
+      if (feedback.paid ? !validChoices(choices.paid).length :
+          !validChoices(choices.liked).length || !validChoices(choices.disliked).length) return;
+      if (!showAvailable({ordinary:feedback,release:[]})) return;
+      lastFocus = document.activeElement;
       heading.textContent = lessonTitle(level, lessonId);
       contextCopy.textContent = course("pwaFeedback.body");
+      submitButton.disabled = false;
+      closeButton.setAttribute("aria-label", course("subscriptionPage.close"));
+      root.hidden = false;
+      panel.focus({preventScroll:true});
+      if (window.NavBack) NavBack.sync();
     } catch (_) {
-      if (token !== generation || root.hidden) return;
-      form.replaceChildren();
-      submitButton.hidden = true;
-      setStatus(course("subscriptionPage.error"));
+      // An automatic, optional prompt should never interrupt study on error.
     }
   }
 
@@ -435,5 +424,8 @@
       ev.preventDefault(); first.focus();
     }
   });
-  window.HskPwaFeedback = {open: open, close: close};
+  window.HskPwaFeedback = {
+    open: open, close: close,
+    backTarget: function () { return root.hidden ? null : panel; }
+  };
 }());

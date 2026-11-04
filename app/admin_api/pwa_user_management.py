@@ -137,7 +137,11 @@ async def execute_user_management(db, *, session_cookie, request, settings_obj):
                 raise CommandError('confirmation_changed',409)
             result = {'user_id':command.user_id,'deleted':True}
         else:
+            was_blocked = user.status == 'blocked'
             await UserRepository(db).set_blocked(user,command.operation=='block')
+            if not was_blocked and user.status == 'blocked':
+                from app.services.learner_pwa_push import enqueue_account_restriction
+                await enqueue_account_restriction(db, user=user, settings_obj=settings_obj, now=now)
             result = {'user_id':user.id,'status':user.status,'blocked':user.status=='blocked'}
             if command.operation == 'unblock' and telegram_id:
                 notice = UnblockedNotice(user.id,telegram_id,user.language or 'ru',audit_id)

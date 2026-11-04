@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Tez eslab qolish</title>
 <link rel="icon" href="/assets/hsk-ai-avatar.webp" type="image/webp">
-<script src="https://telegram.org/js/telegram-web-app.js"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261021-a4cda8e3aa73"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script>
+<script src="/assets/telegram-web-app.js?v=20261019-1"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261021-a4cda8e3aa73"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script>
 <script defer src="/audio/words/index.js?v=20261014-offline-1"></script>
 <script defer src="/audio/words/client.js?v=20261014-persist-1"></script>
 <style>
@@ -80,7 +80,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
 <script defer src="/course_v3_data/lesson_gate_hsk30.js?v=20260930"></script>
 <script defer src="/course_v3_data/ads.js?v=20261021-785974bb437c"></script>
 <script defer src="/course_v3_data/desktop-download.js?v=20261021-c61abddcc057"></script>
-<script src="/course_v3_data/iphone-pwa-practice-boot.js?v=20261104-2"></script>
+<script src="/course_v3_data/iphone-pwa-practice-boot.js?v=20261104-3"></script>
 <script>
 /* Og'ir skriptlar (`defer`) HTML parse tugagach ishga tushadi. Server
    so'rovlari esa darhol ketadi — shu bilan JS yuklanishi va tarmoq
@@ -106,6 +106,7 @@ function goBack(){
     var lv=P.get("level");if(lv)u+="&level="+encodeURIComponent(lv);
     location.href=u;return;
   }
+  if(PWA_MEMORIZE_HOST&&window.HskPwaPracticeBoot){HskPwaPracticeBoot.back();return}
   location.href=(PWA_MEMORIZE_HOST?"/iphone-pwa/course":"/course-v3.html")+"?lang="+LANG+"&tab=mashq";
 }
 var _ttsAudio=null;
@@ -165,21 +166,23 @@ var LIM={
 var MEMORIZE_LIMIT_UI=(window.HSKAI_COURSE_I18N&&window.HSKAI_COURSE_I18N[LANG])||{};Object.keys(LIM).forEach(function(key){var value=MEMORIZE_LIMIT_UI["memorizeLimit."+key];if(typeof value==="string"&&value)LIM[key][LANG]=value});function memoMessage(key,fallback){var value=MEMORIZE_LIMIT_UI[key];return typeof value==="string"&&value?value:t(fallback)}var PWA_MEMORIZE_HOST=location.pathname==="/iphone-pwa/practice/memorize";
 var PWA_MEMORIZE_SESSION=null,PWA_MEMORIZE_PROMISE=null;
 function initData(){return PWA_MEMORIZE_HOST?"":((tg&&tg.initData)?tg.initData:"")}
+function practiceSignIn(){if(window.HskPwaPracticeBoot)HskPwaPracticeBoot.signIn();else location.replace("/iphone-pwa")}
 function memorizePwaSession(){
   if(!PWA_MEMORIZE_HOST)return Promise.reject(new Error("pwa_host_required"));
   if(!PWA_MEMORIZE_PROMISE){
     PWA_MEMORIZE_PROMISE=fetch("/api/v3/pwa-auth/session",{
       credentials:"same-origin",cache:"no-store",redirect:"error"
     }).then(function(r){
-      if(r.status===401){location.replace("/iphone-pwa");throw new Error("pwa_session_required")}
+      if(r.status===401){practiceSignIn();throw new Error("pwa_session_required")}
       if(!r.ok)throw new Error("pwa_session_unavailable");
       return r.json();
     }).then(function(s){
       if(!s||s.ok!==true||!Number.isSafeInteger(Number(s.user_id))||
          Number(s.user_id)<=0||typeof s.csrf!=="string"||!s.csrf)
         throw new Error("pwa_session_invalid");
+      if(window.HskPwaPracticeBoot&&!HskPwaPracticeBoot.acceptActor(s.user_id))throw new Error("pwa_actor_changed");
       if(PWA_MEMORIZE_SESSION&&PWA_MEMORIZE_SESSION.user_id!==s.user_id){
-        location.replace("/iphone-pwa");throw new Error("pwa_actor_changed");
+        practiceSignIn();throw new Error("pwa_actor_changed");
       }
       PWA_MEMORIZE_SESSION=s;return s;
     }).catch(function(e){PWA_MEMORIZE_PROMISE=null;throw e});
@@ -194,7 +197,7 @@ function verifyPwaReturn(){
   memorizePwaSession().catch(function(error){
     // A connectivity/5xx failure is not a logout. 401 or an account change
     // already redirects inside the session verifier; malformed actors fail closed.
-    if(error&&error.message==="pwa_session_invalid")location.replace("/iphone-pwa");
+    if(error&&error.message==="pwa_session_invalid")practiceSignIn();
   });
 }
 if(PWA_MEMORIZE_HOST){
@@ -223,7 +226,10 @@ function memorizePost(url,body,keepalive){
     });
   });
 }
-function goPremium(){location.href=(PWA_MEMORIZE_HOST?"/iphone-pwa/checkout":"/subscription.html")+"?lang="+LANG+"&source=v3_memorize_limit&mode=subscription&return_to=course&return_page=course_v3_memorize.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"")}document.querySelector(".top .ix").setAttribute("aria-label",t(LIM.back))
+function goPremium(){
+  if(PWA_MEMORIZE_HOST&&window.HskPwaPracticeBoot&&HskPwaPracticeBoot.checkout("v3_memorize_limit"))return;
+  location.href=(PWA_MEMORIZE_HOST?"/iphone-pwa/checkout":"/subscription.html")+"?lang="+LANG+"&source=v3_memorize_limit&mode=subscription&return_to=course&return_page=course_v3_memorize.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"");
+}document.querySelector(".top .ix").setAttribute("aria-label",t(LIM.back))
 /* Foydalanuvchi darajasi: server (users.level) asosiy manba — kartalar userning
    haqiqiy HSK darajasidagi ierogliflardan tuziladi (lesson_gate xaritasi orqali).
    CUR — joriy dars (tugatilgan+1): faqat O'RGANILGAN darslar belgilari chiqadi. */

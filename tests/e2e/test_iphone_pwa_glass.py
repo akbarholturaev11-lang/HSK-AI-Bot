@@ -25,11 +25,13 @@ def asset(path):
 def bootstrap(page, *, notices=None, account=None, release=None, ordinary=None):
     """Install real stylesheet, catalogs and both shipping browser modules."""
     notices = notices if notices is not None else [
-        {"id": 11, "title": "Dars tayyor", "body": "HSK 3", "action": "course"},
+        {"id": 11, "title": "Dars tayyor", "body": "HSK 3", "action": "course",
+         "created_at": "2026-11-03T12:00:00+00:00"},
     ]
     account = account if account is not None else {
         "ok": True, "notices": [
-            {"id": 4, "title": "Hisob xabari", "body": "Qabul qilindi", "action": "course"},
+            {"id": 4, "title": "Hisob xabari", "body": "Qabul qilindi", "action": "course",
+             "created_at": "2026-11-03T13:00:00+00:00"},
         ], "payment_reviews": [
             {"payment_id": 40, "status": "approved", "plan_type": "1_month"},
             {"payment_id": 41, "status": "rejected", "plan_type": "1_month"},
@@ -113,7 +115,7 @@ def bootstrap(page, *, notices=None, account=None, release=None, ordinary=None):
 
 
 @pytest.mark.parametrize("width,height", [(320, 568), (390, 844), (430, 932)])
-def test_real_browser_inbox_glass_and_safe_width(width, height):
+def test_real_browser_inbox_is_one_full_screen_feed(width, height):
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch()
         context = browser.new_context(
@@ -125,28 +127,16 @@ def test_real_browser_inbox_glass_and_safe_width(width, height):
         page.evaluate("window.HskPwaInbox.open()")
         dialog = page.locator("#hsk-pwa-notice-root .hsk-pwa-notice-card")
         assert dialog.is_visible()
-        assert page.locator("#hsk-pwa-notice-list .hsk-pwa-notice-row").count() == 1
+        rows = page.locator("#hsk-pwa-notice-list .hsk-pwa-notice-row")
+        assert rows.count() == 4
+        assert rows.first.get_by_text("Hisob xabari").is_visible()
+        assert rows.nth(1).get_by_text("Dars tayyor").is_visible()
         assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth + 1")
         box = dialog.bounding_box()
-        assert box and abs(box["x"] + box["width"] / 2 - width / 2) < 3
-        assert box["x"] >= 0 and box["x"] + box["width"] <= width + 1
-        blur = dialog.evaluate(
-            "(node) => getComputedStyle(node).backdropFilter || "
-            "getComputedStyle(node).webkitBackdropFilter"
-        )
-        assert "blur(" in blur, "actual optical glass not applied"
-        course_tab = page.locator('[data-pwa-tab="course"]')
-        account_tab = page.locator('[data-pwa-tab="account"]')
-        course_tab.focus()
-        page.keyboard.press("ArrowRight")
-        assert account_tab.get_attribute("aria-selected") == "true"
-        assert account_tab.evaluate("node => document.activeElement === node")
-        assert page.locator("#hsk-pwa-notice-list").get_attribute("aria-labelledby") == "hsk-pwa-tab-account"
-        page.keyboard.press("ArrowLeft")
-        assert course_tab.get_attribute("aria-selected") == "true"
-        assert page.locator("#hsk-pwa-notice-list").get_attribute("aria-labelledby") == "hsk-pwa-tab-course"
-        page.locator('[data-pwa-tab="account"]').click()
-        assert page.get_by_text("Hisob xabari").is_visible()
+        assert box and box["x"] == box["y"] == 0
+        assert box["width"] == width
+        assert box["height"] == page.evaluate("innerHeight")
+        assert page.get_by_role("tab").count() == 0
         assert page.locator('[data-payment-status="approved"]').evaluate(
             "node => node.classList.contains('is-approved')"
         )
@@ -180,7 +170,9 @@ def test_rejected_receipt_centered_with_original_locale_and_one_action():
             "window.HSKAI_COURSE_I18N.uz['subscriptionPage.proRejectedTitle']"
         )
         assert page.locator("[data-pwa-retry]").is_visible()
-        assert not page.locator(".hsk-pwa-notice-tabs").is_visible()
+        assert not page.locator("#hsk-pwa-notice-list").is_visible()
+        box = dialog.bounding_box()
+        assert box and box["x"] > 0 and box["y"] > 0
         assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth + 1")
         browser.close()
 
@@ -226,6 +218,47 @@ def test_feedback_is_lesson_contextual_and_uses_csrf():
             "liked_other_text": None, "disliked_code": "price", "disliked_detail_text": None,
         }
         assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth + 1")
+        browser.close()
+
+
+@pytest.mark.parametrize("status,ordinary", [
+    (200, None),
+    (409, None),
+    (200, {"feedback_id": 80, "paid": False, "choices": {}}),
+    (200, {"feedback_id": 80, "paid": False, "choices": {
+        "liked": [{"code": "course", "label": "Kurs"}],
+        "disliked": [{"code": "price", "label": "Narx"}],
+    }}),
+])
+def test_post_lesson_feedback_waits_for_valid_form_and_current_screen(status, ordinary):
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page(viewport={"width": 390, "height": 844}, is_mobile=True, has_touch=True)
+        bootstrap(page)
+        pending = []
+        page.route("**/api/v3/pwa/feedback/lesson/prepare", lambda route: pending.append(route))
+        page.locator("main").evaluate("""node => {
+            node.tabIndex = -1;
+            node.focus();
+        }""")
+        with page.expect_request("**/api/v3/pwa/feedback/lesson/prepare"):
+            page.evaluate("""() => {
+                window.feedbackContextCurrent = true;
+                window.feedbackPending = window.HskPwaFeedback.open({
+                    confirmed: true, lessonId: 3, level: "hsk1",
+                    canOpen: () => window.feedbackContextCurrent,
+                });
+            }""")
+        root = page.locator("#hsk-pwa-feedback-root")
+        assert not root.is_visible()
+        assert page.locator("main").evaluate("node => document.activeElement === node")
+        if ordinary and ordinary.get("choices"):
+            # A valid response arriving after the learner moved away stays silent.
+            page.evaluate("window.feedbackContextCurrent = false")
+        pending[0].fulfill(status=status, json={"ok": status == 200, "ordinary": ordinary})
+        page.evaluate("window.feedbackPending")
+        assert not root.is_visible()
+        assert page.locator("main").evaluate("node => document.activeElement === node")
         browser.close()
 
 

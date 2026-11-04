@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Talaffuz mashqi</title>
 <link rel="icon" href="/assets/hsk-ai-avatar.webp" type="image/webp">
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="/assets/telegram-web-app.js?v=20261019-1"></script>
 <script src="/course_v3_data/hsk-course-i18n.js?v=20261021-a4cda8e3aa73"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script>
 <script defer src="/audio/words/index.js?v=20261014-offline-1"></script>
 <script defer src="/audio/words/client.js?v=20261014-persist-1"></script>
@@ -85,7 +85,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
 <script defer src="/assets/characters/hsk-study-preparing.js?v=20261009-compact-1"></script>
 <script defer src="/assets/characters/hsk-character-motion.js?v=20260921c"></script>
 <script defer src="/assets/characters/hsk-practice-coach.js?v=20260921a"></script>
-<script src="/course_v3_data/iphone-pwa-practice-boot.js?v=20261104-2"></script>
+<script src="/course_v3_data/iphone-pwa-practice-boot.js?v=20261104-3"></script>
 <script>
 /* Og'ir skriptlar (`defer`) HTML parse tugagach ishga tushadi. Server
    so'rovlari esa darhol ketadi — shu bilan JS yuklanishi va tarmoq
@@ -106,8 +106,14 @@ Object.keys(L).forEach(function(key){
   if(typeof v==="string"&&v)L[key]=v;
 });
 var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}document.querySelector(".top .ix").setAttribute("aria-label",L.back);document.querySelector(".mic").setAttribute("aria-label",PRONUNCIATION_UI.say||"Gapirish");
-function goBack(){location.href=(PWA_PRONUNCIATION_HOST?"/iphone-pwa/course":"/course-v3.html")+"?lang="+LANG+"&tab=mashq"}
-function goPremium(){location.href=(PWA_PRONUNCIATION_HOST?"/iphone-pwa/checkout":"/subscription.html")+"?lang="+LANG+"&source=v3_pronunciation_limit&mode=subscription&return_to=course&return_page=course_v3_pronunciation.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"")}
+function goBack(){
+  if(PWA_PRONUNCIATION_HOST&&window.HskPwaPracticeBoot){HskPwaPracticeBoot.back();return}
+  location.href=(PWA_PRONUNCIATION_HOST?"/iphone-pwa/course":"/course-v3.html")+"?lang="+LANG+"&tab=mashq";
+}
+function goPremium(){
+  if(PWA_PRONUNCIATION_HOST&&window.HskPwaPracticeBoot&&HskPwaPracticeBoot.checkout("v3_pronunciation_limit"))return;
+  location.href=(PWA_PRONUNCIATION_HOST?"/iphone-pwa/checkout":"/subscription.html")+"?lang="+LANG+"&source=v3_pronunciation_limit&mode=subscription&return_to=course&return_page=course_v3_pronunciation.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"");
+}
 var PWA_PRONUNCIATION_HOST=location.pathname==="/iphone-pwa/practice/pronunciation";
 var PWA_PRONUNCIATION_SESSION=null,PWA_PRONUNCIATION_PROMISE=null;
 /* Foydalanuvchi darajasi: URL param faqat boshlang'ich qiymat, server (users.level)
@@ -332,21 +338,23 @@ function load(){
 function toast(t){var el=document.getElementById('toast');el.textContent=t;el.classList.add('show');setTimeout(function(){el.classList.remove('show')},1100)}
 // Real pronunciation check: record mic -> server speech-to-text -> character-match score.
 function initData(){return PWA_PRONUNCIATION_HOST?"":((tg&&tg.initData)?tg.initData:"")}
+function practiceSignIn(){if(window.HskPwaPracticeBoot)HskPwaPracticeBoot.signIn();else location.replace("/iphone-pwa")}
 function pronunciationPwaSession(){
   if(!PWA_PRONUNCIATION_HOST)return Promise.reject(new Error("pwa_host_required"));
   if(!PWA_PRONUNCIATION_PROMISE){
     PWA_PRONUNCIATION_PROMISE=fetch("/api/v3/pwa-auth/session",{
       credentials:"same-origin",cache:"no-store",redirect:"error"
     }).then(function(r){
-      if(r.status===401){location.replace("/iphone-pwa");throw new Error("pwa_session_required")}
+      if(r.status===401){practiceSignIn();throw new Error("pwa_session_required")}
       if(!r.ok)throw new Error("pwa_session_unavailable");
       return r.json();
     }).then(function(s){
       if(!s||s.ok!==true||!Number.isSafeInteger(Number(s.user_id))||
          Number(s.user_id)<=0||typeof s.csrf!=="string"||!s.csrf)
         throw new Error("pwa_session_invalid");
+      if(window.HskPwaPracticeBoot&&!HskPwaPracticeBoot.acceptActor(s.user_id))throw new Error("pwa_actor_changed");
       if(PWA_PRONUNCIATION_SESSION&&PWA_PRONUNCIATION_SESSION.user_id!==s.user_id){
-        location.replace("/iphone-pwa");throw new Error("pwa_actor_changed");
+        practiceSignIn();throw new Error("pwa_actor_changed");
       }
       PWA_PRONUNCIATION_SESSION=s;return s;
     }).catch(function(e){PWA_PRONUNCIATION_PROMISE=null;throw e});
@@ -361,7 +369,7 @@ function verifyPwaReturn(){
   pronunciationPwaSession().catch(function(error){
     // A connectivity/5xx failure is not a logout. 401 or an account change
     // already redirects inside the session verifier; malformed actors fail closed.
-    if(error&&error.message==="pwa_session_invalid")location.replace("/iphone-pwa");
+    if(error&&error.message==="pwa_session_invalid")practiceSignIn();
   });
 }
 if(PWA_PRONUNCIATION_HOST){
@@ -426,6 +434,9 @@ function rec(){
 function startRec(){
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder){clog("mic_nosupport","",{md:!!navigator.mediaDevices,gum:!!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia),mr:!!window.MediaRecorder});setHint(L.noSupport);return;}
   navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
+    if(window.HskPwaPracticeBoot&&HskPwaPracticeBoot.isClosing()){
+      stream.getTracks().forEach(function(track){track.stop()});return;
+    }
     mediaStream=stream;chunks=[];var mime=pickMime(),opts={audioBitsPerSecond:32000};if(mime)opts.mimeType=mime;
     try{mediaRecorder=new MediaRecorder(stream,opts)}catch(_){mediaRecorder=mime?new MediaRecorder(stream,{mimeType:mime}):new MediaRecorder(stream)}
     mediaRecorder.ondataavailable=function(e){if(e.data&&e.data.size>0)chunks.push(e.data)};
@@ -434,6 +445,14 @@ function startRec(){
     setRec(true);setHint(L.listening);
     clearTimeout(autoStop);autoStop=setTimeout(stopRec,MAX_REC_MS);
   }).catch(function(err){clog("mic_deny",(err&&err.name)||"",{});setHint(L.micDeny)});
+}
+function cancelPracticeRecording(){
+  clearTimeout(autoStop);
+  if(mediaRecorder&&mediaRecorder.state!=="inactive"){
+    mediaRecorder.onstop=null;mediaRecorder.ondataavailable=null;mediaRecorder.stop();
+  }
+  if(mediaStream)mediaStream.getTracks().forEach(function(track){track.stop()});
+  mediaStream=null;
 }
 function stopRec(){clearTimeout(autoStop);if(mediaRecorder&&mediaRecorder.state!=="inactive"){setRec(false);setHint(L.analyzing);mediaRecorder.stop();}}
 function extFromMime(mt){mt=(mt||"").toLowerCase();if(/mp4|m4a|aac/.test(mt))return"mp4";if(/ogg/.test(mt))return"ogg";if(/mpeg|mp3/.test(mt))return"mp3";if(/wav/.test(mt))return"wav";return"webm";}
@@ -452,7 +471,7 @@ function onStopped(){
 function onErr(o){
   var code=o&&o.j&&o.j.code;
   if(code==="PRONOUNCE_LIMIT_EXCEEDED"){showLimit();return;}
-  if(code==="INVALID_INIT_DATA"){setHint(L.needTg);return;}
+  if(code==="INVALID_INIT_DATA"){setHint(PWA_PRONUNCIATION_HOST?L.netErr:L.needTg);return;}
   if(PWA_PRONUNCIATION_HOST&&(code==="AI_TIMEOUT"||code==="AI_FAILED")){setHint(L.netErr);return;}
   setHint((o&&o.j&&o.j.message)||L.netErr);
 }

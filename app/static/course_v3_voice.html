@@ -4,7 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>AI Voice</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script>
+var PWA_VOICE_HOST=location.pathname==="/iphone-pwa/practice/voice";
+if(PWA_VOICE_HOST)document.documentElement.classList.add("hsk-pwa-browser");
+else document.write('<script src="/assets/telegram-web-app.js?v=20261019-1"><\/script>');
+</script>
 <script src="/course_v3_data/hsk-course-i18n.js?v=20261021-a4cda8e3aa73"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script>
 <style>
 html.hsk-pwa-browser input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]),
@@ -147,7 +151,7 @@ button{font-family:inherit;border:none;background:none;color:inherit}
 
   <div class="top">
     <button class="ic" onclick="endCall()" aria-label="yopish"><i class="ti ti-x"></i></button>
-    <div class="tinfo"><div class="tn" id="nm">阿宝 · Aobao</div><div class="tc" id="cnt">对话 1 / 7</div></div>
+    <div class="tinfo"><div class="tn" id="nm">阿宝 · Aobao</div><div class="tc" id="cnt"></div></div>
     <button class="ic" onclick="openSettings()" aria-label="sozlamalar"><i class="ti ti-settings"></i></button>
   </div>
 
@@ -277,8 +281,6 @@ function chr(mood,p){
 }
 
 /* ---- backend wiring (STT + AI reply via /api/voice-practice) ---- */
-var PWA_VOICE_HOST=location.pathname==="/iphone-pwa/practice/voice";
-if(PWA_VOICE_HOST)document.documentElement.classList.add("hsk-pwa-browser");
 var PWA_VOICE_SESSION=null,PWA_VOICE_PROMISE=null;
 function initData(){return PWA_VOICE_HOST?"":((tg&&tg.initData)?tg.initData:"")}
 function voicePwaActor(){
@@ -308,7 +310,7 @@ function voiceStatus(){
     return fetch("/api/v3/pwa/voice/me",{credentials:"same-origin",cache:"no-store",redirect:"error"});
   });
 }
-function voicePost(url,body){
+function voicePost(url,body,keepalive){
   if(!PWA_VOICE_HOST)return fetch(url,{
     method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)
   });
@@ -325,7 +327,7 @@ function voicePost(url,body){
   return voicePwaActor().then(function(s){
     return fetch(mapped,{
       method:"POST",headers:{"Content-Type":"application/json","X-HSK-PWA-CSRF":s.csrf},
-      credentials:"same-origin",cache:"no-store",redirect:"error",body:JSON.stringify(payload)
+      credentials:"same-origin",cache:"no-store",redirect:"error",body:JSON.stringify(payload),keepalive:!!keepalive
     });
   });
 }
@@ -357,6 +359,33 @@ if(PWA_VOICE_HOST){
   document.addEventListener("visibilitychange",function(){
     if(document.visibilityState==="visible")verifyPwaReturn();
   });
+  window.addEventListener("pagehide",function(){
+    stopHard();stopSpeak();
+    if(!sess)return;
+    var sid=sess;sess=null;started=false;
+    voicePost("/api/voice-practice/session/end",{session_id:sid},true).catch(function(){});
+  });
+  var voiceSwipe=null;
+  document.addEventListener("touchstart",function(ev){
+    if(ev.touches.length!==1||ev.target.closest("textarea,#mic")){voiceSwipe=null;return}
+    var touch=ev.touches[0];
+    voiceSwipe={x:touch.clientX,y:touch.clientY,dx:0};
+  },{passive:true});
+  document.addEventListener("touchmove",function(ev){
+    if(!voiceSwipe||ev.touches.length!==1){voiceSwipe=null;return}
+    var touch=ev.touches[0],dx=touch.clientX-voiceSwipe.x,dy=Math.abs(touch.clientY-voiceSwipe.y);
+    if(dy>8&&dy>=Math.abs(dx)*1.15){voiceSwipe=null;return}
+    if(dx>=12&&dx>=dy*1.25){voiceSwipe.dx=dx;if(ev.cancelable)ev.preventDefault()}
+  },{passive:false});
+  document.addEventListener("touchend",function(){
+    var start=voiceSwipe;voiceSwipe=null;
+    if(!start||start.dx<Math.min(56,Math.max(32,window.innerWidth-start.x-8)))return;
+    if($("hintSheet").classList.contains("on"))closeHints();
+    else if($("setSheet").classList.contains("on"))closeSettings();
+    else if($("kbPanel").classList.contains("on"))closeKb();
+    else goBack();
+  },{passive:true});
+  document.addEventListener("touchcancel",function(){voiceSwipe=null},{passive:true});
 }
 var PERS={bao:{role:"friend",voice:"female",name:L.baoName},li:{role:"teacher_li",voice:"male",name:L.liName}};
 var persona="bao";
@@ -375,7 +404,11 @@ function mtr(m){return !m?"":(typeof m==="string"?m:(m[LANG]||m.ru||m.uz||""))}
 
 function setChar(m){$("char").innerHTML=chr(m,persona);$("char").className="charwrap"+(m==="talk"?" speaking":"")}
 function setStatus(t){$("status").textContent=t||""}
-function setCnt(){$("cnt").textContent="对话 "+Math.min(turn+1,maxDialogs)+" / "+maxDialogs}
+function setCnt(){
+  $("cnt").textContent=PWA_VOICE_HOST
+    ?String(VOICE_PAGE_UI["courseVoiceInline.turnOf"]||"{n}").replace("{n}",turn+1)
+    :"对话 "+Math.min(turn+1,maxDialogs)+" / "+maxDialogs;
+}
 function setName(){$("nm").textContent=PERS[persona].name;$("setPersonaV").textContent=PERS[persona].name}
 function setHold(t){$("holdhint").textContent=t||""}
 function micBusy(on){$("mic").disabled=!!on}
@@ -434,7 +467,7 @@ $("hintBody").addEventListener("click",function(e){
 
 /* ---- keyboard panel ---- */
 function openKb(){$("ctrlRow").classList.add("off");$("kbPanel").classList.add("on");setHold("");$("kbText").focus()}
-function closeKb(){$("kbPanel").classList.remove("on");$("ctrlRow").classList.remove("off");setHold(started?L.holdMic:"")}
+function closeKb(){$("kbText").blur();$("kbPanel").classList.remove("on");$("ctrlRow").classList.remove("off");setHold(started?L.holdMic:"")}
 function syncSend(){$("kbSend").disabled=!$("kbText").value.trim()}
 $("kbText").addEventListener("input",function(){var t=$("kbText");t.style.height="auto";t.style.height=Math.min(t.scrollHeight,96)+"px";syncSend()});
 $("kbText").addEventListener("focus",function(){setTimeout(chatScroll,250)});
@@ -470,7 +503,7 @@ function onStartError(o){
   setChar("happy");
   var code=o.j&&o.j.code;
   if(code==="LIMIT_EXCEEDED"||o.status===403){showPaywall();return;}
-  if(code==="USER_NOT_FOUND"){setStatus(L.startBot);return;}
+  if(code==="USER_NOT_FOUND"&&!PWA_VOICE_HOST){setStatus(L.startBot);return;}
   setStatus(L.sendErr);
 }
 
@@ -527,7 +560,7 @@ function cancelRecording(){
   try{if(mediaStream)mediaStream.getTracks().forEach(function(t){t.stop()})}catch(e){}
   mediaStream=null;mediaRecorder=null;setChar("happy");
 }
-function stopHard(){clearTimeout(autoStop);holdAt=0;holdOk=false;recAt=0;try{if(mediaRecorder&&mediaRecorder.state!=="inactive")mediaRecorder.stop()}catch(e){}try{if(mediaStream)mediaStream.getTracks().forEach(function(t){t.stop()})}catch(e){}mediaStream=null}
+function stopHard(){clearTimeout(autoStop);holdAt=0;holdOk=false;recAt=0;try{if(mediaRecorder){if(PWA_VOICE_HOST)mediaRecorder.onstop=null;if(mediaRecorder.state!=="inactive")mediaRecorder.stop()}}catch(e){}try{if(mediaStream)mediaStream.getTracks().forEach(function(t){t.stop()})}catch(e){}mediaStream=null}
 function extFromMime(mt){mt=(mt||"").toLowerCase();if(/mp4|m4a|aac/.test(mt))return"mp4";if(/ogg/.test(mt))return"ogg";if(/mpeg|mp3/.test(mt))return"mp3";if(/wav/.test(mt))return"wav";return"webm"}
 function onStopped(){
   var mt=(mediaRecorder&&mediaRecorder.mimeType)||"audio/webm";

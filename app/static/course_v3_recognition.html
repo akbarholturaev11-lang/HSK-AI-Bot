@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Ieroglif tanish</title>
 <link rel="icon" href="/assets/hsk-ai-avatar.webp" type="image/webp">
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="/assets/telegram-web-app.js?v=20261019-1"></script>
 <script src="/course_v3_data/hsk-course-i18n.js?v=20261021-a4cda8e3aa73"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script>
 <script defer src="/audio/words/index.js?v=20261014-offline-1"></script>
 <script defer src="/audio/words/client.js?v=20261014-persist-1"></script>
@@ -60,7 +60,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
 <script defer src="/assets/characters/hsk-study-preparing.js?v=20261009-compact-1"></script>
 <script defer src="/assets/characters/hsk-character-motion.js?v=20260921c"></script>
 <script defer src="/assets/characters/hsk-practice-coach.js?v=20260921a"></script>
-<script src="/course_v3_data/iphone-pwa-practice-boot.js?v=20261104-2"></script>
+<script src="/course_v3_data/iphone-pwa-practice-boot.js?v=20261104-3"></script>
 <script>
 /* Og'ir skriptlar (`defer`) HTML parse tugagach ishga tushadi. Server
    so'rovlari esa darhol ketadi — shu bilan JS yuklanishi va tarmoq
@@ -81,21 +81,23 @@ var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()
 function initData(){return location.pathname==="/iphone-pwa/practice/recognition"?"":((tg&&tg.initData)?tg.initData:"")}
 var PWA_RECOGNITION_HOST=location.pathname==="/iphone-pwa/practice/recognition";
 var PWA_RECOGNITION_SESSION=null,PWA_RECOGNITION_PROMISE=null;
+function practiceSignIn(){if(window.HskPwaPracticeBoot)HskPwaPracticeBoot.signIn();else location.replace("/iphone-pwa")}
 function recognitionPwaSession(){
   if(!PWA_RECOGNITION_HOST)return Promise.reject(new Error("pwa_host_required"));
   if(!PWA_RECOGNITION_PROMISE){
     PWA_RECOGNITION_PROMISE=fetch("/api/v3/pwa-auth/session",{
       credentials:"same-origin",cache:"no-store",redirect:"error"
     }).then(function(r){
-      if(r.status===401){location.replace("/iphone-pwa");throw new Error("pwa_session_required")}
+      if(r.status===401){practiceSignIn();throw new Error("pwa_session_required")}
       if(!r.ok)throw new Error("pwa_session_unavailable");
       return r.json();
     }).then(function(s){
       if(!s||s.ok!==true||typeof s.csrf!=="string"||!s.csrf||
          !Number.isSafeInteger(Number(s.user_id))||Number(s.user_id)<=0)
         throw new Error("pwa_session_invalid");
+      if(window.HskPwaPracticeBoot&&!HskPwaPracticeBoot.acceptActor(s.user_id))throw new Error("pwa_actor_changed");
       if(PWA_RECOGNITION_SESSION&&PWA_RECOGNITION_SESSION.user_id!==s.user_id){
-        location.replace("/iphone-pwa");throw new Error("pwa_actor_changed");
+        practiceSignIn();throw new Error("pwa_actor_changed");
       }
       PWA_RECOGNITION_SESSION=s;return s;
     }).catch(function(e){PWA_RECOGNITION_PROMISE=null;throw e});
@@ -110,7 +112,7 @@ function verifyPwaReturn(){
   recognitionPwaSession().catch(function(error){
     // A connectivity/5xx failure is not a logout. 401 or an account change
     // already redirects inside the session verifier; malformed actors fail closed.
-    if(error&&error.message==="pwa_session_invalid")location.replace("/iphone-pwa");
+    if(error&&error.message==="pwa_session_invalid")practiceSignIn();
   });
 }
 if(PWA_RECOGNITION_HOST){
@@ -140,7 +142,10 @@ function recognitionPost(url,body,keepalive){
     });
   });
 }
-function goBack(){location.href=(PWA_RECOGNITION_HOST?"/iphone-pwa/course":"/course-v3.html")+"?lang="+LANG+"&tab=mashq"}
+function goBack(){
+  if(PWA_RECOGNITION_HOST&&window.HskPwaPracticeBoot){HskPwaPracticeBoot.back();return}
+  location.href=(PWA_RECOGNITION_HOST?"/iphone-pwa/course":"/course-v3.html")+"?lang="+LANG+"&tab=mashq";
+}
 /* Foydalanuvchi darajasi: URL param faqat boshlang'ich qiymat, server (users.level)
    asosiy manba — mashq har doim userning haqiqiy HSK darajasiga mos chiqadi.
    CUR — joriy dars (tugatilgan+1): faqat O'RGANILGAN darslar so'zlari chiqadi. */
@@ -160,7 +165,10 @@ function wordLvNum(w){return parseInt(String(w.lv||"").replace(/[^0-9]/g,"").sli
 function isHsk30(){return /^nhsk[1-3]$/.test(LV||"")}
 function wordSource(){return isHsk30()?(window.HSK30_WORDS||[]):(typeof WORDS!=="undefined"?WORDS:[])}
 function wordGate(h){return (isHsk30()?(window.HSK30_WORD_GATE||{}):(window.HSK_WORD_GATE||{}))[h]}
-function goPremium(){location.href=(PWA_RECOGNITION_HOST?"/iphone-pwa/checkout":"/subscription.html")+"?lang="+LANG+"&source=v3_recognition_limit&mode=subscription&return_to=course&return_page=course_v3_recognition.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"")}
+function goPremium(){
+  if(PWA_RECOGNITION_HOST&&window.HskPwaPracticeBoot&&HskPwaPracticeBoot.checkout("v3_recognition_limit"))return;
+  location.href=(PWA_RECOGNITION_HOST?"/iphone-pwa/checkout":"/subscription.html")+"?lang="+LANG+"&source=v3_recognition_limit&mode=subscription&return_to=course&return_page=course_v3_recognition.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"");
+}
 /* Reklama moduli: kunlik bepul limit tugagach, user reklama ko'rib yana kira
    oladi (bo'limga kuniga 2 marta). Reklama sessiya boshi/o'rtasi/oxirida. */
 SCRIPTS_READY.then(function(){if(!PWA_RECOGNITION_HOST&&window.CourseAds)CourseAds.config({lang:LANG,initData:initData(),feature:"recognition",level:(params.get("level")||"hsk1"),onSubscribe:goPremium})});

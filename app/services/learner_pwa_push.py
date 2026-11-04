@@ -40,6 +40,8 @@ _LEASE_SECONDS = 45
 _MAX_BATCH = 50
 _PUSH_PATH = "/iphone-pwa/course?notice=1"
 _NO_STORE_EVENT = {"course", "account", "payment"}
+ACCOUNT_RESTRICTION_KEY = "pwa_account_restriction"
+_ACCOUNT_RESTRICTION_TTL = timedelta(minutes=15)
 
 
 class PushKeys(BaseModel):
@@ -208,6 +210,37 @@ async def enqueue_event(session, *, user_id, source, source_id, language, now=No
     return queued
 
 
+async def enqueue_account_restriction(session, *, user, settings_obj, now=None) -> None:
+    """Queue a lock-screen update within the existing admin block transaction."""
+    if (
+        getattr(settings_obj, "PWA_AUTH_ENABLED", False) is not True
+        or getattr(settings_obj, "PWA_PUSH_ENABLED", False) is not True
+        or getattr(settings_obj, "PWA_PUSH_SEND_ENABLED", False) is not True
+        or UserAccessStateService.classify(user) != UserAccessState.BLOCKED
+    ):
+        return
+    stamp = _utc(now or datetime.now(timezone.utc))
+    try:
+        async with session.begin_nested():
+            if not await active_subscriptions(session, user.id, now=stamp, limit=1):
+                return
+            # Store an explicit event receipt for the outbox and no account
+            # data or admin notes. This row has no Android/Telegram fallback.
+            notice = AccountNoticeDelivery(
+                user_id=user.id, key=ACCOUNT_RESTRICTION_KEY, language=user.language or "ru",
+                title="HSK AI", body="", action="course", status="pwa_only",
+                reason=ACCOUNT_RESTRICTION_KEY, created_at=stamp,
+            )
+            session.add(notice)
+            await session.flush()
+            await enqueue_event(
+                session, user_id=user.id, source="account", source_id=notice.id,
+                language=notice.language, now=stamp,
+            )
+    except Exception:
+        logger.warning("Learner PWA account restriction enqueue unavailable", exc_info=False)
+
+
 async def revoke_device_subscriptions(session, device_id: str, *, now=None) -> int:
     stamp = _utc(now or datetime.now(timezone.utc))
     rows = (await session.scalars(select(LearnerPwaPushSubscription).where(
@@ -342,12 +375,27 @@ async def _smart_study_event_allowed(session, notification) -> bool:
     return False
 
 
-async def _event_exists(session, row) -> bool:
+async def _event_exists(session, row, *, blocked: bool, now: datetime) -> bool:
     if row.source == "account":
-        return await session.scalar(select(AccountNoticeDelivery.id).where(
+        notice = (await session.execute(select(
+            AccountNoticeDelivery.key, AccountNoticeDelivery.created_at,
+        ).where(
             AccountNoticeDelivery.id == row.source_id,
             AccountNoticeDelivery.user_id == row.user_id,
-        )) is not None
+        ))).one_or_none()
+        if notice is None:
+            return False
+        if notice.key != ACCOUNT_RESTRICTION_KEY:
+            return not blocked
+        if not blocked or _utc(notice.created_at) + _ACCOUNT_RESTRICTION_TTL <= now:
+            return False
+        latest = await session.scalar(select(AccountNoticeDelivery.id).where(
+            AccountNoticeDelivery.user_id == row.user_id,
+            AccountNoticeDelivery.key == ACCOUNT_RESTRICTION_KEY,
+        ).order_by(AccountNoticeDelivery.id.desc()).limit(1))
+        return latest == row.source_id
+    if blocked:
+        return False
     if row.source == "course":
         notification = await session.get(CourseUserNotification, row.source_id)
         if notification is None or notification.user_id != row.user_id:
@@ -426,9 +474,9 @@ async def _claim_one(session_factory, *, now: datetime, worker_id: str):
                     AccountDeletionRequest.status.in_(("submitted", "processing")),
                 ).limit(1))
                 user = await session.get(User, row.user_id)
+                blocked = UserAccessStateService.classify(user) == UserAccessState.BLOCKED
                 if (live_session is None or deletion_pending is not None or user is None
-                        or UserAccessStateService.classify(user) == UserAccessState.BLOCKED
-                        or not await _event_exists(session, row)):
+                        or not await _event_exists(session, row, blocked=blocked, now=now)):
                     row.state = "cancelled"
                     row.updated_at = now
                     row.next_attempt_at = None

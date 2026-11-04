@@ -4470,10 +4470,14 @@ async def admin_miniapp_user_block(request: Request):
         target_id = user.telegram_id
         if target_id and _is_admin_id(target_id):
             return JSONResponse(status_code=400, content={"ok": False, "error": "cannot_block_admin"})
+        was_blocked = user.status == "blocked"
         user = await UserRepository(session).set_blocked(user, blocked)
+        if blocked and not was_blocked:
+            from app.services.learner_pwa_push import enqueue_account_restriction
+            await enqueue_account_restriction(session, user=user, settings_obj=settings)
         await session.commit()
         status = user.status
-        # Bloklashda xabar yuborilmaydi: blok odatda suiiste'mol uchun qo'yiladi
+        # Bloklashda Telegram xabari yuborilmaydi: blok odatda suiiste'mol uchun qo'yiladi
         # va ogohlantirish bahs hamda yangi akkaunt ochishga turtki beradi.
         # Blokdan chiqarish esa yaxshi xabar — user qaytib kelishi kerak.
         if not blocked and target_id:

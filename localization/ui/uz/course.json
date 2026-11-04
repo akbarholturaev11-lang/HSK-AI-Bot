@@ -61,6 +61,8 @@
     "pwaPush.enabled": "Push bildirishnomalar yoqilgan",
     "pwaPush.blocked": "iPhone sozlamalarida push'ga ruxsat bering",
     "pwaPush.error": "Yoqib bo'lmadi. Qayta urinib ko'ring.",
+    "pwaInbox.empty": "Hozircha bildirishnomalar yo‘q.",
+    "pwaSettings.helpText": "Ilovada muammo bo‘lsa, yordam xizmatiga qisqa yozing. Iloji bo‘lsa, ekran tasvirini ham yuboring.",
     "cont": "Davom etish",
     "check": "Tekshirish",
     "next": "Davom etish",

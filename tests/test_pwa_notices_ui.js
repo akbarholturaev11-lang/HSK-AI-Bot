@@ -8,8 +8,8 @@ const vm = require("node:vm");
 const source = fs.readFileSync("app/static/course_v3_data/iphone-pwa-notices.js", "utf8");
 const shell = fs.readFileSync("app/static/course-v3.html", "utf8");
 const css = fs.readFileSync("app/static/course_v3_data/iphone-pwa-glass.css", "utf8");
-assert(shell.includes('src="/course_v3_data/iphone-pwa-notices.js?v=20261104-b2923983a5a6"'));
-assert(shell.includes('href="/course_v3_data/iphone-pwa-glass.css?v=20261104-175a0ec6f920'));
+assert.match(shell, /src="\/course_v3_data\/iphone-pwa-notices\.js\?v=[^"]+"/);
+assert.match(shell, /href="\/course_v3_data\/iphone-pwa-glass\.css\?v=[^"]+"/);
 assert(shell.includes('PWA_COURSE_HOST?\'<button class="pwa-notices-button"'));
 assert(shell.includes('pwaPushSettingsRowHtml()'));
 assert(!shell.includes('class="pwa-feedback-button"'),"profile feedback shortcut is removed");
@@ -149,16 +149,19 @@ async function main(){
     "dismiss button uses the canonical localized accessibility label");
   await standard.window.HskPwaInbox.open();
   const list = standard.root().querySelector("#hsk-pwa-notice-list");
-  assert.equal(list.children.length, 1);
+  assert.equal(list.children.length, 4, "one list contains both feeds and both payment outcomes");
   assert.equal(list.children[0].children[0].textContent, "Lesson available");
-  standard.root().listeners.click({target:{closest:(selector)=>selector==='[data-pwa-tab]'
-    ? {dataset:{pwaTab:"account"}} : null}});
-  const accountRows = standard.root().querySelector("#hsk-pwa-notice-list").children;
-  assert(accountRows.some((row)=>row.attrs["data-payment-status"]==="approved"&&row.className.includes("is-approved")),
+  assert.equal(list.children[1].children[0].textContent, "Account notice");
+  assert(!source.includes("data-pwa-tab"), "inbox has no split feed controls");
+  assert(list.children.some((row)=>row.attrs["data-payment-status"]==="approved"&&row.className.includes("is-approved")),
     "confirmed subscription receipts use the success color");
-  assert(accountRows.some((row)=>row.attrs["data-payment-status"]==="rejected"&&row.className.includes("is-rejected")),
+  assert(list.children.some((row)=>row.attrs["data-payment-status"]==="rejected"&&row.className.includes("is-rejected")),
     "rejected subscription receipts use the error color");
-  assert.equal(standard.requests.length, 3, "two owned feeds + session validation");
+  assert.equal(standard.root().querySelector(".hsk-pwa-close").attrs["aria-label"], "action.back");
+  assert.equal(standard.requests.length, 4, "both feeds revalidate their owner independently");
+  assert(standard.window.HskPwaInbox.backTarget());
+  standard.window.HskPwaInbox.back();
+  assert.equal(standard.window.HskPwaInbox.backTarget(),null);
   assert(standard.requests.every((q) => q.options.credentials === "same-origin"));
   assert.equal(standard.navigation.length, 0, "reading inbox cannot navigate or grant access");
 
@@ -257,24 +260,13 @@ async function main(){
   assert(!browserTab.requests.some((request)=>request.url.endsWith("/push/status")),
     "ordinary Safari tab does not query for push subscription state");
 
-  const firstOpenStorage = new Map();
-  const firstOpen = harness({standalone:true,sharedStorage:firstOpenStorage});
+  const firstOpen = harness({standalone:true});
   await firstOpen.loadAndTick();
-  assert.equal(firstOpen.root().querySelector("#hsk-pwa-push-view").hidden,false,
-    "first installed PWA open automatically offers the in-app push consent screen");
+  assert.equal(firstOpen.root().hidden,true,"a returning learner never gets an unsolicited push prompt");
   assert.equal(firstOpen.permissionFetchCount(),null,
-    "first-load prompt does not open the iOS permission sheet without a tap");
-  assert.equal(firstOpenStorage.get("hskai:pwa:push-prompt-seen:v1:7"),"1",
-    "first prompt state is scoped to the verified account");
-
-  const delayedFirstOpen = harness({standalone:true,splashReady:false});
-  await delayedFirstOpen.loadAndTick();
-  assert.equal(delayedFirstOpen.root().querySelector("#hsk-pwa-push-view").hidden,true,
-    "permission prompt waits while the course splash is active");
-  delayedFirstOpen.setSplashDone();
-  await delayedFirstOpen.flushTimers();
-  assert.equal(delayedFirstOpen.root().querySelector("#hsk-pwa-push-view").hidden,false,
-    "first-load prompt resumes once the course is ready");
+    "first-load does not open the iOS permission sheet");
+  assert(!firstOpen.requests.some((request)=>request.url.endsWith("/push/status")),
+    "push status is read when Settings opens");
 
   const androidPwa = harness({standalone:true,vendor:"Google Inc."});
   await androidPwa.window.HskPwaInbox.open();
@@ -332,7 +324,7 @@ async function main(){
   assert.equal(denied.root().querySelector("#hsk-pwa-push-status").textContent,"pwaPush.blocked",
     "blocked browser permission is announced accessibly without requesting OS permission again");
   assert.equal(denied.root().querySelector("#hsk-pwa-push-action").hidden,true);
-  denied.root().listeners.click({target:{closest:(selector)=>selector==="#hsk-pwa-push-later"?{}:null}});
+  denied.window.HskPwaInbox.back();
   await denied.window.HskPwaInbox.open();
   assert.equal(denied.root().querySelector("#hsk-pwa-push-view").hidden,true,
     "reopening the inbox never moves the Settings access screen into notices");
@@ -362,6 +354,6 @@ async function main(){
   assert.equal(intentionalInbox.root().hidden,true,
     "a learner-opened inbox must not queue a payment alert behind it");
 
-  console.log("PWA notice UI: 28 behavior/ownership/safety checks passed");
+  console.log("PWA notice UI behavior, ownership and safety checks passed");
 }
 main().catch((err)=>{console.error(err);process.exitCode=1;});
