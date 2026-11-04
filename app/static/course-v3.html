@@ -8696,7 +8696,7 @@ function onStartError(o){
   setChar("happy");
   var code=o.j&&o.j.code;
   if(code==="LIMIT_EXCEEDED"||o.status===403){showPaywall();return;}
-  if(code==="USER_NOT_FOUND"){setStatus(L.startBot);return;}
+  if(code==="USER_NOT_FOUND"){setStatus(PWA_COURSE_HOST?L.sendErr:L.startBot);return;}
   setStatus(L.sendErr);
 }
 
