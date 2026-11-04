@@ -14,14 +14,17 @@ depends_on = None
 
 
 def _channel_constraint(table, new):
-    name = f"ck_{table}_channel"
+    # This name already includes the table prefix.  Mark it as finalized so
+    # Alembic's ck_%(table_name)s_%(constraint_name)s convention does not add
+    # a second prefix when running under the production migration context.
+    name = op.f(f"ck_{table}_channel")
     with op.batch_alter_table(table) as batch:
         batch.drop_constraint(name, type_="check")
         batch.create_check_constraint(name, new)
 
 
 def _device_constraint(table, new):
-    name = f"ck_{table}_device_channel"
+    name = op.f(f"ck_{table}_device_channel")
     with op.batch_alter_table(table) as batch:
         batch.drop_constraint(name, type_="check")
         batch.create_check_constraint(name, new)

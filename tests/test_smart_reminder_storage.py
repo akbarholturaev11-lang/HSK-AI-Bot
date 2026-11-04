@@ -31,6 +31,14 @@ PWA_SPEC = importlib.util.spec_from_file_location(
     "smart_pwa_channel_migration", ROOT / "alembic/versions/0148_smart_reminder_pwa_channel.py")
 PWA_MIGRATION = importlib.util.module_from_spec(PWA_SPEC)
 PWA_SPEC.loader.exec_module(PWA_MIGRATION)
+ANALYSIS_SPEC = importlib.util.spec_from_file_location(
+    "smart_analysis_migration", ROOT / "alembic/versions/0137_smart_analysis.py")
+ANALYSIS_MIGRATION = importlib.util.module_from_spec(ANALYSIS_SPEC)
+ANALYSIS_SPEC.loader.exec_module(ANALYSIS_MIGRATION)
+PWA_ANALYSIS_SPEC = importlib.util.spec_from_file_location(
+    "smart_pwa_analysis_channel_migration", ROOT / "alembic/versions/0149_smart_pwa_analysis_channel.py")
+PWA_ANALYSIS_MIGRATION = importlib.util.module_from_spec(PWA_ANALYSIS_SPEC)
+PWA_ANALYSIS_SPEC.loader.exec_module(PWA_ANALYSIS_MIGRATION)
 TABLES = {name: Base.metadata.tables[name] for name in MIGRATION.TABLES}
 PREF = SmartReminderPreference.__table__
 CONSENT = SmartReminderConsent.__table__
@@ -74,12 +82,21 @@ class StorageChecks:
 
     @staticmethod
     def migrate(connection, operation):
-        with Operations.context(MigrationContext.configure(connection)):
+        # Match alembic/env.py so batch constraint operations exercise the
+        # production metadata naming convention, including op.f() behavior.
+        context = MigrationContext.configure(
+            connection, opts={"target_metadata": Base.metadata},
+        )
+        with Operations.context(context):
             if operation == "upgrade":
                 MIGRATION.upgrade()
+                ANALYSIS_MIGRATION.upgrade()
                 PWA_MIGRATION.upgrade()
+                PWA_ANALYSIS_MIGRATION.upgrade()
             else:
+                PWA_ANALYSIS_MIGRATION.downgrade()
                 PWA_MIGRATION.downgrade()
+                ANALYSIS_MIGRATION.downgrade()
                 MIGRATION.downgrade()
 
     async def asyncTearDown(self):

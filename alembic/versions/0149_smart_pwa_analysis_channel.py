@@ -10,7 +10,9 @@ depends_on = None
 
 
 def _channel_constraint(table, definition):
-    name = f"ck_{table}_channel"
+    # Keep the established fully-qualified name intact under the metadata
+    # naming convention used by alembic/env.py.
+    name = op.f(f"ck_{table}_channel")
     with op.batch_alter_table(table) as batch:
         batch.drop_constraint(name, type_="check")
         batch.create_check_constraint(name, definition)
