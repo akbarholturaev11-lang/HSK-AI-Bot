@@ -19,22 +19,39 @@ The standalone learner PWA SHALL preserve existing **distinct** message classes 
 - **WHEN** a course/inbox item is read in the PWA
 - **THEN** the action and content are derived from the canonical account and authorized course target, preserve UZ/RU/TJ rendering, and do not mutate transport delivery or grant access
 
-### Requirement: Be ready for Smart Reminder V2 without prematurely enabling Web Push
-The PWA SHALL be designed as a **future channel adapter** of `docs/smart-reminders/SMART_REMINDER_MASTER_PLAN.md` D01/D03/D05/D06/D07/D10/D14 and the platform-neutral canonical `users.id` Smart preference/job/target contracts. It SHALL not introduce its own scheduler, daily reminder job, account-level opt-in, duplicate fallback or fake notification capability. Initial PWA release requires no push service worker, OS permission or subscription; those are necessary future V2 integration work with a separate tested browser push adapter.
+### Requirement: Deliver existing learner notifications through an explicitly enabled PWA push channel
+The PWA SHALL offer background push for existing account/service and course notification sources through a user-gesture permission and an owner-bound subscription. Push SHALL be additive to current Android/Telegram behavior, deduplicated per PWA device/event, and link back to the authenticated existing inbox/course. It SHALL NOT send private lesson, payment, or feedback content in the push payload.
 
-#### Scenario: First PWA launch before Smart V2
-- **WHEN** an installed or Safari PWA has no approved Web Push transport
-- **THEN** it reports its PWA channel as unsupported/not-registered rather than available
-- **AND** it does not request permission, enable an existing OFF channel, or dispatch a study reminder
+#### Scenario: Enable PWA notifications
+- **WHEN** an authenticated learner explicitly enables notifications from a supported installed PWA
+- **THEN** the browser requests OS permission from that user gesture and registers the resulting subscription to the same canonical `users.id` and active PWA device
+- **AND** permission is not requested automatically, in a Safari tab that cannot receive push, or when the feature is disabled
 
-#### Scenario: Future Smart Reminder integration
-- **WHEN** the approved V2 Web Push integration is implemented later
-- **THEN** only a real supported installed PWA with user-gesture OS permission, owner-bound Push API subscription, valid consent and verified device capability can become an eligible channel under the **existing** Smart Reminder selection engine
-- **AND** only the server-owned logical study job with its one-account/local-day bound, allowed chosen channel, acknowledgement and conservative fallback authorizes delivery; no duplicate PWA scheduler or account-wide preference table appears
+#### Scenario: Existing account or course event
+- **WHEN** a new canonical account/service or course notification is recorded for a learner with an active PWA subscription
+- **THEN** one visible, privacy-safe push is queued per active PWA device and event, with a safe PWA destination
+- **AND** the existing Android/Telegram delivery, acknowledgement, fallback, daily study cap, and inbox record remain unchanged
 
-#### Scenario: Opt-out and identity change
-- **WHEN** a user disables Smart reminders, loses OS permission, signs out, removes an installation or switches accounts
-- **THEN** future PWA push subscription/capability is invalidated or marked ineligible without reviving OFF, changing other channel consent or automatically choosing another provider under an unknown outcome
+#### Scenario: Revoke, expire, or switch account
+- **WHEN** OS permission is revoked, the push endpoint expires, the PWA session is revoked, or the account changes
+- **THEN** the endpoint becomes ineligible or revoked and cannot receive the next account's notices
+- **AND** an uncertain provider attempt is not replayed as though delivery were known
+
+### Requirement: Integrate Smart study push under existing consent and routing policy only
+PWA Smart Reminder delivery SHALL use the existing canonical `users.id` preference, consent, job, selected-channel, one-account/local-day, capability, and attempt contracts in `docs/smart-reminders/SMART_REMINDER_MASTER_PLAN.md`. A general PWA push subscription SHALL NOT by itself grant Smart study consent; no second scheduler, reminder job, fallback, or account-level preference may be created.
+
+#### Scenario: Eligible installed PWA destination
+- **WHEN** an existing Smart job is eligible and the account's explicit Smart preference permits the PWA channel, the PWA is installed, OS push is allowed, and its owner-bound subscription is active
+- **THEN** the existing selection and attempt flow may deliver that one server-owned job to the selected PWA destination
+- **AND** a manual Telegram/Android channel lock, Smart OFF, unknown consent, invalid capability, stale session, or already attempted job prevents the PWA send
+
+#### Scenario: Smart study is disabled or cannot be proven
+- **WHEN** Smart study is OFF, PWA channel consent/capability is missing or stale, or an external delivery result is unknown
+- **THEN** no PWA study reminder is sent and no other channel is silently selected or replayed
+
+#### Scenario: Account/service notice is not a study reminder
+- **WHEN** a subscription, payment, expiry, or limit notice is sent through PWA push
+- **THEN** it remains outside the Smart Reminder daily study cap and does not create Smart consent or a Smart job
 
 ### Requirement: Compact centered in-app feedback from the existing bot flows
 The PWA SHALL support the existing eligible ordinary bot feedback questions and release-feedback rating experience in a **small, dismissible, centrally aligned dialog** that does not replace the underlying course page. It SHALL reuse canonical `BotFeedback`/`ReleaseFeedback` owner, eligibility, campaign, response, reward and deduplication rules. The existing Telegram chat interaction remains unchanged. The PWA SHALL NOT show a modal solely because a Telegram chat message was sent, request an unsolicited campaign, invent another bonus, or surface an unrelated user's feedback.

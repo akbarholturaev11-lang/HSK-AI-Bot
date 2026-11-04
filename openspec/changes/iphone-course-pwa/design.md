@@ -24,25 +24,25 @@ Audit the **actual PWA-used** Mini App routes (some are defined directly in `app
 
 Keep grading, completion proofs, protected content and entitlement checks on the server. Preserve free/trial/paid/pending receipt distinctions, payment review/dedupe, referral ownership and cross-platform progress. Adapt only browser-specific checkout/receipt return; do not redesign payment policy. Clear account-specific browser state on logout/switch.
 
-### 4. Simple iPhone install surface; extras excluded
+### 4. Simple iPhone install surface and push-only worker
 
-Serve a dedicated learner HTTPS entry. Use existing branding, safe-area layout and a small manifest/icon where useful. Apple/WebKit confirms iPhone Home Screen web apps **do not require a service worker**; therefore no new offline storage infrastructure is necessary in v1. Do not implement Web Push, new reminders or an analytics pipeline as part of this task. No Admin PWA authentication or service-worker scope reuse.
+Serve a dedicated learner HTTPS entry. Use existing branding, safe-area layout and a small manifest/icon where useful. Register a push-only Service Worker at `/iphone-pwa/sw.js` with scope `/iphone-pwa/`; no offline cache or navigation interception is needed. Use feature detection and a direct learner action before requesting permission, because iOS Web Push requires an installed Home Screen web app and user gesture. Do not register a worker at `/`, where it could control Telegram or other clients. No Admin PWA auth/session/subscription reuse.
 
 Test Safari vs Home Screen, login return, audio and mic permission, backgrounding, navigation, paywall return and session expiry. If a browser API is unavailable, report the limitation without pretending parity. Reuse UZ/RU/TJ canonical localization rules for any new fixed copy.
 
 
-### 5. Preserve notification classes; defer only the Smart Web Push transport
+### 5. Preserve notification classes and add learner Web Push
 
-The Smart Reminder canonical [Master Plan](../../../docs/smart-reminders/SMART_REMINDER_MASTER_PLAN.md) D10/P5 expressly defines iPhone learner PWA as **future V2** over the shared `users.id` engine. Prepare an adapter boundary, NOT a second scheduler or premature study send:
+The Smart Reminder canonical [Master Plan](../../../docs/smart-reminders/SMART_REMINDER_MASTER_PLAN.md) D01/D03/D05/D06/D07/D10/D14 and shared `users.id` job engine remain authoritative. Add a learner Web Push transport without creating a second notification or reminder scheduler:
 
 | Source/class | v1 PWA when open | Future background transport / policy |
 | --- | --- | --- |
-| `CourseUserNotification` course/ranking/motivation feed (`app/services/course_notification_service.py`) | Authenticated account-scoped inbox or existing safe read adapter; no inference that inbox read means push delivered | Existing category policy; Smart study coordination stays separate |
-| Subscription/payment/limit/account notices (`notification_delivery_service.py` and current server account state) | Show canonical status plus any verified in-app notice actually stored. **Audit source coverage**: not every transactional message is necessarily in the course inbox | Preserve existing Android acknowledgement and Telegram fallback semantics, independently of D03 daily study limit. Future PWA transactional delivery requires its own reviewed adapter and eligibility |
-| Smart study reminders | Settings may show the actual canonical account Smart preference and unsupported/not-registered iPhone channel; no PWA study sending in v1 | V2: installed Home Screen, genuine user-gesture OS permission, own subscription, service worker, server-owned job and chosen eligible channel; D01/D03/D05/D06/D07/D14 guards. No second scheduler, auto opt-in or fallback on unknown delivery |
+| `CourseUserNotification` course/ranking/motivation feed (`app/services/course_notification_service.py`) | Existing authenticated in-app inbox | Queue one privacy-safe push per active learner PWA device/event; click opens the PWA course/inbox |
+| Subscription/payment/limit/account notices (`notification_delivery_service.py` and current server account state) | Existing account-notice rows and current authoritative payment state | Additive PWA push; preserve Android acknowledgment and Telegram fallback semantics, independently of D03 study cap |
+| Smart study reminders | Existing preference, consent, selected job/channel and attempts | PWA can be selected only with valid Smart consent + explicit OS/PWA capability, existing auto/manual routing and fresh job guards. No second scheduler, auto opt-in or fallback/replay on unknown delivery |
 | Ordinary bot feedback and release-feedback rating | Small server-eligible center dialog while learner is in PWA; no background push requirement | Keep original Telegram bot chat send/response path; never duplicate campaign or grant |
 
-**Privacy/ownership:** A PWA cookie belongs to canonical `users.id`, but a Telegram bot DM requires a real linked `telegram_id`. Unsupported Safari/Web Push must remain unknown or unavailable, never silently selected by Smart. A PWA study adapter added in V2 must honor one logical account/day job, selection/dedup, explicit channel OFF, OS denial, revocation, verified target/deep link and existing conservative attempt/fallback ledger. Do not infer receipt/open from an inbox view.
+**Privacy/ownership:** learner subscriptions bind to the authenticated PWA `DesktopDevice` and canonical `users.id`; Admin subscriptions remain isolated. Store endpoint hashes and encrypted endpoint/key material; push only generic localized text and a same-origin PWA target, then read detail from the authenticated server inbox. Push permission is always user-gesture initiated. For Smart, the general subscription does not create study consent; require the existing Smart preference/consent, selected-channel policy, active session/capability and one existing logical account/day job. Unknown outcomes remain non-replayable. In-app inbox read is never a push receipt.
 
 ### 6. Compact feedback center modal — reuse existing bot rules
 
@@ -60,8 +60,8 @@ Editable [HSK AI PWA notifications and feedback Figma](https://www.figma.com/des
 
 - **P0 — focused code inventory:** verify actual frontend API, auth/account, notice/feedback source eligibility and Smart V2 policy boundaries, not a broad repo audit.
 - **P1 — browser identity:** verified OAuth and secure session bridge, explicit account linking where needed, auth/CSRF/logout/ownership regressions.
-- **P2 — frontend and API parity:** thin host adapter and only necessary browser routes; same business services, lessons, grading, Pro, required inbox and eligible compact feedback. Review new Figma UI before code.
-- **P3 — iPhone and release QA:** Home Screen entry/icon/manifest, Safari/installed iPhone tests including in-app notifications, dialogs, voice/login/payment return; verify future Smart V2 channel remains OFF/unsupported and rollback works.
+- **P2 — frontend and API parity:** thin host adapter and only necessary browser routes; same business services, lessons, grading, Pro, in-app notices, push subscription controls and eligible compact feedback.
+- **P3 — iPhone and release QA:** Home Screen entry/icon/manifest, Safari/installed iPhone tests including push permission/delivery/revoke, dialogs, voice/login/payment return, Smart guards and rollback.
 
 Detailed bounded implementation tasks are solely in [tasks.md](tasks.md); this design does not create another task ledger.
 
@@ -71,11 +71,13 @@ Detailed bounded implementation tasks are solely in [tasks.md](tasks.md); this d
 | --- | --- |
 | Security | Real provider sign-in/link, cookie + CSRF, expiry/logout/revocation, forged actor/Telegram initData denied, cross-user isolation |
 | Course | Lesson/tests/homework/progress/grade, HSK tracks, Pro/free/pending/paid, no duplicate XP/referral |
-| UI | Same Mini App rendering on Telegram and iPhone; UZ/RU/TJ; voice permission/fallback |
-| iPhone | Safari and installed Home Screen: open, login return, resume, logout, course, payment return, keyboard/safe areas |
+| UI | Same Mini App rendering on Telegram and iPhone; UZ/RU/TJ; voice permission/fallback; notification controls |
+| iPhone | Safari and installed Home Screen: open, login return, resume, logout, course, payment return, keyboard/safe areas, push support/permission/subscription/click/revoke |
 | Isolation | Telegram native initData works; Android/Desktop sessions and server rules remain unchanged |
+| Push security | Same-origin/CSRF, canonical owner/device, encrypted subscription, no private payload, kill switch OFF path, endpoint expiry/revoke and duplicate protection |
+| Smart Reminder | Existing master/consent/manual channel/one-day job guards; no PWA auto-enrollment, daily-cap change, duplicate scheduler, or replay after unknown attempt |
 
-Rollback should disable the new learner entry/browser session only. Never delete account, progress, purchase, identity or payment records. Preserve existing live client routes. Treat any schema migration, new provider setup, feature flags or dependencies as conditional on verified need, not automatic requirements.
+Rollback disables the learner PWA push sender and PWA entry independently, revokes/invalidates learner PWA subscriptions as needed, and retains the additive schema until a verified safe downgrade is available. It never disables Android/Telegram delivery or deletes account, progress, purchase, identity, payment, or Smart Reminder evidence. All PWA push flags remain default OFF in code and no deployment configuration is changed here.
 
 ## Explicit unknowns
 
