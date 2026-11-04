@@ -103,6 +103,15 @@ class IphonePwaNavigationContractTests(unittest.TestCase):
         self.assertIn('LD[locale].micDeny=copy["pronunciation.micDeny"]', COURSE)
         self.assertIn('if(PWA_COURSE_HOST)Object.keys(LD)', COURSE)
 
+    def test_browser_profile_reads_account_owned_stats_and_no_telegram_avatar(self):
+        self.assertIn('"/api/miniapp/profile":"/api/v3/pwa/profile"', COURSE)
+        self.assertIn("function avatarImgHtml(tgId){return !PWA_COURSE_HOST&&tgId?", COURSE)
+        self.assertIn('function myAvatarImgHtml(){if(PWA_COURSE_HOST)return "";', COURSE)
+        self.assertIn("(PWA_COURSE_HOST?'':'<span class=\\\"ed\\\">", COURSE)
+        self.assertIn('async def pwa_profile(request: Request)', AUTH)
+        self.assertIn('get_profile_payload(actor)', AUTH)
+        self.assertIn('result["user"].pop("telegram_username", None)', AUTH)
+
     def test_telegram_avatar_edit_not_advertised_on_iphone(self):
         css = Path("app/static/course_v3_data/iphone-pwa-glass.css").read_text(
             encoding="utf-8"
