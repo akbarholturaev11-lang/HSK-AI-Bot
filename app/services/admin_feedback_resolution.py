@@ -5,15 +5,18 @@ same transaction, so a retry, process restart or double tap cannot silently
 create multiple notifications.
 """
 from datetime import datetime, timezone
+import logging
 import re
 
 from sqlalchemy import select
 
+from app.config import settings
 from app.db.models.account_notice_delivery import AccountNoticeDelivery
 from app.db.models.user import User
 from app.services.notification_delivery_service import TelegramNotice
 
 
+logger = logging.getLogger(__name__)
 _RELEASE_VERSION = re.compile(r"^[0-9]+(?:\.[0-9]+){1,3}$")
 
 
@@ -77,4 +80,22 @@ async def enqueue_android_fix_notice(
     )
     db.add(row)
     await db.flush()
+    if (
+        getattr(settings, "PWA_AUTH_ENABLED", False) is True
+        and getattr(settings, "PWA_PUSH_ENABLED", False) is True
+    ):
+        try:
+            from app.services.learner_pwa_push import enqueue_event
+
+            async with db.begin_nested():
+                await enqueue_event(
+                    db,
+                    user_id=user.id,
+                    source="account",
+                    source_id=row.id,
+                    language=lang,
+                    now=now,
+                )
+        except Exception:  # noqa: BLE001 - optional transport must not block admin resolution
+            logger.warning("Learner PWA push enqueue unavailable for Android fix notice")
     return row.id
