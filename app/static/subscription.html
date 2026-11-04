@@ -485,20 +485,24 @@ function courseReturnUrl(){
   return (PWA_CHECKOUT_HOST?"/iphone-pwa/course":"/course-v3.html")+"?"+query.toString();
 }
 function returnToCourseFromCheckout(){
-  /* On an actual Course -> Checkout visit, restoring the previous document
-     through browser history avoids a heavy full Course HTML/script download.
-     The Course pageshow handler revalidates account access and progress.
-     A deep-linked checkout never navigates to an unknown prior website. */
+  /* Course is served with Referrer-Policy:no-referrer; document.referrer
+     cannot prove navigation origin. Verify the short-lived same-tab marker
+     created only on Course -> Checkout, then restore the previous Course
+     document from browser history (often BFCache) without a heavy reload. */
   if(PWA_CHECKOUT_HOST&&window.history&&window.history.length>1){
     try{
-      var from=new URL(document.referrer||"",location.href);
-      if(from.origin===location.origin&&from.pathname==="/iphone-pwa/course"){
+      var token=PARAMS.get("pwa_return")||"";
+      var stored=JSON.parse(sessionStorage.getItem("hskai.pwa.checkout.return")||"null");
+      if(token&&stored&&stored.token===token&&
+          Number(stored.at)>0&&Date.now()-Number(stored.at)<10*60*1000){
+        sessionStorage.removeItem("hskai.pwa.checkout.return");
         window.history.back();
         return;
       }
     }catch(e){}
   }
-  /* Direct checkout visits and Telegram retain deterministic safe return. */
+  /* Direct checkout, expired/stale markers and Telegram never navigate to
+     an unknown previous website. The fallback remains deterministic. */
   window.location.replace(courseReturnUrl());
 }
 function initTelegramCourseReturn(){
