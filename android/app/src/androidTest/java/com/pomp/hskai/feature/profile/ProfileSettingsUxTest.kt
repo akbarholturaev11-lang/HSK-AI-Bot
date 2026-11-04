@@ -1,7 +1,8 @@
 package com.pomp.hskai.feature.profile
 
 import android.content.res.Configuration
-import android.view.KeyEvent
+import androidx.activity.OnBackPressedDispatcherOwner
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
@@ -53,9 +54,10 @@ class ProfileSettingsUxTest {
     @get:Rule val compose = createComposeRule()
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private fun text(id: Int) = context.getString(id)
-    private fun pressSystemBack() {
-        InstrumentationRegistry.getInstrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_BACK)
-        compose.waitForIdle()
+    private fun pressSystemBack(owner: OnBackPressedDispatcherOwner?) {
+        // Exercise Compose's registered BackHandler directly. A synthetic
+        // KEYCODE_BACK is focus-sensitive on headless CI emulators.
+        compose.runOnIdle { checkNotNull(owner).onBackPressedDispatcher.onBackPressed() }
     }
 
     @Composable
@@ -112,13 +114,17 @@ class ProfileSettingsUxTest {
     }
 
     @Test fun systemBackNavigatesSettingsSubpageThenReturnsToProfile() {
-        compose.setContent { PompHskAiTheme { Profile() } }
+        var backOwner: OnBackPressedDispatcherOwner? = null
+        compose.setContent {
+            backOwner = LocalOnBackPressedDispatcherOwner.current
+            PompHskAiTheme { Profile() }
+        }
         compose.onNodeWithContentDescription(text(R.string.profile_mini_settings)).performClick()
         compose.onNodeWithText(text(R.string.profile_appearance)).performClick()
         compose.onNodeWithText(text(R.string.profile_theme_dark)).assertIsDisplayed()
-        pressSystemBack()
+        pressSystemBack(backOwner)
         compose.onNodeWithText(text(R.string.hsk_course_lang)).assertIsDisplayed()
-        pressSystemBack()
+        pressSystemBack(backOwner)
         compose.onNodeWithTag("profile-settings-surface").assertDoesNotExist()
         compose.onNodeWithContentDescription(text(R.string.profile_mini_settings)).assertIsDisplayed()
     }
