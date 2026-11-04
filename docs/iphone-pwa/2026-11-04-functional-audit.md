@@ -13,6 +13,11 @@
 | PWA-03 | P1 | iOS BFCache `pageshow` map refresh skipped browser PWA entirely; `CHECKOUT_NAVIGATING` remained true on restored Course page. | Reset checkout guard; allow CSRF-protected browser map refresh when BFCache restores, refuse failed responses. | Swipe Safari back after pending/rejected/approved purchase; simulate offline resume |
 | PWA-04 | P2 | On entering Practice, background preloading eagerly instantiated two iframes (dictionary + phrasebook), competing for network and main thread. | Disable invisible warm-up **only for PWA**, keep on-demand `RESOURCE.open` and existing Telegram preloads. | Record peak requests, first-input latency, cold dictionary open |
 | PWA-05 | P2 | Checkout HTML loads blocking Telegram SDK from `telegram.org`, independent of learner origin and slow-network cache. | Use same-origin version already served for Course V3. | Browser checkout/Telegram Mini App compatibility and offline CDN failure |
+| PWA-06 | P1 | Checkout Return always replaced Course, forcing a fresh 700KB+ HTML and script navigation even when a safe BFCache history entry existed. | On verified same-origin Course referrer, use `history.back()`, keeping full reload fallback for direct/Telegram checkout. | iPhone BFCache return and blocked/approved payment transitions |
+| PWA-07 | P1 | PWA daily goal previously returned null without Telegram initData, so Settings could not persist the user's choice. | Reuse canonical preferences service behind `/api/v3/pwa/preferences`, with validated browser session + CSRF; revert goal in UI on server failure. | Integration test and persisted cross-device goal verification |
+| PWA-08 | P2 | Inbox had course/account tab split in a small modal, and swipe-back did not understand it. | One chronological course/account/payment feed, full-screen safe-area view; support NavBack and restore focus. | Browser notice behavior and real iOS swipe QA |
+| PWA-09 | P2 | PWA Settings opened as a bottom sheet; its original Telegram notification toggle had no browser save endpoint. | Full-screen PWA Settings, nested pickers remain sheets; hide nonfunctional Telegram-only toggle while retaining real iPhone push settings. | Mobile layout and push permission QA |
+| PWA-10 | P2 | Course tab did expensive synchronous SVG geometry before the first paint. | For PWA only defer trail drawing through two animation frames; Telegram path unchanged. | Measure long tasks and animation correctness on slow device |
 
 ## Screen-by-screen source review and runtime test matrix
 
@@ -23,9 +28,9 @@ Status **NEEDS DEVICE QA** means code path identified but not exercised on a rea
 | 1 | Installed PWA cold launch and effect | `GET /iphone-pwa` → `course-v3.html` and `finishHskLaunchSplash` | Returning account must skip login welcome but **preserve course splash**; first-time logged-out keeps login | NEEDS DEVICE QA |
 | 2 | OAuth and Telegram sign-in | `iphone-pwa-login.js`, `/api/v3/pwa-auth/*` | Google/Apple/Telegram proof, app↔browser return, canceled OAuth, cookie ownership | NEEDS DEVICE QA |
 | 3 | Main tabs and swipe back | `App.show`, `NavBack` in `course-v3.html` | repeated switches, nested overlays, swipe vs tap consistency, per-screen scroll restoration | NEEDS DEVICE QA |
-| 4 | Checkout entry/exit | `App.goPay`, `subscription.html` and `returnToCourseFromCheckout` | full document navigation on return; very slow under weak network; user reports frozen screen | **SOURCE FIXES PWA-02/03/05**; DEVICE QA |
+| 4 | Checkout entry/exit | `App.goPay`, `subscription.html` and `returnToCourseFromCheckout` | history restores Course for verified referrer; direct checkout still full navigation | **SOURCE FIXES PWA-02/03/05/06**; DEVICE QA |
 | 5 | Payment pending/rejected/approved | `/api/v3/pwa/subscription/*` | never grant Pro before server decision, rejected retry returns correct plan and notice | NEEDS DEVICE QA |
-| 6 | Course map and progress | `renderCourse`, `drawTrails`, `refreshCourseProgress` | synchronous geometry/re-render may cause visible lag; ensure map updates after checkout | **SOURCE FIX PWA-02**, DEVICE QA |
+| 6 | Course map and progress | `renderCourse`, `drawTrails`, `refreshCourseProgress` | deferred geometry and map refresh; measure actual long-task improvement | **SOURCE FIXES PWA-02/10**, DEVICE QA |
 | 7 | Start, pause, finish lesson | `openLessonSheet`, `startLesson`, `Flow`, `exitFlow` | no lost resume/proof, no double XP, correct accessibility/back confirmation | NEEDS DEVICE QA |
 | 8 | HSK 2.0↔3.0, HSK 1–4 | `courseTrackStatus`, `requestCourseTrackSwitch`, `loadLevel` | access gate, level switch and plan refresh, stale maps while a request is in flight | NEEDS DEVICE QA |
 | 9 | Practice hub | `App.show("mashq")`, `renderMashq` | first paint and hidden network preloads; preserves server access gate | **SOURCE FIX PWA-04**, DEVICE QA |
@@ -39,8 +44,8 @@ Status **NEEDS DEVICE QA** means code path identified but not exercised on a rea
 | 17 | AI Voice text + turn audio | `VOICE` and `/api/v3/pwa/voice/session/*` | verify microphone and text, session begin/end; no Telegram-specific mic copy | NEEDS DEVICE QA |
 | 18 | **AI Live voice** | `pwa_voice_start` explicitly returns `live_available=False` | **NOT IMPLEMENTED for PWA**; needs separately authenticated Live RTC design, not just UI enablement | BLOCKED — IMPLEMENTATION REQUIRED |
 | 19 | Rating/leaderboard/users | `renderRating`, `loadLatestRating`, `loadReferrals`, `upov` | server fetched on visible tab, friends/users, profile overlays/back and slow network | NEEDS DEVICE QA |
-| 20 | Profile and Settings | `renderProfile`, `settingsSheetHtml`, `App.openSettings` | Settings currently a modal; requests daily goal/notifications still have Telegram-only guards; identity rows bypass PWA | SOURCE GAPS — DESIGN + SECURE API NEEDED |
-| 21 | Inbox | `iphone-pwa-notices.js` + `iphone-pwa-glass.css` | current modal + course/account tabs contradict desired full-screen unified feed; not in `NavBack` layers | SOURCE GAP — REDESIGN REQUIRED |
+| 20 | Profile and Settings | `renderProfile`, `settingsSheetHtml`, `App.openSettings` | full-screen Settings and secure daily-goal persistence added; Google/Apple linking and Telegram-derived avatar still need dedicated PWA UI | **PARTIALLY PATCHED PWA-07/09**, DEVICE QA |
+| 21 | Inbox | `iphone-pwa-notices.js` + `iphone-pwa-glass.css` | combined notices/receipts, no tabs, full-screen and NavBack registration added | **SOURCE PATCH PWA-08**, DEVICE QA |
 | 22 | Push permissions | `HskPwaInbox.openPushSettings`, `/api/v3/pwa/push/*` | installed iPhone only, user gesture, correct revoke; no automatic OS consent | NEEDS DEVICE QA |
 | 23 | Receipt/account/lesson push | `PaymentNotifyService`, `CourseNotificationService`, `learner_pwa_push.py` | enqueues existing events; sending additionally needs VAPID/settings/worker; generic lock-screen text intentional for privacy | NEEDS SERVER + DEVICE QA |
 | 24 | Discounts, bot block, account block | `NotificationDeliveryService`, user access state | clarify per-event routing; blocked accounts are deliberately excluded from delivery; don't bypass restrictions | POLICY / IMPLEMENTATION QA |
@@ -59,4 +64,6 @@ Status **NEEDS DEVICE QA** means code path identified but not exercised on a rea
 2. **Security invariants:** PWA cookie and CSRF remain server-verified; no Telegram initData forgery, no premium access bypass, no misleading notification proof, no cross-user cache visibility, no new duplicated user XP.
 3. **After merge only:** staging/release QA on real installed iPhone and actual production-like push service; compare the measured timings against the baseline.
 
-**Priority next:** P1 real iPhone checkout back perf and freeze; P1 secure PWA Settings/preferences; P1 navigation/back consistency; P2 unified full-screen Inbox; P2 Live voice independent design; P2 event-specific push classification with privacy and blocked-account policy.
+**Priority next:** P1 real iPhone checkout back perf and freeze; P1 all-screen navigation/back regression; P1 verify Settings API on staging; P2 verify unified full-screen Inbox and push delivery; P2 Live voice independent design; P2 provider identity/avatar UI and Telegram-only text cleanup; P2 event-specific push classification with privacy and blocked-account policy.
+
+**Syntax review:** V8 parsed the modified Inbox JS and inline Course/Checkout scripts with no syntax errors. This is not execution, correctness or iOS performance proof.
