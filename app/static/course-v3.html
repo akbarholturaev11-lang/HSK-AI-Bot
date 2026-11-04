@@ -5881,31 +5881,31 @@ function _fetchCourseMap(lv,signal){
     }).catch(function(){return {_status:r.status,_parseFail:true}});
   });
 }
-function loadCourseMap(lv,tries){
+function loadCourseMap(lv,tries,signal){if(signal&&signal.aborted)return Promise.resolve({cancelled:true});
   tries=tries||0;
-  return _fetchCourseMap(lv).then(function(d){
+  return _fetchCourseMap(lv,signal).then(function(d){
     if(d&&d._status===403&&d.error==="user_blocked")return {blocked:true,support_url:d.support_url||""};
     if(d&&d._status===403&&(d.error==="hsk30_level_not_live"||d.error==="hsk30_no_live_levels"))return {hsk30Soon:true,error:d.error,level:lv};
     if(isHsk30AccessError(d,d.level||lv))return {hsk30Gate:true,error:d.error,level:d.level||lv};
     if(d&&(d.authenticated===false||d._status===401))return {auth:false};
     if(!d||d._parseFail||(d._status&&d._status>=500)){
-      if(tries<3)return _retryCourseMap(lv,tries);
+      if(signal&&signal.aborted)return {cancelled:true};if(tries<3)return _retryCourseMap(lv,tries,signal);
       return {error:true};
     }
     if(d._status>=400||!Array.isArray(d.units))return {error:true};
     if(d.smart_preferences_available===true)_ensureSmartTimezone(); // Best effort; learning/navigation never waits for Smart metadata.
     return {data:d};
   }).catch(function(){
-    if(tries<3)return _retryCourseMap(lv,tries);
+    if(signal&&signal.aborted)return {cancelled:true};if(tries<3)return _retryCourseMap(lv,tries,signal);
     return {error:true};
   });
 }
-function _retryCourseMap(lv,tries){return new Promise(function(res){setTimeout(res,500*(tries+1))}).then(function(){return loadCourseMap(lv,tries+1)})}
-var PWA_LEVEL_REQUEST_SEQ=0; function loadLevel(lv){var requestId=PWA_COURSE_HOST?++PWA_LEVEL_REQUEST_SEQ:0;
+function _retryCourseMap(lv,tries,signal){return new Promise(function(res){setTimeout(res,500*(tries+1))}).then(function(){return signal&&signal.aborted?{cancelled:true}:loadCourseMap(lv,tries+1,signal)})}
+var PWA_LEVEL_REQUEST_SEQ=0,PWA_LEVEL_ABORT=null; function loadLevel(lv){if(PWA_COURSE_HOST&&PWA_LEVEL_ABORT)PWA_LEVEL_ABORT.abort();PWA_LEVEL_ABORT=PWA_COURSE_HOST&&window.AbortController?new AbortController():null;var reqSignal=PWA_LEVEL_ABORT?PWA_LEVEL_ABORT.signal:undefined,requestId=PWA_COURSE_HOST?++PWA_LEVEL_REQUEST_SEQ:0;
   clearDeferredCourseUnlock();
   lv=setSelectedLevel(lv);
   if(!INIT_DATA&&!PWA_COURSE_HOST){hideCourseTrackSwitchPreparing();showAuthGate();return;}
-  return loadCourseMap(lv).then(function(res){if(PWA_COURSE_HOST&&requestId!==PWA_LEVEL_REQUEST_SEQ)return;
+  return loadCourseMap(lv,0,reqSignal).then(function(res){if(PWA_COURSE_HOST&&requestId!==PWA_LEVEL_REQUEST_SEQ)return;
     // On failure dismiss the loader before opening the error/paywall sheet.
     if(!res||!res.data)hideCourseTrackSwitchPreparing();
     if(showCourseMapFailure(res))return;
