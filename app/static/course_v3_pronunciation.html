@@ -358,7 +358,11 @@ function pronunciationPwaSession(){
 function verifyPwaReturn(){
   if(!PWA_PRONUNCIATION_HOST)return;
   PWA_PRONUNCIATION_PROMISE=null;
-  pronunciationPwaSession().catch(function(){location.replace("/iphone-pwa")});
+  pronunciationPwaSession().catch(function(error){
+    // A connectivity/5xx failure is not a logout. 401 or an account change
+    // already redirects inside the session verifier; malformed actors fail closed.
+    if(error&&error.message==="pwa_session_invalid")location.replace("/iphone-pwa");
+  });
 }
 if(PWA_PRONUNCIATION_HOST){
   window.addEventListener("pageshow",function(ev){if(ev.persisted)verifyPwaReturn()});
