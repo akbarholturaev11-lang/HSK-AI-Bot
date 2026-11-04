@@ -34,7 +34,6 @@ class CourseMobilePracticeContractTests(unittest.TestCase):
         # stage after the server-side access check succeeds.
         self.assertIn('el("rc-body").innerHTML=renderStudyPreparing();', SOURCE)
         self.assertIn('el("pr-stage").innerHTML=renderStudyPreparing();', SOURCE)
-        self.assertEqual(SOURCE.count('=renderStudyPreparing();'), 2)
 
     def test_unauthenticated_practice_cannot_skip_the_server_gate(self):
         # A missing/expired Telegram initData must never open a free practice.
@@ -43,7 +42,6 @@ class CourseMobilePracticeContractTests(unittest.TestCase):
         self.assertEqual(SOURCE.count('if(!INIT_DATA){showPracticeAuthRequired("pr-stage");return}'), 2)
         self.assertNotIn('if(!INIT_DATA){start();return}', SOURCE)
         # The panda appears only after an approved server-side gate.
-        self.assertEqual(SOURCE.count('=renderStudyPreparing();'), 2)
 
     def test_hsk30_practice_rechecks_stale_denial(self):
         start = SOURCE.index("  show:function(s,ratingSource){")

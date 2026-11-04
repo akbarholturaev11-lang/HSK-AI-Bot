@@ -907,6 +907,8 @@
     <string name="hsk_course_track_switch_confirm_body" formatted="false">Пешрафти курси ҷорӣ нигоҳ дошта мешавад. Ҳар вақт метавонед ба версияи дигар баргардед.</string>
     <string name="hsk_course_track_switch_confirm_title" formatted="false">Версияи курсро иваз мекунед?</string>
     <string name="hsk_course_track_switching" formatted="false">Курс иваз мешавад…</string>
+    <string name="hsk_course_track_switching_body" formatted="false">Панда курси шуморо омода мекунад</string>
+    <string name="hsk_course_track_switching_title" formatted="false">Курси {version} кушода мешавад…</string>
     <string name="hsk_course_track_test_soon" formatted="false">Тестҳои HSK 3.0 · Ба наздикӣ</string>
     <string name="hsk_course_track_test_soon_body" formatted="false">Формати нави имтиҳони HSK 3.0 ҳоло омода мешавад.</string>
     <string name="hsk_course_track_test_soon_title" formatted="false">Тестҳои HSK 3.0</string>

@@ -33,7 +33,10 @@ from app.db.models.learner_pwa_push import LearnerPwaPushOutbox, LearnerPwaPushS
 from app.db.models.account_notice_delivery import AccountNoticeDelivery
 from app.db.models.course_user_notification import CourseUserNotification
 from app.db.models.course_progress import CourseProgress
+from app.db.models.course_miniapp_profile import CourseMiniAppProfile
+from app.db.models.course_xp_event import CourseXpEvent
 from app.db.models.payment import Payment
+from app.db.models.referral import Referral
 from app.db.models.smart_reminder import SmartReminderAttempt, SmartReminderConsent, SmartReminderJob, SmartReminderPreference
 from app.db.models.conversion_funnel_event import ConversionFunnelEvent
 from app.db.models.user import User
@@ -3030,6 +3033,107 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(denied.status_code, 401, denied.text)
             finally:
                 await anonymous.aclose()
+
+    async def test_pwa_referral_overview_uses_existing_service_and_hides_telegram_identifiers(self):
+        from app.config import settings as main_settings
+        with patch.object(main_settings, "BOT_TOKEN", self.settings.BOT_TOKEN):
+            import app.main as main
+
+        state = await self.begin()
+        await self.callback(state)
+        session_data = (await self.client.get("/api/v3/pwa-auth/session")).json()
+        cookie = self.client.cookies.get(PWA_SESSION_COOKIE)
+        async with self.sessions() as session:
+            invitee = user(2, 2002)
+            invitee.full_name = "Invited learner"
+            invitee.username = "private_handle"
+            session.add(invitee)
+            session.add(Referral(
+                referrer_user_id=1, invited_user_id=2,
+                referrer_telegram_id=1001, invited_user_telegram_id=2002,
+                status="pending", created_at=datetime.now(timezone.utc),
+            ))
+            await session.commit()
+
+        self.settings.PUBLIC_SITE_URL = ORIGIN
+        app = FastAPI()
+        app.add_api_route(
+            "/api/v3/pwa/referral/overview",
+            main.pwa_referral_overview,
+            methods=["POST"],
+        )
+        with patch.object(main, "async_session_maker", self.sessions), patch.object(
+            main, "settings", self.settings,
+        ):
+            client = AsyncClient(
+                transport=ASGITransport(app=app), base_url=ORIGIN,
+                cookies={PWA_SESSION_COOKIE: cookie},
+            )
+            try:
+                path = "/api/v3/pwa/referral/overview"
+                missing_csrf = await client.post(path, headers={"Origin": ORIGIN})
+                self.assertEqual(missing_csrf.status_code, 403, missing_csrf.text)
+                wrong_origin = await client.post(path, headers={
+                    "Origin": "https://attacker.test",
+                    "X-HSK-PWA-CSRF": session_data["csrf"],
+                })
+                self.assertEqual(wrong_origin.status_code, 403, wrong_origin.text)
+                forged_telegram = await client.post(path, headers={
+                    "Origin": ORIGIN, "X-HSK-PWA-CSRF": session_data["csrf"],
+                    "X-Telegram-Init-Data": "not-accepted",
+                })
+                self.assertEqual(forged_telegram.status_code, 422, forged_telegram.text)
+                response = await client.post(path, headers={
+                    "Origin": ORIGIN, "X-HSK-PWA-CSRF": session_data["csrf"],
+                })
+                self.assertEqual(response.status_code, 200, response.text)
+                self.assertEqual(response.headers["cache-control"], "no-store")
+                data = response.json()
+                self.assertTrue(data["ok"])
+                self.assertRegex(data["link"], r"^https://api\.example\.test/apps\?ref=[0-9a-f]+&mode=trial$")
+                self.assertNotIn("t.me/", data["link"])
+                self.assertEqual(data["joined_count"], 1)
+                self.assertEqual(len(data["referrals"]), 1)
+                row = data["referrals"][0]
+                self.assertEqual(row["name"], "Invited learner")
+                for private_field in (
+                    "telegram_id", "username", "user_id", "referrer_user_id",
+                    "invited_user_id", "referrer_telegram_id", "invited_user_telegram_id",
+                ):
+                    self.assertNotIn(private_field, row)
+                anonymous = AsyncClient(
+                    transport=ASGITransport(app=app), base_url=ORIGIN,
+                )
+                try:
+                    denied = await anonymous.post(
+                        path,
+                        headers={"Origin": ORIGIN, "X-HSK-PWA-CSRF": session_data["csrf"]},
+                    )
+                    self.assertEqual(denied.status_code, 401, denied.text)
+                finally:
+                    await anonymous.aclose()
+            finally:
+                await client.aclose()
+
+    def test_pwa_course_switch_and_telegram_bound_controls_are_pwa_scoped(self):
+        course = Path("app/static/course-v3.html").read_text(encoding="utf-8")
+        main = Path("app/main.py").read_text(encoding="utf-8")
+        self.assertIn('var version=trackUi()[target==="hsk30"?"hsk30":"hsk20"]', course)
+        self.assertIn("html.hsk-pwa-browser #sheet.hsk30-switch-preparing{inset:0", course)
+        self.assertIn('courseMessage("track.switchingTitle"', course)
+        self.assertIn('App.openSheet(\'<div class="hsk-course-switch-screen">\'', course)
+        self.assertIn('"/api/v3/pwa/referral/overview":\"/api/v3/pwa/referral/overview\"', course)
+        self.assertIn('async def pwa_referral_overview(request: Request)', main)
+        self.assertIn('"Cache-Control": "no-store"', main[main.index('async def pwa_referral_overview'):main.index('@app.get("/api/v3/invite")')])
+        self.assertIn('function botLinkUrl(suffix){return PWA_COURSE_HOST?location.origin+"/apps"', course)
+        self.assertIn('if(PWA_COURSE_HOST){pwaShareText(txt,"");return}', course)
+        self.assertIn('if(PWA_COURSE_HOST){pwaShareText(text,link);return}', course)
+        self.assertIn('(PWA_COURSE_HOST?"":\'<button class="srow" onclick="App.notifToggle()"', course)
+        self.assertIn('if(PWA_COURSE_HOST){var pwaTitle=courseMessage("pwaHelp.title"', course)
+        self.assertIn('if(PWA_COURSE_HOST){location.assign("/iphone-pwa");return}', course)
+        self.assertIn('messages["pwaVoice.micDeny"]', course)
+        self.assertIn('messages["pwaVoice.accountUnavailable"]', course)
+        self.assertIn('courseMessage("pwaUnavailable.challenge"', course)
 
     async def test_pwa_map_accepts_verified_google_only_actor_without_telegram(self):
         from app.config import settings as main_settings

@@ -10,7 +10,7 @@ import xml.etree.ElementTree as ET
 from scripts.i18n_baseline_guard import git_blob_sha1
 
 from scripts.i18n_build_course_catalogs import (
-    ANDROID_PWA_ONLY_PREFIX, ANDROID_TAGS, LOCALES, ROOT, android_resource_names, generate,
+    ANDROID_PWA_ONLY_PREFIXES, ANDROID_TAGS, LOCALES, ROOT, android_resource_names, generate,
     output_files, read_sources,
 )
 
@@ -27,10 +27,10 @@ def unique_line_containing(source: str, marker: str) -> str:
 
 
 class CourseLocalCatalogTests(unittest.TestCase):
-    def test_reviewed_990_keys_and_six_generated_targets(self):
+    def test_reviewed_1011_keys_and_six_generated_targets(self):
         catalogs = read_sources(ROOT)
         self.assertEqual(set(catalogs), set(LOCALES))
-        self.assertTrue(all(len(catalogs[loc]) == 990 for loc in LOCALES))
+        self.assertTrue(all(len(catalogs[loc]) == 1011 for loc in LOCALES))
         self.assertEqual(len(output_files(catalogs)), 6)
         self.assertEqual(generate(ROOT, check=True), [])
 
@@ -44,13 +44,13 @@ class CourseLocalCatalogTests(unittest.TestCase):
                 actual = {node.attrib["name"]: node for node in items}
                 android_catalog = {
                     key: value for key, value in catalogs[locale].items()
-                    if not key.startswith(ANDROID_PWA_ONLY_PREFIX)
+                    if not key.startswith(ANDROID_PWA_ONLY_PREFIXES)
                 }
                 expected = android_resource_names(android_catalog)
                 self.assertEqual(set(actual), set(expected.values()))
                 pwa_names = android_resource_names({
                     key: value for key, value in catalogs[locale].items()
-                    if key.startswith(ANDROID_PWA_ONLY_PREFIX)
+                    if key.startswith(ANDROID_PWA_ONLY_PREFIXES)
                 })
                 self.assertFalse(set(pwa_names.values()) & set(actual))
                 for key, name in expected.items():
@@ -58,7 +58,7 @@ class CourseLocalCatalogTests(unittest.TestCase):
                     # Android's slash-escaped apostrophe remains in XML parser output.
                     self.assertEqual((actual[name].text or "").replace(r"\'", "'"), catalogs[locale][key])
                     self.assertRegex(name, r"^hsk_course_[a-z][a-z0-9_]*$")
-        self.assertTrue(all(any(key.startswith(ANDROID_PWA_ONLY_PREFIX) for key in catalogs[loc])
+        self.assertTrue(all(any(key.startswith(ANDROID_PWA_ONLY_PREFIXES) for key in catalogs[loc])
                             for loc in LOCALES))
 
     def test_android_key_normalization_rejects_collisions(self):

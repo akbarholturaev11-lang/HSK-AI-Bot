@@ -257,6 +257,14 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 .hsk30-switch-panda .hsk-character{height:100%;width:100%}
 .hsk30-switch-title{font-size:20px;line-height:1.3;font-weight:750;color:var(--ink)}
 .hsk30-switch-caption{margin:7px auto 0;font-size:14px;line-height:1.5;color:var(--ink2)}
+html.hsk-pwa-browser #sheet.hsk30-switch-preparing{inset:0;max-width:none;margin:0;align-items:stretch;justify-content:stretch;padding:0;border-radius:0;background:var(--paper);z-index:10000}
+html.hsk-pwa-browser #sheet.hsk30-switch-preparing .si{width:100%;height:100%;max-width:none;max-height:none;border:0;border-radius:0;padding:0;display:grid;place-items:center;overflow:hidden;background:var(--paper);box-shadow:none}
+html.hsk-pwa-browser #sheet.hsk30-switch-preparing .grip,html.hsk-pwa-browser #sheet.hsk30-switch-preparing .sx{display:none}
+html.hsk-pwa-browser .hsk-course-switch-screen{width:100%;min-height:100vh;min-height:100dvh;display:grid;place-items:center;padding:calc(20px + var(--safe-t)) 20px calc(20px + var(--safe-b))}
+html.hsk-pwa-browser .hsk-course-switch-screen .hsk-study-preparing{min-height:0;padding:24px 12px;gap:11px}
+html.hsk-pwa-browser .hsk-course-switch-screen .hsk-study-preparing-panda{width:156px;height:172px;max-width:48vw}
+html.hsk-pwa-browser .hsk-course-switch-screen .hsk-study-preparing b{font-size:21px;max-width:340px}
+html.hsk-pwa-browser .hsk-course-switch-screen .hsk-study-preparing small{font-size:15px;max-width:340px}
 .course-heading-button{appearance:none;border:0;padding:4px 0;margin:0;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer;min-height:44px}
 .course-heading-button:focus-visible{outline:3px solid var(--cin);outline-offset:3px;border-radius:8px}
 #sheet.course-choice-sheet .si{border-radius:26px 26px 0 0;max-height:85dvh;padding:8px 20px calc(22px + var(--safe-b));background:var(--paper)}
@@ -1707,7 +1715,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 <link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
 <!-- Reklama moduli: dars yakuni bloki uchun (mashq bo'limlari ham shu moduldan foydalanadi) -->
 <script src="/voice-live.js?v=1"></script>
-<script defer src="/course_v3_data/ads.js?v=20261021-785974bb437c"></script><script src="/course_v3_data/hsk-common-i18n.js?v=20261019-1c672dcfb10d"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261021-e6ffe6e07de9"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script><script src="/course_v3_data/p3-grammar-reservation.js?v=20261019-p3-2"></script>
+<script defer src="/course_v3_data/ads.js?v=20261021-785974bb437c"></script><script src="/course_v3_data/hsk-common-i18n.js?v=20261019-1c672dcfb10d"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261021-fd0db3828bc4"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script><script src="/course_v3_data/p3-grammar-reservation.js?v=20261019-p3-2"></script>
 <script>
 /* ---------- i18n (default RU) ---------- */
 var I18N={
@@ -1885,18 +1893,17 @@ function showHsk30AccessGate(){
 }
 var COURSE_TRACK_SWITCH_PREPARING=false;
 function showCourseTrackSwitchPreparing(target){
-  var copy=(window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.course_v3.copy.copy1",{
-    uz:{title:"Kurs ochilmoqda…",subtitle:"Panda kursni tayyorlayapti"},
-    ru:{title:"Открываем курс…",subtitle:"Панда готовит ваш курс"},
-    tj:{title:"Курс кушода мешавад…",subtitle:"Панда курси шуморо омода мекунад"}
-  })[LANG]||{};
-  var panda=window.HSKCharacters&&typeof window.HSKCharacters.render==="function"
-    ?window.HSKCharacters.render("panda","loading")
-    :'<span aria-hidden="true" style="font-size:80px">🐼</span>';
+  var version=trackUi()[target==="hsk30"?"hsk30":"hsk20"];
+  var title=courseMessage("track.switchingTitle",LANG==="ru"?"Открываем {version}…":LANG==="tj"?"{version} кушода мешавад…":"{version} kursi ochilmoqda…").replace("{version}",version);
+  var subtitle=courseMessage("track.switchingBody",LANG==="ru"?"Панда готовит ваш курс":"Панда курси шуморо омода мекунад");
+  var template=document.createElement("div");template.innerHTML=renderStudyPreparing();
+  var preparing=template.firstElementChild,titleNode=preparing&&preparing.querySelector("b"),subtitleNode=preparing&&preparing.querySelector("small");
+  if(titleNode)titleNode.textContent=title;
+  if(subtitleNode)subtitleNode.textContent=subtitle;
+  else if(preparing){subtitleNode=document.createElement("small");subtitleNode.textContent=subtitle;preparing.appendChild(subtitleNode)}
   COURSE_TRACK_SWITCH_PREPARING=true;
-  openHsk30BookSheet('<div role="status" aria-live="polite"><div class="hsk30-switch-panda" aria-hidden="true">'+panda+'</div>'
-    +'<div class="hsk30-switch-title">'+esc(copy.title)+'</div><p class="hsk30-switch-caption">'+esc(copy.subtitle)+'</p></div>',copy.title);
-  $("#sheet").classList.add("hsk30-switch-preparing");
+  App.openSheet('<div class="hsk-course-switch-screen">'+(preparing?preparing.outerHTML:renderStudyPreparing())+'</div>');
+  var sheet=$("#sheet");sheet.classList.add("hsk30-switch-preparing");sheet.setAttribute("aria-label",title);
 }
 function hideCourseTrackSwitchPreparing(){
   if(!COURSE_TRACK_SWITCH_PREPARING)return;
@@ -1904,6 +1911,7 @@ function hideCourseTrackSwitchPreparing(){
   var sheet=$("#sheet");
   if(sheet.classList.contains("hsk30-switch-preparing")){
     sheet.classList.remove("hsk30-switch-preparing");
+    sheet.removeAttribute("aria-label");
     App.closeSheet();
   }
 }
@@ -2257,7 +2265,7 @@ if(PWA_COURSE_HOST){
 /* Bot username yagona manba: serverdan (BOT_USERNAME) keladi. Map javobida
    bot_username bo'lsa yangilanadi; bo'lmasa xavfsiz default ishlaydi. */
 var BOT_USERNAME="darsi_chini_bot";
-function botLinkUrl(suffix){return "https://t.me/"+BOT_USERNAME+(suffix||"")}
+function botLinkUrl(suffix){return PWA_COURSE_HOST?location.origin+"/apps":"https://t.me/"+BOT_USERNAME+(suffix||"")}
 function adoptBotUsername(d){if(d&&d.bot_username){BOT_USERNAME=String(d.bot_username).replace(/^@/,"")}}
 var PAY_SOURCE="v3_paywall";
 var CHECKOUT_NAVIGATING=false;
@@ -2286,7 +2294,8 @@ var PWA_COURSE_POST_PATHS={
   "/api/v3/exams/start":"/api/v3/pwa/exams/start",
   "/api/v3/exams/complete":"/api/v3/pwa/exams/complete",
   "/api/voice-practice/session/start":"/api/v3/pwa/voice/session/start",
-  "/api/voice-practice/session/end":"/api/v3/pwa/voice/session/end"
+  "/api/voice-practice/session/end":"/api/v3/pwa/voice/session/end",
+  "/api/v3/pwa/referral/overview":"/api/v3/pwa/referral/overview"
 };
 function _apiGet(url){
   if(!PWA_COURSE_HOST)return fetch(url,{headers:{"X-Telegram-Init-Data":INIT_DATA}});
@@ -3131,11 +3140,12 @@ var App={
   openPron:function(){if(PWA_COURSE_HOST){RESOURCE.openPractice("/course_v3_pronunciation.html?lang="+encodeURIComponent(LANG)+"&level="+encodeURIComponent((MAP&&MAP.level)||getSelectedLevel()));return}PRON.open()},
   openTest:function(){if(isHsk30Level((MAP&&MAP.level)||getSelectedLevel())){showHsk30TestSoon();return}if(PWA_COURSE_HOST){RESOURCE.openPractice("/course_v3_test.html?lang="+encodeURIComponent(LANG)+"&level="+encodeURIComponent((MAP&&MAP.level)||getSelectedLevel()));return}TEST.open()},
   openMistakes:function(){if(PWA_COURSE_HOST){RESOURCE.openPractice("/course_v3_mistakes.html?lang="+encodeURIComponent(LANG)+"&level="+encodeURIComponent((MAP&&MAP.level)||getSelectedLevel()));return}MIST.open()},
-  openHelp:function(){var t=T();var c=(MAP&&MAP.admin_contact)||"";
+  openHelp:function(){var t=T();if(PWA_COURSE_HOST){var pwaTitle=courseMessage("pwaHelp.title",t.helpTitle),pwaBody=courseMessage("pwaHelp.body",t.helpText),pwaButton=courseMessage("pwaHelp.button",t.helpBtn);App.openSheet('<div class="shead"><div style="width:52px;height:52px;border-radius:15px;background:var(--card);border:1px solid var(--line);color:var(--cin);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 10px"><i class="ti ti-lifebuoy"></i></div><div class="tr" style="font-size:16px;color:var(--ink)">'+esc(pwaTitle)+'</div><div class="tr">'+esc(pwaBody)+'</div></div><button class="scta" onclick="App.openPwaHelp()">'+esc(pwaButton)+'</button>');return}var c=(MAP&&MAP.admin_contact)||"";
     var btn=c?'<button class="scta" onclick="App.contactAdmin()"><i class="ti ti-brand-telegram"></i> '+esc(courseMessage("helpBtn",t.helpBtn))+'</button>'
       :'<div class="tr" style="margin-top:6px;color:var(--ink2)">'+esc(courseMessage("helpNoContact",t.helpNoContact))+'</div>';
     App.openSheet('<div class="shead"><div style="width:52px;height:52px;border-radius:15px;background:var(--card);border:1px solid var(--line);color:var(--cin);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 10px"><i class="ti ti-lifebuoy"></i></div><div class="tr" style="font-size:16px;color:var(--ink)">'+esc(courseMessage("helpTitle",t.helpTitle))+'</div><div class="tr">'+esc(courseMessage("helpText",t.helpText))+'</div></div>'+btn);},
-  contactAdmin:function(){var c=(MAP&&MAP.admin_contact)||"";if(!c){return}App.closeSheet();
+  openPwaHelp:function(){if(!PWA_COURSE_HOST)return;location.assign("/"+encodeURIComponent(LANG==="tj"?"tg":LANG)+"/guide/faq/")},
+  contactAdmin:function(){if(PWA_COURSE_HOST)return;var c=(MAP&&MAP.admin_contact)||"";if(!c){return}App.closeSheet();
     try{if(tg&&tg.openTelegramLink&&/^https:\/\/t\.me\//i.test(c)){tg.openTelegramLink(c);return}}catch(e){}
     try{if(tg&&tg.openLink){tg.openLink(c);return}}catch(e){}
     try{location.href=c}catch(e){}},
@@ -3239,7 +3249,7 @@ var App={
     if(back)App.openSettings();
     if(INIT_DATA)_apiPost("/api/v3/notify",{enabled:on}).catch(function(){})},
   confirmNotifOff:function(){var legacy={uz:{title:"Bildirishnomalarni o'chirasizmi?",body:"Kunlik eslatma va haftalik hisobotlar kelmaydi. Bu eslatmalar o'qishni tashlab qo'ymaslikka yordam beradi.",keep:"Yoqilgan qoldirish",off:"O'chirish"},ru:{title:"Отключить уведомления?",body:"Вы перестанете получать ежедневные напоминания и еженедельный отчёт. Они помогают не бросать учёбу.",keep:"Оставить включёнными",off:"Отключить"},tj:{title:"Огоҳиҳоро хомӯш мекунед?",body:"Шумо ёдовариҳои ҳаррӯза ва ҳисоботи ҳафтаинаро намегиред. Онҳо барои тарк накардани омӯзиш кӯмак мекунанд.",keep:"Фаъол мондан",off:"Хомӯш кардан"}}[LANG]||{};var w={title:courseMessage("notificationsOff.title",legacy.title),body:courseMessage("notificationsOff.body",legacy.body),keep:courseMessage("notificationsOff.keep",legacy.keep),off:courseMessage("notificationsOff.off",legacy.off)};App.openSheet('<div class="shead"><div style="width:52px;height:52px;border-radius:15px;background:var(--card);border:1px solid var(--line);color:var(--cin);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 10px"><i class="ti ti-bell-off"></i></div><div class="tr" style="font-size:16px;color:var(--ink)">'+esc(w.title)+'</div><div class="tr">'+esc(w.body)+'</div></div><button class="scta" onclick="backToSettingsOrClose()">'+esc(w.keep)+'</button><button class="scta ghost" style="margin-top:8px" onclick="App.applyNotif(false)">'+esc(w.off)+'</button>')},
-  avatarEdit:function(){var t=T();var note=courseMessage("avatarEdit.note",LANG==="ru"?"Аватар берётся из вашего профиля Telegram":LANG==="tj"?"Аватар аз профили Telegram шумо гирифта мешавад":"Avatar Telegram profilingizdan olinadi");App.openSheet('<div class="shead"><div class="pav" style="margin:0 auto;cursor:default">'+(PROF.avatar||"阿")+myAvatarImgHtml()+'</div><div class="tr" style="margin-top:10px">'+esc(note)+'</div></div><button class="scta ghost" onclick="App.closeSheet()">OK</button>')},
+  avatarEdit:function(){var t=T();var note=PWA_COURSE_HOST?courseMessage("pwaProfile.avatarNote","Profile rasmi ulangan hisob ma’lumotlariga bog‘langan."):courseMessage("avatarEdit.note",LANG==="ru"?"Аватар берётся из вашего профиля Telegram":LANG==="tj"?"Аватар аз профили Telegram шумо гирифта мешавад":"Avatar Telegram profilingizdan olinadi");App.openSheet('<div class="shead"><div class="pav" style="margin:0 auto;cursor:default">'+(PROF.avatar||"阿")+myAvatarImgHtml()+'</div><div class="tr" style="margin-top:10px">'+esc(note)+'</div></div><button class="scta ghost" onclick="App.closeSheet()">OK</button>')},
   /* Duolingo uslubi: pinyin ko'rsatish sozlamasi (dars oqimida) */
   pinyinSheet:function(){
     var legacy={uz:{h:"Pinyin (talaffuz yozuvi)",all:"Hammasida ko'rsatish",nw:"Faqat yangi so'zlarda",off:"Yashirish"},
@@ -3939,6 +3949,7 @@ function authGateCopy(){
   }[LANG]||{};return {title:courseMessage("authGate.title",legacy.title),body:courseMessage("authGate.body",legacy.body),btn:courseMessage("authGate.btn",legacy.btn)};
 }
 function openBotStart(){
+  if(PWA_COURSE_HOST){location.assign("/iphone-pwa");return}
   var url=botLinkUrl("?start=start");
   pingMiniAppExit();
   try{if(tg&&tg.openTelegramLink){tg.openTelegramLink(url);return}}catch(e){}
@@ -3959,17 +3970,27 @@ function openSupportLink(url){
   try{location.href=url}catch(e){}
 }
 function showBlockedGate(supportUrl){
-  var c=blockedGateCopy();
+  var c=PWA_COURSE_HOST?{
+    title:courseMessage("pwaBlocked.title","Kirish cheklangan"),
+    body:courseMessage("pwaBlocked.body","Kursga kirish cheklangan. Yordam sahifasidan murojaat qiling."),
+    btn:courseMessage("pwaBlocked.button","Yordamni ochish")
+  }:blockedGateCopy();
   window._blockedSupportUrl=supportUrl||"";
   MAP={units:[],progress:{xp:0,streak:0,completed:0},label:"HSK",level:getSelectedLevel()};
   $("#s-course").innerHTML='<div class="htop"><h1 class="section-title">HSK AI</h1></div>'
     +'<div class="rt-invite" style="margin-top:42px"><span class="han">停</span><p style="font-weight:600;color:var(--ink);margin-bottom:6px">'+esc(c.title)+'</p><p>'+esc(c.body)+'</p>'
-    +(supportUrl?'<button onclick="openSupportLink(window._blockedSupportUrl)"><i class="ti ti-lifebuoy"></i> '+esc(c.btn)+'</button>':'')
+    +(PWA_COURSE_HOST?'<button onclick="App.openPwaHelp()"><i class="ti ti-lifebuoy"></i> '+esc(c.btn)+'</button>':(supportUrl?'<button onclick="openSupportLink(window._blockedSupportUrl)"><i class="ti ti-lifebuoy"></i> '+esc(c.btn)+'</button>':''))
     +'</div>';
   ["s-mashq","s-voice","s-rating","s-profile"].forEach(function(id){var el=document.getElementById(id);if(el)el.innerHTML=""});
   App.show("course");
 }
 function showAuthGate(){
+  if(PWA_COURSE_HOST){
+    var pwaAuth={title:courseMessage("pwaAuth.title","Sessiya tugadi"),body:courseMessage("pwaAuth.body","Davom etish uchun hisobingizga qayta kiring."),btn:courseMessage("pwaAuth.button","Kirishga qaytish")};
+    MAP={units:[],progress:{xp:0,streak:0,completed:0},label:"HSK",level:getSelectedLevel()};
+    $("#s-course").innerHTML='<div class="htop"><h1 class="section-title">HSK AI</h1></div><div class="rt-invite" style="margin-top:42px"><span class="han">开</span><p style="font-weight:600;color:var(--ink);margin-bottom:6px">'+esc(pwaAuth.title)+'</p><p>'+esc(pwaAuth.body)+'</p><button onclick="location.assign(\'/iphone-pwa\')"><i class="ti ti-login"></i> '+esc(pwaAuth.btn)+'</button></div>';
+    ["s-mashq","s-voice","s-rating","s-profile"].forEach(function(id){var el=document.getElementById(id);if(el)el.innerHTML=""});App.show("course");return;
+  }
   var c=authGateCopy();
   MAP={units:[],progress:{xp:0,streak:0,completed:0},label:"HSK",level:getSelectedLevel()};
   $("#s-course").innerHTML='<div class="htop"><h1 class="section-title">HSK AI</h1></div>'
@@ -5708,7 +5729,7 @@ function cardPron(c){
             if(!o.ok||!o.j||o.j.ok!==true){
               setBtn(courseMessage("say",T().say));
               if(o.j&&o.j.code==="PRONOUNCE_LIMIT_EXCEEDED"){App.openPaywall("pronLimit");return;}
-              hint((o.j&&o.j.code==="INVALID_INIT_DATA")?_prL().needTg:(o.j&&o.j.message)||_prL().netErr);return;
+              hint((o.j&&o.j.code==="INVALID_INIT_DATA")?(PWA_COURSE_HOST?courseMessage("pwaAuth.body","Hisobga qayta kiring."):_prL().needTg):(o.j&&o.j.message)||_prL().netErr);return;
             }
             var sc=Number(o.j.score)||0,pass=sc>=60,heard=o.j.heard?(_prL().heard+" "+esc(o.j.heard)):"";
             Flow.answered=true;Flow.graded=(Flow.graded||0)+1;if(pass)Flow.correct=(Flow.correct||0)+1;
@@ -6472,7 +6493,8 @@ function applyRatingPayload(d){
 	  referralUsers=(d.referrals||[]).map(normalizeSocialUser);
 	}
 	function loadReferrals(){
-	  return _apiGet(invitePayloadUrl()).then(function(r){return r.json()}).then(function(d){
+	  var request=PWA_COURSE_HOST?_apiPost("/api/v3/pwa/referral/overview",{}):_apiGet(invitePayloadUrl());
+	  return request.then(function(r){return r.json()}).then(function(d){
 	    if(!d||!d.ok)throw new Error("referrals_failed");
 	    applyReferralPayload(d);
 	    return d;
@@ -6542,7 +6564,7 @@ function _renderRatingContent(){
   var memberCount=Number(ratingMeta.leagueSize||ratingUsers.length||0);
   var h=ratingTabCur==="friends"?'<h1 class="rating-friends-heading">'+esc(r.friends)+'</h1>':'<h1 class="section-title rating-title">'+esc(commonMessage("navigation.rating",LANG==="ru"?"Рейтинг":LANG==="tj"?"Рейтинг":"Reyting"))+'</h1>';
 	  if(ratingTabCur==="friends"){
-	    if(!referralMeta.loaded&&INIT_DATA){
+    if(!referralMeta.loaded&&(INIT_DATA||PWA_COURSE_HOST)){
 	      referralMeta.loaded=true;
 	      $("#s-rating").innerHTML=h+'<div style="padding:60px 0;text-align:center;color:var(--ink3)">…</div>';
 	      loadReferrals().then(function(){_renderRatingContent()}).catch(function(){referralMeta={loaded:true,error:true,joined:0,active:0,required:0};referralUsers=[];_renderRatingContent()});
@@ -6594,12 +6616,23 @@ function copyText(txt){
   function fallback(){try{var el=document.createElement("textarea");el.value=txt;el.style.cssText="position:fixed;opacity:0";document.body.appendChild(el);el.select();document.execCommand("copy");document.body.removeChild(el);toast(ok)}catch(e){}}
   if(navigator.clipboard){navigator.clipboard.writeText(txt).then(function(){toast(ok)}).catch(fallback)}else{fallback()}
 }
+function pwaShareText(text,url){
+  var message=String(text||"").trim(),link=String(url||"").trim();
+  if(navigator.share){
+    var data={};if(message)data.text=message;if(link)data.url=link;
+    navigator.share(data).catch(function(err){if(!err||err.name!=="AbortError")copyText([message,link].filter(Boolean).join(" "))});
+    return;
+  }
+  copyText([message,link].filter(Boolean).join(" "));
+}
 function tgShare(txt){
+  if(PWA_COURSE_HOST){pwaShareText(txt,"");return}
   var url="https://t.me/share/url?text="+encodeURIComponent(txt);
   try{if(tg&&tg.openTelegramLink){tg.openTelegramLink(url);return}}catch(e){}
   window.open(url,"_blank");
 }
 function tgShareLink(link,text){
+  if(PWA_COURSE_HOST){pwaShareText(text,link);return}
   var url="https://t.me/share/url?url="+encodeURIComponent(link||"")+"&text="+encodeURIComponent(text||"");
   try{if(tg&&tg.openTelegramLink){tg.openTelegramLink(url);return}}catch(e){}
   window.open(url,"_blank");
@@ -6609,6 +6642,7 @@ function toast(msg,dur){
   clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove("on")},dur||1900);
 }
 	function openUserChat(i,src){
+	  if(PWA_COURSE_HOST)return;
 	  var u=socialUsers(src)[i]||{};
   var username=String(u.username||"").trim().replace(/^@/,"");
   if(!username){
@@ -6629,6 +6663,7 @@ function toast(msg,dur){
 	  return courseMessage("rating.challengeCooldown","Bellashuvni 15 daqiqada bir marta yuborish mumkin. {minutes} daqiqadan keyin urinib ko'ring.").replace("{minutes}",String(minutes));
 	}
 	function friendChallenge(i,src){
+	  if(PWA_COURSE_HOST)return;
 	  var r=rl();
 	  var u=(typeof i==="number")?socialUsers(src)[i]:null;
   if(!u||!u.tgId||u.me){
@@ -6701,6 +6736,7 @@ function renderChallengeSheet(ch){
 function openChallengeById(id){
   var c=chL();id=Number(id||0);
   if(!id)return;
+  if(PWA_COURSE_HOST){toast(courseMessage("pwaUnavailable.challenge","Bu bellashuv brauzer ilovasida hozircha mavjud emas."),2400);return}
   App.show("rating");
   App.openSheet('<div class="shead"><div class="zh han" style="font-size:34px">战</div><div class="tr">'+esc(c.load)+'</div></div>');
   if(!INIT_DATA){App.openSheet('<div class="shead"><div class="zh han" style="font-size:34px">战</div><div class="tr">'+esc(c.needTg)+'</div></div>');return}
@@ -6736,6 +6772,7 @@ function challengeCard(q){
 }
 function startChallengeRound(id){
   var c=chL();
+  if(PWA_COURSE_HOST){toast(courseMessage("pwaUnavailable.challenge","Bu bellashuv brauzer ilovasida hozircha mavjud emas."),2400);return}
   if(requireFoundationBefore(function(){startChallengeRound(id)}))return;
   if(!INIT_DATA){toast(c.needTg,2400);return}
   App.closeSheet();
@@ -6799,7 +6836,7 @@ function finishChallengeRound(){
   });
   _writeTmpls=(t[LANG]||t.ru).map(function(txt,k){var copy=courseMessage("rating.writeTemplate"+k,txt);return copy.replace("{xp}",myXp.toLocaleString("ru")).replace("{rank}",String(myRank)).replace("{botLink}",botLink)});
   var cpLbl=courseMessage("rating.writeCopy",LANG==="ru"?"Копировать":LANG==="tj"?"Нусха":"Nusxa");
-  var sdLbl=courseMessage("rating.writeTelegram","Telegram");
+  var sdLbl=PWA_COURSE_HOST?courseMessage("rating.pwaWriteShare","Share"):courseMessage("rating.writeTelegram","Telegram");
   var ttl=courseMessage("rating.writeTitle",LANG==="ru"?"Написать":LANG==="tj"?"Навиштан":"Yozish");
   var html='<div class="shead"><div class="tr" style="font-size:15px;color:var(--ink)">'+ttl+'</div></div>'
     +_writeTmpls.map(function(txt,k){return '<div class="tmpl">'+esc(txt)+'<div class="tact"><span onclick="copyText(_writeTmpls['+k+'])">📋 '+cpLbl+'</span><span onclick="tgShare(_writeTmpls['+k+'])">✈️ '+sdLbl+'</span></div></div>'}).join("");
@@ -6810,27 +6847,28 @@ function finishChallengeRound(){
 var _invitePayload=null;
 function renderInviteSheet(d){
   _invitePayload=d;
-  var sendLbl=courseMessage("rating.inviteSend",LANG==="ru"?"Отправить сообщение":LANG==="tj"?"Паём фиристодан":"Xabar yuborish");
+  var sendLbl=PWA_COURSE_HOST?courseMessage("rating.pwaInviteShare","Share"):courseMessage("rating.inviteSend",LANG==="ru"?"Отправить сообщение":LANG==="tj"?"Паём фиристодан":"Xabar yuborish");
   var title=courseMessage("rating.inviteTitle",LANG==="ru"?"Пригласить друга":LANG==="tj"?"Дӯстро даъват кардан":"Do'st chaqirish");
-  var hint=courseMessage("rating.inviteHint",LANG==="ru"?"Готовый текст откроется в Telegram. Выберите друга и отправьте.":LANG==="tj"?"Матни тайёр дар Telegram кушода мешавад. Дӯстро интихоб кунед ва фиристед.":"Tayyor matn Telegramda ochiladi. Do'stni tanlab yuboring.");
+  var hint=PWA_COURSE_HOST?courseMessage("rating.pwaInviteHint","Taklif havolasini ulashing."):courseMessage("rating.inviteHint",LANG==="ru"?"Готовый текст откроется в Telegram. Выберите друга и отправьте.":LANG==="tj"?"Матни тайёр дар Telegram кушода мешавад. Дӯстро интихоб кунед ва фиристед.":"Tayyor matn Telegramda ochiladi. Do'stni tanlab yuboring.");
   var stat=(typeof d.active_count!=="undefined")?'<div class="sst"><div><b>'+Number(d.joined_count||0)+'</b><small>'+courseMessage("rating.referralJoined",LANG==="ru"?"перешли":LANG==="tj"?"даромаданд":"kirgan")+'</small></div><div><b>'+Number(d.active_count||0)+' / '+Number(d.required||10)+'</b><small>'+courseMessage("rating.referralActive",LANG==="ru"?"актив":LANG==="tj"?"фаъол":"faol")+'</small></div></div>':'';
   App.openSheet('<div class="shead"><div class="zh han" style="font-size:34px">友</div><div class="tr" style="font-size:16px;color:var(--ink);margin-top:8px">'+title+'</div><div class="tr">'+hint+'</div></div>'
     +stat
     +'<div class="tmpl">'+esc((d.share_text||"")+" "+(d.link||""))+'</div>'
-    +'<button class="scta" onclick="tgShareLink(_invitePayload.link,_invitePayload.share_text)"><i class="ti ti-brand-telegram"></i> '+sendLbl+'</button>');
+    +'<button class="scta" onclick="'+(PWA_COURSE_HOST?'pwaShareText(_invitePayload.share_text,_invitePayload.link)':'tgShareLink(_invitePayload.link,_invitePayload.share_text)')+'"><i class="ti ti-'+(PWA_COURSE_HOST?'share':'brand-telegram')+'"></i> '+sendLbl+'</button>');
 }
 function openInviteSheet(){
   var loading=courseMessage("rating.inviteLoading",LANG==="ru"?"Готовим ссылку…":LANG==="tj"?"Силка омода мешавад…":"Link tayyorlanyapti…");
 	  App.openSheet('<div class="shead"><div class="zh han" style="font-size:34px">友</div><div class="tr">'+loading+'</div></div>');
-	  if(INIT_DATA){
-	    _apiGet(invitePayloadUrl()).then(function(r){return r.json()}).then(function(d){
-	      if(d&&d.ok){renderInviteSheet(d);return}
+	  if(INIT_DATA||PWA_COURSE_HOST){
+	    var request=PWA_COURSE_HOST?_apiPost("/api/v3/pwa/referral/overview",{}):_apiGet(invitePayloadUrl());
+	    request.then(function(r){return r.json()}).then(function(d){
+	      if(d&&d.ok){if(!d.share_text)d.share_text=courseMessage("rating.inviteFallbackShare","");renderInviteSheet(d);return}
 	      throw new Error("invite_failed");
 	    }).catch(function(){toast(courseMessage("rating.inviteLoadError",LANG==="ru"?"Ссылка не загрузилась":LANG==="tj"?"Силка бор нашуд":"Link yuklanmadi"),2200);App.closeSheet()});
     return;
   }
   var link=botLinkUrl();
-  var text=courseMessage("rating.inviteFallbackShare",{ru:"Привет! Учу китайский в HSK AI. Заходи:",uz:"Salom! Men HSK AI bilan xitoy tilini o'rganyapman. Kirib ko'r:",tj:"Салом! Ман бо HSK AI чинӣ меомӯзам. Дароед:"}[LANG]);
+  var text=courseMessage("rating.inviteFallbackShare","");
   renderInviteSheet({ok:true,link:link,share_text:text});
 }
 
@@ -6863,7 +6901,7 @@ function openInviteSheet(){
 	      +'<div class="note">'+esc(rivNote)+'</div></div>';
 	  }
 
-	  var acts=u.me?""
+	  var acts=(u.me||PWA_COURSE_HOST)?""
 	    :'<div class="upacts">'
 	    +'<button class="b-ch" onclick="friendChallenge('+i+',\''+src+'\')"><i class="ti ti-swords"></i> '+r.ch+'</button>'
 	    +'<button class="b-tg" aria-label="'+esc(r.msg)+'" title="'+esc(r.msg)+'" onclick="openUserChat('+i+',\''+src+'\')"><i class="ti ti-message-circle"></i></button>'
@@ -7101,8 +7139,8 @@ function settingsSheetHtml(){
     +'<div class="set" style="margin:0">'
     +'<button class="srow" onclick="App.langPicker()"><i class="ti ti-language"></i> '+courseMessage("lang",t.lang)+'<span class="sv">'+LANG.toUpperCase()+' <i class="ti ti-chevron-right"></i></span></button>'
     +courseVersionSettingsRowHtml()
-    +'<button class="srow" onclick="App.notifToggle()"><i class="ti ti-bell"></i> '+courseMessage("notif",t.notif)+'<span class="toggle '+(notifOn?"on":"")+'"></span></button>'
-    +(notifOn?'<div class="srow-note">'+notifTimesHtml()+'</div>':'')
+    +(PWA_COURSE_HOST?"":'<button class="srow" onclick="App.notifToggle()"><i class="ti ti-bell"></i> '+courseMessage("notif",t.notif)+'<span class="toggle '+(notifOn?"on":"")+'"></span></button>'
+    +(notifOn?'<div class="srow-note">'+notifTimesHtml()+'</div>':''))
     +pwaPushSettingsRowHtml()
     +'<button class="srow" onclick="App.goalPicker()"><i class="ti ti-target"></i> '+p.goalSet+'<span class="sv">'+dailyGoal+' XP <i class="ti ti-chevron-right"></i></span></button>'
     +signInMethodsRowsHtml()
@@ -7855,7 +7893,7 @@ var PRON=(function(){
       })
       .catch(function(){busy=false;if(!live())return;clog("mic_neterr","",{});setHint(L().netErr)});
   }
-  function onErr(o){var code=o&&o.j&&o.j.code;if(code==="PRONOUNCE_LIMIT_EXCEEDED"){rememberSectionLimit(o&&o.j);showLimit(false);return}setHint(code==="INVALID_INIT_DATA"?L().needTg:((o&&o.j&&o.j.message)||L().netErr))}
+  function onErr(o){var code=o&&o.j&&o.j.code;if(code==="PRONOUNCE_LIMIT_EXCEEDED"){rememberSectionLimit(o&&o.j);showLimit(false);return}setHint(code==="INVALID_INIT_DATA"?(PWA_COURSE_HOST?courseMessage("pwaAuth.body","Ба ҳисоб аз нав ворид шавед."):L().needTg):((o&&o.j&&o.j.message)||L().netErr))}
   function applyScore(score,heard){
     var t=L(),ok=score>=60,word=el("pr-word"),fb=el("pr-fb"),he=el("pr-heard");
     if(he)he.textContent=heard?(t.heard+' '+heard):"";
@@ -8441,7 +8479,7 @@ var LIVE_TEXT={
   ru:{startLive:"Нажмите для живого разговора",stopLive:"Микрофон включён · Нажмите, чтобы закончить",liveFallback:"Live недоступен. Удерживайте микрофон, чтобы говорить."},
   tj:{startLive:"Барои гуфтугӯи зинда пахш кунед",stopLive:"Микрофон фаъол · Барои анҷом пахш кунед",liveFallback:"Live дастрас нест. Барои гап задан микрофонро нигоҳ доред."}
 };
-Object.keys(LIVE_TEXT).forEach(function(k){Object.assign(LD[k],LIVE_TEXT[k])});var COURSE_VOICE_CATALOG=window.HSKAI_COURSE_I18N||{};Object.keys(LD).forEach(function(locale){var messages=COURSE_VOICE_CATALOG[locale]||{};Object.keys(LD[locale]).forEach(function(key){var value=messages["courseVoiceInline."+key];if(typeof value==="string"&&value)LD[locale][key]=value})});
+Object.keys(LIVE_TEXT).forEach(function(k){Object.assign(LD[k],LIVE_TEXT[k])});var COURSE_VOICE_CATALOG=window.HSKAI_COURSE_I18N||{};Object.keys(LD).forEach(function(locale){var messages=COURSE_VOICE_CATALOG[locale]||{};Object.keys(LD[locale]).forEach(function(key){var value=messages["courseVoiceInline."+key];if(typeof value==="string"&&value)LD[locale][key]=value})});if(PWA_COURSE_HOST)Object.keys(LD).forEach(function(locale){var messages=COURSE_VOICE_CATALOG[locale]||{};if(messages["pwaVoice.micDeny"])LD[locale].micDeny=messages["pwaVoice.micDeny"];if(messages["pwaVoice.accountUnavailable"])LD[locale].startBot=messages["pwaVoice.accountUnavailable"]});
 var L=LD[LANG]||LD.ru;
 var tg=window.Telegram&&window.Telegram.WebApp;
 var $=function(id){return document.getElementById("vc-"+id)};

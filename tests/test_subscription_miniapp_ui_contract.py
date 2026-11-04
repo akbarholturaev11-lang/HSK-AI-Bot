@@ -58,6 +58,23 @@ def test_subscription_checkout_preserves_discount_modes():
     for mode in ("subscription", "referral_discount", "admin_discount", "feedback_discount"):
         assert mode in html
 
+
+def test_pwa_checkout_uses_public_help_and_share_without_changing_miniapp():
+    html = _html()
+    support = re.search(r"function openSupportChat\(\)\{[\s\S]*?\n\}", html)
+    share = re.search(r"function shareReferral\(link\)\{[\s\S]*?\n\}", html)
+    assert support is not None and share is not None
+    assert 'if(PWA_CHECKOUT_HOST){' in support.group(0)
+    assert '/guide/faq/' in support.group(0)
+    assert 'window.open(url,"_blank")' in support.group(0)
+    assert 'if(PWA_CHECKOUT_HOST){' in share.group(0)
+    assert 'navigator.share({text})' in share.group(0)
+    assert 'copyText(text,tr().copied,tr().copyFailed)' in share.group(0)
+    assert 'https://t.me/share/url?' in share.group(0)
+    assert 'messages.discountInviteText=copy["subscriptionPage.pwaDiscountInviteText"]' in html
+    assert 'messages.invalidTelegram=copy["pwaAuth.body"]' in html
+    assert 'messages.returnToBot=messages.proReturn' in html
+
 def test_checkout_telemetry_requires_ack_and_retries_only_transient_failures():
     html = _html()
     start = html.index("async function trackSubscriptionStage(stage){")

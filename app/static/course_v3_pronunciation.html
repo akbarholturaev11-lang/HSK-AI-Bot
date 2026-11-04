@@ -6,7 +6,7 @@
 <title>Talaffuz mashqi</title>
 <link rel="icon" href="/assets/hsk-ai-avatar.webp" type="image/webp">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script src="/course_v3_data/hsk-course-i18n.js?v=20261021-e6ffe6e07de9"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script>
+<script src="/course_v3_data/hsk-course-i18n.js?v=20261021-fd0db3828bc4"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script>
 <script defer src="/audio/words/index.js?v=20261014-offline-1"></script>
 <script defer src="/audio/words/client.js?v=20261014-persist-1"></script>
 <style>
@@ -107,6 +107,10 @@ var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()
 function goBack(){location.href=(PWA_PRONUNCIATION_HOST?"/iphone-pwa/course":"/course-v3.html")+"?lang="+LANG+"&tab=mashq"}
 function goPremium(){location.href=(PWA_PRONUNCIATION_HOST?"/iphone-pwa/checkout":"/subscription.html")+"?lang="+LANG+"&source=v3_pronunciation_limit&mode=subscription&return_to=course&return_page=course_v3_pronunciation.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"")}
 var PWA_PRONUNCIATION_HOST=location.pathname==="/iphone-pwa/practice/pronunciation";
+if(PWA_PRONUNCIATION_HOST){
+  if(PRONUNCIATION_UI["pwaVoice.micDeny"])L.micDeny=PRONUNCIATION_UI["pwaVoice.micDeny"];
+  if(PRONUNCIATION_UI["pwaAuth.body"])L.needTg=PRONUNCIATION_UI["pwaAuth.body"];
+}
 var PWA_PRONUNCIATION_SESSION=null,PWA_PRONUNCIATION_PROMISE=null;
 /* Foydalanuvchi darajasi: URL param faqat boshlang'ich qiymat, server (users.level)
    asosiy manba — mashq har doim userning haqiqiy HSK darajasiga mos chiqadi.

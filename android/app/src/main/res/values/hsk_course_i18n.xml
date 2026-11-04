@@ -907,6 +907,8 @@
     <string name="hsk_course_track_switch_confirm_body" formatted="false">Joriy kursdagi progressingiz saqlanadi. Istalgan payt boshqa versiyaga qaytishingiz mumkin.</string>
     <string name="hsk_course_track_switch_confirm_title" formatted="false">Kurs versiyasini almashtirasizmi?</string>
     <string name="hsk_course_track_switching" formatted="false">Kurs almashtirilmoqda…</string>
+    <string name="hsk_course_track_switching_body" formatted="false">Panda kursingizni tayyorlayapti</string>
+    <string name="hsk_course_track_switching_title" formatted="false">{version} kursi ochilmoqda…</string>
     <string name="hsk_course_track_test_soon" formatted="false">HSK 3.0 testlari · Tez orada</string>
     <string name="hsk_course_track_test_soon_body" formatted="false">Yangi HSK 3.0 imtihon formati tayyorlanmoqda.</string>
     <string name="hsk_course_track_test_soon_title" formatted="false">HSK 3.0 testlari</string>

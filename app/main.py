@@ -2912,6 +2912,67 @@ async def pwa_course_map(request: Request):
         )
 
 
+@app.post("/api/v3/pwa/referral/overview")
+async def pwa_referral_overview(request: Request):
+    """Return the existing account's referral view to its authenticated PWA.
+
+    This is the browser transport for ReferralService, not a second referral
+    program. It accepts only the same-origin PWA cookie plus CSRF and never
+    returns Telegram identifiers or usernames to the browser.
+    """
+    from app.services.pwa_auth_service import (
+        PWA_SESSION_COOKIE, PwaAuthError, PwaAuthService, require_same_origin,
+    )
+    from app.services.user_access_state_service import UserAccessState, UserAccessStateService
+
+    try:
+        require_same_origin(request, settings)
+        if request.headers.get("X-Telegram-Init-Data"):
+            raise PwaAuthError("pwa_request_invalid", status_code=422)
+        async with async_session_maker() as session:
+            browser = PwaAuthService(session, settings)
+            actor, _ = await browser.mutation_actor(
+                request.cookies.get(PWA_SESSION_COOKIE),
+                request.headers.get("X-HSK-PWA-CSRF"),
+            )
+            user = await UserRepository(session).get_by_user_id(actor.id, lock=True)
+            if user is None or UserAccessStateService.classify(user) == UserAccessState.BLOCKED:
+                raise PwaAuthError("pwa_session_required")
+
+            await UserRepository(session).ensure_referral_code(user)
+            referrals = ReferralService(session)
+            joined_count = await referrals.referral_repo.count_by_referrer(user)
+            active_count = await referrals.get_trial_activation_progress(user)
+            rows = await referrals.list_miniapp_referrals(user)
+            from app.services.referral_service import public_apps_url
+
+            safe_fields = (
+                "rank", "name", "avatar_key", "status", "joined_at", "activated_at",
+                "xp", "league_points", "total_xp", "course_level",
+                "completed_lessons", "is_paid", "is_current_user",
+            )
+            safe_rows = [{key: row.get(key) for key in safe_fields} for row in rows]
+            link = public_apps_url(settings, str(user.referral_code or ""), trial=True)
+            await session.commit()
+            return JSONResponse(
+                content={
+                    "ok": True,
+                    "link": link,
+                    "joined_count": int(joined_count),
+                    "active_count": int(active_count),
+                    "required": REFERRAL_TRIAL_REQUIRED_ACTIVE,
+                    "referrals": safe_rows,
+                },
+                headers={"Cache-Control": "no-store"},
+            )
+    except PwaAuthError as exc:
+        return JSONResponse(
+            {"ok": False, "error": exc.code},
+            status_code=exc.status_code,
+            headers={"Cache-Control": "no-store"},
+        )
+
+
 @app.get("/api/v3/invite")
 async def v3_invite_payload(request: Request, lang: str = "uz"):
     init_data = request.headers.get("X-Telegram-Init-Data", "")

@@ -907,6 +907,8 @@
     <string name="hsk_course_track_switch_confirm_body" formatted="false">Прогресс текущего курса сохранится. Вы сможете вернуться к другой версии в любое время.</string>
     <string name="hsk_course_track_switch_confirm_title" formatted="false">Сменить версию курса?</string>
     <string name="hsk_course_track_switching" formatted="false">Переключаем курс…</string>
+    <string name="hsk_course_track_switching_body" formatted="false">Панда готовит ваш курс</string>
+    <string name="hsk_course_track_switching_title" formatted="false">Открываем {version}…</string>
     <string name="hsk_course_track_test_soon" formatted="false">Тесты HSK 3.0 · Скоро</string>
     <string name="hsk_course_track_test_soon_body" formatted="false">Новый формат экзаменов HSK 3.0 ещё готовится.</string>
     <string name="hsk_course_track_test_soon_title" formatted="false">Тесты HSK 3.0</string>

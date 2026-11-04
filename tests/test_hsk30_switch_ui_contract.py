@@ -187,10 +187,14 @@ class Hsk30SwitchUiContractTests(unittest.TestCase):
         self.assertIn("onClick = { onChoose(level) }", picker)
         self.assertIn("if (hsk30.access.allowed)", self.android)
 
-    def test_panda_preparing_is_only_used_for_lesson_and_practice_entry(self):
+    def test_panda_preparing_is_shared_with_pwa_course_track_switch(self):
         helper = (ROOT / "app" / "static" / "assets" / "characters" / "hsk-study-preparing.js").read_text(encoding="utf-8")
         self.assertIn('HSKCharacters.render("panda","loading")', helper)
         self.assertIn('hsk-study-preparing', helper)
+        course = (ROOT / "app" / "static" / "course-v3.html").read_text(encoding="utf-8")
+        self.assertIn("var version=trackUi()[target===\"hsk30\"?\"hsk30\":\"hsk20\"]", course)
+        self.assertIn('html.hsk-pwa-browser #sheet.hsk30-switch-preparing{inset:0', course)
+        self.assertIn("renderStudyPreparing()", course)
         for filename in ("course_v3_recognition.html", "course_v3_pronunciation.html", "course_v3_memorize.html"):
             page = (ROOT / "app" / "static" / filename).read_text(encoding="utf-8")
             self.assertIn('HSKStudyPreparing.render(LANG)', page)

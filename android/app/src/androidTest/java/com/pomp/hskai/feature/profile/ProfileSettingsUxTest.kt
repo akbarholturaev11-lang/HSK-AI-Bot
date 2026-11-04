@@ -53,8 +53,10 @@ class ProfileSettingsUxTest {
     @get:Rule val compose = createComposeRule()
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private fun text(id: Int) = context.getString(id)
-    private fun pressSystemBack() = InstrumentationRegistry.getInstrumentation()
-        .sendKeyDownUpSync(KeyEvent.KEYCODE_BACK)
+    private fun pressSystemBack() {
+        InstrumentationRegistry.getInstrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_BACK)
+        compose.waitForIdle()
+    }
 
     @Composable
     private fun Profile(
