@@ -110,6 +110,21 @@ class IphonePwaNavigationContractTests(unittest.TestCase):
         self.assertIn('html.hsk-pwa-browser .phero .pav .ed {display:none!important}', css)
         self.assertIn('html.hsk-pwa-browser .phero .pav {cursor:default;pointer-events:none}', css)
 
+    def test_iphone_friends_are_authenticated_and_telegram_free(self):
+        self.assertIn('"/api/v3/invite":"/api/v3/pwa/invite"', COURSE)
+        self.assertIn('if(!referralMeta.loaded&&(INIT_DATA||PWA_COURSE_HOST))', COURSE)
+        self.assertIn('if(INIT_DATA||PWA_COURSE_HOST){', COURSE)
+        self.assertIn('var acts=(u.me||PWA_COURSE_HOST)?"":', COURSE)
+        self.assertIn("HskPwaInvite.open(d)", COURSE)
+        self.assertIn("/api/v3/pwa/invite", AUTH)
+        profiler = Path("app/static/course_v3_data/iphone-pwa-invite.js").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("navigator.share", profiler)
+        self.assertNotIn("telegram_id", profiler)
+        self.assertNotIn("initData", profiler)
+        self.assertIn("rating.inviteFallbackShare", profiler)
+
     def test_push_stays_bound_to_authenticated_inbox(self):
         self.assertIn('/iphone-pwa/course?notice=1', PUSH)
         self.assertNotIn("payment_status", PUSH)
