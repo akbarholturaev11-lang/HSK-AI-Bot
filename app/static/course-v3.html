@@ -9031,6 +9031,21 @@ var finishHskLaunchSplash=(function(){
   /* Returning from the dictionary/phrasebook is not a fresh app launch. */
   var returning=false;
   try{returning=sessionStorage.getItem("hsk_v3_resource_return")==="1";if(returning)sessionStorage.removeItem("hsk_v3_resource_return")}catch(e){}
+  // iPhone PWA: a return from checkout/practice is NOT a new app launch.
+  // Keep the original first-entry animation, but never replay it on an
+  // internal return or reload during this installed PWA browser session.
+  if(PWA_COURSE_HOST){
+    var internalReturn=false;
+    try{
+      var key="hskai.pwa.course.launch.seen";
+      var navParams=new URLSearchParams(location.search);
+      internalReturn=sessionStorage.getItem(key)==="1" ||
+        navParams.has("tab") || navParams.has("return_to") ||
+        navParams.has("return_tab");
+      sessionStorage.setItem(key,"1");
+    }catch(_){ /* URL markers still suppress the internal return animation. */ }
+    if(internalReturn){root.classList.add("is-done");root.remove();return function(){}}
+  }
   if(returning){root.classList.add("is-done");root.remove();return function(){}}
   var bootReady=false,animationReady=false,closed=false;
   var motionReduced=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
