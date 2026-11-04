@@ -58,7 +58,6 @@
   var displayedPaymentId = null;
   var pushState = null;
   var pushBusy = false;
-  var pushReturnMode = "close";
   var pushRegistrationPromise = null;
   var firstPushPromptRetries = 0;
 
@@ -433,16 +432,14 @@
   function markFirstPushPromptSeen() {
     try { if (owner) localStorage.setItem(firstPushPromptKey(), "1"); } catch (_) {}
   }
-  function openPushPrompt(returnMode) {
+  function openPushPrompt() {
     markFirstPushPromptSeen();
-    pushReturnMode = returnMode === "inbox" ? "inbox" : "close";
     openMode("push");
     render();
   }
   async function openPushSettings() {
     urgentPending = null;
     ++checkGeneration;
-    pushReturnMode = "close";
     openMode("push");
     render();
     try { await refreshPushStatus(); }
@@ -458,7 +455,7 @@
         window.setTimeout(presentFirstPushPromptWhenReady, 1000);
       return;
     }
-    openPushPrompt("close");
+    openPushPrompt();
   }
   async function maybeShowFirstPushPrompt() {
     if (!owner) return;
@@ -479,18 +476,12 @@
     openMode("inbox");
     render();
     try {
-      var results = await Promise.all([
-        fetchData().then(function (data) { return {data:data}; }, function (error) { return {error:error}; }),
-        refreshPushStatus().then(function () { return {push:true}; }, function (error) { return {pushError:error}; })
-      ]);
-      if (results[0].error) throw results[0].error;
+      await fetchData();
       render();
       var activePayment = latestData && latestData.account && latestData.account.payment_action;
       if (fromPush && activePayment && activePayment.status === "rejected" &&
           owner && !wasDismissed(activePayment.payment_id)) {
         openMode("urgent");
-      } else if (needsPushConsent()) {
-        openPushPrompt("inbox");
       }
     }
     catch (_) {
@@ -567,8 +558,7 @@
     if (ev.target.closest("[data-pwa-close]")) close();
     if (ev.target.closest("#hsk-pwa-push-action")) changePushSubscription();
     if (ev.target.closest("#hsk-pwa-push-later")) {
-      if (pushReturnMode === "inbox") { openMode("inbox"); render(); }
-      else close();
+      close();
     }
     var tab = ev.target.closest("[data-pwa-tab]");
     if (tab && activeMode === "inbox") {

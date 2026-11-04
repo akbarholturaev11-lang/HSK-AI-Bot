@@ -8,7 +8,7 @@ const vm = require("node:vm");
 const source = fs.readFileSync("app/static/course_v3_data/iphone-pwa-notices.js", "utf8");
 const shell = fs.readFileSync("app/static/course-v3.html", "utf8");
 const css = fs.readFileSync("app/static/course_v3_data/iphone-pwa-glass.css", "utf8");
-assert(shell.includes('src="/course_v3_data/iphone-pwa-notices.js?v=20261104-9aaae52d1860"'));
+assert(shell.includes('src="/course_v3_data/iphone-pwa-notices.js?v=20261104-b2923983a5a6"'));
 assert(shell.includes('href="/course_v3_data/iphone-pwa-glass.css?v=20261104-175a0ec6f920'));
 assert(shell.includes('PWA_COURSE_HOST?\'<button class="pwa-notices-button"'));
 assert(shell.includes('pwaPushSettingsRowHtml()'));
@@ -288,17 +288,24 @@ async function main(){
   await installed.window.HskPwaInbox.open();
   await new Promise(resolve=>setImmediate(resolve));
   const pushControl = installed.root().querySelector("#hsk-pwa-push-view");
-  assert.equal(pushControl.hidden,false,"first inbox open automatically shows in-app push consent");
+  assert.equal(pushControl.hidden,true,"the one-screen inbox never contains push access controls");
+  assert.equal(installed.root().querySelector("#hsk-pwa-notice-list").hidden,false,
+    "the inbox remains visible when push permission is missing");
+  assert.equal(installed.permissionFetchCount(),null,"opening the inbox never requests OS permission");
+  await installed.window.HskPwaInbox.openPushSettings();
+  assert.equal(pushControl.hidden,false,"the Settings preference opens the separate push access screen");
   assert.equal(installed.root().querySelector("#hsk-pwa-notice-list").hidden,true,
-    "unapproved push opens the focused access screen before the inbox");
-  assert.equal(installed.permissionFetchCount(),null,"permission is not requested before the learner taps");
+    "push access controls stay outside the one-screen inbox");
+  const requestCountBeforeEnable = installed.requests.length;
+  assert.equal(installed.permissionFetchCount(),null,"permission is not requested before the Settings action tap");
   installed.root().listeners.click({target:{closest:(selector)=>selector==="#hsk-pwa-push-action"?{}:null}});
   for(let i=0;i<8 && !installed.requests.some((request)=>request.url.endsWith("/push/subscribe"));i++)
     await new Promise(resolve=>setImmediate(resolve));
   assert(installed.pushCalls.includes("permission"),"permission prompt starts in the trusted button gesture");
   assert(installed.pushCalls.indexOf("permission")<installed.pushCalls.findIndex((call)=>Array.isArray(call)&&call[0]==="subscribe"),
     "native permission is requested before browser subscription creation");
-  assert.equal(installed.permissionFetchCount(),4,"permission starts before any network request for subscription");
+  assert.equal(installed.permissionFetchCount(),requestCountBeforeEnable,
+    "the system permission prompt is requested directly from the Settings tap before subscription calls");
   assert(installed.pushCalls.some((call)=>Array.isArray(call)&&call[0]==="getRegistration"&&call[1]==="/iphone-pwa/"),
     "push manager is warmed only under the iPhone PWA scope");
   assert(installed.requests.some((request)=>request.url.endsWith("/push/subscribe")&&request.options.headers["X-HSK-PWA-CSRF"]==="csrf-token"),
@@ -317,14 +324,18 @@ async function main(){
   const denied = harness({standalone:true,permission:"denied"});
   await denied.window.HskPwaInbox.open();
   await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(denied.root().querySelector("#hsk-pwa-push-view").hidden,true,
+    "a blocked permission never inserts an access card into the inbox");
+  assert.equal(denied.root().querySelector("#hsk-pwa-notice-list").hidden,false,
+    "the denied-permission inbox still shows its notices");
+  await denied.window.HskPwaInbox.openPushSettings();
   assert.equal(denied.root().querySelector("#hsk-pwa-push-status").textContent,"pwaPush.blocked",
     "blocked browser permission is announced accessibly without requesting OS permission again");
   assert.equal(denied.root().querySelector("#hsk-pwa-push-action").hidden,true);
   denied.root().listeners.click({target:{closest:(selector)=>selector==="#hsk-pwa-push-later"?{}:null}});
-  denied.window.HskPwaInbox.close();
   await denied.window.HskPwaInbox.open();
-  assert.equal(denied.root().querySelector("#hsk-pwa-push-view").hidden,false,
-    "each deliberate inbox open returns to push access help while permission is missing");
+  assert.equal(denied.root().querySelector("#hsk-pwa-push-view").hidden,true,
+    "reopening the inbox never moves the Settings access screen into notices");
   assert(!denied.pushCalls.includes("permission"),
     "a blocked iOS permission is never re-requested without the user going to Settings");
   const settingsPush = harness({standalone:true});

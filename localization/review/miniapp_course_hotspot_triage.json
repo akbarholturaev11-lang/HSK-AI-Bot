@@ -2,7 +2,7 @@
   "schema_version": 1,
   "status": "SOURCE_CLASSIFIED_ALL_EXPLICIT_LANG_EQUALS_BRANCH_LINES_NOT_RUNTIME_VALIDATION",
   "source": "app/static/course-v3.html",
-  "source_revision": "c6cc3664df66bff408c88bfcd7ea43f1d7a9ebca",
+  "source_revision": "620a21bb785af7bef310f0359f8339137c3dd3c2",
   "counting_note": "62 unique physical source lines cover all 130 current LANG ==/=== literal-locale predicates in course-v3.html after main integration and the reviewed PWA browser bridge. Multiple predicates per line remain one classification; source review only, not runtime UI verification. PWA bug-fix line shifts were re-mapped to the exact current source blob; the reviewed locale predicate inventory remains unchanged.",
   "coverage_note": "Current PWA implementation source only: all LANG ==/=== 'uz'|'ru'|'tj' predicates are classified; added PWA unavailable-practice error fallback is canonical; lesson/grade/Pro/auth unaffected. All other localized source expressions, dynamic content and rendered UI require separate QA.",
   "classifications": [
