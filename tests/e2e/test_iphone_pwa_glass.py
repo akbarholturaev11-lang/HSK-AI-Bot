@@ -423,6 +423,7 @@ def test_shake_report_is_single_bottom_sheet_with_direct_permission_and_csrf(wid
         sheet = page.locator("#hsk-pwa-shake-root .hsk-shake-dialog")
         assert sheet.is_visible()
         assert sheet.get_attribute("data-stage") == "form"
+        assert page.evaluate("window.HskPwaShake.backTarget() !== null")
         assert page.locator("#hsk-shake-description").is_visible()
         assert page.locator("#hsk-shake-actions button").count() == 1
         assert page.locator("#hsk-shake-close").count() == 1
@@ -457,6 +458,54 @@ def test_shake_report_is_single_bottom_sheet_with_direct_permission_and_csrf(wid
         assert page.locator("#hsk-shake-actions button").count() == 1
         page.locator("#hsk-shake-actions button").click()
         assert not report.is_visible()
+        assert page.evaluate("window.HskPwaShake.backTarget() === null")
         page.evaluate("window.HskPwaShake.toggle()")
         assert not page.evaluate("window.HskPwaShake.isListening()")
+        browser.close()
+
+
+def test_shake_report_never_captures_embedded_checkout_even_after_async_renderer():
+    """Top-level installed PWA checkout iframe may contain receipts/financial data."""
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page(
+            viewport={"width": 390, "height": 844},
+            is_mobile=True, has_touch=True,
+        )
+        bootstrap(page)
+        page.add_style_tag(content=asset("course_v3_data/iphone-pwa-shake-report.css"))
+        page.evaluate("""() => {
+          Object.defineProperty(navigator, 'standalone', {configurable:true,value:true});
+          window.__captureCalls = 0;
+          window.html2canvas = () => { window.__captureCalls++; throw Error('Must not run on checkout'); };
+        }""")
+        page.add_script_tag(content=asset("course_v3_data/iphone-pwa-shake-report.js"))
+        page.evaluate("window.dispatchEvent(new Event('load'))")
+        page.wait_for_function("window.HskPwaShake && window.HskPwaShake.settingsRowHtml().includes('role=\"switch\"')")
+        # Same JavaScript turn: renderer is already available, but viewport privacy
+        # must be checked again after the await before screenshot materializes.
+        page.evaluate("""() => {
+          window.HskPwaShake.manual();
+          let layer = document.createElement('section');
+          layer.id = 'pwa-checkout-layer';
+          layer.innerHTML = '<iframe title="Checkout"></iframe>';
+          document.body.appendChild(layer);
+        }""")
+        page.wait_for_function(
+            "document.querySelector('#hsk-pwa-shake-root .hsk-shake-preview')?.textContent.includes('rasm')"
+        )
+        assert page.evaluate("window.__captureCalls") == 0
+        assert page.locator("#hsk-shake-attach").count() == 0
+        posts = []
+        def accept_report(route):
+            posts.append(json.loads(route.request.post_data))
+            route.fulfill(content_type="application/json", body='{"ok":true}')
+        page.route("**/api/v3/pwa/bug-report", accept_report)
+        page.locator("#hsk-shake-description").fill("Obuna sahifasida muammo bor")
+        page.locator("#hsk-shake-actions button").click()
+        page.wait_for_function(
+            "document.querySelector('.hsk-shake-dialog')?.dataset.stage === 'sent'"
+        )
+        assert len(posts) == 1
+        assert posts[0]["screenshot_data_url"] == ""
         browser.close()
