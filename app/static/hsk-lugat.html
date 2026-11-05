@@ -80,11 +80,11 @@ html.hsk-embedded .view{top:0}
 .history-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .history-clear{font-size:11px;color:var(--accent);font-weight:800}
 .count{flex-shrink:0;margin-left:10px;font-size:14px;color:var(--text2);font-weight:500}
-.list{flex:1;overflow-y:auto;padding:8px 16px 20px;display:flex;flex-direction:column;gap:0;-webkit-overflow-scrolling:touch}
+.list{flex:1;overflow-y:auto;padding:8px 16px 20px;display:flex;flex-direction:column;gap:0;overflow-anchor:none;-webkit-overflow-scrolling:touch}
 .row{display:flex;align-items:center;gap:14px;padding:12px 4px;border:0;border-bottom:1px solid var(--border);border-radius:0;background:transparent;box-shadow:none;cursor:pointer;flex-shrink:0}
 .row:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
 .row:active{background:var(--bg2)}
-.row:last-child{border-bottom:0}
+.row:last-child{border-bottom:0}.list .row{height:88px;min-height:88px;max-height:88px;box-sizing:border-box;overflow:hidden}.list .row .p{white-space:nowrap;text-overflow:ellipsis;overflow:hidden}.list .row .m{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.dict-spacer{flex:0 0 auto;width:100%;pointer-events:none}
 .row .h{font-family:var(--cjk);font-size:23px;font-weight:700;min-width:58px;color:var(--text)}
 .row .info{flex:1;min-width:0}
 .row .p{font-size:14px;color:var(--accent);font-weight:600;margin-bottom:2px}
@@ -1248,37 +1248,37 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
 
   /* ---------- list / search ---------- */
 
-  function renderList(query){
-    var t = UI[currentLang] || UI.uz;
-    var q = String(query || '').trim();
-    var qPinyin = normPinyin(q);
-    var qLower = q.toLowerCase();
-    var results;
-    if(!q){
-      results = activeWords;
-    } else {
-      results = activeWords.filter(function(w){
-        return w.h.indexOf(q) !== -1 || w._p.indexOf(qPinyin) !== -1 ||
-          w._m.indexOf(qLower) !== -1 || text(w.m).toLowerCase().indexOf(qLower) !== -1;
-      });
-    }
-    countEl.textContent = String(results.length);
-    countEl.setAttribute('aria-label', q ? t.countResults(results.length) : t.countAll(results.length, filterCountLabel(t)));
-    searchClear.classList.toggle('visible', !!searchEl.value);
-    if(results.length === 0){
-      listEl.innerHTML = '<div class="empty">'+escapeHtml(t.emptyTitle)+'<br>'+escapeHtml(t.emptySub)+'</div>';
-      return;
-    }
-    var html = '';
-    for(var i=0;i<results.length;i++){
-      var w = results[i];
-      html += '<div class="row" role="button" tabindex="0" data-idx="'+w.id+'"><div class="h">'+escapeHtml(w.h)+'</div>'+
-        '<div class="info"><div class="p">'+escapeHtml(w.p)+'</div><div class="m">'+escapeHtml(text(w.m))+'</div></div>'+
-        '<div class="lv">'+escapeHtml(formatDictionaryLevel(w.lv))+'</div></div>';
-    }
-    listEl.innerHTML = html;
+  /* Render a bounded DOM window instead of thousands of rows per keystroke. */
+  var DICT_ROW_HEIGHT=88,DICT_WINDOW_ROWS=90,DICT_WINDOW_STEP=18;
+  var listResults=[],virtualStart=-1,virtualEnd=-1,dictScrollFrame=0;
+  function dictRowHtml(w){
+    return '<div class="row" role="button" tabindex="0" data-idx="'+w.id+'"><div class="h">'+escapeHtml(w.h)+'</div>'+
+      '<div class="info"><div class="p">'+escapeHtml(w.p)+'</div><div class="m">'+escapeHtml(text(w.m))+'</div></div>'+
+      '<div class="lv">'+escapeHtml(formatDictionaryLevel(w.lv))+'</div></div>';
   }
-
+  function renderVisibleWindow(force){
+    if(!listResults.length)return;
+    var viewport=Math.max(440,listEl.clientHeight||0),first=Math.max(0,Math.floor((listEl.scrollTop||0)/DICT_ROW_HEIGHT)-22);
+    var start=Math.floor(first/DICT_WINDOW_STEP)*DICT_WINDOW_STEP;
+    var end=Math.min(listResults.length,start+Math.max(DICT_WINDOW_ROWS,Math.ceil(viewport/DICT_ROW_HEIGHT)+44));
+    if(!force&&start===virtualStart&&end===virtualEnd)return;
+    virtualStart=start;virtualEnd=end;var rows=[];
+    for(var i=start;i<end;i++)rows.push(dictRowHtml(listResults[i]));
+    listEl.innerHTML='<div class="dict-spacer" aria-hidden="true" style="height:'+(start*DICT_ROW_HEIGHT)+'px"></div>'+
+      rows.join('')+'<div class="dict-spacer" aria-hidden="true" style="height:'+((listResults.length-end)*DICT_ROW_HEIGHT)+'px"></div>';
+  }
+  function renderList(query){
+    var t=UI[currentLang]||UI.uz,q=String(query||'').trim(),qPinyin=normPinyin(q),qLower=q.toLowerCase();
+    listResults=q?activeWords.filter(function(w){return w.h.indexOf(q)!==-1||w._p.indexOf(qPinyin)!==-1||w._m.indexOf(qLower)!==-1;}):activeWords;
+    countEl.textContent=String(listResults.length);
+    countEl.setAttribute('aria-label',q?t.countResults(listResults.length):t.countAll(listResults.length,filterCountLabel(t)));
+    searchClear.classList.toggle('visible',!!searchEl.value);
+    virtualStart=-1;virtualEnd=-1;listEl.scrollTop=0;
+    if(!listResults.length){listEl.innerHTML='<div class="empty">'+escapeHtml(t.emptyTitle)+'<br>'+escapeHtml(t.emptySub)+'</div>';return}
+    renderVisibleWindow(true);
+  }
+  listEl.addEventListener('scroll',function(){if(dictScrollFrame)return;dictScrollFrame=requestAnimationFrame(function(){dictScrollFrame=0;renderVisibleWindow(false)})},{passive:true});
+  window.addEventListener('resize',function(){if(listResults.length)renderVisibleWindow(true)});
   /* ---------- stroke-order writer (focused, one char at a time) ---------- */
 
   function setPlayIcon(){
@@ -1575,8 +1575,8 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     var memoBlock = document.getElementById('memo-block');
     var D = (window.MEMO_DATA && word) ? window.MEMO_DATA[word.h] : null;
     if(!window.MEMO_DATA){
-      memoBlock.innerHTML = '';
-      loadMemoData().then(function(){ if(currentWord === word) renderMemo(word); });
+      memoBlock.innerHTML = hsk30MemoryFallback(word);
+      loadMemoData().then(function(){ if(currentWord === word && window.MEMO_DATA) renderMemo(word); });
       return;
     }
     if(!D){ memoBlock.innerHTML = hsk30MemoryFallback(word); return; }
@@ -1751,7 +1751,7 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     currentWord = null;
     viewDetail.classList.add('hidden');
     viewList.classList.remove('hidden');
-    listEl.scrollTop = scrollPos;
+    listEl.scrollTop = scrollPos; renderVisibleWindow(true);
   }
 
   function handleDictionaryBack(){

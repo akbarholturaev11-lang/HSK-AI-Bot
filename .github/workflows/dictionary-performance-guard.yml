@@ -1,0 +1,32 @@
+name: Dictionary virtual list performance
+
+on:
+  pull_request:
+    paths:
+      - "app/static/hsk-lugat.html"
+      - "tests/test_dictionary_virtual_list.js"
+      - "tests/test_dictionary_memo_no_freeze.js"
+      - "tests/e2e/test_dictionary_virtual_list.py"
+      - "localization/baselines/reviewed_ui_changes.json"
+      - ".github/workflows/dictionary-performance-guard.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  dictionary-performance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check dictionary virtualization and queries with Node.js
+        run: node tests/test_dictionary_virtual_list.js
+      - name: Assert memo loader failure does not freeze WebKit event loop
+        run: node tests/test_dictionary_memo_no_freeze.js
+      - name: Install browser test runner
+        run: |
+          python -m pip install "pytest==8.4.2" playwright
+          python -m playwright install --with-deps chromium
+      - name: Verify 2400-word scrolling in Chromium at three iPhone widths
+        run: python -m pytest -q tests/e2e/test_dictionary_virtual_list.py
