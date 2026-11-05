@@ -18,13 +18,20 @@
     async prepare() {
       const Audio = root.AudioContext || root.webkitAudioContext;
       this.context = new Audio();
-      // Start the context within the microphone click's user activation.
-      await this.context.resume();
+      // Start the context within the microphone click's user activation, but
+      // do not block on it: iOS may leave this promise pending until the
+      // microphone is live, which used to hang Live in "connecting".
+      const resuming = this.context.resume().catch(() => {});
       const stream = await navigator.mediaDevices.getUserMedia({ audio: {
         channelCount: 1, echoCancellation: true, noiseSuppression: true, autoGainControl: true
       }});
       if (this.closed) { stream.getTracks().forEach(track => track.stop()); throw new Error("cancelled"); }
       this.stream = stream;
+      await Promise.race([resuming, new Promise(resolve => setTimeout(resolve, 4000))]);
+      if (this.context.state !== "running") {
+        try { await Promise.race([this.context.resume(), new Promise(resolve => setTimeout(resolve, 1500))]); } catch (_) {}
+      }
+      if (this.context.state !== "running") throw new Error("live_audio_suspended");
       await this.context.audioWorklet.addModule("/voice-live-worklet.js?v=1");
       if (this.closed) throw new Error("cancelled");
       this.capture = new AudioWorkletNode(this.context, "hsk-voice-capture");

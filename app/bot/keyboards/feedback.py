@@ -22,6 +22,14 @@ PAID_POSITIVE_OPTIONS = ("worth", "useful")
 PAID_SUB_POSITIVE = ("lessons", "voice", "speed", "daily", "other")
 PAID_SUB_NEGATIVE = ("content", "slow", "tech", "time", "other")
 
+# App (iPhone PWA) option sets: the same canonical flow and codes, listing the
+# features the app actually has (no Telegram photo / AI-chat answers). The bot
+# keyboards above stay unchanged; the server accepts the union of both sets.
+APP_LIKED_OPTIONS = ("course", "voice", "pronunciation", "dictionary", "practice", "other")
+APP_PAID_SUB_POSITIVE = ("lessons", "voice", "pronunciation", "daily", "other")
+ACCEPTED_LIKED_OPTIONS = tuple(dict.fromkeys(LIKED_OPTIONS + APP_LIKED_OPTIONS))
+ACCEPTED_PAID_SUB_POSITIVE = tuple(dict.fromkeys(PAID_SUB_POSITIVE + APP_PAID_SUB_POSITIVE))
+
 
 def feedback_like_label(code: str, lang: str) -> str:
     return t(f"feedback_like_{code}", lang)

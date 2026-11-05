@@ -153,10 +153,11 @@ async def read_android_admission(session, actor, job_id, now, *, history_window)
 
 class SmartReminderAndroidService:
     def __init__(self, session, *, enabled=False, admission_reader=None, calibration=None,
-                 coverage_reader=None, clock=None):
+                 coverage_reader=None, clock=None, rollout_reader=None):
         self.session = session
         self.enabled, self.admission_reader = enabled, admission_reader
         self.calibration, self.coverage_reader = calibration, coverage_reader
+        self.rollout_reader = rollout_reader
         self.clock = clock or (lambda: datetime.now(timezone.utc))
         self.queue = SmartReminderShadowQueue(None, clock=self.clock)
         digest = hashlib.sha256(json.dumps(asdict(calibration), sort_keys=True, default=str).encode()).hexdigest()[:12] if calibration else None
@@ -357,6 +358,9 @@ class SmartReminderAndroidService:
             if until <= now: return denied("android_authority_expired")
             if not await NotificationTemplateService(self.session).is_enabled(KEY_SMART_STUDY, authorize=True):
                 return await self._cancel(row, "admin_study_disabled")
+            if self.rollout_reader is not None and not await self.rollout_reader(
+                    self.session, actor.user_id, now=self._now()):
+                return await self._cancel(row, "rollout_cohort_closed")
             grant_id, attempt_id = str(uuid4()), str(uuid4())
             await self.session.execute(insert(ATTEMPT).values(id=attempt_id, job_id=job_id,
                 attempt_key=hashlib.sha256((job_id+":android:first").encode()).hexdigest(), channel="android",

@@ -232,6 +232,42 @@ class SmartReminderRoutingService:
                 evidence_sha256=review.evidence_sha256))
             return row['generation']
 
+    async def refresh(self, actor, review: RoutingReview):
+        """Re-attest an already reviewed owner without a new hold.
+
+        Ownership (state, transport binding and generation) is unchanged, so no
+        work is invalidated. The current preference revision, grant epoch and
+        Android inventory are re-read and must pass the same consent and fence
+        checks as the original review; a device that could post locally fails.
+        """
+        if not isinstance(review, RoutingReview): raise SmartReminderError('routing_review_invalid')
+        native = actor.kind == 'android'
+        async with self.sessions.begin() as session:
+            pref, epoch, row = await _read_routing(session, actor, android=native)
+            now = _aware_utc(self.clock())
+            inventory, until = await _android_inventory(session, actor.user_id, now)
+            binding = _android_binding(actor) if native else _binding(actor)
+            if (row is None or row['verified_at'] is None or row['telegram_binding'] != binding or
+                    row['state'] != ('held' if native else 'telegram') or review.user_id != actor.user_id or
+                    review.generation != row['generation'] or inventory is None or
+                    (until is None if native else False) or
+                    until is not None and _aware_utc(review.verified_until) > until or
+                    not _utc(row['held_at']) <= _aware_utc(review.verified_at) <= now < _aware_utc(review.verified_until)):
+                raise SmartReminderError('routing_review_stale', 409)
+            if native:
+                if (pref['master_enabled'] is False or pref['channels']['android']['this_device_consent'] != 'on' or
+                        pref['channel_mode'] == 'manual_locked' and pref['preferred_channel'] != 'android'):
+                    raise SmartReminderError('android_study_unavailable', 409)
+            elif (pref['master_enabled'] is False or pref['channels']['telegram']['consent'] != 'on' or
+                    not pref['channels']['telegram']['transport_available']):
+                raise SmartReminderError('telegram_study_unavailable', 409)
+            await session.execute(update(ROUTING).where(ROUTING.c.user_id == actor.user_id,
+                ROUTING.c.generation == row['generation']).values(
+                preference_revision=pref['revision'], grant_epoch=epoch, inventory_sha256=inventory,
+                verified_at=review.verified_at, verified_until=review.verified_until,
+                evidence_sha256=review.evidence_sha256))
+            return row['generation']
+
     async def activate(self, actor, review: RoutingReview):
         async with self.sessions.begin() as session:
             pref, epoch, row = await _read_routing(session, actor)
@@ -255,11 +291,12 @@ class SmartReminderRoutingService:
 
 class SmartReminderTelegramService:
     def __init__(self, settings, sessions, *, calibration=None, coverage_reader=None, clock=None,
-                 analysis_observer=None):
+                 analysis_observer=None, rollout_reader=None):
         self.settings, self.sessions, self.calibration = settings, sessions, calibration
         # A future reviewed read-only canonical feed; no production implementation
         # is installed. It must not own commit or perform provider/network IO.
         self.coverage_reader = coverage_reader
+        self.rollout_reader = rollout_reader
         self.clock = clock or (lambda: datetime.now(timezone.utc))
         from app.services.smart_reminder_analysis import SmartReminderAnalysisObserver
         self.analysis_observer = (analysis_observer if analysis_observer is not None else
@@ -408,6 +445,10 @@ class SmartReminderTelegramService:
             if row["lease_token"] and _utc(row["lease_expires_at"]) > now:
                 return TelegramResult("telegram_lease_busy", job_id, row["state"])
             if refused := await self._fresh(session, actor, row, cohort, history_since): return refused
+            if not await NotificationTemplateService(session).is_enabled(KEY_SMART_STUDY, authorize=True):
+                return TelegramResult("admin_study_disabled", job_id, row["state"])
+            if self.rollout_reader is not None and not await self.rollout_reader(session, actor.user_id, now=self._now()):
+                return TelegramResult("rollout_cohort_closed", job_id, row["state"])
             now = self._now()
             until = now + min(lease_for, _utc(row["expires_at"])-now, _utc(cohort["verified_until"])-now)
             if until <= now: return await self._cancel(session, row, "telegram_expired", "expired")
@@ -460,6 +501,8 @@ class SmartReminderTelegramService:
             if not await NotificationTemplateService(session).is_enabled(KEY_SMART_STUDY, authorize=True):
                 return await self._cancel(session, row, "admin_study_disabled")
             if refused := await self._fresh(session, actor, row, cohort, history_since): return refused
+            if self.rollout_reader is not None and not await self.rollout_reader(session, actor.user_id, now=self._now()):
+                return await self._cancel(session, row, "rollout_cohort_closed")
             now = self._now()
             if _utc(row["lease_expires_at"]) <= now:
                 return TelegramResult("telegram_lease_lost", lease.job_id)

@@ -32,6 +32,9 @@ from app.services.notification_template_service import (
     KEY_SMART_STUDY,TEMPLATE_KEYS,TEMPLATE_META,CAPTION_MAX,TEXT_MAX,NotificationTemplateService,default_text,
 )
 from app.services.smart_reminder_runtime import registered_runtime
+from app.services.smart_reminder_rollout import (
+    SmartReminderRolloutService, pause_after_admin_disable, restart_after_admin_enable,
+)
 
 logger=logging.getLogger(__name__)
 _LANGS=('uz','ru','tj')
@@ -149,11 +152,13 @@ async def read_notices(db,*,session_cookie,request,settings_obj,runtime=None):
                 routing=SmartReminderRouting
                 current_reviews=await db.scalar(select(func.count()).select_from(routing)
                     .where(routing.verified_at <= now, routing.verified_until > now))
+                rollout=await SmartReminderRolloutService(None).snapshot(db,now=now)
                 running=runtime is not None and runtime.ready
                 result['smart']={'month':month.strftime('%Y-%m'),
                     'android_ready':running and callable(runtime.android_admission_reader),
                     'telegram_ready':running and runtime.telegram_ready,
                     'current_reviews':current_reviews,
+                    'rollout':rollout,
                     'observation_enabled':getattr(settings_obj,'SMART_REMINDER_ANALYSIS_ENABLED',False) is True,
                     'counts':{stage:counts.get(stage) for stage in stages}}
         else:
@@ -191,8 +196,15 @@ async def execute_notice(db,*,session_cookie,request,settings_obj):
             raise CommandError('admin_pwa_step_up_denied',403)
         if _revision(row)!=command.expected_hash:raise CommandError('confirmation_changed',409)
         _check_length(_preview(command.key,row),command)
+        was_enabled=bool(row.enabled) if row is not None else True
         row=await NotificationTemplateService(db).update_text(command.key,enabled=command.enabled,
             text_uz=command.text_uz,text_ru=command.text_ru,text_tj=command.text_tj,updated_by=actor.telegram_id)
+        if command.key==KEY_SMART_STUDY:
+            now=datetime.now(timezone.utc)
+            if command.enabled and not was_enabled:
+                await restart_after_admin_enable(db,now=now)
+            elif not command.enabled:
+                await pause_after_admin_disable(db,now=now)
         audit_id=str(uuid4());result=_preview(command.key,row)
         db.add(AdminPwaCommandAudit(id=audit_id,step_up_id=step.id,actor_user_id=actor.id,target_user_id=None,
             action=operation['action'],target=operation['target'],payload_hash=operation_digest(**operation),

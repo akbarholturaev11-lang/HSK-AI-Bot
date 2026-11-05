@@ -80,12 +80,16 @@ function makeHarness({page = "/iphone-pwa/course",ordinary = null,release = [],
     status:()=>root.querySelector("#hsk-pwa-feedback-status").textContent,
     send:()=>root.querySelector("#hsk-pwa-feedback-submit").listeners.click(),
     selects:()=>root.querySelector("#hsk-pwa-feedback-form").children
-      .filter(e=>e.tag==="label").map(e=>({symbol:e.children[0].textContent,input:e.children[1]})),
+      .filter(e=>e.tag==="label"||e.tag==="div")
+      .map(e=>({symbol:e.attributes["data-mark"]||e.children[0].textContent,input:e.children[1]})),
     choose(symbol,code){
+      // Text variants are buttons (like the bot's inline keyboard), not a select.
       const field=this.selects().find(e=>e.symbol===symbol);
       assert(field,"field missing: " + symbol);
-      assert.equal(field.input.tag,"select");
-      field.input.value=code;field.input.listeners.change();
+      const option=field.input.children.find(b=>b.attributes["data-code"]===code);
+      assert(option,"option missing: " + code);
+      assert.equal(option.attributes.role,"radio");
+      option.listeners.click();
     },
     type(symbol,text){
       const field=this.selects().find(e=>e.symbol===symbol);

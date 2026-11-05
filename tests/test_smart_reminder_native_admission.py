@@ -51,6 +51,7 @@ class NativeAdmissionChecks:
         self.routing=SmartReminderRoutingService(self.q.sessions,clock=lambda:self.q.tick)
         self.reader=partial(read_android_admission,history_window=timedelta(days=30))
         self.q.options['admission_reader']=self.reader
+        await runtime_fixture.open_rollout(self.q.sessions,self.q.tick)
 
     async def asyncTearDown(self):await self.p.asyncTearDown()
 

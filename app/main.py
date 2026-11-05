@@ -2391,6 +2391,15 @@ async def course_character_asset(filename: str):
     )
 
 
+@app.get("/assets/startup/{filename}")
+async def pwa_startup_image(filename: str):
+    """iOS Home Screen launch images (logo + HSK AI on paper)."""
+    import re
+    if not re.fullmatch(r"hsk-startup-[0-9]{3,4}x[0-9]{4}\.png", filename):
+        return JSONResponse(status_code=404, content={"error": "not_found"})
+    return static_asset_response(f"app/static/assets/startup/{filename}", "image/png")
+
+
 @app.get("/assets/install/{filename}")
 async def desktop_install_screenshot(filename: str):
     import re
@@ -2436,6 +2445,10 @@ async def course_v3_data_file(filename: str):
         "iphone-pwa-shake-report.css": "text/css",
         "iphone-pwa-practice-boot.js": "application/javascript",
         "iphone-pwa-practice-boot.css": "text/css",
+        "iphone-pwa-fx.js": "application/javascript",
+        "iphone-pwa-refresh.js": "application/javascript",
+        "iphone-pwa-invite.js": "application/javascript",
+        "iphone-pwa-perf.js": "application/javascript",
         "desktop-download.css": "text/css",
         "desktop-download.js": "application/javascript",
         "profile-carousel.css": "text/css",
@@ -2780,6 +2793,9 @@ async def _course_v3_map_for_user(
         "referral_code": getattr(user, "referral_code", None) or "",
         "learner_level": str(getattr(user, "level", "") or "").strip().lower(),
         "onboarding_completed": profile.onboarding_completed_at is not None,
+        # Account-chosen app profile (Android/PWA editor); clients fall back to "name".
+        "display_name": str(getattr(profile, "display_name", None) or "").strip()[:80],
+        "avatar_key": str(getattr(profile, "avatar_key", None) or "").strip()[:32],
         "foundation": await profile_svc.foundation_status(user),
     }
     # Kunlik reja sozlamalari: XP maqsadi endi serverda saqlanadi (ilgari

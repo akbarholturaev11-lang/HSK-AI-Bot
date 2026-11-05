@@ -13,7 +13,7 @@ from uuid import UUID
 
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse, FileResponse, RedirectResponse, Response
-from pydantic import BaseModel, ConfigDict, ValidationError
+from pydantic import BaseModel, ConfigDict, Field, StrictBool, ValidationError
 
 from app.services.native_oauth_service import NativeOAuthError, available_providers
 from app.services.identity_link_service import IdentityLinkError
@@ -93,6 +93,23 @@ class PwaTelegramStart(BaseModel):
 class PwaTelegramClaim(BaseModel):
     model_config = ConfigDict(extra="forbid")
     link_request_id: UUID
+
+
+class PwaProfileUpdate(BaseModel):
+    """Same editable app-profile fields as Android; provider identity stays read-only."""
+    model_config = ConfigDict(extra="forbid")
+    display_name: str = Field(default="", max_length=80)
+    avatar_key: Literal["", "panda_cheer", "panda_streak", "panda_worried"] = ""
+
+
+class PwaNotifyToggle(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    enabled: StrictBool
+
+
+class PwaHintDismiss(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    hint: str = Field(min_length=1, max_length=48)
 
 
 class PwaMistakeStart(BaseModel):
@@ -252,15 +269,15 @@ class PwaOrdinaryFeedbackSubmit(BaseModel):
 
 
 
-def _pwa_feedback_choices(language: str, *, paid: bool) -> dict:
+def _pwa_feedback_choices(language: str, *, paid: bool, current: str | None = None) -> dict:
     """Expose Telegram's existing localized choice contract, not a second UI catalog.
 
     Read-only metadata; no callback payload, Telegram auth or reward authority.
     The server still validates all submitted codes against the same dictionaries.
     """
     from app.bot.keyboards.feedback import (
-        LIKED_OPTIONS, DISLIKED_OPTIONS, LIKE_SUB_OPTIONS, PAID_OPTIONS,
-        PAID_SUB_POSITIVE, PAID_SUB_NEGATIVE,
+        APP_LIKED_OPTIONS, APP_PAID_SUB_POSITIVE, ACCEPTED_LIKED_OPTIONS,
+        DISLIKED_OPTIONS, LIKE_SUB_OPTIONS, PAID_OPTIONS, PAID_SUB_NEGATIVE,
         feedback_like_label, feedback_dislike_label,
         feedback_sub_label, feedback_paid_label,
     )
@@ -274,11 +291,15 @@ def _pwa_feedback_choices(language: str, *, paid: bool) -> dict:
     if paid:
         return {
             "paid": choices(PAID_OPTIONS, feedback_paid_label),
-            "paid_sub_positive": choices(PAID_SUB_POSITIVE, feedback_sub_label),
+            "paid_sub_positive": choices(APP_PAID_SUB_POSITIVE, feedback_sub_label),
             "paid_sub_negative": choices(PAID_SUB_NEGATIVE, feedback_sub_label),
         }
+    liked = list(APP_LIKED_OPTIONS)
+    # A first answer already recorded in the bot stays selectable in the app.
+    if current in ACCEPTED_LIKED_OPTIONS and current not in liked:
+        liked.insert(-1, current)
     return {
-        "liked": choices(LIKED_OPTIONS, feedback_like_label),
+        "liked": choices(liked, feedback_like_label),
         "liked_sub": {
             code: choices(codes, feedback_sub_label)
             for code, codes in LIKE_SUB_OPTIONS.items()
@@ -1057,8 +1078,8 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
         from app.services.voice_practice_service import VoicePracticeError, VoicePracticeService
 
         try:
-            if request.headers.get("Origin") != pwa_origin(settings_obj):
-                raise PwaAuthError("pwa_origin_invalid", status_code=403)
+            # Same origin set as every other PWA mutation (session/start too).
+            require_same_origin(request, settings_obj)
             if request.headers.get("X-Telegram-Init-Data"):
                 raise PwaAuthError("pwa_request_invalid", status_code=422)
             payload = await _small_json(request, PwaVoiceMode, max_bytes=1024)
@@ -1485,6 +1506,86 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
         except ValueError:
             return _error(PwaAuthError("pwa_request_invalid", status_code=422))
 
+    @router.post("/api/v3/pwa/profile")
+    async def pwa_profile_update(request: Request):
+        """Edit the account display name and preset avatar (Android parity)."""
+        from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
+
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            payload = await _small_json(request, PwaProfileUpdate, max_bytes=1024)
+            # Collapse whitespace/control separators like the Android endpoint.
+            display_name = " ".join(payload.display_name.split()).strip()[:80]
+            if not display_name:
+                raise PwaAuthError("pwa_profile_name_required", status_code=422)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                profile = await CourseMiniAppProfileService(db).get_or_create(actor.id)
+                profile.display_name = display_name
+                profile.avatar_key = payload.avatar_key
+                await db.commit()
+            return JSONResponse(
+                {"ok": True, "display_name": display_name, "avatar_key": payload.avatar_key},
+                headers=_NO_STORE,
+            )
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.post("/api/v3/pwa/notify")
+    async def pwa_notify_toggle(request: Request):
+        """Study reminder switch: the same profile flag as Mini App /api/v3/notify."""
+        from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
+
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            payload = await _small_json(request, PwaNotifyToggle, max_bytes=256)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                profile = await CourseMiniAppProfileService(db).get_or_create(actor.id)
+                profile.notifications_enabled = payload.enabled
+                await db.commit()
+            return JSONResponse({"ok": True, "notifications": payload.enabled}, headers=_NO_STORE)
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.post("/api/v3/pwa/hints/dismiss")
+    async def pwa_hint_dismiss(request: Request):
+        """Remember a closed section hint for the verified PWA account.
+
+        Without this the browser could never record the dismissal, so every
+        introduction block came back on each open.
+        """
+        from app.services.miniapp_hint_service import MiniAppHintService
+
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            payload = await _small_json(request, PwaHintDismiss, max_bytes=512)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                saved = await MiniAppHintService(db).dismiss(
+                    actor, payload.hint.strip(), client="course_v3_pwa",
+                )
+                if saved:
+                    await db.commit()
+            return JSONResponse({"ok": True, "saved": saved}, headers=_NO_STORE)
+        except PwaAuthError as exc:
+            return _error(exc)
+
     @router.post("/api/v3/pwa/preferences")
     async def pwa_set_preferences(request: Request):
         from app.api.miniapp_preferences import (
@@ -1855,6 +1956,8 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
             from app.db.models.payment import Payment
             from app.services.account_identity import owner_clause
             from app.services.learner_pwa_push import ACCOUNT_RESTRICTION_KEY
+            from app.services.payment_notify_service import learner_rejection_reason
+            from app.services.subscription_currency_service import normalize_visa_price
             async with session_factory() as db:
                 actor, _ = await PwaAuthService(db, settings_obj).actor(
                     request.cookies.get(PWA_SESSION_COOKIE)
@@ -1890,6 +1993,9 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                     select(
                         Payment.id, Payment.payment_status,
                         Payment.plan_type, Payment.reviewed_at,
+                        Payment.payment_method, Payment.amount, Payment.currency,
+                        Payment.local_amount, Payment.local_currency,
+                        Payment.admin_comment, Payment.card_country,
                     )
                     .where(owner_clause(
                         Payment, actor, telegram_column="user_telegram_id",
@@ -1899,14 +2005,39 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                     .order_by(Payment.reviewed_at.desc(), Payment.id.desc())
                     .limit(10)
                 )).all()
-                payment_reviews = [
-                    {
-                        "payment_id": int(review.id),
-                        "status": review.payment_status,
-                        "plan_type": review.plan_type,
-                        "reviewed_at": review.reviewed_at.isoformat(),
+                language = str(actor.language or "ru")
+
+                def review_view(row, status):
+                    # Read-only receipt summary. Free-text admin comments
+                    # stay hidden; only fixed coded reasons are localized.
+                    local = bool(row.local_amount and row.local_currency)
+                    _, currency = normalize_visa_price(
+                        0, str(row.local_currency if local else row.currency or ""),
+                    )
+                    return {
+                        "payment_id": int(row.id),
+                        "status": status,
+                        "plan_type": row.plan_type,
+                        "reviewed_at": row.reviewed_at.isoformat(),
+                        "payment_method": (
+                            row.payment_method
+                            if row.payment_method in {"visa", "alipay", "wechat"} else None
+                        ),
+                        "card_country": (
+                            row.card_country
+                            if row.payment_method == "visa"
+                            and row.card_country in {"tj", "uz", "ru", "other"} else None
+                        ),
+                        "amount": str(row.local_amount if local else row.amount),
+                        "currency": currency,
+                        "reason": (
+                            learner_rejection_reason(row.admin_comment, language)
+                            if status == "rejected" else None
+                        ),
                     }
-                    for review in reviews
+
+                payment_reviews = [
+                    review_view(review, review.payment_status) for review in reviews
                 ]
                 # A historical rejected receipt must not be presented as an
                 # *active* failure after the learner submitted a new pending
@@ -1916,6 +2047,9 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                     select(
                         Payment.id, Payment.payment_status,
                         Payment.plan_type, Payment.reviewed_at,
+                        Payment.payment_method, Payment.amount, Payment.currency,
+                        Payment.local_amount, Payment.local_currency,
+                        Payment.admin_comment, Payment.card_country,
                     )
                     .where(owner_clause(
                         Payment, actor, telegram_column="user_telegram_id",
@@ -1927,12 +2061,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                     .limit(1)
                 )).one_or_none()
                 payment_action = (
-                    {
-                        "payment_id": int(latest.id),
-                        "status": "rejected",
-                        "plan_type": latest.plan_type,
-                        "reviewed_at": latest.reviewed_at.isoformat(),
-                    }
+                    review_view(latest, "rejected")
                     if latest is not None
                     and latest.payment_status == "rejected"
                     and latest.reviewed_at is not None
@@ -2085,6 +2214,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                     "disliked_code": feedback.disliked_code,
                     "choices": _pwa_feedback_choices(
                         actor.language, paid=UserAccessStateService.is_paid(actor),
+                        current=feedback.liked_code,
                     ),
                 } if feedback else None)
 
@@ -2175,6 +2305,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                     "choices": _pwa_feedback_choices(
                         learner.language,
                         paid=UserAccessStateService.is_paid(learner),
+                        current=feedback.liked_code,
                     ),
                 } if feedback else None)
             return JSONResponse(
@@ -2231,6 +2362,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                     "choices": _pwa_feedback_choices(
                         learner.language,
                         paid=UserAccessStateService.is_paid(learner),
+                        current=feedback.liked_code,
                     ),
                 } if feedback else None)
             return JSONResponse({"ok": True, "ordinary": ordinary}, headers=_NO_STORE)
@@ -2242,8 +2374,9 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
         """Commit one existing ordinary bot feedback using its canonical rules."""
         from sqlalchemy import select
         from app.bot.keyboards.feedback import (
-            LIKED_OPTIONS, DISLIKED_OPTIONS, LIKE_SUB_OPTIONS,
-            PAID_OPTIONS, PAID_SUB_POSITIVE, PAID_SUB_NEGATIVE,
+            ACCEPTED_LIKED_OPTIONS, ACCEPTED_PAID_SUB_POSITIVE,
+            DISLIKED_OPTIONS, LIKE_SUB_OPTIONS,
+            PAID_OPTIONS, PAID_SUB_NEGATIVE,
             feedback_like_label, feedback_dislike_label,
             feedback_sub_label, feedback_paid_label,
         )
@@ -2294,7 +2427,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                         ))
                     ):
                         raise PwaAuthError("pwa_request_invalid", status_code=422)
-                    subs = (PAID_SUB_POSITIVE if data.paid_code in ("worth", "useful")
+                    subs = (ACCEPTED_PAID_SUB_POSITIVE if data.paid_code in ("worth", "useful")
                             else PAID_SUB_NEGATIVE)
                     if data.paid_sub_code not in subs:
                         raise PwaAuthError("pwa_request_invalid", status_code=422)
@@ -2314,7 +2447,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                     )
                 else:
                     if (
-                        data.liked_code not in LIKED_OPTIONS
+                        data.liked_code not in ACCEPTED_LIKED_OPTIONS
                         or data.disliked_code not in DISLIKED_OPTIONS
                         or data.paid_code is not None or data.paid_sub_code is not None
                         or data.paid_other_text is not None

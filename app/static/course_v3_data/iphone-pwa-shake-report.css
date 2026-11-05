@@ -24,3 +24,23 @@
 .hsk-shake-file-label input { display:block;width:100%;max-width:100%;margin-top:7px;font-size:13px; }
 @media(max-height:640px) { .hsk-shake-dialog{max-height:91dvh;padding:14px;} }
 @media(prefers-reduced-motion:reduce) { .hsk-shake-dialog{scroll-behavior:auto;} }
+/* Android BugReportDialog parity: tall sheet, only the fields scroll, Send stays visible. */
+.hsk-shake-dialog[data-stage="form"] { width:min(96vw,520px);height:min(94dvh,860px);max-height:none;display:flex;flex-direction:column;overflow:hidden;border-radius:24px;padding:16px 0 calc(14px + env(safe-area-inset-bottom,0px));background:var(--paper,#FDF9F0); }
+.hsk-shake-dialog[data-stage="form"] .hsk-shake-head { padding:0 12px 6px 18px; }
+.hsk-shake-dialog[data-stage="form"] #hsk-shake-body { flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:0 18px;margin-top:4px; }
+.hsk-shake-dialog[data-stage="form"] #hsk-shake-status { padding:0 18px; }
+.hsk-shake-dialog[data-stage="form"] #hsk-shake-actions { flex:0 0 auto;padding:0 18px;margin-top:6px; }
+#hsk-shake-close { font-size:16px;font-weight:650;color:var(--cin,#B23530);padding:0 6px; }
+.hsk-shake-count { display:block;margin-top:6px;text-align:end;font-size:12px;color:var(--ink2,#6e6e6e); }
+.hsk-shake-dialog .hsk-shake-preview { padding:0;border:0;background:transparent; }
+.hsk-shake-dialog .hsk-shake-preview img { height:112px;max-height:112px;width:100%;margin:10px 0 8px; }
+.hsk-shake-dialog .hsk-shake-preview img[hidden],.hsk-shake-privacy[hidden] { display:none; }
+.hsk-shake-switch-row { display:flex!important;align-items:center;justify-content:space-between;gap:12px;font-weight:600!important;font-size:15px!important; }
+.hsk-shake-switch { -webkit-appearance:none;appearance:none;flex:0 0 52px;width:52px!important;height:32px!important;border-radius:16px;background:var(--line,#d9d2c3);position:relative;cursor:pointer;margin:0;transition:background .18s; }
+.hsk-shake-switch::after { content:"";position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .18s; }
+.hsk-shake-switch:checked { background:var(--hsk-jade,#2F9E6A); }
+.hsk-shake-switch:checked::after { transform:translateX(20px); }
+.hsk-shake-privacy { margin:0;font-size:12px;line-height:1.45;color:var(--ink2,#6e6e6e); }
+.hsk-shake-dialog .hsk-shake-preview .hsk-shake-file-label { display:block;margin-top:12px;padding:12px 14px;border:1px solid var(--line,#ddd);border-radius:12px;text-align:center;font-weight:650!important;font-size:14px!important;color:var(--ink,#222); }
+.hsk-shake-dialog .hsk-shake-file-label input { position:absolute;width:1px;height:1px;opacity:0;pointer-events:none; }
+.hsk-shake-preview input.hsk-shake-switch[type="checkbox"] { flex:0 0 52px;width:52px;height:32px; }

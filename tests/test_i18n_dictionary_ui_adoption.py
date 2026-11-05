@@ -15,7 +15,7 @@ PLURAL_KEYS = [
     for name in ("countAll", "countResults", "strokeCount")
     for category in ("one", "few", "many")
 ]
-VERSION = "hsk-course-i18n.js?v=20261021-6431aaf27e2a"
+VERSION = "hsk-course-i18n.js?v=20261021-395d978eaee1"
 
 
 def source():
@@ -60,7 +60,7 @@ class DictionaryUIAdoptionTests(unittest.TestCase):
                 (ROOT / f"localization/ui/{locale}/course.json").read_text(encoding="utf-8")
             )["messages"]
             with self.subTest(locale=locale):
-                self.assertEqual(len(catalog), 1021)
+                self.assertEqual(len(catalog), 1038)
                 for namespace, required in EXPECTED.items():
                     data = original[locale][namespace]
                     self.assertEqual(len(data), required)
@@ -85,7 +85,7 @@ class DictionaryUIAdoptionTests(unittest.TestCase):
         self.assertIn('if(typeof value==="string"&&value)labels[key]=value', html)
         self.assertIn('if(typeof value==="string"&&value)messages[lang][key]=value', html)
         # 2026-11-05: non-blocking strokes/examples loader (+6 lines).
-        self.assertEqual(len(html.split("\n")), 1911)
+        self.assertEqual(len(html.split("\n")), 1936)
         for marker in (
             "function initFastWriter(fastParams){",
             "function normalizeLevel(value){",

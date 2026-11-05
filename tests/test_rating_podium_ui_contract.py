@@ -12,7 +12,7 @@ SERVICE = Path("app/services/course_gamification_service.py").read_text(encoding
 
 class RatingPodiumUiTests(unittest.TestCase):
     def test_web_displays_member_count_only_beside_league_label(self):
-        self.assertIn("rating-podium.css?v=20261014-2", WEB)
+        self.assertIn("rating-podium.css?v=20261105-1", WEB)
         self.assertIn('"rating-podium.css": "text/css"', Path("app/main.py").read_text(encoding="utf-8"))
         self.assertIn("function ratingPodiumHtml(memberCount)", WEB)
         self.assertIn("league:String(d.league||\"\")", WEB)

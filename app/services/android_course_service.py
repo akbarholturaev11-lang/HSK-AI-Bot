@@ -498,6 +498,7 @@ class AndroidCourseService(DesktopCourseService):
         progress = await self._progress(context.user, for_update=True)
         service = CourseMiniAppProfileService(self.session)
         profile = await service.get_or_create(context.user.id)
+        before = (profile.goal, profile.daily_minutes, profile.preferred_focus)
 
         next_goal = str(goal or profile.goal)
         next_minutes = int(daily_minutes if daily_minutes is not None else profile.daily_minutes)
@@ -522,8 +523,10 @@ class AndroidCourseService(DesktopCourseService):
             except (TypeError, ValueError) as exc:
                 raise DesktopCourseError("android_request_invalid", status_code=422) from exc
 
-        profile.daily_plan_key = None
-        profile.daily_plan_json = None
+        # Re-sending the same answers must not reshuffle today's plan.
+        if (profile.goal, profile.daily_minutes, profile.preferred_focus) != before:
+            profile.daily_plan_key = None
+            profile.daily_plan_json = None
         await self.session.commit()
         return {
             "ok": True,

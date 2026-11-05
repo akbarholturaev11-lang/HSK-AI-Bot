@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Talaffuz mashqi</title>
-<link rel="icon" href="/assets/hsk-ai-avatar.webp" type="image/webp">
+<link rel="icon" href="/assets/hsk-ai-logo-256.png" type="image/png">
 <script src="/assets/telegram-web-app.js?v=20261019-1"></script>
-<script src="/course_v3_data/hsk-course-i18n.js?v=20261021-6431aaf27e2a"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script>
+<script src="/course_v3_data/hsk-course-i18n.js?v=20261021-395d978eaee1"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script>
 <script defer src="/audio/words/index.js?v=20261014-offline-1"></script>
 <script defer src="/audio/words/client.js?v=20261014-persist-1"></script>
 <style>
@@ -59,7 +59,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
 <link rel="stylesheet" href="/assets/characters/hsk-practice-coach.css?v=20260921a">
 <link href="/course_v3_data/desktop-download.css?v=20261003-1" rel="stylesheet">
 <link rel="stylesheet" href="/assets/characters/hsk-scene-background.css?v=20261009-preparing-compact-1">
-<link rel="stylesheet" href="/course_v3_data/iphone-pwa-practice-boot.css?v=20261105-598f142318cf">
+<link rel="stylesheet" href="/course_v3_data/iphone-pwa-practice-boot.css?v=20261105-13e94c7945b9">
 </head>
 <body class="hsk-scene-page hsk-scene-pronunciation">
 <div class="wrap">
@@ -85,6 +85,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
 <script defer src="/assets/characters/hsk-study-preparing.js?v=20261009-compact-1"></script>
 <script defer src="/assets/characters/hsk-character-motion.js?v=20260921c"></script>
 <script defer src="/assets/characters/hsk-practice-coach.js?v=20260921a"></script>
+<script src="/course_v3_data/iphone-pwa-fx.js?v=20261105-3f4db4191370"></script>
 <script src="/course_v3_data/iphone-pwa-practice-boot.js?v=20261105-08ffb7481617"></script>
 <script>
 /* Og'ir skriptlar (`defer`) HTML parse tugagach ishga tushadi. Server
@@ -242,7 +243,7 @@ function speak(t){
   // Direct play keeps the iOS WebView gesture. No duplicate fetch on first tap.
   playSource(_ttsCache[t]||_ttsUrl(t));
 }
-function haptic(ok){try{tg&&tg.HapticFeedback&&tg.HapticFeedback.notificationOccurred(ok?"success":"error")}catch(e){}}
+function haptic(ok){if(!(window.Telegram&&Telegram.WebApp&&Telegram.WebApp.initData)&&window.HskPwaFx){HskPwaFx.haptic(ok?"success":"error");return}try{tg&&tg.HapticFeedback&&tg.HapticFeedback.notificationOccurred(ok?"success":"error")}catch(e){}}
 var ac;function beep(seq){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();var t=ac.currentTime;seq.forEach(function(f,k){var o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;o.connect(g);g.connect(ac.destination);var s=t+k*0.09;g.gain.setValueAtTime(0.0001,s);g.gain.exponentialRampToValueAtTime(0.12,s+0.02);g.gain.exponentialRampToValueAtTime(0.0001,s+0.16);o.start(s);o.stop(s+0.18)})}catch(e){}}
 function tr(m){return !m?"":(typeof m==="string"?m:(m[LANG]||m.ru||m.uz||""))}function practiceMessage(key,fallback){var value=PRONUNCIATION_UI[key];return typeof value==="string"&&value?value:tr(fallback)}
 function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
@@ -556,6 +557,6 @@ function start(){Promise.all([LV_READY,SCRIPTS_READY,planReady()]).then(function
 gateStart();
 </script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
-<script src="/course_v3_data/iphone-pwa-shake-report.js?v=20261105-e878b00bfc8a"></script>
+<script src="/course_v3_data/iphone-pwa-shake-report.js?v=20261105-a41026d777aa"></script>
 </body>
 </html>

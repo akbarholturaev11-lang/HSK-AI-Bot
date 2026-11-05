@@ -14,7 +14,7 @@ from httpx import ASGITransport, AsyncClient
 from sqlalchemy import insert, select, update
 
 from app.api.smart_reminder import create_smart_reminder_router
-from app.db.models.smart_reminder import SmartReminderRouting
+from app.db.models.smart_reminder import SmartReminderRollout, SmartReminderRouting
 from app.services.smart_reminder_android import GRANT
 from app.services.smart_reminder_runtime import SmartReminderRuntime, android_delivery, registered_runtime, build_rules_runtime
 from app.services.smart_reminder_shadow_queue import ATTEMPT, JOB
@@ -24,6 +24,13 @@ from tests.test_smart_reminder_legacy_backfill import PG_URL
 
 
 MAIN = Path(__file__).resolve().parents[1] / 'app/main.py'
+
+
+async def open_rollout(sessions, now):
+    """Synthetic completed rollout so existing reviewed fixtures stay eligible."""
+    async with sessions.begin() as s:
+        await s.merge(SmartReminderRollout(id=1, generation=1, stage=4, status='complete',
+            stage_started_at=now, heartbeat_at=now))
 
 
 async def historical_unknown(q, channel):
@@ -99,10 +106,12 @@ class HostTests(unittest.IsolatedAsyncioTestCase):
         runtime=SmartReminderRuntime(SimpleNamespace(),Mock(),enabled=True,calibration=QA,
             history_window=timedelta(days=30),coverage_reader=AsyncMock(),android_admission_reader=AsyncMock(),timeout=.01)
         cleaned=asyncio.Event()
-        async def blocked():
+        async def blocked(*args):
             try: await asyncio.Event().wait()
             finally: cleaned.set()
         runtime._page=blocked
+        runtime.rollout.heartbeat=AsyncMock(return_value=4)
+        runtime.rollout.tick_finished=AsyncMock()
         with self.assertRaises(asyncio.TimeoutError): await runtime.tick()
         self.assertTrue(cleaned.is_set());self.assertFalse(runtime._ticking.locked())
         task=asyncio.create_task(runtime.tick());await asyncio.sleep(0);task.cancel()
@@ -161,6 +170,7 @@ class NativeRuntimeChecks:
         cls=fixtures.PostgreSQLNativePlannerTests if self.postgres else fixtures.SQLiteNativePlannerTests
         self.p=cls(methodName='test_repeat_and_restart_acknowledge_selection_without_reranking')
         await self.p.asyncSetUp();self.q=self.p.q
+        await open_rollout(self.q.sessions,self.q.tick)
 
     async def asyncTearDown(self): await self.p.asyncTearDown()
 
@@ -261,6 +271,7 @@ class TelegramRuntimeChecks:
         cls=fixtures.PostgreSQLTelegramPlannerTests if self.postgres else fixtures.SQLiteTelegramPlannerTests
         self.p=cls(methodName='test_real_tg_plan_has_no_attempt_until_existing_claim_and_dispatch')
         await self.p.asyncSetUp();self.q=self.p.q
+        await open_rollout(self.q.sessions,self.q.tick)
 
     async def asyncTearDown(self):await self.p.asyncTearDown()
 

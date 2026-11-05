@@ -109,6 +109,10 @@ class SmartReminderPwaService:
             if (row["state"] != "pending" or row["expires_at"] is None or
                     _utc(row["expires_at"]) <= now or row["preference_revision"] < 0):
                 return PwaReminderResult("pwa_job_not_due", job_id)
+            # Like Telegram: a planned job waits for its frozen send time; the
+            # runtime redispatches already-planned jobs on every tick.
+            if row["scheduled_at"] is not None and now < _utc(row["scheduled_at"]):
+                return PwaReminderResult("pwa_job_not_due", job_id, row["state"])
             pref = await SmartReminderPreferencesService(session).read(actor)
             epoch = await session.scalar(select(SmartReminderPreference.grant_epoch).where(
                 SmartReminderPreference.user_id == actor.user_id))
@@ -127,6 +131,11 @@ class SmartReminderPwaService:
                 await session.execute(update(JOB).where(JOB.c.id == job_id).values(
                     state="cancelled", updated_at=now, reason_code="admin_study_disabled"))
                 return PwaReminderResult("admin_study_disabled", job_id, "cancelled")
+            rollout = getattr(planner, "rollout_reader", None)
+            if rollout is not None and not await rollout(session, actor.user_id, now=now):
+                await session.execute(update(JOB).where(JOB.c.id == job_id).values(
+                    state="cancelled", updated_at=now, reason_code="rollout_cohort_closed"))
+                return PwaReminderResult("rollout_cohort_closed", job_id, "cancelled")
             context, refused = await planner.queue._fresh(session, actor, row, now, history_since)
             if refused:
                 return PwaReminderResult(refused.reason, job_id, "cancelled")

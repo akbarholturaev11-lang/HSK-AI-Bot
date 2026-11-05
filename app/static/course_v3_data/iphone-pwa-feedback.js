@@ -29,6 +29,7 @@
   var contextCopy = root.querySelector("#hsk-pwa-feedback-context");
   var status = root.querySelector("#hsk-pwa-feedback-status");
   var submitButton = root.querySelector("#hsk-pwa-feedback-submit");
+  submitButton.hidden = true;
   var closeButton = root.querySelector(".hsk-pwa-feedback-close");
   var lastFocus = null;
   var generation = 0;
@@ -131,22 +132,28 @@
     return data;
   }
 
+  // Same text variants as the bot's inline buttons: one tap per answer.
+  var QUESTIONS = {"✓":"pwaFeedback.paidQ", "👍":"pwaFeedback.likedQ",
+    "👎":"pwaFeedback.dislikedQ", "›":"pwaFeedback.detailQ"};
   function choiceField(mark, options, value, onChange) {
-    var field = make("label", "hsk-pwa-feedback-field");
-    field.appendChild(make("span", "", mark));
-    var select = make("select");
-    select.setAttribute("aria-label", mark);
-    var placeholder = make("option", "", "—");
-    placeholder.value = "";
-    select.appendChild(placeholder);
+    var question = course(QUESTIONS[mark] || "") || mark;
+    var field = make("div", "hsk-pwa-feedback-field hsk-pwa-feedback-choice");
+    field.setAttribute("data-mark", mark);
+    field.appendChild(make("span", "hsk-pwa-feedback-question", question));
+    var group = make("div", "hsk-pwa-feedback-options");
+    group.setAttribute("role", "radiogroup");
+    group.setAttribute("aria-label", question);
+    group.value = value || "";
     validChoices(options).forEach(function (item) {
-      var option = make("option", "", item.label);
-      option.value = item.code;
-      select.appendChild(option);
+      var button = make("button", "hsk-pwa-feedback-option", item.label);
+      button.type = "button";
+      button.setAttribute("role", "radio");
+      button.setAttribute("data-code", item.code);
+      button.setAttribute("aria-checked", String(item.code === value));
+      button.addEventListener("click", function () { onChange(item.code); renderForm(); });
+      group.appendChild(button);
     });
-    select.value = value || "";
-    select.addEventListener("change", function () { onChange(select.value); renderForm(); });
-    field.appendChild(select);
+    field.appendChild(group);
     return field;
   }
   function commentField(label, key) {
@@ -319,6 +326,40 @@
     }
   }
 
+  // Star rating for a bot release-feedback campaign already delivered to this
+  // account (Telegram/Android). Shown at most once per campaign on a device;
+  // the learner can still answer it in the bot.
+  var RELEASE_SEEN_PREFIX = "hsk_pwa_release_seen_v1:";
+  function releaseSeen(id) {
+    try { return localStorage.getItem(RELEASE_SEEN_PREFIX + id) === "1"; } catch (_) { return true; }
+  }
+  async function openRelease(context) {
+    if (busy || !root.hidden || document.visibilityState === "hidden") return;
+    var token = ++generation;
+    function current() {
+      return token === generation && root.hidden && document.visibilityState !== "hidden" &&
+        (!context || typeof context.canOpen !== "function" || context.canOpen());
+    }
+    try {
+      var data = await request("/api/v3/pwa/feedback/available", undefined, current);
+      if (!current()) return;
+      var release = (Array.isArray(data.release) ? data.release : []).filter(function (item) {
+        return item && numberId(item.campaign_id) && !releaseSeen(item.campaign_id);
+      });
+      if (!release.length || !showAvailable({ordinary:null, release:release.slice(0, 1)})) return;
+      try { localStorage.setItem(RELEASE_SEEN_PREFIX + release[0].campaign_id, "1"); } catch (_) { return; }
+      lastFocus = document.activeElement;
+      contextCopy.textContent = isValidLabel(release[0].message_text) ? release[0].message_text.slice(0, 400) : "";
+      submitButton.disabled = false;
+      closeButton.setAttribute("aria-label", course("subscriptionPage.close"));
+      root.hidden = false;
+      panel.focus({preventScroll:true});
+      if (window.NavBack) NavBack.sync();
+    } catch (_) {
+      // Optional prompt: never interrupt study on error.
+    }
+  }
+
   function ordinaryPayload() {
     var choices = selected && selected.choices;
     if (!choices || !numberId(selected.feedback_id)) return null;
@@ -425,7 +466,7 @@
     }
   });
   window.HskPwaFeedback = {
-    open: open, close: close,
+    open: open, openRelease: openRelease, close: close,
     backTarget: function () { return root.hidden ? null : panel; }
   };
 }());

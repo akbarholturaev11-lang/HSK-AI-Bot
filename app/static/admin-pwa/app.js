@@ -1401,14 +1401,24 @@ async function noticeEditor(key=null){
     const template=data.template;
     managementDraft={type:'notice',noticeKey:key,template,texts:{...template.custom_texts},textLanguage:locale};
     const smart=key==='smart_study',overview=smart&&data.smart;
-    const serviceState=value=>value==null?null:t(value?'hsk30On':'hsk30Off');
-    const routing=overview?profileFields([
-      ['smartAndroidService',serviceState(overview.android_ready)],
-      ['smartTelegramService',serviceState(overview.telegram_ready)],
-      ['smartReviewedRoutes',overview.current_reviews],
-    ])+`<p class="source-note">${esc(t('smartReviewedHint'))}</p>`:'';
-    const summary=overview?profileFields([['smartObservation',t(overview.observation_enabled?'hsk30On':'hsk30Off')],['smartMonth',overview.month+' · UTC'],['smartStudyDays',overview.counts.study_day_after_attempt],['smartContactReturns',overview.counts.contact_study_24h],['smartStudyUnits',overview.counts.study_unit_24h]])+`<p class="source-note">${esc(t('smartPartialHint'))}</p>`:'';
-    const body=boolSelect('noticeEnabled',smart?'smartPermission':'status',template.enabled)+(smart?`<p class="source-note">${esc(t('smartPermissionHint'))}</p>`:'')+routing+summary+`<p class="source-note">${esc(t('noticeDefaultHint'))}</p><p class="source-note">${esc(t('noticePlaceholders'))}: ${template.placeholders.map(esc).join(' ')}</p><div class="form-field"><label for="noticeLanguage">${esc(t('language'))}</label><select class="input" id="noticeLanguage">${['uz','ru','tj'].map(lang=>`<option value="${lang}" ${lang===locale?'selected':''}>${lang.toUpperCase()}</option>`).join('')}</select></div><div class="form-field"><label for="noticeText">${esc(t('noticeText'))}</label><textarea class="input setting-value" id="noticeText" maxlength="${template.text_max}">${esc(template.custom_texts[locale])}</textarea></div><p id="noticeValidation" class="alert" role="alert" hidden></p>`;
+    const onOff=value=>`<span class="pill ${value?'green':'gray'}">${esc(value==null?'—':t(value?'hsk30On':'hsk30Off'))}</span>`;
+    let smartStatus='',smartFacts='';
+    if(overview){
+      const r=overview.rollout||{status:'waiting',stage:0,cohort_count:4};
+      const total=Number(r.cohort_count)||4,stage=Number(r.stage)||0;
+      const statusKey={waiting:'smartRolloutWaiting',active:'smartRolloutActive',paused:'smartRolloutPaused',complete:'smartRolloutComplete'}[r.status]||'smartRolloutPaused';
+      const errorKey={runtime_exception:'smartRolloutErrorRuntime',tick_timeout:'smartRolloutErrorTimeout',provider_unknown:'smartRolloutErrorProviderUnknown',provider_failure:'smartRolloutErrorProviderFailure',native_unknown:'smartRolloutErrorNativeUnknown',monitor_stale:'smartRolloutErrorMonitorStale'}[r.error_code];
+      const tone=r.status==='active'||r.status==='complete'?'green':r.status==='paused'?(errorKey?'red':'amber'):'gray';
+      const line=r.status==='paused'&&errorKey?`<span class="smart-status-line is-error">${esc(t(errorKey))}</span>`
+        :r.status==='active'&&r.next_stage_at?`<span class="smart-status-line">${esc(t('smartRolloutNext'))} · ${esc(date(r.next_stage_at))}</span>`:'';
+      const segments=Array.from({length:total},(_,i)=>`<span class="${i<stage?'on':''}"></span>`).join('');
+      smartStatus=`<section class="smart-status tone-${tone}"><div class="smart-status-head"><span>${esc(t('smartRolloutStage'))}</span><strong>${stage}/${total}</strong></div><div class="smart-stages" aria-hidden="true">${segments}</div><div class="smart-status-meta"><span class="pill ${tone}">${esc(t(statusKey))}</span>${line}</div><p class="source-note">${esc(t('smartRolloutHint'))}</p></section>`;
+      const metric=(label,value)=>`<div class="mini-metric"><div class="label">${esc(t(label))}</div><div class="num">${esc(value??'—')}</div></div>`;
+      smartFacts=`<div class="smart-facts"><div class="stat-info-row"><span>${esc(t('smartAndroidService'))}</span>${onOff(overview.android_ready)}</div><div class="stat-info-row"><span>${esc(t('smartTelegramService'))}</span>${onOff(overview.telegram_ready)}</div><div class="stat-info-row"><span>${esc(t('smartReviewedRoutes'))}</span><strong>${esc(overview.current_reviews??'—')}</strong></div></div>`
+        +`<div class="smart-results-head"><span>${esc(t('smartResults'))} · ${esc(overview.month)}</span>${overview.observation_enabled?'':`<span class="pill gray">${esc(t('smartObservationOff'))}</span>`}</div>`
+        +`<div class="smart-results">${metric('smartStudyDays',overview.counts.study_day_after_attempt)}${metric('smartContactReturns',overview.counts.contact_study_24h)}${metric('smartStudyUnits',overview.counts.study_unit_24h)}</div>`;
+    }
+    const body=smartStatus+boolSelect('noticeEnabled',smart?'smartPermission':'status',template.enabled)+(smart?`<p class="source-note">${esc(t('smartPermissionHint'))}</p>`:'')+smartFacts+`<p class="source-note">${esc(t('noticeDefaultHint'))}</p><p class="source-note">${esc(t('noticePlaceholders'))}: ${template.placeholders.map(esc).join(' ')}</p><div class="form-field"><label for="noticeLanguage">${esc(t('language'))}</label><select class="input" id="noticeLanguage">${['uz','ru','tj'].map(lang=>`<option value="${lang}" ${lang===locale?'selected':''}>${lang.toUpperCase()}</option>`).join('')}</select></div><div class="form-field"><label for="noticeText">${esc(t('noticeText'))}</label><textarea class="input setting-value" id="noticeText" maxlength="${template.text_max}">${esc(template.custom_texts[locale])}</textarea></div><p id="noticeValidation" class="alert" role="alert" hidden></p>`;
     drawer(noticeLabels[key],`<form id="managementForm">${body}</form>`,btn('saveChanges','managementPrepare','primary'));
     $('noticeText').placeholder=template.defaults[locale];
   }catch(error){if(current===drawerId&&at===epoch&&state.actor)drawer('notices',statePanel(errorKey(error)),btn('close','close')+btn('readCurrent','noticeList'));}
@@ -3526,5 +3536,31 @@ if('serviceWorker' in navigator){
   }).catch(()=>{});
   navigator.serviceWorker.addEventListener('controllerchange',()=>location.reload());
 }
+// Owner rule: a hint shows one line; longer text folds and opens on tap.
+const HINT_SELECTOR='.source-note:not([role=status]):not([aria-live]),.form-hint:not([role=status]):not([aria-live]),.secondary-note:not([role=status]),.section-help,.drawer-note';
+let hintFrame=0;
+function foldHints(){
+  hintFrame=0;
+  document.querySelectorAll(HINT_SELECTOR).forEach(node=>{
+    if(node.classList.contains('expanded')||!node.offsetParent||node.querySelector('a,button,input,select,textarea'))return;
+    node.classList.add('hint-clamp');
+    const long=node.scrollHeight>node.clientHeight+1;
+    node.classList.toggle('hint-clamp',long);node.classList.toggle('hint-fold',long);
+    if(long){node.tabIndex=0;node.setAttribute('role','button');node.setAttribute('aria-expanded','false');}
+    else if(node.getAttribute('role')==='button'){node.removeAttribute('tabindex');node.removeAttribute('role');node.removeAttribute('aria-expanded');}
+  });
+}
+function scheduleHints(){if(!hintFrame)hintFrame=requestAnimationFrame(foldHints);}
+function toggleHint(node){
+  const open=!node.classList.contains('expanded');
+  node.classList.toggle('expanded',open);node.classList.toggle('hint-clamp',!open);node.setAttribute('aria-expanded',String(open));
+}
+document.addEventListener('click',event=>{const hint=event.target.closest('.hint-fold');if(hint)toggleHint(hint);});
+document.addEventListener('keydown',event=>{
+  const hint=event.target.closest?.('.hint-fold');
+  if(hint&&event.target===hint&&(event.key==='Enter'||event.key===' ')){event.preventDefault();toggleHint(hint);}
+});
+new MutationObserver(scheduleHints).observe(document.body,{childList:true,subtree:true});
+addEventListener('resize',scheduleHints);
 lockAndRequirePasskey();
 })();

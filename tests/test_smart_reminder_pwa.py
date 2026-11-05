@@ -107,6 +107,22 @@ class SmartReminderPwaDeliveryTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual([notice.source for notice in notices], ["smart_pwa"])
         self.assertEqual(outbox, [])
 
+    async def test_job_is_not_sent_before_its_scheduled_time(self):
+        # Regression: planning used to dispatch a PWA reminder immediately.
+        async with self.case.sessions.begin() as session:
+            await session.execute(update(JOB).where(JOB.c.id == self.job_id).values(
+                scheduled_at=self.tick + timedelta(hours=2),
+                expires_at=self.tick + timedelta(hours=6)))
+        sender = AsyncMock(return_value=201)
+        result = await self._dispatch(sender)
+        self.assertEqual(result.reason, "pwa_job_not_due")
+        sender.assert_not_awaited()
+        async with self.case.sessions() as session:
+            job = await session.get(SmartReminderJob, self.job_id)
+            attempts = (await session.scalars(select(SmartReminderAttempt).where(
+                SmartReminderAttempt.job_id == self.job_id))).all()
+        self.assertEqual((job.state, attempts), ("pending", []))
+
     async def test_unknown_provider_result_is_terminal_and_never_replayed(self):
         sender = AsyncMock(side_effect=TimeoutError("provider reply lost"))
         result = await self._dispatch(sender)

@@ -152,6 +152,25 @@ self.addEventListener("message", function (event) {
   event.waitUntil(warm());
 });
 
+// App-icon badge: a device-local count of pushes since the Inbox was last
+// opened. The course page clears it. Unsupported browsers just skip it.
+var BADGE_CACHE = "hsk-pwa-badge-v1", BADGE_KEY = "/__hsk-pwa-badge";
+function bumpAppBadge() {
+  if (!self.navigator || typeof self.navigator.setAppBadge !== "function" || !self.caches) {
+    return Promise.resolve();
+  }
+  return caches.open(BADGE_CACHE).then(function (cache) {
+    return cache.match(BADGE_KEY).then(function (hit) {
+      return hit ? hit.text() : "0";
+    }).then(function (text) {
+      var next = Math.min(99, (parseInt(text, 10) || 0) + 1);
+      return cache.put(BADGE_KEY, new Response(String(next))).then(function () {
+        return self.navigator.setAppBadge(next);
+      });
+    });
+  }).catch(function () {});
+}
+
 self.addEventListener("push", function (event) {
   var data = {};
   try {
@@ -163,13 +182,14 @@ self.addEventListener("push", function (event) {
   var body = typeof data.body === "string" ? data.body.slice(0, 160) : "";
   var tag = typeof data.tag === "string" && /^[A-Za-z0-9_-]{1,48}$/.test(data.tag)
     ? data.tag : "hsk-pwa-notice";
-  event.waitUntil(self.registration.showNotification(title, {
+  // iOS requires every push to show a notification; the badge is extra.
+  event.waitUntil(Promise.all([self.registration.showNotification(title, {
     body: body,
     tag: tag,
     icon: "/assets/hsk-ai-logo-256.png",
     badge: "/assets/hsk-ai-logo-256.png",
     data: { url: "/iphone-pwa/course?notice=1" }
-  }));
+  }), bumpAppBadge()]));
 });
 
 self.addEventListener("notificationclick", function (event) {

@@ -492,3 +492,53 @@ The system SHALL permit owner-approved ordinary opted-in reminders from current 
 #### Scenario: Day-one learner has a saved time
 - **WHEN** the explicit observed profile has a genuinely saved/manual clock and all current consent/review/target guards pass, but fewer than three verified active days exist
 - **THEN** ordinary reminders may use that existing clock immediately under the same daily/weekly limits, with no invented learned gap, inactivity or failed-response estimate; observed current-day learning still suppresses the return reminder
+
+### Requirement: Monitored staged Smart rollout
+The system SHALL open Smart study reminders through four stable cumulative cohorts derived from the canonical account ID. It SHALL advance after 48 observed hours per stage, pause on a systemic technical or ambiguous delivery failure, turn the existing Smart template OFF on that pause, and require a protected Admin PWA re-enable to restart at stage one. Unobserved time MUST NOT count toward a stage. Rollout state MUST contain no learner identifiers and MUST NOT create consent.
+
+#### Scenario: First cohort starts
+- **WHEN** the Smart study template is enabled and the runtime is ready
+- **THEN** the durable rollout begins with the first stable cohort; all existing consent, client, access, daily/weekly budget and legacy-sender guards remain in force
+
+#### Scenario: Healthy stage advances
+- **WHEN** the current stage has been observed by runtime heartbeats for 48 hours
+- **THEN** the next cohort becomes eligible cumulatively, and the durable stage start and heartbeat are updated atomically
+
+#### Scenario: Unobserved time
+- **WHEN** no heartbeat ran for longer than the monitor allowance (deploy, crash)
+- **THEN** send authority fails closed until the next heartbeat, and the gap does not count toward the stage
+
+#### Scenario: Systemic failure
+- **WHEN** at least 5 started attempts in the stage have unknown outcomes and they are at least 30% of the started attempts, or three unexpected per-account exceptions occur within an hour, or three consecutive ticks time out
+- **THEN** the global Smart template is disabled, the rollout is paused with only a fixed sanitized error code, and no new stage or dispatch authority is issued
+
+#### Scenario: Learner refusal is not systemic
+- **WHEN** a learner blocked the bot, a PWA subscription is expired, or an Android receipt is still pending
+- **THEN** the outcome does not count toward the systemic pause; a Telegram block marks the learner blocked and the attempt is never retried
+
+#### Scenario: Operator resumes after repair
+- **WHEN** an authorized operator re-enables the Smart template after reviewing a paused rollout
+- **THEN** the rollout generation increments and observation restarts at stage one; cohorts outside stage one are excluded again at every final send boundary, and no audit or attempt evidence is deleted
+
+### Requirement: Automatic admission of eligible accounts
+Inside an open cohort the system SHALL move an eligible account from the legacy study senders to Smart without manual review: hold it, wait 24 hours from the first hold, then record an evidence-bound automatic review through the existing routing writers. It MUST NOT create or infer consent, and MUST NOT hold an account that an active device without the Smart capability could still remind locally.
+
+#### Scenario: Eligibility
+- **WHEN** an account's Smart preference has no real IANA zone, or allows no channel
+- **THEN** it is not held and its legacy reminders continue
+
+#### Scenario: Eligible Telegram learner
+- **WHEN** an account in an open cohort has a Smart zone, Telegram consent ON, a reachable bot and no unfenced Android device
+- **THEN** it is held (server legacy study senders stop), reviewed after 24 hours, and then served by the existing Smart Telegram path
+
+#### Scenario: Older Android app
+- **WHEN** an account has an active Android device without the Smart capability
+- **THEN** it is not held and keeps its legacy reminders until a Smart-capable app reports its capability
+
+#### Scenario: Same owner re-attestation
+- **WHEN** an admitted account changes its preference revision or Android capability while state, binding and generation are unchanged
+- **THEN** the review is refreshed in place after the same consent and fence checks, and no planned work is cancelled
+
+#### Scenario: Consent turned off after admission
+- **WHEN** an admitted account turns Smart or its channel OFF
+- **THEN** the review is never re-attested, no Smart reminder is sent, and the sticky hold does not revive the legacy sender

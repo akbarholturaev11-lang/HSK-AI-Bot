@@ -1,5 +1,5 @@
 /* Rating podium, HSK AI design tokens; only presentation, no ranking logic. */
-#s-rating .rating-podium{margin:0 10px 3px;padding:0 0 6px;position:relative;isolation:isolate;overflow:hidden}
+#s-rating .rating-podium{touch-action:pan-y;overscroll-behavior-x:none;margin:0 10px 3px;padding:0 0 6px;position:relative;isolation:isolate;overflow:hidden}
 #s-rating .rating-podium::before{content:"";position:absolute;z-index:-1;inset:0 0 33px;background:
  radial-gradient(ellipse at 50% 94%,rgba(209,195,162,.28),transparent 65%),
  linear-gradient(165deg,transparent 42%,rgba(195,192,174,.16) 43%,transparent 70%);

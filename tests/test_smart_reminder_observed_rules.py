@@ -195,6 +195,7 @@ class NativeChecks:
         self.r=build_rules_runtime(self.q.settings,self.q.sessions,Mock())
         self.r.clock=lambda:self.q.tick
         self.r._actors.clock=self.r.clock
+        await host.open_rollout(self.q.sessions,self.q.tick)
         app=FastAPI();app.state.smart_reminder_runtime=self.r;self.r.bind(app)
         host.attach_actual_main_router(app,self.q.sessions,self.q.settings)
         await self.q.client.aclose()
@@ -258,6 +259,7 @@ class TelegramChecks:
         self.q.settings.SMART_REMINDER_ENABLED=True
         self.r=build_rules_runtime(self.q.settings,self.q.sessions,self.q.bot)
         self.r.clock=lambda:self.q.tick;self.r._actors.clock=self.r.clock
+        await host.open_rollout(self.q.sessions,self.q.tick)
 
     async def asyncTearDown(self): await self.p.asyncTearDown()
 

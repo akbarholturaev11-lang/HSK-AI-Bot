@@ -34,6 +34,21 @@ def _translate_reason(reason_code: str, lang: str) -> str:
     return REASON_TRANSLATIONS.get(reason_code, {}).get(lang, reason_code)
 
 
+def learner_rejection_reason(admin_comment, lang: str) -> str | None:
+    """Localized coded rejection reason for the learner, or None.
+
+    Only the five fixed bot reason labels are mapped (Telegram learners already
+    receive them). Free-text admin comments are never exposed.
+    """
+    from app.bot.handlers.admin_payments import REJECT_REASON_LABELS
+
+    text = str(admin_comment or "").strip()
+    for code, label in REJECT_REASON_LABELS.items():
+        if text == label:
+            return _translate_reason(code, lang)
+    return None
+
+
 class PaymentNotifyService:
     def __init__(self, session=None):
         self.session = session

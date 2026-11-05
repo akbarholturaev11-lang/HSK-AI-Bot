@@ -69,11 +69,16 @@ def require_pwa_enabled(settings_obj) -> None:
         raise PwaAuthError("pwa_auth_unavailable", status_code=503)
 
 
-def require_same_origin(request, settings_obj) -> None:
-    allowed = {origin for origin in (
+def pwa_allowed_origins(settings_obj) -> frozenset[str]:
+    """Origins a learner PWA page may run on (public site and OAuth base)."""
+    return frozenset(origin for origin in (
         pwa_origin(settings_obj),
         redirect_base_url(settings_obj),
-    ) if origin}
+    ) if origin)
+
+
+def require_same_origin(request, settings_obj) -> None:
+    allowed = pwa_allowed_origins(settings_obj)
     if not allowed or request.headers.get("Origin") not in allowed:
         raise PwaAuthError("pwa_origin_invalid", status_code=403)
 

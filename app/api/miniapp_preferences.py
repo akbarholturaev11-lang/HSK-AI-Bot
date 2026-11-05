@@ -103,6 +103,11 @@ async def validated_preferences_payload(
 
 async def apply_course_preferences(service, user_id: int, payload: CoursePreferencesUpdate):
     profile = await service.get_or_create(user_id)
+    before = (
+        getattr(profile, "goal", None),
+        getattr(profile, "daily_minutes", None),
+        getattr(profile, "preferred_focus", None),
+    )
     if payload.goal is not None:
         profile.goal = payload.goal
         # O'quvchi maqsadni O'ZI tanladi — endi qayta so'ralmaydi.
@@ -119,11 +124,9 @@ async def apply_course_preferences(service, user_id: int, payload: CoursePrefere
     # Sozlama o'zgarsa bugungi reja qayta qurilishi kerak: aks
     # holda o'quvchi kunlik vaqtni qisqartirib ham eski, uzun
     # rejani ko'rib turaverardi.
-    if (
-        payload.goal is not None
-        or payload.daily_minutes is not None
-        or payload.preferred_focus is not None
-    ):
+    # Re-sending the same values must not reshuffle the day's plan.
+    after = (profile.goal, profile.daily_minutes, profile.preferred_focus)
+    if after != before:
         profile.daily_plan_key = None
         profile.daily_plan_json = None
     return profile
