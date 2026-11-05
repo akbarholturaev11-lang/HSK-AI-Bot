@@ -2391,6 +2391,15 @@ async def course_character_asset(filename: str):
     )
 
 
+@app.get("/assets/startup/{filename}")
+async def pwa_startup_image(filename: str):
+    """iOS Home Screen launch images (logo + HSK AI on paper)."""
+    import re
+    if not re.fullmatch(r"hsk-startup-[0-9]{3,4}x[0-9]{4}\.png", filename):
+        return JSONResponse(status_code=404, content={"error": "not_found"})
+    return static_asset_response(f"app/static/assets/startup/{filename}", "image/png")
+
+
 @app.get("/assets/install/{filename}")
 async def desktop_install_screenshot(filename: str):
     import re

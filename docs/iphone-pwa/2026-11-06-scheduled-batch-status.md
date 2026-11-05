@@ -42,6 +42,12 @@ Not run: Playwright E2E, real iPhone (haptics, push prompt, pull-to-refresh, aud
   `pwa_allowed_origins`. `voice-live.js` no longer waits forever on a pending iOS `AudioContext.resume()`; it falls
   back to turn mode instead.
 
+- 19: iOS shows `apple-touch-startup-image` before the first paint of an installed web app; none existed, so a
+  blank (often black) screen appeared. Added 11 portrait launch images (paper background, knot logo, gold "HSK AI",
+  `app/static/assets/startup/`, served by `/assets/startup/{filename}`), linked statically on the sign-in page and
+  injected on the PWA course page. iOS reads them at install time: an already-installed app needs to be removed and
+  added to the Home Screen again to pick them up.
+
 ## Needs owner/config
 - 12 Live voice: also requires `PWA_VOICE_LIVE_ENABLED=true`, `ANDROID_VOICE_LIVE_ENABLED=true`, a Gemini key,
   model `gemini-3.8-live`, a positive session budget, and `ANDROID_VOICE_LIVE_ALLOWED_USERS="*"`
@@ -52,5 +58,5 @@ Not run: Playwright E2E, real iPhone (haptics, push prompt, pull-to-refresh, aud
 
 ## Not started
 8 (shake report parity), 10 (settings rebuild/channels), 15 (code reviewed, no defect found: the overtake effect needs server `rank_before`>0, so learners outside the ranked list never see it),
-19 (native launch screen / startup images), 20 (profile name/avatar: needs new PWA endpoint + UZ/RU/TJ catalog keys), 21 (review parity check),
+20 (profile name/avatar: needs new PWA endpoint + UZ/RU/TJ catalog keys), 21 (review parity check),
 22/23 (centre-block minimalist audit).

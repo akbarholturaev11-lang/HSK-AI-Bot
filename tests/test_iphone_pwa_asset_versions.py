@@ -40,6 +40,15 @@ class IphonePwaAssetVersionTests(unittest.TestCase):
                 with self.subTest(asset=asset.name):
                     self.assertIn(f'"{asset.name}":', main)
 
+    def test_ios_launch_images_exist_for_every_declared_size(self):
+        login = (STATIC / "iphone-pwa-login.html").read_text(encoding="utf-8")
+        refs = re.findall(r'apple-touch-startup-image" media="[^"]+" href="/assets/startup/([^"]+)"', login)
+        self.assertEqual(len(refs), 11)
+        for name in refs:
+            with self.subTest(image=name):
+                self.assertTrue((STATIC / "assets/startup" / name).is_file())
+                self.assertRegex(name, r"^hsk-startup-[0-9]{3,4}x[0-9]{4}\.png$")
+
     def test_worker_caches_only_versioned_same_origin_assets(self):
         worker = (STATIC / "iphone-pwa-sw.js").read_text(encoding="utf-8")
         self.assertIn('url.searchParams.has("v")', worker)

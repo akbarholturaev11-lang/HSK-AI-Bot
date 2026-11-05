@@ -2225,6 +2225,8 @@ if(PWA_COURSE_HOST){
     meta=document.createElement("meta");meta.name="apple-mobile-web-app-status-bar-style";meta.content="default";document.head.appendChild(meta);
     meta=document.createElement("meta");meta.name="apple-mobile-web-app-title";meta.content="HSK AI";document.head.appendChild(meta);
     var touch=document.createElement("link");touch.rel="apple-touch-icon";touch.href="/assets/hsk-ai-logo-256.png";document.head.appendChild(touch);
+    /* iOS launch screen (logo + HSK AI) instead of a blank screen on cold start. */
+    [[440,956,3],[430,932,3],[402,874,3],[393,852,3],[428,926,3],[390,844,3],[375,812,3],[414,896,3],[414,896,2],[414,736,3],[375,667,2]].forEach(function(s){var l=document.createElement("link");l.rel="apple-touch-startup-image";l.media="(device-width: "+s[0]+"px) and (device-height: "+s[1]+"px) and (-webkit-device-pixel-ratio: "+s[2]+") and (orientation: portrait)";l.href="/assets/startup/hsk-startup-"+(s[0]*s[2])+"x"+(s[1]*s[2])+".png";document.head.appendChild(l)});
     var manifest=document.createElement("link");manifest.rel="manifest";manifest.href="/iphone-pwa/manifest.webmanifest";document.head.appendChild(manifest);
   })();
 }
