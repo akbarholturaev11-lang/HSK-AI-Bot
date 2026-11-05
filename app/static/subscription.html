@@ -171,6 +171,10 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 .done-return.secondary{background:var(--bg);color:var(--text);border:1px solid var(--line);margin-top:0}
 .done-mark svg{width:42px;height:42px}
 .bottom{position:fixed;left:0;right:0;bottom:0;z-index:5;padding:11px 15px calc(11px + env(safe-area-inset-bottom,0px));background:rgba(255,255,255,.96);backdrop-filter:blur(18px);border-top:1px solid var(--line)}
+/* In installed iPhone PWA, use the unnecessary blank area below the CTA.
+   Retain at least 8px for the home gesture zone; Telegram checkout is unchanged. */
+html.hsk-pwa-browser .bottom{padding-bottom:max(8px,calc(env(safe-area-inset-bottom,0px) - 16px))}
+html.hsk-pwa-browser .app{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px))}
 .bottom-inner{max-width:520px;margin:0 auto;display:grid;grid-template-columns:96px 1fr;gap:9px}
 .back,.cta{height:54px;border-radius:var(--radius);font-weight:950;font-size:15px;transition:.18s}
 .back{background:var(--bg);border:1px solid var(--line);color:var(--text)}
@@ -2347,6 +2351,6 @@ $("#receiptInput").addEventListener("change",async event=>{
 render();
 loadOverview();
 </script>
-<script src="/course_v3_data/iphone-pwa-shake-report.js?v=20261105-a41026d777aa"></script>
+<script src="/course_v3_data/iphone-pwa-shake-report.js?v=20261105-74489d4716c4"></script>
 </body>
 </html>
