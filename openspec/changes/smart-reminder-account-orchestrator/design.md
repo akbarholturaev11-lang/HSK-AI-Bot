@@ -627,6 +627,16 @@ only resume action: re-enable increments generation and starts at stage one.
 The Mini App's automatic IANA-zone setup also opens for accounts of an open
 cohort, which lets Telegram learners become eligible.
 
+**Learner iPhone PWA.** PWA is a third channel of the same account/day job on
+a `telegram`-state routing row: the destination selector offers it only when
+the Smart preference is exactly ON (`master_enabled` true), the device has a
+live owned PWA session and push subscription, and the PWA Web Push sender is
+configured. PWA dispatch rechecks the template, cohort and preference before
+the provider, records one attempt and never mirrors to Telegram; an unknown
+result is terminal. The PWA's own study switch controls the legacy motivation
+flag, not Smart consent, so a PWA learner without an explicit Smart ON is
+served on Telegram instead.
+
 This is operational error containment, not proof that all errors are observed
 or that every eligible learner receives exactly one physical display. Accounts
 with an Android APK older than 1.7.29/60 reach Smart only after they update.

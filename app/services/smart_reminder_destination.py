@@ -14,7 +14,7 @@ from app.db.models.learner_pwa_push import LearnerPwaPushSubscription
 from app.db.models.smart_reminder import SmartReminderCapability, SmartReminderConsent, SmartReminderPreference
 from app.services.smart_reminder_policy import _aware_utc
 from app.services.smart_reminder_policy_context import MAX_POLICY_ROWS, _LESSON_REF, verified_studies
-from app.services.smart_reminder_preferences import SmartReminderError, SmartReminderPreferencesService, _state, _utc
+from app.services.smart_reminder_preferences import SmartReminderError, SmartReminderPreferencesService, _state, _utc, pwa_study_consent
 from app.services.smart_reminder_shadow_queue import ATTEMPT, JOB, QUEUE_VERSION
 
 MAX_DESTINATIONS = 128  # Work bound only, not a learning/confidence threshold.
@@ -72,7 +72,9 @@ class DestinationChoice:
 
 
 def choose_destination(*, user_id, destinations, evidence, observed_at, history_since,
-                       master_enabled=None, channel_mode="auto", preferred_channel=None):
+                       master_enabled=None, channel_mode="auto", preferred_channel=None, pwa_consent=None):
+    """``pwa_consent`` is the caller's ``pwa_study_consent`` result; without it
+    PWA still needs explicit Smart ON (an inbox or subscription is not consent)."""
     now, since = _aware_utc(observed_at), _aware_utc(history_since)
     if since > now:
         raise ValueError("Destination history must not begin in the future")
@@ -86,7 +88,8 @@ def choose_destination(*, user_id, destinations, evidence, observed_at, history_
     for endpoint in destinations:
         if (not isinstance(endpoint, Destination) or type(endpoint.user_id) is not int or endpoint.user_id != user_id or
                 type(endpoint.channel) is not str or endpoint.channel not in {"android", "telegram", "pwa"} or
-                (endpoint.channel == "pwa" and master_enabled is not True) or
+                (endpoint.channel == "pwa" and (master_enabled is False or
+                    not (master_enabled is True or pwa_consent is True))) or
                 (endpoint.channel == "android" and (not isinstance(endpoint.device_id, str) or
                     not endpoint.device_id or endpoint.valid_until is None)) or
                 (endpoint.channel == "pwa" and (not isinstance(endpoint.device_id, str) or
@@ -261,7 +264,7 @@ class SmartReminderDestinationService:
                 active = [_utc(v) for v in (device["last_seen_at"], device["observed_at"]) if v is not None and _utc(v) <= now]
                 destinations.append(Destination(actor.user_id, "android", device["id"],
                     min(until, _utc(device["expires_at"]), _utc(device["session_until"])), max(active, default=None)))
-            if pref["master_enabled"] is True and self._pwa_sender_ready():
+            if pwa_study_consent(pref) and self._pwa_sender_ready():
                 pwa_sessions = select(
                     DesktopSession.device_id.label("device_id"),
                     func.max(DesktopSession.expires_at).label("session_until"),
@@ -291,5 +294,6 @@ class SmartReminderDestinationService:
                 history_since=since, observed_at=now) if len(permitted) > 1 else DestinationEvidence())
             choice = choose_destination(user_id=actor.user_id, destinations=destinations, evidence=evidence,
                 observed_at=_aware_utc(self.clock()), history_since=since, master_enabled=pref["master_enabled"],
-                channel_mode=pref["channel_mode"], preferred_channel=pref["preferred_channel"])
+                channel_mode=pref["channel_mode"], preferred_channel=pref["preferred_channel"],
+                pwa_consent=pwa_study_consent(pref))
             return replace(choice, job_id=job_id, preference_revision=pref["revision"], grant_epoch=epoch or 0)

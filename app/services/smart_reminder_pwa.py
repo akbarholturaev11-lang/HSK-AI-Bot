@@ -21,7 +21,7 @@ from app.services.learner_pwa_push import (
 from app.services.notification_i18n import notification_message
 from app.services.notification_template_service import KEY_SMART_STUDY, NotificationTemplateService
 from app.services.smart_reminder_destination import PWA_POLICY_VERSION
-from app.services.smart_reminder_preferences import SmartReminderPreferencesService, _utc
+from app.services.smart_reminder_preferences import SmartReminderPreferencesService, _utc, pwa_study_consent
 from app.services.smart_reminder_shadow_queue import ATTEMPT, JOB
 from app.services.user_access_state_service import UserAccessState, UserAccessStateService
 from app.services.webpush_transport import send_webpush
@@ -116,7 +116,7 @@ class SmartReminderPwaService:
             pref = await SmartReminderPreferencesService(session).read(actor)
             epoch = await session.scalar(select(SmartReminderPreference.grant_epoch).where(
                 SmartReminderPreference.user_id == actor.user_id))
-            if (pref["master_enabled"] is not True or pref["revision"] != row["preference_revision"] or
+            if (not pwa_study_consent(pref) or pref["revision"] != row["preference_revision"] or
                     (epoch or 0) != row["grant_epoch"] or pref["channel_mode"] == "manual_locked"):
                 await session.execute(update(JOB).where(JOB.c.id == job_id).values(
                     state="cancelled", updated_at=now, reason_code="pwa_preference_changed"))

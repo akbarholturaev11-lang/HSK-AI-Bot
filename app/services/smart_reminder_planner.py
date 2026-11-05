@@ -18,7 +18,7 @@ from app.services.smart_reminder_analysis import SmartReminderAnalysisObserver
 from app.services.smart_reminder_destination import PWA_POLICY_VERSION, SmartReminderDestinationService
 from app.services.smart_reminder_coordination import read_d1_scope
 from app.services.smart_reminder_policy import APPROVED_HABIT_CALIBRATION, _aware_utc, evaluate
-from app.services.smart_reminder_preferences import SmartReminderActor, SmartReminderPreferencesService, _utc
+from app.services.smart_reminder_preferences import SmartReminderActor, SmartReminderPreferencesService, _utc, pwa_study_consent
 from app.services.smart_reminder_shadow_queue import ATTEMPT, JOB, QUEUE_VERSION, SmartReminderShadowQueue
 from app.services.smart_reminder_telegram import SmartReminderTelegramService, _android_inventory, _binding
 
@@ -57,7 +57,7 @@ class SmartReminderPlanner:
         return SmartReminderActor(user_id,'telegram_bot',telegram_id=telegram_id)
 
     async def _pwa_review_ready(self, session, user_id, pref):
-        if pref["master_enabled"] is not True or pref["channel_mode"] == "manual_locked":
+        if not pwa_study_consent(pref) or pref["channel_mode"] == "manual_locked":
             return False
         from app.services.learner_pwa_push import active_subscriptions, sender_config
         return (sender_config(self.settings) is not None and
@@ -149,7 +149,7 @@ class SmartReminderPlanner:
                 # requires account Smart ON plus a live user-enabled PWA Push
                 # subscription, and manual Telegram/Android locks exclude it.
                 pwa_pref = await SmartReminderPreferencesService(session).read(actor)
-                if pwa_pref['master_enabled'] is not True or choice.device_id is None:
+                if not pwa_study_consent(pwa_pref) or choice.device_id is None:
                     return PlanningResult('pwa_study_unavailable',row['id'])
                 selected = actor
             # Privileged readers may take time. Never bind stale destination/review facts.
