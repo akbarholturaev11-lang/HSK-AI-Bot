@@ -187,6 +187,7 @@ from app.services.desktop_analytics_service import DesktopAnalyticsService
 from app.services.desktop_auth_service import DesktopAuthService
 from app.api.pwa_auth import create_pwa_auth_router
 from app.api.lava_checkout import attach_lava_block, create_lava_router
+from app.admin_api.pwa_lava import create_admin_pwa_lava_router
 from app.services.lava.events import LavaRuntime
 from app.services.lava.notify import LavaNotifier
 from app.services.lava.reconcile import LavaReconcileWorker
@@ -793,6 +794,8 @@ app.include_router(create_admin_pwa_course_access_router(settings_obj=settings, 
 app.include_router(create_admin_pwa_hsk30_settings_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_limits_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_subscription_prices_router(settings_obj=settings, session_factory=async_session_maker))
+app.include_router(create_admin_pwa_lava_router(settings_obj=settings, session_factory=async_session_maker,
+                                              runtime_getter=lambda: lava_runtime))
 app.include_router(create_admin_pwa_payment_qr_router(
     settings_obj=settings, session_factory=async_session_maker, bot_client=bot,
 ))
