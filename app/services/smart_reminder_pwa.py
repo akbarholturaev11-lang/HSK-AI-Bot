@@ -109,6 +109,10 @@ class SmartReminderPwaService:
             if (row["state"] != "pending" or row["expires_at"] is None or
                     _utc(row["expires_at"]) <= now or row["preference_revision"] < 0):
                 return PwaReminderResult("pwa_job_not_due", job_id)
+            # Like Telegram: a planned job waits for its frozen send time; the
+            # runtime redispatches already-planned jobs on every tick.
+            if row["scheduled_at"] is not None and now < _utc(row["scheduled_at"]):
+                return PwaReminderResult("pwa_job_not_due", job_id, row["state"])
             pref = await SmartReminderPreferencesService(session).read(actor)
             epoch = await session.scalar(select(SmartReminderPreference.grant_epoch).where(
                 SmartReminderPreference.user_id == actor.user_id))

@@ -7,7 +7,6 @@ Checked with: `tests.test_iphone_pwa_asset_versions`, `tests.test_iphone_pwa_nav
 Not run: Playwright E2E, real iPhone (haptics, push prompt, pull-to-refresh, audio icon).
 
 ## Done in code
-- 1/2 (partial): inbox already had approved/rejected payment rows and Apple push; unchanged.
 - 4: separate floating back row removed from the checkout layer; the in-page header back arrow and right-swipe remain.
 - 5: back controls are bare icons (no white card/ring) in course, practice and checkout pages.
 - 7: one-time notification permission request on the first tap after open (iOS needs a gesture). Later changes stay in Settings.
@@ -25,11 +24,31 @@ Not run: Playwright E2E, real iPhone (haptics, push prompt, pull-to-refresh, aud
 - 18: pull-to-refresh on Course/Rating/Profile (`iphone-pwa-refresh.js`).
 - 23 (last line): favicon/Now-Playing icon switched from the panda avatar to the red-gold knot logo.
 
+## Second pass (re-verification + fixes)
+- Regression found: `/course_v3_data/{filename}` serves an allowlist only, so the new `iphone-pwa-fx.js` and
+  `iphone-pwa-refresh.js` (and the older `iphone-pwa-invite.js`) returned 404. Added to the allowlist; a test now
+  fails for any unlisted `iphone-pwa-*` asset.
+- Swipe-back: only pure horizontal scrollers own the gesture (a vertical lesson body computes overflow-x:auto too).
+- Checkout layer focuses its iframe on open; dictionary requests stroke data from the server at most once.
+- 1/2: Inbox payment rows and the urgent dialog show plan, amount, method, receipt number, date and a localized coded
+  rejection reason (free-text admin notes stay hidden). Tapping a rejected receipt opens checkout at the receipt step
+  (`step=pay`, method/country restored; TJ card stops at the bank step). Payment pushes say approved/rejected
+  (4 new notification keys, no amount/reason). The service worker counts pushes on the app-icon badge; opening the
+  Inbox or the sign-in page clears it (iOS 16.4+, installed app, permission granted).
+- 11: Smart PWA dispatch sent a reminder as soon as it was planned, ignoring `scheduled_at` (Telegram already waited).
+  It now waits for the frozen send time; regression test in `tests/test_smart_reminder_pwa.py`.
+- 12: Live mode switch and the Live websocket accepted only `pwa_origin`, while every other PWA mutation also accepts
+  `redirect_base_url`; opened from that origin, Live failed with 403 while turn mode worked. Both now use
+  `pwa_allowed_origins`. `voice-live.js` no longer waits forever on a pending iOS `AudioContext.resume()`; it falls
+  back to turn mode instead.
+
 ## Needs owner/config
-- 12 Live voice: code path is wired. It stays off unless `PWA_VOICE_LIVE_ENABLED=true`, `ANDROID_VOICE_LIVE_ENABLED=true`,
-  a Gemini key, model `gemini-3.8-live`, a positive session budget, and `ANDROID_VOICE_LIVE_ALLOWED_USERS="*"`
+- 12 Live voice: also requires `PWA_VOICE_LIVE_ENABLED=true`, `ANDROID_VOICE_LIVE_ENABLED=true`, a Gemini key,
+  model `gemini-3.8-live`, a positive session budget, and `ANDROID_VOICE_LIVE_ALLOWED_USERS="*"`
   (PWA-only accounts have no real Telegram ID, so a numeric allowlist never matches them).
-- 11 Smart reminders over PWA: needs `PWA_PUSH_ENABLED`, `PWA_PUSH_SEND_ENABLED` and a real device receipt.
+- 11 Smart over PWA: `PWA_PUSH_ENABLED`, `PWA_PUSH_SEND_ENABLED`, VAPID keys, and a production routing review for the
+  account (no production path creates one yet); Google/Apple-only PWA accounts are not admitted by the planner.
+- 1/2 pushes: same PWA push switches and VAPID keys.
 
 ## Not started
 8 (shake report parity), 10 (settings rebuild/channels), 15 (code reviewed, no defect found: the overtake effect needs server `rank_before`>0, so learners outside the ranked list never see it),
