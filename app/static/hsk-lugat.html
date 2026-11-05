@@ -421,6 +421,14 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     var extra = document.createElement('script');
     extra.src = '/hsk-extra.js?v=20260720';
     extra.async = true;
+    // Stroke readers wait for this instead of timing out on a slow network.
+    window.HSK_EXTRA_WAITERS = [];
+    function extraSettled(){
+      window.HSK_EXTRA_DONE = true;
+      var waiting = window.HSK_EXTRA_WAITERS.splice(0);
+      waiting.forEach(function(fn){ try{ fn(); }catch(e){} });
+    }
+    extra.onload = extraSettled; extra.onerror = extraSettled;
     document.head.appendChild(extra);
   }
 })();
@@ -1327,6 +1335,20 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
       onComplete(data);
     }
     if(local){ succeed(local); return; }
+    if(!window.HSK_FAST_WRITER && !window.HSK_EXTRA_DONE && window.HSK_EXTRA_WAITERS){
+      // The bundled stroke data is still downloading: retry from it once ready.
+      var waitTimer = setTimeout(function(){ requestServerStroke(); }, 25000);
+      window.HSK_EXTRA_WAITERS.push(function(){
+        clearTimeout(waitTimer);
+        if(finished) return;
+        var ready = (typeof STROKES !== 'undefined' && STROKES[ch]) ? STROKES[ch] : null;
+        if(ready) succeed(ready); else requestServerStroke();
+      });
+      return;
+    }
+    requestServerStroke();
+    function requestServerStroke(){
+      if(finished) return;
 
     var xhr = new XMLHttpRequest();
     xhr.overrideMimeType && xhr.overrideMimeType('application/json');
@@ -1341,6 +1363,7 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     xhr.onerror = function(){ fail(xhr); };
     xhr.ontimeout = function(){ fail(xhr); };
     xhr.send();
+    }
   }
 
   function playCurrent(){
