@@ -18,6 +18,7 @@ assert(page.includes('layer.id="pwa-practice-layer"'));
 assert(page.includes("entry.innerHTML=renderStudyPreparing()"));
 assert(js.includes('var onCourse = location.pathname === "/iphone-pwa/course"'));
 assert(js.includes("navigator.standalone"));
+assert(js.includes("window.parent !== window || window.HskPwaShake"),"nested PWA iframes cannot open duplicate sheets");
 assert(js.includes('matchMedia("(display-mode: standalone)")'));
 assert(js.includes('DeviceMotionEvent.requestPermission()'));
 assert(js.includes('"/course_v3_data/vendor/html2canvas.min.js?v=1"'));
