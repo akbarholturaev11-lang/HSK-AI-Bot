@@ -14,7 +14,13 @@ Not run: Playwright E2E, real iPhone (haptics, push prompt, pull-to-refresh, aud
 - 13: `iphone-pwa-fx.js` gives practice pages and lessons a browser haptic (Safari switch tick / vibrate) and answer tones.
 - 14: lesson pronunciation steps used the Telegram endpoint and showed "open in Telegram"; they now use `/api/v3/pwa/voice/pronounce`.
 - 16/6: swipe-back no longer starts on the profile carousel, rating cups or any horizontal scroller; cups use `touch-action:pan-y`.
-- 17: the intro tour is flagged as seen when it starts, not only when it ends.
+- 17: root cause: `/api/v3/hints/dismiss` had no PWA route, so closing a section hint was never saved and it returned on every open.
+  Added `POST /api/v3/pwa/hints/dismiss` (CSRF + verified session) and the client mapping. The intro tour is also flagged as seen when it starts.
+- 3: the daily plan was already frozen per level per day, but stored in a single slot (alternating levels/tracks rebuilt it) and any
+  preferences POST, even with unchanged values, cleared it. Plans are now kept per level for the current day and cleared only when
+  goal/minutes/focus really change. Needs CI: `tests.test_course_today_plan_storage`, `tests.test_miniapp_preferences_api` (deps not installed here).
+- 9: dictionary stroke order failed after a 3.5 s timeout while the 2.8 MB bundled stroke data was still loading; it now waits for it.
+  Audio uses public `/api/v3/tts` and was not changed; a freeze was not reproduced.
 - 18: pull-to-refresh on Course/Rating/Profile (`iphone-pwa-refresh.js`).
 - 23 (last line): favicon/Now-Playing icon switched from the panda avatar to the red-gold knot logo.
 
@@ -25,6 +31,6 @@ Not run: Playwright E2E, real iPhone (haptics, push prompt, pull-to-refresh, aud
 - 11 Smart reminders over PWA: needs `PWA_PUSH_ENABLED`, `PWA_PUSH_SEND_ENABLED` and a real device receipt.
 
 ## Not started
-3 (plan once a day), 8 (shake report parity), 9 (dictionary stall), 10 (settings rebuild/channels), 15 (streak/overtake effects audit),
+8 (shake report parity), 10 (settings rebuild/channels), 15 (code reviewed, no defect found: the overtake effect needs server `rank_before`>0, so learners outside the ranked list never see it),
 19 (native launch screen / startup images), 20 (profile name/avatar: needs new PWA endpoint + UZ/RU/TJ catalog keys), 21 (review parity check),
 22/23 (centre-block minimalist audit).
