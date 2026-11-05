@@ -59,6 +59,9 @@ class PwaShakeReportTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_valid_user_report_reuses_private_inbox_and_bot_notification(self):
         csrf = await self.sign_in()
+        # The Admin PWA web panel is independent and defaults OFF in production.
+        # A valid authenticated learner report still reaches Telegram admins.
+        self.settings.ADMIN_PWA_ENABLED = False
         image = b"\xff\xd8\xfftest-jpeg"
         data_url = "data:image/jpeg;base64," + base64.b64encode(image).decode()
         admission = NativeReportAdmission(report_id=9, already_sent=False)
