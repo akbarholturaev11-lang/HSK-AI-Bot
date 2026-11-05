@@ -251,10 +251,10 @@
         (screen !== "course" && screen !== "mashq"))) return false;
     if (location.pathname === "/iphone-pwa/checkout" ||
         document.visibilityState === "hidden" ||
-        // Reject every open checkout/receipt/auth/paywall/modal overlay, including
+        // Reject checkout/receipt/auth/paywall overlays, including
         // an embedded checkout iframe in the parent course PWA.
         document.querySelector(
-          "#pwa-checkout-layer, #sheet.on, #paywall.on, #flow.on, " +
+          "#pwa-checkout-layer, #sheet.on, #paywall.on, " +
           ".pwa-payment, [class*=receipt], [class*=checkout], [data-sensitive]"
         )) return false;
     return true;
@@ -537,7 +537,17 @@
   };
   document.addEventListener("visibilitychange", function () {
     if (document.visibilityState === "hidden") {
-      stopListening(); epoch++; snapshot = null;
+      stopListening();
+      epoch++; snapshot = null;
+      capturePending = false;
+      manualImageSelected = false;
+      imageSelectionSerial++;
+      // A cleared screenshot must not remain displayed as though it would
+      // still be attached after the learner returns from the app switcher.
+      if (stage === "form" && !root.hidden) {
+        var oldPreview = body.querySelector(".hsk-shake-preview");
+        if (oldPreview) oldPreview.replaceWith(imagePreview());
+      }
     } else {
       // Do not assume same account after background / OAuth transitions.
       verifiedActor().then(function (session) {
