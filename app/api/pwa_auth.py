@@ -13,7 +13,7 @@ from uuid import UUID
 
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse, FileResponse, RedirectResponse, Response
-from pydantic import BaseModel, ConfigDict, Field, ValidationError
+from pydantic import BaseModel, ConfigDict, Field, StrictBool, ValidationError
 
 from app.services.native_oauth_service import NativeOAuthError, available_providers
 from app.services.identity_link_service import IdentityLinkError
@@ -93,6 +93,18 @@ class PwaTelegramStart(BaseModel):
 class PwaTelegramClaim(BaseModel):
     model_config = ConfigDict(extra="forbid")
     link_request_id: UUID
+
+
+class PwaProfileUpdate(BaseModel):
+    """Same editable app-profile fields as Android; provider identity stays read-only."""
+    model_config = ConfigDict(extra="forbid")
+    display_name: str = Field(default="", max_length=80)
+    avatar_key: Literal["", "panda_cheer", "panda_streak", "panda_worried"] = ""
+
+
+class PwaNotifyToggle(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    enabled: StrictBool
 
 
 class PwaHintDismiss(BaseModel):
@@ -1489,6 +1501,58 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
             return _error(exc)
         except ValueError:
             return _error(PwaAuthError("pwa_request_invalid", status_code=422))
+
+    @router.post("/api/v3/pwa/profile")
+    async def pwa_profile_update(request: Request):
+        """Edit the account display name and preset avatar (Android parity)."""
+        from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
+
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            payload = await _small_json(request, PwaProfileUpdate, max_bytes=1024)
+            # Collapse whitespace/control separators like the Android endpoint.
+            display_name = " ".join(payload.display_name.split()).strip()[:80]
+            if not display_name:
+                raise PwaAuthError("pwa_profile_name_required", status_code=422)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                profile = await CourseMiniAppProfileService(db).get_or_create(actor.id)
+                profile.display_name = display_name
+                profile.avatar_key = payload.avatar_key
+                await db.commit()
+            return JSONResponse(
+                {"ok": True, "display_name": display_name, "avatar_key": payload.avatar_key},
+                headers=_NO_STORE,
+            )
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.post("/api/v3/pwa/notify")
+    async def pwa_notify_toggle(request: Request):
+        """Study reminder switch: the same profile flag as Mini App /api/v3/notify."""
+        from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
+
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            payload = await _small_json(request, PwaNotifyToggle, max_bytes=256)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                profile = await CourseMiniAppProfileService(db).get_or_create(actor.id)
+                profile.notifications_enabled = payload.enabled
+                await db.commit()
+            return JSONResponse({"ok": True, "notifications": payload.enabled}, headers=_NO_STORE)
+        except PwaAuthError as exc:
+            return _error(exc)
 
     @router.post("/api/v3/pwa/hints/dismiss")
     async def pwa_hint_dismiss(request: Request):

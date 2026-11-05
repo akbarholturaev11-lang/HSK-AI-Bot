@@ -639,6 +639,40 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(valid.json()["profile"]["daily_goal_xp"], 40)
         self.assertEqual(valid.headers["cache-control"], "no-store")
 
+    async def test_profile_edit_and_study_reminder_toggle_require_actor_and_csrf(self):
+        from app.db.models.course_miniapp_profile import CourseMiniAppProfile
+        anonymous = await self.client.post(
+            "/api/v3/pwa/profile", headers={"Origin": ORIGIN},
+            json={"display_name": "Ali", "avatar_key": "panda_cheer"},
+        )
+        self.assertEqual(anonymous.status_code, 401, anonymous.text)
+        state = await self.begin()
+        await self.callback(state)
+        csrf = (await self.client.get("/api/v3/pwa-auth/session")).json()["csrf"]
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf}
+        wrong_csrf = await self.client.post(
+            "/api/v3/pwa/profile", headers={"Origin": ORIGIN, "X-HSK-PWA-CSRF": "invalid"},
+            json={"display_name": "Ali", "avatar_key": ""},
+        )
+        self.assertEqual(wrong_csrf.status_code, 403, wrong_csrf.text)
+        for bad in ({"display_name": "Ali", "avatar_key": "photo"},
+                    {"display_name": "   ", "avatar_key": ""},
+                    {"display_name": "Ali", "avatar_key": "", "telegram_id": 1}):
+            rejected = await self.client.post("/api/v3/pwa/profile", headers=headers, json=bad)
+            self.assertEqual(rejected.status_code, 422, rejected.text)
+        saved = await self.client.post("/api/v3/pwa/profile", headers=headers,
+                                       json={"display_name": "  Ali \n Valiyev ", "avatar_key": "panda_streak"})
+        self.assertEqual(saved.status_code, 200, saved.text)
+        self.assertEqual(saved.json()["display_name"], "Ali Valiyev")
+        off = await self.client.post("/api/v3/pwa/notify", headers=headers, json={"enabled": False})
+        self.assertEqual(off.status_code, 200, off.text)
+        bad_toggle = await self.client.post("/api/v3/pwa/notify", headers=headers, json={"enabled": "no"})
+        self.assertEqual(bad_toggle.status_code, 422, bad_toggle.text)
+        async with self.sessions() as db:
+            profile = (await db.scalars(select(CourseMiniAppProfile))).one()
+        self.assertEqual((profile.display_name, profile.avatar_key, profile.notifications_enabled),
+                         ("Ali Valiyev", "panda_streak", False))
+
     async def test_browser_profile_analytics_use_verified_account_not_telegram(self):
         path = "/api/v3/pwa/profile"
         unauthenticated = await self.client.get(path)

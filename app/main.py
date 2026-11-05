@@ -2793,6 +2793,9 @@ async def _course_v3_map_for_user(
         "referral_code": getattr(user, "referral_code", None) or "",
         "learner_level": str(getattr(user, "level", "") or "").strip().lower(),
         "onboarding_completed": profile.onboarding_completed_at is not None,
+        # Account-chosen app profile (Android/PWA editor); clients fall back to "name".
+        "display_name": str(getattr(profile, "display_name", None) or "").strip()[:80],
+        "avatar_key": str(getattr(profile, "avatar_key", None) or "").strip()[:32],
         "foundation": await profile_svc.foundation_status(user),
     }
     # Kunlik reja sozlamalari: XP maqsadi endi serverda saqlanadi (ilgari
