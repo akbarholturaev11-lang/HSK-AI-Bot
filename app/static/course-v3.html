@@ -60,6 +60,8 @@ html.hsk-pwa-browser #hsk-launch-splash.is-playing .hsk-launch-brandline,
 html.hsk-pwa-browser #hsk-launch-splash.is-playing .hsk-launch-book{animation-duration:300ms;animation-delay:390ms}
 html.hsk-pwa-browser #hsk-launch-splash.is-playing .hsk-launch-title{animation-duration:360ms;animation-delay:520ms}
 #pwa-checkout-layer{position:fixed;inset:0;z-index:9700;background:var(--paper);padding:var(--safe-t) 0 var(--safe-b);display:flex;flex-direction:column;overscroll-behavior:contain}
+/* Embedded checkout owns its own home-indicator clearance; no double safe-area. */
+html.hsk-pwa-browser #pwa-checkout-layer{padding-bottom:0}
 #pwa-checkout-layer iframe{flex:1;min-height:0;width:100%;border:0}
 html.hsk-pwa-browser:has(#pwa-checkout-layer){overflow:hidden}
 .hsk-launch-stage{position:relative;display:flex;flex-direction:column;align-items:center}
