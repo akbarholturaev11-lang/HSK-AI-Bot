@@ -127,6 +127,9 @@ class Settings(BaseSettings):
     SMART_REMINDER_TELEGRAM_ENABLED: bool = False
     # Post-response/commit analysis and independent analysis-only retention.
     SMART_REMINDER_ANALYSIS_ENABLED: bool = False
+    # Owner test accounts (comma-separated canonical user IDs) that join the
+    # first rollout stage early; every consent/fence/drain guard still applies.
+    SMART_REMINDER_EARLY_USER_IDS: str = ""
     # Optional private Cloudflare R2 mirror for 24-hour aggregate snapshots;
     # no browser/client credentials, public URLs or raw feedback are stored.
     ADMIN_PWA_R2_AGGREGATE_ENABLED: bool = False

@@ -23,6 +23,7 @@ stage one.
 """
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
+from functools import lru_cache
 import hashlib
 import json
 import logging
@@ -71,8 +72,32 @@ def cohort_for_user(user_id: int) -> int:
     return int.from_bytes(digest[:4], "big") % COHORT_COUNT
 
 
+@lru_cache(maxsize=8)
+def _parse_early(raw: str) -> frozenset:
+    ids = set()
+    for part in raw.split(","):
+        part = part.strip()
+        if part.isdigit() and int(part) > 0:
+            ids.add(int(part))
+    return frozenset(ids)
+
+
+def early_accounts() -> frozenset:
+    from app.config import settings
+    return _parse_early(str(getattr(settings, "SMART_REMINDER_EARLY_USER_IDS", "") or ""))
+
+
+def rollout_cohort(user_id: int) -> int:
+    """Owner test accounts in SMART_REMINDER_EARLY_USER_IDS join stage one.
+
+    This only moves their cohort; consent, Android fence, drain, pause and
+    every send guard are unchanged.
+    """
+    return 0 if user_id in early_accounts() else cohort_for_user(user_id)
+
+
 def cohort_open(user_id: int, stage: int, status: str = "active") -> bool:
-    return status == "complete" or (stage >= 1 and cohort_for_user(user_id) < stage)
+    return status == "complete" or (stage >= 1 and rollout_cohort(user_id) < stage)
 
 
 def legacy_zone(offset):
