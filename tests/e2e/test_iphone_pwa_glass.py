@@ -369,3 +369,88 @@ def test_rejected_payment_never_interrupts_feedback():
             "closing feedback must not reveal a queued surprise payment dialog"
         )
         browser.close()
+
+
+@pytest.mark.parametrize("width,height", [(320, 568), (390, 844), (430, 932)])
+def test_shake_report_is_single_bottom_sheet_with_direct_permission_and_csrf(width, height):
+    """Exercise the actual PWA JS/CSS in Chromium, not only string/gesture contracts."""
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page(
+            viewport={"width": width, "height": height},
+            device_scale_factor=2, is_mobile=True, has_touch=True,
+        )
+        bootstrap(page)
+        page.add_style_tag(content=asset("course_v3_data/iphone-pwa-shake-report.css"))
+        page.evaluate("""() => {
+          Object.defineProperty(navigator, "standalone", {configurable:true,value:true});
+          window.__motionRequests = 0;
+          Object.defineProperty(window, "DeviceMotionEvent", {
+            configurable:true,
+            value:class MotionEventMock {}
+          });
+          window.DeviceMotionEvent.requestPermission = () => {
+            window.__motionRequests++;
+            return Promise.resolve("granted");
+          };
+          window.SCREEN = "settings";
+          window.__settingsRefreshes = 0;
+          window.renderPwaSettings = () => {window.__settingsRefreshes++};
+        }""")
+        page.add_script_tag(content=asset("course_v3_data/iphone-pwa-shake-report.js"))
+        page.evaluate("window.dispatchEvent(new Event('load'))")
+        page.wait_for_function(
+            "window.HskPwaShake && window.HskPwaShake.settingsRowHtml().includes('role=\"switch\"')"
+        )
+        report = page.locator("#hsk-pwa-shake-root")
+        assert not report.is_visible(), "first use cannot open an unsolicited consent dialog"
+        page.evaluate("""() => {
+          const host = document.createElement("div");
+          host.id = "shake-toggle-fixture";
+          host.innerHTML = window.HskPwaShake.settingsRowHtml();
+          document.body.appendChild(host);
+        }""")
+        setting = page.locator("#shake-toggle-fixture [role='switch']")
+        assert setting.count() == 1
+        assert setting.get_attribute("aria-checked") == "false"
+        setting.click()
+        assert page.evaluate("window.__motionRequests") == 1
+        assert page.evaluate("window.__settingsRefreshes") >= 1
+        assert "aria-checked=\"true\"" in page.evaluate("window.HskPwaShake.settingsRowHtml()")
+        assert not report.is_visible(), "granting sensor permission must not open extra app modals"
+        # Use the public test hook to trigger the same end-form code path as a real shake.
+        page.evaluate("window.HskPwaShake.manual()")
+        sheet = page.locator("#hsk-pwa-shake-root .hsk-shake-dialog")
+        assert sheet.is_visible()
+        assert sheet.get_attribute("data-stage") == "form"
+        assert page.locator("#hsk-shake-description").is_visible()
+        assert page.locator("#hsk-shake-actions button").count() == 1
+        assert page.locator("#hsk-shake-close").count() == 1
+        box = sheet.bounding_box()
+        assert box and box["height"] < height * .9
+        assert abs(box["y"] + box["height"] - height) <= 2, "sheet must dock to the bottom"
+        assert page.evaluate("document.documentElement.scrollWidth <= innerWidth + 1")
+        posts = []
+        def report_post(route):
+            posts.append({
+                "headers": route.request.headers,
+                "body": json.loads(route.request.post_data),
+            })
+            route.fulfill(content_type="application/json", body='{"ok":true}')
+        page.route("**/api/v3/pwa/bug-report", report_post)
+        page.locator("#hsk-shake-description").fill("Dars ochilmay qolyapti")
+        page.locator("#hsk-shake-actions button").click()
+        page.wait_for_function(
+            "document.querySelector('.hsk-shake-dialog')?.dataset.stage === 'sent'"
+        )
+        assert len(posts) == 1
+        assert posts[0]["headers"].get("x-hsk-pwa-csrf") == "browser-csrf"
+        assert posts[0]["body"]["description"] == "Dars ochilmay qolyapti"
+        assert posts[0]["body"]["app_version"] == "iphone-pwa"
+        assert page.locator("#hsk-shake-close").is_hidden(), "success has one Done action"
+        assert page.locator("#hsk-shake-actions button").count() == 1
+        page.locator("#hsk-shake-actions button").click()
+        assert not report.is_visible()
+        page.evaluate("window.HskPwaShake.toggle()")
+        assert not page.evaluate("window.HskPwaShake.isListening()")
+        browser.close()
