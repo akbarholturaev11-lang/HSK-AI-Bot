@@ -105,6 +105,15 @@ class DailyMinutesTests(unittest.IsolatedAsyncioTestCase):
         self.assertIsNone(item.daily_plan_json)
 
 
+    async def test_resending_the_same_answers_keeps_today_plan(self):
+        # Clients re-post unchanged settings; the day's plan must not reshuffle.
+        item = profile()
+        await post(item, {"daily_minutes": 10, "goal": "hsk_exam", "initData": VALID_INIT_DATA})
+
+        self.assertEqual(item.daily_plan_key, "v1:hsk1:2026-09-05")
+        self.assertEqual(item.daily_plan_json, '[{"t":"continue_lesson"}]')
+
+
 class PreferredFocusTests(unittest.IsolatedAsyncioTestCase):
     async def test_focus_is_saved(self):
         item = profile()

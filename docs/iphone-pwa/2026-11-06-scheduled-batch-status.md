@@ -16,9 +16,10 @@ Not run: Playwright E2E, real iPhone (haptics, push prompt, pull-to-refresh, aud
 - 16/6: swipe-back no longer starts on the profile carousel, rating cups or any horizontal scroller; cups use `touch-action:pan-y`.
 - 17: root cause: `/api/v3/hints/dismiss` had no PWA route, so closing a section hint was never saved and it returned on every open.
   Added `POST /api/v3/pwa/hints/dismiss` (CSRF + verified session) and the client mapping. The intro tour is also flagged as seen when it starts.
-- 3: the daily plan was already frozen per level per day, but stored in a single slot (alternating levels/tracks rebuilt it) and any
-  preferences POST, even with unchanged values, cleared it. Plans are now kept per level for the current day and cleared only when
-  goal/minutes/focus really change. Needs CI: `tests.test_course_today_plan_storage`, `tests.test_miniapp_preferences_api` (deps not installed here).
+- 3: the plan is frozen per level per day (unchanged). Root cause of "a different plan on each open": the Android app syncs
+  `daily_goal_xp` on open through `set_study_preferences`, which cleared the shared plan every time; the Mini App/PWA
+  preferences POST did the same even for unchanged values. Both now clear it only when goal/minutes/focus really change
+  (daily XP goal is not part of the frozen plan). Tests: `tests/test_miniapp_preferences_api.py`, `tests/test_course_today_service.py`.
 - 9: dictionary stroke order failed after a 3.5 s timeout while the 2.8 MB bundled stroke data was still loading; it now waits for it.
   Audio uses public `/api/v3/tts` and was not changed; a freeze was not reproduced.
 - 18: pull-to-refresh on Course/Rating/Profile (`iphone-pwa-refresh.js`).
