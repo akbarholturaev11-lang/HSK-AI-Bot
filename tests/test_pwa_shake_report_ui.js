@@ -12,6 +12,22 @@ const css = fs.readFileSync("app/static/course_v3_data/iphone-pwa-shake-report.c
 const backend = fs.readFileSync("app/api/pwa_auth.py", "utf8");
 assert(page.includes('src="/course_v3_data/iphone-pwa-shake-report.js'));
 assert(page.includes('href="/course_v3_data/iphone-pwa-shake-report.css'));
+
+for (const [name, html] of [
+  ["course-v3.html", page],
+  ["subscription.html", checkout]
+]) {
+  // Parse all inline scripts; catching syntax faults in unrelated course code.
+  const tags = /<script\b([^>]*)>([\s\S]*?)<\/script>/g;
+  let match, parsed = 0;
+  while ((match = tags.exec(html)) !== null) {
+    if (match[1].includes("application/json") || !match[2].trim()) continue;
+    new vm.Script(match[2], {filename:name + ":inline-" + parsed});
+    parsed++;
+  }
+  assert(parsed >= 1, name + " must contain parsed inline JS");
+}
+
 assert(page.includes("window.HskPwaShake.settingsRowHtml()"));
 // Practice opens as an in-document iframe layer (no full-page navigation).
 assert(page.includes('layer.id="pwa-practice-layer"'));
