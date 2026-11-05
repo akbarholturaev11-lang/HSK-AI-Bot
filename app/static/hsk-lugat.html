@@ -1575,8 +1575,8 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     var memoBlock = document.getElementById('memo-block');
     var D = (window.MEMO_DATA && word) ? window.MEMO_DATA[word.h] : null;
     if(!window.MEMO_DATA){
-      memoBlock.innerHTML = '';
-      loadMemoData().then(function(){ if(currentWord === word) renderMemo(word); });
+      memoBlock.innerHTML = hsk30MemoryFallback(word);
+      loadMemoData().then(function(){ if(currentWord === word && window.MEMO_DATA) renderMemo(word); });
       return;
     }
     if(!D){ memoBlock.innerHTML = hsk30MemoryFallback(word); return; }
