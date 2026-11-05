@@ -1334,13 +1334,14 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
       }
       onComplete(data);
     }
+    var serverRequested = false;
     if(local){ succeed(local); return; }
     if(!window.HSK_FAST_WRITER && !window.HSK_EXTRA_DONE && window.HSK_EXTRA_WAITERS){
       // The bundled stroke data is still downloading: retry from it once ready.
       var waitTimer = setTimeout(function(){ requestServerStroke(); }, 25000);
       window.HSK_EXTRA_WAITERS.push(function(){
         clearTimeout(waitTimer);
-        if(finished) return;
+        if(finished || serverRequested) return;
         var ready = (typeof STROKES !== 'undefined' && STROKES[ch]) ? STROKES[ch] : null;
         if(ready) succeed(ready); else requestServerStroke();
       });
@@ -1348,7 +1349,8 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     }
     requestServerStroke();
     function requestServerStroke(){
-      if(finished) return;
+      if(finished || serverRequested) return;
+      serverRequested = true;
 
     var xhr = new XMLHttpRequest();
     xhr.overrideMimeType && xhr.overrideMimeType('application/json');
