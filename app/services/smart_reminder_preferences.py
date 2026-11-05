@@ -130,6 +130,18 @@ def _state(rows, source_key):
     return "on" if states and all(x == "on" for x in states) else "unknown"
 
 
+def pwa_study_consent(pref):
+    """Study consent that lets the learner PWA carry a Smart reminder.
+
+    Explicit Smart ON, or no explicit Smart choice while the account already
+    consents to study reminders on Telegram: the PWA is then only another
+    channel for that same reminder. A push subscription alone never counts,
+    and Smart OFF always wins.
+    """
+    master = pref["master_enabled"]
+    return master is True or (master is None and pref["channels"]["telegram"]["consent"] == "on")
+
+
 async def automatic_timezone_initialization_allowed(session, user_id, settings):
     """Read-only browser exposure gate, never consent or dispatch authority.
 

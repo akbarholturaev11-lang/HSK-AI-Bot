@@ -1,6 +1,7 @@
 """Automatic four-stage rollout and admission over the real Smart SQL paths."""
 import asyncio
 from datetime import timedelta
+import json
 from types import SimpleNamespace
 import unittest
 from unittest.mock import AsyncMock, Mock, patch
@@ -17,6 +18,7 @@ from sqlalchemy import delete, insert, inspect, select, update
 from app.db.base import Base
 
 from app.db.models.desktop import DesktopDevice, DesktopSession
+from app.db.models.learner_pwa_push import LearnerPwaPushSubscription
 from app.db.models.course_progress import CourseProgress
 from app.db.models.smart_reminder import (
     SmartReminderCapability, SmartReminderConsent, SmartReminderMutation, SmartReminderPreference,
@@ -28,7 +30,7 @@ from app.services.smart_reminder_lifecycle import SmartReminderLifecycleService
 from app.services.smart_reminder_android import SmartReminderAndroidService, read_android_admission
 from app.services.smart_reminder_policy import day_window
 from app.services.smart_reminder_preferences import (
-    SmartReminderActor, SmartReminderError, automatic_timezone_initialization_allowed,
+    SmartReminderActor, SmartReminderError, automatic_timezone_initialization_allowed, pwa_study_consent,
 )
 from app.services.smart_reminder_rollout import (
     COHORT_COUNT, LEGACY_DRAIN, REVIEW_TTL, STAGE_DURATION, SmartReminderAdmissionService,
@@ -79,6 +81,17 @@ class EarlyAccountTests(unittest.TestCase):
             self.assertEqual(cohort_for_user(3283), 3)  # The stable bucket itself is unchanged.
         with patch("app.config.settings.SMART_REMINDER_EARLY_USER_IDS", ""):
             self.assertFalse(cohort_open(3283, 1))
+
+
+class PwaStudyConsentTests(unittest.TestCase):
+    def test_pwa_needs_existing_study_consent_and_smart_off_always_wins(self):
+        def pref(master, telegram):
+            return {"master_enabled": master, "channels": {"telegram": {"consent": telegram}}}
+        self.assertTrue(pwa_study_consent(pref(True, "off")))      # Explicit Smart ON.
+        self.assertTrue(pwa_study_consent(pref(None, "on")))       # Existing study consent.
+        self.assertFalse(pwa_study_consent(pref(None, "unknown"))) # A subscription alone is not consent.
+        self.assertFalse(pwa_study_consent(pref(None, "off")))
+        self.assertFalse(pwa_study_consent(pref(False, "on")))     # Smart OFF wins.
 
 
 class FixtureChecks:
@@ -341,6 +354,59 @@ class AdmissionChecks(FixtureChecks):
         self.assertEqual(await self.admission().step(4), ("not_eligible",))
         self.assertIsNone(await self.routing())
         self.assertFalse(await self.veto())
+
+    async def test_admitted_learner_with_iphone_pwa_push_gets_the_smart_web_push(self):
+        """Learner iPhone PWA: an admitted account with study consent and a live
+        push subscription is served once by Web Push, never also on Telegram."""
+        async with self.q.sessions.begin() as s:
+            s.add(DesktopDevice(id="iphone-pwa", user_id=1, platform="pwa", app_version="pwa",
+                installation_key_hash="iphone-pwa-fixture", last_seen_at=self.q.tick))
+            await s.flush()
+            s.add(DesktopSession(id="iphone-pwa-session", device_id="iphone-pwa",
+                refresh_token_hash="iphone-pwa-refresh", expires_at=self.q.tick + timedelta(days=30)))
+            sealed, endpoint_hash = self.sealed_subscription()
+            s.add(LearnerPwaPushSubscription(id=str(uuid4()), device_id="iphone-pwa", endpoint_hash=endpoint_hash,
+                encrypted_payload=sealed, created_at=self.q.tick, updated_at=self.q.tick))
+        # A typical PWA learner: no explicit Smart choice, only the existing
+        # Telegram study consent. The PWA carries that same reminder.
+        async with self.q.sessions.begin() as s:
+            await s.execute(update(SmartReminderPreference).values(master_enabled=None))
+        await self.admitted()  # PWA is not an Android device: no fence change.
+        await open_rollout(self.q.sessions, self.q.tick)
+        config = ("private-key-test", "mailto:test@example.com", self.fernet)
+        pushes = AsyncMock(return_value=201)
+        def runtime():
+            return SmartReminderRuntime(self.q.settings, self.q.sessions, enabled=True, calibration=QA,
+                history_window=timedelta(days=30), coverage_reader=self.q.service.coverage_reader,
+                telegram_send=self.q.send, clock=lambda: self.q.tick, admission=True)
+        with patch("app.services.learner_pwa_push.sender_config", return_value=config), \
+                patch("app.services.smart_reminder_pwa.sender_config", return_value=config), \
+                patch("app.services.smart_reminder_pwa.send_webpush", pushes):
+            await runtime().tick()
+            self.q.tick = self.q.tick.replace(hour=14, minute=1)
+            results = await runtime().tick()
+            await runtime().tick()
+        self.assertIn("pwa_provider_accepted", [getattr(r, "reason", None) for r in results])
+        pushes.assert_awaited_once()
+        self.q.bot.send_message.assert_not_awaited()
+        attempt, = await self.q.rows(ATTEMPT)
+        self.assertEqual((attempt["channel"], attempt["device_id"], attempt["state"]),
+                         ("pwa", "iphone-pwa", "provider_accepted"))
+
+    def sealed_subscription(self):
+        import base64
+        from cryptography.fernet import Fernet
+        from cryptography.hazmat.primitives.asymmetric import ec
+        from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat
+        self.fernet = Fernet(Fernet.generate_key())
+        public = ec.generate_private_key(ec.SECP256R1()).public_key().public_bytes(
+            Encoding.X962, PublicFormat.UncompressedPoint)
+        b64 = lambda raw: base64.urlsafe_b64encode(raw).rstrip(b"=").decode("ascii")
+        raw = {"endpoint": "https://web.push.apple.com/device/synthetic",
+               "keys": {"p256dh": b64(public), "auth": b64(b"a" * 16)}}
+        import hashlib
+        return (self.fernet.encrypt(json.dumps(raw).encode("ascii")).decode("ascii"),
+                hashlib.sha256(raw["endpoint"].encode("utf-8")).hexdigest())
 
     async def test_smart_capable_phone_is_held_switched_and_served_on_telegram(self):
         """Public 1.7.29/60: the hold itself switches the phone to server-only."""
