@@ -60,9 +60,7 @@ html.hsk-pwa-browser #hsk-launch-splash.is-playing .hsk-launch-brandline,
 html.hsk-pwa-browser #hsk-launch-splash.is-playing .hsk-launch-book{animation-duration:300ms;animation-delay:390ms}
 html.hsk-pwa-browser #hsk-launch-splash.is-playing .hsk-launch-title{animation-duration:360ms;animation-delay:520ms}
 #pwa-checkout-layer{position:fixed;inset:0;z-index:9700;background:var(--paper);padding:var(--safe-t) 0 var(--safe-b);display:flex;flex-direction:column;overscroll-behavior:contain}
-/* Embedded checkout owns its own home-indicator clearance; no double safe-area. */
-html.hsk-pwa-browser #pwa-checkout-layer{padding-bottom:0}
-#pwa-checkout-layer iframe{flex:1;min-height:0;width:100%;border:0}
+html.hsk-pwa-browser #pwa-checkout-layer{padding-bottom:0}#pwa-checkout-layer iframe{flex:1;min-height:0;width:100%;border:0}
 html.hsk-pwa-browser:has(#pwa-checkout-layer){overflow:hidden}
 .hsk-launch-stage{position:relative;display:flex;flex-direction:column;align-items:center}
 .hsk-launch-halo{position:absolute;top:48px;left:50%;width:132px;height:132px;border-radius:50%;background:radial-gradient(circle,rgba(224,74,64,.24),rgba(224,74,64,0));opacity:.1;transform:translate(-50%,-50%) scale(.84);animation:hsk-launch-halo-breathe 1.45s ease-in-out infinite alternate}
@@ -9687,9 +9685,7 @@ var NavBack={
   EDGE:24,   /* Telegram Mini App keeps its existing left-edge gesture zone. */
   MIN:88,    /* The browser PWA uses a shorter, position-aware horizontal threshold. */
   /* Qatlamlar ustkisidan boshlab tekshiriladi. */
-  LAYERS:[
-    // Shake report has priority over checkout, practice and Settings back routes.
-    {id:"pwa-shake",target:function(){return PWA_COURSE_HOST&&window.HskPwaShake&&HskPwaShake.backTarget()},close:function(){HskPwaShake.close()}},
+  LAYERS:[{id:"pwa-shake",target:function(){return PWA_COURSE_HOST&&window.HskPwaShake&&HskPwaShake.backTarget()},close:function(){HskPwaShake.close()}},
     {id:"pwa-checkout-layer",target:function(){return $("#pwa-checkout-layer")},close:pwaCheckoutBack},
     {id:"pwa-practice-layer",target:function(){return PWA_COURSE_HOST&&RESOURCE.practiceBackTarget()},close:function(){RESOURCE.practiceBack()}},
     {id:"pwa-inbox",target:function(){return PWA_COURSE_HOST&&window.HskPwaInbox&&HskPwaInbox.backTarget&&HskPwaInbox.backTarget()},close:function(){HskPwaInbox.back()}},
