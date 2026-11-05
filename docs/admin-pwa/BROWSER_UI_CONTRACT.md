@@ -9,6 +9,19 @@
 - This applies to **every Admin PWA section**, new pages and future refactors on desktop and mobile. Do not undo it while updating demo parity, translations, automation or legacy tests. Tests must be updated to the accepted interaction, not the other way around.
 - Do not weaken security for visual minimalism. Explicit actions requiring WebAuthn and irreversible/high-risk flows keep their distinct security boundaries. Uncertain transactions still require a recoverable status/reread and **must not** display a success checkmark. A necessary new independent action or exceptional second control requires owner approval before it is introduced.
 
+## One-line hints — owner direction 2026-11-05
+
+Explanatory text must not crowd a screen. Every hint (`.source-note`,
+`.form-hint`, `.secondary-note`, `.section-help`, `.drawer-note`) shows at most
+one line; a longer hint folds automatically to that line with a small chevron
+and opens on tap or Enter/Space (`aria-expanded`). Status/live messages
+(`role=status`, `aria-live`) and hints holding a link or control stay fully
+visible. Prefer removing a hint that the label or value already explains;
+write any remaining hint so its first sentence carries the essential meaning.
+Keep screens minimalist: status first, short labels, values or pills instead of
+sentences. This is the owner-approved exception to "no new controls": the fold
+is a disclosure of existing text, not a new action.
+
 ## Unified editor and navigation UX — owner-approved 2026-10-25
 
 Based on current `main` including the compact Mac window update (PR #210),
