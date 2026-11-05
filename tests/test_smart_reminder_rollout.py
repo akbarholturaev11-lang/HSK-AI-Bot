@@ -16,7 +16,7 @@ from sqlalchemy import delete, insert, inspect, select, update
 
 from app.db.base import Base
 
-from app.db.models.desktop import DesktopDevice
+from app.db.models.desktop import DesktopDevice, DesktopSession
 from app.db.models.smart_reminder import (
     SmartReminderCapability, SmartReminderConsent, SmartReminderPreference, SmartReminderRollout,
     SmartReminderRouting,
@@ -24,7 +24,7 @@ from app.db.models.smart_reminder import (
 from app.db.models.user import User
 from app.services.notification_template_service import KEY_SMART_STUDY, NotificationTemplateService
 from app.services.smart_reminder_lifecycle import SmartReminderLifecycleService
-from app.services.smart_reminder_android import read_android_admission
+from app.services.smart_reminder_android import SmartReminderAndroidService, read_android_admission
 from app.services.smart_reminder_policy import day_window
 from app.services.smart_reminder_preferences import (
     SmartReminderActor, SmartReminderError, automatic_timezone_initialization_allowed,
@@ -319,6 +319,49 @@ class AdmissionChecks(FixtureChecks):
         self.assertIsNone(await self.routing())
         self.assertFalse(await self.veto())
 
+    async def test_smart_capable_phone_is_held_switched_and_served_on_telegram(self):
+        """Public 1.7.29/60: the hold itself switches the phone to server-only."""
+        async with self.q.sessions.begin() as s:
+            s.add(DesktopDevice(id="phone-60", user_id=1, platform="android", app_version="1.7.29",
+                installation_key_hash="phone-60-fixture"))
+            await s.flush()
+            s.add(DesktopSession(id="phone-60-session", device_id="phone-60",
+                refresh_token_hash="phone-60-refresh", expires_at=self.q.tick + timedelta(days=30)))
+        phone = SmartReminderActor(1, "android", device_id="phone-60", session_id="phone-60-session",
+            access_expires_at=self.q.tick + timedelta(minutes=15))
+        async def server_only():
+            async with self.q.sessions() as s:
+                service = SmartReminderAndroidService(s, clock=lambda: self.q.tick)
+                return (await service.mode(phone))["server_claim_required"]
+        self.assertFalse(await server_only())  # Before the hold the phone keeps its own reminder.
+        self.assertEqual(await self.admission().step(4), ("held",))
+        self.assertTrue(await server_only())  # Its next worker run stops local posting.
+        async with self.q.sessions.begin() as s:
+            await s.execute(update(ROUTING).values(held_at=self.q.tick - LEGACY_DRAIN,
+                quiesced_at=self.q.tick - LEGACY_DRAIN))
+        self.assertEqual(await self.admission().step(4), ("admitted",))
+        row = await self.routing()
+        self.assertEqual(row["state"], "telegram")
+        self.assertEqual(_utc(row["verified_until"]), self.q.tick + REVIEW_TTL)  # No token cap.
+        # The phone reports server-only Smart; the review is re-attested in place.
+        async with self.q.sessions.begin() as s:
+            s.add(SmartReminderCapability(user_id=1, device_id="phone-60", generation=1, protocol_version=1,
+                autonomous_study_disabled=True, study_notifications_allowed=True,
+                observed_at=self.q.tick, expires_at=self.q.tick + timedelta(minutes=15)))
+        self.assertEqual(await self.admission().step(4), ("reviewed",))
+        self.assertEqual((await self.routing())["generation"], 1)
+        await open_rollout(self.q.sessions, self.q.tick)
+        def runtime():
+            return SmartReminderRuntime(self.q.settings, self.q.sessions, enabled=True, calibration=QA,
+                history_window=timedelta(days=30), coverage_reader=self.q.service.coverage_reader,
+                telegram_send=self.q.send, clock=lambda: self.q.tick, admission=True)
+        await runtime().tick()
+        self.q.tick = self.q.tick.replace(hour=14, minute=1)  # Capability long expired: still served.
+        results = await runtime().tick()
+        self.assertIn("telegram_provider_accepted", [getattr(r, "reason", None) for r in results])
+        await runtime().tick()
+        self.assertEqual(self.q.bot.send_message.await_count, 1)
+
     async def test_missing_zone_consent_off_or_blocked_bot_is_never_held(self):
         async with self.q.sessions.begin() as s:
             await s.execute(update(SmartReminderPreference).values(timezone_name=None))
@@ -506,7 +549,7 @@ class AndroidAdmissionChecks:
         self.q.tick += timedelta(minutes=10)
         async with self.q.sessions.begin() as s:
             await self.capability(s)  # The phone's next capability report.
-        self.assertIsNone(await self.native_admission(job_id))  # Old inventory no longer binds.
+        self.assertIsNotNone(await self.native_admission(job_id))  # A routine report is not drift.
         self.assertEqual(await self.admission().step(4), ("reviewed",))
         refreshed = dict((await self.q.rows(ROUTING))[0])
         self.assertEqual((refreshed["state"], refreshed["generation"]), ("held", 1))

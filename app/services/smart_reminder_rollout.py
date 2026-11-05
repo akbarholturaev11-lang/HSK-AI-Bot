@@ -9,9 +9,11 @@ admission step moves an account from the legacy study senders to Smart:
 3. review: an evidence-bound automatic review enables the existing Smart path.
 
 Admission never creates consent. It admits only accounts whose existing Smart
-preference already allows a channel and whose Android inventory is fenced: an
-active Android device without the Smart capability (an older APK) can still
-post its own local reminder, so such accounts stay on the legacy senders.
+preference already allows a channel and whose Android inventory is fenced. A
+Smart-capable release (1.7.29/60 and newer) asks the server before any local
+post and stops posting for a held account; an active device on an older APK
+can still post its own local reminder, so such accounts stay on the legacy
+senders.
 
 Rollout state holds no learner identifiers. Systemic failures pause the rollout
 and turn the existing Smart template OFF; an Admin PWA re-enable restarts it at
@@ -394,19 +396,21 @@ class SmartReminderAdmissionService:
                 .with_for_update())).mappings().one_or_none()
             epoch = await session.scalar(select(SmartReminderPreference.grant_epoch).where(
                 SmartReminderPreference.user_id == user_id)) or 0
-            inventory, fence_until = await _android_inventory(session, user_id, now)
+            # Telegram ownership: a Smart-capable release stops its own local
+            # posting once held. Native posting needs a fresh capability.
+            inventory, owner_until = await _android_inventory(session, user_id, now, native=False)
+            _, native_until = await _android_inventory(session, user_id, now, native=True)
             active = await session.scalar(select(JOB.c.id).where(JOB.c.user_id == user_id,
                 JOB.c.state.in_(("shadow", "pending", "claimed"))).limit(1)) is not None
         window = now + MIN_REVIEW_WINDOW
-        fenced = inventory is not None and (fence_until is None or fence_until > window)
         locked = pref["channel_mode"] == "manual_locked"
-        path = None
-        if pref["master_enabled"] is not False and pref["timezone_name"] and fenced:
-            if (android is not None and self.android_ready and fence_until is not None and
-                    pref["channels"]["android"]["this_device_consent"] == "on" and
+        path, fence_until = None, None
+        if pref["master_enabled"] is not False and pref["timezone_name"] and inventory is not None:
+            if (android is not None and self.android_ready and native_until is not None and
+                    native_until > window and pref["channels"]["android"]["this_device_consent"] == "on" and
                     (not locked or pref["preferred_channel"] == "android")):
-                path = "android"
-            elif (telegram is not None and self.telegram_ready and
+                path, fence_until = "android", native_until
+            elif (telegram is not None and self.telegram_ready and owner_until is None and
                     pref["channels"]["telegram"]["consent"] == "on" and
                     pref["channels"]["telegram"]["transport_available"] and
                     (not locked or pref["preferred_channel"] in {"telegram", "pwa"})):

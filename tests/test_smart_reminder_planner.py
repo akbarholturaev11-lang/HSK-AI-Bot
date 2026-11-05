@@ -207,9 +207,11 @@ class NativePlannerChecks:
         await self.no_delivery()
 
     async def test_expired_or_changed_inventory_cannot_be_treated_as_review(self):
+        # A changed Smart report (autonomous posting re-enabled) is drift; a
+        # routine report with only a new generation/timestamp is not.
         async with self.q.sessions.begin() as session:
             await session.execute(update(SmartReminderCapability).where(SmartReminderCapability.user_id==1)
-                .values(generation=2))
+                .values(autonomous_study_disabled=False))
         self.assertEqual((await self.prepare()).reason,'planner_review_unavailable')
         self.assertEqual(await self.q.rows(JOB),[])
         await self.no_delivery()

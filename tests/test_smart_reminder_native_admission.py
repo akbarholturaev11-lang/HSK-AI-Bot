@@ -135,7 +135,7 @@ class NativeAdmissionChecks:
         await self.hold()
         async with self.q.sessions.begin() as session:
             await session.execute(update(SmartReminderCapability).where(SmartReminderCapability.user_id==1)
-                .values(generation=2))
+                .values(protocol_version=2))
         with self.assertRaisesRegex(SmartReminderError,'routing_review_stale'):
             await self.routing.review_android(self.actor,self.review)
         self.assertIsNone((await self.q.rows(SmartReminderRouting.__table__))[0]['verified_at'])
@@ -171,6 +171,11 @@ class NativeAdmissionChecks:
                 .values(grant_epoch=1))
             await session.execute(update(SmartReminderCapability).where(SmartReminderCapability.user_id==1)
                 .values(generation=2))
+        # A routine phone report keeps the stable digest and the admission.
+        self.assertIsNotNone(await self.read())
+        async with self.q.sessions.begin() as session:
+            await session.execute(update(SmartReminderCapability).where(SmartReminderCapability.user_id==1)
+                .values(autonomous_study_disabled=False))
         self.assertIsNone(await self.read())
         self.q.tick=self.q.expiry
         self.assertIsNone(await self.read())

@@ -171,6 +171,10 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 .done-return.secondary{background:var(--bg);color:var(--text);border:1px solid var(--line);margin-top:0}
 .done-mark svg{width:42px;height:42px}
 .bottom{position:fixed;left:0;right:0;bottom:0;z-index:5;padding:11px 15px calc(11px + env(safe-area-inset-bottom,0px));background:rgba(255,255,255,.96);backdrop-filter:blur(18px);border-top:1px solid var(--line)}
+/* Embedded iPhone checkout fills the parent's safe-area bottom once.
+   Keep 30px minimum home-indicator clearance in this footer; Telegram is unchanged. */
+html.hsk-pwa-browser .bottom{padding-bottom:max(30px,env(safe-area-inset-bottom,0px))}
+html.hsk-pwa-browser .app{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px))}
 .bottom-inner{max-width:520px;margin:0 auto;display:grid;grid-template-columns:96px 1fr;gap:9px}
 .back,.cta{height:54px;border-radius:var(--radius);font-weight:950;font-size:15px;transition:.18s}
 .back{background:var(--bg);border:1px solid var(--line);color:var(--text)}
@@ -2347,6 +2351,6 @@ $("#receiptInput").addEventListener("change",async event=>{
 render();
 loadOverview();
 </script>
-<script src="/course_v3_data/iphone-pwa-shake-report.js?v=20261105-a41026d777aa"></script>
+<script src="/course_v3_data/iphone-pwa-shake-report.js?v=20261105-cde548d60e7a"></script>
 </body>
 </html>
