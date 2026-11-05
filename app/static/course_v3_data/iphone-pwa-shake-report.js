@@ -465,6 +465,7 @@
           window.removeEventListener("devicemotion", probe);
           permitted = true;
           restartListening();
+          refreshSettingsControl();
         };
         window.addEventListener("devicemotion", probe, {passive:true});
       }
