@@ -15,6 +15,14 @@ PLAN_DURATIONS = {
     "1_month": 30,
     "3_months": 90,
 }
+# lava.top-only terms. PLAN_DURATIONS stays the manual checkout / admin grant
+# allowlist; activation, preview restore and paid metrics use the union so a
+# verified lava 6/12-month payment is an ordinary subscription payment.
+LAVA_ONLY_PLAN_DURATIONS = {
+    "6_months": 180,
+    "12_months": 365,
+}
+SUBSCRIPTION_PLAN_DURATIONS = {**PLAN_DURATIONS, **LAVA_ONLY_PLAN_DURATIONS}
 
 MANUAL_SUBSCRIPTION_MIN_DAYS = 1
 MANUAL_SUBSCRIPTION_MAX_DAYS = 36_500
@@ -81,7 +89,7 @@ class SubscriptionService:
             ):
                 return False
 
-        duration_days = PLAN_DURATIONS.get(plan_type)
+        duration_days = SUBSCRIPTION_PLAN_DURATIONS.get(plan_type)
         if not duration_days:
             return False
 
