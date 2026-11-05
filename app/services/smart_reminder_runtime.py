@@ -22,7 +22,7 @@ from app.services.smart_reminder_policy import _aware_utc, day_window
 from app.services.smart_reminder_policy_context import read_observed_learning
 from app.services.smart_reminder_preferences import SmartReminderError, SmartReminderPreferencesService, _utc
 from app.services.smart_reminder_rollout import (
-    COHORT_COUNT, SmartReminderAdmissionService, SmartReminderRolloutService, cohort_for_user,
+    COHORT_COUNT, SmartReminderAdmissionService, SmartReminderRolloutService, rollout_cohort,
 )
 from app.services.smart_reminder_shadow_queue import JOB
 from app.services.smart_reminder_destination import PWA_POLICY_VERSION
@@ -114,7 +114,7 @@ class SmartReminderRuntime:
         if not rows:
             self._cursor = 0
             return []
-        selected = [user_id for user_id in rows if cohort_for_user(user_id) < stage][:self.batch]
+        selected = [user_id for user_id in rows if rollout_cohort(user_id) < stage][:self.batch]
         self._cursor = selected[-1] if len(selected) == self.batch else rows[-1]
         return selected
 
