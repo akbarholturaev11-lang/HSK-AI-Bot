@@ -293,3 +293,9 @@ html.hsk-pwa-browser #mk-root .ix,html.hsk-pwa-browser #tc-root .ix,
 html.hsk-pwa-browser .hsk-native-back-duplicate{
   background:transparent;border:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;
 }
+.hsk-pwa-notice-row .hsk-pwa-notice-meta{margin-top:6px;opacity:.72}
+.hsk-pwa-notice-row .hsk-pwa-notice-cta{display:block;margin-top:8px;font-size:13px;font-weight:750;color:var(--hsk-cinnabar-ink)}
+#hsk-pwa-urgent-body{margin:6px 0 0;font-size:15px;line-height:1.45}
+#hsk-pwa-urgent-body:empty{display:none}
+#hsk-pwa-urgent-meta{display:block;margin:4px 0 10px;font-size:12px;opacity:.7}
+.hsk-pwa-notice-row small{white-space:pre-line}

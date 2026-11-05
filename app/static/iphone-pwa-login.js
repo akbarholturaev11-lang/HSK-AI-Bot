@@ -1,6 +1,9 @@
 /* Source-parity Android LinkScreen port: PWA browser actor only; no fake Telegram login. */
 (function () {
   "use strict";
+  // Signed out: drop a stale app-icon badge left by the previous account.
+  try { if (navigator.clearAppBadge) navigator.clearAppBadge().catch(() => {}); } catch (_) {}
+  try { if (window.caches) caches.delete("hsk-pwa-badge-v1").catch(() => {}); } catch (_) {}
   const language = document.getElementById("language");
   const title = document.getElementById("title");
   const subtitle = document.getElementById("subtitle");

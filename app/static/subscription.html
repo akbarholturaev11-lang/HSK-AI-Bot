@@ -384,7 +384,7 @@ if(PWA_CHECKOUT_HOST){
     meta=document.createElement("meta");meta.name="apple-mobile-web-app-status-bar-style";meta.content="default";document.head.appendChild(meta);
     var touch=document.createElement("link");touch.rel="apple-touch-icon";touch.href="/assets/hsk-ai-logo-256.png";document.head.appendChild(touch);
     var manifest=document.createElement("link");manifest.rel="manifest";manifest.href="/iphone-pwa/manifest.webmanifest";document.head.appendChild(manifest);
-    var glass=document.createElement("link");glass.rel="stylesheet";glass.href="/course_v3_data/iphone-pwa-glass.css?v=20261105-907e01548850";document.head.appendChild(glass);
+    var glass=document.createElement("link");glass.rel="stylesheet";glass.href="/course_v3_data/iphone-pwa-glass.css?v=20261105-b91f0fc1a261";document.head.appendChild(glass);
   })();
 }
 const API=PWA_CHECKOUT_HOST?{
@@ -534,6 +534,11 @@ function saveRegion(region){
 }
 /* Havola Xitoy usulini so'rasa (method=alipay/wechat) — havola ustun. */
 const REMEMBERED_REGION=CHINA_METHODS.includes(PARAMS.get("method"))?"":savedRegion();
+/* PWA Inbox "resend receipt": reopen the rejected receipt's method/country and
+   jump to the receipt step once prices are loaded (step=pay). */
+const PWA_RESUME_RECEIPT=PWA_CHECKOUT_HOST&&PARAMS.get("step")==="pay";
+const RESUME_CARD_COUNTRY=PWA_RESUME_RECEIPT&&PARAMS.get("method")==="visa"&&REGION_ORDER.includes(PARAMS.get("country"))&&PARAMS.get("country")!=="cn"?PARAMS.get("country"):"";
+let resumeReceiptPending=PWA_RESUME_RECEIPT;
 const MODE_ORDER=["subscription","referral_discount","admin_discount","feedback_discount","hsk30_unlock"];
 const CHECKOUT_ATTEMPT_ID=(function(){
   const key="hsk_subscription_attempt_v1",now=Date.now();
@@ -1021,7 +1026,7 @@ const state={
   overview:null,
   plan:HSK30_UNLOCK_MODE?"hsk30_unlock":(PLAN_ORDER.includes(PARAMS.get("plan"))?PARAMS.get("plan"):"1_month"),
   method:METHOD_ORDER.includes(PARAMS.get("method"))?PARAMS.get("method"):"visa",
-  region:CHINA_METHODS.includes(PARAMS.get("method"))?"cn":REMEMBERED_REGION,
+  region:CHINA_METHODS.includes(PARAMS.get("method"))?"cn":(RESUME_CARD_COUNTRY||REMEMBERED_REGION),
   country:"tj",
   bank:"dc_city",
   step:HSK30_UNLOCK_MODE?0:(REMEMBERED_REGION?1:0),
@@ -1421,7 +1426,20 @@ async function loadOverview(){
     state.overviewLoading=false;
     setBusy(false);
     render();
+    resumeRejectedReceipt();
   }
+}
+function resumeRejectedReceipt(){
+  if(!resumeReceiptPending)return;
+  resumeReceiptPending=false;
+  if(state.preview||state.loadError||state.pending||state.done||state.paymentDecision||!state.region)return;
+  ensureSelection();
+  if(!hasCurrentPrice())return;
+  const items=flow();
+  /* The TJ card bank is not stored on the receipt: stop at the method step
+     so the learner confirms the bank before seeing card details. */
+  const target=state.region==="tj"&&state.method==="visa"?items.indexOf("method"):items.indexOf("pay");
+  if(target>0)setStep(target);
 }
 async function loadQuote(){
   setBusy(true);

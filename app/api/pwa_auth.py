@@ -1888,6 +1888,8 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
             from app.db.models.payment import Payment
             from app.services.account_identity import owner_clause
             from app.services.learner_pwa_push import ACCOUNT_RESTRICTION_KEY
+            from app.services.payment_notify_service import learner_rejection_reason
+            from app.services.subscription_currency_service import normalize_visa_price
             async with session_factory() as db:
                 actor, _ = await PwaAuthService(db, settings_obj).actor(
                     request.cookies.get(PWA_SESSION_COOKIE)
@@ -1923,6 +1925,9 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                     select(
                         Payment.id, Payment.payment_status,
                         Payment.plan_type, Payment.reviewed_at,
+                        Payment.payment_method, Payment.amount, Payment.currency,
+                        Payment.local_amount, Payment.local_currency,
+                        Payment.admin_comment, Payment.card_country,
                     )
                     .where(owner_clause(
                         Payment, actor, telegram_column="user_telegram_id",
@@ -1932,14 +1937,39 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                     .order_by(Payment.reviewed_at.desc(), Payment.id.desc())
                     .limit(10)
                 )).all()
-                payment_reviews = [
-                    {
-                        "payment_id": int(review.id),
-                        "status": review.payment_status,
-                        "plan_type": review.plan_type,
-                        "reviewed_at": review.reviewed_at.isoformat(),
+                language = str(actor.language or "ru")
+
+                def review_view(row, status):
+                    # Read-only receipt summary. Free-text admin comments
+                    # stay hidden; only fixed coded reasons are localized.
+                    local = bool(row.local_amount and row.local_currency)
+                    _, currency = normalize_visa_price(
+                        0, str(row.local_currency if local else row.currency or ""),
+                    )
+                    return {
+                        "payment_id": int(row.id),
+                        "status": status,
+                        "plan_type": row.plan_type,
+                        "reviewed_at": row.reviewed_at.isoformat(),
+                        "payment_method": (
+                            row.payment_method
+                            if row.payment_method in {"visa", "alipay", "wechat"} else None
+                        ),
+                        "card_country": (
+                            row.card_country
+                            if row.payment_method == "visa"
+                            and row.card_country in {"tj", "uz", "ru", "other"} else None
+                        ),
+                        "amount": str(row.local_amount if local else row.amount),
+                        "currency": currency,
+                        "reason": (
+                            learner_rejection_reason(row.admin_comment, language)
+                            if status == "rejected" else None
+                        ),
                     }
-                    for review in reviews
+
+                payment_reviews = [
+                    review_view(review, review.payment_status) for review in reviews
                 ]
                 # A historical rejected receipt must not be presented as an
                 # *active* failure after the learner submitted a new pending
@@ -1949,6 +1979,9 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                     select(
                         Payment.id, Payment.payment_status,
                         Payment.plan_type, Payment.reviewed_at,
+                        Payment.payment_method, Payment.amount, Payment.currency,
+                        Payment.local_amount, Payment.local_currency,
+                        Payment.admin_comment, Payment.card_country,
                     )
                     .where(owner_clause(
                         Payment, actor, telegram_column="user_telegram_id",
@@ -1960,12 +1993,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                     .limit(1)
                 )).one_or_none()
                 payment_action = (
-                    {
-                        "payment_id": int(latest.id),
-                        "status": "rejected",
-                        "plan_type": latest.plan_type,
-                        "reviewed_at": latest.reviewed_at.isoformat(),
-                    }
+                    review_view(latest, "rejected")
                     if latest is not None
                     and latest.payment_status == "rejected"
                     and latest.reviewed_at is not None

@@ -880,7 +880,11 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         focus = rejected.json()["payment_action"]
         self.assertEqual(
             {k: v for k, v in focus.items() if k != "reviewed_at"},
-            {"payment_id": 903, "status": "rejected", "plan_type": "10_days"},
+            {"payment_id": 903, "status": "rejected", "plan_type": "10_days",
+             "payment_method": None, "card_country": None,
+             "amount": "29", "currency": "TJS",
+             # Free-text admin notes are never exposed as a reason.
+             "reason": None},
         )
         restored_date = datetime.fromisoformat(focus["reviewed_at"])
         if restored_date.tzinfo is None:
@@ -891,6 +895,10 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             now + timedelta(minutes=1),
         )
         self.assertNotIn("Do not expose rejection details", rejected.text)
+        from app.bot.handlers.admin_payments import REJECT_REASON_LABELS
+        from app.services.payment_notify_service import learner_rejection_reason
+        self.assertTrue(learner_rejection_reason(REJECT_REASON_LABELS["wrong_amount"], "ru"))
+        self.assertIsNone(learner_rejection_reason("Do not expose rejection details", "ru"))
 
         # New pending receipt takes precedence; older rejection remains in
         # historical payment_reviews but cannot trigger an active modal.
@@ -4673,6 +4681,55 @@ const settle = () => new Promise(resolve => setImmediate(resolve));
         async with self.sessions() as db:
             stored = await db.get(LearnerPwaPushSubscription, subscription_id)
             self.assertIsNotNone(stored.revoked_at)
+
+    async def test_payment_push_names_only_the_decision(self):
+        from app.services.notification_i18n import notification_message
+        self.settings.PWA_PUSH_ENABLED = True
+        self.settings.PWA_PUSH_SEND_ENABLED = True
+        self.settings.PWA_PUSH_STORAGE_KEY = Fernet.generate_key().decode("ascii")
+        vapid_private = ec.generate_private_key(ec.SECP256R1())
+        private_bytes = vapid_private.private_numbers().private_value.to_bytes(32, "big")
+        public_bytes = vapid_private.public_key().public_bytes(Encoding.X962, PublicFormat.UncompressedPoint)
+        encode = lambda value: base64.urlsafe_b64encode(value).rstrip(b"=").decode("ascii")
+        self.settings.PWA_PUSH_VAPID_PRIVATE_KEY = encode(private_bytes)
+        self.settings.PWA_PUSH_VAPID_PUBLIC_KEY = encode(public_bytes)
+        self.settings.PWA_PUSH_VAPID_SUBJECT = "mailto:security@example.test"
+        state = await self.begin()
+        await self.callback(state)
+        csrf = (await self.client.get("/api/v3/pwa-auth/session")).json()["csrf"]
+        subscription_key = ec.generate_private_key(ec.SECP256R1()).public_key().public_bytes(
+            Encoding.X962, PublicFormat.UncompressedPoint,
+        )
+        response = await self.client.post("/api/v3/pwa/push/subscribe", headers={
+            "Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf,
+        }, json={
+            "endpoint": "https://web.push.apple.com/example/opaque-delivery-token",
+            "keys": {"p256dh": encode(subscription_key), "auth": encode(b"b" * 16)},
+        })
+        self.assertEqual(response.status_code, 200, response.text)
+        now = datetime.now(timezone.utc)
+        async with self.sessions() as db:
+            db.add(Payment(
+                id=4401, user_id=1, user_telegram_id=1001, plan_type="1_month",
+                amount=149, currency="somoni", payment_status="rejected",
+                submitted_at=now, reviewed_at=now, admin_comment="Summa noto'g'ri",
+            ))
+            await db.flush()
+            self.assertEqual(await enqueue_event(db, user_id=1, source="payment",
+                source_id=4401, language="uz", now=now), 1)
+            await db.commit()
+        delivered = []
+        async def accepted_sender(payload, public_payload, private_key, subject, source):
+            delivered.append(json.loads(public_payload))
+            return 201
+        result = await dispatch_batch(self.sessions, settings_obj=self.settings, sender=accepted_sender, now=now, limit=1)
+        self.assertEqual(result["accepted"], 1)
+        self.assertIn(delivered[0]["title"], {
+            notification_message("pwa.push.paymentRejectedTitle", lang, "")
+            for lang in ("uz", "ru", "tj")
+        })
+        self.assertNotIn("149", json.dumps(delivered[0], ensure_ascii=False))
+        self.assertNotIn("Summa", json.dumps(delivered[0], ensure_ascii=False))
 
     async def test_push_outbox_deduplicates_and_sends_content_free_payload_with_bounded_cleanup(self):
         self.settings.PWA_PUSH_ENABLED = True

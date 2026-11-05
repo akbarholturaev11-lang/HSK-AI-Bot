@@ -21,6 +21,7 @@
       '<div class="hsk-pwa-notice-urgent" hidden>' +
         '<div class="hsk-pwa-notice-icon" aria-hidden="true"><i class="ti ti-credit-card-off"></i></div>' +
         '<h2 id="hsk-pwa-urgent-title"></h2>' +
+        '<p id="hsk-pwa-urgent-body"></p><small id="hsk-pwa-urgent-meta"></small>' +
         '<button type="button" class="hsk-pwa-notice-primary" data-pwa-retry></button>' +
         '<button type="button" class="hsk-pwa-notice-secondary" data-pwa-close></button>' +
       '</div>' +
@@ -70,6 +71,14 @@
       approved: courseLabel("subscriptionPage.proApprovedTitle"),
       hsk30Approved: courseLabel("subscriptionPage.paymentApprovedTitle"),
       retry: courseLabel("subscriptionPage.retryPayment"),
+      rejectedText: courseLabel("subscriptionPage.paymentRejectedText"),
+      proApprovedText: courseLabel("subscriptionPage.proApprovedText"),
+      hsk30ApprovedText: courseLabel("subscriptionPage.paymentApprovedText"),
+      planTen: courseLabel("subscriptionNested.planLabels.ten"),
+      planMonth: courseLabel("subscriptionNested.planLabels.month"),
+      planQuarter: courseLabel("subscriptionNested.planLabels.quarter"),
+      methodAlipay: courseLabel("subscriptionNested.methods.alipay.title"),
+      methodWechat: courseLabel("subscriptionNested.methods.wechat.title"),
       pushEnable: courseLabel("pwaPush.enable"),
       pushDisable: courseLabel("pwaPush.disable"),
       pushTitle: courseLabel("pwaPush.title"),
@@ -97,8 +106,38 @@
     var t = labels();
     return payment && payment.plan_type === "hsk30_unlock" ? t.hsk30Rejected : t.rejected;
   }
+  function formatStamp(iso) {
+    var date = new Date(iso);
+    if (!iso || isNaN(date.getTime())) return "";
+    try {
+      return new Intl.DateTimeFormat({uz:"uz-UZ", ru:"ru-RU", tj:"tg-TJ"}[LANG] || "ru-RU",
+        {day:"numeric", month:"short", year:"numeric", hour:"2-digit", minute:"2-digit"}).format(date);
+    } catch (_) { return date.toLocaleString(); }
+  }
+  // Receipt summary from the server's read-only projection: plan, amount,
+  // method, receipt number and review time. No admin free text.
+  function paymentMeta(p) {
+    if (!p) return "";
+    var t = labels();
+    var plan = {"10_days":t.planTen, "1_month":t.planMonth, "3_months":t.planQuarter}[p.plan_type] || "";
+    var amount = p.amount && p.currency ? String(p.amount) + " " + String(p.currency) : "";
+    var method = {alipay:t.methodAlipay, wechat:t.methodWechat}[p.payment_method] || "";
+    var id = Number(p.payment_id) > 0 ? "\u2116" + Number(p.payment_id) : "";
+    return [plan, amount, method, id, formatStamp(p.reviewed_at)].filter(Boolean).join(" \u00b7 ");
+  }
+  function paymentBody(p) {
+    var t = labels(), hsk30 = p && p.plan_type === "hsk30_unlock";
+    if (!p) return "";
+    if (p.status === "approved") return hsk30 ? t.hsk30ApprovedText : t.proApprovedText;
+    return [p.reason, t.rejectedText].filter(Boolean).join("\n");
+  }
   function openCheckout(pay) {
-    var url = "/iphone-pwa/checkout?lang=" + encodeURIComponent(LANG);
+    // step=pay resumes at the receipt upload instead of the country step.
+    var url = "/iphone-pwa/checkout?lang=" + encodeURIComponent(LANG) + "&step=pay";
+    if (pay && ["visa", "alipay", "wechat"].includes(pay.payment_method))
+      url += "&method=" + encodeURIComponent(pay.payment_method);
+    if (pay && pay.payment_method === "visa" && ["tj", "uz", "ru", "other"].includes(pay.card_country))
+      url += "&country=" + encodeURIComponent(pay.card_country);
     if (pay && pay.plan_type === "hsk30_unlock") url += "&mode=hsk30_unlock&plan=hsk30_unlock";
     else if (pay && ["10_days","1_month","3_months"].includes(pay.plan_type))
       url += "&plan=" + encodeURIComponent(pay.plan_type);
@@ -145,7 +184,10 @@
     pushControl.hidden = !isPush;
     urgent.hidden = !isUrgent;
     if (isUrgent) {
-      overlay.querySelector("#hsk-pwa-urgent-title").textContent = rejectedTitle(latestData && latestData.account && latestData.account.payment_action);
+      var urgentPay = latestData && latestData.account && latestData.account.payment_action;
+      overlay.querySelector("#hsk-pwa-urgent-title").textContent = rejectedTitle(urgentPay);
+      overlay.querySelector("#hsk-pwa-urgent-body").textContent = urgentPay && urgentPay.reason || "";
+      overlay.querySelector("#hsk-pwa-urgent-meta").textContent = paymentMeta(urgentPay);
       overlay.querySelector("[data-pwa-retry]").textContent = t.retry;
       urgent.querySelector("[data-pwa-close]").textContent = t.close;
     } else {
@@ -157,7 +199,7 @@
     panel.focus({preventScroll:true});
     if (window.NavBack) window.NavBack.sync();
   }
-  function putMessage(title, body, action, paymentStatus, payment) {
+  function putMessage(title, body, action, paymentStatus, payment, meta, cta) {
     var isAction = action === "course" || action === "subscription" ||
       action === "rating" || action === "profile";
     var row = document.createElement(isAction ? "button" : "div");
@@ -177,6 +219,18 @@
       var small = document.createElement("small");
       small.textContent = String(body).slice(0, 420);
       row.appendChild(small);
+    }
+    if (meta) {
+      var metaNode = document.createElement("small");
+      metaNode.className = "hsk-pwa-notice-meta";
+      metaNode.textContent = String(meta).slice(0, 200);
+      row.appendChild(metaNode);
+    }
+    if (cta && isAction) {
+      var ctaNode = document.createElement("span");
+      ctaNode.className = "hsk-pwa-notice-cta";
+      ctaNode.textContent = cta;
+      row.appendChild(ctaNode);
     }
     list.appendChild(row);
   }
@@ -218,18 +272,19 @@
       var retry = activePayment && activePayment.status === "rejected" &&
         Number(review.payment_id) === Number(activePayment.payment_id) ? activePayment : null;
       rows.push({title:title, action:retry ? "subscription" : review.status === "approved" ? "course" : "",
-        payment:retry,
+        payment:retry, body:paymentBody(review), meta:paymentMeta(review), cta:retry ? t.retry : "",
         paymentStatus:review.status, created_at:review.reviewed_at});
     });
     if (activePayment && activePayment.status === "rejected" &&
         !reviews.some(function (review) { return Number(review.payment_id) === Number(activePayment.payment_id); })) {
       rows.push({title:rejectedTitle(activePayment), action:"subscription",
-        payment:activePayment, paymentStatus:"rejected", created_at:activePayment.reviewed_at});
+        payment:activePayment, body:paymentBody(activePayment), meta:paymentMeta(activePayment), cta:t.retry,
+        paymentStatus:"rejected", created_at:activePayment.reviewed_at});
     }
     rows.sort(function (a, b) {
       return (Date.parse(b.created_at) || 0) - (Date.parse(a.created_at) || 0);
     }).forEach(function (row) {
-      putMessage(row.title, row.body, row.action, row.paymentStatus, row.payment);
+      putMessage(row.title, row.body, row.action, row.paymentStatus, row.payment, row.meta, row.cta);
     });
     if (!list.children.length) {
       var empty = document.createElement("p");
@@ -438,8 +493,13 @@
     try { await refreshPushStatus(); }
     catch (_) { if (activeMode === "push") pushStatus.textContent = labels().pushError; }
   }
+  function clearAppBadge() {
+    try { if (navigator.clearAppBadge) navigator.clearAppBadge().catch(function () {}); } catch (_) {}
+    try { if (window.caches) caches.delete("hsk-pwa-badge-v1").catch(function () {}); } catch (_) {}
+  }
   async function open(fromPush) {
     urgentPending = null;
+    clearAppBadge();
     var check = ++checkGeneration;
     latestData = {};
     openMode("inbox");
