@@ -69,6 +69,13 @@ class IphonePwaNavigationContractTests(unittest.TestCase):
         self.assertIn("PWA_CHECKOUT_HOST", CHECKOUT)
         self.assertIn("/api/v3/pwa/subscription/overview", CHECKOUT)
 
+    def test_closed_section_hints_are_saved_through_the_pwa_session(self):
+        # Regression: an unmapped route made every dismissal fail silently,
+        # so introduction blocks reappeared on each open.
+        self.assertIn('"/api/v3/hints/dismiss":"/api/v3/pwa/hints/dismiss"', COURSE)
+        api = Path("app/api/pwa_auth.py").read_text(encoding="utf-8")
+        self.assertIn('@router.post("/api/v3/pwa/hints/dismiss")', api)
+
     def test_settings_is_fullscreen_and_preferences_are_pwa_authorized(self):
         css = Path("app/static/course_v3_data/iphone-pwa-glass.css").read_text(
             encoding="utf-8"

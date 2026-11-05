@@ -13,7 +13,7 @@ from uuid import UUID
 
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse, FileResponse, RedirectResponse, Response
-from pydantic import BaseModel, ConfigDict, ValidationError
+from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 from app.services.native_oauth_service import NativeOAuthError, available_providers
 from app.services.identity_link_service import IdentityLinkError
@@ -93,6 +93,11 @@ class PwaTelegramStart(BaseModel):
 class PwaTelegramClaim(BaseModel):
     model_config = ConfigDict(extra="forbid")
     link_request_id: UUID
+
+
+class PwaHintDismiss(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    hint: str = Field(min_length=1, max_length=48)
 
 
 class PwaMistakeStart(BaseModel):
@@ -1484,6 +1489,34 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
             return _error(exc)
         except ValueError:
             return _error(PwaAuthError("pwa_request_invalid", status_code=422))
+
+    @router.post("/api/v3/pwa/hints/dismiss")
+    async def pwa_hint_dismiss(request: Request):
+        """Remember a closed section hint for the verified PWA account.
+
+        Without this the browser could never record the dismissal, so every
+        introduction block came back on each open.
+        """
+        from app.services.miniapp_hint_service import MiniAppHintService
+
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            payload = await _small_json(request, PwaHintDismiss, max_bytes=512)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                saved = await MiniAppHintService(db).dismiss(
+                    actor, payload.hint.strip(), client="course_v3_pwa",
+                )
+                if saved:
+                    await db.commit()
+            return JSONResponse({"ok": True, "saved": saved}, headers=_NO_STORE)
+        except PwaAuthError as exc:
+            return _error(exc)
 
     @router.post("/api/v3/pwa/preferences")
     async def pwa_set_preferences(request: Request):
