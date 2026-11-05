@@ -6,6 +6,9 @@
   "use strict";
   var onCourse = location.pathname === "/iphone-pwa/course";
   if (!onCourse && !/^\/iphone-pwa\/(?:checkout|practice\/(?:recognition|pronunciation|memorize|test|mistakes))$/.test(location.pathname)) return;
+  // Only the top-level PWA owns the sensor. Embedded practice/checkout frames
+  // would otherwise open a second report sheet for the same shake.
+  if (window.parent !== window || window.HskPwaShake) return;
   var standalone = !!(navigator.standalone ||
     (window.matchMedia && matchMedia("(display-mode: standalone)").matches));
   if (!standalone) return;
