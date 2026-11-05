@@ -266,9 +266,9 @@ def test_feedback_is_lesson_contextual_and_uses_csrf():
         assert dialog.is_visible()
         assert "3-dars" in page.locator("#hsk-pwa-feedback-title").inner_text()
         assert "Hozirgina tugatgan darsingiz" in page.locator("#hsk-pwa-feedback-context").inner_text()
-        fields = page.locator("#hsk-pwa-feedback-form select")
-        fields.nth(0).select_option("course")
-        fields.nth(1).select_option("price")
+        # The current UI exposes accessible radio buttons, not <select> fields.
+        page.locator('#hsk-pwa-feedback-form [data-mark="👍"] [data-code="course"]').click()
+        page.locator('#hsk-pwa-feedback-form [data-mark="👎"] [data-code="price"]').click()
         page.locator("#hsk-pwa-feedback-submit").click()
         page.wait_for_function(
             "document.querySelector('#hsk-pwa-feedback-submit').hidden === true"
@@ -354,7 +354,7 @@ def test_rejected_payment_never_interrupts_feedback():
         page.evaluate("window.HskPwaFeedback.open({confirmed:true,lessonId:3,level:'hsk1'})")
         card = page.locator("#hsk-pwa-feedback-root .hsk-pwa-feedback-card")
         assert card.is_visible()
-        page.locator("#hsk-pwa-feedback-form select").nth(1).select_option("other")
+        page.locator('#hsk-pwa-feedback-form [data-mark="👎"] [data-code="other"]').click()
         page.locator(".hsk-pwa-feedback-field textarea").focus()
         page.evaluate("window.dispatchEvent(new Event('load'))")
         page.wait_for_timeout(2300)
