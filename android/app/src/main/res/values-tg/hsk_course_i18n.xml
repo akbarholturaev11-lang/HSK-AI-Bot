@@ -564,6 +564,10 @@
     <string name="hsk_course_pronunciation_review" formatted="false">такрор</string>
     <string name="hsk_course_pronunciation_skip" formatted="false">Гузарондан</string>
     <string name="hsk_course_pwa_feedback_body" formatted="false">Дар бораи дарсе, ки ҳозир анҷом додед, кӯтоҳ фикр нависед.</string>
+    <string name="hsk_course_pwa_feedback_detail_q" formatted="false">Маҳз кадом қисмаш?</string>
+    <string name="hsk_course_pwa_feedback_disliked_q" formatted="false">Чӣ нороҳат буд?</string>
+    <string name="hsk_course_pwa_feedback_liked_q" formatted="false">Ба шумо чӣ бештар маъқул шуд?</string>
+    <string name="hsk_course_pwa_feedback_paid_q" formatted="false">Обуна худро сафед кард?</string>
     <string name="hsk_course_pwa_feedback_title" formatted="false">{level} · фикр дар бораи дарси {n}</string>
     <string name="hsk_course_pwa_inbox_empty" formatted="false">Ҳоло огоҳӣ нест.</string>
     <string name="hsk_course_pwa_profile_avatar" formatted="false">Аватарро интихоб кунед</string>

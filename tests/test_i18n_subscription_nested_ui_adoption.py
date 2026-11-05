@@ -50,10 +50,10 @@ class SubscriptionNestedUIAdoptionTests(unittest.TestCase):
                 catalog=json.loads(
                     (ROOT/f"localization/ui/{locale}/course.json").read_text(encoding="utf-8")
                 )["messages"]
-                self.assertEqual(len(catalog),1034)
+                self.assertEqual(len(catalog),1038)
                 for key,value in values.items():
                     self.assertEqual(catalog["subscriptionNested."+key],value)
-        self.assertLess(source.index("hsk-course-i18n.js?v=20261021-56162dae73d4"),
+        self.assertLess(source.index("hsk-course-i18n.js?v=20261021-395d978eaee1"),
                         source.index("const I18N={"))
 
     def test_nested_view_only_and_original_payment_id_paths(self):

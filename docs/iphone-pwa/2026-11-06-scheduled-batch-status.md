@@ -86,6 +86,18 @@ Not run: Playwright E2E, real iPhone (haptics, push prompt, pull-to-refresh, aud
   reminders via `/api/v3/pwa/notify`, payment/account notices locked on). Sheets and centered dialogs use a calm
   entrance animation that respects reduced motion.
 
+- Owner correction (Liquid Glass, scope): Liquid Glass (translucent blur/saturate surface, specular highlight, glass
+  chips; solid fallback for prefers-reduced-transparency; dark variant) applies only to PWA-only centered dialogs:
+  feedback/star rating, urgent payment notice, shake report. Earlier PWA overrides of Mini App dialogs
+  (course-switch cards `hsk30-promo-center`/`hsk30-book-card`, `lesson-exit-confirm`) and of all `#sheet` animations
+  were removed; those keep their original look.
+- Ordinary feedback keeps the bot's text-variant flow (liked → detail → disliked; subscribers: was it worth it →
+  detail), now as tappable variants instead of a select. The app lists its own features
+  (`APP_LIKED_OPTIONS`: course, AI Voice, pronunciation, dictionary/stroke order, practice, other;
+  `APP_PAID_SUB_POSITIVE` adds pronunciation); the bot keyboards are unchanged and the server accepts the union.
+  A first answer already recorded in the bot stays selectable. 4 new bot texts (original 276 bot keys unchanged,
+  frozen-hash test extended) and 4 short course questions (catalog 1038).
+
 ## Needs owner/config
 - 12 Live voice: also requires `PWA_VOICE_LIVE_ENABLED=true`, `ANDROID_VOICE_LIVE_ENABLED=true`, a Gemini key,
   model `gemini-3.8-live`, a positive session budget, and `ANDROID_VOICE_LIVE_ALLOWED_USERS="*"`

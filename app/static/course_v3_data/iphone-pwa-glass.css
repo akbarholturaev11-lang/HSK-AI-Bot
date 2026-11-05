@@ -330,50 +330,76 @@ html.hsk-pwa-browser .pwa-pav.art{background:var(--hsk-paper-raised,#fff)}
 html.hsk-pwa-browser .phero .pav.pwa-pav{cursor:pointer;pointer-events:auto}
 html.hsk-pwa-browser .phero .pav.pwa-pav .ed{display:flex!important}
 
-/* ---- Centered dialogs: one minimalist, premium language (PWA only) ----
-   Light paper card, soft depth, short readable text, large stacked buttons:
-   one primary action, the secondary as a quiet text button. */
-html.hsk-pwa-browser #sheet.hsk30-promo-center,
-html.hsk-pwa-browser #sheet.hsk30-book-card,
-html.hsk-pwa-browser #sheet.lesson-exit-confirm{background:rgba(20,17,13,.42);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
-html.hsk-pwa-browser #sheet.hsk30-promo-center .si,
-html.hsk-pwa-browser #sheet.hsk30-book-card .si,
-html.hsk-pwa-browser #sheet.lesson-exit-confirm .si,
+/* ---- Liquid Glass: centered dialogs that exist only in the PWA ----
+   (feedback/star rating, urgent payment notice, shake report). Mini App
+   dialogs and the course-switch cards keep their original look. */
+html.hsk-pwa-browser .hsk-pwa-feedback-scrim,
+html.hsk-pwa-browser #hsk-pwa-notice-root:not(.is-page) .hsk-pwa-notice-scrim,
+html.hsk-pwa-browser .hsk-shake-scrim{
+  background:rgba(20,17,13,.26);-webkit-backdrop-filter:blur(12px) saturate(140%);backdrop-filter:blur(12px) saturate(140%)}
 html.hsk-pwa-browser .hsk-pwa-feedback-card,
 html.hsk-pwa-browser #hsk-pwa-notice-root:not(.is-page) .hsk-pwa-notice-card,
-html.hsk-pwa-browser .hsk-shake-dialog:not([data-stage="form"]){
-  max-width:400px;border-radius:28px;border:0;padding:26px 20px 20px;
-  background:var(--hsk-paper);box-shadow:0 24px 64px rgba(20,17,13,.2);
+html.hsk-pwa-browser .hsk-shake-dialog{
+  position:relative;isolation:isolate;max-width:400px;border-radius:30px;padding:26px 20px 20px;
+  background:linear-gradient(180deg,rgba(255,255,255,.74),rgba(255,253,248,.5));
+  -webkit-backdrop-filter:blur(28px) saturate(180%);backdrop-filter:blur(28px) saturate(180%);
+  border:1px solid rgba(255,255,255,.7);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(255,255,255,.3),
+    0 30px 80px rgba(20,17,13,.22),0 2px 8px rgba(20,17,13,.06);
 }
-html.hsk-pwa-browser #sheet.lesson-exit-confirm .shead,
-html.hsk-pwa-browser #sheet.hsk30-book-card .shead{margin-bottom:18px}
-html.hsk-pwa-browser #sheet.lesson-exit-confirm .shead .tr,
-html.hsk-pwa-browser #sheet.hsk30-promo-center .shead .tr{font-size:15px;line-height:1.45}
+html.hsk-pwa-browser .hsk-pwa-feedback-card::after,
+html.hsk-pwa-browser .hsk-shake-dialog::after{
+  content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;
+  background:radial-gradient(120% 60% at 18% 0%,rgba(255,255,255,.55),transparent 60%),
+    radial-gradient(80% 50% at 100% 100%,rgba(247,201,72,.1),transparent 70%)}
+html.hsk-pwa-browser .hsk-shake-dialog[data-stage="form"]{max-width:520px;padding:16px 0 calc(14px + env(safe-area-inset-bottom,0px))}
 html.hsk-pwa-browser .hsk-pwa-feedback-title,html.hsk-pwa-browser #hsk-pwa-urgent-title,
-html.hsk-pwa-browser #hsk-shake-title{font-size:20px;font-weight:750;line-height:1.25;letter-spacing:-.01em}
+html.hsk-pwa-browser #hsk-shake-title{font-size:20px;font-weight:750;line-height:1.25;letter-spacing:-.015em;color:var(--hsk-ink)}
 html.hsk-pwa-browser .hsk-pwa-feedback-context,html.hsk-pwa-browser #hsk-shake-body p{font-size:15px;line-height:1.45;color:var(--hsk-ink-secondary)}
-/* Large, calm buttons. */
-html.hsk-pwa-browser #sheet.hsk30-promo-center .scta,
-html.hsk-pwa-browser #sheet.hsk30-book-card .scta,
-html.hsk-pwa-browser #sheet.lesson-exit-confirm .scta,
+/* Glass close control and calm, large buttons. */
+html.hsk-pwa-browser .hsk-pwa-feedback-close{background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.75);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
 html.hsk-pwa-browser .hsk-pwa-feedback-primary,
 html.hsk-pwa-browser .hsk-pwa-notice-primary,
 html.hsk-pwa-browser #hsk-shake-actions .hsk-shake-primary{
-  min-height:54px;border-radius:16px;font-size:17px;font-weight:650;box-shadow:none;
-}
-html.hsk-pwa-browser #sheet.hsk30-promo-center .scta.ghost,
-html.hsk-pwa-browser #sheet.hsk30-book-card .scta.ghost,
-html.hsk-pwa-browser #sheet.lesson-exit-confirm .scta.ghost,
+  min-height:54px;border-radius:18px;font-size:17px;font-weight:650;border:0;
+  background:linear-gradient(180deg,#F0614C,#D9443A);color:var(--hsk-on-cinnabar);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 8px 20px rgba(192,47,50,.22)}
 html.hsk-pwa-browser .hsk-pwa-notice-secondary,
 html.hsk-pwa-browser #hsk-shake-actions .hsk-shake-secondary{
-  min-height:48px;background:transparent;border:0;color:var(--hsk-ink-secondary);font-size:16px;font-weight:600;
-}
+  min-height:50px;border-radius:18px;background:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.7);
+  color:var(--hsk-ink);font-size:16px;font-weight:600}
+/* Text variants (bot-style answers) as glass chips. */
+.hsk-pwa-feedback-choice{display:block;margin:4px 0 14px}
+.hsk-pwa-feedback-question{display:block;margin:0 2px 8px;font-size:15px;font-weight:700;color:var(--hsk-ink)}
+.hsk-pwa-feedback-options{display:flex;flex-direction:column;gap:6px}
+.hsk-pwa-feedback-option{display:block;width:100%;min-height:46px;padding:10px 14px;border-radius:15px;text-align:start;
+  font:inherit;font-size:15px;font-weight:550;line-height:1.3;color:var(--hsk-ink);cursor:pointer;
+  background:rgba(255,255,255,.58);border:1px solid rgba(255,255,255,.8);box-shadow:0 1px 3px rgba(20,17,13,.06)}
+.hsk-pwa-feedback-option[aria-checked="true"]{background:rgba(253,235,231,.92);border-color:var(--hsk-cinnabar);
+  color:var(--hsk-cinnabar-ink);box-shadow:0 0 0 1px var(--hsk-cinnabar) inset}
 /* Star rating: bigger, golden, easy to hit. */
 html.hsk-pwa-browser .hsk-pwa-feedback-stars{gap:8px;margin:8px 0 18px}
-html.hsk-pwa-browser .hsk-pwa-feedback-stars button{height:56px;font-size:34px;border:0;background:transparent;color:var(--hsk-divider)}
-html.hsk-pwa-browser .hsk-pwa-feedback-stars button[aria-pressed="true"]{color:#E2A51D}
+html.hsk-pwa-browser .hsk-pwa-feedback-stars button{height:56px;font-size:34px;border:0;background:transparent;color:rgba(33,29,23,.16)}
+html.hsk-pwa-browser .hsk-pwa-feedback-stars button[aria-pressed="true"]{color:#E2A51D;text-shadow:0 2px 8px rgba(226,165,29,.35)}
 @media (prefers-color-scheme:dark){
+  html.hsk-pwa-browser .hsk-pwa-feedback-card,
+  html.hsk-pwa-browser #hsk-pwa-notice-root:not(.is-page) .hsk-pwa-notice-card,
+  html.hsk-pwa-browser .hsk-shake-dialog{
+    background:linear-gradient(180deg,rgba(20,44,60,.72),rgba(7,28,42,.56));border-color:rgba(255,255,255,.14);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 30px 80px rgba(0,0,0,.45)}
+  html.hsk-pwa-browser .hsk-pwa-feedback-card::after,html.hsk-pwa-browser .hsk-shake-dialog::after{
+    background:radial-gradient(120% 60% at 18% 0%,rgba(255,255,255,.12),transparent 60%)}
+  .hsk-pwa-feedback-option,html.hsk-pwa-browser .hsk-pwa-notice-secondary,
+  html.hsk-pwa-browser #hsk-shake-actions .hsk-shake-secondary,html.hsk-pwa-browser .hsk-pwa-feedback-close{
+    background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.16)}
   html.hsk-pwa-browser .hsk-pwa-feedback-stars button{color:rgba(255,255,255,.22)}
+}
+/* Accessibility: solid surfaces when the user asks for less transparency. */
+@media (prefers-reduced-transparency:reduce){
+  html.hsk-pwa-browser .hsk-pwa-feedback-card,
+  html.hsk-pwa-browser #hsk-pwa-notice-root:not(.is-page) .hsk-pwa-notice-card,
+  html.hsk-pwa-browser .hsk-shake-dialog{background:var(--hsk-paper);-webkit-backdrop-filter:none;backdrop-filter:none}
 }
 
 /* ---- Settings v2: short list + bottom sheets (iOS-like, PWA only) ---- */
@@ -417,19 +443,13 @@ html.hsk-pwa-browser #sheet.pwa-settings-sheet .si{border-radius:28px 28px 0 0;p
 /* Calm entrance motion for sheets and centered dialogs. */
 @keyframes hsk-pwa-sheet-in{from{transform:translateY(28px);opacity:.4}to{transform:none;opacity:1}}
 @keyframes hsk-pwa-pop-in{from{transform:translateY(10px) scale(.97);opacity:0}to{transform:none;opacity:1}}
-html.hsk-pwa-browser #sheet.on .si{animation:hsk-pwa-sheet-in .26s cubic-bezier(.2,.8,.2,1)}
-html.hsk-pwa-browser #sheet.on.hsk30-promo-center .si,html.hsk-pwa-browser #sheet.on.hsk30-book-card .si,
-html.hsk-pwa-browser #sheet.on.lesson-exit-confirm .si,html.hsk-pwa-browser .hsk-pwa-feedback-card,
+html.hsk-pwa-browser #sheet.on.pwa-settings-sheet .si{animation:hsk-pwa-sheet-in .26s cubic-bezier(.2,.8,.2,1)}
+html.hsk-pwa-browser .hsk-pwa-feedback-card,
 html.hsk-pwa-browser #hsk-pwa-notice-root:not(.is-page) .hsk-pwa-notice-card,html.hsk-pwa-browser .hsk-shake-dialog{
   animation:hsk-pwa-pop-in .24s cubic-bezier(.2,.8,.2,1)}
 @media (prefers-reduced-motion:reduce){
-  html.hsk-pwa-browser #sheet.on .si,html.hsk-pwa-browser .hsk-pwa-feedback-card,html.hsk-pwa-browser .hsk-shake-dialog,
+  html.hsk-pwa-browser #sheet.on.pwa-settings-sheet .si,html.hsk-pwa-browser .hsk-pwa-feedback-card,html.hsk-pwa-browser .hsk-shake-dialog,
   html.hsk-pwa-browser #hsk-pwa-notice-root .hsk-pwa-notice-card{animation:none}
 }
-/* The sheet title receives programmatic focus for VoiceOver; no visual ring on touch. */
-html.hsk-pwa-browser #sheet [tabindex="-1"]:focus:not(:focus-visible),
-html.hsk-pwa-browser #sheet .shead .tr[tabindex="-1"]:focus{outline:none}
-/* Centered dialog titles: confident weight, ink colour. */
-html.hsk-pwa-browser #sheet.lesson-exit-confirm .shead .tr:first-child,
-html.hsk-pwa-browser #sheet.hsk30-promo-center .shead .tr:first-child{font-weight:750;letter-spacing:-.015em;color:var(--hsk-ink)}
-html.hsk-pwa-browser #sheet.lesson-exit-confirm .shead .tr + .tr{margin-top:8px;color:var(--hsk-ink-secondary)}
+/* Settings sheets: the title gets programmatic focus for VoiceOver; no ring on touch. */
+html.hsk-pwa-browser #sheet.pwa-settings-sheet [tabindex="-1"]:focus{outline:none}

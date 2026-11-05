@@ -132,22 +132,28 @@
     return data;
   }
 
+  // Same text variants as the bot's inline buttons: one tap per answer.
+  var QUESTIONS = {"✓":"pwaFeedback.paidQ", "👍":"pwaFeedback.likedQ",
+    "👎":"pwaFeedback.dislikedQ", "›":"pwaFeedback.detailQ"};
   function choiceField(mark, options, value, onChange) {
-    var field = make("label", "hsk-pwa-feedback-field");
-    field.appendChild(make("span", "", mark));
-    var select = make("select");
-    select.setAttribute("aria-label", mark);
-    var placeholder = make("option", "", "—");
-    placeholder.value = "";
-    select.appendChild(placeholder);
+    var question = course(QUESTIONS[mark] || "") || mark;
+    var field = make("div", "hsk-pwa-feedback-field hsk-pwa-feedback-choice");
+    field.setAttribute("data-mark", mark);
+    field.appendChild(make("span", "hsk-pwa-feedback-question", question));
+    var group = make("div", "hsk-pwa-feedback-options");
+    group.setAttribute("role", "radiogroup");
+    group.setAttribute("aria-label", question);
+    group.value = value || "";
     validChoices(options).forEach(function (item) {
-      var option = make("option", "", item.label);
-      option.value = item.code;
-      select.appendChild(option);
+      var button = make("button", "hsk-pwa-feedback-option", item.label);
+      button.type = "button";
+      button.setAttribute("role", "radio");
+      button.setAttribute("data-code", item.code);
+      button.setAttribute("aria-checked", String(item.code === value));
+      button.addEventListener("click", function () { onChange(item.code); renderForm(); });
+      group.appendChild(button);
     });
-    select.value = value || "";
-    select.addEventListener("change", function () { onChange(select.value); renderForm(); });
-    field.appendChild(select);
+    field.appendChild(group);
     return field;
   }
   function commentField(label, key) {

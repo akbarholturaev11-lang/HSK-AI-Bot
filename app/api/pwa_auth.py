@@ -269,15 +269,15 @@ class PwaOrdinaryFeedbackSubmit(BaseModel):
 
 
 
-def _pwa_feedback_choices(language: str, *, paid: bool) -> dict:
+def _pwa_feedback_choices(language: str, *, paid: bool, current: str | None = None) -> dict:
     """Expose Telegram's existing localized choice contract, not a second UI catalog.
 
     Read-only metadata; no callback payload, Telegram auth or reward authority.
     The server still validates all submitted codes against the same dictionaries.
     """
     from app.bot.keyboards.feedback import (
-        LIKED_OPTIONS, DISLIKED_OPTIONS, LIKE_SUB_OPTIONS, PAID_OPTIONS,
-        PAID_SUB_POSITIVE, PAID_SUB_NEGATIVE,
+        APP_LIKED_OPTIONS, APP_PAID_SUB_POSITIVE, ACCEPTED_LIKED_OPTIONS,
+        DISLIKED_OPTIONS, LIKE_SUB_OPTIONS, PAID_OPTIONS, PAID_SUB_NEGATIVE,
         feedback_like_label, feedback_dislike_label,
         feedback_sub_label, feedback_paid_label,
     )
@@ -291,11 +291,15 @@ def _pwa_feedback_choices(language: str, *, paid: bool) -> dict:
     if paid:
         return {
             "paid": choices(PAID_OPTIONS, feedback_paid_label),
-            "paid_sub_positive": choices(PAID_SUB_POSITIVE, feedback_sub_label),
+            "paid_sub_positive": choices(APP_PAID_SUB_POSITIVE, feedback_sub_label),
             "paid_sub_negative": choices(PAID_SUB_NEGATIVE, feedback_sub_label),
         }
+    liked = list(APP_LIKED_OPTIONS)
+    # A first answer already recorded in the bot stays selectable in the app.
+    if current in ACCEPTED_LIKED_OPTIONS and current not in liked:
+        liked.insert(-1, current)
     return {
-        "liked": choices(LIKED_OPTIONS, feedback_like_label),
+        "liked": choices(liked, feedback_like_label),
         "liked_sub": {
             code: choices(codes, feedback_sub_label)
             for code, codes in LIKE_SUB_OPTIONS.items()
@@ -2210,6 +2214,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                     "disliked_code": feedback.disliked_code,
                     "choices": _pwa_feedback_choices(
                         actor.language, paid=UserAccessStateService.is_paid(actor),
+                        current=feedback.liked_code,
                     ),
                 } if feedback else None)
 
@@ -2300,6 +2305,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                     "choices": _pwa_feedback_choices(
                         learner.language,
                         paid=UserAccessStateService.is_paid(learner),
+                        current=feedback.liked_code,
                     ),
                 } if feedback else None)
             return JSONResponse(
@@ -2356,6 +2362,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                     "choices": _pwa_feedback_choices(
                         learner.language,
                         paid=UserAccessStateService.is_paid(learner),
+                        current=feedback.liked_code,
                     ),
                 } if feedback else None)
             return JSONResponse({"ok": True, "ordinary": ordinary}, headers=_NO_STORE)
@@ -2367,8 +2374,9 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
         """Commit one existing ordinary bot feedback using its canonical rules."""
         from sqlalchemy import select
         from app.bot.keyboards.feedback import (
-            LIKED_OPTIONS, DISLIKED_OPTIONS, LIKE_SUB_OPTIONS,
-            PAID_OPTIONS, PAID_SUB_POSITIVE, PAID_SUB_NEGATIVE,
+            ACCEPTED_LIKED_OPTIONS, ACCEPTED_PAID_SUB_POSITIVE,
+            DISLIKED_OPTIONS, LIKE_SUB_OPTIONS,
+            PAID_OPTIONS, PAID_SUB_NEGATIVE,
             feedback_like_label, feedback_dislike_label,
             feedback_sub_label, feedback_paid_label,
         )
@@ -2419,7 +2427,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                         ))
                     ):
                         raise PwaAuthError("pwa_request_invalid", status_code=422)
-                    subs = (PAID_SUB_POSITIVE if data.paid_code in ("worth", "useful")
+                    subs = (ACCEPTED_PAID_SUB_POSITIVE if data.paid_code in ("worth", "useful")
                             else PAID_SUB_NEGATIVE)
                     if data.paid_sub_code not in subs:
                         raise PwaAuthError("pwa_request_invalid", status_code=422)
@@ -2439,7 +2447,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                     )
                 else:
                     if (
-                        data.liked_code not in LIKED_OPTIONS
+                        data.liked_code not in ACCEPTED_LIKED_OPTIONS
                         or data.disliked_code not in DISLIKED_OPTIONS
                         or data.paid_code is not None or data.paid_sub_code is not None
                         or data.paid_other_text is not None

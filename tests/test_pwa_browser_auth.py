@@ -1400,11 +1400,11 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             engine.dispose()
 
     async def test_pwa_feedback_choices_reuse_existing_localized_bot_options(self):
-        """PWA option labels and follow-up codes are exactly the live bot catalog."""
+        """PWA labels come from the live bot catalog; the app lists its own features."""
         from app.api.pwa_auth import _pwa_feedback_choices
         from app.bot.keyboards.feedback import (
-            LIKED_OPTIONS, DISLIKED_OPTIONS, LIKE_SUB_OPTIONS,
-            PAID_OPTIONS, PAID_SUB_POSITIVE, PAID_SUB_NEGATIVE,
+            APP_LIKED_OPTIONS as LIKED_OPTIONS, DISLIKED_OPTIONS, LIKE_SUB_OPTIONS,
+            PAID_OPTIONS, APP_PAID_SUB_POSITIVE as PAID_SUB_POSITIVE, PAID_SUB_NEGATIVE,
             feedback_like_label, feedback_dislike_label, feedback_sub_label,
             feedback_paid_label,
         )
@@ -1441,6 +1441,11 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             )
             self.assertEqual(_pwa_feedback_choices("not-a-language", paid=False),
                              _pwa_feedback_choices("ru", paid=False))
+            # A first answer recorded in the bot (e.g. "photo") stays selectable.
+            resumed = _pwa_feedback_choices(lang, paid=False, current="photo")
+            self.assertIn("photo", [choice["code"] for choice in resumed["liked"]])
+            self.assertEqual(resumed["liked"][-1]["code"], "other")
+            self.assertNotIn("photo", [choice["code"] for choice in unpaid["liked"]])
 
         async with self.sessions() as db:
             person = await db.get(User, 1)
