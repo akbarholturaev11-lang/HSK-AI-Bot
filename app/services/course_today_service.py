@@ -72,17 +72,44 @@ class CourseTodayService:
         return view
 
     @staticmethod
-    def _stored_tasks(profile, key: str) -> list[dict] | None:
-        if str(getattr(profile, "daily_plan_key", "") or "") != key:
-            return None
+    def _stored_plans(profile) -> dict[str, list]:
+        """All frozen plans of the current day, keyed by `plan_key`.
+
+        Older rows hold one bare task list under `daily_plan_key`; they are read
+        as a single-entry mapping. A learner who alternates between levels or
+        tracks on one day keeps each plan instead of rebuilding on every switch.
+        """
         raw = getattr(profile, "daily_plan_json", None)
         if not raw:
-            return None
+            return {}
         try:
-            tasks = json.loads(raw)
+            data = json.loads(raw)
         except (TypeError, ValueError):
-            return None
+            return {}
+        if isinstance(data, list):
+            legacy_key = str(getattr(profile, "daily_plan_key", "") or "")
+            return {legacy_key: data} if legacy_key else {}
+        if isinstance(data, dict) and isinstance(data.get("plans"), dict):
+            return {
+                str(k): v for k, v in data["plans"].items() if isinstance(v, list)
+            }
+        return {}
+
+    @staticmethod
+    def _stored_tasks(profile, key: str) -> list[dict] | None:
+        tasks = CourseTodayService._stored_plans(profile).get(key)
         return tasks if isinstance(tasks, list) else None
+
+    @staticmethod
+    def _store_tasks(profile, key: str, tasks: list[dict], local_day: str) -> None:
+        plans = CourseTodayService._stored_plans(profile)
+        # Keep only today's plans; older days are never read again.
+        plans = {k: v for k, v in plans.items() if k.endswith(f":{local_day}")}
+        plans[key] = tasks
+        profile.daily_plan_key = key
+        profile.daily_plan_json = json.dumps(
+            {"v": 2, "plans": plans}, ensure_ascii=False
+        )
 
     async def payload(
         self,
@@ -113,8 +140,7 @@ class CourseTodayService:
                 # muzlaydi va kun davomida o'zgarmaydi.
                 seed = f"{getattr(user, 'id', 0)}|{signals.local_day}"
                 tasks = DailyPlanService.build(signals, access=access, seed=seed)
-                profile.daily_plan_key = key
-                profile.daily_plan_json = json.dumps(tasks, ensure_ascii=False)
+                self._store_tasks(profile, key, tasks, signals.local_day)
             view = DailyPlanService.hydrate(tasks, signals, access=access)
             view["level"] = level
             view["local_day"] = signals.local_day
