@@ -6,6 +6,9 @@
   "use strict";
   var onCourse = location.pathname === "/iphone-pwa/course";
   if (!onCourse && !/^\/iphone-pwa\/(?:checkout|practice\/(?:recognition|pronunciation|memorize|test|mistakes))$/.test(location.pathname)) return;
+  // Only the top-level PWA owns the sensor. Embedded practice/checkout frames
+  // would otherwise open a second report sheet for the same shake.
+  if (window.parent !== window || window.HskPwaShake) return;
   var standalone = !!(navigator.standalone ||
     (window.matchMedia && matchMedia("(display-mode: standalone)").matches));
   if (!standalone) return;
@@ -13,12 +16,13 @@
   if (!document.querySelector('link[href*="iphone-pwa-shake-report.css"]')) {
     var reportCss = document.createElement("link");
     reportCss.rel = "stylesheet";
-    reportCss.href = "/course_v3_data/iphone-pwa-shake-report.css?v=260-1";
+    reportCss.href = "/course_v3_data/iphone-pwa-shake-report.css?v=20261105-c97d140b3930";
     document.head.appendChild(reportCss);
   }
 
-  var owner = null, desired = true, seen = false, permitted = false, previouslyGranted = false;
-  var permissionRequired = true, listening = false, busy = false, epoch = 0;
+  var owner = null, desired = false, permitted = false, previouslyGranted = false;
+  var motionError = "", manualImageSelected = false, capturePending = false, imageSelectionSerial = 0;
+  var permissionPending = false, listening = false, busy = false, epoch = 0;
   var sampleReady = false, gx = 0, gy = 0, gz = 0, above = false;
   var firstPeak = null, lastShake = -100000, snapshot = null;
   var stage = "", submitting = false, reportScreen = "course", reportDescription = "";
@@ -61,14 +65,14 @@
   function readPreference() {
     try {
       var value = JSON.parse(localStorage.getItem(storageKey()) || "{}");
-      desired = value.enabled !== false;
-      seen = value.seen === true;
+      // No unsolicited sensor prompts. Existing explicit ON choices are retained.
+      desired = value.enabled === true;
       previouslyGranted = value.motionGranted === true;
-    } catch (_) { desired = true; seen = false; }
+    } catch (_) { desired = false; previouslyGranted = false; }
   }
   function savePreference() {
     if (!owner) return;
-    try { localStorage.setItem(storageKey(), JSON.stringify({enabled:desired,seen:seen,motionGranted:previouslyGranted})); }
+    try { localStorage.setItem(storageKey(), JSON.stringify({enabled:desired,motionGranted:previouslyGranted})); }
     catch (_) { /* Storage failure never grants sensor permission. */ }
   }
   function showMessage(text) { status.textContent = text || ""; }
@@ -91,22 +95,28 @@
     if (root.hidden) lastFocus = document.activeElement;
     stage = step;
     dialog.setAttribute("data-stage", step);
-    closeButton.textContent = c("subscriptionPage.close") || "\u00d7";
+    closeButton.textContent = "\u00d7";
+    closeButton.setAttribute("aria-label", c("subscriptionPage.close") || "Close");
+    closeButton.hidden = step === "sent";
     root.hidden = false;
     dialog.focus();
+    if (onCourse && typeof NavBack !== "undefined" && NavBack.sync) NavBack.sync();
   }
   function close() {
     if (submitting) return;
-    var wasIntro = stage === "intro";
     root.hidden = true;
+    closeButton.hidden = false;
     stage = "";
     snapshot = null;
+    capturePending = false;
     reportDescription = "";
+    manualImageSelected = false;
+    imageSelectionSerial += 1;
     busy = false;
     epoch += 1;
-    if (wasIntro) { seen = true; savePreference(); }
     if (lastFocus && lastFocus.isConnected && lastFocus.focus) lastFocus.focus();
     restartListening();
+    if (onCourse && typeof NavBack !== "undefined" && NavBack.sync) NavBack.sync();
   }
   var closeButton = root.querySelector("#hsk-shake-close");
   closeButton.addEventListener("click", close);
@@ -166,55 +176,47 @@
     } else if (delta < 0 || delta > 1500) firstPeak = now;
   }
 
+  function refreshSettingsControl() {
+    // Settings is a dedicated screen in the installed PWA, not the old modal.
+    if (typeof SCREEN !== "undefined" && SCREEN === "settings" &&
+        typeof renderPwaSettings === "function") renderPwaSettings();
+    else if (typeof refreshSettingsRows === "function") refreshSettingsRows();
+  }
+  function permissionFailed(message) {
+    permissionPending = false;
+    desired = false;
+    permitted = false;
+    motionError = message;
+    stopListening();
+    savePreference();
+    refreshSettingsControl();
+  }
   function permissionClick() {
-    // IMPORTANT: no await, network call, or setTimeout before requestPermission().
+    if (permissionPending) return;
+    permissionPending = true;
+    // iOS requires the request in this exact user-click stack: no preliminary modal.
     var request;
     try {
       if (!window.DeviceMotionEvent) throw Error("unsupported");
       request = typeof DeviceMotionEvent.requestPermission === "function" ?
         DeviceMotionEvent.requestPermission() : Promise.resolve("granted");
     } catch (_) {
-      permitted = false;
-      showMessage(l("unavailable"));
+      permissionFailed(l("unavailable"));
       return;
     }
     Promise.resolve(request).then(function (result) {
-      if (result !== "granted") {
-        permitted = false;
-        showMessage(l("denied"));
-        return;
-      }
+      if (result !== "granted") { permissionFailed(l("denied")); return; }
+      permissionPending = false;
+      desired = true;
       permitted = true;
       previouslyGranted = true;
-      permissionRequired = false;
-      seen = true;
+      motionError = "";
       savePreference();
-      close();
-      // Best-effort warm the viewport renderer, never transmit user content.
+      restartListening();
+      refreshSettingsControl();
+      // Best-effort render warm-up; no screenshot is sent without Submit.
       loadRenderer().catch(function () {});
-    }).catch(function () {
-      permitted = false;
-      showMessage(l("denied"));
-    });
-  }
-  function introduction() {
-    stopListening();
-    renderShell("introTitle");
-    var p = document.createElement("p");
-    p.textContent = l("introBody");
-    body.appendChild(p);
-    makeButton("allow", permissionClick);
-    makeButton("later", function () { seen = true; savePreference(); close(); }, true);
-    show("intro");
-  }
-  function showSettingsPermission() {
-    renderShell("introTitle");
-    var p = document.createElement("p");
-    p.textContent = l("permissionBody");
-    body.appendChild(p);
-    makeButton("allow", permissionClick);
-    makeButton("later", close, true);
-    show("permission");
+    }).catch(function () { permissionFailed(l("denied")); });
   }
 
   var rendererPromise = null;
@@ -241,11 +243,27 @@
     }
     return output && output.length <= 710000 && output.indexOf("data:image/jpeg;base64,") === 0 ? output : null;
   }
+  function safeReportCaptureSurface(expectedScreen) {
+    var screen = typeof SCREEN === "string" ? SCREEN : "";
+    // Only the lesson and practice surfaces can be captured automatically;
+    // profile, Settings, voice, rating, identity and payment pages may contain PII.
+    if (onCourse && (screen !== expectedScreen ||
+        (screen !== "course" && screen !== "mashq"))) return false;
+    if (location.pathname === "/iphone-pwa/checkout" ||
+        document.visibilityState === "hidden" ||
+        // Reject checkout/receipt/auth/paywall overlays, including
+        // an embedded checkout iframe in the parent course PWA.
+        document.querySelector(
+          "#pwa-checkout-layer, #sheet.on, #paywall.on, " +
+          ".pwa-payment, [class*=receipt], [class*=checkout], [data-sensitive]"
+        )) return false;
+    return true;
+  }
   async function captureViewport() {
-    // Profile, voice transcripts, purchase/auth screens may contain private data.
-    if (location.pathname === "/iphone-pwa/checkout" || ["profile", "voice"].indexOf(typeof SCREEN === "string" ? SCREEN : "") >= 0 ||
-        document.querySelector("#sheet.on .pwa-payment, #sheet.on [class*=receipt], #sheet.on [class*=checkout]")) return null;
+    var expectedScreen = typeof SCREEN === "string" ? SCREEN : "";
+    if (!safeReportCaptureSurface(expectedScreen)) return null;
     var renderer = await loadRenderer();
+    if (!safeReportCaptureSurface(expectedScreen)) return null;
     var width = Math.max(1, Math.min(window.innerWidth, 1200));
     var height = Math.max(1, Math.min(window.innerHeight, 1600));
     var canvas = await renderer(document.body, {
@@ -266,30 +284,36 @@
         });
       }
     });
-    try { return encodeJpeg(canvas); }
-    finally { canvas.width = 0; canvas.height = 0; }
+    try {
+      // html2canvas is asynchronous. The user may have navigated to payment,
+      // settings or an account view while rendering: fail closed at completion.
+      if (!safeReportCaptureSurface(expectedScreen)) return null;
+      return encodeJpeg(canvas);
+    } finally {
+      canvas.width = 0; canvas.height = 0;
+    }
   }
   function startReport() {
-    if (busy || !root.hidden) return;
+    if (busy || !root.hidden || !owner) return;
     busy = true;
     stopListening();
     var generation = ++epoch;
-    reportScreen = typeof SCREEN === "string" ? SCREEN.slice(0,80) : location.pathname.replace("/iphone-pwa/","").slice(0,80);
+    reportScreen = typeof SCREEN === "string" ? SCREEN.slice(0,80) :
+      location.pathname.replace("/iphone-pwa/","").slice(0,80);
     reportDescription = "";
+    snapshot = null;
+    manualImageSelected = false;
+    capturePending = true;
+    // A shake opens the final form immediately: no introduction or confirm page.
+    formReport();
     captureViewport().catch(function () { return null; }).then(function (image) {
-      if (generation !== epoch || !owner) return;
+      if (generation !== epoch || !owner || stage !== "form") return;
+      capturePending = false;
+      if (manualImageSelected) return;
       snapshot = image;
-      confirmReport();
+      var oldPreview = body.querySelector(".hsk-shake-preview");
+      if (oldPreview) oldPreview.replaceWith(imagePreview());
     });
-  }
-  function confirmReport() {
-    renderShell("confirmTitle");
-    var p = document.createElement("p");
-    p.textContent = l("confirmBody");
-    body.appendChild(p);
-    makeButton("continue", formReport);
-    makeButton("cancel", close, true);
-    show("confirm");
   }
   function imagePreview() {
     var wrap = document.createElement("div");
@@ -319,7 +343,7 @@
         img.hidden = !check.checked;
         privacy.hidden = !check.checked;
       });
-    } else {
+    } else if (!capturePending) {
       var note = document.createElement("p");
       note.textContent = l("captureUnavailable");
       wrap.appendChild(note);
@@ -336,9 +360,20 @@
       if (file.size > 6 * 1024 * 1024) {
         showMessage(l("imageTooLarge")); return;
       }
+      manualImageSelected = true;
+      // A selected file may finish decoding after Close, logout or a newer report.
+      // Its stale callback must never reopen the dismissed bottom sheet.
+      var selectionEpoch = epoch, selectionOwner = owner;
+      var selectionId = ++imageSelectionSerial;
+      var selectionValid = function () {
+        return selectionId === imageSelectionSerial &&
+          selectionEpoch === epoch && selectionOwner === owner &&
+          stage === "form" && !root.hidden;
+      };
       var url = URL.createObjectURL(file);
       var image = new Image();
       image.onload = function () {
+        if (!selectionValid()) { URL.revokeObjectURL(url); return; }
         try {
           var factor = Math.min(1, 1600 / Math.max(image.width,image.height));
           var canvas = document.createElement("canvas");
@@ -347,12 +382,17 @@
           canvas.getContext("2d").drawImage(image,0,0,canvas.width,canvas.height);
           snapshot = encodeJpeg(canvas);
           canvas.width = canvas.height = 0;
-          if (!snapshot) showMessage(l("imageTooLarge"));
+          if (!snapshot) { manualImageSelected = false; showMessage(l("imageTooLarge")); }
           else { showMessage(""); formReport(); }
-        } catch (_) { showMessage(l("captureUnavailable")); }
+        } catch (_) { manualImageSelected = false; showMessage(l("captureUnavailable")); }
         URL.revokeObjectURL(url);
       };
-      image.onerror = function () { URL.revokeObjectURL(url); showMessage(l("captureUnavailable")); };
+      image.onerror = function () {
+        URL.revokeObjectURL(url);
+        if (!selectionValid()) return;
+        manualImageSelected = false;
+        showMessage(l("captureUnavailable"));
+      };
       image.src = url;
     });
     manual.appendChild(chooser);
@@ -433,27 +473,36 @@
     }
   }
 
+  function escapeLabel(value) {
+    return String(value || "").replace(/[&<>"']/g, function (character) {
+      return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[character];
+    });
+  }
   function settingsRowHtml() {
     if (!owner) return "";
-    var label = desired ? (permitted ? l("on") : l("needsPermission")) : l("off");
-    var extra = desired && !permitted ?
-      '<button type="button" class="srow" onclick="HskPwaShake.request()"><i class="ti ti-lock-open"></i> ' +
-      l("allow") + '</button>' : "";
-    return '<button type="button" class="srow" onclick="HskPwaShake.toggle()">' +
-      '<i class="ti ti-device-mobile-vibration"></i> ' + l("setting") +
-      '<span class="sv">' + label + '</span></button>' + extra +
-      '<button type="button" class="srow" onclick="HskPwaShake.manual()">' +
-      '<i class="ti ti-bug"></i> ' + l("formTitle") + '</button>';
+    var active = desired && permitted;
+    var error = motionError ?
+      '<small class="hsk-shake-setting-error">' + escapeLabel(motionError) + '</small>' : "";
+    return '<button type="button" class="srow hsk-shake-setting" role="switch" aria-checked="' +
+      (active ? "true" : "false") + '" onclick="HskPwaShake.toggle()">' +
+      '<i class="ti ti-device-mobile-vibration" aria-hidden="true"></i>' +
+      '<span class="hsk-shake-setting-text">' + escapeLabel(l("setting")) + error + '</span>' +
+      '<span class="toggle' + (active ? ' on' : '') + '" aria-hidden="true"></span></button>';
   }
   function toggle() {
-    desired = !desired;
-    seen = true;
-    savePreference();
-    if (!desired) { permitted = false; stopListening(); }
-    else { showSettingsPermission(); }
-    if (typeof SETTINGS_SHEET !== "undefined" && SETTINGS_SHEET && window.App) App.openSettings();
+    if (permissionPending) return;
+    if (desired && permitted) {
+      desired = false;
+      permitted = false;
+      motionError = "";
+      stopListening();
+      savePreference();
+      refreshSettingsControl();
+    } else {
+      // Single switch tap requests OS permission when needed; no second dialog.
+      permissionClick();
+    }
   }
-  function request() { if (desired) showSettingsPermission(); }
   function initialize() {
     verifiedActor().then(function (session) {
       var id = Number(session.user_id);
@@ -461,18 +510,6 @@
       if (owner && owner !== id) { stopListening(); snapshot = null; epoch++; }
       owner = id;
       readPreference();
-      if (!seen && onCourse) {
-        var attempts = 0;
-        var promptWhenIdle = function () {
-          if (!owner || seen || document.visibilityState === "hidden") return;
-          if (attempts++ < 12 &&
-              (document.querySelector("#hsk-launch-splash:not(.is-done), #sheet.on, #tour.on, #hsk-pwa-notice-root:not([hidden]), #hsk-pwa-feedback-root:not([hidden])"))) {
-            setTimeout(promptWhenIdle,1000); return;
-          }
-          introduction();
-        };
-        setTimeout(promptWhenIdle,2200);
-      }
       // OS permission cannot be inferred from stored settings. On next
       // browser session, the learner may need to re-enable explicitly.
       if (previouslyGranted && !permitted && desired) {
@@ -483,20 +520,34 @@
           window.removeEventListener("devicemotion", probe);
           permitted = true;
           restartListening();
+          refreshSettingsControl();
         };
         window.addEventListener("devicemotion", probe, {passive:true});
       }
       restartListening();
+      refreshSettingsControl();
     }).catch(function () { stopListening(); });
   }
   window.HskPwaShake = {
-    settingsRowHtml: settingsRowHtml, toggle: toggle, request: request,
+    settingsRowHtml: settingsRowHtml, toggle: toggle,
     manual: startReport,
+    backTarget: function () { return root.hidden ? null : root; },
+    close: close,
     isListening: function () { return listening; }
   };
   document.addEventListener("visibilitychange", function () {
     if (document.visibilityState === "hidden") {
-      stopListening(); epoch++; snapshot = null;
+      stopListening();
+      epoch++; snapshot = null;
+      capturePending = false;
+      manualImageSelected = false;
+      imageSelectionSerial++;
+      // A cleared screenshot must not remain displayed as though it would
+      // still be attached after the learner returns from the app switcher.
+      if (stage === "form" && !root.hidden) {
+        var oldPreview = body.querySelector(".hsk-shake-preview");
+        if (oldPreview) oldPreview.replaceWith(imagePreview());
+      }
     } else {
       // Do not assume same account after background / OAuth transitions.
       verifiedActor().then(function (session) {
