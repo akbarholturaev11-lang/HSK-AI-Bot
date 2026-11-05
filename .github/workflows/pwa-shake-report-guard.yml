@@ -1,0 +1,38 @@
+name: iPhone PWA shake/report UI contract
+
+on:
+  pull_request:
+    paths:
+      - "app/static/course-v3.html"
+      - "app/static/course_v3_*.html"
+      - "app/static/course_v3_data/iphone-pwa-shake-report.*"
+      - "app/static/subscription.html"
+      - "tests/test_pwa_shake_report_ui.js"
+      - "tests/e2e/test_iphone_pwa_glass.py"
+      - "tests/test_iphone_pwa_asset_versions.py"
+      - "localization/baselines/reviewed_ui_changes.json"
+      - ".github/workflows/pwa-shake-report-guard.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pwa-shake-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check PWA shake/report gesture, layout and auth wiring
+        run: node tests/test_pwa_shake_report_ui.js
+      - name: Verify content-addressed PWA asset references and allowlist
+        run: python -m unittest -v tests.test_iphone_pwa_asset_versions
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install targeted PWA browser test tools
+        run: |
+          python -m pip install "pytest==8.4.2" playwright
+          python -m playwright install chromium
+      - name: Test single bottom sheet and CSRF in real Chromium at three iPhone sizes
+        run: python -m pytest -q tests/e2e/test_iphone_pwa_glass.py -k "shake_report or checkout_cta"

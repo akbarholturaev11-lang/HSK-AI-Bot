@@ -7,31 +7,75 @@ const path = "app/static/course_v3_data/iphone-pwa-shake-report.js";
 const js = fs.readFileSync(path, "utf8");
 new vm.Script(js, {filename:path});
 const page = fs.readFileSync("app/static/course-v3.html", "utf8");
+const checkout = fs.readFileSync("app/static/subscription.html", "utf8");
+const css = fs.readFileSync("app/static/course_v3_data/iphone-pwa-shake-report.css", "utf8");
 const backend = fs.readFileSync("app/api/pwa_auth.py", "utf8");
 assert(page.includes('src="/course_v3_data/iphone-pwa-shake-report.js'));
 assert(page.includes('href="/course_v3_data/iphone-pwa-shake-report.css'));
+
+for (const [name, html] of [
+  ["course-v3.html", page],
+  ["subscription.html", checkout]
+]) {
+  // Parse all inline scripts; catching syntax faults in unrelated course code.
+  const tags = /<script\b([^>]*)>([\s\S]*?)<\/script>/g;
+  let match, parsed = 0;
+  while ((match = tags.exec(html)) !== null) {
+    if (match[1].includes("application/json") || !match[2].trim()) continue;
+    new vm.Script(match[2], {filename:name + ":inline-" + parsed});
+    parsed++;
+  }
+  assert(parsed >= 1, name + " must contain parsed inline JS");
+}
+
 assert(page.includes("window.HskPwaShake.settingsRowHtml()"));
 // Practice opens as an in-document iframe layer (no full-page navigation).
 assert(page.includes('layer.id="pwa-practice-layer"'));
 assert(page.includes("entry.innerHTML=renderStudyPreparing()"));
 assert(js.includes('var onCourse = location.pathname === "/iphone-pwa/course"'));
 assert(js.includes("navigator.standalone"));
+assert(js.includes("window.parent !== window || window.HskPwaShake"),"nested PWA iframes cannot open duplicate sheets");
+assert(js.includes('"#pwa-checkout-layer, #sheet.on, #paywall.on, "'),"checkout and sensitive overlays block automatic capture");
+assert(!js.includes('"#pwa-checkout-layer, #sheet.on, #paywall.on, #flow.on, "'),"active lesson flow must remain eligible for capture");
+assert(js.includes('if (oldPreview) oldPreview.replaceWith(imagePreview());'),"cleared backgrounded screenshot must also clear stale preview");
+assert(js.includes('var renderer = await loadRenderer();') && js.includes('safeReportCaptureSurface(expectedScreen)'),"privacy checked at each async capture boundary");
+assert(js.includes('if (!safeReportCaptureSurface(expectedScreen)) return null;'),"privacy prevents automatic capture on sensitive surfaces");
+assert(js.includes('if (onCourse && (screen !== expectedScreen ||'),"tab switch invalidates in-progress capture");
+assert(js.includes('canvas.width = 0; canvas.height = 0;'),"privacy-rejected canvas memory is released");
+assert(js.includes('backTarget: function () { return root.hidden ? null : root; }'),"sheet exposes back stack target");
+assert(js.includes('close: close'),"sheet back dispatch closes only the active report");
+assert(page.includes('{id:"pwa-shake",target:function(){return PWA_COURSE_HOST&&window.HskPwaShake&&HskPwaShake.backTarget()}'),"shake report has PWA-only back priority");
+assert(page.indexOf('{id:"pwa-shake"') < page.indexOf('{id:"pwa-checkout-layer"'),"report closes before checkout");
 assert(js.includes('matchMedia("(display-mode: standalone)")'));
 assert(js.includes('DeviceMotionEvent.requestPermission()'));
 assert(js.includes('"/course_v3_data/vendor/html2canvas.min.js?v=1"'));
 assert(!js.includes("cdnjs.cloudflare.com"));
 assert(js.includes('verifiedActor().then(function (session)'));
 assert(js.includes('localStorage.getItem(storageKey())'));
-assert(js.includes('desired = value.enabled !== false'));
+assert(js.includes('desired = value.enabled === true'));
 assert(js.includes("owner = id"));
 assert(js.includes("manual: startReport"));
 assert(js.includes("previouslyGranted = true"));
 assert(js.includes("reportDescription = previous.value"));
 assert(js.includes("reportDescription = textarea.value"));
+assert(js.includes("selectionId === imageSelectionSerial"),"only latest manual screenshot decode may update visible form");
+assert(js.includes('stage === "form" && !root.hidden'),"closed report rejects stale manual image callbacks");
 assert(js.includes("async function captureViewport()"));
 assert(js.includes('var generation = ++epoch'));
-assert(js.includes("function confirmReport()"));
-assert(js.indexOf("function confirmReport()") < js.indexOf("function formReport()"));
+assert(!js.includes("function introduction()"),"no unsolicited first-run permission modal");
+assert(!js.includes("function confirmReport()"),"shake must enter form directly");
+assert(!js.includes('makeButton("later"'),"no redundant Not now button");
+assert(!js.includes("showSettingsPermission()"),"OS permission comes from the setting switch tap");
+assert(js.includes("formReport();\n    captureViewport()"),"sheet opens before async screenshot capture");
+assert(js.includes('role="switch" aria-checked="'),"accessible single settings switch");
+assert(js.includes('closeButton.hidden = step === "sent"'),"avoid duplicate close on success");
+const settings = js.slice(js.indexOf("function settingsRowHtml()"),js.indexOf("function toggle()"));
+assert.equal((settings.match(/<button/g)||[]).length,1,"one settings control only");
+assert(css.includes("align-items:flex-end"),"report anchored to bottom");
+assert(css.includes('max-height:min(88dvh,820px)'),"sheet fits available viewport");
+assert(checkout.includes("html.hsk-pwa-browser .bottom{padding-bottom:max(30px,env(safe-area-inset-bottom,0px))}"),"PWA checkout maintains home-indicator clearance without duplicate reserve");
+assert(page.includes("html.hsk-pwa-browser #pwa-checkout-layer{padding-bottom:0}"),"parent embedded checkout must not reserve bottom safe area twice");
+assert(!checkout.includes("html.hsk-pwa-browser .bottom{bottom:-"),"avoid unsafe offscreen positioning");
 assert(js.includes('screenshot_data_url: snapshot && (!checked || checked.checked) ? snapshot : ""'));
 assert(js.includes('await fetch("/api/v3/pwa/bug-report"'));
 assert(js.includes('method:"POST"'));
@@ -44,7 +88,7 @@ assert(backend.includes("screenshot.startswith(b"));
 
 // Exercise the original motion function with deterministic acceleration traces.
 const start = js.indexOf("  function onMotion(event) {");
-const end = js.indexOf("  function permissionClick()", start);
+const end = js.indexOf("  function refreshSettingsControl()", start);
 assert(start > 0 && end > start);
 const originalDetector = js.slice(start, end);
 const harnessCode = "var listening=true,root={hidden:true},desired=true,permitted=true;" +
