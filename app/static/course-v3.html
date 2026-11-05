@@ -2761,6 +2761,7 @@ var App={
     frame.title="HSK AI Pro";query.set("embedded","1");frame.src="/iphone-pwa/checkout?"+query.toString();
     PWA_CHECKOUT_FRAME=frame;PWA_CHECKOUT_RETURN_FOCUS=document.activeElement;
     layer.append(frame);document.body.appendChild(layer);$(".wrap").inert=true;
+    try{frame.focus({preventScroll:true})}catch(e){}
     NavBack.sync();
   },
   closePwaCheckout:function(child){
