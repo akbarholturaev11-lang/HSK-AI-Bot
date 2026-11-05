@@ -426,6 +426,12 @@ def test_shake_report_is_single_bottom_sheet_with_direct_permission_and_csrf(wid
         assert page.locator("#hsk-shake-description").is_visible()
         assert page.locator("#hsk-shake-actions button").count() == 1
         assert page.locator("#hsk-shake-close").count() == 1
+        # Wait for the intentional 250ms bottom-up entrance animation to finish;
+        # otherwise the first paint is deliberately translated +28px offscreen.
+        page.wait_for_function("""() => {
+          const sheet = document.querySelector('#hsk-pwa-shake-root .hsk-shake-dialog');
+          return sheet && sheet.getAnimations().every(a => a.playState === 'finished');
+        }""")
         box = sheet.bounding_box()
         assert box and box["height"] < height * .9
         assert abs(box["y"] + box["height"] - height) <= 2, "sheet must dock to the bottom"
