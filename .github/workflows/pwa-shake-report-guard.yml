@@ -26,3 +26,12 @@ jobs:
         run: node tests/test_pwa_shake_report_ui.js
       - name: Verify content-addressed PWA asset references and allowlist
         run: python -m unittest -v tests.test_iphone_pwa_asset_versions
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install targeted PWA browser test tools
+        run: |
+          python -m pip install "pytest==8.4.2" playwright
+          python -m playwright install chromium
+      - name: Test single bottom sheet and CSRF in real Chromium at three iPhone sizes
+        run: python -m pytest -q tests/e2e/test_iphone_pwa_glass.py -k shake_report
