@@ -9685,7 +9685,7 @@ var NavBack={
   EDGE:24,   /* Telegram Mini App keeps its existing left-edge gesture zone. */
   MIN:88,    /* The browser PWA uses a shorter, position-aware horizontal threshold. */
   /* Qatlamlar ustkisidan boshlab tekshiriladi. */
-  LAYERS:
+  LAYERS:[
     // Shake report has priority over checkout, practice and Settings back routes.
     {id:"pwa-shake",target:function(){return PWA_COURSE_HOST&&window.HskPwaShake&&HskPwaShake.backTarget()},close:function(){HskPwaShake.close()}},
     {id:"pwa-checkout-layer",target:function(){return $("#pwa-checkout-layer")},close:pwaCheckoutBack},
