@@ -9646,7 +9646,9 @@ var NavBack={
       for(var el=node&&node.nodeType===1?node:node&&node.parentElement;el&&el!==document.body;el=el.parentElement){
         if(el.hasAttribute&&el.hasAttribute("data-nb-ignore"))return true;
         if(el.classList&&(el.classList.contains("hp-promo-track")||el.classList.contains("rating-podium")))return true;
-        if(el.scrollWidth>el.clientWidth+4){var ox=getComputedStyle(el).overflowX;if(ox==="auto"||ox==="scroll")return true}
+        /* Only pure horizontal scrollers. A vertical scroller (lesson body,
+           sheets) computes overflow-x:auto too and must keep swipe-back. */
+        if(el.scrollWidth>el.clientWidth+4&&el.scrollHeight<=el.clientHeight+1){var ox=getComputedStyle(el).overflowX;if(ox==="auto"||ox==="scroll")return true}
       }
     }catch(e){}
     return false;
