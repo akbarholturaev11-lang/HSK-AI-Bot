@@ -35,7 +35,7 @@ from app.services.smart_reminder_policy import (
     day_window, habit_history_needs_extension,
 )
 from app.services.smart_reminder_cadence import CadenceContext, StudyIntent
-from app.services.smart_reminder_preferences import SmartReminderPreferencesService
+from app.services.smart_reminder_preferences import SmartReminderPreferencesService, pwa_study_consent
 
 
 # Work bound only; not a confidence, inactivity or data-retention threshold.
@@ -569,10 +569,11 @@ class SmartReminderPolicyContextService:
             if (actor.kind == "android" and android["this_device_consent"] == "on" and
                     android["study_os_permission"] == "allowed"):
                 channels.append("android")
-            # The existing account-level Smart opt-in and the independently
+            # Existing study consent (explicit Smart ON, or Telegram study
+            # consent without an explicit Smart choice) and the independently
             # user-enabled, live PWA Push endpoint are both required. A generic
             # PWA subscription alone never grants Smart study consent.
-            if pref["master_enabled"] is True:
+            if pwa_study_consent(pref):
                 from app.config import settings
                 from app.services.learner_pwa_push import active_subscriptions, sender_config
                 if (sender_config(settings) is not None and
