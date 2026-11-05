@@ -21,8 +21,8 @@
   }
 
   var owner = null, desired = false, permitted = false, previouslyGranted = false;
-  var motionError = "", manualImageSelected = false;
-  var listening = false, busy = false, epoch = 0;
+  var motionError = "", manualImageSelected = false, capturePending = false;
+  var permissionPending = false, listening = false, busy = false, epoch = 0;
   var sampleReady = false, gx = 0, gy = 0, gz = 0, above = false;
   var firstPeak = null, lastShake = -100000, snapshot = null;
   var stage = "", submitting = false, reportScreen = "course", reportDescription = "";
@@ -107,6 +107,7 @@
     closeButton.hidden = false;
     stage = "";
     snapshot = null;
+    capturePending = false;
     reportDescription = "";
     manualImageSelected = false;
     busy = false;
@@ -173,9 +174,13 @@
   }
 
   function refreshSettingsControl() {
-    if (typeof refreshSettingsRows === "function") refreshSettingsRows();
+    // Settings is a dedicated screen in the installed PWA, not the old modal.
+    if (typeof SCREEN !== "undefined" && SCREEN === "settings" &&
+        typeof renderPwaSettings === "function") renderPwaSettings();
+    else if (typeof refreshSettingsRows === "function") refreshSettingsRows();
   }
   function permissionFailed(message) {
+    permissionPending = false;
     desired = false;
     permitted = false;
     motionError = message;
@@ -184,6 +189,8 @@
     refreshSettingsControl();
   }
   function permissionClick() {
+    if (permissionPending) return;
+    permissionPending = true;
     // iOS requires the request in this exact user-click stack: no preliminary modal.
     var request;
     try {
@@ -196,6 +203,7 @@
     }
     Promise.resolve(request).then(function (result) {
       if (result !== "granted") { permissionFailed(l("denied")); return; }
+      permissionPending = false;
       desired = true;
       permitted = true;
       previouslyGranted = true;
@@ -270,10 +278,13 @@
     reportDescription = "";
     snapshot = null;
     manualImageSelected = false;
+    capturePending = true;
     // A shake opens the final form immediately: no introduction or confirm page.
     formReport();
     captureViewport().catch(function () { return null; }).then(function (image) {
-      if (generation !== epoch || !owner || stage !== "form" || !image || manualImageSelected) return;
+      if (generation !== epoch || !owner || stage !== "form") return;
+      capturePending = false;
+      if (manualImageSelected) return;
       snapshot = image;
       var oldPreview = body.querySelector(".hsk-shake-preview");
       if (oldPreview) oldPreview.replaceWith(imagePreview());
@@ -307,7 +318,7 @@
         img.hidden = !check.checked;
         privacy.hidden = !check.checked;
       });
-    } else {
+    } else if (!capturePending) {
       var note = document.createElement("p");
       note.textContent = l("captureUnavailable");
       wrap.appendChild(note);
@@ -439,6 +450,7 @@
       '<span class="toggle' + (active ? ' on' : '') + '" aria-hidden="true"></span></button>';
   }
   function toggle() {
+    if (permissionPending) return;
     if (desired && permitted) {
       desired = false;
       permitted = false;
