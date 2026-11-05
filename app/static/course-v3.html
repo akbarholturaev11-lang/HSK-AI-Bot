@@ -9756,7 +9756,13 @@ window.addEventListener("pageshow",function(ev){
 <script src="/course_v3_data/iphone-pwa-fx.js?v=20261105-3f4db4191370"></script>
 <script src="/course_v3_data/iphone-pwa-refresh.js?v=20261105-e7852ac39c9d"></script>
 <script src="/course_v3_data/iphone-pwa-notices.js?v=20261105-43749b7ef3cb"></script>
-<script src="/course_v3_data/iphone-pwa-feedback.js?v=20261105-b0984f8ed9a6"></script>
+<script src="/course_v3_data/iphone-pwa-feedback.js?v=20261105-29dccfe41c43"></script>
+<script>if(location.pathname==="/iphone-pwa/course")window.addEventListener("load",function(){setTimeout(function(){
+  /* Bot release-feedback campaign (stars) once per campaign, only on a calm course screen. */
+  if(!window.HskPwaFeedback||!HskPwaFeedback.openRelease)return;
+  HskPwaFeedback.openRelease({canOpen:function(){return SCREEN==="course"&&document.visibilityState==="visible"&&!NavBack.blocked()&&!NavBack.top()&&
+    !document.querySelector("#hsk-launch-splash:not(.is-done),#hsk-pwa-notice-root:not([hidden]),#tour.on,#sheet.on,#flow.on")}});
+},6000)},{once:true});</script>
 <script src="/course_v3_data/iphone-pwa-shake-report.js?v=20261105-e878b00bfc8a"></script><script>if(location.pathname==="/iphone-pwa/course"){var hskPwaInvite=document.createElement("script");hskPwaInvite.src="/course_v3_data/iphone-pwa-invite.js?v=20261105-f6bf81e66fe4";document.head.appendChild(hskPwaInvite)}</script><script>if(location.pathname==="/iphone-pwa/course"&&new URLSearchParams(location.search).get("pwa_perf")==="1"){var hskPwaPerfScript=document.createElement("script");hskPwaPerfScript.src="/course_v3_data/iphone-pwa-perf.js?v=20261105-0dbef5d08a9d";document.head.appendChild(hskPwaPerfScript)}</script>
 </body>
 </html>

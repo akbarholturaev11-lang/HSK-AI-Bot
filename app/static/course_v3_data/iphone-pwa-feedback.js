@@ -29,6 +29,7 @@
   var contextCopy = root.querySelector("#hsk-pwa-feedback-context");
   var status = root.querySelector("#hsk-pwa-feedback-status");
   var submitButton = root.querySelector("#hsk-pwa-feedback-submit");
+  submitButton.hidden = true;
   var closeButton = root.querySelector(".hsk-pwa-feedback-close");
   var lastFocus = null;
   var generation = 0;
@@ -319,6 +320,40 @@
     }
   }
 
+  // Star rating for a bot release-feedback campaign already delivered to this
+  // account (Telegram/Android). Shown at most once per campaign on a device;
+  // the learner can still answer it in the bot.
+  var RELEASE_SEEN_PREFIX = "hsk_pwa_release_seen_v1:";
+  function releaseSeen(id) {
+    try { return localStorage.getItem(RELEASE_SEEN_PREFIX + id) === "1"; } catch (_) { return true; }
+  }
+  async function openRelease(context) {
+    if (busy || !root.hidden || document.visibilityState === "hidden") return;
+    var token = ++generation;
+    function current() {
+      return token === generation && root.hidden && document.visibilityState !== "hidden" &&
+        (!context || typeof context.canOpen !== "function" || context.canOpen());
+    }
+    try {
+      var data = await request("/api/v3/pwa/feedback/available", undefined, current);
+      if (!current()) return;
+      var release = (Array.isArray(data.release) ? data.release : []).filter(function (item) {
+        return item && numberId(item.campaign_id) && !releaseSeen(item.campaign_id);
+      });
+      if (!release.length || !showAvailable({ordinary:null, release:release.slice(0, 1)})) return;
+      try { localStorage.setItem(RELEASE_SEEN_PREFIX + release[0].campaign_id, "1"); } catch (_) { return; }
+      lastFocus = document.activeElement;
+      contextCopy.textContent = isValidLabel(release[0].message_text) ? release[0].message_text.slice(0, 400) : "";
+      submitButton.disabled = false;
+      closeButton.setAttribute("aria-label", course("subscriptionPage.close"));
+      root.hidden = false;
+      panel.focus({preventScroll:true});
+      if (window.NavBack) NavBack.sync();
+    } catch (_) {
+      // Optional prompt: never interrupt study on error.
+    }
+  }
+
   function ordinaryPayload() {
     var choices = selected && selected.choices;
     if (!choices || !numberId(selected.feedback_id)) return null;
@@ -425,7 +460,7 @@
     }
   });
   window.HskPwaFeedback = {
-    open: open, close: close,
+    open: open, openRelease: openRelease, close: close,
     backTarget: function () { return root.hidden ? null : panel; }
   };
 }());

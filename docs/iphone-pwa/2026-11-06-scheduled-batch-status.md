@@ -48,6 +48,13 @@ Not run: Playwright E2E, real iPhone (haptics, push prompt, pull-to-refresh, aud
   injected on the PWA course page. iOS reads them at install time: an already-installed app needs to be removed and
   added to the Home Screen again to pick them up.
 
+- 21/23 stars: lesson feedback in the PWA already uses the bot's canonical ordinary-feedback flow. Bot release-feedback
+  campaigns (1-5 stars) were never shown in the PWA (`open()` always passed `release:[]`). The course now calls
+  `HskPwaFeedback.openRelease()` 6 s after load on a calm course screen: one star form per delivered, unanswered
+  campaign per device. Only accounts that received the campaign (Telegram/Android delivery row) are eligible.
+- `tests/test_pwa_feedback_ui.js` and `tests/test_pwa_shake_report_ui.js` were stale (harness ignored the markup
+  `hidden` attribute; practice moved from page navigation to an iframe layer). Both pass again.
+
 ## Needs owner/config
 - 12 Live voice: also requires `PWA_VOICE_LIVE_ENABLED=true`, `ANDROID_VOICE_LIVE_ENABLED=true`, a Gemini key,
   model `gemini-3.8-live`, a positive session budget, and `ANDROID_VOICE_LIVE_ALLOWED_USERS="*"`
@@ -58,5 +65,4 @@ Not run: Playwright E2E, real iPhone (haptics, push prompt, pull-to-refresh, aud
 
 ## Not started
 8 (shake report parity), 10 (settings rebuild/channels), 15 (code reviewed, no defect found: the overtake effect needs server `rank_before`>0, so learners outside the ranked list never see it),
-20 (profile name/avatar: needs new PWA endpoint + UZ/RU/TJ catalog keys), 21 (review parity check),
-22/23 (centre-block minimalist audit).
+20 (profile name/avatar: needs new PWA endpoint + UZ/RU/TJ catalog keys), 22/23 (centre-block minimalist audit).
