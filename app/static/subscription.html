@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<script src="/assets/telegram-web-app.js?v=20261019-1"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261021-395d978eaee1"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-234acba53e35"></script>
+<script src="/assets/telegram-web-app.js?v=20261019-1"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261021-395d978eaee1"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-3e896a185201"></script>
 <link rel="stylesheet" href="/course_v3_data/design-tokens.css?v=20261005">
 <title>HSK AI Pro</title>
 <style>
@@ -13,21 +13,24 @@ html.hsk-pwa-browser input:not([type="hidden"]):not([type="checkbox"]):not([type
 html.hsk-pwa-browser textarea,html.hsk-pwa-browser select{font-size:16px!important}
 :root{
   color-scheme:light;
-  --bg:var(--hsk-paper);
-  --card:var(--hsk-paper-raised);
-  --line:var(--hsk-divider);
-  --line2:#D8CCB5;
-  --text:var(--hsk-ink);
-  --muted:var(--hsk-ink-secondary);
-  --accent:var(--hsk-cinnabar);
-  --accent-ink:var(--hsk-cinnabar-ink);
-  --accent-content:var(--hsk-on-cinnabar);
-  --accent-soft:var(--hsk-cinnabar-soft);
-  --accent-line:#F0B7AE;
-  --gold:var(--hsk-gold);
-  --gold-soft:var(--hsk-gold-soft);
-  --gold-line:#E9D39A;
-  --gold-ink:var(--hsk-gold-ink);
+  /* HSK AI Pro brand palette: navy #0A1430, electric blue #0297DE, orange #FC734D. */
+  --navy:#0A1430;
+  --navy-soft:#EEF1F7;
+  --bg:#FFFFFF;
+  --card:#F7F9FC;
+  --line:#E3E8F1;
+  --line2:#C9D2E1;
+  --text:#0A1430;
+  --muted:#5D6880;
+  --accent:#0297DE;
+  --accent-ink:#0277B6;
+  --accent-content:#FFFFFF;
+  --accent-soft:#EAF6FD;
+  --accent-line:#A6D8F2;
+  --gold:#FC734D;
+  --gold-soft:#FFF1EC;
+  --gold-line:#FDCDBF;
+  --gold-ink:#B8401E;
   --radius:var(--hsk-radius-large);
   --radius-sm:var(--hsk-radius-medium);
   --font:var(--hsk-font-ui);
@@ -61,13 +64,13 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 .discount{position:relative;display:flex;flex-direction:column;gap:11px;margin-top:14px;border:1px solid var(--gold-line);border-radius:var(--radius);background:var(--gold-soft);padding:14px;overflow:hidden;animation:fade .4s ease}
 .discount.used{border-color:var(--line);background:var(--card)}
 .discount-row{position:relative;display:flex;align-items:center;gap:13px}
-.discount-badge{flex:0 0 auto;min-width:58px;height:58px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(135deg,#ffd27d,#ffba4d);color:#2a1c00;font-size:18px;font-weight:950}
+.discount-badge{flex:0 0 auto;min-width:58px;height:58px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(135deg,#FF9874,#FC734D);color:#FFFFFF;font-size:18px;font-weight:950}
 .discount.used .discount-badge{background:var(--line);color:var(--muted)}
 .discount-body{flex:1;min-width:0}
 .discount-body strong{display:block;font-size:14px;font-weight:900;line-height:1.25}
 .discount-body span{display:block;margin-top:4px;color:var(--muted);font-size:12px;line-height:1.38}
 .discount-bar{position:relative;height:6px;border-radius:999px;background:var(--gold-line);overflow:hidden}
-.discount-bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .6s cubic-bezier(.22,.61,.36,1)}
+.discount-bar i{display:block;height:100%;border-radius:999px;background:var(--gold);transition:width .6s cubic-bezier(.22,.61,.36,1)}
 .discount-btn{position:relative;height:46px;border-radius:13px;border:1px solid var(--accent);background:var(--bg);color:var(--accent-ink);font-weight:850;font-size:13px;transition:.18s}
 .discount-btn:active{background:var(--accent-soft)}
 .benefits{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}
@@ -89,8 +92,8 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 .renewal-summary{display:grid;gap:5px;margin-top:12px;border:1px solid var(--accent-line);border-radius:var(--radius-sm);background:var(--accent-soft);padding:12px 13px}
 .renewal-summary strong{font-size:13px;line-height:1.35;font-weight:850;color:var(--text)}
 .renewal-summary span{font-size:12px;line-height:1.4;color:var(--muted)}
-.plan-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.plan-name{font-size:13px;color:var(--muted);font-weight:850}
+.plan-top{display:flex;align-items:center;justify-content:space-between;gap:6px 8px;flex-wrap:wrap}
+.plan-name{font-size:13px;color:var(--muted);font-weight:850;white-space:nowrap}
 .badge{display:inline-flex;align-items:center;justify-content:center;min-height:21px;border-radius:999px;padding:2px 8px;background:var(--gold-soft);color:var(--gold-ink);font-size:10px;line-height:1.12;font-weight:900;border:1px solid var(--gold-line)}
 .price{display:inline-block;font-size:30px;line-height:1;font-weight:950;letter-spacing:-.02em;margin-top:12px;color:var(--text)}
 .price.long{font-size:23px}
@@ -98,6 +101,13 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 .old-price{display:none;margin-top:9px;color:var(--muted);font-size:12px;text-decoration:line-through}
 .discounted .old-price{display:block}
 .list{display:grid;gap:9px}
+body.hsk-scene-page::before{content:none!important}
+.lava-question{min-height:calc(100dvh - 190px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;justify-content:center;text-align:center;gap:22px}
+.lava-question h2{font-size:24px;line-height:1.18;font-weight:900;letter-spacing:-.01em}
+.lava-answers{display:grid;gap:10px}
+.lava-answer{height:56px;border-radius:var(--radius);font-size:15px;font-weight:850}
+.lava-answer.yes{background:var(--navy);color:#FFFFFF;box-shadow:0 6px 18px rgba(10,20,48,.16)}
+.lava-answer.no{background:var(--bg);color:var(--text);border:1px solid var(--line2)}
 .lava-manage{display:grid;gap:4px;margin:0 0 14px;border:1px solid var(--accent-line);border-radius:var(--radius-sm);background:var(--accent-soft);padding:12px 13px}
 .lava-manage[hidden]{display:none}
 .lava-manage strong{font-size:13px;line-height:1.35;font-weight:850;color:var(--text)}
@@ -177,7 +187,7 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 .done-mark{position:relative;width:84px;height:84px;border-radius:50%;display:grid;place-items:center;margin:0 auto;background:var(--accent);color:var(--accent-content);font-size:42px;font-weight:950;box-shadow:0 0 0 10px var(--accent-soft);animation:pop .45s cubic-bezier(.2,1.3,.4,1)}
 .done h2{font-size:25px;font-weight:900}
 .done p{color:var(--muted);font-size:13px;line-height:1.5;max-width:320px;margin:0 auto}
-.done-return{height:54px;border-radius:var(--radius);background:var(--accent);color:var(--accent-content);font-size:15px;font-weight:950;margin:8px auto 0;padding:0 24px;min-width:190px}
+.done-return{height:54px;border-radius:var(--radius);background:var(--navy);color:#FFFFFF;font-size:15px;font-weight:950;margin:8px auto 0;padding:0 24px;min-width:190px}
 .done-return[hidden]{display:none}
 .done-return.secondary{background:var(--bg);color:var(--text);border:1px solid var(--line);margin-top:0}
 .done-mark svg{width:42px;height:42px}
@@ -191,13 +201,13 @@ html.hsk-pwa-browser .app{padding-bottom:calc(104px + env(safe-area-inset-bottom
 .back{background:var(--bg);border:1px solid var(--line);color:var(--text)}
 .back.hide{display:none}
 .back.hide+.cta{grid-column:1/3}
-.cta{background:var(--accent);color:var(--accent-content);box-shadow:0 2px 8px rgba(33,29,23,.10);letter-spacing:.01em}
+.cta{background:var(--navy);color:#FFFFFF;box-shadow:0 6px 18px rgba(10,20,48,.16);letter-spacing:.01em}
 .cta:disabled{opacity:.45;box-shadow:none}
 .toast{position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(12px);max-width:calc(100% - 28px);border-radius:999px;background:var(--text);color:#fff;padding:11px 15px;font-size:13px;font-weight:850;opacity:0;pointer-events:none;transition:.2s ease;box-shadow:0 12px 30px rgba(20,32,27,.2);z-index:20}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .sheet{position:fixed;inset:0;z-index:25;display:none;align-items:flex-end;justify-content:center}
 .sheet.show{display:flex}
-.sheet-backdrop{position:absolute;inset:0;background:rgba(20,32,27,.35);backdrop-filter:blur(4px);transform:none}
+.sheet-backdrop{position:absolute;inset:0;background:rgba(10,20,48,.35);backdrop-filter:blur(4px);transform:none}
 .sheet-panel{position:relative;width:100%;max-width:520px;border:1px solid var(--line);border-radius:var(--radius) var(--radius) 0 0;background:var(--bg);padding:17px 15px calc(17px + env(safe-area-inset-bottom,0px));box-shadow:0 -12px 40px rgba(20,32,27,.12);animation:sheetUp .22s ease}
 .sheet-panel h3{font-size:17px;line-height:1.25;font-weight:900}
 .sheet-panel p{margin-top:7px;color:var(--muted);font-size:12px;line-height:1.45}
@@ -209,7 +219,7 @@ html.hsk-pwa-browser .app{padding-bottom:calc(104px + env(safe-area-inset-bottom
 .sheet-close{color:var(--muted)}
 .renewal-modal{position:fixed;inset:0;z-index:32;display:none;align-items:center;justify-content:center;padding:20px}
 .renewal-modal.show{display:flex}
-.renewal-backdrop{position:absolute;inset:0;background:rgba(20,32,27,.42);backdrop-filter:blur(4px)}
+.renewal-backdrop{position:absolute;inset:0;background:rgba(10,20,48,.42);backdrop-filter:blur(4px)}
 .renewal-card{position:relative;width:100%;max-width:430px;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg);padding:20px;box-shadow:0 18px 55px rgba(20,32,27,.2);animation:pop .2s ease}
 .renewal-card h3{font-size:18px;line-height:1.25;font-weight:900}
 .renewal-card p{margin-top:9px;color:var(--muted);font-size:13px;line-height:1.5}
@@ -259,10 +269,9 @@ html.hsk-pwa-browser .app{padding-bottom:calc(104px + env(safe-area-inset-bottom
   </div>
 
   <section class="screen" data-screen="card">
-    <div class="hero">
+    <div class="lava-question">
       <h2 id="lavaCardTitle"></h2>
-      <p id="lavaCardText"></p>
-      <div class="list section" id="lavaCardChoices"></div>
+      <div class="lava-answers" id="lavaCardChoices"></div>
     </div>
   </section>
 
@@ -1378,13 +1387,8 @@ function renderLava(text,screen){
     $("#lavaCancelBtn").textContent=lavaText("cancelBtn");
   }
   $("#lavaCardTitle").textContent=lavaText("cardQuestion");
-  $("#lavaCardText").textContent=lavaText("cardQuestionText");
-  $("#lavaCardChoices").innerHTML=[["yes","cardYes","cardYesText"],["no","cardNo","cardNoText"]].map(([answer,title,hint])=>{
-    const selected=(answer==="yes"&&state.path==="lava")||(answer==="no"&&state.path==="manual");
-    return `<button class="choice ${selected?"selected":""}" type="button" data-card-answer="${answer}" aria-pressed="${selected}">
-      <span class="choice-tx"><strong>${escapeHtml(lavaText(title))}</strong><span>${escapeHtml(lavaText(hint))}</span></span><i class="dot ${selected?"selected":""}"></i>
-    </button>`;
-  }).join("");
+  $("#lavaCardChoices").innerHTML=[["yes","cardYes"],["no","cardNo"]].map(([answer,label])=>
+    `<button class="lava-answer ${answer}" type="button" data-card-answer="${answer}">${escapeHtml(lavaText(label))}</button>`).join("");
   $("#lavaPlansTitle").textContent=lavaText("plansTitle");
   const blockedActive=info?.blocked_reason==="subscription_active";
   $("#lavaPlansNote").textContent=blockedActive?lavaText("activeTitle"):lavaText("plansNote");
@@ -1765,10 +1769,11 @@ function render(){
   const screen=currentScreen();
   const finalScreen=state.done||state.pending||Boolean(state.lavaStatus);
   $$(".screen").forEach(node=>node.classList.toggle("active",node.dataset.screen===screen));
-  $("#steps").style.gridTemplateColumns=`repeat(${items.length},1fr)`;
+  const stepItems=items.filter(item=>item!=="card"),stepOffset=items[0]==="card"?1:0;
+  $("#steps").style.gridTemplateColumns=`repeat(${Math.max(1,stepItems.length)},1fr)`;
   $$("#steps i").forEach((node,index)=>{
-    node.style.display=finalScreen||index>=items.length?"none":"block";
-    node.classList.toggle("active",index<=state.step);
+    node.style.display=finalScreen||screen==="card"||index>=stepItems.length?"none":"block";
+    node.classList.toggle("active",index<=state.step-stepOffset);
   });
   $("#bottom").style.display=finalScreen||state.qrPreviewOpen||screen==="card"||screen==="lavaWait"?"none":"block";
   renderCountry(text);
