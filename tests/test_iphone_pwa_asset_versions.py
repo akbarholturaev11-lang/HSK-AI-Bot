@@ -31,6 +31,24 @@ class IphonePwaAssetVersionTests(unittest.TestCase):
                         self.assertTrue(token.endswith("-" + digest),
                                         f"{rel} changed: refresh ?v= to <date>-{digest}")
 
+    def test_every_pwa_asset_is_served_by_the_app_route(self):
+        # Regression: /course_v3_data/{filename} serves an allowlist only, so a
+        # new iphone-pwa-* file that is not listed 404s in production.
+        main = Path("app/main.py").read_text(encoding="utf-8")
+        for asset in sorted((STATIC / "course_v3_data").glob("iphone-pwa-*")):
+            if asset.suffix in {".js", ".css"}:
+                with self.subTest(asset=asset.name):
+                    self.assertIn(f'"{asset.name}":', main)
+
+    def test_ios_launch_images_exist_for_every_declared_size(self):
+        login = (STATIC / "iphone-pwa-login.html").read_text(encoding="utf-8")
+        refs = re.findall(r'apple-touch-startup-image" media="[^"]+" href="/assets/startup/([^"]+)"', login)
+        self.assertEqual(len(refs), 11)
+        for name in refs:
+            with self.subTest(image=name):
+                self.assertTrue((STATIC / "assets/startup" / name).is_file())
+                self.assertRegex(name, r"^hsk-startup-[0-9]{3,4}x[0-9]{4}\.png$")
+
     def test_worker_caches_only_versioned_same_origin_assets(self):
         worker = (STATIC / "iphone-pwa-sw.js").read_text(encoding="utf-8")
         self.assertIn('url.searchParams.has("v")', worker)

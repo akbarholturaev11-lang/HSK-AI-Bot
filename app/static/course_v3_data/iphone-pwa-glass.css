@@ -283,3 +283,173 @@ html.hsk-pwa-browser .renewal-actions button {
 @media(prefers-reduced-motion:reduce){
   html.hsk-pwa-browser .renewal-card{animation:none!important}
 }
+
+/* Back controls are bare icons: no white card or ring behind the arrow. */
+html.hsk-pwa-browser .hsk-pwa-close,
+html.hsk-pwa-browser .pwa-practice-back,
+html.hsk-pwa-browser .rc-ix.hsk-native-back-duplicate,
+html.hsk-pwa-browser .pr-ix.hsk-native-back-duplicate,
+html.hsk-pwa-browser #mk-root .ix,html.hsk-pwa-browser #tc-root .ix,
+html.hsk-pwa-browser .hsk-native-back-duplicate{
+  background:transparent;border:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;
+}
+.hsk-pwa-notice-row .hsk-pwa-notice-meta{margin-top:6px;opacity:.72}
+.hsk-pwa-notice-row .hsk-pwa-notice-cta{display:block;margin-top:8px;font-size:13px;font-weight:750;color:var(--hsk-cinnabar-ink)}
+#hsk-pwa-urgent-body{margin:6px 0 0;font-size:15px;line-height:1.45}
+#hsk-pwa-urgent-body:empty{display:none}
+#hsk-pwa-urgent-meta{display:block;margin:4px 0 10px;font-size:12px;opacity:.7}
+.hsk-pwa-notice-row small{white-space:pre-line}
+/* Settings: one flat native list with section titles, no nested cards. */
+#hsk-pwa-settings-rows .pwa-set-head{margin:24px 4px 4px;font-size:13px;font-weight:700;letter-spacing:.04em;
+  text-transform:uppercase;color:var(--hsk-ink-secondary)}
+#hsk-pwa-settings-rows .pwa-set-head:first-child{margin-top:4px}
+#hsk-pwa-settings-rows .set{margin:0;background:transparent;border:0;border-radius:0;box-shadow:none;overflow:visible}
+#hsk-pwa-settings-rows .srow{background:transparent;border:0;border-bottom:1px solid var(--hsk-divider);
+  border-radius:0;box-shadow:none;padding:14px 4px;font-size:16px}
+#hsk-pwa-settings-rows .set > .srow:last-child{border-bottom:0}
+#hsk-pwa-settings-rows .srow .sv{color:var(--hsk-ink-secondary);max-width:48%;text-align:end;white-space:normal}
+#hsk-pwa-settings-rows .srow-static{cursor:default}
+#hsk-pwa-settings-rows .sech{margin:26px 4px 10px}
+#hsk-pwa-settings-rows .social-btn{background:transparent;box-shadow:none}
+/* Profile editor (Android parity). */
+html.hsk-pwa-browser .pwa-pav{padding:0;cursor:pointer;font:inherit;overflow:visible}
+html.hsk-pwa-browser .pwa-pav.art{background:var(--hsk-paper-raised,#fff)}
+.pwa-avatar-art{display:block;width:100%;height:100%}
+.pwa-avatar-art svg,.pwa-avatar-art .hsk-character{width:100%;height:100%;display:block}
+.pwa-avatar-label{margin:4px 2px 10px;font-size:14px;color:var(--hsk-ink-secondary)}
+.pwa-avatar-pick{display:flex;justify-content:center;gap:16px;margin-bottom:18px}
+.pwa-avatar-pick button{width:72px;height:72px;padding:6px;border-radius:50%;border:1px solid var(--hsk-divider);
+  background:var(--hsk-paper-raised,#fff)}
+.pwa-avatar-pick button[aria-checked="true"]{border:2px solid var(--hsk-cinnabar);background:rgba(240,97,76,.1)}
+.pwa-name-field{display:block;margin:0 0 16px}
+.pwa-name-field span{display:block;margin:0 2px 6px;font-size:14px;color:var(--hsk-ink-secondary)}
+.pwa-name-field input{width:100%;min-height:50px;padding:0 14px;border:1px solid var(--hsk-divider);border-radius:14px;
+  background:var(--hsk-paper-raised,#fff);color:var(--hsk-ink);font:inherit;font-size:16px}
+#pwa-profile-save:disabled{opacity:.45}
+/* The PWA's own preset-avatar editor (not the Telegram photo) is tappable. */
+html.hsk-pwa-browser .phero .pav.pwa-pav{cursor:pointer;pointer-events:auto}
+html.hsk-pwa-browser .phero .pav.pwa-pav .ed{display:flex!important}
+
+/* ---- Liquid Glass: centered dialogs that exist only in the PWA ----
+   (feedback/star rating, urgent payment notice, shake report). Mini App
+   dialogs and the course-switch cards keep their original look. */
+html.hsk-pwa-browser .hsk-pwa-feedback-scrim,
+html.hsk-pwa-browser #hsk-pwa-notice-root:not(.is-page) .hsk-pwa-notice-scrim,
+html.hsk-pwa-browser .hsk-shake-scrim{
+  background:rgba(20,17,13,.26);-webkit-backdrop-filter:blur(12px) saturate(140%);backdrop-filter:blur(12px) saturate(140%)}
+html.hsk-pwa-browser .hsk-pwa-feedback-card,
+html.hsk-pwa-browser #hsk-pwa-notice-root:not(.is-page) .hsk-pwa-notice-card,
+html.hsk-pwa-browser .hsk-shake-dialog{
+  position:relative;isolation:isolate;max-width:400px;border-radius:30px;padding:26px 20px 20px;
+  background:linear-gradient(180deg,rgba(255,255,255,.74),rgba(255,253,248,.5));
+  -webkit-backdrop-filter:blur(28px) saturate(180%);backdrop-filter:blur(28px) saturate(180%);
+  border:1px solid rgba(255,255,255,.7);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(255,255,255,.3),
+    0 30px 80px rgba(20,17,13,.22),0 2px 8px rgba(20,17,13,.06);
+}
+html.hsk-pwa-browser .hsk-pwa-feedback-card::after,
+html.hsk-pwa-browser .hsk-shake-dialog::after{
+  content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;
+  background:radial-gradient(120% 60% at 18% 0%,rgba(255,255,255,.55),transparent 60%),
+    radial-gradient(80% 50% at 100% 100%,rgba(247,201,72,.1),transparent 70%)}
+html.hsk-pwa-browser .hsk-shake-dialog[data-stage="form"]{max-width:520px;padding:16px 0 calc(14px + env(safe-area-inset-bottom,0px))}
+html.hsk-pwa-browser .hsk-pwa-feedback-title,html.hsk-pwa-browser #hsk-pwa-urgent-title,
+html.hsk-pwa-browser #hsk-shake-title{font-size:20px;font-weight:750;line-height:1.25;letter-spacing:-.015em;color:var(--hsk-ink)}
+html.hsk-pwa-browser .hsk-pwa-feedback-context,html.hsk-pwa-browser #hsk-shake-body p{font-size:15px;line-height:1.45;color:var(--hsk-ink-secondary)}
+/* Glass close control and calm, large buttons. */
+html.hsk-pwa-browser .hsk-pwa-feedback-close{background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.75);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+html.hsk-pwa-browser .hsk-pwa-feedback-primary,
+html.hsk-pwa-browser .hsk-pwa-notice-primary,
+html.hsk-pwa-browser #hsk-shake-actions .hsk-shake-primary{
+  min-height:54px;border-radius:18px;font-size:17px;font-weight:650;border:0;
+  background:linear-gradient(180deg,#F0614C,#D9443A);color:var(--hsk-on-cinnabar);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 8px 20px rgba(192,47,50,.22)}
+html.hsk-pwa-browser .hsk-pwa-notice-secondary,
+html.hsk-pwa-browser #hsk-shake-actions .hsk-shake-secondary{
+  min-height:50px;border-radius:18px;background:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.7);
+  color:var(--hsk-ink);font-size:16px;font-weight:600}
+/* Text variants (bot-style answers) as glass chips. */
+.hsk-pwa-feedback-choice{display:block;margin:4px 0 14px}
+.hsk-pwa-feedback-question{display:block;margin:0 2px 8px;font-size:15px;font-weight:700;color:var(--hsk-ink)}
+.hsk-pwa-feedback-options{display:flex;flex-direction:column;gap:6px}
+.hsk-pwa-feedback-option{display:block;width:100%;min-height:46px;padding:10px 14px;border-radius:15px;text-align:start;
+  font:inherit;font-size:15px;font-weight:550;line-height:1.3;color:var(--hsk-ink);cursor:pointer;
+  background:rgba(255,255,255,.58);border:1px solid rgba(255,255,255,.8);box-shadow:0 1px 3px rgba(20,17,13,.06)}
+.hsk-pwa-feedback-option[aria-checked="true"]{background:rgba(253,235,231,.92);border-color:var(--hsk-cinnabar);
+  color:var(--hsk-cinnabar-ink);box-shadow:0 0 0 1px var(--hsk-cinnabar) inset}
+/* Star rating: bigger, golden, easy to hit. */
+html.hsk-pwa-browser .hsk-pwa-feedback-stars{gap:8px;margin:8px 0 18px}
+html.hsk-pwa-browser .hsk-pwa-feedback-stars button{height:56px;font-size:34px;border:0;background:transparent;color:rgba(33,29,23,.16)}
+html.hsk-pwa-browser .hsk-pwa-feedback-stars button[aria-pressed="true"]{color:#E2A51D;text-shadow:0 2px 8px rgba(226,165,29,.35)}
+@media (prefers-color-scheme:dark){
+  html.hsk-pwa-browser .hsk-pwa-feedback-card,
+  html.hsk-pwa-browser #hsk-pwa-notice-root:not(.is-page) .hsk-pwa-notice-card,
+  html.hsk-pwa-browser .hsk-shake-dialog{
+    background:linear-gradient(180deg,rgba(20,44,60,.72),rgba(7,28,42,.56));border-color:rgba(255,255,255,.14);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 30px 80px rgba(0,0,0,.45)}
+  html.hsk-pwa-browser .hsk-pwa-feedback-card::after,html.hsk-pwa-browser .hsk-shake-dialog::after{
+    background:radial-gradient(120% 60% at 18% 0%,rgba(255,255,255,.12),transparent 60%)}
+  .hsk-pwa-feedback-option,html.hsk-pwa-browser .hsk-pwa-notice-secondary,
+  html.hsk-pwa-browser #hsk-shake-actions .hsk-shake-secondary,html.hsk-pwa-browser .hsk-pwa-feedback-close{
+    background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.16)}
+  html.hsk-pwa-browser .hsk-pwa-feedback-stars button{color:rgba(255,255,255,.22)}
+}
+/* Accessibility: solid surfaces when the user asks for less transparency. */
+@media (prefers-reduced-transparency:reduce){
+  html.hsk-pwa-browser .hsk-pwa-feedback-card,
+  html.hsk-pwa-browser #hsk-pwa-notice-root:not(.is-page) .hsk-pwa-notice-card,
+  html.hsk-pwa-browser .hsk-shake-dialog{background:var(--hsk-paper);-webkit-backdrop-filter:none;backdrop-filter:none}
+}
+
+/* ---- Settings v2: short list + bottom sheets (iOS-like, PWA only) ---- */
+#hsk-pwa-settings-rows{padding:8px 16px calc(28px + env(safe-area-inset-bottom,0px))}
+#hsk-pwa-settings-rows .set{margin-top:22px}
+#hsk-pwa-settings-rows .srow,.pwa-sheet-list .srow{display:flex;align-items:center;gap:14px;min-height:56px;padding:10px 2px;
+  border-bottom:1px solid var(--hsk-divider);font-size:16px;font-weight:500;color:var(--hsk-ink);text-align:start}
+#hsk-pwa-settings-rows .srow > i.ti:first-child,.pwa-sheet-list .srow > i.ti:first-child,.pwa-sheet-row > i.ti{
+  flex:0 0 34px;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:19px;
+  background:var(--hsk-cinnabar-soft);color:var(--hsk-cinnabar-ink)}
+#hsk-pwa-settings-rows .srow .sv,.pwa-sheet-list .srow .sv{margin-left:auto;display:flex;align-items:center;gap:6px;
+  font-size:15px;font-weight:400;color:var(--hsk-ink-secondary);max-width:46%;text-align:end}
+#hsk-pwa-settings-rows .srow .sv .ti-chevron-right,.pwa-sheet-list .srow .sv .ti-chevron-right{color:var(--hsk-ink-disabled);font-size:18px}
+#hsk-pwa-settings-rows .srow:active,.pwa-sheet-list .srow:active,.pwa-sheet-row:not(:disabled):active{background:rgba(33,29,23,.04)}
+#hsk-pwa-settings-rows .pwa-logout-row{color:var(--hsk-cinnabar-ink);font-weight:600}
+#hsk-pwa-settings-rows .pwa-logout-row > i.ti:first-child{background:transparent}
+/* Profile identity row at the top of Settings. */
+.pwa-set-profile{display:flex;align-items:center;gap:14px;width:100%;margin:6px 0 0;padding:12px 2px;border:0;
+  border-bottom:1px solid var(--hsk-divider);background:transparent;color:var(--hsk-ink);font:inherit;text-align:start;cursor:pointer}
+.pwa-set-profile .pav{flex:0 0 58px;width:58px;height:58px;border-radius:17px;font-size:24px;pointer-events:none}
+.pwa-set-profile-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.pwa-set-profile-text strong{font-size:19px;font-weight:700;letter-spacing:-.01em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pwa-set-profile-text small{font-size:14px;color:var(--hsk-ink-secondary)}
+.pwa-set-profile > .ti{color:var(--hsk-ink-disabled);font-size:18px}
+/* Bottom sheets opened from Settings. */
+html.hsk-pwa-browser #sheet.pwa-settings-sheet{background:rgba(20,17,13,.38);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+html.hsk-pwa-browser #sheet.pwa-settings-sheet .si{border-radius:28px 28px 0 0;padding:8px 20px calc(26px + env(safe-area-inset-bottom,0px));
+  background:var(--hsk-paper);box-shadow:0 -12px 40px rgba(20,17,13,.14)}
+.pwa-sheet-head h2{margin:10px 2px 6px;font-size:22px;font-weight:750;letter-spacing:-.015em;color:var(--hsk-ink)}
+.pwa-sheet-list{display:flex;flex-direction:column}
+.pwa-sheet-list > :last-child{border-bottom:0}
+.pwa-sheet-row{display:flex;align-items:center;gap:14px;width:100%;min-height:62px;padding:10px 2px;border:0;
+  border-bottom:1px solid var(--hsk-divider);background:transparent;color:var(--hsk-ink);font:inherit;text-align:start;cursor:pointer}
+.pwa-sheet-label{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;font-size:16px;font-weight:500}
+.pwa-sheet-label small{font-size:13px;font-weight:400;line-height:1.35;color:var(--hsk-ink-secondary)}
+.pwa-sheet-row .toggle{flex:0 0 51px;width:51px;height:31px;border-radius:16px}
+.pwa-sheet-row .toggle:after{width:27px;height:27px;top:2px;left:2px;box-shadow:0 2px 4px rgba(0,0,0,.18)}
+.pwa-sheet-row .toggle.on:after{left:22px}
+.pwa-sheet-row:disabled{cursor:default}
+.pwa-sheet-row:disabled .toggle{opacity:.55}
+/* Calm entrance motion for sheets and centered dialogs. */
+@keyframes hsk-pwa-sheet-in{from{transform:translateY(28px);opacity:.4}to{transform:none;opacity:1}}
+@keyframes hsk-pwa-pop-in{from{transform:translateY(10px) scale(.97);opacity:0}to{transform:none;opacity:1}}
+html.hsk-pwa-browser #sheet.on.pwa-settings-sheet .si{animation:hsk-pwa-sheet-in .26s cubic-bezier(.2,.8,.2,1)}
+html.hsk-pwa-browser .hsk-pwa-feedback-card,
+html.hsk-pwa-browser #hsk-pwa-notice-root:not(.is-page) .hsk-pwa-notice-card,html.hsk-pwa-browser .hsk-shake-dialog{
+  animation:hsk-pwa-pop-in .24s cubic-bezier(.2,.8,.2,1)}
+@media (prefers-reduced-motion:reduce){
+  html.hsk-pwa-browser #sheet.on.pwa-settings-sheet .si,html.hsk-pwa-browser .hsk-pwa-feedback-card,html.hsk-pwa-browser .hsk-shake-dialog,
+  html.hsk-pwa-browser #hsk-pwa-notice-root .hsk-pwa-notice-card{animation:none}
+}
+/* Settings sheets: the title gets programmatic focus for VoiceOver; no ring on touch. */
+html.hsk-pwa-browser #sheet.pwa-settings-sheet [tabindex="-1"]:focus{outline:none}

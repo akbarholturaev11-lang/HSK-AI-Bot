@@ -44,6 +44,7 @@ from .android_push import AndroidPushToken
 from .smart_reminder import (
     SmartReminderPreference, SmartReminderConsent, SmartReminderCapability,
     SmartReminderJob, SmartReminderAttempt, SmartReminderMutation, SmartReminderRouting, SmartReminderAndroidGrant,
+    SmartReminderRollout,
 )
 from .account_notice_delivery import AccountNoticeDelivery
 from .smart_reminder_analysis import SmartReminderAnalysisEvent, SmartReminderAnalysisMonthly, SmartReminderReservationObservation

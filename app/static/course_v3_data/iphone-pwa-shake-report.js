@@ -43,6 +43,11 @@
     var catalog = (window.HSKAI_COURSE_I18N || {})[lang] || {};
     return catalog["pwaShake." + key] || "";
   }
+  function c(key) {
+    if (typeof courseMessage === "function") return courseMessage(key, "");
+    var lang = typeof LANG === "string" ? LANG : (new URLSearchParams(location.search).get("lang") || "ru");
+    return ((window.HSKAI_COURSE_I18N || {})[lang] || {})[key] || "";
+  }
   function verifiedActor() {
     if (onCourse && typeof pwaCourseActor === "function") return pwaCourseActor();
     return fetch("/api/v3/pwa-auth/session", {
@@ -85,6 +90,8 @@
   function show(step) {
     if (root.hidden) lastFocus = document.activeElement;
     stage = step;
+    dialog.setAttribute("data-stage", step);
+    closeButton.textContent = c("subscriptionPage.close") || "\u00d7";
     root.hidden = false;
     dialog.focus();
   }
@@ -101,7 +108,8 @@
     if (lastFocus && lastFocus.isConnected && lastFocus.focus) lastFocus.focus();
     restartListening();
   }
-  root.querySelector("#hsk-shake-close").addEventListener("click", close);
+  var closeButton = root.querySelector("#hsk-shake-close");
+  closeButton.addEventListener("click", close);
   root.querySelector(".hsk-shake-scrim").addEventListener("click", close);
   root.addEventListener("keydown", function (event) {
     if (root.hidden) return;
@@ -287,18 +295,30 @@
     var wrap = document.createElement("div");
     wrap.className = "hsk-shake-preview";
     if (snapshot) {
-      var img = document.createElement("img");
-      img.src = snapshot;
-      img.alt = l("screenshot");
-      wrap.appendChild(img);
+      // Android parity: label + switch row, preview, then the privacy note.
       var label = document.createElement("label");
+      label.className = "hsk-shake-switch-row";
+      label.appendChild(document.createTextNode(l("screenshot")));
       var check = document.createElement("input");
       check.type = "checkbox";
       check.checked = true;
       check.id = "hsk-shake-attach";
+      check.className = "hsk-shake-switch";
+      check.setAttribute("role", "switch");
       label.appendChild(check);
-      label.appendChild(document.createTextNode(" " + l("screenshot")));
       wrap.appendChild(label);
+      var img = document.createElement("img");
+      img.src = snapshot;
+      img.alt = l("screenshot");
+      wrap.appendChild(img);
+      var privacy = document.createElement("p");
+      privacy.className = "hsk-shake-privacy";
+      privacy.textContent = l("privacy");
+      wrap.appendChild(privacy);
+      check.addEventListener("change", function () {
+        img.hidden = !check.checked;
+        privacy.hidden = !check.checked;
+      });
     } else {
       var note = document.createElement("p");
       note.textContent = l("captureUnavailable");
@@ -353,12 +373,18 @@
     textarea.rows = 4;
     textarea.placeholder = l("hint");
     textarea.value = reportDescription;
-    textarea.addEventListener("input", function () { reportDescription = textarea.value; });
+    var counter = document.createElement("small");
+    counter.className = "hsk-shake-count";
+    counter.textContent = reportDescription.length + " / 2000";
+    textarea.addEventListener("input", function () {
+      reportDescription = textarea.value;
+      counter.textContent = textarea.value.length + " / 2000";
+    });
     label.appendChild(textarea);
     body.appendChild(label);
+    body.appendChild(counter);
     body.appendChild(imagePreview());
     makeButton("send", submit);
-    makeButton("cancel", close, true);
     show("form");
   }
   async function submit() {

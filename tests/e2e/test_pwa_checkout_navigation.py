@@ -80,7 +80,7 @@ def test_checkout_return_keeps_profile_interactive_while_overview_is_pending(ret
         frame.locator("#countries [role=status]").wait_for()
         assert pending_overviews
         if return_action == "back":
-            page.locator("#pwa-checkout-back").click()
+            frame.locator("#pwaCheckoutBackBtn").click()
         else:
             page.evaluate("""() => {
                 const node = document.querySelector('#pwa-checkout-layer iframe').contentDocument.body;

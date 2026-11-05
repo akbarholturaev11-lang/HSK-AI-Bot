@@ -5,6 +5,10 @@
   "messages": {
     "pwa.push.body": "Огоҳии нав доред. HSK AI-ро кушоед.",
     "pwa.push.title": "HSK AI",
+    "pwa.push.paymentApprovedTitle": "Пардохт тасдиқ шуд",
+    "pwa.push.paymentApprovedBody": "HSK AI Pro кушода шуд. Дарсро идома диҳед.",
+    "pwa.push.paymentRejectedTitle": "Пардохт қабул нашуд",
+    "pwa.push.paymentRejectedBody": "Тафсилотро бинед ва чекро аз нав фиристед.",
     "course.title.d1_lesson_recovery": "Ба дарс баргаштан",
     "course.title.daily_goal": "Ҳадафи имрӯз",
     "course.title.lesson_time": "Вақти дарс расид",

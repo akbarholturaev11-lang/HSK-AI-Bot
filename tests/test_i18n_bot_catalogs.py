@@ -33,20 +33,25 @@ class BotCatalogTests(unittest.TestCase):
         # unchanged. One explicitly approved partner rejection key extends
         # each locale without changing any existing effective message.
         partner_rejected_key = "partner_rejected_notification"
+        # Approved app (iPhone PWA) feedback variants for current features.
+        app_feedback_keys = {"feedback_like_voice", "feedback_like_pronunciation",
+                             "feedback_like_dictionary", "feedback_sub_pronunciation"}
+        extensions = {partner_rejected_key} | app_feedback_keys
         for name, value in tables.items():
             frozen = ({"uz": {key: text for key, text in value["uz"].items()
-                              if key != partner_rejected_key},
+                              if key not in extensions},
                        "ru": {key: text for key, text in value["ru"].items()
-                              if key != partner_rejected_key},
+                              if key not in extensions},
                        "tj": {key: text for key, text in value["tj"].items()
-                              if key != partner_rejected_key}}
+                              if key not in extensions}}
                       if name == "TEXTS" else value)
             serialized = json.dumps(frozen, ensure_ascii=False, sort_keys=True,
                                     separators=(",", ":")).encode()
             self.assertEqual(hashlib.sha256(serialized).hexdigest(), expected[name])
         self.assertTrue(all(partner_rejected_key in texts for texts in TEXTS.values()))
+        self.assertTrue(all(app_feedback_keys <= set(texts) for texts in TEXTS.values()))
         self.assertEqual({locale: len(values) for locale, values in TEXTS.items()},
-                         {"uz": 277, "ru": 277, "tj": 277})
+                         {"uz": 281, "ru": 281, "tj": 281})
         self.assertEqual({locale: len(values) for locale, values in COURSE_I18N.items()},
                          {"uz": 92, "ru": 92, "tj": 92})
 

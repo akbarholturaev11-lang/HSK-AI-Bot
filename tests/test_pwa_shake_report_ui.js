@@ -11,10 +11,9 @@ const backend = fs.readFileSync("app/api/pwa_auth.py", "utf8");
 assert(page.includes('src="/course_v3_data/iphone-pwa-shake-report.js'));
 assert(page.includes('href="/course_v3_data/iphone-pwa-shake-report.css'));
 assert(page.includes("window.HskPwaShake.settingsRowHtml()"));
-assert(page.includes('overlay.id="pwa-practice-navigation-overlay"'));
-assert(page.includes("overlay.innerHTML=renderStudyPreparing()"));
-assert(page.includes("setTimeout(function(){location.href=src},32)"));
-assert(page.includes("if(overlay.isConnected)overlay.remove()"));
+// Practice opens as an in-document iframe layer (no full-page navigation).
+assert(page.includes('layer.id="pwa-practice-layer"'));
+assert(page.includes("entry.innerHTML=renderStudyPreparing()"));
 assert(js.includes('var onCourse = location.pathname === "/iphone-pwa/course"'));
 assert(js.includes("navigator.standalone"));
 assert(js.includes('matchMedia("(display-mode: standalone)")'));
@@ -81,9 +80,10 @@ for (const [file, verifier] of [
 ]) {
   const html = fs.readFileSync("app/static/" + file, "utf8");
   assert(html.includes(verifier + '().catch(function(error){'),file + ": explicit retry guard");
-  assert(html.includes('if(error&&error.message==="pwa_session_invalid")location.replace("/iphone-pwa")'),
+  // Framed practice pages return to sign-in through practiceSignIn().
+  assert(/if\(error&&error\.message==="pwa_session_invalid"\)(location\.replace\("\/iphone-pwa"\)|practiceSignIn\(\))/.test(html),
     file + ": invalid actor fails closed");
-  assert(html.includes('if(r.status===401){location.replace("/iphone-pwa")'),
+  assert(/if\(r\.status===401\)\{(location\.replace\("\/iphone-pwa"\)|practiceSignIn\(\))/.test(html),
     file + ": confirmed 401 must redirect");
   assert(html.includes('src="/course_v3_data/iphone-pwa-shake-report.js'),
     file + ": reporting must be available beyond course");

@@ -564,6 +564,64 @@ catalog/guard checks. Real launcher/installed refresh/layout acceptance remains
 support is implied. Rollback uses neutral/compatible rendering, preserving
 all notification flags, day guards and Smart consent/ownership.
 
+### 9. Automated four-stage server rollout and admission
+
+Use one durable singleton rollout row for Smart study: generation, stage
+(1–4), stage start, last heartbeat, paused/completed status and one fixed
+sanitized failure code/time. Do not persist learner IDs in rollout state.
+Stable cohort assignment is derived from the canonical account ID, and each
+stage is cumulative.
+
+The owner-directed D30 outcome (Smart for every eligible learner after four
+stages, no manual per-account review) is reached by **automatic admission**
+inside the open cohorts, using the existing routing records:
+
+1. **Eligibility.** Only an existing Smart preference with a real IANA zone
+   and a channel already allowed by that preference (Android this-device
+   consent, or Telegram consent with a reachable bot). Admission never creates
+   or infers consent. Android inventory must be fenced: every active Android
+   device reports the Smart capability (protocol 1, autonomous posting off,
+   fresh). An active device without it, such as the public 1.7.21/52 APK, can
+   still post its own local reminder, so the whole account stays on the legacy
+   senders and is not held.
+2. **Hold.** The existing sticky routing hold. Every server legacy study sender
+   (Telegram lesson time, motivation evening study, Android FCM) already
+   vetoes held accounts. `quiesced_at` keeps the first veto time.
+3. **Drain.** 24 hours after the first hold, so legacy work already started
+   that day cannot produce a second reminder.
+4. **Review.** An evidence-bound automatic `RoutingReview` (hash of version,
+   generation, path, quiesce time, inventory, revision, epoch and review time)
+   through the existing `activate`/`review_android` writers. Telegram reviews
+   last 7 days; Android reviews are capped by the device capability (one native
+   access token), so expiring reviews are visited before the rotation.
+5. **Refresh.** While the owner (state, transport binding, generation) is
+   unchanged, a new preference revision, epoch or Android inventory is
+   re-attested in place by `refresh`, cancelling no work. A changed owner needs
+   a re-hold, which waits until no study work is active. Consent OFF or a newly
+   unfenced device is never re-attested; the sticky hold does not revive legacy.
+
+Advance a stage only after 48 hours of observed runtime heartbeats. Time
+without a heartbeat (deploy, crash) does not count, and send authority fails
+closed while the heartbeat is stale. Systemic failures pause the rollout and
+turn the existing Smart template OFF: at least 5 unknown outcomes that are at
+least 30% of the attempts started in the stage (a learner who blocked the bot,
+an expired PWA subscription and an Android receipt still pending are not
+systemic), three unexpected per-account exceptions within an hour, or three
+consecutive tick timeouts. A Telegram "blocked" refusal marks the learner
+blocked; the attempt stays unknown and is never retried. Every route that
+authorizes a provider send or native posting grant (Telegram claim/dispatch,
+Android final grant, PWA dispatch, planner) checks the current stage in its
+fresh transaction, so pending work from a formerly wider stage cannot escape
+after a restart. The existing signed Admin PWA Smart-template enable is the
+only resume action: re-enable increments generation and starts at stage one.
+The Mini App's automatic IANA-zone setup also opens for accounts of an open
+cohort, which lets Telegram learners become eligible.
+
+This is operational error containment, not proof that all errors are observed
+or that every eligible learner receives exactly one physical display. Accounts
+with an older Android APK reach Smart only after a Smart-capable APK is
+installed (Android public release remains the separate D28 decision).
+
 ## Risks / Trade-offs
 
 - **Old offline APK can display outside the ledger** → Do not migrate accounts with unknown/unsupported autonomous sender state into new cross-channel dispatch. Test historical binaries and describe the remaining physical display limit honestly; no server-only “exactly once” claim.
@@ -574,6 +632,8 @@ all notification flags, day guards and Smart consent/ownership.
 - **Scheduler head-of-line blocking or two replicas** → Durable due jobs, bounded worker execution and DB uniqueness/lease; fault-inject a slow/failing Admin poller and simultaneous claims without changing unrelated financial job semantics.
 - **Display/open metrics can overclaim effectiveness** → Separate provider acceptance, client API invocation, verifiable display, open and server-confirmed learning; protected admin reports show denominators and unknowns.
 - **Schema downgrade/data purge may lose consent or jobs** → Use additive migration and staged backfill; a downgrade that would delete active/newer consent state must refuse destructive removal. Stop dispatch first and retain data until a reviewed archival plan exists.
+- **Rollout telemetry loss could falsely advance users** → Unobserved time never counts toward a stage and stale observation removes send authority; systemic failures pause and disable the existing Smart template. Final claim/grant paths enforce cohort again, including old pending jobs after an Admin restart.
+- **Automatic admission could silence a learner** → Hold only accounts already eligible for a Smart channel (preference zone, consent, fenced inventory); never hold old-APK accounts. A paused rollout leaves held accounts without study reminders until the operator re-enables Smart; this is the owner-chosen stop behavior.
 
 ## Migration Plan
 
@@ -584,6 +644,7 @@ all notification flags, day guards and Smart consent/ownership.
 5. **P4 Android cutover:** release and verify Direct/Play protocol binary first with server Smart dispatch OFF. Prove both WorkManager and FCM use claims, no autonomous post, study-channel permission report, logout/epoch fence and offline fail-closed behavior. Enable single-device then verified multi-device cohorts only after old-client exclusion/cutover evidence, mixed-build and real FCM/OS/device tests.
 6. **P6/P7/V2:** instrument source-backed outcomes and minimal protected Admin controls, baseline and experimental power before optimizer gates. Only validated ML with per-user evidence switches automatically from rules; learner PWA/Desktop adapters follow as V2 on the existing core after real platform capability checks. D15 widget work shares the P2 context, lands Android rendering with P4 and adds iOS plus paired macOS/Windows widget adapters later against the same versioned projection and golden fixtures. Passive widget release never authorizes new notification rollout.
 7. **P8 release/rollback:** exercise staging migration with backup restore and a dispatch kill drill; inspect every remaining legacy sender ownership path. On rollback, turn new dispatch OFF, expire pending grants/jobs, keep explicit OFF/revisions/channel provenance, and resume a legacy sender only for an individually verified eligible cohort without replaying ambiguous work. Record automated, real Telegram, two-Android-device, OS permission, provider, staging and monitored canary evidence in the Master Plan before claiming production acceptance.
+8. **Automated rollout:** start the first stable cohort when the protected Admin Smart template is enabled; hold, drain 24 hours and automatically review eligible fenced accounts of the open cohorts; advance cumulatively every 48 observed hours, pause on a systemic failure, and restart at stage one only through the existing signed Admin PWA enable after repair. Old-APK accounts stay on legacy senders until a Smart-capable APK reports its capability.
 
 ## Open Questions
 

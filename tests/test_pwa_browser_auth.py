@@ -639,6 +639,40 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(valid.json()["profile"]["daily_goal_xp"], 40)
         self.assertEqual(valid.headers["cache-control"], "no-store")
 
+    async def test_profile_edit_and_study_reminder_toggle_require_actor_and_csrf(self):
+        from app.db.models.course_miniapp_profile import CourseMiniAppProfile
+        anonymous = await self.client.post(
+            "/api/v3/pwa/profile", headers={"Origin": ORIGIN},
+            json={"display_name": "Ali", "avatar_key": "panda_cheer"},
+        )
+        self.assertEqual(anonymous.status_code, 401, anonymous.text)
+        state = await self.begin()
+        await self.callback(state)
+        csrf = (await self.client.get("/api/v3/pwa-auth/session")).json()["csrf"]
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf}
+        wrong_csrf = await self.client.post(
+            "/api/v3/pwa/profile", headers={"Origin": ORIGIN, "X-HSK-PWA-CSRF": "invalid"},
+            json={"display_name": "Ali", "avatar_key": ""},
+        )
+        self.assertEqual(wrong_csrf.status_code, 403, wrong_csrf.text)
+        for bad in ({"display_name": "Ali", "avatar_key": "photo"},
+                    {"display_name": "   ", "avatar_key": ""},
+                    {"display_name": "Ali", "avatar_key": "", "telegram_id": 1}):
+            rejected = await self.client.post("/api/v3/pwa/profile", headers=headers, json=bad)
+            self.assertEqual(rejected.status_code, 422, rejected.text)
+        saved = await self.client.post("/api/v3/pwa/profile", headers=headers,
+                                       json={"display_name": "  Ali \n Valiyev ", "avatar_key": "panda_streak"})
+        self.assertEqual(saved.status_code, 200, saved.text)
+        self.assertEqual(saved.json()["display_name"], "Ali Valiyev")
+        off = await self.client.post("/api/v3/pwa/notify", headers=headers, json={"enabled": False})
+        self.assertEqual(off.status_code, 200, off.text)
+        bad_toggle = await self.client.post("/api/v3/pwa/notify", headers=headers, json={"enabled": "no"})
+        self.assertEqual(bad_toggle.status_code, 422, bad_toggle.text)
+        async with self.sessions() as db:
+            profile = (await db.scalars(select(CourseMiniAppProfile))).one()
+        self.assertEqual((profile.display_name, profile.avatar_key, profile.notifications_enabled),
+                         ("Ali Valiyev", "panda_streak", False))
+
     async def test_browser_profile_analytics_use_verified_account_not_telegram(self):
         path = "/api/v3/pwa/profile"
         unauthenticated = await self.client.get(path)
@@ -880,7 +914,11 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         focus = rejected.json()["payment_action"]
         self.assertEqual(
             {k: v for k, v in focus.items() if k != "reviewed_at"},
-            {"payment_id": 903, "status": "rejected", "plan_type": "10_days"},
+            {"payment_id": 903, "status": "rejected", "plan_type": "10_days",
+             "payment_method": None, "card_country": None,
+             "amount": "29", "currency": "TJS",
+             # Free-text admin notes are never exposed as a reason.
+             "reason": None},
         )
         restored_date = datetime.fromisoformat(focus["reviewed_at"])
         if restored_date.tzinfo is None:
@@ -891,6 +929,10 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             now + timedelta(minutes=1),
         )
         self.assertNotIn("Do not expose rejection details", rejected.text)
+        from app.bot.handlers.admin_payments import REJECT_REASON_LABELS
+        from app.services.payment_notify_service import learner_rejection_reason
+        self.assertTrue(learner_rejection_reason(REJECT_REASON_LABELS["wrong_amount"], "ru"))
+        self.assertIsNone(learner_rejection_reason("Do not expose rejection details", "ru"))
 
         # New pending receipt takes precedence; older rejection remains in
         # historical payment_reviews but cannot trigger an active modal.
@@ -1358,11 +1400,11 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             engine.dispose()
 
     async def test_pwa_feedback_choices_reuse_existing_localized_bot_options(self):
-        """PWA option labels and follow-up codes are exactly the live bot catalog."""
+        """PWA labels come from the live bot catalog; the app lists its own features."""
         from app.api.pwa_auth import _pwa_feedback_choices
         from app.bot.keyboards.feedback import (
-            LIKED_OPTIONS, DISLIKED_OPTIONS, LIKE_SUB_OPTIONS,
-            PAID_OPTIONS, PAID_SUB_POSITIVE, PAID_SUB_NEGATIVE,
+            APP_LIKED_OPTIONS as LIKED_OPTIONS, DISLIKED_OPTIONS, LIKE_SUB_OPTIONS,
+            PAID_OPTIONS, APP_PAID_SUB_POSITIVE as PAID_SUB_POSITIVE, PAID_SUB_NEGATIVE,
             feedback_like_label, feedback_dislike_label, feedback_sub_label,
             feedback_paid_label,
         )
@@ -1399,6 +1441,11 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             )
             self.assertEqual(_pwa_feedback_choices("not-a-language", paid=False),
                              _pwa_feedback_choices("ru", paid=False))
+            # A first answer recorded in the bot (e.g. "photo") stays selectable.
+            resumed = _pwa_feedback_choices(lang, paid=False, current="photo")
+            self.assertIn("photo", [choice["code"] for choice in resumed["liked"]])
+            self.assertEqual(resumed["liked"][-1]["code"], "other")
+            self.assertNotIn("photo", [choice["code"] for choice in unpaid["liked"]])
 
         async with self.sessions() as db:
             person = await db.get(User, 1)
@@ -4673,6 +4720,55 @@ const settle = () => new Promise(resolve => setImmediate(resolve));
         async with self.sessions() as db:
             stored = await db.get(LearnerPwaPushSubscription, subscription_id)
             self.assertIsNotNone(stored.revoked_at)
+
+    async def test_payment_push_names_only_the_decision(self):
+        from app.services.notification_i18n import notification_message
+        self.settings.PWA_PUSH_ENABLED = True
+        self.settings.PWA_PUSH_SEND_ENABLED = True
+        self.settings.PWA_PUSH_STORAGE_KEY = Fernet.generate_key().decode("ascii")
+        vapid_private = ec.generate_private_key(ec.SECP256R1())
+        private_bytes = vapid_private.private_numbers().private_value.to_bytes(32, "big")
+        public_bytes = vapid_private.public_key().public_bytes(Encoding.X962, PublicFormat.UncompressedPoint)
+        encode = lambda value: base64.urlsafe_b64encode(value).rstrip(b"=").decode("ascii")
+        self.settings.PWA_PUSH_VAPID_PRIVATE_KEY = encode(private_bytes)
+        self.settings.PWA_PUSH_VAPID_PUBLIC_KEY = encode(public_bytes)
+        self.settings.PWA_PUSH_VAPID_SUBJECT = "mailto:security@example.test"
+        state = await self.begin()
+        await self.callback(state)
+        csrf = (await self.client.get("/api/v3/pwa-auth/session")).json()["csrf"]
+        subscription_key = ec.generate_private_key(ec.SECP256R1()).public_key().public_bytes(
+            Encoding.X962, PublicFormat.UncompressedPoint,
+        )
+        response = await self.client.post("/api/v3/pwa/push/subscribe", headers={
+            "Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf,
+        }, json={
+            "endpoint": "https://web.push.apple.com/example/opaque-delivery-token",
+            "keys": {"p256dh": encode(subscription_key), "auth": encode(b"b" * 16)},
+        })
+        self.assertEqual(response.status_code, 200, response.text)
+        now = datetime.now(timezone.utc)
+        async with self.sessions() as db:
+            db.add(Payment(
+                id=4401, user_id=1, user_telegram_id=1001, plan_type="1_month",
+                amount=149, currency="somoni", payment_status="rejected",
+                submitted_at=now, reviewed_at=now, admin_comment="Summa noto'g'ri",
+            ))
+            await db.flush()
+            self.assertEqual(await enqueue_event(db, user_id=1, source="payment",
+                source_id=4401, language="uz", now=now), 1)
+            await db.commit()
+        delivered = []
+        async def accepted_sender(payload, public_payload, private_key, subject, source):
+            delivered.append(json.loads(public_payload))
+            return 201
+        result = await dispatch_batch(self.sessions, settings_obj=self.settings, sender=accepted_sender, now=now, limit=1)
+        self.assertEqual(result["accepted"], 1)
+        self.assertIn(delivered[0]["title"], {
+            notification_message("pwa.push.paymentRejectedTitle", lang, "")
+            for lang in ("uz", "ru", "tj")
+        })
+        self.assertNotIn("149", json.dumps(delivered[0], ensure_ascii=False))
+        self.assertNotIn("Summa", json.dumps(delivered[0], ensure_ascii=False))
 
     async def test_push_outbox_deduplicates_and_sends_content_free_payload_with_bounded_cleanup(self):
         self.settings.PWA_PUSH_ENABLED = True

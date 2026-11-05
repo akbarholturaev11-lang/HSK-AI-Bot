@@ -5,6 +5,10 @@
   "messages": {
     "pwa.push.body": "У вас новое уведомление. Откройте HSK AI.",
     "pwa.push.title": "HSK AI",
+    "pwa.push.paymentApprovedTitle": "Платёж подтверждён",
+    "pwa.push.paymentApprovedBody": "HSK AI Pro открыт. Продолжайте урок.",
+    "pwa.push.paymentRejectedTitle": "Платёж не принят",
+    "pwa.push.paymentRejectedBody": "Посмотрите подробности и отправьте чек снова.",
     "course.title.d1_lesson_recovery": "Вернуться к уроку",
     "course.title.daily_goal": "Цель на сегодня",
     "course.title.lesson_time": "Время урока",

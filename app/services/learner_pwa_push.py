@@ -537,6 +537,26 @@ async def _load_event_language(session_factory, outbox_id):
         return lang if lang in {"uz", "ru", "tj"} else row.language
 
 
+# Payment decisions name only the status on the lock screen (like Android's
+# payment notification): never an amount, plan, reason or id.
+_PAYMENT_PUSH_COPY = {
+    "approved": ("pwa.push.paymentApprovedTitle", "pwa.push.paymentApprovedBody"),
+    "rejected": ("pwa.push.paymentRejectedTitle", "pwa.push.paymentRejectedBody"),
+}
+
+
+async def _payment_push_status(session_factory, outbox_id):
+    async with session_factory() as session:
+        row = await session.get(LearnerPwaPushOutbox, outbox_id)
+        if row is None or row.source != "payment":
+            return None
+        status = (await session.execute(
+            select(Payment.payment_status)
+            .where(Payment.id == row.source_id, Payment.user_id == row.user_id)
+        )).scalar_one_or_none()
+        return status if status in _PAYMENT_PUSH_COPY else None
+
+
 async def dispatch_batch(session_factory, *, settings_obj, limit=10, sender=None, now=None):
     """Send bounded visible pushes; provider acceptance is not device display proof."""
     if type(limit) is not int or not 1 <= limit <= _MAX_BATCH:
@@ -575,6 +595,12 @@ async def dispatch_batch(session_factory, *, settings_obj, limit=10, sender=None
                     "pwa.push.body", language,
                     "У вас новое уведомление. Откройте HSK AI.",
                 )
+                if source == "payment":
+                    decision = await _payment_push_status(session_factory, outbox_id)
+                    if decision:
+                        title_key, body_key = _PAYMENT_PUSH_COPY[decision]
+                        title = notification_message(title_key, language, title)
+                        body = notification_message(body_key, language, body)
                 public_payload = json.dumps(
                     {"title": title, "body": body, "url": _PUSH_PATH,
                      "tag": "hsk-" + outbox_id.replace("-", "")[:24]},

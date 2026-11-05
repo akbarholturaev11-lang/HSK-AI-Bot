@@ -5,6 +5,10 @@
   "messages": {
     "pwa.push.body": "Yangi bildirishnoma. HSK AI'ni oching.",
     "pwa.push.title": "HSK AI",
+    "pwa.push.paymentApprovedTitle": "To'lov tasdiqlandi",
+    "pwa.push.paymentApprovedBody": "HSK AI Pro ochildi. Darsni davom ettiring.",
+    "pwa.push.paymentRejectedTitle": "To'lov qabul qilinmadi",
+    "pwa.push.paymentRejectedBody": "Tafsilotni ko'rib, chekni qayta yuboring.",
     "course.title.d1_lesson_recovery": "Darsga qaytish",
     "course.title.daily_goal": "Bugungi maqsad",
     "course.title.lesson_time": "Dars vaqti keldi",

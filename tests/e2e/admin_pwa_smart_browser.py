@@ -78,9 +78,26 @@ async def check(output):
                     await expect(save).to_be_disabled()
                     await expect(page.locator('#drawerFoot button')).to_have_count(1)
                     await expect(page.locator('.drawer-close')).to_have_count(1)
-                    off=await page.evaluate('(lang)=>HSKAI_ADMIN_I18N[lang].hsk30Off',lang)
-                    await expect(page.locator('.review-summary dd')).to_have_text(
-                        [off,off,'0',off,datetime.now(timezone.utc).strftime('%Y-%m')+' · UTC','—','7','—'])
+                    off,waiting=await page.evaluate('(lang)=>[HSKAI_ADMIN_I18N[lang].hsk30Off,'
+                        'HSKAI_ADMIN_I18N[lang].smartRolloutWaiting]',lang)
+                    await expect(page.locator('.smart-status-head strong')).to_have_text('0/4')
+                    await expect(page.locator('.smart-status .pill')).to_have_text(waiting)
+                    await expect(page.locator('.smart-facts .pill')).to_have_text([off,off])
+                    await expect(page.locator('.smart-facts strong')).to_have_text('0')
+                    await expect(page.locator('.smart-results .num')).to_have_text(['—','7','—'])
+                    await expect(page.locator('.smart-results-head')).to_contain_text(
+                        datetime.now(timezone.utc).strftime('%Y-%m'))
+                    # Owner rule: a long hint shows one line and opens on tap.
+                    hint=page.locator('.smart-status .source-note')
+                    await expect(hint).to_have_attribute('aria-expanded','false')
+                    closed=(await hint.bounding_box())['height']
+                    assert closed<=24, closed
+                    await hint.click()
+                    await expect(hint).to_have_attribute('aria-expanded','true')
+                    assert (await hint.bounding_box())['height']>closed
+                    await hint.click()
+                    await expect(hint).to_have_attribute('aria-expanded','false')
+                    assert await page.locator('#managementForm .source-note.hint-fold').count()>=2
                     await page.locator('#noticeEnabled').select_option('false')
                     await expect(save).to_be_enabled()
                     await page.locator('#noticeEnabled').select_option('true')

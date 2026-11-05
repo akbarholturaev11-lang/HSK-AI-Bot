@@ -901,3 +901,32 @@ fieldset.form-field legend{padding:0 6px;font-size:13px;font-weight:650}
   .finance-portfolio-toolbar{align-items:flex-start;flex-wrap:wrap}
   .finance-secondary{max-width:none}
 }
+
+/* One-line hints: longer text folds to a single line and opens on tap. */
+.hint-clamp{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:1;line-clamp:1;overflow:hidden}
+.hint-fold{position:relative;padding-right:20px;cursor:pointer;border-radius:6px;-webkit-tap-highlight-color:transparent}
+.hint-fold:after{content:"";position:absolute;right:5px;top:.55em;width:6px;height:6px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg);opacity:.6;transition:transform .2s}
+.hint-fold.expanded:after{transform:rotate(-135deg);top:.8em}
+.hint-fold:hover{color:#5f707b}
+
+/* Smart study editor: status first, compact facts, small result tiles. */
+.smart-status{border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:0 0 20px;background:#fbfcfc}
+.smart-status-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:12px;color:var(--muted)}
+.smart-status-head strong{font-size:17px;color:var(--ink);font-weight:780;letter-spacing:-.02em}
+.smart-stages{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin:11px 0 12px}
+.smart-stages span{height:5px;border-radius:5px;background:#e3e9eb}
+.smart-status.tone-green .smart-stages span.on{background:var(--green)}
+.smart-status.tone-amber .smart-stages span.on{background:var(--amber)}
+.smart-status.tone-red .smart-stages span.on{background:var(--red)}
+.smart-status.tone-gray .smart-stages span.on{background:#9fb0b6}
+.smart-status-meta{display:flex;align-items:center;gap:9px;flex-wrap:wrap;min-width:0}
+.smart-status-line{font-size:12px;color:var(--muted);min-width:0}
+.smart-status-line.is-error{color:var(--red);font-weight:650}
+.smart-status .source-note{margin:10px 0 0}
+.smart-facts{margin:4px 0 18px}
+.smart-facts .stat-info-row{padding:10px 0;font-size:13px}
+.smart-results-head{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:12px;font-weight:700;color:#516372;margin:0 0 9px}
+.smart-results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:20px}
+.smart-results .mini-metric{padding:11px 12px;border-radius:11px;min-width:0;display:flex;flex-direction:column;justify-content:space-between}
+.smart-results .mini-metric .label{font-size:11px;line-height:1.35}
+.smart-results .mini-metric .num{font-size:18px;margin:6px 0 0}

@@ -33,22 +33,24 @@ class PlanningResult:
 
 class SmartReminderPlanner:
     def __init__(self, settings, sessions, *, enabled=False, calibration=None,
-                 coverage_reader=None, android_admission_reader=None, clock=None):
+                 coverage_reader=None, android_admission_reader=None, clock=None, rollout_reader=None):
         self.settings, self.sessions, self.enabled = settings, sessions, enabled
         self.calibration, self.coverage_reader = calibration, coverage_reader
         self.android_admission_reader = android_admission_reader
+        self.rollout_reader = rollout_reader
         self.clock = clock or (lambda: datetime.now(timezone.utc))
         self.queue = SmartReminderShadowQueue(sessions, clock=self.clock,
             analysis_observer=SmartReminderAnalysisObserver(settings,sessions,clock=self.clock))
         self.telegram = SmartReminderTelegramService(settings,sessions,calibration=calibration,
-            coverage_reader=coverage_reader,clock=self.clock)
+            coverage_reader=coverage_reader,clock=self.clock,rollout_reader=rollout_reader)
 
     def _now(self):
         return _aware_utc(self.clock())
 
     def _android(self, session):
         return SmartReminderAndroidService(session,enabled=self.enabled,calibration=self.calibration,
-            coverage_reader=self.coverage_reader,admission_reader=self.android_admission_reader,clock=self.clock)
+            coverage_reader=self.coverage_reader,admission_reader=self.android_admission_reader,clock=self.clock,
+            rollout_reader=self.rollout_reader)
 
     async def _telegram_actor(self, session, user_id):
         telegram_id = await session.scalar(select(User.telegram_id).where(User.id==user_id))
