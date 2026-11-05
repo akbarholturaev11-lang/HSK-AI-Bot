@@ -66,8 +66,10 @@ job's selected endpoint, create an attempt or issue an Android posting grant.
 
 The internal default-disabled `SmartReminderPlanner` now joins reservation,
 selection and one pending destination. It accepts only already reviewed routing
+(operator or, since 2026-11-05, the production runtime's automatic admission)
 with current inventory/revision/epoch and explicit cadence/complete-learning
-readers. Android additionally requires the existing privileged job/device/session
+readers; a `telegram` row uses the Telegram ownership fence and a `held` row the
+native fresh-capability fence. Android additionally requires the existing privileged job/device/session
 admission reader; Telegram requires its activated cohort and feature setting.
 No review or consent is inferred from a capability/client field.
 

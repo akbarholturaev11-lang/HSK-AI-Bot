@@ -111,7 +111,7 @@ class SmartReminderCapability(Base):
 
 
 class SmartReminderRouting(Base):
-    """Sticky operator-reviewed ownership, never client consent or enrollment."""
+    """Sticky reviewed ownership (automatic admission or operator); never client consent."""
 
     __tablename__ = "smart_reminder_routing"
     __table_args__ = (

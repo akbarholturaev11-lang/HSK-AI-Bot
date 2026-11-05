@@ -1,5 +1,13 @@
 # Smart preference API contract
 
+> **Update 2026-11-05 (Master Plan §17.96–§17.98).** Map exposure for the Mini
+> App zone bootstrap is also true for an account in an open rollout cohort, not
+> only for a held routing row. For a bot-only learner with the legacy lesson
+> reminder ON, automatic admission writes a fixed `Etc/GMT±N` zone from the
+> legacy whole-hour offset through this journaled timezone-only writer (no
+> consent change); the Mini App treats an `Etc/GMT` zone as provisional and
+> replaces it with the real device zone. Android 1.7.29/60 is public.
+
 This is the P1 task 2.3 interface; execution evidence belongs only to the
 [Master Plan](SMART_REMINDER_MASTER_PLAN.md). The existing native study switch consumes it under D29; no separate Smart
 settings screen is introduced. `dispatch_allowed` and channel `eligible` remain false;
