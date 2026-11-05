@@ -53,6 +53,8 @@ assert(js.includes("manual: startReport"));
 assert(js.includes("previouslyGranted = true"));
 assert(js.includes("reportDescription = previous.value"));
 assert(js.includes("reportDescription = textarea.value"));
+assert(js.includes("selectionId === imageSelectionSerial"),"only latest manual screenshot decode may update visible form");
+assert(js.includes('stage === "form" && !root.hidden'),"closed report rejects stale manual image callbacks");
 assert(js.includes("async function captureViewport()"));
 assert(js.includes('var generation = ++epoch'));
 assert(!js.includes("function introduction()"),"no unsolicited first-run permission modal");
