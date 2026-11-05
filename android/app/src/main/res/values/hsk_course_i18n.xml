@@ -566,7 +566,19 @@
     <string name="hsk_course_pwa_feedback_body" formatted="false">Hozirgina tugatgan darsingiz haqida qisqa fikr qoldiring.</string>
     <string name="hsk_course_pwa_feedback_title" formatted="false">{level} · {n}-dars haqida fikringiz</string>
     <string name="hsk_course_pwa_inbox_empty" formatted="false">Hozircha bildirishnomalar yo‘q.</string>
+    <string name="hsk_course_pwa_profile_avatar" formatted="false">Avatarni tanlang</string>
+    <string name="hsk_course_pwa_profile_edit" formatted="false">Profilni tahrirlash</string>
+    <string name="hsk_course_pwa_profile_name" formatted="false">Ism</string>
+    <string name="hsk_course_pwa_profile_save" formatted="false">Saqlash</string>
+    <string name="hsk_course_pwa_settings_account_notices" formatted="false">To‘lov va hisob xabarlari</string>
+    <string name="hsk_course_pwa_settings_always_on" formatted="false">Doim yoqiq</string>
+    <string name="hsk_course_pwa_settings_daily_time" formatted="false">Kunlik vaqt</string>
+    <string name="hsk_course_pwa_settings_focus" formatted="false">Asosiy yo‘nalish</string>
     <string name="hsk_course_pwa_settings_help_text" formatted="false">Ilovada muammo bo‘lsa, yordam xizmatiga qisqa yozing. Iloji bo‘lsa, ekran tasvirini ham yuboring.</string>
+    <string name="hsk_course_pwa_settings_section_account" formatted="false">Hisob</string>
+    <string name="hsk_course_pwa_settings_section_study" formatted="false">O‘qish</string>
+    <string name="hsk_course_pwa_settings_study_goal" formatted="false">O‘qish maqsadi</string>
+    <string name="hsk_course_pwa_settings_study_reminders" formatted="false">Dars eslatmalari</string>
     <string name="hsk_course_rank" formatted="false">o\'rin</string>
     <string name="hsk_course_rating_challenge_cooldown" formatted="false">Bellashuvni 15 daqiqada bir marta yuborish mumkin. {minutes} daqiqadan keyin urinib ko\'ring.</string>
     <string name="hsk_course_rating_challenge_not_allowed" formatted="false">Bu foydalanuvchiga chaqiruv yuborib bo\'lmaydi</string>

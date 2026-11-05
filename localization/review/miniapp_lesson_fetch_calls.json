@@ -7,7 +7,7 @@
   "read_calls": [
     {
       "ordinal": 1,
-      "line": 2635,
+      "line": 2654,
       "anchor": "loadLessonData(lv,n)",
       "owner": "warmLessonPreviewAudio",
       "intent": "audio_preload_before_continue",
@@ -17,7 +17,7 @@
     },
     {
       "ordinal": 2,
-      "line": 3570,
+      "line": 3630,
       "anchor": "loadLessonData(lv,l.n)",
       "owner": "prefetchNearbyLessons",
       "intent": "background_nearby_prefetch",
@@ -27,7 +27,7 @@
     },
     {
       "ordinal": 3,
-      "line": 4663,
+      "line": 4725,
       "anchor": "loadLessonData(lv,l.n)",
       "owner": "startLesson",
       "intent": "interactive_lesson_after_reservation",
@@ -38,17 +38,17 @@
   ],
   "additional_indirect_entrypoints": [
     {
-      "line": 4000,
+      "line": 4062,
       "name": "warmLessonPreviewAudio",
       "intent": "preview_on_sheet_open"
     },
     {
-      "line": 5897,
+      "line": 5961,
       "name": "prefetchNearbyLessons",
       "intent": "track_switch_background"
     },
     {
-      "line": 9096,
+      "line": 9200,
       "name": "prefetchNearbyLessons",
       "intent": "initial_course_boot_background"
     }

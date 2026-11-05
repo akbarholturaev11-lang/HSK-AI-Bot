@@ -299,3 +299,33 @@ html.hsk-pwa-browser .hsk-native-back-duplicate{
 #hsk-pwa-urgent-body:empty{display:none}
 #hsk-pwa-urgent-meta{display:block;margin:4px 0 10px;font-size:12px;opacity:.7}
 .hsk-pwa-notice-row small{white-space:pre-line}
+/* Settings: one flat native list with section titles, no nested cards. */
+#hsk-pwa-settings-rows .pwa-set-head{margin:24px 4px 4px;font-size:13px;font-weight:700;letter-spacing:.04em;
+  text-transform:uppercase;color:var(--hsk-ink-secondary)}
+#hsk-pwa-settings-rows .pwa-set-head:first-child{margin-top:4px}
+#hsk-pwa-settings-rows .set{margin:0;background:transparent;border:0;border-radius:0;box-shadow:none;overflow:visible}
+#hsk-pwa-settings-rows .srow{background:transparent;border:0;border-bottom:1px solid var(--hsk-divider);
+  border-radius:0;box-shadow:none;padding:14px 4px;font-size:16px}
+#hsk-pwa-settings-rows .set > .srow:last-child{border-bottom:0}
+#hsk-pwa-settings-rows .srow .sv{color:var(--hsk-ink-secondary);max-width:48%;text-align:end;white-space:normal}
+#hsk-pwa-settings-rows .srow-static{cursor:default}
+#hsk-pwa-settings-rows .sech{margin:26px 4px 10px}
+#hsk-pwa-settings-rows .social-btn{background:transparent;box-shadow:none}
+/* Profile editor (Android parity). */
+html.hsk-pwa-browser .pwa-pav{padding:0;cursor:pointer;font:inherit;overflow:visible}
+html.hsk-pwa-browser .pwa-pav.art{background:var(--hsk-paper-raised,#fff)}
+.pwa-avatar-art{display:block;width:100%;height:100%}
+.pwa-avatar-art svg,.pwa-avatar-art .hsk-character{width:100%;height:100%;display:block}
+.pwa-avatar-label{margin:4px 2px 10px;font-size:14px;color:var(--hsk-ink-secondary)}
+.pwa-avatar-pick{display:flex;justify-content:center;gap:16px;margin-bottom:18px}
+.pwa-avatar-pick button{width:72px;height:72px;padding:6px;border-radius:50%;border:1px solid var(--hsk-divider);
+  background:var(--hsk-paper-raised,#fff)}
+.pwa-avatar-pick button[aria-checked="true"]{border:2px solid var(--hsk-cinnabar);background:rgba(240,97,76,.1)}
+.pwa-name-field{display:block;margin:0 0 16px}
+.pwa-name-field span{display:block;margin:0 2px 6px;font-size:14px;color:var(--hsk-ink-secondary)}
+.pwa-name-field input{width:100%;min-height:50px;padding:0 14px;border:1px solid var(--hsk-divider);border-radius:14px;
+  background:var(--hsk-paper-raised,#fff);color:var(--hsk-ink);font:inherit;font-size:16px}
+#pwa-profile-save:disabled{opacity:.45}
+/* The PWA's own preset-avatar editor (not the Telegram photo) is tappable. */
+html.hsk-pwa-browser .phero .pav.pwa-pav{cursor:pointer;pointer-events:auto}
+html.hsk-pwa-browser .phero .pav.pwa-pav .ed{display:flex!important}

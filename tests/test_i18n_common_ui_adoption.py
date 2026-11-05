@@ -372,12 +372,13 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
 
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
         self.assertEqual(html.count(
-            '<script src="/course_v3_data/hsk-course-i18n.js?v=20261021-6431aaf27e2a"></script>'
+            '<script src="/course_v3_data/hsk-course-i18n.js?v=20261021-0c543d72cece"></script>'
         ), 1)
         self.assertLess(html.index("hsk-course-i18n.js"),
                         html.index("function courseMessage("))
         self.assertIn("window.HSKAI_COURSE_I18N", html)
-        self.assertEqual(html.count('courseMessage("lang",t.lang)'), 2)
+        # Telegram settings, profile and the separate PWA settings list.
+        self.assertEqual(html.count('courseMessage("lang",t.lang)'), 3)
         self.assertEqual(html.count('courseMessage("notif",t.notif)'), 1)
         self.assertEqual(html.count('esc(courseMessage("friends",t.friends))'), 1)
         self.assertEqual(html.count('esc(courseMessage("helpTitle",t.helpTitle))'), 1)
@@ -410,7 +411,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         "dict": 2,
         "dictSub": 1,
             "grammar": 3,
-        "help": 1,
+        "help": 2,
         "helpBtn": 1,
         "helpNoContact": 1,
         "helpText": 1,
@@ -739,7 +740,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertIn('function openSupportLink(url){', html)
         self.assertIn('+(supportUrl?', html)
         self.assertIn('courseMessage("nav."+st.s,T().nav[st.s])', html)
-        self.assertIn('hsk-course-i18n.js?v=20261021-6431aaf27e2a', html)
+        self.assertIn('hsk-course-i18n.js?v=20261021-0c543d72cece', html)
 
 
     def test_miniapp_notifications_and_pinyin_settings_use_local_static_text(self):
@@ -780,7 +781,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertIn('_apiPost("/api/v3/notify",{enabled:on})', html)
         self.assertIn('localStorage.setItem("hsk_v3_pinyin",v)', html)
         self.assertIn("applyPinyinMode()", html)
-        self.assertIn("hsk-course-i18n.js?v=20261021-6431aaf27e2a", html)
+        self.assertIn("hsk-course-i18n.js?v=20261021-0c543d72cece", html)
         self.assertNotIn("fetch('/api/i18n/", html)
 
 
@@ -821,7 +822,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertIn("App.applyNotif(false)", html)
         self.assertIn('_apiPost("/api/v3/notify",{enabled:on})', html)
         self.assertIn("myAvatarImgHtml()", html)
-        self.assertIn("hsk-course-i18n.js?v=20261021-6431aaf27e2a", html)
+        self.assertIn("hsk-course-i18n.js?v=20261021-0c543d72cece", html)
 
 
     def test_miniapp_course_and_practice_error_copy_local_assets(self):
@@ -866,7 +867,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertIn('if(o.status===403&&o.j&&o.j.error==="free_feature_limit_reached")', html)
         self.assertIn('if(o.status<200||o.status>=300||!o.j||o.j.ok!==true||o.j.allowed!==true)', html)
         self.assertIn('location.reload()', html)
-        self.assertIn('hsk-course-i18n.js?v=20261021-6431aaf27e2a', html)
+        self.assertIn('hsk-course-i18n.js?v=20261021-0c543d72cece', html)
 
 
     def test_miniapp_level_picker_copy_uses_reviewed_local_catalogs(self):
@@ -903,7 +904,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertIn('var cur=normalizeLevel(MAP&&MAP.level||getSelectedLevel())', view)
         self.assertIn("onclick=\"App.pickLevel(", view)
         self.assertIn("pickLevel:function(lv){App.closeSheet();loadLevel(lv)}", html)
-        self.assertIn('hsk-course-i18n.js?v=20261021-6431aaf27e2a', html)
+        self.assertIn('hsk-course-i18n.js?v=20261021-0c543d72cece', html)
         self.assertNotIn('fetch("/api/i18n/', html)
 
 
@@ -947,7 +948,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
                           "if(bi===steps.length-1",
                           "function parseRule(t){"):
             self.assertIn(invariant, html)
-        self.assertIn('hsk-course-i18n.js?v=20261021-6431aaf27e2a', html)
+        self.assertIn('hsk-course-i18n.js?v=20261021-0c543d72cece', html)
 
 
     def test_finish_ui_batch_31_reviewed_keys(self):
@@ -964,7 +965,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         for locale in ("uz", "ru", "tj"):
             msgs = json.loads((ROOT / f"localization/ui/{locale}/course.json")
                               .read_text(encoding="utf-8"))["messages"]
-            self.assertEqual(len(msgs), 1021)
+            self.assertEqual(len(msgs), 1033)
             for prefix, fields, var, scope, start, end in groups:
                 region = html.split(scope, 1)[1].split(start, 1)[1].split(end, 1)[0]
                 original = next((line for line in region.splitlines()
@@ -993,7 +994,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
                           "if(!ps||!n||!ps.extended)", "if(!fxOff())luRain();",
                           "function partSecs(l){", "if(isPremiumLocked(l))"):
             self.assertIn(invariant, html)
-        self.assertIn("hsk-course-i18n.js?v=20261021-6431aaf27e2a", html)
+        self.assertIn("hsk-course-i18n.js?v=20261021-0c543d72cece", html)
 
 
 if __name__ == "__main__":

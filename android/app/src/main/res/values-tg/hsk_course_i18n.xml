@@ -566,7 +566,19 @@
     <string name="hsk_course_pwa_feedback_body" formatted="false">Дар бораи дарсе, ки ҳозир анҷом додед, кӯтоҳ фикр нависед.</string>
     <string name="hsk_course_pwa_feedback_title" formatted="false">{level} · фикр дар бораи дарси {n}</string>
     <string name="hsk_course_pwa_inbox_empty" formatted="false">Ҳоло огоҳӣ нест.</string>
+    <string name="hsk_course_pwa_profile_avatar" formatted="false">Аватарро интихоб кунед</string>
+    <string name="hsk_course_pwa_profile_edit" formatted="false">Таҳрири профил</string>
+    <string name="hsk_course_pwa_profile_name" formatted="false">Ном</string>
+    <string name="hsk_course_pwa_profile_save" formatted="false">Нигоҳ доштан</string>
+    <string name="hsk_course_pwa_settings_account_notices" formatted="false">Пардохт ва ҳисоб</string>
+    <string name="hsk_course_pwa_settings_always_on" formatted="false">Ҳамеша фаъол</string>
+    <string name="hsk_course_pwa_settings_daily_time" formatted="false">Вақт дар як рӯз</string>
+    <string name="hsk_course_pwa_settings_focus" formatted="false">Самти асосӣ</string>
     <string name="hsk_course_pwa_settings_help_text" formatted="false">Агар дар барнома мушкиле пайдо шавад, ба дастгирӣ кӯтоҳ нависед. Агар имкон бошад, акси экранро ҳам фиристед.</string>
+    <string name="hsk_course_pwa_settings_section_account" formatted="false">Ҳисоб</string>
+    <string name="hsk_course_pwa_settings_section_study" formatted="false">Таҳсил</string>
+    <string name="hsk_course_pwa_settings_study_goal" formatted="false">Ҳадафи таҳсил</string>
+    <string name="hsk_course_pwa_settings_study_reminders" formatted="false">Ёдраскуниҳои дарс</string>
     <string name="hsk_course_rank" formatted="false">ҷой</string>
     <string name="hsk_course_rating_challenge_cooldown" formatted="false">Рақобатро дар 15 дақиқа як бор фиристодан мумкин. Пас аз {minutes} дақиқа кӯшиш кунед.</string>
     <string name="hsk_course_rating_challenge_not_allowed" formatted="false">Ба ин корбар даъват фиристодан мумкин нест</string>

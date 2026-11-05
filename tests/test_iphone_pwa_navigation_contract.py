@@ -149,7 +149,11 @@ class IphonePwaNavigationContractTests(unittest.TestCase):
         self.assertIn('"/api/miniapp/profile":"/api/v3/pwa/profile"', COURSE)
         self.assertIn("function avatarImgHtml(tgId){return !PWA_COURSE_HOST&&tgId?", COURSE)
         self.assertRegex(COURSE, r'function myAvatarImgHtml\(\)\{\s*if\(PWA_COURSE_HOST\)return "";')
-        self.assertIn("(PWA_COURSE_HOST?'':myAvatarImgHtml()+'<span class=\"ed\">", COURSE)
+        # PWA profile header: own preset avatar editor, never the Telegram photo.
+        pwa_header = COURSE.split("+'<div class=\"phero\">'+(PWA_COURSE_HOST", 1)[1].split("\n      :'<div class=\"pav", 1)[0]
+        self.assertIn('onclick="App.pwaProfileEdit()"', pwa_header)
+        self.assertNotIn("myAvatarImgHtml", pwa_header)
+        self.assertIn('@router.post("/api/v3/pwa/profile")', AUTH)
         self.assertIn('async def pwa_profile(request: Request)', AUTH)
         self.assertIn('get_profile_payload(actor)', AUTH)
         self.assertIn('result["user"].pop("telegram_username", None)', AUTH)

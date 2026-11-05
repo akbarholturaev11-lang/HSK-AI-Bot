@@ -1627,7 +1627,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
   .nav::before,.nav::after { display:none; }
 }
 </style>
-<link rel="stylesheet" href="/course_v3_data/iphone-pwa-glass.css?v=20261105-b91f0fc1a261">
+<link rel="stylesheet" href="/course_v3_data/iphone-pwa-glass.css?v=20261105-f08560ecef8c">
 <link rel="stylesheet" href="/course_v3_data/iphone-pwa-shake-report.css?v=20261105-83778161c05b">
 <link href="/course_v3_data/desktop-download.css?v=20261003-1" rel="stylesheet">
 <link href="/course_v3_data/profile-carousel.css?v=20261017-link-cards-1" rel="stylesheet">
@@ -1737,7 +1737,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 </script>
 <!-- Reklama moduli: dars yakuni bloki uchun (mashq bo'limlari ham shu moduldan foydalanadi) -->
 <script src="/voice-live.js?v=20261105-87257ac03ec1"></script>
-<script defer src="/course_v3_data/ads.js?v=20261021-785974bb437c"></script><script src="/course_v3_data/hsk-common-i18n.js?v=20261019-1c672dcfb10d"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261021-6431aaf27e2a"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script><script src="/course_v3_data/p3-grammar-reservation.js?v=20261019-p3-2"></script>
+<script defer src="/course_v3_data/ads.js?v=20261021-785974bb437c"></script><script src="/course_v3_data/hsk-common-i18n.js?v=20261019-1c672dcfb10d"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261021-0c543d72cece"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script><script src="/course_v3_data/p3-grammar-reservation.js?v=20261019-p3-2"></script>
 <script>
 /* ---------- i18n (default RU) ---------- */
 var I18N={
@@ -2343,6 +2343,8 @@ var PWA_COURSE_POST_PATHS={
   "/api/v3/language":"/api/v3/pwa/language",
   "/api/v3/preferences":"/api/v3/pwa/preferences",
   "/api/v3/hints/dismiss":"/api/v3/pwa/hints/dismiss",
+  "/api/v3/notify":"/api/v3/pwa/notify",
+  "/api/v3/pwa/profile":"/api/v3/pwa/profile",
   "/api/miniapp/mistakes/review/start":"/api/v3/pwa/mistakes/review/start",
   "/api/miniapp/mistakes/review/answer":"/api/v3/pwa/mistakes/review/answer",
   "/api/miniapp/mistakes/review/complete":"/api/v3/pwa/mistakes/review/complete",
@@ -3184,7 +3186,7 @@ var App={
     });
   },
   closeChest:function(){var ov=$("#levelup");ov.classList.remove("on");ov.classList.remove("cine");var c=$("#lu-cine");if(c)c.innerHTML="";renderAll()},
-  runTour:function(){try{localStorage.setItem("hsk_v3_tour","1")}catch(e){}var t=(window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.course_v3.t.copy1",{
+  runTour:function(){markTourSeen();var t=(window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.course_v3.t.copy1",{
     ru:{
       c:"Вот ваш курс! Каждый кружок — это урок. Нажми на узел и начни учиться.",
       cNode:"Это твой текущий урок — нажми и начни! Внутри урока появится кнопка ✏️ — нажми, чтобы увидеть как пишется иероглиф.",
@@ -3242,7 +3244,7 @@ var App={
     ]};
     $("#tour-skip").textContent=t.skip;$("#tour").classList.add("on");tourRender();},
   tourNext:function(){if(TOUR.i<TOUR.steps.length-1){TOUR.i++;tourRender()}else{App.tourEnd()}},
-  tourEnd:function(){stopTourAudio();try{localStorage.setItem("hsk_v3_tour","1")}catch(e){}$("#tour").classList.remove("on")},
+  tourEnd:function(){stopTourAudio();markTourSeen();$("#tour").classList.remove("on")},
   toggleTourVoice:function(){TOURV=!TOURV;if(!TOURV){stopTourAudio()}tourRender(!TOURV)},
   openDict:function(){RESOURCE.open("dict")},
   openPhrases:function(){RESOURCE.open("phrases")},
@@ -3367,8 +3369,46 @@ var App={
   notifToggle:function(){if(notifOn){App.confirmNotifOff()}else{App.applyNotif(true)}},
   applyNotif:function(on){var back=SETTINGS_SHEET;notifOn=on;if(MAP)MAP.notify={enabled:on};renderProfile();
     if(back)App.openSettings();
-    if(INIT_DATA)_apiPost("/api/v3/notify",{enabled:on}).catch(function(){})},
+    if(INIT_DATA||PWA_COURSE_HOST)_apiPost("/api/v3/notify",{enabled:on}).catch(function(){})},
   confirmNotifOff:function(){var legacy={uz:{title:"Bildirishnomalarni o'chirasizmi?",body:"Kunlik eslatma va haftalik hisobotlar kelmaydi. Bu eslatmalar o'qishni tashlab qo'ymaslikka yordam beradi.",keep:"Yoqilgan qoldirish",off:"O'chirish"},ru:{title:"Отключить уведомления?",body:"Вы перестанете получать ежедневные напоминания и еженедельный отчёт. Они помогают не бросать учёбу.",keep:"Оставить включёнными",off:"Отключить"},tj:{title:"Огоҳиҳоро хомӯш мекунед?",body:"Шумо ёдовариҳои ҳаррӯза ва ҳисоботи ҳафтаинаро намегиред. Онҳо барои тарк накардани омӯзиш кӯмак мекунанд.",keep:"Фаъол мондан",off:"Хомӯш кардан"}}[LANG]||{};var w={title:courseMessage("notificationsOff.title",legacy.title),body:courseMessage("notificationsOff.body",legacy.body),keep:courseMessage("notificationsOff.keep",legacy.keep),off:courseMessage("notificationsOff.off",legacy.off)};App.openSheet('<div class="shead"><div style="width:52px;height:52px;border-radius:15px;background:var(--card);border:1px solid var(--line);color:var(--cin);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 10px"><i class="ti ti-bell-off"></i></div><div class="tr" style="font-size:16px;color:var(--ink)">'+esc(w.title)+'</div><div class="tr">'+esc(w.body)+'</div></div><button class="scta" onclick="backToSettingsOrClose()">'+esc(w.keep)+'</button><button class="scta ghost" style="margin-top:8px" onclick="App.applyNotif(false)">'+esc(w.off)+'</button>')},
+  /* PWA profile editor: Android parity (display name + 3 preset pandas). */
+  pwaProfileEdit:function(){
+    if(!PWA_COURSE_HOST)return;
+    var cur=String(PROF.avatar_key||""),keys=["panda_cheer","panda_streak","panda_worried"];
+    App.openSheet('<div class="shead"><div class="tr" style="font-size:16px;color:var(--ink)">'+esc(courseMessage("pwaProfile.edit",""))+'</div></div>'
+      +'<div class="pwa-avatar-label">'+esc(courseMessage("pwaProfile.avatar",""))+'</div>'
+      +'<div class="pwa-avatar-pick" role="radiogroup" aria-label="'+esc(courseMessage("pwaProfile.avatar",""))+'">'
+      +keys.map(function(k,i){var on=k===cur||(!cur&&i===0);return '<button type="button" role="radio" aria-label="'+(i+1)+'" aria-checked="'+on+'" data-avatar="'+k+'" onclick="App.pwaPickAvatar(this)">'+pwaAvatarArt(k)+'</button>'}).join("")
+      +'</div>'
+      +'<label class="pwa-name-field"><span>'+esc(courseMessage("pwaProfile.name",""))+'</span><input id="pwa-profile-name" type="text" maxlength="80" autocomplete="nickname" oninput="App.pwaProfileDirty()" value="'+esc(String(PROF.display_name||PROF.name||""))+'"></label>'
+      +'<button class="scta" id="pwa-profile-save" disabled onclick="App.pwaSaveProfile()">'+esc(courseMessage("pwaProfile.save",""))+'</button>');
+  },
+  pwaPickAvatar:function(btn){
+    document.querySelectorAll(".pwa-avatar-pick [data-avatar]").forEach(function(b){b.setAttribute("aria-checked",String(b===btn))});
+    App.pwaProfileDirty();
+  },
+  pwaProfileDraft:function(){
+    var input=$("#pwa-profile-name"),pick=document.querySelector('.pwa-avatar-pick [aria-checked="true"]');
+    return {name:input?input.value.replace(/\s+/g," ").trim().slice(0,80):"",avatar:pick?pick.getAttribute("data-avatar"):""};
+  },
+  /* Save stays disabled until a real change (and never with an empty name). */
+  pwaProfileDirty:function(){
+    var d=App.pwaProfileDraft(),btn=$("#pwa-profile-save");if(!btn)return;
+    var curName=String(PROF.display_name||PROF.name||"").trim(),curAvatar=String(PROF.avatar_key||"")||"panda_cheer";
+    btn.disabled=!d.name||(d.name===curName&&d.avatar===curAvatar);
+  },
+  pwaSaveProfile:function(){
+    var d=App.pwaProfileDraft(),btn=$("#pwa-profile-save");if(!btn||btn.disabled||!d.name)return;
+    btn.disabled=true;
+    _apiPost("/api/v3/pwa/profile",{display_name:d.name,avatar_key:d.avatar})
+      .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j}})})
+      .then(function(o){
+        if(!o.ok||!o.j||o.j.ok!==true)throw new Error("profile_save");
+        PROF.display_name=o.j.display_name;PROF.avatar_key=o.j.avatar_key;ratingLoaded=false;
+        App.closeSheet();renderProfile();haptic("ok");
+      })
+      .catch(function(){btn.disabled=false;toast(serverSaveErrorText(),2200)});
+  },
   avatarEdit:function(){var t=T();var note=courseMessage("avatarEdit.note",LANG==="ru"?"Аватар берётся из вашего профиля Telegram":LANG==="tj"?"Аватар аз профили Telegram шумо гирифта мешавад":"Avatar Telegram profilingizdan olinadi");App.openSheet('<div class="shead"><div class="pav" style="margin:0 auto;cursor:default">'+(PROF.avatar||"阿")+myAvatarImgHtml()+'</div><div class="tr" style="margin-top:10px">'+esc(note)+'</div></div><button class="scta ghost" onclick="App.closeSheet()">OK</button>')},
   /* Duolingo uslubi: pinyin ko'rsatish sozlamasi (dars oqimida) */
   pinyinSheet:function(){
@@ -3404,18 +3444,23 @@ var App={
     savePreferences({daily_goal_xp:v}).then(function(saved){       if(!saved||saved.ok!==true){dailyGoal=previous;toast(serverSaveErrorText(),2200)}       renderProfile();if(SETTINGS_SHEET)App.openSettings()     })},
   /* Birinchi darsdan keyingi ikki savol: vaqt -> fokus. Ikkinchi savol
      birinchisi saqlangach ochiladi, shunda bir vaqtda bitta savol turadi. */
+  /* Settings -> edit one onboarding answer and come back, no question chain. */
+  pwaStudyEdit:function(kind){STUDY_EDIT_FROM_SETTINGS=true;if(kind==="goal")askStudyGoal();else if(kind==="time")askStudyTime();else askStudyFocus()},
   pickStudyGoal:function(k){App.closeSheet();
+    if(STUDY_EDIT_FROM_SETTINGS){STUDY_EDIT_FROM_SETTINGS=false;savePreferences({goal:k}).then(function(saved){if(!saved||saved.ok!==true)toast(serverSaveErrorText(),2200);renderAll();refreshSettingsRows()});return}
     savePreferences({goal:k}).then(function(){
       /* Maqsaddan keyin qolgan savollar; hammasi javoblangan bo'lsa to'xtaydi. */
       if(STUDY_SETUP&&!STUDY_SETUP.preferred_focus)setTimeout(askStudyTime,220);
       else renderAll();
     })},
   pickStudyTime:function(v){App.closeSheet();
+    if(STUDY_EDIT_FROM_SETTINGS){STUDY_EDIT_FROM_SETTINGS=false;savePreferences({daily_minutes:v}).then(function(saved){if(!saved||saved.ok!==true)toast(serverSaveErrorText(),2200);else markStudySetupTimeAnswered();renderAll();refreshSettingsRows()});return}
     savePreferences({daily_minutes:v}).then(function(saved){
       if(saved&&saved.ok){markStudySetupTimeAnswered();setTimeout(askStudyFocus,220);return}
       toast(serverSaveErrorText(),2200);askStudyTime();
     })},
   pickStudyFocus:function(k){App.closeSheet();
+    if(STUDY_EDIT_FROM_SETTINGS){STUDY_EDIT_FROM_SETTINGS=false;savePreferences({preferred_focus:k}).then(function(saved){if(!saved||saved.ok!==true)toast(serverSaveErrorText(),2200);renderAll();refreshSettingsRows()});return}
     savePreferences({preferred_focus:k}).then(function(saved){
       if(saved&&saved.ok){renderAll();return}
       toast(serverSaveErrorText(),2200);askStudyFocus();
@@ -3714,7 +3759,9 @@ function studySetupTimeAnswered(){
 function markStudySetupTimeAnswered(){
   try{localStorage.setItem(studySetupTimeKey(),"1")}catch(e){}
 }
+var STUDY_EDIT_FROM_SETTINGS=false;
 function askPendingStudySetup(){
+  STUDY_EDIT_FROM_SETTINGS=false;
   if(!STUDY_SETUP)return;
   if(!STUDY_SETUP.goal_chosen){askStudyGoal();return}
   if(!STUDY_SETUP.preferred_focus){
@@ -5891,6 +5938,8 @@ Flow.next=function(){
   if(Flow.i>=Flow.queue.length){flowDone()}else{renderFlowCard()}
 };
 function luRain(){var cols=['#FF5A4E','#FFC800','#58CC02','#49C0F8','#fff'],el=$("#levelup");for(var n=0;n<24;n++){(function(){var c=document.createElement('span');c.className='lu-conf';c.style.left=(4+Math.random()*92)+'%';c.style.background=cols[n%5];el.appendChild(c);var dx=Math.random()*70-35,rot=Math.random()*720-360;requestAnimationFrame(function(){c.classList.add('fall');c.style.transform='translate('+dx+'px,760px) rotate('+rot+'deg)';c.style.opacity='0'});setTimeout(function(){c.remove()},1750)})()}}
+/* The intro tour is marked seen when it starts, so closing the app mid-tour never repeats it. */
+function markTourSeen(){try{localStorage.setItem("hsk_v3_tour","1")}catch(e){}}
 var TOUR={i:0,steps:[],t:{}},TOURV=true,_tourAudio=null,TOUR_AUDIO_VER="20260628b";
 /* Asosiy ovoz oldindan tayyorlangan MP3. Fallback faqat mos native voice topilsa ishlaydi;
    UZ/TJ uchun turk/rusga majburiy fallback qilish talaffuzni buzadi. */
@@ -7277,7 +7326,45 @@ function settingsSheetHtml(){
   return '<div class="shead"><div class="tr" style="font-size:16px;color:var(--ink)">'+esc(pl().settings)+'</div></div>'
     +settingsRowsHtml();
 }
+/* PWA Settings: flat native-like sections. Values come from the same server
+   study setup / notify flags the Mini App and Android already use. */
+function pwaSettingsRowsHtml(){
+  var t=T(),p=pl(),s=studySetupT(),st=STUDY_SETUP||(MAP&&MAP.study_setup)||{};
+  function head(txt){return '<h2 class="pwa-set-head">'+esc(txt)+'</h2>'}
+  function row(icon,label,value,action){return '<button class="srow" onclick="'+action+'"><i class="ti ti-'+icon+'"></i> '+esc(label)+'<span class="sv">'+esc(value||"")+' <i class="ti ti-chevron-right"></i></span></button>'}
+  var goal=(s.goals||{})[String(st.goal||"")]||"";
+  var minutes=Number(st.daily_minutes)>0?Number(st.daily_minutes)+" "+(s.min||""):"";
+  var focus=(s.focus||{})[String(st.preferred_focus||"")]||"";
+  return head(courseMessage("pwaSettings.sectionStudy",""))
+    +'<div class="set">'
+    +'<button class="srow" onclick="App.langPicker()"><i class="ti ti-language"></i> '+courseMessage("lang",t.lang)+'<span class="sv">'+LANG.toUpperCase()+' <i class="ti ti-chevron-right"></i></span></button>'
+    +courseVersionSettingsRowHtml()
+    +row("flag",courseMessage("pwaSettings.studyGoal",""),goal,"App.pwaStudyEdit('goal')")
+    +row("clock",courseMessage("pwaSettings.dailyTime",""),minutes,"App.pwaStudyEdit('time')")
+    +row("focus-2",courseMessage("pwaSettings.focus",""),focus,"App.pwaStudyEdit('focus')")
+    +'<button class="srow" onclick="App.goalPicker()"><i class="ti ti-target"></i> '+p.goalSet+'<span class="sv">'+dailyGoal+' XP <i class="ti ti-chevron-right"></i></span></button>'
+    +'</div>'
+    +head(commonMessage("desktopA11y.notifications",""))
+    +'<div class="set">'
+    +pwaPushSettingsRowHtml()
+    +'<button class="srow" role="switch" aria-checked="'+(notifOn?"true":"false")+'" onclick="App.notifToggle()"><i class="ti ti-alarm"></i> '+esc(courseMessage("pwaSettings.studyReminders",""))+'<span class="toggle '+(notifOn?"on":"")+'"></span></button>'
+    +'<div class="srow srow-static"><i class="ti ti-receipt"></i> '+esc(courseMessage("pwaSettings.accountNotices",""))+'<span class="sv">'+esc(courseMessage("pwaSettings.alwaysOn",""))+'</span></div>'
+    +'</div>'
+    +head(courseMessage("pwaSettings.sectionAccount",""))
+    +'<div class="set">'
+    +signInMethodsRowsHtml()
+    +(window.HskPwaShake ? window.HskPwaShake.settingsRowHtml() : "")
+    +'<button class="srow" onclick="App.openHelp()"><i class="ti ti-help-circle"></i> '+courseMessage("help",t.help)+'<span class="sv"><i class="ti ti-chevron-right"></i></span></button>'
+    +pwaLogoutSettingsRowHtml()
+    +'</div>'+socialLinksHtml();
+}
+function pwaAvatarArt(key){
+  var mood={panda_cheer:"celebrate",panda_streak:"proud",panda_worried:"wrong"}[key]||"idle";
+  return window.HSKCharacters&&typeof window.HSKCharacters.render==="function"
+    ?'<span class="pwa-avatar-art" aria-hidden="true">'+window.HSKCharacters.render("panda",mood)+'</span>':"🐼";
+}
 function settingsRowsHtml(){
+  if(PWA_COURSE_HOST)return pwaSettingsRowsHtml();
   var t=T(),p=pl();
   return '<div class="set" style="margin:0">'
     +'<button class="srow" onclick="App.langPicker()"><i class="ti ti-language"></i> '+courseMessage("lang",t.lang)+'<span class="sv">'+LANG.toUpperCase()+' <i class="ti ti-chevron-right"></i></span></button>'
@@ -7424,11 +7511,13 @@ function renderProfile(){
   var paid=PROFILE_DETAIL&&PROFILE_DETAIL.subscription?!!PROFILE_DETAIL.subscription.is_paid:isPaidUser();
   var trialActive=!!(TRIAL_STATE&&TRIAL_STATE.active);
   var showProLink=!paid&&!trialActive;
-  var nickname=esc(PROF.name||courseMessage("you",t.you));
+  var nickname=esc((PWA_COURSE_HOST&&PROF.display_name)||PROF.name||courseMessage("you",t.you));
   $("#s-profile").innerHTML='<div class="htop profile-head"><h1 class="profile-title">'+esc(courseMessage("nav.profile",LANG==="ru"?"Профиль":LANG==="tj"?"Профил":"Profil"))+'</h1><div class="profile-head-actions">'
     +(PWA_COURSE_HOST?'<button class="pwa-notices-button" type="button" aria-label="'+esc(commonMessage("desktopA11y.notifications",""))+'" onclick="window.HskPwaInbox&&window.HskPwaInbox.open()"><i class="ti ti-bell" aria-hidden="true"></i></button>':'')
     +'<button class="profile-settings" type="button" aria-label="'+esc(p.settings)+'" onclick="App.openSettings()"><i class="ti ti-settings" aria-hidden="true"></i></button></div></div>'
-    +'<div class="phero"><div class="pav'+(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han")+'"'+(PWA_COURSE_HOST?'':' onclick="App.avatarEdit()"')+'>'+esc(PROF.avatar||"阿")+(PWA_COURSE_HOST?'':myAvatarImgHtml()+'<span class="ed"><i class="ti ti-pencil"></i></span>')+'</div>'
+    +'<div class="phero">'+(PWA_COURSE_HOST
+      ?'<button type="button" class="pav pwa-pav'+(PROF.avatar_key?' art':(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han"))+'" aria-label="'+esc(courseMessage("pwaProfile.edit",""))+'" onclick="App.pwaProfileEdit()">'+(PROF.avatar_key?pwaAvatarArt(PROF.avatar_key):esc(PROF.avatar||"阿"))+'<span class="ed"><i class="ti ti-pencil"></i></span></button>'
+      :'<div class="pav'+(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han")+'" onclick="App.avatarEdit()">'+esc(PROF.avatar||"阿")+myAvatarImgHtml()+'<span class="ed"><i class="ti ti-pencil"></i></span></div>')
     +'<div class="profile-hero-content"><div class="profile-identity-row"><strong class="profile-display-name">'+nickname+'</strong><span class="profile-access-badge'+(paid||trialActive?' pro':'')+'">'+(paid?'<i class="ti ti-crown"></i> Pro':trialActive?'<i class="ti ti-crown"></i> '+esc(c.trial):esc(c.free))+'</span></div>'
     +(goalLabel()?'<div class="profile-goal-row"><span class="lvb goal"><i class="ti ti-target"></i> '+esc(goalLabel())+'</span></div>':'')+'</div></div>'
     +'<button type="button" class="profile-friends-link" onclick="App.openFriends()"><i class="ti ti-users" aria-hidden="true"></i><span>'+esc(courseMessage("friends",t.friends))+'</span><i class="ti ti-chevron-right" aria-hidden="true"></i></button>'

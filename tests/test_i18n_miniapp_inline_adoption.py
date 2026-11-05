@@ -96,7 +96,7 @@ result.absent=vm.runInNewContext('(window.HSKAILocaleMap||function(_,fallback){r
         # Updated after merging main's 2026-11-04 course shell changes and the
         # reviewed PWA host adapter, while source-hash guards remain canonical.
         # 2026-11-05: +PWA in-place checkout/practice layers and Settings screen.
-        self.assertEqual(len((ROOT / "app/static/course-v3.html").read_text().splitlines()), 9730)
+        self.assertEqual(len((ROOT / "app/static/course-v3.html").read_text().splitlines()), 9857)
 
     def test_graded_placement_blocks_remain_byte_identical(self):
         proof = json.loads((ROOT / "localization/review/miniapp_inline_map_migration.json").read_text())

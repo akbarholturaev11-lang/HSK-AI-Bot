@@ -55,6 +55,19 @@ Not run: Playwright E2E, real iPhone (haptics, push prompt, pull-to-refresh, aud
 - `tests/test_pwa_feedback_ui.js` and `tests/test_pwa_shake_report_ui.js` were stale (harness ignored the markup
   `hidden` attribute; practice moved from page navigation to an iframe layer). Both pass again.
 
+- 20: Profile name/avatar editor (Android parity: display name + 3 preset pandas). `POST /api/v3/pwa/profile`
+  (same validation as Android, CSRF, same-origin); the map `user` adds `display_name`/`avatar_key`. Save is enabled
+  only after a real change. The leaderboard already reads the same profile fields.
+- 10: PWA Settings is one flat list in three sections (Study / Notifications / Account), no nested cards. Study shows the
+  onboarding goal, daily time and focus (edit returns to Settings, no question chain) plus daily XP goal and language.
+  Notifications are split into: device push (existing), study reminders (`notifications_enabled`, new
+  `POST /api/v3/pwa/notify`, the flag MotivationReminderService already honours) and payment/account notices
+  (always on, transactional). No new server policy was invented.
+- i18n: 12 new course keys (UZ/RU/TJ), catalog 1021 → 1033 (`scripts/i18n_course_ui_catalog_guard.py`), generated
+  bundles/tokens refreshed, reviewed page blobs recorded in `localization/baselines/reviewed_ui_changes.json`,
+  line anchors remapped in `localization/review/miniapp_course_hotspot_triage.json` and
+  `miniapp_lesson_fetch_calls.json` (diff-mapped from 503730e, anchors verified).
+
 ## Needs owner/config
 - 12 Live voice: also requires `PWA_VOICE_LIVE_ENABLED=true`, `ANDROID_VOICE_LIVE_ENABLED=true`, a Gemini key,
   model `gemini-3.8-live`, a positive session budget, and `ANDROID_VOICE_LIVE_ALLOWED_USERS="*"`
@@ -64,5 +77,5 @@ Not run: Playwright E2E, real iPhone (haptics, push prompt, pull-to-refresh, aud
 - 1/2 pushes: same PWA push switches and VAPID keys.
 
 ## Not started
-8 (shake report parity), 10 (settings rebuild/channels), 15 (code reviewed, no defect found: the overtake effect needs server `rank_before`>0, so learners outside the ranked list never see it),
-20 (profile name/avatar: needs new PWA endpoint + UZ/RU/TJ catalog keys), 22/23 (centre-block minimalist audit).
+8 (shake report parity), 15 (code reviewed, no defect found: the overtake effect needs server `rank_before`>0, so learners outside the ranked list never see it),
+22/23 (centre-block minimalist audit).
