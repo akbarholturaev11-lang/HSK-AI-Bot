@@ -35,7 +35,7 @@ assert(page.includes("entry.innerHTML=renderStudyPreparing()"));
 assert(js.includes('var onCourse = location.pathname === "/iphone-pwa/course"'));
 assert(js.includes("navigator.standalone"));
 assert(js.includes("window.parent !== window || window.HskPwaShake"),"nested PWA iframes cannot open duplicate sheets");
-assert(js.includes('#pwa-checkout-layer, #sheet.on .pwa-payment'),"embedded PWA checkout blocks automatic screenshot capture");
+assert(js.includes('"#pwa-checkout-layer, #sheet.on, #paywall.on, #flow.on, "'),"embedded checkout and modal overlays block automatic capture");
 assert(js.includes('var renderer = await loadRenderer();') && js.includes('safeReportCaptureSurface(expectedScreen)'),"privacy checked at each async capture boundary");
 assert(js.includes('if (!safeReportCaptureSurface(expectedScreen)) return null;'),"privacy prevents automatic capture on sensitive surfaces");
 assert(js.includes('if (onCourse && (screen !== expectedScreen ||'),"tab switch invalidates in-progress capture");
