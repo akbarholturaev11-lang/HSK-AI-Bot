@@ -68,6 +68,11 @@ Not run: Playwright E2E, real iPhone (haptics, push prompt, pull-to-refresh, aud
   line anchors remapped in `localization/review/miniapp_course_hotspot_triage.json` and
   `miniapp_lesson_fetch_calls.json` (diff-mapped from 503730e, anchors verified).
 
+- 8: Shake report form now mirrors Android `BugReportDialog`: tall sheet (96% width / 94% height) where only the
+  fields scroll and the single Send stays visible; "Close" text in the header (no duplicate Cancel); `n / 2000`
+  counter; screenshot label + switch, 112 px preview and the Android privacy note (`pwaShake.privacy`, catalog 1034).
+  The first-run sensor intro and the confirm step match Android's intro sheet.
+
 ## Needs owner/config
 - 12 Live voice: also requires `PWA_VOICE_LIVE_ENABLED=true`, `ANDROID_VOICE_LIVE_ENABLED=true`, a Gemini key,
   model `gemini-3.8-live`, a positive session budget, and `ANDROID_VOICE_LIVE_ALLOWED_USERS="*"`
@@ -77,5 +82,5 @@ Not run: Playwright E2E, real iPhone (haptics, push prompt, pull-to-refresh, aud
 - 1/2 pushes: same PWA push switches and VAPID keys.
 
 ## Not started
-8 (shake report parity), 15 (code reviewed, no defect found: the overtake effect needs server `rank_before`>0, so learners outside the ranked list never see it),
+15 (code reviewed, no defect found: the overtake effect needs server `rank_before`>0, so learners outside the ranked list never see it),
 22/23 (centre-block minimalist audit).
