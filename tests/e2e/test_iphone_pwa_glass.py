@@ -4,6 +4,7 @@ This fixture serves the actual shipped CSS/JS and generated UZ/RU/TJ catalogs.
 Only authenticated API responses are synthetic: it never exercises production
 billing, grants access, or replaces the original Mini App in a browser.
 """
+import base64
 import json
 import re
 from pathlib import Path
@@ -557,4 +558,60 @@ def test_embedded_checkout_cta_uses_exactly_one_bottom_safe_area(width, height):
         assert 28 <= bottom_gap <= 34, f"CTA should clear the home gesture area once: {bottom_gap}"
         assert box["x"] >= 0 and box["x"] + box["width"] <= width
         assert box["height"] >= 50
+        browser.close()
+
+
+def test_shake_report_delayed_manual_image_cannot_reopen_a_closed_sheet():
+    """Delayed iOS file decode must be discarded after user closes the report."""
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page(
+            viewport={"width":390,"height":844}, is_mobile=True, has_touch=True,
+        )
+        bootstrap(page)
+        page.add_style_tag(content=asset("course_v3_data/iphone-pwa-shake-report.css"))
+        page.evaluate("""() => {
+          Object.defineProperty(navigator,"standalone",{configurable:true,value:true});
+          const NativeImage = window.Image;
+          window.__manualImageQueue = [];
+          window.Image = function() {
+            const img = new NativeImage();
+            let callback = null;
+            Object.defineProperty(img,"onload",{
+              configurable:true,
+              get(){return callback;},
+              set(fn){callback = fn;}
+            });
+            window.__manualImageQueue.push({
+              image:img, fire:() => {if (callback) callback.call(img);}
+            });
+            return img;
+          };
+        }""")
+        page.add_script_tag(content=asset("course_v3_data/iphone-pwa-shake-report.js"))
+        page.evaluate("window.dispatchEvent(new Event('load'))")
+        page.wait_for_function(
+            "window.HskPwaShake && window.HskPwaShake.settingsRowHtml().includes('role=\"switch\"')"
+        )
+        page.evaluate("window.HskPwaShake.manual()")
+        page.wait_for_function(
+            "document.querySelector('#hsk-pwa-shake-root .hsk-shake-preview')?.textContent.includes('rasm')"
+        )
+        png = base64.b64decode(
+            "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9YdZ5swAAAAASUVORK5CYII="
+        )
+        page.locator("#hsk-pwa-shake-root input[type=file]").set_input_files({
+            "name":"manual.png","mimeType":"image/png","buffer":png
+        })
+        page.wait_for_function(
+            "window.__manualImageQueue.length > 0 && "
+            "window.__manualImageQueue[0].image.complete && "
+            "window.__manualImageQueue[0].image.naturalWidth > 0"
+        )
+        page.locator("#hsk-shake-close").click()
+        assert not page.locator("#hsk-pwa-shake-root").is_visible()
+        page.evaluate("window.__manualImageQueue[0].fire()")
+        assert not page.locator("#hsk-pwa-shake-root").is_visible(), (
+            "old image.onload must never reopen a dismissed report"
+        )
         browser.close()
