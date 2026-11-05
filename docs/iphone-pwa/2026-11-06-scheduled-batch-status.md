@@ -73,6 +73,12 @@ Not run: Playwright E2E, real iPhone (haptics, push prompt, pull-to-refresh, aud
   counter; screenshot label + switch, 112 px preview and the Android privacy note (`pwaShake.privacy`, catalog 1034).
   The first-run sensor intro and the confirm step match Android's intro sheet.
 
+- 22/23: Centered dialogs (HSK 3.0 promo/book card, lesson-exit confirm, urgent payment notice, feedback/star
+  rating, shake intro/confirm/sent) share one PWA-only style per the hsk-ai-ui skill rules: paper card, 28 px radius,
+  soft depth, 15 px body text, 54 px primary button, quiet text-only secondary, larger golden stars. CSS only,
+  scoped to `html.hsk-pwa-browser`; the Telegram Mini App look is unchanged. Visual smoke (Playwright, iPhone 13):
+  profile, profile editor, settings, shake form and star rating rendered with no console errors.
+
 ## Needs owner/config
 - 12 Live voice: also requires `PWA_VOICE_LIVE_ENABLED=true`, `ANDROID_VOICE_LIVE_ENABLED=true`, a Gemini key,
   model `gemini-3.8-live`, a positive session budget, and `ANDROID_VOICE_LIVE_ALLOWED_USERS="*"`
@@ -82,5 +88,5 @@ Not run: Playwright E2E, real iPhone (haptics, push prompt, pull-to-refresh, aud
 - 1/2 pushes: same PWA push switches and VAPID keys.
 
 ## Not started
-15 (code reviewed, no defect found: the overtake effect needs server `rank_before`>0, so learners outside the ranked list never see it),
-22/23 (centre-block minimalist audit).
+- None of the 23 items is untouched. Not verified on a real iPhone: push receipt, badge, launch images, haptics,
+  Live voice, pull-to-refresh feel. Production env flags above are not verified (Railway MCP was unavailable).

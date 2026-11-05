@@ -329,3 +329,49 @@ html.hsk-pwa-browser .pwa-pav.art{background:var(--hsk-paper-raised,#fff)}
 /* The PWA's own preset-avatar editor (not the Telegram photo) is tappable. */
 html.hsk-pwa-browser .phero .pav.pwa-pav{cursor:pointer;pointer-events:auto}
 html.hsk-pwa-browser .phero .pav.pwa-pav .ed{display:flex!important}
+
+/* ---- Centered dialogs: one minimalist, premium language (PWA only) ----
+   Light paper card, soft depth, short readable text, large stacked buttons:
+   one primary action, the secondary as a quiet text button. */
+html.hsk-pwa-browser #sheet.hsk30-promo-center,
+html.hsk-pwa-browser #sheet.hsk30-book-card,
+html.hsk-pwa-browser #sheet.lesson-exit-confirm{background:rgba(20,17,13,.42);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+html.hsk-pwa-browser #sheet.hsk30-promo-center .si,
+html.hsk-pwa-browser #sheet.hsk30-book-card .si,
+html.hsk-pwa-browser #sheet.lesson-exit-confirm .si,
+html.hsk-pwa-browser .hsk-pwa-feedback-card,
+html.hsk-pwa-browser #hsk-pwa-notice-root:not(.is-page) .hsk-pwa-notice-card,
+html.hsk-pwa-browser .hsk-shake-dialog:not([data-stage="form"]){
+  max-width:400px;border-radius:28px;border:0;padding:26px 20px 20px;
+  background:var(--hsk-paper);box-shadow:0 24px 64px rgba(20,17,13,.2);
+}
+html.hsk-pwa-browser #sheet.lesson-exit-confirm .shead,
+html.hsk-pwa-browser #sheet.hsk30-book-card .shead{margin-bottom:18px}
+html.hsk-pwa-browser #sheet.lesson-exit-confirm .shead .tr,
+html.hsk-pwa-browser #sheet.hsk30-promo-center .shead .tr{font-size:15px;line-height:1.45}
+html.hsk-pwa-browser .hsk-pwa-feedback-title,html.hsk-pwa-browser #hsk-pwa-urgent-title,
+html.hsk-pwa-browser #hsk-shake-title{font-size:20px;font-weight:750;line-height:1.25;letter-spacing:-.01em}
+html.hsk-pwa-browser .hsk-pwa-feedback-context,html.hsk-pwa-browser #hsk-shake-body p{font-size:15px;line-height:1.45;color:var(--hsk-ink-secondary)}
+/* Large, calm buttons. */
+html.hsk-pwa-browser #sheet.hsk30-promo-center .scta,
+html.hsk-pwa-browser #sheet.hsk30-book-card .scta,
+html.hsk-pwa-browser #sheet.lesson-exit-confirm .scta,
+html.hsk-pwa-browser .hsk-pwa-feedback-primary,
+html.hsk-pwa-browser .hsk-pwa-notice-primary,
+html.hsk-pwa-browser #hsk-shake-actions .hsk-shake-primary{
+  min-height:54px;border-radius:16px;font-size:17px;font-weight:650;box-shadow:none;
+}
+html.hsk-pwa-browser #sheet.hsk30-promo-center .scta.ghost,
+html.hsk-pwa-browser #sheet.hsk30-book-card .scta.ghost,
+html.hsk-pwa-browser #sheet.lesson-exit-confirm .scta.ghost,
+html.hsk-pwa-browser .hsk-pwa-notice-secondary,
+html.hsk-pwa-browser #hsk-shake-actions .hsk-shake-secondary{
+  min-height:48px;background:transparent;border:0;color:var(--hsk-ink-secondary);font-size:16px;font-weight:600;
+}
+/* Star rating: bigger, golden, easy to hit. */
+html.hsk-pwa-browser .hsk-pwa-feedback-stars{gap:8px;margin:8px 0 18px}
+html.hsk-pwa-browser .hsk-pwa-feedback-stars button{height:56px;font-size:34px;border:0;background:transparent;color:var(--hsk-divider)}
+html.hsk-pwa-browser .hsk-pwa-feedback-stars button[aria-pressed="true"]{color:#E2A51D}
+@media (prefers-color-scheme:dark){
+  html.hsk-pwa-browser .hsk-pwa-feedback-stars button{color:rgba(255,255,255,.22)}
+}
