@@ -66,7 +66,8 @@ const settings = js.slice(js.indexOf("function settingsRowHtml()"),js.indexOf("f
 assert.equal((settings.match(/<button/g)||[]).length,1,"one settings control only");
 assert(css.includes("align-items:flex-end"),"report anchored to bottom");
 assert(css.includes('max-height:min(88dvh,820px)'),"sheet fits available viewport");
-assert(checkout.includes("html.hsk-pwa-browser .bottom{padding-bottom:max(8px"),"PWA checkout CTA lowered");
+assert(checkout.includes("html.hsk-pwa-browser .bottom{padding-bottom:max(30px,env(safe-area-inset-bottom,0px))}"),"PWA checkout maintains home-indicator clearance without duplicate reserve");
+assert(page.includes("html.hsk-pwa-browser #pwa-checkout-layer{padding-bottom:0}"),"parent embedded checkout must not reserve bottom safe area twice");
 assert(!checkout.includes("html.hsk-pwa-browser .bottom{bottom:-"),"avoid unsafe offscreen positioning");
 assert(js.includes('screenshot_data_url: snapshot && (!checked || checked.checked) ? snapshot : ""'));
 assert(js.includes('await fetch("/api/v3/pwa/bug-report"'));
