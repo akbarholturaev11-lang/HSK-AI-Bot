@@ -8,6 +8,7 @@ on:
       - "app/static/course_v3_data/iphone-pwa-shake-report.*"
       - "app/static/subscription.html"
       - "tests/test_pwa_shake_report_ui.js"
+      - "tests/e2e/test_iphone_pwa_glass.py"
       - "tests/test_iphone_pwa_asset_versions.py"
       - "localization/baselines/reviewed_ui_changes.json"
       - ".github/workflows/pwa-shake-report-guard.yml"
@@ -34,4 +35,4 @@ jobs:
           python -m pip install "pytest==8.4.2" playwright
           python -m playwright install chromium
       - name: Test single bottom sheet and CSRF in real Chromium at three iPhone sizes
-        run: python -m pytest -q tests/e2e/test_iphone_pwa_glass.py -k shake_report
+        run: python -m pytest -q tests/e2e/test_iphone_pwa_glass.py -k "shake_report or checkout_cta"
