@@ -243,19 +243,27 @@
     }
     return output && output.length <= 710000 && output.indexOf("data:image/jpeg;base64,") === 0 ? output : null;
   }
+  function safeReportCaptureSurface(expectedScreen) {
+    var screen = typeof SCREEN === "string" ? SCREEN : "";
+    // Only the lesson and practice surfaces can be captured automatically;
+    // profile, Settings, voice, rating, identity and payment pages may contain PII.
+    if (onCourse && (screen !== expectedScreen ||
+        (screen !== "course" && screen !== "mashq"))) return false;
+    if (location.pathname === "/iphone-pwa/checkout" ||
+        document.visibilityState === "hidden" ||
+        // Reject every open checkout/receipt/auth/paywall/modal overlay, including
+        // an embedded checkout iframe in the parent course PWA.
+        document.querySelector(
+          "#pwa-checkout-layer, #sheet.on, #paywall.on, #flow.on, " +
+          ".pwa-payment, [class*=receipt], [class*=checkout], [data-sensitive]"
+        )) return false;
+    return true;
+  }
   async function captureViewport() {
-    // Profile, voice transcripts, purchase/auth screens may contain private data.
-    if (location.pathname === "/iphone-pwa/checkout" ||
-        ["profile", "voice"].indexOf(typeof SCREEN === "string" ? SCREEN : "") >= 0 ||
-        // Checkout is embedded inside /iphone-pwa/course in the installed PWA:
-        // never capture its invoice, receipt, payment card or embedded frame.
-        document.querySelector("#pwa-checkout-layer, #sheet.on .pwa-payment, #sheet.on [class*=receipt], #sheet.on [class*=checkout]")) return null;
+    var expectedScreen = typeof SCREEN === "string" ? SCREEN : "";
+    if (!safeReportCaptureSurface(expectedScreen)) return null;
     var renderer = await loadRenderer();
-    // A slow renderer download must not allow a later navigation into checkout
-    // or account screens to be captured after the first privacy check.
-    if (location.pathname === "/iphone-pwa/checkout" ||
-        ["profile","voice"].indexOf(typeof SCREEN === "string" ? SCREEN : "") >= 0 ||
-        document.querySelector("#pwa-checkout-layer, #sheet.on .pwa-payment, #sheet.on [class*=receipt], #sheet.on [class*=checkout]")) return null;
+    if (!safeReportCaptureSurface(expectedScreen)) return null;
     var width = Math.max(1, Math.min(window.innerWidth, 1200));
     var height = Math.max(1, Math.min(window.innerHeight, 1600));
     var canvas = await renderer(document.body, {
@@ -276,8 +284,14 @@
         });
       }
     });
-    try { return encodeJpeg(canvas); }
-    finally { canvas.width = 0; canvas.height = 0; }
+    try {
+      // html2canvas is asynchronous. The user may have navigated to payment,
+      // settings or an account view while rendering: fail closed at completion.
+      if (!safeReportCaptureSurface(expectedScreen)) return null;
+      return encodeJpeg(canvas);
+    } finally {
+      canvas.width = 0; canvas.height = 0;
+    }
   }
   function startReport() {
     if (busy || !root.hidden || !owner) return;
