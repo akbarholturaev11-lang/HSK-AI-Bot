@@ -39,6 +39,15 @@ function fixture(pref=initial, options={}) {
     {...initial,timezone_name:'Asia/Tokyo',time_mode:'manual_locked'},
     {...initial,timezone_name:'Asia/Tokyo'},
   ]){const f=fixture(pref);assert.equal(await f.run(),true);assert.equal(f.calls.length,1);checks++;}
+  // A server-derived Etc/GMT legacy-offset zone is provisional: the real device
+  // zone replaces it; the same Etc zone or a manual time lock is left alone.
+  const provisional=fixture({...initial,timezone_name:'Etc/GMT-5'});
+  assert.equal(await provisional.run(),true);assert.equal(provisional.calls.length,2);
+  assert.deepEqual(JSON.parse(provisional.calls[1].opts.body),{request_id:id,expected_revision:0,timezone_name:'Asia/Tashkent'});checks++;
+  const lockedEtc=fixture({...initial,timezone_name:'Etc/GMT-5',time_mode:'manual_locked'});
+  assert.equal(await lockedEtc.run(),false);assert.equal(lockedEtc.calls.length,1);checks++;
+  const sameEtc=fixture({...initial,timezone_name:'Asia/Tashkent'});
+  assert.equal(await sameEtc.run(),true);assert.equal(sameEtc.calls.length,1);checks++;
   for(const pref of [
     {...initial,ok:'true'}, {...initial,revision:'0'}, {...initial,revision:-1},
     {...initial,time_mode:'unknown'}, {...initial,timezone_name:undefined},
@@ -52,12 +61,14 @@ function fixture(pref=initial, options={}) {
   const switched=fixture(initial,{handler:()=>new Promise(resolve=>{release=resolve})});
   const pending=switched.run();switched.context.INIT_DATA='different-signed-session';
   release({ok:true,json:async()=>initial});assert.equal(await pending,false);assert.equal(switched.calls.length,1);checks++;
-  const mapCode=html.slice(html.indexOf('function loadCourseMap(lv,tries){'),html.indexOf('function _retryCourseMap(',html.indexOf('function loadCourseMap(lv,tries){')));
+  // The map loader gained an abort signal (PWA level switching); match its name only.
+  const mapStart=html.indexOf('function loadCourseMap(');assert(mapStart>0);
+  const mapCode=html.slice(mapStart,html.indexOf('function _retryCourseMap(',mapStart));
   for(const allowed of [false,'true',true]){
     let finish;
     const f=fixture(initial,{handler:()=>new Promise(resolve=>{finish=()=>resolve({ok:false})})});
     f.context._fetchCourseMap=async()=>({_status:200,units:[{}],smart_preferences_available:allowed});
-    f.context.isHsk30AccessError=()=>false;
+    f.context.isHsk30AccessError=()=>false;f.context.PWA_COURSE_HOST=false;
     vm.runInContext(mapCode,f.context);
     const result=await f.context.loadCourseMap('hsk1');
     assert.equal(result.data.units.length,1);

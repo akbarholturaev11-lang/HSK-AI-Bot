@@ -143,6 +143,10 @@ async def _read_routing(session, actor, *, android=False):
 # First public Direct release whose study worker asks the server before any
 # local post and stops local posting for a held account (also offline).
 SMART_CAPABLE_ANDROID = (1, 7, 29)
+# An app posts its own reminder only from a freshly fetched course map, which
+# needs a token refresh that records last_seen_at. A device silent this long
+# cannot post; if it wakes, the refresh makes it active again at once.
+ANDROID_DORMANT_AFTER = timedelta(days=14)
 
 
 def _smart_capable(app_version):
@@ -162,6 +166,9 @@ async def _android_inventory(session, user_id, now, *, native=True):
     generation or timestamps that change on every phone report, so a routine
     capability report does not invalidate a review.
 
+    An Android device silent for ANDROID_DORMANT_AFTER is not active: it
+    cannot fetch the fresh course map an app needs before posting locally.
+
     native=True (posting authority on Android): every active Android device
     needs a fresh Smart capability; the deadline is the earliest expiry.
     native=False (Telegram/PWA ownership): an active device is fenced when it
@@ -170,8 +177,9 @@ async def _android_inventory(session, user_id, now, *, native=True):
     account is held. Then no deadline applies; otherwise it is ``now``.
     """
     devices = (await session.execute(select(DesktopDevice.id, DesktopDevice.app_version,
-        DesktopDevice.revoked_at, DesktopDevice.created_at).where(DesktopDevice.user_id == user_id,
-        DesktopDevice.platform == "android").order_by(DesktopDevice.id).limit(MAX_ROUTING_ROWS+1))).mappings().all()
+        DesktopDevice.revoked_at, DesktopDevice.created_at, DesktopDevice.last_seen_at).where(
+        DesktopDevice.user_id == user_id, DesktopDevice.platform == "android").order_by(
+        DesktopDevice.id).limit(MAX_ROUTING_ROWS+1))).mappings().all()
     if len(devices) > MAX_ROUTING_ROWS: return None, now
     ids = [r["id"] for r in devices]
     # Token refresh rotates hashes inside the same session row; these facts stay.
@@ -190,7 +198,8 @@ async def _android_inventory(session, user_id, now, *, native=True):
     if any(len(rows) > MAX_ROUTING_ROWS for rows in (sessions, capabilities, study_flags)): return None, now
     # Capability generation/observed/expiry change on every phone report and
     # stay checked by the native claim itself; they are not ownership drift.
-    facts = {"devices":[dict(r) for r in devices],"sessions":[dict(r) for r in sessions],
+    facts = {"devices":[{k:r[k] for k in ("id","app_version","revoked_at","created_at")} for r in devices],
+             "sessions":[dict(r) for r in sessions],
              "capabilities":[{k:r[k] for k in ("device_id","protocol_version","autonomous_study_disabled")}
                              for r in capabilities],
              "study_flags":[dict(r) for r in study_flags]}
@@ -202,6 +211,8 @@ async def _android_inventory(session, user_id, now, *, native=True):
         # Historical/revoked records still enter the hash and require external
         # review. Revocation alone is NEVER the proof that they are fenced.
         if device["revoked_at"] is not None: continue
+        seen = device["last_seen_at"] or device["created_at"]
+        if seen is not None and _utc(seen) <= now - ANDROID_DORMANT_AFTER: continue
         cap = caps.get(device["id"])
         reported = cap is not None and cap["protocol_version"] == 1 and cap["autonomous_study_disabled"] is True
         if not native:

@@ -524,8 +524,16 @@ The system SHALL open Smart study reminders through four stable cumulative cohor
 Inside an open cohort the system SHALL move an eligible account from the legacy study senders to Smart without manual review: hold it, wait 24 hours from the first hold, then record an evidence-bound automatic review through the existing routing writers. It MUST NOT create or infer consent, and MUST NOT hold an account that an active device without the Smart capability could still remind locally.
 
 #### Scenario: Eligibility
-- **WHEN** an account's Smart preference has no real IANA zone, or allows no channel
+- **WHEN** an account's Smart preference allows no channel, or it has no Smart zone and no legacy reminder offset to derive one from
 - **THEN** it is not held and its legacy reminders continue
+
+#### Scenario: Bot-only learner
+- **WHEN** an account in an open cohort has the legacy lesson reminder ON with a valid whole-hour offset but no Smart zone
+- **THEN** a fixed `Etc/GMT±N` zone for that offset is written as a timezone-only journaled preference change, consent is unchanged, and the account continues through the normal hold, drain and review
+
+#### Scenario: Dormant older Android device
+- **WHEN** an older-APK Android device has not refreshed its session for 14 days
+- **THEN** it does not block admission; if it refreshes again, the Telegram cohort closes immediately and the device's own reminder continues
 
 #### Scenario: Eligible Telegram learner
 - **WHEN** an account in an open cohort has a Smart zone, Telegram consent ON, a reachable bot and no unfenced Android device

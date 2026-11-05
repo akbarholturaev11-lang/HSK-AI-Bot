@@ -17,9 +17,10 @@ from sqlalchemy import delete, insert, inspect, select, update
 from app.db.base import Base
 
 from app.db.models.desktop import DesktopDevice, DesktopSession
+from app.db.models.course_progress import CourseProgress
 from app.db.models.smart_reminder import (
-    SmartReminderCapability, SmartReminderConsent, SmartReminderPreference, SmartReminderRollout,
-    SmartReminderRouting,
+    SmartReminderCapability, SmartReminderConsent, SmartReminderMutation, SmartReminderPreference,
+    SmartReminderRollout, SmartReminderRouting,
 )
 from app.db.models.user import User
 from app.services.notification_template_service import KEY_SMART_STUDY, NotificationTemplateService
@@ -362,10 +363,60 @@ class AdmissionChecks(FixtureChecks):
         await runtime().tick()
         self.assertEqual(self.q.bot.send_message.await_count, 1)
 
-    async def test_missing_zone_consent_off_or_blocked_bot_is_never_held(self):
+    async def bot_only(self, *, enabled=True, offset=5):
         async with self.q.sessions.begin() as s:
             await s.execute(update(SmartReminderPreference).values(timezone_name=None))
+            await s.execute(update(CourseProgress).where(CourseProgress.user_id == 1).values(
+                reminder_enabled=enabled, reminder_tz_offset=offset))
+
+    async def test_bot_only_learner_gets_the_legacy_offset_zone_and_is_held(self):
+        await self.bot_only(offset=5)
+        self.assertEqual(await self.admission().step(4), ("held",))
+        pref = (await self.q.rows(SmartReminderPreference.__table__))[0]
+        self.assertEqual((pref["timezone_name"], pref["revision"], pref["grant_epoch"]), ("Etc/GMT-5", 3, 1))
+        mutation = (await self.q.rows(SmartReminderMutation.__table__))[-1]
+        self.assertEqual((mutation["actor_key"], mutation["applied_revision"]), ("telegram_bot", 3))
+        self.assertEqual([r["state"] for r in await self.q.rows(SmartReminderConsent.__table__)], ["on"])
+        self.assertEqual((await self.routing())["preference_revision"], 3)
+        self.assertTrue(await self.veto())
+
+    async def test_no_legacy_reminder_or_an_invalid_offset_gets_no_derived_zone(self):
+        # A manual time lock always carries a zone (storage constraint).
+        await self.bot_only(enabled=False)
         self.assertEqual(await self.admission().step(4), ())
+        await self.bot_only(offset=15)  # Out-of-range legacy value: no guess.
+        self.assertEqual(await self.admission().step(4), ("not_eligible",))
+        pref = (await self.q.rows(SmartReminderPreference.__table__))[0]
+        self.assertEqual((pref["timezone_name"], pref["revision"]), (None, 2))
+        self.assertIsNone(await self.routing())
+
+    async def old_phone(self, seen_days_ago):
+        async with self.q.sessions.begin() as s:
+            s.add(DesktopDevice(id="old-apk", user_id=1, platform="android", app_version="1.7.21",
+                installation_key_hash="old-apk-fixture", created_at=self.q.tick - timedelta(days=200),
+                last_seen_at=self.q.tick - timedelta(days=seen_days_ago)))
+
+    async def test_dormant_old_phone_no_longer_blocks_but_a_recent_one_does(self):
+        await self.old_phone(13)
+        self.assertEqual(await self.admission().step(4), ("not_eligible",))
+        async with self.q.sessions.begin() as s:
+            await s.execute(update(DesktopDevice).values(last_seen_at=self.q.tick - timedelta(days=15)))
+        await self.admitted()
+        # The app wakes: its token refresh records last_seen_at, Telegram Smart
+        # stops at once and the woken app keeps its own reminder (no double).
+        async with self.q.sessions.begin() as s:
+            await s.execute(update(DesktopDevice).values(last_seen_at=self.q.tick))
+        async with self.q.sessions.begin() as s:
+            with self.assertRaisesRegex(SmartReminderError, "telegram_cohort_unavailable"):
+                await self.q.service._cohort(s, self.q.actor)
+        self.assertEqual(await self.admission().step(4), ("not_eligible",))
+
+    async def test_missing_zone_consent_off_or_blocked_bot_is_never_held(self):
+        # No Smart zone and no legacy reminder to derive one from.
+        await self.bot_only(enabled=False)
+        self.assertEqual(await self.admission().step(4), ())
+        async with self.q.sessions.begin() as s:
+            await s.execute(update(CourseProgress).values(reminder_enabled=True))
         async with self.q.sessions.begin() as s:
             await s.execute(update(SmartReminderPreference).values(timezone_name="Etc/UTC"))
             await s.execute(update(SmartReminderConsent).where(SmartReminderConsent.channel == "telegram")
