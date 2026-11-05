@@ -4,6 +4,18 @@ Decisions and acceptance evidence belong to the [Master Plan](SMART_REMINDER_MAS
 This is the internal protocol/rollback contract for task 4.1. It adds no public
 operator endpoint, scheduler, producer, real transport, template or canary.
 
+> **Current production status (2026-11-05, Master Plan §17.96–§17.99).** The
+> hold/activate/review writers below are now also called by the production
+> runtime's **automatic admission** (`app/services/smart_reminder_rollout.py`)
+> inside the open rollout cohorts: hold → 24-hour drain from `quiesced_at` →
+> evidence-bound automatic review, plus `refresh` that re-attests the same
+> owner in place without invalidating work. Operator review remains possible
+> but is no longer required. Telegram ownership fences an Android device that
+> durably reported server-only Smart or runs 1.7.29/60+, skips devices without
+> a session refresh for 14 days, and uses a stable inventory digest that
+> excludes capability generation/timestamps. Paragraphs below describe the
+> original manual protocol and its unchanged guards.
+
 ## Sticky ownership, separate from consent
 
 `0135_smart_reminder_routing` adds one canonical User-owned row: `held` or

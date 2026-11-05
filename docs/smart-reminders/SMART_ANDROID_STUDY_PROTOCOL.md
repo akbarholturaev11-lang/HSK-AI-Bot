@@ -1,6 +1,17 @@
 # Android selected-study protocol v1
 
 Execution evidence is in the [Master Plan](SMART_REMINDER_MASTER_PLAN.md).
+
+> **Current production status (2026-11-05, Master Plan §17.96–§17.99).** The
+> production runtime wires the real admission reader and delivery factory, and
+> its automatic admission calls `review_android`/`refresh` for accounts whose
+> current device has Android consent and a fresh Smart capability. The review
+> inventory digest now binds stable facts only (devices with release, sessions,
+> Smart protocol/autonomous flag, study flag); capability generation and
+> timestamps are excluded because the claim itself checks them, so a routine
+> capability report no longer invalidates a review. Native authority still
+> requires a fresh capability. Text below records the original dormant
+> protocol and its unchanged guards.
 This is P4 task 5.1b's dormant backend protocol. The real router constructs a
 disabled service. No production job producer, Android admission reader,
 authoritative complete-learning reader or enabled delivery factory is wired.
@@ -102,7 +113,8 @@ Issuance requires all of the following:
   `AndroidAdmission` for this job/device/session and held generation. The hold
   itself grants nothing. Review binds the current bounded inventory digest,
   explicit drain/outcome/other-sender fencing evidence and validity. New device,
-  session, version or capability/inventory drift invalidates the old review.
+  session, release or Smart protocol/autonomous drift invalidates the old review
+  (a routine capability report with a new generation/timestamp does not).
   A second hold changes generation and revokes the previous proof. No HTTP
   caller can submit these attestations; the production reader is absent.
 - Fresh D1/holdout, goal/access/quiet/pause/course/time and cadence checks plus

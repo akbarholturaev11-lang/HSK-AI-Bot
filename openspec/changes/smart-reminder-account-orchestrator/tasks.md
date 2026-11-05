@@ -101,7 +101,7 @@ Checked boxes require the bounded task's source/test evidence; OpenSpec validati
 - [x] 9.6 Extend the existing signed Admin PWA Smart readout with anonymous rollout status/stage/next-time/error state; use the existing Smart template enable as the only restart-at-stage-one action. Verify signed OFF/ON transitions, UZ/RU/TJ catalogs and the minimal-action UI contract (no new control). Evidence: Master Plan §17.96.
 - [x] 9.7 Automatic admission (D30 owner direction): hold, 24-hour drain and evidence-bound review for eligible accounts of the open cohorts, in-place refresh for the same owner, and exclusion of accounts with an active Android device lacking the Smart capability. Verify Telegram and native paths end to end on SQLite/PostgreSQL. Evidence: Master Plan §17.96.
 - [x] 9.7b Relax admission for bot-only learners (derived legacy-offset zone, provisional in the Mini App) and dormant older Android devices (14 days without a session refresh). Verify both databases, the extracted Mini App client and the frozen-source review. Evidence: Master Plan §17.98.
-- [ ] 9.8 Deploy and observe the first production stage: migration head, runtime heartbeat, admitted-account count and pause readout in Admin PWA. Old-APK Android accounts reach Smart only after a public Smart-capable APK (separate D28 decision).
+- [ ] 9.8 Observe the production stages: migration head (done: `0150` live 2026-11-05), runtime heartbeat, admitted-account count, real deliveries and pause readout in Admin PWA. Android 1.7.29/60 is public and admitted (§17.97); only active older APKs stay on legacy reminders.
 
 ## Workflow follow-up
 
@@ -111,4 +111,4 @@ Checked boxes require the bounded task's source/test evidence; OpenSpec validati
 
 - [x] Display live runtime registration and anonymous unexpired review count in the existing Smart Admin editor. Check UZ/RU/TJ, the existing signed save and missing/zero values.
 - [x] Test PostgreSQL ordering between the signed pause and final delivery authorization. Verify both Android and Telegram guard paths and original receipt behavior.
-- [ ] Establish a real legacy sender barrier, drain and verified Android migration condition before broader account admission. Verify production-selected delivery, pause/resume and absence of duplicate study sends before reporting public activation.
+- [ ] Legacy sender barrier, 24-hour drain and Android migration condition are implemented (sticky hold veto, 1.7.29+ server-only mode, dormant-device rule; §17.96–§17.98). Verify production-selected delivery, pause/resume and absence of duplicate study sends before reporting public activation.
