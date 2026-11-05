@@ -77,7 +77,7 @@ class SmartReminderPlanner:
                 row['verified_at'] is None or row['verified_until'] is None or
                 not re.fullmatch(r'[0-9a-f]{64}',row['evidence_sha256'] or '')):
             return 'planner_review_unavailable'
-        inventory, until = await _android_inventory(session,actor.user_id,self._now())
+        inventory, until = await _android_inventory(session,actor.user_id,self._now(),native=row['state']=='held')
         now = self._now()
         if (inventory is None or inventory!=row['inventory_sha256'] or
                 not _utc(row['held_at'])<=_utc(row['verified_at'])<=now<_utc(row['verified_until']) or
