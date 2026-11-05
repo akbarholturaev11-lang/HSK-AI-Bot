@@ -478,6 +478,7 @@ def test_shake_report_never_captures_embedded_checkout_even_after_async_renderer
         page.add_style_tag(content=asset("course_v3_data/iphone-pwa-shake-report.css"))
         page.evaluate("""() => {
           Object.defineProperty(navigator, 'standalone', {configurable:true,value:true});
+          window.SCREEN = "course"; // eligible screenshot surface before checkout appears
           window.__captureCalls = 0;
           window.html2canvas = () => { window.__captureCalls++; throw Error('Must not run on checkout'); };
         }""")
@@ -614,4 +615,46 @@ def test_shake_report_delayed_manual_image_cannot_reopen_a_closed_sheet():
         assert not page.locator("#hsk-pwa-shake-root").is_visible(), (
             "old image.onload must never reopen a dismissed report"
         )
+        browser.close()
+
+
+def test_shake_report_rejects_async_capture_if_learner_navigates_to_private_screen():
+    """A renderer started on a lesson cannot return a picture of profile/payments."""
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page(viewport={"width":390,"height":844}, is_mobile=True, has_touch=True)
+        bootstrap(page)
+        page.add_style_tag(content=asset("course_v3_data/iphone-pwa-shake-report.css"))
+        page.evaluate("""() => {
+          Object.defineProperty(navigator,'standalone',{configurable:true,value:true});
+          window.SCREEN = "course";
+          window.__captureStarted = 0;
+          window.__encodedImages = 0;
+          window.html2canvas = () => {
+            window.__captureStarted++;
+            return new Promise(resolve => {
+              window.__completeCapture = () => resolve({
+                width:100, height:100,
+                toDataURL:() => { window.__encodedImages++; return 'data:image/jpeg;base64,AAAA'; }
+              });
+            });
+          };
+        }""")
+        page.add_script_tag(content=asset("course_v3_data/iphone-pwa-shake-report.js"))
+        page.evaluate("window.dispatchEvent(new Event('load'))")
+        page.wait_for_function(
+            "window.HskPwaShake && window.HskPwaShake.settingsRowHtml().includes('role=\"switch\"')"
+        )
+        page.evaluate("window.HskPwaShake.manual()")
+        page.wait_for_function("window.__captureStarted === 1")
+        page.evaluate("""() => {
+          window.SCREEN = 'profile';  // user switches tab while html2canvas is rendering
+          window.__completeCapture();
+        }""")
+        page.wait_for_function(
+            "document.querySelector('#hsk-pwa-shake-root .hsk-shake-preview')?.textContent.includes('rasm')"
+        )
+        assert page.evaluate("window.__encodedImages") == 0
+        assert page.locator("#hsk-shake-attach").count() == 0
+        assert page.locator("#hsk-shake-description").is_visible()
         browser.close()
