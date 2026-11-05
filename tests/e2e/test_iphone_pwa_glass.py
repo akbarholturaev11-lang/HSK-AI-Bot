@@ -598,7 +598,7 @@ def test_shake_report_delayed_manual_image_cannot_reopen_a_closed_sheet():
             "document.querySelector('#hsk-pwa-shake-root .hsk-shake-preview')?.textContent.includes('rasm')"
         )
         png = base64.b64decode(
-            "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9YdZ5swAAAAASUVORK5CYII="
+            "iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAIAAAD91JpzAAAAFklEQVR4nGP8//8/AwMDEwMDAwMDAwAkBgMB/DXemwAAAABJRU5ErkJggg=="
         )
         page.locator("#hsk-pwa-shake-root input[type=file]").set_input_files({
             "name":"manual.png","mimeType":"image/png","buffer":png
