@@ -13,7 +13,7 @@
   if (!document.querySelector('link[href*="iphone-pwa-shake-report.css"]')) {
     var reportCss = document.createElement("link");
     reportCss.rel = "stylesheet";
-    reportCss.href = "/course_v3_data/iphone-pwa-shake-report.css?v=260-1";
+    reportCss.href = "/course_v3_data/iphone-pwa-shake-report.css?v=20261105-c97d140b3930";
     document.head.appendChild(reportCss);
   }
 
