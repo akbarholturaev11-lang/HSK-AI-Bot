@@ -31,7 +31,7 @@ from app.services.android_live_voice_service import (
 from app.services.ai_service import AIUsageResult
 from app.services.desktop_auth_service import DesktopAuthError, DesktopAuthService
 from app.services.pwa_auth_service import (
-    PWA_SESSION_COOKIE, PwaAuthError, PwaAuthService, pwa_enabled, pwa_origin,
+    PWA_SESSION_COOKIE, PwaAuthError, PwaAuthService, pwa_allowed_origins, pwa_enabled,
 )
 from app.services.telegram_webapp_auth import extract_fresh_verified_webapp_user_id
 from app.services.voice_practice_service import (
@@ -169,7 +169,7 @@ def create_android_live_voice_router(
     async def pwa_live_voice(websocket: WebSocket):
         if (not pwa_enabled(settings_obj)
                 or not getattr(settings_obj, "PWA_VOICE_LIVE_ENABLED", False)
-                or websocket.headers.get("origin") != pwa_origin(settings_obj)):
+                or websocket.headers.get("origin") not in pwa_allowed_origins(settings_obj)):
             await websocket.close(code=1008)
             return
         await relay(websocket, transport="pwa")

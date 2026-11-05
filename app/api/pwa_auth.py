@@ -1062,8 +1062,8 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
         from app.services.voice_practice_service import VoicePracticeError, VoicePracticeService
 
         try:
-            if request.headers.get("Origin") != pwa_origin(settings_obj):
-                raise PwaAuthError("pwa_origin_invalid", status_code=403)
+            # Same origin set as every other PWA mutation (session/start too).
+            require_same_origin(request, settings_obj)
             if request.headers.get("X-Telegram-Init-Data"):
                 raise PwaAuthError("pwa_request_invalid", status_code=422)
             payload = await _small_json(request, PwaVoiceMode, max_bytes=1024)
