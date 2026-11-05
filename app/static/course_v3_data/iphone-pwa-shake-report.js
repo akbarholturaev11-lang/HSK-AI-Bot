@@ -346,9 +346,17 @@
         showMessage(l("imageTooLarge")); return;
       }
       manualImageSelected = true;
+      // A selected file may finish decoding after Close, logout or a newer report.
+      // Its stale callback must never reopen the dismissed bottom sheet.
+      var selectionEpoch = epoch, selectionOwner = owner;
+      var selectionValid = function () {
+        return selectionEpoch === epoch && selectionOwner === owner &&
+          stage === "form" && !root.hidden;
+      };
       var url = URL.createObjectURL(file);
       var image = new Image();
       image.onload = function () {
+        if (!selectionValid()) { URL.revokeObjectURL(url); return; }
         try {
           var factor = Math.min(1, 1600 / Math.max(image.width,image.height));
           var canvas = document.createElement("canvas");
@@ -362,7 +370,12 @@
         } catch (_) { manualImageSelected = false; showMessage(l("captureUnavailable")); }
         URL.revokeObjectURL(url);
       };
-      image.onerror = function () { manualImageSelected = false; URL.revokeObjectURL(url); showMessage(l("captureUnavailable")); };
+      image.onerror = function () {
+        URL.revokeObjectURL(url);
+        if (!selectionValid()) return;
+        manualImageSelected = false;
+        showMessage(l("captureUnavailable"));
+      };
       image.src = url;
     });
     manual.appendChild(chooser);
