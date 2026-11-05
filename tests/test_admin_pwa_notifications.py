@@ -49,6 +49,8 @@ class NotificationTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
         finally: event.remove(self.engine.sync_engine,'before_cursor_execute',collect)
         self.assertEqual(result['smart'],dict(month=month.strftime('%Y-%m'),observation_enabled=False,
             android_ready=False,telegram_ready=False,current_reviews=0,
+            rollout=dict(generation=0,stage=0,cohort_count=4,status='waiting',next_stage_at=None,
+                heartbeat_at=None,error_at=None,error_code=None),
             counts=dict(study_day_after_attempt=0,contact_study_24h=5,study_unit_24h=None)))
         self.assertTrue(result['template']['enabled'])
         json.dumps(result)  # PostgreSQL SUM(bigint) must also be JSON-safe.
@@ -105,6 +107,26 @@ class NotificationTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
         with self.assertRaises(api.CommandError): await self.execute(command,proof)
         async with self.sessions() as db:
             self.assertFalse(await NotificationTemplateService(db).is_enabled('smart_study'))
+
+    async def test_signed_smart_off_pauses_and_on_restarts_rollout_at_stage_one(self):
+        from app.db.models.smart_reminder import SmartReminderRollout
+        now=datetime.now(timezone.utc)
+        async with self.sessions.begin() as db:
+            db.add(SmartReminderRollout(id=1,generation=2,stage=3,status='active',
+                stage_started_at=now-timedelta(hours=5),heartbeat_at=now))
+        async def state():
+            async with self.sessions() as db:
+                row=(await db.execute(select(SmartReminderRollout.__table__))).mappings().one()
+                return row['generation'],row['stage'],row['status']
+        command=await self.prepare(key='smart_study',enabled=False,text_uz='',text_ru='',text_tj='')
+        await self.execute(command,await self.proof(command,signed=True))
+        self.assertEqual(await state(),(2,3,'paused'))
+        command=await self.prepare(key='smart_study',enabled=True,text_uz='',text_ru='',text_tj='')
+        await self.execute(command,await self.proof(command))
+        self.assertEqual(await state(),(3,1,'active'))
+        command=await self.prepare(key='smart_study',enabled=True,text_uz='Dars {lesson}',text_ru='',text_tj='')
+        await self.execute(command,await self.proof(command))
+        self.assertEqual(await state(),(3,1,'active'))  # Text-only edits keep the stage.
 
     async def test_smart_template_uses_existing_signed_editor_without_becoming_motivation_trigger(self):
         from app.services.notification_template_service import KEY_SMART_STUDY, MOTIVATION_KEYS, TEMPLATE_KEYS

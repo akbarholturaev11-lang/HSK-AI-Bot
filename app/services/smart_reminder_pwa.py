@@ -131,6 +131,11 @@ class SmartReminderPwaService:
                 await session.execute(update(JOB).where(JOB.c.id == job_id).values(
                     state="cancelled", updated_at=now, reason_code="admin_study_disabled"))
                 return PwaReminderResult("admin_study_disabled", job_id, "cancelled")
+            rollout = getattr(planner, "rollout_reader", None)
+            if rollout is not None and not await rollout(session, actor.user_id, now=now):
+                await session.execute(update(JOB).where(JOB.c.id == job_id).values(
+                    state="cancelled", updated_at=now, reason_code="rollout_cohort_closed"))
+                return PwaReminderResult("rollout_cohort_closed", job_id, "cancelled")
             context, refused = await planner.queue._fresh(session, actor, row, now, history_since)
             if refused:
                 return PwaReminderResult(refused.reason, job_id, "cancelled")

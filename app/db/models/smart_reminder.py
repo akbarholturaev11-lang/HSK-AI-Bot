@@ -134,6 +134,8 @@ class SmartReminderRouting(Base):
     verified_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     verified_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     evidence_sha256: Mapped[str | None] = mapped_column(String(64))
+    # First time the sticky veto stopped legacy study senders; renewals keep it.
+    quiesced_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
 
 class SmartReminderJob(Base):
@@ -239,3 +241,25 @@ class SmartReminderAndroidGrant(Base):
     receipt_id: Mapped[str | None] = mapped_column(String(36))
     receipt_outcome: Mapped[str | None] = mapped_column(String(32))
     received_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class SmartReminderRollout(Base):
+    """Anonymous singleton state for the automatic four-stage rollout."""
+
+    __tablename__ = "smart_reminder_rollout"
+    __table_args__ = (
+        CheckConstraint("id = 1", name="singleton"),
+        CheckConstraint("generation >= 0 AND stage BETWEEN 0 AND 4", name="versions"),
+        CheckConstraint("status IN ('waiting', 'active', 'paused', 'complete')", name="status"),
+        CheckConstraint("error_code IS NULL OR error_code IN ('runtime_exception', 'tick_timeout', 'provider_unknown', 'provider_failure', 'native_unknown', 'monitor_stale')", name="error_code"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, default=1)
+    generation: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
+    stage: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
+    status: Mapped[str] = mapped_column(String(16), default="waiting", server_default="waiting")
+    stage_started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    heartbeat_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    error_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    error_code: Mapped[str | None] = mapped_column(String(32))
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

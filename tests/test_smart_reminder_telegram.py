@@ -558,13 +558,19 @@ class TelegramChecks:
     async def test_real_routing_migration_empty_roundtrip_populated_refusal_and_owner_purge(self):
         def migrate(sync,direction):
             with Operations.context(MigrationContext.configure(sync)): getattr(MIGRATION,direction)()
+        def quiesce_column(sync):
+            # 0150 adds the first legacy-veto time to the 0135 routing table.
+            with Operations.context(MigrationContext.configure(sync)) as op:
+                op.add_column(SmartReminderRouting.__tablename__,
+                    SmartReminderRouting.__table__.c.quiesced_at.copy())
         async with self.engine.begin() as c:
             await c.run_sync(lambda s:SmartReminderRouting.__table__.drop(s))
             await c.run_sync(migrate,"upgrade")
             cols=await c.run_sync(lambda s:{v['name'] for v in inspect(s).get_columns(SmartReminderRouting.__tablename__)})
-            self.assertEqual(cols,set(SmartReminderRouting.__table__.columns.keys()))
+            self.assertEqual(cols,set(SmartReminderRouting.__table__.columns.keys())-{"quiesced_at"})
             await c.run_sync(migrate,"downgrade")
             await c.run_sync(migrate,"upgrade")
+            await c.run_sync(quiesce_column)
         await self.active()
         async with self.engine.begin() as c:
             with self.assertRaisesRegex(RuntimeError,"Retain routing ownership"):
