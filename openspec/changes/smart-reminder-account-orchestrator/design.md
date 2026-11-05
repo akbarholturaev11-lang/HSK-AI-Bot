@@ -576,18 +576,24 @@ The owner-directed D30 outcome (Smart for every eligible learner after four
 stages, no manual per-account review) is reached by **automatic admission**
 inside the open cohorts, using the existing routing records:
 
-1. **Eligibility.** Only an existing Smart preference with a real IANA zone
-   and a channel already allowed by that preference (Android this-device
-   consent, or Telegram consent with a reachable bot). Admission never creates
-   or infers consent. Android inventory must be fenced. For Telegram/PWA
+1. **Eligibility.** Only an existing Smart preference with an IANA zone and a
+   channel already allowed by that preference (Android this-device consent, or
+   Telegram consent with a reachable bot). Admission never creates or infers
+   consent. A bot-only learner with the legacy lesson reminder ON but no Smart
+   zone receives a fixed `Etc/GMT±N` zone derived from the legacy whole-hour
+   offset the legacy reminder already uses, through the journaled
+   timezone-only preference writer; the Mini App treats such a zone as
+   provisional and replaces it with the real device zone. Android inventory must be fenced. For Telegram/PWA
    ownership every active Android device either durably reported server-only
    Smart (protocol 1, autonomous posting off) or runs a Smart-capable release
    (1.7.29/60 and newer, public since 2026-11-05): its study worker asks the
    server before any local post and stops posting once the account is held,
    also offline. An active device on an older APK can still post its own local
-   reminder, so that account stays on the legacy senders and is not held. The
-   native Android path additionally needs a fresh capability (posting
-   authority).
+   reminder, so that account stays on the legacy senders and is not held. A
+   device silent for 14 days (no token refresh, `last_seen_at`) is dormant: an
+   app posts locally only from a freshly fetched course map, and a woken device
+   becomes active again at once, closing the Telegram cohort. The native
+   Android path additionally needs a fresh capability (posting authority).
 2. **Hold.** The existing sticky routing hold. Every server legacy study sender
    (Telegram lesson time, motivation evening study, Android FCM) already
    vetoes held accounts. `quiesced_at` keeps the first veto time.

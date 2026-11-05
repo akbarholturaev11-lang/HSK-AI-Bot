@@ -10,6 +10,8 @@ admission step moves an account from the legacy study senders to Smart:
 
 Admission never creates consent. It admits only accounts whose existing Smart
 preference already allows a channel and whose Android inventory is fenced. A
+bot-only learner without a Smart zone receives a fixed zone derived from the
+legacy reminder offset it already uses. A
 Smart-capable release (1.7.29/60 and newer) asks the server before any local
 post and stops posting for a held account; an active device on an older APK
 can still post its own local reminder, so such accounts stay on the legacy
@@ -28,6 +30,7 @@ import time as monotonic
 
 from sqlalchemy import and_, func, or_, select, update
 
+from app.db.models.course_progress import CourseProgress
 from app.db.models.desktop import DesktopDevice, DesktopSession
 from app.db.models.notification_template import NotificationTemplate
 from app.db.models.smart_reminder import SmartReminderPreference, SmartReminderRollout, SmartReminderRouting
@@ -70,6 +73,18 @@ def cohort_for_user(user_id: int) -> int:
 
 def cohort_open(user_id: int, stage: int, status: str = "active") -> bool:
     return status == "complete" or (stage >= 1 and cohort_for_user(user_id) < stage)
+
+
+def legacy_zone(offset):
+    """Fixed IANA zone for the legacy whole-hour reminder offset (UTC+5 → Etc/GMT-5).
+
+    The legacy reminder already runs on this fixed offset; Uzbekistan,
+    Tajikistan and Russia keep no daylight-saving time. A real browser zone
+    later replaces it (the Mini App treats ``Etc/GMT`` zones as provisional).
+    """
+    if type(offset) is not int or not -12 <= offset <= 14:
+        return None
+    return "Etc/GMT" if offset == 0 else f"Etc/GMT{-offset:+d}"
 
 
 def _utc(value):
@@ -303,6 +318,7 @@ class _Facts:
     inventory: str | None
     fence_until: datetime | None
     active_job: bool
+    derived_zone: str | None = None
 
 
 class SmartReminderAdmissionService:
@@ -349,6 +365,13 @@ class SmartReminderAdmissionService:
             pref.timezone_name.is_not(None), or_(pref.master_enabled.is_(None), pref.master_enabled.is_(True)),
             ~select(routing.user_id).where(routing.user_id == pref.user_id).exists()))
         routed = select(routing.user_id)
+        # Bot-only learners with the legacy lesson reminder ON have no Smart
+        # zone yet; admission derives it from their saved reminder offset.
+        legacy = (select(CourseProgress.user_id).join(User, User.id == CourseProgress.user_id)
+            .outerjoin(pref, pref.user_id == CourseProgress.user_id).where(
+            CourseProgress.reminder_enabled.is_(True), User.telegram_id > 0, User.bot_blocked_at.is_(None),
+            pref.timezone_name.is_(None), or_(pref.master_enabled.is_(None), pref.master_enabled.is_(True)),
+            ~select(routing.user_id).where(routing.user_id == CourseProgress.user_id).exists()))
         now = self._now()
         chosen = []
         async with self.sessions() as session:
@@ -359,7 +382,8 @@ class SmartReminderAdmissionService:
                 routing.verified_until <= now + URGENT_WINDOW)
                 .order_by(routing.verified_until.desc(), routing.user_id).limit(self.batch * COHORT_COUNT))).all()
         chosen.extend([user_id for user_id in urgent if cohort_open(user_id, stage, status)][:self.batch])
-        for name, query, column in (("new", fresh, pref.user_id), ("routed", routed, routing.user_id)):
+        for name, query, column in (("new", fresh, pref.user_id), ("legacy", legacy, CourseProgress.user_id),
+                                    ("routed", routed, routing.user_id)):
             rows = await self._page(query, column, self.cursors.get(name, 0))
             selected = [user_id for user_id in rows if cohort_open(user_id, stage, status)][:self.batch]
             self.cursors[name] = (selected[-1] if len(selected) == self.batch else rows[-1]) if rows else 0
@@ -402,20 +426,26 @@ class SmartReminderAdmissionService:
             _, native_until = await _android_inventory(session, user_id, now, native=True)
             active = await session.scalar(select(JOB.c.id).where(JOB.c.user_id == user_id,
                 JOB.c.state.in_(("shadow", "pending", "claimed"))).limit(1)) is not None
+            offset = await session.scalar(select(CourseProgress.reminder_tz_offset).where(
+                CourseProgress.user_id == user_id))
         window = now + MIN_REVIEW_WINDOW
         locked = pref["channel_mode"] == "manual_locked"
-        path, fence_until = None, None
-        if pref["master_enabled"] is not False and pref["timezone_name"] and inventory is not None:
+        open_ = pref["master_enabled"] is not False and inventory is not None
+        telegram_ok = (open_ and telegram is not None and self.telegram_ready and owner_until is None and
+            pref["channels"]["telegram"]["consent"] == "on" and pref["channels"]["telegram"]["transport_available"] and
+            (not locked or pref["preferred_channel"] in {"telegram", "pwa"}))
+        path, fence_until, derived = None, None, None
+        if open_ and pref["timezone_name"]:
             if (android is not None and self.android_ready and native_until is not None and
                     native_until > window and pref["channels"]["android"]["this_device_consent"] == "on" and
                     (not locked or pref["preferred_channel"] == "android")):
                 path, fence_until = "android", native_until
-            elif (telegram is not None and self.telegram_ready and owner_until is None and
-                    pref["channels"]["telegram"]["consent"] == "on" and
-                    pref["channels"]["telegram"]["transport_available"] and
-                    (not locked or pref["preferred_channel"] in {"telegram", "pwa"})):
+            elif telegram_ok:
                 path = "telegram"
-        return _Facts(path, dict(row) if row else None, pref["revision"], epoch, inventory, fence_until, active)
+        elif telegram_ok and row is None and pref["time_mode"] == "auto":
+            derived = legacy_zone(offset)
+        return _Facts(path, dict(row) if row else None, pref["revision"], epoch, inventory, fence_until, active,
+            derived)
 
     async def admit(self, user_id):
         """Advance one account by at most one admission step."""
@@ -424,6 +454,9 @@ class SmartReminderAdmissionService:
         if telegram is None and android is None:
             return "actor_unavailable"
         facts = await self._facts(user_id, telegram, android)
+        if facts.path is None and facts.derived_zone is not None:
+            await self._derive_zone(telegram, facts.revision, facts.derived_zone)
+            facts = await self._facts(user_id, telegram, android)
         if facts.path is None:
             return "not_eligible"
         actor = android if facts.path == "android" else telegram
@@ -500,6 +533,14 @@ class SmartReminderAdmissionService:
         return RoutingReview(user_id=user_id, generation=generation, verified_at=now, verified_until=until,
             evidence_sha256=evidence, legacy_quiesced=True, legacy_outcomes_reconciled=True,
             other_study_fenced=True)
+
+    async def _derive_zone(self, telegram, revision, zone):
+        """Timezone only, through the journaled preference writer; no consent."""
+        from uuid import uuid4
+        from app.services.smart_reminder_preferences import SmartReminderPatch, SmartReminderPreferencesService
+        async with self.sessions.begin() as session:
+            await SmartReminderPreferencesService(session).patch(telegram, SmartReminderPatch(
+                request_id=str(uuid4()), expected_revision=revision, timezone_name=zone))
 
     async def _quiesced(self, user_id):
         now = self._now()
