@@ -154,7 +154,7 @@ class LavaCheckoutService:
                 await session.flush()
                 reserved_id = row.id
                 offer_id, periodicity, currency = term.offer_id, term.periodicity, config.currency
-        return_url = self._return_url()
+        return_url = self._return_url(language)
         try:
             created = await self.runtime.client().create_invoice(
                 email=buyer_email, offer_id=offer_id, currency=currency, periodicity=periodicity,
@@ -180,10 +180,12 @@ class LavaCheckoutService:
                 "amount": None if created.amount is None else str(created.amount),
                 "currency": created.currency or currency}
 
-    def _return_url(self) -> str | None:
+    def _return_url(self, language: str | None) -> str | None:
+        lang = (language or "ru")[:2]
+        lang = lang if lang in {"uz", "ru", "tj"} else "ru"
         try:
             from app.public_site.render import public_origin
-            return public_origin(self.settings) + "/pay/lava/return"
+            return public_origin(self.settings) + f"/pay/lava/return?lang={lang}"
         except ValueError:
             return None
 

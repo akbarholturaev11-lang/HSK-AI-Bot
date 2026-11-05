@@ -186,6 +186,10 @@ from app.services.notification_delivery_service import (
 from app.services.desktop_analytics_service import DesktopAnalyticsService
 from app.services.desktop_auth_service import DesktopAuthService
 from app.api.pwa_auth import create_pwa_auth_router
+from app.api.lava_checkout import attach_lava_block, create_lava_router
+from app.services.lava.events import LavaRuntime
+from app.services.lava.notify import LavaNotifier
+from app.services.lava.reconcile import LavaReconcileWorker
 from app.services.desktop_release_manifest_service import (
     resolve_desktop_latest_versions,
 )
@@ -335,6 +339,21 @@ from app.bot.utils.course_miniapp import (
 logger = logging.getLogger(__name__)
 
 bot, dp = create_bot(settings)
+
+
+async def _lava_on_approved(session, result):
+    # Same post-commit delivery/analytics as an admin-approved manual receipt.
+    await _emit_admin_payment_review_effects(session, result, source_prefix="lava")
+
+
+# lava.top second checkout path. Sales are gated by LAVA_ENABLED + Admin PWA
+# mode; webhook/reconcile processing of existing contracts is independent.
+lava_runtime = LavaRuntime(
+    settings=settings,
+    session_factory=async_session_maker,
+    notifier=LavaNotifier(bot=bot, admin_ids=settings.admin_id_list),
+    on_approved=_lava_on_approved,
+)
 _study_ai_tasks = set()
 
 
@@ -680,6 +699,9 @@ async def lifespan(app: FastAPI):
         logger.warning("Admin PWA Apple Push unavailable: verify VAPID/storage/subject config")
     apple_push_task = (asyncio.create_task(_admin_pwa_apple_push_scheduler())
                        if push_ready else None)
+    # Lost-webhook repair runs whenever an API key exists, even with sales off.
+    lava_reconcile_task = (asyncio.create_task(LavaReconcileWorker(lava_runtime).run())
+                           if settings.LAVA_API_KEY else None)
     try:
         yield                                                # /health darhol ishlaydi
     finally:
@@ -697,6 +719,8 @@ async def lifespan(app: FastAPI):
         desktop_auth_cleanup_task.cancel()
         if apple_push_task is not None:
             apple_push_task.cancel()
+        if lava_reconcile_task is not None:
+            lava_reconcile_task.cancel()
         study_ai_tasks = tuple(_study_ai_tasks)
         for task in study_ai_tasks:
             task.cancel()
@@ -1020,7 +1044,10 @@ app.include_router(
     )
 )
 # Separate, default-OFF learner browser sessions; no legacy Mini App cookie bypass.
-app.include_router(create_pwa_auth_router(session_factory=async_session_maker, settings_obj=settings, bot=bot))
+app.include_router(create_pwa_auth_router(session_factory=async_session_maker, settings_obj=settings, bot=bot,
+                                            lava_runtime_getter=lambda: lava_runtime))
+app.include_router(create_lava_router(runtime_getter=lambda: lava_runtime,
+                                     session_factory=async_session_maker, settings_obj=settings))
 app.include_router(
     create_android_course_router(
         session_factory=async_session_maker,
@@ -6280,6 +6307,11 @@ async def subscription_miniapp_overview(request: Request):
                 payment_method=str(payload.get("method") or ""),
                 stage="overview",
                 error=str(result.get("error") or "checkout_unavailable"),
+            )
+        if result.get("ok"):
+            result = await attach_lava_block(
+                session, lava_runtime, await UserRepository(session).get_by_telegram_id(telegram_id), result,
+                mode=str(payload.get("mode") or ""), supports_lava=payload.get("supports_lava") is True,
             )
         return result
 

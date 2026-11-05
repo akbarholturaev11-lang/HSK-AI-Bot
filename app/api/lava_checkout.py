@@ -1,0 +1,233 @@
+"""HTTP adapters for the lava.top checkout path.
+
+- ``POST /api/payments/lava/webhook``: provider webhook (secret-authenticated).
+- ``/api/subscription-miniapp/lava/*``: Telegram Mini App (signed initData).
+- ``/api/v3/pwa/subscription/lava/*``: learner iPhone PWA (cookie + CSRF + origin).
+- ``GET /pay/lava/return``: neutral return page; never proof of payment.
+
+Authorization stays in each transport; money decisions live in
+``app.services.lava``. The webhook is independent of the sales flag.
+"""
+from __future__ import annotations
+
+import logging
+from html import escape
+
+from fastapi import APIRouter, Request
+from fastapi.responses import HTMLResponse, JSONResponse
+from pydantic import BaseModel, ConfigDict, Field, ValidationError
+
+from app.bot.utils.i18n import t
+from app.repositories.user_repo import UserRepository
+from app.services.lava import events
+from app.services.lava.checkout import LavaCheckoutError, LavaCheckoutService
+from app.services.lava.terms import LAVA_PLAN_TYPES
+from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
+
+logger = logging.getLogger(__name__)
+
+_NO_STORE = {"Cache-Control": "no-store", "Referrer-Policy": "no-referrer"}
+_LANGS = {"uz", "ru", "tj"}
+
+
+class LavaStartBody(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    plan_type: str = Field(max_length=16)
+    email: str = Field(max_length=254)
+    language: str | None = Field(default=None, max_length=8)
+
+
+class LavaStatusBody(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    checkout_id: int = Field(gt=0)
+
+
+class LavaEmptyBody(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+
+async def _bounded_body(request: Request, limit: int) -> bytes | None:
+    body = bytearray()
+    async for chunk in request.stream():
+        body.extend(chunk)
+        if len(body) > limit:
+            return None
+    return bytes(body)
+
+
+def _client_ip(request: Request) -> str | None:
+    forwarded = request.headers.get("X-Forwarded-For", "")
+    if forwarded:
+        return forwarded.split(",")[0].strip() or None
+    return request.client.host if request.client else None
+
+
+def _checkout_error(exc: LavaCheckoutError) -> JSONResponse:
+    return JSONResponse({"ok": False, "error": exc.code}, status_code=exc.status, headers=_NO_STORE)
+
+
+async def attach_lava_block(session, runtime, user, result: dict, *, mode: str | None,
+                            supports_lava: bool) -> dict:
+    """Add the optional ``lava`` key to an existing checkout overview.
+
+    Only the plain Pro subscription mode qualifies; discount and HSK 3.0 flows
+    stay manual. Without a block the overview stays byte-identical."""
+    if not isinstance(result, dict) or not result.get("ok") or user is None or runtime is None:
+        return result
+    if (mode or "subscription") not in {"", "subscription"}:
+        return result
+    try:
+        block = await LavaCheckoutService(runtime).overview_block(session, user, supports_lava=supports_lava)
+    except Exception:  # noqa: BLE001 - lava trouble must never break manual checkout
+        logger.exception("lava.top overview block unavailable")
+        return result
+    if block is not None:
+        result["lava"] = block
+    return result
+
+
+def create_lava_router(*, runtime_getter, session_factory, settings_obj) -> APIRouter:
+    router = APIRouter()
+
+    async def _parse(request: Request, model, limit: int = 2048):
+        if request.headers.get("Content-Type", "").split(";")[0].strip().lower() != "application/json":
+            raise LavaCheckoutError("invalid_request", 415)
+        raw = await _bounded_body(request, limit)
+        if raw is None:
+            raise LavaCheckoutError("invalid_request", 413)
+        try:
+            return model.model_validate_json(raw or b"{}")
+        except ValidationError:
+            raise LavaCheckoutError("invalid_request", 422) from None
+
+    async def _start(user, data: LavaStartBody, source: str):
+        if data.plan_type not in LAVA_PLAN_TYPES:
+            raise LavaCheckoutError("plan_unavailable", 400)
+        return await LavaCheckoutService(runtime_getter()).start(
+            session_factory, user_id=user.id, plan_type=data.plan_type, email=data.email,
+            source=source, language=data.language or getattr(user, "language", None),
+        )
+
+    # -- provider webhook -------------------------------------------------
+    @router.post("/api/payments/lava/webhook")
+    async def lava_webhook(request: Request):
+        runtime = runtime_getter()
+        if runtime is None:
+            return JSONResponse({"ok": False}, status_code=404)
+        raw = await _bounded_body(request, events.MAX_WEBHOOK_BYTES)
+        if raw is None:
+            return JSONResponse({"ok": False}, status_code=413)
+        status, body = await events.ingest(
+            runtime, raw, api_key_header=request.headers.get("X-Api-Key"), client_ip=_client_ip(request),
+        )
+        return JSONResponse(body, status_code=status)
+
+    # -- Telegram Mini App -------------------------------------------------
+    async def _miniapp_user(request: Request):
+        telegram_id = extract_verified_webapp_user_id(
+            request.headers.get("X-Telegram-Init-Data", ""), getattr(settings_obj, "BOT_TOKEN", ""))
+        if not telegram_id:
+            raise LavaCheckoutError("invalid_telegram_init_data", 401)
+        async with session_factory() as session:
+            user = await UserRepository(session).get_by_telegram_id(telegram_id)
+        if user is None:
+            raise LavaCheckoutError("access_start_first", 404)
+        return user
+
+    @router.post("/api/subscription-miniapp/lava/start")
+    async def miniapp_lava_start(request: Request):
+        try:
+            user = await _miniapp_user(request)
+            data = await _parse(request, LavaStartBody)
+            return JSONResponse(await _start(user, data, "miniapp"), headers=_NO_STORE)
+        except LavaCheckoutError as exc:
+            return _checkout_error(exc)
+
+    @router.post("/api/subscription-miniapp/lava/status")
+    async def miniapp_lava_status(request: Request):
+        try:
+            user = await _miniapp_user(request)
+            data = await _parse(request, LavaStatusBody)
+            result = await LavaCheckoutService(runtime_getter()).status(
+                session_factory, user_id=user.id, checkout_id=data.checkout_id)
+            return JSONResponse(result, headers=_NO_STORE)
+        except LavaCheckoutError as exc:
+            return _checkout_error(exc)
+
+    @router.post("/api/subscription-miniapp/lava/cancel")
+    async def miniapp_lava_cancel(request: Request):
+        try:
+            user = await _miniapp_user(request)
+            await _parse(request, LavaEmptyBody)
+            result = await LavaCheckoutService(runtime_getter()).cancel(session_factory, user_id=user.id)
+            return JSONResponse(result, status_code=200 if result.get("ok") else 409, headers=_NO_STORE)
+        except LavaCheckoutError as exc:
+            return _checkout_error(exc)
+
+    # -- learner iPhone PWA -------------------------------------------------
+    async def _pwa_user(request: Request):
+        from app.services.pwa_auth_service import (
+            PWA_SESSION_COOKIE, PwaAuthError, PwaAuthService, require_same_origin,
+        )
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise LavaCheckoutError("invalid_request", 422)
+            async with session_factory() as session:
+                actor, _ = await PwaAuthService(session, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE), request.headers.get("X-HSK-PWA-CSRF"))
+            return actor
+        except PwaAuthError as exc:
+            raise LavaCheckoutError(exc.code, exc.status_code) from None
+
+    @router.post("/api/v3/pwa/subscription/lava/start")
+    async def pwa_lava_start(request: Request):
+        try:
+            user = await _pwa_user(request)
+            data = await _parse(request, LavaStartBody)
+            return JSONResponse(await _start(user, data, "pwa"), headers=_NO_STORE)
+        except LavaCheckoutError as exc:
+            return _checkout_error(exc)
+
+    @router.post("/api/v3/pwa/subscription/lava/status")
+    async def pwa_lava_status(request: Request):
+        try:
+            user = await _pwa_user(request)
+            data = await _parse(request, LavaStatusBody)
+            result = await LavaCheckoutService(runtime_getter()).status(
+                session_factory, user_id=user.id, checkout_id=data.checkout_id)
+            return JSONResponse(result, headers=_NO_STORE)
+        except LavaCheckoutError as exc:
+            return _checkout_error(exc)
+
+    @router.post("/api/v3/pwa/subscription/lava/cancel")
+    async def pwa_lava_cancel(request: Request):
+        try:
+            user = await _pwa_user(request)
+            await _parse(request, LavaEmptyBody)
+            result = await LavaCheckoutService(runtime_getter()).cancel(session_factory, user_id=user.id)
+            return JSONResponse(result, status_code=200 if result.get("ok") else 409, headers=_NO_STORE)
+        except LavaCheckoutError as exc:
+            return _checkout_error(exc)
+
+    # -- neutral return page ------------------------------------------------
+    @router.get("/pay/lava/return")
+    async def lava_return_page(request: Request):
+        lang = request.query_params.get("lang", "ru")
+        lang = lang if lang in _LANGS else "ru"
+        title = escape(t("bot.lava.return_title", lang))
+        body = escape(t("bot.lava.return_body", lang))
+        html = (
+            "<!doctype html><html lang=\"" + lang + "\"><head><meta charset=\"utf-8\">"
+            "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">"
+            "<meta name=\"robots\" content=\"noindex\"><title>HSK AI</title>"
+            "<style>body{margin:0;font-family:-apple-system,system-ui,sans-serif;background:#f7f7f5;color:#1b1b1b;"
+            "display:flex;min-height:100vh;align-items:center;justify-content:center;padding:24px}"
+            "main{max-width:420px;text-align:center}h1{font-size:22px;margin:0 0 12px}"
+            "p{font-size:16px;line-height:1.5;margin:0;color:#4a4a4a}</style></head><body><main>"
+            f"<h1>{title}</h1><p>{body}</p></main></body></html>"
+        )
+        return HTMLResponse(html, headers={**_NO_STORE, "X-Frame-Options": "DENY",
+                                           "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'"})
+
+    return router

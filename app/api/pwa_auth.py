@@ -197,6 +197,8 @@ class PwaCheckoutContext(BaseModel):
     attempt_id: str | None = None
     campaign_id: int | None = None
     feedback_id: int | None = None
+    # Declared by checkout builds that implement the lava.top path.
+    supports_lava: bool | None = None
 
 
 class PwaCheckoutQuote(PwaCheckoutContext):
@@ -353,7 +355,7 @@ def _clear_cookie(response: JSONResponse, name: str) -> None:
     response.delete_cookie(name, path="/", secure=True, httponly=True, samesite="lax")
 
 
-def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRouter:
+def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runtime_getter=None) -> APIRouter:
     router = APIRouter(tags=["pwa-auth"])
 
     @router.get("/iphone-pwa/sw.js")
@@ -1299,6 +1301,12 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
                                 "transport": "iphone_pwa",
                             },
                         )
+                if result.get("ok") and lava_runtime_getter is not None:
+                    from app.api.lava_checkout import attach_lava_block
+                    result = await attach_lava_block(
+                        db, lava_runtime_getter(), actor, result, mode=data.mode,
+                        supports_lava=data.supports_lava is True,
+                    )
             return JSONResponse(
                 result, status_code=200 if result.get("ok") else 400,
                 headers=_NO_STORE,
