@@ -4,7 +4,9 @@ This fixture serves the actual shipped CSS/JS and generated UZ/RU/TJ catalogs.
 Only authenticated API responses are synthetic: it never exercises production
 billing, grants access, or replaces the original Mini App in a browser.
 """
+import base64
 import json
+import re
 from pathlib import Path
 from urllib.parse import urlsplit
 
@@ -266,7 +268,7 @@ def test_feedback_is_lesson_contextual_and_uses_csrf():
         assert dialog.is_visible()
         assert "3-dars" in page.locator("#hsk-pwa-feedback-title").inner_text()
         assert "Hozirgina tugatgan darsingiz" in page.locator("#hsk-pwa-feedback-context").inner_text()
-        # The current UI exposes accessible radio buttons, not <select> fields.
+        # Feedback uses accessible radio buttons, not legacy <select> controls.
         page.locator('#hsk-pwa-feedback-form [data-mark="👍"] [data-code="course"]').click()
         page.locator('#hsk-pwa-feedback-form [data-mark="👎"] [data-code="price"]').click()
         page.locator("#hsk-pwa-feedback-submit").click()
@@ -368,4 +370,330 @@ def test_rejected_payment_never_interrupts_feedback():
         assert not page.locator("#hsk-pwa-notice-root").is_visible(), (
             "closing feedback must not reveal a queued surprise payment dialog"
         )
+        browser.close()
+
+
+@pytest.mark.parametrize("width,height", [(320, 568), (390, 844), (430, 932)])
+def test_shake_report_is_single_bottom_sheet_with_direct_permission_and_csrf(width, height):
+    """Exercise the actual PWA JS/CSS in Chromium, not only string/gesture contracts."""
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page(
+            viewport={"width": width, "height": height},
+            device_scale_factor=2, is_mobile=True, has_touch=True,
+        )
+        bootstrap(page)
+        page.add_style_tag(content=asset("course_v3_data/iphone-pwa-shake-report.css"))
+        page.evaluate("""() => {
+          Object.defineProperty(navigator, "standalone", {configurable:true,value:true});
+          window.__motionRequests = 0;
+          Object.defineProperty(window, "DeviceMotionEvent", {
+            configurable:true,
+            value:class MotionEventMock {}
+          });
+          window.DeviceMotionEvent.requestPermission = () => {
+            window.__motionRequests++;
+            return Promise.resolve("granted");
+          };
+          window.SCREEN = "settings";
+          window.__settingsRefreshes = 0;
+          window.renderPwaSettings = () => {window.__settingsRefreshes++};
+        }""")
+        page.add_script_tag(content=asset("course_v3_data/iphone-pwa-shake-report.js"))
+        page.evaluate("window.dispatchEvent(new Event('load'))")
+        page.wait_for_function(
+            "window.HskPwaShake && window.HskPwaShake.settingsRowHtml().includes('role=\"switch\"')"
+        )
+        report = page.locator("#hsk-pwa-shake-root")
+        assert not report.is_visible(), "first use cannot open an unsolicited consent dialog"
+        page.evaluate("""() => {
+          const host = document.createElement("div");
+          host.id = "shake-toggle-fixture";
+          host.innerHTML = window.HskPwaShake.settingsRowHtml();
+          document.body.appendChild(host);
+        }""")
+        setting = page.locator("#shake-toggle-fixture [role='switch']")
+        assert setting.count() == 1
+        assert setting.get_attribute("aria-checked") == "false"
+        setting.click()
+        assert page.evaluate("window.__motionRequests") == 1
+        assert page.evaluate("window.__settingsRefreshes") >= 1
+        assert "aria-checked=\"true\"" in page.evaluate("window.HskPwaShake.settingsRowHtml()")
+        assert not report.is_visible(), "granting sensor permission must not open extra app modals"
+        # Use the public test hook to trigger the same end-form code path as a real shake.
+        page.evaluate("window.HskPwaShake.manual()")
+        sheet = page.locator("#hsk-pwa-shake-root .hsk-shake-dialog")
+        assert sheet.is_visible()
+        assert sheet.get_attribute("data-stage") == "form"
+        assert page.evaluate("window.HskPwaShake.backTarget() !== null")
+        assert page.locator("#hsk-shake-description").is_visible()
+        assert page.locator("#hsk-shake-actions button").count() == 1
+        assert page.locator("#hsk-shake-close").count() == 1
+        # Wait for the intentional 250ms bottom-up entrance animation to finish;
+        # otherwise the first paint is deliberately translated +28px offscreen.
+        page.wait_for_function("""() => {
+          const sheet = document.querySelector('#hsk-pwa-shake-root .hsk-shake-dialog');
+          return sheet && sheet.getAnimations().every(a => a.playState === 'finished');
+        }""")
+        box = sheet.bounding_box()
+        assert box and box["height"] < height * .9
+        assert abs(box["y"] + box["height"] - height) <= 2, "sheet must dock to the bottom"
+        assert page.evaluate("document.documentElement.scrollWidth <= innerWidth + 1")
+        posts = []
+        def report_post(route):
+            posts.append({
+                "headers": route.request.headers,
+                "body": json.loads(route.request.post_data),
+            })
+            route.fulfill(content_type="application/json", body='{"ok":true}')
+        page.route("**/api/v3/pwa/bug-report", report_post)
+        page.locator("#hsk-shake-description").fill("Dars ochilmay qolyapti")
+        page.locator("#hsk-shake-actions button").click()
+        page.wait_for_function(
+            "document.querySelector('.hsk-shake-dialog')?.dataset.stage === 'sent'"
+        )
+        assert len(posts) == 1
+        assert posts[0]["headers"].get("x-hsk-pwa-csrf") == "browser-csrf"
+        assert posts[0]["body"]["description"] == "Dars ochilmay qolyapti"
+        assert posts[0]["body"]["app_version"] == "iphone-pwa"
+        assert page.locator("#hsk-shake-close").is_hidden(), "success has one Done action"
+        assert page.locator("#hsk-shake-actions button").count() == 1
+        page.locator("#hsk-shake-actions button").click()
+        assert not report.is_visible()
+        assert page.evaluate("window.HskPwaShake.backTarget() === null")
+        page.evaluate("window.HskPwaShake.toggle()")
+        assert not page.evaluate("window.HskPwaShake.isListening()")
+        browser.close()
+
+
+def test_shake_report_never_captures_embedded_checkout_even_after_async_renderer():
+    """Top-level installed PWA checkout iframe may contain receipts/financial data."""
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page(
+            viewport={"width": 390, "height": 844},
+            is_mobile=True, has_touch=True,
+        )
+        bootstrap(page)
+        page.add_style_tag(content=asset("course_v3_data/iphone-pwa-shake-report.css"))
+        page.evaluate("""() => {
+          Object.defineProperty(navigator, 'standalone', {configurable:true,value:true});
+          window.SCREEN = "course"; // eligible screenshot surface before checkout appears
+          window.__captureCalls = 0;
+          window.html2canvas = () => { window.__captureCalls++; throw Error('Must not run on checkout'); };
+        }""")
+        page.add_script_tag(content=asset("course_v3_data/iphone-pwa-shake-report.js"))
+        page.evaluate("window.dispatchEvent(new Event('load'))")
+        page.wait_for_function("window.HskPwaShake && window.HskPwaShake.settingsRowHtml().includes('role=\"switch\"')")
+        # Same JavaScript turn: renderer is already available, but viewport privacy
+        # must be checked again after the await before screenshot materializes.
+        page.evaluate("""() => {
+          window.HskPwaShake.manual();
+          let layer = document.createElement('section');
+          layer.id = 'pwa-checkout-layer';
+          layer.innerHTML = '<iframe title="Checkout"></iframe>';
+          document.body.appendChild(layer);
+        }""")
+        page.wait_for_function(
+            "document.querySelector('#hsk-pwa-shake-root .hsk-shake-preview')?.textContent.includes('rasm')"
+        )
+        assert page.evaluate("window.__captureCalls") == 0
+        assert page.locator("#hsk-shake-attach").count() == 0
+        posts = []
+        def accept_report(route):
+            posts.append(json.loads(route.request.post_data))
+            route.fulfill(content_type="application/json", body='{"ok":true}')
+        page.route("**/api/v3/pwa/bug-report", accept_report)
+        page.locator("#hsk-shake-description").fill("Obuna sahifasida muammo bor")
+        page.locator("#hsk-shake-actions button").click()
+        page.wait_for_function(
+            "document.querySelector('.hsk-shake-dialog')?.dataset.stage === 'sent'"
+        )
+        assert len(posts) == 1
+        assert posts[0]["screenshot_data_url"] == ""
+        browser.close()
+
+
+@pytest.mark.parametrize("width,height", [(320, 568), (390, 844), (430, 932)])
+def test_embedded_checkout_cta_uses_exactly_one_bottom_safe_area(width, height):
+    """Render the actual parent + checkout inline CSS in nested Chromium frames."""
+    course_html = asset("course-v3.html")
+    checkout_html = asset("subscription.html")
+    course_css = re.search(r"<style>([\s\S]*?)</style>", course_html).group(1)
+    checkout_css = re.search(r"<style>([\s\S]*?)</style>", checkout_html).group(1)
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page(
+            viewport={"width":width,"height":height},
+            device_scale_factor=2, is_mobile=True, has_touch=True,
+        )
+        page.set_content(
+            '<!doctype html><html class="hsk-pwa-browser"><head>'
+            '<meta name="viewport" content="width=device-width,initial-scale=1">'
+            '<style>' + course_css + '</style></head><body>'
+            '<section id="pwa-checkout-layer">'
+            '<iframe name="checkout" title="HSK AI Pro"></iframe>'
+            '</section></body></html>'
+        )
+        layer = page.locator("#pwa-checkout-layer")
+        assert layer.evaluate(
+            "node => getComputedStyle(node).paddingBottom"
+        ) == "0px", "parent checkout must not consume home-indicator space twice"
+        parent_frame = page.frame(name="checkout")
+        assert parent_frame is not None
+        parent_frame.set_content(
+            '<!doctype html><html class="hsk-pwa-browser"><head>'
+            '<meta name="viewport" content="width=device-width,initial-scale=1">'
+            '<style>' + checkout_css + '</style></head><body>'
+            '<main class="app"><section class="screen">HSK AI Pro</section></main>'
+            '<footer class="bottom" id="bottom">'
+            '<div class="bottom-inner">'
+            '<button id="backBtn" class="back hide"></button>'
+            '<button id="nextBtn" class="cta">Continue</button>'
+            '</div></footer></body></html>'
+        )
+        button = parent_frame.locator("#nextBtn")
+        box = button.bounding_box()
+        assert box is not None
+        bottom_gap = height - (box["y"] + box["height"])
+        assert 28 <= bottom_gap <= 34, f"CTA should clear the home gesture area once: {bottom_gap}"
+        assert box["x"] >= 0 and box["x"] + box["width"] <= width
+        assert box["height"] >= 50
+        browser.close()
+
+
+def test_shake_report_delayed_manual_image_cannot_reopen_a_closed_sheet():
+    """Delayed iOS file decode must be discarded after user closes the report."""
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page(
+            viewport={"width":390,"height":844}, is_mobile=True, has_touch=True,
+        )
+        bootstrap(page)
+        page.add_style_tag(content=asset("course_v3_data/iphone-pwa-shake-report.css"))
+        page.evaluate("""() => {
+          Object.defineProperty(navigator,"standalone",{configurable:true,value:true});
+          const NativeImage = window.Image;
+          window.__manualImageQueue = [];
+          window.Image = function() {
+            const img = new NativeImage();
+            let callback = null;
+            Object.defineProperty(img,"onload",{
+              configurable:true,
+              get(){return callback;},
+              set(fn){callback = fn;}
+            });
+            window.__manualImageQueue.push({
+              image:img, fire:() => {if (callback) callback.call(img);}
+            });
+            return img;
+          };
+        }""")
+        page.add_script_tag(content=asset("course_v3_data/iphone-pwa-shake-report.js"))
+        page.evaluate("window.dispatchEvent(new Event('load'))")
+        page.wait_for_function(
+            "window.HskPwaShake && window.HskPwaShake.settingsRowHtml().includes('role=\"switch\"')"
+        )
+        page.evaluate("window.HskPwaShake.manual()")
+        page.wait_for_function(
+            "document.querySelector('#hsk-pwa-shake-root .hsk-shake-preview')?.textContent.includes('rasm')"
+        )
+        png = base64.b64decode(
+            "iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAIAAAD91JpzAAAAFklEQVR4nGP8//8/AwMDEwMDAwMDAwAkBgMB/DXemwAAAABJRU5ErkJggg=="
+        )
+        page.locator("#hsk-pwa-shake-root input[type=file]").set_input_files({
+            "name":"manual.png","mimeType":"image/png","buffer":png
+        })
+        page.wait_for_function(
+            "window.__manualImageQueue.length > 0 && "
+            "window.__manualImageQueue[0].image.complete && "
+            "window.__manualImageQueue[0].image.naturalWidth > 0"
+        )
+        page.locator("#hsk-shake-close").click()
+        assert not page.locator("#hsk-pwa-shake-root").is_visible()
+        page.evaluate("window.__manualImageQueue[0].fire()")
+        assert not page.locator("#hsk-pwa-shake-root").is_visible(), (
+            "old image.onload must never reopen a dismissed report"
+        )
+        browser.close()
+
+
+def test_shake_report_rejects_async_capture_if_learner_navigates_to_private_screen():
+    """A renderer started on a lesson cannot return a picture of profile/payments."""
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page(viewport={"width":390,"height":844}, is_mobile=True, has_touch=True)
+        bootstrap(page)
+        page.add_style_tag(content=asset("course_v3_data/iphone-pwa-shake-report.css"))
+        page.evaluate("""() => {
+          Object.defineProperty(navigator,'standalone',{configurable:true,value:true});
+          window.SCREEN = "course";
+          window.__captureStarted = 0;
+          window.__encodedImages = 0;
+          window.html2canvas = () => {
+            window.__captureStarted++;
+            return new Promise(resolve => {
+              window.__completeCapture = () => resolve({
+                width:100, height:100,
+                toDataURL:() => { window.__encodedImages++; return 'data:image/jpeg;base64,AAAA'; }
+              });
+            });
+          };
+        }""")
+        page.add_script_tag(content=asset("course_v3_data/iphone-pwa-shake-report.js"))
+        page.evaluate("window.dispatchEvent(new Event('load'))")
+        page.wait_for_function(
+            "window.HskPwaShake && window.HskPwaShake.settingsRowHtml().includes('role=\"switch\"')"
+        )
+        page.evaluate("window.HskPwaShake.manual()")
+        page.wait_for_function("window.__captureStarted === 1")
+        page.evaluate("""() => {
+          window.SCREEN = 'profile';  // user switches tab while html2canvas is rendering
+          window.__completeCapture();
+        }""")
+        page.wait_for_function(
+            "document.querySelector('#hsk-pwa-shake-root .hsk-shake-preview')?.textContent.includes('rasm')"
+        )
+        assert page.evaluate("window.__encodedImages") == 0
+        assert page.locator("#hsk-shake-attach").count() == 0
+        assert page.locator("#hsk-shake-description").is_visible()
+        browser.close()
+
+
+def test_shake_report_active_lesson_screenshot_clears_preview_after_background():
+    """An open lesson is capturable; a background transition discards stale attachment UI."""
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page(viewport={"width":390,"height":844},is_mobile=True,has_touch=True)
+        bootstrap(page)
+        page.add_style_tag(content=asset("course_v3_data/iphone-pwa-shake-report.css"))
+        page.evaluate("""() => {
+          Object.defineProperty(navigator,'standalone',{configurable:true,value:true});
+          window.SCREEN='course';
+          window.__renderCount=0;
+          window.html2canvas=async () => {
+            window.__renderCount++;
+            return {width:100,height:100,toDataURL:()=> 'data:image/jpeg;base64,AAAA'};
+          };
+          const lesson=document.createElement('div');
+          lesson.id='flow';lesson.className='on';
+          lesson.textContent='Lesson detail';
+          document.body.appendChild(lesson);
+        }""")
+        page.add_script_tag(content=asset("course_v3_data/iphone-pwa-shake-report.js"))
+        page.evaluate("window.dispatchEvent(new Event('load'))")
+        page.wait_for_function(
+            "window.HskPwaShake && window.HskPwaShake.settingsRowHtml().includes('role=\"switch\"')"
+        )
+        page.evaluate("window.HskPwaShake.manual()")
+        page.wait_for_function("document.querySelector('#hsk-shake-attach') !== null")
+        assert page.evaluate("window.__renderCount") == 1
+        assert page.locator("#hsk-shake-attach").is_checked()
+        page.evaluate("""() => {
+          Object.defineProperty(document,'visibilityState',{configurable:true,value:'hidden'});
+          document.dispatchEvent(new Event('visibilitychange'));
+        }""")
+        assert page.locator("#hsk-shake-attach").count() == 0
+        assert page.locator("#hsk-shake-description").is_visible()
+        assert page.locator("#hsk-pwa-shake-root").is_visible()
         browser.close()
