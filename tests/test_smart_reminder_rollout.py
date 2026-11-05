@@ -3,7 +3,7 @@ import asyncio
 from datetime import timedelta
 from types import SimpleNamespace
 import unittest
-from unittest.mock import AsyncMock, Mock
+from unittest.mock import AsyncMock, Mock, patch
 from uuid import uuid4
 
 import importlib.util
@@ -66,6 +66,19 @@ class CohortTests(unittest.TestCase):
         for invalid in (0, -1, True, "1", 1.0):
             with self.assertRaises(ValueError):
                 cohort_for_user(invalid)
+
+
+class EarlyAccountTests(unittest.TestCase):
+    def test_listed_owner_accounts_join_stage_one_and_invalid_entries_are_ignored(self):
+        from app.services import smart_reminder_rollout as rollout
+        self.assertEqual(cohort_for_user(3283), 3)
+        with patch("app.config.settings.SMART_REMINDER_EARLY_USER_IDS", " 3283, x, -4, 0, 3471 ,"):
+            self.assertEqual(rollout.early_accounts(), frozenset({3283, 3471}))
+            self.assertEqual(rollout.rollout_cohort(3283), 0)
+            self.assertTrue(cohort_open(3283, 1))
+            self.assertEqual(cohort_for_user(3283), 3)  # The stable bucket itself is unchanged.
+        with patch("app.config.settings.SMART_REMINDER_EARLY_USER_IDS", ""):
+            self.assertFalse(cohort_open(3283, 1))
 
 
 class FixtureChecks:
@@ -273,6 +286,15 @@ class AdmissionChecks(FixtureChecks):
                 quiesced_at=self.q.tick - LEGACY_DRAIN))
         self.assertEqual(await self.admission().step(4), ("admitted",))
         return await self.routing()
+
+    async def test_early_owner_account_is_admitted_in_stage_one_with_every_guard(self):
+        self.assertEqual(await self.admission().step(1), ())  # User 1 is cohort 3.
+        with patch("app.config.settings.SMART_REMINDER_EARLY_USER_IDS", "1"):
+            self.assertEqual(await self.admission().step(1), ("held",))
+            self.assertEqual(await self.admission().step(1), ("draining",))  # Same 24-hour drain.
+            await SmartReminderRolloutService(self.q.sessions, clock=lambda: self.q.tick).heartbeat()
+            async with self.q.sessions() as s:
+                self.assertTrue(await self.rollout.allowed(s, 1))
 
     async def test_open_cohort_is_held_drained_then_admitted_and_closed_cohorts_untouched(self):
         self.assertEqual(await self.admission().step(3), ())
