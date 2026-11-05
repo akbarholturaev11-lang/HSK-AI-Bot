@@ -5,6 +5,7 @@ Only authenticated API responses are synthetic: it never exercises production
 billing, grants access, or replaces the original Mini App in a browser.
 """
 import json
+import re
 from pathlib import Path
 from urllib.parse import urlsplit
 
@@ -508,4 +509,52 @@ def test_shake_report_never_captures_embedded_checkout_even_after_async_renderer
         )
         assert len(posts) == 1
         assert posts[0]["screenshot_data_url"] == ""
+        browser.close()
+
+
+@pytest.mark.parametrize("width,height", [(320, 568), (390, 844), (430, 932)])
+def test_embedded_checkout_cta_uses_exactly_one_bottom_safe_area(width, height):
+    """Render the actual parent + checkout inline CSS in nested Chromium frames."""
+    course_html = asset("course-v3.html")
+    checkout_html = asset("subscription.html")
+    course_css = re.search(r"<style>([\s\S]*?)</style>", course_html).group(1)
+    checkout_css = re.search(r"<style>([\s\S]*?)</style>", checkout_html).group(1)
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page(
+            viewport={"width":width,"height":height},
+            device_scale_factor=2, is_mobile=True, has_touch=True,
+        )
+        page.set_content(
+            '<!doctype html><html class="hsk-pwa-browser"><head>'
+            '<meta name="viewport" content="width=device-width,initial-scale=1">'
+            '<style>' + course_css + '</style></head><body>'
+            '<section id="pwa-checkout-layer">'
+            '<iframe name="checkout" title="HSK AI Pro"></iframe>'
+            '</section></body></html>'
+        )
+        layer = page.locator("#pwa-checkout-layer")
+        assert layer.evaluate(
+            "node => getComputedStyle(node).paddingBottom"
+        ) == "0px", "parent checkout must not consume home-indicator space twice"
+        parent_frame = page.frame(name="checkout")
+        assert parent_frame is not None
+        parent_frame.set_content(
+            '<!doctype html><html class="hsk-pwa-browser"><head>'
+            '<meta name="viewport" content="width=device-width,initial-scale=1">'
+            '<style>' + checkout_css + '</style></head><body>'
+            '<main class="app"><section class="screen">HSK AI Pro</section></main>'
+            '<footer class="bottom" id="bottom">'
+            '<div class="bottom-inner">'
+            '<button id="backBtn" class="back hide"></button>'
+            '<button id="nextBtn" class="cta">Continue</button>'
+            '</div></footer></body></html>'
+        )
+        button = parent_frame.locator("#nextBtn")
+        box = button.bounding_box()
+        assert box is not None
+        bottom_gap = height - (box["y"] + box["height"])
+        assert 28 <= bottom_gap <= 34, f"CTA should clear the home gesture area once: {bottom_gap}"
+        assert box["x"] >= 0 and box["x"] + box["width"] <= width
+        assert box["height"] >= 50
         browser.close()
