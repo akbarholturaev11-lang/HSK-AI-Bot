@@ -36,7 +36,10 @@ assert(js.includes('var onCourse = location.pathname === "/iphone-pwa/course"'))
 assert(js.includes("navigator.standalone"));
 assert(js.includes("window.parent !== window || window.HskPwaShake"),"nested PWA iframes cannot open duplicate sheets");
 assert(js.includes('#pwa-checkout-layer, #sheet.on .pwa-payment'),"embedded PWA checkout blocks automatic screenshot capture");
-assert(js.includes('var renderer = await loadRenderer();') && js.includes('A slow renderer download must not allow a later navigation'),"privacy checked again after async renderer load");
+assert(js.includes('var renderer = await loadRenderer();') && js.includes('safeReportCaptureSurface(expectedScreen)'),"privacy checked at each async capture boundary");
+assert(js.includes('if (!safeReportCaptureSurface(expectedScreen)) return null;'),"privacy prevents automatic capture on sensitive surfaces");
+assert(js.includes('if (onCourse && (screen !== expectedScreen ||'),"tab switch invalidates in-progress capture");
+assert(js.includes('canvas.width = 0; canvas.height = 0;'),"privacy-rejected canvas memory is released");
 assert(js.includes('backTarget: function () { return root.hidden ? null : root; }'),"sheet exposes back stack target");
 assert(js.includes('close: close'),"sheet back dispatch closes only the active report");
 assert(page.includes('{id:"pwa-shake",target:function(){return PWA_COURSE_HOST&&window.HskPwaShake&&HskPwaShake.backTarget()}'),"shake report has PWA-only back priority");
