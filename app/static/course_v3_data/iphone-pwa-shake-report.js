@@ -21,7 +21,7 @@
   }
 
   var owner = null, desired = false, permitted = false, previouslyGranted = false;
-  var motionError = "", manualImageSelected = false, capturePending = false;
+  var motionError = "", manualImageSelected = false, capturePending = false, imageSelectionSerial = 0;
   var permissionPending = false, listening = false, busy = false, epoch = 0;
   var sampleReady = false, gx = 0, gy = 0, gz = 0, above = false;
   var firstPeak = null, lastShake = -100000, snapshot = null;
@@ -111,6 +111,7 @@
     capturePending = false;
     reportDescription = "";
     manualImageSelected = false;
+    imageSelectionSerial += 1;
     busy = false;
     epoch += 1;
     if (lastFocus && lastFocus.isConnected && lastFocus.focus) lastFocus.focus();
@@ -349,8 +350,10 @@
       // A selected file may finish decoding after Close, logout or a newer report.
       // Its stale callback must never reopen the dismissed bottom sheet.
       var selectionEpoch = epoch, selectionOwner = owner;
+      var selectionId = ++imageSelectionSerial;
       var selectionValid = function () {
-        return selectionEpoch === epoch && selectionOwner === owner &&
+        return selectionId === imageSelectionSerial &&
+          selectionEpoch === epoch && selectionOwner === owner &&
           stage === "form" && !root.hidden;
       };
       var url = URL.createObjectURL(file);
