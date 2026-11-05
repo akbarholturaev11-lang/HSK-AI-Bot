@@ -100,6 +100,7 @@
     closeButton.hidden = step === "sent";
     root.hidden = false;
     dialog.focus();
+    if (onCourse && typeof NavBack !== "undefined" && NavBack.sync) NavBack.sync();
   }
   function close() {
     if (submitting) return;
@@ -114,6 +115,7 @@
     epoch += 1;
     if (lastFocus && lastFocus.isConnected && lastFocus.focus) lastFocus.focus();
     restartListening();
+    if (onCourse && typeof NavBack !== "undefined" && NavBack.sync) NavBack.sync();
   }
   var closeButton = root.querySelector("#hsk-shake-close");
   closeButton.addEventListener("click", close);
@@ -242,9 +244,17 @@
   }
   async function captureViewport() {
     // Profile, voice transcripts, purchase/auth screens may contain private data.
-    if (location.pathname === "/iphone-pwa/checkout" || ["profile", "voice"].indexOf(typeof SCREEN === "string" ? SCREEN : "") >= 0 ||
-        document.querySelector("#sheet.on .pwa-payment, #sheet.on [class*=receipt], #sheet.on [class*=checkout]")) return null;
+    if (location.pathname === "/iphone-pwa/checkout" ||
+        ["profile", "voice"].indexOf(typeof SCREEN === "string" ? SCREEN : "") >= 0 ||
+        // Checkout is embedded inside /iphone-pwa/course in the installed PWA:
+        // never capture its invoice, receipt, payment card or embedded frame.
+        document.querySelector("#pwa-checkout-layer, #sheet.on .pwa-payment, #sheet.on [class*=receipt], #sheet.on [class*=checkout]")) return null;
     var renderer = await loadRenderer();
+    // A slow renderer download must not allow a later navigation into checkout
+    // or account screens to be captured after the first privacy check.
+    if (location.pathname === "/iphone-pwa/checkout" ||
+        ["profile","voice"].indexOf(typeof SCREEN === "string" ? SCREEN : "") >= 0 ||
+        document.querySelector("#pwa-checkout-layer, #sheet.on .pwa-payment, #sheet.on [class*=receipt], #sheet.on [class*=checkout]")) return null;
     var width = Math.max(1, Math.min(window.innerWidth, 1200));
     var height = Math.max(1, Math.min(window.innerHeight, 1600));
     var canvas = await renderer(document.body, {
@@ -491,6 +501,8 @@
   window.HskPwaShake = {
     settingsRowHtml: settingsRowHtml, toggle: toggle,
     manual: startReport,
+    backTarget: function () { return root.hidden ? null : root; },
+    close: close,
     isListening: function () { return listening; }
   };
   document.addEventListener("visibilitychange", function () {
