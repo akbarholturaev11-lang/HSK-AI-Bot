@@ -658,3 +658,42 @@ def test_shake_report_rejects_async_capture_if_learner_navigates_to_private_scre
         assert page.locator("#hsk-shake-attach").count() == 0
         assert page.locator("#hsk-shake-description").is_visible()
         browser.close()
+
+
+def test_shake_report_active_lesson_screenshot_clears_preview_after_background():
+    """An open lesson is capturable; a background transition discards stale attachment UI."""
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page(viewport={"width":390,"height":844},is_mobile=True,has_touch=True)
+        bootstrap(page)
+        page.add_style_tag(content=asset("course_v3_data/iphone-pwa-shake-report.css"))
+        page.evaluate("""() => {
+          Object.defineProperty(navigator,'standalone',{configurable:true,value:true});
+          window.SCREEN='course';
+          window.__renderCount=0;
+          window.html2canvas=async () => {
+            window.__renderCount++;
+            return {width:100,height:100,toDataURL:()=> 'data:image/jpeg;base64,AAAA'};
+          };
+          const lesson=document.createElement('div');
+          lesson.id='flow';lesson.className='on';
+          lesson.textContent='Lesson detail';
+          document.body.appendChild(lesson);
+        }""")
+        page.add_script_tag(content=asset("course_v3_data/iphone-pwa-shake-report.js"))
+        page.evaluate("window.dispatchEvent(new Event('load'))")
+        page.wait_for_function(
+            "window.HskPwaShake && window.HskPwaShake.settingsRowHtml().includes('role=\"switch\"')"
+        )
+        page.evaluate("window.HskPwaShake.manual()")
+        page.wait_for_function("document.querySelector('#hsk-shake-attach') !== null")
+        assert page.evaluate("window.__renderCount") == 1
+        assert page.locator("#hsk-shake-attach").is_checked()
+        page.evaluate("""() => {
+          Object.defineProperty(document,'visibilityState',{configurable:true,value:'hidden'});
+          document.dispatchEvent(new Event('visibilitychange'));
+        }""")
+        assert page.locator("#hsk-shake-attach").count() == 0
+        assert page.locator("#hsk-shake-description").is_visible()
+        assert page.locator("#hsk-pwa-shake-root").is_visible()
+        browser.close()
