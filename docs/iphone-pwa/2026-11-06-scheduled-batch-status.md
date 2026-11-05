@@ -79,6 +79,13 @@ Not run: Playwright E2E, real iPhone (haptics, push prompt, pull-to-refresh, aud
   scoped to `html.hsk-pwa-browser`; the Telegram Mini App look is unchanged. Visual smoke (Playwright, iPhone 13):
   profile, profile editor, settings, shake form and star rating rendered with no console errors.
 
+- 10 (v2, owner feedback): Settings is a short iOS-like list (profile identity row, Language, Course version,
+  Study, Notifications / sign-in, shake report, Help / Logout) with icon tiles and inset dividers. Study and
+  Notifications open as bottom sheets: Study edits goal, daily time, focus and daily XP and returns to the sheet;
+  Notifications shows each channel with a switch (device push via the same gesture-safe subscribe path, study
+  reminders via `/api/v3/pwa/notify`, payment/account notices locked on). Sheets and centered dialogs use a calm
+  entrance animation that respects reduced motion.
+
 ## Needs owner/config
 - 12 Live voice: also requires `PWA_VOICE_LIVE_ENABLED=true`, `ANDROID_VOICE_LIVE_ENABLED=true`, a Gemini key,
   model `gemini-3.8-live`, a positive session budget, and `ANDROID_VOICE_LIVE_ALLOWED_USERS="*"`

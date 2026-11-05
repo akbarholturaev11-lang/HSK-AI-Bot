@@ -1627,7 +1627,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
   .nav::before,.nav::after { display:none; }
 }
 </style>
-<link rel="stylesheet" href="/course_v3_data/iphone-pwa-glass.css?v=20261105-2e8049fe7460">
+<link rel="stylesheet" href="/course_v3_data/iphone-pwa-glass.css?v=20261105-0280950be869">
 <link rel="stylesheet" href="/course_v3_data/iphone-pwa-shake-report.css?v=20261105-dc72f5eb7f51">
 <link href="/course_v3_data/desktop-download.css?v=20261003-1" rel="stylesheet">
 <link href="/course_v3_data/profile-carousel.css?v=20261017-link-cards-1" rel="stylesheet">
@@ -2840,7 +2840,7 @@ var App={
       if(SIGNIN_STATE.busy&&!SIGNIN_PENDING){SIGNIN_STATE.generation++;SIGNIN_STATE.busy=""}
     }else if(SIGNIN_PENDING&&!signInPollTimer){pollSignInLink(SIGNIN_PENDING,SIGNIN_PENDING.deadline)}
     if(s==="course"&&window._pendingXpFly){var fx=window._pendingXpFly;window._pendingXpFly=0;setTimeout(function(){flyXp(fx)},350)}},
-  openSheet:function(html){var sheet=$("#sheet");if(!sheet.classList.contains("on"))SHEET_RETURN_FOCUS=document.activeElement;sheet.classList.remove("hsk30-promo-center","hsk30-book-card","course-choice-sheet","profile-apps-choice","lesson-exit-confirm");sheet.removeAttribute("aria-label");sheet.removeAttribute("aria-labelledby");$("#sheet-body").innerHTML=html;var title=sheet.querySelector("#sheet-body h1,#sheet-body h2,#sheet-body h3,#sheet-body [role='heading'],#sheet-body .shead .tr");if(title){if(!title.id)title.id="hsk-sheet-title";sheet.setAttribute("aria-labelledby",title.id)}else{sheet.setAttribute("aria-label",courseMessage("sheet.dialogLabel",LANG==="ru"?"Диалог HSK AI":LANG==="tj"?"Муколамаи HSK AI":"HSK AI oynasi"))}var close=sheet.querySelector(".sx");if(close)close.setAttribute("aria-label",courseMessage("sheet.closeLabel",LANG==="ru"?"Закрыть":LANG==="tj"?"Пӯшидан":"Yopish"));sheet.setAttribute("role","dialog");sheet.setAttribute("aria-modal","true");sheet.classList.add("on");setSheetBackgroundInert(true);focusSheetStart(sheet);startSheetPromo("#sheet")},
+  openSheet:function(html){var sheet=$("#sheet");if(!sheet.classList.contains("on"))SHEET_RETURN_FOCUS=document.activeElement;sheet.classList.remove("hsk30-promo-center","hsk30-book-card","course-choice-sheet","profile-apps-choice","lesson-exit-confirm","pwa-settings-sheet");sheet.removeAttribute("aria-label");sheet.removeAttribute("aria-labelledby");$("#sheet-body").innerHTML=html;var title=sheet.querySelector("#sheet-body h1,#sheet-body h2,#sheet-body h3,#sheet-body [role='heading'],#sheet-body .shead .tr");if(title){if(!title.id)title.id="hsk-sheet-title";sheet.setAttribute("aria-labelledby",title.id)}else{sheet.setAttribute("aria-label",courseMessage("sheet.dialogLabel",LANG==="ru"?"Диалог HSK AI":LANG==="tj"?"Муколамаи HSK AI":"HSK AI oynasi"))}var close=sheet.querySelector(".sx");if(close)close.setAttribute("aria-label",courseMessage("sheet.closeLabel",LANG==="ru"?"Закрыть":LANG==="tj"?"Пӯшидан":"Yopish"));sheet.setAttribute("role","dialog");sheet.setAttribute("aria-modal","true");sheet.classList.add("on");setSheetBackgroundInert(true);focusSheetStart(sheet);startSheetPromo("#sheet")},
   closeSheet:function(){
     SETTINGS_SHEET=PWA_COURSE_HOST&&SCREEN==="settings";
     var sheet=$("#sheet");sheet.classList.remove("on","hsk30-promo-center","hsk30-book-card","course-choice-sheet","profile-apps-choice","lesson-exit-confirm");sheet.removeAttribute("role");sheet.removeAttribute("aria-modal");sheet.removeAttribute("aria-label");sheet.removeAttribute("aria-labelledby");sheet.removeAttribute("tabindex");stopSheetPromo();setSheetBackgroundInert(false);var returnFocus=SHEET_RETURN_FOCUS;SHEET_RETURN_FOCUS=null;if(returnFocus&&returnFocus.isConnected&&typeof returnFocus.focus==="function")returnFocus.focus({preventScroll:true});
@@ -3268,8 +3268,10 @@ var App={
      klient hech qachon ixtiyoriy manzil ochmaydi. */
   openSettings:function(){
     if(PWA_COURSE_HOST){
+      if(PWA_XP_FROM_SHEET&&SCREEN==="settings"){PWA_XP_FROM_SHEET=false;renderPwaSettings();App.pwaStudySheet();return}
       if($("#sheet").classList.contains("on"))App.closeSheet();
       if(SCREEN==="settings"){renderPwaSettings();return}
+      PWA_XP_FROM_SHEET=false;
       App.show("settings");
       $("#hsk-pwa-settings-title").focus({preventScroll:true});
       if(window.HskPwaInbox)HskPwaInbox.refreshPushStatus().catch(function(){});
@@ -3444,23 +3446,60 @@ var App={
     savePreferences({daily_goal_xp:v}).then(function(saved){       if(!saved||saved.ok!==true){dailyGoal=previous;toast(serverSaveErrorText(),2200)}       renderProfile();if(SETTINGS_SHEET)App.openSettings()     })},
   /* Birinchi darsdan keyingi ikki savol: vaqt -> fokus. Ikkinchi savol
      birinchisi saqlangach ochiladi, shunda bir vaqtda bitta savol turadi. */
+  pwaStudySheet:function(){
+    var s=studySetupT(),st=STUDY_SETUP||(MAP&&MAP.study_setup)||{},p=pl();
+    var goal=(s.goals||{})[String(st.goal||"")]||"";
+    var minutes=Number(st.daily_minutes)>0?Number(st.daily_minutes)+" "+(s.min||""):"";
+    var focus=(s.focus||{})[String(st.preferred_focus||"")]||"";
+    pwaOpenSettingsSheet(pwaSheetHead(courseMessage("pwaSettings.sectionStudy",""))+'<div class="pwa-sheet-list">'
+      +pwaSettingsRow("flag",courseMessage("pwaSettings.studyGoal",""),goal,"App.pwaStudyEdit('goal')")
+      +pwaSettingsRow("clock",courseMessage("pwaSettings.dailyTime",""),minutes,"App.pwaStudyEdit('time')")
+      +pwaSettingsRow("focus-2",courseMessage("pwaSettings.focus",""),focus,"App.pwaStudyEdit('focus')")
+      +pwaSettingsRow("target",p.goalSet,dailyGoal+" XP","PWA_XP_FROM_SHEET=true;App.goalPicker()")
+      +'</div>');
+  },
+  pwaNotifSheet:function(noRefresh){
+    var info=window.HskPwaInbox&&HskPwaInbox.pushInfo?HskPwaInbox.pushInfo():{supported:false};
+    var pushHint=!info.supported?courseMessage("pwaPush.installRequired",""):info.denied&&!info.subscribed?courseMessage("pwaPush.blocked",""):"";
+    pwaOpenSettingsSheet(pwaSheetHead(commonMessage("desktopA11y.notifications",""))+'<div class="pwa-sheet-list">'
+      +pwaSwitchRow("device-mobile",courseMessage("pwaPush.title",""),!!info.subscribed,"App.pwaTogglePush()",
+        {disabled:!info.supported||!info.enabled||info.busy||(info.denied&&!info.subscribed),hint:pushHint})
+      +pwaSwitchRow("alarm",courseMessage("pwaSettings.studyReminders",""),notifOn,"App.pwaToggleReminders()")
+      +pwaSwitchRow("receipt",courseMessage("pwaSettings.accountNotices",""),true,"",{disabled:true,hint:courseMessage("pwaSettings.alwaysOn","")})
+      +'</div>');
+    if(!noRefresh&&window.HskPwaInbox&&!PWA_NOTIF_REFRESHING){
+      PWA_NOTIF_REFRESHING=true;
+      HskPwaInbox.refreshPushStatus().catch(function(){}).then(function(){
+        PWA_NOTIF_REFRESHING=false;
+        if($("#sheet").classList.contains("pwa-settings-sheet")&&$("#sheet").classList.contains("on")&&$("#sheet .pwa-sheet-row[role=switch]"))App.pwaNotifSheet(true);
+      });
+    }
+  },
+  /* iOS: the permission request must start inside this tap (togglePush does it first). */
+  pwaTogglePush:function(){if(window.HskPwaInbox&&HskPwaInbox.togglePush){HskPwaInbox.togglePush();App.pwaNotifSheet(true)}},
+  pwaToggleReminders:function(){
+    var next=!notifOn,previous=notifOn;notifOn=next;if(MAP)MAP.notify={enabled:next};App.pwaNotifSheet(true);
+    _apiPost("/api/v3/notify",{enabled:next}).then(function(r){return r.json()}).then(function(j){if(!j||j.ok!==true)throw new Error("notify")})
+      .catch(function(){notifOn=previous;if(MAP)MAP.notify={enabled:previous};toast(serverSaveErrorText(),2200);
+        if($("#sheet").classList.contains("pwa-settings-sheet"))App.pwaNotifSheet(true)});
+  },
   /* Settings -> edit one onboarding answer and come back, no question chain. */
   pwaStudyEdit:function(kind){STUDY_EDIT_FROM_SETTINGS=true;if(kind==="goal")askStudyGoal();else if(kind==="time")askStudyTime();else askStudyFocus()},
   pickStudyGoal:function(k){App.closeSheet();
-    if(STUDY_EDIT_FROM_SETTINGS){STUDY_EDIT_FROM_SETTINGS=false;savePreferences({goal:k}).then(function(saved){if(!saved||saved.ok!==true)toast(serverSaveErrorText(),2200);renderAll();refreshSettingsRows()});return}
+    if(STUDY_EDIT_FROM_SETTINGS){STUDY_EDIT_FROM_SETTINGS=false;savePreferences({goal:k}).then(function(saved){if(!saved||saved.ok!==true)toast(serverSaveErrorText(),2200);renderAll();pwaReturnToStudySheet()});return}
     savePreferences({goal:k}).then(function(){
       /* Maqsaddan keyin qolgan savollar; hammasi javoblangan bo'lsa to'xtaydi. */
       if(STUDY_SETUP&&!STUDY_SETUP.preferred_focus)setTimeout(askStudyTime,220);
       else renderAll();
     })},
   pickStudyTime:function(v){App.closeSheet();
-    if(STUDY_EDIT_FROM_SETTINGS){STUDY_EDIT_FROM_SETTINGS=false;savePreferences({daily_minutes:v}).then(function(saved){if(!saved||saved.ok!==true)toast(serverSaveErrorText(),2200);else markStudySetupTimeAnswered();renderAll();refreshSettingsRows()});return}
+    if(STUDY_EDIT_FROM_SETTINGS){STUDY_EDIT_FROM_SETTINGS=false;savePreferences({daily_minutes:v}).then(function(saved){if(!saved||saved.ok!==true)toast(serverSaveErrorText(),2200);else markStudySetupTimeAnswered();renderAll();pwaReturnToStudySheet()});return}
     savePreferences({daily_minutes:v}).then(function(saved){
       if(saved&&saved.ok){markStudySetupTimeAnswered();setTimeout(askStudyFocus,220);return}
       toast(serverSaveErrorText(),2200);askStudyTime();
     })},
   pickStudyFocus:function(k){App.closeSheet();
-    if(STUDY_EDIT_FROM_SETTINGS){STUDY_EDIT_FROM_SETTINGS=false;savePreferences({preferred_focus:k}).then(function(saved){if(!saved||saved.ok!==true)toast(serverSaveErrorText(),2200);renderAll();refreshSettingsRows()});return}
+    if(STUDY_EDIT_FROM_SETTINGS){STUDY_EDIT_FROM_SETTINGS=false;savePreferences({preferred_focus:k}).then(function(saved){if(!saved||saved.ok!==true)toast(serverSaveErrorText(),2200);renderAll();pwaReturnToStudySheet()});return}
     savePreferences({preferred_focus:k}).then(function(saved){
       if(saved&&saved.ok){renderAll();return}
       toast(serverSaveErrorText(),2200);askStudyFocus();
@@ -3759,7 +3798,14 @@ function studySetupTimeAnswered(){
 function markStudySetupTimeAnswered(){
   try{localStorage.setItem(studySetupTimeKey(),"1")}catch(e){}
 }
-var STUDY_EDIT_FROM_SETTINGS=false;
+var STUDY_EDIT_FROM_SETTINGS=false,PWA_NOTIF_REFRESHING=false;
+/* A push subscribe/revoke finished: repaint the open Notifications sheet. */
+if(PWA_COURSE_HOST)window.addEventListener("hsk-pwa-push-changed",function(ev){
+  var sheet=$("#sheet");
+  if(sheet&&sheet.classList.contains("on")&&sheet.classList.contains("pwa-settings-sheet")&&$("#sheet .pwa-sheet-row[role=switch]"))App.pwaNotifSheet(true);
+  if(ev&&ev.detail&&ev.detail.failed)toast(courseMessage("pwaPush.error",""),2200);
+});
+function pwaReturnToStudySheet(){if(PWA_COURSE_HOST&&SCREEN==="settings"){renderPwaSettings();App.pwaStudySheet()}else refreshSettingsRows()}
 function askPendingStudySetup(){
   STUDY_EDIT_FROM_SETTINGS=false;
   if(!STUDY_SETUP)return;
@@ -7326,37 +7372,50 @@ function settingsSheetHtml(){
   return '<div class="shead"><div class="tr" style="font-size:16px;color:var(--ink)">'+esc(pl().settings)+'</div></div>'
     +settingsRowsHtml();
 }
-/* PWA Settings: flat native-like sections. Values come from the same server
-   study setup / notify flags the Mini App and Android already use. */
+/* PWA Settings: one short list; detail lives in bottom sheets (Study,
+   Notifications). Values come from the same server study-setup / notify flags
+   the Mini App and Android use; no new policy. */
+var PWA_XP_FROM_SHEET=false;
+function pwaSettingsRow(icon,label,value,action,extra){
+  return '<button class="srow" type="button" onclick="'+action+'"><i class="ti ti-'+icon+'"></i> '+esc(label)
+    +'<span class="sv">'+(value?esc(value)+' ':'')+'<i class="ti ti-chevron-right"></i></span>'+(extra||"")+'</button>';
+}
 function pwaSettingsRowsHtml(){
-  var t=T(),p=pl(),s=studySetupT(),st=STUDY_SETUP||(MAP&&MAP.study_setup)||{};
-  function head(txt){return '<h2 class="pwa-set-head">'+esc(txt)+'</h2>'}
-  function row(icon,label,value,action){return '<button class="srow" onclick="'+action+'"><i class="ti ti-'+icon+'"></i> '+esc(label)+'<span class="sv">'+esc(value||"")+' <i class="ti ti-chevron-right"></i></span></button>'}
+  var t=T(),s=studySetupT(),st=STUDY_SETUP||(MAP&&MAP.study_setup)||{};
+  var name=String(PROF.display_name||PROF.name||courseMessage("you",t.you));
   var goal=(s.goals||{})[String(st.goal||"")]||"";
-  var minutes=Number(st.daily_minutes)>0?Number(st.daily_minutes)+" "+(s.min||""):"";
-  var focus=(s.focus||{})[String(st.preferred_focus||"")]||"";
-  return head(courseMessage("pwaSettings.sectionStudy",""))
+  return '<button class="pwa-set-profile" type="button" onclick="App.pwaProfileEdit()">'
+      +'<span class="pav pwa-pav'+(PROF.avatar_key?' art':'')+'" aria-hidden="true">'+(PROF.avatar_key?pwaAvatarArt(PROF.avatar_key):esc(PROF.avatar||"阿"))+'</span>'
+      +'<span class="pwa-set-profile-text"><strong>'+esc(name)+'</strong><small>'+esc(courseMessage("pwaProfile.edit",""))+'</small></span>'
+      +'<i class="ti ti-chevron-right" aria-hidden="true"></i></button>'
     +'<div class="set">'
     +'<button class="srow" onclick="App.langPicker()"><i class="ti ti-language"></i> '+courseMessage("lang",t.lang)+'<span class="sv">'+LANG.toUpperCase()+' <i class="ti ti-chevron-right"></i></span></button>'
     +courseVersionSettingsRowHtml()
-    +row("flag",courseMessage("pwaSettings.studyGoal",""),goal,"App.pwaStudyEdit('goal')")
-    +row("clock",courseMessage("pwaSettings.dailyTime",""),minutes,"App.pwaStudyEdit('time')")
-    +row("focus-2",courseMessage("pwaSettings.focus",""),focus,"App.pwaStudyEdit('focus')")
-    +'<button class="srow" onclick="App.goalPicker()"><i class="ti ti-target"></i> '+p.goalSet+'<span class="sv">'+dailyGoal+' XP <i class="ti ti-chevron-right"></i></span></button>'
+    +pwaSettingsRow("school",courseMessage("pwaSettings.sectionStudy",""),goal,"App.pwaStudySheet()")
+    +pwaSettingsRow("bell",commonMessage("desktopA11y.notifications",""),"","App.pwaNotifSheet()")
     +'</div>'
-    +head(commonMessage("desktopA11y.notifications",""))
-    +'<div class="set">'
-    +pwaPushSettingsRowHtml()
-    +'<button class="srow" role="switch" aria-checked="'+(notifOn?"true":"false")+'" onclick="App.notifToggle()"><i class="ti ti-alarm"></i> '+esc(courseMessage("pwaSettings.studyReminders",""))+'<span class="toggle '+(notifOn?"on":"")+'"></span></button>'
-    +'<div class="srow srow-static"><i class="ti ti-receipt"></i> '+esc(courseMessage("pwaSettings.accountNotices",""))+'<span class="sv">'+esc(courseMessage("pwaSettings.alwaysOn",""))+'</span></div>'
-    +'</div>'
-    +head(courseMessage("pwaSettings.sectionAccount",""))
     +'<div class="set">'
     +signInMethodsRowsHtml()
     +(window.HskPwaShake ? window.HskPwaShake.settingsRowHtml() : "")
     +'<button class="srow" onclick="App.openHelp()"><i class="ti ti-help-circle"></i> '+courseMessage("help",t.help)+'<span class="sv"><i class="ti ti-chevron-right"></i></span></button>'
-    +pwaLogoutSettingsRowHtml()
-    +'</div>'+socialLinksHtml();
+    +'</div>'
+    +'<div class="set">'+pwaLogoutSettingsRowHtml()+'</div>'
+    +socialLinksHtml();
+}
+function pwaSheetHead(title){
+  return '<div class="pwa-sheet-head"><h2>'+esc(title)+'</h2></div>';
+}
+function pwaSwitchRow(icon,label,on,action,opts){
+  opts=opts||{};
+  return '<button type="button" class="pwa-sheet-row" role="switch" aria-checked="'+(on?"true":"false")+'"'
+    +(opts.disabled?' disabled aria-disabled="true"':' onclick="'+action+'"')+'>'
+    +'<i class="ti ti-'+icon+'" aria-hidden="true"></i>'
+    +'<span class="pwa-sheet-label">'+esc(label)+(opts.hint?'<small>'+esc(opts.hint)+'</small>':'')+'</span>'
+    +'<span class="toggle'+(on?" on":"")+'" aria-hidden="true"></span></button>';
+}
+function pwaOpenSettingsSheet(html){
+  App.openSheet(html);
+  $("#sheet").classList.add("pwa-settings-sheet");
 }
 function pwaAvatarArt(key){
   var mood={panda_cheer:"celebrate",panda_streak:"proud",panda_worried:"wrong"}[key]||"idle";
@@ -9844,7 +9903,7 @@ window.addEventListener("pageshow",function(ev){
 <script src="/course_v3_data/profile-carousel.js?v=20261021-bbc40872c23c"></script>
 <script src="/course_v3_data/iphone-pwa-fx.js?v=20261105-3f4db4191370"></script>
 <script src="/course_v3_data/iphone-pwa-refresh.js?v=20261105-e7852ac39c9d"></script>
-<script src="/course_v3_data/iphone-pwa-notices.js?v=20261105-43749b7ef3cb"></script>
+<script src="/course_v3_data/iphone-pwa-notices.js?v=20261105-0b6f63261feb"></script>
 <script src="/course_v3_data/iphone-pwa-feedback.js?v=20261105-29dccfe41c43"></script>
 <script>if(location.pathname==="/iphone-pwa/course")window.addEventListener("load",function(){setTimeout(function(){
   /* Bot release-feedback campaign (stars) once per campaign, only on a calm course screen. */

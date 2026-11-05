@@ -477,6 +477,7 @@
       failed = true;
     } finally {
       pushBusy = false;
+      try { window.dispatchEvent(new CustomEvent("hsk-pwa-push-changed", {detail:{failed:failed}})); } catch (_) {}
       if (activeMode === "push") {
         render();
         if (failed) pushStatus.textContent = labels().pushError;
@@ -628,7 +629,15 @@
   }, {once:true});
   window.HskPwaInbox = {open:open,close:close,openPushSettings:openPushSettings,
     back:close,backTarget:function () { return overlay.hidden ? null : panel; },
-    refreshPushStatus:refreshPushStatus,updateSettingsPushStatus:updateSettingsPushStatus};
+    refreshPushStatus:refreshPushStatus,updateSettingsPushStatus:updateSettingsPushStatus,
+    // Settings sheet: read-only state + the same gesture-safe subscribe/revoke path.
+    pushInfo:function () {
+      var supported = !!pushSupported();
+      return {supported:supported, enabled:!!(pushState && pushState.enabled),
+        subscribed:!!(pushState && pushState.subscribed), busy:pushBusy,
+        denied:supported && Notification.permission === "denied"};
+    },
+    togglePush:function () { return changePushSubscription(); }};
   // Only the latest actionable rejected receipt may interrupt, once per
   // verified owner + payment. Ordinary/new-content notices never pop up.
   window.addEventListener("load", function () {

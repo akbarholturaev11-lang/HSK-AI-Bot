@@ -69,6 +69,18 @@ class IphonePwaNavigationContractTests(unittest.TestCase):
         self.assertIn("PWA_CHECKOUT_HOST", CHECKOUT)
         self.assertIn("/api/v3/pwa/subscription/overview", CHECKOUT)
 
+    def test_settings_is_a_short_list_with_bottom_sheets(self):
+        # Study and Notifications open as bottom sheets; channels are switches
+        # bound to real server state (push subscription, notify flag).
+        self.assertIn('"App.pwaStudySheet()"', COURSE)
+        self.assertIn('"App.pwaNotifSheet()"', COURSE)
+        self.assertIn('App.pwaTogglePush()', COURSE)
+        self.assertIn('_apiPost("/api/v3/notify",{enabled:next})', COURSE)
+        self.assertIn('"/api/v3/notify":"/api/v3/pwa/notify"', COURSE)
+        notices = Path("app/static/course_v3_data/iphone-pwa-notices.js").read_text(encoding="utf-8")
+        self.assertIn("togglePush:function () { return changePushSubscription(); }", notices)
+        self.assertIn('"hsk-pwa-push-changed"', notices)
+
     def test_closed_section_hints_are_saved_through_the_pwa_session(self):
         # Regression: an unmapped route made every dismissal fail silently,
         # so introduction blocks reappeared on each open.

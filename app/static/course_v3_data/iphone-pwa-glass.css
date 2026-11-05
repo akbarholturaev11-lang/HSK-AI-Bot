@@ -375,3 +375,54 @@ html.hsk-pwa-browser .hsk-pwa-feedback-stars button[aria-pressed="true"]{color:#
 @media (prefers-color-scheme:dark){
   html.hsk-pwa-browser .hsk-pwa-feedback-stars button{color:rgba(255,255,255,.22)}
 }
+
+/* ---- Settings v2: short list + bottom sheets (iOS-like, PWA only) ---- */
+#hsk-pwa-settings-rows{padding:8px 16px calc(28px + env(safe-area-inset-bottom,0px))}
+#hsk-pwa-settings-rows .set{margin-top:22px}
+#hsk-pwa-settings-rows .srow,.pwa-sheet-list .srow{display:flex;align-items:center;gap:14px;min-height:56px;padding:10px 2px;
+  border-bottom:1px solid var(--hsk-divider);font-size:16px;font-weight:500;color:var(--hsk-ink);text-align:start}
+#hsk-pwa-settings-rows .srow > i.ti:first-child,.pwa-sheet-list .srow > i.ti:first-child,.pwa-sheet-row > i.ti{
+  flex:0 0 34px;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:19px;
+  background:var(--hsk-cinnabar-soft);color:var(--hsk-cinnabar-ink)}
+#hsk-pwa-settings-rows .srow .sv,.pwa-sheet-list .srow .sv{margin-left:auto;display:flex;align-items:center;gap:6px;
+  font-size:15px;font-weight:400;color:var(--hsk-ink-secondary);max-width:46%;text-align:end}
+#hsk-pwa-settings-rows .srow .sv .ti-chevron-right,.pwa-sheet-list .srow .sv .ti-chevron-right{color:var(--hsk-ink-disabled);font-size:18px}
+#hsk-pwa-settings-rows .srow:active,.pwa-sheet-list .srow:active,.pwa-sheet-row:not(:disabled):active{background:rgba(33,29,23,.04)}
+#hsk-pwa-settings-rows .pwa-logout-row{color:var(--hsk-cinnabar-ink);font-weight:600}
+#hsk-pwa-settings-rows .pwa-logout-row > i.ti:first-child{background:transparent}
+/* Profile identity row at the top of Settings. */
+.pwa-set-profile{display:flex;align-items:center;gap:14px;width:100%;margin:6px 0 0;padding:12px 2px;border:0;
+  border-bottom:1px solid var(--hsk-divider);background:transparent;color:var(--hsk-ink);font:inherit;text-align:start;cursor:pointer}
+.pwa-set-profile .pav{flex:0 0 58px;width:58px;height:58px;border-radius:17px;font-size:24px;pointer-events:none}
+.pwa-set-profile-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.pwa-set-profile-text strong{font-size:19px;font-weight:700;letter-spacing:-.01em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pwa-set-profile-text small{font-size:14px;color:var(--hsk-ink-secondary)}
+.pwa-set-profile > .ti{color:var(--hsk-ink-disabled);font-size:18px}
+/* Bottom sheets opened from Settings. */
+html.hsk-pwa-browser #sheet.pwa-settings-sheet{background:rgba(20,17,13,.38);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+html.hsk-pwa-browser #sheet.pwa-settings-sheet .si{border-radius:28px 28px 0 0;padding:8px 20px calc(26px + env(safe-area-inset-bottom,0px));
+  background:var(--hsk-paper);box-shadow:0 -12px 40px rgba(20,17,13,.14)}
+.pwa-sheet-head h2{margin:10px 2px 6px;font-size:22px;font-weight:750;letter-spacing:-.015em;color:var(--hsk-ink)}
+.pwa-sheet-list{display:flex;flex-direction:column}
+.pwa-sheet-list > :last-child{border-bottom:0}
+.pwa-sheet-row{display:flex;align-items:center;gap:14px;width:100%;min-height:62px;padding:10px 2px;border:0;
+  border-bottom:1px solid var(--hsk-divider);background:transparent;color:var(--hsk-ink);font:inherit;text-align:start;cursor:pointer}
+.pwa-sheet-label{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;font-size:16px;font-weight:500}
+.pwa-sheet-label small{font-size:13px;font-weight:400;line-height:1.35;color:var(--hsk-ink-secondary)}
+.pwa-sheet-row .toggle{flex:0 0 51px;width:51px;height:31px;border-radius:16px}
+.pwa-sheet-row .toggle:after{width:27px;height:27px;top:2px;left:2px;box-shadow:0 2px 4px rgba(0,0,0,.18)}
+.pwa-sheet-row .toggle.on:after{left:22px}
+.pwa-sheet-row:disabled{cursor:default}
+.pwa-sheet-row:disabled .toggle{opacity:.55}
+/* Calm entrance motion for sheets and centered dialogs. */
+@keyframes hsk-pwa-sheet-in{from{transform:translateY(28px);opacity:.4}to{transform:none;opacity:1}}
+@keyframes hsk-pwa-pop-in{from{transform:translateY(10px) scale(.97);opacity:0}to{transform:none;opacity:1}}
+html.hsk-pwa-browser #sheet.on .si{animation:hsk-pwa-sheet-in .26s cubic-bezier(.2,.8,.2,1)}
+html.hsk-pwa-browser #sheet.on.hsk30-promo-center .si,html.hsk-pwa-browser #sheet.on.hsk30-book-card .si,
+html.hsk-pwa-browser #sheet.on.lesson-exit-confirm .si,html.hsk-pwa-browser .hsk-pwa-feedback-card,
+html.hsk-pwa-browser #hsk-pwa-notice-root:not(.is-page) .hsk-pwa-notice-card,html.hsk-pwa-browser .hsk-shake-dialog{
+  animation:hsk-pwa-pop-in .24s cubic-bezier(.2,.8,.2,1)}
+@media (prefers-reduced-motion:reduce){
+  html.hsk-pwa-browser #sheet.on .si,html.hsk-pwa-browser .hsk-pwa-feedback-card,html.hsk-pwa-browser .hsk-shake-dialog,
+  html.hsk-pwa-browser #hsk-pwa-notice-root .hsk-pwa-notice-card{animation:none}
+}

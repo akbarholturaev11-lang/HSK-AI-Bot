@@ -514,7 +514,8 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
                 self.assertEqual(source.count(
                     'courseMessage("' + key + '",T().' + key + ')'
                 ), count)
-        for key, count in {"you": 2, "league": 1, "xp": 1}.items():
+        # "you": profile header, rating row and the PWA settings identity row.
+        for key, count in {"you": 3, "league": 1, "xp": 1}.items():
             with self.subTest(ui_key=key, expression="t"):
                 self.assertEqual(source.count(
                     'courseMessage("' + key + '",t.' + key + ')'
