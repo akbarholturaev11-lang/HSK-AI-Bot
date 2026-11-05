@@ -27,7 +27,7 @@ def test_subscription_checkout_keeps_backend_contracts():
 def test_subscription_checkout_routes_banks_and_permanent_unlock_separately():
     html = _html()
     functions = []
-    for name in ("hasMethodStep", "isHsk30Unlock", "flow"):
+    for name in ("hasMethodStep", "isHsk30Unlock", "manualFlow", "lavaInfo", "lavaMode", "flow"):
         match = re.search(r"function " + name + r"\([^)]*\)\{[\s\S]*?\}", html)
         assert match is not None
         functions.append(match.group(0))
@@ -37,9 +37,30 @@ def test_subscription_checkout_routes_banks_and_permanent_unlock_separately():
         + '\nconst results={}; for(const region of ["tj","uz","ru","cn","other"]){'
         + 'state.region=region;state.mode="subscription";results[region]=flow();'
         + 'state.mode="hsk30_unlock";results[region+"_unlock"]=flow();}'
+        # lava.top second path: only with a server overview.lava block.
+        + '\nstate.region="uz";state.mode="subscription";state.plan="1_month";'
+        + 'const lavaPlans=[{plan_type:"1_month"}];'
+        + 'state.overview={lava:{mode:"both",plans:lavaPlans}};results.both=flow();'
+        + 'state.path="lava";results.both_yes=flow();state.path="manual";results.both_no=flow();'
+        + 'state.overview={lava:{mode:"lava_only",plans:lavaPlans}};results.lava_only=flow();'
+        + 'state.overview={lava:{mode:"both",plans:[]}};results.no_terms=flow();'
+        + 'state.overview={lava:{mode:"both",plans:lavaPlans,blocked_reason:"chargeback_open"}};results.chargeback=flow();'
+        + 'state.overview={lava:{mode:"lava_only",plans:lavaPlans}};state.mode="hsk30_unlock";results.unlock_lava=flow();'
+        + 'state.mode="referral_discount";results.discount_lava=flow();'
+        + 'state.mode="subscription";state.lavaStatus="waiting";results.waiting=flow();state.lavaStatus="";'
+        + 'state.overview=null;state.path="";'
         + '\nstate.pending=true;results.pending=flow();console.log(JSON.stringify(results));'
     )
     results = json.loads(subprocess.check_output(["node", "-e", script], text=True))
+    assert results["both"] == ["card", "country", "plans", "pay"]
+    assert results["both_yes"] == ["card", "lavaPlans", "lavaPay"]
+    assert results["both_no"] == ["card", "country", "plans", "pay"]
+    assert results["lava_only"] == ["lavaPlans", "lavaPay"]
+    assert results["no_terms"] == ["country", "plans", "pay"]
+    assert results["chargeback"] == ["country", "plans", "pay"]
+    assert results["unlock_lava"] == ["country", "pay"]
+    assert results["discount_lava"] == ["country", "plans", "pay"]
+    assert results["waiting"] == ["lavaWait"]
     for region in ("tj", "cn"):
         assert results[region] == ["country", "plans", "method", "pay"]
         assert results[region + "_unlock"] == ["country", "method", "pay"]
