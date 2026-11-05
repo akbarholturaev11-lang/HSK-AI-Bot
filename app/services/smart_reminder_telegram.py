@@ -140,18 +140,46 @@ async def _read_routing(session, actor, *, android=False):
     return pref, epoch or 0, row
 
 
-async def _android_inventory(session, user_id, now):
-    """Minimal non-secret drift fence, NOT proof an absent/offline APK stopped."""
+# First public Direct release whose study worker asks the server before any
+# local post and stops local posting for a held account (also offline).
+SMART_CAPABLE_ANDROID = (1, 7, 29)
+
+
+def _smart_capable(app_version):
+    from app.services.desktop_semver import parse_desktop_semver
+    try:
+        version = parse_desktop_semver(app_version or "")
+    except ValueError:
+        return False
+    return (version.major, version.minor, version.patch) >= SMART_CAPABLE_ANDROID
+
+
+async def _android_inventory(session, user_id, now, *, native=True):
+    """Stable non-secret drift fence, NOT proof an absent/offline APK stopped.
+
+    The digest binds stable device facts (devices, release, sessions and their
+    revocation, Smart protocol report and study flag), never the capability
+    generation or timestamps that change on every phone report, so a routine
+    capability report does not invalidate a review.
+
+    native=True (posting authority on Android): every active Android device
+    needs a fresh Smart capability; the deadline is the earliest expiry.
+    native=False (Telegram/PWA ownership): an active device is fenced when it
+    durably reported server-only Smart (protocol 1, autonomous posting off) or
+    runs a Smart-capable release, whose worker stops local posting once the
+    account is held. Then no deadline applies; otherwise it is ``now``.
+    """
     devices = (await session.execute(select(DesktopDevice.id, DesktopDevice.app_version,
         DesktopDevice.revoked_at, DesktopDevice.created_at).where(DesktopDevice.user_id == user_id,
         DesktopDevice.platform == "android").order_by(DesktopDevice.id).limit(MAX_ROUTING_ROWS+1))).mappings().all()
     if len(devices) > MAX_ROUTING_ROWS: return None, now
     ids = [r["id"] for r in devices]
+    # Token refresh rotates hashes inside the same session row; these facts stay.
     sessions = (await session.execute(select(DesktopSession.id, DesktopSession.device_id,
         DesktopSession.revoked_at, DesktopSession.expires_at, DesktopSession.created_at).where(
         DesktopSession.device_id.in_(ids)).order_by(DesktopSession.id).limit(MAX_ROUTING_ROWS+1))).mappings().all() if ids else []
     capabilities = (await session.execute(select(SmartReminderCapability.device_id,
-        SmartReminderCapability.generation, SmartReminderCapability.protocol_version,
+        SmartReminderCapability.protocol_version,
         SmartReminderCapability.autonomous_study_disabled, SmartReminderCapability.observed_at,
         SmartReminderCapability.expires_at).where(SmartReminderCapability.user_id == user_id,
         SmartReminderCapability.device_id.in_(ids)).order_by(SmartReminderCapability.device_id)
@@ -160,8 +188,12 @@ async def _android_inventory(session, user_id, now):
         AndroidPushToken.study_reminders_enabled).where(AndroidPushToken.device_id.in_(ids))
         .order_by(AndroidPushToken.device_id).limit(MAX_ROUTING_ROWS+1))).mappings().all() if ids else []
     if any(len(rows) > MAX_ROUTING_ROWS for rows in (sessions, capabilities, study_flags)): return None, now
+    # Capability generation/observed/expiry change on every phone report and
+    # stay checked by the native claim itself; they are not ownership drift.
     facts = {"devices":[dict(r) for r in devices],"sessions":[dict(r) for r in sessions],
-             "capabilities":[dict(r) for r in capabilities],"study_flags":[dict(r) for r in study_flags]}
+             "capabilities":[{k:r[k] for k in ("device_id","protocol_version","autonomous_study_disabled")}
+                             for r in capabilities],
+             "study_flags":[dict(r) for r in study_flags]}
     digest = hashlib.sha256(json.dumps(facts,sort_keys=True,separators=(",", ":"),
         default=lambda v:_utc(v).isoformat()).encode()).hexdigest()
     caps = {r["device_id"]:r for r in capabilities}
@@ -171,8 +203,13 @@ async def _android_inventory(session, user_id, now):
         # review. Revocation alone is NEVER the proof that they are fenced.
         if device["revoked_at"] is not None: continue
         cap = caps.get(device["id"])
-        if (cap is None or cap["protocol_version"] != 1 or cap["autonomous_study_disabled"] is not True or
-                cap["observed_at"] is None or not _utc(cap["observed_at"]) <= now < _utc(cap["expires_at"])):
+        reported = cap is not None and cap["protocol_version"] == 1 and cap["autonomous_study_disabled"] is True
+        if not native:
+            if not (reported or _smart_capable(device["app_version"])):
+                return digest, now
+            continue
+        if (not reported or cap["observed_at"] is None or
+                not _utc(cap["observed_at"]) <= now < _utc(cap["expires_at"])):
             return digest, now
         deadline = min(deadline, _utc(cap["expires_at"])) if deadline else _utc(cap["expires_at"])
     return digest, deadline
@@ -245,7 +282,7 @@ class SmartReminderRoutingService:
         async with self.sessions.begin() as session:
             pref, epoch, row = await _read_routing(session, actor, android=native)
             now = _aware_utc(self.clock())
-            inventory, until = await _android_inventory(session, actor.user_id, now)
+            inventory, until = await _android_inventory(session, actor.user_id, now, native=native)
             binding = _android_binding(actor) if native else _binding(actor)
             if (row is None or row['verified_at'] is None or row['telegram_binding'] != binding or
                     row['state'] != ('held' if native else 'telegram') or review.user_id != actor.user_id or
@@ -272,7 +309,7 @@ class SmartReminderRoutingService:
         async with self.sessions.begin() as session:
             pref, epoch, row = await _read_routing(session, actor)
             now = _aware_utc(self.clock())
-            inventory, fence_until = await _android_inventory(session, actor.user_id, now)
+            inventory, fence_until = await _android_inventory(session, actor.user_id, now, native=False)
             if (row is None or row["state"] != "held" or review.user_id != actor.user_id or
                     review.generation != row["generation"] or row["telegram_binding"] != _binding(actor) or
                     row["preference_revision"] != pref["revision"] or row["grant_epoch"] != epoch or
@@ -319,7 +356,7 @@ class SmartReminderTelegramService:
     async def _cohort(self, session, actor):
         pref, _, row = await _read_routing(session, actor)
         now = self._now()
-        inventory, fence_until = await _android_inventory(session, actor.user_id, now)
+        inventory, fence_until = await _android_inventory(session, actor.user_id, now, native=False)
         if (row is None or row["state"] != "telegram" or row["telegram_binding"] != _binding(actor) or
                 inventory is None or inventory != row["inventory_sha256"] or
                 fence_until is not None and now >= fence_until or

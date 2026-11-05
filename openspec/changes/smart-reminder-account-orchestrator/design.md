@@ -579,11 +579,15 @@ inside the open cohorts, using the existing routing records:
 1. **Eligibility.** Only an existing Smart preference with a real IANA zone
    and a channel already allowed by that preference (Android this-device
    consent, or Telegram consent with a reachable bot). Admission never creates
-   or infers consent. Android inventory must be fenced: every active Android
-   device reports the Smart capability (protocol 1, autonomous posting off,
-   fresh). An active device without it, such as the public 1.7.21/52 APK, can
-   still post its own local reminder, so the whole account stays on the legacy
-   senders and is not held.
+   or infers consent. Android inventory must be fenced. For Telegram/PWA
+   ownership every active Android device either durably reported server-only
+   Smart (protocol 1, autonomous posting off) or runs a Smart-capable release
+   (1.7.29/60 and newer, public since 2026-11-05): its study worker asks the
+   server before any local post and stops posting once the account is held,
+   also offline. An active device on an older APK can still post its own local
+   reminder, so that account stays on the legacy senders and is not held. The
+   native Android path additionally needs a fresh capability (posting
+   authority).
 2. **Hold.** The existing sticky routing hold. Every server legacy study sender
    (Telegram lesson time, motivation evening study, Android FCM) already
    vetoes held accounts. `quiesced_at` keeps the first veto time.
@@ -619,8 +623,10 @@ cohort, which lets Telegram learners become eligible.
 
 This is operational error containment, not proof that all errors are observed
 or that every eligible learner receives exactly one physical display. Accounts
-with an older Android APK reach Smart only after a Smart-capable APK is
-installed (Android public release remains the separate D28 decision).
+with an Android APK older than 1.7.29/60 reach Smart only after they update.
+The inventory digest binds stable device facts; the capability generation and
+timestamps that change on every phone report are excluded, because the native
+claim checks them itself.
 
 ## Risks / Trade-offs
 

@@ -532,8 +532,12 @@ Inside an open cohort the system SHALL move an eligible account from the legacy 
 - **THEN** it is held (server legacy study senders stop), reviewed after 24 hours, and then served by the existing Smart Telegram path
 
 #### Scenario: Older Android app
-- **WHEN** an account has an active Android device without the Smart capability
-- **THEN** it is not held and keeps its legacy reminders until a Smart-capable app reports its capability
+- **WHEN** an account has an active Android device that neither reported server-only Smart nor runs a Smart-capable release (1.7.29/60 or newer)
+- **THEN** it is not held and keeps its legacy reminders until the app is updated
+
+#### Scenario: Smart-capable Android app before its first report
+- **WHEN** an account in an open cohort has Telegram consent and an Android device on 1.7.29/60 or newer that has not yet reported the Smart capability
+- **THEN** it is held, the device's next study run receives server-only mode and stops local posting, and after the drain the account is served on Telegram without a token-length review limit
 
 #### Scenario: Same owner re-attestation
 - **WHEN** an admitted account changes its preference revision or Android capability while state, binding and generation are unchanged

@@ -2098,8 +2098,9 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None) -> APIRou
             require_same_origin(request, settings_obj)
             if request.query_params or request.headers.get("X-Telegram-Init-Data"):
                 raise PwaAuthError("pwa_request_invalid", status_code=422)
-            if not getattr(settings_obj, "ADMIN_PWA_ENABLED", False):
-                raise PwaAuthError("pwa_report_unavailable", status_code=503)
+            # This learner report uses the authenticated PWA session and
+            # Telegram admin recipients; it must not depend on enabling the
+            # separate browser Admin PWA (which defaults to disabled).
             async with session_factory() as db:
                 actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
                     request.cookies.get(PWA_SESSION_COOKIE),

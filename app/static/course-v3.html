@@ -60,7 +60,7 @@ html.hsk-pwa-browser #hsk-launch-splash.is-playing .hsk-launch-brandline,
 html.hsk-pwa-browser #hsk-launch-splash.is-playing .hsk-launch-book{animation-duration:300ms;animation-delay:390ms}
 html.hsk-pwa-browser #hsk-launch-splash.is-playing .hsk-launch-title{animation-duration:360ms;animation-delay:520ms}
 #pwa-checkout-layer{position:fixed;inset:0;z-index:9700;background:var(--paper);padding:var(--safe-t) 0 var(--safe-b);display:flex;flex-direction:column;overscroll-behavior:contain}
-#pwa-checkout-layer iframe{flex:1;min-height:0;width:100%;border:0}
+html.hsk-pwa-browser #pwa-checkout-layer{padding-bottom:0}#pwa-checkout-layer iframe{flex:1;min-height:0;width:100%;border:0}
 html.hsk-pwa-browser:has(#pwa-checkout-layer){overflow:hidden}
 .hsk-launch-stage{position:relative;display:flex;flex-direction:column;align-items:center}
 .hsk-launch-halo{position:absolute;top:48px;left:50%;width:132px;height:132px;border-radius:50%;background:radial-gradient(circle,rgba(224,74,64,.24),rgba(224,74,64,0));opacity:.1;transform:translate(-50%,-50%) scale(.84);animation:hsk-launch-halo-breathe 1.45s ease-in-out infinite alternate}
@@ -1628,7 +1628,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 }
 </style>
 <link rel="stylesheet" href="/course_v3_data/iphone-pwa-glass.css?v=20261105-59648ec92079">
-<link rel="stylesheet" href="/course_v3_data/iphone-pwa-shake-report.css?v=20261105-dc72f5eb7f51">
+<link rel="stylesheet" href="/course_v3_data/iphone-pwa-shake-report.css?v=20261105-c97d140b3930">
 <link href="/course_v3_data/desktop-download.css?v=20261003-1" rel="stylesheet">
 <link href="/course_v3_data/profile-carousel.css?v=20261017-link-cards-1" rel="stylesheet">
 <link href="/course_v3_data/rating-podium.css?v=20261105-1" rel="stylesheet">
@@ -9685,7 +9685,7 @@ var NavBack={
   EDGE:24,   /* Telegram Mini App keeps its existing left-edge gesture zone. */
   MIN:88,    /* The browser PWA uses a shorter, position-aware horizontal threshold. */
   /* Qatlamlar ustkisidan boshlab tekshiriladi. */
-  LAYERS:[
+  LAYERS:[{id:"pwa-shake",target:function(){return PWA_COURSE_HOST&&window.HskPwaShake&&HskPwaShake.backTarget()},close:function(){HskPwaShake.close()}},
     {id:"pwa-checkout-layer",target:function(){return $("#pwa-checkout-layer")},close:pwaCheckoutBack},
     {id:"pwa-practice-layer",target:function(){return PWA_COURSE_HOST&&RESOURCE.practiceBackTarget()},close:function(){RESOURCE.practiceBack()}},
     {id:"pwa-inbox",target:function(){return PWA_COURSE_HOST&&window.HskPwaInbox&&HskPwaInbox.backTarget&&HskPwaInbox.backTarget()},close:function(){HskPwaInbox.back()}},
@@ -9911,6 +9911,6 @@ window.addEventListener("pageshow",function(ev){
   HskPwaFeedback.openRelease({canOpen:function(){return SCREEN==="course"&&document.visibilityState==="visible"&&!NavBack.blocked()&&!NavBack.top()&&
     !document.querySelector("#hsk-launch-splash:not(.is-done),#hsk-pwa-notice-root:not([hidden]),#tour.on,#sheet.on,#flow.on")}});
 },6000)},{once:true});</script>
-<script src="/course_v3_data/iphone-pwa-shake-report.js?v=20261105-a41026d777aa"></script><script>if(location.pathname==="/iphone-pwa/course"){var hskPwaInvite=document.createElement("script");hskPwaInvite.src="/course_v3_data/iphone-pwa-invite.js?v=20261105-f6bf81e66fe4";document.head.appendChild(hskPwaInvite)}</script><script>if(location.pathname==="/iphone-pwa/course"&&new URLSearchParams(location.search).get("pwa_perf")==="1"){var hskPwaPerfScript=document.createElement("script");hskPwaPerfScript.src="/course_v3_data/iphone-pwa-perf.js?v=20261105-0dbef5d08a9d";document.head.appendChild(hskPwaPerfScript)}</script>
+<script src="/course_v3_data/iphone-pwa-shake-report.js?v=20261105-cde548d60e7a"></script><script>if(location.pathname==="/iphone-pwa/course"){var hskPwaInvite=document.createElement("script");hskPwaInvite.src="/course_v3_data/iphone-pwa-invite.js?v=20261105-f6bf81e66fe4";document.head.appendChild(hskPwaInvite)}</script><script>if(location.pathname==="/iphone-pwa/course"&&new URLSearchParams(location.search).get("pwa_perf")==="1"){var hskPwaPerfScript=document.createElement("script");hskPwaPerfScript.src="/course_v3_data/iphone-pwa-perf.js?v=20261105-0dbef5d08a9d";document.head.appendChild(hskPwaPerfScript)}</script>
 </body>
 </html>

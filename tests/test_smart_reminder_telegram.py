@@ -11,7 +11,7 @@ from uuid import uuid4
 
 from alembic.migration import MigrationContext
 from alembic.operations import Operations
-from sqlalchemy import event, func, insert, inspect, select, update
+from sqlalchemy import delete, event, func, insert, inspect, select, update
 
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.course_miniapp_profile import CourseMiniAppProfile
@@ -30,7 +30,7 @@ from app.services.smart_reminder_preferences import SmartReminderActor, SmartRem
 from app.services.smart_reminder_shadow_queue import ATTEMPT, JOB
 from app.services.android_push_service import AndroidPushService
 from app.services.smart_reminder_telegram import (
-    LearningCoverage, RoutingReview, SmartReminderRoutingService, SmartReminderTelegramService,
+    LearningCoverage, RoutingReview, SmartReminderRoutingService, SmartReminderTelegramService, _android_inventory,
 )
 from tests import test_smart_reminder_policy as fixtures
 from tests.test_smart_reminder_cadence import QA
@@ -333,13 +333,39 @@ class TelegramChecks:
             s.add(AndroidPushToken(device_id="fenced-phone",token="synthetic-never-real-fcm",
                 study_reminders_enabled=False,notifications_allowed=True,timezone_name="Etc/UTC"))
 
-    async def test_proof_validity_cannot_outlive_present_android_fencing(self):
-        until=self.tick+timedelta(hours=3)
+    async def test_telegram_ownership_follows_durable_android_report_not_token_expiry(self):
+        # A phone that reported server-only Smart (autonomous posting off) keeps
+        # that mode on the device; its 15-minute capability expiry is native
+        # posting authority, not a Telegram ownership limit.
+        until=self.tick+timedelta(minutes=15)
         await self.fenced_phone(until)
         await self.routing.hold(self.actor,expected_generation=0)
-        with self.assertRaisesRegex(SmartReminderError,"routing_review_stale"):
-            await self.routing.activate(self.actor,self.review())
-        await self.routing.activate(self.actor,self.review(verified_until=until))
+        await self.routing.activate(self.actor,self.review(verified_until=self.expiry))
+        self.tick=until+timedelta(minutes=1)
+        async with self.sessions.begin() as s:
+            self.assertEqual((await self.service._cohort(s,self.actor))["state"],"telegram")
+            # A routine phone report changes neither the drift digest nor the cohort.
+            await s.execute(update(SmartReminderCapability).values(generation=2,
+                observed_at=self.tick,expires_at=self.tick+timedelta(minutes=15)))
+            await self.service._cohort(s,self.actor)
+            # Re-enabling autonomous posting is real drift and closes the cohort.
+            await s.execute(update(SmartReminderCapability).values(autonomous_study_disabled=False))
+            with self.assertRaisesRegex(SmartReminderError,"telegram_cohort_unavailable"):
+                await self.service._cohort(s,self.actor)
+
+    async def test_smart_capable_release_is_fenced_and_older_release_is_not(self):
+        for version,fenced in (("1.7.29",True),("1.8.0",True),("1.7.28",False),("1.7.21",False),("qa",False)):
+            async with self.sessions.begin() as s:
+                await s.execute(delete(DesktopDevice).where(DesktopDevice.user_id==1))
+                s.add(DesktopDevice(id="phone",user_id=1,platform="android",app_version=version,
+                    installation_key_hash="release-fixture"))
+            async with self.sessions() as s:
+                inventory,until=await _android_inventory(s,1,self.tick,native=False)
+                _,native=await _android_inventory(s,1,self.tick)
+            with self.subTest(version=version):
+                self.assertIsNotNone(inventory)
+                self.assertEqual(until is None,fenced)
+                self.assertEqual(native,self.tick)  # No native authority without a fresh report.
 
     async def test_study_mirror_intent_is_not_rewritten_and_account_notices_do_not_change_cohort(self):
         await self.fenced_phone();await self.active()
