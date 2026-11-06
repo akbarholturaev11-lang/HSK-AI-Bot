@@ -48,7 +48,9 @@ from app.services.lava.config import (
     LAVA_CONFIG_KEY, LavaConfig, LavaConfigError, LavaTermConfig, config_from_dict, effective_mode,
     parse_config, sales_configured,
 )
-from app.services.lava.events import LAST_AUTH_FAILURE_KEY, LAST_WEBHOOK_KEY
+from app.services.lava.events import (
+    LAST_AUTH_FAILURE_KEY, LAST_AUTH_FAILURE_REASON_KEY, LAST_WEBHOOK_KEY,
+)
 from app.services.lava.preflight import check_config_against_catalog, offer_catalog, run_preflight
 from app.services.lava.reconcile import LAST_RUN_KEY
 from app.services.lava.terms import CHECKOUT_MODES, LAVA_CURRENCIES, LAVA_PLAN_TYPES
@@ -157,7 +159,9 @@ def _invoice_row(row: LavaInvoice) -> dict:
         "id": row.id, "contract": row.contract_id[:8], "kind": row.kind, "user_id": row.user_id,
         "plan_type": row.plan_type, "status": row.status, "subscription_status": row.subscription_status,
         "review_reason": row.review_reason,
-        "amount": None if row.paid_amount is None else str(row.paid_amount), "currency": row.currency,
+        "amount": (str(row.paid_amount) if row.paid_amount is not None else
+                   str(row.expected_amount) if row.expected_amount is not None else None),
+        "currency": row.currency,
         "email": _mask(row.buyer_email), "created_at": _iso(row.created_at), "paid_at": _iso(row.paid_at),
     }
 
@@ -183,6 +187,13 @@ async def read_lava(db, *, session_cookie, settings_obj):
                 LavaWebhookEvent.result.in_(("queued", "retry")))),
             "review_events": await db.scalar(select(func.count(LavaWebhookEvent.id)).where(
                 LavaWebhookEvent.result == "needs_review")),
+            # Ordinary buyer journeys are *not* incident counts.
+            "awaiting_payment": await db.scalar(select(func.count(LavaInvoice.id)).where(
+                LavaInvoice.status == "created",
+                LavaInvoice.review_reason.is_(None),
+                ~LavaInvoice.contract_id.like("local-%"))),
+            "unsuccessful_payments": await db.scalar(select(func.count(LavaInvoice.id)).where(
+                LavaInvoice.status == "failed", LavaInvoice.review_reason.is_(None))),
         }
         attention = (await db.execute(select(LavaInvoice).where(or_(
             LavaInvoice.status.in_(("unmatched", "chargeback_open")),
@@ -190,6 +201,13 @@ async def read_lava(db, *, session_cookie, settings_obj):
         )).order_by(LavaInvoice.id.desc()).limit(_LIST_LIMIT))).scalars().all()
         recent = (await db.execute(select(LavaInvoice).where(
             LavaInvoice.status.in_(("paid", "refunded", "chargeback_won", "chargeback_lost")),
+        ).order_by(LavaInvoice.id.desc()).limit(_LIST_LIMIT))).scalars().all()
+        awaiting = (await db.execute(select(LavaInvoice).where(
+            LavaInvoice.status == "created", LavaInvoice.review_reason.is_(None),
+            ~LavaInvoice.contract_id.like("local-%"),
+        ).order_by(LavaInvoice.id.desc()).limit(_LIST_LIMIT))).scalars().all()
+        unsuccessful = (await db.execute(select(LavaInvoice).where(
+            LavaInvoice.status.in_(("failed", "expired")), LavaInvoice.review_reason.is_(None),
         ).order_by(LavaInvoice.id.desc()).limit(_LIST_LIMIT))).scalars().all()
         reviews = (await db.execute(select(LavaWebhookEvent).where(
             LavaWebhookEvent.result == "needs_review").order_by(LavaWebhookEvent.id.desc())
@@ -202,11 +220,14 @@ async def read_lava(db, *, session_cookie, settings_obj):
             "effective_mode": effective_mode(config, settings_obj, client_supports_lava=True),
             "last_webhook_at": await _setting(db, LAST_WEBHOOK_KEY),
             "last_auth_failure_at": await _setting(db, LAST_AUTH_FAILURE_KEY),
+            "last_auth_failure_reason": await _setting(db, LAST_AUTH_FAILURE_REASON_KEY),
             "last_reconcile_at": await _setting(db, LAST_RUN_KEY),
         }
     return {"lava": {
         "status": status, "counts": counts, "config": config.to_json(), "config_hash": digest,
         "attention": [_invoice_row(row) for row in attention],
+        "awaiting": [_invoice_row(row) for row in awaiting],
+        "unsuccessful": [_invoice_row(row) for row in unsuccessful],
         "recent": [_invoice_row(row) for row in recent],
         "events": [{"id": event.id, "type": event.event_type, "error": event.error_code,
                     "amount": None if event.amount is None else str(event.amount), "currency": event.currency,
