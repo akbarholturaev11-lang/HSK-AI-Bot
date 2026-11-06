@@ -38,6 +38,7 @@ WRAPPED_EVENTS = {"refund.success", "chargeback.initiated"}
 OPEN_RESULTS = {"received", "queued", "retry"}
 LAST_WEBHOOK_KEY = "lava_last_webhook_at"
 LAST_AUTH_FAILURE_KEY = "lava_last_webhook_auth_failure_at"
+LAST_AUTH_FAILURE_REASON_KEY = "lava_last_webhook_auth_failure_reason"
 
 
 @dataclass
@@ -198,8 +199,21 @@ async def ingest(runtime: LavaRuntime, raw: bytes, *, api_key_header: str | None
     settings_obj = runtime.settings
     if not getattr(settings_obj, "LAVA_WEBHOOK_SECRET", ""):
         return 404, {"ok": False}
-    if not authorized(settings_obj, api_key_header) or not ip_allowed(settings_obj, client_ip):
+    key_ok = authorized(settings_obj, api_key_header)
+    ip_ok = ip_allowed(settings_obj, client_ip)
+    if not key_ok or not ip_ok:
+        # Diagnose webhook configuration without retaining the supplied header,
+        # client IP or payload. 401 remains a fail-closed rejection.
+        reason = ("missing_key" if not api_key_header else
+                  "key_mismatch" if not key_ok else "ip_not_allowed")
         await _touch_setting(runtime, LAST_AUTH_FAILURE_KEY)
+        if runtime._state.get(LAST_AUTH_FAILURE_REASON_KEY) != reason:
+            runtime._state[LAST_AUTH_FAILURE_REASON_KEY] = reason
+            try:
+                async with runtime.session_factory() as session, session.begin():
+                    await BotSettingRepository(session).set(LAST_AUTH_FAILURE_REASON_KEY, reason)
+            except Exception:  # noqa: BLE001 - diagnostic only
+                logger.warning("lava.top could not record auth failure category")
         await runtime.notifier.admin_alert("webhook_auth_failed", throttle_seconds=3600)
         return 401, {"ok": False}
     if len(raw) > MAX_WEBHOOK_BYTES:
@@ -301,8 +315,11 @@ async def verify_and_apply(runtime: LavaRuntime, contract_id: str, *,
     except LavaError as exc:
         return "retry", None, exc.code
     if info.status == "FAILED":
+        # A provider-confirmed unsuccessful customer payment is a normal
+        # checkout outcome, not a technical failure requiring admin review.
+        # Provider did not supply a trusted bank-decline reason.
         invoice_id = await ledger.mark_failed(runtime.session_factory, contract_id)
-        return "needs_review", invoice_id, "provider_failed"
+        return "ignored", invoice_id, "provider_failed"
     if not info.completed:
         return "retry", None, "not_completed"
     if renewal and (info.invoice_type != "SUBSCRIPTION_RENEWAL"
