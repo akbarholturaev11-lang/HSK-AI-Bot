@@ -1,5 +1,6 @@
 """Admin PWA lava.top control: exact passkey proofs, CAS, safe mode rules."""
 import unittest
+from decimal import Decimal
 from datetime import datetime, timedelta, timezone
 from unittest.mock import AsyncMock, patch
 from uuid import uuid4
@@ -19,6 +20,7 @@ from app.db.models.payment import Payment
 from app.db.models.user import User
 from app.services.ai_usage_budget_service import AIUsageBudgetService
 from app.services.lava.config import LavaConfigService
+from app.repositories.bot_setting_repo import BotSettingRepository
 from tests import test_admin_pwa_payment_review as fixtures
 from tests.lava_fakes import API_KEY, OFFER_ID, WEBHOOK_SECRET, FakeLava, RecordingNotifier
 from tests.test_admin_pwa_webauthn_crypto_vectors import CRED_ID
@@ -170,6 +172,39 @@ class AdminPwaLavaTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
         with self.assertRaises(CommandError) as ctx:  # already linked
             await self._action(kind="link", invoice_id=invoice_id, user_id=2, plan_type="3_months")
         self.assertEqual(ctx.exception.status, 409)
+
+    async def test_read_separates_buyer_non_payment_from_technical_incidents(self):
+        now = datetime.now(timezone.utc)
+        def invoice(*, status, review_reason=None):
+            return LavaInvoice(
+                contract_id=str(uuid4()), kind="first", user_id=2,
+                plan_type="1_month", currency="USD", expected_amount=Decimal("7.90"),
+                buyer_email="buyer@example.com", source="pwa", status=status,
+                review_reason=review_reason, created_at=now, updated_at=now,
+            )
+        async with self.sessions() as db:
+            db.add_all([
+                invoice(status="created"),
+                invoice(status="failed"),
+                invoice(status="expired"),
+                invoice(status="failed", review_reason="create_rejected"),
+            ])
+            await BotSettingRepository(db).set("lava_last_webhook_auth_failure_at", now.isoformat())
+            await BotSettingRepository(db).set("lava_last_webhook_auth_failure_reason", "key_mismatch")
+            await db.commit()
+        async with self.sessions() as db:
+            result = (await read_lava(db, session_cookie=fixtures.COOKIE,
+                                      settings_obj=self.settings))["lava"]
+        self.assertEqual(result["counts"]["awaiting_payment"], 1)
+        self.assertEqual(result["counts"]["unsuccessful_payments"], 2)
+        self.assertEqual(len(result["awaiting"]), 1)
+        self.assertEqual(result["awaiting"][0]["amount"], "7.90")
+        self.assertEqual({row["status"] for row in result["unsuccessful"]},
+                         {"failed", "expired"})
+        self.assertEqual(len(result["attention"]), 1)
+        self.assertEqual(result["attention"][0]["review_reason"], "create_rejected")
+        self.assertEqual(result["status"]["last_auth_failure_reason"], "key_mismatch")
+        self.assertNotIn("buyer@example.com", str(result))
 
     async def test_action_payload_must_match_kind(self):
         with self.assertRaises(CommandError):

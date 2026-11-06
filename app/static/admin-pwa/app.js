@@ -2445,6 +2445,15 @@ function lavaCheckLabel(code){
   const key='lavaCheck_'+code;return window.HSKAI_ADMIN_I18N?.[locale]?.[key]?t(key):code;
 }
 function lavaStatusLabel(status){const key='lavaStatus_'+status;return window.HSKAI_ADMIN_I18N?.[locale]?.[key]?t(key):status;}
+function lavaWebhookWarning(status){
+  const failed=Date.parse(status?.last_auth_failure_at||''),accepted=Date.parse(status?.last_webhook_at||'');
+  if(!Number.isFinite(failed)||(Number.isFinite(accepted)&&accepted>=failed))return '';
+  const reason=['missing_key','key_mismatch','ip_not_allowed'].includes(status?.last_auth_failure_reason)
+    ?status.last_auth_failure_reason:'unknown';
+  return '<section class="lava-auth-warning" role="alert"><strong>'+esc(t('lavaWebhookAuthProblem'))+'</strong>'
+    +'<span>'+esc(t('lavaWebhookAuth_'+reason))+'</span>'
+    +'<small>'+esc(date(status.last_auth_failure_at))+'</small></section>';
+}
 function lavaOfferOptions(catalog,plan,periodicity,currency,selected){
   const rows=(catalog?.offers||[]).map(offer=>{
     const price=(offer.prices||[]).find(p=>p.currency===currency&&p.periodicity===periodicity);
@@ -2465,7 +2474,8 @@ async function lavaSettings(){
     lavaBaseline=structuredClone(config);
     const checks=(preflight?.checks||[]).map(check=>'<li class="'+(check.ok?'ok':'bad')+'">'+(check.ok?'✓ ':'✕ ')+esc(lavaCheckLabel(check.code))+'</li>').join('');
     const status='<section class="lava-status"><h3>'+esc(t('lavaConnection'))+'</h3><ul class="lava-checks">'+(checks||'<li class="bad">✕ '+esc(t('lavaErr_lava_provider_unavailable'))+'</li>')+'</ul>'
-      +'<p class="source-note">'+esc(t('lavaLastWebhook'))+': '+esc(lava.status.last_webhook_at?date(lava.status.last_webhook_at):t('lavaNever'))+'</p></section>';
+      +'<p class="source-note">'+esc(t('lavaLastWebhook'))+': '+esc(lava.status.last_webhook_at?date(lava.status.last_webhook_at):t('lavaNever'))+'</p></section>'
+      +lavaWebhookWarning(lava.status);
     const option=(value,label,selected)=>'<option value="'+value+'" '+(selected?'selected':'')+'>'+esc(t(label))+'</option>';
     const mode='<div class="form-field"><label for="lavaMode">'+esc(t('lavaMode'))+'</label><select id="lavaMode" class="input">'
       +option('manual_only','lavaModeManual',config.checkout_mode==='manual_only')+option('both','lavaModeBoth',config.checkout_mode==='both')
@@ -2554,8 +2564,11 @@ function lavaInvoiceRow(row,actions){
   const who=row.user_id?'#'+row.user_id:(row.email||'—');
   const money=row.amount?row.amount+' '+row.currency:row.currency;
   const plan=LAVA_TERMS.find(([plan])=>plan===row.plan_type);
+  const reasonKey='lavaReviewReason_'+row.review_reason;
+  const reason=row.review_reason?(window.HSKAI_ADMIN_I18N?.[locale]?.[reasonKey]?t(reasonKey):t('lavaTechnicalReview')):'';
   return '<article class="lava-row"><div><strong>'+esc(lavaStatusLabel(row.status))+' · '+esc(money)+'</strong>'
-    +'<small>'+esc(who)+(plan?' · '+esc(t(plan[1])):'')+' · '+esc(date(row.paid_at||row.created_at))+'</small></div>'
+    +'<small>'+esc(who)+(plan?' · '+esc(t(plan[1])):'')+' · '+esc(date(row.paid_at||row.created_at))+'</small>'
+    +(reason?'<small>'+esc(reason)+'</small>':'')+'</div>'
     +(actions?'<div class="lava-row-actions">'+actions+'</div>':'')+'</article>';
 }
 function lavaRowButton(label,kind,row,extra=''){
@@ -2569,7 +2582,7 @@ async function lavaPayments(){
     if(current!==drawerId||at!==epoch||!state.actor)return;
     const lava=data.lava,c=lava.counts;
     const metric=(label,value)=>'<div class="lava-metric"><span>'+esc(t(label))+'</span><strong>'+esc(String(value??0))+'</strong></div>';
-    const metrics='<div class="lava-metrics">'+metric('lavaActiveSubs',c.active_subscriptions)+metric('lavaPaid30',c.paid_30d)+metric('lavaQueued',c.queued_events)+metric('lavaReviewEvents',c.review_events)+'</div>';
+    const metrics='<div class="lava-metrics">'+metric('lavaActiveSubs',c.active_subscriptions)+metric('lavaPaid30',c.paid_30d)+metric('lavaAwaitingCount',c.awaiting_payment)+metric('lavaUnsuccessfulCount',c.unsuccessful_payments)+metric('lavaQueued',c.queued_events)+metric('lavaReviewEvents',c.review_events)+'</div>';
     const attention=(lava.attention||[]).map(row=>{
       let actions='';
       if(row.status==='unmatched')actions=lavaRowButton('lavaLink','link',row);
@@ -2580,8 +2593,14 @@ async function lavaPayments(){
     const recent=(lava.recent||[]).map(row=>lavaInvoiceRow(row,
       row.status==='paid'&&row.kind!=='renewal'&&row.user_id&&(!row.subscription_status||row.subscription_status==='active')
         ?lavaRowButton('lavaCancelRenewal','cancel',row):'')).join('');
-    const body=metrics
+    const awaiting=(lava.awaiting||[]).map(row=>lavaInvoiceRow(row,'')).join('');
+    const unsuccessful=(lava.unsuccessful||[]).map(row=>lavaInvoiceRow(row,'')).join('');
+    const group=(heading,hint,rows)=>rows?'<section class="lava-list"><h3>'+esc(t(heading))+'</h3>'
+      +'<p class="source-note">'+esc(t(hint))+'</p>'+rows+'</section>':'';
+    const body=metrics+lavaWebhookWarning(lava.status)
       +(attention?'<section class="lava-list"><h3>'+esc(t('lavaAttention'))+'</h3>'+attention+'</section>':'')
+      +group('lavaAwaiting','lavaAwaitingHint',awaiting)
+      +group('lavaUnsuccessful','lavaUnsuccessfulHint',unsuccessful)
       +'<section class="lava-list"><h3>'+esc(t('lavaRecent'))+'</h3>'+(recent||statePanel('empty'))+'</section>';
     drawer('lavaPayments',body,btn('close','close'));
   }catch(error){
