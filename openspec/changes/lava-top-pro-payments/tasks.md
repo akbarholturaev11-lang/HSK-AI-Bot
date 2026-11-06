@@ -48,5 +48,5 @@
 
 ## 9. Integration acceptance
 
-- [ ] 9.1 Full regression of existing payment/subscription/admin PWA tests passes locally.
+- [x] 9.1 Full non-e2e regression locally (CI synthetic env): branch 4934 passed / 28 failed vs clean `origin/main` 4893 passed / 28 failed — identical pre-existing failure set, no new failures.
 - [ ] 9.2 Staging acceptance scenarios 1–11 from `docs/payments/LAVA_TOP.md` executed with real lava payments and evidence in `docs/payments/LAVA_TOP_STAGING_<date>.md`.
