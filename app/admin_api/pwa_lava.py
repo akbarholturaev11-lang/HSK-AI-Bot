@@ -193,7 +193,7 @@ async def read_lava(db, *, session_cookie, settings_obj):
                 LavaInvoice.review_reason.is_(None),
                 ~LavaInvoice.contract_id.like("local-%"))),
             "unsuccessful_payments": await db.scalar(select(func.count(LavaInvoice.id)).where(
-                LavaInvoice.status == "failed", LavaInvoice.review_reason.is_(None))),
+                LavaInvoice.status.in_(("failed", "expired")), LavaInvoice.review_reason.is_(None))),
         }
         attention = (await db.execute(select(LavaInvoice).where(or_(
             LavaInvoice.status.in_(("unmatched", "chargeback_open")),
