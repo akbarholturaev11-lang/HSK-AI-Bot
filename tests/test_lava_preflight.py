@@ -3,7 +3,7 @@ import unittest
 
 import httpx
 
-from app.services.lava.client import LavaClient
+from app.services.lava.client import LavaClient, LavaError
 from app.services.lava.config import config_from_dict
 from app.services.lava.preflight import run_preflight
 from tests.lava_fakes import API_KEY, OFFER_ID, FakeLava, lava_settings
@@ -48,6 +48,48 @@ class LavaPreflightTests(unittest.IsolatedAsyncioTestCase):
         report = await run_preflight(None, _config(), settings_obj=lava_settings(LAVA_ENABLED=False,
                                                                                     LAVA_WEBHOOK_SECRET=""))
         self.assertEqual(_codes(report, False), {"sales_flag", "webhook_secret", "api_key"})
+
+
+
+class LavaValidationDiagnosticsTests(unittest.TestCase):
+    def test_subscription_conflict_exposes_only_safe_category_and_known_field_names(self):
+        response = httpx.Response(400, json={
+            "error": "An active subscription already exists for private@example.com",
+            "details": {"email": "private@example.com", "buyerId": "secret-person-id"},
+        })
+        with self.assertRaises(LavaError) as caught:
+            LavaClient._raise_for_client_error(response)
+        exc = caught.exception
+        self.assertEqual(exc.http_status, 400)
+        self.assertFalse(exc.uncertain)
+        self.assertEqual(exc.validation_reason, "subscription_exists")
+        self.assertEqual(exc.validation_fields, ("email",))
+        self.assertNotIn("private@example.com", repr(vars(exc)))
+        self.assertNotIn("secret-person-id", repr(vars(exc)))
+
+    def test_unexpected_provider_text_cannot_leak_into_diagnostics(self):
+        response = httpx.Response(400, json={
+            "error": "Secret buyer private@example.com says unrecognized provider error",
+            "details": {"custom_error_field": "my-private-secret"},
+        })
+        with self.assertRaises(LavaError) as caught:
+            LavaClient._raise_for_client_error(response)
+        exc = caught.exception
+        self.assertEqual((exc.validation_reason, exc.validation_fields), ("unknown", ()))
+        self.assertNotIn("private@example.com", repr(vars(exc)))
+        self.assertNotIn("my-private-secret", repr(vars(exc)))
+
+    def test_promo_and_invalid_return_url_are_classified_without_exposing_details(self):
+        for response, expected in [
+            (httpx.Response(400, json={"error": "Promo code not found"}), "promo_invalid"),
+            (httpx.Response(400, json={"error": "Invalid return_url"}), "return_url_invalid"),
+            (httpx.Response(400, content="not JSON"), "non_json"),
+        ]:
+            with self.subTest(expected=expected):
+                with self.assertRaises(LavaError) as caught:
+                    LavaClient._raise_for_client_error(response)
+                self.assertEqual(caught.exception.validation_reason, expected)
+
 
 
 if __name__ == "__main__":
