@@ -348,8 +348,10 @@ async def browser_checks(output):
         await expect(page.locator('[data-price-target]')).to_have_count(9)
         await expect(page.locator('.finance-tile [data-action="priceSettings"]')).to_have_count(0)
         await page.locator('[data-finance-tab="methods"]').click()
-        # Six parent tariffs, each containing two scoped actions, plus bank editors.
-        await expect(page.locator('.finance-tile')).to_have_count(8)
+        # Six QR tariff parents, two bank editors and two Lava management tiles.
+        await expect(page.locator('.finance-tile')).to_have_count(10)
+        await expect(page.locator('.finance-tile [data-action="lavaSettings"]')).to_have_count(1)
+        await expect(page.locator('.finance-tile [data-action="lavaPayments"]')).to_have_count(1)
         await expect(page.locator('[data-qr-tariff]')).to_have_count(6)
         await expect(page.locator('[data-payment-qr-target]')).to_have_count(12)
         await expect(page.locator('[data-qr-scope="subscription_20"]')).to_have_count(6)
