@@ -24,10 +24,17 @@ def migration(number):
 class NativeAccountMigrationTests(unittest.TestCase):
     def test_revision_chain_has_one_complete_head(self):
         scripts = ScriptDirectory.from_config(Config('alembic.ini'))
-        # The public-site traffic migration extends the native 0108 chain;
-        # the repository head moved to 0109 without changing native ownership.
-        self.assertEqual(scripts.get_heads(), ['0109_public_site_traffic_daily'])
-        self.assertLessEqual(len(scripts.get_heads()[0]), 32)
+        # Later migrations extend the native 0108 chain linearly. Pinning one
+        # literal head went stale at every new revision; the invariant is a
+        # single head (no branch), a 32-char alembic_version id and 0108 as
+        # its ancestor. The reviewed head itself is pinned by the QA bootstrap.
+        heads = scripts.get_heads()
+        self.assertEqual(len(heads), 1)
+        self.assertLessEqual(len(heads[0]), 32)
+        # iterate_revisions(upper, lower) excludes `lower`: the oldest yielded
+        # revision must be the direct child of 0108.
+        lineage = [r.revision for r in scripts.iterate_revisions(heads[0], '0108_native_audit_ownership')]
+        self.assertEqual(scripts.get_revision(lineage[-1]).down_revision, '0108_native_audit_ownership')
         self.assertEqual([r.revision for r in scripts.iterate_revisions(
             '0108_native_audit_ownership', '0101_account_deletion_requests')], [
                 '0108_native_audit_ownership',

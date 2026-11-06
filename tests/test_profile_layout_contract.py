@@ -9,7 +9,8 @@ RINGS = Path("android/app/src/main/java/com/pomp/hskai/feature/profile/ProfileAc
 
 def test_ranking_has_header_in_both_apps():
     assert 'class="section-title rating-title"' in WEB
-    assert "R.string.nav_rating" in RATING
+    # Android labels were centralized into generated i18n resources (313b7bc6).
+    assert "R.string.hsk_common_navigation_rating" in RATING
 
 
 def test_single_display_name_and_subscription_badge_after_avatar():
@@ -17,7 +18,7 @@ def test_single_display_name_and_subscription_badge_after_avatar():
     assert '<strong class="profile-display-name">' in profile
     assert profile.count("profile-access-badge") == 1
     assert 'class="pun"' not in profile
-    assert "text = stringResource(R.string.nav_profile)" in ANDROID
+    assert "text = stringResource(R.string.hsk_common_navigation_profile)" in ANDROID
     hero = ANDROID.split("private fun ProfileHero(", 1)[1].split("private fun profileAvatarDrawable", 1)[0]
     assert hero.count("AccessPill(") == 1
     assert 'text = "@$username"' not in hero
