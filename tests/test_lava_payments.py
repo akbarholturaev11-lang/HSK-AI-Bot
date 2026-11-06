@@ -337,6 +337,22 @@ class LavaPaymentTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(summary["renewals"], 1)
         self.assertEqual(len(await self._payments()), 2)
 
+    async def test_account_purge_keeps_lava_money_facts_and_drops_email(self):
+        from app.repositories.user_repo import UserRepository
+        await self._paid_first()
+        renewal_parent = await self._contract(1)
+        self.fake.add_renewal(renewal_parent)
+        await self._ingest(refund_webhook())  # first payment becomes 'refunded'
+        async with self.sessions() as session:
+            self.assertTrue(await UserRepository(session).delete_by_user_id(1))
+            await session.commit()
+        async with self.sessions() as session:
+            payments = list((await session.execute(select(Payment))).scalars())
+            invoices = list((await session.execute(select(LavaInvoice))).scalars())
+        self.assertEqual([p.payment_status for p in payments], ["refunded"])
+        self.assertTrue(all(p.user_id is None for p in payments))
+        self.assertTrue(all(row.user_id is None and row.buyer_email is None for row in invoices))
+
     async def test_provider_outage_on_create_marks_reservation_failed(self):
         self.fake.unavailable = True
         with self.assertRaises(LavaCheckoutError) as ctx:

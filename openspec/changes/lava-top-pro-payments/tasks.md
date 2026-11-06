@@ -2,43 +2,43 @@
 
 ## 1. Configuration and schema
 
-- [ ] 1.1 Add `LAVA_*` settings to `app/config.py` and `.env.example`; verify `tests/test_lava_config.py` covers defaults (sales off, no secrets).
-- [ ] 1.2 Add `LavaInvoice` and `LavaWebhookEvent` models, migration `0151_lava_top_payments` (refusing lossy downgrade) and bootstrap registration; verify upgrade/downgrade on local Postgres and model import test.
-- [ ] 1.3 Add `SUBSCRIPTION_PLAN_DURATIONS` (6/12 months) used by activation, preview restore and PWA metrics while manual allowlists stay unchanged; verify activation +180/+365 and manual endpoints still rejecting 6/12 months.
+- [x] 1.1 Add `LAVA_*` settings to `app/config.py` and `.env.example`; verified by effective-mode fallback tests in `tests/test_lava_payments.py` (sales off/no keys → manual_only).
+- [x] 1.2 Add `LavaInvoice` and `LavaWebhookEvent` models, migration `0151_lava_top_payments` (refusing lossy downgrade) and QA bootstrap registration; verified upgrade → refused downgrade with rows → downgrade → re-upgrade on an isolated local PostgreSQL 15 cluster.
+- [x] 1.3 Add `SUBSCRIPTION_PLAN_DURATIONS` (6/12 months) for activation, preview restore and PWA metrics while manual allowlists stay unchanged; verified by `test_twelve_month_term_grants_365_days` and `test_manual_allowlist_does_not_gain_lava_terms`.
 
 ## 2. lava client, config and preflight
 
-- [ ] 2.1 Implement `app/services/lava/client.py` (create/get invoice, products, subscription get/cancel; no POST retry; secrets never logged); verify with httpx MockTransport tests.
-- [ ] 2.2 Implement `config_service.py` (bot_settings JSON, validation, `effective_mode`); verify fallback matrix tests.
-- [ ] 2.3 Implement `preflight_service.py` + `scripts/lava_preflight.py`; verify 401/no product/wrong periodicity/missing currency price tests.
+- [x] 2.1 Implement `app/services/lava/client.py`; verified through the httpx MockTransport double in `tests/lava_fakes.py`.
+- [x] 2.2 Implement `config.py` (bot_settings JSON, validation, `effective_mode`); verified fallback matrix tests.
+- [x] 2.3 Implement `preflight.py` + `scripts/lava_preflight.py`; verified `tests/test_lava_preflight.py` (401, non-subscription product, missing currency price, missing flags).
 
 ## 3. Checkout, activation and webhook
 
-- [ ] 3.1 Implement checkout start/status/cancel with refusal reasons (disabled term, active subscription, pending manual receipt, open chargeback); verify unit tests.
-- [ ] 3.2 Implement verified idempotent activation and renewal through `review_locked_payment`; verify single Payment under duplicate delivery and Postgres concurrency test.
-- [ ] 3.3 Implement webhook endpoint (auth, size limit, dedupe, queued pause, unmatched); verify auth/dedupe/pause tests.
-- [ ] 3.4 Implement refund/chargeback matching and revocation plus cancellation handling; verify end_date arithmetic and needs_review tests.
+- [x] 3.1 Checkout start/status/cancel with refusal reasons; verified `tests/test_lava_payments.py` and `tests/test_lava_checkout_api.py`.
+- [x] 3.2 Verified idempotent activation and renewal through `review_locked_payment`; verified duplicate delivery tests and `tests/test_lava_postgres.py` (5 concurrent deliveries → one Payment).
+- [x] 3.3 Webhook endpoint (auth, size limit, dedupe, queued pause, unmatched); verified auth/dedupe/pause tests.
+- [x] 3.4 Refund/chargeback matching, revocation and cancellation handling; verified end_date arithmetic and needs_review tests.
 
 ## 4. Reconciliation worker
 
-- [ ] 4.1 Implement reconcile worker (open invoices, renewals, queued drain, missing-renewal alert) with advisory lease and lifespan wiring; verify missed-webhook and race tests.
+- [x] 4.1 Reconcile worker (open invoices, renewals, queued drain, overdue alert) with lease and lifespan wiring; verified missed-webhook, missed-renewal tests and PostgreSQL lease/SQL test. Daily unknown-subscription sweep deferred until lava confirms subscription id semantics.
 
 ## 5. Mini App and iPhone PWA
 
-- [ ] 5.1 Add Mini App and PWA lava endpoints and overview `lava` block (only with `supports_lava`); verify manual_only overview unchanged.
-- [ ] 5.2 Update `subscription.html`: Visa question, lava terms, email, open payment, waiting, cancel auto-renew; UZ/RU/TJ catalogs; verify UI contract tests and mobile smoke.
-- [ ] 5.3 Add return page and bot/user notices (refund, renewal failed, cancelled) in UZ/RU/TJ; verify i18n build `--check`.
+- [x] 5.1 Mini App and PWA lava endpoints and overview `lava` block (only with `supports_lava`); verified overview tests.
+- [x] 5.2 `subscription.html`: centered Visa gateway (owner wording), lava terms, email, payment page, polling, auto-renew cancel, brand palette; verified UI contract test, i18n guards and mobile browser smoke (preview mode, UZ/RU/TJ).
+- [x] 5.3 Return page and bot notices (refund, renewal failed, cancelled, chargeback) in UZ/RU/TJ; verified `i18n_build_all_catalogs.py --check` and `tests/test_lava_notifications.py`.
 
 ## 6. Admin PWA
 
-- [ ] 6.1 Add `pwa_lava.py` read + `lava.settings`, `lava.recheck`, `lava.link`, `lava.cancel`, `lava.chargeback` commands with step-up, CAS and audit; verify `tests/test_admin_pwa_lava.py`.
-- [ ] 6.2 Add V10 System → payments "lava.top" row and drawer following BROWSER_UI_CONTRACT; verify shell tests and browser e2e.
-- [ ] 6.3 Update `docs/admin-pwa/MANAGEMENT_COMMANDS_CONTRACT.md`.
+- [x] 6.1 `pwa_lava.py` read/catalog + `lava.settings`, `lava.recheck`, `lava.link`, `lava.cancel`, `lava.chargeback`; verified `tests/test_admin_pwa_lava.py`.
+- [x] 6.2 Finance → payment methods lava.top drawers and finance analytics channel split; verified shell/analytics tests. Authenticated browser e2e of the drawers not yet executed.
+- [x] 6.3 `docs/admin-pwa/MANAGEMENT_COMMANDS_CONTRACT.md` updated.
 
 ## 7. Privacy and documentation
 
-- [ ] 7.1 Clear `lava_invoices.buyer_email` on account purge; verify purge test.
-- [ ] 7.2 Write `docs/payments/LAVA_TOP.md` runbook and update `PROJECT_MEMORY.md` payment section.
+- [x] 7.1 Purge clears lava owner/email and retains refunded/chargeback payments anonymously; verified `test_account_purge_keeps_lava_money_facts_and_drops_email`.
+- [x] 7.2 `docs/payments/LAVA_TOP.md` runbook, `PROJECT_MEMORY.md`, public subscription guide/FAQ (UZ/RU/TJ).
 
 ## 8. Phase 2 and 3 (separate delivery)
 
@@ -49,4 +49,4 @@
 ## 9. Integration acceptance
 
 - [ ] 9.1 Full regression of existing payment/subscription/admin PWA tests passes locally.
-- [ ] 9.2 Staging acceptance scenarios 1–11 from the plan executed with real lava payments and evidence in `docs/payments/LAVA_TOP_STAGING_<date>.md`.
+- [ ] 9.2 Staging acceptance scenarios 1–11 from `docs/payments/LAVA_TOP.md` executed with real lava payments and evidence in `docs/payments/LAVA_TOP_STAGING_<date>.md`.

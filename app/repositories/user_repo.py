@@ -543,11 +543,14 @@ class UserRepository:
             )
             .values(user_telegram_id=anonymous_telegram_id)
         )
+        # lava.top refund/chargeback rows are money that moved too: retain them
+        # anonymously like approved payments (never delete financial facts).
+        retained_statuses = ("approved", "refunded", "chargeback")
         await self.session.execute(
             sql_update(Payment)
             .where(
                 payment_owner,
-                Payment.payment_status == "approved",
+                Payment.payment_status.in_(retained_statuses),
             )
             .values(
                 user_id=None,
@@ -563,8 +566,16 @@ class UserRepository:
         await self.session.execute(
             sql_delete(Payment).where(
                 payment_owner,
-                Payment.payment_status != "approved",
+                Payment.payment_status.not_in(retained_statuses),
             )
+        )
+        # lava.top contracts: keep the financial ledger, drop the buyer email
+        # and the canonical owner (future renewals become admin-review items).
+        from app.db.models.lava import LavaInvoice
+        await self.session.execute(
+            sql_update(LavaInvoice)
+            .where(LavaInvoice.user_id == uid)
+            .values(user_id=None, buyer_email=None)
         )
 
         # Partner ledgeri (credit/payout) system-level moliyaviy tarix. Uni
