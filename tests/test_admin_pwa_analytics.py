@@ -309,6 +309,32 @@ class AnalyticsDefinitionTests(AnalyticsProjectionTests):
         self.assertEqual(next(row['payments'] for row in sources['attribution'] if row['source']=='profile'),1)
         self.assertFalse(any(row['source']=='broadcast' for row in sources['attribution']))
 
+    async def test_finance_splits_manual_and_lava_channels_and_counts_lava_lifecycle(self):
+        from app.admin_api.pwa_analytics_finance import money_metrics
+        from app.db.models.lava import LavaInvoice
+        await self.seed_analytics()
+        at=NOW-timedelta(days=1)
+        async with self.sessions() as db:
+            db.add_all([
+                Payment(user_id=1,amount=10,currency='USD',plan_type='1_month',payment_method='lava',
+                    payment_status='approved',submitted_at=at,reviewed_at=at),
+                Payment(user_id=2,amount=27,currency='USD',plan_type='3_months',payment_method='lava',
+                    payment_status='refunded',submitted_at=at,reviewed_at=at),
+                LavaInvoice(contract_id='a'*36,kind='first',user_id=1,plan_type='1_month',currency='USD',source='miniapp',
+                    status='paid',subscription_status='active',paid_at=at,created_at=at,updated_at=at),
+                LavaInvoice(contract_id='b'*36,kind='renewal',user_id=1,plan_type='1_month',currency='USD',source='miniapp',
+                    status='paid',paid_at=at,created_at=at,updated_at=at),
+                LavaInvoice(contract_id='c'*36,kind='first',user_id=2,plan_type='3_months',currency='USD',source='pwa',
+                    status='refunded',revoked_at=at,created_at=at,updated_at=at),
+            ])
+            await db.commit()
+            m=await money_metrics(db,since=NOW-timedelta(days=7),now=NOW)
+        lava_row=next(row for row in m['channels'] if row['channel']=='lava')
+        # A refunded lava payment is not approved revenue.
+        self.assertEqual((lava_row['payments'],lava_row['usd']),(1,10.0))
+        self.assertTrue(any(row['channel']=='manual' for row in m['channels']))
+        self.assertEqual(m['lava'],{'active_subscriptions':1,'renewals':1,'cancelled':0,'refunded':1,'chargebacks':0})
+
     async def test_lazy_experiments_empty_and_mature_recovery_have_no_private_payload(self):
         from app.admin_api.pwa_analytics_experiments import experiment_metrics
         async with self.sessions() as db:

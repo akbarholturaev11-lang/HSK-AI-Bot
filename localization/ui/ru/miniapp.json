@@ -1260,7 +1260,22 @@
     "ui.admin_pwa.lavaErr_lava_no_enabled_term": "Включите хотя бы один срок",
     "ui.admin_pwa.lavaErr_lava_offer_invalid": "Оффер не найден или нет цены для срока/валюты",
     "ui.admin_pwa.lavaErr_lava_provider_unavailable": "lava.top сейчас не отвечает",
-    "ui.admin_pwa.lavaErr_enabled_term_requires_offer": "Выберите оффер для включённого срока"
+    "ui.admin_pwa.lavaErr_enabled_term_requires_offer": "Выберите оффер для включённого срока",
+    "ui.admin_pwa.6_months": "Pro · 180 дней",
+    "ui.admin_pwa.12_months": "Pro · 365 дней",
+    "ui.admin_pwa.refunded": "Возвращён",
+    "ui.admin_pwa.chargeback": "Chargeback",
+    "ui.admin_pwa.analyticsChannels": "Способы оплаты",
+    "ui.admin_pwa.analyticsChannel": "Способ",
+    "ui.admin_pwa.analyticsChannelmanual": "Обычная (чек)",
+    "ui.admin_pwa.analyticsChannellava": "lava.top (авто)",
+    "ui.admin_pwa.analyticsLava": "Автоподписка lava.top",
+    "ui.admin_pwa.analyticsLavaActive": "Активные автоподписки",
+    "ui.admin_pwa.analyticsLavaRenewals": "Автопродления",
+    "ui.admin_pwa.analyticsLavaCancelled": "Отменённые",
+    "ui.admin_pwa.analyticsLavaRefunded": "Возвраты",
+    "ui.admin_pwa.analyticsLavaChargebacks": "Чарджбэки",
+    "ui.admin_pwa.analyticsLavaNote": "За период; активные подписки — текущее состояние."
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

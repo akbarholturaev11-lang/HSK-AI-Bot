@@ -6,6 +6,7 @@ from sqlalchemy import Float, String, and_, case, cast, func, literal, or_, sele
 from app.admin_api.pwa_analytics import _known
 from app.admin_api.pwa_metrics import _window
 from app.db.models.ai_usage import AIUsageEvent as Usage
+from app.db.models.lava import LavaInvoice
 from app.db.models.payment import Payment
 from app.db.models.portfolio import PortfolioTransaction as Ledger
 from app.db.models.public_site_traffic import PublicSiteTrafficDaily as Traffic, PUBLIC_SITE_TRAFFIC_SOURCES
@@ -55,9 +56,28 @@ def approved_history(now):
     return select(Payment.id.label('id'),User.id.label('account'),owner.label('owner'),
         at.label('at'),Payment.submitted_at.label('submitted'),usd_expression().label('usd'),
         currency_key().label('currency'),Payment.amount.label('amount'),
+        case((Payment.payment_method=='lava','lava'),else_='manual').label('channel'),
         func.row_number().over(partition_by=owner,order_by=(at,Payment.id)).label('sequence'))\
         .select_from(Payment).outerjoin(User,_payment_user_join()).where(
             Payment.payment_status=='approved',Payment.plan_type!=HSK30_UNLOCK_PLAN_TYPE,at<=now).subquery()
+
+
+async def lava_metrics(db, *, since, now):
+    """lava.top lifecycle counts. Refunded/chargeback payments are already
+    excluded from approved revenue because their status is not approved."""
+    active=int(await db.scalar(select(func.count(LavaInvoice.id)).where(
+        LavaInvoice.kind.in_(('first','external')),LavaInvoice.status=='paid',
+        or_(LavaInvoice.subscription_status.is_(None),LavaInvoice.subscription_status=='active'))) or 0)
+    row=(await db.execute(select(
+        func.count().filter(and_(LavaInvoice.kind=='renewal',LavaInvoice.status=='paid',
+                                 *_window(LavaInvoice.paid_at,since,now))),
+        func.count().filter(and_(LavaInvoice.kind!='renewal',LavaInvoice.subscription_status=='cancelled',
+                                 *_window(LavaInvoice.cancelled_at,since,now))),
+        func.count().filter(and_(LavaInvoice.status=='refunded',*_window(LavaInvoice.revoked_at,since,now))),
+        func.count().filter(and_(LavaInvoice.status.like('chargeback%'),
+                                 *_window(LavaInvoice.updated_at,since,now)))).select_from(LavaInvoice))).one()
+    return {'active_subscriptions':active,'renewals':int(row[0] or 0),'cancelled':int(row[1] or 0),
+            'refunded':int(row[2] or 0),'chargebacks':int(row[3] or 0)}
 
 
 async def money_metrics(db, *, since, now):
@@ -69,6 +89,10 @@ async def money_metrics(db, *, since, now):
         func.count().filter(history.c.sequence>1)).where(*where))).one()
     currencies=(await db.execute(select(history.c.currency,func.sum(history.c.amount),func.count())
         .where(*where).group_by(history.c.currency))).all()
+    # Second checkout path: manual receipt vs lava.top auto-subscription.
+    channels=(await db.execute(select(history.c.channel,func.count(),func.coalesce(func.sum(history.c.usd),0),
+        func.count().filter(history.c.sequence>1)).where(*where).group_by(history.c.channel))).all()
+    lava=await lava_metrics(db,since=since,now=now)
     ai=(await db.execute(select(func.count(),func.coalesce(func.sum(Usage.cost_usd),0),
         func.coalesce(func.sum(Usage.total_tokens),0)).where(*_window(Usage.created_at,since,now)))).one()
     # Validate model names as product identifiers, never echo arbitrary stored text.
@@ -109,6 +133,9 @@ async def money_metrics(db, *, since, now):
         'arppu_usd':round(revenue/payers,4) if payers else None,'average_payment_usd':round(revenue/count,4) if count else None,
         'currencies':[{'currency':key,'amount':int(amount),'payments':n} for key,amount,n in currencies if key!='unknown'],
         'unknown_currency_payments':sum(n for key,amount,n in currencies if key=='unknown'),
+        'channels':[{'channel':key,'payments':n,'usd':round(float(usd or 0),4),'renewal_payments':repeat}
+            for key,n,usd,repeat in sorted(channels,key=lambda row:row[0])],
+        'lava':lava,
         'usd_basis':{'tjs_per_usd':TJS_RATE,'cny_per_usd':CNY_RATE,'fallback':'stored base_amount TJS',
             'estimate':True,'ai':'stored cost_usd at event write; not provider invoice'},
         'grains':{'payer':'canonical account or separate retained orphan history','renewal':'approved subscription payment after first historical payment; not cohort churn'}}

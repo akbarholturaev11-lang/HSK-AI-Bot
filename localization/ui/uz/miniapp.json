@@ -1260,7 +1260,22 @@
     "ui.admin_pwa.lavaErr_lava_no_enabled_term": "Kamida bitta muddatni yoqing",
     "ui.admin_pwa.lavaErr_lava_offer_invalid": "Offer topilmadi yoki muddat/valyuta narxi yo'q",
     "ui.admin_pwa.lavaErr_lava_provider_unavailable": "lava.top hozir javob bermayapti",
-    "ui.admin_pwa.lavaErr_enabled_term_requires_offer": "Yoqilgan muddat uchun offer tanlang"
+    "ui.admin_pwa.lavaErr_enabled_term_requires_offer": "Yoqilgan muddat uchun offer tanlang",
+    "ui.admin_pwa.6_months": "Pro · 180 kun",
+    "ui.admin_pwa.12_months": "Pro · 365 kun",
+    "ui.admin_pwa.refunded": "Qaytarilgan",
+    "ui.admin_pwa.chargeback": "Chargeback",
+    "ui.admin_pwa.analyticsChannels": "To'lov yo'llari",
+    "ui.admin_pwa.analyticsChannel": "Yo'l",
+    "ui.admin_pwa.analyticsChannelmanual": "Oddiy (chek)",
+    "ui.admin_pwa.analyticsChannellava": "lava.top (avto)",
+    "ui.admin_pwa.analyticsLava": "lava.top avto-obuna",
+    "ui.admin_pwa.analyticsLavaActive": "Faol avto-obunalar",
+    "ui.admin_pwa.analyticsLavaRenewals": "Avto-yangilanishlar",
+    "ui.admin_pwa.analyticsLavaCancelled": "Bekor qilinganlar",
+    "ui.admin_pwa.analyticsLavaRefunded": "Refundlar",
+    "ui.admin_pwa.analyticsLavaChargebacks": "Chargebacklar",
+    "ui.admin_pwa.analyticsLavaNote": "Davr bo'yicha; faol obunalar — joriy holat."
   },
   "maps": {
     "ui.course_v3.copy.copy1": {
