@@ -248,6 +248,12 @@ class LavaCheckoutService:
                 success_url=return_url, failure_url=return_url, cancel_url=return_url,
             )
         except LavaError as exc:
+            # Keep the upstream failure diagnosable without logging email,
+            # API keys, provider response bodies, or buyer/invoice identifiers.
+            logger.warning(
+                "lava invoice create failed: code=%s upstream_status=%s uncertain=%s",
+                exc.code, exc.http_status, exc.uncertain,
+            )
             async with session_factory() as session, session.begin():
                 row = await session.get(LavaInvoice, reserved_id, with_for_update=True)
                 row.status = "failed"
