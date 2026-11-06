@@ -353,6 +353,37 @@ class LavaPaymentTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(all(p.user_id is None for p in payments))
         self.assertTrue(all(row.user_id is None and row.buyer_email is None for row in invoices))
 
+    async def test_provider_confirmed_failed_payment_is_not_an_admin_incident(self):
+        started = await self._start()
+        contract = await self._contract(started["checkout_id"])
+        self.fake.invoices[contract]["status"] = "FAILED"
+        # Even if the webhook calls it success, only the provider GET is trusted.
+        response = await self._ingest(payment_webhook("payment.success", contract))
+        self.assertEqual(response, (200, {"ok": True, "result": "ignored"}))
+        async with self.sessions() as session:
+            row = await session.get(LavaInvoice, started["checkout_id"])
+            event = (await session.execute(select(LavaWebhookEvent))).scalar_one()
+        self.assertEqual((row.status, row.review_reason), ("failed", None))
+        self.assertEqual((event.result, event.error_code), ("ignored", "provider_failed"))
+        self.assertEqual(len(await self._payments()), 0)
+        self.assertEqual((await self._user()).status, "free")
+
+    async def test_webhook_bad_key_rejected_without_pii_or_event(self):
+        from app.db.models.bot_setting import BotSetting
+        response = await self._ingest(
+            payment_webhook("payment.failed", "11111111-2222-3333-4444-555555555555",
+                            email="private@example.com"), key="incorrect-webhook-secret"
+        )
+        self.assertEqual(response, (401, {"ok": False}))
+        async with self.sessions() as session:
+            reason = await session.scalar(select(BotSetting.value).where(
+                BotSetting.key == "lava_last_webhook_auth_failure_reason"))
+            event_count = await session.scalar(select(func.count()).select_from(LavaWebhookEvent))
+        self.assertEqual(reason, "key_mismatch")
+        self.assertEqual(event_count, 0)
+        self.assertNotIn("private@example.com", str(reason))
+        self.assertNotIn("incorrect-webhook-secret", str(reason))
+
     async def test_provider_outage_on_create_marks_reservation_failed(self):
         self.fake.unavailable = True
         with self.assertRaises(LavaCheckoutError) as ctx:
