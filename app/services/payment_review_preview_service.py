@@ -11,7 +11,7 @@ from app.db.models.user import User
 from app.repositories.payment_repo import PaymentRepository
 from app.services.account_identity import account_user_id
 from app.services.ai_usage_budget_service import AIUsageBudgetService, PAYMENT_PREVIEW_PLAN_TYPE
-from app.services.subscription_service import PLAN_DURATIONS
+from app.services.subscription_service import SUBSCRIPTION_PLAN_DURATIONS as PLAN_DURATIONS
 
 
 class PaymentReviewPreviewService:

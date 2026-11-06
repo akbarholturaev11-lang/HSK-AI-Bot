@@ -48,6 +48,18 @@ class Settings(BaseSettings):
     ADMIN_IDS: str = "7965751363"
     FEEDBACK_NOTIFY_CHAT_IDS: str = "-1004311413349"
     PAYMENT_DETAILS: str = ""
+    # lava.top automated Pro subscriptions (second checkout path).
+    # LAVA_ENABLED gates only NEW sales; webhooks/reconciliation for already
+    # created contracts keep working while a webhook secret is configured.
+    LAVA_ENABLED: bool = False
+    LAVA_API_KEY: str = ""
+    LAVA_WEBHOOK_SECRET: str = ""
+    LAVA_API_BASE: str = "https://gate.lava.top"
+    # Emergency stop: webhooks are stored durably as queued but not applied.
+    LAVA_PROCESSING_PAUSED: bool = False
+    # Optional comma-separated defense-in-depth allowlist (lava: 158.160.60.174).
+    LAVA_WEBHOOK_ALLOWED_IPS: str = ""
+    LAVA_RECONCILE_ENABLED: bool = True
     BOT_USERNAME: str = ""
     # Canonical HTTPS origin; blank derives origin from MINI_APP_BASE_URL.
     PUBLIC_SITE_URL: str = ""

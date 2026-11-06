@@ -20,7 +20,6 @@ from app.admin_api.pwa_mcp_resource import (
 from app.db.models.admin_pwa_mcp import AdminPwaMcpAccessGrant
 from app.db.models.user import User
 
-NOW = datetime.now(timezone.utc)
 TOKEN = "M" * 64
 RESOURCE = "https://hskai.app/mcp"
 SCOPE = "admin:analytics:read"
@@ -29,6 +28,8 @@ GRANT_ID = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
 
 class McpResourceTests(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
+        # Refresh the reference time per test: the full CI suite can run >3 min.
+        self.now = datetime.now(timezone.utc)
         self.engine = create_async_engine("sqlite+aiosqlite:///:memory:")
         async with self.engine.begin() as conn:
             await conn.run_sync(User.__table__.create)
@@ -46,19 +47,19 @@ class McpResourceTests(unittest.IsolatedAsyncioTestCase):
                 token_hash=hashlib.sha256(TOKEN.encode("ascii")).hexdigest(),
                 audience=RESOURCE, client_id="registered-chatgpt-test-client",
                 consent_event_id=str(uuid4()),
-                scope=SCOPE, created_at=NOW - timedelta(seconds=5),
-                expires_at=NOW + timedelta(minutes=3),
+                scope=SCOPE, created_at=self.now - timedelta(seconds=5),
+                expires_at=self.now + timedelta(minutes=3),
             ))
             await db.commit()
 
     async def asyncTearDown(self):
         await self.engine.dispose()
 
-    async def verify(self, token=TOKEN, *, time=NOW):
+    async def verify(self, token=TOKEN, *, time=None):
         async with self.sessions() as db:
             return await verify_readonly_mcp_bearer(
                 db, authorization="Bearer " + token,
-                settings_obj=self.settings, now=time,
+                settings_obj=self.settings, now=self.now if time is None else time,
             )
 
     async def change(self, cls, **attributes):
@@ -90,7 +91,7 @@ class McpResourceTests(unittest.IsolatedAsyncioTestCase):
             ):
                 with self.subTest(header=header[:20]):
                     self.assertIsNone(await verify_readonly_mcp_bearer(
-                        db, authorization=header, settings_obj=self.settings, now=NOW,
+                        db, authorization=header, settings_obj=self.settings, now=self.now,
                     ))
 
     async def test_scope_audience_and_client_mismatch_fail_closed(self):
@@ -112,13 +113,13 @@ class McpResourceTests(unittest.IsolatedAsyncioTestCase):
                 await self.change(cls, **original)
 
     async def test_revocation_expiration_and_suspicious_ttl(self):
-        await self.change(AdminPwaMcpAccessGrant, revoked_at=NOW)
+        await self.change(AdminPwaMcpAccessGrant, revoked_at=self.now)
         self.assertIsNone(await self.verify())
         await self.change(AdminPwaMcpAccessGrant, revoked_at=None)
-        self.assertIsNone(await self.verify(time=NOW + timedelta(minutes=3)))
-        await self.change(AdminPwaMcpAccessGrant, expires_at=NOW + timedelta(minutes=7))
+        self.assertIsNone(await self.verify(time=self.now + timedelta(minutes=3)))
+        await self.change(AdminPwaMcpAccessGrant, expires_at=self.now + timedelta(minutes=7))
         self.assertIsNone(await self.verify())
-        await self.change(AdminPwaMcpAccessGrant, expires_at=NOW + timedelta(minutes=2))
+        await self.change(AdminPwaMcpAccessGrant, expires_at=self.now + timedelta(minutes=2))
         self.assertIsNotNone(await self.verify())
 
     async def test_current_admin_block_and_disabled_killswitch(self):

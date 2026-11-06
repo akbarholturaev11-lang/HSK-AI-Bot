@@ -57,7 +57,7 @@ let statisticsDownload=null;
 let userFilterOpen=false;
 const USER_SEGMENTS=[['all','userFilterAll'],['active_today','userFilterActiveToday'],['paid','userFilterPaid'],['pending','userFilterPending'],['wants_pay','userFilterWantsPay'],['trial','userFilterTrial'],['free','userFilterFree'],['expired','userFilterExpired'],['blocked','userFilterBlocked'],['bot_blocked','userFilterBotBlocked'],['expiring_pro','analyticsExpiringPro']];
 let managementDraft=null,managementReview=null,managementPreparing=false,preparingEditor=null;
-let coursePolicyRevision=null,hsk30Baseline=null;
+let coursePolicyRevision=null,hsk30Baseline=null,lavaBaseline=null;
 let courseData=null,courseLimitDraft=null,courseTrialDraft=null,courseLimitPlan='FREE';
 let courseLimitTouched={FREE:false,TRIAL_ACTIVE:false};
 let courseAnalytics=null,courseAnalyticsDays=30,courseAnalyticsLoading=false,courseAnalyticsToken=0;
@@ -359,6 +359,10 @@ function categorizedStatsView(){
   }else if(tab==='money'){
     body=analyticCards([['analyticsRevenue',usd(m.revenue_usd),'wallet'],['estimatedCost',usd(m.ai_usd,true),'spark'],['analyticsManualProfit',usd(m.manual_profit_usd),'wallet'],['analyticsExpense',usd(m.expense_usd),'wallet'],['analyticsNet',usd(m.net_usd),'chart'],['analyticsArpu',usd(m.arpu_usd),'users'],['analyticsArppu',usd(m.arppu_usd),'users'],['analyticsAverageCheck',usd(m.average_payment_usd),'wallet']]);
     body+=`<div class="double">${analyticPanel('approvedAmounts',analyticTable(['currency','amount','payments'],m.currencies.map(r=>[r.currency,number(r.amount),number(r.payments)])),'analyticsCurrencyBasis')}${analyticPanel('analyticsRenewals',analyticRows([['payments',number(m.payments)],['analyticsFirstPayments',number(m.first_payments)],['analyticsRepeatPayments',number(m.renewal_payments)],['analyticsRenewalShare',percent(m.renewal_percent)],['analyticsUnpriced',number(m.unpriced_payments)],['analyticsArpuDenominator',number(m.active_denominator)],['analyticsFirstPaymentTime',seconds(m.first_payment_seconds)],['analyticsTaggedCac',usd(m.tagged_cac_usd)]]),'analyticsRenewalNote')}</div>`;
+    if(Array.isArray(m.channels)&&m.lava){
+      const lava=m.lava;
+      body+=`<div class="double">${analyticPanel('analyticsChannels',analyticTable(['analyticsChannel','payments','analyticsRepeatPayments','analyticsRevenue'],m.channels.map(r=>[t('analyticsChannel'+r.channel),number(r.payments),number(r.renewal_payments),usd(r.usd)])),'analyticsCurrencyBasis')}${analyticPanel('analyticsLava',analyticRows([['analyticsLavaActive',number(lava.active_subscriptions)],['analyticsLavaRenewals',number(lava.renewals)],['analyticsLavaCancelled',number(lava.cancelled)],['analyticsLavaRefunded',number(lava.refunded)],['analyticsLavaChargebacks',number(lava.chargebacks)]]),'analyticsLavaNote')}</div>`;
+    }
     body+=analyticPanel('aiSpend',m.ai_models?analyticTable(['aiModel','analyticsBillingTier','recordedRequests','tokens','estimatedCost'],m.ai_models.map(r=>[r.model==='unknown'?t('analyticsUnknown'):r.model,t('analyticsTier'+r.tier),number(r.requests),number(r.tokens),usd(r.usd,true)])):statePanel('unavailable'),'aiCostNote');
   }else if(tab==='sources'){
     const sourceName=key=>t('analyticsSource'+key)!=='—'?t('analyticsSource'+key):t('analyticsOtherSource');
@@ -841,7 +845,9 @@ function financeView(){
     body='<section class="finance-group"><h2>'+esc(t('paymentDetails'))+'</h2><div class="finance-card-grid">'+
       tile('paymentDetails','data-setting-kind="payment_details" data-bank="dc_city"','credit').replace('<strong>'+esc(t('paymentDetails'))+'</strong>','<strong>DC City</strong>')+
       tile('paymentDetails','data-setting-kind="payment_details" data-bank="alif"','credit').replace('<strong>'+esc(t('paymentDetails'))+'</strong>','<strong>Alif</strong>')+
-      '</div></section><section class="finance-group"><h2>'+esc(t('paymentQrTitle'))+'</h2><div class="finance-card-grid">'+qr+'</div></section>';
+      '</div></section><section class="finance-group"><h2>'+esc(t('paymentQrTitle'))+'</h2><div class="finance-card-grid">'+qr+'</div></section>'+
+      '<section class="finance-group"><h2>'+esc(t('lavaTop'))+'</h2><div class="finance-card-grid">'+
+      tile('lavaSettings','data-action="lavaSettings"','sliders')+tile('lavaPayments','data-action="lavaPayments"','wallet')+'</div></section>';
   }else{
     // No extra "Ledger" tile inside the already-selected Ledger tab.
     const entries=(financePortfolio?.items||[]).map(row=>
@@ -1009,13 +1015,13 @@ function drawer(title,body,foot='',className='') {
   // Editors have a single top-right dismissal control; a second bottom
   // Close/Cancel button adds no action and crowds the iPhone safe area.
   const footer=$('drawerFoot');
-  if(footer.querySelector('[data-action="managementPrepare"],[data-action="coursePrepare"],[data-action="hsk30Prepare"]'))
+  if(footer.querySelector('[data-action="managementPrepare"],[data-action="coursePrepare"],[data-action="hsk30Prepare"],[data-action="lavaPrepare"]'))
     footer.querySelectorAll('[data-action="close"]').forEach(button=>button.remove());
   updateManagementAction();
   // Capture hydrated values after editors synchronously populate dependent
   // inputs (price amount, media type, notification language, help video).
   const panel=$('overlay');
-  for(const button of panel.querySelectorAll('[data-action="managementPrepare"],[data-action="coursePrepare"],[data-action="hsk30Prepare"]'))button.disabled=true;
+  for(const button of panel.querySelectorAll('[data-action="managementPrepare"],[data-action="coursePrepare"],[data-action="hsk30Prepare"],[data-action="lavaPrepare"]'))button.disabled=true;
   queueMicrotask(()=>{
     if(panel!==$('overlay'))return;
     editorBaseline={panel,value:editorValue()};
@@ -1088,7 +1094,7 @@ function editorActionOnly(){
     d.type==='user'&&d.userOperation!=='delete');
 }
 function updateEditorSaveEnabled(){
-  const b=document.querySelector('#drawerFoot [data-action="managementPrepare"],#drawerFoot [data-action="coursePrepare"],#drawerFoot [data-action="hsk30Prepare"]');
+  const b=document.querySelector('#drawerFoot [data-action="managementPrepare"],#drawerFoot [data-action="coursePrepare"],#drawerFoot [data-action="hsk30Prepare"],#drawerFoot [data-action="lavaPrepare"]');
   if(!b||!editorBaseline||editorBaseline.panel!==$('overlay'))return;
   const dirty=editorActionOnly()||editorValue()!==editorBaseline.value;
   const requiresProof=managementDraft?.type==='payout'&&$('payoutOperation')?.value==='complete'&&!managementDraft.proofLoaded;
@@ -2429,6 +2435,201 @@ async function executeHsk30Settings(){
   }finally{if(signing===control)signing=null;}
 }
 
+const LAVA_TERMS=[['1_month','lavaTerm1','MONTHLY'],['3_months','lavaTerm3','PERIOD_90_DAYS'],['6_months','lavaTerm6','PERIOD_180_DAYS'],['12_months','lavaTerm12','PERIOD_YEAR']];
+function lavaErrorKey(error){
+  const key='lavaErr_'+(error?.message||'');
+  return window.HSKAI_ADMIN_I18N?.[locale]?.[key]?key:errorKey(error);
+}
+function lavaCheckLabel(code){
+  if(String(code).startsWith('offer_')){const term=LAVA_TERMS.find(([plan])=>'offer_'+plan===code);return t('lavaCheck_offer')+(term?' · '+t(term[1]):'');}
+  const key='lavaCheck_'+code;return window.HSKAI_ADMIN_I18N?.[locale]?.[key]?t(key):code;
+}
+function lavaStatusLabel(status){const key='lavaStatus_'+status;return window.HSKAI_ADMIN_I18N?.[locale]?.[key]?t(key):status;}
+function lavaOfferOptions(catalog,plan,periodicity,currency,selected){
+  const rows=(catalog?.offers||[]).map(offer=>{
+    const price=(offer.prices||[]).find(p=>p.currency===currency&&p.periodicity===periodicity);
+    const label=(offer.offer_name||offer.offer_id.slice(0,8))+' · '+(offer.product_title||'')+(price?' — '+price.amount+' '+price.currency:'');
+    return '<option value="'+esc(offer.offer_id)+'" '+(offer.offer_id===selected?'selected':'')+'>'+esc(label)+'</option>';
+  });
+  if(selected&&!(catalog?.offers||[]).some(offer=>offer.offer_id===selected))
+    rows.unshift('<option value="'+esc(selected)+'" selected>'+esc(selected)+'</option>');
+  return '<option value="" '+(selected?'':'selected')+'>'+esc(t('lavaOfferNone'))+'</option>'+rows.join('');
+}
+async function lavaSettings(){
+  closeDrawer();const current=drawerId,at=epoch;
+  drawer('lavaSettings',statePanel('loading'));
+  try{
+    const [data,catalog]=await Promise.all([api('lava/read',{}),api('lava/catalog',{},{timeoutMs:25000}).catch(()=>null)]);
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    const lava=data.lava,config=lava.config,preflight=catalog?.preflight||null;
+    lavaBaseline=structuredClone(config);
+    const checks=(preflight?.checks||[]).map(check=>'<li class="'+(check.ok?'ok':'bad')+'">'+(check.ok?'✓ ':'✕ ')+esc(lavaCheckLabel(check.code))+'</li>').join('');
+    const status='<section class="lava-status"><h3>'+esc(t('lavaConnection'))+'</h3><ul class="lava-checks">'+(checks||'<li class="bad">✕ '+esc(t('lavaErr_lava_provider_unavailable'))+'</li>')+'</ul>'
+      +'<p class="source-note">'+esc(t('lavaLastWebhook'))+': '+esc(lava.status.last_webhook_at?date(lava.status.last_webhook_at):t('lavaNever'))+'</p></section>';
+    const option=(value,label,selected)=>'<option value="'+value+'" '+(selected?'selected':'')+'>'+esc(t(label))+'</option>';
+    const mode='<div class="form-field"><label for="lavaMode">'+esc(t('lavaMode'))+'</label><select id="lavaMode" class="input">'
+      +option('manual_only','lavaModeManual',config.checkout_mode==='manual_only')+option('both','lavaModeBoth',config.checkout_mode==='both')
+      +option('lava_only','lavaModeLava',config.checkout_mode==='lava_only')+'</select></div>';
+    const currency='<div class="form-field"><label for="lavaCurrency">'+esc(t('lavaCurrency'))+'</label><select id="lavaCurrency" class="input">'
+      +['USD','RUB'].map(code=>'<option value="'+code+'" '+(config.currency===code?'selected':'')+'>'+code+'</option>').join('')+'</select></div>';
+    const terms=LAVA_TERMS.map(([plan,label,periodicity])=>{
+      const term=config.plans?.[plan]||{enabled:false,offer_id:''};
+      const offer=preflight
+        ?'<select class="input" id="lavaOffer_'+plan+'" aria-label="'+esc(t('lavaOffer'))+'">'+lavaOfferOptions(preflight,plan,periodicity,config.currency,term.offer_id||'')+'</select>'
+        :'<input class="input" id="lavaOffer_'+plan+'" maxlength="36" autocomplete="off" spellcheck="false" aria-label="'+esc(t('lavaOffer'))+'" value="'+esc(term.offer_id||'')+'">';
+      return '<div class="lava-term"><label class="lava-term-toggle"><input type="checkbox" id="lavaOn_'+plan+'" '+(term.enabled?'checked':'')+'> '+esc(t(label))+'</label>'+offer+'</div>';
+    }).join('');
+    const promos=config.promo_codes||{};
+    const promoInput=(id,value)=>'<input class="input" id="'+id+'" maxlength="36" autocomplete="off" spellcheck="false" autocapitalize="characters" placeholder="'+esc(t('lavaPromoCode'))+'" value="'+esc(value||'')+'">';
+    const adminPromos=Object.entries(promos).filter(([key])=>key.startsWith('admin_campaign:'));
+    const adminRows=[0,1,2].map(index=>{
+      const [key,code]=adminPromos[index]||['',''];
+      return '<div class="lava-term"><input class="input" id="lavaPromoPct_'+index+'" type="number" min="1" max="90" step="1" inputmode="numeric" placeholder="'+esc(t('lavaPromoPercent'))+'" value="'+esc(key?key.split(':')[1]:'')+'">'+promoInput('lavaPromoAdmin_'+index,code)+'</div>';
+    }).join('');
+    const promo='<fieldset class="form-field"><legend>'+esc(t('lavaPromo'))+'</legend><p class="source-note">'+esc(t('lavaPromoHint'))+'</p>'
+      +'<div class="lava-term"><span class="lava-term-toggle">'+esc(t('lavaPromoReferral'))+'</span>'+promoInput('lavaPromoReferral',promos['referral:20'])+'</div>'
+      +'<div class="lava-term"><span class="lava-term-toggle">'+esc(t('lavaPromoFeedback'))+'</span>'+promoInput('lavaPromoFeedback',promos['feedback_price_offer:20'])+'</div>'
+      +'<p class="source-note">'+esc(t('lavaPromoAdmin'))+'</p>'+adminRows+'</fieldset>';
+    const body=status+mode+currency+'<fieldset class="form-field"><legend>'+esc(t('lavaTerms'))+'</legend>'+terms+'</fieldset>'+promo;
+    drawer('lavaSettings',body,btn('saveChanges','lavaPrepare','primary'));
+  }catch(error){
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    drawer('lavaSettings',statePanel(lavaErrorKey(error)),btn('close','close')+btn('retry','lavaSettings','primary'));
+  }
+}
+async function prepareLavaSettingsCommand(){
+  if(!state.actor||signing)return;
+  const plans={};
+  for(const [plan] of LAVA_TERMS)plans[plan]={enabled:$('lavaOn_'+plan)?.checked===true,offer_id:String($('lavaOffer_'+plan)?.value||'').trim().toLowerCase()};
+  const promo_codes={};
+  const code=id=>String($(id)?.value||'').trim();
+  if(code('lavaPromoReferral'))promo_codes['referral:20']=code('lavaPromoReferral');
+  if(code('lavaPromoFeedback'))promo_codes['feedback_price_offer:20']=code('lavaPromoFeedback');
+  for(const index of [0,1,2]){
+    const pct=Number($('lavaPromoPct_'+index)?.value),value=code('lavaPromoAdmin_'+index);
+    if(value&&Number.isInteger(pct)&&pct>=1&&pct<=90)promo_codes['admin_campaign:'+pct]=value;
+  }
+  const request={checkout_mode:$('lavaMode')?.value,currency:$('lavaCurrency')?.value,plans,promo_codes};
+  const current=drawerId,at=epoch;
+  try{
+    const response=await api('lava/prepare',request,{timeoutMs:25000});
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    confirmation=Object.freeze(structuredClone(response.operation));
+    if(confirmation.action!=='lava.settings'||confirmation.target!=='global')throw Error('invalid_lava');
+    if(JSON.stringify(response.current)!==JSON.stringify(lavaBaseline))throw new ApiError('confirmation_changed',409);
+    await executeLavaCommand('lava/save','lavaSettings',()=>showSavedAndDismiss('lavaSaved'));
+  }catch(error){
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    confirmation=null;
+    drawer('lavaSettings',statePanel(lavaErrorKey(error)),btn('close','close')+btn('retry','lavaSettings','primary'));
+  }
+}
+async function executeLavaCommand(endpoint,retryAction,onDone){
+  if(!String(confirmation?.action||'').startsWith('lava.')||!supportsPasskey()||signing)return;
+  const operation=structuredClone(confirmation),current=drawerId,at=epoch,control=new AbortController();
+  signing=control;let submitted=false;
+  $('drawerFoot')?.querySelectorAll('button').forEach(b=>b.disabled=true);
+  try{
+    const options=await api('auth/step-up/options',operation);
+    if(current!==drawerId||at!==epoch)return;
+    const credential=await navigator.credentials.get({publicKey:publicKey(options.publicKey),signal:control.signal});
+    if(current!==drawerId||at!==epoch)return;
+    await api('auth/step-up/verify',{step_up_id:options.step_up_id,credential:serialize(credential)});
+    if(current!==drawerId||at!==epoch)return;
+    submitted=true;
+    const result=await api(endpoint,{...operation.payload,step_up_id:options.step_up_id},{timeoutMs:30000});
+    if(current!==drawerId||at!==epoch)return;
+    confirmation=null;
+    await onDone(result);
+  }catch(error){
+    if(current!==drawerId||at!==epoch)return;
+    confirmation=null;
+    if(!submitted&&['NotAllowedError','AbortError'].includes(error.name)){showNotice('passkeyCancelled');return;}
+    const rejected=[400,403,404,409].includes(error.status);
+    drawer(retryAction,statePanel(submitted&&!rejected?'uncertain':lavaErrorKey(error)),
+      btn('close','close')+btn('retry',retryAction,'primary'));
+  }finally{if(signing===control)signing=null;}
+}
+function lavaInvoiceRow(row,actions){
+  const who=row.user_id?'#'+row.user_id:(row.email||'—');
+  const money=row.amount?row.amount+' '+row.currency:row.currency;
+  const plan=LAVA_TERMS.find(([plan])=>plan===row.plan_type);
+  return '<article class="lava-row"><div><strong>'+esc(lavaStatusLabel(row.status))+' · '+esc(money)+'</strong>'
+    +'<small>'+esc(who)+(plan?' · '+esc(t(plan[1])):'')+' · '+esc(date(row.paid_at||row.created_at))+'</small></div>'
+    +(actions?'<div class="lava-row-actions">'+actions+'</div>':'')+'</article>';
+}
+function lavaRowButton(label,kind,row,extra=''){
+  return '<button type="button" class="btn" data-lava-act="'+kind+'" data-lava-invoice="'+row.id+'" '+(row.user_id?'data-lava-user="'+row.user_id+'"':'')+' '+extra+'>'+esc(t(label))+'</button>';
+}
+async function lavaPayments(){
+  closeDrawer();const current=drawerId,at=epoch;
+  drawer('lavaPayments',statePanel('loading'));
+  try{
+    const data=await api('lava/read',{});
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    const lava=data.lava,c=lava.counts;
+    const metric=(label,value)=>'<div class="lava-metric"><span>'+esc(t(label))+'</span><strong>'+esc(String(value??0))+'</strong></div>';
+    const metrics='<div class="lava-metrics">'+metric('lavaActiveSubs',c.active_subscriptions)+metric('lavaPaid30',c.paid_30d)+metric('lavaQueued',c.queued_events)+metric('lavaReviewEvents',c.review_events)+'</div>';
+    const attention=(lava.attention||[]).map(row=>{
+      let actions='';
+      if(row.status==='unmatched')actions=lavaRowButton('lavaLink','link',row);
+      else if(row.status==='chargeback_open')actions=lavaRowButton('lavaChargebackWon','chargeback',row,'data-lava-outcome="won"')+lavaRowButton('lavaChargebackLost','chargeback',row,'data-lava-outcome="lost"');
+      else actions=lavaRowButton('lavaRecheck','recheck',row);
+      return lavaInvoiceRow(row,actions);
+    }).join('');
+    const recent=(lava.recent||[]).map(row=>lavaInvoiceRow(row,
+      row.status==='paid'&&row.kind!=='renewal'&&row.user_id&&(!row.subscription_status||row.subscription_status==='active')
+        ?lavaRowButton('lavaCancelRenewal','cancel',row):'')).join('');
+    const body=metrics
+      +(attention?'<section class="lava-list"><h3>'+esc(t('lavaAttention'))+'</h3>'+attention+'</section>':'')
+      +'<section class="lava-list"><h3>'+esc(t('lavaRecent'))+'</h3>'+(recent||statePanel('empty'))+'</section>';
+    drawer('lavaPayments',body,btn('close','close'));
+  }catch(error){
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    drawer('lavaPayments',statePanel(lavaErrorKey(error)),btn('close','close')+btn('retry','lavaPayments','primary'));
+  }
+}
+let lavaLinkInvoice=null;
+async function lavaRowAction(kind,invoiceId,userId,outcome){
+  if(!['recheck','link','cancel','chargeback'].includes(kind))return;
+  if(kind==='link'){
+    closeDrawer();lavaLinkInvoice=invoiceId;
+    const plans=LAVA_TERMS.map(([plan,label])=>'<option value="'+plan+'">'+esc(t(label))+'</option>').join('');
+    drawer('lavaLink','<div class="form-field"><label for="lavaLinkUser">'+esc(t('lavaUserId'))+'</label><input class="input" id="lavaLinkUser" type="number" min="1" step="1" inputmode="numeric" required></div>'
+      +'<div class="form-field"><label for="lavaLinkPlan">'+esc(t('lavaTerms'))+'</label><select class="input" id="lavaLinkPlan">'+plans+'</select></div>',
+      btn('lavaLink','lavaLinkPrepare','primary'));
+    return;
+  }
+  const payload={kind};
+  if(kind==='cancel')payload.user_id=userId;else payload.invoice_id=invoiceId;
+  if(kind==='chargeback')payload.outcome=outcome;
+  await singleEditorAction(()=>runLavaAction(payload));
+}
+async function prepareLavaLink(){
+  const user=Number($('lavaLinkUser')?.value);
+  if(!$('lavaLinkUser')?.reportValidity()||!Number.isInteger(user)||user<1||!lavaLinkInvoice)return;
+  await runLavaAction({kind:'link',invoice_id:lavaLinkInvoice,user_id:user,plan_type:$('lavaLinkPlan')?.value});
+}
+async function runLavaAction(payload){
+  if(!state.actor||signing)return;
+  const current=drawerId,at=epoch;
+  try{
+    const prepared=await api('lava/prepare-action',payload);
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    confirmation=Object.freeze(structuredClone(prepared.operation));
+    if(confirmation.action!=='lava.'+payload.kind)throw Error('invalid_lava');
+    await executeLavaCommand('lava/action','lavaPayments',async result=>{
+      const uncertain=['retry','failed','cancel_uncertain','needs_review'].includes(result.outcome);
+      await lavaPayments();
+      showNotice(uncertain?'lavaUncertain':'lavaDone');
+    });
+  }catch(error){
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    confirmation=null;
+    drawer('lavaPayments',statePanel(lavaErrorKey(error)),btn('close','close')+btn('retry','lavaPayments','primary'));
+  }
+}
+
 function summary(operation) {
   const p=operation.payload,s=p.expected;
   const fields=[['payment','#'+p.payment_id],['account',s.user_id],['plan',t(s.plan_type)],['amount',s.amount+' '+s.currency],['method',s.payment_method],['source',s.source],['submitted',date(s.submitted_at)]];
@@ -3119,6 +3320,10 @@ async function action(name) {
   if(name==='campaignMediaClear'){clearCampaignMedia();return;}
   if(name==='managementPrepare'){await prepareManagement();return;}
   if(name==='hsk30Settings'){await hsk30Settings();return;}
+  if(name==='lavaSettings'){await lavaSettings();return;}
+  if(name==='lavaPrepare'){await singleEditorAction(prepareLavaSettingsCommand);return;}
+  if(name==='lavaPayments'){await lavaPayments();return;}
+  if(name==='lavaLinkPrepare'){await singleEditorAction(prepareLavaLink);return;}
   if(name==='hsk30Prepare'){await prepareHsk30Settings();return;}
   if(name==='coursePrepare'){await prepareCoursePolicy();return;}
   if(name==='pushEnable'){await enablePush();return;}
@@ -3292,6 +3497,7 @@ document.addEventListener('click',event=>{
       const match=/^(visa|alipay|wechat)-(10_days|1_month|3_months)$/.exec(button.dataset.priceTarget);
       if(match)await priceSettings(match[1],match[2]);
     }
+    else if(button.dataset.lavaAct){await lavaRowAction(button.dataset.lavaAct,Number(button.dataset.lavaInvoice)||null,Number(button.dataset.lavaUser)||null,button.dataset.lavaOutcome||null);}
     else if(button.dataset.financePortfolioNext){await loadFinancePortfolio(Number(button.dataset.financePortfolioNext));}
     else if(button.dataset.paymentQrTarget){
       const match=/^(alipay|wechat)-(10_days|1_month|3_months)$/.exec(button.dataset.paymentQrTarget);

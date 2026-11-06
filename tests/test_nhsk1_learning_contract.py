@@ -108,7 +108,10 @@ class Nhsk1LearningContractTests(unittest.TestCase):
         self.assertIn("function skipN1PilotRechecks(index)", html)
         self.assertIn("Flow.pilotFailures[card.learning_objective]=!ok", html)
         self.assertIn('var N1_LESSON_CONTENT_REV="n1-learning-check-20261012-v2"', html)
-        self.assertIn('normalizeLevel(lv)==="nhsk1"?{cache:"no-store"}:{}', html)
+        # b887fe08 made every signed lesson-content read no-store (a superset
+        # of the earlier N1-only rule) and keeps the N1 content revision.
+        self.assertIn('fetch(lessonDataUrl(lv,n),{headers:{"X-Telegram-Init-Data":INIT_DATA},cache:"no-store"})', html)
+        self.assertIn('return level==="nhsk1"?url+"?content_rev="+N1_LESSON_CONTENT_REV:url;', html)
 
     def test_n1_exit_check_is_append_only_and_android_compatible(self):
         from scripts.hsk30.apply_learning_overlays import apply_nhsk1_pilot_exit_check

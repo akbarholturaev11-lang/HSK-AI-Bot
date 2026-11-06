@@ -43,6 +43,8 @@ cookie/CSRF contracts; this UI change adds no new management permission.
 | `notifications.update` | `/notifications/read`, `/prepare`, `/save` | Five fixed reminder templates, enabled state and canonical UZ/RU/TJ text/defaults |
 | `portfolio.add` | `/portfolio/read`, `/prepare`, `/save` | Manual profit/expense through shared PortfolioService; no payment synchronization or entitlement mutation |
 | `channels.update` | `/channels/read`, `/prepare`, `/save` | Required-channel mode, add/upsert, state and removal through shared channel service |
+| `lava.settings` | `/lava/read`, `/lava/catalog`, `/lava/prepare`, `/lava/save` | lava.top checkout mode (`manual_only`/`lava_only`/`both`), currency, 1/3/6/12-month terms; live-catalog price snapshot signed; unsafe modes refused, `manual_only` always saveable; secrets never readable |
+| `lava.recheck` / `lava.link` / `lava.cancel` / `lava.chargeback` | `/lava/prepare-action`, `/lava/action` | Re-verify one contract via the lava API; attach an unmatched contract to an explicit account; turn off a learner's auto-renewal (paid term kept); close an open chargeback as won (days restored) or lost. Proof + audit commit first, then the shared idempotent lava ledger runs; uncertain provider answers are reported, never retried |
 
 Subscription price read returns a fixed nine-row projection, never a paginated
 scan. Prepare accepts only `method=visa|alipay|wechat`,

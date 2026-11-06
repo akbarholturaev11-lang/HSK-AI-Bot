@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<script src="/assets/telegram-web-app.js?v=20261019-1"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261021-395d978eaee1"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-5cef6ec9e0de"></script>
+<script src="/assets/telegram-web-app.js?v=20261019-1"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261021-395d978eaee1"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-3e896a185201"></script>
 <link rel="stylesheet" href="/course_v3_data/design-tokens.css?v=20261005">
 <title>HSK AI Pro</title>
 <style>
@@ -89,8 +89,8 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 .renewal-summary{display:grid;gap:5px;margin-top:12px;border:1px solid var(--accent-line);border-radius:var(--radius-sm);background:var(--accent-soft);padding:12px 13px}
 .renewal-summary strong{font-size:13px;line-height:1.35;font-weight:850;color:var(--text)}
 .renewal-summary span{font-size:12px;line-height:1.4;color:var(--muted)}
-.plan-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.plan-name{font-size:13px;color:var(--muted);font-weight:850}
+.plan-top{display:flex;align-items:center;justify-content:space-between;gap:6px 8px;flex-wrap:wrap}
+.plan-name{font-size:13px;color:var(--muted);font-weight:850;white-space:nowrap}
 .badge{display:inline-flex;align-items:center;justify-content:center;min-height:21px;border-radius:999px;padding:2px 8px;background:var(--gold-soft);color:var(--gold-ink);font-size:10px;line-height:1.12;font-weight:900;border:1px solid var(--gold-line)}
 .price{display:inline-block;font-size:30px;line-height:1;font-weight:950;letter-spacing:-.02em;margin-top:12px;color:var(--text)}
 .price.long{font-size:23px}
@@ -98,6 +98,24 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 .old-price{display:none;margin-top:9px;color:var(--muted);font-size:12px;text-decoration:line-through}
 .discounted .old-price{display:block}
 .list{display:grid;gap:9px}
+body.hsk-scene-page::before{content:none!important}
+.lava-question{min-height:calc(100dvh - 190px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;justify-content:center;text-align:center;gap:22px}
+.lava-question h2{font-size:24px;line-height:1.18;font-weight:900;letter-spacing:-.01em}
+.lava-answers{display:grid;gap:10px}
+.lava-answer{height:56px;border-radius:var(--radius);font-size:15px;font-weight:850}
+.lava-answer.yes{background:var(--accent);color:var(--accent-content);box-shadow:0 2px 8px rgba(33,29,23,.10)}
+.lava-answer.no{background:var(--bg);color:var(--text);border:1px solid var(--line2)}
+.lava-manage{display:grid;gap:4px;margin:0 0 14px;border:1px solid var(--accent-line);border-radius:var(--radius-sm);background:var(--accent-soft);padding:12px 13px}
+.lava-manage[hidden]{display:none}
+.lava-manage strong{font-size:13px;line-height:1.35;font-weight:850;color:var(--text)}
+.lava-manage span{font-size:12px;line-height:1.4;color:var(--muted)}
+.lava-manage button{justify-self:start;min-height:44px;margin-top:4px;padding:0;color:var(--accent-ink);font-size:13px;font-weight:800;text-decoration:underline;text-underline-offset:3px}
+.lava-manage button[hidden]{display:none}
+.lava-term{position:relative;margin-top:8px;color:var(--muted);font-size:12px;line-height:1.3;font-weight:800}
+.lava-field{display:grid;gap:7px;margin-top:14px;font-size:12px;font-weight:850;color:var(--muted)}
+.lava-field input{height:52px;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);padding:0 14px;font-size:16px;font-weight:700;outline:none}
+.lava-field input:focus{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.lava-hint{margin-top:8px;color:var(--muted);font-size:12px;line-height:1.45}
 .choice{min-height:66px;display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg);padding:0 14px;text-align:left;transition:.18s}
 #countries.list,#methods.list{gap:0;overflow:hidden;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg)}
 #countries.list>.choice,#methods.list>.choice{width:100%;border:0;border-radius:0;background:transparent;box-shadow:none}
@@ -241,6 +259,50 @@ html.hsk-pwa-browser .app{padding-bottom:calc(104px + env(safe-area-inset-bottom
 
   <div class="status" id="status"></div>
   <div class="steps" id="steps"><i></i><i></i><i></i><i></i></div>
+  <div class="lava-manage" id="lavaManage" hidden>
+    <strong id="lavaManageTitle"></strong>
+    <span id="lavaManageText"></span>
+    <button type="button" id="lavaCancelBtn" hidden></button>
+  </div>
+
+  <section class="screen" data-screen="card">
+    <div class="lava-question">
+      <h2 id="lavaCardTitle"></h2>
+      <div class="lava-answers" id="lavaCardChoices"></div>
+    </div>
+  </section>
+
+  <section class="screen" data-screen="lavaPlans">
+    <section class="section">
+      <div class="section-head">
+        <h3 id="lavaPlansTitle"></h3>
+      </div>
+      <p class="value-copy" id="lavaPlansNote"></p>
+      <div class="plans" id="lavaPlans"></div>
+    </section>
+  </section>
+
+  <section class="screen" data-screen="lavaPay">
+    <div class="hero">
+      <div class="quote-card">
+        <div class="quote-label" id="lavaAmountLabel"></div>
+        <div class="quote-amount"><span id="lavaAmountValue">...</span><small id="lavaAmountCurrency"></small></div>
+        <div class="lava-term" id="lavaAmountTerm"></div>
+      </div>
+      <label class="lava-field"><span id="lavaEmailLabel"></span><input type="email" id="lavaEmail" autocomplete="email" inputmode="email" maxlength="254" autocapitalize="off" spellcheck="false"></label>
+      <p class="lava-hint" id="lavaEmailHint"></p>
+    </div>
+  </section>
+
+  <section class="screen" data-screen="lavaWait">
+    <div class="done">
+      <div class="done-mark" id="lavaWaitMark"></div>
+      <h2 id="lavaWaitTitle"></h2>
+      <p id="lavaWaitText"></p>
+      <button class="done-return" type="button" id="lavaWaitPrimary"></button>
+      <button class="done-return secondary" type="button" id="lavaWaitSecondary" hidden></button>
+    </div>
+  </section>
 
   <section class="screen active" data-screen="country">
     <div class="hero">
@@ -397,14 +459,20 @@ const API=PWA_CHECKOUT_HOST?{
   discountStart:"/api/v3/pwa/subscription/discount-start",
   quote:"/api/v3/pwa/subscription/quote",
   event:"/api/v3/pwa/subscription/event",
-  submit:"/api/v3/pwa/subscription/submit"
+  submit:"/api/v3/pwa/subscription/submit",
+  lavaStart:"/api/v3/pwa/subscription/lava/start",
+  lavaStatus:"/api/v3/pwa/subscription/lava/status",
+  lavaCancel:"/api/v3/pwa/subscription/lava/cancel"
 }:{
   overview:"/api/subscription-miniapp/overview",
   paymentStatus:"/api/subscription-miniapp/payment-status",
   discountStart:"/api/subscription-miniapp/discount-start",
   quote:"/api/subscription-miniapp/quote",
   event:"/api/subscription-miniapp/event",
-  submit:"/api/subscription-miniapp/submit"
+  submit:"/api/subscription-miniapp/submit",
+  lavaStart:"/api/subscription-miniapp/lava/start",
+  lavaStatus:"/api/subscription-miniapp/lava/status",
+  lavaCancel:"/api/subscription-miniapp/lava/cancel"
 };
 const PARAMS=new URLSearchParams(window.location.search);
 const INIT_DATA=PWA_CHECKOUT_HOST?"":(tg?.initData||"");
@@ -1060,7 +1128,13 @@ const state={
   detailHintOpen:false,
   renewalOpen:false,
   loadError:false,
-  overviewLoading:false
+  overviewLoading:false,
+  path:"",
+  lavaPlan:"",
+  lavaEmail:"",
+  lavaCheckout:null,
+  lavaStatus:"",
+  lavaPaidUntil:""
 };
 
 function $(selector){return document.querySelector(selector)}
@@ -1174,12 +1248,186 @@ function contextPayload(){
 }
 function hasCurrentPrice(){return Boolean(priceInfo(state.method,state.plan))}
 function isHsk30Unlock(){return state.mode==="hsk30_unlock"||state.plan==="hsk30_unlock"}
+function manualFlow(){
+  return hasMethodStep()?["country","plans","method","pay"]:["country","plans","pay"];
+}
 function flow(){
   if(state.done||state.pending||state.paymentDecision)return ["done"];
   if(isHsk30Unlock())return hasMethodStep()?["country","method","pay"]:["country","pay"];
-  return hasMethodStep()?["country","plans","method","pay"]:["country","plans","pay"];
+  if(state.lavaStatus)return ["lavaWait"];
+  const lava=lavaMode();
+  if(lava==="lava_only")return ["lavaPlans","lavaPay"];
+  if(lava==="both")return state.path==="lava"?["card","lavaPlans","lavaPay"]:["card",...manualFlow()];
+  return manualFlow();
 }
 function currentScreen(){return flow()[state.step]||"country"}
+/* lava.top (2-yo'l): matnlar faqat canonical Mini App katalogidan olinadi. */
+function lavaText(key){
+  const all=window.HSKAI_MINIAPP_I18N||{};
+  const id="ui.subscription.lava."+key;
+  return (all[state.lang]||{})[id]||(all.ru||{})[id]||"";
+}
+function lavaInfo(){
+  /* Chegirmali oqimlarda ham server lava blokini faqat promokod mos kelsa beradi. */
+  if(isHsk30Unlock())return null;
+  return state.overview?.lava||null;
+}
+function lavaMode(){
+  const info=lavaInfo();
+  if(!info||info.blocked_reason==="chargeback_open")return "manual_only";
+  if(!Array.isArray(info.plans)||!info.plans.length)return "manual_only";
+  return info.mode==="lava_only"||info.mode==="both"?info.mode:"manual_only";
+}
+function lavaPlans(){return (lavaInfo()?.plans||[]).filter(plan=>plan&&plan.plan_type)}
+function lavaPlanInfo(){return lavaPlans().find(plan=>plan.plan_type===state.lavaPlan)||null}
+function ensureLavaPlan(){
+  const plans=lavaPlans();
+  if(!plans.some(plan=>plan.plan_type===state.lavaPlan))state.lavaPlan=plans[0]?.plan_type||"";
+}
+function lavaPlanName(planType){return lavaText(({"1_month":"plan1","3_months":"plan3","6_months":"plan6","12_months":"plan12"})[planType]||"plan1")}
+/* lava narxlari kasrli (7.90): butun bo'lsa "19", aks holda doim 2 xona "15,20". */
+function lavaMoney(value){
+  const number=Number(String(value??"").replace(/\s/g,""));
+  if(!Number.isFinite(number))return money(value);
+  if(Number.isInteger(number))return money(number);
+  return number.toLocaleString("ru-RU",{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+function lavaDate(value){
+  const date=new Date(value||"");
+  if(!Number.isFinite(date.getTime()))return "";
+  const pad=value=>String(value).padStart(2,"0");
+  return `${pad(date.getDate())}.${pad(date.getMonth()+1)}.${date.getFullYear()}`;
+}
+function lavaErrorText(code){
+  return ({invalid_email:lavaText("emailInvalid"),provider_unavailable:lavaText("providerError"),
+    checkout_in_progress:lavaText("inProgress"),too_many_attempts:lavaText("tooMany"),
+    subscription_active:lavaText("activeTitle"),lava_unavailable:lavaText("unavailable"),
+    plan_unavailable:lavaText("unavailable"),chargeback_open:lavaText("unavailable"),
+    discount_unavailable:lavaText("unavailable")})[code]||"";
+}
+function lavaScreen(screen){return screen==="card"||screen==="lavaPlans"||screen==="lavaPay"||screen==="lavaWait"}
+let lavaPollTimer=null,lavaPollStarted=0;
+function openLavaPayment(){
+  const url=state.lavaCheckout?.url||"";
+  if(!/^https:\/\//.test(url))return;
+  try{
+    if(tg&&typeof tg.openLink==="function"){tg.openLink(url);return}
+  }catch(e){}
+  window.open(url,"_blank","noopener");
+}
+async function startLavaPayment(){
+  const input=$("#lavaEmail");
+  const email=String(input.value||"").trim();
+  if(email.length>254||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){toast(lavaText("emailInvalid"));input.focus();return}
+  state.lavaEmail=email;
+  if(state.preview){toast(tr().preview);return}
+  setBusy(true);
+  try{
+    const data=await api(API.lavaStart,{plan_type:state.lavaPlan,email,language:state.lang,
+      mode:state.mode,campaign_id:state.campaignId,feedback_id:state.feedbackId});
+    state.lavaCheckout={id:data.checkout_id,url:data.payment_url};
+    state.lavaStatus="waiting";
+    state.step=0;
+    openLavaPayment();
+    scheduleLavaPoll(true);
+  }catch(error){
+    toast(lavaErrorText(error.code)||error.message||tr().error);
+  }finally{
+    setBusy(false);
+    render();
+  }
+}
+async function checkLavaStatus(){
+  if(!state.lavaCheckout?.id||state.lavaStatus!=="waiting")return;
+  try{
+    const data=await api(API.lavaStatus,{checkout_id:state.lavaCheckout.id});
+    if(data.status==="paid"){state.lavaStatus="paid";state.lavaPaidUntil=data.pro_until||""}
+    else if(data.status==="failed")state.lavaStatus="failed";
+  }catch(error){}
+  render();
+}
+function scheduleLavaPoll(reset){
+  if(reset)lavaPollStarted=Date.now();
+  if(lavaPollTimer)clearTimeout(lavaPollTimer);
+  if(state.lavaStatus!=="waiting"||Date.now()-lavaPollStarted>15*60*1000)return;
+  lavaPollTimer=setTimeout(async()=>{
+    if(document.visibilityState==="visible")await checkLavaStatus();
+    scheduleLavaPoll(false);
+  },5000);
+}
+document.addEventListener("visibilitychange",()=>{
+  if(document.visibilityState==="visible"&&state.lavaStatus==="waiting"){checkLavaStatus();scheduleLavaPoll(true)}
+});
+function confirmLava(message){
+  return new Promise(resolve=>{
+    try{
+      if(tg&&typeof tg.showConfirm==="function"){tg.showConfirm(message,ok=>resolve(Boolean(ok)));return}
+    }catch(e){}
+    resolve(window.confirm(message));
+  });
+}
+async function cancelLavaRenewal(){
+  if(state.busy||state.preview)return;
+  if(!await confirmLava(lavaText("cancelConfirm")))return;
+  setBusy(true);
+  try{
+    await api(API.lavaCancel,{});
+    toast(lavaText("cancelDone"));
+  }catch(error){
+    toast(lavaErrorText(error.code)||error.message||tr().error);
+  }finally{
+    setBusy(false);
+  }
+  loadOverview();
+}
+function renderLava(text,screen){
+  const info=lavaInfo();
+  const sub=info?.subscription||null;
+  const manage=$("#lavaManage");
+  const showManage=Boolean(sub&&!state.lavaStatus&&state.step===0&&!state.pending&&!state.done&&!state.paymentDecision);
+  manage.hidden=!showManage;
+  if(showManage){
+    const date=lavaDate(sub.pro_until);
+    $("#lavaManageTitle").textContent=sub.auto_renew?lavaText("activeTitle"):lavaText("plansTitle");
+    $("#lavaManageText").textContent=(sub.auto_renew?lavaText("activeText"):lavaText("cancelledText")).replace("{date}",date);
+    $("#lavaCancelBtn").hidden=!sub.auto_renew;
+    $("#lavaCancelBtn").textContent=lavaText("cancelBtn");
+  }
+  $("#lavaCardTitle").textContent=lavaText("cardQuestion");
+  $("#lavaCardChoices").innerHTML=[["yes","cardYes"],["no","cardNo"]].map(([answer,label])=>
+    `<button class="lava-answer ${answer}" type="button" data-card-answer="${answer}">${escapeHtml(lavaText(label))}</button>`).join("");
+  $("#lavaPlansTitle").textContent=lavaText("plansTitle");
+  const blockedActive=info?.blocked_reason==="subscription_active";
+  $("#lavaPlansNote").textContent=blockedActive?lavaText("activeTitle"):lavaText("plansNote");
+  $("#lavaPlans").innerHTML=blockedActive?"":lavaPlans().map(plan=>{
+    const selected=state.lavaPlan===plan.plan_type;
+    const amount=plan.amount==null?"":lavaMoney(plan.amount);
+    const percent=Number(plan.discount_percent)||0;
+    const badge=percent>0?`<span class="badge">−${percent}%</span>`:"";
+    const old=percent>0&&plan.base_amount!=null?`<span class="old-price">${escapeHtml(lavaMoney(plan.base_amount))} ${escapeHtml(plan.currency||"")}</span>`:"";
+    return `<button class="plan ${selected?"selected":""} ${percent>0?"discounted":""}" type="button" data-lava-plan="${escapeHtml(plan.plan_type)}" aria-pressed="${selected}">
+      <span class="plan-top"><span class="plan-name">${escapeHtml(lavaPlanName(plan.plan_type))}</span>${badge}</span>
+      <span><span class="price ${amount.length>5?"long":""}">${escapeHtml(amount)}<small>${escapeHtml(plan.currency||"")}</small></span>${old}</span>
+    </button>`;
+  }).join("");
+  const chosen=lavaPlanInfo();
+  $("#lavaAmountLabel").textContent=text.amountLabel;
+  $("#lavaAmountValue").textContent=chosen&&chosen.amount!=null?lavaMoney(chosen.amount):"...";
+  $("#lavaAmountCurrency").textContent=chosen?.currency||"";
+  $("#lavaAmountTerm").textContent=chosen?`${lavaPlanName(chosen.plan_type)} · ${lavaText("plansTitle")}${Number(chosen.discount_percent)>0?" · −"+Number(chosen.discount_percent)+"%":""}`:"";
+  $("#lavaEmailLabel").textContent=lavaText("emailLabel");
+  $("#lavaEmailHint").textContent=lavaText("emailHint");
+  const emailInput=$("#lavaEmail");
+  if(screen==="lavaPay"&&!emailInput.value)emailInput.value=state.lavaEmail||info?.email||"";
+  const status=state.lavaStatus;
+  $("#lavaWaitMark").textContent=status==="paid"?"✓":(status==="failed"?"!":"…");
+  $("#lavaWaitTitle").textContent=status==="paid"?lavaText("paidTitle"):(status==="failed"?lavaText("failedTitle"):lavaText("waitTitle"));
+  $("#lavaWaitText").textContent=status==="paid"?lavaText("paidText").replace("{date}",lavaDate(state.lavaPaidUntil)):
+    (status==="failed"?lavaText("failedText"):lavaText("waitText"));
+  $("#lavaWaitPrimary").textContent=status==="paid"?text.proReturn:(status==="failed"?lavaText("retry"):lavaText("reopenPayment"));
+  $("#lavaWaitSecondary").hidden=status!=="waiting";
+  $("#lavaWaitSecondary").textContent=lavaText("checkStatus");
+}
 function isLockedLessonSource(){
   const source=state.source.toLowerCase();
   return ["course_locked","locked_lesson","v3_locked_lesson"].some(alias=>source===alias||source.includes(alias));
@@ -1285,6 +1533,15 @@ function errorText(code){
   };
   return errors[code]||text.error;
 }
+function mockLava(){
+  const mode=PARAMS.get("lava_preview");
+  if(mode!=="both"&&mode!=="lava_only")return undefined;
+  return {mode,currency:"USD",blocked_reason:null,subscription:null,email:"",plans:[
+    {plan_type:"1_month",months:1,days:30,amount:"10.00",currency:"USD"},
+    {plan_type:"3_months",months:3,days:90,amount:"27.00",currency:"USD"},
+    {plan_type:"6_months",months:6,days:180,amount:"50.00",currency:"USD"},
+    {plan_type:"12_months",months:12,days:365,amount:"90.00",currency:"USD"}]};
+}
 function mockOverview(){
   const special=state.mode==="admin_discount"||state.mode==="feedback_discount";
   const percent=state.mode==="admin_discount"?30:(state.mode==="feedback_discount"?20:0);
@@ -1326,7 +1583,8 @@ function mockOverview(){
         "1_month":apply({base_amount:66,final_amount:66,currency:"¥",discount_applied:false,discount_percent:0}),
         "3_months":apply({base_amount:179,final_amount:179,currency:"¥",discount_applied:false,discount_percent:0})
       }
-    }
+    },
+    lava:mockLava()
   };
 }
 function mockCardAmount(tjsAmount,country){
@@ -1390,6 +1648,13 @@ function applyOverview(data){
   /* Eslab qolingan region bu safar mavjud bo'lmasa (masalan chegirma faqat
      kartaga) — region qayta so'raladi. */
   if(!state.region)state.step=0;
+  if(!state.pending&&!state.lavaStatus){
+    const lava=lavaMode();
+    if(lava==='lava_only'){state.path='lava';state.step=0}
+    else if(lava==='both'){if(state.path!=='manual')state.path=state.path==='lava'?'lava':'';state.step=0}
+    else state.path='';
+    ensureLavaPlan();
+  }
   if(state.pending){
     state.done=false;
     state.step=0;
@@ -1412,7 +1677,7 @@ async function loadOverview(){
     if(state.preview){
       applyOverview(mockOverview());
     }else{
-      const data=await api(API.overview,contextPayload());
+      const data=await api(API.overview,{...contextPayload(),supports_lava:true});
       applyOverview(data);
       state.lang=normalizeLang(data.language||state.lang);
       state.loadError=false;
@@ -1512,14 +1777,15 @@ function render(){
   $("#status").classList.toggle("show",Boolean(statusText));
   const items=flow();
   const screen=currentScreen();
-  const finalScreen=state.done||state.pending;
+  const finalScreen=state.done||state.pending||Boolean(state.lavaStatus);
   $$(".screen").forEach(node=>node.classList.toggle("active",node.dataset.screen===screen));
-  $("#steps").style.gridTemplateColumns=`repeat(${items.length},1fr)`;
+  const stepItems=items.filter(item=>item!=="card"),stepOffset=items[0]==="card"?1:0;
+  $("#steps").style.gridTemplateColumns=`repeat(${Math.max(1,stepItems.length)},1fr)`;
   $$("#steps i").forEach((node,index)=>{
-    node.style.display=finalScreen||index>=items.length?"none":"block";
-    node.classList.toggle("active",index<=state.step);
+    node.style.display=finalScreen||screen==="card"||index>=stepItems.length?"none":"block";
+    node.classList.toggle("active",index<=state.step-stepOffset);
   });
-  $("#bottom").style.display=finalScreen||state.qrPreviewOpen?"none":"block";
+  $("#bottom").style.display=finalScreen||state.qrPreviewOpen||screen==="card"||screen==="lavaWait"?"none":"block";
   renderCountry(text);
   renderPlans(text);
   renderMethod(text);
@@ -1528,14 +1794,17 @@ function render(){
   renderSupportSheet(text);
   renderRenewalDialog(text);
   renderQrPreview(text);
+  renderLava(text,screen);
   $("#backBtn").textContent=text.back;
   $("#pwaCheckoutBackBtn").hidden=!PWA_CHECKOUT_HOST;
   $("#pwaCheckoutBackBtn").setAttribute("aria-label",text.back);
   $("#nextBtn").textContent=nextCtaText(text,screen);
   $("#backBtn").classList.toggle("hide",PWA_CHECKOUT_HOST||state.step===0);
-  $("#nextBtn").disabled=state.busy||!hasCurrentPrice()||(!state.preview&&state.loadError)||(screen==="country"&&!state.region)||(screen==="pay"&&!state.preview&&!state.quote);
+  $("#nextBtn").disabled=lavaScreen(screen)?(state.busy||(screen==="lavaPlans"&&!lavaPlanInfo())||(!state.preview&&state.loadError)):state.busy||!hasCurrentPrice()||(!state.preview&&state.loadError)||(screen==="country"&&!state.region)||(screen==="pay"&&!state.preview&&!state.quote);
 }
 function nextCtaText(text,screen){
+  if(screen==="lavaPay")return lavaText("payCta")||text.next;
+  if(screen==="lavaPlans")return text.next;
   if(screen==="pay")return text.submit;
   if(screen==="country"||(screen==="plans"&&hasMethodStep()))return text.next;
   if(state.method==="alipay")return text.payWithAlipay||text.next;
@@ -2097,6 +2366,14 @@ document.addEventListener("click",event=>{
   if(detailHint){state.detailHintOpen=!state.detailHintOpen;render();return}
   const copyBtn=event.target.closest("[data-copy-detail]");
   if(copyBtn){copyText(copyBtn.dataset.copyValue,tr().copiedValue,tr().copyFailed);return}
+  const cardAnswer=event.target.closest("[data-card-answer]");
+  if(cardAnswer){
+    if(cardAnswer.dataset.cardAnswer==="yes"){state.path="lava";ensureLavaPlan();setStep(1)}
+    else{state.path="manual";setStep(state.region?2:1)}
+    return;
+  }
+  const lavaPlanBtn=event.target.closest("[data-lava-plan]");
+  if(lavaPlanBtn){state.lavaPlan=lavaPlanBtn.dataset.lavaPlan;render();return}
   const planBtn=event.target.closest("[data-plan]");
   if(planBtn){state.plan=planBtn.dataset.plan;clearQuote();render();return}
   const regionBtn=event.target.closest("[data-region]");
@@ -2135,6 +2412,8 @@ function clearQuote(){
 }
 $("#nextBtn").addEventListener("click",()=>{
   const screen=currentScreen();
+  if(screen==="lavaPlans"){if(lavaPlanInfo())setStep(state.step+1);return}
+  if(screen==="lavaPay"){startLavaPayment();return}
   if(screen==="country"&&!state.region)return;
   if(!hasCurrentPrice()){toast(tr().offerExpired);return}
   if(screen==="pay"){submitPayment();return}
@@ -2208,6 +2487,17 @@ $("#botReturnBtn").addEventListener("click",()=>{
   closeMiniApp();
 });
 $("#reviewSupportBtn").addEventListener("click",openSupportChat);
+$("#lavaCancelBtn").addEventListener("click",cancelLavaRenewal);
+$("#lavaWaitSecondary").addEventListener("click",checkLavaStatus);
+$("#lavaWaitPrimary").addEventListener("click",()=>{
+  if(state.lavaStatus==="paid"){returnToCourseFromCheckout();return}
+  if(state.lavaStatus==="failed"){
+    state.lavaStatus="";state.lavaCheckout=null;
+    setStep(flow().indexOf("lavaPay"));
+    return;
+  }
+  openLavaPayment();
+});
 $("#qrPreviewBackBtn").addEventListener("click",closeQrPreview);
 function shareReferral(link){
   if(!link){toast(tr().error);return}
