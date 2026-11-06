@@ -196,7 +196,7 @@ class AdminPwaLavaTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
             result = (await read_lava(db, session_cookie=fixtures.COOKIE,
                                       settings_obj=self.settings))["lava"]
         self.assertEqual(result["counts"]["awaiting_payment"], 1)
-        self.assertEqual(result["counts"]["unsuccessful_payments"], 1)
+        self.assertEqual(result["counts"]["unsuccessful_payments"], 2)
         self.assertEqual(len(result["awaiting"]), 1)
         self.assertEqual(result["awaiting"][0]["amount"], "7.90")
         self.assertEqual({row["status"] for row in result["unsuccessful"]},
