@@ -37,6 +37,8 @@ class FakeLava:
             "MONTHLY": "10.00", "PERIOD_90_DAYS": "27.00", "PERIOD_180_DAYS": "50.00", "PERIOD_YEAR": "90.00",
         }
         self.product_type = "SUBSCRIPTION"
+        self.promo_codes: dict[str, int] = {}  # code -> percent known to the fake cabinet
+        self.last_create_body: dict | None = None
 
     # -- helpers used by tests -------------------------------------------
     def complete(self, contract_id: str, *, amount=None, currency=None):
@@ -71,8 +73,14 @@ class FakeLava:
         path = request.url.path
         if request.method == "POST" and path == "/api/v3/invoice":
             body = json.loads(request.content)
+            self.last_create_body = body
             contract_id = str(uuid.uuid4())
             amount = self.prices.get(body.get("periodicity"), "10.00")
+            if body.get("promoCode"):
+                percent = self.promo_codes.get(body["promoCode"])
+                if percent is None:
+                    return httpx.Response(400, json={"error": "promo code not found"})
+                amount = "%.2f" % (float(amount) * (100 - percent) / 100)
             self.invoices[contract_id] = dict(
                 type="SUBSCRIPTION_FIRST_INVOICE", status="NEW", amount=amount, currency=body["currency"],
                 email=body["email"], parent=None, offer=body["offerId"], periodicity=body.get("periodicity"))

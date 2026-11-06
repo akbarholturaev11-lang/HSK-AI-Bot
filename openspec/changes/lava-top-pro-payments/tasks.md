@@ -44,7 +44,7 @@
 
 - [ ] 8.1 Android direct lava checkout (Play excluded) with tests and release checklist.
 - [ ] 8.2 Desktop macOS/Windows lava checkout with Tauri allowlist and parity tests.
-- [ ] 8.3 Promo-code mapping after verifying lava renewal semantics.
+- [x] 8.3 Promo-code mapping (owner asked to do it now): admin-mapped codes per discount source+percent, server-resolved discount, first contract only; verified `tests/test_lava_promo_codes.py`. Renewal promo semantics still to be confirmed with lava support.
 
 ## 9. Integration acceptance
 

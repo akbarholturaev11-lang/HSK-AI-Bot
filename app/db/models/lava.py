@@ -58,6 +58,12 @@ class LavaInvoice(Base):
     buyer_email: Mapped[Optional[str]] = mapped_column(String(254), nullable=True)
     source: Mapped[str] = mapped_column(String(32), nullable=False, default="miniapp")
     promo_code: Mapped[Optional[str]] = mapped_column(String(36), nullable=True)
+    # Server-resolved in-app discount the promo code represents (first
+    # contract only); copied to the Payment so referral/feedback/campaign
+    # usage follows the existing discount rules.
+    discount_source: Mapped[Optional[str]] = mapped_column(String(32), nullable=True)
+    discount_percent: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    discount_campaign_id: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     status: Mapped[str] = mapped_column(String(24), nullable=False, default="created")
     review_reason: Mapped[Optional[str]] = mapped_column(String(48), nullable=True)
     subscription_status: Mapped[Optional[str]] = mapped_column(String(16), nullable=True)

@@ -72,6 +72,10 @@ class LavaSettingsInput(StrictModel):
     checkout_mode: Literal["manual_only", "lava_only", "both"]
     currency: Literal["USD", "RUB"]
     plans: dict[Literal["1_month", "3_months", "6_months", "12_months"], LavaTermInput]
+    # "<referral|feedback_price_offer|admin_campaign>:<percent>" -> lava promo
+    # code; validated by the shared config parser (lava 3-36 char rule).
+    promo_codes: dict[Annotated[str, Field(max_length=32)], Annotated[str, Field(max_length=36)]] = Field(
+        default_factory=dict, max_length=12)
 
 
 class LavaSettingsCommand(LavaSettingsInput):
@@ -231,6 +235,7 @@ def _desired_config(request: LavaSettingsInput, prices: dict[str, str]) -> LavaC
                 "enabled": term.enabled, "offer_id": term.offer_id,
                 "price": ({"amount": prices[plan], "currency": request.currency} if plan in prices else None),
             } for plan, term in request.plans.items()},
+            "promo_codes": dict(request.promo_codes),
         })
     except LavaConfigError as exc:
         raise CommandError(str(exc), 400) from None
@@ -346,7 +351,9 @@ async def execute_lava_settings(db, *, session_cookie, request, settings_obj, ru
             desired.to_json(), sort_keys=True, separators=(",", ":")))
         audit_id = _audit(db, step=step, actor=actor, operation=operation,
                           result={"before_hash": current_hash, "mode": desired.checkout_mode,
-                                  "enabled": sorted(t.plan_type for t in desired.terms.values() if t.enabled)})
+                                  "enabled": sorted(t.plan_type for t in desired.terms.values() if t.enabled),
+                                  # Codes are merchant secrets of a kind: audit keys only.
+                                  "promo_keys": sorted(desired.promo_codes)})
         await db.flush()
     return {"command_id": audit_id, "config": desired.to_json()}
 

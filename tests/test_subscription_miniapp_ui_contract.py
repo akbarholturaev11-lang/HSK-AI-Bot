@@ -59,7 +59,9 @@ def test_subscription_checkout_routes_banks_and_permanent_unlock_separately():
     assert results["no_terms"] == ["country", "plans", "pay"]
     assert results["chargeback"] == ["country", "plans", "pay"]
     assert results["unlock_lava"] == ["country", "pay"]
-    assert results["discount_lava"] == ["country", "plans", "pay"]
+    # The server includes a lava block in a discount flow only when a promo
+    # code carries the same discount; the client then offers the lava path.
+    assert results["discount_lava"] == ["lavaPlans", "lavaPay"]
     assert results["waiting"] == ["lavaWait"]
     for region in ("tj", "cn"):
         assert results[region] == ["country", "plans", "method", "pay"]

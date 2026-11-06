@@ -1275,7 +1275,16 @@
     "ui.admin_pwa.analyticsLavaCancelled": "Бекоршуда",
     "ui.admin_pwa.analyticsLavaRefunded": "Баргардониҳо",
     "ui.admin_pwa.analyticsLavaChargebacks": "Chargeback-ҳо",
-    "ui.admin_pwa.analyticsLavaNote": "Барои давра; обунаҳои фаъол — ҳолати ҷорӣ."
+    "ui.admin_pwa.analyticsLavaNote": "Барои давра; обунаҳои фаъол — ҳолати ҷорӣ.",
+    "ui.admin_pwa.lavaPromo": "Промокодҳо (тахфифҳои барнома)",
+    "ui.admin_pwa.lavaPromoHint": "Кодро дар кабинети lava бо ҳамон фоиз ва лимити истифода созед. Агар холӣ бошад, тахфиф танҳо дар роҳи оддӣ мемонад.",
+    "ui.admin_pwa.lavaPromoReferral": "Реферал 20%",
+    "ui.admin_pwa.lavaPromoFeedback": "Фикр 20%",
+    "ui.admin_pwa.lavaPromoAdmin": "Тахфифҳои админ: фоиз ва код",
+    "ui.admin_pwa.lavaPromoPercent": "Фоиз",
+    "ui.admin_pwa.lavaPromoCode": "Промокод",
+    "ui.admin_pwa.lavaErr_invalid_promo_code": "Промокод 3–36 аломат: ҳарфҳои лотинӣ, рақам, - ва _",
+    "ui.admin_pwa.lavaErr_invalid_promo_codes": "Рӯйхати промокодҳо нодуруст"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

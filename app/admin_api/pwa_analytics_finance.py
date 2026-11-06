@@ -42,7 +42,12 @@ def currency_key():
 
 def usd_expression():
     key=currency_key()
-    return case((key=='TJS',cast(Payment.amount,Float)/TJS_RATE),(key=='USD',cast(Payment.amount,Float)),
+    # lava.top keeps the exact decimal charge (e.g. 7.90) in local_amount;
+    # the integer amount column would add/lose cents.
+    lava_exact=and_(Payment.payment_method=='lava',Payment.local_currency=='USD',key=='USD',
+        Payment.local_amount.is_not(None))
+    return case((lava_exact,cast(Payment.local_amount,Float)),
+        (key=='TJS',cast(Payment.amount,Float)/TJS_RATE),(key=='USD',cast(Payment.amount,Float)),
         (key=='CNY',cast(Payment.amount,Float)/CNY_RATE),
         (Payment.base_amount>0,cast(Payment.base_amount,Float)/TJS_RATE),else_=None)
 

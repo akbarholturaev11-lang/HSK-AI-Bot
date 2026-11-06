@@ -12,13 +12,17 @@ from datetime import datetime, timedelta, timezone
 
 from sqlalchemy import and_, func, or_, select
 
+from dataclasses import dataclass
+from decimal import ROUND_HALF_UP, Decimal
+
 from app.db.models.lava import LavaInvoice
 from app.repositories.payment_repo import PaymentRepository
 from app.repositories.user_repo import UserRepository
+from app.services.discount_service import DiscountService
 from app.services.lava import events, ledger
 from app.services.lava.client import LavaError
-from app.services.lava.config import LavaConfigService, effective_mode
-from app.services.lava.terms import LAVA_SOURCES, LOCAL_CONTRACT_PREFIX, normalize_email
+from app.services.lava.config import LavaConfig, LavaConfigService, effective_mode
+from app.services.lava.terms import LAVA_PAYMENT_METHOD, LAVA_SOURCES, LOCAL_CONTRACT_PREFIX, normalize_email
 
 logger = logging.getLogger(__name__)
 
@@ -45,6 +49,24 @@ def _iso(value: datetime | None) -> str | None:
         return None
     value = value.replace(tzinfo=timezone.utc) if value.tzinfo is None else value
     return value.astimezone(timezone.utc).isoformat()
+
+
+DISCOUNT_MODES = ("referral_discount", "admin_discount", "feedback_discount")
+CHECKOUT_CONTEXT_MODES = ("", "subscription", *DISCOUNT_MODES)
+
+
+@dataclass(frozen=True)
+class LavaDiscount:
+    source: str
+    percent: int
+    campaign_id: int | None
+    promo_code: str
+
+
+def discounted(amount: Decimal | None, percent: int) -> Decimal | None:
+    if amount is None:
+        return None
+    return (amount * Decimal(100 - percent) / Decimal(100)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
 
 def _active_subscription_clause(user_id: int):
@@ -87,11 +109,62 @@ class LavaCheckoutService:
             "pro_until": _iso(getattr(user, "end_date", None)),
         }
 
-    async def overview_block(self, session, user, *, supports_lava: bool) -> dict | None:
-        """``None`` keeps the existing overview byte-identical (manual only)."""
+    async def resolve_discount(self, session, user, config: LavaConfig, *, plan_type: str,
+                               mode: str | None, campaign_id: int | None = None,
+                               feedback_id: int | None = None) -> LavaDiscount | None:
+        """The same server-owned discount rules as the manual checkout, but a
+        discount reaches lava only through an admin-mapped promo code."""
+        if not config.promo_codes:
+            return None
+        service = DiscountService(session)
+        mode = mode or "subscription"
+        if mode == "admin_discount":
+            choice = (await service.get_campaign_discount(
+                campaign_id=campaign_id, user=user, plan_type=plan_type, payment_method=LAVA_PAYMENT_METHOD)
+                if campaign_id else await service.get_best_admin_discount(
+                    user=user, plan_type=plan_type, payment_method=LAVA_PAYMENT_METHOD))
+        elif mode == "feedback_discount":
+            choice = await service.get_feedback_price_discount(user=user, feedback_id=feedback_id)
+        else:
+            choice = await service.get_best_discount(user=user, plan_type=plan_type,
+                                                     payment_method=LAVA_PAYMENT_METHOD,
+                                                     include_admin_campaigns=True)
+        if not choice or choice.percent <= 0:
+            return None
+        code = config.promo_code(choice.source, choice.percent)
+        if not code:
+            return None
+        return LavaDiscount(source=choice.source, percent=int(choice.percent),
+                            campaign_id=choice.campaign_id, promo_code=code)
+
+    async def overview_block(self, session, user, *, supports_lava: bool, context_mode: str | None = None,
+                             campaign_id: int | None = None, feedback_id: int | None = None) -> dict | None:
+        """``None`` keeps the existing overview byte-identical (manual only).
+        Discount flows get a lava block only when a promo code carries the
+        same discount; otherwise they stay on the manual path."""
         config = await LavaConfigService(session).load()
         mode = effective_mode(config, self.settings, client_supports_lava=supports_lava)
-        subscription = await self._subscription(session, user) if supports_lava else None
+        discount_flow = (context_mode or "subscription") in DISCOUNT_MODES
+        subscription = await self._subscription(session, user) if supports_lava and not discount_flow else None
+        plans = []
+        if mode != "manual_only":
+            for term in config.sellable_terms():
+                row = {"plan_type": term.plan_type, "months": term.months, "days": term.days,
+                       "amount": None if term.price_amount is None else str(term.price_amount),
+                       "currency": term.price_currency or config.currency}
+                discount = await self.resolve_discount(session, user, config, plan_type=term.plan_type,
+                                                       mode=context_mode, campaign_id=campaign_id,
+                                                       feedback_id=feedback_id)
+                if discount is not None:
+                    row["discount_percent"] = discount.percent
+                    row["base_amount"] = row["amount"]
+                    estimate = discounted(term.price_amount, discount.percent)
+                    row["amount"] = None if estimate is None else str(estimate)
+                elif discount_flow:
+                    continue
+                plans.append(row)
+            if discount_flow and not plans:
+                return None
         if mode == "manual_only" and subscription is None:
             return None
         last_email = await session.scalar(select(LavaInvoice.buyer_email).where(
@@ -100,21 +173,20 @@ class LavaCheckoutService:
         return {
             "mode": mode,
             "currency": config.currency,
-            "plans": [] if mode == "manual_only" else [
-                {"plan_type": term.plan_type, "months": term.months, "days": term.days,
-                 "amount": None if term.price_amount is None else str(term.price_amount),
-                 "currency": term.price_currency or config.currency}
-                for term in config.sellable_terms()
-            ],
+            "plans": plans,
             "blocked_reason": await self._blocked_reason(session, user),
             "subscription": subscription,
             "email": last_email,
         }
 
     async def start(self, session_factory, *, user_id: int, plan_type: str, email: str,
-                    source: str, language: str | None, supports_lava: bool = True) -> dict:
+                    source: str, language: str | None, supports_lava: bool = True,
+                    context_mode: str | None = None, campaign_id: int | None = None,
+                    feedback_id: int | None = None) -> dict:
         if source not in LAVA_SOURCES:
             raise LavaCheckoutError("invalid_source", 400)
+        if (context_mode or "") not in CHECKOUT_CONTEXT_MODES:
+            raise LavaCheckoutError("invalid_request", 400)
         buyer_email = normalize_email(email)
         if buyer_email is None:
             raise LavaCheckoutError("invalid_email", 400)
@@ -145,21 +217,34 @@ class LavaCheckoutService:
                     LavaInvoice.created_at > now - timedelta(hours=1)))
                 if recent >= STARTS_PER_HOUR:
                     raise LavaCheckoutError("too_many_attempts", 429)
+                discount = await self.resolve_discount(session, user, config, plan_type=plan_type,
+                                                       mode=context_mode, campaign_id=campaign_id,
+                                                       feedback_id=feedback_id)
+                if (context_mode or "subscription") in DISCOUNT_MODES and discount is None:
+                    # A discount link must never silently become a full price.
+                    raise LavaCheckoutError("discount_unavailable")
                 row = LavaInvoice(
                     contract_id=reservation, kind="first", user_id=user.id, plan_type=plan_type,
                     offer_id=term.offer_id, periodicity=term.periodicity, currency=config.currency,
-                    expected_amount=term.price_amount, buyer_email=buyer_email, source=source,
+                    expected_amount=(discounted(term.price_amount, discount.percent) if discount
+                                     else term.price_amount),
+                    buyer_email=buyer_email, source=source,
+                    promo_code=discount.promo_code if discount else None,
+                    discount_source=discount.source if discount else None,
+                    discount_percent=discount.percent if discount else None,
+                    discount_campaign_id=discount.campaign_id if discount else None,
                     status="created", review_reason="reserving", created_at=now, updated_at=now,
                 )
                 session.add(row)
                 await session.flush()
                 reserved_id = row.id
                 offer_id, periodicity, currency = term.offer_id, term.periodicity, config.currency
+                promo_code = discount.promo_code if discount else None
         return_url = self._return_url(language)
         try:
             created = await self.runtime.client().create_invoice(
                 email=buyer_email, offer_id=offer_id, currency=currency, periodicity=periodicity,
-                buyer_language=BUYER_LANGUAGE,
+                buyer_language=BUYER_LANGUAGE, promo_code=promo_code,
                 success_url=return_url, failure_url=return_url, cancel_url=return_url,
             )
         except LavaError as exc:
@@ -170,6 +255,10 @@ class LavaCheckoutService:
             if exc.uncertain:
                 await self.runtime.notifier.admin_alert("needs_review", invoice_id=reserved_id,
                                                         detail="invoice create uncertain")
+            elif promo_code:
+                # Most likely an unknown/expired promo code in the lava cabinet.
+                await self.runtime.notifier.admin_alert("promo_rejected", invoice_id=reserved_id,
+                                                        detail=promo_code, throttle_seconds=600)
             raise LavaCheckoutError("provider_unavailable", 503) from None
         async with session_factory() as session, session.begin():
             row = await session.get(LavaInvoice, reserved_id, with_for_update=True)

@@ -36,6 +36,7 @@ ADMIN_ALERT_TEXT = {
     "renewal_overdue": "lava.top: kutilgan obuna yangilanishi kelmadi.",
     "retry_exhausted": "lava.top: webhook ko'p marta qayta ishlanmadi — tekshiring.",
     "webhook_auth_failed": "lava.top: webhook noto'g'ri kalit bilan keldi (401).",
+    "promo_rejected": "lava.top: promokod bilan invoice yaratilmadi — kodni lava kabinetida tekshiring.",
 }
 
 

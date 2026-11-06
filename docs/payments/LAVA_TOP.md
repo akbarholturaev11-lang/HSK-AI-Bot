@@ -70,6 +70,38 @@ Statistika: Admin PWA → Statistika → Moliya: "To'lov yo'llari" (oddiy vs
 lava) va "lava.top avto-obuna" (faol, renewal, bekor, refund, chargeback).
 Refund/chargeback to'lovlari daromadga kirmaydi.
 
+## Joriy lava mahsuloti (2026-11-06 tekshirildi)
+
+Sotuv havolasi: `https://app.lava.top/products/c696439c-b771-41fb-97fb-26ca0cc80c7f/c31f2e5a-68e9-4f8e-a299-a97dadc1706e`
+(product `c696439c-…`, offer `c31f2e5a-68e9-4f8e-a299-a97dadc1706e`). Bitta offer
+to'rtta davrni o'z ichiga oladi — Admin PWA'da 1/3/6/12 oyning hammasiga shu
+offer tanlanadi:
+
+| Muddat | USD | RUB |
+| --- | --- | --- |
+| 1 oy (MONTHLY) | 7.90 | 643.86 |
+| 3 oy (PERIOD_90_DAYS) | 19.00 | 1548.51 |
+| 6 oy (PERIOD_180_DAYS) | 34.90 | 2844.37 |
+| 12 oy (PERIOD_YEAR) | 64.90 | 5289.40 |
+
+Narxlar kasrli: `payments.amount` butun son bo'lgani uchun daromad, partner
+komissiyasi va AI budjeti `app/services/payment_amounts.py` orqali aniq
+`local_amount`dan hisoblanadi.
+
+## Promokodlar (ilova chegirmalari)
+
+- Admin PWA → lava.top sozlamalari → "Promokodlar": `referral:20`,
+  `feedback_price_offer:20` va admin kampaniya foizlari uchun lava kodi.
+- Chegirmani server o'zi hisoblaydi (mavjud `DiscountService`, metod `lava`).
+  Mos kod bo'lsa, invoice `promoCode` bilan yaratiladi. Chegirma to'lov
+  tasdiqlangandan keyingina "ishlatilgan" bo'ladi (referral/feedback/kampaniya
+  qoidalari o'zgarmaydi).
+- Kod yo'q bo'lsa, chegirmali oqim avvalgidek faqat oddiy yo'lda qoladi. Chegirma
+  havolasi hech qachon jimgina to'liq narxga aylanmaydi (`discount_unavailable`).
+- Renewal'lar chegirmasiz qayd qilinadi (lava qanday yechsa, shunday).
+- **Xavf:** lava to'lov sahifasida xaridor o'zi kiritadigan "Промокод" maydoni
+  bor. Kodlarni noyob qiling va lava kabinetida ishlatish limitini qo'ying.
+
 ## Egasi bajaradigan sozlash (staging'dan boshlab)
 
 1. lava kabinetida **obuna** turidagi "HSK AI Pro ⭐️" mahsuloti, offer(lar)

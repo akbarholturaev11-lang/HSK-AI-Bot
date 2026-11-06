@@ -6315,6 +6315,8 @@ async def subscription_miniapp_overview(request: Request):
             result = await attach_lava_block(
                 session, lava_runtime, await UserRepository(session).get_by_telegram_id(telegram_id), result,
                 mode=str(payload.get("mode") or ""), supports_lava=payload.get("supports_lava") is True,
+                campaign_id=_positive_int(payload.get("campaign_id")),
+                feedback_id=_positive_int(payload.get("feedback_id")),
             )
         return result
 

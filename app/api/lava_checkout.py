@@ -35,6 +35,10 @@ class LavaStartBody(BaseModel):
     plan_type: str = Field(max_length=16)
     email: str = Field(max_length=254)
     language: str | None = Field(default=None, max_length=8)
+    # Checkout context; the server re-resolves any discount itself.
+    mode: str | None = Field(default=None, max_length=32)
+    campaign_id: int | None = Field(default=None, gt=0)
+    feedback_id: int | None = Field(default=None, gt=0)
 
 
 class LavaStatusBody(BaseModel):
@@ -67,17 +71,22 @@ def _checkout_error(exc: LavaCheckoutError) -> JSONResponse:
 
 
 async def attach_lava_block(session, runtime, user, result: dict, *, mode: str | None,
-                            supports_lava: bool) -> dict:
+                            supports_lava: bool, campaign_id: int | None = None,
+                            feedback_id: int | None = None) -> dict:
     """Add the optional ``lava`` key to an existing checkout overview.
 
-    Only the plain Pro subscription mode qualifies; discount and HSK 3.0 flows
-    stay manual. Without a block the overview stays byte-identical."""
+    Plain Pro subscription qualifies; discount flows qualify only when an
+    admin-mapped lava promo code carries the same discount. HSK 3.0 stays
+    manual. Without a block the overview stays byte-identical."""
     if not isinstance(result, dict) or not result.get("ok") or user is None or runtime is None:
         return result
-    if (mode or "subscription") not in {"", "subscription"}:
+    from app.services.lava.checkout import CHECKOUT_CONTEXT_MODES
+    if (mode or "") not in CHECKOUT_CONTEXT_MODES:
         return result
     try:
-        block = await LavaCheckoutService(runtime).overview_block(session, user, supports_lava=supports_lava)
+        block = await LavaCheckoutService(runtime).overview_block(
+            session, user, supports_lava=supports_lava, context_mode=mode or "subscription",
+            campaign_id=campaign_id, feedback_id=feedback_id)
     except Exception:  # noqa: BLE001 - lava trouble must never break manual checkout
         logger.exception("lava.top overview block unavailable")
         return result
@@ -106,6 +115,7 @@ def create_lava_router(*, runtime_getter, session_factory, settings_obj) -> APIR
         return await LavaCheckoutService(runtime_getter()).start(
             session_factory, user_id=user.id, plan_type=data.plan_type, email=data.email,
             source=source, language=data.language or getattr(user, "language", None),
+            context_mode=data.mode, campaign_id=data.campaign_id, feedback_id=data.feedback_id,
         )
 
     # -- provider webhook -------------------------------------------------

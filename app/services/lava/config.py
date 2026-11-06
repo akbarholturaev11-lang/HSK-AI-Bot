@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 from dataclasses import dataclass, field
 from decimal import Decimal
 
@@ -58,9 +59,17 @@ class LavaConfig:
     terms: dict[str, LavaTermConfig] = field(default_factory=lambda: {
         plan: LavaTermConfig(plan_type=plan) for plan in LAVA_PLAN_TYPES
     })
+    # "<discount source>:<percent>" -> lava promo code (created in the lava
+    # cabinet with the same percent). Empty means discounts stay manual-only.
+    promo_codes: dict[str, str] = field(default_factory=dict)
 
     def sellable_terms(self) -> list[LavaTermConfig]:
         return [term for plan in LAVA_PLAN_TYPES if (term := self.terms.get(plan)) and term.sellable]
+
+    def promo_code(self, source: str | None, percent: int | None) -> str | None:
+        if not source or not percent:
+            return None
+        return self.promo_codes.get(f"{source}:{int(percent)}")
 
     def to_json(self) -> dict:
         return {
@@ -76,7 +85,31 @@ class LavaConfig:
                 }
                 for plan, term in self.terms.items()
             },
+            "promo_codes": dict(sorted(self.promo_codes.items())),
         }
+
+
+PROMO_SOURCES = ("referral", "feedback_price_offer", "admin_campaign")
+PROMO_KEY_RE = re.compile(r"^(referral|feedback_price_offer|admin_campaign):([1-9]|[1-8][0-9]|90)$")
+# lava rule: 3-36 chars, latin letters, digits, "-" and "_".
+PROMO_CODE_RE = re.compile(r"^[A-Za-z0-9_-]{3,36}$")
+MAX_PROMO_CODES = 12
+
+
+def parse_promo_codes(data) -> dict[str, str]:
+    if data is None:
+        return {}
+    if not isinstance(data, dict) or len(data) > MAX_PROMO_CODES:
+        raise LavaConfigError("invalid_promo_codes")
+    codes = {}
+    for key, code in data.items():
+        if not isinstance(key, str) or not isinstance(code, str) or not PROMO_KEY_RE.match(key):
+            raise LavaConfigError("invalid_promo_codes")
+        code = code.strip()
+        if not PROMO_CODE_RE.match(code):
+            raise LavaConfigError("invalid_promo_code")
+        codes[key] = code
+    return codes
 
 
 def parse_config(raw: str | None, *, strict: bool = False) -> LavaConfig:
@@ -127,7 +160,8 @@ def config_from_dict(data) -> LavaConfig:
                 raise LavaConfigError("invalid_plans")
         terms[plan] = LavaTermConfig(plan_type=plan, enabled=enabled, offer_id=offer_id,
                                      price_amount=amount, price_currency=price_currency)
-    return LavaConfig(checkout_mode=mode, currency=currency, terms=terms)
+    return LavaConfig(checkout_mode=mode, currency=currency, terms=terms,
+                      promo_codes=parse_promo_codes(data.get("promo_codes")))
 
 
 def sales_configured(settings_obj) -> bool:

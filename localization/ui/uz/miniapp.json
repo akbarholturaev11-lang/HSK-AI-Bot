@@ -1275,7 +1275,16 @@
     "ui.admin_pwa.analyticsLavaCancelled": "Bekor qilinganlar",
     "ui.admin_pwa.analyticsLavaRefunded": "Refundlar",
     "ui.admin_pwa.analyticsLavaChargebacks": "Chargebacklar",
-    "ui.admin_pwa.analyticsLavaNote": "Davr bo'yicha; faol obunalar — joriy holat."
+    "ui.admin_pwa.analyticsLavaNote": "Davr bo'yicha; faol obunalar — joriy holat.",
+    "ui.admin_pwa.lavaPromo": "Promokodlar (ilova chegirmalari)",
+    "ui.admin_pwa.lavaPromoHint": "Kodni lava kabinetida xuddi shu foiz bilan yarating va ishlatish limitini qo'ying. Bo'sh qoldirilsa, chegirma faqat oddiy yo'lda qoladi.",
+    "ui.admin_pwa.lavaPromoReferral": "Referral 20%",
+    "ui.admin_pwa.lavaPromoFeedback": "Feedback 20%",
+    "ui.admin_pwa.lavaPromoAdmin": "Admin chegirmalari: foiz va kod",
+    "ui.admin_pwa.lavaPromoPercent": "Foiz",
+    "ui.admin_pwa.lavaPromoCode": "Promokod",
+    "ui.admin_pwa.lavaErr_invalid_promo_code": "Promokod 3–36 belgi: lotin harflari, raqam, - va _",
+    "ui.admin_pwa.lavaErr_invalid_promo_codes": "Promokodlar ro'yxati noto'g'ri"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

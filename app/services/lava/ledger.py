@@ -116,7 +116,9 @@ async def resolve_invoice(session_factory, info: LavaInvoiceInfo) -> tuple[int, 
         invoice_id = await _insert_invoice(
             session_factory, contract_id=info.contract_id, parent_contract_id=parent.contract_id,
             kind="renewal", user_id=parent.user_id, plan_type=parent.plan_type, offer_id=parent.offer_id,
-            periodicity=parent.periodicity, currency=parent.currency, expected_amount=parent.paid_amount,
+            periodicity=parent.periodicity, currency=parent.currency,
+            # A promo-discounted first payment says nothing about renewal price.
+            expected_amount=None if parent.discount_source else parent.paid_amount,
             buyer_email=parent.buyer_email, source=parent.source, status="created",
             created_at=now, updated_at=now,
         )
@@ -178,12 +180,19 @@ async def apply_completed(session_factory, info: LavaInvoiceInfo) -> ApplyOutcom
                     return ApplyOutcome("needs_review", invoice_id=invoice_id, user_id=owner_id,
                                         review_reason=reason, kind=kind)
                 amount = info.amount
+                # The promo-code discount applies to the first contract only;
+                # renewals are recorded at the amount lava actually charged.
+                promo = row.kind != "renewal" and row.discount_source and row.discount_percent
                 payment = await PaymentRepository(session).create(
                     user, plan_type=row.plan_type,
                     amount=int(amount.quantize(Decimal("1"), rounding=ROUND_HALF_UP)),
                     currency=row.currency, payment_status="pending", payment_method=LAVA_PAYMENT_METHOD,
                     base_amount=await _base_amount_tjs(session, amount, row.currency),
                     local_amount=str(amount), local_currency=row.currency, source=row.source,
+                    discount_source=row.discount_source if promo else "none",
+                    discount_percent=int(row.discount_percent) if promo else 0,
+                    discount_campaign_id=row.discount_campaign_id if promo else None,
+                    discount_title=f"lava promo {row.promo_code}" if promo and row.promo_code else None,
                 )
                 result = await review_locked_payment(
                     session, payment=payment, user=user, decision="approve",

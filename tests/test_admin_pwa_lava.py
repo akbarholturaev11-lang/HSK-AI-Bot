@@ -89,6 +89,23 @@ class AdminPwaLavaTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
         with self.assertRaises(CommandError):
             await self.save_settings(command, proof)
 
+    async def test_promo_codes_are_signed_saved_and_audited_by_key_only(self):
+        request = _settings_input()
+        request = LavaSettingsInput(**{**request.model_dump(), "promo_codes": {
+            "referral:20": "HSKREF20", "admin_campaign:30": "SPRING-30"}})
+        command = await self.prepare_settings(request)
+        self.assertEqual(command.promo_codes, {"referral:20": "HSKREF20", "admin_campaign:30": "SPRING-30"})
+        result = await self.save_settings(command, await self.proof(command.operation()))
+        self.assertEqual(result["config"]["promo_codes"]["admin_campaign:30"], "SPRING-30")
+        async with self.sessions() as db:
+            audit = await db.get(AdminPwaCommandAudit, result["command_id"])
+        self.assertIn("admin_campaign:30", audit.result_json)
+        self.assertNotIn("SPRING-30", audit.result_json)
+        bad = LavaSettingsInput(**{**request.model_dump(), "promo_codes": {"referral:20": "no spaces!"}})
+        with self.assertRaises(CommandError) as ctx:
+            await self.prepare_settings(bad)
+        self.assertEqual(str(ctx.exception), "invalid_promo_code")
+
     async def test_unsafe_modes_are_refused_but_manual_only_always_saves(self):
         self.settings.LAVA_ENABLED = False
         with self.assertRaises(CommandError) as ctx:

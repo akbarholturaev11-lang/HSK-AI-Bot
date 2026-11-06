@@ -1268,7 +1268,8 @@ function lavaText(key){
   return (all[state.lang]||{})[id]||(all.ru||{})[id]||"";
 }
 function lavaInfo(){
-  if(state.mode!=="subscription"||isHsk30Unlock())return null;
+  /* Chegirmali oqimlarda ham server lava blokini faqat promokod mos kelsa beradi. */
+  if(isHsk30Unlock())return null;
   return state.overview?.lava||null;
 }
 function lavaMode(){
@@ -1284,6 +1285,13 @@ function ensureLavaPlan(){
   if(!plans.some(plan=>plan.plan_type===state.lavaPlan))state.lavaPlan=plans[0]?.plan_type||"";
 }
 function lavaPlanName(planType){return lavaText(({"1_month":"plan1","3_months":"plan3","6_months":"plan6","12_months":"plan12"})[planType]||"plan1")}
+/* lava narxlari kasrli (7.90): butun bo'lsa "19", aks holda doim 2 xona "15,20". */
+function lavaMoney(value){
+  const number=Number(String(value??"").replace(/\s/g,""));
+  if(!Number.isFinite(number))return money(value);
+  if(Number.isInteger(number))return money(number);
+  return number.toLocaleString("ru-RU",{minimumFractionDigits:2,maximumFractionDigits:2});
+}
 function lavaDate(value){
   const date=new Date(value||"");
   if(!Number.isFinite(date.getTime()))return "";
@@ -1294,7 +1302,8 @@ function lavaErrorText(code){
   return ({invalid_email:lavaText("emailInvalid"),provider_unavailable:lavaText("providerError"),
     checkout_in_progress:lavaText("inProgress"),too_many_attempts:lavaText("tooMany"),
     subscription_active:lavaText("activeTitle"),lava_unavailable:lavaText("unavailable"),
-    plan_unavailable:lavaText("unavailable"),chargeback_open:lavaText("unavailable")})[code]||"";
+    plan_unavailable:lavaText("unavailable"),chargeback_open:lavaText("unavailable"),
+    discount_unavailable:lavaText("unavailable")})[code]||"";
 }
 function lavaScreen(screen){return screen==="card"||screen==="lavaPlans"||screen==="lavaPay"||screen==="lavaWait"}
 let lavaPollTimer=null,lavaPollStarted=0;
@@ -1314,7 +1323,8 @@ async function startLavaPayment(){
   if(state.preview){toast(tr().preview);return}
   setBusy(true);
   try{
-    const data=await api(API.lavaStart,{plan_type:state.lavaPlan,email,language:state.lang});
+    const data=await api(API.lavaStart,{plan_type:state.lavaPlan,email,language:state.lang,
+      mode:state.mode,campaign_id:state.campaignId,feedback_id:state.feedbackId});
     state.lavaCheckout={id:data.checkout_id,url:data.payment_url};
     state.lavaStatus="waiting";
     state.step=0;
@@ -1391,17 +1401,20 @@ function renderLava(text,screen){
   $("#lavaPlansNote").textContent=blockedActive?lavaText("activeTitle"):lavaText("plansNote");
   $("#lavaPlans").innerHTML=blockedActive?"":lavaPlans().map(plan=>{
     const selected=state.lavaPlan===plan.plan_type;
-    const amount=plan.amount==null?"":money(plan.amount);
-    return `<button class="plan ${selected?"selected":""}" type="button" data-lava-plan="${escapeHtml(plan.plan_type)}" aria-pressed="${selected}">
-      <span class="plan-top"><span class="plan-name">${escapeHtml(lavaPlanName(plan.plan_type))}</span></span>
-      <span><span class="price ${amount.length>5?"long":""}">${escapeHtml(amount)}<small>${escapeHtml(plan.currency||"")}</small></span></span>
+    const amount=plan.amount==null?"":lavaMoney(plan.amount);
+    const percent=Number(plan.discount_percent)||0;
+    const badge=percent>0?`<span class="badge">−${percent}%</span>`:"";
+    const old=percent>0&&plan.base_amount!=null?`<span class="old-price">${escapeHtml(lavaMoney(plan.base_amount))} ${escapeHtml(plan.currency||"")}</span>`:"";
+    return `<button class="plan ${selected?"selected":""} ${percent>0?"discounted":""}" type="button" data-lava-plan="${escapeHtml(plan.plan_type)}" aria-pressed="${selected}">
+      <span class="plan-top"><span class="plan-name">${escapeHtml(lavaPlanName(plan.plan_type))}</span>${badge}</span>
+      <span><span class="price ${amount.length>5?"long":""}">${escapeHtml(amount)}<small>${escapeHtml(plan.currency||"")}</small></span>${old}</span>
     </button>`;
   }).join("");
   const chosen=lavaPlanInfo();
   $("#lavaAmountLabel").textContent=text.amountLabel;
-  $("#lavaAmountValue").textContent=chosen&&chosen.amount!=null?money(chosen.amount):"...";
+  $("#lavaAmountValue").textContent=chosen&&chosen.amount!=null?lavaMoney(chosen.amount):"...";
   $("#lavaAmountCurrency").textContent=chosen?.currency||"";
-  $("#lavaAmountTerm").textContent=chosen?`${lavaPlanName(chosen.plan_type)} · ${lavaText("plansTitle")}`:"";
+  $("#lavaAmountTerm").textContent=chosen?`${lavaPlanName(chosen.plan_type)} · ${lavaText("plansTitle")}${Number(chosen.discount_percent)>0?" · −"+Number(chosen.discount_percent)+"%":""}`:"";
   $("#lavaEmailLabel").textContent=lavaText("emailLabel");
   $("#lavaEmailHint").textContent=lavaText("emailHint");
   const emailInput=$("#lavaEmail");

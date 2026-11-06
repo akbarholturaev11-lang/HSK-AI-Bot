@@ -2479,7 +2479,18 @@ async function lavaSettings(){
         :'<input class="input" id="lavaOffer_'+plan+'" maxlength="36" autocomplete="off" spellcheck="false" aria-label="'+esc(t('lavaOffer'))+'" value="'+esc(term.offer_id||'')+'">';
       return '<div class="lava-term"><label class="lava-term-toggle"><input type="checkbox" id="lavaOn_'+plan+'" '+(term.enabled?'checked':'')+'> '+esc(t(label))+'</label>'+offer+'</div>';
     }).join('');
-    const body=status+mode+currency+'<fieldset class="form-field"><legend>'+esc(t('lavaTerms'))+'</legend>'+terms+'</fieldset>';
+    const promos=config.promo_codes||{};
+    const promoInput=(id,value)=>'<input class="input" id="'+id+'" maxlength="36" autocomplete="off" spellcheck="false" autocapitalize="characters" placeholder="'+esc(t('lavaPromoCode'))+'" value="'+esc(value||'')+'">';
+    const adminPromos=Object.entries(promos).filter(([key])=>key.startsWith('admin_campaign:'));
+    const adminRows=[0,1,2].map(index=>{
+      const [key,code]=adminPromos[index]||['',''];
+      return '<div class="lava-term"><input class="input" id="lavaPromoPct_'+index+'" type="number" min="1" max="90" step="1" inputmode="numeric" placeholder="'+esc(t('lavaPromoPercent'))+'" value="'+esc(key?key.split(':')[1]:'')+'">'+promoInput('lavaPromoAdmin_'+index,code)+'</div>';
+    }).join('');
+    const promo='<fieldset class="form-field"><legend>'+esc(t('lavaPromo'))+'</legend><p class="source-note">'+esc(t('lavaPromoHint'))+'</p>'
+      +'<div class="lava-term"><span class="lava-term-toggle">'+esc(t('lavaPromoReferral'))+'</span>'+promoInput('lavaPromoReferral',promos['referral:20'])+'</div>'
+      +'<div class="lava-term"><span class="lava-term-toggle">'+esc(t('lavaPromoFeedback'))+'</span>'+promoInput('lavaPromoFeedback',promos['feedback_price_offer:20'])+'</div>'
+      +'<p class="source-note">'+esc(t('lavaPromoAdmin'))+'</p>'+adminRows+'</fieldset>';
+    const body=status+mode+currency+'<fieldset class="form-field"><legend>'+esc(t('lavaTerms'))+'</legend>'+terms+'</fieldset>'+promo;
     drawer('lavaSettings',body,btn('saveChanges','lavaPrepare','primary'));
   }catch(error){
     if(current!==drawerId||at!==epoch||!state.actor)return;
@@ -2490,7 +2501,15 @@ async function prepareLavaSettingsCommand(){
   if(!state.actor||signing)return;
   const plans={};
   for(const [plan] of LAVA_TERMS)plans[plan]={enabled:$('lavaOn_'+plan)?.checked===true,offer_id:String($('lavaOffer_'+plan)?.value||'').trim().toLowerCase()};
-  const request={checkout_mode:$('lavaMode')?.value,currency:$('lavaCurrency')?.value,plans};
+  const promo_codes={};
+  const code=id=>String($(id)?.value||'').trim();
+  if(code('lavaPromoReferral'))promo_codes['referral:20']=code('lavaPromoReferral');
+  if(code('lavaPromoFeedback'))promo_codes['feedback_price_offer:20']=code('lavaPromoFeedback');
+  for(const index of [0,1,2]){
+    const pct=Number($('lavaPromoPct_'+index)?.value),value=code('lavaPromoAdmin_'+index);
+    if(value&&Number.isInteger(pct)&&pct>=1&&pct<=90)promo_codes['admin_campaign:'+pct]=value;
+  }
+  const request={checkout_mode:$('lavaMode')?.value,currency:$('lavaCurrency')?.value,plans,promo_codes};
   const current=drawerId,at=epoch;
   try{
     const response=await api('lava/prepare',request,{timeoutMs:25000});

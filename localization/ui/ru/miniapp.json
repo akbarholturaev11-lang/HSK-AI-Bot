@@ -1275,7 +1275,16 @@
     "ui.admin_pwa.analyticsLavaCancelled": "Отменённые",
     "ui.admin_pwa.analyticsLavaRefunded": "Возвраты",
     "ui.admin_pwa.analyticsLavaChargebacks": "Чарджбэки",
-    "ui.admin_pwa.analyticsLavaNote": "За период; активные подписки — текущее состояние."
+    "ui.admin_pwa.analyticsLavaNote": "За период; активные подписки — текущее состояние.",
+    "ui.admin_pwa.lavaPromo": "Промокоды (скидки приложения)",
+    "ui.admin_pwa.lavaPromoHint": "Создайте код в кабинете lava с тем же процентом и лимитом использований. Если пусто — скидка остаётся только в обычной оплате.",
+    "ui.admin_pwa.lavaPromoReferral": "Реферал 20%",
+    "ui.admin_pwa.lavaPromoFeedback": "Отзыв 20%",
+    "ui.admin_pwa.lavaPromoAdmin": "Скидки админа: процент и код",
+    "ui.admin_pwa.lavaPromoPercent": "Процент",
+    "ui.admin_pwa.lavaPromoCode": "Промокод",
+    "ui.admin_pwa.lavaErr_invalid_promo_code": "Промокод 3–36 символов: латиница, цифры, - и _",
+    "ui.admin_pwa.lavaErr_invalid_promo_codes": "Неверный список промокодов"
   },
   "maps": {
     "ui.course_v3.copy.copy1": {
