@@ -251,8 +251,9 @@ class LavaCheckoutService:
             # Keep the upstream failure diagnosable without logging email,
             # API keys, provider response bodies, or buyer/invoice identifiers.
             logger.warning(
-                "lava invoice create failed: code=%s upstream_status=%s uncertain=%s",
+                "lava invoice create failed: code=%s upstream_status=%s uncertain=%s reason=%s fields=%s",
                 exc.code, exc.http_status, exc.uncertain,
+                exc.validation_reason, ",".join(exc.validation_fields) or "none",
             )
             async with session_factory() as session, session.begin():
                 row = await session.get(LavaInvoice, reserved_id, with_for_update=True)

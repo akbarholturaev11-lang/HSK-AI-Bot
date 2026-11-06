@@ -24,11 +24,62 @@ DEFAULT_TIMEOUT = httpx.Timeout(10.0, connect=5.0)
 class LavaError(Exception):
     """Provider failure. ``uncertain`` means the request may have taken effect."""
 
-    def __init__(self, code: str, *, http_status: int | None = None, uncertain: bool = False):
+    def __init__(self, code: str, *, http_status: int | None = None, uncertain: bool = False,
+                 validation_reason: str = "unknown", validation_fields: tuple[str, ...] = ()):
         super().__init__(code)
         self.code = code
         self.http_status = http_status
         self.uncertain = uncertain
+        # Server-generated categories only; never keep the raw provider body.
+        self.validation_reason = validation_reason
+        self.validation_fields = validation_fields
+
+
+
+# Only known schema field *names* may appear in internal diagnostics. The
+# provider's error/details strings can contain buyer emails or other PII.
+_SAFE_VALIDATION_FIELDS = frozenset({
+    "email", "offerId", "periodicity", "currency", "paymentMethod",
+    "buyerLanguage", "promoCode", "amount",
+    "successful_return_url", "failure_return_url", "cancel_return_url",
+})
+
+
+def _safe_validation_reason(response: httpx.Response) -> tuple[str, tuple[str, ...]]:
+    """Classify a 400/422 response without retaining any untrusted error text."""
+    try:
+        payload = response.json()
+    except ValueError:
+        return "non_json", ()
+    if not isinstance(payload, dict):
+        return "invalid_shape", ()
+    details = payload.get("details")
+    details = details if isinstance(details, dict) else {}
+    fields = tuple(sorted(key for key in details
+                          if isinstance(key, str) and key in _SAFE_VALIDATION_FIELDS))
+    # Read but never log raw provider strings. This is intentionally a small,
+    # non-exhaustive set of known categories; the fallback is always unknown.
+    texts = [payload.get("error")]
+    texts.extend(value for value in details.values() if isinstance(value, str))
+    message = " ".join(text[:500] for text in texts if isinstance(text, str)).casefold()
+    if ("author" in message or "creator" in message or "seller" in message) and (
+            "own" in message or "self" in message or "yourself" in message):
+        reason = "own_product"
+    elif ("subscription" in message or "подписк" in message) and any(
+            word in message for word in ("already", "existing", "active", "уже", "действующ")):
+        reason = "subscription_exists"
+    elif ("promo" in message or "промокод" in message) and any(
+            word in message for word in ("invalid", "not found", "expired", "невер", "недейств")):
+        reason = "promo_invalid"
+    elif ("return_url" in message or "redirect" in message) and any(
+            word in message for word in ("https", "invalid", "url", "ссылк")):
+        reason = "return_url_invalid"
+    elif ("email" in message or "почт" in message) and any(
+            word in message for word in ("invalid", "incorrect", "невер", "некоррект")):
+        reason = "email_invalid"
+    else:
+        reason = "unknown"
+    return reason, fields
 
 
 class LavaNotFound(LavaError):
@@ -233,6 +284,10 @@ class LavaClient:
             raise LavaNotFound()
         if response.status_code in (401, 403):
             raise LavaError("unauthorized", http_status=response.status_code)
+        if response.status_code in (400, 422):
+            reason, fields = _safe_validation_reason(response)
+            raise LavaError("rejected", http_status=response.status_code,
+                            validation_reason=reason, validation_fields=fields)
         if response.status_code >= 400:
             raise LavaError("rejected", http_status=response.status_code)
 
