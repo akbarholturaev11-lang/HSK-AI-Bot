@@ -933,6 +933,9 @@ fieldset.form-field legend{padding:0 6px;font-size:13px;font-weight:650}
 /* lava.top second checkout path: status, terms and contextual row actions. */
 .lava-status{border:1px solid var(--line);border-radius:14px;padding:14px;background:#fbfcfd;margin-bottom:14px}
 .lava-status h3,.lava-list h3{margin:0 0 10px;font-size:13px;font-weight:780;color:var(--ink)}
+.lava-auth-warning{display:grid;gap:5px;border:1px solid #f2c1a6;border-radius:12px;background:#fff5ed;color:#763c24;padding:12px;margin-bottom:14px;font-size:12px;line-height:1.45}
+.lava-auth-warning strong{font-size:13px}.lava-auth-warning small{opacity:.72}
+
 .lava-checks{list-style:none;margin:0;padding:0;display:grid;gap:6px;font-size:13px}
 .lava-checks li.ok{color:var(--green)}.lava-checks li.bad{color:var(--red)}
 .lava-term{display:grid;grid-template-columns:minmax(96px,auto) 1fr;gap:10px;align-items:center;margin-top:10px}
