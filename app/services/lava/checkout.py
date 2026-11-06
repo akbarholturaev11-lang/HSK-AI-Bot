@@ -25,7 +25,8 @@ logger = logging.getLogger(__name__)
 RESERVATION_SECONDS = 90
 STARTS_PER_HOUR = 6
 STATUS_RECHECK_SECONDS = 8
-BUYER_LANGUAGE = {"ru": "RU", "uz": "RU", "tj": "RU"}
+# lava's payment widget supports EN/RU/ES only; RU is the closest for UZ/RU/TJ buyers.
+BUYER_LANGUAGE = "RU"
 
 
 class LavaCheckoutError(Exception):
@@ -158,7 +159,7 @@ class LavaCheckoutService:
         try:
             created = await self.runtime.client().create_invoice(
                 email=buyer_email, offer_id=offer_id, currency=currency, periodicity=periodicity,
-                buyer_language=BUYER_LANGUAGE.get((language or "ru")[:2], "RU"),
+                buyer_language=BUYER_LANGUAGE,
                 success_url=return_url, failure_url=return_url, cancel_url=return_url,
             )
         except LavaError as exc:

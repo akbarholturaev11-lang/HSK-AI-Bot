@@ -702,7 +702,7 @@ async def lifespan(app: FastAPI):
                        if push_ready else None)
     # Lost-webhook repair runs whenever an API key exists, even with sales off.
     lava_reconcile_task = (asyncio.create_task(LavaReconcileWorker(lava_runtime).run())
-                           if settings.LAVA_API_KEY else None)
+                           if getattr(settings, "LAVA_API_KEY", "") else None)
     try:
         yield                                                # /health darhol ishlaydi
     finally:

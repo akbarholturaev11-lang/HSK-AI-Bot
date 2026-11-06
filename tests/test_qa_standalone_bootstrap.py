@@ -101,6 +101,7 @@ class StandaloneQAInitializerTests(unittest.TestCase):
             "admin_pwa_native_reports", "admin_pwa_inbox_triage", "admin_pwa_inbox_triage_audit",
             "admin_pwa_push_subscriptions", "admin_pwa_push_outbox", "admin_pwa_command_audit",
             "learner_pwa_push_subscriptions", "learner_pwa_push_outbox",
+            "lava_invoices", "lava_webhook_events",
         }
         self.assertEqual(set(metadata.tables) - initial, expected)
         self.assertIn("user_identities", initial)
