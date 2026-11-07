@@ -173,7 +173,7 @@ small{color:#59534c}li{margin:0.45em 0}nav.legal-links{display:flex;flex-wrap:wr
 <p>You can change your profile and study settings, stop using optional AI/voice features, disable reminders, revoke device permissions, sign out, or unlink a provider while another remains available. Contact <a href="mailto:hskaiapp@gmail.com">hskaiapp@gmail.com</a> for questions about access, correction, retention or deletion of your information; you can also use <a href="/account-deletion">the account deletion request page</a>.</p>
 <h2>Changes to this policy</h2>
 <p>We may revise this policy as the application changes. The effective date at the top identifies this version; material changes will be reflected here and communicated through the service when appropriate.</p>
-<nav class="legal-links" aria-label="HSK AI legal and support links"><a href="/">HSK AI</a><a href="/privacy#security">Security</a><a href="/account-deletion">Account Deletion</a><a href="/privacy/google-sign-in/">Google Sign-In Privacy</a><a href="/terms">Terms of Use</a><a href="https://t.me/hskai_support_bot">Support</a></nav>
+<nav class="legal-links" aria-label="HSK AI legal and support links"><a href="/">HSK AI</a><a href="/privacy">Privacy Policy</a><a href="/privacy#security">Security</a><a href="/account-deletion">Account Deletion</a><a href="/privacy/google-sign-in/">Google Sign-In Privacy</a><a href="/terms">Terms of Use</a><a href="https://t.me/hskai_support_bot">Support</a></nav>
 </main></body></html>"""
         return HTMLResponse(body, headers={
             "Cache-Control": "public, max-age=300",
