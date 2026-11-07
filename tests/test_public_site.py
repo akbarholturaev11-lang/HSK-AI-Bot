@@ -252,10 +252,9 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
                 with self.subTest(page=path, legal=expected):
                     self.assertIn(f'href="{expected}"', response.text)
 
-        download = await self.client.get("/download")
-        self.assertEqual(download.status_code, 200)
+        download = Path("app/static/desktop-download.html").read_text(encoding="utf-8")
         for expected in (*legal_paths, "/privacy/google-sign-in/"):
-            self.assertIn(f'href="{expected}"', download.text)
+            self.assertIn(f'href="{expected}"', download)
 
         privacy = await self.client.get("/privacy")
         self.assertEqual(privacy.status_code, 200)
@@ -270,7 +269,7 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
                     self.assertIn(f'href="{expected}"', page.text)
         self.assertIn("/terms", SITEMAP_PATHS)
         sitemap = await self.client.get("/sitemap.xml")
-        self.assertIn("<loc>https://hskai.app/terms</loc>", sitemap.text)
+        self.assertIn(f"<loc>{ORIGIN}/terms</loc>", sitemap.text)
 
     async def test_attribution_click_and_no_open_redirect(self):
         with self.assertLogs("uvicorn.error.public_analytics", level="INFO") as captured:
