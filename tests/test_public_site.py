@@ -232,6 +232,7 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('class="official-footer-links"', download_source)
         self.assertIn(SUPPORT_URL, download_source)
         self.assertIn(NEWS_URL, download_source)
+        self.assertIn("https://facebook.com/1159152280609531", download_source)
         privacy = await self.client.get("/privacy")
         self.assertIn(SUPPORT_URL, privacy.text)
         self.assertNotIn('href="' + BOT_URL + '"', privacy.text)
