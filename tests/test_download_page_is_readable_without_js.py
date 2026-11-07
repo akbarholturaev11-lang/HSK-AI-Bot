@@ -147,6 +147,33 @@ class StructuredDataTests(unittest.TestCase):
 
 
 class PageMarkerTests(unittest.TestCase):
+    def test_download_seo_urls_use_official_origin_and_russian_locale(self):
+        # Extract only the pure SEO helper: importing app.main initializes
+        # application services, which this isolated regression must not touch.
+        import ast
+        from pathlib import Path
+
+        source = Path("app/main.py").read_text(encoding="utf-8")
+        function = next(
+            item for item in ast.parse(source).body
+            if isinstance(item, ast.FunctionDef)
+            and item.name == "_absolute_download_seo_urls"
+        )
+        namespace = {}
+        exec(compile(ast.Module(body=[function], type_ignores=[]),
+                     "app/main.py", "exec"), namespace)
+        html = Path("app/static/desktop-download.html").read_text(encoding="utf-8")
+        self.assertIn('<link rel="alternate" hreflang="ru" href="/download">', html)
+        origin = "https://hskai.app"
+        rendered = namespace["_absolute_download_seo_urls"](html, origin)
+        self.assertIn('<link rel="canonical" href="https://hskai.app/download">', rendered)
+        self.assertIn(
+            '<link rel="alternate" hreflang="ru" href="https://hskai.app/download">',
+            rendered,
+        )
+        self.assertIn('<meta property="og:url" content="https://hskai.app/download">', rendered)
+        self.assertNotIn('hreflang="uz" href="/download"', rendered)
+
     def test_the_page_still_carries_the_marker_the_server_fills(self):
         from pathlib import Path
 
