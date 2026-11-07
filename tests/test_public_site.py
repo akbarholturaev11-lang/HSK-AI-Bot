@@ -121,7 +121,7 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
                 {page["lang"]: path},
             )
             self.assertEqual(
-                {t["hreflang"]: t["href"] for t in parsed.find("link", rel="alternate")},
+                {t["hreflang"]: t["href"] for t in parsed.find("link", rel="alternate") if "hreflang" in t},
                 {lang: ORIGIN + p for lang, p in expected.items()},
             )
             graph = json.loads(re.search(r'<script type="application/ld\+json">(.*?)</script>', html, re.S)[1])["@graph"]
