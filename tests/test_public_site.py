@@ -237,6 +237,41 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn(SUPPORT_URL, privacy.text)
         self.assertNotIn('href="' + BOT_URL + '"', privacy.text)
 
+    async def test_every_legal_and_account_page_is_linked(self):
+        legal_paths = ("/privacy", "/privacy#security", "/terms", "/account-deletion")
+        google_by_lang = {
+            "/": "/privacy/google-sign-in/tj/",
+            "/tj/": "/privacy/google-sign-in/tj/",
+            "/ru/": "/privacy/google-sign-in/ru/",
+            "/uz/": "/privacy/google-sign-in/",
+        }
+        for path, google in google_by_lang.items():
+            response = await self.client.get(path)
+            self.assertEqual(response.status_code, 200)
+            for expected in (*legal_paths, google):
+                with self.subTest(page=path, legal=expected):
+                    self.assertIn(f'href="{expected}"', response.text)
+
+        download = await self.client.get("/download")
+        self.assertEqual(download.status_code, 200)
+        for expected in (*legal_paths, "/privacy/google-sign-in/"):
+            self.assertIn(f'href="{expected}"', download.text)
+
+        privacy = await self.client.get("/privacy")
+        self.assertEqual(privacy.status_code, 200)
+        self.assertIn('<h2 id="security">Security</h2>', privacy.text)
+        terms = await self.client.get("/terms")
+        deletion = await self.client.get("/account-deletion")
+        self.assertEqual(terms.status_code, 200)
+        self.assertEqual(deletion.status_code, 200)
+        for page in (privacy, terms, deletion):
+            for expected in ("/privacy", "/privacy#security", "/privacy/google-sign-in/", "https://t.me/hskai_support_bot"):
+                with self.subTest(url=page.url.path, link=expected):
+                    self.assertIn(f'href="{expected}"', page.text)
+        self.assertIn("/terms", SITEMAP_PATHS)
+        sitemap = await self.client.get("/sitemap.xml")
+        self.assertIn("<loc>https://hskai.app/terms</loc>", sitemap.text)
+
     async def test_attribution_click_and_no_open_redirect(self):
         with self.assertLogs("uvicorn.error.public_analytics", level="INFO") as captured:
             response = await self.client.get("/tj/?utm_source=bing&utm_campaign=hsk&initData=SECRET")
