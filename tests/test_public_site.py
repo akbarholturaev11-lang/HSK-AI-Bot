@@ -367,6 +367,9 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
                     self.assertIn("Google Play", html)
                 # The FAQ's standard prices are real source data, not placeholders.
                 self.assertNotIn("Не используйте цену с этой страницы", faq.text)
+                self.assertNotIn("не считайте их безлимитными", guide.text)
+                self.assertNotIn("avtomatik tarzda cheksiz hisoblanmaydi", guide.text)
+                self.assertNotIn("худкор бемаҳдуд нестанд", guide.text)
                 self.assertNotIn("Bu sahifadagi matnni joriy narx deb qabul qilmang", faq.text)
                 self.assertNotIn("Нархи дар ин саҳифа навишташуда ҳисобида нашавад", faq.text)
 
@@ -376,7 +379,7 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("## Стандартные лимиты Free", index.text)
         self.assertIn("## Pro Trial и ограничения", index.text)
         self.assertIn("USD 1.50", index.text)
-        self.assertIn("Остальные точные Trial-лимиты", index.text)
+        self.assertIn("все прочие квоты действий Trial безлимитны", index.text)
         for price in standard_prices:
             self.assertIn(price, index.text)
 
