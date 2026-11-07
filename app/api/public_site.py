@@ -27,7 +27,7 @@ logger = logging.getLogger("uvicorn.error.public_analytics")
 STATIC = Path(__file__).resolve().parents[1] / "static"
 GOOGLE_VERIFICATION_FILENAME = "google4575dc78c69e5824.html"
 GOOGLE_VERIFICATION_CONTENT = b"google-site-verification: google4575dc78c69e5824.html"
-SITEMAP_PATHS = tuple(PAGES) + (DOWNLOAD_PATH, "/privacy", "/account-deletion") + tuple(GOOGLE_SIGNIN_PRIVACY_PAGES)
+SITEMAP_PATHS = tuple(PAGES) + (DOWNLOAD_PATH, "/privacy", "/terms", "/account-deletion") + tuple(GOOGLE_SIGNIN_PRIVACY_PAGES)
 
 
 def indexnow_key(settings_obj):
@@ -144,7 +144,7 @@ def create_public_site_router(*, settings_obj, session_factory=None):
 body{font-family:system-ui,-apple-system,sans-serif;max-width:760px;margin:32px auto;padding:0 20px 40px;line-height:1.65;color:#211d17;background:#fcfaf7}
 h1,h2{line-height:1.25}h1{font-size:clamp(1.7rem,5vw,2.2rem)}h2{font-size:1.25rem;margin-top:1.6em}
 a{color:#8b3929;overflow-wrap:anywhere}a:focus-visible{outline:2px solid #8b3929;outline-offset:3px}
-small{color:#59534c}li{margin:0.45em 0}
+small{color:#59534c}li{margin:0.45em 0}nav.legal-links{display:flex;flex-wrap:wrap;gap:12px 18px;margin-top:32px;padding-top:20px;border-top:1px solid #d8d0c5}
 </style></head><body><main>
 <h1>HSK AI Privacy Policy</h1>
 <p><small>Effective date: 3 November 2026</small></p>
@@ -163,7 +163,7 @@ small{color:#59534c}li{margin:0.45em 0}
 <p>The microphone is used when you choose pronunciation practice or AI Voice. Photos and audio are submitted only when you initiate a feature that needs them; the feature may send them through HSK AI servers to an AI or speech-processing provider. Android may ask for notification permission for optional study reminders, account updates or payment status. You can change app reminder settings and revoke microphone or notification permission in Android settings.</p>
 <h2>Service providers and sharing</h2>
 <p>We do not sell personal data. To operate the service, necessary information may be processed by Google, Apple or Telegram for your selected sign-in method; by cloud hosting, database, storage, security and delivery providers; by AI or speech-processing providers for features you initiate; and by push notification services such as Firebase Cloud Messaging when enabled. Support staff may review user-submitted bug reports, payment receipts and AI-response reports. Information may also be disclosed where legally required or necessary to prevent abuse. These providers may process information in other countries. We do not use the daily aggregated website source counts to identify individual visitors.</p>
-<h2>Security</h2>
+<h2 id="security">Security</h2>
 <p>HSK AI uses HTTPS for supported network connections, access controls and account-bound authentication to limit access to user information. Provider account identifiers are protected through keyed hashing where supported by the account integration. No internet service can guarantee absolute security.</p>
 <h2>Retention and deletion</h2>
 <p>Account, learning and entitlement records are kept while needed to provide the service or until a verified account deletion request is processed, subject to the exceptions below. Transient AI or voice processing, delivery records and operational/security logs may have different technical lifetimes; we do not promise that every external processor deletes inputs immediately.</p>
@@ -173,6 +173,7 @@ small{color:#59534c}li{margin:0.45em 0}
 <p>You can change your profile and study settings, stop using optional AI/voice features, disable reminders, revoke device permissions, sign out, or unlink a provider while another remains available. Contact <a href="mailto:hskaiapp@gmail.com">hskaiapp@gmail.com</a> for questions about access, correction, retention or deletion of your information; you can also use <a href="/account-deletion">the account deletion request page</a>.</p>
 <h2>Changes to this policy</h2>
 <p>We may revise this policy as the application changes. The effective date at the top identifies this version; material changes will be reflected here and communicated through the service when appropriate.</p>
+<nav class="legal-links" aria-label="HSK AI legal and support links"><a href="/">HSK AI</a><a href="/privacy#security">Security</a><a href="/account-deletion">Account Deletion</a><a href="/privacy/google-sign-in/">Google Sign-In Privacy</a><a href="/terms">Terms of Use</a><a href="https://t.me/hskai_support_bot">Support</a></nav>
 </main></body></html>"""
         return HTMLResponse(body, headers={
             "Cache-Control": "public, max-age=300",
@@ -194,7 +195,7 @@ small{color:#59534c}li{margin:0.45em 0}
         body = """<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>HSK AI Terms of Use</title><meta name="robots" content="index,follow">
-<style>body{font-family:system-ui,-apple-system,sans-serif;max-width:760px;margin:40px auto;padding:0 20px;line-height:1.6;color:#211d17}h1,h2{line-height:1.2}small{color:#6c655c}</style></head>
+<style>body{font-family:system-ui,-apple-system,sans-serif;max-width:760px;margin:40px auto;padding:0 20px;line-height:1.6;color:#211d17}h1,h2{line-height:1.2}small{color:#6c655c}nav.legal-links{display:flex;flex-wrap:wrap;gap:12px 18px;margin-top:32px;padding-top:20px;border-top:1px solid #d8d0c5}a{color:#8b3929}</style></head>
 <body><h1>HSK AI Terms of Use</h1><small>Effective: 17 October 2026</small>
 <p>By using HSK AI you agree to use the service lawfully and only for its intended learning, account and community features.</p>
 <h2>Accounts</h2>
@@ -211,7 +212,8 @@ small{color:#59534c}li{margin:0.45em 0}
 <h2>Privacy</h2>
 <p>How account, learning and device data is handled is described in the HSK AI Privacy Policy.</p>
 <h2>Contact</h2>
-<p>Use the Support item inside HSK AI or the official HSK AI Support bot @hskai_support_bot.</p>
+<p>Use the Support item inside HSK AI or the official HSK AI Support bot <a href="https://t.me/hskai_support_bot">@hskai_support_bot</a>.</p>
+<nav class="legal-links" aria-label="HSK AI legal and support links"><a href="/">HSK AI</a><a href="/privacy">Privacy Policy</a><a href="/privacy#security">Security</a><a href="/account-deletion">Account Deletion</a><a href="/privacy/google-sign-in/">Google Sign-In Privacy</a><a href="https://t.me/hskai_support_bot">Support</a></nav>
 </body></html>"""
         return HTMLResponse(
             body,
