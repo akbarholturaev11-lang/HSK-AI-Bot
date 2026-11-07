@@ -83,6 +83,7 @@ def robots_text(origin):
         "Allow: /terms?*",
         "Allow: /sitemap.xml$",
         "Allow: /robots.txt$",
+        "Allow: /llms.txt$",
     ])
     return "\n\n".join("User-agent: " + agent + "\n" + "\n".join(rules)
                           for agent in ("*", "Googlebot", "Bingbot", "OAI-SearchBot")) + f"\n\nSitemap: {origin}/sitemap.xml\n"
@@ -233,6 +234,44 @@ small{color:#59534c}li{margin:0.45em 0}nav.legal-links{display:flex;flex-wrap:wr
 
     for path in GOOGLE_SIGNIN_PRIVACY_PAGES:
         router.add_api_route(path, google_signin_privacy, methods=["GET", "HEAD"], name="privacy_" + path.replace("/", "_"))
+
+    @router.get("/llms.txt")
+    async def llms_information():
+        # A public, concise, text-only directory; no private user data or invented claims.
+        body = f"""# HSK AI — официальный сайт приложения для изучения китайского языка
+
+Официальный сайт: {origin}/
+Русский язык по умолчанию. Таджикский и узбекский доступны отдельно.
+
+## О продукте
+HSK AI — приложение для изучения китайского языка. Курсы HSK 1–4, словарь, упражнения, тесты и AI-помощник. Платформы: Android, Windows, macOS, Telegram Mini App и iPhone PWA. Возможности и оплата зависят от версии и канала установки.
+
+## Официальные страницы
+- Главная (русский по умолчанию): {origin}/
+- Русский: {origin}/ru/
+- Тоҷикӣ: {origin}/tj/
+- O‘zbekcha: {origin}/uz/
+- Курсы HSK: {origin}/ru/hsk/
+- Возможности: {origin}/ru/guide/features/
+- Частые вопросы: {origin}/ru/guide/faq/
+- Руководство: {origin}/ru/guide/
+- Подписка: {origin}/ru/guide/subscription/
+- Скачать официальные приложения: {origin}/download
+- Политика конфиденциальности: {origin}/privacy
+- Безопасность: {origin}/privacy#security
+- Удаление аккаунта: {origin}/account-deletion
+- Конфиденциальность входа через Google: {origin}/privacy/google-sign-in/
+- Условия использования: {origin}/terms
+- Sitemap: {origin}/sitemap.xml
+
+## Проверенные официальные каналы
+- Поддержка: https://t.me/hskai_support_bot
+- Telegram-бот обучения: https://t.me/darsi_chini_bot
+- Канал новостей: https://t.me/hskaiapp
+
+Информация о личных аккаунтах, платежах и других закрытых данных не индексируется. Для актуальных ограничений и тарифов смотрите сам сервис.
+"""
+        return PlainTextResponse(body, headers={"Cache-Control": "public, max-age=300"})
 
     @router.get("/robots.txt")
     async def robots():
