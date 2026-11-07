@@ -209,6 +209,13 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
             )
             graph = json.loads(re.search(r'<script type="application/ld\+json">(.*?)</script>', html, re.S)[1])["@graph"]
             self.assertTrue({"Organization", "WebSite", "SoftwareApplication", "WebPage"}.issubset({n["@type"] for n in graph}))
+            website = next(n for n in graph if n["@type"] == "WebSite")
+            self.assertEqual(website["name"], "HSK AI")
+            self.assertEqual(website["url"], ORIGIN + "/")
+            self.assertEqual(website["alternateName"], ["HSKAI", "hskai.app"])
+            application = next(n for n in graph if n["@type"] == "SoftwareApplication")
+            self.assertEqual(application["url"], ORIGIN + "/")
+            self.assertTrue(parsed.find("a", **{"class": "footer-brand", "href": "/"}))
             self.assertFalse(any("aggregateRating" in n or "review" in n for n in graph))
             if path == "/tj/hsk/":
                 self.assertEqual([n["name"] for n in graph if n["@type"] == "Course"], [f"HSK {i}" for i in range(1, 5)])
@@ -221,6 +228,20 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
             descriptions.add(page["description"])
         self.assertEqual(len(titles), len(PAGES))
         self.assertEqual(len(descriptions), len(PAGES))
+
+    async def test_branded_homepage_is_distinct_and_canonical(self):
+        home = await self.client.get("/")
+        self.assertEqual(home.status_code, 200)
+        self.assertEqual(Tags(home.text).find("html")[0]["lang"], "ru")
+        self.assertIn("HSK AI — официальный сайт приложения", home.text)
+        self.assertIn("Это самостоятельный образовательный продукт", home.text)
+        self.assertIn('rel="canonical" href="' + ORIGIN + '/"', home.text)
+        self.assertNotIn("telegram-chinese-bot-production.up.railway.app", home.text)
+        site = json.loads(re.search(
+            r'<script type="application/ld\+json">(.*?)</script>',
+            home.text, re.S,
+        )[1])["@graph"]
+        self.assertEqual(next(x for x in site if x["@type"] == "WebSite")["url"], ORIGIN + "/")
 
     async def test_product_first_header_language_and_download_contract(self):
         # Content remains crawlable without JavaScript, with one URL per locale.
@@ -359,7 +380,7 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(default.status_code, 200)
         self.assertEqual(default.headers["content-language"], "ru")
         self.assertEqual(Tags(default.text).find("html")[0]["lang"], "ru")
-        self.assertIn("HSK AI — официальная платформа", default.text)
+        self.assertIn("HSK AI — официальный сайт приложения", default.text)
         self.assertIn('<link rel="canonical" href="' + ORIGIN + '/">', default.text)
         self.assertIn('href="/llms.txt"', default.text)
         self.assertIn("Удаление аккаунта", default.text)
