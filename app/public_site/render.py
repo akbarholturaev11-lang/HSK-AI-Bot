@@ -106,7 +106,6 @@ def official_footer_links(lang):
 def structured_data(path, origin):
     page = PAGES[path]
     lang = page["lang"]
-    localized_home = PAGE_TRANSLATIONS["home"].get(lang, "/ru/")
     graph = [
         {"@type": "Organization", "@id": origin + "/#organization", "name": "HSK AI",
          "url": origin + "/", "logo": origin + "/public-assets/logo.png",
@@ -115,15 +114,13 @@ def structured_data(path, origin):
                            "url": SUPPORT_URL, "email": "hskaiapp@gmail.com",
                            "availableLanguage": ["Tajik", "Russian", "Uzbek"]}]},
         {"@type": "WebSite", "@id": origin + "/#website", "name": "HSK AI",
-         "alternateName": {"tg": "HSK AI — омӯзиши забони чинӣ",
-                           "ru": "HSK AI — изучение китайского языка",
-                           "uz": "HSK AI — xitoy tilini o‘rganish"}[lang],
-         "url": origin + localized_home,
-         "inLanguage": ["tg", "ru", "uz"], "publisher": {"@id": origin + "/#organization"}},
+         "alternateName": ["HSKAI", "hskai.app"],
+         "url": origin + "/",
+         "inLanguage": ["ru", "tg", "uz"], "publisher": {"@id": origin + "/#organization"}},
         {"@type": "SoftwareApplication", "@id": origin + "/#application", "name": "HSK AI",
          "applicationCategory": "EducationalApplication", "operatingSystem": ["Android", "macOS", "Windows", "Telegram Mini App", "iOS (PWA)"],
-         "url": origin + localized_home, "installUrl": origin + DOWNLOAD_PATH, "inLanguage": ["tg", "ru", "uz"],
-         "description": PAGES[localized_home]["intro"], "publisher": {"@id": origin + "/#organization"}},
+         "url": origin + "/", "installUrl": origin + DOWNLOAD_PATH, "inLanguage": ["ru", "tg", "uz"],
+         "description": PAGES["/"]["intro"], "publisher": {"@id": origin + "/#organization"}},
         {"@type": "WebPage", "@id": origin + path + "#page", "url": origin + path,
          "name": page["title"], "description": page["description"], "inLanguage": page["lang"],
          "isPartOf": {"@id": origin + "/#website"}, "about": {"@id": origin + "/#application"}},
@@ -270,7 +267,7 @@ def render_page(path, settings_obj, tags=None):
 <main><section class="hero"><div class="hero-copy"><p class="eyebrow">{esc(hero_kicker)}</p><h1>{esc(page['h1'])}</h1><p class="intro">{esc(page['intro'])}{pwa_subscription_link}</p><div class="actions">{primary}{secondary}</div></div>
 {product_summary}</section>
 <article class="content-grid">{sections}</article>{related_section}
-<div class="closing"><p>{esc({"tg": "Дар Telegram Mini App низ дастрас аст.", "ru": "Также доступно в Telegram Mini App.", "uz": "Telegram Mini App orqali ham foydalanish mumkin."}[lang])}</p>{cta}</div></main><footer class="site-footer"><span class="footer-brand">HSK AI · Тоҷикӣ / Русский / O‘zbekcha</span>{footer_links}<details><summary>{esc(labels['language'])}: {esc(LANGUAGE_NAMES[lang])}</summary><p>{privacy}</p></details></footer></body></html>'''
+<div class="closing"><p>{esc({"tg": "Дар Telegram Mini App низ дастрас аст.", "ru": "Также доступно в Telegram Mini App.", "uz": "Telegram Mini App orqali ham foydalanish mumkin."}[lang])}</p>{cta}</div></main><footer class="site-footer"><a class="footer-brand" href="/">HSK AI</a> · Тоҷикӣ / Русский / O‘zbekcha{footer_links}<details><summary>{esc(labels['language'])}: {esc(LANGUAGE_NAMES[lang])}</summary><p>{privacy}</p></details></footer></body></html>'''
 
 
 def render_google_signin_privacy(path, settings_obj):
