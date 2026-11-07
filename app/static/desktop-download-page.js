@@ -467,11 +467,8 @@
     var remembered = window.HSKSiteLanguage && window.HSKSiteLanguage.get();
     if (remembered === "tg") remembered = "tj";
     if (supportedLanguages.indexOf(remembered) >= 0) return remembered;
-    var browserLanguage = String(navigator.language || "").toLowerCase();
-    if (browserLanguage.indexOf("tj") === 0) return "tj";
-    if (browserLanguage.indexOf("uz") === 0) return "uz";
-    if (browserLanguage.indexOf("ru") === 0) return "ru";
-    return "uz";
+    // A first visit has a stable Russian default, not an inferred browser locale.
+    return "ru";
   }
 
   function detectedPlatform() {

@@ -1640,3 +1640,13 @@ footer .official-footer-links section div { display:flex; flex-wrap:wrap; gap:12
 footer .official-footer-links a { font-size:13px; line-height:1.5; text-decoration:none; color:var(--muted); }
 footer .official-footer-links a:hover { text-decoration:underline; }
 @media (max-width:620px) { footer .official-footer-links { grid-template-columns:1fr; } }
+
+/* Crawlable official links, low-footprint mobile footer. */
+footer:has(.official-footer-links) { gap:10px; padding:18px 0 26px; }
+footer .official-footer-links { display:flex; flex-direction:column; gap:9px; }
+footer .official-footer-links section { display:flex; flex-wrap:wrap; align-items:baseline; gap:5px 13px; }
+footer .official-footer-links h2 { margin:0; font-size:11px; white-space:nowrap; }
+footer .official-footer-links section div { flex:1 1 260px; gap:5px 13px; }
+footer .official-footer-links a { font-size:12px; }
+footer .official-footer-links section.legal-utility a { font-size:11px; }
+@media (max-width:620px) { footer .official-footer-links { gap:8px; } footer .official-footer-links section div { flex:1 1 100%; } }

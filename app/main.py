@@ -2274,7 +2274,7 @@ async def _rendered_downloads_page() -> Response:
         )
         origin = public_origin(settings)
         html = _absolute_download_seo_urls(html, origin)
-        section = downloads_section(status, origin=origin, language="uz")
+        section = downloads_section(status, origin=origin, language="ru")
         schema = app_downloads_structured_data(
             status, origin=origin, page_url="/download"
         )

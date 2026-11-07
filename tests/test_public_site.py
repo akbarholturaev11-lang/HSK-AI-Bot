@@ -121,7 +121,7 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
                 {page["lang"]: path},
             )
             self.assertEqual(
-                {t["hreflang"]: t["href"] for t in parsed.find("link", rel="alternate")},
+                {t["hreflang"]: t["href"] for t in parsed.find("link", rel="alternate") if "hreflang" in t},
                 {lang: ORIGIN + p for lang, p in expected.items()},
             )
             graph = json.loads(re.search(r'<script type="application/ld\+json">(.*?)</script>', html, re.S)[1])["@graph"]
@@ -240,10 +240,10 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
     async def test_every_legal_and_account_page_is_linked(self):
         legal_paths = ("/privacy", "/privacy#security", "/terms", "/account-deletion")
         google_by_lang = {
-            "/": "/privacy/google-sign-in/tj/",
+            "/": "/privacy/google-sign-in/ru/",
             "/tj/": "/privacy/google-sign-in/tj/",
             "/ru/": "/privacy/google-sign-in/ru/",
-            "/uz/": "/privacy/google-sign-in/",
+            "/uz/": "/privacy/google-sign-in/uz/",
         }
         for path, google in google_by_lang.items():
             response = await self.client.get(path)
@@ -270,6 +270,53 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("/terms", SITEMAP_PATHS)
         sitemap = await self.client.get("/sitemap.xml")
         self.assertIn(f"<loc>{ORIGIN}/terms</loc>", sitemap.text)
+
+    async def test_russian_first_visit_and_ai_readable_public_inventory(self):
+        default = await self.client.get("/")
+        self.assertEqual(default.status_code, 200)
+        self.assertEqual(default.headers["content-language"], "ru")
+        self.assertEqual(Tags(default.text).find("html")[0]["lang"], "ru")
+        self.assertIn("HSK AI — официальная платформа", default.text)
+        self.assertIn('<link rel="canonical" href="' + ORIGIN + '/">', default.text)
+        self.assertIn('href="/llms.txt"', default.text)
+        self.assertIn("Удаление аккаунта", default.text)
+        self.assertIn("Конфиденциальность", default.text)
+
+        for path, lang in (("/tj/", "tg"), ("/ru/", "ru"), ("/uz/", "uz")):
+            response = await self.client.get(path)
+            self.assertEqual(response.headers["content-language"], lang)
+            self.assertIn("<h1>", response.text)
+            self.assertIn('<nav class="official-footer-links"', response.text)
+
+        policy = await self.client.get("/privacy/google-sign-in/")
+        self.assertEqual(policy.headers["content-language"], "ru")
+        self.assertIn("Вход через Google", policy.text)
+        uz_policy = await self.client.get("/privacy/google-sign-in/uz/")
+        self.assertEqual(uz_policy.headers["content-language"], "uz")
+        self.assertIn("Google bilan kirish", uz_policy.text)
+
+        inventory = await self.client.get("/llms.txt")
+        self.assertEqual(inventory.status_code, 200)
+        self.assertTrue(inventory.headers["content-type"].startswith("text/plain"))
+        for expected in ("/ru/", "/tj/", "/uz/", "/download", "/privacy",
+                         "/account-deletion", "/terms", "/privacy/google-sign-in/",
+                         "https://t.me/hskai_support_bot"):
+            self.assertIn(expected, inventory.text)
+        for denied in ("telegram_user_id", "BOT_TOKEN", "/api/admin/"):
+            self.assertNotIn(denied, inventory.text)
+        robots = (await self.client.get("/robots.txt")).text
+        self.assertTrue(allowed(robots, "OAI-SearchBot", "/llms.txt"))
+        self.assertFalse(allowed(robots, "OAI-SearchBot", "/course-v3.html"))
+
+        download_source = Path("app/static/desktop-download.html").read_text(encoding="utf-8")
+        self.assertIn('<html lang="ru">', download_source)
+        self.assertIn('href="/download?lang=ru"', download_source)
+        self.assertIn("Скачать HSK AI", download_source)
+        self.assertIn('href="/llms.txt"', download_source)
+        shared = Path("app/static/public-site-language.js").read_text(encoding="utf-8")
+        self.assertIn('updateLinks(current || read() || "ru")', shared)
+        installer = Path("app/static/desktop-download-page.js").read_text(encoding="utf-8")
+        self.assertIn('return "ru";', installer)
 
     async def test_attribution_click_and_no_open_redirect(self):
         with self.assertLogs("uvicorn.error.public_analytics", level="INFO") as captured:
