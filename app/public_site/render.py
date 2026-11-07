@@ -252,9 +252,9 @@ def render_page(path, settings_obj, tags=None):
 <meta name="twitter:title" content="{esc(page['title'])}"><meta name="twitter:description" content="{esc(page['description'])}">
 <meta name="twitter:image" content="{esc(origin)}/public-assets/social-cover.webp?v=2">
 <link rel="alternate" type="text/plain" title="HSK AI AI information" href="/llms.txt"><link rel="icon" href="/public-assets/logo.png" type="image/png">
-<link rel="stylesheet" href="/public-assets/site.css?v=4">
+<link rel="stylesheet" href="/public-assets/site.css?v=5">
 <link rel="stylesheet" href="/public-assets/navigation.css?v=1">
-<script src="/public-assets/language.js?v=1" defer></script>
+<script src="/public-assets/language.js?v=2" defer></script>
 <script type="application/ld+json">{schema}</script></head>
 <body class="public-page {body_kind}"><header class="site-header"><a data-site-nav="home" class="brand" href="{esc(with_attribution(HOME_PATHS[lang], tags))}"><img src="/public-assets/logo.png" width="42" height="42" alt="">HSK AI</a>
 <nav class="main-nav" aria-label="{nav_aria}">{nav_items}</nav><details class="language-switch"><summary aria-label="{esc(language_menu_label)}" title="{esc(language_menu_label)}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c-5 5-5 13 0 18M12 3c5 5 5 13 0 18"/></svg><span>{esc(LANGUAGE_NAMES[lang])}</span></summary><div class="language-menu">{nav}</div></details></header>
@@ -296,7 +296,7 @@ def render_google_signin_privacy(path, settings_obj):
 <meta name="robots" content="index,follow"><link rel="canonical" href="{esc(canonical)}">{alternates}
 <meta property="og:title" content="{esc(page["title"])}"><meta property="og:description" content="{esc(page["description"])}">
 <meta property="og:type" content="website"><meta property="og:url" content="{esc(canonical)}"><meta property="og:site_name" content="HSK AI">
-<link rel="alternate" type="text/plain" title="HSK AI AI information" href="/llms.txt"><link rel="icon" href="/public-assets/logo.png" type="image/png"><link rel="stylesheet" href="/public-assets/site.css?v=3"></head>
+<link rel="alternate" type="text/plain" title="HSK AI AI information" href="/llms.txt"><link rel="icon" href="/public-assets/logo.png" type="image/png"><link rel="stylesheet" href="/public-assets/site.css?v=5"></head>
 <body class="public-page legal-page"><header class="site-header"><a class="brand" href="/"><img src="/public-assets/logo.png" width="40" height="40" alt="">HSK AI</a><nav class="language-switch" aria-label="Language">{language_links}</nav></header>
 <main><article><p class="eyebrow">HSK AI · GOOGLE SIGN-IN</p><h1>{esc(page["h1"])}</h1><p class="intro">{esc(page["intro"])}</p>{sections}</article></main>
 <footer class="site-footer"><span class="footer-brand">HSK AI · {esc(page["title"])} · {esc(page["updated"])}</span>{footer_links}</footer></body></html>'''
