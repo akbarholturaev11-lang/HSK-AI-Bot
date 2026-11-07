@@ -1631,3 +1631,12 @@ input:focus-visible {
     width: auto;
   }
 }
+
+/* Official product links remain in server-readable HTML, including no-JS. */
+footer:has(.official-footer-links) { display:flex; flex-direction:column; align-items:stretch; justify-content:flex-start; min-height:0; gap:20px; padding:30px 0 42px; }
+footer .official-footer-links { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:24px; width:100%; }
+footer .official-footer-links h2 { margin:0 0 12px; font-size:14px; font-weight:800; color:var(--ink); }
+footer .official-footer-links section div { display:flex; flex-wrap:wrap; gap:12px 20px; }
+footer .official-footer-links a { font-size:13px; line-height:1.5; text-decoration:none; color:var(--muted); }
+footer .official-footer-links a:hover { text-decoration:underline; }
+@media (max-width:620px) { footer .official-footer-links { grid-template-columns:1fr; } }

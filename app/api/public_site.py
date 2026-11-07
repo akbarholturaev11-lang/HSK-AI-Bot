@@ -149,7 +149,7 @@ small{color:#59534c}li{margin:0.45em 0}
 <h1>HSK AI Privacy Policy</h1>
 <p><small>Effective date: 3 November 2026</small></p>
 <h2>Who operates HSK AI</h2>
-<p>Pomp HSK AI operates HSK AI, a Chinese-learning service available through its Android app, Telegram bot and Mini App, desktop clients and website. This policy explains what information we process, why we use it, who may receive it, and how you can request deletion. Questions about privacy can be sent to <a href="mailto:hskaiapp@gmail.com">hskaiapp@gmail.com</a> or through <a href="https://t.me/darsi_chini_bot">the official HSK AI support bot</a>.</p>
+<p>Pomp HSK AI operates HSK AI, a Chinese-learning service available through its Android app, Telegram bot and Mini App, desktop clients and website. This policy explains what information we process, why we use it, who may receive it, and how you can request deletion. Questions about privacy can be sent to <a href="mailto:hskaiapp@gmail.com">hskaiapp@gmail.com</a> or through <a href="https://t.me/hskai_support_bot">the official HSK AI Support bot</a>.</p>
 <h2>Information we collect and use</h2>
 <ul>
 <li><strong>Account and profile:</strong> Your chosen Telegram, Google or Apple sign-in identifier, linked identity information, any email and name supplied by that provider, profile display name or avatar choice, language and HSK level, and authentication or session records. Google or Apple can create an account without Telegram; equal email addresses do not merge unrelated accounts.</li>
@@ -211,7 +211,7 @@ small{color:#59534c}li{margin:0.45em 0}
 <h2>Privacy</h2>
 <p>How account, learning and device data is handled is described in the HSK AI Privacy Policy.</p>
 <h2>Contact</h2>
-<p>Use the Support item inside HSK AI or the official Telegram bot @darsi_chini_bot.</p>
+<p>Use the Support item inside HSK AI or the official HSK AI Support bot @hskai_support_bot.</p>
 </body></html>"""
         return HTMLResponse(
             body,
