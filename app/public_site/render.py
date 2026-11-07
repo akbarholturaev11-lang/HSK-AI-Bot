@@ -105,7 +105,6 @@ def official_footer_links(lang):
 
 def structured_data(path, origin):
     page = PAGES[path]
-    lang = page["lang"]
     graph = [
         {"@type": "Organization", "@id": origin + "/#organization", "name": "HSK AI",
          "url": origin + "/", "logo": origin + "/public-assets/logo.png",
