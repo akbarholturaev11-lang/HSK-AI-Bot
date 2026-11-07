@@ -32,6 +32,9 @@ OFFICIAL_SOCIAL_LINKS = (
 )
 ATTRIBUTION_KEYS = ("source", "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content")
 LANGUAGE_NAMES = {"tg": "Тоҷикӣ", "ru": "Русский", "uz": "O‘zbekcha"}
+# Search-friendly real variants of the same brand, in preference order.
+# The site's primary name remains HSK AI, with a single canonical root.
+BRAND_ALTERNATE_NAMES = ("HSKAI", "HSK-AI", "HSK Ai", "HSK AI App", "hskai.app")
 
 
 def translated_path(path, lang):
@@ -107,16 +110,18 @@ def structured_data(path, origin):
     page = PAGES[path]
     graph = [
         {"@type": "Organization", "@id": origin + "/#organization", "name": "HSK AI",
+         "alternateName": list(BRAND_ALTERNATE_NAMES),
          "url": origin + "/", "logo": origin + "/public-assets/logo.png",
          "sameAs": [BOT_URL, *(url for _, url in OFFICIAL_SOCIAL_LINKS)],
          "contactPoint": [{"@type": "ContactPoint", "contactType": "customer support",
                            "url": SUPPORT_URL, "email": "hskaiapp@gmail.com",
                            "availableLanguage": ["Tajik", "Russian", "Uzbek"]}]},
         {"@type": "WebSite", "@id": origin + "/#website", "name": "HSK AI",
-         "alternateName": ["HSKAI", "hskai.app"],
+         "alternateName": list(BRAND_ALTERNATE_NAMES),
          "url": origin + "/",
          "inLanguage": ["ru", "tg", "uz"], "publisher": {"@id": origin + "/#organization"}},
         {"@type": "SoftwareApplication", "@id": origin + "/#application", "name": "HSK AI",
+         "alternateName": list(BRAND_ALTERNATE_NAMES[:-1]),
          "applicationCategory": "EducationalApplication", "operatingSystem": ["Android", "macOS", "Windows", "Telegram Mini App", "iOS (PWA)"],
          "url": origin + "/", "installUrl": origin + DOWNLOAD_PATH, "inLanguage": ["ru", "tg", "uz"],
          "description": PAGES["/"]["intro"], "publisher": {"@id": origin + "/#organization"}},
