@@ -202,6 +202,40 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
             "google-site-verification: google4575dc78c69e5824.html",
         )
 
+    async def test_hsk_ai_brand_identity_and_verified_official_links(self):
+        from app.public_site.render import BOT_URL, NEWS_URL, SUPPORT_URL, OFFICIAL_SOCIAL_LINKS
+
+        for path in ("/", "/tj/", "/ru/", "/uz/"):
+            page = await self.client.get(path)
+            self.assertEqual(page.status_code, 200)
+            self.assertTrue(PAGES[path]["title"].startswith("HSK AI"), path)
+            self.assertTrue(PAGES[path]["h1"].startswith("HSK AI"), path)
+            self.assertIn('name="application-name" content="HSK AI"', page.text)
+            self.assertIn('class="official-footer-links"', page.text)
+            self.assertIn(SUPPORT_URL, page.text)
+            self.assertIn(NEWS_URL, page.text)
+            self.assertIn("/iphone-pwa", page.text)
+            graph = json.loads(re.search(r'<script type="application/ld\\+json">(.*?)</script>', page.text, re.S)[1])["@graph"]
+            org = next(node for node in graph if node["@type"] == "Organization")
+            self.assertEqual(org["name"], "HSK AI")
+            self.assertIn(BOT_URL, org["sameAs"])
+            self.assertIn(NEWS_URL, org["sameAs"])
+            self.assertEqual({url for _, url in OFFICIAL_SOCIAL_LINKS},
+                             set(org["sameAs"]) - {BOT_URL})
+            self.assertEqual(org["contactPoint"][0]["url"], SUPPORT_URL)
+
+        for path in ("/tj/guide/faq/", "/ru/guide/faq/", "/uz/guide/faq/"):
+            page = await self.client.get(path)
+            self.assertIn("HSK AI", page.text)
+            self.assertIn(SUPPORT_URL, page.text)
+        download_source = Path("app/static/desktop-download.html").read_text(encoding="utf-8")
+        self.assertIn('class="official-footer-links"', download_source)
+        self.assertIn(SUPPORT_URL, download_source)
+        self.assertIn(NEWS_URL, download_source)
+        privacy = await self.client.get("/privacy")
+        self.assertIn(SUPPORT_URL, privacy.text)
+        self.assertNotIn('href="' + BOT_URL + '"', privacy.text)
+
     async def test_attribution_click_and_no_open_redirect(self):
         with self.assertLogs("uvicorn.error.public_analytics", level="INFO") as captured:
             response = await self.client.get("/tj/?utm_source=bing&utm_campaign=hsk&initData=SECRET")
