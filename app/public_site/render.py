@@ -27,6 +27,7 @@ OFFICIAL_SOCIAL_LINKS = (
     ("TikTok TJ", "https://www.tiktok.com/@hskai.ru"),
     ("YouTube RU", "https://youtube.com/@hskai_app"),
     ("YouTube TJ", "https://www.youtube.com/@hskaiapp-tj"),
+    ("Facebook", "https://facebook.com/1159152280609531"),
     ("Telegram News", NEWS_URL),
 )
 ATTRIBUTION_KEYS = ("source", "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content")
