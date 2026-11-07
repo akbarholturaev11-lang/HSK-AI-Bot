@@ -2233,8 +2233,8 @@ def _absolute_download_seo_urls(html: str, origin: str) -> str:
             f'<link rel="canonical" href="{origin}/download">',
         )
         .replace(
-            '<link rel="alternate" hreflang="uz" href="/download">',
-            f'<link rel="alternate" hreflang="uz" href="{origin}/download">',
+            '<link rel="alternate" hreflang="ru" href="/download">',
+            f'<link rel="alternate" hreflang="ru" href="{origin}/download">',
         )
         .replace(
             '<meta property="og:url" content="/download">',
