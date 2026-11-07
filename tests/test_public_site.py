@@ -318,6 +318,32 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
         installer = Path("app/static/desktop-download-page.js").read_text(encoding="utf-8")
         self.assertIn('return "ru";', installer)
 
+    def test_public_download_has_absolute_russian_hreflang(self):
+        # Test the pure metadata helper without importing app.main or touching
+        # Telegram, the database, Railway or an application startup hook.
+        import ast
+
+        main_source = Path("app/main.py").read_text(encoding="utf-8")
+        helper = next(
+            item for item in ast.parse(main_source).body
+            if isinstance(item, ast.FunctionDef)
+            and item.name == "_absolute_download_seo_urls"
+        )
+        namespace = {}
+        exec(compile(ast.Module(body=[helper], type_ignores=[]),
+                     "app/main.py", "exec"), namespace)
+
+        html = Path("app/static/desktop-download.html").read_text(encoding="utf-8")
+        self.assertIn('<link rel="alternate" hreflang="ru" href="/download">', html)
+        rendered = namespace["_absolute_download_seo_urls"](html, "https://hskai.app")
+        for metadata in (
+            '<link rel="canonical" href="https://hskai.app/download">',
+            '<link rel="alternate" hreflang="ru" href="https://hskai.app/download">',
+            '<meta property="og:url" content="https://hskai.app/download">',
+        ):
+            self.assertIn(metadata, rendered)
+        self.assertNotIn('hreflang="uz" href="/download"', rendered)
+
     async def test_attribution_click_and_no_open_redirect(self):
         with self.assertLogs("uvicorn.error.public_analytics", level="INFO") as captured:
             response = await self.client.get("/tj/?utm_source=bing&utm_campaign=hsk&initData=SECRET")
