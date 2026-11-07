@@ -3,7 +3,7 @@ import json
 import logging
 import re
 from pathlib import Path
-from urllib.parse import urlsplit
+from urllib.parse import urlencode, urlsplit
 from xml.etree.ElementTree import Element, SubElement, tostring
 
 from fastapi import APIRouter, Request
@@ -54,10 +54,16 @@ def legacy_public_site_redirect(request: Request, official_origin: str):
     path = request.url.path
     if path not in LEGACY_PUBLIC_REDIRECT_PATHS:
         return None
-    # The fixed, configured official origin is never derived from untrusted Host
-    # or query parameters. Keep the SEO destination clean and deterministic.
+    # Preserve only public campaign attribution and a valid download language.
+    # Do not reflect tokens, callbacks or arbitrary query parameters.
+    params = attribution(request.query_params)
+    if path in {"/download", "/apps", "/desktop-download", "/desktop-download.html"}:
+        lang = request.query_params.get("lang", "")
+        if lang in {"ru", "uz", "tj"}:
+            params["lang"] = lang
+    destination = official_origin + path + ("?" + urlencode(params) if params else "")
     return RedirectResponse(
-        official_origin + path,
+        destination,
         status_code=301,
         headers={"Cache-Control": "public, max-age=300"},
     )
