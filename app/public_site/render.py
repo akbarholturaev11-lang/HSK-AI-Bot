@@ -18,6 +18,17 @@ from app.public_site.content import (
 )
 
 BOT_URL = "https://t.me/darsi_chini_bot"
+SUPPORT_URL = "https://t.me/hskai_support_bot"
+NEWS_URL = "https://t.me/hskaiapp"
+OFFICIAL_SOCIAL_LINKS = (
+    ("Instagram RU", "https://www.instagram.com/hskai.app"),
+    ("Instagram TJ", "https://www.instagram.com/hskai.apptj/"),
+    ("TikTok RU", "https://www.tiktok.com/@hskai.app"),
+    ("TikTok TJ", "https://www.tiktok.com/@hskai.ru"),
+    ("YouTube RU", "https://youtube.com/@hskai_app"),
+    ("YouTube TJ", "https://www.youtube.com/@hskaiapp-tj"),
+    ("Telegram News", NEWS_URL),
+)
 ATTRIBUTION_KEYS = ("source", "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content")
 LANGUAGE_NAMES = {"tg": "Тоҷикӣ", "ru": "Русский", "uz": "O‘zbekcha"}
 
@@ -50,13 +61,45 @@ def with_attribution(path, tags):
     return path + ("?" + urlencode(tags) if tags else "")
 
 
+def official_footer_links(lang):
+    """Crawler-readable official HSK AI channels, support and legal links."""
+    labels = {
+        "tg": ("Шабакаҳои расмӣ", "Дастгирӣ ва маълумот", "Дастгирии HSK AI", "Барномаи iPhone PWA"),
+        "ru": ("Официальные соцсети", "Поддержка и документы", "Поддержка HSK AI", "Приложение для iPhone"),
+        "uz": ("Rasmiy ijtimoiy tarmoqlar", "Yordam va hujjatlar", "HSK AI qo‘llab-quvvatlash", "iPhone PWA ilovasi"),
+    }[lang]
+    socials = "".join(
+        f'<a href="{escape(url, quote=True)}" rel="noopener noreferrer">{escape(label)}</a>'
+        for label, url in OFFICIAL_SOCIAL_LINKS
+    )
+    help_links = (
+        (labels[2], SUPPORT_URL), ("Telegram Bot", BOT_URL),
+        (labels[3], "/iphone-pwa"), ("Privacy Policy", "/privacy"),
+        ("Terms", "/terms"),
+    )
+    help_html = "".join(
+        f'<a href="{escape(url, quote=True)}" rel="noopener noreferrer">{escape(label)}</a>'
+        for label, url in help_links
+    )
+    return (
+        '<nav class="official-footer-links" aria-label="HSK AI official links">'
+        f'<section><h2>{escape(labels[0])}</h2><div>{socials}</div></section>'
+        f'<section><h2>{escape(labels[1])}</h2><div>{help_html}</div></section>'
+        '</nav>'
+    )
+
+
 def structured_data(path, origin):
     page = PAGES[path]
     lang = page["lang"]
     localized_home = PAGE_TRANSLATIONS["home"].get(lang, "/tj/")
     graph = [
         {"@type": "Organization", "@id": origin + "/#organization", "name": "HSK AI",
-         "url": origin + "/", "sameAs": [BOT_URL]},
+         "url": origin + "/", "logo": origin + "/public-assets/logo.png",
+         "sameAs": [BOT_URL, *(url for _, url in OFFICIAL_SOCIAL_LINKS)],
+         "contactPoint": [{"@type": "ContactPoint", "contactType": "customer support",
+                           "url": SUPPORT_URL, "email": "hskaiapp@gmail.com",
+                           "availableLanguage": ["Tajik", "Russian", "Uzbek"]}]},
         {"@type": "WebSite", "@id": origin + "/#website", "name": "HSK AI",
          "alternateName": {"tg": "HSK AI — омӯзиши забони чинӣ",
                            "ru": "HSK AI — изучение китайского языка",
@@ -64,7 +107,7 @@ def structured_data(path, origin):
          "url": origin + localized_home,
          "inLanguage": ["tg", "ru", "uz"], "publisher": {"@id": origin + "/#organization"}},
         {"@type": "SoftwareApplication", "@id": origin + "/#application", "name": "HSK AI",
-         "applicationCategory": "EducationalApplication", "operatingSystem": ["Android", "macOS", "Windows", "Telegram Mini App"],
+         "applicationCategory": "EducationalApplication", "operatingSystem": ["Android", "macOS", "Windows", "Telegram Mini App", "iOS (PWA)"],
          "url": origin + localized_home, "installUrl": origin + DOWNLOAD_PATH, "inLanguage": ["tg", "ru", "uz"],
          "description": PAGES[localized_home]["intro"], "publisher": {"@id": origin + "/#organization"}},
         {"@type": "WebPage", "@id": origin + path + "#page", "url": origin + path,
@@ -174,6 +217,7 @@ def render_page(path, settings_obj, tags=None):
         "ru": "Мы учитываем открытие страницы и переход к боту с метками кампании в серверном журнале и анонимной дневной статистике. Страница не устанавливает аналитические cookie и не связывает посещение с аккаунтом Telegram.",
         "uz": "Sahifa ochilishi va botga o‘tishni kampaniya belgilari bilan server jurnalida va anonim kunlik jamlanma statistikada hisoblaymiz. Sahifa analytics cookie o‘rnatmaydi va tashrifni Telegram hisobiga bog‘lamaydi.",
     }[lang]
+    footer_links = official_footer_links(lang)
     schema = json.dumps(structured_data(path, origin), ensure_ascii=False).replace("<", "\\u003c")
     body_kind = "guide-page" if str(page.get("translation_group", "")).startswith("guide") else "marketing-page"
     related_section = (
@@ -184,6 +228,7 @@ def render_page(path, settings_obj, tags=None):
 <html lang="{lang}"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{esc(page['title'])}</title><meta name="description" content="{esc(page['description'])}">
+<meta name="application-name" content="HSK AI"><meta name="author" content="HSK AI">
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="{esc(canonical)}">{hreflang}{verification}
 <meta property="og:title" content="{esc(page['title'])}"><meta property="og:description" content="{esc(page['description'])}">
@@ -202,7 +247,7 @@ def render_page(path, settings_obj, tags=None):
 <main><section class="hero"><div class="hero-copy"><p class="eyebrow">{esc(hero_kicker)}</p><h1>{esc(page['h1'])}</h1><p class="intro">{esc(page['intro'])}</p><div class="actions">{primary}{secondary}</div></div>
 {product_summary}</section>
 <article class="content-grid">{sections}</article>{related_section}
-<div class="closing"><p>{esc({"tg": "Дар Telegram Mini App низ дастрас аст.", "ru": "Также доступно в Telegram Mini App.", "uz": "Telegram Mini App orqali ham foydalanish mumkin."}[lang])}</p>{cta}</div></main><footer class="site-footer"><span>HSK AI · Тоҷикӣ / Русский / O‘zbekcha</span><details><summary>{esc(labels['language'])}: {esc(LANGUAGE_NAMES[lang])}</summary><p>{privacy}</p></details></footer></body></html>'''
+<div class="closing"><p>{esc({"tg": "Дар Telegram Mini App низ дастрас аст.", "ru": "Также доступно в Telegram Mini App.", "uz": "Telegram Mini App orqali ham foydalanish mumkin."}[lang])}</p>{cta}</div></main><footer class="site-footer"><span class="footer-brand">HSK AI · Тоҷикӣ / Русский / O‘zbekcha</span>{footer_links}<details><summary>{esc(labels['language'])}: {esc(LANGUAGE_NAMES[lang])}</summary><p>{privacy}</p></details></footer></body></html>'''
 
 
 def render_google_signin_privacy(path, settings_obj):
@@ -228,6 +273,7 @@ def render_google_signin_privacy(path, settings_obj):
         f'<section><h2>{esc(title)}</h2><p>{esc(body)}</p></section>'
         for title, body in page["sections"]
     )
+    footer_links = official_footer_links(page["lang"])
     return f'''<!doctype html>
 <html lang="{esc(page["lang"])}"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -238,4 +284,4 @@ def render_google_signin_privacy(path, settings_obj):
 <link rel="icon" href="/public-assets/logo.png" type="image/png"><link rel="stylesheet" href="/public-assets/site.css?v=3"></head>
 <body class="public-page legal-page"><header class="site-header"><a class="brand" href="/"><img src="/public-assets/logo.png" width="40" height="40" alt="">HSK AI</a><nav class="language-switch" aria-label="Language">{language_links}</nav></header>
 <main><article><p class="eyebrow">HSK AI · GOOGLE SIGN-IN</p><h1>{esc(page["h1"])}</h1><p class="intro">{esc(page["intro"])}</p>{sections}</article></main>
-<footer><span>HSK AI · {esc(page["title"])} · {esc(page["updated"])}</span></footer></body></html>'''
+<footer class="site-footer"><span class="footer-brand">HSK AI · {esc(page["title"])} · {esc(page["updated"])}</span>{footer_links}</footer></body></html>'''
