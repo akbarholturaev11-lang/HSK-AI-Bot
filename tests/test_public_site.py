@@ -344,6 +344,41 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
             self.assertIn(metadata, rendered)
         self.assertNotIn('hreflang="uz" href="/download"', rendered)
 
+    async def test_play_pro_help_prefers_browser_pwa_without_reinstall(self):
+        # The user-facing guidance and the AI-readable source must agree.
+        cases = {
+            "tg": ("/tj/guide/subscription/", "/tj/guide/faq/",
+                   "Обуна дар браузер (PWA)", "APK насб кардан"),
+            "ru": ("/ru/guide/subscription/", "/ru/guide/faq/",
+                   "Оформить Pro в браузере (PWA)", "устанавливать APK"),
+            "uz": ("/uz/guide/subscription/", "/uz/guide/faq/",
+                   "Brauzerda Pro olish (PWA)", "APK o‘rnatish"),
+        }
+        for lang, (guide_path, faq_path, label, no_install) in cases.items():
+            with self.subTest(locale=lang):
+                guide = await self.client.get(guide_path)
+                faq = await self.client.get(faq_path)
+                self.assertEqual(guide.status_code, 200)
+                self.assertEqual(faq.status_code, 200)
+                for html in (guide.text, faq.text):
+                    self.assertIn("https://hskai.app/iphone-pwa", html)
+                    self.assertIn("Google Play", html)
+                    self.assertIn(no_install, html)
+                self.assertIn(
+                    f'<a class="pwa-subscription-link" href="/iphone-pwa">{label}</a>',
+                    guide.text,
+                )
+                self.assertEqual(
+                    len(Tags(guide.text).find("a", **{"class": "pwa-subscription-link"})), 1
+                )
+
+        ai_index = await self.client.get("/llms.txt")
+        self.assertEqual(ai_index.status_code, 200)
+        self.assertIn("## Как купить Pro, если в Google Play закончился лимит", ai_index.text)
+        self.assertIn("https://hskai.app/iphone-pwa", ai_index.text.replace(ORIGIN, "https://hskai.app"))
+        self.assertIn("добавлять PWA на главный экран не нужно", ai_index.text)
+        self.assertIn("Удалять приложение из Google Play", ai_index.text)
+
     async def test_attribution_click_and_no_open_redirect(self):
         with self.assertLogs("uvicorn.error.public_analytics", level="INFO") as captured:
             response = await self.client.get("/tj/?utm_source=bing&utm_campaign=hsk&initData=SECRET")
