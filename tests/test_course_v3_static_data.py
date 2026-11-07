@@ -898,7 +898,7 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn('src="/assets/hsk-ai-logo-256.png"', landing)
         self.assertIn('<link rel="canonical" href="/download">', landing)
         self.assertIn('<meta name="robots" content="index,follow">', landing)
-        self.assertIn('HSK AI Apps / Download — macOS, Windows va Android', landing)
+        self.assertIn('HSK AI — скачать приложение для Android, macOS и Windows', landing)
         self.assertIn('image.src = "/assets/hsk-ai-logo-256.png"', download)
         self.assertIn('var source = "/assets/hsk-ai-devices.jpg"', download)
         self.assertIn('image.addEventListener("error", function ()', download)
