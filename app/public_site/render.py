@@ -231,6 +231,15 @@ def render_page(path, settings_obj, tags=None):
         "ru": "Мы учитываем открытие страницы и переход к боту с метками кампании в серверном журнале и анонимной дневной статистике. Страница не устанавливает аналитические cookie и не связывает посещение с аккаунтом Telegram.",
         "uz": "Sahifa ochilishi va botga o‘tishni kampaniya belgilari bilan server jurnalida va anonim kunlik jamlanma statistikada hisoblaymiz. Sahifa analytics cookie o‘rnatmaydi va tashrifni Telegram hisobiga bog‘lamaydi.",
     }[lang]
+    # A real, small HTML link, readable without JS; never shown inside Google Play.
+    pwa_subscription_link = ""
+    if page.get("translation_group") == "guide-subscription":
+        pwa_label = {
+            "tg": "Обуна дар браузер (PWA)",
+            "ru": "Оформить Pro в браузере (PWA)",
+            "uz": "Brauzerda Pro olish (PWA)",
+        }[lang]
+        pwa_subscription_link = f' <a class="pwa-subscription-link" href="/iphone-pwa">{esc(pwa_label)}</a>'
     footer_links = official_footer_links(lang)
     schema = json.dumps(structured_data(path, origin), ensure_ascii=False).replace("<", "\\u003c")
     body_kind = "guide-page" if str(page.get("translation_group", "")).startswith("guide") else "marketing-page"
@@ -258,7 +267,7 @@ def render_page(path, settings_obj, tags=None):
 <script type="application/ld+json">{schema}</script></head>
 <body class="public-page {body_kind}"><header class="site-header"><a data-site-nav="home" class="brand" href="{esc(with_attribution(HOME_PATHS[lang], tags))}"><img src="/public-assets/logo.png" width="42" height="42" alt="">HSK AI</a>
 <nav class="main-nav" aria-label="{nav_aria}">{nav_items}</nav><details class="language-switch"><summary aria-label="{esc(language_menu_label)}" title="{esc(language_menu_label)}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c-5 5-5 13 0 18M12 3c5 5 5 13 0 18"/></svg><span>{esc(LANGUAGE_NAMES[lang])}</span></summary><div class="language-menu">{nav}</div></details></header>
-<main><section class="hero"><div class="hero-copy"><p class="eyebrow">{esc(hero_kicker)}</p><h1>{esc(page['h1'])}</h1><p class="intro">{esc(page['intro'])}</p><div class="actions">{primary}{secondary}</div></div>
+<main><section class="hero"><div class="hero-copy"><p class="eyebrow">{esc(hero_kicker)}</p><h1>{esc(page['h1'])}</h1><p class="intro">{esc(page['intro'])}{pwa_subscription_link}</p><div class="actions">{primary}{secondary}</div></div>
 {product_summary}</section>
 <article class="content-grid">{sections}</article>{related_section}
 <div class="closing"><p>{esc({"tg": "Дар Telegram Mini App низ дастрас аст.", "ru": "Также доступно в Telegram Mini App.", "uz": "Telegram Mini App orqali ham foydalanish mumkin."}[lang])}</p>{cta}</div></main><footer class="site-footer"><span class="footer-brand">HSK AI · Тоҷикӣ / Русский / O‘zbekcha</span>{footer_links}<details><summary>{esc(labels['language'])}: {esc(LANGUAGE_NAMES[lang])}</summary><p>{privacy}</p></details></footer></body></html>'''
