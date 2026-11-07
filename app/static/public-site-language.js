@@ -45,10 +45,10 @@
   }
   var site = {get: read, set: function(lang) { save(lang); updateLinks(lang); }, syncLinks: updateLinks, normalize: normalize};
   window.HSKSiteLanguage = site;
-  // The root is the default Tajik entry for crawlers and first visits. Only
-  // visitors with an explicit stored preference are sent to their own home.
+  // The server renders the root in Russian, including for no-JavaScript crawlers.
+  // Respect a previously chosen language without overriding the Russian default.
   var remembered = read();
-  if (window.location.pathname === "/" && remembered && remembered !== "tg") {
+  if (window.location.pathname === "/" && remembered && remembered !== "ru") {
     var preferred = new URL(HOME[remembered], window.location.origin);
     var incoming = new URL(window.location.href);
     ["utm_source","utm_medium","utm_campaign","utm_term","utm_content","source"].forEach(function (key) {
@@ -62,5 +62,5 @@
   document.querySelectorAll("[data-site-lang]").forEach(function (link) {
     link.addEventListener("click", function () { save(link.getAttribute("data-site-lang")); });
   });
-  updateLinks(current || read() || "tg");
+  updateLinks(current || read() || "ru");
 })();
