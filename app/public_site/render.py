@@ -73,10 +73,23 @@ def official_footer_links(lang):
         f'<a href="{escape(url, quote=True)}" rel="noopener noreferrer">{escape(label)}</a>'
         for label, url in OFFICIAL_SOCIAL_LINKS
     )
+    legal_labels = {
+        "tg": ("Нест кардани ҳисоб", "Амният", "Махфияти вуруд бо Google"),
+        "ru": ("Удаление аккаунта", "Безопасность", "Конфиденциальность Google Входа"),
+        "uz": ("Akkauntni o‘chirish", "Xavfsizlik", "Google orqali kirish maxfiyligi"),
+    }[lang]
+    google_privacy = {
+        "tg": "/privacy/google-sign-in/tj/",
+        "ru": "/privacy/google-sign-in/ru/",
+        "uz": "/privacy/google-sign-in/",
+    }[lang]
     help_links = (
         (labels[2], SUPPORT_URL), ("Telegram Bot", BOT_URL),
         (labels[3], "/iphone-pwa"), ("Privacy Policy", "/privacy"),
-        ("Terms", "/terms"),
+        (legal_labels[1], "/privacy#security"),
+        (legal_labels[0], "/account-deletion"),
+        (legal_labels[2], google_privacy),
+        ("Terms of Use", "/terms"),
     )
     help_html = "".join(
         f'<a href="{escape(url, quote=True)}" rel="noopener noreferrer">{escape(label)}</a>'
