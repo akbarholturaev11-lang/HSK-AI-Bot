@@ -238,7 +238,7 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('rel="canonical" href="' + ORIGIN + '/"', home.text)
         self.assertNotIn("telegram-chinese-bot-production.up.railway.app", home.text)
         site = json.loads(re.search(
-            r'<script type="application/ld\\+json">(.*?)</script>',
+            r'<script type="application/ld\+json">(.*?)</script>',
             home.text, re.S,
         )[1])["@graph"]
         self.assertEqual(next(x for x in site if x["@type"] == "WebSite")["url"], ORIGIN + "/")
