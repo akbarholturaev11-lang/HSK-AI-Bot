@@ -173,3 +173,17 @@ h1 { max-width: 800px; margin: 18px 0 20px; font-family: "Iowan Old Style", "Pal
   .course-cta { width:100%; }
   .closing { align-items:stretch; flex-direction:column; }
 }
+
+/* Official channels are visible to people and text-only AI/search crawlers. */
+.site-footer { flex-wrap: wrap; }
+.site-footer .footer-brand { flex: 1 1 100%; font-weight: 700; }
+.official-footer-links { display: grid; width: 100%; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.official-footer-links section h2 { margin: 0 0 12px; color: var(--ink); font-size: 14px; font-weight: 800; }
+.official-footer-links section div { display: flex; flex-wrap: wrap; gap: 12px 20px; }
+.official-footer-links a { color: inherit; font-size: 13px; line-height: 1.5; text-decoration: none; }
+.official-footer-links a:hover { color: var(--cinnabar); text-decoration: underline; }
+.official-footer-links a:focus-visible { outline: 2px solid var(--cinnabar); outline-offset: 3px; }
+@media (max-width: 620px) {
+  .official-footer-links { grid-template-columns: 1fr; gap: 25px; }
+  .official-footer-links section div { gap: 13px 18px; }
+}
