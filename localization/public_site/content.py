@@ -55,7 +55,7 @@ PAGES = {
     "/": {
         "lang": "tg", "title": "HSK AI — омӯзиши забони чинӣ ва HSK",
         "description": "Забони чиниро бо курсҳои HSK 1–4, машқ ва шарҳи AI омӯзед. HSK AI дар Android, desktop ва Telegram Mini App тоҷикӣ, русӣ ва ӯзбекиро дастгирӣ мекунад.",
-        "h1": "Забони чиниро қадам ба қадам омӯзед",
+        "h1": "HSK AI — забони чиниро қадам ба қадам омӯзед",
         "intro": "HSK AI курси пайдарпайи забони чинӣ, машқи луғат ва саволу ҷавоби AI-ро дар Android, desktop ва Telegram Mini App муттаҳид мекунад. Шарҳҳоро ба тоҷикӣ, русӣ ё ӯзбекӣ интихоб кунед.",
         "sections": [
             ("Курсҳои HSK 1–4", "Курси пайдарпайи HSK 1–4 луғат, грамматика, гуфтугӯ ва тестҳоро дар як роҳи омӯзиш мепайвандад. Пешравии дарсҳо дар ҳисоби HSK AI нигоҳ дошта мешавад."),
@@ -65,9 +65,9 @@ PAGES = {
         ],
     },
     "/tj/": {
-        "lang": "tg", "title": "Омӯзиши забони чинӣ ба тоҷикӣ — HSK AI",
+        "lang": "tg", "title": "HSK AI — омӯзиши забони чинӣ ба тоҷикӣ",
         "description": "HSK AI — платформаи омӯзиши чинӣ ба тоҷикӣ: HSK 1–4, луғат, тестҳо, AI ва барномаҳои Android, macOS, Windows ё Telegram Mini App.",
-        "h1": "Забони чиниро ба тоҷикӣ омӯзед",
+        "h1": "HSK AI — забони чиниро ба тоҷикӣ омӯзед",
         "intro": "HSK AI — платформаи омӯзиши забони чинӣ бо ёрии AI барои омӯзандагони тоҷикзабон. Дарсро хонед, маъноро ба тоҷикӣ фаҳмед ва баъд бо ҷумлаи худ машқ кунед. Русӣ ва ӯзбекӣ низ дастгирӣ мешаванд.",
         "sections": [
             ("Курсҳои HSK 1–4", "Курсҳо калима, грамматика ва гуфтугӯро бо машқ мепайванданд. Дар HSK 1 аз ибораҳои сода оғоз кунед; барои идомаи омӯзиш маводи HSK 2, HSK 3 ва HSK 4 мавҷуд аст. Пешрафти дарсҳо дар барнома нишон дода мешавад."),
@@ -77,9 +77,9 @@ PAGES = {
         ],
     },
     "/ru/": {
-        "lang": "ru", "title": "Китайский язык и курсы HSK — HSK AI",
+        "lang": "ru", "title": "HSK AI — китайский язык и курсы HSK",
         "description": "Изучайте китайский по курсам HSK 1–4 с AI и повторением слов. HSK AI поддерживает русский, таджикский и узбекский в Android, desktop и Telegram Mini App.",
-        "h1": "Учите китайский шаг за шагом",
+        "h1": "HSK AI — учите китайский шаг за шагом",
         "intro": "HSK AI объединяет последовательный курс китайского языка, практику лексики и ответы AI в Android, desktop и Telegram Mini App. Выберите объяснения на русском, таджикском или узбекском.",
         "sections": [
             ("Курсы HSK 1–4", "Последовательные уроки HSK 1–4 объединяют лексику, грамматику, диалоги и задания. Результаты обучения сохраняются в аккаунте HSK AI."),
@@ -89,9 +89,9 @@ PAGES = {
         ],
     },
     "/uz/": {
-        "lang": "uz", "title": "Xitoy tili va HSK kurslari — HSK AI",
-        "description": "Xitoy tilini HSK 1–4 kurslari bilan o‘rganing, AI yordamchida mashq qiling va so‘zlarni takrorlang. HSK AI o‘zbek, rus va tojik tillarini qo‘llaydi.",
-        "h1": "Xitoy tilini bosqichma-bosqich o‘rganing",
+        "lang": "uz", "title": "HSK AI — xitoy tili va HSK kurslari",
+        "description": "HSK AI — xitoy tilini HSK 1–4 kurslari bilan o‘rganish, AI yordamchida mashq qilish va so‘zlarni takrorlash ilovasi. O‘zbek, rus va tojik tillarida.",
+        "h1": "HSK AI — xitoy tilini bosqichma-bosqich o‘rganing",
         "intro": "HSK AI xitoy tili kursi, lug‘at mashqlari va AI savol-javobini Android, desktop va Telegram Mini App’da birlashtiradi. O‘zbekcha, ruscha yoki tojikcha izohlarni tanlang.",
         "sections": [
             ("HSK 1–4 kurslari", "Bosqichma-bosqich HSK 1–4 darslari lug‘at, grammatika, dialog va mashqlarni birlashtiradi. O‘quv natijalari HSK AI hisobida saqlanadi."),
@@ -386,11 +386,12 @@ PAGE_TRANSLATIONS["guide-faq"] = {
 PAGES.update({
     "/tj/guide/faq/": _page(
         "tg", "guide-faq", "faq",
-        "Саволҳои маъмул дар бораи HSK AI",
+        "HSK AI — саволҳои маъмул",
         "Ҷавоб ба саволҳои маъмул дар бораи забонҳои HSK AI, лимитҳо, AI ва санҷиши пардохти обуна.",
         "Саволҳои маъмул",
         "Ҷавобҳои кӯтоҳ ба саволҳое, ки ҳангоми омӯзиш ва истифодаи HSK AI пайдо мешаванд. Маълумоти ҳисоби шумо ва нархи ҷорӣ дар барнома нишон дода мешаванд.",
         [
+            ("HSK AI чист?", "HSK AI платформаи омӯзиши забони чинӣ бо курсҳои HSK 1–4, луғат, тестҳо ва AI-ёрдамчӣ мебошад. Он дар Android, компютер, Telegram Mini App ва iPhone PWA дастрас аст; забонҳо: тоҷикӣ, русӣ ва ӯзбекӣ. Сомонаи расмӣ: https://hskai.app."),
             ("HSK AI-ро аз куҷо оғоз кунам?", "Барномаи Android ё desktop-ро гиред ва бо Google, Apple ё Telegram-и дастрас ворид шавед. Telegram Mini App низ дастрас аст. Забон ва курси худро интихоб кунед."),
             ("Обуна чӣ қадар арзиш дорад?", "Нарх аз рӯйи муҳлат, минтақа ва усули пардохт муайян шуда, пеш аз пардохт дар экран нишон дода мешавад. Нархи дар ин саҳифа навишташуда ҳисобида нашавад."),
             ("Пас аз фиристодани расид чӣ кор кунам?", "Расидро админ месанҷад. Дархости интизориро такрор накунед; ҳолати тасдиқ ё рад шудани пардохтро дар барнома бинед."),
@@ -402,11 +403,12 @@ PAGES.update({
     ),
     "/ru/guide/faq/": _page(
         "ru", "guide-faq", "faq",
-        "Частые вопросы о HSK AI",
+        "HSK AI — частые вопросы",
         "Ответы на вопросы о языках HSK AI, лимитах, AI-помощнике и проверке оплаты подписки.",
         "Частые вопросы",
         "Короткие ответы на вопросы, которые возникают при обучении и использовании HSK AI. Состояние аккаунта и актуальная цена отображаются в приложении.",
         [
+            ("Что такое HSK AI?", "HSK AI — приложение для изучения китайского языка с курсами HSK 1–4, словарём, тестами и AI-помощником. Доступно на Android, компьютере, в Telegram Mini App и как iPhone PWA; языки: русский, таджикский и узбекский. Официальный сайт: https://hskai.app."),
             ("С чего начать в HSK AI?", "Скачайте Android или desktop и войдите через доступный Google, Apple или Telegram. Также доступен Telegram Mini App. Выберите язык и свой курс."),
             ("Сколько стоит подписка?", "Цена зависит от срока, региона и способа оплаты и показывается перед платежом. Не используйте цену с этой страницы как актуальную."),
             ("Что делать после отправки чека?", "Чек проверяет администратор. Не отправляйте повторный запрос, пока он ожидает проверки; статус подтверждения или отклонения показан в приложении."),
@@ -418,11 +420,12 @@ PAGES.update({
     ),
     "/uz/guide/faq/": _page(
         "uz", "guide-faq", "faq",
-        "HSK AI haqida ko‘p so‘raladigan savollar",
+        "HSK AI — ko‘p so‘raladigan savollar",
         "HSK AI tillari, kunlik limitlar, AI yordamchi va obuna to‘lovini tekshirish haqida savollarga javoblar.",
         "Ko‘p so‘raladigan savollar",
         "HSK AI’dan foydalanish va o‘rganish paytida ko‘p uchraydigan savollarga qisqa javoblar. Hisob holati va joriy narx ilovada ko‘rsatiladi.",
         [
+            ("HSK AI nima?", "HSK AI — xitoy tilini o‘rganish uchun HSK 1–4 kurslari, lug‘at, testlar va AI yordamchiga ega ilova. Android, kompyuter, Telegram Mini App va iPhone PWA’da ishlaydi. O‘zbek, rus va tojik tillari mavjud. Rasmiy sayt: https://hskai.app."),
             ("HSK AI’dan foydalanishni nimadan boshlayman?", "Android yoki desktop ilovasini oling va mavjud Google, Apple yoki Telegram orqali kiring. Telegram Mini App’dan ham foydalanish mumkin. Til va kursingizni tanlang."),
             ("Obuna qancha turadi?", "Narx muddat, hudud va to‘lov usuliga qarab belgilanadi va to‘lovdan oldin oynada ko‘rsatiladi. Bu sahifadagi matnni joriy narx deb qabul qilmang."),
             ("Chek yuborgandan keyin nima qilaman?", "Chekni admin tekshiradi. So‘rov tekshirilayotgan paytda uni qayta yubormang; tasdiq yoki rad holatini ilovada ko‘ring."),
