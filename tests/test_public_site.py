@@ -215,7 +215,7 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
             self.assertIn(SUPPORT_URL, page.text)
             self.assertIn(NEWS_URL, page.text)
             self.assertIn("/iphone-pwa", page.text)
-            graph = json.loads(re.search(r'<script type="application/ld\\+json">(.*?)</script>', page.text, re.S)[1])["@graph"]
+            graph = json.loads(re.search(r'<script type="application/ld\+json">(.*?)</script>', page.text, re.S)[1])["@graph"]
             org = next(node for node in graph if node["@type"] == "Organization")
             self.assertEqual(org["name"], "HSK AI")
             self.assertIn(BOT_URL, org["sameAs"])
