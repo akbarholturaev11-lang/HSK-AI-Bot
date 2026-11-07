@@ -139,13 +139,13 @@ def create_public_site_router(*, settings_obj, session_factory=None):
         body = """<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>HSK AI Privacy Policy</title><meta name="robots" content="index,follow">
+<title>HSK AI Privacy Policy</title><meta name="robots" content="index,follow"><link rel="alternate" type="text/plain" href="/llms.txt">
 <style>
 *{box-sizing:border-box}
 body{font-family:system-ui,-apple-system,sans-serif;max-width:760px;margin:32px auto;padding:0 20px 40px;line-height:1.65;color:#211d17;background:#fcfaf7}
 h1,h2{line-height:1.25}h1{font-size:clamp(1.7rem,5vw,2.2rem)}h2{font-size:1.25rem;margin-top:1.6em}
 a{color:#8b3929;overflow-wrap:anywhere}a:focus-visible{outline:2px solid #8b3929;outline-offset:3px}
-small{color:#59534c}li{margin:0.45em 0}nav.legal-links{display:flex;flex-wrap:wrap;gap:12px 18px;margin-top:32px;padding-top:20px;border-top:1px solid #d8d0c5}
+small{color:#59534c}li{margin:0.45em 0}nav.legal-links{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:16px;padding-top:12px;border-top:1px solid #d8d0c5;font-size:12px}
 </style></head><body><main>
 <h1>HSK AI Privacy Policy</h1>
 <p><small>Effective date: 3 November 2026</small></p>
@@ -195,8 +195,8 @@ small{color:#59534c}li{margin:0.45em 0}nav.legal-links{display:flex;flex-wrap:wr
     async def terms_of_use():
         body = """<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>HSK AI Terms of Use</title><meta name="robots" content="index,follow">
-<style>body{font-family:system-ui,-apple-system,sans-serif;max-width:760px;margin:40px auto;padding:0 20px;line-height:1.6;color:#211d17}h1,h2{line-height:1.2}small{color:#6c655c}nav.legal-links{display:flex;flex-wrap:wrap;gap:12px 18px;margin-top:32px;padding-top:20px;border-top:1px solid #d8d0c5}a{color:#8b3929}</style></head>
+<title>HSK AI Terms of Use</title><meta name="robots" content="index,follow"><link rel="alternate" type="text/plain" href="/llms.txt">
+<style>body{font-family:system-ui,-apple-system,sans-serif;max-width:760px;margin:40px auto;padding:0 20px;line-height:1.6;color:#211d17}h1,h2{line-height:1.2}small{color:#6c655c}nav.legal-links{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:16px;padding-top:12px;border-top:1px solid #d8d0c5;font-size:12px}a{color:#8b3929}</style></head>
 <body><h1>HSK AI Terms of Use</h1><small>Effective: 17 October 2026</small>
 <p>By using HSK AI you agree to use the service lawfully and only for its intended learning, account and community features.</p>
 <h2>Accounts</h2>
