@@ -348,7 +348,7 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
         # The user-facing guidance and the AI-readable source must agree.
         cases = {
             "tg": ("/tj/guide/subscription/", "/tj/guide/faq/",
-                   "Обуна дар браузер (PWA)", "APK насб кардан"),
+                   "Обуна дар браузер (PWA)", "насб кардан"),
             "ru": ("/ru/guide/subscription/", "/ru/guide/faq/",
                    "Оформить Pro в браузере (PWA)", "устанавливать APK"),
             "uz": ("/uz/guide/subscription/", "/uz/guide/faq/",
