@@ -81,7 +81,7 @@ def official_footer_links(lang):
     google_privacy = {
         "tg": "/privacy/google-sign-in/tj/",
         "ru": "/privacy/google-sign-in/ru/",
-        "uz": "/privacy/google-sign-in/",
+        "uz": "/privacy/google-sign-in/uz/",
     }[lang]
     help_links = (
         (labels[2], SUPPORT_URL), ("Telegram Bot", BOT_URL),
@@ -98,7 +98,7 @@ def official_footer_links(lang):
     return (
         '<nav class="official-footer-links" aria-label="HSK AI official links">'
         f'<section><h2>{escape(labels[0])}</h2><div>{socials}</div></section>'
-        f'<section><h2>{escape(labels[1])}</h2><div>{help_html}</div></section>'
+        f'<section class="legal-utility"><h2>{escape(labels[1])}</h2><div>{help_html}</div></section>'
         '</nav>'
     )
 
@@ -106,7 +106,7 @@ def official_footer_links(lang):
 def structured_data(path, origin):
     page = PAGES[path]
     lang = page["lang"]
-    localized_home = PAGE_TRANSLATIONS["home"].get(lang, "/tj/")
+    localized_home = PAGE_TRANSLATIONS["home"].get(lang, "/ru/")
     graph = [
         {"@type": "Organization", "@id": origin + "/#organization", "name": "HSK AI",
          "url": origin + "/", "logo": origin + "/public-assets/logo.png",
@@ -274,7 +274,7 @@ def render_google_signin_privacy(path, settings_obj):
     language_labels = (
         ("/privacy/google-sign-in/tj/", "Тоҷикӣ"),
         ("/privacy/google-sign-in/ru/", "Русский"),
-        ("/privacy/google-sign-in/", "O‘zbekcha"),
+        ("/privacy/google-sign-in/uz/", "O‘zbekcha"),
     )
     language_links = "".join(
         f'<a href="{esc(dest)}">{label}</a>' for dest, label in language_labels
@@ -282,7 +282,8 @@ def render_google_signin_privacy(path, settings_obj):
     alternates = "".join(
         f'<link rel="alternate" hreflang="{esc(item["lang"])}" href="{esc(origin + dest)}">'
         for dest, item in GOOGLE_SIGNIN_PRIVACY_PAGES.items()
-    )
+        if dest != "/privacy/google-sign-in/"
+    ) + f'<link rel="alternate" hreflang="x-default" href="{esc(origin)}/privacy/google-sign-in/">'
     sections = "".join(
         f'<section><h2>{esc(title)}</h2><p>{esc(body)}</p></section>'
         for title, body in page["sections"]
