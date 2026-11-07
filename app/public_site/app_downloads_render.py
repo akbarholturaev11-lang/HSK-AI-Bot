@@ -53,11 +53,11 @@ def format_size(size: Any) -> str:
     return f"{value // 1024} KB"
 
 
-def downloads_section(status: dict[str, Any], *, origin: str, language: str = "uz") -> str:
+def downloads_section(status: dict[str, Any], *, origin: str, language: str = "ru") -> str:
     """The visible, script-free list of what can be downloaded."""
 
-    heading, lead = HEADINGS.get(language, HEADINGS["uz"])
-    unavailable = UNAVAILABLE.get(language, UNAVAILABLE["uz"])
+    heading, lead = HEADINGS.get(language, HEADINGS["ru"])
+    unavailable = UNAVAILABLE.get(language, UNAVAILABLE["ru"])
     rows = []
     for name, label in PLATFORM_LABELS.items():
         entry = status.get("platforms", {}).get(name) or {}
