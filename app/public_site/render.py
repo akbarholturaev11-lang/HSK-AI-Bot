@@ -251,7 +251,7 @@ def render_page(path, settings_obj, tags=None):
 <meta property="og:image:alt" content="HSK AI"><meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{esc(page['title'])}"><meta name="twitter:description" content="{esc(page['description'])}">
 <meta name="twitter:image" content="{esc(origin)}/public-assets/social-cover.webp?v=2">
-<link rel="icon" href="/public-assets/logo.png" type="image/png">
+<link rel="alternate" type="text/plain" title="HSK AI AI information" href="/llms.txt"><link rel="icon" href="/public-assets/logo.png" type="image/png">
 <link rel="stylesheet" href="/public-assets/site.css?v=4">
 <link rel="stylesheet" href="/public-assets/navigation.css?v=1">
 <script src="/public-assets/language.js?v=1" defer></script>
@@ -296,7 +296,7 @@ def render_google_signin_privacy(path, settings_obj):
 <meta name="robots" content="index,follow"><link rel="canonical" href="{esc(canonical)}">{alternates}
 <meta property="og:title" content="{esc(page["title"])}"><meta property="og:description" content="{esc(page["description"])}">
 <meta property="og:type" content="website"><meta property="og:url" content="{esc(canonical)}"><meta property="og:site_name" content="HSK AI">
-<link rel="icon" href="/public-assets/logo.png" type="image/png"><link rel="stylesheet" href="/public-assets/site.css?v=3"></head>
+<link rel="alternate" type="text/plain" title="HSK AI AI information" href="/llms.txt"><link rel="alternate" type="text/plain" title="HSK AI AI information" href="/llms.txt"><link rel="icon" href="/public-assets/logo.png" type="image/png"><link rel="stylesheet" href="/public-assets/site.css?v=3"></head>
 <body class="public-page legal-page"><header class="site-header"><a class="brand" href="/"><img src="/public-assets/logo.png" width="40" height="40" alt="">HSK AI</a><nav class="language-switch" aria-label="Language">{language_links}</nav></header>
 <main><article><p class="eyebrow">HSK AI · GOOGLE SIGN-IN</p><h1>{esc(page["h1"])}</h1><p class="intro">{esc(page["intro"])}</p>{sections}</article></main>
 <footer class="site-footer"><span class="footer-brand">HSK AI · {esc(page["title"])} · {esc(page["updated"])}</span>{footer_links}</footer></body></html>'''
