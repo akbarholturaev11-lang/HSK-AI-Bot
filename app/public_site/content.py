@@ -401,7 +401,7 @@ PAGES.update({
         [
             ("HSK AI чист?", "HSK AI платформаи омӯзиши забони чинӣ бо курсҳои HSK 1–4, луғат, тестҳо ва AI-ёрдамчӣ мебошад. Он дар Android, компютер, Telegram Mini App ва iPhone PWA дастрас аст; забонҳо: тоҷикӣ, русӣ ва ӯзбекӣ. Сомонаи расмӣ: https://hskai.app."),
             ("HSK AI-ро аз куҷо оғоз кунам?", "Барномаи Android ё desktop-ро гиред ва бо Google, Apple ё Telegram-и дастрас ворид шавед. Telegram Mini App низ дастрас аст. Забон ва курси худро интихоб кунед."),
-            ("Обуна чӣ қадар арзиш дорад?", "Нарх аз рӯйи муҳлат, минтақа ва усули пардохт муайян шуда, пеш аз пардохт дар экран нишон дода мешавад. Нархи дар ин саҳифа навишташуда ҳисобида нашавад."),
+            ("Обуна чӣ қадар арзиш дорад?", "Нархҳои стандартии 7 ноябри 2026: пардохти якдафъаина 10 рӯз USD 3.15 / ¥19, 1 моҳ USD 7.49 / ¥49, 3 моҳ USD 19.44 / ¥149; обунаи худкори lava.top барои 1/3/6/12 моҳ USD 7.90 / 19.00 / 34.90 / 64.90. Пеш аз пардохт нархи ниҳоии экранро санҷед; шартҳо метавонанд тағйир ёбанд."),
             ("Пас аз фиристодани расид чӣ кор кунам?", "Расидро админ месанҷад. Дархости интизориро такрор накунед; ҳолати тасдиқ ё рад шудани пардохтро дар барнома бинед."),
             ("Обуна худкор тамдид мешавад?", "Дар пардохти оддӣ бо чек — не. Дар обунаи худкор бо корти Visa/Mastercard — ҳа; онро дар бахши обуна хомӯш кардан мумкин, мӯҳлати пардохтшуда боқӣ мемонад."),
             ("Агар дар Google Play лимит тамом шавад, Pro-ро аз куҷо гирам?", "Аввал дар браузер https://hskai.app/iphone-pwa-ро кушоед ва бо ҳамон ҳисоби HSK AI ба бахши обуна дароед. Версияи Google Play хариди дохилӣ надорад, аммо Pro-и ҳамин ҳисобро мешиносад. Барои харид барномаи ҳозираро ҳазф кардан ё APK насб кардан шарт нест."),
@@ -418,7 +418,7 @@ PAGES.update({
         [
             ("Что такое HSK AI?", "HSK AI — приложение для изучения китайского языка с курсами HSK 1–4, словарём, тестами и AI-помощником. Доступно на Android, компьютере, в Telegram Mini App и как iPhone PWA; языки: русский, таджикский и узбекский. Официальный сайт: https://hskai.app."),
             ("С чего начать в HSK AI?", "Скачайте Android или desktop и войдите через доступный Google, Apple или Telegram. Также доступен Telegram Mini App. Выберите язык и свой курс."),
-            ("Сколько стоит подписка?", "Цена зависит от срока, региона и способа оплаты и показывается перед платежом. Не используйте цену с этой страницы как актуальную."),
+            ("Сколько стоит подписка?", "Стандартные цены на 7 ноября 2026: разовая оплата 10 дней USD 3.15 / ¥19, 1 месяц USD 7.49 / ¥49, 3 месяца USD 19.44 / ¥149; автоподписка lava.top на 1/3/6/12 месяцев USD 7.90 / 19.00 / 34.90 / 64.90. Перед оплатой проверяйте итоговую цену: условия могут измениться."),
             ("Что делать после отправки чека?", "Чек проверяет администратор. Не отправляйте повторный запрос, пока он ожидает проверки; статус подтверждения или отклонения показан в приложении."),
             ("Подписка продлевается автоматически?", "При обычной оплате с чеком — нет. При автоподписке картой Visa/Mastercard — да; её можно отключить в разделе подписки, оплаченный срок сохраняется."),
             ("Как купить Pro, если в Google Play закончился лимит?", "Рекомендуемый способ — открыть https://hskai.app/iphone-pwa в браузере, войти в тот же аккаунт HSK AI и оформить Pro в разделе «Подписка». В версии Google Play нет покупки внутри приложения, но она распознаёт Pro этого аккаунта. Удалять приложение или устанавливать APK не нужно."),
@@ -435,7 +435,7 @@ PAGES.update({
         [
             ("HSK AI nima?", "HSK AI — xitoy tilini o‘rganish uchun HSK 1–4 kurslari, lug‘at, testlar va AI yordamchiga ega ilova. Android, kompyuter, Telegram Mini App va iPhone PWA’da ishlaydi. O‘zbek, rus va tojik tillari mavjud. Rasmiy sayt: https://hskai.app."),
             ("HSK AI’dan foydalanishni nimadan boshlayman?", "Android yoki desktop ilovasini oling va mavjud Google, Apple yoki Telegram orqali kiring. Telegram Mini App’dan ham foydalanish mumkin. Til va kursingizni tanlang."),
-            ("Obuna qancha turadi?", "Narx muddat, hudud va to‘lov usuliga qarab belgilanadi va to‘lovdan oldin oynada ko‘rsatiladi. Bu sahifadagi matnni joriy narx deb qabul qilmang."),
+            ("Obuna qancha turadi?", "2026-yil 7-noyabrdagi standart narxlar: bir martalik 10 kun USD 3.15 / ¥19, 1 oy USD 7.49 / ¥49, 3 oy USD 19.44 / ¥149; lava.top avtomatik obunasi 1/3/6/12 oy USD 7.90 / 19.00 / 34.90 / 64.90. To‘lovdan oldin yakuniy narxni tekshiring: shartlar keyin o‘zgarishi mumkin."),
             ("Chek yuborgandan keyin nima qilaman?", "Chekni admin tekshiradi. So‘rov tekshirilayotgan paytda uni qayta yubormang; tasdiq yoki rad holatini ilovada ko‘ring."),
             ("Obuna avtomatik uzayadimi?", "Chek bilan oddiy to‘lovda — yo‘q. Visa/Mastercard orqali avtomatik obunada — ha; uni obuna bo‘limida istalgan vaqtda o‘chirish mumkin, to‘langan muddat saqlanadi."),
             ("Google Play versiyasida limit tugasa, Pro’ni qayerdan olaman?", "Tavsiya etilgan yo‘l — brauzerda https://hskai.app/iphone-pwa ni ochib, aynan o‘sha HSK AI akkauntiga kirish va «Obuna» orqali Pro olish. Google Play ilovasining o‘zida xarid yo‘q, ammo u shu akkauntdagi Pro huquqini taniydi. Ilovani o‘chirish yoki APK o‘rnatish shart emas."),
@@ -466,6 +466,41 @@ for path, page in PAGES.items():
         page.setdefault("content_group", "ai-teacher")
     if page.get("content_group") in {"home", "guide", "subscription", "faq"}:
         page["sections"].append(_ACCOUNT_GUIDANCE[page["lang"]])
+
+# Standard customer-facing terms checked against the R2 support KB on 2026-11-07.
+# These are published standard offers, not live checkout quote overrides.
+PUBLIC_STANDARD_TERMS = {
+    "ru": [
+        ("Стандартные цены Pro — разовая оплата", "Подтверждено 7 ноября 2026: 10 дней (10 суток) — USD 3.15 или ¥19; 1 месяц (30 суток) — USD 7.49 или ¥49; 3 месяца (90 суток) — USD 19.44 или ¥149. Это стандартные разовые предложения с подтверждением платежа, а не автопродление. Итоговая цена и валюта перед оплатой определяются в приложении."),
+        ("Стандартные цены Pro — автоподписка lava.top", "Подтверждено 7 ноября 2026: 1 месяц — USD 7.90; 3 месяца — USD 19.00; 6 месяцев — USD 34.90; 12 месяцев — USD 64.90. Это отдельная подписка с автоматическим продлением; его можно отменить, сохранив уже оплаченный срок. Доступность зависит от конфигурации оплаты."),
+        ("Free: лимиты AI и уроков", "Стандартные лимиты 7 ноября 2026: текстовые запросы AI — 5 в день; фото AI — 2 в день; голосовой AI — 1 раз за всё время; начало уроков — 2 в день; устная сессия — 1 раз за всё время."),
+        ("Free: упражнения, тесты и аудио", "Стандартные лимиты 7 ноября 2026: каждый вид практики — 1 раз в день; тест определения уровня — 2 раза за всё время; учебный тест — 1 в день; учебное аудио — 5 воспроизведений в день; переводы карточек — 20 в день. Пожизненные лимиты не обновляются ежедневно."),
+        ("Pro Trial: подтверждённые условия", "Стандартная пробная версия Pro действует 7 дней с AI-бюджетом USD 1.50. Подтверждённые лимиты Trial: начало уроков — 5 в день; устные сессии — 2 в день. По подтверждённым владельцем стандартным настройкам все остальные квоты действий Trial безлимитны. Отдельный AI-бюджет USD 1.50 остаётся расходным ограничением, а не дневной квотой запросов."),
+        ("Статус цен и лимитов", "Это проверенные стандартные условия на 7 ноября 2026, а не приблизительные оценки. Администратор может изменить тарифы, акции и лимиты позднее. Перед платежом решающей является актуальная цена в авторизованной форме оплаты; персональные остатки лимитов показывает аккаунт. Pro по умолчанию не имеет фиксированных квот на действия, но отдельный AI-бюджет и условия доступа сохраняются."),
+    ],
+    "uz": [
+        ("Pro standart narxlari — bir martalik to‘lov", "2026-yil 7-noyabrda tasdiqlangan standart narxlar: 10 kun — USD 3.15 yoki ¥19; 1 oy (30 kun) — USD 7.49 yoki ¥49; 3 oy (90 kun) — USD 19.44 yoki ¥149. Bu avtomatik yangilanmaydigan, to‘lov tasdig‘ini talab qiladigan alohida tariflar. Yakuniy narx va valyuta to‘lov oynasida ko‘rsatiladi."),
+        ("Pro standart narxlari — lava.top avtomatik obunasi", "2026-yil 7-noyabrdagi standart narxlar: 1 oy — USD 7.90; 3 oy — USD 19.00; 6 oy — USD 34.90; 12 oy — USD 64.90. Bu alohida avtomatik yangilanadigan obuna; yangilanishni bekor qilganda to‘langan muddat saqlanadi. Mavjudligi to‘lov sozlamalariga bog‘liq."),
+        ("Free: AI va dars limitlari", "2026-yil 7-noyabrdagi standart limitlar: AI matnli savol — kuniga 5 ta; AI rasm — kuniga 2 ta; AI ovoz — jami 1 marta; dars boshlash — kuniga 2 ta; og‘zaki suhbat — jami 1 marta."),
+        ("Free: mashqlar, testlar va audio", "2026-yil 7-noyabrdagi standart limitlar: har bir mashq turi — kuniga 1 ta; darajani aniqlash testi — jami 2 marta; dars testi — kuniga 1 ta; dars audiosi — kuniga 5 marta; kartochka tarjimasi — kuniga 20 ta. Umumiy (lifetime) limitlar har kuni tiklanmaydi."),
+        ("Pro Trial: tasdiqlangan shartlar", "Pro sinov muddati odatda 7 kun, AI byudjeti USD 1.50. Tasdiqlangan Trial limitlari: dars boshlash — kuniga 5 ta; og‘zaki suhbat — kuniga 2 ta. Egasi tasdiqlagan standart sozlamalarda Trial’ning qolgan barcha harakat limitlari cheksiz. Alohida USD 1.50 AI byudjeti esa kunlik so‘rov limiti emas, xarajat cheklovidir."),
+        ("Narx va limitlarning amal qilishi", "Bular 2026-yil 7-noyabrda tasdiqlangan standart shartlar, taxmin emas. Keyinchalik admin tarif, aksiya yoki limitni o‘zgartirishi mumkin. To‘lovdan oldin akkauntdagi rasmiy yakuniy narxni va limit hisoblagichini tekshiring. Pro’da odatiy harakat limitlari cheksiz, lekin AI byudjeti va ayrim kirish shartlari saqlanadi."),
+    ],
+    "tg": [
+        ("Нархҳои стандартии Pro — пардохти якдафъаина", "Нархҳои стандартии тасдиқшуда аз 7 ноябри 2026: 10 рӯз — USD 3.15 ё ¥19; 1 моҳ (30 рӯз) — USD 7.49 ё ¥49; 3 моҳ (90 рӯз) — USD 19.44 ё ¥149. Ин тарифҳо худкор тамдид намешаванд ва тасдиқи пардохтро талаб мекунанд. Нарх ва асъори ниҳоӣ дар экрани пардохт нишон дода мешаванд."),
+        ("Нархҳои стандартии Pro — обунаи худкори lava.top", "Нархҳои стандартии 7 ноябри 2026: 1 моҳ — USD 7.90; 3 моҳ — USD 19.00; 6 моҳ — USD 34.90; 12 моҳ — USD 64.90. Ин обуна худкор тамдид мешавад; онро бекор кардан мумкин, муҳлати аллакай пардохтшуда боқӣ мемонад. Дастрасӣ аз танзимоти пардохт вобаста аст."),
+        ("Free: лимитҳои AI ва дарс", "Лимитҳои стандартӣ аз 7 ноябри 2026: саволи матнии AI — 5 бор дар рӯз; акси AI — 2 бор дар рӯз; овози AI — ҷамъ 1 бор; оғози дарс — 2 бор дар рӯз; сессияи гуфтугӯи шифоҳӣ — ҷамъ 1 бор."),
+        ("Free: машқ, санҷиш ва аудио", "Лимитҳои стандартӣ аз 7 ноябри 2026: ҳар намуди машқ — 1 бор дар рӯз; санҷиши муайян кардани сатҳ — ҷамъ 2 бор; санҷиши дарс — 1 бор дар рӯз; аудиои дарс — 5 бор дар рӯз; тарҷумаи кортҳо — 20 бор дар рӯз. Лимитҳои умумӣ ҳар рӯз барқарор намешаванд."),
+        ("Pro Trial: шартҳои тасдиқшуда", "Муҳлати стандартии санҷиши Pro — 7 рӯз, буҷети AI — USD 1.50. Лимитҳои тасдиқшудаи Trial: оғози дарс — 5 бор дар рӯз; сессияи гуфтугӯ — 2 бор дар рӯз. Мувофиқи танзимоти стандартии тасдиқкардаи соҳиб, ҳамаи квотаҳои дигари амалҳои Trial номаҳдуданд. Буҷети ҷудогонаи AI — USD 1.50 маҳдудияти хароҷот аст, на лимити рӯзонаи саволҳо."),
+        ("Эътибори нархҳо ва лимитҳо", "Ин шартҳои стандартии 7 ноябри 2026 тасдиқшудаанд, тахмин нестанд. Администратор метавонад баъдтар тариф, тахфиф ва лимитро тағйир диҳад. Нарх ва асъори ниҳоии экрани пардохт ва бақияи лимити ҳисоб афзалият доранд. Барои Pro лимитҳои маъмулии амалҳо номаҳдуданд, аммо буҷети ҷудогонаи AI ва шартҳои дастрасӣ боқӣ мемонанд."),
+    ],
+}
+
+for _path, _page in PAGES.items():
+    if _page.get("translation_group") == "guide-subscription":
+        _page["sections"].extend(PUBLIC_STANDARD_TERMS[_page["lang"]])
+    elif _page.get("translation_group") == "guide-faq":
+        _page["sections"].extend(PUBLIC_STANDARD_TERMS[_page["lang"]][2:5])
 
 NAV_LABELS = {
     "tg": {"courses": "Курсҳои HSK", "features": "Имкониятҳо", "guide": "Роҳнамо", "download": "Боргирӣ", "language": "Забон", "more": "Идома диҳед", "home": "Саҳифаи асосӣ"},

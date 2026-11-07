@@ -344,6 +344,45 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
             self.assertIn(metadata, rendered)
         self.assertNotIn('hreflang="uz" href="/download"', rendered)
 
+    async def test_r2_confirmed_standard_prices_and_limits_are_public(self):
+        # R2 hsk-ai-support-kb/knowledge/subscriptions.json, owner-verified
+        # 2026-11-07. Publish standard data, not a guaranteed user checkout quote.
+        standard_prices = (
+            "3.15", "7.49", "19.44", "¥19", "¥49", "¥149",
+            "7.90", "19.00", "34.90", "64.90",
+        )
+        for lang in ("ru", "tj", "uz"):
+            with self.subTest(language=lang):
+                guide = await self.client.get(f"/{lang}/guide/subscription/")
+                faq = await self.client.get(f"/{lang}/guide/faq/")
+                self.assertEqual(guide.status_code, 200)
+                self.assertEqual(faq.status_code, 200)
+                for html in (guide.text, faq.text):
+                    for price in standard_prices:
+                        self.assertIn(price, html)
+                    self.assertIn("1.50", html)
+                    self.assertIn("2026", html)
+                    self.assertIn("5", html)
+                    self.assertIn("20", html)
+                    self.assertIn("Google Play", html)
+                # The FAQ's standard prices are real source data, not placeholders.
+                self.assertNotIn("Не используйте цену с этой страницы", faq.text)
+                self.assertNotIn("не считайте их безлимитными", guide.text)
+                self.assertNotIn("avtomatik tarzda cheksiz hisoblanmaydi", guide.text)
+                self.assertNotIn("худкор бемаҳдуд нестанд", guide.text)
+                self.assertNotIn("Bu sahifadagi matnni joriy narx deb qabul qilmang", faq.text)
+                self.assertNotIn("Нархи дар ин саҳифа навишташуда ҳисобида нашавад", faq.text)
+
+        index = await self.client.get("/llms.txt")
+        self.assertEqual(index.status_code, 200)
+        self.assertIn("## Стандартные цены Pro", index.text)
+        self.assertIn("## Стандартные лимиты Free", index.text)
+        self.assertIn("## Pro Trial и ограничения", index.text)
+        self.assertIn("USD 1.50", index.text)
+        self.assertIn("все прочие квоты действий Trial безлимитны", index.text)
+        for price in standard_prices:
+            self.assertIn(price, index.text)
+
     async def test_play_pro_help_prefers_browser_pwa_without_reinstall(self):
         # The user-facing guidance and the AI-readable source must agree.
         cases = {
