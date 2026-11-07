@@ -3,7 +3,7 @@ import json
 import logging
 import re
 from pathlib import Path
-from urllib.parse import urlsplit
+from urllib.parse import urlencode, urlsplit
 from xml.etree.ElementTree import Element, SubElement, tostring
 
 from fastapi import APIRouter, Request
@@ -28,6 +28,46 @@ STATIC = Path(__file__).resolve().parents[1] / "static"
 GOOGLE_VERIFICATION_FILENAME = "google4575dc78c69e5824.html"
 GOOGLE_VERIFICATION_CONTENT = b"google-site-verification: google4575dc78c69e5824.html"
 SITEMAP_PATHS = tuple(PAGES) + (DOWNLOAD_PATH, "/privacy", "/terms", "/account-deletion") + tuple(GOOGLE_SIGNIN_PRIVACY_PAGES)
+
+# Keep the Railway-generated hostname for bot/webhook/API/OAuth traffic.
+# Only existing public marketing and legal GET URLs move to the official host.
+LEGACY_RAILWAY_PUBLIC_HOST = "telegram-chinese-bot-production.up.railway.app"
+LEGACY_PUBLIC_REDIRECT_PATHS = frozenset(PAGES) | frozenset(GOOGLE_SIGNIN_PRIVACY_PAGES) | frozenset({
+    "/download", "/apps", "/desktop-download", "/desktop-download.html",
+    "/privacy", "/terms", "/account-deletion",
+})
+
+
+def legacy_public_site_redirect(request: Request, official_origin: str):
+    """Permanently move only HTML public pages off the old Railway hostname.
+
+    Deliberately do NOT change /api/, login, PWA, assets, sitemap, robots,
+    Google verification, Telegram webhooks or any other service route.
+    Exact host and path checks prevent accidental changes to those endpoints.
+    """
+    if request.method not in ("GET", "HEAD"):
+        return None
+    if request.url.hostname != LEGACY_RAILWAY_PUBLIC_HOST:
+        return None
+    if official_origin != "https://hskai.app":
+        return None
+    path = request.url.path
+    if path not in LEGACY_PUBLIC_REDIRECT_PATHS:
+        return None
+    # Preserve only public campaign attribution and a valid download language.
+    # Do not reflect tokens, callbacks or arbitrary query parameters.
+    params = attribution(request.query_params)
+    if path in {"/download", "/apps", "/desktop-download", "/desktop-download.html"}:
+        lang = request.query_params.get("lang", "")
+        if lang in {"ru", "uz", "tj"}:
+            params["lang"] = lang
+    destination = official_origin + path + ("?" + urlencode(params) if params else "")
+    return RedirectResponse(
+        destination,
+        status_code=301,
+        headers={"Cache-Control": "public, max-age=300"},
+    )
+
 
 
 def indexnow_key(settings_obj):
@@ -118,6 +158,9 @@ def create_public_site_router(*, settings_obj, session_factory=None):
         return Response(GOOGLE_VERIFICATION_CONTENT, media_type="text/html")
 
     async def landing(request: Request):
+        redirect = legacy_public_site_redirect(request, origin)
+        if redirect is not None:
+            return redirect
         path = request.url.path
         tags = attribution(request.query_params)
         if request.method == "GET":
@@ -133,7 +176,10 @@ def create_public_site_router(*, settings_obj, session_factory=None):
         router.add_api_route(path, landing, methods=["GET", "HEAD"], name="public_" + path.replace("/", "_"))
 
     @router.get("/privacy")
-    async def privacy_policy():
+    async def privacy_policy(request: Request):
+        redirect = legacy_public_site_redirect(request, origin)
+        if redirect is not None:
+            return redirect
         # Public legal notice used by Android Settings and the Play store listing.
         # It must not require authentication, JavaScript, or a database session.
         body = """<!doctype html>
@@ -183,7 +229,10 @@ small{color:#59534c}li{margin:0.45em 0}nav.legal-links{display:flex;flex-wrap:wr
         })
 
     @router.get("/account-deletion")
-    async def account_deletion():
+    async def account_deletion(request: Request):
+        redirect = legacy_public_site_redirect(request, origin)
+        if redirect is not None:
+            return redirect
         return HTMLResponse(render_account_deletion(), headers={
             "Cache-Control": "no-store",
             "Referrer-Policy": "no-referrer",
@@ -192,7 +241,10 @@ small{color:#59534c}li{margin:0.45em 0}nav.legal-links{display:flex;flex-wrap:wr
         })
 
     @router.get("/terms")
-    async def terms_of_use():
+    async def terms_of_use(request: Request):
+        redirect = legacy_public_site_redirect(request, origin)
+        if redirect is not None:
+            return redirect
         body = """<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>HSK AI Terms of Use</title><meta name="robots" content="index,follow"><link rel="alternate" type="text/plain" href="/llms.txt">
@@ -226,6 +278,9 @@ small{color:#59534c}li{margin:0.45em 0}nav.legal-links{display:flex;flex-wrap:wr
         )
 
     async def google_signin_privacy(request: Request):
+        redirect = legacy_public_site_redirect(request, origin)
+        if redirect is not None:
+            return redirect
         path = request.url.path
         return HTMLResponse(render_google_signin_privacy(path, settings_obj), headers={
             "Cache-Control": "no-cache", "Content-Language": GOOGLE_SIGNIN_PRIVACY_PAGES[path]["lang"],

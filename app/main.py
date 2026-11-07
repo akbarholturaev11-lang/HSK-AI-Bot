@@ -19,6 +19,7 @@ from starlette.middleware.gzip import GZipMiddleware
 
 from app.api.public_site import (
     create_public_site_router,
+    legacy_public_site_redirect,
     record_attributed_source_visit,
     record_event,
 )
@@ -2292,6 +2293,9 @@ async def _rendered_downloads_page() -> Response:
 @app.get("/desktop-download.html")
 @app.get("/desktop-download")
 async def desktop_download_page(request: Request):
+    redirect = legacy_public_site_redirect(request, public_origin(settings))
+    if redirect is not None:
+        return redirect
     tags = attribution(request.query_params)
     record_event("landing_view", request.url.path, tags)
     await record_attributed_source_visit(request, async_session_maker)

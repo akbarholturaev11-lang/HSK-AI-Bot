@@ -60,6 +60,89 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
     async def asyncTearDown(self):
         await self.client.aclose()
 
+    async def test_railway_host_moves_only_public_html_to_official_domain(self):
+        from app.api.public_site import (
+            LEGACY_RAILWAY_PUBLIC_HOST, legacy_public_site_redirect,
+        )
+        from fastapi import Request
+        from starlette.requests import Request as StarletteRequest
+
+        assert Request is StarletteRequest
+        official = "https://hskai.app"
+        old = "https://" + LEGACY_RAILWAY_PUBLIC_HOST
+        app = FastAPI()
+        app.include_router(create_public_site_router(
+            settings_obj=settings(PUBLIC_SITE_URL=official)
+        ))
+        @app.get("/api/private-probe")
+        async def private_probe():
+            return {"safe": True}
+
+        async with AsyncClient(transport=ASGITransport(app=app),
+                               base_url=official, follow_redirects=False) as client:
+            # Every existing language/guide page, public privacy and legal page
+            # gets an exact-path 301; no unexpected home-page catch-all.
+            paths = tuple(PAGES) + tuple(GOOGLE_SIGNIN_PRIVACY_PAGES) + (
+                "/privacy", "/terms", "/account-deletion",
+            )
+            for path in paths:
+                moved = await client.get(old + path)
+                self.assertEqual(moved.status_code, 301, path)
+                self.assertEqual(moved.headers["location"], official + path)
+                self.assertEqual(moved.headers["cache-control"], "public, max-age=300")
+                original = await client.get(official + path)
+                self.assertEqual(original.status_code, 200, path)
+
+            # Critical service endpoints, ownership checks and crawler discovery
+            # must stay on the old host; never redirect the whole Railway domain.
+            for path in (
+                "/robots.txt", "/sitemap.xml", "/llms.txt",
+                "/google4575dc78c69e5824.html", "/public-assets/logo.png",
+            ):
+                response = await client.get(old + path)
+                self.assertEqual(response.status_code, 200, path)
+                self.assertNotIn("location", response.headers)
+            self.assertEqual((await client.get(old + "/api/private-probe")).json(),
+                             {"safe": True})
+            self.assertEqual((await client.get(old + "/unknown-private-path")).status_code, 404)
+            self.assertEqual((await client.get(official + "/ru/")).status_code, 200)
+            # Referral campaign tag remains, arbitrary auth token does not.
+            forwarded = await client.get(old + "/ru/?utm_source=organic&token=secret")
+            self.assertEqual(forwarded.headers["location"],
+                             official + "/ru/?utm_source=organic")
+
+        # The download route is owned by main.py, so test the shared pure guard
+        # without initializing Telegram polling, OAuth or the database.
+        def request_for(path, query=b""):
+            return StarletteRequest({
+                "type": "http", "method": "GET", "scheme": "https",
+                "path": path, "raw_path": path.encode(), "query_string": query,
+                "headers": [(b"host", LEGACY_RAILWAY_PUBLIC_HOST.encode())],
+                "server": (LEGACY_RAILWAY_PUBLIC_HOST, 443),
+                "client": ("127.0.0.1", 9000),
+            })
+        for path in ("/download", "/apps", "/desktop-download",
+                     "/desktop-download.html"):
+            redirect = legacy_public_site_redirect(
+                request_for(path, b"lang=uz&utm_campaign=seo&token=private"),
+                official,
+            )
+            self.assertEqual(redirect.status_code, 301)
+            self.assertEqual(
+                redirect.headers["location"],
+                official + path + "?utm_campaign=seo&lang=uz",
+            )
+        for path in ("/api/v3/apps/public-status", "/iphone-pwa",
+                     "/api/account-deletion/status", "/webhook"):
+            self.assertIsNone(legacy_public_site_redirect(request_for(path), official))
+        self.assertIsNone(legacy_public_site_redirect(
+            request_for("/"), "https://unrelated.example"
+        ))
+        self.assertIn(
+            "legacy_public_site_redirect(request, public_origin(settings))",
+            Path("app/main.py").read_text(encoding="utf-8"),
+        )
+
     async def test_account_deletion_request_is_accessible_outside_app(self):
         page = await self.client.get("/account-deletion")
         self.assertEqual(page.status_code, 200)
