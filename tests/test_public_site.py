@@ -212,9 +212,18 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
             website = next(n for n in graph if n["@type"] == "WebSite")
             self.assertEqual(website["name"], "HSK AI")
             self.assertEqual(website["url"], ORIGIN + "/")
-            self.assertEqual(website["alternateName"], ["HSKAI", "hskai.app"])
+            self.assertEqual(
+                website["alternateName"],
+                ["HSKAI", "HSK-AI", "HSK Ai", "HSK AI App", "hskai.app"],
+            )
+            org = next(n for n in graph if n["@type"] == "Organization")
+            self.assertEqual(org["alternateName"], website["alternateName"])
             application = next(n for n in graph if n["@type"] == "SoftwareApplication")
             self.assertEqual(application["url"], ORIGIN + "/")
+            self.assertEqual(
+                application["alternateName"],
+                ["HSKAI", "HSK-AI", "HSK Ai", "HSK AI App"],
+            )
             self.assertTrue(parsed.find("a", **{"class": "footer-brand", "href": "/"}))
             self.assertFalse(any("aggregateRating" in n or "review" in n for n in graph))
             if path == "/tj/hsk/":
@@ -480,6 +489,9 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
         index = await self.client.get("/llms.txt")
         self.assertEqual(index.status_code, 200)
         self.assertIn("## Стандартные цены Pro", index.text)
+        self.assertIn("Основное название бренда: HSK AI", index.text)
+        for spelling in ("HSKAI", "HSK-AI", "HSK Ai", "HSK AI App", "hskai.app"):
+            self.assertIn(spelling, index.text)
         self.assertIn("## Стандартные лимиты Free", index.text)
         self.assertIn("## Pro Trial и ограничения", index.text)
         self.assertIn("USD 1.50", index.text)
