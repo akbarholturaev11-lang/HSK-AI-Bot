@@ -267,6 +267,12 @@ class ConversionFunnelService:
             ("quiz_completed", "ai_explanation_seen", "homework_completed"),
             ("paywall_seen", "checkout_opened", "payment_screenshot_submitted"),
             ("payment_approved", "payment_rejected"),
+            # PWA inline Pro uses separate keys: checkout means a real Lava
+            # invoice and paid means a verified server-side activation.
+            ("pwa_pro_opened", "pwa_pro_plan_selected", "pwa_pro_more_opened"),
+            ("pwa_pro_method_selected", "pwa_pro_dismissed"),
+            ("pwa_pro_exit_offered", "pwa_pro_exit_claimed", "pwa_pro_exit_declined"),
+            ("pwa_pro_checkout_started", "pwa_pro_checkout_paid", "pwa_pro_checkout_failed"),
         ]
         lines = ["<b>🧭 FUNNEL unique (all/7 kun)</b>"]
         for row in compact_rows:
