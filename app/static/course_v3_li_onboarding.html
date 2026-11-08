@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>HSK AI Onboarding Demo</title>
+<title>HSK AI — Li</title>
 <!-- Live Li onboarding visual shell, built from hash-verified user demo.
      Authentication, data readiness, persistence and trial use a verified
      platform adapter in li-onboarding-runtime.js. Reference remains in docs. -->
@@ -475,7 +475,12 @@ var BRAND={
   apple:'<svg width="30" height="30" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.05,12.54c-0.03,-2.86 2.33,-4.23 2.44,-4.3 -1.33,-1.94 -3.4,-2.21 -4.13,-2.24 -1.76,-0.18 -3.43,1.03 -4.32,1.03 -0.89,0 -2.26,-1.01 -3.72,-0.98 -1.91,0.03 -3.68,1.11 -4.67,2.82 -1.99,3.45 -0.51,8.56 1.43,11.36 0.95,1.37 2.08,2.91 3.56,2.85 1.43,-0.06 1.97,-0.92 3.7,-0.92 1.73,0 2.22,0.92 3.73,0.89 1.54,-0.03 2.51,-1.39 3.45,-2.77 1.09,-1.59 1.54,-3.13 1.57,-3.21 -0.03,-0.01 -3.01,-1.16 -3.04,-4.59zM14.22,4.14c0.79,-0.96 1.32,-2.29 1.17,-3.62 -1.13,0.05 -2.51,0.75 -3.32,1.71 -0.73,0.85 -1.37,2.21 -1.2,3.51 1.26,0.1 2.55,-0.64 3.35,-1.6z" fill="currentColor"/></svg>'
 };
 
-function go(next){clearTimeout(timer);trail.push(screen);screen=next;demoStatus=false;render()}
+function go(next){
+  // The embedded visual reference may not advance without the trusted runtime.
+  // If the versioned adapter fails to load, never enter mock login/Pro flow.
+  if(!window.LiRuntime)return;
+  clearTimeout(timer);trail.push(screen);screen=next;demoStatus=false;render();
+}
 function back(){
   clearTimeout(timer);if(!trail.length)return;screen=trail.pop();
   while((screen==="loadCourse"||screen==="loadLesson")&&trail.length)screen=trail.pop();
@@ -651,7 +656,11 @@ function toggleGoal(k){
 function pickTime(k){minutes=Number(k);keepScroll(function(){render(false)});pleased()}
 function pickFocus(k){focus=k;keepScroll(function(){render(false)});pleased()}
 function pickStreak(k){streakGoal=k;keepScroll(function(){render(false)});pleased()}
-function demoLogin(){demoStatus=true;render(false)}
+function demoLogin(){
+  // Reference-only action deliberately disabled in the live page.
+  // Authenticated provider flow is supplied by li-onboarding-runtime.js.
+  return false;
+}
 render();
 </script>
 <script src="/course_v3_data/li-onboarding-runtime.js?v=20261109-e4c79dcf6d61"></script>
