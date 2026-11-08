@@ -36,7 +36,7 @@ def test_inline_pro_two_primary_plans_other_terms_and_real_exit_discount():
         if path == "/iphone-pwa/course":
             route.fulfill(status=200, content_type="text/html", body="""
                 <!DOCTYPE html><html lang="ru"><head>
-                <meta name="viewport" content="width=device-width,initial-scale=1">
+                <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
                 <link rel="stylesheet" href="/course_v3_data/iphone-pwa-inline-pro.css?v=qa">
                 </head><body><button id="starter">open</button>
                 <script src="/course_v3_data/iphone-pwa-inline-pro.js?v=qa"></script>
