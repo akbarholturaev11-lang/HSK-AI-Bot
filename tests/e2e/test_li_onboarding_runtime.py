@@ -26,6 +26,12 @@ def _page(browser, *, pwa=True, trial_eligible=False, trial_start_ok=True, saved
                 "resume": 0, "oauth": [], "public_track_get": 0,
                 "auth_state": {"verified": not guest}}
     page.on("pageerror", lambda err: captured["pageerrors"].append(str(err)))
+    captured["navigations"] = []
+    captured["request_failed"] = []
+    page.on("framenavigated", lambda frame: captured["navigations"].append(frame.url)
+            if frame == page.main_frame else None)
+    page.on("requestfailed", lambda request: captured["request_failed"].append(
+        (request.url, request.failure)))
     page.route("**/assets/telegram-web-app.js*", lambda route: route.fulfill(
         body='window.Telegram={WebApp:{initData:"signed-test-init-data",'
              'initDataUnsafe:{user:{id:111}},HapticFeedback:{selectionChanged:function(){}}}};',
@@ -219,14 +225,21 @@ def test_pwa_guest_sees_panda_first_and_oauth_resumes_saved_draft_safely():
         try:
             page.wait_for_function("window.screen==='profile'", timeout=10000)
         except Exception:
-            snapshot = page.evaluate("""() => ({
-              url: location.href, screen: window.screen,
-              stage: document.querySelector('#stage')?.innerText?.slice(0,300),
-              footer: document.querySelector('#footer')?.innerText?.slice(0,150),
-              pending: document.querySelector('#stage')?.getAttribute('aria-busy'),
-              draftGuest: !!sessionStorage.getItem('hsk_li_draft_v1:pwa:guest'),
-              draftVerified: !!sessionStorage.getItem('hsk_li_draft_v1:pwa:37')
-            })""")
+            # A failed cross-origin navigation can leave chromium-error://
+            # where sessionStorage itself throws SecurityError. Never let
+            # diagnostics mask the original provider-navigation failure.
+            try:
+                snapshot = page.evaluate("""() => ({
+                  url: location.href, screen: String(window.screen),
+                  stage: document.querySelector('#stage')?.innerText?.slice(0,300),
+                  footer: document.querySelector('#footer')?.innerText?.slice(0,150),
+                  pending: document.querySelector('#stage')?.getAttribute('aria-busy')
+                })""")
+            except Exception as diagnostic:
+                snapshot = {"url": page.url,
+                            "diagnostic": str(diagnostic).splitlines()[0]}
+            snapshot["navigations"] = captured["navigations"]
+            snapshot["request_failed"] = captured["request_failed"]
             raise AssertionError(
                 f"OAuth did not restore Li onboarding: {snapshot}; "
                 f"requests: {captured!r}"
