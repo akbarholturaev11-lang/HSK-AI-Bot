@@ -20,7 +20,7 @@ CAST = (STATIC / "assets/characters/hsk-character-pack.js").read_text(encoding="
 ORIGIN = "https://hsk.test"
 
 
-def _page(browser, *, pwa=True, trial_eligible=False, trial_start_ok=True, saved=False):
+def _page(browser, *, pwa=True, trial_eligible=False, trial_start_ok=True, saved=False, trial_status_fail=False):
     page = browser.new_page(viewport={"width": 390, "height": 844})
     captured = {"post": [], "trial_start": [], "track_get": 0, "pageerrors": []}
     page.on("pageerror", lambda err: captured["pageerrors"].append(str(err)))
@@ -85,7 +85,11 @@ def _page(browser, *, pwa=True, trial_eligible=False, trial_start_ok=True, saved
             payload = {"ok": True, "level": "hsk1", "lesson": 1, "tab": "course",
                        "foundation_required": False}
         elif path in {"/api/v3/pwa/trial/status", "/api/v3/trial/status"}:
-            payload = {"ok": True, "trial": {"eligible": trial_eligible, "days": 7}}
+            if trial_status_fail:
+                status = 503
+                payload = {"ok": False, "error": "provider_unavailable"}
+            else:
+                payload = {"ok": True, "trial": {"eligible": trial_eligible, "days": 7}}
         elif path in {"/api/v3/pwa/trial/start", "/api/v3/trial/start"}:
             captured["trial_start"].append(body)
             if trial_start_ok:
@@ -167,6 +171,23 @@ def test_authenticated_li_flow_persists_choices_and_real_launch(pwa):
         page.locator("#footer .cta").click()
         assert ("/iphone-pwa/course?" if pwa else "/course-v3.html?") in page.url
         assert "onboarded=1" in page.url
+        browser.close()
+
+
+def test_trial_status_network_failure_is_retryable_and_free_continuation_exists():
+    with pw.sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page, captured = _page(browser, pwa=True, trial_status_fail=True)
+        _advance_to_profile(page)
+        page.locator("#footer .cta").click()  # server save succeeds; trial status fails
+        page.locator(".li-remote-error").wait_for(state="visible")
+        assert page.locator("#footer .cta").count() == 2
+        assert page.locator("#footer .cta.ghost").is_visible()
+        assert len(captured["post"]) == 1
+        assert captured["trial_start"] == []
+        page.locator("#footer .cta.ghost").click()  # continue free without fake eligibility
+        assert page.evaluate("window.screen") == "end"
+        assert not captured["pageerrors"]
         browser.close()
 
 
