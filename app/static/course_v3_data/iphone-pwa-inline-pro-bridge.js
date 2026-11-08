@@ -15,20 +15,44 @@
     if (lang === "tg") lang = "tj";
     return ["ru", "uz", "tj"].includes(lang) ? lang : "ru";
   }
-  function offer(source) {
-    if (!inline) return false;
-    return inline.open({source:source,lang:language()});
+  function practiceExit(source, paid) {
+    if (paid) return; // The inline modal refreshes the server gate on payment.
+    if (path === "/iphone-pwa/course") {
+      try {
+        var exits = {
+          v3_recognition_limit:window.RECOG&&RECOG.close,
+          v3_pronunciation_limit:window.PRON&&PRON.close,
+          v3_mistake_review:window.MIST&&MIST.close,
+          v3_test_limit:window.TEST&&(TEST.showHub||TEST.close),
+          v3_voice_limit:window.VOICE&&VOICE.endCall
+        };
+        if (typeof exits[source] === "function") {exits[source]();return}
+      } catch (_) {}
+      return;
+    }
+    if (typeof window.goBack === "function") {
+      try {window.goBack();return} catch (_) {}
+    }
+    location.assign("/iphone-pwa/course?lang="+encodeURIComponent(language()));
   }
-  function wrapFunction(name, source, before) {
+  function offer(source, exitToCourse) {
+    if (!inline) return false;
+    return inline.open({
+      source:source,lang:language(),
+      onClose:exitToCourse?function(result){practiceExit(source,Boolean(result&&result.paid))}:undefined
+    });
+  }
+  function wrapFunction(name, source) {
     var original = window[name];
     if (typeof original !== "function") return;
     window[name] = function () {
-      if (before) {
-        var result = original.apply(this, arguments);
-        offer(source);
-        return result;
+      // On PWA the original showLimitNow mutates the page into a second
+      // locked screen. The single fullscreen Pro surface replaces it.
+      if (inline) {
+        try {window.HskPwaPracticeBoot?.hide?.()}catch(_){}
+        try {window.PracticeCoach?.hide?.();window.PracticeCoach?.reset?.()}catch(_){}
+        if (offer(source,true)) return;
       }
-      if (offer(source)) return;
       return original.apply(this, arguments);
     };
   }
@@ -62,12 +86,39 @@
         return originalGoPay.apply(this,arguments);
       };
     }
+    // Older course module limits are rendered by private showLimit()
+    // closures instead of App.openPaywall. Detect only the explicit legacy
+    // lock CTA and replace it before paint; avoid overlaying two paywalls.
+    var observerTarget=document.getElementById("secov")||document.body;
+    var legacyObserver=new MutationObserver(function(){
+      var shown=document.getElementById("hsk-inline-pro");
+      if (shown&&!shown.hidden)return;
+      var source=null;
+      if(document.querySelector("#rc-body .rc-done .rc-prem"))source="v3_recognition_limit";
+      else if(document.querySelector("#pr-done.on .pr-prem"))source="v3_pronunciation_limit";
+      else if(document.querySelector("#mk-limit:not([hidden])"))source="v3_mistake_review";
+      else if(document.querySelector('#tc-empty.on button[onclick*="TEST.premium"]'))source="v3_test_limit";
+      else if(document.querySelector("#paywall.on #pwb"))source="v3_voice_limit";
+      if (!source) return;
+      try {
+        if(source==="v3_recognition_limit"){
+          var node=document.querySelector("#rc-body .rc-done");
+          if(node)node.remove();
+        }
+        if(source==="v3_pronunciation_limit")document.getElementById("pr-done")?.classList.remove("on");
+        if(source==="v3_mistake_review")document.getElementById("mk-limit").hidden=true;
+        if(source==="v3_test_limit")document.getElementById("tc-empty")?.classList.remove("on");
+        if(source==="v3_voice_limit")document.getElementById("paywall")?.classList.remove("on");
+      }catch(_){}
+      offer(source,true);
+    });
+    legacyObserver.observe(observerTarget,{subtree:true,childList:true,attributes:true,attributeFilter:["class","hidden"]});
     return;
   }
 
   if (path === "/iphone-pwa/practice/voice") {
-    wrapFunction("showPaywall", "v3_voice_limit", false);
-    wrapFunction("goPremium", "v3_voice_limit", false);
+    wrapFunction("showPaywall", "v3_voice_limit");
+    wrapFunction("goPremium", "v3_voice_limit");
     return;
   }
 
@@ -79,8 +130,8 @@
     "/iphone-pwa/practice/mistakes":"v3_mistake_review"
   };
   if (sources[path]) {
-    wrapFunction("showLimitNow", sources[path], true);
-    wrapFunction(path.endsWith("/mistakes") ? "goPay" : "goPremium", sources[path], false);
+    wrapFunction("showLimitNow", sources[path]);
+    wrapFunction(path.endsWith("/mistakes") ? "goPay" : "goPremium", sources[path]);
     return;
   }
 
@@ -97,9 +148,23 @@
       };
     }
     if (new URLSearchParams(location.search).get("inline_manual") === "1") {
-      // Loaded immediately after the original script's async overview request.
-      // applyOverview keeps "manual" on mode=both and the canonical receipt UI.
+      // The canonical checkout has a shared first-step Lava card question
+      // whenever both methods are configured. The parent Pro sheet ALREADY
+      // chose manual, so strip exactly that question on this PWA iframe.
       try { if (typeof state !== "undefined") state.path = "manual"; } catch (_) {}
+      var originalFlow=window.flow;
+      if(typeof originalFlow==="function"){
+        window.flow=function(){
+          var steps=originalFlow.apply(this,arguments);
+          if (typeof state !== "undefined" && state.path==="manual")
+            return steps.filter(function(step){return step!=="card"});
+          return steps;
+        };
+      }
+      // The source checkout renders once before this PWA-only bridge is
+      // injected. Immediately re-render using the selected manual path
+      // so the intermediate Visa question cannot flash during loading.
+      try { if (typeof window.render==="function") window.render() } catch (_) {}
     }
     // Actual manual discount supersedes the comparison. This is display only.
     var renderPlans = window.renderPlans;

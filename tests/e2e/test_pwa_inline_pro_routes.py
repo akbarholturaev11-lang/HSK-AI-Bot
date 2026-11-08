@@ -27,7 +27,7 @@ def _markup(path):
     return f"""<!doctype html><html lang="ru"><head><meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <link rel="stylesheet" href="/course_v3_data/iphone-pwa-inline-pro.css?v=e2e">
-      </head><body><button id="go">Start</button>
+      </head><body><div id="secov"></div><button id="go">Start</button>
       <script>{stub}</script>
       <script src="/course_v3_data/iphone-pwa-inline-pro.js?v=e2e"></script>
       <script src="/course_v3_data/iphone-pwa-inline-pro-bridge.js?v=e2e"></script>
@@ -74,11 +74,11 @@ def _serve(route):
     ("/iphone-pwa/course","App.openPaywall('lockedLesson')",0),
     ("/iphone-pwa/course","App.goPay('v3_recognition_limit')",0),
     ("/iphone-pwa/practice/voice","showPaywall()",0),
-    ("/iphone-pwa/practice/recognition","showLimitNow()",1),
-    ("/iphone-pwa/practice/memorize","showLimitNow()",1),
-    ("/iphone-pwa/practice/pronunciation","showLimitNow()",1),
-    ("/iphone-pwa/practice/test","showLimitNow()",1),
-    ("/iphone-pwa/practice/mistakes","showLimitNow()",1),
+    ("/iphone-pwa/practice/recognition","showLimitNow()",0),
+    ("/iphone-pwa/practice/memorize","showLimitNow()",0),
+    ("/iphone-pwa/practice/pronunciation","showLimitNow()",0),
+    ("/iphone-pwa/practice/test","showLimitNow()",0),
+    ("/iphone-pwa/practice/mistakes","showLimitNow()",0),
 ])
 def test_inline_offer_is_entered_from_each_limit(pathname,invoke,original):
     with playwright.sync_playwright() as pw:
@@ -94,8 +94,58 @@ def test_inline_offer_is_entered_from_each_limit(pathname,invoke,original):
         assert page.locator("#hsk-inline-pro .hip-benefit").count()==3
         assert page.evaluate("oldCalls")==original
         page.locator("#hsk-inline-pro .hip-close").click()
-        page.locator("#hsk-inline-pro").wait_for(state="hidden")
+        if pathname == "/iphone-pwa/course":
+            page.locator("#hsk-inline-pro").wait_for(state="hidden")
+        else:
+            page.wait_for_url(ORIGIN + "/iphone-pwa/course?lang=ru")
         assert not errors
+        browser.close()
+
+
+def test_inline_manual_skips_card_question_without_modifying_shared_checkout():
+    # The hosted manual checkout normally starts with a Visa/Lava question
+    # whenever two payment methods exist. Here the parent chose manual.
+    with playwright.sync_playwright() as pw:
+        browser = getattr(pw,os.getenv("PWA_E2E_ENGINE","chromium")).launch()
+        page = browser.new_context(**pw.devices["iPhone 13"]).new_page()
+        page.route("**/*",_serve)
+        page.goto(ORIGIN+"/iphone-pwa/course")
+        # Exercise the exact PWA checkout bridge against the canonical
+        # function signature and state names used in subscription.html.
+        js=(STATIC/"course_v3_data/iphone-pwa-inline-pro-bridge.js").read_text("utf-8")
+        page.evaluate("""() => {
+          history.replaceState({}, '', '/iphone-pwa/checkout?inline_manual=1');
+          window.state={path:'',lavaStatus:null};
+          window.flow=function(){return ['card','country','plans','pay']};
+          window.renderPlans=function(){return 1};
+        }""")
+        page.evaluate(js)
+        assert page.evaluate("flow()") == ["country","plans","pay"]
+        assert page.evaluate("state.path") == "manual"
+        page.evaluate("state.path='lava'")
+        assert page.evaluate("flow()") == ["card","country","plans","pay"]
+        browser.close()
+
+
+@pytest.mark.parametrize("legacy_html,selector", [
+    ("<div id='rc-body'><div class='rc-done'><button class='rc-prem'>Pro</button></div></div>",
+     "#rc-body .rc-done"),
+    ("<div id='mk-limit'><button class='go'>Pro</button></div>",
+     "#mk-limit:not([hidden])"),
+])
+def test_private_course_limit_shows_only_one_pwa_paywall(legacy_html,selector):
+    with playwright.sync_playwright() as pw:
+        browser = getattr(pw,os.getenv("PWA_E2E_ENGINE","chromium")).launch()
+        page = browser.new_context(**pw.devices["iPhone 13"]).new_page()
+        page.route("**/*",_serve)
+        page.goto(ORIGIN + "/iphone-pwa/course")
+        page.evaluate("(html) => document.getElementById('secov').innerHTML = html",legacy_html)
+        page.locator("#hsk-inline-pro button.hip-plan").first.wait_for()
+        # The MutationObserver removes (or hides) the legacy screen before
+        # opening the single PWA paywall, instead of stacking both layers.
+        assert page.locator(selector).count() == 0
+        assert page.locator("#hsk-inline-pro").is_visible()
+        assert page.get_by_role("heading", name="Лимит исчерпан").is_visible()
         browser.close()
 
 
