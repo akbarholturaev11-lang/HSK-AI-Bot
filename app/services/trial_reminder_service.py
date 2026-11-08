@@ -39,6 +39,9 @@ REMINDER_DAYS = (2, 0)
 MAX_BATCH = 200
 TWO_DAY_NOTICE_WINDOW = timedelta(hours=48)
 FINAL_DAY_NOTICE_WINDOW = timedelta(hours=24)
+# Do not send a misleading "2 days" reminder just before the final-day
+# notice. The scheduler runs every minute; 12h slack covers missed runs.
+TWO_DAY_MAX_LATE = timedelta(hours=12)
 
 
 def _due_notice_slot(ends_at: datetime, now: datetime) -> int | None:
@@ -52,7 +55,7 @@ def _due_notice_slot(ends_at: datetime, now: datetime) -> int | None:
         return None
     if remaining <= FINAL_DAY_NOTICE_WINDOW:
         return 0
-    if remaining <= TWO_DAY_NOTICE_WINDOW:
+    if TWO_DAY_NOTICE_WINDOW - TWO_DAY_MAX_LATE <= remaining <= TWO_DAY_NOTICE_WINDOW:
         return 2
     return None
 
