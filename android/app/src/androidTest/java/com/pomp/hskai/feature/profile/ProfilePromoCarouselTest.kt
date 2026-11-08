@@ -86,8 +86,13 @@ class ProfilePromoCarouselTest {
         val cards = listOf("hsk30", "telegram", "google", "apple")
         val heights = cards.map { key ->
             compose.onNodeWithTag("profile-promo-dot-$key").performClick()
-            compose.onNodeWithTag("profile-promo-card-$key").assertIsDisplayed()
-                .fetchSemanticsNode().layoutInfo.coordinates.size.height
+            compose.waitForIdle()
+            val node = compose.onNodeWithTag("profile-promo-card-$key")
+                .assertIsDisplayed().fetchSemanticsNode()
+            // Layout coordinates and SnapshotStateObserver belong to the
+            // Compose UI thread; the instrumentation test thread must not
+            // query them directly during a recomposition/measure pass.
+            compose.runOnIdle { node.layoutInfo.coordinates.size.height }
         }
         assertEquals(1, heights.distinct().size)
     }
@@ -107,13 +112,19 @@ class ProfilePromoCarouselTest {
     @Test fun aCardTracksTheFingerBeforeTheSwipeIsReleased() {
         show()
         val first = compose.onNodeWithTag("profile-promo-card-hsk30")
-        val initialLeft = first.fetchSemanticsNode().layoutInfo.coordinates.positionInRoot().x
+        val initialNode = first.fetchSemanticsNode()
+        val initialLeft = compose.runOnIdle {
+            initialNode.layoutInfo.coordinates.positionInRoot().x
+        }
         compose.onNodeWithTag("profile-promo-pager").performTouchInput {
             down(center)
             moveBy(Offset(-width * .1f, 0f))
             moveBy(Offset(-width * .25f, 0f))
         }
-        val draggedLeft = first.fetchSemanticsNode().layoutInfo.coordinates.positionInRoot().x
+        val draggedNode = first.fetchSemanticsNode()
+        val draggedLeft = compose.runOnIdle {
+            draggedNode.layoutInfo.coordinates.positionInRoot().x
+        }
         assertTrue("card must slide while the finger is held down", draggedLeft < initialLeft - 25f)
         compose.onNodeWithTag("profile-promo-pager").performTouchInput { up() }
     }
