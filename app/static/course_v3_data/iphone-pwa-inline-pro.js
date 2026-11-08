@@ -158,13 +158,13 @@
       var priceLine=el("span","hip-price-line");
       priceLine.appendChild(el("span","price",money(plan.amount,plan.currency)));
       if (Number(plan.discount_percent)>0 && plan.base_amount!=null) {
-        priceLine.appendChild(el("span","comparison",money(plan.base_amount,plan.currency)));
+        priceLine.appendChild(el("span","comparison",Number(plan.base_amount).toFixed(2)));
         card.appendChild(priceLine);
         card.appendChild(el("span","badge","−"+Number(plan.discount_percent)+"%"));
       } else {
         var reference=relativePrice(plan.amount);
         if (reference) {
-          var strike=el("span","comparison",money(reference,plan.currency));
+          var strike=el("span","comparison",reference);
           strike.title=txt("comparison");
           strike.setAttribute("aria-label",txt("comparison")+": "+money(reference,plan.currency));
           priceLine.appendChild(strike);
