@@ -42,7 +42,7 @@ def main():
     after = median_microseconds(cached)
     print(f"seven public map templates, median across 60 iterations:")
     print(f"unoptimized file read + JSON parse: {before:.1f} us")
-    print(f"cached template deepcopy:         {after:.1f} us")
+    print(f"cached JSON-tree clone:           {after:.1f} us")
     if after > 0:
         print(f"microbenchmark ratio: {before / after:.2f}x (CI runner only)")
     print("CAUTION: not an end-to-end API or mobile UX timing")
