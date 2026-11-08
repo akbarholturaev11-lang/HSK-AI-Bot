@@ -2706,8 +2706,7 @@ async def _course_v3_map_for_user(
     Both callers acquire the User row lock before this shared read/write. The
     existing map owns level restoration, HSK30 access, XP, policy and analytics.
     """
-    import json as _json
-    from pathlib import Path
+    from app.services.course_map_template_cache import load_course_map_template
     from app.services.smart_reminder_preferences import automatic_timezone_initialization_allowed
 
     dedupe_prefix = "course-v3" if default_source == "course_v3" else "pwa-course-v3"
@@ -2776,11 +2775,10 @@ async def _course_v3_map_for_user(
 
     resolved_level = target_band
 
-    map_path = Path(f"app/static/course_v3_data/{resolved_level}.json")
-    if not map_path.exists():
-        map_path = Path("app/static/course_v3_data/hsk1.json")
+    # Only public, versioned templates are cached. Every request gets its own
+    # mutable deep copy before applying private progress and entitlement data.
     try:
-        data = _json.loads(map_path.read_text())
+        data = load_course_map_template(resolved_level)
     except Exception:
         return JSONResponse(status_code=500, content={"ok": False, "error": "map_load_failed"})
 
