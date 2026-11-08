@@ -264,11 +264,10 @@ def test_pwa_guest_sees_panda_first_and_oauth_resumes_saved_draft_safely():
         assert started.value.status == 200
         assert captured["resume"] == 1
         assert len(captured["oauth"]) == 1
-        # The provider's real verified callback is exercised separately by
-        # PWA auth API tests. Simulate its return in the SAME tab without
-        # relying on a third-party origin that Chromium may block in CI.
-        # Crucially, sessionStorage is NOT re-seeded here.
-        page.goto(ORIGIN + "/iphone-pwa/onboarding/li?lang=uz")
+        # PWA OAuth API tests independently verify the callback. The
+        # synthetic provider's HTML already redirects to the original URL.
+        # A competing manual page.goto() here aborts that navigation.
+        # Leave the real same-tab journey and sessionStorage intact.
         try:
             page.wait_for_function("window.screen==='profile'", timeout=10000)
         except Exception:
@@ -340,10 +339,9 @@ def test_new_iphone_signup_shows_install_video_guide_after_verified_save_only():
             page.locator("#stage .provider").nth(1).click()  # OAuth
         assert started.value.status == 200
         assert captured["oauth"][0]["provider"] == "google"
-        # Simulate the verified provider callback in the same browser tab.
-        # Server authorizes the actor in /api/v3/pwa-auth/session on reload.
-        page.goto(ORIGIN + "/iphone-pwa/onboarding/li?lang=uz")
-        page.wait_for_function("window.screen==='profile'")
+        # The mocked OAuth provider redirects in the SAME tab. Do not
+        # interrupt that navigation with an extra manual page.goto().
+        page.wait_for_function("window.screen==='profile'", timeout=15000)
         assert page.locator(".li-install-card").count() == 0  # not saved yet
         page.locator("#footer .cta").click()
         page.locator(".li-install-card").wait_for(state="visible")
