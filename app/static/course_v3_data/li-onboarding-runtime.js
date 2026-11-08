@@ -31,18 +31,29 @@ function pageCourse(){return hostPwa?"/iphone-pwa/course":"/course-v3.html"}
 function actorHeaders(){return hostPwa?{}:{"X-Telegram-Init-Data":initData}}
 function errorFromResponse(response){return new Error("server_status_"+response.status)}
 function api(path,options){
-  options=options||{};
+  options=Object.assign({},options||{});
   options.credentials=hostPwa?"same-origin":"omit";
   options.cache="no-store";
   options.redirect="error";
   options.headers=Object.assign({},actorHeaders(),options.headers||{});
-  return fetch(path,options).then(function(response){
+  // A broken network connection must resolve into the retryable in-page UI.
+  // The source fetch remains the only truth; no simulated successful response.
+  var controller=typeof AbortController==="function"?new AbortController():null;
+  if(controller)options.signal=controller.signal;
+  var timeoutId=null;
+  var bound=new Promise(function(_,reject){
+    timeoutId=setTimeout(function(){
+      if(controller)controller.abort();
+      reject(new Error("li_remote_timeout"));
+    },options.method==="POST"?20000:12000);
+  });
+  return Promise.race([fetch(path,options),bound]).then(function(response){
     if(!response.ok)throw errorFromResponse(response);
     return response.json();
   }).then(function(data){
     if(!data||data.ok!==true)throw new Error("server_response_invalid");
     return data;
-  });
+  }).finally(function(){clearTimeout(timeoutId)});
 }
 function guardedPost(path,payload){
   var headers={"Content-Type":"application/json"};
@@ -103,13 +114,22 @@ function restoreDraft(){
 function clearDraft(){
   if(identityKey)try{sessionStorage.removeItem("hsk_li_draft_v1:"+identityKey)}catch(_){}
 }
+function syncPending(){
+  var stage=document.getElementById("stage");
+  if(!stage)return;
+  stage.setAttribute("aria-busy",String(requestBusy));
+  stage.classList.toggle("li-request-busy",
+    requestBusy&&!stage.querySelector(".loading"));
+}
 function setBusy(value){
   requestBusy=value;
-  var buttons=document.querySelectorAll("#top button,#footer button,.choices button,.track-switch button");
-  buttons.forEach(function(button){button.disabled=value});
-  document.getElementById("stage").setAttribute("aria-busy",String(value));
+  if(value){
+    var buttons=document.querySelectorAll("#top button,#footer button,.choices button,.track-switch button");
+    buttons.forEach(function(button){button.disabled=true});
+  }
+  syncPending();
 }
-function renderError(action){
+function renderError(action,continueFree){
   requestBusy=false;
   var stage=document.getElementById("stage");
   var box=document.createElement("div");
@@ -124,7 +144,14 @@ function renderError(action){
   button.type="button";button.className="cta";button.textContent=retryMessage();
   button.addEventListener("click",action);
   footer.appendChild(button);
-  stage.setAttribute("aria-busy","false");
+  if(typeof continueFree==="function"){
+    var skip=document.createElement("button");
+    skip.type="button";skip.className="cta ghost";
+    skip.textContent=word("later");
+    skip.addEventListener("click",continueFree);
+    footer.appendChild(skip);
+  }
+  syncPending();
   document.querySelectorAll("#top button").forEach(function(item){item.disabled=false});
 }
 function isHsk30Live(levelValue){
@@ -244,7 +271,7 @@ function trialStatus(){
 }
 function offerIfEligible(){
   if(requestBusy)return;
-  requestBusy=true;
+  setBusy(true);
   trialStatus().then(function(result){
     trialEligibility=result.trial||null;
     requestBusy=false;
@@ -253,8 +280,9 @@ function offerIfEligible(){
     console.warn("[li-onboarding] eligibility unavailable",String(error&&error.message||"unknown").slice(0,100));
     trialEligibility=null;
     requestBusy=false;
-    // Fail closed: the offer must never be shown on a failed eligibility read.
-    progress("end");
+    // Fail closed, but allow a real retry or a free-course continuation.
+    // Never misrepresent a network outage as "trial not eligible".
+    renderError(offerIfEligible,function(){progress("end")});
   });
 }
 function beginTrial(){
@@ -323,6 +351,7 @@ global.render=function(animate){
     var button=document.querySelector("#footer .cta");
     if(button)button.textContent=word("cont");
   }
+  syncPending();
   if(requestBusy)setBusy(true);
 };
 global.setTrack=function(v){
