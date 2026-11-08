@@ -85,7 +85,20 @@ def test_inline_pro_two_primary_plans_other_terms_and_real_exit_discount():
         assert page.get_by_role("heading", name="Лимит исчерпан").is_visible()
         assert page.locator("#hsk-inline-pro .hip-panda svg").is_visible()
         assert page.locator("#hsk-inline-pro .hip-benefit").count() == 3
-        assert page.locator("#hsk-inline-pro .hip-sheet").evaluate(
+        assert page.locator("#hsk-inline-pro .hip-panda svg").get_attribute("viewBox") == "0 0 128 144"
+        # iPhone full viewport, not a partial-height bottom sheet.
+        layout = page.evaluate("""() => {
+            const r=document.getElementById("hsk-inline-pro").getBoundingClientRect();
+            const s=document.querySelector("#hsk-inline-pro .hip-sheet").getBoundingClientRect();
+            return {rootW:r.width,rootH:r.height,sheetW:s.width,sheetH:s.height,
+              vw:window.innerWidth,vh:window.innerHeight,
+              background:getComputedStyle(document.getElementById("hsk-inline-pro")).backgroundColor};
+        }""")
+        assert abs(layout["rootW"] - layout["vw"]) <= 2
+        assert abs(layout["rootH"] - layout["vh"]) <= 2
+        assert abs(layout["sheetH"] - layout["vh"]) <= 2
+        assert layout["background"] == "rgb(253, 249, 240)"
+        assert page.locator("#hsk-inline-pro").evaluate(
             "(node) => getComputedStyle(node).animationName"
         ) != "none"
         page.locator("#hsk-inline-pro button.hip-plan").first.wait_for()
@@ -94,6 +107,14 @@ def test_inline_pro_two_primary_plans_other_terms_and_real_exit_discount():
         assert "1 год" in page.locator("#hsk-inline-pro .hip-body").inner_text()
         assert "12.99" in page.locator("#hsk-inline-pro .hip-body").inner_text()
         page.get_by_role("button", name="Другие тарифы").click()
+        # The title is never covered by the 44px back and close controls.
+        no_overlap=page.evaluate("""() => {
+            const h=document.querySelector("#hsk-inline-pro .hip-title").getBoundingClientRect();
+            const a=document.querySelector("#hsk-inline-pro .hip-back").getBoundingClientRect();
+            const b=document.querySelector("#hsk-inline-pro .hip-close").getBoundingClientRect();
+            return h.right <= b.left && h.left >= a.right;
+        }""")
+        assert no_overlap
         page.get_by_role("button", name="Visa / Mastercard — Lava.top").click()
         assert page.locator("#hsk-inline-pro button.hip-plan").count() == 4
         page.locator("#hsk-inline-pro .hip-close").click()
