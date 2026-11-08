@@ -204,7 +204,7 @@ async def apply_completed(session_factory, info: LavaInvoiceInfo) -> ApplyOutcom
                 granted_until = _utc(user.end_date)
                 now = _now()
                 row.status = "paid"
-                if row.source == "pwa" and row.kind != "renewal":
+                if row.source == "pwa" and row.kind != "renewal" and row.pwa_inline_attempt_id:
                     # Written in the same verified-grant transaction. No UI
                     # redirect, screenshot, or pending state can count as paid.
                     session.add(ConversionFunnelEvent(
