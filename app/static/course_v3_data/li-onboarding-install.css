@@ -1,0 +1,16 @@
+/* Post-registration iOS Safari Home Screen tutorial. No extra onboarding step. */
+.li-install-overlay{position:fixed;inset:0;z-index:15000;background:rgba(17,22,28,.65);display:flex;align-items:flex-end;justify-content:center;overflow:auto;padding:16px 0 0;padding-bottom:env(safe-area-inset-bottom,0px);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.li-install-card{position:relative;width:min(100%,540px);max-height:calc(100dvh - 24px);overflow-y:auto;overscroll-behavior:contain;border-radius:30px 30px 0 0;background:#fdfaf3;color:#17221c;padding:30px 20px 24px;box-shadow:0 16px 48px rgba(0,0,0,.22);font-family:inherit}
+.li-install-close{position:absolute;top:14px;right:16px;width:36px;height:36px;border:0;border-radius:50%;background:#eeeee9;color:#26372e;font-size:26px;line-height:1;cursor:pointer}
+.li-install-title{margin:8px 38px 8px 0;font-size:23px;font-weight:750;line-height:1.2;letter-spacing:-.4px}
+.li-install-intro{margin:0 0 16px;color:#5c665d;font-size:14px;line-height:1.5}
+.li-install-media{min-height:150px;aspect-ratio:16/9;border-radius:20px;overflow:hidden;background:#eaece5;display:grid;place-items:center}
+.li-install-video{width:100%;height:100%;object-fit:contain;background:#14251f}
+.li-install-video-fallback{padding:28px 20px;text-align:center;color:#425147;font-size:14px;line-height:1.5}
+.li-install-steps{padding-left:24px;margin:18px 0 12px;display:grid;gap:12px;font-size:14px;line-height:1.4}
+.li-install-steps li::marker{font-weight:800;color:#b93e31}
+.li-install-note{font-size:12px;line-height:1.5;color:#617268;margin:0 0 16px}
+.li-install-continue{display:block;width:100%;min-height:50px;border:0;border-radius:16px;background:#b93e31;color:#fff;font-size:16px;font-weight:700;cursor:pointer}
+.li-install-continue:focus-visible,.li-install-close:focus-visible{outline:3px solid #182c46;outline-offset:3px}
+@media(min-width:620px){.li-install-overlay{align-items:center;padding:20px}.li-install-card{border-radius:30px;max-height:calc(100dvh - 40px)}}
+@media(prefers-reduced-motion:reduce){.li-install-overlay,.li-install-card{animation:none;transition:none}}
