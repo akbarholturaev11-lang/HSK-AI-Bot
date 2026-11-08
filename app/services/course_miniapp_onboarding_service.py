@@ -10,7 +10,9 @@ from app.services.course_levels import (
 )
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
 from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
-from app.services.onboarding_goal_selection import read_onboarding_goals
+from app.services.onboarding_goal_selection import (
+    normalize_onboarding_goals, normalize_streak_target, read_onboarding_goals,
+)
 from app.services.course_track_service import CourseTrackService
 from app.services.course_trial_service import CourseTrialService
 from app.services.hsk30_feature_service import Hsk30FeatureService
@@ -265,6 +267,12 @@ class CourseMiniAppOnboardingService:
             daily_minutes=daily_minutes,
             start_mode=start_mode,
         )
+        # Validate every optional field before any track switch, profile
+        # creation or course-progress write. This also covers signed Telegram
+        # payloads that do not pass through PWA's Pydantic validation.
+        normalize_onboarding_goals(goals, primary_goal=goal)
+        normalize_streak_target(streak_target_days)
+        self.profile_service.normalize_preferred_focus(preferred_focus)
         activation_variant = str(activation_variant or "legacy_or_standard").strip()[:32]
 
         user = (await self.user_repo.get_by_actor(telegram_id)
