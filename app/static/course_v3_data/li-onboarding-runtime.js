@@ -13,6 +13,7 @@ var initialRender=global.render;
 var originalLogin=global.loginScreen;
 var originalBooks=global.books;
 var originalSetTrack=global.setTrack;
+var originalLevels=global.levels;
 var originalBack=global.back;
 var READY_STATES=["version","level","goal","time","focus","ready","loadLesson",
                   "habit","streak","profile","signup","pro","trialIntro","trial1",
@@ -124,6 +125,7 @@ function renderError(action){
   button.addEventListener("click",action);
   footer.appendChild(button);
   stage.setAttribute("aria-busy","false");
+  document.querySelectorAll("#top button").forEach(function(item){item.disabled=false});
 }
 function isHsk30Live(levelValue){
   var t=trackStatus&&trackStatus.tracks&&trackStatus.tracks.hsk30;
@@ -241,13 +243,19 @@ function trialStatus(){
     guardedPost("/api/v3/trial/status",{});
 }
 function offerIfEligible(){
-  loadingState("loadLesson",function(){
-    return trialStatus().then(function(result){trialEligibility=result.trial;});
-  },"pro");
-  // A disallowed, already-used or disabled trial must never produce a Pro CTA.
-  var current=requestGeneration,ref=global.render;
-  var after=global.render;
-  // The actual branch decision happens in the loading completion hook below.
+  if(requestBusy)return;
+  requestBusy=true;
+  trialStatus().then(function(result){
+    trialEligibility=result.trial||null;
+    requestBusy=false;
+    progress(trialEligibility&&trialEligibility.eligible?"pro":"end");
+  }).catch(function(error){
+    console.warn("[li-onboarding] eligibility unavailable",String(error&&error.message||"unknown").slice(0,100));
+    trialEligibility=null;
+    requestBusy=false;
+    // Fail closed: the offer must never be shown on a failed eligibility read.
+    progress("end");
+  });
 }
 function beginTrial(){
   if(requestBusy||!trialEligibility||!trialEligibility.eligible){window.go("end");return}
@@ -285,6 +293,13 @@ function showLiveBooks(){
     '<div hidden>'+originalBooks()+'</div></div>';
 }
 global.books=showLiveBooks;
+// Only render live levels reported by the server; demo options are visual
+// references, never entitlement or launch permission.
+global.levels=function(){
+  var source=originalLevels();
+  if(global.track!=="hsk30"||!trackStatus)return source;
+  return source.filter(function(value){return isHsk30Live(value.k)});
+};
 global.loginScreen=function(mode){
   var html=originalLogin(mode);
   // Demo buttons formerly faked sign-in or unlocked Pro on click. Never ship
@@ -379,20 +394,6 @@ document.addEventListener("visibilitychange",function(){
   if(hostPwa&&document.visibilityState==="visible"&&actor)
     session().catch(function(){location.replace("/iphone-pwa")});
 });
-// Replace pending offer UI only once status has been confirmed.
-var previousOffer=offerIfEligible;
-offerIfEligible=function(){
-  if(requestBusy)return;
-  ++requestGeneration;
-  requestBusy=true;
-  trialStatus().then(function(r){
-    trialEligibility=r.trial||null;
-    requestBusy=false;progress(trialEligibility&&trialEligibility.eligible?"pro":"end");
-  }).catch(function(){
-    trialEligibility=null;
-    requestBusy=false;progress("end");
-  });
-};
 global.render(false);
 bootstrap();
 })(window);
