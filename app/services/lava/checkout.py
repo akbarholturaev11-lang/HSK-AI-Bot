@@ -202,7 +202,9 @@ class LavaCheckoutService:
     async def start(self, session_factory, *, user_id: int, plan_type: str, email: str,
                     source: str, language: str | None, supports_lava: bool = True,
                     context_mode: str | None = None, campaign_id: int | None = None,
-                    feedback_id: int | None = None) -> dict:
+                    feedback_id: int | None = None,
+                    analytics_attempt_id: str | None = None,
+                    analytics_source: str | None = None) -> dict:
         if source not in LAVA_SOURCES:
             raise LavaCheckoutError("invalid_source", 400)
         if (context_mode or "") not in CHECKOUT_CONTEXT_MODES:
@@ -251,6 +253,8 @@ class LavaCheckoutService:
                     expected_amount=(discounted(term.price_amount, discount.percent) if discount
                                      else term.price_amount),
                     buyer_email=buyer_email, source=source,
+                    pwa_inline_attempt_id=(analytics_attempt_id if source == "pwa" else None),
+                    pwa_inline_source=(analytics_source if source == "pwa" else None),
                     promo_code=discount.promo_code if discount else None,
                     discount_source=discount.source if discount else None,
                     discount_percent=discount.percent if discount else None,
