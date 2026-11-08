@@ -229,6 +229,26 @@ class PwaExitOfferAction(BaseModel):
     source: str | None = Field(default=None, max_length=80)
 
 
+class PwaProUiEvent(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    # Billing events are exclusively recorded after real provider actions.
+    event: Literal[
+        "pwa_pro_opened", "pwa_pro_plan_selected", "pwa_pro_more_opened",
+        "pwa_pro_method_selected", "pwa_pro_exit_offered",
+        "pwa_pro_exit_claimed", "pwa_pro_exit_declined", "pwa_pro_dismissed",
+        "pwa_pro_checkout_failed",
+    ]
+    source: Literal[
+        "v3_locked_lesson", "v3_pronunciation_limit", "v3_recognition_limit",
+        "v3_memorize_limit", "v3_test_limit", "v3_mistake_review",
+        "v3_voice_limit", "v3_qa_limit",
+    ]
+    attempt_id: str = Field(min_length=5, max_length=80, pattern=r"^[A-Za-z0-9:.-]+$")
+    event_id: str = Field(min_length=5, max_length=80, pattern=r"^[A-Za-z0-9:.-]+$")
+    plan_type: Literal["1_month", "3_months", "6_months", "12_months"] | None = None
+    method: Literal["lava", "manual"] | None = None
+
+
 class PwaCheckoutContext(BaseModel):
     model_config = ConfigDict(extra="forbid")
     source: str | None = None
@@ -1292,6 +1312,60 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                 return RedirectResponse(
                     "/iphone-pwa", status_code=303, headers=_NO_STORE,
                 )
+            return _error(exc)
+
+    @router.post("/api/v3/pwa/subscription/inline-event")
+    async def pwa_inline_pro_event(request: Request):
+        """CSRF-protected, account-bound, idempotent PWA UI funnel stages.
+
+        The canonical account row serializes concurrent browser-tab writes.
+        UI clients CANNOT record a provider checkout or completed payment.
+        """
+        import json
+        from sqlalchemy import select
+        from app.db.models.user import User
+        from app.db.models.conversion_funnel_event import ConversionFunnelEvent
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            data = await _small_json(request, PwaProUiEvent, max_bytes=1024)
+            if not data.event_id.startswith(data.attempt_id + ":"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                # SELECT FOR UPDATE avoids double counting the same stage
+                # when a tab/network retries the same event ID.
+                await db.get(User, actor.id, with_for_update=True)
+                existed = (await db.execute(
+                    select(ConversionFunnelEvent.id).where(
+                        ConversionFunnelEvent.user_id == actor.id,
+                        ConversionFunnelEvent.event_name == data.event,
+                        ConversionFunnelEvent.payload_json.like(
+                            '%"event_id": "' + data.event_id + '"%'
+                        ),
+                    ).limit(1)
+                )).scalar_one_or_none()
+                if existed is None:
+                    db.add(ConversionFunnelEvent(
+                        user_id=actor.id, telegram_id=actor.telegram_id,
+                        event_name=data.event, source=data.source,
+                        payload_json=json.dumps({
+                            "event_id": data.event_id,
+                            "attempt_id": data.attempt_id,
+                            "plan_type": data.plan_type or "",
+                            "payment_method": data.method or "",
+                            "transport": "iphone_pwa",
+                        }, ensure_ascii=False),
+                    ))
+                await db.commit()
+            return JSONResponse(
+                {"ok": True, "recorded": existed is None}, headers=_NO_STORE,
+            )
+        except PwaAuthError as exc:
             return _error(exc)
 
     @router.post("/api/v3/pwa/subscription/exit-offer")
