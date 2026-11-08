@@ -150,7 +150,8 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual((await self.client.post(
             "/api/v3/pwa/onboarding", headers={"Origin": ORIGIN},
             json={"level": "hsk1", "goal": "hsk_exam", "daily_minutes": 10,
-                  "start_mode": "continue"},
+                  "start_mode": "continue", "language": "uz",
+                  "timezone_offset_minutes": 0},
         )).status_code, 401)
         await self.callback(await self.begin())
         signed = await self.client.get(route)
@@ -992,7 +993,11 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('if(!INIT_DATA&&!PWA_COURSE_HOST)return Promise.reject(new Error("auth"));', course)
         self.assertIn('if((!INIT_DATA&&!PWA_COURSE_HOST)||!l||l.status!=="current")', course)
         # Only a server-confirmed sign-in may enter the authenticated course.
-        self.assertEqual(login.count('location.replace("/iphone-pwa/course");'), 2)
+        # Telegram OAuth may first re-enter the server redirect at /iphone-pwa
+        # to honor an explicit Li onboarding resume hint. The existing
+        # session-verified direct course redirect is still mandatory.
+        self.assertEqual(login.count('location.replace("/iphone-pwa/course");'), 1)
+        self.assertIn('location.replace("/iphone-pwa");', login)
         self.assertIn('await json("/api/v3/pwa-auth/session")', login)
         self.assertIn('reply.status === "complete"', login)
         self.assertNotIn('localStorage.setItem("pwa', login)
