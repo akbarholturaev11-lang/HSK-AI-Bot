@@ -48,12 +48,20 @@
 
 ### Testing/QA evidence on new main
 - New **test SOURCE** inspected: `tests/test_pwa_exit_offer.py` (one-time offer/provider/verified grant), `tests/test_pwa_browser_auth.py` (PWA event auth/CSRF/dedupe/preview), `tests/e2e/test_pwa_inline_pro.py` (synthetic visual), `tests/e2e/test_pwa_inline_pro_routes.py` (limit routes + manual iframe), `tests/test_qa_standalone_bootstrap.py` (head 0153). `backend-ci.yml` includes related jobs.
-- No `pytest`, unittest, Playwright, Alembic CLI or mobile-device test command executed in this conversation. No passing GitHub Actions run evidenced at the merged commit. Railway build didn't reach app startup. **NOT VERIFIED; no PASS claim**.
+- Before this feature, no tests executed; see CI evidence at top for the new branch. Do not call PR checks PASS until a completed CI run confirms it. Railway build didn't reach app startup. **NOT VERIFIED; no PASS claim**.
 - Recommend targeted baseline: `python -m unittest tests.test_pwa_browser_auth tests.test_pwa_exit_offer tests.test_lava_promo_codes tests.test_course_miniapp_onboarding tests.test_course_track_service tests.test_trial_reminder_service tests.test_smart_reminder_policy tests.test_smart_reminder_pwa tests.test_qa_standalone_bootstrap`; i18n `python3 scripts/i18n_build_all_catalogs.py --check`; `python -m pytest -q tests/e2e/test_pwa_inline_pro.py tests/e2e/test_pwa_inline_pro_routes.py` (assuming environment deps available); plus migration single-head and synthetic/real-device PWA behavior. Record exact results; these are **proposed commands, not completed tests**.
 
 ### Audit conclusion and agreed work boundary
 - **Recommend implementing from new main 401de, NOT the obsolete docs branch on 4ca.** This new docs branch was created exactly from 401de, with PRODUCT_GOAL and this context only; no runtime changed. On next task, refresh remote main for further commits and compare before coding.
 - **Not started:** user requested AUDIT FIRST, coding NEXT; do not begin P1 without new user instruction. Production Railway failed to deploy new main due Nixpacks driver download; the prior live app stays online. No automatic deployment/merge on this audit.
+
+## CI evidence — first test cycle and bug fixes (2026-11-08)
+
+- Draft PR [#282](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/282) opened on the feature branch to run tests; **DRAFT, no merge or deploy**.
+- GitHub Actions run `42472514663` DID execute tests; `miniapp-ui` failed in `tests/e2e/test_li_onboarding_loading.py::test_track_loading_is_visible_retryable_and_server_authoritative`: after server success, `#cta` stayed disabled. **Actual root cause:** loading render disabled CTA; successful remote render did not re-enable it. **Fix committed:** `app/static/course_v3_onboarding.html` now restores CTA on verified ready state (`0048e1cff92e989a8b5891d4606e39578a9b99b2`).
+- Same run `targeted-tests` failed `tests/test_miniapp_onboarding_save_confirmation.py::test_completed_hsk30_choice_is_confirmed_without_any_write` due newly additive `goals/streak_target_days/preferred_focus` status fields. **Fix committed:** adjusted exact expected response for old legacy profile while preserving read-only/no-write requirement (`2062aa8faa9473114de089ec43c1ab84c4279614`).
+- A new PR CI cycle began after fixes: GitHub workflow run `42472708714` (backend targeted). **At this journal write it is IN PROGRESS; not PASS**. Check workflow jobs and logs before advancing claims.
+- Original demo `docs/onboarding-li/DEMO_REFERENCE_ONLY.html` was compared character-by-character to the attached original through GitHub + Files tools: **identical, all 23 cases present**. Local SHA-256 already matched. This is reference QA only, not a visual browser pass.
 
 ## 2026-11-08 IMPLEMENTATION CHECKPOINT — first partial code slice on deployed main ffbff949
 
@@ -87,7 +95,7 @@
 
 ### Test evidence
 - Authored files and new CI steps: **YES**.
-- Executed `python -m unittest`, `pytest`, `python3 scripts/i18n_build_all_catalogs.py --check`, Alembic upgrade/downgrade, mobile-device browser: **NOT RUN** in this session.
+- GitHub Actions DID execute targeted unittest and synthetic Playwright in PR #282: first run failures described in CI evidence; fixes are committed and the new CI run is pending. Direct local test/physical-device QA and migration rehearsal remain **NOT RUN**.
 - Do not mark migration safe or production ready before sandboxed database migration+regression and CI proof.
 - Source-driven checks performed: GitHub read-after-write and source-anchor validation; these are **not** test execution.
 
