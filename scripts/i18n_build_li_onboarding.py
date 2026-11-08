@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 LOCALES = ("uz", "ru", "tj")
 NAMESPACE = "li_onboarding"
 COPY_COUNT = 66
+INSTALL_KEYS = ("install.title", "install.description", "install.videoLabel", "install.videoFallback", "install.step1", "install.step2", "install.step3", "install.note", "install.continue", "install.close",)
 SHAPES = {
     "LV20": ("beginner", "hsk1", "hsk2", "hsk3", "hsk4"),
     "LV30": ("nhsk1", "nhsk2", "nhsk3"),
@@ -65,7 +66,7 @@ def read_sources(root: Path = ROOT) -> dict[str, dict[str, str]]:
     copy_keys = {key for key in keys if key.startswith("copy.")}
     if len(copy_keys) != COPY_COUNT:
         raise ValueError("Li original demo copy count changed")
-    required = set(copy_keys)
+    required = set(copy_keys) | set(INSTALL_KEYS)
     for group, codes in SHAPES.items():
         for code in codes:
             for field in FIELDS[group]:
@@ -87,7 +88,7 @@ def output_files(catalogs: dict[str, dict[str, str]]) -> dict[str, str]:
     copy = {
         lang: {
             key.removeprefix("copy."): value
-            for key, value in source.items() if key.startswith("copy.")
+            for key, value in source.items() if key.startswith("copy.") or key in INSTALL_KEYS
         }
         for lang, source in catalogs.items()
     }
