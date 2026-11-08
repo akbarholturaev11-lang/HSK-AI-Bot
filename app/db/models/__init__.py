@@ -4,6 +4,7 @@ from .admin_pwa_campaign_asset import AdminPwaCampaignAsset
 from .referral import Referral
 from .payment import Payment
 from .lava import LavaInvoice, LavaWebhookEvent
+from .pwa_exit_offer import PwaExitOffer
 from .discount_campaign import DiscountCampaign
 from .ad_campaign import AdCampaign, AdCampaignDelivery
 from .release_feedback import ReleaseFeedbackCampaign, ReleaseFeedbackDelivery, ReleaseFeedbackResponse
