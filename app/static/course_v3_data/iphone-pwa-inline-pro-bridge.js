@@ -161,6 +161,10 @@
           return steps;
         };
       }
+      // The source checkout renders once before this PWA-only bridge is
+      // injected. Immediately re-render using the selected manual path
+      // so the intermediate Visa question cannot flash during loading.
+      try { if (typeof window.render==="function") window.render() } catch (_) {}
     }
     // Actual manual discount supersedes the comparison. This is display only.
     var renderPlans = window.renderPlans;
