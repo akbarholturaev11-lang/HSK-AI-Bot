@@ -157,6 +157,19 @@ def _page(browser, *, pwa=True, trial_eligible=False, trial_start_ok=True, saved
     page.route("**/api/**", api)
     page.goto(url)
     page.wait_for_function("window.LiRuntime && typeof window.go==='function'")
+    # Safari must recognize an installable app even while the post-signup
+    # guide is open on the Li page. This is a *PWA-only* head contract; the
+    # shared Telegram Mini App HTML must not advertise a PWA identity.
+    if pwa:
+        assert page.locator('link[rel="manifest"]').get_attribute("href") == (
+            "/iphone-pwa/manifest.webmanifest")
+        assert page.locator('link[rel="apple-touch-icon"]').get_attribute("href") == (
+            "/assets/hsk-ai-logo-256.png")
+        assert page.locator('meta[name="apple-mobile-web-app-capable"]').get_attribute(
+            "content") == "yes"
+    else:
+        assert page.locator('link[rel="manifest"]').count() == 0
+        assert page.locator('link[rel="apple-touch-icon"]').count() == 0
     try:
         page.wait_for_function("document.querySelector('#footer .cta')!==null", timeout=8000)
     except Exception:
