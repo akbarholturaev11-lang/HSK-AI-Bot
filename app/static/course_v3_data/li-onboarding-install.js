@@ -17,12 +17,13 @@
       || (global.navigator.platform === "MacIntel" && global.navigator.maxTouchPoints > 1);
   }
   function eligible() {
-    // The authenticated browser URL is the transport authority. PWA pages
-    // may load the Telegram SDK shim for shared panda/course assets; its
-    // presence is NOT proof that the page is a Mini App. The Mini App route
-    // lives outside /iphone-pwa/ and therefore never receives this prompt.
+    // The route is authoritative for browser session/Pro identity. Having
+    // the shared Telegram SDK library object alone is not an auth signal.
+    // But non-empty verified Telegram WebApp initData means this is running
+    // inside a Telegram client WebView, where Safari's Share button is absent.
+    var webApp = global.Telegram && global.Telegram.WebApp;
     return global.location.pathname.startsWith("/iphone-pwa/")
-      && ios() && !standalone();
+      && ios() && !standalone() && !(webApp && webApp.initData);
   }
   function label(lang, key) {
     var all = global.HSKAI_LI_I18N || {};
