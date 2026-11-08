@@ -27,11 +27,11 @@ This is the **single context/handoff file** for this work. Update status here as
 ## Implementation plan
 - [x] Audit repository architecture and PWA entry points.
 - [x] Create isolated feature branch and this context file.
-- [ ] Build standalone, PWA-only inline paywall module, server-owned plans and safe checkout state transitions.
-- [ ] Integrate all PWA limit triggers without modifying Telegram conditions; cover voice separately.
-- [ ] Implement 20% exit offer eligibility/claim in backend, schema migration, and Lava promo mapping with automated tests.
-- [ ] Preserve manual checkout fallback and avoid redundant subscription-page navigation.
-- [ ] Cover analytics, language, cache/version, safe-area accessibility, back/gesture, Pro refresh, and E2E regression.
+- [x] Build standalone, PWA-only inline paywall module, server-owned plans and safe checkout state transitions.
+- [x] Integrate all PWA limit triggers without modifying Telegram conditions; cover voice separately.
+- [x] Implement 20% exit offer eligibility/claim in backend, schema migration, and Lava promo mapping with automated test cases (execution pending).
+- [x] Preserve manual checkout in an embedded iframe inside the paywall; no navigation to a standalone subscription section from the limit surface.
+- [ ] Verify UI and server behavior in the real browser; locale strings, version-pinned CSS/JS, safe areas and Pro refresh are wired. Exit-offer record provides offer/claim/consumption evidence; aggregated analytics remains future work.
 - [ ] Run tests + review diff + create draft PR (do not merge until verified).
 
 ## Known constraints / outstanding verification
@@ -41,3 +41,11 @@ This is the **single context/handoff file** for this work. Update status here as
 - Existing legacy discounts/referral/admin flows must retain current semantics; no unearned discounts.
 - iOS popup blocking with asynchronous `window.open` requires direct gesture-safe payment start plus a manual reopen fallback.
 - Do not claim automated tests passed before executing them.
+
+## Coding status at last update
+- PWA UI: `app/static/course_v3_data/iphone-pwa-inline-pro.{js,css}`; seven limit entry screens wired.
+- Backend: PWA CSRF endpoint; per-account `pwa_exit_offers` table (Alembic `0152`), real Lava promo consumption by verified webhook.
+- Admin PWA: added `exit_offer:20` promo-code editor; without a real code saved in the provider and admin this offer must remain unavailable.
+- Tests authored: `tests/test_pwa_exit_offer.py`, `tests/e2e/test_pwa_inline_pro.py`, a CSRF test in `tests/test_pwa_browser_auth.py`. They have not yet been executed.
+- The PWA mode `exit_discount` applies to Lava only, not manual bank/QR; manual checkout keeps its existing discount rules and its full original screens.
+- Still must inspect CI, validate 1m and 12m live term enablement, actual payment popup/3DS return, and user account rights after payment; no merge until those checks.
