@@ -159,6 +159,10 @@ _PWA_COURSE_BOOT_SCRIPT = b'''<script>
 def _add_pwa_course_initial_shell(source: bytes) -> bytes:
     """Static-only PWA first paint. Never inject stale learner/progress data."""
     markers = (
+        # The canonical source always sets tg=null on the verified PWA route.
+        # Do not load Telegram's 120 KB parser-blocking WebApp SDK in Safari;
+        # keep it intact for the signed Telegram Mini App entry point.
+        (b'<script src="/assets/telegram-web-app.js?v=20261019-1"></script>', b''),
         (b"</head>", _PWA_COURSE_BOOT_HEAD + b"</head>"),
         (b'<body class="hsk-scene-page">', b'<body class="hsk-scene-page hsk-pwa-shell-loading">'),
         (_PWA_COURSE_SKELETON_OLD, _PWA_COURSE_SKELETON_NEW),
