@@ -91,6 +91,7 @@ def test_lava_provider_link_is_available_only_when_invoice_has_real_url(url,expe
             assert "Provider checkout ready" in popup.locator("body").inner_text()
         else:
             assert page.get_by_role("link",name="Lava.top’ni ochish").count()==0
+            page.locator("#hsk-inline-pro .hip-error").wait_for(state="visible")
             assert page.locator("#hsk-inline-pro .hip-error").is_visible()
         assert len(captured)==1
         assert not errors, errors
