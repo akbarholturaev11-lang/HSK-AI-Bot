@@ -273,8 +273,21 @@
     clearInterval(tick);tick=null;run++;root.hidden=true;body.replaceChildren();body.style.padding="";
     document.documentElement.style.overflow=state&&state.previousOverflow||"";
     if (lastFocus&&lastFocus.isConnected) lastFocus.focus({preventScroll:true});
+    var wasPaid=Boolean(state&&state.paid);
     if (state&&typeof state.onClose==="function") state.onClose();
     state=null;
+    if(wasPaid){
+      if(location.pathname==="/iphone-pwa/course"){
+        try {
+          if(typeof window.refreshPwaCheckoutMap==="function") {
+            window.refreshPwaCheckoutMap().catch(function(){});
+          }
+        }catch(e){}
+      } else {
+        // Standalone PWA practice re-runs its server-side gate as Pro.
+        location.reload();
+      }
+    }
   }
   function requestDismiss() {
     if (!state) return;
@@ -353,7 +366,7 @@
     request(API.status,{checkout_id:id}).then(function(result) {
       if (!state||current!==run)return;
       if (result.status==="paid") {
-        clearInterval(tick);tick=null;state.screen="success";state.checkoutId=null;render();
+        clearInterval(tick);tick=null;state.paid=true;state.screen="success";state.checkoutId=null;render();
       } else if (result.status==="failed") {
         clearInterval(tick);tick=null;state.screen="main";state.checkoutId=null;
         state.error=txt("error");render();
