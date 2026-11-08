@@ -477,6 +477,8 @@ jobs:
         run: python -m pytest -q tests/e2e/test_li_onboarding_loading.py
       - name: Verify 23-state Li runtime, platform ownership, real choices and trial boundaries
         run: python -m pytest -q tests/e2e/test_li_onboarding_runtime.py
+      - name: Verify iPhone Home Screen install video guide and missing-MP4 fallback
+        run: python -m pytest -q tests/e2e/test_li_onboarding_install.py
       - name: Install WebKit for iPhone Safari payment and limit regression
         run: python -m playwright install --with-deps webkit
       - name: Verify fullscreen PWA Pro and Lava payment on iPhone WebKit
