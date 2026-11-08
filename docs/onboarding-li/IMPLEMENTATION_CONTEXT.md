@@ -8,6 +8,16 @@
 >
 > **REAL ONBOARDING IMPLEMENTATION STATUS: PARTIAL ON FEATURE BRANCH.** The isolated 23-state Li UI, optional iPhone install guide and server adapters are committed; real MP4, final all-green CI/device validation, default route cutover, production deploy are NOT complete.
 
+## 2026-11-09 VERIFIED VIDEO IMPORT — USER ZIP EXTRACTED TO REAL MP4
+
+- User uploaded the whole `HSK_AI_iPhone_install_video_GitHub_asset.zip` to the feature branch under `app/static/assets/onboarding/`, not the inner MP4. The ZIP itself cannot be played by the browser.
+- Executed a temporary, SHA-locked GitHub Actions extraction workflow. [Run 42505992013](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/42505992013) completed **SUCCESS**.
+- Verified GitHub feature branch tree contains **`app/static/assets/onboarding/iphone-home-screen.mp4`** (709,956 bytes) with blob SHA-1 `4c263a39cb0a6dba12a43379702ed3dd907d1d06`; checked the same SHA against local `git hash-object`.
+- Original optimized MP4 SHA-256 `727be15b30229aedffee780eab61ee781ef3727e9cd7bcf8af5aab6d99bacb8f`, as in asset README.
+- Confirmed **both** the uploaded ZIP and the one-time GitHub Actions workflow were removed in the import commit. This left only the actual video asset, README and existing /assets route.
+- Existing `GET /assets/onboarding/iphone-home-screen.mp4` now resolves to a real file **on this feature branch** after it is served by the app. `li-onboarding-install.js` uses same path. However no preview server was deployed in this conversation and no real-device Safari or throttled-network playback test passed here.
+- PR #282 remains **draft**; no `main` merge, no production deploy. Before approval, run asset validation CI `tests.test_li_install_video_asset` and real Safari range/slow-network playback QA. Review video content for old URL wording.
+
 ## 2026-11-09 USER VIDEO RECEIVED — compression complete, repo binary import pending
 
 - User attached a 16.333 s, 512×1114, H.264/AAC iPhone Safari Home Screen instructional screen recording, **6,624,465 bytes**.
