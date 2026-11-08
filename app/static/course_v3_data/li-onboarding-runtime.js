@@ -7,6 +7,35 @@
 var hostPwa=location.pathname.indexOf("/iphone-pwa/")===0;
 var tg=global.Telegram&&global.Telegram.WebApp;
 var initData=hostPwa?"":String(tg&&tg.initData||"");
+if(hostPwa){
+  // The shared Mini App document must only advertise a Home Screen install
+  // identity from the browser PWA route. Reuse canonical course/login assets.
+  var head=document.head;
+  [["apple-mobile-web-app-capable","yes"],
+   ["apple-mobile-web-app-status-bar-style","default"],
+   ["apple-mobile-web-app-title","HSK AI"],
+   ["theme-color","#FDF9F0"]].forEach(function(pair){
+     if(head.querySelector('meta[name="'+pair[0]+'"]'))return;
+     var meta=document.createElement("meta");
+     meta.name=pair[0];meta.content=pair[1];head.appendChild(meta);
+   });
+  function installLink(rel,href,media){
+    var link=document.createElement("link");
+    link.rel=rel;link.href=href;if(media)link.media=media;
+    head.appendChild(link);
+  }
+  if(!head.querySelector('link[rel="manifest"]'))
+    installLink("manifest","/iphone-pwa/manifest.webmanifest");
+  if(!head.querySelector('link[rel="apple-touch-icon"]'))
+    installLink("apple-touch-icon","/assets/hsk-ai-logo-256.png");
+  [[440,956,3],[430,932,3],[402,874,3],[393,852,3],[428,926,3],
+   [390,844,3],[375,812,3],[414,896,3],[414,896,2],[414,736,3],[375,667,2]]
+  .forEach(function(d){
+    installLink("apple-touch-startup-image",
+      "/assets/startup/hsk-startup-"+(d[0]*d[2])+"x"+(d[1]*d[2])+".png",
+      "(device-width: "+d[0]+"px) and (device-height: "+d[1]+"px) and (-webkit-device-pixel-ratio: "+d[2]+") and (orientation: portrait)");
+  });
+}
 var actor=null,identityKey="",trackStatus=null,launch=null;
 var justResumedGuestRegistration=false;
 var supportedProviders=null; // null while the real provider availability loads
