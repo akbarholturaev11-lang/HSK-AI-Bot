@@ -492,6 +492,36 @@ class CourseMiniAppOnboardingFlowTests(unittest.IsolatedAsyncioTestCase):
         ):
             self.assertEqual(await service._normalize_request_level("nhsk1"), "nhsk1")
 
+    async def test_locked_hsk30_onboarding_cannot_switch_or_persist(self):
+        # Direct PWA/Telegram POST must never bypass the live HSK 3.0
+        # payment/access gate merely because content has been published.
+        session = SimpleNamespace(commit=AsyncMock())
+        service = CourseMiniAppOnboardingService(session)
+        actor = SimpleNamespace(id=4, level="hsk1", telegram_id=41)
+        profile = self._profile()
+        with (
+            patch("app.services.course_miniapp_onboarding_service.Hsk30ManifestService.load",
+                  return_value=SimpleNamespace(first_lesson_order=1, lesson_count=20)),
+            patch("app.services.course_miniapp_onboarding_service.CourseTrackService") as tracks,
+        ):
+            tracks.return_value.hsk30_feature.is_level_live = AsyncMock(return_value=True)
+            tracks.return_value.hsk30_access = AsyncMock(
+                return_value=SimpleNamespace(allowed=False, reason="hsk30_unlock_required")
+            )
+            result = await service._complete_hsk30(
+                user=actor, profile=profile, requested_level="nhsk1",
+                goal="hsk_exam", daily_minutes=10, start_mode="lesson_1",
+                language="uz", timezone_offset_minutes=0,
+                activation_variant="li_onboarding_v1",
+                onboarding_was_completed=False, goals=["hsk_exam"],
+                streak_target_days=14, preferred_focus="speaking",
+            )
+            self.assertEqual(result, {"ok": False, "error": "hsk30_unlock_required"})
+            tracks.return_value.switch.assert_not_called()
+            session.commit.assert_not_awaited()
+            self.assertIsNone(profile.onboarding_completed_at)
+            self.assertEqual(actor.level, "hsk1")
+
     @staticmethod
     def _profile():
         return SimpleNamespace(
