@@ -96,7 +96,7 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 .price.long{font-size:23px}
 .price small{font-size:12px;color:var(--muted);font-weight:850;margin-left:4px}
 .old-price{display:none;margin-top:9px;color:var(--muted);font-size:12px;text-decoration:line-through}
-.discounted .old-price,.pwa-reference-price .old-price{display:block}
+.discounted .old-price{display:block}
 .list{display:grid;gap:9px}
 body.hsk-scene-page::before{content:none!important}
 .lava-question{min-height:calc(100dvh - 190px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;justify-content:center;text-align:center;gap:22px}
@@ -561,9 +561,6 @@ function courseReturnUrl(){
   return (PWA_CHECKOUT_HOST?"/iphone-pwa/course":"/course-v3.html")+"?"+query.toString();
 }
 function returnToCourseFromCheckout(){
-  if(PWA_CHECKOUT_EMBEDDED){
-    try{if(window.parent.HSKPwaInlinePro?.closeEmbeddedCheckout(window))return}catch(e){}
-  }
   if(PWA_CHECKOUT_EMBEDDED){
     try{if(window.parent.App?.closePwaCheckout(window))return}catch(e){}
   }
@@ -1814,14 +1811,6 @@ function nextCtaText(text,screen){
   if(state.method==="wechat")return text.payWithWechat||text.next;
   return text.continueToPayment||text.next;
 }
-function pwaVisualReference(amount){
-  // PWA presentation only. Never used in quotes, receipt, ledger, or provider requests.
-  const numeric=Number(amount);
-  if(!Number.isFinite(numeric)||numeric<=0)return "";
-  let value=Math.round(numeric*1.30-0.99)+0.99;
-  if(value<=numeric)value=Math.ceil(numeric-0.99+1e-9)+0.99;
-  return value.toFixed(2);
-}
 function renderPlans(text){
   $("#plansTitle").textContent=modeText(text,"modePlans");
   /* Umumiy ta'rif matni olib tashlandi: faqat yopiq darsdan kelganlarga
@@ -1836,8 +1825,7 @@ function renderPlans(text){
     const price=planPrice(plan);
     if(!price)return "";
     const selected=state.plan===plan?"selected":"";
-    const visualReference=PWA_CHECKOUT_HOST&&!price.discounted?pwaVisualReference(price.final):"";
-    const discounted=price.discounted?"discounted":(visualReference?"pwa-reference-price":"");
+    const discounted=price.discounted?"discounted":"";
     const wide=plan==="3_months"?"wide":"";
     const name=planName(text,plan);
     const badge=planBadge(text,plan);
@@ -1849,7 +1837,7 @@ function renderPlans(text){
       <span class="plan-top"><span class="plan-name">${name}</span><span class="badge">${badge}</span></span>
       <span>
         <span class="price ${long}">${amount}<small>${price.currency}</small></span>
-        <span class="old-price" title="${visualReference?"Comparison only — not a previous sale price":""}">${visualReference?visualReference:money(price.base)} ${price.currency}</span>
+        <span class="old-price">${money(price.base)} ${price.currency}</span>
         ${note}
       </span>
     </button>`;
