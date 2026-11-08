@@ -33,11 +33,15 @@
   }
   function storageHas(key) {
     if (!key) return true;
-    try { return global.localStorage.getItem(key) === "seen"; } catch (_) { return false; }
+    try { if (global.localStorage.getItem(key) === "seen") return true; } catch (_) {}
+    try { return global.sessionStorage.getItem(key) === "seen"; } catch (_) { return false; }
   }
   function markSeen(key) {
     if (!key) return;
-    try { global.localStorage.setItem(key, "seen"); } catch (_) { /* denied private mode */ }
+    try { global.localStorage.setItem(key, "seen"); } catch (_) {}
+    // Safari private modes may restrict persistent storage. At minimum do
+    // not repeat the guide during this tab's authenticated onboarding.
+    try { global.sessionStorage.setItem(key, "seen"); } catch (_) {}
   }
   function element(tag, css, text) {
     var node = document.createElement(tag);
@@ -107,7 +111,7 @@
       markSeen(key);
       movie.pause();
       movie.removeAttribute("src");
-      movie.load();
+      try { movie.load(); } catch (_) {}
       document.removeEventListener("keydown", keydown);
       document.body.style.overflow = oldOverflow;
       overlay.remove();
@@ -138,7 +142,8 @@
     document.addEventListener("keydown", keydown);
     openDialog = overlay;
     close.focus();
-    movie.load();
+    try { movie.load(); }
+    catch (_) { movie.hidden = true; fallback.hidden = false; }
     return true;
   }
   global.HSKAILiInstallGuide = { open: open, eligible: eligible, standalone: standalone };
