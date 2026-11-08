@@ -20,6 +20,8 @@ from sqlalchemy import select
 from app.bot.keyboards.subscription import subscription_miniapp_keyboard
 from app.bot.utils.i18n import t
 from app.db.models.user import User
+from app.db.models.course_user_notification import CourseUserNotification
+from app.config import settings
 from app.services.course_notification_service import CourseNotificationService
 from app.services.notification_delivery_service import (
     DELIVERED,
@@ -35,6 +37,24 @@ logger = logging.getLogger(__name__)
 REMINDER_DAYS = (2, 0)
 
 MAX_BATCH = 200
+TWO_DAY_NOTICE_WINDOW = timedelta(hours=48)
+FINAL_DAY_NOTICE_WINDOW = timedelta(hours=24)
+
+
+def _due_notice_slot(ends_at: datetime, now: datetime) -> int | None:
+    """At-or-after the real T-48h threshold, never at T-49h or T-72h.
+
+    The existing second notification stays in the final 24h. There are
+    still only TWO stable dedupe keys per trial, not hourly notifications.
+    """
+    remaining = ends_at - now
+    if remaining <= timedelta(0):
+        return None
+    if remaining <= FINAL_DAY_NOTICE_WINDOW:
+        return 0
+    if remaining <= TWO_DAY_NOTICE_WINDOW:
+        return 2
+    return None
 
 
 def _as_utc(value: datetime | None) -> datetime | None:
@@ -73,8 +93,8 @@ class TrialReminderService:
             ends_at = _as_utc(user.pro_trial_ends_at)
             if not ends_at:
                 continue
-            # Qolgan kun yuqoriga yaxlitlanadi: 1.5 kun qolgan bo'lsa "2 kun".
-            days_left = max(0, (ends_at - now).days)
+            # A real 48h due threshold, not the floor of timedelta.days.
+            days_left = _due_notice_slot(ends_at, now)
             if days_left not in REMINDER_DAYS:
                 continue
 
@@ -85,11 +105,27 @@ class TrialReminderService:
             )
             dedupe = f"trial_reminder:{ends_at.date().isoformat()}:{days_left}"
 
-            # AVVAL yoziladi, KEYIN yuboriladi. Tartib muhim: yozuv unique
-            # kalit bilan dedupe qiladi, ya'ni takror chaqiruvda `False`
-            # qaytadi. Teskari tartibda xabar yuborilib, keyin dedupe
-            # aniqlanardi — foydalanuvchi ikkinchi xabarni allaqachon olgan
-            # bo'lardi.
+            # PWA Home Screen opt-in takes ownership of the T-48h notice.
+            # The already-existing generic learner push outbox is one event
+            # per browser subscription. No extra Web Push engine or permission
+            # is invented, and we don't also dispatch Telegram/Android for
+            # the same reminder when its PWA event was durably queued.
+            pwa_ready = False
+            if days_left == 2 and type(getattr(user, "id", None)) is int:
+                try:
+                    from app.services.learner_pwa_push import (
+                        active_subscriptions, enqueue_event, sender_config,
+                    )
+                    pwa_ready = bool(
+                        sender_config(settings) is not None
+                        and await active_subscriptions(self.session, user.id, now=now, limit=1)
+                    )
+                except Exception:  # noqa: BLE001 - existing Android/TG route remains available
+                    logger.warning("Trial 48h PWA push eligibility unavailable")
+                    pwa_ready = False
+
+            # FIRST persist the common Inbox record, then transport it once.
+            # The record is the existing dedupe owner for this trial window.
             if not await notifications.record_from_text(
                 user,
                 key="trial_expiring",
@@ -102,6 +138,28 @@ class TrialReminderService:
                 pwa_push_suppressed=True,
             ):
                 continue
+
+            if pwa_ready:
+                try:
+                    notice_id = await self.session.scalar(
+                        select(CourseUserNotification.id).where(
+                            CourseUserNotification.user_id == user.id,
+                            CourseUserNotification.dedupe_key == dedupe,
+                        )
+                    )
+                    queued = await enqueue_event(
+                        self.session, user_id=user.id, source="course",
+                        source_id=notice_id, language=lang, now=now,
+                    ) if notice_id is not None else 0
+                    if queued:
+                        # Durable outbox: "queued" is NOT provider delivered
+                        # and is intentionally not included in sent count.
+                        continue
+                except Exception:  # noqa: BLE001 - fallback to established channel
+                    logger.warning("Trial 48h PWA enqueue unavailable")
+            # Existing Android-first then Telegram fallback when no opted-in
+            # PWA delivery could be queued. Never send two user-visible
+            # transport copies from this trial reminder execution.
 
             # Android ilova birinchi; telefon ko'rsata olmasa — Telegram.
             outcome = await delivery.deliver(
