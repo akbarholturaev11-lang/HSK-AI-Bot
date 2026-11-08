@@ -4,6 +4,7 @@ This is a presentation-only view. It may never grant a PWA session,
 start a Pro trial or request push permissions.
 """
 from pathlib import Path
+import os
 
 import pytest
 
