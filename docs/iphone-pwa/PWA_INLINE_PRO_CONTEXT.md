@@ -70,3 +70,23 @@ This is the **single context/handoff file** for this work. Update status here as
 - The manual iframe URL sets `embedded=1` but the checkout bridge listens for `inline_manual=1`: verify intended bank/QR landing and eliminate double/navigation fallback.
 - Only the synthetic course-host Playwright test was exercised; it does not establish functional coverage of all practice routes, PWA Safari/iOS native screens, analytics aggregations, checkout provider callbacks, or production settings.
 - Follow-up implementation must add server-attributed, deduplicated, per-account events with distinct source, session/attempt, plan and payment method; preserve existing conversion counters and ensure dashboard/statistics consumers can surface them correctly. Add end-to-end tests for all 7 entry routes, return/retry, payment success/failure and analytics counts before declaring finished.
+
+
+## Follow-up implementation: coherent PWA UI and server analytics
+
+Branch-only follow-up to the additional audit. Changes are authored, **not deployed**:
+- PWA `overview` now accepts `inline_preview: true`; when true it does **not** write `subscription_entry_events` or legacy `checkout_opened`. Re-fetching after the exit offer therefore cannot double count an attempted checkout.
+- New CSRF/session-protected endpoint `/api/v3/pwa/subscription/inline-event` validates source, stage, plan, method and attempt/event IDs; rejects untrusted ownership IDs and server-only payment stages. Account locking and event ID lookup make client retries idempotent.
+- Added explicit PWA funnel event names + labels and admin funnel rows for open, plan, other tariffs, payment method, exit 20% shown/claimed/declined, dismissal, actual Lava invoice start, failed checkout and verified payment. Existing `ConversionFunnelService.counts_by_event` and `unique_users_by_event` aggregate these without overwriting the original funnel.
+- Lava checkout starts are counted only **after a real provider invoice** exists and only for whitelisted inline sources. Invoice fields `pwa_inline_attempt_id` and `pwa_inline_source` retain attribution through the provider webhook. Successful payment is written in the same DB transaction as Pro granting; retries cannot count again. Other PWA/Telegram checkouts are excluded from inline funnel counters.
+- Migration `0153_pwa_inline_funnel` extends the funnel CHECK and adds two nullable invoice attribution fields. It follows historical migration `0076` in discovering physical CHECK names and preserves SQLite skip behavior; QA expected head updated to 0153.
+- New tests cover PWA event origin/CSRF, retry deduplication, repeated overview preview, provider verified paid attribution, and Playwright entry from all PWA course/voice/practice routes plus manual iframe navigation.
+- The manual iframe now passes `inline_manual=1` to the existing checkout, matching its bridge and preserving bank/QR/receipt business rules.
+- A course `App.goPay` bridge intercepts *only* recognized practice-limit sources; profile/onboarding purchases continue along the existing flow.
+
+### Outstanding checks and boundaries
+- Wait for GitHub CI on the final commit, **inspect** rather than assume tests pass; fix failing suites before considering merge.
+- Distinguish underlying blocked practice state from the one visible Pro modal on each route; an underlying legacy gate is retained as safe fallback when the Pro modal is dismissed.
+- Production: validate Lava's live 1m/12m configuration, the actual `exit_offer:20` provider code, Safari popup/3DS return, and manual receipt/Pro refresh.
+- Do not claim R2/private analytics exports or admin KPI dashboards have been updated just because the primary admin funnel text now shows new events; audit export pipelines separately.
+- Never let UI telemetry grant Pro, affect payment amounts or count an unverified payment as paid.
