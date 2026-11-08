@@ -58,8 +58,12 @@ def _page(browser, *, pwa=True, trial_eligible=False, trial_start_ok=True, saved
     page.route(url, lambda route: route.fulfill(
         body=HTML, content_type="text/html; charset=utf-8",
     ))
+    # Simulate a complete browser-side OAuth return in the same tab.
+    # A synthetic intercepted 302 can end in chromium-error:// even though
+    # a real provider uses an HTML navigation and a verified callback.
     page.route("https://accounts.example.test/**", lambda route: route.fulfill(
-        status=302, headers={"Location": url},
+        status=200, content_type="text/html",
+        body="<html><script>location.replace(" + json.dumps(url) + ")</script></html>",
     ))
     page.route(ORIGIN + "/iphone-pwa/course?*", lambda route: route.fulfill(
         body="COURSE PAGE", content_type="text/html",
