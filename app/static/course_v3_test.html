@@ -72,8 +72,6 @@ h1{font-size:23px}
 <link href="/course_v3_data/desktop-download.css?v=20261003-1" rel="stylesheet">
 <link rel="stylesheet" href="/assets/characters/hsk-scene-background.css?v=20261009-preparing-compact-1">
 <link rel="stylesheet" href="/course_v3_data/iphone-pwa-practice-boot.css?v=20261105-13e94c7945b9">
-<link rel="stylesheet" href="/course_v3_data/iphone-pwa-inline-pro.css?v=20261108-5722a1d34411">
-<script defer src="/course_v3_data/iphone-pwa-inline-pro.js?v=20261108-045f3fb83a0d"></script>
 </head>
 <body class="hsk-scene-page">
 <div class="wrap">
@@ -241,8 +239,6 @@ function goBack(){
 /* Access gate: bepul userga bir martalik test sessiyasi (server tomonda). */
 function initData(){return PWA_TEST_HOST?"":((tg&&tg.initData)?tg.initData:"")}
 function goPremium(){
-  if(PWA_TEST_HOST&&window.HSKPwaInlinePro){window.HSKPwaInlinePro.open({source:"v3_test_limit",lang:LANG});return}
-
   if(PWA_TEST_HOST&&window.HskPwaPracticeBoot&&HskPwaPracticeBoot.checkout("v3_test_limit"))return;
   location.href=(PWA_TEST_HOST?"/iphone-pwa/checkout":"/subscription.html")+"?lang="+LANG+"&source=v3_test_limit&mode=subscription&return_to=course&return_page=course_v3_test.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"");
 }
@@ -294,7 +290,6 @@ function showLimitNow(){
   var sub=gateEscape(LIMIT_REASON||L.limSub);
   e.innerHTML='<div class="ic"><i class="ti ti-lock"></i></div><h3>'+L.limTitle+'</h3><p>'+sub+'</p>'+adBtn+'<button onclick="goPremium()" style="margin-top:8px;background:transparent;border:1px solid var(--line);color:var(--cin2)">'+L.limPay+'</button>'+'<button onclick="goBack()" style="margin-top:8px;background:transparent;border:1px solid var(--line);color:var(--ink2)">'+L.limBack+'</button>';
   e.classList.add("on");
-  if(PWA_TEST_HOST&&window.HSKPwaInlinePro)window.HSKPwaInlinePro.open({source:"v3_test_limit",lang:LANG});
 }
 function $(id){return document.getElementById(id)}
 var EXAMS=[
