@@ -126,6 +126,32 @@ class TrialReminderTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(queued.await_args.kwargs["language"], "uz")
         self.assertEqual(len(await self._notifications()), 1)
 
+    async def test_not_due_rows_cannot_starve_the_48_hour_batch(self):
+        # Previously the first 200 trials (even 60 hours away) could fill
+        # MAX_BATCH and the one genuinely due trial would never be processed.
+        async with self.sessions() as session:
+            for number in range(1, 202):
+                candidate = _user(user_id=number, telegram_id=5000 + number)
+                candidate.trial_used = True
+                candidate.pro_trial_started_at = self.now - timedelta(days=4)
+                candidate.pro_trial_ends_at = self.now + timedelta(hours=60)
+                session.add(candidate)
+            due = _user(user_id=1000, telegram_id=8500)
+            due.trial_used = True
+            due.pro_trial_started_at = self.now - timedelta(days=5)
+            due.pro_trial_ends_at = self.now + timedelta(hours=47)
+            session.add(due)
+            await session.commit()
+
+        bot = _BotSpy()
+        async with self.sessions() as session:
+            count = await TrialReminderService(session).send_due_reminders(
+                bot, now=self.now
+            )
+        self.assertEqual(count, 1)
+        self.assertEqual(len(bot.sent), 1)
+        self.assertEqual(bot.sent[0][0], 8500)
+
     async def test_a_reminder_goes_out_on_the_last_day(self):
         await self._seed(days_left=0)
         bot = _BotSpy()
