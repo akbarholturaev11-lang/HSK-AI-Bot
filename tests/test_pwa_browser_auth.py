@@ -135,6 +135,20 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         await self.client.aclose()
         await self.engine.dispose()
 
+    async def test_li_onboarding_preview_is_session_protected_and_uncached(self):
+        route = "/iphone-pwa/onboarding/li"
+        anonymous = await self.client.get(route, follow_redirects=False)
+        self.assertEqual(anonymous.status_code, 303)
+        self.assertEqual(anonymous.headers["location"], "/iphone-pwa")
+        await self.callback(await self.begin())
+        result = await self.client.get(route)
+        self.assertEqual(result.status_code, 200, result.text[:200])
+        self.assertEqual(result.headers.get("cache-control"), "no-store")
+        self.assertEqual(result.headers.get("x-frame-options"), "DENY")
+        self.assertIn("li-onboarding-runtime.js?v=", result.text)
+        self.assertIn("hsk-character-pack.js?v=", result.text)
+        self.assertNotIn("timer=setTimeout(function(){trail.push(screen)", result.text)
+
     async def test_browser_trial_status_uses_verified_user_and_risk_without_grant(self):
         from app.services.pro_trial_service import ProTrialService
         from app.services.trial_risk_service import TrialRiskService
