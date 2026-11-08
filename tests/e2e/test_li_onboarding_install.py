@@ -11,6 +11,7 @@ pw = pytest.importorskip("playwright.sync_api")
 STATIC = Path("app/static")
 JS = (STATIC / "course_v3_data/li-onboarding-install.js").read_text(encoding="utf-8")
 CAT = (STATIC / "course_v3_data/hsk-li-onboarding-i18n.js").read_text(encoding="utf-8")
+CSS = (STATIC / "course_v3_data/li-onboarding-install.css").read_text(encoding="utf-8")
 IOS = "Mozilla/5.0 (iPhone; CPU iPhone OS 18_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.6 Mobile/15E148 Safari/604.1"
 ORIGIN = "https://hsk.test"
 
@@ -62,6 +63,11 @@ def test_iphone_browser_after_verified_registration_shows_video_slot_and_fallbac
         assert page.locator(".li-install-steps li").count() == 3
         page.locator(".li-install-video-fallback").wait_for(state="visible")
         assert page.locator(".li-install-video").is_hidden()
+        # A missing / slow MP4 displays a readable text fallback from the
+        # first frame instead of an empty grey video while Safari waits.
+        assert page.locator(".li-install-media").evaluate(
+            "(node) => node.classList.contains('is-fallback')") is True
+        assert "aspect-ratio:9/16" in CSS
         assert page.get_by_role("dialog").get_attribute("aria-modal") == "true"
         page.locator(".li-install-continue").click()
         assert page.evaluate("window.__next") == 1
@@ -86,6 +92,38 @@ def test_install_prompt_is_exclusive_to_not_yet_installed_ios_pwa(ios, installed
             {userId:41,lang:"ru"},()=>{})""")
         assert opened is expect
         assert page.get_by_role("dialog").count() == int(expect)
+        assert not errors
+        browser.close()
+
+
+def test_media_stays_optional_but_real_metadata_can_swap_to_vertical_video():
+    with pw.sync_playwright() as p:
+        browser = p.chromium.launch()
+        page, errors = _prepare(browser, ios=True, has_video=True)
+        assert page.evaluate("""() => HSKAILiInstallGuide.open(
+          {userId:53,lang:"tj"},()=>{})""") is True
+        # Browser player is hidden until the real MP4 decoder accepts
+        # metadata. The fallback is usable during any download delay.
+        assert page.locator(".li-install-video-fallback").is_visible()
+        page.locator(".li-install-video").evaluate(
+            "(video) => video.dispatchEvent(new Event('loadedmetadata'))")
+        assert page.locator(".li-install-video").is_visible()
+        assert page.locator(".li-install-video-fallback").is_hidden()
+        page.locator(".li-install-close").click()
+        assert page.get_by_role("dialog").count() == 0
+        assert not errors
+        browser.close()
+
+
+def test_telegram_in_app_browser_cannot_show_pwa_install_prompt():
+    with pw.sync_playwright() as p:
+        browser = p.chromium.launch()
+        page, errors = _prepare(browser, ios=True)
+        assert page.evaluate("""() => {
+          window.Telegram={WebApp:{initData:"real-verified-placeholder"}};
+          return HSKAILiInstallGuide.open({userId:53,lang:"ru"},()=>{});
+        }""") is False
+        assert page.get_by_role("dialog").count() == 0
         assert not errors
         browser.close()
 
