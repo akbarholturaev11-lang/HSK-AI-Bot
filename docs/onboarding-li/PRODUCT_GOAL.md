@@ -24,6 +24,23 @@ The existing learner PWA now has a **PWA-only inline Pro limit paywall** with co
 - Associated unit/PWA API/Playwright tests are authored but require actual CI run; test status recorded in `IMPLEMENTATION_CONTEXT.md`.
 - Production code stays unchanged until a future tested merge; do not silently promote partial onboarding.
 
+## 2026-11-09 — mandatory Initial Render & Progressive Loading: Li onboarding ONLY
+
+**User scope clarified:** these new shell, skeleton, image priority, public cache and async-load changes apply **only to the new 23-state Li Panda onboarding** (`app/static/course_v3_li_onboarding.html` and `app/static/course_v3_data/li-onboarding-runtime.js`). Do **not** extend this slice to existing `app/static/course-v3.html`, its course/profile/rating pages, the current live default onboarding, Android native app or an unrelated PWA UI. The web Li onboarding is shared by PWA and Mini App but private auth adapters remain separate.
+
+**Mandatory acceptance contract:**
+
+- Server delivers a ready-to-paint branded HTML shell **before** dependencies. First view is never empty/black even if character pack/Telegram SDK/catalog/network stall. Static first shell reserves top, main and footer geometry and becomes the real Li account/panda screen as soon as inline UI is executable.
+- Within Li's `loadCourse` and `loadLesson` states, do not replace the entire screen with a blocking spinner. Keep top/header, animated inline-SVG panda, real book asset (independent of API), and realistic fixed-aspect track/lesson skeletons visible. One section may resolve while another still loads.
+- Provider buttons: distinct pending placeholders until the actual provider availability API responds; deduplicate concurrent provider requests. On real error show Retry; never show a fake enabled provider.
+- Save profile, trial eligibility and trial activation: each shows a **local** progress skeleton without removing the existing screen; only verified backend responses may advance Pro/trial/course state. A failed API has Retry/approved fallback, no misleading success.
+- First above-fold book image is eager, with `fetchpriority="high"`, `decoding="async"` and fixed 340×255 display geometry; cached JPG can appear immediately with no CLS. If image fails, show an actual offline fallback. Logo/mascot uses first-paint text/inline-SVG, not lazy loading. Offscreen or future pictures must be lazy only if added later; **do not invent missing WebP/AVIF assets**.
+- Safe cache: only short-lived public, anonymous HSK feature metadata (memory-only, stale-while-revalidate) and normal browser-cached public images; never cache server-approved subscription, Pro, actor/CSRF, lesson progress, trial eligibility, paid-access rights, or user private data as a client-side grant.
+- A slow anonymous HSK metadata read can be cancelled with Back. Late responses are ignored using generation tokens; critical writes and paid actions cannot be cancelled as if they succeeded.
+- Regression gates: normal 23 states and Google/Telegram ownership; no-JS static shell, slow public metadata vs book rendering, independent action skeleton, cache while revalidation hangs, safe Back/stale response, failed/partial JSON retry, expired auth and paid/locked track invariants; Chromium and WebKit. Physical Safari network/device QA still required.
+
+**Status:** scoped feature branch code and additional tests have been authored; no latest-head all-green CI or production cutover claim until explicitly verified.
+
 ## 2026-11-09 — iPhone PWA Home Screen video requirement
 
 - On iPhone/iPad browser ONLY after verified first-time PWA OAuth account signup AND successful server onboarding save: offer a short optional Home Screen install guide before Pro eligibility. Never show to returning learners, Telegram Mini App, native Android, or already installed standalone PWA.
