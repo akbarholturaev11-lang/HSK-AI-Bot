@@ -44,6 +44,22 @@
 4. Canonical review screenshot diff for 23 states on RU/UZ/TJ, mobile widths and iPhone safe area.
 5. Only once tests and device flows pass consider guarded default-route cutover. Keep `main` and prod unchanged.
 
+## 2026-11-08 — Follow-up CI defect triage on draft PR #282
+
+**Current base/branch context:** branch `feature/li-onboarding-mainffbff9-20261108`, main has advanced; compare `main` before any subsequent merge. NO production deployment/merge.
+
+**Verified prior GitHub Actions run `42487942737` at `6acd54173acee0cc5888fad1f81c7ddcb9aa95dc`:**
+- `native-postgres`: SUCCESS.
+- `miniapp-ui`: FAILED on `test_pwa_guest_sees_panda_first_and_oauth_resumes_saved_draft_safely` due 30-second `window.screen==='profile'` wait; exact post-OAuth state not yet known.
+- `targeted-tests`: FAILED four test executions across two assertions:
+  1. Anonymous `POST /api/v3/pwa/onboarding` test expected 401 but supplied invalid payload missing REQUIRED `language` + `timezone_offset_minutes`, causing schema 422 *before* auth. Updated test with fully valid payload to test actual auth boundary (`tests/test_pwa_browser_auth.py`, commit `cdadeebbb039b87408ce84e005092a9e59b93d03`).
+  2. Old test expected exactly two direct `location.replace("/iphone-pwa/course")` browser login redirects; verified new Telegram OAuth route intentionally enters `/iphone-pwa` to consume a one-shot Li resume cookie. Updated test to assert one session-verified direct course and one server-return route without bypassing verified session (`cdadeebb`).
+- `local-first localization`, `Admin PWA isolated`, `Smart Reminder`: SUCCESS for this prior head.
+- Guest OAuth browser failure is still **OPEN**. `tests/e2e/test_li_onboarding_runtime.py` now outputs location, current screen, visible error/CTA, draft presence and captured API requests if no return to profile within 10 seconds (commit `9d3c5d623c2eeaeee09f9b6f90aa28be05b310fc`). **Diagnostic instrumentation only, not the actual fix.**
+- A new GitHub Actions cycle at current head `9d3c5d62` was **PENDING** when last inspected (`42494317495` Backend targeted, `42494317523` localization, `42494317547` Smart Reminder, `42494317542` Admin PWA); do NOT count PASS until the runs finish. No test claim for latest head yet.
+
+**Next exact work:** inspect 10-second OAuth diagnostics from latest `miniapp-ui`, fix underlying `li-onboarding-runtime.js` navigation/draft restoration rather than loosening assertions; rerun and record full workflow results, then review valid-cookie/guest smoke tests and project migration head. Do not activate default onboarding or merge until green and device acceptance.
+
 ## 2026-11-08 VERIFIED WORK RESUMPTION — 23-screen UI, multi-goal planning, PWA trial push
 
 **Current branch:** `feature/li-onboarding-mainffbff9-20261108`, draft PR #282; do **not** merge into `main` until all CI jobs, UI regression and migration contracts pass. Main was fast-forward merged **into the feature branch only** at `8ffe7d556e716a8f554ef8adf1ddbe4eea9c015f` with shared PWA Pro Safari/Lava changes. It did not modify production.
