@@ -110,7 +110,7 @@
     var n=Number(value);
     if (!Number.isFinite(n)||n<=0) return null;
     // UI-only 30% higher comparison, rounded UP to the next .99, never sent to a payment API.
-    return ((Math.ceil((n*1.3-0.99)*100-0.00001)/100 + 0.99).toFixed(2));
+    return (Math.ceil(n*1.3-0.99-1e-9)+0.99).toFixed(2);
   }
   function money(value,currency) {
     var n=Number(value);
