@@ -57,6 +57,53 @@
     };
   }
 
+  // Manual checkout inside the PWA Pro surface: fill the screen edge to edge
+  // (the parent hides its own Back/X), keep the bottom button on the bottom
+  // edge, and turn the header back chevron into the single X that leaves it.
+  function embedInProSurface() {
+    var doc = document.documentElement, area = {top: 0, bottom: 0};
+    try { area = window.parent.HSKPwaInlinePro.safeArea() || area; } catch (_) {}
+    doc.classList.add("hsk-inline-embed");
+    doc.style.setProperty("--hip-embed-t", Math.max(0, Number(area.top) || 0) + "px");
+    doc.style.setProperty("--hip-embed-b", Math.max(0, Number(area.bottom) || 0) + "px");
+    var style = document.createElement("style");
+    style.textContent =
+      "html.hsk-inline-embed .app{padding-top:calc(16px + var(--hip-embed-t));padding-bottom:calc(96px + var(--hip-embed-b))}" +
+      "html.hsk-inline-embed .bottom{padding-bottom:calc(11px + var(--hip-embed-b))}" +
+      "html.hsk-inline-embed .qr-preview{padding-top:calc(18px + var(--hip-embed-t));padding-bottom:calc(88px + var(--hip-embed-b))}" +
+      "html.hsk-inline-embed .qr-preview-bottom{padding-bottom:calc(11px + var(--hip-embed-b))}" +
+      "html.hsk-inline-embed .sheet-panel{padding-bottom:calc(17px + var(--hip-embed-b))}" +
+      "html.hsk-inline-embed .toast{bottom:calc(88px + var(--hip-embed-b))}";
+    document.head.appendChild(style);
+    var chevron = document.getElementById("pwaCheckoutBackBtn");
+    if (!chevron) return;
+    var closeLabels = {uz: "Yopish", ru: "Закрыть", tj: "Пӯшидан"};
+    var x = chevron.cloneNode(false); // drops the step-back listener
+    x.innerHTML = '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+    x.addEventListener("click", function () {
+      try {
+        if (typeof state !== "undefined") {
+          if (state.paymentSubmitting) return;
+          // An open sheet/preview closes first, exactly like before.
+          if ((state.qrPreviewOpen || state.supportOpen || state.inviteOpen || state.renewalOpen) &&
+              typeof window.hskPwaCheckoutBack === "function") { window.hskPwaCheckoutBack(); return; }
+        }
+      } catch (_) {}
+      if (typeof window.returnToCourseFromCheckout === "function") window.returnToCourseFromCheckout();
+    });
+    chevron.replaceWith(x);
+    function label() {
+      var lang = "ru";
+      try { if (typeof state !== "undefined" && state.lang) lang = state.lang; } catch (_) {}
+      x.setAttribute("aria-label", closeLabels[lang] || closeLabels.ru);
+    }
+    var baseRender = window.render;
+    if (typeof baseRender === "function") {
+      window.render = function () { var result = baseRender.apply(this, arguments); label(); return result; };
+    }
+    label();
+  }
+
   if (path === "/iphone-pwa/course") {
     var app = window.App;
     if (!app || typeof app.openPaywall !== "function") return;
@@ -161,6 +208,7 @@
           return steps;
         };
       }
+      embedInProSurface();
       // The source checkout renders once before this PWA-only bridge is
       // injected. Immediately re-render using the selected manual path
       // so the intermediate Visa question cannot flash during loading.

@@ -106,6 +106,27 @@ class LavaPaymentTests(unittest.IsolatedAsyncioTestCase):
             await self._start()
         self.assertEqual(ctx.exception.code, "lava_unavailable")
 
+    async def test_inline_pwa_invoice_returns_to_the_app_and_others_keep_neutral_page(self):
+        with patch("app.public_site.render.public_origin", return_value="https://hskai.app"):
+            pwa = await self.checkout.start(self.sessions, user_id=1, plan_type="1_month",
+                                            email="buyer@example.com", source="pwa", language="uz",
+                                            pwa_inline_return=True)
+            pwa_body = dict(self.fake.last_create_body)
+            # Same-window PWA checkout comes back to the fixed app path with a
+            # UI-only outcome hint; it never names an arbitrary redirect target.
+            base = f"https://hskai.app/iphone-pwa/course?lang=uz&pro_checkout={pwa['checkout_id']}"
+            self.assertEqual(pwa_body["successful_return_url"], base + "&pro_return=success")
+            self.assertEqual(pwa_body["failure_return_url"], base + "&pro_return=fail")
+            self.assertEqual(pwa_body["cancel_return_url"], base + "&pro_return=cancel")
+            await self.checkout.start(self.sessions, user_id=2, plan_type="1_month",
+                                      email="other@example.com", source="miniapp", language="ru",
+                                      pwa_inline_return=True)
+            neutral = "https://hskai.app/pay/lava/return?lang=ru"
+            for key in ("successful_return_url", "failure_return_url", "cancel_return_url"):
+                self.assertEqual(self.fake.last_create_body[key], neutral)
+        # The return hint itself grants nothing.
+        self.assertEqual(self.approved, [])
+
     async def test_effective_mode_falls_back_to_manual_when_unsafe(self):
         config = _config("lava_only")
         self.assertEqual(effective_mode(config, lava_settings(), client_supports_lava=True), "lava_only")

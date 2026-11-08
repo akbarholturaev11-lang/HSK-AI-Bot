@@ -85,7 +85,11 @@ def test_inline_pro_two_primary_plans_other_terms_and_real_exit_discount():
         assert page.get_by_role("heading", name="Лимит исчерпан").is_visible()
         assert page.locator("#hsk-inline-pro .hip-panda svg").is_visible()
         assert page.locator("#hsk-inline-pro .hip-benefit").count() == 3
-        assert page.locator("#hsk-inline-pro .hip-panda svg").get_attribute("viewBox") == "0 0 128 144"
+        # The course mascot (pandaChar geometry) in the Pro-card pose.
+        assert page.locator("#hsk-inline-pro .hip-panda svg.hip-pd-char").get_attribute("viewBox") == "-6 -8 112 116"
+        assert page.locator("#hsk-inline-pro .hip-panda").get_attribute("data-pose") == "pro"
+        # Opening focuses the dialog itself, never a button with a focus ring.
+        assert page.evaluate("document.activeElement.classList.contains('hip-sheet')")
         # iPhone full viewport, not a partial-height bottom sheet.
         layout = page.evaluate("""() => {
             const r=document.getElementById("hsk-inline-pro").getBoundingClientRect();
@@ -115,9 +119,18 @@ def test_inline_pro_two_primary_plans_other_terms_and_real_exit_discount():
             return h.right <= b.left && h.left >= a.right;
         }""")
         assert no_overlap
-        page.get_by_role("button", name="Visa / Mastercard — Lava.top").click()
+        # "Other plans" is ONE screen: all four terms plus the regular method.
+        # No provider choice step and no provider names for the learner.
+        assert page.get_by_role("heading", name="Другие тарифы").is_visible()
         assert page.locator("#hsk-inline-pro button.hip-plan").count() == 4
+        assert page.locator("#hsk-inline-pro .hip-method").count() == 1
+        assert "lava" not in page.locator("#hsk-inline-pro").inner_text().lower()
+        assert "≈ 7.50 USD / мес" in page.locator("#hsk-inline-pro .hip-body").inner_text()
+        page.locator("#hsk-inline-pro button.hip-plan").nth(1).click()
+        assert page.locator("#hsk-inline-pro button.hip-plan").nth(1).get_attribute("aria-pressed") == "true"
         page.locator("#hsk-inline-pro .hip-close").click()
+        page.get_by_role("button", name="Забрать скидку").wait_for()
+        assert page.locator("#hsk-inline-pro .hip-panda").get_attribute("data-pose") == "gift"
         page.get_by_role("button", name="Забрать скидку").click()
         page.locator("#hsk-inline-pro button.hip-plan").first.wait_for()
         assert page.locator("#hsk-inline-pro button.hip-plan").count() == 2
@@ -129,10 +142,87 @@ def test_inline_pro_two_primary_plans_other_terms_and_real_exit_discount():
         page.wait_for_load_state("networkidle")
         assert ("event", "pwa_pro_opened") in seen
         assert ("event", "pwa_pro_more_opened") in seen
-        assert ("event", "pwa_pro_method_selected") in seen
+        assert ("event", "pwa_pro_plan_selected") in seen
         assert ("event", "pwa_pro_exit_offered") in seen
         assert ("event", "pwa_pro_exit_claimed") in seen
         page.locator("#hsk-inline-pro .hip-close").click()
         assert page.locator("#hsk-inline-pro").is_hidden()
         assert not errors
+        browser.close()
+
+
+def _serve_static(route, path):
+    file = STATIC / path.lstrip("/")
+    if file.is_file():
+        mime, _ = mimetypes.guess_type(file)
+        route.fulfill(path=str(file), content_type=mime or "application/octet-stream")
+        return
+    route.fulfill(status=404, body="")
+
+
+@pytest.mark.parametrize("lava,expected", [
+    (None, "manual"),
+    ({"mode": "both", "plans": [{"plan_type": "1_month", "currency": "USD", "amount": "10.00"}],
+      "blocked_reason": "subscription_active"}, "status"),
+])
+def test_inline_pro_manual_only_and_blocked_states_are_honest(lava, expected):
+    def respond(route):
+        path = urlsplit(route.request.url).path
+        if path == "/iphone-pwa/course":
+            route.fulfill(status=200, content_type="text/html", body="""
+                <!DOCTYPE html><html lang="ru"><head><meta charset="utf-8">
+                <meta name="viewport" content="width=device-width,initial-scale=1">
+                <link rel="stylesheet" href="/course_v3_data/iphone-pwa-inline-pro.css?v=qa">
+                </head><body><script src="/course_v3_data/iphone-pwa-inline-pro.js?v=qa"></script>
+                </body></html>""")
+            return
+        if path == "/api/v3/pwa-auth/session":
+            route.fulfill(status=200, json={"ok": True, "user_id": 7, "csrf": "qa-csrf"})
+            return
+        if path == "/api/v3/pwa/subscription/overview":
+            route.fulfill(status=200, json={"ok": True, "lava": lava})
+            return
+        if path == "/api/v3/pwa/subscription/inline-event":
+            route.fulfill(status=200, json={"ok": True})
+            return
+        if path.startswith("/iphone-pwa/checkout"):
+            route.fulfill(status=200, content_type="text/html", body="<body>manual</body>")
+            return
+        if path.startswith("/api/"):
+            route.fulfill(status=404, json={"error": "unknown"})
+            return
+        _serve_static(route, path)
+
+    with playwright.sync_playwright() as pw:
+        browser = getattr(pw, os.getenv("PWA_E2E_ENGINE", "chromium")).launch()
+        page = browser.new_context(**pw.devices["iPhone 13"]).new_page()
+        page.set_default_timeout(8000)
+        errors = []
+        page.on("pageerror", lambda exc: errors.append(str(exc)))
+        page.route("**/*", respond)
+        page.goto(ORIGIN + "/iphone-pwa/course")
+        page.evaluate("HSKPwaInlinePro.open({source:'v3_locked_lesson',lang:'ru'})")
+        if expected == "manual":
+            # Card checkout off: no fake "unavailable" error, the one CTA opens
+            # the regular receipt checkout inside the same Pro surface.
+            cta = page.get_by_role("button", name="Получить Pro")
+            cta.wait_for()
+            assert page.locator("#hsk-inline-pro .hip-error").count() == 0
+            assert "недоступны" not in page.locator("#hsk-inline-pro").inner_text()
+            assert page.get_by_role("button", name="Другие тарифы").count() == 0
+            cta.click()
+            frame = page.locator("#hsk-inline-pro iframe")
+            frame.wait_for()
+            assert "inline_manual=1" in frame.get_attribute("src")
+            assert page.locator("#hsk-inline-pro .hip-back").is_hidden()
+            page.evaluate("HSKPwaInlinePro.closeEmbeddedCheckout(document.querySelector('#hsk-inline-pro iframe').contentWindow)")
+            assert page.get_by_role("heading", name="Лимит исчерпан").is_visible()
+        else:
+            heading = page.get_by_role("heading", name="Проверьте текущий платёж или действующую подписку")
+            heading.wait_for()
+            assert page.locator("#hsk-inline-pro button.hip-plan").count() == 0
+            assert page.locator("#hsk-inline-pro .hip-panda").get_attribute("data-pose") == "read"
+            page.get_by_role("button", name="Вернуться к обучению").click()
+            assert page.locator("#hsk-inline-pro").is_hidden()
+        assert not errors, errors
         browser.close()
