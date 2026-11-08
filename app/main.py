@@ -5708,6 +5708,9 @@ async def miniapp_onboarding(request: Request):
                 language=str(payload.get("language") or ""),
                 timezone_offset_minutes=timezone_offset,
                 activation_variant=_checkout_text(payload.get("activation_variant"), 32),
+                goals=payload.get("goals"),
+                streak_target_days=payload.get("streak_target_days"),
+                preferred_focus=payload.get("preferred_focus"),
             )
     except (TypeError, ValueError) as error:
         return JSONResponse(
@@ -5757,6 +5760,7 @@ async def miniapp_onboarding_status(request: Request):
             foundation = await CourseMiniAppProfileService(session).foundation_status(user)
             foundation_required = bool(foundation["required"] and not foundation["completed"])
 
+        from app.services.onboarding_goal_selection import read_onboarding_goals
         return JSONResponse(
             content={
                 "ok": True,
@@ -5764,6 +5768,9 @@ async def miniapp_onboarding_status(request: Request):
                 "level": str(user.level or "").strip().lower(),
                 "profile": {
                     "goal": profile.goal,
+                    "goals": read_onboarding_goals(getattr(profile, "goals_json", None), primary_goal=profile.goal),
+                    "streak_target_days": getattr(profile, "streak_target_days", None),
+                    "preferred_focus": getattr(profile, "preferred_focus", None),
                     "daily_minutes": profile.daily_minutes,
                     "start_mode": profile.start_mode,
                 } if completed else None,
