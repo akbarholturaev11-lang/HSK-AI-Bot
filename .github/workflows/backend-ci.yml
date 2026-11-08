@@ -226,6 +226,13 @@ jobs:
             tests.test_identity_link_service
       - name: Test isolated iPhone PWA browser and Telegram sign-in
         run: python -m unittest tests.test_pwa_browser_auth tests.test_pwa_telegram_bot tests.test_pwa_shake_report
+      - name: Verify actual Safari install MP4 HTTP Range in complete backend environment
+        env:
+          BOT_TOKEN: "9123456:synthetic-test-only-unusable-secret"
+          DATABASE_URL: "postgresql+asyncpg://qa:qa@127.0.0.1:1/qa"
+          REDIS_URL: "redis://127.0.0.1:1/0"
+        run: python -m unittest tests.test_li_install_video_route
+
       - name: Verify one-time PWA exit offer and real Lava promo activation
         run: python -m unittest tests.test_pwa_exit_offer tests.test_lava_promo_codes
       - name: Verify additive Li onboarding goals, streak targets and old-client compatibility
@@ -474,8 +481,6 @@ jobs:
         run: python -m unittest tests.test_li_onboarding_catalog
       - name: Verify approved optimized Safari tutorial video if published
         run: python -m unittest tests.test_li_install_video_asset
-      - name: Verify Safari install video HTTP 206 Range handling
-        run: python -m unittest tests.test_li_install_video_route
 
       - name: Verify Li onboarding honest loading, error retry and server-backed book choice
         run: python -m pytest -q tests/e2e/test_li_onboarding_loading.py
