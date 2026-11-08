@@ -6,7 +6,6 @@ File metadata keys make a replaced template visible on the next request.
 """
 from __future__ import annotations
 
-import copy
 import json
 from functools import lru_cache
 from pathlib import Path
@@ -25,6 +24,20 @@ def _parsed_template(path: str, mtime_ns: int, size: int) -> dict:
     return data
 
 
+def _clone_json_tree(value):
+    """Copy JSON containers without deepcopy's cycle/memo machinery.
+
+    Templates come exclusively from json.load: a tree of dict/list and
+    immutable JSON scalars, with no cyclic objects or custom Python classes.
+    This always creates independent nested containers for each learner.
+    """
+    if isinstance(value, dict):
+        return {key: _clone_json_tree(item) for key, item in value.items()}
+    if isinstance(value, list):
+        return [_clone_json_tree(item) for item in value]
+    return value
+
+
 def load_course_map_template(level: str, *, directory: Path = COURSE_MAP_DIRECTORY) -> dict:
     """Return an independent mutable map; no cross-user object sharing."""
     # The production caller already normalizes levels, but keep the template
@@ -35,4 +48,4 @@ def load_course_map_template(level: str, *, directory: Path = COURSE_MAP_DIRECTO
     if not path.exists():
         path = directory / "hsk1.json"
     stat = path.stat()
-    return copy.deepcopy(_parsed_template(str(path), stat.st_mtime_ns, stat.st_size))
+    return _clone_json_tree(_parsed_template(str(path), stat.st_mtime_ns, stat.st_size))
