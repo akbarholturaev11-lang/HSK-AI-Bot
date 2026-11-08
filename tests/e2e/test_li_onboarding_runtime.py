@@ -15,6 +15,7 @@ pw = pytest.importorskip("playwright.sync_api")
 STATIC = Path("app/static")
 HTML = (STATIC / "course_v3_li_onboarding.html").read_text(encoding="utf-8")
 RUNTIME = (STATIC / "course_v3_data/li-onboarding-runtime.js").read_text(encoding="utf-8")
+CATALOG = (STATIC / "course_v3_data/hsk-li-onboarding-i18n.js").read_text(encoding="utf-8")
 CAST = (STATIC / "assets/characters/hsk-character-pack.js").read_text(encoding="utf-8")
 ORIGIN = "https://hsk.test"
 
@@ -30,6 +31,9 @@ def _page(browser, *, pwa=True, trial_eligible=False, trial_start_ok=True, saved
     ))
     page.route("**/assets/characters/hsk-character-pack.js*", lambda route: route.fulfill(
         body=CAST, content_type="application/javascript",
+    ))
+    page.route("**/course_v3_data/hsk-li-onboarding-i18n.js*", lambda route: route.fulfill(
+        body=CATALOG, content_type="application/javascript",
     ))
     page.route("**/course_v3_data/li-onboarding-runtime.js*", lambda route: route.fulfill(
         body=RUNTIME, content_type="application/javascript",
@@ -98,7 +102,16 @@ def _page(browser, *, pwa=True, trial_eligible=False, trial_start_ok=True, saved
     page.route("**/api/**", api)
     page.goto(url)
     page.wait_for_function("window.LiRuntime && typeof window.go==='function'")
-    page.wait_for_function("document.querySelector('#footer .cta')!==null")
+    try:
+        page.wait_for_function("document.querySelector('#footer .cta')!==null", timeout=8000)
+    except Exception:
+        snapshot = page.evaluate("""() => ({
+          screen: String(window.screen), hasCatalog: !!window.HSKAI_LI_I18N,
+          title: document.title, stage: document.querySelector('#stage')?.innerText?.slice(0,120),
+          footer: document.querySelector('#footer')?.innerHTML?.slice(0,240)
+        })""")
+        raise AssertionError(f"Onboarding did not paint its initial action: {snapshot}; "
+                             f"JS page errors: {captured['pageerrors']}") from None
     return page, captured
 
 
