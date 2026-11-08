@@ -59,3 +59,14 @@ This is the **single context/handoff file** for this work. Update status here as
 - PWA route injects version-pinned CSS and JS without modifying source-reviewed Telegram/Mini App HTML. Update both blob-hash URLs when either asset changes.
 - PWA E2E now asserts headline, panda SVG, exactly 3 benefit lines, entry animation, 2/4 plans and exit discount.
 - QA not yet finalized; inspect latest PR #279 checks before merge; production Lava promo and actual mobile browser checkout must be verified.
+
+
+## Audit follow-up — all PWA limit surfaces and analytics
+
+**Not verified complete. Do not merge based on the 7 route wrappers alone.**
+- PWA inline Pro bridge wraps the course `App.openPaywall`, voice `showPaywall`, and 5 independent practice gates (`recognition`, `memorize`, `pronunciation`, `test`, `mistakes`). In practice pages, `showLimitNow` currently calls the original UI before opening the new overlay: verify that dismissing leaves no duplicate legacy limit modal or broken navigation. Other internal PWA gates must be enumerated and checked.
+- Existing `/api/v3/pwa/subscription/overview` writes `SubscriptionEntryEvent` and generic `checkout_opened`. The new inline JS/bridge writes no specific UI telemetry: `paywall_seen`, plan selection, other plans, payment-method selection, X/dismiss, offer shown/declined/claimed, return or checkout failure. The one-time `pwa_exit_offers` row records offered/accepted/consumed state but is **not** a complete analytics funnel.
+- Critical: inline offer claim reloads `overview` with the same `attempt_id`, and overview writes `checkout_opened` again. Check and enforce session/attempt deduplication before counting conversion. Conversely, the course wrapper bypasses legacy `App.openPaywall` tracking, potentially missing `paywall_seen`. Do not report funnel percentages as accurate without this correction.
+- The manual iframe URL sets `embedded=1` but the checkout bridge listens for `inline_manual=1`: verify intended bank/QR landing and eliminate double/navigation fallback.
+- Only the synthetic course-host Playwright test was exercised; it does not establish functional coverage of all practice routes, PWA Safari/iOS native screens, analytics aggregations, checkout provider callbacks, or production settings.
+- Follow-up implementation must add server-attributed, deduplicated, per-account events with distinct source, session/attempt, plan and payment method; preserve existing conversion counters and ensure dashboard/statistics consumers can surface them correctly. Add end-to-end tests for all 7 entry routes, return/retry, payment success/failure and analytics counts before declaring finished.
