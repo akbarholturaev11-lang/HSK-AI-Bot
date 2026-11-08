@@ -165,6 +165,27 @@ class TrialReminderTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(0, second)
         self.assertEqual(1, len(bot.sent))
 
+    async def test_paid_pro_user_never_gets_a_stale_trial_expiry_notice(self):
+        # A successful payment may convert the user to Pro before the old
+        # trial end timestamp is cleared. Never warn that paid access ends.
+        await self._seed(days_left=2)
+        async with self.sessions() as session:
+            user = (await session.execute(
+                select(User).where(User.telegram_id == 4100)
+            )).scalar_one()
+            user.status = "active"
+            user.payment_status = "approved"
+            user.end_date = self.now + timedelta(days=30)
+            await session.commit()
+        bot = _BotSpy()
+        async with self.sessions() as session:
+            count = await TrialReminderService(session).send_due_reminders(
+                bot, now=self.now
+            )
+        self.assertEqual(count, 0)
+        self.assertEqual(bot.sent, [])
+        self.assertEqual(await self._notifications(), [])
+
     async def test_a_revoked_trial_is_left_alone(self):
         await self._seed(days_left=2)
         async with self.sessions() as session:
