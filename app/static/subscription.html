@@ -562,6 +562,9 @@ function courseReturnUrl(){
 }
 function returnToCourseFromCheckout(){
   if(PWA_CHECKOUT_EMBEDDED){
+    try{if(window.parent.HSKPwaInlinePro?.closeEmbeddedCheckout(window))return}catch(e){}
+  }
+  if(PWA_CHECKOUT_EMBEDDED){
     try{if(window.parent.App?.closePwaCheckout(window))return}catch(e){}
   }
   /* A direct checkout and Telegram never navigate to an unknown previous
