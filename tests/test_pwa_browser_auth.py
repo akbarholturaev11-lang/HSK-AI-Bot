@@ -135,6 +135,39 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         await self.client.aclose()
         await self.engine.dispose()
 
+    async def test_inline_preview_never_counts_fake_checkout(self):
+        # Price discovery must not inflate paid-conversion metrics, including
+        # on a repeat overview after accepting an exit discount.
+        await self.callback(await self.begin())
+        info = (await self.client.get("/api/v3/pwa-auth/session")).json()
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": info["csrf"]}
+        overview = {
+            "source":"v3_locked_lesson",
+            "mode":"subscription","plan":"1_month",
+            "supports_lava":False,"attempt_id":"inline-qa-preview",
+            "inline_preview":True,
+        }
+        with patch(
+            "app.services.subscription_miniapp_service.SubscriptionMiniAppService.overview",
+            new=AsyncMock(return_value={"ok": True, "mode": "subscription"})
+        ), patch(
+            "app.services.conversion_funnel_service.ConversionFunnelService.record",
+            new=AsyncMock(return_value=True)
+        ) as recorded:
+            a=await self.client.post("/api/v3/pwa/subscription/overview",
+                                      json=overview,headers=headers)
+            self.assertEqual(a.status_code,200,a.text)
+            b=await self.client.post("/api/v3/pwa/subscription/overview",
+                                      json={**overview,"mode":"exit_discount"},
+                                      headers=headers)
+            self.assertEqual(b.status_code,200,b.text)
+            recorded.assert_not_awaited()
+            c=await self.client.post("/api/v3/pwa/subscription/overview",
+                                      json={**overview,"inline_preview":False},
+                                      headers=headers)
+            self.assertEqual(c.status_code,200,c.text)
+            self.assertEqual(recorded.await_count,1)
+
     async def test_inline_pro_analytics_is_authenticated_and_deduplicated(self):
         path = "/api/v3/pwa/subscription/inline-event"
         event = {
