@@ -579,6 +579,25 @@ class CourseMiniAppOnboardingFlowTests(unittest.IsolatedAsyncioTestCase):
             )
             self.assertEqual(session.commit.await_count, 2)
 
+    async def test_invalid_li_choices_rejected_before_user_lookup_or_progress(self):
+        service = CourseMiniAppOnboardingService(SimpleNamespace())
+        service.user_repo.get_by_actor = AsyncMock(
+            side_effect=AssertionError("invalid user choice reached a DB lookup")
+        )
+        kwargs = dict(
+            level="hsk1", goal="hsk_exam", daily_minutes=10,
+            start_mode="continue", language="uz",
+        )
+        for fields in (
+            {"goals": ["travel", "hsk_exam"]},
+            {"streak_target_days": 99},
+            {"preferred_focus": "unsupported_mode"},
+        ):
+            with self.subTest(fields=fields), self.assertRaises(ValueError):
+                await service.complete(SimpleNamespace(id=37, telegram_id=None),
+                                       **kwargs, **fields)
+        service.user_repo.get_by_actor.assert_not_awaited()
+
     @staticmethod
     def _profile():
         return SimpleNamespace(
