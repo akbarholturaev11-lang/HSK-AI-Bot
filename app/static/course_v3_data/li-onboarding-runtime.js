@@ -56,6 +56,7 @@ function validAuthHandoff(){
   }catch(_){return false}
 }
 var supportedProviders=null; // null while the real provider availability loads
+var providerRequest=null,publicTrackPromise=null,publicTrackSnapshot=null,publicTrackAt=0;
 var requestGeneration=0,requestBusy=false,initializing=true,trialEligibility=null;
 var initialRender=global.render;
 var originalLogin=global.loginScreen;
@@ -413,9 +414,16 @@ function toCourse(){
 function showLiveBooks(){
   var source=global.track==="hsk30"?"hsk30-course-books.jpg":"hsk20-course-books.jpg";
   var alt=global.track==="hsk30"?word("hsk30Note"):word("hsk20Note");
-  return '<div class="li-real-books" role="group"><img src="/assets/'+source+
-    '?v=20261003c" alt="'+alt+'" loading="eager" onerror="this.hidden=true;this.nextElementSibling.hidden=false">'+
-    '<div hidden>'+originalBooks()+'</div></div>';
+  // This book group is visible above the fold in Li's version/loading
+  // screens. The browser's own HTTP image cache is safe to show immediately:
+  // neither textbook artwork nor its local fallback is private account data.
+  return '<div class="li-real-books" role="group" data-image-ready="false">'+
+    '<span class="li-skel li-book-placeholder" aria-hidden="true"></span>'+
+    '<img src="/assets/'+source+'?v=20261003c" alt="'+alt+
+    '" width="340" height="255" loading="eager" decoding="async" fetchpriority="high"'+
+    ' onload="this.parentElement.dataset.imageReady=\'true\'"'+
+    ' onerror="this.hidden=true;this.parentElement.dataset.imageError=\'true\'">'+
+    '<div class="li-book-fallback">'+originalBooks()+'</div></div>';
 }
 global.books=showLiveBooks;
 // Only render live levels reported by the server; demo options are visual
@@ -437,17 +445,20 @@ global.loginScreen=function(mode){
   return html;
 };
 function loadProviders(){
-  if(!hostPwa)return;
-  api("/api/v3/pwa-auth/providers").then(function(data){
+  if(!hostPwa)return Promise.resolve();
+  if(providerRequest)return providerRequest; // one request for concurrent UI sections
+  supportedProviders=null;
+  if(global.screen==="login"||global.screen==="signup")global.render(false);
+  providerRequest=api("/api/v3/pwa-auth/providers").then(function(data){
     var choices=Array.isArray(data.providers)?data.providers:[];
-    // Apple is not yet supported end-to-end in this product.
+    // Provider availability is public; still never synthesize a login grant.
     supportedProviders=choices.filter(function(p){return p==="google"||p==="telegram"});
     if(global.screen==="login"||global.screen==="signup")global.render(false);
   }).catch(function(){
     supportedProviders=[];
-    if(global.screen==="login"||global.screen==="signup")
-      renderError(loadProviders);
-  });
+    if(global.screen==="login"||global.screen==="signup")renderError(loadProviders);
+  }).finally(function(){providerRequest=null});
+  return providerRequest;
 }
 function authenticate(provider){
   if(requestBusy)return;
@@ -498,10 +509,17 @@ global.render=function(animate){
   }
   syncPending();
   if(global.screen==="signup"||global.screen==="login"){
+    var actions=document.querySelector("#stage .actions");
+    if(actions&&hostPwa&&supportedProviders===null){
+      actions.setAttribute("aria-busy","true");
+      actions.insertAdjacentHTML("beforeend",
+        '<span class="li-skel li-provider-placeholder" aria-hidden="true"></span>'+
+        '<span class="li-skel li-provider-placeholder" aria-hidden="true"></span>');
+    }else if(actions)actions.setAttribute("aria-busy","false");
     var providerButtons=document.querySelectorAll("#stage .provider");
     ["telegram","google","apple"].forEach(function(provider,i){
       var button=providerButtons[i];if(!button)return;
-      button.hidden=provider==="apple" || (
+      button.hidden=provider==="apple" || (hostPwa&&supportedProviders===null) || (
         supportedProviders!==null&&supportedProviders.indexOf(provider)<0
       );
       button.disabled=hostPwa&&(!supportedProviders||
