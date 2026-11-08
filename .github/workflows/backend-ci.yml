@@ -470,6 +470,9 @@ jobs:
         run: python -m pytest -q tests/e2e/test_iphone_pwa_glass.py
       - name: Verify inline PWA Pro terms, manual choice and 20 percent exit offer
         run: python -m pytest -q tests/e2e/test_pwa_inline_pro.py tests/e2e/test_pwa_inline_pro_routes.py tests/e2e/test_pwa_lava_link.py
+      - name: Check canonical Li onboarding catalogs in three languages
+        run: python -m unittest tests.test_li_onboarding_catalog
+
       - name: Verify Li onboarding honest loading, error retry and server-backed book choice
         run: python -m pytest -q tests/e2e/test_li_onboarding_loading.py
       - name: Verify 23-state Li runtime, platform ownership, real choices and trial boundaries

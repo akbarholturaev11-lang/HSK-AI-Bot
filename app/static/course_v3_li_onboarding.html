@@ -329,242 +329,25 @@ body.dark::before{background-color:#FFFFFF;opacity:.55}
   <main id="stage"></main>
   <footer class="footer" id="footer"></footer>
 </div>
+<script src="/course_v3_data/hsk-li-onboarding-i18n.js?v=20261108-34f91cd09087"></script>
 <script>
 /* Copy in RU / UZ / TJ. Strings marked "existing" are taken from the repo catalogs;
    the rest is new demo copy that must go into the canonical catalogs before real use. */
-var T={
-  ru:{
-    accountTitle:"У вас есть аккаунт в HSK&nbsp;AI?",
-    firstTime:"Я впервые в HSK AI",
-    haveAccount:"У меня уже есть аккаунт",
-    hello:"Привет! Я учитель Ли.", /* existing */
-    intro:"Ответьте на <b>5 коротких вопросов</b> — и начнём первый урок!",
-    timeQ:"Сколько минут в день у вас есть?", timeSub:"От этого зависит длина плана на день.", min:"мин", /* existing */
-    focusQ:"На чём сделать упор?", focusSub:"Это подсказка для плана. Ошибки система найдёт сама.", /* existing */
-    habit:"Отлично! Теперь будем закреплять полезную привычку — заниматься нужно каждый день!",
-    streakQ:"Давайте поставим цель по дням в ударе, чтобы всё было серьёзно!",
-    streakCta:"Идти к цели",
-    days:"дней",
-    proTitle:"HSK AI Pro — <span>7 дней бесплатно</span>", /* existing trialTitle */
-    proBody:"Попробуете все основные возможности. Деньги автоматически не спишутся.", /* existing trialBody */
-    proCta:"Попробовать 7 дней бесплатно", /* existing trialCta */
-    close:"Закрыть",
-    later:"Позже",
-    trialOn:"HSK AI Pro открыт на 7 дней", /* existing trialOn */
-    letsGo:"Поехали",
-    t1:"Внимание только <em>на учёбе</em>", t1s:"Без рекламы и лимитов — ничто не отвлекает", /* existing promo slide */
-    t2:"Заговоришь <em>с первого дня</em>", t2s:"Панда 阿宝 терпеливо слушает и мягко исправляет ошибки", /* existing */
-    t3:"Придёшь на экзамен <em>уверенно</em>", t3s:"Безлимит тестов и точный уровень — знаешь, где ты", /* existing */
-    noAds:"Без рекламы", gotIt:"Понятно",
-    trialDone:"7-дневный пробный период начался! За <em>2 дня</em> до его окончания мы пришлём напоминание.",
-    noCharge:"Деньги автоматически не спишутся.", /* existing, from trialBody */
-    endNote:"Всё готово. Перейдём к вашему первому уроку.", first:"Начать первый урок", /* existing goalNote / first */
-    hello1:"你好", hello1py:"nǐ hǎo", hello1tr:"Привет", voiceTr:"Привет! Как дела?", voiceMe:"Хорошо, спасибо!",
-    q1:"«Спасибо» по-китайски?", optOk:"谢谢 xièxie", optA:"再见 zàijiàn", optB:"你好 nǐ hǎo",
-    loadCourse:"Загружаем курс…",
-    loadCourseText:"Курс построен по учебникам HSK: от иероглифов и тонов до свободной речи.",
-    askVersion:"С какой версии HSK вы хотите начать?", /* existing */
-    versionHint:"Выбранная версия определит учебники курса.", /* existing */
-    hsk20Note:"Учебники старого HSK 2.0", hsk30Note:"Новые учебники HSK 3.0", /* existing */
-    ask:"Сколько китайского вы уже знаете?", /* existing */
-    levelHint:"HSK — это уровни знания китайского языка.", /* existing */
-    askGoal:"Зачем вам китайский?", /* existing */
-    goalHint:"Подберём акцент в вашем плане на день.", /* existing */
-    multiHint:"Можно выбрать несколько.",
-    ready:"Отлично! Приступим к вашему первому уроку!",
-    loadLesson:"Загружаем…",
-    loadLessonText:"В каждом уроке — иероглифы, пиньинь и перевод, шаг за шагом.",
-    profile:"Не потеряйте свой прогресс! Давайте создадим вам профиль.",
-    createAccount:"Создать аккаунт",
-    signupTitle:"Создайте профиль",
-    signupSub:"Выберите способ создания аккаунта",
-    loginTitle:"С возвращением!",
-    loginSub:"Выберите способ входа в аккаунт",
-    tagline:"Лучшее будущее — со знаниями", /* existing */
-    demoNote:"Демо: вход здесь не выполняется.",
-    cont:"Продолжить", back:"Назад" /* existing */
-  },
-  uz:{
-    accountTitle:"HSK&nbsp;AI'da hisobingiz bormi?",
-    firstTime:"HSK AI'da birinchi marta",
-    haveAccount:"Menda hisob bor",
-    hello:"Salom! Men Li ustozman.", /* existing */
-    intro:"<b>5 ta qisqa savolga</b> javob bering — va birinchi darsni boshlaymiz!",
-    timeQ:"Kuniga necha daqiqa vaqtingiz bor?", timeSub:"Kunlik reja uzunligi shunga bog'liq.", min:"daq", /* existing */
-    focusQ:"Nimaga ko'proq urg'u beraylik?", focusSub:"Bu — reja uchun ishora. Xatolarni tizim o'zi topadi.", /* existing */
-    habit:"Ajoyib! Endi foydali odatni mustahkamlaymiz — har kuni shug'ullanish kerak!",
-    streakQ:"Keling, ketma-ket kunlar uchun maqsad qo'yamiz — hammasi jiddiy bo'lsin!",
-    streakCta:"Maqsad sari",
-    days:"kun",
-    proTitle:"HSK AI Pro — <span>7 kun bepul</span>", /* existing trialTitle */
-    proBody:"Barcha asosiy imkoniyatlarni sinab ko'rasiz. Avtomatik pul yechilmaydi.", /* existing trialBody */
-    proCta:"7 kun bepul sinash", /* existing trialCta */
-    close:"Yopish",
-    later:"Keyinroq",
-    trialOn:"HSK AI Pro 7 kunga ochildi", /* existing trialOn */
-    letsGo:"Boshladik!",
-    t1:"Diqqating faqat <em>o'rganishda</em>", t1s:"Reklama va limitlarsiz — hech narsa chalg'itmaydi", /* existing promo slide */
-    t2:"Birinchi kundan <em>gapirasan</em>", t2s:"Panda 阿宝 sabr bilan tinglaydi va xatoingni yumshoq tuzatadi", /* existing */
-    t3:"Imtihonga <em>ishonch bilan</em> borasan", t3s:"Cheksiz test va aniq daraja — qayerda turganingni bilasan", /* existing */
-    noAds:"Reklamasiz", gotIt:"Tushunarli",
-    trialDone:"7 kunlik sinov boshlandi! Tugashiga <em>2 kun</em> qolganda eslatma yuboramiz.",
-    noCharge:"Avtomatik pul yechilmaydi.", /* existing, from trialBody */
-    endNote:"Tayyor. Endi birinchi darsingizga o'tamiz.", first:"Birinchi darsni boshlash", /* existing goalNote / first */
-    hello1:"你好", hello1py:"nǐ hǎo", hello1tr:"Salom", voiceTr:"Salom! Ishlaring qalay?", voiceMe:"Yaxshi, rahmat!",
-    q1:"«Rahmat» xitoychada?", optOk:"谢谢 xièxie", optA:"再见 zàijiàn", optB:"你好 nǐ hǎo",
-    loadCourse:"Kurs yuklanmoqda…",
-    loadCourseText:"Kurs HSK darsliklari asosida tuzilgan: ierogliflar va tonlardan erkin nutqqacha.",
-    askVersion:"Qaysi HSK versiyasi orqali boshlamoqchisiz?", /* existing */
-    versionHint:"Tanlangan versiyaga mos darsliklardan boshlang.", /* existing */
-    hsk20Note:"HSK 2.0 eski darsliklari", hsk30Note:"HSK 3.0 yangi darsliklari", /* existing */
-    ask:"Xitoy tilini qanchalik bilasiz?", /* existing */
-    levelHint:"HSK — xitoy tilini bilish darajalari.", /* existing */
-    askGoal:"Xitoy tili sizga nima uchun kerak?", /* existing */
-    goalHint:"Kunlik rejangiz shu maqsadga mos bo'ladi.", /* existing */
-    multiHint:"Bir nechtasini tanlash mumkin.",
-    ready:"Ajoyib! Birinchi darsingizga kirishamiz!",
-    loadLesson:"Yuklanmoqda…",
-    loadLessonText:"Har bir darsda ierogliflar, pinyin va tarjima — qadamma-qadam.",
-    profile:"Progressingizni yo'qotmang! Keling, sizga profil ochamiz.",
-    createAccount:"Hisob ochish",
-    signupTitle:"Profil yarating",
-    signupSub:"Yangi hisob ochish usulini tanlang",
-    loginTitle:"Qaytganingizdan xursandmiz!",
-    loginSub:"Hisobingizga kirish usulini tanlang",
-    tagline:"Yaxshiroq kelajak — bilim bilan", /* existing */
-    demoNote:"Demo: bu yerda kirish bajarilmaydi.",
-    cont:"Davom etish", back:"Orqaga" /* existing */
-  },
-  tj:{
-    accountTitle:"Шумо дар HSK&nbsp;AI ҳисоб доред?",
-    firstTime:"Бори аввал дар HSK AI",
-    haveAccount:"Ман аллакай ҳисоб дорам",
-    hello:"Салом! Ман устод Ли ҳастам.", /* existing */
-    intro:"Ба <b>5 саволи кӯтоҳ</b> ҷавоб диҳед — ва дарси аввалро оғоз мекунем!",
-    timeQ:"Дар як рӯз чанд дақиқа вақт доред?", timeSub:"Дарозии нақшаи рӯзона аз ин вобаста аст.", min:"дақ", /* existing */
-    focusQ:"Ба чӣ бештар таъкид кунем?", focusSub:"Ин ишора барои нақша аст. Хатоҳоро система худаш меёбад.", /* existing */
-    habit:"Олӣ! Акнун одати фоиданокро мустаҳкам мекунем — ҳар рӯз машқ кардан лозим!",
-    streakQ:"Биёед барои рӯзҳои пайдарпай мақсад гузорем, то ҳама чиз ҷиддӣ бошад!",
-    streakCta:"Сӯи мақсад",
-    days:"рӯз",
-    proTitle:"HSK AI Pro — <span>7 рӯз ройгон</span>", /* existing trialTitle */
-    proBody:"Ҳамаи имкониятҳои асосиро месанҷед. Худкор пул гирифта намешавад.", /* existing trialBody */
-    proCta:"7 рӯз ройгон санҷидан", /* existing trialCta */
-    close:"Пӯшидан",
-    later:"Баъдтар",
-    trialOn:"HSK AI Pro ба 7 рӯз кушода шуд", /* existing trialOn */
-    letsGo:"Оғоз кардем!",
-    t1:"Диққат танҳо ба <em>омӯзиш</em>", t1s:"Бе реклама ва маҳдудият — ҳеҷ чиз халал намерасонад", /* existing promo slide */
-    t2:"Аз рӯзи аввал <em>гап мезанӣ</em>", t2s:"Панда 阿宝 бо сабр гӯш мекунад ва хатоятро нарм ислоҳ мекунад", /* existing */
-    t3:"Ба имтиҳон <em>боварӣ</em> меравӣ", t3s:"Тести бепоён ва сатҳи аниқ — медонӣ дар куҷоӣ", /* existing */
-    noAds:"Бе реклама", gotIt:"Фаҳмо",
-    trialDone:"Санҷиши 7-рӯза оғоз шуд! <em>2 рӯз</em> пеш аз анҷомаш ёдрас мефиристем.",
-    noCharge:"Худкор пул гирифта намешавад.", /* existing, from trialBody */
-    endNote:"Тайёр. Ба дарси аввалини шумо мегузарем.", first:"Оғози дарси аввал", /* existing goalNote / first */
-    hello1:"你好", hello1py:"nǐ hǎo", hello1tr:"Салом", voiceTr:"Салом! Корҳо чӣ хел?", voiceMe:"Хуб, ташаккур!",
-    q1:"«Ташаккур» ба чинӣ?", optOk:"谢谢 xièxie", optA:"再见 zàijiàn", optB:"你好 nǐ hǎo",
-    loadCourse:"Курс бор мешавад…",
-    loadCourseText:"Курс дар асоси китобҳои HSK сохта шудааст: аз иероглифҳо ва оҳангҳо то сухани озод.",
-    askVersion:"Бо кадом версияи HSK оғоз мекунед?", /* existing */
-    versionHint:"Китобҳо мувофиқи версияи интихобшуда иваз мешаванд.", /* existing */
-    hsk20Note:"Китобҳои кӯҳнаи HSK 2.0", hsk30Note:"Китобҳои нави HSK 3.0", /* existing */
-    ask:"Забони чиниро то чӣ андоза медонед?", /* existing */
-    levelHint:"HSK — сатҳҳои дониши забони чинӣ аст.", /* existing */
-    askGoal:"Забони чинӣ ба шумо барои чӣ лозим аст?", /* existing */
-    goalHint:"Нақшаи рӯзонаи шумо ба ин мақсад мувофиқ мешавад.", /* existing */
-    multiHint:"Метавонед якчандтоашро интихоб кунед.",
-    ready:"Олӣ! Ба дарси аввалини шумо шурӯъ мекунем!",
-    loadLesson:"Бор мешавад…",
-    loadLessonText:"Дар ҳар дарс иероглифҳо, пинйин ва тарҷума — қадам ба қадам.",
-    profile:"Пешрафти худро гум накунед! Биёед, барои шумо профил созем.",
-    createAccount:"Сохтани ҳисоб",
-    signupTitle:"Профил созед",
-    signupSub:"Усули сохтани ҳисоби навро интихоб кунед",
-    loginTitle:"Хуш баргаштед!",
-    loginSub:"Усули вуруд ба ҳисобро интихоб кунед",
-    tagline:"Ояндаи беҳтар — бо дониш", /* existing */
-    demoNote:"Демо: дар ин ҷо вуруд иҷро намешавад.",
-    cont:"Идома", back:"Бозгашт" /* existing */
-  }
-};
+var T=window.HSKAI_LI_I18N||{};
 /* Levels from course_v3_onboarding.html; "say" = Li's reaction when the row is chosen (new copy). */
-var LV20=[
-  {k:"beginner",hd:{ru:"Начинаю с нуля",uz:"Noldan boshlayman",tj:"Аз сифр оғоз мекунам"},
-   s:{ru:"Сначала ханцзы, пиньинь и тоны",uz:"Avval hanzi, pinyin va tonlar",tj:"Аввал ханзӣ, пинйин ва оҳангҳо"},
-   say:{ru:"Тогда начнём с чистого листа!",uz:"Unda toza varaqdan boshlaymiz!",tj:"Пас аз варақи тоза оғоз мекунем!"}},
-  {k:"hsk1",hd:"HSK 1",s:{ru:"Уже немного знаю китайский",uz:"Biroz xitoycha bilaman",tj:"Каме забони чинӣ медонам"},
-   say:{ru:"Отлично! Освежим базу и пойдём дальше.",uz:"Zo'r! Asoslarni yangilab, oldinga yuramiz.",tj:"Олӣ! Асосҳоро такрор карда, пеш меравем."}},
-  {k:"hsk2",hd:"HSK 2",s:{ru:"Базовое общение",uz:"Asosiy suhbat",tj:"Муоширати асосӣ"},
-   say:{ru:"Хорошая база — будем её расширять!",uz:"Yaxshi poydevor — uni kengaytiramiz!",tj:"Пойдевори хуб — онро васеъ мекунем!"}},
-  {k:"hsk3",hd:"HSK 3",s:{ru:"Повседневное общение",uz:"Kundalik muloqot",tj:"Муоширати ҳаррӯза"},
-   say:{ru:"Впечатляет! Добавим больше живой речи.",uz:"Ajoyib! Ko'proq jonli nutq qo'shamiz.",tj:"Аҷиб! Сухани зиндаро бештар илова мекунем."}},
-  {k:"hsk4",hd:"HSK 4",s:{ru:"Свободное общение",uz:"Erkin muloqot",tj:"Муоширати озод"},
-   say:{ru:"Серьёзный уровень — доведём речь до свободы!",uz:"Jiddiy daraja — nutqni erkinlikkacha olib boramiz!",tj:"Сатҳи ҷиддӣ — суханро то озодӣ мерасонем!"}}
-];
-var LV30=[
-  {k:"nhsk1",hd:"HSK 1",s:{ru:"Новый стандарт · уровень 1",uz:"Yangi standart · 1-daraja",tj:"Стандарти нав · сатҳи 1"},
-   say:{ru:"Новый стандарт с первого шага — отличный выбор!",uz:"Birinchi qadamdan yangi standart — zo'r tanlov!",tj:"Стандарти нав аз қадами аввал — интихоби олӣ!"}},
-  {k:"nhsk2",hd:"HSK 2",s:{ru:"Новый стандарт · уровень 2",uz:"Yangi standart · 2-daraja",tj:"Стандарти нав · сатҳи 2"},
-   say:{ru:"Хорошая база — будем её расширять!",uz:"Yaxshi poydevor — uni kengaytiramiz!",tj:"Пойдевори хуб — онро васеъ мекунем!"}},
-  {k:"nhsk3",hd:"HSK 3",s:{ru:"Новый стандарт · уровень 3",uz:"Yangi standart · 3-daraja",tj:"Стандарти нав · сатҳи 3"},
-   say:{ru:"Впечатляет! Добавим больше живой речи.",uz:"Ajoyib! Ko'proq jonli nutq qo'shamiz.",tj:"Аҷиб! Сухани зиндаро бештар илова мекунем."}}
-];
+var LV20=(window.HSKAI_LI_OPTIONS||{}).LV20||[];
+var LV30=(window.HSKAI_LI_OPTIONS||{}).LV30||[];
 /* The 5 existing server goal keys; "say" = Li's reaction (new copy, tone taken from the frames). */
-var GOALS=[
-  {k:"hsk_exam",hd:{ru:"Сдать HSK",uz:"HSK imtihonini topshirish",tj:"Супоридани HSK"},
-   s:{ru:"Больше тестов и разбора ошибок",uz:"Ko'proq test va xatolar ustida ish",tj:"Бештар тест ва кор бар хатоҳо"},
-   say:{ru:"Берегитесь, тесты, — результаты будут блестящими!",uz:"Testlar, ehtiyot bo'ling — natijalar a'lo bo'ladi!",tj:"Тестҳо, эҳтиёт шавед — натиҷаҳо аъло мешаванд!"}},
-  {k:"daily_communication",hd:{ru:"Общаться в жизни",uz:"Kundalik muloqot",tj:"Муоширати ҳаррӯза"},
-   s:{ru:"Больше речи и произношения",uz:"Ko'proq gapirish va talaffuz",tj:"Бештар сухан ва талаффуз"},
-   say:{ru:"Будем развивать навыки разговорной речи!",uz:"Og'zaki nutq ko'nikmalarini rivojlantiramiz!",tj:"Малакаи гуфтугӯро инкишоф медиҳем!"}},
-  {k:"travel",hd:{ru:"Путешествия",uz:"Sayohat",tj:"Сафар"},
-   s:{ru:"Живые ситуации и слова в дороге",uz:"Yo'ldagi holatlar va so'zlar",tj:"Ҳолатҳо ва калимаҳои роҳ"},
-   say:{ru:"Лучший багаж для путешествий — багаж знаний!",uz:"Sayohat uchun eng yaxshi yuk — bilim yuki!",tj:"Беҳтарин бағоҷи сафар — бағоҷи дониш!"}},
-  {k:"work_china",hd:{ru:"Работа с Китаем",uz:"Ish uchun xitoy tili",tj:"Забони чинӣ барои кор"},
-   s:{ru:"Вежливая рабочая речь",uz:"Ishchan, hurmatli nutq",tj:"Сухани кории боэҳтиром"},
-   say:{ru:"Навстречу новым возможностям!",uz:"Yangi imkoniyatlar sari!",tj:"Ба сӯи имкониятҳои нав!"}},
-  {k:"study_china",hd:{ru:"Учёба в Китае",uz:"Xitoyda o'qish",tj:"Таҳсил дар Чин"},
-   s:{ru:"Упор на курс и словарный запас",uz:"Kursga va so'z boyligiga urg'u",tj:"Таъкид ба курс ва луғат"},
-   say:{ru:"Мудрое решение!",uz:"Dono qaror!",tj:"Қарори оқилона!"}}
-];
+var GOALS=(window.HSKAI_LI_OPTIONS||{}).GOALS||[];
 
 /* Asked after lesson 1 in course-v3.html today (askStudyTime / askStudyFocus); moved here for the demo.
    Labels are existing copy; "say" reactions are new demo copy without numeric promises. */
-var TIMES=[
-  {k:5,say:{ru:"Даже 5 минут в день — это шаг вперёд!",uz:"Kuniga 5 daqiqa ham — oldinga qadam!",tj:"Ҳатто 5 дақиқа дар як рӯз — қадам ба пеш!"}},
-  {k:10,say:{ru:"Хороший темп — понемногу каждый день!",uz:"Yaxshi temp — har kuni ozdan-ozdan!",tj:"Суръати хуб — ҳар рӯз каме-каме!"}},
-  {k:15,say:{ru:"Отлично! Ровный и спокойный темп.",uz:"Zo'r! Bir maromda, xotirjam temp.",tj:"Олӣ! Суръати мунтазам ва ором."}},
-  {k:20,say:{ru:"Серьёзный настрой — так и продолжим!",uz:"Jiddiy kayfiyat — shunday davom etamiz!",tj:"Рӯҳияи ҷиддӣ — ҳамин тавр идома медиҳем!"}},
-  {k:30,say:{ru:"Мощно! Составим насыщенный план.",uz:"Zo'r! Boy reja tuzamiz.",tj:"Аҷиб! Нақшаи пурмазмун тартиб медиҳем."}}
-];
-var FOCUS=[
-  {k:"speaking",hd:{ru:"Разговор",uz:"Gapirish",tj:"Гуфтугӯ"},
-   say:{ru:"Будем говорить с первого урока!",uz:"Birinchi darsdan gapiramiz!",tj:"Аз дарси аввал гап мезанем!"}},
-  {k:"listening",hd:{ru:"Аудирование",uz:"Tinglash",tj:"Шунидан"},
-   say:{ru:"Научим ухо слышать тоны!",uz:"Qulog'ingizni tonlarni eshitishga o'rgatamiz!",tj:"Гӯши шуморо ба шунидани оҳангҳо одат медиҳем!"}},
-  {k:"vocabulary",hd:{ru:"Слова и иероглифы",uz:"So'z va ieroglif",tj:"Калима ва ҳарф"},
-   say:{ru:"Иероглиф за иероглифом — словарь будет расти!",uz:"Ieroglifma-ieroglif — lug'atingiz o'sib boradi!",tj:"Иероглиф ба иероглиф — луғати шумо меафзояд!"}},
-  {k:"grammar",hd:{ru:"Грамматика",uz:"Grammatika",tj:"Грамматика"},
-   say:{ru:"Разберём, как строятся фразы!",uz:"Gaplar qanday tuzilishini tushunamiz!",tj:"Мефаҳмем, ки ҷумлаҳо чӣ тавр сохта мешаванд!"}},
-  {k:"none",hd:{ru:"Без разницы",uz:"Farqi yo'q",tj:"Фарқ надорад"},
-   say:{ru:"Хорошо, составим сбалансированный план!",uz:"Mayli, rejani muvozanatli tuzamiz!",tj:"Хуб, нақшаи мутавозин тартиб медиҳем!"}}
-];
+var TIMES=(window.HSKAI_LI_OPTIONS||{}).TIMES||[];
+var FOCUS=(window.HSKAI_LI_OPTIONS||{}).FOCUS||[];
 /* Streak goal: HSK AI has no gem/diamond rewards, so no reward is promised; the right side is only the length. */
-var STREAKS=[
-  {k:7,len:{ru:"1 неделя",uz:"1 hafta",tj:"1 ҳафта"},say:{ru:"Неделя — первый кирпичик привычки!",uz:"Bir hafta — odatning birinchi g'ishti!",tj:"Як ҳафта — хишти аввали одат!"}},
-  {k:14,len:{ru:"2 недели",uz:"2 hafta",tj:"2 ҳафта"},say:{ru:"Две недели — это уже не случайность!",uz:"Ikki hafta — bu endi tasodif emas!",tj:"Ду ҳафта — ин дигар тасодуф нест!"}},
-  {k:30,len:{ru:"1 месяц",uz:"1 oy",tj:"1 моҳ"},say:{ru:"Месяц без пропусков — слово, данное себе!",uz:"Bir oy uzluksiz — o'zingizga bergan so'zingiz!",tj:"Як моҳ бе танаффус — сухане, ки ба худ додед!"}},
-  {k:50,len:{ru:"больше 7 недель",uz:"7 haftadan ko'p",tj:"зиёда аз 7 ҳафта"},say:{ru:"Пятьдесят дней! Это уже характер.",uz:"Ellik kun! Bu endi xarakter.",tj:"Панҷоҳ рӯз! Ин дигар хислат аст."}}
-];
+var STREAKS=(window.HSKAI_LI_OPTIONS||{}).STREAKS||[];
 /* Pro perks: three existing promo slides from course-v3.html (adPromoSlides). */
-var PERKS=[
-  {i:"mic",t:{ru:"Заговоришь с первого дня",uz:"Birinchi kundan gapirasan",tj:"Аз рӯзи аввал гап мезанӣ"},
-   s:{ru:"Панда 阿宝 терпеливо слушает и мягко исправляет ошибки",uz:"Panda 阿宝 sabr bilan tinglaydi va xatoingni yumshoq tuzatadi",tj:"Панда 阿宝 бо сабр гӯш мекунад ва хатоятро нарм ислоҳ мекунад"}},
-  {i:"exam",t:{ru:"Придёшь на экзамен уверенно",uz:"Imtihonga ishonch bilan borasan",tj:"Ба имтиҳон боварӣ меравӣ"},
-   s:{ru:"Безлимит тестов и точный уровень — знаешь, где ты",uz:"Cheksiz test va aniq daraja — qayerda turganingni bilasan",tj:"Тести бепоён ва сатҳи аниқ — медонӣ дар куҷоӣ"}},
-  {i:"infinity",t:{ru:"Внимание только на учёбе",uz:"Diqqating faqat o'rganishda",tj:"Диққат танҳо ба омӯзиш"},
-   s:{ru:"Без рекламы и лимитов — ничто не отвлекает",uz:"Reklama va limitlarsiz — hech narsa chalg'itmaydi",tj:"Бе реклама ва маҳдудият — ҳеҷ чиз халал намерасонад"}}
-];
+var PERKS=(window.HSKAI_LI_OPTIONS||{}).PERKS||[];
 var minutes=null,focus=null,streakGoal=null;
 var LANG=(new URLSearchParams(location.search).get("lang")||"uz");if(!T[LANG])LANG="uz";
 var screen="account",trail=[],track="hsk20",level=null,goals=[],lastGoal=null,timer=null,demoStatus=false;
