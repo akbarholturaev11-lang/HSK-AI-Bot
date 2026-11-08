@@ -7,6 +7,7 @@ routes must explicitly resolve the actor and enforce CSRF on state mutation.
 from __future__ import annotations
 
 import hashlib
+import logging
 import os
 from typing import Literal
 from uuid import UUID
@@ -176,9 +177,13 @@ def _add_pwa_course_initial_shell(source: bytes) -> bytes:
         (b'data-i="profile"></span>', 'data-i="profile">Профиль</span>'.encode("utf-8")),
         (b"</body>", _PWA_COURSE_BOOT_SCRIPT + b"</body>"),
     )
+    original = source
     for old, new in markers:
         if source.count(old) != 1:
-            raise RuntimeError("pwa_initial_shell_source_mismatch")
+            # A changed shared HTML build must never take down authenticated
+            # PWA access merely because a cosmetic shell anchor moved.
+            logging.getLogger(__name__).warning("pwa_initial_shell_skipped_missing_anchor")
+            return original
         source = source.replace(old, new, 1)
     return source
 
