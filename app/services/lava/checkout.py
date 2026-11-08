@@ -51,7 +51,7 @@ def _iso(value: datetime | None) -> str | None:
     return value.astimezone(timezone.utc).isoformat()
 
 
-DISCOUNT_MODES = ("referral_discount", "admin_discount", "feedback_discount")
+DISCOUNT_MODES = ("referral_discount", "admin_discount", "feedback_discount", "exit_discount")
 CHECKOUT_CONTEXT_MODES = ("", "subscription", *DISCOUNT_MODES)
 
 
@@ -118,6 +118,26 @@ class LavaCheckoutService:
             return None
         service = DiscountService(session)
         mode = mode or "subscription"
+        if mode == "exit_discount":
+            # Never trust the client mode alone. A per-account accepted,
+            # unexpired PWA offer and an actual provider promo are mandatory.
+            from app.services.pwa_exit_offer_service import PwaExitOfferService, EXIT_PERCENT
+            if not await PwaExitOfferService(session, self.settings).active(user):
+                return None
+            choice = await service.get_best_discount(
+                user=user, plan_type=plan_type, payment_method=LAVA_PAYMENT_METHOD,
+                include_admin_campaigns=True,
+            )
+            if choice.percent > EXIT_PERCENT and config.promo_code(choice.source, choice.percent):
+                return LavaDiscount(
+                    source=choice.source, percent=int(choice.percent),
+                    campaign_id=choice.campaign_id,
+                    promo_code=config.promo_code(choice.source, choice.percent),
+                )
+            promo = config.promo_code("exit_offer", EXIT_PERCENT)
+            return LavaDiscount(
+                source="exit_offer", percent=EXIT_PERCENT, campaign_id=None, promo_code=promo
+            ) if promo else None
         if mode == "admin_discount":
             choice = (await service.get_campaign_discount(
                 campaign_id=campaign_id, user=user, plan_type=plan_type, payment_method=LAVA_PAYMENT_METHOD)
@@ -186,6 +206,8 @@ class LavaCheckoutService:
         if source not in LAVA_SOURCES:
             raise LavaCheckoutError("invalid_source", 400)
         if (context_mode or "") not in CHECKOUT_CONTEXT_MODES:
+            raise LavaCheckoutError("invalid_request", 400)
+        if context_mode == "exit_discount" and source != "pwa":
             raise LavaCheckoutError("invalid_request", 400)
         buyer_email = normalize_email(email)
         if buyer_email is None:
