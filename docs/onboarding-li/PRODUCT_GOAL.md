@@ -17,13 +17,20 @@ The existing learner PWA now has a **PWA-only inline Pro limit paywall** with co
 - Current PWA-only inline paywall keeps its strings in inline `WORDS` JS despite the repository's canonical-localization rule. Do NOT copy that pattern into onboarding; canonical UZ/RU/TJ catalogs remain mandatory. Avoid unrelated paywall refactor unless its actual integration requires it.
 - New main doesn't change the existing trial PWA endpoint gap, 48h push/reminder code, Smart Reminder policy, scalar goal, streak target absence, or original book JPEGs. The existing onboarding task remains necessary.
 
+## First implementation slice (in progress; not final)
+
+- An additive migration `0154_li_onboarding_choices` and server PWA/Mini App onboarding adapters now accept optional `goals[]`, `streak_target_days`, `preferred_focus`; older scalar `goal` clients remain valid. This does NOT yet provide 23-state UI or Smart Reminder integration.
+- The existing shared onboarding HTML now paints an honest server-owned course-track loading/error/retry state on its version screen. This is only the first global loading use, NOT completion of the 23-state loading contract.
+- Associated unit/PWA API/Playwright tests are authored but require actual CI run; test status recorded in `IMPLEMENTATION_CONTEXT.md`.
+- Production code stays unchanged until a future tested merge; do not silently promote partial onboarding.
+
 ## 1. Bosh maqsad
 
 Foydalanuvchi HSK AI'ga birinchi kirganda **Li panda qatnashgan 23-state interaktiv demo**ga imkon qadar **1:1 mos** UI/UX ko'radi. Ekranlarning joylashuvi, animatsiyasi, panda pozasi, tanlovga javobi, matni (RU/UZ/TJ), visual ierarxiya va Pro slaydlari demodagidek bo'ladi. Lekin login, data loading, HSK access, lesson start, Pro/trial, reminder, analytics va save **mock emas — real server kontraktlari** bilan ishlaydi. Mavjud kurs/progress/to'lov xavfsizligi buzilmaydi.
 
 ### Manbalar ustuvorligi
 
-1. **Visual va ko'rsatiladigan matn:** foydalanuvchi bergan `Hsk ai onboarding li demo.html`, handoff paketida `DEMO_REFERENCE_ONLY.html` nomi bilan. Earlier handoff's stated SHA-256 (99,339-byte reference): `767c2de59116229dab9304e3036ae589399379340013f1d137eae7df82644b30` **UNVERIFIED in this audit; confirm from the actual attached file before use**. Ilgari chatda yaratilgan `HSK_AI_CODEX_HANDOFF(1).zip` ichida `DEMO_REFERENCE_ONLY.html`, `SCREEN_MAP.md`, `CODEX_TASK.md` bor. **Demo HTML ushbu branch'ga qo'shilmagan; coding agent exact copy/visual tekshirishdan oldin shu artifactni topib, hash'ni tasdiqlasin.** Topolmasa 1:1 deb da'vo qilmasin.
+1. **Visual va ko'rsatiladigan matn:** foydalanuvchi bergan `Hsk ai onboarding li demo.html`, handoff paketida `DEMO_REFERENCE_ONLY.html` nomi bilan. **SHA-256 verified from the local original user upload** (99,339 bytes): `767c2de59116229dab9304e3036ae589399379340013f1d137eae7df82644b30`. Ilgari chatda yaratilgan `HSK_AI_CODEX_HANDOFF(1).zip` ichida `DEMO_REFERENCE_ONLY.html`, `SCREEN_MAP.md`, `CODEX_TASK.md` bor. **The full exact demo is now pinned in this same branch at [`docs/onboarding-li/DEMO_REFERENCE_ONLY.html`](DEMO_REFERENCE_ONLY.html).** Coding agent must preserve this file as visual/copy reference; it is NOT a live UI route. Before claiming 1:1 production fidelity, compare source, rendered states and catalog strings to this pinned file.
 2. **Real capability/behavior/security:** shu vaqtdagi repository `main`, mavjud services/API/tests; demo'dagi soxta behavior ishlab chiqarishga ko'chirilmaydi.
 3. **Repository qoidalari:** `AGENTS.md`, `AI_RULES.md`, `PROJECT_MEMORY.md`, `.agents/skills/hsk-ai-ui/SKILL.md`, `localization/README.md`. HSK AI OpenSpec faqat talab qilinadigan yuqori xavfli delta uchun va mavjud scoped handoffga bog'liq holda.
 
