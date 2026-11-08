@@ -69,9 +69,9 @@ class PwaInitialShellTests(unittest.TestCase):
             self.assertIn(b"Other screen", page.body)
             self.assertNotIn(b"hsk-pwa-boot-shell", page.body)
 
-    def test_unexpected_canonical_markup_fails_closed(self):
-        with self.assertRaisesRegex(RuntimeError, "pwa_initial_shell_source_mismatch"):
-            _add_pwa_course_initial_shell(b"<html><body>not the course</body></html>")
+    def test_unexpected_canonical_markup_keeps_original_pwa_usable(self):
+        html = b"<html><body>not the course</body></html>"
+        self.assertEqual(_add_pwa_course_initial_shell(html), html)
 
 
 if __name__ == "__main__":
