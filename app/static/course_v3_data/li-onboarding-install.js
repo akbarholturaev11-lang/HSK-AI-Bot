@@ -62,7 +62,7 @@
     title.id = "li-install-title";
     var copy = element("p", "li-install-intro", label(lang, "install.description"));
     copy.id = "li-install-description";
-    var videoArea = element("div", "li-install-media");
+    var videoArea = element("div", "li-install-media is-fallback");
     var movie = element("video", "li-install-video");
     movie.controls = true;
     movie.playsInline = true;
@@ -70,12 +70,22 @@
     movie.setAttribute("playsinline", "");
     movie.setAttribute("webkit-playsinline", "");
     movie.setAttribute("aria-label", label(lang, "install.videoLabel"));
+    movie.hidden = true;
     movie.src = VIDEO;
+    // A missing or slow remote MP4 must never leave an empty grey player.
+    // Text guidance is immediately usable; show the player only after
+    // real media metadata has loaded.
     var fallback = element("div", "li-install-video-fallback", label(lang, "install.videoFallback"));
-    fallback.hidden = true;
+    fallback.hidden = false;
+    movie.addEventListener("loadedmetadata", function () {
+      movie.hidden = false;
+      fallback.hidden = true;
+      videoArea.classList.remove("is-fallback");
+    }, { once: true });
     movie.addEventListener("error", function () {
       movie.hidden = true;
       fallback.hidden = false;
+      videoArea.classList.add("is-fallback");
     }, { once: true });
     videoArea.append(movie, fallback);
     var steps = element("ol", "li-install-steps");

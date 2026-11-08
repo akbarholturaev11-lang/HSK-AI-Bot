@@ -4,7 +4,8 @@
 .li-install-close{position:absolute;top:14px;right:16px;width:36px;height:36px;border:0;border-radius:50%;background:#eeeee9;color:#26372e;font-size:26px;line-height:1;cursor:pointer}
 .li-install-title{margin:8px 38px 8px 0;font-size:23px;font-weight:750;line-height:1.2;letter-spacing:-.4px}
 .li-install-intro{margin:0 0 16px;color:#5c665d;font-size:14px;line-height:1.5}
-.li-install-media{min-height:150px;aspect-ratio:16/9;border-radius:20px;overflow:hidden;background:#eaece5;display:grid;place-items:center}
+.li-install-media{width:min(100%,240px);max-height:40dvh;aspect-ratio:9/16;margin:0 auto;border-radius:20px;overflow:hidden;background:#eaece5;display:grid;place-items:center}
+.li-install-media.is-fallback{width:100%;min-height:110px;max-height:none;aspect-ratio:auto}
 .li-install-video{width:100%;height:100%;object-fit:contain;background:#14251f}
 .li-install-video-fallback{padding:28px 20px;text-align:center;color:#425147;font-size:14px;line-height:1.5}
 .li-install-steps{padding-left:24px;margin:18px 0 12px;display:grid;gap:12px;font-size:14px;line-height:1.4}
