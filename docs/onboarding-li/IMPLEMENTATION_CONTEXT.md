@@ -43,6 +43,18 @@
 - QA: these new tests were committed, but their final post-change GitHub Actions results were **NOT YET VERIFIED** at this journal checkpoint. No physical iOS Safari, real push receipt, prod flags, or production Alembic migration confirmed.
 - Branch stays draft PR #282; main and production remain untouched.
 
+## 2026-11-09 ADDITIONAL AUDIT HARDENING — through approved-scope feature branch
+
+- **No extra video to delete:** the separate user-upload commit had exactly the same tree as previous. Only required `iphone-home-screen.mp4` (709,956 bytes) exists; do NOT delete it or unrelated MP4 test fixtures. ZIP has already been deleted.
+- **Trial release bug fixed:** canonical entitlement guard prevents paid Pro users with historical unexpired trial stamps from receiving expiry notices. A direct unit test proves this.
+- **HSK 3.0 server bypass fixed:** Li onboarding now checks per-user `CourseTrackService.hsk30_access(...).allowed` before any switch/progress persistence. Explicitly disabled `allow_locked_hsk30` for the onboarding switch; added both denied and allowed unit cases.
+- **48h queue starvation fixed:** query limits to actual due windows and excludes already recorded reminder slots using correlated `NOT EXISTS` before `MAX_BATCH=200`. Added 201-not-due and 5-due-users/2-page-unit regression; new cohorts drain over successive runs rather than endlessly repeating the same rows.
+- **Network/UI hardening:** API 12s GET/20s POST deadline now covers complete JSON decoding, not just fetch headers. Trial activation now gives honest Retry and separate free course exit; error panel does not duplicate. Tests added in `tests/e2e/test_li_onboarding_runtime.py`.
+- **Safari asset audit:** real FastAPI MP4 `Range`/HTTP 206 test verifies first/middle/final bytes and canonical SHA-256; test was placed in backend CI job with full dependencies, not the browser-only job.
+- **WebKit coverage:** Li 23-state and install guide suites now run in both Chromium and actual Playwright WebKit browser engine in CI. WebKit is not a physical iPhone.
+- **Remaining:** official PWA hostname vs video `up.railway.app`, real iPhone Safari slow network/seek/VoiceOver, production Web Push flags and device permission, production Alembic, end-to-end real Google/Telegram OAuth, CSP inline-script hardening. See [AUDIT_RISKS_2026-11-09.md](AUDIT_RISKS_2026-11-09.md).
+- **Test claims:** code/CI steps have been committed, but latest fresh GitHub Actions are still running at this checkpoint; no full-green claim. PR #282 stays draft and production/main unchanged.
+
 ## 0. Yangi chatni boshlash — shu tartib majburiy
 
 1. Repository `akbarholturaev11-lang/HSK-AI-Bot`ni och, **branch `feature/li-onboarding-mainffbff9-20261108`** mavjudligini va uning remote HEAD SHA'sini tekshir. Default `main`dan ko'r-ko'rona davom etma. Local workspace allaqachon dirty bo'lsa user o'zgarishlarini saqla; rebase/reset/force yo'q.
