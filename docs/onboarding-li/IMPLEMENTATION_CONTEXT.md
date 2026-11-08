@@ -4,9 +4,9 @@
 >
 > **Sister document:** [PRODUCT_GOAL.md](PRODUCT_GOAL.md) — final product behavior, fixed scope, 23-state demo, acceptance criteria. Maqsad bu yerda qayta ixtiro qilinmaydi.
 >
-> **Last verified:** 2026-11-08; **active new-main branch:** `feature/li-onboarding-mainffbff9-20261108`; **branch baseline:** `main@ffbff9492e0713686f57a76443bef17a45c4041c`; **source:** GitHub `akbarholturaev11-lang/HSK-AI-Bot`. Prior docs-only branch `feature/li-onboarding-handoff-20261108` is archival (based on old 4ca0d2d); **do not implement there**.
+> **Last verified:** 2026-11-09; **active new-main branch:** `feature/li-onboarding-mainffbff9-20261108`; **branch baseline:** `main@ffbff9492e0713686f57a76443bef17a45c4041c`; **source:** GitHub `akbarholturaev11-lang/HSK-AI-Bot`. Prior docs-only branch `feature/li-onboarding-handoff-20261108` is archival (based on old 4ca0d2d); **do not implement there**.
 >
-> **REAL ONBOARDING IMPLEMENTATION STATUS: PARTIAL ON FEATURE BRANCH.** See first checkpoint above. New 0154 schema/API/loader code is committed on feature branch, but 23-state UI, Smart/PWA trial, E2E and test execution remain incomplete. Production is still base main ffbff949.
+> **REAL ONBOARDING IMPLEMENTATION STATUS: PARTIAL ON FEATURE BRANCH.** The isolated 23-state Li UI, optional iPhone install guide and server adapters are committed; real MP4, final all-green CI/device validation, default route cutover, production deploy are NOT complete.
 
 ## 0. Yangi chatni boshlash — shu tartib majburiy
 
@@ -17,6 +17,16 @@
 5. Quyi `CURRENT STATUS` va `NEXT ACTION`ni tekshir. Faqat undan keyin code ishlari davom etsin. Yangi session avvalgi xatolarni takrorlamasin.
 6. Har bir **haqiqiy** muhim code slice/migration/test tugagach `CURRENT STATUS`, `VERIFIED CODE CHANGES`, `TEST EVIDENCE`, `NEXT ACTION`, `OPEN RISKS`ni **shu fayl ichida** yangila va kod bilan **o'sha branch commit**da saqla. Har bir token/CSS micro-editni emas, tekshiriladigan fayl/behavior bo'lagini qayd et.
 7. Yangi chatga qisqa topshiriq: **"`feature/li-onboarding-mainffbff9-20261108` branch'da `docs/onboarding-li/PRODUCT_GOAL.md` va `docs/onboarding-li/IMPLEMENTATION_CONTEXT.md`ni o'qi. Hozirgi HEAD/diff/testlarni tekshir, jurnalning NEXT ACTION joyidan davom et, har verified code slice'dan so'ng jurnalni actual sha va test evidence bilan yangila. `main`ni o'zgartirma, release qilma."**
+
+## 2026-11-09 — Latest implementation/audit checkpoint (draft PR #282)
+
+- Verified updated main c80d72184b853ec4b83141403f7e2c77dcffb557 was already included in the onboarding feature branch (0 behind). This feature branch remains isolated; no merge into main or production deploy.
+- New user-initiated iPhone install-guide implementation exists in app/static/course_v3_data/li-onboarding-install.js and .css. The real onboarding runtime calls it ONLY after verified guest OAuth registration and confirmed server save; it does not grant user rights. Apple/iPhone, standalone and Telegram source conditions were inspected. app/main.py has fixed optional video route /assets/onboarding/iphone-home-screen.mp4; the required real MP4 file is NOT in repository, so the server returns 404 and UI shows the canonical RU/UZ/TJ 3-step guide.
+- Confirmed the first implementation displayed a blank pending video region. Fixed in commit f1ec2713e3a5f185896b035976d4865ca1f46298: text fallback now paints immediately, media appears only after loadedmetadata, and vertical 9:16 video geometry is supported. Bust JS/CSS URL cache in HTML commit 31a1da12229a95abf73e021d1b7d9bae215a7bfd.
+- Added further Playwright assertions in a8bc8e42a046974089b8756f53273720490f3374: video metadata transition and fallback, iOS/standalone/Telegram exclusion; tests are authored, NOT necessarily passed in latest run. Later commits added full first-time OAuth + server-save-gated guide E2E and canonical source checks; check actual GitHub CI before claiming PASS.
+- Previous backend run 42494394481: native-postgres SUCCESS, targeted-tests SUCCESS, miniapp-ui FAILED because the synthetic OAuth test tried reading sessionStorage on Chromium's blocked error document; not proof of actual account corruption. Added safe navigation diagnostics in a7d8c6b8 and simulated external provider full-document callback in 21960e2d; verify latest miniapp-ui result before removing the blocker.
+- Open release gates: full current CI; physical iPhone Safari video and Home Screen behavior, actual reviewed MP4, Telegram callback, end-to-end 23-scene screenshot diff in UZ/RU/TJ, exact T-48h PWA push consent/delivery, analytics/event ownership, and migration rehearsal. Legacy default onboarding remains deployed and must not be silently swapped.
+- Next step: inspect latest branch HEAD/CI after this checkpoint, repair any real failing assertions/flows, validate optional video file route and future source integrity, then separately approve default PWA/Mini App cutover after device tests. Update this same file with evidence.
 
 ## 2026-11-08 CHECKPOINT — public PWA panda-first, real OAuth draft resume, bounded API loading
 

@@ -24,6 +24,15 @@ The existing learner PWA now has a **PWA-only inline Pro limit paywall** with co
 - Associated unit/PWA API/Playwright tests are authored but require actual CI run; test status recorded in `IMPLEMENTATION_CONTEXT.md`.
 - Production code stays unchanged until a future tested merge; do not silently promote partial onboarding.
 
+## 2026-11-09 — iPhone PWA Home Screen video requirement
+
+- On iPhone/iPad browser ONLY after verified first-time PWA OAuth account signup AND successful server onboarding save: offer a short optional Home Screen install guide before Pro eligibility. Never show to returning learners, Telegram Mini App, native Android, or already installed standalone PWA.
+- The original 23 demo scenes and words remain unchanged. This is an optional post-registration sheet, not a parallel auth/progress/trial service. Close and Continue must both lead to the existing real course/Pro path. Never automatically request OS notification permission.
+- Reserve the reviewed portrait 9:16 screencast at app/static/assets/onboarding/iphone-home-screen.mp4; serve only that exact public file from /assets/onboarding/iphone-home-screen.mp4. **Actual approved MP4 absent as of this checkpoint.** Show RU/UZ/TJ step instructions immediately; never display an empty or fake video while loading or after 404. Show video only after real metadata.
+- Textual steps verified against https://support.apple.com/en-gb/guide/iphone/iph42ab2f3a7/27/ios/27 : Safari Page Menu → Share → Add to Home Screen → Add. Review the eventual video against current iOS Safari UI, scrub personal data, and check on real iPhone.
+- Per-account local device prompt state may prevent repeat suggestions, but cannot imply installation actually happened. Keep Pro, PWA push, payment, streak, auth, trial and course state unchanged.
+- Acceptance: actual Safari non-installed signup = prompt; installed PWA/Mini App/desktop/Android/returning user = no prompt; no video asset = immediate 3-step fallback; approved MP4 = functional native player with controls/playsinline; Close/Continue = expected next onboarding step; safe user switch, accessibility, reduced-motion and static asset cache version validated.
+
 ## 1. Bosh maqsad
 
 Foydalanuvchi HSK AI'ga birinchi kirganda **Li panda qatnashgan 23-state interaktiv demo**ga imkon qadar **1:1 mos** UI/UX ko'radi. Ekranlarning joylashuvi, animatsiyasi, panda pozasi, tanlovga javobi, matni (RU/UZ/TJ), visual ierarxiya va Pro slaydlari demodagidek bo'ladi. Lekin login, data loading, HSK access, lesson start, Pro/trial, reminder, analytics va save **mock emas — real server kontraktlari** bilan ishlaydi. Mavjud kurs/progress/to'lov xavfsizligi buzilmaydi.
