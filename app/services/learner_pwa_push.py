@@ -402,6 +402,16 @@ async def _event_exists(session, row, *, blocked: bool, now: datetime) -> bool:
             return False
         if notification.key == "smart_study":
             return await _smart_study_event_allowed(session, notification)
+        if notification.key == "trial_expiring" and notification.source == "trial_reminder":
+            # Outbox can be delayed by offline devices/retries. A now-expired,
+            # revoked, blocked or already-paid trial must not still trigger
+            # a stale 48h "trial almost over" notification.
+            from app.services.entitlements.state import EntitlementState, resolve_state
+            actor = await session.get(User, row.user_id)
+            if actor is None:
+                return False
+            if resolve_state(actor, now=now) != EntitlementState.TRIAL_ACTIVE:
+                return False
         return True
     if row.source == "payment":
         # Payment status remains authoritative; the push is only a generic
