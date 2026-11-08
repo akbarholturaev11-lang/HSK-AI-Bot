@@ -149,7 +149,7 @@ _PWA_COURSE_BOOT_SCRIPT = b'''<script>
   // This is a retry-only UI; it cannot authorize a lesson or display old data.
   var safety=setTimeout(function(){
     if(!screen.querySelector(".hsk-pwa-boot-shell"))return;
-    screen.innerHTML='<div class="hsk-pwa-boot-error" role="alert" style="margin:28px 18px;padding:24px;border-radius:20px;background:var(--hsk-card-surface,#f2f1ee);color:var(--ink,#222)"><h2 style="font-size:20px;margin:0 0 10px">HSK AI</h2><p style="margin:0 0 16px">Не удалось загрузить курс.</p><button type="button" onclick="location.reload()" style="padding:12px 20px;border-radius:12px;cursor:pointer">Повторить</button></div>';
+    screen.innerHTML='<div class="hsk-pwa-boot-error" role="alert" style="margin:28px 18px;padding:24px;border-radius:20px;background:var(--hsk-card-surface,#f2f1ee);color:var(--ink,#222)"><h2 style="font-size:20px;margin:0 0 10px">HSK AI</h2><p style="margin:0 0 16px">&#1053;&#1077; &#1091;&#1076;&#1072;&#1083;&#1086;&#1089;&#1100; &#1079;&#1072;&#1075;&#1088;&#1091;&#1079;&#1080;&#1090;&#1100; &#1082;&#1091;&#1088;&#1089;.</p><button type="button" onclick="location.reload()" style="padding:12px 20px;border-radius:12px;cursor:pointer">&#1055;&#1086;&#1074;&#1090;&#1086;&#1088;&#1080;&#1090;&#1100;</button></div>';
   },14000);
   finish();
 })();
