@@ -144,6 +144,8 @@ button{font-family:inherit;border:none;background:none;color:inherit}
 @media (max-height:640px){.stage{height:clamp(140px,26vh,190px)}.mic{width:66px;height:66px;font-size:27px}.sq{width:44px;height:44px}}
 </style>
 <link rel="stylesheet" href="/assets/characters/hsk-scene-background.css?v=20261009-preparing-compact-1">
+<link rel="stylesheet" href="/course_v3_data/iphone-pwa-inline-pro.css?v=20261108-1">
+<script defer src="/course_v3_data/iphone-pwa-inline-pro.js?v=20261108-1"></script>
 </head>
 <body class="hsk-scene-page">
 <div class="wrap">
@@ -659,6 +661,10 @@ function toggleDialog(){
   $("dtoggleic").className=on?"ti ti-chevron-up":"ti ti-messages";
 }
 function showPaywall(){
+  if(PWA_VOICE_HOST&&window.HSKPwaInlinePro){
+    window.HSKPwaInlinePro.open({source:"v3_voice_limit",lang:LANG});
+    return;
+  }
   if(!PWA_VOICE_HOST&&window.CourseAds&&CourseAds.showLimitPromo){
     CourseAds.config({lang:LANG,initData:(tg&&tg.initData)||"",feature:"voice",level:(params.get("level")||"hsk1")});
     CourseAds.showLimitPromo({feature:"voice",reason:L.limitWhy||"",onSubscribe:goPremium,onBack:goBack});
@@ -670,7 +676,9 @@ function showPaywall(){
   $("pwb").textContent=L.premiumBtn;$("pwb").hidden=false;$("pwb2").textContent=L.exit;
   $("paywall").classList.add("on");
 }
-function goPremium(){location.href=(PWA_VOICE_HOST?"/iphone-pwa/checkout":"/subscription.html")+"?lang="+LANG+"&source=v3_voice_limit&mode=subscription&return_to=course&return_page=course_v3_voice.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"")}
+function goPremium(){
+  if(PWA_VOICE_HOST&&window.HSKPwaInlinePro){window.HSKPwaInlinePro.open({source:"v3_voice_limit",lang:LANG});return}
+  location.href=(PWA_VOICE_HOST?"/iphone-pwa/checkout":"/subscription.html")+"?lang="+LANG+"&source=v3_voice_limit&mode=subscription&return_to=course&return_page=course_v3_voice.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"")}
 function softReset(){
   started=false;sess=null;turn=0;lessonWords=[];reviewWords=[];
   closeKb();setName();setChar("happy");setStatus("");setHold(L.holdMic);chatClear();setCnt();
