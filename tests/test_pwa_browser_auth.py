@@ -135,6 +135,30 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         await self.client.aclose()
         await self.engine.dispose()
 
+    async def test_pwa_exit_offer_requires_session_csrf_and_origin(self):
+        path = "/api/v3/pwa/subscription/exit-offer"
+        payload = {"action": "view", "source": "v3_locked_lesson"}
+        unauthorized = await self.client.post(path, json=payload, headers={"Origin": ORIGIN})
+        self.assertEqual(unauthorized.status_code, 401)
+        await self.callback(await self.begin())
+        actor = (await self.client.get("/api/v3/pwa-auth/session")).json()
+        no_csrf = await self.client.post(path, json=payload, headers={"Origin": ORIGIN})
+        self.assertEqual(no_csrf.status_code, 403)
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": actor["csrf"]}
+        wrong_origin = await self.client.post(
+            path, json=payload,
+            headers={"Origin": "https://attacker.invalid", "X-HSK-PWA-CSRF": actor["csrf"]},
+        )
+        self.assertEqual(wrong_origin.status_code, 403)
+        for invalid in ({"action": "fake"}, {"action": "claim", "user_id": 1}, {}):
+            bad = await self.client.post(path, json=invalid, headers=headers)
+            self.assertEqual(bad.status_code, 422)
+        valid = await self.client.post(path, json=payload, headers=headers)
+        self.assertEqual(valid.status_code, 200, valid.text)
+        self.assertEqual(valid.headers["cache-control"], "no-store")
+        # Sales are disabled in this isolated PWA auth fixture.
+        self.assertFalse(valid.json()["available"])
+
     async def begin(self):
         response = await self.client.post(
             "/api/v3/pwa-auth/start", headers={"Origin": ORIGIN},
