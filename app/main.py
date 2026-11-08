@@ -2514,6 +2514,8 @@ async def course_v3_data_file(filename: str):
         "hsk-miniapp-i18n.js": "application/javascript",
         "hsk-course-i18n.js": "application/javascript",
         "li-onboarding-runtime.js": "application/javascript",
+        "li-onboarding-install.js": "application/javascript",
+        "li-onboarding-install.css": "text/css",
         "hsk-li-onboarding-i18n.js": "application/javascript",
         "p3-grammar-reservation.js": "application/javascript",
         "ready-phrases-v1.json": "application/json",
