@@ -11,7 +11,7 @@ bo'lardi va dedupe uni ushlab qololmasdi.
 
 import unittest
 from datetime import datetime, timedelta, timezone
-from unittest.mock import patch
+from unittest.mock import AsyncMock, patch
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
@@ -102,6 +102,29 @@ class TrialReminderTests(unittest.IsolatedAsyncioTestCase):
         self.assertIsNone(_due_notice_slot(cutoff, cutoff - timedelta(hours=35)))
         self.assertEqual(_due_notice_slot(cutoff, cutoff - timedelta(hours=24)), 0)
         self.assertIsNone(_due_notice_slot(cutoff, cutoff))
+
+    async def test_verified_pwa_subscription_owns_only_one_durable_48h_push(self):
+        await self._seed(days_left=2)
+        bot = _BotSpy()
+        with (
+            patch("app.services.learner_pwa_push.sender_config",
+                  return_value=("synthetic-key", "synthetic-subject", object())),
+            patch("app.services.learner_pwa_push.active_subscriptions",
+                  new=AsyncMock(return_value=[("subscription-test", "device-test")])),
+            patch("app.services.learner_pwa_push.enqueue_event",
+                  new=AsyncMock(return_value=1)) as queued,
+        ):
+            async with self.sessions() as session:
+                service = TrialReminderService(session)
+                first = await service.send_due_reminders(bot, now=self.now)
+                second = await service.send_due_reminders(bot, now=self.now)
+        # Queue count is not the same as a provider-accepted Web Push.
+        self.assertEqual((first, second), (0, 0))
+        self.assertEqual(bot.sent, [])
+        queued.assert_awaited_once()
+        self.assertEqual(queued.await_args.kwargs["source"], "course")
+        self.assertEqual(queued.await_args.kwargs["language"], "ru")
+        self.assertEqual(len(await self._notifications()), 1)
 
     async def test_a_reminder_goes_out_on_the_last_day(self):
         await self._seed(days_left=0)
