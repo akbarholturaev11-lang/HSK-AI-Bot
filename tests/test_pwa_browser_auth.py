@@ -135,19 +135,61 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         await self.client.aclose()
         await self.engine.dispose()
 
-    async def test_li_onboarding_preview_is_session_protected_and_uncached(self):
+    async def test_public_li_shell_contains_no_private_user_or_course_access(self):
         route = "/iphone-pwa/onboarding/li"
         anonymous = await self.client.get(route, follow_redirects=False)
-        self.assertEqual(anonymous.status_code, 303)
-        self.assertEqual(anonymous.headers["location"], "/iphone-pwa")
+        self.assertEqual(anonymous.status_code, 200)
+        self.assertEqual(anonymous.headers.get("cache-control"), "no-store")
+        self.assertEqual(anonymous.headers.get("x-frame-options"), "DENY")
+        self.assertIn("frame-ancestors 'none'", anonymous.headers.get("content-security-policy", ""))
+        self.assertIn("li-onboarding-runtime.js?v=", anonymous.text)
+        self.assertIn("hsk-character-pack.js?v=", anonymous.text)
+        self.assertNotIn("timer=setTimeout(function(){trail.push(screen)", anonymous.text)
+        self.assertNotIn("user_id", anonymous.text)
+        self.assertEqual((await self.client.get("/api/v3/pwa/onboarding/status")).status_code, 401)
+        self.assertEqual((await self.client.post(
+            "/api/v3/pwa/onboarding", headers={"Origin": ORIGIN},
+            json={"level": "hsk1", "goal": "hsk_exam", "daily_minutes": 10,
+                  "start_mode": "continue"},
+        )).status_code, 401)
         await self.callback(await self.begin())
-        result = await self.client.get(route)
-        self.assertEqual(result.status_code, 200, result.text[:200])
-        self.assertEqual(result.headers.get("cache-control"), "no-store")
-        self.assertEqual(result.headers.get("x-frame-options"), "DENY")
-        self.assertIn("li-onboarding-runtime.js?v=", result.text)
-        self.assertIn("hsk-character-pack.js?v=", result.text)
-        self.assertNotIn("timer=setTimeout(function(){trail.push(screen)", result.text)
+        signed = await self.client.get(route)
+        self.assertEqual(signed.status_code, 200)
+        self.assertEqual(signed.text, anonymous.text)
+
+    async def test_li_resume_hint_requires_same_origin_and_verified_oauth(self):
+        path = "/api/v3/pwa/onboarding/li/resume"
+        self.assertEqual((await self.client.post(
+            path, headers={"Origin": "https://other.test"},
+        )).status_code, 403)
+        started = await self.client.post(path, headers={"Origin": ORIGIN})
+        self.assertEqual(started.status_code, 200, started.text)
+        self.assertIn("__Host-hskai-li-resume", started.headers.get("set-cookie", ""))
+        # No cookie hint creates a browser login session or entitlements.
+        self.assertEqual((await self.client.get("/api/v3/pwa-auth/session")).status_code, 401)
+        await self.callback(await self.begin())
+        redirected = await self.client.get("/iphone-pwa", follow_redirects=False)
+        self.assertEqual(redirected.status_code, 303)
+        self.assertEqual(redirected.headers["location"], "/iphone-pwa/onboarding/li")
+        self.assertIn("max-age=0", redirected.headers.get("set-cookie", "").lower())
+        return_again = await self.client.get("/iphone-pwa", follow_redirects=False)
+        self.assertEqual(return_again.headers["location"], "/iphone-pwa/course")
+
+    async def test_li_public_track_metadata_never_claims_anonymous_hsk3_access(self):
+        from app.services.hsk30_feature_service import Hsk30FeatureService
+        with (
+            patch.object(Hsk30FeatureService, "is_enabled", new_callable=AsyncMock) as enabled,
+            patch.object(Hsk30FeatureService, "live_levels", new_callable=AsyncMock) as levels,
+        ):
+            enabled.return_value = True
+            levels.return_value = ["nhsk1", "nhsk2"]
+            result = await self.client.get("/api/v3/pwa/onboarding/public-tracks")
+            self.assertEqual(result.status_code, 200, result.text)
+            payload = result.json()
+            self.assertFalse(payload["tracks"]["hsk30"]["access"]["allowed"])
+            self.assertEqual(payload["tracks"]["hsk30"]["live_levels"], ["nhsk1", "nhsk2"])
+            self.assertNotIn("user_id", payload)
+            self.assertNotIn("unlocked_at", str(payload))
 
     async def test_browser_trial_status_uses_verified_user_and_risk_without_grant(self):
         from app.services.pro_trial_service import ProTrialService
