@@ -90,3 +90,18 @@ Branch-only follow-up to the additional audit. Changes are authored, **not deplo
 - Production: validate Lava's live 1m/12m configuration, the actual `exit_offer:20` provider code, Safari popup/3DS return, and manual receipt/Pro refresh.
 - Do not claim R2/private analytics exports or admin KPI dashboards have been updated just because the primary admin funnel text now shows new events; audit export pipelines separately.
 - Never let UI telemetry grant Pro, affect payment amounts or count an unverified payment as paid.
+
+
+## 2026-11-08 — production iPhone UX follow-up PR #283
+
+Actual iPhone PWA screenshots exposed six defects in the merged inline paywall. PR #283 fixes PWA-only assets; the original shared Telegram/Mini App HTML is byte-identical.
+
+- **Full screen:** `#hsk-inline-pro` + `.hip-sheet` fill the full dynamic viewport (100dvh), support iPhone safe areas, and keep the content scrollable. Both methods/email/waiting states share a consistent page instead of a half-height bottom sheet. Long headers reserve back/close button space.
+- **Colors:** CSS uses HSK's existing `--hsk-paper`, cinnabar, jade, ink and divider tokens with the same fallback hex values as the course UI; removed independently invented green CTA/theme.
+- **Mascot:** original distorted inline bear/book replaced with a proportioned panda with feet, body and book. SVG remains local (no network/image/font dependency).
+- **No duplicate limit:** PWA practice wrappers intercept `showLimitNow` *before* rendering the original full-page lock. For internal course modules (whose `showLimit` is private), a scoped MutationObserver detects the explicit locked CTA, removes the legacy view and opens the one PWA Pro surface. Dismissing a practice modal navigates to the existing back handler, not the old lock screen. Unmodified Telegram conditions remain as before.
+- **Manual path:** selecting manual inside PWA sets `state.path='manual'` and filters the generic `card` choice from the original flow on this PWA iframe only. The user sees manual countries/plans/receipt immediately, without being asked again whether to pay with Visa. Parent sheet header hidden while the complete manual checkout iframe is displayed.
+- **Lava URL:** removed the premature `window.open("about:blank")` call that left a blank Safari tab when the asynchronous invoice was returned. A valid HTTPS `lava.top` subdomain URL from the backend appears as a real `<a target="_blank" rel="noopener noreferrer">` only after invoice creation. User taps the link to open payment; cannot produce a pre-opened blank tab. Unexpected hostnames are rejected. Provider webhook remains the only source of Pro access.
+- **Tests:** E2E checks viewport dimensions, canonical colors, header button overlap, legible panda, no independent-practice legacy calls, manual card-question suppression, valid/invalid checkout domain, and no preopened popup. Existing auth/analytics, payment, Android and localization CI remain intact.
+- Asset SHA references in `app/api/pwa_auth.py` must always match current .css/.js/.bridge blob SHA to invalidate old iPhone PWA caches.
+- **Validation boundary:** mocked browser link opening does not prove a real Lava credit-card transaction. Confirm actual provider invoice in the user browser after deployment, and never create a live charge just to test presentation.
