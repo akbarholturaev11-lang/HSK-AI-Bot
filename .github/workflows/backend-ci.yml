@@ -474,6 +474,8 @@ jobs:
         run: python -m unittest tests.test_li_onboarding_catalog
       - name: Verify approved optimized Safari tutorial video if published
         run: python -m unittest tests.test_li_install_video_asset
+      - name: Verify Safari install video HTTP 206 Range handling
+        run: python -m unittest tests.test_li_install_video_route
 
       - name: Verify Li onboarding honest loading, error retry and server-backed book choice
         run: python -m pytest -q tests/e2e/test_li_onboarding_loading.py
