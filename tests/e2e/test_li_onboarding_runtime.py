@@ -226,6 +226,13 @@ def test_pwa_guest_sees_panda_first_and_oauth_resumes_saved_draft_safely():
         assert page.locator("#stage .provider").count() == 3
         assert page.locator("#stage .provider").nth(2).is_hidden()  # Apple disabled
         page.locator("#stage .provider").nth(1).click()  # real Google OAuth start
+        assert captured["resume"] == 1
+        assert len(captured["oauth"]) == 1
+        # The provider's real verified callback is exercised separately by
+        # PWA auth API tests. Simulate its return in the SAME tab without
+        # relying on a third-party origin that Chromium may block in CI.
+        # Crucially, sessionStorage is NOT re-seeded here.
+        page.goto(ORIGIN + "/iphone-pwa/onboarding/li?lang=uz")
         try:
             page.wait_for_function("window.screen==='profile'", timeout=10000)
         except Exception:
