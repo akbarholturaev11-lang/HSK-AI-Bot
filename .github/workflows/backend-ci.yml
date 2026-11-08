@@ -225,7 +225,7 @@ jobs:
             tests.test_native_oauth_lifecycle \
             tests.test_identity_link_service
       - name: Test isolated iPhone PWA browser and Telegram sign-in
-        run: python -m unittest tests.test_pwa_browser_auth tests.test_pwa_telegram_bot tests.test_pwa_shake_report
+        run: python -m unittest tests.test_pwa_browser_auth tests.test_pwa_initial_shell tests.test_pwa_telegram_bot tests.test_pwa_shake_report
       - name: Verify one-time PWA exit offer and real Lava promo activation
         run: python -m unittest tests.test_pwa_exit_offer tests.test_lava_promo_codes
       - name: Validate iPhone PWA inbox, payment and feedback dialogs
