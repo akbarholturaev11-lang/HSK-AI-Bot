@@ -152,6 +152,30 @@ class TrialReminderTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(len(bot.sent), 1)
         self.assertEqual(bot.sent[0][0], 8500)
 
+    async def test_large_due_cohort_drains_across_bounded_runs_without_duplicates(self):
+        # A scheduler should process the next page on each invocation,
+        # even if the first page's reminder rows remain in the database.
+        async with self.sessions() as session:
+            for number in range(5):
+                user = _user(user_id=100 + number, telegram_id=8100 + number)
+                user.trial_used = True
+                user.pro_trial_started_at = self.now - timedelta(days=5)
+                user.pro_trial_ends_at = self.now + timedelta(hours=47)
+                session.add(user)
+            await session.commit()
+        bot = _BotSpy()
+        with patch("app.services.trial_reminder_service.MAX_BATCH", 2):
+            async with self.sessions() as session:
+                service = TrialReminderService(session)
+                sent = [
+                    await service.send_due_reminders(bot, now=self.now)
+                    for _ in range(4)
+                ]
+        self.assertEqual(sent, [2, 2, 1, 0])
+        self.assertEqual(len(bot.sent), 5)
+        self.assertEqual(len({chat_id for chat_id, _ in bot.sent}), 5)
+        self.assertEqual(len(await self._notifications()), 5)
+
     async def test_a_reminder_goes_out_on_the_last_day(self):
         await self._seed(days_left=0)
         bot = _BotSpy()
