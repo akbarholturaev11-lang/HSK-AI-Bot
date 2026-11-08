@@ -8,6 +8,7 @@ var hostPwa=location.pathname.indexOf("/iphone-pwa/")===0;
 var tg=global.Telegram&&global.Telegram.WebApp;
 var initData=hostPwa?"":String(tg&&tg.initData||"");
 var actor=null,identityKey="",trackStatus=null,launch=null;
+var justResumedGuestRegistration=false;
 var supportedProviders=null; // null while the real provider availability loads
 var requestGeneration=0,requestBusy=false,initializing=true,trialEligibility=null;
 var initialRender=global.render;
@@ -99,15 +100,22 @@ function restoreDraft(){
   try{
     var key="hsk_li_draft_v1:"+identityKey;
     var raw=sessionStorage.getItem(key);
+    var claimedGuest=false;
     if(!raw&&hostPwa&&actor){
       // OAuth returned to this same browser tab. Bind only the learner's
       // own pre-login, non-secret selections to the newly verified actor.
       var guestKey="hsk_li_draft_v1:pwa:guest";
       raw=sessionStorage.getItem(guestKey);
-      if(raw){sessionStorage.setItem(key,raw);sessionStorage.removeItem(guestKey)}
+      if(raw){
+        sessionStorage.setItem(key,raw);
+        sessionStorage.removeItem(guestKey);
+        claimedGuest=true;
+      }
     }
     var obj=JSON.parse(raw||"null");
     if(!obj||Date.now()-Number(obj.at)>86400000||Number(obj.at)>Date.now())return;
+    if(claimedGuest&&obj.step==="signup"&&hostPwa&&actor)
+      justResumedGuestRegistration=true;
     if(["uz","ru","tj"].indexOf(obj.lang)>=0)global.LANG=obj.lang;
     if(obj.track==="hsk20"||obj.track==="hsk30")global.track=obj.track;
     if(obj.level===null||typeof obj.level==="string")global.level=obj.level;
@@ -277,6 +285,16 @@ function saveProfile(){
     launch=value;
     clearDraft();
     requestBusy=false;
+    // Installation is a presentation-only prompt after a confirmed PWA
+    // onboarding save, never a permission/Pro/account-grant operation.
+    // A returning signed-in learner or Telegram Mini App must not see it.
+    var guide=global.HSKAILiInstallGuide;
+    if(hostPwa&&justResumedGuestRegistration&&guide&&typeof guide.open==="function"&&
+       guide.open({userId:Number(actor&&actor.user_id),lang:global.LANG},offerIfEligible)){
+      justResumedGuestRegistration=false;
+      return;
+    }
+    justResumedGuestRegistration=false;
     offerIfEligible();
   }).catch(function(error){
     console.warn("[li-onboarding] save not confirmed",String(error&&error.message||"save_failed").slice(0,100));
