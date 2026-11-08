@@ -8,6 +8,21 @@
 >
 > **REAL ONBOARDING IMPLEMENTATION STATUS: PARTIAL ON FEATURE BRANCH.** The isolated 23-state Li UI, optional iPhone install guide and server adapters are committed; real MP4, final all-green CI/device validation, default route cutover, production deploy are NOT complete.
 
+## 2026-11-09 USER SCOPE CLARIFICATION — progressive loading applies ONLY to our Li onboarding
+
+**Scope:** user expressly narrowed Initial Render & Progressive Loading to the newly added **23-state Li Panda onboarding**. No change to existing authenticated course homepage, rating, profile, paywall, Android, or `app/static/course-v3.html` belongs to this new task. Everything below is **only feature-branch work**, not a main merge/deploy.
+
+**Real code changes made:**
+
+1. `app/static/course_v3_li_onboarding.html`: first paint is a branded HTML header/main/footer skeleton with reserved layout before external pack/Telegram/catalog JS. Their script tags moved after initial body shell. Added local skeleton CSS with reduced-motion fallback and corrected width/alignment. `loadCourse` and `loadLesson` preserve header and inline SVG panda, show book/tracks/lesson blocks with stable geometry instead of a blank fullscreen spinner. Added accessible Back action for slow read states. Runtime version query updated after source edits.
+2. `app/static/course_v3_data/li-onboarding-runtime.js`: real book JPEG remains original authoritative art; image element uses 340×255, `loading=eager`, `decoding=async`, `fetchpriority=high`, a reserved overlay skeleton, and true onload/error fallback. No nonexistent WebP/AVIF URLs invented (actual book files are JPG, 167151 and 310301 bytes). Login/signup providers show independent skeleton cards pending real provider API; duplicate in-flight provider reads collapse into one promise. Save, trial-status, trial-start and OAuth launch show local status blocks without replacing the underlying page. Public *anonymous* HSK track metadata uses only a short 120s **in-memory** preview with background revalidation and request dedupe; paid/Pro, actor, CSRF, trial, private progress and subscription data are never cached by this feature. The onboarding status GET no longer repeats a proven same-bootstrap PWA session read; status endpoint still authenticates independently. Back during `loadCourse`/`loadLesson` advances generation and ignores late results; writes remain blocking by design.
+3. `tests/e2e/test_li_onboarding_runtime.py`: added Playwright tests for HTML shell with scripts failing, slow course API and independent book/track skeleton, safe public cache while background refresh hangs, save-specific status skeleton with scene retained, and slow-track Back discarding late response. Existing Chromium/WebKit CI steps exercise the entire test module.
+4. `docs/onboarding-li/PRODUCT_GOAL.md`: added strict scope statement, explicit progressive loading / no-CLS / safe-cache / auth acceptance contract.
+
+**Code reviewed but not changed in this scoped task:** `app/static/course-v3.html` (existing course/profile/rating UI); existing PWA paywall and Android sources. No access/Pro/lesson backend contract is modified here. Official book JPEGs reused; the iPhone video guide remains its existing separate media component.
+
+**Validation:** `li-onboarding-runtime.js` and the inline Li HTML script passed JavaScript parse in the connector V8 check before the final cache/back amendments; newer code should be checked again. Latest fresh GitHub CI after edits must be confirmed before marking complete; no physical iPhone Safari, Web Push or production deploy evidence. See PR #282 and GitHub Actions for the exact head. Do not claim completed without fresh pass.
+
 ## 2026-11-09 VERIFIED VIDEO IMPORT — USER ZIP EXTRACTED TO REAL MP4
 
 - User uploaded the whole `HSK_AI_iPhone_install_video_GitHub_asset.zip` to the feature branch under `app/static/assets/onboarding/`, not the inner MP4. The ZIP itself cannot be played by the browser.
