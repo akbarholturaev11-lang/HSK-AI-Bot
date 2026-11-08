@@ -91,7 +91,7 @@ function saveDraft(){
   if(!identityKey||requestBusy)return;
   var payload={at:Date.now(),lang:global.LANG,track:global.track,
     level:global.level,goals:global.goals.slice(),minutes:global.minutes,
-    focus:global.focus,streakGoal:global.streakGoal};
+    focus:global.focus,streakGoal:global.streakGoal,step:global.screen};
   try{sessionStorage.setItem("hsk_li_draft_v1:"+identityKey,JSON.stringify(payload))}catch(_){}
 }
 function restoreDraft(){
@@ -119,7 +119,9 @@ function restoreDraft(){
     if(global.FOCUS.some(function(x){return x.k===obj.focus}))global.focus=obj.focus;
     if([7,14,30,50].indexOf(Number(obj.streakGoal))>=0)global.streakGoal=Number(obj.streakGoal);
     global.render(false);
+    return typeof obj.step==="string"?obj.step:null;
   }catch(_){}
+  return null;
 }
 function clearDraft(){
   if(identityKey)try{sessionStorage.removeItem("hsk_li_draft_v1:"+identityKey)}catch(_){}
@@ -498,9 +500,21 @@ async function bootstrap(){
     if(status.saved){
       location.replace(pageCourse());return;
     }
-    restoreDraft();
+    var resumedStep=restoreDraft();
     requestBusy=false;
-    global.render(false);
+    if(hostPwa&&actor&&resumedStep==="signup"&&
+       global.level&&global.goals.length&&global.minutes&&global.focus&&global.streakGoal){
+      // Revalidate *personal* course access after OAuth before any saved
+      // draft is attached to this verified actor. Do not trust anonymous
+      // public track preview as an HSK 3.0 entitlement.
+      loadingState("loadCourse",function(){
+        return trackApi().then(function(data){
+          trackStatus=data;validateGoalData();
+        });
+      },"profile");
+    }else{
+      global.render(false);
+    }
   }catch(e){
     console.warn("[li-onboarding] authentication/status",String(e&&e.message||"not_ready").slice(0,100));
     renderError(bootstrap);
