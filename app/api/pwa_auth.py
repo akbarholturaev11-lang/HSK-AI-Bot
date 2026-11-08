@@ -1027,6 +1027,12 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
             if request.headers.get("X-Telegram-Init-Data"):
                 raise PwaAuthError("pwa_request_invalid", status_code=422)
             payload = await _small_json(request, PwaOnboardingFinish, max_bytes=4096)
+            # Validate the ordered primary/goal invariant *before* any course write.
+            from app.services.onboarding_goal_selection import normalize_onboarding_goals
+            try:
+                normalize_onboarding_goals(payload.goals, primary_goal=payload.goal)
+            except ValueError:
+                raise PwaAuthError("pwa_request_invalid", status_code=422) from None
             if (not 1 <= len(payload.level) <= 16 or
                 not 1 <= len(payload.goal) <= 40 or
                 not 1 <= len(payload.start_mode) <= 32 or
