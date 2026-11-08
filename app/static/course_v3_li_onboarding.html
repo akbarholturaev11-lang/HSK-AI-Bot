@@ -540,7 +540,7 @@ function topBar(){
   var lang='<div class="lang-control">'+icon("globe")+'<select class="language" aria-label="UZ / RU / TJ" onchange="setLang(this.value)">'
     +["uz","ru","tj"].map(function(l){return '<option value="'+l+'"'+(l===LANG?" selected":"")+'>'+l.toUpperCase()+'</option>'}).join("")+'</select></div>';
   if(screen==="account")return '<div class="spacer"></div>'+lang;
-  if(screen==="loadCourse"||screen==="loadLesson")return "";
+  if(screen==="loadCourse"||screen==="loadLesson")return '<div class="li-first-brand" aria-label="HSK AI">HSK AI</div><div class="spacer"></div>'+lang;
   if(screen==="pro")return '<button class="bk" type="button" aria-label="'+t("close")+'" onclick="go(\'end\')">'+icon("close")+'</button><div class="spacer"></div>';
   if(TRIAL_STEPS.indexOf(screen)>0)return stepper();
   if(screen==="trialIntro"||screen==="end")return "";
@@ -596,7 +596,14 @@ function render(animate){
     case "intro":
       html='<div class="center"><div class="bub">'+t("intro")+'</div>'+haloPanda()+'</div>';foot=cta(t("cont"),"go('loadCourse')");break;
     case "loadCourse":
-      html='<div class="loading">'+haloPanda()+'<h2>'+t("loadCourse")+'</h2><p>'+t("loadCourseText")+'</p></div>';
+      html='<div class="loading li-progressive-stage" data-remote-section="tracks" aria-busy="true">'
+        +'<div class="li-loading-head">'+guide(t("loadCourse"))+'</div>'
+        +'<div class="body li-loading-body"><p class="helper">'+t("loadCourseText")+'</p>'
+        +books()
+        +'<div class="li-loading-options" role="status" aria-label="'+t("loadCourse")+'">'
+        +'<span class="li-skel" aria-hidden="true"></span><span class="li-skel" aria-hidden="true"></span></div>'
+        +'<div class="li-loading-lines" aria-hidden="true"><span class="li-skel"></span><span class="li-skel"></span></div>'
+        +'</div></div>';
       break;
     case "version":
       html=guide(t("askVersion"))+'<div class="body">'+books()
@@ -623,7 +630,12 @@ function render(animate){
     case "ready":
       html='<div class="center"><div class="bub">'+t("ready")+'</div>'+haloPanda()+'</div>';foot=cta(t("cont"),"go('loadLesson')");break;
     case "loadLesson":
-      html='<div class="loading">'+haloPanda()+'<h2>'+t("loadLesson")+'</h2><p>'+t("loadLessonText")+'</p></div>';
+      html='<div class="loading li-progressive-stage" data-remote-section="lesson" aria-busy="true">'
+        +'<div class="li-loading-head">'+guide(t("loadLesson"))+'</div>'
+        +'<div class="body li-loading-body"><p class="helper">'+t("loadLessonText")+'</p>'
+        +'<span class="li-skel li-loading-card" aria-hidden="true"></span>'
+        +'<div class="li-loading-lines" aria-hidden="true"><span class="li-skel"></span><span class="li-skel"></span></div>'
+        +'<span class="li-skel li-loading-row" aria-hidden="true"></span></div></div>';
       break;
     case "habit":
       html='<div class="center"><div class="bub">'+t("habit")+'</div>'+haloPanda()+'</div>';foot=cta(t("cont"),"go('streak')");break;
