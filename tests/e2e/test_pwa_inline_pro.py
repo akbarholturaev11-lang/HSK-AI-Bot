@@ -94,7 +94,7 @@ def test_inline_pro_two_primary_plans_other_terms_and_real_exit_discount():
         page.locator("#hsk-inline-pro button.hip-plan").first.wait_for()
         assert page.locator("#hsk-inline-pro button.hip-plan").count() == 2
         assert "8.00 USD" in page.locator("#hsk-inline-pro .hip-body").inner_text()
-        assert "10.00 USD" in page.locator("#hsk-inline-pro .hip-body").inner_text()
+        assert page.locator("#hsk-inline-pro button.hip-plan .comparison").first.inner_text() == "10.00"
         assert ("offer", "view") in seen
         assert ("offer", "claim") in seen
         assert ("overview", "exit_discount") in seen
