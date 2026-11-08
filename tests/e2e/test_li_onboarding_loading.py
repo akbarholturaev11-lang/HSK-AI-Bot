@@ -35,6 +35,14 @@ window.fetch = function(path) {
         page.route("**/*.css*", lambda route: route.fulfill(body="", status=200, content_type="text/css"))
         page.route("**/*.js*", lambda route: route.fulfill(body="", status=200,
                                                        content_type="application/javascript"))
+        # Serve the *real* HSK book JPEGs in this synthetic origin. Otherwise
+        # Chromium correctly triggers img.onerror and removes the img to show
+        # the production CSS fallback, making an image-src assertion meaningless.
+        page.route("**/assets/hsk*-course-books.jpg*", lambda route: route.fulfill(
+            body=(Path("app/static/assets") /
+                  route.request.url.split("/assets/")[1].split("?")[0]).read_bytes(),
+            status=200, content_type="image/jpeg",
+        ))
         page.goto("https://hsk.test/iphone-pwa/onboarding")
 
         page.locator("#cta").click()
