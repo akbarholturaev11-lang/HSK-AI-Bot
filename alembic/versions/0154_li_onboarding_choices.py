@@ -19,7 +19,7 @@ def upgrade():
                   sa.Column("streak_target_days", sa.Integer(), nullable=True))
     if op.get_bind().dialect.name != "sqlite":
         op.create_check_constraint(
-            "ck_course_miniapp_profiles_streak_target_days",
+            op.f("ck_course_miniapp_profiles_streak_target_days"),
             "course_miniapp_profiles",
             "streak_target_days IS NULL OR streak_target_days IN (7, 14, 30, 50)",
         )
@@ -28,7 +28,7 @@ def upgrade():
 def downgrade():
     if op.get_bind().dialect.name != "sqlite":
         op.drop_constraint(
-            "ck_course_miniapp_profiles_streak_target_days",
+            op.f("ck_course_miniapp_profiles_streak_target_days"),
             "course_miniapp_profiles", type_="check",
         )
     op.drop_column("course_miniapp_profiles", "streak_target_days")
