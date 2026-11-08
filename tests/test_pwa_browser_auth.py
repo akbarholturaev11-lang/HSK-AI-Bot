@@ -135,6 +135,49 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         await self.client.aclose()
         await self.engine.dispose()
 
+    async def test_inline_pro_analytics_is_authenticated_and_deduplicated(self):
+        path = "/api/v3/pwa/subscription/inline-event"
+        event = {
+            "event": "pwa_pro_opened",
+            "source": "v3_locked_lesson",
+            "attempt_id": "inline-qa-123",
+            "event_id": "inline-qa-123:1",
+            "plan_type": "1_month",
+            "method": None,
+        }
+        self.assertEqual((await self.client.post(path, json=event,
+                         headers={"Origin": ORIGIN})).status_code, 401)
+        await self.callback(await self.begin())
+        a = (await self.client.get("/api/v3/pwa-auth/session")).json()
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": a["csrf"]}
+        self.assertEqual((await self.client.post(path,json=event,
+                         headers={"Origin":"https://attacker.invalid",
+                         "X-HSK-PWA-CSRF":a["csrf"]})).status_code,403)
+        for invalid in (
+            {**event, "event": "pwa_pro_checkout_paid"},
+            {**event, "event_id": "from-another-attempt:1"},
+            {**event, "source": "v3_fake"},
+            {**event, "user_id": 1000},
+        ):
+            self.assertEqual((await self.client.post(path,json=invalid,
+                             headers=headers)).status_code, 422)
+        first = await self.client.post(path,json=event,headers=headers)
+        self.assertEqual(first.status_code,200,first.text)
+        self.assertTrue(first.json()["recorded"])
+        second = await self.client.post(path,json=event,headers=headers)
+        self.assertEqual(second.status_code,200,second.text)
+        self.assertFalse(second.json()["recorded"])
+        next_event = {**event,"event_id":"inline-qa-123:2"}
+        self.assertTrue((await self.client.post(
+            path,json=next_event,headers=headers)).json()["recorded"])
+        async with self.sessions() as db:
+            found = (await db.execute(sa.select(ConversionFunnelEvent).where(
+                ConversionFunnelEvent.event_name=="pwa_pro_opened",
+                ConversionFunnelEvent.user_id==1,
+            ))).scalars().all()
+            self.assertEqual(len(found),2)
+            self.assertTrue(all(row.source=="v3_locked_lesson" for row in found))
+
     async def test_pwa_exit_offer_requires_session_csrf_and_origin(self):
         path = "/api/v3/pwa/subscription/exit-offer"
         payload = {"action": "view", "source": "v3_locked_lesson"}
