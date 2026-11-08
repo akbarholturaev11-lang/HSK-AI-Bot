@@ -38,8 +38,12 @@ def _page(browser, *, pwa=True, trial_eligible=False, trial_start_ok=True, saved
             if frame == page.main_frame else None)
     page.on("requestfailed", lambda request: captured["request_failed"].append(
         (request.url, request.failure)))
+    # A PWA Safari page may load the shared Telegram SDK file, but it must
+    # not magically possess signed Mini App initData. Only the Telegram route
+    # gets this proof, and only the browser route gets cookie/CSRF identity.
+    telegram_init = "" if pwa else "signed-test-init-data"
     page.route("**/assets/telegram-web-app.js*", lambda route: route.fulfill(
-        body='window.Telegram={WebApp:{initData:"signed-test-init-data",'
+        body='window.Telegram={WebApp:{initData:' + json.dumps(telegram_init) + ','
              'initDataUnsafe:{user:{id:111}},HapticFeedback:{selectionChanged:function(){}}}};',
         content_type="application/javascript",
     ))
