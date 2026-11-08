@@ -2635,6 +2635,16 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             api_url, headers=headers,
             json={**payload, "telegram_id": 1},
         )).status_code, 422)
+        for invalid_choices in (
+            {"goals": ["travel", "hsk_exam"]},
+            {"goals": ["hsk_exam", "hsk_exam"]},
+            {"goals": []},
+            {"streak_target_days": 99},
+            {"preferred_focus": "unknown"},
+        ):
+            self.assertEqual((await self.client.post(
+                api_url, headers=headers, json={**payload, **invalid_choices},
+            )).status_code, 422)
         with patch(
             "app.services.course_miniapp_onboarding_service.CourseMiniAppOnboardingService.complete",
             new_callable=AsyncMock,
@@ -2648,6 +2658,13 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(complete.await_args.args[0].id, 1)
             self.assertEqual(complete.await_args.kwargs["level"], "hsk1")
             self.assertEqual(complete.await_args.kwargs["language"], "uz")
+            choices = {**payload, "goals": ["hsk_exam", "travel"],
+                       "streak_target_days": 14, "preferred_focus": "speaking"}
+            selected = await self.client.post(api_url, headers=headers, json=choices)
+            self.assertEqual(selected.status_code, 200, selected.text)
+            self.assertEqual(complete.await_args.kwargs["goals"], ["hsk_exam", "travel"])
+            self.assertEqual(complete.await_args.kwargs["streak_target_days"], 14)
+            self.assertEqual(complete.await_args.kwargs["preferred_focus"], "speaking")
         self.settings.PWA_AUTH_ENABLED = False
         self.assertEqual((await self.client.get(page_url)).status_code, 503)
 
