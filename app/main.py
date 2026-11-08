@@ -2135,7 +2135,7 @@ async def course_data_file(level: str):
 
 # ── Course v3 Mini App ──────────────────────────────────────────────────────
 
-_COURSE_V3_PAGES = {"onboarding", "recognition", "pronunciation", "test", "mistakes", "voice", "memorize"}
+_COURSE_V3_PAGES = {"onboarding", "li_onboarding", "recognition", "pronunciation", "test", "mistakes", "voice", "memorize"}
 _COURSE_V3_LEVELS = {"hsk1", "hsk2", "hsk3", "hsk4", "nhsk1", "nhsk2", "nhsk3"}
 
 
@@ -2496,6 +2496,7 @@ async def course_v3_data_file(filename: str):
         "hsk-common-i18n.js": "application/javascript",
         "hsk-miniapp-i18n.js": "application/javascript",
         "hsk-course-i18n.js": "application/javascript",
+        "li-onboarding-runtime.js": "application/javascript",
         "p3-grammar-reservation.js": "application/javascript",
         "ready-phrases-v1.json": "application/json",
     }
