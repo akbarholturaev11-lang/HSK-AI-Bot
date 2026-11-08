@@ -197,6 +197,16 @@
       body.appendChild(btn(txt("return"),"hip-secondary",close));
       return;
     }
+    if (s!=="manual"&&state.data&&(state.data.pending_payment||state.data.access&&state.data.access.is_paid||
+        state.data.lava&&state.data.lava.blocked_reason)) {
+      body.appendChild(el("p","hip-emphasis",state.data.access&&state.data.access.is_paid?
+        txt("paid"):(state.data.pending_payment?txt("pending"):txt("blocked"))));
+      if (state.data.pending_payment) {
+        body.appendChild(btn(txt("manual"),"hip-secondary",function(){state.screen="manual";render()}));
+      }
+      body.appendChild(btn(txt("return"),"hip-primary",close));
+      return;
+    }
     if (s==="manual") {
       var iframe=el("iframe","hip-checkout");
       iframe.title=txt("manual");
