@@ -89,8 +89,8 @@ class LavaConfig:
         }
 
 
-PROMO_SOURCES = ("referral", "feedback_price_offer", "admin_campaign")
-PROMO_KEY_RE = re.compile(r"^(referral|feedback_price_offer|admin_campaign):([1-9]|[1-8][0-9]|90)$")
+PROMO_SOURCES = ("referral", "feedback_price_offer", "admin_campaign", "exit_offer")
+PROMO_KEY_RE = re.compile(r"^(referral|feedback_price_offer|admin_campaign|exit_offer):([1-9]|[1-8][0-9]|90)$")
 # lava rule: 3-36 chars, latin letters, digits, "-" and "_".
 PROMO_CODE_RE = re.compile(r"^[A-Za-z0-9_-]{3,36}$")
 MAX_PROMO_CODES = 12
