@@ -505,6 +505,9 @@ function optionRow(key,title,subtitle,glyph,selected,handler){
 function render(animateStage){
   var st=document.getElementById("stage"),cta=document.getElementById("cta"),backButton=document.getElementById("back");
   st.dataset.step=String(step);
+  // Always restore actionable CTA after an async shell finishes. Previously
+  // the loading screen disabled it and the success render forgot to enable it.
+  if(!submitting && ONB_TRACK_REMOTE==="ready")cta.disabled=false;
   document.getElementById("top").style.display=step===0?"none":"flex";
   document.getElementById("error").hidden=true;
   backButton.innerHTML=icon("back");backButton.setAttribute("aria-label",L.back);
