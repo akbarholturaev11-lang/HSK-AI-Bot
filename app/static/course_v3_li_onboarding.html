@@ -543,7 +543,7 @@ function topBar(){
   var lang='<div class="lang-control">'+icon("globe")+'<select class="language" aria-label="UZ / RU / TJ" onchange="setLang(this.value)">'
     +["uz","ru","tj"].map(function(l){return '<option value="'+l+'"'+(l===LANG?" selected":"")+'>'+l.toUpperCase()+'</option>'}).join("")+'</select></div>';
   if(screen==="account")return '<div class="spacer"></div>'+lang;
-  if(screen==="loadCourse"||screen==="loadLesson")return '<div class="li-first-brand" aria-label="HSK AI">HSK AI</div><div class="spacer"></div>'+lang;
+  if(screen==="loadCourse"||screen==="loadLesson")return '<button type="button" class="bk li-loading-back" aria-label="'+t("back")+'" onclick="back()">'+icon("back")+'</button><div class="li-first-brand" aria-label="HSK AI">HSK AI</div><div class="spacer"></div>'+lang;
   if(screen==="pro")return '<button class="bk" type="button" aria-label="'+t("close")+'" onclick="go(\'end\')">'+icon("close")+'</button><div class="spacer"></div>';
   if(TRIAL_STEPS.indexOf(screen)>0)return stepper();
   if(screen==="trialIntro"||screen==="end")return "";
