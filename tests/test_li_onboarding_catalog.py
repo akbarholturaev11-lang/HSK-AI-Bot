@@ -16,6 +16,14 @@ class LiOnboardingCanonicalCatalogTests(unittest.TestCase):
         self.assertEqual(sources["tj"]["STREAKS.14.say"],
                          "Ду ҳафта — ин дигар тасодуф нест!")
 
+    def test_home_screen_guide_strings_are_canonical_in_three_languages(self):
+        sources = li.read_sources()
+        for lang in ("uz", "ru", "tj"):
+            for key in li.INSTALL_KEYS:
+                self.assertTrue(sources[lang][key].strip(), (lang, key))
+        self.assertEqual(len(li.INSTALL_KEYS), 10)
+        self.assertEqual(len({k for k in sources["uz"] if k.startswith("copy.")}), 66)
+
     def test_generated_bundle_matches_reviewed_local_sources(self):
         output = li.output_files(li.read_sources())
         for relative, data in output.items():
