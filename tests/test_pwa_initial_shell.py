@@ -42,6 +42,10 @@ class PwaInitialShellTests(unittest.TestCase):
         self.assertIn(b'html.hsk-pwa-browser #hsk-launch-splash{display:none!important}', adapted)
         self.assertIn(b'@media(prefers-reduced-motion:reduce)', adapted)
         self.assertNotIn(b"hsk-pwa-boot-shell", self.canonical)
+        sdk = b'/assets/telegram-web-app.js?v=20261019-1'
+        self.assertIn(sdk, self.canonical)
+        self.assertNotIn(sdk, adapted)
+        self.assertIn(b'var tg=PWA_COURSE_HOST?null:window.Telegram', adapted)
         self.assertNotIn(b'"is_paid":true', adapted.lower())
         self.assertNotIn(b'http-equiv="refresh"', adapted.lower())
 
