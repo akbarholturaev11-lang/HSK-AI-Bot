@@ -56,8 +56,10 @@ class TrialReminderTests(unittest.IsolatedAsyncioTestCase):
             user = _user()
             user.trial_used = True
             user.pro_trial_started_at = self.now - timedelta(days=7 - days_left)
-            # `.days` pastga yaxlitlaydi, shuning uchun bir soat qo'shamiz.
-            user.pro_trial_ends_at = self.now + timedelta(days=days_left, hours=1)
+            # T-48 is an actual 48-hour threshold, not timedelta.days.
+            # The fixture for slot 2 is 47h away; day 0 is one hour away.
+            delta = timedelta(hours=47) if days_left == 2 else timedelta(days=days_left, hours=1)
+            user.pro_trial_ends_at = self.now + delta
             session.add(user)
             await session.commit()
 
@@ -89,6 +91,17 @@ class TrialReminderTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(course_notice_calls[0]["pwa_push_suppressed"])
         self.assertEqual(1, len(bot.sent))
         self.assertIn("2", bot.sent[0][1])
+
+    async def test_48_hour_boundary_is_not_an_early_72_hour_notice(self):
+        from app.services.trial_reminder_service import _due_notice_slot
+        cutoff = self.now + timedelta(days=7)
+        self.assertIsNone(_due_notice_slot(cutoff, cutoff - timedelta(hours=49)))
+        self.assertEqual(_due_notice_slot(cutoff, cutoff - timedelta(hours=48)), 2)
+        self.assertEqual(_due_notice_slot(cutoff, cutoff - timedelta(hours=47)), 2)
+        self.assertEqual(_due_notice_slot(cutoff, cutoff - timedelta(hours=36)), 2)
+        self.assertIsNone(_due_notice_slot(cutoff, cutoff - timedelta(hours=35)))
+        self.assertEqual(_due_notice_slot(cutoff, cutoff - timedelta(hours=24)), 0)
+        self.assertIsNone(_due_notice_slot(cutoff, cutoff))
 
     async def test_a_reminder_goes_out_on_the_last_day(self):
         await self._seed(days_left=0)
