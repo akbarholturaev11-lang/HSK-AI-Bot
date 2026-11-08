@@ -92,7 +92,7 @@ _PWA_COURSE_SKELETON_OLD = '<div class="scr on" id="s-course"><div class="loadin
 _PWA_COURSE_SKELETON_NEW = b'''<div class="scr on" id="s-course" aria-busy="true">
   <div class="hsk-pwa-boot-shell" role="status" aria-label="HSK AI loading">
     <div class="hsk-pwa-boot-top">
-      <div class="hsk-pwa-boot-line hsk-pwa-boot-title"></div>
+      <h1 class="hsk-pwa-boot-title" aria-label="HSK AI">HSK AI</h1>
       <div class="hsk-pwa-boot-dot"></div><div class="hsk-pwa-boot-dot"></div>
     </div>
     <div class="hsk-pwa-boot-card hsk-pwa-boot-today">
@@ -118,7 +118,7 @@ html.hsk-pwa-browser #hsk-launch-splash{display:none!important}
 .hsk-pwa-boot-today{min-height:118px}.hsk-pwa-boot-unit{min-height:178px}
 .hsk-pwa-boot-line,.hsk-pwa-boot-dot,.hsk-pwa-boot-node{background:var(--hsk-divider,#dedddc);opacity:.8;animation:hsk-pwa-boot-pulse 1.5s ease-in-out infinite alternate}
 .hsk-pwa-boot-line{height:16px;border-radius:8px;margin:8px 0 14px}
-.hsk-pwa-boot-title{width:42%;height:26px;flex:1;max-width:175px}
+.hsk-pwa-boot-title{margin:0;width:42%;flex:1;max-width:175px;font-size:24px;line-height:1.25;letter-spacing:-.5px;color:var(--ink,#242424)}
 .hsk-pwa-boot-mid{width:65%;max-width:240px}.hsk-pwa-boot-small{width:44%;height:12px}
 .hsk-pwa-boot-dot{width:34px;height:34px;border-radius:50%;flex:none}
 .hsk-pwa-boot-node{width:54px;height:54px;border-radius:50%;margin:14px auto 0}
@@ -152,6 +152,13 @@ def _add_pwa_course_initial_shell(source: bytes) -> bytes:
         (b'<body class="hsk-scene-page">', b'<body class="hsk-scene-page hsk-pwa-shell-loading">'),
         (_PWA_COURSE_SKELETON_OLD, _PWA_COURSE_SKELETON_NEW),
         (b'<nav class="nav" id="nav">', b'<nav class="nav" id="nav" inert>'),
+        # Default RU labels already match the bundle's i18n default. The
+        # signed map adopts the learner's real language before interactions.
+        (b'data-i="course"></span>', 'data-i="course">Курс</span>'.encode("utf-8")),
+        (b'data-i="mashq"></span>', 'data-i="mashq">Практика</span>'.encode("utf-8")),
+        (b'data-i="voice"></span>', 'data-i="voice">AI Voice</span>'.encode("utf-8")),
+        (b'data-i="rating"></span>', 'data-i="rating">Рейтинг</span>'.encode("utf-8")),
+        (b'data-i="profile"></span>', 'data-i="profile">Профиль</span>'.encode("utf-8")),
         (b"</body>", _PWA_COURSE_BOOT_SCRIPT + b"</body>"),
     )
     for old, new in markers:
