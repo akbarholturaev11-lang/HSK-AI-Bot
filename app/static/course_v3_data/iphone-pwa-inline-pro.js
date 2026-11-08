@@ -329,7 +329,7 @@
     document.documentElement.style.overflow=state&&state.previousOverflow||"";
     if (lastFocus&&lastFocus.isConnected) lastFocus.focus({preventScroll:true});
     var wasPaid=Boolean(state&&state.paid);
-    if (state&&typeof state.onClose==="function") state.onClose();
+    if (state&&typeof state.onClose==="function") state.onClose({paid:wasPaid});
     state=null;
     if(wasPaid){
       if(location.pathname==="/iphone-pwa/course"){
