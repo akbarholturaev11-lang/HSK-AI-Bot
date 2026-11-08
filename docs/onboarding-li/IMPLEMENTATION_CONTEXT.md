@@ -6,14 +6,14 @@
 >
 > **Last verified:** 2026-11-08; **active new-main branch:** `feature/li-onboarding-mainffbff9-20261108`; **branch baseline:** `main@ffbff9492e0713686f57a76443bef17a45c4041c`; **source:** GitHub `akbarholturaev11-lang/HSK-AI-Bot`. Prior docs-only branch `feature/li-onboarding-handoff-20261108` is archival (based on old 4ca0d2d); **do not implement there**.
 >
-> **REAL ONBOARDING IMPLEMENTATION STATUS: NOT STARTED.** 2026-11-08 kuni faqat new-main delta/source audit va task hujjatlari tayyorlangan. **Ushbu task doirasida 0 ta runtime/DB/API/UI file o'zgargan; 0 ta migration; 0 ta app/test command bajarilgan.** New `main@401de` alohida PWA Pro feature/runtime/migration o'zgarishlariga ega; ular onboarding implementation deb sanalmaydi.
+> **REAL ONBOARDING IMPLEMENTATION STATUS: PARTIAL ON FEATURE BRANCH.** See first checkpoint above. New 0154 schema/API/loader code is committed on feature branch, but 23-state UI, Smart/PWA trial, E2E and test execution remain incomplete. Production is still base main ffbff949.
 
 ## 0. Yangi chatni boshlash — shu tartib majburiy
 
 1. Repository `akbarholturaev11-lang/HSK-AI-Bot`ni och, **branch `feature/li-onboarding-mainffbff9-20261108`** mavjudligini va uning remote HEAD SHA'sini tekshir. Default `main`dan ko'r-ko'rona davom etma. Local workspace allaqachon dirty bo'lsa user o'zgarishlarini saqla; rebase/reset/force yo'q.
 2. `AGENTS.md`, `AI_RULES.md`, `PROJECT_MEMORY.md`, **shu fayl**, [`PRODUCT_GOAL.md`](PRODUCT_GOAL.md), `localization/README.md`, `.agents/skills/hsk-ai-ui/SKILL.md` va scoped auth/Smart Reminder rules ni o'qi.
 3. **Current branch HEAD'ni `main` bilan solishtir:** code diff/commits, migrations current head, related tests; loggi statusga emas real diffga ishonsin. Boshqa agent allaqachon o'zgartirgan bo'lsa hammasini qayta ko'rib, shu jurnalni real holatga mosla.
-4. Demo reference: oldingi chatdagi `HSK_AI_CODEX_HANDOFF(1).zip`dan `DEMO_REFERENCE_ONLY.html`ni topib SHA-256 `767c2de59116229dab9304e3036ae589399379340013f1d137eae7df82644b30` bilan solishtir. Undagi `SCREEN_MAP.md`, `CODEX_TASK.md` foydali audit attachment; repo runtime manbasi emas. **Demo hozir GitHub branch'ida yo'q.** Manba topilmasa exact copy/visual fidelity done deb aytma.
+4. Demo reference: current branch `docs/onboarding-li/DEMO_REFERENCE_ONLY.html`ni o'qi va SHA-256 `767c2de59116229dab9304e3036ae589399379340013f1d137eae7df82644b30` bilan solishtir. Undagi `SCREEN_MAP.md`, `CODEX_TASK.md` foydali audit attachment; repo runtime manbasi emas. **Demo now exists in this GitHub branch as reference-only.** Original SHA-256 locally verified; preserve it. Its presence alone does NOT prove live UI copy/visual fidelity.
 5. Quyi `CURRENT STATUS` va `NEXT ACTION`ni tekshir. Faqat undan keyin code ishlari davom etsin. Yangi session avvalgi xatolarni takrorlamasin.
 6. Har bir **haqiqiy** muhim code slice/migration/test tugagach `CURRENT STATUS`, `VERIFIED CODE CHANGES`, `TEST EVIDENCE`, `NEXT ACTION`, `OPEN RISKS`ni **shu fayl ichida** yangila va kod bilan **o'sha branch commit**da saqla. Har bir token/CSS micro-editni emas, tekshiriladigan fayl/behavior bo'lagini qayd et.
 7. Yangi chatga qisqa topshiriq: **"`feature/li-onboarding-mainffbff9-20261108` branch'da `docs/onboarding-li/PRODUCT_GOAL.md` va `docs/onboarding-li/IMPLEMENTATION_CONTEXT.md`ni o'qi. Hozirgi HEAD/diff/testlarni tekshir, jurnalning NEXT ACTION joyidan davom et, har verified code slice'dan so'ng jurnalni actual sha va test evidence bilan yangila. `main`ni o'zgartirma, release qilma."**
@@ -55,31 +55,78 @@
 - **Recommend implementing from new main 401de, NOT the obsolete docs branch on 4ca.** This new docs branch was created exactly from 401de, with PRODUCT_GOAL and this context only; no runtime changed. On next task, refresh remote main for further commits and compare before coding.
 - **Not started:** user requested AUDIT FIRST, coding NEXT; do not begin P1 without new user instruction. Production Railway failed to deploy new main due Nixpacks driver download; the prior live app stays online. No automatic deployment/merge on this audit.
 
+## 2026-11-08 IMPLEMENTATION CHECKPOINT — first partial code slice on deployed main ffbff949
+
+**Source:** base `main@ffbff9492e0713686f57a76443bef17a45c4041c`, feature `feature/li-onboarding-mainffbff9-20261108`. Railway production deploy for base ffbff949 verified **SUCCESS**. Source code changes below **only on feature branch**, no production deployment or main merge.
+
+**Exact original demo source now located and pinned:** `docs/onboarding-li/DEMO_REFERENCE_ONLY.html`, original 1038-line, 99,339-byte user-provided HTML. Local container SHA256 computed and matched `767c2de59116229dab9304e3036ae589399379340013f1d137eae7df82644b30`. Source file is REFERENCE-ONLY; it is **not** live 23-screen onboarding, and its fake auth/trial/timers must never be shipped as-is.
+
+### Verified code changes (GitHub source writes, not executed runtime)
+- `alembic/versions/0154_li_onboarding_choices.py`: additive nullable profile columns `goals_json` and `streak_target_days`, PostgreSQL CHECK for 7/14/30/50, Alembic named-constraint `op.f`; down-revision `0153_pwa_inline_funnel`. Old goal/progress untouched by migration.
+- `app/db/models/course_miniapp_profile.py`: ORM mapping and matching CHECK.
+- `app/services/onboarding_goal_selection.py`: strict ordered primary-first multi-goal input, valid streak target and backwards read fallback. Uses no reward/activity data.
+- `app/services/course_miniapp_profile_service.py`: optional `goals`, `streak_target_days` accepted and stored, existing scalar goal preserved, old scalar-change clears a mismatched legacy JSON array, verified focus optional. Current streak and XP not touched.
+- `app/services/course_miniapp_onboarding_service.py`: pass choices through both legacy HSK2.0 and live HSK3.0 completion paths; profile return includes all choices without resetting server-owned XP.
+- `app/api/pwa_auth.py`: authenticated same-origin/CSRF optional request schema, invalid goal array returns 422 before course mutation, status reads persisted choices.
+- `app/main.py`: verified Telegram `X-Telegram-Init-Data` onboarding request and status support optional choices, invalid input 400 with existing semantics.
+- `app/static/course_v3_onboarding.html`: version screen now shows immediate panda loading shell/skeleton while real track API unresolved, error+retry without inventing HSK3.0 access; 12s abort timeout, request-sequence guard; success replaces skeleton with real version and original book JPG. **Existing UI is still 3-question flow, not 23-state demo.**
+- Tests authored: `tests/test_li_onboarding_choices.py`, additions to `tests/test_pwa_browser_auth.py`, `tests/e2e/test_li_onboarding_loading.py`; `.github/workflows/backend-ci.yml` includes new unit and Playwright steps. QA bootstrap/test reviewed expected head advanced to `0154_li_onboarding_choices`.
+
+### Current status (do not overclaim)
+- P0 baseline: **PARTIAL**. Source/main/deployment SHA and demo hash verified, but no fully local project checkout or CLI migration/test baseline.
+- P1 23-state 1:1 UI: **NOT STARTED** (exact demo pinned as source, not live).
+- P2 universal loading UX: **PARTIAL** (only first course-track metadata request path; lesson, auth, Pro, trial, push etc remain).
+- P3 public/auth draft: **NOT STARTED**.
+- P4 goals/time/focus/streak persistence: **PARTIAL** (DB + server endpoints exist in branch, demo UI not connected, plan weighting not migrated).
+- P5 real HSK course/lesson integration: **NOT STARTED** (legacy behavior preserved).
+- P6 Pro trial new PWA adapter: **NOT STARTED**.
+- P7 exact 48h PWA trial push: **NOT STARTED**.
+- P8 Smart Reminder streak-context integration and duplicate-notice owner: **NOT STARTED**.
+- P9 onboarding-specific analytics and canonical RU/UZ/TJ copy: **NOT STARTED**.
+- P10 acceptance/visual/iOS E2E: **NOT STARTED**.
+
+### Test evidence
+- Authored files and new CI steps: **YES**.
+- Executed `python -m unittest`, `pytest`, `python3 scripts/i18n_build_all_catalogs.py --check`, Alembic upgrade/downgrade, mobile-device browser: **NOT RUN** in this session.
+- Do not mark migration safe or production ready before sandboxed database migration+regression and CI proof.
+- Source-driven checks performed: GitHub read-after-write and source-anchor validation; these are **not** test execution.
+
+### New risk / review before next code
+1. First check `0154` single Alembic head + PostgreSQL physical CHECK naming, migrate existing sample profile, downgrade rehearsal without deleting real data; do NOT run this on prod just to test.
+2. Review PWA/Telegram profile request actor boundaries, potential retry-after-lost-POST progress mutations, and prompt/post-first-lesson suppression.
+3. Verify profile goal lists integrate into versioned daily-plan weighting without mutating frozen plan.
+4. Current loader uses existing canonical `onboarding.progress` and `courseLoadError` strings; for exact demo `loadCourse` copy, add canonical RU/UZ/TJ keys and generate resources in a real checkout before final UI.
+5. No PWA public panda-first account route yet, no PWA trial status/start, and no 48h push. Never claim user-visible full onboarding.
+6. Do not overwrite PWA-only inline Pro limit module, Lava attribution, or existing Mini App plan gating.
+
+### Next action
+**Run branch CI/targeted tests, fix failures, then P1 implement the hash-verified 23-state UI using the pinned demo CSS/copy/panda and real course book JPEGs, with secure per-platform account adapters.** Continue from `PRODUCT_GOAL.md`, not an invented redesign.
+
 ## 1. CURRENT STATUS — faqat tekshirilgan holat
 
 | Slice | Status at last verification | Evidence / note |
 | --- | --- | --- |
-| P0 — repo audit/documentation | **Docs prepared; CLI baseline NOT run** | 2026-11-08 GitHub main SHA audit + two handoff files only |
+| P0 — source baseline | **PARTIAL; CLI baseline NOT run** | deployed ffbff949 confirmed, original demo pinned |
 | P1 — 23-state shared visual UI | **NOT STARTED** | Demo reference is separate attachment |
-| P2 — real loading state everywhere | **NOT STARTED** | Global rule specified, no runtime edits |
+| P2 — real loading state everywhere | **PARTIAL** | track metadata load state + retry added in shared HTML; other remote flows pending |
 | P3 — PWA/Telegram auth/draft | **NOT STARTED** | Existing endpoints audited |
-| P4 — multi-goal/time/focus/streak schema | **NOT STARTED** | Existing profile has scalar `goal`; no migration |
+| P4 — multi-goal/time/focus/streak schema | **PARTIAL** | additive 0154 + PWA/Telegram endpoint support, UI and daily-plan consumers pending |
 | P5 — real HSK track/lesson | **NOT STARTED** | Existing course routes audited |
 | P6 — Pro offer/trial activation | **NOT STARTED** | Existing Telegram trial endpoint, PWA gap |
 | P7 — 48h PWA trial push | **NOT STARTED** | Existing push engine; actual flags unknown |
 | P8 — streak ↔ Smart Reminder | **NOT STARTED** | Existing Smart planner; integration gap |
 | P9 — analytics + canonical locales | **NOT STARTED** | Current analytics/i18n infra audited |
-| P10 — regression, screenshot, device QA | **NOT STARTED** | No app tests executed in this docs-only session |
+| P10 — regression, screenshot, device QA | **NOT RUN** | tests authored, CI step added; no pass evidence yet |
 
 ### VERIFIED CODE CHANGES
 
-- **Runtime code, schema, migrations, endpoints:** none.
+- **Runtime code, schema, migrations, endpoints:** partial; see 2026-11-08 IMPLEMENTATION CHECKPOINT above. This older section describes the initial docs-only point-in-time, not the current branch.
 - **Documentation-only commits in NEW branch:** `docs/onboarding-li/PRODUCT_GOAL.md` created in `a241f6c434a30d0115514384f8980cee06b47ece`; this journal created subsequently. Previous archived branch commits (`6a09d036`, `666c9922`) are not the active implementation base. Confirm latest branch diff/commit SHA.
 - Do **not** conflate audit findings, source references, earlier chat task prose, fake/demo UI, or planned designs with written/tested production code.
 
 ### TEST EVIDENCE
 
-- Executed unit/API/Playwright/i18n commands in this documentation session: **none**.
+- Executed unit/API/Playwright/i18n commands in the current implementation session: **none yet**. See latest checkpoint above.
 - GitHub `fetch_file`/read-only code inspection conducted; reading test names does **not** mean tests passed.
 - User device/iOS Home Screen push, env credentials, VAPID readiness and production delivery: **not verified**.
 - Documentation can be manually checked via remote GitHub `fetch_file` + compare commits after creation; that does not test app behavior.
