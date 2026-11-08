@@ -4,6 +4,9 @@ from datetime import datetime, timezone
 from sqlalchemy import select
 
 from app.services.account_identity import owner_clause
+from app.services.onboarding_goal_selection import (
+    normalize_onboarding_goals, normalize_streak_target, read_onboarding_goals,
+)
 
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.course_miniapp_profile import CourseMiniAppProfile
@@ -233,6 +236,8 @@ class CourseMiniAppProfileService:
         complete_onboarding: bool = False,
         preferred_focus=None,
         goal_explicit: bool = False,
+        goals: list[str] | None = None,
+        streak_target_days: int | None = None,
     ) -> CourseMiniAppProfile:
         goal, daily_minutes, start_mode = self.validate_preferences(
             goal=goal,
@@ -242,8 +247,17 @@ class CourseMiniAppProfileService:
         # Berilmagan bo'lsa mavjud qiymat saqlanadi — eski chaqiruvchilar
         # (bot onboarding oqimi) fokusni tasodifan tozalab yubormasin.
         focus = self.normalize_preferred_focus(preferred_focus)
+        verified_goals = normalize_onboarding_goals(goals, primary_goal=goal)
+        verified_target = normalize_streak_target(streak_target_days)
         timezone_offset_minutes = max(-720, min(840, int(timezone_offset_minutes or 0)))
 
+        # A legacy scalar update must not leave a conflicting primary-first JSON.
+        if verified_goals is not None:
+            profile.goals_json = json.dumps(verified_goals, ensure_ascii=False)
+        elif profile.goal != goal and getattr(profile, "goals_json", None):
+            profile.goals_json = None
+        if verified_target is not None:
+            profile.streak_target_days = verified_target
         profile.goal = goal
         profile.daily_minutes = daily_minutes
         profile.start_mode = start_mode
