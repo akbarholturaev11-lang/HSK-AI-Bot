@@ -20,6 +20,7 @@ from sqlalchemy.exc import IntegrityError
 
 from app.db.models.ai_usage import AIUsageBudget
 from app.db.models.lava import LavaInvoice
+from app.db.models.pwa_exit_offer import PwaExitOffer
 from app.db.models.partner import PartnerCredit
 from app.db.models.payment import Payment
 from app.db.models.portfolio import PortfolioTransaction
@@ -201,6 +202,12 @@ async def apply_completed(session_factory, info: LavaInvoiceInfo) -> ApplyOutcom
                 granted_until = _utc(user.end_date)
                 now = _now()
                 row.status = "paid"
+                # One exit offer per account: consume only after a verified
+                # completed invoice and successful Pro activation.
+                if row.kind != "renewal" and row.discount_source == "exit_offer":
+                    exit_offer = await session.get(PwaExitOffer, owner_id, with_for_update=True)
+                    if exit_offer is not None and exit_offer.consumed_at is None:
+                        exit_offer.consumed_at = now
                 row.paid_amount = amount
                 row.paid_at = now
                 row.last_checked_at = now
