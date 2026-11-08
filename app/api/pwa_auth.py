@@ -188,6 +188,12 @@ class PwaGamificationRequest(BaseModel):
     timezone_offset_minutes: int
 
 
+class PwaExitOfferAction(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    action: Literal["view", "claim"]
+    source: str | None = Field(default=None, max_length=80)
+
+
 class PwaCheckoutContext(BaseModel):
     model_config = ConfigDict(extra="forbid")
     source: str | None = None
@@ -1248,6 +1254,28 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                 return RedirectResponse(
                     "/iphone-pwa", status_code=303, headers=_NO_STORE,
                 )
+            return _error(exc)
+
+    @router.post("/api/v3/pwa/subscription/exit-offer")
+    async def pwa_exit_offer(request: Request):
+        """Allow a one-time real 20% promo only after a verified PWA X action."""
+        from app.services.pwa_exit_offer_service import PwaExitOfferService
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            payload = await _small_json(request, PwaExitOfferAction, max_bytes=512)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                result = await PwaExitOfferService(db, settings_obj).action(
+                    actor, action=payload.action,
+                )
+                await db.commit()
+            return JSONResponse(result, headers=_NO_STORE)
+        except PwaAuthError as exc:
             return _error(exc)
 
     @router.post("/api/v3/pwa/subscription/overview")
