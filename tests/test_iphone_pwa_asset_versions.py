@@ -35,10 +35,15 @@ class IphonePwaAssetVersionTests(unittest.TestCase):
         # Regression: /course_v3_data/{filename} serves an allowlist only, so a
         # new iphone-pwa-* file that is not listed 404s in production.
         main = Path("app/main.py").read_text(encoding="utf-8")
+        # Entries can be literal key/value pairs or members of the
+        # dict.fromkeys(...) group used for JS assets. Scope the check to the
+        # *actual route allowlist* rather than searching unrelated code.
+        route = main.split("async def course_v3_data_file(filename: str):", 1)[1]
+        route = route.split("    public_assets = {", 1)[1].split("\n    }", 1)[0]
         for asset in sorted((STATIC / "course_v3_data").glob("iphone-pwa-*")):
             if asset.suffix in {".js", ".css"}:
                 with self.subTest(asset=asset.name):
-                    self.assertIn(f'"{asset.name}":', main)
+                    self.assertIn(f'"{asset.name}"', route)
 
     def test_ios_launch_images_exist_for_every_declared_size(self):
         login = (STATIC / "iphone-pwa-login.html").read_text(encoding="utf-8")
