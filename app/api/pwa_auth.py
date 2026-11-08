@@ -32,6 +32,9 @@ from app.services.pwa_auth_service import (
 )
 
 _NO_STORE = {"Cache-Control": "no-store", "Referrer-Policy": "no-referrer"}
+# A short-lived, HttpOnly navigation hint, not authentication or course access.
+_PWA_LI_RESUME_COOKIE = "__Host-hskai-li-resume"
+_PWA_LI_RESUME_SECONDS = 900
 
 
 def _embeddable_pwa_page_headers(request: Request) -> dict[str, str]:
@@ -452,9 +455,20 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                     # never treat an unverified cookie as a signed-in learner.
                     pass
                 else:
-                    return RedirectResponse(
-                        "/iphone-pwa/course", status_code=303, headers=_NO_STORE,
+                    # The Li onboarding guest can resume their same-tab draft
+                    # after provider callback, but the server still verifies
+                    # session actor and onboarding status before any save.
+                    resuming_li = request.cookies.get(_PWA_LI_RESUME_COOKIE) == "1"
+                    response = RedirectResponse(
+                        "/iphone-pwa/onboarding/li" if resuming_li else "/iphone-pwa/course",
+                        status_code=303, headers=_NO_STORE,
                     )
+                    if resuming_li:
+                        response.delete_cookie(
+                            _PWA_LI_RESUME_COOKIE, path="/", secure=True,
+                            httponly=True, samesite="lax",
+                        )
+                    return response
             return FileResponse(
                 "app/static/iphone-pwa-login.html", media_type="text/html",
                 headers={**_NO_STORE,
@@ -975,28 +989,72 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
 
     @router.get("/iphone-pwa/onboarding/li")
     async def learner_li_onboarding_page(request: Request):
-        """The Li demo-faithful 23-state web UI, gated by canonical PWA auth.
+        """Public visual shell only; never a public account or course API.
 
-        Preview integration route only. The original default onboarding route
-        remains unchanged until cross-platform 23-state acceptance is complete.
+        The panda-first entry can display before registration. Every actual
+        account state, track entitlement, trial and course write remains under
+        the existing verified PWA cookie/CSRF routes. No public HTML response
+        contains user profile data, a session token or an entitlement grant.
         """
         try:
             require_pwa_enabled(settings_obj)
-            async with session_factory() as db:
-                await PwaAuthService(db, settings_obj).actor(
-                    request.cookies.get(PWA_SESSION_COOKIE)
-                )
             return FileResponse(
                 "app/static/course_v3_li_onboarding.html",
                 media_type="text/html",
-                headers={**_NO_STORE, "X-Content-Type-Options": "nosniff",
-                         "X-Frame-Options": "DENY"},
+                headers={
+                    **_NO_STORE, "X-Content-Type-Options": "nosniff",
+                    "X-Frame-Options": "DENY",
+                    "Content-Security-Policy": (
+                        "default-src 'self'; script-src 'self' 'unsafe-inline'; "
+                        "style-src 'self' 'unsafe-inline'; img-src 'self' data:; "
+                        "connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; "
+                        "form-action 'none'"
+                    ),
+                },
             )
         except PwaAuthError as exc:
-            if exc.code == "pwa_session_required":
-                return RedirectResponse(
-                    "/iphone-pwa", status_code=303, headers=_NO_STORE,
-                )
+            return _error(exc)
+
+    @router.post("/api/v3/pwa/onboarding/li/resume")
+    async def learner_li_resume_after_provider_login(request: Request):
+        """Same-origin explicit navigation only, never an anonymous login."""
+        try:
+            require_pwa_enabled(settings_obj)
+            require_same_origin(request, settings_obj)
+            response = JSONResponse({"ok": True}, headers=_NO_STORE)
+            response.set_cookie(
+                _PWA_LI_RESUME_COOKIE, "1", max_age=_PWA_LI_RESUME_SECONDS,
+                path="/", secure=True, httponly=True, samesite="lax",
+            )
+            return response
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.get("/api/v3/pwa/onboarding/public-tracks")
+    async def learner_li_public_track_preview(request: Request):
+        """Expose only read-only HSK feature metadata, not user entitlement.
+
+        Anonymous visitors may view available standards but cannot claim
+        HSK 3.0 access or write profile/lesson/trial information.
+        """
+        try:
+            require_pwa_enabled(settings_obj)
+            from app.services.hsk30_feature_service import Hsk30FeatureService
+            async with session_factory() as db:
+                feature = Hsk30FeatureService(db)
+                enabled = bool(await feature.is_enabled())
+                live_levels = await feature.live_levels() if enabled else []
+            return JSONResponse({
+                "ok": True,
+                "tracks": {
+                    "hsk20": {"track": "hsk20"},
+                    "hsk30": {"track": "hsk30",
+                              "access": {"feature_enabled": enabled, "allowed": False},
+                              "live_levels": list(live_levels)},
+                },
+                "hsk30_unlock": {},
+            }, headers=_NO_STORE)
+        except PwaAuthError as exc:
             return _error(exc)
 
     @router.get("/api/v3/pwa/onboarding/status")
