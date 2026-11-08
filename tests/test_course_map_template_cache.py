@@ -19,7 +19,7 @@ class CourseMapTemplateCacheTests(unittest.TestCase):
         self.directory = Path(self.temporary.name)
         self.path = self.directory / "hsk1.json"
         self.path.write_text(
-            json.dumps({"level": "hsk1", "units": [{"lessons": [{"n": 1, "status": "locked"}]}]}),
+            json.dumps({"level": "hsk1", "units": [{"lessons": [{"n": 1, "status": "locked", "tr": {"ru": "Hello"}}]}]}),
             encoding="utf-8",
         )
 
@@ -29,10 +29,12 @@ class CourseMapTemplateCacheTests(unittest.TestCase):
     def test_reuses_parsed_template_without_sharing_mutable_user_state(self):
         first = load_course_map_template("hsk1", directory=self.directory)
         first["units"][0]["lessons"][0]["status"] = "done"
+        first["units"][0]["lessons"][0]["tr"]["ru"] = "Private change"
         first["user"] = {"id": 17, "is_paid": True}
         second = load_course_map_template("hsk1", directory=self.directory)
 
         self.assertEqual(second["units"][0]["lessons"][0]["status"], "locked")
+        self.assertEqual(second["units"][0]["lessons"][0]["tr"]["ru"], "Hello")
         self.assertNotIn("user", second)
         self.assertEqual((_parsed_template.cache_info().misses,
                           _parsed_template.cache_info().hits), (1, 1))
