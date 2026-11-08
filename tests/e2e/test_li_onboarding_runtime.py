@@ -23,7 +23,8 @@ ORIGIN = "https://hsk.test"
 def _page(browser, *, pwa=True, trial_eligible=False, trial_start_ok=True, saved=False, trial_status_fail=False, guest=False):
     page = browser.new_page(viewport={"width": 390, "height": 844})
     captured = {"post": [], "trial_start": [], "track_get": 0, "pageerrors": [],
-                "resume": 0, "oauth": [], "auth_state": {"verified": not guest}}
+                "resume": 0, "oauth": [], "public_track_get": 0,
+                "auth_state": {"verified": not guest}}
     page.on("pageerror", lambda err: captured["pageerrors"].append(str(err)))
     page.route("**/assets/telegram-web-app.js*", lambda route: route.fulfill(
         body='window.Telegram={WebApp:{initData:"signed-test-init-data",'
@@ -87,6 +88,7 @@ def _page(browser, *, pwa=True, trial_eligible=False, trial_start_ok=True, saved
             captured["auth_state"]["verified"] = True
             payload = {"ok": True, "authorize_url": "https://accounts.example.test/oauth"}
         elif path == "/api/v3/pwa/onboarding/public-tracks":
+            captured["public_track_get"] += 1
             payload = {"ok": True, "tracks": {"hsk20": {"track": "hsk20"},
                 "hsk30": {"access": {"feature_enabled": True, "allowed": False},
                           "live_levels": ["nhsk1"]}}, "hsk30_unlock": {}}
@@ -206,7 +208,8 @@ def test_pwa_guest_sees_panda_first_and_oauth_resumes_saved_draft_safely():
         page, captured = _page(browser, pwa=True, guest=True, trial_eligible=False)
         _advance_to_profile(page)
         assert captured["post"] == []  # Public guest may NEVER save a course.
-        assert captured["track_get"] >= 2
+        assert captured["public_track_get"] >= 2
+        assert captured["track_get"] == 0  # anonymous users cannot fetch personal tracks
         page.locator("#footer .cta").click()  # provider sign-up, not POST
         assert page.evaluate("window.screen") == "signup"
         assert captured["post"] == []
