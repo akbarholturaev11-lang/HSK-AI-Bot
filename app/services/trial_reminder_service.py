@@ -15,7 +15,7 @@ import logging
 from datetime import datetime, timedelta, timezone
 
 from aiogram import Bot
-from sqlalchemy import and_, or_, select
+from sqlalchemy import and_, exists, or_, select
 
 from app.bot.keyboards.subscription import subscription_miniapp_keyboard
 from app.bot.utils.i18n import t
@@ -76,10 +76,31 @@ class TrialReminderService:
         # Only due notice windows enter the bounded DB batch. Previously the
         # first 200 not-yet-due trials (48–72h away) could consume the entire
         # query result and starve an actual T-48h reminder.
-        last_day = User.pro_trial_ends_at <= now + FINAL_DAY_NOTICE_WINDOW
+        # Exclude rows already recorded for the relevant slot before LIMIT.
+        # If more than MAX_BATCH users have the same due window, the next
+        # scheduler pass must reach the next unsent page, not re-scan the same
+        # first 200 users indefinitely. Trials are one-time per account.
+        def not_already_recorded(slot: int):
+            return ~exists(
+                select(CourseUserNotification.id)
+                .where(
+                    CourseUserNotification.user_id == User.id,
+                    CourseUserNotification.source == "trial_reminder",
+                    CourseUserNotification.dedupe_key.like(
+                        f"trial_reminder:%:{slot}"
+                    ),
+                )
+                .correlate(User)
+            )
+
+        last_day = and_(
+            User.pro_trial_ends_at <= now + FINAL_DAY_NOTICE_WINDOW,
+            not_already_recorded(0),
+        )
         two_day = and_(
             User.pro_trial_ends_at >= now + TWO_DAY_NOTICE_WINDOW - TWO_DAY_MAX_LATE,
             User.pro_trial_ends_at <= now + TWO_DAY_NOTICE_WINDOW,
+            not_already_recorded(2),
         )
         result = await self.session.execute(
             select(User)
