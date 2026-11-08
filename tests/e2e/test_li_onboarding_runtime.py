@@ -117,7 +117,7 @@ def _advance_to_profile(page):
     page.locator(".choices .lv").nth(1).click()  # HSK 1
     page.locator("#footer .cta").click()  # multi-goal
     page.locator(".choices .lv").nth(0).click()  # HSK exam
-    page.locator(".choices .lv").nth(4).click()  # travel
+    page.locator(".choices .lv").nth(2).click()  # travel (demo GOALS order)
     page.locator("#footer .cta").click()  # time
     page.locator(".choices .lv").nth(1).click()  # 10m
     page.locator("#footer .cta").click()  # focus
