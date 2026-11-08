@@ -83,6 +83,83 @@ def _pwa_html(request: Request, path: str, headers: dict[str, str]) -> Response:
 # audit anchors. Inject PWA-only assets only after an authenticated route check.
 # The injected HTML is separately ETagged by its FULL bytes, not by file SHA.
 _PWA_INLINE_PRO_HTML = "\n<link rel=\"stylesheet\" href=\"/course_v3_data/iphone-pwa-inline-pro.css?v=20261108-e8010ea28fdc\">\n<script src=\"/course_v3_data/iphone-pwa-inline-pro.js?v=20261108-8d96888d601f\"></script>\n<script src=\"/course_v3_data/iphone-pwa-inline-pro-bridge.js?v=20261108-afd4f9d80534\"></script>\n".encode("utf-8")
+
+# PWA-only, non-personalized first paint. The canonical Telegram course HTML
+# stays byte-for-byte untouched; only the authenticated PWA response is adapted.
+# The full-screen splash formerly covered the entire app until the POST map
+# finished (or its 3-second safety timer elapsed).
+_PWA_COURSE_SKELETON_OLD = '<div class="scr on" id="s-course"><div class="loading">…</div></div>'.encode("utf-8")
+_PWA_COURSE_SKELETON_NEW = b'''<div class="scr on" id="s-course" aria-busy="true">
+  <div class="hsk-pwa-boot-shell" role="status" aria-label="HSK AI loading">
+    <div class="hsk-pwa-boot-top">
+      <div class="hsk-pwa-boot-line hsk-pwa-boot-title"></div>
+      <div class="hsk-pwa-boot-dot"></div><div class="hsk-pwa-boot-dot"></div>
+    </div>
+    <div class="hsk-pwa-boot-card hsk-pwa-boot-today">
+      <div class="hsk-pwa-boot-line hsk-pwa-boot-mid"></div>
+      <div class="hsk-pwa-boot-line hsk-pwa-boot-small"></div>
+    </div>
+    <div class="hsk-pwa-boot-card hsk-pwa-boot-unit">
+      <div class="hsk-pwa-boot-line hsk-pwa-boot-mid"></div>
+      <div class="hsk-pwa-boot-line hsk-pwa-boot-small"></div>
+      <div class="hsk-pwa-boot-node"></div>
+    </div>
+    <div class="hsk-pwa-boot-card hsk-pwa-boot-unit">
+      <div class="hsk-pwa-boot-line hsk-pwa-boot-mid"></div>
+      <div class="hsk-pwa-boot-line hsk-pwa-boot-small"></div>
+    </div>
+  </div>
+</div>'''
+_PWA_COURSE_BOOT_HEAD = b'''<style id="hsk-pwa-initial-shell">
+html.hsk-pwa-browser #hsk-launch-splash{display:none!important}
+.hsk-pwa-boot-shell{padding:20px 16px 100px;max-width:660px;margin:0 auto;min-height:calc(100dvh - 88px)}
+.hsk-pwa-boot-top{display:flex;align-items:center;gap:12px;min-height:56px;margin-bottom:16px}
+.hsk-pwa-boot-card{background:var(--hsk-card-surface,var(--card,#f1f0ee));border:1px solid var(--line,rgba(0,0,0,.08));border-radius:20px;margin-bottom:16px;padding:18px}
+.hsk-pwa-boot-today{min-height:118px}.hsk-pwa-boot-unit{min-height:178px}
+.hsk-pwa-boot-line,.hsk-pwa-boot-dot,.hsk-pwa-boot-node{background:var(--hsk-divider,#dedddc);opacity:.8;animation:hsk-pwa-boot-pulse 1.5s ease-in-out infinite alternate}
+.hsk-pwa-boot-line{height:16px;border-radius:8px;margin:8px 0 14px}
+.hsk-pwa-boot-title{width:42%;height:26px;flex:1;max-width:175px}
+.hsk-pwa-boot-mid{width:65%;max-width:240px}.hsk-pwa-boot-small{width:44%;height:12px}
+.hsk-pwa-boot-dot{width:34px;height:34px;border-radius:50%;flex:none}
+.hsk-pwa-boot-node{width:54px;height:54px;border-radius:50%;margin:14px auto 0}
+body.hsk-pwa-shell-loading #nav{opacity:.78}
+@keyframes hsk-pwa-boot-pulse{from{opacity:.5}to{opacity:.95}}
+@media(prefers-reduced-motion:reduce){.hsk-pwa-boot-line,.hsk-pwa-boot-dot,.hsk-pwa-boot-node{animation:none}}
+</style>'''
+_PWA_COURSE_BOOT_SCRIPT = b'''<script>
+(function(){
+  if(location.pathname!=="/iphone-pwa/course")return;
+  var screen=document.getElementById("s-course"),nav=document.getElementById("nav");
+  if(!screen)return;
+  function finish(){
+    if(screen.querySelector(".hsk-pwa-boot-shell"))return;
+    screen.removeAttribute("aria-busy");
+    document.body.classList.remove("hsk-pwa-shell-loading");
+    if(nav)nav.inert=false;
+    observer.disconnect();
+  }
+  var observer=new MutationObserver(finish);
+  observer.observe(screen,{childList:true});
+  finish();
+})();
+</script>'''
+
+
+def _add_pwa_course_initial_shell(source: bytes) -> bytes:
+    """Static-only PWA first paint. Never inject stale learner/progress data."""
+    markers = (
+        (b"</head>", _PWA_COURSE_BOOT_HEAD + b"</head>"),
+        (b'<body class="hsk-scene-page">', b'<body class="hsk-scene-page hsk-pwa-shell-loading">'),
+        (_PWA_COURSE_SKELETON_OLD, _PWA_COURSE_SKELETON_NEW),
+        (b'<nav class="nav" id="nav">', b'<nav class="nav" id="nav" inert>'),
+        (b"</body>", _PWA_COURSE_BOOT_SCRIPT + b"</body>"),
+    )
+    for old, new in markers:
+        if source.count(old) != 1:
+            raise RuntimeError("pwa_initial_shell_source_mismatch")
+        source = source.replace(old, new, 1)
+    return source
+
 _PWA_INLINE_CACHE: dict[tuple[str, int, int], tuple[bytes, str]] = {}
 
 
@@ -96,6 +173,8 @@ def _pwa_inline_html(request: Request, path: str, headers: dict[str, str],
             source = handle.read()
         if source.count(b"</body>") != 1:
             raise RuntimeError("pwa_inline_html_invalid")
+        if path == "app/static/course-v3.html":
+            source = _add_pwa_course_initial_shell(source)
         document = source.replace(b"</body>", _PWA_INLINE_PRO_HTML + b"</body>", 1)
         etag = 'W/"' + hashlib.sha256(document).hexdigest()[:32] + '"'
         cached = document, etag
