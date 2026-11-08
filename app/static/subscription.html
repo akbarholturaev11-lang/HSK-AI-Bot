@@ -1818,7 +1818,9 @@ function pwaVisualReference(amount){
   // PWA presentation only. Never used in quotes, receipt, ledger, or provider requests.
   const numeric=Number(amount);
   if(!Number.isFinite(numeric)||numeric<=0)return "";
-  return (Math.ceil(numeric*1.30-0.99-1e-9)+0.99).toFixed(2);
+  let value=Math.round(numeric*1.30-0.99)+0.99;
+  if(value<=numeric)value=Math.ceil(numeric-0.99+1e-9)+0.99;
+  return value.toFixed(2);
 }
 function renderPlans(text){
   $("#plansTitle").textContent=modeText(text,"modePlans");
