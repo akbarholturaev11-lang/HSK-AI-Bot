@@ -92,7 +92,8 @@ class ProfilePromoCarouselTest {
             // synchronizes through the Compose test owner. Do not read
             // layoutInfo.coordinates directly from instrumentation code.
             compose.onNodeWithTag("profile-promo-card-$key")
-                .assertIsDisplayed().getUnclippedBoundsInRoot().height
+                .assertIsDisplayed().getUnclippedBoundsInRoot()
+                .let { it.bottom - it.top }
         }
         assertEquals(1, heights.distinct().size)
     }
