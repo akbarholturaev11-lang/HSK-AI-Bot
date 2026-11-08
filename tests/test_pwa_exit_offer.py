@@ -3,12 +3,15 @@ import unittest
 from datetime import datetime, timedelta, timezone
 from unittest.mock import AsyncMock, patch
 
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import StaticPool
 
 from app.db import models  # noqa: F401
 from app.db.base import Base
 from app.db.models.pwa_exit_offer import PwaExitOffer
+from app.db.models.conversion_funnel_event import ConversionFunnelEvent
+from app.db.models.lava import LavaInvoice
 from app.db.models.user import User
 from app.services.ai_usage_budget_service import AIUsageBudgetService
 from app.services.discount_service import DiscountChoice, DiscountService
@@ -120,11 +123,16 @@ class PwaExitOfferTests(unittest.IsolatedAsyncioTestCase):
             self.sessions, user_id=1, plan_type="1_month",
             email="student@example.com", source="pwa",
             language="ru", context_mode="exit_discount",
+            analytics_attempt_id="inline-unit-1",
+            analytics_source="v3_locked_lesson",
         )
         self.assertEqual(created["amount"], "8.00")
         self.assertEqual(self.fake.last_create_body["promoCode"], "HSKEXIT20")
         async with self.sessions() as db:
             self.assertIsNone((await db.get(PwaExitOffer, 1)).consumed_at)
+            invoice = await db.get(LavaInvoice, created["checkout_id"])
+            self.assertEqual(invoice.pwa_inline_attempt_id, "inline-unit-1")
+            self.assertEqual(invoice.pwa_inline_source, "v3_locked_lesson")
         contract = created["payment_url"].rsplit("/", 1)[1]
         self.fake.complete(contract)
         result = await events.verify_and_apply(self.runtime, contract)
@@ -133,6 +141,19 @@ class PwaExitOfferTests(unittest.IsolatedAsyncioTestCase):
             self.assertIsNotNone((await db.get(PwaExitOffer, 1)).consumed_at)
             user = await db.get(User, 1)
             self.assertFalse(await PwaExitOfferService(db, self.runtime.settings).active(user))
+            paid = (await db.execute(select(ConversionFunnelEvent).where(
+                ConversionFunnelEvent.event_name == "pwa_pro_checkout_paid",
+            ))).scalars().all()
+            self.assertEqual(len(paid), 1)
+            self.assertEqual(paid[0].source, "v3_locked_lesson")
+            self.assertIn('"attempt_id": "inline-unit-1"', paid[0].payload_json)
+        # Webhook/provider retry must not add a second conversion.
+        await events.verify_and_apply(self.runtime, contract)
+        async with self.sessions() as db:
+            paid = (await db.execute(select(ConversionFunnelEvent.id).where(
+                ConversionFunnelEvent.event_name == "pwa_pro_checkout_paid",
+            ))).scalars().all()
+            self.assertEqual(len(paid), 1)
 
     async def test_provider_mode_guard_and_expired_offer_cannot_be_reused(self):
         await self.action("view")
