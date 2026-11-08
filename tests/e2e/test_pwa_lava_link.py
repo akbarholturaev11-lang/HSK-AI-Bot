@@ -78,7 +78,7 @@ def test_lava_provider_link_is_available_only_when_invoice_has_real_url(url,expe
         page.get_by_role("button",name="Pro olish").click()
         assert len(popups)==0, "No premature about:blank popup may be opened"
         if expected:
-            link=page.get_by_role("link",name="Lava.top’ni ochish")
+            link=page.get_by_role("link",name="To‘lovga o‘tish")
             link.wait_for()
             assert link.get_attribute("href")==url
             assert link.get_attribute("target")=="_blank"
@@ -89,8 +89,11 @@ def test_lava_provider_link_is_available_only_when_invoice_has_real_url(url,expe
             popup.wait_for_load_state()
             assert popup.url==url
             assert "Provider checkout ready" in popup.locator("body").inner_text()
+            # The learner sees a neutral payment step, never the provider name.
+            assert "lava" not in page.locator("#hsk-inline-pro").inner_text().lower()
+            assert page.locator("#hsk-inline-pro .hip-checking").is_visible()
         else:
-            assert page.get_by_role("link",name="Lava.top’ni ochish").count()==0
+            assert page.get_by_role("link",name="To‘lovga o‘tish").count()==0
             page.locator("#hsk-inline-pro .hip-error").wait_for(state="visible")
             assert page.locator("#hsk-inline-pro .hip-error").is_visible()
         assert len(captured)==1

@@ -11,60 +11,63 @@
     offer: "/api/v3/pwa/subscription/exit-offer",
     analytics: "/api/v3/pwa/subscription/inline-event"
   };
+  // The learner never sees a payment provider name: one card checkout and
+  // one "regular" (bank card / Alipay / WeChat receipt) method.
   var WORDS = {
     ru: {title:"Лимит исчерпан",subtitle:"Оформите Pro, чтобы продолжить",benefits:["Уроки без ограничений","Разговорная практика с ИИ","Учёба без рекламы"],one:"1 месяц",
-      three:"3 месяца",six:"6 месяцев",year:"1 год",pay:"Получить Pro",
-      more:"Другие тарифы",lava:"Visa / Mastercard — Lava.top",
+      three:"3 месяца",six:"6 месяцев",year:"1 год",perMonth:"/ мес",pay:"Получить Pro",
+      more:"Другие тарифы",
       manual:"Обычный способ оплаты",manualHint:"Банковская карта, Alipay или WeChat",
-      choose:"Выберите способ оплаты",email:"Email для оплаты",continue:"Продолжить оплату",
+      email:"Email для оплаты",continue:"Продолжить оплату",
       close:"Закрыть",back:"Назад",loading:"Загружаем тарифы…",unavailable:"Тарифы временно недоступны",
       retry:"Повторить",pending:"Оплата ожидает подтверждения",paying:"Проверяем оплату…",
-      reopen:"Открыть Lava.top",paymentReady:"Ссылка Lava.top готова",paid:"Pro активирован",return:"Вернуться к обучению",
+      reopen:"Перейти к оплате",paymentReady:"Страница оплаты готова",paid:"Pro активирован",return:"Вернуться к обучению",
       error:"Не удалось загрузить оплату. Попробуйте ещё раз.",exitTitle:"Специальная скидка 20%",
       exitText:"Заберите скидку на первый платёж и продолжайте обучение",
       accept:"Забрать скидку",decline:"Нет, спасибо",
       renewal:"Продление оплачивается по стандартной цене. Автопродление можно отменить.",
       comparison:"Ориентировочная цена для сравнения, не предыдущая цена",
       saving:"Скидка 20% применена",normal:"Стоимость с учётом действующей скидки",
-      manualNoExit:"Скидка при выходе действует только при оплате Lava.top",
+      manualNoExit:"Скидка 20% действует только при онлайн-оплате картой",
       blocked:"Проверьте текущий платёж или действующую подписку",
       missingEmail:"Укажите действительный email",success:"Платёж подтверждён сервером"},
     uz: {title:"Limit tugadi",subtitle:"Davom etish uchun Pro oling",benefits:["Cheksiz darslar","AI bilan ovozli mashqlar","Reklamasiz o‘rganing"],one:"1 oy",
-      three:"3 oy",six:"6 oy",year:"1 yil",pay:"Pro olish",
-      more:"Boshqa tariflar",lava:"Visa / Mastercard — Lava.top",
+      three:"3 oy",six:"6 oy",year:"1 yil",perMonth:"/ oy",pay:"Pro olish",
+      more:"Boshqa tariflar",
       manual:"Oddiy to‘lov usuli",manualHint:"Bank kartasi, Alipay yoki WeChat",
-      choose:"To‘lov usulini tanlang",email:"To‘lov uchun email",continue:"To‘lovni davom ettirish",
+      email:"To‘lov uchun email",continue:"To‘lovni davom ettirish",
       close:"Yopish",back:"Orqaga",loading:"Tariflar yuklanmoqda…",unavailable:"Tariflar hozir mavjud emas",
       retry:"Qayta urinish",pending:"To‘lov tasdiqlanishi kutilmoqda",paying:"To‘lov tekshirilmoqda…",
-      reopen:"Lava.top’ni ochish",paymentReady:"Lava.top havolasi tayyor",paid:"Pro faollashtirildi",return:"O‘qishga qaytish",
+      reopen:"To‘lovga o‘tish",paymentReady:"To‘lov sahifasi tayyor",paid:"Pro faollashtirildi",return:"O‘qishga qaytish",
       error:"To‘lov ma’lumotlari yuklanmadi. Qayta urinib ko‘ring.",exitTitle:"Maxsus 20% chegirma",
       exitText:"Birinchi to‘lov uchun 20% chegirma oling",accept:"Chegirmani olish",decline:"Yo‘q, rahmat",
       renewal:"Keyingi to‘lovlar oddiy narxda. Avtoyangilanishni bekor qilish mumkin.",
       comparison:"Taqqoslash uchun taxminiy narx, oldingi narx emas",
       saving:"20% chegirma qo‘llandi",normal:"Amaldagi chegirmali narx",
-      manualNoExit:"Chiqish chegirmasi faqat Lava.top to‘loviga tegishli",
+      manualNoExit:"20% chegirma faqat karta orqali onlayn to‘lovga tegishli",
       blocked:"Joriy to‘lov yoki faol obunani tekshiring",
       missingEmail:"To‘g‘ri email kiriting",success:"To‘lov serverda tasdiqlandi"},
     tj: {title:"Лимит тамом шуд",subtitle:"Барои идома Pro гиред",benefits:["Дарсҳо бе маҳдудият","Машқи овозӣ бо AI","Омӯзиш бе реклама"],one:"1 моҳ",
-      three:"3 моҳ",six:"6 моҳ",year:"1 сол",pay:"Гирифтани Pro",
-      more:"Тарифҳои дигар",lava:"Visa / Mastercard — Lava.top",
+      three:"3 моҳ",six:"6 моҳ",year:"1 сол",perMonth:"/ моҳ",pay:"Гирифтани Pro",
+      more:"Тарифҳои дигар",
       manual:"Пардохти оддӣ",manualHint:"Корти бонкӣ, Alipay ё WeChat",
-      choose:"Роҳи пардохтро интихоб кунед",email:"Email барои пардохт",continue:"Идомаи пардохт",
+      email:"Email барои пардохт",continue:"Идомаи пардохт",
       close:"Пӯшидан",back:"Бозгашт",loading:"Тарифҳо бор шуда истодаанд…",unavailable:"Тарифҳо дастрас нестанд",
       retry:"Аз нав кӯшиш кунед",pending:"Пардохт интизори тасдиқ аст",paying:"Пардохт санҷида мешавад…",
-      reopen:"Кушодани Lava.top",paymentReady:"Пайванди Lava.top омода аст",paid:"Pro фаъол шуд",return:"Бозгашт ба омӯзиш",
+      reopen:"Ба пардохт гузаштан",paymentReady:"Саҳифаи пардохт омода аст",paid:"Pro фаъол шуд",return:"Бозгашт ба омӯзиш",
       error:"Маълумоти пардохт дастрас нашуд. Аз нав кӯшиш кунед.",exitTitle:"20% тахфифи махсус",
       exitText:"Барои пардохти аввал 20% тахфиф гиред",accept:"Гирифтани тахфиф",decline:"Не, ташаккур",
       renewal:"Пардохти навбатӣ бо нархи муқаррарӣ аст. Тамдиди худкорро бекор кардан мумкин.",
       comparison:"Нархи тахминӣ барои муқоиса, на нархи қаблӣ",
       saving:"20% тахфиф татбиқ шуд",normal:"Нарх бо тахфифи воқеӣ",
-      manualNoExit:"Тахфифи баромад танҳо барои Lava.top аст",
+      manualNoExit:"Тахфифи 20% танҳо барои пардохти онлайн бо корт аст",
       blocked:"Пардохти ҷорӣ ё обунаи фаъолро санҷед",
       missingEmail:"Email-и дуруст ворид кунед",success:"Пардохт аз тарафи сервер тасдиқ шуд"}
   };
   var NAMES = { "1_month":"one", "3_months":"three", "6_months":"six", "12_months":"year" };
+  var MONTHS = { "1_month":1, "3_months":3, "6_months":6, "12_months":12 };
   var order = ["1_month","3_months","6_months","12_months"];
-  var root, body, heading, info, panda, back, closeButton, lastFocus, state, tick = null, actorPromise = null, run = 0;
+  var root, sheet, scroll, body, actions, heading, info, panda, back, closeButton, lastFocus, state, tick = null, actorPromise = null, run = 0;
   function txt(key) { return (WORDS[state.lang]||WORDS.ru)[key]; }
   function el(tag, cls, value) {
     var node = document.createElement(tag);
@@ -77,6 +80,84 @@
     node.type="button";
     node.addEventListener("click",fn);
     return node;
+  }
+  function icon(path) {
+    return "<svg viewBox=\"0 0 24 24\" width=\"22\" height=\"22\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\">"+path+"</svg>";
+  }
+  /* The course mascot (course-v3.html pandaChar: same head, ears, body,
+     colors and motion) in a pose that belongs to each Pro moment. Local SVG,
+     no network/font dependency, identical on course and practice pages. */
+  function pandaSvg(pose) {
+    var INK="#2B2620",MOUTH="#8E3A31",TONGUE="#E07B72",BLUSH="#F5B8C0",GOLD="#E9A916",FACE="#FFFDF7",CREAM="#FFF4DE",DEEP="#D4B27C";
+    if (["celebrate","gift","read"].indexOf(pose)<0) pose="pro";
+    var celebrate=pose==="celebrate", py=pose==="read"?36.2:34.8;
+    function arm(d){return "<path d=\""+d+"\" fill=\"none\" stroke=\""+INK+"\" stroke-width=\"10\" stroke-linecap=\"round\"/>"}
+    function paw(x,y,r){return "<ellipse cx=\""+x+"\" cy=\""+y+"\" rx=\"7\" ry=\"5.8\" fill=\""+INK+"\" transform=\"rotate("+r+" "+x+" "+y+")\"/>"}
+    function star(x,y,s,delay){return "<path class=\"hip-pd-twinkle\" style=\"animation-delay:"+delay+"s\" transform=\"translate("+x+" "+y+") scale("+s+")\" d=\"M0 -5 L1.2 -1.2 L5 0 L1.2 1.2 L0 5 L-1.2 1.2 L-5 0 L-1.2 -1.2 Z\" fill=\""+GOLD+"\"/>"}
+    var eyes=celebrate
+      ? "<path d=\"M32 35 q6 -7 12 0\" fill=\"none\" stroke=\"#fff\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M56 35 q6 -7 12 0\" fill=\"none\" stroke=\"#fff\" stroke-width=\"3\" stroke-linecap=\"round\"/>"
+      : "<circle cx=\"38\" cy=\"34\" r=\"4.8\" fill=\"#fff\"/><circle cx=\"62\" cy=\"34\" r=\"4.8\" fill=\"#fff\"/>"
+        +"<circle cx=\"38.6\" cy=\""+py+"\" r=\"2.7\" fill=\""+INK+"\"/><circle cx=\"61.4\" cy=\""+py+"\" r=\"2.7\" fill=\""+INK+"\"/>"
+        +"<circle cx=\"39.8\" cy=\""+(py-1.6)+"\" r=\"1.1\" fill=\"#fff\"/><circle cx=\"62.6\" cy=\""+(py-1.6)+"\" r=\"1.1\" fill=\"#fff\"/>"
+        +"<rect class=\"hip-pd-blink\" x=\"32\" y=\"28\" width=\"12\" height=\"12\" rx=\"5\" fill=\""+INK+"\"/><rect class=\"hip-pd-blink\" x=\"56\" y=\"28\" width=\"12\" height=\"12\" rx=\"5\" fill=\""+INK+"\"/>";
+    var mouth=(celebrate||pose==="gift")
+      ? "<path d=\"M41 52 q9 11 18 0 q-9 5 -18 0 z\" fill=\""+MOUTH+"\"/><path d=\"M45.5 56.5 q4.5 3.5 9 0 q-4.5 3 -9 0 z\" fill=\""+TONGUE+"\"/>"
+      : "<path d=\"M43 53 q7 5 14 0\" stroke=\""+INK+"\" stroke-width=\"2.6\" fill=\"none\" stroke-linecap=\"round\"/>";
+    var back="",front="";
+    if (pose==="celebrate") {
+      back="<path d=\"M30 62 q-15 -7 -17 -23 q6 -6 12 -2 q3 11 11 18 z\" fill=\""+INK+"\"/><path d=\"M70 62 q15 -7 17 -23 q-6 -6 -12 -2 q-3 11 -11 18 z\" fill=\""+INK+"\"/>";
+      front=star(10,16,1,0)+star(92,12,.8,.3)+star(52,0,.68,.6);
+    } else if (pose==="pro"||pose==="gift") {
+      // Both paws present a card from its lower corners: a gold Pro card on
+      // the limit screen, a red ticket only for the server-verified offer.
+      var gift=pose==="gift";
+      back=arm("M31 68 Q24 82 34 88")+arm("M69 68 Q76 82 66 88");
+      front="<defs><linearGradient id=\"hipCard"+pose+"\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">"
+        +(gift?"<stop offset=\"0\" stop-color=\"#F0675C\"/><stop offset=\"1\" stop-color=\"#C93A31\"/>"
+              :"<stop offset=\"0\" stop-color=\"#F8D376\"/><stop offset=\".55\" stop-color=\"#E9A916\"/><stop offset=\"1\" stop-color=\"#D18C0B\"/>")
+        +"</linearGradient></defs>"
+        +"<g transform=\"rotate(-4 50 79)\"><rect x=\"30\" y=\"66\" width=\"40\" height=\"24\" rx=\"5\" fill=\"url(#hipCard"+pose+")\" stroke=\""+(gift?"#A92E27":"#B9790A")+"\" stroke-width=\"1.2\"/>"
+        +"<path d=\"M34 69.6 h32\" stroke=\""+(gift?"#FFC9C2":"#FFF1C4")+"\" stroke-width=\"1.2\" stroke-linecap=\"round\" opacity=\".8\"/>"
+        +"<text x=\"50\" y=\"82\" text-anchor=\"middle\" font-size=\""+(gift?"10":"11")+"\" font-weight=\"900\" letter-spacing=\".4\" fill=\""+(gift?"#fff":"#4A3200")+"\" font-family=\"-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif\">"+(gift?"−20%":"PRO")+"</text></g>"
+        +paw(34,89,10)+paw(66,88,-10)
+        +star(11,22,.7,0)+star(90,18,.56,.45);
+    } else if (pose==="read") {
+      back=arm("M31 70 Q22 79 31 86")+arm("M69 70 Q78 79 69 86");
+      front="<g transform=\"translate(50 82) scale(1.35)\"><path d=\"M-19 -10q10-5 19 1v25q-9-6-19-1Z\" fill=\"#FFF8E8\" stroke=\"#A8782B\" stroke-width=\"1.6\"/>"
+        +"<path d=\"M19 -10q-10-5-19 1v25q9-6 19-1Z\" fill=\"#FFF8E8\" stroke=\"#A8782B\" stroke-width=\"1.6\"/><path d=\"M0 -9v25\" stroke=\"#D5A84C\" stroke-width=\"1.2\"/>"
+        +"<path d=\"M-15 -4q6-2 11 1M-15 1q6-2 11 1M4 -3q6-3 11-1M4 2q6-3 11-1\" stroke=\"#D9C7A4\" stroke-width=\"1.1\" fill=\"none\" stroke-linecap=\"round\"/></g>"
+        +paw(31,86,20)+paw(69,86,-20);
+    }
+    return "<svg class=\"hip-pd-char\" viewBox=\"-6 -8 112 116\" width=\"100%\" height=\"100%\" aria-hidden=\"true\" focusable=\"false\">"
+      +"<ellipse class=\"hip-pd-ground\" cx=\"50\" cy=\"102\" rx=\"30\" ry=\"6\" fill=\"#211D17\" opacity=\".16\"/>"
+      +"<g class=\"hip-pd-core "+(celebrate?"hip-pd-bounce":"hip-pd-breathe")+"\">"
+      +back
+      +"<ellipse cx=\"38\" cy=\"97\" rx=\"9.5\" ry=\"6.5\" fill=\""+INK+"\"/><ellipse cx=\"62\" cy=\"97\" rx=\"9.5\" ry=\"6.5\" fill=\""+INK+"\"/>"
+      +"<path d=\"M31 96 q-7 -29 9 -40 h23 q17 10 10 40 q-20 10 -42 0 z\" fill=\""+DEEP+"\" opacity=\".34\"/>"
+      +"<path d=\"M28 94 q-5 -28 9 -36 h26 q14 8 9 36 q-22 7 -44 0 z\" fill=\""+FACE+"\" stroke=\""+INK+"\" stroke-width=\"3\"/>"
+      +"<path d=\"M61 61 q13 10 9 31 q-8 4 -18 5 q10 -13 9 -36 z\" fill=\"#B98442\" opacity=\".34\"/>"
+      +"<ellipse cx=\"50\" cy=\"80\" rx=\"14\" ry=\"10.5\" fill=\""+CREAM+"\"/>"
+      +"<circle cx=\"27\" cy=\"15\" r=\"12\" fill=\""+INK+"\"/><circle cx=\"73\" cy=\"15\" r=\"12\" fill=\""+INK+"\"/>"
+      +"<circle cx=\"27\" cy=\"15\" r=\"5\" fill=\"#4A443C\"/><circle cx=\"73\" cy=\"15\" r=\"5\" fill=\"#4A443C\"/>"
+      +"<circle cx=\"50\" cy=\"38\" r=\"30\" fill=\""+FACE+"\" stroke=\""+INK+"\" stroke-width=\"3\"/>"
+      +"<path d=\"M61 12 q18 12 17 28 q-1 19 -20 27 q13 -17 3 -55 z\" fill=\""+DEEP+"\" opacity=\".34\"/>"
+      +"<ellipse cx=\"40\" cy=\"24\" rx=\"13\" ry=\"8\" fill=\"#fff\" opacity=\".72\"/>"
+      +"<ellipse cx=\"38\" cy=\"35\" rx=\"9\" ry=\"12\" fill=\""+INK+"\" transform=\"rotate(-12 38 35)\"/>"
+      +"<ellipse cx=\"62\" cy=\"35\" rx=\"9\" ry=\"12\" fill=\""+INK+"\" transform=\"rotate(12 62 35)\"/>"
+      +eyes
+      +"<ellipse cx=\"50\" cy=\"51\" rx=\"11\" ry=\"8\" fill=\""+CREAM+"\" opacity=\".94\"/>"
+      +"<path d=\"M46 46.5 q4 -3 8 0 q-2 4 -4 4 q-2 0 -4 -4 z\" fill=\""+INK+"\"/>"
+      +"<path d=\"M50 50 v2.6\" stroke=\""+INK+"\" stroke-width=\"2\" stroke-linecap=\"round\"/>"
+      +mouth
+      +"<ellipse cx=\"29\" cy=\"46\" rx=\"4.8\" ry=\"3.2\" fill=\""+BLUSH+"\" opacity=\".85\"/><ellipse cx=\"71\" cy=\"46\" rx=\"4.8\" ry=\"3.2\" fill=\""+BLUSH+"\" opacity=\".85\"/>"
+      +front
+      +"</g></svg>";
+  }
+  function setPanda(pose) {
+    panda.hidden=!pose;
+    if (!pose || panda.dataset.pose===pose) return;
+    panda.dataset.pose=pose;
+    panda.innerHTML=pandaSvg(pose);
   }
   function session() {
     if (!actorPromise) actorPromise = fetch("/api/v3/pwa-auth/session",{
@@ -131,49 +212,72 @@
     if (!Number.isFinite(n)||n<0) return "";
     return n.toFixed(2)+" "+(currency||"");
   }
+  function errorText(code) {
+    if (code==="invalid_email") return txt("missingEmail");
+    if (code==="subscription_active"||code==="payment_pending"||code==="chargeback_open") return txt("blocked");
+    if (code==="plan_unavailable"||code==="lava_unavailable") return txt("unavailable");
+    return txt("error");
+  }
   function ensure() {
     if (root) return;
     root=el("section");root.id="hsk-inline-pro";root.hidden=true;
     root.setAttribute("role","dialog");root.setAttribute("aria-modal","true");
-    var sheet=el("div","hip-sheet");
+    sheet=el("div","hip-sheet");
+    // The dialog itself takes focus on open, so no button shows a focus ring
+    // to touch users; keyboard users tab to Back/Close as usual.
+    sheet.tabIndex=-1;
     var header=el("div","hip-header");
     panda=el("div","hip-panda");panda.setAttribute("aria-hidden","true");
-    panda.innerHTML="<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 128 144\" role=\"img\" aria-hidden=\"true\" focusable=\"false\">\n  <ellipse cx=\"30\" cy=\"28\" rx=\"15\" ry=\"19\" transform=\"rotate(-27 30 28)\" fill=\"#302A26\"/>\n  <ellipse cx=\"98\" cy=\"28\" rx=\"15\" ry=\"19\" transform=\"rotate(27 98 28)\" fill=\"#302A26\"/>\n  <ellipse cx=\"64\" cy=\"110\" rx=\"29\" ry=\"29\" fill=\"#302A26\"/>\n  <ellipse cx=\"64\" cy=\"112\" rx=\"22\" ry=\"26\" fill=\"#FFFEFA\"/>\n  <ellipse cx=\"64\" cy=\"64\" rx=\"40\" ry=\"41\" fill=\"#FFFEFA\" stroke=\"#302A26\" stroke-width=\"2.6\"/>\n  <ellipse cx=\"46\" cy=\"61\" rx=\"13\" ry=\"18\" transform=\"rotate(21 46 61)\" fill=\"#302A26\"/>\n  <ellipse cx=\"82\" cy=\"61\" rx=\"13\" ry=\"18\" transform=\"rotate(-21 82 61)\" fill=\"#302A26\"/>\n  <ellipse cx=\"50\" cy=\"60\" rx=\"4.6\" ry=\"6.2\" fill=\"#FFFEFA\"/>\n  <ellipse cx=\"78\" cy=\"60\" rx=\"4.6\" ry=\"6.2\" fill=\"#FFFEFA\"/>\n  <circle cx=\"51\" cy=\"58\" r=\"1.8\" fill=\"#302A26\"/>\n  <circle cx=\"79\" cy=\"58\" r=\"1.8\" fill=\"#302A26\"/>\n  <ellipse cx=\"64\" cy=\"80\" rx=\"7.6\" ry=\"5.4\" fill=\"#302A26\"/>\n  <path d=\"M64 85q-6 10-12 3m12-3q6 10 12 3\" fill=\"none\" stroke=\"#302A26\" stroke-width=\"2.4\" stroke-linecap=\"round\"/>\n  <ellipse cx=\"40\" cy=\"102\" rx=\"10\" ry=\"16\" transform=\"rotate(-28 40 102)\" fill=\"#302A26\"/>\n  <ellipse cx=\"88\" cy=\"102\" rx=\"10\" ry=\"16\" transform=\"rotate(28 88 102)\" fill=\"#302A26\"/>\n  <ellipse cx=\"47\" cy=\"133\" rx=\"13\" ry=\"7\" fill=\"#302A26\"/>\n  <ellipse cx=\"81\" cy=\"133\" rx=\"13\" ry=\"7\" fill=\"#302A26\"/>\n  <path d=\"M47 108q9-4 17 2q8-6 17-2v25q-8-4-17 2q-9-6-17-2Z\" fill=\"#E04A40\" stroke=\"#B23530\" stroke-width=\"2\" stroke-linejoin=\"round\"/>\n  <path d=\"M64 110v25\" stroke=\"#FDF9F0\" stroke-width=\"2\" opacity=\".82\"/>\n  <path d=\"M36 113q4 7 12 8m44-8q-4 7-12 8\" fill=\"none\" stroke=\"#302A26\" stroke-width=\"7\" stroke-linecap=\"round\"/>\n</svg>";
-    heading=el("h2","hip-title");
+    heading=el("h2","hip-title");heading.id="hsk-inline-pro-title";
     info=el("p","hip-summary");
     header.append(panda,heading,info);
     body=el("div","hip-body");
-    back=btn("‹","hip-back",goBack);
-    closeButton=btn("×","hip-close",requestDismiss);
-    sheet.append(back,closeButton,header,body);
+    back=btn("","hip-back",goBack);back.innerHTML=icon("<path d=\"M15 5l-7 7 7 7\"/>");
+    closeButton=btn("","hip-close",requestDismiss);closeButton.innerHTML=icon("<path d=\"M6 6l12 12M18 6L6 18\"/>");
+    // Content scrolls; the actions stay at the bottom in the thumb zone.
+    scroll=el("div","hip-scroll");scroll.append(header,body);
+    actions=el("div","hip-actions");
+    sheet.append(back,closeButton,scroll,actions);
     root.appendChild(sheet);
+    root.setAttribute("aria-labelledby",heading.id);
     document.body.appendChild(root);
-    root.addEventListener("click",function(ev){if(ev.target===root)requestDismiss()});
   }
+  function lavaBlock() { return state.data && state.data.lava || null; }
+  function manualAllowed() { var lava=lavaBlock(); return !lava || lava.mode!=="lava_only"; }
   function available() {
-    var lava=state.data && state.data.lava;
+    var lava=lavaBlock();
     return lava && Array.isArray(lava.plans) ? lava.plans.filter(function(p) {
       return p && order.indexOf(p.plan_type)!==-1 && p.amount!==null && p.amount!==undefined;
-    }) : [];
+    }).sort(function(a,b){return order.indexOf(a.plan_type)-order.indexOf(b.plan_type)}) : [];
   }
   function selectedPlan() {
     return available().find(function(p){return p.plan_type===state.plan}) || null;
   }
+  function statusKind() {
+    var d=state.data;
+    if (!d) return "";
+    if (d.access && d.access.is_paid) return "paid";
+    if (d.pending_payment) return "pending";
+    if (d.lava && d.lava.blocked_reason) return "blocked";
+    return "";
+  }
   function elementPlans(all) {
     var plans=available().filter(function(p){return all||p.plan_type==="1_month"||p.plan_type==="12_months"});
-    var grid=el("div","hip-plans"+(all?" all":""));
+    var grid=el("div","hip-plans");
     plans.forEach(function(plan) {
       var card=btn("","hip-plan",function(){
+        if (state.plan===plan.plan_type) return;
         state.plan=plan.plan_type;emit("pwa_pro_plan_selected",plan.plan_type,"lava");render();
       });
       card.setAttribute("aria-pressed",String(state.plan===plan.plan_type));
-      card.appendChild(el("span","term",txt(NAMES[plan.plan_type])));
+      var discounted=Number(plan.discount_percent)>0 && plan.base_amount!=null;
+      var term=el("span","term",txt(NAMES[plan.plan_type]));
+      if (discounted) term.appendChild(el("span","badge","−"+Number(plan.discount_percent)+"%"));
+      card.appendChild(term);
       var priceLine=el("span","hip-price-line");
       priceLine.appendChild(el("span","price",money(plan.amount,plan.currency)));
-      if (Number(plan.discount_percent)>0 && plan.base_amount!=null) {
+      if (discounted) {
         priceLine.appendChild(el("span","comparison",Number(plan.base_amount).toFixed(2)));
-        card.appendChild(priceLine);
-        card.appendChild(el("span","badge","−"+Number(plan.discount_percent)+"%"));
       } else {
         var reference=relativePrice(plan.amount);
         if (reference) {
@@ -182,79 +286,122 @@
           strike.setAttribute("aria-label",txt("comparison")+": "+money(reference,plan.currency));
           priceLine.appendChild(strike);
         }
-        card.appendChild(priceLine);
+      }
+      card.appendChild(priceLine);
+      // Per-month equivalent of the same server amount (display only).
+      var months=Number(plan.months)||MONTHS[plan.plan_type]||1, amount=Number(plan.amount);
+      if (months>1 && Number.isFinite(amount) && amount>0) {
+        card.appendChild(el("span","per","≈ "+money(amount/months,plan.currency)+" "+txt("perMonth")));
       }
       grid.appendChild(card);
     });
     return grid;
   }
+  function manualRow() {
+    var row=btn("","hip-method",function(){
+      emit("pwa_pro_method_selected",null,"manual");state.screen="manual";state.error="";render();
+    });
+    var text=el("span","hip-method-text");
+    text.append(el("b",null,txt("manual")),el("small",null,txt("manualHint")));
+    var chevron=el("span","hip-method-chevron");chevron.innerHTML=icon("<path d=\"M9 5l7 7-7 7\"/>");
+    row.append(text,chevron);
+    return row;
+  }
+  function payButton() {
+    return btn(txt("pay"),"hip-primary",function() {
+      if (!selectedPlan()) return;
+      if (!state.email) {state.emailFrom=state.screen;state.screen="email";state.error="";render();return}
+      startPayment();
+    });
+  }
+  function header(pose,title,summary) {
+    setPanda(pose);
+    heading.textContent=title||"";
+    info.textContent=summary||"";
+    info.hidden=!summary;
+  }
   function render() {
     if (!root||!state||root.hidden) return;
-    var s=state.screen, plans=available(), isLava=state.data&&state.data.lava;
-    root.dataset.screen=s;
-    body.style.padding="";
-    heading.textContent=s==="exit"?txt("exitTitle"):s==="more"?txt("choose"):txt("title");
-    info.textContent=s==="exit"?txt("exitText"):s==="more"?"":txt("subtitle");
-    panda.hidden=!(["main","loading","exit"].includes(s));
+    var s=state.screen, plans=available();
+    var status=(s==="main"||s==="more"||s==="email")?statusKind():"";
+    var view=status?"status":s;
+    root.dataset.screen=view;
     closeButton.setAttribute("aria-label",txt("close"));
-    back.hidden=["main","loading","exit","success"].indexOf(s)!==-1;
     back.setAttribute("aria-label",txt("back"));
-    body.replaceChildren();
-    if (state.error && s!=="exit") body.appendChild(el("p","hip-error",state.error));
-    if (s==="main"||s==="loading") {
+    back.hidden=["main","loading","exit","success","waiting","status"].indexOf(view)!==-1;
+    body.replaceChildren();actions.replaceChildren();
+    if (state.error && view!=="exit") body.appendChild(el("p","hip-error",state.error));
+    if (view==="main"||view==="loading") {
+      header("pro",txt("title"),txt("subtitle"));
       var benefits=el("ul","hip-benefits");
       (txt("benefits")||[]).forEach(function(value){
         benefits.appendChild(el("li","hip-benefit",value));
       });
       body.appendChild(benefits);
     }
-    if (s==="loading") {
+    if (view==="loading") {
       var loadingPlans=el("div","hip-plans");
+      loadingPlans.setAttribute("aria-hidden","true");
       for(var n=0;n<2;n++) loadingPlans.appendChild(el("div","hip-plan hip-skeleton"));
       body.appendChild(loadingPlans);
       var loadingCta=btn(txt("pay"),"hip-primary",function(){});
       loadingCta.disabled=true;
-      body.appendChild(loadingCta);
+      actions.appendChild(loadingCta);
+      // Reserve the secondary row so the primary button does not jump when
+      // the real plans arrive.
+      var placeholder=btn(txt("more"),"hip-secondary",function(){});
+      placeholder.disabled=true;placeholder.style.visibility="hidden";placeholder.setAttribute("aria-hidden","true");
+      actions.appendChild(placeholder);
       body.appendChild(el("div","hip-loading",txt("loading")));
       return;
     }
-    if (s==="exit") {
-      body.appendChild(el("p","hip-emphasis","−20%"));
-      body.appendChild(btn(txt("accept"),"hip-primary",claimExit));
-      body.appendChild(btn(txt("decline"),"hip-secondary",function(){emit("pwa_pro_exit_declined");close()}));
-      body.appendChild(el("p","hip-small",txt("renewal")));
+    if (view==="exit") {
+      header("gift",txt("exitTitle"),txt("exitText"));
+      actions.appendChild(btn(txt("accept"),"hip-primary",claimExit));
+      actions.appendChild(btn(txt("decline"),"hip-secondary",function(){emit("pwa_pro_exit_declined");close()}));
+      actions.appendChild(el("p","hip-small hip-center",txt("renewal")));
       return;
     }
-    if (s==="success") {
-      body.appendChild(el("p","hip-emphasis","✓ "+txt("paid")));
-      body.appendChild(el("p","hip-small",txt("success")));
-      body.appendChild(btn(txt("return"),"hip-primary",close));
+    if (view==="success") {
+      header("celebrate",txt("paid"),txt("success"));
+      actions.appendChild(btn(txt("return"),"hip-primary",close));
       return;
     }
-    if (s==="waiting") {
-      body.appendChild(el("p","hip-emphasis",txt("paymentReady")));
+    if (view==="waiting") {
+      var waitPlan=selectedPlan();
+      header("read",txt("paymentReady"),waitPlan?txt(NAMES[waitPlan.plan_type])+" · "+money(waitPlan.amount,waitPlan.currency):"");
       if (state.paymentUrl) {
-        // An actual user tap opens the real provider URL. Never create a
+        // An actual user tap opens the real payment URL. Never create a
         // blank popup before the asynchronous invoice is ready on iOS.
         var link=el("a","hip-primary",txt("reopen"));
         link.href=state.paymentUrl;
         link.target="_blank";link.rel="noopener noreferrer";
-        body.appendChild(link);
+        link.addEventListener("click",function(){
+          if (!state||state.opened) return;
+          state.opened=true;
+          // Keep the same link for a re-tap; only add the honest status line.
+          var line=actions.querySelector(".hip-checking");
+          if (line) line.hidden=false;
+        });
+        actions.appendChild(link);
       }
-      body.appendChild(btn(txt("return"),"hip-secondary",close));
+      var checking=el("p","hip-checking",txt("paying"));
+      checking.setAttribute("role","status");
+      checking.hidden=!state.opened;
+      actions.appendChild(checking);
+      actions.appendChild(btn(txt("return"),"hip-secondary",close));
       return;
     }
-    if (s!=="manual"&&state.data&&(state.data.pending_payment||state.data.access&&state.data.access.is_paid||
-        state.data.lava&&state.data.lava.blocked_reason)) {
-      body.appendChild(el("p","hip-emphasis",state.data.access&&state.data.access.is_paid?
-        txt("paid"):(state.data.pending_payment?txt("pending"):txt("blocked"))));
-      if (state.data.pending_payment) {
-        body.appendChild(btn(txt("manual"),"hip-secondary",function(){emit("pwa_pro_method_selected",null,"manual");state.screen="manual";render()}));
+    if (view==="status") {
+      header(status==="paid"?"celebrate":"read",txt(status),"");
+      actions.appendChild(btn(txt("return"),"hip-primary",close));
+      if (status==="pending") {
+        actions.appendChild(btn(txt("manual"),"hip-secondary",function(){emit("pwa_pro_method_selected",null,"manual");state.screen="manual";render()}));
       }
-      body.appendChild(btn(txt("return"),"hip-primary",close));
       return;
     }
-    if (s==="manual") {
+    if (view==="manual") {
+      header("","","");
       var iframe=el("iframe","hip-checkout");
       iframe.title=txt("manual");
       iframe.setAttribute("loading","eager");
@@ -263,50 +410,59 @@
       body.appendChild(iframe);
       return;
     }
-    if (s==="email") {
+    if (view==="email") {
       var p=selectedPlan();
       if (!p) {state.screen="main";return render()}
-      body.appendChild(el("p","hip-emphasis",txt(NAMES[p.plan_type])+" · "+money(p.amount,p.currency)));
+      header("",txt("email"),txt(NAMES[p.plan_type])+" · "+money(p.amount,p.currency));
       var input=el("input","hip-input");
-      input.type="email";input.autocomplete="email";input.inputMode="email";input.placeholder=txt("email");
+      input.type="email";input.autocomplete="email";input.inputMode="email";
+      input.placeholder="name@example.com";input.setAttribute("aria-label",txt("email"));
       input.value=state.email||"";
       input.addEventListener("input",function(){state.email=input.value});
+      input.addEventListener("keydown",function(ev){if(ev.key==="Enter"){ev.preventDefault();startPayment()}});
       body.appendChild(input);
       body.appendChild(btn(txt("continue"),"hip-primary",startPayment));
-      body.appendChild(el("p","hip-small",txt("renewal")));
+      body.appendChild(el("p","hip-small hip-center",txt("renewal")));
       return;
     }
-    if (s==="more") {
+    if (view==="more") {
+      // One screen: every sellable term plus the regular payment method.
+      // No provider choice step and no provider names.
+      header("",txt("more"),"");
       if (plans.length) {
-        body.appendChild(btn(txt("lava"),"hip-method",function(){emit("pwa_pro_method_selected",null,"lava");state.screen="all";render()}));
+        if (!selectedPlan()) state.plan=plans[0].plan_type;
+        body.appendChild(elementPlans(true));
+        if (state.mode==="exit_discount") body.appendChild(el("p","hip-small hip-center",txt("saving")));
+        actions.appendChild(payButton());
+      } else if (!manualAllowed()) {
+        body.appendChild(el("p","hip-small hip-center",txt("unavailable")));
       }
-      if (state.data && state.data.lava && state.data.lava.mode==="lava_only") {
-        body.appendChild(el("p","hip-small",txt("unavailable")));
-      } else {
-        body.appendChild(btn(txt("manual")+"  ›","hip-method",function(){
-          emit("pwa_pro_method_selected",null,"manual");state.screen="manual";render();
-        }));
+      if (manualAllowed()) {
+        if (plans.length) body.appendChild(el("div","hip-divider"));
+        body.appendChild(manualRow());
         if (state.mode==="exit_discount") body.appendChild(el("p","hip-small",txt("manualNoExit")));
       }
       return;
     }
+    // main
     if (!plans.length) {
-      body.appendChild(el("p","hip-small",isLava&&isLava.blocked_reason?txt("blocked"):txt("unavailable")));
-      body.appendChild(btn(txt("retry"),"hip-primary",load));
-      if (!isLava||isLava.mode!=="lava_only") body.appendChild(btn(txt("manual"),"hip-secondary",function(){emit("pwa_pro_method_selected",null,"manual");state.screen="manual";render()}));
+      if (state.error || !manualAllowed()) {
+        if (!state.error) body.appendChild(el("p","hip-small hip-center",txt("unavailable")));
+        actions.appendChild(btn(txt("retry"),"hip-primary",load));
+        if (manualAllowed()) actions.appendChild(btn(txt("manual"),"hip-secondary",function(){emit("pwa_pro_method_selected",null,"manual");state.screen="manual";state.error="";render()}));
+        return;
+      }
+      // Card checkout is switched off: the regular method is the only path.
+      actions.appendChild(btn(txt("pay"),"hip-primary",function(){emit("pwa_pro_method_selected",null,"manual");state.screen="manual";render()}));
       return;
     }
-    if (!selectedPlan() || (s==="main" && state.plan!=="1_month" && state.plan!=="12_months")) {
+    if (!selectedPlan() || (state.plan!=="1_month" && state.plan!=="12_months")) {
       state.plan=plans.some(function(p){return p.plan_type==="1_month"})?"1_month":plans[0].plan_type;
     }
-    body.appendChild(elementPlans(s==="all"));
-    if (state.mode==="exit_discount") body.appendChild(el("p","hip-small",txt("saving")));
-    body.appendChild(btn(txt("pay"),"hip-primary",function() {
-      if (!selectedPlan()) return;
-      if (!state.email) {state.screen="email";render();return}
-      startPayment();
-    }));
-    body.appendChild(btn(txt("more"),"hip-secondary",function(){emit("pwa_pro_more_opened");state.screen="more";render()}));
+    body.appendChild(elementPlans(false));
+    if (state.mode==="exit_discount") body.appendChild(el("p","hip-small hip-center",txt("saving")));
+    actions.appendChild(payButton());
+    actions.appendChild(btn(txt("more"),"hip-secondary",function(){emit("pwa_pro_more_opened");state.screen="more";state.error="";render()}));
   }
   function load() {
     if (!state) return;
@@ -318,14 +474,15 @@
       state.data=data;
       state.email=(data.lava&&data.lava.email)||state.email||"";
       state.screen="main";render();
-    }).catch(function(err) {
+    }).catch(function() {
       if (!state||current!==run) return;
       state.data={};state.screen="main";state.error=txt("error");render();
     });
   }
   function close() {
     if (!root||root.hidden) return;
-    clearInterval(tick);tick=null;run++;root.hidden=true;body.replaceChildren();body.style.padding="";
+    clearInterval(tick);tick=null;run++;root.hidden=true;body.replaceChildren();actions.replaceChildren();
+    panda.dataset.pose="";panda.replaceChildren();
     document.documentElement.style.overflow=state&&state.previousOverflow||"";
     if (lastFocus&&lastFocus.isConnected) lastFocus.focus({preventScroll:true});
     var wasPaid=Boolean(state&&state.paid);
@@ -346,7 +503,10 @@
   }
   function requestDismiss() {
     if (!state) return;
-    if (state.mode==="exit_discount"||state.screen==="success"||state.screen==="waiting"||state.screen==="manual") {emit("pwa_pro_dismissed");close();return}
+    // An invoice may be in flight or already open: never interrupt it with
+    // a discount offer that would start a second checkout.
+    if (state.mode==="exit_discount"||state.paying||state.checkoutId||
+        state.screen==="success"||state.screen==="waiting"||state.screen==="manual") {emit("pwa_pro_dismissed");close();return}
     if (state.screen==="exit") {emit("pwa_pro_exit_declined");close();return}
     var current=++run;
     state.screen="loading";render();
@@ -369,32 +529,40 @@
   }
   function goBack() {
     if (!state) return;
-    if (state.screen==="manual"||state.screen==="all"||state.screen==="email")state.screen="more";
-    else if(state.screen==="more")state.screen="main";
+    if (state.screen==="manual")state.screen=available().length?"more":"main";
+    else if (state.screen==="email")state.screen=state.emailFrom==="more"?"more":"main";
+    else if (state.screen==="more")state.screen="main";
     else {requestDismiss();return}
     state.error="";render();
   }
   function startPayment() {
     var plan=selectedPlan();
-    if (!plan||!state) return;
+    if (!plan||!state||state.paying) return;
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((state.email||"").trim())) {
+      if (state.screen!=="email") state.emailFrom=state.screen;
       state.screen="email";state.error=txt("missingEmail");render();return;
     }
     // Do not pre-open about:blank: iOS standalone PWAs can strand the
-    // blank window even after a valid provider checkout URL is returned.
-    var current=++run;
-    state.screen="loading";state.error="";render();
+    // blank window even after a valid payment URL is returned.
+    var current=++run, from=state.screen==="email"?(state.emailFrom||"main"):state.screen;
+    state.paying=true;state.screen="loading";state.error="";render();
     request(API.start,{plan_type:plan.plan_type,email:state.email.trim(),language:state.lang,
       mode:state.mode,attempt_id:state.attempt,ui_source:state.source}).then(function(data){
       if (!state||current!==run) return;
+      state.paying=false;
       var url=new URL(data.payment_url);
       if (url.protocol!=="https:" || !(url.hostname==="lava.top"||url.hostname.endsWith(".lava.top")))
-        throw Error("invalid_lava_payment_url");
-      state.checkoutId=data.checkout_id;state.paymentUrl=url.href;
+        throw Error("invalid_payment_url");
+      state.checkoutId=data.checkout_id;state.paymentUrl=url.href;state.opened=false;
       state.screen="waiting";render();beginPolling();
-    }).catch(function(){
+    }).catch(function(err){
       if(!state||current!==run)return;
-      emit("pwa_pro_checkout_failed",plan.plan_type,"lava");state.error=txt("error");state.screen="email";render();
+      state.paying=false;
+      emit("pwa_pro_checkout_failed",plan.plan_type,"lava");
+      state.error=errorText(err&&err.code);
+      if (err&&err.code==="invalid_email") {state.emailFrom=from;state.screen="email";}
+      else state.screen=from==="more"?"more":"main";
+      render();
     });
   }
   function beginPolling() {
@@ -430,12 +598,12 @@
     if(!WORDS[lang])lang="ru";
     state={lang:lang,source:String(opts.source||"v3_paywall").slice(0,80),
       mode:"subscription",screen:"loading",plan:"1_month",email:"",attempt:"inline-"+Date.now()+"-"+Math.floor(Math.random()*1000000),eventSeq:0,
-      data:null,error:"",polling:false,onClose:opts.onClose,
+      data:null,error:"",polling:false,paying:false,opened:false,emailFrom:"main",onClose:opts.onClose,
       previousOverflow:document.documentElement.style.overflow};
     root.hidden=false;
     document.documentElement.style.overflow="hidden";
     root.setAttribute("aria-label","HSK AI Pro");
-    closeButton.focus({preventScroll:true});
+    sheet.focus({preventScroll:true});
     emit("pwa_pro_opened");load();
     return true;
   }
@@ -443,7 +611,7 @@
     if (!state||state.screen!=="manual"||!body)return false;
     var iframe=body.querySelector("iframe");
     if (!iframe||iframe.contentWindow!==child)return false;
-    state.screen="more";render();return true;
+    state.screen=available().length?"more":"main";render();return true;
   }
   document.addEventListener("keydown",function(ev) {
     if (!root||root.hidden)return;

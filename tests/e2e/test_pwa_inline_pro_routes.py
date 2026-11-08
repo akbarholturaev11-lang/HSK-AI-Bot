@@ -163,6 +163,6 @@ def test_manual_flow_stays_in_same_pwa_modal():
         assert frame.get_attribute("src").startswith("/iphone-pwa/checkout?")
         assert "inline_manual=1" in frame.get_attribute("src")
         page.locator("#hsk-inline-pro .hip-back").click()
-        assert page.get_by_role("heading",name="Выберите способ оплаты").is_visible()
+        assert page.get_by_role("heading",name="Другие тарифы").is_visible()
         assert page.locator("#hsk-inline-pro iframe").count()==0
         browser.close()
