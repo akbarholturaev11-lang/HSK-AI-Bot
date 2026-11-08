@@ -79,6 +79,41 @@ def _pwa_html(request: Request, path: str, headers: dict[str, str]) -> Response:
     return FileResponse(path, media_type="text/html", headers=response_headers)
 
 
+# The reviewed shared HTML bytes MUST remain unchanged for source/translation
+# audit anchors. Inject PWA-only assets only after an authenticated route check.
+# The injected HTML is separately ETagged by its FULL bytes, not by file SHA.
+_PWA_INLINE_PRO_HTML = "\n<link rel=\"stylesheet\" href=\"/course_v3_data/iphone-pwa-inline-pro.css?v=20261108-48debe7bf811\">\n<script src=\"/course_v3_data/iphone-pwa-inline-pro.js?v=20261108-9ea0e36e2b8c\"></script>\n<script src=\"/course_v3_data/iphone-pwa-inline-pro-bridge.js?v=20261108-a6215a61d479\"></script>\n".encode("utf-8")
+_PWA_INLINE_CACHE: dict[tuple[str, int, int], tuple[bytes, str]] = {}
+
+
+def _pwa_inline_html(request: Request, path: str, headers: dict[str, str],
+                     *, revalidate: bool = True) -> Response:
+    stat = os.stat(path)
+    key = (path, stat.st_mtime_ns, stat.st_size)
+    cached = _PWA_INLINE_CACHE.get(key)
+    if cached is None:
+        with open(path, "rb") as handle:
+            source = handle.read()
+        if source.count(b"</body>") != 1:
+            raise RuntimeError("pwa_inline_html_invalid")
+        document = source.replace(b"</body>", _PWA_INLINE_PRO_HTML + b"</body>", 1)
+        etag = 'W/"' + hashlib.sha256(document).hexdigest()[:32] + '"'
+        cached = document, etag
+        if len(_PWA_INLINE_CACHE) >= 12:
+            _PWA_INLINE_CACHE.clear()
+        _PWA_INLINE_CACHE[key] = cached
+    document, etag = cached
+    output_headers = {**headers}
+    output_headers["Cache-Control"] = "private, no-cache" if revalidate else "no-store"
+    if revalidate:
+        output_headers["ETag"] = etag
+        candidates = {tag.strip().removeprefix("W/")
+                      for tag in request.headers.get("if-none-match", "").split(",")}
+        if etag.removeprefix("W/") in candidates:
+            return Response(status_code=304, headers=output_headers)
+    return Response(content=document, media_type="text/html", headers=output_headers)
+
+
 class PwaLoginStart(BaseModel):
     model_config = ConfigDict(extra="forbid")
     provider: Literal["google", "apple"]
@@ -188,6 +223,32 @@ class PwaGamificationRequest(BaseModel):
     timezone_offset_minutes: int
 
 
+class PwaExitOfferAction(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    action: Literal["view", "claim"]
+    source: str | None = Field(default=None, max_length=80)
+
+
+class PwaProUiEvent(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    # Billing events are exclusively recorded after real provider actions.
+    event: Literal[
+        "pwa_pro_opened", "pwa_pro_plan_selected", "pwa_pro_more_opened",
+        "pwa_pro_method_selected", "pwa_pro_exit_offered",
+        "pwa_pro_exit_claimed", "pwa_pro_exit_declined", "pwa_pro_dismissed",
+        "pwa_pro_checkout_failed",
+    ]
+    source: Literal[
+        "v3_locked_lesson", "v3_pronunciation_limit", "v3_recognition_limit",
+        "v3_memorize_limit", "v3_test_limit", "v3_mistake_review",
+        "v3_voice_limit", "v3_qa_limit",
+    ]
+    attempt_id: str = Field(min_length=5, max_length=80, pattern=r"^[A-Za-z0-9:.-]+$")
+    event_id: str = Field(min_length=5, max_length=80, pattern=r"^[A-Za-z0-9:.-]+$")
+    plan_type: Literal["1_month", "3_months", "6_months", "12_months"] | None = None
+    method: Literal["lava", "manual"] | None = None
+
+
 class PwaCheckoutContext(BaseModel):
     model_config = ConfigDict(extra="forbid")
     source: str | None = None
@@ -199,6 +260,8 @@ class PwaCheckoutContext(BaseModel):
     feedback_id: int | None = None
     # Declared by checkout builds that implement the lava.top path.
     supports_lava: bool | None = None
+    # Inline UI only requests prices; it has NOT opened checkout.
+    inline_preview: bool = False
 
 
 class PwaCheckoutQuote(PwaCheckoutContext):
@@ -418,7 +481,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                 await PwaAuthService(db, settings_obj).actor(
                     request.cookies.get(PWA_SESSION_COOKIE)
                 )
-            return _pwa_html(request, "app/static/course-v3.html", {
+            return _pwa_inline_html(request, "app/static/course-v3.html", {
                 "Referrer-Policy": "no-referrer",
                 "X-Content-Type-Options": "nosniff",
                 "X-Frame-Options": "DENY",
@@ -463,7 +526,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                 await PwaAuthService(db, settings_obj).actor(
                     request.cookies.get(PWA_SESSION_COOKIE)
                 )
-            return _pwa_html(request, "app/static/course_v3_recognition.html", _embeddable_pwa_page_headers(request))
+            return _pwa_inline_html(request, "app/static/course_v3_recognition.html", _embeddable_pwa_page_headers(request))
         except PwaAuthError as exc:
             if exc.code == "pwa_session_required":
                 return RedirectResponse(
@@ -480,7 +543,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                 await PwaAuthService(db, settings_obj).actor(
                     request.cookies.get(PWA_SESSION_COOKIE)
                 )
-            return _pwa_html(request, "app/static/course_v3_memorize.html", _embeddable_pwa_page_headers(request))
+            return _pwa_inline_html(request, "app/static/course_v3_memorize.html", _embeddable_pwa_page_headers(request))
         except PwaAuthError as exc:
             if exc.code == "pwa_session_required":
                 return RedirectResponse(
@@ -497,7 +560,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                 await PwaAuthService(db, settings_obj).actor(
                     request.cookies.get(PWA_SESSION_COOKIE)
                 )
-            return _pwa_html(request, "app/static/course_v3_pronunciation.html", _embeddable_pwa_page_headers(request))
+            return _pwa_inline_html(request, "app/static/course_v3_pronunciation.html", _embeddable_pwa_page_headers(request))
         except PwaAuthError as exc:
             if exc.code == "pwa_session_required":
                 return RedirectResponse(
@@ -606,7 +669,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                 await PwaAuthService(db, settings_obj).actor(
                     request.cookies.get(PWA_SESSION_COOKIE)
                 )
-            return _pwa_html(request, "app/static/course_v3_mistakes.html", _embeddable_pwa_page_headers(request))
+            return _pwa_inline_html(request, "app/static/course_v3_mistakes.html", _embeddable_pwa_page_headers(request))
         except PwaAuthError as exc:
             if exc.code == "pwa_session_required":
                 return RedirectResponse(
@@ -741,7 +804,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                 await PwaAuthService(db, settings_obj).actor(
                     request.cookies.get(PWA_SESSION_COOKIE)
                 )
-            return _pwa_html(request, "app/static/course_v3_test.html", _embeddable_pwa_page_headers(request))
+            return _pwa_inline_html(request, "app/static/course_v3_test.html", _embeddable_pwa_page_headers(request))
         except PwaAuthError as exc:
             if exc.code == "pwa_session_required":
                 return RedirectResponse(
@@ -995,10 +1058,11 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                 await PwaAuthService(db, settings_obj).actor(
                     request.cookies.get(PWA_SESSION_COOKIE)
                 )
-            return FileResponse(
-                "app/static/course_v3_voice.html", media_type="text/html",
-                headers={**_NO_STORE, "X-Content-Type-Options": "nosniff",
-                         "X-Frame-Options": "DENY"},
+            return _pwa_inline_html(
+                request, "app/static/course_v3_voice.html",
+                {**_NO_STORE, "X-Content-Type-Options": "nosniff",
+                 "X-Frame-Options": "DENY"},
+                revalidate=False,
             )
         except PwaAuthError as exc:
             if exc.code == "pwa_session_required":
@@ -1242,12 +1306,88 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                 )
             # The course shell can host the existing checkout after the same
             # actor check. Direct checkout links remain unframeable.
-            return _pwa_html(request, "app/static/subscription.html", _embeddable_pwa_page_headers(request))
+            return _pwa_inline_html(request, "app/static/subscription.html", _embeddable_pwa_page_headers(request))
         except PwaAuthError as exc:
             if exc.code == "pwa_session_required":
                 return RedirectResponse(
                     "/iphone-pwa", status_code=303, headers=_NO_STORE,
                 )
+            return _error(exc)
+
+    @router.post("/api/v3/pwa/subscription/inline-event")
+    async def pwa_inline_pro_event(request: Request):
+        """CSRF-protected, account-bound, idempotent PWA UI funnel stages.
+
+        The canonical account row serializes concurrent browser-tab writes.
+        UI clients CANNOT record a provider checkout or completed payment.
+        """
+        import json
+        from sqlalchemy import select
+        from app.db.models.user import User
+        from app.db.models.conversion_funnel_event import ConversionFunnelEvent
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            data = await _small_json(request, PwaProUiEvent, max_bytes=1024)
+            if not data.event_id.startswith(data.attempt_id + ":"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                # SELECT FOR UPDATE avoids double counting the same stage
+                # when a tab/network retries the same event ID.
+                await db.get(User, actor.id, with_for_update=True)
+                existed = (await db.execute(
+                    select(ConversionFunnelEvent.id).where(
+                        ConversionFunnelEvent.user_id == actor.id,
+                        ConversionFunnelEvent.event_name == data.event,
+                        ConversionFunnelEvent.payload_json.like(
+                            '%"event_id": "' + data.event_id + '"%'
+                        ),
+                    ).limit(1)
+                )).scalar_one_or_none()
+                if existed is None:
+                    db.add(ConversionFunnelEvent(
+                        user_id=actor.id, telegram_id=actor.telegram_id,
+                        event_name=data.event, source=data.source,
+                        payload_json=json.dumps({
+                            "event_id": data.event_id,
+                            "attempt_id": data.attempt_id,
+                            "plan_type": data.plan_type or "",
+                            "payment_method": data.method or "",
+                            "transport": "iphone_pwa",
+                        }, ensure_ascii=False),
+                    ))
+                await db.commit()
+            return JSONResponse(
+                {"ok": True, "recorded": existed is None}, headers=_NO_STORE,
+            )
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.post("/api/v3/pwa/subscription/exit-offer")
+    async def pwa_exit_offer(request: Request):
+        """Allow a one-time real 20% promo only after a verified PWA X action."""
+        from app.services.pwa_exit_offer_service import PwaExitOfferService
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            payload = await _small_json(request, PwaExitOfferAction, max_bytes=512)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                result = await PwaExitOfferService(db, settings_obj).action(
+                    actor, action=payload.action,
+                )
+                await db.commit()
+            return JSONResponse(result, headers=_NO_STORE)
+        except PwaAuthError as exc:
             return _error(exc)
 
     @router.post("/api/v3/pwa/subscription/overview")
@@ -1277,7 +1417,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                     campaign_id=data.campaign_id,
                     feedback_id=data.feedback_id,
                 )
-                if result.get("ok"):
+                if result.get("ok") and not data.inline_preview:
                     await SubscriptionEntryAnalyticsService(db).record_entry(
                         user=actor, source=data.source or "iphone_pwa",
                         mode=data.mode, plan_type=data.plan,

@@ -44,6 +44,17 @@ class ConversionFunnelService:
         "paywall_cta_clicked": "Paywall bosildi",
         "ad_shown": "Reklama ko'rsatildi",
         "ad_skipped": "Reklama tashlandi",
+        "pwa_pro_opened": "PWA Pro oynasi",
+        "pwa_pro_plan_selected": "PWA tarif tanlandi",
+        "pwa_pro_more_opened": "PWA boshqa tariflar",
+        "pwa_pro_method_selected": "PWA tolov usuli",
+        "pwa_pro_exit_offered": "PWA 20% taklif",
+        "pwa_pro_exit_claimed": "PWA 20% qabul",
+        "pwa_pro_exit_declined": "PWA 20% rad",
+        "pwa_pro_dismissed": "PWA Pro yopildi",
+        "pwa_pro_checkout_started": "PWA Lava checkout",
+        "pwa_pro_checkout_failed": "PWA checkout xato",
+        "pwa_pro_checkout_paid": "PWA tolov tasdiq",
     }
     RATE_PAIRS = (
         ("CTA → Kurs", "course_started", "course_cta_seen"),
@@ -256,6 +267,12 @@ class ConversionFunnelService:
             ("quiz_completed", "ai_explanation_seen", "homework_completed"),
             ("paywall_seen", "checkout_opened", "payment_screenshot_submitted"),
             ("payment_approved", "payment_rejected"),
+            # PWA inline Pro uses separate keys: checkout means a real Lava
+            # invoice and paid means a verified server-side activation.
+            ("pwa_pro_opened", "pwa_pro_plan_selected", "pwa_pro_more_opened"),
+            ("pwa_pro_method_selected", "pwa_pro_dismissed"),
+            ("pwa_pro_exit_offered", "pwa_pro_exit_claimed", "pwa_pro_exit_declined"),
+            ("pwa_pro_checkout_started", "pwa_pro_checkout_paid", "pwa_pro_checkout_failed"),
         ]
         lines = ["<b>🧭 FUNNEL unique (all/7 kun)</b>"]
         for row in compact_rows:

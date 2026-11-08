@@ -4,6 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.test.getUnclippedBoundsInRoot
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.performKeyInput
@@ -86,8 +87,13 @@ class ProfilePromoCarouselTest {
         val cards = listOf("hsk30", "telegram", "google", "apple")
         val heights = cards.map { key ->
             compose.onNodeWithTag("profile-promo-dot-$key").performClick()
-            compose.onNodeWithTag("profile-promo-card-$key").assertIsDisplayed()
-                .fetchSemanticsNode().layoutInfo.coordinates.size.height
+            compose.waitForIdle()
+            // Use the official UI-test semantics geometry query, which
+            // synchronizes through the Compose test owner. Do not read
+            // layoutInfo.coordinates directly from instrumentation code.
+            compose.onNodeWithTag("profile-promo-card-$key")
+                .assertIsDisplayed().getUnclippedBoundsInRoot()
+                .let { it.bottom - it.top }
         }
         assertEquals(1, heights.distinct().size)
     }
@@ -107,13 +113,25 @@ class ProfilePromoCarouselTest {
     @Test fun aCardTracksTheFingerBeforeTheSwipeIsReleased() {
         show()
         val first = compose.onNodeWithTag("profile-promo-card-hsk30")
-        val initialLeft = first.fetchSemanticsNode().layoutInfo.coordinates.positionInRoot().x
+        // Resolve the card semantics before starting the gesture. Re-fetching
+        // the semantics tree while a finger is held down can observe layout
+        // on the instrumentation thread and race Compose's UI observer.
+        val cardNode = first.fetchSemanticsNode()
+        val initialLeft = compose.runOnIdle {
+            cardNode.layoutInfo.coordinates.positionInRoot().x
+        }
         compose.onNodeWithTag("profile-promo-pager").performTouchInput {
             down(center)
             moveBy(Offset(-width * .1f, 0f))
             moveBy(Offset(-width * .25f, 0f))
         }
-        val draggedLeft = first.fetchSemanticsNode().layoutInfo.coordinates.positionInRoot().x
+        // Do not re-query the semantics tree during an active drag. The
+        // already-resolved card layout coordinates update when the pager
+        // places the same node on the UI thread.
+        compose.mainClock.advanceTimeByFrame()
+        val draggedLeft = compose.runOnIdle {
+            cardNode.layoutInfo.coordinates.positionInRoot().x
+        }
         assertTrue("card must slide while the finger is held down", draggedLeft < initialLeft - 25f)
         compose.onNodeWithTag("profile-promo-pager").performTouchInput { up() }
     }

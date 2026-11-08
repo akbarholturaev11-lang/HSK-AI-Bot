@@ -135,6 +135,106 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         await self.client.aclose()
         await self.engine.dispose()
 
+    async def test_inline_preview_never_counts_fake_checkout(self):
+        # Price discovery must not inflate paid-conversion metrics, including
+        # on a repeat overview after accepting an exit discount.
+        await self.callback(await self.begin())
+        info = (await self.client.get("/api/v3/pwa-auth/session")).json()
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": info["csrf"]}
+        overview = {
+            "source":"v3_locked_lesson",
+            "mode":"subscription","plan":"1_month",
+            "supports_lava":False,"attempt_id":"inline-qa-preview",
+            "inline_preview":True,
+        }
+        with patch(
+            "app.services.subscription_miniapp_service.SubscriptionMiniAppService.overview",
+            new=AsyncMock(return_value={"ok": True, "mode": "subscription"})
+        ), patch(
+            "app.services.conversion_funnel_service.ConversionFunnelService.record",
+            new=AsyncMock(return_value=True)
+        ) as recorded:
+            a=await self.client.post("/api/v3/pwa/subscription/overview",
+                                      json=overview,headers=headers)
+            self.assertEqual(a.status_code,200,a.text)
+            b=await self.client.post("/api/v3/pwa/subscription/overview",
+                                      json={**overview,"mode":"exit_discount"},
+                                      headers=headers)
+            self.assertEqual(b.status_code,200,b.text)
+            recorded.assert_not_awaited()
+            c=await self.client.post("/api/v3/pwa/subscription/overview",
+                                      json={**overview,"inline_preview":False},
+                                      headers=headers)
+            self.assertEqual(c.status_code,200,c.text)
+            self.assertEqual(recorded.await_count,1)
+
+    async def test_inline_pro_analytics_is_authenticated_and_deduplicated(self):
+        path = "/api/v3/pwa/subscription/inline-event"
+        event = {
+            "event": "pwa_pro_opened",
+            "source": "v3_locked_lesson",
+            "attempt_id": "inline-qa-123",
+            "event_id": "inline-qa-123:1",
+            "plan_type": "1_month",
+            "method": None,
+        }
+        self.assertEqual((await self.client.post(path, json=event,
+                         headers={"Origin": ORIGIN})).status_code, 401)
+        await self.callback(await self.begin())
+        a = (await self.client.get("/api/v3/pwa-auth/session")).json()
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": a["csrf"]}
+        self.assertEqual((await self.client.post(path,json=event,
+                         headers={"Origin":"https://attacker.invalid",
+                         "X-HSK-PWA-CSRF":a["csrf"]})).status_code,403)
+        for invalid in (
+            {**event, "event": "pwa_pro_checkout_paid"},
+            {**event, "event_id": "from-another-attempt:1"},
+            {**event, "source": "v3_fake"},
+            {**event, "user_id": 1000},
+        ):
+            self.assertEqual((await self.client.post(path,json=invalid,
+                             headers=headers)).status_code, 422)
+        first = await self.client.post(path,json=event,headers=headers)
+        self.assertEqual(first.status_code,200,first.text)
+        self.assertTrue(first.json()["recorded"])
+        second = await self.client.post(path,json=event,headers=headers)
+        self.assertEqual(second.status_code,200,second.text)
+        self.assertFalse(second.json()["recorded"])
+        next_event = {**event,"event_id":"inline-qa-123:2"}
+        self.assertTrue((await self.client.post(
+            path,json=next_event,headers=headers)).json()["recorded"])
+        async with self.sessions() as db:
+            found = (await db.execute(sa.select(ConversionFunnelEvent).where(
+                ConversionFunnelEvent.event_name=="pwa_pro_opened",
+                ConversionFunnelEvent.user_id==1,
+            ))).scalars().all()
+            self.assertEqual(len(found),2)
+            self.assertTrue(all(row.source=="v3_locked_lesson" for row in found))
+
+    async def test_pwa_exit_offer_requires_session_csrf_and_origin(self):
+        path = "/api/v3/pwa/subscription/exit-offer"
+        payload = {"action": "view", "source": "v3_locked_lesson"}
+        unauthorized = await self.client.post(path, json=payload, headers={"Origin": ORIGIN})
+        self.assertEqual(unauthorized.status_code, 401)
+        await self.callback(await self.begin())
+        actor = (await self.client.get("/api/v3/pwa-auth/session")).json()
+        no_csrf = await self.client.post(path, json=payload, headers={"Origin": ORIGIN})
+        self.assertEqual(no_csrf.status_code, 403)
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": actor["csrf"]}
+        wrong_origin = await self.client.post(
+            path, json=payload,
+            headers={"Origin": "https://attacker.invalid", "X-HSK-PWA-CSRF": actor["csrf"]},
+        )
+        self.assertEqual(wrong_origin.status_code, 403)
+        for invalid in ({"action": "fake"}, {"action": "claim", "user_id": 1}, {}):
+            bad = await self.client.post(path, json=invalid, headers=headers)
+            self.assertEqual(bad.status_code, 422)
+        valid = await self.client.post(path, json=payload, headers=headers)
+        self.assertEqual(valid.status_code, 200, valid.text)
+        self.assertEqual(valid.headers["cache-control"], "no-store")
+        # Sales are disabled in this isolated PWA auth fixture.
+        self.assertFalse(valid.json()["available"])
+
     async def begin(self):
         response = await self.client.post(
             "/api/v3/pwa-auth/start", headers={"Origin": ORIGIN},

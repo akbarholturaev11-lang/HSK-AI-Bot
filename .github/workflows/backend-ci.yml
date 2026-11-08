@@ -226,6 +226,8 @@ jobs:
             tests.test_identity_link_service
       - name: Test isolated iPhone PWA browser and Telegram sign-in
         run: python -m unittest tests.test_pwa_browser_auth tests.test_pwa_telegram_bot tests.test_pwa_shake_report
+      - name: Verify one-time PWA exit offer and real Lava promo activation
+        run: python -m unittest tests.test_pwa_exit_offer tests.test_lava_promo_codes
       - name: Validate iPhone PWA inbox, payment and feedback dialogs
         run: |
           node tests/test_pwa_notices_ui.js
@@ -464,6 +466,8 @@ jobs:
           python -m playwright install --with-deps chromium
       - name: Verify real browser iPhone PWA glass dialogs at mobile widths
         run: python -m pytest -q tests/e2e/test_iphone_pwa_glass.py
+      - name: Verify inline PWA Pro terms, manual choice and 20 percent exit offer
+        run: python -m pytest -q tests/e2e/test_pwa_inline_pro.py tests/e2e/test_pwa_inline_pro_routes.py
       - name: Preserve current main navigation, preload and desktop dialog behavior
         run: >-
           python -m pytest -q tests/e2e/test_practice_bootstrap.py

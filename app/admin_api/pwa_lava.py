@@ -74,7 +74,7 @@ class LavaSettingsInput(StrictModel):
     checkout_mode: Literal["manual_only", "lava_only", "both"]
     currency: Literal["USD", "RUB"]
     plans: dict[Literal["1_month", "3_months", "6_months", "12_months"], LavaTermInput]
-    # "<referral|feedback_price_offer|admin_campaign>:<percent>" -> lava promo
+    # "<referral|feedback_price_offer|admin_campaign|exit_offer>:<percent>" -> lava promo
     # code; validated by the shared config parser (lava 3-36 char rule).
     promo_codes: dict[Annotated[str, Field(max_length=32)], Annotated[str, Field(max_length=36)]] = Field(
         default_factory=dict, max_length=12)

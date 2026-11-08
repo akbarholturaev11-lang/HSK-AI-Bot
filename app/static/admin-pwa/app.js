@@ -2499,6 +2499,7 @@ async function lavaSettings(){
     const promo='<fieldset class="form-field"><legend>'+esc(t('lavaPromo'))+'</legend><p class="source-note">'+esc(t('lavaPromoHint'))+'</p>'
       +'<div class="lava-term"><span class="lava-term-toggle">'+esc(t('lavaPromoReferral'))+'</span>'+promoInput('lavaPromoReferral',promos['referral:20'])+'</div>'
       +'<div class="lava-term"><span class="lava-term-toggle">'+esc(t('lavaPromoFeedback'))+'</span>'+promoInput('lavaPromoFeedback',promos['feedback_price_offer:20'])+'</div>'
+      +'<div class="lava-term"><span class="lava-term-toggle">PWA Exit Offer · 20%</span>'+promoInput('lavaPromoExit',promos['exit_offer:20'])+'</div>'
       +'<p class="source-note">'+esc(t('lavaPromoAdmin'))+'</p>'+adminRows+'</fieldset>';
     const body=status+mode+currency+'<fieldset class="form-field"><legend>'+esc(t('lavaTerms'))+'</legend>'+terms+'</fieldset>'+promo;
     drawer('lavaSettings',body,btn('saveChanges','lavaPrepare','primary'));
@@ -2515,6 +2516,7 @@ async function prepareLavaSettingsCommand(){
   const code=id=>String($(id)?.value||'').trim();
   if(code('lavaPromoReferral'))promo_codes['referral:20']=code('lavaPromoReferral');
   if(code('lavaPromoFeedback'))promo_codes['feedback_price_offer:20']=code('lavaPromoFeedback');
+  if(code('lavaPromoExit'))promo_codes['exit_offer:20']=code('lavaPromoExit');
   for(const index of [0,1,2]){
     const pct=Number($('lavaPromoPct_'+index)?.value),value=code('lavaPromoAdmin_'+index);
     if(value&&Number.isInteger(pct)&&pct>=1&&pct<=90)promo_codes['admin_campaign:'+pct]=value;

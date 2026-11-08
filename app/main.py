@@ -2473,9 +2473,10 @@ async def course_v3_data_file(filename: str):
     public_assets = {
         "design-tokens.css": "text/css",
         "iphone-pwa-glass.css": "text/css",
-        "iphone-pwa-notices.js": "application/javascript",
-        "iphone-pwa-feedback.js": "application/javascript",
-        "iphone-pwa-shake-report.js": "application/javascript",
+        "iphone-pwa-inline-pro.css": "text/css",
+        **dict.fromkeys(("iphone-pwa-inline-pro.js", "iphone-pwa-inline-pro-bridge.js",
+                         "iphone-pwa-notices.js", "iphone-pwa-feedback.js",
+                         "iphone-pwa-shake-report.js"), "application/javascript"),
         "iphone-pwa-shake-report.css": "text/css",
         "iphone-pwa-practice-boot.js": "application/javascript",
         "iphone-pwa-practice-boot.css": "text/css",

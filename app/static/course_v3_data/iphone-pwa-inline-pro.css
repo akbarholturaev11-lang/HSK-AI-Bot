@@ -1,0 +1,105 @@
+/* HSK AI learner PWA: instant, compact Pro sheet. Isolated from Telegram UI. */
+#hsk-inline-pro[hidden],#hsk-inline-pro [hidden]{display:none!important}
+#hsk-inline-pro{position:fixed;inset:0;z-index:11000;display:grid;align-items:end;justify-items:center;
+  background:rgba(17,23,28,.55);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);
+  box-sizing:border-box;padding:8px 8px max(8px,env(safe-area-inset-bottom,0px));
+  color:#21272a;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  animation:hip-backdrop-in .19s ease-out both}
+#hsk-inline-pro *,#hsk-inline-pro *:before,#hsk-inline-pro *:after{box-sizing:border-box}
+#hsk-inline-pro .hip-sheet{position:relative;width:min(100%,440px);
+  max-height:calc(100dvh - 16px - env(safe-area-inset-bottom,0px) - env(safe-area-inset-top,0px));
+  display:flex;flex-direction:column;overflow:hidden;background:#fffcf7;
+  border:1px solid rgba(255,255,255,.8);border-radius:28px 28px 22px 22px;
+  box-shadow:0 24px 75px rgba(15,22,22,.24);transform-origin:50% 100%;
+  animation:hip-sheet-in .33s cubic-bezier(.18,.85,.23,1.04) both}
+#hsk-inline-pro .hip-header{flex:none;display:flex;flex-direction:column;align-items:center;
+  gap:0;text-align:center;padding:12px 22px 4px}
+#hsk-inline-pro .hip-panda{position:relative;display:grid;place-items:center;
+  width:88px;height:85px;margin:0 auto 2px;filter:drop-shadow(0 8px 12px rgba(0,0,0,.09))}
+#hsk-inline-pro .hip-panda svg{width:86px;height:86px;display:block;animation:hip-panda-appear .42s cubic-bezier(.2,1.3,.35,1) both}
+#hsk-inline-pro .hip-title{margin:0;font-size:clamp(26px,7.8vw,32px);line-height:1.09;
+  letter-spacing:-.035em;font-weight:850;color:#1f2825}
+#hsk-inline-pro .hip-summary{font-size:15px;font-weight:600;line-height:1.35;color:#636c68;margin:7px 0 0}
+#hsk-inline-pro .hip-body{flex:1;overflow:auto;min-height:0;padding:8px 18px 14px;
+  overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+#hsk-inline-pro .hip-close,#hsk-inline-pro .hip-back{position:absolute;top:13px;width:35px;height:35px;
+  border:0;border-radius:50%;background:#eeede6;color:#435049;font-size:23px;line-height:33px;
+  display:grid;place-items:center;z-index:3;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#hsk-inline-pro .hip-close{right:13px}
+#hsk-inline-pro .hip-back{left:13px}
+#hsk-inline-pro .hip-benefits{display:grid;gap:8px;margin:0 0 16px;padding:0 4px;
+  list-style:none;text-align:left}
+#hsk-inline-pro .hip-benefit{display:flex;align-items:center;gap:11px;min-height:23px;
+  color:#29392f;font-size:14px;font-weight:620;line-height:1.2}
+#hsk-inline-pro .hip-benefit:before{content:"✓";flex:none;width:22px;height:22px;border-radius:50%;
+  display:grid;place-items:center;color:#28865f;background:#dff4e7;font-size:13px;font-weight:900}
+#hsk-inline-pro .hip-plans{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;margin:2px 0 12px}
+#hsk-inline-pro .hip-plan{position:relative;display:flex;flex-direction:column;justify-content:center;
+  background:#fff;border:1.5px solid #dedcd5;border-radius:17px;
+  color:#202b25;text-align:left;padding:11px 10px;min-height:99px;
+  cursor:pointer;-webkit-tap-highlight-color:transparent}
+#hsk-inline-pro .hip-plan[aria-pressed="true"]{background:#edf8f1;border:2px solid #16835b;
+  padding:10.5px 9.5px;box-shadow:0 2px 9px rgba(35,119,80,.08)}
+#hsk-inline-pro .hip-plan[aria-pressed="true"]:after{content:"✓";position:absolute;right:8px;top:8px;
+  display:grid;place-items:center;width:19px;height:19px;border-radius:50%;
+  background:#16835b;color:white;font-size:11px;font-weight:800}
+#hsk-inline-pro .hip-plan .term{font-size:15px;font-weight:770;line-height:1.25;margin-right:22px}
+#hsk-inline-pro .hip-plan .hip-price-line{display:flex;flex-wrap:wrap;align-items:baseline;
+  gap:3px 5px;margin-top:8px;flex-wrap:nowrap}
+#hsk-inline-pro .hip-plan .price{font-size:clamp(16px,4.4vw,21px);font-weight:860;line-height:1.15;
+  white-space:nowrap;letter-spacing:-.045em}
+#hsk-inline-pro .hip-plan .comparison{font-size:11.5px;color:#a2a39e;text-decoration:line-through;
+  text-decoration-thickness:1px;white-space:nowrap}
+#hsk-inline-pro .hip-plan .badge{position:absolute;bottom:6px;right:7px;font-size:11px;
+  font-weight:800;color:#127e50}
+#hsk-inline-pro .hip-plan .badge~*{margin-bottom:6px}
+#hsk-inline-pro .hip-primary{width:100%;min-height:54px;border:0;border-radius:16px;
+  color:#fff;background:#157854;font-size:17px;letter-spacing:.01em;font-weight:800;
+  box-shadow:0 5px 14px rgba(18,103,73,.18);cursor:pointer;-webkit-tap-highlight-color:transparent}
+#hsk-inline-pro .hip-primary:active{transform:scale(.99)}
+#hsk-inline-pro .hip-primary:disabled{opacity:.5;cursor:not-allowed}
+#hsk-inline-pro .hip-secondary{display:block;width:100%;min-height:42px;padding:9px 7px;
+  border:0;background:transparent;color:#5b655d;font-size:14px;font-weight:690;
+  text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+#hsk-inline-pro .hip-disclosure{margin:4px 0 0!important;text-align:center;font-size:11px!important;
+  line-height:1.35;color:#8b8b82!important}
+#hsk-inline-pro .hip-method{width:100%;display:block;text-align:left;padding:15px 14px;
+  background:white;border:1px solid #dedbd2;border-radius:14px;
+  color:#29362e;font-size:15px;font-weight:730;margin:10px 0}
+#hsk-inline-pro .hip-small{font-size:13px;color:#747d75;line-height:1.4;margin:11px 0}
+#hsk-inline-pro .hip-error{font-size:13px;font-weight:650;color:#bd3535;
+  text-align:center;margin:8px 0}
+#hsk-inline-pro .hip-input{display:block;width:100%;border-radius:13px;
+  border:1px solid #cdcfc8;background:white;color:#202b25;padding:14px 12px;
+  font-size:16px;margin:10px 0 14px}
+#hsk-inline-pro .hip-checkout{display:block;width:100%;height:min(65dvh,550px);
+  border:0;background:white}
+#hsk-inline-pro .hip-emphasis{font-size:27px;font-weight:850;line-height:1.15;
+  text-align:center;margin:10px 0 19px}
+#hsk-inline-pro .hip-loading{font-size:13px;color:#7b827d;text-align:center;margin:9px 0}
+#hsk-inline-pro .hip-skeleton{background:linear-gradient(100deg,#f0efea 15%,#fff 50%,#f0efea 85%);
+  background-size:220% 100%;animation:hip-shimmer 1.2s linear infinite;border:0;pointer-events:none}
+#hsk-inline-pro .hip-skeleton:before{content:"";width:48%;height:17px;
+  background:#dadbd3;border-radius:6px;display:block;margin:0 0 12px}
+#hsk-inline-pro .hip-skeleton:after{content:"";width:76%;height:23px;
+  background:#dadbd3;border-radius:7px;display:block}
+#hsk-inline-pro button:focus-visible,#hsk-inline-pro input:focus-visible{
+  outline:3px solid #edb65e;outline-offset:2px}
+@keyframes hip-backdrop-in{from{opacity:0}to{opacity:1}}
+@keyframes hip-sheet-in{from{opacity:.65;transform:translate3d(0,29px,0) scale(.97)}
+  to{opacity:1;transform:translate3d(0,0,0) scale(1)}}
+@keyframes hip-panda-appear{from{opacity:0;transform:translateY(12px) scale(.9)}
+  to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes hip-shimmer{to{background-position-x:-220%}}
+@media(min-width:650px){#hsk-inline-pro{align-items:center}
+  #hsk-inline-pro .hip-sheet{border-radius:28px;transform-origin:50% 50%}}
+@media(max-height:690px){#hsk-inline-pro .hip-header{padding-top:7px}
+  #hsk-inline-pro .hip-panda{height:62px;width:70px}
+  #hsk-inline-pro .hip-panda svg{width:67px;height:67px}
+  #hsk-inline-pro .hip-title{font-size:26px}
+  #hsk-inline-pro .hip-benefits{gap:5px;margin-bottom:10px}
+  #hsk-inline-pro .hip-plan{min-height:84px}}
+@media(prefers-reduced-motion:reduce){#hsk-inline-pro,
+  #hsk-inline-pro *,#hsk-inline-pro *:before,#hsk-inline-pro *:after{
+    animation:none!important;transition:none!important}}
