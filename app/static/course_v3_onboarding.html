@@ -740,14 +740,12 @@ function refreshOnboardingTracks(){
         if(!choices.some(function(l){return l.k===sel}))sel=track==="hsk30"?"nhsk1":"beginner";
       }
       saveDraft();
-      if(step===1){
-        updateTrackSwitcher();
-        if(previousTrack!==track)updateBookPreview();
-      }else{
-        var stage=document.getElementById("stage"),previousScroll=stage.scrollTop;
-        render(false);
-        stage.scrollTop=previousScroll;
-      }
+      // The version step might still be a loading skeleton, not the book DOM.
+      // Render the real screen on success; restoring the old switcher alone
+      // would leave the loading CTA disabled forever.
+      var stage=document.getElementById("stage"),previousScroll=stage.scrollTop;
+      render(false);
+      if(step!==1)stage.scrollTop=previousScroll;
     })
     .catch(function(error){
       if(id!==ONB_TRACK_REQUEST_ID)return;
