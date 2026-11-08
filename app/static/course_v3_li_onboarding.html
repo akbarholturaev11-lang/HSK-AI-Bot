@@ -240,6 +240,9 @@ body.dark::before{background-color:#FFFFFF;opacity:.55}
 .li-real-books>img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;display:block}
 .li-real-books>.book-fallback{width:100%;height:100%}
 .li-remote-error{padding:16px 24px;text-align:center;max-width:420px;margin:18px auto;color:var(--hsk-ink-secondary);font-size:14px;line-height:1.5}
+#stage.li-request-busy{position:relative}
+#stage.li-request-busy:after{content:"";display:block;position:sticky;bottom:10px;left:calc(50% - 57px);z-index:9;width:114px;height:5px;border-radius:999px;background:linear-gradient(90deg,var(--hsk-cinnabar) 0 40%,var(--hsk-divider) 40%);background-size:220% 100%;animation:liServerPending 1.15s ease-in-out infinite alternate}
+
 .loading:after{content:"";display:block;width:115px;height:5px;margin:20px auto 0;background:linear-gradient(90deg,var(--hsk-cinnabar) 0 40%,var(--hsk-divider) 40%);background-size:220% 100%;border-radius:99px;animation:liServerPending 1.15s ease-in-out infinite alternate}
 @keyframes liServerPending{from{background-position:100%}to{background-position:0}}
 @media(prefers-reduced-motion:reduce){.loading:after{animation:none}}
@@ -650,6 +653,6 @@ function pickStreak(k){streakGoal=k;keepScroll(function(){render(false)});please
 function demoLogin(){demoStatus=true;render(false)}
 render();
 </script>
-<script src="/course_v3_data/li-onboarding-runtime.js?v=20261108-9bc42a5ed438"></script>
+<script src="/course_v3_data/li-onboarding-runtime.js?v=20261108-d06516482410"></script>
 </body>
 </html>
