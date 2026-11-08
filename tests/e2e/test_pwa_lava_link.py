@@ -68,7 +68,7 @@ def test_lava_provider_link_is_available_only_when_invoice_has_real_url(url,expe
         browser=getattr(pw,os.getenv("PWA_E2E_ENGINE","chromium")).launch()
         context=browser.new_context(**pw.devices["iPhone 13"])
         page=context.new_page()
-        page.route("**/*",serve)
+        context.route("**/*",serve)
         errors=[]; popups=[]
         page.on("pageerror",lambda exc:errors.append(str(exc)))
         page.on("popup",lambda popup:popups.append(popup))
