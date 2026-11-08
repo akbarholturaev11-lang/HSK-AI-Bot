@@ -1,0 +1,60 @@
+name: Import approved iPhone install MP4 from uploaded ZIP (one-time)
+on:
+  push:
+    branches:
+      - feature/li-onboarding-mainffbff9-20261108
+    paths:
+      - .github/workflows/li-import-video-once.yml
+
+permissions:
+  contents: write
+
+jobs:
+  import-video:
+    if: github.repository == 'akbarholturaev11-lang/HSK-AI-Bot'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          ref: feature/li-onboarding-mainffbff9-20261108
+      - name: Inspect and extract approved compressed recording
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib
+          import pathlib
+          import zipfile
+          zip_path = pathlib.Path('app/static/assets/onboarding/HSK_AI_iPhone_install_video_GitHub_asset.zip')
+          out_path = pathlib.Path('app/static/assets/onboarding/iphone-home-screen.mp4')
+          expected_zip = '998898d6170863f769be8f2f32db8eb6a04e82900aedfa5f76b1f374ecfa3c9a'
+          expected_mp4 = '727be15b30229aedffee780eab61ee781ef3727e9cd7bcf8af5aab6d99bacb8f'
+          assert zip_path.is_file(), 'Uploaded archive missing'
+          assert hashlib.sha256(zip_path.read_bytes()).hexdigest() == expected_zip, 'Uploaded archive not approved'
+          with zipfile.ZipFile(zip_path) as f:
+              names = f.namelist()
+              assert names == [
+                  'app/static/assets/onboarding/iphone-home-screen.mp4',
+                  'VIDEO_IMPORT.txt',
+              ], 'Unexpected ZIP entries'
+              content = f.read('app/static/assets/onboarding/iphone-home-screen.mp4')
+          assert len(content) == 709956, 'Unexpected video size'
+          assert hashlib.sha256(content).hexdigest() == expected_mp4, 'Unexpected video bytes'
+          assert content[4:8] == b'ftyp' and 0 < content.find(b'moov') < content.find(b'mdat'), 'Not faststart MP4'
+          assert not out_path.exists(), 'Video already exists; no overwrite permitted'
+          out_path.write_bytes(content)
+          print('Validated approved H.264/AAC faststart MP4:', len(content), 'bytes')
+          PY
+      - name: Commit only the exact approved MP4 and remove the temporary ZIP and workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- app/static/assets/onboarding/iphone-home-screen.mp4
+          git rm -- app/static/assets/onboarding/HSK_AI_iPhone_install_video_GitHub_asset.zip .github/workflows/li-import-video-once.yml
+          git diff --cached --check
+          git commit -m "assets(pwa): add verified 710 KB iPhone Safari install video"
+          git push origin HEAD:refs/heads/feature/li-onboarding-mainffbff9-20261108
