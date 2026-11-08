@@ -138,7 +138,8 @@ _PWA_COURSE_BOOT_SCRIPT = b'''<script>
     clearTimeout(safety);
     screen.removeAttribute("aria-busy");
     document.body.classList.remove("hsk-pwa-shell-loading");
-    if(nav)nav.inert=false;
+    // A script-failure retry is not an authorized map; keep tabs inert.
+    if(nav)nav.inert=!!screen.querySelector(".hsk-pwa-boot-error");
     observer.disconnect();
   }
   var observer=new MutationObserver(finish);
