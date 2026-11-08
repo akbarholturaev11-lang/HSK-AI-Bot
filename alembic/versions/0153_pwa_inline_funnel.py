@@ -67,6 +67,12 @@ def _replace(names):
 
 
 def upgrade():
+    op.add_column("lava_invoices", sa.Column(
+        "pwa_inline_attempt_id", sa.String(length=80), nullable=True,
+    ))
+    op.add_column("lava_invoices", sa.Column(
+        "pwa_inline_source", sa.String(length=80), nullable=True,
+    ))
     _replace(_BASE + _NEW)
 
 
@@ -76,3 +82,5 @@ def downgrade():
         f"DELETE FROM {TABLE} WHERE event_name IN :names"
     ).bindparams(sa.bindparam("names", value=_NEW, expanding=True)))
     _replace(_BASE)
+    op.drop_column("lava_invoices", "pwa_inline_source")
+    op.drop_column("lava_invoices", "pwa_inline_attempt_id")
