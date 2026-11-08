@@ -135,6 +135,85 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         await self.client.aclose()
         await self.engine.dispose()
 
+    async def test_browser_trial_status_uses_verified_user_and_risk_without_grant(self):
+        from app.services.pro_trial_service import ProTrialService
+        from app.services.trial_risk_service import TrialRiskService
+
+        path = "/api/v3/pwa/trial/status"
+        self.assertEqual((await self.client.get(path)).status_code, 401)
+        await self.callback(await self.begin())
+        with (
+            patch.object(ProTrialService, "eligibility", new_callable=AsyncMock) as eligibility,
+            patch.object(TrialRiskService, "analyze", new_callable=AsyncMock) as analyze,
+            patch.object(TrialRiskService, "evaluate") as evaluate,
+        ):
+            eligibility.return_value = {"eligible": True, "reason": "", "days": 7}
+            analyze.return_value = SimpleNamespace()
+            evaluate.return_value = SimpleNamespace(denied=False)
+            response = await self.client.get(path)
+            self.assertEqual(response.status_code, 200, response.text)
+            self.assertTrue(response.json()["trial"]["eligible"])
+            self.assertEqual(eligibility.await_args.args[0].id, 1)
+            self.assertEqual(analyze.await_args.kwargs["client"], "iphone_pwa")
+            evaluate.return_value = SimpleNamespace(denied=True)
+            denied = await self.client.get(path)
+            self.assertEqual(denied.status_code, 200)
+            self.assertFalse(denied.json()["trial"]["eligible"])
+        # Signed Telegram initData can never substitute for PWA browser auth.
+        mixed = await self.client.get(path, headers={"X-Telegram-Init-Data": "fake"})
+        self.assertEqual(mixed.status_code, 422)
+
+    async def test_browser_trial_start_requires_same_origin_csrf_and_real_server_result(self):
+        from app.services.pro_trial_service import ProTrialService
+        from app.services.trial_risk_service import TrialRiskService
+
+        path = "/api/v3/pwa/trial/start"
+        self.assertEqual((await self.client.post(
+            path, headers={"Origin": ORIGIN},
+        )).status_code, 401)
+        await self.callback(await self.begin())
+        csrf = (await self.client.get("/api/v3/pwa-auth/session")).json()["csrf"]
+        self.assertEqual((await self.client.post(
+            path, headers={"Origin": ORIGIN},
+        )).status_code, 403)
+        self.assertEqual((await self.client.post(
+            path, headers={"Origin": "https://malicious.test",
+                           "X-HSK-PWA-CSRF": csrf},
+        )).status_code, 403)
+        self.assertEqual((await self.client.post(
+            path, headers={"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf,
+                           "X-Telegram-Init-Data": "fake"},
+        )).status_code, 422)
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf}
+        with (
+            patch.object(TrialRiskService, "analyze", new_callable=AsyncMock) as analyze,
+            patch.object(TrialRiskService, "evaluate") as evaluate,
+            patch.object(TrialRiskService, "record_started",
+                         new_callable=AsyncMock) as recorded,
+            patch.object(ProTrialService, "start", new_callable=AsyncMock) as start,
+        ):
+            analyze.return_value = SimpleNamespace()
+            evaluate.return_value = SimpleNamespace(denied=True)
+            refused = await self.client.post(path, headers=headers)
+            self.assertEqual(refused.status_code, 409)
+            start.assert_not_awaited()
+            recorded.assert_not_awaited()
+
+            evaluate.return_value = SimpleNamespace(denied=False)
+            start.return_value = {"ok": False, "error": "trial_already_used"}
+            used = await self.client.post(path, headers=headers)
+            self.assertEqual(used.status_code, 409)
+            recorded.assert_not_awaited()
+
+            start.return_value = {"ok": True, "days": 7,
+                                  "ends_at": "2026-11-15T10:00:00+00:00"}
+            approved = await self.client.post(path, headers=headers)
+            self.assertEqual(approved.status_code, 200, approved.text)
+            self.assertTrue(approved.json()["ok"])
+            self.assertEqual(start.await_args.args[0].id, 1)
+            self.assertEqual(start.await_args.kwargs["source"], "pwa_onboarding")
+            recorded.assert_awaited_once()
+
     async def test_inline_preview_never_counts_fake_checkout(self):
         # Price discovery must not inflate paid-conversion metrics, including
         # on a repeat overview after accepting an exit discount.
