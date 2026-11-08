@@ -16,12 +16,18 @@ STATIC = Path("app/static")
 HTML = (STATIC / "course_v3_li_onboarding.html").read_text(encoding="utf-8")
 RUNTIME = (STATIC / "course_v3_data/li-onboarding-runtime.js").read_text(encoding="utf-8")
 CATALOG = (STATIC / "course_v3_data/hsk-li-onboarding-i18n.js").read_text(encoding="utf-8")
+INSTALL_JS = (STATIC / "course_v3_data/li-onboarding-install.js").read_text(encoding="utf-8")
+INSTALL_CSS = (STATIC / "course_v3_data/li-onboarding-install.css").read_text(encoding="utf-8")
+IOS_SAFARI = "Mozilla/5.0 (iPhone; CPU iPhone OS 18_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.6 Mobile/15E148 Safari/604.1"
 CAST = (STATIC / "assets/characters/hsk-character-pack.js").read_text(encoding="utf-8")
 ORIGIN = "https://hsk.test"
 
 
-def _page(browser, *, pwa=True, trial_eligible=False, trial_start_ok=True, saved=False, trial_status_fail=False, guest=False):
-    page = browser.new_page(viewport={"width": 390, "height": 844})
+def _page(browser, *, pwa=True, trial_eligible=False, trial_start_ok=True, saved=False, trial_status_fail=False, guest=False, ios=False):
+    options = {"viewport": {"width": 390, "height": 844}}
+    if ios:
+        options["user_agent"] = IOS_SAFARI
+    page = browser.new_page(**options)
     captured = {"post": [], "trial_start": [], "track_get": 0, "pageerrors": [],
                 "resume": 0, "oauth": [], "public_track_get": 0,
                 "auth_state": {"verified": not guest}}
@@ -46,12 +52,19 @@ def _page(browser, *, pwa=True, trial_eligible=False, trial_start_ok=True, saved
     page.route("**/course_v3_data/li-onboarding-runtime.js*", lambda route: route.fulfill(
         body=RUNTIME, content_type="application/javascript",
     ))
+    page.route("**/course_v3_data/li-onboarding-install.js*", lambda route: route.fulfill(
+        body=INSTALL_JS, content_type="application/javascript",
+    ))
     page.route("**/assets/hsk*-course-books.jpg*", lambda route: route.fulfill(
         body=(STATIC / "assets" / route.request.url.split("/assets/")[1].split("?")[0]).read_bytes(),
         content_type="image/jpeg",
     ))
     page.route("**/*.css*", lambda route: route.fulfill(
-        body="", content_type="text/css",
+        body=INSTALL_CSS if "li-onboarding-install.css" in route.request.url else "",
+        content_type="text/css",
+    ))
+    page.route("**/assets/onboarding/iphone-home-screen.mp4", lambda route: route.fulfill(
+        body="not published", status=404, content_type="text/plain",
     ))
     url = ORIGIN + ("/iphone-pwa/onboarding/li" if pwa else
                     "/course_v3_li_onboarding.html") + "?lang=uz"
@@ -265,6 +278,35 @@ def test_pwa_guest_sees_panda_first_and_oauth_resumes_saved_draft_safely():
         page.wait_for_function("window.screen==='end'")
         assert len(captured["post"]) == 1
         assert captured["post"][0]["goals"] == ["hsk_exam", "travel"]
+        assert not captured["pageerrors"]
+        browser.close()
+
+
+def test_new_iphone_signup_shows_install_video_guide_after_verified_save_only():
+    with pw.sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page, captured = _page(browser, pwa=True, guest=True, ios=True)
+        _advance_to_profile(page)
+        assert page.locator(".li-install-card").count() == 0  # unauthenticated
+        page.locator("#footer .cta").click()  # signup
+        page.locator("#stage .provider").nth(1).click()  # OAuth
+        assert captured["oauth"][0]["provider"] == "google"
+        # Simulate the verified provider callback in the same browser tab.
+        # Server authorizes the actor in /api/v3/pwa-auth/session on reload.
+        page.goto(ORIGIN + "/iphone-pwa/onboarding/li?lang=uz")
+        page.wait_for_function("window.screen==='profile'")
+        assert page.locator(".li-install-card").count() == 0  # not saved yet
+        page.locator("#footer .cta").click()
+        page.locator(".li-install-card").wait_for(state="visible")
+        assert len(captured["post"]) == 1  # actual owner-scoped save occurred
+        page.locator(".li-install-video-fallback").wait_for(state="visible")
+        assert page.locator(".li-install-video").is_hidden()
+        assert page.locator(".li-install-steps li").count() == 3
+        assert page.evaluate("window.screen") == "profile"  # no mock Pro grant
+        page.locator(".li-install-continue").click()
+        page.wait_for_function("window.screen==='end'")
+        assert not captured["trial_start"]
+        assert page.evaluate("localStorage.getItem('hskai_li_install_guide_v1:37')") == "seen"
         assert not captured["pageerrors"]
         browser.close()
 
