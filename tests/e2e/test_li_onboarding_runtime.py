@@ -404,6 +404,30 @@ def test_trial_status_network_failure_is_retryable_and_free_continuation_exists(
         browser.close()
 
 
+def test_trial_activation_denial_offers_real_retry_and_free_course():
+    with pw.sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page, captured = _page(
+            browser, pwa=True, trial_eligible=True, trial_start_ok=False,
+        )
+        _advance_to_profile(page)
+        page.locator("#footer .cta").click()
+        page.wait_for_function("window.screen==='pro'")
+        for _ in range(5):
+            page.locator("#footer .cta").click()
+        page.locator(".li-remote-error").wait_for(state="visible")
+        assert page.locator(".li-remote-error").count() == 1
+        assert len(captured["trial_start"]) == 1
+        page.get_by_role("button", name="Qayta urinish").click()
+        page.locator(".li-remote-error").wait_for(state="visible")
+        assert len(captured["trial_start"]) == 2
+        assert page.locator(".li-remote-error").count() == 1
+        page.locator("#footer .cta.ghost").click()
+        assert page.evaluate("window.screen") == "end"
+        assert not captured["pageerrors"]
+        browser.close()
+
+
 def test_trial_slides_cannot_forge_activation_or_two_day_push_claim():
     with pw.sync_playwright() as playwright:
         browser = playwright.chromium.launch()
