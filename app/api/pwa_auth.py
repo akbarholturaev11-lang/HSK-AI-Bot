@@ -92,6 +92,7 @@ _PWA_COURSE_SKELETON_OLD = '<div class="scr on" id="s-course"><div class="loadin
 _PWA_COURSE_SKELETON_NEW = b'''<div class="scr on" id="s-course" aria-busy="true">
   <div class="hsk-pwa-boot-shell" role="status" aria-label="HSK AI loading">
     <div class="hsk-pwa-boot-top">
+      <img class="hsk-pwa-boot-logo" src="/assets/hsk-ai-logo-256.png" width="40" height="40" decoding="async" fetchpriority="high" alt="">
       <h1 class="hsk-pwa-boot-title" aria-label="HSK AI">HSK AI</h1>
       <div class="hsk-pwa-boot-dot"></div><div class="hsk-pwa-boot-dot"></div>
     </div>
@@ -114,6 +115,7 @@ _PWA_COURSE_BOOT_HEAD = b'''<style id="hsk-pwa-initial-shell">
 html.hsk-pwa-browser #hsk-launch-splash{display:none!important}
 .hsk-pwa-boot-shell{padding:20px 16px 100px;max-width:660px;margin:0 auto;min-height:calc(100dvh - 88px)}
 .hsk-pwa-boot-top{display:flex;align-items:center;gap:12px;min-height:56px;margin-bottom:16px}
+.hsk-pwa-boot-logo{width:40px;height:40px;object-fit:contain;flex:none}
 .hsk-pwa-boot-card{background:var(--hsk-card-surface,var(--card,#f1f0ee));border:1px solid var(--line,rgba(0,0,0,.08));border-radius:20px;margin-bottom:16px;padding:18px}
 .hsk-pwa-boot-today{min-height:118px}.hsk-pwa-boot-unit{min-height:178px}
 .hsk-pwa-boot-line,.hsk-pwa-boot-dot,.hsk-pwa-boot-node{background:var(--hsk-divider,#dedddc);opacity:.8;animation:hsk-pwa-boot-pulse 1.5s ease-in-out infinite alternate}
