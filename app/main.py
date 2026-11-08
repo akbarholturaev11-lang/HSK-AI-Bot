@@ -2445,6 +2445,23 @@ async def desktop_install_screenshot(filename: str):
     )
 
 
+@app.get("/assets/onboarding/iphone-home-screen.mp4")
+async def li_iphone_install_guide_video():
+    """Fixed, optional iPhone Safari tutorial asset for first PWA registration.
+
+    The video is deliberately not synthesized or silently substituted with
+    other user media. Missing approved MP4 returns 404; the Li guide displays
+    the canonical three-step fallback and still allows course continuation.
+    """
+    path = Path("app/static/assets/onboarding/iphone-home-screen.mp4")
+    if not path.is_file():
+        return JSONResponse(status_code=404, content={"error": "guide_not_published"},
+                            headers={"Cache-Control": "no-store"})
+    return FileResponse(path, media_type="video/mp4",
+                        headers={"X-Content-Type-Options": "nosniff",
+                                 "Cache-Control": "no-cache"})
+
+
 @app.get("/course_v3_{page}.html")
 async def course_v3_sub_page(page: str):
     if page not in _COURSE_V3_PAGES:
