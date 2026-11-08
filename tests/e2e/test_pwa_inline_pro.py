@@ -75,12 +75,18 @@ def test_inline_pro_two_primary_plans_other_terms_and_real_exit_discount():
         page.route("**/*", respond)
         page.goto(ORIGIN + "/iphone-pwa/course")
         page.evaluate("HSKPwaInlinePro.open({source:'v3_locked_lesson',lang:'ru'})")
+        assert page.get_by_role("heading", name="Лимит исчерпан").is_visible()
+        assert page.locator("#hsk-inline-pro .hip-panda svg").is_visible()
+        assert page.locator("#hsk-inline-pro .hip-benefit").count() == 3
+        assert page.locator("#hsk-inline-pro .hip-sheet").evaluate(
+            "(node) => getComputedStyle(node).animationName"
+        ) != "none"
         page.locator("#hsk-inline-pro .hip-plan").first.wait_for()
         assert page.locator("#hsk-inline-pro .hip-plan").count() == 2
         assert "1 месяц" in page.locator("#hsk-inline-pro .hip-body").inner_text()
         assert "1 год" in page.locator("#hsk-inline-pro .hip-body").inner_text()
         assert "12.99" in page.locator("#hsk-inline-pro .hip-body").inner_text()
-        page.get_by_role("button", name="Другие тарифы и способы оплаты").click()
+        page.get_by_role("button", name="Другие тарифы").click()
         page.get_by_role("button", name="Visa / Mastercard — Lava.top").click()
         assert page.locator("#hsk-inline-pro .hip-plan").count() == 4
         page.locator("#hsk-inline-pro .hip-close").click()
