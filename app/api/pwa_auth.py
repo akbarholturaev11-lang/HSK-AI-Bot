@@ -240,6 +240,8 @@ class PwaCheckoutContext(BaseModel):
     feedback_id: int | None = None
     # Declared by checkout builds that implement the lava.top path.
     supports_lava: bool | None = None
+    # Inline UI only requests prices; it has NOT opened checkout.
+    inline_preview: bool = False
 
 
 class PwaCheckoutQuote(PwaCheckoutContext):
@@ -1341,7 +1343,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                     campaign_id=data.campaign_id,
                     feedback_id=data.feedback_id,
                 )
-                if result.get("ok"):
+                if result.get("ok") and not data.inline_preview:
                     await SubscriptionEntryAnalyticsService(db).record_entry(
                         user=actor, source=data.source or "iphone_pwa",
                         mode=data.mode, plan_type=data.plan,
