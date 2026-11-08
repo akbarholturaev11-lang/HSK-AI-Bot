@@ -1065,6 +1065,70 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
         except ValueError:
             return _error(PwaAuthError("pwa_request_invalid", status_code=422))
 
+    @router.get("/api/v3/pwa/trial/status")
+    async def pwa_onboarding_trial_status(request: Request):
+        """Read-only eligibility for the verified browser account, never a grant."""
+        from app.services.pro_trial_service import ProTrialService, REASON_NOT_APPLICABLE
+        from app.services.trial_risk_service import TrialRiskService
+        try:
+            require_pwa_enabled(settings_obj)
+            # Browser cookie owns this read; no Telegram initData is trusted.
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).actor(
+                    request.cookies.get(PWA_SESSION_COOKIE)
+                )
+                verdict = await ProTrialService(db).eligibility(actor)
+                if verdict.get("eligible"):
+                    risk = TrialRiskService(db, settings_obj)
+                    snapshot = await risk.analyze(
+                        actor, client="iphone_pwa", source="pwa_onboarding_status",
+                        remote_ip=request.headers.get("X-Real-IP"),
+                    )
+                    if risk.evaluate(snapshot).denied:
+                        verdict = {**verdict, "eligible": False,
+                                   "reason": REASON_NOT_APPLICABLE}
+            return JSONResponse({"ok": True, "trial": verdict}, headers=_NO_STORE)
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.post("/api/v3/pwa/trial/start")
+    async def pwa_onboarding_trial_start(request: Request):
+        """One-time trial via canonical service; same-origin cookie+CSRF only."""
+        from app.services.pro_trial_service import ProTrialService, REASON_NOT_APPLICABLE
+        from app.services.trial_risk_service import TrialRiskService
+        try:
+            require_pwa_enabled(settings_obj)
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                risk = TrialRiskService(db, settings_obj)
+                snapshot = await risk.analyze(
+                    actor, client="iphone_pwa", source="pwa_onboarding",
+                    remote_ip=request.headers.get("X-Real-IP"),
+                )
+                if risk.evaluate(snapshot).denied:
+                    return JSONResponse(
+                        {"ok": False, "error": REASON_NOT_APPLICABLE},
+                        status_code=409, headers=_NO_STORE,
+                    )
+                result = await ProTrialService(db).start(
+                    actor, source="pwa_onboarding", client="iphone_pwa",
+                )
+                if not result.get("ok"):
+                    return JSONResponse(result, status_code=409, headers=_NO_STORE)
+                await risk.record_started(actor, snapshot)
+                await db.commit()
+            return JSONResponse(result, headers=_NO_STORE)
+        except PwaAuthError as exc:
+            return _error(exc)
+
     @router.get("/iphone-pwa/practice/voice")
     async def learner_voice_page(request: Request):
         """Original AI Voice Mini App page, protected by PWA session."""
