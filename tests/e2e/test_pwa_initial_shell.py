@@ -47,7 +47,14 @@ def test_stalled_bootstrap_shows_retry_without_authorizing_tabs():
         browser = getattr(playwright, engine).launch()
         try:
             page = browser.new_page(viewport={"width": 390, "height": 844})
-            page.set_content(html)
+            # The injected script is deliberately inert off the real
+            # authenticated PWA path. Exercise that pathname without network.
+            page.route("**/*", lambda route: (
+                route.fulfill(body=html, content_type="text/html")
+                if route.request.resource_type == "document"
+                else route.abort()
+            ))
+            page.goto("http://hsk-ai.local/iphone-pwa/course")
             page.locator(".hsk-pwa-boot-error").wait_for(timeout=3000)
             assert page.locator(".hsk-pwa-boot-shell").count() == 0
             assert page.get_by_role("button", name="Повторить").is_visible()
@@ -79,7 +86,14 @@ def test_authenticated_shell_visible_without_map_and_settles_independently(reduc
                 reduced_motion="reduce" if reduced_motion else "no-preference",
             )
             page = context.new_page()
-            page.set_content(html)
+            # The injected script is deliberately inert off the real
+            # authenticated PWA path. Exercise that pathname without network.
+            page.route("**/*", lambda route: (
+                route.fulfill(body=html, content_type="text/html")
+                if route.request.resource_type == "document"
+                else route.abort()
+            ))
+            page.goto("http://hsk-ai.local/iphone-pwa/course")
             assert page.locator("#hsk-launch-splash").is_hidden()
             assert page.get_by_role("heading", name="HSK AI").is_visible()
             assert page.locator(".hsk-pwa-boot-shell").is_visible()
