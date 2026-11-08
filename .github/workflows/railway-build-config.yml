@@ -5,6 +5,8 @@ on:
     paths:
       - "railway.toml"
       - "railpack.json"
+      - "Dockerfile"
+      - ".dockerignore"
       - "tests/test_railway_build_config.py"
       - ".github/workflows/railway-build-config.yml"
   push:
@@ -12,6 +14,8 @@ on:
     paths:
       - "railway.toml"
       - "railpack.json"
+      - "Dockerfile"
+      - ".dockerignore"
       - "tests/test_railway_build_config.py"
       - ".github/workflows/railway-build-config.yml"
   workflow_dispatch:
@@ -25,3 +29,9 @@ jobs:
         with:
           python-version: "3.11"
       - run: python -m unittest tests.test_railway_build_config
+      - name: Build actual production Dockerfile without Railway driver
+        timeout-minutes: 15
+        run: docker build --progress=plain -t hsk-ai-railway-smoke .
+      - name: Verify runtime dependencies and migration script
+        run: |
+          docker run --rm --entrypoint bash hsk-ai-railway-smoke -c 'python --version && ffmpeg -version | head -n 1 && python -c "import fastapi,aiogram,alembic,asyncpg,uvicorn" && bash -n scripts/start.sh'
