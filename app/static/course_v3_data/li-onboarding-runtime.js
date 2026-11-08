@@ -244,13 +244,34 @@ function trackAvailable(){
   return !!(a&&a.feature_enabled!==false&&a.allowed===true&&
             Array.isArray(t.live_levels)&&t.live_levels.length);
 }
+function guestTrackMetadata(force){
+  // Cache ONLY anonymous public metadata, in this page's memory. Never cache
+  // PWA session, Pro/trial rights, subscriptions, saved progress or CSRF.
+  if(publicTrackPromise)return publicTrackPromise;
+  if(!force&&publicTrackSnapshot&&Date.now()-publicTrackAt<120000){
+    // Stale-while-revalidate: render safe cached HSK 2.0 preview immediately,
+    // then refresh the server snapshot without blocking the visible screen.
+    Promise.resolve().then(function(){
+      guestTrackMetadata(true).then(function(fresh){
+        if(actor||global.screen!=="version")return;
+        trackStatus=fresh;updateTrackUi();
+      }).catch(function(){/* safe cached preview remains, no entitlement */});
+    });
+    return Promise.resolve(publicTrackSnapshot);
+  }
+  publicTrackPromise=api("/api/v3/pwa/onboarding/public-tracks").then(function(data){
+    if(!data.tracks||!data.tracks.hsk30||!data.tracks.hsk30.access||
+       data.tracks.hsk30.access.allowed!==false)
+      throw new Error("public_metadata_untrusted");
+    publicTrackSnapshot=data;publicTrackAt=Date.now();
+    return data;
+  }).finally(function(){publicTrackPromise=null});
+  return publicTrackPromise;
+}
 function trackApi(){
   if(!hostPwa&&!initData)return Promise.reject(new Error("telegram_init_data_missing"));
-  if(hostPwa&&!actor){
-    // Server-authored public feature metadata; NEVER an anonymous
-    // entitlement. HSK 3.0 paid/personal state remains locked.
-    return api("/api/v3/pwa/onboarding/public-tracks");
-  }
+  if(hostPwa&&!actor)return guestTrackMetadata(false);
+  // Personal access decisions are always fetched from the server.
   return session().then(function(){
     return api(hostPwa?"/api/v3/pwa/course-tracks":"/api/v3/course-tracks");
   });
