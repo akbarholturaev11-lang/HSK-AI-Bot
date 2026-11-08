@@ -216,7 +216,21 @@ def test_pwa_guest_sees_panda_first_and_oauth_resumes_saved_draft_safely():
         assert page.locator("#stage .provider").count() == 3
         assert page.locator("#stage .provider").nth(2).is_hidden()  # Apple disabled
         page.locator("#stage .provider").nth(1).click()  # real Google OAuth start
-        page.wait_for_function("window.screen==='profile'")
+        try:
+            page.wait_for_function("window.screen==='profile'", timeout=10000)
+        except Exception:
+            snapshot = page.evaluate("""() => ({
+              url: location.href, screen: window.screen,
+              stage: document.querySelector('#stage')?.innerText?.slice(0,300),
+              footer: document.querySelector('#footer')?.innerText?.slice(0,150),
+              pending: document.querySelector('#stage')?.getAttribute('aria-busy'),
+              draftGuest: !!sessionStorage.getItem('hsk_li_draft_v1:pwa:guest'),
+              draftVerified: !!sessionStorage.getItem('hsk_li_draft_v1:pwa:37')
+            })""")
+            raise AssertionError(
+                f"OAuth did not restore Li onboarding: {snapshot}; "
+                f"requests: {captured!r}"
+            ) from None
         assert captured["resume"] == 1
         assert len(captured["oauth"]) == 1
         assert captured["oauth"][0]["provider"] == "google"
