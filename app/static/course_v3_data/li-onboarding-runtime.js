@@ -8,6 +8,7 @@ var hostPwa=location.pathname.indexOf("/iphone-pwa/")===0;
 var tg=global.Telegram&&global.Telegram.WebApp;
 var initData=hostPwa?"":String(tg&&tg.initData||"");
 var actor=null,identityKey="",trackStatus=null,launch=null;
+var supportedProviders=null; // null while the real provider availability loads
 var requestGeneration=0,requestBusy=false,initializing=true,trialEligibility=null;
 var initialRender=global.render;
 var originalLogin=global.loginScreen;
@@ -96,7 +97,16 @@ function saveDraft(){
 function restoreDraft(){
   if(!identityKey)return;
   try{
-    var raw=sessionStorage.getItem("hsk_li_draft_v1:"+identityKey),obj=JSON.parse(raw||"null");
+    var key="hsk_li_draft_v1:"+identityKey;
+    var raw=sessionStorage.getItem(key);
+    if(!raw&&hostPwa&&actor){
+      // OAuth returned to this same browser tab. Bind only the learner's
+      // own pre-login, non-secret selections to the newly verified actor.
+      var guestKey="hsk_li_draft_v1:pwa:guest";
+      raw=sessionStorage.getItem(guestKey);
+      if(raw){sessionStorage.setItem(key,raw);sessionStorage.removeItem(guestKey)}
+    }
+    var obj=JSON.parse(raw||"null");
     if(!obj||Date.now()-Number(obj.at)>86400000||Number(obj.at)>Date.now())return;
     if(["uz","ru","tj"].indexOf(obj.lang)>=0)global.LANG=obj.lang;
     if(obj.track==="hsk20"||obj.track==="hsk30")global.track=obj.track;
@@ -166,6 +176,11 @@ function trackAvailable(){
 }
 function trackApi(){
   if(!hostPwa&&!initData)return Promise.reject(new Error("telegram_init_data_missing"));
+  if(hostPwa&&!actor){
+    // Server-authored public feature metadata; NEVER an anonymous
+    // entitlement. HSK 3.0 paid/personal state remains locked.
+    return api("/api/v3/pwa/onboarding/public-tracks");
+  }
   return session().then(function(){
     return api(hostPwa?"/api/v3/pwa/course-tracks":"/api/v3/course-tracks");
   });
@@ -242,6 +257,7 @@ function matchesSaved(selected,data){
 }
 function saveProfile(){
   if(requestBusy)return;
+  if(hostPwa&&!actor){progress("signup");loadProviders();return}
   var p;try{p=payload()}catch(e){renderError(saveProfile);return}
   requestBusy=true;setBusy(true);
   var path=hostPwa?"/api/v3/pwa/onboarding":"/api/miniapp/onboarding";
@@ -329,15 +345,61 @@ global.levels=function(){
   return source.filter(function(value){return isHsk30Live(value.k)});
 };
 global.loginScreen=function(mode){
-  var html=originalLogin(mode);
-  // Demo buttons formerly faked sign-in or unlocked Pro on click. Never ship
-  // those actions. All providers use the canonical PWA auth page.
+  var html=originalLogin(mode),providerIndex=0;
+  // Provider identity is not a demo button: each click uses the real PWA
+  // OAuth service or the existing Telegram verification page.
+  var order=["telegram","google","apple"];
   html=html.replace(/onclick="(?:demoLogin\(\)|go\('pro'\))"/g,
-    'onclick="LiRuntime.authenticate()"');
+    function(){return 'onclick="LiRuntime.authenticate(\''+order[providerIndex++]+'\')"';});
   html=html.replace(/<p class="status" role="status">[\s\S]*?<\/p>/,
     '<p class="status" role="status"></p>');
   return html;
 };
+function loadProviders(){
+  if(!hostPwa)return;
+  api("/api/v3/pwa-auth/providers").then(function(data){
+    var choices=Array.isArray(data.providers)?data.providers:[];
+    // Apple is not yet supported end-to-end in this product.
+    supportedProviders=choices.filter(function(p){return p==="google"||p==="telegram"});
+    if(global.screen==="login"||global.screen==="signup")global.render(false);
+  }).catch(function(){
+    supportedProviders=[];
+    if(global.screen==="login"||global.screen==="signup")
+      renderError(loadProviders);
+  });
+}
+function authenticate(provider){
+  if(requestBusy)return;
+  if(!hostPwa){
+    if(initData)location.assign(pageCourse());
+    return;
+  }
+  if(actor){location.assign(pageCourse());return}
+  if(!supportedProviders||supportedProviders.indexOf(provider)<0)return;
+  // Never issue a user grant. This only makes OAuth return to our public
+  // onboarding page; actual user identity is proven by PwaAuthService.
+  saveDraft();
+  setBusy(true);
+  api("/api/v3/pwa/onboarding/li/resume",{method:"POST"}).then(function(){
+    if(provider==="telegram"){
+      // Delegate Telegram link proof and polling to the canonical login UI.
+      // Do not duplicate its browser-bound approval protocol here.
+      location.assign("/iphone-pwa?lang="+encodeURIComponent(global.LANG));
+      return null;
+    }
+    return api("/api/v3/pwa-auth/start",{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({provider:provider,language:global.LANG})
+    }).then(function(data){
+      if(typeof data.authorize_url!=="string"||!data.authorize_url.startsWith("https://"))
+        throw new Error("provider_url_invalid");
+      location.assign(data.authorize_url);
+    });
+  }).catch(function(error){
+    console.warn("[li-onboarding] provider launch",String(error&&error.message||"unavailable").slice(0,100));
+    renderError(function(){authenticate(provider)});
+  });
+}
 global.render=function(animate){
   initialRender(animate);
   updateTrackUi();
@@ -347,11 +409,22 @@ global.render=function(animate){
     var heading=document.querySelector("#stage .trial h2");
     if(heading)heading.textContent=word("trialOn");
   }
-  if(global.screen==="profile"&&identityKey){
+  if(global.screen==="profile"&&identityKey&&(!hostPwa||actor)){
     var button=document.querySelector("#footer .cta");
     if(button)button.textContent=word("cont");
   }
   syncPending();
+  if(global.screen==="signup"||global.screen==="login"){
+    var providerButtons=document.querySelectorAll("#stage .provider");
+    ["telegram","google","apple"].forEach(function(provider,i){
+      var button=providerButtons[i];if(!button)return;
+      button.hidden=provider==="apple" || (
+        supportedProviders!==null&&supportedProviders.indexOf(provider)<0
+      );
+      button.disabled=hostPwa&&(!supportedProviders||
+        supportedProviders.indexOf(provider)<0);
+    });
+  }
   if(requestBusy)setBusy(true);
 };
 global.setTrack=function(v){
@@ -367,9 +440,9 @@ global.back=function(){
 global.go=function(next){
   if(requestBusy)return;
   if(next==="login"){
-    // The Mini App account is already proven by signed initData. Existing
-    // learner? Enter the real course; don't ask for a fictitious sign-in.
-    if(identityKey){location.assign(pageCourse());return}
+    if(!hostPwa&&identityKey){location.assign(pageCourse());return}
+    if(hostPwa&&actor){location.assign(pageCourse());return}
+    progress("login");loadProviders();return;
   }
   if(next==="loadCourse"){
     loadingState("loadCourse",function(){
@@ -383,7 +456,10 @@ global.go=function(next){
       return trackApi().then(function(d){trackStatus=d;validateTrack()});
     },"habit");return;
   }
-  if(next==="signup"){saveProfile();return}
+  if(next==="signup"){
+    if(hostPwa&&!actor){progress("signup");loadProviders();return}
+    saveProfile();return
+  }
   if(next==="trialDone"){beginTrial();return}
   if(next==="pro"&&(!trialEligibility||!trialEligibility.eligible)){progress("end");return}
   if(READY_STATES.indexOf(next)>=0&&
@@ -391,10 +467,8 @@ global.go=function(next){
   progress(next);
 };
 global.restart=toCourse;
-global.LiRuntime={authenticate:function(){
-  if(hostPwa)location.assign("/iphone-pwa?lang="+encodeURIComponent(global.LANG));
-  else if(initData)location.assign(pageCourse());
-},retryTrack:function(){window.go("loadCourse")}};
+global.LiRuntime={authenticate:authenticate,
+  retryTrack:function(){window.go("loadCourse")}};
 ["pickLevel","toggleGoal","pickTime","pickFocus","pickStreak","setLang"].forEach(function(name){
   var method=global[name];
   if(typeof method!=="function")return;
@@ -402,7 +476,23 @@ global.LiRuntime={authenticate:function(){
 });
 async function bootstrap(){
   try{
-    await session();
+    if(hostPwa){
+      try{await session()}
+      catch(error){
+        if(error&&error.message==="server_status_401"){
+          // This is a public panda-first UI, not a public user account.
+          // All course writes remain inaccessible until verified OAuth.
+          actor=null;identityKey="pwa:guest";
+          restoreDraft();
+          requestBusy=false;global.render(false);
+          loadProviders();
+          return;
+        }
+        throw error;
+      }
+    }else{
+      await session();
+    }
     var status=await statusApi();
     identityKey=userKey();
     if(status.saved){
