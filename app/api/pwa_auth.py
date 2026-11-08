@@ -79,6 +79,41 @@ def _pwa_html(request: Request, path: str, headers: dict[str, str]) -> Response:
     return FileResponse(path, media_type="text/html", headers=response_headers)
 
 
+# The reviewed shared HTML bytes MUST remain unchanged for source/translation
+# audit anchors. Inject PWA-only assets only after an authenticated route check.
+# The injected HTML is separately ETagged by its FULL bytes, not by file SHA.
+_PWA_INLINE_PRO_HTML = "\n<link rel=\"stylesheet\" href=\"/course_v3_data/iphone-pwa-inline-pro.css?v=20261108-5722a1d34411\">\n<script src=\"/course_v3_data/iphone-pwa-inline-pro.js?v=20261108-045f3fb83a0d\"></script>\n<script src=\"/course_v3_data/iphone-pwa-inline-pro-bridge.js?v=20261108-8a15ee7719ab\"></script>\n".encode("utf-8")
+_PWA_INLINE_CACHE: dict[tuple[str, int, int], tuple[bytes, str]] = {}
+
+
+def _pwa_inline_html(request: Request, path: str, headers: dict[str, str],
+                     *, revalidate: bool = True) -> Response:
+    stat = os.stat(path)
+    key = (path, stat.st_mtime_ns, stat.st_size)
+    cached = _PWA_INLINE_CACHE.get(key)
+    if cached is None:
+        with open(path, "rb") as handle:
+            source = handle.read()
+        if source.count(b"</body>") != 1:
+            raise RuntimeError("pwa_inline_html_invalid")
+        document = source.replace(b"</body>", _PWA_INLINE_PRO_HTML + b"</body>", 1)
+        etag = 'W/"' + hashlib.sha256(document).hexdigest()[:32] + '"'
+        cached = document, etag
+        if len(_PWA_INLINE_CACHE) >= 12:
+            _PWA_INLINE_CACHE.clear()
+        _PWA_INLINE_CACHE[key] = cached
+    document, etag = cached
+    output_headers = {**headers}
+    output_headers["Cache-Control"] = "private, no-cache" if revalidate else "no-store"
+    if revalidate:
+        output_headers["ETag"] = etag
+        candidates = {tag.strip().removeprefix("W/")
+                      for tag in request.headers.get("if-none-match", "").split(",")}
+        if etag.removeprefix("W/") in candidates:
+            return Response(status_code=304, headers=output_headers)
+    return Response(content=document, media_type="text/html", headers=output_headers)
+
+
 class PwaLoginStart(BaseModel):
     model_config = ConfigDict(extra="forbid")
     provider: Literal["google", "apple"]
@@ -424,7 +459,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                 await PwaAuthService(db, settings_obj).actor(
                     request.cookies.get(PWA_SESSION_COOKIE)
                 )
-            return _pwa_html(request, "app/static/course-v3.html", {
+            return _pwa_inline_html(request, "app/static/course-v3.html", {
                 "Referrer-Policy": "no-referrer",
                 "X-Content-Type-Options": "nosniff",
                 "X-Frame-Options": "DENY",
@@ -469,7 +504,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                 await PwaAuthService(db, settings_obj).actor(
                     request.cookies.get(PWA_SESSION_COOKIE)
                 )
-            return _pwa_html(request, "app/static/course_v3_recognition.html", _embeddable_pwa_page_headers(request))
+            return _pwa_inline_html(request, "app/static/course_v3_recognition.html", _embeddable_pwa_page_headers(request))
         except PwaAuthError as exc:
             if exc.code == "pwa_session_required":
                 return RedirectResponse(
@@ -486,7 +521,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                 await PwaAuthService(db, settings_obj).actor(
                     request.cookies.get(PWA_SESSION_COOKIE)
                 )
-            return _pwa_html(request, "app/static/course_v3_memorize.html", _embeddable_pwa_page_headers(request))
+            return _pwa_inline_html(request, "app/static/course_v3_memorize.html", _embeddable_pwa_page_headers(request))
         except PwaAuthError as exc:
             if exc.code == "pwa_session_required":
                 return RedirectResponse(
@@ -503,7 +538,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                 await PwaAuthService(db, settings_obj).actor(
                     request.cookies.get(PWA_SESSION_COOKIE)
                 )
-            return _pwa_html(request, "app/static/course_v3_pronunciation.html", _embeddable_pwa_page_headers(request))
+            return _pwa_inline_html(request, "app/static/course_v3_pronunciation.html", _embeddable_pwa_page_headers(request))
         except PwaAuthError as exc:
             if exc.code == "pwa_session_required":
                 return RedirectResponse(
@@ -612,7 +647,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                 await PwaAuthService(db, settings_obj).actor(
                     request.cookies.get(PWA_SESSION_COOKIE)
                 )
-            return _pwa_html(request, "app/static/course_v3_mistakes.html", _embeddable_pwa_page_headers(request))
+            return _pwa_inline_html(request, "app/static/course_v3_mistakes.html", _embeddable_pwa_page_headers(request))
         except PwaAuthError as exc:
             if exc.code == "pwa_session_required":
                 return RedirectResponse(
@@ -747,7 +782,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                 await PwaAuthService(db, settings_obj).actor(
                     request.cookies.get(PWA_SESSION_COOKIE)
                 )
-            return _pwa_html(request, "app/static/course_v3_test.html", _embeddable_pwa_page_headers(request))
+            return _pwa_inline_html(request, "app/static/course_v3_test.html", _embeddable_pwa_page_headers(request))
         except PwaAuthError as exc:
             if exc.code == "pwa_session_required":
                 return RedirectResponse(
@@ -1001,10 +1036,11 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                 await PwaAuthService(db, settings_obj).actor(
                     request.cookies.get(PWA_SESSION_COOKIE)
                 )
-            return FileResponse(
-                "app/static/course_v3_voice.html", media_type="text/html",
-                headers={**_NO_STORE, "X-Content-Type-Options": "nosniff",
-                         "X-Frame-Options": "DENY"},
+            return _pwa_inline_html(
+                request, "app/static/course_v3_voice.html",
+                {**_NO_STORE, "X-Content-Type-Options": "nosniff",
+                 "X-Frame-Options": "DENY"},
+                revalidate=False,
             )
         except PwaAuthError as exc:
             if exc.code == "pwa_session_required":
@@ -1248,7 +1284,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                 )
             # The course shell can host the existing checkout after the same
             # actor check. Direct checkout links remain unframeable.
-            return _pwa_html(request, "app/static/subscription.html", _embeddable_pwa_page_headers(request))
+            return _pwa_inline_html(request, "app/static/subscription.html", _embeddable_pwa_page_headers(request))
         except PwaAuthError as exc:
             if exc.code == "pwa_session_required":
                 return RedirectResponse(
