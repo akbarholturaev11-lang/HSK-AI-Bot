@@ -28,6 +28,11 @@ logger = logging.getLogger(__name__)
 
 _NO_STORE = {"Cache-Control": "no-store", "Referrer-Policy": "no-referrer"}
 _LANGS = {"uz", "ru", "tj"}
+_PWA_INLINE_SOURCES = frozenset({
+    "v3_locked_lesson", "v3_pronunciation_limit", "v3_recognition_limit",
+    "v3_memorize_limit", "v3_test_limit", "v3_mistake_review",
+    "v3_voice_limit", "v3_qa_limit",
+})
 
 
 class LavaStartBody(BaseModel):
@@ -113,15 +118,20 @@ def create_lava_router(*, runtime_getter, session_factory, settings_obj) -> APIR
             raise LavaCheckoutError("invalid_request", 422) from None
 
     async def _start(user, data: LavaStartBody, source: str):
+        is_inline = (
+            source == "pwa" and bool(data.attempt_id)
+            and data.ui_source in _PWA_INLINE_SOURCES
+        )
         if data.plan_type not in LAVA_PLAN_TYPES:
             raise LavaCheckoutError("plan_unavailable", 400)
         result = await LavaCheckoutService(runtime_getter()).start(
             session_factory, user_id=user.id, plan_type=data.plan_type, email=data.email,
             source=source, language=data.language or getattr(user, "language", None),
             context_mode=data.mode, campaign_id=data.campaign_id, feedback_id=data.feedback_id,
-            analytics_attempt_id=data.attempt_id, analytics_source=data.ui_source,
+            analytics_attempt_id=data.attempt_id if is_inline else None,
+            analytics_source=data.ui_source if is_inline else None,
         )
-        if source == "pwa" and result.get("ok"):
+        if is_inline and result.get("ok"):
             from app.services.conversion_funnel_service import ConversionFunnelService
             # A checkout is counted ONLY after a real provider invoice exists.
             await ConversionFunnelService().record(
