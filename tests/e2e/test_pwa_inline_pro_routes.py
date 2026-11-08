@@ -74,11 +74,11 @@ def _serve(route):
     ("/iphone-pwa/course","App.openPaywall('lockedLesson')",0),
     ("/iphone-pwa/course","App.goPay('v3_recognition_limit')",0),
     ("/iphone-pwa/practice/voice","showPaywall()",0),
-    ("/iphone-pwa/practice/recognition","showLimitNow()",1),
-    ("/iphone-pwa/practice/memorize","showLimitNow()",1),
-    ("/iphone-pwa/practice/pronunciation","showLimitNow()",1),
-    ("/iphone-pwa/practice/test","showLimitNow()",1),
-    ("/iphone-pwa/practice/mistakes","showLimitNow()",1),
+    ("/iphone-pwa/practice/recognition","showLimitNow()",0),
+    ("/iphone-pwa/practice/memorize","showLimitNow()",0),
+    ("/iphone-pwa/practice/pronunciation","showLimitNow()",0),
+    ("/iphone-pwa/practice/test","showLimitNow()",0),
+    ("/iphone-pwa/practice/mistakes","showLimitNow()",0),
 ])
 def test_inline_offer_is_entered_from_each_limit(pathname,invoke,original):
     with playwright.sync_playwright() as pw:
@@ -94,8 +94,36 @@ def test_inline_offer_is_entered_from_each_limit(pathname,invoke,original):
         assert page.locator("#hsk-inline-pro .hip-benefit").count()==3
         assert page.evaluate("oldCalls")==original
         page.locator("#hsk-inline-pro .hip-close").click()
-        page.locator("#hsk-inline-pro").wait_for(state="hidden")
+        if pathname == "/iphone-pwa/course":
+            page.locator("#hsk-inline-pro").wait_for(state="hidden")
+        else:
+            page.wait_for_url(ORIGIN + "/iphone-pwa/course?lang=ru")
         assert not errors
+        browser.close()
+
+
+def test_inline_manual_skips_card_question_without_modifying_shared_checkout():
+    # The hosted manual checkout normally starts with a Visa/Lava question
+    # whenever two payment methods exist. Here the parent chose manual.
+    with playwright.sync_playwright() as pw:
+        browser = getattr(pw,os.getenv("PWA_E2E_ENGINE","chromium")).launch()
+        page = browser.new_context(**pw.devices["iPhone 13"]).new_page()
+        page.route("**/*",_serve)
+        page.goto(ORIGIN+"/iphone-pwa/course")
+        # Exercise the exact PWA checkout bridge against the canonical
+        # function signature and state names used in subscription.html.
+        js=(STATIC/"course_v3_data/iphone-pwa-inline-pro-bridge.js").read_text("utf-8")
+        page.evaluate("""() => {
+          history.replaceState({}, '', '/iphone-pwa/checkout?inline_manual=1');
+          window.state={path:'',lavaStatus:null};
+          window.flow=function(){return ['card','country','plans','pay']};
+          window.renderPlans=function(){return 1};
+        }""")
+        page.evaluate(js)
+        assert page.evaluate("flow()") == ["country","plans","pay"]
+        assert page.evaluate("state.path") == "manual"
+        page.evaluate("state.path='lava'")
+        assert page.evaluate("flow()") == ["card","country","plans","pay"]
         browser.close()
 
 
