@@ -29,6 +29,34 @@ def parts():
     return found
 
 
+def test_stalled_bootstrap_shows_retry_without_authorizing_tabs():
+    fragments = parts()
+    script = fragments["_PWA_COURSE_BOOT_SCRIPT"]
+    assert script.count("},14000);") == 1
+    script = script.replace("},14000);", "},20);")
+    html = (
+        '<!doctype html><html class="hsk-pwa-browser"><head>'
+        + fragments["_PWA_COURSE_BOOT_HEAD"]
+        + '</head><body class="hsk-scene-page hsk-pwa-shell-loading">'
+        + fragments["_PWA_COURSE_SKELETON_NEW"]
+        + '<nav class="nav" id="nav" inert><button>Course</button></nav>'
+        + script + '</body></html>'
+    )
+    engine = os.environ.get("PWA_E2E_ENGINE", "chromium")
+    with sync_playwright() as playwright:
+        browser = getattr(playwright, engine).launch()
+        try:
+            page = browser.new_page(viewport={"width": 390, "height": 844})
+            page.set_content(html)
+            page.locator(".hsk-pwa-boot-error").wait_for(timeout=3000)
+            assert page.locator(".hsk-pwa-boot-shell").count() == 0
+            assert page.get_by_role("button", name="Повторить").is_visible()
+            assert page.locator("#nav").get_attribute("inert") == ""
+            assert page.locator("#s-course").get_attribute("aria-busy") is None
+        finally:
+            browser.close()
+
+
 @pytest.mark.parametrize("reduced_motion", [False, True])
 def test_authenticated_shell_visible_without_map_and_settles_independently(reduced_motion):
     fragments = parts()
