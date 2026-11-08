@@ -81,18 +81,18 @@ def test_inline_pro_two_primary_plans_other_terms_and_real_exit_discount():
         assert page.locator("#hsk-inline-pro .hip-sheet").evaluate(
             "(node) => getComputedStyle(node).animationName"
         ) != "none"
-        page.locator("#hsk-inline-pro .hip-plan").first.wait_for()
-        assert page.locator("#hsk-inline-pro .hip-plan").count() == 2
+        page.locator("#hsk-inline-pro button.hip-plan").first.wait_for()
+        assert page.locator("#hsk-inline-pro button.hip-plan").count() == 2
         assert "1 месяц" in page.locator("#hsk-inline-pro .hip-body").inner_text()
         assert "1 год" in page.locator("#hsk-inline-pro .hip-body").inner_text()
         assert "12.99" in page.locator("#hsk-inline-pro .hip-body").inner_text()
         page.get_by_role("button", name="Другие тарифы").click()
         page.get_by_role("button", name="Visa / Mastercard — Lava.top").click()
-        assert page.locator("#hsk-inline-pro .hip-plan").count() == 4
+        assert page.locator("#hsk-inline-pro button.hip-plan").count() == 4
         page.locator("#hsk-inline-pro .hip-close").click()
         page.get_by_role("button", name="Забрать скидку").click()
-        page.locator("#hsk-inline-pro .hip-plan").first.wait_for()
-        assert page.locator("#hsk-inline-pro .hip-plan").count() == 2
+        page.locator("#hsk-inline-pro button.hip-plan").first.wait_for()
+        assert page.locator("#hsk-inline-pro button.hip-plan").count() == 2
         assert "8.00 USD" in page.locator("#hsk-inline-pro .hip-body").inner_text()
         assert "10.00 USD" in page.locator("#hsk-inline-pro .hip-body").inner_text()
         assert ("offer", "view") in seen
