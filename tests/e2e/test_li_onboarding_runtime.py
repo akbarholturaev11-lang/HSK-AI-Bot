@@ -288,6 +288,38 @@ def test_li_cached_public_tracks_show_version_while_fresh_refresh_is_stalled():
         browser.close()
 
 
+def test_li_cancel_slow_track_read_never_applies_late_api_response():
+    with pw.sync_playwright() as playwright:
+        browser = getattr(playwright, os.environ.get('PWA_E2E_ENGINE', 'chromium')).launch()
+        page, captured = _page(browser, pwa=True, guest=True)
+        page.locator("#footer .cta").first.click()
+        page.locator("#footer .cta").click()
+        page.evaluate("""() => {
+          const realFetch=window.fetch.bind(window);
+          window.fetch=(url,opts) => String(url).includes('/api/v3/pwa/onboarding/public-tracks')
+            ? new Promise((resolve) => {window.__releaseTracks=resolve;})
+            : realFetch(url,opts);
+        }""")
+        page.locator("#footer .cta").click()
+        page.locator('[data-remote-section="tracks"]').wait_for(state="visible")
+        assert page.locator("#top .li-loading-back").is_enabled()
+        page.locator("#top .li-loading-back").click()
+        assert page.evaluate("window.screen") == "intro"
+        page.evaluate("""() => window.__releaseTracks({
+          ok:true,
+          json:()=>Promise.resolve({
+            ok:true,tracks:{hsk20:{track:'hsk20'},
+              hsk30:{access:{allowed:false,feature_enabled:true},live_levels:['nhsk1']}}
+          })
+        })""")
+        page.wait_for_timeout(150)
+        assert page.evaluate("window.screen") == "intro"
+        assert page.locator("#stage .center").is_visible()
+        assert captured["post"] == []
+        assert not captured["pageerrors"]
+        browser.close()
+
+
 def test_li_save_has_local_skeleton_without_wiping_profile_scene():
     with pw.sync_playwright() as playwright:
         browser = getattr(playwright, os.environ.get('PWA_E2E_ENGINE', 'chromium')).launch()
