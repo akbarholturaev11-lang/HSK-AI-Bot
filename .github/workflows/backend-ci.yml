@@ -485,6 +485,10 @@ jobs:
         run: python -m pytest -q tests/e2e/test_li_onboarding_install.py
       - name: Install WebKit for iPhone Safari payment and limit regression
         run: python -m playwright install --with-deps webkit
+      - name: Verify Li Panda onboarding, OAuth return, and iPhone install guide in WebKit
+        env:
+          PWA_E2E_ENGINE: webkit
+        run: python -m pytest -q tests/e2e/test_li_onboarding_runtime.py tests/e2e/test_li_onboarding_install.py
       - name: Verify fullscreen PWA Pro and Lava payment on iPhone WebKit
         env:
           PWA_E2E_ENGINE: webkit
