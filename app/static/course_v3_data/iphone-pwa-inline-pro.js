@@ -236,7 +236,7 @@
       var iframe=el("iframe","hip-checkout");
       iframe.title=txt("manual");
       iframe.setAttribute("loading","eager");
-      var q=new URLSearchParams({embedded:"1",source:state.source,lang:state.lang,mode:"subscription",return_to:"course"});
+      var q=new URLSearchParams({embedded:"1",source:state.source,lang:state.lang,mode:"subscription",return_to:"course",inline_manual:"1"});
       iframe.src="/iphone-pwa/checkout?"+q.toString();
       body.appendChild(iframe);
       body.style.padding="0";return;
@@ -292,7 +292,7 @@
     var current=++run;
     state.screen="loading";state.error="";render();
     request(API.overview,{source:state.source,mode:state.mode,plan:state.plan,
-      supports_lava:true,attempt_id:state.attempt}).then(function(data) {
+      supports_lava:true,inline_preview:true,attempt_id:state.attempt}).then(function(data) {
       if (!state||current!==run) return;
       state.data=data;
       state.email=(data.lava&&data.lava.email)||state.email||"";
@@ -430,7 +430,7 @@
     if (!state||state.screen!=="manual"||!body)return false;
     var iframe=body.querySelector("iframe");
     if (!iframe||iframe.contentWindow!==child)return false;
-    state.screen="more";render();load();return true;
+    state.screen="more";render();return true;
   }
   document.addEventListener("keydown",function(ev) {
     if (!root||root.hidden)return;
