@@ -208,6 +208,9 @@ function setBusy(value){
 function renderError(action,continueFree){
   requestBusy=false;
   var stage=document.getElementById("stage");
+  // Retrying a failed save/trial must not stack an additional red error
+  // block on every attempt. Keep one current, actionable failure state.
+  stage.querySelectorAll(".li-remote-error").forEach(function(node){node.remove()});
   var box=document.createElement("div");
   box.className="li-remote-error";
   box.setAttribute("role","alert");
@@ -386,7 +389,9 @@ function beginTrial(){
     requestBusy=false;global.trail.push(global.screen);global.screen="trialDone";global.render();
   }).catch(function(e){
     console.warn("[li-onboarding] trial activation",String(e&&e.message||"trial_denied").slice(0,100));
-    renderError(function(){window.go("end")});
+    // Retry really retries the trusted trial API. Declining or an already
+    // used offer must always allow the free course, without a Pro claim.
+    renderError(beginTrial,function(){progress("end")});
   });
 }
 function toCourse(){
