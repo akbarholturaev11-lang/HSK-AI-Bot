@@ -31,13 +31,19 @@ ffmpeg -i YOUR_ORIGINAL.mp4 \
   -movflags +faststart app/static/assets/onboarding/iphone-home-screen.mp4
 ```
 
-**Transport note:** This compressed MP4 exists as a chat artifact, **not yet as
-a GitHub repository blob**. The connected GitHub text-file interface cannot
-read the local binary artifact. Use the actual optimized MP4 delivered in this
-conversation and add its exact bytes to the feature branch at the fixed path
-above (do not mistakenly add the 6.6 MB original). Confirm SHA-256 in the
-checkout. Until then, the route correctly returns 404 and the UI displays a
-three-step RU/UZ/TJ guide.
+**GitHub import confirmed (2026-11-09):** The user uploaded the prepared
+ZIP, and one-time GitHub Actions run `42505992013` extracted and checked the
+approved MP4 in the feature branch. Run conclusion: **SUCCESS**. Committed
+file: `app/static/assets/onboarding/iphone-home-screen.mp4`, size **709,956**
+bytes, Git blob SHA-1 `4c263a39cb0a6dba12a43379702ed3dd907d1d06`,
+matching local `git hash-object` of the optimized asset. The uploaded ZIP
+and temporary extraction workflow have both been deleted from the branch.
+The video is now a normal static file at the exact URL used by the app.
+
+The asset's presence and bit-for-bit identity are verified. iPhone Safari
+real-device playback, slow-network delivery, and final production deployment
+have **not yet** been verified. The existing MP4 route and UI remain only on
+feature branch until testing and merge.
 
 **Content review:** The recording appears to show a truncated older
 `telegram-chinese-bot-...` address on the iPhone's Add to Home Screen screen.
