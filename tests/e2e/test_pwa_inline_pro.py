@@ -45,9 +45,16 @@ def test_inline_pro_two_primary_plans_other_terms_and_real_exit_discount():
         if path == "/api/v3/pwa-auth/session":
             route.fulfill(status=200, json={"ok": True, "user_id": 7, "csrf": "qa-csrf"})
             return
+        if path == "/api/v3/pwa/subscription/inline-event":
+            payload = json.loads(route.request.post_data or "{}")
+            assert route.request.headers["x-hsk-pwa-csrf"] == "qa-csrf"
+            seen.append(("event", payload["event"]))
+            route.fulfill(status=200, json={"ok": True,"recorded": True})
+            return
         if path == "/api/v3/pwa/subscription/overview":
             payload = json.loads(route.request.post_data or "{}")
             assert route.request.headers["x-hsk-pwa-csrf"] == "qa-csrf"
+            assert payload["inline_preview"] is True
             seen.append(("overview", payload["mode"]))
             route.fulfill(status=200, json=_overview(payload.get("mode") == "exit_discount"))
             return
@@ -98,6 +105,12 @@ def test_inline_pro_two_primary_plans_other_terms_and_real_exit_discount():
         assert ("offer", "view") in seen
         assert ("offer", "claim") in seen
         assert ("overview", "exit_discount") in seen
+        page.wait_for_load_state("networkidle")
+        assert ("event", "pwa_pro_opened") in seen
+        assert ("event", "pwa_pro_more_opened") in seen
+        assert ("event", "pwa_pro_method_selected") in seen
+        assert ("event", "pwa_pro_exit_offered") in seen
+        assert ("event", "pwa_pro_exit_claimed") in seen
         page.locator("#hsk-inline-pro .hip-close").click()
         assert page.locator("#hsk-inline-pro").is_hidden()
         assert not errors
