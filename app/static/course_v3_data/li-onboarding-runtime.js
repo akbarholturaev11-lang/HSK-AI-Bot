@@ -219,7 +219,12 @@ function setBusy(value,section){
   }
   if(value){
     var buttons=document.querySelectorAll("#top button,#footer button,.choices button,.track-switch button");
-    buttons.forEach(function(button){button.disabled=true});
+    buttons.forEach(function(button){
+      // Reads can be cancelled while still allowing the learner to go back;
+      // write operations (profile, OAuth, trial) remain atomic and locked.
+      if(button.classList.contains("li-loading-back"))return;
+      button.disabled=true;
+    });
   }
   syncPending();
 }
@@ -574,7 +579,13 @@ global.setTrack=function(v){
   originalSetTrack(v);saveDraft();
 };
 global.back=function(){
-  if(requestBusy)return;
+  if(requestBusy){
+    if(global.screen!=="loadCourse"&&global.screen!=="loadLesson")return;
+    // A slow read must not trap the learner. The generation check prevents
+    // late JSON from moving a cancelled screen forward.
+    ++requestGeneration;requestBusy=false;
+    originalBack();syncPending();return;
+  }
   ++requestGeneration;
   originalBack();
 };
