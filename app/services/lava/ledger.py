@@ -209,10 +209,12 @@ async def apply_completed(session_factory, info: LavaInvoiceInfo) -> ApplyOutcom
                     # redirect, screenshot, or pending state can count as paid.
                     session.add(ConversionFunnelEvent(
                         user_id=owner_id, telegram_id=user.telegram_id,
-                        event_name="pwa_pro_checkout_paid", source="iphone_pwa",
+                        event_name="pwa_pro_checkout_paid",
+                        source=row.pwa_inline_source or "iphone_pwa",
                         payment_id=payment.id,
                         payload_json=json.dumps({
                             "checkout_id": invoice_id,
+                            "attempt_id": row.pwa_inline_attempt_id or "",
                             "plan_type": row.plan_type,
                             "payment_method": "lava",
                             "discount_source": row.discount_source or "none",
