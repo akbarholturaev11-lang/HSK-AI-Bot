@@ -8,7 +8,8 @@
     overview: "/api/v3/pwa/subscription/overview",
     start: "/api/v3/pwa/subscription/lava/start",
     status: "/api/v3/pwa/subscription/lava/status",
-    offer: "/api/v3/pwa/subscription/exit-offer"
+    offer: "/api/v3/pwa/subscription/exit-offer",
+    analytics: "/api/v3/pwa/subscription/inline-event"
   };
   var WORDS = {
     ru: {title:"Лимит исчерпан",subtitle:"Оформите Pro, чтобы продолжить",benefits:["Уроки без ограничений","Разговорная практика с ИИ","Учёба без рекламы"],one:"1 месяц",
@@ -106,6 +107,16 @@
       });
     });
   }
+  // Fire-and-forget analytics: real payment state never depends on telemetry.
+  function emit(event,plan,method) {
+    if (!state) return;
+    var payload = {
+      event:event,source:state.source,attempt_id:state.attempt,
+      event_id:state.attempt+":"+(++state.eventSeq),
+      plan_type:plan||state.plan||null,method:method||null
+    };
+    request(API.analytics,payload).catch(function(){});
+  }
   function relativePrice(value) {
     var n=Number(value);
     if (!Number.isFinite(n)||n<=0) return null;
@@ -152,7 +163,9 @@
     var plans=available().filter(function(p){return all||p.plan_type==="1_month"||p.plan_type==="12_months"});
     var grid=el("div","hip-plans"+(all?" all":""));
     plans.forEach(function(plan) {
-      var card=btn("","hip-plan",function(){state.plan=plan.plan_type;render()});
+      var card=btn("","hip-plan",function(){
+        state.plan=plan.plan_type;emit("pwa_pro_plan_selected",plan.plan_type,"lava");render();
+      });
       card.setAttribute("aria-pressed",String(state.plan===plan.plan_type));
       card.appendChild(el("span","term",txt(NAMES[plan.plan_type])));
       var priceLine=el("span","hip-price-line");
@@ -206,7 +219,7 @@
     if (s==="exit") {
       body.appendChild(el("p","hip-emphasis","−20%"));
       body.appendChild(btn(txt("accept"),"hip-primary",claimExit));
-      body.appendChild(btn(txt("decline"),"hip-secondary",close));
+      body.appendChild(btn(txt("decline"),"hip-secondary",function(){emit("pwa_pro_exit_declined");close()}));
       body.appendChild(el("p","hip-small",txt("renewal")));
       return;
     }
@@ -227,7 +240,7 @@
       body.appendChild(el("p","hip-emphasis",state.data.access&&state.data.access.is_paid?
         txt("paid"):(state.data.pending_payment?txt("pending"):txt("blocked"))));
       if (state.data.pending_payment) {
-        body.appendChild(btn(txt("manual"),"hip-secondary",function(){state.screen="manual";render()}));
+        body.appendChild(btn(txt("manual"),"hip-secondary",function(){emit("pwa_pro_method_selected",null,"manual");state.screen="manual";render()}));
       }
       body.appendChild(btn(txt("return"),"hip-primary",close));
       return;
@@ -257,13 +270,13 @@
     }
     if (s==="more") {
       if (plans.length) {
-        body.appendChild(btn(txt("lava"),"hip-method",function(){state.screen="all";render()}));
+        body.appendChild(btn(txt("lava"),"hip-method",function(){emit("pwa_pro_method_selected",null,"lava");state.screen="all";render()}));
       }
       if (state.data && state.data.lava && state.data.lava.mode==="lava_only") {
         body.appendChild(el("p","hip-small",txt("unavailable")));
       } else {
         body.appendChild(btn(txt("manual")+"  ›","hip-method",function(){
-          state.screen="manual";render();
+          emit("pwa_pro_method_selected",null,"manual");state.screen="manual";render();
         }));
         if (state.mode==="exit_discount") body.appendChild(el("p","hip-small",txt("manualNoExit")));
       }
@@ -272,7 +285,7 @@
     if (!plans.length) {
       body.appendChild(el("p","hip-small",isLava&&isLava.blocked_reason?txt("blocked"):txt("unavailable")));
       body.appendChild(btn(txt("retry"),"hip-primary",load));
-      if (!isLava||isLava.mode!=="lava_only") body.appendChild(btn(txt("manual"),"hip-secondary",function(){state.screen="manual";render()}));
+      if (!isLava||isLava.mode!=="lava_only") body.appendChild(btn(txt("manual"),"hip-secondary",function(){emit("pwa_pro_method_selected",null,"manual");state.screen="manual";render()}));
       return;
     }
     if (!selectedPlan() || (s==="main" && state.plan!=="1_month" && state.plan!=="12_months")) {
@@ -285,7 +298,7 @@
       if (!state.email) {state.screen="email";render();return}
       startPayment();
     }));
-    body.appendChild(btn(txt("more"),"hip-secondary",function(){state.screen="more";render()}));
+    body.appendChild(btn(txt("more"),"hip-secondary",function(){emit("pwa_pro_more_opened");state.screen="more";render()}));
   }
   function load() {
     if (!state) return;
@@ -325,15 +338,15 @@
   }
   function requestDismiss() {
     if (!state) return;
-    if (state.mode==="exit_discount"||state.screen==="success"||state.screen==="waiting"||state.screen==="manual") {close();return}
-    if (state.screen==="exit") {close();return}
+    if (state.mode==="exit_discount"||state.screen==="success"||state.screen==="waiting"||state.screen==="manual") {emit("pwa_pro_dismissed");close();return}
+    if (state.screen==="exit") {emit("pwa_pro_exit_declined");close();return}
     var current=++run;
     state.screen="loading";render();
     request(API.offer,{action:"view",source:state.source}).then(function(data) {
       if (!state||current!==run) return;
-      if (!data.available) {close();return}
-      state.screen="exit";render();
-    }).catch(function(){if(state&&current===run)close()});
+      if (!data.available) {emit("pwa_pro_dismissed");close();return}
+      emit("pwa_pro_exit_offered");state.screen="exit";render();
+    }).catch(function(){if(state&&current===run){emit("pwa_pro_dismissed");close()}});
   }
   function claimExit() {
     if (!state) return;
@@ -342,7 +355,7 @@
     request(API.offer,{action:"claim",source:state.source}).then(function(data) {
       if (!state||current!==run) return;
       if (!data.available) {close();return}
-      state.mode="exit_discount";
+      emit("pwa_pro_exit_claimed");state.mode="exit_discount";
       load();
     }).catch(function(){if(state&&current===run){state.error=txt("error");state.screen="main";render()}});
   }
@@ -366,7 +379,7 @@
     var current=++run;
     state.screen="loading";state.error="";render();
     request(API.start,{plan_type:plan.plan_type,email:state.email.trim(),language:state.lang,
-      mode:state.mode}).then(function(data){
+      mode:state.mode,attempt_id:state.attempt,ui_source:state.source}).then(function(data){
       if (!state||current!==run) {if(popup)popup.close();return}
       var url;
       try {url=new URL(data.payment_url);if(url.protocol!=="https:")throw Error("invalid_payment_url")}
@@ -377,7 +390,7 @@
     }).catch(function(){
       if(popup)try{popup.close()}catch(e){}
       if(!state||current!==run)return;
-      state.error=txt("error");state.screen="email";render();
+      emit("pwa_pro_checkout_failed",plan.plan_type,"lava");state.error=txt("error");state.screen="email";render();
     });
   }
   function reopenPayment() {
@@ -403,7 +416,7 @@
         clearInterval(tick);tick=null;state.paid=true;state.screen="success";state.checkoutId=null;render();
       } else if (result.status==="failed") {
         clearInterval(tick);tick=null;state.screen="main";state.checkoutId=null;
-        state.error=txt("error");render();
+        emit("pwa_pro_checkout_failed");state.error=txt("error");render();
       }
     }).catch(function(){}).finally(function(){if(state&&current===run)state.polling=false});
   }
@@ -416,14 +429,14 @@
     if(lang==="tg")lang="tj";
     if(!WORDS[lang])lang="ru";
     state={lang:lang,source:String(opts.source||"v3_paywall").slice(0,80),
-      mode:"subscription",screen:"loading",plan:"1_month",email:"",attempt:"inline-"+Date.now(),
+      mode:"subscription",screen:"loading",plan:"1_month",email:"",attempt:"inline-"+Date.now()+"-"+Math.floor(Math.random()*1000000),eventSeq:0,
       data:null,error:"",polling:false,onClose:opts.onClose,
       previousOverflow:document.documentElement.style.overflow};
     root.hidden=false;
     document.documentElement.style.overflow="hidden";
     root.setAttribute("aria-label","HSK AI Pro");
     closeButton.focus({preventScroll:true});
-    load();
+    emit("pwa_pro_opened");load();
     return true;
   }
   function closeEmbeddedCheckout(child) {
