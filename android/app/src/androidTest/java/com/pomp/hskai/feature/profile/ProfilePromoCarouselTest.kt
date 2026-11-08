@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.test.getUnclippedBoundsInRoot
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.performKeyInput
 import androidx.compose.ui.test.performSemanticsAction
@@ -113,17 +113,26 @@ class ProfilePromoCarouselTest {
     @Test fun aCardTracksTheFingerBeforeTheSwipeIsReleased() {
         show()
         val first = compose.onNodeWithTag("profile-promo-card-hsk30")
-        val initialLeft = first.getUnclippedBoundsInRoot().left
+        // Resolve the card semantics before starting the gesture. Re-fetching
+        // the semantics tree while a finger is held down can observe layout
+        // on the instrumentation thread and race Compose's UI observer.
+        val cardNode = first.fetchSemanticsNode()
+        val initialLeft = compose.runOnIdle {
+            cardNode.layoutInfo.coordinates.positionInRoot().x
+        }
         compose.onNodeWithTag("profile-promo-pager").performTouchInput {
             down(center)
             moveBy(Offset(-width * .1f, 0f))
             moveBy(Offset(-width * .25f, 0f))
         }
-        // The pointer is still down: verify the live drag position before
-        // issuing an up(), using the Compose UI-test bounds helper.
+        // Do not re-query the semantics tree during an active drag. The
+        // already-resolved card layout coordinates update when the pager
+        // places the same node on the UI thread.
         compose.mainClock.advanceTimeByFrame()
-        val draggedLeft = first.getUnclippedBoundsInRoot().left
-        assertTrue("card must slide while the finger is held down", draggedLeft < initialLeft - 25.dp)
+        val draggedLeft = compose.runOnIdle {
+            cardNode.layoutInfo.coordinates.positionInRoot().x
+        }
+        assertTrue("card must slide while the finger is held down", draggedLeft < initialLeft - 25f)
         compose.onNodeWithTag("profile-promo-pager").performTouchInput { up() }
     }
 
