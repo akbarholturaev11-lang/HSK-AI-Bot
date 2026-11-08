@@ -1633,8 +1633,6 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 <link href="/course_v3_data/profile-carousel.css?v=20261017-link-cards-1" rel="stylesheet">
 <link href="/course_v3_data/rating-podium.css?v=20261105-1" rel="stylesheet">
 <link rel="stylesheet" href="/assets/characters/hsk-scene-background.css?v=20261009-preparing-compact-1">
-<link rel="stylesheet" href="/course_v3_data/iphone-pwa-inline-pro.css?v=20261108-5722a1d34411">
-<script defer src="/course_v3_data/iphone-pwa-inline-pro.js?v=20261108-045f3fb83a0d"></script>
 </head>
 <body class="hsk-scene-page">
 <div id="hsk-launch-splash" class="is-playing" role="img" aria-label="HSK AI">
@@ -2854,14 +2852,6 @@ var App={
     flushPendingCenterAd();
   },
   openPaywall:function(ctx){
-    if(PWA_COURSE_HOST&&isLimitPaywallContext(ctx)&&window.HSKPwaInlinePro){
-      var inlineSource=ctx==="pronLimit"?"v3_pronunciation_limit":"v3_locked_lesson";
-      PAY_SOURCE=inlineSource;
-      trackCourseEvent("paywall_seen",{source:inlineSource,dedupe_key:lessonEventKey("paywall_seen",inlineSource,Date.now())});
-      if($("#sheet").classList.contains("on"))App.closeSheet();
-      window.HSKPwaInlinePro.open({source:inlineSource,lang:LANG});
-      return;
-    }
     if(!PWA_COURSE_HOST&&isLimitPaywallContext(ctx)&&window.CourseAds&&CourseAds.showLimitPromo){
       var isPron=ctx==="pronLimit",feature=isPron?"pronunciation":"lesson";
       var source=isPron?"v3_pronunciation_limit":"v3_locked_lesson";
