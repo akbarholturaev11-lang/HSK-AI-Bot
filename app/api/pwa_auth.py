@@ -973,6 +973,32 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                 )
             return _error(exc)
 
+    @router.get("/iphone-pwa/onboarding/li")
+    async def learner_li_onboarding_page(request: Request):
+        """The Li demo-faithful 23-state web UI, gated by canonical PWA auth.
+
+        Preview integration route only. The original default onboarding route
+        remains unchanged until cross-platform 23-state acceptance is complete.
+        """
+        try:
+            require_pwa_enabled(settings_obj)
+            async with session_factory() as db:
+                await PwaAuthService(db, settings_obj).actor(
+                    request.cookies.get(PWA_SESSION_COOKIE)
+                )
+            return FileResponse(
+                "app/static/course_v3_li_onboarding.html",
+                media_type="text/html",
+                headers={**_NO_STORE, "X-Content-Type-Options": "nosniff",
+                         "X-Frame-Options": "DENY"},
+            )
+        except PwaAuthError as exc:
+            if exc.code == "pwa_session_required":
+                return RedirectResponse(
+                    "/iphone-pwa", status_code=303, headers=_NO_STORE,
+                )
+            return _error(exc)
+
     @router.get("/api/v3/pwa/onboarding/status")
     async def pwa_onboarding_status(request: Request):
         from sqlalchemy import select
