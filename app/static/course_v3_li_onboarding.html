@@ -584,6 +584,10 @@ function goalSay(){
 function levelSay(){var l=find(levels(),level);return l?tr(l.say):t("ask")}
 
 function render(animate){
+  // Fail closed on a blocked/missing localization bundle: keep the branded
+  // first-paint HTML shell instead of partially replacing header/footer and
+  // leaving an empty JS-built scene.
+  if(!T[LANG]||!T[LANG].accountTitle)return;
   document.documentElement.lang=LANG==="tj"?"tg":LANG;
   var st=document.getElementById("stage"),top=document.getElementById("top"),ft=document.getElementById("footer"),html="",foot="";
   var dark=screen==="pro"||TRIAL_STEPS.indexOf(screen)>=0;
