@@ -22,6 +22,7 @@ from app.bot.utils.i18n import t
 from app.db.models.user import User
 from app.db.models.course_user_notification import CourseUserNotification
 from app.config import settings
+from app.services.entitlements.state import EntitlementState, resolve_state
 from app.services.course_notification_service import CourseNotificationService
 from app.services.notification_delivery_service import (
     DELIVERED,
@@ -91,6 +92,12 @@ class TrialReminderService:
         sent = 0
 
         for user in users:
+            # A paid subscriber may still have a historical, unexpired
+            # pro_trial_ends_at column. Sending "trial almost over" to that
+            # person is misleading, even if their old trial has not expired.
+            # Use the single entitlement resolver, matching Web Push dispatch.
+            if resolve_state(user, now=now) != EntitlementState.TRIAL_ACTIVE:
+                continue
             if not await delivery.reachable(user):
                 continue
             ends_at = _as_utc(user.pro_trial_ends_at)
