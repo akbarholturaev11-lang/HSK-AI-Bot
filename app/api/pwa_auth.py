@@ -135,6 +135,7 @@ _PWA_COURSE_BOOT_SCRIPT = b'''<script>
   if(!screen)return;
   function finish(){
     if(screen.querySelector(".hsk-pwa-boot-shell"))return;
+    clearTimeout(safety);
     screen.removeAttribute("aria-busy");
     document.body.classList.remove("hsk-pwa-shell-loading");
     if(nav)nav.inert=false;
@@ -142,6 +143,13 @@ _PWA_COURSE_BOOT_SCRIPT = b'''<script>
   }
   var observer=new MutationObserver(finish);
   observer.observe(screen,{childList:true});
+  // Should an earlier dependency throw before the canonical 8s map retry can
+  // report an error, never leave a permanent blank/disabled PWA shell.
+  // This is a retry-only UI; it cannot authorize a lesson or display old data.
+  var safety=setTimeout(function(){
+    if(!screen.querySelector(".hsk-pwa-boot-shell"))return;
+    screen.innerHTML='<div class="hsk-pwa-boot-error" role="alert" style="margin:28px 18px;padding:24px;border-radius:20px;background:var(--hsk-card-surface,#f2f1ee);color:var(--ink,#222)"><h2 style="font-size:20px;margin:0 0 10px">HSK AI</h2><p style="margin:0 0 16px">Не удалось загрузить курс.</p><button type="button" onclick="location.reload()" style="padding:12px 20px;border-radius:12px;cursor:pointer">Повторить</button></div>';
+  },14000);
   finish();
 })();
 </script>'''
