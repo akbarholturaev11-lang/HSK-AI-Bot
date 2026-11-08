@@ -44,6 +44,17 @@ class ConversionFunnelService:
         "paywall_cta_clicked": "Paywall bosildi",
         "ad_shown": "Reklama ko'rsatildi",
         "ad_skipped": "Reklama tashlandi",
+        "pwa_pro_opened": "PWA Pro oynasi",
+        "pwa_pro_plan_selected": "PWA tarif tanlandi",
+        "pwa_pro_more_opened": "PWA boshqa tariflar",
+        "pwa_pro_method_selected": "PWA tolov usuli",
+        "pwa_pro_exit_offered": "PWA 20% taklif",
+        "pwa_pro_exit_claimed": "PWA 20% qabul",
+        "pwa_pro_exit_declined": "PWA 20% rad",
+        "pwa_pro_dismissed": "PWA Pro yopildi",
+        "pwa_pro_checkout_started": "PWA Lava checkout",
+        "pwa_pro_checkout_failed": "PWA checkout xato",
+        "pwa_pro_checkout_paid": "PWA tolov tasdiq",
     }
     RATE_PAIRS = (
         ("CTA → Kurs", "course_started", "course_cta_seen"),
