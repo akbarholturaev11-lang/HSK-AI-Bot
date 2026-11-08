@@ -29,6 +29,20 @@
 - **Do not merge/deploy** until binary is imported, and the actual iPhone Safari video opens correctly under slow-network throttling (plus 23-state onboarding acceptance).
 - GitHub PR #282 remains draft on feature branch. At checkpoint CI for latest content was queued/pending, no new all-green claim.
 
+## 2026-11-09 SOURCE-BASED SECURITY AND RELEASE-BLOCKER AUDIT (current)
+
+**Read first:** [AUDIT_RISKS_2026-11-09.md](AUDIT_RISKS_2026-11-09.md), an evidence-based file/bug/test matrix. Only facts in the present feature branch have been used; no production tests/deploy/merge.
+
+- User's final extra `Add files via upload` commit `65a6aaff` has exactly the same Git tree as its parent: **NO duplicate video is present**. Keep the one approved 709,956-byte `iphone-home-screen.mp4` and unrelated admin test fixture, do not force-rewrite Git history just to delete an empty commit.
+- Security: closed direct HSK3.0 locked-level onboarding bypass before state mutation and added denial unit test.
+- Correctness: paid Pro account no longer receives old trial-expiry warning; SQL due-window filtering and `NOT EXISTS` slot dedupe before 200-row LIMIT prevent non-due and already-sent users from starving true T-48h notifications. Added paid/oversized cohort unit tests.
+- UX: timeout now covers full API JSON body, not just response headers; trial failure shows real retry plus separate free-course continuation; repeated errors no longer stack. Added mock-hung-response and trial-denial Playwright cases.
+- Safari: real optional MP4 now committed; test actual FastAPI 206 Range response, SHA-256 and byte-for-byte partial content; execute Li runtime and install-guide suites on both Chromium and WebKit in CI.
+- Video content still shows `up.railway.app` in the Safari Share panel. **Do not claim this is the official/current PWA hostname** without verification.
+- Platform security: no PWA push permission is granted by the Li onboarding sheet, no Pro granted by the client, and Android native onboarding is unchanged.
+- QA: these new tests were committed, but their final post-change GitHub Actions results were **NOT YET VERIFIED** at this journal checkpoint. No physical iOS Safari, real push receipt, prod flags, or production Alembic migration confirmed.
+- Branch stays draft PR #282; main and production remain untouched.
+
 ## 0. Yangi chatni boshlash — shu tartib majburiy
 
 1. Repository `akbarholturaev11-lang/HSK-AI-Bot`ni och, **branch `feature/li-onboarding-mainffbff9-20261108`** mavjudligini va uning remote HEAD SHA'sini tekshir. Default `main`dan ko'r-ko'rona davom etma. Local workspace allaqachon dirty bo'lsa user o'zgarishlarini saqla; rebase/reset/force yo'q.
