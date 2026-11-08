@@ -2475,6 +2475,7 @@ async def course_v3_data_file(filename: str):
         "iphone-pwa-glass.css": "text/css",
         "iphone-pwa-inline-pro.css": "text/css",
         "iphone-pwa-inline-pro.js": "application/javascript",
+        "iphone-pwa-inline-pro-bridge.js": "application/javascript",
         "iphone-pwa-notices.js": "application/javascript",
         "iphone-pwa-feedback.js": "application/javascript",
         "iphone-pwa-shake-report.js": "application/javascript",
