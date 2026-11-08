@@ -270,11 +270,10 @@ function trackAvailable(){
 function guestTrackMetadata(force){
   // Cache ONLY anonymous public metadata, in this page's memory. Never cache
   // PWA session, Pro/trial rights, subscriptions, saved progress or CSRF.
-  if(publicTrackPromise)return publicTrackPromise;
   if(!force&&publicTrackSnapshot&&Date.now()-publicTrackAt<120000){
-    // Stale-while-revalidate: render safe cached HSK 2.0 preview immediately,
-    // then refresh the server snapshot without blocking the visible screen.
-    Promise.resolve().then(function(){
+    // Always use safe cached public data even when a revalidation is in
+    // flight: one slow refresh must not block a second visible section.
+    if(!publicTrackPromise)Promise.resolve().then(function(){
       guestTrackMetadata(true).then(function(fresh){
         if(actor||global.screen!=="version")return;
         trackStatus=fresh;updateTrackUi();
@@ -282,6 +281,7 @@ function guestTrackMetadata(force){
     });
     return Promise.resolve(publicTrackSnapshot);
   }
+  if(publicTrackPromise)return publicTrackPromise;
   publicTrackPromise=api("/api/v3/pwa/onboarding/public-tracks").then(function(data){
     if(!data.tracks||!data.tracks.hsk30||!data.tracks.hsk30.access||
        data.tracks.hsk30.access.allowed!==false)
@@ -351,6 +351,10 @@ function payload(){
   };
 }
 function statusApi(){
+  // The status endpoint independently verifies the session cookie. Avoid a
+  // redundant /pwa-auth/session request immediately after bootstrap proved
+  // the actor; never cache or manufacture the user's saved profile state.
+  if(hostPwa&&actor)return api("/api/v3/pwa/onboarding/status");
   return session().then(function(){
     return api(hostPwa?"/api/v3/pwa/onboarding/status":"/api/miniapp/onboarding/status");
   });
