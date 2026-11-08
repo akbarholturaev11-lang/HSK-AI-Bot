@@ -55,6 +55,35 @@
 - **Recommend implementing from new main 401de, NOT the obsolete docs branch on 4ca.** This new docs branch was created exactly from 401de, with PRODUCT_GOAL and this context only; no runtime changed. On next task, refresh remote main for further commits and compare before coding.
 - **Not started:** user requested AUDIT FIRST, coding NEXT; do not begin P1 without new user instruction. Production Railway failed to deploy new main due Nixpacks driver download; the prior live app stays online. No automatic deployment/merge on this audit.
 
+## 2026-11-08 LATEST CHECKPOINT — implemented PWA trial adapter + real CI evidence
+
+**Active implementation branch:** `feature/li-onboarding-mainffbff9-20261108` based on deployed `main@ffbff949`. Draft PR **#282** open; **not merged, not deployed, no production migration**.
+
+### Additional committed feature behavior
+- `app/api/pwa_auth.py`: **GET `/api/v3/pwa/trial/status`** returns canonical `ProTrialService.eligibility` + `TrialRiskService` evaluation for the cookie-verified PWA account; status never grants rights. **POST `/api/v3/pwa/trial/start`** requires PWA enabled, same-origin and cookie+CSRF; rejects Telegram initData spoof, evaluates existing risk and calls the existing one-time `ProTrialService.start`. Only successful start records risk, commits and returns `ends_at`. No independent trial/entitlement/payment engine created, no client-side Pro grant.
+- `tests/test_pwa_browser_auth.py`: tests for PWA status auth/risk, trial start unauthorized/wrong-origin/no-CSRF/cross-channel, risk denial, failed eligibility and confirmed server result. **Do not claim these tests passed until full targeted-tests job finishes.**
+- `tests/test_course_v3_static_data.py`: updated legacy assertion that demanded silent HSK2.0 fallback on remote failure. Now asserts server-known disabled fallback and **honest retry on failed network**; did not reintroduce a fake access status.
+- `tests/test_iphone_pwa_asset_versions.py`: updated allowlist test to inspect actual route `public_assets` membership with both literal keys and existing `dict.fromkeys` JS group; former brittle test falsely rejected five JS assets already in deployed main.
+- `app/static/course_v3_onboarding.html`: restored CTA to enabled on successful metadata response; forced deadline for old WebViews without AbortController. No full 23-state activation yet.
+
+### GitHub Actions evidence (NOT ALL GREEN)
+- First attempted PR run `42472514663`: Playwright failed due CTA still disabled; old Mini App save confirmation test failed due additive profile shape. Both fixed in commits `0048e1cf` and `2062aa8f`.
+- Subsequent run `42472859223`: old static string assertion failed, corrected without weakening fail-closed logic in commit `bbbe3554`.
+- Subsequent `42473153502` PWA asset test failed because deployed main had switched to `dict.fromkeys`; updated test in commit `8aa67b91`.
+- **Latest specifically inspected completed jobs on commit `6c446b6f`, workflow `42473482755`:** `native-postgres` = **SUCCESS**, `miniapp-ui` = **SUCCESS** (includes `tests/e2e/test_li_onboarding_loading.py`). `targeted-tests` was **IN PROGRESS** as last checked (running `tests.test_pwa_browser_auth`). It must not be marked passed. Other workflows (Smart Reminder, localization, Android) are not fully assessed here; use full current CI before release.
+- Tests authored + remote CI actual, but **no dedicated physical iPhone/Telegram device run**, **no manual PostgreSQL production migration**, **no visual 23-screen screenshot regression** and no proof PWA trial UI started from demo.
+
+### Explicit scope not yet delivered
+1. User demo 23-state pixel/text fidelity live PWA+Telegram UI (reference-only HTML pinned, current live UI still legacy three-question flow).
+2. Public PWA panda-first registration, OAuth return/temporary drafts, signed Telegram auth UX and real first-lesson launch.
+3. Bind `goals[]`, time, focus, streak target selections from 23-screen UI; deterministic multi-goal daily-plan weighting and no post-first-lesson duplicate questions.
+4. PWA 48-hour trial-expiry Web Push, platform permission/consent, exact dedupe and push receipt evidence.
+5. Smart Reminder canonical streak target context and legacy notification cross-channel dedupe.
+6. Onboarding event funnel/canonical RU/UZ/TJ source catalogs + builder, full device regression and release safety.
+
+### Next exact action
+Review **latest** branch HEAD and `targeted-tests` CI conclusion; fix actual failures. Then implement P1 23-state shared UI from `docs/onboarding-li/DEMO_REFERENCE_ONLY.html` with same copy/poses but **no fake timers/auth/trial**, original course book JPGs and canonical localizations. Continue updating this journal after tested code slices.
+
 ## CI evidence — first test cycle and bug fixes (2026-11-08)
 
 - Draft PR [#282](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/282) opened on the feature branch to run tests; **DRAFT, no merge or deploy**.
