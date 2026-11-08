@@ -97,6 +97,8 @@ h1{font-size:23px}
 <link href="/course_v3_data/desktop-download.css?v=20261003-1" rel="stylesheet">
 <link rel="stylesheet" href="/assets/characters/hsk-scene-background.css?v=20261009-preparing-compact-1">
 <link rel="stylesheet" href="/course_v3_data/iphone-pwa-practice-boot.css?v=20261105-13e94c7945b9">
+<link rel="stylesheet" href="/course_v3_data/iphone-pwa-inline-pro.css?v=20261108-1">
+<script defer src="/course_v3_data/iphone-pwa-inline-pro.js?v=20261108-1"></script>
 </head>
 <body class="hsk-scene-page">
 <div class="wrap">
@@ -495,9 +497,11 @@ function showLimitNow(){
   $("lim-text").textContent=L.limitText;
   $("lim-btn").hidden=false;
   $("limit").hidden=false;
+  if(PWA_MISTAKES_HOST&&window.HSKPwaInlinePro)window.HSKPwaInlinePro.open({source:"v3_mistake_review",lang:LANG});
 }
 function closeLimit(){$("limit").hidden=true}
 function goPay(){
+  if(PWA_MISTAKES_HOST&&window.HSKPwaInlinePro){window.HSKPwaInlinePro.open({source:"v3_mistake_review",lang:LANG});return}
   if(PWA_MISTAKES_HOST&&window.HskPwaPracticeBoot&&HskPwaPracticeBoot.checkout("v3_mistake_review"))return;
   location.href=(PWA_MISTAKES_HOST?"/iphone-pwa/checkout":"/subscription.html")+"?lang="+LANG+"&mode=subscription&source=v3_mistake_review&return_to=course&return_page=course_v3_mistakes.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"");
 }
