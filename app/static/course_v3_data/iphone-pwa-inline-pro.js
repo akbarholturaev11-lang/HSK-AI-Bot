@@ -11,9 +11,9 @@
     offer: "/api/v3/pwa/subscription/exit-offer"
   };
   var WORDS = {
-    ru: {title:"HSK AI Pro",subtitle:"Продолжайте учиться без ограничений",one:"1 месяц",
+    ru: {title:"Лимит исчерпан",subtitle:"Оформите Pro, чтобы продолжить",benefits:["Уроки без ограничений","Разговорная практика с ИИ","Учёба без рекламы"],one:"1 месяц",
       three:"3 месяца",six:"6 месяцев",year:"1 год",pay:"Получить Pro",
-      more:"Другие тарифы и способы оплаты",lava:"Visa / Mastercard — Lava.top",
+      more:"Другие тарифы",lava:"Visa / Mastercard — Lava.top",
       manual:"Обычный способ оплаты",manualHint:"Банковская карта, Alipay или WeChat",
       choose:"Выберите способ оплаты",email:"Email для оплаты",continue:"Продолжить оплату",
       close:"Закрыть",back:"Назад",loading:"Загружаем тарифы…",unavailable:"Тарифы временно недоступны",
@@ -28,9 +28,9 @@
       manualNoExit:"Скидка при выходе действует только при оплате Lava.top",
       blocked:"Проверьте текущий платёж или действующую подписку",
       missingEmail:"Укажите действительный email",success:"Платёж подтверждён сервером"},
-    uz: {title:"HSK AI Pro",subtitle:"Cheklovsiz o‘qishni davom ettiring",one:"1 oy",
+    uz: {title:"Limit tugadi",subtitle:"Davom etish uchun Pro oling",benefits:["Cheksiz darslar","AI bilan ovozli mashqlar","Reklamasiz o‘rganing"],one:"1 oy",
       three:"3 oy",six:"6 oy",year:"1 yil",pay:"Pro olish",
-      more:"Boshqa tariflar va to‘lov usullari",lava:"Visa / Mastercard — Lava.top",
+      more:"Boshqa tariflar",lava:"Visa / Mastercard — Lava.top",
       manual:"Oddiy to‘lov usuli",manualHint:"Bank kartasi, Alipay yoki WeChat",
       choose:"To‘lov usulini tanlang",email:"To‘lov uchun email",continue:"To‘lovni davom ettirish",
       close:"Yopish",back:"Orqaga",loading:"Tariflar yuklanmoqda…",unavailable:"Tariflar hozir mavjud emas",
@@ -44,9 +44,9 @@
       manualNoExit:"Chiqish chegirmasi faqat Lava.top to‘loviga tegishli",
       blocked:"Joriy to‘lov yoki faol obunani tekshiring",
       missingEmail:"To‘g‘ri email kiriting",success:"To‘lov serverda tasdiqlandi"},
-    tj: {title:"HSK AI Pro",subtitle:"Омӯзишро бе маҳдудият идома диҳед",one:"1 моҳ",
+    tj: {title:"Лимит тамом шуд",subtitle:"Барои идома Pro гиред",benefits:["Дарсҳо бе маҳдудият","Машқи овозӣ бо AI","Омӯзиш бе реклама"],one:"1 моҳ",
       three:"3 моҳ",six:"6 моҳ",year:"1 сол",pay:"Гирифтани Pro",
-      more:"Тарифҳо ва роҳҳои дигари пардохт",lava:"Visa / Mastercard — Lava.top",
+      more:"Тарифҳои дигар",lava:"Visa / Mastercard — Lava.top",
       manual:"Пардохти оддӣ",manualHint:"Корти бонкӣ, Alipay ё WeChat",
       choose:"Роҳи пардохтро интихоб кунед",email:"Email барои пардохт",continue:"Идомаи пардохт",
       close:"Пӯшидан",back:"Бозгашт",loading:"Тарифҳо бор шуда истодаанд…",unavailable:"Тарифҳо дастрас нестанд",
@@ -63,7 +63,7 @@
   };
   var NAMES = { "1_month":"one", "3_months":"three", "6_months":"six", "12_months":"year" };
   var order = ["1_month","3_months","6_months","12_months"];
-  var root, body, heading, info, back, closeButton, lastFocus, state, tick = null, actorPromise = null, run = 0;
+  var root, body, heading, info, panda, back, closeButton, lastFocus, state, tick = null, actorPromise = null, run = 0;
   function txt(key) { return (WORDS[state.lang]||WORDS.ru)[key]; }
   function el(tag, cls, value) {
     var node = document.createElement(tag);
@@ -126,9 +126,11 @@
     root.setAttribute("role","dialog");root.setAttribute("aria-modal","true");
     var sheet=el("div","hip-sheet");
     var header=el("div","hip-header");
+    panda=el("div","hip-panda");panda.setAttribute("aria-hidden","true");
+    panda.innerHTML="<svg viewBox=\"0 0 100 100\" role=\"img\" aria-hidden=\"true\" focusable=\"false\" xmlns=\"http://www.w3.org/2000/svg\">\n<ellipse cx=\"28\" cy=\"23\" rx=\"13\" ry=\"15\" fill=\"#292f30\" transform=\"rotate(-24 28 23)\"/>\n<ellipse cx=\"72\" cy=\"23\" rx=\"13\" ry=\"15\" fill=\"#292f30\" transform=\"rotate(24 72 23)\"/>\n<ellipse cx=\"50\" cy=\"58\" rx=\"33\" ry=\"34\" fill=\"#fffdf6\" stroke=\"#333b39\" stroke-width=\"2\"/>\n<ellipse cx=\"35\" cy=\"52\" rx=\"10\" ry=\"14\" fill=\"#303735\" transform=\"rotate(22 35 52)\"/>\n<ellipse cx=\"65\" cy=\"52\" rx=\"10\" ry=\"14\" fill=\"#303735\" transform=\"rotate(-22 65 52)\"/>\n<circle cx=\"37\" cy=\"50\" r=\"3.1\" fill=\"#fff\"/>\n<circle cx=\"63\" cy=\"50\" r=\"3.1\" fill=\"#fff\"/>\n<ellipse cx=\"50\" cy=\"67\" rx=\"7\" ry=\"4.9\" fill=\"#333b39\"/>\n<path d=\"M50 72q-7 10-13 2M50 72q7 10 13 2\" fill=\"none\" stroke=\"#333b39\" stroke-width=\"2.2\" stroke-linecap=\"round\"/>\n<ellipse cx=\"19\" cy=\"79\" rx=\"11\" ry=\"8\" fill=\"#303735\" transform=\"rotate(-20 19 79)\"/>\n<ellipse cx=\"81\" cy=\"79\" rx=\"11\" ry=\"8\" fill=\"#303735\" transform=\"rotate(20 81 79)\"/>\n<path d=\"M39 80Q50 75 61 80L59 96Q50 91 41 96Z\" fill=\"#e8aa65\" stroke=\"#c48742\" stroke-width=\"1.5\"/>\n<path d=\"M50 78v15\" stroke=\"#c48742\" stroke-width=\"1.6\"/>\n</svg>";
     heading=el("h2","hip-title");
     info=el("p","hip-summary");
-    header.append(heading,info);
+    header.append(panda,heading,info);
     body=el("div","hip-body");
     back=btn("‹","hip-back",goBack);
     closeButton=btn("×","hip-close",requestDismiss);
@@ -153,9 +155,11 @@
       var card=btn("","hip-plan",function(){state.plan=plan.plan_type;render()});
       card.setAttribute("aria-pressed",String(state.plan===plan.plan_type));
       card.appendChild(el("span","term",txt(NAMES[plan.plan_type])));
-      card.appendChild(el("span","price",money(plan.amount,plan.currency)));
+      var priceLine=el("span","hip-price-line");
+      priceLine.appendChild(el("span","price",money(plan.amount,plan.currency)));
       if (Number(plan.discount_percent)>0 && plan.base_amount!=null) {
-        card.appendChild(el("span","comparison",money(plan.base_amount,plan.currency)));
+        priceLine.appendChild(el("span","comparison",money(plan.base_amount,plan.currency)));
+        card.appendChild(priceLine);
         card.appendChild(el("span","badge","−"+Number(plan.discount_percent)+"%"));
       } else {
         var reference=relativePrice(plan.amount);
@@ -163,8 +167,9 @@
           var strike=el("span","comparison",money(reference,plan.currency));
           strike.title=txt("comparison");
           strike.setAttribute("aria-label",txt("comparison")+": "+money(reference,plan.currency));
-          card.appendChild(strike);
+          priceLine.appendChild(strike);
         }
+        card.appendChild(priceLine);
       }
       grid.appendChild(card);
     });
@@ -174,13 +179,30 @@
     if (!root||!state||root.hidden) return;
     var s=state.screen, plans=available(), isLava=state.data&&state.data.lava;
     heading.textContent=s==="exit"?txt("exitTitle"):s==="more"?txt("choose"):txt("title");
-    info.textContent=s==="exit"?txt("exitText"):txt("subtitle");
+    info.textContent=s==="exit"?txt("exitText"):s==="more"?"":txt("subtitle");
+    panda.hidden=!(["main","loading","exit"].includes(s));
     closeButton.setAttribute("aria-label",txt("close"));
     back.hidden=["main","loading","exit","success"].indexOf(s)!==-1;
     back.setAttribute("aria-label",txt("back"));
     body.replaceChildren();
     if (state.error && s!=="exit") body.appendChild(el("p","hip-error",state.error));
-    if (s==="loading") {body.appendChild(el("div","hip-loading",txt("loading")));return}
+    if (s==="main"||s==="loading") {
+      var benefits=el("ul","hip-benefits");
+      (txt("benefits")||[]).forEach(function(value){
+        benefits.appendChild(el("li","hip-benefit",value));
+      });
+      body.appendChild(benefits);
+    }
+    if (s==="loading") {
+      var loadingPlans=el("div","hip-plans");
+      for(var n=0;n<2;n++) loadingPlans.appendChild(el("div","hip-plan hip-skeleton"));
+      body.appendChild(loadingPlans);
+      var loadingCta=btn(txt("pay"),"hip-primary",function(){});
+      loadingCta.disabled=true;
+      body.appendChild(loadingCta);
+      body.appendChild(el("div","hip-loading",txt("loading")));
+      return;
+    }
     if (s==="exit") {
       body.appendChild(el("p","hip-emphasis","−20%"));
       body.appendChild(btn(txt("accept"),"hip-primary",claimExit));
@@ -264,7 +286,6 @@
       startPayment();
     }));
     body.appendChild(btn(txt("more"),"hip-secondary",function(){state.screen="more";render()}));
-    body.appendChild(el("p","hip-small hip-disclosure",txt("renewal")));
   }
   function load() {
     if (!state) return;
