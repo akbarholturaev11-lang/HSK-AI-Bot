@@ -289,9 +289,9 @@ global.loginScreen=function(mode){
   var html=originalLogin(mode);
   // Demo buttons formerly faked sign-in or unlocked Pro on click. Never ship
   // those actions. All providers use the canonical PWA auth page.
-  html=html.replace(/onclick="(?:demoLogin\\(\\)|go\\('pro'\\))"/g,
+  html=html.replace(/onclick="(?:demoLogin\(\)|go\('pro'\))"/g,
     'onclick="LiRuntime.authenticate()"');
-  html=html.replace(/<p class="status" role="status">[\\s\\S]*?<\\/p>/,
+  html=html.replace(/<p class="status" role="status">[\s\S]*?<\/p>/,
     '<p class="status" role="status"></p>');
   return html;
 };
