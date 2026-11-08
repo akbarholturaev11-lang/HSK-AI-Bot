@@ -359,6 +359,34 @@ def test_new_iphone_signup_shows_install_video_guide_after_verified_save_only():
         browser.close()
 
 
+def test_partial_json_response_cannot_leave_loading_screen_stuck():
+    # A response may deliver status/headers but stall forever reading JSON.
+    # The frontend timeout must wrap the *whole* body read, not only fetch.
+    with pw.sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page, captured = _page(browser, pwa=True, guest=True)
+        page.evaluate("""() => {
+          const originalFetch = window.fetch.bind(window);
+          const originalTimeout = window.setTimeout.bind(window);
+          window.fetch = function(path, options) {
+            if (String(path).includes('/api/v3/pwa/onboarding/public-tracks'))
+              return Promise.resolve({ok: true, json: () => new Promise(() => {})});
+            return originalFetch(path, options);
+          };
+          window.setTimeout = (fn, ms, ...args) =>
+            originalTimeout(fn, ms === 12000 ? 110 : ms, ...args);
+        }""")
+        page.locator("#footer .cta").first.click()
+        page.locator("#footer .cta").click()
+        page.locator("#footer .cta").click()
+        page.locator(".li-remote-error").wait_for(state="visible", timeout=4000)
+        assert page.get_by_role("button", name="Qayta urinish").is_visible()
+        assert page.evaluate("window.screen") == "loadCourse"
+        assert not captured["post"]
+        assert not captured["pageerrors"]
+        browser.close()
+
+
 def test_trial_status_network_failure_is_retryable_and_free_continuation_exists():
     with pw.sync_playwright() as playwright:
         browser = playwright.chromium.launch()
