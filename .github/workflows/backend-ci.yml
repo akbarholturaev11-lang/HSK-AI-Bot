@@ -467,7 +467,7 @@ jobs:
       - name: Verify real browser iPhone PWA glass dialogs at mobile widths
         run: python -m pytest -q tests/e2e/test_iphone_pwa_glass.py
       - name: Verify inline PWA Pro terms, manual choice and 20 percent exit offer
-        run: python -m pytest -q tests/e2e/test_pwa_inline_pro.py tests/e2e/test_pwa_inline_pro_routes.py
+        run: python -m pytest -q tests/e2e/test_pwa_inline_pro.py tests/e2e/test_pwa_inline_pro_routes.py tests/e2e/test_pwa_lava_link.py
       - name: Preserve current main navigation, preload and desktop dialog behavior
         run: >-
           python -m pytest -q tests/e2e/test_practice_bootstrap.py
