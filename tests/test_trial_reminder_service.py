@@ -123,7 +123,7 @@ class TrialReminderTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(bot.sent, [])
         queued.assert_awaited_once()
         self.assertEqual(queued.await_args.kwargs["source"], "course")
-        self.assertEqual(queued.await_args.kwargs["language"], "ru")
+        self.assertEqual(queued.await_args.kwargs["language"], "uz")
         self.assertEqual(len(await self._notifications()), 1)
 
     async def test_a_reminder_goes_out_on_the_last_day(self):
