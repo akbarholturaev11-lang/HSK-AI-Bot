@@ -44,8 +44,6 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
 <link href="/course_v3_data/desktop-download.css?v=20261003-1" rel="stylesheet">
 <link rel="stylesheet" href="/assets/characters/hsk-scene-background.css?v=20261009-preparing-compact-1">
 <link rel="stylesheet" href="/course_v3_data/iphone-pwa-practice-boot.css?v=20261105-13e94c7945b9">
-<link rel="stylesheet" href="/course_v3_data/iphone-pwa-inline-pro.css?v=20261108-5722a1d34411">
-<script defer src="/course_v3_data/iphone-pwa-inline-pro.js?v=20261108-045f3fb83a0d"></script>
 </head>
 <body class="hsk-scene-page">
 <div class="wrap">
@@ -169,8 +167,6 @@ function isHsk30(){return /^nhsk[1-3]$/.test(LV||"")}
 function wordSource(){return isHsk30()?(window.HSK30_WORDS||[]):(typeof WORDS!=="undefined"?WORDS:[])}
 function wordGate(h){return (isHsk30()?(window.HSK30_WORD_GATE||{}):(window.HSK_WORD_GATE||{}))[h]}
 function goPremium(){
-  if(PWA_RECOGNITION_HOST&&window.HSKPwaInlinePro){window.HSKPwaInlinePro.open({source:"v3_recognition_limit",lang:LANG});return}
-
   if(PWA_RECOGNITION_HOST&&window.HskPwaPracticeBoot&&HskPwaPracticeBoot.checkout("v3_recognition_limit"))return;
   location.href=(PWA_RECOGNITION_HOST?"/iphone-pwa/checkout":"/subscription.html")+"?lang="+LANG+"&source=v3_recognition_limit&mode=subscription&return_to=course&return_page=course_v3_recognition.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"");
 }
@@ -208,7 +204,6 @@ function showLimitNow(){if(window.HskPwaPracticeBoot)HskPwaPracticeBoot.hide();
   var adBtn="";
   var sub=gateEscape(LIMIT_REASON||L.limitSub);
   document.getElementById("body").innerHTML='<div class="done"><div class="st" style="background:var(--gold)"><i class="ti ti-lock"></i></div><h3>'+L.limitTitle+'</h3><p>'+sub+'</p>'+adBtn+'<button onclick="goPremium()" style="width:100%;max-width:300px;background:transparent;border:1px solid var(--line);color:var(--cin2);border-radius:14px;padding:14px;font-family:inherit;font-size:15px;font-weight:500;margin-top:8px">'+L.premiumBtn+'</button>'+'<button onclick="goBack()" style="width:100%;max-width:300px;background:transparent;border:1px solid var(--line);color:var(--ink2);border-radius:14px;padding:14px;font-family:inherit;font-size:15px;margin-top:8px">'+L.back+'</button></div>';
-  if(PWA_RECOGNITION_HOST&&window.HSKPwaInlinePro)window.HSKPwaInlinePro.open({source:"v3_recognition_limit",lang:LANG});
 }
 /* Sessiya ochish (sahifa yuklanganda) — reload xavfsiz token bilan. */
 function gateStart(newAttempt){
