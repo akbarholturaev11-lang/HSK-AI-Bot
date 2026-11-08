@@ -246,6 +246,41 @@ body.dark::before{background-color:#FFFFFF;opacity:.55}
 .loading:after{content:"";display:block;width:115px;height:5px;margin:20px auto 0;background:linear-gradient(90deg,var(--hsk-cinnabar) 0 40%,var(--hsk-divider) 40%);background-size:220% 100%;border-radius:99px;animation:liServerPending 1.15s ease-in-out infinite alternate}
 @keyframes liServerPending{from{background-position:100%}to{background-position:0}}
 @media(prefers-reduced-motion:reduce){.loading:after{animation:none}}
+
+/* Scoped progressive first paint for Li onboarding, never the PWA course. */
+.li-skel{position:relative;display:block;overflow:hidden;flex-shrink:0;background:#e8e4dc;border-radius:12px}
+.li-skel:after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.48),transparent);animation:liSkel 1.65s ease-in-out infinite}
+@keyframes liSkel{100%{transform:translateX(100%)}}
+.li-first-shell{min-height:100%;padding:32px 24px;display:flex;flex-direction:column;gap:22px}
+.li-first-brand{font-weight:750;font-size:16px;color:var(--hsk-cinnabar-ink)}
+.li-first-hero{display:grid;place-items:center;gap:16px;padding-top:26px}
+.li-first-bubble{width:min(85%,340px);height:75px;border-radius:18px}
+.li-first-panda{width:180px;height:190px;border-radius:46% 46% 38% 38%;background:var(--hsk-cinnabar-soft)}
+.li-first-cta{height:54px;border-radius:13px}
+.li-progressive-stage{display:flex;flex:1;flex-direction:column;min-height:0}
+.li-progressive-stage .li-loading-head{min-height:112px}
+.li-progressive-stage .li-loading-head .panda{width:84px;height:94px}
+.li-progressive-stage .li-loading-body{display:flex;flex-direction:column;gap:14px}
+.li-loading-books{width:min(100%,340px);aspect-ratio:4/3;margin:0 auto 7px;border-radius:16px}
+.li-loading-options{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.li-loading-options .li-skel{height:48px}
+.li-loading-lines{display:grid;gap:9px}
+.li-loading-lines .li-skel{height:14px}
+.li-loading-lines .li-skel:last-child{width:65%}
+.li-loading-row{height:72px;border-radius:14px}
+.li-loading-card{height:132px;border-radius:18px}
+.li-real-books{position:relative}
+.li-book-placeholder{position:absolute;inset:0;border-radius:14px}
+.li-real-books>img{position:relative;z-index:1}
+.li-real-books>img[hidden]{display:none}
+.li-real-books[data-image-ready="true"] .li-book-placeholder{display:none}
+.li-real-books .li-book-fallback{position:absolute;inset:0;z-index:2;display:none}
+.li-real-books[data-image-error="true"] .li-book-fallback{display:flex}
+.li-provider-placeholder{height:66px;border-radius:22px;margin-bottom:10px}
+.li-inline-pending{display:grid;gap:10px;padding:16px 20px;margin:16px auto 0;max-width:370px;width:100%;border:1px solid var(--hsk-divider);border-radius:16px;background:var(--hsk-paper-raised)}
+.li-inline-pending .li-skel{height:16px}
+.li-inline-pending .li-skel:last-child{width:65%}
+@media(prefers-reduced-motion:reduce){.li-skel:after{animation:none}}
 </style>
 <style>/* Copied verbatim from app/static/assets/characters/hsk-character-pack.css */
 /* HSK AI original lesson cast — Phase 1.
@@ -323,16 +358,19 @@ body.dark::before{background-color:#FFFFFF;opacity:.55}
   .hsk-character{animation:none!important;transition:none!important}
 }
 </style>
-<script src="/assets/characters/hsk-character-pack.js?v=20261108-97e81d4643b7"></script>
-<script src="/assets/telegram-web-app.js?v=20261019-1"></script>
 <link rel="stylesheet" href="/course_v3_data/li-onboarding-install.css?v=20261109-63669632b7e7">
 </head>
 <body>
 <div class="wrap">
-  <header class="top" id="top"></header>
-  <main id="stage"></main>
-  <footer class="footer" id="footer"></footer>
+  <header class="top" id="top"><span class="li-first-brand">HSK AI</span><span class="spacer"></span><span class="li-skel" aria-hidden="true" style="width:64px;height:33px"></span></header>
+  <main id="stage" aria-busy="true"><div class="li-first-shell" aria-label="HSK AI">
+    <div class="li-first-hero"><span class="li-skel li-first-bubble" aria-hidden="true"></span><span class="li-skel li-first-panda" aria-hidden="true"></span></div>
+  </div></main>
+  <footer class="footer" id="footer"><span class="li-skel li-first-cta" aria-hidden="true"></span></footer>
 </div>
+<!-- Display first shell even when the optional character pack or Telegram SDK is delayed. -->
+<script src="/assets/characters/hsk-character-pack.js?v=20261108-97e81d4643b7"></script>
+<script src="/assets/telegram-web-app.js?v=20261019-1"></script>
 <script src="/course_v3_data/hsk-li-onboarding-i18n.js?v=20261109-4fba649fcd24"></script>
 <script>
 /* Copy in RU / UZ / TJ. Strings marked "existing" are taken from the repo catalogs;
