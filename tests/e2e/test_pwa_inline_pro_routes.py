@@ -27,7 +27,7 @@ def _markup(path):
     return f"""<!doctype html><html lang="ru"><head><meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <link rel="stylesheet" href="/course_v3_data/iphone-pwa-inline-pro.css?v=e2e">
-      </head><body><button id="go">Start</button>
+      </head><body><div id="secov"></div><button id="go">Start</button>
       <script>{stub}</script>
       <script src="/course_v3_data/iphone-pwa-inline-pro.js?v=e2e"></script>
       <script src="/course_v3_data/iphone-pwa-inline-pro-bridge.js?v=e2e"></script>
@@ -124,6 +124,28 @@ def test_inline_manual_skips_card_question_without_modifying_shared_checkout():
         assert page.evaluate("state.path") == "manual"
         page.evaluate("state.path='lava'")
         assert page.evaluate("flow()") == ["card","country","plans","pay"]
+        browser.close()
+
+
+@pytest.mark.parametrize("legacy_html,selector", [
+    ("<div id='rc-body'><div class='rc-done'><button class='rc-prem'>Pro</button></div></div>",
+     "#rc-body .rc-done"),
+    ("<div id='mk-limit'><button class='go'>Pro</button></div>",
+     "#mk-limit:not([hidden])"),
+])
+def test_private_course_limit_shows_only_one_pwa_paywall(legacy_html,selector):
+    with playwright.sync_playwright() as pw:
+        browser = getattr(pw,os.getenv("PWA_E2E_ENGINE","chromium")).launch()
+        page = browser.new_context(**pw.devices["iPhone 13"]).new_page()
+        page.route("**/*",_serve)
+        page.goto(ORIGIN + "/iphone-pwa/course")
+        page.evaluate("(html) => document.getElementById('secov').innerHTML = html",legacy_html)
+        page.locator("#hsk-inline-pro button.hip-plan").first.wait_for()
+        # The MutationObserver removes (or hides) the legacy screen before
+        # opening the single PWA paywall, instead of stacking both layers.
+        assert page.locator(selector).count() == 0
+        assert page.locator("#hsk-inline-pro").is_visible()
+        assert page.get_by_role("heading", name="Лимит исчерпан").is_visible()
         browser.close()
 
 
