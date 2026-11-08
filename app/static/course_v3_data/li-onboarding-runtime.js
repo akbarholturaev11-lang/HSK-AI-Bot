@@ -38,6 +38,23 @@ if(hostPwa){
 }
 var actor=null,identityKey="",trackStatus=null,launch=null;
 var justResumedGuestRegistration=false;
+var OAUTH_DRAFT_MARKER="hsk_li_auth_handoff_v1";
+function clearAuthHandoff(){
+  try{sessionStorage.removeItem(OAUTH_DRAFT_MARKER)}catch(_){}
+}
+function markAuthHandoff(provider){
+  // A browser-only navigation intent, not OAuth proof or a user identity.
+  // Canonical PWA auth still verifies the HttpOnly session and CSRF.
+  try{sessionStorage.setItem(OAUTH_DRAFT_MARKER,
+    JSON.stringify({at:Date.now(),provider:provider}))}catch(_){}
+}
+function validAuthHandoff(){
+  try{
+    var marker=JSON.parse(sessionStorage.getItem(OAUTH_DRAFT_MARKER)||"null");
+    return !!(marker&&["google","telegram"].indexOf(marker.provider)>=0&&
+      Date.now()>=Number(marker.at)&&Date.now()-Number(marker.at)<=900000);
+  }catch(_){return false}
+}
 var supportedProviders=null; // null while the real provider availability loads
 var requestGeneration=0,requestBusy=false,initializing=true,trialEligibility=null;
 var initialRender=global.render;
@@ -130,16 +147,21 @@ function restoreDraft(){
     var key="hsk_li_draft_v1:"+identityKey;
     var raw=sessionStorage.getItem(key);
     var claimedGuest=false;
-    if(!raw&&hostPwa&&actor){
-      // OAuth returned to this same browser tab. Bind only the learner's
-      // own pre-login, non-secret selections to the newly verified actor.
+    if(!raw&&hostPwa&&actor&&validAuthHandoff()){
+      // Adopt anonymous choices ONLY after a fresh, explicit login/signup
+      // started in this very browser tab. A leftover guest draft must never
+      // be silently attached to an unrelated later account.
       var guestKey="hsk_li_draft_v1:pwa:guest";
-      raw=sessionStorage.getItem(guestKey);
-      if(raw){
+      var proposed=sessionStorage.getItem(guestKey);
+      var parsed=JSON.parse(proposed||"null");
+      if(parsed&&parsed.step==="signup"&&Date.now()>=Number(parsed.at)&&
+         Date.now()-Number(parsed.at)<=900000){
+        raw=proposed;
         sessionStorage.setItem(key,raw);
         sessionStorage.removeItem(guestKey);
         claimedGuest=true;
       }
+      clearAuthHandoff();
     }
     var obj=JSON.parse(raw||"null");
     if(!obj||Date.now()-Number(obj.at)>86400000||Number(obj.at)>Date.now())return;
@@ -162,6 +184,7 @@ function restoreDraft(){
 }
 function clearDraft(){
   if(identityKey)try{sessionStorage.removeItem("hsk_li_draft_v1:"+identityKey)}catch(_){}
+  clearAuthHandoff();
 }
 function syncPending(){
   var stage=document.getElementById("stage");
@@ -430,6 +453,7 @@ function authenticate(provider){
   saveDraft();
   setBusy(true);
   api("/api/v3/pwa/onboarding/li/resume",{method:"POST"}).then(function(){
+    markAuthHandoff(provider);
     if(provider==="telegram"){
       // Delegate Telegram link proof and polling to the canonical login UI.
       // Do not duplicate its browser-bound approval protocol here.
@@ -445,6 +469,7 @@ function authenticate(provider){
       location.assign(data.authorize_url);
     });
   }).catch(function(error){
+    clearAuthHandoff();
     console.warn("[li-onboarding] provider launch",String(error&&error.message||"unavailable").slice(0,100));
     renderError(function(){authenticate(provider)});
   });
@@ -545,6 +570,12 @@ async function bootstrap(){
     var status=await statusApi();
     identityKey=userKey();
     if(status.saved){
+      // Existing learners should not leave stale anonymous choices that
+      // a later account could inadvertently inherit on this device.
+      if(hostPwa){
+        try{sessionStorage.removeItem("hsk_li_draft_v1:pwa:guest")}catch(_){}
+      }
+      clearDraft();
       location.replace(pageCourse());return;
     }
     var resumedStep=restoreDraft();
