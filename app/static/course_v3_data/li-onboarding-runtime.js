@@ -198,8 +198,25 @@ function syncPending(){
   stage.classList.toggle("li-request-busy",
     requestBusy&&!stage.querySelector(".loading"));
 }
-function setBusy(value){
+function setBusy(value,section){
   requestBusy=value;
+  var stage=document.getElementById("stage");
+  if(stage){
+    stage.querySelectorAll(".li-inline-pending").forEach(function(node){node.remove()});
+    if(value&&section&&!stage.querySelector(".loading")){
+      // Independent status block, not a full-screen overlay or fake
+      // completion state. A save/trial action remains server-authoritative.
+      var block=document.createElement("div");
+      block.className="li-inline-pending";
+      block.dataset.section=section;
+      block.setAttribute("role","status");
+      block.setAttribute("aria-label",safeMessage());
+      block.setAttribute("aria-busy","true");
+      block.innerHTML='<span class="li-skel" aria-hidden="true"></span>'+
+        '<span class="li-skel" aria-hidden="true"></span>';
+      stage.appendChild(block);
+    }
+  }
   if(value){
     var buttons=document.querySelectorAll("#top button,#footer button,.choices button,.track-switch button");
     buttons.forEach(function(button){button.disabled=true});
@@ -212,6 +229,7 @@ function renderError(action,continueFree){
   // Retrying a failed save/trial must not stack an additional red error
   // block on every attempt. Keep one current, actionable failure state.
   stage.querySelectorAll(".li-remote-error").forEach(function(node){node.remove()});
+  stage.querySelectorAll(".li-inline-pending").forEach(function(node){node.remove()});
   var box=document.createElement("div");
   box.className="li-remote-error";
   box.setAttribute("role","alert");
@@ -350,7 +368,7 @@ function saveProfile(){
   if(requestBusy)return;
   if(hostPwa&&!actor){progress("signup");loadProviders();return}
   var p;try{p=payload()}catch(e){renderError(saveProfile);return}
-  requestBusy=true;setBusy(true);
+  setBusy(true,"save");
   var path=hostPwa?"/api/v3/pwa/onboarding":"/api/miniapp/onboarding";
   var result,hadResponse=false;
   guardedPost(path,p).then(function(value){hadResponse=true;result=value;return value;})
@@ -366,6 +384,7 @@ function saveProfile(){
     launch=value;
     clearDraft();
     requestBusy=false;
+    document.querySelectorAll("#stage .li-inline-pending").forEach(function(node){node.remove()});
     // Installation is a presentation-only prompt after a confirmed PWA
     // onboarding save, never a permission/Pro/account-grant operation.
     // A returning signed-in learner or Telegram Mini App must not see it.
@@ -388,7 +407,7 @@ function trialStatus(){
 }
 function offerIfEligible(){
   if(requestBusy)return;
-  setBusy(true);
+  setBusy(true,"trial-status");
   trialStatus().then(function(result){
     trialEligibility=result.trial||null;
     requestBusy=false;
@@ -404,7 +423,7 @@ function offerIfEligible(){
 }
 function beginTrial(){
   if(requestBusy||!trialEligibility||!trialEligibility.eligible){window.go("end");return}
-  setBusy(true);
+  setBusy(true,"trial-start");
   var endpoint=hostPwa?"/api/v3/pwa/trial/start":"/api/v3/trial/start";
   guardedPost(endpoint,{}).then(function(result){
     if(!result.ok||!result.ends_at)throw new Error("trial_not_confirmed");
@@ -492,7 +511,7 @@ function authenticate(provider){
   // Never issue a user grant. This only makes OAuth return to our public
   // onboarding page; actual user identity is proven by PwaAuthService.
   saveDraft();
-  setBusy(true);
+  setBusy(true,"provider");
   api("/api/v3/pwa/onboarding/li/resume",{method:"POST"}).then(function(){
     markAuthHandoff(provider);
     if(provider==="telegram"){
