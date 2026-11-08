@@ -214,7 +214,8 @@ def test_inline_pro_manual_only_and_blocked_states_are_honest(lava, expected):
             frame = page.locator("#hsk-inline-pro iframe")
             frame.wait_for()
             assert "inline_manual=1" in frame.get_attribute("src")
-            page.locator("#hsk-inline-pro .hip-back").click()
+            assert page.locator("#hsk-inline-pro .hip-back").is_hidden()
+            page.evaluate("HSKPwaInlinePro.closeEmbeddedCheckout(document.querySelector('#hsk-inline-pro iframe').contentWindow)")
             assert page.get_by_role("heading", name="Лимит исчерпан").is_visible()
         else:
             heading = page.get_by_role("heading", name="Проверьте текущий платёж или действующую подписку")

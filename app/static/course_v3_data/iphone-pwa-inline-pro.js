@@ -15,13 +15,13 @@
   // one "regular" (bank card / Alipay / WeChat receipt) method.
   var WORDS = {
     ru: {title:"Лимит исчерпан",subtitle:"Оформите Pro, чтобы продолжить",benefits:["Уроки без ограничений","Разговорная практика с ИИ","Учёба без рекламы"],one:"1 месяц",
-      three:"3 месяца",six:"6 месяцев",year:"1 год",perMonth:"/ мес",pay:"Получить Pro",
+      three:"3 месяца",six:"6 месяцев",year:"1 год",perMonth:"/ мес",pay:"Получить Pro ⭐️",
       more:"Другие тарифы",
       manual:"Обычный способ оплаты",manualHint:"Банковская карта, Alipay или WeChat",
       email:"Email для оплаты",continue:"Продолжить оплату",
       close:"Закрыть",back:"Назад",loading:"Загружаем тарифы…",unavailable:"Тарифы временно недоступны",
       retry:"Повторить",pending:"Оплата ожидает подтверждения",paying:"Проверяем оплату…",
-      reopen:"Перейти к оплате",paymentReady:"Страница оплаты готова",paid:"Pro активирован",return:"Вернуться к обучению",
+      reopen:"Перейти к оплате",opening:"Открываем страницу оплаты…",paid:"Pro активирован",return:"Вернуться к обучению",
       error:"Не удалось загрузить оплату. Попробуйте ещё раз.",exitTitle:"Специальная скидка 20%",
       exitText:"Заберите скидку на первый платёж и продолжайте обучение",
       accept:"Забрать скидку",decline:"Нет, спасибо",
@@ -32,13 +32,13 @@
       blocked:"Проверьте текущий платёж или действующую подписку",
       missingEmail:"Укажите действительный email",success:"Платёж подтверждён сервером"},
     uz: {title:"Limit tugadi",subtitle:"Davom etish uchun Pro oling",benefits:["Cheksiz darslar","AI bilan ovozli mashqlar","Reklamasiz o‘rganing"],one:"1 oy",
-      three:"3 oy",six:"6 oy",year:"1 yil",perMonth:"/ oy",pay:"Pro olish",
+      three:"3 oy",six:"6 oy",year:"1 yil",perMonth:"/ oy",pay:"Pro ⭐️ olish",
       more:"Boshqa tariflar",
       manual:"Oddiy to‘lov usuli",manualHint:"Bank kartasi, Alipay yoki WeChat",
       email:"To‘lov uchun email",continue:"To‘lovni davom ettirish",
       close:"Yopish",back:"Orqaga",loading:"Tariflar yuklanmoqda…",unavailable:"Tariflar hozir mavjud emas",
       retry:"Qayta urinish",pending:"To‘lov tasdiqlanishi kutilmoqda",paying:"To‘lov tekshirilmoqda…",
-      reopen:"To‘lovga o‘tish",paymentReady:"To‘lov sahifasi tayyor",paid:"Pro faollashtirildi",return:"O‘qishga qaytish",
+      reopen:"To‘lovga o‘tish",opening:"To‘lov sahifasi ochilmoqda…",paid:"Pro faollashtirildi",return:"O‘qishga qaytish",
       error:"To‘lov ma’lumotlari yuklanmadi. Qayta urinib ko‘ring.",exitTitle:"Maxsus 20% chegirma",
       exitText:"Birinchi to‘lov uchun 20% chegirma oling",accept:"Chegirmani olish",decline:"Yo‘q, rahmat",
       renewal:"Keyingi to‘lovlar oddiy narxda. Avtoyangilanishni bekor qilish mumkin.",
@@ -48,13 +48,13 @@
       blocked:"Joriy to‘lov yoki faol obunani tekshiring",
       missingEmail:"To‘g‘ri email kiriting",success:"To‘lov serverda tasdiqlandi"},
     tj: {title:"Лимит тамом шуд",subtitle:"Барои идома Pro гиред",benefits:["Дарсҳо бе маҳдудият","Машқи овозӣ бо AI","Омӯзиш бе реклама"],one:"1 моҳ",
-      three:"3 моҳ",six:"6 моҳ",year:"1 сол",perMonth:"/ моҳ",pay:"Гирифтани Pro",
+      three:"3 моҳ",six:"6 моҳ",year:"1 сол",perMonth:"/ моҳ",pay:"Гирифтани Pro ⭐️",
       more:"Тарифҳои дигар",
       manual:"Пардохти оддӣ",manualHint:"Корти бонкӣ, Alipay ё WeChat",
       email:"Email барои пардохт",continue:"Идомаи пардохт",
       close:"Пӯшидан",back:"Бозгашт",loading:"Тарифҳо бор шуда истодаанд…",unavailable:"Тарифҳо дастрас нестанд",
       retry:"Аз нав кӯшиш кунед",pending:"Пардохт интизори тасдиқ аст",paying:"Пардохт санҷида мешавад…",
-      reopen:"Ба пардохт гузаштан",paymentReady:"Саҳифаи пардохт омода аст",paid:"Pro фаъол шуд",return:"Бозгашт ба омӯзиш",
+      reopen:"Ба пардохт гузаштан",opening:"Саҳифаи пардохт кушода мешавад…",paid:"Pro фаъол шуд",return:"Бозгашт ба омӯзиш",
       error:"Маълумоти пардохт дастрас нашуд. Аз нав кӯшиш кунед.",exitTitle:"20% тахфифи махсус",
       exitText:"Барои пардохти аввал 20% тахфиф гиред",accept:"Гирифтани тахфиф",decline:"Не, ташаккур",
       renewal:"Пардохти навбатӣ бо нархи муқаррарӣ аст. Тамдиди худкорро бекор кардан мумкин.",
@@ -368,27 +368,22 @@
       return;
     }
     if (view==="waiting") {
+      // Shown only while the provider page is being opened in this window,
+      // or if the learner comes back without a provider redirect (e.g. the
+      // iOS in-app browser was closed). Access is still server-verified.
       var waitPlan=selectedPlan();
-      header("read",txt("paymentReady"),waitPlan?txt(NAMES[waitPlan.plan_type])+" · "+money(waitPlan.amount,waitPlan.currency):"");
+      header("read",state.redirecting?txt("opening"):txt("paying"),
+        waitPlan?txt(NAMES[waitPlan.plan_type])+" · "+money(waitPlan.amount,waitPlan.currency):"");
+      var checking=el("p","hip-checking");
+      checking.setAttribute("aria-hidden","true");
+      body.appendChild(checking);
+      if (state.redirecting) return;
       if (state.paymentUrl) {
-        // An actual user tap opens the real payment URL. Never create a
-        // blank popup before the asynchronous invoice is ready on iOS.
         var link=el("a","hip-primary",txt("reopen"));
-        link.href=state.paymentUrl;
-        link.target="_blank";link.rel="noopener noreferrer";
-        link.addEventListener("click",function(){
-          if (!state||state.opened) return;
-          state.opened=true;
-          // Keep the same link for a re-tap; only add the honest status line.
-          var line=actions.querySelector(".hip-checking");
-          if (line) line.hidden=false;
-        });
+        link.href=state.paymentUrl;link.rel="noopener noreferrer";
+        link.addEventListener("click",function(){rememberCheckout();if(state)state.redirecting=true;render()});
         actions.appendChild(link);
       }
-      var checking=el("p","hip-checking",txt("paying"));
-      checking.setAttribute("role","status");
-      checking.hidden=!state.opened;
-      actions.appendChild(checking);
       actions.appendChild(btn(txt("return"),"hip-secondary",close));
       return;
     }
@@ -464,24 +459,57 @@
     actions.appendChild(payButton());
     actions.appendChild(btn(txt("more"),"hip-secondary",function(){emit("pwa_pro_more_opened");state.screen="more";state.error="";render()}));
   }
-  function load() {
+  // quiet=true refreshes prices behind the current screen (checkout resume).
+  function load(quiet) {
     if (!state) return;
-    var current=++run;
-    state.screen="loading";state.error="";render();
+    var current=quiet===true?run:++run;
+    if (quiet!==true) {state.screen="loading";state.error="";render();}
     request(API.overview,{source:state.source,mode:state.mode,plan:state.plan,
       supports_lava:true,inline_preview:true,attempt_id:state.attempt}).then(function(data) {
       if (!state||current!==run) return;
       state.data=data;
       state.email=(data.lava&&data.lava.email)||state.email||"";
-      state.screen="main";render();
+      if (quiet!==true) {
+        state.screen="main";
+        if (state.pendingError) {state.error=state.pendingError;state.pendingError="";}
+      }
+      render();
     }).catch(function() {
-      if (!state||current!==run) return;
+      if (!state||current!==run||quiet===true) return;
       state.data={};state.screen="main";state.error=txt("error");render();
     });
   }
+  var RESUME_KEY="hsk_pwa_pro_checkout_v1";
+  function rememberCheckout() {
+    if (!state||!state.checkoutId) return;
+    try {
+      sessionStorage.setItem(RESUME_KEY,JSON.stringify({id:String(state.checkoutId),
+        source:state.source,plan:state.plan,at:Date.now()}));
+    } catch (_) {}
+  }
+  function recalledCheckout(id) {
+    try {
+      var r=JSON.parse(sessionStorage.getItem(RESUME_KEY)||"null");
+      if (r&&String(r.id)===String(id)&&Date.now()-Number(r.at)<2*3600*1000) return r;
+    } catch (_) {}
+    return null;
+  }
+  function forgetCheckout() { try { sessionStorage.removeItem(RESUME_KEY); } catch (_) {} }
+  // Measured in the app window: a same-origin iframe sees 0 for env().
+  function safeArea() {
+    var probe=el("div");
+    probe.style.cssText="position:fixed;left:0;top:0;visibility:hidden;pointer-events:none;"
+      +"padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)";
+    document.body.appendChild(probe);
+    var cs=getComputedStyle(probe);
+    var result={top:parseFloat(cs.paddingTop)||0,bottom:parseFloat(cs.paddingBottom)||0};
+    probe.remove();
+    return result;
+  }
   function close() {
     if (!root||root.hidden) return;
-    clearInterval(tick);tick=null;run++;root.hidden=true;body.replaceChildren();actions.replaceChildren();
+    clearInterval(tick);tick=null;run++;root.hidden=true;
+    if (state) clearTimeout(state.redirectTimer);body.replaceChildren();actions.replaceChildren();
     panda.dataset.pose="";panda.replaceChildren();
     document.documentElement.style.overflow=state&&state.previousOverflow||"";
     if (lastFocus&&lastFocus.isConnected) lastFocus.focus({preventScroll:true});
@@ -553,8 +581,19 @@
       var url=new URL(data.payment_url);
       if (url.protocol!=="https:" || !(url.hostname==="lava.top"||url.hostname.endsWith(".lava.top")))
         throw Error("invalid_payment_url");
-      state.checkoutId=data.checkout_id;state.paymentUrl=url.href;state.opened=false;
-      state.screen="waiting";render();beginPolling();
+      state.checkoutId=data.checkout_id;state.paymentUrl=url.href;
+      // Open the provider directly in this window. An async window.open is
+      // blocked on iPhone; a top-level navigation is not. The invoice return
+      // URL brings the learner back to /iphone-pwa/course with this id.
+      state.redirecting=true;state.screen="waiting";render();
+      rememberCheckout();beginPolling();
+      clearTimeout(state.redirectTimer);
+      state.redirectTimer=setTimeout(function(){
+        // Still here (in-app browser overlay or blocked navigation): offer
+        // the same link and keep checking the server.
+        if (state&&state.redirecting){state.redirecting=false;render()}
+      },4000);
+      location.assign(state.paymentUrl);
     }).catch(function(err){
       if(!state||current!==run)return;
       state.paying=false;
@@ -581,10 +620,11 @@
     request(API.status,{checkout_id:id}).then(function(result) {
       if (!state||current!==run)return;
       if (result.status==="paid") {
-        clearInterval(tick);tick=null;state.paid=true;state.screen="success";state.checkoutId=null;render();
+        clearInterval(tick);tick=null;forgetCheckout();
+        state.paid=true;state.redirecting=false;state.screen="success";state.checkoutId=null;render();
       } else if (result.status==="failed") {
-        clearInterval(tick);tick=null;state.screen="main";state.checkoutId=null;
-        emit("pwa_pro_checkout_failed");state.error=txt("error");render();
+        clearInterval(tick);tick=null;forgetCheckout();state.checkoutId=null;state.redirecting=false;
+        emit("pwa_pro_checkout_failed");state.pendingError=txt("error");load();
       }
     }).catch(function(){}).finally(function(){if(state&&current===run)state.polling=false});
   }
@@ -598,12 +638,26 @@
     if(!WORDS[lang])lang="ru";
     state={lang:lang,source:String(opts.source||"v3_paywall").slice(0,80),
       mode:"subscription",screen:"loading",plan:"1_month",email:"",attempt:"inline-"+Date.now()+"-"+Math.floor(Math.random()*1000000),eventSeq:0,
-      data:null,error:"",polling:false,paying:false,opened:false,emailFrom:"main",onClose:opts.onClose,
+      data:null,error:"",pendingError:"",polling:false,paying:false,redirecting:false,emailFrom:"main",onClose:opts.onClose,
       previousOverflow:document.documentElement.style.overflow};
     root.hidden=false;
     document.documentElement.style.overflow="hidden";
     root.setAttribute("aria-label","HSK AI Pro");
     sheet.focus({preventScroll:true});
+    var resume=opts.resume;
+    if (resume) {
+      // Back from the payment page: the server, not the redirect, decides.
+      if (resume.plan&&order.indexOf(resume.plan)!==-1) state.plan=resume.plan;
+      if (resume.outcome==="success") {
+        state.checkoutId=resume.checkoutId;state.screen="waiting";render();
+        beginPolling();load(true);
+      } else {
+        forgetCheckout();
+        if (resume.outcome==="fail") state.pendingError=txt("error");
+        load();
+      }
+      return true;
+    }
     emit("pwa_pro_opened");load();
     return true;
   }
@@ -617,12 +671,26 @@
     if (!root||root.hidden)return;
     if (ev.key==="Escape"){ev.stopPropagation();ev.preventDefault();goBack()}
   });
+  function cameBack() {
+    if (state&&state.redirecting) {state.redirecting=false;render();}
+    if (state&&state.checkoutId) checkStatus();
+  }
   document.addEventListener("visibilitychange",function(){
-    if(document.visibilityState==="visible"){
-      actorPromise=null;
-      if (state&&state.checkoutId)checkStatus();
-    }
+    if(document.visibilityState==="visible"){actorPromise=null;cameBack();}
   });
-  window.addEventListener("pageshow",function(e){if(e.persisted){actorPromise=null;if(state&&state.checkoutId)checkStatus()}});
-  window.HSKPwaInlinePro={open:open,close:close,closeEmbeddedCheckout:closeEmbeddedCheckout};
+  window.addEventListener("pageshow",function(e){if(e.persisted){actorPromise=null;cameBack();}});
+  window.HSKPwaInlinePro={open:open,close:close,closeEmbeddedCheckout:closeEmbeddedCheckout,safeArea:safeArea};
+  // The provider returns to /iphone-pwa/course?pro_checkout=<id>&pro_return=…
+  (function resumeFromProvider() {
+    if (location.pathname!=="/iphone-pwa/course") return;
+    var q=new URLSearchParams(location.search), raw=q.get("pro_checkout"), outcome=q.get("pro_return");
+    if (raw===null) return;
+    q.delete("pro_checkout");q.delete("pro_return");
+    try { history.replaceState(history.state,"",location.pathname+(q.toString()?"?"+q.toString():"")+location.hash); } catch (_) {}
+    if (!/^[1-9][0-9]{0,11}$/.test(raw)) return;
+    var record=recalledCheckout(raw)||{};
+    open({source:record.source||"v3_locked_lesson",lang:q.get("lang")||undefined,
+      resume:{checkoutId:Number(raw),plan:record.plan,
+        outcome:outcome==="success"?"success":outcome==="fail"?"fail":"cancel"}});
+  })();
 })();

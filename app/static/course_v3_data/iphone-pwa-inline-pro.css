@@ -58,7 +58,6 @@
 #hsk-inline-pro .hip-actions:empty{display:none}
 #hsk-inline-pro .hip-actions .hip-secondary{margin-top:2px}
 #hsk-inline-pro .hip-actions .hip-small{margin:6px 4px 0}
-#hsk-inline-pro .hip-actions .hip-checking{margin:6px 0 0}
 
 /* Header: mascot + title, vertically centred with the body on hero screens. */
 #hsk-inline-pro .hip-header {
@@ -201,11 +200,10 @@
 }
 #hsk-inline-pro .hip-loading{font-size:13px;color:var(--hip-muted);text-align:center;margin:12px 0}
 #hsk-inline-pro .hip-checking{
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  margin:14px 0 0;font-size:14px;font-weight:600;color:var(--hip-muted)
+  display:flex;align-items:center;justify-content:center;margin:18px 0 0
 }
 #hsk-inline-pro .hip-checking::before{
-  content:"";width:14px;height:14px;border-radius:50%;
+  content:"";width:22px;height:22px;border-radius:50%;
   border:2px solid var(--hip-line);border-top-color:var(--hip-cin);animation:hip-spin .8s linear infinite
 }
 #hsk-inline-pro .hip-input{
@@ -229,19 +227,21 @@
 #hsk-inline-pro button:focus-visible,#hsk-inline-pro a:focus-visible,
 #hsk-inline-pro input:focus-visible{outline:3px solid var(--hip-cin-deep);outline-offset:3px}
 
-/* Manual payment is already a full checkout. Do not stack two Pro headers.
-   Reserve a small toolbar for the parent back / dismiss controls. */
-#hsk-inline-pro[data-screen="manual"] .hip-header{display:none}
+/* Manual payment is already a full checkout with its own header (X + help)
+   and bottom button: it fills the whole screen edge to edge, and the parent
+   Back/X are not stacked on top. The iframe applies the safe areas itself. */
+#hsk-inline-pro[data-screen="manual"] .hip-sheet{padding:0}
+#hsk-inline-pro[data-screen="manual"] .hip-header,
+#hsk-inline-pro[data-screen="manual"] .hip-back,
+#hsk-inline-pro[data-screen="manual"] .hip-close{display:none}
 #hsk-inline-pro[data-screen="manual"] .hip-scroll{padding-top:0;overflow:hidden}
 #hsk-inline-pro[data-screen="manual"] .hip-body{
   flex:1 1 auto;max-width:none;width:100%;margin:0;min-height:0;
-  padding:55px 0 0!important;overflow:hidden
+  padding:0!important;overflow:hidden
 }
 #hsk-inline-pro .hip-checkout{
   display:block;width:100%;height:100%;border:0;background:var(--hip-paper)
 }
-#hsk-inline-pro[data-screen="manual"] .hip-close,
-#hsk-inline-pro[data-screen="manual"] .hip-back{top:calc(var(--hip-safe-t) + 2px)}
 
 /* Course mascot motion (same rhythm as course-v3 pandaChar). */
 #hsk-inline-pro .hip-pd-core{transform-box:fill-box;transform-origin:50% 96%}

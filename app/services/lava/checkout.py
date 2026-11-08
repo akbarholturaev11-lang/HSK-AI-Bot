@@ -9,6 +9,7 @@ from __future__ import annotations
 import logging
 import uuid
 from datetime import datetime, timedelta, timezone
+from urllib.parse import urlencode
 
 from sqlalchemy import and_, func, or_, select
 
@@ -204,7 +205,8 @@ class LavaCheckoutService:
                     context_mode: str | None = None, campaign_id: int | None = None,
                     feedback_id: int | None = None,
                     analytics_attempt_id: str | None = None,
-                    analytics_source: str | None = None) -> dict:
+                    analytics_source: str | None = None,
+                    pwa_inline_return: bool = False) -> dict:
         if source not in LAVA_SOURCES:
             raise LavaCheckoutError("invalid_source", 400)
         if (context_mode or "") not in CHECKOUT_CONTEXT_MODES:
@@ -266,12 +268,20 @@ class LavaCheckoutService:
                 reserved_id = row.id
                 offer_id, periodicity, currency = term.offer_id, term.periodicity, config.currency
                 promo_code = discount.promo_code if discount else None
-        return_url = self._return_url(language)
+        if pwa_inline_return and source == "pwa":
+            # The PWA paywall navigates to the provider in the same window, so
+            # the provider must bring the learner back into the app. The
+            # outcome hint is UI-only; access still comes from the webhook.
+            success_url = self._return_url(language, pwa_checkout_id=reserved_id, outcome="success")
+            failure_url = self._return_url(language, pwa_checkout_id=reserved_id, outcome="fail")
+            cancel_url = self._return_url(language, pwa_checkout_id=reserved_id, outcome="cancel")
+        else:
+            success_url = failure_url = cancel_url = self._return_url(language)
         try:
             created = await self.runtime.client().create_invoice(
                 email=buyer_email, offer_id=offer_id, currency=currency, periodicity=periodicity,
                 buyer_language=BUYER_LANGUAGE, promo_code=promo_code,
-                success_url=return_url, failure_url=return_url, cancel_url=return_url,
+                success_url=success_url, failure_url=failure_url, cancel_url=cancel_url,
             )
         except LavaError as exc:
             # Keep the upstream failure diagnosable without logging email,
@@ -302,14 +312,21 @@ class LavaCheckoutService:
                 "amount": None if created.amount is None else str(created.amount),
                 "currency": created.currency or currency}
 
-    def _return_url(self, language: str | None) -> str | None:
+    def _return_url(self, language: str | None, *, pwa_checkout_id: int | None = None,
+                    outcome: str | None = None) -> str | None:
         lang = (language or "ru")[:2]
         lang = lang if lang in {"uz", "ru", "tj"} else "ru"
         try:
             from app.public_site.render import public_origin
-            return public_origin(self.settings) + f"/pay/lava/return?lang={lang}"
+            origin = public_origin(self.settings)
         except ValueError:
             return None
+        if pwa_checkout_id is not None:
+            # Fixed same-origin app path (no client-supplied redirect target).
+            query = urlencode({"lang": lang, "pro_checkout": int(pwa_checkout_id),
+                               "pro_return": outcome if outcome in {"success", "fail", "cancel"} else "cancel"})
+            return origin + "/iphone-pwa/course?" + query
+        return origin + f"/pay/lava/return?lang={lang}"
 
     async def status(self, session_factory, *, user_id: int, checkout_id: int) -> dict:
         async with session_factory() as session:

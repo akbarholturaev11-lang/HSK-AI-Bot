@@ -130,6 +130,7 @@ def create_lava_router(*, runtime_getter, session_factory, settings_obj) -> APIR
             context_mode=data.mode, campaign_id=data.campaign_id, feedback_id=data.feedback_id,
             analytics_attempt_id=data.attempt_id if is_inline else None,
             analytics_source=data.ui_source if is_inline else None,
+            pwa_inline_return=is_inline,
         )
         if is_inline and result.get("ok"):
             from app.services.conversion_funnel_service import ConversionFunnelService
