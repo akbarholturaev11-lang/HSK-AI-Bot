@@ -187,6 +187,9 @@ class PwaOnboardingFinish(BaseModel):
     model_config = ConfigDict(extra="forbid")
     level: str
     goal: str
+    goals: list[str] | None = Field(default=None, min_length=1, max_length=5)
+    streak_target_days: Literal[7, 14, 30, 50] | None = None
+    preferred_focus: Literal["speaking", "listening", "vocabulary", "grammar", "none"] | None = None
     daily_minutes: int
     start_mode: str
     language: Literal["uz", "ru", "tj"]
@@ -975,6 +978,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
         from sqlalchemy import select
         from app.db.models.course_miniapp_profile import CourseMiniAppProfile
         from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
+        from app.services.onboarding_goal_selection import read_onboarding_goals
 
         try:
             require_pwa_enabled(settings_obj)
@@ -1001,6 +1005,9 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                     "level": str(user.level or "").strip().lower(),
                     "profile": ({
                         "goal": profile.goal,
+                        "goals": read_onboarding_goals(getattr(profile, "goals_json", None), primary_goal=profile.goal),
+                        "streak_target_days": getattr(profile, "streak_target_days", None),
+                        "preferred_focus": getattr(profile, "preferred_focus", None),
                         "daily_minutes": profile.daily_minutes,
                         "start_mode": profile.start_mode,
                     } if completed else None),
@@ -1039,6 +1046,9 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                     start_mode=payload.start_mode, language=payload.language,
                     timezone_offset_minutes=payload.timezone_offset_minutes,
                     activation_variant=payload.activation_variant,
+                    goals=payload.goals,
+                    streak_target_days=payload.streak_target_days,
+                    preferred_focus=payload.preferred_focus,
                 )
             status = (200 if result.get("ok") else
                       409 if result.get("error") == "course_level_change_requires_placement"
