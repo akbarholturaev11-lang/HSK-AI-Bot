@@ -60,6 +60,8 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
 <link href="/course_v3_data/desktop-download.css?v=20261003-1" rel="stylesheet">
 <link rel="stylesheet" href="/assets/characters/hsk-scene-background.css?v=20261009-preparing-compact-1">
 <link rel="stylesheet" href="/course_v3_data/iphone-pwa-practice-boot.css?v=20261105-13e94c7945b9">
+<link rel="stylesheet" href="/course_v3_data/iphone-pwa-inline-pro.css?v=20261108-1">
+<script defer src="/course_v3_data/iphone-pwa-inline-pro.js?v=20261108-1"></script>
 </head>
 <body class="hsk-scene-page hsk-scene-pronunciation">
 <div class="wrap">
@@ -112,6 +114,8 @@ function goBack(){
   location.href=(PWA_PRONUNCIATION_HOST?"/iphone-pwa/course":"/course-v3.html")+"?lang="+LANG+"&tab=mashq";
 }
 function goPremium(){
+  if(PWA_PRONUNCIATION_HOST&&window.HSKPwaInlinePro){window.HSKPwaInlinePro.open({source:"v3_pronunciation_limit",lang:LANG});return}
+
   if(PWA_PRONUNCIATION_HOST&&window.HskPwaPracticeBoot&&HskPwaPracticeBoot.checkout("v3_pronunciation_limit"))return;
   location.href=(PWA_PRONUNCIATION_HOST?"/iphone-pwa/checkout":"/subscription.html")+"?lang="+LANG+"&source=v3_pronunciation_limit&mode=subscription&return_to=course&return_page=course_v3_pronunciation.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"");
 }
@@ -180,6 +184,7 @@ function showLimitNow(){if(window.HskPwaPracticeBoot)HskPwaPracticeBoot.hide();
   var sub=gateEscape(LIMIT_REASON||L.limitSub);
   d.innerHTML='<div class="st han" style="background:var(--gold)"><i class="ti ti-lock"></i></div><h3>'+L.limitTitle+'</h3><p>'+sub+'</p>'+adBtn+'<button onclick="goPremium()" style="background:transparent;border:1px solid var(--line);color:var(--cin2);margin-top:8px">'+L.premiumBtn+'</button>'+'<button onclick="goBack()" style="background:transparent;border:1px solid var(--line);color:var(--ink2);margin-top:8px">'+L.back+'</button>';
   document.getElementById('ctrl').style.display='none';d.classList.add('on');
+  if(PWA_PRONUNCIATION_HOST&&window.HSKPwaInlinePro)window.HSKPwaInlinePro.open({source:"v3_pronunciation_limit",lang:LANG});
 }
 function gateStart(newAttempt){
   var ref=gateRef(newAttempt!==false);
