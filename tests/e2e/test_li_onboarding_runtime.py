@@ -251,7 +251,12 @@ def test_pwa_guest_sees_panda_first_and_oauth_resumes_saved_draft_safely():
         assert captured["post"] == []
         assert page.locator("#stage .provider").count() == 3
         assert page.locator("#stage .provider").nth(2).is_hidden()  # Apple disabled
-        page.locator("#stage .provider").nth(1).click()  # real Google OAuth start
+        # OAuth is asynchronous: the resume hint POST must complete before
+        # the verified provider-start POST. Wait for the actual HTTP reply,
+        # not for an in-memory callback list immediately after click().
+        with page.expect_response("**/api/v3/pwa-auth/start") as started:
+            page.locator("#stage .provider").nth(1).click()  # real Google OAuth start
+        assert started.value.status == 200
         assert captured["resume"] == 1
         assert len(captured["oauth"]) == 1
         # The provider's real verified callback is exercised separately by
@@ -302,7 +307,9 @@ def test_new_iphone_signup_shows_install_video_guide_after_verified_save_only():
         _advance_to_profile(page)
         assert page.locator(".li-install-card").count() == 0  # unauthenticated
         page.locator("#footer .cta").click()  # signup
-        page.locator("#stage .provider").nth(1).click()  # OAuth
+        with page.expect_response("**/api/v3/pwa-auth/start") as started:
+            page.locator("#stage .provider").nth(1).click()  # OAuth
+        assert started.value.status == 200
         assert captured["oauth"][0]["provider"] == "google"
         # Simulate the verified provider callback in the same browser tab.
         # Server authorizes the actor in /api/v3/pwa-auth/session on reload.
