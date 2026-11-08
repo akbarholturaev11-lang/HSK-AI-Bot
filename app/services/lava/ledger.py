@@ -11,6 +11,7 @@ appears as a reviewable pending receipt.
 from __future__ import annotations
 
 import logging
+import json
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from decimal import ROUND_HALF_UP, Decimal
@@ -21,6 +22,7 @@ from sqlalchemy.exc import IntegrityError
 from app.db.models.ai_usage import AIUsageBudget
 from app.db.models.lava import LavaInvoice
 from app.db.models.pwa_exit_offer import PwaExitOffer
+from app.db.models.conversion_funnel_event import ConversionFunnelEvent
 from app.db.models.partner import PartnerCredit
 from app.db.models.payment import Payment
 from app.db.models.portfolio import PortfolioTransaction
@@ -202,6 +204,21 @@ async def apply_completed(session_factory, info: LavaInvoiceInfo) -> ApplyOutcom
                 granted_until = _utc(user.end_date)
                 now = _now()
                 row.status = "paid"
+                if row.source == "pwa" and row.kind != "renewal":
+                    # Written in the same verified-grant transaction. No UI
+                    # redirect, screenshot, or pending state can count as paid.
+                    session.add(ConversionFunnelEvent(
+                        user_id=owner_id, telegram_id=user.telegram_id,
+                        event_name="pwa_pro_checkout_paid", source="iphone_pwa",
+                        payment_id=payment.id,
+                        payload_json=json.dumps({
+                            "checkout_id": invoice_id,
+                            "plan_type": row.plan_type,
+                            "payment_method": "lava",
+                            "discount_source": row.discount_source or "none",
+                            "transport": "iphone_pwa",
+                        }),
+                    ))
                 # One exit offer per account: consume only after a verified
                 # completed invoice and successful Pro activation.
                 if row.kind != "renewal" and row.discount_source == "exit_offer":
