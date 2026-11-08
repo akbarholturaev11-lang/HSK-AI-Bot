@@ -57,6 +57,9 @@ class LavaInvoice(Base):
     paid_amount: Mapped[Optional[Decimal]] = mapped_column(Numeric(12, 2), nullable=True)
     buyer_email: Mapped[Optional[str]] = mapped_column(String(254), nullable=True)
     source: Mapped[str] = mapped_column(String(32), nullable=False, default="miniapp")
+    # Pure attribution only: never used for provider prices or Pro rights.
+    pwa_inline_attempt_id: Mapped[Optional[str]] = mapped_column(String(80), nullable=True)
+    pwa_inline_source: Mapped[Optional[str]] = mapped_column(String(80), nullable=True)
     promo_code: Mapped[Optional[str]] = mapped_column(String(36), nullable=True)
     # Server-resolved in-app discount the promo code represents (first
     # contract only); copied to the Payment so referral/feedback/campaign
