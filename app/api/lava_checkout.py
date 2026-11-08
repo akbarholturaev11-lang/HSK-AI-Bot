@@ -119,6 +119,7 @@ def create_lava_router(*, runtime_getter, session_factory, settings_obj) -> APIR
             session_factory, user_id=user.id, plan_type=data.plan_type, email=data.email,
             source=source, language=data.language or getattr(user, "language", None),
             context_mode=data.mode, campaign_id=data.campaign_id, feedback_id=data.feedback_id,
+            analytics_attempt_id=data.attempt_id, analytics_source=data.ui_source,
         )
         if source == "pwa" and result.get("ok"):
             from app.services.conversion_funnel_service import ConversionFunnelService
