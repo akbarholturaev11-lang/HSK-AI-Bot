@@ -52,7 +52,7 @@ def _prepare(browser, *, ios=True, installed=False, has_video=False):
 
 def test_iphone_browser_after_verified_registration_shows_video_slot_and_fallback():
     with pw.sync_playwright() as p:
-        browser = p.chromium.launch()
+        browser = getattr(p, os.environ.get('PWA_E2E_ENGINE', 'chromium')).launch()
         page, errors = _prepare(browser)
         opened = page.evaluate("""() => {
           window.__next=0;
@@ -86,7 +86,7 @@ def test_iphone_browser_after_verified_registration_shows_video_slot_and_fallbac
 ])
 def test_install_prompt_is_exclusive_to_not_yet_installed_ios_pwa(ios, installed, expect):
     with pw.sync_playwright() as p:
-        browser = p.chromium.launch()
+        browser = getattr(p, os.environ.get('PWA_E2E_ENGINE', 'chromium')).launch()
         page, errors = _prepare(browser, ios=ios, installed=installed)
         opened = page.evaluate("""() => HSKAILiInstallGuide.open(
             {userId:41,lang:"ru"},()=>{})""")
@@ -98,7 +98,7 @@ def test_install_prompt_is_exclusive_to_not_yet_installed_ios_pwa(ios, installed
 
 def test_media_stays_optional_but_real_metadata_can_swap_to_vertical_video():
     with pw.sync_playwright() as p:
-        browser = p.chromium.launch()
+        browser = getattr(p, os.environ.get('PWA_E2E_ENGINE', 'chromium')).launch()
         page, errors = _prepare(browser, ios=True, has_video=True)
         assert page.evaluate("""() => HSKAILiInstallGuide.open(
           {userId:53,lang:"tj"},()=>{})""") is True
@@ -117,7 +117,7 @@ def test_media_stays_optional_but_real_metadata_can_swap_to_vertical_video():
 
 def test_telegram_in_app_browser_cannot_show_pwa_install_prompt():
     with pw.sync_playwright() as p:
-        browser = p.chromium.launch()
+        browser = getattr(p, os.environ.get('PWA_E2E_ENGINE', 'chromium')).launch()
         page, errors = _prepare(browser, ios=True)
         assert page.evaluate("""() => {
           window.Telegram={WebApp:{initData:"real-verified-placeholder"}};
@@ -130,7 +130,7 @@ def test_telegram_in_app_browser_cannot_show_pwa_install_prompt():
 
 def test_install_guide_never_opens_without_verified_account_id():
     with pw.sync_playwright() as p:
-        browser = p.chromium.launch()
+        browser = getattr(p, os.environ.get('PWA_E2E_ENGINE', 'chromium')).launch()
         page, _ = _prepare(browser)
         for value in (None, -1, 0, "guest", 1.5):
             assert page.evaluate("""v => HSKAILiInstallGuide.open(
