@@ -17,9 +17,12 @@
       || (global.navigator.platform === "MacIntel" && global.navigator.maxTouchPoints > 1);
   }
   function eligible() {
+    // The authenticated browser URL is the transport authority. PWA pages
+    // may load the Telegram SDK shim for shared panda/course assets; its
+    // presence is NOT proof that the page is a Mini App. The Mini App route
+    // lives outside /iphone-pwa/ and therefore never receives this prompt.
     return global.location.pathname.startsWith("/iphone-pwa/")
-      && ios() && !standalone()
-      && !(global.Telegram && global.Telegram.WebApp && global.Telegram.WebApp.initData);
+      && ios() && !standalone();
   }
   function label(lang, key) {
     var all = global.HSKAI_LI_I18N || {};
