@@ -19,7 +19,7 @@
       choose:"Выберите способ оплаты",email:"Email для оплаты",continue:"Продолжить оплату",
       close:"Закрыть",back:"Назад",loading:"Загружаем тарифы…",unavailable:"Тарифы временно недоступны",
       retry:"Повторить",pending:"Оплата ожидает подтверждения",paying:"Проверяем оплату…",
-      reopen:"Открыть оплату",paid:"Pro активирован",return:"Вернуться к обучению",
+      reopen:"Открыть Lava.top",paymentReady:"Ссылка Lava.top готова",paid:"Pro активирован",return:"Вернуться к обучению",
       error:"Не удалось загрузить оплату. Попробуйте ещё раз.",exitTitle:"Специальная скидка 20%",
       exitText:"Заберите скидку на первый платёж и продолжайте обучение",
       accept:"Забрать скидку",decline:"Нет, спасибо",
@@ -36,7 +36,7 @@
       choose:"To‘lov usulini tanlang",email:"To‘lov uchun email",continue:"To‘lovni davom ettirish",
       close:"Yopish",back:"Orqaga",loading:"Tariflar yuklanmoqda…",unavailable:"Tariflar hozir mavjud emas",
       retry:"Qayta urinish",pending:"To‘lov tasdiqlanishi kutilmoqda",paying:"To‘lov tekshirilmoqda…",
-      reopen:"To‘lovni ochish",paid:"Pro faollashtirildi",return:"O‘qishga qaytish",
+      reopen:"Lava.top’ni ochish",paymentReady:"Lava.top havolasi tayyor",paid:"Pro faollashtirildi",return:"O‘qishga qaytish",
       error:"To‘lov ma’lumotlari yuklanmadi. Qayta urinib ko‘ring.",exitTitle:"Maxsus 20% chegirma",
       exitText:"Birinchi to‘lov uchun 20% chegirma oling",accept:"Chegirmani olish",decline:"Yo‘q, rahmat",
       renewal:"Keyingi to‘lovlar oddiy narxda. Avtoyangilanishni bekor qilish mumkin.",
@@ -52,7 +52,7 @@
       choose:"Роҳи пардохтро интихоб кунед",email:"Email барои пардохт",continue:"Идомаи пардохт",
       close:"Пӯшидан",back:"Бозгашт",loading:"Тарифҳо бор шуда истодаанд…",unavailable:"Тарифҳо дастрас нестанд",
       retry:"Аз нав кӯшиш кунед",pending:"Пардохт интизори тасдиқ аст",paying:"Пардохт санҷида мешавад…",
-      reopen:"Пардохтро кушоед",paid:"Pro фаъол шуд",return:"Бозгашт ба омӯзиш",
+      reopen:"Кушодани Lava.top",paymentReady:"Пайванди Lava.top омода аст",paid:"Pro фаъол шуд",return:"Бозгашт ба омӯзиш",
       error:"Маълумоти пардохт дастрас нашуд. Аз нав кӯшиш кунед.",exitTitle:"20% тахфифи махсус",
       exitText:"Барои пардохти аввал 20% тахфиф гиред",accept:"Гирифтани тахфиф",decline:"Не, ташаккур",
       renewal:"Пардохти навбатӣ бо нархи муқаррарӣ аст. Тамдиди худкорро бекор кардан мумкин.",
@@ -138,7 +138,7 @@
     var sheet=el("div","hip-sheet");
     var header=el("div","hip-header");
     panda=el("div","hip-panda");panda.setAttribute("aria-hidden","true");
-    panda.innerHTML="<svg viewBox=\"0 0 100 100\" role=\"img\" aria-hidden=\"true\" focusable=\"false\" xmlns=\"http://www.w3.org/2000/svg\">\n<ellipse cx=\"28\" cy=\"23\" rx=\"13\" ry=\"15\" fill=\"#292f30\" transform=\"rotate(-24 28 23)\"/>\n<ellipse cx=\"72\" cy=\"23\" rx=\"13\" ry=\"15\" fill=\"#292f30\" transform=\"rotate(24 72 23)\"/>\n<ellipse cx=\"50\" cy=\"58\" rx=\"33\" ry=\"34\" fill=\"#fffdf6\" stroke=\"#333b39\" stroke-width=\"2\"/>\n<ellipse cx=\"35\" cy=\"52\" rx=\"10\" ry=\"14\" fill=\"#303735\" transform=\"rotate(22 35 52)\"/>\n<ellipse cx=\"65\" cy=\"52\" rx=\"10\" ry=\"14\" fill=\"#303735\" transform=\"rotate(-22 65 52)\"/>\n<circle cx=\"37\" cy=\"50\" r=\"3.1\" fill=\"#fff\"/>\n<circle cx=\"63\" cy=\"50\" r=\"3.1\" fill=\"#fff\"/>\n<ellipse cx=\"50\" cy=\"67\" rx=\"7\" ry=\"4.9\" fill=\"#333b39\"/>\n<path d=\"M50 72q-7 10-13 2M50 72q7 10 13 2\" fill=\"none\" stroke=\"#333b39\" stroke-width=\"2.2\" stroke-linecap=\"round\"/>\n<ellipse cx=\"19\" cy=\"79\" rx=\"11\" ry=\"8\" fill=\"#303735\" transform=\"rotate(-20 19 79)\"/>\n<ellipse cx=\"81\" cy=\"79\" rx=\"11\" ry=\"8\" fill=\"#303735\" transform=\"rotate(20 81 79)\"/>\n<path d=\"M39 80Q50 75 61 80L59 96Q50 91 41 96Z\" fill=\"#e8aa65\" stroke=\"#c48742\" stroke-width=\"1.5\"/>\n<path d=\"M50 78v15\" stroke=\"#c48742\" stroke-width=\"1.6\"/>\n</svg>";
+    panda.innerHTML="<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 128 144\" role=\"img\" aria-hidden=\"true\" focusable=\"false\">\n  <ellipse cx=\"30\" cy=\"28\" rx=\"15\" ry=\"19\" transform=\"rotate(-27 30 28)\" fill=\"#302A26\"/>\n  <ellipse cx=\"98\" cy=\"28\" rx=\"15\" ry=\"19\" transform=\"rotate(27 98 28)\" fill=\"#302A26\"/>\n  <ellipse cx=\"64\" cy=\"110\" rx=\"29\" ry=\"29\" fill=\"#302A26\"/>\n  <ellipse cx=\"64\" cy=\"112\" rx=\"22\" ry=\"26\" fill=\"#FFFEFA\"/>\n  <ellipse cx=\"64\" cy=\"64\" rx=\"40\" ry=\"41\" fill=\"#FFFEFA\" stroke=\"#302A26\" stroke-width=\"2.6\"/>\n  <ellipse cx=\"46\" cy=\"61\" rx=\"13\" ry=\"18\" transform=\"rotate(21 46 61)\" fill=\"#302A26\"/>\n  <ellipse cx=\"82\" cy=\"61\" rx=\"13\" ry=\"18\" transform=\"rotate(-21 82 61)\" fill=\"#302A26\"/>\n  <ellipse cx=\"50\" cy=\"60\" rx=\"4.6\" ry=\"6.2\" fill=\"#FFFEFA\"/>\n  <ellipse cx=\"78\" cy=\"60\" rx=\"4.6\" ry=\"6.2\" fill=\"#FFFEFA\"/>\n  <circle cx=\"51\" cy=\"58\" r=\"1.8\" fill=\"#302A26\"/>\n  <circle cx=\"79\" cy=\"58\" r=\"1.8\" fill=\"#302A26\"/>\n  <ellipse cx=\"64\" cy=\"80\" rx=\"7.6\" ry=\"5.4\" fill=\"#302A26\"/>\n  <path d=\"M64 85q-6 10-12 3m12-3q6 10 12 3\" fill=\"none\" stroke=\"#302A26\" stroke-width=\"2.4\" stroke-linecap=\"round\"/>\n  <ellipse cx=\"40\" cy=\"102\" rx=\"10\" ry=\"16\" transform=\"rotate(-28 40 102)\" fill=\"#302A26\"/>\n  <ellipse cx=\"88\" cy=\"102\" rx=\"10\" ry=\"16\" transform=\"rotate(28 88 102)\" fill=\"#302A26\"/>\n  <ellipse cx=\"47\" cy=\"133\" rx=\"13\" ry=\"7\" fill=\"#302A26\"/>\n  <ellipse cx=\"81\" cy=\"133\" rx=\"13\" ry=\"7\" fill=\"#302A26\"/>\n  <path d=\"M47 108q9-4 17 2q8-6 17-2v25q-8-4-17 2q-9-6-17-2Z\" fill=\"#E04A40\" stroke=\"#B23530\" stroke-width=\"2\" stroke-linejoin=\"round\"/>\n  <path d=\"M64 110v25\" stroke=\"#FDF9F0\" stroke-width=\"2\" opacity=\".82\"/>\n  <path d=\"M36 113q4 7 12 8m44-8q-4 7-12 8\" fill=\"none\" stroke=\"#302A26\" stroke-width=\"7\" stroke-linecap=\"round\"/>\n</svg>";
     heading=el("h2","hip-title");
     info=el("p","hip-summary");
     header.append(panda,heading,info);
@@ -191,6 +191,8 @@
   function render() {
     if (!root||!state||root.hidden) return;
     var s=state.screen, plans=available(), isLava=state.data&&state.data.lava;
+    root.dataset.screen=s;
+    body.style.padding="";
     heading.textContent=s==="exit"?txt("exitTitle"):s==="more"?txt("choose"):txt("title");
     info.textContent=s==="exit"?txt("exitText"):s==="more"?"":txt("subtitle");
     panda.hidden=!(["main","loading","exit"].includes(s));
@@ -230,8 +232,15 @@
       return;
     }
     if (s==="waiting") {
-      body.appendChild(el("p","hip-emphasis",txt("paying")));
-      body.appendChild(btn(txt("reopen"),"hip-primary",reopenPayment));
+      body.appendChild(el("p","hip-emphasis",txt("paymentReady")));
+      if (state.paymentUrl) {
+        // An actual user tap opens the real provider URL. Never create a
+        // blank popup before the asynchronous invoice is ready on iOS.
+        var link=el("a","hip-primary",txt("reopen"));
+        link.href=state.paymentUrl;
+        link.target="_blank";link.rel="noopener noreferrer";
+        body.appendChild(link);
+      }
       body.appendChild(btn(txt("return"),"hip-secondary",close));
       return;
     }
@@ -252,9 +261,8 @@
       var q=new URLSearchParams({embedded:"1",source:state.source,lang:state.lang,mode:"subscription",return_to:"course",inline_manual:"1"});
       iframe.src="/iphone-pwa/checkout?"+q.toString();
       body.appendChild(iframe);
-      body.style.padding="0";return;
+      return;
     }
-    body.style.padding="";
     if (s==="email") {
       var p=selectedPlan();
       if (!p) {state.screen="main";return render()}
@@ -321,7 +329,7 @@
     document.documentElement.style.overflow=state&&state.previousOverflow||"";
     if (lastFocus&&lastFocus.isConnected) lastFocus.focus({preventScroll:true});
     var wasPaid=Boolean(state&&state.paid);
-    if (state&&typeof state.onClose==="function") state.onClose();
+    if (state&&typeof state.onClose==="function") state.onClose({paid:wasPaid});
     state=null;
     if(wasPaid){
       if(location.pathname==="/iphone-pwa/course"){
@@ -372,30 +380,22 @@
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((state.email||"").trim())) {
       state.screen="email";state.error=txt("missingEmail");render();return;
     }
-    // Open the trusted checkout window synchronously with the click for iOS popup protection.
-    var popup=null;
-    try {popup=window.open("about:blank","_blank");}catch(e){}
-    if (popup) {try{popup.document.title="HSK AI";popup.document.body.textContent=txt("loading")}catch(e){}}
+    // Do not pre-open about:blank: iOS standalone PWAs can strand the
+    // blank window even after a valid provider checkout URL is returned.
     var current=++run;
     state.screen="loading";state.error="";render();
     request(API.start,{plan_type:plan.plan_type,email:state.email.trim(),language:state.lang,
       mode:state.mode,attempt_id:state.attempt,ui_source:state.source}).then(function(data){
-      if (!state||current!==run) {if(popup)popup.close();return}
-      var url;
-      try {url=new URL(data.payment_url);if(url.protocol!=="https:")throw Error("invalid_payment_url")}
-      catch(e) {if(popup)popup.close();throw e}
-      state.checkoutId=data.checkout_id;state.paymentUrl=url.href;state.screen="waiting";render();
-      if(popup) {try{popup.location.replace(url.href)}catch(e){popup.close()}}
-      beginPolling();
+      if (!state||current!==run) return;
+      var url=new URL(data.payment_url);
+      if (url.protocol!=="https:" || !(url.hostname==="lava.top"||url.hostname.endsWith(".lava.top")))
+        throw Error("invalid_lava_payment_url");
+      state.checkoutId=data.checkout_id;state.paymentUrl=url.href;
+      state.screen="waiting";render();beginPolling();
     }).catch(function(){
-      if(popup)try{popup.close()}catch(e){}
       if(!state||current!==run)return;
       emit("pwa_pro_checkout_failed",plan.plan_type,"lava");state.error=txt("error");state.screen="email";render();
     });
-  }
-  function reopenPayment() {
-    if (!state||!state.paymentUrl) return;
-    window.open(state.paymentUrl,"_blank","noopener");
   }
   function beginPolling() {
     clearInterval(tick);
