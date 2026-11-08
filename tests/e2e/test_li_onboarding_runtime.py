@@ -6,6 +6,7 @@ the runtime does not fake course readiness, account writes or trial grants.
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 
 import pytest
@@ -219,7 +220,7 @@ def _advance_to_profile(page):
 @pytest.mark.parametrize("pwa", [True, False])
 def test_authenticated_li_flow_persists_choices_and_real_launch(pwa):
     with pw.sync_playwright() as playwright:
-        browser = playwright.chromium.launch()
+        browser = getattr(playwright, os.environ.get('PWA_E2E_ENGINE', 'chromium')).launch()
         page, captured = _page(browser, pwa=pwa, trial_eligible=False)
         _advance_to_profile(page)
         page.locator("#footer .cta").click()
@@ -244,7 +245,7 @@ def test_authenticated_li_flow_persists_choices_and_real_launch(pwa):
 
 def test_pwa_guest_sees_panda_first_and_oauth_resumes_saved_draft_safely():
     with pw.sync_playwright() as playwright:
-        browser = playwright.chromium.launch()
+        browser = getattr(playwright, os.environ.get('PWA_E2E_ENGINE', 'chromium')).launch()
         page, captured = _page(browser, pwa=True, guest=True, trial_eligible=False)
         _advance_to_profile(page)
         assert captured["post"] == []  # Public guest may NEVER save a course.
@@ -306,7 +307,7 @@ def test_pwa_guest_sees_panda_first_and_oauth_resumes_saved_draft_safely():
 
 def test_unrelated_pwa_login_does_not_silently_adopt_old_guest_draft():
     with pw.sync_playwright() as playwright:
-        browser = playwright.chromium.launch()
+        browser = getattr(playwright, os.environ.get('PWA_E2E_ENGINE', 'chromium')).launch()
         page, captured = _page(browser, pwa=True, guest=True)
         _advance_to_profile(page)
         # An anonymous guest may have chosen everything, but no canonical
@@ -330,7 +331,7 @@ def test_unrelated_pwa_login_does_not_silently_adopt_old_guest_draft():
 
 def test_new_iphone_signup_shows_install_video_guide_after_verified_save_only():
     with pw.sync_playwright() as playwright:
-        browser = playwright.chromium.launch()
+        browser = getattr(playwright, os.environ.get('PWA_E2E_ENGINE', 'chromium')).launch()
         page, captured = _page(browser, pwa=True, guest=True, ios=True)
         _advance_to_profile(page)
         assert page.locator(".li-install-card").count() == 0  # unauthenticated
@@ -363,7 +364,7 @@ def test_partial_json_response_cannot_leave_loading_screen_stuck():
     # A response may deliver status/headers but stall forever reading JSON.
     # The frontend timeout must wrap the *whole* body read, not only fetch.
     with pw.sync_playwright() as playwright:
-        browser = playwright.chromium.launch()
+        browser = getattr(playwright, os.environ.get('PWA_E2E_ENGINE', 'chromium')).launch()
         page, captured = _page(browser, pwa=True, guest=True)
         page.evaluate("""() => {
           const originalFetch = window.fetch.bind(window);
@@ -389,7 +390,7 @@ def test_partial_json_response_cannot_leave_loading_screen_stuck():
 
 def test_trial_status_network_failure_is_retryable_and_free_continuation_exists():
     with pw.sync_playwright() as playwright:
-        browser = playwright.chromium.launch()
+        browser = getattr(playwright, os.environ.get('PWA_E2E_ENGINE', 'chromium')).launch()
         page, captured = _page(browser, pwa=True, trial_status_fail=True)
         _advance_to_profile(page)
         page.locator("#footer .cta").click()  # server save succeeds; trial status fails
@@ -406,7 +407,7 @@ def test_trial_status_network_failure_is_retryable_and_free_continuation_exists(
 
 def test_trial_activation_denial_offers_real_retry_and_free_course():
     with pw.sync_playwright() as playwright:
-        browser = playwright.chromium.launch()
+        browser = getattr(playwright, os.environ.get('PWA_E2E_ENGINE', 'chromium')).launch()
         page, captured = _page(
             browser, pwa=True, trial_eligible=True, trial_start_ok=False,
         )
@@ -430,7 +431,7 @@ def test_trial_activation_denial_offers_real_retry_and_free_course():
 
 def test_trial_slides_cannot_forge_activation_or_two_day_push_claim():
     with pw.sync_playwright() as playwright:
-        browser = playwright.chromium.launch()
+        browser = getattr(playwright, os.environ.get('PWA_E2E_ENGINE', 'chromium')).launch()
         page, captured = _page(browser, pwa=True, trial_eligible=True)
         _advance_to_profile(page)
         page.locator("#footer .cta").click()
