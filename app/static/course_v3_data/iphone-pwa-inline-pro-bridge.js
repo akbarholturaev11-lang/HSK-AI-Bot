@@ -48,6 +48,20 @@
       }
       return legacy.apply(this, arguments);
     };
+    // Internal practice modules use App.goPay directly; intercept only
+    // server-confirmed limit sources, never profile/onboarding purchases.
+    var originalGoPay = app.goPay;
+    if (typeof originalGoPay === "function") {
+      app.goPay = function(src) {
+        var limitSources = {
+          v3_recognition_limit:1,v3_memorize_limit:1,v3_pronunciation_limit:1,
+          v3_mistake_review:1,v3_test_limit:1,v3_voice_limit:1,
+          v3_locked_lesson:1,v3_qa_limit:1
+        };
+        if (limitSources[src] && offer(src)) return;
+        return originalGoPay.apply(this,arguments);
+      };
+    }
     return;
   }
 
