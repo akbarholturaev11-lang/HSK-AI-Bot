@@ -272,7 +272,7 @@ class CourseMiniAppOnboardingService:
         # payloads that do not pass through PWA's Pydantic validation.
         normalize_onboarding_goals(goals, primary_goal=goal)
         normalize_streak_target(streak_target_days)
-        self.profile_service.normalize_preferred_focus(preferred_focus)
+        CourseMiniAppProfileService.normalize_preferred_focus(preferred_focus)
         activation_variant = str(activation_variant or "legacy_or_standard").strip()[:32]
 
         user = (await self.user_repo.get_by_actor(telegram_id)
