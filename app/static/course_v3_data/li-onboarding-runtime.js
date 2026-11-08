@@ -95,13 +95,17 @@ function api(path,options){
       reject(new Error("li_remote_timeout"));
     },options.method==="POST"?20000:12000);
   });
-  return Promise.race([fetch(path,options),bound]).then(function(response){
+  // Timeout covers both response headers AND the JSON body. A server can
+  // send headers then stall forever halfway through its response stream;
+  // racing fetch alone would leave onboarding stuck at a loading skeleton.
+  var completed=fetch(path,options).then(function(response){
     if(!response.ok)throw errorFromResponse(response);
     return response.json();
   }).then(function(data){
     if(!data||data.ok!==true)throw new Error("server_response_invalid");
     return data;
-  }).finally(function(){clearTimeout(timeoutId)});
+  });
+  return Promise.race([completed,bound]).finally(function(){clearTimeout(timeoutId)});
 }
 function guardedPost(path,payload){
   var headers={"Content-Type":"application/json"};
