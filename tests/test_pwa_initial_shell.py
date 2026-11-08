@@ -37,7 +37,8 @@ class PwaInitialShellTests(unittest.TestCase):
         self.assertIn('data-i="course">Курс</span>'.encode("utf-8"), adapted)
         self.assertIn(b'class="hsk-pwa-boot-title" aria-label="HSK AI">HSK AI</h1>', adapted)
         self.assertIn(b'width="40" height="40" decoding="async" fetchpriority="high"', adapted)
-        self.assertNotIn(b'loading="lazy" alt=""', adapted)
+        logo_tag = adapted.split(b'<img class="hsk-pwa-boot-logo"', 1)[1].split(b">", 1)[0]
+        self.assertNotIn(b'loading="lazy"', logo_tag)
         self.assertIn(b'html.hsk-pwa-browser #hsk-launch-splash{display:none!important}', adapted)
         self.assertIn(b'@media(prefers-reduced-motion:reduce)', adapted)
         self.assertNotIn(b"hsk-pwa-boot-shell", self.canonical)
