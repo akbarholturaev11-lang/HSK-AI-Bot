@@ -39,6 +39,9 @@ class LavaStartBody(BaseModel):
     mode: str | None = Field(default=None, max_length=32)
     campaign_id: int | None = Field(default=None, gt=0)
     feedback_id: int | None = Field(default=None, gt=0)
+    # Optional PWA-only analytics correlation, not a billing entitlement.
+    attempt_id: str | None = Field(default=None, max_length=80, pattern=r"^[A-Za-z0-9:.-]+$")
+    ui_source: str | None = Field(default=None, max_length=80, pattern=r"^[a-z0-9_]+$")
 
 
 class LavaStatusBody(BaseModel):
@@ -112,11 +115,27 @@ def create_lava_router(*, runtime_getter, session_factory, settings_obj) -> APIR
     async def _start(user, data: LavaStartBody, source: str):
         if data.plan_type not in LAVA_PLAN_TYPES:
             raise LavaCheckoutError("plan_unavailable", 400)
-        return await LavaCheckoutService(runtime_getter()).start(
+        result = await LavaCheckoutService(runtime_getter()).start(
             session_factory, user_id=user.id, plan_type=data.plan_type, email=data.email,
             source=source, language=data.language or getattr(user, "language", None),
             context_mode=data.mode, campaign_id=data.campaign_id, feedback_id=data.feedback_id,
         )
+        if source == "pwa" and result.get("ok"):
+            from app.services.conversion_funnel_service import ConversionFunnelService
+            # A checkout is counted ONLY after a real provider invoice exists.
+            await ConversionFunnelService().record(
+                event_name="pwa_pro_checkout_started", user=user,
+                source=(data.ui_source or "iphone_pwa")[:80],
+                payload={
+                    "checkout_id": result.get("checkout_id"),
+                    "attempt_id": data.attempt_id or "",
+                    "plan_type": data.plan_type,
+                    "payment_method": "lava",
+                    "mode": data.mode or "subscription",
+                    "transport": "iphone_pwa",
+                },
+            )
+        return result
 
     # -- provider webhook -------------------------------------------------
     @router.post("/api/payments/lava/webhook")
