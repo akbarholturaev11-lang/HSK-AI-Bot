@@ -20,9 +20,10 @@ CAST = (STATIC / "assets/characters/hsk-character-pack.js").read_text(encoding="
 ORIGIN = "https://hsk.test"
 
 
-def _page(browser, *, pwa=True, trial_eligible=False, trial_start_ok=True, saved=False, trial_status_fail=False):
+def _page(browser, *, pwa=True, trial_eligible=False, trial_start_ok=True, saved=False, trial_status_fail=False, guest=False):
     page = browser.new_page(viewport={"width": 390, "height": 844})
-    captured = {"post": [], "trial_start": [], "track_get": 0, "pageerrors": []}
+    captured = {"post": [], "trial_start": [], "track_get": 0, "pageerrors": [],
+                "resume": 0, "oauth": [], "auth_state": {"verified": not guest}}
     page.on("pageerror", lambda err: captured["pageerrors"].append(str(err)))
     page.route("**/assets/telegram-web-app.js*", lambda route: route.fulfill(
         body='window.Telegram={WebApp:{initData:"signed-test-init-data",'
@@ -50,6 +51,9 @@ def _page(browser, *, pwa=True, trial_eligible=False, trial_start_ok=True, saved
     page.route(url, lambda route: route.fulfill(
         body=HTML, content_type="text/html; charset=utf-8",
     ))
+    page.route("https://accounts.example.test/**", lambda route: route.fulfill(
+        status=302, headers={"Location": url},
+    ))
     page.route(ORIGIN + "/iphone-pwa/course?*", lambda route: route.fulfill(
         body="COURSE PAGE", content_type="text/html",
     ))
@@ -63,7 +67,29 @@ def _page(browser, *, pwa=True, trial_eligible=False, trial_start_ok=True, saved
         body = req.post_data_json if req.method == "POST" and req.post_data else {}
         status = 200
         if path == "/api/v3/pwa-auth/session":
-            payload = {"ok": True, "user_id": 37, "csrf": "test-csrf"}
+            if not captured["auth_state"]["verified"]:
+                status = 401
+                payload = {"ok": False, "error": "pwa_session_required"}
+            else:
+                payload = {"ok": True, "user_id": 37, "csrf": "test-csrf"}
+        elif path == "/api/v3/pwa-auth/providers":
+            payload = {"ok": True, "providers": ["google", "telegram"]}
+        elif path == "/api/v3/pwa/onboarding/li/resume":
+            assert req.method == "POST"
+            captured["resume"] += 1
+            payload = {"ok": True}
+        elif path == "/api/v3/pwa-auth/start":
+            assert req.method == "POST"
+            assert body["provider"] == "google"
+            captured["oauth"].append(body)
+            # Synthetic callback: the actual origin/nonce and credential
+            # binding are checked in tests/test_pwa_browser_auth.py.
+            captured["auth_state"]["verified"] = True
+            payload = {"ok": True, "authorize_url": "https://accounts.example.test/oauth"}
+        elif path == "/api/v3/pwa/onboarding/public-tracks":
+            payload = {"ok": True, "tracks": {"hsk20": {"track": "hsk20"},
+                "hsk30": {"access": {"feature_enabled": True, "allowed": False},
+                          "live_levels": ["nhsk1"]}}, "hsk30_unlock": {}}
         elif path in {"/api/v3/pwa/onboarding/status", "/api/miniapp/onboarding/status"}:
             payload = {"ok": True, "saved": saved, "level": "hsk1",
                        "profile": {"goal": "hsk_exam"} if saved else None}
@@ -171,6 +197,34 @@ def test_authenticated_li_flow_persists_choices_and_real_launch(pwa):
         page.locator("#footer .cta").click()
         assert ("/iphone-pwa/course?" if pwa else "/course-v3.html?") in page.url
         assert "onboarded=1" in page.url
+        browser.close()
+
+
+def test_pwa_guest_sees_panda_first_and_oauth_resumes_saved_draft_safely():
+    with pw.sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page, captured = _page(browser, pwa=True, guest=True, trial_eligible=False)
+        _advance_to_profile(page)
+        assert captured["post"] == []  # Public guest may NEVER save a course.
+        assert captured["track_get"] >= 2
+        page.locator("#footer .cta").click()  # provider sign-up, not POST
+        assert page.evaluate("window.screen") == "signup"
+        assert captured["post"] == []
+        assert page.locator("#stage .provider").count() == 3
+        assert page.locator("#stage .provider").nth(2).is_hidden()  # Apple disabled
+        page.locator("#stage .provider").nth(1).click()  # real Google OAuth start
+        page.wait_for_function("window.screen==='profile'")
+        assert captured["resume"] == 1
+        assert len(captured["oauth"]) == 1
+        assert captured["oauth"][0]["provider"] == "google"
+        assert page.evaluate("window.goals") == ["hsk_exam", "travel"]
+        assert page.evaluate("window.streakGoal") == 14
+        assert captured["post"] == []  # Still no write until authenticated consent.
+        page.locator("#footer .cta").click()
+        page.wait_for_function("window.screen==='end'")
+        assert len(captured["post"]) == 1
+        assert captured["post"][0]["goals"] == ["hsk_exam", "travel"]
+        assert not captured["pageerrors"]
         browser.close()
 
 
