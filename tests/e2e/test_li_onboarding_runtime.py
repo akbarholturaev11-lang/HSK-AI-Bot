@@ -217,6 +217,98 @@ def _advance_to_profile(page):
     assert page.locator("#stage .center").is_visible()
 
 
+def test_li_shell_is_visible_when_external_scripts_fail():
+    # Even a blocked CDN/Telegram SDK may not produce a black or blank page.
+    with pw.sync_playwright() as playwright:
+        browser = getattr(playwright, os.environ.get('PWA_E2E_ENGINE', 'chromium')).launch()
+        page = browser.new_page(viewport={"width": 390, "height": 844})
+        page.route(ORIGIN + "/iphone-pwa/onboarding/li?lang=uz", lambda route: route.fulfill(
+            body=HTML, content_type="text/html; charset=utf-8",
+        ))
+        page.route("**/*.js*", lambda route: route.abort())
+        page.route("**/*.css*", lambda route: route.fulfill(
+            body="", content_type="text/css",
+        ))
+        page.goto(ORIGIN + "/iphone-pwa/onboarding/li?lang=uz")
+        assert page.locator("#top .li-first-brand").is_visible()
+        assert page.locator("#stage .li-first-shell").is_visible()
+        assert page.locator("#stage .li-first-panda").is_visible()
+        assert page.locator("#footer .li-first-cta").is_visible()
+        assert page.locator("#stage").get_attribute("aria-busy") == "true"
+        browser.close()
+
+
+def test_li_course_sections_load_independently_without_blocking_shell():
+    with pw.sync_playwright() as playwright:
+        browser = getattr(playwright, os.environ.get('PWA_E2E_ENGINE', 'chromium')).launch()
+        page, captured = _page(browser, pwa=True, guest=True)
+        page.locator("#footer .cta").first.click()  # hello
+        page.locator("#footer .cta").click()  # intro
+        page.evaluate("""() => {
+          const originalFetch=window.fetch.bind(window);
+          window.fetch=(url,opts) => String(url).includes('/api/v3/pwa/onboarding/public-tracks')
+            ? new Promise(() => {}) : originalFetch(url,opts);
+        }""")
+        page.locator("#footer .cta").click()
+        section = page.locator('[data-remote-section="tracks"]')
+        section.wait_for(state="visible")
+        assert page.locator("#top").is_visible()
+        assert page.locator("#stage .li-loading-options .li-skel").count() == 2
+        assert page.locator("#stage .li-loading-lines .li-skel").count() == 2
+        assert page.locator('#stage img[src*="hsk20-course-books.jpg"]').is_visible()
+        assert page.locator('#stage img[src*="hsk20-course-books.jpg"]').get_attribute("fetchpriority") == "high"
+        assert page.locator("#stage").get_attribute("aria-busy") == "true"
+        assert captured["post"] == []
+        assert not captured["pageerrors"]
+        browser.close()
+
+
+def test_li_cached_public_tracks_show_version_while_fresh_refresh_is_stalled():
+    # Only safe public HSK metadata can be presented stale. Never cache a
+    # PWA actor, paid access, trial or lesson progress in the onboarding view.
+    with pw.sync_playwright() as playwright:
+        browser = getattr(playwright, os.environ.get('PWA_E2E_ENGINE', 'chromium')).launch()
+        page, captured = _page(browser, pwa=True, guest=True)
+        page.locator("#footer .cta").first.click()
+        page.locator("#footer .cta").click()
+        page.locator("#footer .cta").click()
+        page.locator(".track-switch").wait_for(state="visible")
+        assert captured["public_track_get"] >= 1
+        page.evaluate("""() => {
+          const realFetch=window.fetch.bind(window);
+          window.fetch=(url,opts) => String(url).includes('/api/v3/pwa/onboarding/public-tracks')
+            ? new Promise(() => {}) : realFetch(url,opts);
+          LiRuntime.retryTrack();
+        }""")
+        page.locator(".track-switch").wait_for(state="visible", timeout=2500)
+        assert page.locator('button[onclick*="hsk30"]').is_disabled()
+        assert captured["post"] == []
+        assert captured["track_get"] == 0
+        assert not captured["pageerrors"]
+        browser.close()
+
+
+def test_li_save_has_local_skeleton_without_wiping_profile_scene():
+    with pw.sync_playwright() as playwright:
+        browser = getattr(playwright, os.environ.get('PWA_E2E_ENGINE', 'chromium')).launch()
+        page, captured = _page(browser, pwa=True)
+        _advance_to_profile(page)
+        page.evaluate("""() => {
+          const realFetch=window.fetch.bind(window);
+          window.fetch=(url,opts) => String(url).endsWith('/api/v3/pwa/onboarding') &&
+            opts && opts.method === 'POST' ? new Promise(() => {}) : realFetch(url,opts);
+        }""")
+        page.locator("#footer .cta").click()
+        panel=page.locator('#stage .li-inline-pending[data-section="save"]')
+        panel.wait_for(state="visible")
+        assert page.locator("#stage .center").is_visible()
+        assert page.locator("#stage .bub").is_visible()
+        assert page.locator("#footer .cta").is_disabled()
+        assert captured["post"] == []
+        assert not captured["pageerrors"]
+        browser.close()
+
+
 @pytest.mark.parametrize("pwa", [True, False])
 def test_authenticated_li_flow_persists_choices_and_real_launch(pwa):
     with pw.sync_playwright() as playwright:
