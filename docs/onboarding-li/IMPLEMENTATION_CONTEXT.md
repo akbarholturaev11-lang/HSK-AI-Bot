@@ -8,6 +8,17 @@
 >
 > **REAL ONBOARDING IMPLEMENTATION STATUS: PARTIAL ON FEATURE BRANCH.** The isolated 23-state Li UI, optional iPhone install guide and server adapters are committed; real MP4, final all-green CI/device validation, default route cutover, production deploy are NOT complete.
 
+## 2026-11-09 USER VIDEO RECEIVED — compression complete, repo binary import pending
+
+- User attached a 16.333 s, 512×1114, H.264/AAC iPhone Safari Home Screen instructional screen recording, **6,624,465 bytes**.
+- Actual local transcoding: `ffmpeg -c:v libx264 -preset slow -crf 27 -profile:v main -level:v 3.1 -pix_fmt yuv420p -c:a aac -b:a 32k -ac 1 -movflags +faststart`. Output `iphone-home-screen.mp4`, **709,956 bytes (89.28% smaller)**, 16.345 s, average 347,485 bps, same display size. `moov` at byte 36 before `mdat` at 18,940. SSIM=0.993621.
+- **Optimized MP4 SHA-256**: `727be15b30229aedffee780eab61ee781ef3727e9cd7bcf8af5aab6d99bacb8f`.
+- File exists in current conversation container at `/mnt/data/hsk_video/iphone-home-screen.mp4` and is downloadable from the assistant conversation. **Important: do NOT confuse local conversation files with GitHub!** The GitHub plugin's text-file API cannot read a local binary; as of this checkpoint, the video **has NOT been committed to feature branch**. Do not claim published/tested Safari integration.
+- Required GitHub path (after obtaining the exact optimized binary): `app/static/assets/onboarding/iphone-home-screen.mp4`. Existing GET route will then serve with `video/mp4` and byte-range support; existing runtime uses `preload=metadata`, `playsinline` and a fallback when missing. `app/static/assets/onboarding/README.md` includes exact codec/compression/copy instructions. `tests/test_li_install_video_asset.py` validates expected hash (<1 MB, faststart) only if file actually exists; CI step runs it.
+- **Content-review warning:** One recording frame shows truncated `telegram-chinese-bot-...` URL. Before publishing, confirm it is still an intended official PWA hostname, or replace with current one. No visual content was changed during compression.
+- **Do not merge/deploy** until binary is imported, and the actual iPhone Safari video opens correctly under slow-network throttling (plus 23-state onboarding acceptance).
+- GitHub PR #282 remains draft on feature branch. At checkpoint CI for latest content was queued/pending, no new all-green claim.
+
 ## 0. Yangi chatni boshlash — shu tartib majburiy
 
 1. Repository `akbarholturaev11-lang/HSK-AI-Bot`ni och, **branch `feature/li-onboarding-mainffbff9-20261108`** mavjudligini va uning remote HEAD SHA'sini tekshir. Default `main`dan ko'r-ko'rona davom etma. Local workspace allaqachon dirty bo'lsa user o'zgarishlarini saqla; rebase/reset/force yo'q.
