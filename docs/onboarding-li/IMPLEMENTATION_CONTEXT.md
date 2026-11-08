@@ -18,6 +18,32 @@
 6. Har bir **haqiqiy** muhim code slice/migration/test tugagach `CURRENT STATUS`, `VERIFIED CODE CHANGES`, `TEST EVIDENCE`, `NEXT ACTION`, `OPEN RISKS`ni **shu fayl ichida** yangila va kod bilan **o'sha branch commit**da saqla. Har bir token/CSS micro-editni emas, tekshiriladigan fayl/behavior bo'lagini qayd et.
 7. Yangi chatga qisqa topshiriq: **"`feature/li-onboarding-mainffbff9-20261108` branch'da `docs/onboarding-li/PRODUCT_GOAL.md` va `docs/onboarding-li/IMPLEMENTATION_CONTEXT.md`ni o'qi. Hozirgi HEAD/diff/testlarni tekshir, jurnalning NEXT ACTION joyidan davom et, har verified code slice'dan so'ng jurnalni actual sha va test evidence bilan yangila. `main`ni o'zgartirma, release qilma."**
 
+## 2026-11-08 CHECKPOINT — public PWA panda-first, real OAuth draft resume, bounded API loading
+
+**Active branch:** `feature/li-onboarding-mainffbff9-20261108`. No `main` merge or production deployment. After re-audit `main` moved to `c80d72184b853ec4b83141403f7e2c77dcffb557`; that main was merged **into feature only** via commit `4b6d8b35b61920c989ab2835b5d4bb33d8301ba3`, preserving latest Lava paid/Pro Safari patches and custom onboarding endpoints. The branch was 0 commits behind after merge.
+
+### Implemented code
+- `app/api/pwa_auth.py`: `GET /iphone-pwa/onboarding/li` now serves **public static UI only**, without actor ID, subscription, session or course data. Existing signed-account `GET /api/v3/pwa/onboarding/status`, POST onboarding and trial endpoints retain full session/CSRF rules. `GET /api/v3/pwa/onboarding/public-tracks` exposes only server-confirmed HSK feature metadata with anonymous HSK3.0 `allowed:false`. `POST /api/v3/pwa/onboarding/li/resume` sets a short-lived, secure HttpOnly `__Host-hskai-li-resume` navigation cookie **only after same-origin check**. Verified `GET /iphone-pwa` session handling consumes the hint once and returns to Li after Google/Telegram sign-in; no client ID/token is trusted to grant account access.
+- `app/static/course_v3_data/li-onboarding-runtime.js`: guest first-screen + local non-secret, same-tab choices; guest `loadCourse`/lesson preview fetch public metadata, never authenticated course data. Guest `signup` enters real provider screen instead of writing profile. Real Google provider starts through canonical `/api/v3/pwa-auth/start`; Telegram delegates browser-bound claim/polling to existing PWA login page; Apple hidden until actually supported. After OAuth, only authenticated owner `user_id` may adopt same-tab draft; full personal HSK track entitlement is reloaded before profile save. Existing completed users still redirect to real course. GET/POST fetches have 12/20s bounded wait and honest loading/error retry; no fake delays. Failed trial eligibility shows Retry and Continue free (not fake ineligibility).
+- `app/static/iphone-pwa-login.js`: after verified Telegram claim, navigate via `/iphone-pwa` so the trusted server can consume Li resume hint; normal users still land on course. `app/static/course_v3_li_onboarding.html` content-addresses the updated adapter and shows network-in-flight indicator with reduced motion rules.
+- `tests/test_pwa_browser_auth.py`: public shell privacy and protected session/POST checks, same-origin resume cookie, one-time return, no anonymous HSK3 grant; existing PWA OAuth/trial checks maintained.
+- `tests/e2e/test_li_onboarding_runtime.py`: guest visual progression, public-only track reads, provider UI and actual OAuth initiation, same-tab draft restore after simulated Google callback, no POST before authentication; trial status offline Retry/Continue free, Mini App/PWA real choice persistence.
+
+### Test evidence and open status
+- Pre-public-flow PR CI on feature: `42486168023` launched after latest main integration; `miniapp-ui` = **SUCCESS**, `native-postgres` = **SUCCESS**. Remaining broader jobs may have been superseded by subsequent commits.
+- First guest browser CI `42487595257`: 4 Li E2E tests passed, new guest test failed because test counted **authenticated** `track_get` (correctly zero for a guest) instead of separate public endpoint fetches; fixed in `81815861a92a08cb2704a59687266b1ce28e2371` without weakening real user/CSRF guards.
+- **Latest CI after fix:** `42487829821` backend workflow started and was **queued/in progress** when this checkpoint was prepared. Recheck actual jobs and failing assertions; do not claim success.
+- The original 23-state copy reference is pinned exactly in `docs/onboarding-li/DEMO_REFERENCE_ONLY.html`; canonical locale artifacts stay in sync. Real physical device/iPhone installed-app push permission, all 23 screenshot diffs and production impact are **NOT VERIFIED**.
+- **Known remaining auth limitation:** Telegram-from-Li signup deliberately reuses canonical login page to avoid duplicating browser-bound Telegram proof, so it currently includes an additional existing provider selection step. This is safer than a fake Telegram login and needs final UX parity audit.
+- **Release blocker:** default `/iphone-pwa/onboarding` and primary Mini App route still use legacy onboarding; Li currently preview/opt-in routes only. No feature auto rollout. PWA new UI is public but mutation endpoints remain private.
+
+### NEXT ACTION
+1. Inspect latest PR #282 CI run after commit `81815861` and fix real browser/HTTP/OAuth regressions. Recheck `main` SHA drift.
+2. Verify PWA anonymous preview, same-origin resume cookie, OAuth callback and Telegram browser claim redirect via actual API test; verify no cross-account draft.
+3. Audit server-first lesson readiness: current Li `loadLesson` re-reads real track access but not actual lesson content; implement proper real lesson loader or amend copy/contract. Check aborted requests/back/retry.
+4. Canonical review screenshot diff for 23 states on RU/UZ/TJ, mobile widths and iPhone safe area.
+5. Only once tests and device flows pass consider guarded default-route cutover. Keep `main` and prod unchanged.
+
 ## 2026-11-08 VERIFIED WORK RESUMPTION — 23-screen UI, multi-goal planning, PWA trial push
 
 **Current branch:** `feature/li-onboarding-mainffbff9-20261108`, draft PR #282; do **not** merge into `main` until all CI jobs, UI regression and migration contracts pass. Main was fast-forward merged **into the feature branch only** at `8ffe7d556e716a8f554ef8adf1ddbe4eea9c015f` with shared PWA Pro Safari/Lava changes. It did not modify production.
