@@ -95,13 +95,20 @@ class CourseMiniAppOnboardingService:
         if not await track_service.hsk30_feature.is_level_live(requested_content_level):
             return {"ok": False, "error": "hsk30_level_not_live"}
 
+        # Do not let a direct onboarding POST bypass the same payment/Pro
+        # gating enforced by the regular course-track switch endpoint.
+        # HSK 3.0 being published ("live") does not itself grant access.
+        access = await track_service.hsk30_access(user)
+        if not access.allowed:
+            return {"ok": False, "error": access.reason}
+
         current_track = track_service.track_for_level(getattr(user, "level", None))
         if current_track != TRACK_HSK30:
             await track_service.switch(
                 user,
                 target_track=TRACK_HSK30,
                 requested_level=requested_level,
-                allow_locked_hsk30=True,
+                allow_locked_hsk30=False,
             )
 
         progress = await self.engine.progress_repo.get_by_user_id(
