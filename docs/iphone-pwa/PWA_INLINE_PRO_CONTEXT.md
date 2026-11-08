@@ -49,3 +49,13 @@ This is the **single context/handoff file** for this work. Update status here as
 - Tests authored: `tests/test_pwa_exit_offer.py`, `tests/e2e/test_pwa_inline_pro.py`, a CSRF test in `tests/test_pwa_browser_auth.py`. They have not yet been executed.
 - The PWA mode `exit_discount` applies to Lava only, not manual bank/QR; manual checkout keeps its existing discount rules and its full original screens.
 - Still must inspect CI, validate 1m and 12m live term enablement, actual payment popup/3DS return, and user account rights after payment; no merge until those checks.
+
+## UI refinement — 2026-11-08 (owner-approved)
+- Applied `.agents/skills/hsk-ai-ui/SKILL.md` (mobile-first, one primary CTA, premium and compact) and `.agents/skills/webapp-testing/SKILL.md` (mobile Playwright verification).
+- Default limit sheet opens synchronously, before API returns: panda SVG art at top, bold limit headline, three concise Pro benefits, immediate two-card skeleton for Lava 1-month and 12-month plans, one primary checkout button and short «Другие тарифы» link. No redundant explanatory paragraphs.
+- Motion: 190ms backdrop and 330ms spring-like rising sheet; no artificial timeout or wait for API to display sheet. Reduced-motion preference disables all animations.
+- Current server price and UI-only higher comparison (rounded to a .99 ending) appear next to each other inside each plan. True discount replaces visual comparison with the real base amount, and the provider invoice remains the source of truth.
+- X flow still checks server entitlement and offers real 20% only when configured. Existing manual/Lava alternate navigation remains.
+- PWA route injects version-pinned CSS and JS without modifying source-reviewed Telegram/Mini App HTML. Update both blob-hash URLs when either asset changes.
+- PWA E2E now asserts headline, panda SVG, exactly 3 benefit lines, entry animation, 2/4 plans and exit discount.
+- QA not yet finalized; inspect latest PR #279 checks before merge; production Lava promo and actual mobile browser checkout must be verified.
