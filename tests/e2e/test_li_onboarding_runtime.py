@@ -300,6 +300,30 @@ def test_pwa_guest_sees_panda_first_and_oauth_resumes_saved_draft_safely():
         browser.close()
 
 
+def test_unrelated_pwa_login_does_not_silently_adopt_old_guest_draft():
+    with pw.sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page, captured = _page(browser, pwa=True, guest=True)
+        _advance_to_profile(page)
+        # An anonymous guest may have chosen everything, but no canonical
+        # OAuth/resume was initiated in this tab for the newly signed-in actor.
+        page.evaluate("""() => {
+          const key='hsk_li_draft_v1:pwa:guest';
+          const value=JSON.parse(sessionStorage.getItem(key));
+          value.step='signup';value.at=Date.now();
+          sessionStorage.setItem(key,JSON.stringify(value));
+          sessionStorage.removeItem('hsk_li_auth_handoff_v1');
+        }""")
+        captured["auth_state"]["verified"] = True  # separate login, not Li OAuth
+        page.goto(ORIGIN + "/iphone-pwa/onboarding/li?lang=uz")
+        page.wait_for_function("window.LiRuntime && window.screen==='account'")
+        assert page.evaluate("window.goals") == []
+        assert page.evaluate("window.streakGoal") is None
+        assert len(captured["post"]) == 0
+        assert not captured["pageerrors"]
+        browser.close()
+
+
 def test_new_iphone_signup_shows_install_video_guide_after_verified_save_only():
     with pw.sync_playwright() as playwright:
         browser = playwright.chromium.launch()
