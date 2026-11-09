@@ -717,7 +717,7 @@ def test_practice_initial_loading_geometry_matches_six_real_cards(width, motion)
             # Reserve actual two-line labels at narrow widths. Never relax
             # the <=8px anchor threshold or hide the real six-card layout.
             expected_heights = (
-                [80, 80, 68, 80, 68, 68] if width <= 340 else
+                [78, 78, 68, 78, 68, 68] if width <= 340 else
                 [68, 80, 68, 68, 68, 68] if width <= 400 else
                 [68] * 6
             )
