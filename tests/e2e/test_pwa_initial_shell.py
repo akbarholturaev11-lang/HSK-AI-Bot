@@ -60,6 +60,17 @@ def test_stalled_bootstrap_shows_retry_without_authorizing_tabs():
             assert page.get_by_role("button", name="Повторить").is_visible()
             assert page.locator("#nav").get_attribute("inert") == ""
             assert page.locator("#s-course").get_attribute("aria-busy") is None
+            # A delayed, owner-verified map may arrive after the 14s-style
+            # UI fallback. The observer must still unlock navigation then.
+            page.evaluate("""() => {
+              window.MAP={authenticated:true,units:[]};
+              document.querySelector("#s-course").innerHTML =
+                '<div class="actual-course">Recovered map</div>';
+            }""")
+            page.wait_for_function(
+                "() => !document.querySelector('#nav').hasAttribute('inert')"
+            )
+            assert page.get_by_text("Recovered map").is_visible()
         finally:
             browser.close()
 
@@ -108,6 +119,7 @@ def test_authenticated_shell_visible_without_map_and_settles_independently(reduc
 
             # The canonical private map has now validated the actor and
             # replaced the course section. The shell releases nav/aria state.
+            page.evaluate("window.MAP={authenticated:true,units:[]}")
             page.locator("#s-course").evaluate(
                 "(node) => { node.innerHTML = '<div class=\"actual-course\">Verified map</div>'; }"
             )
