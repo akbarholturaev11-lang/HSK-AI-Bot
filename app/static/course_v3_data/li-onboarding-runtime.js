@@ -533,8 +533,8 @@ global.levels=function(){
   if(global.track!=="hsk30"||!trackStatus)return source;
   return source.filter(function(value){return isHsk30Live(value.k)});
 };
-global.loginScreen=function(mode){
-  var html=originalLogin(mode),providerIndex=0;
+global.loginScreen=function(mode,inProfile){
+  var html=originalLogin(mode,inProfile),providerIndex=0;
   // Provider identity is not a demo button: each click uses the real PWA
   // OAuth service or the existing Telegram verification page.
   var order=["telegram","google","apple"];
@@ -669,6 +669,10 @@ global.go=function(next){
       return trackApi().then(function(d){trackStatus=d;validateTrack()});
     },"habit");return;
   }
+  // PWA guests choose Telegram/Google directly on the last profile step.
+  // Internally retain "signup" so same-tab draft/resume and verified OAuth
+  // callbacks keep their existing protections; remove the redundant CTA page.
+  if(next==="profile"&&hostPwa&&!actor){progress("signup");loadProviders();return}
   if(next==="signup"){
     if(hostPwa&&!actor){progress("signup");loadProviders();return}
     saveProfile();return
