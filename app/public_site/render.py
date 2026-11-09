@@ -265,7 +265,7 @@ def render_page(path, settings_obj, tags=None):
 <link rel="alternate" type="text/plain" title="HSK AI AI information" href="/llms.txt"><link rel="icon" href="/public-assets/logo.png" type="image/png">
 <link rel="stylesheet" href="/public-assets/site.css?v=5">
 <link rel="stylesheet" href="/public-assets/navigation.css?v=2">
-<script src="/public-assets/language.js?v=3" defer></script>
+<script src="/public-assets/language.js?v=4" defer></script>
 <script type="application/ld+json">{schema}</script></head>
 <body class="public-page {body_kind}"><header class="site-header"><a data-site-nav="home" class="brand" href="{esc(with_attribution(HOME_PATHS[lang], tags))}"><img src="/public-assets/logo.png" width="42" height="42" alt="">HSK AI</a>
 <nav class="main-nav" aria-label="{nav_aria}">{nav_items}</nav><details class="language-switch"><summary aria-label="{esc(language_menu_label)}" title="{esc(language_menu_label)}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c-5 5-5 13 0 18M12 3c5 5 5 13 0 18"/></svg><span>{esc(LANGUAGE_NAMES[lang])}</span></summary><div class="language-menu">{nav}</div></details>{mobile_nav}</header>

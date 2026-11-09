@@ -70,7 +70,7 @@
     },
     "app/static/desktop-download.html": {
       "baseline_sha1": "1d0f69a7e9de869af485dbf7bf5a78180ab98b92",
-      "reviewed_sha1": "c41502fcd8a156a130007f57110e63f1bfd82f90",
+      "reviewed_sha1": "b84bad0be3f00615717e4cd54f77eafa61675ac2",
       "reason": "Reviewed local-first fixed UI adoption and content-addressed bundle refresh; original Chinese/answers/lesson IDs and auth, access, payment and progress contracts unchanged. Legacy fallback retained; source and runtime adoption regressions added. Android in-app browser handoff to the existing Telegram APK channel reviewed; no new localization strings.; 2026-11-04 PWA-only shake feedback, responsive practice panda loader, session-scoped return navigation; preserved upstream main Apple push Settings fix and exact source revisions for PR #261."
     },
     "app/static/subscription.html": {

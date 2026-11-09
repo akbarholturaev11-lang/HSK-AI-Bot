@@ -465,6 +465,10 @@ def test_mobile_site_header_and_ios_pwa_video_without_desktop_nav_regression(des
     playwright.expect(page.locator(".site-header .main-nav")).to_be_visible()
     playwright.expect(page.locator(".site-header .mobile-nav")).to_be_hidden()
     playwright.expect(page.locator(".site-header .language-switch summary span")).to_be_visible()
+    # The new mutual-exclusion/outside-click controls are mobile-only.
+    page.locator(".site-header .language-switch summary").click()
+    page.locator(".hero h1").click()
+    playwright.expect(page.locator(".site-header .language-switch")).to_have_attribute("open", "")
     playwright.expect(page.locator("[data-ios-install]")).to_be_hidden()
     assert page.locator('[data-download-button]').get_attribute('href').endswith('/downloads/macos')
     assert errors == []
