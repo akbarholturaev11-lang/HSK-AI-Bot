@@ -294,6 +294,29 @@ def test_li_cached_public_tracks_show_version_while_fresh_refresh_is_stalled():
         browser.close()
 
 
+def test_li_cached_public_tracks_do_not_refetch_on_rapid_back_navigation():
+    # Network-limited Safari should not start a fresh metadata fetch on
+    # every revisit. This is PUBLIC preview cache only, not auth/Pro/progress.
+    with pw.sync_playwright() as playwright:
+        browser = getattr(playwright, os.environ.get('PWA_E2E_ENGINE', 'chromium')).launch()
+        page, captured = _page(browser, pwa=True, guest=True)
+        page.locator("#footer .cta").first.click()
+        page.locator("#footer .cta").click()
+        page.locator("#footer .cta").click()
+        page.locator(".track-switch").wait_for(state="visible")
+        first = captured["public_track_get"]
+        assert first == 1
+        for _ in range(3):
+            page.evaluate("LiRuntime.retryTrack()")
+            page.locator(".track-switch").wait_for(state="visible")
+        page.wait_for_timeout(200)
+        assert captured["public_track_get"] == first
+        assert captured["track_get"] == 0  # no personal entitlement API
+        assert captured["post"] == []
+        assert not captured["pageerrors"]
+        browser.close()
+
+
 def test_li_cancel_slow_track_read_never_applies_late_api_response():
     with pw.sync_playwright() as playwright:
         browser = getattr(playwright, os.environ.get('PWA_E2E_ENGINE', 'chromium')).launch()
