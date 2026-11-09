@@ -119,10 +119,12 @@ when the Li entry flag is enabled; never let unrelated tokens, arbitrary query
 parameters or legacy referral secrets pass through the handoff. An existing
 verified PWA session keeps its own server account/language authority.
 
-Keep the original reviewed iPhone Safari installation video at
+Keep the reviewed iPhone Safari installation video at
 `/assets/onboarding/iphone-home-screen.mp4`, with explicit Share → Add to
-Home Screen instructions and textual fallback; inspect obsolete Railway URL
-footage before releasing publicly. Android APK social-browser Telegram fallback
+Home Screen instructions and textual fallback. The 2026-11-09 replacement
+shows the official `hskai.app/iphone-pwa` address rather than the obsolete
+Railway URL; verify the committed SHA-256, browser playback and deployment
+before releasing publicly. Android APK social-browser Telegram fallback
 and the optional **verified** iPhone Telegram-referral path are separate
 contracts and must not be silently removed or credited as PWA referrals.
 Update UZ/RU/TJ local copy, metadata/JSON-LD, docs, tests and analytics
