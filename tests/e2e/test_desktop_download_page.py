@@ -80,6 +80,14 @@ class _DownloadPageHandler(SimpleHTTPRequestHandler):
             return
         if path == "/desktop-download":
             self.path = "/desktop-download.html"
+        # Production FastAPI maps these public aliases, so the static browser
+        # fixture must serve them too (otherwise mobile header CSS is absent).
+        aliases = {
+            "/public-assets/navigation.css": "/public-site-navigation.css",
+            "/public-assets/language.js": "/public-site-language.js",
+            "/public-assets/logo.png": "/assets/hsk-ai-logo-256.png",
+        }
+        self.path = aliases.get(urlsplit(self.path).path, self.path)
         super().do_GET()
 
 
