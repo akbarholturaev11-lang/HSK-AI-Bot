@@ -128,6 +128,47 @@ class ConversionFunnelService:
             logger.exception("Failed to record conversion funnel event: %s", event_name)
             return False
 
+    async def record_in_transaction(
+        self,
+        *,
+        event_name: str,
+        user,
+        source: str | None = None,
+        payload: dict[str, Any] | None = None,
+    ) -> bool:
+        """Optional funnel event in the caller's DB transaction.
+
+        A trial activation holds a FOR UPDATE lock on users. Calling record()
+        here uses a second connection and its FK key-share lock can wait on
+        the *same request's* uncommitted user row until the browser times out.
+        A savepoint keeps telemetry best-effort without a second connection.
+        The event commits atomically with the trial grant, never before it.
+        """
+        if self.session is None:
+            raise ValueError("record_in_transaction requires a DB session")
+        if event_name not in self.EVENT_NAMES:
+            logger.warning("Unknown conversion funnel event ignored: %s", event_name)
+            return False
+        user_id = getattr(user, "id", None)
+        telegram_id = getattr(user, "telegram_id", None)
+        if not user_id and not telegram_id:
+            return False
+        try:
+            async with self.session.begin_nested():
+                self.session.add(ConversionFunnelEvent(
+                    user_id=user_id,
+                    telegram_id=int(telegram_id) if telegram_id else None,
+                    event_name=event_name,
+                    source=source or None,
+                    payload_json=self._payload_json(payload),
+                    created_at=datetime.now(timezone.utc),
+                ))
+                await self.session.flush()
+            return True
+        except Exception:
+            logger.exception("Failed to record transactional funnel event: %s", event_name)
+            return False
+
     async def record_once(
         self,
         *,

@@ -2445,13 +2445,21 @@ async def desktop_install_screenshot(filename: str):
     )
 
 
+@app.get("/assets/onboarding/iphone-install-home-focus.jpg")
+async def li_iphone_install_hero_image():
+    """Fixed reviewed user-provided Home Screen image, no dynamic path."""
+    return static_asset_response(
+        "app/static/assets/onboarding/iphone-install-home-focus.jpg", "image/jpeg"
+    )
+
+
 @app.get("/assets/onboarding/iphone-home-screen.mp4")
 async def li_iphone_install_guide_video():
     """Fixed, optional iPhone Safari tutorial asset for first PWA registration.
 
     The video is deliberately not synthesized or silently substituted with
     other user media. Missing approved MP4 returns 404; the Li guide displays
-    the canonical three-step fallback and still allows course continuation.
+    the canonical four-step fallback and still allows course continuation.
     """
     path = Path("app/static/assets/onboarding/iphone-home-screen.mp4")
     if not path.is_file():
@@ -2459,7 +2467,7 @@ async def li_iphone_install_guide_video():
                             headers={"Cache-Control": "no-store"})
     # MP4 is already compressed. Global GZipMiddleware must not recompress
     # 206 byte ranges: their Content-Range offsets refer to the original
-    # file bytes. The public approved 710 KB video can be cached briefly.
+    # file bytes. The compressed approved MP4 can be cached briefly.
     return FileResponse(path, media_type="video/mp4",
                         headers={"X-Content-Type-Options": "nosniff",
                                  "Content-Encoding": "identity",

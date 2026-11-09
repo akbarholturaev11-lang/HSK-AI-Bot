@@ -447,7 +447,7 @@ def test_mobile_site_header_and_ios_pwa_video_without_desktop_nav_regression(des
     playwright.expect(page.locator(".site-header .language-switch")).not_to_have_attribute("open", "")
     assert page.locator('[data-download-button]').get_attribute('href') == '/iphone-pwa?lang=ru'
     playwright.expect(page.locator('[data-ios-install]')).to_be_visible()
-    assert page.locator('[data-ios-video] source').get_attribute('src') == '/assets/onboarding/iphone-home-screen.mp4'
+    assert page.locator('[data-ios-video] source').get_attribute('src') == '/assets/onboarding/iphone-home-screen.mp4?v=20261109-3e099a0c0489'
     assert "Safari" in page.locator('[data-step-body="one"]').inner_text()
     # The browser media request can fail or be offline; text remains usable.
     page.locator("[data-ios-video]").dispatch_event("error")
