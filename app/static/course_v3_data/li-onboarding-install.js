@@ -187,6 +187,7 @@
         clearTimeout(failTimer);
         detail.hidden = true; intro.hidden = false;
         card.classList.remove("li-install-show-video");
+        movie.pause();
         howButton.focus();
       });
       card.append(intro, detail);
