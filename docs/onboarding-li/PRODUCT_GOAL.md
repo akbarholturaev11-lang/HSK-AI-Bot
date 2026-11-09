@@ -4,6 +4,8 @@
 >
 > **Qamrov:** PWA (iPhone/browser) + Telegram Mini App uchun **bitta umumiy web onboarding**, har bir platformaning xavfsiz auth adapteri bilan. Android native onboarding UI shu taskda qayta chizilmaydi. Shared backend/schema o'zgarishlari barcha clientlarga mos kelishi kerak.
 >
+> **Current release staging (2026-11-09):** Main guidance synchronized at `8ff505b352f88c0155e9d390f04d1205669fa0d5`; guest Li entry is behind `PWA_LI_ONBOARDING_ENTRY_ENABLED=false` and no main/production cutover occurred. [RELEASE_READINESS.md](RELEASE_READINESS.md) contains final QA/analytics/rollback gates.
+>
 > **Audit bazasi (updated 2026-11-08):** `main` commit `ffbff9492e0713686f57a76443bef17a45c4041c` (includes PWA inline Pro and verified 20% exit offer, migration 0153, Dockerfile and Railway build fix). **Railway production SUCCESS for this exact SHA** on 2026-11-08; this confirms deploy, not onboarding implementation or new feature tests.
 
 ## Updated 2026-11-08 integration contract — new main 401de151
@@ -13,7 +15,7 @@ The existing learner PWA now has a **PWA-only inline Pro limit paywall** with co
 - New PWA limit module: `app/static/course_v3_data/iphone-pwa-inline-pro.{js,css}`, `iphone-pwa-inline-pro-bridge.js`. `app/api/pwa_auth.py::_pwa_inline_html` injects them only in authenticated course/practice/checkout routes. `/iphone-pwa/onboarding` is NOT injected. Shared `course-v3.html` and Mini App static HTML were deliberately left unchanged in new main.
 - New PWA funnel: `/api/v3/pwa/subscription/inline-event` CSRF+allowlisted stage/source, `inline_preview` to avoid counting mere price display as checkout, and server-only verified Lava paid event. **Onboarding events must use their own event namespace**, not falsely be counted as `pwa_pro_opened` from a limit hit.
 - New schema head: `0153_pwa_inline_funnel`, after `0152_pwa_exit_offer`; onboarding migrations branch from the current real head, NEVER from the previously audited `0151`.
-- **Important public entry gap:** `/iphone-pwa/onboarding` currently requires a PWA session, and `/iphone-pwa` redirects already authenticated users to course. The new panda-first `account` → `signup/login` flow therefore needs a safely served public shell and a verified auth-return/draft bridge. Do not simply remove route authentication from private onboarding endpoints.
+- **Historical public entry gap (now resolved on feature branch):** `/iphone-pwa/onboarding` remains authenticated; public `/iphone-pwa/onboarding/li` is a visual-only shell with server-verified OAuth return and owner-scoped private APIs. Automatic guest entry is prepared behind **default-OFF** `PWA_LI_ONBOARDING_ENTRY_ENABLED`. Private onboarding endpoints must NEVER become public.
 - Current PWA-only inline paywall keeps its strings in inline `WORDS` JS despite the repository's canonical-localization rule. Do NOT copy that pattern into onboarding; canonical UZ/RU/TJ catalogs remain mandatory. Avoid unrelated paywall refactor unless its actual integration requires it.
 - New main doesn't change the existing trial PWA endpoint gap, 48h push/reminder code, Smart Reminder policy, scalar goal, streak target absence, or original book JPEGs. The existing onboarding task remains necessary.
 

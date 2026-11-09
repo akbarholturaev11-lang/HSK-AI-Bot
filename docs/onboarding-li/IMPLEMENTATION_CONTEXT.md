@@ -8,6 +8,15 @@
 >
 > **REAL ONBOARDING IMPLEMENTATION STATUS: PARTIAL ON FEATURE BRANCH.** The isolated 23-state Li UI, optional iPhone install guide and server adapters are committed; final all-green CI/device validation, default route cutover, production deploy are NOT complete (approved real MP4 is committed).
 
+## 2026-11-09 RELEASE PREPARATION — UPDATED CURRENT MAIN
+
+- Last verified main for this operation: `8ff505b352f88c0155e9d390f04d1205669fa0d5`. Feature branch previously `4664ebfb4e0ddae8d08f6bfd881ede1a113f527b` (4 commits behind), now synchronized via **two-parent merge** `a53774fdb0637e71b41b0887e4a71cd0466108ab`; `git compare main..branch` verified **behind=0**, preserving all onboarding files. Main changed only `AGENTS.md` and added `docs/analytics/ANALYTICS_INTEGRITY_IMPLEMENTATION_PLAN.md`. No force push or main modification.
+- `app/config.py` adds **`PWA_LI_ONBOARDING_ENTRY_ENABLED: bool = False`**. `app/api/pwa_auth.py` redirects only anonymous `GET /iphone-pwa` to public Li shell when flag enabled; verified sessions still use canonical course and OAuth resume remains single-use. Default remains original login flow. Roll back by turning the flag off, without reversing user choices or migration.
+- `tests/test_pwa_browser_auth.py::test_li_entry_release_switch_is_disabled_by_default_and_guest_only` checks disabled legacy login, enabled guest 303, forged-cookie isolation, verified actor course redirect and global PWA auth kill switch.
+- **Analytics Impact:** existing `CourseMiniAppOnboardingService` writes canonical `onboarding_completed` to `CourseMiniAppEvent` with server-owned `user_id` and a profile dedupe key; `app/admin_api/pwa_analytics_learning.py` has a consumer for that event, but verified Li **guest-view/step-to-payment conversion denominator is not instrumented** and `iphone_pwa` Admin metrics include `not_instrumented`. Treat those as **unavailable**, not zero; don't invent per-platform conversions. Default-disabled rollout switch has no measured live exposure. See [RELEASE_READINESS.md](RELEASE_READINESS.md).
+- QA gates still open: final new-HEAD CI, staging Alembic `0154_li_onboarding_choices`, physical iPhone Safari real OAuth, MP4 playback and slow networks, 23-state accessibility/visual signoff, Push/VAPID and Telegram Mini App route release. The PWA flag is not an instruction to enable anything in production.
+- **No main merge, production deploy, production env change, or PR-ready status.** PR #282 stays draft.
+
 ## 2026-11-09 WEBKIT VIDEO CI FAILURE ROOT CAUSE + REAL MP4 TEST
 
 - CI `42570969144` / job `miniapp-ui` WebKit `tests/e2e/test_li_onboarding_install.py::test_media_stays_optional_but_real_metadata_can_swap_to_vertical_video` failed (1 of 25 tests; 24 passed). **This exposed a faulty test fixture**, NOT proof the real MP4 is invalid: `_prepare(...,has_video=True)` returned only a 12-byte `ftypmp42` fake with status 206 and no `Content-Range`, then manually dispatched a `loadedmetadata` event. WebKit correctly fired an asynchronous decoder error and the app retained its usable text fallback.
