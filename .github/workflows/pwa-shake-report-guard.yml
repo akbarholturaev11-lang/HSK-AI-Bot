@@ -41,4 +41,6 @@ jobs:
       - name: Test single bottom sheet and CSRF in real Chromium at three iPhone sizes
         run: python -m pytest -q tests/e2e/test_iphone_pwa_glass.py -k "shake_report or checkout_cta"
       - name: Verify Li Home Screen install Safari video and non-Safari handoff
-        run: python -m pytest -q tests/e2e/test_li_onboarding_install.py tests/e2e/test_li_onboarding_runtime.py -k "install or signup"
+        run: |
+          python -m pytest -q tests/e2e/test_li_onboarding_install.py
+          python -m pytest -q tests/e2e/test_li_onboarding_runtime.py -k "install or signup"
