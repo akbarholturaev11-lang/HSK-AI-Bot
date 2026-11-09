@@ -416,8 +416,9 @@ def test_guest_profile_has_telegram_google_without_duplicate_create_account_step
         page, captured = _page(browser, pwa=True, guest=True)
         _advance_to_profile(page, guest=True)
         assert page.locator("#stage h1").inner_text() == "Profilingizni saqlang"
-        assert page.locator("#stage .provider").nth(0).is_visible()
-        assert page.locator("#stage .provider").nth(1).is_visible()
+        # Provider discovery is asynchronous; retain honest skeleton until it finishes.
+        page.locator("#stage .provider").nth(0).wait_for(state="visible")
+        page.locator("#stage .provider").nth(1).wait_for(state="visible")
         assert page.locator("#stage .provider").nth(2).is_hidden()
         assert page.locator("#footer .cta").count() == 0
         # Back returns straight to the last preference screen, not an extra page.
