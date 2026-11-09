@@ -126,7 +126,7 @@ def _page(browser, *, pwa=True, trial_eligible=False, trial_start_ok=True, saved
             assert body["language"] == "uz"
             captured["telegram_start"].append(body)
             payload = {"ok": True, "link_request_id": TELEGRAM_ID,
-                       "authorize_url": "https://t.me/hskai_bot?start=pwa_link_" + TELEGRAM_ID}
+                       "authorize_url": "https://t.me/hskai_bot?start=pwa_link_" + TELEGRAM_ID + "_uz"}
         elif path == "/api/v3/pwa-auth/telegram/claim":
             assert req.method == "POST"
             assert body["link_request_id"] == TELEGRAM_ID
@@ -484,7 +484,7 @@ def test_guest_li_telegram_starts_from_original_profile_without_welcome_page():
         assert page.locator("#stage .provider").nth(1).is_visible()
         assert page.locator("#stage .provider").nth(2).is_hidden()
         telegram.click()
-        page.wait_for_url("https://t.me/hskai_bot?start=pwa_link_" + TELEGRAM_ID)
+        page.wait_for_url("https://t.me/hskai_bot?start=pwa_link_" + TELEGRAM_ID + "_uz")
         page.go_back()
         page.wait_for_function("""() =>
           sessionStorage.getItem('hskai.pwa.telegram.pending')===
@@ -522,7 +522,7 @@ def test_new_user_telegram_claim_resumes_guest_choices_without_welcome_screen():
             body="<html><body>Telegram bot approval</body></html>",
         ))
         page.locator("#stage .provider").nth(0).click()
-        page.wait_for_url("https://t.me/hskai_bot?start=pwa_link_" + TELEGRAM_ID)
+        page.wait_for_url("https://t.me/hskai_bot?start=pwa_link_" + TELEGRAM_ID + "_uz")
         page.go_back()
         page.wait_for_function(
             "() => sessionStorage.getItem('hskai.pwa.telegram.pending')"
@@ -564,7 +564,7 @@ def test_li_telegram_expired_does_not_sign_in_and_can_retry_without_welcome():
         ))
         captured["telegram_state"] = "expired"
         page.locator("#stage .provider").nth(0).click()
-        page.wait_for_url("https://t.me/hskai_bot?start=pwa_link_" + TELEGRAM_ID)
+        page.wait_for_url("https://t.me/hskai_bot?start=pwa_link_" + TELEGRAM_ID + "_uz")
         page.go_back()
         page.wait_for_function(
             "() => document.querySelector('#stage .status')?.textContent?.includes('muddati tugadi')"
