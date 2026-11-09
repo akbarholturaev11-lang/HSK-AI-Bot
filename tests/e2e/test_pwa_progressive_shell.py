@@ -111,3 +111,51 @@ def test_first_paint_localizes_before_any_account_api(lang, label, accessibility
         ) == accessibility
         assert page.evaluate("document.documentElement.lang") == lang
         browser.close()
+
+
+def test_rating_second_render_does_not_replace_pending_skeleton_with_empty_results():
+    # Isolate the exact rating controller from the bundled application. The
+    # second App.show() after renderAll() must not race rating API completion.
+    func = "function renderRating(){" + HTML.split("function renderRating(){", 1)[1].split(
+        "function retryRating(){", 1
+    )[0]
+    retry = "function retryRating(){" + HTML.split("function retryRating(){", 1)[1].split(
+        "/* Trophy art", 1
+    )[0]
+    with pw.sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page()
+        page.set_content('<div id="s-rating"><div class="pwa-initial-shell">Loading…</div></div>')
+        page.evaluate("""() => {
+          window.PWA_COURSE_HOST=true;
+          window.INIT_DATA='';
+          window.ratingLoaded=false;
+          window.ratingPending=false;
+          window.ratingTabCur='league';
+          window.ratingMeta={};
+          window.ratingUsers=[];
+          window.requests=0;
+          window.rendered=0;
+          window.$=s=>document.querySelector(s);
+          window.T=()=>({nav:{rating:'Рейтинг'}});
+          window.courseMessage=(k,v)=>v;
+          window.esc=x=>String(x);
+          window._renderRatingContent=()=>{
+            document.querySelector('#s-rating').textContent='SERVER RESULT';
+            window.rendered++;
+          };
+          window.loadLatestRating=()=>{
+            window.requests++;
+            return new Promise(resolve=>{window.releaseRating=resolve});
+          };
+        }""")
+        page.evaluate(func + retry)
+        page.evaluate("renderRating();renderRating();retryRating()")
+        assert page.evaluate("requests") == 1
+        assert page.evaluate("rendered") == 0
+        assert page.locator("#s-rating .pwa-initial-shell").count() == 1
+        page.evaluate("releaseRating({ok:true})")
+        page.wait_for_function("window.rendered===1")
+        assert page.locator("#s-rating").inner_text() == "SERVER RESULT"
+        assert page.evaluate("ratingPending") is False
+        browser.close()
