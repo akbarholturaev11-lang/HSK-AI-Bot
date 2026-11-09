@@ -62,7 +62,7 @@ PWA hostname; otherwise re-record the step with the official URL.
 - No other path is dynamically fetched from query strings or user input.
 - When this MP4 **does not exist**, the route intentionally
   returns HTTP 404. The UI hides the broken player, shows the exact canonical
-  RU/UZ/TJ three-step text guide, and offers a Continue action.
+  RU/UZ/TJ four-step text guide, and offers a Continue action.
 
 Record an actual iPhone **Safari** demonstration using a neutral test device
 with notifications/account emails/secrets hidden:
@@ -81,7 +81,7 @@ requests are handled by Starlette `FileResponse` when the file exists.
 
 - New account using iPhone Safari: dialog opens once after confirmed onboarding
   save; video loads and plays with controls.
-- On media fetch failure: no broken video or spinner; three textual steps stay
+- On media fetch failure: no broken video or spinner; four short textual steps stay
   accessible. The learner can continue.
 - Existing, already-onboarded users, Telegram Mini App, desktop/Android,
   installed iPhone standalone PWA: no first-time prompt.
