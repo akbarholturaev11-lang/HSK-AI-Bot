@@ -252,6 +252,24 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
         )[1])["@graph"]
         self.assertEqual(next(x for x in site if x["@type"] == "WebSite")["url"], ORIGIN + "/")
 
+    def test_iphone_pwa_download_js_syntax_and_fallback_contract(self):
+        import shutil
+        import subprocess
+
+        script_path = Path("app/static/desktop-download-page.js")
+        script = script_path.read_text(encoding="utf-8")
+        self.assertIn('button.href = PWA_URL;', script)
+        self.assertIn('status.lastElementChild.textContent = localized.referralAndroidStatus;', script)
+        self.assertIn('iosReferralLink.href = referralLinkFor("ios");', script)
+        self.assertNotIn('button.href = referralCode ? referralLinkFor("ios") : BOT_URL;', script)
+        if not shutil.which("node"):
+            self.skipTest("Node.js not installed for JS syntax check")
+        result = subprocess.run(
+            ["node", "--check", str(script_path)],
+            capture_output=True, text=True, timeout=20,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+
     async def test_product_first_header_language_and_download_contract(self):
         # Content remains crawlable without JavaScript, with one URL per locale.
         for language, url_code in (("tg", "tj"), ("ru", "ru"), ("uz", "uz")):
