@@ -90,7 +90,11 @@
       pushInstallRequired: courseLabel("pwaPush.installRequired"),
       pushEnabled: courseLabel("pwaPush.enabled"),
       pushBlocked: courseLabel("pwaPush.blocked"),
-      pushError: courseLabel("pwaPush.error")
+      pushError: courseLabel("pwaPush.error"),
+      // Push status is not a payment: never reuse checkout "Calculating..."
+      // or "Resend payment" copy for the Push settings action slot.
+      pushLoading: commonLabel("state.loading"),
+      pushRetry: courseLabel("practiceGate.retry")
     };
   }
   function actorId(data) {
@@ -350,7 +354,7 @@
     if (!node) return;
     var t = labels();
     // The row shows a short state. Install instructions stay in the push view.
-    var value = pushStatusPending && pushSupported() ? t.loading
+    var value = pushStatusPending && pushSupported() ? t.pushLoading
       : !pushSupported() ? t.pushOff
       : !pushState || !pushState.enabled ? t.pushOff
         : Notification.permission === "denied" ? t.pushBlocked
@@ -367,14 +371,14 @@
     var retry = pushStatusFailed && supported && !waiting;
     pushControl.hidden = activeMode !== "push";
     pushStatus.textContent = !supported ? t.pushInstallRequired
-      : waiting ? t.loading : retry ? t.pushError
+      : waiting ? t.pushLoading : retry ? t.pushError
         : !enabled ? t.pushOff : denied && !subscribed ? t.pushBlocked
           : subscribed ? t.pushEnabled : "";
     // Keep a fixed action slot through pending/error/ready without allowing
     // writes until the current cookie owner and Push state are confirmed.
     pushButton.hidden = !supported || (!waiting && !retry && (!enabled || (denied && !subscribed)));
     pushButton.disabled = pushBusy || waiting;
-    pushButton.textContent = waiting ? t.loading : retry ? t.retry
+    pushButton.textContent = waiting ? t.pushLoading : retry ? t.pushRetry
       : subscribed ? t.pushDisable : t.pushEnable;
     updateSettingsPushStatus();
   }

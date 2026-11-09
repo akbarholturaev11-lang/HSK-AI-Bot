@@ -6800,7 +6800,7 @@ function boundedSectionRequest(promise,controller){
 function ratingLoadingHtml(errorHtml){
   if(!PWA_COURSE_HOST)return '<div style="padding:60px 0;text-align:center;color:var(--ink3)">…</div>';
   var busy=!errorHtml,body=ratingTabCur==="friends"?PWA_FRIENDS_SKELETON_BODY:PWA_RATING_SKELETON_BODY;
-  var label=esc(courseMessage("practice.preparing",({ru:"Загрузка",tj:"Бор мешавад",uz:"Yuklanmoqda"}[LANG]||"Загрузка")));
+  var label=esc(commonMessage("state.loading",({ru:"Загрузка…",tj:"Боргирӣ…",uz:"Yuklanmoqda…"}[LANG]||"Загрузка…")));
   return '<div class="hsk-pwa-section-loading pwa-rating-body'+(ratingTabCur==="friends"?' pwa-friends-body':'')+'" role="status" aria-busy="'+String(busy)+'" aria-label="'+label+'">'
     +body+(errorHtml?'<div class="pwa-rating-error" role="alert">'+errorHtml+'</div>':'')+'</div>';
 }
@@ -9993,7 +9993,7 @@ window.addEventListener("pageshow",function(ev){
 <script src="/course_v3_data/profile-carousel.js?v=20261021-bbc40872c23c"></script>
 <script src="/course_v3_data/iphone-pwa-fx.js?v=20261105-3f4db4191370"></script>
 <script src="/course_v3_data/iphone-pwa-refresh.js?v=20261105-e7852ac39c9d"></script>
-<script src="/course_v3_data/iphone-pwa-notices.js?v=20261109-ff16bbf3a839"></script>
+<script src="/course_v3_data/iphone-pwa-notices.js?v=20261110-e985617de198"></script>
 <script src="/course_v3_data/iphone-pwa-feedback.js?v=20261105-51e57153c4e0"></script>
 <script>if(location.pathname==="/iphone-pwa/course")window.addEventListener("load",function(){setTimeout(function(){
   /* Bot release-feedback campaign (stars) once per campaign, only on a calm course screen. */

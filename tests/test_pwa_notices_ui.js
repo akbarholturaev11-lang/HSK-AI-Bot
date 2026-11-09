@@ -295,8 +295,8 @@ async function main(){
   const loadingOpen = loadingPush.window.HskPwaInbox.openPushSettings();
   await new Promise(resolve=>setImmediate(resolve));
   const loadingView = loadingPush.root();
-  assert.equal(loadingView.querySelector("#hsk-pwa-push-status").textContent,"subscriptionPage.loading",
-    "unverified push state is never mislabeled as switched Off");
+  assert.equal(loadingView.querySelector("#hsk-pwa-push-status").textContent,"state.loading",
+    "unverified push state is never mislabeled as switched Off or as a checkout calculation");
   const loadingButton = loadingView.querySelector("#hsk-pwa-push-action");
   assert.equal(loadingButton.hidden,false,"reserve the eventual Push CTA geometry");
   assert.equal(loadingButton.disabled,true,"a pending owner/state check must not allow writes");
@@ -310,7 +310,7 @@ async function main(){
     "even a programmatic pending click must not mutate Push subscriptions");
   assert(!loadingPush.pushCalls.includes("permission"),
     "pending owner proof must never request OS notification permission");
-  assert.equal(loadingButton.textContent,"subscriptionPage.loading");
+  assert.equal(loadingButton.textContent,"state.loading");
   assert.equal(loadingPush.requests.filter(x=>x.url.endsWith("/push/status")).length,1);
   loadingPush.releaseHeldPushStatus();
   await loadingOpen;
@@ -327,7 +327,8 @@ async function main(){
     "pwaPush.error","an unverified Push failure is not shown as Off");
   assert.equal(failedButton.hidden,false,"failed Push check keeps its CTA slot");
   assert.equal(failedButton.disabled,false,"retry is available immediately");
-  assert.equal(failedButton.textContent,"subscriptionPage.retryPayment");
+  assert.equal(failedButton.textContent,"practiceGate.retry",
+    "Push status retry must never be labelled as resending a payment");
   failedPush.root().listeners.click({
     target:{closest:(selector)=>selector==="#hsk-pwa-push-action"?{}:null}
   });
