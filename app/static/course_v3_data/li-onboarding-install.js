@@ -102,7 +102,7 @@
     function onKey(event) {
       if (event.key === "Escape") { event.preventDefault(); finish(); return; }
       if (event.key !== "Tab") return;
-      var a = [close, howButton, handoffLink].filter(function(n) {
+      var a = [close, howButton, back, movie, handoffLink].filter(function(n) {
         return n && !n.hidden && n.getClientRects().length;
       });
       if (!a.length) return;
