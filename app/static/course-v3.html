@@ -1626,6 +1626,27 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 @media (prefers-reduced-transparency: reduce) {
   .nav::before,.nav::after { display:none; }
 }
+
+/* PWA only: paint a stable shell before the authenticated course-map API.
+   The Telegram Mini App keeps its existing cinematic launch and layout. */
+html.hsk-pwa-browser #hsk-launch-splash{display:none!important}
+.pwa-initial-shell{display:none}
+html.hsk-pwa-browser .pwa-initial-shell{display:block;max-width:var(--read);margin:0 auto;padding:15px 18px 32px}
+html.hsk-pwa-browser .pwa-initial-shell[aria-busy="true"]{min-height:540px}
+html.hsk-pwa-browser #s-course>.loading{display:none}
+.pwa-initial-shell .pwa-skel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;margin-bottom:12px}
+.pwa-initial-shell .pwa-skel-title{font-weight:750;letter-spacing:-.35px;font-size:23px;line-height:1.25;color:var(--ink)}
+.pwa-initial-shell .pwa-skel-card{background:var(--card);border:1px solid var(--line);border-radius:20px;min-height:104px;padding:18px;margin:12px 0;box-shadow:0 1px 3px rgba(25,20,10,.025)}
+.pwa-initial-shell .pwa-skel-card.habit{min-height:128px}
+.pwa-initial-shell .pwa-skel-line{height:12px;border-radius:8px;margin:12px 0;background:var(--line);width:76%;opacity:.68}
+.pwa-initial-shell .pwa-skel-line.short{width:43%}
+.pwa-initial-shell .pwa-skel-line.long{width:93%}
+.pwa-initial-shell .pwa-skel-path{min-height:196px;padding:18px 12px 6px}
+.pwa-initial-shell .pwa-skel-node{width:55px;height:55px;border-radius:50%;background:var(--card);border:7px solid var(--line);margin:9px auto}
+.pwa-initial-shell .pwa-skel-node:nth-child(2){transform:translateX(-42px)}
+.pwa-initial-shell .pwa-skel-node:nth-child(3){transform:translateX(35px)}
+@media(prefers-reduced-motion:no-preference){.pwa-initial-shell .pwa-skel-line,.pwa-initial-shell .pwa-skel-node{animation:pwa-skeleton-pulse 1.5s ease-in-out infinite alternate}}
+@keyframes pwa-skeleton-pulse{from{opacity:.52}to{opacity:.9}}
 </style>
 <link rel="stylesheet" href="/course_v3_data/iphone-pwa-glass.css?v=20261105-59648ec92079">
 <link rel="stylesheet" href="/course_v3_data/iphone-pwa-shake-report.css?v=20261105-c97d140b3930">
@@ -1671,11 +1692,11 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
   </div>
 </div>
 <div class="wrap">
-  <div class="scr on" id="s-course"><div class="loading">…</div></div>
-  <div class="scr" id="s-mashq"></div>
-  <div class="scr" id="s-voice"></div>
-  <div class="scr" id="s-rating"></div>
-  <div class="scr" id="s-profile"></div>
+  <div class="scr on" id="s-course"><div class="loading">…</div><div class="pwa-initial-shell" role="status" aria-label="Загрузка курса" aria-busy="true"><div class="pwa-skel-head"><span class="pwa-skel-title">HSK AI</span><div class="pwa-skel-line short" aria-hidden="true" style="width:72px"></div></div><div class="pwa-skel-card habit" aria-hidden="true"><div class="pwa-skel-line short"></div><div class="pwa-skel-line long"></div><div class="pwa-skel-line"></div></div><div class="pwa-skel-card" aria-hidden="true"><div class="pwa-skel-line short"></div><div class="pwa-skel-line long"></div><div class="pwa-skel-line"></div></div><div class="pwa-skel-path" aria-hidden="true"><div class="pwa-skel-node"></div><div class="pwa-skel-node"></div><div class="pwa-skel-node"></div></div></div></div>
+  <div class="scr" id="s-mashq"><div class="pwa-initial-shell" role="status" aria-label="Загрузка" aria-busy="true"><div class="pwa-skel-head"><span class="pwa-skel-title">Практика</span></div><div class="pwa-skel-card" aria-hidden="true"><div class="pwa-skel-line short"></div><div class="pwa-skel-line long"></div><div class="pwa-skel-line"></div></div><div class="pwa-skel-card" aria-hidden="true"><div class="pwa-skel-line short"></div><div class="pwa-skel-line long"></div><div class="pwa-skel-line"></div></div></div></div>
+  <div class="scr" id="s-voice"><div class="pwa-initial-shell" role="status" aria-label="Загрузка" aria-busy="true"><div class="pwa-skel-head"><span class="pwa-skel-title">AI Voice</span></div><div class="pwa-skel-card" aria-hidden="true"><div class="pwa-skel-line short"></div><div class="pwa-skel-line long"></div><div class="pwa-skel-line"></div></div><div class="pwa-skel-card" aria-hidden="true"><div class="pwa-skel-line short"></div><div class="pwa-skel-line long"></div><div class="pwa-skel-line"></div></div></div></div>
+  <div class="scr" id="s-rating"><div class="pwa-initial-shell" role="status" aria-label="Загрузка" aria-busy="true"><div class="pwa-skel-head"><span class="pwa-skel-title">Рейтинг</span></div><div class="pwa-skel-card" aria-hidden="true"><div class="pwa-skel-line short"></div><div class="pwa-skel-line long"></div><div class="pwa-skel-line"></div></div><div class="pwa-skel-card" aria-hidden="true"><div class="pwa-skel-line short"></div><div class="pwa-skel-line long"></div><div class="pwa-skel-line"></div></div></div></div>
+  <div class="scr" id="s-profile"><div class="pwa-initial-shell" role="status" aria-label="Загрузка" aria-busy="true"><div class="pwa-skel-head"><span class="pwa-skel-title">Профиль</span></div><div class="pwa-skel-card" aria-hidden="true"><div class="pwa-skel-line short"></div><div class="pwa-skel-line long"></div><div class="pwa-skel-line"></div></div><div class="pwa-skel-card" aria-hidden="true"><div class="pwa-skel-line short"></div><div class="pwa-skel-line long"></div><div class="pwa-skel-line"></div></div></div></div>
   <section class="scr" id="s-settings" aria-labelledby="hsk-pwa-settings-title"></section>
 
   <!-- Bo'lim tanishtiruvi: ekran USTIDA suzadi, layoutdan joy egallamaydi va
@@ -1683,11 +1704,11 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
   <div id="hint-float" aria-live="polite"></div>
 
   <nav class="nav" id="nav">
-    <button class="on" data-s="course" aria-current="page"><i class="ti ti-map-2" id="i-c"></i><span data-i="course"></span></button>
-    <button data-s="mashq"><i class="ti ti-cards"></i><span data-i="mashq"></span></button>
-    <button class="center" data-s="voice"><span class="fab"><i class="ti ti-microphone"></i></span><span class="lbl" data-i="voice"></span></button>
-    <button data-s="rating"><i class="ti ti-trophy"></i><span data-i="rating"></span></button>
-    <button data-s="profile"><i class="ti ti-user"></i><span data-i="profile"></span></button>
+    <button class="on" data-s="course" aria-current="page"><i class="ti ti-map-2" id="i-c"></i><span data-i="course">Курс</span></button>
+    <button data-s="mashq"><i class="ti ti-cards"></i><span data-i="mashq">Практика</span></button>
+    <button class="center" data-s="voice"><span class="fab"><i class="ti ti-microphone"></i></span><span class="lbl" data-i="voice">AI Voice</span></button>
+    <button data-s="rating"><i class="ti ti-trophy"></i><span data-i="rating">Рейтинг</span></button>
+    <button data-s="profile"><i class="ti ti-user"></i><span data-i="profile">Профиль</span></button>
   </nav>
 
   <div class="sheet" id="sheet"><div class="si" onclick="event.stopPropagation()"><button class="sx" onclick="App.closeSheet()"><i class="ti ti-x"></i></button><div class="grip"></div><div id="sheet-body"></div></div></div>
@@ -2782,6 +2803,19 @@ var App={
   },
   setLang:function(l){if(!I18N[l])return;LANG=l;syncDocumentLanguage();renderAll()},
   show:function(s,ratingSource){
+    // Before actor/map confirmation, navigation is presentation-only. No
+    // profile, billing, lessons or Pro state is rendered from placeholder data.
+    if(PWA_COURSE_HOST&&!MAP){
+      var allowed=["course","mashq","voice","rating","profile"];
+      if(allowed.indexOf(s)<0)s="course";
+      SCREEN=s;
+      document.querySelectorAll(".scr").forEach(function(el){el.classList.toggle("on",el.id==="s-"+s)});
+      document.querySelectorAll("#nav button").forEach(function(btn){
+        var selected=btn.dataset.s===s;btn.classList.toggle("on",selected);
+        if(selected)btn.setAttribute("aria-current","page");else btn.removeAttribute("aria-current");
+      });
+      return;
+    }
     if(s==="settings"&&!PWA_COURSE_HOST)s="profile";
     if(s==="rating")ratingTabCur=ratingSource==="friends"?"friends":"league";
     syncCourseTelegramChrome();
@@ -9508,6 +9542,9 @@ $("#paywall").onclick=function(){App.closePaywall()};
 window.openLessonSheet=openLessonSheet;window.startLesson=startLesson;window.App=App;window.Flow=Flow;window.speak=speak;
 var finishHskLaunchSplash=(function(){
   var root=document.getElementById("hsk-launch-splash");if(!root)return function(){};
+  // PWA must render the real shell immediately, not wait for map API or the
+  // cinema animation. Mini App retains its original splash behaviour.
+  if(PWA_COURSE_HOST){root.remove();return function(){}}
   /* Returning from the dictionary/phrasebook is not a fresh app launch. */
   var returning=false;
   try{returning=sessionStorage.getItem("hsk_v3_resource_return")==="1";if(returning)sessionStorage.removeItem("hsk_v3_resource_return")}catch(e){}
