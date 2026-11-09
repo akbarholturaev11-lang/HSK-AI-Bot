@@ -380,7 +380,7 @@ body.dark::before{background-color:#FFFFFF;opacity:.55}
 <!-- Display first shell even when the optional character pack or Telegram SDK is delayed. -->
 <script src="/assets/characters/hsk-character-pack.js?v=20261108-97e81d4643b7"></script>
 <script src="/assets/telegram-web-app.js?v=20261019-1"></script>
-<script src="/course_v3_data/hsk-li-onboarding-i18n.js?v=20261109-e5bab5674f05"></script>
+<script src="/course_v3_data/hsk-li-onboarding-i18n.js?v=20261109-a0d90f447666"></script>
 <script>
 /* Copy in RU / UZ / TJ. Strings marked "existing" are taken from the repo catalogs;
    the rest is new demo copy that must go into the canonical catalogs before real use. */
@@ -554,7 +554,7 @@ function topBar(){
   if(TRIAL_STEPS.indexOf(screen)>0)return stepper();
   if(screen==="trialIntro"||screen==="end")return "";
   var bk='<button class="bk" type="button" aria-label="'+t("back")+'" onclick="back()">'+icon("back")+'</button>';
-  if(screen==="login"||screen==="signup")return bk+'<div class="spacer"></div>'+lang;
+  if(screen==="login")return bk+'<div class="spacer"></div>'+lang;
   var i=QUESTION_FLOW.indexOf(screen);
   if(i>=0)return bk+'<div class="pbar" role="progressbar" aria-valuemin="0" aria-valuemax="'+QUESTION_FLOW.length+'" aria-valuenow="'+(i+1)+'"><i style="width:'+((i+1)*100/QUESTION_FLOW.length)+'%"></i></div>';
   return bk+'<div class="spacer"></div>';
@@ -749,7 +749,7 @@ if(T[LANG]&&window.HSKCharacters&&typeof window.HSKCharacters.render==="function
   render();
 }else{liCriticalAssetFailed()}
 </script>
-<script src="/course_v3_data/li-onboarding-runtime.js?v=20261109-e6550b99c736"></script>
+<script src="/course_v3_data/li-onboarding-runtime.js?v=20261109-efdccb82ceac"></script>
 <script src="/course_v3_data/li-onboarding-install.js?v=20261109-45db3c9aae4c"></script>
 </body>
 </html>
