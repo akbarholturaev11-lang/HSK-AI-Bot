@@ -317,7 +317,11 @@ def test_course_ready_while_rating_referrals_and_profile_stats_load_independentl
             held["voice"].pop().fulfill(
                 status=200, headers={"X-HSK-PWA-User-ID": "31"}, json={"ok": True, "remaining_voice_limit": 2},
             )
-            page.locator("#voice-quota").wait_for(state="visible")
+            # The quota is already visible as "checking access"; wait for the
+            # verified response to replace it rather than reading a race.
+            page.wait_for_function(
+                "() => /2/.test(document.getElementById('voice-quota').textContent)"
+            )
             assert "2" in page.locator("#voice-quota").inner_text()
             page.locator('#nav button[data-s="course"]').click()
             page.locator('#nav button[data-s="voice"]').click()
@@ -326,7 +330,11 @@ def test_course_ready_while_rating_referrals_and_profile_stats_load_independentl
             held["voice"].pop().fulfill(
                 status=200, headers={"X-HSK-PWA-User-ID": "31"}, json={"ok": True, "remaining_voice_limit": 1},
             )
-            page.locator("#voice-quota").wait_for(state="visible")
+            # The quota is already visible as "checking access"; wait for the
+            # verified response to replace it rather than reading a race.
+            page.wait_for_function(
+                "() => /1/.test(document.getElementById('voice-quota').textContent)"
+            )
             assert "1" in page.locator("#voice-quota").inner_text()
             assert errors == []
 
