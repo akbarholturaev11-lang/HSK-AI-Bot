@@ -48,6 +48,7 @@ This requirement is **retroactive**: every currently implemented learner PWA scr
 - [x] PWA-only splash no longer hides the authenticated shell while waiting for the map, and nav remains inert until verified map or terminal auth/error state settles.
 - [x] Unit regression tests check source isolation, ETag revalidation, 304, and non-course screens.
 - [ ] Browser slow-network filmstrip and LCP/CLS measurements (baseline and after).
+- [x] Verified Friends API failure discarded reserved invite/summary/row placeholders on PWA; now failed Friends GET and local Retry retain the same independent geometry while preserving Telegram's existing error UI. Added Chromium/WebKit mock-503 → error-anchor → retry → success regression. Latest-head CI pending.
 - [x] Independent Rating and Friends loading boundaries: in-flight deduplication, no premature empty state on locale re-render, per-section skeletons, and separate failure/retry paths.
 - [x] Profile accuracy placeholder while its own API is pending; on successful response replace the placeholder without blocking the profile header, navigation, account controls or Pro gate.
 - [x] Verified duplicate PWA Voice quota GET on locale re-render while the first request is pending; reuse a single in-flight Promise, then fetch fresh quota on a later visit. Chromium and WebKit mocked-route regression covers both cases; Telegram transport is unchanged.

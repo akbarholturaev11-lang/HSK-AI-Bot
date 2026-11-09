@@ -6885,8 +6885,8 @@ function _renderRatingContent(){
 	    }
 	    h+='<div class="rt-invite" style="padding:20px 22px 18px"><span class="han">友</span><p>'+esc(r.refSub||r.inviteSub)+'</p><button onclick="openInviteSheet()"><i class="ti ti-user-plus"></i> '+esc(r.invite)+'</button></div>';
 	    if(referralMeta.error){
-	      h+='<div class="rt-invite"><span class="han">友</span><p>'+esc(r.refLoadErr)+'</p><button type="button" class="scta" onclick="retryReferrals()">'+esc(ratingRetryText())+'</button></div>';
-	      $("#s-rating").innerHTML=h;return;
+	      var errorCard='<div class="rt-invite"><span class="han">友</span><p>'+esc(r.refLoadErr)+'</p><button type="button" class="scta" onclick="retryReferrals()">'+esc(ratingRetryText())+'</button></div>';
+	      $("#s-rating").innerHTML=PWA_COURSE_HOST?'<h1 class="rating-friends-heading">'+esc(r.friends)+'</h1>'+ratingLoadingHtml(errorCard):h+errorCard;return;
 	    }
 	    h+='<div class="ref-stat"><div><b>'+Number(referralMeta.joined||0)+'</b><small>'+courseMessage("rating.referralJoined",LANG==="ru"?"перешли":LANG==="tj"?"даромаданд":"kirgan")+'</small></div><div><b>'+Number(referralMeta.active||0)+' / '+Number(referralMeta.required||0)+'</b><small>'+courseMessage("rating.referralActive",LANG==="ru"?"актив":LANG==="tj"?"фаъол":"faol")+'</small></div></div>';
 	    if(!referralUsers.length){

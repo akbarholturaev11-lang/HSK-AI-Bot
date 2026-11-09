@@ -241,6 +241,27 @@ def test_course_ready_while_rating_referrals_and_profile_stats_load_independentl
             assert len(held["friends"]) == 1
             page.evaluate("App.setLang('ru')")
             assert len(held["friends"]) == 1
+            # A failed Friends GET must retain the independent reserved
+            # invite/summary/row slots, then retry a fresh request.
+            friends_anchors = {
+                "invite": "#s-rating .pwa-friends-body .pwa-friends-invite",
+                "summary": "#s-rating .pwa-friends-body .pwa-friends-summary",
+                "first-row": "#s-rating .pwa-friends-body .pwa-rating-row",
+                "nav": "#nav",
+            }
+            friends_loading_boxes = capture_geometry(page, friends_anchors)
+            held["friends"].pop().fulfill(status=503, json={"ok": False})
+            page.locator("#s-rating .pwa-rating-error button").wait_for(state="visible")
+            assert_reserved_layout(
+                friends_loading_boxes, capture_geometry(page, friends_anchors)
+            )
+            assert page.locator("#s-course .uban").count() > 0
+            page.locator("#s-rating .pwa-rating-error button").click()
+            page.locator("#s-rating .pwa-friends-body[aria-busy=true]").wait_for()
+            assert len(held["friends"]) == 1
+            assert_reserved_layout(
+                friends_loading_boxes, capture_geometry(page, friends_anchors)
+            )
             held["friends"].pop().fulfill(status=200, headers={"X-HSK-PWA-User-ID": "31"}, json={
                 "ok": True, "joined_count": 0, "active_count": 0,
                 "required": 2, "referrals": [],
