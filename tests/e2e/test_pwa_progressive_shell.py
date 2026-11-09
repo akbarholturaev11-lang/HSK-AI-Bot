@@ -175,6 +175,9 @@ def test_profile_accuracy_has_independent_loading_success_and_error_states():
           window.PWA_COURSE_HOST=true;
           window.PROFILE_DETAIL=null;
           window.PROFILE_DETAIL_FAILED=false;
+          window.PROFILE_DETAIL_ERROR=false;
+          window.PROFILE_DETAIL_SETTLED=false;
+          window.LANG="ru";
           window.profileCopy=()=>({overall:'Всего',today:'Сегодня'});
           window.esc=x=>String(x);
         }""")
@@ -196,6 +199,12 @@ def test_profile_accuracy_has_independent_loading_success_and_error_states():
         }""")
         assert page.locator(".profile-accuracy[aria-busy='true']").count() == 0
         assert "—" in page.locator(".profile-accuracy").inner_text()
+        page.evaluate("""() => {
+          PROFILE_DETAIL_ERROR=true;
+          document.body.innerHTML=profileAccuracyHtml();
+        }""")
+        assert page.locator(".hsk-pwa-profile-stats-error").count() == 1
+        assert page.get_by_role("button", name="Повторить").is_visible()
         browser.close()
 
 
