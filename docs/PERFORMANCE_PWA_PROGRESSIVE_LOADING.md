@@ -23,7 +23,9 @@ This is a **release acceptance criterion**, not an optional visual enhancement.
 - [x] PWA-only splash no longer hides the authenticated shell while waiting for the map, and nav remains inert until verified map or terminal auth/error state settles.
 - [x] Unit regression tests check source isolation, ETag revalidation, 304, and non-course screens.
 - [ ] Browser slow-network filmstrip and LCP/CLS measurements (baseline and after).
-- [ ] True independent API loading for course sub-sections, only after access/query dependency analysis.
+- [x] Independent Rating and Friends loading boundaries: in-flight deduplication, no premature empty state on locale re-render, per-section skeletons, and separate failure/retry paths.
+- [x] Profile accuracy placeholder while its own API is pending; on successful response replace the placeholder without blocking the profile header, navigation, account controls or Pro gate.
+- [ ] Split **additional optional course-map sub-sections** into independent API boundaries only after access/query dependency and row-lock analysis.
 - [ ] Audit and convert genuinely offscreen images to responsive WebP/AVIF without regressing visible mascot/brand.
 - [ ] All affected iPhone Safari flows with live-like latency, including auth replacement and Pro/lesson updates.
 
@@ -38,3 +40,10 @@ This is a **release acceptance criterion**, not an optional visual enhancement.
 ## Release gate
 
 No merge to `main` or production deployment until the latest targeted backend tests, real isolated PostgreSQL integration and PWA WebKit checks pass. Label incomplete UX work as incomplete rather than treating a skeleton alone as fully progressive API loading.
+
+
+## Mandatory engineering workflow while CI runs
+
+Do not idle while a CI workflow is pending. Inspect all changed code and direct callers/consumers in parallel: authentication and account ownership, Trial/Free/Pro entitlements, session/CSRF boundaries, request deduplication/cancellation, failure/retry and cache invalidation, Mini App and Android shared API contracts, and real frontend lifecycle behavior. Record findings with exact files/functions and add a focused regression test for any confirmed defect. Keep unverified tests **pending** (not passed) and keep all changes on a Draft PR until the final commit has green required checks.
+
+An earlier CI failure traced to a browser test running at `about:blank` instead of `/iphone-pwa/course`; test routing was corrected without weakening PWA path guards.
