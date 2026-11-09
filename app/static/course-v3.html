@@ -2691,7 +2691,7 @@ function haptic(t){try{if(!tg&&window.HskPwaFx){HskPwaFx.haptic(t);return}tg&&tg
 var ac;function beep(seq){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();var t=ac.currentTime;seq.forEach(function(f,k){var o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;o.connect(g);g.connect(ac.destination);var s=t+k*0.09;g.gain.setValueAtTime(0.0001,s);g.gain.exponentialRampToValueAtTime(0.12,s+0.02);g.gain.exponentialRampToValueAtTime(0.0001,s+0.16);o.start(s);o.stop(s+0.18)})}catch(e){}}
 
 /* ---------- App ---------- */
-var MAP=null,SCREEN="course",SCREEN_HISTORY=[],NAVBACK_SCREEN_CHANGE=false,HP=5,notifOn=true,dailyGoal=50,PROF={},ratingLoaded=false,pendingRankUp=null;
+var MAP=null,SCREEN="course",PWA_PREBOOT_TAB=null,SCREEN_HISTORY=[],NAVBACK_SCREEN_CHANGE=false,HP=5,notifOn=true,dailyGoal=50,PROF={},ratingLoaded=false,pendingRankUp=null;
 /* Kunlik reja sozlamalari serverdan (map javobidagi `study_setup`).
    Ilgari `dailyGoal` faqat shu yerdagi o'zgaruvchi edi va ilova qayta
    ochilganda foydalanuvchi tanlovi yo'qolardi. */
@@ -2808,6 +2808,9 @@ var App={
     if(PWA_COURSE_HOST&&!MAP){
       var allowed=["course","mashq","voice","rating","profile"];
       if(allowed.indexOf(s)<0)s="course";
+      // Preserve a user's visible tab choice while the authenticated map
+      // is still pending; otherwise boot would silently jump back to Course.
+      PWA_PREBOOT_TAB=s;
       SCREEN=s;
       document.querySelectorAll(".scr").forEach(function(el){el.classList.toggle("on",el.id==="s-"+s)});
       document.querySelectorAll("#nav button").forEach(function(btn){
@@ -9639,7 +9642,9 @@ var finishHskLaunchSplash=(function(){
       setTimeout(askPendingStudySetup,1200);
     prefetchNearbyLessons();
     var sp=bootParams;
-    App.show(sp.get("tab")||"course");
+    var initialTab=PWA_COURSE_HOST&&PWA_PREBOOT_TAB||sp.get("tab")||"course";
+    PWA_PREBOOT_TAB=null;
+    App.show(initialTab);
     finishHskLaunchSplash();
     var initialLesson=Number(sp.get("lesson")||0);
     // resume=1: aniq lesson berilmagan bo'lsa, server progresidan JORIY qismni
