@@ -76,11 +76,12 @@
     var card = element("section", "li-install-card");
     card.setAttribute("role", "dialog");
     card.setAttribute("aria-modal", "true");
-    var close = element("button", "li-install-close", "×");
+    var close = element("button", "li-install-close");
+    close.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 5L19 19M19 5L5 19"/></svg>';
     close.type = "button";
     close.setAttribute("aria-label", label(lang, "install.close"));
     var oldFocus = document.activeElement, oldOverflow = document.body.style.overflow;
-    var finished = false, movie = null, back = null, failTimer = null, handoffLink = null, howButton = null;
+    var finished = false, movie = null, failTimer = null, handoffLink = null, howButton = null;
     function finish() {
       if (finished) return;
       finished = true;
@@ -102,7 +103,7 @@
     function onKey(event) {
       if (event.key === "Escape") { event.preventDefault(); finish(); return; }
       if (event.key !== "Tab") return;
-      var a = [close, howButton, back, movie, handoffLink].filter(function(n) {
+      var a = [close, howButton, movie, handoffLink].filter(function(n) {
         return n && !n.hidden && n.getClientRects().length;
       });
       if (!a.length) return;
@@ -140,9 +141,6 @@
 
       var detail = element("div", "li-install-video-page");
       detail.hidden = true;
-      back = element("button", "li-install-back", "‹");
-      back.type = "button";
-      back.setAttribute("aria-label", label(lang, "install.back"));
       var mediaStage = element("div", "li-install-video-stage");
       var media = element("div", "li-install-media");
       var loading = element("div", "li-install-video-loading");
@@ -159,7 +157,7 @@
       mediaStage.appendChild(media);
       var more = element("div", "li-install-scroll-steps");
       more.appendChild(steps);
-      detail.append(back, mediaStage, more);
+      detail.append(mediaStage, more);
 
       function showFallback() {
         if (finished) return;
@@ -182,14 +180,7 @@
         if (movie.error) showFallback();
         else if (movie.readyState >= 1) showMovie();
         else failTimer = setTimeout(showFallback, 10000);
-        back.focus();
-      });
-      back.addEventListener("click", function() {
-        clearTimeout(failTimer);
-        detail.hidden = true; intro.hidden = false;
-        card.classList.remove("li-install-show-video");
-        movie.pause();
-        howButton.focus();
+        close.focus();
       });
       card.append(intro, detail);
     } else {
