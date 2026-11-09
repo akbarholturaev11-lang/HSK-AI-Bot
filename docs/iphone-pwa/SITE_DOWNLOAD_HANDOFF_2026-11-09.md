@@ -11,7 +11,7 @@
 
 ## Install guidance and asset
 
-PWA entry: `https://hskai.app/iphone-pwa` (optionally `?lang=uz|ru|tj` when a language is already selected). The login page and, when enabled, the guest Li onboarding must preserve that chosen language. A signed-in session retains its own server-owned profile language. For Home Screen installation, open in **Safari**, tap Share, choose Add to Home Screen, confirm Add, and open the new icon. Use the existing account's linked login to retain progress and Pro. Do not imply that an App Store app is published or that Apple login is already supported.
+PWA entry: `https://hskai.app/iphone-pwa` (optionally `?lang=uz|ru|tj` when a language is already selected). The login page and, when enabled, the guest Li onboarding must preserve that chosen language. Only allowlisted bounded UTM/source tags survive the Li redirect; referral codes, device-link secrets, duplicate tags and unrecognized query parameters do not. A signed-in session retains its own server-owned profile language. For Home Screen installation, open in **Safari**, tap Share, choose Add to Home Screen, confirm Add, and open the new icon. Use the existing account's linked login to retain progress and Pro. Do not imply that an App Store app is published or that Apple login is already supported.
 
 Reuse exactly `/assets/onboarding/iphone-home-screen.mp4` (the same file as the PWA onboarding). The download page plays it with `controls playsinline preload="none"` and keeps text instructions visible if playback fails. It is shown only for the iOS platform choice. See `app/static/assets/onboarding/README.md` for codec and original-video review.
 

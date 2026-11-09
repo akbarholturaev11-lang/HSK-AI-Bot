@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import hashlib
 import os
+from urllib.parse import urlencode
 from typing import Literal
 from uuid import UUID
 
@@ -482,7 +483,20 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                 # Preserve only a validated public display locale from /download.
                 # PWA Li starts before account login and reads ?lang directly.
                 requested_lang = request.query_params.get("lang")
-                suffix = ("?lang=" + requested_lang) if requested_lang in {"uz", "ru", "tj"} else ""
+                public_params: list[tuple[str, str]] = []
+                if requested_lang in {"uz", "ru", "tj"}:
+                    public_params.append(("lang", requested_lang))
+                for key in ("utm_source", "utm_medium", "utm_campaign",
+                            "utm_term", "utm_content", "source"):
+                    values = request.query_params.getlist(key)
+                    if len(values) != 1:
+                        continue
+                    value = values[0]
+                    if 0 < len(value) <= 100 and not any(
+                        ord(char) < 32 or ord(char) == 127 for char in value
+                    ):
+                        public_params.append((key, value))
+                suffix = "?" + urlencode(public_params) if public_params else ""
                 return RedirectResponse(
                     "/iphone-pwa/onboarding/li" + suffix, status_code=303,
                     headers={**_NO_STORE, "Referrer-Policy": "no-referrer"},
