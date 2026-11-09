@@ -556,7 +556,7 @@ function back(){
   while((screen==="loadCourse"||screen==="loadLesson")&&trail.length)screen=trail.pop();
   demoStatus=false;render();
 }
-function setLang(v){if(T[v]){LANG=v;render(false)}}
+function setLang(v){if(T[v]){LANG=v;document.documentElement.lang=v;render(false)}}
 function levels(){return track==="hsk30"?LV30:LV20}
 
 var TRIAL_STEPS=["trialIntro","trial1","trial2","trial3","trialDone"];
