@@ -17,6 +17,8 @@ STATIC = Path("app/static")
 HTML = (STATIC / "course_v3_li_onboarding.html").read_text(encoding="utf-8")
 RUNTIME = (STATIC / "course_v3_data/li-onboarding-runtime.js").read_text(encoding="utf-8")
 CATALOG = (STATIC / "course_v3_data/hsk-li-onboarding-i18n.js").read_text(encoding="utf-8")
+COMMON_CATALOG = (STATIC / "course_v3_data/hsk-common-i18n.js").read_text(encoding="utf-8")
+TELEGRAM_ID = "12345678-1234-4123-8123-123456789abc"
 INSTALL_JS = (STATIC / "course_v3_data/li-onboarding-install.js").read_text(encoding="utf-8")
 INSTALL_CSS = (STATIC / "course_v3_data/li-onboarding-install.css").read_text(encoding="utf-8")
 IOS_SAFARI = "Mozilla/5.0 (iPhone; CPU iPhone OS 18_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.6 Mobile/15E148 Safari/604.1"
@@ -30,7 +32,9 @@ def _page(browser, *, pwa=True, trial_eligible=False, trial_start_ok=True, saved
         options["user_agent"] = IOS_SAFARI
     page = browser.new_page(**options)
     captured = {"post": [], "trial_start": [], "track_get": 0, "pageerrors": [],
-                "resume": 0, "oauth": [], "public_track_get": 0,
+                "resume": 0, "oauth": [], "telegram_start": [],
+                "telegram_claim": [], "telegram_state": "pending",
+                "public_track_get": 0,
                 "auth_state": {"verified": not guest}}
     page.on("pageerror", lambda err: captured["pageerrors"].append(str(err)))
     captured["navigations"] = []
@@ -53,6 +57,9 @@ def _page(browser, *, pwa=True, trial_eligible=False, trial_start_ok=True, saved
     ))
     page.route("**/course_v3_data/hsk-li-onboarding-i18n.js*", lambda route: route.fulfill(
         body=CATALOG, content_type="application/javascript",
+    ))
+    page.route("**/course_v3_data/hsk-common-i18n.js*", lambda route: route.fulfill(
+        body=COMMON_CATALOG, content_type="application/javascript",
     ))
     page.route("**/course_v3_data/li-onboarding-runtime.js*", lambda route: route.fulfill(
         body=RUNTIME, content_type="application/javascript",
@@ -86,6 +93,13 @@ def _page(browser, *, pwa=True, trial_eligible=False, trial_start_ok=True, saved
     page.route(ORIGIN + "/iphone-pwa/course?*", lambda route: route.fulfill(
         body="COURSE PAGE", content_type="text/html",
     ))
+    page.route(ORIGIN + "/iphone-pwa/course", lambda route: route.fulfill(
+        body="COURSE PAGE", content_type="text/html",
+    ))
+    page.route(ORIGIN + "/iphone-pwa", lambda route: route.fulfill(
+        body='<html><script>location.replace("/iphone-pwa/onboarding/li?lang=uz")</script></html>',
+        content_type="text/html",
+    ))
     page.route(ORIGIN + "/course-v3.html?*", lambda route: route.fulfill(
         body="COURSE PAGE", content_type="text/html",
     ))
@@ -107,6 +121,27 @@ def _page(browser, *, pwa=True, trial_eligible=False, trial_start_ok=True, saved
             assert req.method == "POST"
             captured["resume"] += 1
             payload = {"ok": True}
+        elif path == "/api/v3/pwa-auth/telegram/start":
+            assert req.method == "POST"
+            assert body["language"] == "uz"
+            captured["telegram_start"].append(body)
+            payload = {"ok": True, "link_request_id": TELEGRAM_ID,
+                       "authorize_url": "https://t.me/hskai_bot?start=pwa_link_" + TELEGRAM_ID + "_uz"}
+        elif path == "/api/v3/pwa-auth/telegram/claim":
+            assert req.method == "POST"
+            assert body["link_request_id"] == TELEGRAM_ID
+            captured["telegram_claim"].append(body)
+            if captured["telegram_state"] == "complete":
+                captured["auth_state"]["verified"] = True
+                payload = {"ok": True, "status": "complete"}
+            elif captured["telegram_state"] == "expired":
+                status = 409
+                payload = {"ok": False, "error": "pwa_telegram_expired"}
+            elif captured["telegram_state"] == "denied":
+                status = 409
+                payload = {"ok": False, "error": "pwa_telegram_not_approved"}
+            else:
+                payload = {"ok": True, "status": "pending"}
         elif path == "/api/v3/pwa-auth/start":
             assert req.method == "POST"
             assert body["provider"] == "google"
@@ -435,26 +470,114 @@ def test_guest_profile_has_telegram_google_without_duplicate_create_account_step
         browser.close()
 
 
-def test_guest_li_offers_telegram_even_though_oauth_providers_lists_only_google():
+def test_guest_li_telegram_starts_from_original_profile_without_welcome_page():
+    with pw.sync_playwright() as playwright:
+        browser = getattr(playwright, os.environ.get("PWA_E2E_ENGINE", "chromium")).launch()
+        page, captured = _page(browser, pwa=True, guest=True, saved=True)
+        _advance_to_profile(page, guest=True)
+        page.route("https://t.me/**", lambda route: route.fulfill(
+            status=200, content_type="text/html",
+            body="<html><body>Telegram bot approval</body></html>",
+        ))
+        telegram = page.locator("#stage .provider").nth(0)
+        telegram.wait_for(state="visible")
+        assert page.locator("#stage .provider").nth(1).is_visible()
+        assert page.locator("#stage .provider").nth(2).is_hidden()
+        telegram.click()
+        page.wait_for_url("https://t.me/hskai_bot?start=pwa_link_" + TELEGRAM_ID + "_uz")
+        page.go_back()
+        page.wait_for_function("""() =>
+          sessionStorage.getItem('hskai.pwa.telegram.pending')===
+          '12345678-1234-4123-8123-123456789abc'""")
+        assert captured["resume"] == 1
+        assert len(captured["telegram_start"]) == 1
+        assert captured["oauth"] == []
+        assert captured["post"] == [] and captured["trial_start"] == []
+        assert "/iphone-pwa?login=1" not in captured["navigations"]
+        assert page.locator("#stage .bub").inner_text() == (
+            "Progressingizni yo'qotmang! Keling, sizga profil ochamiz."
+        )
+        page.locator("#stage .status").wait_for(state="visible")
+        assert "Telegram botida" in page.locator("#stage .status").inner_text()
+        # The bot's approval is the ONLY thing allowed to verify this browser.
+        assert not captured["auth_state"]["verified"]
+        captured["telegram_state"] = "complete"
+        page.evaluate("window.dispatchEvent(new Event('focus'))")
+        page.wait_for_url(ORIGIN + "/iphone-pwa/course", timeout=12000)
+        assert captured["auth_state"]["verified"]
+        assert page.locator("body").inner_text() == "COURSE PAGE"
+        assert captured["post"] == [] and captured["trial_start"] == []
+        assert len(captured["telegram_claim"]) >= 1
+        assert not captured["pageerrors"]
+        browser.close()
+
+
+def test_new_user_telegram_claim_resumes_guest_choices_without_welcome_screen():
+    with pw.sync_playwright() as playwright:
+        browser = getattr(playwright, os.environ.get("PWA_E2E_ENGINE", "chromium")).launch()
+        page, captured = _page(browser, pwa=True, guest=True, saved=False)
+        _advance_to_profile(page, guest=True)
+        page.route("https://t.me/**", lambda route: route.fulfill(
+            status=200, content_type="text/html",
+            body="<html><body>Telegram bot approval</body></html>",
+        ))
+        page.locator("#stage .provider").nth(0).click()
+        page.wait_for_url("https://t.me/hskai_bot?start=pwa_link_" + TELEGRAM_ID + "_uz")
+        page.go_back()
+        page.wait_for_function(
+            "() => sessionStorage.getItem('hskai.pwa.telegram.pending')"
+        )
+        assert captured["post"] == [] and captured["trial_start"] == []
+        # Browser page can reload after returning from the Telegram native app.
+        page.reload()
+        page.wait_for_function(
+            "() => window.screen==='signup' && sessionStorage.getItem('hskai.pwa.telegram.pending')"
+        )
+        captured["telegram_state"] = "complete"
+        page.evaluate("window.dispatchEvent(new Event('focus'))")
+        page.wait_for_function(
+            "() => window.screen==='profile' && document.querySelector('#footer .cta')",
+            timeout=12000,
+        )
+        assert captured["auth_state"]["verified"]
+        assert captured["post"] == []  # no write before final verified action
+        assert page.evaluate("window.goals") == ["hsk_exam", "travel"]
+        assert page.evaluate("window.streakGoal") == 14
+        assert "/iphone-pwa?login=1" not in captured["navigations"]
+        page.locator("#footer .cta").click()
+        page.wait_for_function("window.screen==='end'")
+        assert len(captured["post"]) == 1
+        assert captured["post"][0]["goals"] == ["hsk_exam", "travel"]
+        assert captured["trial_start"] == []
+        assert not captured["pageerrors"]
+        browser.close()
+
+
+def test_li_telegram_expired_does_not_sign_in_and_can_retry_without_welcome():
     with pw.sync_playwright() as playwright:
         browser = getattr(playwright, os.environ.get("PWA_E2E_ENGINE", "chromium")).launch()
         page, captured = _page(browser, pwa=True, guest=True)
-        page.evaluate("go('login')")
-        telegram_button = page.locator("#stage .provider").nth(0)
-        telegram_button.wait_for(state="visible")
-        assert telegram_button.is_enabled()
-        assert page.locator("#stage .provider").nth(1).is_visible()
-        assert page.locator("#stage .provider").nth(2).is_hidden()
-        page.route(ORIGIN + "/iphone-pwa?login=1&lang=uz", lambda route: route.fulfill(
-            status=200, body="<html><body>CANONICAL TELEGRAM LOGIN</body></html>",
-            content_type="text/html",
+        _advance_to_profile(page, guest=True)
+        page.route("https://t.me/**", lambda route: route.fulfill(
+            status=200, content_type="text/html",
+            body="<html><body>Telegram bot approval</body></html>",
         ))
-        with page.expect_navigation():
-            telegram_button.click()
-        assert page.url.endswith("/iphone-pwa?login=1&lang=uz")
-        assert captured["resume"] == 1
-        assert captured["oauth"] == []  # No Google OAuth or simulated Telegram login.
-        assert captured["post"] == []  # No account, paid access or profile grant.
+        page.locator("#stage .provider").nth(0).click()
+        page.wait_for_url("https://t.me/hskai_bot?start=pwa_link_" + TELEGRAM_ID + "_uz")
+        page.go_back()
+        page.wait_for_function("() => window.screen==='signup'")
+        # A new link is never already expired; expire only while awaiting bot approval.
+        captured["telegram_state"] = "expired"
+        page.evaluate("window.dispatchEvent(new Event('focus'))")
+        page.wait_for_function(
+            "() => document.querySelector('#stage .status')?.textContent?.includes('muddati tugadi')"
+        )
+        assert page.evaluate("sessionStorage.getItem('hskai.pwa.telegram.pending')") is None
+        assert page.evaluate("sessionStorage.getItem('hsk_li_auth_handoff_v1')") is None
+        assert page.locator("#stage .provider").nth(0).is_enabled()
+        assert captured["auth_state"]["verified"] is False
+        assert captured["post"] == []
+        assert "/iphone-pwa?login=1" not in captured["navigations"]
         assert not captured["pageerrors"]
         browser.close()
 
