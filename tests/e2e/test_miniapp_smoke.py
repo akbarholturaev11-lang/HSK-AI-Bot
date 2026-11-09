@@ -1304,6 +1304,82 @@ def test_course_v3_starter_mic_skip_stops_recording_and_late_upload(page):
     assert voice_requests == []
 
 
+
+def test_course_v3_starter_mic_success_advances_to_result(page):
+    """A 100% spoken score must show a real next CTA, not trap the learner."""
+    runtime_errors = []
+    voice_requests = []
+    page.on("pageerror", lambda error: runtime_errors.append(str(error)))
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+    mock_learning_audio(page)
+    page.route(
+        "**/api/voice-practice/pronounce",
+        lambda route: voice_requests.append(route.request.url)
+        or json_response(route, {"ok": True, "score": 100}),
+    )
+    page.route("**/api/miniapp/event", lambda route: json_response(route, {"ok": True}))
+    page.add_init_script(
+        """
+        localStorage.clear();localStorage.setItem('hsk_v3_onb','1');
+        class FakeRecorder {
+          constructor(stream, options) {
+            this.state='inactive';this.mimeType='audio/webm';window.__starterRecorder=this;
+          }
+          static isTypeSupported(){return true}
+          start(){this.state='recording'}
+          stop(){
+            if(this.state==='inactive')return;
+            this.state='inactive';
+            if(this.ondataavailable)this.ondataavailable({
+              data:new Blob([new Uint8Array(800)],{type:'audio/webm'})
+            });
+            if(this.onstop)setTimeout(()=>this.onstop(),0);
+          }
+        }
+        window.MediaRecorder=FakeRecorder;
+        Object.defineProperty(navigator,'mediaDevices',{
+          configurable:true,
+          value:{getUserMedia:()=>Promise.resolve({
+            getTracks:()=>[{stop:()=>{}}]
+          })}
+        });
+        """
+    )
+    page.goto(
+        app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1&foundation=1"),
+        wait_until="networkidle",
+    )
+    page.wait_for_function("Foundation.active && Foundation.queue.length > 0")
+    # One badge only, at the top next to the step count, never twice.
+    expect(page.locator("#f-stage .foundation-step")).to_have_text(re.compile("0 dan asoslar"))
+    expect(page.locator("#f-body .foundation-step")).to_have_count(0)
+    page.evaluate(
+        """() => {
+          Foundation.i=Foundation.queue.findIndex(card=>card.type==='speak');
+          if(Foundation.i<0)throw new Error('starter_speak_missing');
+          Foundation.render();
+        }"""
+    )
+    expect(page.locator("#foundation-mic")).to_be_visible()
+    expect(page.locator("#f-cta")).to_be_hidden()
+    page.locator("#foundation-mic").click()
+    page.wait_for_function("window.__starterRecorder && window.__starterRecorder.state==='recording'")
+    page.evaluate("window.__starterRecorder.stop()")
+    expect(page.locator("#foundation-mic-hint")).to_contain_text("100%")
+    expect(page.locator("#f-cta")).to_be_visible()
+    expect(page.locator("#f-cta")).to_contain_text("Davom etish")
+    assert page.evaluate("Foundation.answered && Foundation.speakingBonus") is True
+    assert page.locator("#foundation-mic").is_disabled()
+    expect(page.locator("#f-body .pron-skip")).to_be_hidden()
+    assert len(voice_requests) == 1
+    page.locator("#f-cta").click()
+    assert page.evaluate("Foundation.queue[Foundation.i].type") == "result"
+    assert len(voice_requests) == 1
+    assert runtime_errors == []
+
+
 def test_course_v3_checkpoint_exit_ticket_mastery_and_paywall_boundary(page):
     mock_price_preview(page)
     mock_telegram_ready(page)
