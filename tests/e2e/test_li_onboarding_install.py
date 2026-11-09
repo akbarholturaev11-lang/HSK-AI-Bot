@@ -132,11 +132,20 @@ def test_media_stays_optional_but_real_metadata_can_swap_to_vertical_video():
         page, errors = _prepare(browser, ios=True, has_video=True)
         assert page.evaluate("""() => HSKAILiInstallGuide.open(
           {userId:53,lang:"tj"},()=>{})""") is True
-        # Browser player is hidden until the real MP4 decoder accepts
-        # metadata. The fallback is usable during any download delay.
-        assert page.locator(".li-install-video-fallback").is_visible()
+        # Browser player is hidden until real MP4 metadata arrives. In a
+        # fast CI/browser the loadedmetadata event may already have fired by
+        # the time Playwright inspects this DOM, making the fallback hidden.
+        # Either the four-step fallback OR a genuinely decoded video must
+        # occupy the media slot; neither is allowed to leave it blank.
+        fallback = page.locator(".li-install-video-fallback")
+        video = page.locator(".li-install-video")
+        if not fallback.is_visible():
+            assert video.is_visible(), "No readable fallback or playable video"
+            assert video.evaluate(
+                "(node) => node.readyState >= HTMLMediaElement.HAVE_METADATA"
+            ), "Fallback must remain until video metadata is decoded"
         # Actual playable MP4, not a synthetic loadedmetadata event.
-        page.locator(".li-install-video").wait_for(state="visible", timeout=15000)
+        video.wait_for(state="visible", timeout=15000)
         assert page.locator(".li-install-video").evaluate(
             "(video) => video.readyState >= HTMLMediaElement.HAVE_METADATA")
         assert page.locator(".li-install-video-fallback").is_hidden()
