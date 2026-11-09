@@ -819,11 +819,18 @@ async function bootstrap(){
           // This is a public panda-first UI, not a public user account.
           // All course writes remain inaccessible until verified OAuth.
           actor=null;identityKey="pwa:guest";
-          restoreDraft();
+          var guestStep=restoreDraft();
+          // Safari back/reload must keep the original speech/panda/provider
+          // screen while a fresh, same-tab Telegram approval is pending.
+          // A stale or unrelated draft cannot be used as login proof.
+          if(telegramPendingId()){
+            if(guestStep==="signup"&&validAuthHandoff()&&global.level&&
+               global.goals.length&&global.minutes&&global.focus&&global.streakGoal)
+              global.screen="signup";
+            else clearTelegramPending();
+          }
           requestBusy=false;global.render(false);
           loadProviders();
-          // Safari may restore this guest page after Telegram has opened.
-          // The same tab retains its browser-bound request and keeps polling.
           resumeTelegram();
           return;
         }
