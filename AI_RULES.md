@@ -13,6 +13,21 @@
 
 ---
 
+
+## Permanent Backend / PWA speed and progressive-loading rule
+
+For every new or changed backend endpoint and learner PWA feature, consult
+[docs/PERFORMANCE_PWA_PROGRESSIVE_LOADING.md](docs/PERFORMANCE_PWA_PROGRESSIVE_LOADING.md)
+**before coding**. Build fast first paint, session-safe shell, per-section
+skeleton/loading/empty/error/retry, first-viewport asset priority, bounded and
+deduplicated API requests, pagination and safe caching into the feature from
+its first version. Audit SQL/transaction/timeouts and preserve Android/Mini App
+contracts. Add focused behavioral regression tests; the CI policy and
+Chromium/WebKit regressions in
+`.github/workflows/backend-pwa-performance-contract.yml` apply to future
+changes as well. Never claim a CI pass is equivalent to measured performance.
+
+
 ## Permanent UI localization ownership
 
 Before adding/editing user-facing fixed copy or introducing a language, follow
