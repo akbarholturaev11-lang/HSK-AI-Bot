@@ -501,7 +501,12 @@ function saveProfile(){
     // A returning signed-in learner or Telegram Mini App must not see it.
     var guide=global.HSKAILiInstallGuide;
     if(hostPwa&&justResumedGuestRegistration&&guide&&typeof guide.open==="function"&&
-       guide.open({userId:Number(actor&&actor.user_id),lang:global.LANG},offerIfEligible)){
+       guide.open({userId:Number(actor&&actor.user_id),lang:global.LANG},function(){
+         // No stale course-book loader flash between closing the guide
+         // and the server-confirmed Pro eligibility destination.
+         showAuthWait("saving");
+         offerIfEligible();
+       })){
       justResumedGuestRegistration=false;
       hideAuthWait(); // The real install overlay is already attached.
       return;
