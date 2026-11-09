@@ -102,7 +102,7 @@ def _page(browser, *, pwa=True, trial_eligible=False, trial_start_ok=True, saved
             else:
                 payload = {"ok": True, "user_id": 37, "csrf": "test-csrf"}
         elif path == "/api/v3/pwa-auth/providers":
-            payload = {"ok": True, "providers": ["google", "telegram"]}
+            payload = {"ok": True, "providers": ["google"]}  # Actual API lists OAuth only
         elif path == "/api/v3/pwa/onboarding/li/resume":
             assert req.method == "POST"
             captured["resume"] += 1
@@ -188,7 +188,7 @@ def _page(browser, *, pwa=True, trial_eligible=False, trial_start_ok=True, saved
     return page, captured
 
 
-def _advance_to_profile(page):
+def _advance_to_profile(page, *, chosen_track="hsk20"):
     # Existing authenticated users begin at the same panda-first scene; no
     # second provider login is required by the real Mini App/PWA adapters.
     assert page.locator("h1.bub.q").is_visible()
@@ -198,9 +198,16 @@ def _advance_to_profile(page):
     page.locator("#footer .cta").click()  # load real track data
     page.locator(".track-switch").wait_for(state="visible")
     assert page.locator('img[src*="hsk20-course-books.jpg"]').is_visible()
-    assert page.locator('button[onclick*="hsk30"]').is_disabled()
+    hsk30_button = page.locator('button[onclick*="hsk30"]')
+    # Guest preview (not an entitlement) is selectable when HSK 3.0 is live.
+    if chosen_track == "hsk30":
+        assert hsk30_button.is_enabled()
+    if chosen_track == "hsk30":
+        hsk30_button.click()
+        assert page.evaluate("window.track") == "hsk30"
+        assert page.locator('img[src*="hsk30-course-books.jpg"]').is_visible()
     page.locator("#footer .cta").click()  # level
-    page.locator(".choices .lv").nth(1).click()  # HSK 1
+    page.locator(".choices .lv").nth(0 if chosen_track == "hsk30" else 1).click()
     page.locator("#footer .cta").click()  # multi-goal
     page.locator(".choices .lv").nth(0).click()  # HSK exam
     page.locator(".choices .lv").nth(2).click()  # travel (demo GOALS order)
@@ -287,7 +294,7 @@ def test_li_cached_public_tracks_show_version_while_fresh_refresh_is_stalled():
           LiRuntime.retryTrack();
         }""")
         page.locator(".track-switch").wait_for(state="visible", timeout=2500)
-        assert page.locator('button[onclick*="hsk30"]').is_disabled()
+        assert page.locator('button[onclick*="hsk30"]').is_enabled()
         assert captured["post"] == []
         assert captured["track_get"] == 0
         assert not captured["pageerrors"]
@@ -393,6 +400,56 @@ def test_authenticated_li_flow_persists_choices_and_real_launch(pwa):
         page.locator("#footer .cta").click()
         assert ("/iphone-pwa/course?" if pwa else "/course-v3.html?") in page.url
         assert "onboarded=1" in page.url
+        browser.close()
+
+
+def test_guest_li_offers_telegram_even_though_oauth_providers_lists_only_google():
+    with pw.sync_playwright() as playwright:
+        browser = getattr(playwright, os.environ.get("PWA_E2E_ENGINE", "chromium")).launch()
+        page, captured = _page(browser, pwa=True, guest=True)
+        page.evaluate("go('login')")
+        telegram_button = page.locator("#stage .provider").nth(0)
+        telegram_button.wait_for(state="visible")
+        assert telegram_button.is_enabled()
+        assert page.locator("#stage .provider").nth(1).is_visible()
+        assert page.locator("#stage .provider").nth(2).is_hidden()
+        page.route(ORIGIN + "/iphone-pwa?login=1&lang=uz", lambda route: route.fulfill(
+            status=200, body="<html><body>CANONICAL TELEGRAM LOGIN</body></html>",
+            content_type="text/html",
+        ))
+        with page.expect_navigation():
+            telegram_button.click()
+        assert page.url.endswith("/iphone-pwa?login=1&lang=uz")
+        assert captured["resume"] == 1
+        assert captured["oauth"] == []  # No Google OAuth or simulated Telegram login.
+        assert captured["post"] == []  # No account, paid access or profile grant.
+        assert not captured["pageerrors"]
+        browser.close()
+
+
+def test_guest_can_select_hsk30_but_locked_account_must_use_canonical_unlock():
+    with pw.sync_playwright() as playwright:
+        browser = getattr(playwright, os.environ.get("PWA_E2E_ENGINE", "chromium")).launch()
+        page, captured = _page(browser, pwa=True, guest=True)
+        _advance_to_profile(page, chosen_track="hsk30")
+        assert page.evaluate("window.track") == "hsk30"
+        assert page.evaluate("window.level") == "nhsk1"
+        assert captured["post"] == []
+        assert captured["track_get"] == 0
+        page.locator("#footer .cta").click()
+        assert page.evaluate("window.screen") == "signup"
+        with page.expect_response("**/api/v3/pwa-auth/start") as started:
+            page.locator("#stage .provider").nth(1).click()
+        assert started.value.status == 200
+        page.locator("#stage .li-remote-error").wait_for(state="visible")
+        assert "HSK 3.0" in page.locator("#stage .li-remote-error").inner_text()
+        assert "Kursda HSK 3.0 ni ochish" in page.locator("#footer").inner_text()
+        assert captured["post"] == []  # Authorization did not bypass the paid track.
+        page.locator("#footer .cta.ghost").click()
+        page.locator(".track-switch").wait_for(state="visible")
+        assert page.evaluate("window.track") == "hsk20"
+        assert captured["post"] == []
+        assert not captured["pageerrors"]
         browser.close()
 
 
