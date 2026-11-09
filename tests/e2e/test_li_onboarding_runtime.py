@@ -202,7 +202,6 @@ def _advance_to_profile(page, *, chosen_track="hsk20"):
     # Guest preview (not an entitlement) is selectable when HSK 3.0 is live.
     if chosen_track == "hsk30":
         assert hsk30_button.is_enabled()
-    if chosen_track == "hsk30":
         hsk30_button.click()
         assert page.evaluate("window.track") == "hsk30"
         assert page.locator('img[src*="hsk30-course-books.jpg"]').is_visible()
