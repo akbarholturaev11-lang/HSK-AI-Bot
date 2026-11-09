@@ -220,6 +220,38 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         mixed = await self.client.get(path, headers={"X-Telegram-Init-Data": "fake"})
         self.assertEqual(mixed.status_code, 422)
 
+    async def test_browser_trial_status_only_confirms_real_active_entitlement(self):
+        from app.services.pro_trial_service import ProTrialService
+        path = "/api/v3/pwa/trial/status"
+        self.assertEqual((await self.client.get(path)).status_code, 401)
+        await self.callback(await self.begin())
+        stamp = datetime.now(timezone.utc)
+        async with self.sessions() as session:
+            actor = await session.get(User, 1)
+            actor.trial_used = True
+            actor.pro_trial_started_at = stamp - timedelta(hours=2)
+            actor.pro_trial_ends_at = stamp + timedelta(days=6)
+            actor.pro_trial_revoked_at = None
+            await session.commit()
+        with patch.object(ProTrialService, "eligibility", new_callable=AsyncMock) as eligibility:
+            eligibility.return_value = {"eligible": False, "reason": "trial_already_used", "days": 7}
+            verified = await self.client.get(path)
+            self.assertEqual(verified.status_code, 200, verified.text)
+            info = verified.json()["trial"]
+            self.assertFalse(info["eligible"])
+            self.assertTrue(info["active"])
+            self.assertEqual(info["ends_at"], (stamp + timedelta(days=6)).isoformat())
+            self.assertEqual(verified.headers["cache-control"], "no-store")
+            # Revoked, expired or paid conversions cannot be mistaken for an
+            # active seven-day trial even when trial_used is still true.
+            async with self.sessions() as session:
+                actor = await session.get(User, 1)
+                actor.pro_trial_revoked_at = stamp
+                await session.commit()
+            revoked = (await self.client.get(path)).json()["trial"]
+            self.assertFalse(revoked["active"])
+            self.assertIsNone(revoked["ends_at"])
+
     async def test_browser_trial_start_requires_same_origin_csrf_and_real_server_result(self):
         from app.services.pro_trial_service import ProTrialService
         from app.services.trial_risk_service import TrialRiskService
