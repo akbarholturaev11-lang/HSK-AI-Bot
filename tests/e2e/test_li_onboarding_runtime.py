@@ -475,12 +475,17 @@ def test_guest_li_telegram_starts_from_original_profile_without_welcome_page():
         browser = getattr(playwright, os.environ.get("PWA_E2E_ENGINE", "chromium")).launch()
         page, captured = _page(browser, pwa=True, guest=True, saved=True)
         _advance_to_profile(page, guest=True)
-        page.route("https://t.me/**", lambda route: route.abort())
+        page.route("https://t.me/**", lambda route: route.fulfill(
+            status=200, content_type="text/html",
+            body="<html><body>Telegram bot approval</body></html>",
+        ))
         telegram = page.locator("#stage .provider").nth(0)
         telegram.wait_for(state="visible")
         assert page.locator("#stage .provider").nth(1).is_visible()
         assert page.locator("#stage .provider").nth(2).is_hidden()
         telegram.click()
+        page.wait_for_url("https://t.me/hskai_bot?start=pwa_link_" + TELEGRAM_ID)
+        page.go_back()
         page.wait_for_function("""() =>
           sessionStorage.getItem('hskai.pwa.telegram.pending')===
           '12345678-1234-4123-8123-123456789abc'""")
@@ -512,8 +517,13 @@ def test_new_user_telegram_claim_resumes_guest_choices_without_welcome_screen():
         browser = getattr(playwright, os.environ.get("PWA_E2E_ENGINE", "chromium")).launch()
         page, captured = _page(browser, pwa=True, guest=True, saved=False)
         _advance_to_profile(page, guest=True)
-        page.route("https://t.me/**", lambda route: route.abort())
+        page.route("https://t.me/**", lambda route: route.fulfill(
+            status=200, content_type="text/html",
+            body="<html><body>Telegram bot approval</body></html>",
+        ))
         page.locator("#stage .provider").nth(0).click()
+        page.wait_for_url("https://t.me/hskai_bot?start=pwa_link_" + TELEGRAM_ID)
+        page.go_back()
         page.wait_for_function(
             "() => sessionStorage.getItem('hskai.pwa.telegram.pending')"
         )
@@ -548,9 +558,14 @@ def test_li_telegram_expired_does_not_sign_in_and_can_retry_without_welcome():
         browser = getattr(playwright, os.environ.get("PWA_E2E_ENGINE", "chromium")).launch()
         page, captured = _page(browser, pwa=True, guest=True)
         _advance_to_profile(page, guest=True)
-        page.route("https://t.me/**", lambda route: route.abort())
+        page.route("https://t.me/**", lambda route: route.fulfill(
+            status=200, content_type="text/html",
+            body="<html><body>Telegram bot approval</body></html>",
+        ))
         captured["telegram_state"] = "expired"
         page.locator("#stage .provider").nth(0).click()
+        page.wait_for_url("https://t.me/hskai_bot?start=pwa_link_" + TELEGRAM_ID)
+        page.go_back()
         page.wait_for_function(
             "() => document.querySelector('#stage .status')?.textContent?.includes('muddati tugadi')"
         )
