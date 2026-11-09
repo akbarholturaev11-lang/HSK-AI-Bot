@@ -1039,7 +1039,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                 "active_count": int(active),
                 "required": int(REFERRAL_TRIAL_REQUIRED_ACTIVE),
                 "referrals": public,
-            }, headers=_NO_STORE)
+            }, headers={**_NO_STORE, "X-HSK-PWA-User-ID": str(actor.id)})
         except PwaAuthError as exc:
             return _error(exc)
         except (TypeError, ValueError):
@@ -1062,7 +1062,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                         result["user"].pop("telegram_username", None)
                     await db.commit()
             return JSONResponse(result, status_code=200 if result.get("ok") else 404,
-                                headers=_NO_STORE)
+                                headers={**_NO_STORE, "X-HSK-PWA-User-ID": str(actor.id)})
         except PwaAuthError as exc:
             return _error(exc)
 
