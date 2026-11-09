@@ -190,6 +190,7 @@ def render_page(path, settings_obj, tags=None):
         f'{aria_current if code == lang else ""}>{label}</a>'
         for code, label in LANGUAGE_NAMES.items()
     )
+    nav_aria = {"tg": "Паймоиши асосӣ", "ru": "Основная навигация", "uz": "Asosiy navigatsiya"}[lang]
     mobile_nav = f'<details class="mobile-nav"><summary aria-label="{esc(labels["more"])}" title="{esc(labels["more"])}"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 6h16M4 12h16M4 18h16"/></svg></summary><nav class="mobile-nav-links" aria-label="{nav_aria}">{nav_items}</nav></details>'
     sections = "".join(
         f'<section class="content-card" id="{"hsk" + str(i + 1) if group == "hsk" and i < 4 else "section" + str(i + 1)}">'
@@ -222,7 +223,6 @@ def render_page(path, settings_obj, tags=None):
         "ru": {"guide": "РУКОВОДСТВО HSK AI", "default": "HSK 1–4 · ANDROID · DESKTOP · MINI APP"},
         "uz": {"guide": "HSK AI QO‘LLANMASI", "default": "HSK 1–4 · ANDROID · DESKTOP · MINI APP"},
     }[lang]["guide" if str(page.get("translation_group", "")).startswith("guide") else "default"]
-    nav_aria = {"tg": "Паймоиши асосӣ", "ru": "Основная навигация", "uz": "Asosiy navigatsiya"}[lang]
     section_heading = {
         "tg": "Аз куҷо идома диҳед",
         "ru": "Выберите следующий шаг",
