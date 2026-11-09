@@ -925,7 +925,9 @@ def test_profile_first_paint_shell_matches_identity_accuracy_and_calendar(width,
                 }}},
             )
             page.get_by_text("77%", exact=True).wait_for()
-            assert page.locator("#s-profile .profile-access-badge").inner_text().strip().startswith("Pro") is False
+            badge = page.locator("#s-profile .profile-access-badge").inner_text().strip()
+            assert "Пробный" in badge, "Trial access must retain the trial label"
+            assert badge != "Pro", "Trial access must never appear as paid Pro"
             assert errors == []
         finally:
             browser.close()
