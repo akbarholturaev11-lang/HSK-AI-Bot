@@ -515,6 +515,46 @@ def test_pwa_guest_sees_panda_first_and_oauth_resumes_saved_draft_safely():
         browser.close()
 
 
+def test_existing_account_after_full_guest_onboarding_skips_new_profile_and_trial():
+    """Returning owner must reach the existing course, not save a guest draft.
+
+    The same Google provider button appears on the Li signup screen for both
+    first-time registration and sign-in. Its actual identity comes only from
+    the verified server session, and status.saved wins over anonymous choices.
+    """
+    with pw.sync_playwright() as playwright:
+        browser = getattr(playwright, os.environ.get("PWA_E2E_ENGINE", "chromium")).launch()
+        page, captured = _page(
+            browser, pwa=True, guest=True, saved=True, trial_eligible=True,
+        )
+        # The real course redirect does not need URL parameters when onboarding
+        # is already complete; cover the exact route as well as deep links.
+        page.route(ORIGIN + "/iphone-pwa/course", lambda route: route.fulfill(
+            body="COURSE PAGE", content_type="text/html",
+        ))
+        _advance_to_profile(page)
+        assert captured["post"] == []
+        assert page.evaluate("window.goals") == ["hsk_exam", "travel"]
+        page.locator("#footer .cta").click()
+        assert page.evaluate("window.screen") == "signup"
+
+        with page.expect_response("**/api/v3/pwa-auth/start") as started:
+            page.locator("#stage .provider").nth(1).click()  # existing Google owner
+        assert started.value.status == 200
+        page.wait_for_url(ORIGIN + "/iphone-pwa/course", timeout=10000)
+        assert page.locator("body").inner_text() == "COURSE PAGE"
+        assert captured["resume"] == 1
+        assert len(captured["oauth"]) == 1
+        assert captured["post"] == []  # no onboarding overwrites
+        assert captured["trial_start"] == []  # no repeat Pro trial
+        assert captured["track_get"] == 0  # no ownership/track changes after return
+        assert page.evaluate(
+            "sessionStorage.getItem('hsk_li_draft_v1:pwa:guest')"
+        ) is None
+        assert captured["pageerrors"] == []
+        browser.close()
+
+
 def test_unrelated_pwa_login_does_not_silently_adopt_old_guest_draft():
     with pw.sync_playwright() as playwright:
         browser = getattr(playwright, os.environ.get('PWA_E2E_ENGINE', 'chromium')).launch()
