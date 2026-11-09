@@ -5,6 +5,7 @@ served stale from the worker cache indefinitely. Every reference to an
 `iphone-pwa-*` asset must therefore carry its own content hash.
 Run: python -m unittest tests.test_iphone_pwa_asset_versions
 """
+import ast
 import re
 import unittest
 from pathlib import Path
@@ -32,13 +33,37 @@ class IphonePwaAssetVersionTests(unittest.TestCase):
                                         f"{rel} changed: refresh ?v= to <date>-{digest}")
 
     def test_every_pwa_asset_is_served_by_the_app_route(self):
-        # Regression: /course_v3_data/{filename} serves an allowlist only, so a
-        # new iphone-pwa-* file that is not listed 404s in production.
-        main = Path("app/main.py").read_text(encoding="utf-8")
+        # Inspect the route's actual allowlist, including dict.fromkeys. The
+        # old grep-based check misclassified bundled JS files as unserved.
+        tree = ast.parse(Path("app/main.py").read_text(encoding="utf-8"))
+        route = next(
+            n for n in tree.body
+            if isinstance(n, ast.AsyncFunctionDef) and n.name == "course_v3_data_file"
+        )
+        mapping = next(
+            n.value for n in route.body if isinstance(n, ast.Assign)
+            and any(isinstance(t, ast.Name) and t.id == "public_assets" for t in n.targets)
+        )
+        self.assertIsInstance(mapping, ast.Dict)
+        allowed = {}
+        for key, value in zip(mapping.keys, mapping.values):
+            if key is not None:
+                allowed[ast.literal_eval(key)] = ast.literal_eval(value)
+                continue
+            # The only supported unpack form is dict.fromkeys(tuple, MIME).
+            self.assertIsInstance(value, ast.Call)
+            self.assertIsInstance(value.func, ast.Attribute)
+            self.assertIsInstance(value.func.value, ast.Name)
+            self.assertEqual((value.func.value.id, value.func.attr), ("dict", "fromkeys"))
+            keys, media_type = (ast.literal_eval(arg) for arg in value.args)
+            allowed.update(dict.fromkeys(keys, media_type))
         for asset in sorted((STATIC / "course_v3_data").glob("iphone-pwa-*")):
             if asset.suffix in {".js", ".css"}:
                 with self.subTest(asset=asset.name):
-                    self.assertIn(f'"{asset.name}":', main)
+                    self.assertEqual(
+                        allowed.get(asset.name),
+                        "application/javascript" if asset.suffix == ".js" else "text/css",
+                    )
 
     def test_ios_launch_images_exist_for_every_declared_size(self):
         login = (STATIC / "iphone-pwa-login.html").read_text(encoding="utf-8")
