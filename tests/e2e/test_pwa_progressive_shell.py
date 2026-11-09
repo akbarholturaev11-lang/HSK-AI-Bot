@@ -204,3 +204,15 @@ def test_optional_prefetch_runs_after_map_first_paint_and_does_not_change_telegr
     assert 'if(document.visibilityState!=="hidden"&&MAP)prefetchNearbyLessons();' in HTML
     assert 'else prefetchNearbyLessons();' in HTML
     assert 'App.show(tab);' in HTML
+
+
+def test_rating_friends_section_stays_independent_of_leaderboard_network():
+    # During a slow league API response, the learner can still enter the
+    # independent friends/referral pane. A pending league request must not
+    # block that view or invent a completed leaderboard.
+    rating = HTML.split("function renderRating(){", 1)[1].split(
+        "function retryRating()", 1
+    )[0]
+    assert rating.index('if(ratingTabCur==="friends")') < rating.index(
+        'if(PWA_COURSE_HOST&&ratingPending)'
+    )
