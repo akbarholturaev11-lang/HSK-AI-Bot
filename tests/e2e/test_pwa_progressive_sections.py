@@ -225,6 +225,31 @@ def test_course_ready_while_rating_referrals_and_profile_stats_load_independentl
                 assert page.locator("#voice-quota button").count() == 0
                 assert errors == []
 
+            # A stalled GET must time out and release single-flight state:
+            # otherwise the quota stays in "checking" and Retry never appears.
+            page.clock.install()
+            page.locator('#nav button[data-s="course"]').click()
+            page.locator('#nav button[data-s="voice"]').click()
+            page.wait_for_function("() => !!renderVoice._quotaPending")
+            assert len(held["voice"]) == 1
+            page.clock.fast_forward(10100)
+            page.locator("#voice-quota button").wait_for(state="visible")
+            assert page.locator("#s-course .uban").count() > 0
+            held["voice"].clear()  # The timed-out route was aborted.
+            page.locator("#voice-quota button").click()
+            page.wait_for_function("() => !!renderVoice._quotaPending")
+            assert len(held["voice"]) == 1
+            held["voice"].pop().fulfill(
+                status=200, headers={"X-HSK-PWA-User-ID": "31"},
+                json={"ok": True, "remaining_voice_limit": 3},
+            )
+            page.wait_for_function(
+                "() => document.querySelector('#voice-quota') &&"
+                " document.querySelector('#voice-quota').textContent.includes('3')"
+            )
+            assert page.locator("#voice-quota button").count() == 0
+            assert errors == []
+
             # A cookie replaced in another tab could return a different
             # learner's GET payload while the old map is still in memory.
             # Refuse that response before rendering any cross-account data.

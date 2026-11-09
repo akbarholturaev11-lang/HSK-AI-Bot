@@ -6342,12 +6342,12 @@ function renderVoice(){
     +'<div class="voicebox"><div class="pd">'+pandaChar("talk")+'</div><h3>'+courseMessage("voiceTitle",t.voiceTitle)+'</h3><p>'+courseMessage("voiceSub",t.voiceSub)+'</p><p class="voice-quota" id="voice-quota" role="status" aria-live="polite" hidden></p><button onclick="App.openVoiceCall()"><i class="ti ti-phone"></i> '+courseMessage("voiceStart",t.voiceStart)+'</button></div>';
   var quota=document.getElementById("voice-quota");
   if(PWA_COURSE_HOST&&SCREEN==="voice"){quota.textContent=courseMessage("practice.checkingAccess","…");quota.hidden=false}
-  var voiceStatus=PWA_COURSE_HOST?(SCREEN==="voice"?(renderVoice._quotaPending||(renderVoice._quotaPending=pwaCourseActor().then(function(){
-    return fetch("/api/v3/pwa/voice/me",{credentials:"same-origin",cache:"no-store",redirect:"error"});
+  var voiceStatus=PWA_COURSE_HOST?(SCREEN==="voice"?(renderVoice._quotaPending||(renderVoice._quotaPending=(function(){var controller=typeof AbortController==="function"?new AbortController():null;return boundedSectionRequest(pwaCourseActor().then(function(){
+    return fetch("/api/v3/pwa/voice/me",{credentials:"same-origin",cache:"no-store",redirect:"error",signal:controller?controller.signal:undefined});
   }).then(function(res){if(res.status===401||(res.ok&&res.headers.get("X-HSK-PWA-User-ID")!==String(PWA_COURSE_USER_ID))){PWA_COURSE_ACTOR_PROMISE=null;location.replace("/iphone-pwa");throw new Error("pwa_actor_changed")}return res.ok?res.json():null}).then(function(data){
     if(!data||typeof data.remaining_voice_limit!=="number")return null;
     return {remaining:data.remaining_voice_limit<0?null:data.remaining_voice_limit};
-  }).finally(function(){renderVoice._quotaPending=null}))):null):(INIT_DATA&&window.CourseLimitStatus?CourseLimitStatus.get("voice"):null);
+  }),controller).finally(function(){renderVoice._quotaPending=null})})())):null):(INIT_DATA&&window.CourseLimitStatus?CourseLimitStatus.get("voice"):null);
   if(voiceStatus){
     voiceStatus.then(function(status){
       if(!quota.isConnected)return;
