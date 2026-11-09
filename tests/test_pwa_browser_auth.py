@@ -701,6 +701,8 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         allowed = await self.client.get(endpoint, params={"lang": "uz", "tz": 480})
         self.assertEqual(allowed.status_code, 200, allowed.text)
         self.assertEqual(allowed.headers["cache-control"], "no-store")
+        self.assertEqual(allowed.headers["x-hsk-pwa-user-id"],
+                         str((await self.client.get("/api/v3/pwa-auth/session")).json()["user_id"]))
         body = allowed.json()
         self.assertTrue(body["ok"])
         self.assertEqual(body["joined_count"], 0)
@@ -782,6 +784,8 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         response = await self.client.get(path)
         self.assertEqual(response.status_code, 200, response.text)
         self.assertEqual(response.headers["cache-control"], "no-store")
+        self.assertEqual(response.headers["x-hsk-pwa-user-id"],
+                         str((await self.client.get("/api/v3/pwa-auth/session")).json()["user_id"]))
         data = response.json()
         self.assertTrue(data["ok"])
         self.assertEqual(data["user"]["name"], "Existing learner")
@@ -837,8 +841,8 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('"/api/v3/lesson/foundation":"/api/v3/pwa/lesson/foundation"', course)
         self.assertIn('"/api/miniapp/gamification":"/api/v3/pwa/gamification"', course)
         self.assertIn('if(!ratingLoaded&&(INIT_DATA||PWA_COURSE_HOST)){', course)
-        self.assertIn('_apiPost("/api/miniapp/gamification",{timezone_offset_minutes:timezoneOffset})', course)
-        self.assertIn('_apiGet("/api/miniapp/gamification?tz="+encodeURIComponent(timezoneOffset))', course)
+        self.assertIn('_apiPost("/api/miniapp/gamification",{timezone_offset_minutes:timezoneOffset},opts)', course)
+        self.assertIn('_apiGet("/api/miniapp/gamification?tz="+encodeURIComponent(timezoneOffset),opts)', course)
         get_paths = course.split("var PWA_COURSE_GET_PATHS={", 1)[1].split("};", 1)[0]
         self.assertNotIn('"/api/miniapp/gamification"', get_paths)
         self.assertIn('mapped=parsed.pathname.replace("/api/v3/lesson/content/","/api/v3/pwa/lesson/content/")', course)
