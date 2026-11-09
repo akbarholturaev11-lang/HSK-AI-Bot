@@ -514,7 +514,7 @@
     "downloadPage.referralAndroidButton": "Продолжить в Telegram",
     "downloadPage.referralAndroidStatus": "Нажмите Start в боте — APK файл придёт в чат.",
     "downloadPage.referralIosTitle": "Как засчитывается приглашение",
-    "downloadPage.referralIosBody": "Откройте Telegram-бота и получите ответы на 2 вопроса к AI. После этого приглашение засчитается.",
+    "downloadPage.referralIosBody": "Основная кнопка открывает HSK AI PWA в Safari. Чтобы приглашение засчиталось, отдельно откройте Telegram по ссылке ниже и получите в боте ответы на 2 вопроса к AI. Сам вход в PWA не подтверждает приглашение.",
     "downloadPage.referralOtherTitle": "Откройте приглашение на телефоне",
     "downloadPage.referralOtherBody": "Условия этого приглашения на скидку выполняются в Android-приложении или в Telegram-боте на iPhone. Откройте ссылку на соответствующем устройстве.",
     "downloadPage.iosSecurityTitle": "Установка на экран «Домой»",

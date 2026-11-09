@@ -204,7 +204,7 @@
     <string name="hsk_course_download_page_referral_android_title" formatted="false">Taklif bilan hisob ochish</string>
     <string name="hsk_course_download_page_referral_code_label" formatted="false">Taklif kodi</string>
     <string name="hsk_course_download_page_referral_copy" formatted="false">Kodni nusxalash</string>
-    <string name="hsk_course_download_page_referral_ios_body" formatted="false">Telegram botini oching va unda 2 ta AI savoliga javob oling. Shunda taklif hisoblanadi.</string>
+    <string name="hsk_course_download_page_referral_ios_body" formatted="false">Asosiy tugma HSK AI PWA’ni Safari’da ochadi. Taklif bonusi uchun quyidagi alohida Telegram havolasini bosing va botda 2 ta AI savoliga javob oling. PWA’ga kirishning o‘zi taklifni tasdiqlamaydi.</string>
     <string name="hsk_course_download_page_referral_ios_title" formatted="false">Taklif qanday hisoblanadi?</string>
     <string name="hsk_course_download_page_referral_manual" formatted="false">Kodni belgilang va qo‘lda nusxalang.</string>
     <string name="hsk_course_download_page_referral_open" formatted="false">O‘rnatilgan ilovada ochish</string>

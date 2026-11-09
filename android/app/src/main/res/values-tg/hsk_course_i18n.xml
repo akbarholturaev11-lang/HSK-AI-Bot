@@ -204,7 +204,7 @@
     <string name="hsk_course_download_page_referral_android_title" formatted="false">Ҳисобро бо даъват созед</string>
     <string name="hsk_course_download_page_referral_code_label" formatted="false">Рамзи даъват</string>
     <string name="hsk_course_download_page_referral_copy" formatted="false">Нусхаи рамз</string>
-    <string name="hsk_course_download_page_referral_ios_body" formatted="false">Боти Telegram-ро кушоед ва ба 2 савол аз AI ҷавоб гиред. Баъд даъват ҳисоб мешавад.</string>
+    <string name="hsk_course_download_page_referral_ios_body" formatted="false">Тугмаи асосӣ HSK AI PWA-ро дар Safari мекушояд. Барои ҳисоб шудани даъват пайванди алоҳидаи Telegram-ро зер кунед ва дар бот ба 2 саволи AI ҷавоб гиред. Танҳо ворид шудан ба PWA даъватро тасдиқ намекунад.</string>
     <string name="hsk_course_download_page_referral_ios_title" formatted="false">Даъват чӣ гуна ҳисоб мешавад?</string>
     <string name="hsk_course_download_page_referral_manual" formatted="false">Рамзро интихоб карда дастӣ нусха гиред.</string>
     <string name="hsk_course_download_page_referral_open" formatted="false">Дар барномаи насбшуда кушодан</string>
