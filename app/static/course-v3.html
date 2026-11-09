@@ -5405,7 +5405,7 @@ function courseRailHtml(){
 }
 function goalRingHtml(){
   var dx=dailyXpVal(),r=Math.min(dx/dailyGoal,1),off=(100.5-100.5*r).toFixed(1);
-  return '<span class="goalring'+(r>=1?" full":"")+'" id="goalring" onclick="App.show(\'profile\');renderProfile()">'
+  return '<span class="goalring'+(r>=1?" full":"")+'" id="goalring" onclick="App.show(\'profile\')">'
     +'<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" fill="none" stroke="var(--line)" stroke-width="5"/>'
     +'<circle cx="20" cy="20" r="16" fill="none" stroke="'+(r>=1?"var(--gold)":"var(--cin)")+'" stroke-width="5" stroke-linecap="round" stroke-dasharray="100.5" stroke-dashoffset="'+off+'" transform="rotate(-90 20 20)"/></svg>'
     +'<span class="gr-ic"><i class="ti ti-'+(r>=1?"check":"target-arrow")+'"></i></span></span>';

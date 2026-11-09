@@ -39,6 +39,66 @@ def pwa_document():
     return source.replace("</head>", css + "</head>", 1).replace(sdk, "", 1)
 
 
+def test_course_goal_ring_navigates_and_renders_profile_once():
+    """The XP ring must not remount the Profile immediately after App.show."""
+    data = json.loads((STATIC / "course_v3_data/hsk1.json").read_text(encoding="utf-8"))
+    data["authenticated"] = True
+    data["level"] = "hsk1"
+    data["user"] = {
+        "name": "Verified", "avatar": "阿", "language": "ru",
+        "is_paid": True, "state": "TRIAL_ACTIVE",
+        "onboarding_completed": True,
+    }
+
+    def serve(route):
+        path = urlsplit(route.request.url).path
+        if path == "/iphone-pwa/course":
+            route.fulfill(status=200, content_type="text/html", body=pwa_document())
+        elif path == "/api/v3/pwa-auth/session":
+            route.fulfill(status=200, json={"ok": True, "user_id": 31, "csrf": "test-csrf"})
+        elif path == "/api/v3/pwa/map":
+            route.fulfill(status=200, json=data, headers={"X-HSK-PWA-User-ID": "31"})
+        elif path.startswith("/api/"):
+            route.fulfill(status=404, json={"ok": False, "error": "not_mocked"})
+        else:
+            file = (STATIC / path.lstrip("/")).resolve()
+            if file.is_file() and file.is_relative_to(STATIC.resolve()):
+                mime, _ = mimetypes.guess_type(file)
+                route.fulfill(path=str(file), content_type=mime or "application/octet-stream")
+            else:
+                route.fulfill(status=404, body="")
+
+    with sync_playwright() as playwright:
+        browser = getattr(playwright, os.getenv("PWA_E2E_ENGINE", "chromium")).launch()
+        try:
+            page = browser.new_context(viewport={"width": 390, "height": 844}, is_mobile=True).new_page()
+            page.set_default_timeout(15000)
+            page.route("**/*", serve)
+            page.goto(ORIGIN + "/iphone-pwa/course?lang=ru&onboarded=1", wait_until="domcontentloaded")
+            page.locator("#s-course .uban").first.wait_for()
+            assert page.locator("#goalring").count() == 1
+            renders = page.evaluate("""() => {
+                const previous = window.renderProfile;
+                if (typeof previous !== "function") throw new Error("Profile renderer missing");
+                let count = 0;
+                window.renderProfile = function () {
+                    count++;
+                    return previous.apply(this, arguments);
+                };
+                try {
+                    document.getElementById("goalring").click();
+                    if (window.SCREEN !== "profile") throw new Error("Goal ring did not navigate");
+                    return count;
+                } finally {
+                    window.renderProfile = previous;
+                }
+            }""")
+            assert renders == 1
+            assert page.locator("#s-profile").get_attribute("class").split().count("on") == 1
+        finally:
+            browser.close()
+
+
 def test_course_ready_while_rating_referrals_and_profile_stats_load_independently():
     data = json.loads((STATIC / "course_v3_data/hsk1.json").read_text(encoding="utf-8"))
     data["authenticated"] = True
