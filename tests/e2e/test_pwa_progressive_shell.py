@@ -85,3 +85,29 @@ def test_profile_and_navigation_render_independently_after_map_confirmation():
     # Render the profile once its asynchronous accuracy boundary is active,
     # not a stale "—" placeholder immediately before replacing with skeleton.
     assert 'SCREEN==="profile"&&!PWA_PREBOOT_TAB' in HTML
+
+
+@pytest.mark.parametrize("lang,label,accessibility", [
+    ("ru", "Профиль", "Загрузка"),
+    ("uz", "Profil", "Yuklanmoqda"),
+    ("tj", "Профил", "Бор шуда истодааст"),
+])
+def test_first_paint_localizes_before_any_account_api(lang, label, accessibility):
+    with pw.sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page(viewport={"width": 390, "height": 844})
+        page.route("**/*", lambda route: route.fulfill(
+            body="", content_type="text/css" if ".css" in route.request.url
+            else "application/javascript",
+        ))
+        url = ORIGIN + "/iphone-pwa/course?lang=" + lang
+        page.route(url, lambda route: route.fulfill(
+            body=HTML, content_type="text/html; charset=utf-8",
+        ))
+        page.goto(url, wait_until="domcontentloaded")
+        assert page.locator('#nav [data-i="profile"]').inner_text() == label
+        assert page.locator('#s-course .pwa-initial-shell').get_attribute(
+            "aria-label"
+        ) == accessibility
+        assert page.evaluate("document.documentElement.lang") == lang
+        browser.close()
