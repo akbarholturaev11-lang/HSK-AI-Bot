@@ -233,9 +233,12 @@ function setBusy(value,section){
   }
   syncPending();
 }
-function renderError(action,continueFree){
+function renderError(action,continueFree,message,primaryLabel,secondaryLabel){
   requestBusy=false;
   var stage=document.getElementById("stage");
+  // An access gate has its own clear message; do not leave a loading skeleton
+  // behind or present a payment restriction as a network error.
+  if(message){stage.replaceChildren();stage.setAttribute("aria-busy","false")}
   // Retrying a failed save/trial must not stack an additional red error
   // block on every attempt. Keep one current, actionable failure state.
   stage.querySelectorAll(".li-remote-error").forEach(function(node){node.remove()});
@@ -243,19 +246,19 @@ function renderError(action,continueFree){
   var box=document.createElement("div");
   box.className="li-remote-error";
   box.setAttribute("role","alert");
-  box.textContent=safeMessage();
+  box.textContent=message||safeMessage();
   stage.appendChild(box);
   var footer=document.getElementById("footer");
   footer.hidden=false;
   footer.replaceChildren();
   var button=document.createElement("button");
-  button.type="button";button.className="cta";button.textContent=retryMessage();
+  button.type="button";button.className="cta";button.textContent=primaryLabel||retryMessage();
   button.addEventListener("click",action);
   footer.appendChild(button);
   if(typeof continueFree==="function"){
     var skip=document.createElement("button");
     skip.type="button";skip.className="cta ghost";
-    skip.textContent=word("later");
+    skip.textContent=secondaryLabel||word("later");
     skip.addEventListener("click",continueFree);
     footer.appendChild(skip);
   }
@@ -266,11 +269,23 @@ function isHsk30Live(levelValue){
   var t=trackStatus&&trackStatus.tracks&&trackStatus.tracks.hsk30;
   return !!(t&&Array.isArray(t.live_levels)&&t.live_levels.indexOf(levelValue)>=0);
 }
+function trackSelectable(){
+  var t=trackStatus&&trackStatus.tracks&&trackStatus.tracks.hsk30;
+  // Browsing a published HSK 3.0 standard is not a course entitlement.
+  return !!(t&&t.access&&t.access.feature_enabled===true&&
+            Array.isArray(t.live_levels)&&t.live_levels.length);
+}
 function trackAvailable(){
   var t=trackStatus&&trackStatus.tracks&&trackStatus.tracks.hsk30;
-  var a=t&&t.access;
-  return !!(a&&a.feature_enabled!==false&&a.allowed===true&&
-            Array.isArray(t.live_levels)&&t.live_levels.length);
+  return !!(trackSelectable()&&t.access.allowed===true);
+}
+function showHsk30Locked(){
+  // Direct the verified learner to the existing course unlock UI; never
+  // submit HSK 3.0 course data or grant paid access from this page.
+  renderError(function(){location.assign(pageCourse())},function(){
+    global.track="hsk20";global.level=null;saveDraft();
+    window.go("loadCourse");
+  },word("hsk30AccessNeeded"),word("hsk30OpenInCourse"),word("hsk30Use20"));
 }
 function guestTrackMetadata(force){
   // Cache ONLY anonymous public metadata, in this page's memory. Never cache
@@ -313,7 +328,11 @@ function trackApi(){
 }
 function validateTrack(){
   if(!trackStatus)throw new Error("track_not_verified");
-  if(global.track==="hsk30"&&!trackAvailable())throw new Error("hsk30_locked");
+  if(global.track==="hsk30"&&!trackSelectable())throw new Error("hsk30_locked");
+  // Anonymous guests may choose a standard and level, but an authenticated
+  // actor (including Telegram Mini App) must still pass server-owned access.
+  if(global.track==="hsk30"&&(!hostPwa||actor)&&!trackAvailable())
+    throw new Error("hsk30_locked");
   if(global.track==="hsk30"&&global.level&&!isHsk30Live(global.level))
     throw new Error("hsk30_level_not_live");
 }
@@ -321,7 +340,7 @@ function updateTrackUi(){
   if(global.screen!=="version")return;
   var t=document.querySelector('.track-switch button[onclick*="hsk30"]');
   if(t){
-    var allowed=trackAvailable();t.disabled=!allowed;
+    var allowed=trackSelectable();t.disabled=!allowed;
     t.hidden=!trackStatus||!(trackStatus.tracks&&trackStatus.tracks.hsk30&&
                 trackStatus.tracks.hsk30.access&&
                 trackStatus.tracks.hsk30.access.feature_enabled);
@@ -339,7 +358,9 @@ function loadingState(state,load,next){
   }).catch(function(reason){
     if(current!==requestGeneration||global.screen!==state)return;
     console.warn("[li-onboarding] remote loading",String(reason&&reason.message||"unavailable").slice(0,80));
-    renderError(function(){loadingState(state,load,next)});
+    if(reason&&reason.message==="hsk30_locked"&&hostPwa&&actor&&global.track==="hsk30")
+      showHsk30Locked();
+    else renderError(function(){loadingState(state,load,next)});
   });
 }
 function validateGoalData(){
@@ -388,7 +409,10 @@ function matchesSaved(selected,data){
 function saveProfile(){
   if(requestBusy)return;
   if(hostPwa&&!actor){progress("signup");loadProviders();return}
-  var p;try{p=payload()}catch(e){renderError(saveProfile);return}
+  var p;try{p=payload()}catch(e){
+    if(e&&e.message==="hsk30_locked"&&hostPwa&&actor){showHsk30Locked();return}
+    renderError(saveProfile);return
+  }
   setBusy(true,"save");
   var path=hostPwa?"/api/v3/pwa/onboarding":"/api/miniapp/onboarding";
   var result,hadResponse=false;
@@ -528,11 +552,15 @@ function loadProviders(){
   providerRequest=api("/api/v3/pwa-auth/providers").then(function(data){
     var choices=Array.isArray(data.providers)?data.providers:[];
     // Provider availability is public; still never synthesize a login grant.
-    supportedProviders=choices.filter(function(p){return p==="google"||p==="telegram"});
+    // Telegram uses the verified browser/bot handshake, not native OAuth.
+    // The OAuth provider endpoint intentionally enumerates only Google/Apple.
+    supportedProviders=["telegram"].concat(choices.filter(function(p){return p==="google"}));
     if(global.screen==="login"||global.screen==="signup")global.render(false);
   }).catch(function(){
-    supportedProviders=[];
-    if(global.screen==="login"||global.screen==="signup")renderError(loadProviders);
+    // A temporary OAuth discovery failure must not hide the independent
+    // canonical Telegram sign-in method.
+    supportedProviders=["telegram"];
+    if(global.screen==="login"||global.screen==="signup")global.render(false);
   }).finally(function(){providerRequest=null});
   return providerRequest;
 }
@@ -553,7 +581,9 @@ function authenticate(provider){
     if(provider==="telegram"){
       // Delegate Telegram link proof and polling to the canonical login UI.
       // Do not duplicate its browser-bound approval protocol here.
-      location.assign("/iphone-pwa?lang="+encodeURIComponent(global.LANG));
+      // Explicit login view bypasses the guest Li entry redirect; the legacy
+      // Telegram polling page then returns through the verified resume cookie.
+      location.assign("/iphone-pwa?login=1&lang="+encodeURIComponent(global.LANG));
       return null;
     }
     return api("/api/v3/pwa-auth/start",{
@@ -606,7 +636,7 @@ global.render=function(animate){
 };
 global.setTrack=function(v){
   if(requestBusy)return;
-  if(v==="hsk30"&&!trackAvailable())return;
+  if(v==="hsk30"&&!trackSelectable())return;
   originalSetTrack(v);saveDraft();
 };
 global.back=function(){
