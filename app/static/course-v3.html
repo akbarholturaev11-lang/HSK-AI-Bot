@@ -6790,7 +6790,16 @@ function renderRating(){
   if(!ratingLoaded&&(INIT_DATA||PWA_COURSE_HOST)){
     ratingLoaded=true;
     var t=T();
-    $("#s-rating").innerHTML='<div style="padding:60px 0;text-align:center;color:var(--ink3)">…</div>';
+    if(PWA_COURSE_HOST){
+      var ratingPane=$("#s-rating");
+      if(!ratingPane.querySelector(".pwa-initial-shell")){
+        ratingPane.innerHTML='<div class="pwa-initial-shell" aria-busy="true" role="status">'
+          +'<div class="pwa-skel-head"><span class="pwa-skel-title">'+esc(courseMessage("nav.rating",t.nav.rating))+'</span></div>'
+          +'<div class="pwa-skel-card" aria-hidden="true"><div class="pwa-skel-line short"></div><div class="pwa-skel-line long"></div></div></div>';
+      }
+    }else{
+      $("#s-rating").innerHTML='<div style="padding:60px 0;text-align:center;color:var(--ink3)">…</div>';
+    }
     loadLatestRating().then(function(){
       _renderRatingContent();
     }).catch(function(){ratingMeta={loaded:true,error:true,leagueSize:0,resetAtMs:null};ratingUsers=[];_renderRatingContent()});
