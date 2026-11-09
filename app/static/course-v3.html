@@ -6750,16 +6750,24 @@ function applyRatingPayload(d){
 	    return d;
 	  });
 	}
+function ratingLoadingHtml(){
+  if(!PWA_COURSE_HOST)return '<div style="padding:60px 0;text-align:center;color:var(--ink3)">…</div>';
+  // Independent skeleton: no user, rank, plan or cached entitlement data.
+  return '<div class="hsk-pwa-section-loading" role="status" aria-busy="true" aria-label="'+esc(courseMessage("practice.preparing",LANG==="ru"?"Загрузка":LANG==="tj"?"Бор мешавад":"Yuklanmoqda"))+'">'
+    +'<div class="hsk-pwa-load-card"><div class="hsk-pwa-load-line"></div><div class="hsk-pwa-load-line short"></div></div>'
+    +'<div class="hsk-pwa-load-card"><div class="hsk-pwa-load-line"></div><div class="hsk-pwa-load-line short"></div></div>'
+    +'<div class="hsk-pwa-load-card"><div class="hsk-pwa-load-line"></div></div></div>';
+}
 function renderRating(){
-  // Friends fetches referrals directly; it must not wait for a leaderboard request.
+  // Friends and leaderboard use independent requests and loading boundaries.
   if(ratingTabCur==="friends"){_renderRatingContent();return}
+  if(ratingMeta.loading){_renderRatingContent();return}
   if(!ratingLoaded&&(INIT_DATA||PWA_COURSE_HOST)){
-    ratingLoaded=true;
-    var t=T();
-    $("#s-rating").innerHTML='<div style="padding:60px 0;text-align:center;color:var(--ink3)">…</div>';
+    ratingLoaded=true;ratingMeta.loading=true;
+    _renderRatingContent();
     loadLatestRating().then(function(){
       _renderRatingContent();
-    }).catch(function(){ratingMeta={loaded:true,error:true,leagueSize:0,resetAtMs:null};ratingUsers=[];_renderRatingContent()});
+    }).catch(function(){ratingMeta={loaded:true,error:true,loading:false,leagueSize:0,resetAtMs:null};ratingUsers=[];_renderRatingContent()});
     return;
   }
   _renderRatingContent();
@@ -6813,11 +6821,17 @@ function _renderRatingContent(){
   sortRatingUsers();
   var memberCount=Number(ratingMeta.leagueSize||ratingUsers.length||0);
   var h=ratingTabCur==="friends"?'<h1 class="rating-friends-heading">'+esc(r.friends)+'</h1>':'<h1 class="section-title rating-title">'+esc(commonMessage("navigation.rating",LANG==="ru"?"Рейтинг":LANG==="tj"?"Рейтинг":"Reyting"))+'</h1>';
+  if(ratingTabCur!=="friends"&&ratingMeta.loading){
+    $("#s-rating").innerHTML=h+ratingLoadingHtml();return;
+  }
 	  if(ratingTabCur==="friends"){
+      if(referralMeta.loading){
+        $("#s-rating").innerHTML=h+ratingLoadingHtml();return;
+      }
 	    if(!referralMeta.loaded&&(INIT_DATA||PWA_COURSE_HOST)){
-	      referralMeta.loaded=true;
-	      $("#s-rating").innerHTML=h+'<div style="padding:60px 0;text-align:center;color:var(--ink3)">…</div>';
-	      loadReferrals().then(function(){_renderRatingContent()}).catch(function(){referralMeta={loaded:true,error:true,joined:0,active:0,required:0};referralUsers=[];_renderRatingContent()});
+	      referralMeta.loaded=true;referralMeta.loading=true;
+	      $("#s-rating").innerHTML=h+ratingLoadingHtml();
+	      loadReferrals().then(function(){_renderRatingContent()}).catch(function(){referralMeta={loaded:true,error:true,loading:false,joined:0,active:0,required:0};referralUsers=[];_renderRatingContent()});
 	      return;
 	    }
 	    h+='<div class="rt-invite" style="padding:20px 22px 18px"><span class="han">友</span><p>'+esc(r.refSub||r.inviteSub)+'</p><button onclick="openInviteSheet()"><i class="ti ti-user-plus"></i> '+esc(r.invite)+'</button></div>';
@@ -7532,7 +7546,7 @@ function pollSignInLink(pending,deadline){
 }
 
 var PROFILE_DETAIL=null;
-var PROFILE_DETAIL_PENDING=false;
+var PROFILE_DETAIL_PENDING=false,PROFILE_DETAIL_SETTLED=false;
 function profileCopy(){
   var legacy=({
     tj:{free:"Ройгон",trial:"Pro · Озмоиш",today:"Имрӯз",overall:"Ҳамагӣ",pro:"Гирифтани Pro",answers:"ҷавоби арзёбишуда",note:"Танҳо ҷавобҳои санҷидашуда · маълумоти кӯҳна метавонад нопурра бошад"},
@@ -7547,11 +7561,18 @@ function loadProfileDetail(){
     if(!d||!d.ok)throw Error("profile");
     PROFILE_DETAIL=d;
   }).catch(function(){PROFILE_DETAIL=null}).then(function(){
-    PROFILE_DETAIL_PENDING=false;
+    PROFILE_DETAIL_PENDING=false;PROFILE_DETAIL_SETTLED=true;
     if(SCREEN==="profile")renderProfile();
   });
 }
 function profileAccuracyHtml(){
+  // Profile accuracy is an optional, independent request. The canonical map
+  // already controls Pro/trial; placeholders never infer subscription state.
+  if(PWA_COURSE_HOST&&!PROFILE_DETAIL&&!PROFILE_DETAIL_SETTLED){
+    return '<div class="hsk-pwa-profile-accuracy-loading" role="status" aria-busy="true" aria-label="Loading">'
+      +'<div><div class="hsk-pwa-load-ring"></div><div class="hsk-pwa-load-line"></div></div>'
+      +'<div><div class="hsk-pwa-load-ring"></div><div class="hsk-pwa-load-line"></div></div></div>';
+  }
   var c=profileCopy(),data=PROFILE_DETAIL&&PROFILE_DETAIL.stats&&PROFILE_DETAIL.stats.answer_accuracy;
   function item(label,score){
     var pct=score&&Number.isFinite(Number(score.percent))&&score.percent!==null?Math.max(0,Math.min(100,Math.round(Number(score.percent)))):null;
