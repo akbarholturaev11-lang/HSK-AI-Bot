@@ -97,6 +97,16 @@ def test_iphone_install_starts_with_focus_photo_then_video_with_three_fallback_s
         assert page.locator(".li-install-title").is_visible()
         assert "telefoningiz" in page.locator(".li-install-title").inner_text()
         assert page.locator(".li-install-how").inner_text() == "Qanday?"
+        # Keep the heading close to the owner's Home Screen illustration;
+        # no stretching of blank space between the title and hero image.
+        assert page.locator(".li-install-hero").evaluate("""(img) => {
+          const h = document.querySelector('.li-install-title').getBoundingClientRect();
+          const p = img.getBoundingClientRect();
+          return p.top > h.bottom && p.top - h.bottom <= 45;
+        }""")
+        assert page.locator(".li-install-back").count() == 0
+        assert page.locator(".li-install-close").evaluate(
+            "(el) => getComputedStyle(el).backgroundColor === 'rgba(0, 0, 0, 0)'")
         assert page.locator(".li-install-video-page").is_hidden()
         assert page.locator(".li-install-continue, .li-install-note").count() == 0
         assert page.locator(".li-install-card").evaluate(
