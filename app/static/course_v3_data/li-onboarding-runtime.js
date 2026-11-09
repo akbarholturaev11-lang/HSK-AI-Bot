@@ -580,8 +580,11 @@ function telegramPendingId(){
 function telegramBotUrl(value,id){
   try{
     var url=new URL(value);
+    var start=url.searchParams.get("start"),base="pwa_link_"+id;
     return url.protocol==="https:"&&url.hostname==="t.me"&&
-      url.searchParams.get("start")==="pwa_link_"+id?url.href:null;
+      !url.username&&!url.password&&!url.port&&
+      (start===base||["uz","ru","tj"].some(function(l){return start===base+"_"+l}))?
+      url.href:null;
   }catch(_){return null}
 }
 function telegramMessage(key,error){
