@@ -43,7 +43,15 @@ jobs:
       - name: Enforce permanent policy and regression-test co-changes
         env:
           PERF_BASE: ${{ steps.base.outputs.sha }}
-        run: python scripts/check_backend_pwa_performance_contract.py --base "$PERF_BASE"
+          EVENT_NAME: ${{ github.event_name }}
+          REF_NAME: ${{ github.ref_name }}
+        shell: bash
+        run: |
+          FLAGS=()
+          if [[ "$EVENT_NAME" == "pull_request" || "$REF_NAME" == "main" ]]; then
+            FLAGS+=(--enforce-change-tests)
+          fi
+          python scripts/check_backend_pwa_performance_contract.py --base "$PERF_BASE" "${FLAGS[@]}"
       - name: Test the policy guard itself
         run: python -m unittest -v tests.test_backend_pwa_performance_contract
       - name: Detect code paths for behavior regressions
