@@ -4,6 +4,7 @@ Runs in Chromium and WebKit; every request is handled locally, no production
 credentials or account data. Start the canonical PWA course with the same
 public bootstrap shell the authenticated delivery injects.
 """
+import ast
 import json
 import mimetypes
 import os
@@ -14,31 +15,26 @@ import pytest
 
 from playwright.sync_api import sync_playwright
 
-from test_pwa_initial_shell import parts
-
 STATIC = Path(__file__).resolve().parents[2] / "app/static"
 ORIGIN = "http://hsk-ai.local"
 
 
 def pwa_document():
+    # Reconstruct only the actual authenticated PWA response-side CSS and SDK
+    # optimization. Current main owns the ONE static first-paint shell in the
+    # canonical shared HTML; no deprecated response-injected shell is allowed.
     source = (STATIC / "course-v3.html").read_text(encoding="utf-8")
-    fragments = parts()
-    source = source.replace(
-        "</head>", fragments["_PWA_COURSE_BOOT_HEAD"] + "</head>", 1
-    ).replace(
-        '<body class="hsk-scene-page">',
-        '<body class="hsk-scene-page hsk-pwa-shell-loading">', 1
-    ).replace(
-        '<div class="scr on" id="s-course"><div class="loading">…</div></div>',
-        fragments["_PWA_COURSE_SKELETON_NEW"], 1
-    ).replace('<nav class="nav" id="nav">', '<nav class="nav" id="nav" inert>', 1)
-    source = source.replace(
-        '<script src="/assets/telegram-web-app.js?v=20261019-1"></script>', "", 1
+    tree = ast.parse((Path("app/api/pwa_auth.py")).read_text(encoding="utf-8"))
+    css = next(
+        ast.literal_eval(node.value).decode("utf-8")
+        for node in tree.body if isinstance(node, ast.Assign)
+        and any(isinstance(t, ast.Name) and t.id == "_PWA_PROGRESSIVE_SECTIONS_CSS"
+                for t in node.targets)
     )
-    source = source.replace(
-        "</body>", fragments["_PWA_COURSE_BOOT_SCRIPT"] + "</body>", 1
-    )
-    return source
+    sdk = '<script src="/assets/telegram-web-app.js?v=20261019-1"></script>'
+    assert source.count(sdk) == 1
+    assert source.count('class="pwa-initial-shell"') >= 3
+    return source.replace("</head>", css + "</head>", 1).replace(sdk, "", 1)
 
 
 def test_course_ready_while_rating_referrals_and_profile_stats_load_independently():
@@ -123,10 +119,12 @@ def test_course_ready_while_rating_referrals_and_profile_stats_load_independentl
             assert page.locator("#s-mashq .row-card").count() == 6
 
             page.locator('#nav button[data-s="rating"]').click()
-            page.locator("#s-rating .hsk-pwa-section-loading").wait_for()
+            # Upstream main's first-rating skeleton stays mounted while the
+            # independent API is pending; re-renders must not erase it.
+            page.locator("#s-rating [aria-busy='true']").first.wait_for()
             assert len(held["rating"]) == 1
             page.evaluate("App.setLang('uz')")
-            assert page.locator("#s-rating .hsk-pwa-section-loading").is_visible()
+            assert page.locator("#s-rating [aria-busy='true']").first.is_visible()
             assert len(held["rating"]) == 1
             # The course has already loaded; a slow leaderboard cannot undo it.
             assert page.locator("#s-course .uban").count() > 0
@@ -136,6 +134,7 @@ def test_course_ready_while_rating_referrals_and_profile_stats_load_independentl
             })
             page.get_by_text("Rank verified").wait_for()
             assert page.locator("#s-rating .hsk-pwa-section-loading").count() == 0
+            assert page.locator("#s-rating .pwa-initial-shell").count() == 0
 
             page.locator('#nav button[data-s="profile"]').click()
             page.locator("#s-profile .hsk-pwa-profile-accuracy-loading").wait_for()
