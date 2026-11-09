@@ -264,10 +264,15 @@ def test_first_pwa_course_map_recovers_transient_failure_but_never_retries_auth(
                 _status:403,error:'hsk30_unlock_required'
               })};
               const denied=await loadCourseMap('nhsk1',0);
+              const deniedCalls=calls;
+              calls=0;
+              window._fetchCourseMap=()=>{calls++;return Promise.reject(new Error('pwa_actor_changed'))};
+              const changed=await loadCourseMap('hsk1',0);
               return {recovered:!!recovered.data,transientCalls,
                 failed:failed.error===true,limitedCalls,
                 auth:expired.auth===false,authCalls,
-                denied:denied.error===true,deniedCalls:calls,events};
+                denied:denied.error===true,deniedCalls,
+                changed:changed.auth===false,changedCalls:calls,events};
             }""",
             loader,
         )
@@ -277,6 +282,7 @@ def test_first_pwa_course_map_recovers_transient_failure_but_never_retries_auth(
         assert result["limitedCalls"] == 2
         assert result["auth"] is True and result["authCalls"] == 1
         assert result["denied"] is True and result["deniedCalls"] == 1
+        assert result["changed"] is True and result["changedCalls"] == 1
         assert result["events"] == [
             {"name": "pwa_course_map_retry", "kind": "http_5xx", "attempt": 1},
             {"name": "pwa_course_map_retry", "kind": "network", "attempt": 1},
