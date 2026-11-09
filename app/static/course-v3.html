@@ -9591,7 +9591,15 @@ var finishHskLaunchSplash=(function(){
        so'raymiz. Yopib yuborsa 24 soat qayta so'ralmaydi. */
     if(STUDY_SETUP&&STUDY_SETUP.pending&&studySetupPending())
       setTimeout(askPendingStudySetup,1200);
-    prefetchNearbyLessons();
+    // Above-the-fold map/tab gets the next paint before optional lesson
+    // prefetch traverses the lesson tree. Existing Telegram sequencing stays.
+    if(PWA_COURSE_HOST&&typeof requestAnimationFrame==="function"){
+      requestAnimationFrame(function(){
+        setTimeout(function(){
+          if(document.visibilityState!=="hidden"&&MAP)prefetchNearbyLessons();
+        },0);
+      });
+    }else prefetchNearbyLessons();
     var sp=bootParams;
     var tab=PWA_COURSE_HOST&&PWA_PREBOOT_TAB||sp.get("tab")||"course";PWA_PREBOOT_TAB=null;App.show(tab);
     finishHskLaunchSplash();
