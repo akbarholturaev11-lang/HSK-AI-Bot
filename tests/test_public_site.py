@@ -308,6 +308,8 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('<details class="mobile-nav">', download)
         self.assertIn('data-ios-install', download)
         self.assertIn('/assets/onboarding/iphone-home-screen.mp4', download)
+        self.assertIn("PWA для iPhone", download)
+        self.assertIn("Safari", download)
         self.assertIn('/public-assets/navigation.css', download)
         self.assertIn('/public-assets/language.js', download)
         script = Path("app/static/desktop-download-page.js").read_text(encoding="utf-8")
