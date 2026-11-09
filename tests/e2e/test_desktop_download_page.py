@@ -312,7 +312,7 @@ def test_referral_android_downloads_without_telegram_and_preserves_signup_code(
     context.close()
 
 
-def test_referral_uses_ios_bot_flow_and_does_not_trust_platform_query(
+def test_referral_keeps_separate_ios_bot_action_but_primary_is_pwa(
     desktop_download_url, browser,
 ):
     context, page, errors = _page(
@@ -322,7 +322,8 @@ def test_referral_uses_ios_bot_flow_and_does_not_trust_platform_query(
         has_touch=True,
     )
     page.goto(f"{desktop_download_url}?ref=a1b2c3d4&platform=android", wait_until="networkidle")
-    assert page.locator('[data-download-button]').get_attribute('href') == (
+    assert page.locator('[data-download-button]').get_attribute('href') == '/iphone-pwa'
+    assert page.locator('[data-referral-ios-link]').get_attribute('href') == (
         'https://t.me/darsi_chini_bot?start=ri_a1b2c3d4'
     )
     guide = page.locator('[data-referral-guide]')
@@ -390,12 +391,13 @@ def test_invalid_referral_cannot_create_an_app_link(desktop_download_url, browse
     context.close()
 
 
-def test_trial_invite_on_iphone_uses_bot_instructions_and_trial_payload(desktop_download_url, browser):
+def test_trial_invite_on_iphone_opens_pwa_and_retains_optional_bot_link(desktop_download_url, browser):
     context, page, errors = _page(browser, viewport={"width": 390, "height": 844},
         user_agent="Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148",
         has_touch=True)
     page.goto(f"{desktop_download_url}?ref=a1b2c3d4&mode=trial", wait_until="networkidle")
-    assert page.locator('[data-download-button]').get_attribute('href') == 'https://t.me/darsi_chini_bot?start=a1b2c3d4'
+    assert page.locator('[data-download-button]').get_attribute('href') == '/iphone-pwa'
+    assert page.locator('[data-referral-ios-link]').get_attribute('href') == 'https://t.me/darsi_chini_bot?start=a1b2c3d4'
     assert 'Telegram' in page.locator('[data-referral-body]').inner_text()
     assert 'Google' not in page.locator('[data-referral-body]').inner_text()
     assert page.locator('[data-referral-code]').input_value() == 'a1b2c3d4'
@@ -413,5 +415,37 @@ def test_referral_copy_failure_keeps_code_available_for_manual_copy(desktop_down
     assert page.locator('[data-referral-code]').input_value() == 'a1b2c3d4'
     assert page.locator('[data-referral-copy-status]').inner_text() == 'Kodni belgilang va qo‘lda nusxalang.'
     assert page.evaluate("document.activeElement === document.querySelector('[data-referral-code]')")
+    assert errors == []
+    context.close()
+
+def test_mobile_site_header_and_ios_pwa_video_without_desktop_nav_regression(desktop_download_url, browser):
+    context, page, errors = _page(
+        browser,
+        viewport={"width": 390, "height": 844},
+        user_agent="Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148",
+        has_touch=True,
+    )
+    page.goto(f"{desktop_download_url}?platform=ios&lang=ru", wait_until="networkidle")
+    playwright.expect(page.locator(".site-header .main-nav")).to_be_hidden()
+    playwright.expect(page.locator(".site-header .mobile-nav")).to_be_visible()
+    playwright.expect(page.locator(".site-header .language-switch summary span")).to_be_hidden()
+    page.locator(".site-header .mobile-nav summary").click()
+    playwright.expect(page.locator(".site-header .mobile-nav-links a")).to_have_count(4)
+    page.locator(".site-header .mobile-nav summary").click()
+    assert page.locator('[data-download-button]').get_attribute('href') == '/iphone-pwa'
+    playwright.expect(page.locator('[data-ios-install]')).to_be_visible()
+    assert page.locator('[data-ios-video] source').get_attribute('src') == '/assets/onboarding/iphone-home-screen.mp4'
+    assert "Safari" in page.locator('[data-step-body="one"]').inner_text()
+    assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth")
+    assert errors == []
+    context.close()
+
+    context, page, errors = _page(browser, viewport={"width": 1280, "height": 900})
+    page.goto(f"{desktop_download_url}?platform=macos&lang=ru", wait_until="networkidle")
+    playwright.expect(page.locator(".site-header .main-nav")).to_be_visible()
+    playwright.expect(page.locator(".site-header .mobile-nav")).to_be_hidden()
+    playwright.expect(page.locator(".site-header .language-switch summary span")).to_be_visible()
+    playwright.expect(page.locator("[data-ios-install]")).to_be_hidden()
+    assert page.locator('[data-download-button]').get_attribute('href').endswith('/downloads/macos')
     assert errors == []
     context.close()
