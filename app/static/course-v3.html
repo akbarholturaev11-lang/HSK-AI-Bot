@@ -2670,7 +2670,7 @@ function haptic(t){try{if(!tg&&window.HskPwaFx){HskPwaFx.haptic(t);return}tg&&tg
 var ac;function beep(seq){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();var t=ac.currentTime;seq.forEach(function(f,k){var o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;o.connect(g);g.connect(ac.destination);var s=t+k*0.09;g.gain.setValueAtTime(0.0001,s);g.gain.exponentialRampToValueAtTime(0.12,s+0.02);g.gain.exponentialRampToValueAtTime(0.0001,s+0.16);o.start(s);o.stop(s+0.18)})}catch(e){}}
 
 /* ---------- App ---------- */
-var MAP=null,SCREEN="course",PWA_PREBOOT_TAB=null,PWA_COURSE_LOAD_FAILED=false,SCREEN_HISTORY=[],NAVBACK_SCREEN_CHANGE=false,HP=5,notifOn=true,dailyGoal=50,PROF={},ratingLoaded=false,pendingRankUp=null;
+var MAP=null,SCREEN="course",PWA_PREBOOT_TAB=null,PWA_COURSE_LOAD_FAILED=false,SCREEN_HISTORY=[],NAVBACK_SCREEN_CHANGE=false,HP=5,notifOn=true,dailyGoal=50,PROF={},ratingLoaded=false,ratingPending=false,pendingRankUp=null;
 /* Kunlik reja sozlamalari serverdan (map javobidagi `study_setup`).
    Ilgari `dailyGoal` faqat shu yerdagi o'zgaruvchi edi va ilova qayta
    ochilganda foydalanuvchi tanlovi yo'qolardi. */
@@ -6750,21 +6750,21 @@ function applyRatingPayload(d){
 	    return d;
 	  });
 	}
-function renderRating(){
+function renderRating(){if(PWA_COURSE_HOST&&ratingPending)return;
   // Friends fetches referrals directly; it must not wait for a leaderboard request.
   if(ratingTabCur==="friends"){_renderRatingContent();return}
   if(!ratingLoaded&&(INIT_DATA||PWA_COURSE_HOST)){
-    ratingLoaded=true;
+    ratingLoaded=true;ratingPending=true;
     var t=T();
     if(PWA_COURSE_HOST){var pane=$("#s-rating");if(!pane.querySelector(".pwa-initial-shell"))pane.innerHTML='<div class="pwa-initial-shell" role="status" aria-busy="true"><div class="pwa-skel-head"><span class="pwa-skel-title">'+esc(courseMessage("nav.rating",t.nav.rating))+'</span></div><div class="pwa-skel-card" aria-hidden="true"><div class="pwa-skel-line short"></div><div class="pwa-skel-line long"></div></div></div>'}else{$("#s-rating").innerHTML='<div style="padding:60px 0;text-align:center;color:var(--ink3)">…</div>'}
-    loadLatestRating().then(function(){
+    loadLatestRating().then(function(){ratingPending=false;
       _renderRatingContent();
-    }).catch(function(){ratingMeta={loaded:true,error:true,leagueSize:0,resetAtMs:null};ratingUsers=[];_renderRatingContent()});
+    }).catch(function(){ratingPending=false;ratingMeta={loaded:true,error:true,leagueSize:0,resetAtMs:null};ratingUsers=[];_renderRatingContent()});
     return;
   }
   _renderRatingContent();
 }
-function retryRating(){ratingLoaded=false;renderRating()}
+function retryRating(){if(ratingPending)return;ratingLoaded=false;renderRating()}
 function retryReferrals(){referralMeta={loaded:false,error:false,joined:0,active:0,required:0};_renderRatingContent()}
 /* Trophy art is decorative; leagues and member count are supplied by the server.
    Backend leagues use lifetime XP, whereas the row ranking uses weekly XP. */
