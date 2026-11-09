@@ -507,6 +507,42 @@ def test_guest_li_telegram_starts_from_original_profile_without_welcome_page():
         browser.close()
 
 
+def test_new_user_telegram_claim_resumes_guest_choices_without_welcome_screen():
+    with pw.sync_playwright() as playwright:
+        browser = getattr(playwright, os.environ.get("PWA_E2E_ENGINE", "chromium")).launch()
+        page, captured = _page(browser, pwa=True, guest=True, saved=False)
+        _advance_to_profile(page, guest=True)
+        page.route("https://t.me/**", lambda route: route.abort())
+        page.locator("#stage .provider").nth(0).click()
+        page.wait_for_function(
+            "() => sessionStorage.getItem('hskai.pwa.telegram.pending')"
+        )
+        assert captured["post"] == [] and captured["trial_start"] == []
+        # Browser page can reload after returning from the Telegram native app.
+        page.reload()
+        page.wait_for_function(
+            "() => window.screen==='signup' && sessionStorage.getItem('hskai.pwa.telegram.pending')"
+        )
+        captured["telegram_state"] = "complete"
+        page.evaluate("window.dispatchEvent(new Event('focus'))")
+        page.wait_for_function(
+            "() => window.screen==='profile' && document.querySelector('#footer .cta')",
+            timeout=12000,
+        )
+        assert captured["auth_state"]["verified"]
+        assert captured["post"] == []  # no write before final verified action
+        assert page.evaluate("window.goals") == ["hsk_exam", "travel"]
+        assert page.evaluate("window.streakGoal") == 14
+        assert "/iphone-pwa?login=1" not in captured["navigations"]
+        page.locator("#footer .cta").click()
+        page.wait_for_function("window.screen==='end'")
+        assert len(captured["post"]) == 1
+        assert captured["post"][0]["goals"] == ["hsk_exam", "travel"]
+        assert captured["trial_start"] == []
+        assert not captured["pageerrors"]
+        browser.close()
+
+
 def test_li_telegram_expired_does_not_sign_in_and_can_retry_without_welcome():
     with pw.sync_playwright() as playwright:
         browser = getattr(playwright, os.environ.get("PWA_E2E_ENGINE", "chromium")).launch()
