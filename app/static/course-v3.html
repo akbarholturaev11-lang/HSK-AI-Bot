@@ -6329,11 +6329,19 @@ function renderMashq(){
 function rowCard(cls,ic,title,sub,act,id,newSectionId){return '<button type="button" class="row-card"'+(id?' id="'+id+'"':'')+(act?' onclick="'+act+'"':'')+'><span class="ti2 '+cls+'" aria-hidden="true">'+ic+'</span><span class="rt"><b>'+esc(title)+'</b><small>'+esc(sub)+'</small></span>'+(newSectionId?newSectionBadge(newSectionId):'')+'<span class="ar" aria-hidden="true"><i class="ti ti-chevron-right"></i></span></button>'}
 
 /* ---------- Voice ---------- */
+function showVoiceQuotaError(quota){
+  if(!PWA_COURSE_HOST||!quota||!quota.isConnected||SCREEN!=="voice")return;
+  var copy=practiceGateErrorCopy();
+  quota.setAttribute("role","alert");
+  quota.innerHTML='<span>'+esc(copy.body)+'</span> <button type="button" style="margin-left:8px;text-decoration:underline;color:var(--cin2);cursor:pointer" onclick="renderVoice()">'+esc(copy.retry)+'</button>';
+  quota.hidden=false;
+}
 function renderVoice(){
   var t=T();
   $("#s-voice").innerHTML='<div class="htop"><h1 class="section-title">AI Voice</h1></div>'
     +'<div class="voicebox"><div class="pd">'+pandaChar("talk")+'</div><h3>'+courseMessage("voiceTitle",t.voiceTitle)+'</h3><p>'+courseMessage("voiceSub",t.voiceSub)+'</p><p class="voice-quota" id="voice-quota" role="status" aria-live="polite" hidden></p><button onclick="App.openVoiceCall()"><i class="ti ti-phone"></i> '+courseMessage("voiceStart",t.voiceStart)+'</button></div>';
   var quota=document.getElementById("voice-quota");
+  if(PWA_COURSE_HOST&&SCREEN==="voice"){quota.textContent=courseMessage("practice.checkingAccess","…");quota.hidden=false}
   var voiceStatus=PWA_COURSE_HOST?(SCREEN==="voice"?(renderVoice._quotaPending||(renderVoice._quotaPending=pwaCourseActor().then(function(){
     return fetch("/api/v3/pwa/voice/me",{credentials:"same-origin",cache:"no-store",redirect:"error"});
   }).then(function(res){if(res.status===401||(res.ok&&res.headers.get("X-HSK-PWA-User-ID")!==String(PWA_COURSE_USER_ID))){PWA_COURSE_ACTOR_PROMISE=null;location.replace("/iphone-pwa");throw new Error("pwa_actor_changed")}return res.ok?res.json():null}).then(function(data){
@@ -6343,7 +6351,8 @@ function renderVoice(){
   if(voiceStatus){
     voiceStatus.then(function(status){
       if(!quota.isConnected)return;
-      if(!quota||SCREEN!=="voice"||!status)return;
+      if(!quota||SCREEN!=="voice")return;
+      if(!status){showVoiceQuotaError(quota);return}
       var unlimited=!!status.is_paid||status.remaining==null;
       var copy=courseMessage(unlimited?"voicePage.quotaUnlimited":"voicePage.quotaRemaining",LANG==="ru"
         ?(unlimited?"AI Voice без ограничения":"Сегодня осталось разговоров: {n}")
@@ -6352,7 +6361,10 @@ function renderVoice(){
           :(unlimited?"AI Voice cheksiz":"Bugun {n} ta suhbat qoldi"));
       quota.textContent=unlimited?copy:copy.replace("{n}",String(Math.max(0,Number(status.remaining)||0)));
       quota.hidden=false;
-    }).catch(function(){});
+    }).catch(function(error){
+      if(error&&["pwa_actor_changed","pwa_session_required"].indexOf(error.message)>=0)return;
+      showVoiceQuotaError(quota);
+    });
   }
   /* Bo'lim ochilganda panda sakrab kirib keladi */
   pandaFx(document.querySelector("#s-voice .voicebox .pd"),"pop");

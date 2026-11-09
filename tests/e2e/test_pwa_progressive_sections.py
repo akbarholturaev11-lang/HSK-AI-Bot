@@ -195,6 +195,36 @@ def test_course_ready_while_rating_referrals_and_profile_stats_load_independentl
             assert "1" in page.locator("#voice-quota").inner_text()
             assert errors == []
 
+            # A failed optional quota read must not leave a blank status.
+            # Both HTTP 503 and transport failure expose a localized retry,
+            # without blocking the already rendered course or duplicating GETs.
+            for failure_mode in ("http", "network"):
+                page.locator('#nav button[data-s="course"]').click()
+                page.locator('#nav button[data-s="voice"]').click()
+                page.wait_for_function("() => !!renderVoice._quotaPending")
+                assert len(held["voice"]) == 1
+                failed_request = held["voice"].pop()
+                if failure_mode == "http":
+                    failed_request.fulfill(status=503, json={"ok": False})
+                else:
+                    failed_request.abort("failed")
+                retry = page.locator("#voice-quota button")
+                retry.wait_for(state="visible")
+                assert page.locator("#s-course .uban").count() > 0
+                retry.click()
+                page.wait_for_function("() => !!renderVoice._quotaPending")
+                assert len(held["voice"]) == 1
+                held["voice"].pop().fulfill(
+                    status=200, headers={"X-HSK-PWA-User-ID": "31"},
+                    json={"ok": True, "remaining_voice_limit": 2},
+                )
+                page.wait_for_function(
+                    "() => document.querySelector('#voice-quota') &&"
+                    " document.querySelector('#voice-quota').textContent.includes('2')"
+                )
+                assert page.locator("#voice-quota button").count() == 0
+                assert errors == []
+
             # A cookie replaced in another tab could return a different
             # learner's GET payload while the old map is still in memory.
             # Refuse that response before rendering any cross-account data.
