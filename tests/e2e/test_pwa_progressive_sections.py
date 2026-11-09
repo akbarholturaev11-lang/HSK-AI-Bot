@@ -635,3 +635,99 @@ def test_rating_retry_keeps_podium_and_rows_in_place():
             assert page.locator("#s-course .uban").count() > 0
         finally:
             browser.close()
+
+
+@pytest.mark.parametrize("width", [320, 390, 430])
+@pytest.mark.parametrize("motion", ["reduce", "no-preference"])
+def test_practice_initial_loading_geometry_matches_six_real_cards(width, motion):
+    """Measure the actual Practice first-paint placeholders against rendered cards.
+
+    Keep /api/v3/pwa/map unresolved while App.show selects Practice. No real
+    user information or Pro/Trial data may be used to build these placeholders.
+    """
+    from tests.pwa_layout_geometry import assert_reserved_layout, capture_geometry
+
+    payload = json.loads((STATIC / "course_v3_data/hsk1.json").read_text(encoding="utf-8"))
+    payload["authenticated"] = True
+    payload["level"] = "hsk1"
+    payload["user"] = {
+        "name": "Authorized test account", "avatar": "阿",
+        "language": "ru", "is_paid": True, "state": "PRO_ACTIVE",
+        "onboarding_completed": True,
+    }
+    held = []
+    errors = []
+
+    def serve(route):
+        path = urlsplit(route.request.url).path
+        if path == "/iphone-pwa/course":
+            route.fulfill(status=200, content_type="text/html", body=pwa_document())
+        elif path == "/api/v3/pwa-auth/session":
+            route.fulfill(status=200, json={"ok": True, "user_id": 31, "csrf": "test-csrf"})
+        elif path == "/api/v3/pwa/map":
+            held.append(route)
+        elif path.startswith("/api/"):
+            route.fulfill(status=404, json={"ok": False, "error": "not_mocked"})
+        else:
+            file = (STATIC / path.lstrip("/")).resolve()
+            if file.is_file() and file.is_relative_to(STATIC.resolve()):
+                mime, _ = mimetypes.guess_type(file)
+                route.fulfill(path=str(file), content_type=mime or "application/octet-stream")
+            else:
+                route.fulfill(status=404, body="")
+
+    def geometry(page):
+        anchors = capture_geometry(page, {
+            "title": "#s-mashq .section-title",
+            "header": "#s-mashq .htop",
+            "first-section": "#s-mashq .sech",
+            "nav": "#nav",
+        })
+        rows = page.locator("#s-mashq .mashq-group > *")
+        assert rows.count() == 6
+        groups = page.locator("#s-mashq .mashq-group")
+        assert groups.count() == 2
+        for i in range(2):
+            rect = groups.nth(i).bounding_box()
+            assert rect is not None
+            anchors[f"group-{i+1}"] = rect
+        for i in range(6):
+            rect = rows.nth(i).bounding_box()
+            assert rect is not None
+            anchors[f"card-{i+1}"] = rect
+        return anchors
+
+    with sync_playwright() as playwright:
+        browser = getattr(playwright, os.getenv("PWA_E2E_ENGINE", "chromium")).launch()
+        try:
+            page = browser.new_context(
+                viewport={"width": width, "height": 844},
+                is_mobile=True, reduced_motion=motion,
+            ).new_page()
+            page.set_default_timeout(15000)
+            page.on("pageerror", lambda error: errors.append(str(error)))
+            page.route("**/*", serve)
+            page.goto(ORIGIN + "/iphone-pwa/course?lang=ru", wait_until="domcontentloaded")
+            page.wait_for_function("() => typeof App === 'object' && typeof App.show === 'function'")
+            page.wait_for_function("() => !!document.querySelector('#s-mashq .pwa-practice-shell')")
+            page.evaluate("App.show('mashq')")
+            page.locator("#s-mashq .pwa-practice-shell[aria-busy=true]").wait_for()
+            assert len(held) == 1
+            assert page.locator("#s-mashq .row-card").count() == 0
+            before = geometry(page)
+            if motion == "reduce":
+                assert page.locator("#s-mashq .pwa-layout-ink").first.evaluate(
+                    "(el) => getComputedStyle(el).animationName"
+                ) == "none"
+            held.pop().fulfill(status=200, json=payload, headers={
+                "X-HSK-PWA-User-ID": "31", "Cache-Control": "no-store",
+            })
+            page.locator("#s-mashq .row-card").first.wait_for()
+            after = geometry(page)
+            assert_reserved_layout(before, after)
+            assert page.locator("#s-mashq .pwa-practice-shell").count() == 0
+            assert page.locator("#s-mashq .row-card").count() == 6
+            assert page.locator("#s-course .uban").count() > 0
+            assert errors == []
+        finally:
+            browser.close()
