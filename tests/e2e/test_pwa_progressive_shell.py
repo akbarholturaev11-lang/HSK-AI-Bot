@@ -218,3 +218,74 @@ def test_rating_friends_section_stays_independent_of_leaderboard_network():
     assert rating.index('if(ratingTabCur==="friends")') < rating.index(
         'if(PWA_COURSE_HOST&&ratingPending)'
     )
+
+
+def test_first_pwa_course_map_recovers_transient_failure_but_never_retries_auth():
+    # Execute the production map loader in an isolated browser with a fake
+    # read-only map transport. No fake course/identity enters the app itself.
+    loader = "function retryTransientCourseMap(" + HTML.split(
+        "function retryTransientCourseMap(", 1
+    )[1].split("var PWA_LEVEL_REQUEST_SEQ", 1)[0]
+    with pw.sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page()
+        page.set_content("<div>map loader test</div>")
+        result = page.evaluate(
+            """async (source) => {
+              window.PWA_COURSE_HOST=true;
+              window.isHsk30AccessError=()=>false;
+              window._ensureSmartTimezone=()=>{};
+              const events=[];
+              window.clog=(name,kind,extra)=>events.push({name,kind,attempt:extra.attempt});
+              (0,eval)(source);
+              const good={_status:200,authenticated:true,units:[],level:'hsk1'};
+              let calls=0;
+              window._fetchCourseMap=()=>{
+                calls++;
+                return Promise.resolve(calls===1?{_status:503}:good);
+              };
+              const recovered=await loadCourseMap('hsk1',0);
+              const transientCalls=calls;
+              calls=0;
+              window._fetchCourseMap=()=>{
+                calls++;
+                return Promise.reject(new TypeError('network disconnected'));
+              };
+              const failed=await loadCourseMap('hsk1',0);
+              const limitedCalls=calls;
+              calls=0;
+              window._fetchCourseMap=()=>{calls++;return Promise.resolve({
+                _status:401,authenticated:false
+              })};
+              const expired=await loadCourseMap('hsk1',0);
+              const authCalls=calls;
+              calls=0;
+              window._fetchCourseMap=()=>{calls++;return Promise.resolve({
+                _status:403,error:'hsk30_unlock_required'
+              })};
+              const denied=await loadCourseMap('nhsk1',0);
+              const deniedCalls=calls;
+              calls=0;
+              window._fetchCourseMap=()=>{calls++;return Promise.reject(new Error('pwa_actor_changed'))};
+              const changed=await loadCourseMap('hsk1',0);
+              return {recovered:!!recovered.data,transientCalls,
+                failed:failed.error===true,limitedCalls,
+                auth:expired.auth===false,authCalls,
+                denied:denied.error===true,deniedCalls,
+                changed:changed.auth===false,changedCalls:calls,events};
+            }""",
+            loader,
+        )
+        assert result["recovered"] is True
+        assert result["transientCalls"] == 2
+        assert result["failed"] is True
+        assert result["limitedCalls"] == 2
+        assert result["auth"] is True and result["authCalls"] == 1
+        assert result["denied"] is True and result["deniedCalls"] == 1
+        assert result["changed"] is True and result["changedCalls"] == 1
+        assert result["events"] == [
+            {"name": "pwa_course_map_retry", "kind": "http_5xx", "attempt": 1},
+            {"name": "pwa_course_map_retry", "kind": "network", "attempt": 1},
+            {"name": "pwa_course_map_failed", "kind": "network", "attempt": 2},
+        ]
+        browser.close()
