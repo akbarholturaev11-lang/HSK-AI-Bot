@@ -473,7 +473,12 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
             # shell, not a login or an entitlement. Returning verified actors
             # still use the normal authenticated course route above.
             # The flag defaults OFF in production until release QA is complete.
-            if bool(getattr(settings_obj, "PWA_LI_ONBOARDING_ENTRY_ENABLED", False)):
+            # Telegram login started from Li must show the canonical browser
+            # approval/polling page, not bounce back into Li again. This is
+            # only a presentation escape hatch; session/CSRF rules are unchanged.
+            explicit_login = request.query_params.get("login") == "1"
+            if (not explicit_login and
+                    bool(getattr(settings_obj, "PWA_LI_ONBOARDING_ENTRY_ENABLED", False))):
                 return RedirectResponse(
                     "/iphone-pwa/onboarding/li", status_code=303,
                     headers={**_NO_STORE, "Referrer-Policy": "no-referrer"},

@@ -490,6 +490,36 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(disabled.status_code, 503)
         self.assertEqual(disabled.json()["error"], "pwa_auth_unavailable")
 
+    async def test_explicit_telegram_login_bypasses_guest_li_redirect_without_auth_bypass(self):
+        # The guest Li entry is ON, yet its Telegram button must reach the
+        # original browser-bound Telegram approval and polling screen.
+        self.settings.PWA_LI_ONBOARDING_ENTRY_ENABLED = True
+        path = "/iphone-pwa"
+        self.assertEqual(
+            (await self.client.get(path, follow_redirects=False)).status_code, 303
+        )
+        login = await self.client.get(path, params={"login": "1", "lang": "ru"},
+                                      follow_redirects=False)
+        self.assertEqual(login.status_code, 200)
+        self.assertIn('data-provider="telegram"', login.text)
+        self.assertIn("no-store", login.headers["cache-control"])
+        self.assertEqual((await self.client.get(path, params={"login": "0"},
+                         follow_redirects=False)).headers["location"],
+                         "/iphone-pwa/onboarding/li")
+        self.client.cookies.set(PWA_SESSION_COOKIE, "forged-session")
+        self.assertEqual((await self.client.get(path, params={"login": "1"},
+                         follow_redirects=False)).status_code, 200)
+        self.client.cookies.clear()
+        await self.callback(await self.begin())
+        signed = await self.client.get(path, params={"login": "1"},
+                                       follow_redirects=False)
+        self.assertEqual(signed.status_code, 303)
+        self.assertEqual(signed.headers["location"], "/iphone-pwa/course")
+        self.settings.PWA_AUTH_ENABLED = False
+        disabled = await self.client.get(path, params={"login": "1"},
+                                         follow_redirects=False)
+        self.assertEqual(disabled.status_code, 503)
+
     async def test_home_screen_entry_skips_login_only_for_verified_browser(self):
         self.assertEqual((await self.client.get("/iphone-pwa")).status_code, 200)
         self.client.cookies.set(PWA_SESSION_COOKIE, "unverified-browser-cookie" * 3)
