@@ -451,6 +451,10 @@ jobs:
               raise SystemExit("PostgreSQL regressions failed")
           print(f"PostgreSQL coverage: {len(cases)} tests, 0 skipped")
           PY
+      - name: Rehearse Li 0153 to 0154 upgrade on disposable PostgreSQL
+        env:
+          NATIVE_ACCOUNT_TEST_DATABASE_URL: "postgresql+asyncpg://hsk_critical_qa:hsk-critical-ci-only@127.0.0.1:${{ job.services.postgres.ports[5432] }}/hsk_critical_test"
+        run: python scripts/check_li_migration_postgres.py
       - name: Save PostgreSQL regression report
         if: always()
         continue-on-error: true
