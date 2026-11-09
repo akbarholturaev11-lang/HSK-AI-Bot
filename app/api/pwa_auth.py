@@ -147,12 +147,17 @@ _PWA_COURSE_BOOT_SCRIPT = b'''<script>
   if(!screen)return;
   function finish(){
     if(screen.querySelector(".hsk-pwa-boot-shell"))return;
+    // A DOM replacement alone does not prove the map is authorized. The
+    // canonical fetch validates the PWA actor/owner before assigning MAP.
+    var verified=typeof MAP!=="undefined"&&MAP&&MAP.authenticated===true&&Array.isArray(MAP.units);
     clearTimeout(safety);
     screen.removeAttribute("aria-busy");
     document.body.classList.remove("hsk-pwa-shell-loading");
-    // A script-failure retry is not an authorized map; keep tabs inert.
-    if(nav)nav.inert=!!screen.querySelector(".hsk-pwa-boot-error");
-    observer.disconnect();
+    if(nav)nav.inert=!verified;
+    // A fallback/error can be followed by a late successful map retry.
+    // Keep watching until the verified map actually renders, otherwise
+    // the navigation remains permanently inert after late recovery.
+    if(verified)observer.disconnect();
   }
   var observer=new MutationObserver(finish);
   observer.observe(screen,{childList:true});
