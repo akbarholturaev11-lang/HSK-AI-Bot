@@ -300,6 +300,16 @@ async function main(){
   const loadingButton = loadingView.querySelector("#hsk-pwa-push-action");
   assert.equal(loadingButton.hidden,false,"reserve the eventual Push CTA geometry");
   assert.equal(loadingButton.disabled,true,"a pending owner/state check must not allow writes");
+  assert.equal(typeof loadingButton.disabled,"boolean",
+    "Push-disabled state is a strict boolean, including in the DOM-free harness");
+  loadingPush.root().listeners.click({
+    target:{closest:(selector)=>selector==="#hsk-pwa-push-action"?{}:null}
+  });
+  await new Promise(resolve=>setImmediate(resolve));
+  assert(!loadingPush.requests.some(x=>x.url.endsWith("/push/subscribe")||x.url.endsWith("/push/revoke")),
+    "even a programmatic pending click must not mutate Push subscriptions");
+  assert(!loadingPush.pushCalls.includes("permission"),
+    "pending owner proof must never request OS notification permission");
   assert.equal(loadingButton.textContent,"subscriptionPage.loading");
   assert.equal(loadingPush.requests.filter(x=>x.url.endsWith("/push/status")).length,1);
   loadingPush.releaseHeldPushStatus();

@@ -341,9 +341,9 @@
       window.navigator.vendor === "Apple Computer, Inc.";
   }
   function pushSupported() {
-    return isAppleStandalonePwa() && window.isSecureContext &&
+    return !!(isAppleStandalonePwa() && window.isSecureContext &&
       window.navigator && "serviceWorker" in window.navigator &&
-      window.PushManager && window.Notification;
+      window.PushManager && window.Notification);
   }
   function updateSettingsPushStatus() {
     var node = document.getElementById("pwa-push-settings-status");
