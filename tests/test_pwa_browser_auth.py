@@ -2929,6 +2929,8 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             }
             result = await self.client.get("/api/v3/pwa/voice/me")
             self.assertEqual(result.status_code, 200, result.text)
+            self.assertEqual(result.headers.get("x-hsk-pwa-user-id"), "1")
+            self.assertEqual(result.headers.get("cache-control"), "no-store")
             self.assertEqual(status.await_args.args[0].id, 1)
         self.settings.PWA_AUTH_ENABLED = False
         self.assertEqual((await self.client.get(path)).status_code, 503)

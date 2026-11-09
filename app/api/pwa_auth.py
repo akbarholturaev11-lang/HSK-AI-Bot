@@ -1203,7 +1203,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                     request.cookies.get(PWA_SESSION_COOKIE)
                 )
                 result = await VoicePracticeService(db).user_status(actor)
-            return JSONResponse(result, headers=_NO_STORE)
+            return JSONResponse(result, headers={**_NO_STORE, "X-HSK-PWA-User-ID": str(actor.id)})
         except PwaAuthError as exc:
             return _error(exc)
         except VoicePracticeError as exc:

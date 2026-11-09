@@ -6336,7 +6336,7 @@ function renderVoice(){
   var quota=document.getElementById("voice-quota");
   var voiceStatus=PWA_COURSE_HOST?(SCREEN==="voice"?(renderVoice._quotaPending||(renderVoice._quotaPending=pwaCourseActor().then(function(){
     return fetch("/api/v3/pwa/voice/me",{credentials:"same-origin",cache:"no-store",redirect:"error"});
-  }).then(function(res){return res.ok?res.json():null}).then(function(data){
+  }).then(function(res){if(res.status===401||(res.ok&&res.headers.get("X-HSK-PWA-User-ID")!==String(PWA_COURSE_USER_ID))){PWA_COURSE_ACTOR_PROMISE=null;location.replace("/iphone-pwa");throw new Error("pwa_actor_changed")}return res.ok?res.json():null}).then(function(data){
     if(!data||typeof data.remaining_voice_limit!=="number")return null;
     return {remaining:data.remaining_voice_limit<0?null:data.remaining_voice_limit};
   }).finally(function(){renderVoice._quotaPending=null}))):null):(INIT_DATA&&window.CourseLimitStatus?CourseLimitStatus.get("voice"):null);

@@ -10,6 +10,8 @@ import os
 from pathlib import Path
 from urllib.parse import urlsplit
 
+import pytest
+
 from playwright.sync_api import sync_playwright
 
 from test_pwa_initial_shell import parts
@@ -178,7 +180,7 @@ def test_course_ready_while_rating_referrals_and_profile_stats_load_independentl
             page.evaluate("App.setLang('uz')")
             assert len(held["voice"]) == 1
             held["voice"].pop().fulfill(
-                status=200, json={"ok": True, "remaining_voice_limit": 2},
+                status=200, headers={"X-HSK-PWA-User-ID": "31"}, json={"ok": True, "remaining_voice_limit": 2},
             )
             page.locator("#voice-quota").wait_for(state="visible")
             assert "2" in page.locator("#voice-quota").inner_text()
@@ -187,7 +189,7 @@ def test_course_ready_while_rating_referrals_and_profile_stats_load_independentl
             page.wait_for_function("() => !!renderVoice._quotaPending")
             assert len(held["voice"]) == 1
             held["voice"].pop().fulfill(
-                status=200, json={"ok": True, "remaining_voice_limit": 1},
+                status=200, headers={"X-HSK-PWA-User-ID": "31"}, json={"ok": True, "remaining_voice_limit": 1},
             )
             page.locator("#voice-quota").wait_for(state="visible")
             assert "1" in page.locator("#voice-quota").inner_text()
@@ -205,5 +207,77 @@ def test_course_ready_while_rating_referrals_and_profile_stats_load_independentl
             )
             page.wait_for_url(ORIGIN + "/iphone-pwa")
             assert "Other account secret" not in page.content()
+        finally:
+            browser.close()
+@pytest.mark.parametrize("surface", ["course", "standalone"])
+@pytest.mark.parametrize("outcome", ["account_replaced", "session_expired"])
+def test_voice_status_refuses_other_session_owners(surface, outcome):
+    """An already-open PWA Voice view cannot use another cookie owner's quota."""
+    data = json.loads((STATIC / "course_v3_data/hsk1.json").read_text(encoding="utf-8"))
+    data["authenticated"] = True
+    data["level"] = "hsk1"
+    data["user"] = {
+        "name": "Original account", "avatar": "阿", "language": "ru",
+        "is_paid": True, "state": "PRO_ACTIVE", "onboarding_completed": True,
+        "referral_code": "", "display_name": "", "avatar_key": "",
+    }
+    data["notify"] = {"enabled": True}
+    held = []
+
+    def serve(route):
+        path = urlsplit(route.request.url).path
+        if path == "/iphone-pwa/course":
+            route.fulfill(status=200, content_type="text/html", body=pwa_document())
+        elif path == "/iphone-pwa/practice/voice":
+            route.fulfill(
+                status=200, content_type="text/html",
+                body=(STATIC / "course_v3_voice.html").read_text(encoding="utf-8"),
+            )
+        elif path == "/iphone-pwa":
+            route.fulfill(status=200, content_type="text/html", body="<html><body>Sign in</body></html>")
+        elif path == "/api/v3/pwa-auth/session":
+            route.fulfill(status=200, json={"ok": True, "user_id": 31, "csrf": "test-csrf"})
+        elif path == "/api/v3/pwa/map":
+            route.fulfill(status=200, json=data, headers={"X-HSK-PWA-User-ID": "31"})
+        elif path == "/api/v3/pwa/voice/me":
+            held.append(route)
+        elif path.startswith("/api/"):
+            route.fulfill(status=404, json={"ok": False, "error": "not_mocked"})
+        else:
+            file = (STATIC / path.lstrip("/")).resolve()
+            if file.is_file() and file.is_relative_to(STATIC.resolve()):
+                mime, _ = mimetypes.guess_type(file)
+                route.fulfill(path=str(file), content_type=mime or "application/octet-stream")
+            else:
+                route.fulfill(status=404, body="")
+
+    with sync_playwright() as playwright:
+        engine = os.getenv("PWA_E2E_ENGINE", "chromium")
+        browser = getattr(playwright, engine).launch()
+        try:
+            page = browser.new_context(viewport={"width": 390, "height": 844}, is_mobile=True).new_page()
+            page.set_default_timeout(12000)
+            page.route("**/*", serve)
+            path = "/iphone-pwa/course?lang=ru&onboarded=1" if surface == "course" else "/iphone-pwa/practice/voice"
+            if surface == "course":
+                page.goto(ORIGIN + path, wait_until="domcontentloaded")
+                page.locator("#s-course .uban").first.wait_for()
+                with page.expect_request("**/api/v3/pwa/voice/me"):
+                    page.locator('#nav button[data-s="voice"]').click()
+                page.wait_for_function("() => !!renderVoice._quotaPending")
+            else:
+                with page.expect_request("**/api/v3/pwa/voice/me"):
+                    page.goto(ORIGIN + path, wait_until="domcontentloaded")
+                page.wait_for_function("() => !!PWA_VOICE_SESSION")
+            assert len(held) == 1
+            if outcome == "account_replaced":
+                held.pop().fulfill(
+                    status=200, headers={"X-HSK-PWA-User-ID": "32"},
+                    json={"ok": True, "remaining_voice_limit": 999},
+                )
+            else:
+                held.pop().fulfill(status=401, json={"ok": False, "error": "pwa_session_required"})
+            page.wait_for_url(ORIGIN + "/iphone-pwa")
+            assert "999" not in page.content()
         finally:
             browser.close()

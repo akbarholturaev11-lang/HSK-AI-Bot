@@ -306,8 +306,13 @@ function voicePwaActor(){
 }
 function voiceStatus(){
   if(!PWA_VOICE_HOST)return fetch("/api/voice-practice/me?initData="+encodeURIComponent(initData()));
-  return voicePwaActor().then(function(){
-    return fetch("/api/v3/pwa/voice/me",{credentials:"same-origin",cache:"no-store",redirect:"error"});
+  return voicePwaActor().then(function(s){
+    return fetch("/api/v3/pwa/voice/me",{credentials:"same-origin",cache:"no-store",redirect:"error"}).then(function(res){
+      if(res.status===401||(res.ok&&res.headers.get("X-HSK-PWA-User-ID")!==String(s.user_id))){
+        PWA_VOICE_PROMISE=null;location.replace("/iphone-pwa");throw new Error("pwa_actor_changed");
+      }
+      return res;
+    });
   });
 }
 function voicePost(url,body,keepalive){
