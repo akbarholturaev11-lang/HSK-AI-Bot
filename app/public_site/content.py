@@ -253,7 +253,7 @@ PAGES.update({
         "Роҳнамои HSK AI",
         "Дар ин ҷо тарзи оғоз, истифодаи курс ва функсияҳо, инчунин қадамҳои обуна шарҳ дода мешаванд. Шартҳои дастрасӣ ва нархи ҷорӣ ҳамеша дар худи барнома нишон дода мешаванд.",
         [
-            ("Оғоз ва омӯзиш", "Барномаи HSK AI-ро гиред ё Telegram Mini App-ро кушоед, забонро интихоб кунед ва аз курси дастрас оғоз намоед. Дар Android ва desktop ҳисоби навро бо Google ё Apple бе Telegram сохтан мумкин аст."),
+            ("Оғоз ва омӯзиш", "Дар iPhone/iPad аз саҳифаи «Боргирӣ» HSK AI PWA-ро дар Safari кушоед: «Мубодила» → «Ба экрани асосӣ» → «Илова кардан». Барои Android ва desktop барномаи мувофиқро гиред; Telegram Mini App низ дастрас аст. Бо ҳисоби HSK AI-и пешина ворид шавед."),
             ("Курс ва функсияҳо", "Дарсҳо луғат, грамматика ва машқро мепайванданд. Тестҳоро анҷом диҳед, талаффузро машқ кунед ва ба хатоҳо баргардед."),
             ("Обуна ва пардохт", "Муддатро интихоб кунед, нархи дар экрани пардохт нишон додашударо бинед ва танҳо бо реквизитҳои ҳамон экран пардохт кунед. Расиди пардохт барои санҷиш фиристода мешавад."),
         ],
@@ -265,7 +265,7 @@ PAGES.update({
         "Руководство HSK AI",
         "Здесь собраны инструкции по началу обучения, курсу и функциям, а также по оформлению подписки. Актуальные условия доступа и цены всегда отображаются в приложении.",
         [
-            ("Начало обучения", "Скачайте HSK AI или откройте Telegram Mini App, выберите язык и начните с доступного курса. В Android и desktop новый аккаунт можно создать через Google или Apple без Telegram."),
+            ("Начало обучения", "На iPhone/iPad откройте HSK AI PWA со страницы «Скачать» в Safari, затем «Поделиться» → «На экран «Домой»» → «Добавить». Для Android и desktop скачайте соответствующее приложение; Telegram Mini App остаётся дополнительным способом. Для сохранения прогресса войдите в прежний аккаунт HSK AI."),
             ("Курс и функции", "Уроки объединяют лексику, грамматику и практику. Выполняйте тесты, тренируйте произношение и возвращайтесь к ошибкам."),
             ("Подписка и оплата", "Выберите срок, проверьте цену на экране оплаты и используйте только показанные там реквизиты. Для проверки потребуется отправить подтверждение платежа."),
         ],
@@ -277,7 +277,7 @@ PAGES.update({
         "HSK AI qo‘llanmasi",
         "Bu bo‘limda o‘qishni boshlash, kurs va funksiyalardan foydalanish hamda obuna olish tartibi tushuntiriladi. Joriy kirish shartlari va narx ilovaning o‘zida ko‘rsatiladi.",
         [
-            ("O‘qishni boshlash", "HSK AI ilovasini oling yoki Telegram Mini App’ni oching, tilni tanlang va o‘zingizga ochiq kursdan boshlang. Android va desktop’da Google yoki Apple orqali Telegramsiz yangi hisob yaratish mumkin."),
+            ("O‘qishni boshlash", "iPhone/iPad’da «Yuklab olish» sahifasidan HSK AI PWA’ni Safari’da oching: «Ulashish» → «Bosh ekranga qo‘shish» → «Qo‘shish». Android va desktop uchun mos ilovani yuklang; Telegram Mini App ham alohida variant. Progressni saqlash uchun avvalgi HSK AI hisobingizga kiring."),
             ("Kurs va funksiyalar", "Darslarda lug‘at, grammatika va mashqlar birlashadi. Testlarni bajaring, talaffuzni mashq qiling va xatolaringizga qayting."),
             ("Obuna va to‘lov", "Muddatni tanlang, to‘lov oynasidagi narxni tekshiring va faqat o‘sha yerda ko‘rsatilgan rekvizitlardan foydalaning. To‘lovni tekshirish uchun chek rasmi yuboriladi."),
         ],
@@ -400,7 +400,7 @@ PAGES.update({
         "Ҷавобҳои кӯтоҳ ба саволҳое, ки ҳангоми омӯзиш ва истифодаи HSK AI пайдо мешаванд. Маълумоти ҳисоби шумо ва нархи ҷорӣ дар барнома нишон дода мешаванд.",
         [
             ("HSK AI чист?", "HSK AI платформаи омӯзиши забони чинӣ бо курсҳои HSK 1–4, луғат, тестҳо ва AI-ёрдамчӣ мебошад. Он дар Android, компютер, Telegram Mini App ва iPhone PWA дастрас аст; забонҳо: тоҷикӣ, русӣ ва ӯзбекӣ. Сомонаи расмӣ: https://hskai.app."),
-            ("HSK AI-ро аз куҷо оғоз кунам?", "Барномаи Android ё desktop-ро гиред ва бо Google, Apple ё Telegram-и дастрас ворид шавед. Telegram Mini App низ дастрас аст. Забон ва курси худро интихоб кунед."),
+            ("HSK AI-ро аз куҷо оғоз кунам?", "Барои iPhone/iPad дар саҳифаи «Боргирӣ» PWA-ро интихоб карда, дар Safari кушоед ва бо «Мубодила» → «Ба экрани асосӣ» илова кунед. Барои Android ва desktop барномаи мувофиқро гиред. Telegram Mini App низ дастрас аст; ҳисоби пешинаи худро истифода баред."),
             ("Обуна чӣ қадар арзиш дорад?", "Нархҳои стандартии 7 ноябри 2026: пардохти якдафъаина 10 рӯз USD 3.15 / ¥19, 1 моҳ USD 7.49 / ¥49, 3 моҳ USD 19.44 / ¥149; обунаи худкори lava.top барои 1/3/6/12 моҳ USD 7.90 / 19.00 / 34.90 / 64.90. Пеш аз пардохт нархи ниҳоии экранро санҷед; шартҳо метавонанд тағйир ёбанд."),
             ("Пас аз фиристодани расид чӣ кор кунам?", "Расидро админ месанҷад. Дархости интизориро такрор накунед; ҳолати тасдиқ ё рад шудани пардохтро дар барнома бинед."),
             ("Обуна худкор тамдид мешавад?", "Дар пардохти оддӣ бо чек — не. Дар обунаи худкор бо корти Visa/Mastercard — ҳа; онро дар бахши обуна хомӯш кардан мумкин, мӯҳлати пардохтшуда боқӣ мемонад."),
@@ -417,7 +417,7 @@ PAGES.update({
         "Короткие ответы на вопросы, которые возникают при обучении и использовании HSK AI. Состояние аккаунта и актуальная цена отображаются в приложении.",
         [
             ("Что такое HSK AI?", "HSK AI — приложение для изучения китайского языка с курсами HSK 1–4, словарём, тестами и AI-помощником. Доступно на Android, компьютере, в Telegram Mini App и как iPhone PWA; языки: русский, таджикский и узбекский. Официальный сайт: https://hskai.app."),
-            ("С чего начать в HSK AI?", "Скачайте Android или desktop и войдите через доступный Google, Apple или Telegram. Также доступен Telegram Mini App. Выберите язык и свой курс."),
+            ("С чего начать в HSK AI?", "Для iPhone/iPad выберите PWA на странице «Скачать», откройте её в Safari и добавьте через «Поделиться» → «На экран «Домой»». Для Android и desktop скачайте соответствующее приложение. Telegram Mini App также доступен; используйте прежний аккаунт для сохранения прогресса."),
             ("Сколько стоит подписка?", "Стандартные цены на 7 ноября 2026: разовая оплата 10 дней USD 3.15 / ¥19, 1 месяц USD 7.49 / ¥49, 3 месяца USD 19.44 / ¥149; автоподписка lava.top на 1/3/6/12 месяцев USD 7.90 / 19.00 / 34.90 / 64.90. Перед оплатой проверяйте итоговую цену: условия могут измениться."),
             ("Что делать после отправки чека?", "Чек проверяет администратор. Не отправляйте повторный запрос, пока он ожидает проверки; статус подтверждения или отклонения показан в приложении."),
             ("Подписка продлевается автоматически?", "При обычной оплате с чеком — нет. При автоподписке картой Visa/Mastercard — да; её можно отключить в разделе подписки, оплаченный срок сохраняется."),
@@ -434,7 +434,7 @@ PAGES.update({
         "HSK AI’dan foydalanish va o‘rganish paytida ko‘p uchraydigan savollarga qisqa javoblar. Hisob holati va joriy narx ilovada ko‘rsatiladi.",
         [
             ("HSK AI nima?", "HSK AI — xitoy tilini o‘rganish uchun HSK 1–4 kurslari, lug‘at, testlar va AI yordamchiga ega ilova. Android, kompyuter, Telegram Mini App va iPhone PWA’da ishlaydi. O‘zbek, rus va tojik tillari mavjud. Rasmiy sayt: https://hskai.app."),
-            ("HSK AI’dan foydalanishni nimadan boshlayman?", "Android yoki desktop ilovasini oling va mavjud Google, Apple yoki Telegram orqali kiring. Telegram Mini App’dan ham foydalanish mumkin. Til va kursingizni tanlang."),
+            ("HSK AI’dan foydalanishni nimadan boshlayman?", "iPhone/iPad’da «Yuklab olish» sahifasidan PWA’ni tanlab, Safari’da «Ulashish» → «Bosh ekranga qo‘shish» orqali o‘rnating. Android yoki desktop uchun mos ilovani oling. Telegram Mini App ham mavjud; progress uchun avvalgi hisobingizga kiring."),
             ("Obuna qancha turadi?", "2026-yil 7-noyabrdagi standart narxlar: bir martalik 10 kun USD 3.15 / ¥19, 1 oy USD 7.49 / ¥49, 3 oy USD 19.44 / ¥149; lava.top avtomatik obunasi 1/3/6/12 oy USD 7.90 / 19.00 / 34.90 / 64.90. To‘lovdan oldin yakuniy narxni tekshiring: shartlar keyin o‘zgarishi mumkin."),
             ("Chek yuborgandan keyin nima qilaman?", "Chekni admin tekshiradi. So‘rov tekshirilayotgan paytda uni qayta yubormang; tasdiq yoki rad holatini ilovada ko‘ring."),
             ("Obuna avtomatik uzayadimi?", "Chek bilan oddiy to‘lovda — yo‘q. Visa/Mastercard orqali avtomatik obunada — ha; uni obuna bo‘limida istalgan vaqtda o‘chirish mumkin, to‘langan muddat saqlanadi."),
@@ -503,9 +503,9 @@ for _path, _page in PAGES.items():
         _page["sections"].extend(PUBLIC_STANDARD_TERMS[_page["lang"]][2:5])
 
 NAV_LABELS = {
-    "tg": {"courses": "Курсҳои HSK", "features": "Имкониятҳо", "guide": "Роҳнамо", "download": "Боргирӣ", "language": "Забон", "more": "Идома диҳед", "home": "Саҳифаи асосӣ"},
-    "ru": {"courses": "Курсы HSK", "features": "Возможности", "guide": "Руководство", "download": "Скачать", "language": "Язык", "more": "Продолжить", "home": "Главная"},
-    "uz": {"courses": "HSK kurslari", "features": "Imkoniyatlar", "guide": "Qo‘llanma", "download": "Yuklab olish", "language": "Til", "more": "Davom eting", "home": "Bosh sahifa"},
+    "tg": {"courses": "Курсҳои HSK", "features": "Имкониятҳо", "guide": "Роҳнамо", "download": "Боргирӣ", "language": "Забон", "more": "Меню", "home": "Саҳифаи асосӣ"},
+    "ru": {"courses": "Курсы HSK", "features": "Возможности", "guide": "Руководство", "download": "Скачать", "language": "Язык", "more": "Меню", "home": "Главная"},
+    "uz": {"courses": "HSK kurslari", "features": "Imkoniyatlar", "guide": "Qo‘llanma", "download": "Yuklab olish", "language": "Til", "more": "Menyu", "home": "Bosh sahifa"},
 }
 
 RELATED_LINKS = {

@@ -81,7 +81,7 @@ class OnboardingOptionsTests(unittest.TestCase):
         self.assertIn('item.s[LANG]=onboardingOptionMessage("onboardingGoal."+onboardingGoalCatalogId(item.k)+".subtitle"', html)
         self.assertIn('item.s[LANG]=onboardingOptionMessage("onboardingLevel."+item.k+".subtitle"', html)
         self.assertIn('onboardingOptionMessage("onboardingLevel.beginner.title"', html)
-        self.assertIn('hsk-course-i18n.js?v=20261021-395d978eaee1', html)
+        self.assertIn('hsk-course-i18n.js?v=20261021-7e6386c22f57', html)
         self.assertNotIn('fetch("/api/i18n/', html)
 
     def test_android_notification_strings_match_exact_native_fallbacks(self):

@@ -63,4 +63,32 @@
     link.addEventListener("click", function () { save(link.getAttribute("data-site-lang")); });
   });
   updateLinks(current || read() || "ru");
+
+  // Exclusive mobile header menus. Without this, both anchored overlays can
+  // cover each other after a quick globe/menu sequence on narrow screens.
+  var headerMenus = ".site-header details.language-switch, .site-header details.mobile-nav";
+  function compactHeader() {
+    return window.matchMedia ? window.matchMedia("(max-width: 850px)").matches : window.innerWidth <= 850;
+  }
+  document.addEventListener("toggle", function (event) {
+    var menu = event.target;
+    if (!compactHeader() || !menu.matches || !menu.matches(headerMenus) || !menu.open) return;
+    document.querySelectorAll(headerMenus).forEach(function (other) {
+      if (other !== menu) other.open = false;
+    });
+  }, true);
+  document.addEventListener("keydown", function (event) {
+    if (!compactHeader() || event.key !== "Escape") return;
+    document.querySelectorAll(headerMenus).forEach(function (menu) {
+      if (menu.open) {
+        menu.open = false;
+        var summary = menu.querySelector("summary");
+        if (summary) summary.focus();
+      }
+    });
+  });
+  document.addEventListener("click", function (event) {
+    if (!compactHeader() || (event.target.closest && event.target.closest(headerMenus))) return;
+    document.querySelectorAll(headerMenus).forEach(function (menu) { menu.open = false; });
+  });
 })();

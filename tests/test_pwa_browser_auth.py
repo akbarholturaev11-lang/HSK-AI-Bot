@@ -469,6 +469,22 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         guest = await self.client.get(path, follow_redirects=False)
         self.assertEqual(guest.status_code, 303)
         self.assertEqual(guest.headers["location"], "/iphone-pwa/onboarding/li")
+        translated = await self.client.get(
+            "/iphone-pwa?lang=ru&utm_source=instagram&source=download&ref=secret&request=abcdef",
+            follow_redirects=False,
+        )
+        self.assertEqual(translated.status_code, 303)
+        self.assertEqual(
+            translated.headers["location"],
+            "/iphone-pwa/onboarding/li?lang=ru&utm_source=instagram&source=download",
+        )
+        duplicate = await self.client.get(
+            "/iphone-pwa?lang=tj&utm_source=a&utm_source=b",
+            follow_redirects=False,
+        )
+        self.assertEqual(duplicate.headers["location"], "/iphone-pwa/onboarding/li?lang=tj")
+        invalid = await self.client.get("/iphone-pwa?lang=%3Cscript%3E", follow_redirects=False)
+        self.assertEqual(invalid.headers["location"], "/iphone-pwa/onboarding/li")
         self.assertEqual(guest.headers["cache-control"], "no-store")
         self.assertEqual(guest.headers["referrer-policy"], "no-referrer")
         public_shell = await self.client.get(guest.headers["location"])

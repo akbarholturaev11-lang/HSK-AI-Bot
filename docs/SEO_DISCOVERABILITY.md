@@ -205,3 +205,33 @@ Branch: `codex/website-unified-header-i18n-content-20261020`; not merged into `m
 - Nav links retain allowlisted campaign labels. Login tokens, device tokens and other arbitrary query parameters are not propagated.
 - `guide/faq` pages expose factual FAQPage JSON-LD alongside existing WebPage/SoftwareApplication metadata. No assertions of search indexing, AI recommendation, test pass, or production deployment are made.
 - Smoke and unit test expectations have been extended to cover locale links, product-first hero, the installer header and static language-preference contract. Run the checks in section I and manually test `/download?lang=ru` -> `/ru/guide/` -> `/download?lang=ru`, the other locales, direct entry, first visit, Safari localStorage denial and all four installer platforms before merging.
+
+## iPhone PWA representation (2026-11-09)
+
+The public `/download` page exposes an always-available iOS **WebApplication** with `installUrl` at `https://hskai.app/iphone-pwa`. Do not generate a false iOS `.ipa` or binary `downloadUrl`. The primary iPhone CTA no longer points to Telegram; the bot remains an optional separate channel and referral-specific handoff. The mobile website uses a globe-only language selector and hamburger navigation; the full desktop header is unchanged. See `docs/iphone-pwa/SITE_DOWNLOAD_HANDOFF_2026-11-09.md`.
+
+## 2026-11-09: current download/PWA source-of-truth (PR #291)
+
+The original Telegram-oriented copy and SEO notes earlier in this file document
+historical implementation. The **current source change** is that the public
+`/download` page exposes iOS as an installable **WebApplication** with
+`url` and `installUrl` at `https://hskai.app/iphone-pwa` (no fictitious
+native IPA or binary download link). The native Android/macOS/Windows release
+listing and canonical URLs remain unchanged.
+
+The iOS primary CTA is PWA. It forwards a validated display language
+(`uz`, `ru`, `tj`) and only allowlisted anonymous UTM/source tags;
+it never forwards device-link request secrets or attributes ordinary PWA
+registration as a Telegram referral. Valid iOS invitations still have a
+secondary Telegram-bot verification link until a verified PWA-specific referral
+contract exists. This must not inflate native-download or bot-conversion metrics.
+
+At widths at most 850px the public header uses a globe language selector and
+hamburger menu; desktop retains inline navigation. Public guide/FAQ copy covers
+Safari Share → Add to Home Screen, and official UZ/RU/TJ catalog content is
+compiled from `localization/public_site/content.py`.
+
+Status: committed in feature branch; **not a production deployment or Search
+Console confirmation**. Verify the tutorial MP4 for an obsolete Railway
+hostname, iOS Safari playback, and production `/iphone-pwa` enablement before
+promoting the PR.

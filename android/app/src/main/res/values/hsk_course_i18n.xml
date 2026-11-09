@@ -173,10 +173,10 @@
     <string name="hsk_course_download_page_free_download" formatted="false">Bepul yuklash</string>
     <string name="hsk_course_download_page_guide_eyebrow" formatted="false">O‘rnatish</string>
     <string name="hsk_course_download_page_guide_title" formatted="false">Uch qadamda tayyor</string>
-    <string name="hsk_course_download_page_ios_download" formatted="false">Telegramda ochish</string>
-    <string name="hsk_course_download_page_ios_security" formatted="false">Mini App Telegram ichida ochiladi. Hech narsa o‘rnatilmaydi, hisobingiz va progressingiz o‘sha yerda qoladi.</string>
-    <string name="hsk_course_download_page_ios_security_title" formatted="false">Hech narsa o‘rnatilmaydi</string>
-    <string name="hsk_course_download_page_ios_status" formatted="false">iOS uchun alohida ilova hozircha yo‘q — Telegram ichidagi Mini App to‘liq ishlaydi.</string>
+    <string name="hsk_course_download_page_ios_download" formatted="false">HSK AI PWA’ni ochish</string>
+    <string name="hsk_course_download_page_ios_security" formatted="false">PWA Safari orqali App Store’siz qo‘shiladi. Kurs, progress va Pro uchun avvalgi HSK AI hisobingizga kiring.</string>
+    <string name="hsk_course_download_page_ios_security_title" formatted="false">Bosh ekranga o‘rnatish</string>
+    <string name="hsk_course_download_page_ios_status" formatted="false">iPhone va iPad uchun HSK AI PWA mavjud. Uni Safari’da ochib, bosh ekranga qo‘shing.</string>
     <string name="hsk_course_download_page_ios_title" formatted="false">iPhone va iPad uchun</string>
     <string name="hsk_course_download_page_lead" formatted="false">Qurilmangizni tanlang</string>
     <string name="hsk_course_download_page_loading" formatted="false">Tayyorlanmoqda…</string>
@@ -204,7 +204,7 @@
     <string name="hsk_course_download_page_referral_android_title" formatted="false">Taklif bilan hisob ochish</string>
     <string name="hsk_course_download_page_referral_code_label" formatted="false">Taklif kodi</string>
     <string name="hsk_course_download_page_referral_copy" formatted="false">Kodni nusxalash</string>
-    <string name="hsk_course_download_page_referral_ios_body" formatted="false">Telegram botini oching va unda 2 ta AI savoliga javob oling. Shunda taklif hisoblanadi.</string>
+    <string name="hsk_course_download_page_referral_ios_body" formatted="false">Asosiy tugma HSK AI PWA’ni Safari’da ochadi. Taklif bonusi uchun quyidagi alohida Telegram havolasini bosing va botda 2 ta AI savoliga javob oling. PWA’ga kirishning o‘zi taklifni tasdiqlamaydi.</string>
     <string name="hsk_course_download_page_referral_ios_title" formatted="false">Taklif qanday hisoblanadi?</string>
     <string name="hsk_course_download_page_referral_manual" formatted="false">Kodni belgilang va qo‘lda nusxalang.</string>
     <string name="hsk_course_download_page_referral_open" formatted="false">O‘rnatilgan ilovada ochish</string>
