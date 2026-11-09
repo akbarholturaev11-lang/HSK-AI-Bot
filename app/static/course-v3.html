@@ -6334,12 +6334,12 @@ function renderVoice(){
   $("#s-voice").innerHTML='<div class="htop"><h1 class="section-title">AI Voice</h1></div>'
     +'<div class="voicebox"><div class="pd">'+pandaChar("talk")+'</div><h3>'+courseMessage("voiceTitle",t.voiceTitle)+'</h3><p>'+courseMessage("voiceSub",t.voiceSub)+'</p><p class="voice-quota" id="voice-quota" role="status" aria-live="polite" hidden></p><button onclick="App.openVoiceCall()"><i class="ti ti-phone"></i> '+courseMessage("voiceStart",t.voiceStart)+'</button></div>';
   var quota=document.getElementById("voice-quota");
-  var voiceStatus=PWA_COURSE_HOST?(SCREEN==="voice"?pwaCourseActor().then(function(){
+  var voiceStatus=PWA_COURSE_HOST?(SCREEN==="voice"?(renderVoice._quotaPending||(renderVoice._quotaPending=pwaCourseActor().then(function(){
     return fetch("/api/v3/pwa/voice/me",{credentials:"same-origin",cache:"no-store",redirect:"error"});
   }).then(function(res){return res.ok?res.json():null}).then(function(data){
     if(!data||typeof data.remaining_voice_limit!=="number")return null;
     return {remaining:data.remaining_voice_limit<0?null:data.remaining_voice_limit};
-  }):null):(INIT_DATA&&window.CourseLimitStatus?CourseLimitStatus.get("voice"):null);
+  }).finally(function(){renderVoice._quotaPending=null}))):null):(INIT_DATA&&window.CourseLimitStatus?CourseLimitStatus.get("voice"):null);
   if(voiceStatus){
     voiceStatus.then(function(status){
       if(!quota.isConnected)return;

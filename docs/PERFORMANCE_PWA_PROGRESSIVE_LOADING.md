@@ -25,6 +25,7 @@ This is a **release acceptance criterion**, not an optional visual enhancement.
 - [ ] Browser slow-network filmstrip and LCP/CLS measurements (baseline and after).
 - [x] Independent Rating and Friends loading boundaries: in-flight deduplication, no premature empty state on locale re-render, per-section skeletons, and separate failure/retry paths.
 - [x] Profile accuracy placeholder while its own API is pending; on successful response replace the placeholder without blocking the profile header, navigation, account controls or Pro gate.
+- [x] Verified duplicate PWA Voice quota GET on locale re-render while the first request is pending; reuse a single in-flight Promise, then fetch fresh quota on a later visit. Chromium and WebKit mocked-route regression covers both cases; Telegram transport is unchanged.
 - [ ] Split **additional optional course-map sub-sections** into independent API boundaries only after access/query dependency and row-lock analysis.
 - [ ] Audit and convert genuinely offscreen images to responsive WebP/AVIF without regressing visible mascot/brand.
 - [ ] All affected iPhone Safari flows with live-like latency, including auth replacement and Pro/lesson updates.
