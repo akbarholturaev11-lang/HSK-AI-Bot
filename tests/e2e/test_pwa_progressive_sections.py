@@ -141,8 +141,15 @@ def test_course_ready_while_rating_referrals_and_profile_stats_load_independentl
             )
             assert page.locator("#s-rating .hsk-pwa-section-loading").count() == 0
 
-            # A failed optional stats read must not erase the profile header,
-            # trap the whole PWA or replace the course. Retry only that card.
+            # Returning to the same verified PWA account inside the short
+            # freshness window must reuse memory (no duplicate SQL-backed GET).
+            page.locator('#nav button[data-s="profile"]').click()
+            page.locator("#s-profile .profile-accuracy").wait_for()
+            assert len(held["profile"]) == 0
+            page.evaluate("PROFILE_DETAIL_LOADED_AT=Date.now()-31000")
+            page.locator('#nav button[data-s="rating"]').click()
+            # When cache becomes stale, the background read is revalidated;
+            # failures remain local and never erase the rest of the page.
             page.locator('#nav button[data-s="profile"]').click()
             page.wait_for_function("() => typeof PROFILE_DETAIL_PENDING !== 'undefined' && PROFILE_DETAIL_PENDING")
             assert len(held["profile"]) == 1
