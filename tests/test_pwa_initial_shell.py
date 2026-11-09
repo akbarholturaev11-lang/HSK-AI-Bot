@@ -52,6 +52,11 @@ class PwaInitialShellTests(unittest.TestCase):
         self.assertEqual(first.body.count(b'class="pwa-initial-shell"'),
                          self.canonical.count(b'class="pwa-initial-shell"'))
         self.assertNotIn(b"hsk-pwa-boot-shell", first.body)
+        self.assertEqual(first.body.count(b'id="hsk-pwa-progressive-sections"'), 1)
+        self.assertIn(b".hsk-pwa-section-loading", first.body)
+        self.assertIn(b".hsk-pwa-profile-accuracy-loading", first.body)
+        self.assertIn(b"prefers-reduced-motion:reduce", first.body)
+        self.assertNotIn(b'<script src="/assets/telegram-web-app.js?v=20261019-1"></script>', first.body)
         self.assertIn(b"iphone-pwa-inline-pro.js", first.body)
         second = _pwa_inline_html(request(etag=first.headers["ETag"]), path, {})
         self.assertEqual(second.status_code, 304)
@@ -64,6 +69,7 @@ class PwaInitialShellTests(unittest.TestCase):
             self.assertEqual(page.status_code, 200)
             self.assertIn(b"Other screen", page.body)
             self.assertNotIn(b"pwa-initial-shell", page.body)
+            self.assertNotIn(b"hsk-pwa-progressive-sections", page.body)
 
     def test_inline_response_never_modifies_shared_file(self):
         _pwa_inline_html(request(), "app/static/course-v3.html", {})

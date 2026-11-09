@@ -88,6 +88,23 @@ def _pwa_html(request: Request, path: str, headers: dict[str, str]) -> Response:
 # The injected HTML is separately ETagged by its FULL bytes, not by file SHA.
 _PWA_INLINE_PRO_HTML = "\n<link rel=\"stylesheet\" href=\"/course_v3_data/iphone-pwa-inline-pro.css?v=20261108-e8010ea28fdc\">\n<script src=\"/course_v3_data/iphone-pwa-inline-pro.js?v=20261108-8d96888d601f\"></script>\n<script src=\"/course_v3_data/iphone-pwa-inline-pro-bridge.js?v=20261108-afd4f9d80534\"></script>\n".encode("utf-8")
 
+# Scope only to the verified browser PWA. The native first-paint skeleton
+# stays in course-v3.html; these are ONLY independent secondary section states.
+_PWA_PROGRESSIVE_SECTIONS_CSS = b'''<style id="hsk-pwa-progressive-sections">
+html.hsk-pwa-browser .hsk-pwa-section-loading{display:block;padding:12px 0 24px;min-height:220px}
+html.hsk-pwa-browser .hsk-pwa-section-loading .hsk-pwa-load-card{border-radius:18px;background:var(--card,#f1f0ee);border:1px solid var(--line,rgba(0,0,0,.08));min-height:78px;margin:12px 0;padding:16px}
+html.hsk-pwa-browser .hsk-pwa-section-loading .hsk-pwa-load-card:first-child{min-height:110px}
+html.hsk-pwa-browser .hsk-pwa-section-loading .hsk-pwa-load-line{width:56%;height:13px;margin:9px 0;border-radius:9px;background:var(--hsk-divider,#dedddc);animation:hsk-pwa-section-pulse 1.5s ease-in-out infinite alternate}
+html.hsk-pwa-browser .hsk-pwa-section-loading .hsk-pwa-load-line.short{width:34%}
+html.hsk-pwa-browser .hsk-pwa-profile-accuracy-loading{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;min-height:138px;margin:14px 0}
+html.hsk-pwa-browser .hsk-pwa-profile-accuracy-loading .hsk-pwa-load-ring{width:76px;height:76px;border-radius:50%;border:10px solid var(--hsk-divider,#dedddc);margin:0 auto 10px;opacity:.75;animation:hsk-pwa-section-pulse 1.5s ease-in-out infinite alternate}
+html.hsk-pwa-browser .hsk-pwa-profile-accuracy-loading .hsk-pwa-load-line{height:12px;width:55%;border-radius:8px;background:var(--hsk-divider,#dedddc);margin:auto;opacity:.75}
+@keyframes hsk-pwa-section-pulse{from{opacity:.5}to{opacity:.95}}
+@media(prefers-reduced-motion:reduce){html.hsk-pwa-browser .hsk-pwa-section-loading .hsk-pwa-load-line,html.hsk-pwa-browser .hsk-pwa-profile-accuracy-loading .hsk-pwa-load-ring{animation:none}}
+</style>'''
+_PWA_TELEGRAM_SDK_SCRIPT = b'<script src="/assets/telegram-web-app.js?v=20261019-1"></script>'
+
+
 _PWA_INLINE_CACHE: dict[tuple[str, int, int], tuple[bytes, str]] = {}
 
 
@@ -101,6 +118,16 @@ def _pwa_inline_html(request: Request, path: str, headers: dict[str, str],
             source = handle.read()
         if source.count(b"</body>") != 1:
             raise RuntimeError("pwa_inline_html_invalid")
+        if path == "app/static/course-v3.html":
+            # Safari does not use Telegram WebApp. Remove its blocking SDK
+            # from the authenticated PWA response only, never shared source.
+            if source.count(_PWA_TELEGRAM_SDK_SCRIPT) == 1:
+                source = source.replace(_PWA_TELEGRAM_SDK_SCRIPT, b"", 1)
+            else:
+                logging.getLogger(__name__).warning("pwa_telegram_sdk_tag_changed")
+            # The new upstream shell is already in shared HTML. Inject CSS
+            # only for independent Rating/Friends/Profile loading boundaries.
+            source = source.replace(b"</head>", _PWA_PROGRESSIVE_SECTIONS_CSS + b"</head>", 1)
         document = source.replace(b"</body>", _PWA_INLINE_PRO_HTML + b"</body>", 1)
         etag = 'W/"' + hashlib.sha256(document).hexdigest()[:32] + '"'
         cached = document, etag
