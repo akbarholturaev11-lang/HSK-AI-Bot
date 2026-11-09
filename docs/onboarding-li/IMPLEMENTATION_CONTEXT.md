@@ -6,7 +6,25 @@
 >
 > **Last verified:** 2026-11-09; **active new-main branch:** `feature/li-onboarding-mainffbff9-20261108`; **branch baseline:** `main@ffbff9492e0713686f57a76443bef17a45c4041c`; **source:** GitHub `akbarholturaev11-lang/HSK-AI-Bot`. Prior docs-only branch `feature/li-onboarding-handoff-20261108` is archival (based on old 4ca0d2d); **do not implement there**.
 >
-> **REAL ONBOARDING IMPLEMENTATION STATUS: PARTIAL ON FEATURE BRANCH.** The isolated 23-state Li UI, optional iPhone install guide and server adapters are committed; real MP4, final all-green CI/device validation, default route cutover, production deploy are NOT complete.
+> **REAL ONBOARDING IMPLEMENTATION STATUS: PARTIAL ON FEATURE BRANCH.** The isolated 23-state Li UI, optional iPhone install guide and server adapters are committed; final all-green CI/device validation, default route cutover, production deploy are NOT complete (approved real MP4 is committed).
+
+## 2026-11-09 CI audit continuation — 975fa78ac6ec2a3ff53958f104cbf1e917084c07
+
+**Current branch:** `feature/li-onboarding-mainffbff9-20261108`; PR #282 draft. No main merge, no production deploy.
+
+- Previous HEAD `573ba2ff8536966664db16231574721a2025ca14`: backend targeted job **SUCCESS**; native PostgreSQL **SUCCESS**; localization P0 **SUCCESS**; Android **SUCCESS**; Admin PWA **SUCCESS**; Smart Reminder and miniapp-ui overall **FAILURE**.
+- Miniapp-ui failure (run `42552066084`, job `128949691275`): `tests/e2e/test_pwa_progressive_shell.py::test_first_paint_localizes_before_any_account_api[tj]` asserted HTML lang `tj`, while initial shell correctly emits standard BCP 47 `tg`. App locale remains `tj`. Fixed regression test, **not** the canonical HTML language.
+- Smart Reminder failure (run `42552066114`, job `128949622480`): `tests/test_smart_reminder_pwa.py::test_job_is_not_sent_before_its_scheduled_time` used `self.expiry` but only child fixture `self.case.expiry` exists. Fixed test reference without changing sender behavior.
+- Fixes committed as `d30200efd444df0ce2aaf46070fa37103944131b` and `975fa78ac6ec2a3ff53958f104cbf1e917084c07` respectively.
+- New HEAD's CI: Backend targeted run `42567353011`, Local-first i18n run `42567353014`, Smart Reminder run `42567353017` triggered; **not complete when last checked**. Do not claim green or approve PR until current HEAD CI completes.
+- Progressive-loading status is partial PWA shell/independent section loading implementation; unchanged default onboarding cutover remains a release gate. Do not cache or trust Pro/auth/course progress from local UI.
+- **Video note:** approved 709,956-byte MP4 has been committed on the feature branch, but real Safari device/network validation remains outstanding. Earlier header prose still contains a stale `real MP4 ... NOT complete` statement; do not take it literally.
+
+### Next
+1. Check current HEAD and statuses before any new edits; inspect failures from **current** CI, not prior SHA.
+2. Audit any failed browser tests against real route constraints and avoid relaxing validations.
+3. Preserve RU/UZ/TJ, Mini App behavior, secure actor ownership and 9916-line course source localization baseline; log real CI verification.
+4. Do not merge/deploy or enable live default routes without explicit authorization.
 
 ## 2026-11-09 USER SCOPE CLARIFICATION — progressive loading applies ONLY to our Li onboarding
 
