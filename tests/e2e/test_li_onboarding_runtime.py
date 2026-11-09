@@ -582,6 +582,47 @@ def test_trial_activation_denial_offers_real_retry_and_free_course():
         browser.close()
 
 
+def test_pwa_lost_trial_start_reply_reconciles_without_duplicate_grant():
+    # Server committed the grant, but Safari received an error instead of the
+    # /start response. Read the real account trial state before retrying.
+    with pw.sync_playwright() as playwright:
+        browser = getattr(playwright, os.environ.get('PWA_E2E_ENGINE', 'chromium')).launch()
+        page, captured = _page(browser, pwa=True, trial_eligible=True)
+        expiry = "2026-11-16T12:00:00+00:00"
+
+        def intercepted_start(route):
+            captured["trial_start"].append({})
+            route.fulfill(
+                status=503, body=json.dumps({"ok": False, "error": "reply_lost"}),
+                content_type="application/json",
+            )
+
+        def read_authoritative_status(route):
+            active = bool(captured["trial_start"])
+            route.fulfill(
+                body=json.dumps({"ok": True, "trial": {
+                    "eligible": not active, "reason": "trial_already_used" if active else "",
+                    "days": 7, "active": active,
+                    "ends_at": expiry if active else None,
+                }}), content_type="application/json",
+            )
+
+        page.route("**/api/v3/pwa/trial/start", intercepted_start)
+        page.route("**/api/v3/pwa/trial/status", read_authoritative_status)
+        _advance_to_profile(page)
+        page.locator("#footer .cta").click()
+        page.wait_for_function("window.screen==='pro'")
+        for _ in range(5):
+            page.locator("#footer .cta").click()
+        page.wait_for_function("window.screen==='trialDone'")
+        assert len(captured["trial_start"]) == 1
+        assert page.locator(".li-remote-error").count() == 0
+        assert page.locator("#stage").get_attribute("aria-busy") == "false"
+        assert len(captured["post"]) == 1
+        assert not captured["pageerrors"]
+        browser.close()
+
+
 def test_trial_slides_cannot_forge_activation_or_two_day_push_claim():
     with pw.sync_playwright() as playwright:
         browser = getattr(playwright, os.environ.get('PWA_E2E_ENGINE', 'chromium')).launch()
