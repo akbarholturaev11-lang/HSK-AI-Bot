@@ -118,7 +118,7 @@ def test_course_ready_while_rating_referrals_and_profile_stats_load_independentl
             # even before analytics responds, the verified trial badge must
             # never momentarily claim this user purchased Pro.
             assert "Sinov" in page.locator("#s-profile .profile-access-badge").inner_text()
-            held["profile"].pop().fulfill(status=200, json={
+            held["profile"].pop().fulfill(status=200, headers={"X-HSK-PWA-User-ID": "31"}, json={
                 "ok": True,
                 "stats": {"answer_accuracy": {
                     "overall": {"percent": 79}, "today": {"percent": 80},
@@ -132,7 +132,7 @@ def test_course_ready_while_rating_referrals_and_profile_stats_load_independentl
             assert len(held["friends"]) == 1
             page.evaluate("App.setLang('ru')")
             assert len(held["friends"]) == 1
-            held["friends"].pop().fulfill(status=200, json={
+            held["friends"].pop().fulfill(status=200, headers={"X-HSK-PWA-User-ID": "31"}, json={
                 "ok": True, "joined_count": 0, "active_count": 0,
                 "required": 2, "referrals": [],
             })
@@ -152,7 +152,7 @@ def test_course_ready_while_rating_referrals_and_profile_stats_load_independentl
             page.locator("#s-profile .hsk-pwa-profile-stats-error button").click()
             page.locator("#s-profile .hsk-pwa-profile-accuracy-loading").wait_for()
             assert len(held["profile"]) == 1
-            held["profile"].pop().fulfill(status=200, json={
+            held["profile"].pop().fulfill(status=200, headers={"X-HSK-PWA-User-ID": "31"}, json={
                 "ok": True, "stats": {"answer_accuracy": {
                     "overall": {"percent": 84}, "today": {"percent": 88},
                 }},
@@ -160,5 +160,18 @@ def test_course_ready_while_rating_referrals_and_profile_stats_load_independentl
             page.locator("#s-profile .profile-accuracy").wait_for()
             assert page.locator("#s-profile .hsk-pwa-profile-stats-error").count() == 0
             assert errors == []
+
+            # A cookie replaced in another tab could return a different
+            # learner's GET payload while the old map is still in memory.
+            # Refuse that response before rendering any cross-account data.
+            page.evaluate("App.show('rating', 'friends');retryReferrals()")
+            page.wait_for_function("() => typeof referralMeta !== 'undefined' && referralMeta.loading")
+            assert len(held["friends"]) == 1
+            held["friends"].pop().fulfill(
+                status=200, headers={"X-HSK-PWA-User-ID": "32"},
+                json={"ok": True, "referrals": [{"name": "Other account secret"}]},
+            )
+            page.wait_for_url(ORIGIN + "/iphone-pwa")
+            assert "Other account secret" not in page.content()
         finally:
             browser.close()
