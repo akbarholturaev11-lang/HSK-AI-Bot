@@ -51,7 +51,7 @@ function markAuthHandoff(provider){
   // A browser-only navigation intent, not OAuth proof or a user identity.
   // Canonical PWA auth still verifies the HttpOnly session and CSRF.
   try{sessionStorage.setItem(OAUTH_DRAFT_MARKER,
-    JSON.stringify({at:Date.now(),provider:provider}))}catch(_){}
+    JSON.stringify({at:Date.now(),provider:provider,lang:global.LANG}))}catch(_){}
 }
 function validAuthHandoff(){
   try{
