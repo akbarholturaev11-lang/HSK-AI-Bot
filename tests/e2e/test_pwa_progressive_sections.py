@@ -141,6 +141,18 @@ def test_course_ready_while_rating_referrals_and_profile_stats_load_independentl
             page.locator('#nav button[data-s="profile"]').click()
             page.locator("#s-profile .hsk-pwa-profile-accuracy-loading").wait_for()
             assert len(held["profile"]) == 1
+            # The independently loaded accuracy block must not rebuild Profile.
+            from tests.pwa_layout_geometry import capture_geometry, assert_reserved_layout
+            accuracy_anchors = {
+                "overall-ring": "#s-profile .profile-accuracy>div:nth-child(1) .accuracy-ring",
+                "today-ring": "#s-profile .profile-accuracy>div:nth-child(2) .accuracy-ring",
+                "accuracy": "#s-profile .profile-accuracy",
+                "nav": "#nav",
+            }
+            profile_loading_boxes = capture_geometry(page, accuracy_anchors)
+            page.locator("#s-profile .profile-head").evaluate(
+                "(node) => node.dataset.apiPreserve = 'yes'"
+            )
             # Profile settings/name are present even though accuracy is pending.
             assert page.locator("#s-profile .profile-display-name").is_visible()
             assert page.locator("#s-profile .profile-settings").is_visible()
@@ -154,7 +166,14 @@ def test_course_ready_while_rating_referrals_and_profile_stats_load_independentl
                     "overall": {"percent": 79}, "today": {"percent": 80},
                 }},
             })
-            page.locator("#s-profile .profile-accuracy").wait_for()
+            page.wait_for_function(
+                "() => !!document.querySelector('#s-profile .profile-accuracy') &&"
+                " !document.querySelector('#s-profile .hsk-pwa-profile-accuracy-loading')"
+            )
+            profile_ready_boxes = capture_geometry(page, accuracy_anchors)
+            assert_reserved_layout(profile_loading_boxes, profile_ready_boxes)
+            assert page.locator("#s-profile .profile-head").get_attribute("data-api-preserve") == "yes"
+            assert "79%" in page.locator("#s-profile .profile-accuracy").inner_text()
             assert page.locator("#s-profile .hsk-pwa-profile-accuracy-loading").count() == 0
 
             page.evaluate("App.show('rating', 'friends')")
@@ -185,6 +204,10 @@ def test_course_ready_while_rating_referrals_and_profile_stats_load_independentl
             assert len(held["profile"]) == 1
             held["profile"].pop().fulfill(status=503, json={"ok": False})
             page.locator("#s-profile .hsk-pwa-profile-stats-error").wait_for()
+            assert_reserved_layout(
+                profile_ready_boxes, capture_geometry(page, accuracy_anchors)
+            )
+            assert page.locator("#s-profile .profile-head").get_attribute("data-api-preserve") == "yes"
             assert page.locator("#s-profile .profile-display-name").is_visible()
             page.locator("#s-profile .hsk-pwa-profile-stats-error button").click()
             page.locator("#s-profile .hsk-pwa-profile-accuracy-loading").wait_for()
