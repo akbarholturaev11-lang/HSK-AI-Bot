@@ -27,3 +27,19 @@
 .li-install-close:focus-visible,.li-install-how:focus-visible,.li-install-browser-link:focus-visible{outline:3px solid #182c46;outline-offset:3px}
 @media(max-height:660px){.li-install-title{font-size:21px;margin-top:20px}.li-install-hero{max-height:46dvh;margin-top:14px}.li-install-video-stage{min-height:calc(100dvh - 65px)}.li-install-media{max-height:67dvh;width:min(100%,calc(67dvh * 512 / 910))}}
 @media(prefers-reduced-motion:reduce){.li-install-video-loading{animation:none}.li-install-overlay,.li-install-card{animation:none;transition:none}}
+
+/* One uninterrupted, non-authoritative Google/Telegram wait scene.
+   Uses the real HSKCharacters panda loading pose from lesson/practice. */
+html.li-auth-resuming .wrap{visibility:hidden}
+.li-auth-wait{position:fixed;inset:0;z-index:14000;background:#FDF9F0;color:#211D17;display:grid;place-items:center;padding:calc(24px + env(safe-area-inset-top,0px)) 24px calc(24px + env(safe-area-inset-bottom,0px));box-sizing:border-box}
+.li-auth-wait-inner{width:100%;max-width:390px;display:flex;flex-direction:column;align-items:center;text-align:center}
+.li-auth-wait-panda{width:186px;height:208px;display:grid;place-items:center;overflow:hidden}
+.li-auth-wait-panda .hsk-character{width:100%;height:100%}
+.li-auth-wait-title{margin:12px 0 0;font-size:clamp(20px,5.4vw,24px);font-weight:800;line-height:1.3;letter-spacing:-.3px}
+.li-auth-wait-subtitle{margin:12px 0 0;font-size:clamp(15px,4vw,17px);font-weight:500;line-height:1.45;color:#69645D}
+.li-auth-wait-dots{display:flex;justify-content:center;gap:13px;margin-top:24px}
+.li-auth-wait-dots i{display:block;width:10px;height:10px;border-radius:50%;background:#E04A40;animation:liAuthDot 1.15s ease-in-out infinite alternate}
+.li-auth-wait-dots i:nth-child(2){animation-delay:.22s}
+.li-auth-wait-dots i:nth-child(3){animation-delay:.44s}
+@keyframes liAuthDot{from{opacity:1;transform:scale(1)}to{opacity:.35;transform:scale(.7)}}
+@media(prefers-reduced-motion:reduce){.li-auth-wait-dots i{animation:none}.li-auth-wait-dots i:nth-child(2){opacity:.65}.li-auth-wait-dots i:nth-child(3){opacity:.4}}
