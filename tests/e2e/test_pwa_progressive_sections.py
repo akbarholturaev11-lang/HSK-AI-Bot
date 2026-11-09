@@ -136,6 +136,25 @@ def test_course_ready_while_rating_referrals_and_profile_stats_load_independentl
                 "() => typeof referralMeta !== 'undefined' && !referralMeta.loading"
             )
             assert page.locator("#s-rating .hsk-pwa-section-loading").count() == 0
+
+            # A failed optional stats read must not erase the profile header,
+            # trap the whole PWA or replace the course. Retry only that card.
+            page.locator('#nav button[data-s="profile"]').click()
+            page.wait_for_function("() => typeof PROFILE_DETAIL_PENDING !== 'undefined' && PROFILE_DETAIL_PENDING")
+            assert len(held["profile"]) == 1
+            held["profile"].pop().fulfill(status=503, json={"ok": False})
+            page.locator("#s-profile .hsk-pwa-profile-stats-error").wait_for()
+            assert page.locator("#s-profile .profile-display-name").is_visible()
+            page.locator("#s-profile .hsk-pwa-profile-stats-error button").click()
+            page.locator("#s-profile .hsk-pwa-profile-accuracy-loading").wait_for()
+            assert len(held["profile"]) == 1
+            held["profile"].pop().fulfill(status=200, json={
+                "ok": True, "stats": {"answer_accuracy": {
+                    "overall": {"percent": 84}, "today": {"percent": 88},
+                }},
+            })
+            page.locator("#s-profile .profile-accuracy").wait_for()
+            assert page.locator("#s-profile .hsk-pwa-profile-stats-error").count() == 0
             assert errors == []
         finally:
             browser.close()
