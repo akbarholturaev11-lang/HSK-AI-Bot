@@ -8,6 +8,12 @@
 >
 > **REAL ONBOARDING IMPLEMENTATION STATUS: PARTIAL ON FEATURE BRANCH.** The isolated 23-state Li UI, optional iPhone install guide and server adapters are committed; final all-green CI/device validation, default route cutover, production deploy are NOT complete (approved real MP4 is committed).
 
+## 2026-11-09 WEBKIT VIDEO CI FAILURE ROOT CAUSE + REAL MP4 TEST
+
+- CI `42570969144` / job `miniapp-ui` WebKit `tests/e2e/test_li_onboarding_install.py::test_media_stays_optional_but_real_metadata_can_swap_to_vertical_video` failed (1 of 25 tests; 24 passed). **This exposed a faulty test fixture**, NOT proof the real MP4 is invalid: `_prepare(...,has_video=True)` returned only a 12-byte `ftypmp42` fake with status 206 and no `Content-Range`, then manually dispatched a `loadedmetadata` event. WebKit correctly fired an asynchronous decoder error and the app retained its usable text fallback.
+- Corrected test fixture in `tests/e2e/test_li_onboarding_install.py`: load actual committed `app/static/assets/onboarding/iphone-home-screen.mp4` (709,956 bytes); serve `200` or legitimate `206 Partial Content` with valid `Content-Range` and `Accept-Ranges`; remove fabricated event; assert the native video player becomes visible only after real metadata. Commit `c1c0f949011621c0150b6465c00776d2df807077`.
+- No production video/player was changed. Its original fail-closed text fallback remains intact if Safari cannot decode the file or download stalls. **Latest-head WebKit CI remains unverified until it completes.** Physical iPhone playback is a separate release acceptance gate.
+
 ## 2026-11-09 PWA TRIAL POST RESPONSE-LOSS AUDIT — feature branch only
 
 - Before this patch, current `87b4ee6a2c15` CI confirmed **Backend targeted SUCCESS** (targeted-tests + miniapp-ui + native-postgres), **RU/UZ/TJ source-contract SUCCESS** and **Android SUCCESS**; Smart Reminder storage still ran. No main merge or production deploy.
