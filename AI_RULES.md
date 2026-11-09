@@ -28,6 +28,20 @@ Chromium/WebKit regressions in
 changes as well. Never claim a CI pass is equivalent to measured performance.
 
 
+## Always preserve PWA loading geometry for future features
+
+Every new or changed learner PWA component must display a skeleton that
+occupies the **same positions and approximate dimensions** as its final
+content (title, cards, icons, image areas, rows and bottom-nav anchors). Do
+not replace a detailed screen with a generic two-line loading box, even when
+its API is fast locally. Independently replace each ready piece **in place**
+with an opacity-only short transition, no scrolling/CLS jump, and respect
+`prefers-reduced-motion`. For complex screens (e.g. Rating podium and rows)
+prove loading→ready geometry in Chromium and WebKit with a focused Playwright
+test and `tests/pwa_layout_geometry.py`. This permanent rule and remaining
+Rating remediation are tracked in
+[docs/PERFORMANCE_PWA_PROGRESSIVE_LOADING.md](docs/PERFORMANCE_PWA_PROGRESSIVE_LOADING.md).
+
 ## Permanent UI localization ownership
 
 Before adding/editing user-facing fixed copy or introducing a language, follow
