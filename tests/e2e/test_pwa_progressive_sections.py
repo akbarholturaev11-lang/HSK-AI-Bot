@@ -202,6 +202,11 @@ def test_course_ready_while_rating_referrals_and_profile_stats_load_independentl
             page.locator('#nav button[data-s="profile"]').click()
             page.wait_for_function("() => typeof PROFILE_DETAIL_PENDING !== 'undefined' && PROFILE_DETAIL_PENDING")
             assert len(held["profile"]) == 1
+            # App.show(profile) intentionally remounts on NAVIGATION. The
+            # independent analytics response must preserve this current header.
+            page.locator("#s-profile .profile-head").evaluate(
+                "(node) => node.dataset.apiPreserve = 'yes'"
+            )
             held["profile"].pop().fulfill(status=503, json={"ok": False})
             page.locator("#s-profile .hsk-pwa-profile-stats-error").wait_for()
             assert_reserved_layout(
