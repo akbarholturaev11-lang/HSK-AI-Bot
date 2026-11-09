@@ -448,6 +448,14 @@ def test_mobile_site_header_and_ios_pwa_video_without_desktop_nav_regression(des
     playwright.expect(page.locator('[data-ios-install]')).to_be_visible()
     assert page.locator('[data-ios-video] source').get_attribute('src') == '/assets/onboarding/iphone-home-screen.mp4'
     assert "Safari" in page.locator('[data-step-body="one"]').inner_text()
+    # The browser media request can fail or be offline; text remains usable.
+    page.locator("[data-ios-video]").dispatch_event("error")
+    playwright.expect(page.locator("[data-ios-install]")).to_be_hidden()
+    playwright.expect(page.locator("[data-platform-guide]")).to_be_visible()
+    page.locator('[data-platform="android"]').click()
+    page.locator('[data-platform="ios"]').click()
+    playwright.expect(page.locator("[data-ios-install]")).to_be_hidden()
+    assert "Safari" in page.locator('[data-step-body="one"]').inner_text()
     assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth")
     assert errors == []
     context.close()

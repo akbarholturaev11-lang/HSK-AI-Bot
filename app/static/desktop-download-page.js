@@ -8,6 +8,7 @@
   var PWA_URL = "/iphone-pwa";
   var BOT_URL = "https://t.me/darsi_chini_bot";
   var socialApkFallbackArmed = false;
+  var iosVideoUnavailable = false;
 
   function isAndroidSocialBrowser() {
     var agent = String(navigator.userAgent || "");
@@ -719,7 +720,7 @@
     if (guide) guide.hidden = !selected;
     if (security) security.hidden = !selected;
     var iosInstall = document.querySelector("[data-ios-install]");
-    if (iosInstall) iosInstall.hidden = state.platform !== "ios";
+    if (iosInstall) iosInstall.hidden = state.platform !== "ios" || iosVideoUnavailable;
     if (iosInstall && state.platform === "ios") setText("[data-ios-video-title]", localized.iosSecurityTitle);
     var iosVideo = document.querySelector("[data-ios-video]");
     if (iosVideo) {
@@ -1082,7 +1083,12 @@
     });
 
     var iosVideo = document.querySelector("[data-ios-video]");
-    if (iosVideo) iosVideo.addEventListener("error", function () { iosVideo.hidden = true; });
+    if (iosVideo) iosVideo.addEventListener("error", function () {
+      // On missing media, the three written Safari steps stay visible.
+      iosVideoUnavailable = true;
+      var section = document.querySelector("[data-ios-install]");
+      if (section) section.hidden = true;
+    });
     var downloadButton = document.querySelector("[data-download-button]");
     if (downloadButton) {
       downloadButton.addEventListener("click", function (event) {
