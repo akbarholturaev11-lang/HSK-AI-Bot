@@ -210,8 +210,9 @@ def test_windows_guide_tracks_ru_and_tj_localisation(
     ) == "none"
     page.get_by_role("button", name="Понятно").click()
 
-    page.get_by_role("button", name="TJ", exact=True).click()
-    assert page.locator("html").get_attribute("lang") == "tj"
+    page.locator(".site-header .language-switch summary").click()
+    page.locator('.site-header [data-language="tj"]').click()
+    assert page.locator("html").get_attribute("lang") == "tg"
     with page.expect_download():
         page.locator("[data-download-button]").click()
     playwright.expect(dialog).to_be_visible()
@@ -305,7 +306,7 @@ def test_referral_android_downloads_without_telegram_and_preserves_signup_code(
         user_agent="Mozilla/5.0 (Linux; Android 15; Pixel 8) AppleWebKit/537.36 Chrome/130 Mobile Safari/537.36",
         has_touch=True,
     )
-    page.goto(f"{desktop_download_url}?ref=a1b2c3d4&platform=ios", wait_until="networkidle")
+    page.goto(f"{desktop_download_url}?ref=a1b2c3d4&platform=ios&lang=uz", wait_until="networkidle")
     assert page.locator('[data-download-button]').get_attribute('href').endswith('/downloads/android')
     assert page.locator('[data-download-button]').get_attribute('data-action') == 'download'
     guide = page.locator('[data-referral-guide]')
@@ -329,7 +330,7 @@ def test_referral_keeps_separate_ios_bot_action_but_primary_is_pwa(
         user_agent="Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148",
         has_touch=True,
     )
-    page.goto(f"{desktop_download_url}?ref=a1b2c3d4&platform=android", wait_until="networkidle")
+    page.goto(f"{desktop_download_url}?ref=a1b2c3d4&platform=android&lang=uz", wait_until="networkidle")
     assert page.locator('[data-download-button]').get_attribute('href') == '/iphone-pwa'
     assert page.locator('[data-referral-ios-link]').get_attribute('href') == (
         'https://t.me/darsi_chini_bot?start=ri_a1b2c3d4'
@@ -418,7 +419,7 @@ def test_referral_copy_failure_keeps_code_available_for_manual_copy(desktop_down
     page.add_init_script("""Object.defineProperty(navigator, 'clipboard', {value: {
       writeText: () => { throw new Error('clipboard denied'); }
     }});""")
-    page.goto(f"{desktop_download_url}?ref=a1b2c3d4&mode=trial&platform=windows", wait_until="networkidle")
+    page.goto(f"{desktop_download_url}?ref=a1b2c3d4&mode=trial&platform=windows&lang=uz", wait_until="networkidle")
     page.locator('[data-referral-copy]').click()
     assert page.locator('[data-referral-code]').input_value() == 'a1b2c3d4'
     assert page.locator('[data-referral-copy-status]').inner_text() == 'Kodni belgilang va qo‘lda nusxalang.'
