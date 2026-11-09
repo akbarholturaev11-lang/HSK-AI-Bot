@@ -1,0 +1,64 @@
+# Tasks
+
+This is the only checklist for this work. Context, audit results, decisions and the next step live only in `docs/analytics/ANALYTICS_INTEGRITY_IMPLEMENTATION_PLAN.md`. Update that file at the end of every session. A checked box is not proof of passing tests, promotion or production acceptance.
+
+**Test conventions:**
+- Run Python tests with `.venv/bin/python`, and write async tests as `unittest.IsolatedAsyncioTestCase`.
+- Run PostgreSQL chain tests over local TCP Postgres.
+- Compare Playwright runs with a pre-change baseline worktree, and report skipped runs as skipped.
+
+## 1. Audit and baseline
+
+- [ ] 1.1 Revalidate `origin/main` HEAD. For Android (Play/Direct), the Mini App, the PWA and desktop, trace each V10 metric and each critical flow (onboarding, lessons, practice, voice/AI, paywall/Pro/payment, app open): writer → table → canonical owner → reader → section → platform field. Mark each row `verified` (code and test cited) or `to_verify`. In the same pass, decide on PWA foreground proof reuse and Android channel availability (design D3). Verify by recording the table and decisions in the context file, with every current V10 metric key listed.
+- [ ] 1.2 Add a V10 regression fixture and test (provisional `tests/test_admin_pwa_v10_regression.py`). It seeds a mixed-platform DB and snapshots every section × platform × period output of the current code. Verify that it passes on unchanged `main`.
+
+## 2. Coverage guard (before any metric repair)
+
+- [ ] 2.1 Create `docs/analytics/FEATURE_ANALYTICS_COVERAGE.json` (design D1), seeded from the 1.1 table with honest statuses and reasons. Verify that the checker's schema validation passes.
+- [ ] 2.2 Implement `scripts/check_analytics_coverage.py` (stdlib only) and `tests/test_analytics_coverage_contract.py`. Verify with tests for each case:
+  - an unmapped new event fails, naming the file and event
+  - a stale entry fails
+  - a copy/CSS/i18n-only change passes
+  - an empty-reason exemption fails
+  - a directory-wide exemption fails
+  - a `covered` entry without an existing chain test fails
+  - the projection-key-versus-registry contract catches a missing metric
+- [ ] 2.3 Add `.github/workflows/analytics-integrity.yml` (push and pull_request), which runs the checker and the analytics tests. Update the `AGENTS.md` "Enforcement status" to name the registry and CI as active, keeping justified `not_applicable` allowed. Verify that an unmapped-event test commit fails and a cosmetic one passes on a scratch branch, and record the run URLs in the context file.
+
+## 3. Metric states and platform scoping
+
+- [ ] 3.1 Add the per-metric `{state, reason}` (design D2) and replace the two section-wide early returns in `pwa_analytics_cache.py` with registry-driven per-metric states. Move changed sections to `_v2` cache scopes. Verify in `tests/test_admin_pwa_analytics.py` that an unavailable metric is never zero, that `not_applicable` and unavailable stay distinct, and that the 1.2 fixture is unchanged.
+- [ ] 3.2 Apply platform predicates to the `verified` event families for Android, the Mini App and the PWA across Overview, Course, Funnel, Finance and Sources. Use the canonical overall union. Add the PWA foreground proof and the Android channel only as decided in 1.1, by extending existing writes. Verify mixed-platform tests showing:
+  - each view counts only its own rows
+  - one account on three platforms counts once overall
+  - two Android devices give one account and two devices
+  - unaudited families stay `attribution_not_audited`
+- [ ] 3.3 Render the states and per-platform values in `app/static/admin-pwa/app.js`. Author UZ/RU/TJ keys in the canonical localization sources and run `scripts/i18n_build_all_catalogs.py --write` and `--check`. Verify the i18n tests and a Playwright run at 390 px in each language.
+- [ ] 3.4 Add chain tests for one representative metric per platform: Android bearer, Mini App signed and PWA cookie + CSRF routes, through PostgreSQL and the Admin analytics API to Playwright (right tab and filter). Flip those registry entries to `covered`, and update the definitions in `docs/admin-pwa/READ_PROJECTIONS.md`. Verify that the chain tests and the checker pass.
+
+## 4. PWA Pro funnel
+
+- [ ] 4.1 Implement `pwa_pro_attempt_funnel` (design D4) beside the unchanged legacy funnel. Verify tests for each case:
+  - a verified Lava payment moves only the matching attempt to paid
+  - a click, a return URL or a failed webhook is not paid
+  - two invoices in one attempt give one attempt
+  - a refund or lost chargeback is reversed
+  - an approved payment with no matching attempt is `unlinked`
+  - legacy funnel values are unchanged
+  - no attempt, invoice or provider IDs appear in the output
+- [ ] 4.2 Render the funnel card in the Conversion tab (UZ/RU/TJ). Add a chain test: PWA inline event → Lava start → ledger paid (`tests/lava_fakes.py`) → Admin API → Playwright under the Overall and PWA filters. Flip the registry entry to `covered` and update `READ_PROJECTIONS.md`. Verify that the chain test and the checker pass.
+
+## 5. Retention and Report freshness
+
+- [ ] 5.1 Label `retention` as `miniapp_open` and add `return_retention` D1/D7 (design D5), with distinct UI labels. Check the query plan with `EXPLAIN ANALYZE` on local Postgres. Verify tests showing that one account in two apps counts once, that passive activity is excluded, and that legacy values are unchanged, plus a Playwright label check.
+- [ ] 5.2 Add per-platform `latest_at` and unresolved-owner counts to the Report section (design D7). Verify tests showing that a stale platform is visible and that no identifiers or payloads appear in the response or the page.
+
+## 6. Integration validation
+
+- [ ] 6.1 Run `openspec validate hsk-ai-analytics-integrity --strict`, the analytics/Lava/PWA/coverage suites, the PostgreSQL chain tests and the Admin PWA Playwright suites, comparing with the baseline. Verify by recording commands and results in the context file.
+- [ ] 6.2 Real-client acceptance, recorded separately from CI. Perform one action each on installed Android Play and Direct builds, the Telegram Mini App and an iPhone PWA home-screen install. Confirm that each appears in the right tab and filter after a refresh, and that the shared account counts once overall. Verify by recording the evidence or the reason it was not done.
+- [ ] 6.3 Promote under the `AGENTS.md` Git rules after owner approval. Write the final Analytics Impact summary: covered and not-applicable metrics per platform, tests, CI and known gaps. Verify the `main` commit via the remote ref.
+
+## Workflow follow-up
+
+- Archive with `openspec archive hsk-ai-analytics-integrity` only after verified completion.
