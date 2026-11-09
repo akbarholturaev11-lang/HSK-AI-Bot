@@ -718,7 +718,27 @@ function demoLogin(){
   // Authenticated provider flow is supplied by li-onboarding-runtime.js.
   return false;
 }
-render();
+/* Missing catalog/character asset must never trigger demo login/Pro UI,
+   nor leave a spinner forever when Safari is offline or a CDN request fails. */
+function liCriticalAssetFailed(){
+  var copy={uz:["Ulanishni tekshiring va qayta urinib ko'ring.","Qayta urinish"],
+            ru:["Проверьте подключение и попробуйте снова.","Повторить"],
+            tj:["Пайвастро санҷед ва боз кӯшиш кунед.","Боз кӯшиш кардан"]}[LANG]||
+           ["Проверьте подключение и попробуйте снова.","Повторить"];
+  var stage=document.getElementById("stage"),footer=document.getElementById("footer");
+  stage.replaceChildren();
+  var message=document.createElement("p");
+  message.className="helper";message.setAttribute("role","alert");message.textContent=copy[0];
+  stage.appendChild(message);stage.setAttribute("aria-busy","false");
+  footer.replaceChildren();footer.hidden=false;
+  var retry=document.createElement("button");retry.type="button";
+  retry.className="cta";retry.textContent=copy[1];
+  retry.addEventListener("click",function(){location.reload()});
+  footer.appendChild(retry);
+}
+if(T[LANG]&&window.HSKCharacters&&typeof window.HSKCharacters.render==="function"){
+  render();
+}else{liCriticalAssetFailed()}
 </script>
 <script src="/course_v3_data/li-onboarding-runtime.js?v=20261109-8fabcef0eccf"></script>
 <script src="/course_v3_data/li-onboarding-install.js?v=20261109-45db3c9aae4c"></script>
