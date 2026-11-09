@@ -8,6 +8,19 @@
 >
 > **REAL ONBOARDING IMPLEMENTATION STATUS: PARTIAL ON FEATURE BRANCH.** The isolated 23-state Li UI, optional iPhone install guide and server adapters are committed; final all-green CI/device validation, default route cutover, production deploy are NOT complete (approved real MP4 is committed).
 
+## 2026-11-09 LATEST CONTINUATION — exact code and CI evidence
+
+**Working feature branch:** `feature/li-onboarding-mainffbff9-20261108`; PR #282 remains **draft**, no merge to `main`, no production deploy.
+
+1. Commit `6b8c0ea0a7a66df155112b2dcdf412b962943698`: `tests/e2e/test_li_onboarding_runtime.py` corrected failed external-JavaScript scenario. The live HTML deliberately replaces loading skeleton with a localized, accessible `role=alert` and actionable retry when character/catalog dependencies fail. No production JS was changed for this; it would be wrong to keep a busy skeleton indefinitely. Previous run `42567424989`, job `miniapp-ui` had one failed assertion expecting the obsolete skeleton.
+2. Commit `5b022ca24e6be3ee8425d338ef953e32047b8a16`: `app/static/course_v3_data/li-onboarding-runtime.js` now throttles in-memory **public-only** track metadata revalidation. Valid public cache shows immediately; no extra GET for every rapid back/forward; revalidates after 60 s with 30 s throttle, and expires normal cache after 120 s. **No session, subscription, HSK 3.0 access, CSRF, trial or progress caching.**
+3. Commit `612a037120556fab429042f1051bd59c66f59441`: `app/static/course_v3_li_onboarding.html` now references exact updated JS blob hash `21814dea415e` to avoid stale Safari cache.
+4. Commit `1896fd20bc5e4eec5417b42bb75c8f4050fb34b8`: added Playwright `test_li_cached_public_tracks_do_not_refetch_on_rapid_back_navigation`. Server `app/api/pwa_auth.py` public-tracks endpoint was separately reviewed: anonymous HSK3 `access.allowed` is always `false`; user access checked via private endpoint.
+5. CI run `42568225118`, `miniapp-ui`: initial Pro/glass and 11 progressive-shell checks passed; 1 Li test failed because older `test_pwa_guest_sees_panda_first_and_oauth_resumes_saved_draft_safely` expected `public_track_get >= 2` (the redundant request eliminated by item 2). Corrected in commit `24bcabd3d43edf49d3d121c0b39691ab158a6acf` to assert exactly 1 public GET; separate rapid-navigation test proves no duplicate GET. No production auth logic changed to satisfy the test.
+6. New code/test CI `42568544408` (Backend targeted), `42568544410` (localization), `42568544323` (Smart Reminder) was **pending** immediately after the test correction. The final HEAD must be fetched and tested afresh. Previous canceled runs DO NOT count as an all-green result.
+
+**Remaining release gates:** physical Safari iPhone video/slow network, WebKit, real Google/Telegram callback, actual Web Push capability and authorization, no duplicate/incorrect Pro grants, complete UI acceptance. Note that the original user requirement states `main` must not change and PR must not merge/deploy without explicit approval.
+
 ## 2026-11-09 CI audit continuation — 975fa78ac6ec2a3ff53958f104cbf1e917084c07
 
 **Current branch:** `feature/li-onboarding-mainffbff9-20261108`; PR #282 draft. No main merge, no production deploy.
