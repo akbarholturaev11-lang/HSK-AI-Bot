@@ -51,9 +51,10 @@ function harness({path = "/iphone-pwa/course", href = null, action = null, accou
                   splashReady = true, sharedStorage = new Map(), standalone = false,
                   vendor = "Apple Computer, Inc.",
                   pushEnabled = true, initiallySubscribed = false, permission = "default",
-                  holdPushStatus = false} = {}) {
+                  holdPushStatus = false, failPushStatusOnce = false} = {}) {
   let splashDone = splashReady, currentAction = action, activeAccountId = accountId;
   const heldPushStatus = [];
+  let failuresRemaining = failPushStatusOnce ? 1 : 0;
   const timers = [], callbacks = {}, requests = [], navigation = [], pushCalls = [];
   let root = null, redirects = 0, serverSubscribed = initiallySubscribed, localSubscription = null;
   let notificationPermission = permission, permissionFetchCount = null;
@@ -116,6 +117,10 @@ function harness({path = "/iphone-pwa/course", href = null, action = null, accou
         : {ok:true, notifications:[{id:1,title:"Lesson available",body:"HSK 3",action:"course"}]};
     if (url.endsWith("/push/subscribe")) serverSubscribed = true;
     if (url.endsWith("/push/revoke")) serverSubscribed = false;
+    if (url.endsWith("/push/status") && failuresRemaining > 0) {
+      failuresRemaining--;
+      return {ok:false,json:async()=>({ok:false,error:"temporary_unavailable"})};
+    }
     const result = {ok:true,json:async()=>response};
     if (url.endsWith("/push/status") && holdPushStatus) {
       return new Promise(resolve => heldPushStatus.push(() => resolve(result)));
@@ -302,6 +307,29 @@ async function main(){
   assert.equal(loadingButton.disabled,false);
   assert.equal(loadingButton.textContent,"pwaPush.enable",
     "only the verified server state enables the existing Push action");
+
+  // A failed status read must remain in its reserved slot with a local retry,
+  // never a false "Off" or a subscription mutation for an unknown account.
+  const failedPush = harness({standalone:true,failPushStatusOnce:true});
+  await failedPush.window.HskPwaInbox.openPushSettings();
+  const failedButton = failedPush.root().querySelector("#hsk-pwa-push-action");
+  assert.equal(failedPush.root().querySelector("#hsk-pwa-push-status").textContent,
+    "pwaPush.error","an unverified Push failure is not shown as Off");
+  assert.equal(failedButton.hidden,false,"failed Push check keeps its CTA slot");
+  assert.equal(failedButton.disabled,false,"retry is available immediately");
+  assert.equal(failedButton.textContent,"subscriptionPage.retryPayment");
+  failedPush.root().listeners.click({
+    target:{closest:(selector)=>selector==="#hsk-pwa-push-action"?{}:null}
+  });
+  for (let i = 0; i < 8 && failedButton.textContent !== "pwaPush.enable"; i++)
+    await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(failedButton.textContent,"pwaPush.enable",
+    "local retry settles into the verified server-owned action");
+  assert.equal(failedPush.requests.filter(x=>x.url.endsWith("/push/status")).length,2);
+  assert(!failedPush.requests.some(x=>x.url.endsWith("/push/subscribe")),
+    "Push status retry does not subscribe without an explicit gesture");
+  assert(!failedPush.pushCalls.includes("permission"),
+    "Push status retry must not trigger an iOS permission prompt");
 
   const installed = harness({standalone:true});
   await installed.window.HskPwaInbox.open();

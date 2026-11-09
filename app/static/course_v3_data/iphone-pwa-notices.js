@@ -54,6 +54,7 @@
   var pushBusy = false;
   // Never show unknown or previous-session push preferences while verifying.
   var pushStatusPending = false;
+  var pushStatusFailed = false;
   var pushRegistrationPromise = null;
 
   // These strings are already authored in the shared UZ/RU/TJ catalogs.
@@ -363,15 +364,18 @@
     var denied = supported && Notification.permission === "denied";
     var subscribed = !!(pushState && pushState.subscribed);
     var waiting = pushStatusPending && supported;
+    var retry = pushStatusFailed && supported && !waiting;
     pushControl.hidden = activeMode !== "push";
     pushStatus.textContent = !supported ? t.pushInstallRequired
-      : waiting ? t.loading
+      : waiting ? t.loading : retry ? t.pushError
         : !enabled ? t.pushOff : denied && !subscribed ? t.pushBlocked
           : subscribed ? t.pushEnabled : "";
-    // Keep the 48px action slot present and inert while the state is unknown.
-    pushButton.hidden = !supported || (!waiting && (!enabled || (denied && !subscribed)));
+    // Keep a fixed action slot through pending/error/ready without allowing
+    // writes until the current cookie owner and Push state are confirmed.
+    pushButton.hidden = !supported || (!waiting && !retry && (!enabled || (denied && !subscribed)));
     pushButton.disabled = pushBusy || waiting;
-    pushButton.textContent = waiting ? t.loading : subscribed ? t.pushDisable : t.pushEnable;
+    pushButton.textContent = waiting ? t.loading : retry ? t.retry
+      : subscribed ? t.pushDisable : t.pushEnable;
     updateSettingsPushStatus();
   }
   async function preparePushRegistration() {
@@ -508,6 +512,7 @@
     ++checkGeneration;
     // No transient "Off" or old user's subscription while cookie proof is pending.
     pushState = null;
+    pushStatusFailed = false;
     pushStatusPending = true;
     openMode("push");
     render();
@@ -516,10 +521,8 @@
     catch (_) { failed = true; }
     finally {
       pushStatusPending = false;
-      if (activeMode === "push") {
-        paintPushControl();
-        if (failed) pushStatus.textContent = labels().pushError;
-      }
+      pushStatusFailed = failed;
+      if (activeMode === "push") paintPushControl();
     }
   }
   function clearAppBadge() {
@@ -611,7 +614,9 @@
   }
   overlay.addEventListener("click", function (ev) {
     if (ev.target.closest("[data-pwa-close]")) close();
-    if (ev.target.closest("#hsk-pwa-push-action")) changePushSubscription();
+    if (ev.target.closest("#hsk-pwa-push-action")) {
+      if (pushStatusFailed) openPushSettings(); else changePushSubscription();
+    }
     if (ev.target.closest("[data-pwa-retry]")) {
       openCheckout(latestData && latestData.account && latestData.account.payment_action);
     }
