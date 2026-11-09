@@ -1636,6 +1636,7 @@ html.hsk-pwa-browser .pwa-initial-shell[aria-busy="true"]{min-height:540px}
 html.hsk-pwa-browser #s-course>.loading{display:none}
 .pwa-initial-shell .pwa-skel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;margin-bottom:12px}
 .pwa-initial-shell .pwa-skel-title{font-weight:750;letter-spacing:-.35px;font-size:23px;line-height:1.25;color:var(--ink)}
+.pwa-initial-shell .pwa-first-logo{width:48px;height:48px;object-fit:contain;flex:0 0 48px}
 .pwa-initial-shell .pwa-skel-card{background:var(--card);border:1px solid var(--line);border-radius:20px;min-height:104px;padding:18px;margin:12px 0;box-shadow:0 1px 3px rgba(25,20,10,.025)}
 .pwa-initial-shell .pwa-skel-card.habit{min-height:128px}
 .pwa-initial-shell .pwa-skel-line{height:12px;border-radius:8px;margin:12px 0;background:var(--line);width:76%;opacity:.68}
@@ -1645,6 +1646,8 @@ html.hsk-pwa-browser #s-course>.loading{display:none}
 .pwa-initial-shell .pwa-skel-node{width:55px;height:55px;border-radius:50%;background:var(--card);border:7px solid var(--line);margin:9px auto}
 .pwa-initial-shell .pwa-skel-node:nth-child(2){transform:translateX(-42px)}
 .pwa-initial-shell .pwa-skel-node:nth-child(3){transform:translateX(35px)}
+html.hsk-pwa-browser .pwa-profile-accuracy-pending{display:flex;justify-content:space-around;min-height:128px;align-items:center;gap:16px}
+html.hsk-pwa-browser .pwa-profile-accuracy-pending .pwa-skel-line{height:82px;width:82px;flex:0 0 82px;border-radius:50%;margin:0}
 @media(prefers-reduced-motion:no-preference){.pwa-initial-shell .pwa-skel-line,.pwa-initial-shell .pwa-skel-node{animation:pwa-skeleton-pulse 1.5s ease-in-out infinite alternate}}
 @keyframes pwa-skeleton-pulse{from{opacity:.52}to{opacity:.9}}
 </style>
@@ -1692,7 +1695,7 @@ html.hsk-pwa-browser #s-course>.loading{display:none}
   </div>
 </div>
 <div class="wrap">
-  <div class="scr on" id="s-course"><div class="loading">…</div><div class="pwa-initial-shell" role="status" aria-label="Загрузка курса" aria-busy="true"><div class="pwa-skel-head"><span class="pwa-skel-title">HSK AI</span><div class="pwa-skel-line short" aria-hidden="true" style="width:72px"></div></div><div class="pwa-skel-card habit" aria-hidden="true"><div class="pwa-skel-line short"></div><div class="pwa-skel-line long"></div><div class="pwa-skel-line"></div></div><div class="pwa-skel-card" aria-hidden="true"><div class="pwa-skel-line short"></div><div class="pwa-skel-line long"></div><div class="pwa-skel-line"></div></div><div class="pwa-skel-path" aria-hidden="true"><div class="pwa-skel-node"></div><div class="pwa-skel-node"></div><div class="pwa-skel-node"></div></div></div></div>
+  <div class="scr on" id="s-course"><div class="loading">…</div><div class="pwa-initial-shell" role="status" aria-label="Загрузка курса" aria-busy="true"><div class="pwa-skel-head"><img class="pwa-first-logo" src="/assets/hsk-ai-logo-256.png" alt="" width="48" height="48" loading="eager" decoding="async" fetchpriority="high"><span class="pwa-skel-title">HSK AI</span><div class="pwa-skel-line short" aria-hidden="true" style="width:72px"></div></div><div class="pwa-skel-card habit" aria-hidden="true"><div class="pwa-skel-line short"></div><div class="pwa-skel-line long"></div><div class="pwa-skel-line"></div></div><div class="pwa-skel-card" aria-hidden="true"><div class="pwa-skel-line short"></div><div class="pwa-skel-line long"></div><div class="pwa-skel-line"></div></div><div class="pwa-skel-path" aria-hidden="true"><div class="pwa-skel-node"></div><div class="pwa-skel-node"></div><div class="pwa-skel-node"></div></div></div></div>
   <div class="scr" id="s-mashq"><div class="pwa-initial-shell" role="status" aria-label="Загрузка" aria-busy="true"><div class="pwa-skel-head"><span class="pwa-skel-title" data-pwa-shell-label="mashq">Практика</span></div><div class="pwa-skel-card" aria-hidden="true"><div class="pwa-skel-line short"></div><div class="pwa-skel-line long"></div><div class="pwa-skel-line"></div></div><div class="pwa-skel-card" aria-hidden="true"><div class="pwa-skel-line short"></div><div class="pwa-skel-line long"></div><div class="pwa-skel-line"></div></div></div></div>
   <div class="scr" id="s-voice"><div class="pwa-initial-shell" role="status" aria-label="Загрузка" aria-busy="true"><div class="pwa-skel-head"><span class="pwa-skel-title" data-pwa-shell-label="voice">AI Voice</span></div><div class="pwa-skel-card" aria-hidden="true"><div class="pwa-skel-line short"></div><div class="pwa-skel-line long"></div><div class="pwa-skel-line"></div></div><div class="pwa-skel-card" aria-hidden="true"><div class="pwa-skel-line short"></div><div class="pwa-skel-line long"></div><div class="pwa-skel-line"></div></div></div></div>
   <div class="scr" id="s-rating"><div class="pwa-initial-shell" role="status" aria-label="Загрузка" aria-busy="true"><div class="pwa-skel-head"><span class="pwa-skel-title" data-pwa-shell-label="rating">Рейтинг</span></div><div class="pwa-skel-card" aria-hidden="true"><div class="pwa-skel-line short"></div><div class="pwa-skel-line long"></div><div class="pwa-skel-line"></div></div><div class="pwa-skel-card" aria-hidden="true"><div class="pwa-skel-line short"></div><div class="pwa-skel-line long"></div><div class="pwa-skel-line"></div></div></div></div>
@@ -2884,9 +2887,12 @@ var App={
     if(s==="rating")renderRating();
     if(s!=="profile"&&window.HskProfileCarousel)window.HskProfileCarousel.pause();
     if(s==="profile"){
+      // Independent profile stats: start the fetch before painting so only
+      // this panel receives a correctly sized skeleton, never the whole app.
+      if(PWA_COURSE_HOST)loadProfileDetail();
       renderProfile();
       if(previous==="settings")$("#s-profile .profile-settings").focus({preventScroll:true});
-      loadProfileDetail();
+      if(!PWA_COURSE_HOST)loadProfileDetail();
       if(!TRIAL_LOADED)trialFetchStatus().then(function(){if(SCREEN==="profile")renderProfile()});
     }
     /* Kirish usullari faqat profil ochilganda va bir marta so'raladi.
@@ -7618,6 +7624,13 @@ function loadProfileDetail(){
   });
 }
 function profileAccuracyHtml(){
+  // Cache-then-revalidate *within the verified same-account page*. Keep an
+  // already known value visible; only the first in-flight read shows blanks.
+  if(PWA_COURSE_HOST&&PROFILE_DETAIL_PENDING&&!PROFILE_DETAIL){
+    return '<div class="pwa-profile-accuracy-pending" role="status" aria-busy="true" aria-label="HSK AI">'
+      +'<span class="pwa-skel-line" aria-hidden="true"></span>'
+      +'<span class="pwa-skel-line" aria-hidden="true"></span></div>';
+  }
   var c=profileCopy(),data=PROFILE_DETAIL&&PROFILE_DETAIL.stats&&PROFILE_DETAIL.stats.answer_accuracy;
   function item(label,score){
     var pct=score&&Number.isFinite(Number(score.percent))&&score.percent!==null?Math.max(0,Math.min(100,Math.round(Number(score.percent)))):null;
