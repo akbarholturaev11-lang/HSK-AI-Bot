@@ -619,7 +619,7 @@
     var localized = copy();
     var steps = forPlatform(localized, "QuickSteps");
     if (!steps) {
-      // iOS installs nothing, so there is nothing to open "like this". The
+      // iOS installs via Safari Home Screen instead of a binary installer; the
       // guide is closed rather than left holding another platform's steps.
       closeQuickGuide();
       return;
@@ -854,6 +854,19 @@
     });
   }
 
+  // Carry only the selected locale and allowlisted public acquisition tags
+  // into the PWA; referral eligibility remains owned by the verified bot flow.
+  function pwaLaunchUrl() {
+    var url = new URL(PWA_URL, window.location.origin);
+    url.searchParams.set("lang", state.language);
+    ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content", "source"]
+      .forEach(function (key) {
+        var value = params.get(key);
+        if (value && value.length <= 100) url.searchParams.set(key, value);
+      });
+    return url.pathname + url.search;
+  }
+
   function renderRelease() {
     var localized = copy();
     renderReferral();
@@ -869,7 +882,7 @@
       setText("[data-version]", "");
       setText("[data-published]", "");
       if (!button || !status) return;
-      button.href = PWA_URL;
+      button.href = pwaLaunchUrl();
       button.removeAttribute("aria-disabled");
       button.dataset.action = "open";
       status.dataset.state = "ready";
