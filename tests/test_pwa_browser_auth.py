@@ -487,7 +487,8 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(signed.headers["location"], "/iphone-pwa/course")
         self.settings.PWA_AUTH_ENABLED = False
         disabled = await self.client.get(path, follow_redirects=False)
-        self.assertEqual(disabled.status_code, 403)
+        self.assertEqual(disabled.status_code, 503)
+        self.assertEqual(disabled.json()["error"], "pwa_auth_unavailable")
 
     async def test_home_screen_entry_skips_login_only_for_verified_browser(self):
         self.assertEqual((await self.client.get("/iphone-pwa")).status_code, 200)
