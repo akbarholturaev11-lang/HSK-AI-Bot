@@ -10,7 +10,7 @@ class LiOnboardingCanonicalCatalogTests(unittest.TestCase):
     def test_all_three_locales_have_exact_demo_copy_and_reactions(self):
         sources = li.read_sources()
         self.assertEqual(set(sources), {"uz", "ru", "tj"})
-        self.assertEqual(len({k for k in sources["ru"] if k.startswith("copy.")}), 66)
+        self.assertEqual(len({k for k in sources["ru"] if k.startswith("copy.")}), 69)
         self.assertEqual(sources["uz"]["copy.firstTime"], "HSK AI'da birinchi marta")
         self.assertEqual(sources["ru"]["copy.loadCourse"], "Загружаем курс…")
         self.assertEqual(sources["tj"]["STREAKS.14.say"],
@@ -22,7 +22,16 @@ class LiOnboardingCanonicalCatalogTests(unittest.TestCase):
             for key in li.INSTALL_KEYS:
                 self.assertTrue(sources[lang][key].strip(), (lang, key))
         self.assertEqual(len(li.INSTALL_KEYS), 10)
-        self.assertEqual(len({k for k in sources["uz"] if k.startswith("copy.")}), 66)
+        self.assertEqual(len({k for k in sources["uz"] if k.startswith("copy.")}), 69)
+
+    def test_hsk30_access_gate_is_localized_without_changing_original_demo(self):
+        sources = li.read_sources()
+        keys = ("copy.hsk30AccessNeeded", "copy.hsk30OpenInCourse", "copy.hsk30Use20")
+        for lang in ("uz", "ru", "tj"):
+            with self.subTest(lang=lang):
+                for key in keys:
+                    self.assertIn("HSK", sources[lang][key])
+                self.assertIn("3.0", sources[lang]["copy.hsk30AccessNeeded"])
 
     def test_generated_bundle_matches_reviewed_local_sources(self):
         output = li.output_files(li.read_sources())
