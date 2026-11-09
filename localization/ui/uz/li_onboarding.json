@@ -139,6 +139,9 @@
     "TIMES.15.say": "Zo'r! Bir maromda, xotirjam temp.",
     "TIMES.20.say": "Jiddiy kayfiyat — shunday davom etamiz!",
     "TIMES.30.say": "Zo'r! Boy reja tuzamiz.",
-    "TIMES.5.say": "Kuniga 5 daqiqa ham — oldinga qadam!"
+    "TIMES.5.say": "Kuniga 5 daqiqa ham — oldinga qadam!",
+    "copy.hsk30AccessNeeded": "HSK 3.0 darslarini boshlash uchun hisobingizda kirish huquqi bo‘lishi kerak. Uni kurs bo‘limida ochishingiz mumkin.",
+    "copy.hsk30OpenInCourse": "Kursda HSK 3.0 ni ochish",
+    "copy.hsk30Use20": "HSK 2.0 ni tanlash"
   }
 }
