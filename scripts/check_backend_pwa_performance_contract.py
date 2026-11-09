@@ -16,6 +16,7 @@ POLICY = "docs/PERFORMANCE_PWA_PROGRESSIVE_LOADING.md"
 AGENTS = ("AGENTS.md", "AI_RULES.md")
 REQUIRED_HEADINGS = (
     "## Required: Initial Render & Progressive Loading (PWA)",
+    "## Mandatory: Layout-matched skeletons and smooth in-place settlement (all future learner PWA sections)",
     "## Backend performance master checklist",
     "## PWA performance master checklist",
     "## Future feature invariant",
