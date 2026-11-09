@@ -415,7 +415,9 @@ def test_guest_profile_has_telegram_google_without_duplicate_create_account_step
         browser = getattr(playwright, os.environ.get("PWA_E2E_ENGINE", "chromium")).launch()
         page, captured = _page(browser, pwa=True, guest=True)
         _advance_to_profile(page, guest=True)
-        assert page.locator("#stage h1").inner_text() == "Profilingizni saqlang"
+        assert page.locator("#stage .bub").inner_text() == "Progressingizni yo'qotmang! Keling, sizga profil ochamiz."
+        assert page.locator("#stage .halo--gold .panda").is_visible()
+        assert page.locator("#stage h1").count() == 0  # no duplicate new-account title
         # Provider discovery is asynchronous; retain honest skeleton until it finishes.
         page.locator("#stage .provider").nth(0).wait_for(state="visible")
         page.locator("#stage .provider").nth(1).wait_for(state="visible")
