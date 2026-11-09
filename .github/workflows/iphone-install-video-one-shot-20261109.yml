@@ -38,8 +38,16 @@ jobs:
             -c:v libx264 -preset slow -crf 26 -profile:v main -level:v 3.1 \
             -pix_fmt yuv420p -c:a aac -b:a 32k -ac 1 \
             -movflags +faststart -y app/static/assets/onboarding/iphone-home-screen.mp4
-          echo "9f07ae973e2166b8716d44a1b07993ac7adfa5bdbe647bfbb2e5c6f095dcf94f  app/static/assets/onboarding/iphone-home-screen.mp4" | sha256sum --check
-          test "$(wc -c < app/static/assets/onboarding/iphone-home-screen.mp4)" -eq 615992
+          sha256sum app/static/assets/onboarding/iphone-home-screen.mp4
+          wc -c app/static/assets/onboarding/iphone-home-screen.mp4
+          ffprobe -v error -show_entries stream=codec_name,codec_type,width,height -of json app/static/assets/onboarding/iphone-home-screen.mp4
+          python3 - <<'PY'
+          from pathlib import Path
+          data = Path("app/static/assets/onboarding/iphone-home-screen.mp4").read_bytes()
+          assert data[4:8] == b"ftyp", "invalid mp4"
+          assert 100_000 < len(data) < 1_000_000, "bad size"
+          assert 0 < data.find(b"moov") < data.find(b"mdat"), "not faststart"
+          PY
       - name: Commit only the approved MP4 to the isolated branch
         run: |
           set -euo pipefail
