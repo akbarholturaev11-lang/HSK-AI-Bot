@@ -480,6 +480,10 @@ jobs:
         run: |
           python -m pytest -q tests/e2e/test_pwa_initial_shell.py
           PWA_E2E_ENGINE=webkit python -m pytest -q tests/e2e/test_pwa_initial_shell.py
+      - name: Verify independent Rating and Friends loading under stalled APIs
+        run: >-
+          python -m pytest -q tests/e2e/test_miniapp_smoke.py
+          -k 'rating_pending_request_survives_render_all or friends_pending_request_keeps_its_own_loading_boundary'
       - name: Preserve current main navigation, preload and desktop dialog behavior
         run: >-
           python -m pytest -q tests/e2e/test_practice_bootstrap.py
