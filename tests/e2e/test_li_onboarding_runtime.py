@@ -491,7 +491,7 @@ def test_auth_return_keeps_original_locale_at_first_panda_paint(provider):
           'hsk_li_auth_handoff_v1',
           JSON.stringify({at:Date.now(),provider:provider,lang:'ru'})
         )""", provider)
-        page.add_init_script("""() => {
+        page.add_init_script("""(() => {
           const previous = window.fetch.bind(window);
           window.fetch = (url, options) => {
             if (String(url).includes('/api/v3/pwa-auth/session')) {
@@ -501,7 +501,7 @@ def test_auth_return_keeps_original_locale_at_first_panda_paint(provider):
             }
             return previous(url, options);
           };
-        }""")
+        })();""")
         page.reload()
         page.locator(".li-auth-wait-title").wait_for(state="visible")
         assert page.locator(".li-auth-wait-title").inner_text() == "Ожидаем вход…"
