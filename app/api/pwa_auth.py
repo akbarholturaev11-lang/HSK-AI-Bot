@@ -126,6 +126,17 @@ html.hsk-pwa-browser #hsk-launch-splash{display:none!important}
 .hsk-pwa-boot-dot{width:34px;height:34px;border-radius:50%;flex:none}
 .hsk-pwa-boot-node{width:54px;height:54px;border-radius:50%;margin:14px auto 0}
 body.hsk-pwa-shell-loading #nav{opacity:.78}
+/* Each secondary section settles on its own, without a page overlay.
+   Geometry stays close to the eventual rating rows and accuracy rings. */
+.hsk-pwa-section-loading{display:block;padding:12px 0 24px;min-height:220px}
+.hsk-pwa-section-loading .hsk-pwa-load-card{border-radius:18px;background:var(--card,#f1f0ee);border:1px solid var(--line,rgba(0,0,0,.08));min-height:78px;margin:12px 0;padding:16px}
+.hsk-pwa-section-loading .hsk-pwa-load-card:first-child{min-height:110px}
+.hsk-pwa-section-loading .hsk-pwa-load-line{width:56%;height:13px;margin:9px 0;border-radius:9px;background:var(--hsk-divider,#dedddc);animation:hsk-pwa-boot-pulse 1.5s ease-in-out infinite alternate}
+.hsk-pwa-section-loading .hsk-pwa-load-line.short{width:34%}
+.hsk-pwa-profile-accuracy-loading{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;min-height:138px;margin:14px 0}
+.hsk-pwa-profile-accuracy-loading .hsk-pwa-load-ring{width:76px;height:76px;border-radius:50%;border:10px solid var(--hsk-divider,#dedddc);margin:0 auto 10px;opacity:.75;animation:hsk-pwa-boot-pulse 1.5s ease-in-out infinite alternate}
+.hsk-pwa-profile-accuracy-loading .hsk-pwa-load-line{height:12px;width:55%;border-radius:8px;background:var(--hsk-divider,#dedddc);margin:auto;opacity:.75}
+@media(prefers-reduced-motion:reduce){.hsk-pwa-section-loading .hsk-pwa-load-line,.hsk-pwa-profile-accuracy-loading .hsk-pwa-load-ring{animation:none}}
 @keyframes hsk-pwa-boot-pulse{from{opacity:.5}to{opacity:.95}}
 @media(prefers-reduced-motion:reduce){.hsk-pwa-boot-line,.hsk-pwa-boot-dot,.hsk-pwa-boot-node{animation:none}}
 </style>'''
