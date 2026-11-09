@@ -15,7 +15,7 @@ PWA entry: `https://hskai.app/iphone-pwa` (optionally `?lang=uz|ru|tj` when a la
 
 Reuse exactly `/assets/onboarding/iphone-home-screen.mp4` (the same file as the PWA onboarding). The download page plays it with `controls playsinline preload="none"` and keeps text instructions visible if playback fails. It is shown only for the iOS platform choice. See `app/static/assets/onboarding/README.md` for codec and original-video review.
 
-**Known release risk:** The existing video reportedly shows part of the older Railway hostname on Safari's Home Screen sheet. The text steps must always display the official `hskai.app/iphone-pwa` URL. Check the actual video on an iPhone Safari device and replace/redact an obsolete address before public release; reusing the file does not prove the hostname is correct.
+**2026-11-09 video replacement:** The earlier Railway-hostname video was superseded by the owner's new 13.267 s portrait recording showing `https://hskai.app/iphone-pwa` in the iOS Home Screen dialog. The committed optimized MP4 is 574,244 bytes (SHA-256 `3e099a0c0489d9f0dc3e358490f5d87f2682462204eac7668b557c918874d15e`). Both Li onboarding and the public download page use a content-versioned URL. Still verify real iPhone Safari playback and production availability before release.
 
 ## Regression checks
 

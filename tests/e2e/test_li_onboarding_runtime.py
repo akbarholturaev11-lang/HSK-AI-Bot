@@ -75,7 +75,7 @@ def _page(browser, *, pwa=True, trial_eligible=False, trial_start_ok=True, saved
         body=INSTALL_CSS if "li-onboarding-install.css" in route.request.url else "",
         content_type="text/css",
     ))
-    page.route("**/assets/onboarding/iphone-home-screen.mp4", lambda route: route.fulfill(
+    page.route("**/assets/onboarding/iphone-home-screen.mp4*", lambda route: route.fulfill(
         body="not published", status=404, content_type="text/plain",
     ))
     url = ORIGIN + ("/iphone-pwa/onboarding/li" if pwa else

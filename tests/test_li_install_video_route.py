@@ -12,7 +12,7 @@ from httpx import ASGITransport, AsyncClient
 from app.main import app
 
 MP4 = Path("app/static/assets/onboarding/iphone-home-screen.mp4")
-SHA256 = "727be15b30229aedffee780eab61ee781ef3727e9cd7bcf8af5aab6d99bacb8f"
+SHA256 = "3e099a0c0489d9f0dc3e358490f5d87f2682462204eac7668b557c918874d15e"
 
 
 class SafariInstallVideoRouteTests(unittest.IsolatedAsyncioTestCase):
@@ -44,7 +44,7 @@ class SafariInstallVideoRouteTests(unittest.IsolatedAsyncioTestCase):
                     self.assertEqual(response.content, video[start:end + 1])
             entire = await client.get("/assets/onboarding/iphone-home-screen.mp4", headers={"Accept-Encoding":"gzip"})
             self.assertEqual(entire.status_code, 200)
-            self.assertEqual(len(entire.content), 709956)
+            self.assertEqual(len(entire.content), 574244)
             self.assertEqual(entire.content, video)
             self.assertEqual(entire.headers.get("x-content-type-options"), "nosniff")
             self.assertEqual(entire.headers.get("content-encoding"), "identity")
