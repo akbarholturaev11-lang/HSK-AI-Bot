@@ -404,7 +404,7 @@ def test_trial_invite_on_iphone_opens_pwa_and_retains_optional_bot_link(desktop_
     context, page, errors = _page(browser, viewport={"width": 390, "height": 844},
         user_agent="Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148",
         has_touch=True)
-    page.goto(f"{desktop_download_url}?ref=a1b2c3d4&mode=trial", wait_until="networkidle")
+    page.goto(f"{desktop_download_url}?ref=a1b2c3d4&mode=trial&lang=uz", wait_until="networkidle")
     assert page.locator('[data-download-button]').get_attribute('href') == '/iphone-pwa?lang=uz'
     assert page.locator('[data-referral-ios-link]').get_attribute('href') == 'https://t.me/darsi_chini_bot?start=a1b2c3d4'
     assert 'Telegram' in page.locator('[data-referral-body]').inner_text()
