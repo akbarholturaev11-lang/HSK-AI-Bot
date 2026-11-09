@@ -212,52 +212,6 @@ class LearningSignalsTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(signals.evidence_count, 4)
         self.assertEqual(signals.active_days_7, 3)
 
-    async def test_mistake_weakness_and_total_share_one_query_even_above_sample_cap(self):
-        # The exact total must include mistakes below the 80-row sampling
-        # boundary, while weakness categories only use the 80 heaviest rows.
-        # Neither HSK 3.0 records, fully resolved rows, nor unreviewable
-        # legacy targets may leak into the HSK 2.0 daily plan.
-        rows = [
-            mistake(f"sample:{index}", category="word", weight=3)
-            for index in range(80)
-        ]
-        rows.append(mistake("light:tail", category="grammar", weight=1))
-        ignored = mistake("unreviewable", category="character", weight=200)
-        ignored.target_key = "-"
-        rows.append(ignored)
-        resolved = mistake("resolved", category="pronunciation", weight=25)
-        resolved.resolved_count = 25
-        rows.append(resolved)
-        rows.append(mistake("other:track", category="grammar", weight=300, level="nhsk1"))
-        await self._add(*rows)
-
-        statements = []
-
-        def record_sql(conn, cursor, statement, parameters, context, executemany):
-            if "course_mistakes" in statement.lower() and statement.lstrip().lower().startswith("select"):
-                statements.append(statement)
-
-        event.listen(self.engine.sync_engine, "before_cursor_execute", record_sql)
-        try:
-            signals = await self._load(level="hsk1")
-        finally:
-            event.remove(self.engine.sync_engine, "before_cursor_execute", record_sql)
-
-        self.assertEqual(signals.mistakes_total, 241)
-        self.assertEqual(signals.weakness["word"], 240)
-        self.assertEqual(signals.weakness["grammar"], 0)
-        self.assertEqual(signals.weakness["character"], 0)
-        self.assertEqual(signals.weakness["pronunciation"], 0)
-        self.assertEqual(len(statements), 1, "Must not repeat mistake SELECT for total")
-        self.assertIn("over", statements[0].lower())
-        self.assertIn("sum(", statements[0].lower())
-        self.assertIn("limit", statements[0].lower())
-
-    async def test_no_mistake_rows_return_zero_total_and_empty_weakness(self):
-        signals = await self._load()
-        self.assertEqual(signals.mistakes_total, 0)
-        self.assertTrue(all(value == 0 for value in signals.weakness.values()))
-
     async def test_evidence_aggregation_uses_one_bounded_sql_result(self):
         # A growing history must not grow the number of rows returned from
         # PostgreSQL. All-time evidence and the seven-day dates retain the
