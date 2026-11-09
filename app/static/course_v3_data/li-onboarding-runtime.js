@@ -62,6 +62,9 @@ function validAuthHandoff(){
 }
 var supportedProviders=null; // null while the real provider availability loads
 var providerRequest=null,publicTrackPromise=null,publicTrackSnapshot=null,publicTrackAt=0,publicTrackRevalidateAt=0;
+var TELEGRAM_PENDING_KEY="hskai.pwa.telegram.pending";
+var TELEGRAM_URL_KEY="hskai.li.telegram.url";
+var telegramPoller=null,telegramClaimBusy=false,telegramStatusKey=null,telegramStatusError=false;
 var requestGeneration=0,requestBusy=false,initializing=true,trialEligibility=null;
 var initialRender=global.render;
 var originalLogin=global.loginScreen;
@@ -564,6 +567,80 @@ function loadProviders(){
   }).finally(function(){providerRequest=null});
   return providerRequest;
 }
+// Start and claim the SAME browser-bound Telegram proof as iphone-pwa-login.js.
+// This page never invents identity: the verified session cookie is issued by
+// /telegram/claim only after the owner approves the official bot request.
+function telegramUuid(value){
+  return typeof value==="string"&&/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
+}
+function telegramPendingId(){
+  try{var id=sessionStorage.getItem(TELEGRAM_PENDING_KEY);return telegramUuid(id)?id:null}
+  catch(_){return null}
+}
+function telegramBotUrl(value,id){
+  try{
+    var url=new URL(value);
+    return url.protocol==="https:"&&url.hostname==="t.me"&&
+      url.searchParams.get("start")==="pwa_link_"+id?url.href:null;
+  }catch(_){return null}
+}
+function telegramMessage(key,error){
+  telegramStatusKey=key;telegramStatusError=!!error;
+  var node=document.querySelector("#stage .status");
+  if(!node)return;
+  var shared=global.HSKAI_COMMON_I18N;
+  var text=shared&&shared[global.LANG]&&shared[global.LANG][key];
+  node.textContent=typeof text==="string"&&text?text:safeMessage();
+  if(error)node.setAttribute("role","alert");else node.setAttribute("role","status");
+}
+function stopTelegramPoll(){
+  if(telegramPoller!==null)clearInterval(telegramPoller);
+  telegramPoller=null;
+}
+function clearTelegramPending(){
+  stopTelegramPoll();
+  try{sessionStorage.removeItem(TELEGRAM_PENDING_KEY);
+      sessionStorage.removeItem(TELEGRAM_URL_KEY)}catch(_){}
+}
+async function claimTelegram(){
+  var id=telegramPendingId();
+  if(!hostPwa||!id||actor||telegramClaimBusy||document.visibilityState==="hidden")return;
+  telegramClaimBusy=true;
+  var controller=typeof AbortController==="function"?new AbortController():null;
+  var timeout=setTimeout(function(){if(controller)controller.abort()},20000);
+  try{
+    var response=await fetch("/api/v3/pwa-auth/telegram/claim",{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({link_request_id:id}),credentials:"same-origin",
+      cache:"no-store",redirect:"error",signal:controller?controller.signal:undefined
+    });
+    var result=await response.json();
+    if(!response.ok||!result||result.ok!==true)
+      throw new Error(result&&typeof result.error==="string"?result.error:"pwa_telegram_unavailable");
+    if(telegramPendingId()!==id)return;
+    if(result.status==="complete"){
+      clearTelegramPending();
+      telegramMessage("desktopAuth.linked",false);
+      // Consume the existing HttpOnly Li resume cookie through the canonical
+      // server route, which verifies this new session before showing a course.
+      location.replace("/iphone-pwa");
+    }
+  }catch(error){
+    if(telegramPendingId()!==id)return;
+    var reason=String(error&&error.message||"");
+    var terminal=reason==="pwa_telegram_not_approved"||reason==="pwa_telegram_expired";
+    if(terminal)clearTelegramPending();
+    telegramMessage(reason==="pwa_telegram_not_approved"?"desktopAuth.cancelled":
+      reason==="pwa_telegram_expired"?"desktopAuth.expired":
+      "desktopAuth.providerFailed",true);
+  }finally{clearTimeout(timeout);telegramClaimBusy=false}
+}
+function resumeTelegram(){
+  if(!hostPwa||!telegramPendingId())return;
+  telegramMessage("pwaAuth.telegramPending",false);
+  if(telegramPoller===null)telegramPoller=setInterval(claimTelegram,2500);
+  claimTelegram();
+}
 function authenticate(provider){
   if(requestBusy)return;
   if(!hostPwa){
@@ -572,19 +649,40 @@ function authenticate(provider){
   }
   if(actor){location.assign(pageCourse());return}
   if(!supportedProviders||supportedProviders.indexOf(provider)<0)return;
-  // Never issue a user grant. This only makes OAuth return to our public
-  // onboarding page; actual user identity is proven by PwaAuthService.
+  if(telegramPendingId()){
+    if(provider==="telegram"){
+      var url=null;
+      try{url=telegramBotUrl(sessionStorage.getItem(TELEGRAM_URL_KEY),telegramPendingId())}catch(_){}
+      resumeTelegram();
+      if(url)location.assign(url);
+      return;
+    }
+    // Switching from Telegram to Google must not leave a background claim
+    // capable of taking over the other provider's verified browser session.
+    clearTelegramPending();
+  }
+  // No browser action here grants an account: all identity comes from the
+  // canonical verified Google OAuth or Telegram browser-bound link proof.
   saveDraft();
   setBusy(true,"provider");
   api("/api/v3/pwa/onboarding/li/resume",{method:"POST"}).then(function(){
     markAuthHandoff(provider);
     if(provider==="telegram"){
-      // Delegate Telegram link proof and polling to the canonical login UI.
-      // Do not duplicate its browser-bound approval protocol here.
-      // Explicit login view bypasses the guest Li entry redirect; the legacy
-      // Telegram polling page then returns through the verified resume cookie.
-      location.assign("/iphone-pwa?login=1&lang="+encodeURIComponent(global.LANG));
-      return null;
+      // Keep the original progress bubble/panda in this tab: do not open the
+      // unrelated "Welcome" login screen merely to launch the same API.
+      return api("/api/v3/pwa-auth/telegram/start",{
+        method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({language:global.LANG})
+      }).then(function(data){
+        if(!telegramUuid(data.link_request_id))throw new Error("invalid_telegram_link");
+        var url=telegramBotUrl(data.authorize_url,data.link_request_id);
+        if(!url)throw new Error("invalid_telegram_link");
+        sessionStorage.setItem(TELEGRAM_PENDING_KEY,data.link_request_id);
+        sessionStorage.setItem(TELEGRAM_URL_KEY,url);
+        setBusy(false);
+        resumeTelegram();
+        location.assign(url);
+      });
     }
     return api("/api/v3/pwa-auth/start",{
       method:"POST",headers:{"Content-Type":"application/json"},
@@ -596,6 +694,7 @@ function authenticate(provider){
     });
   }).catch(function(error){
     clearAuthHandoff();
+    if(provider==="telegram")clearTelegramPending();
     console.warn("[li-onboarding] provider launch",String(error&&error.message||"unavailable").slice(0,100));
     renderError(function(){authenticate(provider)});
   });
@@ -632,6 +731,8 @@ global.render=function(animate){
         supportedProviders.indexOf(provider)<0);
     });
   }
+  if(telegramStatusKey&&(global.screen==="signup"||global.screen==="login"))
+    telegramMessage(telegramStatusKey,telegramStatusError);
   if(requestBusy)setBusy(true);
 };
 global.setTrack=function(v){
@@ -640,6 +741,9 @@ global.setTrack=function(v){
   originalSetTrack(v);saveDraft();
 };
 global.back=function(){
+  if(hostPwa&&global.screen==="signup"&&telegramPendingId()){
+    clearTelegramPending();telegramStatusKey=null;clearAuthHandoff();
+  }
   if(requestBusy){
     if(global.screen!=="loadCourse"&&global.screen!=="loadLesson")return;
     // A slow read must not trap the learner. The generation check prevents
@@ -703,6 +807,9 @@ async function bootstrap(){
           restoreDraft();
           requestBusy=false;global.render(false);
           loadProviders();
+          // Safari may restore this guest page after Telegram has opened.
+          // The same tab retains its browser-bound request and keeps polling.
+          resumeTelegram();
           return;
         }
         throw error;
@@ -710,6 +817,7 @@ async function bootstrap(){
     }else{
       await session();
     }
+    clearTelegramPending();
     var status=await statusApi();
     identityKey=userKey();
     if(status.saved){
@@ -742,12 +850,19 @@ async function bootstrap(){
   }finally{initializing=false}
 }
 global.addEventListener("pageshow",function(ev){
-  if(hostPwa&&ev.persisted)session().catch(function(){location.replace("/iphone-pwa")});
+  if(!hostPwa)return;
+  if(!actor&&telegramPendingId()){resumeTelegram();return}
+  if(ev.persisted&&actor)session().catch(function(){location.replace("/iphone-pwa")});
 });
 document.addEventListener("visibilitychange",function(){
-  if(hostPwa&&document.visibilityState==="visible"&&actor)
-    session().catch(function(){location.replace("/iphone-pwa")});
+  if(!hostPwa||document.visibilityState!=="visible")return;
+  if(!actor&&telegramPendingId()){resumeTelegram();return}
+  if(actor)session().catch(function(){location.replace("/iphone-pwa")});
 });
+global.addEventListener("focus",function(){
+  if(hostPwa&&!actor&&telegramPendingId())resumeTelegram();
+});
+global.addEventListener("pagehide",stopTelegramPoll);
 global.render(false);
 bootstrap();
 })(window);
