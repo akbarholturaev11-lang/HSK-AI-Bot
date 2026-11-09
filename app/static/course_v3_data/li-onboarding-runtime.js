@@ -669,6 +669,10 @@ global.go=function(next){
       return trackApi().then(function(d){trackStatus=d;validateTrack()});
     },"habit");return;
   }
+  // PWA guests choose Telegram/Google directly on the last profile step.
+  // Internally retain "signup" so same-tab draft/resume and verified OAuth
+  // callbacks keep their existing protections; remove the redundant CTA page.
+  if(next==="profile"&&hostPwa&&!actor){progress("signup");loadProviders();return}
   if(next==="signup"){
     if(hostPwa&&!actor){progress("signup");loadProviders();return}
     saveProfile();return
