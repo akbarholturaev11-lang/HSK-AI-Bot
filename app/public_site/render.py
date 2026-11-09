@@ -190,7 +190,7 @@ def render_page(path, settings_obj, tags=None):
         f'{aria_current if code == lang else ""}>{label}</a>'
         for code, label in LANGUAGE_NAMES.items()
     )
-    mobile_nav = f\'<details class="mobile-nav"><summary aria-label="{esc(labels["more"])}" title="{esc(labels["more"])}"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 6h16M4 12h16M4 18h16"/></svg></summary><nav class="mobile-nav-links" aria-label="{nav_aria}">{nav_items}</nav></details>'
+    mobile_nav = f'<details class="mobile-nav"><summary aria-label="{esc(labels["more"])}" title="{esc(labels["more"])}"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 6h16M4 12h16M4 18h16"/></svg></summary><nav class="mobile-nav-links" aria-label="{nav_aria}">{nav_items}</nav></details>'
     sections = "".join(
         f'<section class="content-card" id="{"hsk" + str(i + 1) if group == "hsk" and i < 4 else "section" + str(i + 1)}">'
         f'<h2>{esc(title)}</h2><p>{esc(body)}</p></section>'
