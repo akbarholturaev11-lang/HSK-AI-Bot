@@ -351,13 +351,19 @@ function updateTrackUi(){
   }
 }
 function progress(next){global.trail.push(global.screen);global.screen=next;global.render()}
-function loadingState(state,load,next){
+function loadingState(state,load,next,afterLoad){
   var current=++requestGeneration;
   progress(state);
   setBusy(true);
   Promise.resolve().then(load).then(function(){
     if(current!==requestGeneration||global.screen!==state)return;
-    requestBusy=false;global.trail.push(state);global.screen=next;global.render();
+    requestBusy=false;
+    if(typeof afterLoad==="function"){
+      // Keep the existing loading scene while a verified post-OAuth save
+      // starts. Do not flash the redundant profile/Continue step.
+      afterLoad();return;
+    }
+    global.trail.push(state);global.screen=next;global.render();
   }).catch(function(reason){
     if(current!==requestGeneration||global.screen!==state)return;
     console.warn("[li-onboarding] remote loading",String(reason&&reason.message||"unavailable").slice(0,80));
@@ -459,7 +465,9 @@ function offerIfEligible(){
   trialStatus().then(function(result){
     trialEligibility=result.trial||null;
     requestBusy=false;
-    progress(trialEligibility&&trialEligibility.eligible?"pro":"end");
+    // The old generic Pro offer repeats the first trial slide; enter the
+    // panda + HSK AI PRO welcome directly, then goal-matched slides.
+    progress(trialEligibility&&trialEligibility.eligible?"trialIntro":"end");
   }).catch(function(error){
     console.warn("[li-onboarding] eligibility unavailable",String(error&&error.message||"unknown").slice(0,100));
     trialEligibility=null;
@@ -719,6 +727,22 @@ global.render=function(animate){
   updateTrackUi();
   // Trial service has no 48-hour PWA Web Push guarantee today; show only the
   // proven server-granted state, not the demo's unimplemented push promise.
+  if(["trial1","trial2","trial3"].indexOf(global.screen)>=0){
+    var preferred={
+      trial1:["work_china","study_china","travel"],
+      trial2:["daily_communication","travel","work_china"],
+      trial3:["hsk_exam","study_china"]
+    }[global.screen]||[];
+    var selected=preferred.find(function(key){
+      return Array.isArray(global.goals)&&global.goals.indexOf(key)>=0;
+    });
+    if(selected){
+      var heading=document.querySelector("#stage .trial h2");
+      var subtitle=document.querySelector("#stage .trial p");
+      if(heading)heading.textContent=word("proGoal."+selected+".title");
+      if(subtitle)subtitle.textContent=word("proGoal."+selected+".subtitle");
+    }
+  }
   if(global.screen==="trialDone"){
     var heading=document.querySelector("#stage .trial h2");
     if(heading)heading.textContent=word("trialOn");
@@ -858,11 +882,18 @@ async function bootstrap(){
       // Revalidate *personal* course access after OAuth before any saved
       // draft is attached to this verified actor. Do not trust anonymous
       // public track preview as an HSK 3.0 entitlement.
+      if(justResumedGuestRegistration){
+        // OAuth already bound the same-tab draft to the verified owner.
+        // Start media prefetch now and save the verified onboarding without
+        // making the person tap a second account/Continue button.
+        var install=global.HSKAILiInstallGuide;
+        if(install&&typeof install.preload==="function")install.preload();
+      }
       loadingState("loadCourse",function(){
         return trackApi().then(function(data){
           trackStatus=data;validateGoalData();
         });
-      },"profile");
+      },"profile",justResumedGuestRegistration?saveProfile:null);
     }else{
       global.render(false);
     }
