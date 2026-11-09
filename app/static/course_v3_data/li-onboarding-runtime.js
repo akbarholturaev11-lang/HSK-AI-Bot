@@ -446,14 +446,29 @@ function beginTrial(){
   if(requestBusy||!trialEligibility||!trialEligibility.eligible){window.go("end");return}
   setBusy(true,"trial-start");
   var endpoint=hostPwa?"/api/v3/pwa/trial/start":"/api/v3/trial/start";
+  function confirmed(){
+    requestBusy=false;global.trail.push(global.screen);global.screen="trialDone";global.render();
+  }
+  function failed(e){
+    console.warn("[li-onboarding] trial activation",String(e&&e.message||"trial_denied").slice(0,100));
+    // Retry remains available but never claim Pro based on a timeout or
+    // client-side state. The real server holds the one-time entitlement.
+    renderError(beginTrial,function(){progress("end")});
+  }
   guardedPost(endpoint,{}).then(function(result){
     if(!result.ok||!result.ends_at)throw new Error("trial_not_confirmed");
-    requestBusy=false;global.trail.push(global.screen);global.screen="trialDone";global.render();
+    confirmed();
   }).catch(function(e){
-    console.warn("[li-onboarding] trial activation",String(e&&e.message||"trial_denied").slice(0,100));
-    // Retry really retries the trusted trial API. Declining or an already
-    // used offer must always allow the free course, without a Pro claim.
-    renderError(beginTrial,function(){progress("end")});
+    if(!hostPwa){failed(e);return}
+    // A POST can commit even when its HTTP reply is lost. Check the signed-in
+    // account's actual entitlement before asking for another one-time POST.
+    trialStatus().then(function(result){
+      if(result.trial&&result.trial.active===true&&
+         typeof result.trial.ends_at==="string"&&result.trial.ends_at){
+        confirmed();return;
+      }
+      failed(e);
+    }).catch(function(){failed(e)});
   });
 }
 function toCourse(){
