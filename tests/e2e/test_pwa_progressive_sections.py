@@ -932,3 +932,74 @@ def test_profile_first_paint_shell_matches_identity_accuracy_and_calendar(width,
         finally:
             browser.close()
 
+
+@pytest.mark.parametrize("width", [320, 390, 430])
+@pytest.mark.parametrize("participant_count", [1, 4])
+def test_rating_short_leaderboard_preserves_first_row_geometry(width, participant_count):
+    """PWA Top-5 heading is a reserved slot even with fewer than five users."""
+    from tests.pwa_layout_geometry import capture_geometry, assert_reserved_layout
+    payload = json.loads((STATIC / "course_v3_data/hsk1.json").read_text(encoding="utf-8"))
+    payload["authenticated"] = True
+    payload["level"] = "hsk1"
+    payload["user"] = {"name":"Verified", "avatar":"阿","language":"ru","is_paid":True,
+                       "state":"PRO_ACTIVE","onboarding_completed":True}
+    held = []
+    errors = []
+    def serve(route):
+        path = urlsplit(route.request.url).path
+        if path == "/iphone-pwa/course":
+            route.fulfill(status=200, content_type="text/html", body=pwa_document())
+        elif path == "/api/v3/pwa-auth/session":
+            route.fulfill(status=200, json={"ok":True,"user_id":31,"csrf":"test-csrf"})
+        elif path == "/api/v3/pwa/map":
+            route.fulfill(status=200, json=payload, headers={"X-HSK-PWA-User-ID":"31"})
+        elif path == "/api/v3/pwa/gamification":
+            held.append(route)
+        elif path.startswith("/api/"):
+            route.fulfill(status=404, json={"ok":False})
+        else:
+            file = (STATIC / path.lstrip("/")).resolve()
+            if file.is_file() and file.is_relative_to(STATIC.resolve()):
+                mime, _ = mimetypes.guess_type(file)
+                route.fulfill(path=str(file), content_type=mime or "application/octet-stream")
+            else:
+                route.fulfill(status=404, body="")
+    anchors = {
+        "title":"#s-rating .rating-title",
+        "podium":"#s-rating .rating-podium-list",
+        "members":"#s-rating .rating-podium-meta",
+        "top-five":"#s-rating .rating-podium-queue",
+        "first-row":"#s-rating .lr",
+        "nav":"#nav",
+    }
+    with sync_playwright() as playwright:
+        browser = getattr(playwright, os.getenv("PWA_E2E_ENGINE", "chromium")).launch()
+        try:
+            page = browser.new_context(viewport={"width":width,"height":844},
+                                       is_mobile=True,reduced_motion="reduce").new_page()
+            page.set_default_timeout(15000)
+            page.on("pageerror", lambda err: errors.append(str(err)))
+            page.route("**/*", serve)
+            page.goto(ORIGIN + "/iphone-pwa/course?lang=ru", wait_until="domcontentloaded")
+            page.locator("#s-course .uban").first.wait_for()
+            page.locator('#nav button[data-s="rating"]').click()
+            page.locator("#s-rating .pwa-rating-shell[aria-busy=true]").wait_for()
+            before = capture_geometry(page, anchors)
+            assert len(held) == 1
+            held.pop().fulfill(status=200, json={
+                "ok":True,"league":"Bronze","league_size":12,
+                "leaderboard":[{"name":f"Student {i}","rank":i,"xp":100-i*10,
+                                "total_xp":900-i*25}
+                               for i in range(1,participant_count+1)]
+            })
+            page.get_by_text("Student 1", exact=True).wait_for()
+            ready = capture_geometry(page, anchors)
+            assert_reserved_layout(before, ready)
+            assert page.locator("#s-rating .rating-podium-queue").count() == 1
+            assert page.locator("#s-rating .lr").count() == participant_count
+            assert page.locator("#s-course .uban").count() > 0
+            assert not errors
+        finally:
+            browser.close()
+
+

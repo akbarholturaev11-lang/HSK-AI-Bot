@@ -6910,7 +6910,7 @@ function _renderRatingContent(){
     h+='<div class="rt-invite"><span class="han">榜</span><p>'+esc(r.empty)+'</p></div>';
     $("#s-rating").innerHTML=h;return;
   }
-  if(ratingUsers.length>=5)h+='<div class="rating-podium-queue"><i class="ti ti-chart-no-axes-column-increasing"></i> '+esc(courseMessage("rating.weeklyTopFive",LANG==="ru"?"Недельный рейтинг · Топ 5":LANG==="tj"?"Рейтинги ҳафта · Топ 5":"Haftalik reyting · Top 5"))+'</div>';
+  if(PWA_COURSE_HOST||ratingUsers.length>=5)h+='<div class="rating-podium-queue"><i class="ti ti-chart-no-axes-column-increasing"></i> '+esc(courseMessage("rating.weeklyTopFive",LANG==="ru"?"Недельный рейтинг · Топ 5":LANG==="tj"?"Рейтинги ҳафта · Топ 5":"Haftalik reyting · Top 5"))+'</div>';
   var med=["g","s","b"];
   ratingUsers.forEach(function(u,i){
 
