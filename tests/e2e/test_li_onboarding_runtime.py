@@ -571,3 +571,39 @@ def test_trial_slides_cannot_forge_activation_or_two_day_push_claim():
         assert "2 kun" not in page.locator("#stage .trial h2").inner_text()
         assert not captured["pageerrors"]
         browser.close()
+
+
+@pytest.mark.parametrize("missing_asset", ["catalog", "character"])
+def test_missing_public_view_bundle_shows_retry_without_fake_account_or_pro(missing_asset):
+    # A CDN/offline failure must never crash the inline render or leave the
+    # skeleton stuck. Neither provider auth nor trial should be attempted.
+    with pw.sync_playwright() as playwright:
+        browser = getattr(playwright, os.environ.get("PWA_E2E_ENGINE", "chromium")).launch()
+        page = browser.new_page(viewport={"width": 390, "height": 844})
+        pageerrors, api_requests = [], []
+        page.on("pageerror", lambda e: pageerrors.append(str(e)))
+        page.on("request", lambda r: api_requests.append(r.url)
+                if "/api/" in r.url else None)
+        page.route("**/*", lambda route: route.fulfill(
+            body="", status=200,
+            content_type=("text/css" if ".css" in route.request.url
+                          else "application/javascript"),
+        ))
+        if missing_asset == "character":
+            page.route("**/course_v3_data/hsk-li-onboarding-i18n.js*",
+                       lambda route: route.fulfill(
+                           body=CATALOG, content_type="application/javascript"))
+        page.route(ORIGIN + "/iphone-pwa/onboarding/li?lang=uz",
+                   lambda route: route.fulfill(
+                       body=HTML, content_type="text/html; charset=utf-8"))
+        page.goto(ORIGIN + "/iphone-pwa/onboarding/li?lang=uz",
+                  wait_until="domcontentloaded")
+        alert = page.locator("#stage [role=alert]")
+        alert.wait_for(state="visible")
+        assert page.locator("#stage").get_attribute("aria-busy") == "false"
+        assert page.locator("#footer button").count() == 1
+        assert page.locator("#footer button").is_enabled()
+        assert not page.locator("#stage .provider").count()
+        assert not api_requests
+        assert not pageerrors
+        browser.close()
