@@ -635,7 +635,7 @@ async function claimTelegram(){
     if(telegramPendingId()!==id)return;
     var reason=String(error&&error.message||"");
     var terminal=reason==="pwa_telegram_not_approved"||reason==="pwa_telegram_expired";
-    if(terminal)clearTelegramPending();
+    if(terminal){clearTelegramPending();clearAuthHandoff()}
     telegramMessage(reason==="pwa_telegram_not_approved"?"desktopAuth.cancelled":
       reason==="pwa_telegram_expired"?"desktopAuth.expired":
       "desktopAuth.providerFailed",true);
@@ -827,7 +827,7 @@ async function bootstrap(){
             if(guestStep==="signup"&&validAuthHandoff()&&global.level&&
                global.goals.length&&global.minutes&&global.focus&&global.streakGoal)
               global.screen="signup";
-            else clearTelegramPending();
+            else {clearTelegramPending();clearAuthHandoff()}
           }
           requestBusy=false;global.render(false);
           loadProviders();
