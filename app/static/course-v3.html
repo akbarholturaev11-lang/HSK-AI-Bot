@@ -6750,9 +6750,11 @@ function applyRatingPayload(d){
 	    return d;
 	  });
 	}
-function renderRating(){if(PWA_COURSE_HOST&&ratingPending)return;
-  // Friends fetches referrals directly; it must not wait for a leaderboard request.
+function renderRating(){
+  // Friends/referrals are an independent API section; a slow leaderboard
+  // must never block switching into the friends panel.
   if(ratingTabCur==="friends"){_renderRatingContent();return}
+  if(PWA_COURSE_HOST&&ratingPending)return;
   if(!ratingLoaded&&(INIT_DATA||PWA_COURSE_HOST)){
     ratingLoaded=true;ratingPending=true;
     var t=T();
