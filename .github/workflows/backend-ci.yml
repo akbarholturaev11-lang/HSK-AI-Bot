@@ -482,6 +482,8 @@ jobs:
       - name: Verify approved optimized Safari tutorial video if published
         run: python -m unittest tests.test_li_install_video_asset
 
+      - name: Verify PWA static first paint with stalled API (Mini App unchanged)
+        run: python -m pytest -q tests/e2e/test_pwa_progressive_shell.py
       - name: Verify Li onboarding honest loading, error retry and server-backed book choice
         run: python -m pytest -q tests/e2e/test_li_onboarding_loading.py
       - name: Verify 23-state Li runtime, platform ownership, real choices and trial boundaries
