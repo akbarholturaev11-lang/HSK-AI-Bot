@@ -33,10 +33,35 @@ def _prepare(browser, *, ios=True, installed=False, has_video=False):
         body=CAT, content_type="application/javascript"))
     page.route("**/course_v3_data/li-onboarding-install.js*", lambda route: route.fulfill(
         body=JS, content_type="application/javascript"))
-    page.route("**/assets/onboarding/iphone-home-screen.mp4", lambda route: route.fulfill(
-        status=206 if has_video else 404,
-        body=b"\0\0\0\x18ftypmp42" if has_video else "not available",
-        content_type="video/mp4" if has_video else "application/json"))
+    def video_response(route):
+        if not has_video:
+            route.fulfill(status=404, body="not available", content_type="text/plain")
+            return
+        # A fake 12-byte ftyp header is NOT a valid MP4. WebKit correctly
+        # rejected that fixture. Test the committed optimized H.264 recording
+        # and real Safari HTTP byte-range behaviour instead.
+        video = (STATIC / "assets/onboarding/iphone-home-screen.mp4").read_bytes()
+        header = route.request.headers.get("range", "")
+        headers = {"Accept-Ranges": "bytes", "Content-Type": "video/mp4"}
+        if header.startswith("bytes="):
+            start_text, _, end_text = header[6:].partition("-")
+            if start_text:
+                start_byte = int(start_text)
+                end_byte = min(len(video)-1, int(end_text) if end_text else len(video)-1)
+            else:
+                start_byte = max(0, len(video) - int(end_text))
+                end_byte = len(video)-1
+            if start_byte >= len(video) or end_byte < start_byte:
+                route.fulfill(status=416, headers={
+                    **headers, "Content-Range": f"bytes */{len(video)}"
+                })
+                return
+            headers["Content-Range"] = f"bytes {start_byte}-{end_byte}/{len(video)}"
+            route.fulfill(status=206, body=video[start_byte:end_byte + 1], headers=headers)
+        else:
+            route.fulfill(status=200, body=video, headers=headers)
+
+    page.route("**/assets/onboarding/iphone-home-screen.mp4", video_response)
     html = (
         "<!doctype html><html lang='uz'><head><meta name='viewport' content='width=device-width'></head>"
         "<body><main>Authenticated onboarding complete</main>"
@@ -106,9 +131,10 @@ def test_media_stays_optional_but_real_metadata_can_swap_to_vertical_video():
         # Browser player is hidden until the real MP4 decoder accepts
         # metadata. The fallback is usable during any download delay.
         assert page.locator(".li-install-video-fallback").is_visible()
-        page.locator(".li-install-video").evaluate(
-            "(video) => video.dispatchEvent(new Event('loadedmetadata'))")
-        assert page.locator(".li-install-video").is_visible()
+        # Actual playable MP4, not a synthetic loadedmetadata event.
+        page.locator(".li-install-video").wait_for(state="visible", timeout=15000)
+        assert page.locator(".li-install-video").evaluate(
+            "(video) => video.readyState >= HTMLMediaElement.HAVE_METADATA")
         assert page.locator(".li-install-video-fallback").is_hidden()
         page.locator(".li-install-close").click()
         assert page.get_by_role("dialog").count() == 0
