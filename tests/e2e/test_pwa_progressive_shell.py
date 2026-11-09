@@ -21,14 +21,17 @@ def test_shell_renders_without_api_and_preserves_telegram_launch(pwa):
         # Exact source markup: no fake actor/session, no lesson JSON and no
         # cached Pro state. Resources are empty to test static resilience.
         target = ORIGIN + ("/iphone-pwa/course" if pwa else "/course-v3.html")
-        page.route(target, lambda route: route.fulfill(
-            body=HTML, content_type="text/html; charset=utf-8",
-        ))
         page.route("**/*", lambda route: route.fulfill(
             body="", content_type=(
                 "text/css" if route.request.url.split("?")[0].endswith(".css")
                 else "application/javascript"
             ),
+        ))
+        # API never responds. Prove the shell does not depend on headers.
+        page.route("**/api/**", lambda route: None)
+        # Last matching route wins in Playwright.
+        page.route(target, lambda route: route.fulfill(
+            body=HTML, content_type="text/html; charset=utf-8",
         ))
         page.goto(target, wait_until="domcontentloaded")
         page.locator("#s-course").wait_for(state="visible")
