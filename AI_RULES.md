@@ -13,6 +13,20 @@
 
 ---
 
+## Active product scope: PWA + Android
+
+The owner’s permanent prioritization rule is in `AGENTS.md`
+(“Hozirgi mahsulot ustuvorligi: PWA + Android”). Apply it **before**
+desktop parity, desktop Coming Soon, or cross-platform completeness guidance:
+spend implementation and agent tokens on PWA/Android and their required shared
+systems only. Keep shared contracts reusable for a possible future desktop
+connection; **do not build speculative desktop code or run standalone desktop
+parity work.** Existing Telegram teaching stays operational today; the
+bot-to-PWA/Android-only handoff is a **future direction, not an instruction
+to remove current lessons or migrate now**.
+
+---
+
 ## Permanent UI localization ownership
 
 Before adding/editing user-facing fixed copy or introducing a language, follow
@@ -61,7 +75,12 @@ Git branch, recovery, test, and push/promotion rules are maintained in `AGENTS.m
 
 ---
 
-## Desktop DMG/EXE Parity Rule
+## Desktop DMG/EXE Parity Rule — dormant unless explicitly authorized
+
+This rule does **not** activate desktop work during PWA/Android tasks. Apply
+only if the owner explicitly scopes a desktop implementation in the future;
+shared-code compatibility work must remain minimal under the active priority
+in `AGENTS.md`.
 
 - macOS DMG and Windows EXE desktop apps are a paired product and must stay functionally aligned.
 - If a feature, user-visible behavior, UI flow, backend/API contract, setting, security fix, or update behavior is added or changed in one desktop app, implement and test the corresponding change for the other app in the same task, adapted to that operating system.
@@ -70,7 +89,10 @@ Git branch, recovery, test, and push/promotion rules are maintained in `AGENTS.m
 
 ---
 
-## Desktop Coming Soon Activation Rule
+## Desktop Coming Soon Activation Rule — dormant unless explicitly authorized
+
+Apply the following UX constraints only within a separately authorized
+Desktop task; a placeholder does not authorize new Desktop development.
 
 - Desktop UI blocks marked as `soonBlock`, "Soon", "Tez orada", or placeholders must stay in their current in-place location until the real feature is implemented.
 - When one of these placeholder blocks becomes functional, remove the disabled/soon wrapper from that same block and connect the existing in-block button, row, or primary action to the real flow.
