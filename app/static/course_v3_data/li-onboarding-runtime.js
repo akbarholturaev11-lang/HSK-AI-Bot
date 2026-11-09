@@ -82,6 +82,55 @@ var ERR={
 };
 var TRY={uz:"Qayta urinish",ru:"Попробовать снова",tj:"Боз кӯшиш кардан"};
 function word(key){var lang=global.T[global.LANG]||global.T.ru;return lang[key]||""}
+
+var authWaitNode=null;
+function showAuthWait(phase){
+  if(!hostPwa)return;
+  if(!authWaitNode){
+    var overlay=document.createElement("div");
+    overlay.className="li-auth-wait";
+    overlay.setAttribute("role","status");
+    overlay.setAttribute("aria-live","polite");
+    overlay.setAttribute("aria-busy","true");
+    var inner=document.createElement("div");
+    inner.className="li-auth-wait-inner";
+    var panda=document.createElement("div");
+    panda.className="li-auth-wait-panda";
+    panda.setAttribute("aria-hidden","true");
+    panda.innerHTML=global.HSKCharacters.render("panda","loading");
+    var title=document.createElement("h2");
+    title.className="li-auth-wait-title";
+    var subtitle=document.createElement("p");
+    subtitle.className="li-auth-wait-subtitle";
+    var dots=document.createElement("div");
+    dots.className="li-auth-wait-dots";
+    dots.setAttribute("aria-hidden","true");
+    for(var i=0;i<3;i++)dots.appendChild(document.createElement("i"));
+    inner.append(panda,title,subtitle,dots);
+    overlay.appendChild(inner);
+    document.body.appendChild(overlay);
+    authWaitNode=overlay;
+    var wrap=document.querySelector(".wrap");
+    if(wrap)wrap.inert=true;
+  }
+  setAuthWaitPhase(phase||"waiting");
+  document.documentElement.classList.remove("li-auth-resuming");
+}
+function setAuthWaitPhase(phase){
+  if(!authWaitNode)return;
+  var saving=phase==="saving";
+  var title=authWaitNode.querySelector(".li-auth-wait-title");
+  var subtitle=authWaitNode.querySelector(".li-auth-wait-subtitle");
+  if(title)title.textContent=word(saving?"install.authSaveTitle":"install.authWaitTitle");
+  if(subtitle)subtitle.textContent=word(saving?"install.authSaveSubtitle":"install.authWaitSubtitle");
+}
+function hideAuthWait(){
+  document.documentElement.classList.remove("li-auth-resuming");
+  if(authWaitNode){authWaitNode.remove();authWaitNode=null}
+  var wrap=document.querySelector(".wrap");
+  if(wrap)wrap.inert=false;
+}
+
 function safeMessage(){return ERR[global.LANG]||ERR.ru}
 function retryMessage(){return TRY[global.LANG]||TRY.ru}
 function pageCourse(){return hostPwa?"/iphone-pwa/course":"/course-v3.html"}
@@ -237,6 +286,7 @@ function setBusy(value,section){
   syncPending();
 }
 function renderError(action,continueFree,message,primaryLabel,secondaryLabel){
+  hideAuthWait();
   requestBusy=false;
   var stage=document.getElementById("stage");
   // An access gate has its own clear message; do not leave a loading skeleton
@@ -350,7 +400,12 @@ function updateTrackUi(){
     t.setAttribute("aria-disabled",String(!allowed));
   }
 }
-function progress(next){global.trail.push(global.screen);global.screen=next;global.render()}
+function progress(next){
+  global.trail.push(global.screen);global.screen=next;global.render();
+  // Keep the same panda visible until the verified guide or actual trial
+  // destination has been painted, never reveal the intermediate course UI.
+  if(next==="trialIntro"||next==="end")hideAuthWait();
+}
 function loadingState(state,load,next,afterLoad){
   var current=++requestGeneration;
   progress(state);
@@ -422,6 +477,7 @@ function saveProfile(){
     if(e&&e.message==="hsk30_locked"&&hostPwa&&actor){showHsk30Locked();return}
     renderError(saveProfile);return
   }
+  if(hostPwa&&justResumedGuestRegistration)setAuthWaitPhase("saving");
   setBusy(true,"save");
   var path=hostPwa?"/api/v3/pwa/onboarding":"/api/miniapp/onboarding";
   var result,hadResponse=false;
@@ -446,6 +502,7 @@ function saveProfile(){
     if(hostPwa&&justResumedGuestRegistration&&guide&&typeof guide.open==="function"&&
        guide.open({userId:Number(actor&&actor.user_id),lang:global.LANG},offerIfEligible)){
       justResumedGuestRegistration=false;
+      hideAuthWait(); // The real install overlay is already attached.
       return;
     }
     justResumedGuestRegistration=false;
@@ -643,7 +700,7 @@ async function claimTelegram(){
     if(telegramPendingId()!==id)return;
     var reason=String(error&&error.message||"");
     var terminal=reason==="pwa_telegram_not_approved"||reason==="pwa_telegram_expired";
-    if(terminal){clearTelegramPending();clearAuthHandoff()}
+    if(terminal){clearTelegramPending();clearAuthHandoff();hideAuthWait()}
     telegramMessage(reason==="pwa_telegram_not_approved"?"desktopAuth.cancelled":
       reason==="pwa_telegram_expired"?"desktopAuth.expired":
       "desktopAuth.providerFailed",true);
@@ -671,6 +728,7 @@ function authenticate(provider){
       return;
     }
     if(provider==="telegram"){
+      showAuthWait("waiting");
       var url=null;
       try{url=telegramBotUrl(sessionStorage.getItem(TELEGRAM_URL_KEY),telegramPendingId())}catch(_){}
       resumeTelegram();
@@ -684,6 +742,7 @@ function authenticate(provider){
   // No browser action here grants an account: all identity comes from the
   // canonical verified Google OAuth or Telegram browser-bound link proof.
   saveDraft();
+  showAuthWait("waiting");
   setBusy(true,"provider");
   api("/api/v3/pwa/onboarding/li/resume",{method:"POST"}).then(function(){
     markAuthHandoff(provider);
@@ -847,11 +906,21 @@ async function bootstrap(){
           // Safari back/reload must keep the original speech/panda/provider
           // screen while a fresh, same-tab Telegram approval is pending.
           // A stale or unrelated draft cannot be used as login proof.
+          var handoff=validAuthHandoff();
           if(telegramPendingId()){
-            if(guestStep==="signup"&&validAuthHandoff()&&global.level&&
+            if(guestStep==="signup"&&handoff&&global.level&&
                global.goals.length&&global.minutes&&global.focus&&global.streakGoal)
               global.screen="signup";
-            else {clearTelegramPending();clearAuthHandoff()}
+            else {clearTelegramPending();clearAuthHandoff();hideAuthWait()}
+          }else{
+            // Google cancellation or a rejected cookie is NOT a verified
+            // sign-in. Return to the actual provider controls for retry,
+            // without attaching any guest draft to an unverified owner.
+            if(handoff&&guestStep==="signup"&&global.level&&
+               global.goals.length&&global.minutes&&global.focus&&global.streakGoal)
+              global.screen="signup";
+            if(handoff)clearAuthHandoff();
+            hideAuthWait();
           }
           requestBusy=false;global.render(false);
           loadProviders();
@@ -889,6 +958,7 @@ async function bootstrap(){
         var install=global.HSKAILiInstallGuide;
         if(install&&typeof install.preload==="function")install.preload();
       }
+      if(!justResumedGuestRegistration)hideAuthWait();
       loadingState("loadCourse",function(){
         return trackApi().then(function(data){
           trackStatus=data;validateGoalData();
@@ -896,6 +966,7 @@ async function bootstrap(){
       },"profile",justResumedGuestRegistration?saveProfile:null);
     }else{
       global.render(false);
+      hideAuthWait();
     }
   }catch(e){
     console.warn("[li-onboarding] authentication/status",String(e&&e.message||"not_ready").slice(0,100));
@@ -916,6 +987,10 @@ global.addEventListener("focus",function(){
   if(hostPwa&&!actor&&telegramPendingId())resumeTelegram();
 });
 global.addEventListener("pagehide",stopTelegramPoll);
+// A same-tab OAuth return is only display intent; bootstrap still verifies
+// HttpOnly session, server profile ownership and course access before any save.
+if(hostPwa&&(validAuthHandoff()||telegramPendingId()))
+  showAuthWait("waiting");
 global.render(false);
 bootstrap();
 })(window);
