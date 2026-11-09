@@ -97,6 +97,23 @@ def test_course_ready_while_rating_referrals_and_profile_stats_load_independentl
             assert page.locator("#s-course .hsk-pwa-boot-shell").count() == 0
             assert not page.locator("#nav").get_attribute("inert")
 
+            # PWA first viewport must not synchronously build offscreen
+            # Practice cards. The existing App.show() entry point builds
+            # them on the first visit, and subsequent locale changes update
+            # the mounted screen (including when it is offscreen).
+            assert page.locator("#s-mashq .row-card").count() == 0
+            page.evaluate("App.setLang('uz')")
+            assert page.locator("#s-mashq .row-card").count() == 0
+            page.locator('#nav button[data-s="mashq"]').click()
+            assert page.locator("#s-mashq .row-card").count() == 6
+            assert page.locator("#s-mashq .section-title").inner_text() == "Mashq"
+            page.evaluate("App.setLang('ru')")
+            assert page.locator("#s-mashq .section-title").inner_text() == "Практика"
+            page.locator('#nav button[data-s="course"]').click()
+            page.evaluate("App.setLang('uz')")
+            assert page.locator("#s-mashq .section-title").inner_text() == "Mashq"
+            assert page.locator("#s-mashq .row-card").count() == 6
+
             page.locator('#nav button[data-s="rating"]').click()
             page.locator("#s-rating .hsk-pwa-section-loading").wait_for()
             assert len(held["rating"]) == 1
