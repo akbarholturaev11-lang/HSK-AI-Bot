@@ -55,7 +55,7 @@ class SubscriptionUIAdoptionTests(unittest.TestCase):
 
     def test_preload_and_entitlement_logic_boundaries(self):
         source = subscription_source()
-        self.assertLess(source.index("hsk-course-i18n.js?v=20261021-395d978eaee1"),
+        self.assertLess(source.index("hsk-course-i18n.js?v=20261021-b962df86b34e"),
                         source.index("const I18N={"))
         self.assertIn('local["subscriptionPage."+key]', source)
         self.assertIn('if(typeof value==="string"&&value)I18N[locale][key]=value', source)

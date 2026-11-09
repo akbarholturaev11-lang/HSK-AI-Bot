@@ -53,7 +53,7 @@ class SubscriptionNestedUIAdoptionTests(unittest.TestCase):
                 self.assertEqual(len(catalog),1038)
                 for key,value in values.items():
                     self.assertEqual(catalog["subscriptionNested."+key],value)
-        self.assertLess(source.index("hsk-course-i18n.js?v=20261021-395d978eaee1"),
+        self.assertLess(source.index("hsk-course-i18n.js?v=20261021-b962df86b34e"),
                         source.index("const I18N={"))
 
     def test_nested_view_only_and_original_payment_id_paths(self):
