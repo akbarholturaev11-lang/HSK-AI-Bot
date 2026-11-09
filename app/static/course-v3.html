@@ -6147,11 +6147,21 @@ function refreshPwaCheckoutMap(){
     return true;
   }).finally(function(){clearTimeout(timer)});
 }
+function retryTransientCourseMap(lv,tries,signal,kind){
+  if(signal&&signal.aborted)return {cancelled:true};
+  // A course-map POST reads the learner's map; it is safe to retry after a
+  // transport/5xx failure. Never retry 401, CSRF, HSK 3.0 or other 4xx gates.
+  // PWA gets one short automatic recovery, Mini App keeps its old retry budget.
+  var retry=tries<(PWA_COURSE_HOST?1:3);
+  if(PWA_COURSE_HOST)clog(retry?"pwa_course_map_retry":"pwa_course_map_failed",kind,{attempt:tries+1});
+  return retry?_retryCourseMap(lv,tries,signal):{error:true};
+}
 function loadCourseMap(lv,tries,signal){
   if(signal&&signal.aborted)return Promise.resolve({cancelled:true});
   tries=tries||0;
-  // PWA: one bounded attempt. A newer level choice aborts this request
-  // through `signal`; a stalled connection aborts it after 8 s.
+  // Each PWA attempt is bounded to 8 s. One transient retry reuses the
+  // verified browser actor and prevents a manual reload on cold Safari starts.
+  // A newer level choice still aborts every outstanding attempt via signal.
   var controller=PWA_COURSE_HOST&&window.AbortController?new AbortController():null,timer,onAbort;
   if(controller&&signal){onAbort=function(){controller.abort()};signal.addEventListener("abort",onAbort)}
   var request=_fetchCourseMap(lv,controller?controller.signal:signal);
@@ -6164,15 +6174,16 @@ function loadCourseMap(lv,tries,signal){
     if(isHsk30AccessError(d,d.level||lv))return {hsk30Gate:true,error:d.error,level:d.level||lv};
     if(d&&(d.authenticated===false||d._status===401))return {auth:false};
     if(!d||d._parseFail||(d._status&&d._status>=500)){
-      if(signal&&signal.aborted)return {cancelled:true};if(!PWA_COURSE_HOST&&tries<3)return _retryCourseMap(lv,tries,signal);
-      return {error:true};
+      return retryTransientCourseMap(lv,tries,signal,d&&d._status>=500?"http_5xx":d&&d._parseFail?"timeout_or_parse":"network");
     }
     if(d._status>=400||!Array.isArray(d.units))return {error:true};
     if(d.smart_preferences_available===true)_ensureSmartTimezone(); // Best effort; learning/navigation never waits for Smart metadata.
     return {data:d};
-  }).catch(function(){
-    if(signal&&signal.aborted)return {cancelled:true};if(!PWA_COURSE_HOST&&tries<3)return _retryCourseMap(lv,tries,signal);
-    return {error:true};
+  }).catch(function(err){
+    // A verified session mismatch/expiry is never a transient map failure.
+    if(PWA_COURSE_HOST&&err&&/^(pwa_session_required|pwa_actor_changed|pwa_session_invalid)$/.test(String(err.message||"")))
+      return {auth:false};
+    return retryTransientCourseMap(lv,tries,signal,"network");
   }).finally(function(){clearTimeout(timer);if(onAbort)signal.removeEventListener("abort",onAbort)});
 }
 function _retryCourseMap(lv,tries,signal){return new Promise(function(res){setTimeout(res,500*(tries+1))}).then(function(){return signal&&signal.aborted?{cancelled:true}:loadCourseMap(lv,tries+1,signal)})}
