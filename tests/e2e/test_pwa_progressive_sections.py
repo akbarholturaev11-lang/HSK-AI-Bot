@@ -934,7 +934,7 @@ def test_profile_first_paint_shell_matches_identity_accuracy_and_calendar(width,
 
 
 @pytest.mark.parametrize("width", [320, 390, 430])
-@pytest.mark.parametrize("participant_count", [1, 4])
+@pytest.mark.parametrize("participant_count", [0, 1, 4])
 def test_rating_short_leaderboard_preserves_first_row_geometry(width, participant_count):
     """PWA Top-5 heading is a reserved slot even with fewer than five users."""
     from tests.pwa_layout_geometry import capture_geometry, assert_reserved_layout
@@ -969,7 +969,6 @@ def test_rating_short_leaderboard_preserves_first_row_geometry(width, participan
         "podium":"#s-rating .rating-podium-list",
         "members":"#s-rating .rating-podium-meta",
         "top-five":"#s-rating .rating-podium-queue",
-        "first-row":"#s-rating .lr",
         "nav":"#nav",
     }
     with sync_playwright() as playwright:
@@ -984,6 +983,8 @@ def test_rating_short_leaderboard_preserves_first_row_geometry(width, participan
             page.locator("#s-course .uban").first.wait_for()
             page.locator('#nav button[data-s="rating"]').click()
             page.locator("#s-rating .pwa-rating-shell[aria-busy=true]").wait_for()
+            if participant_count:
+                anchors["first-row"] = "#s-rating .lr"
             before = capture_geometry(page, anchors)
             assert len(held) == 1
             held.pop().fulfill(status=200, json={
@@ -992,11 +993,20 @@ def test_rating_short_leaderboard_preserves_first_row_geometry(width, participan
                                 "total_xp":900-i*25}
                                for i in range(1,participant_count+1)]
             })
-            page.get_by_text("Student 1", exact=True).wait_for()
+            if participant_count:
+                page.get_by_text("Student 1", exact=True).wait_for()
+            else:
+                page.locator("#s-rating .pwa-rating-empty[role=status]").wait_for()
             ready = capture_geometry(page, anchors)
             assert_reserved_layout(before, ready)
             assert page.locator("#s-rating .rating-podium-queue").count() == 1
             assert page.locator("#s-rating .lr").count() == participant_count
+            if participant_count == 0:
+                assert page.locator("#s-rating .pwa-rating-empty").is_visible()
+                assert page.locator("#s-rating .pwa-rating-empty").evaluate("(node) => node.getBoundingClientRect().height >= 305")
+                assert page.locator("#s-rating [aria-busy=true]").count() == 0
+            else:
+                assert page.locator("#s-rating .pwa-rating-empty").count() == 0
             assert page.locator("#s-course .uban").count() > 0
             assert not errors
         finally:
