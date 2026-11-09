@@ -9579,7 +9579,7 @@ window.VOICE=VOICE;
 
 function renderAll(){
   document.querySelectorAll("#nav [data-i]").forEach(function(s){s.textContent=courseMessage("nav."+s.dataset.i,T().nav[s.dataset.i])});
-  if(MAP){renderCourse();renderMashq();if(SCREEN==="rating")renderRating();if(!PWA_COURSE_HOST||SCREEN==="profile")renderProfile();if(SCREEN==="voice")renderVoice()}
+  if(MAP){renderCourse();renderMashq();if(SCREEN==="rating")renderRating();if(!PWA_COURSE_HOST||(SCREEN==="profile"&&!PWA_PREBOOT_TAB))renderProfile();if(SCREEN==="voice")renderVoice()}
 }
 navInit();
 $("#sheet").onclick=function(){App.closeSheet()};
