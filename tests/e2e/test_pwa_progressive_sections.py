@@ -33,7 +33,9 @@ def pwa_document():
     )
     sdk = '<script src="/assets/telegram-web-app.js?v=20261019-1"></script>'
     assert source.count(sdk) == 1
-    assert source.count('class="pwa-initial-shell"') >= 3
+    # The first Course shell and all four layout-specific existing tab shells
+    # must be present; variant classes are required for geometry fidelity.
+    assert source.count('class="pwa-initial-shell') >= 5
     return source.replace("</head>", css + "</head>", 1).replace(sdk, "", 1)
 
 
