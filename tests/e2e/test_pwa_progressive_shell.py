@@ -42,6 +42,12 @@ def test_shell_renders_without_api_and_preserves_telegram_launch(pwa):
             assert page.locator("#nav button").count() == 5
             assert page.locator("#s-course .pwa-skel-card").count() == 2
             assert page.locator("#s-course .pwa-skel-node").count() == 3
+            logo = page.locator("#s-course .pwa-first-logo")
+            assert logo.count() == 1
+            assert logo.get_attribute("fetchpriority") == "high"
+            assert logo.get_attribute("loading") == "eager"
+            assert logo.get_attribute("width") == "48"
+            assert logo.get_attribute("height") == "48"
             assert page.evaluate("""() => {
               const s=document.querySelector('#s-course .pwa-initial-shell');
               return s.getBoundingClientRect().height >= 500;
@@ -66,3 +72,13 @@ def test_progressive_shell_does_not_claim_fake_user_data():
     assert "PROF" not in shell
     assert "localStorage" not in shell
     assert "premium" not in shell
+
+def test_profile_and_navigation_render_independently_after_map_confirmation():
+    # Real course HTML explicitly preserves the currently selected shell tab
+    # until a verified map arrives; a slow course request must not reset it.
+    assert "PWA_PREBOOT_TAB=s;" in HTML
+    assert "App.show(initialTab);" in HTML
+    # Profile accuracy has its own bounded layout while its API is in flight.
+    assert 'if(PWA_COURSE_HOST&&PROFILE_DETAIL_PENDING&&!PROFILE_DETAIL)' in HTML
+    assert "pwa-profile-accuracy-pending" in HTML
+    assert 'if(PWA_COURSE_HOST)loadProfileDetail();' in HTML
