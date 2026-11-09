@@ -475,6 +475,51 @@ def test_guest_profile_has_telegram_google_without_duplicate_create_account_step
 
 
 @pytest.mark.parametrize("provider_index", [0, 1])
+
+@pytest.mark.parametrize("provider", ["google", "telegram"])
+def test_auth_return_keeps_original_locale_at_first_panda_paint(provider):
+    """The provider callback can lose ?lang; the pending, recent handoff
+    retains the exact user's selected locale BEFORE first visible text.
+    The marker never acts as an identity or bypasses the real session API.
+    """
+    with pw.sync_playwright() as playwright:
+        browser = getattr(playwright, os.environ.get("PWA_E2E_ENGINE", "chromium")).launch()
+        page, captured = _page(browser, pwa=True, guest=True, ios=True)
+        # The callback URL still carries the old UZ query, but RU is the
+        # most recent language selected just before provider navigation.
+        page.evaluate("""(provider) => sessionStorage.setItem(
+          'hsk_li_auth_handoff_v1',
+          JSON.stringify({at:Date.now(),provider:provider,lang:'ru'})
+        )""", provider)
+        page.add_init_script("""() => {
+          const previous = window.fetch.bind(window);
+          window.fetch = (url, options) => {
+            if (String(url).includes('/api/v3/pwa-auth/session')) {
+              return new Promise(resolve => {
+                window.__authSessionRelease = () => resolve(previous(url, options));
+              });
+            }
+            return previous(url, options);
+          };
+        }""")
+        page.reload()
+        page.locator(".li-auth-wait-title").wait_for(state="visible")
+        assert page.locator(".li-auth-wait-title").inner_text() == "Ожидаем вход…"
+        assert page.locator(".li-auth-wait-subtitle").inner_text() == "Проверяем ваш аккаунт"
+        assert page.evaluate("window.LANG") == "ru"
+        assert page.evaluate("document.documentElement.lang") == "ru"
+        assert page.locator(".li-auth-wait-panda .hc-loading-prop").count() == 1
+        assert page.locator(".li-auth-wait-panda .hc-loading-prop").is_hidden()
+        # No hidden permission change: guest is still 401 until the
+        # server issues the verified cookie.
+        assert captured["post"] == [] and captured["trial_start"] == []
+        page.evaluate("window.__authSessionRelease()")
+        page.locator(".li-auth-wait").wait_for(state="detached")
+        assert captured["auth_state"]["verified"] is False
+        assert not captured["pageerrors"]
+        browser.close()
+
+
 def test_google_and_telegram_immediately_show_same_panda_wait_before_server_auth(provider_index):
     with pw.sync_playwright() as playwright:
         browser = getattr(playwright, os.environ.get("PWA_E2E_ENGINE", "chromium")).launch()
