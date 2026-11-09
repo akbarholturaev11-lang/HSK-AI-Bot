@@ -188,7 +188,7 @@ def _page(browser, *, pwa=True, trial_eligible=False, trial_start_ok=True, saved
     return page, captured
 
 
-def _advance_to_profile(page, *, chosen_track="hsk20"):
+def _advance_to_profile(page, *, chosen_track="hsk20", guest=False):
     # Existing authenticated users begin at the same panda-first scene; no
     # second provider login is required by the real Mini App/PWA adapters.
     assert page.locator("h1.bub.q").is_visible()
@@ -219,8 +219,16 @@ def _advance_to_profile(page, *, chosen_track="hsk20"):
     page.locator("#stage .center").wait_for(state="visible")  # habit
     page.locator("#footer .cta").click()  # streak
     page.locator(".choices .lv").nth(1).click()  # 14 days
-    page.locator("#footer .cta").click()  # profile
-    assert page.locator("#stage .center").is_visible()
+    page.locator("#footer .cta").click()  # final profile screen
+    if guest:
+        # No intermediate 'create account' CTA: the final card is sign-in.
+        assert page.evaluate("window.screen") == "signup"
+        assert page.locator("#stage .provider").count() == 3
+        assert page.locator("#footer .cta").count() == 0
+        assert page.evaluate("window.trail[window.trail.length-1]") == "streak"
+    else:
+        assert page.evaluate("window.screen") == "profile"
+        assert page.locator("#stage .center").is_visible()
 
 
 def test_li_shell_is_visible_when_external_scripts_fail():
@@ -402,6 +410,28 @@ def test_authenticated_li_flow_persists_choices_and_real_launch(pwa):
         browser.close()
 
 
+def test_guest_profile_has_telegram_google_without_duplicate_create_account_step():
+    with pw.sync_playwright() as playwright:
+        browser = getattr(playwright, os.environ.get("PWA_E2E_ENGINE", "chromium")).launch()
+        page, captured = _page(browser, pwa=True, guest=True)
+        _advance_to_profile(page, guest=True)
+        assert page.locator("#stage h1").inner_text() == "Profilingizni saqlang"
+        assert page.locator("#stage .provider").nth(0).is_visible()
+        assert page.locator("#stage .provider").nth(1).is_visible()
+        assert page.locator("#stage .provider").nth(2).is_hidden()
+        assert page.locator("#footer .cta").count() == 0
+        # Back returns straight to the last preference screen, not an extra page.
+        page.evaluate("back()")
+        assert page.evaluate("window.screen") == "streak"
+        page.locator("#footer .cta").click()
+        assert page.evaluate("window.screen") == "signup"
+        assert page.evaluate("window.goals") == ["hsk_exam", "travel"]
+        assert page.evaluate("window.streakGoal") == 14
+        assert captured["post"] == [] and captured["trial_start"] == []
+        assert not captured["pageerrors"]
+        browser.close()
+
+
 def test_guest_li_offers_telegram_even_though_oauth_providers_lists_only_google():
     with pw.sync_playwright() as playwright:
         browser = getattr(playwright, os.environ.get("PWA_E2E_ENGINE", "chromium")).launch()
@@ -430,12 +460,11 @@ def test_guest_can_select_hsk30_but_locked_account_must_use_canonical_unlock():
     with pw.sync_playwright() as playwright:
         browser = getattr(playwright, os.environ.get("PWA_E2E_ENGINE", "chromium")).launch()
         page, captured = _page(browser, pwa=True, guest=True)
-        _advance_to_profile(page, chosen_track="hsk30")
+        _advance_to_profile(page, chosen_track="hsk30", guest=True)
         assert page.evaluate("window.track") == "hsk30"
         assert page.evaluate("window.level") == "nhsk1"
         assert captured["post"] == []
         assert captured["track_get"] == 0
-        page.locator("#footer .cta").click()
         assert page.evaluate("window.screen") == "signup"
         with page.expect_response("**/api/v3/pwa-auth/start") as started:
             page.locator("#stage .provider").nth(1).click()
@@ -456,13 +485,13 @@ def test_pwa_guest_sees_panda_first_and_oauth_resumes_saved_draft_safely():
     with pw.sync_playwright() as playwright:
         browser = getattr(playwright, os.environ.get('PWA_E2E_ENGINE', 'chromium')).launch()
         page, captured = _page(browser, pwa=True, guest=True, trial_eligible=False)
-        _advance_to_profile(page)
+        _advance_to_profile(page, guest=True)
         assert captured["post"] == []  # Public guest may NEVER save a course.
         # Initial public metadata is cached for this page. Repeated reads
         # must not manufacture duplicate requests merely to enter later steps.
         assert captured["public_track_get"] == 1
         assert captured["track_get"] == 0  # anonymous users cannot fetch personal tracks
-        page.locator("#footer .cta").click()  # provider sign-up, not POST
+        # Providers appear immediately on the final profile step.
         assert page.evaluate("window.screen") == "signup"
         assert captured["post"] == []
         assert page.locator("#stage .provider").count() == 3
@@ -532,10 +561,9 @@ def test_existing_account_after_full_guest_onboarding_skips_new_profile_and_tria
         page.route(ORIGIN + "/iphone-pwa/course", lambda route: route.fulfill(
             body="COURSE PAGE", content_type="text/html",
         ))
-        _advance_to_profile(page)
+        _advance_to_profile(page, guest=True)
         assert captured["post"] == []
         assert page.evaluate("window.goals") == ["hsk_exam", "travel"]
-        page.locator("#footer .cta").click()
         assert page.evaluate("window.screen") == "signup"
 
         with page.expect_response("**/api/v3/pwa-auth/start") as started:
@@ -559,7 +587,7 @@ def test_unrelated_pwa_login_does_not_silently_adopt_old_guest_draft():
     with pw.sync_playwright() as playwright:
         browser = getattr(playwright, os.environ.get('PWA_E2E_ENGINE', 'chromium')).launch()
         page, captured = _page(browser, pwa=True, guest=True)
-        _advance_to_profile(page)
+        _advance_to_profile(page, guest=True)
         # An anonymous guest may have chosen everything, but no canonical
         # OAuth/resume was initiated in this tab for the newly signed-in actor.
         page.evaluate("""() => {
@@ -583,9 +611,8 @@ def test_new_iphone_signup_shows_install_video_guide_after_verified_save_only():
     with pw.sync_playwright() as playwright:
         browser = getattr(playwright, os.environ.get('PWA_E2E_ENGINE', 'chromium')).launch()
         page, captured = _page(browser, pwa=True, guest=True, ios=True)
-        _advance_to_profile(page)
+        _advance_to_profile(page, guest=True)
         assert page.locator(".li-install-card").count() == 0  # unauthenticated
-        page.locator("#footer .cta").click()  # signup
         with page.expect_response("**/api/v3/pwa-auth/start") as started:
             page.locator("#stage .provider").nth(1).click()  # OAuth
         assert started.value.status == 200
