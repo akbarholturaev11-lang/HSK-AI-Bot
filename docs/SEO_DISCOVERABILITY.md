@@ -205,3 +205,7 @@ Branch: `codex/website-unified-header-i18n-content-20261020`; not merged into `m
 - Nav links retain allowlisted campaign labels. Login tokens, device tokens and other arbitrary query parameters are not propagated.
 - `guide/faq` pages expose factual FAQPage JSON-LD alongside existing WebPage/SoftwareApplication metadata. No assertions of search indexing, AI recommendation, test pass, or production deployment are made.
 - Smoke and unit test expectations have been extended to cover locale links, product-first hero, the installer header and static language-preference contract. Run the checks in section I and manually test `/download?lang=ru` -> `/ru/guide/` -> `/download?lang=ru`, the other locales, direct entry, first visit, Safari localStorage denial and all four installer platforms before merging.
+
+## iPhone PWA representation (2026-11-09)
+
+The public `/download` page exposes an always-available iOS **WebApplication** with `installUrl` at `https://hskai.app/iphone-pwa`. Do not generate a false iOS `.ipa` or binary `downloadUrl`. The primary iPhone CTA no longer points to Telegram; the bot remains an optional separate channel and referral-specific handoff. The mobile website uses a globe-only language selector and hamburger navigation; the full desktop header is unchanged. See `docs/iphone-pwa/SITE_DOWNLOAD_HANDOFF_2026-11-09.md`.
