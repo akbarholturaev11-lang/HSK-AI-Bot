@@ -841,3 +841,92 @@ def test_voice_shell_matches_panda_quota_and_call_layout(width, motion):
         finally:
             browser.close()
 
+
+
+@pytest.mark.parametrize("width", [320, 390, 430])
+@pytest.mark.parametrize("motion", ["reduce", "no-preference"])
+def test_profile_first_paint_shell_matches_identity_accuracy_and_calendar(width, motion):
+    """Compare the initial unverified shell with verified Profile DOM anchors."""
+    from tests.pwa_layout_geometry import assert_reserved_layout, capture_geometry
+
+    payload = json.loads((STATIC / "course_v3_data/hsk1.json").read_text(encoding="utf-8"))
+    payload["authenticated"] = True
+    payload["level"] = "hsk1"
+    payload["user"] = {
+        "name": "Authorized", "avatar": "阿", "language": "ru",
+        "is_paid": True, "state": "TRIAL_ACTIVE", "onboarding_completed": True,
+    }
+    maps, profile_reads, errors = [], [], []
+
+    def serve(route):
+        path = urlsplit(route.request.url).path
+        if path == "/iphone-pwa/course":
+            route.fulfill(status=200, content_type="text/html", body=pwa_document())
+        elif path == "/api/v3/pwa-auth/session":
+            route.fulfill(status=200, json={"ok":True, "user_id":31, "csrf":"test-csrf"})
+        elif path == "/api/v3/pwa/map":
+            maps.append(route)
+        elif path == "/api/v3/pwa/profile":
+            profile_reads.append(route)
+        elif path.startswith("/api/"):
+            route.fulfill(status=404, json={"ok":False, "error":"not_mocked"})
+        else:
+            file = (STATIC / path.lstrip("/")).resolve()
+            if file.is_file() and file.is_relative_to(STATIC.resolve()):
+                mime, _ = mimetypes.guess_type(file)
+                route.fulfill(path=str(file), content_type=mime or "application/octet-stream")
+            else:
+                route.fulfill(status=404, body="")
+
+    selectors = {
+        "header": "#s-profile .profile-head",
+        "title": "#s-profile .profile-title",
+        "hero": "#s-profile .phero",
+        "avatar": "#s-profile .pav",
+        "friend-row": "#s-profile .profile-friends-link",
+        "accuracy": "#s-profile .profile-accuracy",
+        "ring-1": "#s-profile .profile-accuracy .accuracy-ring",
+        "first-section": "#s-profile .sech",
+        "calendar": "#s-profile .card2",
+        "achievements": "#s-profile .profile-compact-ach",
+        "nav": "#nav",
+    }
+
+    with sync_playwright() as playwright:
+        browser = getattr(playwright, os.getenv("PWA_E2E_ENGINE", "chromium")).launch()
+        try:
+            page = browser.new_context(
+                viewport={"width":width, "height":844}, is_mobile=True,
+                reduced_motion=motion,
+            ).new_page()
+            page.set_default_timeout(15000)
+            page.on("pageerror", lambda error: errors.append(str(error)))
+            page.route("**/*", serve)
+            page.goto(ORIGIN + "/iphone-pwa/course?lang=ru", wait_until="domcontentloaded")
+            page.wait_for_function("() => typeof App === 'object' && typeof App.show === 'function'")
+            page.evaluate("App.show('profile')")
+            page.locator("#s-profile .pwa-profile-shell[aria-busy=true]").wait_for()
+            assert len(maps) == 1
+            assert page.locator("#s-profile .profile-display-name").count() == 0
+            before = capture_geometry(page, selectors)
+            maps.pop().fulfill(status=200, json=payload, headers={
+                "X-HSK-PWA-User-ID":"31", "Cache-Control":"no-store",
+            })
+            page.locator("#s-profile .profile-display-name").wait_for()
+            page.locator("#s-profile .hsk-pwa-profile-accuracy-loading").wait_for()
+            after = capture_geometry(page, selectors)
+            assert_reserved_layout(before, after)
+            assert page.locator("#s-profile .pwa-profile-shell").count() == 0
+            assert len(profile_reads) == 1
+            profile_reads.pop().fulfill(
+                status=200, headers={"X-HSK-PWA-User-ID":"31"},
+                json={"ok":True,"stats":{"answer_accuracy":{
+                    "overall":{"percent":77}, "today":{"percent":83},
+                }}},
+            )
+            page.get_by_text("77%", exact=True).wait_for()
+            assert page.locator("#s-profile .profile-access-badge").inner_text().strip().startswith("Pro") is False
+            assert errors == []
+        finally:
+            browser.close()
+
