@@ -25,6 +25,7 @@ from app.db.models.course_xp_event import CourseXpEvent
 from app.services.course_daily_window import local_day_key
 from app.services.course_levels import is_hsk30_level
 from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
+from app.services.onboarding_goal_selection import read_onboarding_goals
 from app.services.course_v3_parts import current_part, total_parts
 
 
@@ -80,6 +81,8 @@ class LearningSignals:
     active_days_7: int = 0
     done_refs_today: frozenset[str] = frozenset()
     done_types_today: frozenset[str] = frozenset()
+    # New onboarding choices. Empty = legacy scalar goal only.
+    goals: tuple[str, ...] = ()
 
     @property
     def has_next_part(self) -> bool:
@@ -247,6 +250,10 @@ class LearningSignalsService:
         return LearningSignals(
             level=level,
             goal=str(getattr(profile, "goal", "") or "hsk_exam"),
+            goals=tuple(read_onboarding_goals(
+                getattr(profile, "goals_json", None),
+                primary_goal=str(getattr(profile, "goal", "") or "hsk_exam"),
+            )),
             daily_minutes=int(setup["daily_minutes"]),
             preferred_focus=setup["preferred_focus"],
             plan_size=int(setup["plan_size"]),

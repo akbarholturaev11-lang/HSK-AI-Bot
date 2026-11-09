@@ -1,15 +1,15 @@
-"""PWA initial paint must be non-blocking and independent of private map state."""
+"""Regression: one canonical static PWA first paint, never a second injected shell.
+
+The authenticated /iphone-pwa/course route owns the cookie gate. This test
+covers the pure HTML renderer; browser-level identity checks live elsewhere.
+"""
 import hashlib
 import tempfile
 import unittest
 from pathlib import Path
 
 from starlette.requests import Request
-
-from app.api.pwa_auth import (
-    _add_pwa_course_initial_shell,
-    _pwa_inline_html,
-)
+from app.api.pwa_auth import _pwa_inline_html
 
 
 def request(path="/iphone-pwa/course", etag=None):
@@ -28,50 +28,46 @@ class PwaInitialShellTests(unittest.TestCase):
     def tearDownClass(cls):
         assert hashlib.sha256(Path("app/static/course-v3.html").read_bytes()).hexdigest() == cls.digest
 
-    def test_only_authenticated_pwa_delivery_gets_shell_and_existing_course_is_unchanged(self):
-        adapted = _add_pwa_course_initial_shell(self.canonical)
-        self.assertIn(b'hsk-pwa-shell-loading', adapted)
-        self.assertIn(b'hsk-pwa-boot-shell', adapted)
-        self.assertIn(b'aria-busy="true"', adapted)
-        self.assertIn(b'<nav class="nav" id="nav" inert>', adapted)
-        self.assertIn('data-i="course">Курс</span>'.encode("utf-8"), adapted)
-        self.assertIn(b'class="hsk-pwa-boot-title" aria-label="HSK AI">HSK AI</h1>', adapted)
-        self.assertIn(b'width="40" height="40" decoding="async" fetchpriority="high"', adapted)
-        logo_tag = adapted.split(b'<img class="hsk-pwa-boot-logo"', 1)[1].split(b">", 1)[0]
-        self.assertNotIn(b'loading="lazy"', logo_tag)
-        self.assertIn(b'html.hsk-pwa-browser #hsk-launch-splash{display:none!important}', adapted)
-        self.assertIn(b'@media(prefers-reduced-motion:reduce)', adapted)
-        self.assertNotIn(b"hsk-pwa-boot-shell", self.canonical)
-        sdk = b'/assets/telegram-web-app.js?v=20261019-1'
-        self.assertIn(sdk, self.canonical)
-        self.assertNotIn(sdk, adapted)
-        self.assertIn(b'var tg=PWA_COURSE_HOST?null:window.Telegram', adapted)
-        self.assertNotIn(b'"is_paid":true', adapted.lower())
-        self.assertNotIn(b'http-equiv="refresh"', adapted.lower())
+    def test_canonical_shell_is_static_and_does_not_claim_access(self):
+        source = self.canonical
+        self.assertIn(b'class="pwa-initial-shell"', source)
+        self.assertIn(b'class="pwa-first-logo"', source)
+        self.assertIn(b'fetchpriority="high"', source)
+        self.assertIn(b'PWA_PREBOOT_TAB', source)
+        self.assertIn(b'/assets/telegram-web-app.js', source)
+        self.assertIn(b'var tg=PWA_COURSE_HOST?null:window.Telegram', source)
+        self.assertNotIn(b'hsk-pwa-boot-shell', source)
+        shell = source.split(b'<div class="scr on" id="s-course">', 1)[1].split(
+            b'<div class="scr" id="s-mashq">', 1
+        )[0]
+        for private in (b'"is_paid":true', b"localStorage", b"data-lesson", b'"user_id"'):
+            self.assertNotIn(private, shell)
 
-    def test_pwa_shell_preserves_private_etag_revalidation(self):
+    def test_pwa_document_preserves_one_shell_and_private_etag(self):
         path = "app/static/course-v3.html"
         first = _pwa_inline_html(request(), path, {"X-Frame-Options": "DENY"})
         self.assertEqual(first.status_code, 200)
         self.assertEqual(first.headers["Cache-Control"], "private, no-cache")
         self.assertEqual(first.headers["X-Frame-Options"], "DENY")
-        self.assertIn(b"hsk-pwa-boot-shell", first.body)
+        self.assertEqual(first.body.count(b'class="pwa-initial-shell"'),
+                         self.canonical.count(b'class="pwa-initial-shell"'))
+        self.assertNotIn(b"hsk-pwa-boot-shell", first.body)
         self.assertIn(b"iphone-pwa-inline-pro.js", first.body)
         second = _pwa_inline_html(request(etag=first.headers["ETag"]), path, {})
         self.assertEqual(second.status_code, 304)
         self.assertEqual(second.headers["ETag"], first.headers["ETag"])
 
-    def test_other_pwa_pages_do_not_receive_course_shell(self):
+    def test_other_pages_do_not_receive_course_shell(self):
         with tempfile.NamedTemporaryFile(suffix=".html") as file:
             Path(file.name).write_text("<html><body>Other screen</body></html>", encoding="utf-8")
             page = _pwa_inline_html(request("/iphone-pwa/practice/test"), file.name, {})
             self.assertEqual(page.status_code, 200)
             self.assertIn(b"Other screen", page.body)
-            self.assertNotIn(b"hsk-pwa-boot-shell", page.body)
+            self.assertNotIn(b"pwa-initial-shell", page.body)
 
-    def test_unexpected_canonical_markup_keeps_original_pwa_usable(self):
-        html = b"<html><body>not the course</body></html>"
-        self.assertEqual(_add_pwa_course_initial_shell(html), html)
+    def test_inline_response_never_modifies_shared_file(self):
+        _pwa_inline_html(request(), "app/static/course-v3.html", {})
+        self.assertEqual(Path("app/static/course-v3.html").read_bytes(), self.canonical)
 
 
 if __name__ == "__main__":

@@ -78,7 +78,9 @@
         stopTelegramPolling();
         actions.hidden = true;
         message("desktopAuth.linked", false);
-        location.replace("/iphone-pwa/course");
+        // The verified server's /iphone-pwa entry consumes a short-lived
+        // Li onboarding resume hint; otherwise it redirects to the course.
+        location.replace("/iphone-pwa");
       }
     } catch (error) {
       if (pendingTelegramId() !== linkId) return;

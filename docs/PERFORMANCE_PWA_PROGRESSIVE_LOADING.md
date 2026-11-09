@@ -18,7 +18,7 @@ This is a **release acceptance criterion**, not an optional visual enhancement.
 ## Implementation / verification checkpoints
 
 - [x] Identified course startup blocker: original shared source has a full-screen splash and a single `…` placeholder, and waits for the authenticated map before calling `renderAll`.
-- [x] Preserve the canonical shared `app/static/course-v3.html` **on disk during PWA response adaptation**; only inject the PWA-only shell after the existing verified browser-session gate. **PR #284 also changes this shared source file** for guarded progressive section rendering and lazy Practice cards. Do not claim its bytes are unchanged from `main`; run the separate Telegram Mini App smoke regressions as well as authenticated PWA Chromium/WebKit tests.
+- [x] Reconciled against main `e5026949`: **one authoritative native PWA first paint** remains in shared `app/static/course-v3.html`, guarded by PWA path/CSS, while Telegram retains its original splash. Removed the redundant response-side injected skeleton from `pwa_auth.py`. The authenticated backend route still owns session/CSRF and never injects user/Pro state into static shell. Main Li Onboarding and runtime scripts are preserved. Latest reconciled HEAD requires new Chromium/WebKit, Mini App, auth, Postgres and Android CI.
 - [x] Replace PWA-only course placeholder with layout-sized neutral skeletons and visible brand/nav; don't show account or Pro data before the map verifies owner.
 - [x] PWA-only splash no longer hides the authenticated shell while waiting for the map, and nav remains inert until verified map or terminal auth/error state settles.
 - [x] Unit regression tests check source isolation, ETag revalidation, 304, and non-course screens.

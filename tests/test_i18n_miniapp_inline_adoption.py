@@ -98,7 +98,7 @@ result.absent=vm.runInNewContext('(window.HSKAILocaleMap||function(_,fallback){r
         # 2026-11-09: scoped PWA Voice quota loading/retry; reviewed source
         # inventory re-anchored (62 original locale lines/130 predicates),
         # with the exact source blob recorded in miniapp_course_hotspot_triage.json.
-        self.assertEqual(len((ROOT / "app/static/course-v3.html").read_text().splitlines()), 10004)
+        self.assertEqual(len((ROOT / "app/static/course-v3.html").read_text().splitlines()), 10006)
 
     def test_graded_placement_blocks_remain_byte_identical(self):
         proof = json.loads((ROOT / "localization/review/miniapp_inline_map_migration.json").read_text())

@@ -33,6 +33,9 @@ from app.services.pwa_auth_service import (
 )
 
 _NO_STORE = {"Cache-Control": "no-store", "Referrer-Policy": "no-referrer"}
+# A short-lived, HttpOnly navigation hint, not authentication or course access.
+_PWA_LI_RESUME_COOKIE = "__Host-hskai-li-resume"
+_PWA_LI_RESUME_SECONDS = 900
 
 
 def _embeddable_pwa_page_headers(request: Request) -> dict[str, str]:
@@ -85,124 +88,6 @@ def _pwa_html(request: Request, path: str, headers: dict[str, str]) -> Response:
 # The injected HTML is separately ETagged by its FULL bytes, not by file SHA.
 _PWA_INLINE_PRO_HTML = "\n<link rel=\"stylesheet\" href=\"/course_v3_data/iphone-pwa-inline-pro.css?v=20261108-e8010ea28fdc\">\n<script src=\"/course_v3_data/iphone-pwa-inline-pro.js?v=20261108-8d96888d601f\"></script>\n<script src=\"/course_v3_data/iphone-pwa-inline-pro-bridge.js?v=20261108-afd4f9d80534\"></script>\n".encode("utf-8")
 
-# PWA-only, non-personalized first paint. The canonical Telegram course HTML
-# stays byte-for-byte untouched; only the authenticated PWA response is adapted.
-# The full-screen splash formerly covered the entire app until the POST map
-# finished (or its 3-second safety timer elapsed).
-_PWA_COURSE_SKELETON_OLD = '<div class="scr on" id="s-course"><div class="loading">…</div></div>'.encode("utf-8")
-_PWA_COURSE_SKELETON_NEW = b'''<div class="scr on" id="s-course" aria-busy="true">
-  <div class="hsk-pwa-boot-shell" role="status" aria-label="HSK AI loading">
-    <div class="hsk-pwa-boot-top">
-      <img class="hsk-pwa-boot-logo" src="/assets/hsk-ai-logo-256.png" width="40" height="40" decoding="async" fetchpriority="high" alt="">
-      <h1 class="hsk-pwa-boot-title" aria-label="HSK AI">HSK AI</h1>
-      <div class="hsk-pwa-boot-dot"></div><div class="hsk-pwa-boot-dot"></div>
-    </div>
-    <div class="hsk-pwa-boot-card hsk-pwa-boot-today">
-      <div class="hsk-pwa-boot-line hsk-pwa-boot-mid"></div>
-      <div class="hsk-pwa-boot-line hsk-pwa-boot-small"></div>
-    </div>
-    <div class="hsk-pwa-boot-card hsk-pwa-boot-unit">
-      <div class="hsk-pwa-boot-line hsk-pwa-boot-mid"></div>
-      <div class="hsk-pwa-boot-line hsk-pwa-boot-small"></div>
-      <div class="hsk-pwa-boot-node"></div>
-    </div>
-    <div class="hsk-pwa-boot-card hsk-pwa-boot-unit">
-      <div class="hsk-pwa-boot-line hsk-pwa-boot-mid"></div>
-      <div class="hsk-pwa-boot-line hsk-pwa-boot-small"></div>
-    </div>
-  </div>
-</div>'''
-_PWA_COURSE_BOOT_HEAD = b'''<style id="hsk-pwa-initial-shell">
-html.hsk-pwa-browser #hsk-launch-splash{display:none!important}
-.hsk-pwa-boot-shell{padding:20px 16px 100px;max-width:660px;margin:0 auto;min-height:calc(100dvh - 88px)}
-.hsk-pwa-boot-top{display:flex;align-items:center;gap:12px;min-height:56px;margin-bottom:16px}
-.hsk-pwa-boot-logo{width:40px;height:40px;object-fit:contain;flex:none}
-.hsk-pwa-boot-card{background:var(--hsk-card-surface,var(--card,#f1f0ee));border:1px solid var(--line,rgba(0,0,0,.08));border-radius:20px;margin-bottom:16px;padding:18px}
-.hsk-pwa-boot-today{min-height:118px}.hsk-pwa-boot-unit{min-height:178px}
-.hsk-pwa-boot-line,.hsk-pwa-boot-dot,.hsk-pwa-boot-node{background:var(--hsk-divider,#dedddc);opacity:.8;animation:hsk-pwa-boot-pulse 1.5s ease-in-out infinite alternate}
-.hsk-pwa-boot-line{height:16px;border-radius:8px;margin:8px 0 14px}
-.hsk-pwa-boot-title{margin:0;width:42%;flex:1;max-width:175px;font-size:24px;line-height:1.25;letter-spacing:-.5px;color:var(--ink,#242424)}
-.hsk-pwa-boot-mid{width:65%;max-width:240px}.hsk-pwa-boot-small{width:44%;height:12px}
-.hsk-pwa-boot-dot{width:34px;height:34px;border-radius:50%;flex:none}
-.hsk-pwa-boot-node{width:54px;height:54px;border-radius:50%;margin:14px auto 0}
-body.hsk-pwa-shell-loading #nav{opacity:.78}
-/* Each secondary section settles on its own, without a page overlay.
-   Geometry stays close to the eventual rating rows and accuracy rings. */
-.hsk-pwa-section-loading{display:block;padding:12px 0 24px;min-height:220px}
-.hsk-pwa-section-loading .hsk-pwa-load-card{border-radius:18px;background:var(--card,#f1f0ee);border:1px solid var(--line,rgba(0,0,0,.08));min-height:78px;margin:12px 0;padding:16px}
-.hsk-pwa-section-loading .hsk-pwa-load-card:first-child{min-height:110px}
-.hsk-pwa-section-loading .hsk-pwa-load-line{width:56%;height:13px;margin:9px 0;border-radius:9px;background:var(--hsk-divider,#dedddc);animation:hsk-pwa-boot-pulse 1.5s ease-in-out infinite alternate}
-.hsk-pwa-section-loading .hsk-pwa-load-line.short{width:34%}
-.hsk-pwa-profile-accuracy-loading{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;min-height:138px;margin:14px 0}
-.hsk-pwa-profile-accuracy-loading .hsk-pwa-load-ring{width:76px;height:76px;border-radius:50%;border:10px solid var(--hsk-divider,#dedddc);margin:0 auto 10px;opacity:.75;animation:hsk-pwa-boot-pulse 1.5s ease-in-out infinite alternate}
-.hsk-pwa-profile-accuracy-loading .hsk-pwa-load-line{height:12px;width:55%;border-radius:8px;background:var(--hsk-divider,#dedddc);margin:auto;opacity:.75}
-@media(prefers-reduced-motion:reduce){.hsk-pwa-section-loading .hsk-pwa-load-line,.hsk-pwa-profile-accuracy-loading .hsk-pwa-load-ring{animation:none}}
-@keyframes hsk-pwa-boot-pulse{from{opacity:.5}to{opacity:.95}}
-@media(prefers-reduced-motion:reduce){.hsk-pwa-boot-line,.hsk-pwa-boot-dot,.hsk-pwa-boot-node{animation:none}}
-</style>'''
-_PWA_COURSE_BOOT_SCRIPT = b'''<script>
-(function(){
-  if(location.pathname!=="/iphone-pwa/course")return;
-  var screen=document.getElementById("s-course"),nav=document.getElementById("nav");
-  if(!screen)return;
-  function finish(){
-    if(screen.querySelector(".hsk-pwa-boot-shell"))return;
-    // A DOM replacement alone does not prove the map is authorized. The
-    // canonical fetch validates the PWA actor/owner before assigning MAP.
-    var verified=typeof MAP!=="undefined"&&MAP&&MAP.authenticated===true&&Array.isArray(MAP.units);
-    clearTimeout(safety);
-    screen.removeAttribute("aria-busy");
-    document.body.classList.remove("hsk-pwa-shell-loading");
-    if(nav)nav.inert=!verified;
-    // A fallback/error can be followed by a late successful map retry.
-    // Keep watching until the verified map actually renders, otherwise
-    // the navigation remains permanently inert after late recovery.
-    if(verified)observer.disconnect();
-  }
-  var observer=new MutationObserver(finish);
-  observer.observe(screen,{childList:true});
-  // Should an earlier dependency throw before the canonical 8s map retry can
-  // report an error, never leave a permanent blank/disabled PWA shell.
-  // This is a retry-only UI; it cannot authorize a lesson or display old data.
-  var safety=setTimeout(function(){
-    if(!screen.querySelector(".hsk-pwa-boot-shell"))return;
-    screen.innerHTML='<div class="hsk-pwa-boot-error" role="alert" style="margin:28px 18px;padding:24px;border-radius:20px;background:var(--hsk-card-surface,#f2f1ee);color:var(--ink,#222)"><h2 style="font-size:20px;margin:0 0 10px">HSK AI</h2><p style="margin:0 0 16px">&#1053;&#1077; &#1091;&#1076;&#1072;&#1083;&#1086;&#1089;&#1100; &#1079;&#1072;&#1075;&#1088;&#1091;&#1079;&#1080;&#1090;&#1100; &#1082;&#1091;&#1088;&#1089;.</p><button type="button" onclick="location.reload()" style="padding:12px 20px;border-radius:12px;cursor:pointer">&#1055;&#1086;&#1074;&#1090;&#1086;&#1088;&#1080;&#1090;&#1100;</button></div>';
-  },14000);
-  finish();
-})();
-</script>'''
-
-
-def _add_pwa_course_initial_shell(source: bytes) -> bytes:
-    """Static-only PWA first paint. Never inject stale learner/progress data."""
-    markers = (
-        # The canonical source always sets tg=null on the verified PWA route.
-        # Do not load Telegram's 120 KB parser-blocking WebApp SDK in Safari;
-        # keep it intact for the signed Telegram Mini App entry point.
-        (b'<script src="/assets/telegram-web-app.js?v=20261019-1"></script>', b''),
-        (b"</head>", _PWA_COURSE_BOOT_HEAD + b"</head>"),
-        (b'<body class="hsk-scene-page">', b'<body class="hsk-scene-page hsk-pwa-shell-loading">'),
-        (_PWA_COURSE_SKELETON_OLD, _PWA_COURSE_SKELETON_NEW),
-        (b'<nav class="nav" id="nav">', b'<nav class="nav" id="nav" inert>'),
-        # Default RU labels already match the bundle's i18n default. The
-        # signed map adopts the learner's real language before interactions.
-        (b'data-i="course"></span>', 'data-i="course">Курс</span>'.encode("utf-8")),
-        (b'data-i="mashq"></span>', 'data-i="mashq">Практика</span>'.encode("utf-8")),
-        (b'data-i="voice"></span>', 'data-i="voice">AI Voice</span>'.encode("utf-8")),
-        (b'data-i="rating"></span>', 'data-i="rating">Рейтинг</span>'.encode("utf-8")),
-        (b'data-i="profile"></span>', 'data-i="profile">Профиль</span>'.encode("utf-8")),
-        (b"</body>", _PWA_COURSE_BOOT_SCRIPT + b"</body>"),
-    )
-    original = source
-    for old, new in markers:
-        if source.count(old) != 1:
-            # A changed shared HTML build must never take down authenticated
-            # PWA access merely because a cosmetic shell anchor moved.
-            logging.getLogger(__name__).warning("pwa_initial_shell_skipped_missing_anchor")
-            return original
-        source = source.replace(old, new, 1)
-    return source
-
 _PWA_INLINE_CACHE: dict[tuple[str, int, int], tuple[bytes, str]] = {}
 
 
@@ -216,8 +101,6 @@ def _pwa_inline_html(request: Request, path: str, headers: dict[str, str],
             source = handle.read()
         if source.count(b"</body>") != 1:
             raise RuntimeError("pwa_inline_html_invalid")
-        if path == "app/static/course-v3.html":
-            source = _add_pwa_course_initial_shell(source)
         document = source.replace(b"</body>", _PWA_INLINE_PRO_HTML + b"</body>", 1)
         etag = 'W/"' + hashlib.sha256(document).hexdigest()[:32] + '"'
         cached = document, etag
@@ -309,6 +192,9 @@ class PwaOnboardingFinish(BaseModel):
     model_config = ConfigDict(extra="forbid")
     level: str
     goal: str
+    goals: list[str] | None = Field(default=None, min_length=1, max_length=5)
+    streak_target_days: Literal[7, 14, 30, 50] | None = None
+    preferred_focus: Literal["speaking", "listening", "vocabulary", "grammar", "none"] | None = None
     daily_minutes: int
     start_mode: str
     language: Literal["uz", "ru", "tj"]
@@ -571,9 +457,29 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                     # never treat an unverified cookie as a signed-in learner.
                     pass
                 else:
-                    return RedirectResponse(
-                        "/iphone-pwa/course", status_code=303, headers=_NO_STORE,
+                    # The Li onboarding guest can resume their same-tab draft
+                    # after provider callback, but the server still verifies
+                    # session actor and onboarding status before any save.
+                    resuming_li = request.cookies.get(_PWA_LI_RESUME_COOKIE) == "1"
+                    response = RedirectResponse(
+                        "/iphone-pwa/onboarding/li" if resuming_li else "/iphone-pwa/course",
+                        status_code=303, headers=_NO_STORE,
                     )
+                    if resuming_li:
+                        response.delete_cookie(
+                            _PWA_LI_RESUME_COOKIE, path="/", secure=True,
+                            httponly=True, samesite="lax",
+                        )
+                    return response
+            # Gradual opt-in cutover: the Li panda entry is a public visual
+            # shell, not a login or an entitlement. Returning verified actors
+            # still use the normal authenticated course route above.
+            # The flag defaults OFF in production until release QA is complete.
+            if bool(getattr(settings_obj, "PWA_LI_ONBOARDING_ENTRY_ENABLED", False)):
+                return RedirectResponse(
+                    "/iphone-pwa/onboarding/li", status_code=303,
+                    headers={**_NO_STORE, "Referrer-Policy": "no-referrer"},
+                )
             return FileResponse(
                 "app/static/iphone-pwa-login.html", media_type="text/html",
                 headers={**_NO_STORE,
@@ -1092,11 +998,82 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                 )
             return _error(exc)
 
+    @router.get("/iphone-pwa/onboarding/li")
+    async def learner_li_onboarding_page(request: Request):
+        """Public visual shell only; never a public account or course API.
+
+        The panda-first entry can display before registration. Every actual
+        account state, track entitlement, trial and course write remains under
+        the existing verified PWA cookie/CSRF routes. No public HTML response
+        contains user profile data, a session token or an entitlement grant.
+        """
+        try:
+            require_pwa_enabled(settings_obj)
+            return FileResponse(
+                "app/static/course_v3_li_onboarding.html",
+                media_type="text/html",
+                headers={
+                    **_NO_STORE, "X-Content-Type-Options": "nosniff",
+                    "X-Frame-Options": "DENY",
+                    "Content-Security-Policy": (
+                        "default-src 'self'; script-src 'self' 'unsafe-inline'; "
+                        "style-src 'self' 'unsafe-inline'; img-src 'self' data:; "
+                        "connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; "
+                        "form-action 'none'"
+                    ),
+                },
+            )
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.post("/api/v3/pwa/onboarding/li/resume")
+    async def learner_li_resume_after_provider_login(request: Request):
+        """Same-origin explicit navigation only, never an anonymous login."""
+        try:
+            require_pwa_enabled(settings_obj)
+            require_same_origin(request, settings_obj)
+            response = JSONResponse({"ok": True}, headers=_NO_STORE)
+            response.set_cookie(
+                _PWA_LI_RESUME_COOKIE, "1", max_age=_PWA_LI_RESUME_SECONDS,
+                path="/", secure=True, httponly=True, samesite="lax",
+            )
+            return response
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.get("/api/v3/pwa/onboarding/public-tracks")
+    async def learner_li_public_track_preview(request: Request):
+        """Expose only read-only HSK feature metadata, not user entitlement.
+
+        Anonymous visitors may view available standards but cannot claim
+        HSK 3.0 access or write profile/lesson/trial information.
+        """
+        try:
+            require_pwa_enabled(settings_obj)
+            from app.services.hsk30_feature_service import Hsk30FeatureService
+            async with session_factory() as db:
+                feature = Hsk30FeatureService(db)
+                enabled = bool(await feature.is_enabled())
+                live_levels = await feature.live_levels() if enabled else []
+            return JSONResponse({
+                "ok": True,
+                "tracks": {
+                    "hsk20": {"track": "hsk20"},
+                    "hsk30": {"track": "hsk30",
+                              "access": {"feature_enabled": enabled, "allowed": False},
+                              "live_levels": list(live_levels)},
+                },
+                "hsk30_unlock": {},
+            }, headers=_NO_STORE)
+        except PwaAuthError as exc:
+            return _error(exc)
+
     @router.get("/api/v3/pwa/onboarding/status")
     async def pwa_onboarding_status(request: Request):
         from sqlalchemy import select
         from app.db.models.course_miniapp_profile import CourseMiniAppProfile
         from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
+        from app.services.onboarding_goal_selection import read_onboarding_goals
 
         try:
             require_pwa_enabled(settings_obj)
@@ -1123,6 +1100,9 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                     "level": str(user.level or "").strip().lower(),
                     "profile": ({
                         "goal": profile.goal,
+                        "goals": read_onboarding_goals(getattr(profile, "goals_json", None), primary_goal=profile.goal),
+                        "streak_target_days": getattr(profile, "streak_target_days", None),
+                        "preferred_focus": getattr(profile, "preferred_focus", None),
                         "daily_minutes": profile.daily_minutes,
                         "start_mode": profile.start_mode,
                     } if completed else None),
@@ -1142,6 +1122,12 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
             if request.headers.get("X-Telegram-Init-Data"):
                 raise PwaAuthError("pwa_request_invalid", status_code=422)
             payload = await _small_json(request, PwaOnboardingFinish, max_bytes=4096)
+            # Validate the ordered primary/goal invariant *before* any course write.
+            from app.services.onboarding_goal_selection import normalize_onboarding_goals
+            try:
+                normalize_onboarding_goals(payload.goals, primary_goal=payload.goal)
+            except ValueError:
+                raise PwaAuthError("pwa_request_invalid", status_code=422) from None
             if (not 1 <= len(payload.level) <= 16 or
                 not 1 <= len(payload.goal) <= 40 or
                 not 1 <= len(payload.start_mode) <= 32 or
@@ -1161,6 +1147,9 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                     start_mode=payload.start_mode, language=payload.language,
                     timezone_offset_minutes=payload.timezone_offset_minutes,
                     activation_variant=payload.activation_variant,
+                    goals=payload.goals,
+                    streak_target_days=payload.streak_target_days,
+                    preferred_focus=payload.preferred_focus,
                 )
             status = (200 if result.get("ok") else
                       409 if result.get("error") == "course_level_change_requires_placement"
@@ -1170,6 +1159,78 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
             return _error(exc)
         except ValueError:
             return _error(PwaAuthError("pwa_request_invalid", status_code=422))
+
+    @router.get("/api/v3/pwa/trial/status")
+    async def pwa_onboarding_trial_status(request: Request):
+        """Read-only eligibility for the verified browser account, never a grant."""
+        from app.services.pro_trial_service import ProTrialService, REASON_NOT_APPLICABLE
+        from app.services.trial_risk_service import TrialRiskService
+        from app.services.entitlements.state import EntitlementState, access_expires_at, resolve_state
+        try:
+            require_pwa_enabled(settings_obj)
+            # Browser cookie owns this read; no Telegram initData is trusted.
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).actor(
+                    request.cookies.get(PWA_SESSION_COOKIE)
+                )
+                verdict = await ProTrialService(db).eligibility(actor)
+                if verdict.get("eligible"):
+                    risk = TrialRiskService(db, settings_obj)
+                    snapshot = await risk.analyze(
+                        actor, client="iphone_pwa", source="pwa_onboarding_status",
+                        remote_ip=request.headers.get("X-Real-IP"),
+                    )
+                    if risk.evaluate(snapshot).denied:
+                        verdict = {**verdict, "eligible": False,
+                                   "reason": REASON_NOT_APPLICABLE}
+                # A lost /trial/start HTTP response must be recoverable by
+                # reading this *verified actor's* current entitlement. A
+                # used trial flag alone is not proof that Pro is now active.
+                active = resolve_state(actor) == EntitlementState.TRIAL_ACTIVE
+                expires = access_expires_at(actor, EntitlementState.TRIAL_ACTIVE) if active else None
+                verdict = {**verdict, "active": active,
+                           "ends_at": expires.isoformat() if expires else None}
+            return JSONResponse({"ok": True, "trial": verdict}, headers=_NO_STORE)
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.post("/api/v3/pwa/trial/start")
+    async def pwa_onboarding_trial_start(request: Request):
+        """One-time trial via canonical service; same-origin cookie+CSRF only."""
+        from app.services.pro_trial_service import ProTrialService, REASON_NOT_APPLICABLE
+        from app.services.trial_risk_service import TrialRiskService
+        try:
+            require_pwa_enabled(settings_obj)
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                risk = TrialRiskService(db, settings_obj)
+                snapshot = await risk.analyze(
+                    actor, client="iphone_pwa", source="pwa_onboarding",
+                    remote_ip=request.headers.get("X-Real-IP"),
+                )
+                if risk.evaluate(snapshot).denied:
+                    return JSONResponse(
+                        {"ok": False, "error": REASON_NOT_APPLICABLE},
+                        status_code=409, headers=_NO_STORE,
+                    )
+                result = await ProTrialService(db).start(
+                    actor, source="pwa_onboarding", client="iphone_pwa",
+                )
+                if not result.get("ok"):
+                    return JSONResponse(result, status_code=409, headers=_NO_STORE)
+                await risk.record_started(actor, snapshot)
+                await db.commit()
+            return JSONResponse(result, headers=_NO_STORE)
+        except PwaAuthError as exc:
+            return _error(exc)
 
     @router.get("/iphone-pwa/practice/voice")
     async def learner_voice_page(request: Request):
