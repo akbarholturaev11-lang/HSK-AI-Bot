@@ -229,7 +229,11 @@ function restoreDraft(){
     if(!obj||Date.now()-Number(obj.at)>86400000||Number(obj.at)>Date.now())return;
     if(claimedGuest&&obj.step==="signup"&&hostPwa&&actor)
       justResumedGuestRegistration=true;
-    if(["uz","ru","tj"].indexOf(obj.lang)>=0)global.LANG=obj.lang;
+    if(["uz","ru","tj"].indexOf(obj.lang)>=0){
+      global.LANG=obj.lang;
+      document.documentElement.lang=obj.lang;
+      setAuthWaitPhase("waiting");
+    }
     if(obj.track==="hsk20"||obj.track==="hsk30")global.track=obj.track;
     if(obj.level===null||typeof obj.level==="string")global.level=obj.level;
     if(Array.isArray(obj.goals)){
