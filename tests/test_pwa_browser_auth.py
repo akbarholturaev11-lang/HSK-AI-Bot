@@ -251,6 +251,16 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             revoked = (await self.client.get(path)).json()["trial"]
             self.assertFalse(revoked["active"])
             self.assertIsNone(revoked["ends_at"])
+            # Trial-used and an historical expiry date also cannot fabricate
+            # Pro status on the browser after a successful or failed payment.
+            async with self.sessions() as session:
+                actor = await session.get(User, 1)
+                actor.pro_trial_revoked_at = None
+                actor.pro_trial_ends_at = stamp - timedelta(hours=1)
+                await session.commit()
+            expired = (await self.client.get(path)).json()["trial"]
+            self.assertFalse(expired["active"])
+            self.assertIsNone(expired["ends_at"])
 
     async def test_browser_trial_start_requires_same_origin_csrf_and_real_server_result(self):
         from app.services.pro_trial_service import ProTrialService
