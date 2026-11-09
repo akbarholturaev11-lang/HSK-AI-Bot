@@ -4,6 +4,11 @@
  */
 (function(global){
 "use strict";
+// The HTML already painted a visible, retryable failure when a public JS
+// asset is missing. Do not run a session, fake a completed screen or throw
+// while the exact localized demo copy/character bundle is unavailable.
+if(!global.T||!global.T[global.LANG]||!global.HSKCharacters||
+   typeof global.HSKCharacters.render!=="function")return;
 var hostPwa=location.pathname.indexOf("/iphone-pwa/")===0;
 var tg=global.Telegram&&global.Telegram.WebApp;
 var initData=hostPwa?"":String(tg&&tg.initData||"");
