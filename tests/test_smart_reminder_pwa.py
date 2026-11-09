@@ -116,7 +116,7 @@ class SmartReminderPwaDeliveryTests(unittest.IsolatedAsyncioTestCase):
         async with self.case.sessions.begin() as session:
             await session.execute(update(JOB).where(JOB.c.id == self.job_id).values(
                 scheduled_at=self.tick + timedelta(microseconds=1),
-                expires_at=self.expiry))
+                expires_at=self.case.expiry))
         sender = AsyncMock(return_value=201)
         result = await self._dispatch(sender)
         self.assertEqual(result.reason, "pwa_job_not_due")
