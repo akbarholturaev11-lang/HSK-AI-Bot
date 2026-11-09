@@ -45,7 +45,7 @@ def test_course_ready_while_rating_referrals_and_profile_stats_load_independentl
     data["level"] = "hsk1"
     data["user"] = {
         "name": "Verified Test", "avatar": "阿", "language": "ru",
-        "is_paid": False, "state": "FREE", "onboarding_completed": True,
+        "is_paid": True, "state": "TRIAL_ACTIVE", "onboarding_completed": True,
         "referral_code": "", "display_name": "", "avatar_key": "",
     }
     data["progress"]["completed"] = 0
@@ -114,6 +114,10 @@ def test_course_ready_while_rating_referrals_and_profile_stats_load_independentl
             # Profile settings/name are present even though accuracy is pending.
             assert page.locator("#s-profile .profile-display-name").is_visible()
             assert page.locator("#s-profile .profile-settings").is_visible()
+            # MAP.is_paid means unlocked content, not a paid subscription:
+            # even before analytics responds, the verified trial badge must
+            # never momentarily claim this user purchased Pro.
+            assert "Sinov" in page.locator("#s-profile .profile-access-badge").inner_text()
             held["profile"].pop().fulfill(status=200, json={
                 "ok": True,
                 "stats": {"answer_accuracy": {
