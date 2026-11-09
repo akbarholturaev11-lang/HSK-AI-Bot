@@ -92,6 +92,8 @@ def policy_issues(root: Path) -> list[str]:
     for test in (
         "tests/e2e/test_pwa_initial_shell.py",
         "tests/e2e/test_pwa_progressive_sections.py",
+        "tests/pwa_layout_geometry.py",
+        "tests/test_pwa_layout_geometry.py",
     ):
         if not (root / test).is_file():
             issues.append(f"Missing behavioral PWA regression: {test}")
