@@ -5668,9 +5668,7 @@ function foundationSpeakCard(c){
 }
 Foundation.skipSpeak=function(){Foundation.cancelMic();Foundation.next()};
 Foundation.tryMic=function(){
-  var c=Foundation.queue[Foundation.i];
-  if(!Foundation.active||Foundation.answered||!c||c.type!=="speak")return;
-  var hint=$("#foundation-mic-hint"),btn=$("#foundation-mic");
+  var c=Foundation.queue[Foundation.i];if(!Foundation.active||Foundation.answered||!c||c.type!=="speak")return;var hint=$("#foundation-mic-hint"),btn=$("#foundation-mic");
   function say(t){if(hint)hint.textContent=t||""}function ready(){if(btn){btn.disabled=false;btn.setAttribute("aria-label",courseMessage("say",T().say))}}
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder){say(_prL().noSupport);return}
   Foundation.cancelMic();var session={cancelled:false,stream:null,rec:null,timer:null,controller:null};Foundation._micSession=session;
@@ -5689,18 +5687,7 @@ Foundation.tryMic=function(){
       say(_prL().analyzing);var fd=new FormData(),target=c.audio_text||((c.example||{}).zh)||"你好",mt=(blob.type||rec.mimeType||mime||"audio/webm").toLowerCase(),ext=/mp4|m4a|aac/.test(mt)?"mp4":(/ogg/.test(mt)?"ogg":(/mpeg|mp3/.test(mt)?"mp3":(/wav/.test(mt)?"wav":"webm")));fd.append("initData",initData());fd.append("target",target);fd.append("target_pinyin",((c.example||{}).pinyin)||"");fd.append("language",LANG);fd.append("level","hsk1");fd.append("audio",blob,"voice."+ext);
       session.controller=window.AbortController?new AbortController():null;
       coursePronounce(fd,session.controller?session.controller.signal:undefined).then(function(r){return r.json().then(function(j){return{ok:r.ok,j:j}})}).then(function(o){
-        if(session.cancelled||Foundation._micSession!==session)return;Foundation._micSession=null;ready();var score=Number(o.j&&o.j.score||0);if(o.ok&&o.j&&o.j.ok===true&&score>=60){
-          // The spoken card is an optional bonus, not a required mastery grade.
-          // A verified score must offer the NEXT step instead of leaving the
-          // learner trapped behind a hidden CTA after "Correct! 100%".
-          Foundation.speakingBonus=true;Foundation.answered=true;Foundation.save();
-          say(courseMessage("correct",T().correct)+" "+score+"%");
-          var next=$("#f-cta"),skip=$("#f-body .pron-skip");
-          if(next){next.style.display="flex";next.disabled=false;next.onclick=Foundation.next}
-          if(btn)btn.disabled=true;
-          if(skip)skip.style.display="none";
-          beep([523,659,784]);haptic("ok")
-        }else say((o.j&&o.j.message)||_prL().retry);
+        if(session.cancelled||Foundation._micSession!==session)return;Foundation._micSession=null;ready();var score=Number(o.j&&o.j.score||0);if(o.ok&&o.j&&o.j.ok===true&&score>=60){/* Spoken bonus is optional mastery; show Continue after verified success. */Foundation.speakingBonus=true;Foundation.answered=true;Foundation.save();say(courseMessage("correct",T().correct)+" "+score+"%");var next=$("#f-cta"),skip=$("#f-body .pron-skip");if(next){next.style.display="flex";next.disabled=false;next.onclick=Foundation.next}if(btn)btn.disabled=true;if(skip)skip.style.display="none";beep([523,659,784]);haptic("ok")}else say((o.j&&o.j.message)||_prL().retry);
       }).catch(function(err){if(session.cancelled||err&&err.name==="AbortError")return;Foundation._micSession=null;ready();say(_prL().netErr)});
     };rec.start();session.timer=setTimeout(function(){try{if(!session.cancelled&&rec.state!=="inactive")rec.stop()}catch(e){}},2600);
   }).catch(function(){if(session.cancelled)return;Foundation._micSession=null;ready();say(_prL().micDeny)});
@@ -6131,12 +6118,7 @@ function _fetchCourseMap(lv,signal){
         throw new Error("pwa_actor_changed");
       }
       d._status=r.status;return d;
-    }).catch(function(err){
-      // Never downgrade a verified browser actor/CSRF mismatch into a parse
-      // failure that the new transient map retry could accidentally repeat.
-      if(err&&err.message==="pwa_actor_changed")throw err;
-      return {_status:r.status,_parseFail:true};
-    });
+    }).catch(function(err){/* PWA actor mismatch is terminal, not a parse failure. */if(err&&err.message==="pwa_actor_changed")throw err;return {_status:r.status,_parseFail:true}});
   });
 }
 function refreshPwaCheckoutMap(){
@@ -6152,21 +6134,11 @@ function refreshPwaCheckoutMap(){
     return true;
   }).finally(function(){clearTimeout(timer)});
 }
-function retryTransientCourseMap(lv,tries,signal,kind){
-  if(signal&&signal.aborted)return {cancelled:true};
-  // A course-map POST reads the learner's map; it is safe to retry after a
-  // transport/5xx failure. Never retry 401, CSRF, HSK 3.0 or other 4xx gates.
-  // PWA gets one short automatic recovery, Mini App keeps its old retry budget.
-  var retry=tries<(PWA_COURSE_HOST?1:3);
-  if(PWA_COURSE_HOST)clog(retry?"pwa_course_map_retry":"pwa_course_map_failed",kind,{attempt:tries+1});
-  return retry?_retryCourseMap(lv,tries,signal):{error:true};
-}
-function loadCourseMap(lv,tries,signal){
+function retryTransientCourseMap(lv,tries,signal,kind){if(signal&&signal.aborted)return{cancelled:true};var retry=tries<(PWA_COURSE_HOST?1:3);if(PWA_COURSE_HOST)clog(retry?"pwa_course_map_retry":"pwa_course_map_failed",kind,{attempt:tries+1});return retry?_retryCourseMap(lv,tries,signal):{error:true}}function loadCourseMap(lv,tries,signal){
   if(signal&&signal.aborted)return Promise.resolve({cancelled:true});
   tries=tries||0;
-  // Each PWA attempt is bounded to 8 s. One transient retry reuses the
-  // verified browser actor and prevents a manual reload on cold Safari starts.
-  // A newer level choice still aborts every outstanding attempt via signal.
+  // PWA: 8s per attempt and one transient retry on cold Safari; Mini App unchanged.
+  // A newer level choice aborts every pending attempt through signal.
   var controller=PWA_COURSE_HOST&&window.AbortController?new AbortController():null,timer,onAbort;
   if(controller&&signal){onAbort=function(){controller.abort()};signal.addEventListener("abort",onAbort)}
   var request=_fetchCourseMap(lv,controller?controller.signal:signal);
@@ -6179,15 +6151,14 @@ function loadCourseMap(lv,tries,signal){
     if(isHsk30AccessError(d,d.level||lv))return {hsk30Gate:true,error:d.error,level:d.level||lv};
     if(d&&(d.authenticated===false||d._status===401))return {auth:false};
     if(!d||d._parseFail||(d._status&&d._status>=500)){
+      // Only transient read failures retry; all auth and access denials are terminal.
       return retryTransientCourseMap(lv,tries,signal,d&&d._status>=500?"http_5xx":d&&d._parseFail?"timeout_or_parse":"network");
     }
     if(d._status>=400||!Array.isArray(d.units))return {error:true};
     if(d.smart_preferences_available===true)_ensureSmartTimezone(); // Best effort; learning/navigation never waits for Smart metadata.
     return {data:d};
   }).catch(function(err){
-    // A verified session mismatch/expiry is never a transient map failure.
-    if(PWA_COURSE_HOST&&err&&/^(pwa_session_required|pwa_actor_changed|pwa_session_invalid)$/.test(String(err.message||"")))
-      return {auth:false};
+    if(PWA_COURSE_HOST&&err&&/^(pwa_session_required|pwa_actor_changed|pwa_session_invalid)$/.test(String(err.message||"")))return {auth:false};
     return retryTransientCourseMap(lv,tries,signal,"network");
   }).finally(function(){clearTimeout(timer);if(onAbort)signal.removeEventListener("abort",onAbort)});
 }
