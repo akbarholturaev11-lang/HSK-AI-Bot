@@ -581,7 +581,7 @@ function providerActions(signup){
 }
 function loginScreen(mode,inProfile){
   var signup=mode==="signup";
-  if(inProfile)return '<div class="center profile-auth"><div class="bub">'+t("profile")+'</div>'+haloPanda()+providerActions(true)+'</div>';
+  if(inProfile)return '<div class="center profile-auth"><div class="bub">'+t("profile")+'</div><div class="halo halo--gold"><div class="panda">'+panda(POSE.profile)+'</div></div>'+providerActions(true)+'</div>';
   return '<div class="login"><div class="hero-panda" aria-hidden="true"><div class="panda">'+panda(POSE[screen])+'</div></div>'
     +'<h1>'+(signup?t("signupTitle"):t("loginTitle"))+'</h1><p class="subtitle">'+(signup?t("signupSub"):t("loginSub"))+'</p>'
     +providerActions(signup)+'<div class="tagline"><span>'+t("tagline")+'</span></div></div>';
