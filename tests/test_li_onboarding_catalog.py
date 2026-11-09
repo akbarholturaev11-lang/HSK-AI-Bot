@@ -32,7 +32,7 @@ class LiOnboardingCanonicalCatalogTests(unittest.TestCase):
         for lang in ("uz", "ru", "tj"):
             for key in li.INSTALL_KEYS:
                 self.assertTrue(sources[lang][key].strip(), (lang, key))
-        self.assertEqual(len(li.INSTALL_KEYS), 15)
+        self.assertEqual(len(li.INSTALL_KEYS), 19)
         self.assertEqual(len(li.PRO_GOAL_KEYS), 10)
         for lang in ("uz", "ru", "tj"):
             for key in li.PRO_GOAL_KEYS:

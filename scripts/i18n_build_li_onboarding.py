@@ -15,7 +15,7 @@ LOCALES = ("uz", "ru", "tj")
 NAMESPACE = "li_onboarding"
 # Original demo has 66 copy keys; Li's verified HSK 3.0 access gate adds 3.
 COPY_COUNT = 69
-INSTALL_KEYS = ("install.title", "install.description", "install.videoLabel", "install.videoFallback", "install.safariHint", "install.step1", "install.step2", "install.step3", "install.step4", "install.note", "install.continue", "install.close", "install.how", "install.heroAlt", "install.back",)
+INSTALL_KEYS = ("install.title", "install.description", "install.videoLabel", "install.videoFallback", "install.safariHint", "install.step1", "install.step2", "install.step3", "install.step4", "install.note", "install.continue", "install.close", "install.how", "install.heroAlt", "install.back", "install.authWaitTitle", "install.authWaitSubtitle", "install.authSaveTitle", "install.authSaveSubtitle",)
 SHAPES = {
     "LV20": ("beginner", "hsk1", "hsk2", "hsk3", "hsk4"),
     "LV30": ("nhsk1", "nhsk2", "nhsk3"),

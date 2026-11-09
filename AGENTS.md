@@ -15,6 +15,41 @@ mos bo‘lishi kerak; haqiqiy kontraktni kod va tegishli testlardan tekshir.
 
 ---
 
+## Hozirgi mahsulot ustuvorligi: PWA + Android (owner decision, 2026-11-10)
+
+**Barcha keyingi agentlar uchun doimiy scope qoidasi.** Asosiy mahsulot —
+foydalanuvchi PWA'si (iPhone/iOS va browser) hamda Android (Play/direct).
+Backend, auth, kurs, obuna/to‘lov, Admin PWA, public sayt va infratuzilmaga
+faqat shu ikki asosiy client'ni ishlatish, qo‘llab-quvvatlash yoki ularga
+foydalanuvchi olib kelish uchun kerakli miqyosda vaqt/token ajrat.
+
+- **macOS/Windows Desktop — hozircha development freeze.** Desktop'ga xos
+  yangi funksiya, UI/UX, bugfix, DMG/EXE packaging, parity sinxronlash,
+  alohida test/CI, refactor yoki kelajak uchun oldindan kod yozma.
+  PWA/Android task'ini Desktop'ni rivojlantirish uchun bahona qilma.
+- Shared backend/API/domain o‘zgarishida mavjud umumiy kontraktlarni
+  imkon qadar barqaror, platformadan mustaqil va keyinchalik Desktop ulanishi
+  oson bo‘ladigan qilib saqla. **Bu faqat arxitektura ehtiyot chorasi:**
+  Desktop uchun yangi adapter, shim, stub, endpoint, scaffolding, test yoki
+  funksiyani oldindan yaratish talab qilinmaydi.
+- Mavjud Desktop kodini o‘chirma, ataylab sindirma. PWA/Android uchun
+  zarur shared o‘zgarish Desktop'ga muqarrar jiddiy regression tug‘dirsa,
+  faqat eng kichik compatibility fix'ni ko‘rib chiq yoki konfliktni aniq
+  hisobot qil; butun Desktop feature/parity ishini boshlama.
+- **Telegram botning kelajakdagi roli** — foydalanuvchini PWA yoki
+  Android'ga yo‘naltirish, botning o‘zida dars bermaslik. **Bu kelajak
+  strategiyasi, hozirgi migratsiya topshirig‘i emas.** Hozir bot/Mini App'ning
+  ishlayotgan dars, login, referral, to‘lov, Pro va progress oqimlarini
+  o‘chirib yoki o‘zgartirib yuborma. Yangi bot-only ta’lim funksiyalariga
+  default holatda investitsiya qilma; keyingi migratsiya uchun alohida
+  scope, xavfsiz account/entitlement/progress handoff va release talab qilinadi.
+- Noaniq task'da PWA/Android foydasiga eng tor scope'ni tanla. Faqat egasi
+  Desktop'ni aniq qayta ustuvor qilsa, shu task doirasida Desktop ishini och.
+  Pastdagi Desktop-specific qoidalar **faqat shunday ruxsatlangan task** uchun
+  amal qiladi; bu ustuvorlikni bekor qilmaydi.
+
+---
+
 ## Javob qoidalari
 
 - Qisqa va aniq yoz

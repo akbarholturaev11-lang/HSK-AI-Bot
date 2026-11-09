@@ -43,13 +43,22 @@ ffmpeg -i YOUR_ORIGINAL.mp4 \
   fixed FastAPI route supports HTTP Range requests and skips gzip recompression.
 - The same video is used by Li post-registration iPhone Safari PWA onboarding
   and the public iPhone PWA install/download page.
+- Google and Telegram both show one centered, animated Panda waiting
+  view immediately on provider click. The same UI survives same-tab callback
+  and verified course/status/profile-save requests (waiting/saving copy differs
+  per locale), without a course book skeleton or app back button. Only the
+  session-verified, saved-new-user install guide replaces that wait. An existing
+  owner still redirects to their saved course. Denied/expired/unverified and
+  network failures show the existing retry path, never a false grant.
 - After same-tab verified OAuth, onboarding saves the chosen profile
   automatically and preloads the approved MP4 ahead of the guide.
-- Safari installation step 1: full-screen localized heading, the reviewed
-  HSK AI Home Screen focus photo, and one "How?" CTA. No duplicate account CTA.
-- Step 2: centered portrait MP4. Three localized instructions are below the
-  first viewport and appear only after swiping down; on missing or stalled
-  video, those three instructions replace the player. No autoplay or Continue.
+- Safari installation step 1: localized heading with tighter spacing to the
+  reviewed HSK AI Home Screen focus photo, and one "How?" CTA. Its only dismiss
+  affordance is a minimalist unboxed X in the upper-right corner.
+- Step 2: centered portrait MP4 with the same top-right unboxed X, no
+  separate back arrow. Three localized instructions are below the first
+  viewport and appear only after swiping down; on missing or stalled video,
+  those three instructions replace the player. No autoplay or Continue.
 - Reviewed focus photo: `app/static/assets/onboarding/iphone-install-home-focus.jpg`
   (164899 bytes, SHA-256
   `17848fda4d9cbdf9655cd407c10efa0e5b6ae7fcf6b59132f47314134c553428`),
