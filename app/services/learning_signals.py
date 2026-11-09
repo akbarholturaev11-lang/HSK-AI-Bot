@@ -133,41 +133,42 @@ class LearningSignalsService:
             else or_(CourseMistake.level.is_(None), ~CourseMistake.level.like("nhsk%"))
         )
 
-    async def _weakness_and_total(
-        self, user_id: int, *, level: str
-    ) -> tuple[dict[str, int], int]:
-        """Get sampled weaknesses and the exact all-row total in ONE query.
-
-        A windowed SUM runs before LIMIT. The sample is capped at 80 records
-        for Python material parsing, but the overall mistake count includes
-        every eligible row. HSK track and unreviewable-target filters stay
-        identical for the two outputs. No row means zero for both outputs.
-        """
+    async def _weakness(self, user_id: int, *, level: str) -> dict[str, int]:
         weight = CourseMistake.wrong_count - CourseMistake.resolved_count
         result = await self.session.execute(
             select(
                 CourseMistake.category,
                 CourseMistake.material_json,
                 weight.label("weight"),
-                func.sum(weight).over().label("total_weight"),
             )
             .where(
                 CourseMistake.user_id == user_id,
                 weight > 0,
                 self._track_filter(level),
-                # "-" is an unresolved legacy target, never reviewable.
                 or_(CourseMistake.target_key.is_(None), CourseMistake.target_key != "-"),
             )
             .order_by(weight.desc(), CourseMistake.last_seen_at.desc())
             .limit(WEAKNESS_SAMPLE_SIZE)
         )
         scores = {key: 0 for key in WEAKNESS_KEYS}
-        total = 0
-        for category, material_json, item_weight, total_weight in result.all():
-            total = int(total_weight or 0)
+        for category, material_json, item_weight in result.all():
             item = CourseMistake(category=category, material_json=material_json)
             scores[self._weakness_key(item)] += int(item_weight or 0)
-        return scores, total
+        return scores
+
+    async def _mistakes_total(self, user_id: int, *, level: str) -> int:
+        weight = CourseMistake.wrong_count - CourseMistake.resolved_count
+        result = await self.session.execute(
+            select(func.coalesce(func.sum(weight), 0)).where(
+                CourseMistake.user_id == user_id,
+                CourseMistake.wrong_count > CourseMistake.resolved_count,
+                self._track_filter(level),
+                # "-" — takrorlab bo'lmaydigan eski yozuv (nishon ham, yaroqli
+                # savol ham yo'q): kunlik reja uni vazifa qilib bermasin.
+                or_(CourseMistake.target_key.is_(None), CourseMistake.target_key != "-"),
+            )
+        )
+        return int(result.scalar_one() or 0)
 
     async def _today(self, user_id: int, local_day) -> tuple[int, set[str], set[str]]:
         """Bugun (MAHALLIY kun) bajarilgan ishlar: XP, ref'lar va turlar."""
@@ -236,9 +237,8 @@ class LearningSignalsService:
         evidence, active_days = 0, 0
         user_id = int(getattr(user, "id", 0) or 0)
         if user_id:
-            weakness, mistakes_total = await self._weakness_and_total(
-                user_id, level=level
-            )
+            weakness = await self._weakness(user_id, level=level)
+            mistakes_total = await self._mistakes_total(user_id, level=level)
             if gamification_day is not None:
                 today_xp, done_refs, done_types = await self._today(user_id, gamification_day)
                 evidence, active_days = await self._evidence_and_pace(user_id, gamification_day)
