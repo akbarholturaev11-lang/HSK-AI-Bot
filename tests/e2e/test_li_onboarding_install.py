@@ -63,7 +63,8 @@ def _prepare(browser, *, ios=True, installed=False, has_video=False):
 
     page.route("**/assets/onboarding/iphone-home-screen.mp4", video_response)
     html = (
-        "<!doctype html><html lang='uz'><head><meta name='viewport' content='width=device-width'></head>"
+        "<!doctype html><html lang='uz'><head><meta name='viewport' content='width=device-width'>"
+        "<style>" + CSS + "</style></head>"
         "<body><main>Authenticated onboarding complete</main>"
         "<script src='/course_v3_data/hsk-li-onboarding-i18n.js'></script>"
         "<script src='/course_v3_data/li-onboarding-install.js'></script>"
@@ -86,7 +87,10 @@ def test_iphone_browser_after_verified_registration_shows_video_slot_and_fallbac
         }""")
         assert opened is True
         assert page.get_by_role("dialog").is_visible()
-        assert page.locator(".li-install-steps li").count() == 3
+        assert page.locator(".li-install-steps li").count() == 4
+        assert page.locator(".li-install-intro, .li-install-note, .li-install-continue").count() == 0
+        assert page.locator(".li-install-card").evaluate(
+            "(node) => Math.abs(node.getBoundingClientRect().height - innerHeight) < 2")
         page.locator(".li-install-video-fallback").wait_for(state="visible")
         assert page.locator(".li-install-video").is_hidden()
         # A missing / slow MP4 displays a readable text fallback from the
@@ -95,7 +99,7 @@ def test_iphone_browser_after_verified_registration_shows_video_slot_and_fallbac
             "(node) => node.classList.contains('is-fallback')") is True
         assert "aspect-ratio:9/16" in CSS
         assert page.get_by_role("dialog").get_attribute("aria-modal") == "true"
-        page.locator(".li-install-continue").click()
+        page.locator(".li-install-close").click()
         assert page.evaluate("window.__next") == 1
         assert page.get_by_role("dialog").count() == 0
         assert page.evaluate("localStorage.getItem('hskai_li_install_guide_v1:37')") == "seen"
@@ -142,15 +146,34 @@ def test_media_stays_optional_but_real_metadata_can_swap_to_vertical_video():
         browser.close()
 
 
-def test_telegram_in_app_browser_cannot_show_pwa_install_prompt():
+def test_telegram_in_app_browser_shows_safari_link_not_video():
     with pw.sync_playwright() as p:
         browser = getattr(p, os.environ.get('PWA_E2E_ENGINE', 'chromium')).launch()
         page, errors = _prepare(browser, ios=True)
         assert page.evaluate("""() => {
           window.Telegram={WebApp:{initData:"real-verified-placeholder"}};
           return HSKAILiInstallGuide.open({userId:53,lang:"ru"},()=>{});
-        }""") is False
-        assert page.get_by_role("dialog").count() == 0
+        }""") is True
+        assert page.locator(".li-install-panda").is_visible()
+        assert page.locator(".li-install-browser-link").get_attribute("href") == "https://hskai.app/iphone-pwa"
+        assert page.locator(".li-install-video, .li-install-steps, .li-install-title").count() == 0
+        assert not errors
+        browser.close()
+
+
+def test_chrome_on_ios_is_not_mistaken_for_safari():
+    with pw.sync_playwright() as p:
+        browser = getattr(p, os.environ.get('PWA_E2E_ENGINE', 'chromium')).launch()
+        page, errors = _prepare(browser)
+        page.add_init_script("""Object.defineProperty(navigator, 'userAgent', {
+          get:()=> 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/130.0.0.0 Mobile/15E148 Safari/604.1'
+        });""")
+        page.reload()
+        assert page.evaluate("""() => HSKAILiInstallGuide.open(
+            {userId:54,lang:"uz"},()=>{})""") is True
+        assert page.locator(".li-install-panda").is_visible()
+        assert page.locator(".li-install-video").count() == 0
+        assert page.locator(".li-install-browser-hint").inner_text().count("Safari") == 1
         assert not errors
         browser.close()
 

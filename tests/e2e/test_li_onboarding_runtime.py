@@ -752,9 +752,10 @@ def test_new_iphone_signup_shows_install_video_guide_after_verified_save_only():
         assert len(captured["post"]) == 1  # actual owner-scoped save occurred
         page.locator(".li-install-video-fallback").wait_for(state="visible")
         assert page.locator(".li-install-video").is_hidden()
-        assert page.locator(".li-install-steps li").count() == 3
+        assert page.locator(".li-install-steps li").count() == 4
+        assert page.locator(".li-install-continue, .li-install-note, .li-install-intro").count() == 0
         assert page.evaluate("window.screen") == "profile"  # no mock Pro grant
-        page.locator(".li-install-continue").click()
+        page.locator(".li-install-close").click()
         page.wait_for_function("window.screen==='end'")
         assert not captured["trial_start"]
         assert page.evaluate("localStorage.getItem('hskai_li_install_guide_v1:37')") == "seen"
