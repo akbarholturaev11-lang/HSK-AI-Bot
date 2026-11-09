@@ -230,11 +230,17 @@ def test_li_shell_is_visible_when_external_scripts_fail():
             body="", content_type="text/css",
         ))
         page.goto(ORIGIN + "/iphone-pwa/onboarding/li?lang=uz")
+        # The first shell exists before any script executes. Once optional
+        # character/catalog scripts fail, the inline fail-closed handler must
+        # replace the busy skeleton with an actionable error; leaving an
+        # endlessly busy skeleton would violate the loading UX contract.
         assert page.locator("#top .li-first-brand").is_visible()
-        assert page.locator("#stage .li-first-shell").is_visible()
-        assert page.locator("#stage .li-first-panda").is_visible()
-        assert page.locator("#footer .li-first-cta").is_visible()
-        assert page.locator("#stage").get_attribute("aria-busy") == "true"
+        assert page.locator('#stage [role="alert"]').is_visible()
+        assert page.locator("#stage").get_attribute("aria-busy") == "false"
+        assert page.locator("#footer button.cta").is_visible()
+        assert page.locator("#footer button.cta").inner_text().strip()
+        assert page.locator("#stage .li-first-shell").count() == 0
+        assert page.locator("#stage .pro-offer").count() == 0
         browser.close()
 
 
