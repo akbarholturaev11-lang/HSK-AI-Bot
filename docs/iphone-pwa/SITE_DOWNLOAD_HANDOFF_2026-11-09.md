@@ -3,7 +3,7 @@
 ## Intent and boundaries
 
 - The **only** header redesign is for mobile widths (`@media (max-width:850px)` in `app/static/public-site-navigation.css`).
-- The mobile header keeps **brand + globe icon + three-line menu**. Language options remain UZ/RU/TJ; menu links are the existing courses, features, guide and download routes. Do not change desktop header layout.
+- The mobile header keeps **brand + globe icon + three-line menu**. The two menus are mutually exclusive, close on Escape/outside click, and use the shared `/public-assets/language.js?v=3` controller. Language options remain UZ/RU/TJ; menu links are the existing courses, features, guide and download routes. Do not change desktop header layout.
 - The browser download page's `ios` platform is now **PWA**, linking to `/iphone-pwa?lang=uz|ru|tj` rather than the bot. Anonymous UTM/source tags are forwarded only from the allowlist; referral and device-link secrets are not forwarded. This is the product download route on any viewport.
 - Preserve macOS DMG, Windows EXE and Android APK downloads, status API contract, device detection and download attribution. Social-browser Android fallback to the Telegram APK delivery bot remains separate from the iOS CTA.
 - If an iPhone referral link arrives, primary action remains PWA. A **separate secondary Telegram referral link** retains the existing `ri_` code/2-message verification, because PWA referral credit is not independently established. Do not claim PWA referrer credit without proof.
