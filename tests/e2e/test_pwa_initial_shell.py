@@ -33,7 +33,7 @@ def test_single_shell_before_any_api_and_telegram_remains_unchanged(pwa):
             ))
             page.goto(target, wait_until="domcontentloaded")
             assert page.locator(".hsk-pwa-boot-shell").count() == 0
-            assert page.locator("#s-course .pwa-initial-shell").count() == 1
+            assert page.locator("#s-course .pwa-initial-shell").count() == (1 if pwa else 0)
             if pwa:
                 assert page.locator("#s-course .pwa-initial-shell").is_visible()
                 assert page.locator("#hsk-launch-splash").is_hidden()

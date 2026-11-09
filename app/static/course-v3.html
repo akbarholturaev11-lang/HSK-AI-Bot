@@ -2837,7 +2837,7 @@ var App={
     if(s==="mashq"){
       /* The bundled Practice cards do not depend on local preloads finishing.
          HSK 3.0 server access still gates the tab above this block. */
-      if(!$("#s-mashq").firstElementChild)renderMashq();
+      if(!$("#s-mashq").firstElementChild||$("#s-mashq").querySelector(".pwa-initial-shell"))renderMashq();
       schedulePracticeBackgroundLoad();
     }
     if(s==="voice")renderVoice();
@@ -9590,7 +9590,7 @@ window.VOICE=VOICE;
 
 function renderAll(){
   document.querySelectorAll("#nav [data-i]").forEach(function(s){s.textContent=courseMessage("nav."+s.dataset.i,T().nav[s.dataset.i])});
-  if(MAP){renderCourse();if(!PWA_COURSE_HOST||SCREEN==="mashq"||$("#s-mashq").firstElementChild)renderMashq();if(SCREEN==="rating")renderRating();if(!PWA_COURSE_HOST||SCREEN==="profile")renderProfile();if(SCREEN==="voice")renderVoice()}
+  if(MAP){renderCourse();if(!PWA_COURSE_HOST||SCREEN==="mashq"||($("#s-mashq").firstElementChild&&!$("#s-mashq").querySelector(".pwa-initial-shell")))renderMashq();if(SCREEN==="rating")renderRating();if(!PWA_COURSE_HOST||SCREEN==="profile")renderProfile();if(SCREEN==="voice")renderVoice()}
 }
 navInit();
 $("#sheet").onclick=function(){App.closeSheet()};
