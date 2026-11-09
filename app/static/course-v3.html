@@ -7581,7 +7581,7 @@ function pollSignInLink(pending,deadline){
 }
 
 var PROFILE_DETAIL=null;
-var PROFILE_DETAIL_PENDING=false,PROFILE_DETAIL_SETTLED=false,PROFILE_DETAIL_ERROR=false;
+var PROFILE_DETAIL_PENDING=false,PROFILE_DETAIL_SETTLED=false,PROFILE_DETAIL_ERROR=false,PROFILE_DETAIL_LOADED_AT=0;
 function profileCopy(){
   var legacy=({
     tj:{free:"Ройгон",trial:"Pro · Озмоиш",today:"Имрӯз",overall:"Ҳамагӣ",pro:"Гирифтани Pro",answers:"ҷавоби арзёбишуда",note:"Танҳо ҷавобҳои санҷидашуда · маълумоти кӯҳна метавонад нопурра бошад"},
@@ -7590,7 +7590,8 @@ function profileCopy(){
   })[LANG]||{};return {free:courseMessage("profile.free",legacy.free),trial:courseMessage("profile.trial",legacy.trial),today:courseMessage("profile.today",legacy.today),overall:courseMessage("profile.overall",legacy.overall),pro:courseMessage("profile.pro",legacy.pro),answers:courseMessage("profile.answers",legacy.answers),note:courseMessage("profile.note",legacy.note)};
 }
 function loadProfileDetail(){
-  if(PROFILE_DETAIL_PENDING)return;
+  // Reuse a recent, session-verified PWA profile result; still revalidate after 30s.
+  if(PROFILE_DETAIL_PENDING||(PWA_COURSE_HOST&&PROFILE_DETAIL&&Date.now()-PROFILE_DETAIL_LOADED_AT<30000))return;
   if(PROFILE_DETAIL_SETTLED&&!PROFILE_DETAIL){
     PROFILE_DETAIL_SETTLED=false;PROFILE_DETAIL_ERROR=false;
     if(SCREEN==="profile")renderProfile();
@@ -7602,7 +7603,7 @@ function loadProfileDetail(){
     if(!r.ok)throw Error("profile_http");return r.json();
   }).then(function(d){if(!d||!d.ok)throw Error("profile");return d});
   boundedSectionRequest(result,controller).then(function(d){
-    PROFILE_DETAIL=d;PROFILE_DETAIL_ERROR=false;
+    PROFILE_DETAIL=d;PROFILE_DETAIL_ERROR=false;PROFILE_DETAIL_LOADED_AT=Date.now();
   }).catch(function(){PROFILE_DETAIL=null;PROFILE_DETAIL_ERROR=true}).then(function(){
     PROFILE_DETAIL_PENDING=false;PROFILE_DETAIL_SETTLED=true;
     if(SCREEN==="profile")renderProfile();
