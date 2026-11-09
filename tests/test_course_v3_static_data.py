@@ -149,7 +149,13 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn('fetch("/api/v3/course-tracks"', onboarding)
         self.assertIn('track=h30Enabled?"hsk30":"hsk20"', onboarding)
         self.assertIn('sel=h30Enabled?"nhsk1":"beginner"', onboarding)
-        self.assertIn('if(track==="hsk30"){track="hsk20";sel="beginner";saveDraft()}', onboarding)
+        # A *verified* disabled HSK 3.0 track retains the HSK 2.0 beginner fallback.
+        # A failed fetch must NOT invent feature access or silently change the
+        # learner's choice: show the honest retryable loading-error state instead.
+        self.assertIn('else if(track==="hsk30"&&!h30Enabled){', onboarding)
+        self.assertIn('ONB_TRACK_REMOTE="error"', onboarding)
+        self.assertIn('HSK30_STATUS=null;', onboarding)
+        self.assertIn('if(step===1)render(false);', onboarding)
         self.assertLess(onboarding.index('{k:"beginner"'), onboarding.index('{k:"hsk1"'))
         self.assertIn('localStorage.removeItem("hsk_v3_start_mode")', onboarding)
         self.assertNotIn('startMode=localStorage.getItem("hsk_v3_start_mode")', onboarding)

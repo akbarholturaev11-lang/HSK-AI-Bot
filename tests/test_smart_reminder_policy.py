@@ -46,6 +46,16 @@ def samples(*, hour=2, minute=0, days=3):
 
 
 class PurePolicyTests(unittest.TestCase):
+    def test_streak_target_is_read_only_context_never_new_reminder_authority(self):
+        baseline = context(studies=samples())
+        enriched = replace(baseline, streak_current=4, streak_target_days=14)
+        self.assertAlmostEqual(enriched.streak_target_progress, 4 / 14)
+        self.assertEqual(evaluate(enriched), evaluate(baseline))
+        self.assertIsNone(baseline.streak_target_progress)
+        self.assertEqual(replace(enriched, streak_current=60).streak_target_progress, 1.0)
+        self.assertIsNone(replace(enriched, streak_target_days=None).streak_target_progress)
+        self.assertFalse(evaluate(replace(enriched, master_enabled=False)).dispatch_allowed)
+
     def check(self, expected, **changes):
         decision = evaluate(context(**changes))
         self.assertEqual(decision.reason, expected)

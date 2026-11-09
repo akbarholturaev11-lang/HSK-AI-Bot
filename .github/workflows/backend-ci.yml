@@ -226,8 +226,19 @@ jobs:
             tests.test_identity_link_service
       - name: Test isolated iPhone PWA browser and Telegram sign-in
         run: python -m unittest tests.test_pwa_browser_auth tests.test_pwa_telegram_bot tests.test_pwa_shake_report
+      - name: Verify actual Safari install MP4 HTTP Range in complete backend environment
+        env:
+          BOT_TOKEN: "9123456:synthetic-test-only-unusable-secret"
+          DATABASE_URL: "postgresql+asyncpg://qa:qa@127.0.0.1:1/qa"
+          REDIS_URL: "redis://127.0.0.1:1/0"
+        run: python -m unittest tests.test_li_install_video_route
+
       - name: Verify one-time PWA exit offer and real Lava promo activation
         run: python -m unittest tests.test_pwa_exit_offer tests.test_lava_promo_codes
+      - name: Verify additive Li onboarding goals, streak targets and old-client compatibility
+        run: python -m unittest tests.test_li_onboarding_choices
+      - name: Rehearse additive Li migration 0154 without legacy data loss
+        run: python -m unittest tests.test_li_onboarding_0154_migration
       - name: Validate iPhone PWA inbox, payment and feedback dialogs
         run: |
           node tests/test_pwa_notices_ui.js
@@ -440,6 +451,10 @@ jobs:
               raise SystemExit("PostgreSQL regressions failed")
           print(f"PostgreSQL coverage: {len(cases)} tests, 0 skipped")
           PY
+      - name: Rehearse Li 0153 to 0154 upgrade on disposable PostgreSQL
+        env:
+          NATIVE_ACCOUNT_TEST_DATABASE_URL: "postgresql+asyncpg://hsk_critical_qa:hsk-critical-ci-only@127.0.0.1:${{ job.services.postgres.ports[5432] }}/hsk_critical_test"
+        run: python scripts/check_li_migration_postgres.py
       - name: Save PostgreSQL regression report
         if: always()
         continue-on-error: true
@@ -468,8 +483,25 @@ jobs:
         run: python -m pytest -q tests/e2e/test_iphone_pwa_glass.py
       - name: Verify inline PWA Pro terms, manual choice and 20 percent exit offer
         run: python -m pytest -q tests/e2e/test_pwa_inline_pro.py tests/e2e/test_pwa_inline_pro_routes.py tests/e2e/test_pwa_lava_link.py
+      - name: Check canonical Li onboarding catalogs in three languages
+        run: python -m unittest tests.test_li_onboarding_catalog
+      - name: Verify approved optimized Safari tutorial video if published
+        run: python -m unittest tests.test_li_install_video_asset
+
+      - name: Verify PWA static first paint with stalled API (Mini App unchanged)
+        run: python -m pytest -q tests/e2e/test_pwa_progressive_shell.py
+      - name: Verify Li onboarding honest loading, error retry and server-backed book choice
+        run: python -m pytest -q tests/e2e/test_li_onboarding_loading.py
+      - name: Verify 23-state Li runtime, platform ownership, real choices and trial boundaries
+        run: python -m pytest -q tests/e2e/test_li_onboarding_runtime.py
+      - name: Verify iPhone Home Screen install video guide and missing-MP4 fallback
+        run: python -m pytest -q tests/e2e/test_li_onboarding_install.py
       - name: Install WebKit for iPhone Safari payment and limit regression
         run: python -m playwright install --with-deps webkit
+      - name: Verify Li Panda onboarding, OAuth return, and iPhone install guide in WebKit
+        env:
+          PWA_E2E_ENGINE: webkit
+        run: python -m pytest -q tests/e2e/test_li_onboarding_runtime.py tests/e2e/test_li_onboarding_install.py
       - name: Verify fullscreen PWA Pro and Lava payment on iPhone WebKit
         env:
           PWA_E2E_ENGINE: webkit

@@ -89,6 +89,34 @@ class PlanShapeTests(unittest.TestCase):
 
 
 class GoalWeightingTests(unittest.TestCase):
+    def test_existing_single_goal_preferences_are_unchanged(self):
+        for goal in ("hsk_exam", "daily_communication", "travel",
+                     "work_china", "study_china"):
+            self.assertEqual(
+                DailyPlanService._goal_weights(goal, (goal,)),
+                DailyPlanService._goal_weights(goal),
+            )
+            self.assertEqual(
+                DailyPlanService.build(signals(goal=goal, goals=(goal,)), seed="stable"),
+                DailyPlanService.build(signals(goal=goal), seed="stable"),
+            )
+
+    def test_multiple_goals_blend_predictably_without_unlocking_new_tasks(self):
+        score = DailyPlanService._goal_weights(
+            "hsk_exam", ("hsk_exam", "travel"),
+        )
+        self.assertAlmostEqual(score[TASK_MOCK_EXAM], 0.6 * 3.0 + 0.4 * 0.3)
+        self.assertAlmostEqual(score[TASK_VOICE_DIALOG], 0.6 * 0.3 + 0.4 * 2.6)
+        sample = signals(goal="hsk_exam", goals=("hsk_exam", "travel"))
+        first = DailyPlanService.build(sample, seed="stable:2026-11-08")
+        again = DailyPlanService.build(sample, seed="stable:2026-11-08")
+        self.assertEqual(first, again)
+        self.assertEqual(first[0]["t"], TASK_CONTINUE_LESSON)
+        self.assertTrue(all(task["t"] in {
+            TASK_CONTINUE_LESSON, TASK_MISTAKE_REVIEW, TASK_SKILL_DRILL,
+            TASK_MOCK_EXAM, TASK_VOICE_DIALOG,
+        } for task in first))
+
     def test_exam_goal_prefers_tests_and_mistake_review(self):
         tasks = DailyPlanService.build(signals(goal="hsk_exam", plan_size=4), seed="u1")
         self.assertIn(TASK_MISTAKE_REVIEW, types(tasks))

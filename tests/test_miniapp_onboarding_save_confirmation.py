@@ -90,6 +90,9 @@ class OnboardingSaveConfirmationApiTests(unittest.IsolatedAsyncioTestCase):
             "level": "nhsk1",
             "profile": {
                 "goal": "daily_communication",
+                "goals": ["daily_communication"],
+                "streak_target_days": None,
+                "preferred_focus": None,
                 "daily_minutes": 10,
                 "start_mode": "lesson_1",
             },

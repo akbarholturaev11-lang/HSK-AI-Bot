@@ -78,6 +78,19 @@ class PolicyContext:
     quiet_start: time | None = None
     quiet_end: time | None = None
     pause_until: datetime | None = None
+    # Supplemental, verified server-owned habit context, never a consent grant,
+    # notification eligibility override or replacement for proven study events.
+    streak_current: int | None = None
+    streak_target_days: int | None = None
+
+    @property
+    def streak_target_progress(self) -> float | None:
+        """Display-oriented target progress, not a reason to send a reminder."""
+        if not isinstance(self.streak_current, int) or type(self.streak_target_days) is not int:
+            return None
+        if self.streak_target_days not in (7, 14, 30, 50):
+            return None
+        return max(0.0, min(1.0, self.streak_current / self.streak_target_days))
 
 
 @dataclass(frozen=True)

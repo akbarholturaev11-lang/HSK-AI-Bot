@@ -2135,7 +2135,7 @@ async def course_data_file(level: str):
 
 # ── Course v3 Mini App ──────────────────────────────────────────────────────
 
-_COURSE_V3_PAGES = {"onboarding", "recognition", "pronunciation", "test", "mistakes", "voice", "memorize"}
+_COURSE_V3_PAGES = {"onboarding", "li_onboarding", "recognition", "pronunciation", "test", "mistakes", "voice", "memorize"}
 _COURSE_V3_LEVELS = {"hsk1", "hsk2", "hsk3", "hsk4", "nhsk1", "nhsk2", "nhsk3"}
 
 
@@ -2445,6 +2445,27 @@ async def desktop_install_screenshot(filename: str):
     )
 
 
+@app.get("/assets/onboarding/iphone-home-screen.mp4")
+async def li_iphone_install_guide_video():
+    """Fixed, optional iPhone Safari tutorial asset for first PWA registration.
+
+    The video is deliberately not synthesized or silently substituted with
+    other user media. Missing approved MP4 returns 404; the Li guide displays
+    the canonical three-step fallback and still allows course continuation.
+    """
+    path = Path("app/static/assets/onboarding/iphone-home-screen.mp4")
+    if not path.is_file():
+        return JSONResponse(status_code=404, content={"error": "guide_not_published"},
+                            headers={"Cache-Control": "no-store"})
+    # MP4 is already compressed. Global GZipMiddleware must not recompress
+    # 206 byte ranges: their Content-Range offsets refer to the original
+    # file bytes. The public approved 710 KB video can be cached briefly.
+    return FileResponse(path, media_type="video/mp4",
+                        headers={"X-Content-Type-Options": "nosniff",
+                                 "Content-Encoding": "identity",
+                                 "Cache-Control": "public, max-age=3600, no-transform"})
+
+
 @app.get("/course_v3_{page}.html")
 async def course_v3_sub_page(page: str):
     if page not in _COURSE_V3_PAGES:
@@ -2496,6 +2517,10 @@ async def course_v3_data_file(filename: str):
         "hsk-common-i18n.js": "application/javascript",
         "hsk-miniapp-i18n.js": "application/javascript",
         "hsk-course-i18n.js": "application/javascript",
+        "li-onboarding-runtime.js": "application/javascript",
+        "li-onboarding-install.js": "application/javascript",
+        "li-onboarding-install.css": "text/css",
+        "hsk-li-onboarding-i18n.js": "application/javascript",
         "p3-grammar-reservation.js": "application/javascript",
         "ready-phrases-v1.json": "application/json",
     }
@@ -5708,6 +5733,9 @@ async def miniapp_onboarding(request: Request):
                 language=str(payload.get("language") or ""),
                 timezone_offset_minutes=timezone_offset,
                 activation_variant=_checkout_text(payload.get("activation_variant"), 32),
+                goals=payload.get("goals"),
+                streak_target_days=payload.get("streak_target_days"),
+                preferred_focus=payload.get("preferred_focus"),
             )
     except (TypeError, ValueError) as error:
         return JSONResponse(
@@ -5757,6 +5785,7 @@ async def miniapp_onboarding_status(request: Request):
             foundation = await CourseMiniAppProfileService(session).foundation_status(user)
             foundation_required = bool(foundation["required"] and not foundation["completed"])
 
+        from app.services.onboarding_goal_selection import read_onboarding_goals
         return JSONResponse(
             content={
                 "ok": True,
@@ -5764,6 +5793,9 @@ async def miniapp_onboarding_status(request: Request):
                 "level": str(user.level or "").strip().lower(),
                 "profile": {
                     "goal": profile.goal,
+                    "goals": read_onboarding_goals(getattr(profile, "goals_json", None), primary_goal=profile.goal),
+                    "streak_target_days": getattr(profile, "streak_target_days", None),
+                    "preferred_focus": getattr(profile, "preferred_focus", None),
                     "daily_minutes": profile.daily_minutes,
                     "start_mode": profile.start_mode,
                 } if completed else None,

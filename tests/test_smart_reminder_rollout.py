@@ -624,7 +624,19 @@ class AdmissionChecks(FixtureChecks):
         if not self.postgres:
             self.skipTest("Independent PostgreSQL transactions required")
         results = await asyncio.gather(self.admission().step(4), self.admission().step(4))
-        self.assertEqual(sorted(sum(map(list, results), [])), ["admission_refused", "held"])
+        outcomes = sorted(sum(map(list, results), []))
+        # PostgreSQL can schedule replica B either before A commits the
+        # initial hold (CAS refuses B), or after A commits (B observes the
+        # sticky hold and reports the mandatory 24h drain). Both are valid:
+        # neither may admit or send, and only one routing generation exists.
+        self.assertIn(outcomes, [
+            ["admission_refused", "held"], ["draining", "held"],
+        ])
+        held = await self.routing()
+        self.assertEqual((held["state"], held["generation"]), ("held", 1))
+        self.assertIsNone(held["verified_at"])
+        self.assertEqual(_utc(held["quiesced_at"]), _utc(held["held_at"]))
+        self.assertTrue(await self.veto())
         async with self.q.sessions.begin() as s:
             await s.execute(update(ROUTING).values(held_at=self.q.tick - LEGACY_DRAIN,
                 quiesced_at=self.q.tick - LEGACY_DRAIN))
