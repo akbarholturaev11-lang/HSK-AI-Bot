@@ -140,7 +140,7 @@
 
       var detail = element("div", "li-install-video-page");
       detail.hidden = true;
-      var back = element("button", "li-install-back", "‹");
+      back = element("button", "li-install-back", "‹");
       back.type = "button";
       back.setAttribute("aria-label", label(lang, "install.back"));
       var mediaStage = element("div", "li-install-video-stage");
