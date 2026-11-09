@@ -474,8 +474,6 @@ def test_guest_profile_has_telegram_google_without_duplicate_create_account_step
         browser.close()
 
 
-@pytest.mark.parametrize("provider_index", [0, 1])
-
 @pytest.mark.parametrize("provider", ["google", "telegram"])
 def test_auth_return_keeps_original_locale_at_first_panda_paint(provider):
     """The provider callback can lose ?lang; the pending, recent handoff
@@ -520,6 +518,7 @@ def test_auth_return_keeps_original_locale_at_first_panda_paint(provider):
         browser.close()
 
 
+@pytest.mark.parametrize("provider_index", [0, 1])
 def test_google_and_telegram_immediately_show_same_panda_wait_before_server_auth(provider_index):
     with pw.sync_playwright() as playwright:
         browser = getattr(playwright, os.environ.get("PWA_E2E_ENGINE", "chromium")).launch()
