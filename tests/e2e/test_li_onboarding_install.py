@@ -93,7 +93,7 @@ def test_iphone_install_starts_with_focus_photo_then_video_with_three_fallback_s
         }""")
         assert opened is True
         assert page.locator(".li-install-hero").is_visible()
-        assert page.locator(".li-install-hero").evaluate("(img) => img.naturalWidth > 0")
+        page.wait_for_function("document.querySelector('.li-install-hero')?.naturalWidth > 0")
         assert page.locator(".li-install-title").is_visible()
         assert "telefoningiz" in page.locator(".li-install-title").inner_text()
         assert page.locator(".li-install-how").inner_text() == "Qanday?"
