@@ -539,17 +539,13 @@ def test_new_user_telegram_claim_resumes_guest_choices_without_welcome_screen():
         )
         captured["telegram_state"] = "complete"
         page.evaluate("window.dispatchEvent(new Event('focus'))")
-        page.wait_for_function(
-            "() => window.screen==='profile' && document.querySelector('#footer .cta')",
-            timeout=12000,
-        )
+        # The same-tab verified Telegram claim auto-saves the previously
+        # selected draft. No redundant profile Continue screen is allowed.
+        page.wait_for_function("window.screen==='end'", timeout=12000)
         assert captured["auth_state"]["verified"]
-        assert captured["post"] == []  # no write before final verified action
         assert page.evaluate("window.goals") == ["hsk_exam", "travel"]
         assert page.evaluate("window.streakGoal") == 14
         assert "/iphone-pwa?login=1" not in captured["navigations"]
-        page.locator("#footer .cta").click()
-        page.wait_for_function("window.screen==='end'")
         assert len(captured["post"]) == 1
         assert captured["post"][0]["goals"] == ["hsk_exam", "travel"]
         assert captured["trial_start"] == []
