@@ -656,6 +656,12 @@ function authenticate(provider){
   if(actor){location.assign(pageCourse());return}
   if(!supportedProviders||supportedProviders.indexOf(provider)<0)return;
   if(telegramPendingId()){
+    if(provider!=="telegram"&&telegramClaimBusy){
+      // Do not start a second provider while the server may be issuing a
+      // Telegram session cookie for the first, already-approved identity.
+      telegramMessage("pwaAuth.telegramPending",false);
+      return;
+    }
     if(provider==="telegram"){
       var url=null;
       try{url=telegramBotUrl(sessionStorage.getItem(TELEGRAM_URL_KEY),telegramPendingId())}catch(_){}
@@ -686,6 +692,9 @@ function authenticate(provider){
         sessionStorage.setItem(TELEGRAM_PENDING_KEY,data.link_request_id);
         sessionStorage.setItem(TELEGRAM_URL_KEY,url);
         setBusy(false);
+        // The launch is asynchronous but remains on this page until Telegram
+        // opens. Restore the back control disabled during the resume POST.
+        global.render(false);
         resumeTelegram();
         location.assign(url);
       });
