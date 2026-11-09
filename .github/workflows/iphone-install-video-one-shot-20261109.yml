@@ -25,6 +25,10 @@ jobs:
           set -euo pipefail
           curl --fail --location --silent --show-error --retry 2 "$VIDEO_SOURCE" -o /tmp/hsk-install-original.mp4
           echo "2921aac471d37b9a4a247b7aec8d1a7d60e35755ccbbfa69b467441e9374b410  /tmp/hsk-install-original.mp4" | sha256sum --check
+      - name: Install ffmpeg on the runner
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
       - name: Produce and verify Safari H.264/AAC faststart MP4
         run: |
           set -euo pipefail
