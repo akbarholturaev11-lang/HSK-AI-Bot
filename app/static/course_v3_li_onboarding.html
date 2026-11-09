@@ -10,8 +10,13 @@
   if(location.pathname.indexOf("/iphone-pwa/")!==0)return;
   var v=JSON.parse(sessionStorage.getItem("hsk_li_auth_handoff_v1")||"null");
   if(v&&["google","telegram"].includes(v.provider)&&
-     Date.now()>=Number(v.at)&&Date.now()-Number(v.at)<=900000)
+     Date.now()>=Number(v.at)&&Date.now()-Number(v.at)<=900000){
     document.documentElement.classList.add("li-auth-resuming");
+    // Display preference only. This does NOT authenticate the session;
+    // the protected bootstrap still verifies the real HttpOnly cookie.
+    if(["uz","ru","tj"].includes(v.lang))
+      window.HSKAI_LI_RETURN_LANG=v.lang;
+  }
 }catch(_){}})();
 </script>
 <title>HSK AI — Li</title>
@@ -382,7 +387,7 @@ body.dark::before{background-color:#FFFFFF;opacity:.55}
   .hsk-character{animation:none!important;transition:none!important}
 }
 </style>
-<link rel="stylesheet" href="/course_v3_data/li-onboarding-install.css?v=20261110-33dfc798d6c9">
+<link rel="stylesheet" href="/course_v3_data/li-onboarding-install.css?v=20261110-717551e1a9d9">
 </head>
 <body>
 <div class="wrap">
@@ -415,7 +420,10 @@ var STREAKS=(window.HSKAI_LI_OPTIONS||{}).STREAKS||[];
 /* Pro perks: three existing promo slides from course-v3.html (adPromoSlides). */
 var PERKS=(window.HSKAI_LI_OPTIONS||{}).PERKS||[];
 var minutes=null,focus=null,streakGoal=null;
-var LANG=(new URLSearchParams(location.search).get("lang")||"uz");if(!T[LANG])LANG="uz";
+var LANG=window.HSKAI_LI_RETURN_LANG||
+  new URLSearchParams(location.search).get("lang")||"uz";
+if(!T[LANG])LANG="uz";
+document.documentElement.lang=LANG;
 var screen="account",trail=[],track="hsk20",level=null,goals=[],lastGoal=null,timer=null,demoStatus=false;
 var QUESTION_FLOW=["version","level","goal","time","focus"];
 function t(k){return T[LANG][k]}
@@ -548,7 +556,7 @@ function back(){
   while((screen==="loadCourse"||screen==="loadLesson")&&trail.length)screen=trail.pop();
   demoStatus=false;render();
 }
-function setLang(v){if(T[v]){LANG=v;render(false)}}
+function setLang(v){if(T[v]){LANG=v;document.documentElement.lang=v;render(false)}}
 function levels(){return track==="hsk30"?LV30:LV20}
 
 var TRIAL_STEPS=["trialIntro","trial1","trial2","trial3","trialDone"];
@@ -764,6 +772,6 @@ if(T[LANG]&&window.HSKCharacters&&typeof window.HSKCharacters.render==="function
 </script>
 <script src="/course_v3_data/hsk-common-i18n.js"></script>
 <script src="/course_v3_data/li-onboarding-install.js?v=20261110-555b78ed86c6"></script>
-<script src="/course_v3_data/li-onboarding-runtime.js?v=20261110-622dd84d0b27" onerror="liCriticalAssetFailed()"></script>
+<script src="/course_v3_data/li-onboarding-runtime.js?v=20261110-3d85772c0235" onerror="liCriticalAssetFailed()"></script>
 </body>
 </html>

@@ -51,7 +51,7 @@ function markAuthHandoff(provider){
   // A browser-only navigation intent, not OAuth proof or a user identity.
   // Canonical PWA auth still verifies the HttpOnly session and CSRF.
   try{sessionStorage.setItem(OAUTH_DRAFT_MARKER,
-    JSON.stringify({at:Date.now(),provider:provider}))}catch(_){}
+    JSON.stringify({at:Date.now(),provider:provider,lang:global.LANG}))}catch(_){}
 }
 function validAuthHandoff(){
   try{
@@ -229,7 +229,11 @@ function restoreDraft(){
     if(!obj||Date.now()-Number(obj.at)>86400000||Number(obj.at)>Date.now())return;
     if(claimedGuest&&obj.step==="signup"&&hostPwa&&actor)
       justResumedGuestRegistration=true;
-    if(["uz","ru","tj"].indexOf(obj.lang)>=0)global.LANG=obj.lang;
+    if(["uz","ru","tj"].indexOf(obj.lang)>=0){
+      global.LANG=obj.lang;
+      document.documentElement.lang=obj.lang;
+      setAuthWaitPhase("waiting");
+    }
     if(obj.track==="hsk20"||obj.track==="hsk30")global.track=obj.track;
     if(obj.level===null||typeof obj.level==="string")global.level=obj.level;
     if(Array.isArray(obj.goals)){
