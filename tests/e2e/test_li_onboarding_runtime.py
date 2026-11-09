@@ -474,6 +474,37 @@ def test_guest_profile_has_telegram_google_without_duplicate_create_account_step
         browser.close()
 
 
+@pytest.mark.parametrize("provider_index", [0, 1])
+def test_google_and_telegram_immediately_show_same_panda_wait_before_server_auth(provider_index):
+    with pw.sync_playwright() as playwright:
+        browser = getattr(playwright, os.environ.get("PWA_E2E_ENGINE", "chromium")).launch()
+        page, captured = _page(browser, pwa=True, guest=True, ios=True)
+        _advance_to_profile(page, guest=True)
+        # Keep the first network step pending: the loading screen must paint
+        # synchronously from the person's actual provider click.
+        page.evaluate("""() => {
+          const original = fetch.bind(window);
+          window.fetch = (path, options) => {
+            if (String(path).includes('/api/v3/pwa/onboarding/li/resume'))
+              return new Promise((resolve) => {
+                window.__releaseProviderWait = () => resolve(original(path, options));
+              });
+            return original(path, options);
+          };
+        }""")
+        page.locator("#stage .provider").nth(provider_index).click()
+        page.locator(".li-auth-wait").wait_for(state="visible")
+        assert page.locator(".li-auth-wait-panda .hsk-character").is_visible()
+        assert page.locator(".li-auth-wait-title").inner_text() == "Kirish kutilmoqda…"
+        assert page.locator(".li-auth-wait-dots i").count() == 3
+        assert page.locator(".li-auth-wait button, .li-auth-wait .li-loading-back").count() == 0
+        assert page.evaluate("document.querySelector('.wrap').inert") is True
+        assert captured["post"] == [] and captured["trial_start"] == []
+        assert captured["oauth"] == []
+        assert not captured["pageerrors"]
+        browser.close()
+
+
 def test_guest_li_telegram_starts_from_original_profile_without_welcome_page():
     with pw.sync_playwright() as playwright:
         browser = getattr(playwright, os.environ.get("PWA_E2E_ENGINE", "chromium")).launch()
@@ -498,9 +529,11 @@ def test_guest_li_telegram_starts_from_original_profile_without_welcome_page():
         assert captured["oauth"] == []
         assert captured["post"] == [] and captured["trial_start"] == []
         assert "/iphone-pwa?login=1" not in captured["navigations"]
-        assert page.locator("#stage .bub").inner_text() == (
-            "Progressingizni yo'qotmang! Keling, sizga profil ochamiz."
-        )
+        # A pending bot approval must not expose the old profile speech
+        # bubble or a second login card in front of the auth waiting panda.
+        assert page.locator(".li-auth-wait").is_visible()
+        assert page.locator(".li-auth-wait-title").inner_text() == "Kirish kutilmoqda…"
+        assert page.evaluate("document.querySelector('.wrap').inert") is True
         page.locator("#stage .status").wait_for(state="visible")
         assert "Telegram botida" in page.locator("#stage .status").inner_text()
         # The bot's approval is the ONLY thing allowed to verify this browser.
@@ -537,6 +570,8 @@ def test_new_user_telegram_claim_resumes_guest_choices_without_welcome_screen():
         page.wait_for_function(
             "() => window.screen==='signup' && sessionStorage.getItem('hskai.pwa.telegram.pending')"
         )
+        assert page.locator(".li-auth-wait").is_visible()
+        assert page.locator(".li-auth-wait-panda .hsk-character").is_visible()
         captured["telegram_state"] = "complete"
         page.evaluate("window.dispatchEvent(new Event('focus'))")
         # The same-tab verified Telegram claim auto-saves the previously
@@ -575,6 +610,8 @@ def test_li_telegram_expired_does_not_sign_in_and_can_retry_without_welcome():
         assert page.evaluate("sessionStorage.getItem('hskai.pwa.telegram.pending')") is None
         assert page.evaluate("sessionStorage.getItem('hsk_li_auth_handoff_v1')") is None
         assert page.locator("#stage .provider").nth(0).is_enabled()
+        assert page.locator(".li-auth-wait").count() == 0
+        assert page.evaluate("document.querySelector('.wrap').inert") is False
         assert captured["auth_state"]["verified"] is False
         assert captured["post"] == []
         assert "/iphone-pwa?login=1" not in captured["navigations"]
@@ -665,6 +702,7 @@ def test_pwa_guest_sees_panda_first_and_oauth_resumes_saved_draft_safely():
         # the same account. No extra profile/Continue action.
         assert len(captured["post"]) == 1
         assert page.evaluate("window.screen") == "end"
+        assert page.locator(".li-auth-wait").count() == 0
         assert captured["post"][0]["goals"] == ["hsk_exam", "travel"]
         assert not captured["pageerrors"]
         browser.close()
@@ -746,6 +784,7 @@ def test_new_iphone_signup_shows_install_video_guide_after_verified_save_only():
         # The mocked OAuth provider redirects in the SAME tab. Do not
         # interrupt that navigation with an extra manual page.goto().
         page.locator(".li-install-card").wait_for(state="visible", timeout=15000)
+        assert page.locator(".li-auth-wait").count() == 0
         assert len(captured["post"]) == 1  # verified auto-save
         assert page.locator(".li-install-hero").is_visible()
         assert page.locator(".li-install-how").inner_text() == "Qanday?"

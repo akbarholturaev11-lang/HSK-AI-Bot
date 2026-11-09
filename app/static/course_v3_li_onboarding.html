@@ -3,6 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<script>
+// Hide the ordinary first-paint skeleton for a recent same-tab provider
+// handoff. This marker never authenticates a person or grants access.
+(function(){try{
+  if(location.pathname.indexOf("/iphone-pwa/")!==0)return;
+  var v=JSON.parse(sessionStorage.getItem("hsk_li_auth_handoff_v1")||"null");
+  if(v&&["google","telegram"].includes(v.provider)&&
+     Date.now()>=Number(v.at)&&Date.now()-Number(v.at)<=900000)
+    document.documentElement.classList.add("li-auth-resuming");
+}catch(_){}})();
+</script>
 <title>HSK AI — Li</title>
 <!-- Live Li onboarding visual shell, built from hash-verified user demo.
      Authentication, data readiness, persistence and trial use a verified
@@ -371,7 +382,7 @@ body.dark::before{background-color:#FFFFFF;opacity:.55}
   .hsk-character{animation:none!important;transition:none!important}
 }
 </style>
-<link rel="stylesheet" href="/course_v3_data/li-onboarding-install.css?v=20261110-83346cc37a7c">
+<link rel="stylesheet" href="/course_v3_data/li-onboarding-install.css?v=20261110-33dfc798d6c9">
 </head>
 <body>
 <div class="wrap">
@@ -384,7 +395,7 @@ body.dark::before{background-color:#FFFFFF;opacity:.55}
 <!-- Display first shell even when the optional character pack or Telegram SDK is delayed. -->
 <script src="/assets/characters/hsk-character-pack.js?v=20261108-97e81d4643b7"></script>
 <script src="/assets/telegram-web-app.js?v=20261019-1"></script>
-<script src="/course_v3_data/hsk-li-onboarding-i18n.js?v=20261110-c7727285bb6c"></script>
+<script src="/course_v3_data/hsk-li-onboarding-i18n.js?v=20261110-1f66873abaf8"></script>
 <script>
 /* Copy in RU / UZ / TJ. Strings marked "existing" are taken from the repo catalogs;
    the rest is new demo copy that must go into the canonical catalogs before real use. */
@@ -735,6 +746,7 @@ function liCriticalAssetFailed(){
             ru:["Проверьте подключение и попробуйте снова.","Повторить"],
             tj:["Пайвастро санҷед ва боз кӯшиш кунед.","Боз кӯшиш кардан"]}[LANG]||
            ["Проверьте подключение и попробуйте снова.","Повторить"];
+  document.documentElement.classList.remove("li-auth-resuming");
   var stage=document.getElementById("stage"),footer=document.getElementById("footer");
   stage.replaceChildren();
   var message=document.createElement("p");
@@ -751,7 +763,7 @@ if(T[LANG]&&window.HSKCharacters&&typeof window.HSKCharacters.render==="function
 }else{liCriticalAssetFailed()}
 </script>
 <script src="/course_v3_data/hsk-common-i18n.js"></script>
-<script src="/course_v3_data/li-onboarding-runtime.js?v=20261110-e7c33a3750bd"></script>
-<script src="/course_v3_data/li-onboarding-install.js?v=20261110-3f1bbc42de44"></script>
+<script src="/course_v3_data/li-onboarding-install.js?v=20261110-555b78ed86c6"></script>
+<script src="/course_v3_data/li-onboarding-runtime.js?v=20261110-622dd84d0b27" onerror="liCriticalAssetFailed()"></script>
 </body>
 </html>
