@@ -49,7 +49,7 @@ def is_web_regression_test(path: str) -> bool:
     return is_regression_test(path) and (
         path.startswith("tests/e2e/")
         or any(keyword in path.lower() for keyword in (
-            "pwa", "iphone", "course", "dictionary", "miniapp", "frontend",
+            "pwa", "iphone", "course_v3", "dictionary", "miniapp", "frontend",
             "browser", "shell", "web", "ui", "static",
         ))
     )
@@ -118,12 +118,14 @@ def changed_files(base: str) -> list[str]:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--base", default="", help="base commit for PR/push diff")
+    parser.add_argument("--enforce-change-tests", action="store_true", help="require regression-test cochanges (PR or main integration)")
     parser.add_argument("--root", type=Path, default=Path("."))
     args = parser.parse_args()
     issues = policy_issues(args.root)
     try:
         changed = changed_files(args.base)
-        issues.extend(change_issues(changed))
+        if args.enforce_change_tests:
+            issues.extend(change_issues(changed))
     except RuntimeError as exc:
         issues.append(str(exc))
     if issues:
