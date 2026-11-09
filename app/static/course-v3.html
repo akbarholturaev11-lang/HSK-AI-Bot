@@ -6788,7 +6788,7 @@ function boundedSectionRequest(promise,controller){
 function ratingLoadingHtml(){
   if(!PWA_COURSE_HOST)return '<div style="padding:60px 0;text-align:center;color:var(--ink3)">…</div>';
   // Independent skeleton: no user, rank, plan or cached entitlement data.
-  return '<div class="hsk-pwa-section-loading" role="status" aria-busy="true" aria-label="'+esc(courseMessage("practice.preparing",LANG==="ru"?"Загрузка":LANG==="tj"?"Бор мешавад":"Yuklanmoqda"))+'">'
+  return '<div class="hsk-pwa-section-loading" role="status" aria-busy="true" aria-label="'+esc(courseMessage("practice.preparing",({ru:"Загрузка",tj:"Бор мешавад",uz:"Yuklanmoqda"}[LANG]||"Загрузка")))+'">'
     +'<div class="hsk-pwa-load-card"><div class="hsk-pwa-load-line"></div><div class="hsk-pwa-load-line short"></div></div>'
     +'<div class="hsk-pwa-load-card"><div class="hsk-pwa-load-line"></div><div class="hsk-pwa-load-line short"></div></div>'
     +'<div class="hsk-pwa-load-card"><div class="hsk-pwa-load-line"></div></div></div>';
@@ -7612,7 +7612,7 @@ function profileAccuracyHtml(){
   // Profile accuracy is an optional, independent request. The canonical map
   // already controls Pro/trial; placeholders never infer subscription state.
   if(PWA_COURSE_HOST&&!PROFILE_DETAIL&&PROFILE_DETAIL_ERROR){
-    var copy=LANG==="ru"?["Не удалось загрузить статистику","Повторить"]:LANG==="tj"?["Омор бор нашуд","Такрор кардан"]:["Statistika yuklanmadi","Qayta urinish"];
+    var copy=({ru:["Не удалось загрузить статистику","Повторить"],tj:["Омор бор нашуд","Такрор кардан"],uz:["Statistika yuklanmadi","Qayta urinish"]}[LANG]||["Не удалось загрузить статистику","Повторить"]);
     return '<div class="hsk-pwa-profile-stats-error" role="status" style="min-height:138px;padding:20px 12px;text-align:center;color:var(--ink2)">'
       +'<p>'+esc(copy[0])+'</p><button type="button" class="sec" onclick="loadProfileDetail()">'+esc(copy[1])+'</button></div>';
   }
@@ -7653,7 +7653,7 @@ function renderProfile(){
     +'<div class="phero">'+(PWA_COURSE_HOST
       ?'<button type="button" class="pav pwa-pav'+(PROF.avatar_key?' art':(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han"))+'" aria-label="'+esc(courseMessage("pwaProfile.edit",""))+'" onclick="App.pwaProfileEdit()">'+(PROF.avatar_key?pwaAvatarArt(PROF.avatar_key):esc(PROF.avatar||"阿"))+'<span class="ed"><i class="ti ti-pencil"></i></span></button>'
       :'<div class="pav'+(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han")+'" onclick="App.avatarEdit()">'+esc(PROF.avatar||"阿")+myAvatarImgHtml()+'<span class="ed"><i class="ti ti-pencil"></i></span></div>')
-    +'<div class="profile-hero-content"><div class="profile-identity-row"><strong class="profile-display-name">'+nickname+'</strong><span class="profile-access-badge'+(paid||trialActive||temporaryActive?' pro':'')+'">'+(paid?'<i class="ti ti-crown"></i> Pro':trialActive?'<i class="ti ti-crown"></i> '+esc(c.trial):temporaryActive?'<i class="ti ti-clock"></i> '+esc(courseMessage("profile.temporaryAccess",LANG==="ru"?"Временный доступ":LANG==="tj"?"Дастрасии муваққатӣ":"Vaqtinchalik ruxsat")):esc(c.free))+'</span></div>'
+    +'<div class="profile-hero-content"><div class="profile-identity-row"><strong class="profile-display-name">'+nickname+'</strong><span class="profile-access-badge'+(paid||trialActive||temporaryActive?' pro':'')+'">'+(paid?'<i class="ti ti-crown"></i> Pro':trialActive?'<i class="ti ti-crown"></i> '+esc(c.trial):temporaryActive?'<i class="ti ti-clock"></i> '+esc(courseMessage("profile.temporaryAccess",({ru:"Временный доступ",tj:"Дастрасии муваққатӣ",uz:"Vaqtinchalik ruxsat"}[LANG]||"Временный доступ"))):esc(c.free))+'</span></div>'
     +(goalLabel()?'<div class="profile-goal-row"><span class="lvb goal"><i class="ti ti-target"></i> '+esc(goalLabel())+'</span></div>':'')+'</div></div>'
     +'<button type="button" class="profile-friends-link" onclick="App.openFriends()"><i class="ti ti-users" aria-hidden="true"></i><span>'+esc(courseMessage("friends",t.friends))+'</span><i class="ti ti-chevron-right" aria-hidden="true"></i></button>'
     +profileAccuracyHtml()
