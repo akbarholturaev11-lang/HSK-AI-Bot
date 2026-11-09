@@ -743,3 +743,96 @@ def test_practice_initial_loading_geometry_matches_six_real_cards(width, motion)
             assert errors == []
         finally:
             browser.close()
+
+
+@pytest.mark.parametrize("width", [320, 390, 430])
+@pytest.mark.parametrize("motion", ["reduce", "no-preference"])
+def test_voice_shell_matches_panda_quota_and_call_layout(width, motion):
+    """Check real Voice static→verified DOM geometry with optional quota held."""
+    from tests.pwa_layout_geometry import assert_reserved_layout, capture_geometry
+
+    payload = json.loads((STATIC / "course_v3_data/hsk1.json").read_text(encoding="utf-8"))
+    payload["authenticated"] = True
+    payload["level"] = "hsk1"
+    payload["user"] = {
+        "name": "Verified", "avatar": "阿", "language": "ru",
+        "is_paid": True, "state": "PRO_ACTIVE", "onboarding_completed": True,
+    }
+    maps, quotas, errors = [], [], []
+
+    def serve(route):
+        path = urlsplit(route.request.url).path
+        if path == "/iphone-pwa/course":
+            route.fulfill(status=200, content_type="text/html", body=pwa_document())
+        elif path == "/api/v3/pwa-auth/session":
+            route.fulfill(status=200, json={"ok":True, "user_id":31, "csrf":"test-csrf"})
+        elif path == "/api/v3/pwa/map":
+            maps.append(route)
+        elif path == "/api/v3/pwa/voice/me":
+            quotas.append(route)
+        elif path.startswith("/api/"):
+            route.fulfill(status=404, json={"ok":False, "error":"not_mocked"})
+        else:
+            file = (STATIC / path.lstrip("/")).resolve()
+            if file.is_file() and file.is_relative_to(STATIC.resolve()):
+                mime, _ = mimetypes.guess_type(file)
+                route.fulfill(path=str(file), content_type=mime or "application/octet-stream")
+            else:
+                route.fulfill(status=404, body="")
+
+    slots = {
+        "title": ("#s-voice .section-title", "#s-voice .section-title"),
+        "header": ("#s-voice .htop", "#s-voice .htop"),
+        "panel": ("#s-voice .voicebox", "#s-voice .voicebox"),
+        "panda": ("#s-voice .voicebox .pd", "#s-voice .voicebox .pd"),
+        "title-line": ("#s-voice .voicebox h3", "#s-voice .voicebox h3"),
+        "description": ("#s-voice .voicebox > p:not(.voice-quota)", "#s-voice .voicebox > p:not(.voice-quota)"),
+        "quota": ("#s-voice .voice-quota", "#s-voice .voice-quota"),
+        "call": ("#s-voice .pwa-voice-call", "#s-voice .voicebox button"),
+        "nav": ("#nav", "#nav"),
+    }
+    def geometry(page, ready=False):
+        return capture_geometry(page, {
+            key: pair[int(ready)] for key, pair in slots.items()
+        })
+
+    with sync_playwright() as playwright:
+        browser = getattr(playwright, os.getenv("PWA_E2E_ENGINE", "chromium")).launch()
+        try:
+            page = browser.new_context(
+                viewport={"width":width, "height":844}, is_mobile=True,
+                reduced_motion=motion,
+            ).new_page()
+            page.set_default_timeout(15000)
+            page.on("pageerror", lambda error: errors.append(str(error)))
+            page.route("**/*", serve)
+            page.goto(ORIGIN + "/iphone-pwa/course?lang=ru", wait_until="domcontentloaded")
+            page.wait_for_function("() => typeof App === 'object' && typeof App.show === 'function'")
+            page.evaluate("App.show('voice')")
+            page.locator("#s-voice .pwa-voice-shell[aria-busy=true]").wait_for()
+            assert len(maps) == 1
+            assert page.locator("#s-voice .voicebox button").count() == 0
+            before = geometry(page)
+            if motion == "reduce":
+                assert page.locator("#s-voice .pwa-voice-panda").evaluate(
+                    "(el) => getComputedStyle(el).animationName"
+                ) == "none"
+            maps.pop().fulfill(status=200, json=payload, headers={
+                "X-HSK-PWA-User-ID":"31", "Cache-Control":"no-store",
+            })
+            page.locator("#s-voice .voicebox button").wait_for()
+            page.wait_for_function("() => typeof renderVoice !== 'undefined' && !!renderVoice._quotaPending")
+            after = geometry(page, ready=True)
+            assert_reserved_layout(before, after)
+            assert page.locator("#s-voice .pwa-voice-shell").count() == 0
+            assert len(quotas) == 1
+            quotas.pop().fulfill(
+                status=200, headers={"X-HSK-PWA-User-ID":"31"},
+                json={"ok":True, "remaining_voice_limit":2},
+            )
+            page.locator("#voice-quota").get_by_text("2", exact=False).wait_for()
+            assert page.locator("#s-course .uban").count() > 0
+            assert errors == []
+        finally:
+            browser.close()
+
