@@ -2,7 +2,7 @@
    verified account/Pro and onboarding continuation are owned by the caller. */
 (function (global) {
   "use strict";
-  var VIDEO = "/assets/onboarding/iphone-home-screen.mp4";
+  var VIDEO = "/assets/onboarding/iphone-home-screen.mp4?v=20261109-3e099a0c0489";
   var PWA_URL = "https://hskai.app/iphone-pwa";
   var openDialog = null;
 
