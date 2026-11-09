@@ -7532,7 +7532,7 @@ function pollSignInLink(pending,deadline){
 }
 
 var PROFILE_DETAIL=null;
-var PROFILE_DETAIL_PENDING=false;
+var PROFILE_DETAIL_PENDING=false,PROFILE_DETAIL_FAILED=false;
 function profileCopy(){
   var legacy=({
     tj:{free:"Ройгон",trial:"Pro · Озмоиш",today:"Имрӯз",overall:"Ҳамагӣ",pro:"Гирифтани Pro",answers:"ҷавоби арзёбишуда",note:"Танҳо ҷавобҳои санҷидашуда · маълумоти кӯҳна метавонад нопурра бошад"},
@@ -7542,16 +7542,16 @@ function profileCopy(){
 }
 function loadProfileDetail(){
   if(PROFILE_DETAIL_PENDING)return;
-  PROFILE_DETAIL_PENDING=true;
+  PROFILE_DETAIL_PENDING=true;PROFILE_DETAIL_FAILED=false;
   _apiGet("/api/miniapp/profile").then(function(r){if(!r.ok)throw Error("profile");return r.json()}).then(function(d){
     if(!d||!d.ok)throw Error("profile");
     PROFILE_DETAIL=d;
-  }).catch(function(){PROFILE_DETAIL=null}).then(function(){
+  }).catch(function(){PROFILE_DETAIL=null;PROFILE_DETAIL_FAILED=true}).then(function(){
     PROFILE_DETAIL_PENDING=false;
     if(SCREEN==="profile")renderProfile();
   });
 }
-function profileAccuracyHtml(){
+function profileAccuracyHtml(){if(PWA_COURSE_HOST&&!PROFILE_DETAIL&&!PROFILE_DETAIL_FAILED){var pc=profileCopy();return '<div class="profile-accuracy" aria-busy="true" role="status"><div style="min-height:118px;display:grid;place-items:center"><div aria-hidden="true" style="width:72px;height:72px;border-radius:50%;background:var(--line);opacity:.7"></div><span>'+esc(pc.overall)+'</span></div><div style="min-height:118px;display:grid;place-items:center"><div aria-hidden="true" style="width:72px;height:72px;border-radius:50%;background:var(--line);opacity:.7"></div><span>'+esc(pc.today)+'</span></div></div>'}
   var c=profileCopy(),data=PROFILE_DETAIL&&PROFILE_DETAIL.stats&&PROFILE_DETAIL.stats.answer_accuracy;
   function item(label,score){
     var pct=score&&Number.isFinite(Number(score.percent))&&score.percent!==null?Math.max(0,Math.min(100,Math.round(Number(score.percent)))):null;
