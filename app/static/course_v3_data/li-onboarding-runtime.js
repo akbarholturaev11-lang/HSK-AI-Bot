@@ -408,6 +408,7 @@ function progress(next){
 }
 function loadingState(state,load,next,afterLoad){
   var current=++requestGeneration;
+  if(hostPwa&&justResumedGuestRegistration&&afterLoad)showAuthWait("waiting");
   progress(state);
   setBusy(true);
   Promise.resolve().then(load).then(function(){
@@ -424,7 +425,7 @@ function loadingState(state,load,next,afterLoad){
     console.warn("[li-onboarding] remote loading",String(reason&&reason.message||"unavailable").slice(0,80));
     if(reason&&reason.message==="hsk30_locked"&&hostPwa&&actor&&global.track==="hsk30")
       showHsk30Locked();
-    else renderError(function(){loadingState(state,load,next)});
+    else renderError(function(){loadingState(state,load,next,afterLoad)});
   });
 }
 function validateGoalData(){
@@ -477,7 +478,7 @@ function saveProfile(){
     if(e&&e.message==="hsk30_locked"&&hostPwa&&actor){showHsk30Locked();return}
     renderError(saveProfile);return
   }
-  if(hostPwa&&justResumedGuestRegistration)setAuthWaitPhase("saving");
+  if(hostPwa&&justResumedGuestRegistration)showAuthWait("saving");
   setBusy(true,"save");
   var path=hostPwa?"/api/v3/pwa/onboarding":"/api/miniapp/onboarding";
   var result,hadResponse=false;
@@ -895,6 +896,7 @@ global.LiRuntime={authenticate:authenticate,
 });
 async function bootstrap(){
   try{
+    if(hostPwa&&(validAuthHandoff()||telegramPendingId()))showAuthWait("waiting");
     if(hostPwa){
       try{await session()}
       catch(error){
