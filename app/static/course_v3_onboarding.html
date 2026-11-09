@@ -109,6 +109,13 @@ button:disabled{cursor:default}
 @keyframes pdBlink{0%,90%,100%{transform:scaleY(0)}94%{transform:scaleY(1)}}
 .pd-twinkle{animation:pdTwinkle 1.1s ease-in-out infinite}
 @keyframes pdTwinkle{0%,100%{opacity:.25;transform:scale(.7)}50%{opacity:1;transform:scale(1.1)}}
+.onb-remote-state{min-height:40vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:22px;text-align:center}
+.onb-remote-state .panda{width:96px;height:104px}
+.onb-remote-state h2{font-size:23px;line-height:1.2;letter-spacing:-.4px}
+.onb-remote-state p{font-size:14px;color:var(--ink2);max-width:310px;line-height:1.5}
+.onb-remote-state .loader{height:5px;width:150px;border-radius:8px;overflow:hidden;background:var(--line)}
+.onb-remote-state .loader i{display:block;width:42%;height:100%;border-radius:8px;background:var(--cin);animation:onbLoading 1.1s ease-in-out infinite alternate}
+@keyframes onbLoading{from{transform:translateX(-100%)}to{transform:translateX(350%)}}
 .stage-enter{animation:stageEnter .24s ease-out both}
 @keyframes stageEnter{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .pd-writing-arm{transform-origin:70px 70px;animation:pdWave 1.2s .2s ease-in-out both}
@@ -137,7 +144,7 @@ button:disabled{cursor:default}
     <button class="cta" id="cta" type="button" onclick="nextBtn()">Boshlash</button>
   </footer>
 </div>
-<script src="/course_v3_data/hsk-course-i18n.js?v=20261021-395d978eaee1"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-3e896a185201"></script>
+<script src="/course_v3_data/hsk-course-i18n.js?v=20261021-7e6386c22f57"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-3e896a185201"></script>
 <script>
 var params=new URLSearchParams(location.search||"");
 var LANG=(params.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru";
@@ -267,6 +274,9 @@ function adoptOnboardingOptionCopy(){
 adoptOnboardingOptionCopy();
 var step=0,track="hsk30",sel="nhsk1",goalSel="hsk_exam",submitting=false,hasSavedTrack=false,userSelectedTrack=false;
 var HSK30_STATUS=null;
+// A real remote request controls this state; never pretend a failed track read
+// means HSK 3.0 is safely unavailable. The retry is rendered in the same page.
+var ONB_TRACK_REMOTE="loading",ONB_TRACK_REQUEST_ID=0;
 var PWA_ONBOARDING_HOST=location.pathname==="/iphone-pwa/onboarding";
 if(PWA_ONBOARDING_HOST)document.documentElement.classList.add("hsk-pwa-browser");
 var PWA_ONBOARDING_SESSION=null,PWA_ONBOARDING_PROMISE=null;
@@ -305,13 +315,13 @@ if(PWA_ONBOARDING_HOST){
     if(document.visibilityState==="visible")verifyPwaReturn();
   });
 }
-function onboardingTrackRequest(){
+function onboardingTrackRequest(signal){
   if(!PWA_ONBOARDING_HOST)return fetch("/api/v3/course-tracks",{
-    headers:{"X-Telegram-Init-Data":INIT_DATA},cache:"no-store"
+    headers:{"X-Telegram-Init-Data":INIT_DATA},cache:"no-store",signal:signal
   });
   return onboardingPwaActor().then(function(){
     return fetch("/api/v3/pwa/course-tracks",{
-      credentials:"same-origin",cache:"no-store",redirect:"error"
+      credentials:"same-origin",cache:"no-store",redirect:"error",signal:signal
     });
   });
 }
@@ -495,12 +505,29 @@ function optionRow(key,title,subtitle,glyph,selected,handler){
 function render(animateStage){
   var st=document.getElementById("stage"),cta=document.getElementById("cta"),backButton=document.getElementById("back");
   st.dataset.step=String(step);
+  // Always restore actionable CTA after an async shell finishes. Previously
+  // the loading screen disabled it and the success render forgot to enable it.
+  if(!submitting && ONB_TRACK_REMOTE==="ready")cta.disabled=false;
   document.getElementById("top").style.display=step===0?"none":"flex";
   document.getElementById("error").hidden=true;
   backButton.innerHTML=icon("back");backButton.setAttribute("aria-label",L.back);
   document.getElementById("footer-note").textContent=L.welcomeNote;
   document.getElementById("footer-note").hidden=step!==0;
-  if(step===0){
+  if(step===1&&ONB_TRACK_REMOTE!=="ready"){
+    var loading=ONB_TRACK_REMOTE==="loading";
+    var failureTitle=ONBOARDING_CATALOG["courseLoadError.title"]||L.progress;
+    var failureBody=ONBOARDING_CATALOG["courseLoadError.body"]||L.saveError;
+    st.innerHTML='<div class="onb-remote-state" role="status" aria-live="polite" aria-busy="'+loading+'">'
+      +'<div class="panda">'+panda("happy")+'</div>'
+      +'<h2>'+(loading?L.progress:failureTitle)+'</h2>'
+      +(loading?'<div class="loader" aria-hidden="true"><i></i></div>':'<p>'+failureBody+'</p>')
+      +'</div>';
+    cta.textContent=loading?L.cont:L.retry;
+    cta.disabled=loading;
+    document.getElementById("progress").setAttribute("aria-valuenow","1");
+    document.getElementById("prog").style.width="33.333%";
+    document.getElementById("step-count").textContent="1 / 3";
+  }else if(step===0){
     st.innerHTML='<div class="welcome"><div class="bub hello">'+L.hello+'</div><div class="big">'+panda("happy")+'</div><h1 id="question" tabindex="-1">HSK AI</h1><p>'+L.boot+'</p></div>';
     cta.textContent=L.start;
   }else{
@@ -549,7 +576,11 @@ function selectChoice(k){
 function pick(k){var choices=levelsForTrack();if(submitting||!choices.some(function(l){return l.k===k}))return;sel=k;saveDraft();selectChoice(k)}
 function pickGoal(k){if(submitting||!GOALS.some(function(o){return o.k===k}))return;goalSel=k;saveDraft();selectChoice(k)}
 function focusQuestion(){var question=document.getElementById("question");if(question)question.focus({preventScroll:true})}
-function nextBtn(){if(submitting)return;if(step<3){step++;render();focusQuestion()}else{finish()}}
+function nextBtn(){
+  if(submitting)return;
+  if(step===1&&ONB_TRACK_REMOTE!=="ready"){if(ONB_TRACK_REMOTE==="error")refreshOnboardingTracks();return}
+  if(step<3){step++;render();focusQuestion()}else{finish()}
+}
 function back(){if(submitting)return;if(step>0){step--;render();focusQuestion()}}
 function setSubmitting(value){
   submitting=value;
@@ -682,12 +713,28 @@ function finish(){
   }else submit();
 }
 trackOnboardingEvent("onboarding_started",{dedupe_key:"started:"+ONB_SESSION_ID,event_id:"started:"+ONB_SESSION_ID});
-if(INIT_DATA||PWA_ONBOARDING_HOST){
-  onboardingTrackRequest()
-    .then(function(r){return r.ok?r.json():null})
+function refreshOnboardingTracks(){
+  if(!INIT_DATA&&!PWA_ONBOARDING_HOST)return;
+  var id=++ONB_TRACK_REQUEST_ID;
+  ONB_TRACK_REMOTE="loading";
+  if(step===1)render(false);
+  var controller=typeof AbortController==="function"?new AbortController():null;
+  var timeout;
+  // Race the actual network against a bounded deadline. AbortController is
+  // optional on older WebViews; absence must never mean endless loading.
+  var deadline=new Promise(function(_,reject){
+    timeout=setTimeout(function(){
+      if(controller)controller.abort();
+      reject(new Error("course_track_timeout"));
+    },12000);
+  });
+  Promise.race([onboardingTrackRequest(controller?controller.signal:undefined),deadline])
+    .then(function(r){if(!r.ok)throw new Error("course_track_http_"+r.status);return r.json()})
     .then(function(d){
+      if(id!==ONB_TRACK_REQUEST_ID)return;
       if(!d||!d.ok)throw new Error("course_track_unavailable");
       HSK30_STATUS=d;
+      ONB_TRACK_REMOTE="ready";
       var access=hsk30Access(),h30Enabled=!!(access&&access.feature_enabled!==false);
       var previousTrack=track;
       if(h30Enabled&&pendingHsk30Draft&&pendingHsk30Draft.restore&&!userSelectedTrack){
@@ -704,22 +751,23 @@ if(INIT_DATA||PWA_ONBOARDING_HOST){
         if(!choices.some(function(l){return l.k===sel}))sel=track==="hsk30"?"nhsk1":"beginner";
       }
       saveDraft();
-      if(step===1){
-        updateTrackSwitcher();
-        if(previousTrack!==track)updateBookPreview();
-      }else{
-        var stage=document.getElementById("stage"),previousScroll=stage.scrollTop;
-        render(false);
-        stage.scrollTop=previousScroll;
-      }
+      // The version step might still be a loading skeleton, not the book DOM.
+      // Render the real screen on success; restoring the old switcher alone
+      // would leave the loading CTA disabled forever.
+      var stage=document.getElementById("stage"),previousScroll=stage.scrollTop;
+      render(false);
+      if(step!==1)stage.scrollTop=previousScroll;
     })
-    .catch(function(){
-      HSK30_STATUS={tracks:{hsk30:{access:{feature_enabled:false,allowed:false},live_levels:[]}},hsk30_unlock:{}};
-      if(track==="hsk30"){track="hsk20";sel="beginner";saveDraft()}
-      if(step===1){updateTrackSwitcher();updateBookPreview()}
-      else{var stage=document.getElementById("stage"),previousScroll=stage.scrollTop;render(false);stage.scrollTop=previousScroll}
-    });
+    .catch(function(error){
+      if(id!==ONB_TRACK_REQUEST_ID)return;
+      ONB_TRACK_REMOTE="error";
+      // Fail closed; don't replace a failed real feature check with fake data.
+      HSK30_STATUS=null;
+      if(step===1)render(false);
+    }).finally(function(){clearTimeout(timeout)});
 }
+if(INIT_DATA||PWA_ONBOARDING_HOST)refreshOnboardingTracks();
+else ONB_TRACK_REMOTE="ready";
 render();
 </script>
 </body>

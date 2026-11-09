@@ -8,7 +8,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 LOCALES = ("uz", "ru", "tj")
-FAMILIES = {"readyPhrases": ("UI", 15), "downloadPage": ("COPY", 83)}
+FAMILIES = {"readyPhrases": ("UI", 15), "downloadPage": ("COPY", 85)}
 
 
 def inline_dictionary(source, name):
@@ -56,7 +56,7 @@ class ReadyPhrasesAndDownloadUIAdoptionTests(unittest.TestCase):
         phrases = (ROOT / "app/static/hsk-gaplar.html").read_text(encoding="utf-8")
         download_page = (ROOT / "app/static/desktop-download.html").read_text(encoding="utf-8")
         download_js = (ROOT / "app/static/desktop-download-page.js").read_text(encoding="utf-8")
-        asset = "hsk-course-i18n.js?v=20261021-395d978eaee1"
+        asset = "hsk-course-i18n.js?v=20261021-7e6386c22f57"
         self.assertLess(phrases.index(asset), phrases.index("var UI ="))
         self.assertIn('PHRASE_UI["readyPhrases."+key]', phrases)
         self.assertIn('UI[LANGUAGE][key]=value', phrases)

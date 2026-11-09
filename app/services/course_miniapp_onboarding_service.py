@@ -10,6 +10,9 @@ from app.services.course_levels import (
 )
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
 from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
+from app.services.onboarding_goal_selection import (
+    normalize_onboarding_goals, normalize_streak_target, read_onboarding_goals,
+)
 from app.services.course_track_service import CourseTrackService
 from app.services.course_trial_service import CourseTrialService
 from app.services.hsk30_feature_service import Hsk30FeatureService
@@ -81,6 +84,9 @@ class CourseMiniAppOnboardingService:
         timezone_offset_minutes: int,
         activation_variant: str,
         onboarding_was_completed: bool,
+        goals: list[str] | None,
+        streak_target_days: int | None,
+        preferred_focus: str | None,
     ) -> dict:
         requested_content_level = self.content_level(requested_level)
         requested_manifest = Hsk30ManifestService.load(requested_content_level)
@@ -91,13 +97,20 @@ class CourseMiniAppOnboardingService:
         if not await track_service.hsk30_feature.is_level_live(requested_content_level):
             return {"ok": False, "error": "hsk30_level_not_live"}
 
+        # Do not let a direct onboarding POST bypass the same payment/Pro
+        # gating enforced by the regular course-track switch endpoint.
+        # HSK 3.0 being published ("live") does not itself grant access.
+        access = await track_service.hsk30_access(user)
+        if not access.allowed:
+            return {"ok": False, "error": access.reason}
+
         current_track = track_service.track_for_level(getattr(user, "level", None))
         if current_track != TRACK_HSK30:
             await track_service.switch(
                 user,
                 target_track=TRACK_HSK30,
                 requested_level=requested_level,
-                allow_locked_hsk30=True,
+                allow_locked_hsk30=False,
             )
 
         progress = await self.engine.progress_repo.get_by_user_id(
@@ -162,6 +175,9 @@ class CourseMiniAppOnboardingService:
             timezone_offset_minutes=timezone_offset_minutes,
             complete_onboarding=True,
             goal_explicit=True,
+            goals=goals,
+            streak_target_days=streak_target_days,
+            preferred_focus=preferred_focus,
         )
         await self.session.commit()
 
@@ -213,6 +229,9 @@ class CourseMiniAppOnboardingService:
             "ok": True,
             "profile": {
                 "goal": profile.goal,
+                "goals": read_onboarding_goals(getattr(profile, "goals_json", None), primary_goal=profile.goal),
+                "streak_target_days": getattr(profile, "streak_target_days", None),
+                "preferred_focus": getattr(profile, "preferred_focus", None),
                 "daily_minutes": profile.daily_minutes,
                 "start_mode": profile.start_mode,
                 "timezone_offset_minutes": profile.timezone_offset_minutes,
@@ -238,6 +257,9 @@ class CourseMiniAppOnboardingService:
         language: str | None = None,
         timezone_offset_minutes: int = 0,
         activation_variant: str | None = None,
+        goals: list[str] | None = None,
+        streak_target_days: int | None = None,
+        preferred_focus: str | None = None,
     ) -> dict:
         level = await self._normalize_request_level(level)
         goal, daily_minutes, start_mode = self.profile_service.validate_preferences(
@@ -245,6 +267,12 @@ class CourseMiniAppOnboardingService:
             daily_minutes=daily_minutes,
             start_mode=start_mode,
         )
+        # Validate every optional field before any track switch, profile
+        # creation or course-progress write. This also covers signed Telegram
+        # payloads that do not pass through PWA's Pydantic validation.
+        normalize_onboarding_goals(goals, primary_goal=goal)
+        normalize_streak_target(streak_target_days)
+        CourseMiniAppProfileService.normalize_preferred_focus(preferred_focus)
         activation_variant = str(activation_variant or "legacy_or_standard").strip()[:32]
 
         user = (await self.user_repo.get_by_actor(telegram_id)
@@ -268,6 +296,9 @@ class CourseMiniAppOnboardingService:
                 timezone_offset_minutes=timezone_offset_minutes,
                 activation_variant=activation_variant,
                 onboarding_was_completed=onboarding_was_completed,
+                goals=goals,
+                streak_target_days=streak_target_days,
+                preferred_focus=preferred_focus,
             )
 
         # Legacy HSK 2.0 path below is intentionally unchanged in behavior.
@@ -344,6 +375,9 @@ class CourseMiniAppOnboardingService:
             timezone_offset_minutes=timezone_offset_minutes,
             complete_onboarding=True,
             goal_explicit=True,
+            goals=goals,
+            streak_target_days=streak_target_days,
+            preferred_focus=preferred_focus,
         )
         await self.session.commit()
 
@@ -393,6 +427,9 @@ class CourseMiniAppOnboardingService:
             "ok": True,
             "profile": {
                 "goal": profile.goal,
+                "goals": read_onboarding_goals(getattr(profile, "goals_json", None), primary_goal=profile.goal),
+                "streak_target_days": getattr(profile, "streak_target_days", None),
+                "preferred_focus": getattr(profile, "preferred_focus", None),
                 "daily_minutes": profile.daily_minutes,
                 "start_mode": profile.start_mode,
                 "timezone_offset_minutes": profile.timezone_offset_minutes,

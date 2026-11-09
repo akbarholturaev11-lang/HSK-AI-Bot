@@ -103,6 +103,35 @@ Har taskdan keyin kunlik log yaratish shart emas.
 
 ---
 
+## Public site / iPhone PWA download invariant
+
+Website UI navigation is **mobile-only** at widths <= 850px: brand, globe-only
+language control, and a three-line menu. Desktop inline navigation must remain
+unchanged. The canonical UZ/RU/TJ public copy is in
+`localization/public_site/content.py` and must be regenerated into
+`app/public_site/content.py` without manual divergence.
+
+The official iOS/iPadOS entry on `/download` is **the browser PWA**
+(`/iphone-pwa`), not a native IPA and not a Telegram Mini App launch.
+Preserve the selected `lang=uz|ru|tj` from the public download page
+through unauthenticated `/iphone-pwa` → `/iphone-pwa/onboarding/li`
+when the Li entry flag is enabled; never let unrelated tokens, arbitrary query
+parameters or legacy referral secrets pass through the handoff. An existing
+verified PWA session keeps its own server account/language authority.
+
+Keep the reviewed iPhone Safari installation video at
+`/assets/onboarding/iphone-home-screen.mp4`, with explicit Share → Add to
+Home Screen instructions and textual fallback. The 2026-11-09 replacement
+shows the official `hskai.app/iphone-pwa` address rather than the obsolete
+Railway URL; verify the committed SHA-256, browser playback and deployment
+before releasing publicly. Android APK social-browser Telegram fallback
+and the optional **verified** iPhone Telegram-referral path are separate
+contracts and must not be silently removed or credited as PWA referrals.
+Update UZ/RU/TJ local copy, metadata/JSON-LD, docs, tests and analytics
+impact together; see `docs/iphone-pwa/SITE_DOWNLOAD_HANDOFF_2026-11-09.md`.
+
+---
+
 ## Permanent analytics integrity and feature coverage
 
 **This is a cross-session rule for Codex, cloud AI and every future feature change**, not

@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import hashlib
 import os
+from urllib.parse import urlencode
 from typing import Literal
 from uuid import UUID
 
@@ -32,6 +33,9 @@ from app.services.pwa_auth_service import (
 )
 
 _NO_STORE = {"Cache-Control": "no-store", "Referrer-Policy": "no-referrer"}
+# A short-lived, HttpOnly navigation hint, not authentication or course access.
+_PWA_LI_RESUME_COOKIE = "__Host-hskai-li-resume"
+_PWA_LI_RESUME_SECONDS = 900
 
 
 def _embeddable_pwa_page_headers(request: Request) -> dict[str, str]:
@@ -187,6 +191,9 @@ class PwaOnboardingFinish(BaseModel):
     model_config = ConfigDict(extra="forbid")
     level: str
     goal: str
+    goals: list[str] | None = Field(default=None, min_length=1, max_length=5)
+    streak_target_days: Literal[7, 14, 30, 50] | None = None
+    preferred_focus: Literal["speaking", "listening", "vocabulary", "grammar", "none"] | None = None
     daily_minutes: int
     start_mode: str
     language: Literal["uz", "ru", "tj"]
@@ -449,9 +456,51 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                     # never treat an unverified cookie as a signed-in learner.
                     pass
                 else:
-                    return RedirectResponse(
-                        "/iphone-pwa/course", status_code=303, headers=_NO_STORE,
+                    # The Li onboarding guest can resume their same-tab draft
+                    # after provider callback, but the server still verifies
+                    # session actor and onboarding status before any save.
+                    resuming_li = request.cookies.get(_PWA_LI_RESUME_COOKIE) == "1"
+                    response = RedirectResponse(
+                        "/iphone-pwa/onboarding/li" if resuming_li else "/iphone-pwa/course",
+                        status_code=303, headers=_NO_STORE,
                     )
+                    if resuming_li:
+                        response.delete_cookie(
+                            _PWA_LI_RESUME_COOKIE, path="/", secure=True,
+                            httponly=True, samesite="lax",
+                        )
+                    return response
+            # Gradual opt-in cutover: the Li panda entry is a public visual
+            # shell, not a login or an entitlement. Returning verified actors
+            # still use the normal authenticated course route above.
+            # The flag defaults OFF in production until release QA is complete.
+            # Telegram login started from Li must show the canonical browser
+            # approval/polling page, not bounce back into Li again. This is
+            # only a presentation escape hatch; session/CSRF rules are unchanged.
+            explicit_login = request.query_params.get("login") == "1"
+            if (not explicit_login and
+                    bool(getattr(settings_obj, "PWA_LI_ONBOARDING_ENTRY_ENABLED", False))):
+                # Preserve only a validated public display locale from /download.
+                # PWA Li starts before account login and reads ?lang directly.
+                requested_lang = request.query_params.get("lang")
+                public_params: list[tuple[str, str]] = []
+                if requested_lang in {"uz", "ru", "tj"}:
+                    public_params.append(("lang", requested_lang))
+                for key in ("utm_source", "utm_medium", "utm_campaign",
+                            "utm_term", "utm_content", "source"):
+                    values = request.query_params.getlist(key)
+                    if len(values) != 1:
+                        continue
+                    value = values[0]
+                    if 0 < len(value) <= 100 and not any(
+                        ord(char) < 32 or ord(char) == 127 for char in value
+                    ):
+                        public_params.append((key, value))
+                suffix = "?" + urlencode(public_params) if public_params else ""
+                return RedirectResponse(
+                    "/iphone-pwa/onboarding/li" + suffix, status_code=303,
+                    headers={**_NO_STORE, "Referrer-Policy": "no-referrer"},
+                )
             return FileResponse(
                 "app/static/iphone-pwa-login.html", media_type="text/html",
                 headers={**_NO_STORE,
@@ -970,11 +1019,82 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                 )
             return _error(exc)
 
+    @router.get("/iphone-pwa/onboarding/li")
+    async def learner_li_onboarding_page(request: Request):
+        """Public visual shell only; never a public account or course API.
+
+        The panda-first entry can display before registration. Every actual
+        account state, track entitlement, trial and course write remains under
+        the existing verified PWA cookie/CSRF routes. No public HTML response
+        contains user profile data, a session token or an entitlement grant.
+        """
+        try:
+            require_pwa_enabled(settings_obj)
+            return FileResponse(
+                "app/static/course_v3_li_onboarding.html",
+                media_type="text/html",
+                headers={
+                    **_NO_STORE, "X-Content-Type-Options": "nosniff",
+                    "X-Frame-Options": "DENY",
+                    "Content-Security-Policy": (
+                        "default-src 'self'; script-src 'self' 'unsafe-inline'; "
+                        "style-src 'self' 'unsafe-inline'; img-src 'self' data:; "
+                        "connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; "
+                        "form-action 'none'"
+                    ),
+                },
+            )
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.post("/api/v3/pwa/onboarding/li/resume")
+    async def learner_li_resume_after_provider_login(request: Request):
+        """Same-origin explicit navigation only, never an anonymous login."""
+        try:
+            require_pwa_enabled(settings_obj)
+            require_same_origin(request, settings_obj)
+            response = JSONResponse({"ok": True}, headers=_NO_STORE)
+            response.set_cookie(
+                _PWA_LI_RESUME_COOKIE, "1", max_age=_PWA_LI_RESUME_SECONDS,
+                path="/", secure=True, httponly=True, samesite="lax",
+            )
+            return response
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.get("/api/v3/pwa/onboarding/public-tracks")
+    async def learner_li_public_track_preview(request: Request):
+        """Expose only read-only HSK feature metadata, not user entitlement.
+
+        Anonymous visitors may view available standards but cannot claim
+        HSK 3.0 access or write profile/lesson/trial information.
+        """
+        try:
+            require_pwa_enabled(settings_obj)
+            from app.services.hsk30_feature_service import Hsk30FeatureService
+            async with session_factory() as db:
+                feature = Hsk30FeatureService(db)
+                enabled = bool(await feature.is_enabled())
+                live_levels = await feature.live_levels() if enabled else []
+            return JSONResponse({
+                "ok": True,
+                "tracks": {
+                    "hsk20": {"track": "hsk20"},
+                    "hsk30": {"track": "hsk30",
+                              "access": {"feature_enabled": enabled, "allowed": False},
+                              "live_levels": list(live_levels)},
+                },
+                "hsk30_unlock": {},
+            }, headers=_NO_STORE)
+        except PwaAuthError as exc:
+            return _error(exc)
+
     @router.get("/api/v3/pwa/onboarding/status")
     async def pwa_onboarding_status(request: Request):
         from sqlalchemy import select
         from app.db.models.course_miniapp_profile import CourseMiniAppProfile
         from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
+        from app.services.onboarding_goal_selection import read_onboarding_goals
 
         try:
             require_pwa_enabled(settings_obj)
@@ -1001,6 +1121,9 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                     "level": str(user.level or "").strip().lower(),
                     "profile": ({
                         "goal": profile.goal,
+                        "goals": read_onboarding_goals(getattr(profile, "goals_json", None), primary_goal=profile.goal),
+                        "streak_target_days": getattr(profile, "streak_target_days", None),
+                        "preferred_focus": getattr(profile, "preferred_focus", None),
                         "daily_minutes": profile.daily_minutes,
                         "start_mode": profile.start_mode,
                     } if completed else None),
@@ -1020,6 +1143,12 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
             if request.headers.get("X-Telegram-Init-Data"):
                 raise PwaAuthError("pwa_request_invalid", status_code=422)
             payload = await _small_json(request, PwaOnboardingFinish, max_bytes=4096)
+            # Validate the ordered primary/goal invariant *before* any course write.
+            from app.services.onboarding_goal_selection import normalize_onboarding_goals
+            try:
+                normalize_onboarding_goals(payload.goals, primary_goal=payload.goal)
+            except ValueError:
+                raise PwaAuthError("pwa_request_invalid", status_code=422) from None
             if (not 1 <= len(payload.level) <= 16 or
                 not 1 <= len(payload.goal) <= 40 or
                 not 1 <= len(payload.start_mode) <= 32 or
@@ -1039,6 +1168,9 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                     start_mode=payload.start_mode, language=payload.language,
                     timezone_offset_minutes=payload.timezone_offset_minutes,
                     activation_variant=payload.activation_variant,
+                    goals=payload.goals,
+                    streak_target_days=payload.streak_target_days,
+                    preferred_focus=payload.preferred_focus,
                 )
             status = (200 if result.get("ok") else
                       409 if result.get("error") == "course_level_change_requires_placement"
@@ -1048,6 +1180,78 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
             return _error(exc)
         except ValueError:
             return _error(PwaAuthError("pwa_request_invalid", status_code=422))
+
+    @router.get("/api/v3/pwa/trial/status")
+    async def pwa_onboarding_trial_status(request: Request):
+        """Read-only eligibility for the verified browser account, never a grant."""
+        from app.services.pro_trial_service import ProTrialService, REASON_NOT_APPLICABLE
+        from app.services.trial_risk_service import TrialRiskService
+        from app.services.entitlements.state import EntitlementState, access_expires_at, resolve_state
+        try:
+            require_pwa_enabled(settings_obj)
+            # Browser cookie owns this read; no Telegram initData is trusted.
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).actor(
+                    request.cookies.get(PWA_SESSION_COOKIE)
+                )
+                verdict = await ProTrialService(db).eligibility(actor)
+                if verdict.get("eligible"):
+                    risk = TrialRiskService(db, settings_obj)
+                    snapshot = await risk.analyze(
+                        actor, client="iphone_pwa", source="pwa_onboarding_status",
+                        remote_ip=request.headers.get("X-Real-IP"),
+                    )
+                    if risk.evaluate(snapshot).denied:
+                        verdict = {**verdict, "eligible": False,
+                                   "reason": REASON_NOT_APPLICABLE}
+                # A lost /trial/start HTTP response must be recoverable by
+                # reading this *verified actor's* current entitlement. A
+                # used trial flag alone is not proof that Pro is now active.
+                active = resolve_state(actor) == EntitlementState.TRIAL_ACTIVE
+                expires = access_expires_at(actor, EntitlementState.TRIAL_ACTIVE) if active else None
+                verdict = {**verdict, "active": active,
+                           "ends_at": expires.isoformat() if expires else None}
+            return JSONResponse({"ok": True, "trial": verdict}, headers=_NO_STORE)
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.post("/api/v3/pwa/trial/start")
+    async def pwa_onboarding_trial_start(request: Request):
+        """One-time trial via canonical service; same-origin cookie+CSRF only."""
+        from app.services.pro_trial_service import ProTrialService, REASON_NOT_APPLICABLE
+        from app.services.trial_risk_service import TrialRiskService
+        try:
+            require_pwa_enabled(settings_obj)
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            async with session_factory() as db:
+                actor, _ = await PwaAuthService(db, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                risk = TrialRiskService(db, settings_obj)
+                snapshot = await risk.analyze(
+                    actor, client="iphone_pwa", source="pwa_onboarding",
+                    remote_ip=request.headers.get("X-Real-IP"),
+                )
+                if risk.evaluate(snapshot).denied:
+                    return JSONResponse(
+                        {"ok": False, "error": REASON_NOT_APPLICABLE},
+                        status_code=409, headers=_NO_STORE,
+                    )
+                result = await ProTrialService(db).start(
+                    actor, source="pwa_onboarding", client="iphone_pwa",
+                )
+                if not result.get("ok"):
+                    return JSONResponse(result, status_code=409, headers=_NO_STORE)
+                await risk.record_started(actor, snapshot)
+                await db.commit()
+            return JSONResponse(result, headers=_NO_STORE)
+        except PwaAuthError as exc:
+            return _error(exc)
 
     @router.get("/iphone-pwa/practice/voice")
     async def learner_voice_page(request: Request):

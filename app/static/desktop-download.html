@@ -9,32 +9,32 @@
       http-equiv="Content-Security-Policy"
       content="default-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'"
     >
-    <title>HSK AI — скачать приложение для Android, macOS и Windows</title>
+    <title>Скачать HSK AI — Android, macOS, Windows и PWA для iPhone</title>
     <meta
       name="description"
-      content="Официальная страница загрузки HSK AI для Android, macOS и Windows. Для iPhone доступны PWA и Telegram Mini App."
+      content="Официальные приложения HSK AI для Android, macOS и Windows. Для iPhone и iPad — PWA с установкой через Safari на экран «Домой»."
     >
     <meta name="robots" content="index,follow">
     <link rel="canonical" href="/download">
     <link rel="alternate" type="text/plain" title="HSK AI AI information" href="/llms.txt">
     <link rel="alternate" hreflang="ru" href="/download">
-    <meta property="og:title" content="HSK AI — скачать приложение для Android, macOS и Windows">
-    <meta property="og:description" content="Официальные приложения HSK AI: Android, Windows, macOS, iPhone PWA и Telegram Mini App.">
+    <meta property="og:title" content="Скачать HSK AI — Android, macOS, Windows и PWA для iPhone">
+    <meta property="og:description" content="Официальные версии HSK AI для Android, Windows и macOS, а также PWA для iPhone и iPad с видеоинструкцией Safari.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="/download">
     <meta property="og:site_name" content="HSK AI">
     <meta property="og:image" content="/assets/hsk-ai-cover.webp">
     <meta property="og:image:alt" content="HSK AI Apps / Download">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="HSK AI — скачать приложение для Android, macOS и Windows">
-    <meta name="twitter:description" content="Скачать HSK AI: доступные версии Android, macOS и Windows и доступ для iPhone.">
+    <meta name="twitter:title" content="Скачать HSK AI — Android, macOS, Windows и PWA для iPhone">
+    <meta name="twitter:description" content="HSK AI: Android, macOS, Windows и устанавливаемая PWA для iPhone/iPad.">
     <meta name="twitter:image" content="/assets/hsk-ai-cover.webp">
     <link rel="icon" href="/assets/hsk-ai-logo-256.png" type="image/png">
-    <link rel="stylesheet" href="/desktop-download-page.css?v=20261107-1">
-    <link rel="stylesheet" href="/public-assets/navigation.css?v=1">
-    <script src="/public-assets/language.js?v=2" defer></script>
-    <script src="/course_v3_data/hsk-course-i18n.js?v=20261021-395d978eaee1" defer></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-3e896a185201"></script>
-    <script src="/desktop-download-page.js?v=20261020-68456605bd71" defer></script>
+    <link rel="stylesheet" href="/desktop-download-page.css?v=20261109-2">
+    <link rel="stylesheet" href="/public-assets/navigation.css?v=2">
+    <script src="/public-assets/language.js?v=4" defer></script>
+    <script src="/course_v3_data/hsk-course-i18n.js?v=20261021-7e6386c22f57" defer></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-3e896a185201"></script>
+    <script src="/desktop-download-page.js?v=20261020-f21b9fedfe49" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#download-card" data-i18n="skip">Перейти к загрузке</a>
@@ -58,6 +58,15 @@
           <button type="button" data-language="uz" aria-pressed="false">O‘zbekcha</button>
         </div>
       </details>
+      <details class="mobile-nav">
+        <summary aria-label="Меню" title="Меню"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 6h16M4 12h16M4 18h16"/></svg></summary>
+        <nav class="mobile-nav-links" aria-label="HSK AI">
+          <a data-site-nav="courses" data-nav-i18n="courses" href="/ru/hsk/">Курсы HSK</a>
+          <a data-site-nav="features" data-nav-i18n="features" href="/ru/guide/features/">Возможности</a>
+          <a data-site-nav="guide" data-nav-i18n="guide" href="/ru/guide/">Руководство</a>
+          <a data-site-nav="download" data-nav-i18n="download" href="/download?lang=ru" aria-current="page">Скачать</a>
+        </nav>
+      </details>
     </header>
 
     <main>
@@ -72,11 +81,7 @@
           download page starts looking like a fake one.
         -->
         <div class="platform-picker" id="platforms" role="group" aria-label="Устройство">
-          <!--
-            iOS has no app of its own yet, and saying so is better than leaving
-            an iPhone owner to wonder. It is kept in the row and leads to the
-            Mini App in Telegram, which works fully there.
-          -->
+          <!-- The iOS choice opens HSK AI PWA in Safari, not the Telegram bot. -->
           <button type="button" data-platform="ios" aria-pressed="false">
             <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
               <rect x="10" y="2" width="12" height="28" rx="3.5"/>
@@ -133,6 +138,7 @@
               <span role="status" aria-live="polite" data-referral-copy-status></span>
             </div>
             <a data-referral-link hidden></a>
+            <a data-referral-ios-link hidden></a>
           </div>
         </section>
       </section>
@@ -166,6 +172,13 @@
             </div>
           </li>
         </ol>
+      </section>
+
+      <section class="ios-install-video" id="ios-install-video" data-ios-install hidden aria-labelledby="ios-video-title">
+        <h2 id="ios-video-title" data-ios-video-title>Установка на экран «Домой»</h2>
+        <video controls playsinline preload="none" data-ios-video aria-label="Установка HSK AI PWA на iPhone">
+          <source src="/assets/onboarding/iphone-home-screen.mp4?v=20261109-3e099a0c0489" type="video/mp4">
+        </video>
       </section>
 
       <section class="security-note" aria-labelledby="security-title" data-platform-security>

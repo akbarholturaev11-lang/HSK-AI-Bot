@@ -62,7 +62,7 @@ class StandaloneQAInitializerTests(unittest.TestCase):
                          [mod.EXPECTED_HEAD])
         self.assertEqual(mod.EXPECTED_BASELINE, "0102_payment_review_preview")
         # This is an explicit reviewed upgrade, not an arbitrary accepted head.
-        self.assertEqual(mod.EXPECTED_HEAD, "0153_pwa_inline_funnel")
+        self.assertEqual(mod.EXPECTED_HEAD, "0154_li_onboarding_choices")
 
     def test_new_or_multiple_heads_stop_before_any_schema_creation_or_stamp(self):
         for heads in ([], ["0110_unreviewed"], [mod.EXPECTED_HEAD, "other_head"]):

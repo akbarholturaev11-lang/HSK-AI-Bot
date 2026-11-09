@@ -190,6 +190,8 @@ def render_page(path, settings_obj, tags=None):
         f'{aria_current if code == lang else ""}>{label}</a>'
         for code, label in LANGUAGE_NAMES.items()
     )
+    nav_aria = {"tg": "Паймоиши асосӣ", "ru": "Основная навигация", "uz": "Asosiy navigatsiya"}[lang]
+    mobile_nav = f'<details class="mobile-nav"><summary aria-label="{esc(labels["more"])}" title="{esc(labels["more"])}"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 6h16M4 12h16M4 18h16"/></svg></summary><nav class="mobile-nav-links" aria-label="{nav_aria}">{nav_items}</nav></details>'
     sections = "".join(
         f'<section class="content-card" id="{"hsk" + str(i + 1) if group == "hsk" and i < 4 else "section" + str(i + 1)}">'
         f'<h2>{esc(title)}</h2><p>{esc(body)}</p></section>'
@@ -221,7 +223,6 @@ def render_page(path, settings_obj, tags=None):
         "ru": {"guide": "РУКОВОДСТВО HSK AI", "default": "HSK 1–4 · ANDROID · DESKTOP · MINI APP"},
         "uz": {"guide": "HSK AI QO‘LLANMASI", "default": "HSK 1–4 · ANDROID · DESKTOP · MINI APP"},
     }[lang]["guide" if str(page.get("translation_group", "")).startswith("guide") else "default"]
-    nav_aria = {"tg": "Паймоиши асосӣ", "ru": "Основная навигация", "uz": "Asosiy navigatsiya"}[lang]
     section_heading = {
         "tg": "Аз куҷо идома диҳед",
         "ru": "Выберите следующий шаг",
@@ -263,11 +264,11 @@ def render_page(path, settings_obj, tags=None):
 <meta name="twitter:image" content="{esc(origin)}/public-assets/social-cover.webp?v=2">
 <link rel="alternate" type="text/plain" title="HSK AI AI information" href="/llms.txt"><link rel="icon" href="/public-assets/logo.png" type="image/png">
 <link rel="stylesheet" href="/public-assets/site.css?v=5">
-<link rel="stylesheet" href="/public-assets/navigation.css?v=1">
-<script src="/public-assets/language.js?v=2" defer></script>
+<link rel="stylesheet" href="/public-assets/navigation.css?v=2">
+<script src="/public-assets/language.js?v=4" defer></script>
 <script type="application/ld+json">{schema}</script></head>
 <body class="public-page {body_kind}"><header class="site-header"><a data-site-nav="home" class="brand" href="{esc(with_attribution(HOME_PATHS[lang], tags))}"><img src="/public-assets/logo.png" width="42" height="42" alt="">HSK AI</a>
-<nav class="main-nav" aria-label="{nav_aria}">{nav_items}</nav><details class="language-switch"><summary aria-label="{esc(language_menu_label)}" title="{esc(language_menu_label)}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c-5 5-5 13 0 18M12 3c5 5 5 13 0 18"/></svg><span>{esc(LANGUAGE_NAMES[lang])}</span></summary><div class="language-menu">{nav}</div></details></header>
+<nav class="main-nav" aria-label="{nav_aria}">{nav_items}</nav><details class="language-switch"><summary aria-label="{esc(language_menu_label)}" title="{esc(language_menu_label)}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c-5 5-5 13 0 18M12 3c5 5 5 13 0 18"/></svg><span>{esc(LANGUAGE_NAMES[lang])}</span></summary><div class="language-menu">{nav}</div></details>{mobile_nav}</header>
 <main><section class="hero"><div class="hero-copy"><p class="eyebrow">{esc(hero_kicker)}</p><h1>{esc(page['h1'])}</h1><p class="intro">{esc(page['intro'])}{pwa_subscription_link}</p><div class="actions">{primary}{secondary}</div></div>
 {product_summary}</section>
 <article class="content-grid">{sections}</article>{related_section}
