@@ -2457,9 +2457,13 @@ async def li_iphone_install_guide_video():
     if not path.is_file():
         return JSONResponse(status_code=404, content={"error": "guide_not_published"},
                             headers={"Cache-Control": "no-store"})
+    # MP4 is already compressed. Global GZipMiddleware must not recompress
+    # 206 byte ranges: their Content-Range offsets refer to the original
+    # file bytes. The public approved 710 KB video can be cached briefly.
     return FileResponse(path, media_type="video/mp4",
                         headers={"X-Content-Type-Options": "nosniff",
-                                 "Cache-Control": "no-cache"})
+                                 "Content-Encoding": "identity",
+                                 "Cache-Control": "public, max-age=3600, no-transform"})
 
 
 @app.get("/course_v3_{page}.html")
