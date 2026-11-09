@@ -2,7 +2,7 @@
   "schema_version": 1,
   "status": "SOURCE_CLASSIFIED_ALL_EXPLICIT_LANG_EQUALS_BRANCH_LINES_NOT_RUNTIME_VALIDATION",
   "source": "app/static/course-v3.html",
-  "source_revision": "595d80221a1be8431106850045ee5416c20eba56",
+  "source_revision": "51b465c214ffde5a2300355ed873deefec45613d",
   "counting_note": "62 unique physical source lines cover all 130 current LANG ==/=== literal-locale predicates in course-v3.html after main integration and the reviewed PWA browser bridge. Multiple predicates per line remain one classification; source review only, not runtime UI verification. Reviewed PWA browser and shake line shifts against the exact current source blob; the reviewed locale predicate inventory remains unchanged.; 2026-11-04 iPhone PWA-only immediate practice loader adds 20 non-locale lines before the last reviewed access predicate; that predicate now resides at source line 8277.; 2026-11-09 performance audit: re-anchored all 62 reviewed LANG branches using exact, unchanged source lines after progressive loading additions; 130 predicates unchanged.; 2026-11-09 PWA profile memory reuse re-reviewed: identical 62 locale predicate source lines, 130 branches unchanged.; 2026-11-09 PWA Voice quota local failure/retry: retained 62 reviewed literal-locale source lines and 130 predicates, re-anchored exact lines after scoped status UX edit.",
   "coverage_note": "Current PWA implementation source only: all LANG ==/=== 'uz'|'ru'|'tj' predicates are classified; added PWA unavailable-practice error fallback is canonical; lesson/grade/Pro/auth unaffected. All other localized source expressions, dynamic content and rendered UI require separate QA.",
   "classifications": [

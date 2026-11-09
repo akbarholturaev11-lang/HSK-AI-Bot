@@ -97,6 +97,14 @@ def test_course_ready_while_rating_referrals_and_profile_stats_load_independentl
             assert page.locator("#s-course .hsk-pwa-boot-shell").count() == 0
             assert not page.locator("#nav").get_attribute("inert")
 
+            # Onboarded PWA startup resolves legacy trial-status locally. It
+            # must not undo lazy Profile mounting while Course is active.
+            page.wait_for_function("() => typeof TRIAL_LOADED !== 'undefined' && TRIAL_LOADED")
+            assert page.locator("#s-profile .profile-display-name").count() == 0
+            assert page.evaluate("refreshCourseProgress()") is True
+            assert page.locator("#s-profile .profile-display-name").count() == 0
+            assert page.locator("#s-course .uban").count() > 0
+
             # PWA first viewport must not synchronously build offscreen
             # Practice cards. The existing App.show() entry point builds
             # them on the first visit, and subsequent locale changes update

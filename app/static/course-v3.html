@@ -2721,7 +2721,7 @@ function refreshCourseProgress(afterWrite){
       if(d.progress)MAP.progress=d.progress;
       if(d.study_setup)adoptStudySetup(d);
       ratingLoaded=false;
-      renderCourse();renderProfile();
+      renderCourse();if(!PWA_COURSE_HOST||SCREEN==="profile")renderProfile();
       return true;
     }).catch(function(){return false}).then(function(updated){
       clearTimeout(timer);PROGRESS_REFRESH=null;
@@ -9672,7 +9672,7 @@ var finishHskLaunchSplash=(function(){
       /* Onboardingdan keyin Pro/trial taklifi chiqmaydi. Limit birinchi marta
          haqiqatan tugagach mavjud limit oqimi taklifni ko'rsatadi. Bu yerda
          trial holati faqat profil kartasini to'g'ri chizish uchun olinadi. */
-      trialFetchStatus().then(function(){try{renderProfile()}catch(e){}});
+      trialFetchStatus().then(function(){if(!PWA_COURSE_HOST||SCREEN==="profile")try{renderProfile()}catch(e){}});
     }
     /* Avvalgi kunlarda dars qilgan, lekin savolga hali javob bermagan
        o'quvchi (masalan boshqa qurilmada tugatgan) — xarita chizilgach
