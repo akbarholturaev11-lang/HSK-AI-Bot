@@ -2362,8 +2362,24 @@ function _apiGet(url,opts){
   if(!mapped&&/^\/api\/v3\/lesson\/content\/(?:hsk[1-4]|nhsk[1-3])\/[1-9][0-9]*$/.test(parsed.pathname))
     mapped=parsed.pathname.replace("/api/v3/lesson/content/","/api/v3/pwa/lesson/content/");
   if(!mapped)return Promise.reject(new Error("pwa_route_unavailable"));
-  return pwaCourseActor().then(function(){
-    return fetch(mapped+parsed.search,{credentials:"same-origin",cache:"no-store",redirect:"error",signal:opts&&opts.signal});
+  return pwaCourseActor().then(function(actor){
+    return fetch(mapped+parsed.search,{credentials:"same-origin",cache:"no-store",redirect:"error",signal:opts&&opts.signal})
+      .then(function(response){
+        // Read-only profile/referrals accept a cookie (not CSRF), so a login in
+        // another tab could switch the HTTP actor while this PWA tab still
+        // holds the prior map. Never combine the two accounts' data.
+        if(mapped==="/api/v3/pwa/profile"||mapped==="/api/v3/pwa/invite"){
+          var owner=response.headers.get("X-HSK-PWA-User-ID");
+          if(response.status===401||response.ok&&
+             (!PWA_COURSE_USER_ID||String(actor.user_id)!==String(PWA_COURSE_USER_ID)||
+              owner!==String(PWA_COURSE_USER_ID))){
+            PWA_COURSE_ACTOR_PROMISE=null;
+            location.replace("/iphone-pwa");
+            throw new Error("pwa_actor_changed");
+          }
+        }
+        return response;
+      });
   });
 }
 function _apiPost(url,body,opts){
