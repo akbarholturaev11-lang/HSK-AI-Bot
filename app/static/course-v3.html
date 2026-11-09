@@ -7590,8 +7590,7 @@ function profileCopy(){
   })[LANG]||{};return {free:courseMessage("profile.free",legacy.free),trial:courseMessage("profile.trial",legacy.trial),today:courseMessage("profile.today",legacy.today),overall:courseMessage("profile.overall",legacy.overall),pro:courseMessage("profile.pro",legacy.pro),answers:courseMessage("profile.answers",legacy.answers),note:courseMessage("profile.note",legacy.note)};
 }
 function loadProfileDetail(){
-  // Reuse a recent, session-verified PWA profile result; still revalidate after 30s.
-  if(PROFILE_DETAIL_PENDING||(PWA_COURSE_HOST&&PROFILE_DETAIL&&Date.now()-PROFILE_DETAIL_LOADED_AT<30000))return;
+  if(PROFILE_DETAIL_PENDING||(PWA_COURSE_HOST&&PROFILE_DETAIL&&Date.now()-PROFILE_DETAIL_LOADED_AT<30000))return; // verified PWA result, revalidate after 30s
   if(PROFILE_DETAIL_SETTLED&&!PROFILE_DETAIL){
     PROFILE_DETAIL_SETTLED=false;PROFILE_DETAIL_ERROR=false;
     if(SCREEN==="profile")renderProfile();
