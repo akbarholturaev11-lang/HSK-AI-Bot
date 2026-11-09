@@ -109,6 +109,21 @@ class TrialReminderService:
                 User.pro_trial_ends_at > now,
                 or_(last_day, two_day),
                 User.pro_trial_revoked_at.is_(None),
+                User.status != "blocked",
+                # Applying LIMIT before checking entitlement could repeatedly
+                # select 200 paid or referral/bonus users with stale trial dates,
+                # permanently starving genuinely due trials behind them.
+                # Mirror the canonical PAID/TEMP precedence at SQL selection;
+                # a pending receipt + active trial must remain eligible.
+                ~and_(
+                    User.status == "active",
+                    User.end_date.is_not(None),
+                    User.end_date > now,
+                    or_(
+                        User.payment_status == "approved",
+                        User.payment_preview_payment_id.is_(None),
+                    ),
+                ),
             )
             .order_by(User.pro_trial_ends_at.asc(), User.id.asc())
             .limit(MAX_BATCH)
