@@ -52,6 +52,8 @@
   var displayedPaymentId = null;
   var pushState = null;
   var pushBusy = false;
+  // Never show unknown or previous-session push preferences while verifying.
+  var pushStatusPending = false;
   var pushRegistrationPromise = null;
 
   // These strings are already authored in the shared UZ/RU/TJ catalogs.
@@ -347,7 +349,8 @@
     if (!node) return;
     var t = labels();
     // The row shows a short state. Install instructions stay in the push view.
-    var value = !pushSupported() ? t.pushOff
+    var value = pushStatusPending && pushSupported() ? t.loading
+      : !pushSupported() ? t.pushOff
       : !pushState || !pushState.enabled ? t.pushOff
         : Notification.permission === "denied" ? t.pushBlocked
           : pushState.subscribed ? t.pushEnabled : t.pushOff;
@@ -359,13 +362,16 @@
     var enabled = !!(pushState && pushState.enabled);
     var denied = supported && Notification.permission === "denied";
     var subscribed = !!(pushState && pushState.subscribed);
+    var waiting = pushStatusPending && supported;
     pushControl.hidden = activeMode !== "push";
     pushStatus.textContent = !supported ? t.pushInstallRequired
-      : !enabled ? t.pushOff : denied && !subscribed ? t.pushBlocked
-        : subscribed ? t.pushEnabled : "";
-    pushButton.hidden = !supported || !enabled || (denied && !subscribed);
-    pushButton.disabled = pushBusy;
-    pushButton.textContent = subscribed ? t.pushDisable : t.pushEnable;
+      : waiting ? t.loading
+        : !enabled ? t.pushOff : denied && !subscribed ? t.pushBlocked
+          : subscribed ? t.pushEnabled : "";
+    // Keep the 48px action slot present and inert while the state is unknown.
+    pushButton.hidden = !supported || (!waiting && (!enabled || (denied && !subscribed)));
+    pushButton.disabled = pushBusy || waiting;
+    pushButton.textContent = waiting ? t.loading : subscribed ? t.pushDisable : t.pushEnable;
     updateSettingsPushStatus();
   }
   async function preparePushRegistration() {
@@ -500,10 +506,21 @@
   async function openPushSettings() {
     urgentPending = null;
     ++checkGeneration;
+    // No transient "Off" or old user's subscription while cookie proof is pending.
+    pushState = null;
+    pushStatusPending = true;
     openMode("push");
     render();
+    var failed = false;
     try { await refreshPushStatus(); }
-    catch (_) { if (activeMode === "push") pushStatus.textContent = labels().pushError; }
+    catch (_) { failed = true; }
+    finally {
+      pushStatusPending = false;
+      if (activeMode === "push") {
+        paintPushControl();
+        if (failed) pushStatus.textContent = labels().pushError;
+      }
+    }
   }
   function clearAppBadge() {
     try { if (navigator.clearAppBadge) navigator.clearAppBadge().catch(function () {}); } catch (_) {}

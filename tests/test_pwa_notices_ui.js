@@ -284,6 +284,25 @@ async function main(){
   assert(!androidPwa.requests.some((request)=>request.url.endsWith("/push/status")),
     "installed Android PWA does not request Apple push configuration");
 
+  // Existing Push Settings must show a stable, disabled loading action
+  // until the cookie owner and server state are both verified.
+  const loadingPush = harness({standalone:true,holdPushStatus:true});
+  const loadingOpen = loadingPush.window.HskPwaInbox.openPushSettings();
+  await new Promise(resolve=>setImmediate(resolve));
+  const loadingView = loadingPush.root();
+  assert.equal(loadingView.querySelector("#hsk-pwa-push-status").textContent,"subscriptionPage.loading",
+    "unverified push state is never mislabeled as switched Off");
+  const loadingButton = loadingView.querySelector("#hsk-pwa-push-action");
+  assert.equal(loadingButton.hidden,false,"reserve the eventual Push CTA geometry");
+  assert.equal(loadingButton.disabled,true,"a pending owner/state check must not allow writes");
+  assert.equal(loadingButton.textContent,"subscriptionPage.loading");
+  assert.equal(loadingPush.requests.filter(x=>x.url.endsWith("/push/status")).length,1);
+  loadingPush.releaseHeldPushStatus();
+  await loadingOpen;
+  assert.equal(loadingButton.disabled,false);
+  assert.equal(loadingButton.textContent,"pwaPush.enable",
+    "only the verified server state enables the existing Push action");
+
   const installed = harness({standalone:true});
   await installed.window.HskPwaInbox.open();
   await new Promise(resolve=>setImmediate(resolve));
