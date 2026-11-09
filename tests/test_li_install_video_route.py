@@ -28,18 +28,23 @@ class SafariInstallVideoRouteTests(unittest.IsolatedAsyncioTestCase):
                 with self.subTest(start=start):
                     response = await client.get(
                         "/assets/onboarding/iphone-home-screen.mp4",
-                        headers={"Range": f"bytes={start}-{end}"},
+                        headers={"Range": f"bytes={start}-{end}", "Accept-Encoding": "gzip"},
                     )
                     self.assertEqual(response.status_code, 206, response.text[:200])
                     self.assertTrue(response.headers["content-type"].startswith("video/mp4"))
                     self.assertEqual(response.headers["accept-ranges"], "bytes")
+                    # Starlette's global gzip middleware must not transform
+                    # compressed MP4 range bytes, even for gzip-capable peers.
+                    self.assertEqual(response.headers.get("content-encoding"), "identity")
+                    self.assertIn("no-transform", response.headers["cache-control"])
                     self.assertEqual(
                         response.headers["content-range"],
                         f"bytes {start}-{end}/{len(video)}",
                     )
                     self.assertEqual(response.content, video[start:end + 1])
-            entire = await client.get("/assets/onboarding/iphone-home-screen.mp4")
+            entire = await client.get("/assets/onboarding/iphone-home-screen.mp4", headers={"Accept-Encoding":"gzip"})
             self.assertEqual(entire.status_code, 200)
             self.assertEqual(len(entire.content), 709956)
             self.assertEqual(entire.content, video)
             self.assertEqual(entire.headers.get("x-content-type-options"), "nosniff")
+            self.assertEqual(entire.headers.get("content-encoding"), "identity")
