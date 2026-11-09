@@ -50,8 +50,10 @@ function harness({path = "/iphone-pwa/course", href = null, action = null, accou
                   alreadyBusy = false, feedbackOpen = false, inputFocused = false,
                   splashReady = true, sharedStorage = new Map(), standalone = false,
                   vendor = "Apple Computer, Inc.",
-                  pushEnabled = true, initiallySubscribed = false, permission = "default"} = {}) {
-  let splashDone = splashReady, currentAction = action;
+                  pushEnabled = true, initiallySubscribed = false, permission = "default",
+                  holdPushStatus = false} = {}) {
+  let splashDone = splashReady, currentAction = action, activeAccountId = accountId;
+  const heldPushStatus = [];
   const timers = [], callbacks = {}, requests = [], navigation = [], pushCalls = [];
   let root = null, redirects = 0, serverSubscribed = initiallySubscribed, localSubscription = null;
   let notificationPermission = permission, permissionFetchCount = null;
@@ -103,9 +105,9 @@ function harness({path = "/iphone-pwa/course", href = null, action = null, accou
     assert.equal(options.cache, "no-store");
     const response = url.endsWith("/push/status")
       ? {ok:true, enabled:pushEnabled, public_key:pushEnabled?key:null, subscribed:serverSubscribed,
-         subscription_id:serverSubscribed?"11111111-1111-4111-8111-111111111111":null, user_id:accountId}
+         subscription_id:serverSubscribed?"11111111-1111-4111-8111-111111111111":null, user_id:activeAccountId}
       : url.endsWith("/session")
-      ? {ok:true, user_id:accountId}
+      ? {ok:true, user_id:activeAccountId}
       : url.endsWith("/account-notices")
         ? {ok:true, notices:[{id:2, title:"Account notice", body:"Stored on server", action:"course"}],
            payment_reviews:[{payment_id:30,status:"approved",plan_type:"1_month"},
@@ -114,10 +116,14 @@ function harness({path = "/iphone-pwa/course", href = null, action = null, accou
         : {ok:true, notifications:[{id:1,title:"Lesson available",body:"HSK 3",action:"course"}]};
     if (url.endsWith("/push/subscribe")) serverSubscribed = true;
     if (url.endsWith("/push/revoke")) serverSubscribed = false;
-    return {ok:true,json:async()=>response};
+    const result = {ok:true,json:async()=>response};
+    if (url.endsWith("/push/status") && holdPushStatus) {
+      return new Promise(resolve => heldPushStatus.push(() => resolve(result)));
+    }
+    return result;
   };
   vm.runInNewContext(source, {
-    document, window, location, history, URL, navigator, Notification, atob, Uint8Array, fetch, pwaCourseActor: async()=>({user_id:accountId,csrf:"csrf-token"}),
+    document, window, location, history, URL, navigator, Notification, atob, Uint8Array, fetch, pwaCourseActor: async()=>({user_id:activeAccountId,csrf:"csrf-token"}),
     courseMessage: (key) => key, commonMessage: (key) => key,
     LANG:"uz", App:window.App, Set, Number, Promise, Array, String,
     encodeURIComponent, localStorage:{
@@ -129,6 +135,8 @@ function harness({path = "/iphone-pwa/course", href = null, action = null, accou
     pushCalls, historyCalls, permissionFetchCount:()=>permissionFetchCount,
     setSplashDone(){splashDone = true;},
     setAction(value){currentAction = value;},
+    switchAccount(value){activeAccountId = value;},
+    releaseHeldPushStatus(){assert.equal(heldPushStatus.length,1);heldPushStatus.pop()();},
     async flushTimers(){for(const fn of timers.splice(0))await fn();},
     async loadAndTick(){
       assert.equal(typeof callbacks.load, "function");
@@ -317,6 +325,19 @@ async function main(){
   assert(installed.requests.some((request)=>request.url.endsWith("/push/revoke")&&request.options.headers["X-HSK-PWA-CSRF"]==="csrf-token"),
     "disable revokes the server-owned device subscription with CSRF");
   assert(installed.pushCalls.includes("unsubscribe"),"disable also removes the local browser subscription");
+
+  // Push settings must not display a stale account after a slow GET.
+  const switched = harness({standalone:true,holdPushStatus:true});
+  const pendingStatus = switched.window.HskPwaInbox.refreshPushStatus();
+  await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(switched.requests.filter(x=>x.url.endsWith("/push/status")).length,1);
+  switched.switchAccount(8);
+  switched.releaseHeldPushStatus();
+  await assert.rejects(pendingStatus,/pwa_actor_changed/);
+  assert(switched.navigation.includes("replace:/iphone-pwa"),
+    "late Push status must redirect when the cookie changed owners");
+  assert.equal(switched.window.HskPwaInbox.pushInfo().enabled,false,
+    "Push preferences from previous owner must never be displayed");
 
   const denied = harness({standalone:true,permission:"denied"});
   await denied.window.HskPwaInbox.open();

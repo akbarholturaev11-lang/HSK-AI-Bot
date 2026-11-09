@@ -400,8 +400,19 @@
       credentials: "same-origin", cache: "no-store", redirect: "error"
     });
     var data = await response.json();
-    if (!response.ok || !data || data.ok !== true || actorId(actor) !== actorId(data)) {
+    if (!response.ok || !data || data.ok !== true || verifiedOwner !== actorId(data)) {
       throw new Error("pwa_push_status_unavailable");
+    }
+    // An account can change while the status GET is in flight. As with the
+    // Inbox feeds, never render that old account's Push configuration.
+    var sessionResponse = await fetch("/api/v3/pwa-auth/session", {
+      credentials:"same-origin", cache:"no-store", redirect:"error"
+    });
+    if (!sessionResponse.ok || actorId(await sessionResponse.json()) !== verifiedOwner) {
+      pushState = null;
+      close();
+      location.replace("/iphone-pwa");
+      throw new Error("pwa_actor_changed");
     }
     pushState = data;
     paintPushControl();
