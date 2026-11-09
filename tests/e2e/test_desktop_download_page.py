@@ -438,6 +438,7 @@ def test_mobile_site_header_and_ios_pwa_video_without_desktop_nav_regression(des
     playwright.expect(page.locator(".site-header .main-nav")).to_be_hidden()
     playwright.expect(page.locator(".site-header .mobile-nav")).to_be_visible()
     playwright.expect(page.locator(".site-header .language-switch summary span")).to_be_hidden()
+    playwright.expect(page.locator(".site-header .mobile-nav summary")).to_have_attribute("aria-label", "Меню")
     page.locator(".site-header .mobile-nav summary").click()
     playwright.expect(page.locator(".site-header .mobile-nav-links a")).to_have_count(4)
     page.locator(".site-header .language-switch summary").click()
@@ -487,5 +488,8 @@ def test_iphone_pwa_link_keeps_selected_locale_and_allowlisted_attribution(deskt
     page.locator('.site-header .language-switch summary').click()
     page.locator('[data-language="ru"]').click()
     assert page.locator('[data-download-button]').get_attribute('href') == "/iphone-pwa?lang=ru&utm_source=instagram"
+    page.locator('.site-header .language-switch summary').click()
+    page.locator('[data-language="uz"]').click()
+    playwright.expect(page.locator(".site-header .mobile-nav summary")).to_have_attribute("aria-label", "Menyu")
     assert errors == []
     context.close()

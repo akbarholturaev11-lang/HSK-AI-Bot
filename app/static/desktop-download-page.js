@@ -541,6 +541,12 @@
       if (value) node.textContent = value;
     });
     setText("[data-site-selected-lang]", navigationCopy.language);
+    var mobileMenu = document.querySelector(".site-header .mobile-nav summary");
+    if (mobileMenu) {
+      var menuLabel = {uz: "Menyu", ru: "Меню", tj: "Меню"}[state.language];
+      mobileMenu.setAttribute("aria-label", menuLabel);
+      mobileMenu.setAttribute("title", menuLabel);
+    }
     if (window.HSKSiteLanguage) window.HSKSiteLanguage.set(state.language);
     document.querySelectorAll("[data-i18n]").forEach(function (node) {
       var value = localized[node.dataset.i18n];
