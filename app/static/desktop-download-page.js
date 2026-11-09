@@ -4,8 +4,8 @@
   var STATUS_ENDPOINT = "/api/v3/apps/public-status";
   var params = new URLSearchParams(window.location.search || "");
   var supportedPlatforms = ["ios", "macos", "android", "windows"];
-  // iOS has no build of its own. It is offered because an iPhone owner
-  // deserves an answer, and the answer is the Mini App inside Telegram.
+  // The iPhone choice opens the existing PWA, never the Telegram bot.
+  var PWA_URL = "/iphone-pwa";
   var BOT_URL = "https://t.me/darsi_chini_bot";
   var socialApkFallbackArmed = false;
 
@@ -43,6 +43,8 @@
     uz: {
       referralAndroidTitle: "Taklif bilan hisob ochish",
       referralAndroidBody: "APK’ni o‘rnating. Yangi hisob ochishdan oldin taklif kodini kiriting, so‘ng Google, Apple yoki Telegram bilan kiring. Taklif ilovadagi kirish va qurilma tekshiruvidan keyin hisoblanadi.",
+      referralAndroidButton: "Telegram orqali davom etish",
+      referralAndroidStatus: "Botda Start ni bosing — APK fayli chatga yuboriladi.",
       referralIosTitle: "Taklif qanday hisoblanadi?",
       referralIosBody: "Telegram botini oching va unda 2 ta AI savoliga javob oling. Shunda taklif hisoblanadi.",
       referralOtherTitle: "Chegirma taklifini telefonda oching",
@@ -53,18 +55,18 @@
       referralCopy: "Kodni nusxalash",
       referralOpen: "O‘rnatilgan ilovada ochish",
       referralManual: "Kodni belgilang va qo‘lda nusxalang.",
-      iosSecurityTitle: "Hech narsa o‘rnatilmaydi",
+      iosSecurityTitle: "Bosh ekranga o‘rnatish",
       androidSecurityTitle: "O‘rnatishda ogohlantirish chiqishi mumkin",
       macSecurityTitle: "Birinchi ochishda ogohlantirish chiqishi mumkin",
       windowsSecurityTitle: "Birinchi ochishda ogohlantirish chiqishi mumkin",
       iosTitle: "iPhone va iPad uchun",
-      iosDownload: "Telegramda ochish",
-      iosStatus: "iOS uchun alohida ilova hozircha yo‘q — Telegram ichidagi Mini App to‘liq ishlaydi.",
-      iosSecurity: "Mini App Telegram ichida ochiladi. Hech narsa o‘rnatilmaydi, hisobingiz va progressingiz o‘sha yerda qoladi.",
+      iosDownload: "HSK AI PWA’ni ochish",
+      iosStatus: "iPhone va iPad uchun HSK AI PWA mavjud. Uni Safari’da ochib, bosh ekranga qo‘shing.",
+      iosSecurity: "PWA Safari orqali App Store’siz qo‘shiladi. Kurs, progress va Pro uchun avvalgi HSK AI hisobingizga kiring.",
       iosSteps: [
-        ["Telegramni oching", "Yuqoridagi tugma botni ochadi."],
-        ["Kursni boshlang", "Mini App darslar, mashq va AI yordamchini to‘liq beradi."],
-        ["Alohida ilova kutmang", "iOS uchun ilova tayyor bo‘lganda shu sahifada paydo bo‘ladi."],
+        ["PWA’ni Safari’da oching", "Yuqoridagi tugmani bosing. Ichki brauzerda bo‘lsangiz, hskai.app/iphone-pwa manzilini Safari’da oching."],
+        ["Bosh ekranga qo‘shing", "Safari’da «Ulashish» → «Bosh ekranga qo‘shish» → «Qo‘shish» ni tanlang."],
+        ["HSK AI’ga kiring", "Bosh ekrandagi ikonka orqali ilovani oching va oldingi hisobingizga bog‘langan Google yoki Telegram orqali kiring."],
       ],
       androidTitle: "Android uchun HSK AI",
       androidDownload: "APK yuklab olish",
@@ -177,6 +179,8 @@
     ru: {
       referralAndroidTitle: "Создайте аккаунт по приглашению",
       referralAndroidBody: "Установите APK. Перед созданием аккаунта введите код приглашения, затем войдите через Google, Apple или Telegram. Приглашение засчитается после входа и проверки устройства в приложении.",
+      referralAndroidButton: "Продолжить в Telegram",
+      referralAndroidStatus: "Нажмите Start в боте — APK файл придёт в чат.",
       referralIosTitle: "Как засчитывается приглашение",
       referralIosBody: "Откройте Telegram-бота и получите ответы на 2 вопроса к AI. После этого приглашение засчитается.",
       referralOtherTitle: "Откройте приглашение на телефоне",
@@ -187,18 +191,18 @@
       referralCopy: "Скопировать код",
       referralOpen: "Открыть установленное приложение",
       referralManual: "Выделите и скопируйте код вручную.",
-      iosSecurityTitle: "Ничего устанавливать не нужно",
+      iosSecurityTitle: "Установка на экран «Домой»",
       androidSecurityTitle: "При установке может появиться предупреждение",
       macSecurityTitle: "При первом запуске может появиться предупреждение",
       windowsSecurityTitle: "При первом запуске может появиться предупреждение",
       iosTitle: "Для iPhone и iPad",
-      iosDownload: "Открыть в Telegram",
-      iosStatus: "Отдельного приложения для iOS пока нет — Mini App в Telegram работает полностью.",
-      iosSecurity: "Mini App открывается внутри Telegram. Ничего устанавливать не нужно, аккаунт и прогресс остаются там же.",
+      iosDownload: "Открыть HSK AI PWA",
+      iosStatus: "Для iPhone и iPad доступна HSK AI PWA. Откройте её в Safari и добавьте на экран «Домой».",
+      iosSecurity: "Добавьте PWA через Safari без App Store. Для прежнего курса, прогресса и Pro войдите в тот же аккаунт HSK AI.",
       iosSteps: [
-        ["Откройте Telegram", "Кнопка выше открывает бота."],
-        ["Начните курс", "Mini App даёт уроки, практику и AI-помощника полностью."],
-        ["Отдельного приложения ждать не нужно", "Когда приложение для iOS будет готово, оно появится на этой странице."],
+        ["Откройте PWA в Safari", "Нажмите кнопку выше. Если вы во встроенном браузере, откройте hskai.app/iphone-pwa в Safari."],
+        ["Добавьте на экран «Домой»", "В Safari нажмите «Поделиться» → «На экран «Домой»» → «Добавить»."],
+        ["Войдите в HSK AI", "Откройте иконку на экране «Домой» и войдите через Google или привязанный Telegram прежнего аккаунта."],
       ],
       androidTitle: "HSK AI для Android",
       androidDownload: "Скачать APK",
@@ -311,6 +315,8 @@
     tj: {
       referralAndroidTitle: "Ҳисобро бо даъват созед",
       referralAndroidBody: "APK-ро насб кунед. Пеш аз сохтани ҳисоб рамзи даъватро ворид карда, бо Google, Apple ё Telegram ворид шавед. Даъват пас аз воридшавӣ ва санҷиши дастгоҳ дар барнома ҳисоб мешавад.",
+      referralAndroidButton: "Идома дар Telegram",
+      referralAndroidStatus: "Дар бот Start-ро пахш кунед — файли APK ба чат меояд.",
       referralIosTitle: "Даъват чӣ гуна ҳисоб мешавад?",
       referralIosBody: "Боти Telegram-ро кушоед ва ба 2 савол аз AI ҷавоб гиред. Баъд даъват ҳисоб мешавад.",
       referralOtherTitle: "Даъватро дар телефон кушоед",
@@ -321,18 +327,18 @@
       referralCopy: "Нусхаи рамз",
       referralOpen: "Дар барномаи насбшуда кушодан",
       referralManual: "Рамзро интихоб карда дастӣ нусха гиред.",
-      iosSecurityTitle: "Ҳеҷ чиз насб намешавад",
+      iosSecurityTitle: "Насб ба экрани асосӣ",
       androidSecurityTitle: "Ҳангоми насб огоҳӣ пайдо шуда метавонад",
       macSecurityTitle: "Ҳангоми кушодани аввал огоҳӣ пайдо шуда метавонад",
       windowsSecurityTitle: "Ҳангоми кушодани аввал огоҳӣ пайдо шуда метавонад",
       iosTitle: "Барои iPhone ва iPad",
-      iosDownload: "Дар Telegram кушодан",
-      iosStatus: "Барномаи алоҳида барои iOS ҳанӯз нест — Mini App дар Telegram пурра кор мекунад.",
-      iosSecurity: "Mini App дар дохили Telegram кушода мешавад. Ҳеҷ чиз насб намешавад, ҳисоб ва пешрафти шумо ҳамон ҷо мемонад.",
+      iosDownload: "Кушодани HSK AI PWA",
+      iosStatus: "Барои iPhone ва iPad барномаи HSK AI PWA дастрас аст. Онро дар Safari кушоед ва ба экрани асосӣ илова кунед.",
+      iosSecurity: "PWA-ро тавассути Safari бе App Store илова кунед. Барои курс, пешрафт ва Pro ба ҳамон ҳисоби HSK AI ворид шавед.",
       iosSteps: [
-        ["Telegram-ро кушоед", "Тугмаи боло ботро мекушояд."],
-        ["Курсро оғоз кунед", "Mini App дарсҳо, машқ ва ёрдамчии AI-ро пурра медиҳад."],
-        ["Барномаи алоҳидаро интизор нашавед", "Вақте барнома барои iOS тайёр шавад, дар ҳамин саҳифа пайдо мешавад."],
+        ["PWA-ро дар Safari кушоед", "Тугмаи болоро пахш кунед. Агар дар браузери дохилӣ бошед, hskai.app/iphone-pwa-ро дар Safari кушоед."],
+        ["Ба экрани асосӣ илова кунед", "Дар Safari «Мубодила» → «Ба экрани асосӣ» → «Илова кардан»-ро интихоб кунед."],
+        ["Ба HSK AI ворид шавед", "Аз нишонаи экрани асосӣ барномаро кушоед ва бо Google ё Telegram-и пайвастшудаи ҳисоби пешина ворид шавед."],
       ],
       androidTitle: "HSK AI барои Android",
       androidDownload: "APK-ро боргирӣ кунед",
@@ -712,6 +718,14 @@
     if (prompt) prompt.hidden = selected;
     if (guide) guide.hidden = !selected;
     if (security) security.hidden = !selected;
+    var iosInstall = document.querySelector("[data-ios-install]");
+    if (iosInstall) iosInstall.hidden = state.platform !== "ios";
+    if (iosInstall && state.platform === "ios") setText("[data-ios-video-title]", localized.iosSecurityTitle);
+    var iosVideo = document.querySelector("[data-ios-video]");
+    if (iosVideo) {
+      iosVideo.preload = state.platform === "ios" ? "metadata" : "none";
+      if (state.platform !== "ios") iosVideo.pause();
+    }
 
     if (!selected) {
       setText("[data-download-title]", localized.selectTitle);
@@ -780,9 +794,9 @@
     button.href = websiteApkBotLink();
     button.removeAttribute("aria-disabled");
     button.dataset.action = "open";
-    setText("[data-download-label]", localized.iosDownload);
+    setText("[data-download-label]", localized.referralAndroidButton);
     status.dataset.state = "ready";
-    status.lastElementChild.textContent = localized.iosSteps[0][1];
+    status.lastElementChild.textContent = localized.referralAndroidStatus;
     return true;
   }
 
@@ -810,6 +824,14 @@
     link.removeAttribute("href");
     link.textContent = localized.referralOpen;
     if (!link.hidden) link.href = "pomp-hsk-ai://referral/" + payload;
+    var iosReferralLink = document.querySelector("[data-referral-ios-link]");
+    if (iosReferralLink) {
+      iosReferralLink.hidden = platform !== "ios";
+      if (platform === "ios") {
+        iosReferralLink.href = referralLinkFor("ios");
+        iosReferralLink.textContent = localized.referralAndroidButton;
+      } else iosReferralLink.removeAttribute("href");
+    }
   }
 
   function copyReferralCode() {
@@ -842,13 +864,12 @@
 
     renderTransfer();
 
-    // iOS has nothing to download and never will until there is a build. It
-    // gets the truth and a working way in, not a disabled button.
+    // iOS primarily opens the PWA; invitations retain their optional bot link.
     if (state.platform === "ios") {
       setText("[data-version]", "");
       setText("[data-published]", "");
       if (!button || !status) return;
-      button.href = referralCode ? referralLinkFor("ios") : BOT_URL;
+      button.href = PWA_URL;
       button.removeAttribute("aria-disabled");
       button.dataset.action = "open";
       status.dataset.state = "ready";
@@ -1047,6 +1068,8 @@
       });
     });
 
+    var iosVideo = document.querySelector("[data-ios-video]");
+    if (iosVideo) iosVideo.addEventListener("error", function () { iosVideo.hidden = true; });
     var downloadButton = document.querySelector("[data-download-button]");
     if (downloadButton) {
       downloadButton.addEventListener("click", function (event) {
