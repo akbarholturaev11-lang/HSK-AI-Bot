@@ -714,6 +714,10 @@ def test_practice_initial_loading_geometry_matches_six_real_cards(width, motion)
             page.locator("#s-mashq .pwa-mashq-shell[aria-busy=true]").wait_for()
             assert len(held) == 1
             assert page.locator("#s-mashq .row-card").count() == 0
+            # Real row geometry rules must match the actual shell class.
+            assert page.locator("#s-mashq .pwa-practice-row").first.evaluate(
+                "(el) => getComputedStyle(el).minHeight"
+            ) == "68px"
             before = geometry(page)
             if motion == "reduce":
                 assert page.locator("#s-mashq .pwa-layout-ink").first.evaluate(

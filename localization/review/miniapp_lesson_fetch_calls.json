@@ -2,7 +2,7 @@
   "schema_version": 1,
   "status": "PURPOSE_SPECIFIC_APIS_SOURCE_REVIEWED",
   "source": "app/static/course-v3.html",
-  "source_revision": "7098b3588c5c19e955a386e6af835b86dd55e7d2",
+  "source_revision": "0d0a3b7826a0c884ca5041d22920c89d58142af1",
   "scope": "Three direct loadLessonData(...) expressions remain: audio warmup, nearby prefetch, and the post-reservation interactive lesson. Sales preview, Starter 0, and skip-test use separate purpose-specific endpoints. No client caller reads the legacy public lesson JSON route.",
   "read_calls": [
     {
@@ -93,7 +93,7 @@
     "scope": "Exact reviewed direct and indirect lesson load callsite anchors were remapped after current main merge; access/consumption, signed auth and active lesson reservation remain server-owned."
   },
   "pwa_source_review": {
-    "source_blob_sha": "7098b3588c5c19e955a386e6af835b86dd55e7d2",
+    "source_blob_sha": "0d0a3b7826a0c884ca5041d22920c89d58142af1",
     "identity": "Telegram Mini App signed API and PWA account-bound content GET use separate server-authenticated transports; canonical entitlement and quota policies remain in shared service",
     "direct_calls": 3,
     "indirect_calls": 3,
