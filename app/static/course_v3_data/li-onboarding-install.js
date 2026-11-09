@@ -80,7 +80,7 @@
     close.type = "button";
     close.setAttribute("aria-label", label(lang, "install.close"));
     var oldFocus = document.activeElement, oldOverflow = document.body.style.overflow;
-    var finished = false, movie = null, failTimer = null, handoffLink = null, howButton = null;
+    var finished = false, movie = null, back = null, failTimer = null, handoffLink = null, howButton = null;
     function finish() {
       if (finished) return;
       finished = true;
