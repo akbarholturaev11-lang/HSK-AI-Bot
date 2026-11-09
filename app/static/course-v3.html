@@ -2354,8 +2354,8 @@ var PWA_COURSE_POST_PATHS={
   "/api/voice-practice/session/mode":"/api/v3/pwa/voice/session/mode",
   "/api/voice-practice/session/end":"/api/v3/pwa/voice/session/end"
 };
-function _apiGet(url){
-  if(!PWA_COURSE_HOST)return fetch(url,{headers:{"X-Telegram-Init-Data":INIT_DATA}});
+function _apiGet(url,opts){
+  if(!PWA_COURSE_HOST)return fetch(url,{headers:{"X-Telegram-Init-Data":INIT_DATA},signal:opts&&opts.signal});
   var parsed=new URL(url,location.href);
   if(parsed.origin!==location.origin)return Promise.reject(new Error("pwa_route_unavailable"));
   var mapped=PWA_COURSE_GET_PATHS[parsed.pathname];
@@ -2363,13 +2363,14 @@ function _apiGet(url){
     mapped=parsed.pathname.replace("/api/v3/lesson/content/","/api/v3/pwa/lesson/content/");
   if(!mapped)return Promise.reject(new Error("pwa_route_unavailable"));
   return pwaCourseActor().then(function(){
-    return fetch(mapped+parsed.search,{credentials:"same-origin",cache:"no-store",redirect:"error"});
+    return fetch(mapped+parsed.search,{credentials:"same-origin",cache:"no-store",redirect:"error",signal:opts&&opts.signal});
   });
 }
 function _apiPost(url,body,opts){
   if(!PWA_COURSE_HOST){
     var init={method:"POST",headers:_apiHeaders(),body:JSON.stringify(body)};
     if(opts&&opts.keepalive)init.keepalive=true;
+    if(opts&&opts.signal)init.signal=opts.signal;
     return fetch(url,init);
   }
   // Never let a new browser transport call the legacy Telegram mutation
@@ -2383,7 +2384,7 @@ function _apiPost(url,body,opts){
     return fetch(mapped,{
       method:"POST",headers:{"Content-Type":"application/json","X-HSK-PWA-CSRF":actor.csrf},
       body:JSON.stringify(payload),credentials:"same-origin",cache:"no-store",redirect:"error",
-      keepalive:!!(opts&&opts.keepalive)
+      keepalive:!!(opts&&opts.keepalive),signal:opts&&opts.signal
     });
   });
 }
@@ -6728,27 +6729,45 @@ function applyRatingPayload(d){
     }
 	}
 	function invitePayloadUrl(){return "/api/v3/invite?lang="+LANG+"&tz="+encodeURIComponent(-new Date().getTimezoneOffset())}
+/* Bound optional section reads, including slow body decoding and the PWA
+   session handshake. A late response after timeout must never overwrite the
+   current view. The caller alone applies data after this race resolves. */
+function boundedSectionRequest(promise,controller){
+  var timer;
+  var deadline=new Promise(function(resolve,reject){
+    timer=setTimeout(function(){
+      if(controller)controller.abort();
+      reject(new Error("section_timeout"));
+    },10000);
+  });
+  return Promise.race([promise,deadline]).finally(function(){clearTimeout(timer)});
+}
 	function loadLatestRating(){
 	  var timezoneOffset=-new Date().getTimezoneOffset();
+      var controller=typeof AbortController==="function"?new AbortController():null;
+      var opts=controller?{signal:controller.signal}:{};
 	  var request=PWA_COURSE_HOST
-	    ? _apiPost("/api/miniapp/gamification",{timezone_offset_minutes:timezoneOffset})
-	    : _apiGet("/api/miniapp/gamification?tz="+encodeURIComponent(timezoneOffset));
-	  return request.then(function(r){return r.json()}).then(function(d){
-	    if(!d||!d.ok)throw new Error("rating_failed");
-	    applyRatingPayload(d);
-	    return d;
-	  });
+	    ? _apiPost("/api/miniapp/gamification",{timezone_offset_minutes:timezoneOffset},opts)
+	    : _apiGet("/api/miniapp/gamification?tz="+encodeURIComponent(timezoneOffset),opts);
+      var result=request.then(function(r){if(!r.ok)throw new Error("rating_http");return r.json()})
+        .then(function(d){if(!d||!d.ok)throw new Error("rating_failed");return d});
+	  return boundedSectionRequest(result,controller).then(function(d){
+        applyRatingPayload(d);return d;
+      });
 	}
 	function applyReferralPayload(d){
 	  referralMeta={loaded:true,error:false,joined:Number(d.joined_count||0),active:Number(d.active_count||0),required:Number(d.required||0)};
 	  referralUsers=(d.referrals||[]).map(normalizeSocialUser);
 	}
 	function loadReferrals(){
-	  return _apiGet(invitePayloadUrl()).then(function(r){return r.json()}).then(function(d){
-	    if(!d||!d.ok)throw new Error("referrals_failed");
-	    applyReferralPayload(d);
-	    return d;
-	  });
+      var controller=typeof AbortController==="function"?new AbortController():null;
+      var opts=controller?{signal:controller.signal}:{};
+      var result=_apiGet(invitePayloadUrl(),opts).then(function(r){
+        if(!r.ok)throw new Error("referrals_http");return r.json();
+      }).then(function(d){if(!d||!d.ok)throw new Error("referrals_failed");return d});
+      return boundedSectionRequest(result,controller).then(function(d){
+        applyReferralPayload(d);return d;
+      });
 	}
 function ratingLoadingHtml(){
   if(!PWA_COURSE_HOST)return '<div style="padding:60px 0;text-align:center;color:var(--ink3)">…</div>';
@@ -7546,7 +7565,7 @@ function pollSignInLink(pending,deadline){
 }
 
 var PROFILE_DETAIL=null;
-var PROFILE_DETAIL_PENDING=false,PROFILE_DETAIL_SETTLED=false;
+var PROFILE_DETAIL_PENDING=false,PROFILE_DETAIL_SETTLED=false,PROFILE_DETAIL_ERROR=false;
 function profileCopy(){
   var legacy=({
     tj:{free:"Ройгон",trial:"Pro · Озмоиш",today:"Имрӯз",overall:"Ҳамагӣ",pro:"Гирифтани Pro",answers:"ҷавоби арзёбишуда",note:"Танҳо ҷавобҳои санҷидашуда · маълумоти кӯҳна метавонад нопурра бошад"},
@@ -7556,11 +7575,19 @@ function profileCopy(){
 }
 function loadProfileDetail(){
   if(PROFILE_DETAIL_PENDING)return;
+  if(PROFILE_DETAIL_SETTLED&&!PROFILE_DETAIL){
+    PROFILE_DETAIL_SETTLED=false;PROFILE_DETAIL_ERROR=false;
+    if(SCREEN==="profile")renderProfile();
+  }
   PROFILE_DETAIL_PENDING=true;
-  _apiGet("/api/miniapp/profile").then(function(r){if(!r.ok)throw Error("profile");return r.json()}).then(function(d){
-    if(!d||!d.ok)throw Error("profile");
-    PROFILE_DETAIL=d;
-  }).catch(function(){PROFILE_DETAIL=null}).then(function(){
+  var controller=typeof AbortController==="function"?new AbortController():null;
+  var opts=controller?{signal:controller.signal}:{};
+  var result=_apiGet("/api/miniapp/profile",opts).then(function(r){
+    if(!r.ok)throw Error("profile_http");return r.json();
+  }).then(function(d){if(!d||!d.ok)throw Error("profile");return d});
+  boundedSectionRequest(result,controller).then(function(d){
+    PROFILE_DETAIL=d;PROFILE_DETAIL_ERROR=false;
+  }).catch(function(){PROFILE_DETAIL=null;PROFILE_DETAIL_ERROR=true}).then(function(){
     PROFILE_DETAIL_PENDING=false;PROFILE_DETAIL_SETTLED=true;
     if(SCREEN==="profile")renderProfile();
   });
@@ -7568,6 +7595,11 @@ function loadProfileDetail(){
 function profileAccuracyHtml(){
   // Profile accuracy is an optional, independent request. The canonical map
   // already controls Pro/trial; placeholders never infer subscription state.
+  if(PWA_COURSE_HOST&&!PROFILE_DETAIL&&PROFILE_DETAIL_ERROR){
+    var copy=LANG==="ru"?["Не удалось загрузить статистику","Повторить"]:LANG==="tj"?["Омор бор нашуд","Такрор кардан"]:["Statistika yuklanmadi","Qayta urinish"];
+    return '<div class="hsk-pwa-profile-stats-error" role="status" style="min-height:138px;padding:20px 12px;text-align:center;color:var(--ink2)">'
+      +'<p>'+esc(copy[0])+'</p><button type="button" class="sec" onclick="loadProfileDetail()">'+esc(copy[1])+'</button></div>';
+  }
   if(PWA_COURSE_HOST&&!PROFILE_DETAIL&&!PROFILE_DETAIL_SETTLED){
     return '<div class="hsk-pwa-profile-accuracy-loading" role="status" aria-busy="true" aria-label="Loading">'
       +'<div><div class="hsk-pwa-load-ring"></div><div class="hsk-pwa-load-line"></div></div>'
