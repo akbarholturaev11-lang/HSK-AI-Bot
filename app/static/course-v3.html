@@ -7620,8 +7620,15 @@ function renderProfile(){
   var completedLessons=Number(MAP&&MAP.progress&&MAP.progress.completed||0);
   var lessonAchPct=Math.min(100,Math.round(completedLessons/100*100));
   var streakAchPct=Math.min(100,Math.round(streak/30*100));
-  var paid=PROFILE_DETAIL&&PROFILE_DETAIL.subscription?!!PROFILE_DETAIL.subscription.is_paid:isPaidUser();
-  var trialActive=!!(TRIAL_STATE&&TRIAL_STATE.active);
+  // The authenticated map already provides the precise entitlement state.
+  // "is_paid" on the map also means temporary/trial course access, so it is
+  // NOT a billing-paid flag. Do not briefly show trial learners as paid Pro
+  // or let a stale profile analytics response override a new checkout map.
+  var mapState=PWA_COURSE_HOST&&MAP&&MAP.user&&MAP.user.state;
+  var hasMapState=["FREE","EXPIRED","BLOCKED","TEMP_ACCESS","TRIAL_ACTIVE","PRO_ACTIVE"].indexOf(mapState)>=0;
+  var paid=hasMapState?mapState==="PRO_ACTIVE":(PROFILE_DETAIL&&PROFILE_DETAIL.subscription?!!PROFILE_DETAIL.subscription.is_paid:isPaidUser());
+  var trialActive=hasMapState?mapState==="TRIAL_ACTIVE":!!(TRIAL_STATE&&TRIAL_STATE.active);
+  var temporaryActive=hasMapState&&mapState==="TEMP_ACCESS";
   var showProLink=!paid&&!trialActive;
   var nickname=esc((PWA_COURSE_HOST&&PROF.display_name)||PROF.name||courseMessage("you",t.you));
   $("#s-profile").innerHTML='<div class="htop profile-head"><h1 class="profile-title">'+esc(courseMessage("nav.profile",LANG==="ru"?"Профиль":LANG==="tj"?"Профил":"Profil"))+'</h1><div class="profile-head-actions">'
@@ -7630,7 +7637,7 @@ function renderProfile(){
     +'<div class="phero">'+(PWA_COURSE_HOST
       ?'<button type="button" class="pav pwa-pav'+(PROF.avatar_key?' art':(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han"))+'" aria-label="'+esc(courseMessage("pwaProfile.edit",""))+'" onclick="App.pwaProfileEdit()">'+(PROF.avatar_key?pwaAvatarArt(PROF.avatar_key):esc(PROF.avatar||"阿"))+'<span class="ed"><i class="ti ti-pencil"></i></span></button>'
       :'<div class="pav'+(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han")+'" onclick="App.avatarEdit()">'+esc(PROF.avatar||"阿")+myAvatarImgHtml()+'<span class="ed"><i class="ti ti-pencil"></i></span></div>')
-    +'<div class="profile-hero-content"><div class="profile-identity-row"><strong class="profile-display-name">'+nickname+'</strong><span class="profile-access-badge'+(paid||trialActive?' pro':'')+'">'+(paid?'<i class="ti ti-crown"></i> Pro':trialActive?'<i class="ti ti-crown"></i> '+esc(c.trial):esc(c.free))+'</span></div>'
+    +'<div class="profile-hero-content"><div class="profile-identity-row"><strong class="profile-display-name">'+nickname+'</strong><span class="profile-access-badge'+(paid||trialActive||temporaryActive?' pro':'')+'">'+(paid?'<i class="ti ti-crown"></i> Pro':trialActive?'<i class="ti ti-crown"></i> '+esc(c.trial):temporaryActive?'<i class="ti ti-clock"></i> '+esc(courseMessage("profile.temporaryAccess",LANG==="ru"?"Временный доступ":LANG==="tj"?"Дастрасии муваққатӣ":"Vaqtinchalik ruxsat")):esc(c.free))+'</span></div>'
     +(goalLabel()?'<div class="profile-goal-row"><span class="lvb goal"><i class="ti ti-target"></i> '+esc(goalLabel())+'</span></div>':'')+'</div></div>'
     +'<button type="button" class="profile-friends-link" onclick="App.openFriends()"><i class="ti ti-users" aria-hidden="true"></i><span>'+esc(courseMessage("friends",t.friends))+'</span><i class="ti ti-chevron-right" aria-hidden="true"></i></button>'
     +profileAccuracyHtml()
