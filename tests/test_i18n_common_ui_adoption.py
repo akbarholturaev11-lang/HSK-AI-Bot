@@ -372,7 +372,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
 
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
         self.assertEqual(html.count(
-            '<script src="/course_v3_data/hsk-course-i18n.js?v=20261021-b962df86b34e"></script>'
+            '<script src="/course_v3_data/hsk-course-i18n.js?v=20261021-7e6386c22f57"></script>'
         ), 1)
         self.assertLess(html.index("hsk-course-i18n.js"),
                         html.index("function courseMessage("))
@@ -741,7 +741,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertIn('function openSupportLink(url){', html)
         self.assertIn('+(supportUrl?', html)
         self.assertIn('courseMessage("nav."+st.s,T().nav[st.s])', html)
-        self.assertIn('hsk-course-i18n.js?v=20261021-b962df86b34e', html)
+        self.assertIn('hsk-course-i18n.js?v=20261021-7e6386c22f57', html)
 
 
     def test_miniapp_notifications_and_pinyin_settings_use_local_static_text(self):
@@ -782,7 +782,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertIn('_apiPost("/api/v3/notify",{enabled:on})', html)
         self.assertIn('localStorage.setItem("hsk_v3_pinyin",v)', html)
         self.assertIn("applyPinyinMode()", html)
-        self.assertIn("hsk-course-i18n.js?v=20261021-b962df86b34e", html)
+        self.assertIn("hsk-course-i18n.js?v=20261021-7e6386c22f57", html)
         self.assertNotIn("fetch('/api/i18n/", html)
 
 
@@ -823,7 +823,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertIn("App.applyNotif(false)", html)
         self.assertIn('_apiPost("/api/v3/notify",{enabled:on})', html)
         self.assertIn("myAvatarImgHtml()", html)
-        self.assertIn("hsk-course-i18n.js?v=20261021-b962df86b34e", html)
+        self.assertIn("hsk-course-i18n.js?v=20261021-7e6386c22f57", html)
 
 
     def test_miniapp_course_and_practice_error_copy_local_assets(self):
@@ -868,7 +868,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertIn('if(o.status===403&&o.j&&o.j.error==="free_feature_limit_reached")', html)
         self.assertIn('if(o.status<200||o.status>=300||!o.j||o.j.ok!==true||o.j.allowed!==true)', html)
         self.assertIn('location.reload()', html)
-        self.assertIn('hsk-course-i18n.js?v=20261021-b962df86b34e', html)
+        self.assertIn('hsk-course-i18n.js?v=20261021-7e6386c22f57', html)
 
 
     def test_miniapp_level_picker_copy_uses_reviewed_local_catalogs(self):
@@ -905,7 +905,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertIn('var cur=normalizeLevel(MAP&&MAP.level||getSelectedLevel())', view)
         self.assertIn("onclick=\"App.pickLevel(", view)
         self.assertIn("pickLevel:function(lv){App.closeSheet();loadLevel(lv)}", html)
-        self.assertIn('hsk-course-i18n.js?v=20261021-b962df86b34e', html)
+        self.assertIn('hsk-course-i18n.js?v=20261021-7e6386c22f57', html)
         self.assertNotIn('fetch("/api/i18n/', html)
 
 
@@ -949,7 +949,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
                           "if(bi===steps.length-1",
                           "function parseRule(t){"):
             self.assertIn(invariant, html)
-        self.assertIn('hsk-course-i18n.js?v=20261021-b962df86b34e', html)
+        self.assertIn('hsk-course-i18n.js?v=20261021-7e6386c22f57', html)
 
 
     def test_finish_ui_batch_31_reviewed_keys(self):
@@ -995,7 +995,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
                           "if(!ps||!n||!ps.extended)", "if(!fxOff())luRain();",
                           "function partSecs(l){", "if(isPremiumLocked(l))"):
             self.assertIn(invariant, html)
-        self.assertIn("hsk-course-i18n.js?v=20261021-b962df86b34e", html)
+        self.assertIn("hsk-course-i18n.js?v=20261021-7e6386c22f57", html)
 
 
 if __name__ == "__main__":

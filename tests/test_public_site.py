@@ -258,9 +258,10 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
 
         script_path = Path("app/static/desktop-download-page.js")
         script = script_path.read_text(encoding="utf-8")
-        self.assertIn('button.href = PWA_URL;', script)
+        self.assertIn('button.href = pwaLaunchUrl();', script)
         self.assertIn('status.lastElementChild.textContent = localized.referralAndroidStatus;', script)
         self.assertIn('iosReferralLink.href = referralLinkFor("ios");', script)
+        self.assertIn('url.searchParams.set("lang", state.language);', script)
         self.assertNotIn('button.href = referralCode ? referralLinkFor("ios") : BOT_URL;', script)
         if not shutil.which("node"):
             self.skipTest("Node.js not installed for JS syntax check")
