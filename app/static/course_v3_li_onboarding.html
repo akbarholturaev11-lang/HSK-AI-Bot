@@ -51,6 +51,10 @@ body::before{content:"";position:fixed;inset:0;max-width:480px;margin:0 auto;z-i
 .center .bub{max-width:340px;margin-bottom:22px}
 .center .bub:before{content:"";position:absolute;width:14px;height:14px;background:var(--hsk-paper-raised);border-left:1px solid var(--hsk-divider);border-bottom:1px solid var(--hsk-divider);transform:rotate(-45deg);left:calc(50% - 7px);bottom:-8px}
 .center .panda{width:150px;height:164px}
+/* Final PWA account step retains the original speech bubble and panda. */
+.profile-auth .bub{margin-bottom:14px}
+.profile-auth .actions{max-width:420px;margin-top:12px}
+.profile-auth .status{margin-top:8px;min-height:0}
 .halo{width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,var(--halo,var(--hsk-cinnabar-soft)) 0%,rgba(253,249,240,0) 72%);display:grid;place-items:center;flex-shrink:0}
 .halo--gold{--halo:var(--hsk-gold-soft)}.halo--jade{--halo:var(--hsk-jade-soft)}
 .streak-scene{display:flex;align-items:flex-end;justify-content:center;gap:4px;padding:2px 24px 10px;flex-shrink:0}
@@ -548,7 +552,7 @@ function topBar(){
   if(TRIAL_STEPS.indexOf(screen)>0)return stepper();
   if(screen==="trialIntro"||screen==="end")return "";
   var bk='<button class="bk" type="button" aria-label="'+t("back")+'" onclick="back()">'+icon("back")+'</button>';
-  if(screen==="login"||screen==="signup")return bk+'<div class="spacer"></div>'+lang;
+  if(screen==="login")return bk+'<div class="spacer"></div>'+lang;
   var i=QUESTION_FLOW.indexOf(screen);
   if(i>=0)return bk+'<div class="pbar" role="progressbar" aria-valuemin="0" aria-valuemax="'+QUESTION_FLOW.length+'" aria-valuenow="'+(i+1)+'"><i style="width:'+((i+1)*100/QUESTION_FLOW.length)+'%"></i></div>';
   return bk+'<div class="spacer"></div>';
@@ -568,14 +572,17 @@ function row(key,title,sub,glyph,selected,handler){
 }
 function bars(n){return '<span class="level-bars">'+[0,1,2,3,4].map(function(b){return '<i class="'+(b<=n?"on":"")+'" style="height:'+(9+b*5)+'px"></i>'}).join("")+'</span>'}
 function cta(label,handler,disabled,ghost){return '<button type="button" class="cta'+(ghost?" ghost":"")+'" onclick="'+handler+'"'+(disabled?" disabled":"")+'>'+label+'</button>'}
-function loginScreen(mode){
+function providerActions(signup){
+  return '<div class="actions">'+["telegram","google","apple"].map(function(p){
+    return '<button type="button" class="provider" onclick="'+(signup?"go('pro')":"demoLogin()")+'"><span class="provider__icon">'+BRAND[p]+'</span><span class="provider__label">'+p.charAt(0).toUpperCase()+p.slice(1)+'</span><span class="provider__chevron">'+icon("chevron")+'</span></button>'}).join("")+'</div>'
+    +'<p class="status" role="status">'+(demoStatus?t("demoNote"):"")+'</p>';
+}
+function loginScreen(mode,inProfile){
   var signup=mode==="signup";
+  if(inProfile)return '<div class="center profile-auth"><div class="bub">'+t("profile")+'</div><div class="halo halo--gold"><div class="panda">'+panda(POSE.profile)+'</div></div>'+providerActions(true)+'</div>';
   return '<div class="login"><div class="hero-panda" aria-hidden="true"><div class="panda">'+panda(POSE[screen])+'</div></div>'
     +'<h1>'+(signup?t("signupTitle"):t("loginTitle"))+'</h1><p class="subtitle">'+(signup?t("signupSub"):t("loginSub"))+'</p>'
-    +'<div class="actions">'+["telegram","google","apple"].map(function(p){
-      return '<button type="button" class="provider" onclick="'+(signup?"go('pro')":"demoLogin()")+'"><span class="provider__icon">'+BRAND[p]+'</span><span class="provider__label">'+p.charAt(0).toUpperCase()+p.slice(1)+'</span><span class="provider__chevron">'+icon("chevron")+'</span></button>'}).join("")+'</div>'
-    +'<p class="status" role="status">'+(demoStatus?t("demoNote"):"")+'</p>'
-    +'<div class="tagline"><span>'+t("tagline")+'</span></div></div>';
+    +providerActions(signup)+'<div class="tagline"><span>'+t("tagline")+'</span></div></div>';
 }
 function goalSay(){
   var k=lastGoal&&goals.indexOf(lastGoal)>=0?lastGoal:goals[goals.length-1];
@@ -696,7 +703,7 @@ function render(animate){
       foot=cta(t("first"),"restart()");break;
     case "profile":
       html='<div class="center"><div class="bub">'+t("profile")+'</div>'+haloPanda()+'</div>';foot=cta(t("createAccount"),"go('signup')");break;
-    case "signup": html=loginScreen("signup");break;
+    case "signup": html=loginScreen("signup",true);break;
   }
   st.innerHTML=html;ft.innerHTML=foot;ft.hidden=!foot;ft.classList.toggle("list",["version","level","goal","time","focus","streak"].indexOf(screen)>=0);
   if(animate!==false){st.scrollTop=0;st.classList.remove("stage-enter");void st.offsetWidth;st.classList.add("stage-enter")}
@@ -740,7 +747,7 @@ if(T[LANG]&&window.HSKCharacters&&typeof window.HSKCharacters.render==="function
   render();
 }else{liCriticalAssetFailed()}
 </script>
-<script src="/course_v3_data/li-onboarding-runtime.js?v=20261109-19a8d1663cb6"></script>
+<script src="/course_v3_data/li-onboarding-runtime.js?v=20261109-efdccb82ceac"></script>
 <script src="/course_v3_data/li-onboarding-install.js?v=20261109-45db3c9aae4c"></script>
 </body>
 </html>

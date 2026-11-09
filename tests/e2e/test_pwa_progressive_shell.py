@@ -80,7 +80,8 @@ def test_profile_and_navigation_render_independently_after_map_confirmation():
     assert "App.show(tab);" in HTML
     # Profile accuracy has its own bounded layout while its API is in flight.
     assert 'if(PWA_COURSE_HOST&&!PROFILE_DETAIL&&!PROFILE_DETAIL_FAILED)' in HTML
-    assert 'class="profile-accuracy" aria-busy="true"' in HTML
+    assert 'class="profile-accuracy hsk-pwa-profile-accuracy-loading" aria-busy="true"' in HTML
+    assert "function updateProfileAccuracyInPlace()" in HTML
     assert 'if(s==="profile")' in HTML and "loadProfileDetail();" in HTML
     # Render the profile once its asynchronous accuracy boundary is active,
     # not a stale "—" placeholder immediately before replacing with skeleton.
