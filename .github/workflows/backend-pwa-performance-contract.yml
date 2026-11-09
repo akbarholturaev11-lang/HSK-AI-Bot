@@ -54,6 +54,8 @@ jobs:
           python scripts/check_backend_pwa_performance_contract.py --base "$PERF_BASE" "${FLAGS[@]}"
       - name: Test the policy guard itself
         run: python -m unittest -v tests.test_backend_pwa_performance_contract
+      - name: Verify reusable skeleton geometry assertions catch layout shifts
+        run: python -m unittest -v tests.test_pwa_layout_geometry
       - name: Detect code paths for behavior regressions
         id: scope
         shell: bash
