@@ -402,7 +402,9 @@ def test_pwa_guest_sees_panda_first_and_oauth_resumes_saved_draft_safely():
         page, captured = _page(browser, pwa=True, guest=True, trial_eligible=False)
         _advance_to_profile(page)
         assert captured["post"] == []  # Public guest may NEVER save a course.
-        assert captured["public_track_get"] >= 2
+        # Initial public metadata is cached for this page. Repeated reads
+        # must not manufacture duplicate requests merely to enter later steps.
+        assert captured["public_track_get"] == 1
         assert captured["track_get"] == 0  # anonymous users cannot fetch personal tracks
         page.locator("#footer .cta").click()  # provider sign-up, not POST
         assert page.evaluate("window.screen") == "signup"
