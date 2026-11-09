@@ -159,3 +159,39 @@ def test_rating_second_render_does_not_replace_pending_skeleton_with_empty_resul
         assert page.locator("#s-rating").inner_text() == "SERVER RESULT"
         assert page.evaluate("ratingPending") is False
         browser.close()
+
+
+def test_profile_accuracy_has_independent_loading_success_and_error_states():
+    func = "function profileAccuracyHtml(){" + HTML.split(
+        "function profileAccuracyHtml(){", 1
+    )[1].split("function renderProfile(){", 1)[0]
+    with pw.sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page()
+        page.goto("about:blank")
+        page.evaluate("""() => {
+          window.PWA_COURSE_HOST=true;
+          window.PROFILE_DETAIL=null;
+          window.PROFILE_DETAIL_FAILED=false;
+          window.profileCopy=()=>({overall:'Всего',today:'Сегодня'});
+          window.esc=x=>String(x);
+        }""")
+        page.evaluate(func)
+        page.evaluate("document.body.innerHTML=profileAccuracyHtml()")
+        assert page.locator(".profile-accuracy[aria-busy='true']").count() == 1
+        assert page.locator(".profile-accuracy [aria-hidden='true']").count() == 2
+        page.evaluate("""() => {
+          PROFILE_DETAIL={stats:{answer_accuracy:{
+            overall:{percent:75},today:{percent:60}}}};
+          document.body.innerHTML=profileAccuracyHtml();
+        }""")
+        assert page.locator(".accuracy-ring").count() == 2
+        assert "75%" in page.locator(".profile-accuracy").inner_text()
+        assert page.locator(".profile-accuracy[aria-busy='true']").count() == 0
+        page.evaluate("""() => {
+          PROFILE_DETAIL=null;PROFILE_DETAIL_FAILED=true;
+          document.body.innerHTML=profileAccuracyHtml();
+        }""")
+        assert page.locator(".profile-accuracy[aria-busy='true']").count() == 0
+        assert "—" in page.locator(".profile-accuracy").inner_text()
+        browser.close()
