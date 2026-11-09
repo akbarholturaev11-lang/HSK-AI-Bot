@@ -77,6 +77,170 @@ Keep the analytics HSK AI already collects. Repair disconnected, incomplete or m
 - [ ] Gate new views behind existing rollout boundaries if required; publish with a documented rollback for only the analytics reader/UI. Never disable actual Pro verification, user access, course grading or production payments.
 - [ ] Final evidence must include: measured questions answerable, source code paths, event/consumer coverage, known unavailable metrics, test commands/results, CI status, migration/flag implications and `main` commit after validated promotion.
 
+
+## OpenSpec authoring handoff — use `$hsk-ai-openspec-planning`
+
+**State: OpenSpec scaffold and CLI validation are NOT yet completed.** The original
+`AGENTS.md` Analytics Impact rule is already present on `main`; the coverage
+registry and CI enforcement are not. This section is the **input contract for a
+real CLI-generated OpenSpec change**, not an invented OpenSpec scaffold.
+
+### Entry and sources
+
+Use `.agents/skills/hsk-ai-openspec-planning/SKILL.md`, read `AGENTS.md`,
+`AI_RULES.md`, `PROJECT_MEMORY.md`, `openspec/config.yaml`, the current
+`main` code and this document. Cross-check the current V10 requirements in
+`openspec/specs/admin-real-analytics/spec.md` and
+`openspec/specs/admin-control-center-ui/spec.md`. **Do not** reinterpret archived
+V10 tasks as unfinished and do not create an independent analytics progress
+ledger. This document remains the implementation checklist until the official
+OpenSpec artifacts are generated; after that reconcile task progress to the
+single active OpenSpec task list instead of keeping two competing ledgers.
+
+On an environment with a supported actual OpenSpec CLI:
+
+```bash
+node --version
+openspec --version
+openspec context --json
+openspec new change hsk-ai-analytics-integrity
+openspec status --change hsk-ai-analytics-integrity --json
+openspec instructions proposal --change hsk-ai-analytics-integrity --json
+# Write the returned proposal path using its actual instructions and template.
+# Continue with whatever artifact IDs/dependencies status returns:
+openspec instructions design --change hsk-ai-analytics-integrity --json
+openspec instructions specs --change hsk-ai-analytics-integrity --json
+openspec instructions tasks --change hsk-ai-analytics-integrity --json
+openspec status --change hsk-ai-analytics-integrity --json
+openspec validate hsk-ai-analytics-integrity
+```
+
+**Important:** Call `openspec status` between artifacts and obey its actual
+dependency order/paths. Commands above are the intended sequence, not proof of
+output or a substitute for returned CLI templates. Never initialize another
+OpenSpec project on top of this one. If CLI installation or project resolution
+fails, stop and record the blocker; do not hand-create a pseudo-scaffold or
+claim validation passed. The existing GitHub Actions
+`.github/workflows/openspec-planning.yml` demonstrates use of the official
+npm package but does **not** substitute for validating this specific change.
+
+### Proposal — requested delta, no parallel redesign
+
+- **Why:** Current event capture and Admin V10 projections do not form a
+  verifiable end-to-end measurement contract. New business flows, including
+  PWA Pro, can be released without corresponding Admin funnel/retention/source
+  coverage, producing misleading confidence from partially connected counts.
+- **What changes:** Enforce analytics impact for future feature changes, build
+  a machine-checkable coverage registry and CI guard, reconcile existing PWA Pro,
+  cross-platform retention/learning, attribution and reliability metrics, expose
+  honest availability/provenance and data-health diagnostics.
+- **Impacted:** shared backend/SQLAlchemy, Telegram Mini App, iPhone PWA,
+  Android (Play/Direct), desktop macOS/Windows, public-site traffic, Admin PWA,
+  tests and GitHub CI. Each client's instrumentation must be verified rather
+  than presumed.
+- **Non-goals:** rebuilding V10; replacing PostgreSQL/Redis/R2; collecting
+  private content; universal session replay; changing payment, Pro entitlement,
+  course result, auth, privacy or public release policy; declaring historical
+  attribution causal.
+- **Authority:** canonical implementation code/tests, scoped payment/PWA
+  handoffs, `AGENTS.md` and `AI_RULES.md`; this document is the evidence-based
+  planning input, not a competing runtime authority.
+
+### Design — required decisions and constraints
+
+1. **Canonical measurement contract:** feature → event → trusted owner
+   and optional attempt/source context → persistence/dedupe → aggregate
+   projection → visible consumer and availability labels → executable test.
+   Keep user, event, session, invoice, attempt, payer and device grains distinct.
+2. **Linkage before instrumentation expansion:** prefer reusing existing
+   `course_miniapp_events`, `conversion_funnel_events`,
+   `subscription_entry_events`, `payments`, `lava_invoices`, activity and
+   traffic stores. Do not add migration or provider until the current stores
+   demonstrably cannot answer a required question.
+3. **PWA Pro funnel:** authenticated UI exposure and server-side invoice
+   creation use different evidence classes; paid is only true after verified
+   settlement/activation, not URL return. Correlate by canonical account and
+   bounded `attempt_id`; handle retry, cancellation, manual review, refund,
+   and legacy-only checkout without conflating denominators.
+4. **Retention:** distinguish app open, authenticated foreground, meaningful
+   learning and lesson completion. Report Mini App D1/D7 series as the existing
+   narrow metric, add distinct cross-platform D1/D7/D30 only where source
+   coverage exists, with eligible mature signup cohorts.
+5. **Attribution and quality:** distinguish anonymous tagged visit counts
+   from verified account/campaign joins. Capture intake and rejected/duplicate
+   health only in privacy-safe aggregates. Surface unavailable and incomplete
+   explicitly; keep a 24h snapshot's original age visible.
+6. **Fail-safe rollout:** new read-only analytics and guards must not alter
+   Pro/payment/access/grade decisions, delay critical UX or leak payment or
+   learner content. Preserve existing auth, 24h snapshot, no-store, SQL bounds
+   and rollout switches. Reverse the read-side dashboard/CI change independently
+   on failure; any schema migration needs non-destructive downgrade review.
+
+### Specifications — required observable acceptance scenarios
+
+Use the CLI-reported delta paths/format. Modify
+`admin-real-analytics` only where genuinely extending its existing SHALL
+requirements; keep `admin-control-center-ui` parity. Propose new capability
+IDs such as `analytics-feature-coverage` and `analytics-data-integrity`
+**only if the actual CLI instructions and repo naming rules call for them**.
+
+- **New business feature:** WHEN a payment/onboarding/course or platform flow
+  is added or changed, THEN its analytics-impact declaration and registry
+  mapping and focused source→reader→consumer test accompany the change;
+  a non-applicable exception states the specific reason.
+- **Prevention guard:** WHEN a new critical business-flow entry point or
+  event name appears without a reviewed mapping/justification, THEN CI fails
+  with actionable file/event paths; when only cosmetic copy/CSS changes,
+  it does not demand new telemetry.
+- **PWA Pro:** WHEN a verified Lava invoice becomes an approved Pro payment,
+  THEN only that matched canonical owner and attempt moves to paid; a checkout
+  click, return URL, refund or failed webhook never masquerades as payment.
+- **Native + PWA learning:** WHEN one linked account studies in both apps
+  during a mature D7 return window, THEN it contributes once to cross-platform
+  learning-return retention; passive notification/admin changes do not count.
+- **Missing evidence:** WHEN a platform lacks verified foreground or attribution
+  telemetry, THEN the metric displays `unavailable` with reason and
+  denominator/source/window where supported, not zero or borrowed data.
+- **Incomplete data:** WHEN event rows exceed a safe detail cap, ingestion
+  fails or stage linkage is absent, THEN affected detailed metrics are marked
+  incomplete/unavailable, not calculated from a silently truncated cohort.
+- **Privacy and security:** WHEN a revoked admin requests/caches analytics,
+  THEN access is denied with no raw identities/events or leaked invoice/provider
+  references; telemetry failure does not block checkout or learning.
+
+### Tasks — dependencies and acceptance gates
+
+Use the phase tasks above as implementation input, but the active OpenSpec
+`tasks.md` should have **one authoritative set of checkboxes** with these
+dependencies and scoped file paths:
+
+1. Record current commit, baseline fixtures and question/metric contracts.
+   Mark the existing `AGENTS.md` rule as already delivered only with the
+   verified `main` reference; do not claim CI already works.
+2. **First enforce future coverage:** add minimal registry, change-impact
+   declaration and a scoped CI guard before long migrations or funnel repair.
+3. Connect existing PWA Pro events and Lava invoice results to the Admin
+   attempt-based funnel; test server-authoritative paid, retries, refunds,
+   manual paths and missing attempts.
+4. Add verified cross-platform return/learning cohort projections while
+   preserving historical Mini App-only metrics with distinct labels.
+5. Reconcile onboarding, source attribution, performance/error measurement
+   and platform coverage where source evidence supports them.
+6. Add data-health metrics, integrity tests, safe scaling of 5k-limited
+   detail cases and explicit unavailability/provenance.
+7. Strengthen ongoing CI with writer/reader/consumer mapping and SQL/API/UI
+   regression tests. Do not rely on static substring checks alone.
+8. Validate `openspec`, focused integration tests, CI, privacy/security
+   boundaries, relevant browser/mobile/provider acceptance and release/rollback
+   notes; only then promote tested scope under the repository Git rules.
+
+**Definition of done:** every critical supported question has an auditable
+metric definition, reproducible fixture/reconciliation evidence, linked
+producer/storage/reader/UI coverage and a documented source/coverage status.
+A new user-observable feature cannot silently become uncovered without either
+a failing guard or an explicit reviewed exemption. OpenSpec validation alone
+does not prove a deployed or production-correct analytics system.
+
 ## Mandatory per-feature completion contract (use forever)
 
 When Codex adds or modifies a **user-observable behavior** (onboarding, course, quiz, voice, AI, limit, payment, Pro, promotion, referral, account, notification, navigation affecting a funnel, error handling or platform delivery):
