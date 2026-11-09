@@ -16,20 +16,16 @@ class LiOnboardingCanonicalCatalogTests(unittest.TestCase):
         self.assertEqual(sources["tj"]["STREAKS.14.say"],
                          "Ду ҳафта — ин дигар тасодуф нест!")
 
-    def test_final_profile_screen_describes_both_login_and_signup(self):
+    def test_final_profile_keeps_original_user_demo_speech_in_three_languages(self):
         source = li.read_sources()
         expected = {
-            "uz": ("Profilingizni saqlang",
-                   "Mavjud hisobga kiring yoki yangisini oching"),
-            "ru": ("Сохраните свой профиль",
-                   "Войдите в существующий аккаунт или создайте новый"),
-            "tj": ("Профили худро нигоҳ доред",
-                   "Ба ҳисоби мавҷуда ворид шавед ё ҳисоби нав кушоед"),
+            "uz": "Progressingizni yo'qotmang! Keling, sizga profil ochamiz.",
+            "ru": "Не потеряйте свой прогресс! Давайте создадим вам профиль.",
+            "tj": "Пешрафти худро гум накунед! Биёед, барои шумо профил созем.",
         }
-        for lang, (title, subtitle) in expected.items():
+        for lang, message in expected.items():
             with self.subTest(lang=lang):
-                self.assertEqual(source[lang]["copy.signupTitle"], title)
-                self.assertEqual(source[lang]["copy.signupSub"], subtitle)
+                self.assertEqual(source[lang]["copy.profile"], message)
 
     def test_home_screen_guide_strings_are_canonical_in_three_languages(self):
         sources = li.read_sources()
