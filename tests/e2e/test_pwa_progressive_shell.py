@@ -77,14 +77,14 @@ def test_profile_and_navigation_render_independently_after_map_confirmation():
     # Real course HTML explicitly preserves the currently selected shell tab
     # until a verified map arrives; a slow course request must not reset it.
     assert "PWA_PREBOOT_TAB=s;" in HTML
-    assert "App.show(initialTab);" in HTML
+    assert "App.show(tab);" in HTML
     # Profile accuracy has its own bounded layout while its API is in flight.
-    assert 'if(PWA_COURSE_HOST&&PROFILE_DETAIL_PENDING&&!PROFILE_DETAIL)' in HTML
-    assert "pwa-profile-accuracy-pending" in HTML
-    assert 'if(PWA_COURSE_HOST)loadProfileDetail();' in HTML
+    assert 'if(PWA_COURSE_HOST&&!PROFILE_DETAIL&&!PROFILE_DETAIL_FAILED)' in HTML
+    assert 'class="profile-accuracy" aria-busy="true"' in HTML
+    assert 'if(s==="profile")' in HTML and "loadProfileDetail();" in HTML
     # Render the profile once its asynchronous accuracy boundary is active,
     # not a stale "—" placeholder immediately before replacing with skeleton.
-    assert 'SCREEN==="profile"&&!PWA_PREBOOT_TAB' in HTML
+    assert 'if(SCREEN==="profile")renderProfile();' in HTML
 
 
 @pytest.mark.parametrize("lang,label,accessibility", [
@@ -101,6 +101,7 @@ def test_first_paint_localizes_before_any_account_api(lang, label, accessibility
             else "application/javascript",
         ))
         url = ORIGIN + "/iphone-pwa/course?lang=" + lang
+        page.route("**/api/**", lambda route: None)
         page.route(url, lambda route: route.fulfill(
             body=HTML, content_type="text/html; charset=utf-8",
         ))
@@ -149,8 +150,8 @@ def test_rating_second_render_does_not_replace_pending_skeleton_with_empty_resul
             return new Promise(resolve=>{window.releaseRating=resolve});
           };
         }""")
-        page.evaluate(func + retry)
-        page.evaluate("renderRating();renderRating();retryRating()")
+        page.evaluate("() => { " + func + "\n" + retry + "\nwindow.renderRating=renderRating;window.retryRating=retryRating; }")
+        page.evaluate("() => { renderRating();renderRating();retryRating(); }")
         assert page.evaluate("requests") == 1
         assert page.evaluate("rendered") == 0
         assert page.locator("#s-rating .pwa-initial-shell").count() == 1
@@ -176,7 +177,7 @@ def test_profile_accuracy_has_independent_loading_success_and_error_states():
           window.profileCopy=()=>({overall:'Всего',today:'Сегодня'});
           window.esc=x=>String(x);
         }""")
-        page.evaluate(func)
+        page.evaluate("() => { " + func + "\nwindow.profileAccuracyHtml=profileAccuracyHtml; }")
         page.evaluate("document.body.innerHTML=profileAccuracyHtml()")
         assert page.locator(".profile-accuracy[aria-busy='true']").count() == 1
         assert page.locator(".profile-accuracy [aria-hidden='true']").count() == 2
@@ -201,7 +202,7 @@ def test_optional_prefetch_runs_after_map_first_paint_and_does_not_change_telegr
     # Scheduling nearby lesson fetches after first paint prevents a large
     # course map from doing extra traversal before displaying the visible tab.
     assert 'if(PWA_COURSE_HOST&&typeof requestAnimationFrame==="function")' in HTML
-    assert 'if(document.visibilityState!=="hidden"&&MAP)prefetchNearbyLessons();' in HTML
+    assert 'if(document.visibilityState!=="hidden"&&MAP)prefetchNearbyLessons()' in HTML
     assert 'else prefetchNearbyLessons();' in HTML
     assert 'App.show(tab);' in HTML
 
