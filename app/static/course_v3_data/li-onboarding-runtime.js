@@ -61,7 +61,7 @@ function validAuthHandoff(){
   }catch(_){return false}
 }
 var supportedProviders=null; // null while the real provider availability loads
-var providerRequest=null,publicTrackPromise=null,publicTrackSnapshot=null,publicTrackAt=0;
+var providerRequest=null,publicTrackPromise=null,publicTrackSnapshot=null,publicTrackAt=0,publicTrackRevalidateAt=0;
 var requestGeneration=0,requestBusy=false,initializing=true,trialEligibility=null;
 var initialRender=global.render;
 var originalLogin=global.loginScreen;
@@ -275,15 +275,22 @@ function trackAvailable(){
 function guestTrackMetadata(force){
   // Cache ONLY anonymous public metadata, in this page's memory. Never cache
   // PWA session, Pro/trial rights, subscriptions, saved progress or CSRF.
-  if(!force&&publicTrackSnapshot&&Date.now()-publicTrackAt<120000){
-    // Always use safe cached public data even when a revalidation is in
-    // flight: one slow refresh must not block a second visible section.
-    if(!publicTrackPromise)Promise.resolve().then(function(){
-      guestTrackMetadata(true).then(function(fresh){
-        if(actor||global.screen!=="version")return;
-        trackStatus=fresh;updateTrackUi();
-      }).catch(function(){/* safe cached preview remains, no entitlement */});
-    });
+  var now=Date.now(),cacheAge=now-publicTrackAt;
+  if(!force&&publicTrackSnapshot&&cacheAge>=0&&cacheAge<120000){
+    // Public-only cache is safe for first paint. Revalidate at most once
+    // after the first minute rather than making an extra API request on
+    // every back/forward navigation through the version selector.
+    // HSK 3.0 rights, session, payments and progress are never cached.
+    if(cacheAge>=60000&&!publicTrackPromise&&
+       now-publicTrackRevalidateAt>=30000){
+      publicTrackRevalidateAt=now;
+      Promise.resolve().then(function(){
+        guestTrackMetadata(true).then(function(fresh){
+          if(actor||global.screen!=="version")return;
+          trackStatus=fresh;updateTrackUi();
+        }).catch(function(){/* safe public preview remains; retry later */});
+      });
+    }
     return Promise.resolve(publicTrackSnapshot);
   }
   if(publicTrackPromise)return publicTrackPromise;
