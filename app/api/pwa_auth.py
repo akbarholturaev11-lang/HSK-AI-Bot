@@ -1154,7 +1154,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
         """Read-only eligibility for the verified browser account, never a grant."""
         from app.services.pro_trial_service import ProTrialService, REASON_NOT_APPLICABLE
         from app.services.trial_risk_service import TrialRiskService
-        from app.services.entitlements.state import EntitlementState, resolve_state
+        from app.services.entitlements.state import EntitlementState, access_expires_at, resolve_state
         try:
             require_pwa_enabled(settings_obj)
             # Browser cookie owns this read; no Telegram initData is trusted.
@@ -1178,7 +1178,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                 # reading this *verified actor's* current entitlement. A
                 # used trial flag alone is not proof that Pro is now active.
                 active = resolve_state(actor) == EntitlementState.TRIAL_ACTIVE
-                expires = getattr(actor, "pro_trial_ends_at", None) if active else None
+                expires = access_expires_at(actor, EntitlementState.TRIAL_ACTIVE) if active else None
                 verdict = {**verdict, "active": active,
                            "ends_at": expires.isoformat() if expires else None}
             return JSONResponse({"ok": True, "trial": verdict}, headers=_NO_STORE)
