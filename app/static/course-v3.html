@@ -343,7 +343,7 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 .fpbar>i{display:block;height:100%;width:0;background:var(--cin);border-radius:6px;transition:width .3s}
 .fheart{display:flex;align-items:center;gap:3px;color:var(--cin2);font-size:15px;font-weight:500}
 .fstage{padding:4px 18px 0;font-size:11px;color:var(--cin2);font-weight:600;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;gap:8px}
-.fstage b{font-size:12px;color:var(--ink);font-weight:600;text-transform:none;letter-spacing:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fstage .foundation-step{margin:0;max-width:72%;min-width:0;font-size:11px;line-height:1.25;text-transform:none;letter-spacing:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:1}
 /* Murabbiy qatori: chapda personaj, o'ngda u aytayotgan gap.
    Ilgari personaj o'ng chetda YOLG'IZ turardi, yonida esa uning ISMI
    yozilgan yorliq bor edi — ya'ni bo'sh joyda osilgan stikerga o'xshardi va
@@ -5636,7 +5636,7 @@ function foundationGuidedCard(c){
 }
 function foundationRepairSpacer(c){
   var src=c._sourceCard||{},M=courseMessage("foundation.repairReminder",{uz:"Javobni yana bir bor ko'ring — birozdan keyin o'zingiz topasiz.",ru:"Посмотрите на ответ ещё раз — скоро вы найдёте его сами.",tj:"Ҷавобро боз як бор бинед — каме пас худатон меёбед."}[LANG]);
-  $("#f-body").innerHTML='<div class="foundation-step"><i class="ti ti-bulb"></i> '+esc(foundationStepLabel(src))+'</div>'+foundationExampleHtml(src.example,false)
+  $("#f-body").innerHTML=foundationExampleHtml(src.example,false)
     +'<div class="foundation-note"><b>'+esc(foundationAnswerText(src))+'</b><div style="margin-top:7px">'+esc(tr(src.explanation)||M)+'</div></div>';
 }
 function foundationChoiceCard(c){
@@ -5647,12 +5647,12 @@ function foundationChoiceCard(c){
   var audio=c.type==="listen_choice"?'<div class="qcard"><button class="audio" onclick="foundationSpeak(\''+esc(c.audio_text||"")+'\')"><i class="ti ti-volume"></i></button></div>'
     :'<div class="qcard"><div class="qh qask han">'+esc(ex.zh||"")+'</div><div class="qpy">'+esc(ex.pinyin||"")+'</div></div>';
   var opts=(c.options||[]).map(function(o,k){return '<button class="opt" data-k="'+k+'" onclick="Foundation.pick(this,'+k+')"><span class="k">'+"ABCD"[k]+'</span>'+esc(optText(o))+'</button>'}).join("");
-  $("#f-body").innerHTML='<div class="foundation-step"><i class="ti ti-'+(c.type==="listen_choice"?'headphones':'brain')+'"></i> '+esc(foundationStepLabel(c))+'</div><div class="qq">'+esc(tr(c.prompt)||foundationTitle(c))+'</div>'+audio+opts;
+  $("#f-body").innerHTML='<div class="qq">'+esc(tr(c.prompt)||foundationTitle(c))+'</div>'+audio+opts;
   if(c.type==="listen_choice")Foundation.scheduleAudio(c.audio_text||"",280);
 }
 function foundationBuilderCard(c){
   $("#f-cta").style.display="none";var bank=(c.tokens||[]).slice(),line=[];
-  $("#f-body").innerHTML='<div class="foundation-step"><i class="ti ti-puzzle"></i> '+esc(foundationStepLabel(c))+'</div><div class="qq">'+esc(tr(c.prompt)||foundationTitle(c))+'</div><div class="tokens" id="foundation-line"></div><div class="bank" id="foundation-bank"></div>';
+  $("#f-body").innerHTML='<div class="qq">'+esc(tr(c.prompt)||foundationTitle(c))+'</div><div class="tokens" id="foundation-line"></div><div class="bank" id="foundation-bank"></div>';
   function draw(){
     $("#foundation-line").innerHTML=line.map(function(i,pos){return '<button class="tok han" onclick="Foundation.builderRemove('+pos+')">'+esc(bank[i])+'</button>'}).join("");
     $("#foundation-bank").innerHTML=bank.map(function(x,i){return line.indexOf(i)>=0?'<span class="tok han ghost">'+esc(x)+'</span>':'<button class="tok han" onclick="Foundation.builderAdd('+i+')">'+esc(x)+'</button>'}).join("");
@@ -5668,7 +5668,9 @@ function foundationSpeakCard(c){
 }
 Foundation.skipSpeak=function(){Foundation.cancelMic();Foundation.next()};
 Foundation.tryMic=function(){
-  var c=Foundation.queue[Foundation.i],hint=$("#foundation-mic-hint"),btn=$("#foundation-mic");
+  var c=Foundation.queue[Foundation.i];
+  if(!Foundation.active||Foundation.answered||!c||c.type!=="speak")return;
+  var hint=$("#foundation-mic-hint"),btn=$("#foundation-mic");
   function say(t){if(hint)hint.textContent=t||""}function ready(){if(btn){btn.disabled=false;btn.setAttribute("aria-label",courseMessage("say",T().say))}}
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder){say(_prL().noSupport);return}
   Foundation.cancelMic();var session={cancelled:false,stream:null,rec:null,timer:null,controller:null};Foundation._micSession=session;
@@ -5687,7 +5689,18 @@ Foundation.tryMic=function(){
       say(_prL().analyzing);var fd=new FormData(),target=c.audio_text||((c.example||{}).zh)||"你好",mt=(blob.type||rec.mimeType||mime||"audio/webm").toLowerCase(),ext=/mp4|m4a|aac/.test(mt)?"mp4":(/ogg/.test(mt)?"ogg":(/mpeg|mp3/.test(mt)?"mp3":(/wav/.test(mt)?"wav":"webm")));fd.append("initData",initData());fd.append("target",target);fd.append("target_pinyin",((c.example||{}).pinyin)||"");fd.append("language",LANG);fd.append("level","hsk1");fd.append("audio",blob,"voice."+ext);
       session.controller=window.AbortController?new AbortController():null;
       coursePronounce(fd,session.controller?session.controller.signal:undefined).then(function(r){return r.json().then(function(j){return{ok:r.ok,j:j}})}).then(function(o){
-        if(session.cancelled||Foundation._micSession!==session)return;Foundation._micSession=null;ready();var score=Number(o.j&&o.j.score||0);if(o.ok&&o.j&&o.j.ok===true&&score>=60){Foundation.speakingBonus=true;Foundation.save();say(courseMessage("correct",T().correct)+" "+score+"%");beep([523,659,784]);haptic("ok")}else say((o.j&&o.j.message)||_prL().retry);
+        if(session.cancelled||Foundation._micSession!==session)return;Foundation._micSession=null;ready();var score=Number(o.j&&o.j.score||0);if(o.ok&&o.j&&o.j.ok===true&&score>=60){
+          // The spoken card is an optional bonus, not a required mastery grade.
+          // A verified score must offer the NEXT step instead of leaving the
+          // learner trapped behind a hidden CTA after "Correct! 100%".
+          Foundation.speakingBonus=true;Foundation.answered=true;Foundation.save();
+          say(courseMessage("correct",T().correct)+" "+score+"%");
+          var next=$("#f-cta"),skip=$("#f-body .pron-skip");
+          if(next){next.style.display="flex";next.disabled=false;next.onclick=Foundation.next}
+          if(btn)btn.disabled=true;
+          if(skip)skip.style.display="none";
+          beep([523,659,784]);haptic("ok")
+        }else say((o.j&&o.j.message)||_prL().retry);
       }).catch(function(err){if(session.cancelled||err&&err.name==="AbortError")return;Foundation._micSession=null;ready();say(_prL().netErr)});
     };rec.start();session.timer=setTimeout(function(){try{if(!session.cancelled&&rec.state!=="inactive")rec.stop()}catch(e){}},2600);
   }).catch(function(){if(session.cancelled)return;Foundation._micSession=null;ready();say(_prL().micDeny)});
@@ -5697,7 +5710,7 @@ Foundation.render=function(){
   $("#f-body").classList.remove("has-lesson-pron");
   var c=Foundation.queue[Foundation.i];if(!c)return Foundation.finish();
   $("#f-prog").style.width=Math.round(Foundation.i/Math.max(Foundation.queue.length,1)*100)+"%";
-  var st=$("#f-stage");if(st)st.innerHTML='<span>'+(Foundation.i+1)+' / '+Foundation.queue.length+'</span><b>'+esc(foundationStepLabel(c))+'</b>';
+  var st=$("#f-stage");if(st)st.innerHTML='<span>'+(Foundation.i+1)+' / '+Foundation.queue.length+'</span><span class="foundation-step"><i class="ti ti-info-circle" aria-hidden="true"></i> '+esc(foundationStepLabel(c))+'</span>';
   var cta=$("#f-cta");cta.style.display="flex";cta.innerHTML='<i class="ti ti-arrow-right"></i> '+(c.type==="result"?courseMessage("check",T().check):courseMessage("cont",T().cont));
   if(c._repairSpacer)return foundationRepairSpacer(c);
   if(c._guided)return foundationGuidedCard(c);
@@ -5708,23 +5721,23 @@ Foundation.render=function(){
   /* Chinese auto-audio bilan ona-til narration ustma-ust tushmasin. */
   if(c.narrate&&c.type!=="intro"&&c.type!=="listen_choice"&&c.type!=="speak")narrate(c.narrate,text||title);
   if(c.type==="intro"){
-    $("#f-body").innerHTML='<div class="foundation-step"><i class="ti ti-rocket"></i> '+esc(foundationStepLabel(c))+'</div><div class="foundation-hero"><h2>'+esc(title)+'</h2><p>'+esc(text)+'</p>'+foundationExampleHtml(ex,true)+'<button class="foundation-audio" onclick="foundationSpeak(\''+esc(c.audio_text||ex.zh||"")+'\')"><i class="ti ti-volume"></i></button></div>';
+    $("#f-body").innerHTML='<div class="foundation-hero"><h2>'+esc(title)+'</h2><p>'+esc(text)+'</p>'+foundationExampleHtml(ex,true)+'<button class="foundation-audio" onclick="foundationSpeak(\''+esc(c.audio_text||ex.zh||"")+'\')"><i class="ti ti-volume"></i></button></div>';
     Foundation.scheduleAudio(c.audio_text||ex.zh||"",350);return;
   }
   if(c.type==="parts"){
-    $("#f-body").innerHTML='<div class="foundation-step"><i class="ti ti-components"></i> '+esc(foundationStepLabel(c))+'</div><div class="foundation-hero"><h2>'+esc(title)+'</h2><p>'+esc(text)+'</p></div><div class="foundation-parts">'+(c.examples||[]).map(function(x){return '<button class="foundation-part" onclick="foundationSpeak(\''+esc(x.zh||"")+'\')"><div class="zh han">'+esc(x.zh||"")+'</div><div class="py">'+esc(x.pinyin||"")+'</div><small>'+esc(tr(x.translation)||"")+'</small></button>'}).join("")+'</div>';return;
+    $("#f-body").innerHTML='<div class="foundation-hero"><h2>'+esc(title)+'</h2><p>'+esc(text)+'</p></div><div class="foundation-parts">'+(c.examples||[]).map(function(x){return '<button class="foundation-part" onclick="foundationSpeak(\''+esc(x.zh||"")+'\')"><div class="zh han">'+esc(x.zh||"")+'</div><div class="py">'+esc(x.pinyin||"")+'</div><small>'+esc(tr(x.translation)||"")+'</small></button>'}).join("")+'</div>';return;
   }
   if(c.type==="tones"){
-    $("#f-body").innerHTML='<div class="foundation-step"><i class="ti ti-wave-sine"></i> '+esc(foundationStepLabel(c))+'</div><div class="foundation-hero"><h2>'+esc(title)+'</h2><p>'+esc(text)+'</p></div><div class="tone-row">'+(c.examples||[]).map(function(x,i){return '<button class="tone-btn" onclick="foundationSpeak(\''+esc(x.zh||x.audio_text||"")+'\')"><b>'+esc(x.pinyin||x.zh||"")+'</b><small>'+(i+1)+'</small></button>'}).join("")+'</div>';return;
+    $("#f-body").innerHTML='<div class="foundation-hero"><h2>'+esc(title)+'</h2><p>'+esc(text)+'</p></div><div class="tone-row">'+(c.examples||[]).map(function(x,i){return '<button class="tone-btn" onclick="foundationSpeak(\''+esc(x.zh||x.audio_text||"")+'\')"><b>'+esc(x.pinyin||x.zh||"")+'</b><small>'+(i+1)+'</small></button>'}).join("")+'</div>';return;
   }
   if(c.type==="sandhi"){
-    $("#f-body").innerHTML='<div class="foundation-step"><i class="ti ti-wave-saw-tool"></i> '+esc(foundationStepLabel(c))+'</div><div class="foundation-hero"><h2>'+esc(title)+'</h2><p>'+esc(text)+'</p>'+foundationExampleHtml(ex,true)+'<div class="foundation-note"><b>'+esc(ex.pinyin||"nǐ hǎo")+'</b> — '+esc(courseMessage("foundation.writtenForm",LANG==="ru"?"на письме":LANG==="tj"?"навишт":"yozilishi"))+'<br><b>'+esc(c.natural_pinyin||"ní hǎo")+'</b> — '+esc(courseMessage("foundation.naturalPronunciation",LANG==="ru"?"естественное произношение":LANG==="tj"?"талаффузи табиӣ":"tabiiy talaffuzi"))+'</div><button class="foundation-audio" onclick="foundationSpeak(\''+esc(c.audio_text||ex.zh||"")+'\')"><i class="ti ti-volume"></i></button></div>';return;
+    $("#f-body").innerHTML='<div class="foundation-hero"><h2>'+esc(title)+'</h2><p>'+esc(text)+'</p>'+foundationExampleHtml(ex,true)+'<div class="foundation-note"><b>'+esc(ex.pinyin||"nǐ hǎo")+'</b> — '+esc(courseMessage("foundation.writtenForm",LANG==="ru"?"на письме":LANG==="tj"?"навишт":"yozilishi"))+'<br><b>'+esc(c.natural_pinyin||"ní hǎo")+'</b> — '+esc(courseMessage("foundation.naturalPronunciation",LANG==="ru"?"естественное произношение":LANG==="tj"?"талаффузи табиӣ":"tabiiy talaffuzi"))+'</div><button class="foundation-audio" onclick="foundationSpeak(\''+esc(c.audio_text||ex.zh||"")+'\')"><i class="ti ti-volume"></i></button></div>';return;
   }
   if(c.type==="result"){
     var objs=c.objectives||((Foundation.data.required_objectives||[]).map(function(id){return{objective_id:id,label:id}}));
-    $("#f-body").innerHTML='<div class="foundation-step"><i class="ti ti-trophy"></i> '+esc(foundationStepLabel(c))+'</div><div class="foundation-hero"><div style="font-size:54px">🎉</div><h2>'+esc(title)+'</h2><p>'+esc(text)+'</p>'+foundationExampleHtml(ex,false)+'</div><div class="foundation-win">'+objs.map(function(o){var ok=Foundation.mastery[o.objective_id]===true;return '<div'+(ok?'':' style="opacity:.55"')+'><i class="ti ti-'+(ok?'circle-check':'clock')+'"></i>'+esc(tr(o.label)||o.objective_id)+'</div>'}).join("")+'</div>';return;
+    $("#f-body").innerHTML='<div class="foundation-hero"><div style="font-size:54px">🎉</div><h2>'+esc(title)+'</h2><p>'+esc(text)+'</p>'+foundationExampleHtml(ex,false)+'</div><div class="foundation-win">'+objs.map(function(o){var ok=Foundation.mastery[o.objective_id]===true;return '<div'+(ok?'':' style="opacity:.55"')+'><i class="ti ti-'+(ok?'circle-check':'clock')+'"></i>'+esc(tr(o.label)||o.objective_id)+'</div>'}).join("")+'</div>';return;
   }
-  $("#f-body").innerHTML='<div class="foundation-step"><i class="ti ti-info-circle"></i> '+esc(foundationStepLabel(c))+'</div><div class="foundation-hero"><h2>'+esc(title)+'</h2><p>'+esc(text)+'</p>'+foundationExampleHtml(ex,false)+'</div>'+(c.examples||[]).map(function(x){return '<div class="foundation-note">'+foundationExampleHtml(x,false)+'</div>'}).join("");
+  $("#f-body").innerHTML='<div class="foundation-hero"><h2>'+esc(title)+'</h2><p>'+esc(text)+'</p>'+foundationExampleHtml(ex,false)+'</div>'+(c.examples||[]).map(function(x){return '<div class="foundation-note">'+foundationExampleHtml(x,false)+'</div>'}).join("");
 };
 function cardGrammar(g){
   $("#f-cta").style.display="none";
