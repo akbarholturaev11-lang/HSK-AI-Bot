@@ -252,6 +252,37 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
         )[1])["@graph"]
         self.assertEqual(next(x for x in site if x["@type"] == "WebSite")["url"], ORIGIN + "/")
 
+    def test_iphone_pwa_download_js_syntax_and_fallback_contract(self):
+        import shutil
+        import subprocess
+
+        script_path = Path("app/static/desktop-download-page.js")
+        script = script_path.read_text(encoding="utf-8")
+        self.assertIn('button.href = pwaLaunchUrl();', script)
+        self.assertIn('status.lastElementChild.textContent = localized.referralAndroidStatus;', script)
+        self.assertIn('iosReferralLink.href = referralLinkFor("ios");', script)
+        self.assertIn('url.searchParams.set("lang", state.language);', script)
+        self.assertNotIn('button.href = referralCode ? referralLinkFor("ios") : BOT_URL;', script)
+        if not shutil.which("node"):
+            self.skipTest("Node.js not installed for JS syntax check")
+        result = subprocess.run(
+            ["node", "--check", str(script_path)],
+            capture_output=True, text=True, timeout=20,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_mobile_menu_locale_labels_and_pwa_public_guide_copy(self):
+        from app.public_site.content import NAV_LABELS, PAGES
+        for lang, label in (("tg", "Меню"), ("ru", "Меню"), ("uz", "Menyu")):
+            self.assertEqual(NAV_LABELS[lang]["more"], label)
+        for locale in ("tj", "ru", "uz"):
+            guide = PAGES[f"/{locale}/guide/"]
+            faq = PAGES[f"/{locale}/guide/faq/"]
+            self.assertTrue(any("Safari" in body and "PWA" in body
+                                for _, body in guide["sections"]))
+            self.assertTrue(any("Safari" in body and "PWA" in body
+                                for _, body in faq["sections"]))
+
     async def test_product_first_header_language_and_download_contract(self):
         # Content remains crawlable without JavaScript, with one URL per locale.
         for language, url_code in (("tg", "tj"), ("ru", "ru"), ("uz", "uz")):
@@ -260,6 +291,8 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
             self.assertIn('class="course-cta"', html)
             self.assertIn('class="product-summary"', html)
             self.assertIn('<details class="language-switch">', html)
+            self.assertIn('<details class="mobile-nav">', html)
+            self.assertIn('class="mobile-nav-links"', html)
             self.assertIn('data-site-nav="features"', html)
             self.assertIn('data-site-nav="download"', html)
             self.assertIn("lang=" + url_code, html)
@@ -272,6 +305,11 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('data-site-nav="courses"', download)
         self.assertIn('data-site-nav="features"', download)
         self.assertIn('data-site-selected-lang', download)
+        self.assertIn('<details class="mobile-nav">', download)
+        self.assertIn('data-ios-install', download)
+        self.assertIn('/assets/onboarding/iphone-home-screen.mp4', download)
+        self.assertIn("PWA для iPhone", download)
+        self.assertIn("Safari", download)
         self.assertIn('/public-assets/navigation.css', download)
         self.assertIn('/public-assets/language.js', download)
         script = Path("app/static/desktop-download-page.js").read_text(encoding="utf-8")

@@ -173,10 +173,10 @@
     <string name="hsk_course_download_page_free_download" formatted="false">Бесплатная загрузка</string>
     <string name="hsk_course_download_page_guide_eyebrow" formatted="false">Установка</string>
     <string name="hsk_course_download_page_guide_title" formatted="false">Готово за три шага</string>
-    <string name="hsk_course_download_page_ios_download" formatted="false">Открыть в Telegram</string>
-    <string name="hsk_course_download_page_ios_security" formatted="false">Mini App открывается внутри Telegram. Ничего устанавливать не нужно, аккаунт и прогресс остаются там же.</string>
-    <string name="hsk_course_download_page_ios_security_title" formatted="false">Ничего устанавливать не нужно</string>
-    <string name="hsk_course_download_page_ios_status" formatted="false">Отдельного приложения для iOS пока нет — Mini App в Telegram работает полностью.</string>
+    <string name="hsk_course_download_page_ios_download" formatted="false">Открыть HSK AI PWA</string>
+    <string name="hsk_course_download_page_ios_security" formatted="false">Добавьте PWA через Safari без App Store. Для прежнего курса, прогресса и Pro войдите в тот же аккаунт HSK AI.</string>
+    <string name="hsk_course_download_page_ios_security_title" formatted="false">Установка на экран «Домой»</string>
+    <string name="hsk_course_download_page_ios_status" formatted="false">Для iPhone и iPad доступна HSK AI PWA. Откройте её в Safari и добавьте на экран «Домой».</string>
     <string name="hsk_course_download_page_ios_title" formatted="false">Для iPhone и iPad</string>
     <string name="hsk_course_download_page_lead" formatted="false">Выберите устройство</string>
     <string name="hsk_course_download_page_loading" formatted="false">Подготавливаем…</string>
@@ -204,7 +204,7 @@
     <string name="hsk_course_download_page_referral_android_title" formatted="false">Создайте аккаунт по приглашению</string>
     <string name="hsk_course_download_page_referral_code_label" formatted="false">Код приглашения</string>
     <string name="hsk_course_download_page_referral_copy" formatted="false">Скопировать код</string>
-    <string name="hsk_course_download_page_referral_ios_body" formatted="false">Откройте Telegram-бота и получите ответы на 2 вопроса к AI. После этого приглашение засчитается.</string>
+    <string name="hsk_course_download_page_referral_ios_body" formatted="false">Основная кнопка открывает HSK AI PWA в Safari. Чтобы приглашение засчиталось, отдельно откройте Telegram по ссылке ниже и получите в боте ответы на 2 вопроса к AI. Сам вход в PWA не подтверждает приглашение.</string>
     <string name="hsk_course_download_page_referral_ios_title" formatted="false">Как засчитывается приглашение</string>
     <string name="hsk_course_download_page_referral_manual" formatted="false">Выделите и скопируйте код вручную.</string>
     <string name="hsk_course_download_page_referral_open" formatted="false">Открыть установленное приложение</string>

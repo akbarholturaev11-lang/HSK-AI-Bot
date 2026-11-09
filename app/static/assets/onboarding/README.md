@@ -42,8 +42,10 @@ The video is now a normal static file at the exact URL used by the app.
 
 The asset's presence and bit-for-bit identity are verified. iPhone Safari
 real-device playback, slow-network delivery, and final production deployment
-have **not yet** been verified. The existing MP4 route and UI remain only on
-feature branch until testing and merge.
+have **not yet** been verified. The video asset is present on the repository's current `main` snapshot; the public
+`/download` page now reuses this same file on its iOS PWA installation guide
+in the isolated website-update branch. Real iPhone Safari playback and final
+production availability still require verification.
 
 **Content review:** The recording appears to show a truncated older
 `telegram-chinese-bot-...` address on the iPhone's Add to Home Screen screen.
@@ -58,7 +60,7 @@ PWA hostname; otherwise re-record the step with the official URL.
   (`-movflags +faststart`), portrait, up to 1080x1920, 15–45 seconds,
   reasonably compressed (target under 10 MiB).
 - No other path is dynamically fetched from query strings or user input.
-- When this MP4 **does not exist** (currently absent), the route intentionally
+- When this MP4 **does not exist**, the route intentionally
   returns HTTP 404. The UI hides the broken player, shows the exact canonical
   RU/UZ/TJ three-step text guide, and offers a Continue action.
 
@@ -88,6 +90,6 @@ requests are handled by Starlette `FileResponse` when the file exists.
 - Verify Safari real device, offline fallback, landscape/safe-area, reduced
   motion, VoiceOver labels, and that the guide never asks for push permission.
 
-**This README is asset documentation, not a published video.** Do not mark the
-video itself finished before the MP4 is actually created, added and browser
-tested.
+**Release QA still required:** file integrity and presence in GitHub do not
+prove real-device Safari playback or a production deployment. Verify the
+hostname shown in the recording before promoting the public download page.

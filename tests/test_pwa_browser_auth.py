@@ -469,6 +469,22 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         guest = await self.client.get(path, follow_redirects=False)
         self.assertEqual(guest.status_code, 303)
         self.assertEqual(guest.headers["location"], "/iphone-pwa/onboarding/li")
+        translated = await self.client.get(
+            "/iphone-pwa?lang=ru&utm_source=instagram&source=download&ref=secret&request=abcdef",
+            follow_redirects=False,
+        )
+        self.assertEqual(translated.status_code, 303)
+        self.assertEqual(
+            translated.headers["location"],
+            "/iphone-pwa/onboarding/li?lang=ru&utm_source=instagram&source=download",
+        )
+        duplicate = await self.client.get(
+            "/iphone-pwa?lang=tj&utm_source=a&utm_source=b",
+            follow_redirects=False,
+        )
+        self.assertEqual(duplicate.headers["location"], "/iphone-pwa/onboarding/li?lang=tj")
+        invalid = await self.client.get("/iphone-pwa?lang=%3Cscript%3E", follow_redirects=False)
+        self.assertEqual(invalid.headers["location"], "/iphone-pwa/onboarding/li")
         self.assertEqual(guest.headers["cache-control"], "no-store")
         self.assertEqual(guest.headers["referrer-policy"], "no-referrer")
         public_shell = await self.client.get(guest.headers["location"])
@@ -4047,7 +4063,11 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             json={"timezone_offset_minutes": 330},
         )).status_code, 503)
 
-    async def test_pwa_site_origin_is_separate_from_oauth_callback_origin(self):
+    async def test_pwa_google_callback_same_site_as_browser_proof_with_native_isolation(self):
+        """Google must return to the PWA cookie host, not Railway/native OAuth."""
+        from app.services import google_auth
+        from app.services.native_oauth_service import NativeOAuthService
+
         site_origin = "https://pwa.example.test"
         callback_origin = "https://oauth.example.test"
         self.settings.PUBLIC_SITE_URL = site_origin
@@ -4059,12 +4079,48 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             json={"provider": "google", "language": "uz"},
         )
         self.assertEqual(started.status_code, 200, started.text)
-        redirect_uri = parse_qs(
-            urlparse(started.json()["authorize_url"]).query
-        )["redirect_uri"][0]
+        self.assertIn(PWA_OAUTH_COOKIE, started.cookies)
+        query = parse_qs(urlparse(started.json()["authorize_url"]).query)
+        redirect_uri = query["redirect_uri"][0]
+        state = query["state"][0]
         self.assertEqual(
             redirect_uri,
-            callback_origin + "/api/v3/native-auth/oauth/callback/google",
+            site_origin + "/api/v3/native-auth/oauth/callback/google",
+        )
+        async with self.sessions() as db:
+            oauth = NativeOAuthService(db, self.settings)
+            self.assertEqual(oauth.redirect_uri("google", platform="macos"),
+                             callback_origin + "/api/v3/native-auth/oauth/callback/google")
+            self.assertEqual(oauth.redirect_uri("google", platform="windows"),
+                             callback_origin + "/api/v3/native-auth/oauth/callback/google")
+            self.assertEqual(oauth.redirect_uri("apple", platform="pwa"),
+                             callback_origin + "/api/v3/native-auth/oauth/callback/apple")
+
+        # Simulate the regression: Railway cannot receive a __Host- PWA
+        # proof cookie set by the other origin. It must not authenticate.
+        wrong_host = await self.client.get(
+            f"{callback_origin}/api/v3/native-auth/oauth/callback/google",
+            params={"state": state, "code": "auth-code"},
+        )
+        self.assertIn("pwa_oauth_proof_invalid", wrong_host.text)
+        self.assertNotIn(PWA_SESSION_COOKIE, wrong_host.cookies)
+
+        # On the real cookie origin the exact same request succeeds, and
+        # the Google token exchange must reuse the start redirect_uri.
+        with patch.object(google_auth, "exchange_code", return_value="google-id-token") as exchange, patch.object(
+            google_auth, "verify_desktop_id_token", return_value=identity(),
+        ):
+            completed = await self.client.get(
+                redirect_uri, params={"state": state, "code": "auth-code"},
+                follow_redirects=False,
+            )
+        self.assertEqual(completed.status_code, 303, completed.text)
+        self.assertEqual(completed.headers["location"], "/iphone-pwa")
+        self.assertIn(PWA_SESSION_COOKIE, completed.cookies)
+        self.assertEqual(exchange.call_args.kwargs["redirect_uri"], redirect_uri)
+        self.assertEqual(
+            (await self.client.get(f"{site_origin}/api/v3/pwa-auth/session")).json()["user_id"],
+            1,
         )
 
         legacy_origin = await self.client.post(
@@ -4080,6 +4136,20 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             json={"provider": "google", "language": "uz"},
         )
         self.assertEqual(wrong_origin.status_code, 403)
+
+    async def test_pwa_google_fails_closed_on_invalid_public_origin_without_affecting_desktop(self):
+        from app.services.native_oauth_service import NativeOAuthService
+        self.settings.PUBLIC_SITE_URL = "https://attacker.test/redirect"
+        self.settings.OAUTH_REDIRECT_BASE_URL = "https://oauth.example.test"
+        async with self.sessions() as db:
+            oauth = NativeOAuthService(db, self.settings)
+            self.assertEqual(
+                oauth.redirect_uri("google", platform="macos"),
+                "https://oauth.example.test/api/v3/native-auth/oauth/callback/google",
+            )
+            with self.assertRaises(Exception) as caught:
+                oauth.redirect_uri("google", platform="pwa")
+            self.assertEqual(str(caught.exception), "oauth_provider_unconfigured")
 
     async def test_pwa_only_rollback_fences_existing_sessions_without_account_deletion(self):
         """Feature OFF must close both browser HTML and API routes, not Telegram.

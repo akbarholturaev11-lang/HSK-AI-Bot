@@ -1614,7 +1614,7 @@ input:focus-visible {
 .referral-code-block button { padding: 9px 12px; border: 1px solid var(--jade); border-radius: 8px; background: transparent; color: var(--jade); font: inherit; cursor: pointer; }
 .referral-code-block [role="status"] { width: 100%; color: var(--muted); font-size: 13px; }
 
-/* Opening Telegram is not a download; the arrow would promise a file. */
+/* A PWA/browser handoff is not a binary download. */
 .download-card .download-button[data-action="open"] .download-button-icon {
   display: none;
 }
@@ -1650,3 +1650,11 @@ footer .official-footer-links section div { flex:1 1 260px; gap:5px 13px; }
 footer .official-footer-links a { font-size:12px; }
 footer .official-footer-links section.legal-utility a { font-size:11px; }
 @media (max-width:620px) { footer .official-footer-links { gap:8px; } footer .official-footer-links section div { flex:1 1 100%; } }
+
+/* iOS Safari video; other installers remain unchanged. */
+.ios-install-video[hidden], .ios-install-video video[hidden] { display:none; }
+.ios-install-video { width:min(100%,680px); margin:0 auto 42px; padding:20px; border:1px solid var(--line); border-radius:22px; background:var(--surface); text-align:center; }
+.ios-install-video h2 { margin:0 0 16px; font-size:clamp(21px,4vw,30px); color:var(--ink); }
+.ios-install-video video { display:block; width:min(100%,320px); max-height:520px; margin:0 auto; border-radius:15px; background:#171717; }
+.referral-guide [data-referral-ios-link]:not([hidden]) { display:inline-block; margin-top:12px; }
+@media (max-width:620px) { .ios-install-video { padding:16px 12px; border-radius:18px; } }

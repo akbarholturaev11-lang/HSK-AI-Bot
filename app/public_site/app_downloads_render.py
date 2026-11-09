@@ -34,6 +34,12 @@ HEADINGS = {
     "tj": ("Ҳамаи боргириҳо", "Версияи охирин барои ҳар дастгоҳ."),
 }
 
+PWA_ACTION = {
+    "uz": "PWA’ni ochish — Safari’da bosh ekranga qo‘shish",
+    "ru": "Открыть PWA — добавить на экран «Домой» в Safari",
+    "tj": "Кушодани PWA — илова ба экрани асосӣ аз Safari",
+}
+
 UNAVAILABLE = {
     "uz": "hali chiqarilmagan",
     "ru": "ещё не выпущено",
@@ -58,7 +64,13 @@ def downloads_section(status: dict[str, Any], *, origin: str, language: str = "r
 
     heading, lead = HEADINGS.get(language, HEADINGS["ru"])
     unavailable = UNAVAILABLE.get(language, UNAVAILABLE["ru"])
-    rows = []
+    # iOS is a working browser PWA, not an unpublished native installer.
+    rows = [
+        '<li class="is-webapp"><a href="/iphone-pwa">'
+        '<b>iOS (PWA)</b>'
+        f'<span>{escape(PWA_ACTION.get(language, PWA_ACTION["ru"]))}</span>'
+        '</a></li>'
+    ]
     for name, label in PLATFORM_LABELS.items():
         entry = status.get("platforms", {}).get(name) or {}
         if entry.get("available") and entry.get("download"):
@@ -94,14 +106,26 @@ def downloads_section(status: dict[str, Any], *, origin: str, language: str = "r
 
 
 def structured_data(status: dict[str, Any], *, origin: str, page_url: str) -> str:
-    """One `SoftwareApplication` per published platform.
+    """Published native installers plus the always-available iPhone PWA.
 
     Only published ones are described. Announcing a build that does not exist
     is worse than describing nothing: it is the kind of claim an assistant
     repeats to somebody who then cannot find the file.
     """
 
-    graph: list[dict[str, Any]] = []
+    graph: list[dict[str, Any]] = [
+        {
+            "@type": "WebApplication",
+            "@id": f"{origin}{page_url}#ios-pwa",
+            "name": "HSK AI — iOS PWA",
+            "applicationCategory": "EducationalApplication",
+            "operatingSystem": "iOS",
+            "url": origin + "/iphone-pwa",
+            "installUrl": origin + "/iphone-pwa",
+            "inLanguage": ["tg", "ru", "uz"],
+            "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+        }
+    ]
     for name, label in PLATFORM_LABELS.items():
         entry = status.get("platforms", {}).get(name) or {}
         if not entry.get("available") or not entry.get("download"):
