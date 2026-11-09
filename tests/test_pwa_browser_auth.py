@@ -459,6 +459,36 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(profile.user_id, actor["user_id"])
             self.assertEqual(profile.daily_goal_xp, 80)
 
+    async def test_li_entry_release_switch_is_disabled_by_default_and_guest_only(self):
+        # The release switch changes only the unauthenticated entry URL.
+        # Never trust an unsigned cookie and never alter returning sessions.
+        path = "/iphone-pwa"
+        legacy = await self.client.get(path, follow_redirects=False)
+        self.assertEqual(legacy.status_code, 200)  # default OFF
+        self.settings.PWA_LI_ONBOARDING_ENTRY_ENABLED = True
+        guest = await self.client.get(path, follow_redirects=False)
+        self.assertEqual(guest.status_code, 303)
+        self.assertEqual(guest.headers["location"], "/iphone-pwa/onboarding/li")
+        self.assertEqual(guest.headers["cache-control"], "no-store")
+        self.assertEqual(guest.headers["referrer-policy"], "no-referrer")
+        public_shell = await self.client.get(guest.headers["location"])
+        self.assertEqual(public_shell.status_code, 200)
+        self.assertNotIn("user_id", public_shell.text)
+        self.assertEqual(
+            (await self.client.get("/api/v3/pwa/onboarding/status")).status_code, 401
+        )
+        self.client.cookies.set(PWA_SESSION_COOKIE, "forged-session")
+        forged = await self.client.get(path, follow_redirects=False)
+        self.assertEqual(forged.headers["location"], "/iphone-pwa/onboarding/li")
+        self.client.cookies.clear()
+        await self.callback(await self.begin())
+        signed = await self.client.get(path, follow_redirects=False)
+        self.assertEqual(signed.status_code, 303)
+        self.assertEqual(signed.headers["location"], "/iphone-pwa/course")
+        self.settings.PWA_AUTH_ENABLED = False
+        disabled = await self.client.get(path, follow_redirects=False)
+        self.assertEqual(disabled.status_code, 403)
+
     async def test_home_screen_entry_skips_login_only_for_verified_browser(self):
         self.assertEqual((await self.client.get("/iphone-pwa")).status_code, 200)
         self.client.cookies.set(PWA_SESSION_COOKIE, "unverified-browser-cookie" * 3)
