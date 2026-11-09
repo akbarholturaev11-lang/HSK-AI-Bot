@@ -2459,7 +2459,7 @@ async def li_iphone_install_guide_video():
 
     The video is deliberately not synthesized or silently substituted with
     other user media. Missing approved MP4 returns 404; the Li guide displays
-    the canonical four-step fallback and still allows course continuation.
+    the canonical three-step fallback and still allows course continuation.
     """
     path = Path("app/static/assets/onboarding/iphone-home-screen.mp4")
     if not path.is_file():
