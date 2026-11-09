@@ -62,6 +62,9 @@ def _prepare(browser, *, ios=True, installed=False, has_video=False):
             route.fulfill(status=200, body=video, headers=headers)
 
     page.route("**/assets/onboarding/iphone-home-screen.mp4*", video_response)
+    page.route("**/assets/onboarding/iphone-install-home-focus.jpg*", lambda route: route.fulfill(
+        body=(STATIC / "assets/onboarding/iphone-install-home-focus.jpg").read_bytes(),
+        content_type="image/jpeg"))
     html = (
         "<!doctype html><html lang='uz'><head><meta name='viewport' content='width=device-width'>"
         "<style>" + CSS + "</style></head>"
