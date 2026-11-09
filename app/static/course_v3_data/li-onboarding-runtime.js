@@ -599,6 +599,7 @@ function stopTelegramPoll(){
 }
 function clearTelegramPending(){
   stopTelegramPoll();
+  telegramStatusKey=null;telegramStatusError=false;
   try{sessionStorage.removeItem(TELEGRAM_PENDING_KEY);
       sessionStorage.removeItem(TELEGRAM_URL_KEY)}catch(_){}
 }
@@ -624,6 +625,8 @@ async function claimTelegram(){
       // Consume the existing HttpOnly Li resume cookie through the canonical
       // server route, which verifies this new session before showing a course.
       location.replace("/iphone-pwa");
+    }else if(result.status==="pending"&&telegramStatusKey!=="pwaAuth.telegramPending"){
+      telegramMessage("pwaAuth.telegramPending",false);
     }
   }catch(error){
     if(telegramPendingId()!==id)return;
