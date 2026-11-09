@@ -2445,6 +2445,14 @@ async def desktop_install_screenshot(filename: str):
     )
 
 
+@app.get("/assets/onboarding/iphone-install-home-focus.jpg")
+async def li_iphone_install_hero_image():
+    """Fixed reviewed user-provided Home Screen image, no dynamic path."""
+    return static_asset_response(
+        "app/static/assets/onboarding/iphone-install-home-focus.jpg", "image/jpeg"
+    )
+
+
 @app.get("/assets/onboarding/iphone-home-screen.mp4")
 async def li_iphone_install_guide_video():
     """Fixed, optional iPhone Safari tutorial asset for first PWA registration.

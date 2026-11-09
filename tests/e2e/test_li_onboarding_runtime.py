@@ -78,6 +78,10 @@ def _page(browser, *, pwa=True, trial_eligible=False, trial_start_ok=True, saved
     page.route("**/assets/onboarding/iphone-home-screen.mp4*", lambda route: route.fulfill(
         body="not published", status=404, content_type="text/plain",
     ))
+    page.route("**/assets/onboarding/iphone-install-home-focus.jpg*", lambda route: route.fulfill(
+        body=(STATIC / "assets/onboarding/iphone-install-home-focus.jpg").read_bytes(),
+        content_type="image/jpeg",
+    ))
     url = ORIGIN + ("/iphone-pwa/onboarding/li" if pwa else
                     "/course_v3_li_onboarding.html") + "?lang=uz"
     page.route(url, lambda route: route.fulfill(
@@ -535,17 +539,13 @@ def test_new_user_telegram_claim_resumes_guest_choices_without_welcome_screen():
         )
         captured["telegram_state"] = "complete"
         page.evaluate("window.dispatchEvent(new Event('focus'))")
-        page.wait_for_function(
-            "() => window.screen==='profile' && document.querySelector('#footer .cta')",
-            timeout=12000,
-        )
+        # The same-tab verified Telegram claim auto-saves the previously
+        # selected draft. No redundant profile Continue screen is allowed.
+        page.wait_for_function("window.screen==='end'", timeout=12000)
         assert captured["auth_state"]["verified"]
-        assert captured["post"] == []  # no write before final verified action
         assert page.evaluate("window.goals") == ["hsk_exam", "travel"]
         assert page.evaluate("window.streakGoal") == 14
         assert "/iphone-pwa?login=1" not in captured["navigations"]
-        page.locator("#footer .cta").click()
-        page.wait_for_function("window.screen==='end'")
         assert len(captured["post"]) == 1
         assert captured["post"][0]["goals"] == ["hsk_exam", "travel"]
         assert captured["trial_start"] == []
@@ -635,7 +635,7 @@ def test_pwa_guest_sees_panda_first_and_oauth_resumes_saved_draft_safely():
         # A competing manual page.goto() here aborts that navigation.
         # Leave the real same-tab journey and sessionStorage intact.
         try:
-            page.wait_for_function("window.screen==='profile'", timeout=10000)
+            page.wait_for_function("window.screen==='end'", timeout=15000)
         except Exception:
             # A failed cross-origin navigation can leave chromium-error://
             # where sessionStorage itself throws SecurityError. Never let
@@ -661,10 +661,10 @@ def test_pwa_guest_sees_panda_first_and_oauth_resumes_saved_draft_safely():
         assert captured["oauth"][0]["provider"] == "google"
         assert page.evaluate("window.goals") == ["hsk_exam", "travel"]
         assert page.evaluate("window.streakGoal") == 14
-        assert captured["post"] == []  # Still no write until authenticated consent.
-        page.locator("#footer .cta").click()
-        page.wait_for_function("window.screen==='end'")
+        # Explicit guest choices are saved automatically after OAuth proves
+        # the same account. No extra profile/Continue action.
         assert len(captured["post"]) == 1
+        assert page.evaluate("window.screen") == "end"
         assert captured["post"][0]["goals"] == ["hsk_exam", "travel"]
         assert not captured["pageerrors"]
         browser.close()
@@ -745,16 +745,15 @@ def test_new_iphone_signup_shows_install_video_guide_after_verified_save_only():
         assert captured["oauth"][0]["provider"] == "google"
         # The mocked OAuth provider redirects in the SAME tab. Do not
         # interrupt that navigation with an extra manual page.goto().
-        page.wait_for_function("window.screen==='profile'", timeout=15000)
-        assert page.locator(".li-install-card").count() == 0  # not saved yet
-        page.locator("#footer .cta").click()
-        page.locator(".li-install-card").wait_for(state="visible")
-        assert len(captured["post"]) == 1  # actual owner-scoped save occurred
+        page.locator(".li-install-card").wait_for(state="visible", timeout=15000)
+        assert len(captured["post"]) == 1  # verified auto-save
+        assert page.locator(".li-install-hero").is_visible()
+        assert page.locator(".li-install-how").inner_text() == "Qanday?"
+        assert page.locator(".li-install-video-page").is_hidden()
+        assert page.locator("#footer .cta").count() == 0
+        page.locator(".li-install-how").click()
         page.locator(".li-install-video-fallback").wait_for(state="visible")
-        assert page.locator(".li-install-video").is_hidden()
-        assert page.locator(".li-install-steps li").count() == 4
-        assert page.locator(".li-install-continue, .li-install-note, .li-install-intro").count() == 0
-        assert page.evaluate("window.screen") == "profile"  # no mock Pro grant
+        assert page.locator(".li-install-video-fallback .li-install-steps li").count() == 3
         page.locator(".li-install-close").click()
         page.wait_for_function("window.screen==='end'")
         assert not captured["trial_start"]
@@ -816,8 +815,8 @@ def test_trial_activation_denial_offers_real_retry_and_free_course():
         )
         _advance_to_profile(page)
         page.locator("#footer .cta").click()
-        page.wait_for_function("window.screen==='pro'")
-        for _ in range(5):
+        page.wait_for_function("window.screen==='trialIntro'")
+        for _ in range(4):
             page.locator("#footer .cta").click()
         page.locator(".li-remote-error").wait_for(state="visible")
         assert page.locator(".li-remote-error").count() == 1
@@ -861,8 +860,8 @@ def test_pwa_lost_trial_start_reply_reconciles_without_duplicate_grant():
         page.route("**/api/v3/pwa/trial/status", read_authoritative_status)
         _advance_to_profile(page)
         page.locator("#footer .cta").click()
-        page.wait_for_function("window.screen==='pro'")
-        for _ in range(5):
+        page.wait_for_function("window.screen==='trialIntro'")
+        for _ in range(4):
             page.locator("#footer .cta").click()
         page.wait_for_function("window.screen==='trialDone'")
         assert len(captured["trial_start"]) == 1
@@ -879,13 +878,18 @@ def test_trial_slides_cannot_forge_activation_or_two_day_push_claim():
         page, captured = _page(browser, pwa=True, trial_eligible=True)
         _advance_to_profile(page)
         page.locator("#footer .cta").click()
-        page.wait_for_function("window.screen==='pro'")
+        page.wait_for_function("window.screen==='trialIntro'")
         assert len(captured["post"]) == 1
         assert captured["trial_start"] == []
-        # Pro intro + three intact demo promo scenes
-        for expected in ["trialIntro", "trial1", "trial2", "trial3"]:
+        assert page.locator(".li-pro-welcome h1").inner_text() == "HSK AI PRO"
+        assert page.locator(".li-pro-welcome-panda").is_visible()
+        for expected in ["trial1", "trial2", "trial3"]:
             page.locator("#footer .cta").click()
             assert page.evaluate("window.screen") == expected
+            if expected == "trial2":
+                assert "Safarda" in page.locator("#stage .trial h2").inner_text()
+            if expected == "trial3":
+                assert "HSK" in page.locator("#stage .trial h2").inner_text()
         page.locator("#footer .cta").click()
         page.wait_for_function("window.screen==='trialDone'")
         assert len(captured["trial_start"]) == 1

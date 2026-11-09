@@ -62,6 +62,9 @@ def _prepare(browser, *, ios=True, installed=False, has_video=False):
             route.fulfill(status=200, body=video, headers=headers)
 
     page.route("**/assets/onboarding/iphone-home-screen.mp4*", video_response)
+    page.route("**/assets/onboarding/iphone-install-home-focus.jpg*", lambda route: route.fulfill(
+        body=(STATIC / "assets/onboarding/iphone-install-home-focus.jpg").read_bytes(),
+        content_type="image/jpeg"))
     html = (
         "<!doctype html><html lang='uz'><head><meta name='viewport' content='width=device-width'>"
         "<style>" + CSS + "</style></head>"
@@ -77,28 +80,37 @@ def _prepare(browser, *, ios=True, installed=False, has_video=False):
     return page, errors
 
 
-def test_iphone_browser_after_verified_registration_shows_video_slot_and_fallback():
+def test_iphone_install_starts_with_focus_photo_then_video_with_three_fallback_steps():
     with pw.sync_playwright() as p:
         browser = getattr(p, os.environ.get('PWA_E2E_ENGINE', 'chromium')).launch()
         page, errors = _prepare(browser)
+        # Verified login may preload before the installation guide is shown.
+        page.evaluate("() => HSKAILiInstallGuide.preload()")
+        assert page.evaluate("() => document.querySelector('video') === null") is True
         opened = page.evaluate("""() => {
           window.__next=0;
           return HSKAILiInstallGuide.open({userId:37,lang:"uz"},()=>window.__next++);
         }""")
         assert opened is True
-        assert page.get_by_role("dialog").is_visible()
-        assert page.locator(".li-install-steps li").count() == 4
-        assert page.locator(".li-install-intro, .li-install-note, .li-install-continue").count() == 0
+        assert page.locator(".li-install-hero").is_visible()
+        page.wait_for_function("document.querySelector('.li-install-hero')?.naturalWidth > 0")
+        assert page.locator(".li-install-title").is_visible()
+        assert "telefoningiz" in page.locator(".li-install-title").inner_text()
+        assert page.locator(".li-install-how").inner_text() == "Qanday?"
+        assert page.locator(".li-install-video-page").is_hidden()
+        assert page.locator(".li-install-continue, .li-install-note").count() == 0
         assert page.locator(".li-install-card").evaluate(
             "(node) => Math.abs(node.getBoundingClientRect().height - innerHeight) < 2")
+        assert page.get_by_role("dialog").get_attribute("aria-modal") == "true"
+
+        page.locator(".li-install-how").click()
+        page.locator(".li-install-video-page").wait_for(state="visible")
         page.locator(".li-install-video-fallback").wait_for(state="visible")
         assert page.locator(".li-install-video").is_hidden()
-        # A missing / slow MP4 displays a readable text fallback from the
-        # first frame instead of an empty grey video while Safari waits.
-        assert page.locator(".li-install-media").evaluate(
-            "(node) => node.classList.contains('is-fallback')") is True
-        assert "aspect-ratio:9/16" in CSS
-        assert page.get_by_role("dialog").get_attribute("aria-modal") == "true"
+        assert page.locator(".li-install-video-fallback .li-install-steps li").count() == 3
+        assert page.locator(".li-install-scroll-steps").is_hidden()
+        page.locator(".li-install-back").click()
+        assert page.locator(".li-install-hero").is_visible()
         page.locator(".li-install-close").click()
         assert page.evaluate("window.__next") == 1
         assert page.get_by_role("dialog").count() == 0
@@ -132,14 +144,21 @@ def test_media_stays_optional_but_real_metadata_can_swap_to_vertical_video():
         page, errors = _prepare(browser, ios=True, has_video=True)
         assert page.evaluate("""() => HSKAILiInstallGuide.open(
           {userId:53,lang:"tj"},()=>{})""") is True
-        # Browser player is hidden until the real MP4 decoder accepts
-        # metadata. The fallback is usable during any download delay.
-        assert page.locator(".li-install-video-fallback").is_visible()
+        assert page.locator(".li-install-hero").is_visible()
+        assert page.locator(".li-install-video-page").is_hidden()
+        page.locator(".li-install-how").click()
         # Actual playable MP4, not a synthetic loadedmetadata event.
         page.locator(".li-install-video").wait_for(state="visible", timeout=15000)
         assert page.locator(".li-install-video").evaluate(
             "(video) => video.readyState >= HTMLMediaElement.HAVE_METADATA")
         assert page.locator(".li-install-video-fallback").is_hidden()
+        assert page.locator(".li-install-scroll-steps .li-install-steps li").count() == 3
+        # Instructions live below the initial viewport, revealed by swipe.
+        assert page.locator(".li-install-scroll-steps").evaluate(
+            "(node) => node.getBoundingClientRect().top >= innerHeight - 20")
+        page.locator(".li-install-video-page").evaluate(
+            "(node) => node.scrollTop = node.scrollHeight")
+        assert page.locator(".li-install-scroll-steps").is_visible()
         page.locator(".li-install-close").click()
         assert page.get_by_role("dialog").count() == 0
         assert not errors

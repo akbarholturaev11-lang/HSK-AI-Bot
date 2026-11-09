@@ -16,6 +16,25 @@ SHA256 = "3e099a0c0489d9f0dc3e358490f5d87f2682462204eac7668b557c918874d15e"
 
 
 class SafariInstallVideoRouteTests(unittest.IsolatedAsyncioTestCase):
+    async def test_supplied_focus_hero_is_served_from_fixed_public_path(self):
+        image = Path("app/static/assets/onboarding/iphone-install-home-focus.jpg")
+        self.assertTrue(image.is_file())
+        data = image.read_bytes()
+        self.assertEqual(len(data), 164899)
+        self.assertEqual(
+            hashlib.sha256(data).hexdigest(),
+            "17848fda4d9cbdf9655cd407c10efa0e5b6ae7fcf6b59132f47314134c553428",
+        )
+        async with AsyncClient(
+            transport=ASGITransport(app=app), base_url="https://hsk.test"
+        ) as client:
+            response = await client.get(
+                "/assets/onboarding/iphone-install-home-focus.jpg"
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers["content-type"], "image/jpeg")
+        self.assertEqual(response.content, data)
+
     async def test_real_video_metadata_and_partial_content_on_slow_connections(self):
         self.assertTrue(MP4.is_file(), "Approved install video must exist on this branch")
         video = MP4.read_bytes()
