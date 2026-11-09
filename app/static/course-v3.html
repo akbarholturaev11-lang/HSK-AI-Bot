@@ -6131,7 +6131,12 @@ function _fetchCourseMap(lv,signal){
         throw new Error("pwa_actor_changed");
       }
       d._status=r.status;return d;
-    }).catch(function(){return {_status:r.status,_parseFail:true}});
+    }).catch(function(err){
+      // Never downgrade a verified browser actor/CSRF mismatch into a parse
+      // failure that the new transient map retry could accidentally repeat.
+      if(err&&err.message==="pwa_actor_changed")throw err;
+      return {_status:r.status,_parseFail:true};
+    });
   });
 }
 function refreshPwaCheckoutMap(){
