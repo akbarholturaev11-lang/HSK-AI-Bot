@@ -822,6 +822,11 @@ def test_voice_shell_matches_panda_quota_and_call_layout(width, motion):
             })
             page.locator("#s-voice .voicebox button").wait_for()
             page.wait_for_function("() => typeof renderVoice !== 'undefined' && !!renderVoice._quotaPending")
+            # Existing Panda entrance animates the illustration's transform for
+            # 620ms. Measure stable layout after it settles, not its intentional
+            # visual bounce; reduced-motion is measured without any delay.
+            if motion != "reduce":
+                page.wait_for_timeout(650)
             after = geometry(page, ready=True)
             assert_reserved_layout(before, after)
             assert page.locator("#s-voice .pwa-voice-shell").count() == 0
