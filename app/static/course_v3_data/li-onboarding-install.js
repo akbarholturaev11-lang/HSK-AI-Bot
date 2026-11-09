@@ -179,7 +179,8 @@
       howButton.addEventListener("click", function() {
         intro.hidden = true; detail.hidden = false;
         card.classList.add("li-install-show-video");
-        if (movie.readyState >= 1) showMovie();
+        if (movie.error) showFallback();
+        else if (movie.readyState >= 1) showMovie();
         else failTimer = setTimeout(showFallback, 10000);
         back.focus();
       });
