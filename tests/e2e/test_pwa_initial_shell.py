@@ -40,6 +40,18 @@ def test_single_shell_before_any_api_and_telegram_remains_unchanged(pwa):
                 assert page.locator("#nav button").count() == 5
                 assert page.locator("#s-profile .pwa-initial-shell").count() == 1
                 assert page.locator("#s-rating .pwa-initial-shell").count() == 1
+                # Every existing primary PWA tab uses its own final-layout slots.
+                assert page.locator("#s-mashq .pwa-practice-row").count() == 6
+                assert page.locator("#s-mashq .mashq-group").count() == 2
+                assert page.locator("#s-voice .pwa-voice-shell .voicebox").count() == 1
+                assert page.locator("#s-profile .pwa-profile-shell .phero").count() == 1
+                assert page.locator("#s-profile .pwa-profile-shell .accuracy-ring").count() == 2
+                assert page.locator("#s-rating .pwa-rating-shell .rating-podium-item").count() == 3
+                assert page.locator("#s-rating .pwa-rating-shell .rating-podium-meta").count() == 1
+                assert page.locator("#s-rating .pwa-rating-shell .rating-podium-queue").count() == 1
+                assert page.locator("#s-rating .pwa-rating-shell .pwa-rating-row").count() == 5
+                for tab in ("mashq", "voice", "rating", "profile"):
+                    assert page.locator(f"#s-{tab} .pwa-initial-shell[aria-busy='true']").count() == 1
                 assert "Pro" not in page.locator("#s-course").inner_text()
                 logo = page.locator("#s-course .pwa-first-logo")
                 assert logo.get_attribute("loading") == "eager"

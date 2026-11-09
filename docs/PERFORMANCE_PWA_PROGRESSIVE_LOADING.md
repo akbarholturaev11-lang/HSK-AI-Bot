@@ -29,6 +29,15 @@ This is a **release acceptance criterion**, not an optional visual enhancement.
 
 - [ ] **Current Rating/Reyting example:** replace the sparse first-rating loading blocks with layout-faithful podium/leaderboard placeholders and verify in-place crossfade by Chromium/WebKit filmstrip. This is **not** marked implemented by adding the policy/CI guard.
 
+## Mandatory retrofit: ALL EXISTING learner PWA functions
+
+This requirement is **retroactive**: every currently implemented learner PWA screen, widget, list, form, in-place layer and future feature must use its OWN layout-matched loading state, not a generic card. Specifically review Course, Practice (six cards), Voice (Panda, quota and CTA), Rating podium/Top 5/ranks, Friends, Profile avatar/accuracy/calendar/achievements, Settings, dictionary, mistakes, tests, lessons, checkout and notifications. Preserve all existing functions during this retrofit.
+
+- [x] Replaced the four existing generic **initial** Practice, Voice, Rating and Profile loading shells with non-personalized visual compositions shaped like their ready screens. Rating also uses the captured podium/row geometry during its independent API pending phase and retains reserved slots on error/retry. No verified account/progress/Pro data is emitted by the shell. Browser first-paint structural and real Rating-geometry/regression assertions added. **CI and real-device geometry signoff still pending.**
+- [ ] Verify EVERY existing PWA screen at 320/390/430px on Chromium/WebKit, reduced motion, slow/failed requests, partial/ready transitions, account switch and real mobile Safari. Compare actual DOM anchors and CLS; mere presence of placeholder does not close a screen.
+- [ ] Audit the current in-place embedded resources, Settings, Friends, notifications, Pro checkout, lesson dialogs, long lists and dynamically added widgets separately: they are not covered just because parent tab has a skeleton.
+- [ ] Record actual before/after filmstrip, LCP/CLS/INP and API/SQL p50/p95 measurements. Keep unverified product-wide acceptance open.
+
 ## Implementation / verification checkpoints
 
 - [x] Identified course startup blocker: original shared source has a full-screen splash and a single `…` placeholder, and waits for the authenticated map before calling `renderAll`.

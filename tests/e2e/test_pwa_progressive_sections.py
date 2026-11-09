@@ -360,3 +360,167 @@ def test_voice_status_refuses_other_session_owners(surface, outcome):
             assert "999" not in page.content()
         finally:
             browser.close()
+
+
+@pytest.mark.parametrize("width", [320, 390, 430])
+@pytest.mark.parametrize("reduced_motion", ["reduce", "no-preference"])
+def test_rating_live_loading_geometry_matches_podium_rows_and_nav(width, reduced_motion):
+    """Compare ACTUAL rendered Rating slots, not invented box coordinates."""
+    from tests.pwa_layout_geometry import capture_geometry, assert_reserved_layout
+
+    payload = json.loads((STATIC / "course_v3_data/hsk1.json").read_text(encoding="utf-8"))
+    payload["authenticated"] = True
+    payload["level"] = "hsk1"
+    payload["user"] = {
+        "name": "Verified test account", "avatar": "阿",
+        "language": "ru", "is_paid": True, "state": "PRO_ACTIVE",
+        "onboarding_completed": True,
+    }
+    held = []
+    errors = []
+
+    def serve(route):
+        path = urlsplit(route.request.url).path
+        if path == "/iphone-pwa/course":
+            route.fulfill(status=200, content_type="text/html", body=pwa_document())
+        elif path == "/api/v3/pwa-auth/session":
+            route.fulfill(status=200, json={"ok": True, "user_id": 31, "csrf": "test-csrf"})
+        elif path == "/api/v3/pwa/map":
+            route.fulfill(status=200, json=payload, headers={
+                "X-HSK-PWA-User-ID": "31", "Cache-Control": "no-store",
+            })
+        elif path == "/api/v3/pwa/gamification":
+            held.append(route)
+        elif path.startswith("/api/"):
+            route.fulfill(status=404, json={"ok": False, "error": "not_mocked"})
+        else:
+            file = (STATIC / path.lstrip("/")).resolve()
+            if file.is_file() and file.is_relative_to(STATIC.resolve()):
+                mime, _ = mimetypes.guess_type(file)
+                route.fulfill(path=str(file), content_type=mime or "application/octet-stream")
+            else:
+                route.fulfill(status=404, body="")
+
+    anchors = {
+        "title": "#s-rating .rating-title",
+        "podium": "#s-rating .rating-podium-list",
+        "members": "#s-rating .rating-podium-meta",
+        "top-five": "#s-rating .rating-podium-queue",
+        "row-1": "#s-rating .lr",
+        "nav": "#nav",
+    }
+    with sync_playwright() as playwright:
+        browser = getattr(playwright, os.getenv("PWA_E2E_ENGINE", "chromium")).launch()
+        try:
+            page = browser.new_context(
+                viewport={"width": width, "height": 844}, is_mobile=True,
+                reduced_motion=reduced_motion,
+            ).new_page()
+            page.set_default_timeout(15000)
+            page.on("pageerror", lambda error: errors.append(str(error)))
+            page.add_init_script(
+                """(() => {
+                  window.__ratingCLS = null;
+                  if ('PerformanceObserver' in window &&
+                      PerformanceObserver.supportedEntryTypes &&
+                      PerformanceObserver.supportedEntryTypes.includes('layout-shift')) {
+                    window.__ratingCLS = 0;
+                    new PerformanceObserver(list => list.getEntries().forEach(e => {
+                      if (!e.hadRecentInput) window.__ratingCLS += e.value;
+                    })).observe({type:'layout-shift', buffered:true});
+                  }
+                })();"""
+            )
+            page.route("**/*", serve)
+            page.goto(ORIGIN + "/iphone-pwa/course?lang=ru&onboarded=1", wait_until="domcontentloaded")
+            page.locator("#s-course .uban").first.wait_for()
+            page.evaluate("if (window.__ratingCLS !== null) window.__ratingCLS = 0")
+            page.locator('#nav button[data-s="rating"]').click()
+            page.locator("#s-rating .pwa-rating-shell[aria-busy=true]").wait_for()
+            assert len(held) == 1
+            assert page.locator("#s-rating .pwa-rating-trophy").count() == 3
+            assert page.locator("#s-rating .pwa-rating-row").count() == 5
+            if reduced_motion == "reduce":
+                assert page.locator("#s-rating .pwa-rating-trophy").first.evaluate(
+                    "(node) => getComputedStyle(node).animationName"
+                ) == "none"
+            before = capture_geometry(page, anchors)
+            held.pop().fulfill(status=200, json={
+                "ok": True, "league": "Bronze", "league_size": 12,
+                "leaderboard": [
+                    {"name": f"Student {i}", "rank": i, "xp": 110-i*10,
+                     "total_xp": 900-i*20}
+                    for i in range(1, 6)
+                ],
+            })
+            page.get_by_text("Student 1").wait_for()
+            after = capture_geometry(page, anchors)
+            assert_reserved_layout(before, after, max_anchor_shift_px=8, max_dimension_delta_px=16)
+            observed_cls = page.evaluate("window.__ratingCLS")
+            if observed_cls is not None:  # WebKit versions without LayoutShift support
+                assert observed_cls <= 0.1
+            assert page.locator("#s-course .uban").count() > 0
+            assert errors == []
+        finally:
+            browser.close()
+
+
+def test_rating_retry_keeps_podium_and_rows_in_place():
+    """Failure and retry preserve every initial slot, without repeating GETs."""
+    from tests.pwa_layout_geometry import capture_geometry, assert_reserved_layout
+
+    payload = json.loads((STATIC / "course_v3_data/hsk1.json").read_text(encoding="utf-8"))
+    payload["authenticated"] = True
+    payload["level"] = "hsk1"
+    payload["user"] = {"name":"Verified", "avatar":"阿", "language":"ru",
+                       "is_paid":True, "state":"PRO_ACTIVE", "onboarding_completed":True}
+    held = []
+    def serve(route):
+        path = urlsplit(route.request.url).path
+        if path == "/iphone-pwa/course":
+            route.fulfill(status=200, content_type="text/html", body=pwa_document())
+        elif path == "/api/v3/pwa-auth/session":
+            route.fulfill(status=200, json={"ok":True, "user_id":31, "csrf":"test-csrf"})
+        elif path == "/api/v3/pwa/map":
+            route.fulfill(status=200, json=payload, headers={"X-HSK-PWA-User-ID":"31"})
+        elif path == "/api/v3/pwa/gamification":
+            held.append(route)
+        elif path.startswith("/api/"):
+            route.fulfill(status=404, json={"ok":False})
+        else:
+            file = (STATIC / path.lstrip("/")).resolve()
+            if file.is_file() and file.is_relative_to(STATIC.resolve()):
+                mime, _ = mimetypes.guess_type(file)
+                route.fulfill(path=str(file), content_type=mime or "application/octet-stream")
+            else:
+                route.fulfill(status=404, body="")
+    anchors = {
+        "podium": "#s-rating .rating-podium-list",
+        "members": "#s-rating .rating-podium-meta",
+        "top-five": "#s-rating .rating-podium-queue",
+        "row-1": "#s-rating .pwa-rating-row",
+        "nav": "#nav",
+    }
+    with sync_playwright() as playwright:
+        browser = getattr(playwright, os.getenv("PWA_E2E_ENGINE", "chromium")).launch()
+        try:
+            page = browser.new_context(viewport={"width":390,"height":844}, is_mobile=True).new_page()
+            page.set_default_timeout(15000)
+            page.route("**/*", serve)
+            page.goto(ORIGIN + "/iphone-pwa/course?lang=ru", wait_until="domcontentloaded")
+            page.locator("#s-course .uban").first.wait_for()
+            page.locator('#nav button[data-s="rating"]').click()
+            page.locator("#s-rating .pwa-rating-shell").wait_for()
+            before = capture_geometry(page, anchors)
+            assert len(held) == 1
+            held.pop().fulfill(status=503, json={"ok":False})
+            retry = page.locator("#s-rating .pwa-rating-error button")
+            retry.wait_for(state="visible")
+            after_error = capture_geometry(page, anchors)
+            assert_reserved_layout(before, after_error)
+            retry.click()
+            page.locator("#s-rating .pwa-rating-body[aria-busy=true]").wait_for()
+            assert len(held) == 1
+            assert page.locator("#s-course .uban").count() > 0
+        finally:
+            browser.close()
