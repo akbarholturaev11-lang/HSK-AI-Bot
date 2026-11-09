@@ -420,7 +420,10 @@ var STREAKS=(window.HSKAI_LI_OPTIONS||{}).STREAKS||[];
 /* Pro perks: three existing promo slides from course-v3.html (adPromoSlides). */
 var PERKS=(window.HSKAI_LI_OPTIONS||{}).PERKS||[];
 var minutes=null,focus=null,streakGoal=null;
-var LANG=(new URLSearchParams(location.search).get("lang")||"uz");if(!T[LANG])LANG="uz";
+var LANG=window.HSKAI_LI_RETURN_LANG||
+  new URLSearchParams(location.search).get("lang")||"uz";
+if(!T[LANG])LANG="uz";
+document.documentElement.lang=LANG;
 var screen="account",trail=[],track="hsk20",level=null,goals=[],lastGoal=null,timer=null,demoStatus=false;
 var QUESTION_FLOW=["version","level","goal","time","focus"];
 function t(k){return T[LANG][k]}
