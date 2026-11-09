@@ -43,10 +43,17 @@ ffmpeg -i YOUR_ORIGINAL.mp4 \
   fixed FastAPI route supports HTTP Range requests and skips gzip recompression.
 - The same video is used by Li post-registration iPhone Safari PWA onboarding
   and the public iPhone PWA install/download page.
-- Safari: full-screen guide, heading + vertical playable video. No Continue
-  button or duplicated copy below the movie.
-- If MP4 is missing, stalled or fails: four short UZ/RU/TJ textual steps are
-  displayed instead, never a blank or stuck player.
+- After same-tab verified OAuth, onboarding saves the chosen profile
+  automatically and preloads the approved MP4 ahead of the guide.
+- Safari installation step 1: full-screen localized heading, the reviewed
+  HSK AI Home Screen focus photo, and one "How?" CTA. No duplicate account CTA.
+- Step 2: centered portrait MP4. Three localized instructions are below the
+  first viewport and appear only after swiping down; on missing or stalled
+  video, those three instructions replace the player. No autoplay or Continue.
+- Reviewed focus photo: `app/static/assets/onboarding/iphone-install-home-focus.jpg`
+  (164899 bytes, SHA-256
+  `17848fda4d9cbdf9655cd407c10efa0e5b6ae7fcf6b59132f47314134c553428`),
+  publicly served at `/assets/onboarding/iphone-install-home-focus.jpg`.
 - Other iOS browsers: Li panda and copyable `https://hskai.app/iphone-pwa`
   URL to open in Safari. Do not attempt an automatic Safari launch or pass
   auth/session/referral tokens through a browser handoff.
