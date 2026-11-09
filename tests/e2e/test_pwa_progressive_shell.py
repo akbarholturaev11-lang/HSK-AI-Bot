@@ -195,3 +195,12 @@ def test_profile_accuracy_has_independent_loading_success_and_error_states():
         assert page.locator(".profile-accuracy[aria-busy='true']").count() == 0
         assert "—" in page.locator(".profile-accuracy").inner_text()
         browser.close()
+
+
+def test_optional_prefetch_runs_after_map_first_paint_and_does_not_change_telegram():
+    # Scheduling nearby lesson fetches after first paint prevents a large
+    # course map from doing extra traversal before displaying the visible tab.
+    assert 'if(PWA_COURSE_HOST&&typeof requestAnimationFrame==="function")' in HTML
+    assert 'if(document.visibilityState!=="hidden"&&MAP)prefetchNearbyLessons();' in HTML
+    assert 'else prefetchNearbyLessons();' in HTML
+    assert 'App.show(tab);' in HTML
