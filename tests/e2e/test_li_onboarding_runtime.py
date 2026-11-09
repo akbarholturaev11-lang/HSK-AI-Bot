@@ -573,6 +573,7 @@ def test_li_telegram_expired_does_not_sign_in_and_can_retry_without_welcome():
             "() => document.querySelector('#stage .status')?.textContent?.includes('muddati tugadi')"
         )
         assert page.evaluate("sessionStorage.getItem('hskai.pwa.telegram.pending')") is None
+        assert page.evaluate("sessionStorage.getItem('hsk_li_auth_handoff_v1')") is None
         assert page.locator("#stage .provider").nth(0).is_enabled()
         assert captured["auth_state"]["verified"] is False
         assert captured["post"] == []
