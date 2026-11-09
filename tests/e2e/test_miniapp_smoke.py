@@ -5970,3 +5970,64 @@ def test_desktop_course_modal_covers_full_viewport_and_mobile_keeps_bottom_sheet
     assert abs(mobile["cardBottom"] - 844) <= 2
     page.evaluate("App.closeSheet()")
     expect(sheet).not_to_have_class(re.compile(r"\bon\b"))
+
+
+def test_rating_pending_request_survives_render_all_without_duplicate_or_empty_rank(page):
+    """A language re-render during a slow leaderboard cannot show an empty rank.
+
+    The first request remains pending; another render must neither issue a
+    second read nor replace the loading boundary with fake empty results.
+    """
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+    pending = []
+
+    def hold_rating(route):
+        pending.append(route)
+
+    page.route("**/api/miniapp/gamification?*", hold_rating)
+    page.add_init_script(
+        "localStorage.setItem('hsk_v3_onb','1'); localStorage.setItem('hsk_v3_level','hsk1');"
+    )
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+    page.locator('#nav button[data-s="rating"]').click()
+    expect(page.locator("#s-rating")).to_contain_text("…")
+    page.wait_for_function("() => typeof ratingMeta !== 'undefined' && ratingMeta.loading === true")
+    assert len(pending) == 1
+
+    page.evaluate("App.setLang('ru')")
+    expect(page.locator("#s-rating")).to_contain_text("…")
+    assert len(pending) == 1, "re-render must deduplicate a pending rating API call"
+
+    json_response(pending.pop(), {
+        "ok": True, "league": "Bronze", "league_size": 1,
+        "weekly_reset_seconds": 3600, "weekly_xp": 35,
+        "xp": 60, "streak": 1,
+        "leaderboard": [{"rank": 1, "name": "Pending learner",
+                         "weekly_xp": 35, "xp": 60, "level": "hsk1", "me": True}],
+    })
+    expect(page.locator("#s-rating")).to_contain_text("Pending learner")
+    assert page.evaluate("ratingMeta.loading") is None or page.evaluate("ratingMeta.loading") is False
+
+
+def test_friends_pending_request_keeps_its_own_loading_boundary(page):
+    """A slow referrals API cannot hide its own skeleton on a second render."""
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+    pending = []
+    page.route("**/api/v3/invite?*", lambda route: pending.append(route))
+    page.add_init_script("localStorage.setItem('hsk_v3_onb','1')")
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+    page.evaluate("App.show('rating','friends')")
+    page.wait_for_function("() => typeof referralMeta !== 'undefined' && referralMeta.loading === true")
+    expect(page.locator("#s-rating")).to_contain_text("…")
+    assert len(pending) == 1
+    page.evaluate("App.setLang('ru')")
+    expect(page.locator("#s-rating")).to_contain_text("…")
+    assert len(pending) == 1
+    json_response(pending.pop(), {"ok": True, "joined_count": 0, "active_count": 0,
+                                   "required": 2, "referrals": []})
+    page.wait_for_function("() => typeof referralMeta !== 'undefined' && !referralMeta.loading")
+    expect(page.locator("#s-rating")).not_to_contain_text("…")
