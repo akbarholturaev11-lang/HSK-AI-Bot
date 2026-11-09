@@ -110,7 +110,8 @@ def test_first_paint_localizes_before_any_account_api(lang, label, accessibility
         assert page.locator('#s-course .pwa-initial-shell').get_attribute(
             "aria-label"
         ) == accessibility
-        assert page.evaluate("document.documentElement.lang") == lang
+        # App locale uses "tj"; HTML language uses BCP 47 "tg" for Tajik.
+        assert page.evaluate("document.documentElement.lang") == ("tg" if lang == "tj" else lang)
         browser.close()
 
 
