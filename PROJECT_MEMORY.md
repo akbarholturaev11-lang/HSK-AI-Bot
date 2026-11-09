@@ -4,6 +4,11 @@
 
 HSK AI helps Uzbek-, Russian-, and Tajik-speaking learners study Chinese through structured HSK lessons, practice, AI assistance, and related tools. The course is the core product; AI, voice, XP, reminders, rewards, and subscriptions support it.
 
+## Product direction (owner decision, 2026-11-10)
+
+- Active product investment is **learner-facing PWA and Android** plus necessary shared backend, auth, payment, course, Admin PWA and acquisition/entry flows. macOS/Windows Desktop development is **deferred**: no proactive desktop features, parity work, builds or standalone tests; preserve clean reusable shared contracts for eventual reconnection without speculative desktop-specific code. Keep existing code and avoid intentional regressions. The operational instruction is in `AGENTS.md`; `AI_RULES.md` desktop parity/Coming Soon rules apply only to an explicitly authorized future desktop task.
+- Long-term **Telegram bot** direction: an entry/handoff to PWA or Android, no lessons inside the bot. **Not effective yet:** current bot/Mini App teaching, account, Pro, referral, payment and progress flows remain intact until an explicitly scoped and tested migration. Do not interpret the roadmap as authorization to disable them now or expand bot-only learning.
+
 ## Architecture
 
 - `app/main.py` composes the FastAPI application; `app/bot/create_bot.py` creates the Aiogram bot and registers handlers.
