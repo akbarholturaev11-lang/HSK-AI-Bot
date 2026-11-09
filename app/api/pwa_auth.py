@@ -469,6 +469,15 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                             httponly=True, samesite="lax",
                         )
                     return response
+            # Gradual opt-in cutover: the Li panda entry is a public visual
+            # shell, not a login or an entitlement. Returning verified actors
+            # still use the normal authenticated course route above.
+            # The flag defaults OFF in production until release QA is complete.
+            if bool(getattr(settings_obj, "PWA_LI_ONBOARDING_ENTRY_ENABLED", False)):
+                return RedirectResponse(
+                    "/iphone-pwa/onboarding/li", status_code=303,
+                    headers={**_NO_STORE, "Referrer-Policy": "no-referrer"},
+                )
             return FileResponse(
                 "app/static/iphone-pwa-login.html", media_type="text/html",
                 headers={**_NO_STORE,
