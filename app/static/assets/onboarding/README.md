@@ -62,7 +62,7 @@ PWA hostname; otherwise re-record the step with the official URL.
 - No other path is dynamically fetched from query strings or user input.
 - When this MP4 **does not exist**, the route intentionally
   returns HTTP 404. The UI hides the broken player, shows the exact canonical
-  RU/UZ/TJ four-step text guide, and offers a Continue action.
+  RU/UZ/TJ four-step text guide. The guide has no Continue button; the close icon resumes onboarding.
 
 Record an actual iPhone **Safari** demonstration using a neutral test device
 with notifications/account emails/secrets hidden:
@@ -73,7 +73,7 @@ with notifications/account emails/secrets hidden:
 
 Upload ONLY the reviewed recording with the exact fixed filename. A reviewed
 video must not claim the app can install itself, bypass iOS prompts or enable
-Web Push without separate permission. The HTML uses `<video controls
+Web Push without separate permission. The guide uses `<video controls
 playsinline preload="metadata">`, not forced autoplay. Browser `Range` video
 requests are handled by Starlette `FileResponse` when the file exists.
 
@@ -83,6 +83,7 @@ requests are handled by Starlette `FileResponse` when the file exists.
   save; video loads and plays with controls.
 - On media fetch failure: no broken video or spinner; four short textual steps stay
   accessible. The learner can continue.
+- A verified account in a non-Safari iOS browser sees Li panda and a copyable official Safari URL, without video or Safari auto-launch.
 - Existing, already-onboarded users, Telegram Mini App, desktop/Android,
   installed iPhone standalone PWA: no first-time prompt.
 - Dismissed guide: local per-account flag prevents repeated display in the same
