@@ -480,6 +480,10 @@ jobs:
         run: |
           python -m pytest -q tests/e2e/test_pwa_initial_shell.py
           PWA_E2E_ENGINE=webkit python -m pytest -q tests/e2e/test_pwa_initial_shell.py
+      - name: Verify independent PWA sections in Chromium and iPhone WebKit
+        run: |
+          python -m pytest -q tests/e2e/test_pwa_progressive_sections.py
+          PWA_E2E_ENGINE=webkit python -m pytest -q tests/e2e/test_pwa_progressive_sections.py
       - name: Verify independent Rating and Friends loading under stalled APIs
         run: >-
           python -m pytest -q tests/e2e/test_miniapp_smoke.py
