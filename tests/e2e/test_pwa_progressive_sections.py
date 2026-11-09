@@ -709,9 +709,9 @@ def test_practice_initial_loading_geometry_matches_six_real_cards(width, motion)
             page.route("**/*", serve)
             page.goto(ORIGIN + "/iphone-pwa/course?lang=ru", wait_until="domcontentloaded")
             page.wait_for_function("() => typeof App === 'object' && typeof App.show === 'function'")
-            page.wait_for_function("() => !!document.querySelector('#s-mashq .pwa-practice-shell')")
+            page.wait_for_function("() => !!document.querySelector('#s-mashq .pwa-mashq-shell')")
             page.evaluate("App.show('mashq')")
-            page.locator("#s-mashq .pwa-practice-shell[aria-busy=true]").wait_for()
+            page.locator("#s-mashq .pwa-mashq-shell[aria-busy=true]").wait_for()
             assert len(held) == 1
             assert page.locator("#s-mashq .row-card").count() == 0
             before = geometry(page)
@@ -725,7 +725,7 @@ def test_practice_initial_loading_geometry_matches_six_real_cards(width, motion)
             page.locator("#s-mashq .row-card").first.wait_for()
             after = geometry(page)
             assert_reserved_layout(before, after)
-            assert page.locator("#s-mashq .pwa-practice-shell").count() == 0
+            assert page.locator("#s-mashq .pwa-mashq-shell").count() == 0
             assert page.locator("#s-mashq .row-card").count() == 6
             assert page.locator("#s-course .uban").count() > 0
             assert errors == []
