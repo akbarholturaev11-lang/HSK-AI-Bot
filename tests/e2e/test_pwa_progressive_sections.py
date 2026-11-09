@@ -714,10 +714,18 @@ def test_practice_initial_loading_geometry_matches_six_real_cards(width, motion)
             page.locator("#s-mashq .pwa-mashq-shell[aria-busy=true]").wait_for()
             assert len(held) == 1
             assert page.locator("#s-mashq .row-card").count() == 0
-            # Real row geometry rules must match the actual shell class.
-            assert page.locator("#s-mashq .pwa-practice-row").first.evaluate(
-                "(el) => getComputedStyle(el).minHeight"
-            ) == "68px"
+            # Reserve actual two-line labels at narrow widths. Never relax
+            # the <=8px anchor threshold or hide the real six-card layout.
+            expected_heights = (
+                [80, 80, 68, 80, 68, 68] if width <= 340 else
+                [68, 80, 68, 68, 68, 68] if width <= 400 else
+                [68] * 6
+            )
+            for i, expected in enumerate(expected_heights):
+                actual = page.locator("#s-mashq .pwa-practice-row").nth(i).evaluate(
+                    "(el) => parseFloat(getComputedStyle(el).minHeight)"
+                )
+                assert actual == expected
             before = geometry(page)
             if motion == "reduce":
                 assert page.locator("#s-mashq .pwa-layout-ink").first.evaluate(
