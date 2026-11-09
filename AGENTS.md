@@ -103,6 +103,40 @@ Har taskdan keyin kunlik log yaratish shart emas.
 
 ---
 
+## Permanent analytics integrity and feature coverage
+
+**This is a cross-session rule for Codex, cloud AI and every future feature change**, not
+a one-time cleanup task. Read the canonical plan:
+[`docs/analytics/ANALYTICS_INTEGRITY_IMPLEMENTATION_PLAN.md`](docs/analytics/ANALYTICS_INTEGRITY_IMPLEMENTATION_PLAN.md).
+
+Before implementing or completing any **user-observable behavior or business-flow
+change** (onboarding, lessons, practice, AI/voice, Pro/paywall, checkout/payment,
+referral, notifications, login, app/platform flows, and related error paths):
+
+1. Inspect existing actual event writers, trusted identity and payment/access
+   authority, persistence, Admin PWA aggregation, UI/report consumer and tests.
+2. State the **Analytics Impact** explicitly: reuse an existing verified event,
+   add/version needed instrumentation, report an unsupported metric as unavailable
+   with a reason, or demonstrate **no measurement impact**. Cosmetic text/CSS or
+   non-behavioral refactors do not require invented telemetry.
+3. When behavior needs measurement, connect the **complete chain in the same
+   task**: client/server event → authenticated canonical user/attempt →
+   deduplicated storage → metric contract and Admin consumer → focused tests →
+   analytics coverage registry (once created). A new event enum alone is NOT
+   implementation; a working feature with an unconnected dashboard is unfinished.
+4. Check affected platforms, cohort/time window, denominator, event loss and
+   attribution limits. Never treat missing instrumentation as zero, infer
+   conversions from unrelated events or call estimates verified revenue.
+5. Put `Analytics Impact: ...` and evidence or the justified exemption in the
+   PR/task completion notes. Preserve existing auth, payments, Pro, lesson results,
+   privacy and performance. Telemetry must never block the user's critical flow.
+
+**Enforcement status:** this agent rule is active; the coverage registry, CI
+guard and remaining analytics repairs are planned tasks in the linked document.
+Do not claim those mechanisms already exist until verified on `main`.
+
+---
+
 ## Doimiy lokalizatsiya qoidasi
 
 UI matni qo‘shish, tarjimani tahrirlash yoki yangi til kiritishdan oldin
