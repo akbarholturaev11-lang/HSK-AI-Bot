@@ -562,10 +562,13 @@ def test_li_telegram_expired_does_not_sign_in_and_can_retry_without_welcome():
             status=200, content_type="text/html",
             body="<html><body>Telegram bot approval</body></html>",
         ))
-        captured["telegram_state"] = "expired"
         page.locator("#stage .provider").nth(0).click()
         page.wait_for_url("https://t.me/hskai_bot?start=pwa_link_" + TELEGRAM_ID + "_uz")
         page.go_back()
+        page.wait_for_function("() => window.screen==='signup'")
+        # A new link is never already expired; expire only while awaiting bot approval.
+        captured["telegram_state"] = "expired"
+        page.evaluate("window.dispatchEvent(new Event('focus'))")
         page.wait_for_function(
             "() => document.querySelector('#stage .status')?.textContent?.includes('muddati tugadi')"
         )
