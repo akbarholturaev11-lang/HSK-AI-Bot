@@ -82,3 +82,6 @@ def test_profile_and_navigation_render_independently_after_map_confirmation():
     assert 'if(PWA_COURSE_HOST&&PROFILE_DETAIL_PENDING&&!PROFILE_DETAIL)' in HTML
     assert "pwa-profile-accuracy-pending" in HTML
     assert 'if(PWA_COURSE_HOST)loadProfileDetail();' in HTML
+    # Render the profile once its asynchronous accuracy boundary is active,
+    # not a stale "—" placeholder immediately before replacing with skeleton.
+    assert 'SCREEN==="profile"&&!PWA_PREBOOT_TAB' in HTML
