@@ -270,6 +270,18 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
         )
         self.assertEqual(result.returncode, 0, result.stderr)
 
+    def test_mobile_menu_locale_labels_and_pwa_public_guide_copy(self):
+        from app.public_site.content import NAV_LABELS, PAGES
+        for lang, label in (("tg", "Меню"), ("ru", "Меню"), ("uz", "Menyu")):
+            self.assertEqual(NAV_LABELS[lang]["more"], label)
+        for locale in ("tj", "ru", "uz"):
+            guide = PAGES[f"/{locale}/guide/"]
+            faq = PAGES[f"/{locale}/guide/faq/"]
+            self.assertTrue(any("Safari" in body and "PWA" in body
+                                for _, body in guide["sections"]))
+            self.assertTrue(any("Safari" in body and "PWA" in body
+                                for _, body in faq["sections"]))
+
     async def test_product_first_header_language_and_download_contract(self):
         # Content remains crawlable without JavaScript, with one URL per locale.
         for language, url_code in (("tg", "tj"), ("ru", "ru"), ("uz", "uz")):
