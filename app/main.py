@@ -6744,6 +6744,14 @@ async def miniapp_event(request: Request):
                         ),
                         action=action,
                     )
+                elif event == "android_play_opened":
+                    # Opening the Play listing is the Android offer accepted:
+                    # the same cooldown the Direct APK request starts.
+                    await AppPromoDecisionService(session).mark(
+                        telegram_id=telegram_id,
+                        target_platform="android",
+                        action="download_requested",
+                    )
                 await session.commit()
             return result
 

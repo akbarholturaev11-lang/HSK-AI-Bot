@@ -68,7 +68,13 @@ build'da ekanini bilmay chaqiradi.
 - Yo'l bitta: bot profilidagi «📱 HSK AI ilovalari» → Mini App profilidagi
   karta (`?tab=profile&desktop_download=1`, karta fokuslanadi) → Android
   chipi (`POST /api/miniapp/event` → `android_apk_to_chat`) → Mini App
-  yopiladi, APK chatga tushadi. `/android` buyrug'i va eski xabarlardagi
+  yopiladi, APK chatga tushadi. Yangi (PR #300, prod'da yoqilmagan): Admin
+  PWA ilova reklamasi sozlamasiga Google Play havolasi kiritilsa (faqat
+  `play.google.com/store/apps/details?id=com.pomp.hskai`), shu chip va Mini
+  App taklifi Play sahifasini ochadi (`android_play_opened` → Android
+  cooldown va funnel `play_opened`); havola bo'sh bo'lsa yuqoridagi APK yo'li
+  o'zgarmaydi. Tafsilot: `docs/TELEGRAM_PWA_ANDROID_HANDOFF_CONTEXT.md`.
+  `/android` buyrug'i va eski xabarlardagi
   `android_app:get` tugmasi ham ishlaydi. Saytdagi `/desktop-download` sahifasi
   Android uchun direct linkni faqat joriy release’da download URL mavjud
   bo‘lsa ko‘rsatadi; u Telegram `file_id`ning o‘zi bilan link yasamaydi va

@@ -40,6 +40,7 @@ Do **not** report measured Li signup rate, onboarding completion rate, 48h push 
 - [ ] Confirm the 709,956-byte approved MP4's **recorded URL** is the intended official PWA host (the video appears to show an `up.railway.app` hostname), then test actual iPhone Range/seek, playback and text fallback.
 - [ ] Verify real production PWA auth configuration, and separate VAPID, push consent, scheduler and provider delivery before promising a 48-hour Web Push notice. Never auto-opt users in.
 - [ ] Verify signed Telegram Mini App owner and separate Mini App route cutover plan. PWA-only flag does not silently affect it.
+- [ ] The same install guide (intro → video, once per learner) is also opened by the Telegram Mini App → iPhone PWA one-time sign-in landing `/iphone-pwa/handoff` (PR #300), behind the Admin iPhone PWA promo switch. Its real-device QA is tracked in `docs/TELEGRAM_PWA_ANDROID_HANDOFF_CONTEXT.md`; the hostname check above applies to it too.
 - [ ] Verify platform attribution/analytics coverage and do not interpret missing data as zero.
 - [ ] Review staged rollout, monitoring and rollback. Explicit release authorization required before enabling the entry flag or shipping to main.
 

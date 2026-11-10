@@ -7,7 +7,7 @@ from sqlalchemy.pool import StaticPool
 from app.db import models  # noqa: F401
 from app.db.base import Base
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
-from app.db.models.desktop import DesktopDevice
+from app.db.models.desktop import DesktopDevice, DesktopSession
 from app.db.models.user import User
 from app.db.models.user_client_presence import UserClientPresence
 from app.services.app_promo_decision_service import AppPromoDecisionService
@@ -424,11 +424,53 @@ class PlatformPromoDecisionTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(windows["eligible"])
         self.assertEqual(windows["target_platform"], "windows")
 
-    async def test_ios_has_no_automatic_cross_platform_ad(self):
+    async def test_ios_targets_only_the_pwa_and_only_when_admin_enabled_it(self):
+        # iPhone has no native app; with the iPhone PWA switch off it is
+        # never offered and nothing cross-platform is shown instead.
         result = await self._decide("ios")
         self.assertFalse(result["eligible"])
-        self.assertEqual(result["reason"], "no_matching_native_app")
-        self.assertIsNone(result["target_platform"])
+        self.assertEqual(result["reason"], "not_ready")
+        self.assertEqual(result["target_platform"], "ios")
+        self.targets["ios"] = True
+        result = await self._decide("ios")
+        self.assertTrue(result["eligible"])
+        self.assertEqual(result["target_platform"], "ios")
+        for platform in ("web", "unknown"):
+            self.assertEqual((await self._decide(platform))["reason"],
+                             "no_matching_native_app")
+
+    async def test_live_pwa_session_suppresses_ios_until_it_ends(self):
+        self.targets["ios"] = True
+        async with self.sessions() as session:
+            session.add(_device(device_id="pwa-browser", user_id=1,
+                                telegram_id=1001, platform="pwa"))
+            session.add(DesktopSession(
+                id="pwa-session", device_id="pwa-browser",
+                refresh_token_hash="h" * 64, expires_at=NOW + timedelta(days=30)))
+            await session.commit()
+        result = await self._decide("ios")
+        self.assertEqual((result["eligible"], result["reason"]), (False, "already_installed"))
+        # A PWA device never counts as the Android or desktop app.
+        self.assertTrue((await self._decide("android"))["eligible"])
+        for change in ({"revoked_at": NOW - timedelta(minutes=1)},
+                       {"revoked_at": None, "expires_at": NOW - timedelta(minutes=1)}):
+            async with self.sessions() as session:
+                row = await session.get(DesktopSession, "pwa-session")
+                for key, value in change.items():
+                    setattr(row, key, value)
+                await session.commit()
+            self.assertTrue((await self._decide("ios"))["eligible"], change)
+
+    async def test_ios_offer_has_its_own_cooldown(self):
+        self.targets["ios"] = True
+        async with self.sessions() as session:
+            service = AppPromoDecisionService(session)
+            self.assertTrue(await service.mark(
+                telegram_id=1001, target_platform="ios", action="download_requested"))
+            await session.commit()
+        result = await self._decide("ios")
+        self.assertEqual(result["reason"], "cooldown")
+        self.assertTrue((await self._decide("android"))["eligible"])
 
     async def test_revoked_android_device_no_longer_suppresses_android(self):
         async with self.sessions() as session:
