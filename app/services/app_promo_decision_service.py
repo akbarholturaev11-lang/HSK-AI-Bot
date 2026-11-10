@@ -10,7 +10,7 @@ from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.user_client_presence import AppPromoState
 from app.repositories.user_repo import UserRepository
 from app.services.user_device_inventory_service import (
-    NATIVE_PLATFORMS,
+    PROMO_PLATFORMS,
     UserDeviceInventoryService,
     normalize_client_platform,
 )
@@ -101,7 +101,7 @@ class AppPromoDecisionService:
         available_targets: dict[str, bool],
     ) -> dict[str, Any]:
         platform = normalize_client_platform(current_platform)
-        if platform not in NATIVE_PLATFORMS:
+        if platform not in PROMO_PLATFORMS:
             return {
                 "eligible": False,
                 "reason": "no_matching_native_app",
@@ -116,8 +116,11 @@ class AppPromoDecisionService:
                 "cooldown_remaining_seconds": 0,
             }
 
-        installed = await self.inventory.installed_native_platforms(telegram_id)
-        if platform in installed:
+        if platform == "ios":
+            installed = await self.inventory.has_live_pwa_session(telegram_id)
+        else:
+            installed = platform in await self.inventory.installed_native_platforms(telegram_id)
+        if installed:
             return {
                 "eligible": False,
                 "reason": "already_installed",
@@ -170,7 +173,7 @@ class AppPromoDecisionService:
         action: str,
     ) -> bool:
         platform = normalize_client_platform(target_platform)
-        if platform not in NATIVE_PLATFORMS:
+        if platform not in PROMO_PLATFORMS:
             return False
         state = await self._state(
             telegram_id=telegram_id,

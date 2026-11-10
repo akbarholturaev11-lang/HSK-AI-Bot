@@ -877,9 +877,10 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn("function shouldShowAdPromoEntry()", download)
         self.assertIn('state.promoReason === "already_installed"', download)
         self.assertIn('actions.classList.add("pdd-ad-download-actions")', download)
-        # Android qo'shildi; iOS'ga alohida ilova yo'q, shuning uchun u yo'q.
+        # Android qo'shildi; iOS'ning maqsadi native ilova emas, iPhone PWA
+        # (bir martalik kirish havolasi orqali).
         self.assertIn(
-            'var APP_PROMO_PLATFORMS = ["macos", "windows", "android"]', download
+            'var APP_PROMO_PLATFORMS = ["macos", "windows", "android", "ios"]', download
         )
         self.assertIn("buildOsButton(platform, source)", download)
         self.assertNotIn('buildOsButton("android", source)', download)
@@ -962,7 +963,8 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn('HskProfileCarousel.select("apps")', download)
         self.assertNotIn('host.appendChild(card)', download)
         self.assertIn("function openProfileApps()", download)
-        self.assertIn('detectPlatform() !== "android" || !telegramInitData()', download)
+        self.assertIn('if (!telegramInitData() || (device !== "android" && !iphone))', download)
+        self.assertIn('var iphone = device === "ios" && isPlatformAvailable("ios");', download)
         self.assertIn("openProfileAppsSite();", download)
         self.assertIn('sendAndroidToChat("profile")', download)
         self.assertIn('event: "android_apk_to_chat"', download)

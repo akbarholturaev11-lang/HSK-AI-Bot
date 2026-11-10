@@ -18,6 +18,7 @@ _SOURCES = {
     "android": "AndroidAnalyticsService.snapshot",
     "macos": "DesktopAnalyticsService.snapshot.platforms",
     "windows": "DesktopAnalyticsService.snapshot.platforms",
+    "iphone_pwa": "course_miniapp_events.pwa_handoff",
 }
 
 
@@ -128,10 +129,17 @@ def statistics_export(data, query):
             for suffix in ("", "_devices"):
                 add("active." + window + suffix, "devices" if suffix else "analytics_identities",
                     "Recorded android_app_opened on currently linked devices in rolling 1/7/30 days; not selected-period totals.", "course_miniapp_events.created_at")
-        for stage in ("apk_requested", "apk_sent", "session_linked", "first_open"):
+        for stage in ("play_opened", "apk_requested", "apk_sent", "session_linked", "first_open"):
             for kind in ("users", "events"):
                 add(f"funnel.{stage}.{kind}", "analytics_identities" if kind == "users" else "events",
                     "Recorded Android stage in the selected period; users deduplicated by existing analytics identity rules.", "course_miniapp_events.created_at")
+    elif query.platform == "iphone_pwa":
+        result["scope"] = {"telegram_handoff": query.period, "install_and_activity": "not_instrumented"}
+        for stage in ("issued", "completed"):
+            for kind in ("users", "events"):
+                add(f"telegram_handoff.{stage}.{kind}", "accounts" if kind == "users" else "events",
+                    "Server-recorded one-time Telegram to iPhone PWA sign-in links in the selected period; not a Home Screen install.",
+                    "course_miniapp_events.created_at")
     else:
         result["scope"] = {"metrics": "rolling_30_days", "period_filter_applied": False}
         for name in ("download_requests_30d", "verified_first_open_30d", "active_users_30d"):

@@ -8,7 +8,7 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
-from app.db.models.desktop import DesktopDevice
+from app.db.models.desktop import DesktopDevice, DesktopSession
 from app.db.models.user import User
 from app.db.models.user_client_presence import UserClientPresence
 from app.repositories.user_repo import UserRepository
@@ -17,6 +17,10 @@ from app.services.account_identity import owner_clause
 
 MINIAPP_SURFACE = "telegram_miniapp"
 NATIVE_PLATFORMS = frozenset({"android", "macos", "windows"})
+# Targets the automatic app offer may name. iPhone has no native app: its
+# target is the learner PWA, "installed" once a live PWA session exists.
+PROMO_PLATFORMS = NATIVE_PLATFORMS | {"ios"}
+PWA_DEVICE_PLATFORM = "pwa"
 CLIENT_PLATFORMS = frozenset({"android", "ios", "macos", "windows", "web", "unknown"})
 
 
@@ -144,6 +148,28 @@ class UserDeviceInventoryService:
             for platform in rows
             if str(platform) in NATIVE_PLATFORMS
         }
+
+    async def has_live_pwa_session(self, telegram_id: int | User) -> bool:
+        """True while this learner holds an unexpired, unrevoked PWA session.
+
+        A browser cannot tell the server whether it was added to the Home
+        Screen, so a signed-in PWA is the honest "already has it" signal.
+        """
+        row = (
+            await self.session.execute(
+                select(DesktopSession.id)
+                .join(DesktopDevice, DesktopDevice.id == DesktopSession.device_id)
+                .where(
+                    owner_clause(DesktopDevice, telegram_id, telegram_column="telegram_id"),
+                    DesktopDevice.platform == PWA_DEVICE_PLATFORM,
+                    DesktopDevice.revoked_at.is_(None),
+                    DesktopSession.revoked_at.is_(None),
+                    DesktopSession.expires_at > _utcnow(),
+                )
+                .limit(1)
+            )
+        ).scalar_one_or_none()
+        return row is not None
 
     @staticmethod
     def _payload(value: str | None) -> dict[str, Any]:

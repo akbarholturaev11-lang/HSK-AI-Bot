@@ -79,9 +79,13 @@ public download page, native Android code, Desktop, Li onboarding or payments.
    `target_platform`). Add server-written `pwa_handoff_issued`,
    `pwa_handoff_completed` (dedupe = link request id) and client-reported,
    server-authenticated `android_play_opened` (dedupe = event id). Consumer:
-   the basic statistics reader — Android metrics gain `routing.play_opened`;
-   `iphone_pwa` returns `telegram_handoff` counts and explicitly keeps install
-   and activity metrics unavailable. Telemetry failure never blocks the flow.
+   the basic statistics reader (`pwa_read.statistics`, its export and the MCP
+   cache) — the Android funnel gains the first stage `play_opened` (also in the
+   legacy admin funnel); `iphone_pwa` returns `telegram_handoff.{issued,
+   completed}` counts and explicitly keeps install and activity metrics
+   `not_instrumented`. The Admin PWA dashboard card (`pwa_analytics_*` stack)
+   still shows iPhone PWA as not instrumented; showing the handoff counts there
+   is a separate UI follow-up. Telemetry failure never blocks the flow.
 
 ## Risks / Trade-offs
 

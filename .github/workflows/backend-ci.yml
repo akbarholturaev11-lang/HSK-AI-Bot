@@ -226,6 +226,12 @@ jobs:
             tests.test_identity_link_service
       - name: Test isolated iPhone PWA browser and Telegram sign-in
         run: python -m unittest tests.test_pwa_browser_auth tests.test_pwa_initial_shell tests.test_pwa_telegram_bot tests.test_pwa_shake_report tests.test_pwa_telegram_handoff tests.test_app_routing_settings
+      - name: Verify Mini App app offer events reach the iPhone and Android cooldowns
+        env:
+          BOT_TOKEN: "9123456:synthetic-test-only-unusable-secret"
+          DATABASE_URL: "postgresql+asyncpg://qa:qa@127.0.0.1:1/qa"
+          REDIS_URL: "redis://127.0.0.1:1/0"
+        run: python -m unittest tests.test_miniapp_app_routing_events
       - name: Verify actual Safari install MP4 HTTP Range in complete backend environment
         env:
           BOT_TOKEN: "9123456:synthetic-test-only-unusable-secret"
@@ -515,6 +521,10 @@ jobs:
         run: |
           python -m pytest -q tests/e2e/test_pwa_initial_shell.py
           PWA_E2E_ENGINE=webkit python -m pytest -q tests/e2e/test_pwa_initial_shell.py
+      - name: Verify Telegram app offer routing and iPhone PWA handoff landing in Chromium and WebKit
+        run: |
+          python -m pytest -q tests/e2e/test_miniapp_app_routing.py tests/e2e/test_pwa_telegram_handoff_page.py
+          PWA_E2E_ENGINE=webkit python -m pytest -q tests/e2e/test_miniapp_app_routing.py tests/e2e/test_pwa_telegram_handoff_page.py
       - name: Verify independent PWA sections in Chromium and iPhone WebKit
         run: |
           python -m pytest -q tests/e2e/test_pwa_progressive_sections.py

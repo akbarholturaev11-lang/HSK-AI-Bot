@@ -2277,7 +2277,8 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                     "Content-Security-Policy": (
                         "default-src 'none'; script-src 'self'; "
                         "style-src 'self' 'unsafe-inline'; connect-src 'self'; "
-                        "img-src 'self'; media-src 'self'; frame-ancestors 'none'; "
+                        "img-src 'self'; media-src 'self'; manifest-src 'self'; "
+                        "frame-ancestors 'none'; "
                         "form-action 'none'; base-uri 'none'"
                     ),
                     "X-Content-Type-Options": "nosniff",

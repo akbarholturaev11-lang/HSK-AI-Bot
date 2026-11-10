@@ -319,9 +319,15 @@ class DesktopDownloadService:
             )
             for platform in PLATFORMS
         }
-        android_ready = bool(
-            promo_settings.platforms.get("android")
-        ) and await self._android_release_ready()
+        android_ready = await self._android_ready(promo_settings)
+        ios_ready = self._ios_ready(promo_settings)
+        # Admin-owned Play listing wins over the Direct APK when it is set.
+        payload["downloads"]["android_play"] = (
+            promo_settings.android_play_url
+            if promo_settings.platforms.get("android") and promo_settings.android_play_url
+            else None
+        )
+        payload["platforms"]["ios"] = ios_ready
         # Mini App oldin Android availability uchun yana public-status so'rar
         # edi. Shu authenticated status allaqachon ayni release'ni tekshiradi,
         # shuning uchun natijani bitta payload'da beramiz.
@@ -333,6 +339,20 @@ class DesktopDownloadService:
             current_platform=current_platform,
         )
         return payload
+
+    async def _android_ready(self, promo_settings: DesktopAppPromoSettings) -> bool:
+        """Android switch on, and a Play listing or a deliverable APK exists."""
+        if not promo_settings.platforms.get("android"):
+            return False
+        if promo_settings.android_play_url:
+            return True
+        return await self._android_release_ready()
+
+    def _ios_ready(self, promo_settings: DesktopAppPromoSettings) -> bool:
+        """iPhone PWA switch on and the learner PWA can actually sign people in."""
+        from app.services.pwa_auth_service import pwa_enabled
+
+        return bool(promo_settings.platforms.get("ios")) and pwa_enabled(self.settings)
 
     async def _android_release_ready(self) -> bool:
         """Android buildi hozir tarqatishga tayyormi.
@@ -382,15 +402,13 @@ class DesktopDownloadService:
             for platform in PLATFORMS
         }
         if android_ready is None:
-            android_ready = bool(
-                promo_settings.platforms.get("android")
-            ) and await self._android_release_ready()
+            android_ready = await self._android_ready(promo_settings)
 
         available_targets = {
             "macos": bool(desktop_targets.get("macos")),
             "windows": bool(desktop_targets.get("windows")),
             "android": bool(android_ready),
-            "ios": False,
+            "ios": self._ios_ready(promo_settings),
         }
         release_ready = any(available_targets.values())
         feature_enabled = bool(promo_settings.enabled and release_ready)

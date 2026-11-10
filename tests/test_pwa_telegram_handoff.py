@@ -10,9 +10,11 @@ import hashlib
 import hmac
 import json
 import os
+import re
 import time
 import unittest
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 from types import SimpleNamespace
 from urllib.parse import urlencode, urlsplit
 from uuid import uuid4
@@ -495,6 +497,7 @@ class HandoffIsolationTests(HandoffFixture):
         self.assertEqual(page.headers["x-content-type-options"], "nosniff")
         policy = page.headers["content-security-policy"]
         for directive in ("default-src 'none'", "script-src 'self'", "connect-src 'self'",
+                          "manifest-src 'self'",
                           "frame-ancestors 'none'", "form-action 'none'", "base-uri 'none'"):
             self.assertIn(directive, policy)
         self.assertNotIn("unsafe-inline'; connect", policy.split("script-src")[1].split(";")[0])
@@ -505,6 +508,14 @@ class HandoffIsolationTests(HandoffFixture):
         for external in ("http://", "//cdn", "googletagmanager", "telegram.org"):
             self.assertNotIn(external, html)
         self.assertNotIn("<script>", html)  # No inline script under this policy.
+        # Shared assets are immutable for a year: every reference carries a
+        # token derived from that file's current bytes.
+        self.assertNotIn("?v=AUTO", html)
+        versioned = re.findall(r'"(/(?:course_v3_data|assets/characters)/[^"?]+)\?v=([0-9a-f]{12})"', html)
+        self.assertEqual(len(versioned), 6)
+        for path, token in versioned:
+            digest = hashlib.sha256(Path("app/static" + path).read_bytes()).hexdigest()
+            self.assertEqual(token, digest[:12], path)
         script = await self.browser.get("/iphone-pwa-handoff.js")
         self.assertEqual(script.status_code, 200)
         self.assertEqual(script.headers["cache-control"], "no-store")

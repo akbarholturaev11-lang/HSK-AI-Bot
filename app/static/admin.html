@@ -1201,6 +1201,7 @@
       $("androidCards").innerHTML=androidCards.map(cardHtml).join("");
 
       const steps=[
+        ["Google Play очилди",stage("play_opened")],
         ["APK сўралди",stage("apk_requested")],
         ["APK олган",stage("apk_sent")],
         ["Аккаунт улаган",stage("session_linked")],

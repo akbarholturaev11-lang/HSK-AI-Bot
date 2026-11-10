@@ -44,7 +44,8 @@
       button.textContent = label(action[0]);
       button.onclick = action[1];
     });
-    if (first) primary.focus();
+    // No programmatic focus: #status is a live region, and a forced focus
+    // ring on a touch screen reads as a stuck selection.
   }
   function openCourse() { window.location.replace("/iphone-pwa/course"); }
   function openSignIn() { window.location.replace("/iphone-pwa?login=1&lang=" + lang); }
