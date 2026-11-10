@@ -1,5 +1,6 @@
 import unittest
 from datetime import datetime, timedelta, timezone
+from unittest.mock import patch
 
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import StaticPool
@@ -10,7 +11,12 @@ from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.desktop import DesktopDevice, DesktopSession
 from app.db.models.user import User
 from app.db.models.user_client_presence import UserClientPresence
+from app.services import app_promo_decision_service
 from app.services.app_promo_decision_service import AppPromoDecisionService
+
+# The rest period is off by default (owner decision 2026-11-10); these tests
+# turn it on to keep the mechanism proven for when it is restored.
+WITH_14_DAY_REST = patch.object(app_promo_decision_service, "PROMO_COOLDOWN_DAYS", 14)
 from app.services.user_device_inventory_service import (
     UserDeviceInventoryService,
     normalize_client_platform,
@@ -394,6 +400,22 @@ class PlatformPromoDecisionTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(result["eligible"])
         self.assertEqual(result["target_platform"], "android")
 
+    async def test_no_rest_period_by_default_so_the_offer_can_return(self):
+        self.assertEqual(app_promo_decision_service.PROMO_COOLDOWN_DAYS, 0)
+        self.targets["ios"] = True
+        async with self.sessions() as session:
+            service = AppPromoDecisionService(session)
+            for platform in ("android", "ios"):
+                for action in ("seen", "dismissed", "download_requested"):
+                    self.assertTrue(await service.mark(
+                        telegram_id=1001, target_platform=platform, action=action))
+            await session.commit()
+        for platform in ("android", "ios"):
+            result = await self._decide(platform)
+            self.assertEqual((result["eligible"], result["reason"]), (True, "eligible"), platform)
+            self.assertEqual(result["cooldown_remaining_seconds"], 0)
+
+    @WITH_14_DAY_REST
     async def test_seen_on_android_starts_14_day_server_cooldown(self):
         async with self.sessions() as session:
             service = AppPromoDecisionService(session)
@@ -410,6 +432,7 @@ class PlatformPromoDecisionTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result["reason"], "cooldown")
         self.assertGreater(result["cooldown_remaining_seconds"], 0)
 
+    @WITH_14_DAY_REST
     async def test_android_cooldown_does_not_block_windows(self):
         async with self.sessions() as session:
             service = AppPromoDecisionService(session)
@@ -461,6 +484,7 @@ class PlatformPromoDecisionTests(unittest.IsolatedAsyncioTestCase):
                 await session.commit()
             self.assertTrue((await self._decide("ios"))["eligible"], change)
 
+    @WITH_14_DAY_REST
     async def test_ios_offer_has_its_own_cooldown(self):
         self.targets["ios"] = True
         async with self.sessions() as session:
@@ -488,6 +512,7 @@ class PlatformPromoDecisionTests(unittest.IsolatedAsyncioTestCase):
         result = await self._decide("android")
         self.assertTrue(result["eligible"])
 
+    @WITH_14_DAY_REST
     async def test_legacy_recent_impression_is_respected_during_migration(self):
         async with self.sessions() as session:
             session.add(

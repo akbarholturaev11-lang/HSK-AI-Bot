@@ -186,6 +186,7 @@ class DesktopDownloadServiceTests(unittest.IsolatedAsyncioTestCase):
             # iOS'ga alohida ilova yo'q — o'lik tugma chiqmasin.
             self.assertFalse(payload["promo"]["platform_targets"]["ios"])
 
+    @patch("app.services.app_promo_decision_service.PROMO_COOLDOWN_DAYS", 14)
     async def test_any_recent_legacy_promo_impression_bridges_to_unified_cooldown(self):
         """Deploy eski userni darrov qayta reklama bilan bezovta qilmasin."""
         async with self.sessions() as session:
@@ -210,6 +211,7 @@ class DesktopDownloadServiceTests(unittest.IsolatedAsyncioTestCase):
             self.assertFalse(promo["placements"]["lesson_end_promo"])
             self.assertFalse(promo["placements"]["ad_promo"])
 
+    @patch("app.services.app_promo_decision_service.PROMO_COOLDOWN_DAYS", 14)
     async def test_legacy_lesson_end_impression_blocks_all_auto_placements(self):
         async with self.sessions() as session:
             session.add(
@@ -369,6 +371,8 @@ class DesktopDownloadServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(payload["platforms"]["android"])
         self.assertEqual(payload["promo"]["target_platform"], "android")
         self.assertTrue(payload["promo"]["eligible"])
+        # The client reads the rest period from here: 0 = off (owner decision).
+        self.assertEqual(payload["promo"]["cooldown_days"], 0)
         # No listing: Direct APK stays the route and needs a real release.
         payload = await self._routing_status(
             platforms=on, release=SimpleNamespace(download_url=None, file_id="f"))
