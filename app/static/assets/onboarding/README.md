@@ -61,10 +61,11 @@ ffmpeg -i YOUR_ORIGINAL.mp4 \
   same top-right unboxed X, no separate back arrow. Three localized instructions are below the first
   viewport and appear only after swiping down; on missing or stalled video,
   those three instructions replace the player. No autoplay or Continue.
-- Reviewed focus photo (owner replacement 2026-11-10: full iPhone Home Screen
-  with status bar and dock, 1254×1254 JPEG from the supplied PNG):
-  `app/static/assets/onboarding/iphone-install-home-focus.jpg` (125527 bytes,
-  SHA-256 `176ef3953675c8d8327acf0281279486cdc99275be2b952b527b611193812ced`),
+- Reviewed focus photo (owner replacement 2026-11-10: iPhone Home Screen with
+  status bar and dock, every app except HSK AI blurred, 1254×1254 JPEG from the
+  supplied PNG): `app/static/assets/onboarding/iphone-install-home-focus.jpg`
+  (107575 bytes, SHA-256
+  `4250a78bf29e350db93667d93ff67804996d9af7612c405318b0f3d09602bca8`),
   publicly served at `/assets/onboarding/iphone-install-home-focus.jpg`.
 - Other iOS browsers: the existing panda, the short "open in Safari" hint, the
   `https://hskai.app/iphone-pwa` link and one Copy Link button (clipboard; if

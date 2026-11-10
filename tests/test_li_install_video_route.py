@@ -20,10 +20,10 @@ class SafariInstallVideoRouteTests(unittest.IsolatedAsyncioTestCase):
         image = Path("app/static/assets/onboarding/iphone-install-home-focus.jpg")
         self.assertTrue(image.is_file())
         data = image.read_bytes()
-        self.assertEqual(len(data), 125527)
+        self.assertEqual(len(data), 107575)
         self.assertEqual(
             hashlib.sha256(data).hexdigest(),
-            "176ef3953675c8d8327acf0281279486cdc99275be2b952b527b611193812ced",
+            "4250a78bf29e350db93667d93ff67804996d9af7612c405318b0f3d09602bca8",
         )
         async with AsyncClient(
             transport=ASGITransport(app=app), base_url="https://hsk.test"

@@ -7,7 +7,7 @@
 (function (global) {
   "use strict";
   var VIDEO = "/assets/onboarding/iphone-home-screen.mp4?v=20261109-3e099a0c0489";
-  var HERO = "/assets/onboarding/iphone-install-home-focus.jpg?v=20261110-176ef3953675";
+  var HERO = "/assets/onboarding/iphone-install-home-focus.jpg?v=20261110-4250a78bf29e";
   var PWA_URL = "https://hskai.app/iphone-pwa";
   // Per tab: survives same-tab OAuth/Telegram returns, payment returns and
   // onboarding -> course, so one opening never shows the guide twice.
