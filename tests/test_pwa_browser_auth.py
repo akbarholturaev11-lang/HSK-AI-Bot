@@ -5192,6 +5192,7 @@ const settle = () => new Promise(resolve => setImmediate(resolve));
             await db.flush()
             self.assertEqual(await enqueue_event(db, user_id=1, source="payment",
                 source_id=4401, language="uz", now=now), 1)
+            outbox_id = await db.scalar(select(LearnerPwaPushOutbox.id))
             await db.commit()
         delivered = []
         async def accepted_sender(payload, public_payload, private_key, subject, source):
@@ -5203,7 +5204,12 @@ const settle = () => new Promise(resolve => setImmediate(resolve));
             notification_message("pwa.push.paymentRejectedTitle", lang, "")
             for lang in ("uz", "ru", "tj")
         })
-        self.assertNotIn("149", json.dumps(delivered[0], ensure_ascii=False))
+        self.assertEqual(set(delivered[0]), {"title", "body", "url", "tag"})
+        # The opaque UUID tag may coincidentally contain the amount's digits.
+        # Verify its origin separately from the human-readable notification.
+        self.assertEqual(delivered[0]["tag"], "hsk-" + outbox_id.replace("-", "")[:24])
+        visible = {key: value for key, value in delivered[0].items() if key != "tag"}
+        self.assertNotIn("149", json.dumps(visible, ensure_ascii=False))
         self.assertNotIn("Summa", json.dumps(delivered[0], ensure_ascii=False))
 
     async def test_push_outbox_deduplicates_and_sends_content_free_payload_with_bounded_cleanup(self):

@@ -1737,7 +1737,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 </script>
 <!-- Reklama moduli: dars yakuni bloki uchun (mashq bo'limlari ham shu moduldan foydalanadi) -->
 <script src="/voice-live.js?v=20261105-87257ac03ec1"></script>
-<script defer src="/course_v3_data/ads.js?v=20261021-785974bb437c"></script><script src="/course_v3_data/hsk-common-i18n.js?v=20261019-1c672dcfb10d"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261021-7e6386c22f57"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-a0dd8c0b1db1"></script><script src="/course_v3_data/p3-grammar-reservation.js?v=20261019-p3-2"></script>
+<script defer src="/course_v3_data/ads.js?v=20261021-5288c4e06b0c"></script><script src="/course_v3_data/hsk-common-i18n.js?v=20261019-1c672dcfb10d"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261021-9ba02f44f5cb"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-a0dd8c0b1db1"></script><script src="/course_v3_data/p3-grammar-reservation.js?v=20261019-p3-2"></script>
 <script>
 /* ---------- i18n (default RU) ---------- */
 var I18N={
@@ -2330,10 +2330,14 @@ var SALES_VALUE_PRIME_PROMISE=null,SALES_VALUE_PRIME_DONE=false;
 function _apiHeaders(){return{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA}}
 var PWA_COURSE_GET_PATHS={
   "/api/v3/course-tracks":"/api/v3/pwa/course-tracks",
+  "/api/v3/ad":"/api/v3/pwa/ad",
   "/api/v3/lesson/foundation":"/api/v3/pwa/lesson/foundation","/api/v3/invite":"/api/v3/pwa/invite",
   "/api/miniapp/mistakes":"/api/v3/pwa/mistakes", "/api/miniapp/profile":"/api/v3/pwa/profile"
 };
 var PWA_COURSE_POST_PATHS={
+  "/api/miniapp/event":"/api/v3/pwa/event",
+  "/api/v3/lesson/foundation/complete":"/api/v3/pwa/lesson/foundation/complete",
+  "/api/v3/ad/view":"/api/v3/pwa/ad/view",
   "/api/v3/course-tracks/switch":"/api/v3/pwa/course-tracks/switch",
   "/api/v3/course-tracks/promo-shown":"/api/v3/pwa/course-tracks/promo-shown",
   "/api/miniapp/gamification":"/api/v3/pwa/gamification",
@@ -2368,7 +2372,7 @@ function _apiGet(url,opts){
         // Read-only profile/referrals accept a cookie (not CSRF), so a login in
         // another tab could switch the HTTP actor while this PWA tab still
         // holds the prior map. Never combine the two accounts' data.
-        if(mapped==="/api/v3/pwa/profile"||mapped==="/api/v3/pwa/invite"){
+        if(mapped==="/api/v3/pwa/profile"||mapped==="/api/v3/pwa/invite"||mapped==="/api/v3/pwa/ad"){
           var owner=response.headers.get("X-HSK-PWA-User-ID");
           if(response.status===401||response.ok&&
              (!PWA_COURSE_USER_ID||String(actor.user_id)!==String(PWA_COURSE_USER_ID)||
@@ -2477,7 +2481,8 @@ CHECKOUT_NAVIGATING=false; if((!INIT_DATA&&!PWA_COURSE_HOST)||!MAP)return;
    saqlash qayta ochilgan Mini Appni eski sessionga qo'shib yuborardi. */
 var COURSE_SESSION_ID="v3-"+Date.now()+"-"+Math.random().toString(36).slice(2,9);var LESSON_COMPLETION_PROOF="";
 function trackCourseEvent(event,payload,opts){
-  if(!INIT_DATA)return Promise.resolve({ok:false,skipped:true});
+  if(!INIT_DATA&&!PWA_COURSE_HOST)return Promise.resolve({ok:false,skipped:true});
+  if(PWA_COURSE_HOST&&["foundation_started","card_seen","interaction_completed","section_started","section_completed","lesson_started","test_started","training_started","mistake_review_started"].indexOf(event)<0)return Promise.resolve({ok:false,skipped:true});
   payload=payload||{};
   var body={};
   for(var k in payload)body[k]=payload[k];
@@ -2485,7 +2490,7 @@ function trackCourseEvent(event,payload,opts){
   body.source=body.source||"course_v3";
   body.level=body.level||((MAP&&MAP.level)||getSelectedLevel());
   body.session_id=body.session_id||COURSE_SESSION_ID;
-  return _apiPost("/api/miniapp/event",body,opts).then(function(r){return r.json()}).catch(function(){return{ok:false}});
+  return _apiPost("/api/miniapp/event",body,opts).then(function(r){if(!r.ok)return{ok:false};return r.json()}).catch(function(){return{ok:false}});
 }
 function salesValueOffer(){
   var o=MAP&&MAP.sales_offer;
@@ -2719,6 +2724,7 @@ function refreshCourseProgress(afterWrite){
       if(PROGRESS_REFRESH_QUEUED||MAP!==snapshot||!d||d._parseFail||d._status>=400||d.authenticated===false||!d.units||d.level!==level)return false;
       if(Object.prototype.hasOwnProperty.call(d,"today"))MAP.today=d.today;
       if(d.progress)MAP.progress=d.progress;
+      if(d.foundation){var foundationChanged=foundationIsComplete()!==d.foundation.completed;MAP.foundation=d.foundation;if(foundationChanged)MAP.units=d.units;}
       if(d.study_setup)adoptStudySetup(d);
       ratingLoaded=false;
       renderCourse();if(!PWA_COURSE_HOST||SCREEN==="profile")renderProfile();
@@ -3761,11 +3767,12 @@ function playLessonEndAd(next){
      o'zgarmasdi — o'lik boshqaruv. Endi qaror serverda: u obunachiga
      reklama bermasa, `playLessonEnd` bo'sh qaytadi va oqim davom etadi.
      Android allaqachon shunday ishlaydi. */
-  if(!lessonN||!INIT_DATA)return false;
+  if(!lessonN||(!INIT_DATA&&!PWA_COURSE_HOST))return false;
   if(!window.CourseAds||typeof CourseAds.playLessonEnd!=="function")return false;
   var resumed=false,go=function(){if(resumed)return;resumed=true;if(typeof next==="function")next()};
-  CourseAds.config({lang:LANG,initData:INIT_DATA,level:(MAP&&MAP.level)||"hsk1",
-    lessonOrder:lessonN,paid:isPaidUser(),
+  CourseAds.config({requestGet:PWA_COURSE_HOST?_apiGet:null,requestPost:PWA_COURSE_HOST?_apiPost:null,lang:LANG,initData:INIT_DATA,level:(MAP&&MAP.level)||"hsk1",
+    lessonOrder:lessonN,paid:isPaidUser(),onClose:go,
+    canShow:function(){return document.visibilityState==="visible"&&!centerAdBusy()&&!foundationBlocksCourse()},
     onOffer:function(){trackCourseEvent("paywall_seen",{source:"v3_lesson_end_ad",
       lesson_id:lessonN,dedupe_key:lessonEventKey("paywall_seen",lessonN,"v3_lesson_end_ad")})},
     onSubscribe:function(){App.goPay("v3_lesson_end_ad")}});
@@ -4071,6 +4078,7 @@ function foundationIsComplete(){
   if(typeof s.completed==="boolean")return s.completed;
   if(s.status==="completed")return true;
   if(s.status==="required"||s.status==="optional")return false;
+  if(PWA_COURSE_HOST||INIT_DATA)return false;
   var cached=foundationCachedState(s.id||"starter0_hsk1",s.version||1);
   return cached.completed===true;
 }
@@ -4408,7 +4416,7 @@ function foundationQueueState(){return(Foundation.queue||[]).map(function(c){ret
 Foundation.save=function(){
   if(!Foundation.data)return;
   try{localStorage.setItem(foundationCacheKey(Foundation.data.id,Foundation.data.version),JSON.stringify({
-    version:Number(Foundation.data.version||1),i:Foundation.answered?Foundation.i+1:Foundation.i,mastery:Foundation.mastery||{},attempts:Foundation.attempts||{},completed:!!Foundation.completed,speaking_bonus:!!Foundation.speakingBonus,queue:foundationQueueState(),at:Date.now()
+    version:Number(Foundation.data.version||1),i:Foundation.answered?Foundation.i+1:Foundation.i,mastery:Foundation.mastery||{},attempts:Foundation.attempts||{},completed:!!Foundation.completed,completion_key:Foundation.completionKey,attempt_session:Foundation.attemptSession,speaking_bonus:!!Foundation.speakingBonus,queue:foundationQueueState(),at:Date.now()
   }))}catch(e){}
 };
 Foundation.restoreQueue=function(saved){
@@ -4437,18 +4445,20 @@ Foundation.start=function(data,opts){
   var saved=foundationCachedState(data.id,data.version);
   /* Server incomplete bo'lsa local mastery resume qoladi, lekin stale local
      `completed` hech qachon mandatory Starter'ni yopmaydi. */
-  var authoritative=foundationMapState();if(Foundation.required&&authoritative.completed===false)saved.completed=false;
+  var authoritative=foundationMapState();if((PWA_COURSE_HOST||INIT_DATA)&&authoritative.completed!==true)saved.completed=false;
   var restart=!!opts.restart&&saved.completed===true;
   if(restart)saved={completed:true};
+  Foundation.attemptSession=saved.attempt_session||COURSE_SESSION_ID;
+  Foundation.completionKey=saved.completion_key||["foundation_completed",Foundation.attemptSession,data.id,data.version].join(":");
   Foundation.mastery=saved.mastery||{};Foundation.attempts=saved.attempts||{};Foundation.completed=!!saved.completed;Foundation.speakingBonus=!!saved.speaking_bonus;
   Foundation.queue=restart?(data.cards||[]).slice():Foundation.restoreQueue(saved);
   Foundation.i=restart?0:Math.max(0,Math.min(Number(saved.i||0),Math.max(0,Foundation.queue.length-1)));
   Foundation.active=true;Foundation.answered=false;Foundation.finishing=false;
   var heart=document.querySelector("#flow .fheart"),gear=document.querySelector("#flow .fgear"),close=document.querySelector("#flow .fx");
   if(heart)heart.style.display="none";if(gear)gear.style.display=Foundation.required?"none":"";if(close)close.style.visibility=Foundation.required?"hidden":"visible";
-  var cta=$("#f-cta"),bar=$("#f-barbtn");if(cta)cta.onclick=Foundation.next;if(bar)bar.onclick=Foundation.next;
+  var cta=$("#f-cta"),bar=$("#f-barbtn");if(cta){cta.disabled=false;cta.onclick=Foundation.next}if(bar)bar.onclick=Foundation.next;
   setWriteBtn("");hideBar();$("#flow").classList.add("on");
-  trackCourseEvent("foundation_started",{foundation_version:Number(data.version||1),foundation_id:data.id||"starter0_hsk1",dedupe_key:["foundation_started",COURSE_SESSION_ID,data.id,data.version].join(":")});
+  trackCourseEvent("foundation_started",{foundation_version:Number(data.version||1),foundation_id:data.id||"starter0_hsk1",dedupe_key:["foundation_started",Foundation.attemptSession,data.id,data.version].join(":")});
   Foundation.save();Foundation.render();
 };
 function startFoundationFromMap(restart,afterComplete){
@@ -4495,7 +4505,7 @@ Foundation.grade=function(ok){
   var c=Foundation.queue[Foundation.i];if(!c||!c.objective_id)return;
   var id=String(c.objective_id),attempt=Number(c._attempt||((Foundation.attempts[id]||0)+1));c._attempt=attempt;Foundation.attempts[id]=Math.max(Number(Foundation.attempts[id]||0),attempt);
   if(ok)Foundation.mastery[id]=true;else{delete Foundation.mastery[id];Foundation.scheduleRepair(c,attempt>=2,attempt+1)}
-  trackCourseEvent("interaction_completed",{card_id:c.card_id,objective_id:id,attempt:attempt,guided:!!c._guided,correct:!!ok,foundation_version:Number(Foundation.data.version||1),card_type:c.type||"",dedupe_key:["foundation_interaction",COURSE_SESSION_ID,c.card_id,attempt].join(":")});
+  trackCourseEvent("interaction_completed",{card_id:c.card_id,objective_id:id,attempt:attempt,guided:!!c._guided,correct:!!ok,foundation_version:Number(Foundation.data.version||1),card_type:c.type||"",dedupe_key:["foundation_interaction",Foundation.attemptSession,c.card_id,attempt].join(":")});
   Foundation.save();
 };
 Foundation.feedback=function(ok,sub){
@@ -4532,22 +4542,35 @@ Foundation.finish=function(){
   Foundation.finishing=true;Foundation.cancelMic();Foundation.stopAudio();
   var cta=$("#f-cta"),waiting=courseMessage("foundation.saving",LANG==="ru"?"Сохраняем…":LANG==="tj"?"Сабт мешавад…":"Saqlanmoqda…");
   if(cta){cta.disabled=true;cta.innerHTML='<i class="ti ti-loader-2"></i> '+waiting}
-  var payload={foundation_version:Number(Foundation.data.version||1),foundation_id:Foundation.data.id||"starter0_hsk1",speaking_bonus:!!Foundation.speakingBonus,dedupe_key:["foundation_completed",COURSE_SESSION_ID,Foundation.data.id,Foundation.data.version].join(":")};
-  var write=INIT_DATA?trackCourseEvent("foundation_completed",payload,{keepalive:true}):Promise.resolve({ok:true,preview:true});
-  var timeout=new Promise(function(resolve){setTimeout(function(){resolve({ok:false,timeout:true})},12000)});
-  Promise.race([write,timeout]).then(function(result){
-    if(!result||result.ok!==true){
+  Foundation.save();
+  var owner=localUserScope(),dataId=Foundation.data.id||"starter0_hsk1",version=Number(Foundation.data.version||1);
+  var payload={foundation_version:version,foundation_id:dataId,speaking_bonus:!!Foundation.speakingBonus,
+    event_id:Foundation.completionKey,session_id:Foundation.attemptSession};
+  var controller=new AbortController(),timer;
+  var deadline=new Promise(function(resolve){timer=setTimeout(function(){controller.abort();resolve({ok:false})},12000)});
+  var write=(INIT_DATA||PWA_COURSE_HOST)?_apiPost("/api/v3/lesson/foundation/complete",payload,{signal:controller.signal})
+    .then(function(r){
+      if(!r.ok||PWA_COURSE_HOST&&r.headers.get("X-HSK-PWA-User-ID")!==String(PWA_COURSE_USER_ID))throw new Error("foundation_save_failed");
+      return r.json();
+    }):Promise.resolve({ok:true,foundation:{id:dataId,version:version,completed:true}});
+  return Promise.race([write.catch(function(){return{ok:false}}),deadline]).then(function(result){
+    clearTimeout(timer);
+    var state=result&&result.foundation;
+    if(owner!==localUserScope()||!Foundation.active)return;
+    if(!result||result.ok!==true||!state||state.completed!==true||state.id!==dataId||Number(state.version)!==version){
       Foundation.finishing=false;
       var retry=courseMessage("foundation.retrySave",LANG==="ru"?"Повторить сохранение":LANG==="tj"?"Аз нав сабт кардан":"Qayta saqlash");
       if(cta){cta.disabled=false;cta.innerHTML='<i class="ti ti-refresh"></i> '+retry}
       toast(courseMessage("foundation.saveFailed",LANG==="ru"?"Не удалось сохранить результат. Попробуйте ещё раз.":LANG==="tj"?"Натиҷа сабт нашуд. Боз кӯшиш кунед.":"Natija saqlanmadi. Qayta urinib ko'ring."),2800);return;
     }
     Foundation.completed=true;Foundation.save();
-    var serverState=foundationMapState();serverState.id=Foundation.data.id||"starter0_hsk1";serverState.version=Number(Foundation.data.version||1);serverState.completed=true;serverState.required=false;serverState.status="completed";
+    var serverState=foundationMapState();serverState.id=Foundation.data.id||"starter0_hsk1";serverState.version=Number(Foundation.data.version||1);serverState.completed=true;serverState.required=!!state.required;serverState.status="completed";
+    if(MAP)MAP.foundation=serverState;
     var cb=Foundation.afterComplete;Foundation.afterComplete=null;Foundation.active=false;Foundation.finishing=false;$("#flow").classList.remove("on");
     var close=document.querySelector("#flow .fx");if(close)close.style.visibility="visible";if(cta)cta.disabled=false;renderCourse();
     try{var u=new URL(location.href);u.searchParams.delete("foundation");history.replaceState(null,"",u.pathname+"?"+u.searchParams.toString()+u.hash)}catch(e){}
     if(typeof cb==="function")setTimeout(cb,80);
+    else queuePwaActivityFeedback({kind:"foundation"});
   });
 };
 var LESSON_RESUME_TTL_MS=7*24*60*60*1000;
@@ -6202,7 +6225,7 @@ var PWA_LEVEL_REQUEST_SEQ=0,PWA_LEVEL_ABORT=null; function loadLevel(lv){if(PWA_
 function applyLessonDone(cur,d){
   var rankBefore=Number(d&&d.rank_before)||0;
   if(PWA_COURSE_HOST&&d&&d.ok===true&&!d.duplicate){
-    window._pendingPwaLessonFeedback={confirmed:true,lessonId:Number(cur&&cur.n)||0,
+    window._pendingPwaLessonFeedback={kind:"lesson",confirmed:true,lessonId:Number(cur&&cur.n)||0,
       level:String((MAP&&MAP.level)||getSelectedLevel())};
   }
   clearLessonResume((MAP&&MAP.level)||"hsk1",cur&&cur.n);
@@ -6214,7 +6237,7 @@ function applyLessonDone(cur,d){
   /* Dars yakuni reklamasi — bayram ekranlari tugagach (closeLevelUp) chiqadi.
      Kimga chiqishini SERVER aytadi (joy auditoriyasi), shuning uchun bu
      yerda obunachi tekshiruvi yo'q: server bermasa, oqim jim davom etadi. */
-  window._pendingLessonEndAd=INIT_DATA?(Number(cur.n)||0):0;
+  window._pendingLessonEndAd=(INIT_DATA||PWA_COURSE_HOST)?(Number(cur.n)||0):0;
   if(d&&d.gamification&&MAP.progress){
     var g=d.gamification;
     var prevStreak=Number(typeof g.previous_streak!=="undefined"?g.previous_streak:(MAP.progress.streak||0)),newStreak=Number(g.streak||0);
@@ -7816,12 +7839,22 @@ function openSection(mod){
   $("#secov").classList.add("on");
   try{NavBack.sync()}catch(e){}
 }
+function queuePwaActivityFeedback(context){
+  if(!PWA_COURSE_HOST||!MAP||!window.HskPwaFeedback)return;
+  context.level=context.level||MAP.level;context.confirmed=true;
+  var owner=localUserScope(),screen=SCREEN;
+  context.canOpen=function(){return owner===localUserScope()&&SCREEN===screen&&MAP&&MAP.level===context.level&&
+    document.visibilityState==="visible"&&!NavBack.blocked()&&!NavBack.top()&&!studySetupPending()};
+  setTimeout(function(){if(context.canOpen())HskPwaFeedback.open(context)},900);
+}
 function closeSection(){
+  var feedbackKind=SECTION?(SECTION===VOICE?"voice":"practice"):null;
   SECTION=null;stopSpeak();
   var ov=$("#secov");ov.classList.remove("on");ov.classList.remove("vc-open");ov.innerHTML="";
   try{NavBack.sync()}catch(e){}
   refreshCourseProgress();
   flushPendingCenterAd();
+  if(feedbackKind)queuePwaActivityFeedback({kind:feedbackKind});
 }
 
 /* ---------- Dictionary + phrasebook: cached in-app resource screens ---------- */
@@ -7972,6 +8005,9 @@ var RESOURCE=(function(){
     // Let a completed/partial attempt queue its existing keepalive report
     // before discarding the child document. The course is already usable.
     setTimeout(function(){current.layer.remove();refreshCourseProgress(true)},0);
+    Promise.resolve(current.feedbackVisit).then(function(result){
+      if(result&&result.ok)queuePwaActivityFeedback({kind:"practice"});
+    });
     return true;
   }
   function practiceBack(){
@@ -7990,7 +8026,14 @@ var RESOURCE=(function(){
   }
   function acceptPracticeActor(child,userId){
     if(!isPracticeFrame(child))return false;
-    if(Number(userId)===PWA_COURSE_USER_ID)return true;
+    if(Number(userId)===PWA_COURSE_USER_ID){
+      // This is a verified page visit, never a claimed exercise result.
+      if(!PRACTICE.feedbackVisit)PRACTICE.feedbackVisit=trackCourseEvent("card_seen",{
+        card_type:"practice_entry",card_id:"practice_entry_"+PRACTICE.feature,
+        feature:PRACTICE.feature,dedupe_key:["practice_entry",COURSE_SESSION_ID,newPracticeAttemptRef()].join(":")
+      });
+      return true;
+    }
     signInFromPractice(child);return false;
   }
   function openPracticeCheckout(child,source){
@@ -8007,7 +8050,7 @@ var RESOURCE=(function(){
     backButton.setAttribute("aria-label",commonMessage("action.back",""));backButton.innerHTML='<i class="ti ti-arrow-left" aria-hidden="true"></i>';
     backButton.onclick=practiceBack;entry.appendChild(backButton);
     var background=Array.from(wrap.children).filter(function(node){return !node.inert});
-    PRACTICE={layer:layer,entry:entry,frame:frame,background:background,focus:document.activeElement};
+    PRACTICE={layer:layer,entry:entry,frame:frame,background:background,focus:document.activeElement,feature:target.pathname.split("/").pop()};
     background.forEach(function(node){node.inert=true});
     frame.title=label;frame.hidden=true;
     if(target.pathname==="/iphone-pwa/practice/pronunciation")frame.allow="microphone 'self'";
@@ -9735,9 +9778,10 @@ var finishHskLaunchSplash=(function(){
    foydalanuvchi bosgan amal reklamadan ustun turadi.
    Kunlik chegara (kuniga 2) serverda — bu yerda hisoblanmaydi. */
 function maybeShowAppOpenAd(ctx){
-  if(!INIT_DATA)return;
+  if(!INIT_DATA&&!PWA_COURSE_HOST)return;
   if(!window.CourseAds||typeof CourseAds.playScreenCenter!=="function")return;
-  CourseAds.config({lang:LANG,initData:INIT_DATA,level:(MAP&&MAP.level)||"hsk1"});
+  CourseAds.config({requestGet:PWA_COURSE_HOST?_apiGet:null,requestPost:PWA_COURSE_HOST?_apiPost:null,lang:LANG,initData:INIT_DATA,level:(MAP&&MAP.level)||"hsk1",
+    canShow:function(){return document.visibilityState==="visible"&&!centerAdBusy()&&!foundationBlocksCourse()}});
   /* Deep-link (dars, chellenj, tur) ustiga reklama chiqmaydi — foydalanuvchi
      bosgan amal undan ustun. Ilgari bunda reklama BUTUNLAY tashlab
      yuborilardi, va bu ko'rinmay qolishning asosiy sababi edi: profildagi
@@ -9994,7 +10038,7 @@ window.addEventListener("pageshow",function(ev){
 <script src="/course_v3_data/iphone-pwa-fx.js?v=20261105-3f4db4191370"></script>
 <script src="/course_v3_data/iphone-pwa-refresh.js?v=20261105-e7852ac39c9d"></script>
 <script src="/course_v3_data/iphone-pwa-notices.js?v=20261110-e985617de198"></script>
-<script src="/course_v3_data/iphone-pwa-feedback.js?v=20261105-51e57153c4e0"></script>
+<script src="/course_v3_data/iphone-pwa-feedback.js?v=20261110-d5bccb78a25a"></script>
 <script>if(location.pathname==="/iphone-pwa/course")window.addEventListener("load",function(){setTimeout(function(){
   /* Bot release-feedback campaign (stars) once per campaign, only on a calm course screen. */
   if(!window.HskPwaFeedback||!HskPwaFeedback.openRelease)return;

@@ -386,28 +386,15 @@ class AndroidCourseService(DesktopCourseService):
             raise DesktopCourseError("android_request_invalid", status_code=422)
 
         context = await self._context(access_token)
-        analytics = CourseMiniAppAnalyticsService(self.session)
-        result = await analytics.record_server_event(
-            event_name="foundation_completed",
-            telegram_id=context.user.telegram_id,
-            user_id=getattr(context.user, "id", None),
-            source="android_course",
-            level="hsk1",
-            dedupe_key=dedupe_key,
-            payload={
-                "foundation_id": COURSE_FOUNDATION_ID,
-                "foundation_version": COURSE_FOUNDATION_VERSION,
-                "speaking_bonus": bool(speaking_bonus),
-            },
+        result = await CourseMiniAppProfileService(self.session).complete_foundation(
+            context.user, foundation_id=foundation_id,
+            foundation_version=foundation_version, speaking_bonus=speaking_bonus,
+            event_id=dedupe_key, source="android_course",
         )
         if not result.get("ok"):
             raise DesktopCourseError("android_foundation_save_failed", status_code=503)
         await self.session.commit()
-        return {
-            "ok": True,
-            "duplicate": bool(result.get("duplicate")),
-            "foundation": await self._foundation_status(context.user),
-        }
+        return result
 
     async def onboarding_status(self, access_token: str) -> dict:
         """Return the canonical onboarding state for the authenticated learner."""
