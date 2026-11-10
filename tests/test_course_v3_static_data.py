@@ -939,7 +939,7 @@ class CourseV3StaticMapTests(unittest.TestCase):
         ):
             html = Path("app/static", page).read_text(encoding="utf-8")
             self.assertIn(
-                "/course_v3_data/desktop-download.css?v=20261003-1", html, page
+                "/course_v3_data/desktop-download.css?v=20261110-d3164c95f1bd", html, page
             )
             # Ikkala skript `immutable`, bir yillik cache bilan beriladi
             # (`app/main.py`, STATIC_ASSET_HEADERS), ya'ni faylni o'zgartirish

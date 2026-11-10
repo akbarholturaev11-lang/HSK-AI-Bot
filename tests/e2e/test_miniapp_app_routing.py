@@ -14,13 +14,15 @@ pw = pytest.importorskip("playwright.sync_api")
 STATIC = Path("app/static")
 SCRIPT = (STATIC / "course_v3_data/desktop-download.js").read_text(encoding="utf-8")
 CATALOG = (STATIC / "course_v3_data/hsk-miniapp-i18n.js").read_text(encoding="utf-8")
+STYLE = (STATIC / "course_v3_data/desktop-download.css").read_text(encoding="utf-8")
+SQUARE = (STATIC / "assets/hsk-ai-avatar.webp").read_bytes()  # 640x640, like the admin photo
 ORIGIN = "https://app.hsk.test"
 PWA = "https://hsk.test"
 SECRET = "A" * 43
 PLAY = "https://play.google.com/store/apps/details?id=com.pomp.hskai"
 
 
-def status(platform, *, play=None):
+def status(platform, *, play=None, media=False):
     targets = {"macos": False, "windows": False, "android": platform == "android",
                "ios": platform == "ios"}
     return {
@@ -32,15 +34,18 @@ def status(platform, *, play=None):
             "platform_targets": targets,
             "placements": {"profile": True, "home_prompt": True,
                            "lesson_end_promo": False, "ad_promo": False},
+            **({"media_url": "/uploads/app_promo/square.webp", "media_type": "photo"}
+               if media else {}),
         },
     }
 
 
 class Harness:
-    def __init__(self, playwright, platform, *, play=None, handoff=None):
+    def __init__(self, playwright, platform, *, play=None, handoff=None, media=False,
+                 lang="uz", viewport=(390, 844)):
         engine = os.environ.get("PWA_E2E_ENGINE", "chromium")
         self.browser = getattr(playwright, engine).launch()
-        self.page = self.browser.new_page(viewport={"width": 390, "height": 844})
+        self.page = self.browser.new_page(viewport={"width": viewport[0], "height": viewport[1]})
         self.errors, self.events, self.handoffs = [], [], []
         self.handoff = handoff or (lambda: {"status": 200, "body": {
             "ok": True, "expires_in": 120,
@@ -48,24 +53,29 @@ class Harness:
         page = self.page
         page.on("pageerror", lambda exc: self.errors.append(str(exc)))
         page.add_init_script(
-            "window.LANG='uz';window.SCREEN='course';window.__opened=[];"
+            "window.LANG=%s;window.SCREEN='course';window.__opened=[];"
             "window.Telegram={WebApp:{platform:%s,initData:'query_id=signed',"
             "openLink:function(u,o){window.__opened.push([u,o||null])},close:function(){}}};"
             "window.App={openSheet:function(h){document.getElementById('sheet').innerHTML=h;"
             "document.getElementById('sheet').classList.add('on')},"
             "closeSheet:function(){document.getElementById('sheet').classList.remove('on')}};"
-            % json.dumps(platform))
+            % (json.dumps(lang), json.dumps(platform)))
         page.route("**/course_v3_data/hsk-miniapp-i18n.js", lambda route: route.fulfill(
             body=CATALOG, content_type="application/javascript; charset=utf-8"))
         page.route("**/course_v3_data/desktop-download.js", lambda route: route.fulfill(
             body=SCRIPT, content_type="application/javascript; charset=utf-8"))
+        page.route("**/course_v3_data/desktop-download.css", lambda route: route.fulfill(
+            body=STYLE, content_type="text/css; charset=utf-8"))
+        page.route("**/uploads/app_promo/square.webp", lambda route: route.fulfill(
+            body=SQUARE, content_type="image/webp"))
         page.route("**/api/v3/desktop-download/status*", lambda route: route.fulfill(
-            json=status(platform, play=play)))
+            json=status(platform, play=play, media=media)))
         page.route("**/api/miniapp/event", self._event)
         page.route("**/api/v3/pwa-auth/handoff/start", self._handoff)
         page.route(ORIGIN + "/course-v3.html", lambda route: route.fulfill(
             content_type="text/html; charset=utf-8", body=(
-                "<!doctype html><html><head><meta charset='utf-8'></head><body><section id='s-course' class='on'></section>"
+                "<!doctype html><html><head><meta charset='utf-8'>"
+                "<link rel='stylesheet' href='/course_v3_data/desktop-download.css'></head><body><section id='s-course' class='on'></section>"
                 "<div id='sheet'></div>"
                 "<script src='/course_v3_data/hsk-miniapp-i18n.js'></script>"
                 "<script src='/course_v3_data/desktop-download.js'></script></body></html>")))
@@ -194,4 +204,44 @@ def test_iphone_profile_entry_offers_safari_and_keeps_the_site_link():
         h.page.wait_for_function("window.__opened.length === 1")
         assert h.handoffs[0]["body"] == {"language": "uz", "source": "profile"}
         assert first.inner_text() == "Yana ochish"
+        h.close()
+
+
+@pytest.mark.parametrize("lang, viewport", [
+    ("uz", (390, 844)), ("ru", (390, 844)), ("tj", (390, 844)), ("ru", (375, 667))])
+def test_iphone_offer_is_picture_title_line_and_one_action(lang, viewport):
+    """Owner review 2026-11-10: no eyebrow, chips or "later" button, and the
+    square admin photo is shown whole, never cropped."""
+    with pw.sync_playwright() as playwright:
+        h = Harness(playwright, "ios", media=True, lang=lang, viewport=viewport)
+        h.promo_button()
+        page = h.page
+        page.wait_for_function(
+            "document.querySelector('.pdd-promo-media') && "
+            "document.querySelector('.pdd-promo-media').complete")
+        page.wait_for_timeout(300)  # 220 ms entrance animation
+        shell = page.locator(".pdd-promo-shell")
+        for gone in (".pdd-eyebrow", ".pdd-benefits", ".pdd-promo-dismiss"):
+            assert shell.locator(gone).count() == 0, gone
+        body = shell.locator(".pdd-promo-body > p").inner_text()
+        assert "Pro" not in body and "Safari" in body
+        assert shell.locator(".pdd-promo-close").is_visible()
+        box = page.evaluate("""() => {
+          const r = n => document.querySelector(n).getBoundingClientRect();
+          const img = document.querySelector('.pdd-promo-media');
+          return {shell: r('.pdd-promo-shell'), visual: r('.pdd-promo-visual'),
+                  button: r('.pdd-promo-shell [data-pdd-platform]'),
+                  fit: getComputedStyle(img).objectFit,
+                  natural: [img.naturalWidth, img.naturalHeight],
+                  focusRing: document.activeElement.classList.contains('pdd-promo-close')};
+        }""")
+        width, height = viewport
+        assert box["natural"] == [640, 640]
+        assert box["fit"] == "contain"  # whole picture, never a crop
+        if height >= 800:
+            assert abs(box["visual"]["width"] - box["visual"]["height"]) <= 1
+        assert box["shell"]["top"] >= 0 and box["shell"]["bottom"] <= height + 0.5
+        assert box["button"]["bottom"] <= box["shell"]["bottom"]
+        assert box["shell"]["left"] >= 0 and box["shell"]["right"] <= width + 0.5
+        assert not box["focusRing"]
         h.close()

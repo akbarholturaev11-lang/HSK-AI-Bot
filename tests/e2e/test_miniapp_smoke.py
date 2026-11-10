@@ -5391,9 +5391,9 @@ def test_lesson_end_promo_still_gets_its_turn_after_the_home_prompt(page):
     page.locator('#nav button[data-s="course"]').click()
 
     def dismiss_open_promo():
-        later = page.locator(".pdd-promo-dismiss")
-        if later.count() and later.is_visible():
-            later.click()
+        close = page.locator(".pdd-promo-shell .pdd-promo-close")
+        if close.count() and close.is_visible():
+            close.click()
         expect(page.locator(".pdd-promo-shell")).to_have_count(0)
 
     # 1. Ochilgandagi promo o'rinni egallaydi. U boot paytida o'zi chiqib

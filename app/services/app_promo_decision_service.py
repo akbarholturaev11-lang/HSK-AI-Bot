@@ -16,7 +16,10 @@ from app.services.user_device_inventory_service import (
 )
 
 
-PROMO_COOLDOWN_DAYS = 14
+# Days an app offer rests after it was seen, dismissed or acted on, per
+# target platform. 0 = no rest (owner decision 2026-11-10); the Admin daily
+# limit and one offer per session still apply. Set e.g. 14 to restore it.
+PROMO_COOLDOWN_DAYS = 0
 
 
 def _utcnow() -> datetime:
@@ -128,6 +131,13 @@ class AppPromoDecisionService:
                 "cooldown_remaining_seconds": 0,
             }
 
+        if PROMO_COOLDOWN_DAYS <= 0:
+            return {
+                "eligible": True,
+                "reason": "eligible",
+                "target_platform": platform,
+                "cooldown_remaining_seconds": 0,
+            }
         state = await self._state(
             telegram_id=telegram_id,
             target_platform=platform,

@@ -13,6 +13,7 @@ from sqlalchemy import func, select
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.repositories.user_repo import UserRepository
 from app.services.android_release_service import AndroidReleaseService
+from app.services import app_promo_decision_service
 from app.services.app_promo_decision_service import AppPromoDecisionService
 from app.services.desktop_app_promo_settings_service import (
     DesktopAppPromoSettings,
@@ -29,7 +30,6 @@ logger = logging.getLogger(__name__)
 PLATFORMS = ("macos", "windows")
 REQUEST_TOKEN_RE = re.compile(r"^[0-9a-f]{32}$")
 SAFE_FILE_NAME_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._+-]{0,119}$")
-PROMO_COOLDOWN_DAYS = 14
 PROMO_COMPLETION_EVENTS = (
     "section_completed",
     "lesson_completed",
@@ -458,7 +458,8 @@ class DesktopDownloadService:
             "eligible": eligible,
             "reason": str(decision.get("reason") or "not_ready"),
             "target_platform": decision.get("target_platform"),
-            "cooldown_days": PROMO_COOLDOWN_DAYS,
+            # One source of truth with the server decision (0 = no rest).
+            "cooldown_days": app_promo_decision_service.PROMO_COOLDOWN_DAYS,
             "daily_limit": promo_settings.daily_limit,
             "cooldown_remaining_seconds": int(
                 decision.get("cooldown_remaining_seconds") or 0
