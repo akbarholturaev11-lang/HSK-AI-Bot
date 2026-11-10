@@ -50,6 +50,10 @@ class PwaLearningParityTests(unittest.IsolatedAsyncioTestCase):
             owner.level = 'beginner'
             db.add(fixture.user(2, None))
             await db.commit()
+        denied = await self.client.post('/api/v3/pwa/lesson/start', headers=headers,
+            json={'lesson_id': 1, 'level': 'hsk1'})
+        self.assertEqual(denied.status_code, 403, denied.text)
+        self.assertEqual(denied.json()['error'], 'android_foundation_required')
         event_path = '/api/v3/pwa/event'
         for payload in [
             {'event': 'foundation_started', 'foundation_id': 'starter0_hsk1', 'foundation_version': 1, 'dedupe_key': 'f:start'},
@@ -65,6 +69,9 @@ class PwaLearningParityTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(response.status_code, 200, response.text)
         self.assertEqual(response.headers['x-hsk-pwa-user-id'], '1')
         self.assertTrue(response.json()['foundation']['completed'])
+        allowed = await self.client.get('/api/v3/pwa/lesson/content/hsk1/1')
+        self.assertEqual(allowed.status_code, 200, allowed.text)
+
         # Lost ACK and a new device's intent must both return the stored result.
         for event_id in ['pwa:finish', 'pwa:other-device']:
             retry = await self.client.post(path, headers=headers, json={**payload, 'event_id': event_id})

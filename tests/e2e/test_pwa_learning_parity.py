@@ -30,6 +30,8 @@ class LearningPage:
         self.ad_views = []
         self.ad_reads = []
         self.offer_ads = False
+        self.hold_ads = False
+        self.held_ads = []
         self.lang = lang
 
     def serve(self, route):
@@ -60,6 +62,9 @@ class LearningPage:
             route.fulfill(json={'ok': True, 'ordinary': None, 'release': []})
         elif path == '/api/v3/pwa/ad':
             self.ad_reads.append(route.request.url)
+            if self.hold_ads:
+                self.held_ads.append(route)
+                return
             placement = 'lesson_end' if 'placement=lesson_end' in route.request.url else 'screen_center'
             route.fulfill(headers={'X-HSK-PWA-User-ID': '31'}, json={'ok': True, 'ad': {
                 'id': 1, 'title': 'HSK AI', 'media_type': 'photo',
@@ -218,7 +223,14 @@ def test_existing_ads_two_placements_use_pwa_transport_and_resume_after_close():
             ad.wait_for(state='visible')
             ad.locator('.caa-app-x').click()
             page.wait_for_function('!document.querySelector(".caa-app").classList.contains("on")')
-            page.evaluate('window.adReturned=0;window._pendingLessonEndAd=1;playLessonEndAd(function(){window.adReturned++})')
+            page.evaluate("""() => {
+                const celebrate=App.showLevelUp, refresh=refreshCourseProgress;
+                App.showLevelUp=function(){}; refreshCourseProgress=()=>Promise.resolve(true);
+                try {applyLessonDone(allLessons()[0], {ok:true,duplicate:false,completed_lessons_count:1});}
+                finally {App.showLevelUp=celebrate;refreshCourseProgress=refresh;}
+                if(window._pendingLessonEndAd!==1)throw Error('PWA saved lesson did not queue its existing ad');
+                window.adReturned=0;playLessonEndAd(function(){window.adReturned++});
+            }""")
             ad.wait_for(state='visible')
             assert 'lesson-end' in ad.get_attribute('class')
             ad.locator('.caa-app-x').click()
@@ -263,5 +275,23 @@ def test_foundation_timeout_and_invalid_ack_leave_results_retryable():
             assert not page.evaluate('foundationIsComplete()')
             assert page.locator('#f-cta').is_enabled()
             assert len({r.request.post_data_json['event_id'] for r in fixture.completions}) == 1
+        finally:
+            browser.close()
+
+
+def test_stalled_lesson_ad_does_not_block_returning_to_course():
+    fixture = LearningPage()
+    with sync_playwright() as pw:
+        browser = getattr(pw, os.getenv('PWA_E2E_ENGINE', 'chromium')).launch()
+        try:
+            page = fixture.open(browser)
+            fixture.hold_ads = True
+            page.clock.install()
+            page.evaluate('window.adReturned=0;window._pendingLessonEndAd=1;playLessonEndAd(function(){window.adReturned++})')
+            page.wait_for_function('window._pendingLessonEndAd === 0')
+            page.clock.fast_forward(8001)
+            page.wait_for_function('window.adReturned === 1')
+            assert not page.locator('.caa-app.on').count()
+            assert page.locator('#nav').is_visible()
         finally:
             browser.close()

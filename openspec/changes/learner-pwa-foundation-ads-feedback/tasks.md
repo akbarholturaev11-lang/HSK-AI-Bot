@@ -10,4 +10,7 @@
 - [x] 2.3 Generate canonical UZ/RU/TJ UI copy; verify catalog check and affected mobile browser layout.
 
 ## 3. Integration
-- [ ] 3.1 Run focused syntax/import, API/DB, browser and localization checks; review diff, record prevention notes and verify applicable CI before promotion.
+- [x] 3.1 Run focused syntax/import, API/DB, browser and localization checks; review diff and record prevention notes.
+
+## Workflow follow-up
+- Verify the final commit in applicable CI before main promotion; installed-device/production acceptance is separate from automated checks.
