@@ -205,12 +205,13 @@ class PwaLearningParityTests(unittest.IsolatedAsyncioTestCase):
             db.add(fixture.user(2, None))
             db.add(Event(user_id=2, event_name='voice_started', source='course_voice'))
             await db.commit()
-        for kind, event in [('practice', 'training_completed'), ('voice', 'voice_started')]:
+        for kind, event in [('practice', 'card_seen'), ('voice', 'voice_started')]:
             body = {'context': {'kind': kind, 'level': 'hsk1'}}
             path = '/api/v3/pwa/feedback/ordinary/prepare'
             self.assertEqual((await self.client.post(path, headers=headers, json=body)).status_code, 409)
             async with self.sessions() as db:
-                db.add(Event(user_id=1, event_name=event, source='course_voice' if kind == 'voice' else 'course_miniapp'))
+                db.add(Event(user_id=1, event_name=event, source='course_voice' if kind == 'voice' else 'pwa_course_v3',
+                    payload_json=json.dumps({'card_type':'practice_entry'}, separators=(',', ':')) if kind == 'practice' else None))
                 # Clean only this synthetic pending prompt to test each context independently.
                 from sqlalchemy import delete
                 await db.execute(delete(BotFeedback))

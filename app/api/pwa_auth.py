@@ -469,7 +469,7 @@ def _pwa_feedback_choices(language: str, *, paid: bool, current: str | None = No
 async def _pwa_feedback_context_exists(db, user, context) -> bool:
     """Only current, actually used learning contexts can request compact feedback."""
     from datetime import datetime, timedelta, timezone
-    from sqlalchemy import select
+    from sqlalchemy import and_, or_, select
     from app.db.models.course_miniapp_event import CourseMiniAppEvent as Event
     from app.repositories.course_progress_repo import CourseProgressRepository
     from app.services.course_levels import content_level
@@ -488,8 +488,14 @@ async def _pwa_feedback_context_exists(db, user, context) -> bool:
     names = (("voice_started", "voice_completed") if context.kind == "voice" else
              ("training_started", "training_completed", "test_started", "test_completed",
               "practice_attempt_scored", "section_attempt_scored", "mistake_review_started", "mistake_review_completed"))
+    activity = Event.event_name.in_(names)
+    if context.kind == "practice":
+        activity = or_(activity, and_(
+            Event.event_name == "card_seen", Event.source == "pwa_course_v3",
+            Event.payload_json.contains('"card_type":"practice_entry"'),
+        ))
     return (await db.execute(select(Event.id).where(
-        Event.user_id == user.id, Event.event_name.in_(names),
+        Event.user_id == user.id, activity,
         Event.created_at >= datetime.now(timezone.utc) - timedelta(minutes=30),
     ).limit(1))).scalar_one_or_none() is not None
 

@@ -346,9 +346,9 @@
     var url="/api/v3/ad?placement="+encodeURIComponent(placement)
       +"&lesson="+encodeURIComponent(Number(CFG.lessonOrder)||0)
       +"&lang="+encodeURIComponent(["tj","uz","ru"].indexOf(CFG.lang)>=0?CFG.lang:"tj");
-    var controller=new AbortController(),timer;
-    var deadline=new Promise(function(resolve){timer=setTimeout(function(){controller.abort();resolve(null)},8000)});
-    var request=(CFG.requestGet?CFG.requestGet(url,{signal:controller.signal}):fetch(url,{headers:{"X-Telegram-Init-Data":CFG.initData||""},signal:controller.signal}))
+    var controller=window.AbortController?new window.AbortController():null,timer;
+    var deadline=new Promise(function(resolve){timer=setTimeout(function(){if(controller)controller.abort();resolve(null)},8000)});
+    var request=(CFG.requestGet?CFG.requestGet(url,{signal:controller?controller.signal:undefined}):fetch(url,{headers:{"X-Telegram-Init-Data":CFG.initData||""},signal:controller?controller.signal:undefined}))
       .then(function(r){return r.ok?r.json().catch(function(){return {}}):{}})
       .then(function(d){
         var ad=d&&d.ad;

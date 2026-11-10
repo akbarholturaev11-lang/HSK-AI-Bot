@@ -382,7 +382,7 @@
     try { return localStorage.getItem(RELEASE_SEEN_PREFIX + id) === "1"; } catch (_) { return true; }
   }
   async function openRelease(context) {
-    if (busy || !root.hidden || document.visibilityState === "hidden") return;
+    if (busy || !root.hidden || sessionPrompted || document.visibilityState === "hidden") return;
     var token = ++generation;
     function current() {
       return token === generation && root.hidden && document.visibilityState !== "hidden" &&
@@ -401,6 +401,7 @@
       submitButton.disabled = false;
       closeButton.setAttribute("aria-label", course("subscriptionPage.close"));
       root.hidden = false;
+      sessionPrompted = true;
       panel.focus({preventScroll:true});
       if (window.NavBack) NavBack.sync();
     } catch (_) {

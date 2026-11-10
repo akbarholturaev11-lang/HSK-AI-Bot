@@ -29,6 +29,7 @@ class LearningPage:
         self.submissions = []
         self.ad_views = []
         self.ad_reads = []
+        self.available_reads = 0
         self.offer_ads = False
         self.hold_ads = False
         self.held_ads = []
@@ -38,6 +39,12 @@ class LearningPage:
         path = urlsplit(route.request.url).path
         if path == '/iphone-pwa/course':
             route.fulfill(content_type='text/html', body=pwa_document())
+        elif path == '/iphone-pwa/practice/recognition':
+            route.fulfill(content_type='text/html', body='''<body><button id="practice-exit"
+                onclick="parent.RESOURCE.closePracticeFrame(window)">Back</button><script>
+                parent.RESOURCE.acceptPracticeActor(window,31);
+                parent.RESOURCE.revealPracticeFrame(window);
+                </script></body>''')
         elif path == '/api/v3/pwa-auth/session':
             route.fulfill(json={'ok': True, 'user_id': 31, 'csrf': 'test-csrf'})
         elif path == '/api/v3/pwa/map':
@@ -59,6 +66,7 @@ class LearningPage:
             assert route.request.headers.get('x-hsk-pwa-csrf') == 'test-csrf'
             route.fulfill(json={'ok': True, 'completed': True})
         elif path == '/api/v3/pwa/feedback/available':
+            self.available_reads += 1
             route.fulfill(json={'ok': True, 'ordinary': None, 'release': []})
         elif path == '/api/v3/pwa/ad':
             self.ad_reads.append(route.request.url)
@@ -180,8 +188,12 @@ def test_compact_existing_feedback_on_practice_and_voice_exit(lang, width):
             errors = []
             page.on('pageerror', lambda error: errors.append(str(error)))
             kind = 'voice' if width == 430 else 'practice'
-            page.evaluate('''kind => {App.show(kind === 'voice' ? 'voice' : 'mashq');
-                SECTION = kind === 'voice' ? VOICE : {}; closeSection();}''', kind)
+            if kind == 'practice':
+                page.evaluate('App.show("mashq");App.openRecog()')
+                page.frame_locator('#pwa-practice-layer iframe').locator('#practice-exit').click()
+                assert any(event.get('card_type') == 'practice_entry' for event in fixture.events)
+            else:
+                page.evaluate('App.show("voice");SECTION=VOICE;closeSection()')
             root = page.locator('#hsk-pwa-feedback-root')
             root.wait_for(state='visible')
             assert len(fixture.prepares) == 1
@@ -206,6 +218,10 @@ def test_compact_existing_feedback_on_practice_and_voice_exit(lang, width):
             page.wait_for_timeout(1100)
             assert len(fixture.prepares) == 1
             assert not root.is_visible()
+            available_before = fixture.available_reads
+            page.evaluate('HskPwaFeedback.openRelease({canOpen:function(){return true}})')
+            page.wait_for_timeout(50)
+            assert fixture.available_reads == available_before, 'one automatic feedback prompt per session'
             assert errors == []
         finally:
             browser.close()
