@@ -2,7 +2,7 @@
 
 > **Single continuation file for this proposed feature.** Read this file in every new chat before changing the feature. Keep it short and factual; update this file in place, not with new handoff copies.
 >
-> **Status:** merged to `main` (PR #300, merge `75795da5`, 2026-11-10); production switches unchanged and not device-tested — see **Current state** at the end.
+> **Status (2026-11-11):** implemented and merged to `main` (PR #300, merge `75795da5`; later UI update PR #302). **Owner reports hands-on end-to-end testing completed successfully** and accepts the behavior. This is *owner-reported manual QA*, not a new independent device or CI test run. Live Admin PWA switch values and remaining operational checks have not been independently read — see **Current state** below.
 >
 > **Baseline read:** `main@3d4f14fa1ef39311998eb5d59d32c7598b17296d` (2026-11-10 review). **Re-read latest `origin/main` and changed files before any implementation.** This SHA is not a fixed implementation base.
 
@@ -90,13 +90,19 @@ At the start of every new coding chat:
   - Transfer secret travels in the URL **fragment** only (never query/path), cleared by the landing script before the same-origin redeem.
   - A different account already signed in on the browser is never replaced without an explicit switch; a signed-out browser is signed in directly (login-CSRF residual risk accepted and documented in `design.md`).
 - **Done (code + automated tests):** all four workstreams; every `tasks.md` item is checked. Production switches untouched: `platforms.ios` stays as stored, no Play URL entered.
-- **Not done — owner gates before any rollout (in this order):**
-  1. ~~Merge~~ done: PR https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/300 → `main` `75795da5`. The production `platforms.ios` value was **not** read before the merge (Railway CLI login expired): the owner must confirm the iPhone PWA switch is OFF in Admin PWA.
-  2. Real-device QA on staging, with `platforms.ios` ON there only: Telegram iOS → "Safari’da ochish" → does `openLink(…, {try_browser:"safari"})` really open Safari, and does the `#t=…` fragment survive? → same account, no onboarding repeat, install video, course, Pro/progress intact. Then Add to Home Screen: iOS gives the Home Screen app its own storage, so the learner signs in there once with the existing sign-in (expected, not a bug).
-  3. Android: enter the real Play listing on staging, confirm `openLink` opens the Play Store app; empty URL → APK in chat.
-  4. Check the install video still shows `hskai.app`, not an old hostname (section 5).
-  5. Only then switch ON in production via Admin PWA; roll back by switching OFF (sessions, Pro and progress are untouched).
+- **Owner manual acceptance — PASSED (reported 2026-11-11):** the owner explicitly confirms testing the complete user-facing flow and reports everything working. Record this as **owner-reported real-use QA accepted**. Do not keep claiming that *no real-device test has occurred*. No new CI run, device matrix, OS/browser versions, case-by-case evidence or authenticated production-setting read was supplied with this confirmation; do not invent any.
+- **Separate operational facts/gates (not negated by owner acceptance):**
+  1. Merged: PR https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/300 → `main` `75795da5`, plus follow-up UI PR #302. No further merge is needed for the original feature.
+  2. The current **live** `desktop_app_promo_settings.platforms.ios/android` values and Play URL have not been independently checked in this documentation update; do not assert they are OFF, ON or empty without reading actual Admin PWA settings. Owner confirmation of working UI does not reveal the present switch values.
+  3. Exact iOS/Android device versions, browser handoff fragment behavior, alternate-account edge cases, installed Home Screen new-session behavior and Play/APK fallback are covered by existing automated tests or were part of the owner's general successful test report only to the extent actually exercised; **do not pretend every edge case has individual manual evidence**.
+  4. Independently verifying the installed-video hostname (`hskai.app` vs obsolete Railway footage) and uploaded square-photo survival across a later deploy remains a separate content/operations check unless the owner explicitly supplies those outcomes.
+  5. New production enable/disable actions remain controlled by actual Admin PWA settings; do not flip a live switch as a side effect of updating QA notes. If a regression appears, OFF disables new routing offers/handoffs without deleting existing sessions, accounts, progress or Pro.
 - **Follow-up (not in this change):** the Admin PWA dashboard card (`pwa_analytics_*` stack) still says iPhone PWA is not instrumented; the handoff counts are in the statistics reader, export and MCP only.
+
+### Manual QA acceptance record
+
+- **2026-11-11 — owner feedback:** "мен синап булдим хамаси чотка" (I tested it; everything works). **Status: PASSED — owner-reported end-to-end user acceptance.** This is a user confirmation, not a claim that ChatGPT operated the phone, checked staging, or independently ran a device suite.
+- Later Codex sessions must respect this acceptance and focus only on verified regressions or specifically outstanding operational evidence; do not reopen a blanket "device QA never performed" blocker without new evidence.
 
 ### Work log (append newest last)
 
