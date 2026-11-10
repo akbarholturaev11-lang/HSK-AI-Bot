@@ -379,7 +379,7 @@
     promoEligible: false,
     promoReason: "",
     autoTargetPlatform: "",
-    promoCooldownDays: 0,
+    promoCooldownDays: null,
     homePromptDailyLimit: DEFAULT_HOME_PROMPT_DAILY_LIMIT,
     promoPlacements: {
       home_prompt: false,
@@ -459,16 +459,7 @@
     }
     var title = miniappText("iphone.title");
     if (!title) return null;
-    return {
-      eyebrow: miniappText("iphone.eyebrow"),
-      title: title,
-      body: miniappText("iphone.body"),
-      benefits: [
-        ["device-mobile", miniappText("iphone.benefitHome")],
-        ["user-check", miniappText("iphone.benefitAccount")],
-        ["arrows-exchange", miniappText("iphone.benefitProgress")]
-      ]
-    };
+    return { title: title, body: miniappText("iphone.body") };
   }
 
   function promoCopyFor(source, meta) {
@@ -797,37 +788,6 @@
       pwa_handoff_failed: miniappText("iphone.failed"),
       network_error: copy.networkError
     }[code] || copy.networkError;
-  }
-
-  function buildBenefit(iconName, label) {
-    var item = element("span", "pdd-benefit");
-    item.appendChild(icon(iconName));
-    item.appendChild(document.createTextNode(label));
-    return item;
-  }
-
-  function buildBenefits(includeProgress) {
-    var copy = text();
-    var row = element("div", "pdd-benefits");
-    row.appendChild(buildBenefit("device-desktop", copy.bigScreen));
-    row.appendChild(buildBenefit("refresh", copy.autoUpdate));
-    if (includeProgress) {
-      row.appendChild(buildBenefit("arrows-exchange", copy.sharedProgress));
-    }
-    return row;
-  }
-
-  function buildPromoBenefits(source, meta, includeProgress) {
-    var contextual = promoCopyFor(source, meta);
-    if (!contextual || !Array.isArray(contextual.benefits)) {
-      return buildBenefits(includeProgress);
-    }
-    var row = element("div", "pdd-benefits");
-    contextual.benefits.forEach(function (definition) {
-      if (!Array.isArray(definition) || definition.length < 2) return;
-      row.appendChild(buildBenefit(definition[0], definition[1]));
-    });
-    return row;
   }
 
   function buildProfileDeviceVisual() {
@@ -2054,9 +2014,18 @@
     });
   }
 
+  /* 0 from the server means no rest between offers; only a missing or
+     invalid value falls back to the default. */
+  function cooldownDays(value) {
+    var days = Number(value);
+    if (value === null || value === undefined || value === "" || !isFinite(days)) {
+      days = DEFAULT_PROMO_COOLDOWN_DAYS;
+    }
+    return Math.max(0, Math.min(90, days));
+  }
+
   function promoCooldownMs() {
-    var days = Number(state.promoCooldownDays) || DEFAULT_PROMO_COOLDOWN_DAYS;
-    return Math.max(1, Math.min(90, days)) * 24 * 60 * 60 * 1000;
+    return cooldownDays(state.promoCooldownDays) * 24 * 60 * 60 * 1000;
   }
 
   /* Sovish muddati HAR JOY UCHUN ALOHIDA sanaladi.
@@ -2295,14 +2264,10 @@
     shell.appendChild(close);
     shell.appendChild(buildPromoVisual());
 
+    /* Owner review 2026-11-10: picture, title, one short line and one
+       action. No eyebrow, benefit chips or second "later" button; the
+       close button and the backdrop still dismiss it. */
     var body = element("div", "pdd-promo-body");
-    body.appendChild(
-      element(
-        "span",
-        "pdd-eyebrow",
-        contextualCopy ? contextualCopy.eyebrow : copy.eyebrow
-      )
-    );
     var title = element(
       "h2",
       "",
@@ -2313,17 +2278,19 @@
     body.appendChild(
       element("p", "", contextualCopy ? contextualCopy.body : copy.promoBody)
     );
-    body.appendChild(buildPromoBenefits(source, meta, true));
     body.appendChild(buildActions(source));
     body.appendChild(buildInlineStatus());
-    var later = element("button", "pdd-promo-dismiss", copy.dismiss);
-    later.type = "button";
-    later.addEventListener("click", dismissPromo);
-    body.appendChild(later);
     shell.appendChild(body);
     promoRoot.appendChild(shell);
     syncControls();
-    close.focus();
+    // Focus moves into the dialog itself, not onto the close button, so a
+    // touch screen does not show a stuck focus ring around the X.
+    shell.tabIndex = -1;
+    try {
+      shell.focus({ preventScroll: true });
+    } catch (error) {
+      shell.focus();
+    }
     return true;
   }
 
@@ -2515,13 +2482,7 @@
               APP_PROMO_PLATFORMS.indexOf(promo.target_platform) >= 0
                 ? promo.target_platform
                 : "";
-            state.promoCooldownDays = Math.max(
-              1,
-              Math.min(
-                90,
-                Number(promo.cooldown_days) || DEFAULT_PROMO_COOLDOWN_DAYS
-              )
-            );
+            state.promoCooldownDays = cooldownDays(promo.cooldown_days);
             state.homePromptDailyLimit = Math.max(
               1,
               Math.min(
