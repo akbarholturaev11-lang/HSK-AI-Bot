@@ -1,6 +1,6 @@
 # HSK AI — Performance audit acceptance: Backend and PWA
 
-Scope: canonical backend, API, PostgreSQL, Cloudflare, Telegram Mini App shared assets and authenticated learner PWA. `android/` native implementation is out of scope. Preserve native/Telegram shared API contracts.
+Historical scope **of the completed/older Backend + PWA-only work**: canonical backend, API, PostgreSQL, Cloudflare, Telegram Mini App shared assets and authenticated learner PWA. The older phase excluded `android/` changes, **but this restriction does not apply to the current owner-directed joint PWA + Android + Backend optimization initiative**. Use the evergreen goals/requirements document for current scope and plan all three together. Preserve native/Telegram shared API contracts.
 
 ## Required: Initial Render & Progressive Loading (PWA)
 
@@ -140,7 +140,7 @@ The existing **Required: Initial Render & Progressive Loading** section remains 
 2. Every new learner PWA view must render a useful authorized shell before its slow data requests settle, with its **own** skeleton and loading/empty/error/retry states. Protect authentication first: an unverified session can show only public/non-personalized shell, not stale account data, Pro badges or lessons.
 3. Prioritize visible logo/mascot/above-the-fold assets, defer genuinely offscreen resources, reserve image/card geometry, reduce request duplication and avoid blocking unrelated sections. Add debounce, pagination, virtualization, optimized image formats and code splitting where the usage profile warrants them.
 4. Every new API must consider bounded response size, correct SQL/query count, transaction/pool behavior, timeout/cancellation, cache ownership and invalidation, and safe parallel work **at implementation time**. If not applicable, document the reason rather than adding a service or technology.
-5. Do not change Android native code in this performance phase; preserve contracts consumed by Android, Telegram bot and Mini App. New shared APIs still require compatibility checks.
+5. For the **historical Backend/PWA-only implementation phase described in this document**, Android native was not modified. This is **not a prohibition for the current combined PWA + Android + Backend initiative**, which must include Android native work and appropriate client-specific tests. Preserve contracts consumed by Android, Telegram bot and Mini App, and check all shared API changes for compatibility.
 6. Preserve user isolation, CSRF/session checks, course progress, Trial/Free/Pro decisions, purchases, refunds and expiry. No optimistic entitlements and no public caching of private data.
 
 ## Performance acceptance for every future change

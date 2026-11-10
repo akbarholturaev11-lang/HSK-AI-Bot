@@ -253,3 +253,9 @@ When Codex adds or modifies a **user-observable behavior** (onboarding, course, 
 6. Include an **Analytics Impact** subsection in the PR/final task result: questions answered, affected events/readers, test evidence, limitations/exemptions. Do not declare an integrated feature complete without this evidence.
 
 **Done means**: critical journeys are source-to-dashboard traceable; newly supported metrics are reconciled against their authoritative records; unsupported metrics say why; regressions and registry drift are caught by scoped CI and functional tests; future coding agents automatically encounter the enduring instruction in root `AGENTS.md`. A plan checklist alone is not a safeguard.
+
+## Analytics → Monitoring → joint integration order
+
+- **First:** deliver the Analytics Impact rule, coverage registry and scoped CI guard; continue metric repair in bounded packages. This prerequisite does **not** require finishing every Analytics report.
+- **Then:** Monitoring reuses verified canonical user/platform/feature identifiers and compatible coverage/CI conventions. Keep business/KPI events separate from privacy-safe diagnostic incidents; no duplicate pipelines.
+- **Finally:** one joint integration audit (not a third rebuild) checks both Impact/CI obligations, end-to-end Admin Analytics/Inbox coverage, dedup/privacy, nonblocking flows and affected regressions. Recheck the latest `main` and integrate tested changes sequentially.
