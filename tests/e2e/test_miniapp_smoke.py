@@ -1499,8 +1499,9 @@ def test_course_v3_checkpoint_exit_ticket_mastery_and_paywall_boundary(page):
     expect(page.locator(".caa-ls-pay")).to_contain_text("HSK AI Pro")
 
 
-def test_course_v3_sales_treatment_bridge_preview_and_cutoff_paywall(page):
+def test_course_v3_sales_bridge_preserves_server_denied_next_lesson(page):
     events = []
+    lesson_starts = []
     mock_price_preview(page)
     mock_telegram_ready(page)
     mock_learning_audio(page)
@@ -1512,6 +1513,12 @@ def test_course_v3_sales_treatment_bridge_preview_and_cutoff_paywall(page):
             "trigger": "hsk1_first_checkpoint",
         },
     )
+
+    def capture_start(route):
+        lesson_starts.append(route.request.post_data_json)
+        json_response(route, {"ok": True, "allowed": True})
+
+    page.route("**/api/v3/lesson/start", capture_start)
 
     def capture_event(route):
         events.append(route.request.post_data_json)
@@ -1576,35 +1583,25 @@ def test_course_v3_sales_treatment_bridge_preview_and_cutoff_paywall(page):
     assert page.evaluate("window._pendingLessonEndAd") == 0
     assert page.evaluate("window._pendingDesktopLessonPromo") == 0
 
+    # The existing backend strips preview_half and denies the next part
+    # after the free allowance. A marketing bridge must not grant access.
     bridge.locator(".sales-secondary").click()
-    expect(page.locator("#sheet")).to_have_class(re.compile(r"\bon\b"))
-    expect(page.locator("#sheet")).to_contain_text("2-dars · 1-qism")
-    page.locator("#sheet .scta").click()
-    expect(page.locator("#flow")).to_have_class(re.compile(r"\bon\b"))
-    page.wait_for_function("Flow.previewHalf === true && Flow.previewHalfAt > 0")
-    page.evaluate("Flow.i = Flow.previewHalfAt - 1; Flow.next()")
-
-    paywall = page.locator("#paywall")
+    paywall = page.locator(".caa-ov.limit")
     expect(paywall).to_have_class(re.compile(r"\bon\b"))
-    expect(paywall).to_contain_text(
-        "Bepul namuna yakunlandi. HSK yo'lingizni davom ettirish uchun to'liq kursni oching."
-    )
-    expect(paywall).to_contain_text("HSK maqsadingizgacha aniq yo'l")
-    expect(paywall).to_contain_text("谢谢你！")
-    expect(paywall.locator(".spromo")).to_have_count(0)
-    expect(paywall.locator(".sales-offer .scta")).to_contain_text(
-        "HSK yo'lini to'liq ochish"
-    )
-    page.locator("#paywall .sx").click()
+    expect(paywall).to_contain_text("Bugungi bepul darslaring tugadi")
+    expect(paywall.locator(".caa-ls-pay")).to_contain_text("HSK AI Pro")
+    expect(page.locator("#flow")).not_to_have_class(re.compile(r"\bon\b"))
+    assert not any(entry.get("lesson_id") == 4 for entry in lesson_starts)
+    page.locator(".caa-ls-close").click()
     page.wait_for_timeout(100)
 
     sales_events = [event for event in events if event["event"].startswith("sales_")]
     assert {event["event"] for event in sales_events} >= {
         "sales_bridge_seen",
         "sales_bridge_cta",
-        "sales_offer_seen",
-        "sales_offer_dismissed",
     }
+    assert any(event.get("event") == "paywall_seen" and event.get("source") == "v3_locked_lesson"
+               for event in events)
     cta = next(event for event in sales_events if event["event"] == "sales_bridge_cta")
     assert cta["action"] == "free_preview"
     assert all("arm" not in event for event in sales_events)
