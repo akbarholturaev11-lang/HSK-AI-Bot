@@ -1,132 +1,91 @@
-# HSK AI — Backend & Learner PWA Performance: Goals and Requirements
+# HSK AI — Performance Goals & Requirements: PWA, Android, Backend
 
-> **Document type:** Product objective and permanent requirements contract — **NOT** an implementation plan, sprint backlog, task log or assertion of completed work.
+> **Purpose:** A stable, technology-neutral statement of desired outcomes and non-negotiable requirements. **This is not an implementation plan, historical progress report or fixed snapshot of repository code.**
 >
-> **Baseline reviewed:** Current `main` project rules and performance contract on 2026-11-10.
->
-> **Authority:** `AGENTS.md`, `AI_RULES.md`, `PROJECT_MEMORY.md`, and `docs/PERFORMANCE_PWA_PROGRESSIVE_LOADING.md` remain authoritative for their existing invariants. Follow the latest versions when work begins; resolve any conflict in favor of security, active product priorities, and current verified code/contracts. This document defines the **desired outcome**, not the mechanism or implementation sequence.
+> These requirements apply to existing functionality and all relevant future additions. How to meet them must be decided by inspecting the **latest `main`** at planning/implementation time, never by assuming an old code structure, branch or prior task remains current.
 
-## 1. Core objective
+## 1. Main goal
 
-Make HSK AI feel **immediately usable, visually stable, fast, resilient and economical** on real phones and unstable networks, without degrading Chinese learning, user trust, revenue flows or account security.
+HSK AI must be **fast to open, responsive to interact with, visually stable, reliable on poor networks and economical to operate** without sacrificing functionality, access rules, privacy or learning accuracy.
 
-- Opening the learner PWA must not feel like a blank, frozen or endlessly spinning application.
-- Real UI structure should be visible early; real data fills **its predetermined place**, independently and smoothly.
-- Slow requests, large data, third-party APIs and avoidable backend work must not hold unrelated user interactions hostage.
-- Real measured user experience — not a count of added optimization techniques — determines success.
-- Improve the existing architecture first. Avoid technology additions, unrelated refactors and unnecessary token/infrastructure spending.
+What matters is the actual experience of a learner, not the number of technologies or optimizations installed. Improve the proven bottlenecks and preserve what already works. Do not make the product more complex or expensive without measurable benefit.
 
-## 2. Scope and product direction
+**Target product:** learner PWA (iPhone/iPad and supported browsers), **native Android** (Play and direct distribution), and the shared backend/API, database, network and relevant infrastructure supporting them. These platforms are part of the **same overall performance objective**, but do not need to be changed simultaneously.
 
-**Current implementation scope:** Learner PWA on iPhone/iPad Safari and supported browsers; canonical FastAPI/backend APIs, PostgreSQL, existing Cloudflare/CDN/cache/R2 infrastructure and shared web assets consumed by the PWA.
+## 2. Shared user-experience requirements
 
-**Shared-code boundary:** Existing Telegram Mini App, Telegram bot, Android, auth, payments, course and Admin PWA consumers must retain their valid API/domain contracts. Backend improvements may benefit these consumers, but must not silently change their behavior. Admin PWA needs separate UX work only where an affected shared backend contract requires it.
+1. **Fast first useful screen.** Show a real application shell and usable non-sensitive navigation promptly; do not leave users watching a blank page, full-screen network spinner or frozen launch screen while optional data loads.
+2. **Layout-faithful skeletons.** Every async screen, card, dialog, section, form, image and long-list region must reserve the final content's approximate position, dimensions, spacing and visual hierarchy before data arrives. A generic short grey rectangle cannot stand in for a complex real screen.
+3. **True progressive loading.** Independent data areas load independently. As soon as one response is verified, that area settles into its **already reserved position** without moving the header, fixed navigation, nearby content or previously settled sections. Another slow/failed API must not block or erase the completed area.
+4. **Smooth and restrained transitions.** Replace placeholders through a subtle, short fade within the reserved dimensions, without animating layout dimensions to conceal shifts. Respect reduced-motion settings and platform conventions. Loading, empty, error and retry are distinct, usable states.
+5. **Real visuals at the right time.** Essential first-viewport HSK AI logo/mascot and visible images have priority. Offscreen resources load on demand. Use supported, correctly sized modern image formats where they actually reduce cost while keeping the original official assets/fallbacks. Reserve image geometry to avoid jumps.
+6. **Responsive interactions.** Avoid repeated renders, duplicate equivalent in-flight reads and serial loading of independent work. Cancel stale reads when appropriate; debounce searches and autocomplete after typing pauses, but never delay or merge separate payment/lesson writes as if they were reads.
+7. **Bounded information display.** Avoid loading/rendering enormous datasets upfront. Use appropriate pagination, incremental loading and virtualization when real list length, device capability or measurements justify them.
+8. **Trustworthy cache and recovery.** Caches should improve perceived speed but must not expose other accounts' data or stale access rights. Under offline, timeouts and partial outages, keep safe, already verified UI usable and give local recovery/retry instead of false data or endless loading.
+9. **Whole-product coverage.** The requirements apply to **all existing and newly added** learner surfaces (learning course, exercises, voice/AI, ratings, profile, dictionary, tests, results, onboarding, settings, notifications and future sections). A parent screen having a skeleton is insufficient if nested widgets still jump or block.
 
-**Explicitly outside this performance work:**
-- Android native UI/app-specific performance optimization: a later dedicated stage, without changing `android/` now. Shared backend contracts must remain Android-compatible.
-- macOS/Windows Desktop feature development, parity, packaging and desktop-only tests: currently frozen by `AGENTS.md`. Keep generic contracts reusable; create no speculative desktop adapter or code.
-- Immediate Telegram-bot teaching shutdown or migration. Future direction is bot handoff to PWA/Android, but existing Telegram education, referral, payment, account and progress flows must keep working now.
-- Replacing the frontend framework, database, queue infrastructure or deployment topology without a demonstrated need.
+**Concrete visual acceptance example:** A rating screen with three trophies, league labels, participant/time indicators, leaderboard title and ranked user rows must show placeholders in **each of those final slots** while loading. They become the real elements smoothly **in place**. This is a general rule for every screen's own design, not a requirement to copy the rating screen elsewhere.
 
-**Scope rule:** This document does **not** authorize work in every listed area. It describes acceptance requirements for a future expanded plan. Actual implementation should be scoped and evidence-driven.
+## 3. PWA-specific requirements
 
-## 3. User-visible PWA loading and interaction requirements
+- Prioritize early rendering of the shell and above-the-fold content, with independent loading for visible sections; avoid synchronous heavy JavaScript and unnecessary first-load DOM construction.
+- Use safe browser/CDN/service-worker caching with correct versioning and invalidation. Keep dynamic personal responses private and session-validated.
+- Limit expensive scripts, unnecessary dependencies, CSS/JS payloads, font variants and rerenders; evaluate route-based code splitting and delayed third-party loading where beneficial.
+- Provide properly sized/lazy-loaded images and sensible WebP/AVIF fallbacks; never defer critical above-the-fold imagery by default.
+- Respect mobile Safari/WebKit layout, iOS safe areas, keyboard and navigation, existing PWA install/onboarding flow, multilingual copy and accessibility. Do not break browser auth, device/account handoff, course progress or checkout.
+- Test the **actual** loading → partial → ready → error → retry transition, not merely whether a skeleton DOM node exists. Visually fixed anchors should remain stable at narrow widths.
 
-**PWA-01 — Shell before slow data.** Display the real approved HSK AI page shell, title, navigation, background, layout and safe placeholders as early as possible; never show a blank/black viewport or fullscreen network spinner during ordinary load. Session verification must precede private content or active protected controls.
+## 4. Native Android-specific requirements
 
-**PWA-02 — True layout-matched skeletons.** **Every existing and future** learner screen, section, card, profile panel, image area, modal, sheet, list and embedded widget must reserve the positions and approximate dimensions of its actual final UI. A generic two-line box is unacceptable for a multi-element final view. Reserve headings, art, cards, buttons, rows, gutters and bottom navigation consistently; avoid large empty gaps.
+- Native Android is **in scope for the overall performance program**, with its own measured implementation stage if that reduces risk. Cover both Play and direct app variants, preserving their real current feature/payment/update differences.
+- Display real app structure promptly without long blank startup or screen-wide network waits. Use **native layout-matched placeholders** for loading elements and stable, smooth in-place settlement; do not force web-only mechanisms or CSS into native UI.
+- Reduce unnecessary UI recomposition/rebuilds, heavy work on the main thread, memory churn, oversized images, duplicate repository/API requests and unnecessary startup work. Keep scrolling and input responsive; avoid hangs and ANRs.
+- Use appropriate lifecycle-aware cancellation, bounded concurrency, pagination, local data caching and safe background execution; never create speculative queues or services when the existing Android architecture already handles a task.
+- Treat foreground/background, network loss/reconnect, rotation where relevant, app resume, push/deep links, login callback, account switching, mandatory updates and offline learning as reliability-critical flows.
+- Preserve Google/Telegram account linking and cross-device synchronization, correct course/Pro/Trial access and all supported payment routes. No false optimistic billing/access state.
+- Verify performance on actual or representative **weak Android devices**, poor networks and both installed build variants. Measure startup responsiveness, UI frame delays/jank, errors/crashes/ANRs, memory and network usage with available platform-appropriate tools.
+- Share backend improvements where appropriate but do not mechanically duplicate the PWA implementation in Android; native behavior should use existing Android architecture.
 
-**PWA-03 — Rating is an explicit reference.** The `Reyting` loading view must reserve the final heading, **three league trophies/podium positions**, league-name labels, participant count/countdown, weekly Top-5 heading, and visible rank/avatar/name/XP rows. Existing artwork and fixed bottom nav remain stable while the leaderboard request is unresolved. Apply the same fidelity to every other screen's actual design, not to a copied Rating layout.
+## 5. Backend, PostgreSQL and infrastructure requirements
 
-**PWA-04 — Independent loading boundaries.** Course, Practice, AI Voice, Rating, Friends, Profile, Settings, dictionary, mistakes, lessons/tests, checkout, notices/push and future features have their own `loading | ready | empty | error | retry` handling where data is asynchronous. A slow/erroring secondary endpoint must not blank a loaded screen or prevent unrelated ready sections from functioning.
+1. **Measure real bottlenecks.** Establish request latency (including p50/p95 where available), SQL/query count, payload sizes, errors, network and resource overhead before declaring optimizations necessary or successful.
+2. **Avoid duplicated work and N+1.** Remove redundant API calls, avoidable DB/ORM queries, repeated calculations and confirmed N+1 patterns without breaking authorization, idempotency or data correctness.
+3. **Efficient database usage.** Select only required rows/columns, bound or paginate responses, inspect query plans before adding indexes, use connections and pools safely, keep transactions/locks short and avoid blocking DB resources on external IO.
+4. **Resilient external APIs.** Apply sensible timeouts, cancellation, bounded parallelism, and retry/backoff only when semantics are safe. Separate non-interactive expensive work from user-critical paths when evidence shows need.
+5. **Cache and deliver safely.** Prefer existing Cloudflare/static delivery, browser caching and bounded application caches before Redis or new servers. Design invalidation, cache keys, TTL and user ownership correctly. Serve appropriate compressed/static assets and stable cache headers without leaking protected data.
+6. **AI responsiveness.** Improve time-to-first-useful-response; use genuine incremental streaming where supported and useful with correct cancellation, safety, auth and error handling. Do not simulate speed while the real backend work remains blocking.
+7. **Lightweight architecture.** Reduce unnecessary dependencies and blocking operations. Consider load balancing, regional placement, extra replicas, SSR/SSG for eligible public pages or OpenTelemetry only if verified needs justify them. Do not replace existing services or architecture simply because a technique appears on an optimization checklist.
+8. **Resource and cost discipline.** Improve reliability and response time without unnecessary memory, CPU, tokens, database connections, third-party bills or continuous monitoring cost.
 
-**PWA-05 — In-place progressive settlement.** Replace each skeleton **only within its reserved visual slot** as independently **verified** data arrives. No full-page rerender, nav displacement, visible jump, unrelated skeleton reset or content reordering solely because a slower API finished. Results of unknown length may extend below initially reserved rows without moving stable first-viewport anchors.
+## 6. Safety and compatibility requirements
 
-**PWA-06 — Subtle and accessible transitions.** Prefer a brief `opacity` transition of roughly 150–250 ms inside fixed geometry; do not animate `height`, `top`, `margin` or position to conceal layout instability. Under `prefers-reduced-motion: reduce`, settle immediately. Keep loading status accessible; decorative bars must not become focusable controls.
+- Authentication, session/CSRF, private data owner checks, account switching and logout remain correct at every stage; late or cached responses cannot cross user boundaries.
+- Keep Trial/Free/Pro rights, subscription expiry, checkout/refunds, quota rules, learning progress, answers/grades, referrals, AI Voice and notifications server-authoritative. Never optimistically claim successful payment or unlocked content.
+- PWA, Android, existing Telegram/Mini App and relevant Admin/backend clients must not regress due to shared API changes. Preserve currently operating Telegram flows; future Telegram migration is **not** an optimization shortcut.
+- Respect the product's active PWA + Android priority. Do not spend time on desktop-only functionality or speculative desktop compatibility features; keep existing shared contracts reasonably stable.
+- Follow the project's actual canonical localization, analytics, privacy, testing, security and release rules as they exist at the time of work. Instrumentation must not block user-critical actions or expose sensitive data.
 
-**PWA-07 — Images and visual priority.** First-viewport real brand/logo/Panda and useful above-the-fold imagery must load eagerly and not be hidden by offscreen lazy-loading. Reserve intrinsic dimensions/aspect ratio. Load genuinely offscreen pictures/embeds lazily, favor appropriately sized modern WebP/AVIF when quality/size/support justify them, preserve exact official mascot/artwork and provide safe fallbacks. Avoid blocking initial UI on decorative asset loads.
+## 7. Acceptance and ongoing prevention
 
-**PWA-08 — Fast, bounded interactions.** Search/autocomplete must debounce after typing pauses and cancel superseded reads. Equivalent in-flight reads must be deduplicated per user/session/parameters. Stale requests cannot overwrite later state. Independent queries may run concurrently with sensible limits; writes such as checkout and lesson submission must **not** be debounced/deduplicated as if they were reads.
+- Prove improvement with **comparable before/after** evidence, distinguishing measurements, code inspection, assumptions and missing data. A passing test or the presence of skeleton code alone is not proof of real speed.
+- Test cold/warm starts, slow/intermittent internet, timeout, request failures, offline recovery, large accounts/lists, session changes, reduced motion and weak devices. Use platform-appropriate real browser/device checks.
+- For PWA loading geometry, verify representative first-viewport anchors on mobile sizes (including 320/390/430 px where applicable), investigate displacement exceeding about **8 px** and aim for **CLS ≤ 0.1**. Validate visually variable content rather than hiding jumps behind animation. Android uses analogous native view/frame measurements instead of web CLS as its only metric.
+- Add meaningful, focused regression checks for new behavior and observed defects. Keep existing CI guards effective and extend coverage to **future new functions and Android** when those scopes are implemented. Avoid dummy tests and massive unrelated CI runs.
+- Every new or materially modified PWA/Android/backend feature must meet applicable loading, data efficiency, security and observability requirements **from its first version**. An agent must explicitly explain justified non-applicability; do not leave new features outside monitoring or regression coverage.
+- Accept a feature only after relevant measured behavior, functional tests, security and shared contract checks. Unverified results must remain labelled **unverified**.
 
-**PWA-09 — Efficient views.** Large API-backed lists use bounded paging and virtualization where profiling indicates benefit; screens not currently needed must avoid unnecessary initial DOM creation. Reduce duplicate renders and excessive JS/CSS work. Split bundles/routes and delay noncritical third-party scripts when this measurably improves real load, without harming auth/learning.
+## 8. Requirements for creating and simplifying the future implementation plan
 
-**PWA-10 — Reliable offline/cache behavior.** Use browser/CDN/Service Worker caches for safe static resources, with content-addressed versions and coherent invalidation. Reuse trusted current-session data appropriately, but never show stale account-specific or protected states before owner/session validation. Offline or failed requests show a usable, local recovery state rather than invented content or infinite loading.
+This section specifies **how a separate plan must be produced**. It is **not the plan**.
 
-**PWA-11 — Preserve entry and localization.** Preserve existing iPhone Safari/Home Screen install and onboarding flows, PWA browser auth, verified language authority and UZ/RU/TJ canonical UI localization. Keep safe areas, responsive layout, navigation and back behavior functioning on mobile WebKit.
+1. **Fresh source of truth every time:** before planning, fetch and inspect the **latest `main` HEAD**, the project rules, relevant architecture/configuration, current existing functions, tests, CI and actual blockers. Never build a plan from a frozen commit SHA, an outdated branch, this file's phrasing alone, or historical checked boxes.
+2. **Use the real `$hsk-ai-openspec-planning` skill:** read its **current repository instructions** and use its actual OpenSpec workflow/CLI when creating the substantive cross-platform plan. Validate against the repository's current OpenSpec project. Do **not** pretend a manually written Markdown template is a successfully generated OpenSpec plan when CLI setup/validation was not possible.
+3. **Audit existing work before creating tasks:** recognize what is already implemented, what is partially implemented and what genuinely remains broken or slow. Reuse valid existing tests, helpers and infrastructure. Don't propose rebuilding already working functionality.
+4. **Make only necessary tasks:** every proposed change must map to an unmet requirement **and** to code evidence or a test/measurement gap. Merge duplicate or strongly related tasks; remove ornamental sections, excessive abstraction, speculative technologies, redundant checks and unneeded documentation. Prefer the simplest safe solution.
+5. **Perform a deliberate second-pass scope reduction:** after drafting, challenge every item: *Is it needed? Is it duplicative? Can it join another task? Does the benefit justify cost and regression risk?* Revise the plan into fewer, clearer, testable tasks without losing essential security or quality coverage.
+6. **Split a large plan into manageable stages:** if a full PWA + Android + Backend change is too broad to do deeply, divide it into **independently testable, deliverable stages** with explicit dependencies and acceptance criteria. A sensible split may separate shared Backend, PWA and Android, but **derive the actual split from current code and bottlenecks** rather than making permanent phase numbers here. Do not do everything superficially at once.
+7. **Maintain shared-contract safety:** each stage protects auth/entitlements/progress/payments and existing client compatibility; identify which other platform's tests are affected before implementation. Avoid expanding a stage into unrelated work.
+8. **Deliver a separate, concise OpenSpec plan:** record its actual artifacts and acceptance criteria outside this requirements document. Requirements here remain stable while plans/implementations can evolve with `main`. The plan must clearly distinguish **already solved / to do / unnecessary with evidence**, and should not prescribe Redis, SSR, queues, OpenTelemetry, CDN migration or architectural replacement without need.
+9. **Verification is not optional:** run available OpenSpec validation and relevant technical tests at the appropriate stages, reporting limits honestly. Do not equate proposal validation with production performance success.
 
-## 4. Backend and infrastructure requirements
-
-**BE-01 — Measure before changing.** Identify actual slow routes and cost centers, capture baseline timings, SQL counts, payload size and query plans. Prefer remedies backed by a verified bottleneck.
-
-**BE-02 — No wasteful requests or N+1.** Remove redundant equivalent API calls, repeated database reads, synchronous duplicate work and demonstrated N+1 queries while preserving request ownership, cache keys, user intent and write semantics. Avoid broad ORM changes without evidence.
-
-**BE-03 — Efficient PostgreSQL.** Fetch only needed columns/rows; use bounded pagination; inspect filters, sorting, joins and `EXPLAIN (ANALYZE)` before adding indexes. Avoid long-running transactions, leaked sessions and N+1 fetch patterns. Maintain safe pooling and protect row-lock/idempotency/concurrency behavior.
-
-**BE-04 — Predictable API payloads.** Provide bounded result sets and payload sizes appropriate to the user view. Pagination must be deterministic and not break course order, progress semantics, rankings or user identity.
-
-**BE-05 — External reliability.** Apply appropriate timeouts, cancellation, bounded concurrency and safe/idempotent retries with backoff for external APIs and expensive tasks. Errors must be contained and reflected in the affected UI only; never claim success on an uncertain write.
-
-**BE-06 — Parallel and background work.** Run independent safe operations concurrently when beneficial; move confirmed long noninteractive tasks to an **existing appropriate** background/queue mechanism with idempotency, retry and failure visibility. Do not add queues or new servers without evidence.
-
-**BE-07 — Caching without leaks.** Prefer current Cloudflare CDN/cache/R2, browser and bounded process-memory capabilities before adding Redis. Cache public/static templates safely; retain invalidation, bounded memory/TTL, and owner-aware private data policies. Never publicly cache tokens, payment results, Pro/Trial entitlement decisions, private lesson progress or user payloads.
-
-**BE-08 — Static delivery and network efficiency.** Review CDN routing, `Cache-Control`, immutable hashed assets, ETag and correct MIME; enable Brotli/Gzip where supported and beneficial. Avoid pointless double compression or caching mutable authenticated responses.
-
-**BE-09 — AI responsiveness.** Where the provider/API supports it and UX benefits, stream genuine model output incrementally with safe cancellation and error handling. Never fake token streaming or leak incomplete unverified billing/access state.
-
-**BE-10 — Sustainable infrastructure.** Avoid unnecessary packages, unused imports, event-loop blocking and excessively distant backend–database placement. Do not introduce Redis, extra replicas, load balancing, SSR/SSG, OpenTelemetry or architectural rewrites by default; require proof of a concrete performance/capacity gap. SSR/SSG is only an option for eligible **public** pages, never as an unauthorized shortcut for private course data.
-
-## 5. Business, security and cross-platform invariants
-
-**SAFE-01.** Authentication, verified owner/session boundaries, cookies/CSRF, account switching, logout, login recovery and privacy remain authoritative; an old request must not render another user's content.
-
-**SAFE-02.** Trial/Free/Pro rights, expiry, payments/refunds, checkout, limits, course progress, tests, answers/grades, streaks, referrals and notification preferences stay correct. Optimistic UI is restricted to reversible, non-sensitive actions; no optimistic subscription or payment success.
-
-**SAFE-03.** Existing Android/Mini App/shared API contracts, Telegram WebApp compatibility and currently working learning flows must not regress during PWA/backend performance changes.
-
-**SAFE-04.** No personal information, auth tokens, prompts, private learning details or payment secrets in public CDN caches, telemetry labels, logs, test fixtures or generated static HTML.
-
-**SAFE-05.** Any user-visible behavior change must evaluate **Analytics Impact** under the permanent analytics rule; connect real measurement to its trusted backend/Admin consumer when applicable. Telemetry must never block a lesson, payment or login.
-
-**SAFE-06.** Follow existing localization and product design policy; no invented user-facing text or duplicated localization source and no unrelated redesign or feature removal.
-
-## 6. Real performance evidence and acceptance
-
-**MEASURE-01.** Report before/after comparable data, not statements such as “faster” based only on code inspection: backend p50/p95, request count, SQL count/duration, payload sizes; mobile first usable render, LCP, CLS, INP and error/retry rates where observable.
-
-**MEASURE-02.** Use real or production-like mobile conditions: iPhone Safari/WebKit and Chromium; 320/390/430 px widths; slow and intermittent network, throttled CPU/low-end device, cold and warm caches, reduced motion, background/foreground, timed-out/failed requests.
-
-**MEASURE-03.** Confirm visual geometry on `loading → partial → ready → error → retry`. Measure stable heading, primary artwork, cards/first rows and fixed navigation anchor positions. Investigate shifts greater than **8 px** in stable anchors and target **CLS ≤ 0.1**; do not hide jumps with animation. Where content is inherently variable, justify exceptions with real screenshots/filmstrips.
-
-**MEASURE-04.** Test account switch, stale session/CSRF, unsigned/unauthenticated entry, Pro/Trial boundary, payment state, slow leaderboard and concurrent requests under realistic timing. False “Pro” badges or other account data are release blockers.
-
-**MEASURE-05.** Add privacy-safe real-user monitoring/diagnostics when appropriate, use existing monitoring where adequate and add OpenTelemetry only for a proven blind spot. Measured improvement and acceptable cost/regression risk are the outcomes; no fabricated p95 or production claims.
-
-## 7. Permanent future-feature and CI acceptance
-
-**FUTURE-01 — Applies automatically to new work.** Every newly added or materially changed learner PWA screen, route, card, image, list, dialog and backend endpoint inherits the requirements above **from its first implementation**. Do not defer this to a later optimization sprint.
-
-**FUTURE-02 — AI must remember.** Any coding agent must read `AGENTS.md`, `AI_RULES.md`, this goals/requirements file and the canonical detailed performance contract when the task affects Backend/PWA. New features must explicitly evaluate loading geometry, independent fetching, queries, cache, permissions and operational metrics; mark a requirement “not applicable” only with a reason.
-
-**FUTURE-03 — Evidence-bearing regression tests.** Every substantial new Backend/PWA feature or change needs focused tests for affected request lifecycle, layout, identity and error conditions. For visual PWA work, verify real loading-vs-ready element geometry in Chromium **and** WebKit, using the shared geometry assertion helper where appropriate; a grey-box selector alone is not sufficient.
-
-**FUTURE-04 — CI prevents silent regression.** Keep and evolve `.github/workflows/backend-pwa-performance-contract.yml` and its policy guard to cover new routes/components, not only the original Course/Rating fixtures. Ensure meaningful tests run on relevant changes; report skip/failure explicitly. Presence of a test file or a green generic policy job **does not prove** new UI/endpoint performance.
-
-**FUTURE-05 — Honest completion criterion.** A feature is complete only when the relevant behavior, security, slow-network response, browser/SQL regression, shared-client compatibility and available performance evidence have passed. Do not mark missing measurement or incomplete coverage as verified. Keep failing checks and unresolved regressions visible.
-
-**FUTURE-06 — Low-friction maintenance.** Prefer a small permanent contract plus focused reusable tests, not large duplicate documentation, forced infrastructure changes or expensive end-to-end runs for unrelated doc-only edits. Whenever the product adds a genuinely new surface, update its own test coverage rather than weakening the global guard.
-
-## 8. What this file intentionally does NOT specify
-
-This is **not** the implementation sequence: no phases, effort/time estimates, task assignment, backlog checkboxes, commit checklist, or instruction to refactor the entire repository. No technique is mandated merely by its popularity.
-
-The later expanded implementation plan must begin from **fresh `main`**, current measured evidence and applicable project rules, then map work back to the requirement IDs above. The existing detailed performance document remains the source of historical checkpoints and current acceptance notes; do not copy stale “done” states from it into this goal contract.
-
----
-**Canonical related documents**
-- [Agent rules](../AGENTS.md)
-- [AI rules](../AI_RULES.md)
-- [Project memory](../PROJECT_MEMORY.md)
-- [Existing performance acceptance and implementation history](PERFORMANCE_PWA_PROGRESSIVE_LOADING.md)
-- [Backend/PWA performance CI](../.github/workflows/backend-pwa-performance-contract.yml)
-- [Analytics integrity policy and plan](analytics/ANALYTICS_INTEGRITY_IMPLEMENTATION_PLAN.md)
+**Permanent principle:** The requirements should not become obsolete because a branch, framework, server location or specific implementation changes. The next plan must adapt to the project — not force the project to match an old plan.
