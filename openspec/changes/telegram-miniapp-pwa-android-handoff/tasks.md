@@ -11,9 +11,9 @@ A checked box means the stated verification was actually run.
 
 ## 2. Secure handoff
 
-- [ ] 2.1 Implement `issue_handoff`/`redeem_handoff` in `PwaAuthService` on `desktop_link_requests` (`flow="miniapp"`), and exclude that flow from the `start_link` global limiter; verify with `tests/test_pwa_telegram_handoff.py` (expiry, replay, wrong secret, blocked, owner change, gates off, mismatch, switch, supersede, rate limit, other flows refuse the row)
-- [ ] 2.2 Add `POST /api/v3/pwa-auth/handoff/start`, `POST /api/v3/pwa-auth/handoff/redeem`, `GET /iphone-pwa/handoff`, `GET /iphone-pwa-handoff.js`; verify headers, origin/transport refusal and cookie issuance through the API tests
-- [ ] 2.3 Verify atomic single consumption under real concurrency on PostgreSQL (separate test database) or record why it could not be run
+- [x] 2.1 Implement `issue_handoff`/`redeem_handoff` in `PwaAuthService` on `desktop_link_requests` (`flow="miniapp"`), and exclude that flow from the `start_link` global limiter; verify with `tests/test_pwa_telegram_handoff.py` (expiry, replay, wrong secret, blocked, owner change, gates off, mismatch, switch, supersede, rate limit, other flows refuse the row)
+- [x] 2.2 Add `POST /api/v3/pwa-auth/handoff/start`, `POST /api/v3/pwa-auth/handoff/redeem`, `GET /iphone-pwa/handoff`, `GET /iphone-pwa-handoff.js`; verify headers, origin/transport refusal and cookie issuance through the API tests
+- [x] 2.3 Verify atomic single consumption under real concurrency on PostgreSQL (separate test database) or record why it could not be run
 
 ## 3. Clients
 

@@ -225,7 +225,7 @@ jobs:
             tests.test_native_oauth_lifecycle \
             tests.test_identity_link_service
       - name: Test isolated iPhone PWA browser and Telegram sign-in
-        run: python -m unittest tests.test_pwa_browser_auth tests.test_pwa_initial_shell tests.test_pwa_telegram_bot tests.test_pwa_shake_report
+        run: python -m unittest tests.test_pwa_browser_auth tests.test_pwa_initial_shell tests.test_pwa_telegram_bot tests.test_pwa_shake_report tests.test_pwa_telegram_handoff tests.test_app_routing_settings
       - name: Verify actual Safari install MP4 HTTP Range in complete backend environment
         env:
           BOT_TOKEN: "9123456:synthetic-test-only-unusable-secret"
@@ -434,6 +434,7 @@ jobs:
             tests/test_i18n_native_audit_migration.py::NativeAuditMigrationPostgreSQLTests \
             tests/test_native_account_statistics.py \
             tests/test_native_purge_ownership.py \
+            tests/test_pwa_telegram_handoff.py::HandoffPostgresConcurrencyTests \
             --junitxml=/tmp/hsk-native-postgres.xml
       - name: Reject skipped or missing PostgreSQL coverage
         if: always()

@@ -9,6 +9,7 @@ from __future__ import annotations
 import hashlib
 import logging
 import os
+import re
 from urllib.parse import urlencode
 from typing import Literal
 from uuid import UUID
@@ -21,6 +22,8 @@ from app.services.native_oauth_service import NativeOAuthError, available_provid
 from app.services.identity_link_service import IdentityLinkError
 from app.services.desktop_auth_service import DesktopAuthError
 from app.services.pwa_auth_service import (
+    PWA_HANDOFF_INIT_DATA_MAX_AGE_SECONDS,
+    PWA_HANDOFF_TTL_SECONDS,
     PWA_OAUTH_AGE_SECONDS,
     PWA_OAUTH_COOKIE,
     PWA_TELEGRAM_COOKIE,
@@ -147,6 +150,36 @@ def _pwa_inline_html(request: Request, path: str, headers: dict[str, str],
     return Response(content=document, media_type="text/html", headers=output_headers)
 
 
+# Shared assets are served `immutable` for a year, so every reference needs a
+# content token. The handoff shell borrows the Li install guide and catalog;
+# deriving their tokens here means an edit to those files can never leave this
+# page pointing at a stale cached copy.
+_HANDOFF_HTML = "app/static/iphone-pwa-handoff.html"
+_HANDOFF_ASSET = re.compile(
+    rb'"(/(?:course_v3_data|assets/characters)/[A-Za-z0-9._-]+)\?v=AUTO"')
+_HANDOFF_HTML_CACHE: dict[tuple, bytes] = {}
+
+
+def _handoff_html() -> bytes:
+    with open(_HANDOFF_HTML, "rb") as handle:
+        source = handle.read()
+    paths = sorted({"app/static" + match.decode() for match in _HANDOFF_ASSET.findall(source)})
+    stats = [os.stat(path) for path in (_HANDOFF_HTML, *paths)]
+    key = tuple((item.st_mtime_ns, item.st_size) for item in stats)
+    cached = _HANDOFF_HTML_CACHE.get(key)
+    if cached is None:
+        def versioned(match):
+            with open("app/static" + match.group(1).decode(), "rb") as handle:
+                digest = hashlib.sha256(handle.read()).hexdigest()[:12]
+            return b'"' + match.group(1) + b"?v=" + digest.encode() + b'"'
+        cached = _HANDOFF_ASSET.sub(versioned, source)
+        if b"?v=AUTO" in cached:
+            raise RuntimeError("pwa_handoff_asset_unversioned")
+        _HANDOFF_HTML_CACHE.clear()
+        _HANDOFF_HTML_CACHE[key] = cached
+    return cached
+
+
 class PwaLoginStart(BaseModel):
     model_config = ConfigDict(extra="forbid")
     provider: Literal["google", "apple"]
@@ -161,6 +194,18 @@ class PwaTelegramStart(BaseModel):
 class PwaTelegramClaim(BaseModel):
     model_config = ConfigDict(extra="forbid")
     link_request_id: UUID
+
+
+class PwaHandoffStart(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    language: Literal["uz", "ru", "tj"] | None = None
+    source: Literal["profile", "home_prompt", "lesson_end_promo", "ad_promo"] = "profile"
+
+
+class PwaHandoffRedeem(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
+    token: str = Field(min_length=32, max_length=200)
+    switch: bool = False
 
 
 class PwaProfileUpdate(BaseModel):
@@ -2121,6 +2166,135 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                     httponly=True, samesite="none",
                 )
             return response
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    # --- Telegram Mini App -> external browser handoff --------------------
+    # Contract: docs/TELEGRAM_PWA_ANDROID_HANDOFF_CONTEXT.md. The transfer
+    # secret travels only in the URL fragment of the landing page below and is
+    # exchanged once for the same HttpOnly session every other sign-in issues.
+
+    async def _handoff_event(event_name, *, user, link_request_id, source):
+        """Best-effort funnel fact; it can never change a sign-in outcome."""
+        try:
+            from app.services.app_promo_decision_service import AppPromoDecisionService
+            from app.services.course_miniapp_analytics_service import (
+                CourseMiniAppAnalyticsService,
+            )
+            async with session_factory() as db:
+                await CourseMiniAppAnalyticsService(db).record_server_event(
+                    event_name=event_name, telegram_id=user.telegram_id,
+                    user_id=user.id, source=source,
+                    dedupe_key=f"{event_name}:{link_request_id}",
+                    payload={"target_platform": "ios"},
+                )
+                if event_name == "pwa_handoff_issued":
+                    # An accepted offer starts the same cooldown a download does.
+                    await AppPromoDecisionService(db).mark(
+                        telegram_id=user.telegram_id, target_platform="ios",
+                        action="download_requested",
+                    )
+                await db.commit()
+        except Exception:
+            logging.getLogger(__name__).warning("pwa_handoff_event_unrecorded")
+
+    @router.post("/api/v3/pwa-auth/handoff/start")
+    async def handoff_start(request: Request):
+        """Mini App only: authority is fresh signed Telegram data, not a cookie."""
+        try:
+            require_pwa_enabled(settings_obj)
+            from app.services.telegram_webapp_auth import (
+                extract_fresh_verified_webapp_user_id,
+            )
+            telegram_id = extract_fresh_verified_webapp_user_id(
+                request.headers.get("X-Telegram-Init-Data", ""),
+                str(getattr(settings_obj, "BOT_TOKEN", "") or ""),
+                max_age_seconds=PWA_HANDOFF_INIT_DATA_MAX_AGE_SECONDS,
+            )
+            if not telegram_id:
+                raise PwaAuthError("invalid_telegram_init_data")
+            payload = await _small_json(request, PwaHandoffStart)
+            async with session_factory() as db:
+                link_id, secret, user = await PwaAuthService(db, settings_obj).issue_handoff(
+                    telegram_id=telegram_id, language=payload.language,
+                )
+            await _handoff_event(
+                "pwa_handoff_issued", user=user, link_request_id=link_id,
+                source="miniapp_" + payload.source,
+            )
+            language = payload.language or (
+                user.language if user.language in {"uz", "ru", "tj"} else "ru")
+            # Fragment only: never sent to a server, a proxy log or a Referer.
+            url = (f"{pwa_origin(settings_obj)}/iphone-pwa/handoff"
+                   f"#t={secret}&lang={language}")
+            return JSONResponse(
+                {"ok": True, "url": url, "expires_in": PWA_HANDOFF_TTL_SECONDS},
+                headers=_NO_STORE,
+            )
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.post("/api/v3/pwa-auth/handoff/redeem")
+    async def handoff_redeem(request: Request):
+        try:
+            require_same_origin(request, settings_obj)
+            payload = await _small_json(request, PwaHandoffRedeem)
+            async with session_factory() as db:
+                cookie, link_id, user = await PwaAuthService(db, settings_obj).redeem_handoff(
+                    secret=payload.token,
+                    current_cookie=request.cookies.get(PWA_SESSION_COOKIE),
+                    switch=payload.switch,
+                )
+            await _handoff_event(
+                "pwa_handoff_completed", user=user, link_request_id=link_id,
+                source="pwa_handoff",
+            )
+            response = JSONResponse({"ok": True, "status": "complete"}, headers=_NO_STORE)
+            if cookie is not None:
+                response.set_cookie(
+                    PWA_SESSION_COOKIE, cookie, max_age=PWA_SESSION_AGE_SECONDS,
+                    path="/", secure=True, httponly=True, samesite="lax",
+                )
+                # An unfinished provider sign-in in this browser must not
+                # replace the handed-over learner from a stale callback.
+                _clear_cookie(response, PWA_TELEGRAM_COOKIE)
+                response.delete_cookie(
+                    PWA_OAUTH_COOKIE, path="/", secure=True,
+                    httponly=True, samesite="none",
+                )
+            return response
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.get("/iphone-pwa/handoff")
+    async def handoff_page(request: Request):
+        """Static first-party shell; it holds no secret and no account data."""
+        try:
+            require_pwa_enabled(settings_obj)
+            return Response(
+                content=_handoff_html(), media_type="text/html",
+                headers={**_NO_STORE,
+                    "Content-Security-Policy": (
+                        "default-src 'none'; script-src 'self'; "
+                        "style-src 'self' 'unsafe-inline'; connect-src 'self'; "
+                        "img-src 'self'; media-src 'self'; frame-ancestors 'none'; "
+                        "form-action 'none'; base-uri 'none'"
+                    ),
+                    "X-Content-Type-Options": "nosniff",
+                    "X-Frame-Options": "DENY",
+                },
+            )
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.get("/iphone-pwa-handoff.js")
+    async def handoff_script():
+        try:
+            require_pwa_enabled(settings_obj)
+            return FileResponse(
+                "app/static/iphone-pwa-handoff.js", media_type="application/javascript",
+                headers={**_NO_STORE, "X-Content-Type-Options": "nosniff"},
+            )
         except PwaAuthError as exc:
             return _error(exc)
 
