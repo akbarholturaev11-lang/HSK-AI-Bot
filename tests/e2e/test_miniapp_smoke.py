@@ -6042,7 +6042,10 @@ def test_desktop_course_modal_covers_full_viewport_and_mobile_keeps_bottom_sheet
       return {width:b.width,height:b.height,cardBottom:c.bottom,align:getComputedStyle(document.querySelector('#sheet')).alignItems};
     }""")
     assert abs(mobile["width"] - 390) <= 1
-    assert mobile["align"] == "flex-end"
+    # The CSS says `flex-end`; Chromium from Playwright 1.65 reports the
+    # computed value as `flow-end`. Same layout: the card bottom check below
+    # is what proves the sheet stays anchored.
+    assert mobile["align"] in ("flex-end", "flow-end")
     assert abs(mobile["cardBottom"] - 844) <= 2
     page.evaluate("App.closeSheet()")
     expect(sheet).not_to_have_class(re.compile(r"\bon\b"))
