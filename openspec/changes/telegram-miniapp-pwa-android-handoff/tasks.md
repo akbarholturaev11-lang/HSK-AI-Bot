@@ -1,0 +1,33 @@
+# Tasks
+
+Status and evidence are logged in `docs/TELEGRAM_PWA_ANDROID_HANDOFF_CONTEXT.md`.
+A checked box means the stated verification was actually run.
+
+## 1. Admin configuration
+
+- [ ] 1.1 Add validated `android_play_url` to `DesktopAppPromoSettings` (raw/payload/storage, legacy partial write keeps it); verify with unit tests in `tests/test_app_routing_settings.py`
+- [ ] 1.2 Add the field to `DesktopPromoChange` and the setting payload in `app/admin_api/pwa_marketing.py`; verify signed save, CAS refusal and invalid URL rejection in `tests/test_admin_pwa_marketing.py`
+- [ ] 1.3 Add the Play URL input to the existing promo editor in `app/static/admin-pwa/app.js` with canonical UZ/RU/TJ `ui.admin_pwa.*` labels; verify `scripts/i18n_build_all_catalogs.py --check` and the Admin PWA source/browser tests
+
+## 2. Secure handoff
+
+- [ ] 2.1 Implement `issue_handoff`/`redeem_handoff` in `PwaAuthService` on `desktop_link_requests` (`flow="miniapp"`), and exclude that flow from the `start_link` global limiter; verify with `tests/test_pwa_telegram_handoff.py` (expiry, replay, wrong secret, blocked, owner change, gates off, mismatch, switch, supersede, rate limit, other flows refuse the row)
+- [ ] 2.2 Add `POST /api/v3/pwa-auth/handoff/start`, `POST /api/v3/pwa-auth/handoff/redeem`, `GET /iphone-pwa/handoff`, `GET /iphone-pwa-handoff.js`; verify headers, origin/transport refusal and cookie issuance through the API tests
+- [ ] 2.3 Verify atomic single consumption under real concurrency on PostgreSQL (separate test database) or record why it could not be run
+
+## 3. Clients
+
+- [ ] 3.1 Extend promo decision/status for `ios` and `downloads.android_play`; verify `tests/test_desktop_download_api.py` and new decision tests
+- [ ] 3.2 Wire `desktop-download.js`: iPhone promo/profile action → handoff + `openLink`; Android action → Play or APK-to-chat; canonical UZ/RU/TJ copy; verify with JS execution tests and existing `tests/test_android_contextual_app_promo.py`
+- [ ] 3.3 Build the landing page (redeem → mismatch prompt → install guide → course; failure → existing sign-in); verify with Playwright WebKit/Chromium test `tests/e2e/test_pwa_telegram_handoff_page.py`
+
+## 4. Analytics, regression and handover
+
+- [ ] 4.1 Record `pwa_handoff_issued`, `pwa_handoff_completed`, `android_play_opened` and expose them in the statistics reader/export registry; verify with focused tests
+- [ ] 4.2 Run regressions: PWA browser auth, desktop download, Android APK delivery, Admin PWA marketing/settings, Li install/onboarding, i18n guards, iPhone PWA asset versions
+- [ ] 4.3 `openspec validate telegram-miniapp-pwa-android-handoff`; update the context file with branch, commits, test evidence and remaining gates
+
+## Workflow follow-up
+
+- Real-device acceptance (owner): iPhone Telegram → Safari → Home Screen; Android Telegram → Play / APK; account, progress and Pro preserved. Production switches stay off until then.
+- Promotion to `main` per `AGENTS.md` Git rules after CI on the exact SHA.

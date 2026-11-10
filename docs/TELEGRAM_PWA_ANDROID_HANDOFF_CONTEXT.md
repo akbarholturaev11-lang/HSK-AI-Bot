@@ -2,7 +2,7 @@
 
 > **Single continuation file for this proposed feature.** Read this file in every new chat before changing the feature. Keep it short and factual; update this file in place, not with new handoff copies.
 >
-> **Status:** planning and source audit only. **No routing/handoff implementation, OpenSpec CLI scaffold, runtime tests, production switch changes or rollout has been completed for this feature.**
+> **Status:** implementation in progress on a feature branch — see **Current state** at the end. No production switch has been changed and nothing is released.
 >
 > **Baseline read:** `main@3d4f14fa1ef39311998eb5d59d32c7598b17296d` (2026-11-10 review). **Re-read latest `origin/main` and changed files before any implementation.** This SHA is not a fixed implementation base.
 
@@ -81,8 +81,19 @@ At the start of every new coding chat:
 
 ### Current state
 
-- **Phase:** source-audited, owner-approved reduced **four-part plan**, **implementation not started**.
-- **Verified main baseline at initial context creation:** `3d4f14fa1ef39311998eb5d59d32c7598b17296d`.
-- **Completed for this feature:** requirements reconciliation and code-level architecture review; this continuity document.
-- **Not completed:** actual OpenSpec CLI artifacts/validation; Admin switches/Play URL; one-time handoff; Mini App UI integration; auth/e2e tests; device QA; staging; release.
-- **Next action:** re-check latest `main`, follow OpenSpec CLI, then bounded implementation on a clean feature branch with security tests first.
+- **Branch:** `feat/telegram-pwa-android-handoff-20261110` (worktree `.claude/worktrees/telegram-pwa-android-handoff`), based on `main@675f6244`. Nothing pushed.
+- **Plan of record:** `openspec/changes/telegram-miniapp-pwa-android-handoff/` (proposal, design, two spec deltas, `tasks.md`); `openspec validate` passes. `tasks.md` is the only checklist; this section is the status log.
+- **Audit corrections to sections 2–4 above (verified in source):**
+  - Independent iPhone/Android ON/OFF already exist: `desktop_app_promo_settings.platforms.ios/android`, edited by the signed Admin PWA `desktop_promo` command. **No new flags.** Only `android_play_url` is added to that setting/editor.
+  - **No new table/migration.** Handoff reuses `desktop_link_requests` with `flow="miniapp"`, `platform="pwa"`, `intent="signin"`, pre-approved, 120 s TTL; secret hashed under its own HMAC purpose. Existing bot approval, native poll, Telegram claim and OAuth callback already refuse such a row.
+  - Server hard-coded `ios: False` and the decision service knew only native platforms — both must be extended; an active PWA session counts as "already has it".
+  - Transfer secret travels in the URL **fragment** only (never query/path), cleared by the landing script before the same-origin redeem.
+  - A different account already signed in on the browser is never replaced without an explicit switch; a signed-out browser is signed in directly (login-CSRF residual risk accepted and documented in `design.md`).
+- **Done:** audit, OpenSpec plan.
+- **In progress / next:** see the log below.
+
+### Work log (append newest last)
+
+| Step | Commit | Evidence |
+| --- | --- | --- |
+| Audit + OpenSpec plan | (this commit) | `openspec validate telegram-miniapp-pwa-android-handoff` → valid; baseline before changes: `tests/test_pwa_browser_auth.py tests/test_desktop_download_api.py tests/test_admin_pwa_marketing.py tests/test_android_contextual_app_promo.py` → 180 passed; `scripts/i18n_build_all_catalogs.py --check` → 0 stale |
