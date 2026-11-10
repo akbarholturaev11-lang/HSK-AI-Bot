@@ -23,7 +23,7 @@ A checked box means the stated verification was actually run.
 
 ## 4. Analytics, regression and handover
 
-- [x] 4.1 Record `pwa_handoff_issued`, `pwa_handoff_completed`, `android_play_opened`; expose `android_play_opened` as the Android funnel stage `play_opened` (statistics reader, export, legacy admin); verify with focused tests
+- [x] 4.1 Record `pwa_handoff_issued`, `pwa_handoff_completed`, `android_play_opened`; expose `android_play_opened` as the Android funnel stage `play_opened` (statistics reader, export, MCP cache; the frozen legacy `admin.html` is left as on `main`); verify with focused tests
 - [x] 4.1b Expose the iPhone handoff counts (`telegram_handoff.issued/completed`, install/activity stay `not_instrumented`) in the statistics reader, export and MCP cache; verify `tests/test_admin_pwa_read.py`, `tests/test_admin_pwa_statistics_export.py`. The Admin PWA dashboard card is a separate UI follow-up (see the context file)
 - [x] 4.2 Run regressions: PWA browser auth, desktop download, Android APK delivery, Admin PWA marketing/settings, Li install/onboarding, i18n guards, iPhone PWA asset versions
 - [x] 4.3 `openspec validate telegram-miniapp-pwa-android-handoff`; update the context file with branch, commits, test evidence and remaining gates
