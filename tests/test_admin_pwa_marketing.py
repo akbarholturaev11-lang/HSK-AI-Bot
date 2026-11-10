@@ -327,6 +327,42 @@ class AdminPwaMarketingTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioT
             self.assertTrue(actual.require_learning_progress)
             self.assertNotIn("private-promo-canary", (await db.get(AdminPwaCommandAudit, result["command_id"])).result_json)
 
+    async def test_play_destination_is_signed_validated_and_optional(self):
+        play = "https://play.google.com/store/apps/details?id=com.pomp.hskai"
+        # An older cached editor omits the field: nothing is stored or cleared.
+        command = await self.prepare_marketing(PROMO_CHANGE)
+        self.assertIsNone(command.change.android_play_url)
+        first = await self.execute_marketing(command, await self.proof_marketing(command))
+        self.assertEqual(first["result"]["android_play_url"], "")
+        # A browser-decorated listing address is bound in canonical form.
+        command = await self.prepare_marketing({**PROMO_CHANGE, "android_play_url": play + "&hl=ru"})
+        self.assertEqual(command.operation()["payload"]["change"]["android_play_url"], play)
+        saved = await self.execute_marketing(command, await self.proof_marketing(command))
+        self.assertEqual(saved["result"]["android_play_url"], play)
+        self.assertEqual(saved["result"]["platforms"], PROMO_CHANGE["platforms"])
+        async with self.sessions() as db:
+            self.assertEqual((await get_desktop_app_promo_settings(db)).android_play_url, play)
+            audit = await db.get(AdminPwaCommandAudit, saved["command_id"])
+            self.assertEqual((audit.action, audit.target), ("marketing.update", "desktop_promo"))
+        # Omitting it afterwards keeps it; an explicit empty value clears it.
+        command = await self.prepare_marketing(PROMO_CHANGE)
+        kept = await self.execute_marketing(command, await self.proof_marketing(command))
+        self.assertEqual(kept["result"]["android_play_url"], play)
+        stale = await self.prepare_marketing({**PROMO_CHANGE, "android_play_url": ""})
+        fresh = await self.prepare_marketing({**PROMO_CHANGE, "android_play_url": ""})
+        cleared = await self.execute_marketing(fresh, await self.proof_marketing(fresh))
+        self.assertEqual(cleared["result"]["android_play_url"], "")
+        # The other editor's proof was prepared against the previous revision.
+        with self.assertRaisesRegex(marketing.CommandError, "confirmation_changed"):
+            await self.execute_marketing(stale, await self.proof_marketing(stale))
+        for invalid in ("https://play.google.com/store/apps/details?id=com.other.app",
+                        "http://play.google.com/store/apps/details?id=com.pomp.hskai",
+                        "https://evil.example/store/apps/details?id=com.pomp.hskai",
+                        "x" * 513, 7):
+            with self.subTest(value=invalid), self.assertRaises(ValidationError):
+                marketing.PrepareMarketing.model_validate(
+                    {"change": {**PROMO_CHANGE, "android_play_url": invalid}})
+
     async def test_desktop_promo_image_is_hash_bound_and_clear_removes_only_after_commit(self):
         data = self.promo_png()
         with tempfile.TemporaryDirectory(prefix="admin-pwa-promo-") as media_root:

@@ -5,9 +5,9 @@ A checked box means the stated verification was actually run.
 
 ## 1. Admin configuration
 
-- [ ] 1.1 Add validated `android_play_url` to `DesktopAppPromoSettings` (raw/payload/storage, legacy partial write keeps it); verify with unit tests in `tests/test_app_routing_settings.py`
-- [ ] 1.2 Add the field to `DesktopPromoChange` and the setting payload in `app/admin_api/pwa_marketing.py`; verify signed save, CAS refusal and invalid URL rejection in `tests/test_admin_pwa_marketing.py`
-- [ ] 1.3 Add the Play URL input to the existing promo editor in `app/static/admin-pwa/app.js` with canonical UZ/RU/TJ `ui.admin_pwa.*` labels; verify `scripts/i18n_build_all_catalogs.py --check` and the Admin PWA source/browser tests
+- [x] 1.1 Add validated `android_play_url` to `DesktopAppPromoSettings` (raw/payload/storage, legacy partial write keeps it); verify with unit tests in `tests/test_app_routing_settings.py`
+- [x] 1.2 Add the field to `DesktopPromoChange` and the setting payload in `app/admin_api/pwa_marketing.py`; verify signed save, CAS refusal and invalid URL rejection in `tests/test_admin_pwa_marketing.py`
+- [x] 1.3 Add the Play URL input to the existing promo editor in `app/static/admin-pwa/app.js` with canonical UZ/RU/TJ `ui.admin_pwa.*` labels; verify `scripts/i18n_build_all_catalogs.py --check` and the Admin PWA source/browser tests
 
 ## 2. Secure handoff
 

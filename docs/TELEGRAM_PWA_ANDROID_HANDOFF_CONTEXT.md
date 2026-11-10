@@ -89,7 +89,7 @@ At the start of every new coding chat:
   - Server hard-coded `ios: False` and the decision service knew only native platforms — both must be extended; an active PWA session counts as "already has it".
   - Transfer secret travels in the URL **fragment** only (never query/path), cleared by the landing script before the same-origin redeem.
   - A different account already signed in on the browser is never replaced without an explicit switch; a signed-out browser is signed in directly (login-CSRF residual risk accepted and documented in `design.md`).
-- **Done:** audit, OpenSpec plan.
+- **Done:** audit, OpenSpec plan, workstream 1 (Admin Play URL).
 - **In progress / next:** see the log below.
 
 ### Work log (append newest last)
@@ -97,3 +97,4 @@ At the start of every new coding chat:
 | Step | Commit | Evidence |
 | --- | --- | --- |
 | Audit + OpenSpec plan | (this commit) | `openspec validate telegram-miniapp-pwa-android-handoff` → valid; baseline before changes: `tests/test_pwa_browser_auth.py tests/test_desktop_download_api.py tests/test_admin_pwa_marketing.py tests/test_android_contextual_app_promo.py` → 180 passed; `scripts/i18n_build_all_catalogs.py --check` → 0 stale |
+| 1. Admin: `android_play_url` in `desktop_app_promo_settings` + signed `desktop_promo` command + editor field (`ui.admin_pwa.promoPlayUrl*`, iOS switch relabelled "iPhone PWA") | (this commit) | `tests/test_app_routing_settings.py` + `tests/test_admin_pwa_marketing.py` → 35 passed; real-SQL + virtual-WebAuthn browser run `python -m tests.e2e.admin_pwa_settings_browser` → passed (invalid listing never reaches the passkey sheet, valid one stored canonically, empty clears); i18n/catalog selection with CI synthetic env → 607 passed, 14 skipped. Field is optional in the command so an older cached editor cannot clear it. |
