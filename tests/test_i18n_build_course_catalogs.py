@@ -147,8 +147,10 @@ class CourseLocalCatalogTests(unittest.TestCase):
                 for locale in LOCALES:
                     self.assertTrue(any(catalogs[locale][key] in line
                                         for line in matching_lines))
-        # The server-owned Foundation result decision and retry/timeout are unchanged.
-        self.assertIn('if(!result||result.ok!==true){\n      Foundation.finishing=false;', source)
+        # Server acknowledgement includes authoritative completion checks; retry copy stays canonical.
+        self.assertIn('state.completed!==true', source)
+        self.assertIn('Foundation.finishing=false;', source)
+        self.assertIn('/api/v3/lesson/foundation/complete', source)
         self.assertIn('2800);return;',
                       unique_line_containing(source, 'courseMessage("foundation.saveFailed",'))
         self.assertIn('esc(copy)', unique_line_containing(source, 'esc(copy)'))

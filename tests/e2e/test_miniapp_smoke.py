@@ -1167,19 +1167,24 @@ def test_course_v3_starter_repair_mic_denied_and_completion(page):
     page.route(re.compile(r".*/api/v3/map(\?.*)?$"), lambda route: json_response(route, data))
 
     def capture_event(route):
+        events.append(route.request.post_data_json)
+        json_response(route, {"ok": True})
+
+    def capture_completion(route):
         payload = route.request.post_data_json
-        events.append(payload)
-        completion_attempts = sum(
-            1 for item in events if item.get("event") == "foundation_completed"
-        )
-        # The first completion write fails: the result screen must remain and
-        # let the next CTA press retry instead of trusting local state.
-        if payload.get("event") == "foundation_completed" and completion_attempts == 1:
-            json_response(route, {"ok": False, "error": "course_event_write_failed"})
+        events.append({**payload, "event": "foundation_completed"})
+        completions = [item for item in events if item.get("event") == "foundation_completed"]
+        if len(completions) == 1:
+            json_response(route, {"ok": False, "error": "foundation_save_failed"})
         else:
-            json_response(route, {"ok": True})
+            assert completions[0]["event_id"] == payload["event_id"]
+            json_response(route, {"ok": True, "duplicate": True, "foundation": {
+                "id": "starter0_hsk1", "version": 1, "required": True,
+                "completed": True, "status": "completed",
+            }})
 
     page.route("**/api/miniapp/event", capture_event)
+    page.route("**/api/v3/lesson/foundation/complete", capture_completion)
     page.add_init_script(
         """
         localStorage.clear();

@@ -62,7 +62,7 @@ class TestCenterI18nAdoptionTests(unittest.TestCase):
 
     def test_bundle_precedes_test_exercise_and_all_inline_fallbacks_remain(self):
         html = (ROOT / "app/static/course_v3_test.html").read_text(encoding="utf-8")
-        self.assertLess(html.index("hsk-course-i18n.js?v=20261021-7e6386c22f57"),
+        self.assertLess(html.index("hsk-course-i18n.js?v=20261021-9ba02f44f5cb"),
                         html.index("var L={"))
         for name in ("L","EM","PT","HSK30_SOON"):
             self.assertEqual(html.count("var " + name + "={"), 1)

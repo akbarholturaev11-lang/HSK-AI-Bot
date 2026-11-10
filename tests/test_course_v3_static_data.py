@@ -87,7 +87,11 @@ class CourseV3StaticMapTests(unittest.TestCase):
         # birga turganda qaysi biri ishlayotganini hech kim ayta olmasdi —
         # aslida esa hech qaysi biri ishlamasdi.
         self.assertNotIn("/api/v3/ad?placement=", html)
-        self.assertNotIn("/api/v3/ad/view", html)
+        # The single PWA route adapter is transport metadata; ads.js still
+        # owns the only overlay and impression request implementation.
+        self.assertEqual(html.count('"/api/v3/ad/view"'), 1)
+        self.assertIn('"/api/v3/ad/view":"/api/v3/pwa/ad/view"', html)
+        self.assertNotIn('fetch("/api/v3/ad/view"', html)
         self.assertNotIn("AdFlow", html)
         ads_js = (BASE / "ads.js").read_text(encoding="utf-8")
         self.assertIn('"/api/v3/ad?placement="', ads_js)
@@ -162,7 +166,7 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn('var query=new URLSearchParams(params.toString())', onboarding)
         self.assertIn('d.user&&d.user.onboarding_completed===false', course)
         self.assertIn('typeof d.user.onboarding_completed!=="boolean"', course)
-        self.assertIn('authoritative.completed===false', course)
+        self.assertIn('authoritative.completed!==true', course)
         self.assertIn('if(required){', course)
         self.assertIn('if(typeof afterComplete==="function")afterComplete()', course)
 
@@ -676,7 +680,7 @@ class CourseV3StaticMapTests(unittest.TestCase):
         # Dars tugagach belgilanadi. Obunachi tekshiruvi klientda EMAS: joy
         # auditoriyasini admin sozlaydi ("faqat bepul" yoki "hammaga") va
         # serverning o'zi kerak bo'lsa bo'sh javob qaytaradi.
-        self.assertIn("window._pendingLessonEndAd=INIT_DATA?", html)
+        self.assertIn("window._pendingLessonEndAd=(INIT_DATA||PWA_COURSE_HOST)?", html)
         self.assertIn("paid:isPaidUser()", html)
         # Bayram/streak/reyting ekranlaridan KEYIN — closeLevelUp ichida.
         self.assertIn("if(playLessonEndAd(go))return;", html)

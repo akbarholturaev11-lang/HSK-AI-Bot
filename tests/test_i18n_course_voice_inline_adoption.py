@@ -50,7 +50,7 @@ class CourseVoiceInlineAdoptionTests(unittest.TestCase):
     def test_preload_static_catalog_before_voice_and_keep_original_runtime(self):
         html, main, live = source_parts()
         self.assertLess(
-            html.index("hsk-course-i18n.js?v=20261021-7e6386c22f57"),
+            html.index("hsk-course-i18n.js?v=20261021-9ba02f44f5cb"),
             html.index("var VOICE=(function(){"),
         )
         self.assertIn('messages["courseVoiceInline."+key]', html)

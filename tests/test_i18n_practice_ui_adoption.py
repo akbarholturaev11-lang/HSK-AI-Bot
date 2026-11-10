@@ -45,7 +45,7 @@ class PracticeUIAdoptionTests(unittest.TestCase):
                     self.assertEqual(len(catalog), 1046)
                     for key, label in old.items():
                         self.assertEqual(catalog[f"{'mistakesPage' if page == 'mistakes' else page}.{key}"], label)
-            self.assertLess(source.index("hsk-course-i18n.js?v=20261021-7e6386c22f57"),
+            self.assertLess(source.index("hsk-course-i18n.js?v=20261021-9ba02f44f5cb"),
                             source.index("var L={"))
             self.assertEqual(source.count("var L={"), 1)
 
