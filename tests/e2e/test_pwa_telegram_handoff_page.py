@@ -119,6 +119,35 @@ def test_iphone_safari_sees_the_existing_install_guide_then_the_course():
         landing.close()
 
 
+def test_install_guide_runs_intro_then_video_forward_only_and_once():
+    with pw.sync_playwright() as playwright:
+        landing = Landing(playwright, ios=True)
+        landing.open()
+        page = landing.page
+        intro, video = page.locator(".li-install-intro-page"), page.locator(".li-install-video-page")
+        # Same two-step guide as after onboarding: hero page first, video second.
+        intro.wait_for(state="visible", timeout=8000)
+        assert page.locator(".li-install-hero").is_visible()
+        assert video.is_hidden()
+        page.locator(".li-install-how").click()
+        video.wait_for(state="visible", timeout=8000)
+        assert intro.is_hidden()
+        # The video page has no way back to the hero page; closing it goes on.
+        assert page.locator(".li-install-how").is_hidden()
+        page.wait_for_function(
+            "() => !document.querySelector('.li-install-video').hidden || "
+            "!document.querySelector('.li-install-video-fallback').hidden", timeout=12000)
+        assert intro.is_hidden()
+        page.locator(".li-install-close").click()
+        landing.wait_left("/iphone-pwa/course")
+        # A second link for the same learner on this browser skips the guide.
+        landing.visited.clear()
+        landing.open()
+        landing.wait_left("/iphone-pwa/course")
+        assert page.locator(".li-install-card").count() == 0
+        landing.close()
+
+
 def test_another_learner_signed_in_here_is_never_replaced_silently():
     with pw.sync_playwright() as playwright:
         def reply(body):
