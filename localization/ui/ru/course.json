@@ -1040,6 +1040,14 @@
     "practiceGate.back": "Назад",
     "lessonPreview.helloGloss": "привет",
     "rating.leagueName": "Лига {league}",
-    "rating.membersTotal": "участников всего"
+    "rating.membersTotal": "участников всего",
+    "pwaFeedback.quickQuestion": "Как всё прошло?",
+    "pwaFeedback.positive": "Понравилось",
+    "pwaFeedback.unclear": "Сложно понять",
+    "pwaFeedback.technical": "Техническая проблема",
+    "pwaFeedback.optionalComment": "Комментарий (необязательно)",
+    "pwaFeedback.foundationTitle": "Об основах с нуля",
+    "pwaFeedback.practiceTitle": "О тренировке",
+    "pwaFeedback.voiceTitle": "Об AI Voice"
   }
 }

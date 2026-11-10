@@ -346,24 +346,30 @@
     var url="/api/v3/ad?placement="+encodeURIComponent(placement)
       +"&lesson="+encodeURIComponent(Number(CFG.lessonOrder)||0)
       +"&lang="+encodeURIComponent(["tj","uz","ru"].indexOf(CFG.lang)>=0?CFG.lang:"tj");
-    return fetch(url,{headers:{"X-Telegram-Init-Data":CFG.initData||""}})
-      .then(function(r){return r.json().catch(function(){return {}})})
+    var controller=new AbortController(),timer;
+    var deadline=new Promise(function(resolve){timer=setTimeout(function(){controller.abort();resolve(null)},8000)});
+    var request=(CFG.requestGet?CFG.requestGet(url,{signal:controller.signal}):fetch(url,{headers:{"X-Telegram-Init-Data":CFG.initData||""},signal:controller.signal}))
+      .then(function(r){return r.ok?r.json().catch(function(){return {}}):{}})
       .then(function(d){
         var ad=d&&d.ad;
         if(!d||d.ok!==true||!ad||!ad.media_url||ad.media_available===false)return null;
         return ad;
       })
       .catch(function(){return null});
+    return Promise.race([request,deadline]).then(function(ad){clearTimeout(timer);return ad});
   }
   /* Ko'rilganini yozadi. Ilgari bu yerda `access_ref` va `attempt_token` ham
      bor edi — reklama ko'rib DARSNI OCHISH uchun. U mexanizm olib tashlandi,
      shuning uchun bu chaqiruv endi faqat hisob uchun. */
   function recordView(ad,placement,watched){
-    if(!CFG.initData||!ad)return Promise.resolve({ok:false});
-    return fetch("/api/v3/ad/view",{method:"POST",headers:{"Content-Type":"application/json","X-Telegram-Init-Data":CFG.initData},
-      body:JSON.stringify({ad_id:ad.id,level:CFG.level||"hsk1",lesson_order:Number(CFG.lessonOrder)||0,placement:placement,watched_seconds:watched})})
+    if((!CFG.initData&&!CFG.requestPost)||!ad)return Promise.resolve({ok:false});
+    var body={ad_id:ad.id,level:CFG.level||"hsk1",lesson_order:Number(CFG.lessonOrder)||0,placement:placement,watched_seconds:watched};
+    if(CFG.requestPost)body.lang=CFG.lang;
+    return (CFG.requestPost?CFG.requestPost("/api/v3/ad/view",body):fetch("/api/v3/ad/view",{
+      method:"POST",headers:{"Content-Type":"application/json","X-Telegram-Init-Data":CFG.initData},body:JSON.stringify(body)}))
       .then(function(r){return r.json()}).catch(function(){return {ok:false}});
   }
+
   function openAdLink(){
     var ad=STATE.ad;if(!ad||!ad.link_url)return;var url=ad.link_url;haptic(true);
     var tg=window.Telegram&&window.Telegram.WebApp;
@@ -603,7 +609,8 @@
   }
 
   function closeCenterAd(){
-    if(!appEls) return;
+    if(!appEls||!appState.open) return;
+    var onClose=appState.onClose;appState.onClose=null;
     /* Ko'rilgani serverga yoziladi: kunlik chegara aynan shu qatorlardan
        sanaladi, klientning localStorage hisoblagichidan emas. */
     try{
@@ -618,6 +625,7 @@
     appEls.ov.classList.remove("on","lesson-end");
     appEls.ov.setAttribute("aria-hidden","true");
     appState.open=false;
+    if(typeof onClose==="function")onClose();
   }
 
   function openAppLink(url){
@@ -634,6 +642,7 @@
     var lessonEnd=placement==="lesson_end";
     var skip=Math.max(0,Math.min(60,Number(ad&&ad.skip_after_seconds)||0));
     appState.ad=ad;
+    appState.onClose=lessonEnd?CFG.onClose:null;
     appState.placement=lessonEnd?"lesson_end":"screen_center";
     e.ov.classList.toggle("lesson-end",lessonEnd);
     appState.watched=0;
@@ -720,27 +729,27 @@
      o'tmaydi. Bu yerdagi `shownInSession` faqat bitta ochilishda ikki marta
      chiqib qolmasligi uchun — chegara emas. */
   function playScreenCenter(){
-    if(appState.open||appState.shownInSession) return Promise.resolve(false);
-    CFG.slot="";
+    if(appState.open||appState.shownInSession||appState.loading) return Promise.resolve(false);
+    CFG.slot="";appState.loading=true;
     return fetchPlacementAd("screen_center").then(function(ad){
-      if(!ad) return false;
+      if(!ad||CFG.canShow&&!CFG.canShow()) return false;
       showCenterAd(ad,"screen_center");
       return true;
-    });
+    }).finally(function(){appState.loading=false});
   }
 
   /* Dars yakunidagi reklama — alohida full-screen overlay, markaz reklamasi modal. */
   function playLessonEnd(lessonOrder){
-    if(appState.open) return Promise.resolve(false);
+    if(appState.open||appState.loading) return Promise.resolve(false);
     if(lessonOrder!=null) CFG.lessonOrder=lessonOrder;
     /* Dars yakunida obuna kartasi va tashqi CTA chiqadi — `isLessonEnd()`
        shu bayroqqa qaraydi. */
-    CFG.slot="lesson_end";
+    CFG.slot="lesson_end";appState.loading=true;
     return fetchPlacementAd("lesson_end").then(function(ad){
-      if(!ad) return false;
+      if(!ad||CFG.canShow&&!CFG.canShow()) return false;
       showCenterAd(ad,"lesson_end");
       return true;
-    });
+    }).finally(function(){appState.loading=false});
   }
 
   window.CourseAds = {

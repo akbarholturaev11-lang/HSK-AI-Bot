@@ -263,6 +263,91 @@ def create_miniapp_entitlements_router(
                 )
             return _foundation_content()
 
+    @router.post("/api/v3/lesson/foundation/complete")
+    @router.post("/api/v3/pwa/lesson/foundation/complete")
+    async def complete_foundation(request: Request):
+        is_pwa = request.url.path.startswith("/api/v3/pwa/")
+        try:
+            if len(await request.body()) > 2048 or request.query_params:
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            payload = await _body(request)
+            allowed = {"foundation_id", "foundation_version", "speaking_bonus", "event_id", "session_id"}
+            if set(payload) - allowed or type(payload.get("speaking_bonus", False)) is not bool:
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            async with session_factory() as session:
+                if is_pwa:
+                    require_same_origin(request, settings_obj)
+                    if request.headers.get("X-Telegram-Init-Data"):
+                        raise PwaAuthError("pwa_request_invalid", status_code=422)
+                    user, _ = await PwaAuthService(session, settings_obj).mutation_actor(
+                        request.cookies.get(PWA_SESSION_COOKIE), request.headers.get("X-HSK-PWA-CSRF"),
+                    )
+                else:
+                    telegram_id, _ = await _authenticated(request)
+                    user = await UserRepository(session).get_by_telegram_id(telegram_id) if telegram_id else None
+                    if user is None:
+                        raise PwaAuthError("invalid_telegram_init_data")
+                result = await CourseMiniAppProfileService(session).complete_foundation(
+                    user, foundation_id=payload.get("foundation_id"),
+                    foundation_version=payload.get("foundation_version"),
+                    speaking_bonus=payload.get("speaking_bonus", False),
+                    event_id=payload.get("event_id"), source="pwa_course_v3" if is_pwa else "course_v3",
+                    session_id=str(payload.get("session_id") or "")[:80] or None,
+                )
+                if not result.get("ok"):
+                    return _private_content_response(result, status_code=503 if result["error"] == "foundation_save_failed" else 409)
+                await session.commit()
+                response = _private_content_response(result)
+                if is_pwa:
+                    response.headers["X-HSK-PWA-User-ID"] = str(user.id)
+                return response
+        except PwaAuthError as exc:
+            return _private_content_response({"ok": False, "error": exc.code}, status_code=exc.status_code)
+
+    @router.post("/api/v3/pwa/event")
+    async def pwa_course_event(request: Request):
+        from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
+
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data") or request.query_params or len(await request.body()) > 8192:
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            payload = await _body(request)
+            # Learning telemetry only: completion, billing and access writes
+            # remain exclusively on their authoritative server routes.
+            event_name = payload.get("event")
+            if not isinstance(event_name, str) or event_name not in {
+                "foundation_started", "card_seen", "interaction_completed",
+                "section_started", "section_completed", "lesson_started",
+                "test_started", "training_started", "mistake_review_started",
+            } or {"user_id", "telegram_id", "initData"} & payload.keys():
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            async with session_factory() as session:
+                user, _ = await PwaAuthService(session, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE), request.headers.get("X-HSK-PWA-CSRF"),
+                )
+                service = CourseMiniAppAnalyticsService(session)
+                try:
+                    lesson_order = int(payload.get("lesson_order") or payload.get("lesson_id") or 0)
+                except (TypeError, ValueError, OverflowError):
+                    lesson_order = 0
+                trusted = service.trusted_client_payload(payload, user)
+                trusted["source"] = "pwa_course_v3"
+                trusted["transport"] = "iphone_pwa"
+                result = await service.record_client_event(
+                    event_name=payload["event"], user_id=user.id, telegram_id=user.telegram_id,
+                    source="pwa_course_v3", level=content_level(user.level),
+                    lesson_order=lesson_order if 1 <= lesson_order <= 500 else None,
+                    session_id=str(payload.get("session_id") or "")[:80] or None,
+                    dedupe_key=str(payload.get("dedupe_key") or "")[:120] or None,
+                    payload=trusted,
+                )
+                if result.get("ok"):
+                    await session.commit()
+                return _private_content_response(result)
+        except PwaAuthError as exc:
+            return _private_content_response({"ok": False, "error": exc.code}, status_code=exc.status_code)
+
     async def _lesson_content_for_user(session, user, normalized_level: str, lesson_order: int):
         # One shared server-authoritative access policy for signed Telegram and
         # verified PWA actors; never trust caller-provided user or grade data.

@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 MAX_SOURCE_ROWS = 500
 MAX_EXPORT_BYTES = 128 * 1024
 FEEDBACK_DEFINITIONS = {
-    "bot": "Completed Bot feedback: stored disliked_code only; missing/unknown code is unclassified",
+    "bot": "Completed Bot feedback: stored disliked_code only; explicit PWA context positive/unclear/technical map to positive_rating/unclear/other; missing/unknown code is unclassified",
     "release": "Recorded 1-2 low, 3 neutral, 4-5 positive rating; unknown is unclassified_rating",
     "android": "Unexpired stored Android bug reports; no guessed issue categories; older Telegram-only reports unavailable",
 }
@@ -56,6 +56,9 @@ class FeedbackAnalyticsExportRequest(FeedbackAnalyticsRequest):
 
 def _category(source, value):
     if source == "bot":
+        contextual = {"context_positive": "positive_rating", "context_unclear": "unclear", "context_technical": "other"}
+        if isinstance(value, str) and value in contextual:
+            return contextual[value]
         return value if isinstance(value, str) and value in _CODES else "unclassified"
     if source == "release":
         return _RATING_BUCKETS.get(value, "unclassified_rating") if type(value) is int else "unclassified_rating"

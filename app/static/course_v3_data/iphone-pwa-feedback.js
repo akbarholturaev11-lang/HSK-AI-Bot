@@ -38,6 +38,7 @@
   var selected = null;
   var busy = false;
   var draft = {};
+  var sessionPrompted = false;
 
   function common(key) { return commonMessage(key, ""); }
   function course(key) { return courseMessage(key, ""); }
@@ -245,8 +246,21 @@
     form.appendChild(commentField(label, "comment_text"));
   }
 
+  function renderCompact() {
+    form.replaceChildren();
+    var items = ["positive", "unclear", "technical"].map(function(code) {
+      return {code:code, label:course("pwaFeedback." + code)};
+    });
+    form.appendChild(choiceField("", items, draft.answer, function(code) {draft.answer = code;}));
+    if (draft.answer === "unclear" || draft.answer === "technical") {
+      form.appendChild(commentField(course("pwaFeedback.optionalComment"), "comment_text"));
+    }
+    submitButton.disabled = !draft.answer;
+  }
+
   function renderForm() {
-    if (kind === "ordinary") renderOrdinary();
+    if (kind === "context") renderCompact();
+    else if (kind === "ordinary") renderOrdinary();
     else if (kind === "release") renderRelease();
   }
 
@@ -288,7 +302,41 @@
     return true;
   }
 
+  async function openContext(context) {
+    if (busy || !root.hidden || sessionPrompted || !context || context.confirmed !== true ||
+        !["lesson", "foundation", "practice", "voice"].includes(context.kind) ||
+        !/^(hsk[1-4]|nhsk[1-3])$/.test(context.level) || document.visibilityState === "hidden") return;
+    var token = ++generation;
+    function current() {
+      return token === generation && root.hidden && document.visibilityState !== "hidden" &&
+        (!context.canOpen || context.canOpen());
+    }
+    var binding = {kind:context.kind, level:context.level};
+    if (context.kind === "lesson") binding.lesson_id = Number(context.lessonId);
+    try {
+      var data = await request("/api/v3/pwa/feedback/ordinary/prepare", {context:binding}, current);
+      if (!current() || !data.ordinary || !numberId(data.ordinary.feedback_id) || !data.ordinary.compact) return;
+      selected = data.ordinary;
+      kind = "context";
+      restoreDraft();
+      heading.textContent = context.kind === "lesson" ? lessonTitle(context.level, context.lessonId)
+        : course("pwaFeedback." + context.kind + "Title");
+      contextCopy.textContent = course("pwaFeedback.quickQuestion");
+      setStatus("");
+      submitButton.textContent = course("subscriptionPage.submit");
+      submitButton.hidden = false;
+      closeButton.setAttribute("aria-label", course("subscriptionPage.close"));
+      renderForm();
+      lastFocus = document.activeElement;
+      root.hidden = false;
+      sessionPrompted = true;
+      panel.focus({preventScroll:true});
+      if (window.NavBack) NavBack.sync();
+    } catch (_) { /* Optional feedback must not block returning to study. */ }
+  }
+
   async function open(context) {
+    if (context && context.kind) return openContext(context);
     if (busy || !root.hidden) return;
     var lessonId = Number(context && context.lessonId);
     var level = String(context && context.level || "");
@@ -400,7 +448,12 @@
   async function submit() {
     if (busy || root.hidden || !selected || !kind) return;
     var path, body;
-    if (kind === "ordinary") {
+    if (kind === "context") {
+      if (!["positive", "unclear", "technical"].includes(draft.answer)) return;
+      path = "/api/v3/pwa/feedback/ordinary/submit";
+      body = {feedback_id:selected.feedback_id, context:selected.compact,
+        answer:draft.answer, comment:draft.comment_text.trim() || null};
+    } else if (kind === "ordinary") {
       body = ordinaryPayload();
       path = "/api/v3/pwa/feedback/ordinary/submit";
     } else {
@@ -427,6 +480,7 @@
     setStatus(course("subscriptionPage.loading"));
     var token = generation;
     try {
+      var compactSubmission = kind === "context";
       await request(path, body, function () { return token === generation && !root.hidden; });
       if (token !== generation || root.hidden) return;
       kind = null;
@@ -435,6 +489,7 @@
       heading.textContent = "HSK AI";
       setStatus(common("bot.releaseFeedback.thanks"));
       submitButton.hidden = true;
+      if (compactSubmission) setTimeout(function(){if(token === generation)close();},1200);
     } catch (_) {
       if (token !== generation || root.hidden) return;
       setStatus(course("subscriptionPage.error"));

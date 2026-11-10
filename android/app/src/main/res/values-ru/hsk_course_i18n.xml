@@ -566,9 +566,17 @@
     <string name="hsk_course_pwa_feedback_body" formatted="false">Коротко поделитесь впечатлением об уроке, который только что прошли.</string>
     <string name="hsk_course_pwa_feedback_detail_q" formatted="false">Какая именно часть?</string>
     <string name="hsk_course_pwa_feedback_disliked_q" formatted="false">Что было неудобно?</string>
+    <string name="hsk_course_pwa_feedback_foundation_title" formatted="false">Об основах с нуля</string>
     <string name="hsk_course_pwa_feedback_liked_q" formatted="false">Что понравилось больше всего?</string>
+    <string name="hsk_course_pwa_feedback_optional_comment" formatted="false">Комментарий (необязательно)</string>
     <string name="hsk_course_pwa_feedback_paid_q" formatted="false">Оправдала ли себя подписка?</string>
+    <string name="hsk_course_pwa_feedback_positive" formatted="false">Понравилось</string>
+    <string name="hsk_course_pwa_feedback_practice_title" formatted="false">О тренировке</string>
+    <string name="hsk_course_pwa_feedback_quick_question" formatted="false">Как всё прошло?</string>
+    <string name="hsk_course_pwa_feedback_technical" formatted="false">Техническая проблема</string>
     <string name="hsk_course_pwa_feedback_title" formatted="false">{level} · отзыв об уроке {n}</string>
+    <string name="hsk_course_pwa_feedback_unclear" formatted="false">Сложно понять</string>
+    <string name="hsk_course_pwa_feedback_voice_title" formatted="false">Об AI Voice</string>
     <string name="hsk_course_pwa_inbox_empty" formatted="false">Пока нет уведомлений.</string>
     <string name="hsk_course_pwa_profile_avatar" formatted="false">Выберите аватар</string>
     <string name="hsk_course_pwa_profile_edit" formatted="false">Редактировать профиль</string>

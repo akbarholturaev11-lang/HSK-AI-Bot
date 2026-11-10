@@ -375,9 +375,17 @@ class PwaBugReport(BaseModel):
     screen: str = ""
 
 
+class PwaActivityFeedbackContext(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    kind: Literal["lesson", "foundation", "practice", "voice"]
+    level: Literal["hsk1", "hsk2", "hsk3", "hsk4", "nhsk1", "nhsk2", "nhsk3"]
+    lesson_id: int | None = Field(default=None, ge=1, le=500)
+
+
 class PwaFeedbackPrepare(BaseModel):
     """No user, identity or campaign selector is supplied by the browser."""
     model_config = ConfigDict(extra="forbid")
+    context: PwaActivityFeedbackContext | None = None
 
 
 class PwaLessonFeedbackPrepare(BaseModel):
@@ -402,6 +410,9 @@ class PwaReleaseFeedbackComment(BaseModel):
 
 class PwaOrdinaryFeedbackSubmit(BaseModel):
     model_config = ConfigDict(extra="forbid")
+    context: PwaActivityFeedbackContext | None = None
+    answer: Literal["positive", "unclear", "technical"] | None = None
+    comment: str | None = Field(default=None, max_length=1000)
     feedback_id: int
     liked_code: str | None = None
     liked_sub_code: str | None = None
@@ -453,6 +464,34 @@ def _pwa_feedback_choices(language: str, *, paid: bool, current: str | None = No
         "disliked": choices(DISLIKED_OPTIONS, feedback_dislike_label),
         "disliked_detail_required": sorted(DISLIKE_DETAIL_REQUIRED_CODES | {"other"}),
     }
+
+
+async def _pwa_feedback_context_exists(db, user, context) -> bool:
+    """Only current, actually used learning contexts can request compact feedback."""
+    from datetime import datetime, timedelta, timezone
+    from sqlalchemy import select
+    from app.db.models.course_miniapp_event import CourseMiniAppEvent as Event
+    from app.repositories.course_progress_repo import CourseProgressRepository
+    from app.services.course_levels import content_level
+    from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
+
+    if content_level(user.level) != context.level:
+        return False
+    if context.kind == "lesson":
+        progress = await CourseProgressRepository(db).get_by_user_id(user.id)
+        return bool(context.lesson_id and progress and progress.level == context.level
+                    and progress.completed_lessons_count >= context.lesson_id)
+    if context.lesson_id is not None:
+        return False
+    if context.kind == "foundation":
+        return bool((await CourseMiniAppProfileService(db).foundation_status(user))["completed"])
+    names = (("voice_started", "voice_completed") if context.kind == "voice" else
+             ("training_started", "training_completed", "test_started", "test_completed",
+              "practice_attempt_scored", "section_attempt_scored", "mistake_review_started", "mistake_review_completed"))
+    return (await db.execute(select(Event.id).where(
+        Event.user_id == user.id, Event.event_name.in_(names),
+        Event.created_at >= datetime.now(timezone.utc) - timedelta(minutes=30),
+    ).limit(1))).scalar_one_or_none() is not None
 
 
 def _pwa_feedback_prompt_eligible(user, service, now) -> bool:
@@ -2841,12 +2880,14 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                     request.cookies.get(PWA_SESSION_COOKIE),
                     request.headers.get("X-HSK-PWA-CSRF"),
                 )
-                await _small_json(request, PwaFeedbackPrepare, max_bytes=256)
+                data = await _small_json(request, PwaFeedbackPrepare, max_bytes=512)
                 # Serialize prompt creation per canonical learner, including
                 # concurrent browser tabs or simultaneous provider sessions.
                 learner = (await db.execute(
                     select(User).where(User.id == actor.id).with_for_update()
                 )).scalar_one()
+                if data.context and not await _pwa_feedback_context_exists(db, learner, data.context):
+                    raise PwaAuthError("feedback_context_unavailable", status_code=409)
                 now = datetime.now(timezone.utc)
                 service = BotFeedbackService(db)
                 feedback = None
@@ -2854,9 +2895,16 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                     feedback = await service._get_or_create_due_feedback(learner, now)
                     if feedback and not service._is_prompt_due(feedback, now):
                         feedback = None
+                if data.context and feedback:
+                    # Never replace an unfinished bot answer with a shorter form.
+                    if feedback.liked_code or feedback.disliked_code:
+                        feedback = None
+                    else:
+                        await service.feedback_repo.mark_prompt_sent(feedback, feedback.prompt_message_id)
                 await db.commit()
                 payload = ({
                     "feedback_id": feedback.id,
+                    "compact": data.context.model_dump() if data.context else None,
                     "paid": UserAccessStateService.is_paid(learner),
                     "liked_code": feedback.liked_code,
                     "disliked_code": feedback.disliked_code,
@@ -2976,7 +3024,24 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                     raise PwaAuthError("feedback_already_completed", status_code=409)
                 repo = BotFeedbackRepository(db)
                 lang = learner.language if learner.language in {"uz", "ru", "tj"} else "ru"
-                if UserAccessStateService.is_paid(learner):
+                if data.context:
+                    if (not data.answer or feedback.liked_code or feedback.disliked_code
+                            or any((data.liked_code, data.liked_sub_code, data.liked_other_text,
+                                    data.disliked_code, data.disliked_detail_text,
+                                    data.paid_code, data.paid_sub_code, data.paid_other_text))
+                            or not await _pwa_feedback_context_exists(db, learner, data.context)):
+                        raise PwaAuthError("pwa_request_invalid", status_code=422)
+                    context_text = f"{data.context.kind} · {data.context.level}"
+                    if data.context.lesson_id:
+                        context_text += f" · {data.context.lesson_id}"
+                    await repo.save_liked(feedback, "context_" + data.context.kind, context_text)
+                    await repo.save_disliked(
+                        feedback, "context_" + data.answer,
+                        context_text + " · " + data.answer + ("\n" + data.comment.strip() if data.comment else ""),
+                    )
+                elif data.answer is not None or data.comment is not None:
+                    raise PwaAuthError("pwa_request_invalid", status_code=422)
+                elif UserAccessStateService.is_paid(learner):
                     if (
                         data.paid_code not in PAID_OPTIONS
                         or any((

@@ -6691,6 +6691,21 @@ async def miniapp_event(request: Request):
         if event == "v2_lesson_completed":
             return {"ok": False, "error": "course_lesson_flow_required"}
 
+        if event == "foundation_completed":
+            user = await UserRepository(session).get_by_telegram_id(telegram_id)
+            if user is None:
+                return {"ok": False, "error": "access_start_first"}
+            result = await CourseMiniAppProfileService(session).complete_foundation(
+                user, foundation_id=payload.get("foundation_id") or "starter0_hsk1",
+                foundation_version=payload.get("foundation_version"),
+                speaking_bonus=payload.get("speaking_bonus", False),
+                event_id=str(payload.get("event_id") or payload.get("dedupe_key") or "foundation:starter0_hsk1:v1"),
+                source="course_v3", session_id=str(payload.get("session_id") or "")[:80] or None,
+            )
+            if result.get("ok"):
+                await session.commit()
+            return result
+
         if event in analytics_service.CLIENT_EVENT_NAMES:
             user = await UserRepository(session).get_by_telegram_id(telegram_id)
             if event in SALES_EXPERIMENT_CLIENT_EVENTS:
