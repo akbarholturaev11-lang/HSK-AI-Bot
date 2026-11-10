@@ -79,7 +79,7 @@ Before implementing **any future** Backend API or learner PWA screen, section or
 - Backend: before adding a route/query, check N+1, bounded data/pagination, pool/transaction scope, indexes based on plans, timeouts, request concurrency and cache invalidation/owner isolation; use existing infrastructure before Redis/new servers.
 - Protect Trial/Free/Pro, payments, auth, CSRF, lesson progress and shared Mini App/Android contracts. No cached private cross-account content or optimistic entitlements.
 - A Backend/PWA feature is not done without focused regression tests and relevant slow-network/SQL or browser evidence; if an optimization is unnecessary, document evidence rather than adding it.
-- `.github/workflows/backend-pwa-performance-contract.yml` is the recurring CI check. Never bypass it by adding a dummy test or weakening assertions. Keep Android native optimization out of this phase.
+- `.github/workflows/backend-pwa-performance-contract.yml` is the recurring **Backend/PWA phase** CI check. Never bypass it by adding a dummy test or weakening assertions. The earlier Backend/PWA-only implementation phase excludes Android-native code; this does **not** exclude Android from the overall performance objective. Scope and test Android in its own evidence-based stage.
 
 
 ## Bug fix standarti
