@@ -30,5 +30,6 @@ A checked box means the stated verification was actually run.
 
 ## Workflow follow-up
 
-- Real-device acceptance (owner): iPhone Telegram → Safari → Home Screen; Android Telegram → Play / APK; account, progress and Pro preserved. Production switches stay off until then.
-- Promotion to `main` per `AGENTS.md` Git rules after CI on the exact SHA.
+- **Owner manual acceptance: PASSED (reported 2026-11-11).** The owner confirms testing the user-facing flow and that everything works. This is owner-reported device/end-to-end QA, **not** a fresh independent device-matrix, staging, CI or provider verification run. See `docs/TELEGRAM_PWA_ANDROID_HANDOFF_CONTEXT.md` for the acceptance record and remaining operational evidence.
+- **Merge: DONE.** PR #300 is in `main`, with follow-up UI changes from PR #302. The exact live Admin PWA switch/Play URL state is **not independently known** from this QA confirmation; do not assume OFF or ON or change any production setting as part of documentation updates.
+- If later code or rollout is changed, follow `AGENTS.md` Git/CI rules and re-run focused regression tests. Preserve reversible settings and existing sessions, accounts, Pro and progress.
