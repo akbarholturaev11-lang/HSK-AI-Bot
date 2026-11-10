@@ -1026,6 +1026,7 @@ def test_course_v3_asks_daily_time_and_focus_after_the_first_lesson(page):
                     "ok": True,
                     "profile": {
                         "goal": "hsk_exam",
+                        "goal_chosen": True,
                         "daily_minutes": 20,
                         "preferred_focus": saved[-1].get("preferred_focus"),
                         "daily_goal_xp": 40,
@@ -1050,7 +1051,11 @@ def test_course_v3_asks_daily_time_and_focus_after_the_first_lesson(page):
         "onboarding_completed": True,
     }
     data["notify"] = {"enabled": True}
+    # This scenario starts after an actual goal choice; the server now
+    # distinguishes an explicit choice from its default HSK-exam prior.
     data["study_setup"] = {
+        "goal": "hsk_exam",
+        "goal_chosen": True,
         "daily_minutes": 10,
         "preferred_focus": None,
         "daily_goal_xp": 30,
