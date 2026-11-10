@@ -17,7 +17,9 @@
 
 For every new or changed backend endpoint and learner PWA feature, consult
 [docs/PERFORMANCE_PWA_PROGRESSIVE_LOADING.md](docs/PERFORMANCE_PWA_PROGRESSIVE_LOADING.md)
-**before coding**. Build fast first paint, session-safe shell, per-section
+**before coding**. For the project-wide objectives and required acceptance behavior, also read
+[docs/PERFORMANCE_BACKEND_PWA_GOALS_REQUIREMENTS.md](docs/PERFORMANCE_BACKEND_PWA_GOALS_REQUIREMENTS.md)
+when drafting, expanding or reviewing Backend/PWA performance work; this is a requirements contract, never a substitute for fresh code audit or an implementation plan. Build fast first paint, session-safe shell, per-section
 skeleton/loading/empty/error/retry, first-viewport asset priority, bounded and
 deduplicated API requests, pagination and safe caching into the feature from
 its first version. Audit SQL/transaction/timeouts and preserve Android/Mini App
