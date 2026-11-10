@@ -2,12 +2,12 @@
   "schema_version": 1,
   "status": "PURPOSE_SPECIFIC_APIS_SOURCE_REVIEWED",
   "source": "app/static/course-v3.html",
-  "source_revision": "40180e1be8f683e1d85e5313dad2a4ed9263f396",
+  "source_revision": "31c91d6e2b86f3f2053b882963b008417dd86a35",
   "scope": "Three direct loadLessonData(...) expressions remain: audio warmup, nearby prefetch, and the post-reservation interactive lesson. Sales preview, Starter 0, and skip-test use separate purpose-specific endpoints. No client caller reads the legacy public lesson JSON route.",
   "read_calls": [
     {
       "ordinal": 1,
-      "line": 2671,
+      "line": 2676,
       "anchor": "loadLessonData(lv,n)",
       "owner": "warmLessonPreviewAudio",
       "intent": "audio_preload_before_continue",
@@ -17,7 +17,7 @@
     },
     {
       "ordinal": 2,
-      "line": 3686,
+      "line": 3692,
       "anchor": "loadLessonData(lv,l.n)",
       "owner": "prefetchNearbyLessons",
       "intent": "background_nearby_prefetch",
@@ -27,7 +27,7 @@
     },
     {
       "ordinal": 3,
-      "line": 4788,
+      "line": 4811,
       "anchor": "loadLessonData(lv,l.n)",
       "owner": "startLesson",
       "intent": "interactive_lesson_after_reservation",
