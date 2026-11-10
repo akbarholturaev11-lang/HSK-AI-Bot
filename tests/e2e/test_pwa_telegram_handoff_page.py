@@ -140,7 +140,8 @@ def test_install_guide_runs_intro_then_video_forward_only_and_once():
         assert intro.is_hidden()
         page.locator(".li-install-close").click()
         landing.wait_left("/iphone-pwa/course")
-        # A second link for the same learner on this browser skips the guide.
+        # A second link in the same opening (tab) skips the guide; a new tab
+        # is a new opening and shows it again (see test_li_onboarding_install).
         landing.visited.clear()
         landing.open()
         landing.wait_left("/iphone-pwa/course")
