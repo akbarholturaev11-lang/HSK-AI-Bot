@@ -478,9 +478,9 @@ jobs:
 
   miniapp-ui:
     runs-on: ubuntu-latest
-    # Browser/Ubuntu dependency downloads can consume the former 8-minute budget.
-    # Leave time for both unchanged browser regression steps on a cold runner.
-    timeout-minutes: 15
+    # A cold Ubuntu runner used almost 14 minutes before WebKit tests started.
+    # Keep time for the complete Chromium/WebKit suite after dependency setup.
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
