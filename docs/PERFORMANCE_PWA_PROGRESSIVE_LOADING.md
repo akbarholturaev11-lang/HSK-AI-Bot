@@ -1,6 +1,6 @@
 # HSK AI — Performance audit acceptance: Backend and PWA
 
-Scope **of this original Backend + PWA phase only**: canonical backend, API, PostgreSQL, Cloudflare, Telegram Mini App shared assets and authenticated learner PWA. `android/` native implementation is out of scope **for this phase**; Android performance belongs to the wider product goal and must be planned/tested separately. Preserve native/Telegram shared API contracts.
+Historical scope **of the completed/older Backend + PWA-only work**: canonical backend, API, PostgreSQL, Cloudflare, Telegram Mini App shared assets and authenticated learner PWA. The older phase excluded `android/` changes, **but this restriction does not apply to the current owner-directed joint PWA + Android + Backend optimization initiative**. Use the evergreen goals/requirements document for current scope and plan all three together. Preserve native/Telegram shared API contracts.
 
 ## Required: Initial Render & Progressive Loading (PWA)
 
