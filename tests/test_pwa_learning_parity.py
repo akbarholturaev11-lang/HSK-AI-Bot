@@ -69,6 +69,9 @@ class PwaLearningParityTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(response.status_code, 200, response.text)
         self.assertEqual(response.headers['x-hsk-pwa-user-id'], '1')
         self.assertTrue(response.json()['foundation']['completed'])
+        started = await self.client.post('/api/v3/pwa/lesson/start', headers=headers,
+            json={'lesson_id': 1, 'level': 'hsk1'})
+        self.assertEqual(started.status_code, 200, started.text)
         allowed = await self.client.get('/api/v3/pwa/lesson/content/hsk1/1')
         self.assertEqual(allowed.status_code, 200, allowed.text)
 
@@ -85,7 +88,7 @@ class PwaLearningParityTests(unittest.IsolatedAsyncioTestCase):
                 **payload, source='android_course')
             self.assertTrue(native['duplicate'])
             self.assertFalse((await service.foundation_status(await db.get(User, 2)))['completed'])
-            events = (await db.execute(select(Event).where(Event.user_id == 1).order_by(Event.id))).scalars().all()
+            events = (await db.execute(select(Event).where(Event.user_id == 1, Event.event_name.in_(['foundation_started', 'interaction_completed', 'foundation_completed'])).order_by(Event.id))).scalars().all()
         self.assertEqual([e.event_name for e in events], ['foundation_started', 'interaction_completed', 'foundation_completed'])
         self.assertTrue(all(e.source == 'pwa_course_v3' for e in events))
         rows = [(e.event_name, 'user:1', e.source, e.level, e.lesson_order, e.payload_json, e.created_at) for e in events]
