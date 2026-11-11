@@ -14,7 +14,7 @@ Selecting Overall, Android, Telegram Mini App or iPhone PWA SHALL render each ex
 - **THEN** a localized unavailable state and reason are shown, with no zero value and no horizontal overflow
 
 ### Requirement: Distinct retention labels
-The Course/activity tab SHALL label the Mini App-open retention series and the cross-platform return series distinctly. Each SHALL show its own denominator, and the two series MUST NOT be merged.
+The Course/activity tab SHALL label the course-open retention series (Mini App and PWA opens) and the cross-platform return series distinctly. Each SHALL show its own denominator, and the two series MUST NOT be merged.
 
 #### Scenario: Both series shown
 - **WHEN** an administrator views retention

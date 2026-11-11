@@ -17,6 +17,14 @@ For the Android, Telegram Mini App and iPhone PWA filters, every V10 section SHA
 - **WHEN** Android records carry no Play/Direct channel
 - **THEN** the combined Android value is shown and no Play/Direct split is invented
 
+#### Scenario: Shared writer gains a platform key
+- **WHEN** a shared lesson, practice, exam or mistake-review write starts storing a server-set client key
+- **THEN** per-platform values for that family use only rows with the key, report the earliest attributed time, and Overall still counts every row
+
+#### Scenario: Client-supplied platform metadata
+- **WHEN** a Telegram client sends a PWA source or transport value in its event payload
+- **THEN** the stored row is not attributed to the iPhone PWA
+
 ### Requirement: Metric states
 Every metric SHALL report exactly one state:
 - `available`, with its value (which may be a real zero);
@@ -26,7 +34,7 @@ Every metric SHALL report exactly one state:
 `not_applicable` MUST NOT be used for missing data, and an unavailable metric MUST NOT be shown as zero.
 
 #### Scenario: Not applicable versus not instrumented
-- **WHEN** desktop device inventory is viewed under the Mini App filter, and PWA foreground activity is viewed before a PWA proof exists
+- **WHEN** desktop device inventory is viewed under the Mini App filter, and AI cost, which records no platform, is viewed under the PWA filter
 - **THEN** the first is `not_applicable`, the second is unavailable with `not_instrumented`, and neither is zero
 
 #### Scenario: Detail row limit exceeded
@@ -71,7 +79,7 @@ The Conversion section SHALL provide a PWA Pro funnel, separate from the legacy 
 - **THEN** the legacy funnel output is unchanged, and the PWA Pro funnel shows an empty cohort rather than borrowed steps
 
 ### Requirement: Cross-platform return retention
-The existing D1/D7 Mini App-open series SHALL keep its definition under a Mini App-open label. A separate cross-platform D1/D7 return series SHALL count each mature-cohort account once when it has verified user activity on any covered platform. The series SHALL list the platforms it covers.
+The existing D1/D7 series counts course-map opens, which both the Mini App and the PWA record. It SHALL keep its definition under a course-open label. A separate cross-platform D1/D7 return series SHALL count each mature-cohort account once when it has verified user activity on any covered platform. The series SHALL list the platforms it covers.
 
 #### Scenario: One account in two apps
 - **WHEN** one account is active in the Android app and the PWA during its D7 window

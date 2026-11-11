@@ -7,7 +7,7 @@ Prevents HSK AI features from silently falling outside analytics. Every Admin V1
 ## ADDED Requirements
 
 ### Requirement: Platform and section coverage registry
-The repository SHALL keep a machine-readable registry. It lists every metric shown in the Admin V10 sections (Overview, Course, Platforms, Funnel, Finance, Sources, Report) and every critical business flow. Each gets a status per platform: Android, Telegram Mini App, iPhone PWA, macOS and Windows. A status is `covered`, `partial`, `not_instrumented` or `not_applicable`. Every status other than `covered` needs a concrete reason.
+The repository SHALL keep a machine-readable registry of every Admin V10 metric (Overview, Course, Platforms, Funnel, Finance, Sources, Report) and every critical business flow. Each gets a status per platform: Android, Telegram Mini App, iPhone PWA, macOS and Windows. A status is `covered`, `partial`, `not_instrumented` or `not_applicable`, and every status except `covered` needs a concrete reason. Platform keys and flow IDs SHALL stay stable so other registries can reference them.
 
 #### Scenario: Metric missing from the registry
 - **WHEN** an Admin section returns a metric key that has no registry entry
@@ -20,6 +20,14 @@ The repository SHALL keep a machine-readable registry. It lists every metric sho
 #### Scenario: Status without reason
 - **WHEN** an entry is `partial`, `not_instrumented` or `not_applicable` with an empty reason
 - **THEN** the check fails and names the entry
+
+#### Scenario: Frozen desktop platform
+- **WHEN** a metric's macOS or Windows status is recorded during the Desktop development freeze
+- **THEN** the status reflects existing code only, and no desktop code, test or CI job is required to change it
+
+#### Scenario: Reuse by another registry
+- **WHEN** a later monitoring registry needs platform or flow identifiers
+- **THEN** it references this registry's keys instead of defining duplicates
 
 ### Requirement: Covered requires end-to-end chain evidence
 An entry SHALL be `covered` only when it names an existing executable test. That test sends the event through its real API or server path, stores it in PostgreSQL, aggregates it, and shows it in the correct Admin PWA section and platform filter. A stored event, an event enumeration or a passing unit test alone MUST NOT count as integration evidence.
