@@ -31,7 +31,7 @@ fun ActivityFeedbackDialog(state: ActivityFeedbackState, onAnswer: (String)->Uni
     AlertDialog(onDismissRequest = onClose,
         title = { Row { Text(stringResource(if (state.completed) R.string.bug_report_thanks_title else heading),
             modifier = Modifier.weight(1f)); IconButton(onClick = onClose, enabled = !state.busy) {
-            Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_close)) } } },
+            Icon(Icons.Default.Close, contentDescription = stringResource(R.string.hsk_common_action_close)) } } },
         text = { Column(Modifier.heightIn(max=440.dp).verticalScroll(rememberScrollState())) {
             if (!state.completed && question != null) {
                 if (question.options.isEmpty()) OutlinedTextField(value = state.draft[question.key].orEmpty(), onValueChange = onAnswer,
@@ -46,9 +46,9 @@ fun ActivityFeedbackDialog(state: ActivityFeedbackState, onAnswer: (String)->Uni
         } },
         confirmButton = {
             if (!state.completed && (question?.options?.isEmpty() == true || state.error)) TextButton(onClick = onNext,
-                enabled = !state.busy && !state.draft[question?.key].isNullOrBlank()) { Text(stringResource(if (state.step == state.questions.lastIndex) R.string.bug_report_send else R.string.action_continue)) }
+                enabled = !state.busy && !state.draft[question?.key].isNullOrBlank()) { Text(stringResource(if (state.step == state.questions.lastIndex) R.string.bug_report_send else R.string.hsk_common_action_continue)) }
         },
         dismissButton = {
-            if (!state.completed && state.step > 0) TextButton(onClick = onBack, enabled = !state.busy) { Text(stringResource(R.string.action_back)) }
+            if (!state.completed && state.step > 0) TextButton(onClick = onBack, enabled = !state.busy) { Text(stringResource(R.string.hsk_common_action_back)) }
         })
 }

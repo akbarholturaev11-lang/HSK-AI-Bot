@@ -84,7 +84,7 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
             Row(Modifier.fillMaxWidth()) {
                 Text(stringResource(R.string.sub_heading), style = MaterialTheme.typography.headlineMedium, modifier = Modifier.weight(1f))
                 IconButton(onClick = model::requestProviderClose, enabled = !state.busy) {
-                    Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_close))
+                    Icon(Icons.Default.Close, contentDescription = stringResource(R.string.hsk_common_action_close))
                 }
             }
             Column(Modifier.weight(1f).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -156,7 +156,7 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
                 if (state.error) {
                     Text(stringResource(R.string.lava_error), color = MaterialTheme.colorScheme.error)
                     TextButton(onClick = { if (state.checkoutId > 0) model.refresh() else model.load() }, enabled = !state.busy) {
-                        Text(stringResource(R.string.action_retry))
+                        Text(stringResource(R.string.hsk_course_lesson_flow_retry))
                     }
                 }
                 if (state.mode == "subscription" && block?.mode == "both" && state.checkoutId == 0 && !state.uncertainStart && !state.busy) {

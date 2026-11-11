@@ -1,5 +1,8 @@
 package com.pomp.hskai.core.design.components
 
+import android.animation.ValueAnimator
+import android.os.Build
+
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -20,6 +23,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,16 +42,22 @@ fun HskListSkeletonRow(
     leadingCircle: Boolean = true,
     compact: Boolean = false,
 ) {
-    val transition = rememberInfiniteTransition(label = "hsk-skeleton")
-    val alpha by transition.animateFloat(
-        initialValue = if (PompColors.IsDark) 0.28f else 0.42f,
-        targetValue = if (PompColors.IsDark) 0.52f else 0.72f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 900),
-            repeatMode = RepeatMode.Reverse,
-        ),
-        label = "skeleton-alpha",
-    )
+    val motionEnabled = remember { Build.VERSION.SDK_INT < 26 || ValueAnimator.areAnimatorsEnabled() }
+    val alpha = if (!motionEnabled) {
+        if (PompColors.IsDark) 0.40f else 0.56f
+    } else {
+        val transition = rememberInfiniteTransition(label = "hsk-skeleton")
+        val pulse by transition.animateFloat(
+            initialValue = if (PompColors.IsDark) 0.28f else 0.42f,
+            targetValue = if (PompColors.IsDark) 0.52f else 0.72f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(durationMillis = 900),
+                repeatMode = RepeatMode.Reverse,
+            ),
+            label = "skeleton-alpha",
+        )
+        pulse
+    }
     val shape = RoundedCornerShape(if (compact) 14.dp else 16.dp)
 
     HskGlassSurface(

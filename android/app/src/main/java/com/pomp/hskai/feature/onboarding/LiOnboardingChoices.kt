@@ -119,7 +119,7 @@ fun LiOnboardingChoices(
                                     supportingContent = { Text(stringResource(body)) })
                             }
                         }
-                        profile.trialStatusError != null -> TextButton(onClick = onRetryTrial) { Text(stringResource(R.string.action_retry)) }
+                        profile.trialStatusError != null -> TextButton(onClick = onRetryTrial) { Text(stringResource(R.string.hsk_course_lesson_flow_retry)) }
                         else -> Text(stringResource(R.string.li_copy_ready))
                     }
                 }
