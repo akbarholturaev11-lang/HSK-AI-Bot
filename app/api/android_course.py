@@ -34,6 +34,7 @@ from app.api.desktop_course import (
     validated_course_payload,
 )
 from app.services.android_course_service import AndroidCourseService
+from app.services.hsk30_feature_service import Hsk30FeatureService
 from app.services.course_v3_dictionary import (
     dictionary_for_language,
     dictionary_version,
@@ -372,6 +373,27 @@ def create_android_course_router(
                                 headers={"Cache-Control": "no-store"})
         except Exception:
             logger.exception("Android course map failed")
+            return _unavailable()
+
+    @router.get("/api/v3/android/course/onboarding/preview")
+    async def android_onboarding_preview(request: Request):
+        """Public course metadata only; no learner data or track entitlement."""
+        headers = {"Cache-Control": "no-store"}
+        if request.query_params:
+            return JSONResponse({"ok": False, "error": "android_request_invalid"}, 422, headers=headers)
+        if not getattr(settings_obj, "ANDROID_LI_ONBOARDING_ENABLED", False):
+            return JSONResponse({"ok": True, "li_enabled": False}, headers=headers)
+        try:
+            async with session_factory() as session:
+                feature = Hsk30FeatureService(session)
+                enabled = bool(await feature.is_enabled())
+                levels = await feature.live_levels() if enabled else []
+            return JSONResponse({
+                "ok": True, "li_enabled": True,
+                "hsk30": {"enabled": enabled, "allowed": False, "live_levels": list(levels)},
+            }, headers=headers)
+        except Exception:
+            logger.exception("Android onboarding preview unavailable")
             return _unavailable()
 
     @router.get("/api/v3/android/course/onboarding")

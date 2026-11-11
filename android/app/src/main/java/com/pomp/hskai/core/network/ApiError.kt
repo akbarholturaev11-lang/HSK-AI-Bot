@@ -193,6 +193,8 @@ sealed interface ApiError {
                 "android_request_invalid",
                 "android_request_too_large",
                 "android_li_onboarding_disabled",
+                "android_li_guest_not_fresh",
+                "android_li_guest_track_locked",
                 "course_context_changed",
                 "smart_revision_conflict",
                 -> R.string.error_unknown

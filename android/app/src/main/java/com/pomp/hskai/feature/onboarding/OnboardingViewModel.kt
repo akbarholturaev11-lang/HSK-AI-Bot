@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.data.api.AndroidOnboardingCompleteDto
+import com.pomp.hskai.data.api.AndroidOnboardingStatusDto
+import java.io.IOException
 import com.pomp.hskai.data.repository.OnboardingRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,74 +24,63 @@ data class OnboardingFlowState(
 )
 
 /** Welcome -> course version -> level -> goal, matching the Mini App flow. */
-class OnboardingViewModel(
+internal class OnboardingViewModel(
     private val repository: OnboardingRepository,
     private val language: String,
+    private val guestPreview: AndroidOnboardingStatusDto? = null,
+    initialDraft: GuestLiDraft? = null,
+    private val onGuestReady: (suspend (GuestLiDraft) -> Unit)? = null,
+    private val claimGuestDraft: (suspend () -> GuestLiDraft?)? = null,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(OnboardingFlowState())
     val state: StateFlow<OnboardingFlowState> = _state.asStateFlow()
     private var statusGeneration = 0L
 
+    private var checkedGuestDraft = false
+    private var claimingGuestDraft = false
+
     init {
-        loadStatus()
+        if (guestPreview == null) loadStatus()
+        else _state.update { initial ->
+            val state = initial.withStatus(guestPreview)
+            val preview = state.ui.copy(selectedTrack = "hsk20", selectedLevel = "beginner")
+            val restored = initialDraft?.takeIf {
+                it.track != "hsk30" || (preview.hsk30Enabled && it.level in preview.hsk30LiveLevels)
+            }
+            state.copy(ui = restored?.applyTo(preview)?.copy(step = 7) ?: preview)
+        }
     }
 
-    /**
-     * [showSplash] false re-reads the status behind the screen already shown,
-     * for a connection that has just come back: the splash would blink over
-     * the app the learner is using, and the last error stays until the
-     * answer replaces it.
-     */
+    /** Refresh behind the current screen after connectivity changes. */
     fun loadStatus(showSplash: Boolean = true) {
-        if (_state.value.ui.submitting) return
+        if (guestPreview != null || _state.value.ui.submitting || claimingGuestDraft) return
         val generation = ++statusGeneration
+        val claim = if (checkedGuestDraft) null else claimGuestDraft
+        claimingGuestDraft = claim != null
         if (showSplash) _state.update { it.copy(loading = true, error = null) }
         viewModelScope.launch {
-            val result = repository.status()
+            val (result, verified) = try {
+                repository.statusWithDraft(claim)
+            } finally {
+                claimingGuestDraft = false
+            }
             if (generation != statusGeneration) return@launch
             when (result) {
                 is ApiResult.Success -> {
                     val status = result.value
-                    val liveHsk30Levels = status.hsk30.liveLevels
-                        .filter { level -> level in HSK30_LEVELS }
-                    val hasLiveHsk30 = status.hsk30.enabled && liveHsk30Levels.isNotEmpty()
-                    _state.update {
-                        val serverLevel = normalizeLevel(status.level)
-                        val selectedTrack = when {
-                            hasLiveHsk30 && serverLevel in HSK30_LEVELS -> "hsk30"
-                            !status.completed && hasLiveHsk30 -> "hsk30"
-                            else -> "hsk20"
+                    checkedGuestDraft = status.ok
+                    _state.update { it.withStatus(status) }
+                    if (verified != null && status.ok && status.liEnabled && !status.completed) {
+                        val draft = verified.draft
+                        val trackAllowed = draft.track != "hsk30" ||
+                            (status.hsk30.allowed && status.hsk30.enabled && draft.level in status.hsk30.liveLevels)
+                        _state.update { state ->
+                            val restored = draft.applyTo(state.ui)
+                            state.copy(ui = if (trackAllowed) restored.copy(step = 7)
+                                else restored.copy(step = 1, selectedTrack = "hsk20", selectedLevel = "beginner"))
                         }
-                        val selectedLevel = when {
-                            selectedTrack == "hsk30" && serverLevel in liveHsk30Levels -> serverLevel
-                            selectedTrack == "hsk30" -> liveHsk30Levels.first()
-                            serverLevel in HSK20_LEVELS -> serverLevel
-                            else -> "beginner"
-                        }
-                        it.copy(
-                            loading = false,
-                            completed = status.ok && status.completed,
-                            ui = it.ui.copy(
-                                liEnabled = status.liEnabled,
-                                step = if (status.liEnabled) it.ui.step else it.ui.step.coerceAtMost(3),
-                                selectedGoals = status.profile.goals.filter(::validGoal).ifEmpty { listOf(status.profile.goal.takeIf(::validGoal) ?: "hsk_exam") },
-                                dailyMinutes = status.profile.dailyMinutes.takeIf { it in setOf(5, 10, 15, 20, 30) } ?: 10,
-                                preferredFocus = status.profile.preferredFocus ?: "none",
-                                streakTargetDays = status.profile.streakTargetDays ?: 7,
-                                selectedTrack = selectedTrack,
-                                selectedLevel = selectedLevel,
-                                selectedGoal = status.profile.goal.takeIf(::validGoal) ?: "hsk_exam",
-                                hsk30Enabled = status.hsk30.enabled,
-                                hsk30Allowed = status.hsk30.allowed,
-                                hsk30LiveLevels = liveHsk30Levels.ifEmpty { listOf("nhsk1") },
-                                hsk30IsNew = status.hsk30.newBadge.isNew,
-                                hsk30PaymentEnabled = status.hsk30.paymentEnabled,
-                                hsk30PriceTjs = status.hsk30.priceTjs.coerceAtLeast(0),
-                                hsk30PriceDisplay = status.hsk30.priceDisplay,
-                            ),
-                            error = if (status.ok) null else ApiError.Unknown,
-                        )
+                        if (trackAllowed) submit(verified.token)
                     }
                 }
                 is ApiResult.Failure -> _state.update {
@@ -97,6 +88,46 @@ class OnboardingViewModel(
                 }
             }
         }
+    }
+
+    private fun OnboardingFlowState.withStatus(status: AndroidOnboardingStatusDto): OnboardingFlowState {
+        val liveHsk30Levels = status.hsk30.liveLevels.filter { it in HSK30_LEVELS }
+        val hasLiveHsk30 = status.hsk30.enabled && liveHsk30Levels.isNotEmpty()
+        val serverLevel = normalizeLevel(status.level)
+        val selectedTrack = when {
+            hasLiveHsk30 && serverLevel in HSK30_LEVELS -> "hsk30"
+            !status.completed && hasLiveHsk30 -> "hsk30"
+            else -> "hsk20"
+        }
+        val selectedLevel = when {
+            selectedTrack == "hsk30" && serverLevel in liveHsk30Levels -> serverLevel
+            selectedTrack == "hsk30" -> liveHsk30Levels.first()
+            serverLevel in HSK20_LEVELS -> serverLevel
+            else -> "beginner"
+        }
+        return copy(
+            loading = false,
+            completed = status.ok && status.completed,
+            ui = ui.copy(
+                liEnabled = status.liEnabled,
+                step = if (status.liEnabled) ui.step else ui.step.coerceAtMost(3),
+                selectedGoals = status.profile.goals.filter(::validGoal).ifEmpty { listOf(status.profile.goal.takeIf(::validGoal) ?: "hsk_exam") },
+                dailyMinutes = status.profile.dailyMinutes.takeIf { it in setOf(5, 10, 15, 20, 30) } ?: 10,
+                preferredFocus = status.profile.preferredFocus ?: "none",
+                streakTargetDays = status.profile.streakTargetDays ?: 7,
+                selectedTrack = selectedTrack,
+                selectedLevel = selectedLevel,
+                selectedGoal = status.profile.goal.takeIf(::validGoal) ?: "hsk_exam",
+                hsk30Enabled = hasLiveHsk30,
+                hsk30Allowed = status.hsk30.allowed,
+                hsk30LiveLevels = liveHsk30Levels.ifEmpty { listOf("nhsk1") },
+                hsk30IsNew = status.hsk30.newBadge.isNew,
+                hsk30PaymentEnabled = status.hsk30.paymentEnabled,
+                hsk30PriceTjs = status.hsk30.priceTjs.coerceAtLeast(0),
+                hsk30PriceDisplay = status.hsk30.priceDisplay,
+            ),
+            error = if (status.ok) null else ApiError.Unknown,
+        )
     }
 
     fun selectTrack(track: String) {
@@ -171,11 +202,20 @@ class OnboardingViewModel(
         if (_state.value.launch?.ok == true) _state.update { it.copy(completed = true) }
     }
 
-    private fun submit() {
+    private fun submit(guestResumeToken: String? = null) {
         statusGeneration++
         val current = _state.value.ui
         _state.update { it.copy(error = null, ui = current.copy(submitting = true, error = false)) }
         viewModelScope.launch {
+            if (guestPreview != null) {
+                try {
+                    onGuestReady?.invoke(GuestLiDraft.from(current))
+                    _state.update { it.copy(ui = it.ui.copy(submitting = false)) }
+                } catch (_: IOException) {
+                    _state.update { it.copy(ui = it.ui.copy(submitting = false, error = true)) }
+                }
+                return@launch
+            }
             when (
                 val result = repository.complete(
                     level = current.selectedLevel,
@@ -185,6 +225,7 @@ class OnboardingViewModel(
                     goals = current.selectedGoals.takeIf { current.liEnabled },
                     streakTargetDays = current.streakTargetDays.takeIf { current.liEnabled },
                     preferredFocus = current.preferredFocus.takeIf { current.liEnabled },
+                    guestResumeToken = guestResumeToken,
                 )
             ) {
                 is ApiResult.Success -> {
@@ -211,8 +252,16 @@ class OnboardingViewModel(
                     _state.update {
                         it.copy(error = result.error, ui = it.ui.copy(submitting = false, error = true))
                     }
-                    if ((result.error as? ApiError.Server)?.code == "android_li_onboarding_disabled")
-                        loadStatus(showSplash = false)
+                    when ((result.error as? ApiError.Server)?.code) {
+                        "android_li_onboarding_disabled" -> loadStatus(showSplash = false)
+                        "android_li_guest_not_fresh" -> {
+                            _state.update { it.copy(ui = it.ui.copy(step = 0, error = false)) }
+                            loadStatus(showSplash = false)
+                        }
+                        "android_li_guest_track_locked" -> _state.update {
+                            it.copy(ui = it.ui.copy(step = 1, selectedTrack = "hsk20", selectedLevel = "beginner"))
+                        }
+                    }
                 }
             }
         }
@@ -228,10 +277,14 @@ class OnboardingViewModel(
     class Factory(
         private val repository: OnboardingRepository,
         private val language: String,
+        private val guestPreview: AndroidOnboardingStatusDto? = null,
+        private val initialDraft: GuestLiDraft? = null,
+        private val onGuestReady: (suspend (GuestLiDraft) -> Unit)? = null,
+        private val claimGuestDraft: (suspend () -> GuestLiDraft?)? = null,
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
-            OnboardingViewModel(repository, language) as T
+            OnboardingViewModel(repository, language, guestPreview, initialDraft, onGuestReady, claimGuestDraft) as T
     }
 
     private companion object {

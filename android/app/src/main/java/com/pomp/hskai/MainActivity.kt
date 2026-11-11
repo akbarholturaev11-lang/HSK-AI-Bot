@@ -56,6 +56,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.pomp.hskai.core.auth.AuthRepository
 import com.pomp.hskai.core.auth.AuthState
+import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.auth.authActivity
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompHskAiTheme
@@ -89,6 +90,10 @@ import com.pomp.hskai.feature.dictionary.DictionaryActions
 import com.pomp.hskai.feature.dictionary.DictionaryScreen
 import com.pomp.hskai.feature.dictionary.DictionaryViewModel
 import com.pomp.hskai.feature.foundation.FoundationActivity
+import com.pomp.hskai.data.api.AndroidOnboardingStatusDto
+import com.pomp.hskai.feature.onboarding.GuestLiDraft
+import com.pomp.hskai.feature.onboarding.LiGuestEntry
+import java.io.IOException
 import com.pomp.hskai.feature.onboarding.OnboardingScreen
 import com.pomp.hskai.feature.onboarding.OnboardingViewModel
 import com.pomp.hskai.feature.profile.IdentitiesViewModel
@@ -297,27 +302,68 @@ private fun AppRoot(
                     viewModel.loadProviders()
                 }
             }
-            LinkScreen(
-                state = linkState,
-                language = loginLanguage,
-                onLanguageSelected = { language ->
-                    loginLanguage = language
-                    if (AppLocale.choose(localeHost, language)) {
-                        localeHost.authActivity()?.recreate()
+            var previewLoaded by remember { mutableStateOf(false) }
+            var preview by remember { mutableStateOf<AndroidOnboardingStatusDto?>(null) }
+            var initialDraft by remember { mutableStateOf<GuestLiDraft?>(null) }
+            LaunchedEffect(Unit) {
+                preview = app.onboardingRepository.guestPreview()
+                if (preview != null) initialDraft = app.guestLiDraftStore.read()
+                previewLoaded = true
+            }
+            val chooseLanguage: (AppLanguage) -> Unit = { language ->
+                loginLanguage = language
+                if (AppLocale.choose(localeHost, language)) localeHost.authActivity()?.recreate()
+            }
+            val provider: @Composable (Boolean, (() -> Unit)?) -> Unit = { signup, onBack ->
+                val providerScope = rememberCoroutineScope()
+                var draftError by remember { mutableStateOf(false) }
+                fun startProvider(action: () -> Unit) {
+                    providerScope.launch {
+                        draftError = false
+                        try {
+                            if (signup) {
+                                if (!app.guestLiDraftStore.arm()) {
+                                    draftError = true
+                                    return@launch
+                                }
+                            } else app.guestLiDraftStore.clear()
+                            action()
+                        } catch (_: IOException) {
+                            draftError = true
+                        }
                     }
-                },
-                onContinueWithTelegram = {
-                    viewModel.continueWithTelegram(AppLocale.current(localeHost))
-                },
-                onSignInWithGoogle = {
-                    viewModel.signInWithGoogle(localeHost.authActivity(), AppLocale.current(localeHost))
-                },
-                onSignInWithApple = { viewModel.signInWithApple(AppLocale.current(localeHost)) },
-                onBrowserUrlOpened = viewModel::browserUrlOpened,
-                onTelegramUrlOpened = viewModel::telegramUrlOpened,
-                onExternalLaunchFailed = viewModel::externalLaunchFailed,
-                onDismissWaiting = viewModel::dismissWaiting,
-            )
+                }
+                LinkScreen(
+                    state = if (draftError) linkState.copy(error = ApiError.Unknown) else linkState,
+                    language = loginLanguage,
+                    onLanguageSelected = chooseLanguage,
+                    onContinueWithTelegram = {
+                        startProvider { viewModel.continueWithTelegram(AppLocale.current(localeHost)) }
+                    },
+                    onSignInWithGoogle = {
+                        startProvider { viewModel.signInWithGoogle(localeHost.authActivity(), AppLocale.current(localeHost)) }
+                    },
+                    onSignInWithApple = {
+                        startProvider { viewModel.signInWithApple(AppLocale.current(localeHost)) }
+                    },
+                    onBrowserUrlOpened = viewModel::browserUrlOpened,
+                    onTelegramUrlOpened = viewModel::telegramUrlOpened,
+                    onExternalLaunchFailed = viewModel::externalLaunchFailed,
+                    onDismissWaiting = viewModel::dismissWaiting,
+                    signup = signup,
+                    onBack = onBack,
+                )
+            }
+            val availablePreview = preview
+            when {
+                !previewLoaded -> LaunchWaitScreen()
+                availablePreview == null -> provider(false, null)
+                else -> LiGuestEntry(
+                    repository = app.onboardingRepository, preview = availablePreview, initialDraft = initialDraft,
+                    owner = sessionOwner, language = loginLanguage, onLanguageSelected = chooseLanguage,
+                    saveDraft = app.guestLiDraftStore::save, provider = provider,
+                )
+            }
         }
 
         is AuthState.SignedIn -> {
@@ -354,6 +400,9 @@ private fun AppRoot(
                 factory = OnboardingViewModel.Factory(
                     repository = app.onboardingRepository,
                     language = state.account.language.backendCode,
+                    claimGuestDraft = {
+                        try { app.guestLiDraftStore.takeArmed() } catch (_: IOException) { null }
+                    },
                 ),
             )
             val onboardingState by onboardingViewModel.state.collectAsStateWithLifecycle()

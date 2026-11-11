@@ -22,6 +22,8 @@ import com.pomp.hskai.data.api.AndroidCourseApi
 import com.pomp.hskai.data.api.AndroidFeatureApi
 import com.pomp.hskai.data.api.AndroidFoundationApi
 import com.pomp.hskai.data.api.AndroidOnboardingApi
+import com.pomp.hskai.data.api.AndroidGuestOnboardingApi
+import com.pomp.hskai.feature.onboarding.GuestLiDraftStore
 import com.pomp.hskai.data.api.AndroidStudyPreferencesApi
 import com.pomp.hskai.data.local.BundledDictionaryInsights
 import com.pomp.hskai.data.local.BundledStrokes
@@ -303,8 +305,11 @@ class HskAiApplication : Application() {
             api = onboardingApi,
             accessToken = authRepository::accessToken,
             onSessionExpired = authRepository::invalidateSession,
+            previewApi = retrofit.create(AndroidGuestOnboardingApi::class.java),
         )
     }
+
+    internal val guestLiDraftStore by lazy { GuestLiDraftStore(this) }
 
     val studyPreferencesRepository: StudyPreferencesRepository by lazy {
         StudyPreferencesRepository(
