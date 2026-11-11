@@ -28,3 +28,10 @@ Historical missing PWA events stay missing, and foundation cohort conversion sti
 | Context feedback | existing BotFeedbackRepository/Service → one completed BotFeedback and reward | existing Admin inbox and feedback_analytics categories | saved-context/cooldown/replay/category tests |
 
 The broader analytics registry/CI initiative remains owned by `docs/analytics/ANALYTICS_INTEGRITY_IMPLEMENTATION_PLAN.md`; this task does not claim historical PWA platform analytics are complete.
+
+## Bot questionnaire activation correction
+- **Sabab:** activity exits selected the three-answer compact presentation, so the existing free liked/disliked and paid value/reason bot forms were not automatically shown.
+- **Fix:** the same prepare route accepts the additive `presentation=bot` selector after the original owned-activity and cooldown checks. The existing dialog displays one canonical question at a time, advances radio choices in one tap, requests text only where the original bot requires it, and preserves native back, failure retry and pending bot answers. Full submissions retain the original codes, validation, one reward and Admin notification path. Legacy compact clients keep their original contract.
+- **Risk:** new automatic forms use the app's existing feature option sets, not unavailable Telegram-only tools. Release campaign delivery rules are unchanged. No new schema or entitlement/discount/reward policy.
+- **Prevention:** real authenticated free/paid/partial-answer API tests on SQLite and disposable PostgreSQL; three-language 320/390/430px Chromium/WebKit flows, native back, required text, failed-write retry, session suppression and the legacy Node UI harness.
+- **Analytics Impact:** new full answers use the same BotFeedback codes and existing Admin inbox/category readers as bot answers. Existing compact rows and their explicit category mapping remain readable; no historical rows are rewritten.

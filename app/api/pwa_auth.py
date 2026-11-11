@@ -412,6 +412,7 @@ class PwaFeedbackPrepare(BaseModel):
     """No user, identity or campaign selector is supplied by the browser."""
     model_config = ConfigDict(extra="forbid")
     context: PwaActivityFeedbackContext | None = None
+    presentation: Literal["compact", "bot"] = "compact"
 
 
 class PwaLessonFeedbackPrepare(BaseModel):
@@ -2928,15 +2929,17 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                     if feedback and not service._is_prompt_due(feedback, now):
                         feedback = None
                 if data.context and feedback:
-                    # Never replace an unfinished bot answer with a shorter form.
-                    if feedback.liked_code or feedback.disliked_code:
+                    # Legacy compact clients cannot replace a partial bot answer.
+                    # The bot presentation resumes the same canonical choices.
+                    if data.presentation == "compact" and (feedback.liked_code or feedback.disliked_code):
                         feedback = None
                     else:
                         await service.feedback_repo.mark_prompt_sent(feedback, feedback.prompt_message_id)
                 await db.commit()
                 payload = ({
                     "feedback_id": feedback.id,
-                    "compact": data.context.model_dump() if data.context else None,
+                    "compact": data.context.model_dump() if data.context and data.presentation == "compact" else None,
+                    "presentation": data.presentation,
                     "paid": UserAccessStateService.is_paid(learner),
                     "liked_code": feedback.liked_code,
                     "disliked_code": feedback.disliked_code,

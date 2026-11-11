@@ -13,12 +13,12 @@ from tests.pwa_layout_geometry import capture_geometry, assert_reserved_layout
 
 
 class LearningPage:
-    def __init__(self, *, lang='uz', required=False):
+    def __init__(self, *, lang='uz', required=False, paid=False):
         self.data = json.loads((STATIC / 'course_v3_data/hsk1.json').read_text())
         self.foundation = json.loads((STATIC / 'course_v3_data/hsk1/lesson_01.json').read_text())['foundation']
         self.data.update(authenticated=True, level='hsk1', user={
-            'name': 'Verified', 'avatar': '阿', 'language': lang, 'is_paid': False,
-            'state': 'FREE', 'onboarding_completed': True,
+            'name': 'Verified', 'avatar': '阿', 'language': lang, 'is_paid': paid,
+            'state': 'PRO_ACTIVE' if paid else 'FREE', 'onboarding_completed': True,
         }, foundation={'id': 'starter0_hsk1', 'version': 1, 'required': required,
                        'completed': False, 'status': 'required' if required else 'optional'})
         self.data['progress']['completed'] = 0
@@ -34,6 +34,23 @@ class LearningPage:
         self.hold_ads = False
         self.held_ads = []
         self.lang = lang
+        self.paid = paid
+        self.fail_feedback_once = False
+
+    def feedback_choices(self):
+        # Use the actual canonical bot labels in all three mobile locales.
+        catalog = json.loads((STATIC.parent.parent / f'localization/ui/{self.lang}/bot.json').read_text())['messages']
+        def options(prefix, codes):
+            return [{'code': code, 'label': catalog[f'texts.feedback_{prefix}_{code}']} for code in codes]
+        if self.paid:
+            return {'paid': options('paid', ['worth', 'useful', 'unsure', 'regret']),
+                    'paid_sub_positive': options('sub', ['lessons', 'voice', 'pronunciation', 'daily', 'other']),
+                    'paid_sub_negative': options('sub', ['content', 'slow', 'tech', 'time', 'other'])}
+        return {'liked': options('like', ['course', 'voice', 'pronunciation', 'dictionary', 'practice', 'other']),
+                'liked_sub': {'course': options('sub', ['lessons', 'exercises', 'voice', 'other']),
+                              'practice': options('sub', ['daily', 'memorize', 'quiz', 'other'])},
+                'disliked': options('dislike', ['price', 'limits', 'unclear', 'pace', 'other']),
+                'disliked_detail_required': ['unclear', 'pace', 'other']}
 
     def serve(self, route):
         path = urlsplit(route.request.url).path
@@ -60,10 +77,15 @@ class LearningPage:
         elif path == '/api/v3/pwa/feedback/ordinary/prepare':
             payload = route.request.post_data_json
             self.prepares.append(payload)
-            route.fulfill(json={'ok': True, 'ordinary': {'feedback_id': 71, 'compact': payload['context']}})
+            route.fulfill(json={'ok': True, 'ordinary': {'feedback_id': 71, 'compact': None,
+                'presentation': 'bot', 'paid': self.paid, 'choices': self.feedback_choices()}})
         elif path == '/api/v3/pwa/feedback/ordinary/submit':
             self.submissions.append(route.request.post_data_json)
             assert route.request.headers.get('x-hsk-pwa-csrf') == 'test-csrf'
+            if self.fail_feedback_once:
+                self.fail_feedback_once = False
+                route.fulfill(status=503, json={'ok': False, 'error': 'temporary'})
+                return
             route.fulfill(json={'ok': True, 'completed': True})
         elif path == '/api/v3/pwa/feedback/available':
             self.available_reads += 1
@@ -179,8 +201,9 @@ def test_foundation_all_steps_offline_retry_reload_and_acknowledged_completion()
 
 @pytest.mark.parametrize('lang', ['uz', 'ru', 'tj'])
 @pytest.mark.parametrize('width', [320, 390, 430])
-def test_compact_existing_feedback_on_practice_and_voice_exit(lang, width):
-    fixture = LearningPage(lang=lang)
+@pytest.mark.parametrize('paid', [False, True])
+def test_existing_bot_questionnaires_on_practice_and_voice_exit(lang, width, paid):
+    fixture = LearningPage(lang=lang, paid=paid)
     with sync_playwright() as pw:
         browser = getattr(pw, os.getenv('PWA_E2E_ENGINE', 'chromium')).launch()
         try:
@@ -198,21 +221,31 @@ def test_compact_existing_feedback_on_practice_and_voice_exit(lang, width):
             root.wait_for(state='visible')
             assert len(fixture.prepares) == 1
             assert fixture.prepares[0]['context']['kind'] == kind
-            assert root.locator('[role="radio"]').count() == 3
+            assert fixture.prepares[0]['presentation'] == 'bot'
+            assert root.locator('[role="radiogroup"]').count() == 1
+            assert root.locator('[role="radio"]').count() == (4 if paid else 6)
             assert root.locator('textarea').count() == 0
-            assert root.locator('#hsk-pwa-feedback-submit').is_disabled()
+            assert root.locator('#hsk-pwa-feedback-submit').is_hidden()
             box = root.locator('[role="dialog"]').bounding_box()
             assert box['x'] >= 0 and box['x'] + box['width'] <= width + 1
             assert abs(box['x'] + box['width']/2 - width/2) < 2
             if lang == 'uz' and width == 390:
-                page.screenshot(path='/tmp/hsk-pwa-feedback-390.png')
-            root.locator('[data-code="technical"]').click()
-            assert root.locator('textarea').count() == 1
-            root.locator('#hsk-pwa-feedback-submit').click()  # comment is optional
+                page.screenshot(path=f'/tmp/hsk-pwa-bot-feedback-{"paid" if paid else "free"}.png')
+            root.locator('[data-code="useful"]' if paid else '[data-code="practice"]').click()
+            assert root.locator('[role="radiogroup"]').count() == 1
+            page.evaluate('NavBack.goBack()')
+            assert root.locator('[data-code="useful"]' if paid else '[data-code="practice"]').is_visible()
+            root.locator('[data-code="useful"]' if paid else '[data-code="practice"]').click()
+            root.locator('[data-code="lessons"]' if paid else '[data-code="daily"]').click()
+            if not paid:
+                assert root.locator('[role="radiogroup"]').count() == 1
+                root.locator('[data-code="limits"]').click()
             page.wait_for_function('document.querySelector("#hsk-pwa-feedback-submit").hidden')
+            page.wait_for_function('!document.querySelector("#hsk-pwa-feedback-form").children.length')
             assert len(fixture.submissions) == 1
-            assert fixture.submissions[0]['answer'] == 'technical'
-            assert fixture.submissions[0]['comment'] is None
+            assert fixture.submissions[0].get('paid_code') == ('useful' if paid else None)
+            assert fixture.submissions[0].get('liked_sub_code') == (None if paid else 'daily')
+            assert 'answer' not in fixture.submissions[0]
             root.wait_for(state='hidden')
             page.evaluate('queuePwaActivityFeedback({kind:"practice"})')
             page.wait_for_timeout(1100)
@@ -223,6 +256,34 @@ def test_compact_existing_feedback_on_practice_and_voice_exit(lang, width):
             page.wait_for_timeout(50)
             assert fixture.available_reads == available_before, 'one automatic feedback prompt per session'
             assert errors == []
+        finally:
+            browser.close()
+
+
+def test_bot_questionnaire_other_text_and_failed_write_can_retry():
+    fixture = LearningPage()
+    fixture.fail_feedback_once = True
+    with sync_playwright() as pw:
+        browser = getattr(pw, os.getenv('PWA_E2E_ENGINE', 'chromium')).launch()
+        try:
+            page = fixture.open(browser)
+            page.evaluate('App.show("voice");SECTION=VOICE;closeSection()')
+            root = page.locator('#hsk-pwa-feedback-root')
+            root.wait_for(state='visible')
+            root.locator('[data-code="other"]').click()
+            assert root.locator('textarea').count() == 1
+            assert root.locator('#hsk-pwa-feedback-submit').is_disabled()
+            root.locator('textarea').fill('Vocabulary')
+            root.locator('#hsk-pwa-feedback-submit').click()
+            root.locator('[data-code="unclear"]').click()
+            root.locator('textarea').fill('Audio stopped')
+            root.locator('#hsk-pwa-feedback-submit').click()
+            page.wait_for_function('!document.querySelector("#hsk-pwa-feedback-submit").disabled')
+            assert len(fixture.submissions) == 1
+            assert root.locator('textarea').input_value() == 'Audio stopped'
+            root.locator('#hsk-pwa-feedback-submit').click()
+            root.wait_for(state='hidden')
+            assert fixture.submissions == [fixture.submissions[0], fixture.submissions[0]]
         finally:
             browser.close()
 

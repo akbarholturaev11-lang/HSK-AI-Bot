@@ -219,3 +219,108 @@ class PwaLearningParityTests(unittest.IsolatedAsyncioTestCase):
             result = await self.client.post(path, headers=headers, json=body)
             self.assertEqual(result.status_code, 200, result.text)
             self.assertEqual(result.json()['ordinary']['compact']['kind'], kind)
+
+    async def test_bot_questionnaire_free_answers_keep_canonical_codes_and_single_reward(self):
+        headers = await self.login()
+        async with self.sessions() as db:
+            owner = await db.get(User, 1)
+            owner.created_at = datetime.now(timezone.utc) - timedelta(days=3)
+            owner.telegram_id = None
+            db.add(fixture.user(2, None))
+            db.add(CourseProgress(user_id=1, level='hsk1', completed_lessons_count=1))
+            await db.commit()
+        context = {'kind': 'lesson', 'level': 'hsk1', 'lesson_id': 1}
+        path = '/api/v3/pwa/feedback/ordinary/prepare'
+        response = await self.client.post(path, headers=headers, json={'context': context, 'presentation': 'bot'})
+        self.assertEqual(response.status_code, 200, response.text)
+        feedback = response.json()['ordinary']
+        self.assertEqual(feedback['presentation'], 'bot')
+        self.assertIsNone(feedback['compact'])
+        self.assertFalse(feedback['paid'])
+        self.assertIn('practice', [x['code'] for x in feedback['choices']['liked']])
+        self.assertIn('limits', [x['code'] for x in feedback['choices']['disliked']])
+        self.assertIsNone((await self.client.post(path, headers=headers,
+            json={'context': context, 'presentation': 'bot'})).json()['ordinary'])
+        payload = {'feedback_id': feedback['feedback_id'], 'liked_code': 'practice',
+                   'liked_sub_code': 'daily', 'disliked_code': 'limits'}
+        with patch('app.services.admin_notify_service.AdminNotifyService.notify_bot_feedback', new=AsyncMock()) as notice:
+            accepted = await self.client.post('/api/v3/pwa/feedback/ordinary/submit', headers=headers, json=payload)
+            self.assertEqual(accepted.status_code, 200, accepted.text)
+            self.assertEqual(notice.await_count, 1)
+            async with self.sessions() as db:
+                end = (await db.get(User, 1)).end_date
+            retry = await self.client.post('/api/v3/pwa/feedback/ordinary/submit', headers=headers, json=payload)
+            self.assertEqual(retry.status_code, 409)
+            self.assertEqual(notice.await_count, 1)
+        async with self.sessions() as db:
+            stored = await db.get(BotFeedback, feedback['feedback_id'])
+            self.assertEqual((stored.user_id, stored.telegram_id, stored.liked_code, stored.disliked_code),
+                             (1, None, 'practice', 'limits'))
+            self.assertIsNotNone(stored.reward_granted_at)
+            self.assertIsNotNone(stored.price_offer_due_at)
+            self.assertEqual((await db.get(User, 1)).end_date, end)
+            metrics = await feedback_analytics(db, FeedbackAnalyticsRequest(source='bot'))
+            self.assertEqual(metrics['sources'][0]['categories'], [{'category': 'limits', 'count': 1}])
+            self.assertEqual(len((await db.scalars(select(BotFeedback))).all()), 1)
+
+    async def test_bot_questionnaire_paid_value_and_reason_preserve_subscription(self):
+        headers = await self.login()
+        expires = datetime.now(timezone.utc).replace(microsecond=0) + timedelta(days=30)
+        async with self.sessions() as db:
+            owner = await db.get(User, 1)
+            owner.created_at = datetime.now(timezone.utc) - timedelta(days=3)
+            owner.status = 'active'
+            owner.payment_status = 'approved'
+            owner.selected_plan_type = '1_month'
+            owner.start_date = expires - timedelta(days=30)
+            owner.end_date = expires
+            db.add(Event(user_id=1, event_name='voice_started', source='course_voice'))
+            await db.commit()
+        path = '/api/v3/pwa/feedback/ordinary/prepare'
+        response = await self.client.post(path, headers=headers,
+            json={'context': {'kind': 'voice', 'level': 'hsk1'}, 'presentation': 'bot'})
+        feedback = response.json()['ordinary']
+        self.assertTrue(feedback['paid'])
+        self.assertIn('useful', [x['code'] for x in feedback['choices']['paid']])
+        self.assertIn('lessons', [x['code'] for x in feedback['choices']['paid_sub_positive']])
+        payload = {'feedback_id': feedback['feedback_id'], 'paid_code': 'useful', 'paid_sub_code': 'lessons'}
+        with patch('app.services.admin_notify_service.AdminNotifyService.notify_bot_feedback', new=AsyncMock()) as notice:
+            accepted = await self.client.post('/api/v3/pwa/feedback/ordinary/submit', headers=headers, json=payload)
+            self.assertEqual(accepted.status_code, 200, accepted.text)
+            self.assertEqual(notice.await_args.kwargs['feedback'].liked_code, 'paid_useful')
+        async with self.sessions() as db:
+            stored = await db.get(BotFeedback, feedback['feedback_id'])
+            self.assertEqual((stored.status, stored.liked_code, stored.disliked_code),
+                             ('completed', 'paid_useful', 'paid_lessons'))
+            self.assertIsNone(stored.reward_granted_at)
+            self.assertIsNone(stored.price_offer_due_at)
+            owner = await db.get(User, 1)
+            self.assertEqual(owner.end_date.replace(tzinfo=timezone.utc), expires)
+            self.assertEqual(owner.selected_plan_type, '1_month')
+
+    async def test_bot_questionnaire_resumes_partial_bot_answer_without_replacing_it(self):
+        from app.repositories.bot_feedback_repo import BotFeedbackRepository
+        headers = await self.login()
+        async with self.sessions() as db:
+            owner = await db.get(User, 1)
+            owner.created_at = datetime.now(timezone.utc) - timedelta(days=3)
+            db.add(Event(user_id=1, event_name='voice_started', source='course_voice'))
+            repo = BotFeedbackRepository(db)
+            pending = await repo.create_pending(owner)
+            await repo.save_liked(pending, 'practice', 'Daily practice')
+            await db.commit()
+            feedback_id = pending.id
+        path = '/api/v3/pwa/feedback/ordinary/prepare'
+        context = {'kind': 'voice', 'level': 'hsk1'}
+        legacy = await self.client.post(path, headers=headers, json={'context': context})
+        self.assertIsNone(legacy.json()['ordinary'])
+        response = await self.client.post(path, headers=headers, json={'context': context, 'presentation': 'bot'})
+        feedback = response.json()['ordinary']
+        self.assertEqual(feedback['feedback_id'], feedback_id)
+        self.assertEqual(feedback['liked_code'], 'practice')
+        payload = {'feedback_id': feedback_id, 'liked_code': 'course',
+                   'liked_sub_code': 'lessons', 'disliked_code': 'limits'}
+        denied = await self.client.post('/api/v3/pwa/feedback/ordinary/submit', headers=headers, json=payload)
+        self.assertEqual(denied.status_code, 409)
+        invalid = await self.client.post(path, headers=headers, json={'context': context, 'presentation': 'unknown'})
+        self.assertEqual(invalid.status_code, 422)
