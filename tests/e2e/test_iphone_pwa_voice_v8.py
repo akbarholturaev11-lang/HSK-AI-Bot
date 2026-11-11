@@ -88,8 +88,14 @@ def open_voice(static_server, *, live=True, remaining=3):
             if log["remaining"] == 0:
                 return route.fulfill(status=403, json={"ok": False, "code": "LIMIT_EXCEEDED"})
             return route.fulfill(json={"ok": True, "session_id": "voice-session-1", "live_available": live,
+                                       "course_context": {"words": [{"zh": "学生", "pinyin": "xuésheng",
+                                                                     "meaning": "talaba"}],
+                                                          "review_words": [{"zh": "老师", "pinyin": "lǎoshī",
+                                                                            "meaning": "o'qituvchi"}]},
                                        "opening_message": {"chinese_reply": "你好！", "pinyin": "nǐ hǎo",
-                                                           "translation": "Salom!"}})
+                                                           "translation": "Salom!",
+                                                           "suggestions": [{"zh": "你好，我是学生", "pinyin": "nǐ hǎo",
+                                                                            "translation": "Salom, men talabaman"}]}})
         if path == "/api/v3/pwa/voice/session/mode":
             payload = json.loads(body)
             log["modes"].append(payload["mode"])
@@ -168,9 +174,8 @@ def mic_closed(page):
 def test_live_conversation_streams_pcm_types_mutes_and_ends_on_time_limit(static_server):
     page, log, close = open_voice(static_server)
     try:
-        expect(status(page)).to_have_text(UZ["voiceV8.statusReady"])
         assert page.evaluate("PompLiveVoice.supported()")
-        page.locator("#micmuted").click()
+        # «Начать разговор» already started the call: no microphone tap.
         wait_until(page, lambda: len(log["pcm"]) >= 3, "Live must stream microphone PCM")
         assert log["auth"] == {"type": "auth", "session_id": "voice-session-1", "csrf": "pwa-csrf"}
         assert "csrf" not in log["socket"].url and "session" not in log["socket"].url
@@ -227,7 +232,6 @@ def test_live_conversation_streams_pcm_types_mutes_and_ends_on_time_limit(static
 def test_live_drop_falls_back_to_recorded_turns(static_server):
     page, log, close = open_voice(static_server)
     try:
-        page.locator("#micmuted").click()
         wait_until(page, lambda: log["auth"] is not None and len(log["pcm"]) >= 1, "Live must connect")
         log["socket"].close()
         expect(status(page)).to_have_text(UZ["voiceV8.statusTurn"])
@@ -241,12 +245,14 @@ def test_live_drop_falls_back_to_recorded_turns(static_server):
 def test_turn_mode_records_uploads_audio_and_shows_reply(static_server):
     page, log, close = open_voice(static_server, live=False)
     try:
-        page.locator("#micmuted").click()
+        # Without Live the first turn is recording on entry; the button sends it.
         expect(status(page)).to_have_text(UZ["voiceV8.statusRecording"])
         assert log["modes"] == [] and log["socket"] is None
         page.wait_for_timeout(1500)
         page.locator("#micmuted").click()
         wait_until(page, lambda: len(log["messages"]) == 1, "the recording must be uploaded")
+        expect(status(page)).not_to_have_text(UZ["voiceV8.statusRecording"])
+        assert len(log["starts"]) == 1
         request = log["messages"][0]
         assert request.headers["content-type"].startswith("multipart/form-data")
         body = request.post_data_buffer
@@ -275,9 +281,53 @@ def test_limit_opens_shared_pro_offer_and_closing_leaves_voice(static_server):
         close()
 
 
+def test_spent_allowance_never_auto_starts_and_x_leaves_at_once(static_server):
+    page, log, close = open_voice(static_server, remaining=0)
+    try:
+        expect(status(page)).to_have_text(UZ["voiceV8.noQuota"])
+        page.wait_for_timeout(400)
+        assert log["starts"] == [] and page.evaluate("window.__voiceStreams.length") == 0
+        page.locator("#close").click()
+        page.wait_for_url(re.compile(r"/iphone-pwa/course\?tab=voice&lang=uz$"))
+        assert log["ends"] == []
+        assert not log["errors"]
+    finally:
+        close()
+
+
+def test_what_to_say_sheet_offers_lesson_words_suggestions_and_examples(static_server):
+    page, log, close = open_voice(static_server, live=False)
+    try:
+        wait_until(page, lambda: len(log["starts"]) == 1, "the call starts on entry")
+        expect(status(page)).to_have_text(UZ["voiceV8.statusRecording"])
+        page.locator("#plus").click()
+        expect(page.locator("#suggestTitle")).to_have_text(UZ["voicePage.hintTitle"])
+        words = page.locator("#hintWordList .hintItem")
+        expect(words).to_have_count(2)
+        expect(words.first.locator(".hintZh")).to_have_text("学生")
+        expect(words.first.locator(".hintPy")).to_have_text("xuésheng")
+        expect(words.first.locator(".hintTr")).to_have_text("talaba")
+        expect(page.locator("#hintPhraseList .hintItem .hintTr")).to_have_text("Salom, men talabaman")
+        expect(page.locator(".addOptions button")).to_have_count(4)
+        assert page.locator(".drawerFooter").count() == 0
+        page.locator("#hintPhraseList .hintItem").click()
+        wait_until(page, lambda: len(log["messages"]) == 1, "a tapped phrase is sent")
+        body = log["messages"][0].post_data_buffer
+        assert b'name="text"' in body and "你好，我是学生".encode() in body and b'name="audio"' not in body
+        expect(page.locator("#dialogue .msg.user").first).to_have_text("你好，我是学生")
+        # The recording that was running is dropped, never uploaded later.
+        mic_closed(page)
+        page.wait_for_timeout(300)
+        assert len(log["messages"]) == 1
+        assert not log["errors"]
+    finally:
+        close()
+
+
 def test_settings_persist_and_topic_change_ends_running_session(static_server):
     page, log, close = open_voice(static_server, live=False)
     try:
+        expect(status(page)).to_have_text(UZ["voiceV8.statusRecording"])
         page.locator("#prompt").fill("你好")
         page.locator("#prompt").press("Enter")
         wait_until(page, lambda: len(log["messages"]) == 1, "typed turn must be sent")
@@ -290,12 +340,14 @@ def test_settings_persist_and_topic_change_ends_running_session(static_server):
         expect(page.locator("#topicsLayer")).to_have_class(re.compile(r"\bopen\b"))
         page.locator('#topicList [data-topic="hsk"]').click()
         wait_until(page, lambda: log["ends"] == [{"session_id": "voice-session-1"}], "old session must end")
-        expect(page.locator("#dialogue .msg")).to_have_count(0)
+        # The running call goes on with the new partner: only its greeting is left.
+        wait_until(page, lambda: len(log["starts"]) == 2, "new topic starts a new session")
+        assert log["starts"][1]["role"] == "teacher_li"
+        expect(page.locator("#dialogue .msg")).to_have_count(1)
         expect(page.locator("#currentTopicTitle")).to_have_text(UZ["voiceV8.topicHsk"])
         page.locator("#prompt").fill("老师好")
         page.locator("#prompt").press("Enter")
-        wait_until(page, lambda: len(log["starts"]) == 2, "new topic starts a new session")
-        assert log["starts"][1]["role"] == "teacher_li"
+        wait_until(page, lambda: len(log["messages"]) == 2, "typed turn goes to the new session")
         assert not log["errors"]
     finally:
         close()

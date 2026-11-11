@@ -114,8 +114,6 @@ button,input{font:inherit}button{cursor:pointer;-webkit-tap-highlight-color:tran
 .topicChoice .topicTitle{font-size:14px;line-height:1.32;font-weight:610}
 .topicChoice .topicSub{font-size:11px;color:#949498;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .topicChoice .topicCheck{font-size:17px;font-weight:400;color:#7a7a7c}
-.drawerFooter{padding:14px 21px calc(5px + var(--safe-bottom));margin-top:auto;border-top:1px solid #242427;display:flex;align-items:center;justify-content:space-between;color:#8a8a8a;font-size:11px}
-.drawerFooter span:first-child{font-weight:650;color:#d0d0d0}
 #settingsLayer .sheet{max-height:min(79%,520px);overflow:visible}
 .sheet{padding:13px 21px calc(26px + var(--safe-bottom));background:#242425;border:1px solid #383839;border-bottom:0;border-radius:28px 28px 0 0;box-shadow:0 -22px 50px #0009}
 .grip{margin-bottom:11px;background:#6b6b6b;width:37px;height:4px}
@@ -130,6 +128,16 @@ button,input{font:inherit}button{cursor:pointer;-webkit-tap-highlight-color:tran
 .addOptions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:24px 0 4px}
 .addOptions button{min-width:0;min-height:52px;padding:10px 8px;border-radius:17px;background:#38383a;border:1px solid #565659;color:#fff;text-align:center;font-size:14px;line-height:1.3}
 .addOptions button:active{background:#5f2c28}
+/* "What to say": this lesson's words and the partner's last suggested
+   replies (the earlier AI Voice hint sheet), then the example requests. */
+.suggestionsSheet{max-height:82%;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.hintGroup{margin:18px 2px 9px;color:#8e8e91;font-size:11px;font-weight:700;letter-spacing:.9px;text-transform:uppercase}
+.hintGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.hintGrid.phrases{grid-template-columns:minmax(0,1fr)}
+.hintItem{min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:9px 12px;border:1px solid #4a4a4d;border-radius:15px;background:#303032;color:#fff;text-align:left}
+.hintItem:active{background:#5f2c28}
+.hintZh{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Noto Sans CJK SC",sans-serif;font-size:17px;font-weight:600;line-height:1.3;overflow-wrap:anywhere}
+.hintPy{color:#e3a399;font-size:12px;line-height:1.3}.hintTr{color:#a9a9ad;font-size:12px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hintBody .addOptions{margin:0 0 4px}
 @media(max-width:380px){#topicsLayer .topicsSheet{width:83%}#app.drawerOpen #voiceScreen{transform:translateX(83%) scale(.967)}.topicPhoto{width:55px;height:54px;flex-basis:55px}.topicChoice{min-height:68px}.topicChoice .topicTitle{font-size:13px}.seg button{padding:7px 9px}}
 @media(max-height:610px){.sheet{padding-bottom:calc(18px + var(--safe-bottom))}.rowSet{padding:14px 0}.topicHeadline{margin-bottom:10px}.topicChoice{min-height:64px}}
 
@@ -139,18 +147,19 @@ button,input{font:inherit}button{cursor:pointer;-webkit-tap-highlight-color:tran
 #orbStatus{max-width:min(340px,94vw)}
 #micmuted:disabled{opacity:.48}
 
-/* Voice V8: compact resting footer, gentle spring expansion on keyboard focus. */
-.footer{height:44px;left:20px;right:20px;bottom:calc(15px + var(--safe-bottom));gap:6px;
+/* Voice V8: compact resting footer (full screen sits it lower, so it stays
+   small), gentle spring expansion only while the keyboard is up. */
+.footer{height:40px;left:20px;right:20px;bottom:calc(14px + var(--safe-bottom));gap:6px;
   transition:left 390ms cubic-bezier(.2,1.19,.32,1),right 390ms cubic-bezier(.2,1.19,.32,1),height 390ms cubic-bezier(.2,1.19,.32,1),bottom 390ms cubic-bezier(.2,1.19,.32,1),gap 390ms ease}
-.composer{height:44px;padding:0 7px 0 6px;gap:4px;
+.composer{height:40px;padding:0 7px 0 6px;gap:4px;
   transition:height 390ms cubic-bezier(.2,1.19,.32,1),padding 390ms cubic-bezier(.2,1.19,.32,1),border-color .22s ease}
-#plus{width:29px;flex-basis:29px;height:34px;transition:width .36s cubic-bezier(.2,1.19,.32,1),flex-basis .36s cubic-bezier(.2,1.19,.32,1)}
-#plus svg{width:22px;height:22px}
+#plus{width:27px;flex-basis:27px;height:32px;transition:width .36s cubic-bezier(.2,1.19,.32,1),flex-basis .36s cubic-bezier(.2,1.19,.32,1)}
+#plus svg{width:20px;height:20px}
 #prompt{font-size:16px}
-.footbtn{width:44px;height:44px;flex:0 0 44px;transition:width 390ms cubic-bezier(.2,1.19,.32,1),height 390ms cubic-bezier(.2,1.19,.32,1),flex-basis 390ms cubic-bezier(.2,1.19,.32,1)}
-.footbtn svg{width:22px;height:22px}
-#close svg{width:24px;height:24px}
-#send{display:none;width:44px;height:44px;flex:0 0 44px;border:1px solid var(--red);background:var(--red);color:#fff}
+.footbtn{width:40px;height:40px;flex:0 0 40px;transition:width 390ms cubic-bezier(.2,1.19,.32,1),height 390ms cubic-bezier(.2,1.19,.32,1),flex-basis 390ms cubic-bezier(.2,1.19,.32,1)}
+.footbtn svg{width:20px;height:20px}
+#close svg{width:22px;height:22px}
+#send{display:none;width:40px;height:40px;flex:0 0 40px;border:1px solid var(--red);background:var(--red);color:#fff}
 #send.ready{display:none}
 #app.typing .footer{left:12px;right:12px;height:50px;bottom:calc(12px + var(--safe-bottom));gap:8px}
 #app.typing .composer{height:50px;padding:0 9px 0 7px}
@@ -189,7 +198,7 @@ button,input{font:inherit}button{cursor:pointer;-webkit-tap-highlight-color:tran
  <div id="orb" role="button" tabindex="0" data-i18n-aria="voiceV8.orbLabel"><canvas id="orbCanvas" aria-hidden="true"></canvas><div id="orbStatus" role="status" aria-live="polite" aria-atomic="true"></div></div>
  <div class="footer">
   <div class="composer">
-   <button id="plus" data-i18n-aria="voiceV8.examplesTitle"><svg viewBox="0 0 24 24"><path d="M12 2v20M2 12h20"/></svg></button>
+   <button id="plus" data-i18n-aria="voicePage.hintTitle"><svg viewBox="0 0 24 24"><path d="M12 2v20M2 12h20"/></svg></button>
    <input id="prompt" autocomplete="off" data-i18n-placeholder="voiceV8.ask" data-i18n-aria="voiceV8.promptLabel" inputmode="text" maxlength="400">
   </div>
   <button id="micmuted" class="circle footbtn"><svg id="mutedMuted" viewBox="0 0 24 24"><path d="M10 9v2.2c0 1 .5 1.7 1.1 2.1M14 8V5a2 2 0 0 0-4 0v1M7 12c.2 2.7 2.2 4.6 5 4.6 1 0 1.8-.2 2.5-.7M17 12c0 .6-.1 1.1-.3 1.6M12 17v4m-4 0h8M2 2l20 20"/></svg><svg id="micnormal" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v5M8 22h8"/></svg></button>
@@ -207,7 +216,6 @@ button,input{font:inherit}button{cursor:pointer;-webkit-tap-highlight-color:tran
       <div class="topicCaption" data-i18n="voiceV8.topicsOther"></div>
       <div id="topicList" class="topicList" role="group" data-i18n-aria="voiceV8.topicsTitle"></div>
     </div>
-    <div class="drawerFooter"><span>HSK AI</span><span data-i18n="voiceV8.drawerFooter"></span></div>
   </aside>
  </div>
  <div class="sheetLayer" id="settingsLayer" aria-hidden="true"><div class="scrim" data-close="settingsLayer"></div>
@@ -221,8 +229,11 @@ button,input{font:inherit}button{cursor:pointer;-webkit-tap-highlight-color:tran
  </div>
  <div class="sheetLayer" id="plusLayer" aria-hidden="true"><div class="scrim" data-close="plusLayer"></div>
   <section class="sheet suggestionsSheet" role="dialog" aria-modal="true" aria-labelledby="suggestTitle">
-   <div class="grip"></div><div class="sheetHead"><h3 id="suggestTitle" data-i18n="voiceV8.examplesTitle"></h3><button class="dismissX" type="button" data-close="plusLayer" data-i18n-aria="voiceV8.examplesClose"><svg viewBox="0 0 24 24"><path d="M5 5l14 14M19 5 5 19"/></svg></button></div>
-   <div class="addOptions"><button type="button" data-i18n="voiceV8.example1Label" data-i18n-example="voiceV8.example1Text"></button><button type="button" data-i18n="voiceV8.example2Label" data-i18n-example="voiceV8.example2Text"></button><button type="button" data-i18n="voiceV8.example3Label" data-i18n-example="voiceV8.example3Text"></button><button type="button" data-i18n="voiceV8.example4Label" data-i18n-example="voiceV8.example4Text"></button></div>
+   <div class="grip"></div><div class="sheetHead"><h3 id="suggestTitle" data-i18n="voicePage.hintTitle"></h3><button class="dismissX" type="button" data-close="plusLayer" data-i18n-aria="voiceV8.examplesClose"><svg viewBox="0 0 24 24"><path d="M5 5l14 14M19 5 5 19"/></svg></button></div>
+   <div class="hintBody"><div id="hintWords" hidden><div class="hintGroup" data-i18n="voicePage.hintWords"></div><div class="hintGrid" id="hintWordList"></div></div>
+   <div id="hintPhrases" hidden><div class="hintGroup" data-i18n="voicePage.hintPhrases"></div><div class="hintGrid phrases" id="hintPhraseList"></div></div>
+   <div class="hintGroup" data-i18n="voiceV8.examplesTitle"></div>
+   <div class="addOptions"><button type="button" data-i18n="voiceV8.example1Label" data-i18n-example="voiceV8.example1Text"></button><button type="button" data-i18n="voiceV8.example2Label" data-i18n-example="voiceV8.example2Text"></button><button type="button" data-i18n="voiceV8.example3Label" data-i18n-example="voiceV8.example3Text"></button><button type="button" data-i18n="voiceV8.example4Label" data-i18n-example="voiceV8.example4Text"></button></div></div>
   </section>
  </div>
  <div id="endModal" class="endModal"><div class="endCard"><h3 data-i18n="voiceV8.endTitle"></h3><p data-i18n="voiceV8.endBody"></p><div class="endActions"><button id="cancelEnd" data-i18n="voiceV8.endCancel"></button><button id="confirmEnd" class="danger" data-i18n="voiceV8.endConfirm"></button></div></div></div>
@@ -248,6 +259,7 @@ function t(name){return STATUS_KEYS[name]?msg('voiceV8.'+STATUS_KEYS[name]):''}
 let mode='focus',drag=null,typing=false,pinyin=false,showTranslation=true,showBackdrop=true,busy=false,leaving=false;
 let actor=null,authPromise=null,sessionId=null,sessionMode='turn',liveVoice=null,liveReady=false,liveAvailable=false,liveKnown=false;
 let quota,recording=null,pendingLiveText='',state='connect',currentTopic='free',endPromise=null,ownerId=null,epoch=0,noticeText='',noticeTimer=0;
+let lessonWords=[],hintSuggestions=[];
 const primaryRoles={free:'friend',daily:'roommate',shopping:'seller',food:'seller',travel:'friend',school:'classmate',friends:'friend',work:'manager_wang',hsk:'teacher_li'};
 const topics=[
 {id:'free',key:'voiceV8.topicFree',zh:'自由聊天',py:'Zìyóu liáotiān'},
@@ -303,38 +315,56 @@ function applyLocale(next){const value=normalizeLang(next);if(value)lang=value;w
  for(const el of document.querySelectorAll('[data-i18n-example]'))el.dataset.example=msg(el.dataset.i18nExample);
  renderTopics();setMicVisual(liveReady?liveMicOn():!!recording,liveReady&&!liveMicOn());renderStatus()}
 function layer(id,open){document.querySelectorAll('.sheetLayer.open').forEach(el=>{if(el.id!==id){el.classList.remove('open');el.setAttribute('aria-hidden','true')}});const el=$(id);el.classList.toggle('open',open);el.setAttribute('aria-hidden',String(!open));if(id==='topicsLayer'){app.classList.toggle('drawerOpen',open);$('history').setAttribute('aria-expanded',String(open))}}
-$('history').addEventListener('click',()=>{prompt.blur();renderTopics();layer('topicsLayer',true)});$('settings').addEventListener('click',()=>layer('settingsLayer',true));$('plus').addEventListener('click',()=>{prompt.blur();layer('plusLayer',true)});$('topicClose').addEventListener('click',()=>layer('topicsLayer',false));
+$('history').addEventListener('click',()=>{prompt.blur();renderTopics();layer('topicsLayer',true)});$('settings').addEventListener('click',()=>layer('settingsLayer',true));$('plus').addEventListener('click',()=>{prompt.blur();renderHints();layer('plusLayer',true)});$('topicClose').addEventListener('click',()=>layer('topicsLayer',false));
 document.querySelectorAll('[data-close]').forEach(el=>el.addEventListener('click',()=>layer(el.dataset.close,false)));
 window.addEventListener('keydown',e=>{if(e.key==='Escape'){for(const el of document.querySelectorAll('.sheetLayer.open'))layer(el.id,false);$('endModal').classList.remove('show')}});
 function sceneThumb(topicId){const frame=document.createElement('div');frame.className='topicPhoto';const glyph=document.createElement('span');glyph.textContent=sceneGlyphs[topicId]||sceneGlyphs.free;frame.appendChild(glyph);const img=document.createElement('img');img.src=scenePhoto(topicId);img.alt='';img.loading='lazy';img.onerror=()=>img.remove();frame.appendChild(img);return frame}
 function renderTopics(){const target=topics.find(x=>x.id===currentTopic)||topics[0];$('currentTopicTitle').textContent=msg(target.key);$('currentTopicSubtitle').textContent=target.zh+' · '+target.py;const old=$('currentTopicPhoto');if(old&&old.dataset.topic!==target.id){const img=sceneThumb(target.id);img.id='currentTopicPhoto';img.dataset.topic=target.id;old.replaceWith(img)}const list=$('topicList');list.replaceChildren();for(const topic of topics){if(topic.id===currentTopic)continue;const b=document.createElement('button');b.type='button';b.className='topicChoice';b.dataset.topic=topic.id;const copy=document.createElement('span');copy.className='topicCopy';const n=document.createElement('span');n.className='topicTitle';n.textContent=msg(topic.key);const sub=document.createElement('span');sub.className='topicSub';sub.textContent=topic.zh+' · '+topic.py;copy.append(n,sub);const arrow=document.createElement('span');arrow.className='topicCheck';arrow.textContent='›';b.append(sceneThumb(topic.id),copy,arrow);list.appendChild(b)}updateTopicBackdrop()}
-$('topicList').addEventListener('click',async e=>{const b=e.target.closest('[data-topic]');if(!b||busy)return;const target=topics.find(x=>x.id===b.dataset.topic);if(!target||target.id===currentTopic)return;layer('topicsLayer',false);if(sessionId)await endSession({quiet:true});currentTopic=target.id;dialogue.replaceChildren();renderTopics();app.classList.remove('ended');setMode('focus');if(quota===0)noQuotaState();else setState('ready');showToast(msg('voiceV8.topicChanged'))});
+$('topicList').addEventListener('click',async e=>{const b=e.target.closest('[data-topic]');if(!b||busy)return;const target=topics.find(x=>x.id===b.dataset.topic);if(!target||target.id===currentTopic)return;layer('topicsLayer',false);const wasActive=!!(sessionId||recording);if(sessionId)await endSession({quiet:true});currentTopic=target.id;dialogue.replaceChildren();renderTopics();app.classList.remove('ended');setMode('focus');if(quota===0)noQuotaState();else{setState('ready');if(wasActive)autoStart()}showToast(msg('voiceV8.topicChanged'))});
 function refreshToggle(id,on){const b=$(id);b.classList.toggle('active',on);b.setAttribute('aria-checked',String(on))}
 $('pinyinToggle').addEventListener('click',()=>{pinyin=!pinyin;refreshToggle('pinyinToggle',pinyin);updatePinyin();persistUiPrefs()});
 function updateTranslations(){for(const el of dialogue.querySelectorAll('.sub.translation'))el.hidden=!showTranslation}
 $('translationToggle').addEventListener('click',()=>{showTranslation=!showTranslation;refreshToggle('translationToggle',showTranslation);updateTranslations();persistUiPrefs()});
 $('backdropToggle').addEventListener('click',()=>{showBackdrop=!showBackdrop;refreshToggle('backdropToggle',showBackdrop);updateTopicBackdrop();persistUiPrefs()});
 function sendIcon(){const ready=!!prompt.value.trim();const button=$('send');button.classList.toggle('ready',ready);button.disabled=!ready||busy;button.setAttribute('aria-hidden',String(!typing));button.tabIndex=typing&&ready?0:-1;if(!button.firstElementChild)button.innerHTML='<svg viewBox="0 0 24 24"><path d="m12 19 0-14M6 11l6-6 6 6"/></svg>'}
-prompt.addEventListener('input',sendIcon);prompt.addEventListener('focus',()=>{typing=true;setMode('chat');app.classList.add('typing');sendIcon();setTimeout(scrollBottom,140)});prompt.addEventListener('blur',()=>{typing=false;app.classList.remove('typing');keyboardWasSeen=false;sendIcon()});
+prompt.addEventListener('input',sendIcon);prompt.addEventListener('focus',()=>{typing=true;setMode('chat');app.classList.add('typing');sendIcon();setTimeout(scrollBottom,140)});prompt.addEventListener('blur',()=>{typing=false;app.classList.remove('typing');keyboardWasSeen=false;sendIcon();syncSafeArea(false)});
+/* Full screen inside the course frame: env() is 0 in an iframe, so the
+   parent's insets are measured where the frame meets the screen edges. With
+   the soft keyboard up the composer sits on the keyboard, not on a home
+   indicator gap. */
+let safeProbe=null;
+function parentInsets(){try{const frame=EMBEDDED&&window.frameElement;if(!frame)return null;const doc=window.parent.document;if(!safeProbe||!safeProbe.isConnected){safeProbe=doc.createElement('div');safeProbe.setAttribute('aria-hidden','true');safeProbe.style.cssText='position:fixed;left:0;top:0;width:0;height:0;visibility:hidden;pointer-events:none;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)';doc.body.appendChild(safeProbe)}const cs=window.parent.getComputedStyle(safeProbe),rect=frame.getBoundingClientRect();return {top:Math.max(0,(parseFloat(cs.paddingTop)||0)-Math.max(0,rect.top)),bottom:Math.max(0,(parseFloat(cs.paddingBottom)||0)-Math.max(0,window.parent.innerHeight-rect.bottom))}}catch(_){return null}}
+function syncSafeArea(keyboard){const root=document.documentElement.style,inset=parentInsets();if(inset)root.setProperty('--safe-top',Math.round(inset.top)+'px');else root.removeProperty('--safe-top');if(keyboard)root.setProperty('--safe-bottom','0px');else if(inset)root.setProperty('--safe-bottom',Math.round(inset.bottom)+'px');else root.removeProperty('--safe-bottom')}
 // On phones a soft keyboard can close without blurring the focused input.
 let viewportRest=viewportBox().height,keyboardWasSeen=false;
 function syncKeyboardLayout(){
  const height=viewportBox().height;
+ syncSafeArea(document.activeElement===prompt&&height<viewportRest-120);
  if(document.activeElement!==prompt){viewportRest=Math.max(viewportRest,height);return}
  if(height<viewportRest-120){keyboardWasSeen=true;typing=true;app.classList.add('typing');sendIcon()}
  else if(keyboardWasSeen&&height>=viewportRest-75){typing=false;app.classList.remove('typing');sendIcon()}
 }
+syncSafeArea(false);
 prompt.addEventListener('pointerdown',()=>{if(document.activeElement===prompt&&!typing){typing=true;app.classList.add('typing');sendIcon()}});
 // Prevent a tap on Send from dismissing the keyboard before the click is dispatched.
 $('send').addEventListener('pointerdown',event=>{if(!event.target.closest('button'))return;event.preventDefault()});
 function updatePinyin(){for(const el of dialogue.querySelectorAll('.sub.pinyin'))el.hidden=!pinyin}
 function appendMessage(message,who,detail={}){if(!message)return null;const el=document.createElement('div');el.className='msg '+who;const han=document.createElement('div');han.className='han';han.textContent=String(message).slice(0,2000);el.append(han);const py=String(detail.pinyin||'').trim();if(py){const sub=document.createElement('div');sub.className='sub pinyin';sub.hidden=!pinyin;sub.textContent=py;el.append(sub)}const meaning=String(detail.translation||'').trim();if(meaning){const sub=document.createElement('div');sub.className='sub native translation';sub.hidden=!showTranslation;sub.textContent=meaning;el.append(sub)}const fix=String(detail.correction||'').trim();if(fix){const sub=document.createElement('div');sub.className='sub native';sub.textContent='✓ '+fix;el.append(sub)}dialogue.append(el);setTimeout(scrollBottom,30);return el}
-function appendTurn(data,skipUser=false){if(!data)return;if(!skipUser&&data.transcription&&data.transcription!==pendingLiveText)appendMessage(data.transcription,'user',{correction:data.correction});if(data.chinese_reply)appendMessage(data.chinese_reply,'ai',{pinyin:data.pinyin,translation:data.translation});if(typeof data.remaining_limit==='number')quota=data.remaining_limit;if(data.session_should_end)finishSession()}
+/* "What to say": the server's lesson words and suggested replies (zh is the
+   only part sent); the example requests below them are always there. */
+function hintEntries(list,meaningKey){const out=[],seen=new Set();for(const entry of Array.isArray(list)?list:[]){const zh=String(entry&&entry.zh||'').trim().slice(0,40);if(!zh||seen.has(zh))continue;seen.add(zh);out.push({zh,pinyin:String(entry.pinyin||'').trim().slice(0,80),meaning:String(entry[meaningKey]||'').trim().slice(0,160)})}return out}
+function hintItem(entry){const b=document.createElement('button');b.type='button';b.className='hintItem';b.dataset.say=entry.zh;const zh=document.createElement('span');zh.className='hintZh';zh.textContent=entry.zh;b.append(zh);for(const [cls,value] of [['hintPy',entry.pinyin],['hintTr',entry.meaning]]){if(!value)continue;const sub=document.createElement('span');sub.className=cls;sub.textContent=value;b.append(sub)}return b}
+function renderHints(){for(const [box,list,items] of [['hintWords','hintWordList',lessonWords.slice(0,6)],['hintPhrases','hintPhraseList',hintSuggestions]]){$(list).replaceChildren(...items.map(hintItem));$(box).hidden=!items.length}}
+function setHintSuggestions(list){const next=hintEntries(list,'translation');if(next.length)hintSuggestions=next.slice(0,4)}
+$('plusLayer').addEventListener('click',e=>{const b=e.target.closest('[data-say]');if(!b)return;layer('plusLayer',false);prompt.value=b.dataset.say;sendIcon();submit()});
+function appendTurn(data,skipUser=false){if(!data)return;setHintSuggestions(data.suggestions);if(!skipUser&&data.transcription&&data.transcription!==pendingLiveText)appendMessage(data.transcription,'user',{correction:data.correction});if(data.chinese_reply)appendMessage(data.chinese_reply,'ai',{pinyin:data.pinyin,translation:data.translation});if(typeof data.remaining_limit==='number')quota=data.remaining_limit;if(data.session_should_end)finishSession()}
 
 /* Turn-mode replies use the server Chinese voice. The single element is
    primed on the user's tap so iOS can play the reply after the request. */
 let ttsAudio=null,ttsToken=0;
-function primeAudio(){if(ttsAudio)return;try{ttsAudio=new Audio();const played=ttsAudio.play();if(played&&played.catch)played.catch(()=>{});ttsAudio.pause()}catch(_){}}
+// Primed on every tap, not only the first call: the automatic start on entry
+// runs without a tap, and iOS only unlocks an element inside one.
+function primeAudio(){try{if(ttsAudio&&!ttsAudio.paused)return;ttsAudio=ttsAudio||new Audio();ttsAudio.onended=ttsAudio.onerror=null;const played=ttsAudio.play();if(played&&played.catch)played.catch(()=>{});ttsAudio.pause()}catch(_){}}
 function stopTts(){ttsToken++;if(ttsAudio){try{ttsAudio.onended=ttsAudio.onerror=null;ttsAudio.pause()}catch(_){}}try{window.speechSynthesis?.cancel()}catch(_){}}
 async function speakTurn(text){text=String(text||'').trim();if(!text||liveReady||leaving)return;stopTts();const token=ttsToken;let fallen=false;
  const finish=()=>{if(token===ttsToken&&state==='speaking')setState('turn')};
@@ -366,7 +396,11 @@ function handleError(err){const code=String(err?.code||err?.name||err?.message||
  else if(['TRANSCRIPTION_EMPTY','EMPTY_AUDIO','LIVE_TURN_EMPTY'].includes(code)){setState('turn');showToast(msg('courseVoiceInline.tooShort'))}
  else{if(['SESSION_NOT_FOUND','live_session_expired','SESSION_MODE_MISMATCH'].includes(code)){sessionId=null;sessionMode='turn'}setState('fail')}
  return code}
-async function prepareBoot(){if(!IS_PWA){setState('fail');return}setState('connect');try{await safeStatus();if(quota===0)noQuotaState();else setState('ready')}catch(e){handleError(e)}}
+async function prepareBoot(){if(!IS_PWA){setState('fail');return}setState('connect');try{await safeStatus();if(quota===0)noQuotaState();else{setState('ready');autoStart()}}catch(e){handleError(e)}}
+/* «Начать разговор» already started the call: the microphone opens on entry
+   (Live when the server offers it, else a recorded turn). Afterwards the mic
+   button only mutes Live or stops/sends a recorded turn. */
+function autoStart(){if(!IS_PWA||leaving||busy||sessionId||recording||quota===0||app.classList.contains('ended'))return;recordingAction()}
 function liveMicOn(){const tracks=liveVoice?.stream?.getAudioTracks()||[];return tracks.some(x=>x.enabled)}
 function setMicVisual(on,disabled=false){const btn=$('micmuted');btn.classList.toggle('off',on&&!disabled);btn.setAttribute('aria-label',msg(disabled?'voiceV8.micDisabled':on?'voiceV8.micOff':'voiceV8.micOn'));btn.setAttribute('aria-pressed',String(on&&!disabled))}
 async function startSession(){if(sessionId)return sessionId;if(!IS_PWA)throw new VoiceApiError('pwa_session_required',401);
@@ -375,13 +409,16 @@ async function startSession(){if(sessionId)return sessionId;if(!IS_PWA)throw new
  if(typeof data.session_id!=='string'||!data.session_id)throw new VoiceApiError('voice_start_invalid');
  if(started!==epoch||leaving){apiJson('/api/v3/pwa/voice/session/end',{session_id:data.session_id}).catch(()=>{});throw new VoiceApiError('cancelled')}
  sessionId=data.session_id;sessionMode='turn';liveAvailable=data.live_available===true;liveKnown=true;
- const o=data.opening_message;if(o&&o.chinese_reply)appendMessage(o.chinese_reply,'ai',{pinyin:o.pinyin,translation:o.translation});
+ const context=data.course_context||{};lessonWords=hintEntries([...(Array.isArray(context.words)?context.words:[]),...(Array.isArray(context.review_words)?context.review_words:[])],'meaning');
+ const o=data.opening_message;hintSuggestions=[];setHintSuggestions(o&&o.suggestions);if(o&&o.chinese_reply)appendMessage(o.chinese_reply,'ai',{pinyin:o.pinyin,translation:o.translation});
  setState('ready');return sessionId}
 async function setSessionMode(next){const sid=sessionId;if(!sid)return;for(let attempt=0;;attempt++){try{const r=await apiJson('/api/v3/pwa/voice/session/mode',{session_id:sid,mode:next});if(r.mode!==next)throw new VoiceApiError('voice_mode_invalid');if(sid===sessionId)sessionMode=next;return}catch(e){if(e.code==='LIVE_SESSION_BUSY'&&attempt<4){await new Promise(resolve=>setTimeout(resolve,150));continue}throw e}}}
 async function endSession({quiet=false}={}){if(endPromise)return endPromise;const sid=sessionId;sessionId=null;epoch++;liveReady=false;pendingLiveText='';stopTts();if(liveVoice){try{liveVoice.stop()}catch(_){}liveVoice=null}await stopRecorder({cancel:true});setMicVisual(false);if(!sid||!IS_PWA)return null;endPromise=(async()=>{try{return await apiJson('/api/v3/pwa/voice/session/end',{session_id:sid})}catch(e){if(!quiet)handleError(e);return null}finally{endPromise=null}})();return endPromise}
 async function hardReset(){epoch++;stopTts();if(liveVoice){try{liveVoice.stop()}catch(_){}liveVoice=null}await stopRecorder({cancel:true});sessionId=null;sessionMode='turn';liveReady=false;pendingLiveText='';setMicVisual(false)}
 async function submit(){const value=prompt.value.trim();if(!value||busy||leaving||app.classList.contains('ended'))return;if(value.length>MAX_CHARS){showToast(msg('voiceV8.maxChars'));return}primeAudio();busy=true;prompt.value='';sendIcon();prompt.blur();setMode('chat');const started=epoch;
- try{if(!sessionId)await startSession();if(started!==epoch)return;appendMessage(value,'user');
+ try{// A typed line replaces the turn being recorded; it is never sent twice.
+  if(recording)await stopRecorder({cancel:true});
+  if(!sessionId)await startSession();if(started!==epoch)return;appendMessage(value,'user');
   if(liveReady&&liveVoice){pendingLiveText=value;if(!liveVoice.sendText(value))throw new VoiceApiError('live_voice_unavailable');setState('thinking')}
   else{const sid=sessionId;setState('thinking');const form=new FormData();form.append('session_id',sid);form.append('text',value);const result=await apiForm(form);if(started!==epoch||sid!==sessionId)return;appendTurn(result,true);await speakTurn(result.chinese_reply);if(state==='thinking')setState('turn')}}
  catch(e){if(started!==epoch)return;prompt.value=value;sendIcon();handleError(e)}finally{busy=false;sendIcon()}}
@@ -419,7 +456,8 @@ async function stopRecorder({cancel=false}={}){const r=recording;if(!r)return;re
  catch(e){if(started===epoch)handleError(e)}finally{busy=false;sendIcon()}}
 $('micmuted').addEventListener('click',recordingAction);
 function closeUiDialogs(){$('endModal').classList.remove('show');document.querySelectorAll('.sheetLayer.open').forEach(el=>layer(el.id,false))}
-$('close').addEventListener('click',()=>{$('endModal').classList.add('show')});$('cancelEnd').addEventListener('click',()=>closeUiDialogs());
+// With the allowance spent there is nothing to end: X leaves AI Voice.
+$('close').addEventListener('click',()=>{if(quota===0){exitVoice();return}$('endModal').classList.add('show')});$('cancelEnd').addEventListener('click',()=>closeUiDialogs());
 async function finishSession(){if(app.classList.contains('ended'))return;closeUiDialogs();prompt.blur();app.classList.add('ended');requestAnimationFrame(scrollBottom);await endSession();setState('end')}
 $('confirmEnd').addEventListener('click',async()=>{closeUiDialogs();await finishSession()});
 $('restart').addEventListener('click',async()=>{if(busy)return;await hardReset();dialogue.replaceChildren();app.classList.remove('ended');setMode('focus');prepareBoot()});
@@ -431,7 +469,7 @@ window.addEventListener('online',()=>{if(!IS_PWA||state!=='offline')return;setSt
    unattended Live stream is never left running in the background. */
 function releaseMedia(){stopTts();if(liveVoice){try{liveVoice.stop()}catch(_){}liveVoice=null}liveReady=false;const r=recording;if(r){recording=null;clearTimeout(r.timer);try{r.media.onstop=null;if(r.media.state!=='inactive')r.media.stop()}catch(_){}r.stream.getTracks().forEach(x=>x.stop())}}
 function endSessionBeacon(){if(!sessionId||!actor?.csrf)return;const sid=sessionId;sessionId=null;try{fetch('/api/v3/pwa/voice/session/end',{method:'POST',headers:{'Content-Type':'application/json','X-HSK-PWA-CSRF':actor.csrf},body:JSON.stringify({session_id:sid}),credentials:'same-origin',keepalive:true,cache:'no-store'}).catch(()=>{})}catch(_){}}
-function beforeClose(){if(leaving)return;leaving=true;epoch++;releaseMedia();endSessionBeacon();bindViewport(false)}
+function beforeClose(){if(leaving)return;leaving=true;epoch++;releaseMedia();endSessionBeacon();bindViewport(false);try{safeProbe?.remove()}catch(_){}}
 function exitVoice(){if(leaving)return;const resource=host();if(resource&&resource.closePracticeFrame(window))return;beforeClose();const url=new URL('/iphone-pwa/course',location.origin);url.searchParams.set('tab','voice');url.searchParams.set('lang',lang);location.replace(url)}
 function swipeBack(){if(leaving)return;if($('endModal').classList.contains('show')){closeUiDialogs();return}const open=document.querySelector('.sheetLayer.open');if(open){layer(open.id,false);return}if(document.activeElement===prompt){prompt.blur();return}exitVoice()}
 window.addEventListener('pageshow',e=>{leaving=false;if(e.persisted){bindViewport(true);vh();if(IS_PWA)getActor(true).catch(handleError)}});
@@ -450,6 +488,8 @@ window.showPaywall=function(){noQuotaState()};
 window.goBack=function(){exitVoice()};
 hydrateUiPrefs();applyLocale(lang);refreshToggle('pinyinToggle',pinyin);updatePinyin();refreshToggle('translationToggle',showTranslation);updateTranslations();refreshToggle('backdropToggle',showBackdrop);updateTopicBackdrop();setMicVisual(false);sendIcon();
 try{host()?.revealPracticeFrame(window)}catch(_){}
+// Revealing makes the frame full screen: measure the insets it now meets.
+vh();syncSafeArea(false);
 prepareBoot();
 
 // HSK cinnabar orb: continuously flowing pigments with elastic touch deformation.

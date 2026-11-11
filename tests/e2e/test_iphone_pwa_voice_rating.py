@@ -92,11 +92,18 @@ def test_voice_v8_frame_swipe_closes_layers_then_ends_session_and_late_reply_is_
     frame_element = layer.locator("iframe")
     expect(frame_element).to_be_visible()
     expect(layer).to_have_class("pwa-practice-dark")
+    # Full screen: no course padding or cream colour around the black call.
+    assert layer.evaluate("el => getComputedStyle(el).padding") == "0px"
+    assert page.evaluate("""() => document.documentElement.classList.contains('pwa-practice-voice')
+        && document.querySelector('meta[name=theme-color]').content === '#000000'
+        && getComputedStyle(document.body).backgroundColor === 'rgb(0, 0, 0)'""")
     assert frame_element.get_attribute("allow") == "microphone 'self'"
     assert "embedded=1" in frame_element.get_attribute("src")
     voice = page.frame_locator("#pwa-practice-layer iframe")
     frame = page.frame(url=lambda url: "/iphone-pwa/practice/voice" in url)
-    expect(voice.locator("#orbStatus")).to_have_text("Mikrofonni bosing — suhbat boshlanadi")
+    # «Начать разговор» starts the call at once; this browser has no
+    # microphone, so the call says so and typing stays available.
+    expect(voice.locator("#orbStatus")).to_have_text("Mikrofonga ruxsat yo'q")
 
     voice.locator("#settings").click()
     expect(voice.locator("#settingsLayer.open")).to_be_visible()
@@ -120,6 +127,8 @@ def test_voice_v8_frame_swipe_closes_layers_then_ends_session_and_late_reply_is_
     swipe_back_in(frame)
     expect(page.locator("#pwa-practice-layer")).to_have_count(0)
     expect(page.locator("#s-voice.on")).to_be_visible()
+    assert page.evaluate("""() => !document.documentElement.classList.contains('pwa-practice-voice')
+        && document.querySelector('meta[name=theme-color]').content === '#FDF9F0'""")
     for _ in range(50):
         if ends:
             break
