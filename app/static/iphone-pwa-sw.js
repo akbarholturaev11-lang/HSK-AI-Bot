@@ -1,6 +1,6 @@
 /* Learner PWA worker.
  *
- * Push: generic lock-screen notices that open the authenticated Inbox.
+ * Push: localized event-specific notices that open the authenticated Inbox.
  *
  * Cache: Cache First ONLY for same-origin, version-pinned static assets
  * (.js/.css/fonts/images whose URL carries `?v=`). A new version is a new
@@ -175,16 +175,22 @@ self.addEventListener("push", function (event) {
   var data = {};
   try {
     data = event.data ? event.data.json() : {};
+    if (!data || typeof data !== "object") data = {};
   } catch (_) {
     data = {};
   }
-  var title = typeof data.title === "string" ? data.title.slice(0, 80) : "HSK AI";
-  var body = typeof data.body === "string" ? data.body.slice(0, 160) : "";
+  // iOS supplies the installed app name. Never repeat it as the headline.
+  // Code-point slicing keeps supplementary Chinese characters/emoji intact.
+  var title = typeof data.title === "string" ? data.title.trim() : "";
+  if (!title || /^HSK\s+AI$/i.test(title)) title = "🔔";
+  title = Array.from(title).slice(0, 80).join("");
+  var body = typeof data.body === "string" ? Array.from(data.body).slice(0, 1000).join("") : "";
   var tag = typeof data.tag === "string" && /^[A-Za-z0-9_-]{1,48}$/.test(data.tag)
     ? data.tag : "hsk-pwa-notice";
   // iOS requires every push to show a notification; the badge is extra.
   event.waitUntil(Promise.all([self.registration.showNotification(title, {
     body: body,
+    lang: /^(uz|ru|tj)$/.test(data.lang) ? (data.lang === "tj" ? "tg" : data.lang) : undefined,
     tag: tag,
     icon: "/assets/hsk-ai-logo-256.png",
     badge: "/assets/hsk-ai-logo-256.png",

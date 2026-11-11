@@ -175,7 +175,11 @@ def _localized_copy(
         try:
             from app.bot.utils.i18n import t
 
-            return notification_copy(row.key, reader, t(template, reader, **arguments))
+            text = t(template, reader, **arguments)
+            if isinstance(params.get("limit_context"), dict):
+                from app.services.entitlements.decision import limit_text
+                text = limit_text(**params["limit_context"], language=reader) + "\n\n" + text
+            return notification_copy(row.key, reader, text)
         except Exception:  # noqa: BLE001 - a broken template must not empty the feed
             pass
     return notification_title(row.key, reader), row.body

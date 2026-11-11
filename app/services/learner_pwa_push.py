@@ -1,7 +1,7 @@
 """Opt-in, learner-account-bound Web Push for existing PWA notice sources.
 
 This service never shares Admin PWA subscriptions or identity. Outbox rows keep
-only event ownership metadata; notification text is intentionally generic.
+only event ownership metadata; localized text is rendered from the owned source.
 """
 from __future__ import annotations
 
@@ -414,8 +414,8 @@ async def _event_exists(session, row, *, blocked: bool, now: datetime) -> bool:
                 return False
         return True
     if row.source == "payment":
-        # Payment status remains authoritative; the push is only a generic
-        # pointer back to the authenticated PWA notice center.
+        # Payment status remains authoritative; the push opens the authenticated
+        # PWA notice center without amounts, receipts or admin comments.
         return await session.scalar(select(Payment.id).where(
             Payment.id == row.source_id,
             Payment.user_id == row.user_id,
@@ -537,34 +537,34 @@ async def _finish(session_factory, *, outbox_id, subscription_id, worker_id, sta
             return row.state
 
 
-async def _load_event_language(session_factory, outbox_id):
+async def _load_event_copy(session_factory, outbox_id):
+    from app.services.learner_pwa_push_copy import (
+        account_push_copy, course_push_copy, payment_push_copy,
+    )
+
+    # The bounded source/template reads end before provider IO. Outbox rows
+    # still store only ownership metadata, never rendered message content.
     async with session_factory() as session:
         row = await session.get(LearnerPwaPushOutbox, outbox_id)
         if row is None:
-            return "ru"
+            raise ValueError("missing_push_event")
         user = await session.get(User, row.user_id)
-        lang = getattr(user, "language", None) if user is not None else None
-        return lang if lang in {"uz", "ru", "tj"} else row.language
-
-
-# Payment decisions name only the status on the lock screen (like Android's
-# payment notification): never an amount, plan, reason or id.
-_PAYMENT_PUSH_COPY = {
-    "approved": ("pwa.push.paymentApprovedTitle", "pwa.push.paymentApprovedBody"),
-    "rejected": ("pwa.push.paymentRejectedTitle", "pwa.push.paymentRejectedBody"),
-}
-
-
-async def _payment_push_status(session_factory, outbox_id):
-    async with session_factory() as session:
-        row = await session.get(LearnerPwaPushOutbox, outbox_id)
-        if row is None or row.source != "payment":
-            return None
-        status = (await session.execute(
-            select(Payment.payment_status)
-            .where(Payment.id == row.source_id, Payment.user_id == row.user_id)
-        )).scalar_one_or_none()
-        return status if status in _PAYMENT_PUSH_COPY else None
+        language = getattr(user, "language", None)
+        if language not in {"uz", "ru", "tj"}:
+            language = row.language if row.language in {"uz", "ru", "tj"} else "ru"
+        model = {"course": CourseUserNotification, "account": AccountNoticeDelivery, "payment": Payment}[row.source]
+        source = await session.get(model, row.source_id)
+        if source is None or source.user_id != row.user_id:
+            raise ValueError("missing_push_source")
+        if row.source == "course":
+            title, body = await course_push_copy(session, source, language)
+        elif row.source == "account":
+            title, body = account_push_copy(source, language)
+        else:
+            if source.payment_status not in {"approved", "rejected"}:
+                raise ValueError("unreviewed_push_payment")
+            title, body = payment_push_copy(source, language)
+        return title, body, language
 
 
 async def dispatch_batch(session_factory, *, settings_obj, limit=10, sender=None, now=None):
@@ -598,21 +598,9 @@ async def dispatch_batch(session_factory, *, settings_obj, limit=10, sender=None
             status = 400
         if status is None:
             try:
-                from app.services.notification_i18n import notification_message
-                language = await _load_event_language(session_factory, outbox_id) or stored_language
-                title = notification_message("pwa.push.title", language, "HSK AI")
-                body = notification_message(
-                    "pwa.push.body", language,
-                    "У вас новое уведомление. Откройте HSK AI.",
-                )
-                if source == "payment":
-                    decision = await _payment_push_status(session_factory, outbox_id)
-                    if decision:
-                        title_key, body_key = _PAYMENT_PUSH_COPY[decision]
-                        title = notification_message(title_key, language, title)
-                        body = notification_message(body_key, language, body)
+                title, body, language = await _load_event_copy(session_factory, outbox_id)
                 public_payload = json.dumps(
-                    {"title": title, "body": body, "url": _PUSH_PATH,
+                    {"title": title, "body": body, "lang": language, "url": _PUSH_PATH,
                      "tag": "hsk-" + outbox_id.replace("-", "")[:24]},
                     ensure_ascii=False, separators=(",", ":"),
                 )
