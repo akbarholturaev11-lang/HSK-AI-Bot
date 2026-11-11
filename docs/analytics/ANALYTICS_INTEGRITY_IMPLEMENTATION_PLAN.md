@@ -72,3 +72,9 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 ## History
 
 The original long plan (phases 0–5, OpenSpec authoring handoff, per-feature contract) is preserved in git at `8ff505b3`. Its content now lives in the OpenSpec change and in `AGENTS.md`.
+
+## Analytics → Monitoring → joint integration order
+
+- **First:** deliver the Analytics Impact rule, coverage registry and scoped CI guard; continue metric repair in bounded packages. This prerequisite does **not** require finishing every Analytics report.
+- **Then:** Monitoring reuses verified canonical user/platform/feature identifiers and compatible coverage/CI conventions. Keep business/KPI events separate from privacy-safe diagnostic incidents; no duplicate pipelines.
+- **Finally:** one joint integration audit (not a third rebuild) checks both Impact/CI obligations, end-to-end Admin Analytics/Inbox coverage, dedup/privacy, nonblocking flows and affected regressions. Recheck the latest `main` and integrate tested changes sequentially.
