@@ -109,7 +109,7 @@ class VoiceScreenBackTest {
         var exits = 0
         var ends = 0
         setV8(
-            VoiceUiState(status = status, isLoading = false, sessionId = "open-session"),
+            VoiceUiState(status = status, isLoading = false, remainingLimit = 3, sessionId = "open-session"),
             actions(onExit = { exits++ }, onEnd = { ends++ }),
         )
         compose.onNodeWithContentDescription(context.getString(R.string.hsk_course_voice_v8_end_label))
@@ -133,6 +133,7 @@ class VoiceScreenBackTest {
             VoiceUiState(
                 status = status,
                 isLoading = false,
+                remainingLimit = 3,
                 sessionId = "open-session",
                 lines = listOf(
                     VoiceLine(VoiceSpeaker.USER, "我是学生"),

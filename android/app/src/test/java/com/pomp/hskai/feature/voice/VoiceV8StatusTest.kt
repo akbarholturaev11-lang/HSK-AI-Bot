@@ -3,6 +3,8 @@ package com.pomp.hskai.feature.voice
 import com.pomp.hskai.R
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.data.api.VoiceStatusResponse
+import com.pomp.hskai.data.api.VoiceSuggestionDto
+import com.pomp.hskai.data.api.VoiceWordDto
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -85,6 +87,31 @@ class VoiceV8StatusTest {
         assertEquals("Salom", messages[2].text)
         assertEquals("", messages[2].translation)
         assertNull(messages[0].source)
+    }
+
+    @Test fun whatToSayOffersLessonWordsThenTheLatestSuggestions() {
+        val words = (1..8).map { VoiceWordDto(hanzi = "词$it", pinyin = "cí", meaning = "so'z $it") }
+        val state = idle.copy(
+            lessonWords = listOf(VoiceWordDto(hanzi = " 学生 ", pinyin = "xuésheng", meaning = "talaba")) + words,
+            reviewWords = listOf(VoiceWordDto(hanzi = "学生"), VoiceWordDto(hanzi = "")),
+            suggestions = (1..6).map { VoiceSuggestionDto(hanzi = "句$it", translation = "gap $it") },
+        )
+        val hints = voiceV8HintWords(state)
+        assertEquals(6, hints.size)
+        assertEquals(VoiceV8Hint("学生", "xuésheng", "talaba"), hints[0])
+        val phrases = voiceV8HintPhrases(state)
+        assertEquals(listOf("句1", "句2", "句3", "句4"), phrases.map { it.hanzi })
+        assertEquals("gap 1", phrases[0].meaning)
+        assertTrue(voiceV8HintWords(idle).isEmpty())
+        assertTrue(voiceV8HintPhrases(idle).isEmpty())
+    }
+
+    @Test fun onlyAnUnpaidSpentAllowanceCountsAsExhausted() {
+        assertTrue(!voiceV8QuotaExhausted(idle))
+        val spent = idle.copy(status = free.copy(remainingVoiceLimit = 0), remainingLimit = 0)
+        assertTrue(voiceV8QuotaExhausted(spent))
+        assertTrue(!voiceV8QuotaExhausted(spent.copy(status = spent.status!!.copy(isPaid = true))))
+        assertTrue(!voiceV8QuotaExhausted(VoiceUiState(remainingLimit = 0)))
     }
 
     @Test fun topicsMapToTheBackendPartners() {

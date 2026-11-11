@@ -348,6 +348,26 @@ internal fun voiceV8Messages(lines: List<VoiceLine>): List<VoiceV8Message> {
     return out
 }
 
+/** One tappable line of the "What to say" sheet: tapping it says [hanzi]. */
+internal data class VoiceV8Hint(val hanzi: String, val pinyin: String, val meaning: String)
+
+/** The lesson's words first, then review words: six, no repeats. */
+internal fun voiceV8HintWords(state: VoiceUiState): List<VoiceV8Hint> =
+    voiceV8Hints((state.lessonWords + state.reviewWords).map { VoiceV8Hint(it.hanzi, it.pinyin, it.meaning) }).take(6)
+
+/** The partner's latest suggested replies: four at most. */
+internal fun voiceV8HintPhrases(state: VoiceUiState): List<VoiceV8Hint> =
+    voiceV8Hints(state.suggestions.map { VoiceV8Hint(it.hanzi, it.pinyin, it.translation) }).take(4)
+
+private fun voiceV8Hints(list: List<VoiceV8Hint>): List<VoiceV8Hint> {
+    val seen = HashSet<String>()
+    return list.mapNotNull { hint ->
+        val hanzi = hint.hanzi.trim().take(40)
+        if (hanzi.isEmpty() || !seen.add(hanzi)) null
+        else VoiceV8Hint(hanzi, hint.pinyin.trim().take(80), hint.meaning.trim().take(160))
+    }
+}
+
 private enum class V8Layer { Topics, Settings, Plus }
 
 private val Red = Color(0xFFE04A40)
@@ -390,6 +410,8 @@ fun VoiceV8Screen(
     var endModal by rememberSaveable { mutableStateOf(false) }
     var limitOpen by rememberSaveable { mutableStateOf(false) }
     var prompt by rememberSaveable { mutableStateOf("") }
+    // "Start conversation" already starts it: the call opens listening.
+    var autoStart by rememberSaveable { mutableStateOf(true) }
     var promptFocused by remember { mutableStateOf(false) }
     var lastSubmitted by remember { mutableStateOf<String?>(null) }
     var toast by remember { mutableStateOf<Int?>(null) }
@@ -551,12 +573,26 @@ fun VoiceV8Screen(
     fun selectTopic(next: VoiceV8Topic) {
         if (busy || next == topic) return
         layer = null
+        // A running conversation carries on with the new partner.
+        if (latestState.hasSession || latestState.isRecording) autoStart = true
         onTopicSelected(next.id)
         latestActions.changeTopic(next.role)
         endedLocally = false
         micDenied = false
         chat = false
         showToast(R.string.hsk_course_voice_v8_topic_changed)
+    }
+
+    // Once the allowance is known the conversation starts by itself; the mic
+    // button then only turns the microphone off and on. A spent allowance
+    // never starts one (X leaves instead).
+    LaunchedEffect(autoStart, state.status != null, state.isLoading, state.hasSession, ended) {
+        if (!autoStart) return@LaunchedEffect
+        val current = latestState
+        if (current.status == null || current.isLoading) return@LaunchedEffect
+        autoStart = false
+        if (ended || current.hasSession || current.isStarting || voiceV8QuotaExhausted(current)) return@LaunchedEffect
+        recordingAction()
     }
 
     BackHandler {
@@ -627,7 +663,10 @@ fun VoiceV8Screen(
                         if (next == V8Layer.Topics || next == V8Layer.Plus) focusManager.clearFocus()
                         layer = next
                     },
-                    onEndModal = { endModal = it },
+                    onEndModal = { open ->
+                        // With the allowance spent there is nothing to end: X leaves AI Voice.
+                        if (open && voiceV8QuotaExhausted(latestState)) latestActions.exit() else endModal = open
+                    },
                     onSubmit = ::submit,
                     onExample = { text ->
                         layer = null
@@ -643,6 +682,7 @@ fun VoiceV8Screen(
                             chat = false
                             prompt = ""
                             latestActions.restart()
+                            autoStart = true
                         }
                     },
                     onExit = { latestActions.exit() },
@@ -782,11 +822,15 @@ private fun V8App(
                 onPrefsChange(prefs.copy(backdrop = !prefs.backdrop))
             }
         }
+        // "What to say": the lesson's words and the partner's latest
+        // suggestions (the old AI Voice hints), then the example questions.
         V8Sheet(
             open = layer == V8Layer.Plus, reduced = reduced, safeBottom = safeBottom,
-            maxHeight = null, onDismiss = { onLayer(null) },
+            maxHeight = height * 0.82f, onDismiss = { onLayer(null) },
         ) {
-            V8SheetHead(R.string.hsk_course_voice_v8_examples_title, R.string.hsk_course_voice_v8_examples_close) { onLayer(null) }
+            V8SheetHead(R.string.hsk_course_voice_page_hint_title, R.string.hsk_course_voice_v8_examples_close) { onLayer(null) }
+            val words = remember(state.lessonWords, state.reviewWords) { voiceV8HintWords(state) }
+            val phrases = remember(state.suggestions) { voiceV8HintPhrases(state) }
             val examples = listOf(
                 R.string.hsk_course_voice_v8_example1_label to R.string.hsk_course_voice_v8_example1_text,
                 R.string.hsk_course_voice_v8_example2_label to R.string.hsk_course_voice_v8_example2_text,
@@ -794,13 +838,35 @@ private fun V8App(
                 R.string.hsk_course_voice_v8_example4_label to R.string.hsk_course_voice_v8_example4_text,
             ).map { (label, text) -> stringResource(label) to stringResource(text) }
             Column(
-                Modifier.padding(top = 24.dp, bottom = 4.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
+                Modifier
+                    .weight(1f, fill = false)
+                    .verticalScroll(rememberScrollState())
+                    .padding(bottom = 4.dp),
             ) {
-                examples.chunked(2).forEach { pair ->
-                    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                        pair.forEach { (label, text) ->
-                            V8ExampleButton(label, Modifier.weight(1f)) { onExample(text) }
+                if (words.isNotEmpty()) {
+                    V8HintGroup(R.string.hsk_course_voice_page_hint_words)
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        words.chunked(2).forEach { pair ->
+                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                pair.forEach { hint -> V8HintItem(hint, Modifier.weight(1f)) { onExample(hint.hanzi) } }
+                                if (pair.size == 1) Spacer(Modifier.weight(1f))
+                            }
+                        }
+                    }
+                }
+                if (phrases.isNotEmpty()) {
+                    V8HintGroup(R.string.hsk_course_voice_page_hint_phrases)
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        phrases.forEach { hint -> V8HintItem(hint, Modifier.fillMaxWidth()) { onExample(hint.hanzi) } }
+                    }
+                }
+                V8HintGroup(R.string.hsk_course_voice_v8_examples_title)
+                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    examples.chunked(2).forEach { pair ->
+                        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                            pair.forEach { (label, text) ->
+                                V8ExampleButton(label, Modifier.weight(1f)) { onExample(text) }
+                            }
                         }
                     }
                 }
@@ -1116,6 +1182,44 @@ private fun V8MessageView(
 
 // --- the orb -------------------------------------------------------------------
 
+/** The AI Voice tab card's orb: the call's orb at rest, gently floating. */
+@Composable
+internal fun VoiceV8HomeOrb(modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    val reduced = remember {
+        Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1f) == 0f
+    }
+    val renderer = remember { VoiceV8OrbRenderer() }
+    DisposableEffect(renderer) { onDispose { renderer.release() } }
+    var clock by remember { mutableFloatStateOf(1.2f) }
+    LaunchedEffect(reduced) {
+        if (reduced) return@LaunchedEffect
+        var last = 0L
+        while (true) {
+            withInfiniteAnimationFrameMillis { ms ->
+                if (ms - last >= 32) {
+                    last = ms
+                    clock = ms * 0.00083f
+                }
+            }
+        }
+    }
+    val float = rememberInfiniteTransition(label = "homeOrbFloat")
+    val floatPhase by float.animateFloat(
+        0f, 1f,
+        infiniteRepeatable(tween(1_700, easing = EaseInOut), RepeatMode.Reverse),
+        label = "homeOrbFloatPhase",
+    )
+    Canvas(
+        modifier
+            .clearAndSetSemantics {}
+            .graphicsLayer { if (!reduced) translationY = -4f * floatPhase * density },
+    ) {
+        val t = if (reduced) 1.2f else clock
+        drawIntoCanvas { canvas -> renderer.draw(canvas.nativeCanvas, this.size.width, density, t, 1f) }
+    }
+}
+
 private val ORB_SPRING_FRAMES = listOf(
     0.37f to (1.08f to 0.93f),
     0.64f to (0.975f to 1.045f),
@@ -1395,10 +1499,11 @@ private fun V8Footer(
         if (typing) (if (tiny) 8.dp else 12.dp) else (if (tiny) 14.dp else 20.dp),
         spec(reduced, springMs, EaseSpring), label = "footerSide",
     )
-    val barHeight by animateDpAsState(if (typing) 50.dp else 44.dp, spec(reduced, springMs, EaseSpring), label = "footerHeight")
-    val lift by animateDpAsState(if (typing) 12.dp else 15.dp, spec(reduced, springMs, EaseSpring), label = "footerBottom")
+    // Compact at rest (the full-screen call sits it low); roomier while typing.
+    val barHeight by animateDpAsState(if (typing) 50.dp else 40.dp, spec(reduced, springMs, EaseSpring), label = "footerHeight")
+    val lift by animateDpAsState(if (typing) 12.dp else 14.dp, spec(reduced, springMs, EaseSpring), label = "footerBottom")
     val gap by animateDpAsState(if (typing) (if (tiny) 6.dp else 8.dp) else 6.dp, spec(reduced, springMs, EaseSpring), label = "footerGap")
-    val plusWidth by animateDpAsState(if (typing) 33.dp else 29.dp, spec(reduced, 360, EaseSpring), label = "plusWidth")
+    val plusWidth by animateDpAsState(if (typing) 33.dp else 27.dp, spec(reduced, 360, EaseSpring), label = "plusWidth")
     val padStart by animateDpAsState(if (typing) 7.dp else 6.dp, spec(reduced, springMs, EaseSpring), label = "composerStart")
     val padEnd by animateDpAsState(if (typing) 9.dp else 7.dp, spec(reduced, springMs, EaseSpring), label = "composerEnd")
 
@@ -1436,10 +1541,10 @@ private fun V8Footer(
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                val plusLabel = stringResource(R.string.hsk_course_voice_v8_examples_title)
+                val plusLabel = stringResource(R.string.hsk_course_voice_page_hint_title)
                 Box(
                     Modifier
-                        .size(plusWidth, 34.dp)
+                        .size(plusWidth, 32.dp)
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null,
@@ -1449,7 +1554,7 @@ private fun V8Footer(
                         )
                         .semantics { contentDescription = plusLabel },
                     contentAlignment = Alignment.Center,
-                ) { V8Glyph(V8Icon.PLUS, 22.dp, Color.White) }
+                ) { V8Glyph(V8Icon.PLUS, 20.dp, Color.White) }
                 val promptLabel = stringResource(R.string.hsk_course_voice_v8_prompt_label)
                 BasicTextField(
                     value = prompt,
@@ -1487,7 +1592,7 @@ private fun V8Footer(
                 pressed = micOn && !micDisabled,
                 dimmed = false,
                 onClick = onMic,
-            ) { V8Glyph(if (micOn && !micDisabled) V8Icon.MIC else V8Icon.MIC_MUTED, 22.dp, Color.White) }
+            ) { V8Glyph(if (micOn && !micDisabled) V8Icon.MIC else V8Icon.MIC_MUTED, 20.dp, Color.White) }
             if (!typing) {
                 // #close
                 V8CircleButton(
@@ -1497,7 +1602,7 @@ private fun V8Footer(
                     borderColor = Color.White,
                     highlight = false,
                     onClick = onClose,
-                ) { V8Glyph(V8Icon.CLOSE, 24.dp, Color.Black) }
+                ) { V8Glyph(V8Icon.CLOSE, 22.dp, Color.Black) }
             } else {
                 // #send
                 val enabled = ready && !busy
@@ -1806,16 +1911,6 @@ private fun V8TopicsDrawer(
                     }
                 }
             }
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .drawBehind { drawLine(Color(0xFF242427), Offset.Zero, Offset(size.width, 0f), 1.dp.toPx()) }
-                    .padding(start = 21.dp, end = 21.dp, top = 14.dp, bottom = 5.dp + safeBottom),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Text("HSK AI", fontSize = 11.sp, fontWeight = FontWeight(650), color = Color(0xFFD0D0D0))
-                Text(stringResource(R.string.hsk_course_voice_v8_drawer_footer), fontSize = 11.sp, color = Color(0xFF8A8A8A))
-            }
         }
     }
 }
@@ -1999,6 +2094,46 @@ private fun V8SettingRow(labelRes: Int, on: Boolean, last: Boolean, onToggle: ()
                     .offset(x = knob, y = 3.dp)
                     .size(20.dp)
                     .background(Color.White, CircleShape),
+            )
+        }
+    }
+}
+
+@Composable
+private fun V8HintGroup(titleRes: Int) {
+    Text(
+        stringResource(titleRes).uppercase(),
+        style = TextStyle(fontSize = 11.sp, fontWeight = FontWeight.Bold, letterSpacing = 0.9.sp),
+        color = Color(0xFF8E8E91),
+        modifier = Modifier.padding(start = 2.dp, end = 2.dp, top = 18.dp, bottom = 9.dp),
+    )
+}
+
+@Composable
+private fun V8HintItem(hint: VoiceV8Hint, modifier: Modifier, onClick: () -> Unit) {
+    val interaction = remember { MutableInteractionSource() }
+    val pressed by interaction.collectIsPressedAsState()
+    Column(
+        modifier
+            .clip(RoundedCornerShape(15.dp))
+            .background(if (pressed) Color(0xFF5F2C28) else Color(0xFF303032))
+            .border(1.dp, Color(0xFF4A4A4D), RoundedCornerShape(15.dp))
+            .clickable(interactionSource = interaction, indication = null, role = Role.Button, onClick = onClick)
+            .padding(horizontal = 12.dp, vertical = 9.dp),
+        verticalArrangement = Arrangement.spacedBy(2.dp),
+    ) {
+        Text(hint.hanzi, fontSize = 17.sp, lineHeight = 22.sp, fontWeight = FontWeight.SemiBold, color = Color.White)
+        if (hint.pinyin.isNotEmpty()) {
+            Text(hint.pinyin, fontSize = 12.sp, lineHeight = 15.6.sp, color = Color(0xFFE3A399))
+        }
+        if (hint.meaning.isNotEmpty()) {
+            Text(
+                hint.meaning,
+                fontSize = 12.sp,
+                lineHeight = 15.6.sp,
+                color = Color(0xFFA9A9AD),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
             )
         }
     }

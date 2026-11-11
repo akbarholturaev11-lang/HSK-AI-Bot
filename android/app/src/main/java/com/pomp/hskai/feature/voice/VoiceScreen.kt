@@ -2,6 +2,10 @@ package com.pomp.hskai.feature.voice
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +15,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -28,10 +33,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -45,8 +54,6 @@ import com.pomp.hskai.core.design.components.HskGlassSurface
 import com.pomp.hskai.core.design.components.HskPrimaryButton
 import com.pomp.hskai.core.design.components.HskSectionTitle
 import com.pomp.hskai.core.navigation.LocalMainBottomInset
-import com.pomp.hskai.feature.course.CoursePandaMascot
-import com.pomp.hskai.feature.course.PandaMood
 import com.pomp.hskai.data.api.AndroidHintDto
 import com.pomp.hskai.data.api.VoiceTranscriptDto
 import com.pomp.hskai.feature.hint.SectionHint
@@ -219,15 +226,19 @@ private fun VoiceHome(
     }
 }
 
-/** Mini App `.voicebox`. */
+/**
+ * The AI Voice card as the start of the V8 call: black, the call's orb, the
+ * topic the call opens with, and one red "Start conversation" pill.
+ */
 @Composable
 private fun VoiceBox(
     state: VoiceUiState,
     onStart: () -> Unit,
 ) {
-    val boxSurface = if (PompColors.IsDark) PompColors.PaperRaised else PompColors.Ink
-    val boxInk = if (PompColors.IsDark) PompColors.Ink else PompColors.Paper
-    val boxMuted = if (PompColors.IsDark) PompColors.InkSecondary else Color.White.copy(alpha = 0.72f)
+    val topic = VoiceV8Topic.forRole(state.selectedRole)
+    val enabled = canStartVoice(state)
+    val interaction = remember { MutableInteractionSource() }
+    val pressed by interaction.collectIsPressedAsState()
     val quotaText = when {
         state.isLoading -> stringResource(R.string.hsk_common_state_loading)
         state.status == null -> stringResource(R.string.error_voice_unavailable)
@@ -238,48 +249,70 @@ private fun VoiceBox(
         )
     }
     Surface(
-        color = boxSurface,
-        shape = RoundedCornerShape(18.dp),
-        border = if (PompColors.IsDark) BorderStroke(1.dp, PompColors.Divider) else null,
+        color = Color.Black,
+        shape = RoundedCornerShape(24.dp),
+        border = BorderStroke(1.dp, Color(0xFF262626)),
         modifier = Modifier.fillMaxWidth(),
     ) {
         Column(
-            modifier = Modifier.padding(20.dp),
+            modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 26.dp, bottom = 22.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            CoursePandaMascot(mood = PandaMood.Talk, modifier = Modifier.size(90.dp))
-            Spacer(Modifier.height(8.dp))
+            VoiceV8HomeOrb(Modifier.size(112.dp))
+            Spacer(Modifier.height(16.dp))
             Text(
                 text = stringResource(R.string.hsk_course_voice_title),
-                style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
-                fontWeight = FontWeight.Medium,
-                color = boxInk,
+                style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp, letterSpacing = (-0.2).sp),
+                fontWeight = FontWeight.SemiBold,
+                color = Color.White,
                 textAlign = TextAlign.Center,
             )
             Spacer(Modifier.height(4.dp))
             Text(
-                text = stringResource(R.string.voice_box_body),
-                style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
-                color = boxMuted,
+                text = stringResource(topic.titleRes) + " · " + topic.zh,
+                style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp, lineHeight = 18.sp),
+                color = Color(0xFFB5B5B8),
                 textAlign = TextAlign.Center,
             )
             Spacer(Modifier.height(12.dp))
             Text(
                 text = quotaText,
-                style = MaterialTheme.typography.labelMedium,
-                color = boxMuted,
+                style = MaterialTheme.typography.labelMedium.copy(lineHeight = 17.sp),
+                color = Color(0xFF8E8E91),
                 textAlign = TextAlign.Center,
             )
-            Spacer(Modifier.height(16.dp))
-            HskPrimaryButton(
-                text = stringResource(R.string.hsk_course_voice_start),
-                onClick = onStart,
-                enabled = canStartVoice(state),
-                loading = state.isStarting,
-                // Full width inside the card: a long ru/tg label then wraps
-                // with the card instead of pushing past its padding.
-                modifier = Modifier.fillMaxWidth(),
-            )
+            Spacer(Modifier.height(18.dp))
+            // Full width up to 300 dp: a long ru/tg label wraps inside the pill.
+            Box(
+                modifier = Modifier
+                    .widthIn(max = 300.dp)
+                    .fillMaxWidth()
+                    .heightIn(min = 48.dp)
+                    .graphicsLayer { alpha = if (enabled) 1f else 0.55f }
+                    .clip(RoundedCornerShape(24.dp))
+                    .background(if (pressed && enabled) Color(0xFFB23530) else Color(0xFFE04A40))
+                    .clickable(
+                        enabled = enabled && !state.isStarting,
+                        interactionSource = interaction,
+                        indication = null,
+                        role = Role.Button,
+                        onClick = onStart,
+                    )
+                    .padding(horizontal = 22.dp, vertical = 12.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                if (state.isStarting) {
+                    CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp, color = Color.White)
+                } else {
+                    Text(
+                        text = stringResource(R.string.hsk_course_voice_start),
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.White,
+                        textAlign = TextAlign.Center,
+                    )
+                }
+            }
         }
     }
 }
