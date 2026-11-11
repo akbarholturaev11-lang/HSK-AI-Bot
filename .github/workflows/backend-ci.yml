@@ -415,6 +415,7 @@ jobs:
       - name: Verify isolated PostgreSQL ownership, migrations and concurrent writes
         env:
           PWA_PARITY_TEST_DATABASE_URL: "postgresql+asyncpg://hsk_critical_qa:hsk-critical-ci-only@127.0.0.1:${{ job.services.postgres.ports[5432] }}/hsk_critical_test"
+          LAVA_TEST_DATABASE_URL: "postgresql+asyncpg://hsk_critical_qa:hsk-critical-ci-only@127.0.0.1:${{ job.services.postgres.ports[5432] }}/hsk_critical_test"
           NATIVE_ACCOUNT_TEST_DATABASE_URL: "postgresql+asyncpg://hsk_critical_qa:hsk-critical-ci-only@127.0.0.1:${{ job.services.postgres.ports[5432] }}/hsk_critical_test"
         run: |
           python - <<'PY'
@@ -443,6 +444,7 @@ jobs:
             tests/test_native_account_statistics.py \
             tests/test_native_purge_ownership.py \
             tests/test_pwa_telegram_handoff.py::HandoffPostgresConcurrencyTests \
+            tests/test_lava_postgres.py \
             --junitxml=/tmp/hsk-native-postgres.xml
       - name: Reject skipped or missing PostgreSQL coverage
         if: always()

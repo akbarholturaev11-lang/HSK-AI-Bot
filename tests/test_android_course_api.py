@@ -1053,6 +1053,7 @@ class AndroidCourseApiTests(unittest.IsolatedAsyncioTestCase):
         saved = await self.client.post("/api/v3/android/course/onboarding", headers=headers,
             json={"level":"beginner", "goal":"hsk_exam", "goals":["hsk_exam"], "streak_target_days":7})
         self.assertEqual(422, saved.status_code)
+        self.assertEqual("android_li_onboarding_disabled", saved.json()["error"])
 
     async def test_native_li_choices_persist_in_canonical_profile_and_legacy_goal(self):
         self.settings.ANDROID_LI_ONBOARDING_ENABLED = True

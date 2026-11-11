@@ -29,6 +29,7 @@ class OnboardingViewModel(
 
     private val _state = MutableStateFlow(OnboardingFlowState())
     val state: StateFlow<OnboardingFlowState> = _state.asStateFlow()
+    private var statusGeneration = 0L
 
     init {
         loadStatus()
@@ -41,9 +42,13 @@ class OnboardingViewModel(
      * answer replaces it.
      */
     fun loadStatus(showSplash: Boolean = true) {
+        if (_state.value.ui.submitting) return
+        val generation = ++statusGeneration
         if (showSplash) _state.update { it.copy(loading = true, error = null) }
         viewModelScope.launch {
-            when (val result = repository.status()) {
+            val result = repository.status()
+            if (generation != statusGeneration) return@launch
+            when (result) {
                 is ApiResult.Success -> {
                     val status = result.value
                     val liveHsk30Levels = status.hsk30.liveLevels
@@ -67,6 +72,7 @@ class OnboardingViewModel(
                             completed = status.ok && status.completed,
                             ui = it.ui.copy(
                                 liEnabled = status.liEnabled,
+                                step = if (status.liEnabled) it.ui.step else it.ui.step.coerceAtMost(3),
                                 selectedGoals = status.profile.goals.filter(::validGoal).ifEmpty { listOf(status.profile.goal.takeIf(::validGoal) ?: "hsk_exam") },
                                 dailyMinutes = status.profile.dailyMinutes.takeIf { it in setOf(5, 10, 15, 20, 30) } ?: 10,
                                 preferredFocus = status.profile.preferredFocus ?: "none",
@@ -166,6 +172,7 @@ class OnboardingViewModel(
     }
 
     private fun submit() {
+        statusGeneration++
         val current = _state.value.ui
         _state.update { it.copy(error = null, ui = current.copy(submitting = true, error = false)) }
         viewModelScope.launch {
@@ -200,11 +207,12 @@ class OnboardingViewModel(
                         }
                     }
                 }
-                is ApiResult.Failure -> _state.update {
-                    it.copy(
-                        error = result.error,
-                        ui = it.ui.copy(submitting = false, error = true),
-                    )
+                is ApiResult.Failure -> {
+                    _state.update {
+                        it.copy(error = result.error, ui = it.ui.copy(submitting = false, error = true))
+                    }
+                    if ((result.error as? ApiError.Server)?.code == "android_li_onboarding_disabled")
+                        loadStatus(showSplash = false)
                 }
             }
         }

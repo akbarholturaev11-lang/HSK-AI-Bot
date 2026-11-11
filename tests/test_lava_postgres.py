@@ -102,6 +102,43 @@ class LavaPostgresConcurrencyTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(payments, 2)
         self.assertEqual(after.end_date - before.end_date, timedelta(days=30))
 
+    async def test_native_exit_claim_and_provider_verification_share_one_canonical_offer(self):
+        from app.db.models.pwa_exit_offer import PwaExitOffer
+        from app.services.pwa_exit_offer_service import PwaExitOfferService
+        async with self.sessions() as db:
+            await LavaConfigService(db).save(config_from_dict({
+                "checkout_mode":"both", "currency":"USD",
+                "plans":{"1_month":{"enabled":True,"offer_id":OFFER_ID,
+                                      "price":{"amount":"10.00","currency":"USD"}}},
+                "promo_codes":{"exit_offer:20":"NATIVEEXIT20"},
+            }))
+            await db.commit()
+        self.fake.promo_codes["NATIVEEXIT20"] = 20
+        async def action(kind):
+            async with self.sessions() as db:
+                user = await db.get(User,1)
+                value = await PwaExitOfferService(db,self.runtime.settings).action(user,action=kind)
+                await db.commit()
+                return value
+        first, second = await asyncio.gather(action("view"),action("view"))
+        self.assertEqual(first["expires_at"],second["expires_at"])
+        await action("claim")
+        checkout = await LavaCheckoutService(self.runtime).start(
+            self.sessions,user_id=1,plan_type="1_month",email="native@example.com",
+            source="android",language="uz",context_mode="exit_discount")
+        contract=checkout["payment_url"].rsplit("/",1)[1]
+        self.fake.complete(contract)
+        await asyncio.gather(events.verify_and_apply(self.runtime,contract),
+                             events.verify_and_apply(self.runtime,contract))
+        payments,_=await self._counts()
+        self.assertEqual(1,payments)
+        async with self.sessions() as db:
+            self.assertEqual(1,await db.scalar(select(func.count(PwaExitOffer.user_id))))
+            self.assertIsNotNone((await db.get(PwaExitOffer,1)).consumed_at)
+            invoice=await db.scalar(select(LavaInvoice).where(LavaInvoice.contract_id==contract))
+            self.assertEqual(("android",20,30),(invoice.source,invoice.discount_percent,invoice.granted_days))
+        self.assertFalse((await action("view"))["available"])
+
     async def test_reconcile_lease_has_a_single_runner(self):
         first = LavaReconcileWorker(self.runtime, instance_id="a")
         second = LavaReconcileWorker(self.runtime, instance_id="b")

@@ -462,7 +462,7 @@ class AndroidCourseService(DesktopCourseService):
         """Complete onboarding through the exact service used by the Mini App."""
         context = await self._context(access_token)
         if any(value is not None for value in (goals, streak_target_days, preferred_focus)) and not getattr(self.settings, "ANDROID_LI_ONBOARDING_ENABLED", False):
-            raise DesktopCourseError("android_request_invalid", status_code=422)
+            raise DesktopCourseError("android_li_onboarding_disabled", status_code=422)
         try:
             return await CourseMiniAppOnboardingService(self.session).complete(
                 context.user,
