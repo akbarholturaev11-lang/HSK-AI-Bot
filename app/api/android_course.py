@@ -82,6 +82,9 @@ class AndroidOnboardingRequest(BaseModel):
         le=MAX_TZ_OFFSET_MINUTES,
     )
     activation_variant: str | None = Field(default="direct_start_v1", max_length=32)
+    goals: list[str] | None = Field(default=None, min_length=1, max_length=5)
+    streak_target_days: Literal[7, 14, 30, 50] | None = None
+    preferred_focus: Literal["vocabulary", "grammar", "listening", "speaking", "none"] | None = None
 
 
 class AndroidCourseTrackSwitchRequest(BaseModel):
@@ -401,6 +404,9 @@ def create_android_course_router(
                     language=payload.language,
                     timezone_offset_minutes=payload.timezone_offset_minutes,
                     activation_variant=payload.activation_variant,
+                    **({"goals": payload.goals, "streak_target_days": payload.streak_target_days,
+                        "preferred_focus": payload.preferred_focus}
+                       if any(value is not None for value in (payload.goals, payload.streak_target_days, payload.preferred_focus)) else {}),
                 )
             return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
         except (DesktopAuthError, DesktopCourseError) as exc:

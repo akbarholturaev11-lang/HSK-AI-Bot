@@ -845,11 +845,12 @@ class AndroidCourseApiTests(unittest.IsolatedAsyncioTestCase):
             session.add(_user(1, 1001, "Account A"))
             await session.commit()
 
+        self.settings = _settings()
         app = FastAPI()
         app.include_router(
             create_android_course_router(
                 session_factory=self.sessions,
-                settings_obj=_settings(),
+                settings_obj=self.settings,
             )
         )
         self.client = AsyncClient(
@@ -1043,6 +1044,53 @@ class AndroidCourseApiTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(state["ok"])
         self.assertTrue(state["completed"])
         self.assertEqual("daily_communication", state["profile"]["goal"])
+
+    async def test_native_li_rollout_is_independent_of_live_pwa_entry(self):
+        self.settings.PWA_LI_ONBOARDING_ENTRY_ENABLED = True
+        headers = await self._bearer()
+        status = await self.client.get("/api/v3/android/course/onboarding", headers=headers)
+        self.assertFalse(status.json()["li_enabled"])
+        saved = await self.client.post("/api/v3/android/course/onboarding", headers=headers,
+            json={"level":"beginner", "goal":"hsk_exam", "goals":["hsk_exam"], "streak_target_days":7})
+        self.assertEqual(422, saved.status_code)
+
+    async def test_native_li_choices_persist_in_canonical_profile_and_legacy_goal(self):
+        self.settings.ANDROID_LI_ONBOARDING_ENABLED = True
+        headers = await self._bearer()
+        async with self.sessions() as db:
+            db.add(CourseLesson(level="hsk1", lesson_order=1, lesson_code="hsk1-01", title="First lesson"))
+            await db.commit()
+        payload = {"level":"beginner", "goal":"travel", "goals":["travel", "study_china"],
+                   "daily_minutes":20, "preferred_focus":"listening", "streak_target_days":30,
+                   "language":"tj", "timezone_offset_minutes":480}
+        saved = await self.client.post("/api/v3/android/course/onboarding", headers=headers, json=payload)
+        self.assertEqual(200, saved.status_code, saved.text)
+        self.assertTrue(saved.json()["ok"])
+        status = (await self.client.get("/api/v3/android/course/onboarding", headers=headers)).json()
+        self.assertTrue(status["li_enabled"])
+        self.assertTrue(status["completed"])
+        self.assertEqual(["travel", "study_china"], status["profile"]["goals"])
+        self.assertEqual("travel", status["profile"]["goal"])
+        self.assertEqual(30, status["profile"]["streak_target_days"])
+        self.assertEqual("listening", status["profile"]["preferred_focus"])
+        async with self.sessions() as db:
+            events = (await db.execute(select(CourseMiniAppEvent).where(
+                CourseMiniAppEvent.event_name == "onboarding_completed"))).scalars().all()
+            self.assertEqual(1, len(events))
+            self.assertEqual(1, events[0].user_id)
+
+    async def test_native_li_invalid_goals_are_422_before_progress_mutation(self):
+        self.settings.ANDROID_LI_ONBOARDING_ENABLED = True
+        headers = await self._bearer()
+        for extra in ({"goals":["hsk_exam", "hsk_exam"]}, {"goals":["travel"]},
+                      {"goals":["invented"]}, {"goals":[]}, {"streak_target_days":8},
+                      {"preferred_focus":"payment_bypass"}):
+            with self.subTest(extra=extra):
+                reply = await self.client.post("/api/v3/android/course/onboarding", headers=headers,
+                    json={"level":"beginner", "goal":"hsk_exam", **extra})
+                self.assertEqual(422, reply.status_code, reply.text)
+        async with self.sessions() as db:
+            self.assertIsNone(await CourseProgressRepository(db).get_by_user_id(1))
 
     async def test_onboarding_routes_require_a_bearer_token(self):
         status = await self.client.get("/api/v3/android/course/onboarding")

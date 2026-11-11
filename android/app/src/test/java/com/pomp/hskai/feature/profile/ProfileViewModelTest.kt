@@ -244,4 +244,31 @@ class ProfileViewModelTest {
         assertFalse(vm.state.value.trialStarting)
         assertFalse(vm.state.value.isLoading)
     }
+    @Test fun profileSettlesWithoutWaitingForOptionalTrial() = runTest(dispatcher) {
+        val f = Fixture()
+        val read = f.nextRead()
+        val vm = f.model()
+        runCurrent()
+        read.profile.complete(Response.success(profile(name = "Ready now")))
+        runCurrent()
+        assertFalse(vm.state.value.isLoading)
+        assertEquals("Ready now", vm.state.value.profile?.user?.name)
+        assertTrue(vm.state.value.trialLoading)
+        assertEquals(null, vm.state.value.trial)
+        read.trial.complete(Response.error(503, "{}".toResponseBody()))
+        runCurrent()
+        assertFalse(vm.state.value.trialLoading)
+        assertTrue(vm.state.value.trialStatusError != null)
+        assertEquals(null, vm.state.value.error)
+        val retry = Read()
+        f.trialReads.add(retry)
+        vm.loadTrial()
+        runCurrent()
+        assertEquals("Ready now", vm.state.value.profile?.user?.name)
+        retry.trial.complete(Response.success(AndroidTrialStatusResponse(ok = true, trial = AndroidTrialDto(eligible = true))))
+        runCurrent()
+        assertTrue(vm.state.value.trial?.eligible == true)
+        assertEquals(null, vm.state.value.trialStatusError)
+    }
+
 }

@@ -947,8 +947,14 @@ private fun AppRoot(
             // its lesson and practice access is checked when the learner enters.
             // Beginner onboarding enters Starter 0 first; FoundationActivity
             // returns through the canonical current-lesson deep link.
+            LaunchedEffect(onboardingState.ui.step, onboardingState.launch) {
+                if (onboardingState.ui.liEnabled && onboardingState.ui.step == 8 && onboardingState.launch != null)
+                    profileViewModel.loadTrial()
+            }
+
             LaunchedEffect(
                 onboardingState.launch,
+                onboardingState.completed,
                 courseState.map,
                 offline,
                 notificationPrimerSeen,
@@ -958,7 +964,7 @@ private fun AppRoot(
                 widgetPlacedNotice,
             ) {
                 val onboardingLaunch = onboardingState.launch ?: return@LaunchedEffect
-                if (onboardingAutoStartHandled || offline) return@LaunchedEffect
+                if (!onboardingState.completed || onboardingAutoStartHandled || offline) return@LaunchedEffect
                 if (!notificationPrimerSeen && !widgetSession.reminderEnabled) {
                     return@LaunchedEffect
                 }
@@ -1174,7 +1180,20 @@ private fun AppRoot(
             } else if (onboardingState.loading && !onboardingUnknown) {
                 LaunchWaitScreen()
             } else if (!onboardingState.completed && !onboardingUnknown) {
-                OnboardingScreen(
+                if (onboardingState.ui.liEnabled && onboardingState.ui.step >= 3) {
+                    com.pomp.hskai.feature.onboarding.LiOnboardingChoices(
+                        state = onboardingState.ui, profile = profileState,
+                        onGoal = onboardingViewModel::selectGoal,
+                        onMinutes = onboardingViewModel::selectDailyMinutes,
+                        onFocus = onboardingViewModel::selectFocus,
+                        onStreak = onboardingViewModel::selectStreak,
+                        onBack = onboardingViewModel::back,
+                        onNext = onboardingViewModel::next,
+                        onFinish = onboardingViewModel::finishIntro,
+                        onTrial = profileViewModel::startTrial,
+                        onRetryTrial = profileViewModel::loadTrial,
+                    )
+                } else OnboardingScreen(
                     language = currentLanguage,
                     state = onboardingState.ui,
                     onTrackSelected = onboardingViewModel::selectTrack,

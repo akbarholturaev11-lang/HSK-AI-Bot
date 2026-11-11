@@ -6,6 +6,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class AndroidOnboardingProfileDto(
     @SerialName("goal") val goal: String = "hsk_exam",
+    @SerialName("goals") val goals: List<String> = emptyList(),
+    @SerialName("streak_target_days") val streakTargetDays: Int? = null,
+    @SerialName("preferred_focus") val preferredFocus: String? = null,
     @SerialName("daily_minutes") val dailyMinutes: Int = 10,
     @SerialName("start_mode") val startMode: String = "lesson_1",
     @SerialName("timezone_offset_minutes") val timezoneOffsetMinutes: Int = 0,
@@ -29,6 +32,7 @@ data class AndroidHsk30OnboardingDto(
 data class AndroidOnboardingStatusDto(
     @SerialName("ok") val ok: Boolean = false,
     @SerialName("completed") val completed: Boolean = false,
+    @SerialName("li_enabled") val liEnabled: Boolean = false,
     @SerialName("level") val level: String = "",
     @SerialName("profile") val profile: AndroidOnboardingProfileDto = AndroidOnboardingProfileDto(),
     @SerialName("hsk30") val hsk30: AndroidHsk30OnboardingDto = AndroidHsk30OnboardingDto(),
@@ -43,6 +47,9 @@ data class AndroidOnboardingRequestDto(
     @SerialName("language") val language: String,
     @SerialName("timezone_offset_minutes") val timezoneOffsetMinutes: Int,
     @SerialName("activation_variant") val activationVariant: String = "direct_start_v1",
+    @SerialName("goals") val goals: List<String>? = null,
+    @SerialName("streak_target_days") val streakTargetDays: Int? = null,
+    @SerialName("preferred_focus") val preferredFocus: String? = null,
 )
 
 @Serializable

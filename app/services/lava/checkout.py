@@ -211,7 +211,7 @@ class LavaCheckoutService:
             raise LavaCheckoutError("invalid_source", 400)
         if (context_mode or "") not in CHECKOUT_CONTEXT_MODES:
             raise LavaCheckoutError("invalid_request", 400)
-        if context_mode == "exit_discount" and source != "pwa":
+        if context_mode == "exit_discount" and source not in {"pwa", "android"}:
             raise LavaCheckoutError("invalid_request", 400)
         buyer_email = normalize_email(email)
         if buyer_email is None:
@@ -229,6 +229,10 @@ class LavaCheckoutService:
                 term = config.terms.get(plan_type)
                 if term is None or not term.sellable:
                     raise LavaCheckoutError("plan_unavailable")
+                if source == "android" and await session.scalar(select(LavaInvoice.id).where(
+                        LavaInvoice.user_id == user.id, LavaInvoice.source == "android",
+                        LavaInvoice.review_reason == "create_uncertain").limit(1)):
+                    raise LavaCheckoutError("checkout_needs_review")
                 reason = await self._blocked_reason(session, user)
                 if reason:
                     raise LavaCheckoutError(reason)

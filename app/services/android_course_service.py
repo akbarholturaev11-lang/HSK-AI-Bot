@@ -11,6 +11,8 @@ the desktop funnel.
 
 from __future__ import annotations
 
+from app.services.onboarding_goal_selection import read_onboarding_goals
+
 import json
 from datetime import datetime, timezone
 from pathlib import Path
@@ -413,9 +415,13 @@ class AndroidCourseService(DesktopCourseService):
         return {
             "ok": True,
             "completed": profile.onboarding_completed_at is not None,
+            "li_enabled": bool(getattr(self.settings, "ANDROID_LI_ONBOARDING_ENABLED", False)),
             "level": str(getattr(context.user, "level", "") or ""),
             "profile": {
                 "goal": profile.goal,
+                "goals": read_onboarding_goals(getattr(profile, "goals_json", None), primary_goal=profile.goal),
+                "streak_target_days": getattr(profile, "streak_target_days", None),
+                "preferred_focus": getattr(profile, "preferred_focus", None),
                 "daily_minutes": profile.daily_minutes,
                 "start_mode": profile.start_mode,
                 "timezone_offset_minutes": profile.timezone_offset_minutes,
@@ -449,19 +455,28 @@ class AndroidCourseService(DesktopCourseService):
         language: str | None = None,
         timezone_offset_minutes: int = 0,
         activation_variant: str | None = None,
+        goals: list[str] | None = None,
+        streak_target_days: int | None = None,
+        preferred_focus: str | None = None,
     ) -> dict:
         """Complete onboarding through the exact service used by the Mini App."""
         context = await self._context(access_token)
-        return await CourseMiniAppOnboardingService(self.session).complete(
-            context.user,
-            level=level,
-            goal=goal,
-            daily_minutes=daily_minutes,
-            start_mode=start_mode,
-            language=language,
-            timezone_offset_minutes=timezone_offset_minutes,
-            activation_variant=activation_variant,
-        )
+        if any(value is not None for value in (goals, streak_target_days, preferred_focus)) and not getattr(self.settings, "ANDROID_LI_ONBOARDING_ENABLED", False):
+            raise DesktopCourseError("android_request_invalid", status_code=422)
+        try:
+            return await CourseMiniAppOnboardingService(self.session).complete(
+                context.user,
+                level=level,
+                goal=goal,
+                daily_minutes=daily_minutes,
+                start_mode=start_mode,
+                language=language,
+                timezone_offset_minutes=timezone_offset_minutes,
+                activation_variant=activation_variant,
+                goals=goals, streak_target_days=streak_target_days, preferred_focus=preferred_focus,
+            )
+        except ValueError as exc:
+            raise DesktopCourseError("android_request_invalid", status_code=422) from exc
 
     async def set_study_preferences(
         self,
