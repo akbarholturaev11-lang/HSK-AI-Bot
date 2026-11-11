@@ -2931,7 +2931,11 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                 if data.context and feedback:
                     # Legacy compact clients cannot replace a partial bot answer.
                     # The bot presentation resumes the same canonical choices.
-                    if data.presentation == "compact" and (feedback.liked_code or feedback.disliked_code):
+                    # A paid/free change can make the old answer incompatible.
+                    mode_changed = feedback.liked_code and (
+                        feedback.liked_code.startswith("paid_") != UserAccessStateService.is_paid(learner)
+                    )
+                    if (data.presentation == "compact" and (feedback.liked_code or feedback.disliked_code)) or mode_changed:
                         feedback = None
                     else:
                         await service.feedback_repo.mark_prompt_sent(feedback, feedback.prompt_message_id)

@@ -324,3 +324,33 @@ class PwaLearningParityTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(denied.status_code, 409)
         invalid = await self.client.post(path, headers=headers, json={'context': context, 'presentation': 'unknown'})
         self.assertEqual(invalid.status_code, 422)
+
+    async def test_bot_questionnaire_skips_partial_answers_after_paid_status_changes(self):
+        from app.repositories.bot_feedback_repo import BotFeedbackRepository
+        headers = await self.login()
+        async with self.sessions() as db:
+            owner = await db.get(User, 1)
+            owner.created_at = datetime.now(timezone.utc) - timedelta(days=3)
+            db.add(Event(user_id=1, event_name='voice_started', source='course_voice'))
+            pending = await BotFeedbackRepository(db).create_pending(owner)
+            await db.commit()
+            feedback_id = pending.id
+        for paid, original in [(True, 'practice'), (False, 'paid_useful')]:
+            with self.subTest(paid=paid):
+                async with self.sessions() as db:
+                    owner = await db.get(User, 1)
+                    owner.status = 'active' if paid else 'free'
+                    owner.payment_status = 'approved' if paid else 'none'
+                    owner.end_date = datetime.now(timezone.utc) + timedelta(days=30) if paid else None
+                    pending = await db.get(BotFeedback, feedback_id)
+                    pending.liked_code = original
+                    await db.commit()
+                response = await self.client.post('/api/v3/pwa/feedback/ordinary/prepare', headers=headers,
+                    json={'context': {'kind': 'voice', 'level': 'hsk1'}, 'presentation': 'bot'})
+                self.assertEqual(response.status_code, 200, response.text)
+                self.assertIsNone(response.json()['ordinary'], 'do not open an unanswerable form after a subscription change')
+                async with self.sessions() as db:
+                    pending = await db.get(BotFeedback, feedback_id)
+                    self.assertEqual(pending.liked_code, original)
+                    self.assertEqual(pending.prompt_attempts, 0)
+                    self.assertIsNone(pending.reward_granted_at)

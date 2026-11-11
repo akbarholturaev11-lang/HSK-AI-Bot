@@ -87,3 +87,6 @@ class FeedbackPostgresTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_partial_bot_answer_preserves_its_original_choice(self):
         await self._exercise('test_bot_questionnaire_resumes_partial_bot_answer_without_replacing_it')
+
+    async def test_changed_subscription_does_not_open_an_incompatible_partial_answer(self):
+        await self._exercise('test_bot_questionnaire_skips_partial_answers_after_paid_status_changes')
