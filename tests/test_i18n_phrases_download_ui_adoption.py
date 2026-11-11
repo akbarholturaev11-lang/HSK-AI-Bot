@@ -39,7 +39,7 @@ class ReadyPhrasesAndDownloadUIAdoptionTests(unittest.TestCase):
                     catalog = json.loads(
                         (ROOT / f"localization/ui/{lang}/course.json").read_text(encoding="utf-8")
                     )["messages"]
-                    self.assertEqual(len(catalog), 1046)
+                    self.assertEqual(len(catalog), 1107)
                     for key, value in items.items():
                         self.assertEqual(catalog[family + "." + key], value)
 
@@ -56,7 +56,7 @@ class ReadyPhrasesAndDownloadUIAdoptionTests(unittest.TestCase):
         phrases = (ROOT / "app/static/hsk-gaplar.html").read_text(encoding="utf-8")
         download_page = (ROOT / "app/static/desktop-download.html").read_text(encoding="utf-8")
         download_js = (ROOT / "app/static/desktop-download-page.js").read_text(encoding="utf-8")
-        asset = "hsk-course-i18n.js?v=20261021-9ba02f44f5cb"
+        asset = "hsk-course-i18n.js?v=20261021-3eff2a84e104"
         self.assertLess(phrases.index(asset), phrases.index("var UI ="))
         self.assertIn('PHRASE_UI["readyPhrases."+key]', phrases)
         self.assertIn('UI[LANGUAGE][key]=value', phrases)

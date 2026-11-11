@@ -1319,7 +1319,11 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
 
     @router.get("/iphone-pwa/practice/voice")
     async def learner_voice_page(request: Request):
-        """Original AI Voice Mini App page, protected by PWA session."""
+        """AI Voice V8 for the browser PWA, protected by the PWA session.
+
+        The course shell embeds it (``?embedded=1``) like the other practice
+        pages; the Telegram Mini App keeps its own course_v3_voice.html.
+        """
         try:
             require_pwa_enabled(settings_obj)
             async with session_factory() as db:
@@ -1327,9 +1331,8 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                     request.cookies.get(PWA_SESSION_COOKIE)
                 )
             return _pwa_inline_html(
-                request, "app/static/course_v3_voice.html",
-                {**_NO_STORE, "X-Content-Type-Options": "nosniff",
-                 "X-Frame-Options": "DENY"},
+                request, "app/static/iphone-pwa-voice.html",
+                _embeddable_pwa_page_headers(request),
                 revalidate=False,
             )
         except PwaAuthError as exc:

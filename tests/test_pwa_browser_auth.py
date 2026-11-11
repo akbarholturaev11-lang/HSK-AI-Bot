@@ -3179,7 +3179,7 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             self.assertIsNone((await db.get(VoicePracticeSession, own_id)).live_connection_token)
             self.assertEqual((await db.get(VoicePracticeSession, other_id)).mode, "live")
 
-    async def test_pwa_standalone_voice_keeps_original_page_without_telegram_session(self):
+    async def test_pwa_voice_v8_page_requires_session_and_frames_only_in_course(self):
         path = "/iphone-pwa/practice/voice"
         self.assertEqual(
             (await self.client.get(path, follow_redirects=False)).status_code, 303,
@@ -3193,8 +3193,20 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(page.status_code, 200, page.text[:150])
         self.assertEqual(page.headers.get("cache-control"), "no-store")
         self.assertEqual(page.headers.get("x-frame-options"), "DENY")
+        self.assertEqual(page.headers.get("content-security-policy"), "frame-ancestors 'none'")
+        self.assertIn('<div id="orb" role="button"', page.text)
         self.assertNotIn("maximum-scale=1", page.text)
-        self.assertIn('font-size:16px;line-height:1.35', page.text)
+        self.assertNotIn("user-scalable=no", page.text)
+        self.assertIn("#prompt{font-size:16px}", page.text)
+        self.assertIn("/course_v3_data/iphone-pwa-inline-pro-bridge.js?v=", page.text)
+        self.assertLess(page.text.index("window.showPaywall=function"),
+                        page.text.index("iphone-pwa-inline-pro-bridge.js"))
+        self.assertNotIn("telegram-web-app.js", page.text)
+        self.assertNotIn("data:image/jpeg;base64", page.text)
+        embedded = await self.client.get(path + "?embedded=1&lang=uz")
+        self.assertEqual(embedded.status_code, 200)
+        self.assertEqual(embedded.headers.get("x-frame-options"), "SAMEORIGIN")
+        self.assertEqual(embedded.headers.get("content-security-policy"), "frame-ancestors 'self'")
         with patch(
             "app.services.voice_practice_service.VoicePracticeService.user_status",
             new_callable=AsyncMock,

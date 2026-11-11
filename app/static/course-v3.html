@@ -45,7 +45,7 @@ html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-famil
 .scr.on{display:block}
 #pwa-practice-layer{position:fixed;inset:0;z-index:9600;display:flex;flex-direction:column;overscroll-behavior:contain;background:var(--paper);padding:var(--safe-t) 0 var(--safe-b)}
 #pwa-practice-layer[hidden],#pwa-practice-layer [hidden]{display:none!important}
-#pwa-practice-layer iframe{width:100%;flex:1;min-height:0;border:0}
+#pwa-practice-layer iframe{width:100%;flex:1;min-height:0;border:0}#pwa-practice-layer.pwa-practice-dark{background:#000}
 .pwa-practice-entry{position:relative;flex:1;display:grid;place-items:center}
 .pwa-practice-entry .pwa-practice-back{position:absolute;top:5px;left:12px;width:44px;height:44px;border:1px solid var(--line);border-radius:50%;background:var(--card);color:var(--ink);display:grid;place-items:center;font-size:20px}
 html.hsk-pwa-browser:has(#pwa-practice-layer:not([hidden])){overflow:hidden}
@@ -3285,7 +3285,7 @@ var App={
     try{if(tg&&tg.openTelegramLink&&/^https:\/\/t\.me\//i.test(c)){tg.openTelegramLink(c);return}}catch(e){}
     try{if(tg&&tg.openLink){tg.openLink(c);return}}catch(e){}
     try{location.href=c}catch(e){}},
-  openVoiceCall:function(role){VOICE.open(role)},
+  openVoiceCall:function(role){if(PWA_COURSE_HOST&&RESOURCE.openVoice(role))return;VOICE.open(role)},
   openFriends:function(){App.show("rating","friends")},
   /* HSK AI rasmiy sahifasini tashqarida ochadi. URL ro'yxatdan olinadi —
      klient hech qachon ixtiyoriy manzil ochmaydi. */
@@ -8004,7 +8004,7 @@ var RESOURCE=(function(){
     NavBack.sync();
     // Let a completed/partial attempt queue its existing keepalive report
     // before discarding the child document. The course is already usable.
-    setTimeout(function(){current.layer.remove();refreshCourseProgress(true)},0);
+    setTimeout(function(){current.layer.remove();refreshCourseProgress(true);if(current.feature==="voice"&&SCREEN==="voice")renderVoice()},0);
     Promise.resolve(current.feedbackVisit).then(function(result){
       if(result&&result.ok)queuePwaActivityFeedback({kind:"practice"});
     });
@@ -8018,7 +8018,7 @@ var RESOURCE=(function(){
   }
   function revealPracticeFrame(child){
     if(!isPracticeFrame(child)||PRACTICE.entry.hidden)return;
-    PRACTICE.entry.hidden=true;PRACTICE.frame.hidden=false;
+    PRACTICE.entry.hidden=true;PRACTICE.frame.hidden=false;PRACTICE.layer.classList.toggle("pwa-practice-dark",PRACTICE.feature==="voice");
     PRACTICE.frame.focus({preventScroll:true});
   }
   function signInFromPractice(child){
@@ -8028,7 +8028,7 @@ var RESOURCE=(function(){
     if(!isPracticeFrame(child))return false;
     if(Number(userId)===PWA_COURSE_USER_ID){
       // This is a verified page visit, never a claimed exercise result.
-      if(!PRACTICE.feedbackVisit)PRACTICE.feedbackVisit=trackCourseEvent("card_seen",{
+      if(!PRACTICE.feedbackVisit&&PRACTICE.feature!=="voice")PRACTICE.feedbackVisit=trackCourseEvent("card_seen",{
         card_type:"practice_entry",card_id:"practice_entry_"+PRACTICE.feature,
         feature:PRACTICE.feature,dedupe_key:["practice_entry",COURSE_SESSION_ID,newPracticeAttemptRef()].join(":")
       });
@@ -8053,7 +8053,7 @@ var RESOURCE=(function(){
     PRACTICE={layer:layer,entry:entry,frame:frame,background:background,focus:document.activeElement,feature:target.pathname.split("/").pop()};
     background.forEach(function(node){node.inert=true});
     frame.title=label;frame.hidden=true;
-    if(target.pathname==="/iphone-pwa/practice/pronunciation")frame.allow="microphone 'self'";
+    if(/^\/iphone-pwa\/practice\/(?:pronunciation|voice)$/.test(target.pathname))frame.allow="microphone 'self'";
     frame.addEventListener("load",function(){
       if(!isPracticeFrame(frame.contentWindow)||entry.hidden)return;
       try{if(frame.contentWindow.HskPwaPracticeBoot)return}catch(e){}
@@ -8065,7 +8065,7 @@ var RESOURCE=(function(){
     layer.append(entry,frame);wrap.appendChild(layer);
     backButton.focus({preventScroll:true});NavBack.sync();
   }
-  function openPractice(src){
+  function openVoice(role){if(!PWA_COURSE_HOST)return false;var target=new URL("/iphone-pwa/practice/voice",location.origin);target.searchParams.set("lang",LANG);if(role==="teacher_li")target.searchParams.set("topic","hsk");mountPracticeFrame(target,"AI Voice");return true}function openPractice(src){
     // Keep the established exercise gates and its return path unchanged.
     var allowed=["/course_v3_pronunciation.html","/course_v3_recognition.html","/course_v3_memorize.html","/course_v3_test.html","/course_v3_mistakes.html"];
     var path=String(src||"").split("?")[0];
@@ -8106,7 +8106,7 @@ var RESOURCE=(function(){
       },1100);
     },2500);
   }
-  return {open:open,close:close,back:back,warm:warm,openPractice:openPractice,
+  return {open:open,close:close,back:back,warm:warm,openPractice:openPractice,openVoice:openVoice,
     practiceBackTarget:practiceBackTarget,practiceBack:practiceBack,isPracticeFrame:isPracticeFrame,
     closePracticeFrame:closePracticeFrame,revealPracticeFrame:revealPracticeFrame,signInFromPractice:signInFromPractice,
     acceptPracticeActor:acceptPracticeActor,openPracticeCheckout:openPracticeCheckout,
