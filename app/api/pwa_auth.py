@@ -109,20 +109,46 @@ html.hsk-pwa-browser .hsk-pwa-profile-accuracy-loading .hsk-pwa-load-line{height
 _PWA_TELEGRAM_SDK_SCRIPT = b'<script src="/assets/telegram-web-app.js?v=20261019-1"></script>'
 
 
-_PWA_INLINE_CACHE: dict[tuple[str, int, int], tuple[bytes, str]] = {}
+_PWA_INLINE_CACHE: dict[tuple, tuple[bytes, str]] = {}
+_PWA_COURSE_HTML = "app/static/course-v3.html"
+# Existing accounts open the course directly, so the iPhone Safari (browser
+# mode) Home Screen guide is added to this PWA response only; shared course
+# HTML stays unchanged. The module itself decides (iOS, not standalone, once
+# per tab) and lazy-loads its versioned catalog and stylesheet.
+_PWA_INSTALL_GUIDE_ASSETS = (
+    "/course_v3_data/li-onboarding-install.js",
+    "/course_v3_data/hsk-li-onboarding-i18n.js",
+    "/course_v3_data/li-onboarding-install.css",
+)
+
+
+def _static_version(url: str) -> str:
+    with open("app/static" + url, "rb") as handle:
+        return hashlib.sha256(handle.read()).hexdigest()[:12]
+
+
+def _pwa_install_guide_html() -> bytes:
+    script, catalog, style = (url + "?v=" + _static_version(url)
+                              for url in _PWA_INSTALL_GUIDE_ASSETS)
+    return (f'<script defer src="{script}" data-hsk-install-launch="course" '
+            f'data-i18n="{catalog}" data-css="{style}"></script>\n').encode("utf-8")
 
 
 def _pwa_inline_html(request: Request, path: str, headers: dict[str, str],
                      *, revalidate: bool = True) -> Response:
     stat = os.stat(path)
-    key = (path, stat.st_mtime_ns, stat.st_size)
+    key: tuple = (path, stat.st_mtime_ns, stat.st_size)
+    if path == _PWA_COURSE_HTML:
+        # An edited guide asset must never leave a stale ?v= token cached.
+        key += tuple((item.st_mtime_ns, item.st_size) for item in
+                     (os.stat("app/static" + url) for url in _PWA_INSTALL_GUIDE_ASSETS))
     cached = _PWA_INLINE_CACHE.get(key)
     if cached is None:
         with open(path, "rb") as handle:
             source = handle.read()
         if source.count(b"</body>") != 1:
             raise RuntimeError("pwa_inline_html_invalid")
-        if path == "app/static/course-v3.html":
+        if path == _PWA_COURSE_HTML:
             # Safari does not use Telegram WebApp. Remove its blocking SDK
             # from the authenticated PWA response only, never shared source.
             if source.count(_PWA_TELEGRAM_SDK_SCRIPT) == 1:
@@ -132,6 +158,7 @@ def _pwa_inline_html(request: Request, path: str, headers: dict[str, str],
             # The new upstream shell is already in shared HTML. Inject CSS
             # only for independent Rating/Friends/Profile loading boundaries.
             source = source.replace(b"</head>", _PWA_PROGRESSIVE_SECTIONS_CSS + b"</head>", 1)
+            source = source.replace(b"</body>", _pwa_install_guide_html() + b"</body>", 1)
         document = source.replace(b"</body>", _PWA_INLINE_PRO_HTML + b"</body>", 1)
         etag = 'W/"' + hashlib.sha256(document).hexdigest()[:32] + '"'
         cached = document, etag
@@ -169,8 +196,7 @@ def _handoff_html() -> bytes:
     cached = _HANDOFF_HTML_CACHE.get(key)
     if cached is None:
         def versioned(match):
-            with open("app/static" + match.group(1).decode(), "rb") as handle:
-                digest = hashlib.sha256(handle.read()).hexdigest()[:12]
+            digest = _static_version(match.group(1).decode())
             return b'"' + match.group(1) + b"?v=" + digest.encode() + b'"'
         cached = _HANDOFF_ASSET.sub(versioned, source)
         if b"?v=AUTO" in cached:
@@ -386,6 +412,7 @@ class PwaFeedbackPrepare(BaseModel):
     """No user, identity or campaign selector is supplied by the browser."""
     model_config = ConfigDict(extra="forbid")
     context: PwaActivityFeedbackContext | None = None
+    presentation: Literal["compact", "bot"] = "compact"
 
 
 class PwaLessonFeedbackPrepare(BaseModel):
@@ -2902,15 +2929,21 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                     if feedback and not service._is_prompt_due(feedback, now):
                         feedback = None
                 if data.context and feedback:
-                    # Never replace an unfinished bot answer with a shorter form.
-                    if feedback.liked_code or feedback.disliked_code:
+                    # Legacy compact clients cannot replace a partial bot answer.
+                    # The bot presentation resumes the same canonical choices.
+                    # A paid/free change can make the old answer incompatible.
+                    mode_changed = feedback.liked_code and (
+                        feedback.liked_code.startswith("paid_") != UserAccessStateService.is_paid(learner)
+                    )
+                    if (data.presentation == "compact" and (feedback.liked_code or feedback.disliked_code)) or mode_changed:
                         feedback = None
                     else:
                         await service.feedback_repo.mark_prompt_sent(feedback, feedback.prompt_message_id)
                 await db.commit()
                 payload = ({
                     "feedback_id": feedback.id,
-                    "compact": data.context.model_dump() if data.context else None,
+                    "compact": data.context.model_dump() if data.context and data.presentation == "compact" else None,
+                    "presentation": data.presentation,
                     "paid": UserAccessStateService.is_paid(learner),
                     "liked_code": feedback.liked_code,
                     "disliked_code": feedback.disliked_code,

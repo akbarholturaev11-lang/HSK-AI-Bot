@@ -10,7 +10,7 @@
   root.hidden = true;
   root.innerHTML =
     '<div class="hsk-pwa-feedback-scrim" data-pwa-feedback-close></div>' +
-    '<section class="hsk-pwa-feedback-card" role="dialog" aria-modal="true" ' +
+    '<section class="hsk-pwa-feedback-card" role="dialog" aria-modal="true" style="outline:none" ' +
       'aria-labelledby="hsk-pwa-feedback-title" tabindex="-1">' +
       '<div class="hsk-pwa-feedback-head">' +
         '<h2 class="hsk-pwa-feedback-title" id="hsk-pwa-feedback-title">HSK AI</h2>' +
@@ -39,6 +39,9 @@
   var busy = false;
   var draft = {};
   var sessionPrompted = false;
+  var guided = false;
+  var guidedStep = 0;
+  var guidedRetry = false;
 
   function common(key) { return commonMessage(key, ""); }
   function course(key) { return courseMessage(key, ""); }
@@ -76,6 +79,8 @@
     busy = false;
     submitButton.disabled = false;
     draft = {};
+    guided = false;
+    guidedRetry = false;
     if (lastFocus && lastFocus.isConnected && typeof lastFocus.focus === "function") {
       lastFocus.focus({preventScroll:true});
     }
@@ -136,11 +141,11 @@
   // Same text variants as the bot's inline buttons: one tap per answer.
   var QUESTIONS = {"✓":"pwaFeedback.paidQ", "👍":"pwaFeedback.likedQ",
     "👎":"pwaFeedback.dislikedQ", "›":"pwaFeedback.detailQ"};
-  function choiceField(mark, options, value, onChange) {
+  function choiceField(mark, options, value, onChange, useHeading) {
     var question = course(QUESTIONS[mark] || "") || mark;
     var field = make("div", "hsk-pwa-feedback-field hsk-pwa-feedback-choice");
     field.setAttribute("data-mark", mark);
-    field.appendChild(make("span", "hsk-pwa-feedback-question", question));
+    if (!useHeading) field.appendChild(make("span", "hsk-pwa-feedback-question", question));
     var group = make("div", "hsk-pwa-feedback-options");
     group.setAttribute("role", "radiogroup");
     group.setAttribute("aria-label", question);
@@ -151,21 +156,30 @@
       button.setAttribute("role", "radio");
       button.setAttribute("data-code", item.code);
       button.setAttribute("aria-checked", String(item.code === value));
-      button.addEventListener("click", function () { onChange(item.code); renderForm(); });
+      button.disabled = busy;
+      button.addEventListener("click", function () {
+        if (busy) return;
+        onChange(item.code); renderForm();
+      });
       group.appendChild(button);
     });
     field.appendChild(group);
     return field;
   }
-  function commentField(label, key) {
+  function commentField(label, key, useHeading) {
     var field = make("label", "hsk-pwa-feedback-field");
-    field.appendChild(make("span", "", label));
+    field.setAttribute("data-mark", label);
+    if (!useHeading) field.appendChild(make("span", "", label));
     var box = make("textarea");
     box.setAttribute("aria-label", label);
     box.maxLength = 1000;
     box.rows = 3;
     box.value = draft[key] || "";
-    box.addEventListener("input", function () { draft[key] = box.value; });
+    box.disabled = busy;
+    box.addEventListener("input", function () {
+      draft[key] = box.value;
+      if (guided) submitButton.disabled = busy || !box.value.trim();
+    });
     field.appendChild(box);
     return field;
   }
@@ -179,6 +193,7 @@
   }
 
   function renderOrdinary() {
+    if (guided) { renderGuidedOrdinary(); return; }
     form.replaceChildren();
     if (!selected || !selected.choices) return;
     var choices = selected.choices;
@@ -227,6 +242,74 @@
     }
   }
 
+  function ordinarySteps() {
+    var choices = selected.choices;
+    var steps = [];
+    function choice(key, mark, options, reset) {
+      steps.push({key:key, mark:mark, options:options, reset:reset || []});
+    }
+    function detail(key) { steps.push({key:key}); }
+    if (selected.paid) {
+      choice("paid_code", "✓", choices.paid, ["paid_sub_code", "paid_other_text"]);
+      if (draft.paid_code) {
+        choice("paid_sub_code", "›", (draft.paid_code === "worth" || draft.paid_code === "useful")
+          ? choices.paid_sub_positive : choices.paid_sub_negative, ["paid_other_text"]);
+        if (draft.paid_sub_code === "other") detail("paid_other_text");
+      }
+    } else {
+      choice("liked_code", "👍", choices.liked, ["liked_sub_code", "liked_other_text"]);
+      var subs = choices.liked_sub && choices.liked_sub[draft.liked_code];
+      if (validChoices(subs).length) choice("liked_sub_code", "›", subs, ["liked_other_text"]);
+      if (draft.liked_code === "other" || draft.liked_sub_code === "other") detail("liked_other_text");
+      choice("disliked_code", "👎", choices.disliked, ["disliked_detail_text"]);
+      if (Array.isArray(choices.disliked_detail_required) &&
+          choices.disliked_detail_required.includes(draft.disliked_code)) detail("disliked_detail_text");
+    }
+    return steps;
+  }
+
+  function renderGuidedOrdinary() {
+    form.replaceChildren();
+    var steps = ordinarySteps();
+    guidedStep = Math.min(guidedStep, steps.length - 1);
+    var step = steps[guidedStep];
+    heading.textContent = step.options ? course(QUESTIONS[step.mark])
+      : common("bot.releaseFeedback.commentButton");
+    if (step.options) {
+      form.appendChild(choiceField(step.mark, step.options, draft[step.key], function (code) {
+        draft[step.key] = code;
+        step.reset.forEach(function (key) { draft[key] = ""; });
+        guidedRetry = false;
+        setStatus("");
+        if (guidedStep < ordinarySteps().length - 1) guidedStep++;
+        else submit();
+      }, true));
+    } else {
+      form.appendChild(commentField(common("bot.releaseFeedback.commentButton"), step.key, true));
+    }
+    // Radio answers advance in one tap, just like the existing bot keyboard.
+    // Text needs one action; a failed final write exposes the same retry action.
+    submitButton.hidden = !!step.options && !guidedRetry;
+    submitButton.textContent = guidedStep < steps.length - 1
+      ? common("action.continue") : course("subscriptionPage.submit");
+    submitButton.disabled = busy || (!step.options && !String(draft[step.key] || "").trim());
+    var focus = form.querySelector(step.options ? '[role="radiogroup"]' : "textarea");
+    if (focus) {
+      focus.tabIndex = -1;
+      if (step.options) focus.setAttribute("style", "outline:none");
+      if (!root.hidden && !busy) focus.focus({preventScroll:true});
+    }
+  }
+
+  function back() {
+    if (guided && !busy && guidedStep > 0) {
+      guidedStep--;
+      guidedRetry = false;
+      setStatus("");
+      renderForm();
+    } else close();
+  }
+
   function renderRelease() {
     form.replaceChildren();
     var stars = make("div", "hsk-pwa-feedback-stars");
@@ -259,6 +342,7 @@
   }
 
   function renderForm() {
+    form.setAttribute("aria-busy", String(busy));
     if (kind === "context") renderCompact();
     else if (kind === "ordinary") renderOrdinary();
     else if (kind === "release") renderRelease();
@@ -267,6 +351,8 @@
   function showAvailable(data) {
     selected = null;
     kind = null;
+    guided = false;
+    panel.setAttribute("style", "outline:none");
     restoreDraft();
     if (Array.isArray(data.release) && data.release.length) {
       var entry = data.release.find(function (item) {
@@ -314,14 +400,21 @@
     var binding = {kind:context.kind, level:context.level};
     if (context.kind === "lesson") binding.lesson_id = Number(context.lessonId);
     try {
-      var data = await request("/api/v3/pwa/feedback/ordinary/prepare", {context:binding}, current);
-      if (!current() || !data.ordinary || !numberId(data.ordinary.feedback_id) || !data.ordinary.compact) return;
-      selected = data.ordinary;
-      kind = "context";
-      restoreDraft();
-      heading.textContent = context.kind === "lesson" ? lessonTitle(context.level, context.lessonId)
-        : course("pwaFeedback." + context.kind + "Title");
-      contextCopy.textContent = course("pwaFeedback.quickQuestion");
+      var data = await request("/api/v3/pwa/feedback/ordinary/prepare", {
+        context:binding, presentation:"bot"
+      }, current);
+      var feedback = data.ordinary;
+      if (!current() || !feedback || feedback.presentation !== "bot" || !feedback.choices ||
+          !numberId(feedback.feedback_id)) return;
+      if (feedback.paid ? !validChoices(feedback.choices.paid).length :
+          !validChoices(feedback.choices.liked).length || !validChoices(feedback.choices.disliked).length) return;
+      if (!showAvailable({ordinary:feedback, release:[]})) return;
+      guided = true;
+      panel.setAttribute("style", "outline:none;background:var(--hsk-paper)");
+      guidedRetry = false;
+      guidedStep = ordinarySteps().findIndex(function (step) { return !draft[step.key]; });
+      if (guidedStep < 0) guidedStep = ordinarySteps().length - 1;
+      contextCopy.textContent = "";
       setStatus("");
       submitButton.textContent = course("subscriptionPage.submit");
       submitButton.hidden = false;
@@ -448,6 +541,15 @@
 
   async function submit() {
     if (busy || root.hidden || !selected || !kind) return;
+    if (guided) {
+      var steps = ordinarySteps(), step = steps[guidedStep];
+      if (!step.options && !String(draft[step.key] || "").trim()) return;
+      if (guidedStep < steps.length - 1) {
+        guidedStep++;
+        renderForm();
+        return;
+      }
+    }
     var path, body;
     if (kind === "context") {
       if (!["positive", "unclear", "technical"].includes(draft.answer)) return;
@@ -479,13 +581,16 @@
     busy = true;
     submitButton.disabled = true;
     setStatus(course("subscriptionPage.loading"));
+    if (guided) renderForm();
     var token = generation;
     try {
-      var compactSubmission = kind === "context";
+      var compactSubmission = kind === "context" || guided;
       await request(path, body, function () { return token === generation && !root.hidden; });
       if (token !== generation || root.hidden) return;
       kind = null;
       selected = null;
+      guided = false;
+      guidedRetry = false;
       form.replaceChildren();
       heading.textContent = "HSK AI";
       setStatus(common("bot.releaseFeedback.thanks"));
@@ -494,11 +599,13 @@
     } catch (_) {
       if (token !== generation || root.hidden) return;
       setStatus(course("subscriptionPage.error"));
+      if (guided) guidedRetry = true;
     } finally {
       // A slow old submission must not unlock a newer reopened dialog.
       if (token === generation) {
         busy = false;
         submitButton.disabled = false;
+        if (guided && selected) renderForm();
       }
     }
   }
@@ -522,7 +629,7 @@
     }
   });
   window.HskPwaFeedback = {
-    open: open, openRelease: openRelease, close: close,
+    open: open, openRelease: openRelease, close: close, back: back,
     backTarget: function () { return root.hidden ? null : panel; }
   };
 }());

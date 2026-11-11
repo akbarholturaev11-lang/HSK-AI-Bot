@@ -840,7 +840,8 @@ def test_new_iphone_signup_shows_install_video_guide_after_verified_save_only():
         page.locator(".li-install-close").click()
         page.wait_for_function("window.screen==='end'")
         assert not captured["trial_start"]
-        assert page.evaluate("localStorage.getItem('hskai_li_install_guide_v1:37')") == "seen"
+        # One display per opening (tab session); the course will not repeat it.
+        assert page.evaluate("sessionStorage.getItem('hskai.pwa.install.guide.shown')") == "1"
         assert not captured["pageerrors"]
         browser.close()
 

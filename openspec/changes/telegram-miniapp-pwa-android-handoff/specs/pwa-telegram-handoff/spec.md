@@ -94,12 +94,12 @@ system SHALL NOT replace it without an explicit switch chosen by the person.
 A redeemed handoff SHALL grant nothing beyond a normal PWA sign-in: level,
 progress, Pro, trial, referral and language remain server-owned. Completed
 onboarding SHALL NOT be shown again; the existing Home Screen install guide is
-shown once to eligible browsers, then the existing course opens. Other sign-in
+shown once per opening (tab session) to eligible browsers, then the existing course opens. Other sign-in
 flows (bot approval, Google/Apple, native link) SHALL behave as before.
 
 #### Scenario: Learner with completed onboarding
 - **WHEN** the handoff is redeemed for a learner whose onboarding is complete
-- **THEN** the install guide is shown if not yet seen on that browser and the course opens without onboarding
+- **THEN** the install guide is shown if not yet shown in this opening (tab) and the course opens without onboarding
 
 #### Scenario: Handoff row offered to another sign-in path
 - **WHEN** a handoff identifier or secret is presented to bot approval, native polling, Telegram claim or an OAuth callback

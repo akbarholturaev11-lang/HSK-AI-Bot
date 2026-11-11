@@ -12,6 +12,10 @@ from starlette.requests import Request
 from app.api.pwa_auth import _pwa_inline_html
 
 
+def _version(url):
+    return hashlib.sha256(Path("app/static" + url).read_bytes()).hexdigest()[:12]
+
+
 def request(path="/iphone-pwa/course", etag=None):
     headers = [] if not etag else [(b"if-none-match", etag.encode("ascii"))]
     return Request({"type": "http", "method": "GET", "path": path,
@@ -61,6 +65,28 @@ class PwaInitialShellTests(unittest.TestCase):
         second = _pwa_inline_html(request(etag=first.headers["ETag"]), path, {})
         self.assertEqual(second.status_code, 304)
         self.assertEqual(second.headers["ETag"], first.headers["ETag"])
+
+    def test_only_the_course_gets_the_content_versioned_install_guide(self):
+        # Existing accounts open the course directly; the guide module decides
+        # iOS/browser-mode/once-per-tab itself and lazy-loads its catalog/CSS.
+        body = _pwa_inline_html(request(), "app/static/course-v3.html", {}).body
+        tag = (
+            '<script defer src="/course_v3_data/li-onboarding-install.js?v={}" '
+            'data-hsk-install-launch="course" '
+            'data-i18n="/course_v3_data/hsk-li-onboarding-i18n.js?v={}" '
+            'data-css="/course_v3_data/li-onboarding-install.css?v={}"></script>'
+        ).format(*(_version(url) for url in (
+            "/course_v3_data/li-onboarding-install.js",
+            "/course_v3_data/hsk-li-onboarding-i18n.js",
+            "/course_v3_data/li-onboarding-install.css",
+        ))).encode()
+        self.assertEqual(body.count(tag), 1)
+        self.assertLess(body.index(tag), body.index(b"</body>"))
+        self.assertNotIn(b"li-onboarding-install", self.canonical)
+        for name in ("course_v3_recognition.html", "course_v3_memorize.html"):
+            with self.subTest(page=name):
+                frame = _pwa_inline_html(request(), "app/static/" + name, {}).body
+                self.assertNotIn(b"data-hsk-install-launch", frame)
 
     def test_other_pages_do_not_receive_course_shell(self):
         with tempfile.NamedTemporaryFile(suffix=".html") as file:
