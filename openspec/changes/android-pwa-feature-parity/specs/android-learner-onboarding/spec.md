@@ -21,6 +21,13 @@ Android SHALL retain its current onboarding when the native Li switch is off. En
 - **WHEN** a saved learner resumes or a locked HSK 3.0 level is selected
 - **THEN** saved progress is preserved and the server rejects unauthorized track entry.
 
+### Requirement: Match PWA choice navigation on Android
+Li choice screens SHALL use the PWA hierarchy of header back, compact mascot and speech bubble, scrollable choices, and one fixed primary action. Android system back SHALL remain available for returning to a prior choice.
+
+#### Scenario: Narrow and short viewport
+- **WHEN** the learner opens the daily time question in UZ, RU or TJ on a narrow screen
+- **THEN** the choices remain readable and selectable, the footer never covers them, and the header back control is the only visible back action.
+
 ### Requirement: Native auth and trial remain authoritative
 Native auth SHALL reuse original provider proof polling and cancellation. Native Pro introduction SHALL use actual server trial eligibility and activation, and SHALL offer free continuation without granting local access.
 
