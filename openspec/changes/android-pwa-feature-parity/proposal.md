@@ -2,7 +2,7 @@
 
 ## Why
 
-Direct 1.7.29/60 was published from 503730e5 on 2026-11-05; main ffcab1c0 contains later PWA onboarding, provider checkout and independent loading behavior absent or partial in native Android. Existing web-specific handoffs deliberately exclude Android, so this bounded native delta is needed; they remain authoritative for their own flows.
+Direct 1.7.29/60 was published from 503730e5 on 2026-11-05; latest reviewed main 66dea5be (including the owner-requested continuation after ffcab1c0) contains later PWA onboarding, provider checkout and independent loading behavior absent or partial in native Android. Existing web-specific handoffs deliberately exclude Android, so this bounded native delta is needed; they remain authoritative for their own flows.
 
 ## What Changes
 
@@ -18,6 +18,7 @@ Direct 1.7.29/60 was published from 503730e5 on 2026-11-05; main ffcab1c0 contai
 
 - `android-learner-onboarding`: native additive choices and safe rollout using existing authenticated onboarding/trial/course services.
 - `android-provider-checkout`: Direct-only provider checkout with authoritative pricing, ownership, discount and payment verification.
+- `android-activity-feedback`: canonical bot/PWA one-question feedback after verified learning activity.
 - `android-progressive-sections`: independent native profile sections and stable affected loading layouts.
 
 ### Modified Capabilities

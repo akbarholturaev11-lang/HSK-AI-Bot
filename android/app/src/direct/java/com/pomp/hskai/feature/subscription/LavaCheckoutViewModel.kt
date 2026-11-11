@@ -13,7 +13,7 @@ import java.net.URI
 
 internal fun safeLavaPaymentUrl(value: String?): String? = runCatching {
     val uri = URI(value ?: return null)
-    value.takeIf { uri.scheme == "https" && uri.host in setOf("pay.lava.top", "app.lava.top", "lava.top") &&
+    value.takeIf { uri.scheme == "https" && (uri.host == "lava.top" || uri.host?.endsWith(".lava.top") == true) &&
         uri.rawUserInfo == null && (uri.port == -1 || uri.port == 443) }
 }.getOrNull()
 
@@ -31,18 +31,8 @@ class LavaCheckoutViewModel(private val repository: LavaCheckoutRepository, priv
     val state = _state.asStateFlow()
     private var generation = 0
     private var offerAsked = false
-    private var opened = false
     private val _closeEvents = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
     val closeEvents = _closeEvents.asSharedFlow()
-    fun onHostOpened() {
-        if (opened) {
-            offerAsked = false
-            _state.update { it.copy(checkoutId = 0, status = "", paymentUrl = null, launchUrl = null,
-                offer = null, closeRequested = false, mode = "subscription") }
-            load()
-        }
-        opened = true
-    }
     init { load() }
 
     fun load() {
@@ -59,7 +49,7 @@ class LavaCheckoutViewModel(private val repository: LavaCheckoutRepository, priv
                             ?: block?.plans?.firstOrNull { it.amount != null }?.plan_type.orEmpty(),
                         email = old.email.ifBlank { block?.email.orEmpty() }, checkoutId = id,
                         status = old.status.ifBlank { if (id > 0) "pending" else "" },
-                        uncertainStart = false, error = !result.value.ok)
+                        uncertainStart = false, error = !result.value.ok || (old.mode == "exit_discount" && block == null))
                 }
                 is ApiResult.Failure -> if (current == generation) _state.update { it.copy(loading = false, error = true) }
             }

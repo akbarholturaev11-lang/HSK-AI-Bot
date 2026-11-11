@@ -81,6 +81,27 @@ class AndroidLavaCheckoutTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual("android", self.funnel.call_args.kwargs["payload"]["transport"])
         self.assertEqual("checkout_opened", self.funnel.call_args.kwargs["event_name"])
 
+    async def test_real_android_funnel_storage_and_financial_owner_reach_existing_admin_source_group(self):
+        from app.db.models.conversion_funnel_event import ConversionFunnelEvent
+        from app.db.models.payment import Payment
+        from app.admin_api.pwa_analytics_finance import source_group
+        self.events.stop()
+        await self.post("overview", {"origin":"course_limit"})
+        with patch("app.services.conversion_funnel_service.async_session_maker", self.sessions):
+            started = await self.post("start", {"plan_type":"1_month", "email":"a@b.co"})
+        self.assertEqual(200, started.status_code, started.text)
+        value = started.json()
+        self.fake.complete(value["payment_url"].rsplit("/",1)[1])
+        self.assertEqual("paid", (await self.post("status", {"checkout_id":value["checkout_id"]})).json()["status"])
+        async with self.sessions() as db:
+            event = await db.scalar(select(ConversionFunnelEvent).where(ConversionFunnelEvent.event_name == "checkout_opened"))
+            self.assertEqual((1,"android_subscription"), (event.user_id,event.source))
+            self.assertEqual("android", __import__("json").loads(event.payload_json)["transport"])
+            self.assertEqual("android_subscription", await db.scalar(select(source_group(SubscriptionEntryEvent.source))))
+            invoice = await db.get(LavaInvoice, value["checkout_id"])
+            payment = await db.get(Payment, invoice.payment_id)
+            self.assertEqual((1,"lava","approved"), (payment.user_id,payment.payment_method,payment.payment_status))
+
     async def test_rejects_play_wrong_platform_mixed_identity_and_client_owner(self):
         for headers in ({"X-HSK-Android-Channel": "play"}, {"X-HSK-Android-Channel": ""},
                         {"X-HSK-Lava-Capability": ""}, {"Cookie": "forged=pwa"},
@@ -114,6 +135,16 @@ class AndroidLavaCheckoutTests(unittest.IsolatedAsyncioTestCase):
         async with self.sessions() as db:
             self.assertIsNotNone((await db.get(PwaExitOffer, 2)).consumed_at)
         self.assertFalse((await self.post("exit-offer", {"action":"view"})).json()["available"])
+
+    async def test_sales_disabled_does_not_hide_or_stop_existing_invoice_reconciliation(self):
+        start = (await self.post("start", {"plan_type":"1_month", "email":"a@b.co"})).json()
+        self.runtime.settings.LAVA_ENABLED = False
+        restored = (await self.post("overview")).json()["lava"]
+        self.assertEqual(start["checkout_id"], restored["pending_checkout_id"])
+        self.assertEqual(("manual_only", []), (restored["mode"], restored["plans"]))
+        self.assertEqual(409, (await self.post("start", {"plan_type":"1_month", "email":"a@b.co"})).status_code)
+        self.fake.complete(start["payment_url"].rsplit("/",1)[1])
+        self.assertEqual("paid", (await self.post("status", {"checkout_id":start["checkout_id"]})).json()["status"])
 
     async def test_flags_and_uncertain_provider_attempt_cannot_create_a_second_invoice(self):
         self.runtime.settings.LAVA_ENABLED = False

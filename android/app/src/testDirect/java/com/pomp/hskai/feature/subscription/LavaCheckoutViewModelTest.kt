@@ -83,6 +83,17 @@ class LavaCheckoutViewModelTest {
         assertTrue(vm.state.value.closeRequested)
         assertNull(vm.state.value.offer)
     }
+    @Test fun retiredExitPromoDoesNotSilentlyBecomeFullPrice() = runTest(dispatcher) {
+        val fake = Fake(); val vm = fake.model(); runCurrent()
+        vm.requestProviderClose(); runCurrent()
+        fake.offer = fake.offer.copy(accepted = true)
+        fake.overview = LavaOverview(ok = true)
+        vm.claim(); runCurrent()
+        assertEquals("exit_discount", vm.state.value.mode)
+        assertTrue(vm.state.value.error)
+        assertNull(vm.state.value.block)
+        vm.start(); runCurrent(); assertEquals(0, fake.starts)
+    }
     @Test fun providerUrlsAreHttpsAndExactHostOnly() {
         assertNotNull(safeLavaPaymentUrl("https://pay.lava.top/123"))
         listOf("http://pay.lava.top/a", "https://pay.lava.top.evil.example/a", "https://evil@pay.lava.top/a",

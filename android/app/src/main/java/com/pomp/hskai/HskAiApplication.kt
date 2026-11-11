@@ -292,6 +292,12 @@ class HskAiApplication : Application() {
         )
     }
 
+    val activityFeedbackRepository by lazy {
+        com.pomp.hskai.feature.feedback.ActivityFeedbackRepository(
+            nativeApi(com.pomp.hskai.feature.feedback.AndroidActivityFeedbackApi::class.java),
+            authRepository::accessToken, authRepository::invalidateSession)
+    }
+
     val onboardingRepository: OnboardingRepository by lazy {
         OnboardingRepository(
             api = onboardingApi,

@@ -353,6 +353,14 @@ private fun AppRoot(
                 ),
             )
             val onboardingState by onboardingViewModel.state.collectAsStateWithLifecycle()
+            val activityFeedback: com.pomp.hskai.feature.feedback.ActivityFeedbackViewModel = viewModel(
+                viewModelStoreOwner = sessionOwner,
+                factory = object : androidx.lifecycle.ViewModelProvider.Factory {
+                    @Suppress("UNCHECKED_CAST")
+                    override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T =
+                        com.pomp.hskai.feature.feedback.ActivityFeedbackViewModel(app.activityFeedbackRepository) as T
+                })
+            val feedbackState by activityFeedback.state.collectAsStateWithLifecycle()
             val courseViewModel: CourseViewModel = viewModel(
                 viewModelStoreOwner = sessionOwner,
                 factory = CourseViewModel.Factory(app.courseRepository),
@@ -879,6 +887,30 @@ private fun AppRoot(
             var onboardingAutoStartHandled by rememberSaveable { mutableStateOf(false) }
             val deepLinkRefreshGate = remember { DeepLinkRefreshGate() }
             val currentLevel = courseState.map?.level ?: state.account.level
+            var feedbackPreviousTab by remember { mutableStateOf(selectedTab) }
+            LaunchedEffect(selectedTab) {
+                val previous = feedbackPreviousTab
+                feedbackPreviousTab = selectedTab
+                if (previous != selectedTab && !offline) when (previous) {
+                    MainTab.PRACTICE -> activityFeedback.prepare("practice", currentLevel)
+                    MainTab.VOICE -> activityFeedback.prepare("voice", currentLevel)
+                    else -> Unit
+                }
+            }
+            LaunchedEffect(onboardingState.completed) {
+                val activity = context.authActivity()
+                if (onboardingState.completed && activity?.intent?.getStringExtra("hsk_feedback_context") == "foundation") {
+                    activity.intent.removeExtra("hsk_feedback_context")
+                    activityFeedback.prepare("foundation", currentLevel)
+                }
+            }
+            LaunchedEffect(feedbackState.completed) {
+                if (feedbackState.completed) { profileViewModel.load(); courseViewModel.load() }
+            }
+            if (openLesson == null && adRequest == null && !checkoutVisible)
+                com.pomp.hskai.feature.feedback.ActivityFeedbackDialog(feedbackState, activityFeedback::answer,
+                    activityFeedback::next, activityFeedback::back, activityFeedback::close)
+
             val currentLanguage = state.account.language.backendCode
             LaunchedEffect(selectedTab, voiceViewModel) {
                 val voice = voiceViewModel.state.value
@@ -1411,6 +1443,7 @@ private fun AppRoot(
                     accessChanged = accessActive,
                     onExit = { completed ->
                         val finishedOrder = launch.lesson.order
+                        if (completed) activityFeedback.prepare("lesson", currentLevel, finishedOrder)
                         openLesson = null
                         courseViewModel.load()
                         if (completed && adsUnlockedAfterLimit) {

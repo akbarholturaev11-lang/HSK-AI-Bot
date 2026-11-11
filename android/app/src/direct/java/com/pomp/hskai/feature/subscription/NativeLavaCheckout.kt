@@ -15,6 +15,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.foundation.text.KeyboardOptions
@@ -29,14 +30,22 @@ import com.pomp.hskai.core.design.components.HskSceneSurface
 
 /** Returns true while the provider surface owns this native route. No WebView. */
 @Composable
-internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onClose: () -> Unit): Boolean {
+internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onClose: () -> Unit,
+    repositoryOverride: LavaCheckoutRepository? = null): Boolean {
     // Keep the separate permanent-course product and existing discount entry routes manual.
     if (origin.startsWith("hsk30") || origin.contains("discount")) return false
     val context = LocalContext.current
     val app = context.applicationContext as HskAiApplication
-    val repository = remember(app) { LavaCheckoutRepository(app.nativeApi(AndroidLavaApi::class.java),
+    val repository = remember(app, repositoryOverride) { repositoryOverride ?: LavaCheckoutRepository(app.nativeApi(AndroidLavaApi::class.java),
         app.authRepository::accessToken, app.authRepository::invalidateSession, origin) }
-    val model: LavaCheckoutViewModel = viewModel(viewModelStoreOwner = owner, key = "lava:$origin",
+    // One provider model per visible host. A reused session model could expose
+    // its previous manual fallback before the next provider read starts, mounting
+    // and loading the manual host twice on reopen.
+    val providerOwner = remember(owner, origin) { object : ViewModelStoreOwner {
+        override val viewModelStore = ViewModelStore()
+    } }
+    DisposableEffect(providerOwner) { onDispose { providerOwner.viewModelStore.clear() } }
+    val model: LavaCheckoutViewModel = viewModel(viewModelStoreOwner = providerOwner, key = "lava:$origin",
         factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T =
@@ -50,7 +59,7 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
     val block = state.block
     val lifecycle = LocalLifecycleOwner.current
     val close by rememberUpdatedState(onClose)
-    LaunchedEffect(model) { model.onHostOpened(); model.closeEvents.collect { close() } }
+    LaunchedEffect(model) { model.closeEvents.collect { close() } }
     LaunchedEffect(state.launchUrl) {
         state.launchUrl?.let { url ->
             val success = runCatching {
@@ -65,8 +74,10 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
         lifecycle.lifecycle.addObserver(observer)
         onDispose { lifecycle.lifecycle.removeObserver(observer) }
     }
-    if (manual || (!state.loading && block == null)) return false
-    if (block?.mode == "manual_only" && block.subscription == null && !state.error) return false
+    if ((manual && state.mode == "subscription" && block?.mode == "both") ||
+        (!state.loading && block == null && state.mode == "subscription")) return false
+    if (block?.mode == "manual_only" && block.subscription == null && state.checkoutId == 0 &&
+        block.blocked_reason == null && !state.error) return false
     BackHandler { model.requestProviderClose() }
     HskSceneSurface(Modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize().safeDrawingPadding().padding(20.dp)) {
@@ -83,7 +94,7 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
                         ProviderPlanSkeleton()
                         Spacer(Modifier.height(48.dp))
                         OutlinedTextField(value = "", onValueChange = {}, enabled = false, singleLine = true,
-                            label = { Text(stringResource(R.string.lava_email)) }, modifier = Modifier.fillMaxWidth())
+                            label = { Text(stringResource(R.string.lava_email)) }, modifier = Modifier.fillMaxWidth().testTag("provider-email"))
                         Text(stringResource(R.string.lava_terms), style = MaterialTheme.typography.bodySmall)
                         Button(onClick = {}, enabled = false, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.lava_pay)) }
                     }
@@ -108,7 +119,7 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
                         Text(stringResource(R.string.lava_title), style = MaterialTheme.typography.titleLarge)
                         val plans = block.plans.filter { it.amount != null && it.months in setOf(1, 3, 6, 12) }
                         val primary = plans.filter { it.months in setOf(1, 12) }.ifEmpty { plans.take(2) }
-                        Row(Modifier.fillMaxWidth().height(110.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Row(Modifier.fillMaxWidth().height(110.dp).testTag("provider-plans"), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             primary.forEach { plan ->
                                 FilterChip(selected = state.plan == plan.plan_type, enabled = !state.busy,
                                     onClick = { model.chooseProviderPlan(plan.plan_type) }, modifier = Modifier.weight(1f).fillMaxHeight(), label = {
@@ -133,7 +144,7 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
                         } else Spacer(Modifier.height(48.dp))
                         OutlinedTextField(value = state.email, onValueChange = model::email,
                             enabled = !state.busy, singleLine = true, label = { Text(stringResource(R.string.lava_email)) },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email), modifier = Modifier.fillMaxWidth())
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email), modifier = Modifier.fillMaxWidth().testTag("provider-email"))
                         Text(stringResource(R.string.lava_terms), style = MaterialTheme.typography.bodySmall)
                         if (block.blocked_reason != null) Text(stringResource(R.string.lava_blocked))
                         Button(onClick = model::start, enabled = !state.busy && !state.uncertainStart &&
@@ -148,7 +159,7 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
                         Text(stringResource(R.string.action_retry))
                     }
                 }
-                if (block?.mode == "both" && state.checkoutId == 0 && !state.uncertainStart && !state.busy) {
+                if (state.mode == "subscription" && block?.mode == "both" && state.checkoutId == 0 && !state.uncertainStart && !state.busy) {
                     TextButton(onClick = { manual = true }) { Text(stringResource(R.string.lava_manual)) }
                 }
             }
@@ -167,7 +178,7 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
 /** Same two primary plan slots as ready; static bars respect disabled system animations. */
 @Composable
 private fun ProviderPlanSkeleton() {
-    Row(Modifier.fillMaxWidth().height(110.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+    Row(Modifier.fillMaxWidth().height(110.dp).testTag("provider-plans"), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         repeat(2) {
             Column(Modifier.weight(1f).fillMaxHeight().background(MaterialTheme.colorScheme.surfaceVariant,
                 RoundedCornerShape(12.dp)).padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {

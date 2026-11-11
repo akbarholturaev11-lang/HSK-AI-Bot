@@ -240,7 +240,7 @@ jobs:
         run: python -m unittest tests.test_li_install_video_route
 
       - name: Verify one-time PWA exit offer and real Lava promo activation
-        run: python -m unittest tests.test_pwa_exit_offer tests.test_lava_promo_codes
+        run: python -m unittest tests.test_pwa_exit_offer tests.test_lava_promo_codes tests.test_android_lava_checkout tests.test_android_activity_feedback tests.test_pwa_learning_parity
       - name: Verify additive Li onboarding goals, streak targets and old-client compatibility
         run: python -m unittest tests.test_li_onboarding_choices
       - name: Rehearse additive Li migration 0154 without legacy data loss

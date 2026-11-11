@@ -300,21 +300,24 @@ def create_lava_router(*, runtime_getter, session_factory, settings_obj) -> APIR
             async with session_factory() as db:
                 block = await LavaCheckoutService(runtime_getter()).overview_block(
                     db, user, supports_lava=True, context_mode=data.mode)
+                from sqlalchemy import select
+                from datetime import datetime, timedelta, timezone
+                from app.db.models.lava import LavaInvoice
+                # Existing invoices/reservations remain recoverable even if
+                # sales are disabled after the first request was committed.
+                pending_id = await db.scalar(select(LavaInvoice.id).where(
+                    LavaInvoice.user_id == user.id, LavaInvoice.source == "android",
+                    LavaInvoice.kind == "first", LavaInvoice.status == "created",
+                    LavaInvoice.created_at > datetime.now(timezone.utc) - timedelta(hours=24),
+                ).order_by(LavaInvoice.id.desc()).limit(1))
+                uncertain = await db.scalar(select(LavaInvoice.id).where(
+                    LavaInvoice.user_id == user.id, LavaInvoice.source == "android",
+                    LavaInvoice.review_reason == "create_uncertain",
+                ).limit(1))
+                if block is None and (pending_id or uncertain):
+                    block = {"mode": "manual_only", "plans": [], "subscription": None}
                 if block is not None:
-                    from sqlalchemy import select
-                    from datetime import datetime, timedelta, timezone
-                    from app.db.models.lava import LavaInvoice
-                    from app.services.lava.terms import LOCAL_CONTRACT_PREFIX
-                    block["pending_checkout_id"] = await db.scalar(select(LavaInvoice.id).where(
-                        LavaInvoice.user_id == user.id, LavaInvoice.source == "android",
-                        LavaInvoice.kind == "first", LavaInvoice.status == "created",
-                        ~LavaInvoice.contract_id.like(LOCAL_CONTRACT_PREFIX + "%"),
-                        LavaInvoice.created_at > datetime.now(timezone.utc) - timedelta(hours=24),
-                    ).order_by(LavaInvoice.id.desc()).limit(1))
-                    uncertain = await db.scalar(select(LavaInvoice.id).where(
-                        LavaInvoice.user_id == user.id, LavaInvoice.source == "android",
-                        LavaInvoice.review_reason == "create_uncertain",
-                    ).limit(1))
+                    block["pending_checkout_id"] = pending_id
                     if uncertain:
                         block["blocked_reason"] = "checkout_needs_review"
                     from app.services.subscription_entry_analytics_service import SubscriptionEntryAnalyticsService

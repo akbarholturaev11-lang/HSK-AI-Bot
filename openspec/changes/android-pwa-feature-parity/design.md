@@ -27,3 +27,7 @@ Goals: independently reviewable onboarding, Direct billing and loading packages;
 ## Migration Plan
 
 No database migration or production activation. PR from ffcab1c0; automated tests and audit evidence required. Existing provider reconciliation/refunds must continue if sales are disabled. Roll back via reviewed revert or keep native Li OFF; never reset accounts, offers or financial facts. Physical Android weak-device/real OAuth/provider QA remains separate from CI.
+
+## Latest-main reconciliation (66dea5be)
+
+The continuation explicitly includes new PWA changes after the original cutoff. Safari per-opening install/photo changes remain iOS-only. The canonical bot feedback revision supersedes the old compact native candidate: extract its existing prepare/submit/helper behavior into ActivityFeedbackService and keep the PWA cookie/CSRF adapter unchanged. Native bearer adapters reuse the same locked account/feedback row, localized bot choices, cooldown, code validation and reward. Existing pending responses are never replaced on a paid/free mismatch. Native learning context is proven by stored progress/foundation/activity; no client event claims reward authority. Reuse generated course/common text and source bot choice labels. Android dialog remains one question at a time and prompts do not block course operation.

@@ -19,10 +19,15 @@
 
 - [ ] 4.1 Settle native Profile/trial independently and add reserved affected loading regions; verify slow/failure/stale-response and mutation race tests.
 
-## 5. Integration and PR
+## 5. Latest-main feedback parity
 
-- [ ] 5.1 Run localization generation/check/baseline, Android unit/lint/build/channel checks, affected backend/PWA/security and CI; record exact failures/limits in matrix.
-- [ ] 5.2 Audit diff, push isolated branch, open PR with evidence and exact-SHA CI; leave main/release/production switches untouched.
+- [ ] 5.1 Share current PWA prepare/submit behavior with native bearer routes; verify canonical context, ownership, pending paid/free changes, duplicate reward and PWA regression tests.
+- [ ] 5.2 Add native sequential bot questions after lesson/foundation/practice/Voice activity; verify UZ/RU/TJ choices, required details, actual submit/error and no local entitlement grant.
+
+## 6. Integration and PR
+
+- [ ] 6.1 Run localization generation/check/baseline, Android unit/lint/build/channel checks, affected backend/PWA/security and CI; record exact failures/limits in matrix.
+- [ ] 6.2 Audit diff, push isolated branch, open PR with evidence and exact-SHA CI; leave main/release/production switches untouched.
 
 ## Workflow follow-up
 

@@ -104,6 +104,14 @@ fun LiOnboardingChoices(
                         profile.trial?.active == true -> Text(stringResource(R.string.li_copy_nocharge))
                         profile.trial?.eligible == true -> {
                             Text(stringResource(R.string.li_copy_probody))
+                            val goalCopy = when (state.selectedGoal) {
+                                "travel" -> R.string.li_progoal_travel_subtitle
+                                "study_china" -> R.string.li_progoal_study_china_subtitle
+                                "work_china" -> R.string.li_progoal_work_china_subtitle
+                                "daily_communication" -> R.string.li_progoal_daily_communication_subtitle
+                                else -> R.string.li_progoal_hsk_exam_subtitle
+                            }
+                            Text(stringResource(goalCopy))
                             listOf(R.string.li_copy_t1 to R.string.li_copy_t1s,
                                 R.string.li_copy_t2 to R.string.li_copy_t2s,
                                 R.string.li_copy_t3 to R.string.li_copy_t3s).forEach { (title, body) ->
