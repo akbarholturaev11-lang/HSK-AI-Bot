@@ -243,20 +243,20 @@ class VoiceV8Actions(
 )
 
 internal enum class VoiceV8Status(val textRes: Int, val urgent: Boolean = false) {
-    Connect(R.string.hsk_course_voice_v8_status_connect),
-    Slow(R.string.hsk_course_voice_v8_status_slow, urgent = true),
-    Reconnect(R.string.hsk_course_voice_v8_status_reconnect),
-    Offline(R.string.hsk_course_voice_v8_status_offline, urgent = true),
-    Mic(R.string.hsk_course_voice_v8_status_mic, urgent = true),
-    Fail(R.string.hsk_course_voice_v8_status_fail, urgent = true),
-    Login(R.string.hsk_course_voice_v8_status_login, urgent = true),
-    Ready(R.string.hsk_course_voice_v8_status_ready),
-    Listening(R.string.hsk_course_voice_v8_status_listening),
-    Speaking(R.string.hsk_course_voice_v8_status_speaking),
-    Thinking(R.string.hsk_course_voice_v8_status_thinking),
-    Recording(R.string.hsk_course_voice_v8_status_recording),
-    Turn(R.string.hsk_course_voice_v8_status_turn),
-    End(R.string.hsk_course_voice_v8_status_end),
+    CONNECT(R.string.hsk_course_voice_v8_status_connect),
+    SLOW(R.string.hsk_course_voice_v8_status_slow, urgent = true),
+    RECONNECT(R.string.hsk_course_voice_v8_status_reconnect),
+    OFFLINE(R.string.hsk_course_voice_v8_status_offline, urgent = true),
+    MIC(R.string.hsk_course_voice_v8_status_mic, urgent = true),
+    FAIL(R.string.hsk_course_voice_v8_status_fail, urgent = true),
+    LOGIN(R.string.hsk_course_voice_v8_status_login, urgent = true),
+    READY(R.string.hsk_course_voice_v8_status_ready),
+    LISTENING(R.string.hsk_course_voice_v8_status_listening),
+    SPEAKING(R.string.hsk_course_voice_v8_status_speaking),
+    THINKING(R.string.hsk_course_voice_v8_status_thinking),
+    RECORDING(R.string.hsk_course_voice_v8_status_recording),
+    TURN(R.string.hsk_course_voice_v8_status_turn),
+    END(R.string.hsk_course_voice_v8_status_end),
 }
 
 internal data class VoiceV8StatusLine(val status: VoiceV8Status, val messageRes: Int? = null)
@@ -270,44 +270,44 @@ internal fun voiceV8QuotaExhausted(state: VoiceUiState): Boolean {
 
 /** The line under the orb: the PWA's `setState()` states, derived from the ViewModel. */
 internal fun voiceV8Status(state: VoiceUiState, micDenied: Boolean, ended: Boolean): VoiceV8StatusLine {
-    val noQuota = VoiceV8StatusLine(VoiceV8Status.Fail, R.string.hsk_course_voice_v8_no_quota)
-    if (ended) return VoiceV8StatusLine(VoiceV8Status.End)
-    if (micDenied) return VoiceV8StatusLine(VoiceV8Status.Mic)
+    val noQuota = VoiceV8StatusLine(VoiceV8Status.FAIL, R.string.hsk_course_voice_v8_no_quota)
+    if (ended) return VoiceV8StatusLine(VoiceV8Status.END)
+    if (micDenied) return VoiceV8StatusLine(VoiceV8Status.MIC)
     when (val error = state.error) {
         null -> Unit
-        ApiError.Offline -> return VoiceV8StatusLine(VoiceV8Status.Offline)
-        ApiError.Timeout -> return VoiceV8StatusLine(VoiceV8Status.Slow)
-        ApiError.SessionExpired -> return VoiceV8StatusLine(VoiceV8Status.Login)
+        ApiError.Offline -> return VoiceV8StatusLine(VoiceV8Status.OFFLINE)
+        ApiError.Timeout -> return VoiceV8StatusLine(VoiceV8Status.SLOW)
+        ApiError.SessionExpired -> return VoiceV8StatusLine(VoiceV8Status.LOGIN)
         is ApiError.LimitReached -> return noQuota
         is ApiError.Server -> if (error.code !in VOICE_V8_TOO_SHORT_CODES) {
-            return VoiceV8StatusLine(VoiceV8Status.Fail)
+            return VoiceV8StatusLine(VoiceV8Status.FAIL)
         }
-        else -> return VoiceV8StatusLine(VoiceV8Status.Fail)
+        else -> return VoiceV8StatusLine(VoiceV8Status.FAIL)
     }
     if (state.status == null) {
-        return VoiceV8StatusLine(if (state.isLoading) VoiceV8Status.Connect else VoiceV8Status.Fail)
+        return VoiceV8StatusLine(if (state.isLoading) VoiceV8Status.CONNECT else VoiceV8Status.FAIL)
     }
-    if (state.isStarting || (state.isLoading && !state.hasSession)) return VoiceV8StatusLine(VoiceV8Status.Connect)
+    if (state.isStarting || (state.isLoading && !state.hasSession)) return VoiceV8StatusLine(VoiceV8Status.CONNECT)
     if (!state.hasSession) {
-        return if (voiceV8QuotaExhausted(state)) noQuota else VoiceV8StatusLine(VoiceV8Status.Ready)
+        return if (voiceV8QuotaExhausted(state)) noQuota else VoiceV8StatusLine(VoiceV8Status.READY)
     }
     val status = if (state.isLive) {
         when {
             state.isLiveConnecting ->
-                if (state.isLiveReconnecting) VoiceV8Status.Reconnect else VoiceV8Status.Connect
-            !state.isLiveConnected -> VoiceV8Status.Ready
-            state.isSending -> VoiceV8Status.Thinking
-            state.isAiSpeaking -> VoiceV8Status.Speaking
-            state.isLiveMuted -> VoiceV8Status.Ready
-            else -> VoiceV8Status.Listening
+                if (state.isLiveReconnecting) VoiceV8Status.RECONNECT else VoiceV8Status.CONNECT
+            !state.isLiveConnected -> VoiceV8Status.READY
+            state.isSending -> VoiceV8Status.THINKING
+            state.isAiSpeaking -> VoiceV8Status.SPEAKING
+            state.isLiveMuted -> VoiceV8Status.READY
+            else -> VoiceV8Status.LISTENING
         }
     } else {
         when {
-            state.isRecording -> VoiceV8Status.Recording
-            state.isSending -> VoiceV8Status.Thinking
-            state.isReplyPlaying -> VoiceV8Status.Speaking
-            state.turnCount == 0 && !state.usedTurnFallback -> VoiceV8Status.Ready
-            else -> VoiceV8Status.Turn
+            state.isRecording -> VoiceV8Status.RECORDING
+            state.isSending -> VoiceV8Status.THINKING
+            state.isReplyPlaying -> VoiceV8Status.SPEAKING
+            state.turnCount == 0 && !state.usedTurnFallback -> VoiceV8Status.READY
+            else -> VoiceV8Status.TURN
         }
     }
     return VoiceV8StatusLine(status)
@@ -900,7 +900,7 @@ private fun V8VoiceSurface(
             },
             spec(reduced, 660, EaseOrb), label = "orbCenter",
         )
-        val active = statusLine.status == VoiceV8Status.Speaking || statusLine.status == VoiceV8Status.Listening
+        val active = statusLine.status == VoiceV8Status.SPEAKING || statusLine.status == VoiceV8Status.LISTENING
         V8Orb(
             size = orbSize,
             centerX = width / 2,
@@ -963,12 +963,12 @@ private fun V8TopBar(safeTop: Dp, onTopics: () -> Unit, onSettings: () -> Unit) 
             size = 49.dp,
             label = stringResource(R.string.hsk_course_voice_v8_topics_open),
             onClick = onTopics,
-        ) { V8Glyph(V8Icon.History, 25.dp, Color.White) }
+        ) { V8Glyph(V8Icon.HISTORY, 25.dp, Color.White) }
         V8CircleButton(
             size = 49.dp,
             label = stringResource(R.string.hsk_course_course_voice_inline_settings),
             onClick = onSettings,
-        ) { V8Glyph(V8Icon.Settings, 25.dp, Color.White) }
+        ) { V8Glyph(V8Icon.SETTINGS, 25.dp, Color.White) }
     }
 }
 
@@ -1449,7 +1449,7 @@ private fun V8Footer(
                         )
                         .semantics { contentDescription = plusLabel },
                     contentAlignment = Alignment.Center,
-                ) { V8Glyph(V8Icon.Plus, 22.dp, Color.White) }
+                ) { V8Glyph(V8Icon.PLUS, 22.dp, Color.White) }
                 val promptLabel = stringResource(R.string.hsk_course_voice_v8_prompt_label)
                 BasicTextField(
                     value = prompt,
@@ -1487,7 +1487,7 @@ private fun V8Footer(
                 pressed = micOn && !micDisabled,
                 dimmed = false,
                 onClick = onMic,
-            ) { V8Glyph(if (micOn && !micDisabled) V8Icon.Mic else V8Icon.MicMuted, 22.dp, Color.White) }
+            ) { V8Glyph(if (micOn && !micDisabled) V8Icon.MIC else V8Icon.MIC_MUTED, 22.dp, Color.White) }
             if (!typing) {
                 // #close
                 V8CircleButton(
@@ -1497,7 +1497,7 @@ private fun V8Footer(
                     borderColor = Color.White,
                     highlight = false,
                     onClick = onClose,
-                ) { V8Glyph(V8Icon.Close, 24.dp, Color.Black) }
+                ) { V8Glyph(V8Icon.CLOSE, 24.dp, Color.Black) }
             } else {
                 // #send
                 val enabled = ready && !busy
@@ -1518,7 +1518,7 @@ private fun V8Footer(
                         )
                         .semantics { contentDescription = sendLabel },
                     contentAlignment = Alignment.Center,
-                ) { V8Glyph(V8Icon.Send, 25.dp, if (enabled) Color.White else Color(0xFFAAAAAA)) }
+                ) { V8Glyph(V8Icon.SEND, 25.dp, if (enabled) Color.White else Color(0xFFAAAAAA)) }
             }
         }
     }
@@ -2038,7 +2038,7 @@ private fun V8DismissX(label: String, onClick: () -> Unit) {
             )
             .semantics { contentDescription = label },
         contentAlignment = Alignment.Center,
-    ) { V8Glyph(V8Icon.Dismiss, 16.dp, Color.White) }
+    ) { V8Glyph(V8Icon.DISMISS, 16.dp, Color.White) }
 }
 
 // --- end dialog and ended state -------------------------------------------------
@@ -2134,17 +2134,17 @@ private fun V8RestartButton(text: String, color: Color, onClick: () -> Unit) {
 // --- icons (the reference's inline SVGs on a 24-unit view box) ------------------
 
 private enum class V8Icon(val paths: List<String>, val stroke: Float) {
-    History(listOf("M4 7h16M4 16h10"), 2.4f),
-    Settings(listOf("M3 7h18M3 17h18"), 2.4f),
-    Plus(listOf("M12 2v20M2 12h20"), 2.3f),
-    Mic(listOf("M9 5a3 3 0 0 1 6 0v6a3 3 0 0 1-6 0z", "M5 10a7 7 0 0 0 14 0M12 17v5M8 22h8"), 2.4f),
-    MicMuted(
+    HISTORY(listOf("M4 7h16M4 16h10"), 2.4f),
+    SETTINGS(listOf("M3 7h18M3 17h18"), 2.4f),
+    PLUS(listOf("M12 2v20M2 12h20"), 2.3f),
+    MIC(listOf("M9 5a3 3 0 0 1 6 0v6a3 3 0 0 1-6 0z", "M5 10a7 7 0 0 0 14 0M12 17v5M8 22h8"), 2.4f),
+    MIC_MUTED(
         listOf("M10 9v2.2c0 1 .5 1.7 1.1 2.1M14 8V5a2 2 0 0 0-4 0v1M7 12c.2 2.7 2.2 4.6 5 4.6 1 0 1.8-.2 2.5-.7M17 12c0 .6-.1 1.1-.3 1.6M12 17v4m-4 0h8M2 2l20 20"),
         2.4f,
     ),
-    Close(listOf("M4 4l16 16M20 4 4 20"), 2.4f),
-    Send(listOf("m12 19 0-14M6 11l6-6 6 6"), 2.3f),
-    Dismiss(listOf("M5 5l14 14M19 5 5 19"), 2.5f),
+    CLOSE(listOf("M4 4l16 16M20 4 4 20"), 2.4f),
+    SEND(listOf("m12 19 0-14M6 11l6-6 6 6"), 2.3f),
+    DISMISS(listOf("M5 5l14 14M19 5 5 19"), 2.5f),
 }
 
 @Composable
@@ -2155,7 +2155,7 @@ private fun V8Glyph(icon: V8Icon, size: Dp, color: Color) {
         withTransform({ scale(unit, unit, pivot = Offset.Zero) }) {
             val stroke = Stroke(width = icon.stroke, cap = StrokeCap.Round, join = StrokeJoin.Round)
             paths.forEach { drawPath(it, color, style = stroke) }
-            if (icon == V8Icon.Settings) drawSettingsKnobs(color, stroke)
+            if (icon == V8Icon.SETTINGS) drawSettingsKnobs(color, stroke)
         }
     }
 }

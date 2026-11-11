@@ -19,54 +19,54 @@ class VoiceV8StatusTest {
         voiceV8Status(state, micDenied, ended).status
 
     @Test fun beforeASessionTheOrbIsReadyOrConnecting() {
-        assertEquals(VoiceV8Status.Ready, of(idle))
-        assertEquals(VoiceV8Status.Connect, of(idle.copy(isStarting = true)))
-        assertEquals(VoiceV8Status.Connect, of(VoiceUiState(isLoading = true)))
+        assertEquals(VoiceV8Status.READY, of(idle))
+        assertEquals(VoiceV8Status.CONNECT, of(idle.copy(isStarting = true)))
+        assertEquals(VoiceV8Status.CONNECT, of(VoiceUiState(isLoading = true)))
     }
 
     @Test fun anExhaustedFreeAllowanceSaysSoButNotForPro() {
         val spent = idle.copy(status = free.copy(remainingVoiceLimit = 0), remainingLimit = 0)
         val line = voiceV8Status(spent, micDenied = false, ended = false)
-        assertEquals(VoiceV8Status.Fail, line.status)
+        assertEquals(VoiceV8Status.FAIL, line.status)
         assertEquals(R.string.hsk_course_voice_v8_no_quota, line.messageRes)
         val pro = spent.copy(status = spent.status!!.copy(isPaid = true))
-        assertEquals(VoiceV8Status.Ready, of(pro))
+        assertEquals(VoiceV8Status.READY, of(pro))
     }
 
     @Test fun liveStatesFollowTheSocket() {
-        assertEquals(VoiceV8Status.Listening, of(live))
-        assertEquals(VoiceV8Status.Speaking, of(live.copy(isAiSpeaking = true)))
-        assertEquals(VoiceV8Status.Thinking, of(live.copy(isSending = true)))
-        assertEquals(VoiceV8Status.Ready, of(live.copy(isLiveMuted = true)))
-        assertEquals(VoiceV8Status.Connect, of(live.copy(isLiveConnected = false, isLiveConnecting = true)))
+        assertEquals(VoiceV8Status.LISTENING, of(live))
+        assertEquals(VoiceV8Status.SPEAKING, of(live.copy(isAiSpeaking = true)))
+        assertEquals(VoiceV8Status.THINKING, of(live.copy(isSending = true)))
+        assertEquals(VoiceV8Status.READY, of(live.copy(isLiveMuted = true)))
+        assertEquals(VoiceV8Status.CONNECT, of(live.copy(isLiveConnected = false, isLiveConnecting = true)))
         assertEquals(
-            VoiceV8Status.Reconnect,
+            VoiceV8Status.RECONNECT,
             of(live.copy(isLiveConnected = false, isLiveConnecting = true, isLiveReconnecting = true)),
         )
     }
 
     @Test fun turnStatesFollowTheRecorderAndThePlayer() {
-        assertEquals(VoiceV8Status.Ready, of(turn))
-        assertEquals(VoiceV8Status.Recording, of(turn.copy(isRecording = true)))
-        assertEquals(VoiceV8Status.Thinking, of(turn.copy(isSending = true)))
-        assertEquals(VoiceV8Status.Speaking, of(turn.copy(turnCount = 1, isReplyPlaying = true)))
-        assertEquals(VoiceV8Status.Turn, of(turn.copy(turnCount = 1)))
-        assertEquals(VoiceV8Status.Turn, of(turn.copy(usedTurnFallback = true)))
+        assertEquals(VoiceV8Status.READY, of(turn))
+        assertEquals(VoiceV8Status.RECORDING, of(turn.copy(isRecording = true)))
+        assertEquals(VoiceV8Status.THINKING, of(turn.copy(isSending = true)))
+        assertEquals(VoiceV8Status.SPEAKING, of(turn.copy(turnCount = 1, isReplyPlaying = true)))
+        assertEquals(VoiceV8Status.TURN, of(turn.copy(turnCount = 1)))
+        assertEquals(VoiceV8Status.TURN, of(turn.copy(usedTurnFallback = true)))
     }
 
     @Test fun errorsMicAndEndTakePrecedence() {
-        assertEquals(VoiceV8Status.End, of(live, micDenied = true, ended = true))
-        assertEquals(VoiceV8Status.Mic, of(live, micDenied = true))
-        assertEquals(VoiceV8Status.Offline, of(live.copy(error = ApiError.Offline)))
-        assertEquals(VoiceV8Status.Slow, of(live.copy(error = ApiError.Timeout)))
-        assertEquals(VoiceV8Status.Login, of(live.copy(error = ApiError.SessionExpired)))
-        assertEquals(VoiceV8Status.Fail, of(live.copy(error = ApiError.Unknown)))
-        assertEquals(VoiceV8Status.Fail, of(idle.copy(error = ApiError.LimitReached(resetAt = null, messageRes = 0))))
+        assertEquals(VoiceV8Status.END, of(live, micDenied = true, ended = true))
+        assertEquals(VoiceV8Status.MIC, of(live, micDenied = true))
+        assertEquals(VoiceV8Status.OFFLINE, of(live.copy(error = ApiError.Offline)))
+        assertEquals(VoiceV8Status.SLOW, of(live.copy(error = ApiError.Timeout)))
+        assertEquals(VoiceV8Status.LOGIN, of(live.copy(error = ApiError.SessionExpired)))
+        assertEquals(VoiceV8Status.FAIL, of(live.copy(error = ApiError.Unknown)))
+        assertEquals(VoiceV8Status.FAIL, of(idle.copy(error = ApiError.LimitReached(resetAt = null, messageRes = 0))))
         // A too-short recording is a toast, not a failure: the turn goes on.
         val short = turn.copy(turnCount = 1, error = ApiError.Server("TRANSCRIPTION_EMPTY", 0))
-        assertEquals(VoiceV8Status.Turn, of(short))
-        assertTrue(VoiceV8Status.Offline.urgent)
-        assertTrue(!VoiceV8Status.Listening.urgent)
+        assertEquals(VoiceV8Status.TURN, of(short))
+        assertTrue(VoiceV8Status.OFFLINE.urgent)
+        assertTrue(!VoiceV8Status.LISTENING.urgent)
     }
 
     @Test fun messagesPutTheCorrectionUnderTheLearnersLineAndSkipBlanks() {

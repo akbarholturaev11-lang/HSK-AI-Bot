@@ -74,9 +74,9 @@ class AndroidVoiceUIAdoptionTests(unittest.TestCase):
             with self.subTest(key=generated_key):
                 self.assertIn(f"R.string.{generated_key}", combined)
         v8_screen = sources[VOICE_FILES[0]]
-        self.assertIn("if (state.isLiveReconnecting) VoiceV8Status.Reconnect else VoiceV8Status.Connect",
+        self.assertIn("if (state.isLiveReconnecting) VoiceV8Status.RECONNECT else VoiceV8Status.CONNECT",
                       v8_screen)
-        self.assertIn("state.isLiveMuted -> VoiceV8Status.Ready", v8_screen)
+        self.assertIn("state.isLiveMuted -> VoiceV8Status.READY", v8_screen)
         for call in ("latestActions.toggleRecording()", "latestActions.sendText(value)",
                      "latestActions.endSession()"):
             self.assertIn(call, v8_screen)
