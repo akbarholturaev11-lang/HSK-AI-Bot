@@ -78,7 +78,8 @@ EXPECTED_GENERATED_CALLS = {
     "hsk_course_help": 1,
     "hsk_common_action_logout": 1,
     "hsk_common_state_loading": 1,
-    "hsk_course_voice_page_what_to_say": 1,
+    # The AI Voice V8 screen replaced the call screen that used these two.
+    "hsk_course_voice_page_what_to_say": 0,
     "hsk_course_lesson_flow_retry": 12,
     "hsk_common_desktopAuth_referralInvalid": 1,
     "hsk_common_desktopAuth_providerFailed": 1,
@@ -86,7 +87,7 @@ EXPECTED_GENERATED_CALLS = {
     "hsk_course_rating_referral_joined": 1,
     "hsk_course_rating_weekly_heading": 1,
     "hsk_common_desktopA11y_courseNavigation": 1,
-    "hsk_course_memorize_finish": 1,
+    "hsk_course_memorize_finish": 0,
     "hsk_course_rating_write_telegram": 1,
     "hsk_common_navigation_challenges": 1,
 }

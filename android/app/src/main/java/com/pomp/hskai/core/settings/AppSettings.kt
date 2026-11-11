@@ -147,15 +147,17 @@ class AppSettings(context: Context) : LessonResumeStore {
         .map { it[LAST_REMINDER_DATE_KEY] }
 
     /**
-     * AI Voice call settings, mirroring the Mini App's `hsk_voice_sub` and
-     * `hsk_voice_rate`: whether the pinyin and translation are shown under a
-     * reply, and whether the partner speaks slowly.
+     * AI Voice V8 settings sheet, the same three switches and defaults as the
+     * PWA's `hsk_voice_pinyin`, `hsk_voice_translation` and `hsk_voice_backdrop`.
      */
-    val voiceSubtitles: Flow<Boolean> = appContext.settingsDataStore.data
-        .map { it[VOICE_SUBTITLES_KEY] ?: true }
+    val voiceV8Pinyin: Flow<Boolean> = appContext.settingsDataStore.data
+        .map { it[VOICE_V8_PINYIN_KEY] ?: false }
 
-    val voiceSlowSpeech: Flow<Boolean> = appContext.settingsDataStore.data
-        .map { it[VOICE_SLOW_SPEECH_KEY] ?: false }
+    val voiceV8Translation: Flow<Boolean> = appContext.settingsDataStore.data
+        .map { it[VOICE_V8_TRANSLATION_KEY] ?: true }
+
+    val voiceV8Backdrop: Flow<Boolean> = appContext.settingsDataStore.data
+        .map { it[VOICE_V8_BACKDROP_KEY] ?: true }
 
     /**
      * Whether the one-time notification primer has been answered.
@@ -221,12 +223,16 @@ class AppSettings(context: Context) : LessonResumeStore {
         appContext.settingsDataStore.edit { it.remove(SUBSCRIPTION_DISPLAY_CURRENCY_KEY) }
     }
 
-    suspend fun setVoiceSubtitles(value: Boolean) {
-        appContext.settingsDataStore.edit { it[VOICE_SUBTITLES_KEY] = value }
+    suspend fun setVoiceV8Pinyin(value: Boolean) {
+        appContext.settingsDataStore.edit { it[VOICE_V8_PINYIN_KEY] = value }
     }
 
-    suspend fun setVoiceSlowSpeech(value: Boolean) {
-        appContext.settingsDataStore.edit { it[VOICE_SLOW_SPEECH_KEY] = value }
+    suspend fun setVoiceV8Translation(value: Boolean) {
+        appContext.settingsDataStore.edit { it[VOICE_V8_TRANSLATION_KEY] = value }
+    }
+
+    suspend fun setVoiceV8Backdrop(value: Boolean) {
+        appContext.settingsDataStore.edit { it[VOICE_V8_BACKDROP_KEY] = value }
     }
 
     suspend fun setPinyinVisibility(value: PinyinVisibility) {
@@ -353,8 +359,9 @@ class AppSettings(context: Context) : LessonResumeStore {
         val DAILY_GOAL_KEY = intPreferencesKey("daily_goal_xp")
         val LAST_STUDY_SETUP_ASKED_AT_KEY = longPreferencesKey("hsk_v3_setup_asked")
         val LAST_REMINDER_DATE_KEY = stringPreferencesKey("last_reminder_date")
-        val VOICE_SUBTITLES_KEY = booleanPreferencesKey("hsk_voice_sub")
-        val VOICE_SLOW_SPEECH_KEY = booleanPreferencesKey("hsk_voice_rate_slow")
+        val VOICE_V8_PINYIN_KEY = booleanPreferencesKey("hsk_voice_pinyin")
+        val VOICE_V8_TRANSLATION_KEY = booleanPreferencesKey("hsk_voice_translation")
+        val VOICE_V8_BACKDROP_KEY = booleanPreferencesKey("hsk_voice_backdrop")
         val NOTIFICATION_PRIMER_SEEN_KEY = booleanPreferencesKey("notification_primer_seen")
         val ADS_UNLOCKED_AFTER_LIMIT_KEY = booleanPreferencesKey("ads_unlocked_after_limit:v1")
         val PAYMENT_REGION_KEY = stringPreferencesKey("payment_region:v1")

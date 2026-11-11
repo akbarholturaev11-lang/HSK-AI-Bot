@@ -172,6 +172,12 @@ sealed interface ApiError {
                 "android_voice_unavailable",
                 -> R.string.error_voice_unavailable
 
+                // A recording too short to transcribe: say so, as the PWA does.
+                "TRANSCRIPTION_EMPTY",
+                "EMPTY_AUDIO",
+                "LIVE_TURN_EMPTY",
+                -> R.string.hsk_course_course_voice_inline_too_short
+
                 // Admin-blocked account. The Telegram flow never reaches the
                 // approval step while blocked; a provider flow is refused here
                 // instead, so the reason must be stated rather than shown as a

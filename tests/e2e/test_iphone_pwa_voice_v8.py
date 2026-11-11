@@ -206,6 +206,8 @@ def test_live_conversation_streams_pcm_types_mutes_and_ends_on_time_limit(static
         log["socket"].send(json.dumps({"type": "time_limit"}))
         expect(page.locator("#app")).to_have_class(re.compile(r"\bended\b"))
         expect(page.locator(".restart p")).to_have_text(UZ["voiceV8.statusEnd"])
+        # Not only present: on top of the black voice screen and clickable.
+        page.locator("#restart").click(trial=True, timeout=3000)
         wait_until(page, lambda: log["ends"] == [{"session_id": "voice-session-1"}], "session must end on server")
         mic_closed(page)
         assert not log["errors"]
