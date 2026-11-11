@@ -63,6 +63,7 @@ from app.services.desktop_app_promo_settings_service import (
     DESKTOP_APP_PROMO_MEDIA_ROOT, DESKTOP_APP_PROMO_SETTINGS_KEY,
     DesktopAppPromoSettings,
     desktop_app_promo_media_full_path, get_desktop_app_promo_settings,
+    normalize_android_play_url,
     save_desktop_app_promo_settings,
 )
 
@@ -128,6 +129,19 @@ class DesktopPromoChange(StrictModel):
     media_sha256: Annotated[str, Field(pattern=r"^[0-9a-f]{64}$")] | None = None
     media_size: Annotated[int, Field(strict=True, ge=1, le=_PWA_PROMO_IMAGE_MAX_BYTES)] | None = None
     clear_media: bool = False
+    # None keeps the stored destination (older cached editors omit the field);
+    # "" clears it, so Android routing falls back to the Direct APK.
+    android_play_url: Annotated[str, Field(max_length=512)] | None = None
+
+    @field_validator("android_play_url")
+    @classmethod
+    def official_play_listing(cls, value):
+        if value is None:
+            return None
+        normalized = normalize_android_play_url(value)
+        if normalized is None:
+            raise ValueError("Only the official Google Play listing is accepted")
+        return normalized
 
     @model_validator(mode="after")
     def exact_media_operation(self):
@@ -803,6 +817,8 @@ async def execute_marketing(db, *, session_cookie, request, settings_obj,
                 promo_change = change.model_dump(exclude={
                     "kind", "media_sha256", "media_size", "clear_media",
                 })
+                if change.android_play_url is None:
+                    promo_change.pop("android_play_url")
                 if change.media_sha256 is not None:
                     new_promo_filename = await asyncio.to_thread(
                         _write_promo_image, media_bytes, media_extension,

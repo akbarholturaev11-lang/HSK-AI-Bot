@@ -13,6 +13,51 @@
 
 ---
 
+## Permanent Backend / PWA speed and progressive-loading rule
+
+For every new or changed backend endpoint and learner PWA feature, consult
+[docs/PERFORMANCE_PWA_PROGRESSIVE_LOADING.md](docs/PERFORMANCE_PWA_PROGRESSIVE_LOADING.md)
+**before coding**. For the project-wide objectives and required acceptance behavior, also read
+[docs/PERFORMANCE_BACKEND_PWA_GOALS_REQUIREMENTS.md](docs/PERFORMANCE_BACKEND_PWA_GOALS_REQUIREMENTS.md)
+when drafting, expanding or reviewing **PWA, Android and shared Backend** performance work; it contains stable goals plus a mandate to build a separate lean plan from the latest `main` with the repository's `$hsk-ai-openspec-planning` skill. Consolidate duplicate work and organize a large plan into independently testable work packages **within the same PWA + Android + Backend initiative**; Android must be included from the beginning, not assigned to a future separate phase. This is a requirements contract, never a substitute for fresh code audit or an implementation plan. Build fast first paint, session-safe shell, per-section
+skeleton/loading/empty/error/retry, first-viewport asset priority, bounded and
+deduplicated API requests, pagination and safe caching into the feature from
+its first version. Audit SQL/transaction/timeouts and preserve Android/Mini App
+contracts. Add focused behavioral regression tests; the CI policy and
+Chromium/WebKit regressions in
+`.github/workflows/backend-pwa-performance-contract.yml` apply to future
+changes as well. Never claim a CI pass is equivalent to measured performance.
+
+## Always preserve PWA loading geometry for future features
+
+Every new or changed learner PWA component must display a skeleton that
+occupies the **same positions and approximate dimensions** as its final
+content (title, cards, icons, image areas, rows and bottom-nav anchors). Do
+not replace a detailed screen with a generic two-line loading box, even when
+its API is fast locally. Independently replace each ready piece **in place**
+with an opacity-only short transition, no scrolling/CLS jump, and respect
+`prefers-reduced-motion`. For complex screens (e.g. Rating podium and rows)
+prove loading→ready geometry in Chromium and WebKit with a focused Playwright
+test and `tests/pwa_layout_geometry.py`. This permanent rule and remaining
+Rating remediation are tracked in
+[docs/PERFORMANCE_PWA_PROGRESSIVE_LOADING.md](docs/PERFORMANCE_PWA_PROGRESSIVE_LOADING.md).
+
+---
+
+## Active product scope: PWA + Android
+
+The owner’s permanent prioritization rule is in `AGENTS.md`
+(“Hozirgi mahsulot ustuvorligi: PWA + Android”). Apply it **before**
+desktop parity, desktop Coming Soon, or cross-platform completeness guidance:
+spend implementation and agent tokens on PWA/Android and their required shared
+systems only. Keep shared contracts reusable for a possible future desktop
+connection; **do not build speculative desktop code or run standalone desktop
+parity work.** Existing Telegram teaching stays operational today; the
+bot-to-PWA/Android-only handoff is a **future direction, not an instruction
+to remove current lessons or migrate now**.
+
+---
+
 ## Permanent UI localization ownership
 
 Before adding/editing user-facing fixed copy or introducing a language, follow
@@ -61,7 +106,12 @@ Git branch, recovery, test, and push/promotion rules are maintained in `AGENTS.m
 
 ---
 
-## Desktop DMG/EXE Parity Rule
+## Desktop DMG/EXE Parity Rule — dormant unless explicitly authorized
+
+This rule does **not** activate desktop work during PWA/Android tasks. Apply
+only if the owner explicitly scopes a desktop implementation in the future;
+shared-code compatibility work must remain minimal under the active priority
+in `AGENTS.md`.
 
 - macOS DMG and Windows EXE desktop apps are a paired product and must stay functionally aligned.
 - If a feature, user-visible behavior, UI flow, backend/API contract, setting, security fix, or update behavior is added or changed in one desktop app, implement and test the corresponding change for the other app in the same task, adapted to that operating system.
@@ -70,7 +120,10 @@ Git branch, recovery, test, and push/promotion rules are maintained in `AGENTS.m
 
 ---
 
-## Desktop Coming Soon Activation Rule
+## Desktop Coming Soon Activation Rule — dormant unless explicitly authorized
+
+Apply the following UX constraints only within a separately authorized
+Desktop task; a placeholder does not authorize new Desktop development.
 
 - Desktop UI blocks marked as `soonBlock`, "Soon", "Tez orada", or placeholders must stay in their current in-place location until the real feature is implemented.
 - When one of these placeholder blocks becomes functional, remove the disabled/soon wrapper from that same block and connect the existing in-block button, row, or primary action to the real flow.

@@ -2459,7 +2459,7 @@ async def li_iphone_install_guide_video():
 
     The video is deliberately not synthesized or silently substituted with
     other user media. Missing approved MP4 returns 404; the Li guide displays
-    the canonical four-step fallback and still allows course continuation.
+    the canonical three-step fallback and still allows course continuation.
     """
     path = Path("app/static/assets/onboarding/iphone-home-screen.mp4")
     if not path.is_file():
@@ -2739,8 +2739,7 @@ async def _course_v3_map_for_user(
     Both callers acquire the User row lock before this shared read/write. The
     existing map owns level restoration, HSK30 access, XP, policy and analytics.
     """
-    import json as _json
-    from pathlib import Path
+    from app.services.course_map_template_cache import load_course_map_template
     from app.services.smart_reminder_preferences import automatic_timezone_initialization_allowed
 
     dedupe_prefix = "course-v3" if default_source == "course_v3" else "pwa-course-v3"
@@ -2809,11 +2808,10 @@ async def _course_v3_map_for_user(
 
     resolved_level = target_band
 
-    map_path = Path(f"app/static/course_v3_data/{resolved_level}.json")
-    if not map_path.exists():
-        map_path = Path("app/static/course_v3_data/hsk1.json")
+    # Only public, versioned templates are cached. Every request gets its own
+    # mutable deep copy before applying private progress and entitlement data.
     try:
-        data = _json.loads(map_path.read_text())
+        data = load_course_map_template(resolved_level)
     except Exception:
         return JSONResponse(status_code=500, content={"ok": False, "error": "map_load_failed"})
 
@@ -6693,6 +6691,21 @@ async def miniapp_event(request: Request):
         if event == "v2_lesson_completed":
             return {"ok": False, "error": "course_lesson_flow_required"}
 
+        if event == "foundation_completed":
+            user = await UserRepository(session).get_by_telegram_id(telegram_id)
+            if user is None:
+                return {"ok": False, "error": "access_start_first"}
+            result = await CourseMiniAppProfileService(session).complete_foundation(
+                user, foundation_id=payload.get("foundation_id") or "starter0_hsk1",
+                foundation_version=payload.get("foundation_version"),
+                speaking_bonus=payload.get("speaking_bonus", False),
+                event_id=str(payload.get("event_id") or payload.get("dedupe_key") or "foundation:starter0_hsk1:v1"),
+                source="course_v3", session_id=str(payload.get("session_id") or "")[:80] or None,
+            )
+            if result.get("ok"):
+                await session.commit()
+            return result
+
         if event in analytics_service.CLIENT_EVENT_NAMES:
             user = await UserRepository(session).get_by_telegram_id(telegram_id)
             if event in SALES_EXPERIMENT_CLIENT_EVENTS:
@@ -6745,6 +6758,14 @@ async def miniapp_event(request: Request):
                             trusted_payload.get("target_platform") or ""
                         ),
                         action=action,
+                    )
+                elif event == "android_play_opened":
+                    # Opening the Play listing is the Android offer accepted:
+                    # the same cooldown the Direct APK request starts.
+                    await AppPromoDecisionService(session).mark(
+                        telegram_id=telegram_id,
+                        target_platform="android",
+                        action="download_requested",
                     )
                 await session.commit()
             return result

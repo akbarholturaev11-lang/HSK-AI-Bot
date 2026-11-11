@@ -114,6 +114,40 @@ class CourseMiniAppProfileService:
             "status": "completed" if completed else "required" if required else "optional",
         }
 
+    async def complete_foundation(
+        self, user, *, foundation_id, foundation_version, speaking_bonus=False,
+        event_id, source, session_id=None,
+    ) -> dict:
+        """One canonical completion for all clients; caller commits before ACK."""
+        from app.repositories.user_repo import UserRepository
+        from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
+
+        if (foundation_id != COURSE_FOUNDATION_ID
+                or type(foundation_version) is not int
+                or foundation_version != COURSE_FOUNDATION_VERSION
+                or not isinstance(event_id, str) or not 1 <= len(event_id.strip()) <= 120):
+            return {"ok": False, "error": "foundation_invalid"}
+        user = await UserRepository(self.session).get_by_user_id(user.id, lock=True)
+        if user is None or user.status == "blocked":
+            return {"ok": False, "error": "access_blocked"}
+        status = await self.foundation_status(user)
+        if status["completed"]:
+            return {"ok": True, "duplicate": True, "foundation": status}
+        result = await CourseMiniAppAnalyticsService(self.session).record_server_event(
+            event_name="foundation_completed", user_id=user.id,
+            telegram_id=user.telegram_id, source=source, level="hsk1",
+            session_id=session_id, dedupe_key=event_id.strip(),
+            payload={"foundation_id": COURSE_FOUNDATION_ID,
+                     "foundation_version": COURSE_FOUNDATION_VERSION,
+                     "speaking_bonus": bool(speaking_bonus)},
+        )
+        if not result.get("ok"):
+            return {"ok": False, "error": "foundation_save_failed"}
+        status = await self.foundation_status(user)
+        if not status["completed"]:
+            return {"ok": False, "error": "foundation_save_failed"}
+        return {"ok": True, "duplicate": bool(result.get("duplicate")), "foundation": status}
+
     @staticmethod
     def normalize_preferred_focus(value) -> str | None:
         """Bo'sh/berilmagan qiymat -> None ("hali so'ralmagan"). Noma'lum -> xato.

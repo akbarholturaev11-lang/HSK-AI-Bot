@@ -1040,6 +1040,14 @@
     "practiceGate.back": "Orqaga",
     "lessonPreview.helloGloss": "salom",
     "rating.leagueName": "{league} ligasi",
-    "rating.membersTotal": "jami ishtirokchi"
+    "rating.membersTotal": "jami ishtirokchi",
+    "pwaFeedback.quickQuestion": "Qanday o'tdi?",
+    "pwaFeedback.positive": "Yoqdi",
+    "pwaFeedback.unclear": "Tushunish qiyin",
+    "pwaFeedback.technical": "Texnik muammo",
+    "pwaFeedback.optionalComment": "Izoh (ixtiyoriy)",
+    "pwaFeedback.foundationTitle": "0 dan asoslar haqida",
+    "pwaFeedback.practiceTitle": "Mashq haqida",
+    "pwaFeedback.voiceTitle": "AI Voice haqida"
   }
 }

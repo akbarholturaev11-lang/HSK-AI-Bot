@@ -186,6 +186,7 @@ class DesktopDownloadServiceTests(unittest.IsolatedAsyncioTestCase):
             # iOS'ga alohida ilova yo'q — o'lik tugma chiqmasin.
             self.assertFalse(payload["promo"]["platform_targets"]["ios"])
 
+    @patch("app.services.app_promo_decision_service.PROMO_COOLDOWN_DAYS", 14)
     async def test_any_recent_legacy_promo_impression_bridges_to_unified_cooldown(self):
         """Deploy eski userni darrov qayta reklama bilan bezovta qilmasin."""
         async with self.sessions() as session:
@@ -210,6 +211,7 @@ class DesktopDownloadServiceTests(unittest.IsolatedAsyncioTestCase):
             self.assertFalse(promo["placements"]["lesson_end_promo"])
             self.assertFalse(promo["placements"]["ad_promo"])
 
+    @patch("app.services.app_promo_decision_service.PROMO_COOLDOWN_DAYS", 14)
     async def test_legacy_lesson_end_impression_blocks_all_auto_placements(self):
         async with self.sessions() as session:
             session.add(
@@ -343,6 +345,65 @@ class DesktopDownloadServiceTests(unittest.IsolatedAsyncioTestCase):
         promo = await self._android_only_promo(android_chip=True, release=None)
         self.assertEqual(promo["reason"], "not_ready")
         self.assertFalse(promo["eligible"])
+
+    async def _routing_status(self, *, platforms, play_url="", release=None,
+                              current_platform="android", **overrides):
+        async with self.sessions() as session:
+            await save_desktop_app_promo_settings(session, {
+                "enabled": True, "daily_limit": 3,
+                "placements": {"home_prompt": True, "lesson_end_promo": True,
+                               "ad_promo": True},
+                "platforms": platforms, "android_play_url": play_url,
+            })
+            await session.commit()
+        values = dict(PWA_AUTH_ENABLED=True, PUBLIC_SITE_URL="https://app.example.test")
+        values.update(overrides)
+        with patch.object(AndroidReleaseService, "serve", AsyncMock(return_value=release)):
+            async with self.sessions() as session:
+                return await DesktopDownloadService(session, _settings(**values)).status(
+                    1001, current_platform=current_platform)
+
+    async def test_play_listing_routes_android_even_without_a_direct_apk(self):
+        play = "https://play.google.com/store/apps/details?id=com.pomp.hskai"
+        on = {"macos": True, "windows": True, "android": True, "ios": False}
+        payload = await self._routing_status(platforms=on, play_url=play)
+        self.assertEqual(payload["downloads"]["android_play"], play)
+        self.assertTrue(payload["platforms"]["android"])
+        self.assertEqual(payload["promo"]["target_platform"], "android")
+        self.assertTrue(payload["promo"]["eligible"])
+        # The client reads the rest period from here: 0 = off (owner decision).
+        self.assertEqual(payload["promo"]["cooldown_days"], 0)
+        # No listing: Direct APK stays the route and needs a real release.
+        payload = await self._routing_status(
+            platforms=on, release=SimpleNamespace(download_url=None, file_id="f"))
+        self.assertIsNone(payload["downloads"]["android_play"])
+        self.assertTrue(payload["platforms"]["android"])
+        # The Android switch off hides both routes.
+        payload = await self._routing_status(
+            platforms={**on, "android": False}, play_url=play,
+            release=SimpleNamespace(download_url=None, file_id="f"))
+        self.assertIsNone(payload["downloads"]["android_play"])
+        self.assertFalse(payload["platforms"]["android"])
+        self.assertFalse(payload["promo"]["platform_targets"]["android"])
+
+    async def test_iphone_pwa_target_follows_its_own_switch_and_the_pwa_gate(self):
+        off = {"macos": True, "windows": True, "android": True, "ios": False}
+        payload = await self._routing_status(platforms=off, current_platform="ios")
+        self.assertFalse(payload["platforms"]["ios"])
+        self.assertFalse(payload["promo"]["platform_targets"]["ios"])
+        self.assertFalse(payload["promo"]["eligible"])
+        on = {**off, "ios": True}
+        payload = await self._routing_status(platforms=on, current_platform="ios")
+        self.assertTrue(payload["platforms"]["ios"])
+        self.assertEqual(payload["promo"]["target_platform"], "ios")
+        self.assertTrue(payload["promo"]["eligible"])
+        # Android routing is independent of the iPhone switch and vice versa.
+        self.assertTrue(payload["promo"]["platform_targets"]["macos"])
+        # The learner PWA itself off (deploy flag) means no iPhone offer.
+        payload = await self._routing_status(
+            platforms=on, current_platform="ios", PWA_AUTH_ENABLED=False)
+        self.assertFalse(payload["platforms"]["ios"])
+        self.assertFalse(payload["promo"]["eligible"])
 
     async def test_request_returns_tracked_download_page_and_safe_filename(self):
         async with self.sessions() as session:

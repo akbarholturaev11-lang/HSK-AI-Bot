@@ -163,6 +163,9 @@ class HskAiApplication : Application() {
             .build()
     }
 
+    /** Flavor-owned transports use the same allowlisted network stack. */
+    fun <T> nativeApi(type: Class<T>): T = retrofit.create(type)
+
     private val retrofit: Retrofit by lazy {
         Retrofit.Builder()
             .baseUrl("${BuildConfig.API_ORIGIN}/")
@@ -287,6 +290,12 @@ class HskAiApplication : Application() {
             accessToken = authRepository::accessToken,
             onSessionExpired = authRepository::invalidateSession,
         )
+    }
+
+    val activityFeedbackRepository by lazy {
+        com.pomp.hskai.feature.feedback.ActivityFeedbackRepository(
+            nativeApi(com.pomp.hskai.feature.feedback.AndroidActivityFeedbackApi::class.java),
+            authRepository::accessToken, authRepository::invalidateSession)
     }
 
     val onboardingRepository: OnboardingRepository by lazy {

@@ -1658,6 +1658,8 @@ class AndroidFeatureAuthTests(unittest.IsolatedAsyncioTestCase):
         ("GET", "/api/v3/android/profile"),
         ("PATCH", "/api/v3/android/profile"),
         ("POST", "/api/v3/android/bug-report"),
+        ("POST", "/api/v3/android/feedback/prepare"),
+        ("POST", "/api/v3/android/feedback/submit"),
         ("GET", "/api/v3/android/subscription/overview"),
         ("GET", "/api/v3/android/subscription/checkout/overview"),
         ("GET", "/api/v3/android/subscription/currency-preference"),

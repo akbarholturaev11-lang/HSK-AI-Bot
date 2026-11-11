@@ -38,6 +38,9 @@ class OnboardingRepository(
         language: String,
         dailyMinutes: Int = 10,
         startMode: String = "lesson_1",
+        goals: List<String>? = null,
+        streakTargetDays: Int? = null,
+        preferredFocus: String? = null,
     ): ApiResult<AndroidOnboardingCompleteDto> {
         val token = when (val result = accessToken()) {
             is ApiResult.Failure -> return result
@@ -57,6 +60,8 @@ class OnboardingRepository(
                         startMode = startMode,
                         language = normalizeBackendLanguage(language),
                         timezoneOffsetMinutes = timezoneOffsetMinutes(),
+                        activationVariant = if (goals == null) "direct_start_v1" else "native_li_v1",
+                        goals = goals, streakTargetDays = streakTargetDays, preferredFocus = preferredFocus,
                     ),
                 )
             }

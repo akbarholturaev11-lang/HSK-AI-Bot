@@ -186,6 +186,7 @@ sealed interface ApiError {
                 "desktop_link_intent_invalid",
                 "android_request_invalid",
                 "android_request_too_large",
+                "android_li_onboarding_disabled",
                 "course_context_changed",
                 "smart_revision_conflict",
                 -> R.string.error_unknown

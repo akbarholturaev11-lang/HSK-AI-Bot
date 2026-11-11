@@ -15,6 +15,41 @@ mos bo‘lishi kerak; haqiqiy kontraktni kod va tegishli testlardan tekshir.
 
 ---
 
+## Hozirgi mahsulot ustuvorligi: PWA + Android (owner decision, 2026-11-10)
+
+**Barcha keyingi agentlar uchun doimiy scope qoidasi.** Asosiy mahsulot —
+foydalanuvchi PWA'si (iPhone/iOS va browser) hamda Android (Play/direct).
+Backend, auth, kurs, obuna/to‘lov, Admin PWA, public sayt va infratuzilmaga
+faqat shu ikki asosiy client'ni ishlatish, qo‘llab-quvvatlash yoki ularga
+foydalanuvchi olib kelish uchun kerakli miqyosda vaqt/token ajrat.
+
+- **macOS/Windows Desktop — hozircha development freeze.** Desktop'ga xos
+  yangi funksiya, UI/UX, bugfix, DMG/EXE packaging, parity sinxronlash,
+  alohida test/CI, refactor yoki kelajak uchun oldindan kod yozma.
+  PWA/Android task'ini Desktop'ni rivojlantirish uchun bahona qilma.
+- Shared backend/API/domain o‘zgarishida mavjud umumiy kontraktlarni
+  imkon qadar barqaror, platformadan mustaqil va keyinchalik Desktop ulanishi
+  oson bo‘ladigan qilib saqla. **Bu faqat arxitektura ehtiyot chorasi:**
+  Desktop uchun yangi adapter, shim, stub, endpoint, scaffolding, test yoki
+  funksiyani oldindan yaratish talab qilinmaydi.
+- Mavjud Desktop kodini o‘chirma, ataylab sindirma. PWA/Android uchun
+  zarur shared o‘zgarish Desktop'ga muqarrar jiddiy regression tug‘dirsa,
+  faqat eng kichik compatibility fix'ni ko‘rib chiq yoki konfliktni aniq
+  hisobot qil; butun Desktop feature/parity ishini boshlama.
+- **Telegram botning kelajakdagi roli** — foydalanuvchini PWA yoki
+  Android'ga yo‘naltirish, botning o‘zida dars bermaslik. **Bu kelajak
+  strategiyasi, hozirgi migratsiya topshirig‘i emas.** Hozir bot/Mini App'ning
+  ishlayotgan dars, login, referral, to‘lov, Pro va progress oqimlarini
+  o‘chirib yoki o‘zgartirib yuborma. Yangi bot-only ta’lim funksiyalariga
+  default holatda investitsiya qilma; keyingi migratsiya uchun alohida
+  scope, xavfsiz account/entitlement/progress handoff va release talab qilinadi.
+- Noaniq task'da PWA/Android foydasiga eng tor scope'ni tanla. Faqat egasi
+  Desktop'ni aniq qayta ustuvor qilsa, shu task doirasida Desktop ishini och.
+  Pastdagi Desktop-specific qoidalar **faqat shunday ruxsatlangan task** uchun
+  amal qiladi; bu ustuvorlikni bekor qilmaydi.
+
+---
+
 ## Javob qoidalari
 
 - Qisqa va aniq yoz
@@ -31,6 +66,21 @@ mos bo‘lishi kerak; haqiqiy kontraktni kod va tegishli testlardan tekshir.
 Mavjud project style va tuzilishini saqla. Talabni bajaradigan eng sodda, tushunarli va qo‘llab-quvvatlash oson yechimni tanla; qayta ishlatiladigan abstraksiyani faqat real takrorni kamaytirsa qo‘sh. Yangi dependency’ni faqat real talab uchun zarur bo‘lsa qo‘sh va avval mavjud kutubxonalarni tekshir. Bog‘liq bo‘lmagan refactor qilma. Yangi fayl ochishdan oldin mavjud kodni tekshir va kerak bo‘lsa kengaytir.
 
 ---
+
+
+## Permanent Backend / learner PWA performance contract
+
+Before implementing **any future** Backend API or learner PWA screen, section or feature (including modifications to existing ones), read and apply [docs/PERFORMANCE_PWA_PROGRESSIVE_LOADING.md](docs/PERFORMANCE_PWA_PROGRESSIVE_LOADING.md). These rules remain active after the current optimization PR is merged; do not treat them as a one-time sprint.
+
+**Permanent outcome/requirements source for future planning:** [docs/PERFORMANCE_BACKEND_PWA_GOALS_REQUIREMENTS.md](docs/PERFORMANCE_BACKEND_PWA_GOALS_REQUIREMENTS.md). Read it together with the detailed performance contract before expanding or replacing a performance plan; it defines the goals and non-negotiable requirements, **not** an implementation plan. The current owner-directed performance initiative **includes PWA, Android native and shared Backend together from the outset**. Audit and plan all three in one OpenSpec effort based on the latest main; use smaller testable work packages only when needed, without deferring Android to a separate later project. Older Backend/PWA-only documentation is historical scope, not a current Android prohibition. Follow the active PWA/Android product priority above and the repository OpenSpec skill.
+
+- PWA: verified-session-first safe shell, above-the-fold logo/mascot priority, per-section skeleton/loading/empty/error/retry, progressive updates, stable layout, lazy offscreen assets, and no duplicate in-flight reads. Never block all UI on an unrelated API call.
+- **Permanent layout-first skeleton requirement:** all new or modified learner PWA sections reserve the final visual layout before data arrives (e.g., Rating podium + header + member/countdown row + first leaderboard rows). No generic loading card in place of a complex screen, no large blank gap, no layout jump. Verified data replaces placeholders **in their own slot** with a short opacity fade; reduced-motion disables it. Check on iPhone/WebKit and include stable-geometry assertions in the affected browser test. See the mandatory "Layout-matched skeletons and smooth in-place settlement" section in the linked contract.
+- Backend: before adding a route/query, check N+1, bounded data/pagination, pool/transaction scope, indexes based on plans, timeouts, request concurrency and cache invalidation/owner isolation; use existing infrastructure before Redis/new servers.
+- Protect Trial/Free/Pro, payments, auth, CSRF, lesson progress and shared Mini App/Android contracts. No cached private cross-account content or optimistic entitlements.
+- A Backend/PWA feature is not done without focused regression tests and relevant slow-network/SQL or browser evidence; if an optimization is unnecessary, document evidence rather than adding it.
+- `.github/workflows/backend-pwa-performance-contract.yml` remains the existing Backend/PWA CI guard. Never bypass it or weaken assertions. For the **same active performance initiative**, use existing native Android CI/tests and add justified Android-specific performance/regression gates. The historical Backend/PWA-only restriction does **not** prohibit Android changes in the current joint scope; do not postpone Android to a future standalone stage.
+
 
 ## Bug fix standarti
 

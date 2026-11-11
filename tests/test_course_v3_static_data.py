@@ -87,7 +87,11 @@ class CourseV3StaticMapTests(unittest.TestCase):
         # birga turganda qaysi biri ishlayotganini hech kim ayta olmasdi —
         # aslida esa hech qaysi biri ishlamasdi.
         self.assertNotIn("/api/v3/ad?placement=", html)
-        self.assertNotIn("/api/v3/ad/view", html)
+        # The single PWA route adapter is transport metadata; ads.js still
+        # owns the only overlay and impression request implementation.
+        self.assertEqual(html.count('"/api/v3/ad/view"'), 1)
+        self.assertIn('"/api/v3/ad/view":"/api/v3/pwa/ad/view"', html)
+        self.assertNotIn('fetch("/api/v3/ad/view"', html)
         self.assertNotIn("AdFlow", html)
         ads_js = (BASE / "ads.js").read_text(encoding="utf-8")
         self.assertIn('"/api/v3/ad?placement="', ads_js)
@@ -162,7 +166,7 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn('var query=new URLSearchParams(params.toString())', onboarding)
         self.assertIn('d.user&&d.user.onboarding_completed===false', course)
         self.assertIn('typeof d.user.onboarding_completed!=="boolean"', course)
-        self.assertIn('authoritative.completed===false', course)
+        self.assertIn('authoritative.completed!==true', course)
         self.assertIn('if(required){', course)
         self.assertIn('if(typeof afterComplete==="function")afterComplete()', course)
 
@@ -676,7 +680,7 @@ class CourseV3StaticMapTests(unittest.TestCase):
         # Dars tugagach belgilanadi. Obunachi tekshiruvi klientda EMAS: joy
         # auditoriyasini admin sozlaydi ("faqat bepul" yoki "hammaga") va
         # serverning o'zi kerak bo'lsa bo'sh javob qaytaradi.
-        self.assertIn("window._pendingLessonEndAd=INIT_DATA?", html)
+        self.assertIn("window._pendingLessonEndAd=(INIT_DATA||PWA_COURSE_HOST)?", html)
         self.assertIn("paid:isPaidUser()", html)
         # Bayram/streak/reyting ekranlaridan KEYIN — closeLevelUp ichida.
         self.assertIn("if(playLessonEndAd(go))return;", html)
@@ -877,9 +881,10 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn("function shouldShowAdPromoEntry()", download)
         self.assertIn('state.promoReason === "already_installed"', download)
         self.assertIn('actions.classList.add("pdd-ad-download-actions")', download)
-        # Android qo'shildi; iOS'ga alohida ilova yo'q, shuning uchun u yo'q.
+        # Android qo'shildi; iOS'ning maqsadi native ilova emas, iPhone PWA
+        # (bir martalik kirish havolasi orqali).
         self.assertIn(
-            'var APP_PROMO_PLATFORMS = ["macos", "windows", "android"]', download
+            'var APP_PROMO_PLATFORMS = ["macos", "windows", "android", "ios"]', download
         )
         self.assertIn("buildOsButton(platform, source)", download)
         self.assertNotIn('buildOsButton("android", source)', download)
@@ -934,7 +939,7 @@ class CourseV3StaticMapTests(unittest.TestCase):
         ):
             html = Path("app/static", page).read_text(encoding="utf-8")
             self.assertIn(
-                "/course_v3_data/desktop-download.css?v=20261003-1", html, page
+                "/course_v3_data/desktop-download.css?v=20261110-d3164c95f1bd", html, page
             )
             # Ikkala skript `immutable`, bir yillik cache bilan beriladi
             # (`app/main.py`, STATIC_ASSET_HEADERS), ya'ni faylni o'zgartirish
@@ -962,7 +967,8 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn('HskProfileCarousel.select("apps")', download)
         self.assertNotIn('host.appendChild(card)', download)
         self.assertIn("function openProfileApps()", download)
-        self.assertIn('detectPlatform() !== "android" || !telegramInitData()', download)
+        self.assertIn('if (!telegramInitData() || (device !== "android" && !iphone))', download)
+        self.assertIn('var iphone = device === "ios" && isPlatformAvailable("ios");', download)
         self.assertIn("openProfileAppsSite();", download)
         self.assertIn('sendAndroidToChat("profile")', download)
         self.assertIn('event: "android_apk_to_chat"', download)

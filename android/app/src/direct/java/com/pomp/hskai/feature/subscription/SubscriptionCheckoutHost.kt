@@ -139,6 +139,7 @@ fun SubscriptionCheckoutHost(
     origin: String,
     onClose: () -> Unit,
 ) {
+    if (NativeLavaCheckout(viewModelStoreOwner, origin, onClose)) return
     val context = LocalContext.current
     val app = context.applicationContext as HskAiApplication
     val model: SubscriptionCheckoutViewModel = viewModel(
@@ -224,8 +225,8 @@ fun SubscriptionCheckoutHost(
                 (state.isHsk30Unlock && state.pendingPaymentId > 0 && state.paymentDecision.isBlank())
             val paid = state.overview?.access?.isPaid == true
             if (state.loading) {
-                Spacer(Modifier.height(80.dp))
-                CircularProgressIndicator(color = C.accent, modifier = Modifier.align(Alignment.CenterHorizontally))
+                com.pomp.hskai.core.design.components.HskContentSkeleton(
+                    rows = 3, leadingCircle = false, modifier = Modifier.fillMaxWidth())
             } else if (state.submitted || pending || state.paymentDecision.isNotBlank()) {
                 DoneContent(
                     copy = copy,

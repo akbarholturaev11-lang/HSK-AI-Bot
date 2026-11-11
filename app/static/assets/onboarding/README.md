@@ -41,25 +41,52 @@ ffmpeg -i YOUR_ORIGINAL.mp4 \
 
 - Canonical GET path: `/assets/onboarding/iphone-home-screen.mp4`; the
   fixed FastAPI route supports HTTP Range requests and skips gzip recompression.
-- The same video is used by Li post-registration iPhone Safari PWA onboarding
-  and the public iPhone PWA install/download page.
+- The same video is used by the iPhone Safari PWA guide (after a new sign-up,
+  on every new course opening and on the Telegram handoff landing) and the
+  public iPhone PWA install/download page.
+- Google and Telegram both show one centered, animated Panda waiting
+  view immediately on provider click. The same UI survives same-tab callback
+  and verified course/status/profile-save requests (waiting/saving copy differs
+  per locale), without a course book skeleton or app back button. Only the
+  session-verified, saved-new-user install guide replaces that wait. An existing
+  owner still redirects to their saved course. Denied/expired/unverified and
+  network failures show the existing retry path, never a false grant.
 - After same-tab verified OAuth, onboarding saves the chosen profile
   automatically and preloads the approved MP4 ahead of the guide.
-- Safari installation step 1: full-screen localized heading, the reviewed
-  HSK AI Home Screen focus photo, and one "How?" CTA. No duplicate account CTA.
-- Step 2: centered portrait MP4. Three localized instructions are below the
-  first viewport and appear only after swiping down; on missing or stalled
-  video, those three instructions replace the player. No autoplay or Continue.
-- Reviewed focus photo: `app/static/assets/onboarding/iphone-install-home-focus.jpg`
-  (164899 bytes, SHA-256
-  `17848fda4d9cbdf9655cd407c10efa0e5b6ae7fcf6b59132f47314134c553428`),
+- Safari installation step 1: localized heading with tighter spacing to the
+  reviewed HSK AI Home Screen focus photo, and one "How?" CTA. Its only dismiss
+  affordance is a minimalist unboxed X in the upper-right corner.
+- Step 2: localized "Qo‘llanma" / "Инструкция" / "Дастурамал" heading
+  (`install.guideTitle`) directly above the centered portrait MP4, with the
+  same top-right unboxed X, no separate back arrow. Three localized instructions are below the first
+  viewport and appear only after swiping down; on missing or stalled video,
+  those three instructions replace the player. No autoplay or Continue.
+- Reviewed focus photo (owner replacement 2026-11-10: iPhone Home Screen with
+  status bar and dock, every app except HSK AI blurred, 1254×1254 JPEG from the
+  supplied PNG): `app/static/assets/onboarding/iphone-install-home-focus.jpg`
+  (107575 bytes, SHA-256
+  `4250a78bf29e350db93667d93ff67804996d9af7612c405318b0f3d09602bca8`),
   publicly served at `/assets/onboarding/iphone-install-home-focus.jpg`.
-- Other iOS browsers: Li panda and copyable `https://hskai.app/iphone-pwa`
-  URL to open in Safari. Do not attempt an automatic Safari launch or pass
-  auth/session/referral tokens through a browser handoff.
-- Installed standalone PWA, non-iOS clients and existing returning profiles:
-  no first-time install dialog. The guide grants no account, Pro, payment or
-  notification access; only verified saved onboarding can show it once.
+- Other iOS browsers: the existing panda, the short "open in Safari" hint, the
+  `https://hskai.app/iphone-pwa` link and one Copy Link button (clipboard; if
+  denied, the visible link is selected for the native Copy menu). Do not
+  attempt an automatic Safari launch or pass auth/session/referral tokens
+  through a browser handoff.
+- Frequency (owner decision 2026-11-10): iOS **browser mode** only, for a
+  verified account (new or existing), **once per opening** — one Safari tab
+  session (`sessionStorage` `hskai.pwa.install.guide.shown`, set on close).
+  The same tab's OAuth/Telegram return, Lava `pro_checkout`/`pro_return`
+  return, reload and onboarding → course never repeat it; a new tab/link does.
+  The old per-account localStorage `hskai_li_install_guide_v1:*` flag is no
+  longer read. Guests before sign-up still see no guide.
+- Existing accounts: `/iphone-pwa/course` gets the guide through a PWA-only
+  script tag added by `app/api/pwa_auth.py` (shared `course-v3.html` is
+  unchanged); the module lazy-loads its catalog/CSS only when eligible and
+  registers `.li-install-overlay` in `NavBack.BLOCK` so course prompts wait.
+- Standalone (Home Screen) PWA, Android and other non-iOS clients: never.
+  Safari cannot know whether the app is already installed; only the current
+  browser vs standalone display mode is detected. The guide grants no
+  account, Pro, payment or notification access.
 - Share → Add to Home Screen → Add → launch icon. Safari push notifications
   require a separate user permission; installing does not imply consent.
 

@@ -29,6 +29,7 @@ class OnboardingViewModel(
 
     private val _state = MutableStateFlow(OnboardingFlowState())
     val state: StateFlow<OnboardingFlowState> = _state.asStateFlow()
+    private var statusGeneration = 0L
 
     init {
         loadStatus()
@@ -41,9 +42,13 @@ class OnboardingViewModel(
      * answer replaces it.
      */
     fun loadStatus(showSplash: Boolean = true) {
+        if (_state.value.ui.submitting) return
+        val generation = ++statusGeneration
         if (showSplash) _state.update { it.copy(loading = true, error = null) }
         viewModelScope.launch {
-            when (val result = repository.status()) {
+            val result = repository.status()
+            if (generation != statusGeneration) return@launch
+            when (result) {
                 is ApiResult.Success -> {
                     val status = result.value
                     val liveHsk30Levels = status.hsk30.liveLevels
@@ -66,6 +71,12 @@ class OnboardingViewModel(
                             loading = false,
                             completed = status.ok && status.completed,
                             ui = it.ui.copy(
+                                liEnabled = status.liEnabled,
+                                step = if (status.liEnabled) it.ui.step else it.ui.step.coerceAtMost(3),
+                                selectedGoals = status.profile.goals.filter(::validGoal).ifEmpty { listOf(status.profile.goal.takeIf(::validGoal) ?: "hsk_exam") },
+                                dailyMinutes = status.profile.dailyMinutes.takeIf { it in setOf(5, 10, 15, 20, 30) } ?: 10,
+                                preferredFocus = status.profile.preferredFocus ?: "none",
+                                streakTargetDays = status.profile.streakTargetDays ?: 7,
                                 selectedTrack = selectedTrack,
                                 selectedLevel = selectedLevel,
                                 selectedGoal = status.profile.goal.takeIf(::validGoal) ?: "hsk_exam",
@@ -114,11 +125,18 @@ class OnboardingViewModel(
 
     fun selectGoal(goal: String) {
         if (_state.value.ui.submitting || !validGoal(goal)) return
-        _state.update { it.copy(ui = it.ui.copy(selectedGoal = goal, error = false)) }
+        _state.update {
+            val goals = if (!it.ui.liEnabled) listOf(goal) else when {
+                goal !in it.ui.selectedGoals -> it.ui.selectedGoals + goal
+                it.ui.selectedGoals.size > 1 -> it.ui.selectedGoals - goal
+                else -> it.ui.selectedGoals
+            }
+            it.copy(ui = it.ui.copy(selectedGoal = goals.first(), selectedGoals = goals, error = false))
+        }
     }
 
     fun back() {
-        if (_state.value.ui.submitting) return
+        if (_state.value.ui.submitting || _state.value.launch != null) return
         _state.update {
             it.copy(ui = it.ui.copy(step = (it.ui.step - 1).coerceAtLeast(0), error = false))
         }
@@ -126,15 +144,35 @@ class OnboardingViewModel(
 
     fun next() {
         val current = _state.value
-        if (current.ui.submitting) return
-        if (current.ui.step < 3) {
+        if (current.completed || current.ui.submitting || current.launch != null) return
+        if (current.ui.step < if (current.ui.liEnabled) 7 else 3) {
             _state.update { it.copy(ui = it.ui.copy(step = it.ui.step + 1, error = false)) }
             return
         }
         submit()
     }
 
+    fun selectDailyMinutes(value: Int) {
+        if (!_state.value.ui.submitting && value in setOf(5, 10, 15, 20, 30))
+            _state.update { it.copy(ui = it.ui.copy(dailyMinutes = value)) }
+    }
+
+    fun selectFocus(value: String) {
+        if (!_state.value.ui.submitting && value in setOf("speaking", "listening", "vocabulary", "grammar", "none"))
+            _state.update { it.copy(ui = it.ui.copy(preferredFocus = value)) }
+    }
+
+    fun selectStreak(value: Int) {
+        if (!_state.value.ui.submitting && value in setOf(7, 14, 30, 50))
+            _state.update { it.copy(ui = it.ui.copy(streakTargetDays = value)) }
+    }
+
+    fun finishIntro() {
+        if (_state.value.launch?.ok == true) _state.update { it.copy(completed = true) }
+    }
+
     private fun submit() {
+        statusGeneration++
         val current = _state.value.ui
         _state.update { it.copy(error = null, ui = current.copy(submitting = true, error = false)) }
         viewModelScope.launch {
@@ -143,6 +181,10 @@ class OnboardingViewModel(
                     level = current.selectedLevel,
                     goal = current.selectedGoal,
                     language = language,
+                    dailyMinutes = current.dailyMinutes,
+                    goals = current.selectedGoals.takeIf { current.liEnabled },
+                    streakTargetDays = current.streakTargetDays.takeIf { current.liEnabled },
+                    preferredFocus = current.preferredFocus.takeIf { current.liEnabled },
                 )
             ) {
                 is ApiResult.Success -> {
@@ -150,10 +192,10 @@ class OnboardingViewModel(
                     if (launch.ok) {
                         _state.update {
                             it.copy(
-                                completed = true,
+                                completed = !current.liEnabled,
                                 launch = launch,
                                 error = null,
-                                ui = it.ui.copy(submitting = false, error = false),
+                                ui = it.ui.copy(submitting = false, error = false, step = if (current.liEnabled) 8 else it.ui.step),
                             )
                         }
                     } else {
@@ -165,11 +207,12 @@ class OnboardingViewModel(
                         }
                     }
                 }
-                is ApiResult.Failure -> _state.update {
-                    it.copy(
-                        error = result.error,
-                        ui = it.ui.copy(submitting = false, error = true),
-                    )
+                is ApiResult.Failure -> {
+                    _state.update {
+                        it.copy(error = result.error, ui = it.ui.copy(submitting = false, error = true))
+                    }
+                    if ((result.error as? ApiError.Server)?.code == "android_li_onboarding_disabled")
+                        loadStatus(showSplash = false)
                 }
             }
         }

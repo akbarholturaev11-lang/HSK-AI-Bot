@@ -6,8 +6,15 @@ routes must explicitly resolve the actor and enforce CSRF on state mutation.
 
 from __future__ import annotations
 
+from app.services.activity_feedback_service import (
+    ActivityFeedbackService, ActivityFeedbackError,
+    _pwa_feedback_choices, _pwa_feedback_context_exists, _pwa_feedback_prompt_eligible,
+)
+
 import hashlib
+import logging
 import os
+import re
 from urllib.parse import urlencode
 from typing import Literal
 from uuid import UUID
@@ -20,6 +27,8 @@ from app.services.native_oauth_service import NativeOAuthError, available_provid
 from app.services.identity_link_service import IdentityLinkError
 from app.services.desktop_auth_service import DesktopAuthError
 from app.services.pwa_auth_service import (
+    PWA_HANDOFF_INIT_DATA_MAX_AGE_SECONDS,
+    PWA_HANDOFF_TTL_SECONDS,
     PWA_OAUTH_AGE_SECONDS,
     PWA_OAUTH_COOKIE,
     PWA_TELEGRAM_COOKIE,
@@ -87,19 +96,74 @@ def _pwa_html(request: Request, path: str, headers: dict[str, str]) -> Response:
 # audit anchors. Inject PWA-only assets only after an authenticated route check.
 # The injected HTML is separately ETagged by its FULL bytes, not by file SHA.
 _PWA_INLINE_PRO_HTML = "\n<link rel=\"stylesheet\" href=\"/course_v3_data/iphone-pwa-inline-pro.css?v=20261108-e8010ea28fdc\">\n<script src=\"/course_v3_data/iphone-pwa-inline-pro.js?v=20261108-8d96888d601f\"></script>\n<script src=\"/course_v3_data/iphone-pwa-inline-pro-bridge.js?v=20261108-afd4f9d80534\"></script>\n".encode("utf-8")
-_PWA_INLINE_CACHE: dict[tuple[str, int, int], tuple[bytes, str]] = {}
+
+# Scope only to the verified browser PWA. The native first-paint skeleton
+# stays in course-v3.html; these are ONLY independent secondary section states.
+_PWA_PROGRESSIVE_SECTIONS_CSS = b'''<style id="hsk-pwa-progressive-sections">
+html.hsk-pwa-browser .hsk-pwa-section-loading{display:block;padding:12px 0 24px;min-height:220px}
+html.hsk-pwa-browser .hsk-pwa-section-loading .hsk-pwa-load-card{border-radius:18px;background:var(--card,#f1f0ee);border:1px solid var(--line,rgba(0,0,0,.08));min-height:78px;margin:12px 0;padding:16px}
+html.hsk-pwa-browser .hsk-pwa-section-loading .hsk-pwa-load-card:first-child{min-height:110px}
+html.hsk-pwa-browser .hsk-pwa-section-loading .hsk-pwa-load-line{width:56%;height:13px;margin:9px 0;border-radius:9px;background:var(--hsk-divider,#dedddc);animation:hsk-pwa-section-pulse 1.5s ease-in-out infinite alternate}
+html.hsk-pwa-browser .hsk-pwa-section-loading .hsk-pwa-load-line.short{width:34%}
+html.hsk-pwa-browser .hsk-pwa-profile-accuracy-loading{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;min-height:138px;margin:14px 0}
+html.hsk-pwa-browser .hsk-pwa-profile-accuracy-loading .hsk-pwa-load-ring{width:76px;height:76px;border-radius:50%;border:10px solid var(--hsk-divider,#dedddc);margin:0 auto 10px;opacity:.75;animation:hsk-pwa-section-pulse 1.5s ease-in-out infinite alternate}
+html.hsk-pwa-browser .hsk-pwa-profile-accuracy-loading .hsk-pwa-load-line{height:12px;width:55%;border-radius:8px;background:var(--hsk-divider,#dedddc);margin:auto;opacity:.75}
+@keyframes hsk-pwa-section-pulse{from{opacity:.5}to{opacity:.95}}
+@media(prefers-reduced-motion:reduce){html.hsk-pwa-browser .hsk-pwa-section-loading .hsk-pwa-load-line,html.hsk-pwa-browser .hsk-pwa-profile-accuracy-loading .hsk-pwa-load-ring{animation:none}}
+</style>'''
+_PWA_TELEGRAM_SDK_SCRIPT = b'<script src="/assets/telegram-web-app.js?v=20261019-1"></script>'
+
+
+_PWA_INLINE_CACHE: dict[tuple, tuple[bytes, str]] = {}
+_PWA_COURSE_HTML = "app/static/course-v3.html"
+# Existing accounts open the course directly, so the iPhone Safari (browser
+# mode) Home Screen guide is added to this PWA response only; shared course
+# HTML stays unchanged. The module itself decides (iOS, not standalone, once
+# per tab) and lazy-loads its versioned catalog and stylesheet.
+_PWA_INSTALL_GUIDE_ASSETS = (
+    "/course_v3_data/li-onboarding-install.js",
+    "/course_v3_data/hsk-li-onboarding-i18n.js",
+    "/course_v3_data/li-onboarding-install.css",
+)
+
+
+def _static_version(url: str) -> str:
+    with open("app/static" + url, "rb") as handle:
+        return hashlib.sha256(handle.read()).hexdigest()[:12]
+
+
+def _pwa_install_guide_html() -> bytes:
+    script, catalog, style = (url + "?v=" + _static_version(url)
+                              for url in _PWA_INSTALL_GUIDE_ASSETS)
+    return (f'<script defer src="{script}" data-hsk-install-launch="course" '
+            f'data-i18n="{catalog}" data-css="{style}"></script>\n').encode("utf-8")
 
 
 def _pwa_inline_html(request: Request, path: str, headers: dict[str, str],
                      *, revalidate: bool = True) -> Response:
     stat = os.stat(path)
-    key = (path, stat.st_mtime_ns, stat.st_size)
+    key: tuple = (path, stat.st_mtime_ns, stat.st_size)
+    if path == _PWA_COURSE_HTML:
+        # An edited guide asset must never leave a stale ?v= token cached.
+        key += tuple((item.st_mtime_ns, item.st_size) for item in
+                     (os.stat("app/static" + url) for url in _PWA_INSTALL_GUIDE_ASSETS))
     cached = _PWA_INLINE_CACHE.get(key)
     if cached is None:
         with open(path, "rb") as handle:
             source = handle.read()
         if source.count(b"</body>") != 1:
             raise RuntimeError("pwa_inline_html_invalid")
+        if path == _PWA_COURSE_HTML:
+            # Safari does not use Telegram WebApp. Remove its blocking SDK
+            # from the authenticated PWA response only, never shared source.
+            if source.count(_PWA_TELEGRAM_SDK_SCRIPT) == 1:
+                source = source.replace(_PWA_TELEGRAM_SDK_SCRIPT, b"", 1)
+            else:
+                logging.getLogger(__name__).warning("pwa_telegram_sdk_tag_changed")
+            # The new upstream shell is already in shared HTML. Inject CSS
+            # only for independent Rating/Friends/Profile loading boundaries.
+            source = source.replace(b"</head>", _PWA_PROGRESSIVE_SECTIONS_CSS + b"</head>", 1)
+            source = source.replace(b"</body>", _pwa_install_guide_html() + b"</body>", 1)
         document = source.replace(b"</body>", _PWA_INLINE_PRO_HTML + b"</body>", 1)
         etag = 'W/"' + hashlib.sha256(document).hexdigest()[:32] + '"'
         cached = document, etag
@@ -118,6 +182,35 @@ def _pwa_inline_html(request: Request, path: str, headers: dict[str, str],
     return Response(content=document, media_type="text/html", headers=output_headers)
 
 
+# Shared assets are served `immutable` for a year, so every reference needs a
+# content token. The handoff shell borrows the Li install guide and catalog;
+# deriving their tokens here means an edit to those files can never leave this
+# page pointing at a stale cached copy.
+_HANDOFF_HTML = "app/static/iphone-pwa-handoff.html"
+_HANDOFF_ASSET = re.compile(
+    rb'"(/(?:course_v3_data|assets/characters)/[A-Za-z0-9._-]+)\?v=AUTO"')
+_HANDOFF_HTML_CACHE: dict[tuple, bytes] = {}
+
+
+def _handoff_html() -> bytes:
+    with open(_HANDOFF_HTML, "rb") as handle:
+        source = handle.read()
+    paths = sorted({"app/static" + match.decode() for match in _HANDOFF_ASSET.findall(source)})
+    stats = [os.stat(path) for path in (_HANDOFF_HTML, *paths)]
+    key = tuple((item.st_mtime_ns, item.st_size) for item in stats)
+    cached = _HANDOFF_HTML_CACHE.get(key)
+    if cached is None:
+        def versioned(match):
+            digest = _static_version(match.group(1).decode())
+            return b'"' + match.group(1) + b"?v=" + digest.encode() + b'"'
+        cached = _HANDOFF_ASSET.sub(versioned, source)
+        if b"?v=AUTO" in cached:
+            raise RuntimeError("pwa_handoff_asset_unversioned")
+        _HANDOFF_HTML_CACHE.clear()
+        _HANDOFF_HTML_CACHE[key] = cached
+    return cached
+
+
 class PwaLoginStart(BaseModel):
     model_config = ConfigDict(extra="forbid")
     provider: Literal["google", "apple"]
@@ -132,6 +225,18 @@ class PwaTelegramStart(BaseModel):
 class PwaTelegramClaim(BaseModel):
     model_config = ConfigDict(extra="forbid")
     link_request_id: UUID
+
+
+class PwaHandoffStart(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    language: Literal["uz", "ru", "tj"] | None = None
+    source: Literal["profile", "home_prompt", "lesson_end_promo", "ad_promo"] = "profile"
+
+
+class PwaHandoffRedeem(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
+    token: str = Field(min_length=32, max_length=200)
+    switch: bool = False
 
 
 class PwaProfileUpdate(BaseModel):
@@ -301,9 +406,18 @@ class PwaBugReport(BaseModel):
     screen: str = ""
 
 
+class PwaActivityFeedbackContext(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    kind: Literal["lesson", "foundation", "practice", "voice"]
+    level: Literal["hsk1", "hsk2", "hsk3", "hsk4", "nhsk1", "nhsk2", "nhsk3"]
+    lesson_id: int | None = Field(default=None, ge=1, le=500)
+
+
 class PwaFeedbackPrepare(BaseModel):
     """No user, identity or campaign selector is supplied by the browser."""
     model_config = ConfigDict(extra="forbid")
+    context: PwaActivityFeedbackContext | None = None
+    presentation: Literal["compact", "bot"] = "compact"
 
 
 class PwaLessonFeedbackPrepare(BaseModel):
@@ -328,6 +442,9 @@ class PwaReleaseFeedbackComment(BaseModel):
 
 class PwaOrdinaryFeedbackSubmit(BaseModel):
     model_config = ConfigDict(extra="forbid")
+    context: PwaActivityFeedbackContext | None = None
+    answer: Literal["positive", "unclear", "technical"] | None = None
+    comment: str | None = Field(default=None, max_length=1000)
     feedback_id: int
     liked_code: str | None = None
     liked_sub_code: str | None = None
@@ -341,63 +458,10 @@ class PwaOrdinaryFeedbackSubmit(BaseModel):
 
 
 
-def _pwa_feedback_choices(language: str, *, paid: bool, current: str | None = None) -> dict:
-    """Expose Telegram's existing localized choice contract, not a second UI catalog.
-
-    Read-only metadata; no callback payload, Telegram auth or reward authority.
-    The server still validates all submitted codes against the same dictionaries.
-    """
-    from app.bot.keyboards.feedback import (
-        APP_LIKED_OPTIONS, APP_PAID_SUB_POSITIVE, ACCEPTED_LIKED_OPTIONS,
-        DISLIKED_OPTIONS, LIKE_SUB_OPTIONS, PAID_OPTIONS, PAID_SUB_NEGATIVE,
-        feedback_like_label, feedback_dislike_label,
-        feedback_sub_label, feedback_paid_label,
-    )
-    from app.bot.handlers.feedback import DISLIKE_DETAIL_REQUIRED_CODES
-
-    lang = language if language in {"uz", "ru", "tj"} else "ru"
-
-    def choices(codes, label):
-        return [{"code":code, "label":label(code, lang)} for code in codes]
-
-    if paid:
-        return {
-            "paid": choices(PAID_OPTIONS, feedback_paid_label),
-            "paid_sub_positive": choices(APP_PAID_SUB_POSITIVE, feedback_sub_label),
-            "paid_sub_negative": choices(PAID_SUB_NEGATIVE, feedback_sub_label),
-        }
-    liked = list(APP_LIKED_OPTIONS)
-    # A first answer already recorded in the bot stays selectable in the app.
-    if current in ACCEPTED_LIKED_OPTIONS and current not in liked:
-        liked.insert(-1, current)
-    return {
-        "liked": choices(liked, feedback_like_label),
-        "liked_sub": {
-            code: choices(codes, feedback_sub_label)
-            for code, codes in LIKE_SUB_OPTIONS.items()
-        },
-        "disliked": choices(DISLIKED_OPTIONS, feedback_dislike_label),
-        "disliked_detail_required": sorted(DISLIKE_DETAIL_REQUIRED_CODES | {"other"}),
-    }
 
 
-def _pwa_feedback_prompt_eligible(user, service, now) -> bool:
-    """Share the original bot's join/activity gates across PWA read and prepare.
 
-    PWA deliberately does not require an active Telegram transport: a verified
-    Google/Apple-only learner has the same canonical eligibility.
-    """
-    from app.services.bot_feedback_service import (
-        FEEDBACK_ACTIVE_WINDOW, FEEDBACK_JOIN_DELAY,
-    )
 
-    joined = service._aware(user.created_at)
-    active = service._aware(user.last_active_at)
-    return bool(
-        user.status != "blocked"
-        and joined is not None and joined <= now - FEEDBACK_JOIN_DELAY
-        and active is not None and active >= now - FEEDBACK_ACTIVE_WINDOW
-    )
 
 
 async def _small_json(request: Request, model, *, max_bytes: int = 1024):
@@ -971,7 +1035,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                 "active_count": int(active),
                 "required": int(REFERRAL_TRIAL_REQUIRED_ACTIVE),
                 "referrals": public,
-            }, headers=_NO_STORE)
+            }, headers={**_NO_STORE, "X-HSK-PWA-User-ID": str(actor.id)})
         except PwaAuthError as exc:
             return _error(exc)
         except (TypeError, ValueError):
@@ -994,7 +1058,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                         result["user"].pop("telegram_username", None)
                     await db.commit()
             return JSONResponse(result, status_code=200 if result.get("ok") else 404,
-                                headers=_NO_STORE)
+                                headers={**_NO_STORE, "X-HSK-PWA-User-ID": str(actor.id)})
         except PwaAuthError as exc:
             return _error(exc)
 
@@ -1285,7 +1349,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                     request.cookies.get(PWA_SESSION_COOKIE)
                 )
                 result = await VoicePracticeService(db).user_status(actor)
-            return JSONResponse(result, headers=_NO_STORE)
+            return JSONResponse(result, headers={**_NO_STORE, "X-HSK-PWA-User-ID": str(actor.id)})
         except PwaAuthError as exc:
             return _error(exc)
         except VoicePracticeError as exc:
@@ -2095,6 +2159,136 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
         except PwaAuthError as exc:
             return _error(exc)
 
+    # --- Telegram Mini App -> external browser handoff --------------------
+    # Contract: docs/TELEGRAM_PWA_ANDROID_HANDOFF_CONTEXT.md. The transfer
+    # secret travels only in the URL fragment of the landing page below and is
+    # exchanged once for the same HttpOnly session every other sign-in issues.
+
+    async def _handoff_event(event_name, *, user, link_request_id, source):
+        """Best-effort funnel fact; it can never change a sign-in outcome."""
+        try:
+            from app.services.app_promo_decision_service import AppPromoDecisionService
+            from app.services.course_miniapp_analytics_service import (
+                CourseMiniAppAnalyticsService,
+            )
+            async with session_factory() as db:
+                await CourseMiniAppAnalyticsService(db).record_server_event(
+                    event_name=event_name, telegram_id=user.telegram_id,
+                    user_id=user.id, source=source,
+                    dedupe_key=f"{event_name}:{link_request_id}",
+                    payload={"target_platform": "ios"},
+                )
+                if event_name == "pwa_handoff_issued":
+                    # An accepted offer starts the same cooldown a download does.
+                    await AppPromoDecisionService(db).mark(
+                        telegram_id=user.telegram_id, target_platform="ios",
+                        action="download_requested",
+                    )
+                await db.commit()
+        except Exception:
+            logging.getLogger(__name__).warning("pwa_handoff_event_unrecorded")
+
+    @router.post("/api/v3/pwa-auth/handoff/start")
+    async def handoff_start(request: Request):
+        """Mini App only: authority is fresh signed Telegram data, not a cookie."""
+        try:
+            require_pwa_enabled(settings_obj)
+            from app.services.telegram_webapp_auth import (
+                extract_fresh_verified_webapp_user_id,
+            )
+            telegram_id = extract_fresh_verified_webapp_user_id(
+                request.headers.get("X-Telegram-Init-Data", ""),
+                str(getattr(settings_obj, "BOT_TOKEN", "") or ""),
+                max_age_seconds=PWA_HANDOFF_INIT_DATA_MAX_AGE_SECONDS,
+            )
+            if not telegram_id:
+                raise PwaAuthError("invalid_telegram_init_data")
+            payload = await _small_json(request, PwaHandoffStart)
+            async with session_factory() as db:
+                link_id, secret, user = await PwaAuthService(db, settings_obj).issue_handoff(
+                    telegram_id=telegram_id, language=payload.language,
+                )
+            await _handoff_event(
+                "pwa_handoff_issued", user=user, link_request_id=link_id,
+                source="miniapp_" + payload.source,
+            )
+            language = payload.language or (
+                user.language if user.language in {"uz", "ru", "tj"} else "ru")
+            # Fragment only: never sent to a server, a proxy log or a Referer.
+            url = (f"{pwa_origin(settings_obj)}/iphone-pwa/handoff"
+                   f"#t={secret}&lang={language}")
+            return JSONResponse(
+                {"ok": True, "url": url, "expires_in": PWA_HANDOFF_TTL_SECONDS},
+                headers=_NO_STORE,
+            )
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.post("/api/v3/pwa-auth/handoff/redeem")
+    async def handoff_redeem(request: Request):
+        try:
+            require_same_origin(request, settings_obj)
+            payload = await _small_json(request, PwaHandoffRedeem)
+            async with session_factory() as db:
+                cookie, link_id, user = await PwaAuthService(db, settings_obj).redeem_handoff(
+                    secret=payload.token,
+                    current_cookie=request.cookies.get(PWA_SESSION_COOKIE),
+                    switch=payload.switch,
+                )
+            await _handoff_event(
+                "pwa_handoff_completed", user=user, link_request_id=link_id,
+                source="pwa_handoff",
+            )
+            response = JSONResponse({"ok": True, "status": "complete"}, headers=_NO_STORE)
+            if cookie is not None:
+                response.set_cookie(
+                    PWA_SESSION_COOKIE, cookie, max_age=PWA_SESSION_AGE_SECONDS,
+                    path="/", secure=True, httponly=True, samesite="lax",
+                )
+                # An unfinished provider sign-in in this browser must not
+                # replace the handed-over learner from a stale callback.
+                _clear_cookie(response, PWA_TELEGRAM_COOKIE)
+                response.delete_cookie(
+                    PWA_OAUTH_COOKIE, path="/", secure=True,
+                    httponly=True, samesite="none",
+                )
+            return response
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.get("/iphone-pwa/handoff")
+    async def handoff_page(request: Request):
+        """Static first-party shell; it holds no secret and no account data."""
+        try:
+            require_pwa_enabled(settings_obj)
+            return Response(
+                content=_handoff_html(), media_type="text/html",
+                headers={**_NO_STORE,
+                    "Content-Security-Policy": (
+                        "default-src 'none'; script-src 'self'; "
+                        "style-src 'self' 'unsafe-inline'; connect-src 'self'; "
+                        "img-src 'self'; media-src 'self'; manifest-src 'self'; "
+                        "frame-ancestors 'none'; "
+                        "form-action 'none'; base-uri 'none'"
+                    ),
+                    "X-Content-Type-Options": "nosniff",
+                    "X-Frame-Options": "DENY",
+                },
+            )
+        except PwaAuthError as exc:
+            return _error(exc)
+
+    @router.get("/iphone-pwa-handoff.js")
+    async def handoff_script():
+        try:
+            require_pwa_enabled(settings_obj)
+            return FileResponse(
+                "app/static/iphone-pwa-handoff.js", media_type="application/javascript",
+                headers={**_NO_STORE, "X-Content-Type-Options": "nosniff"},
+            )
+        except PwaAuthError as exc:
+            return _error(exc)
+
     @router.post("/api/v3/pwa-auth/start")
     async def start(request: Request):
         try:
@@ -2637,35 +2831,12 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                     request.cookies.get(PWA_SESSION_COOKIE),
                     request.headers.get("X-HSK-PWA-CSRF"),
                 )
-                await _small_json(request, PwaFeedbackPrepare, max_bytes=256)
-                # Serialize prompt creation per canonical learner, including
-                # concurrent browser tabs or simultaneous provider sessions.
-                learner = (await db.execute(
-                    select(User).where(User.id == actor.id).with_for_update()
-                )).scalar_one()
-                now = datetime.now(timezone.utc)
-                service = BotFeedbackService(db)
-                feedback = None
-                if _pwa_feedback_prompt_eligible(learner, service, now):
-                    feedback = await service._get_or_create_due_feedback(learner, now)
-                    if feedback and not service._is_prompt_due(feedback, now):
-                        feedback = None
-                await db.commit()
-                payload = ({
-                    "feedback_id": feedback.id,
-                    "paid": UserAccessStateService.is_paid(learner),
-                    "liked_code": feedback.liked_code,
-                    "disliked_code": feedback.disliked_code,
-                    "choices": _pwa_feedback_choices(
-                        learner.language,
-                        paid=UserAccessStateService.is_paid(learner),
-                        current=feedback.liked_code,
-                    ),
-                } if feedback else None)
+                data = await _small_json(request, PwaFeedbackPrepare, max_bytes=512)
+                payload = await ActivityFeedbackService(db).prepare(actor.id, data)
             return JSONResponse(
                 {"ok": True, "ordinary": payload}, headers=_NO_STORE,
             )
-        except PwaAuthError as exc:
+        except (PwaAuthError, ActivityFeedbackError) as exc:
             return _error(exc)
 
     @router.post("/api/v3/pwa/feedback/lesson/prepare")
@@ -2753,98 +2924,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                 data = await _small_json(
                     request, PwaOrdinaryFeedbackSubmit, max_bytes=8192,
                 )
-                if not 1 <= data.feedback_id <= 2147483647:
-                    raise PwaAuthError("pwa_request_invalid", status_code=422)
-                # A verified account row serializes browser tabs and repeated
-                # submissions; existing bot records use the same users.id.
-                learner = (await db.execute(
-                    select(User).where(User.id == actor.id).with_for_update()
-                )).scalar_one()
-                feedback = (await db.execute(
-                    select(BotFeedback).where(
-                        BotFeedback.id == data.feedback_id,
-                        BotFeedback.user_id == learner.id,
-                    ).with_for_update()
-                )).scalar_one_or_none()
-                if feedback is None:
-                    raise PwaAuthError("feedback_not_available", status_code=404)
-                if feedback.status != "pending":
-                    raise PwaAuthError("feedback_already_completed", status_code=409)
-                repo = BotFeedbackRepository(db)
-                lang = learner.language if learner.language in {"uz", "ru", "tj"} else "ru"
-                if UserAccessStateService.is_paid(learner):
-                    if (
-                        data.paid_code not in PAID_OPTIONS
-                        or any((
-                            data.liked_code, data.liked_sub_code, data.liked_other_text,
-                            data.disliked_code, data.disliked_detail_text,
-                        ))
-                    ):
-                        raise PwaAuthError("pwa_request_invalid", status_code=422)
-                    subs = (ACCEPTED_PAID_SUB_POSITIVE if data.paid_code in ("worth", "useful")
-                            else PAID_SUB_NEGATIVE)
-                    if data.paid_sub_code not in subs:
-                        raise PwaAuthError("pwa_request_invalid", status_code=422)
-                    detail = (data.paid_other_text or "").strip()
-                    if (data.paid_sub_code == "other" and not detail) or len(detail) > 1000:
-                        raise PwaAuthError("pwa_request_invalid", status_code=422)
-                    if feedback.liked_code and feedback.liked_code != "paid_" + data.paid_code:
-                        raise PwaAuthError("feedback_state_changed", status_code=409)
-                    await repo.save_liked(
-                        feedback, "paid_" + data.paid_code,
-                        feedback_paid_label(data.paid_code, lang),
-                    )
-                    await repo.save_disliked(
-                        feedback, "paid_" + data.paid_sub_code,
-                        detail if data.paid_sub_code == "other"
-                        else feedback_sub_label(data.paid_sub_code, lang),
-                    )
-                else:
-                    if (
-                        data.liked_code not in ACCEPTED_LIKED_OPTIONS
-                        or data.disliked_code not in DISLIKED_OPTIONS
-                        or data.paid_code is not None or data.paid_sub_code is not None
-                        or data.paid_other_text is not None
-                    ):
-                        raise PwaAuthError("pwa_request_invalid", status_code=422)
-                    like_detail = (data.liked_other_text or "").strip()
-                    dislike_detail = (data.disliked_detail_text or "").strip()
-                    if len(like_detail) > 1000 or len(dislike_detail) > 1000:
-                        raise PwaAuthError("pwa_request_invalid", status_code=422)
-                    if data.liked_code in LIKE_SUB_OPTIONS:
-                        if data.liked_sub_code not in LIKE_SUB_OPTIONS[data.liked_code]:
-                            raise PwaAuthError("pwa_request_invalid", status_code=422)
-                        if data.liked_sub_code == "other" and not like_detail:
-                            raise PwaAuthError("pwa_request_invalid", status_code=422)
-                    elif data.liked_sub_code is not None:
-                        raise PwaAuthError("pwa_request_invalid", status_code=422)
-                    if data.liked_code == "other" and not like_detail:
-                        raise PwaAuthError("pwa_request_invalid", status_code=422)
-                    if data.disliked_code in DISLIKE_DETAIL_REQUIRED_CODES | {"other"}:
-                        if not dislike_detail:
-                            raise PwaAuthError("pwa_request_invalid", status_code=422)
-                    if feedback.liked_code and feedback.liked_code != data.liked_code:
-                        raise PwaAuthError("feedback_state_changed", status_code=409)
-                    liked_text = (
-                        like_detail if data.liked_code == "other"
-                        else feedback_like_label(data.liked_code, lang)
-                    )
-                    if data.liked_sub_code:
-                        liked_text = (
-                            liked_text + " → " + (
-                                like_detail if data.liked_sub_code == "other"
-                                else feedback_sub_label(data.liked_sub_code, lang)
-                            )
-                        )[:1000]
-                    await repo.save_liked(feedback, data.liked_code, liked_text)
-                    await repo.save_disliked(
-                        feedback, data.disliked_code,
-                        dislike_detail if data.disliked_code in
-                        DISLIKE_DETAIL_REQUIRED_CODES | {"other"}
-                        else feedback_dislike_label(data.disliked_code, lang),
-                    )
-                await BotFeedbackService(db).finish_feedback(feedback, learner)
-                await db.commit()
+                learner, feedback = await ActivityFeedbackService(db).submit(actor.id, data)
             if bot is not None:
                 # Like the Telegram handler, notify only after commit. Admin
                 # transport failure must never undo an accepted learner answer.
@@ -2862,7 +2942,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                 {"ok": True, "feedback_id": data.feedback_id, "completed": True},
                 headers=_NO_STORE,
             )
-        except PwaAuthError as exc:
+        except (PwaAuthError, ActivityFeedbackError) as exc:
             return _error(exc)
 
     @router.post("/api/v3/pwa/feedback/release/comment")

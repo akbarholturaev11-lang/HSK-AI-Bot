@@ -566,9 +566,17 @@
     <string name="hsk_course_pwa_feedback_body" formatted="false">Hozirgina tugatgan darsingiz haqida qisqa fikr qoldiring.</string>
     <string name="hsk_course_pwa_feedback_detail_q" formatted="false">Aniqroq qaysi qismi?</string>
     <string name="hsk_course_pwa_feedback_disliked_q" formatted="false">Nima noqulay bo‘ldi?</string>
+    <string name="hsk_course_pwa_feedback_foundation_title" formatted="false">0 dan asoslar haqida</string>
     <string name="hsk_course_pwa_feedback_liked_q" formatted="false">Sizga nima ko‘proq yoqdi?</string>
+    <string name="hsk_course_pwa_feedback_optional_comment" formatted="false">Izoh (ixtiyoriy)</string>
     <string name="hsk_course_pwa_feedback_paid_q" formatted="false">Obuna o‘zini oqladimi?</string>
+    <string name="hsk_course_pwa_feedback_positive" formatted="false">Yoqdi</string>
+    <string name="hsk_course_pwa_feedback_practice_title" formatted="false">Mashq haqida</string>
+    <string name="hsk_course_pwa_feedback_quick_question" formatted="false">Qanday o\'tdi?</string>
+    <string name="hsk_course_pwa_feedback_technical" formatted="false">Texnik muammo</string>
     <string name="hsk_course_pwa_feedback_title" formatted="false">{level} · {n}-dars haqida fikringiz</string>
+    <string name="hsk_course_pwa_feedback_unclear" formatted="false">Tushunish qiyin</string>
+    <string name="hsk_course_pwa_feedback_voice_title" formatted="false">AI Voice haqida</string>
     <string name="hsk_course_pwa_inbox_empty" formatted="false">Hozircha bildirishnomalar yo‘q.</string>
     <string name="hsk_course_pwa_profile_avatar" formatted="false">Avatarni tanlang</string>
     <string name="hsk_course_pwa_profile_edit" formatted="false">Profilni tahrirlash</string>

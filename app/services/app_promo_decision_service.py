@@ -10,13 +10,16 @@ from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.user_client_presence import AppPromoState
 from app.repositories.user_repo import UserRepository
 from app.services.user_device_inventory_service import (
-    NATIVE_PLATFORMS,
+    PROMO_PLATFORMS,
     UserDeviceInventoryService,
     normalize_client_platform,
 )
 
 
-PROMO_COOLDOWN_DAYS = 14
+# Days an app offer rests after it was seen, dismissed or acted on, per
+# target platform. 0 = no rest (owner decision 2026-11-10); the Admin daily
+# limit and one offer per session still apply. Set e.g. 14 to restore it.
+PROMO_COOLDOWN_DAYS = 0
 
 
 def _utcnow() -> datetime:
@@ -101,7 +104,7 @@ class AppPromoDecisionService:
         available_targets: dict[str, bool],
     ) -> dict[str, Any]:
         platform = normalize_client_platform(current_platform)
-        if platform not in NATIVE_PLATFORMS:
+        if platform not in PROMO_PLATFORMS:
             return {
                 "eligible": False,
                 "reason": "no_matching_native_app",
@@ -116,8 +119,11 @@ class AppPromoDecisionService:
                 "cooldown_remaining_seconds": 0,
             }
 
-        installed = await self.inventory.installed_native_platforms(telegram_id)
-        if platform in installed:
+        if platform == "ios":
+            installed = await self.inventory.has_live_pwa_session(telegram_id)
+        else:
+            installed = platform in await self.inventory.installed_native_platforms(telegram_id)
+        if installed:
             return {
                 "eligible": False,
                 "reason": "already_installed",
@@ -125,6 +131,13 @@ class AppPromoDecisionService:
                 "cooldown_remaining_seconds": 0,
             }
 
+        if PROMO_COOLDOWN_DAYS <= 0:
+            return {
+                "eligible": True,
+                "reason": "eligible",
+                "target_platform": platform,
+                "cooldown_remaining_seconds": 0,
+            }
         state = await self._state(
             telegram_id=telegram_id,
             target_platform=platform,
@@ -170,7 +183,7 @@ class AppPromoDecisionService:
         action: str,
     ) -> bool:
         platform = normalize_client_platform(target_platform)
-        if platform not in NATIVE_PLATFORMS:
+        if platform not in PROMO_PLATFORMS:
             return False
         state = await self._state(
             telegram_id=telegram_id,

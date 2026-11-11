@@ -81,7 +81,12 @@ class TrialEntryPointTests(unittest.TestCase):
         self.assertNotIn("function proProfileCard()", COURSE)
 
     def test_the_profile_never_draws_two_subscription_cards(self):
-        body = COURSE.split("function renderProfile()")[1][:4000]
+        # Read the complete renderProfile function up to the next canonical
+        # top-level function, not a stale 4000-character prefix. Progressive
+        # loading added legitimate logic before this single promo root.
+        body = COURSE.split("function renderProfile(){", 1)[1].split(
+            "\nfunction salesValueCopy(", 1
+        )[0]
         self.assertEqual(1, body.count('<div id="hsk-profile-promo-root"></div>'))
         self.assertNotIn("proProfileCard()", body)
         self.assertNotIn('<div class="pro"', body)

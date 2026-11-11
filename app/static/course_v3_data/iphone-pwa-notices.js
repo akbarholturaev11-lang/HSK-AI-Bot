@@ -52,6 +52,9 @@
   var displayedPaymentId = null;
   var pushState = null;
   var pushBusy = false;
+  // Never show unknown or previous-session push preferences while verifying.
+  var pushStatusPending = false;
+  var pushStatusFailed = false;
   var pushRegistrationPromise = null;
 
   // These strings are already authored in the shared UZ/RU/TJ catalogs.
@@ -87,7 +90,11 @@
       pushInstallRequired: courseLabel("pwaPush.installRequired"),
       pushEnabled: courseLabel("pwaPush.enabled"),
       pushBlocked: courseLabel("pwaPush.blocked"),
-      pushError: courseLabel("pwaPush.error")
+      pushError: courseLabel("pwaPush.error"),
+      // Push status is not a payment: never reuse checkout "Calculating..."
+      // or "Resend payment" copy for the Push settings action slot.
+      pushLoading: commonLabel("state.loading"),
+      pushRetry: courseLabel("practiceGate.retry")
     };
   }
   function actorId(data) {
@@ -338,16 +345,17 @@
       window.navigator.vendor === "Apple Computer, Inc.";
   }
   function pushSupported() {
-    return isAppleStandalonePwa() && window.isSecureContext &&
+    return !!(isAppleStandalonePwa() && window.isSecureContext &&
       window.navigator && "serviceWorker" in window.navigator &&
-      window.PushManager && window.Notification;
+      window.PushManager && window.Notification);
   }
   function updateSettingsPushStatus() {
     var node = document.getElementById("pwa-push-settings-status");
     if (!node) return;
     var t = labels();
     // The row shows a short state. Install instructions stay in the push view.
-    var value = !pushSupported() ? t.pushOff
+    var value = pushStatusPending && pushSupported() ? t.pushLoading
+      : !pushSupported() ? t.pushOff
       : !pushState || !pushState.enabled ? t.pushOff
         : Notification.permission === "denied" ? t.pushBlocked
           : pushState.subscribed ? t.pushEnabled : t.pushOff;
@@ -359,13 +367,19 @@
     var enabled = !!(pushState && pushState.enabled);
     var denied = supported && Notification.permission === "denied";
     var subscribed = !!(pushState && pushState.subscribed);
+    var waiting = pushStatusPending && supported;
+    var retry = pushStatusFailed && supported && !waiting;
     pushControl.hidden = activeMode !== "push";
     pushStatus.textContent = !supported ? t.pushInstallRequired
-      : !enabled ? t.pushOff : denied && !subscribed ? t.pushBlocked
-        : subscribed ? t.pushEnabled : "";
-    pushButton.hidden = !supported || !enabled || (denied && !subscribed);
-    pushButton.disabled = pushBusy;
-    pushButton.textContent = subscribed ? t.pushDisable : t.pushEnable;
+      : waiting ? t.pushLoading : retry ? t.pushError
+        : !enabled ? t.pushOff : denied && !subscribed ? t.pushBlocked
+          : subscribed ? t.pushEnabled : "";
+    // Keep a fixed action slot through pending/error/ready without allowing
+    // writes until the current cookie owner and Push state are confirmed.
+    pushButton.hidden = !supported || (!waiting && !retry && (!enabled || (denied && !subscribed)));
+    pushButton.disabled = pushBusy || waiting;
+    pushButton.textContent = waiting ? t.pushLoading : retry ? t.pushRetry
+      : subscribed ? t.pushDisable : t.pushEnable;
     updateSettingsPushStatus();
   }
   async function preparePushRegistration() {
@@ -400,8 +414,19 @@
       credentials: "same-origin", cache: "no-store", redirect: "error"
     });
     var data = await response.json();
-    if (!response.ok || !data || data.ok !== true || actorId(actor) !== actorId(data)) {
+    if (!response.ok || !data || data.ok !== true || verifiedOwner !== actorId(data)) {
       throw new Error("pwa_push_status_unavailable");
+    }
+    // An account can change while the status GET is in flight. As with the
+    // Inbox feeds, never render that old account's Push configuration.
+    var sessionResponse = await fetch("/api/v3/pwa-auth/session", {
+      credentials:"same-origin", cache:"no-store", redirect:"error"
+    });
+    if (!sessionResponse.ok || actorId(await sessionResponse.json()) !== verifiedOwner) {
+      pushState = null;
+      close();
+      location.replace("/iphone-pwa");
+      throw new Error("pwa_actor_changed");
     }
     pushState = data;
     paintPushControl();
@@ -489,10 +514,20 @@
   async function openPushSettings() {
     urgentPending = null;
     ++checkGeneration;
+    // No transient "Off" or old user's subscription while cookie proof is pending.
+    pushState = null;
+    pushStatusFailed = false;
+    pushStatusPending = true;
     openMode("push");
     render();
+    var failed = false;
     try { await refreshPushStatus(); }
-    catch (_) { if (activeMode === "push") pushStatus.textContent = labels().pushError; }
+    catch (_) { failed = true; }
+    finally {
+      pushStatusPending = false;
+      pushStatusFailed = failed;
+      if (activeMode === "push") paintPushControl();
+    }
   }
   function clearAppBadge() {
     try { if (navigator.clearAppBadge) navigator.clearAppBadge().catch(function () {}); } catch (_) {}
@@ -583,7 +618,9 @@
   }
   overlay.addEventListener("click", function (ev) {
     if (ev.target.closest("[data-pwa-close]")) close();
-    if (ev.target.closest("#hsk-pwa-push-action")) changePushSubscription();
+    if (ev.target.closest("#hsk-pwa-push-action")) {
+      if (pushStatusFailed) openPushSettings(); else changePushSubscription();
+    }
     if (ev.target.closest("[data-pwa-retry]")) {
       openCheckout(latestData && latestData.account && latestData.account.payment_action);
     }

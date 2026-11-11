@@ -1,0 +1,129 @@
+name: Backend & learner PWA performance contract
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - 'perf/**'
+      - 'codex/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: backend-pwa-contract-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  policy-and-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    outputs:
+      web_changed: ${{ steps.scope.outputs.web_changed }}
+      backend_changed: ${{ steps.scope.outputs.backend_changed }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Determine PR/push comparison base
+        id: base
+        shell: bash
+        env:
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          PUSH_BASE: ${{ github.event.before }}
+        run: |
+          BASE="${PR_BASE:-${PUSH_BASE:-}}"
+          if [[ "$BASE" =~ ^0+$ ]]; then BASE=""; fi
+          echo "sha=$BASE" >> "$GITHUB_OUTPUT"
+      - name: Enforce permanent policy and regression-test co-changes
+        env:
+          PERF_BASE: ${{ steps.base.outputs.sha }}
+          EVENT_NAME: ${{ github.event_name }}
+          REF_NAME: ${{ github.ref_name }}
+        shell: bash
+        run: |
+          FLAGS=()
+          if [[ "$EVENT_NAME" == "pull_request" || "$REF_NAME" == "main" ]]; then
+            FLAGS+=(--enforce-change-tests)
+          fi
+          python scripts/check_backend_pwa_performance_contract.py --base "$PERF_BASE" "${FLAGS[@]}"
+      - name: Test the policy guard itself
+        run: python -m unittest -v tests.test_backend_pwa_performance_contract
+      - name: Verify reusable skeleton geometry assertions catch layout shifts
+        run: python -m unittest -v tests.test_pwa_layout_geometry
+      - name: Detect code paths for behavior regressions
+        id: scope
+        shell: bash
+        env:
+          PERF_BASE: ${{ steps.base.outputs.sha }}
+        run: |
+          if [[ -z "$PERF_BASE" ]]; then
+            echo "web_changed=false" >> "$GITHUB_OUTPUT"
+            echo "backend_changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git diff --name-only "$PERF_BASE...HEAD" > /tmp/perf-paths.txt
+          if grep -Eq '^app/static/.*\.(html|js|mjs|css|ts|tsx|jsx)$|^app/api/pwa_' /tmp/perf-paths.txt; then
+            echo "web_changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "web_changed=false" >> "$GITHUB_OUTPUT"
+          fi
+          if grep -Eq '^app/(api|services|repositories|db)/|^app/main\.py$|^alembic/' /tmp/perf-paths.txt; then
+            echo "backend_changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "backend_changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  progressive-browser:
+    needs: policy-and-tests
+    if: needs.policy-and-tests.outputs.web_changed == 'true'
+    # Playwright 1.56 does not provide browser binaries for ubuntu-26.04.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    strategy:
+      fail-fast: false
+      matrix:
+        engine: [chromium, webkit]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install isolated browser regression tools
+        run: |
+          python -m pip install "pytest==8.4.2" "playwright==1.56.0"
+          python -m playwright install --with-deps ${{ matrix.engine }}
+      - name: Verify shell first and independently loaded sections
+        env:
+          PWA_E2E_ENGINE: ${{ matrix.engine }}
+        run: >-
+          python -m pytest -q
+          tests/e2e/test_pwa_initial_shell.py
+          tests/e2e/test_pwa_progressive_sections.py
+          tests/e2e/test_pwa_learning_parity.py
+
+  backend-course-cache-regression:
+    needs: policy-and-tests
+    if: needs.policy-and-tests.outputs.backend_changed == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install backend dependencies
+        run: python -m pip install -r requirements.txt aiosqlite
+      - name: Protect course template isolation and query/service behavior
+        run: >-
+          python -m unittest -v
+          tests.test_course_map_template_cache
+          tests.test_course_today_service
+          tests.test_pwa_learning_parity
+          tests.test_android_foundation_api

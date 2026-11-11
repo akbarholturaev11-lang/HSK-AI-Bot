@@ -47,8 +47,11 @@ def test_voice_swipe_closes_top_layer_and_old_reply_cannot_cross_sessions(learne
     pending = []
     errors = []
     page.on("pageerror", lambda error: errors.append(str(error)))
+    # The real Voice status read names its verified owner; PR #284 rejects a
+    # response that cannot prove it belongs to the course map's account.
     page.route("**/api/v3/pwa/voice/me", lambda route: json_response(
         route, {"ok": True, "remaining_voice_limit": 2},
+        headers={"X-HSK-PWA-User-ID": "1"},
     ))
     page.route("**/api/v3/pwa/voice/session/start", lambda route: json_response(route, {
         "ok": True, "session_id": "voice-test", "live_available": False,
@@ -97,7 +100,9 @@ def test_browser_rating_shows_user_profile_without_telegram_controls(learner_pag
         }],
     }))
     page.locator('.nav [data-s="rating"]').click()
-    page.locator("#s-rating .lr").click()
+    # Layout-matched skeleton rows reuse the decorative `.lr` geometry but are
+    # aria-hidden <div>s; only verified leaderboard rows are buttons.
+    page.locator("#s-rating button.lr").click()
     expect(page.locator("#upov.on .nm")).to_have_text("League Learner")
     expect(page.locator("#upov .bg-lg")).to_have_text("青龙")
     expect(page.locator("#upov .upacts")).to_have_count(0)

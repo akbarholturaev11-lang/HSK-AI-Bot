@@ -56,10 +56,10 @@ LEGACY_TO_GENERATED = {
 
 # Includes six existing call sites that already used the destination resource.
 EXPECTED_GENERATED_CALLS = {
-    "hsk_common_action_back": 5,
+    "hsk_common_action_back": 6,
     "hsk_course_dictionary_page_clear_history": 1,
-    "hsk_common_action_close": 21,  # Includes the compact account editor close button.
-    "hsk_common_action_continue": 16,
+    "hsk_common_action_close": 22,  # Includes the compact account editor close button.
+    "hsk_common_action_continue": 17,
     "hsk_common_action_done": 2,
     "hsk_course_lang": 2,
     "hsk_common_action_finish": 1,
@@ -79,7 +79,7 @@ EXPECTED_GENERATED_CALLS = {
     "hsk_common_action_logout": 1,
     "hsk_common_state_loading": 1,
     "hsk_course_voice_page_what_to_say": 1,
-    "hsk_course_lesson_flow_retry": 11,
+    "hsk_course_lesson_flow_retry": 12,
     "hsk_common_desktopAuth_referralInvalid": 1,
     "hsk_common_desktopAuth_providerFailed": 1,
     "hsk_course_rating_weekly_top_five": 1,

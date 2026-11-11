@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lava_title">Pro бо пардохти корт</string>
+    <string name="lava_email">Почтаи электронӣ</string>
+    <string name="lava_months">%1$d моҳ</string>
+    <string name="lava_price">%1$s %2$s</string>
+    <string name="lava_pay">Гузаштан ба пардохт</string>
+    <string name="lava_manual">Пардохти дастӣ</string>
+    <string name="lava_terms">Обуна худкор тамдид мешавад. Пардохти навбатиро аз профил бекор карда метавонед; муҳлати пардохтшуда боқӣ мемонад.</string>
+    <string name="lava_pending">Сервер пардохтро месанҷад. Бозгашт аз браузер тасдиқи пардохт нест.</string>
+    <string name="lava_failed">Пардохт тасдиқ нашуд. Ҳолатро нав кунед ё ба дастгирӣ муроҷиат намоед.</string>
+    <string name="lava_open">Кушодани саҳифаи пардохт</string>
+    <string name="lava_check">Санҷидани пардохт</string>
+    <string name="lava_cancel">Бекор кардани тамдиди худкор</string>
+    <string name="lava_cancelled">Тамдиди худкор хомӯш аст. Муҳлати пардохтшуда боқӣ мемонад.</string>
+    <string name="lava_error">Ҳолат санҷида нашуд. Боз кӯшиш кунед.</string>
+    <string name="lava_blocked">Пардохти нав ҳоло дастрас нест. Пардохт ё обунаи ҷориро санҷед.</string>
+    <string name="lava_exit_title">Тахфифи %1$d%%-ро мегиред?</string>
+    <string name="lava_exit_body">Пешниҳод барои ҳисоб як бор дода мешавад. Муҳлати амал: %1$s.</string>
+    <string name="lava_exit_claim">Гирифтани тахфиф</string>
+    <string name="lava_exit_later">Ҳоло не</string>
+    <string name="lava_uncertain">Ҷавоби дархости пардохт нарасид. Пеш аз кӯшиши нав ҳолати серверро санҷед.</string>
+    <string name="lava_other_plans">Тарифҳои дигар</string>
+</resources>

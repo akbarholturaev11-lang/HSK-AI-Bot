@@ -195,8 +195,20 @@ class FeatureRepository(
     suspend fun trialStatus(): ApiResult<AndroidTrialStatusResponse> =
         authorized { api.trialStatus(it) }
 
-    suspend fun trialStart(): ApiResult<AndroidTrialStartResponse> =
-        authorized { api.trialStart(it) }
+    suspend fun trialStart(): ApiResult<AndroidTrialStartResponse> {
+        val result = authorized { api.trialStart(it) }
+        if (result is ApiResult.Failure && (result.error is com.pomp.hskai.core.network.ApiError.Timeout ||
+                result.error is com.pomp.hskai.core.network.ApiError.Offline ||
+                result.error is com.pomp.hskai.core.network.ApiError.Unknown)) {
+            val status = trialStatus()
+            if (status is ApiResult.Success && status.value.ok && status.value.trial.active &&
+                !status.value.trial.endsAt.isNullOrBlank()) {
+                return ApiResult.Success(AndroidTrialStartResponse(ok = true,
+                    endsAt = status.value.trial.endsAt, days = status.value.trial.days))
+            }
+        }
+        return result
+    }
 
     suspend fun rating(): ApiResult<RatingResponse> = authorized {
         api.rating(it, timezoneOffsetMinutes())

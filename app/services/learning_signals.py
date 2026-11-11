@@ -18,7 +18,7 @@ import logging
 from dataclasses import dataclass, field
 from datetime import timedelta
 
-from sqlalchemy import func, or_, select
+from sqlalchemy import case, func, or_, select
 
 from app.db.models.course_mistake import CourseMistake
 from app.db.models.course_xp_event import CourseXpEvent
@@ -198,21 +198,28 @@ class LearningSignalsService:
 
     async def _evidence_and_pace(self, user_id: int, local_day) -> tuple[int, int]:
         """Dalil hajmi (o'quv faoliyatlari soni) va oxirgi 7 kundagi faol kunlar."""
+        window_start = local_day - timedelta(days=6)
+        # Keep the original all-time evidence count and inclusive seven-day
+        # window, but aggregate in SQL instead of loading every XP row into
+        # Python on each course-map request.
+        active_date = case(
+            (
+                CourseXpEvent.activity_date.between(window_start, local_day),
+                CourseXpEvent.activity_date,
+            ),
+            else_=None,
+        )
         result = await self.session.execute(
-            select(CourseXpEvent.activity_date, CourseXpEvent.activity_type).where(
+            select(
+                func.count(CourseXpEvent.id),
+                func.count(func.distinct(active_date)),
+            ).where(
                 CourseXpEvent.user_id == user_id,
                 CourseXpEvent.activity_type.in_(LEARNING_ACTIVITY_TYPES),
             )
         )
-        rows = result.all()
-        evidence = len(rows)
-        window_start = local_day - timedelta(days=6)
-        active_days = {
-            activity_date
-            for activity_date, _ in rows
-            if activity_date and window_start <= activity_date <= local_day
-        }
-        return evidence, len(active_days)
+        evidence, active_days = result.one()
+        return int(evidence or 0), int(active_days or 0)
 
     async def load(self, user, *, profile, progress, level: str) -> LearningSignals:
         level = str(level or "hsk1").strip().lower()

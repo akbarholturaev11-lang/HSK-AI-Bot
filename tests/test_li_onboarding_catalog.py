@@ -1,5 +1,7 @@
 """Exact user-demo Li Panda copy and local-first generated catalog contract."""
 import hashlib
+import json
+import re
 import unittest
 from pathlib import Path
 
@@ -32,12 +34,28 @@ class LiOnboardingCanonicalCatalogTests(unittest.TestCase):
         for lang in ("uz", "ru", "tj"):
             for key in li.INSTALL_KEYS:
                 self.assertTrue(sources[lang][key].strip(), (lang, key))
-        self.assertEqual(len(li.INSTALL_KEYS), 15)
+        self.assertEqual(len(li.INSTALL_KEYS), 22)
         self.assertEqual(len(li.PRO_GOAL_KEYS), 10)
         for lang in ("uz", "ru", "tj"):
             for key in li.PRO_GOAL_KEYS:
                 self.assertTrue(sources[lang][key].strip(), (lang, key))
         self.assertEqual(len({k for k in sources["uz"] if k.startswith("copy.")}), 69)
+
+    def test_telegram_handoff_landing_strings_are_canonical_in_three_languages(self):
+        sources = li.read_sources()
+        self.assertEqual(len(li.HANDOFF_KEYS), 6)
+        bundle = li.output_files(sources)[li.OUTPUT]
+        script = Path("app/static/iphone-pwa-handoff.js").read_text(encoding="utf-8")
+        used = set(re.findall(r'"(handoff\.[A-Za-z]+)"', script))
+        # The landing page may only name strings the catalog really ships.
+        self.assertEqual(used, set(li.HANDOFF_KEYS))
+        for lang in ("uz", "ru", "tj"):
+            for key in li.HANDOFF_KEYS:
+                self.assertTrue(sources[lang][key].strip(), (lang, key))
+                self.assertIn(json.dumps(sources[lang][key], ensure_ascii=False), bundle)
+        for key in ("handoff.accountMismatch", "handoff.switchAccount"):
+            for lang in ("uz", "ru", "tj"):
+                self.assertIn("Telegram", sources[lang][key])
 
     def test_hsk30_access_gate_is_localized_without_changing_original_demo(self):
         sources = li.read_sources()

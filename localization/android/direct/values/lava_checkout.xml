@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lava_title">Karta orqali Pro</string>
+    <string name="lava_email">Email</string>
+    <string name="lava_months">%1$d oy</string>
+    <string name="lava_price">%1$s %2$s</string>
+    <string name="lava_pay">To‘lovga o‘tish</string>
+    <string name="lava_manual">Qo‘lda to‘lash</string>
+    <string name="lava_terms">Avtomatik uzaytiriladigan obuna. Keyingi to‘lovni profil orqali bekor qilishingiz mumkin. To‘langan muddat saqlanadi.</string>
+    <string name="lava_pending">To‘lov serverda tekshirilmoqda. Brauzerdan qaytish to‘lov tasdiqlandi degani emas.</string>
+    <string name="lava_failed">To‘lov tasdiqlanmadi. Holatni yangilang yoki yordamga murojaat qiling.</string>
+    <string name="lava_open">To‘lov sahifasini ochish</string>
+    <string name="lava_check">To‘lovni tekshirish</string>
+    <string name="lava_cancel">Avtomatik uzaytirishni bekor qilish</string>
+    <string name="lava_cancelled">Avtomatik uzaytirish o‘chirilgan. To‘langan muddat saqlanadi.</string>
+    <string name="lava_error">Holatni tekshirib bo‘lmadi. Qayta urinib ko‘ring.</string>
+    <string name="lava_blocked">Yangi to‘lov hozir mavjud emas. Joriy to‘lov yoki obuna holatini tekshiring.</string>
+    <string name="lava_exit_title">%1$d%% chegirmani olasizmi?</string>
+    <string name="lava_exit_body">Taklif hisobingiz uchun bir marta beriladi. Amal qilish muddati: %1$s.</string>
+    <string name="lava_exit_claim">Chegirmani olish</string>
+    <string name="lava_exit_later">Hozir emas</string>
+    <string name="lava_uncertain">To‘lov so‘rovi javobsiz qoldi. Yangi so‘rov yuborishdan oldin server holatini tekshiring.</string>
+    <string name="lava_other_plans">Boshqa tariflar</string>
+</resources>

@@ -9,6 +9,7 @@ import json
 import unittest
 from datetime import date, datetime, timedelta, timezone
 
+from sqlalchemy import event
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import StaticPool
 
@@ -210,6 +211,41 @@ class LearningSignalsTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual(signals.evidence_count, 4)
         self.assertEqual(signals.active_days_7, 3)
+
+    async def test_evidence_aggregation_uses_one_bounded_sql_result(self):
+        # A growing history must not grow the number of rows returned from
+        # PostgreSQL. All-time evidence and the seven-day dates retain the
+        # exact prior semantics, including the inclusive window endpoints.
+        today = date.fromisoformat((await self._load()).local_day)
+        await self._add(
+            *[xp_event("lesson", f"old:{i}", today - timedelta(days=20 + i))
+              for i in range(120)],
+            xp_event("lesson", "day:1", today),
+            xp_event("voice", "day:2", today),
+            xp_event("training", "boundary:in", today - timedelta(days=6)),
+            xp_event("lesson", "boundary:out", today - timedelta(days=7)),
+            xp_event("test", "future", today + timedelta(days=1)),
+            xp_event("reward_chest", "not-study", today),
+        )
+        statements = []
+
+        def record_sql(conn, cursor, statement, parameters, context, executemany):
+            if "course_xp_events" in statement.lower():
+                statements.append(statement)
+
+        event.listen(self.engine.sync_engine, "before_cursor_execute", record_sql)
+        try:
+            async with self.factory() as session:
+                evidence, active_days = await LearningSignalsService(
+                    session
+                )._evidence_and_pace(1, today)
+        finally:
+            event.remove(self.engine.sync_engine, "before_cursor_execute", record_sql)
+
+        self.assertEqual((evidence, active_days), (125, 2))
+        self.assertEqual(len(statements), 1)
+        self.assertIn("count(", statements[0].lower())
+        self.assertIn("distinct", statements[0].lower())
 
     async def test_today_marks_done_types_for_the_plan(self):
         today = date.fromisoformat((await self._load()).local_day)

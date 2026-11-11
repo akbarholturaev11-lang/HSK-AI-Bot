@@ -75,6 +75,8 @@ class Settings(BaseSettings):
     # Disabled by default until iPhone Safari, OAuth and analytics release gates pass.
     # When enabled, only anonymous /iphone-pwa navigation enters the public Li shell.
     PWA_LI_ONBOARDING_ENTRY_ENABLED: bool = False
+    # Independent native rollout; a PWA release must not activate Android.
+    ANDROID_LI_ONBOARDING_ENABLED: bool = False
     PWA_VOICE_LIVE_ENABLED: bool = False
     # Learner iPhone Web Push stays independently disabled until explicit QA/release gates pass.
     PWA_PUSH_ENABLED: bool = False

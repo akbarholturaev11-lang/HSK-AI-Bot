@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import logging
 from html import escape
+from typing import Literal
 
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse, JSONResponse
@@ -47,6 +48,17 @@ class LavaStartBody(BaseModel):
     # Optional PWA-only analytics correlation, not a billing entitlement.
     attempt_id: str | None = Field(default=None, max_length=80, pattern=r"^[A-Za-z0-9:.-]+$")
     ui_source: str | None = Field(default=None, max_length=80, pattern=r"^[a-z0-9_]+$")
+
+
+class AndroidLavaContext(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    mode: Literal["subscription", "exit_discount"] = "subscription"
+    origin: str = Field(default="", max_length=40)
+
+
+class AndroidExitAction(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    action: Literal["view", "claim"]
 
 
 class LavaStatusBody(BaseModel):
@@ -147,6 +159,13 @@ def create_lava_router(*, runtime_getter, session_factory, settings_obj) -> APIR
                     "transport": "iphone_pwa",
                 },
             )
+        if source == "android" and result.get("ok"):
+            from app.services.conversion_funnel_service import ConversionFunnelService
+            await ConversionFunnelService().record(
+                event_name="checkout_opened", user=user, source="android_subscription",
+                payload={"attempt_id": "android-lava-" + str(result["checkout_id"]),
+                         "mode": data.mode or "subscription", "payment_method": "lava",
+                         "transport": "android"})
         return result
 
     # -- provider webhook -------------------------------------------------
@@ -248,6 +267,111 @@ def create_lava_router(*, runtime_getter, session_factory, settings_obj) -> APIR
             await _parse(request, LavaEmptyBody)
             result = await LavaCheckoutService(runtime_getter()).cancel(session_factory, user_id=user.id)
             return JSONResponse(result, status_code=200 if result.get("ok") else 409, headers=_NO_STORE)
+        except LavaCheckoutError as exc:
+            return _checkout_error(exc)
+
+    # -- native Android Direct (no cookie or Telegram credential fallback) ---
+    async def _android_user(request: Request):
+        from app.services.desktop_auth_service import DesktopAuthError, DesktopAuthService
+        if (request.headers.get("X-HSK-Android-Channel") != "direct"
+                or request.headers.get("X-HSK-Lava-Capability") != "1"
+                or request.headers.get("X-Telegram-Init-Data") or request.headers.get("Cookie")):
+            raise LavaCheckoutError("invalid_request", 422)
+        scheme, _, token = request.headers.get("Authorization", "").partition(" ")
+        if scheme.lower() != "bearer" or not token.strip():
+            raise LavaCheckoutError("native_auth_required", 401)
+        try:
+            async with session_factory() as db:
+                context = await DesktopAuthService(db, settings_obj).authenticate(token.strip())
+                if context.device.platform != "android":
+                    raise LavaCheckoutError("invalid_platform", 403)
+                return context.user
+        except DesktopAuthError as exc:
+            raise LavaCheckoutError(exc.code, exc.status_code) from None
+
+    @router.post("/api/v3/android/subscription/lava/overview")
+    async def android_lava_overview(request: Request):
+        try:
+            user = await _android_user(request)
+            data = await _parse(request, AndroidLavaContext)
+            from app.api.android_features import ANDROID_CHECKOUT_ORIGIN_SOURCES
+            if data.origin and (data.origin not in ANDROID_CHECKOUT_ORIGIN_SOURCES or data.origin.startswith("hsk30")):
+                raise LavaCheckoutError("invalid_request", 422)
+            async with session_factory() as db:
+                block = await LavaCheckoutService(runtime_getter()).overview_block(
+                    db, user, supports_lava=True, context_mode=data.mode)
+                from sqlalchemy import select
+                from datetime import datetime, timedelta, timezone
+                from app.db.models.lava import LavaInvoice
+                # Existing invoices/reservations remain recoverable even if
+                # sales are disabled after the first request was committed.
+                pending_id = await db.scalar(select(LavaInvoice.id).where(
+                    LavaInvoice.user_id == user.id, LavaInvoice.source == "android",
+                    LavaInvoice.kind == "first", LavaInvoice.status == "created",
+                    LavaInvoice.created_at > datetime.now(timezone.utc) - timedelta(hours=24),
+                ).order_by(LavaInvoice.id.desc()).limit(1))
+                uncertain = await db.scalar(select(LavaInvoice.id).where(
+                    LavaInvoice.user_id == user.id, LavaInvoice.source == "android",
+                    LavaInvoice.review_reason == "create_uncertain",
+                ).limit(1))
+                if block is None and (pending_id or uncertain):
+                    block = {"mode": "manual_only", "plans": [], "subscription": None}
+                if block is not None:
+                    block["pending_checkout_id"] = pending_id
+                    if uncertain:
+                        block["blocked_reason"] = "checkout_needs_review"
+                    from app.services.subscription_entry_analytics_service import SubscriptionEntryAnalyticsService
+                    await SubscriptionEntryAnalyticsService(db).record_entry(
+                        user=user, source=ANDROID_CHECKOUT_ORIGIN_SOURCES.get(data.origin, "android_subscription"),
+                        mode=data.mode, payment_method="lava")
+            return JSONResponse({"ok": True, "lava": block}, headers=_NO_STORE)
+        except LavaCheckoutError as exc:
+            return _checkout_error(exc)
+
+    @router.post("/api/v3/android/subscription/lava/start")
+    async def android_lava_start(request: Request):
+        try:
+            user = await _android_user(request)
+            data = await _parse(request, LavaStartBody)
+            if data.attempt_id or data.ui_source:
+                raise LavaCheckoutError("invalid_request", 422)
+            return JSONResponse(await _start(user, data, "android"), headers=_NO_STORE)
+        except LavaCheckoutError as exc:
+            return _checkout_error(exc)
+
+    @router.post("/api/v3/android/subscription/lava/status")
+    async def android_lava_status(request: Request):
+        try:
+            user = await _android_user(request)
+            data = await _parse(request, LavaStatusBody)
+            result = await LavaCheckoutService(runtime_getter()).status(
+                session_factory, user_id=user.id, checkout_id=data.checkout_id)
+            return JSONResponse(result, headers=_NO_STORE)
+        except LavaCheckoutError as exc:
+            return _checkout_error(exc)
+
+    @router.post("/api/v3/android/subscription/lava/cancel")
+    async def android_lava_cancel(request: Request):
+        try:
+            user = await _android_user(request)
+            await _parse(request, LavaEmptyBody)
+            result = await LavaCheckoutService(runtime_getter()).cancel(session_factory, user_id=user.id)
+            return JSONResponse(result, status_code=200 if result.get("ok") else 409, headers=_NO_STORE)
+        except LavaCheckoutError as exc:
+            return _checkout_error(exc)
+
+    @router.post("/api/v3/android/subscription/lava/exit-offer")
+    async def android_exit_offer(request: Request):
+        from app.db.models.user import User
+        from app.services.pwa_exit_offer_service import PwaExitOfferService
+        try:
+            user = await _android_user(request)
+            data = await _parse(request, AndroidExitAction, limit=512)
+            async with session_factory() as db:
+                actor = await db.get(User, user.id)
+                result = await PwaExitOfferService(db, settings_obj).action(actor, action=data.action)
+                await db.commit()
+            return JSONResponse(result, headers=_NO_STORE)
         except LavaCheckoutError as exc:
             return _checkout_error(exc)
 

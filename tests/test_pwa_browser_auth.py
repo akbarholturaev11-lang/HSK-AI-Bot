@@ -956,6 +956,8 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         allowed = await self.client.get(endpoint, params={"lang": "uz", "tz": 480})
         self.assertEqual(allowed.status_code, 200, allowed.text)
         self.assertEqual(allowed.headers["cache-control"], "no-store")
+        self.assertEqual(allowed.headers["x-hsk-pwa-user-id"],
+                         str((await self.client.get("/api/v3/pwa-auth/session")).json()["user_id"]))
         body = allowed.json()
         self.assertTrue(body["ok"])
         self.assertEqual(body["joined_count"], 0)
@@ -1037,6 +1039,8 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         response = await self.client.get(path)
         self.assertEqual(response.status_code, 200, response.text)
         self.assertEqual(response.headers["cache-control"], "no-store")
+        self.assertEqual(response.headers["x-hsk-pwa-user-id"],
+                         str((await self.client.get("/api/v3/pwa-auth/session")).json()["user_id"]))
         data = response.json()
         self.assertTrue(data["ok"])
         self.assertEqual(data["user"]["name"], "Existing learner")
@@ -1092,8 +1096,8 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('"/api/v3/lesson/foundation":"/api/v3/pwa/lesson/foundation"', course)
         self.assertIn('"/api/miniapp/gamification":"/api/v3/pwa/gamification"', course)
         self.assertIn('if(!ratingLoaded&&(INIT_DATA||PWA_COURSE_HOST)){', course)
-        self.assertIn('_apiPost("/api/miniapp/gamification",{timezone_offset_minutes:timezoneOffset})', course)
-        self.assertIn('_apiGet("/api/miniapp/gamification?tz="+encodeURIComponent(timezoneOffset))', course)
+        self.assertIn('_apiPost("/api/miniapp/gamification",{timezone_offset_minutes:timezoneOffset},opts)', course)
+        self.assertIn('_apiGet("/api/miniapp/gamification?tz="+encodeURIComponent(timezoneOffset),opts)', course)
         get_paths = course.split("var PWA_COURSE_GET_PATHS={", 1)[1].split("};", 1)[0]
         self.assertNotIn('"/api/miniapp/gamification"', get_paths)
         self.assertIn('mapped=parsed.pathname.replace("/api/v3/lesson/content/","/api/v3/pwa/lesson/content/")', course)
@@ -3201,6 +3205,8 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             }
             result = await self.client.get("/api/v3/pwa/voice/me")
             self.assertEqual(result.status_code, 200, result.text)
+            self.assertEqual(result.headers.get("x-hsk-pwa-user-id"), "1")
+            self.assertEqual(result.headers.get("cache-control"), "no-store")
             self.assertEqual(status.await_args.args[0].id, 1)
         self.settings.PWA_AUTH_ENABLED = False
         self.assertEqual((await self.client.get(path)).status_code, 503)
@@ -5186,6 +5192,7 @@ const settle = () => new Promise(resolve => setImmediate(resolve));
             await db.flush()
             self.assertEqual(await enqueue_event(db, user_id=1, source="payment",
                 source_id=4401, language="uz", now=now), 1)
+            outbox_id = await db.scalar(select(LearnerPwaPushOutbox.id))
             await db.commit()
         delivered = []
         async def accepted_sender(payload, public_payload, private_key, subject, source):
@@ -5197,7 +5204,12 @@ const settle = () => new Promise(resolve => setImmediate(resolve));
             notification_message("pwa.push.paymentRejectedTitle", lang, "")
             for lang in ("uz", "ru", "tj")
         })
-        self.assertNotIn("149", json.dumps(delivered[0], ensure_ascii=False))
+        self.assertEqual(set(delivered[0]), {"title", "body", "url", "tag"})
+        # The opaque UUID tag may coincidentally contain the amount's digits.
+        # Verify its origin separately from the human-readable notification.
+        self.assertEqual(delivered[0]["tag"], "hsk-" + outbox_id.replace("-", "")[:24])
+        visible = {key: value for key, value in delivered[0].items() if key != "tag"}
+        self.assertNotIn("149", json.dumps(visible, ensure_ascii=False))
         self.assertNotIn("Summa", json.dumps(delivered[0], ensure_ascii=False))
 
     async def test_push_outbox_deduplicates_and_sends_content_free_payload_with_bounded_cleanup(self):

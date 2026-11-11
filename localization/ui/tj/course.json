@@ -1040,6 +1040,14 @@
     "practiceGate.back": "Бозгашт",
     "lessonPreview.helloGloss": "салом",
     "rating.leagueName": "Лигаи {league}",
-    "rating.membersTotal": "иштирокчӣ дар маҷмӯъ"
+    "rating.membersTotal": "иштирокчӣ дар маҷмӯъ",
+    "pwaFeedback.quickQuestion": "Чӣ гуна гузашт?",
+    "pwaFeedback.positive": "Писанд омад",
+    "pwaFeedback.unclear": "Фаҳмидан душвор буд",
+    "pwaFeedback.technical": "Мушкили техникӣ",
+    "pwaFeedback.optionalComment": "Шарҳ (ихтиёрӣ)",
+    "pwaFeedback.foundationTitle": "Дар бораи асосҳо аз сифр",
+    "pwaFeedback.practiceTitle": "Дар бораи машқ",
+    "pwaFeedback.voiceTitle": "Дар бораи AI Voice"
   }
 }
