@@ -35,3 +35,11 @@ The broader analytics registry/CI initiative remains owned by `docs/analytics/AN
 - **Risk:** new automatic forms use the app's existing feature option sets, not unavailable Telegram-only tools. Release campaign delivery rules are unchanged. No new schema or entitlement/discount/reward policy.
 - **Prevention:** real authenticated free/paid/partial-answer API tests on SQLite and disposable PostgreSQL; three-language 320/390/430px Chromium/WebKit flows, native back, required text, failed-write retry, session suppression and the legacy Node UI harness.
 - **Analytics Impact:** new full answers use the same BotFeedback codes and existing Admin inbox/category readers as bot answers. Existing compact rows and their explicit category mapping remain readable; no historical rows are rewritten.
+
+## Unanswered Telegram questionnaire in PWA and Android
+
+- **Sabab:** Telegram's delivery starts the shared retry timer. Both contextual apps interpreted that timer as hiding even the existing unanswered invitation.
+- **Fix:** the shared `ActivityFeedbackService.prepare` lets one eligible PWA or Android learner session continue the same delivered, pending `BotFeedback` after proven activity. The canonical user lock and existing indexed server-only event key reserve the continuation once across apps and devices. It does not create another questionnaire, consume an attempt or grant a reward. The last presentation time keeps the 24-hour retry spacing; completion still starts the existing 30-day cooldown. The compact form and legacy read paths keep their original admission rules.
+- **Risk:** a reserved response lost in transit is not counted as an impression; the Telegram message can still be answered. Older Android binaries without the activity feedback dialog need a separate client release.
+- **Prevention:** real PWA-cookie and Android-bearer API tests exercise both continuation orders, repeat suppression, the same stored answer and the shared cooldown. Six simultaneous requests from both transports on isolated PostgreSQL reserve a single continuation even after both Telegram attempts were used.
+- **Analytics Impact:** the internal reservation is neither client telemetry nor a display metric. Existing `BotFeedback.completed_at` and answer codes still drive the Admin inbox and feedback categories. No new schema, report, endpoint or page request.

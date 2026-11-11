@@ -1,4 +1,5 @@
 """Canonical PWA foundation, existing ad caps and compact feedback integration."""
+import asyncio
 import hashlib
 import hmac
 import json
@@ -297,6 +298,89 @@ class PwaLearningParityTests(unittest.IsolatedAsyncioTestCase):
             owner = await db.get(User, 1)
             self.assertEqual(owner.end_date.replace(tzinfo=timezone.utc), expires)
             self.assertEqual(owner.selected_plan_type, '1_month')
+
+    async def _check_telegram_feedback_continuation(self, *, clients, attempts=1):
+        from app.api.android_features import create_android_features_router
+        from app.repositories.bot_feedback_repo import BotFeedbackRepository
+        from app.services.bot_feedback_service import BotFeedbackService
+        from app.services.desktop_auth_service import DesktopAuthService
+
+        pwa_headers = await self.login()
+        self.client._transport.app.include_router(create_android_features_router(
+            session_factory=self.sessions, settings_obj=self.settings,
+        ))
+        body = {'context': {'kind': 'voice', 'level': 'hsk1'}, 'presentation': 'bot'}
+        async with self.sessions() as db:
+            auth = DesktopAuthService(db, self.settings)
+            link = await auth.start_link(platform='android', app_version='1.1.0', installation_key='i' * 48)
+            await auth.approve_link(display_code=link['display_code'], telegram_id=1001)
+            native = await auth.poll_link(
+                link_request_id=link['link_request_id'], polling_secret=link['polling_secret'],
+            )
+            owner = await db.get(User, 1)
+            owner.created_at = datetime.now(timezone.utc) - timedelta(days=3)
+            db.add(Event(user_id=1, event_name='voice_started', source='course_voice'))
+            repo = BotFeedbackRepository(db)
+            pending = await repo.create_pending(owner)
+            for index in range(attempts):
+                await repo.mark_prompt_sent(pending, 100 + index)
+            await db.commit()
+            feedback_id = pending.id
+            self.assertFalse(BotFeedbackService(db)._is_prompt_due(pending, datetime.now(timezone.utc)))
+
+        routes = {
+            'pwa': ('/api/v3/pwa/feedback/ordinary', pwa_headers),
+            'android': ('/api/v3/android/feedback', {'Authorization': 'Bearer ' + native['access_token']}),
+        }
+
+        async def prepare(client):
+            path, headers = routes[client]
+            result = await self.client.post(path + '/prepare', headers=headers, json=body)
+            self.assertEqual(result.status_code, 200, result.text)
+            return client, result.json()['ordinary']
+
+        # A legacy compact client must not take the Telegram continuation.
+        legacy = await self.client.post(routes['pwa'][0] + '/prepare', headers=pwa_headers,
+                                        json={'context': body['context']})
+        self.assertIsNone(legacy.json()['ordinary'])
+        responses = await asyncio.wait_for(asyncio.gather(*(prepare(client) for client in clients)), timeout=25)
+        available = [(client, ordinary) for client, ordinary in responses if ordinary is not None]
+        self.assertEqual(len(available), 1, 'one app can resume the same Telegram invite')
+        client, ordinary = available[0]
+        self.assertEqual(ordinary['feedback_id'], feedback_id)
+        self.assertFalse(ordinary['paid'])
+        for transport in routes:
+            self.assertIsNone((await prepare(transport))[1])
+
+        async with self.sessions() as db:
+            row = await db.get(BotFeedback, feedback_id)
+            self.assertEqual((row.prompt_attempts, row.prompt_message_id), (attempts, 99 + attempts))
+            self.assertEqual(row.status, 'pending')
+            self.assertIsNone(row.reward_granted_at)
+
+        answer = {'feedback_id': feedback_id, 'liked_code': 'practice',
+                  'liked_sub_code': 'daily', 'disliked_code': 'limits'}
+        path, headers = routes[client]
+        with patch('app.services.admin_notify_service.AdminNotifyService.notify_bot_feedback', new=AsyncMock()):
+            saved = await self.client.post(path + '/submit', headers=headers, json=answer)
+        self.assertEqual(saved.status_code, 200, saved.text)
+        for transport in routes:
+            self.assertIsNone((await prepare(transport))[1])
+        async with self.sessions() as db:
+            rows = (await db.scalars(select(BotFeedback))).all()
+            self.assertEqual(len(rows), 1)
+            self.assertEqual(rows[0].status, 'completed')
+            self.assertIsNotNone(rows[0].reward_granted_at)
+            owner = await db.get(User, 1)
+            self.assertIsNone(await BotFeedbackService(db)._get_or_create_due_feedback(
+                owner, datetime.now(timezone.utc),
+            ))
+
+    async def test_pwa_resumes_the_unanswered_telegram_prompt_once(self):
+        await self._check_telegram_feedback_continuation(clients=('pwa',))
+
+    async def test_android_resumes_the_unanswered_telegram_prompt_once(self):
+        await self._check_telegram_feedback_continuation(clients=('android',))
 
     async def test_bot_questionnaire_resumes_partial_bot_answer_without_replacing_it(self):
         from app.repositories.bot_feedback_repo import BotFeedbackRepository
