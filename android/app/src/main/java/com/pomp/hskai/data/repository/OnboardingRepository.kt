@@ -4,9 +4,11 @@ import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.core.network.apiCall
 import com.pomp.hskai.data.api.AndroidOnboardingApi
+import com.pomp.hskai.data.api.AndroidGuestOnboardingApi
 import com.pomp.hskai.data.api.AndroidOnboardingCompleteDto
 import com.pomp.hskai.data.api.AndroidOnboardingRequestDto
 import com.pomp.hskai.data.api.AndroidOnboardingStatusDto
+import com.pomp.hskai.feature.onboarding.GuestLiDraft
 import java.util.TimeZone
 import kotlinx.coroutines.withTimeoutOrNull
 
@@ -21,15 +23,27 @@ class OnboardingRepository(
     private val timezoneOffsetMinutes: () -> Int = {
         TimeZone.getDefault().getOffset(System.currentTimeMillis()) / 60_000
     },
+    private val previewApi: AndroidGuestOnboardingApi? = null,
 ) {
-    suspend fun status(): ApiResult<AndroidOnboardingStatusDto> {
+    internal suspend fun guestPreview(): AndroidOnboardingStatusDto? = withTimeoutOrNull(4_000L) {
+        val preview = previewApi ?: return@withTimeoutOrNull null
+        (apiCall { preview.preview() } as? ApiResult.Success)?.value?.takeIf { it.ok && it.liEnabled }
+    }
+
+    internal class VerifiedGuestDraft(val draft: GuestLiDraft, val token: String)
+
+    suspend fun status(): ApiResult<AndroidOnboardingStatusDto> = statusWithDraft(null).first
+
+    internal suspend fun statusWithDraft(claimDraft: (suspend () -> GuestLiDraft?)?):
+        Pair<ApiResult<AndroidOnboardingStatusDto>, VerifiedGuestDraft?> {
         val token = when (val result = accessToken()) {
-            is ApiResult.Failure -> return result
+            is ApiResult.Failure -> return result to null
             is ApiResult.Success -> result.value
         }
         val result = status(token)
         if (result is ApiResult.Failure) notifySessionExpired(result.error)
-        return result
+        val draft = if (result is ApiResult.Success && result.value.ok) claimDraft?.invoke() else null
+        return result to draft?.let { VerifiedGuestDraft(it, token) }
     }
 
     suspend fun complete(
@@ -41,8 +55,9 @@ class OnboardingRepository(
         goals: List<String>? = null,
         streakTargetDays: Int? = null,
         preferredFocus: String? = null,
+        guestResumeToken: String? = null,
     ): ApiResult<AndroidOnboardingCompleteDto> {
-        val token = when (val result = accessToken()) {
+        val token = guestResumeToken ?: when (val result = accessToken()) {
             is ApiResult.Failure -> return result
             is ApiResult.Success -> result.value
         }
@@ -60,7 +75,11 @@ class OnboardingRepository(
                         startMode = startMode,
                         language = normalizeBackendLanguage(language),
                         timezoneOffsetMinutes = timezoneOffsetMinutes(),
-                        activationVariant = if (goals == null) "direct_start_v1" else "native_li_v1",
+                        activationVariant = when {
+                            guestResumeToken != null -> "native_li_guest_v1"
+                            goals != null -> "native_li_v1"
+                            else -> "direct_start_v1"
+                        },
                         goals = goals, streakTargetDays = streakTargetDays, preferredFocus = preferredFocus,
                     ),
                 )
@@ -84,10 +103,10 @@ class OnboardingRepository(
                     )
                 }
 
-                is ApiResult.Failure -> notifySessionExpired(canonical.error)
+                is ApiResult.Failure -> if (guestResumeToken == null) notifySessionExpired(canonical.error)
             }
         }
-        if (result is ApiResult.Failure) notifySessionExpired(result.error)
+        if (result is ApiResult.Failure && guestResumeToken == null) notifySessionExpired(result.error)
         return result
     }
 

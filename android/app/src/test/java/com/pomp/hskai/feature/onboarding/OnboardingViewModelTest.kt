@@ -19,11 +19,17 @@ class OnboardingViewModelTest {
     @After fun teardown() = Dispatchers.resetMain()
     private class Fake(private var li: Boolean, private val completed: Boolean = false) : AndroidOnboardingApi {
         var request: AndroidOnboardingRequestDto? = null
+        var statusReads = 0
+        var writeAuthorization: String? = null
         var writes = 0
         var disableOnSave = false
-        override suspend fun status(authorization: String) = Response.success(AndroidOnboardingStatusDto(ok = true, completed = completed, liEnabled = li))
+        var track = AndroidHsk30OnboardingDto()
+        override suspend fun status(authorization: String): Response<AndroidOnboardingStatusDto> {
+            statusReads++
+            return Response.success(AndroidOnboardingStatusDto(ok = true, completed = completed, liEnabled = li, hsk30 = track))
+        }
         override suspend fun complete(authorization: String, body: AndroidOnboardingRequestDto): Response<AndroidOnboardingCompleteDto> {
-            writes++; request = body
+            writes++; request = body; writeAuthorization = authorization
             if (disableOnSave) {
                 disableOnSave = false; li = false
                 return Response.error(422, """{"ok":false,"error":"android_li_onboarding_disabled"}""".toResponseBody())
@@ -88,4 +94,73 @@ class OnboardingViewModelTest {
         runCurrent(); assertTrue(vm.state.value.completed); assertEquals(1,vm.state.value.launch?.lesson)
     }
 
+    @Test fun guestFinishesChoicesWithoutReadingBearerOrWritingProfile() = runTest(dispatcher) {
+        val api = Fake(true)
+        var saved: GuestLiDraft? = null
+        val model = OnboardingViewModel(
+            OnboardingRepository(api, { error("Guest cannot read an access token") }), "uz",
+            guestPreview = AndroidOnboardingStatusDto(ok = true, liEnabled = true),
+            onGuestReady = { saved = it },
+        )
+        model.selectDailyMinutes(20)
+        repeat(8) { model.next() }
+        runCurrent()
+        assertEquals(20, saved?.minutes)
+        assertEquals(0, api.statusReads)
+        assertEquals(0, api.writes)
+        assertNull(model.state.value.launch)
+    }
+
+    @Test fun guestDraftResumesOnceUsingTheSameVerifiedBearer() = runTest(dispatcher) {
+        val api = Fake(true)
+        var tokens = 0
+        var claims = 0
+        val model = OnboardingViewModel(
+            OnboardingRepository(api, { ApiResult.Success("session-${++tokens}") }), "uz",
+            claimGuestDraft = {
+                claims++
+                GuestLiDraft.from(OnboardingUiState(dailyMinutes = 20))
+            },
+        )
+        model.loadStatus()
+        runCurrent()
+        assertEquals(1, claims)
+        assertEquals(1, tokens)
+        assertEquals(1, api.writes)
+        assertEquals("Bearer session-1", api.writeAuthorization)
+        assertEquals("native_li_guest_v1", api.request?.activationVariant)
+        assertEquals(20, api.request?.dailyMinutes)
+        assertEquals(8, model.state.value.ui.step)
+    }
+
+    @Test fun savedAccountAndDisabledFlagNeverReplayGuestDraft() = runTest(dispatcher) {
+        listOf(Fake(true, completed = true), Fake(false)).forEach { api ->
+            var claims = 0
+            val model = OnboardingViewModel(
+                OnboardingRepository(api, { ApiResult.Success("verified") }), "uz",
+                claimGuestDraft = { claims++; GuestLiDraft.from(OnboardingUiState()) },
+            )
+            runCurrent()
+            assertEquals(1, claims)
+            assertEquals(0, api.writes)
+            assertEquals(0, model.state.value.ui.step)
+        }
+    }
+
+    @Test fun guestTrackWithoutVerifiedAccessReturnsToTrackChoice() = runTest(dispatcher) {
+        val api = Fake(true).apply {
+            track = AndroidHsk30OnboardingDto(enabled = true, allowed = false, liveLevels = listOf("nhsk1"))
+        }
+        val model = OnboardingViewModel(
+            OnboardingRepository(api, { ApiResult.Success("verified") }), "uz",
+            claimGuestDraft = {
+                GuestLiDraft.from(OnboardingUiState(selectedTrack = "hsk30", selectedLevel = "nhsk1", dailyMinutes = 20))
+            },
+        )
+        runCurrent()
+        assertEquals(0, api.writes)
+        assertEquals(1, model.state.value.ui.step)
+        assertEquals("hsk20", model.state.value.ui.selectedTrack)
+        assertEquals(20, model.state.value.ui.dailyMinutes)
+    }
 }

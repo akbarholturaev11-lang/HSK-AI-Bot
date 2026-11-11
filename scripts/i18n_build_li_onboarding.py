@@ -2,7 +2,7 @@
 
 Single local-first source: localization/ui/<locale>/li_onboarding.json.
 Native Android uses a selected plain-text projection of the same canonical copy.
-iOS install, guest signup and demo-only strings are excluded from native resources.
+iOS install and demo-only strings are excluded from native resources.
 """
 from __future__ import annotations
 
@@ -123,6 +123,7 @@ def output_files(catalogs: dict[str, dict[str, str]]) -> dict[str, str]:
     )
     outputs = {OUTPUT: contents}
     native_copy = {"timeQ", "timeSub", "min", "focusQ", "focusSub", "streakQ", "days", "cont", "back", "ready", "first", "later", "proTitle", "proBody", "proCta", "noCharge", "trialOn", "multiHint", "t1", "t1s", "t2", "t2s", "t3", "t3s"}
+    native_copy.update({"accountTitle", "firstTime", "haveAccount", "hello", "intro", "profile", "signupTitle", "signupSub"})
     for lang, tag in (("uz", "values"), ("ru", "values-ru"), ("tj", "values-tg")):
         rows = []
         for key, value in sorted(catalogs[lang].items()):

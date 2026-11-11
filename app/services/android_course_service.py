@@ -19,6 +19,7 @@ from pathlib import Path
 from typing import Any
 
 from app.services.course_gamification_service import CourseGamificationService
+from app.services.course_levels import is_hsk30_level
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
 from app.services.course_miniapp_onboarding_service import CourseMiniAppOnboardingService
 from app.services.course_track_service import CourseTrackService
@@ -461,10 +462,31 @@ class AndroidCourseService(DesktopCourseService):
     ) -> dict:
         """Complete onboarding through the exact service used by the Mini App."""
         context = await self._context(access_token)
-        if any(value is not None for value in (goals, streak_target_days, preferred_focus)) and not getattr(self.settings, "ANDROID_LI_ONBOARDING_ENABLED", False):
+        guest_resume = activation_variant == "native_li_guest_v1"
+        has_li_choices = any(value is not None for value in (goals, streak_target_days, preferred_focus))
+        if (guest_resume or has_li_choices) and not getattr(self.settings, "ANDROID_LI_ONBOARDING_ENABLED", False):
             raise DesktopCourseError("android_li_onboarding_disabled", status_code=422)
         try:
-            return await CourseMiniAppOnboardingService(self.session).complete(
+            service = CourseMiniAppOnboardingService(self.session)
+            if guest_resume:
+                # get_or_create takes the same User lock as canonical saves.
+                # Do not apply anonymous choices over a completed profile or
+                # an account that has already started lessons.
+                profile = await service.profile_service.get_or_create(context.user.id)
+                progress = await service.engine.progress_repo.get_by_user_id(context.user.id, for_update=True)
+                if profile.onboarding_completed_at is not None or (
+                    progress and (progress.current_lesson_id or progress.completed_lessons_count)
+                ):
+                    raise DesktopCourseError("android_li_guest_not_fresh", status_code=409)
+                tracks = (await CourseTrackService(self.session).status(context.user)).get("tracks") or {}
+                if any(track.get("completed_lessons_count") for track in tracks.values()):
+                    raise DesktopCourseError("android_li_guest_not_fresh", status_code=409)
+                hsk30 = tracks.get("hsk30") or {}
+                if is_hsk30_level(level) and (
+                    not (hsk30.get("access") or {}).get("allowed") or level not in (hsk30.get("live_levels") or [])
+                ):
+                    raise DesktopCourseError("android_li_guest_track_locked", status_code=403)
+            return await service.complete(
                 context.user,
                 level=level,
                 goal=goal,

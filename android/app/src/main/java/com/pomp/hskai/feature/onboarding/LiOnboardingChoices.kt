@@ -41,6 +41,7 @@ fun LiOnboardingChoices(
     onTrial: () -> Unit,
     onRetryTrial: () -> Unit,
     modifier: Modifier = Modifier,
+    guestEntry: Boolean = false,
 ) {
     val intro = state.step == 8
     BackHandler(enabled = !state.submitting && !profile.trialStarting) {
@@ -128,7 +129,9 @@ fun LiOnboardingChoices(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.spacedBy(16.dp)) {
                                 OnboardingPandaMascot(modifier = Modifier.size(120.dp, 132.dp), motionEnabled = motionEnabled)
-                                Text(stringResource(if (!intro) R.string.li_copy_ready else when {
+                                Text(stringResource(if (!intro) {
+                                    if (guestEntry) R.string.li_copy_profile else R.string.li_copy_ready
+                                } else when {
                                     profile.trial?.active == true -> R.string.li_copy_trialon
                                     profile.trial?.eligible == true -> R.string.li_copy_protitle
                                     else -> R.string.li_copy_ready
@@ -182,7 +185,11 @@ fun LiOnboardingChoices(
                     }
                 } else {
                     OnboardingFooter(copy, state, onNext, motionEnabled, layout,
-                        labelOverride = stringResource(if (state.step == 7) R.string.li_copy_first else R.string.li_copy_cont))
+                        labelOverride = stringResource(when {
+                            state.step != 7 -> R.string.li_copy_cont
+                            guestEntry -> R.string.li_copy_signuptitle
+                            else -> R.string.li_copy_first
+                        }))
                 }
             }
         }
