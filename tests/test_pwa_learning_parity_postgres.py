@@ -59,7 +59,7 @@ class FoundationPostgresTests(unittest.IsolatedAsyncioTestCase):
 
 @unittest.skipUnless(URL.startswith('postgresql+asyncpg://'), 'PWA_PARITY_TEST_DATABASE_URL not set')
 class FeedbackPostgresTests(unittest.IsolatedAsyncioTestCase):
-    async def _exercise(self, name):
+    async def _exercise(self, name, **options):
         from tests.test_pwa_learning_parity import PwaLearningParityTests, fixture
         schema = 'pwa_feedback_' + uuid4().hex
         engine = create_async_engine(URL, connect_args={'server_settings': {'search_path': schema}})
@@ -71,7 +71,7 @@ class FeedbackPostgresTests(unittest.IsolatedAsyncioTestCase):
             with patch.object(fixture, 'create_async_engine', return_value=engine):
                 await case.asyncSetUp()
             try:
-                await getattr(case, name)()
+                await getattr(case, name)(**options)
             finally:
                 await case.asyncTearDown()
         finally:
@@ -90,3 +90,8 @@ class FeedbackPostgresTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_changed_subscription_does_not_open_an_incompatible_partial_answer(self):
         await self._exercise('test_bot_questionnaire_skips_partial_answers_after_paid_status_changes')
+
+    async def test_only_one_pwa_or_android_session_can_resume_a_telegram_prompt(self):
+        await self._exercise(
+            '_check_telegram_feedback_continuation', attempts=2, clients=('pwa', 'android') * 3,
+        )
