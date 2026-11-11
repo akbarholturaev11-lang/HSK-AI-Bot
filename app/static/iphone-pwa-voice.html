@@ -465,8 +465,12 @@ function render(ms){
  if(!reduced)requestAnimationFrame(render);
  if(!reduced&&ms-lastDraw<32)return;
  if(reduced&&lastDraw)return;
+ // A hidden frame (still opening or already closing) has no orb box yet:
+ // drawing a 1px canvas would give arc() a negative radius and throw.
+ const width=canvas.getBoundingClientRect().width;
+ if(width<8){if(reduced)requestAnimationFrame(render);return}
  lastDraw=ms;
- const dim=Math.max(1,Math.round(canvas.getBoundingClientRect().width));
+ const dim=Math.round(width);
  const dpr=Math.min(2,window.devicePixelRatio||1),size=Math.round(dim*dpr);
  if(size!==lastW){canvas.width=size;canvas.height=size;lastW=size}
  const c=size/2,r=c-.75*dpr,t=reduced?1.2:ms*.00083;

@@ -21,6 +21,13 @@ def learner_page(page):
     page.route("**/api/v3/pwa/map?*", lambda route: json_response(
         route, data, headers={"X-HSK-PWA-User-ID": "1"},
     ))
+    # The real ad read also names its verified owner (app/api/miniapp_ads.py).
+    # The course page asks for its timed screen-centre ad while a test runs;
+    # an ownerless reply would look like an account switch and sign out.
+    page.route("**/api/v3/pwa/ad?*", lambda route: json_response(
+        route, {"ok": True, "ad": None, "placement": "screen_center"},
+        headers={"X-HSK-PWA-User-ID": "1"},
+    ))
     page.route("**/iphone-pwa/course?*", lambda route: route.fulfill(
         content_type="text/html", body=(STATIC_ROOT / "course-v3.html").read_text(),
     ))
