@@ -1003,6 +1003,67 @@
     <string name="hsk_course_voice_start" formatted="false">Начать разговор</string>
     <string name="hsk_course_voice_sub" formatted="false">Живой разговор с пандой 阿宝. Слушай, говори, получай исправления.</string>
     <string name="hsk_course_voice_title" formatted="false">Поговорите с AI</string>
+    <string name="hsk_course_voice_v8_ask" formatted="false">Спросить...</string>
+    <string name="hsk_course_voice_v8_dialogue_label" formatted="false">Текст разговора</string>
+    <string name="hsk_course_voice_v8_drawer_footer" formatted="false">Общение на китайском</string>
+    <string name="hsk_course_voice_v8_end_body" formatted="false">Текущий разговор будет завершён.</string>
+    <string name="hsk_course_voice_v8_end_cancel" formatted="false">Продолжить</string>
+    <string name="hsk_course_voice_v8_end_confirm" formatted="false">Завершить</string>
+    <string name="hsk_course_voice_v8_end_label" formatted="false">Завершить разговор</string>
+    <string name="hsk_course_voice_v8_end_title" formatted="false">Завершить разговор?</string>
+    <string name="hsk_course_voice_v8_example1_label" formatted="false">Что значит «计划»?</string>
+    <string name="hsk_course_voice_v8_example1_text" formatted="false">Что значит «计划»?</string>
+    <string name="hsk_course_voice_v8_example2_label" formatted="false">Объясни по-русски</string>
+    <string name="hsk_course_voice_v8_example2_text" formatted="false">Объясни эту фразу по-русски</string>
+    <string name="hsk_course_voice_v8_example3_label" formatted="false">Поговорим по-китайски</string>
+    <string name="hsk_course_voice_v8_example3_text" formatted="false">Поговори со мной по-китайски</string>
+    <string name="hsk_course_voice_v8_example4_label" formatted="false">Скажи проще</string>
+    <string name="hsk_course_voice_v8_example4_text" formatted="false">Скажи ещё проще</string>
+    <string name="hsk_course_voice_v8_examples_close" formatted="false">Закрыть примеры вопросов</string>
+    <string name="hsk_course_voice_v8_examples_title" formatted="false">Примеры вопросов</string>
+    <string name="hsk_course_voice_v8_max_chars" formatted="false">Максимум 200 символов</string>
+    <string name="hsk_course_voice_v8_menu_close" formatted="false">Закрыть меню</string>
+    <string name="hsk_course_voice_v8_mic_disabled" formatted="false">Микрофон выключен</string>
+    <string name="hsk_course_voice_v8_mic_off" formatted="false">Выключить микрофон</string>
+    <string name="hsk_course_voice_v8_mic_on" formatted="false">Включить микрофон</string>
+    <string name="hsk_course_voice_v8_no_quota" formatted="false">Лимит AI Voice исчерпан</string>
+    <string name="hsk_course_voice_v8_orb_label" formatted="false">Живой шар. Проведите вниз — открыть чат, вверх — скрыть</string>
+    <string name="hsk_course_voice_v8_prompt_label" formatted="false">Написать сообщение</string>
+    <string name="hsk_course_voice_v8_restart" formatted="false">Начать новый разговор</string>
+    <string name="hsk_course_voice_v8_send_label" formatted="false">Отправить сообщение</string>
+    <string name="hsk_course_voice_v8_settings_backdrop" formatted="false">Показывать фон</string>
+    <string name="hsk_course_voice_v8_settings_close" formatted="false">Закрыть настройки</string>
+    <string name="hsk_course_voice_v8_settings_pinyin" formatted="false">Показывать пиньинь</string>
+    <string name="hsk_course_voice_v8_settings_title" formatted="false">Настройки разговора</string>
+    <string name="hsk_course_voice_v8_settings_translation" formatted="false">Показывать перевод</string>
+    <string name="hsk_course_voice_v8_status_connect" formatted="false">Подключаемся…</string>
+    <string name="hsk_course_voice_v8_status_end" formatted="false">Разговор завершён</string>
+    <string name="hsk_course_voice_v8_status_fail" formatted="false">AI Voice недоступен</string>
+    <string name="hsk_course_voice_v8_status_listening" formatted="false">Слушаю…</string>
+    <string name="hsk_course_voice_v8_status_login" formatted="false">Войдите в аккаунт</string>
+    <string name="hsk_course_voice_v8_status_mic" formatted="false">Нет доступа к микрофону</string>
+    <string name="hsk_course_voice_v8_status_offline" formatted="false">Нет интернета</string>
+    <string name="hsk_course_voice_v8_status_ready" formatted="false">Нажмите микрофон, чтобы начать</string>
+    <string name="hsk_course_voice_v8_status_reconnect" formatted="false">Переподключаемся…</string>
+    <string name="hsk_course_voice_v8_status_recording" formatted="false">Идёт запись. Нажмите для отправки.</string>
+    <string name="hsk_course_voice_v8_status_slow" formatted="false">Плохое соединение</string>
+    <string name="hsk_course_voice_v8_status_speaking" formatted="false">AI говорит…</string>
+    <string name="hsk_course_voice_v8_status_thinking" formatted="false">Готовлю ответ…</string>
+    <string name="hsk_course_voice_v8_status_turn" formatted="false">Live недоступен · нажмите для записи</string>
+    <string name="hsk_course_voice_v8_topic_changed" formatted="false">Тема выбрана. Начните новый разговор.</string>
+    <string name="hsk_course_voice_v8_topic_daily" formatted="false">Повседневная жизнь</string>
+    <string name="hsk_course_voice_v8_topic_food" formatted="false">Заказ в ресторане</string>
+    <string name="hsk_course_voice_v8_topic_free" formatted="false">Свободный разговор</string>
+    <string name="hsk_course_voice_v8_topic_friends" formatted="false">Знакомство с новыми друзьями</string>
+    <string name="hsk_course_voice_v8_topic_hsk" formatted="false">Разговорная практика HSK</string>
+    <string name="hsk_course_voice_v8_topic_school" formatted="false">Учёба и университет</string>
+    <string name="hsk_course_voice_v8_topic_shopping" formatted="false">Магазин и покупки</string>
+    <string name="hsk_course_voice_v8_topic_travel" formatted="false">Путешествие и как пройти</string>
+    <string name="hsk_course_voice_v8_topic_work" formatted="false">Работа и бизнес</string>
+    <string name="hsk_course_voice_v8_topics_current" formatted="false">ТЕКУЩИЙ РАЗГОВОР</string>
+    <string name="hsk_course_voice_v8_topics_open" formatted="false">Выбрать тему разговора</string>
+    <string name="hsk_course_voice_v8_topics_other" formatted="false">ДРУГИЕ ТЕМЫ</string>
+    <string name="hsk_course_voice_v8_topics_title" formatted="false">Темы разговора</string>
     <string name="hsk_course_writer_loading" formatted="false">Загрузка...</string>
     <string name="hsk_course_wrong" formatted="false">Неверно</string>
     <string name="hsk_course_xp" formatted="false">XP</string>

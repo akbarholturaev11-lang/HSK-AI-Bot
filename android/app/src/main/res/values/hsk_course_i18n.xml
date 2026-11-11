@@ -1003,6 +1003,67 @@
     <string name="hsk_course_voice_start" formatted="false">Suhbatni boshlash</string>
     <string name="hsk_course_voice_sub" formatted="false">Panda 阿宝 bilan jonli suhbat. Eshit, gapir, tuzatish ol.</string>
     <string name="hsk_course_voice_title" formatted="false">AI bilan gaplashing</string>
+    <string name="hsk_course_voice_v8_ask" formatted="false">So\'rang...</string>
+    <string name="hsk_course_voice_v8_dialogue_label" formatted="false">Suhbat matni</string>
+    <string name="hsk_course_voice_v8_drawer_footer" formatted="false">Xitoycha muloqot</string>
+    <string name="hsk_course_voice_v8_end_body" formatted="false">Hozirgi suhbat yakunlanadi.</string>
+    <string name="hsk_course_voice_v8_end_cancel" formatted="false">Davom etish</string>
+    <string name="hsk_course_voice_v8_end_confirm" formatted="false">Tugatish</string>
+    <string name="hsk_course_voice_v8_end_label" formatted="false">Suhbatni tugatish</string>
+    <string name="hsk_course_voice_v8_end_title" formatted="false">Suhbatni tugatasizmi?</string>
+    <string name="hsk_course_voice_v8_example1_label" formatted="false">«计划» nima degani?</string>
+    <string name="hsk_course_voice_v8_example1_text" formatted="false">«计划» nima degani?</string>
+    <string name="hsk_course_voice_v8_example2_label" formatted="false">Ruscha tushuntir</string>
+    <string name="hsk_course_voice_v8_example2_text" formatted="false">Bu gapni ruscha tushuntir</string>
+    <string name="hsk_course_voice_v8_example3_label" formatted="false">Xitoycha suhbatlash</string>
+    <string name="hsk_course_voice_v8_example3_text" formatted="false">Men bilan xitoycha suhbatlash</string>
+    <string name="hsk_course_voice_v8_example4_label" formatted="false">Osonroq ayt</string>
+    <string name="hsk_course_voice_v8_example4_text" formatted="false">Yana osonroq ayt</string>
+    <string name="hsk_course_voice_v8_examples_close" formatted="false">Namuna savollarni yopish</string>
+    <string name="hsk_course_voice_v8_examples_title" formatted="false">Namuna savollar</string>
+    <string name="hsk_course_voice_v8_max_chars" formatted="false">Ko\'pi bilan 200 belgi</string>
+    <string name="hsk_course_voice_v8_menu_close" formatted="false">Menyuni yopish</string>
+    <string name="hsk_course_voice_v8_mic_disabled" formatted="false">Mikrofon o\'chirilgan</string>
+    <string name="hsk_course_voice_v8_mic_off" formatted="false">Mikrofonni o\'chirish</string>
+    <string name="hsk_course_voice_v8_mic_on" formatted="false">Mikrofonni ishga tushirish</string>
+    <string name="hsk_course_voice_v8_no_quota" formatted="false">AI Voice limiti tugagan</string>
+    <string name="hsk_course_voice_v8_orb_label" formatted="false">Jonli shar. Pastga suring — chatni ochish, yuqoriga suring — yashirish</string>
+    <string name="hsk_course_voice_v8_prompt_label" formatted="false">Xabar yozish</string>
+    <string name="hsk_course_voice_v8_restart" formatted="false">Yangi suhbatni boshlash</string>
+    <string name="hsk_course_voice_v8_send_label" formatted="false">Xabar yuborish</string>
+    <string name="hsk_course_voice_v8_settings_backdrop" formatted="false">Fonni ko\'rsatish</string>
+    <string name="hsk_course_voice_v8_settings_close" formatted="false">Sozlamalarni yopish</string>
+    <string name="hsk_course_voice_v8_settings_pinyin" formatted="false">Pinyin ko\'rsatish</string>
+    <string name="hsk_course_voice_v8_settings_title" formatted="false">Suhbat sozlamalari</string>
+    <string name="hsk_course_voice_v8_settings_translation" formatted="false">Tarjimani ko\'rsatish</string>
+    <string name="hsk_course_voice_v8_status_connect" formatted="false">Ulanmoqda…</string>
+    <string name="hsk_course_voice_v8_status_end" formatted="false">Suhbat tugadi</string>
+    <string name="hsk_course_voice_v8_status_fail" formatted="false">AI Voice xizmati ishlamayapti</string>
+    <string name="hsk_course_voice_v8_status_listening" formatted="false">Tinglayapman…</string>
+    <string name="hsk_course_voice_v8_status_login" formatted="false">Akkauntga kirish kerak</string>
+    <string name="hsk_course_voice_v8_status_mic" formatted="false">Mikrofonga ruxsat yo\'q</string>
+    <string name="hsk_course_voice_v8_status_offline" formatted="false">Internet uzildi</string>
+    <string name="hsk_course_voice_v8_status_ready" formatted="false">Mikrofonni bosing — suhbat boshlanadi</string>
+    <string name="hsk_course_voice_v8_status_reconnect" formatted="false">Qayta ulanmoqda…</string>
+    <string name="hsk_course_voice_v8_status_recording" formatted="false">Ovoz yozilmoqda. Yuborish uchun bosing.</string>
+    <string name="hsk_course_voice_v8_status_slow" formatted="false">Aloqa sifati past</string>
+    <string name="hsk_course_voice_v8_status_speaking" formatted="false">AI gapiryapti…</string>
+    <string name="hsk_course_voice_v8_status_thinking" formatted="false">Javob tayyorlanmoqda…</string>
+    <string name="hsk_course_voice_v8_status_turn" formatted="false">Live mavjud emas · bosib ovoz yozing</string>
+    <string name="hsk_course_voice_v8_topic_changed" formatted="false">Mavzu tanlandi. Yangi suhbatni boshlang.</string>
+    <string name="hsk_course_voice_v8_topic_daily" formatted="false">Kundalik hayot</string>
+    <string name="hsk_course_voice_v8_topic_food" formatted="false">Restoranda buyurtma</string>
+    <string name="hsk_course_voice_v8_topic_free" formatted="false">Erkin suhbat</string>
+    <string name="hsk_course_voice_v8_topic_friends" formatted="false">Yangi do\'stlar bilan tanishuv</string>
+    <string name="hsk_course_voice_v8_topic_hsk" formatted="false">HSK suhbat mashqi</string>
+    <string name="hsk_course_voice_v8_topic_school" formatted="false">O\'qish va universitet</string>
+    <string name="hsk_course_voice_v8_topic_shopping" formatted="false">Do\'kon va xarid</string>
+    <string name="hsk_course_voice_v8_topic_travel" formatted="false">Sayohat va yo\'l so\'rash</string>
+    <string name="hsk_course_voice_v8_topic_work" formatted="false">Ish va biznes</string>
+    <string name="hsk_course_voice_v8_topics_current" formatted="false">HOZIRGI SUHBAT</string>
+    <string name="hsk_course_voice_v8_topics_open" formatted="false">Suhbat mavzularini tanlash</string>
+    <string name="hsk_course_voice_v8_topics_other" formatted="false">BOSHQA MAVZULAR</string>
+    <string name="hsk_course_voice_v8_topics_title" formatted="false">Suhbat mavzulari</string>
     <string name="hsk_course_writer_loading" formatted="false">Yuklanmoqda...</string>
     <string name="hsk_course_wrong" formatted="false">Noto\'g\'ri</string>
     <string name="hsk_course_xp" formatted="false">XP</string>
