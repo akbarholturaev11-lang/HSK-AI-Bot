@@ -187,7 +187,7 @@ class TrialReminderService:
                 action="subscription",
                 source="trial_reminder",
                 dedupe_key=dedupe,
-                params={"days_left": days_left},
+                params={"template": key, **({"days": days_left} if days_left else {})},
                 pwa_push_suppressed=True,
             ):
                 continue

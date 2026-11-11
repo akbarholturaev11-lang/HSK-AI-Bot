@@ -92,7 +92,8 @@ class SmartReminderPwaDeliveryTests(unittest.IsolatedAsyncioTestCase):
         args = sender.await_args.args
         payload = json.loads(args[1])
         self.assertEqual(payload["url"], "/iphone-pwa/course?notice=1")
-        self.assertNotIn("lesson", payload["body"].lower())
+        self.assertNotIn("HSK AI", payload["title"] + payload["body"])
+        self.assertIn("📖", payload["title"])
         async with self.case.sessions() as session:
             attempt = (await session.scalars(select(SmartReminderAttempt).where(
                 SmartReminderAttempt.job_id == self.job_id))).one()
@@ -104,6 +105,8 @@ class SmartReminderPwaDeliveryTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual((attempt.channel, attempt.device_id, attempt.state),
             ("pwa", self.device_id, "provider_accepted"))
         self.assertEqual((job.state, job.selected_channel), ("provider_accepted", "pwa"))
+        self.assertIn(str(job.lesson_order), payload["title"])
+        self.assertEqual((notices[0].title, notices[0].body), (payload["title"], payload["body"]))
         self.assertEqual([notice.source for notice in notices], ["smart_pwa"])
         self.assertEqual(outbox, [])
 
