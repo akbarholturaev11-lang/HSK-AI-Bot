@@ -83,7 +83,8 @@ function makeHarness({page = "/iphone-pwa/course",ordinary = null,release = [],
     send:()=>root.querySelector("#hsk-pwa-feedback-submit").listeners.click(),
     selects:()=>root.querySelector("#hsk-pwa-feedback-form").children
       .filter(e=>e.tag==="label"||e.tag==="div")
-      .map(e=>({symbol:e.attributes["data-mark"]||e.children[0].textContent,input:e.children[1]})),
+      .map(e=>({symbol:e.attributes["data-mark"]||e.children[0].textContent,
+        input:e.children.find(child=>child.tag==="textarea"||child.attributes.role==="radiogroup")})),
     choose(symbol,code){
       // Text variants are buttons (like the bot's inline keyboard), not a select.
       const field=this.selects().find(e=>e.symbol===symbol);
@@ -223,6 +224,8 @@ async function main(){
   }};
   const guided=makeHarness({ordinary:canonical});
   await guided.window.HskPwaFeedback.open(activity);
+  assert.equal(guided.root().querySelector("#hsk-pwa-feedback-title").textContent,"pwaFeedback.likedQ");
+  assert.equal(guided.form().children[0].children.length,1,"question is in the heading, without a duplicate line");
   assert.equal(guided.selects().length,1,"one bot question at a time");
   assert.deepEqual(JSON.parse(guided.requests.find(r=>r.url.endsWith("/ordinary/prepare")).opt.body),
     {context:{kind:"practice",level:"hsk1"},presentation:"bot"});
@@ -232,6 +235,7 @@ async function main(){
   assert.equal(guided.selects()[0].symbol,"👍","back edits the previous answer");
   guided.choose("👍","practice");
   guided.choose("›","daily");
+  assert.equal(guided.root().querySelector("#hsk-pwa-feedback-title").textContent,"pwaFeedback.dislikedQ");
   assert.equal(guided.selects()[0].symbol,"👎");
   guided.choose("👎","limits");
   await new Promise(setImmediate);
@@ -249,6 +253,7 @@ async function main(){
     paid_sub_negative:choices([["other","Other"]])
   }}});
   await guidedPaid.window.HskPwaFeedback.open({...activity,kind:"voice"});
+  assert.equal(guidedPaid.root().querySelector("#hsk-pwa-feedback-title").textContent,"pwaFeedback.paidQ");
   assert.equal(guidedPaid.selects()[0].symbol,"✓");
   guidedPaid.choose("✓","useful");
   guidedPaid.choose("›","lessons");

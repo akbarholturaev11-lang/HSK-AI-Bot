@@ -141,11 +141,11 @@
   // Same text variants as the bot's inline buttons: one tap per answer.
   var QUESTIONS = {"✓":"pwaFeedback.paidQ", "👍":"pwaFeedback.likedQ",
     "👎":"pwaFeedback.dislikedQ", "›":"pwaFeedback.detailQ"};
-  function choiceField(mark, options, value, onChange) {
+  function choiceField(mark, options, value, onChange, useHeading) {
     var question = course(QUESTIONS[mark] || "") || mark;
     var field = make("div", "hsk-pwa-feedback-field hsk-pwa-feedback-choice");
     field.setAttribute("data-mark", mark);
-    field.appendChild(make("span", "hsk-pwa-feedback-question", question));
+    if (!useHeading) field.appendChild(make("span", "hsk-pwa-feedback-question", question));
     var group = make("div", "hsk-pwa-feedback-options");
     group.setAttribute("role", "radiogroup");
     group.setAttribute("aria-label", question);
@@ -166,9 +166,10 @@
     field.appendChild(group);
     return field;
   }
-  function commentField(label, key) {
+  function commentField(label, key, useHeading) {
     var field = make("label", "hsk-pwa-feedback-field");
-    field.appendChild(make("span", "", label));
+    field.setAttribute("data-mark", label);
+    if (!useHeading) field.appendChild(make("span", "", label));
     var box = make("textarea");
     box.setAttribute("aria-label", label);
     box.maxLength = 1000;
@@ -272,6 +273,8 @@
     var steps = ordinarySteps();
     guidedStep = Math.min(guidedStep, steps.length - 1);
     var step = steps[guidedStep];
+    heading.textContent = step.options ? course(QUESTIONS[step.mark])
+      : common("bot.releaseFeedback.commentButton");
     if (step.options) {
       form.appendChild(choiceField(step.mark, step.options, draft[step.key], function (code) {
         draft[step.key] = code;
@@ -280,9 +283,9 @@
         setStatus("");
         if (guidedStep < ordinarySteps().length - 1) guidedStep++;
         else submit();
-      }));
+      }, true));
     } else {
-      form.appendChild(commentField(common("bot.releaseFeedback.commentButton"), step.key));
+      form.appendChild(commentField(common("bot.releaseFeedback.commentButton"), step.key, true));
     }
     // Radio answers advance in one tap, just like the existing bot keyboard.
     // Text needs one action; a failed final write exposes the same retry action.
@@ -349,6 +352,7 @@
     selected = null;
     kind = null;
     guided = false;
+    panel.setAttribute("style", "outline:none");
     restoreDraft();
     if (Array.isArray(data.release) && data.release.length) {
       var entry = data.release.find(function (item) {
@@ -406,11 +410,10 @@
           !validChoices(feedback.choices.liked).length || !validChoices(feedback.choices.disliked).length) return;
       if (!showAvailable({ordinary:feedback, release:[]})) return;
       guided = true;
+      panel.setAttribute("style", "outline:none;background:var(--hsk-paper)");
       guidedRetry = false;
       guidedStep = ordinarySteps().findIndex(function (step) { return !draft[step.key]; });
       if (guidedStep < 0) guidedStep = ordinarySteps().length - 1;
-      heading.textContent = context.kind === "lesson" ? lessonTitle(context.level, context.lessonId)
-        : course("pwaFeedback." + context.kind + "Title");
       contextCopy.textContent = "";
       setStatus("");
       submitButton.textContent = course("subscriptionPage.submit");

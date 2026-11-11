@@ -223,6 +223,12 @@ def test_existing_bot_questionnaires_on_practice_and_voice_exit(lang, width, pai
             assert fixture.prepares[0]['context']['kind'] == kind
             assert fixture.prepares[0]['presentation'] == 'bot'
             assert root.locator('[role="radiogroup"]').count() == 1
+            question_key = 'pwaFeedback.paidQ' if paid else 'pwaFeedback.likedQ'
+            expected_heading = page.evaluate('(key)=>courseMessage(key, "")', question_key)
+            assert root.locator('#hsk-pwa-feedback-title').inner_text() == expected_heading
+            assert root.locator('.hsk-pwa-feedback-question').count() == 0
+            background = root.locator('[role="dialog"]').evaluate('(node)=>getComputedStyle(node).backgroundColor')
+            assert background.startswith('rgb(') or background.endswith(', 1)'), 'background text must not show through the question'
             assert root.locator('[role="radio"]').count() == (4 if paid else 6)
             assert root.locator('textarea').count() == 0
             assert root.locator('#hsk-pwa-feedback-submit').is_hidden()
