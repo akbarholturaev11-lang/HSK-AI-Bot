@@ -979,11 +979,6 @@ private fun AppRoot(
             // its lesson and practice access is checked when the learner enters.
             // Beginner onboarding enters Starter 0 first; FoundationActivity
             // returns through the canonical current-lesson deep link.
-            LaunchedEffect(onboardingState.ui.step, onboardingState.launch) {
-                if (onboardingState.ui.liEnabled && onboardingState.ui.step == 8 && onboardingState.launch != null)
-                    profileViewModel.loadTrial()
-            }
-
             LaunchedEffect(
                 onboardingState.launch,
                 onboardingState.completed,
