@@ -645,6 +645,7 @@ fun VoiceV8Screen(
                             latestActions.restart()
                         }
                     },
+                    onExit = { latestActions.exit() },
                     onTopic = ::selectTopic,
                     onPrefsChange = onPrefsChange,
                     onReport = { line -> reportedAnswer = state.sessionId.orEmpty() to line },
@@ -715,6 +716,7 @@ private fun V8App(
     onMic: () -> Unit,
     onFinish: () -> Unit,
     onRestart: () -> Unit,
+    onExit: () -> Unit,
     onTopic: (VoiceV8Topic) -> Unit,
     onPrefsChange: (VoiceV8Prefs) -> Unit,
     onReport: (VoiceLine) -> Unit,
@@ -744,7 +746,12 @@ private fun V8App(
                 }
                 .background(Color.Black),
         ) {
-            V8Backdrop(topic = topic, visible = prefs.backdrop && !chat && !typing, chat = chat || typing, reduced = reduced)
+            V8Backdrop(
+                topic = topic,
+                visible = prefs.backdrop && !chat && !typing && !ended,
+                chat = chat || typing || ended,
+                reduced = reduced,
+            )
             V8VoiceSurface(
                 width = width, height = height, safeTop = safeTop, safeBottom = safeBottom, reduced = reduced,
                 state = state, chat = chat, typing = typing, ended = ended, busy = busy,
@@ -800,7 +807,7 @@ private fun V8App(
             }
         }
 
-        if (ended) V8Restart(onRestart)
+        if (ended) V8Restart(safeBottom = safeBottom, onRestart = onRestart, onExit = onExit)
         if (endModal) V8EndModal(onCancel = { onEndModal(false) }, onConfirm = onFinish)
     }
 }
@@ -864,14 +871,18 @@ private fun V8VoiceSurface(
     ) {
         if (!ended) {
             V8TopBar(safeTop = safeTop, onTopics = { onLayer(V8Layer.Topics) }, onSettings = { onLayer(V8Layer.Settings) })
-            V8Dialogue(
-                messages = messages, prefs = prefs, chat = chat, typing = typing, reduced = reduced,
-                top = 85.dp + safeTop,
-                bottom = (if (typing) 161.dp else 212.dp) + safeBottom,
-                onBounds = { dialogueBounds = it },
-                onReport = onReport,
-            )
         }
+        V8Dialogue(
+            messages = messages, prefs = prefs, chat = chat, typing = typing, ended = ended, reduced = reduced,
+            top = 85.dp + safeTop,
+            bottom = when {
+                ended -> 178.dp
+                typing -> 161.dp
+                else -> 212.dp
+            } + safeBottom,
+            onBounds = { dialogueBounds = it },
+            onReport = onReport,
+        )
 
         val orbSize by animateDpAsState(
             when {
@@ -967,13 +978,15 @@ private fun V8Dialogue(
     prefs: VoiceV8Prefs,
     chat: Boolean,
     typing: Boolean,
+    ended: Boolean,
     reduced: Boolean,
     top: Dp,
     bottom: Dp,
     onBounds: (Rect) -> Unit,
     onReport: (VoiceLine) -> Unit,
 ) {
-    val shown = chat || typing
+    // The ended screen keeps the whole conversation readable.
+    val shown = chat || typing || ended
     val alpha by animateFloatAsState(if (shown) 1f else 0f, spec(reduced, 300, EaseCss), label = "dialogueAlpha")
     val shift by animateFloatAsState(if (shown) 0f else -13f, spec(reduced, 350, EaseCss), label = "dialogueShift")
     val list = rememberLazyListState()
@@ -983,8 +996,8 @@ private fun V8Dialogue(
             list.animateScrollToItem(messages.lastIndex)
         }
     }
-    LaunchedEffect(chat) {
-        if (chat && messages.isNotEmpty()) {
+    LaunchedEffect(chat || ended) {
+        if ((chat || ended) && messages.isNotEmpty()) {
             delay(180)
             list.scrollToItem(messages.lastIndex)
         }
@@ -1013,7 +1026,7 @@ private fun V8Dialogue(
             }
             .drawWithContent {
                 drawContent()
-                if (chat) {
+                if (chat || ended) {
                     drawRect(
                         Brush.verticalGradient(
                             0f to Color.Transparent, 0.09f to Color.Black,
@@ -1169,13 +1182,19 @@ private fun V8Orb(
             .offset { IntOffset((centerX - size / 2).roundToPx(), (centerY - size / 2).roundToPx()) }
             .size(size)
             .onGloballyPositioned { onBounds(it.boundsInRoot()) }
-            .semantics {
-                contentDescription = orbLabel
-                role = Role.Button
-                onClick { onChat(!latestChat); true }
-            }
-            .pointerInput(ended, reduced) {
-                if (ended) return@pointerInput
+            // `.ended #orb{pointer-events:none}`: the transcript under it scrolls.
+            .then(
+                if (ended) {
+                    Modifier.clearAndSetSemantics {}
+                } else {
+                    Modifier.semantics {
+                        contentDescription = orbLabel
+                        role = Role.Button
+                        onClick { onChat(!latestChat); true }
+                    }
+                },
+            )
+            .then(if (ended) Modifier else Modifier.pointerInput(reduced) {
                 awaitEachGesture {
                     val down = awaitFirstDown()
                     down.consume()
@@ -1228,7 +1247,7 @@ private fun V8Orb(
                         }
                     }
                 }
-            },
+            }),
     ) {
         Box(
             Modifier
@@ -2075,22 +2094,41 @@ private fun V8ModalButton(text: String, color: Color, modifier: Modifier, onClic
     ) { Text(text, fontSize = 16.sp, color = Color.White) }
 }
 
+/** `.restart`: under the kept transcript, a new conversation or the way out. */
 @Composable
-private fun V8Restart(onRestart: () -> Unit) {
-    Column(
-        Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(22.dp, Alignment.CenterVertically),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Text(stringResource(R.string.hsk_course_voice_v8_status_end), fontSize = 16.sp, color = Color(0xFFAAAAAA))
-        Box(
+private fun V8Restart(safeBottom: Dp, onRestart: () -> Unit, onExit: () -> Unit) {
+    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+        Column(
             Modifier
-                .clip(RoundedCornerShape(24.dp))
-                .background(Red)
-                .clickable(role = Role.Button, onClick = onRestart)
-                .padding(horizontal = 22.dp, vertical = 14.dp),
-        ) { Text(stringResource(R.string.hsk_course_voice_v8_restart), fontSize = 16.sp, color = Color.White) }
+                .padding(start = 20.dp, end = 20.dp, bottom = 16.dp + safeBottom)
+                .widthIn(max = 420.dp)
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                stringResource(R.string.hsk_course_voice_v8_status_end),
+                fontSize = 14.sp, color = Color(0xFFAAAAAA), textAlign = TextAlign.Center,
+            )
+            Spacer(Modifier.height(16.dp))
+            V8RestartButton(stringResource(R.string.hsk_course_voice_v8_restart), Red, onRestart)
+            Spacer(Modifier.height(10.dp))
+            V8RestartButton(stringResource(R.string.hsk_course_voice_page_exit), Color(0xFF333333), onExit)
+        }
     }
+}
+
+@Composable
+private fun V8RestartButton(text: String, color: Color, onClick: () -> Unit) {
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .height(48.dp)
+            .clip(RoundedCornerShape(24.dp))
+            .background(color)
+            .clickable(role = Role.Button, onClick = onClick)
+            .padding(horizontal = 22.dp),
+        contentAlignment = Alignment.Center,
+    ) { Text(text, fontSize = 16.sp, color = Color.White, textAlign = TextAlign.Center) }
 }
 
 // --- icons (the reference's inline SVGs on a 24-unit view box) ------------------

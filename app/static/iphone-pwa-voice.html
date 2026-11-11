@@ -73,7 +73,7 @@ button,input{font:inherit}button{cursor:pointer;-webkit-tap-highlight-color:tran
 @media(max-height:600px){#topicsLayer .topicsSheet{height:80%;max-height:80%}}
 .addOptions{display:flex;gap:8px;flex-wrap:wrap}.addOptions button{background:#2d2d2d;border:1px solid #4b4b4b;color:#fff;border-radius:18px;padding:12px 14px;flex:1 1 45%;font-size:14px}
 .endModal{position:absolute;z-index:35;inset:0;display:none;align-items:center;justify-content:center;background:#000b;padding:20px}.endModal.show{display:flex}.endCard{background:#202020;border:1px solid #393939;border-radius:24px;padding:22px;width:min(330px,100%);text-align:center}.endCard h3{font-size:19px;font-weight:620}.endCard p{font-size:14px;color:#aaa}.endActions{display:flex;gap:10px;margin-top:20px}.endActions button{height:44px;flex:1;border:0;border-radius:14px;background:#333;color:#fff}.endActions button.danger{background:var(--red)}
-#app.ended #orb{opacity:0;pointer-events:none}#app.ended .footer,#app.ended .top,#app.ended #dialogue{display:none}.restart{display:none;position:absolute;inset:0;z-index:2;align-items:center;justify-content:center;flex-direction:column;gap:22px}.restart button{background:var(--red);color:#fff;padding:14px 22px;border:0;border-radius:24px}.restart p{color:#aaa;margin:0}#app.ended .restart{display:flex}
+#app.ended #orb{opacity:0;pointer-events:none}#app.ended .footer,#app.ended .top{display:none}#app.ended #topicBackdrop{opacity:0;transform:scale(1.1)}#app.ended #dialogue{opacity:1;transform:translateY(0);pointer-events:auto;bottom:calc(178px + var(--safe-bottom));mask-image:linear-gradient(to bottom,transparent 0%,#000 9%,#000 97%,transparent 100%)}.restart{display:none;position:absolute;z-index:2;left:20px;right:20px;bottom:calc(16px + var(--safe-bottom));max-width:420px;margin:0 auto;flex-direction:column;gap:10px}.restart button{height:48px;padding:0 22px;border:0;border-radius:24px;color:#fff;font-size:16px}#restart{background:var(--red)}#exitEnded{background:#333}.restart p{color:#aaa;margin:0 0 6px;text-align:center;font-size:14px}#app.ended .restart{display:flex}
 #app.typing #orb{top:calc(100% - 125px - var(--safe-bottom));--orb-w:62px;opacity:.82}#app.typing #dialogue{bottom:calc(158px + var(--safe-bottom))}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}}
 
@@ -226,7 +226,7 @@ button,input{font:inherit}button{cursor:pointer;-webkit-tap-highlight-color:tran
   </section>
  </div>
  <div id="endModal" class="endModal"><div class="endCard"><h3 data-i18n="voiceV8.endTitle"></h3><p data-i18n="voiceV8.endBody"></p><div class="endActions"><button id="cancelEnd" data-i18n="voiceV8.endCancel"></button><button id="confirmEnd" class="danger" data-i18n="voiceV8.endConfirm"></button></div></div></div>
- <div class="restart"><p data-i18n="voiceV8.statusEnd"></p><button id="restart" data-i18n="voiceV8.restart"></button></div>
+ <div class="restart"><p data-i18n="voiceV8.statusEnd"></p><button id="restart" type="button" data-i18n="voiceV8.restart"></button><button id="exitEnded" type="button" data-i18n="voicePage.exit"></button></div>
 </div>
 <script>
 (()=>{'use strict';
@@ -420,9 +420,10 @@ async function stopRecorder({cancel=false}={}){const r=recording;if(!r)return;re
 $('micmuted').addEventListener('click',recordingAction);
 function closeUiDialogs(){$('endModal').classList.remove('show');document.querySelectorAll('.sheetLayer.open').forEach(el=>layer(el.id,false))}
 $('close').addEventListener('click',()=>{$('endModal').classList.add('show')});$('cancelEnd').addEventListener('click',()=>closeUiDialogs());
-async function finishSession(){if(app.classList.contains('ended'))return;closeUiDialogs();prompt.blur();app.classList.add('ended');await endSession();setState('end')}
+async function finishSession(){if(app.classList.contains('ended'))return;closeUiDialogs();prompt.blur();app.classList.add('ended');requestAnimationFrame(scrollBottom);await endSession();setState('end')}
 $('confirmEnd').addEventListener('click',async()=>{closeUiDialogs();await finishSession()});
 $('restart').addEventListener('click',async()=>{if(busy)return;await hardReset();dialogue.replaceChildren();app.classList.remove('ended');setMode('focus');prepareBoot()});
+$('exitEnded').addEventListener('click',()=>exitVoice());
 window.addEventListener('offline',()=>{if(IS_PWA)setState('offline')});
 window.addEventListener('online',()=>{if(!IS_PWA||state!=='offline')return;setState('reconnect');if(!sessionId)prepareBoot();else getActor(true).then(()=>setState(liveReady?(liveMicOn()?'listening':'ready'):'turn')).catch(handleError)});
 

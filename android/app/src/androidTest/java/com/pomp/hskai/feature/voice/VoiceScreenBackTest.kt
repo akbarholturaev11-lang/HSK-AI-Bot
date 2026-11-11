@@ -26,7 +26,7 @@ class VoiceScreenBackTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val status = VoiceStatusResponse(ok = true, remainingVoiceLimit = 3)
 
-    private fun actions(onExit: () -> Unit = {}, onEnd: () -> Unit = {}) = VoiceV8Actions(
+    private fun actions(onExit: () -> Unit = {}, onEnd: () -> Unit = {}, onRestart: () -> Unit = {}) = VoiceV8Actions(
         startFromMicrophone = {},
         startWithText = {},
         toggleRecording = {},
@@ -35,7 +35,7 @@ class VoiceScreenBackTest {
         changeTopic = {},
         selectRole = {},
         cancelRecording = {},
-        restart = {},
+        restart = onRestart,
         exit = onExit,
     )
 
@@ -123,6 +123,39 @@ class VoiceScreenBackTest {
         }
         pressBack()
         compose.runOnIdle { assertEquals(1, exits) }
+    }
+
+    @Test fun endingKeepsTheConversationAndOffersRestartOrExit() {
+        var exits = 0
+        var ends = 0
+        var restarts = 0
+        setV8(
+            VoiceUiState(
+                status = status,
+                isLoading = false,
+                sessionId = "open-session",
+                lines = listOf(
+                    VoiceLine(VoiceSpeaker.USER, "我是学生"),
+                    VoiceLine(VoiceSpeaker.AI, "Zo'r", hanzi = "很好", translation = "Zo'r"),
+                ),
+            ),
+            actions(onExit = { exits++ }, onEnd = { ends++ }, onRestart = { restarts++ }),
+        )
+        compose.onNodeWithContentDescription(context.getString(R.string.hsk_course_voice_v8_end_label))
+            .performClick()
+        compose.onNodeWithText(context.getString(R.string.hsk_course_voice_v8_end_confirm)).performClick()
+        compose.runOnIdle { assertEquals(1, ends) }
+        compose.onNodeWithText("我是学生").assertIsDisplayed()
+        compose.onNodeWithText("很好").assertIsDisplayed()
+        compose.onNodeWithText(context.getString(R.string.hsk_course_voice_v8_status_end)).assertIsDisplayed()
+        compose.onNodeWithText(context.getString(R.string.hsk_course_voice_v8_restart)).assertIsDisplayed()
+        compose.onNodeWithText(context.getString(R.string.hsk_course_voice_page_exit)).assertIsDisplayed()
+            .performClick()
+        compose.runOnIdle {
+            assertEquals(1, exits)
+            assertEquals(0, restarts)
+            assertEquals(1, ends)
+        }
     }
 
     @Test fun replacingVoiceWithAnotherScreenCancelsAnActiveOrPendingCallOnly() {

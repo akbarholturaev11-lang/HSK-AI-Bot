@@ -206,10 +206,19 @@ def test_live_conversation_streams_pcm_types_mutes_and_ends_on_time_limit(static
         log["socket"].send(json.dumps({"type": "time_limit"}))
         expect(page.locator("#app")).to_have_class(re.compile(r"\bended\b"))
         expect(page.locator(".restart p")).to_have_text(UZ["voiceV8.statusEnd"])
+        # The ended screen keeps the conversation and offers restart or exit.
+        expect(page.locator("#dialogue .msg.user").first).to_be_visible()
+        expect(page.locator("#dialogue .msg.ai").last.locator(".han")).to_have_text("你今天忙吗？")
+        expect(page.locator("#restart")).to_have_text(UZ["voiceV8.restart"])
+        expect(page.locator("#exitEnded")).to_have_text(UZ["voicePage.exit"])
         # Not only present: on top of the black voice screen and clickable.
         page.locator("#restart").click(trial=True, timeout=3000)
+        page.locator("#exitEnded").click(trial=True, timeout=3000)
         wait_until(page, lambda: log["ends"] == [{"session_id": "voice-session-1"}], "session must end on server")
         mic_closed(page)
+        page.locator("#exitEnded").click()
+        page.wait_for_url(re.compile(r"/iphone-pwa/course\?tab=voice&lang=uz$"))
+        assert log["ends"] == [{"session_id": "voice-session-1"}], "exit must not end the session twice"
         assert not log["errors"]
     finally:
         close()
