@@ -37,10 +37,11 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 
 ## Current state — 2026-11-12
 
-- The branch has the PostgreSQL baseline, the coverage guard and per-metric V10 states in the API and the Admin UI. It also has per-platform scoping, route chain tests, the PWA Pro funnel, `return_retention` and Report freshness. Existing V10 values still match the baseline.
-- Task 1.1 re-audited `334368cc..680761f1`. The delta below updates the original matrix and establishes `680761f1` as the unchanged runtime base for task 1.2.
-- **Next step: 6.3 promotion** — the owner approves promoting PR #285 to `main`. After that, verify `main` through the remote ref and deploy. Then the owner runs the 6.2 checklist on their devices. Done so far: sections 1–5, 6.1 validation, the 6.2 status and the Analytics Impact summary (below).
-- PR [akbarholturaev11-lang/HSK-AI-Bot#285](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/285) is the integration branch for this work. Main promotion is outside the current authorization.
+- The branch has the PostgreSQL baseline, the coverage guard and per-metric V10 states in the API and the Admin UI. It also has per-platform scoping, route chain tests, the PWA Pro funnel, `return_retention` and Report freshness.
+- An independent audit of PR #285 (55 findings) confirmed 17. The code and process defects among them are fixed on this branch; see [Audit remediation](#audit-remediation--pr-285-2026-11-12). Every V10 value still matches the baseline except two Overall Finance averages, which were wrong on `main` too (#34).
+- **Open: 6.2 real-client acceptance** (owner devices and a deployment of this branch; checklist below) and **6.3 promotion** (owner approval). No merge to `main` without the owner's permission.
+- **Next stage (not started):** four mandatory requirements are recorded in [Next stage](#next-stage--mandatory-requirements-not-implemented). They are not part of this change.
+- PR [akbarholturaev11-lang/HSK-AI-Bot#285](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/285) is the integration branch for this work.
 
 ## Platform scope
 
@@ -177,25 +178,80 @@ Branch vs baseline `680761f1` (= `origin/main`). The baseline is a detached work
   - Cause: the Report check accepted the loading panel, which is also a `.state-panel`. The read then finished after the next platform menu opened, and its render closed the menu.
   - Fix: the test now waits for each read to settle (`f993a3fa`). No UI change. A pending read closing an open header menu is pre-existing behavior.
 
+### Re-validation after the audit remediation — 2026-11-12
+
+Same machine; disposable PostgreSQL 15 on TCP `127.0.0.1:55441`, `LC_ALL=en_US.UTF-8`, synthetic `BOT_TOKEN`.
+
+| Check | Result |
+|---|---|
+| OpenSpec `--strict` | valid |
+| Registry | valid, 118 projection keys, 20 flows; the diff guard passes in `push` mode (`70759cd0..HEAD`) and `pull_request` mode (`origin/main`) |
+| Full unit (`pytest -q tests --ignore=tests/e2e`) | 5183 passed, 8 failed, 876 skipped; the same 8 known failures as above |
+| Real PostgreSQL | 52 modules, each in a fresh `*_test` database: all passed (729 tests, 548 subtests; 12 Smart Reminder skips) |
+| Analytics CI list | 117 passed, 196 subtests |
+| Refresh, writer and R2 cache modules | 34 passed |
+| Admin PWA Playwright | 8 of 8 suites passed; `admin_pwa_browser` now writes its Telegram completion through the real route |
+| i18n catalogs | `--check`: 0 stale |
+| Benchmark | `return_retention` with Voice turn evidence on 50k accounts, 1M course events and 300k AI usage rows: weekly 0.14 s, all time 1.06 s (limit 8 s) |
+
+Each reader fix has a test that fails on the previous reader (checked by swapping in the old file).
+
 ## Real-client acceptance — task 6.2
 
-**Not performed.**
-- It needs the owner's installed clients: Android Play and Direct builds, the Telegram Mini App and an iPhone home-screen PWA.
-- It also needs an Admin PWA that runs this branch. Production runs `main` `680761f1`, and no staging deployment of this branch exists.
+**Open.** It needs the owner's installed clients (Android Play and Direct builds, the Telegram Mini App, an iPhone home-screen PWA) and an Admin PWA that runs this branch. Production runs `main`; no staging deployment of this branch exists.
 
-Owner checklist, after promotion and deploy, with one account on every client:
+Each platform filter is its own 24-hour snapshot. To see an action at once, refresh that filter's snapshot through the internal endpoint (machine-only bearer secret; 60 s cooldown per platform), or wait for the next daily snapshot:
+
+```
+POST /api/internal/admin-pwa/analytics/refresh
+Authorization: Bearer <ADMIN_PWA_MANUAL_AGGREGATE_REFRESH_TOKEN>
+{"section": "course", "period": "weekly", "platform": "telegram"}
+```
+
+`platform` is `overall`, `android`, `telegram` or `iphone_pwa` (default `overall`); `section` is `course`, `funnel`, `money`, `sources` or `report`. Overall Home/Overview use the existing empty-body refresh.
+
+Owner checklist, after deploy, with one account on every client:
 1. Complete one lesson each on Android Play, Android Direct, the Telegram Mini App and the iPhone PWA.
-2. Admin PWA → Statistics → Course, Weekly, refresh: under each platform filter «completed lessons» grows only by that client's lessons. Android = Play + Direct combined (A19).
+2. Refresh `course`/`weekly` for `overall`, `android`, `telegram` and `iphone_pwa`. Admin PWA → Statistics → Course, Weekly: under each platform filter «completed lessons» grows only by that client's lessons. Android = Play + Direct combined (A19).
 3. Overall: the account counts once.
-4. Report → freshness: each platform's learning time is the time of its action.
-5. On the iPhone PWA, open the Pro offer → choose a plan → start checkout (no payment needed). The «iPhone PWA Pro» panel in Conversion counts the attempt.
+4. Refresh `report`/`weekly` (`overall`). Report → freshness: each platform's learning time is the time of its action.
+5. On the iPhone PWA, open the Pro offer → choose a plan → start checkout (no payment needed). Refresh `funnel`/`weekly` for `iphone_pwa`. The «iPhone PWA Pro» panel in Conversion counts the attempt.
+
+## Audit remediation — PR #285, 2026-11-12
+
+The audit (`Audit-Analitika.md`, 55 findings) was verified independently: 17 confirmed, 8 partial, 25 intentional limitations, 2 false positives, 3 need runtime evidence. Fixed here:
+
+| # | Defect | Fix | Evidence |
+|---|---|---|---|
+| 13 | Other clients' Starter 0 rows filled a Telegram/PWA `foundation` detail limit | Non-start rows are read only for accounts whose start carries this client | `CourseFoundationDetailLimitTests` (fails on the old reader) |
+| 28 | All-time PWA Pro funnel became `detail_limited` | Aggregated per attempt in SQL; PostgreSQL and SQLite paths | 2 600 extra attempts counted exactly; SQLite suite |
+| 31 | A Voice session started before the window could not count as a return; one ending after it could | Voice counts by a spoken-turn usage row in the window, or a session wholly inside it | `test_return_retention_dates_a_voice_return_by_its_turn` |
+| 34 | Average payment and ARPPU divided by unpriced payments (a `main` defect) | Priced payments and payers with a priced payment only | Golden test pins the two corrected Overall values; unit test |
+| 37 | Freshness accepted a caller `client` lookalike before tagging was live | Same per-client boundary as Course | Freshness lookalike test |
+| 40 | Report quality looked platform-scoped | One-line UZ/RU/TJ note «all platforms; independent of filter and period» | i18n catalogs; browser suite |
+| 44 | Manual refresh was Overall-only, so 6.2 could not refresh a platform filter | Optional `platform` per snapshot, per-platform cooldown; Report refreshable | Cache and endpoint tests |
+| 6 | A description-only flow edit satisfied the diff guard | Only events or per-platform status, chain test or reason count | Contract tests |
+| 7 | `covered` was checked only for a test's existence | The test must run in `analytics-integrity.yml` and read the metric from `/api/admin/v1/analytics` for that platform | Contract tests |
+| 8 | Attribution in `app/main.py` and `app/api/miniapp_practice.py` was unguarded | Critical paths with per-function `symbols` (AST compare); the writer service added | Contract tests |
+| 9 | Registry reasons said shared writes lack a client | Reasons describe the route-set key and the missing scoped readers | Registry |
+| 42 | 6.2 marked done while not performed | 6.2 reopened | `tasks.md` |
+| 43 | No single route → browser run | Browser QA writes its Telegram completion through the real signed lesson routes | `tests/e2e/admin_pwa_browser.py` |
+
+Also: the writer drops a caller `client` key before tagging, so the route key is always final, and logs when a tag is omitted for size.
+
+Remaining from the audit (not code defects in this change):
+- #26 PWA Pro attempt split on resume: needs learner PWA JS and service-worker changes plus runtime evidence. Left for a separate task.
+- #45/#46: CI and full-suite results are recorded in the validation table, including known baseline failures.
+- #47: few `covered` cells. More route chains are follow-up work, not a defect.
+- #48/#49: real devices and staging are 6.2.
+- #24/#51/#53: need production-scale or production-data evidence. Local 1M-row runs stayed far below the 8 s limit.
 
 ## Analytics Impact summary — task 6.3
 
 Branch `planning/analytics-integrity-openspec-20261109` (PR #285) on runtime base `680761f1`. Registry: [`FEATURE_ANALYTICS_COVERAGE.json`](FEATURE_ANALYTICS_COVERAGE.json), 118 projection keys, 20 flows.
 
 **Metric cells per platform.**
-- `covered`: a route → PostgreSQL → Admin API chain test exists.
+- `covered`: a route → PostgreSQL → Admin API chain test exists. The checker requires that `analytics-integrity.yml` runs it and that it reads the metric from `/api/admin/v1/analytics` for that platform.
 - `partial`: the value is shown under the filter from verified stored-row predicates, with stored-row tests but no route chain yet.
 
 | Platform | covered | partial | not_instrumented | not_applicable |
@@ -208,7 +264,9 @@ Branch `planning/analytics-integrity-openspec-20261109` (PR #285) on runtime bas
 - **Route chains:**
   - `course.completed_user_lessons` on all three clients ([test](../../tests/test_analytics_platform_chain.py));
   - `funnel.pwa_pro_attempt_funnel` on PWA ([test](../../tests/test_pwa_pro_funnel_chain.py)).
-- **New series:** V10 values are unchanged, and the golden test ignores only these keys:
+- **Browser:** `tests/e2e/admin_pwa_browser.py` writes its Telegram completion through the real signed lesson routes, then reads it under the Telegram filter (SQLite).
+- **Corrected values:** Overall Finance `average_payment_usd` and `arppu_usd` now exclude unpriced payments (#34, a `main` defect). The golden test pins both new values.
+- **New series:** other V10 values are unchanged, and the golden test ignores only these keys:
   - `funnel.pwa_pro_attempt_funnel` (Overall + PWA);
   - `course.return_retention` (Overall);
   - `report.platform_freshness` (one global list).
@@ -230,6 +288,7 @@ Branch `planning/analytics-integrity-openspec-20261109` (PR #285) on runtime bas
   - subscription entry sources (F6, F7; they need a schema change).
 - `return_retention` per platform has no platform-of-registration signal.
 - Rows written before the route-set `client` key count only in Overall (`attributed_since`).
+- A resumed PWA Pro checkout can split into two attempts (#26); it needs a learner PWA change.
 - Desktop: registry statuses only (freeze).
 
 **Monitoring handoff:** reuse, do not copy, the registry identifiers:
@@ -239,6 +298,15 @@ Branch `planning/analytics-integrity-openspec-20261109` (PR #285) on runtime bas
 - the reasons `no_data`, `not_instrumented`, `attribution_not_audited`, `detail_limited`, `not_applicable`.
 
 **Promotion:** waits for the owner's approval. This work has not changed `main`.
+
+## Next stage — mandatory requirements (not implemented)
+
+The owner set these four as mandatory for the next stage. **None is implemented in this change.** Each starts as its own OpenSpec change after owner approval, with a route chain test and UZ/RU/TJ UI text.
+
+1. **Android Lesson Start.** Android writes no lesson start (A7), so Course > Android has no lessons entry and no start-based cohort. Needed: a server-written, deduplicated lesson start from the authenticated Android course route with the route-set client `android` (Play + Direct combined until the channel is recorded, A19), read by the Android Course features.
+2. **PWA Activation.** PWA activation, direct activation and sessions are `not_instrumented` per platform (A11): their anchor and most rows carry no route-set client. Needed: a defined PWA activation (signup or handoff → first meaningful learning action) from route-owned rows only, with its own cohort and window.
+3. **Subscription Sources.** Sources is Overall-only (F6, F7): `subscription_entry_events` has no platform column and entry sources on the Telegram route are caller text. Needed: a server-set platform on each entry (reviewed schema change), then Sources and source → payment attribution per platform.
+4. **Platform D1/D7 Retention.** `return_retention` is Overall-only (D5): the signup cohort has no platform of registration. Needed: a defined platform cohort (platform of registration or first verified open) and per-platform return evidence, with D1/D7 windows matching the Overall series.
 
 ## Decisions log
 
@@ -264,7 +332,17 @@ Branch `planning/analytics-integrity-openspec-20261109` (PR #285) on runtime bas
 - 2026-11-12 — Report freshness (D7) is one global list under every filter, like `quality`: Android/Telegram/PWA × learning/payments with `latest_at` and `unresolved_owners`. Android learning excludes the `android_*` prefix rule because the Telegram client writes `android_play_opened`; it uses `android_app_opened`, `android_course` completions and the `client` key. An owned row whose account is gone counts as unresolved, as in the analytics owner rule.
 - 2026-11-12 — `return_retention` (D5) is Overall-only. Per-platform opens are verifiable for Android (A1) and PWA (A4), but the signup cohort has no platform-of-registration signal, so a per-platform cohort is not defined; every platform filter shows `not_instrumented`. The allowlist is server-written events only (none of `CLIENT_COURSE_MINIAPP_EVENT_NAMES`), plus Voice sessions with `turn_count > 0`.
 
+- 2026-11-12 — Audit remediation (#13): Course `foundation` per platform reads non-start rows only for accounts whose `foundation_started` carries this client (a semi-join), so other clients' history never fills its detail limit. Values are unchanged; the reducer already ignored those rows.
+- 2026-11-12 — Audit remediation (#28): `pwa_pro_attempt_funnel` is a SQL aggregate per (account, `attempt_id`). PostgreSQL extracts the token with a text match on the server-built payload; SQLite (browser QA) uses JSON1. It no longer depends on the 5 000-row detail limit.
+- 2026-11-12 — Audit remediation (#31): Voice return evidence is the time of a spoken turn: `voice_practice_reply`, `voice_live_audio` or `voice_live_evaluation` usage rows (written before `turn_count` increments), or a session with turns that started and ended inside the window. No schema or Voice behavior change.
+- 2026-11-12 — Audit remediation (#34): Finance average payment and ARPPU exclude unpriced payments and payers with no priced payment. This corrects a `main` defect; only these two Overall keys differ from the golden, and the test pins their new values. The legacy basic statistics service is unchanged.
+- 2026-11-12 — Audit remediation (#37): Report freshness uses the Course boundary per client (first server-built tagged completion), computed in one grouped scan.
+- 2026-11-12 — Audit remediation (#44): the internal section refresh takes an optional `platform` and refreshes that filter's own snapshot; the cooldown is per platform; Report is refreshable. The empty-body Overall overview refresh is unchanged. There is still no Admin UI refresh button.
+- 2026-11-12 — Audit remediation (#6–#8): the diff guard ignores flow `description` and whitespace; `covered` needs a CI-run test that reads the metric from the Admin analytics route for that platform; large shared modules are guarded per function through `symbols`.
+
 ## Session log (newest first, one or two lines each)
+
+- 2026-11-12 — Audit remediation for PR #285: fixed confirmed findings #6–#9, #13, #28, #31, #34, #37, #40, #42–#44 (table in [Audit remediation](#audit-remediation--pr-285-2026-11-12)); writer keeps the route key final. 6.2 reopened. Four next-stage requirements recorded, not implemented. Re-validation table above; no merge to `main`.
 
 - 2026-11-12 — Tasks 6.1–6.3: validation matches the baseline. Branch and baseline have the same 8 unit failures; all PostgreSQL modules pass on both; 8 of 8 Admin Playwright suites pass; the perf contract has only the known 320 px failures. The CI e2e flake in the platform loop is fixed in the test (`f993a3fa`); Admin PWA security CI is green. 6.2 was not performed (reason and owner checklist above). The Impact summary is written. Promotion waits for the owner.
 

@@ -210,12 +210,13 @@ referral, notifications, login, app/platform flows, and related error paths):
    PR/task completion notes. Preserve existing auth, payments, Pro, lesson results,
    privacy and performance. Telemetry must never block the user's critical flow.
 
-**Enforcement status:** this agent rule is active. This branch implements the
-[coverage registry](docs/analytics/FEATURE_ANALYTICS_COVERAGE.json) and
-[`analytics-integrity` CI check](.github/workflows/analytics-integrity.yml).
-Keep justified `not_applicable` entries. Verify both files on `main` before
-reporting enforcement there; CI results and pending metric repairs are tracked
-in the linked context.
+**Enforcement status:** this agent rule is active. The
+[coverage registry](docs/analytics/FEATURE_ANALYTICS_COVERAGE.json) and the
+[`analytics-integrity` CI check](.github/workflows/analytics-integrity.yml)
+enforce it on any branch that contains both files. Keep justified
+`not_applicable` entries. Verify both files on `main` before reporting
+enforcement there; CI results and pending metric repairs are tracked in the
+linked context.
 
 ---
 
