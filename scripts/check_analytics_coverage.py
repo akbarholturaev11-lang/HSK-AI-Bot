@@ -20,6 +20,10 @@ STATUSES = ("covered", "partial", "not_instrumented", "not_applicable")
 ID = re.compile(r"[a-z][a-z0-9_]*")
 FILE = re.compile(r"(?:[a-zA-Z0-9_.-]+/)*[a-zA-Z0-9_.-]+")
 TEST_SYMBOL = re.compile(r"(?:[A-Za-z][A-Za-z0-9_]*::)?test_[A-Za-z0-9_]+")
+# `covered` claims a route -> PostgreSQL -> aggregation -> Admin filter chain.
+# Its test must run in this workflow and read the Admin analytics route.
+WORKFLOW = ".github/workflows/analytics-integrity.yml"
+ADMIN_ANALYTICS_ROUTE = "/api/admin/v1/analytics"
 
 
 class CoverageError(ValueError):
@@ -70,7 +74,19 @@ def exact_file(root, value, label):
     return root / value
 
 
-def validate_chain(root, reference, label):
+def ci_test_modules(root):
+    """Test modules the Analytics integrity workflow executes."""
+    workflow = Path(root) / WORKFLOW
+    text = workflow.read_text(encoding="utf-8") if workflow.is_file() else ""
+    return set(re.findall(r"tests/[A-Za-z0-9_/.-]+\.py", text))
+
+
+def _string_literals(node):
+    return {item.value for item in ast.walk(node)
+            if isinstance(item, ast.Constant) and isinstance(item.value, str)}
+
+
+def validate_chain(root, reference, label, *, platform, subjects, ci_modules):
     require(isinstance(reference, str) and "::" in reference, label,
             "covered requires a chain_test as tests/file.py::test_name")
     path, symbol = reference.split("::", 1)
@@ -78,30 +94,60 @@ def validate_chain(root, reference, label):
             label, "chain_test must name an executable Python test")
     source = exact_file(root, path, label)
     nodes = ast.parse(source.read_text(encoding="utf-8"), filename=path).body
+    scope = None
     if "::" in symbol:
         classname, symbol = symbol.split("::")
-        nodes = next((node.body for node in nodes if isinstance(node, ast.ClassDef)
-                      and node.name == classname), ())
-    require(any(isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name == symbol
-                for node in nodes), label, f"chain test not found: {reference}")
+        scope = next((node for node in nodes if isinstance(node, ast.ClassDef) and node.name == classname), None)
+        nodes = scope.body if scope is not None else ()
+    test = next((node for node in nodes if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+                 and node.name == symbol), None)
+    require(test is not None, label, f"chain test not found: {reference}")
+    require(path in ci_modules, label, f"chain test module is not run by {WORKFLOW}: {path}")
+    # Static evidence only: the test (or its class helpers) must request this
+    # platform from the Admin analytics route and read this metric or event.
+    literals = _string_literals(scope if scope is not None else test)
+    require(ADMIN_ANALYTICS_ROUTE in literals and platform in literals and literals & set(subjects), label,
+            f"chain test must read {ADMIN_ANALYTICS_ROUTE} with platform {platform!r} "
+            f"and one of {sorted(subjects)}: {reference}")
 
 
-def validate_platforms(root, platforms, label):
+def validate_platforms(root, platforms, label, *, subjects=(), ci_modules=frozenset()):
     fields(platforms, label, PLATFORMS)
     for platform, cell in platforms.items():
         scope = f"{label}/{platform}"
         fields(cell, scope, ("status",), ("reason", "chain_test"))
         require(cell["status"] in STATUSES, scope, f"invalid status {cell['status']!r}")
         if cell["status"] == "covered":
-            validate_chain(root, cell.get("chain_test"), scope)
+            validate_chain(root, cell.get("chain_test"), scope, platform=platform,
+                           subjects=subjects, ci_modules=ci_modules)
         else:
             require("chain_test" not in cell, scope, "only covered entries can name a chain test")
             explanation(cell.get("reason"), scope)
 
 
+def functions(source, path):
+    """Every function definition by name, including route handlers nested in a
+    registration function."""
+    found = defaultdict(list)
+    for node in ast.walk(ast.parse(source, filename=path)):
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            found[node.name].append(node)
+    return found
+
+
+def symbol_dumps(source, path, symbols):
+    """Comparable AST of each named function; comments and blank lines ignored."""
+    try:
+        found = functions(source, path) if source else {}
+    except SyntaxError:
+        return {}
+    return {name: ast.dump(found[name][0]) for name in symbols if len(found.get(name, ())) == 1}
+
+
 def validate_schema(registry, root=ROOT):
     fields(registry, "registry", ("version", "metrics", "flows", "critical_paths", "exemptions"))
     require(type(registry["version"]) is int and registry["version"] == 1, "registry", "unsupported version")
+    ci_modules = ci_test_modules(root)
     metrics = set()
     for row in rows(registry["metrics"], "metrics", required=True):
         fields(row, "metric", ("section", "key", "kind", "filters"), ("platforms",))
@@ -113,7 +159,7 @@ def validate_schema(registry, root=ROOT):
         unique(row["filters"], label, ("overall", *PLATFORMS))
         require(row["kind"] in ("metric", "metadata"), label, "kind must be metric or metadata")
         if row["kind"] == "metric":
-            validate_platforms(root, row.get("platforms"), label)
+            validate_platforms(root, row.get("platforms"), label, subjects=(key,), ci_modules=ci_modules)
         else:
             require("platforms" not in row, label, "projection metadata does not have platform coverage")
 
@@ -126,7 +172,6 @@ def validate_schema(registry, root=ROOT):
         require(flow_id not in flows, label, "duplicate flow")
         flows.add(flow_id)
         explanation(flow["description"], label)
-        validate_platforms(root, flow["platforms"], label)
         for group in rows(flow["events"], label):
             fields(group, label, ("store", "role", "names"), ("reason",))
             store, role = group["store"], group["role"]
@@ -138,15 +183,23 @@ def validate_schema(registry, root=ROOT):
                 identifier(name, label)
                 require((store, name) not in events, label, f"duplicate event {store}:{name}")
                 events.add((store, name))
+        validate_platforms(root, flow["platforms"], label, ci_modules=ci_modules,
+                           subjects=tuple(name for group in flow["events"] for name in group["names"]))
 
     paths = set()
     for row in rows(registry["critical_paths"], "critical_paths", required=True):
-        fields(row, "critical path", ("path", "flows"))
+        fields(row, "critical path", ("path", "flows"), ("symbols",))
         path = row["path"]
-        exact_file(root, path, "critical path")
+        file = exact_file(root, path, "critical path")
         require(path not in paths, path, "duplicate critical path")
         paths.add(path)
         unique(row["flows"], path, flows)
+        if "symbols" in row:
+            # A large shared module is guarded per function, not per file.
+            found = functions(file.read_text(encoding="utf-8"), path)
+            for name in unique(row["symbols"], path):
+                require(name.isidentifier() and len(found.get(name, ())) == 1, path,
+                        f"symbol {name!r} must name exactly one function")
 
     exemptions = set()
     for row in rows(registry["exemptions"], "exemptions"):
@@ -381,12 +434,30 @@ def validate_events(registry, found):
         raise CoverageError("\n".join(errors))
 
 
-def validate_diff(registry, previous, paths, event_changes):
-    """Require a change to a related flow or a fresh, exact exemption."""
+def _flow_substance(flow):
+    """What a flow states about measurement: its events and, per platform, the
+    status, chain test and whitespace-normalised reason. The free-form
+    description alone is not an analytics-impact statement (audit #6)."""
+    if flow is None:
+        return None
+    return (
+        sorted((group["store"], group["role"], sorted(group["names"])) for group in flow.get("events", ())),
+        sorted((platform, cell.get("status"), cell.get("chain_test"), " ".join(str(cell.get("reason", "")).split()))
+               for platform, cell in flow.get("platforms", {}).items()),
+    )
+
+
+def validate_diff(registry, previous, paths, event_changes, changed_symbols=None):
+    """Require a substantive change to a related flow or a fresh, exact exemption.
+
+    `changed_symbols` maps a path to the functions whose AST changed. A
+    critical path that lists `symbols` is affected only when one of them did;
+    without that evidence every listed path is treated as affected.
+    """
     old_flows = {row["id"]: row for row in previous.get("flows", ())}
     new_flows = {row["id"]: row for row in registry["flows"]}
     changed_flows = {key for key in old_flows.keys() | new_flows.keys()
-                     if old_flows.get(key) != new_flows.get(key)}
+                     if _flow_substance(old_flows.get(key)) != _flow_substance(new_flows.get(key))}
     old_events = registered_events(previous)
     new_events = registered_events(registry)
     reviewed = [row for row in registry["exemptions"] if row not in previous.get("exemptions", ())]
@@ -394,6 +465,9 @@ def validate_diff(registry, previous, paths, event_changes):
     exempt_events = {(row["store"], row["event"]) for row in reviewed if "event" in row}
     affected = {}
     for row in (*previous.get("critical_paths", ()), *registry["critical_paths"]):
+        symbols = set(row.get("symbols", ()))
+        if symbols and changed_symbols is not None and not symbols & changed_symbols.get(row["path"], set()):
+            continue
         affected.setdefault(row["path"], set()).update(row["flows"])
 
     errors = []
@@ -404,8 +478,8 @@ def validate_diff(registry, previous, paths, event_changes):
                 errors.append(f"{path}: {store}:{event} changed without a matching flow update or exemption")
         flows = affected.get(path, set())
         if flows and not flows & changed_flows:
-            errors.append(f"{path}: update a related flow ({', '.join(sorted(flows))}) "
-                          "or add a reviewed exact-path exemption")
+            errors.append(f"{path}: update a related flow's events or platform coverage "
+                          f"({', '.join(sorted(flows))}) or add a reviewed exact-path exemption")
     if errors:
         raise CoverageError("\n".join(errors))
 
@@ -428,7 +502,8 @@ def check_git_diff(root, registry, base, head, mode):
     if mode == "pull_request":
         base = git(root, "merge-base", base, head).strip()
     paths = git(root, "diff", "--name-only", "--no-renames", "-z", base, head, "--").split("\0")
-    previous = git_blob(root, base, REGISTRY)
+    previous_text = git_blob(root, base, REGISTRY)
+    previous = load_registry(previous_text) if previous_text else {}
     old_imports = _event_module_loader(lambda path: git_blob(root, base, path))
     new_imports = _event_module_loader(lambda path: git_blob(root, head, path))
     changes = {}
@@ -437,7 +512,16 @@ def check_git_diff(root, registry, base, head, mode):
             before = events_in_file(path, git_blob(root, base, path), load_module=old_imports)
             after = events_in_file(path, git_blob(root, head, path), load_module=new_imports)
             changes[path] = before ^ after
-    validate_diff(registry, load_registry(previous) if previous else {}, paths, changes)
+    symbols = defaultdict(set)
+    for row in (*previous.get("critical_paths", ()), *registry["critical_paths"]):
+        symbols[row["path"]].update(row.get("symbols", ()))
+    changed_symbols = {}
+    for path, names in symbols.items():
+        if names and path in paths:
+            before = symbol_dumps(git_blob(root, base, path), path, names)
+            after = symbol_dumps(git_blob(root, head, path), path, names)
+            changed_symbols[path] = {name for name in names if before.get(name) != after.get(name)}
+    validate_diff(registry, previous, paths, changes, changed_symbols)
 
 
 def main(argv=None):

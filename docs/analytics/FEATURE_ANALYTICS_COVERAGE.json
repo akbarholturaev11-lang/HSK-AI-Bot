@@ -30,9 +30,9 @@
     },
     {"section": "home", "key": "activity", "kind": "metric", "filters": ["overall"],
       "platforms": {
-        "android": {"status": "partial", "reason": "A8: Android completions have a source; A7 starts have no writer and A13-A15 shared writes lack a client. No scoped aggregate."},
-        "telegram": {"status": "not_instrumented", "reason": "A6/A9/A13-A15: shared lesson, practice, exam and mistake rows lack a trusted Mini App client key."},
-        "iphone_pwa": {"status": "partial", "reason": "A11: server-set PWA flow telemetry exists, but A6/A9/A13-A15 shared rows lack a client; historical client payload is not exclusive."},
+        "android": {"status": "partial", "reason": "A8: Android completions have a source and A13-A15 Android routes set the client android, but this Overall aggregate has no Android-scoped reader. A7: no lesson-start writer."},
+        "telegram": {"status": "not_instrumented", "reason": "A6/A9/A13-A15 rows carry the route-set client telegram from its attributed_since on, but this Overall aggregate has no Telegram-scoped reader; earlier rows have no client."},
+        "iphone_pwa": {"status": "partial", "reason": "A11: server-set PWA flow telemetry exists and A6/A9/A13-A15 rows carry the route-set client iphone_pwa from its attributed_since on, but this Overall aggregate has no PWA-scoped reader."},
         "macos": {"status": "not_instrumented", "reason": "V10 does not scope the learning event union to an individual Desktop OS; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "V10 does not scope the learning event union to an individual Desktop OS; Desktop freeze."}
       }
@@ -161,9 +161,9 @@
     },
     {"section": "overview", "key": "activity", "kind": "metric", "filters": ["overall"],
       "platforms": {
-        "android": {"status": "partial", "reason": "A8: Android completions have a source; A7 starts have no writer and A13-A15 shared writes lack a client. No scoped aggregate."},
-        "telegram": {"status": "not_instrumented", "reason": "A6/A9/A13-A15: shared lesson, practice, exam and mistake rows lack a trusted Mini App client key."},
-        "iphone_pwa": {"status": "partial", "reason": "A11: server-set PWA flow telemetry exists, but A6/A9/A13-A15 shared rows lack a client; historical client payload is not exclusive."},
+        "android": {"status": "partial", "reason": "A8: Android completions have a source and A13-A15 Android routes set the client android, but this Overall aggregate has no Android-scoped reader. A7: no lesson-start writer."},
+        "telegram": {"status": "not_instrumented", "reason": "A6/A9/A13-A15 rows carry the route-set client telegram from its attributed_since on, but this Overall aggregate has no Telegram-scoped reader; earlier rows have no client."},
+        "iphone_pwa": {"status": "partial", "reason": "A11: server-set PWA flow telemetry exists and A6/A9/A13-A15 rows carry the route-set client iphone_pwa from its attributed_since on, but this Overall aggregate has no PWA-scoped reader."},
         "macos": {"status": "not_instrumented", "reason": "V10 does not scope the learning event union to an individual Desktop OS; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "V10 does not scope the learning event union to an individual Desktop OS; Desktop freeze."}
       }
@@ -188,9 +188,9 @@
     },
     {"section": "overview", "key": "course_engagement", "kind": "metric", "filters": ["overall"],
       "platforms": {
-        "android": {"status": "partial", "reason": "A8: Android completions have a source; A7 starts have no writer and A13-A15 shared writes lack a client. No scoped aggregate."},
-        "telegram": {"status": "not_instrumented", "reason": "A6/A9/A13-A15: shared lesson, practice, exam and mistake rows lack a trusted Mini App client key."},
-        "iphone_pwa": {"status": "partial", "reason": "A11: server-set PWA flow telemetry exists, but A6/A9/A13-A15 shared rows lack a client; historical client payload is not exclusive."},
+        "android": {"status": "partial", "reason": "A8: Android completions have a source and A13-A15 Android routes set the client android, but this Overall aggregate has no Android-scoped reader. A7: no lesson-start writer."},
+        "telegram": {"status": "not_instrumented", "reason": "A6/A9/A13-A15 rows carry the route-set client telegram from its attributed_since on, but this Overall aggregate has no Telegram-scoped reader; earlier rows have no client."},
+        "iphone_pwa": {"status": "partial", "reason": "A11: server-set PWA flow telemetry exists and A6/A9/A13-A15 rows carry the route-set client iphone_pwa from its attributed_since on, but this Overall aggregate has no PWA-scoped reader."},
         "macos": {"status": "not_instrumented", "reason": "V10 does not scope the learning event union to an individual Desktop OS; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "V10 does not scope the learning event union to an individual Desktop OS; Desktop freeze."}
       }
@@ -351,9 +351,9 @@
     },
     {"section": "course", "key": "course_engagement", "kind": "metric", "filters": ["overall"],
       "platforms": {
-        "android": {"status": "partial", "reason": "A8: Android completions have a source; A7 starts have no writer and A13-A15 shared writes lack a client. No scoped aggregate."},
-        "telegram": {"status": "not_instrumented", "reason": "A6/A9/A13-A15: shared lesson, practice, exam and mistake rows lack a trusted Mini App client key."},
-        "iphone_pwa": {"status": "partial", "reason": "A11: server-set PWA flow telemetry exists, but A6/A9/A13-A15 shared rows lack a client; historical client payload is not exclusive."},
+        "android": {"status": "partial", "reason": "A8: Android completions have a source and A13-A15 Android routes set the client android, but this Overall aggregate has no Android-scoped reader. A7: no lesson-start writer."},
+        "telegram": {"status": "not_instrumented", "reason": "A6/A9/A13-A15 rows carry the route-set client telegram from its attributed_since on, but this Overall aggregate has no Telegram-scoped reader; earlier rows have no client."},
+        "iphone_pwa": {"status": "partial", "reason": "A11: server-set PWA flow telemetry exists and A6/A9/A13-A15 rows carry the route-set client iphone_pwa from its attributed_since on, but this Overall aggregate has no PWA-scoped reader."},
         "macos": {"status": "not_instrumented", "reason": "V10 does not scope the learning event union to an individual Desktop OS; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "V10 does not scope the learning event union to an individual Desktop OS; Desktop freeze."}
       }
@@ -500,9 +500,9 @@
     },
     {"section": "funnel", "key": "course_engagement", "kind": "metric", "filters": ["overall"],
       "platforms": {
-        "android": {"status": "partial", "reason": "A8: Android completions have a source; A7 starts have no writer and A13-A15 shared writes lack a client. No scoped aggregate."},
-        "telegram": {"status": "not_instrumented", "reason": "A6/A9/A13-A15: shared lesson, practice, exam and mistake rows lack a trusted Mini App client key."},
-        "iphone_pwa": {"status": "partial", "reason": "A11: server-set PWA flow telemetry exists, but A6/A9/A13-A15 shared rows lack a client; historical client payload is not exclusive."},
+        "android": {"status": "partial", "reason": "A8: Android completions have a source and A13-A15 Android routes set the client android, but this Overall aggregate has no Android-scoped reader. A7: no lesson-start writer."},
+        "telegram": {"status": "not_instrumented", "reason": "A6/A9/A13-A15 rows carry the route-set client telegram from its attributed_since on, but this Overall aggregate has no Telegram-scoped reader; earlier rows have no client."},
+        "iphone_pwa": {"status": "partial", "reason": "A11: server-set PWA flow telemetry exists and A6/A9/A13-A15 rows carry the route-set client iphone_pwa from its attributed_since on, but this Overall aggregate has no PWA-scoped reader."},
         "macos": {"status": "not_instrumented", "reason": "V10 does not scope the learning event union to an individual Desktop OS; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "V10 does not scope the learning event union to an individual Desktop OS; Desktop freeze."}
       }
@@ -808,11 +808,11 @@
     },
     {"section": "report", "key": "quality", "kind": "metric", "filters": ["overall", "android", "telegram", "macos", "windows"],
       "platforms": {
-        "android": {"status": "not_applicable", "reason": "Existing quality rows are global record counts and latest timestamps, even when returned under a platform filter. No platform quality breakdown exists yet."},
-        "telegram": {"status": "not_applicable", "reason": "Existing quality rows are global record counts and latest timestamps, even when returned under a platform filter. No platform quality breakdown exists yet."},
-        "iphone_pwa": {"status": "not_applicable", "reason": "Existing quality rows are global record counts and latest timestamps, even when returned under a platform filter. No platform quality breakdown exists yet."},
-        "macos": {"status": "not_applicable", "reason": "Existing quality rows are global record counts and latest timestamps, even when returned under a platform filter. No platform quality breakdown exists yet."},
-        "windows": {"status": "not_applicable", "reason": "Existing quality rows are global record counts and latest timestamps, even when returned under a platform filter. No platform quality breakdown exists yet."}
+        "android": {"status": "not_applicable", "reason": "Global record counts and latest timestamps, returned unchanged under every filter; the Report labels the table as all platforms, independent of filter and period. No platform quality breakdown exists yet."},
+        "telegram": {"status": "not_applicable", "reason": "Global record counts and latest timestamps, returned unchanged under every filter; the Report labels the table as all platforms, independent of filter and period. No platform quality breakdown exists yet."},
+        "iphone_pwa": {"status": "not_applicable", "reason": "Global record counts and latest timestamps, returned unchanged under every filter; the Report labels the table as all platforms, independent of filter and period. No platform quality breakdown exists yet."},
+        "macos": {"status": "not_applicable", "reason": "Global record counts and latest timestamps, returned unchanged under every filter; the Report labels the table as all platforms, independent of filter and period. No platform quality breakdown exists yet."},
+        "windows": {"status": "not_applicable", "reason": "Global record counts and latest timestamps, returned unchanged under every filter; the Report labels the table as all platforms, independent of filter and period. No platform quality breakdown exists yet."}
       }
     }
   ],
@@ -1031,15 +1031,15 @@
       "platforms": {
         "android": {
           "status": "partial",
-          "reason": "Android source android_course is present and the Overall foundation reader exists; V10 platform attribution still needs a chain test."
+          "reason": "Android source android_course feeds the Overall foundation reader; Android writes no foundation_started (A10), so Course > Android has no foundation cohort."
         },
         "telegram": {
           "status": "partial",
-          "reason": "Foundation uses the existing Mini App course source; the scoped V10 projection and chain are not implemented."
+          "reason": "Course > Telegram counts the Starter 0 cohort whose foundation_started carries the route-set client telegram as the final payload key (a caller client is dropped), from attributed_since on; the cohort's later rows follow its start. No route chain test."
         },
         "iphone_pwa": {
           "status": "partial",
-          "reason": "Foundation uses the existing PWA course source; the scoped V10 projection and chain are not implemented."
+          "reason": "Course > iPhone PWA counts the Starter 0 cohort whose foundation_started carries the route-set client iphone_pwa as the final payload key (a caller client is dropped), from attributed_since on; the cohort's later rows follow its start. No route chain test."
         },
         "macos": {
           "status": "not_instrumented",
@@ -1103,15 +1103,15 @@
       "platforms": {
         "android": {
           "status": "partial",
-          "reason": "Android completion uses source android_course; no Android lesson-start writer exists and there is no V10 lesson chain test."
+          "reason": "Android completions use the Android-only source android_course (course.completed_user_lessons is route-chain tested); no Android lesson-start writer exists (A7)."
         },
         "telegram": {
           "status": "partial",
-          "reason": "Canonical shared lesson starts and completions feed Overall; shared writes lack the server-set client field."
+          "reason": "Signed Mini App lesson starts and completions carry the route-set client telegram as the final payload key (a caller client is dropped); Course > Telegram reads them from attributed_since on, earlier rows Overall only. Only course.completed_user_lessons is route-chain tested."
         },
         "iphone_pwa": {
           "status": "partial",
-          "reason": "Canonical shared lesson starts and completions feed Overall; shared writes lack the server-set client field."
+          "reason": "PWA lesson starts and completions carry the route-set client iphone_pwa as the final payload key (a caller client is dropped); Course > iPhone PWA reads them from attributed_since on, earlier rows Overall only. Only course.completed_user_lessons is route-chain tested."
         },
         "macos": {
           "status": "not_instrumented",
@@ -1159,11 +1159,11 @@
       "platforms": {
         "android": {
           "status": "partial",
-          "reason": "The shared Android practice path records generic events; no trustworthy platform attribution in V10 yet."
+          "reason": "Android practice routes tag training starts and completions with the route-set client android; Course > Android features read them from attributed_since on. No route chain test."
         },
         "telegram": {
           "status": "partial",
-          "reason": "The shared Mini App practice path records generic events; no trustworthy platform attribution in V10 yet."
+          "reason": "Signed Mini App practice routes tag training starts and completions with the route-set client telegram; Course > Telegram features read them from attributed_since on. No route chain test."
         },
         "iphone_pwa": {
           "status": "not_instrumented",
@@ -1202,15 +1202,15 @@
       "platforms": {
         "android": {
           "status": "partial",
-          "reason": "Android uses shared test/exam writes; the current V10 reader does not separate platform."
+          "reason": "Android exam routes tag test starts and completions with the route-set client android; Course > Android features read them from attributed_since on. No route chain test."
         },
         "telegram": {
           "status": "partial",
-          "reason": "Mini App uses shared test/exam writes; the current V10 reader does not separate platform."
+          "reason": "Signed Mini App exam routes tag test starts and completions with the route-set client telegram; Course > Telegram features read them from attributed_since on. No route chain test."
         },
         "iphone_pwa": {
           "status": "partial",
-          "reason": "PWA uses shared test/exam writes; the current V10 reader does not separate platform."
+          "reason": "PWA exam routes tag test starts and completions with the route-set client iphone_pwa; Course > iPhone PWA features read them from attributed_since on. No route chain test."
         },
         "macos": {
           "status": "not_instrumented",
@@ -1239,15 +1239,15 @@
       "platforms": {
         "android": {
           "status": "partial",
-          "reason": "Shared mistake review stores generic events; the current V10 reader does not separate Android."
+          "reason": "Android mistake review routes tag starts, answers and completions with the route-set client android; Course > Android features read starts and completions from attributed_since on. No route chain test."
         },
         "telegram": {
           "status": "partial",
-          "reason": "Shared mistake review stores generic events; the current V10 reader does not separate Mini App."
+          "reason": "Signed Mini App mistake review routes tag starts, answers and completions with the route-set client telegram; Course > Telegram features read starts and completions from attributed_since on. No route chain test."
         },
         "iphone_pwa": {
           "status": "partial",
-          "reason": "Shared mistake review stores generic events; the current V10 reader does not separate PWA."
+          "reason": "PWA mistake review routes tag starts, answers and completions with the route-set client iphone_pwa; Course > iPhone PWA features read starts and completions from attributed_since on. No route chain test."
         },
         "macos": {
           "status": "not_instrumented",
@@ -1797,6 +1797,16 @@
       ]
     },
     {
+      "path": "app/api/miniapp_practice.py",
+      "flows": [
+        "practice"
+      ],
+      "symbols": [
+        "miniapp_practice_start",
+        "miniapp_practice_complete"
+      ]
+    },
+    {
       "path": "app/api/pwa_auth.py",
       "flows": [
         "client_activity",
@@ -1810,6 +1820,30 @@
         "checkout_payments",
         "pwa_pro_checkout",
         "feedback"
+      ]
+    },
+    {
+      "path": "app/main.py",
+      "flows": [
+        "client_activity",
+        "foundation",
+        "lessons",
+        "practice",
+        "assessments",
+        "mistake_review"
+      ],
+      "symbols": [
+        "v3_hsk_exam_start",
+        "v3_hsk_exam_complete",
+        "_v3_complete_lesson_for_canonical_actor",
+        "v3_course_lesson_complete",
+        "pwa_v3_course_lesson_complete",
+        "miniapp_practice_start",
+        "miniapp_practice_complete",
+        "miniapp_mistake_review_start",
+        "miniapp_mistake_review_answer",
+        "miniapp_mistake_review_complete",
+        "miniapp_event"
       ]
     },
     {
@@ -1843,6 +1877,17 @@
       "path": "app/services/course_lesson_start_grant.py",
       "flows": [
         "lessons"
+      ]
+    },
+    {
+      "path": "app/services/course_miniapp_analytics_service.py",
+      "flows": [
+        "client_activity",
+        "foundation",
+        "lessons",
+        "practice",
+        "assessments",
+        "mistake_review"
       ]
     },
     {

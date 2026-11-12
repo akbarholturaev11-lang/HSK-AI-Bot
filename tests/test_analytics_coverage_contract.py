@@ -124,16 +124,53 @@ class AnalyticsCoverageGuardTests(unittest.TestCase):
         with self.assertRaisesRegex(checker.CoverageError, "chain test not found"):
             checker.validate_schema(registry)
 
-    def test_only_a_related_flow_change_or_fresh_exact_exemption_passes(self):
+    def test_covered_chain_test_must_run_in_ci_and_read_the_admin_route(self):
         registry = deepcopy(self.registry)
-        mapping = registry["critical_paths"][0]
+        cell = next(row for row in registry["metrics"]
+                    if (row["section"], row["key"]) == ("course", "completed_user_lessons"))["platforms"]["telegram"]
+        original = cell["chain_test"]
+        # An existing test that never reads this metric through the Admin route.
+        cell["chain_test"] = ("tests/test_analytics_coverage_contract.py::"
+                              "AnalyticsCoverageGuardTests::test_exemption_requires_a_reason")
+        with self.assertRaisesRegex(checker.CoverageError, "must read /api/admin/v1/analytics"):
+            checker.validate_schema(registry)
+        # A real chain test which the Analytics integrity workflow does not run.
+        cell["chain_test"] = original
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            for path in {row["path"] for row in registry["critical_paths"]} | {original.split("::")[0]}:
+                (root / path).parent.mkdir(parents=True, exist_ok=True)
+                (root / path).write_text((checker.ROOT / path).read_text(encoding="utf-8"), encoding="utf-8")
+            with self.assertRaisesRegex(checker.CoverageError, "not run by .github/workflows/analytics-integrity.yml"):
+                checker.validate_schema(registry, root)
+            (root / checker.WORKFLOW).parent.mkdir(parents=True)
+            (root / checker.WORKFLOW).write_text("python -m pytest " + original.split("::")[0], encoding="utf-8")
+            # Only this module is listed, so drop the other covered entry first.
+            for row in registry["metrics"]:
+                for platform in row.get("platforms", {}).values():
+                    if platform.get("chain_test", "").startswith("tests/test_pwa_pro_funnel_chain.py"):
+                        platform.pop("chain_test")
+                        platform.update(status="partial", reason="synthetic")
+            checker.validate_schema(registry, root)
+
+    def test_only_a_substantive_related_flow_change_or_fresh_exact_exemption_passes(self):
+        registry = deepcopy(self.registry)
+        mapping = next(row for row in registry["critical_paths"] if "symbols" not in row)
         path = mapping["path"]
         related = next(row for row in registry["flows"] if row["id"] in mapping["flows"])
         unrelated = next(row for row in registry["flows"] if row["id"] not in mapping["flows"])
-        unrelated["description"] += " Unrelated change."
+        unrelated["platforms"]["android"]["reason"] += " Unrelated change."
         with self.assertRaisesRegex(checker.CoverageError, "update a related flow"):
             checker.validate_diff(registry, self.registry, {path}, {})
+        # Audit #6: narrative text alone is not an analytics-impact statement.
         related["description"] += " Analytics impact: updated related behavior."
+        with self.assertRaisesRegex(checker.CoverageError, "update a related flow"):
+            checker.validate_diff(registry, self.registry, {path}, {})
+        reason = related["platforms"]["android"]["reason"]
+        related["platforms"]["android"]["reason"] = "  " + reason.replace(" ", "  ") + " "
+        with self.assertRaisesRegex(checker.CoverageError, "update a related flow"):
+            checker.validate_diff(registry, self.registry, {path}, {})
+        related["platforms"]["android"]["reason"] = reason + " The writer now also tags starts."
         checker.validate_diff(registry, self.registry, {path}, {})
         reviewed = {**self.registry, "exemptions": [{"path": path, "reason": "No change to recorded results."}]}
         checker.validate_diff(reviewed, self.registry, {path}, {})
@@ -146,5 +183,44 @@ class AnalyticsCoverageGuardTests(unittest.TestCase):
         with self.assertRaisesRegex(checker.CoverageError, f"{event[0]}:{event[1]} changed"):
             checker.validate_diff(self.registry, self.registry, {path}, {path: {event}})
         registry = deepcopy(self.registry)
-        next(row for row in registry["flows"] if row["id"] == flow_id)["description"] += " New event caller."
+        flow = next(row for row in registry["flows"] if row["id"] == flow_id)
+        flow["description"] += " New event caller."
+        with self.assertRaisesRegex(checker.CoverageError, f"{event[0]}:{event[1]} changed"):
+            checker.validate_diff(registry, self.registry, {path}, {path: {event}})
+        flow["platforms"]["telegram"]["reason"] += " New event caller."
         checker.validate_diff(registry, self.registry, {path}, {path: {event}})
+
+    def test_attribution_handlers_in_shared_modules_are_guarded_per_function(self):
+        rows = {row["path"]: row for row in self.registry["critical_paths"]}
+        # Audit #8: these modules set the route-owned client outside the 26 paths.
+        self.assertIn("miniapp_event", rows["app/main.py"]["symbols"])
+        self.assertIn("pwa_v3_course_lesson_complete", rows["app/main.py"]["symbols"])
+        self.assertEqual(rows["app/api/miniapp_practice.py"]["symbols"],
+                         ["miniapp_practice_start", "miniapp_practice_complete"])
+        self.assertNotIn("symbols", rows["app/services/course_miniapp_analytics_service.py"])
+        path = "app/main.py"
+        # An unrelated function in a guarded module needs no registry change.
+        checker.validate_diff(self.registry, self.registry, {path}, {}, {path: set()})
+        with self.assertRaisesRegex(checker.CoverageError, "app/main.py: update a related flow"):
+            checker.validate_diff(self.registry, self.registry, {path}, {}, {path: {"miniapp_event"}})
+        # Without symbol evidence the whole file is treated as affected.
+        with self.assertRaisesRegex(checker.CoverageError, "app/main.py: update a related flow"):
+            checker.validate_diff(self.registry, self.registry, {path}, {})
+
+    def test_symbol_comparison_ignores_comments_but_not_code(self):
+        source = "async def miniapp_event(request):\n    return {'client': 'telegram'}\n"
+        commented = "# note\nasync def miniapp_event(request):\n    # why\n\n    return {'client': 'telegram'}\n"
+        changed = "async def miniapp_event(request):\n    return {'client': 'android'}\n"
+        dump = checker.symbol_dumps
+        self.assertEqual(dump(source, "app/main.py", {"miniapp_event"}),
+                         dump(commented, "app/main.py", {"miniapp_event"}))
+        self.assertNotEqual(dump(source, "app/main.py", {"miniapp_event"}),
+                            dump(changed, "app/main.py", {"miniapp_event"}))
+        self.assertEqual(dump("", "app/main.py", {"miniapp_event"}), {})
+
+    def test_symbols_must_name_exactly_one_existing_function(self):
+        registry = deepcopy(self.registry)
+        row = next(row for row in registry["critical_paths"] if row["path"] == "app/main.py")
+        row["symbols"] = ["miniapp_event_renamed"]
+        with self.assertRaisesRegex(checker.CoverageError, "must name exactly one function"):
+            checker.validate_schema(registry)
