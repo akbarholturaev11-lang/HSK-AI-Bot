@@ -248,8 +248,12 @@ class CoursePlatformScopeTests(unittest.IsolatedAsyncioTestCase):
     def test_attributed_since_is_the_first_server_built_tagged_row(self):
         for platform, hours in (("telegram", 10), ("iphone_pwa", 8)):
             boundary = ago(hours=hours).isoformat()
+            # R2: the PWA handoff cohort starts at the PWA boundary; there is no
+            # PWA-tagged onboarding, so no activation boundary.
+            handoff = {"handoff_activation": boundary} if platform == "iphone_pwa" else {}
             self.assertEqual(self.course(platform)["attributed_since"],
-                             {"features": boundary, "foundation": boundary, "completed_user_lessons": boundary})
+                             {"features": boundary, "foundation": boundary, "completed_user_lessons": boundary,
+                              **handoff})
         self.assertEqual(self.course("android")["attributed_since"], {"features": ago(hours=6).isoformat()})
 
     def test_completed_lessons_per_platform(self):
@@ -276,10 +280,14 @@ class CoursePlatformScopeTests(unittest.IsolatedAsyncioTestCase):
             keys = {"features", "completed_user_lessons", "attributed_since", "detail_since"}
             if platform != "android":
                 keys |= {"foundation", "detail_limited"}
+            if platform == "iphone_pwa":
+                # R2: PWA activation cohorts (pinned in PwaActivationScopeTests).
+                keys |= {"activation", "direct_activation", "handoff_activation"}
             self.assertEqual(set(response["metrics"]), keys)
             states = response["metric_states"]
             self.assertEqual(states["features"], {"state": "available", "reason": None})
-            for key in ("voice_minutes", "chat", "ai_usage", "activation", "sessions"):
+            for key in ("voice_minutes", "chat", "ai_usage", "sessions",
+                        *(("activation",) if platform != "iphone_pwa" else ())):
                 self.assertEqual(states[key], {"state": "unavailable", "reason": "not_instrumented"})
             self.assertNotIn(PRIVATE, json.dumps(response))
 
@@ -327,6 +335,87 @@ class AndroidLessonStartScopeTests(unittest.IsolatedAsyncioTestCase):
 
 
 @unittest.skipUnless(URL, "set ANALYTICS_TEST_DATABASE_URL for the real PostgreSQL platform scope tests")
+class PwaActivationScopeTests(unittest.IsolatedAsyncioTestCase):
+    """R2: PWA onboarding and Telegram -> PWA handoff cohorts from route-owned rows.
+
+    The baseline fixture adds an untagged PWA-transport onboarding of account 1
+    and account 1's handoff 24 hours ago."""
+
+    async def asyncSetUp(self):
+        def event(name, user_id, at, payload, source="course_v3"):
+            return CourseMiniAppEvent(event_name=name, user_id=user_id, source=source,
+                payload_json=json.dumps(payload, separators=(",", ":")), created_at=at)
+
+        pwa, telegram = {"client": "iphone_pwa"}, {"client": "telegram"}
+        self.rows = [
+            # A caller lookalike and an anchor before the PWA boundary: never read.
+            event("pwa_handoff_completed", 3, ago(hours=60), {}, source="pwa_handoff"),
+            event("lesson_started", 3, ago(hours=59), {"lesson_order": 1, **pwa}),
+            # The PWA boundary: the first server-built PWA-tagged row.
+            event("test_completed", 1, ago(hours=50), {"score": 1, **pwa}),
+            # Account 2 hands off but learns only in Telegram within 24 hours.
+            event("pwa_handoff_completed", 2, ago(hours=47), {}, source="pwa_handoff"),
+            event("lesson_started", 2, ago(hours=46), {"lesson_order": 1, **telegram}),
+            # Account 1 (handoff 24 hours ago in the fixture) learns on the PWA.
+            event("lesson_started", 1, ago(hours=23), {"lesson_order": 1, **pwa}),
+            # New PWA learner: onboarding and a PWA lesson start within 2 minutes.
+            event("onboarding_completed", 3, ago(hours=20), {"activation_variant": "direct_start_v1", **pwa},
+                  source="course_onboarding"),
+            event("lesson_started", 3, ago(hours=19, minutes=59), {"lesson_order": 1, **pwa}),
+            # A nested lookalike and a Telegram onboarding stay outside the PWA
+            # cohort, even with a PWA lesson start after them.
+            event("onboarding_completed", 1, ago(hours=15), {"meta": pwa, **telegram}, source="course_onboarding"),
+            event("onboarding_completed", 2, ago(hours=12), {"activation_variant": "direct_start_v1", **telegram},
+                  source="course_onboarding"),
+            event("lesson_started", 2, ago(hours=11, minutes=59), {"lesson_order": 1, **pwa}),
+            # Account 3's handoff is under 24 hours old: not yet eligible.
+            event("pwa_handoff_completed", 3, ago(hours=2), {}, source="pwa_handoff"),
+        ]
+        async with postgres_fixture(URL) as sessions:
+            async with sessions() as db:
+                db.add_all(self.rows)
+                await db.commit()
+            self.projections = await capture(sessions)
+            async with sessions() as db:
+                with patch("app.admin_api.pwa_analytics_learning.DETAIL_LIMIT", 1):
+                    self.limited = await course_platform_metrics(db, platform="iphone_pwa", since=ago(days=7), now=NOW)
+
+    def view(self, platform):
+        return self.projections["course", platform, "weekly"]
+
+    def test_pwa_activation_reads_only_the_pwa_onboarding_cohort(self):
+        metrics = self.view("iphone_pwa")["metrics"]
+        self.assertEqual(metrics["activation"], {"eligible": 1, "started": 1, "percent": 100.0})
+        self.assertEqual(metrics["direct_activation"], {"eligible": 1, "started": 1, "percent": 100.0})
+        self.assertEqual(metrics["attributed_since"]["activation"], ago(hours=20).isoformat())
+
+    def test_handoff_activation_starts_at_the_pwa_boundary(self):
+        metrics = self.view("iphone_pwa")["metrics"]
+        # Accounts 1 and 2 are eligible; only account 1 learned on the PWA.
+        self.assertEqual(metrics["handoff_activation"], {"eligible": 2, "activated": 1, "percent": 50.0})
+        self.assertEqual(metrics["attributed_since"]["handoff_activation"], ago(hours=50).isoformat())
+        for key in ("activation", "direct_activation", "handoff_activation"):
+            self.assertEqual(self.view("iphone_pwa")["metric_states"][key], {"state": "available", "reason": None})
+
+    def test_other_views_do_not_gain_the_pwa_cohorts(self):
+        for platform in ("telegram", "android"):
+            view = self.view(platform)
+            self.assertNotIn("activation", view["metrics"])
+            self.assertEqual(view["metric_states"]["activation"],
+                             {"state": "unavailable", "reason": "not_instrumented"})
+            self.assertEqual(view["metric_states"]["handoff_activation"],
+                             {"state": "not_applicable", "reason": "not_applicable"})
+        overall = self.view("overall")
+        self.assertNotIn("handoff_activation", overall["metrics"])
+        self.assertNotEqual(overall["metric_states"]["handoff_activation"]["state"], "available")
+
+    def test_too_many_rows_refuse_a_sample(self):
+        self.assertIs(self.limited["detail_limited"], True)
+        self.assertIsNone(self.limited["activation"])
+        self.assertIsNone(self.limited["handoff_activation"])
+
+
+@unittest.skipUnless(URL, "set ANALYTICS_TEST_DATABASE_URL for the real PostgreSQL platform scope tests")
 class CourseFoundationDetailLimitTests(unittest.IsolatedAsyncioTestCase):
     """Audit #13: other learners' Starter 0 rows never fill one client's detail limit."""
 
@@ -371,6 +460,11 @@ class CourseWithoutAttributionTests(unittest.IsolatedAsyncioTestCase):
             self.assertIsNone(response["metrics"]["completed_user_lessons"])
             for key in ("features", "foundation"):
                 self.assertEqual(response["metric_states"][key], {"state": "unavailable", "reason": "no_data"})
+        # R2: no PWA-tagged onboarding or boundary yet, so no PWA cohort.
+        pwa = projections["course", "iphone_pwa", "weekly"]
+        for key in ("activation", "direct_activation", "handoff_activation"):
+            self.assertIsNone(pwa["metrics"][key])
+            self.assertEqual(pwa["metric_states"][key], {"state": "unavailable", "reason": "no_data"})
 
 
 @unittest.skipUnless(URL, "set ANALYTICS_TEST_DATABASE_URL for the real PostgreSQL platform scope tests")

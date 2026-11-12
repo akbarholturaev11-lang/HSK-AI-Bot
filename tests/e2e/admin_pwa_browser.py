@@ -205,6 +205,15 @@ async def browser_checks(output):
         db.add(CourseMiniAppEvent(user_id=1,telegram_id=1001,event_name='android_lesson_started',source='android_course',
                                   level='hsk1',lesson_order=1,dedupe_key='android-lesson-start:qa',
                                   payload_json='{"client":"android"}',created_at=datetime.now(timezone.utc)-timedelta(hours=1)))
+        # R2 UI half: PWA rows as the PWA onboarding, event and handoff routes
+        # write them; tests/test_analytics_platform_chain.py proves the routes.
+        for name,hours,payload in (('test_completed',30,'{"score":1,"client":"iphone_pwa"}'),
+                                   ('pwa_handoff_completed',26,'{"target_platform":"ios"}'),
+                                   ('lesson_started',25,'{"lesson_order":1,"client":"iphone_pwa"}'),
+                                   ('onboarding_completed',3,'{"activation_variant":"direct_start_v1","client":"iphone_pwa"}'),
+                                   ('lesson_started',2.99,'{"lesson_order":1,"client":"iphone_pwa"}')):
+            db.add(CourseMiniAppEvent(user_id=2,telegram_id=2002,event_name=name,source='pwa_course_v3',
+                                      payload_json=payload,created_at=datetime.now(timezone.utc)-timedelta(hours=hours)))
         await db.execute(update(AdminPwaSession).values(revoked_at=__import__('datetime').datetime.now(__import__('datetime').timezone.utc)))
         await db.commit()
     await complete_telegram_lesson_through_route(fixture.sessions)
@@ -563,14 +572,24 @@ async def browser_checks(output):
                         await expect(page.locator('.stats-category-metrics .metric')).to_have_count(11)
                         # Course open: Android not_applicable, Telegram not_instrumented, PWA not
                         # audited. The cross-app return series is Overall-only (not_instrumented).
-                        await expect(page.locator('.metric[data-state=not_instrumented]')).to_have_count({'android':9,'telegram':9,'iphone_pwa':7}[platform])
+                        # R2: PWA activation is attributed, so its card is available.
+                        await expect(page.locator('.metric[data-state=not_instrumented]')).to_have_count({'android':9,'telegram':9,'iphone_pwa':6}[platform])
                         await expect(page.locator('.metric[data-state=not_applicable]')).to_have_count(2 if platform=='android' else 0)
                         # The Telegram completion shows under Telegram only; Android is a real zero.
                         lessons=page.locator('.stat-info-row',has_text=labels['analyticsCompletedUserLessons']).locator('strong')
-                        await expect(lessons).to_have_text({'telegram':'1','android':'0','iphone_pwa':labels['analyticsStateNoData']}[platform])
+                        await expect(lessons).to_have_text({'telegram':'1','android':'0','iphone_pwa':'0'}[platform])
                         # R1: Android lessons carry their own boundary line, in the active locale.
                         lessons_since=page.locator('.analytics-since',has_text=labels['analyticsFeaturelessons']+' · ')
                         await expect(lessons_since).to_have_count(1 if platform=='android' else 0)
+                        # R2: the Telegram -> PWA row and both cohort boundaries show under the PWA only.
+                        handoff=page.locator('.analytics-panel tr',has_text=labels['analyticsHandoffActivation'])
+                        await expect(handoff).to_have_count(1 if platform=='iphone_pwa' else 0)
+                        for key in ('analyticsActivation','analyticsHandoffActivation'):
+                            await expect(page.locator('.analytics-since',has_text=labels[key]+' · ')).to_have_count(1 if platform=='iphone_pwa' else 0)
+                        if platform=='iphone_pwa':
+                            await expect(handoff.locator('td')).to_have_text([labels['analyticsHandoffActivation'],'1','1'])
+                            activation=page.locator('.analytics-panel tr',has_text=labels['analyticsActivation'])
+                            await expect(activation.locator('td')).to_have_text([labels['analyticsActivation'],'1','1'])
                     elif section=='funnel':
                         await expect(page.locator('.metric[data-state=not_instrumented]')).to_have_count(3)
                         # Task 4.2: the PWA Pro attempts panel shows under iPhone PWA only.

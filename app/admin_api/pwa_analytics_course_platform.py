@@ -1,16 +1,21 @@
 """Course metrics for one client, from route-owned attribution only (task 3.2)."""
+from collections import defaultdict
 from datetime import timedelta
 
 from sqlalchemy import and_, func, or_, select
 from sqlalchemy.orm import aliased
 
-from app.admin_api.pwa_analytics_learning import bounded_rows, foundation_query, foundation_summary, owner
+from app.admin_api.pwa_analytics_learning import (
+    activation_query, activation_values, bounded_rows, foundation_query, foundation_summary, owner, ratio,
+)
 from app.admin_api.pwa_metrics import _window
 from app.admin_api.pwa_read import _user_segment_clause
 from app.db.models.course_miniapp_event import CourseMiniAppEvent as Event
 from app.db.models.user import User
+from app.services.admin_miniapp_service import _as_utc
 
 COURSE_CLIENTS = ('android', 'telegram', 'iphone_pwa')
+PWA = 'iphone_pwa'
 # Server-built writes never copy a caller payload, so the first row tagged for
 # a client marks when route-owned tagging was live for it. Client-writable
 # starts could carry a caller `client` key before that, so they count only
@@ -34,6 +39,48 @@ FEATURE_EVENTS = (
 COMPLETED = ('lesson_completed', 'book_lesson_completed')
 # A8: only the Android course route writes this source on a completion.
 ANDROID_COMPLETION_SOURCE = 'android_course'
+# R2: only the PWA handoff redeem route writes this name (server-built, not
+# client-writable). Activated: a PWA-tagged lesson start or completion within
+# 24 hours of the account's first handoff.
+HANDOFF_COMPLETED = 'pwa_handoff_completed'
+HANDOFF_STEPS = ('lesson_started', *COMPLETED)
+HANDOFF_WINDOW = timedelta(hours=24)
+
+
+def handoff_values(rows, *, now):
+    """Rows are (event, account, time) in time order."""
+    anchors, steps = {}, defaultdict(list)
+    for name, account, at in rows:
+        if name == HANDOFF_COMPLETED:
+            anchors.setdefault(account, _as_utc(at))
+        else:
+            steps[account].append(_as_utc(at))
+    eligible = [(account, at) for account, at in anchors.items() if at <= now - HANDOFF_WINDOW]
+    activated = sum(any(at <= step <= at + HANDOFF_WINDOW for step in steps[account]) for account, at in eligible)
+    return {'eligible': len(eligible), 'activated': activated, 'percent': ratio(activated, len(eligible))}
+
+
+async def _pwa_activation(db, *, boundary, since, now):
+    """R2. The onboarding cohort is anchored on `onboarding_completed` tagged by
+    the PWA onboarding route. Onboarding is deduplicated per profile, so an
+    account onboarded on another client is not in it. Only PWA-tagged steps
+    count. The handoff cohort starts at the PWA boundary, when PWA learning
+    rows began to carry the tag."""
+    onboarded_since = await db.scalar(select(func.min(Event.created_at)).where(
+        Event.event_name == 'onboarding_completed', client_tag(PWA), Event.created_at <= now))
+    rows = None if onboarded_since is None else await bounded_rows(db, activation_query(
+        client_tag(PWA), Event.created_at >= onboarded_since, since=since, now=now), payload_index=3)
+    activation, direct = activation_values(rows, now=now)
+    handoff_rows = None if boundary is None else await bounded_rows(db, select(
+        Event.event_name, User.id, Event.created_at).select_from(Event).join(User, owner(Event)).where(
+            or_(Event.event_name == HANDOFF_COMPLETED, and_(Event.event_name.in_(HANDOFF_STEPS), client_tag(PWA))),
+            Event.created_at >= boundary, *_window(Event.created_at, since, now)).order_by(Event.created_at, Event.id))
+    limited = (onboarded_since is not None and rows is None) or (boundary is not None and handoff_rows is None)
+    since_by_key = {key: at.isoformat() for key, at in
+                    (('activation', onboarded_since), ('handoff_activation', boundary)) if at}
+    return {'activation': activation, 'direct_activation': direct,
+            'handoff_activation': None if handoff_rows is None else handoff_values(handoff_rows, now=now),
+            }, since_by_key, limited
 
 
 def client_tag(platform, model=Event):
@@ -102,6 +149,11 @@ async def course_platform_metrics(db, *, platform, since, now):
             since=detail_since, now=now), payload_index=5)
         result['foundation'] = foundation_summary(rows, now=now)
         result['detail_limited'] = attributed is not None and rows is None
+    if platform == PWA:
+        values, since_by_key, limited = await _pwa_activation(db, boundary=boundary, since=detail_since, now=now)
+        result.update(values)
+        attributed_since.update(since_by_key)
+        result['detail_limited'] = result['detail_limited'] or limited
     if platform == 'android':
         completed = await _completed_lessons(db, Event.event_name.in_((*COMPLETED, 'android_lesson_completed')),
             Event.source == ANDROID_COMPLETION_SOURCE, since=since, now=now)

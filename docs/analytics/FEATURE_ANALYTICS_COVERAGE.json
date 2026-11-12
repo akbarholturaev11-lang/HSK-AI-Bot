@@ -313,11 +313,11 @@
       }
     },
     {"section": "platform", "key": "versions_scope", "kind": "metadata", "filters": ["overall", "android", "telegram", "iphone_pwa", "macos", "windows"]},
-    {"section": "course", "key": "activation", "kind": "metric", "filters": ["overall"],
+    {"section": "course", "key": "activation", "kind": "metric", "filters": ["overall", "iphone_pwa"],
       "platforms": {
-        "android": {"status": "not_instrumented", "reason": "A7: Android has no trustworthy lesson-start writer for the activation step."},
-        "telegram": {"status": "not_instrumented", "reason": "A6/A12: shared starts and historical client-supplied telemetry lack trusted Mini App provenance."},
-        "iphone_pwa": {"status": "not_instrumented", "reason": "A11: transport on PWA telemetry is forgeable on historical Telegram rows, and the cohort anchor (onboarding_completed) and most session rows carry no route-set client key."},
+        "android": {"status": "not_instrumented", "reason": "R2 tags Android onboarding rows (writer only). The activation step reads lesson_started, which Android does not write (R1 writes android_lesson_started), so there is no Android reader."},
+        "telegram": {"status": "not_instrumented", "reason": "R2 tags Telegram onboarding rows (writer only); no Telegram-scoped activation reader yet. Earlier onboarding rows have no client."},
+        "iphone_pwa": {"status": "covered", "reason": "R2: cohort anchored on onboarding_completed written by the PWA onboarding route with the route-set final client key iphone_pwa; onboarding is deduplicated per profile, so accounts onboarded on another client are outside. Only iphone_pwa-tagged steps count, from attributed_since on; earlier rows Overall-only.", "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_pwa_onboarding_and_handoff_reach_the_pwa_activation"},
         "macos": {"status": "not_instrumented", "reason": "The activation cohort has no Desktop OS attribution; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "The activation cohort has no Desktop OS attribution; Desktop freeze."}
       }
@@ -362,13 +362,22 @@
     {"section": "course", "key": "detail_row_limit", "kind": "metadata", "filters": ["overall"]},
     {"section": "course", "key": "detail_since", "kind": "metadata", "filters": ["overall", "android", "telegram", "iphone_pwa"]},
     {"section": "course", "key": "attributed_since", "kind": "metadata", "filters": ["android", "telegram", "iphone_pwa"]},
-    {"section": "course", "key": "direct_activation", "kind": "metric", "filters": ["overall"],
+    {"section": "course", "key": "direct_activation", "kind": "metric", "filters": ["overall", "iphone_pwa"],
       "platforms": {
-        "android": {"status": "not_instrumented", "reason": "A7: Android has no trustworthy lesson-start writer for the activation step."},
-        "telegram": {"status": "not_instrumented", "reason": "A6/A12: shared starts and historical client-supplied telemetry lack trusted Mini App provenance."},
-        "iphone_pwa": {"status": "not_instrumented", "reason": "A11: transport on PWA telemetry is forgeable on historical Telegram rows, and the cohort anchor (onboarding_completed) and most session rows carry no route-set client key."},
+        "android": {"status": "not_instrumented", "reason": "R2 tags Android onboarding rows (writer only). The activation step reads lesson_started, which Android does not write (R1 writes android_lesson_started), so there is no Android reader."},
+        "telegram": {"status": "not_instrumented", "reason": "R2 tags Telegram onboarding rows (writer only); no Telegram-scoped activation reader yet. Earlier onboarding rows have no client."},
+        "iphone_pwa": {"status": "covered", "reason": "R2: cohort anchored on onboarding_completed with the onboarding activation_variant direct_start_v1 written by the PWA onboarding route with the route-set final client key iphone_pwa; onboarding is deduplicated per profile, so accounts onboarded on another client are outside. Only iphone_pwa-tagged steps count, from attributed_since on; earlier rows Overall-only.", "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_pwa_onboarding_and_handoff_reach_the_pwa_activation"},
         "macos": {"status": "not_instrumented", "reason": "The activation cohort has no Desktop OS attribution; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "The activation cohort has no Desktop OS attribution; Desktop freeze."}
+      }
+    },
+    {"section": "course", "key": "handoff_activation", "kind": "metric", "filters": ["iphone_pwa"],
+      "platforms": {
+        "android": {"status": "not_applicable", "reason": "The Telegram to PWA handoff ends on the iPhone PWA only."},
+        "telegram": {"status": "not_applicable", "reason": "The Telegram to PWA handoff ends on the iPhone PWA only."},
+        "iphone_pwa": {"status": "covered", "reason": "R2: anchor is each account's first pwa_handoff_completed, written only by the PWA handoff redeem route, from the PWA attributed_since on. Activated: an iphone_pwa-tagged lesson start or completion within 24 hours.", "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_pwa_onboarding_and_handoff_reach_the_pwa_activation"},
+        "macos": {"status": "not_applicable", "reason": "The Telegram to PWA handoff ends on the iPhone PWA only."},
+        "windows": {"status": "not_applicable", "reason": "The Telegram to PWA handoff ends on the iPhone PWA only."}
       }
     },
     {"section": "course", "key": "feature_denominators", "kind": "metric", "filters": ["overall"],
@@ -447,7 +456,7 @@
       "platforms": {
         "android": {"status": "not_instrumented", "reason": "The session grouping combines all CME session IDs and lacks complete Android session provenance."},
         "telegram": {"status": "not_instrumented", "reason": "A12: session groups use historical client telemetry that does not establish Mini App provenance."},
-        "iphone_pwa": {"status": "not_instrumented", "reason": "A11: transport on PWA telemetry is forgeable on historical Telegram rows, and the cohort anchor (onboarding_completed) and most session rows carry no route-set client key."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "A11: most session rows (card views, interactions) carry no route-set client key, and transport is forgeable on historical Telegram rows. R2 tags the activation anchor only."},
         "macos": {"status": "not_instrumented", "reason": "The mixed CME session grouping is not scoped to a Desktop OS; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "The mixed CME session grouping is not scoped to a Desktop OS; Desktop freeze."}
       }
@@ -955,15 +964,16 @@
       "platforms": {
         "android": {
           "status": "partial",
-          "reason": "Authenticated Li guest resume uses existing deduplicated onboarding_completed. The anonymous preview and choices do not write events, and Android lesson-start activity is missing."
+          "reason": "Authenticated Li guest resume uses existing deduplicated onboarding_completed, tagged with the route-set client android since R2. The anonymous preview and choices do not write events. No Android activation reader: the step reads lesson_started, which Android does not write."
         },
         "telegram": {
           "status": "partial",
-          "reason": "The shared onboarding completion feeds Overall activation; there is no trustworthy platform signal for the cohort."
+          "reason": "The shared onboarding completion feeds Overall activation. Since R2 its rows carry the route-set client telegram, but there is no Telegram-scoped reader yet."
         },
         "iphone_pwa": {
-          "status": "partial",
-          "reason": "The shared onboarding completion feeds Overall activation; there is no trustworthy platform signal for the cohort."
+          "status": "covered",
+          "reason": "R2: the PWA onboarding route tags onboarding_completed and its choice rows with the route-set client iphone_pwa; Course > iPhone PWA reads the activation cohort from the first tagged row.",
+          "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_pwa_onboarding_and_handoff_reach_the_pwa_activation"
         },
         "macos": {
           "status": "not_instrumented",
