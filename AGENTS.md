@@ -132,9 +132,11 @@ chaqiruvchilarni va ta’sir doirasini top.
 
 - `graphify explain "<symbol>"`, `graphify affected "<symbol>"`,
   `graphify path "A" "B"`, `graphify query "<savol>"`;
-- `graphify-out/GRAPH_REPORT.md` va `graph.json`ni o‘qish (masalan, lokal Python skript bilan);
-- `graphify update .` — faqat AST, LLM’siz. Git hook’lar commit va branch almashganda
-  grafni o‘zi qayta quradi, shuning uchun qo‘lda ishga tushirish odatda shart emas.
+- `GRAPH_REPORT.md`ni grep yoki `head` bilan o‘qish. ~45 MB `graph.json`ni to‘liq o‘qima va
+  diff qilma; kerak bo‘lsa uni lokal skript bilan filtrla.
+- `graphify update .`, `watch`’ni qo‘lda ishga tushirma: git hook’lar commit va branch
+  almashganda grafni fonda o‘zi qayta quradi (faqat AST, LLM’siz). Rebuild ketayotganda
+  (`pgrep -fl graphify`) tezlik o‘lchovi olma.
 
 **Owner aniq ruxsatisiz taqiqlangan:**
 
@@ -152,6 +154,9 @@ chaqiruvchilarni va ta’sir doirasini top.
   teng bo‘lsin. Commit qilinmagan o‘zgarishlar grafda yo‘q.
 - `INFERRED` bog‘lanish faqat yo‘nalish beradi. Har bir topilmani kodni o‘qib tasdiqla;
   hujjat, reja va PR’da grafni emas, `file:line`ni keltir.
+- Graf zanjirli chaqiruvlarni ko‘rmaydi (masalan, `Service(db).method(...)`). Bog‘lanish
+  yo‘qligi chaqiruvchi yo‘qligini isbotlamaydi: “boshqa joyda ishlatilmaydi” deyishdan
+  oldin grep bilan tasdiqla.
 - Graf CI, test yoki coverage guard uchun kirish ma’lumoti bo‘lmaydi; ular kodni o‘zi o‘qiydi.
 - Desktop (freeze) tugunlarini vazifa topilmasi deb hisoblama.
 
