@@ -484,7 +484,7 @@
       "platforms": {
         "android": {"status": "not_applicable", "reason": "F8: the inline Pro offer and its Lava attempt exist only in the iPhone PWA."},
         "telegram": {"status": "not_applicable", "reason": "F8: the inline Pro offer and its Lava attempt exist only in the iPhone PWA."},
-        "iphone_pwa": {"status": "partial", "reason": "F8: attempts keyed by account and attempt ID from PWA-only rows; paid only from the ledger row with its approved payment; refund/lost chargeback reversed. Chain test pending (4.2)."},
+        "iphone_pwa": {"status": "covered", "reason": "F8: attempts keyed by account and attempt ID from PWA-only rows; paid only from the ledger row with its approved payment; refund/lost chargeback reversed. Inline-event, Lava start and webhook route chain.", "chain_test": "tests/test_pwa_pro_funnel_chain.py::PwaProFunnelChainTests::test_pwa_routes_reach_the_pwa_pro_funnel_under_overall_and_pwa_only"},
         "macos": {"status": "not_applicable", "reason": "F8: the inline Pro offer and its Lava attempt exist only in the iPhone PWA."},
         "windows": {"status": "not_applicable", "reason": "F8: the inline Pro offer and its Lava attempt exist only in the iPhone PWA."}
       }
@@ -1560,7 +1560,7 @@
         },
         "iphone_pwa": {
           "status": "partial",
-          "reason": "Client stages, invoice start and verified Lava ledger payment feed funnel.pwa_pro_attempt_funnel (4.1); route-to-Admin chain test pending (4.2)."
+          "reason": "Opened, plan, invoice start and verified Lava payment reach funnel.pwa_pro_attempt_funnel through the route chain (4.2); more/method/exit/dismiss/failed UI rows are stored but not projected."
         },
         "macos": {
           "status": "not_applicable",

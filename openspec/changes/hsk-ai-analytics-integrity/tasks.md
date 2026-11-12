@@ -79,7 +79,7 @@ This is the only checklist for this work. Context, audit results, decisions and 
   - an approved payment with no matching attempt is `unlinked`
   - legacy funnel values are unchanged
   - no attempt, invoice or provider IDs appear in the output
-- [ ] 4.2 Render the funnel card in the Conversion tab (UZ/RU/TJ). Add a chain test: PWA inline event → Lava start → ledger paid (`tests/lava_fakes.py`) → Admin API → Playwright under the Overall and PWA filters. Flip the registry entry (F8) to `covered` and update `READ_PROJECTIONS.md`. Verify that the chain test and the checker pass.
+- [x] 4.2 Render the funnel card in the Conversion tab (UZ/RU/TJ). Add a chain test: PWA inline event → Lava start → ledger paid (`tests/lava_fakes.py`) → Admin API → Playwright under the Overall and PWA filters. Flip the registry entry (F8) to `covered` and update `READ_PROJECTIONS.md`. Verify that the chain test and the checker pass.
 
 ## 5. Retention and Report freshness
 

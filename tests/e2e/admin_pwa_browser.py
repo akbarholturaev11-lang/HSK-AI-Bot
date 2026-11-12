@@ -150,6 +150,16 @@ async def browser_checks(output):
             telegram_id=1001,source='course_v3',level='hsk1',lesson_order=1,dedupe_key='qa:telegram-lesson-1',
             analytics_client='telegram')
         assert recorded['ok'],recorded
+        # Task 4.2 UI half: PWA Pro stages as the inline-event and PWA Lava start
+        # routes write them; tests/test_pwa_pro_funnel_chain.py proves the routes
+        # and the provider-verified payment.
+        from app.db.models.conversion_funnel_event import ConversionFunnelEvent
+        for attempt,names in (('qa-pwa-browse',('pwa_pro_opened',)),
+                              ('qa-pwa-buy',('pwa_pro_opened','pwa_pro_plan_selected','pwa_pro_checkout_started'))):
+            for step,name in enumerate(names,1):
+                db.add(ConversionFunnelEvent(user_id=2,telegram_id=2002,event_name=name,source='v3_locked_lesson',
+                    payload_json=json.dumps({'event_id':f'{attempt}:{step}','attempt_id':attempt,'plan_type':'1_month',
+                                             'payment_method':'lava','transport':'iphone_pwa'})))
         await db.execute(update(AdminPwaSession).values(revoked_at=__import__('datetime').datetime.now(__import__('datetime').timezone.utc)))
         await db.commit()
     settings=fixture.settings
@@ -452,6 +462,11 @@ async def browser_checks(output):
                 for section in ('overview','course','platform','funnel','money','sources','report'):
                     await page.locator('[data-stats-tab='+section+']').click()
                     await expect(page.locator('.stats-category-content')).to_be_visible()
+                    if section=='funnel':
+                        # Overall shows the iPhone PWA Pro attempts beside the shared funnel.
+                        title=await page.evaluate(f"window.HSKAI_ADMIN_I18N.{language}.analyticsPwaPro")
+                        pro=page.locator('.analytics-panel',has=page.locator('h2',has_text=title))
+                        await expect(pro.locator('.stat-step-label span')).to_have_text(['2','1','1','0'])
                     await page.screenshot(path=str(output/f'v10-{section}-{language}-{width}.png'),full_page=True)
                     assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
         # Task 3.3: each platform filter renders every tab; an unavailable or
@@ -484,6 +499,11 @@ async def browser_checks(output):
                         await expect(lessons).to_have_text({'telegram':'1','android':'0','iphone_pwa':labels['analyticsStateNoData']}[platform])
                     elif section=='funnel':
                         await expect(page.locator('.metric[data-state=not_instrumented]')).to_have_count(3)
+                        # Task 4.2: the PWA Pro attempts panel shows under iPhone PWA only.
+                        pro=page.locator('.analytics-panel',has=page.locator('h2',has_text=labels['analyticsPwaPro']))
+                        await expect(pro).to_have_count(1 if platform=='iphone_pwa' else 0)
+                        if platform=='iphone_pwa':
+                            await expect(pro.locator('.stat-step-label span')).to_have_text(['2','1','1','0'])
                     elif section=='sources':
                         await expect(page.locator('#content .state-panel h2')).to_have_text(labels['analyticsStateNotAudited'])
                         await expect(page.locator('#content .state-panel p')).to_have_text(labels['analyticsStateSeeOverall'])

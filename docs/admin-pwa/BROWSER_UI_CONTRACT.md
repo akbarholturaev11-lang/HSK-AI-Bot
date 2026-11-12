@@ -356,7 +356,9 @@ an unavailable metric are omitted. A whole section outside a platform's scope
 shows the reason and points to the Overall filter. Per-platform families show
 `attributed_since` as one line under their panel. The iPhone PWA card has
 foreground opens only (no device inventory); version tables are hidden where
-`not_applicable`.
+`not_applicable`. The Conversion tab adds the iPhone PWA Pro attempts panel
+(opened, plan, checkout, verified payment; reversals and unlinked payments as
+rows) under Overall and iPhone PWA only; Android and Telegram hide it.
 
 Canonical UZ/RU/TJ bundles own new labels. Layout uses fixed CSS/SVG attributes
 under the existing CSP, no inline styles or public private-data cache. Every
