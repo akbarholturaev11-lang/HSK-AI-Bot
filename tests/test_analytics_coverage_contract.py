@@ -43,6 +43,13 @@ class AnalyticsProjectionCoverageTests(unittest.IsolatedAsyncioTestCase):
         async with postgres_fixture(URL) as sessions:
             projections = await capture(sessions)
         assert_projection_keys(registry, projections)
+        expected_states = {}
+        for row in registry["metrics"]:
+            if row["kind"] == "metric":
+                expected_states.setdefault(row["section"], set()).add(row["key"])
+        for (section, platform, period), projection in projections.items():
+            self.assertEqual(set(projection.get("metric_states", {})), expected_states.get(section, set()),
+                             (section, platform, period))
 
         # Keep the real projection and remove only a registry row; this exercises
         # the same contract which a newly added runtime projection key must pass.

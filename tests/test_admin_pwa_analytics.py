@@ -259,6 +259,40 @@ class CompleteAnalyticsTests(AnalyticsProjectionTests):
         self.assertEqual(values['course']['metrics']['retention']['d1']['returned'],0)
         self.assertEqual(values['platform']['metrics']['platforms'][0]['devices'],1)
 
+    async def test_metric_states_separate_unavailable_not_applicable_and_real_zero(self):
+        from app.admin_api.pwa_analytics_cache import AnalyticsRequest, section_projection
+        from unittest.mock import patch
+
+        async def project(section, platform="overall"):
+            async with self.sessions() as db, read_transaction(db):
+                with patch("app.admin_api.pwa_analytics_cache.datetime") as clock:
+                    clock.now.return_value = NOW
+                    return await section_projection(
+                        db, AnalyticsRequest(section=section, platform=platform), section=section,
+                    )
+
+        money = await project("money", "iphone_pwa")
+        self.assertIsNone(money["metrics"])
+        self.assertEqual(money["metric_states"]["ai_usd"],
+                         {"state": "unavailable", "reason": "not_instrumented"})
+        self.assertEqual(money["metric_states"]["manual_profit_usd"],
+                         {"state": "not_applicable", "reason": "not_applicable"})
+        self.assertEqual(money["metric_states"]["revenue_usd"],
+                         {"state": "unavailable", "reason": "attribution_not_audited"})
+        course = await project("course")
+        self.assertEqual(course["metrics"]["voice_minutes"], 0)
+        self.assertEqual(course["metric_states"]["voice_minutes"], {"state": "available", "reason": None})
+        self.assertIsNone(course["metrics"]["direct_activation"])
+        self.assertEqual(course["metric_states"]["direct_activation"],
+                         {"state": "unavailable", "reason": "no_data"})
+
+        await self.seed_analytics()
+        with patch("app.admin_api.pwa_analytics_learning.DETAIL_LIMIT", 1):
+            limited = await project("course")
+        self.assertIsNone(limited["metrics"]["lesson_seconds"])
+        self.assertEqual(limited["metric_states"]["lesson_seconds"],
+                         {"state": "unavailable", "reason": "detail_limited"})
+
     async def test_detail_limit_refuses_partial_metric_and_exact_expiring_cohort(self):
         from app.admin_api.pwa_analytics_learning import bounded_rows
         from app.admin_api.pwa_read import _user_segment_clause
@@ -378,7 +412,8 @@ class AnalyticsR2Tests(unittest.IsolatedAsyncioTestCase):
             async def load(db,query):
                 calls[section]+=1
                 return {'platform':query.platform,'period':query.period,'generated_at':datetime.fromtimestamp(fixture.clock,timezone.utc).isoformat(),
-                    'available':True,'scope':{'section':section},'metrics':{'accounts':calls[section]}}
+                    'available':True,'scope':{'section':section},'metrics':{'accounts':calls[section]},
+                    'metric_states': {'accounts': {'state': 'available', 'reason': None}}}
             return load
         args=dict(settings_obj=fixture.settings,session_factory=fixture.sessions,
             projections={s:projection(s) for s in calls},reader_options={'r2_store':fixture.r2,'clock':lambda:fixture.clock})
@@ -389,6 +424,8 @@ class AnalyticsR2Tests(unittest.IsolatedAsyncioTestCase):
             restored=await second(AnalyticsRequest(section='home'))
             self.assertEqual(calls,{'home':1,'overview':1})
             self.assertEqual(restored['generated_at'],original['generated_at'])
+            self.assertEqual(restored['metric_states'], original['metric_states'])
+            self.assertTrue(first._readers['home'].prefix.endswith(':analytics_home_v2'))
             self.assertEqual(len(fixture.r2.items),2)
             fixture.clock+=86401
             await second(AnalyticsRequest(section='home'))

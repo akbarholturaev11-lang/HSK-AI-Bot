@@ -74,7 +74,7 @@ A contract test projects every section × platform × period on the fixture DB a
 **Why JSON.** YAML would add a new dependency, and the repo already keeps JSON registries such as `localization/surface_registry.json`.
 
 ### D2. Metric state per metric, applied in the existing projections
-- Each metric gains `{state, reason}`. Existing value keys stay unchanged.
+- Each metric gains `{state, reason}` under `metric_states`. The additive field keeps existing values and the legacy section envelope intact while the Admin UI migrates; a field's presence in the legacy payload is not proof of scoped attribution.
 - The two section-wide early returns become a per-metric map driven by registry statuses, so a section can mix available and unavailable metrics.
 - Reasons are used as follows:
   - `not_instrumented`: the audit found no platform signal (the `gap` rows).

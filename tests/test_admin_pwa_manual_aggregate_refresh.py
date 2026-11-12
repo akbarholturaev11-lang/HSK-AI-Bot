@@ -290,11 +290,12 @@ class ForceCacheTests(unittest.IsolatedAsyncioTestCase):
                 "since": datetime.fromtimestamp(self.clock - 604800, timezone.utc).isoformat(),
                 "metrics": {"attempt_funnel": None, "registration_conversion": {
                     "registered_accounts": 4, "converted_accounts": 1, "percent": 25}},
+                "metric_states": {"attempt_funnel": {"state": "unavailable", "reason": "detail_limited"}},
             }
         reader = AdminPwaStatisticsReader(
             settings_obj=self.settings, session_factory=self.sessions,
             loader=scoped, clock=lambda: self.clock, r2_store=self.store,
-            cache_scope="analytics_funnel_v1")
+            cache_scope="analytics_funnel_v2")
         reader._redis_url = ""
         first = await reader.refresh_approved_section(query, section="funnel")
         self.assertEqual(first["section"], "funnel")
@@ -302,6 +303,7 @@ class ForceCacheTests(unittest.IsolatedAsyncioTestCase):
         stored = await self.store.get(
             kind="statistics", namespace=reader._r2_namespace, variant="overall_weekly")
         self.assertEqual(json.loads(stored)["data"]["metrics"]["registration_conversion"]["converted_accounts"], 1)
+        self.assertEqual(json.loads(stored)["data"]["metric_states"]["attempt_funnel"]["reason"], "detail_limited")
         self.assertEqual(self.calls, 1)
         with self.assertRaisesRegex(StatisticsUnavailable, "recently completed"):
             await reader.refresh_approved_section(query, section="funnel")

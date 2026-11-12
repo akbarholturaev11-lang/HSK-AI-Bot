@@ -320,5 +320,6 @@ class AdminPwaV10RegressionTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(actual.keys(), expected.keys())
         for case, response in actual.items():
             with self.subTest(section=case[0], platform=case[1], period=case[2]):
-                self.assertEqual(response, expected[case])
+                legacy = {key: value for key, value in response.items() if key != "metric_states"}
+                self.assertEqual(legacy, expected[case])
                 self.assertNotIn(PRIVATE, json.dumps(response))

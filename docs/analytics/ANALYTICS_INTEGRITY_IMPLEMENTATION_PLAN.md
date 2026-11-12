@@ -32,14 +32,14 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 | Coverage registry | [FEATURE_ANALYTICS_COVERAGE.json](FEATURE_ANALYTICS_COVERAGE.json) | Present; schema, event inventory and projection checks pass |
 | CI guard | [analytics-integrity.yml](../../.github/workflows/analytics-integrity.yml) | Verified on the scratch branch (2.3); not promoted to main |
 | Agent rule | `AGENTS.md` | Active; lists the registry and check, with main enforcement verified separately |
-| Admin readers | `app/admin_api/pwa_analytics*.py`, `pwa_metrics.py` | Unchanged |
+| Admin readers | `app/admin_api/pwa_analytics*.py`, `pwa_metrics.py` | V10 emits per-metric states; values unchanged in 3.1 |
 | Monitoring requirements | `docs/monitoring/REQUIREMENTS.md` | Follows this work; reuses its identifiers (§7, §11) |
 
 ## Current state — 2026-11-12
 
-- The planning branch now has a PostgreSQL V10 baseline. No analytics runtime code has changed.
+- The branch has the PostgreSQL baseline, coverage guard and per-metric V10 API states. Existing values and scopes still match the baseline. The Admin UI will consume the states in 3.3.
 - Task 1.1 re-audited `334368cc..680761f1`. The delta below updates the original matrix and establishes `680761f1` as the unchanged runtime base for task 1.2.
-- **Next step: 3.1**: per-metric states and isolated V10 cache scopes.
+- **Next step: 3.2**: harden Telegram metadata, thread the route-owned client through shared writers, then add tested platform predicates.
 - PR [akbarholturaev11-lang/HSK-AI-Bot#285](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/285) is the integration branch for this work. Main promotion is outside the current authorization.
 
 ## Platform scope
@@ -164,6 +164,7 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 
 ## Session log (newest first, one or two lines each)
 
+- 2026-11-12 — Task 3.1 added registry-driven `metric_states` and isolated eight V10 section scopes as `_v2`; experiments and basic/MCP contracts stayed unchanged. PostgreSQL/analytics/manual refresh/cache suite: **74 passed, 165 subtests passed**; five local Redis tests initially skipped and **all five passed** in a separate disposable Redis run. The original 162 snapshots remained identical after removing only the new additive state map. The [2.3 push](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43132748403) and [PR](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43132755458) workflows passed.
 - 2026-11-12 — Task 2.3: the scratch [cosmetic push passed](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43132137627) (`a74af1f4`); the [unmapped event push failed as intended](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43132150012) (`5c2dcc2b`), naming `app/db/models/conversion_funnel_event.py` and `conversion_funnel_events:analytics_ci_unmapped_proof`. With both PostgreSQL test settings populated, the workflow suite passed locally (**65 tests, 171 subtests, no skips**). The scratch event is not in the PR.
 - 2026-11-12 — Task 2.2 added the [stdlib checker](../../scripts/check_analytics_coverage.py) and [contract tests](../../tests/test_analytics_coverage_contract.py). It matched all 138 qualified event names and required exact flow changes or reviewed exemptions for scoped diffs. Coverage and baseline suites on fresh TCP PostgreSQL: **11 passed, 165 subtests passed**, no skips.
 - 2026-11-12 — Task 2.1 added 84 metric keys, 29 projection metadata keys and 20 flow IDs. Schema validation passed; all 144 in-scope baseline responses match their declared keys. No `covered` status is asserted before the chain tests.

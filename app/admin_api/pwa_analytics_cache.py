@@ -8,6 +8,7 @@ from app.admin_api.pwa_analytics_learning import learning_metrics, funnel_metric
 from app.admin_api.pwa_analytics_finance import money_metrics, sources_metrics
 from app.admin_api.pwa_analytics_platforms import platform_metrics
 from app.admin_api.pwa_analytics_experiments import experiment_metrics
+from app.admin_api.pwa_analytics_states import has_legacy_filter, metric_states
 from app.db.models.user import User
 from app.db.models.payment import Payment
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
@@ -20,6 +21,7 @@ from app.admin_api.pwa_read import StatisticsRequest
 from app.admin_api.pwa_statistics_cache import AdminPwaStatisticsReader, StatisticsUnavailable
 
 Section = Literal['home','overview','course','platform','funnel','money','sources','report','experiments']
+_LEGACY_PLATFORM_SECTIONS = ('home', 'overview', 'platform', 'report')
 
 
 class AnalyticsRequest(StatisticsRequest):
@@ -27,6 +29,13 @@ class AnalyticsRequest(StatisticsRequest):
 
 
 async def section_projection(db,query,*,section):
+    result = await _legacy_projection(db, query, section=section)
+    if section != 'experiments':
+        result['metric_states'] = metric_states(section, query.platform, result['metrics'])
+    return result
+
+
+async def _legacy_projection(db,query,*,section):
     now=datetime.now(timezone.utc)
     since=now-timedelta(days={'weekly':7,'monthly':30}[query.period]) if query.period!='all_time' else None
     if query.platform=='overall' and section in ('home','overview'):
@@ -34,11 +43,13 @@ async def section_projection(db,query,*,section):
     result={'platform':query.platform,'period':query.period,'since':since.isoformat() if since else None,
         'generated_at':now.isoformat(),'timezone':'Asia/Shanghai','platform_counts_overlap':True,
         'scope':{'section':section},'source':'first-party stored aggregate projections','available':True}
-    if query.platform!='overall' and section not in ('platform','report','home','overview'):
-        return {**result,'available':False,'metrics':None,'reason':'attribution_not_audited'}
-    if query.platform=='iphone_pwa':
-        return {**result,'available':False,'metrics':None,'reason':'not_instrumented'}
-    if section in ('platform','home','overview'):
+    # A registry entry describes response shape. It cannot authorize an
+    # Overall-only SQL loader to return global numbers for a platform.
+    scoped = section in _LEGACY_PLATFORM_SECTIONS and has_legacy_filter(section, query.platform)
+    if query.platform != 'overall' and not scoped:
+        reason = 'not_instrumented' if section in _LEGACY_PLATFORM_SECTIONS else 'attribution_not_audited'
+        result.update(available=False, metrics=None, reason=reason)
+    elif section in ('platform','home','overview'):
         result['metrics']=await platform_metrics(db,since=since,now=now,platform=query.platform)
         result['scope']['period_filter_applied']=False
     elif section=='course':result['metrics']=await learning_metrics(db,period=query.period,since=since,now=now)
@@ -69,7 +80,7 @@ class AdminPwaAnalyticsReader:
         projections=projections if projections is not None else {section:partial(section_projection,section=section) for section in ('home','overview','course','platform','funnel','money','sources','report','experiments')}
         self._mutex=refresh_mutex if refresh_mutex is not None else asyncio.Lock()
         self._readers={section:AdminPwaStatisticsReader(settings_obj=settings_obj,session_factory=session_factory,
-            loader=projection,cache_scope='analytics_'+section+'_v1',refresh_mutex=self._mutex,
+            loader=projection,cache_scope=f"analytics_{section}_v{1 if section == 'experiments' else 2}",refresh_mutex=self._mutex,
             **(reader_options or {})) for section,projection in projections.items()}
 
     async def __call__(self,query):

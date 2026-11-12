@@ -41,7 +41,7 @@ This is the only checklist for this work. Context, audit results, decisions and 
 
 ## 3. Metric states and platform scoping
 
-- [ ] 3.1 Add the per-metric `{state, reason}` (design D2) and replace the two section-wide early returns in `pwa_analytics_cache.py` with registry-driven per-metric states. Move changed sections to `_v2` cache scopes. Verify in `tests/test_admin_pwa_analytics.py` that:
+- [x] 3.1 Add per-metric `{state, reason}` and move the eight changed V10 sections to `_v2` cache scopes. Registry-driven states are available even when the legacy section payload is empty. Analytics, PostgreSQL and Redis/manual refresh tests verified that:
   - an unavailable metric is never zero;
   - `not_applicable` and unavailable stay distinct;
   - the `gap` rows report `not_instrumented`;
