@@ -8,7 +8,9 @@ from app.admin_api.pwa_metrics import _window, overall_activity_metrics
 from app.admin_api.pwa_read import _user_segment_clause
 from app.db.models.ai_usage import AIUsageEvent
 from app.db.models.conversion_funnel_event import ConversionFunnelEvent as Funnel
-from app.db.models.course_miniapp_event import CourseMiniAppEvent as Event
+from app.db.models.course_miniapp_event import (
+    SMART_PRACTICE_SCORED, SMART_PRACTICE_STARTED, CourseMiniAppEvent as Event,
+)
 from app.db.models.message import Message
 from app.db.models.user import User
 from app.db.models.payment import Payment
@@ -25,6 +27,13 @@ from app.services.course_miniapp_admin_analytics_service import (
 
 DETAIL_LIMIT = 5000
 PAYLOAD_LIMIT = 4096
+# D5 return evidence: an app open on any client, or a learning outcome the
+# server writes itself. Client-writable starts, passive views, feedback
+# reservations and bare Voice start/end rows are not on the list.
+RETURN_OPEN_EVENTS = ('miniapp_opened', 'android_app_opened', 'desktop_app_opened', 'desktop_active_day')
+RETURN_LEARNING_EVENTS = ('lesson_completed', 'book_lesson_completed', 'section_attempt_scored',
+    'test_completed', 'training_completed', SMART_PRACTICE_STARTED, SMART_PRACTICE_SCORED,
+    'mistake_review_answered', 'mistake_review_completed')
 
 
 def ratio(numerator, denominator):
@@ -52,19 +61,43 @@ def shift(db, column, days):
     return func.datetime(column, f'+{days} days')
 
 
-async def retention(db, *, since, now):
+async def _cohort_returns(db, evidence, *, since, now):
+    """Accounts registered in the matured cohort, and those with evidence in
+    their D1 (24-48 h) or D7 (168-192 h) window. One query per window."""
     result={}
     for days in (1,7):
         end=now-timedelta(days=days+1)
         start=end-(now-since) if since else None
-        returned=select(Event.id).where(owner(Event), Event.event_name=='miniapp_opened',
-            Event.created_at>=shift(db,User.created_at,days),
-            Event.created_at<shift(db,User.created_at,days+1),Event.created_at<=now).correlate(User).exists()
+        returned=evidence(shift(db,User.created_at,days),shift(db,User.created_at,days+1))
         eligible,count=(await db.execute(select(func.count(User.id),func.count(User.id).filter(returned))
             .where(User.created_at<=end,*([User.created_at>start] if start else [])))).one()
         result[f'd{days}']={'eligible':eligible,'returned':count,'percent':ratio(count,eligible),
             'cohort_start':start.isoformat() if start else None,'cohort_end':end.isoformat()}
     return result
+
+
+async def retention(db, *, since, now):
+    """`course_open`: a Mini App or PWA course-map open (A3 + A4)."""
+    return await _cohort_returns(db, lambda low, high: select(Event.id).where(
+        owner(Event), Event.event_name=='miniapp_opened', Event.created_at>=low,
+        Event.created_at<high, Event.created_at<=now).correlate(User).exists(), since=since, now=now)
+
+
+async def return_retention(db, *, since, now):
+    """D5: any verified return on any client; one account counts once."""
+    def evidence(low, high):
+        window=(Event.event_name.in_(RETURN_OPEN_EVENTS+RETURN_LEARNING_EVENTS),
+            Event.created_at>=low, Event.created_at<high, Event.created_at<=now)
+        # `owner(Event)` as two EXISTS: with its OR the planner intersects the
+        # created_at index for every account (EXPLAIN ANALYZE, task 5.1).
+        owned=select(Event.id).where(Event.user_id==User.id, *window).correlate(User).exists()
+        legacy=select(Event.id).where(Event.user_id.is_(None), Event.telegram_id==User.telegram_id,
+            Event.telegram_id>0, *window).correlate(User).exists()
+        # Voice auto-starts and can end with no turn: only a confirmed turn counts.
+        voice=select(Voice.id).where(owner(Voice,'user_telegram_id'), Voice.turn_count>0,
+            Voice.started_at>=low, Voice.started_at<high, Voice.started_at<=now).correlate(User).exists()
+        return or_(owned, legacy, voice)
+    return await _cohort_returns(db, evidence, since=since, now=now)
 
 
 def foundation_summary(rows, *, now):
@@ -143,7 +176,8 @@ async def learning_metrics(db, *, period, since, now):
         *_window(Event.created_at,since,now)).distinct().subquery()
     completed_lessons=int(await db.scalar(select(func.count()).select_from(completed)) or 0)
     result=await overall_activity_metrics(db,since=since,now=now)
-    result.update({'retention':await retention(db,since=since,now=now),'features':features,
+    result.update({'retention':await retention(db,since=since,now=now),
+        'return_retention':await return_retention(db,since=since,now=now),'features':features,
         'feature_denominators':{'paid':denominators[0],'free':denominators[1]},'activation':activation,
         'direct_activation':direct_activation,'completed_user_lessons':completed_lessons,
         'foundation':foundation,'chat':{'messages':messages,'accounts':chat_users,'average':round(messages/chat_users,2) if chat_users else None},

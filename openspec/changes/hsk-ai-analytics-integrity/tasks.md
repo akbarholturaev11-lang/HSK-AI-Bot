@@ -83,7 +83,7 @@ This is the only checklist for this work. Context, audit results, decisions and 
 
 ## 5. Retention and Report freshness
 
-- [ ] 5.1 Label `retention` as `course_open` (Mini App + PWA opens) and add `return_retention` D1/D7 (design D5), with distinct UI labels. Check the query plan with `EXPLAIN ANALYZE` on local Postgres. Verify with tests and a Playwright label check:
+- [x] 5.1 Label `retention` as `course_open` (Mini App + PWA opens) and add `return_retention` D1/D7 (design D5), with distinct UI labels. Check the query plan with `EXPLAIN ANALYZE` on local Postgres. Verify with tests and a Playwright label check:
   - one account in two apps counts once;
   - passive activity, feedback reservations and Voice auto-start/end without a confirmed turn are excluded;
   - legacy values are unchanged.

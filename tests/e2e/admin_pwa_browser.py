@@ -431,7 +431,7 @@ async def browser_checks(output):
         await page.keyboard.press('Home')
         await expect(page.locator('[data-stats-tab=overview]')).to_have_attribute('aria-selected','true')
         await page.locator('[data-stats-tab=course]').click()
-        await expect(page.locator('.stats-category-metrics .metric')).to_have_count(9)
+        await expect(page.locator('.stats-category-metrics .metric')).to_have_count(11)
         course_experiment_reads=sum(body.get('section')=='experiments' for path,method,body in calls if path=='/api/admin/v1/analytics' and body)
         # The Course > Sales A/B tab requests its own real metrics; the Stats disclosure
         # must remain lazy and issue exactly one *additional* read when expanded.
@@ -462,6 +462,12 @@ async def browser_checks(output):
                 for section in ('overview','course','platform','funnel','money','sources','report'):
                     await page.locator('[data-stats-tab='+section+']').click()
                     await expect(page.locator('.stats-category-content')).to_be_visible()
+                    if section=='course':
+                        # Task 5.1: cross-app return and course-open series carry distinct labels.
+                        names=await page.evaluate(f"[window.HSKAI_ADMIN_I18N.{language}.analyticsReturnD1,window.HSKAI_ADMIN_I18N.{language}.analyticsRetentionD1]")
+                        assert names[0]!=names[1],names
+                        for name in names:
+                            await expect(page.locator('.stats-category-metrics .metric',has_text=name)).to_have_count(1)
                     if section=='funnel':
                         # Overall shows the iPhone PWA Pro attempts beside the shared funnel.
                         title=await page.evaluate(f"window.HSKAI_ADMIN_I18N.{language}.analyticsPwaPro")
@@ -490,9 +496,10 @@ async def browser_checks(output):
                         await expect(page.locator('.metric[data-state=not_instrumented]')).to_have_count(2)
                         await expect(page.locator('.analytics-state[data-state=not_instrumented]')).to_have_count(1)
                     elif section=='course':
-                        await expect(page.locator('.stats-category-metrics .metric')).to_have_count(9)
-                        # Retention: Android not_applicable, Telegram not_instrumented, PWA not audited.
-                        await expect(page.locator('.metric[data-state=not_instrumented]')).to_have_count({'android':7,'telegram':7,'iphone_pwa':5}[platform])
+                        await expect(page.locator('.stats-category-metrics .metric')).to_have_count(11)
+                        # Course open: Android not_applicable, Telegram not_instrumented, PWA not
+                        # audited. The cross-app return series is Overall-only (not_instrumented).
+                        await expect(page.locator('.metric[data-state=not_instrumented]')).to_have_count({'android':9,'telegram':9,'iphone_pwa':7}[platform])
                         await expect(page.locator('.metric[data-state=not_applicable]')).to_have_count(2 if platform=='android' else 0)
                         # The Telegram completion shows under Telegram only; Android is a real zero.
                         lessons=page.locator('.stat-info-row',has_text=labels['analyticsCompletedUserLessons']).locator('strong')

@@ -425,6 +425,15 @@
         "windows": {"status": "not_applicable", "reason": "The legacy course-open series does not use Desktop app activity; Desktop freeze."}
       }
     },
+    {"section": "course", "key": "return_retention", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_instrumented", "reason": "D5: an Overall series. Android opens (A1) are verified, but the cohort has no platform-of-registration signal, so a per-platform cohort is not defined."},
+        "telegram": {"status": "not_instrumented", "reason": "D5: an Overall series; A3 Mini App opens carry no exclusive Telegram signal."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "D5: an Overall series. PWA opens (A4) are verified, but the cohort has no platform-of-registration signal, so a per-platform cohort is not defined."},
+        "macos": {"status": "not_instrumented", "reason": "Desktop opens feed the Overall series; no Desktop cohort; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "Desktop opens feed the Overall series; no Desktop cohort; Desktop freeze."}
+      }
+    },
     {"section": "course", "key": "session_seconds", "kind": "metric", "filters": ["overall"],
       "platforms": {
         "android": {"status": "not_instrumented", "reason": "The session grouping combines all CME session IDs and lacks complete Android session provenance."},

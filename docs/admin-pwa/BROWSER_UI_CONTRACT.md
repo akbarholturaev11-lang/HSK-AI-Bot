@@ -358,7 +358,10 @@ shows the reason and points to the Overall filter. Per-platform families show
 foreground opens only (no device inventory); version tables are hidden where
 `not_applicable`. The Conversion tab adds the iPhone PWA Pro attempts panel
 (opened, plan, checkout, verified payment; reversals and unlinked payments as
-rows) under Overall and iPhone PWA only; Android and Telegram hide it.
+rows) under Overall and iPhone PWA only; Android and Telegram hide it. Course
+shows «Return» D1/D7 (any verified return on any app) before «Course open» D1/D7
+(Mini App/PWA course map); both appear as cards and cohort rows with distinct
+labels.
 
 Canonical UZ/RU/TJ bundles own new labels. Layout uses fixed CSS/SVG attributes
 under the existing CSP, no inline styles or public private-data cache. Every

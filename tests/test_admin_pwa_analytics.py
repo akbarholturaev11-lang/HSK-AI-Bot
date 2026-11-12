@@ -327,6 +327,52 @@ class AnalyticsDefinitionTests(AnalyticsProjectionTests):
         self.assertEqual(result['d1']['percent'],100)
         self.assertEqual(result['d7']['percent'],None)
 
+    async def test_return_retention_counts_verified_returns_once_and_excludes_passive_rows(self):
+        # Task 5.1 (design D5): beside the unchanged `course_open` series.
+        from app.admin_api.pwa_analytics_learning import retention, return_retention
+        from app.db.models.voice_practice_session import VoicePracticeSession as Voice
+        def voice(user_id,turns):
+            return Voice(id=f'voice-{user_id}',user_id=user_id,role='friend',level='hsk1',language='uz',voice='female',status='completed',
+                turn_count=turns,started_at=day1+timedelta(hours=2),ended_at=day1+timedelta(hours=3))
+        registered=NOW-timedelta(days=2);day1=registered+timedelta(days=1)
+        async with self.sessions() as db:
+            for user_id in (1,2,101):(await db.get(User,user_id)).created_at=registered
+            db.add(User(id=3,telegram_id=3003,status='free',created_at=registered))
+            await db.flush()
+            db.add_all([
+                # One account returning in two apps counts once; the Mini App row
+                # is owned by Telegram ID only.
+                Event(user_id=None,telegram_id=2002,event_name='miniapp_opened',created_at=day1+timedelta(hours=1)),
+                Event(user_id=2,event_name='android_app_opened',created_at=day1+timedelta(hours=5)),
+                # Passive or client-writable rows, a feedback reservation and bare
+                # Voice telemetry are not return evidence; nor is a day-0 open.
+                *[Event(user_id=1,event_name=name,created_at=day1+timedelta(hours=1)) for name in
+                  ('card_seen','lesson_started','paywall_seen','app_telegram_feedback_reserved','voice_started','voice_completed')],
+                Event(user_id=1,event_name='miniapp_opened',created_at=registered+timedelta(hours=1)),
+                voice(1,0),
+                # A confirmed Voice turn and a server-written learning outcome are.
+                voice(101,2),
+                Event(user_id=3,event_name='mistake_review_completed',created_at=day1+timedelta(hours=1)),
+            ])
+            await db.commit()
+            since=NOW-timedelta(days=7)
+            legacy=await retention(db,since=since,now=NOW)
+            returned=await return_retention(db,since=since,now=NOW)
+        self.assertEqual((returned['d1']['eligible'],returned['d1']['returned'],returned['d1']['percent']),(4,3,75))
+        self.assertEqual((returned['d7']['eligible'],returned['d7']['percent']),(0,None))
+        # The legacy series still reads course-map opens only.
+        self.assertEqual((legacy['d1']['eligible'],legacy['d1']['returned']),(4,1))
+        self.assertEqual({k:v for k,v in returned['d1'].items() if k.startswith('cohort')},
+                         {k:v for k,v in legacy['d1'].items() if k.startswith('cohort')})
+
+    def test_return_evidence_is_server_written_only(self):
+        from app.admin_api.pwa_analytics_learning import RETURN_LEARNING_EVENTS, RETURN_OPEN_EVENTS
+        from app.db.models.course_miniapp_event import CLIENT_COURSE_MINIAPP_EVENT_NAMES
+        from app.services.activity_feedback_service import APP_TELEGRAM_FEEDBACK_RESERVATION
+        allow=set(RETURN_OPEN_EVENTS+RETURN_LEARNING_EVENTS)
+        self.assertFalse(allow&set(CLIENT_COURSE_MINIAPP_EVENT_NAMES))
+        self.assertFalse(allow&{APP_TELEGRAM_FEEDBACK_RESERVATION,'voice_started','voice_completed','card_seen'})
+
     async def test_finance_uses_full_prior_canonical_history_and_unknown_currency_is_not_priced(self):
         from app.admin_api.pwa_analytics_finance import money_metrics, sources_metrics, Entry
         await self.seed_analytics()
@@ -405,6 +451,7 @@ class AnalyticsPostgresTests(fixtures.PaymentFixtures,unittest.IsolatedAsyncioTe
     seed_analytics=AnalyticsProjectionTests.seed_analytics
     test_all_sections_execute_real_sql_and_never_export_private_records=CompleteAnalyticsTests.test_all_sections_execute_real_sql_and_never_export_private_records
     test_retention_maturity_and_exact_window_boundaries=AnalyticsDefinitionTests.test_retention_maturity_and_exact_window_boundaries
+    test_return_retention_counts_verified_returns_once_and_excludes_passive_rows=AnalyticsDefinitionTests.test_return_retention_counts_verified_returns_once_and_excludes_passive_rows
     test_finance_uses_full_prior_canonical_history_and_unknown_currency_is_not_priced=AnalyticsDefinitionTests.test_finance_uses_full_prior_canonical_history_and_unknown_currency_is_not_priced
     test_lazy_experiments_empty_and_mature_recovery_have_no_private_payload=AnalyticsDefinitionTests.test_lazy_experiments_empty_and_mature_recovery_have_no_private_payload
 

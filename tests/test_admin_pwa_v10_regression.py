@@ -47,7 +47,7 @@ SINCE = {"weekly": "2026-11-05T12:00:00+00:00", "monthly": "2026-10-13T12:00:00+
 # Section/filter cells that task 3.2 moved from `attribution_not_audited` to a
 # platform predicate. Every other cell must stay byte-identical to the golden.
 # Keys added beside unchanged legacy series (task 4.1); pinned in their own tests.
-ADDED_METRICS = {"funnel": frozenset({"pwa_pro_attempt_funnel"})}
+ADDED_METRICS = {"funnel": frozenset({"pwa_pro_attempt_funnel"}), "course": frozenset({"return_retention"})}
 NEWLY_ATTRIBUTED = frozenset([("home", "iphone_pwa"), ("overview", "iphone_pwa"), ("platform", "iphone_pwa")]) | frozenset(
     (section, platform) for section in ("money", "funnel", "course")
                              for platform in ("android", "telegram", "iphone_pwa"))
