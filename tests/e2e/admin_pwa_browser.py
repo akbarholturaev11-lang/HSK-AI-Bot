@@ -214,6 +214,11 @@ async def browser_checks(output):
                                    ('lesson_started',2.99,'{"lesson_order":1,"client":"iphone_pwa"}')):
             db.add(CourseMiniAppEvent(user_id=2,telegram_id=2002,event_name=name,source='pwa_course_v3',
                                       payload_json=payload,created_at=datetime.now(timezone.utc)-timedelta(hours=hours)))
+        # R3 UI half: an Android entry as the Android subscription routes write
+        # it; tests/test_analytics_platform_chain.py proves the routes.
+        from app.db.models.subscription_entry_event import SubscriptionEntryEvent
+        db.add(SubscriptionEntryEvent(user_id=1,telegram_id=1001,source='android_course_limit',client='android',
+                                      created_at=datetime.now(timezone.utc)-timedelta(hours=2)))
         await db.execute(update(AdminPwaSession).values(revoked_at=__import__('datetime').datetime.now(__import__('datetime').timezone.utc)))
         await db.commit()
     await complete_telegram_lesson_through_route(fixture.sessions)
@@ -602,8 +607,19 @@ async def browser_checks(output):
                         if platform=='iphone_pwa':
                             await expect(pro.locator('.stat-step-label span')).to_have_text(['2','1','1','0'])
                     elif section=='sources':
-                        await expect(page.locator('#content .state-panel h2')).to_have_text(labels['analyticsStateNotAudited'])
-                        await expect(page.locator('#content .state-panel p')).to_have_text(labels['analyticsStateSeeOverall'])
+                        # R3: entries and payments of this platform; public-site traffic is Overall-only.
+                        panels=page.locator('.stats-category-content .analytics-panel')
+                        await expect(panels).to_have_count(2)
+                        await expect(panels.nth(1)).to_contain_text(labels['analyticsPlatformAttributionNote'])
+                        await expect(page.locator('.analytics-panel h2',has_text=labels['analyticsPublicTraffic'])).to_have_count(0)
+                        if platform=='android':
+                            await expect(panels.nth(0).locator('tbody tr td')).to_have_text([labels['analyticsSourceandroid_subscription'],'1','1'])
+                            await expect(panels.nth(1).locator('tbody tr td')).to_have_text([labels['empty']])
+                            await expect(page.locator('.analytics-since')).to_have_count(2)
+                        else:
+                            # No route-set entry yet: no data, never an empty table.
+                            await expect(page.locator('.analytics-state[data-state=no_data]')).to_have_count(2)
+                            await expect(page.locator('.analytics-since')).to_have_count(0)
                     elif section in ('overview','platform'):
                         await expect(page.locator('.analytics-platform-grid .analytics-panel')).to_have_count(1)
                         title={'android':'analyticsAndroid','telegram':'analyticsTelegram','iphone_pwa':'analyticsIphonePwa'}[platform]

@@ -3327,6 +3327,8 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(overview.await_args.args[0].id, 1)
             self.assertIs(overview.await_args.kwargs["bot"], self.receipt_bot)
             self.assertEqual(entry.await_args.kwargs["user"].id, 1)
+            # R3: the route sets the client; the body has no field for it.
+            self.assertEqual(entry.await_args.kwargs["client"], "iphone_pwa")
             self.assertEqual(funnel.await_args.kwargs["user"].id, 1)
             quoted = await self.client.post(quote_url, headers=headers, json={**ctx, **order})
             self.assertEqual(quoted.status_code, 200, quoted.text)

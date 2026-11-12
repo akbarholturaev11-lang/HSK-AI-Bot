@@ -1069,6 +1069,7 @@
     "ui.admin_pwa.analyticsPaymentSources": "Источники перед оплатой",
     "ui.admin_pwa.analyticsOtherSource": "Другое / неизвестно",
     "ui.admin_pwa.analyticsAttributionNote": "Ближайший записанный вход до отправки платежа. Учитывается вся предшествующая история; это не доказывает влияние источника на оплату.",
+    "ui.admin_pwa.analyticsPlatformAttributionNote": "Ближайший вход на этой платформе до отправки платежа. Входы на других платформах не учитываются; это не доказывает влияние источника на оплату.",
     "ui.admin_pwa.analyticsPublicTraffic": "Переходы на сайт с метками",
     "ui.admin_pwa.analyticsTrafficNote": "Количество анонимных посещений, а не пользователей или регистраций.",
     "ui.admin_pwa.analyticsDataQuality": "Общее покрытие данных",

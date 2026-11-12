@@ -40,7 +40,7 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 - The branch has the PostgreSQL baseline, the coverage guard and per-metric V10 states in the API and the Admin UI. It also has per-platform scoping, route chain tests, the PWA Pro funnel, `return_retention` and Report freshness.
 - An independent audit of PR #285 (55 findings) confirmed 17. The code and process defects among them are fixed on this branch; see [Audit remediation](#audit-remediation--pr-285-2026-11-12). Every V10 value still matches the baseline except two Overall Finance averages, which were wrong on `main` too (#34).
 - **Open: 6.2 real-client acceptance** (owner devices and a deployment of this branch; checklist below) and **6.3 promotion** (owner approval). No merge to `main` without the owner's permission.
-- **Next stage (not started):** four mandatory requirements and their implementation plan are in [Next stage](#next-stage--mandatory-requirements-not-implemented). They are not part of this change. The plan was reviewed and strengthened on 2026-11-12. R1 (Android Lesson Start) has started on its own branch, stacked on this PR.
+- **Next stage (implemented, not merged):** R1, R2, R4 and R3 from [Next stage](#next-stage--mandatory-requirements-not-implemented) are implemented on `feat/analytics-next-stage-20261112`, stacked on this PR, with one OpenSpec change each. Open there: final verification on the final head, the R4 performance numbers, the owner's approval of the R3 migration, and owner acceptance on real clients.
 - PR [akbarholturaev11-lang/HSK-AI-Bot#285](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/285) is the integration branch for this work.
 
 ## Platform scope
@@ -343,7 +343,7 @@ Written from the code on this branch.
 | 1 | R1 Android Lesson Start | no | no (server only) | S | Smallest. Unblocks Android `features.lessons` and gives R4 an Android learning signal. **Implemented 2026-11-12** on `feat/analytics-android-lesson-start-20261112` (stacked on PR #285; not merged) |
 | 2 | R2 PWA Activation | no | no | M | The writer gets one argument; the reader reuses the activation funnel. **Implemented 2026-11-12** on `feat/analytics-next-stage-20261112` (stacked on R1; not merged) |
 | 3 | R4 Platform D1/D7 Retention | no | no | M | Reader only; uses R1 and R2 rows as evidence. **Implemented 2026-11-12** on `feat/analytics-next-stage-20261112` (stacked on R2; not merged) |
-| 4 | R3 Subscription Sources | **yes** (one nullable column) | no | M–L | The only migration, so it deploys alone |
+| 4 | R3 Subscription Sources | **yes** (one nullable column) | no | M–L | The only migration, so it deploys alone. **Implemented 2026-11-13** on `feat/analytics-next-stage-20261112` (stacked on R4; not merged; the migration needs the owner's approval at the PR) |
 
 #### R1. Android Lesson Start
 
@@ -450,16 +450,17 @@ Written from the code on this branch.
 - The migration is tested with the local PostgreSQL routine: create_all + stamp + upgrade/downgrade.
 
 **Writers** (`record_entry(..., client=...)`):
-- **`main.py` (Telegram subscription overview and event routes):** `telegram`. A caller that sends `source=android_subscription` still stays Telegram.
+- **`main.py` (Telegram subscription overview route, the only Telegram entry writer):** `telegram`. A caller that sends `source=android_subscription` still stays Telegram.
 - **`android_features.py` and the Android Lava overview route in `lava_checkout.py`:** `android`.
 - **The PWA entry in `pwa_auth.py`:** `iphone_pwa`.
 - **`desktop_subscription_service.py` (shared):** `android` only for the Android namespace. Desktop leaves the column empty (freeze).
 
-**Reader.** `sources_metrics(db, platform=...)`:
+**Reader.** `platform_sources_metrics(db, platform=...)` (Overall keeps `sources_metrics`):
 - **`entries`:** rows with that `client`, from its `attributed_since`.
 - **`attribution`** (default taken): payments of that platform (F4 `PAYMENT_PLATFORM_SOURCES`) are attributed to the nearest earlier entry **on the same platform**, else to `unknown`. Overall keeps the current any-platform rule.
 - **`traffic`:** stays `not_applicable` (company-wide).
 - The Sources section gets per-platform composition and snapshot variants.
+- **As built (2026-11-13):** `record_entry` stores only `telegram`/`iphone_pwa`/`android`, anything else NULL. Payments before a platform's first entry are left out (no entry could match them). Both values are null before the first entry. Registry: `entries` `covered` (route chain test); `attribution` `partial`, because its payment side has projection evidence only, as in Finance. OpenSpec change `analytics-subscription-sources-platform`.
 
 **Tests:**
 - migration upgrade and downgrade;
@@ -598,6 +599,7 @@ Written from the code on this branch.
 - 2026-11-12 — Audit remediation (#6–#8): the diff guard ignores flow `description` and whitespace; `covered` needs a CI-run test that reads the metric from the Admin analytics route for that platform; large shared modules are guarded per function through `symbols`.
 
 ## Session log (newest first, one or two lines each)
+- 2026-11-13 — R3 Subscription Sources implemented on `feat/analytics-next-stage-20261112` (stacked on R4): migration `0155` (nullable `client` + index, upgrade/downgrade tested on local PostgreSQL), five route writers, `platform_sources_metrics`, registry, UI (same-platform note in UZ/RU/TJ, traffic Overall-only), OpenSpec change `analytics-subscription-sources-platform`. Writer, stored-row, chain and golden tests pass and the new ones fail on the old code; the Admin PWA browser suite passes with R1–R4. The migration merges only with the owner's approval.
 - 2026-11-12 — R4 Platform D1/D7 Retention implemented on `feat/analytics-next-stage-20261112` (stacked on R2): first-use cohort per platform, same-platform returns, registry covered, one UI line, OpenSpec change `analytics-platform-return-retention`. The Admin PWA browser suite passes with R1, R2 and R4. Its Report freshness check now expects Android and PWA learning dates, from the R1/R2 rows.
 - 2026-11-12 — R2 PWA Activation implemented on `feat/analytics-next-stage-20261112` (stacked on R1): onboarding rows carry the route-set client on all three routes; Course > iPhone PWA gets `activation`, `direct_activation` and `handoff_activation`. Registry, UI row, OpenSpec change `analytics-pwa-activation` and tests are done.
 

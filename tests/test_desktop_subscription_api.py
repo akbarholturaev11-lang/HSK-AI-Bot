@@ -208,6 +208,8 @@ class DesktopSubscriptionApiTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(entry.telegram_id, 1001)
         self.assertEqual(entry.source, "desktop_subscription")
         self.assertEqual(entry.mode, "subscription")
+        # R3: Desktop entries carry no client (Desktop freeze), so no platform view reads them.
+        self.assertIsNone(entry.client)
         self.assertEqual(funnel.telegram_id, 1001)
         self.assertEqual(funnel.source, "desktop_subscription")
 
@@ -654,6 +656,7 @@ class DesktopSubscriptionApiTests(unittest.IsolatedAsyncioTestCase):
             [entry.source for entry in hsk30_entries[-2:]],
             ["android_hsk30_onboarding", "android_hsk30_settings"],
         )
+        self.assertEqual([entry.client for entry in hsk30_entries[-2:]], ["android", "android"])
     async def test_android_profile_renewal_allows_active_paid_checkout(self):
         expires_at = datetime.now(timezone.utc) + timedelta(days=12)
         async with self.sessions() as session:

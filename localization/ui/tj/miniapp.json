@@ -1069,6 +1069,7 @@
     "ui.admin_pwa.analyticsPaymentSources": "Манбаъҳо пеш аз пардохт",
     "ui.admin_pwa.analyticsOtherSource": "Дигар / номаълум",
     "ui.admin_pwa.analyticsAttributionNote": "Наздиктарин вуруди сабтшуда пеш аз фиристодани пардохт. Тамоми таърихи пешина ҳисоб мешавад; ин таъсири манбаъро ба пардохт исбот намекунад.",
+    "ui.admin_pwa.analyticsPlatformAttributionNote": "Наздиктарин вуруд дар ҳамин платформа пеш аз фиристодани пардохт. Вурудҳо дар платформаҳои дигар ҳисоб намешаванд; ин таъсири манбаъро ба пардохт исбот намекунад.",
     "ui.admin_pwa.analyticsPublicTraffic": "Гузаришҳои нишонадор ба сомона",
     "ui.admin_pwa.analyticsTrafficNote": "Шумораи боздидҳои беном, на корбарон ё сабти номҳо.",
     "ui.admin_pwa.analyticsDataQuality": "Фарогирии умумии маълумот",

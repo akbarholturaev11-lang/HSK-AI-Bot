@@ -382,8 +382,12 @@ function categorizedStatsView(){
     body+=analyticPanel('aiSpend',m.ai_models?analyticTable(['aiModel','analyticsBillingTier','recordedRequests','tokens','estimatedCost'],m.ai_models.map(r=>[r.model==='unknown'?t('analyticsUnknown'):r.model,t('analyticsTier'+r.tier),number(r.requests),number(r.tokens),usd(r.usd,true)])):stateBlock('ai_models'),'aiCostNote');
   }else if(tab==='sources'){
     const sourceName=key=>t('analyticsSource'+key)!=='—'?t('analyticsSource'+key):t('analyticsOtherSource');
-    body=`<div class="double">${analyticPanel('analyticsSubscriptionEntries',analyticTable(['source','analyticsVisits','analyticsHistories'],m.entries.map(r=>[sourceName(r.source),number(r.visits),number(r.histories)])))}${analyticPanel('analyticsPaymentSources',analyticTable(['source','payments','analyticsRevenue'],m.attribution.map(r=>[sourceName(r.source),number(r.payments),usd(r.usd)])),'analyticsAttributionNote')}</div>`;
-    body+=analyticPanel('analyticsPublicTraffic',analyticTable(['source','analyticsVisits'],m.traffic.map(r=>[r.source==='other'?t('analyticsOtherSource'):r.source,number(r.visits)])),'analyticsTrafficNote');
+    // R3: a platform view is null before its first route-set entry.
+    const entries=m.entries?analyticTable(['source','analyticsVisits','analyticsHistories'],m.entries.map(r=>[sourceName(r.source),number(r.visits),number(r.histories)])):stateBlock('entries');
+    const paid=m.attribution?analyticTable(['source','payments','analyticsRevenue'],m.attribution.map(r=>[sourceName(r.source),number(r.payments),usd(r.usd)])):stateBlock('attribution');
+    body=`<div class="double">${analyticPanel('analyticsSubscriptionEntries',entries+sinceLine(m,'entries'))}${analyticPanel('analyticsPaymentSources',paid+sinceLine(m,'attribution'),data.platform==='overall'?'analyticsAttributionNote':'analyticsPlatformAttributionNote')}</div>`;
+    // Public-site visits are company-wide, so only Overall carries them.
+    if(Array.isArray(m.traffic))body+=analyticPanel('analyticsPublicTraffic',analyticTable(['source','analyticsVisits'],m.traffic.map(r=>[r.source==='other'?t('analyticsOtherSource'):r.source,number(r.visits)])),'analyticsTrafficNote');
   }else{
     body=`<div class="double">${analyticPanel('analyticsDataQuality',analyticTable(['source','analyticsRecords','updated'],m.quality.map(r=>[t('analyticsQuality'+r.source),number(r.records),r.latest_at?date(r.latest_at):'—'])),'analyticsQualityNote')}${analyticPanel('analyticsDefinitions',analyticRows([['analyticsRefresh',t('analyticsDailyCache')],['analyticsFinancialGrain',t('analyticsSeparateCurrencies')],['analyticsAiBasis',t('analyticsStoredEstimate')],['analyticsPlatformTotal',t('analyticsOverlapping')],['analyticsDetailBound',number(m.detail_row_limit)]]))}</div>`;
     // D7: latest record and unowned rows per platform, from verified signals only.

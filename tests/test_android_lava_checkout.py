@@ -52,7 +52,8 @@ class AndroidLavaCheckoutTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual("10.00", plans[0]["amount"])
         async with self.sessions() as db:
             entry = await db.scalar(select(SubscriptionEntryEvent))
-            self.assertEqual((1, "android_course_limit", "lava"), (entry.user_id, entry.source, entry.payment_method))
+            self.assertEqual((1, "android_course_limit", "lava", "android"),
+                             (entry.user_id, entry.source, entry.payment_method, entry.client))
         start = await self.post("start", {"plan_type": "1_month", "email": "native@example.com"})
         self.assertEqual(200, start.status_code)
         value = start.json(); checkout = value["checkout_id"]

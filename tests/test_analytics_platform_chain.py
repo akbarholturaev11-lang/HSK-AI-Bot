@@ -14,6 +14,8 @@ route writes the server-only `android_lesson_started`.
 Next-stage R2 adds PWA activation: `/api/v3/pwa/onboarding` tags the cohort
 anchor, and `/api/v3/pwa-auth/handoff/redeem` writes the handoff anchor.
 Next-stage R4 adds D1/D7 return per platform from each account's first use.
+Next-stage R3 adds Sources entries: each client's subscription route sets the
+entry's `client` column, read under that client's Sources filter.
 
 Each client completes a different number of lessons, so a value that leaked
 into another filter would change that filter's count.
@@ -181,7 +183,7 @@ class CoursePlatformChainTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(session.status_code, 200, session.text)
         return browser, {"Origin": pwa.ORIGIN, "X-HSK-PWA-CSRF": session.json()["csrf"]}
 
-    async def admin_read(self, platform):
+    async def admin_read(self, platform, section="course"):
         admin_settings = SimpleNamespace(ADMIN_PWA_ENABLED=True, ADMIN_PWA_PUBLIC_ORIGIN=ADMIN_ORIGIN,
                                          admin_id_list=[ADMIN_TELEGRAM_ID])
         app = FastAPI()
@@ -189,7 +191,7 @@ class CoursePlatformChainTests(unittest.IsolatedAsyncioTestCase):
                                                              session_factory=self.sessions))
         async with AsyncClient(transport=ASGITransport(app=app), base_url=ADMIN_ORIGIN) as admin:
             response = await admin.post("/api/admin/v1/analytics",
-                                        json={"section": "course", "platform": platform, "period": "weekly"},
+                                        json={"section": section, "platform": platform, "period": "weekly"},
                                         headers={"Origin": ADMIN_ORIGIN,
                                                  "Cookie": ADMIN_PWA_COOKIE_NAME + "=" + ADMIN_COOKIE})
         self.assertEqual(response.status_code, 200, response.text)
@@ -351,6 +353,40 @@ class CoursePlatformChainTests(unittest.IsolatedAsyncioTestCase):
         for platform, view in views.items():
             self.assertEqual(view["metric_states"]["return_retention"], {"state": "available", "reason": None})
             self.assertIsNotNone(view["metrics"]["attributed_since"]["return_retention"], platform)
+
+    async def test_each_client_entry_reaches_its_own_sources_filter(self):
+        from app.api.android_features import create_android_features_router
+        self.learner.include_router(create_android_features_router(session_factory=self.sessions,
+                                                                   settings_obj=self.settings))
+        self.learner.add_api_route("/api/subscription-miniapp/overview", main.subscription_miniapp_overview,
+                                   methods=["POST"])
+        telegram, pwa_browser, android = self.telegram_headers(), await self.pwa_headers(), await self.android_headers()
+        # Telegram, one entry: its caller text imitates the Android namespace and
+        # sends a client field, but the route sets the client.
+        opened = await self.client.post("/api/subscription-miniapp/overview", headers=telegram,
+                                        json={"source": "android_subscription", "mode": "subscription",
+                                              "client": "android"})
+        self.assertTrue(opened.json().get("ok"), opened.text)
+        for source in ("v3_paywall", "v3_profile"):  # PWA, two entries
+            opened = await self.client.post("/api/v3/pwa/subscription/overview", headers=pwa_browser,
+                                            json={"source": source, "mode": "subscription"})
+            self.assertEqual(opened.status_code, 200, opened.text)
+        for _ in range(3):  # Android, three entries
+            opened = await self.client.post("/api/v3/android/subscription/open", headers=android)
+            self.assertEqual(opened.status_code, 200, opened.text)
+
+        views = {platform: await self.admin_read(platform, "sources")
+                 for platform in ("overall", "android", "telegram", "iphone_pwa")}
+        visits = {platform: sum(row["visits"] for row in view["metrics"]["entries"])
+                  for platform, view in views.items()}
+        self.assertEqual(visits, {"overall": 6, "android": 3, "telegram": 1, "iphone_pwa": 2})
+        self.assertEqual(views["telegram"]["metrics"]["entries"],
+                         [{"source": "android_subscription", "visits": 1, "histories": 1}])
+        for platform in ("android", "telegram", "iphone_pwa"):
+            view = views[platform]
+            self.assertEqual(view["metric_states"]["entries"], {"state": "available", "reason": None})
+            self.assertIsNotNone(view["metrics"]["attributed_since"]["entries"], platform)
+            self.assertNotIn("traffic", view["metrics"])
 
 
 if __name__ == "__main__":

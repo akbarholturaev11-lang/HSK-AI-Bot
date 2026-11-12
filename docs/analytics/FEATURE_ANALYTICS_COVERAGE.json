@@ -770,21 +770,22 @@
       }
     },
     {"section": "money", "key": "usd_basis", "kind": "metadata", "filters": ["overall", "android", "telegram", "iphone_pwa"]},
-    {"section": "sources", "key": "attribution", "kind": "metric", "filters": ["overall"],
+    {"section": "sources", "key": "attribution", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
       "platforms": {
-        "android": {"status": "not_instrumented", "reason": "F6/F7: Subscription entry sources are caller text on the Telegram route, so an android_ prefix can be forged; the table has no platform column (schema change out of scope)."},
-        "telegram": {"status": "not_instrumented", "reason": "F7: Mini App entry source is client-supplied and cannot establish a platform-specific history."},
-        "iphone_pwa": {"status": "not_instrumented", "reason": "F7: PWA entry source is client-supplied and cannot establish a platform-specific history."},
+        "android": {"status": "partial", "reason": "R3: approved android payments (server-set payments.source) submitted from attributed_since on, attributed to the nearest earlier android entry of the same account, else unknown; descriptive, not causal. The entry side is route-chain tested; payments.source has PostgreSQL projection evidence only, as in Finance."},
+        "telegram": {"status": "partial", "reason": "R3: approved Telegram (miniapp or telegram_bot) payments (server-set payments.source) submitted from attributed_since on, attributed to the nearest earlier telegram entry of the same account, else unknown; descriptive, not causal. The entry side is route-chain tested; payments.source has PostgreSQL projection evidence only, as in Finance."},
+        "iphone_pwa": {"status": "partial", "reason": "R3: approved iPhone PWA (iphone_pwa or Lava pwa) payments (server-set payments.source) submitted from attributed_since on, attributed to the nearest earlier iphone_pwa entry of the same account, else unknown; descriptive, not causal. The entry side is route-chain tested; payments.source has PostgreSQL projection evidence only, as in Finance."},
         "macos": {"status": "not_instrumented", "reason": "The combined Desktop source does not establish separate OS entry or attribution histories; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "The combined Desktop source does not establish separate OS entry or attribution histories; Desktop freeze."}
       }
     },
-    {"section": "sources", "key": "attribution_basis", "kind": "metadata", "filters": ["overall"]},
-    {"section": "sources", "key": "entries", "kind": "metric", "filters": ["overall"],
+    {"section": "sources", "key": "attribution_basis", "kind": "metadata", "filters": ["overall", "android", "telegram", "iphone_pwa"]},
+    {"section": "sources", "key": "attributed_since", "kind": "metadata", "filters": ["android", "telegram", "iphone_pwa"]},
+    {"section": "sources", "key": "entries", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
       "platforms": {
-        "android": {"status": "not_instrumented", "reason": "F6/F7: Subscription entry sources are caller text on the Telegram route, so an android_ prefix can be forged; the table has no platform column (schema change out of scope)."},
-        "telegram": {"status": "not_instrumented", "reason": "F7: Mini App entry source is client-supplied and cannot establish a platform-specific history."},
-        "iphone_pwa": {"status": "not_instrumented", "reason": "F7: PWA entry source is client-supplied and cannot establish a platform-specific history."},
+        "android": {"status": "covered", "reason": "R3: entries recorded by the Android subscription routes (open and Lava overview) with the route-set column client android (never caller text), from attributed_since on; earlier rows have no client and stay Overall-only.", "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_each_client_entry_reaches_its_own_sources_filter"},
+        "telegram": {"status": "covered", "reason": "R3: entries recorded by the Mini App subscription overview route with the route-set column client telegram (never caller text), from attributed_since on; earlier rows have no client and stay Overall-only.", "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_each_client_entry_reaches_its_own_sources_filter"},
+        "iphone_pwa": {"status": "covered", "reason": "R3: entries recorded by the PWA subscription overview route with the route-set column client iphone_pwa (never caller text), from attributed_since on; earlier rows have no client and stay Overall-only.", "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_each_client_entry_reaches_its_own_sources_filter"},
         "macos": {"status": "not_instrumented", "reason": "The combined Desktop source does not establish separate OS entry or attribution histories; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "The combined Desktop source does not establish separate OS entry or attribution histories; Desktop freeze."}
       }
@@ -1463,16 +1464,16 @@
       ],
       "platforms": {
         "android": {
-          "status": "not_instrumented",
-          "reason": "Subscription entry sources are caller text on the Telegram route, so an android_ prefix can be forged; the table has no platform column (schema change out of scope)."
+          "status": "partial",
+          "reason": "R3: subscription_entry_events.client is set to android by the Android subscription routes only; Sources > Android reads those entries and attributes android payments to them. Paywall and limit funnel events stay as they were."
         },
         "telegram": {
-          "status": "not_instrumented",
-          "reason": "Subscription entry sources are client-selectable and have no trusted Mini App platform marker."
+          "status": "partial",
+          "reason": "R3: the Mini App subscription overview route sets subscription_entry_events.client to telegram; the source text stays caller-chosen, but the platform is route-set. Sources > Telegram reads those entries."
         },
         "iphone_pwa": {
-          "status": "not_instrumented",
-          "reason": "Subscription entry sources are client-selectable and have no trusted PWA platform marker."
+          "status": "partial",
+          "reason": "R3: the PWA subscription overview route sets subscription_entry_events.client to iphone_pwa; the source text stays caller-chosen, but the platform is route-set. Sources > iPhone PWA reads those entries."
         },
         "macos": {
           "status": "not_instrumented",
@@ -1787,7 +1788,8 @@
       "path": "app/api/lava_checkout.py",
       "flows": [
         "checkout_payments",
-        "pwa_pro_checkout"
+        "pwa_pro_checkout",
+        "subscription_entries"
       ]
     },
     {

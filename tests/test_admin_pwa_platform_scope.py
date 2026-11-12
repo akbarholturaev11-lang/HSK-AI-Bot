@@ -10,6 +10,8 @@ from unittest.mock import patch
 from app.admin_api.pwa_analytics_course_platform import course_platform_metrics
 from app.db.models.conversion_funnel_event import ConversionFunnelEvent
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
+from app.db.models.payment import Payment
+from app.db.models.subscription_entry_event import SubscriptionEntryEvent
 from tests.test_admin_pwa_v10_regression import NOW, PRIVATE, URL, ago, capture, postgres_fixture
 
 PLATFORMS = ("android", "telegram", "iphone_pwa")
@@ -495,6 +497,98 @@ class PlatformReturnRetentionTests(unittest.IsolatedAsyncioTestCase):
 
 
 @unittest.skipUnless(URL, "set ANALYTICS_TEST_DATABASE_URL for the real PostgreSQL platform scope tests")
+class SourcesPlatformScopeTests(unittest.IsolatedAsyncioTestCase):
+    """R3: entries carry the route-set `client` column; each platform reads its
+    own entries and its own payments, matched to the nearest earlier entry on
+    the same client. The fixture's entries have no client (Overall-only)."""
+
+    async def asyncSetUp(self):
+        def entry(user_id, source, client, at):
+            return SubscriptionEntryEvent(user_id=user_id, source=source, client=client, created_at=at)
+
+        self.rows = [
+            # Android boundary. The fixture's untagged android_subscription entry
+            # one day ago stays Overall-only.
+            entry(1, "android_course_limit", "android", ago(hours=26)),
+            # Telegram boundary; its 5-hour Mini App payment matches this entry,
+            # not the later PWA entry of the same account.
+            entry(1, "profile", "telegram", ago(hours=6)),
+            # PWA boundary; the fixture's nearer untagged iphone_pwa entry (4 h)
+            # is not a PWA entry, so the 1-hour PWA payment matches this one.
+            entry(1, "broadcast", "iphone_pwa", ago(hours=5, minutes=30)),
+            # Caller text with an android_ prefix on the Telegram route stays Telegram.
+            entry(4, "android_subscription", "telegram", ago(hours=3)),
+        ]
+        async with postgres_fixture(URL) as sessions:
+            async with sessions() as db:
+                db.add_all(self.rows)
+                # An Android payment of an account with no Android entry: unknown.
+                db.add(Payment(user_id=4, source="android", currency="USD", amount=10, plan_type="1_month",
+                               payment_method="visa", payment_status="approved",
+                               submitted_at=ago(hours=1, minutes=30), reviewed_at=ago(hours=1, minutes=30)))
+                await db.commit()
+            self.projections = await capture(sessions)
+
+    def sources(self, platform, period="all_time"):
+        return self.projections["sources", platform, period]
+
+    def test_each_platform_reads_only_its_route_set_entries(self):
+        expected = {
+            "android": [{"source": "android_subscription", "visits": 1, "histories": 1}],
+            "telegram": [{"source": "android_subscription", "visits": 1, "histories": 1},
+                         {"source": "profile", "visits": 1, "histories": 1}],
+            "iphone_pwa": [{"source": "broadcast", "visits": 1, "histories": 1}],
+        }
+        for platform, rows in expected.items():
+            with self.subTest(platform=platform):
+                response = self.sources(platform)
+                self.assertIs(response["available"], True)
+                self.assertEqual(response["metrics"]["entries"], rows)
+                self.assertNotIn(PRIVATE, json.dumps(response))
+
+    def test_payments_match_the_nearest_entry_on_the_same_platform(self):
+        # Payments before a platform's first entry (Android 42 days, PWA TJS
+        # one day, Telegram bot 2 and 8 days) have no possible entry: left out.
+        expected = {
+            "android": [{"source": "android_subscription", "payments": 1, "usd": 10.0},
+                        {"source": "unknown", "payments": 1, "usd": 10.0}],
+            "telegram": [{"source": "profile", "payments": 1, "usd": 10.0}],
+            # The PWA Lava payment counts at its USD local amount, as in Overall.
+            "iphone_pwa": [{"source": "broadcast", "payments": 1, "usd": 7.9}],
+        }
+        for platform, rows in expected.items():
+            with self.subTest(platform=platform):
+                self.assertEqual(self.sources(platform)["metrics"]["attribution"], rows)
+
+    def test_attributed_since_and_states(self):
+        since = {"android": ago(hours=26), "telegram": ago(hours=6), "iphone_pwa": ago(hours=5, minutes=30)}
+        for platform, at in since.items():
+            with self.subTest(platform=platform):
+                response = self.sources(platform, "weekly")
+                metrics = response["metrics"]
+                self.assertEqual(metrics["attributed_since"], {"entries": at.isoformat(), "attribution": at.isoformat()})
+                self.assertIn("same platform", metrics["attribution_basis"])
+                # Public-site visits are company-wide: never a platform value.
+                self.assertNotIn("traffic", metrics)
+                self.assertEqual(response["metric_states"], {
+                    "entries": {"state": "available", "reason": None},
+                    "attribution": {"state": "available", "reason": None},
+                    "traffic": {"state": "not_applicable", "reason": "not_applicable"}})
+
+    def test_overall_keeps_every_entry(self):
+        overall = self.sources("overall")["metrics"]
+        # Fixture: four entries; this class adds four tagged ones.
+        self.assertEqual(sum(row["visits"] for row in overall["entries"]), 8)
+        self.assertIn("traffic", overall)
+
+    def test_desktop_filters_stay_unavailable(self):
+        for platform in ("macos", "windows"):
+            with self.subTest(platform=platform):
+                response = self.sources(platform)
+                self.assertEqual((response["available"], response["metrics"]), (False, None))
+
+
+@unittest.skipUnless(URL, "set ANALYTICS_TEST_DATABASE_URL for the real PostgreSQL platform scope tests")
 class CourseFoundationDetailLimitTests(unittest.IsolatedAsyncioTestCase):
     """Audit #13: other learners' Starter 0 rows never fill one client's detail limit."""
 
@@ -544,6 +638,15 @@ class CourseWithoutAttributionTests(unittest.IsolatedAsyncioTestCase):
         for key in ("activation", "direct_activation", "handoff_activation"):
             self.assertIsNone(pwa["metrics"][key])
             self.assertEqual(pwa["metric_states"][key], {"state": "unavailable", "reason": "no_data"})
+        # R3: the fixture's entries have no client, so no platform has a
+        # Sources boundary yet: no data, never an empty table or zero.
+        for platform in PLATFORMS:
+            sources = projections["sources", platform, "all_time"]
+            self.assertIs(sources["available"], True)
+            self.assertEqual({key: sources["metrics"][key] for key in ("entries", "attribution", "attributed_since")},
+                             {"entries": None, "attribution": None, "attributed_since": {}})
+            for key in ("entries", "attribution"):
+                self.assertEqual(sources["metric_states"][key], {"state": "unavailable", "reason": "no_data"})
 
 
 @unittest.skipUnless(URL, "set ANALYTICS_TEST_DATABASE_URL for the real PostgreSQL platform scope tests")

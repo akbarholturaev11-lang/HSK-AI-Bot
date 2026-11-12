@@ -1350,6 +1350,7 @@ def create_android_features_router(
                     user=user,
                     source="android_subscription",
                     mode="subscription",
+                    client="android",
                 )
                 delivered = False
                 if bot is not None:

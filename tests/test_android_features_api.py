@@ -412,6 +412,7 @@ class AndroidSubscriptionHandoffApiTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual("android_subscription", entries[0].source)
         self.assertEqual("subscription", entries[0].mode)
         self.assertEqual(1001, entries[0].telegram_id)
+        self.assertEqual("android", entries[0].client)
 
     async def test_a_failed_message_still_hands_the_learner_the_bot_link(self):
         # Telegram can refuse the message (the user blocked the bot, a network

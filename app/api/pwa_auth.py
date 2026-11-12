@@ -1701,6 +1701,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                         payment_method=data.method,
                         campaign_id=data.campaign_id,
                         feedback_id=data.feedback_id,
+                        client="iphone_pwa",
                     )
                     # Retain the canonical funnel event. PWA users may have no
                     # Telegram provider, so the accountable key is users.id.
