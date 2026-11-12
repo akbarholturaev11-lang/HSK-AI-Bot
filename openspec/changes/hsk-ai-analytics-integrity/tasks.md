@@ -53,7 +53,8 @@ This is the only checklist for this work. Context, audit results, decisions and 
      - practice (A13), HSK exam (A14) and mistake review (A15).
   3. **Predicates:** apply them across Overview, Course, Platforms (PWA card from A4), Funnel, Finance and Sources for the `verified` rows and the rows fixed by steps 1–2. Report `attributed_since` for families that have the `client` key.
      - [x] Finance (F4, F5): payment keys and Lava lifecycle per server-set source; `tests/test_admin_pwa_platform_scope.py`.
-     - [ ] Funnel (F1–F3), Sources (F6), Platforms PWA card (A4), Course (A8, A10, then `client`-keyed A6/A9/A13–A15 with `attributed_since`).
+     - [x] Funnel (F1–F3): route-set `transport` on base openings (added to Telegram and Android manual writes), `attributed_since`; `tests/test_checkout_transport_marker.py`.
+     - [ ] Sources (F6), Platforms PWA card (A4), Course (A8, A10, then `client`-keyed A6/A9/A13–A15 with `attributed_since`).
 
   Verify with mixed-platform tests (`to_verify` rows A4, F3, F4, F5 become `verified`):
   - each view counts only its own rows

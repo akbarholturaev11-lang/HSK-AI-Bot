@@ -6360,6 +6360,8 @@ async def subscription_miniapp_overview(request: Request):
                         "mode": str(payload.get("mode") or ""),
                         "campaign_id": _positive_int(payload.get("campaign_id")),
                         "feedback_id": _positive_int(payload.get("feedback_id")),
+                        # Route-owned platform marker; source and attempt ID are caller text.
+                        "transport": "telegram",
                     },
                 )
         elif (
@@ -6512,6 +6514,7 @@ async def subscription_miniapp_event(request: Request):
                 "plan_type": _checkout_text(payload.get("plan_type"), 32),
                 "payment_method": _checkout_text(payload.get("payment_method"), 32),
                 "mode": _checkout_text(payload.get("mode"), 32),
+                "transport": "telegram",
             },
         )
     # A failed best-effort analytics write is not a successful delivery.

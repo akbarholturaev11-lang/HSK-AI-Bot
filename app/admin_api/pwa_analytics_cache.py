@@ -4,7 +4,7 @@ from functools import partial
 from datetime import datetime, timedelta, timezone
 
 from sqlalchemy import func, select
-from app.admin_api.pwa_analytics_learning import learning_metrics, funnel_metrics
+from app.admin_api.pwa_analytics_learning import FUNNEL_TRANSPORTS, learning_metrics, funnel_metrics
 from app.admin_api.pwa_analytics_finance import PAYMENT_PLATFORM_SOURCES, money_metrics, sources_metrics
 from app.admin_api.pwa_analytics_platforms import platform_metrics
 from app.admin_api.pwa_analytics_experiments import experiment_metrics
@@ -47,6 +47,7 @@ async def _legacy_projection(db,query,*,section):
     # Overall-only SQL loader to return global numbers for a platform.
     scoped = section in _LEGACY_PLATFORM_SECTIONS and has_legacy_filter(section, query.platform)
     scoped = scoped or (section == 'money' and query.platform in PAYMENT_PLATFORM_SOURCES)
+    scoped = scoped or (section == 'funnel' and query.platform in FUNNEL_TRANSPORTS)
     if query.platform != 'overall' and not scoped:
         reason = 'not_instrumented' if section in _LEGACY_PLATFORM_SECTIONS else 'attribution_not_audited'
         result.update(available=False, metrics=None, reason=reason)
@@ -54,7 +55,7 @@ async def _legacy_projection(db,query,*,section):
         result['metrics']=await platform_metrics(db,since=since,now=now,platform=query.platform)
         result['scope']['period_filter_applied']=False
     elif section=='course':result['metrics']=await learning_metrics(db,period=query.period,since=since,now=now)
-    elif section=='funnel':result['metrics']=await funnel_metrics(db,since=since,now=now)
+    elif section=='funnel':result['metrics']=await funnel_metrics(db,since=since,now=now,platform=query.platform)
     elif section=='money':result['metrics']=await money_metrics(db,since=since,now=now,platform=query.platform)
     elif section=='sources':result['metrics']=await sources_metrics(db,since=since,now=now)
     elif section=='experiments':result['metrics']=await experiment_metrics(db,since=since,now=now)

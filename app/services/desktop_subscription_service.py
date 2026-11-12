@@ -159,15 +159,16 @@ class DesktopSubscriptionService:
         entry_source: str | None = None,
     ) -> None:
         mode = self._checkout_mode(entry_source=entry_source)
+        payload = {"attempt_id": attempt_id, "mode": mode}
+        if self.source == "android_subscription":
+            # Route-owned marker, as on Android Lava rows. Desktop rows are frozen.
+            payload["transport"] = "android"
         await ConversionFunnelService().record(
             event_name="checkout_opened",
             user=user,
             telegram_id=user.telegram_id,
             source=entry_source or self.source,
-            payload={
-                "attempt_id": attempt_id,
-                "mode": mode,
-            },
+            payload=payload,
         )
 
     async def trial_status(self, access_token: str) -> dict[str, Any]:

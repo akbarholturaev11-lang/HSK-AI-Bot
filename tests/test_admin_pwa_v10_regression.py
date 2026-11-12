@@ -46,7 +46,8 @@ BASELINE = "680761f15e05f6d543da52cd021d05df41217ea3"
 SINCE = {"weekly": "2026-11-05T12:00:00+00:00", "monthly": "2026-10-13T12:00:00+00:00", "all_time": None}
 # Section/filter cells that task 3.2 moved from `attribution_not_audited` to a
 # platform predicate. Every other cell must stay byte-identical to the golden.
-NEWLY_ATTRIBUTED = frozenset(("money", platform) for platform in ("android", "telegram", "iphone_pwa"))
+NEWLY_ATTRIBUTED = frozenset((section, platform) for section in ("money", "funnel")
+                             for platform in ("android", "telegram", "iphone_pwa"))
 
 
 def ago(*, days=0, hours=0, minutes=0):

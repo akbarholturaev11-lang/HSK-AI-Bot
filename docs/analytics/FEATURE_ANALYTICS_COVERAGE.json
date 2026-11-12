@@ -460,6 +460,7 @@
         "windows": {"status": "not_instrumented", "reason": "A16: the completed sessions with a turn used for minutes do not have a platform. CME voice transport does not tag the duration rows."}
       }
     },
+    {"section": "funnel", "key": "attributed_since", "kind": "metadata", "filters": ["android", "telegram", "iphone_pwa"]},
     {"section": "funnel", "key": "ai_usage", "kind": "metric", "filters": ["overall"],
       "platforms": {
         "android": {"status": "not_instrumented", "reason": "A17: AI usage records a feature source and stored cost without a trusted platform dimension."},
@@ -469,11 +470,11 @@
         "windows": {"status": "not_instrumented", "reason": "A17: AI usage records a feature source and stored cost without a trusted platform dimension."}
       }
     },
-    {"section": "funnel", "key": "attempt_funnel", "kind": "metric", "filters": ["overall"],
+    {"section": "funnel", "key": "attempt_funnel", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
       "platforms": {
-        "android": {"status": "partial", "reason": "F2/F4: Android checkout and payment signals exist; legacy V10 attempt projection is Overall only."},
-        "telegram": {"status": "partial", "reason": "F3/F4: Mini App payment source exists; checkout attribution by elimination needs proof and the V10 attempt projection is Overall only."},
-        "iphone_pwa": {"status": "partial", "reason": "F1/F4: PWA checkout transport and payment sources exist; legacy V10 attempt projection is Overall only. F8 is a separate unconnected flow."},
+        "android": {"status": "partial", "reason": "F2: openings with the route-set transport android (Lava and manual); earlier manual rows stay Overall-only (attributed_since). Chain test pending (3.4)."},
+        "telegram": {"status": "partial", "reason": "F3: openings with the route-set transport telegram; caller source and attempt text are ignored, earlier rows stay Overall-only (attributed_since). Chain test pending (3.4)."},
+        "iphone_pwa": {"status": "partial", "reason": "F1: openings with the route-set transport iphone_pwa. F8 (PWA Pro inline) is a separate flow, task 4. Chain test pending (3.4)."},
         "macos": {"status": "not_instrumented", "reason": "The legacy attempt chain does not establish end-to-end attribution to either Desktop OS; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "The legacy attempt chain does not establish end-to-end attribution to either Desktop OS; Desktop freeze."}
       }
@@ -1496,15 +1497,15 @@
       "platforms": {
         "android": {
           "status": "partial",
-          "reason": "Android checkout and canonical payment sources exist; scoped Finance/Funnel lack chain proof and Play/Direct are combined."
+          "reason": "Finance by payments.source android and Funnel by the route-set transport android are scoped (3.2); chain proof pending (3.4); Play/Direct are combined."
         },
         "telegram": {
           "status": "partial",
-          "reason": "Payment sources include Mini App and Telegram bot; legacy checkout by elimination lacks a scoped test."
+          "reason": "Finance by payments.source miniapp/telegram_bot and Funnel by the route-set transport telegram are scoped (3.2); earlier openings are Overall-only; chain proof pending (3.4)."
         },
         "iphone_pwa": {
           "status": "partial",
-          "reason": "Server-set checkout transport and payment sources iphone_pwa and pwa exist; no scoped Finance/Funnel chain test."
+          "reason": "Finance by payments.source iphone_pwa/pwa and Funnel by the route-set transport iphone_pwa are scoped (3.2); chain proof pending (3.4)."
         },
         "macos": {
           "status": "partial",

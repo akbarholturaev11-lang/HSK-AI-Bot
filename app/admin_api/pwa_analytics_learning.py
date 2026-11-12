@@ -148,16 +148,36 @@ async def learning_metrics(db, *, period, since, now):
     return result
 
 
-async def funnel_metrics(db, *, since, now):
-    result=await overall_activity_metrics(db,since=since,now=now)
+FUNNEL_TRANSPORTS = {'android': 'android', 'telegram': 'telegram', 'iphone_pwa': 'iphone_pwa'}
+
+
+def checkout_transport(platform):
+    """Server-set payload marker of an opening. Caller text is JSON-escaped, so
+    a quoted key cannot be injected through mode, source or attempt values."""
+    return Funnel.payload_json.like(f'%"transport": "{FUNNEL_TRANSPORTS[platform]}"%')
+
+
+async def funnel_metrics(db, *, since, now, platform='overall'):
+    scoped=platform!='overall'
+    # Activity families have no platform predicate; a platform view omits them.
+    result={} if scoped else await overall_activity_metrics(db,since=since,now=now)
     names=('checkout_opened','payment_screenshot_submitted','payment_approved')
     payment_owner=select(Payment.id).where(Payment.id==Funnel.payment_id,_payment_user_join(),
         (Funnel.event_name!='payment_approved') | (Payment.payment_status=='approved')).correlate(Funnel,User).exists()
+    # Only a base opening starts an attempt; stage, receipt and approval rows
+    # attach to that owner's attempt, so scoping the opening scopes the attempt.
+    opening=[or_(Funnel.event_name!='checkout_opened',Funnel.payload_json.like('%"stage":%'),
+        checkout_transport(platform))] if scoped else []
     rows=await bounded_rows(db,select(Funnel.event_name,User.id,Funnel.payment_id,
         func.substr(Funnel.payload_json,1,PAYLOAD_LIMIT+1),Funnel.created_at)
         .select_from(Funnel).join(User,owner(Funnel)).where(Funnel.event_name.in_(names),
-            (Funnel.event_name=='checkout_opened') | payment_owner,
+            (Funnel.event_name=='checkout_opened') | payment_owner,*opening,
             *_window(Funnel.created_at,since,now)).order_by(Funnel.created_at,Funnel.id),payload_index=3)
+    if scoped:
+        # Rows written before the route-owned marker stay in Overall only.
+        first=await db.scalar(select(func.min(Funnel.created_at)).where(
+            Funnel.event_name=='checkout_opened',checkout_transport(platform),Funnel.created_at<=now))
+        result['attributed_since']={'attempt_funnel':first.isoformat() if first else None}
     if rows is None:
         result['attempt_funnel']=None
     else:

@@ -6,7 +6,8 @@ projection evidence only; event-to-UI chain tests come in task 3.4.
 import json
 import unittest
 
-from tests.test_admin_pwa_v10_regression import PRIVATE, URL, capture, postgres_fixture
+from app.db.models.conversion_funnel_event import ConversionFunnelEvent
+from tests.test_admin_pwa_v10_regression import PRIVATE, URL, ago, capture, postgres_fixture
 
 PLATFORMS = ("android", "telegram", "iphone_pwa")
 PAYMENT_KEYS = ("payments", "revenue_usd", "paying_histories", "canonical_payers", "new_paying_accounts",
@@ -98,6 +99,64 @@ class FinancePlatformScopeTests(unittest.IsolatedAsyncioTestCase):
             response = self.money(platform)
             self.assertEqual((response["available"], response["metrics"], response["reason"]),
                              (False, None, "attribution_not_audited"))
+
+
+@unittest.skipUnless(URL, "set ANALYTICS_TEST_DATABASE_URL for the real PostgreSQL platform scope tests")
+class FunnelPlatformScopeTests(unittest.IsolatedAsyncioTestCase):
+    """The fixture's Telegram and Android Lava openings predate the marker."""
+
+    async def asyncSetUp(self):
+        def opened(user_id, source, attempt, hours, **payload):
+            return ConversionFunnelEvent(event_name="checkout_opened", user_id=user_id, source=source,
+                payload_json=json.dumps({"attempt_id": attempt, **payload}), created_at=ago(hours=hours))
+
+        async with postgres_fixture(URL) as sessions:
+            async with sessions() as db:
+                db.add_all([
+                    opened(2, "subscription_miniapp", "tg-new", 7, mode="", transport="telegram"),
+                    opened(2, "subscription_miniapp", "tg-new", 6, stage="payment_instructions_viewed",
+                           transport="telegram"),
+                    # Caller-controlled Android lookalike sent through the Telegram route.
+                    opened(2, "android_subscription", "android-spoof", 5, mode="", transport="telegram"),
+                    opened(3, "android_subscription", "android-manual", 9, mode="subscription",
+                           transport="android"),
+                ])
+                await db.commit()
+            self.projections = await capture(sessions)
+
+    def funnel(self, platform, period="weekly"):
+        return self.projections["funnel", platform, period]
+
+    def test_openings_count_only_under_their_route_marker(self):
+        attempts = {platform: self.funnel(platform)["metrics"]["attempt_funnel"]["attempts"]
+                    for platform in PLATFORMS}
+        # Android excludes the unmarked fixture Lava opening and the Telegram lookalike.
+        self.assertEqual(attempts, {"android": 1, "telegram": 2, "iphone_pwa": 1})
+        steps = {row["key"]: row["accounts"] for row in
+                 self.funnel("telegram")["metrics"]["attempt_funnel"]["steps"]}
+        self.assertEqual((steps["checkout_opened"], steps["payment_instructions_viewed"]), (1, 1))
+
+    def test_overall_keeps_every_opening_including_unmarked_rows(self):
+        overall = self.funnel("overall")["metrics"]
+        self.assertEqual(overall["attempt_funnel"]["attempts"], 6)
+        self.assertNotIn("attributed_since", overall)
+
+    def test_attributed_since_is_the_first_marked_opening(self):
+        self.assertEqual(self.funnel("android")["metrics"]["attributed_since"],
+                         {"attempt_funnel": ago(hours=9).isoformat()})
+        self.assertEqual(self.funnel("telegram")["metrics"]["attributed_since"],
+                         {"attempt_funnel": ago(hours=7).isoformat()})
+        self.assertEqual(self.funnel("iphone_pwa")["metrics"]["attributed_since"],
+                         {"attempt_funnel": ago(hours=4).isoformat()})
+
+    def test_activity_families_are_not_platform_values(self):
+        for platform in PLATFORMS:
+            response = self.funnel(platform, "all_time")
+            self.assertEqual(set(response["metrics"]), {"attempt_funnel", "attributed_since"})
+            states = response["metric_states"]
+            self.assertEqual(states["attempt_funnel"], {"state": "available", "reason": None})
+            self.assertEqual(states["ai_usage"], {"state": "unavailable", "reason": "not_instrumented"})
+            self.assertEqual(states["registration_conversion"]["state"], "unavailable")
 
 
 if __name__ == "__main__":
