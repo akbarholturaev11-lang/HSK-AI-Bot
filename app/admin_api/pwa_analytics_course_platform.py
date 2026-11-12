@@ -2,7 +2,7 @@
 from collections import defaultdict
 from datetime import timedelta
 
-from sqlalchemy import and_, func, or_, select
+from sqlalchemy import and_, func, or_, select, union_all
 from sqlalchemy.orm import aliased
 
 from app.admin_api.pwa_analytics_learning import (
@@ -116,9 +116,17 @@ async def platform_return_retention(db, *, platform, boundary, since, now):
     use = platform_use(platform, boundary)
     if use is None:
         return None, None
+    # `owner` split into its two branches: the OR join made the planner loop
+    # over every account (1.7 s on 1M rows for any period).
+    owned_first = (select(Event.user_id.label('account'), func.min(Event.created_at).label('at'))
+                   .where(use, Event.user_id.is_not(None), Event.created_at <= now).group_by(Event.user_id))
+    legacy_first = (select(User.id.label('account'), func.min(Event.created_at).label('at'))
+                    .select_from(Event).join(User, and_(Event.user_id.is_(None), Event.telegram_id == User.telegram_id))
+                    .where(use, Event.telegram_id > 0, Event.created_at <= now).group_by(User.id))
+    uses = union_all(owned_first, legacy_first).subquery()
     first = (select(User.id.label('account'), User.telegram_id.label('telegram_id'),
-                    func.min(Event.created_at).label('first_use'))
-             .select_from(Event).join(User, owner(Event)).where(use, Event.created_at <= now)
+                    func.min(uses.c.at).label('first_use'))
+             .select_from(uses).join(User, User.id == uses.c.account)
              .group_by(User.id, User.telegram_id).subquery())
     later = aliased(Event)
     columns, windows = [func.min(first.c.first_use)], []
