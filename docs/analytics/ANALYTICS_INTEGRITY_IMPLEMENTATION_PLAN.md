@@ -341,7 +341,7 @@ Written from the code on this branch.
 | Step | Requirement | Schema | Client release | Size | Reason |
 |---|---|---|---|---|---|
 | 1 | R1 Android Lesson Start | no | no (server only) | S | Smallest. Unblocks Android `features.lessons` and gives R4 an Android learning signal. **Implemented 2026-11-12** on `feat/analytics-android-lesson-start-20261112` (stacked on PR #285; not merged) |
-| 2 | R2 PWA Activation | no | no | M | The writer gets one argument; the reader reuses the activation funnel |
+| 2 | R2 PWA Activation | no | no | M | The writer gets one argument; the reader reuses the activation funnel. **Implemented 2026-11-12** on `feat/analytics-next-stage-20261112` (stacked on R1; not merged) |
 | 3 | R4 Platform D1/D7 Retention | no | no | M | Reader only; uses R1 and R2 rows as evidence |
 | 4 | R3 Subscription Sources | **yes** (one nullable column) | no | M–L | The only migration, so it deploys alone |
 
@@ -399,6 +399,20 @@ Written from the code on this branch.
 - **Direct activation.** PWA `direct_activation` comes from the same anchor with variant `direct_start_v1`.
 - **Sessions.** PWA `sessions` stay `not_instrumented`. Most session rows (card views, interactions) carry no route-set client. They are not part of R2.
 - **Open decision.** An existing account that signs in on the PWA without onboarding or a handoff is in neither cohort. Its anchor would be the PWA sign-in (A5).
+
+**Status — 2026-11-12: implemented, not merged.** OpenSpec change `analytics-pwa-activation`.
+- **Writer:** as above, on both the HSK 2.0 and HSK 3.0 onboarding paths, including the choice rows.
+- **Reader:**
+  - The handoff cohort starts at the PWA boundary (`attributed_since.handoff_activation`). Before it, PWA lesson rows carried no tag, so an earlier handoff would look like a missed activation.
+  - The onboarding cohort starts at the first PWA-tagged onboarding (`attributed_since.activation`).
+  - Overall and the PWA view share one activation helper; the golden test is unchanged.
+- **UI:** one cohort row («Telegram → PWA → dars · 24 soat», RU/TJ too) and two boundary lines, PWA only.
+- **Evidence:**
+  - writer unit tests (3);
+  - stored-row tests (5);
+  - a route chain test covering the PWA onboarding, a Telegram onboarding with a caller `client`, and two handoffs.
+  The chain test fails on the old writer and on the old reader.
+- **Remaining:** owner acceptance on the iPhone PWA (task 3.4).
 
 **Writer.**
 - `CourseMiniAppOnboardingService.complete(..., analytics_client=None)` passes the key to `onboarding_completed` and its step rows. The PWA route passes `iphone_pwa`.
@@ -571,6 +585,7 @@ Written from the code on this branch.
 - 2026-11-12 — Audit remediation (#6–#8): the diff guard ignores flow `description` and whitespace; `covered` needs a CI-run test that reads the metric from the Admin analytics route for that platform; large shared modules are guarded per function through `symbols`.
 
 ## Session log (newest first, one or two lines each)
+- 2026-11-12 — R2 PWA Activation implemented on `feat/analytics-next-stage-20261112` (stacked on R1): onboarding rows carry the route-set client on all three routes; Course > iPhone PWA gets `activation`, `direct_activation` and `handoff_activation`. Registry, UI row, OpenSpec change `analytics-pwa-activation` and tests are done.
 
 - 2026-11-12 — R1 Android Lesson Start implemented on `feat/analytics-android-lesson-start-20261112` (writer, reader, registry, UI boundary line, tests). Fixed a wall-clock dependence in the V10 golden fixture (user 4 `last_active_at`), which made the money/overall cases fail after 12:00 UTC on unchanged code; that fix is on the PR #285 branch.
 - 2026-11-12 — Plan review: R1 writes the server-only `android_lesson_started`, because `lesson_started` drives Telegram reminders. The R4 Telegram anchor is the first tagged row, since presence is not first use. Added defaults, definition of done and risks. R1 started.
