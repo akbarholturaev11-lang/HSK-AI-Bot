@@ -342,7 +342,7 @@ Written from the code on this branch.
 |---|---|---|---|---|---|
 | 1 | R1 Android Lesson Start | no | no (server only) | S | Smallest. Unblocks Android `features.lessons` and gives R4 an Android learning signal. **Implemented 2026-11-12** on `feat/analytics-android-lesson-start-20261112` (stacked on PR #285; not merged) |
 | 2 | R2 PWA Activation | no | no | M | The writer gets one argument; the reader reuses the activation funnel. **Implemented 2026-11-12** on `feat/analytics-next-stage-20261112` (stacked on R1; not merged) |
-| 3 | R4 Platform D1/D7 Retention | no | no | M | Reader only; uses R1 and R2 rows as evidence |
+| 3 | R4 Platform D1/D7 Retention | no | no | M | Reader only; uses R1 and R2 rows as evidence. **Implemented 2026-11-12** on `feat/analytics-next-stage-20261112` (stacked on R2; not merged) |
 | 4 | R3 Subscription Sources | **yes** (one nullable column) | no | M–L | The only migration, so it deploys alone |
 
 #### R1. Android Lesson Start
@@ -503,6 +503,19 @@ Written from the code on this branch.
 - a PostgreSQL chain;
 - a performance test.
 
+**Status — 2026-11-12: implemented, not merged.** OpenSpec change `analytics-platform-return-retention`.
+- **Reader:** `platform_use` and `platform_return_retention` in `pwa_analytics_course_platform.py`.
+  - Evidence is the same as Overall D5 (opens and server-written learning outcomes), restricted to one platform.
+  - Client-writable starts are excluded, as in Overall.
+  - Both windows come from one statement.
+- **UI:** the existing D1/D7 return cards and cohort rows under each mobile filter, plus one UZ/RU/TJ line giving the cohort rule and its start date.
+- **Side effect:** none on Overall (golden test).
+- **Evidence:**
+  - stored-row tests (4);
+  - a route chain test on all three mobile routes, which fails on the old reader;
+  - the Admin PWA browser suite.
+- **Remaining:** the performance numbers on an idle machine (task 2.3), and owner acceptance.
+
 **Plan review — 2026-11-12.** The owner asked for the plan to be confirmed as complete, or strengthened and started. It could not be confirmed as written. Checking the code changed three points:
 1. **R1 event name.** `lesson_started` drives Telegram reminders (`motivation_reminder_service.py`), so R1 writes the server-only `android_lesson_started`. Details are in R1.
 2. **R4 Telegram anchor.** `user_client_presences` is written only by the desktop-download status route, so it cannot date first use. The anchor is the first Telegram-tagged row.
@@ -585,6 +598,7 @@ Written from the code on this branch.
 - 2026-11-12 — Audit remediation (#6–#8): the diff guard ignores flow `description` and whitespace; `covered` needs a CI-run test that reads the metric from the Admin analytics route for that platform; large shared modules are guarded per function through `symbols`.
 
 ## Session log (newest first, one or two lines each)
+- 2026-11-12 — R4 Platform D1/D7 Retention implemented on `feat/analytics-next-stage-20261112` (stacked on R2): first-use cohort per platform, same-platform returns, registry covered, one UI line, OpenSpec change `analytics-platform-return-retention`. The Admin PWA browser suite passes with R1, R2 and R4. Its Report freshness check now expects Android and PWA learning dates, from the R1/R2 rows.
 - 2026-11-12 — R2 PWA Activation implemented on `feat/analytics-next-stage-20261112` (stacked on R1): onboarding rows carry the route-set client on all three routes; Course > iPhone PWA gets `activation`, `direct_activation` and `handoff_activation`. Registry, UI row, OpenSpec change `analytics-pwa-activation` and tests are done.
 
 - 2026-11-12 — R1 Android Lesson Start implemented on `feat/analytics-android-lesson-start-20261112` (writer, reader, registry, UI boundary line, tests). Fixed a wall-clock dependence in the V10 golden fixture (user 4 `last_active_at`), which made the money/overall cases fail after 12:00 UTC on unchanged code; that fix is on the PR #285 branch.
