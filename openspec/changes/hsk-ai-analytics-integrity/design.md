@@ -63,7 +63,7 @@ See `proposal.md` for the motivation and `specs/` for the requirements. These co
 
 `scripts/check_analytics_coverage.py` uses only stdlib. It runs four checks:
 1. Schema validation.
-2. `ast` extraction of `CONVERSION_FUNNEL_EVENT_NAMES`, the course event tuples and `PwaProUiEvent.event`, to find unregistered and stale events. Reader-only names with no writer are recorded as `no_writer` and are not counted as covered.
+2. `ast` extraction of the model declarations, scoped reader tuples, PWA/Android endpoint literals and named writes to the two event stores. This finds unregistered/stale names and direct writes without importing the app. Dynamic sources remain governed by their declarations and exact critical-path review. Reader-only names with no writer are recorded as `no_writer` and are not counted as covered.
 3. Diff detection for `push` (`before..sha`) and `pull_request` (`base...head`).
 4. Exemption validation.
 

@@ -29,7 +29,7 @@ This is the only checklist for this work. Context, audit results, decisions and 
   - Platform keys and flow IDs are stable.
 
   Verified: `scripts/check_analytics_coverage.py --schema-only` passed and declared keys matched all 144 non-experiment baseline responses.
-- [ ] 2.2 Implement `scripts/check_analytics_coverage.py` (stdlib only) and `tests/test_analytics_coverage_contract.py`. Verify with tests for each case:
+- [x] 2.2 Implement `scripts/check_analytics_coverage.py` (stdlib only) and `tests/test_analytics_coverage_contract.py`. Verified all cases below with 11 tests and 165 subtests over the baseline and real PostgreSQL projection contract:
   - an unmapped new event fails, naming the file and event
   - a stale entry fails
   - a copy/CSS/i18n-only change passes
