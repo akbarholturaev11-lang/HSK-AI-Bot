@@ -143,6 +143,13 @@ async def browser_checks(output):
         db.add(BotFeedback(user_id=2,telegram_id=2002,status='completed',disliked_text='other account QA feedback'))
         for index in range(11):
             db.add(Payment(user_id=1,amount=index+1,currency='TJS',plan_type='1_month',payment_status='approved'))
+        # Task 3.4 UI half: one completion written the way the signed Telegram
+        # route writes it; tests/test_analytics_platform_chain.py proves the route.
+        from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
+        recorded=await CourseMiniAppAnalyticsService(db).record_server_event(event_name='lesson_completed',user_id=1,
+            telegram_id=1001,source='course_v3',level='hsk1',lesson_order=1,dedupe_key='qa:telegram-lesson-1',
+            analytics_client='telegram')
+        assert recorded['ok'],recorded
         await db.execute(update(AdminPwaSession).values(revoked_at=__import__('datetime').datetime.now(__import__('datetime').timezone.utc)))
         await db.commit()
     settings=fixture.settings
@@ -472,6 +479,9 @@ async def browser_checks(output):
                         # Retention: Android not_applicable, Telegram not_instrumented, PWA not audited.
                         await expect(page.locator('.metric[data-state=not_instrumented]')).to_have_count({'android':7,'telegram':7,'iphone_pwa':5}[platform])
                         await expect(page.locator('.metric[data-state=not_applicable]')).to_have_count(2 if platform=='android' else 0)
+                        # The Telegram completion shows under Telegram only; Android is a real zero.
+                        lessons=page.locator('.stat-info-row',has_text=labels['analyticsCompletedUserLessons']).locator('strong')
+                        await expect(lessons).to_have_text({'telegram':'1','android':'0','iphone_pwa':labels['analyticsStateNoData']}[platform])
                     elif section=='funnel':
                         await expect(page.locator('.metric[data-state=not_instrumented]')).to_have_count(3)
                     elif section=='sources':

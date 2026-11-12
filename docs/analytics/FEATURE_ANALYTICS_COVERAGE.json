@@ -342,9 +342,9 @@
     },
     {"section": "course", "key": "completed_user_lessons", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
       "platforms": {
-        "android": {"status": "partial", "reason": "A8: completions with the Android-only source android_course, all history. Chain test pending (3.4)."},
-        "telegram": {"status": "partial", "reason": "A9: completions whose final payload key is the route-set client telegram, from attributed_since on; earlier rows Overall-only. Chain test pending (3.4)."},
-        "iphone_pwa": {"status": "partial", "reason": "A9: completions whose final payload key is the route-set client iphone_pwa, from attributed_since on; earlier rows Overall-only. Chain test pending (3.4)."},
+        "android": {"status": "covered", "reason": "A8: completions with the Android-only source android_course, all history; bearer route chain.", "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_each_client_route_reaches_its_own_admin_filter_and_overall"},
+        "telegram": {"status": "covered", "reason": "A9: completions whose final payload key is the route-set client telegram, from attributed_since on; earlier rows Overall-only; signed route chain.", "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_each_client_route_reaches_its_own_admin_filter_and_overall"},
+        "iphone_pwa": {"status": "covered", "reason": "A9: completions whose final payload key is the route-set client iphone_pwa, from attributed_since on; earlier rows Overall-only; cookie + CSRF route chain.", "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_each_client_route_reaches_its_own_admin_filter_and_overall"},
         "macos": {"status": "not_instrumented", "reason": "The existing lesson total is not scoped by Desktop OS; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "The existing lesson total is not scoped by Desktop OS; Desktop freeze."}
       }
