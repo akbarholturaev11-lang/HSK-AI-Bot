@@ -48,13 +48,15 @@ def create_manual_aggregate_refresh_router(*, settings_obj, analytics_reader):
             return _reply(400, "admin_pwa_invalid_payload")
         scoped = data != {}
         if scoped:
-            if (set(data) != {"section", "period"}
-                    or data.get("section") not in ("course", "funnel", "money", "sources")
-                    or data.get("period") not in ("weekly", "monthly", "all_time")):
+            # `platform` is optional: a filter's own snapshot (audit #44).
+            if (set(data) not in ({"section", "period"}, {"section", "period", "platform"})
+                    or data.get("section") not in ("course", "funnel", "money", "sources", "report")
+                    or data.get("period") not in ("weekly", "monthly", "all_time")
+                    or data.get("platform", "overall") not in ("overall", "android", "telegram", "iphone_pwa")):
                 return _reply(400, "admin_pwa_invalid_payload")
-            section, period = data["section"], data["period"]
+            section, period, platform = data["section"], data["period"], data.get("platform", "overall")
         else:
-            section, period = "overview", None
+            section, period, platform = "overview", None, "overall"
 
         reader = getattr(analytics_reader, "_readers", {}).get(section)
         if reader is None or not hasattr(reader, "refresh_overview_bundle"):
@@ -64,7 +66,7 @@ def create_manual_aggregate_refresh_router(*, settings_obj, analytics_reader):
             if scoped:
                 from app.admin_api.pwa_read import StatisticsRequest
                 result = await reader.refresh_approved_section(
-                    StatisticsRequest(platform="overall", period=period), section=section)
+                    StatisticsRequest(platform=platform, period=period), section=section)
                 results = {period: {"generated_at": result["generated_at"],
                                     "expires_at": result["expires_at"]}}
             else:
@@ -98,6 +100,7 @@ def create_manual_aggregate_refresh_router(*, settings_obj, analytics_reader):
         except Exception:
             logger.error("Manual aggregate refresh failed")
             return _reply(503, "admin_pwa_refresh_unavailable")
-        return JSONResponse({"ok": True, "periods": results, "section": section}, headers=_PRIVATE_HEADERS)
+        return JSONResponse({"ok": True, "periods": results, "section": section, "platform": platform},
+                            headers=_PRIVATE_HEADERS)
 
     return router

@@ -311,6 +311,62 @@ class ForceCacheTests(unittest.IsolatedAsyncioTestCase):
         with self.assertRaises(StatisticsUnavailable):
             await reader.refresh_approved_section(query, section="sources")
 
+    async def test_scoped_refresh_owns_each_platform_snapshot_and_the_report(self):
+        # Audit #44: a platform filter's 24-hour snapshot refreshes on its own,
+        # under its own cooldown, and the Report is refreshable too.
+        def loader(section):
+            async def load(db, req):
+                self.calls += 1
+                return {"platform": req.platform, "period": req.period, "available": True,
+                        "scope": {"section": section}, "source": "first-party stored aggregate projections",
+                        "generated_at": datetime.fromtimestamp(self.clock, timezone.utc).isoformat(),
+                        "metrics": {"value": self.calls}}
+            return load
+
+        def reader(section):
+            created = AdminPwaStatisticsReader(
+                settings_obj=self.settings, session_factory=self.sessions, loader=loader(section),
+                clock=lambda: self.clock, r2_store=self.store, cache_scope=f"analytics_{section}_v2")
+            created._redis_url = ""
+            return created
+
+        course = reader("course")
+        weekly = lambda platform: StatisticsRequest(platform=platform, period="weekly")
+        result = await course.refresh_approved_section(weekly("telegram"), section="course")
+        self.assertEqual((result["section"], result["platform"]), ("course", "telegram"))
+        stored = await self.store.get(kind="statistics", namespace=course._r2_namespace, variant="telegram_weekly")
+        self.assertEqual(json.loads(stored)["data"]["platform"], "telegram")
+        self.assertIsNone(await self.store.get(kind="statistics", namespace=course._r2_namespace,
+                                               variant="overall_weekly"))
+        # Telegram's cooldown does not block another filter, only Telegram.
+        await course.refresh_approved_section(weekly("iphone_pwa"), section="course")
+        with self.assertRaisesRegex(StatisticsUnavailable, "recently completed"):
+            await course.refresh_approved_section(weekly("telegram"), section="course")
+        # A Desktop filter has no scoped Course snapshot to refresh.
+        with self.assertRaisesRegex(StatisticsUnavailable, "refresh unavailable"):
+            await course.refresh_approved_section(weekly("macos"), section="course")
+        self.assertEqual(self.calls, 2)
+        # The filter then serves its refreshed snapshot without recomputation.
+        self.assertEqual((await course(weekly("telegram")))["metrics"]["value"], 1)
+        self.assertEqual(self.calls, 2)
+        report = await reader("report").refresh_approved_section(weekly("android"), section="report")
+        self.assertEqual((report["section"], report["platform"]), ("report", "android"))
+
+    async def test_scoped_refresh_refuses_a_projection_for_another_platform(self):
+        async def overall(db, req):
+            return {"platform": "overall", "period": req.period, "available": True,
+                    "scope": {"section": "money"}, "source": "first-party stored aggregate projections",
+                    "generated_at": datetime.fromtimestamp(self.clock, timezone.utc).isoformat(),
+                    "metrics": {"payments": 1}}
+        reader = AdminPwaStatisticsReader(
+            settings_obj=self.settings, session_factory=self.sessions, loader=overall,
+            clock=lambda: self.clock, r2_store=self.store, cache_scope="analytics_money_v2")
+        reader._redis_url = ""
+        with self.assertRaisesRegex(StatisticsUnavailable, "Unexpected scoped"):
+            await reader.refresh_approved_section(StatisticsRequest(platform="android", period="weekly"),
+                                                  section="money")
+        self.assertEqual(self.store.puts, 0)
+
     async def test_scoped_refresh_wrong_source_is_never_published(self):
         async def wrong(db, req):
             return {"platform": "overall", "period": req.period, "available": True,
@@ -364,8 +420,9 @@ class FakeScoped:
         self.calls = []
 
     async def refresh_approved_section(self, query, *, section):
-        self.calls.append((section, query.period))
-        return {"section": section, "period": query.period,
+        self.calls.append((section, query.period) if query.platform == "overall"
+                          else (section, query.platform, query.period))
+        return {"section": section, "platform": query.platform, "period": query.period,
                 "generated_at": "2026-10-30T10:00:00+00:00",
                 "expires_at": "2026-10-31T10:00:00+00:00"}
 
@@ -385,7 +442,8 @@ class ManualRefreshTransportTests(unittest.IsolatedAsyncioTestCase):
         app = FastAPI()
         app.include_router(create_manual_aggregate_refresh_router(
             settings_obj=self.settings,
-            analytics_reader=SimpleNamespace(_readers={"overview": self.overview, "funnel": self.scoped})))
+            analytics_reader=SimpleNamespace(_readers={"overview": self.overview, "funnel": self.scoped,
+                                                       "report": self.scoped})))
         self.app = app
 
     async def post(self, *, url="https://hskai.app", secret=SECRET, data="{}"):
@@ -424,6 +482,19 @@ class ManualRefreshTransportTests(unittest.IsolatedAsyncioTestCase):
         denied = await self.post(data='{"section":"funnel","period":"weekly"}', secret="wrong")
         self.assertEqual(denied.status_code, 401)
         self.assertEqual(len(self.scoped.calls), 1)
+
+    async def test_section_route_refreshes_one_platform_snapshot_or_the_report(self):
+        result = await self.post(data='{"section":"funnel","period":"monthly","platform":"iphone_pwa"}')
+        self.assertEqual(result.status_code, 200)
+        self.assertEqual((result.json()["section"], result.json()["platform"]), ("funnel", "iphone_pwa"))
+        result = await self.post(data='{"section":"report","period":"weekly"}')
+        self.assertEqual((result.status_code, result.json()["platform"]), (200, "overall"))
+        for bad in ('{"section":"funnel","period":"weekly","platform":"macos"}',
+                    '{"section":"funnel","period":"weekly","platform":""}',
+                    '{"section":"home","period":"weekly","platform":"android"}'):
+            self.assertEqual((await self.post(data=bad)).status_code, 400)
+        self.assertEqual(self.scoped.calls, [("funnel", "iphone_pwa", "monthly"), ("report", "weekly")])
+        self.assertEqual(self.overview.calls, [])
 
     async def test_disabled_token_or_bad_payload_fails_without_refresh(self):
         result = await self.post(data='{"section":"users"}')
