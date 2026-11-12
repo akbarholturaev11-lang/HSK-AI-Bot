@@ -37,9 +37,9 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 
 ## Current state — 2026-11-12
 
-- The branch has the PostgreSQL baseline, coverage guard and per-metric V10 API states. Existing values and scopes still match the baseline. The Admin UI will consume the states in 3.3.
+- The branch has the PostgreSQL baseline, the coverage guard and per-metric V10 states in the API and the Admin UI. It also has per-platform scoping, route chain tests, the PWA Pro funnel, `return_retention` and Report freshness. Existing V10 values still match the baseline.
 - Task 1.1 re-audited `334368cc..680761f1`. The delta below updates the original matrix and establishes `680761f1` as the unchanged runtime base for task 1.2.
-- **Next step: 6.1** — full validation against the baseline (OpenSpec strict, coverage checker, analytics/PG/browser suites), then 6.2 real-client acceptance and 6.3 the Analytics Impact summary; main promotion needs the owner's approval. Done so far: all of sections 1–5.
+- **Next step: 6.3 promotion** — the owner approves promoting PR #285 to `main`. After that, verify `main` through the remote ref and deploy. Then the owner runs the 6.2 checklist on their devices. Done so far: sections 1–5, 6.1 validation, the 6.2 status and the Analytics Impact summary (below).
 - PR [akbarholturaev11-lang/HSK-AI-Bot#285](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/285) is the integration branch for this work. Main promotion is outside the current authorization.
 
 ## Platform scope
@@ -147,6 +147,99 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 | AI, chat, voice minutes | `not_instrumented` (A16, A17) | the same | the same |
 | Ledger, marketing, traffic | `not_applicable` (company-wide) | the same | the same |
 
+## Validation — task 6.1, 2026-11-12
+
+Branch vs baseline `680761f1` (= `origin/main`). The baseline is a detached worktree on the same machine. Both use the same scratch PostgreSQL on TCP `127.0.0.1:55439`, `LC_ALL=en_US.UTF-8` and a synthetic `BOT_TOKEN`.
+
+| Check | Command | Branch | Baseline |
+|---|---|---|---|
+| OpenSpec | `openspec validate hsk-ai-analytics-integrity --strict` | valid | — |
+| Registry | `python scripts/check_analytics_coverage.py` | valid: 118 projection keys, 20 flows | no registry |
+| Full unit | `pytest -q tests --ignore=tests/e2e` | 5168 passed, 8 failed, 872 skipped | 5150 passed, 8 failed, 839 skipped |
+| Real PostgreSQL | every `*_TEST_DATABASE_URL` module, one fresh DB each | 52 modules, all passed | 45 modules, all passed |
+| Analytics CI list | tests in `.github/workflows/analytics-integrity.yml` | 102 passed, 196 subtests | — |
+| i18n + static | catalog `--check` + i18n/static suites | 551 passed, 15 skipped | — |
+| Admin PWA Playwright | `python -m tests.e2e.<suite>`: `admin_pwa_browser` and 7 other `admin_pwa_*_browser` suites | 8 of 8 passed | — |
+| Performance contract | policy, perf/geometry unittests, course-cache regression, progressive browser | policy OK; 11 OK; 45 OK; 64 passed, 2 failed per engine (Chromium, WebKit) | the same 2 failed |
+
+- **Full unit:** the 8 failures are the same tests on both sides, and none is in analytics:
+  - `test_miniapp_product_name` (2 tests);
+  - `test_android_live_voice_relay` (3 languages);
+  - `test_course_character_assets` (3 pages).
+- **Real PostgreSQL, first pass:** 4 branch modules and 1 baseline module failed only on database-name guards (analytics requires `*_test`, Smart Reminder requires `smart_reminder_qa*`). They were rerun with `smart_reminder_qa_<tag>_<n>_test`. All passed:
+  - platform scope 20;
+  - V10 regression 1 test, 162 subtests;
+  - coverage contract 10;
+  - course map concurrency 5 + 5.
+- **Progressive browser:** the 2 failures are the 320 px practice-loading geometry case. They are known baseline failures.
+- **Remote CI on `f993a3fa`:** every workflow passed except Desktop. In Desktop, the macOS job was cancelled before a runner was assigned (no steps ran). Windows and the UI contract passed. Desktop code is unchanged.
+- **CI e2e fix:** on `c7aa43b6` the Admin PWA security workflow failed in the 3.3 platform loop.
+  - Cause: the Report check accepted the loading panel, which is also a `.state-panel`. The read then finished after the next platform menu opened, and its render closed the menu.
+  - Fix: the test now waits for each read to settle (`f993a3fa`). No UI change. A pending read closing an open header menu is pre-existing behavior.
+
+## Real-client acceptance — task 6.2
+
+**Not performed.**
+- It needs the owner's installed clients: Android Play and Direct builds, the Telegram Mini App and an iPhone home-screen PWA.
+- It also needs an Admin PWA that runs this branch. Production runs `main` `680761f1`, and no staging deployment of this branch exists.
+
+Owner checklist, after promotion and deploy, with one account on every client:
+1. Complete one lesson each on Android Play, Android Direct, the Telegram Mini App and the iPhone PWA.
+2. Admin PWA → Statistics → Course, Weekly, refresh: under each platform filter «completed lessons» grows only by that client's lessons. Android = Play + Direct combined (A19).
+3. Overall: the account counts once.
+4. Report → freshness: each platform's learning time is the time of its action.
+5. On the iPhone PWA, open the Pro offer → choose a plan → start checkout (no payment needed). The «iPhone PWA Pro» panel in Conversion counts the attempt.
+
+## Analytics Impact summary — task 6.3
+
+Branch `planning/analytics-integrity-openspec-20261109` (PR #285) on runtime base `680761f1`. Registry: [`FEATURE_ANALYTICS_COVERAGE.json`](FEATURE_ANALYTICS_COVERAGE.json), 118 projection keys, 20 flows.
+
+**Metric cells per platform.**
+- `covered`: a route → PostgreSQL → Admin API chain test exists.
+- `partial`: the value is shown under the filter from verified stored-row predicates, with stored-row tests but no route chain yet.
+
+| Platform | covered | partial | not_instrumented | not_applicable |
+|---|---|---|---|---|
+| Android (Play + Direct combined) | 1 | 35 | 33 | 18 |
+| Telegram Mini App | 1 | 28 | 38 | 20 |
+| iPhone PWA | 2 | 34 | 32 | 19 |
+| macOS / Windows (frozen) | 0 | 6 | 64 | 17 |
+
+- **Route chains:**
+  - `course.completed_user_lessons` on all three clients ([test](../../tests/test_analytics_platform_chain.py));
+  - `funnel.pwa_pro_attempt_funnel` on PWA ([test](../../tests/test_pwa_pro_funnel_chain.py)).
+- **New series:** V10 values are unchanged, and the golden test ignores only these keys:
+  - `funnel.pwa_pro_attempt_funnel` (Overall + PWA);
+  - `course.return_retention` (Overall);
+  - `report.platform_freshness` (one global list).
+- **Admin UI:**
+  - Every tab reads `metric_states`. An unavailable metric shows its reason, never a number or zero.
+  - Per-platform panels show `attributed_since`.
+  - New: the PWA Pro panel, separate «return» and «course open» labels, and the Report freshness table.
+  - All new text is in UZ/RU/TJ.
+- **Overall:** canonical accounts are deduplicated. Platform groups overlap (`platform_counts_overlap`).
+- **Tests and CI:** the 6.1 table above. `analytics-integrity.yml` runs the coverage checker and the analytics suite on every PR.
+
+**Known gaps** (registry reasons carry the detail):
+- Telegram course opens (A3) and Telegram lesson-flow telemetry (A12) have no exclusive client signal. Course open, activation and sessions per platform stay unavailable.
+- Android lesson starts have no writer (A7).
+- Play vs Direct is not in analytics rows (A19), so one combined Android value is shown.
+- These stay `not_instrumented` per platform:
+  - PWA device inventory (A5);
+  - voice, chat and AI usage (A16, A17);
+  - subscription entry sources (F6, F7; they need a schema change).
+- `return_retention` per platform has no platform-of-registration signal.
+- Rows written before the route-set `client` key count only in Overall (`attributed_since`).
+- Desktop: registry statuses only (freeze).
+
+**Monitoring handoff:** reuse, do not copy, the registry identifiers:
+- platform keys `android`, `telegram`, `iphone_pwa`, `macos`, `windows`;
+- metric IDs `section.key`;
+- flow IDs and `critical_paths`;
+- the reasons `no_data`, `not_instrumented`, `attribution_not_audited`, `detail_limited`, `not_applicable`.
+
+**Promotion:** waits for the owner's approval. This work has not changed `main`.
+
 ## Decisions log
 
 - 2026-11-09 — Single context file is this document. OpenSpec `tasks.md` is the only checklist.
@@ -172,6 +265,8 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 - 2026-11-12 — `return_retention` (D5) is Overall-only. Per-platform opens are verifiable for Android (A1) and PWA (A4), but the signup cohort has no platform-of-registration signal, so a per-platform cohort is not defined; every platform filter shows `not_instrumented`. The allowlist is server-written events only (none of `CLIENT_COURSE_MINIAPP_EVENT_NAMES`), plus Voice sessions with `turn_count > 0`.
 
 ## Session log (newest first, one or two lines each)
+
+- 2026-11-12 — Tasks 6.1–6.3: validation matches the baseline. Branch and baseline have the same 8 unit failures; all PostgreSQL modules pass on both; 8 of 8 Admin Playwright suites pass; the perf contract has only the known 320 px failures. The CI e2e flake in the platform loop is fixed in the test (`f993a3fa`); Admin PWA security CI is green. 6.2 was not performed (reason and owner checklist above). The Impact summary is written. Promotion waits for the owner.
 
 - 2026-11-12 — Task 5.2: `app/admin_api/pwa_analytics_freshness.py` adds `platform_freshness` to the Report (registry row; V10 golden ignores only this key). [Test](../../tests/test_admin_pwa_report_freshness.py): stale Android stays visible with its 10-day-old timestamp, Telegram counts an orphan event and a payment of a deleted account as unresolved, a PWA lookalike, `android_play_opened`, a feedback reservation, Desktop payments and future rows are excluded, an empty platform is `null`, and no IDs/payloads appear. On 1M CME rows it takes 154 ms (one grouped scan). The Report tab shows the table (UZ/RU/TJ); the browser suite checks rows, dashes and absence of IDs. Analytics CI suite **102 passed, 196 subtests**; browser suite passed.
 

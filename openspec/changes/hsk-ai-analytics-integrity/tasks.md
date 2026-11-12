@@ -91,7 +91,7 @@ This is the only checklist for this work. Context, audit results, decisions and 
 
 ## 6. Integration validation
 
-- [ ] 6.1 Run these, comparing with the baseline:
+- [x] 6.1 Run these, comparing with the baseline:
   - `openspec validate hsk-ai-analytics-integrity --strict`;
   - the analytics, Lava, PWA and coverage suites;
   - the PostgreSQL chain tests;
@@ -99,7 +99,7 @@ This is the only checklist for this work. Context, audit results, decisions and 
   - the `backend-pwa-performance-contract` checks.
 
   Verify by recording commands and results in the context file.
-- [ ] 6.2 Real-client acceptance, recorded separately from CI. Perform one action each on installed Android Play and Direct builds, the Telegram Mini App and an iPhone PWA home-screen install. Confirm that each appears in the right tab and filter after a refresh, and that the shared account counts once overall. Verify by recording the evidence or the reason it was not done.
+- [x] 6.2 Real-client acceptance, recorded separately from CI. Perform one action each on installed Android Play and Direct builds, the Telegram Mini App and an iPhone PWA home-screen install. Confirm that each appears in the right tab and filter after a refresh, and that the shared account counts once overall. Verify by recording the evidence or the reason it was not done. Not performed: it needs the owner's devices and a deployment of this branch. The reason and the owner checklist are in the context file.
 - [ ] 6.3 Promote under the `AGENTS.md` Git rules after owner approval. Write the final Analytics Impact summary: covered, `not_instrumented` and `not_applicable` metrics per platform, tests, CI and known gaps. Hand the registry identifiers to the Monitoring work for the joint integration audit. Verify the `main` commit via the remote ref.
 
 ## Workflow follow-up
