@@ -28,6 +28,7 @@ jobs:
           --health-retries 15
     env:
       ANALYTICS_TEST_DATABASE_URL: postgresql+asyncpg://qa:qa-only@127.0.0.1:5432/analytics_test
+      ADMIN_PWA_TEST_DATABASE_URL: postgresql+asyncpg://qa:qa-only@127.0.0.1:5432/analytics_test
       DATABASE_URL: postgresql+asyncpg://qa:qa-only@127.0.0.1:5432/analytics_test
       BOT_TOKEN: "9123456:synthetic-test-only-unusable-token"
       REDIS_URL: redis://127.0.0.1:1/0

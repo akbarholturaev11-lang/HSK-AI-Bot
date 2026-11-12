@@ -37,7 +37,7 @@ This is the only checklist for this work. Context, audit results, decisions and 
   - a directory-wide exemption fails
   - a `covered` entry without an existing chain test fails
   - the projection-key-versus-registry contract catches a missing metric
-- [ ] 2.3 Add `.github/workflows/analytics-integrity.yml` (push and pull_request), which runs the checker and the analytics tests. Update the `AGENTS.md` "Enforcement status" to name the registry and CI as active, keeping justified `not_applicable` allowed. Verify that an unmapped-event test commit fails and a cosmetic one passes on a scratch branch, and record the run URLs in the context file.
+- [x] 2.3 Add push and pull-request CI and link the registry/check from `AGENTS.md`. A cosmetic scratch push passed, and an unmapped event failed with the file and event named. Run links and the 65-test local PostgreSQL result are in the shared context.
 
 ## 3. Metric states and platform scoping
 

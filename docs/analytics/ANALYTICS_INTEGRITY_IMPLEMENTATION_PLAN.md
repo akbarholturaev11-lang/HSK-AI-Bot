@@ -28,9 +28,9 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 | Item | Location | Status |
 |---|---|---|
 | OpenSpec change | `openspec/changes/hsk-ai-analytics-integrity/` | Re-audited on `main` `680761f1`; passes `openspec validate --strict` |
-| Checklist | `.../tasks.md` | Only checklist; audit, baseline and registry done |
-| Coverage registry | [FEATURE_ANALYTICS_COVERAGE.json](FEATURE_ANALYTICS_COVERAGE.json) | Present and checked locally; GitHub CI pending 2.3 |
-| CI guard | [analytics-integrity.yml](../../.github/workflows/analytics-integrity.yml) | Implemented on this branch; scratch runs pending (2.3) |
+| Checklist | `.../tasks.md` | Only checklist; audit, baseline and coverage guard done |
+| Coverage registry | [FEATURE_ANALYTICS_COVERAGE.json](FEATURE_ANALYTICS_COVERAGE.json) | Present; schema, event inventory and projection checks pass |
+| CI guard | [analytics-integrity.yml](../../.github/workflows/analytics-integrity.yml) | Verified on the scratch branch (2.3); not promoted to main |
 | Agent rule | `AGENTS.md` | Active; lists the registry and check, with main enforcement verified separately |
 | Admin readers | `app/admin_api/pwa_analytics*.py`, `pwa_metrics.py` | Unchanged |
 | Monitoring requirements | `docs/monitoring/REQUIREMENTS.md` | Follows this work; reuses its identifiers (§7, §11) |
@@ -39,7 +39,7 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 
 - The planning branch now has a PostgreSQL V10 baseline. No analytics runtime code has changed.
 - Task 1.1 re-audited `334368cc..680761f1`. The delta below updates the original matrix and establishes `680761f1` as the unchanged runtime base for task 1.2.
-- **Next step: 2.3**: CI enforcement and scratch-branch proof before metric repair.
+- **Next step: 3.1**: per-metric states and isolated V10 cache scopes.
 - PR [akbarholturaev11-lang/HSK-AI-Bot#285](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/285) is the integration branch for this work. Main promotion is outside the current authorization.
 
 ## Platform scope
@@ -164,6 +164,7 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 
 ## Session log (newest first, one or two lines each)
 
+- 2026-11-12 — Task 2.3: the scratch [cosmetic push passed](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43132137627) (`a74af1f4`); the [unmapped event push failed as intended](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43132150012) (`5c2dcc2b`), naming `app/db/models/conversion_funnel_event.py` and `conversion_funnel_events:analytics_ci_unmapped_proof`. With both PostgreSQL test settings populated, the workflow suite passed locally (**65 tests, 171 subtests, no skips**). The scratch event is not in the PR.
 - 2026-11-12 — Task 2.2 added the [stdlib checker](../../scripts/check_analytics_coverage.py) and [contract tests](../../tests/test_analytics_coverage_contract.py). It matched all 138 qualified event names and required exact flow changes or reviewed exemptions for scoped diffs. Coverage and baseline suites on fresh TCP PostgreSQL: **11 passed, 165 subtests passed**, no skips.
 - 2026-11-12 — Task 2.1 added 84 metric keys, 29 projection metadata keys and 20 flow IDs. Schema validation passed; all 144 in-scope baseline responses match their declared keys. No `covered` status is asserted before the chain tests.
 - 2026-11-12 — Task 1.2 froze the V10 matrix from unchanged `680761f1` and reproduced it in the planning worktree. Next: registry, task 2.1.
