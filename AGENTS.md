@@ -258,6 +258,37 @@ For high-risk/cross-platform features, auth, payments, entitlements, database sc
 
 Do not require OpenSpec for small UI/copy changes, isolated bug fixes, routine documentation, or already-scoped tasks. Do not retroactively migrate active plans or maintain parallel progress logs. If using OpenSpec, keep the proposal linked to the canonical relevant feature handoff; it must not silently overrule it. Never equate a spec or checked task with passing tests, a main push, or production acceptance. Continue to follow the repository's existing risk-based tests and Git rules.
 
+## Graphify impact audit for substantial changes
+
+For **substantial new features, architecture changes, cross-module or
+cross-platform changes, and high-risk shared contracts** (auth, payments,
+entitlements, course/progress, analytics, schema/API), use the **Graphify
+code/dependency graph** as an additional review step **when the tool is
+available**:
+
+1. Before coding, map affected entry points, callers, imports, data/event
+   flows and likely blast radius from the **current branch**, including PWA,
+   Android and relevant shared backend/Admin consumers.
+2. After implementation, refresh/recheck the graph against the actual diff;
+   inspect impacted call paths, contracts and potentially overlooked consumers.
+   Validate every material Graphify finding in real source; prioritize
+   affected regression, integration and end-to-end tests.
+3. In the completion report, briefly state what Graphify was used to check,
+   any confirmed dependency risks and the tests that verified them.
+
+**Graphify is supplementary, not proof of runtime correctness**: its graph
+cannot replace code review, PostgreSQL/API tests, CI, browser tests or
+real-device verification where relevant. Do not treat inferred edges as
+confirmed defects. Keep scope on active PWA/Android and necessary shared
+systems; do not activate Desktop work.
+
+**Do not require Graphify for** isolated small fixes, copy/CSS, routine
+documentation or low-risk changes. If Graphify is not installed or cannot run,
+record that limitation and perform the same focused manual dependency/impact
+audit; do not block the task, silently skip risk analysis, auto-install
+unapproved tooling or add a runtime/CI/cloud dependency. Keep generated graph
+artifacts out of Git unless explicitly requested.
+
 ## Git intizomi
 
 Agar git ishlatilsa:
