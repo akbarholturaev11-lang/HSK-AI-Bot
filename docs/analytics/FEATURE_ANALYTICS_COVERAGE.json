@@ -107,7 +107,7 @@
       "platforms": {
         "android": {"status": "partial", "reason": "A1: linked device inventory and app-open accounts reach the native card; no full chain test."},
         "telegram": {"status": "partial", "reason": "A2: Mini App presence reaches the card; it has accounts and foreground accounts, no device count or DAU/WAU/MAU; no full chain test."},
-        "iphone_pwa": {"status": "partial", "reason": "A4: PWA card (DAU/WAU/MAU) under the PWA filter from course-map opens with the route-owned dedupe prefix pwa-course-v3:, not the forgeable source text; Overall list unchanged. A5 sign-ins are not activity. Chain test pending (3.4)."},
+        "iphone_pwa": {"status": "partial", "reason": "A4: PWA card (DAU/WAU/MAU) under the PWA filter from course-map opens with the route-owned dedupe prefix pwa-course-v3:, not the forgeable source text; Overall list unchanged. A5 sign-ins are not activity. No route-to-Admin chain test yet (3.4 chained Course completions)."},
         "macos": {"status": "partial", "reason": "A20: existing linked devices and desktop foreground card, with bounded event details; Desktop freeze, no new chain test."},
         "windows": {"status": "partial", "reason": "A20: existing linked devices and desktop foreground card, with bounded event details; Desktop freeze, no new chain test."}
       }
@@ -265,7 +265,7 @@
       "platforms": {
         "android": {"status": "partial", "reason": "A1: linked device inventory and app-open accounts reach the native card; no full chain test."},
         "telegram": {"status": "partial", "reason": "A2: Mini App presence reaches the card; it has accounts and foreground accounts, no device count or DAU/WAU/MAU; no full chain test."},
-        "iphone_pwa": {"status": "partial", "reason": "A4: PWA card (DAU/WAU/MAU) under the PWA filter from course-map opens with the route-owned dedupe prefix pwa-course-v3:, not the forgeable source text; Overall list unchanged. A5 sign-ins are not activity. Chain test pending (3.4)."},
+        "iphone_pwa": {"status": "partial", "reason": "A4: PWA card (DAU/WAU/MAU) under the PWA filter from course-map opens with the route-owned dedupe prefix pwa-course-v3:, not the forgeable source text; Overall list unchanged. A5 sign-ins are not activity. No route-to-Admin chain test yet (3.4 chained Course completions)."},
         "macos": {"status": "partial", "reason": "A20: existing linked devices and desktop foreground card, with bounded event details; Desktop freeze, no new chain test."},
         "windows": {"status": "partial", "reason": "A20: existing linked devices and desktop foreground card, with bounded event details; Desktop freeze, no new chain test."}
       }
@@ -297,7 +297,7 @@
       "platforms": {
         "android": {"status": "partial", "reason": "A1: linked device inventory and app-open accounts reach the native card; no full chain test."},
         "telegram": {"status": "partial", "reason": "A2: Mini App presence reaches the card; it has accounts and foreground accounts, no device count or DAU/WAU/MAU; no full chain test."},
-        "iphone_pwa": {"status": "partial", "reason": "A4: PWA card (DAU/WAU/MAU) under the PWA filter from course-map opens with the route-owned dedupe prefix pwa-course-v3:, not the forgeable source text; Overall list unchanged. A5 sign-ins are not activity. Chain test pending (3.4)."},
+        "iphone_pwa": {"status": "partial", "reason": "A4: PWA card (DAU/WAU/MAU) under the PWA filter from course-map opens with the route-owned dedupe prefix pwa-course-v3:, not the forgeable source text; Overall list unchanged. A5 sign-ins are not activity. No route-to-Admin chain test yet (3.4 chained Course completions)."},
         "macos": {"status": "partial", "reason": "A20: existing linked devices and desktop foreground card, with bounded event details; Desktop freeze, no new chain test."},
         "windows": {"status": "partial", "reason": "A20: existing linked devices and desktop foreground card, with bounded event details; Desktop freeze, no new chain test."}
       }
@@ -382,9 +382,9 @@
     },
     {"section": "course", "key": "features", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
       "platforms": {
-        "android": {"status": "partial", "reason": "A13-A15: tests, practice and mistakes by the route-set client android from attributed_since on. Lessons omitted (A7: no start writer); AI and voice omitted (A16/A17). Chain test pending (3.4)."},
-        "telegram": {"status": "partial", "reason": "A6/A13-A15: lessons, tests, practice and mistakes by the route-set client telegram from attributed_since on; AI and voice omitted (A16/A17). Chain test pending (3.4)."},
-        "iphone_pwa": {"status": "partial", "reason": "A6/A13-A15: lessons, tests, practice and mistakes by the route-set client iphone_pwa from attributed_since on; AI and voice omitted (A16/A17). Chain test pending (3.4)."},
+        "android": {"status": "partial", "reason": "A13-A15: tests, practice and mistakes by the route-set client android from attributed_since on. Lessons omitted (A7: no start writer); AI and voice omitted (A16/A17). No route-to-Admin chain test yet (3.4 chained Course completions)."},
+        "telegram": {"status": "partial", "reason": "A6/A13-A15: lessons, tests, practice and mistakes by the route-set client telegram from attributed_since on; AI and voice omitted (A16/A17). No route-to-Admin chain test yet (3.4 chained Course completions)."},
+        "iphone_pwa": {"status": "partial", "reason": "A6/A13-A15: lessons, tests, practice and mistakes by the route-set client iphone_pwa from attributed_since on; AI and voice omitted (A16/A17). No route-to-Admin chain test yet (3.4 chained Course completions)."},
         "macos": {"status": "not_instrumented", "reason": "Feature-use rows lack a consistent Desktop OS dimension; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "Feature-use rows lack a consistent Desktop OS dimension; Desktop freeze."}
       }
@@ -392,8 +392,8 @@
     {"section": "course", "key": "foundation", "kind": "metric", "filters": ["overall", "telegram", "iphone_pwa"],
       "platforms": {
         "android": {"status": "not_instrumented", "reason": "A10: Android writes the completion but no foundation_started, and the Starter 0 funnel is anchored on the start."},
-        "telegram": {"status": "partial", "reason": "A10: cohort of learners whose foundation_started has the route-set final client key telegram, from attributed_since on. Chain test pending (3.4)."},
-        "iphone_pwa": {"status": "partial", "reason": "A10: cohort of learners whose foundation_started has the route-set final client key iphone_pwa, from attributed_since on. Chain test pending (3.4)."},
+        "telegram": {"status": "partial", "reason": "A10: cohort of learners whose foundation_started has the route-set final client key telegram, from attributed_since on. No route-to-Admin chain test yet (3.4 chained Course completions)."},
+        "iphone_pwa": {"status": "partial", "reason": "A10: cohort of learners whose foundation_started has the route-set final client key iphone_pwa, from attributed_since on. No route-to-Admin chain test yet (3.4 chained Course completions)."},
         "macos": {"status": "not_instrumented", "reason": "A10 does not establish a separate Desktop OS foundation cohort; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "A10 does not establish a separate Desktop OS foundation cohort; Desktop freeze."}
       }
@@ -473,11 +473,20 @@
     },
     {"section": "funnel", "key": "attempt_funnel", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
       "platforms": {
-        "android": {"status": "partial", "reason": "F2: openings with the route-set transport android (Lava and manual); earlier manual rows stay Overall-only (attributed_since). Chain test pending (3.4)."},
-        "telegram": {"status": "partial", "reason": "F3: openings with the route-set transport telegram; caller source and attempt text are ignored, earlier rows stay Overall-only (attributed_since). Chain test pending (3.4)."},
-        "iphone_pwa": {"status": "partial", "reason": "F1: openings with the route-set transport iphone_pwa. F8 (PWA Pro inline) is a separate flow, task 4. Chain test pending (3.4)."},
+        "android": {"status": "partial", "reason": "F2: openings with the route-set transport android (Lava and manual); earlier manual rows stay Overall-only (attributed_since). No route-to-Admin chain test yet (3.4 chained Course completions)."},
+        "telegram": {"status": "partial", "reason": "F3: openings with the route-set transport telegram; caller source and attempt text are ignored, earlier rows stay Overall-only (attributed_since). No route-to-Admin chain test yet (3.4 chained Course completions)."},
+        "iphone_pwa": {"status": "partial", "reason": "F1: openings with the route-set transport iphone_pwa. F8 (PWA Pro inline) is a separate flow, task 4. No route-to-Admin chain test yet (3.4 chained Course completions)."},
         "macos": {"status": "not_instrumented", "reason": "The legacy attempt chain does not establish end-to-end attribution to either Desktop OS; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "The legacy attempt chain does not establish end-to-end attribution to either Desktop OS; Desktop freeze."}
+      }
+    },
+    {"section": "funnel", "key": "pwa_pro_attempt_funnel", "kind": "metric", "filters": ["overall", "iphone_pwa"],
+      "platforms": {
+        "android": {"status": "not_applicable", "reason": "F8: the inline Pro offer and its Lava attempt exist only in the iPhone PWA."},
+        "telegram": {"status": "not_applicable", "reason": "F8: the inline Pro offer and its Lava attempt exist only in the iPhone PWA."},
+        "iphone_pwa": {"status": "partial", "reason": "F8: attempts keyed by account and attempt ID from PWA-only rows; paid only from the ledger row with its approved payment; refund/lost chargeback reversed. Chain test pending (4.2)."},
+        "macos": {"status": "not_applicable", "reason": "F8: the inline Pro offer and its Lava attempt exist only in the iPhone PWA."},
+        "windows": {"status": "not_applicable", "reason": "F8: the inline Pro offer and its Lava attempt exist only in the iPhone PWA."}
       }
     },
     {"section": "funnel", "key": "course_engagement", "kind": "metric", "filters": ["overall"],
@@ -536,9 +545,9 @@
     },
     {"section": "money", "key": "arppu_usd", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
       "platforms": {
-        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only, chain test pending (3.4)."},
-        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only, chain test pending (3.4)."},
-        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only, chain test pending (3.4)."},
+        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only; no route-to-Admin chain test yet."},
         "macos": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."}
       }
@@ -554,36 +563,36 @@
     },
     {"section": "money", "key": "average_payment_usd", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
       "platforms": {
-        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only, chain test pending (3.4)."},
-        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only, chain test pending (3.4)."},
-        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only, chain test pending (3.4)."},
+        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only; no route-to-Admin chain test yet."},
         "macos": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."}
       }
     },
     {"section": "money", "key": "canonical_payers", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
       "platforms": {
-        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only, chain test pending (3.4)."},
-        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only, chain test pending (3.4)."},
-        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only, chain test pending (3.4)."},
+        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only; no route-to-Admin chain test yet."},
         "macos": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."}
       }
     },
     {"section": "money", "key": "channels", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
       "platforms": {
-        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only, chain test pending (3.4)."},
-        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only, chain test pending (3.4)."},
-        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only, chain test pending (3.4)."},
+        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only; no route-to-Admin chain test yet."},
         "macos": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."}
       }
     },
     {"section": "money", "key": "currencies", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
       "platforms": {
-        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only, chain test pending (3.4)."},
-        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only, chain test pending (3.4)."},
-        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only, chain test pending (3.4)."},
+        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only; no route-to-Admin chain test yet."},
         "macos": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."}
       }
@@ -599,18 +608,18 @@
     },
     {"section": "money", "key": "first_payment_seconds", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
       "platforms": {
-        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only, chain test pending (3.4)."},
-        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only, chain test pending (3.4)."},
-        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only, chain test pending (3.4)."},
+        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only; no route-to-Admin chain test yet."},
         "macos": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."}
       }
     },
     {"section": "money", "key": "first_payments", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
       "platforms": {
-        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only, chain test pending (3.4)."},
-        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only, chain test pending (3.4)."},
-        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only, chain test pending (3.4)."},
+        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only; no route-to-Admin chain test yet."},
         "macos": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."}
       }
@@ -618,9 +627,9 @@
     {"section": "money", "key": "grains", "kind": "metadata", "filters": ["overall", "android", "telegram", "iphone_pwa"]},
     {"section": "money", "key": "lava", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
       "platforms": {
-        "android": {"status": "partial", "reason": "F5: route-set lava_invoices.source android; PostgreSQL projection test only, chain test pending (3.4)."},
-        "telegram": {"status": "partial", "reason": "F5: route-set lava_invoices.source miniapp; PostgreSQL projection test only, chain test pending (3.4)."},
-        "iphone_pwa": {"status": "partial", "reason": "F5: route-set lava_invoices.source pwa; PostgreSQL projection test only, chain test pending (3.4)."},
+        "android": {"status": "partial", "reason": "F5: route-set lava_invoices.source android; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "telegram": {"status": "partial", "reason": "F5: route-set lava_invoices.source miniapp; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "iphone_pwa": {"status": "partial", "reason": "F5: route-set lava_invoices.source pwa; PostgreSQL projection test only; no route-to-Admin chain test yet."},
         "macos": {"status": "not_instrumented", "reason": "F5 does not establish a Lava lifecycle cohort by Desktop OS; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "F5 does not establish a Lava lifecycle cohort by Desktop OS; Desktop freeze."}
       }
@@ -645,54 +654,54 @@
     },
     {"section": "money", "key": "new_paying_accounts", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
       "platforms": {
-        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only, chain test pending (3.4)."},
-        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only, chain test pending (3.4)."},
-        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only, chain test pending (3.4)."},
+        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only; no route-to-Admin chain test yet."},
         "macos": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."}
       }
     },
     {"section": "money", "key": "paying_histories", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
       "platforms": {
-        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only, chain test pending (3.4)."},
-        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only, chain test pending (3.4)."},
-        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only, chain test pending (3.4)."},
+        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only; no route-to-Admin chain test yet."},
         "macos": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."}
       }
     },
     {"section": "money", "key": "payments", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
       "platforms": {
-        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only, chain test pending (3.4)."},
-        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only, chain test pending (3.4)."},
-        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only, chain test pending (3.4)."},
+        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only; no route-to-Admin chain test yet."},
         "macos": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."}
       }
     },
     {"section": "money", "key": "renewal_payments", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
       "platforms": {
-        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only, chain test pending (3.4)."},
-        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only, chain test pending (3.4)."},
-        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only, chain test pending (3.4)."},
+        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only; no route-to-Admin chain test yet."},
         "macos": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."}
       }
     },
     {"section": "money", "key": "renewal_percent", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
       "platforms": {
-        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only, chain test pending (3.4)."},
-        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only, chain test pending (3.4)."},
-        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only, chain test pending (3.4)."},
+        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only; no route-to-Admin chain test yet."},
         "macos": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."}
       }
     },
     {"section": "money", "key": "revenue_usd", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
       "platforms": {
-        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only, chain test pending (3.4)."},
-        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only, chain test pending (3.4)."},
-        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only, chain test pending (3.4)."},
+        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only; no route-to-Admin chain test yet."},
         "macos": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."}
       }
@@ -726,18 +735,18 @@
     },
     {"section": "money", "key": "unknown_currency_payments", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
       "platforms": {
-        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only, chain test pending (3.4)."},
-        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only, chain test pending (3.4)."},
-        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only, chain test pending (3.4)."},
+        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only; no route-to-Admin chain test yet."},
         "macos": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."}
       }
     },
     {"section": "money", "key": "unpriced_payments", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
       "platforms": {
-        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only, chain test pending (3.4)."},
-        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only, chain test pending (3.4)."},
-        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only, chain test pending (3.4)."},
+        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only; no route-to-Admin chain test yet."},
         "macos": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."}
       }
@@ -1498,15 +1507,15 @@
       "platforms": {
         "android": {
           "status": "partial",
-          "reason": "Finance by payments.source android and Funnel by the route-set transport android are scoped (3.2); chain proof pending (3.4); Play/Direct are combined."
+          "reason": "Finance by payments.source android and Funnel by the route-set transport android are scoped (3.2); no route-to-Admin chain proof yet; Play/Direct are combined."
         },
         "telegram": {
           "status": "partial",
-          "reason": "Finance by payments.source miniapp/telegram_bot and Funnel by the route-set transport telegram are scoped (3.2); earlier openings are Overall-only; chain proof pending (3.4)."
+          "reason": "Finance by payments.source miniapp/telegram_bot and Funnel by the route-set transport telegram are scoped (3.2); earlier openings are Overall-only; no route-to-Admin chain proof yet."
         },
         "iphone_pwa": {
           "status": "partial",
-          "reason": "Finance by payments.source iphone_pwa/pwa and Funnel by the route-set transport iphone_pwa are scoped (3.2); chain proof pending (3.4)."
+          "reason": "Finance by payments.source iphone_pwa/pwa and Funnel by the route-set transport iphone_pwa are scoped (3.2); no route-to-Admin chain proof yet."
         },
         "macos": {
           "status": "partial",
@@ -1551,7 +1560,7 @@
         },
         "iphone_pwa": {
           "status": "partial",
-          "reason": "Client stages, invoice start and verified Lava ledger payment are stored; there is no V10 consumer yet."
+          "reason": "Client stages, invoice start and verified Lava ledger payment feed funnel.pwa_pro_attempt_funnel (4.1); route-to-Admin chain test pending (4.2)."
         },
         "macos": {
           "status": "not_applicable",

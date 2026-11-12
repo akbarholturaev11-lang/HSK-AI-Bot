@@ -123,6 +123,7 @@ A new reader (provisional `app/admin_api/pwa_analytics_pwa_pro.py`) returns `pwa
 - **Reversal:** `lava_invoices.status` of `refunded` or `chargeback_lost`.
 - **Cohort and outliers:** the cohort is attempts whose first stage falls in the window. Approved payments with no matching attempt are reported as `unlinked`.
 - **Bounds:** uses the existing `bounded_rows` sentinel. Above the cap the result is `detail_limited`. An indexed column needs a separately reviewed migration backed by query-plan evidence.
+- **Reading rules (4.1).** A step counts attempts that reached it or a later step, so the funnel never grows. `paid` needs the ledger row and a payment that was approved (`approved`, or later `refunded` / `chargeback`); a paid-looking row with any other payment status is ignored. `unlinked` counts verified first-invoice PWA Lava payments (`lava_invoices.source='pwa'`, not `renewal`) paid in the window that no attempt reached. Rows up to 30 days before the window are read, so an attempt that began earlier is not counted as starting inside it.
 
 ### D5. Retention: relabel the existing series, add one cross-platform series
 - `retention` keeps its values and gains the label `course_open`. Its basis is `miniapp_opened` from the Mini App and the PWA.

@@ -28,7 +28,7 @@ def _null_reason(section, key, metrics):
         # A platform view also reports None before any attributed row exists.
         if key in limited and limited[key] in metrics and metrics[limited[key]] is None and metrics.get("detail_limited", True):
             return "detail_limited"
-    if (section, key) in (("funnel", "attempt_funnel"), ("money", "ai_models")):
+    if (section, key) in (("funnel", "attempt_funnel"), ("funnel", "pwa_pro_attempt_funnel"), ("money", "ai_models")):
         return "detail_limited"
     return "no_data"
 

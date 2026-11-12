@@ -8,6 +8,7 @@ from app.admin_api.pwa_analytics_learning import FUNNEL_TRANSPORTS, learning_met
 from app.admin_api.pwa_analytics_course_platform import COURSE_CLIENTS, course_platform_metrics
 from app.admin_api.pwa_analytics_finance import PAYMENT_PLATFORM_SOURCES, money_metrics, sources_metrics
 from app.admin_api.pwa_analytics_platforms import platform_metrics
+from app.admin_api.pwa_analytics_pwa_pro import pwa_pro_attempt_funnel
 from app.admin_api.pwa_analytics_experiments import experiment_metrics
 from app.admin_api.pwa_analytics_states import has_legacy_filter, metric_states
 from app.db.models.user import User
@@ -59,7 +60,11 @@ async def _legacy_projection(db,query,*,section):
     elif section=='course' and query.platform!='overall':
         result['metrics']=await course_platform_metrics(db,platform=query.platform,since=since,now=now)
     elif section=='course':result['metrics']=await learning_metrics(db,period=query.period,since=since,now=now)
-    elif section=='funnel':result['metrics']=await funnel_metrics(db,since=since,now=now,platform=query.platform)
+    elif section=='funnel':
+        result['metrics']=await funnel_metrics(db,since=since,now=now,platform=query.platform)
+        if query.platform in ('overall','iphone_pwa'):
+            # F8 is PWA-only; it sits beside the unchanged legacy attempt funnel.
+            result['metrics']['pwa_pro_attempt_funnel']=await pwa_pro_attempt_funnel(db,since=since,now=now)
     elif section=='money':result['metrics']=await money_metrics(db,since=since,now=now,platform=query.platform)
     elif section=='sources':result['metrics']=await sources_metrics(db,since=since,now=now)
     elif section=='experiments':result['metrics']=await experiment_metrics(db,since=since,now=now)

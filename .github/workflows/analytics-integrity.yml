@@ -63,5 +63,6 @@ jobs:
           tests/test_admin_pwa_platform_scope.py
           tests/test_checkout_transport_marker.py
           tests/test_analytics_platform_chain.py
+          tests/test_admin_pwa_pro_funnel.py
           tests/test_admin_pwa_analytics.py
           tests/test_android_analytics_service.py

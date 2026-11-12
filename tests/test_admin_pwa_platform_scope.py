@@ -153,7 +153,9 @@ class FunnelPlatformScopeTests(unittest.IsolatedAsyncioTestCase):
     def test_activity_families_are_not_platform_values(self):
         for platform in PLATFORMS:
             response = self.funnel(platform, "all_time")
-            self.assertEqual(set(response["metrics"]), {"attempt_funnel", "attributed_since"})
+            # The PWA view also carries the PWA-only Pro funnel (F8, task 4.1).
+            extra = {"pwa_pro_attempt_funnel"} if platform == "iphone_pwa" else set()
+            self.assertEqual(set(response["metrics"]), {"attempt_funnel", "attributed_since", *extra})
             states = response["metric_states"]
             self.assertEqual(states["attempt_funnel"], {"state": "available", "reason": None})
             self.assertEqual(states["ai_usage"], {"state": "unavailable", "reason": "not_instrumented"})

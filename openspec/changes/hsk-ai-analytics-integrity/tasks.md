@@ -71,7 +71,7 @@ This is the only checklist for this work. Context, audit results, decisions and 
 
 ## 4. PWA Pro funnel
 
-- [ ] 4.1 Implement `pwa_pro_attempt_funnel` (design D4) beside the unchanged legacy funnel. Verify tests for each case:
+- [x] 4.1 Implement `pwa_pro_attempt_funnel` (design D4) beside the unchanged legacy funnel. Verify tests for each case:
   - a verified Lava payment moves only the matching attempt to paid
   - a click, a return URL or a failed webhook is not paid
   - two invoices in one attempt give one attempt

@@ -46,6 +46,8 @@ BASELINE = "680761f15e05f6d543da52cd021d05df41217ea3"
 SINCE = {"weekly": "2026-11-05T12:00:00+00:00", "monthly": "2026-10-13T12:00:00+00:00", "all_time": None}
 # Section/filter cells that task 3.2 moved from `attribution_not_audited` to a
 # platform predicate. Every other cell must stay byte-identical to the golden.
+# Keys added beside unchanged legacy series (task 4.1); pinned in their own tests.
+ADDED_METRICS = {"funnel": frozenset({"pwa_pro_attempt_funnel"})}
 NEWLY_ATTRIBUTED = frozenset([("home", "iphone_pwa"), ("overview", "iphone_pwa"), ("platform", "iphone_pwa")]) | frozenset(
     (section, platform) for section in ("money", "funnel", "course")
                              for platform in ("android", "telegram", "iphone_pwa"))
@@ -334,4 +336,8 @@ class AdminPwaV10RegressionTests(unittest.IsolatedAsyncioTestCase):
                     self.assertIs(response["available"], True)
                     continue
                 legacy = {key: value for key, value in response.items() if key != "metric_states"}
+                if isinstance(legacy.get("metrics"), dict) and case[0] in ADDED_METRICS:
+                    # New series beside the legacy ones; their values are pinned elsewhere.
+                    legacy["metrics"] = {key: value for key, value in legacy["metrics"].items()
+                                         if key not in ADDED_METRICS[case[0]]}
                 self.assertEqual(legacy, expected[case])
