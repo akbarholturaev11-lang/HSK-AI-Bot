@@ -19,5 +19,6 @@ Only checklist for R3. Context, decisions and the next step live in `docs/analyt
 - [x] 3.2 Stored-row tests: forged prefix stays Telegram, nearer other-client or untagged entry is skipped, pre-boundary payments are left out, `unknown`, no data before the first entry, Desktop unavailable.
 - [x] 3.3 Route → PostgreSQL → `/api/admin/v1/analytics` chain test on the Telegram, PWA and Android routes; it fails on the old code.
 - [x] 3.4 Golden test: only the three platform Sources cells change; Overall is byte-identical.
-- [ ] 3.5 Full unit suite, PostgreSQL modules and Admin PWA browser suites on the final head; results recorded in the context file.
-- [ ] 3.6 Owner approval of the migration at the PR, then owner acceptance on real clients after deploy.
+- [x] 3.5 Performance and `EXPLAIN ANALYZE` on 300k entries / 60k payments: each platform reads faster than Overall Sources; the nearest same-client entry is an index lookup per payment. Numbers are in the context file.
+- [ ] 3.6 Full unit suite, PostgreSQL modules and Admin PWA browser suites on the final head; results recorded in the context file.
+- [ ] 3.7 Owner approval of the migration at the PR, then owner acceptance on real clients after deploy.
