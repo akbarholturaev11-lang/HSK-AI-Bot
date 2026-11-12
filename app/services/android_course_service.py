@@ -14,6 +14,7 @@ from __future__ import annotations
 from app.services.onboarding_goal_selection import read_onboarding_goals
 
 import json
+import logging
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -45,10 +46,17 @@ from app.services.smart_widget_context_service import SmartWidgetContextService
 
 __all__ = ["AndroidCourseError", "AndroidCourseService"]
 
+logger = logging.getLogger(__name__)
+
 AndroidCourseError = DesktopCourseError
 
 _FOUNDATION_SOURCE = Path("app/static/course_v3_data/hsk1/lesson_01.json")
 _FOUNDATION_REQUIRED_ERROR = "android_foundation_required"
+# Next-stage R1 (audit A7). Not `lesson_started`: the D1 recovery and
+# unfinished-lesson Telegram reminders read that name, so reusing it would send
+# Android learners new messages. This name is server-only (no client route can
+# write it) and only the Admin readers and bot-block diagnostics read it.
+ANDROID_LESSON_STARTED = "android_lesson_started"
 _SKIP_CHOICE_TYPES = frozenset({
     "meaning_guess", "translation_choice", "hanzi_choice", "pinyin_choice",
     "quick_quiz", "gap_fill", "listening_choice", "dialog_cloze",
@@ -61,11 +69,12 @@ class AndroidCourseService(DesktopCourseService):
     async def _foundation_status(self, user) -> dict:
         return await CourseMiniAppProfileService(self.session).foundation_status(user)
 
-    async def _require_foundation_complete(self, access_token: str) -> None:
+    async def _require_foundation_complete(self, access_token: str):
         context = await self._context(access_token)
         status = await self._foundation_status(context.user)
         if bool(status.get("required")) and not bool(status.get("completed")):
             raise DesktopCourseError(_FOUNDATION_REQUIRED_ERROR, status_code=403)
+        return context
 
     async def _safe_rank(self, user) -> int:
         """Return the current leaderboard rank without breaking completion UX.
@@ -219,12 +228,43 @@ class AndroidCourseService(DesktopCourseService):
         lesson_order: int,
         access_ref: str = "",
     ) -> dict[str, Any]:
-        await self._require_foundation_complete(access_token)
-        return await super().lesson(
+        context = await self._require_foundation_complete(access_token)
+        # The parent commits before returning, which expires ORM objects.
+        user_id, telegram_id = context.user.id, context.user.telegram_id
+        result = await super().lesson(
             access_token,
             lesson_order=lesson_order,
             access_ref=access_ref,
         )
+        await self._record_lesson_start(user_id=user_id, telegram_id=telegram_id, result=result)
+        return result
+
+    async def _record_lesson_start(self, *, user_id: int, telegram_id: int | None, result: dict) -> None:
+        """One start per account, level, lesson and UTC day, after the lesson
+        was allowed. Best-effort: the lesson is already committed and returned
+        unchanged whatever happens here."""
+        level = str(result.get("level") or "")
+        lesson_order = int(result.get("lesson_order") or 0)
+        day = datetime.now(timezone.utc).date().isoformat()
+        try:
+            recorded = await CourseMiniAppAnalyticsService(self.session).record_server_event(
+                event_name=ANDROID_LESSON_STARTED,
+                telegram_id=telegram_id,
+                user_id=user_id,
+                source=f"{self.CLIENT_NAMESPACE}_course",
+                level=level,
+                lesson_order=lesson_order,
+                dedupe_key=f"{self.CLIENT_NAMESPACE}-lesson-start:{level}:{lesson_order}:{day}",
+                analytics_client="android",
+            )
+            if recorded.get("recorded"):
+                await self.session.commit()
+        except Exception:
+            logger.exception("Android lesson start analytics failed")
+            try:
+                await self.session.rollback()
+            except Exception:
+                logger.exception("Android lesson start analytics rollback failed")
 
     async def skip_test_questions(
         self,
