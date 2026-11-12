@@ -5756,6 +5756,7 @@ async def miniapp_onboarding(request: Request):
                 goals=payload.get("goals"),
                 streak_target_days=payload.get("streak_target_days"),
                 preferred_focus=payload.get("preferred_focus"),
+                analytics_client="telegram",
             )
     except (TypeError, ValueError) as error:
         return JSONResponse(
