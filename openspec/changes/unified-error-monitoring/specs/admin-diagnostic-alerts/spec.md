@@ -67,7 +67,7 @@ Diagnostic Apple Push SHALL go through the existing Admin PWA push outbox and di
 - **THEN** diagnostic pushes stop at the global cap, and payment and Android report alerts are queued and sent as before
 
 ### Requirement: Safe push payload and destination
-A diagnostic push payload SHALL carry only a fixed safe category. Opening it SHALL lead, after Admin PWA authentication, to the Inbox filtered to diagnostic incidents. Existing payment, Android-report, bot and release alerts SHALL keep their payload, priority and behavior.
+A diagnostic push payload SHALL carry only a fixed safe category. Opening it SHALL lead, after Admin PWA authentication, to the Inbox filtered to diagnostic incidents. Existing payment, Android-report, bot and release alerts SHALL keep their payload, priority and behavior. Existing Telegram admin messages, including Lava payment alerts, SHALL stay unchanged and MUST NOT be suppressed or deduplicated against diagnostic alerts.
 
 #### Scenario: Admin taps the alert
 - **WHEN** an admin taps a diagnostic notification
@@ -76,6 +76,10 @@ A diagnostic push payload SHALL carry only a fixed safe category. Opening it SHA
 #### Scenario: Push accepted but not displayed
 - **WHEN** the push provider accepts a diagnostic push
 - **THEN** it is recorded as accepted only, never as displayed on the device
+
+#### Scenario: Lava failure in both channels
+- **WHEN** a Lava payment activation fails, raising its Telegram admin alert, and is also reported as a diagnostic incident
+- **THEN** the Telegram message is sent as today, the incident appears in the Inbox (with a push when critical), and neither channel suppresses the other
 
 ### Requirement: Mini App technical source cutover
 When the Mini App adapter is enabled, new Mini App technical errors admitted by the intake mode SHALL appear only as diagnostic incidents, and their per-error `technical` push SHALL stop. Errors the mode does not admit keep today's behavior. `technical` items recorded before the cutover stay visible for their existing 30 days. Disabling the adapter SHALL restore the current behavior.

@@ -82,7 +82,7 @@ The backend SHALL record a server-side occurrence for an unhandled exception or 
 - **THEN** no occurrence is recorded
 
 ### Requirement: Android and PWA failure capture
-Android SHALL capture uncaught exceptions, supported process-exit reasons (crash, native crash, ANR) and unexpected failures of critical API calls. The learner PWA SHALL capture uncaught errors, unhandled rejections and failures to load, save or restore in critical flows. Each report is mapped to catalog codes on the device.
+Android SHALL capture uncaught exceptions, supported process-exit reasons (crash, native crash, ANR), unexpected failures of critical API calls and unexpected live-voice session failures. The learner PWA SHALL capture uncaught errors, unhandled rejections, failures to load, save or restore in critical flows, and unexpected live-voice session failures. Each report is mapped to catalog codes on the device.
 
 #### Scenario: Android crash
 - **WHEN** the Android app crashes on a lesson screen
@@ -95,6 +95,14 @@ Android SHALL capture uncaught exceptions, supported process-exit reasons (crash
 #### Scenario: PWA unhandled rejection
 - **WHEN** an unhandled promise rejection happens on the PWA course page
 - **THEN** one event with the page's feature code and a safe category is queued, without the error message or stack
+
+#### Scenario: Live voice connection lost
+- **WHEN** a live-voice session's connection drops unexpectedly on Android or the PWA
+- **THEN** one `voice` event with a fixed reason site is queued, with no audio, transcript or free text
+
+#### Scenario: Live voice ended normally or limited
+- **WHEN** the learner ends a live-voice session, or the server closes it with a limit or quota code
+- **THEN** no failure event is created
 
 ### Requirement: Bounded owner-bound offline queue
 Android and PWA reporters SHALL keep unsent events in a bounded queue with a short TTL and capped retry with backoff. Every queued event SHALL be bound to the account that produced it. Logout or an account switch MUST discard the previous owner's events.

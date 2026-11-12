@@ -2,7 +2,7 @@
 
 ## Context
 
-Motivation is in `proposal.md`, requirements in `specs/`. These facts were audited on branch `feat/analytics-android-lesson-start-20261112` (2026-11-12). The branch contains `origin/main` `680761f1`, Analytics Integrity (PR #285) and R1.
+Motivation is in `proposal.md`, requirements in `specs/`. These facts were audited on branch `feat/analytics-android-lesson-start-20261112` (2026-11-12). The branch contains `origin/main` `680761f1`, Analytics Integrity (PR #285) and R1. A read-only Graphify pass (2026-11-13, AGENTS.md Graphify rule) added the Lava Telegram alerts, live voice, the `apiCall` classifier and the LI onboarding page; each lead was verified in code.
 
 ### Existing failure signals
 
@@ -14,6 +14,8 @@ Motivation is in `proposal.md`, requirements in `specs/`. These facts were audit
 | Android crashes | none: no `UncaughtExceptionHandler`, no `ApplicationExitInfo` (minSdk 26, targetSdk 36) | — | No automatic capture |
 | PWA JS errors | none: no `onerror` / `unhandledrejection`; `/api/v3/pwa/event` allowlist rejects `app_error` | — | No automatic capture |
 | Backend 5xx | process logs only; middleware is GZip and `BlockedUserApiMiddleware` | — | No capture |
+| Lava admin alerts | `LavaNotifier.admin_alert(code)` in `app/services/lava/notify.py`, called from `lava/checkout.py`, `lava/events.py`, `lava/reconcile.py` (`activation_failed`, `amount_mismatch`, `retry_exhausted`, `renewal_overdue`, `webhook_auth_failed`, …) | Telegram message to each admin, per-code throttle | No incident. **Stays unchanged** (owner decision 2026-11-13): Telegram and Inbox/Push both deliver |
+| Live voice failures | Android `feature/voice/LiveVoiceSocket.kt` `fail(reason)`, PWA `voice-live.js` `fail(code)`; fixed `live_*` reason codes. Not routed through `apiCall` | Shown to the learner only | No capture |
 
 ### Reusable parts
 
@@ -38,9 +40,10 @@ Motivation is in `proposal.md`, requirements in `specs/`. These facts were audit
 - **Android:**
   - `DISTRIBUTION_CHANNEL` build field (`play` / `direct`);
   - an AtomicFile outbox pattern (`assistant-outbox`) and WorkManager;
-  - R8 strips `@Serializable` models in release builds unless they are kept.
+  - R8 strips `@Serializable` models in release builds unless they are kept;
+  - `core/network/ApiResult.kt`: `apiCall` is the single failure classifier. `toApiError()` reads the error body once, and `ApiError` keeps no HTTP status.
 - **Learner PWA:**
-  - `course-v3.html` serves both the Mini App and the PWA (`PWA_COURSE_HOST`), plus `course_v3_*.html` practice pages, `subscription.html` checkout and `iphone-pwa-voice.html`;
+  - `course-v3.html` serves both the Mini App and the PWA (`PWA_COURSE_HOST`), plus `course_v3_*.html` practice pages (including the LI guest onboarding page `course_v3_li_onboarding.html`), `subscription.html` checkout and `iphone-pwa-voice.html`;
   - the service worker serves `?v=`-pinned assets Cache First.
 
 ### Scope
@@ -131,6 +134,7 @@ Defaults (catalog constants, not owner decisions): cap 60 events per account per
   - A 10 s per-fingerprint coalescing window sends one `ingest` with `n`.
   - When saturated, the write is dropped and counted in process. The hourly loop flushes the count as the `monitoring/self_dropped` self-incident.
 - **Integration failures.** Failures that do not surface as 5xx use `report_server_failure(feature, failure, site)`. V1 call sites: the Lava webhook/ledger processing exceptions and AI/voice provider failures. TTS already returns 502 on allowlisted routes.
+- **Lava Telegram alerts stay (owner decision 2026-11-13).** `report_server_failure` is added next to `LavaNotifier.admin_alert`, never instead of it. The admin gets the same failure as a Telegram message and as a diagnostic incident (with push when critical). The monitor never suppresses, deduplicates, throttles or reroutes Telegram alerts.
 - *Why:* zero added latency on learner routes, and failures never change responses.
 
 ### D5. Client reporters
@@ -141,6 +145,10 @@ Defaults (catalog constants, not owner decisions): cap 60 events per account per
   - The handler makes no network call.
 - **Exit reasons.** On API ≥ 30, `getHistoricalProcessExitReasons` maps crash, native crash and ANR. A stored last-seen timestamp prevents re-reporting.
 - **Handled failures.** The shared `apiCall` wrapper reports `api_5xx` and `api_decode` (it also catches R8-stripped models) for call sites tagged with a feature. Offline, 4xx, limit and paywall are not reported.
+  - The hook lives inside `apiCall`, because `ApiError` has no HTTP status. `api_5xx` comes from `response.code() >= 500`. `api_decode` comes from the 2xx-without-body branch and the non-IO `unexpected` catch.
+  - The reporter reuses the `ApiError` that `toApiError()` returned. It never reads the error body a second time and never adds a second parser.
+  - `Offline` and `Timeout` are transient and not reported.
+- **Live voice.** `LiveVoiceSocket` does not use `apiCall`. Its `fail(reason)` reports to `voice` only for a fixed allowlist of client-side reasons: `live_connection_lost`, `live_message_invalid`, `live_message_too_large`, `live_send_failed`. Server-sent codes (limits, quota), learner close and backpressure are not reported. The reason becomes a site code, never free text, audio or transcript. Voice V8 (`feat/ai-voice-v8-pwa-android-20261111`) may change these codes, so task 1.1 re-checks them.
 - **Queue.**
   - At most 50 events, TTL 72 h, entries stamped with the account ID.
   - Logout or an account switch purges the queue; a crash record of another owner is dropped.
@@ -150,11 +158,12 @@ Defaults (catalog constants, not owner decisions): cap 60 events per account per
 - **R8.** Keep rules for the DTOs; verified on release builds.
 
 **Learner web** (one script, `course_v3_data/hsk-diagnostics.js`):
-- **Loading.** Loaded with `defer` by `course-v3.html` and the PWA practice/checkout/voice pages.
+- **Loading.** Loaded with `defer` by `course-v3.html`, `course_v3_li_onboarding.html` and the PWA practice/checkout/voice pages.
 - **Capture.**
   - `error` and `unhandledrejection` listeners map `error.name` to a fixed category.
   - The site is a fixed page ID.
   - `HskDiag.report(feature, failure, site, outcome)` reports load, save and restore failures at existing call sites, after their own retry.
+  - `voice-live.js` `fail(code)` reports the client-side codes `live_connection_timeout`, `live_response_invalid`, `live_audio_invalid` and an unexpected socket close. Server-sent codes, `live_network_slow` and `live_audio_suspended` are not reported, matching the Android allowlist.
 - **Transports.** PWA: `/api/v3/pwa/diagnostics`, `fetch` keepalive with the CSRF header. Telegram mode: `/api/miniapp/event` with `event:"app_error"`, `schema:"diag.v1"` and `initData`.
 - **Queue.**
   - `localStorage` per owner, at most 30 events, TTL 24 h.
@@ -195,6 +204,7 @@ Defaults (catalog constants, not owner decisions): cap 60 events per account per
 - **Dispatcher.** `_relevant` treats a resolved or purged incident as obsolete.
 - **Service worker.** `sw.js` gets a fixed `diagnostic` label and an allowlisted per-source link, `/admin/?inbox=diagnostic`. The Admin app applies that filter after authentication.
 - **Unchanged:** payment, Android-report, bot and release payloads. The cap protects them from a diagnostic flood.
+- **Telegram admin alerts are a separate channel.** Lava `admin_alert` messages keep their codes, throttle and recipients. Diagnostic alert decisions never read, wait for or cancel them, and the reverse also holds.
 
 ### D8. Retention and deletion
 - **Hourly loop.** Next to `purge_expired_native_reports`, it deletes receipts older than 30 days and resolved incidents unseen for 180 days, together with their triage rows. Both use bounded batches (≤ 1000). Audit rows stay; they hold no telemetry.
@@ -259,6 +269,8 @@ In the `app_error` branch of `/api/miniapp/event`:
 - [Advisory locks on SQLite tests] → Concurrency and cap tests run on PostgreSQL only, in a fresh DB per module.
 - [False reopen from old app versions] → Version-aware reopen; backend reopens on any occurrence.
 - [Push fatigue or starvation of payment alerts] → Critical-only, epoch keys, cooldown and global cap, with a test that payment alerts still dispatch during a flood.
+- [One Lava failure alerts twice: Telegram and Inbox/Push] → Intended by the owner (2026-11-13). The incident groups repeats, and its push is critical-only. Neither channel suppresses the other.
+- [Voice V8 changes the `live_*` codes] → The allowlist is re-checked in task 1.1, and the unknown-reporter-literal CI check fails on an unlisted code.
 - [Route-map maintenance cost] → The baseline is generated once (task 1.2) and reviewed; each later route adds one line. CI names exactly the missing route.
 - [Bypass by mapping a new route to an existing covered feature] → Its 5xx is still captured by the backend reporter for that feature. New screens and pages are caught separately, and review sees the mapping in the diff.
 - [Mini App behavior drift] → Legacy rows and AI context are unchanged. Only the per-row push and the `technical` listing move behind an adapter switch, with a cutover time.

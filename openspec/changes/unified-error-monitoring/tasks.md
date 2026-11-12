@@ -15,7 +15,7 @@ This is the only checklist for this work. Task 1.1 creates the single shared con
 
 ## 1. Foundation: catalog, coverage guard, intake
 
-- [ ] 1.1 Re-audit on the then-current `main`, with Analytics PR #285 merged or this work stacked on it. Confirm or correct the design.md Context: signals, Inbox/triage/push, transports, migration head, route inventory. Create `docs/monitoring/MONITORING_CONTEXT.md` as the single context file, and apply any deltas to design.md. Verify: every Context row cites code, and `openspec validate unified-error-monitoring --strict` passes.
+- [ ] 1.1 Re-audit on the then-current `main`, with Analytics PR #285 merged or this work stacked on it. Confirm or correct the design.md Context: signals, Inbox/triage/push, transports, migration head, route inventory, the voice `live_*` allowlist after Voice V8. Use the read-only Graphify commands (AGENTS.md Graphify rule) to find failure and alert paths the Context misses, and verify each lead in code before adding it. Create `docs/monitoring/MONITORING_CONTEXT.md` as the single context file, and apply any deltas to design.md. Verify: every Context row cites code, and `openspec validate unified-error-monitoring --strict` passes.
 - [ ] 1.2 Land the P0 coverage guard in `declare` mode (D1, D10):
   - add `app/services/monitoring/catalog.py`;
   - generate the registry `monitoring` block once from the source inventory, then review it, with honest statuses and the frozen `legacy_baseline`;
@@ -48,13 +48,14 @@ This is the only checklist for this work. Task 1.1 creates the single shared con
 - [ ] 1.4 Add the intake routes and the backend reporter (D3, D4):
   - Android bearer and PWA cookie + CSRF routes;
   - the ASGI middleware over `route_map`;
-  - `report_server_failure` at the Lava and AI/voice provider sites;
+  - `report_server_failure` at the Lava and AI/voice provider sites, next to the Lava Telegram `admin_alert`, never replacing it;
   - self-incidents;
   - registry `server` entries.
 
   Verify:
   - **Route tests:** auth is required; a client owner ID, fingerprint or severity is rejected; blocked and revoked accounts are refused; `off` returns the paused response.
   - **Middleware tests:** a 5xx or an exception is recorded once and the response is unchanged; a 4xx is not recorded; saturation drops are counted; no body is read.
+  - **Lava test:** a Lava activation failure records one incident and still sends its Telegram `admin_alert` with the same code, throttle and recipients.
   - **Performance:** the backend part of `backend-pwa-performance-contract` passes.
 
 ## 2. Android and PWA reporters
@@ -62,7 +63,8 @@ This is the only checklist for this work. Task 1.1 creates the single shared con
 - [ ] 2.1 Add the Android reporter (D5) in `core/diagnostics`, for both flavours:
   - the crash handler;
   - exit reasons on API ≥ 30;
-  - tagged `apiCall` failures for login, lesson open/complete, practice, progress, subscription/payment and handoff;
+  - tagged `apiCall` failures for login, lesson open/complete, practice, progress, subscription/payment and handoff, hooked inside `apiCall` (`ApiResult.kt`) and reusing the `toApiError()` result;
+  - the `LiveVoiceSocket.fail` client-side reason allowlist;
   - the owner-bound AtomicFile queue with WorkManager flush;
   - `channel`;
   - R8 keep rules.
@@ -70,13 +72,13 @@ This is the only checklist for this work. Task 1.1 creates the single shared con
   Registry Android entries are `partial` with "Admin consumer pending 3.1".
 
   Verify:
-  - **JVM tests** (`testPlayDebugUnitTest testDirectDebugUnitTest`): offline, 4xx, limit and paywall are not reported; a crash record is written without network and the previous handler still runs; an exit reason is reported once; queue cap, TTL and backoff hold, and drops become one `queue_dropped` event; an account switch purges the queue; 401/403 drops it.
+  - **JVM tests** (`testPlayDebugUnitTest testDirectDebugUnitTest`): offline, timeout, 4xx, limit and paywall are not reported; a 5xx and a 2xx decode failure are reported once, and the error body is read only once; an unexpected live-voice connection loss is reported once, while a learner close, a server limit code or backpressure is not; a crash record is written without network and the previous handler still runs; an exit reason is reported once; queue cap, TTL and backoff hold, and drops become one `queue_dropped` event; an account switch purges the queue; 401/403 drops it.
   - **Release builds:** `bundlePlayRelease bundleDirectRelease`, plus a Direct release smoke that the DTO serializes.
   - **Chain test:** `tests/test_monitoring_android_chain.py`, bearer intake → PostgreSQL incident.
-- [ ] 2.2 Add the learner web reporter `course_v3_data/hsk-diagnostics.js` (D5) with the PWA transport. Include it with a `?v=` token in `course-v3.html` and the PWA practice, checkout and voice pages. Registry PWA entries are `partial` with "Admin consumer pending 3.1".
+- [ ] 2.2 Add the learner web reporter `course_v3_data/hsk-diagnostics.js` (D5) with the PWA transport. Include it with a `?v=` token in `course-v3.html`, `course_v3_li_onboarding.html` and the PWA practice, checkout and voice pages. Report the `voice-live.js` client-side failure codes. Registry PWA entries are `partial` with "Admin consumer pending 3.1".
 
   Verify:
-  - **Node test:** category mapping; no message, stack or URL in the payload; loop guard; coalescing; owner-mismatch discard; TTL and the `queue_dropped` event.
+  - **Node test:** category mapping; no message, stack or URL in the payload; loop guard; coalescing; owner-mismatch discard; TTL and the `queue_dropped` event; the voice allowlist reports client-side codes only.
   - **Playwright, Chromium and WebKit:**
     - an error or rejection sends one POST with CSRF;
     - offline → online sends once with the same `event_id`;
@@ -114,7 +116,7 @@ This is the only checklist for this work. Task 1.1 creates the single shared con
   - a non-critical incident sends no push;
   - a `high` incident reaching the account threshold, and a critical reopen, alert once each;
   - the global cap holds;
-  - payment and Android alerts still dispatch during a diagnostic flood;
+  - payment and Android alerts still dispatch during a diagnostic flood, and Lava Telegram admin alerts are sent unchanged;
   - an enqueue failure does not fail intake;
   - the payload is `{kind, source}` only;
   - the `sw.js` test passes;
