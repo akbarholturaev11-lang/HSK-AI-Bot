@@ -83,7 +83,10 @@ async def seed(sessions):
                  created_at=ago(days=10), last_active_at=ago(days=9), bot_blocked_at=ago(days=8)),
             User(id=3, status="free", level="hsk1", language="tj", created_at=ago(days=45),
                  last_active_at=ago(days=40)),
-            User(id=4, status="free", level="hsk1", language="uz", created_at=ago(days=-1)),
+            # Pinned to the fixed clock: the model default is the wall clock, so
+            # after NOW this account left the ARPU window and the golden drifted.
+            User(id=4, status="free", level="hsk1", language="uz", created_at=ago(days=-1),
+                 last_active_at=ago(hours=1)),
         ])
         await db.flush()
 
