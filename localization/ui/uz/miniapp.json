@@ -1075,6 +1075,7 @@
     "ui.admin_pwa.analyticsFreshness": "Platformalar bo‘yicha yangilanish",
     "ui.admin_pwa.analyticsUnresolvedOwners": "Egasi aniqlanmagan",
     "ui.admin_pwa.analyticsFreshnessNote": "Faqat platformasi tasdiqlangan yozuvlar; filtr va davrga bog‘liq emas.",
+    "ui.admin_pwa.analyticsQualityNote": "Barcha platformalar bo‘yicha; filtr va davrga bog‘liq emas.",
     "ui.admin_pwa.analyticsRecords": "Yozuvlar",
     "ui.admin_pwa.analyticsDefinitions": "Hisoblash asoslari",
     "ui.admin_pwa.analyticsRefresh": "Yangilanish",

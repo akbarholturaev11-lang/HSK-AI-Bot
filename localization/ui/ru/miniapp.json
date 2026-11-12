@@ -1075,6 +1075,7 @@
     "ui.admin_pwa.analyticsFreshness": "Свежесть данных по платформам",
     "ui.admin_pwa.analyticsUnresolvedOwners": "Без владельца",
     "ui.admin_pwa.analyticsFreshnessNote": "Только записи с подтверждённой платформой; не зависит от фильтра и периода.",
+    "ui.admin_pwa.analyticsQualityNote": "По всем платформам; не зависит от фильтра и периода.",
     "ui.admin_pwa.analyticsRecords": "Записи",
     "ui.admin_pwa.analyticsDefinitions": "Основания расчёта",
     "ui.admin_pwa.analyticsRefresh": "Обновление",

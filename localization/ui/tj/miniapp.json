@@ -1075,6 +1075,7 @@
     "ui.admin_pwa.analyticsFreshness": "Навсозии маълумот аз рӯи платформаҳо",
     "ui.admin_pwa.analyticsUnresolvedOwners": "Бе соҳиб",
     "ui.admin_pwa.analyticsFreshnessNote": "Танҳо сабтҳо бо платформаи тасдиқшуда; аз филтр ва давра вобаста нест.",
+    "ui.admin_pwa.analyticsQualityNote": "Аз рӯи ҳамаи платформаҳо; аз филтр ва давра вобаста нест.",
     "ui.admin_pwa.analyticsRecords": "Сабтҳо",
     "ui.admin_pwa.analyticsDefinitions": "Асосҳои ҳисоб",
     "ui.admin_pwa.analyticsRefresh": "Навсозӣ",
