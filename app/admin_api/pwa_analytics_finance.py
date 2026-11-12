@@ -101,10 +101,15 @@ async def money_metrics(db, *, since, now, platform="overall"):
         # Keep the canonical first-payment history across platforms. Only the
         # final cohort is scoped, so switching clients cannot restart renewals.
         where.append(history.c.source.in_(PAYMENT_PLATFORM_SOURCES[platform]))
-    count,payers,known_payers,revenue,unpriced,renewals=(await db.execute(select(func.count(),
+    # Averages divide USD revenue only by the payments and payers it contains:
+    # an unpriced payment is counted separately, never as a $0 sale (#34).
+    priced=history.c.usd.is_not(None)
+    count,payers,known_payers,revenue,unpriced,renewals,priced_payers=(await db.execute(select(func.count(),
         func.count(func.distinct(history.c.owner)),func.count(func.distinct(history.c.account)),
         func.coalesce(func.sum(history.c.usd),0),func.count().filter(history.c.usd.is_(None)),
-        func.count().filter(history.c.sequence>1)).where(*where))).one()
+        func.count().filter(history.c.sequence>1),
+        func.count(func.distinct(case((priced,history.c.owner))))).where(*where))).one()
+    priced_count=count-unpriced
     currencies=(await db.execute(select(history.c.currency,func.sum(history.c.amount),func.count())
         .where(*where).group_by(history.c.currency))).all()
     # Second checkout path: manual receipt vs lava.top auto-subscription.
@@ -123,7 +128,8 @@ async def money_metrics(db, *, since, now, platform="overall"):
         'revenue_usd':round(revenue,4),'unpriced_payments':unpriced,'payments':count,'paying_histories':payers,
         'canonical_payers':known_payers,'renewal_payments':renewals,'first_payments':count-renewals,
         'renewal_percent':round(100*renewals/count,2) if count else None,
-        'arppu_usd':round(revenue/payers,4) if payers else None,'average_payment_usd':round(revenue/count,4) if count else None,
+        'arppu_usd':round(revenue/priced_payers,4) if priced_payers else None,
+        'average_payment_usd':round(revenue/priced_count,4) if priced_count else None,
         'currencies':[{'currency':key,'amount':int(amount),'payments':n} for key,amount,n in currencies if key!='unknown'],
         'unknown_currency_payments':sum(n for key,amount,n in currencies if key=='unknown'),
         'channels':[{'channel':key,'payments':n,'usd':round(float(usd or 0),4),'renewal_payments':repeat}

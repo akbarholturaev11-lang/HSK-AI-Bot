@@ -34,6 +34,10 @@ RETURN_OPEN_EVENTS = ('miniapp_opened', 'android_app_opened', 'desktop_app_opene
 RETURN_LEARNING_EVENTS = ('lesson_completed', 'book_lesson_completed', 'section_attempt_scored',
     'test_completed', 'training_completed', SMART_PRACTICE_STARTED, SMART_PRACTICE_SCORED,
     'mistake_review_answered', 'mistake_review_completed')
+# One server usage row per spoken Voice turn, written in the turn's own commit
+# (`voice_practice_service`: reply for turn mode, audio/evaluation for live).
+# Their time is the turn's time; a reused session's `started_at` is not (#31).
+VOICE_TURN_USAGE_SOURCES = ('voice_practice_reply', 'voice_live_audio', 'voice_live_evaluation')
 
 
 def ratio(numerator, denominator):
@@ -93,10 +97,18 @@ async def return_retention(db, *, since, now):
         owned=select(Event.id).where(Event.user_id==User.id, *window).correlate(User).exists()
         legacy=select(Event.id).where(Event.user_id.is_(None), Event.telegram_id==User.telegram_id,
             Event.telegram_id>0, *window).correlate(User).exists()
-        # Voice auto-starts and can end with no turn: only a confirmed turn counts.
+        # Voice auto-starts and can end with no turn: only a spoken turn counts,
+        # at its own time. A session counts as a whole only when it started and
+        # ended inside the window, so none of its turns can fall outside it.
+        turn=(AIUsageEvent.source.in_(VOICE_TURN_USAGE_SOURCES), AIUsageEvent.created_at>=low,
+            AIUsageEvent.created_at<high, AIUsageEvent.created_at<=now)
+        voice_turn=select(AIUsageEvent.id).where(AIUsageEvent.user_id==User.id, *turn).correlate(User).exists()
+        legacy_turn=select(AIUsageEvent.id).where(AIUsageEvent.user_id.is_(None),
+            AIUsageEvent.user_telegram_id==User.telegram_id, AIUsageEvent.user_telegram_id>0, *turn).correlate(User).exists()
         voice=select(Voice.id).where(owner(Voice,'user_telegram_id'), Voice.turn_count>0,
-            Voice.started_at>=low, Voice.started_at<high, Voice.started_at<=now).correlate(User).exists()
-        return or_(owned, legacy, voice)
+            Voice.started_at>=low, Voice.ended_at.is_not(None), Voice.ended_at<high,
+            Voice.ended_at<=now).correlate(User).exists()
+        return or_(owned, legacy, voice_turn, legacy_turn, voice)
     return await _cohort_returns(db, evidence, since=since, now=now)
 
 

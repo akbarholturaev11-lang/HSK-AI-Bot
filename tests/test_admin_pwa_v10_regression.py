@@ -49,6 +49,15 @@ SINCE = {"weekly": "2026-11-05T12:00:00+00:00", "monthly": "2026-10-13T12:00:00+
 # Keys added beside unchanged legacy series (task 4.1); pinned in their own tests.
 ADDED_METRICS = {"funnel": frozenset({"pwa_pro_attempt_funnel"}), "course": frozenset({"return_retention"}),
                  "report": frozenset({"platform_freshness"})}
+# Audit #34 (a main defect): averages divided USD revenue by payments and payers
+# that have no USD price. Only these two keys of the Overall money cell change;
+# every other key stays byte-identical. Values: revenue / priced payments and
+# revenue / payers with at least one priced payment, in this fixture.
+CORRECTED_METRICS = {("money", "overall"): {
+    "weekly": {"average_payment_usd": 9.138, "arppu_usd": 36.552},
+    "monthly": {"average_payment_usd": 9.4734, "arppu_usd": 23.6835},
+    "all_time": {"average_payment_usd": 9.5612, "arppu_usd": 19.1223},
+}}
 NEWLY_ATTRIBUTED = frozenset([("home", "iphone_pwa"), ("overview", "iphone_pwa"), ("platform", "iphone_pwa")]) | frozenset(
     (section, platform) for section in ("money", "funnel", "course")
                              for platform in ("android", "telegram", "iphone_pwa"))
@@ -341,4 +350,14 @@ class AdminPwaV10RegressionTests(unittest.IsolatedAsyncioTestCase):
                     # New series beside the legacy ones; their values are pinned elsewhere.
                     legacy["metrics"] = {key: value for key, value in legacy["metrics"].items()
                                          if key not in ADDED_METRICS[case[0]]}
+                corrected = CORRECTED_METRICS.get(case[:2], {}).get(case[2])
+                if corrected:
+                    golden_metrics = expected[case]["metrics"]
+                    # The fixture has an unpriced payment, so the old values differ.
+                    self.assertTrue(all(golden_metrics[key] != value for key, value in corrected.items()))
+                    self.assertEqual({key: legacy["metrics"][key] for key in corrected}, corrected)
+                    expected[case] = {**expected[case], "metrics": {**golden_metrics, **corrected}}
+                    self.assertEqual(legacy["metrics"]["average_payment_usd"], round(
+                        legacy["metrics"]["revenue_usd"]
+                        / (legacy["metrics"]["payments"] - legacy["metrics"]["unpriced_payments"]), 4))
                 self.assertEqual(legacy, expected[case])

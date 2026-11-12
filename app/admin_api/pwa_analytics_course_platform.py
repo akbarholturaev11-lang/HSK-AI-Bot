@@ -2,6 +2,7 @@
 from datetime import timedelta
 
 from sqlalchemy import and_, func, or_, select
+from sqlalchemy.orm import aliased
 
 from app.admin_api.pwa_analytics_learning import bounded_rows, foundation_query, foundation_summary, owner
 from app.admin_api.pwa_metrics import _window
@@ -29,10 +30,23 @@ COMPLETED = ('lesson_completed', 'book_lesson_completed')
 ANDROID_COMPLETION_SOURCE = 'android_course'
 
 
-def client_tag(platform):
+def client_tag(platform, model=Event):
     """Routes drop a caller `client` before tagging, so the server key is the
     document's final top-level key. A nested caller object cannot end it."""
-    return Event.payload_json.endswith(f'"client":"{platform}"}}', autoescape=True)
+    return model.payload_json.endswith(f'"client":"{platform}"}}', autoescape=True)
+
+
+def _started_here(platform, boundary, *, since, now):
+    """Accounts whose Starter 0 start is attributed to this client in the
+    window. Their non-start rows are the only ones the cohort can use, so other
+    clients' rows never fill this client's detail limit (audit #13)."""
+    start, account = aliased(Event), aliased(User)
+    owned = and_(or_(start.user_id == account.id,
+                     and_(start.user_id.is_(None), start.telegram_id == account.telegram_id)),
+                 or_(start.user_id.is_not(None), start.telegram_id > 0))
+    return (select(account.id).select_from(start).join(account, owned)
+            .where(start.event_name == 'foundation_started', client_tag(platform, start),
+                   start.created_at >= boundary, *_window(start.created_at, since, now)))
 
 
 async def _completed_lessons(db, *conditions, since, now):
@@ -70,8 +84,10 @@ async def course_platform_metrics(db, *, platform, since, now):
         # A10: Android writes no start, so it has no foundation cohort.
         attributed_since['foundation'] = since_iso
         rows = None if attributed is None else await bounded_rows(db, foundation_query(
-            or_(Event.event_name != 'foundation_started', and_(*attributed)), since=detail_since, now=now),
-            payload_index=5)
+            or_(and_(Event.event_name == 'foundation_started', *attributed),
+                and_(Event.event_name != 'foundation_started',
+                     User.id.in_(_started_here(platform, boundary, since=detail_since, now=now)))),
+            since=detail_since, now=now), payload_index=5)
         result['foundation'] = foundation_summary(rows, now=now)
         result['detail_limited'] = attributed is not None and rows is None
     if platform == 'android':

@@ -1,10 +1,12 @@
 """Task 4.1: the iPhone PWA Pro inline attempt funnel over existing rows (design D4).
 
-Stored-row evidence on a disposable PostgreSQL schema; the route-to-Admin chain
-is task 4.2. Run with ANALYTICS_TEST_DATABASE_URL.
+Stored-row evidence on a disposable PostgreSQL schema (ANALYTICS_TEST_DATABASE_URL)
+and on SQLite, which the Admin PWA browser QA uses; the route-to-Admin chain is
+task 4.2.
 """
 import json
 import os
+from tempfile import TemporaryDirectory
 import unittest
 from datetime import datetime, timedelta, timezone
 from unittest.mock import patch
@@ -66,15 +68,8 @@ def payment(number, user, status):
                    payment_status=status, payment_method="lava", source="pwa", base_amount=60)
 
 
-@unittest.skipUnless(URL.startswith("postgresql+asyncpg://"), "set ANALYTICS_TEST_DATABASE_URL")
-class PwaProAttemptFunnelTests(unittest.IsolatedAsyncioTestCase):
-    async def asyncSetUp(self):
-        self.schema = "pwa_pro_" + uuid4().hex
-        self.engine = create_async_engine(URL, connect_args={"server_settings": {"search_path": self.schema}})
-        async with self.engine.begin() as connection:
-            await connection.execute(text("CREATE SCHEMA " + self.schema))
-            await connection.run_sync(Base.metadata.create_all)
-        self.sessions = async_sessionmaker(self.engine, expire_on_commit=False)
+class FunnelFixture:
+    async def seed(self):
         async with self.sessions() as db:
             db.add_all([User(id=1, telegram_id=None, status="active"), User(id=2, telegram_id=2002, status="free")])
             await db.flush()
@@ -117,11 +112,6 @@ class PwaProAttemptFunnelTests(unittest.IsolatedAsyncioTestCase):
             ])
             await db.commit()
 
-    async def asyncTearDown(self):
-        async with self.engine.begin() as connection:
-            await connection.execute(text("DROP SCHEMA IF EXISTS " + self.schema + " CASCADE"))
-        await self.engine.dispose()
-
     async def funnel(self, since):
         async with self.sessions() as db:
             return await pwa_pro_attempt_funnel(db, since=since, now=NOW)
@@ -148,9 +138,40 @@ class PwaProAttemptFunnelTests(unittest.IsolatedAsyncioTestCase):
         for value in SECRET_IDS:
             self.assertNotIn(value, encoded)
 
-    async def test_over_the_row_cap_is_unavailable_not_a_sample(self):
+    async def test_history_beyond_the_detail_row_limit_is_counted_exactly(self):
+        # Audit #28: the funnel is aggregated in SQL, so the 5 000-row detail
+        # limit of other readers can no longer make All time unavailable.
+        extra = 2600
+        async with self.sessions() as db:
+            db.add_all([row for index in range(extra) for row in (
+                ui("pwa_pro_opened", 2, f"bulk-{index}", ago(days=3)),
+                ui("pwa_pro_plan_selected", 2, f"bulk-{index}", ago(days=3)))])
+            await db.commit()
         with patch("app.admin_api.pwa_analytics_learning.DETAIL_LIMIT", 3):
-            self.assertIsNone(await self.funnel(None))
+            result = await self.funnel(None)
+        self.assertEqual(result, {
+            "attempts": 6 + extra,
+            "steps": [{"key": "opened", "attempts": 6 + extra}, {"key": "plan_selected", "attempts": 4 + extra},
+                      {"key": "checkout_started", "attempts": 4}, {"key": "paid", "attempts": 2}],
+            "reversed": 1, "unlinked": 1,
+        })
+
+
+@unittest.skipUnless(URL.startswith("postgresql+asyncpg://"), "set ANALYTICS_TEST_DATABASE_URL")
+class PwaProAttemptFunnelTests(FunnelFixture, unittest.IsolatedAsyncioTestCase):
+    async def asyncSetUp(self):
+        self.schema = "pwa_pro_" + uuid4().hex
+        self.engine = create_async_engine(URL, connect_args={"server_settings": {"search_path": self.schema}})
+        async with self.engine.begin() as connection:
+            await connection.execute(text("CREATE SCHEMA " + self.schema))
+            await connection.run_sync(Base.metadata.create_all)
+        self.sessions = async_sessionmaker(self.engine, expire_on_commit=False)
+        await self.seed()
+
+    async def asyncTearDown(self):
+        async with self.engine.begin() as connection:
+            await connection.execute(text("DROP SCHEMA IF EXISTS " + self.schema + " CASCADE"))
+        await self.engine.dispose()
 
     async def test_section_reports_it_beside_the_legacy_funnel_and_only_for_pwa(self):
         async with self.sessions() as db:
@@ -165,6 +186,31 @@ class PwaProAttemptFunnelTests(unittest.IsolatedAsyncioTestCase):
             self.assertNotIn("pwa_pro_attempt_funnel", views[platform]["metrics"])
             self.assertEqual(views[platform]["metric_states"]["pwa_pro_attempt_funnel"],
                              {"state": "not_applicable", "reason": "not_applicable"})
+
+
+
+class SqlitePwaProAttemptFunnelTests(FunnelFixture, unittest.IsolatedAsyncioTestCase):
+    """The same reader on SQLite JSON1, as the Admin PWA browser QA runs it."""
+
+    async def asyncSetUp(self):
+        self.directory = TemporaryDirectory()
+        self.engine = create_async_engine(f"sqlite+aiosqlite:///{self.directory.name}/funnel.db")
+        async with self.engine.begin() as connection:
+            await connection.run_sync(Base.metadata.create_all)
+        self.sessions = async_sessionmaker(self.engine, expire_on_commit=False)
+        await self.seed()
+
+    async def asyncTearDown(self):
+        await self.engine.dispose()
+        self.directory.cleanup()
+
+    async def test_malformed_or_non_text_attempt_ids_are_not_attempts(self):
+        async with self.sessions() as db:
+            db.add_all([Funnel(user_id=2, event_name="pwa_pro_opened", source="v3_locked_lesson",
+                               created_at=ago(hours=1), payload_json=payload)
+                        for payload in ("{not json", '{"attempt_id": 7}', '{"attempt_id": ""}', None)])
+            await db.commit()
+        self.assertEqual((await self.funnel(ago(days=7)))["attempts"], 5)
 
 
 if __name__ == "__main__":

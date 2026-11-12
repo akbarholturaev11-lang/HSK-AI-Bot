@@ -105,6 +105,19 @@ class ReportFreshnessTests(unittest.IsolatedAsyncioTestCase):
             await db.commit()
         self.assertEqual((await self.freshness())[("iphone_pwa", "payments")], (None, 0))
 
+    async def test_a_lookalike_before_the_clients_first_server_tag_never_dates_it(self):
+        # Audit #37: a caller could store `"client":"iphone_pwa"` before route
+        # tagging was live. Without a server-built PWA row it is not PWA activity.
+        async with self.sessions() as db:
+            db.add(tagged("lesson_started", "iphone_pwa", ago(minutes=30), user_id=2))
+            await db.commit()
+        self.assertEqual((await self.freshness())[("iphone_pwa", "learning")], (ago(hours=2), 0))
+        async with self.sessions() as db:
+            db.add(tagged("test_completed", "iphone_pwa", ago(minutes=40), user_id=2))
+            await db.commit()
+        # From the first server-built tagged row on, tagged starts date PWA too.
+        self.assertEqual((await self.freshness())[("iphone_pwa", "learning")], (ago(minutes=30), 0))
+
     async def test_report_carries_it_under_overall_without_identifiers_or_payloads(self):
         async with self.sessions() as db:
             report = await analytics.section_projection(

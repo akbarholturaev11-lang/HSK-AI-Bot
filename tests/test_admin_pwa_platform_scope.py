@@ -5,10 +5,12 @@ projection evidence only; event-to-UI chain tests come in task 3.4.
 """
 import json
 import unittest
+from unittest.mock import patch
 
+from app.admin_api.pwa_analytics_course_platform import course_platform_metrics
 from app.db.models.conversion_funnel_event import ConversionFunnelEvent
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
-from tests.test_admin_pwa_v10_regression import PRIVATE, URL, ago, capture, postgres_fixture
+from tests.test_admin_pwa_v10_regression import NOW, PRIVATE, URL, ago, capture, postgres_fixture
 
 PLATFORMS = ("android", "telegram", "iphone_pwa")
 PAYMENT_KEYS = ("payments", "revenue_usd", "paying_histories", "canonical_payers", "new_paying_accounts",
@@ -280,6 +282,40 @@ class CoursePlatformScopeTests(unittest.IsolatedAsyncioTestCase):
             for key in ("voice_minutes", "chat", "ai_usage", "activation", "sessions"):
                 self.assertEqual(states[key], {"state": "unavailable", "reason": "not_instrumented"})
             self.assertNotIn(PRIVATE, json.dumps(response))
+
+
+@unittest.skipUnless(URL, "set ANALYTICS_TEST_DATABASE_URL for the real PostgreSQL platform scope tests")
+class CourseFoundationDetailLimitTests(unittest.IsolatedAsyncioTestCase):
+    """Audit #13: other learners' Starter 0 rows never fill one client's detail limit."""
+
+    async def test_rows_of_accounts_without_this_clients_start_are_not_read(self):
+        def event(name, user_id, hours, payload):
+            return CourseMiniAppEvent(event_name=name, user_id=user_id, source="course_v3",
+                payload_json=json.dumps(payload, separators=(",", ":")), created_at=ago(hours=hours))
+
+        async with postgres_fixture(URL) as sessions:
+            async with sessions() as db:
+                db.add_all([
+                    event("lesson_completed", 1, 10, {"lesson_order": 1, "client": "telegram"}),
+                    event("foundation_started", 2, 9, {"foundation_version": "v9", "client": "telegram"}),
+                    event("foundation_completed", 2, 8, {"foundation_version": "v9"}),
+                    # A busy learner who started elsewhere (PWA) and an untagged one.
+                    event("foundation_started", 3, 9, {"foundation_version": "v9", "client": "iphone_pwa"}),
+                    *[event("foundation_completed", user, 7, {"foundation_version": "v9"})
+                      for user in (1, 3) for _ in range(4)],
+                ])
+                await db.commit()
+            async with sessions() as db:
+                with patch("app.admin_api.pwa_analytics_learning.DETAIL_LIMIT", 3):
+                    telegram = await course_platform_metrics(db, platform="telegram", since=ago(days=7), now=NOW)
+                with patch("app.admin_api.pwa_analytics_learning.DETAIL_LIMIT", 1):
+                    own_rows_over = await course_platform_metrics(db, platform="telegram", since=ago(days=7), now=NOW)
+        # Before the fix all 11 window rows were read, so Telegram had no value.
+        self.assertIs(telegram["detail_limited"], False)
+        self.assertEqual((telegram["foundation"]["started_users"], telegram["foundation"]["completed_users"]), (1, 1))
+        # Its own two rows above the limit still refuse a sample.
+        self.assertIs(own_rows_over["detail_limited"], True)
+        self.assertIsNone(own_rows_over["foundation"])
 
 
 @unittest.skipUnless(URL, "set ANALYTICS_TEST_DATABASE_URL for the real PostgreSQL platform scope tests")
