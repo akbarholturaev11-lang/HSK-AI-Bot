@@ -3179,7 +3179,7 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             self.assertIsNone((await db.get(VoicePracticeSession, own_id)).live_connection_token)
             self.assertEqual((await db.get(VoicePracticeSession, other_id)).mode, "live")
 
-    async def test_pwa_standalone_voice_keeps_original_page_without_telegram_session(self):
+    async def test_pwa_voice_v8_page_requires_session_and_frames_only_in_course(self):
         path = "/iphone-pwa/practice/voice"
         self.assertEqual(
             (await self.client.get(path, follow_redirects=False)).status_code, 303,
@@ -3193,8 +3193,20 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(page.status_code, 200, page.text[:150])
         self.assertEqual(page.headers.get("cache-control"), "no-store")
         self.assertEqual(page.headers.get("x-frame-options"), "DENY")
+        self.assertEqual(page.headers.get("content-security-policy"), "frame-ancestors 'none'")
+        self.assertIn('<div id="orb" role="button"', page.text)
         self.assertNotIn("maximum-scale=1", page.text)
-        self.assertIn('font-size:16px;line-height:1.35', page.text)
+        self.assertNotIn("user-scalable=no", page.text)
+        self.assertIn("#prompt{font-size:16px}", page.text)
+        self.assertIn("/course_v3_data/iphone-pwa-inline-pro-bridge.js?v=", page.text)
+        self.assertLess(page.text.index("window.showPaywall=function"),
+                        page.text.index("iphone-pwa-inline-pro-bridge.js"))
+        self.assertNotIn("telegram-web-app.js", page.text)
+        self.assertNotIn("data:image/jpeg;base64", page.text)
+        embedded = await self.client.get(path + "?embedded=1&lang=uz")
+        self.assertEqual(embedded.status_code, 200)
+        self.assertEqual(embedded.headers.get("x-frame-options"), "SAMEORIGIN")
+        self.assertEqual(embedded.headers.get("content-security-policy"), "frame-ancestors 'self'")
         with patch(
             "app.services.voice_practice_service.VoicePracticeService.user_status",
             new_callable=AsyncMock,
@@ -5204,7 +5216,7 @@ const settle = () => new Promise(resolve => setImmediate(resolve));
             notification_message("pwa.push.paymentRejectedTitle", lang, "")
             for lang in ("uz", "ru", "tj")
         })
-        self.assertEqual(set(delivered[0]), {"title", "body", "url", "tag"})
+        self.assertEqual(set(delivered[0]), {"title", "body", "lang", "url", "tag"})
         # The opaque UUID tag may coincidentally contain the amount's digits.
         # Verify its origin separately from the human-readable notification.
         self.assertEqual(delivered[0]["tag"], "hsk-" + outbox_id.replace("-", "")[:24])
@@ -5212,7 +5224,7 @@ const settle = () => new Promise(resolve => setImmediate(resolve));
         self.assertNotIn("149", json.dumps(visible, ensure_ascii=False))
         self.assertNotIn("Summa", json.dumps(delivered[0], ensure_ascii=False))
 
-    async def test_push_outbox_deduplicates_and_sends_content_free_payload_with_bounded_cleanup(self):
+    async def test_push_outbox_deduplicates_and_sends_event_copy_with_bounded_cleanup(self):
         self.settings.PWA_PUSH_ENABLED = True
         self.settings.PWA_PUSH_SEND_ENABLED = True
         self.settings.PWA_PUSH_STORAGE_KEY = Fernet.generate_key().decode("ascii")
@@ -5242,7 +5254,7 @@ const settle = () => new Promise(resolve => setImmediate(resolve));
         async with self.sessions() as db:
             notices = [CourseUserNotification(
                 user_id=1, telegram_id=1001, key="daily_goal", source="pwa_push_test",
-                language="uz", title="Private title", body="Private answer text must never reach push",
+                language="uz", title="⏳ Bugungi maqsad", body="⏳ Bugungi maqsad\nDarsni davom ettiring 🎯",
                 action="course", created_at=now,
             ) for _ in range(2)]
             db.add_all(notices)
@@ -5263,8 +5275,9 @@ const settle = () => new Promise(resolve => setImmediate(resolve));
         self.assertEqual(first["accepted"], 1)
         self.assertEqual(delivered[0][0]["endpoint"], subscription["endpoint"])
         self.assertEqual(delivered[0][2], "course")
-        self.assertNotIn("Private", delivered[0][1]["title"] + delivered[0][1]["body"])
-        self.assertNotIn("answer", json.dumps(delivered[0][1]))
+        self.assertEqual(delivered[0][1]["title"], "⏳ Bugungi maqsad")
+        self.assertEqual(delivered[0][1]["body"], "Darsni davom ettiring 🎯")
+        self.assertEqual(delivered[0][1]["lang"], "uz")
         self.assertEqual(delivered[0][1]["url"], "/iphone-pwa/course?notice=1")
 
         async def gone_sender(*_):
@@ -5276,6 +5289,65 @@ const settle = () => new Promise(resolve => setImmediate(resolve));
             self.assertCountEqual([row.state for row in rows], ["accepted", "dead"])
             subscription_row = (await db.scalars(select(LearnerPwaPushSubscription))).one()
             self.assertIsNotNone(subscription_row.revoked_at)
+
+    async def test_all_push_sources_use_current_account_language_and_retry_keeps_tag(self):
+        from app.services.learner_pwa_push_copy import account_push_copy, course_push_copy, payment_push_copy
+        await self.callback(await self.begin())
+        now = datetime.now(timezone.utc)
+        fernet = Fernet(Fernet.generate_key())
+        endpoint = {"endpoint": "https://web.push.apple.com/test/synthetic", "keys": {}}
+        async with self.sessions() as db:
+            device_id = await db.scalar(select(DesktopSession.device_id).where(DesktopSession.revoked_at.is_(None)))
+            db.add(LearnerPwaPushSubscription(
+                id=str(uuid4()), device_id=device_id, endpoint_hash="a" * 64,
+                encrypted_payload=fernet.encrypt(json.dumps(endpoint).encode("ascii")).decode("ascii"),
+                created_at=now, updated_at=now,
+            ))
+            await db.commit()
+        delivered = []
+        async def sender(_, payload, *args):
+            delivered.append(json.loads(payload))
+            return 503 if len(delivered) == 1 else 201
+        with patch("app.services.learner_pwa_push.sender_config",
+                   return_value=("test-private-key", "mailto:test@example.test", fernet)):
+            for language in ("uz", "ru", "tj"):
+                async with self.sessions() as db:
+                    actor = await db.get(User, 1)
+                    actor.language = language
+                    course = CourseUserNotification(
+                        user_id=1, telegram_id=1001, key="daily_goal", source="motivation_reminder",
+                        language="uz", title="Old title", body="Old text",
+                        params={"template_service": "daily_goal", "minutes": 15}, action="course", created_at=now,
+                    )
+                    account = AccountNoticeDelivery(user_id=1, key="subscription_expiring", language="uz",
+                        title="Old title", body="Old text", status="telegram_sent", action="subscription", created_at=now)
+                    payment = Payment(user_id=1, user_telegram_id=1001, plan_type="1_month", amount=149,
+                        currency="TJS", payment_status="approved", reviewed_at=now)
+                    db.add_all([course, account, payment])
+                    await db.flush()
+                    expected = [await course_push_copy(db, course, language),
+                                account_push_copy(account, language), payment_push_copy(payment, language)]
+                    for source, row in zip(("course", "account", "payment"), (course, account, payment)):
+                        await enqueue_event(db, user_id=1, source=source, source_id=row.id, language="uz", now=now)
+                    await db.commit()
+                start = len(delivered)
+                await dispatch_batch(self.sessions, settings_obj=self.settings, sender=sender, now=now, limit=3)
+                self.assertCountEqual([(item["title"], item["body"]) for item in delivered[start:]], expected)
+                self.assertTrue(all(item["lang"] == language for item in delivered[start:]))
+                self.assertTrue(all("HSK AI" not in item["title"]+item["body"] for item in delivered[start:]))
+            # One retry remains. Change preference after enqueue and before retry:
+            # it gets fresh language and text, with the same dedupe/click identity.
+            async with self.sessions() as db:
+                actor = await db.get(User, 1)
+                actor.language = "ru"
+                await db.commit()
+            result = await dispatch_batch(self.sessions, settings_obj=self.settings, sender=sender,
+                                          now=now+timedelta(minutes=3), limit=1)
+            self.assertEqual(result["accepted"], 1)
+            self.assertEqual(delivered[-1]["tag"], delivered[0]["tag"])
+            self.assertEqual(delivered[-1]["lang"], "ru")
+            self.assertEqual(delivered[-1]["url"], delivered[0]["url"])
+            self.assertNotEqual(delivered[-1]["title"], delivered[0]["title"])
 
     async def test_accepted_telegram_smart_reminder_is_not_mirrored_to_pwa(self):
         from app.services.learner_pwa_push import _smart_study_event_allowed

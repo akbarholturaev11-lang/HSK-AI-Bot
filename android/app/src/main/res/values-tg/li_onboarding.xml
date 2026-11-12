@@ -39,12 +39,17 @@
     <string name="li_times_20_say" formatted="false">Рӯҳияи ҷиддӣ — ҳамин тавр идома медиҳем!</string>
     <string name="li_times_30_say" formatted="false">Аҷиб! Нақшаи пурмазмун тартиб медиҳем.</string>
     <string name="li_times_5_say" formatted="false">Ҳатто 5 дақиқа дар як рӯз — қадам ба пеш!</string>
+    <string name="li_copy_accounttitle" formatted="false">Шумо дар HSK AI ҳисоб доред?</string>
     <string name="li_copy_back" formatted="false">Бозгашт</string>
     <string name="li_copy_cont" formatted="false">Идома</string>
     <string name="li_copy_days" formatted="false">рӯз</string>
     <string name="li_copy_first" formatted="false">Оғози дарси аввал</string>
+    <string name="li_copy_firsttime" formatted="false">Бори аввал дар HSK AI</string>
     <string name="li_copy_focusq" formatted="false">Ба чӣ бештар таъкид кунем?</string>
     <string name="li_copy_focussub" formatted="false">Ин ишора барои нақша аст. Хатоҳоро система худаш меёбад.</string>
+    <string name="li_copy_haveaccount" formatted="false">Ман аллакай ҳисоб дорам</string>
+    <string name="li_copy_hello" formatted="false">Салом! Ман устод Ли ҳастам.</string>
+    <string name="li_copy_intro" formatted="false">Ба 5 саволи кӯтоҳ ҷавоб диҳед — ва дарси аввалро оғоз мекунем!</string>
     <string name="li_copy_later" formatted="false">Баъдтар</string>
     <string name="li_copy_min" formatted="false">дақ</string>
     <string name="li_copy_multihint" formatted="false">Метавонед якчандтоашро интихоб кунед.</string>
@@ -52,7 +57,10 @@
     <string name="li_copy_probody" formatted="false">Ҳамаи имкониятҳои асосиро месанҷед. Худкор пул гирифта намешавад.</string>
     <string name="li_copy_procta" formatted="false">7 рӯз ройгон санҷидан</string>
     <string name="li_copy_protitle" formatted="false">HSK AI Pro — 7 рӯз ройгон</string>
+    <string name="li_copy_profile" formatted="false">Пешрафти худро гум накунед! Биёед, барои шумо профил созем.</string>
     <string name="li_copy_ready" formatted="false">Олӣ! Ба дарси аввалини шумо шурӯъ мекунем!</string>
+    <string name="li_copy_signupsub" formatted="false">Усули сохтани ҳисоби навро интихоб кунед</string>
+    <string name="li_copy_signuptitle" formatted="false">Профил созед</string>
     <string name="li_copy_streakq" formatted="false">Биёед барои рӯзҳои пайдарпай мақсад гузорем, то ҳама чиз ҷиддӣ бошад!</string>
     <string name="li_copy_t1" formatted="false">Диққат танҳо ба омӯзиш</string>
     <string name="li_copy_t1s" formatted="false">Ҳар рӯз забони чиниро бо суръати мувофиқ омӯзед.</string>

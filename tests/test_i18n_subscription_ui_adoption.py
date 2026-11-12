@@ -38,7 +38,7 @@ class SubscriptionUIAdoptionTests(unittest.TestCase):
                 catalog = json.loads(
                     (ROOT / f"localization/ui/{locale}/course.json").read_text(encoding="utf-8")
                 )["messages"]
-                self.assertEqual(len(catalog), 1046)
+                self.assertEqual(len(catalog), 1107)
                 for key, value in scalar.items():
                     self.assertEqual(catalog["subscriptionPage." + key], value)
 
@@ -55,7 +55,7 @@ class SubscriptionUIAdoptionTests(unittest.TestCase):
 
     def test_preload_and_entitlement_logic_boundaries(self):
         source = subscription_source()
-        self.assertLess(source.index("hsk-course-i18n.js?v=20261021-9ba02f44f5cb"),
+        self.assertLess(source.index("hsk-course-i18n.js?v=20261021-3eff2a84e104"),
                         source.index("const I18N={"))
         self.assertIn('local["subscriptionPage."+key]', source)
         self.assertIn('if(typeof value==="string"&&value)I18N[locale][key]=value', source)

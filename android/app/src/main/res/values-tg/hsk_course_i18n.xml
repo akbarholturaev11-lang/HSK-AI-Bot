@@ -1003,6 +1003,67 @@
     <string name="hsk_course_voice_start" formatted="false">Оғози сӯҳбат</string>
     <string name="hsk_course_voice_sub" formatted="false">Сӯҳбати зинда бо панда 阿宝.</string>
     <string name="hsk_course_voice_title" formatted="false">Бо AI сӯҳбат кунед</string>
+    <string name="hsk_course_voice_v8_ask" formatted="false">Пурсед...</string>
+    <string name="hsk_course_voice_v8_dialogue_label" formatted="false">Матни суҳбат</string>
+    <string name="hsk_course_voice_v8_drawer_footer" formatted="false">Муоширати чинӣ</string>
+    <string name="hsk_course_voice_v8_end_body" formatted="false">Суҳбати ҷорӣ анҷом меёбад.</string>
+    <string name="hsk_course_voice_v8_end_cancel" formatted="false">Идома додан</string>
+    <string name="hsk_course_voice_v8_end_confirm" formatted="false">Анҷом додан</string>
+    <string name="hsk_course_voice_v8_end_label" formatted="false">Анҷом додани суҳбат</string>
+    <string name="hsk_course_voice_v8_end_title" formatted="false">Суҳбатро анҷом медиҳед?</string>
+    <string name="hsk_course_voice_v8_example1_label" formatted="false">«计划» чӣ маъно дорад?</string>
+    <string name="hsk_course_voice_v8_example1_text" formatted="false">«计划» чӣ маъно дорад?</string>
+    <string name="hsk_course_voice_v8_example2_label" formatted="false">Ба русӣ фаҳмон</string>
+    <string name="hsk_course_voice_v8_example2_text" formatted="false">Ин ҷумларо ба русӣ фаҳмон</string>
+    <string name="hsk_course_voice_v8_example3_label" formatted="false">Бо чинӣ гап занем</string>
+    <string name="hsk_course_voice_v8_example3_text" formatted="false">Бо ман ба забони чинӣ суҳбат кун</string>
+    <string name="hsk_course_voice_v8_example4_label" formatted="false">Соддатар гӯй</string>
+    <string name="hsk_course_voice_v8_example4_text" formatted="false">Боз соддатар гӯй</string>
+    <string name="hsk_course_voice_v8_examples_close" formatted="false">Пӯшидани саволҳои намунавӣ</string>
+    <string name="hsk_course_voice_v8_examples_title" formatted="false">Саволҳои намунавӣ</string>
+    <string name="hsk_course_voice_v8_max_chars" formatted="false">Ҳадди аксар 200 аломат</string>
+    <string name="hsk_course_voice_v8_menu_close" formatted="false">Пӯшидани меню</string>
+    <string name="hsk_course_voice_v8_mic_disabled" formatted="false">Микрофон хомӯш аст</string>
+    <string name="hsk_course_voice_v8_mic_off" formatted="false">Хомӯш кардани микрофон</string>
+    <string name="hsk_course_voice_v8_mic_on" formatted="false">Фаъол кардани микрофон</string>
+    <string name="hsk_course_voice_v8_no_quota" formatted="false">Маҳдудияти AI Voice тамом шуд</string>
+    <string name="hsk_course_voice_v8_orb_label" formatted="false">Тӯби зинда. Ба поён кашед — чат кушода мешавад, ба боло — пинҳон</string>
+    <string name="hsk_course_voice_v8_prompt_label" formatted="false">Навиштани паём</string>
+    <string name="hsk_course_voice_v8_restart" formatted="false">Оғози суҳбати нав</string>
+    <string name="hsk_course_voice_v8_send_label" formatted="false">Фиристодани паём</string>
+    <string name="hsk_course_voice_v8_settings_backdrop" formatted="false">Намоиши замина</string>
+    <string name="hsk_course_voice_v8_settings_close" formatted="false">Пӯшидани танзимот</string>
+    <string name="hsk_course_voice_v8_settings_pinyin" formatted="false">Намоиши пинйин</string>
+    <string name="hsk_course_voice_v8_settings_title" formatted="false">Танзимоти суҳбат</string>
+    <string name="hsk_course_voice_v8_settings_translation" formatted="false">Намоиши тарҷума</string>
+    <string name="hsk_course_voice_v8_status_connect" formatted="false">Пайваст мешавем…</string>
+    <string name="hsk_course_voice_v8_status_end" formatted="false">Суҳбат ба анҷом расид</string>
+    <string name="hsk_course_voice_v8_status_fail" formatted="false">AI Voice дастнорас аст</string>
+    <string name="hsk_course_voice_v8_status_listening" formatted="false">Гӯш мекунам…</string>
+    <string name="hsk_course_voice_v8_status_login" formatted="false">Ба ҳисоб ворид шавед</string>
+    <string name="hsk_course_voice_v8_status_mic" formatted="false">Ба микрофон иҷозат нест</string>
+    <string name="hsk_course_voice_v8_status_offline" formatted="false">Интернет нест</string>
+    <string name="hsk_course_voice_v8_status_ready" formatted="false">Барои оғоз микрофонро пахш кунед</string>
+    <string name="hsk_course_voice_v8_status_reconnect" formatted="false">Аз нав пайваст мешавем…</string>
+    <string name="hsk_course_voice_v8_status_recording" formatted="false">Сабт мешавад. Барои фиристодан пахш кунед.</string>
+    <string name="hsk_course_voice_v8_status_slow" formatted="false">Пайваст суст аст</string>
+    <string name="hsk_course_voice_v8_status_speaking" formatted="false">AI гап мезанад…</string>
+    <string name="hsk_course_voice_v8_status_thinking" formatted="false">Ҷавоб омода мешавад…</string>
+    <string name="hsk_course_voice_v8_status_turn" formatted="false">Live дастнорас · барои сабт пахш кунед</string>
+    <string name="hsk_course_voice_v8_topic_changed" formatted="false">Мавзӯъ интихоб шуд. Суҳбати навро оғоз кунед.</string>
+    <string name="hsk_course_voice_v8_topic_daily" formatted="false">Ҳаёти ҳаррӯза</string>
+    <string name="hsk_course_voice_v8_topic_food" formatted="false">Фармоиш дар тарабхона</string>
+    <string name="hsk_course_voice_v8_topic_free" formatted="false">Суҳбати озод</string>
+    <string name="hsk_course_voice_v8_topic_friends" formatted="false">Шиносоӣ бо дӯстони нав</string>
+    <string name="hsk_course_voice_v8_topic_hsk" formatted="false">Машқи суҳбати HSK</string>
+    <string name="hsk_course_voice_v8_topic_school" formatted="false">Таҳсил ва донишгоҳ</string>
+    <string name="hsk_course_voice_v8_topic_shopping" formatted="false">Мағоза ва харид</string>
+    <string name="hsk_course_voice_v8_topic_travel" formatted="false">Сафар ва пурсидани роҳ</string>
+    <string name="hsk_course_voice_v8_topic_work" formatted="false">Кор ва тиҷорат</string>
+    <string name="hsk_course_voice_v8_topics_current" formatted="false">СУҲБАТИ ҶОРӢ</string>
+    <string name="hsk_course_voice_v8_topics_open" formatted="false">Интихоби мавзӯи суҳбат</string>
+    <string name="hsk_course_voice_v8_topics_other" formatted="false">МАВЗӮЪҲОИ ДИГАР</string>
+    <string name="hsk_course_voice_v8_topics_title" formatted="false">Мавзӯъҳои суҳбат</string>
     <string name="hsk_course_writer_loading" formatted="false">Бор шуда истодааст...</string>
     <string name="hsk_course_wrong" formatted="false">Нодуруст</string>
     <string name="hsk_course_xp" formatted="false">XP</string>

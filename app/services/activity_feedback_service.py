@@ -13,6 +13,7 @@ from app.bot.keyboards.feedback import (
 from app.bot.handlers.feedback import DISLIKE_DETAIL_REQUIRED_CODES
 from app.db.models.user import User
 from app.db.models.bot_feedback import BotFeedback
+from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.repositories.bot_feedback_repo import BotFeedbackRepository
 from app.services.bot_feedback_service import BotFeedbackService
 from app.services.user_access_state_service import UserAccessStateService
@@ -128,9 +129,39 @@ def _pwa_feedback_prompt_eligible(user, service, now) -> bool:
     )
 
 
+# Server-only delivery reservation, not client telemetry or a counted impression.
+APP_TELEGRAM_FEEDBACK_RESERVATION = "app_telegram_feedback_reserved"
+
+
 class ActivityFeedbackService:
     def __init__(self, db):
         self.db = db
+
+    async def _reserve_telegram_continuation(self, feedback, now):
+        """Allow one app to continue an already-delivered pending invite."""
+        if (feedback.prompt_message_id or 0) <= 0:
+            return False
+        key = f"feedback:{feedback.id}"
+        # The caller holds the canonical user lock; the existing event unique
+        # key also protects the reservation across PWA and Android devices.
+        reserved = await self.db.scalar(select(CourseMiniAppEvent.id).where(
+            CourseMiniAppEvent.user_id == feedback.user_id,
+            CourseMiniAppEvent.event_name == APP_TELEGRAM_FEEDBACK_RESERVATION,
+            CourseMiniAppEvent.dedupe_key == key,
+        ).limit(1))
+        if reserved is not None:
+            return False
+        self.db.add(CourseMiniAppEvent(
+            user_id=feedback.user_id,
+            event_name=APP_TELEGRAM_FEEDBACK_RESERVATION,
+            source="activity_feedback_server",
+            dedupe_key=key,
+            created_at=now,
+        ))
+        # Same attempt; the next real reminder still waits 24 hours.
+        feedback.prompted_at = now
+        feedback.updated_at = now
+        return True
 
     async def prepare(self, user_id, data):
         db = self.db
@@ -138,6 +169,7 @@ class ActivityFeedbackService:
         # concurrent browser tabs or simultaneous provider sessions.
         learner = (await db.execute(
             select(User).where(User.id == user_id).with_for_update()
+            .execution_options(populate_existing=True)
         )).scalar_one()
         if data.context and not await _pwa_feedback_context_exists(db, learner, data.context):
             raise ActivityFeedbackError("feedback_context_unavailable", status_code=409)
@@ -146,8 +178,6 @@ class ActivityFeedbackService:
         feedback = None
         if _pwa_feedback_prompt_eligible(learner, service, now):
             feedback = await service._get_or_create_due_feedback(learner, now)
-            if feedback and not service._is_prompt_due(feedback, now):
-                feedback = None
         if data.context and feedback:
             # Legacy compact clients cannot replace a partial bot answer.
             # The bot presentation resumes the same canonical choices.
@@ -158,7 +188,17 @@ class ActivityFeedbackService:
             if (data.presentation == "compact" and (feedback.liked_code or feedback.disliked_code)) or mode_changed:
                 feedback = None
             else:
-                await service.feedback_repo.mark_prompt_sent(feedback, feedback.prompt_message_id)
+                continued = (
+                    data.presentation == "bot"
+                    and await self._reserve_telegram_continuation(feedback, now)
+                )
+                if not continued:
+                    if service._is_prompt_due(feedback, now):
+                        await service.feedback_repo.mark_prompt_sent(feedback, feedback.prompt_message_id)
+                    else:
+                        feedback = None
+        elif feedback and not service._is_prompt_due(feedback, now):
+            feedback = None
         await db.commit()
         payload = ({
             "feedback_id": feedback.id,

@@ -429,7 +429,7 @@ def test_voice_status_refuses_other_session_owners(surface, outcome):
         elif path == "/iphone-pwa/practice/voice":
             route.fulfill(
                 status=200, content_type="text/html",
-                body=(STATIC / "course_v3_voice.html").read_text(encoding="utf-8"),
+                body=(STATIC / "iphone-pwa-voice.html").read_text(encoding="utf-8"),
             )
         elif path == "/iphone-pwa":
             route.fulfill(status=200, content_type="text/html", body="<html><body>Sign in</body></html>")
@@ -466,7 +466,7 @@ def test_voice_status_refuses_other_session_owners(surface, outcome):
             else:
                 with page.expect_request("**/api/v3/pwa/voice/me"):
                     page.goto(ORIGIN + path, wait_until="domcontentloaded")
-                page.wait_for_function("() => !!PWA_VOICE_SESSION")
+                page.wait_for_function("() => !!window.HskPwaPracticeBoot")
             assert len(held) == 1
             if outcome == "account_replaced":
                 held.pop().fulfill(

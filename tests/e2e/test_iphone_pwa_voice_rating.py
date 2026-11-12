@@ -21,6 +21,13 @@ def learner_page(page):
     page.route("**/api/v3/pwa/map?*", lambda route: json_response(
         route, data, headers={"X-HSK-PWA-User-ID": "1"},
     ))
+    # The real ad read also names its verified owner (app/api/miniapp_ads.py).
+    # The course page asks for its timed screen-centre ad while a test runs;
+    # an ownerless reply would look like an account switch and sign out.
+    page.route("**/api/v3/pwa/ad?*", lambda route: json_response(
+        route, {"ok": True, "ad": None, "placement": "screen_center"},
+        headers={"X-HSK-PWA-User-ID": "1"},
+    ))
     page.route("**/iphone-pwa/course?*", lambda route: route.fulfill(
         content_type="text/html", body=(STATIC_ROOT / "course-v3.html").read_text(),
     ))
@@ -42,49 +49,94 @@ def swipe_back(page):
     }""")
 
 
-def test_voice_swipe_closes_top_layer_and_old_reply_cannot_cross_sessions(learner_page):
+def swipe_back_in(frame):
+    frame.evaluate("""() => {
+        const target = document.elementFromPoint(40, 300);
+        for (const [type, x] of [['touchstart', 40], ['touchmove', 150], ['touchend', 160]]) {
+            const event = new Event(type, {bubbles: true, cancelable: true});
+            Object.defineProperty(event, 'touches', {
+                value: type === 'touchend' ? [] : [{clientX: x, clientY: 300}]
+            });
+            target.dispatchEvent(event);
+        }
+    }""")
+
+
+def test_voice_v8_frame_swipe_closes_layers_then_ends_session_and_late_reply_is_dropped(learner_page):
     page = learner_page
-    pending = []
-    errors = []
+    pending, ends, posts, errors = [], [], [], []
     page.on("pageerror", lambda error: errors.append(str(error)))
+    page.on("request", lambda request: posts.append(request.post_data_buffer or b"")
+            if request.method == "POST" else None)
+    page.route("**/iphone-pwa/practice/voice?*", lambda route: route.fulfill(
+        content_type="text/html", body=(STATIC_ROOT / "iphone-pwa-voice.html").read_text(),
+    ))
     # The real Voice status read names its verified owner; PR #284 rejects a
     # response that cannot prove it belongs to the course map's account.
     page.route("**/api/v3/pwa/voice/me", lambda route: json_response(
-        route, {"ok": True, "remaining_voice_limit": 2},
+        route, {"ok": True, "remaining_voice_limit": 2, "language": "uz"},
         headers={"X-HSK-PWA-User-ID": "1"},
     ))
     page.route("**/api/v3/pwa/voice/session/start", lambda route: json_response(route, {
         "ok": True, "session_id": "voice-test", "live_available": False,
         "opening_message": {"chinese_reply": "你好！", "pinyin": "nǐ hǎo", "translation": "Salom"},
     }))
+    page.route("**/api/v3/pwa/voice/session/end", lambda route: (
+        ends.append(json.loads(route.request.post_data)), json_response(route, {"ok": True}),
+    ))
     page.route("**/api/v3/pwa/voice/message", lambda route: pending.append(route))
     page.locator('.nav [data-s="voice"]').click()
     expect(page.locator("#voice-quota")).to_contain_text("2")
-    start = page.locator("#s-voice .voicebox button")
-    start.click()
-    expect(page.locator("#vc-chat .msg.ai")).to_contain_text("你好")
-    page.locator("#vc-root .top .ic").last.click()
-    expect(page.locator("#vc-setSheet.on")).to_be_visible()
-    swipe_back(page)
-    expect(page.locator("#vc-setSheet.on")).to_have_count(0)
-    expect(page.locator("#secov.on")).to_be_visible()
-    page.locator("#vc-root .row .sq").first.click()
-    page.locator("#vc-kbText").fill("我很好")
-    page.locator("#vc-kbSend").click()
-    expect(page.locator("#vc-typing")).to_be_visible()
-    swipe_back(page)
-    expect(page.locator("#vc-kbPanel.on")).to_have_count(0)
-    swipe_back(page)
-    expect(page.locator("#secov.on")).to_have_count(0)
-    start.click()
-    expect(page.locator("#vc-chat .msg.ai")).to_contain_text("你好")
+    page.locator("#s-voice .voicebox button").click()
+    layer = page.locator("#pwa-practice-layer")
+    frame_element = layer.locator("iframe")
+    expect(frame_element).to_be_visible()
+    expect(layer).to_have_class("pwa-practice-dark")
+    # Full screen: no course padding or cream colour around the black call.
+    assert layer.evaluate("el => getComputedStyle(el).padding") == "0px"
+    assert page.evaluate("""() => document.documentElement.classList.contains('pwa-practice-voice')
+        && document.querySelector('meta[name=theme-color]').content === '#000000'
+        && getComputedStyle(document.body).backgroundColor === 'rgb(0, 0, 0)'""")
+    assert frame_element.get_attribute("allow") == "microphone 'self'"
+    assert "embedded=1" in frame_element.get_attribute("src")
+    voice = page.frame_locator("#pwa-practice-layer iframe")
+    frame = page.frame(url=lambda url: "/iphone-pwa/practice/voice" in url)
+    # «Начать разговор» starts the call at once; this browser has no
+    # microphone, so the call says so and typing stays available.
+    expect(voice.locator("#orbStatus")).to_have_text("Mikrofonga ruxsat yo'q")
+
+    voice.locator("#settings").click()
+    expect(voice.locator("#settingsLayer.open")).to_be_visible()
+    swipe_back_in(frame)
+    expect(voice.locator("#settingsLayer.open")).to_have_count(0)
+    expect(layer).to_be_visible()
+
+    voice.locator("#prompt").fill("我很好")
+    voice.locator("#prompt").press("Enter")
+    expect(voice.locator("#dialogue .msg.ai").first).to_contain_text("你好")
+    expect(voice.locator("#dialogue .msg.user")).to_have_text("我很好")
+    for _ in range(50):
+        if pending:
+            break
+        page.wait_for_timeout(100)
     assert len(pending) == 1
     assert pending[0].request.headers["x-hsk-pwa-csrf"] == "fixture-csrf"
-    assert "initData" not in pending[0].request.post_data
-    with page.expect_response("**/api/v3/pwa/voice/message"):
-        json_response(pending[0], {"ok": True, "chinese_reply": "你好吗？"})
+    assert b"voice-test" in pending[0].request.post_data_buffer
+    assert b"initData" not in pending[0].request.post_data_buffer
+
+    swipe_back_in(frame)
+    expect(page.locator("#pwa-practice-layer")).to_have_count(0)
+    expect(page.locator("#s-voice.on")).to_be_visible()
+    assert page.evaluate("""() => !document.documentElement.classList.contains('pwa-practice-voice')
+        && document.querySelector('meta[name=theme-color]').content === '#FDF9F0'""")
+    for _ in range(50):
+        if ends:
+            break
+        page.wait_for_timeout(100)
+    assert ends == [{"session_id": "voice-test"}]
+    json_response(pending[0], {"ok": True, "chinese_reply": "你好吗？"})
     page.wait_for_timeout(200)
-    expect(page.locator("#vc-chat .msg.ai")).to_have_count(1)
+    assert not any(b"practice_entry" in body for body in posts)
     assert not errors
 
 

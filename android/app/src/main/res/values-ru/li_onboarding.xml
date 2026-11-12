@@ -39,12 +39,17 @@
     <string name="li_times_20_say" formatted="false">Серьёзный настрой — так и продолжим!</string>
     <string name="li_times_30_say" formatted="false">Мощно! Составим насыщенный план.</string>
     <string name="li_times_5_say" formatted="false">Даже 5 минут в день — это шаг вперёд!</string>
+    <string name="li_copy_accounttitle" formatted="false">У вас есть аккаунт в HSK AI?</string>
     <string name="li_copy_back" formatted="false">Назад</string>
     <string name="li_copy_cont" formatted="false">Продолжить</string>
     <string name="li_copy_days" formatted="false">дней</string>
     <string name="li_copy_first" formatted="false">Начать первый урок</string>
+    <string name="li_copy_firsttime" formatted="false">Я впервые в HSK AI</string>
     <string name="li_copy_focusq" formatted="false">На чём сделать упор?</string>
     <string name="li_copy_focussub" formatted="false">Это подсказка для плана. Ошибки система найдёт сама.</string>
+    <string name="li_copy_haveaccount" formatted="false">У меня уже есть аккаунт</string>
+    <string name="li_copy_hello" formatted="false">Привет! Я учитель Ли.</string>
+    <string name="li_copy_intro" formatted="false">Ответьте на 5 коротких вопросов — и начнём первый урок!</string>
     <string name="li_copy_later" formatted="false">Позже</string>
     <string name="li_copy_min" formatted="false">мин</string>
     <string name="li_copy_multihint" formatted="false">Можно выбрать несколько.</string>
@@ -52,7 +57,10 @@
     <string name="li_copy_probody" formatted="false">Попробуете все основные возможности. Деньги автоматически не спишутся.</string>
     <string name="li_copy_procta" formatted="false">Попробовать 7 дней бесплатно</string>
     <string name="li_copy_protitle" formatted="false">HSK AI Pro — 7 дней бесплатно</string>
+    <string name="li_copy_profile" formatted="false">Не потеряйте свой прогресс! Давайте создадим вам профиль.</string>
     <string name="li_copy_ready" formatted="false">Отлично! Приступим к вашему первому уроку!</string>
+    <string name="li_copy_signupsub" formatted="false">Выберите способ создания аккаунта</string>
+    <string name="li_copy_signuptitle" formatted="false">Создайте профиль</string>
     <string name="li_copy_streakq" formatted="false">Давайте поставим цель по дням в ударе, чтобы всё было серьёзно!</string>
     <string name="li_copy_t1" formatted="false">Внимание только на учёбе</string>
     <string name="li_copy_t1s" formatted="false">Учите китайский каждый день в удобном для вас темпе.</string>

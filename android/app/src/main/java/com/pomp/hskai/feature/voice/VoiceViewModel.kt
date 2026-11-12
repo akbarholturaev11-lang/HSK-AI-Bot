@@ -57,6 +57,10 @@ data class VoiceUiState(
     val isLiveConnecting: Boolean = false,
     val isLiveConnected: Boolean = false,
     val isLiveMuted: Boolean = false,
+    /** A dropped Live socket is being reopened (V8 "Qayta ulanmoqda…"). */
+    val isLiveReconnecting: Boolean = false,
+    /** A recorded-turn reply is being read aloud (V8 "AI gapiryapti…"). */
+    val isReplyPlaying: Boolean = false,
     val liveSecondsRemaining: Int? = null,
     val isAiSpeaking: Boolean = false,
     val usedTurnFallback: Boolean = false,
@@ -106,16 +110,16 @@ class VoiceViewModel(
     private var lastLiveLanguage = "uz"
     private var liveReconnectAttempts = 0
     private var fallbackNoticePending = false
-    private var slowSpeech: Boolean = false
     private var courseLevel: String? = null
     private var courseGeneration = 0L
     private var sessionGeneration = 0L
     private var endingGeneration: Long? = null
-
-    /** Follows the learner's "slow speech" setting for the next reply. */
-    fun setSlowSpeech(slow: Boolean) {
-        slowSpeech = slow
-    }
+    /** V8: text typed before a conversation exists is sent once it starts. */
+    private var pendingTypedText: String? = null
+    /** V8: a microphone tap that opens a turn conversation also starts recording. */
+    private var recordOnStart = false
+    /** V8: the typed line already shown, so its echo is not added twice. */
+    private var typedEcho: String? = null
 
     /**
      * Reads one Chinese reply aloud.
@@ -133,9 +137,12 @@ class VoiceViewModel(
         speakJob?.cancel()
         speakJob = viewModelScope.launch {
             when (val audio = course.ttsAudio(phrase)) {
-                is ApiResult.Success -> runCatching {
-                    if (generation == sessionGeneration) {
-                        player.play(audio.value, if (slowSpeech) SLOW_SPEECH_RATE else 1f)
+                is ApiResult.Success -> if (generation == sessionGeneration) {
+                    _state.update { it.copy(isReplyPlaying = true) }
+                    try {
+                        runCatching { player.play(audio.value, 1f) }
+                    } finally {
+                        if (generation == sessionGeneration) _state.update { it.copy(isReplyPlaying = false) }
                     }
                 }
 
@@ -196,6 +203,10 @@ class VoiceViewModel(
         disconnectLiveTransport()
         fallbackNoticePending = false
         liveReconnectAttempts = 0
+        pendingTypedText = null
+        recordOnStart = false
+        typedEcho = null
+        if (_state.value.isReplyPlaying) _state.update { it.copy(isReplyPlaying = false) }
     }
 
     private fun closeAbandonedSession(sessionId: String) {
@@ -300,10 +311,21 @@ class VoiceViewModel(
                         )
                     }
                     if (result.value.mode == "live") {
+                        recordOnStart = false
                         connectLiveSession(result.value.sessionId)
                     } else {
                         fallbackNoticePending = false
-                        speak(opening.chineseReply)
+                        // V8 (PWA parity): the opening line is shown, not read
+                        // aloud — the tap that started it is the learner's turn.
+                        val typed = pendingTypedText
+                        pendingTypedText = null
+                        if (typed != null) {
+                            recordOnStart = false
+                            sendTypedMessage(typed)
+                        } else if (recordOnStart) {
+                            recordOnStart = false
+                            toggleRecording()
+                        }
                     }
                 }
 
@@ -315,6 +337,8 @@ class VoiceViewModel(
                         startSession(level, language, preferLive = false)
                     } else {
                         fallbackNoticePending = false
+                        pendingTypedText = null
+                        recordOnStart = false
                         _state.update { it.copy(isStarting = false, error = result.error) }
                     }
                 }
@@ -374,11 +398,23 @@ class VoiceViewModel(
             connection.setMuted(true)
             liveVoiceAudioEngine?.setMuted(true)
             connection.sendText(trimmed)
-            _state.update { it.copy(isSending = true, isLiveMuted = true, isRecording = false, error = null) }
+            typedEcho = trimmed
+            _state.update {
+                it.copy(
+                    isSending = true, isLiveMuted = true, isRecording = false, error = null,
+                    lines = it.lines + VoiceLine(speaker = VoiceSpeaker.USER, text = trimmed),
+                )
+            }
             return
         }
         recorder.cancel()
-        _state.update { it.copy(isRecording = false, isSending = true, error = null) }
+        typedEcho = trimmed
+        _state.update {
+            it.copy(
+                isRecording = false, isSending = true, error = null,
+                lines = it.lines + VoiceLine(speaker = VoiceSpeaker.USER, text = trimmed),
+            )
+        }
         viewModelScope.launch {
             if (!ownsSession(generation, sessionId)) return@launch
             applyTurn(repository.voiceTypedMessage(sessionId, trimmed), generation, sessionId)
@@ -424,6 +460,7 @@ class VoiceViewModel(
                 _state.update {
                     it.copy(
                         isLiveConnecting = false,
+                        isLiveReconnecting = false,
                         isLiveConnected = true,
                         isLiveMuted = false,
                         isRecording = true,
@@ -475,7 +512,7 @@ class VoiceViewModel(
             liveReconnectAttempts++
             val generation = liveGeneration
             val retryDelay = LIVE_RECONNECT_DELAY_MS * liveReconnectAttempts
-            _state.update { it.copy(isLiveConnecting = true, error = null) }
+            _state.update { it.copy(isLiveConnecting = true, isLiveReconnecting = true, error = null) }
             liveReconnectJob = viewModelScope.launch {
                 delay(retryDelay)
                 if (generation == liveGeneration && _state.value.sessionId == sessionId && _state.value.isLive) {
@@ -491,7 +528,7 @@ class VoiceViewModel(
             liveTimerJob = null
             val error = ApiError.fromCode(reason).takeUnless { it == ApiError.Unknown }
                 ?: ApiError.Server(reason, R.string.error_voice_unavailable)
-            _state.update { it.copy(isLiveConnecting = false, error = error) }
+            _state.update { it.copy(isLiveConnecting = false, isLiveReconnecting = false, error = error) }
         }
     }
 
@@ -505,6 +542,7 @@ class VoiceViewModel(
             it.copy(
                 isLive = false,
                 isLiveConnecting = false,
+                isLiveReconnecting = false,
                 isLiveConnected = false,
                 isRecording = false,
                 isLiveMuted = false,
@@ -557,7 +595,6 @@ class VoiceViewModel(
                             ),
                         )
                     }
-                    speak(opening.chineseReply)
                 }
                 is ApiResult.Failure -> if (ownsSession(generation, liveSessionId)) _state.update {
                     it.copy(isStarting = false, sessionId = null, error = fallback.error)
@@ -628,6 +665,8 @@ class VoiceViewModel(
             }
             is LiveVoiceEvent.TurnComplete -> {
                 val turn = event.turn
+                val echoed = typedEcho != null && turn.transcription == typedEcho
+                typedEcho = null
                 liveReconnectAttempts = 0
                 liveConnection?.setMuted(false)
                 liveVoiceAudioEngine?.setMuted(false)
@@ -641,8 +680,9 @@ class VoiceViewModel(
                         maxDialogs = turn.maxDialogs,
                         remainingLimit = turn.remainingLimit,
                         suggestions = turn.suggestions.ifEmpty { it.suggestions },
-                        lines = it.lines + listOf(
-                            VoiceLine(speaker = VoiceSpeaker.USER, text = turn.transcription),
+                        lines = it.lines + listOfNotNull(
+                            VoiceLine(speaker = VoiceSpeaker.USER, text = turn.transcription)
+                                .takeUnless { echoed || turn.transcription.isBlank() },
                             VoiceLine(
                                 speaker = VoiceSpeaker.AI,
                                 text = turn.translation.ifBlank { turn.chineseReply },
@@ -685,6 +725,8 @@ class VoiceViewModel(
         when (result) {
             is ApiResult.Success -> {
                 val response = result.value
+                val echoed = typedEcho != null && response.transcription == typedEcho
+                typedEcho = null
                 _state.update {
                     it.copy(
                         isSending = false,
@@ -695,11 +737,11 @@ class VoiceViewModel(
                         // keeps the previous ones rather than emptying the
                         // sheet mid-conversation.
                         suggestions = response.suggestions.ifEmpty { it.suggestions },
-                        lines = it.lines + listOf(
+                        lines = it.lines + listOfNotNull(
                             VoiceLine(
                                 speaker = VoiceSpeaker.USER,
                                 text = response.transcription,
-                            ),
+                            ).takeUnless { echoed || response.transcription.isBlank() },
                             VoiceLine(
                                 speaker = VoiceSpeaker.AI,
                                 text = response.translation,
@@ -717,8 +759,9 @@ class VoiceViewModel(
                 }
             }
 
-            is ApiResult.Failure -> _state.update {
-                it.copy(isSending = false, error = result.error)
+            is ApiResult.Failure -> {
+                typedEcho = null
+                _state.update { it.copy(isSending = false, error = result.error) }
             }
         }
     }
@@ -738,6 +781,7 @@ class VoiceViewModel(
                 isStarting = false,
                 isRecording = false,
                 isLiveConnecting = false,
+                isLiveReconnecting = false,
                 isLiveConnected = false,
                 isAiSpeaking = false,
                 isSending = true,
@@ -803,6 +847,58 @@ class VoiceViewModel(
         }
     }
 
+    /**
+     * V8 microphone: the first tap opens the conversation — Live when the
+     * server offers it and the microphone is allowed, otherwise a recorded
+     * turn that starts recording at once.
+     */
+    fun startFromMicrophone(level: String, language: String, liveAllowed: Boolean) {
+        if (_state.value.isStarting || _state.value.hasSession) return
+        recordOnStart = true
+        startSession(level, language, preferLive = liveAllowed)
+        if (!_state.value.isStarting) recordOnStart = false
+    }
+
+    /** V8 composer: a question typed before any conversation starts one. */
+    fun startWithText(level: String, language: String, text: String) {
+        val trimmed = text.trim()
+        if (trimmed.isEmpty() || _state.value.isStarting || _state.value.hasSession) return
+        pendingTypedText = trimmed
+        startSession(level, language, preferLive = false)
+        if (!_state.value.isStarting) pendingTypedText = null
+    }
+
+    /** V8 topics: a new topic quietly closes the running conversation. */
+    fun changeTopic(role: String) {
+        val current = _state.value
+        if (current.isSending || current.isStarting) return
+        val previous = current.sessionId?.takeIf { current.result == null }
+        invalidateSession()
+        _state.value = VoiceUiState(
+            status = current.status,
+            isLoading = false,
+            selectedRole = role,
+            remainingLimit = current.remainingLimit,
+        )
+        previous?.let(::closeAbandonedSession)
+    }
+
+    /** V8: an unfinished recording is dropped when the app leaves the screen. */
+    fun cancelRecording() {
+        val current = _state.value
+        if (current.isLive || !current.isRecording) return
+        recorder.cancel()
+        _state.update { it.copy(isRecording = false) }
+    }
+
+    /** V8 exit: the conversation ends quietly and the tab shows its card again. */
+    fun exitConversation() {
+        val current = _state.value
+        val previous = current.sessionId?.takeIf { current.result == null }
+        reset()
+        previous?.let(::closeAbandonedSession)
+    }
+
     fun reset() {
         courseGeneration++
         statusLoadInFlight = false
@@ -839,8 +935,6 @@ class VoiceViewModel(
     }
 
     private companion object {
-        /** The Mini App's `playbackRate` for slow speech. */
-        const val SLOW_SPEECH_RATE = 0.75f
         const val MAX_LIVE_RECONNECTS = 3
         const val LIVE_RECONNECT_DELAY_MS = 1_200L
         val LIVE_TERMINAL_REASONS = setOf(

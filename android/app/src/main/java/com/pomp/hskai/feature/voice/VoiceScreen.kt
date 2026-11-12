@@ -1,12 +1,11 @@
 package com.pomp.hskai.feature.voice
 
-import android.Manifest
-import android.content.pm.PackageManager
 import androidx.activity.compose.BackHandler
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,58 +15,45 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Mic
-import androidx.compose.material.icons.filled.Flag
-import androidx.compose.material.icons.filled.MoreHoriz
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat
 import com.pomp.hskai.R
-import com.pomp.hskai.HskAiApplication
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.components.HskSceneSurface
 import com.pomp.hskai.core.design.components.HskGlassSurface
 import com.pomp.hskai.core.design.components.HskPrimaryButton
 import com.pomp.hskai.core.design.components.HskSectionTitle
 import com.pomp.hskai.core.navigation.LocalMainBottomInset
-import com.pomp.hskai.feature.course.CoursePandaMascot
-import com.pomp.hskai.feature.course.PandaMood
 import com.pomp.hskai.data.api.AndroidHintDto
 import com.pomp.hskai.data.api.VoiceTranscriptDto
 import com.pomp.hskai.feature.hint.SectionHint
@@ -76,8 +62,6 @@ import com.pomp.hskai.feature.limit.SectionLimitOverlay
 import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.feature.assistant.AssistantScreen
 import com.pomp.hskai.feature.assistant.voiceAssistantContext
-import com.pomp.hskai.feature.feedback.BugReportDialog
-import com.pomp.hskai.feature.assistant.AssistantModalBottomSheet as ModalBottomSheet
 
 @Composable
 fun VoiceScreen(
@@ -89,84 +73,33 @@ fun VoiceScreen(
     onDismissHint: (String) -> Unit = {},
     /** Markazdagi limit tanlovi yopilganda. */
     onDismissLimit: () -> Unit = {},
-    subtitlesOn: Boolean,
-    slowSpeech: Boolean,
-    onToggleSubtitles: (Boolean) -> Unit,
-    onToggleSlowSpeech: (Boolean) -> Unit,
     onSelectRole: (String) -> Unit,
-    onStartSession: (String, String, Boolean) -> Unit,
-    onToggleRecording: () -> Unit,
-    onSendText: (String) -> Unit,
+    /** Opens the full-screen AI Voice V8 conversation (VoiceV8Screen). */
+    onOpenVoice: () -> Unit,
     onEndSession: () -> Unit,
-    onSwapPartner: (String) -> Unit,
     onReset: () -> Unit,
     onRetryStatus: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
-    // A running call hides the tab bar and puts its own dock there instead,
-    // so the floating AI button is told to clear the dock, not the tabs.
-    val callActive = state.hasSession && state.result == null
-    // VoiceCallScreen owns Back after connection; pending starts need the same
-    // cancellation before their late response can open a call in the background.
-    BackHandler(enabled = state.isStarting && !callActive, onBack = onEndSession)
-    val context = LocalContext.current
-    // Snapshot the selected answer and its session; later live turns must not
-    // replace the content the learner chose to report.
-    var reportedAnswer by remember { mutableStateOf<Pair<String, VoiceLine>?>(null) }
-    var pendingLiveStart by remember { mutableStateOf<Pair<String, String>?>(null) }
+    // A pending start must be cancellable before its late response opens a
+    // conversation in the background; the open V8 screen owns Back itself.
+    BackHandler(enabled = state.isStarting && !state.hasSession, onBack = onEndSession)
     val endSessionOnExit by rememberUpdatedState(onEndSession)
     val sessionActiveOnExit by rememberUpdatedState(state.hasSession || state.isStarting)
     DisposableEffect(Unit) {
         onDispose {
-            pendingLiveStart = null
             if (sessionActiveOnExit) endSessionOnExit()
-        }
-    }
-    val livePermissionLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission(),
-    ) { granted ->
-        val pending = pendingLiveStart
-        pendingLiveStart = null
-        if (pending != null) onStartSession(pending.first, pending.second, granted)
-    }
-    val startVoice: (String, String) -> Unit = { selectedLevel, selectedLanguage ->
-        if (state.status?.liveAvailable == true) {
-            val granted = ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.RECORD_AUDIO,
-            ) == PackageManager.PERMISSION_GRANTED
-            if (granted) {
-                onStartSession(selectedLevel, selectedLanguage, true)
-            } else {
-                pendingLiveStart = selectedLevel to selectedLanguage
-                livePermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
-            }
-        } else {
-            onStartSession(selectedLevel, selectedLanguage, false)
         }
     }
     AssistantScreen(
         voiceAssistantContext(state, level),
-        bottomBar = !callActive,
-        bottomInset = if (callActive) VOICE_DOCK_HEIGHT else 0.dp,
+        bottomBar = true,
         showButton = false,
     )
     HskSceneSurface(modifier = modifier.fillMaxSize()) {
       Box(Modifier.fillMaxSize()) {
         when {
             state.result != null -> VoiceResult(state = state, onDone = onReset)
-            state.hasSession -> VoiceCallScreen(
-                state = state,
-                subtitlesOn = subtitlesOn,
-                slowSpeech = slowSpeech,
-                onToggleSubtitles = onToggleSubtitles,
-                onToggleSlowSpeech = onToggleSlowSpeech,
-                onToggleRecording = onToggleRecording,
-                onSendText = onSendText,
-                onEndSession = onEndSession,
-                onSwapPartner = onSwapPartner,
-                onReport = { line -> reportedAnswer = state.sessionId.orEmpty() to line },
-            )
             else -> VoiceHome(
                 state = state,
                 level = level,
@@ -175,7 +108,7 @@ fun VoiceScreen(
                 hints = hints,
                 onDismissHint = onDismissHint,
                 onSelectRole = onSelectRole,
-                onStartSession = startVoice,
+                onStartSession = { _, _ -> onOpenVoice() },
                 onRetryStatus = onRetryStatus,
             )
         }
@@ -207,20 +140,6 @@ fun VoiceScreen(
             )
         }
       }
-    }
-    reportedAnswer?.let { (sessionId, line) ->
-        BugReportDialog(
-            repository = (context.applicationContext as HskAiApplication).featureRepository,
-            screenshot = null,
-            screen = "ai_voice",
-            initialDescription = context.getString(
-                R.string.assistant_report_prefill,
-                sessionId.take(80),
-                listOf(line.hanzi, line.pinyin, line.text, line.translation, line.correction.orEmpty())
-                    .filter { it.isNotBlank() }.distinct().joinToString("\n").take(350),
-            ),
-            onDismiss = { reportedAnswer = null },
-        )
     }
 }
 
@@ -307,15 +226,19 @@ private fun VoiceHome(
     }
 }
 
-/** Mini App `.voicebox`. */
+/**
+ * The AI Voice card as the start of the V8 call: black, the call's orb, the
+ * topic the call opens with, and one red "Start conversation" pill.
+ */
 @Composable
 private fun VoiceBox(
     state: VoiceUiState,
     onStart: () -> Unit,
 ) {
-    val boxSurface = if (PompColors.IsDark) PompColors.PaperRaised else PompColors.Ink
-    val boxInk = if (PompColors.IsDark) PompColors.Ink else PompColors.Paper
-    val boxMuted = if (PompColors.IsDark) PompColors.InkSecondary else Color.White.copy(alpha = 0.72f)
+    val topic = VoiceV8Topic.forRole(state.selectedRole)
+    val enabled = canStartVoice(state)
+    val interaction = remember { MutableInteractionSource() }
+    val pressed by interaction.collectIsPressedAsState()
     val quotaText = when {
         state.isLoading -> stringResource(R.string.hsk_common_state_loading)
         state.status == null -> stringResource(R.string.error_voice_unavailable)
@@ -326,48 +249,70 @@ private fun VoiceBox(
         )
     }
     Surface(
-        color = boxSurface,
-        shape = RoundedCornerShape(18.dp),
-        border = if (PompColors.IsDark) BorderStroke(1.dp, PompColors.Divider) else null,
+        color = Color.Black,
+        shape = RoundedCornerShape(24.dp),
+        border = BorderStroke(1.dp, Color(0xFF262626)),
         modifier = Modifier.fillMaxWidth(),
     ) {
         Column(
-            modifier = Modifier.padding(20.dp),
+            modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 26.dp, bottom = 22.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            CoursePandaMascot(mood = PandaMood.Talk, modifier = Modifier.size(90.dp))
-            Spacer(Modifier.height(8.dp))
+            VoiceV8HomeOrb(Modifier.size(112.dp))
+            Spacer(Modifier.height(16.dp))
             Text(
                 text = stringResource(R.string.hsk_course_voice_title),
-                style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
-                fontWeight = FontWeight.Medium,
-                color = boxInk,
+                style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp, letterSpacing = (-0.2).sp),
+                fontWeight = FontWeight.SemiBold,
+                color = Color.White,
                 textAlign = TextAlign.Center,
             )
             Spacer(Modifier.height(4.dp))
             Text(
-                text = stringResource(R.string.voice_box_body),
-                style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
-                color = boxMuted,
+                text = stringResource(topic.titleRes) + " · " + topic.zh,
+                style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp, lineHeight = 18.sp),
+                color = Color(0xFFB5B5B8),
                 textAlign = TextAlign.Center,
             )
             Spacer(Modifier.height(12.dp))
             Text(
                 text = quotaText,
-                style = MaterialTheme.typography.labelMedium,
-                color = boxMuted,
+                style = MaterialTheme.typography.labelMedium.copy(lineHeight = 17.sp),
+                color = Color(0xFF8E8E91),
                 textAlign = TextAlign.Center,
             )
-            Spacer(Modifier.height(16.dp))
-            HskPrimaryButton(
-                text = stringResource(R.string.hsk_course_voice_start),
-                onClick = onStart,
-                enabled = canStartVoice(state),
-                loading = state.isStarting,
-                // Full width inside the card: a long ru/tg label then wraps
-                // with the card instead of pushing past its padding.
-                modifier = Modifier.fillMaxWidth(),
-            )
+            Spacer(Modifier.height(18.dp))
+            // Full width up to 300 dp: a long ru/tg label wraps inside the pill.
+            Box(
+                modifier = Modifier
+                    .widthIn(max = 300.dp)
+                    .fillMaxWidth()
+                    .heightIn(min = 48.dp)
+                    .graphicsLayer { alpha = if (enabled) 1f else 0.55f }
+                    .clip(RoundedCornerShape(24.dp))
+                    .background(if (pressed && enabled) Color(0xFFB23530) else Color(0xFFE04A40))
+                    .clickable(
+                        enabled = enabled && !state.isStarting,
+                        interactionSource = interaction,
+                        indication = null,
+                        role = Role.Button,
+                        onClick = onStart,
+                    )
+                    .padding(horizontal = 22.dp, vertical = 12.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                if (state.isStarting) {
+                    CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp, color = Color.White)
+                } else {
+                    Text(
+                        text = stringResource(R.string.hsk_course_voice_start),
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.White,
+                        textAlign = TextAlign.Center,
+                    )
+                }
+            }
         }
     }
 }
@@ -403,172 +348,6 @@ private fun RoleCard(
                     color = PompColors.InkSecondary,
                 )
             }
-        }
-    }
-}
-
-/** The five partners the backend offers, behind the conversation's own gear. */
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-internal fun PartnerPicker(
-    current: String,
-    onPick: (String) -> Unit,
-    onDismiss: () -> Unit,
-) {
-    val sheetState = rememberModalBottomSheetState()
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        sheetState = sheetState,
-        containerColor = PompColors.PaperRaised.copy(
-            alpha = if (PompColors.IsDark) 0.98f else 0.94f,
-        ),
-    ) {
-        Column(Modifier.padding(horizontal = 20.dp, vertical = 8.dp)) {
-            Text(
-                text = stringResource(R.string.hsk_course_voice_page_opt_persona),
-                style = MaterialTheme.typography.titleMedium,
-                color = PompColors.Ink,
-            )
-            Spacer(Modifier.height(10.dp))
-            VOICE_PARTNERS.forEach { role ->
-                val selected = role.id == current
-                HskGlassSurface(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp),
-                    shape = RoundedCornerShape(14.dp),
-                    shadowElevation = 4.dp,
-                    borderColor = if (selected) PompColors.Cinnabar else null,
-                    onClick = { onPick(role.id) },
-                ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    ) {
-                        Text(
-                            text = role.glyph,
-                            style = PompTextStyles.hanziSmall,
-                            color = if (selected) PompColors.Cinnabar else PompColors.InkSecondary,
-                        )
-                        Column(Modifier.weight(1f)) {
-                            Text(
-                                text = stringResource(role.titleRes),
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = PompColors.Ink,
-                            )
-                            Text(
-                                text = stringResource(role.bodyRes),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = PompColors.InkSecondary,
-                            )
-                        }
-                    }
-                }
-            }
-            Spacer(Modifier.height(16.dp))
-        }
-    }
-}
-
-private val VOICE_PARTNERS = listOf(
-    VoiceRoleSpec("friend", R.string.voice_role_friend, R.string.voice_role_friend_body, "友"),
-    VoiceRoleSpec("teacher_li", R.string.voice_role_teacher, R.string.voice_role_teacher_body, "师"),
-    VoiceRoleSpec("seller", R.string.voice_role_seller, R.string.voice_role_seller_body, "店"),
-    VoiceRoleSpec("classmate", R.string.voice_role_classmate, R.string.voice_role_classmate_body, "同"),
-    VoiceRoleSpec("manager_wang", R.string.voice_role_manager, R.string.voice_role_manager_body, "王"),
-)
-
-internal fun partnerTitleRes(role: String): Int =
-    VOICE_PARTNERS.firstOrNull { it.id == role }?.titleRes ?: R.string.voice_session_title
-
-@Composable
-internal fun VoiceBubble(line: VoiceLine, subtitlesOn: Boolean = true, onReport: (() -> Unit)? = null) {
-    val isUser = line.speaker == VoiceSpeaker.USER
-    if (isUser) {
-        Surface(
-            color = PompColors.CinnabarSoft,
-            shape = RoundedCornerShape(18.dp),
-            border = BorderStroke(1.dp, PompColors.Cinnabar),
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            VoiceBubbleBody(line = line, isUser = true, subtitlesOn = subtitlesOn)
-        }
-    } else {
-        HskGlassSurface(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(18.dp),
-            shadowElevation = 5.dp,
-        ) {
-            VoiceBubbleBody(line = line, isUser = false, subtitlesOn = subtitlesOn, onReport = onReport)
-        }
-    }
-}
-
-@Composable
-private fun VoiceBubbleBody(line: VoiceLine, isUser: Boolean, subtitlesOn: Boolean, onReport: (() -> Unit)? = null) {
-    Column(Modifier.padding(16.dp)) {
-        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = if (isUser) stringResource(R.string.hsk_course_you) else stringResource(R.string.voice_ai),
-                style = MaterialTheme.typography.labelLarge,
-                color = if (isUser) PompColors.CinnabarDark else PompColors.Jade,
-                modifier = Modifier.weight(1f),
-            )
-            if (!isUser && onReport != null) VoiceAnswerReportAction(line, onReport)
-        }
-        if (line.hanzi.isNotBlank()) {
-            Text(
-                text = line.hanzi,
-                style = PompTextStyles.hanziMedium,
-                color = PompColors.Ink,
-            )
-        }
-        // Subtitles off means the Chinese stands alone — the learner
-        // is listening, not reading along.
-        if (subtitlesOn && line.pinyin.isNotBlank()) {
-            Text(
-                text = line.pinyin,
-                style = PompTextStyles.pinyin,
-                color = PompColors.InkSecondary,
-            )
-        }
-        if (subtitlesOn || line.hanzi.isBlank()) {
-            Text(
-                text = line.text.ifBlank { line.translation },
-                style = MaterialTheme.typography.bodyLarge,
-                color = PompColors.Ink,
-            )
-        }
-        line.correction?.takeIf { it.isNotBlank() }?.let {
-            Spacer(Modifier.height(8.dp))
-            Text(
-                text = stringResource(R.string.voice_correction, it),
-                style = MaterialTheme.typography.bodyMedium,
-                color = PompColors.Flame,
-                fontWeight = FontWeight.SemiBold,
-            )
-        }
-    }
-}
-
-@Composable
-private fun VoiceAnswerReportAction(line: VoiceLine, onReport: () -> Unit) {
-    var expanded by remember(line) { mutableStateOf(false) }
-    Box {
-        IconButton(onClick = { expanded = true }, modifier = Modifier.size(48.dp)) {
-            Icon(
-                Icons.Default.MoreHoriz,
-                contentDescription = stringResource(R.string.assistant_more_actions),
-                tint = PompColors.InkSecondary,
-            )
-        }
-        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            DropdownMenuItem(
-                text = { Text(stringResource(R.string.assistant_report_answer)) },
-                leadingIcon = { Icon(Icons.Default.Flag, contentDescription = null) },
-                onClick = { expanded = false; onReport() },
-            )
         }
     }
 }
@@ -701,13 +480,6 @@ internal fun ErrorPill(text: String) {
         )
     }
 }
-
-/**
- * Roughly what `CallDock` covers at the bottom of a call: the "what to say"
- * pill, the microphone and the line under it. The assistant button stays above
- * this instead of parking itself on the microphone.
- */
-private val VOICE_DOCK_HEIGHT = 168.dp
 
 private fun canStartVoice(state: VoiceUiState): Boolean {
     val status = state.status ?: return false

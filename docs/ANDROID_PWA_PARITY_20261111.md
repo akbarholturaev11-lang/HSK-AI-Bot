@@ -44,6 +44,8 @@ Paths below are repository-relative. “Existing” means verified implementatio
 
 ## Automated evidence and remaining acceptance
 
+The [guest entry follow-up](../openspec/changes/android-li-guest-onboarding/proposal.md) corrects the original native auth-first sequence: with the native Li flag enabled, first-time learners choose a study plan before provider signup; returning learners can go directly to login. The local draft is armed only from signup, expires after 30 minutes, and can be consumed once after bearer status. Server freshness and track access are checked again before writing. This follow-up does not change the shipped APK, the rollout switch or the browser flow.
+
 Li choice UI uses the PWA's header arrow/progress, compact Panda speech bubble, choice cards and separate single-action footer. Emulator checks cover all five daily-time choices at 320 × 700 dp in UZ/RU/TJ, fixed-footer scrolling at 320 × 510 dp, top-back and primary-action callbacks, and the ineligible Pro case. The shipped legacy form is still used when the native switch is off.
 
 Real disposable PostgreSQL: four Lava concurrency tests passed, including native claim/shared offer/duplicate verification; this suite is also wired into the isolated CI PostgreSQL job.

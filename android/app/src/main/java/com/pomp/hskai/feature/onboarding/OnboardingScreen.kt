@@ -68,6 +68,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.progressBarRangeInfo
@@ -365,12 +366,19 @@ fun OnboardingScreen(
     onBack: () -> Unit,
     onNext: () -> Unit,
     modifier: Modifier = Modifier,
+    guestEntry: Boolean = false,
 ) {
-    BackHandler(enabled = state.step > 0 && !state.submitting, onBack = onBack)
+    BackHandler(enabled = (state.step > 0 || guestEntry) && !state.submitting, onBack = onBack)
     val context = LocalContext.current
-    val copy = remember(language, context) {
+    val bundledCopy = remember(language, context) {
         OnboardingCopy.forLanguage(language).withBundledCatalog(context, language)
     }
+    val copy = if (guestEntry) bundledCopy.copy(
+        hello = stringResource(R.string.li_copy_hello),
+        boot = stringResource(R.string.li_copy_intro),
+        start = stringResource(R.string.li_copy_cont),
+        welcomeNote = "",
+    ) else bundledCopy
     val view = LocalView.current
     val configuration = LocalConfiguration.current
     val layoutSpec = remember(configuration.screenWidthDp, configuration.screenHeightDp) {
@@ -434,7 +442,7 @@ fun OnboardingScreen(
                     }
                     .windowInsetsPadding(WindowInsets.safeDrawing),
             ) {
-                if (state.step > 0) {
+                if (state.step > 0 || guestEntry) {
                     OnboardingTopBar(
                         step = state.step,
                         backLabel = copy.back,
@@ -443,7 +451,8 @@ fun OnboardingScreen(
                         motionEnabled = motionEnabled,
                         layoutSpec = layoutSpec,
                         totalSteps = if (state.liEnabled) 5 else 3,
-                        showStepCount = !state.liEnabled,
+                        showStepCount = !state.liEnabled && state.step > 0,
+                        showProgress = state.step > 0,
                     )
                 }
 
@@ -793,7 +802,7 @@ private fun CourseVersionChoiceStep(
 }
 
 @Composable
-private fun SpeechBubble(
+internal fun SpeechBubble(
     text: String,
     centeredTail: Boolean,
     large: Boolean,
@@ -1268,7 +1277,7 @@ internal fun OnboardingFooter(
                 ),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            if (state.step == 0) {
+            if (state.step == 0 && copy.welcomeNote.isNotBlank()) {
                 Text(
                     copy.welcomeNote,
                     color = PompColors.InkSecondary,

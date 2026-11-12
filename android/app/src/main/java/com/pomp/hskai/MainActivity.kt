@@ -56,6 +56,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.pomp.hskai.core.auth.AuthRepository
 import com.pomp.hskai.core.auth.AuthState
+import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.auth.authActivity
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompHskAiTheme
@@ -89,6 +90,10 @@ import com.pomp.hskai.feature.dictionary.DictionaryActions
 import com.pomp.hskai.feature.dictionary.DictionaryScreen
 import com.pomp.hskai.feature.dictionary.DictionaryViewModel
 import com.pomp.hskai.feature.foundation.FoundationActivity
+import com.pomp.hskai.data.api.AndroidOnboardingStatusDto
+import com.pomp.hskai.feature.onboarding.GuestLiDraft
+import com.pomp.hskai.feature.onboarding.LiGuestEntry
+import java.io.IOException
 import com.pomp.hskai.feature.onboarding.OnboardingScreen
 import com.pomp.hskai.feature.onboarding.OnboardingViewModel
 import com.pomp.hskai.feature.profile.IdentitiesViewModel
@@ -141,6 +146,10 @@ import com.pomp.hskai.feature.rating.RatingTab
 import com.pomp.hskai.feature.rating.RatingUserScreen
 import com.pomp.hskai.feature.rating.RatingViewModel
 import com.pomp.hskai.feature.voice.VoiceScreen
+import com.pomp.hskai.feature.voice.VoiceV8Actions
+import com.pomp.hskai.feature.voice.VoiceV8Prefs
+import com.pomp.hskai.feature.voice.VoiceV8Topic
+import com.pomp.hskai.feature.voice.VoiceV8Screen
 import com.pomp.hskai.feature.voice.VoiceViewModel
 import java.util.UUID
 import java.time.LocalDate
@@ -293,27 +302,68 @@ private fun AppRoot(
                     viewModel.loadProviders()
                 }
             }
-            LinkScreen(
-                state = linkState,
-                language = loginLanguage,
-                onLanguageSelected = { language ->
-                    loginLanguage = language
-                    if (AppLocale.choose(localeHost, language)) {
-                        localeHost.authActivity()?.recreate()
+            var previewLoaded by remember { mutableStateOf(false) }
+            var preview by remember { mutableStateOf<AndroidOnboardingStatusDto?>(null) }
+            var initialDraft by remember { mutableStateOf<GuestLiDraft?>(null) }
+            LaunchedEffect(Unit) {
+                preview = app.onboardingRepository.guestPreview()
+                if (preview != null) initialDraft = app.guestLiDraftStore.read()
+                previewLoaded = true
+            }
+            val chooseLanguage: (AppLanguage) -> Unit = { language ->
+                loginLanguage = language
+                if (AppLocale.choose(localeHost, language)) localeHost.authActivity()?.recreate()
+            }
+            val provider: @Composable (Boolean, (() -> Unit)?) -> Unit = { signup, onBack ->
+                val providerScope = rememberCoroutineScope()
+                var draftError by remember { mutableStateOf(false) }
+                fun startProvider(action: () -> Unit) {
+                    providerScope.launch {
+                        draftError = false
+                        try {
+                            if (signup) {
+                                if (!app.guestLiDraftStore.arm()) {
+                                    draftError = true
+                                    return@launch
+                                }
+                            } else app.guestLiDraftStore.clear()
+                            action()
+                        } catch (_: IOException) {
+                            draftError = true
+                        }
                     }
-                },
-                onContinueWithTelegram = {
-                    viewModel.continueWithTelegram(AppLocale.current(localeHost))
-                },
-                onSignInWithGoogle = {
-                    viewModel.signInWithGoogle(localeHost.authActivity(), AppLocale.current(localeHost))
-                },
-                onSignInWithApple = { viewModel.signInWithApple(AppLocale.current(localeHost)) },
-                onBrowserUrlOpened = viewModel::browserUrlOpened,
-                onTelegramUrlOpened = viewModel::telegramUrlOpened,
-                onExternalLaunchFailed = viewModel::externalLaunchFailed,
-                onDismissWaiting = viewModel::dismissWaiting,
-            )
+                }
+                LinkScreen(
+                    state = if (draftError) linkState.copy(error = ApiError.Unknown) else linkState,
+                    language = loginLanguage,
+                    onLanguageSelected = chooseLanguage,
+                    onContinueWithTelegram = {
+                        startProvider { viewModel.continueWithTelegram(AppLocale.current(localeHost)) }
+                    },
+                    onSignInWithGoogle = {
+                        startProvider { viewModel.signInWithGoogle(localeHost.authActivity(), AppLocale.current(localeHost)) }
+                    },
+                    onSignInWithApple = {
+                        startProvider { viewModel.signInWithApple(AppLocale.current(localeHost)) }
+                    },
+                    onBrowserUrlOpened = viewModel::browserUrlOpened,
+                    onTelegramUrlOpened = viewModel::telegramUrlOpened,
+                    onExternalLaunchFailed = viewModel::externalLaunchFailed,
+                    onDismissWaiting = viewModel::dismissWaiting,
+                    signup = signup,
+                    onBack = onBack,
+                )
+            }
+            val availablePreview = preview
+            when {
+                !previewLoaded -> LaunchWaitScreen()
+                availablePreview == null -> provider(false, null)
+                else -> LiGuestEntry(
+                    repository = app.onboardingRepository, preview = availablePreview, initialDraft = initialDraft,
+                    owner = sessionOwner, language = loginLanguage, onLanguageSelected = chooseLanguage,
+                    saveDraft = app.guestLiDraftStore::save, provider = provider,
+                )
+            }
         }
 
         is AuthState.SignedIn -> {
@@ -350,6 +400,9 @@ private fun AppRoot(
                 factory = OnboardingViewModel.Factory(
                     repository = app.onboardingRepository,
                     language = state.account.language.backendCode,
+                    claimGuestDraft = {
+                        try { app.guestLiDraftStore.takeArmed() } catch (_: IOException) { null }
+                    },
                 ),
             )
             val onboardingState by onboardingViewModel.state.collectAsStateWithLifecycle()
@@ -714,10 +767,15 @@ private fun AppRoot(
 
             val dailyGoal by app.appSettings.dailyGoal
                 .collectAsStateWithLifecycle(initialValue = DailyGoal.DEFAULT)
-            val voiceSubtitles by app.appSettings.voiceSubtitles
-                .collectAsStateWithLifecycle(initialValue = true)
-            val voiceSlowSpeech by app.appSettings.voiceSlowSpeech
+            // AI Voice V8 settings sheet; defaults match the PWA's switches.
+            val voiceV8Pinyin by app.appSettings.voiceV8Pinyin
                 .collectAsStateWithLifecycle(initialValue = false)
+            val voiceV8Translation by app.appSettings.voiceV8Translation
+                .collectAsStateWithLifecycle(initialValue = true)
+            val voiceV8Backdrop by app.appSettings.voiceV8Backdrop
+                .collectAsStateWithLifecycle(initialValue = true)
+            // The open V8 conversation's topic; null while it is closed.
+            var voiceV8Topic by rememberSaveable { mutableStateOf<String?>(null) }
             // Starts as "seen" so the primer cannot flash on top of the app
             // in the moment before the store has been read.
             val notificationPrimerSeen by app.appSettings.notificationPrimerSeen
@@ -755,7 +813,6 @@ private fun AppRoot(
                     }
                 }
             }
-            LaunchedEffect(voiceSlowSpeech) { voiceViewModel.setSlowSpeech(voiceSlowSpeech) }
             var goalPickerOpen by remember { mutableStateOf(false) }
             var practiceRequest by remember { mutableStateOf<PracticeRequest?>(null) }
             var openDrill by remember { mutableStateOf<DrillLaunch?>(null) }
@@ -913,6 +970,7 @@ private fun AppRoot(
 
             val currentLanguage = state.account.language.backendCode
             LaunchedEffect(selectedTab, voiceViewModel) {
+                if (selectedTab != MainTab.VOICE) voiceV8Topic = null
                 val voice = voiceViewModel.state.value
                 if (selectedTab != MainTab.VOICE && (voice.hasSession || voice.isStarting)) {
                     voiceViewModel.endSession()
@@ -1453,12 +1511,9 @@ private fun AppRoot(
                     },
                 )
             } else {
-                // A running AI Voice conversation takes the whole screen:
-                // the tabs are not a place to leave a call from, the Close
-                // button is, and the Mini App shows no tabs there either.
-                val voiceCallActive = selectedTab == MainTab.VOICE &&
-                    voiceState.hasSession &&
-                    voiceState.result == null
+                // The AI Voice V8 conversation takes the whole screen, as the
+                // PWA page does: no tabs there, Back or Close leaves it.
+                val voiceV8Open = selectedTab == MainTab.VOICE && voiceV8Topic != null
                 val practiceImmersive = selectedTab == MainTab.PRACTICE && practiceState.isImmersive
 
                 // Kurs is the home screen: back from any other tab lands on it,
@@ -1483,7 +1538,7 @@ private fun AppRoot(
                                 else -> selectedTab = it
                             }
                         },
-                        bottomBarVisible = !voiceCallActive && !practiceImmersive &&
+                        bottomBarVisible = !voiceV8Open && !practiceImmersive &&
                             !(selectedTab == MainTab.PROFILE && profileSettingsOpen),
                         topNotice = reconnect?.let { retry ->
                             { OfflineBanner(retrying = retry.retrying, onRetry = retry::retryNow) }
@@ -1572,22 +1627,11 @@ private fun AppRoot(
                                 limit = limitGate,
                                 hints = hints,
                                 onDismissHint = hintsViewModel::dismiss,
-                                subtitlesOn = voiceSubtitles,
-                                slowSpeech = voiceSlowSpeech,
-                                onToggleSubtitles = { on ->
-                                    scope.launch { app.appSettings.setVoiceSubtitles(on) }
-                                },
-                                onToggleSlowSpeech = { slow ->
-                                    scope.launch { app.appSettings.setVoiceSlowSpeech(slow) }
-                                },
                                 onSelectRole = voiceViewModel::selectRole,
-                                onStartSession = voiceViewModel::startSession,
-                                onToggleRecording = voiceViewModel::toggleRecording,
-                                onSendText = voiceViewModel::sendTypedMessage,
-                                onEndSession = voiceViewModel::endSession,
-                                onSwapPartner = { role ->
-                                    voiceViewModel.swapPartner(role, currentLevel, currentLanguage)
+                                onOpenVoice = {
+                                    voiceV8Topic = VoiceV8Topic.forRole(voiceState.selectedRole).id
                                 },
+                                onEndSession = voiceViewModel::endSession,
                                 onReset = voiceViewModel::reset,
                                 onRetryStatus = voiceViewModel::loadStatus,
                                 modifier = contentModifier,
@@ -1694,6 +1738,46 @@ private fun AppRoot(
                                 onDismissAccountDeletion = accountDeletionViewModel::dismiss,
                             )
                         }
+                    }
+
+                    if (voiceV8Open) {
+                        VoiceV8Screen(
+                            state = voiceState,
+                            topicId = voiceV8Topic ?: VoiceV8Topic.FREE.id,
+                            onTopicSelected = { voiceV8Topic = it },
+                            prefs = VoiceV8Prefs(
+                                pinyin = voiceV8Pinyin,
+                                translation = voiceV8Translation,
+                                backdrop = voiceV8Backdrop,
+                            ),
+                            onPrefsChange = { next ->
+                                scope.launch {
+                                    app.appSettings.setVoiceV8Pinyin(next.pinyin)
+                                    app.appSettings.setVoiceV8Translation(next.translation)
+                                    app.appSettings.setVoiceV8Backdrop(next.backdrop)
+                                }
+                            },
+                            limit = limitGate,
+                            actions = VoiceV8Actions(
+                                startFromMicrophone = { live ->
+                                    voiceViewModel.startFromMicrophone(currentLevel, currentLanguage, live)
+                                },
+                                startWithText = { text ->
+                                    voiceViewModel.startWithText(currentLevel, currentLanguage, text)
+                                },
+                                toggleRecording = voiceViewModel::toggleRecording,
+                                sendText = voiceViewModel::sendTypedMessage,
+                                endSession = voiceViewModel::endSession,
+                                changeTopic = voiceViewModel::changeTopic,
+                                selectRole = voiceViewModel::selectRole,
+                                cancelRecording = voiceViewModel::cancelRecording,
+                                restart = voiceViewModel::reset,
+                                exit = {
+                                    voiceViewModel.exitConversation()
+                                    voiceV8Topic = null
+                                },
+                            ),
+                        )
                     }
 
                     if (widgetSetupOpen) {

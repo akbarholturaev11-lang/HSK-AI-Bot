@@ -2445,6 +2445,14 @@ async def desktop_install_screenshot(filename: str):
     )
 
 
+@app.get("/assets/voice-v8/{filename}")
+async def pwa_voice_topic_photo(filename: str):
+    import re
+    if not re.fullmatch(r"(?:free|daily|shopping|food|travel|school|friends|work|hsk)\.jpg", filename):
+        return JSONResponse(status_code=404, content={"error": "not_found"})
+    return static_asset_response(f"app/static/assets/voice-v8/{filename}", "image/jpeg")
+
+
 @app.get("/assets/onboarding/iphone-install-home-focus.jpg")
 async def li_iphone_install_hero_image():
     """Fixed reviewed user-provided Home Screen image, no dynamic path."""
