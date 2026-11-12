@@ -514,7 +514,9 @@ async def browser_checks(output):
         fresh=page.locator('.analytics-panel',has=page.locator('h2',has_text=fresh_title))
         await expect(fresh.locator('tbody tr')).to_have_count(6)
         updated=[await fresh.locator('tbody tr').nth(i).locator('td').nth(2).inner_text() for i in range(6)]
-        assert updated[0]=='—' and updated[2]!='—' and updated[3]!='—' and updated[4]=='—', updated
+        # Rows: Android, Telegram, PWA × learning, payments. The R1 Android start and
+        # the R2 PWA rows are verified learning, so only Android and PWA payments stay dashed.
+        assert [value=='—' for value in updated]==[False,True,False,False,False,True], updated
         fresh_text=await fresh.inner_text()
         for secret in ('2002','"client"','telegram_bot'):
             assert secret not in fresh_text, secret
@@ -573,7 +575,8 @@ async def browser_checks(output):
                         # Course open: Android not_applicable, Telegram not_instrumented, PWA not
                         # audited. The cross-app return series is Overall-only (not_instrumented).
                         # R2: PWA activation is attributed, so its card is available.
-                        await expect(page.locator('.metric[data-state=not_instrumented]')).to_have_count({'android':9,'telegram':9,'iphone_pwa':6}[platform])
+                        # R4: D1/D7 return is attributed on every platform.
+                        await expect(page.locator('.metric[data-state=not_instrumented]')).to_have_count({'android':7,'telegram':7,'iphone_pwa':4}[platform])
                         await expect(page.locator('.metric[data-state=not_applicable]')).to_have_count(2 if platform=='android' else 0)
                         # The Telegram completion shows under Telegram only; Android is a real zero.
                         lessons=page.locator('.stat-info-row',has_text=labels['analyticsCompletedUserLessons']).locator('strong')
@@ -584,6 +587,7 @@ async def browser_checks(output):
                         # R2: the Telegram -> PWA row and both cohort boundaries show under the PWA only.
                         handoff=page.locator('.analytics-panel tr',has_text=labels['analyticsHandoffActivation'])
                         await expect(handoff).to_have_count(1 if platform=='iphone_pwa' else 0)
+                        await expect(page.locator('.analytics-since',has_text=labels['analyticsPlatformReturnNote']+' · ')).to_have_count(1)
                         for key in ('analyticsActivation','analyticsHandoffActivation'):
                             await expect(page.locator('.analytics-since',has_text=labels[key]+' · ')).to_have_count(1 if platform=='iphone_pwa' else 0)
                         if platform=='iphone_pwa':

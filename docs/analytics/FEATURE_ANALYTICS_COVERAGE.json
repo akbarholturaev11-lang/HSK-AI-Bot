@@ -434,11 +434,11 @@
         "windows": {"status": "not_applicable", "reason": "The legacy course-open series does not use Desktop app activity; Desktop freeze."}
       }
     },
-    {"section": "course", "key": "return_retention", "kind": "metric", "filters": ["overall"],
+    {"section": "course", "key": "return_retention", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
       "platforms": {
-        "android": {"status": "not_instrumented", "reason": "D5: an Overall series. Android opens (A1) are verified, but the cohort has no platform-of-registration signal, so a per-platform cohort is not defined."},
-        "telegram": {"status": "not_instrumented", "reason": "D5: an Overall series; A3 Mini App opens carry no exclusive Telegram signal."},
-        "iphone_pwa": {"status": "not_instrumented", "reason": "D5: an Overall series. PWA opens (A4) are verified, but the cohort has no platform-of-registration signal, so a per-platform cohort is not defined."},
+        "android": {"status": "covered", "reason": "R4: cohort is each account's first verified Android use (android_first_open, android_app_opened, android_course completions for all history; android-tagged learning outcomes from attributed_since on); a return is Android use 24-48 h (D1) or 168-192 h (D7) later. Matured cohorts as in Overall.", "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_first_use_returns_reach_each_platform_filter"},
+        "telegram": {"status": "covered", "reason": "R4: cohort is each account's first telegram-tagged learning outcome from the Telegram boundary on; a return is a later telegram-tagged learning outcome. A3: Mini App opens have no exclusive signal, so this is a learning return.", "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_first_use_returns_reach_each_platform_filter"},
+        "iphone_pwa": {"status": "covered", "reason": "R4: cohort is each account's first verified PWA use (A4 course-map opens with the route-owned pwa-course-v3: key for all history; iphone_pwa-tagged learning outcomes from attributed_since on); a return is PWA use in the D1/D7 window.", "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_first_use_returns_reach_each_platform_filter"},
         "macos": {"status": "not_instrumented", "reason": "Desktop opens feed the Overall series; no Desktop cohort; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "Desktop opens feed the Overall series; no Desktop cohort; Desktop freeze."}
       }

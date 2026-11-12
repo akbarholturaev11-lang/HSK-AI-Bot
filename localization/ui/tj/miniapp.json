@@ -1162,6 +1162,7 @@
     "ui.admin_pwa.analyticsCheckpoint": "Checkpoint → paywall · 24 соат",
     "ui.admin_pwa.analyticsDirectStart": "Direct start → дарс · 2 дақиқа",
     "ui.admin_pwa.analyticsHandoffActivation": "Telegram → PWA → дарс · 24 соат",
+    "ui.admin_pwa.analyticsPlatformReturnNote": "Бозгашт: аз истифодаи аввали ҳамин платформа (Telegram — танҳо омӯзиш)",
     "ui.admin_pwa.analyticsTaggedCac": "Маркетинги нишонадор / пардохткунандаи нав",
     "ui.admin_pwa.analyticsDays": "рӯз",
     "ui.admin_pwa.analyticsHours": "соат",

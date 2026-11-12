@@ -13,6 +13,7 @@ route writes the server-only `android_lesson_started`.
 
 Next-stage R2 adds PWA activation: `/api/v3/pwa/onboarding` tags the cohort
 anchor, and `/api/v3/pwa-auth/handoff/redeem` writes the handoff anchor.
+Next-stage R4 adds D1/D7 return per platform from each account's first use.
 
 Each client completes a different number of lessons, so a value that leaked
 into another filter would change that filter's count.
@@ -155,8 +156,8 @@ class CoursePlatformChainTests(unittest.IsolatedAsyncioTestCase):
             await db.commit()
         return {"Authorization": "Bearer " + linked["access_token"]}
 
-    async def complete_lessons(self, start, complete, headers, count):
-        for lesson in range(1, count + 1):
+    async def complete_lessons(self, start, complete, headers, count, first=1):
+        for lesson in range(first, first + count):
             body = {"lesson_id": lesson, "level": "hsk1"}
             started = await self.client.post(start, headers=headers, json=body)
             self.assertEqual(started.status_code, 200, started.text)
@@ -315,6 +316,41 @@ class CoursePlatformChainTests(unittest.IsolatedAsyncioTestCase):
         telegram_view = await self.admin_read("telegram")
         self.assertEqual(telegram_view["metric_states"]["activation"]["state"], "unavailable")
         self.assertNotIn("handoff_activation", telegram_view["metrics"])
+
+    async def age_rows(self, hours):
+        async with self.sessions() as db:
+            await db.execute(update(Event).values(created_at=Event.created_at - timedelta(hours=hours)))
+            await db.commit()
+
+    async def test_first_use_returns_reach_each_platform_filter(self):
+        telegram, pwa_browser, android = self.telegram_headers(), await self.pwa_headers(), await self.android_headers()
+        async def learn(lesson):
+            await self.complete_lessons("/api/v3/lesson/start", "/api/v3/lesson/complete", telegram, 1, lesson)
+            await self.complete_lessons("/api/v3/pwa/lesson/start", "/api/v3/pwa/lesson/complete",
+                                        pwa_browser, 1, lesson)
+            # A completed lesson is recorded once per account, so the Android
+            # account's own lessons follow its Telegram lesson 1.
+            done = await self.client.post("/api/v3/android/course/complete", headers=android,
+                                          json={"lesson_order": lesson + 1, "event_id": f"android:{lesson:032x}"})
+            self.assertEqual(done.status_code, 200, done.text)
+        # First use on each client; the Android account also learns once in Telegram.
+        await self.complete_lessons("/api/v3/lesson/start", "/api/v3/lesson/complete",
+                                    self.telegram_headers(ANDROID_TELEGRAM_ID), 1)
+        await learn(1)
+        await self.age_rows(30)
+        # 30 hours later each account returns on its own client only (D1 window).
+        await learn(2)
+        await self.age_rows(48)  # the D1 cohort is now mature
+
+        views = {platform: await self.admin_read(platform) for platform in ("android", "telegram", "iphone_pwa")}
+        returns = {platform: (view["metrics"]["return_retention"]["d1"]["eligible"],
+                              view["metrics"]["return_retention"]["d1"]["returned"])
+                   for platform, view in views.items()}
+        # The Android account's return was on Android, so it is not a Telegram return.
+        self.assertEqual(returns, {"android": (1, 1), "telegram": (2, 1), "iphone_pwa": (1, 1)})
+        for platform, view in views.items():
+            self.assertEqual(view["metric_states"]["return_retention"], {"state": "available", "reason": None})
+            self.assertIsNotNone(view["metrics"]["attributed_since"]["return_retention"], platform)
 
 
 if __name__ == "__main__":

@@ -6,8 +6,10 @@ from sqlalchemy import and_, func, or_, select
 from sqlalchemy.orm import aliased
 
 from app.admin_api.pwa_analytics_learning import (
-    activation_query, activation_values, bounded_rows, foundation_query, foundation_summary, owner, ratio,
+    RETURN_LEARNING_EVENTS, activation_query, activation_values, bounded_rows, foundation_query,
+    foundation_summary, owner, ratio, shift,
 )
+from app.admin_api.pwa_analytics_platforms import PWA_MAP_OPEN_PREFIX
 from app.admin_api.pwa_metrics import _window
 from app.admin_api.pwa_read import _user_segment_clause
 from app.db.models.course_miniapp_event import CourseMiniAppEvent as Event
@@ -45,6 +47,9 @@ ANDROID_COMPLETION_SOURCE = 'android_course'
 HANDOFF_COMPLETED = 'pwa_handoff_completed'
 HANDOFF_STEPS = ('lesson_started', *COMPLETED)
 HANDOFF_WINDOW = timedelta(hours=24)
+# R4: D1/D7 return per platform, from each account's first verified use of it.
+ANDROID_OPENS = ('android_first_open', 'android_app_opened')
+RETURN_LEARNING = (*RETURN_LEARNING_EVENTS, ANDROID_LESSON_STARTED)
 
 
 def handoff_values(rows, *, now):
@@ -81,6 +86,64 @@ async def _pwa_activation(db, *, boundary, since, now):
     return {'activation': activation, 'direct_activation': direct,
             'handoff_activation': None if handoff_rows is None else handoff_values(handoff_rows, now=now),
             }, since_by_key, limited
+
+
+def platform_use(platform, boundary, model=Event):
+    """Verified use of one platform (R4).
+
+    Android opens and PWA course-map opens are written by the server under a
+    name or dedupe key that only that client's route writes, so they count for
+    all history. Learning outcomes count by the route-set final client key,
+    from the platform boundary on. Telegram opens have no exclusive signal
+    (A3), so Telegram use is learning only."""
+    signals = []
+    if platform == 'android':
+        signals += [model.event_name.in_(ANDROID_OPENS),
+                    and_(model.event_name.in_(COMPLETED), model.source == ANDROID_COMPLETION_SOURCE)]
+    if platform == PWA:
+        signals.append(and_(model.event_name == 'miniapp_opened',
+                            model.dedupe_key.like(PWA_MAP_OPEN_PREFIX + '%')))
+    if boundary is not None:
+        signals.append(and_(model.event_name.in_(RETURN_LEARNING), client_tag(platform, model),
+                            model.created_at >= boundary))
+    return or_(*signals) if signals else None
+
+
+async def platform_return_retention(db, *, platform, boundary, since, now):
+    """D1 (24-48 h) and D7 (168-192 h) after each account's first use of this
+    platform, counting only this platform's use as a return. Cohorts mature as
+    in Overall `_cohort_returns`. Returns (series, first use of any account)."""
+    use = platform_use(platform, boundary)
+    if use is None:
+        return None, None
+    first = (select(User.id.label('account'), User.telegram_id.label('telegram_id'),
+                    func.min(Event.created_at).label('first_use'))
+             .select_from(Event).join(User, owner(Event)).where(use, Event.created_at <= now)
+             .group_by(User.id, User.telegram_id).subquery())
+    later = aliased(Event)
+    columns, windows = [func.min(first.c.first_use)], []
+    for days in (1, 7):
+        end = now - timedelta(days=days + 1)
+        start = end - (now - since) if since else None
+        window = (platform_use(platform, boundary, later),
+                  later.created_at >= shift(db, first.c.first_use, days),
+                  later.created_at < shift(db, first.c.first_use, days + 1), later.created_at <= now)
+        # Two EXISTS instead of the OR in `owner`, as in Overall return_retention.
+        owned = select(later.id).where(later.user_id == first.c.account, *window).correlate(first).exists()
+        legacy = select(later.id).where(later.user_id.is_(None), later.telegram_id == first.c.telegram_id,
+                                        later.telegram_id > 0, *window).correlate(first).exists()
+        mature = and_(first.c.first_use <= end, *([first.c.first_use > start] if start else []))
+        columns += [func.count().filter(mature), func.count().filter(and_(mature, or_(owned, legacy)))]
+        windows.append((days, start, end))
+    # One statement, so the first-use aggregation runs once for both windows.
+    started, *counts = (await db.execute(select(*columns).select_from(first))).one()
+    if started is None:
+        return None, None
+    result = {}
+    for (days, start, end), eligible, returned in zip(windows, counts[::2], counts[1::2]):
+        result[f'd{days}'] = {'eligible': eligible, 'returned': returned, 'percent': ratio(returned, eligible),
+                              'cohort_start': start.isoformat() if start else None, 'cohort_end': end.isoformat()}
+    return result, started
 
 
 def client_tag(platform, model=Event):
@@ -136,6 +199,10 @@ async def course_platform_metrics(db, *, platform, since, now):
             features.append({'key': key, 'paid': values[0], 'free': values[1]})
 
     result = {}
+    result['return_retention'], returns_since = await platform_return_retention(
+        db, platform=platform, boundary=boundary, since=since, now=now)
+    if returns_since is not None:
+        attributed_since['return_retention'] = returns_since.isoformat()
     if platform != 'android':
         # The Starter 0 funnel is anchored on each learner's start. Only the
         # start is attributed; the completion, objectives and paywall rows of

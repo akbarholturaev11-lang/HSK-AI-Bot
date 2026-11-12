@@ -251,10 +251,15 @@ class CoursePlatformScopeTests(unittest.IsolatedAsyncioTestCase):
             # R2: the PWA handoff cohort starts at the PWA boundary; there is no
             # PWA-tagged onboarding, so no activation boundary.
             handoff = {"handoff_activation": boundary} if platform == "iphone_pwa" else {}
+            # R4: returns start at the first verified use: Telegram's first tagged
+            # outcome, the fixture's PWA map open 2 days ago.
+            returns = boundary if platform == "telegram" else ago(days=2).isoformat()
             self.assertEqual(self.course(platform)["attributed_since"],
                              {"features": boundary, "foundation": boundary, "completed_user_lessons": boundary,
-                              **handoff})
-        self.assertEqual(self.course("android")["attributed_since"], {"features": ago(hours=6).isoformat()})
+                              "return_retention": returns, **handoff})
+        # Android opens count for all history: the fixture's first is 44 days old.
+        self.assertEqual(self.course("android")["attributed_since"],
+                         {"features": ago(hours=6).isoformat(), "return_retention": ago(days=44).isoformat()})
 
     def test_completed_lessons_per_platform(self):
         self.assertEqual(self.course("telegram")["completed_user_lessons"], 1)
@@ -277,7 +282,7 @@ class CoursePlatformScopeTests(unittest.IsolatedAsyncioTestCase):
     def test_unattributed_course_families_are_not_platform_values(self):
         for platform in PLATFORMS:
             response = self.projections["course", platform, "all_time"]
-            keys = {"features", "completed_user_lessons", "attributed_since", "detail_since"}
+            keys = {"features", "completed_user_lessons", "attributed_since", "detail_since", "return_retention"}
             if platform != "android":
                 keys |= {"foundation", "detail_limited"}
             if platform == "iphone_pwa":
@@ -325,7 +330,8 @@ class AndroidLessonStartScopeTests(unittest.IsolatedAsyncioTestCase):
         # User 1 is paid, user 3 free; user 2's untagged row is not Android.
         self.assertEqual(self.lessons("android"), (1, 1))
         self.assertEqual(self.course("android")["attributed_since"],
-                         {"features": ago(hours=20).isoformat(), "features_lessons": ago(hours=5).isoformat()})
+                         {"features": ago(hours=20).isoformat(), "features_lessons": ago(hours=5).isoformat(),
+                          "return_retention": ago(days=44).isoformat()})
 
     def test_overall_counts_every_start_and_each_account_once(self):
         baseline = self.projections["course", "overall", "weekly"]["metrics"]
@@ -413,6 +419,79 @@ class PwaActivationScopeTests(unittest.IsolatedAsyncioTestCase):
         self.assertIs(self.limited["detail_limited"], True)
         self.assertIsNone(self.limited["activation"])
         self.assertIsNone(self.limited["handoff_activation"])
+
+
+@unittest.skipUnless(URL, "set ANALYTICS_TEST_DATABASE_URL for the real PostgreSQL platform scope tests")
+class PlatformReturnRetentionTests(unittest.IsolatedAsyncioTestCase):
+    """R4: D1/D7 return from each account's first verified use of a platform.
+
+    The baseline fixture already has account 1's Android first open (2 days),
+    app open (5 hours) and Android completion (2 days 54 minutes), its PWA map
+    open (2 days), account 3's Android opens 40 and 44 days ago, and account
+    2's Telegram map open stored with the PWA source but the Telegram key."""
+
+    async def asyncSetUp(self):
+        def event(name, user_id, at, payload=None, source="course_v3", **fields):
+            return CourseMiniAppEvent(event_name=name, user_id=user_id, source=source,
+                payload_json=json.dumps(payload or {}, separators=(",", ":")), created_at=at, **fields)
+
+        def tagged(name, user_id, at, client):
+            return event(name, user_id, at, {"lesson_order": 1, "client": client})
+
+        def pwa_open(user_id, at):
+            return event("miniapp_opened", user_id, at, source="pwa_course_v3",
+                         dedupe_key=f"pwa-course-v3:miniapp-opened:{user_id}-{at.timestamp()}")
+
+        async with postgres_fixture(URL) as sessions:
+            async with sessions() as db:
+                db.add_all([
+                    # Telegram: a tagged learning row before the boundary never anchors.
+                    tagged("section_attempt_scored", 3, ago(days=40), "telegram"),
+                    tagged("lesson_completed", 1, ago(days=25), "telegram"),
+                    tagged("test_completed", 1, ago(days=23, hours=18), "telegram"),
+                    # Account 2 learns in Telegram, then first opens the PWA; its next-day
+                    # PWA open is a PWA return, not a Telegram one.
+                    tagged("training_completed", 2, ago(days=20), "telegram"),
+                    pwa_open(2, ago(days=18, hours=18)),
+                    pwa_open(2, ago(days=17, hours=12)),
+                    # Account 2 on Android: first open 12 days ago, an Android lesson 7 days later.
+                    event("android_app_opened", 2, ago(days=12), source="android_app"),
+                    tagged("android_lesson_started", 2, ago(days=4, hours=22), "android"),
+                    # A client-writable start never counts, and a young cohort is not mature.
+                    tagged("lesson_started", 3, ago(days=30), "telegram"),
+                    tagged("lesson_completed", 3, ago(days=1), "telegram"),
+                ])
+                await db.commit()
+            self.projections = await capture(sessions)
+
+    def returns(self, platform, period="monthly"):
+        series = self.projections["course", platform, period]["metrics"]["return_retention"]
+        return {day: (row["eligible"], row["returned"], row["percent"]) for day, row in series.items()}
+
+    def test_telegram_counts_tagged_learning_from_its_boundary(self):
+        # Accounts 1 and 2 are mature; only account 1 returned to Telegram.
+        self.assertEqual(self.returns("telegram"), {"d1": (2, 1, 50.0), "d7": (2, 0, 0.0)})
+        self.assertEqual(self.projections["course", "telegram", "monthly"]["metrics"]["attributed_since"]
+                         ["return_retention"], ago(days=25).isoformat())
+
+    def test_pwa_cohort_starts_at_the_first_pwa_open(self):
+        # Account 2 enters the PWA cohort 18 days ago, not at its Telegram start.
+        self.assertEqual(self.returns("iphone_pwa"), {"d1": (2, 1, 50.0), "d7": (1, 0, 0.0)})
+        self.assertEqual(self.projections["course", "iphone_pwa", "monthly"]["metrics"]["attributed_since"]
+                         ["return_retention"], ago(days=18, hours=18).isoformat())
+
+    def test_android_counts_opens_and_tagged_learning(self):
+        # Account 1 returns by an app open, account 2 at D7 by a tagged lesson;
+        # account 3's 44-day-old cohort is outside the monthly window.
+        self.assertEqual(self.returns("android"), {"d1": (2, 1, 50.0), "d7": (1, 1, 100.0)})
+        self.assertEqual(self.returns("android", "all_time")["d7"][:2], (2, 1))
+
+    def test_states_and_overall(self):
+        for platform in PLATFORMS:
+            self.assertEqual(self.projections["course", platform, "monthly"]["metric_states"]["return_retention"],
+                             {"state": "available", "reason": None})
+        overall = self.projections["course", "overall", "monthly"]["metrics"]
+        self.assertNotIn("return_retention", overall.get("attributed_since") or {})
 
 
 @unittest.skipUnless(URL, "set ANALYTICS_TEST_DATABASE_URL for the real PostgreSQL platform scope tests")

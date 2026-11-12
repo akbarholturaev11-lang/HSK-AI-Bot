@@ -1162,6 +1162,7 @@
     "ui.admin_pwa.analyticsCheckpoint": "Checkpoint → paywall · 24 часа",
     "ui.admin_pwa.analyticsDirectStart": "Direct start → урок · 2 минуты",
     "ui.admin_pwa.analyticsHandoffActivation": "Telegram → PWA → урок · 24 часа",
+    "ui.admin_pwa.analyticsPlatformReturnNote": "Возврат: от первого использования этой платформы (Telegram — только обучение)",
     "ui.admin_pwa.analyticsTaggedCac": "Маркированный маркетинг / новый плательщик",
     "ui.admin_pwa.analyticsDays": "дн.",
     "ui.admin_pwa.analyticsHours": "ч.",
