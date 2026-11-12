@@ -40,7 +40,7 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 - The branch has the PostgreSQL baseline, the coverage guard and per-metric V10 states in the API and the Admin UI. It also has per-platform scoping, route chain tests, the PWA Pro funnel, `return_retention` and Report freshness.
 - An independent audit of PR #285 (55 findings) confirmed 17. The code and process defects among them are fixed on this branch; see [Audit remediation](#audit-remediation--pr-285-2026-11-12). Every V10 value still matches the baseline except two Overall Finance averages, which were wrong on `main` too (#34).
 - **Open: 6.2 real-client acceptance** (owner devices and a deployment of this branch; checklist below) and **6.3 promotion** (owner approval). No merge to `main` without the owner's permission.
-- **Next stage (not started):** four mandatory requirements are recorded in [Next stage](#next-stage--mandatory-requirements-not-implemented). They are not part of this change.
+- **Next stage (not started):** four mandatory requirements and their implementation plan are in [Next stage](#next-stage--mandatory-requirements-not-implemented). They are not part of this change. The plan was reviewed and strengthened on 2026-11-12. R1 (Android Lesson Start) has started on its own branch, stacked on this PR.
 - PR [akbarholturaev11-lang/HSK-AI-Bot#285](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/285) is the integration branch for this work.
 
 ## Platform scope
@@ -301,12 +301,236 @@ Branch `planning/analytics-integrity-openspec-20261109` (PR #285) on runtime bas
 
 ## Next stage — mandatory requirements (not implemented)
 
-The owner set these four as mandatory for the next stage. **None is implemented in this change.** Each starts as its own OpenSpec change after owner approval, with a route chain test and UZ/RU/TJ UI text.
+The owner set these four as mandatory for the next stage. **None is implemented in this change.**
 
 1. **Android Lesson Start.** Android writes no lesson start (A7), so Course > Android has no lessons entry and no start-based cohort. Needed: a server-written, deduplicated lesson start from the authenticated Android course route with the route-set client `android` (Play + Direct combined until the channel is recorded, A19), read by the Android Course features.
 2. **PWA Activation.** PWA activation, direct activation and sessions are `not_instrumented` per platform (A11): their anchor and most rows carry no route-set client. Needed: a defined PWA activation (signup or handoff → first meaningful learning action) from route-owned rows only, with its own cohort and window.
 3. **Subscription Sources.** Sources is Overall-only (F6, F7): `subscription_entry_events` has no platform column and entry sources on the Telegram route are caller text. Needed: a server-set platform on each entry (reviewed schema change), then Sources and source → payment attribution per platform.
 4. **Platform D1/D7 Retention.** `return_retention` is Overall-only (D5): the signup cohort has no platform of registration. Needed: a defined platform cohort (platform of registration or first verified open) and per-platform return evidence, with D1/D7 windows matching the Overall series.
+
+### Implementation plan — 2026-11-12 (reviewed; R1 started)
+
+Written from the code on this branch.
+- On approval, each requirement becomes its own OpenSpec change and its own PR.
+- That change's `tasks.md` is its only checklist; this section stays the context.
+- Nothing merges to `main` without the owner's permission.
+
+**Prerequisite:** PR #285 merged to `main`. All four reuse its pieces:
+- the route-set `client` key;
+- the registry and coverage guard;
+- the chain-test rule;
+- the per-platform snapshots and manual refresh.
+
+**Rules for all four:**
+- **Platform source.** The platform comes only from the route that wrote the row, as a route-set `client` key or column. Caller text (`source`, `transport`, `client`) never decides a platform.
+- **Telemetry never blocks.** It never blocks or changes a learner, payment or auth response. Writes are best-effort, in a savepoint.
+- **Before the boundary.** Rows written before a writer goes live count only in Overall. The platform value reports `attributed_since`; before that date the cell stays `not_instrumented`.
+- **Desktop freeze.** No desktop code or behavior changes. In shared services the new write is gated on the Android namespace.
+- **Per-cell requirements.** Every new or changed metric cell needs:
+  - a registry row with an honest status;
+  - a route → PostgreSQL → `/api/admin/v1/analytics` chain test listed in `analytics-integrity.yml`;
+  - the golden test pinning Overall. An intended Overall change is pinned explicitly, as #34 was.
+- **Admin UI.**
+  - New Admin text is in UZ/RU/TJ, and the Admin PWA browser suite asserts it.
+  - UI changes are small and follow `AGENTS.md` and the `hsk-ai-ui` skill.
+- **Performance.** Reads stay bounded aggregates inside the 24-hour per-platform snapshot.
+- **Acceptance.** Real-client acceptance runs on the owner's devices, as in 6.2. It uses the manual refresh with `platform`.
+
+**Order:**
+
+| Step | Requirement | Schema | Client release | Size | Reason |
+|---|---|---|---|---|---|
+| 1 | R1 Android Lesson Start | no | no (server only) | S | Smallest. Unblocks Android `features.lessons` and gives R4 an Android learning signal. **Started 2026-11-12** |
+| 2 | R2 PWA Activation | no | no | M | The writer gets one argument; the reader reuses the activation funnel |
+| 3 | R4 Platform D1/D7 Retention | no | no | M | Reader only; uses R1 and R2 rows as evidence |
+| 4 | R3 Subscription Sources | **yes** (one nullable column) | no | M–L | The only migration, so it deploys alone |
+
+#### R1. Android Lesson Start
+
+**Definition.** The server writes one `android_lesson_started` per Android account, level, lesson and UTC day.
+- It is written when the authenticated `GET /api/v3/android/course/lesson/{order}` has passed the access check and returns the lesson.
+- A refused lesson (lock, limit or foundation) writes nothing.
+- Play and Direct stay combined (A19).
+
+**Why not `lesson_started`.** `motivation_reminder_service.py` reads `lesson_started` for the D1 recovery and the unfinished-lesson reminder. An Android start under that name would send new Telegram messages to Android learners: a behavior change. `android_lesson_started` has these properties:
+- **Server-only.** It is not in `CLIENT_COURSE_MINIAPP_EVENT_NAMES`, and `/api/v3/android/events` accepts only widget and notification names. No caller can write a lookalike.
+- **Already expected by the Admin readers.** Overall V10 reads it in `features.lessons`, `started_accounts` and `COURSE_EVENTS`; bot-block diagnostics read it too. These readers were written for it and simply had no writer.
+- **Not read by product flows.** Reminders, the activation funnel and lesson durations do not read it. Overall `activation` and `lesson_seconds` stay unchanged.
+
+**Writer.**
+- **Location:** `AndroidCourseService.lesson` (`app/services/android_course_service.py`), after `super().lesson()` returns. The shared `DesktopCourseService.lesson` is not changed.
+- **Call:** `record_server_event(event_name="android_lesson_started", source="android_course", analytics_client="android", level=…, lesson_order=…)`, with `dedupe_key=f"android-lesson-start:{level}:{order}:{utc_date}"`.
+- **Commit:** the write has its own commit after the lesson's commit (`desktop_course_service.py` commits before returning). A failure is logged, and the lesson is returned unchanged.
+- **Activity:** like every learner-facing Android server event, it updates `users.last_active_at`. The Android app-open event of the same session already does this.
+
+**Readers.**
+- **Course > Android.** In `pwa_analytics_course_platform.py`, Android `features.lessons` reads `android_lesson_started` with the `client: android` tag.
+- **Boundary.** It has its own boundary: the first tagged row, reported as `attributed_since.features_lessons`. The Admin feature panel shows that date under the table, reusing existing UZ/RU/TJ strings. Until the first row exists, the lessons entry is omitted, as it is today.
+- **Registry.** The name changes from `no_writer` to a declared event of the `lessons` flow.
+
+**Overall impact (intended).** From the deploy date, Android starts enter Overall `features.lessons` and Overview `started_accounts` / course engagement. Until now, Android learners never counted as started. The golden fixture has no Android start, so it stays unchanged. A new test pins the Overall change.
+
+**Registry and tests.**
+- **Registry.** The Android `course.features` reason drops "lessons omitted". Flow `lessons` on Android is `covered` once the chain test runs in CI. Add the critical path `app/services/android_course_service.py` with symbol `lesson`.
+- **Unit tests:**
+  - one tagged row;
+  - a refetch on the same day is deduplicated;
+  - a refused lesson writes nothing;
+  - a writer failure still returns the lesson;
+  - no `lesson_started` row is written, so reminders see nothing new.
+- **PostgreSQL chain.** Android route → `course` / `android` → `features.lessons`.
+- **Overall.** `features.lessons` counts an account that starts on Telegram and on Android once.
+
+#### R2. PWA Activation
+
+**Definition (default taken).** Two cohorts, both from route-owned rows only:
+- **New PWA learner.**
+  - Anchor: `onboarding_completed` written by `POST /api/v3/pwa-auth/onboarding/finish`, tagged `client: iphone_pwa`.
+  - Steps reuse the existing activation windows: lesson start within 2 minutes, section completed within 15 minutes, lesson completed within 24 hours.
+  - Only PWA-tagged steps count.
+  - Onboarding is deduplicated per profile, so an account onboarded on Telegram is not in this cohort.
+- **Telegram → PWA handoff.** Anchor: `pwa_handoff_completed`, which the PWA handoff redeem route writes on the server. Activated means a first PWA-tagged lesson start or completion within 24 hours.
+- **Direct activation.** PWA `direct_activation` comes from the same anchor with variant `direct_start_v1`.
+- **Sessions.** PWA `sessions` stay `not_instrumented`. Most session rows (card views, interactions) carry no route-set client. They are not part of R2.
+- **Open decision.** An existing account that signs in on the PWA without onboarding or a handoff is in neither cohort. Its anchor would be the PWA sign-in (A5).
+
+**Writer.**
+- `CourseMiniAppOnboardingService.complete(..., analytics_client=None)` passes the key to `onboarding_completed` and its step rows. The PWA route passes `iphone_pwa`.
+- The Telegram and Android onboarding routes also pass `telegram` and `android` (default taken). This is writer-only; their readers come later.
+
+**Reader.**
+- `course_platform_metrics` for `iphone_pwa` returns:
+  - `activation`;
+  - `direct_activation`;
+  - a new key `handoff_activation` `{eligible, activated, percent}`.
+- It is bounded by `bounded_rows` on the 30-day detail window.
+- `attributed_since` is the first tagged PWA `onboarding_completed`.
+- Overall activation is unchanged: it reads the same rows, which now carry one more payload key.
+
+**UI.** On the Course tab under the PWA filter: the existing activation card plus one «Telegram → PWA» row, in UZ/RU/TJ.
+
+**Tests.**
+- A unit test for the writer key.
+- Cohort tests:
+  - a Telegram-onboarded account stays outside the PWA cohort;
+  - a handoff with no PWA learning is not activated;
+  - a caller `client` on the Telegram route never enters.
+- A PostgreSQL chain from the PWA routes to `course` / `iphone_pwa`.
+- A label check in the browser suite.
+- The golden test stays unchanged.
+
+#### R3. Subscription Sources
+
+**Definition.** Each subscription entry stores the client of the route that recorded it. The source text stays descriptive only.
+
+**Schema (needs owner approval).**
+- Alembic `0155` adds a nullable `client VARCHAR(16)` to `subscription_entry_events`, with an index on `(client, created_at)`.
+- No backfill: old rows stay Overall-only.
+- The column is additive and nullable, so PostgreSQL does not rewrite the table.
+- The migration is tested with the local PostgreSQL routine: create_all + stamp + upgrade/downgrade.
+
+**Writers** (`record_entry(..., client=...)`):
+- **`main.py` (Telegram subscription overview and event routes):** `telegram`. A caller that sends `source=android_subscription` still stays Telegram.
+- **`android_features.py` and the Android Lava overview route in `lava_checkout.py`:** `android`.
+- **The PWA entry in `pwa_auth.py`:** `iphone_pwa`.
+- **`desktop_subscription_service.py` (shared):** `android` only for the Android namespace. Desktop leaves the column empty (freeze).
+
+**Reader.** `sources_metrics(db, platform=...)`:
+- **`entries`:** rows with that `client`, from its `attributed_since`.
+- **`attribution`** (default taken): payments of that platform (F4 `PAYMENT_PLATFORM_SOURCES`) are attributed to the nearest earlier entry **on the same platform**, else to `unknown`. Overall keeps the current any-platform rule.
+- **`traffic`:** stays `not_applicable` (company-wide).
+- The Sources section gets per-platform composition and snapshot variants.
+
+**Tests:**
+- migration upgrade and downgrade;
+- each writer sets the column, and a caller cannot choose it;
+- the per-platform reader;
+- a PostgreSQL chain from each route to `sources` / platform;
+- the golden test with Overall unchanged;
+- an EXPLAIN for the nearest-entry subquery.
+
+#### R4. Platform D1/D7 Retention
+
+**Definition (default taken).**
+- **No registration signal.** `users` has no platform-of-registration column, and adding one would change the auth paths, which is out of bounds.
+- **Proposed cohort.** The account's **first verified use of the platform**.
+- **Windows.** D1 is evidence 24–48 hours after that first use; D7 is 168–192 hours after it.
+- **Maturity.** The matured-cohort rule is the same as Overall `_cohort_returns`.
+
+| Platform | First-use anchor | Return evidence |
+|---|---|---|
+| Android | first `android_first_open` / `android_app_opened` (A1) | `android_app_opened`; Android-tagged learning rows, including R1 |
+| iPhone PWA | first `miniapp_opened` with dedupe prefix `pwa-course-v3:` (A4), or the first PWA-tagged learning row | the same two signals |
+| Telegram | the first Telegram-tagged row (route-set `client: telegram`) at or after the Telegram boundary. `user_client_presences` is not used: only `/api/v3/desktop-download/status` writes it, so its `first_seen_at` is not first use | Telegram-tagged learning rows only. Telegram opens have no exclusive signal (A3), so this is a learning return and is labelled as one |
+
+- **Exclusions.** Voice and AI have no per-platform attribution (A16, A17), so they are left out.
+- **Boundary.** Cohorts before each anchor's `attributed_since` are left out.
+- **Overall.** Overall `return_retention` is unchanged.
+- **Overlap.** An account can be in several platform cohorts (`platform_counts_overlap`).
+
+**Reader.**
+- `platform_return_retention(db, platform, since, now)`, next to `return_retention`.
+- Per-account first use is computed in one grouped subquery.
+- Performance gate: an EXPLAIN on a 1M-row fixture stays within the current `return_retention` budget (all-time 1.06 s locally).
+
+**UI.** A retention card under a platform filter, with a one-line cohort note «first use on this platform», in UZ/RU/TJ.
+
+**Tests:**
+- an account that is on Telegram and first opens the PWA on day 10 enters the PWA cohort on day 10;
+- a return on another platform does not count;
+- immature cohorts are excluded;
+- lookalike rows before the boundary never become an anchor;
+- a PostgreSQL chain;
+- a performance test.
+
+**Plan review — 2026-11-12.** The owner asked for the plan to be confirmed as complete, or strengthened and started. It could not be confirmed as written. Checking the code changed three points:
+1. **R1 event name.** `lesson_started` drives Telegram reminders (`motivation_reminder_service.py`), so R1 writes the server-only `android_lesson_started`. Details are in R1.
+2. **R4 Telegram anchor.** `user_client_presences` is written only by the desktop-download status route, so it cannot date first use. The anchor is the first Telegram-tagged row.
+3. **New rule for all four.** Before adding a write, list every consumer of that event name or table, not only the Admin readers: reminders, bot handlers, entitlements, diagnostics. A write that a product flow reads is a behavior change and is not allowed.
+
+**Decisions (defaults taken 2026-11-12).** The owner delegated these. The owner can change each one before its PR merges.
+
+| # | Decision | Default |
+|---|---|---|
+| R1 | Start dedupe; effect on Overall | One start per account, level, lesson and UTC day. Overall `features.lessons` and `started_accounts` rise from the deploy date; activation and lesson time do not change |
+| R2 | Cohorts | New PWA onboarding, plus Telegram → PWA handoff |
+| R2 | Telegram/Android onboarding tag | Tagged in the same change (writer only); their readers come later |
+| R2 | PWA sign-in without onboarding or handoff | Outside both cohorts; listed as a gap |
+| R3 | Schema change | Prepared in its own PR. **The migration merges only with the owner's explicit approval at that PR** |
+| R3 | Source → payment rule | Nearest earlier entry on the same platform; Overall keeps today's rule |
+| R4 | Cohort and Telegram return | First verified use of the platform; Telegram counts learning returns only |
+
+**Definition of done (each requirement):**
+- **Routes and writers:**
+  - the writer is server-built;
+  - an exhaustive consumer check shows no product-flow change;
+  - unit tests cover dedupe, refusal and failure isolation.
+- **Readers and states:**
+  - the reader returns the value from `attributed_since` on, and `null` with a reason before that;
+  - the registry is updated;
+  - the coverage checker passes in push and pull-request modes.
+- **Tests:**
+  - a route → PostgreSQL → `/api/admin/v1/analytics` chain test runs in `analytics-integrity.yml`;
+  - the golden test passes, with any intended Overall change pinned explicitly;
+  - the full unit suite shows only the known baseline failures;
+  - every PostgreSQL module passes on a fresh database;
+  - the Admin PWA browser suites pass;
+  - the CI workflows are green, apart from the known runner-side Desktop macOS cancel.
+- **Docs:** UZ/RU/TJ text, `READ_PROJECTIONS.md`, this file and the change's `tasks.md` are updated.
+- **Release:**
+  - the owner accepts the result on a real client (6.2 style);
+  - nothing merges to `main` without the owner's permission.
+
+**Risks and rollback:**
+
+| Risk | Guard | Rollback |
+|---|---|---|
+| A new event changes a product flow | Consumer check; R1 uses a name no flow reads | Revert the writer; the rows are inert |
+| An analytics write breaks a learner response | Savepoint, separate commit, failure test | — |
+| Double counting on refetch | Dedupe key per day; unit test | — |
+| Overall values move | Golden test; intended moves pinned and listed in Impact | Revert the reader commit |
+| A per-platform read is slow | `bounded_rows`; EXPLAIN on a 1M-row fixture before merge | Hide the cell (`not_instrumented`) |
+| R3 migration on production | Additive nullable column, upgrade/downgrade test | `alembic downgrade` drops the column; old readers ignore it |
 
 ## Decisions log
 
@@ -341,6 +565,9 @@ The owner set these four as mandatory for the next stage. **None is implemented 
 - 2026-11-12 — Audit remediation (#6–#8): the diff guard ignores flow `description` and whitespace; `covered` needs a CI-run test that reads the metric from the Admin analytics route for that platform; large shared modules are guarded per function through `symbols`.
 
 ## Session log (newest first, one or two lines each)
+
+- 2026-11-12 — Plan review: R1 writes the server-only `android_lesson_started`, because `lesson_started` drives Telegram reminders. The R4 Telegram anchor is the first tagged row, since presence is not first use. Added defaults, definition of done and risks. R1 started.
+- 2026-11-12 — Wrote the implementation plan for the four next-stage requirements (order R1 → R2 → R4 → R3, rules, per-requirement writer/reader/tests, owner decisions) from the code on this branch. Nothing implemented; waits for owner approval.
 
 - 2026-11-12 — Audit remediation for PR #285: fixed confirmed findings #6–#9, #13, #28, #31, #34, #37, #40, #42–#44 (table in [Audit remediation](#audit-remediation--pr-285-2026-11-12)); writer keeps the route key final. 6.2 reopened. Four next-stage requirements recorded, not implemented. Re-validation table above; no merge to `main`.
 
