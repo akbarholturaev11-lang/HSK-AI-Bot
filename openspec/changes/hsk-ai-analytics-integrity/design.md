@@ -10,9 +10,9 @@ See `proposal.md` for the motivation and `specs/` for the requirements. These co
 - **Request filter.** `StatisticsRequest.platform` accepts `overall, telegram, android, macos, windows, iphone_pwa`.
 - **Owner resolution.** `owner()` / `analytics_user_join` already resolve the canonical `users.id` first and fall back to a positive Telegram ID.
 - **Detail bounds.** `bounded_rows()` returns `None` above 5,000 rows, and readers then expose `detail_limited`.
-- **Trustworthy platform signals today.**
-  - Android: `android_*` lifecycle events (A1); `lesson_completed` and foundation with source `android_course` (A8, A10); checkout source `android_*` and attempt prefix `android-` (F2); `payments.source` `android` (F4); Sources `android_*` (F6).
-  - Telegram: `user_client_presence` surface `telegram_miniapp` (A2); `payments.source` `miniapp` / `telegram_bot` (F4).
+- **Trustworthy platform signals today** (re-checked in 3.2):
+  - Android: `android_*` lifecycle events (A1); `lesson_completed` and foundation with source `android_course` (A8, A10); checkout payload `transport: android` (F2; the `android_*` source and `android-` attempt prefix are caller-forgeable on the Telegram route); `payments.source` `android` (F4).
+  - Telegram: `user_client_presence` surface `telegram_miniapp` (A2); `payments.source` `miniapp` / `telegram_bot` (F4); checkout payload `transport: telegram` from 3.2 on (F3).
   - PWA: `miniapp_opened` with source `pwa_course_v3` from `/api/v3/pwa/map` (A4); `/api/v3/pwa/event` rows with a server-set `transport: iphone_pwa` (A11); checkout payload transport (F1); `payments.source` `iphone_pwa` and Lava `pwa` (F4, F5).
 - **Missing platform signals.**
   - Shared writers record no platform:
@@ -110,7 +110,9 @@ A contract test projects every section × platform × period on the fixture DB a
 
 **Android lesson start.** It is `not_instrumented` (A7). Adding a writer is out of scope unless the owner asks.
 
-**No platform field.** AI usage, chat, voice minutes (A16, A17) and PWA/Telegram Sources entries (F7) stay `not_instrumented` per platform.
+**No platform field.** AI usage, chat, voice minutes (A16, A17) and Sources entries on every platform (F6, F7) stay `not_instrumented` per platform. Entry sources are caller text on the Telegram route, so an `android_*` prefix proves nothing.
+
+**Checkout openings.** The funnel attributes an attempt only by the route-set payload `transport` of its base `checkout_opened` row. It was already on PWA and Android Lava rows; 3.2 adds it to the two Telegram writes and the Android manual opening. Earlier rows stay in Overall, with `attributed_since`.
 
 ### D4. PWA Pro funnel over existing rows
 A new reader (provisional `app/admin_api/pwa_analytics_pwa_pro.py`) returns `pwa_pro_attempt_funnel` in the `funnel` section, beside the unchanged legacy `attempt_funnel`.

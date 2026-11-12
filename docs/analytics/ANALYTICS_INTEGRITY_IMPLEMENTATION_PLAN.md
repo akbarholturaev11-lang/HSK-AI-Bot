@@ -39,7 +39,7 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 
 - The branch has the PostgreSQL baseline, coverage guard and per-metric V10 API states. Existing values and scopes still match the baseline. The Admin UI will consume the states in 3.3.
 - Task 1.1 re-audited `334368cc..680761f1`. The delta below updates the original matrix and establishes `680761f1` as the unchanged runtime base for task 1.2.
-- **Next step: 3.2, step 3, remaining sections**: Finance (F4/F5) and Funnel (F1–F3) are scoped. Next are Sources (F6), the PWA Platforms card (A4) and Course (A8, A10, then the `client`-keyed families with `attributed_since`). Steps 1–2 hardened caller metadata and tagged existing writes. A4 has the route-owned PWA map dedupe prefix; raw historic source/transport/client claims still require independent proof or a verified post-guard boundary.
+- **Next step: 3.2, step 3, remaining sections**: Finance (F4/F5) and Funnel (F1–F3) are scoped; Sources stays Overall-only (F6 `gap`). Next are the PWA Platforms card (A4) and Course (A8, A10, then the `client`-keyed families with `attributed_since`). Steps 1–2 hardened caller metadata and tagged existing writes. A4 has the route-owned PWA map dedupe prefix; raw historic source/transport/client claims still require independent proof or a verified post-guard boundary.
 - PR [akbarholturaev11-lang/HSK-AI-Bot#285](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/285) is the integration branch for this work. Main promotion is outside the current authorization.
 
 ## Platform scope
@@ -94,7 +94,7 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 | F3 | `checkout_opened` | Telegram | `/api/subscription-miniapp/overview` and `/event` in `main.py`: source and attempt ID are caller text (`_checkout_text`, `_checkout_attempt_id`); payload now `transport: telegram` | server-set transport (3.2). Elimination rejected: a caller can forge `android_subscription` / `android-…` | Funnel, Telegram filter; earlier rows Overall-only (`attributed_since`) | `verified`: [marker test](../../tests/test_checkout_transport_marker.py), [platform scope test](../../tests/test_admin_pwa_platform_scope.py) |
 | F4 | Payments (Finance, funnel paid) | all | `payments.source`: `miniapp` (`subscription_miniapp_service.py:316,416`); `iphone_pwa` (`pwa_auth.py:1912`); `android` / `desktop` (`desktop_subscription_service.py:399`); Lava copies the invoice source `miniapp` / `pwa` / `android` (`lava_checkout.py:202,248,338` → `lava/ledger.py:194`); bot default `telegram_bot` | source. PWA has two values: `iphone_pwa` and `pwa` | Finance `money_metrics` payment keys per platform (3.2); renewal order stays canonical across platforms | `verified` on stored rows: [platform scope test](../../tests/test_admin_pwa_platform_scope.py); chain test pending (3.4) |
 | F5 | Lava lifecycle | all | `lava_invoices.source` `miniapp` / `pwa` / `android` | source | Finance `lava` per platform (3.2) | `verified` on stored rows: [platform scope test](../../tests/test_admin_pwa_platform_scope.py); chain test pending (3.4) |
-| F6 | Subscription entries | Android | `android_features.py:1348` `android_subscription`; `ANDROID_CHECKOUT_ORIGIN_SOURCES` (`android_*`) | source prefix | Sources (`source_group` `android_%`) | `verified`: `test_android_features_api.py` |
+| F6 | Subscription entries | Android | `android_features.py:1348` `android_subscription`; `ANDROID_CHECKOUT_ORIGIN_SOURCES` (`android_*`) | none trusted: the Telegram overview route stores caller `source` (`main.py` `_checkout_text` → `record_entry`, `normalize_source` keeps `android_subscription`) and the table has no platform column | Sources (`source_group` `android_%`), Overall only | `verified` writer; `gap` for platform attribution (re-checked in 3.2) |
 | F7 | Subscription entries | PWA, Telegram | `pwa_auth.py:1689` `data.source or "iphone_pwa"` and `main.py:6322`, both client-supplied; `subscription_entry_events` has no payload column | none | Sources | `gap` (a fix needs a schema change: out of scope) |
 | F8 | PWA Pro inline funnel | PWA | inline events, `lava_checkout._start` `pwa_pro_checkout_started`, `lava/ledger.py` `pwa_pro_checkout_paid`, `lava_invoices.pwa_inline_attempt_id` | PWA-only | No reader | `to_verify` (task 4) |
 
@@ -143,7 +143,7 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 | Course | completions and foundation (A8, A10). `lesson_started` → `not_instrumented` (A7). Practice, exam and mistakes after the `client` key (A13–A15) | lesson, practice, exam and mistakes after the `client` key (A6, A9, A12–A15). Foundation now (A10) | the same as Telegram, plus flow telemetry (A11) |
 | Funnel | F2 | F3 after test | F1 |
 | Finance | F4/F5 `android` | F4/F5 `miniapp`, `telegram_bot` | F4/F5 `iphone_pwa` + `pwa` |
-| Sources | F6 | `not_instrumented` (F7) | `not_instrumented` (F7) |
+| Sources | `not_instrumented` (F6: forgeable prefix) | `not_instrumented` (F7) | `not_instrumented` (F7) |
 | AI, chat, voice minutes | `not_instrumented` (A16, A17) | the same | the same |
 | Ledger, marketing, traffic | `not_applicable` (company-wide) | the same | the same |
 
@@ -161,10 +161,13 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 - 2026-11-11 — Handoff events (A18) keep their existing basic Statistics consumer. No V10 duplicate.
 - 2026-11-11 — Desktop freeze: macOS/Windows get registry statuses only.
 - 2026-11-11 — The registry's platform keys and feature IDs are stable. Monitoring will reference them instead of duplicating them.
+- 2026-11-12 — Sources stays Overall-only on every platform. F6 was planned for Android, but entry sources on the Telegram route are caller text, so `android_*` can be forged; `subscription_entry_events` has no platform column and a schema change is out of scope.
 - 2026-11-12 — Funnel per platform uses the route-set payload `transport` of the base `checkout_opened` row (existing on PWA and Android Lava; added to the two Telegram writes and the Android manual opening; desktop rows unchanged). Stage, receipt and approval rows attach to that attempt. Caller `source` and attempt text never attribute. `attributed_since.attempt_funnel` is the first marked opening; earlier rows stay in Overall. Funnel activity families (AI, engagement, registration) are not computed for a platform.
 - 2026-11-12 — Finance per platform uses the server-set `payments.source`: Android `android`; Telegram `miniapp` + bot `telegram_bot`; PWA `iphone_pwa` + Lava `pwa`. Lava lifecycle uses `lava_invoices.source`. The first-payment/renewal order stays canonical across platforms, so a later payment on another client is a renewal. AI cost, ledger, marketing and ARPU are not computed for a platform (`not_instrumented` / `not_applicable`). Desktop `desktop` payments stay out of the three mobile filters.
 
 ## Session log (newest first, one or two lines each)
+
+- 2026-11-12 — Task 3.2 step 3, Sources: code re-check found the F6 Android prefix forgeable from the Telegram route; registry Sources (entries, attribution) and the `subscription_entries` flow now report Android `not_instrumented`. No runtime change.
 
 - 2026-11-12 — Task 3.2 step 3, Funnel: `transport` marker on the Telegram overview/event and Android manual openings; attempt funnel scoped per platform with `attributed_since`; a Telegram row with source `android_subscription` stays Telegram. Analytics CI suite **76 passed, 191 subtests**; checkout/funnel writer suites **177 passed, 3 skipped (PG-gated), 98 subtests**.
 

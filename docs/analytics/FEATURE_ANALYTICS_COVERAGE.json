@@ -744,7 +744,7 @@
     {"section": "money", "key": "usd_basis", "kind": "metadata", "filters": ["overall", "android", "telegram", "iphone_pwa"]},
     {"section": "sources", "key": "attribution", "kind": "metric", "filters": ["overall"],
       "platforms": {
-        "android": {"status": "partial", "reason": "F6: Android entries have a source prefix. Attribution is descriptive nearest-entry history; neither projection is filtered by Android."},
+        "android": {"status": "not_instrumented", "reason": "F6/F7: Subscription entry sources are caller text on the Telegram route, so an android_ prefix can be forged; the table has no platform column (schema change out of scope)."},
         "telegram": {"status": "not_instrumented", "reason": "F7: Mini App entry source is client-supplied and cannot establish a platform-specific history."},
         "iphone_pwa": {"status": "not_instrumented", "reason": "F7: PWA entry source is client-supplied and cannot establish a platform-specific history."},
         "macos": {"status": "not_instrumented", "reason": "The combined Desktop source does not establish separate OS entry or attribution histories; Desktop freeze."},
@@ -754,7 +754,7 @@
     {"section": "sources", "key": "attribution_basis", "kind": "metadata", "filters": ["overall"]},
     {"section": "sources", "key": "entries", "kind": "metric", "filters": ["overall"],
       "platforms": {
-        "android": {"status": "partial", "reason": "F6: Android entries have a source prefix. Attribution is descriptive nearest-entry history; neither projection is filtered by Android."},
+        "android": {"status": "not_instrumented", "reason": "F6/F7: Subscription entry sources are caller text on the Telegram route, so an android_ prefix can be forged; the table has no platform column (schema change out of scope)."},
         "telegram": {"status": "not_instrumented", "reason": "F7: Mini App entry source is client-supplied and cannot establish a platform-specific history."},
         "iphone_pwa": {"status": "not_instrumented", "reason": "F7: PWA entry source is client-supplied and cannot establish a platform-specific history."},
         "macos": {"status": "not_instrumented", "reason": "The combined Desktop source does not establish separate OS entry or attribution histories; Desktop freeze."},
@@ -1424,8 +1424,8 @@
       ],
       "platforms": {
         "android": {
-          "status": "partial",
-          "reason": "Android subscription entry writers use android-prefixed sources; scoped V10 and chain proof remain pending."
+          "status": "not_instrumented",
+          "reason": "Subscription entry sources are caller text on the Telegram route, so an android_ prefix can be forged; the table has no platform column (schema change out of scope)."
         },
         "telegram": {
           "status": "not_instrumented",
