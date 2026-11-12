@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Lets administrators see, triage and resolve diagnostic incidents in the existing Admin PWA Inbox, and be alerted on iPhone and Mac only for new, escalated or reopened critical incidents.
+Lets administrators see, triage and mark diagnostic incidents fixed in the existing Admin PWA Inbox. They are alerted on iPhone and Mac for new or escalated critical incidents, and whenever an incident they marked fixed comes back.
 
 ## ADDED Requirements
 
@@ -33,22 +33,22 @@ An incident item SHALL show its platform, feature, a localized explanation of th
 - **THEN** no stack, message, URL, payload, token or account ID appears in the response or the page
 
 ### Requirement: Triage with audited automatic reopen
-Incident triage SHALL use the existing audited triage store and operations: New is `new`, Investigating is `assigned`, Resolved is `resolved`. A resolved incident SHALL reopen automatically on a new occurrence from a version not older than the newest version at resolution; backend incidents reopen on any new occurrence. Every change, including a system reopen, SHALL be written to the triage audit.
+Incident triage SHALL use the existing audited triage store and operations: New is `new`, Investigating is `assigned`, Resolved is `resolved`. The incident view SHALL offer the existing "Fixed" button, which resolves without a learner notice. A resolved incident SHALL reopen automatically on a new occurrence from a version not older than the newest version at resolution (backend: any occurrence), and SHALL show a localized "fixed error came back" notice. Every change SHALL be audited.
 
 #### Scenario: Admin investigates and resolves
-- **WHEN** an admin assigns an incident to themselves and later resolves it
-- **THEN** its status moves from new to assigned to resolved, and each step has an audit row
+- **WHEN** an admin assigns an incident to themselves and later taps "Fixed"
+- **THEN** its status moves from new to assigned to resolved, each step has an audit row, and no learner is notified
 
 #### Scenario: Failure returns on the fixed version
 - **WHEN** a resolved Android incident gets a new occurrence from the same or a newer app version
-- **THEN** it reopens with a system audit row and counts as reopened for alerting
+- **THEN** it reopens with a system audit row, shows the "fixed error came back" notice with the time and version in UZ, RU or TJ, and counts as reopened for alerting
 
 #### Scenario: Old version still in use
 - **WHEN** a resolved incident gets a new occurrence only from a version older than the newest one at resolution
 - **THEN** it stays resolved, and the occurrence is still counted
 
 ### Requirement: Bounded critical Apple Push
-Diagnostic Apple Push SHALL go through the existing Admin PWA push outbox and dispatcher, and only in three cases: an incident is new at critical severity, its server-observed scope raises it to critical, or a critical incident reopens. Each incident SHALL have a cooldown, and diagnostic alerts SHALL have a global hourly cap.
+Diagnostic Apple Push SHALL go through the existing Admin PWA push outbox and dispatcher, and only in three cases: an incident is new at critical severity, its server-observed scope raises it to critical, or an incident marked fixed reopens at any severity. New and escalation alerts SHALL have a per-incident cooldown and a global hourly cap. A reopen alert SHALL be sent once per reopen, exempt from both.
 
 #### Scenario: Many identical events
 - **WHEN** 100 events of one critical fingerprint arrive within a minute
@@ -66,6 +66,10 @@ Diagnostic Apple Push SHALL go through the existing Admin PWA push outbox and di
 - **WHEN** many different critical incidents open within one hour
 - **THEN** diagnostic pushes stop at the global cap, and payment and Android report alerts are queued and sent as before
 
+#### Scenario: Fixed error comes back
+- **WHEN** a `normal`-severity incident marked fixed reopens, even during a flood or within the cooldown
+- **THEN** exactly one push with the fixed "came back" label is queued per enrolled device
+
 ### Requirement: Safe push payload and destination
 A diagnostic push payload SHALL carry only a fixed safe category. Opening it SHALL lead, after Admin PWA authentication, to the Inbox filtered to diagnostic incidents. Existing payment, Android-report, bot and release alerts SHALL keep their payload, priority and behavior. Existing Telegram admin messages, including Lava payment alerts, SHALL stay unchanged and MUST NOT be suppressed or deduplicated against diagnostic alerts.
 
@@ -81,17 +85,17 @@ A diagnostic push payload SHALL carry only a fixed safe category. Opening it SHA
 - **WHEN** a Lava payment activation fails, raising its Telegram admin alert, and is also reported as a diagnostic incident
 - **THEN** the Telegram message is sent as today, the incident appears in the Inbox (with a push when critical), and neither channel suppresses the other
 
-### Requirement: Mini App technical source cutover
-When the Mini App adapter is enabled, new Mini App technical errors admitted by the intake mode SHALL appear only as diagnostic incidents, and their per-error `technical` push SHALL stop. Errors the mode does not admit keep today's behavior. `technical` items recorded before the cutover stay visible for their existing 30 days. Disabling the adapter SHALL restore the current behavior.
+### Requirement: Additive Mini App adapter
+When the Mini App adapter is enabled, Mini App technical errors admitted by the intake mode SHALL also be recorded as diagnostic incidents. The existing `technical` Inbox item, its per-error push and the bot's AI context MUST stay unchanged, whether the adapter is on or off. Disabling the adapter SHALL stop only the incident writes.
 
 #### Scenario: Adapter enabled
-- **WHEN** the Mini App onboarding sends `app_error` after the cutover
-- **THEN** one diagnostic incident occurrence is recorded, no new `technical` Inbox item or push appears, and the bot's AI context still receives the error context as today
+- **WHEN** the Mini App onboarding sends `app_error` while the adapter is on
+- **THEN** the `technical` item and its push appear as today, one diagnostic incident occurrence is also recorded, and the bot's AI context receives the error context as today
 
-#### Scenario: Intake off while the adapter is on
-- **WHEN** the intake mode is off, or the account is outside the owners stage
-- **THEN** the Mini App error is shown and pushed as a `technical` item as today, so no alert is lost
+#### Scenario: Thirty identical errors
+- **WHEN** 30 learners hit the same onboarding save error in one day
+- **THEN** 30 `technical` pushes arrive as today, and one grouped diagnostic incident shows 30 occurrences
 
 #### Scenario: Adapter disabled again
 - **WHEN** the adapter is switched off
-- **THEN** new Mini App errors appear as `technical` items with their per-error push, as before
+- **THEN** no new incident occurrence is written, and the `technical` items and pushes continue unchanged

@@ -92,6 +92,7 @@ This is the only checklist for this work. Task 1.1 creates the single shared con
 - [ ] 3.1 Add the Inbox `diagnostic` source (D6):
   - projection, platform filter, affected state;
   - triage mapping, the resolve hook, and auto-reopen with a system audit row;
+  - the existing "Тузатилди ✅" button in the incident drawer, which sends plain `resolve`, and the "🔁 fixed error came back" line with its time and version (D6);
   - list and drawer UI with UZ/RU/TJ catalog text (`i18n_build_all_catalogs.py --write` and `--check`; `BROWSER_UI_CONTRACT.md`);
   - the Report freshness `diagnostics` family, latest receipt per platform (D11).
 
@@ -99,22 +100,23 @@ This is the only checklist for this work. Task 1.1 creates the single shared con
 
   Verify:
   - **Projection:** one item per incident; no forbidden field or account ID in the response or the page; `partial` and `unknown` states; unauthorized reads refused.
-  - **Triage:** new → assigned → resolved, each step audited; reopen on the same or a newer version; an older version stays resolved; a backend incident reopens.
+  - **Triage:** new → assigned → resolved, each step audited; "Fixed" on an incident sends no learner notice; reopen on the same or a newer version shows the "came back" line in all three languages; an older version stays resolved; a backend incident reopens.
   - **Analytics:** the golden test changes only the freshness shape.
   - **Browser:** Admin PWA Playwright at 390 px in three languages.
   - **Registry:** the checker passes with the flipped entries.
 - [ ] 3.2 Add bounded push (D7):
   - outbox and dispatcher allowlists, with the epoch key;
   - the alert decision in an intake savepoint;
-  - per-incident cooldown and global cap;
-  - the `sw.js` label and the `/admin/?inbox=diagnostic` link, applied after auth.
+  - per-incident cooldown and global cap, with reopen alerts exempt;
+  - the `sw.js` `new` and `reopened` labels and the `/admin/?inbox=diagnostic` link, applied after auth.
 
   Set registry `mode` to `require_covered` in the same change.
 
   Verify:
   - 100 identical critical events give at most one outbox row per device;
   - a non-critical incident sends no push;
-  - a `high` incident reaching the account threshold, and a critical reopen, alert once each;
+  - a `high` incident reaching the account threshold alerts once;
+  - a reopen of a fixed incident at any severity alerts once with the "came back" label, even during a flood or within the cooldown;
   - the global cap holds;
   - payment and Android alerts still dispatch during a diagnostic flood, and Lava Telegram admin alerts are sent unchanged;
   - an enqueue failure does not fail intake;
@@ -124,20 +126,18 @@ This is the only checklist for this work. Task 1.1 creates the single shared con
 
 ## 4. Mini App compatibility
 
-- [ ] 4.1 Add the Mini App adapter (D9):
+- [ ] 4.1 Add the additive Mini App adapter (D9, owner option A):
   - the `diag.v1` path to `ingest`;
-  - the legacy onboarding mapping;
-  - the per-row `technical` push is skipped for admitted events;
-  - the single `MONITORING_MINIAPP_CUTOVER_AT` switch and the `technical` listing filter;
+  - the legacy onboarding mapping to `ingest`, in addition to today's `technical` path;
+  - the `MONITORING_MINIAPP_ADAPTER` switch;
   - the Telegram transport in `hsk-diagnostics.js`;
   - the `clog` audio/mic mapping;
   - registry `telegram` entries, with the chain test, `covered`.
 
   Verify:
-  - legacy onboarding `app_error` still writes its `messages` row, and the bot AI context is unchanged;
-  - with the adapter on, no `technical` push for admitted events;
-  - with the mode `off`, or for a non-owner in `owners`, the `technical` item and push stay as today;
-  - with the cutover unset, the current behavior returns;
+  - legacy onboarding `app_error` still writes its `messages` row and still sends its per-error `technical` push, with the adapter on or off; the bot AI context and the `technical` listing are unchanged;
+  - with the adapter on, 30 identical errors give 30 `technical` pushes and one incident with 30 occurrences;
+  - with the adapter off, or the mode `off`, no incident is written and everything else is as today;
   - `diag.v1` writes no `messages` row, and a caller `user_id` is ignored;
   - the existing Telegram tests pass for `/api/miniapp/event`, onboarding, lesson flow, login, Pro and referral.
 
@@ -161,7 +161,7 @@ This is the only checklist for this work. Task 1.1 creates the single shared con
   3. Android Direct and Play: a crash, an ANR if it can be reproduced, an API 5xx, offline → retry, an account switch.
   4. iPhone Safari home-screen PWA: a JS error, a rejection, offline → retry, an owner switch.
   5. Mini App onboarding regression; a forced backend 5xx on staging.
-  6. Admin PWA push on iPhone and Mac, and the tap opens the diagnostic Inbox; resolve → reopen.
+  6. Admin PWA push on iPhone and Mac, and the tap opens the diagnostic Inbox. Tap "Тузатилди ✅", repeat the error, then confirm the "came back" push and Inbox line arrive.
   7. The kill switch stops writes.
   8. Push on, adapter on, then `all`, each with owner approval.
 

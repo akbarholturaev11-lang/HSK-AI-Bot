@@ -183,12 +183,19 @@ Defaults (catalog constants, not owner decisions): cap 60 events per account per
   - `unknown`, for an owner-free server-only incident.
 - **Filter:** `InboxRequest` gains an optional `platform`, applied to `diagnostic` only. Search matches code substrings only.
 
-**UI.** The existing Inbox list and drawer render the fields with UZ/RU/TJ catalog text. No new buttons (`BROWSER_UI_CONTRACT.md`).
+**UI.** The existing Inbox list and drawer render the fields with UZ/RU/TJ catalog text. No new button type (`BROWSER_UI_CONTRACT.md`).
+- **"Fixed" button (owner request 2026-11-13).** An unresolved incident's drawer shows the existing Android-report primary button "Тузатилди ✅" / "Исправлено ✅" / "Ислоҳ шуд ✅" (`fixLabels.fixed` in `app.js`). For incidents it sends the plain `resolve` operation, so no learner notice is sent. A resolved incident shows the same text as its status, as Android reports do.
+- **"Error came back" notice.** An auto-reopened incident shows one line in the list and drawer, with the time and version of the new occurrence:
+  - UZ: "🔁 Тузатилган хато яна такрорланди"
+  - RU: "🔁 Исправленная ошибка повторилась"
+  - TJ: "🔁 Хатои ислоҳшуда боз такрор шуд"
+
+  The text lives in the Admin catalog for all three languages.
 
 **Triage.**
-- Mapping: New = `new`, Investigating = `assigned` (existing `assign_self`), Resolved = `resolved`.
-- On resolve, the hook stores `resolved_version = last_version` in the same transaction. `resolve_fixed` stays Android-report only.
-- Automatic reopen (in `ingest`): when an incident is resolved and a new receipt arrives with a version ≥ `resolved_version` (any version for `server`), the triage moves as the existing `reopen` does. It writes a revision and an audit row with a null actor.
+- Mapping: New = `new`, Investigating = `assigned` (existing `assign_self`), Resolved = `resolved` (the "Fixed" button).
+- On resolve, the hook stores `resolved_version = last_version` in the same transaction. `resolve_fixed` stays Android-report only, because it notifies a learner.
+- Automatic reopen (in `ingest`): when an incident is resolved and a new receipt arrives with a version ≥ `resolved_version` (any version for `server`), the triage moves as the existing `reopen` does. It writes a revision and an audit row with a null actor, and sets the "came back" notice.
 - Version order: Android `versionCode`, PWA token date, backend none.
 
 ### D7. Bounded push through the existing outbox
@@ -196,13 +203,14 @@ Defaults (catalog constants, not owner decisions): cap 60 events per account per
 - **When an alert is queued.** Inside `ingest`, in a savepoint that never fails intake, an alert is queued only for one of three cases:
   - a new `critical` incident;
   - a scope escalation: a `high` incident that reaches ≥ 5 distinct accounts in 1 h becomes `critical`, a bounded indexed count;
-  - the reopen of a `critical` incident.
+  - the reopen of any incident the admin marked fixed, at any severity (owner request 2026-11-13). A fixed error that comes back always alerts.
 
   Further conditions:
   - a 6 h per-incident cooldown;
-  - a global cap of 6 distinct diagnostic alerts per hour, counted by `event_key` in the outbox under an advisory lock on a constant key.
+  - a global cap of 6 distinct diagnostic alerts per hour, counted by `event_key` in the outbox under an advisory lock on a constant key;
+  - a reopen alert is exempt from the cooldown and the cap. Each reopen needs a human "Fixed" first, so its rate is bounded, and the epoch key gives one alert per reopen.
 - **Dispatcher.** `_relevant` treats a resolved or purged incident as obsolete.
-- **Service worker.** `sw.js` gets a fixed `diagnostic` label and an allowlisted per-source link, `/admin/?inbox=diagnostic`. The Admin app applies that filter after authentication.
+- **Service worker.** `sw.js` gets two fixed `diagnostic` labels, chosen by a fixed `kind` (`new` or `reopened`; reopened uses the "came back" text). It also gets an allowlisted per-source link, `/admin/?inbox=diagnostic`, which the Admin app applies after authentication. The payload still carries no incident detail. iPhone web push has no action buttons, so "Fixed" stays in the authenticated drawer and never goes into the notification.
 - **Unchanged:** payment, Android-report, bot and release payloads. The cap protects them from a diagnostic flood.
 - **Telegram admin alerts are a separate channel.** Lava `admin_alert` messages keep their codes, throttle and recipients. Diagnostic alert decisions never read, wait for or cancel them, and the reverse also holds.
 
@@ -211,17 +219,17 @@ Defaults (catalog constants, not owner decisions): cap 60 events per account per
 - **Account deletion.** Account deletion cascades the receipts through the FK, in the existing deletion transaction; incidents keep aggregates only.
 - **Blocked or revoked accounts.** The existing transports refuse them. A 401/403 makes the client drop that owner's queue.
 
-### D9. Mini App compatibility and cutover
-**Switch.** One setting, `MONITORING_MINIAPP_CUTOVER_AT` (ISO time), separate from the mode. Set means the adapter is on from that time; unset means off. The adapter acts only on events the current `MONITORING_MODE` admits. With the mode `off`, or for an account outside the `owners` stage, the current behavior stays, so no Mini App alert is lost.
+### D9. Mini App compatibility: additive adapter
+**Owner decision (2026-11-13): option A.** Fixing errors comes first, so no Mini App alert is removed. The adapter only adds the diagnostic incident. The `technical` Inbox item and its per-error push stay exactly as today. Example: 30 onboarding save errors in a day give 30 `technical` pushes as today, plus one grouped incident card, with its own push under D7.
+
+**Switch.** One boolean setting, `MONITORING_MINIAPP_ADAPTER`, separate from the mode; default off. The adapter acts only on events the current `MONITORING_MODE` admits.
 
 In the `app_error` branch of `/api/miniapp/event`:
-- **`schema:"diag.v1"` events from the shared script.** They go to `ingest` only. No `messages` row is written, so no new rows reach the AI context.
+- **`schema:"diag.v1"` events from the shared script.** They are new signals, so they go to `ingest` only. No `messages` row is written, so no new rows reach the AI context.
 - **Legacy onboarding `app_error`.**
-  - It still writes its `messages` row; bot AI context, `bot_block_cause_service` and the experiments count are unchanged.
-  - It is mapped to the onboarding failure codes, mirroring `_technical_explanation_code`. A recovered variant only lowers severity.
-  - Its per-row `technical` push is skipped.
-- **Cutover.** While the adapter is on, the `technical` source lists rows written before the cutover, plus rows the mode did not admit.
-- **Rollback.** Unsetting the cutover restores today's listing and push, because every legacy row still exists.
+  - It still writes its `messages` row and still enqueues its per-row `technical` push. Bot AI context, `bot_block_cause_service`, the experiments count and the `technical` listing are unchanged.
+  - It is also mapped to the onboarding failure codes, mirroring `_technical_explanation_code`, and sent to `ingest`. A recovered variant only lowers severity.
+- **Rollback.** Turning the adapter off stops only the incident writes. The `technical` path never changed, so nothing needs restoring.
 - **`clog`.** Its known audio/mic events are mapped into `HskDiag.report`. `/api/v3/clientlog` is left untouched.
 
 ### D10. Coverage registry and CI: one registry, one checker, one workflow
@@ -273,7 +281,8 @@ In the `app_error` branch of `/api/miniapp/event`:
 - [Voice V8 changes the `live_*` codes] → The allowlist is re-checked in task 1.1, and the unknown-reporter-literal CI check fails on an unlisted code.
 - [Route-map maintenance cost] → The baseline is generated once (task 1.2) and reviewed; each later route adds one line. CI names exactly the missing route.
 - [Bypass by mapping a new route to an existing covered feature] → Its 5xx is still captured by the backend reporter for that feature. New screens and pages are caught separately, and review sees the mapping in the diff.
-- [Mini App behavior drift] → Legacy rows and AI context are unchanged. Only the per-row push and the `technical` listing move behind an adapter switch, with a cutover time.
+- [Mini App behavior drift] → None by design. Legacy rows, AI context, the `technical` listing and its per-error push are unchanged. The adapter only adds incidents.
+- [More pushes for one Mini App error] → Accepted by the owner (option A, 2026-11-13). Per-error `technical` pushes stay, and the grouped incident adds at most one push per D7 case.
 - [R8 strips the Android DTOs] → Keep rules plus a release-build smoke on the Direct flavour (instrumentation runs there only).
 - [Reporter slows the PWA] → Deferred script, no work before first paint, idle flush. The existing performance-contract browser tests must stay green.
 

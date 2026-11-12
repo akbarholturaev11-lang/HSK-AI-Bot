@@ -45,9 +45,9 @@ Where these disagree, code and tests win.
 
   Both use a bounded, owner-bound offline queue with backoff. Neither ever blocks the learner.
 - **Admin PWA:**
-  - a `diagnostic` source in the existing Inbox and triage (New → Investigating → Resolved, audited reopen);
-  - bounded Apple Push through the existing outbox, only for new, escalated or reopened critical incidents.
-- **Mini App compatibility.** The Mini App `app_error` and `clog` signals feed the same intake. The per-event `technical` push stops once the adapter is enabled. Bot AI context and the other existing consumers keep their rows.
+  - a `diagnostic` source in the existing Inbox and triage (New → Investigating → Resolved), with the existing "Fixed" button and an audited reopen that shows a "fixed error came back" notice;
+  - bounded Apple Push through the existing outbox for new or escalated critical incidents, plus one push whenever an incident marked fixed comes back, at any severity.
+- **Mini App compatibility.** The Mini App `app_error` and `clog` signals feed the same intake. The adapter is additive (owner decision 2026-11-13). The `technical` item, its per-error push, bot AI context and the other existing consumers stay unchanged.
 - **P0 coverage enforcement from the first group:**
   - a `Monitoring Impact` rule in `AGENTS.md`;
   - a `monitoring` block in the existing registry, keyed by Analytics flow IDs and platform keys;
@@ -65,7 +65,7 @@ Where these disagree, code and tests win.
 
 ### New Capabilities
 - `error-monitoring`: Failure capture on Android, PWA, Mini App and Backend; the privacy-safe authenticated intake; deduplication into incidents; non-blocking reliability; retention; rollout and kill switch.
-- `admin-diagnostic-alerts`: The diagnostic incident source in the Admin PWA Inbox, its triage and reopen rules, and bounded Apple Push for critical incidents.
+- `admin-diagnostic-alerts`: The diagnostic incident source in the Admin PWA Inbox, its triage, "Fixed" and reopen rules, and bounded Apple Push for critical and returning incidents.
 - `monitoring-coverage`: The durable Monitoring Impact rule, the monitoring section of the shared coverage registry, and the CI merge-block for unmonitored important features.
 
 ### Modified Capabilities
@@ -104,5 +104,5 @@ None. `admin-real-analytics` keeps its requirements: Report freshness gains a di
 - **Rollback:**
   - Intake mode `off` stops all writes.
   - The push switch stops diagnostic alerts only.
-  - Disabling the Mini App adapter restores today's `technical` source and per-event push, because its `messages` row is still written.
+  - Disabling the Mini App adapter stops only incident writes. The `technical` source and its per-event push never change.
   - The migration downgrade refuses while diagnostic triage or outbox rows exist, as `0127` does.
