@@ -113,6 +113,52 @@ async def authenticate_fresh_launch(page):
         await expect(page.locator('.app')).to_be_visible(timeout=20000)
 
 
+async def complete_telegram_lesson_through_route(sessions):
+    """Audit #43: the Telegram completion that Course > Telegram shows below is
+    written by the real signed Mini App lesson routes (start, then complete with
+    its proof), so route -> stored row -> Admin analytics -> browser is one run.
+    tests/test_analytics_platform_chain.py proves the same chain on PostgreSQL."""
+    import hashlib, hmac, time
+    from contextlib import ExitStack
+    from urllib.parse import urlencode
+    import app.main as main
+    import tests.test_pwa_browser_auth as pwa
+    from app.api.miniapp_entitlements import create_miniapp_entitlements_router
+    learner_settings=pwa.settings()
+    async with sessions() as db:
+        # A learner placed at HSK 1, so the beginner Starter 0 gate does not apply.
+        (await db.get(User,2)).level='hsk1'
+        await db.commit()
+    with ExitStack() as stack:
+        for key,value in vars(learner_settings).items():
+            stack.enter_context(patch.object(main.settings,key,value))
+        for target in ('app.main.async_session_maker','app.services.conversion_funnel_service.async_session_maker',
+                       'app.services.entitlements.shadow.async_session_maker'):
+            stack.enter_context(patch(target,sessions))
+        learner=FastAPI()
+        learner.include_router(create_miniapp_entitlements_router(session_factory=sessions,settings_obj=learner_settings))
+        learner.add_api_route('/api/v3/lesson/complete',main.v3_course_lesson_complete,methods=['POST'])
+        # Account 2 (Pro trial) is the fixture's Telegram learner (ID 2002).
+        values={'auth_date':str(int(time.time())),'user':json.dumps({'id':2002})}
+        secret=hmac.new(b'WebAppData',learner_settings.BOT_TOKEN.encode(),hashlib.sha256).digest()
+        check='\n'.join(f'{key}={value}' for key,value in sorted(values.items()))
+        values['hash']=hmac.new(secret,check.encode(),hashlib.sha256).hexdigest()
+        headers={'X-Telegram-Init-Data':urlencode(values)}
+        body={'lesson_id':1,'level':'hsk1'}
+        async with AsyncClient(transport=ASGITransport(app=learner),base_url=pwa.ORIGIN) as client:
+            started=await client.post('/api/v3/lesson/start',headers=headers,json=body)
+            assert started.status_code==200,started.text
+            done=await client.post('/api/v3/lesson/complete',headers=headers,
+                                   json={**body,'completion_proof':started.json()['completion_proof']})
+            assert done.status_code==200,done.text
+    from app.db.models.course_miniapp_event import CourseMiniAppEvent
+    async with sessions() as db:
+        payloads=(await db.execute(select(CourseMiniAppEvent.payload_json).where(
+            CourseMiniAppEvent.event_name=='lesson_completed'))).scalars().all()
+    # The route, not the caller, set the client as the payload's final key.
+    assert len(payloads)==1 and payloads[0].endswith('"client":"telegram"}'),payloads
+
+
 async def browser_checks(output):
     fixture=Fixture()
     fixture.engine=create_async_engine('sqlite+aiosqlite:///:memory:',poolclass=StaticPool)
@@ -143,13 +189,6 @@ async def browser_checks(output):
         db.add(BotFeedback(user_id=2,telegram_id=2002,status='completed',disliked_text='other account QA feedback'))
         for index in range(11):
             db.add(Payment(user_id=1,amount=index+1,currency='TJS',plan_type='1_month',payment_status='approved'))
-        # Task 3.4 UI half: one completion written the way the signed Telegram
-        # route writes it; tests/test_analytics_platform_chain.py proves the route.
-        from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
-        recorded=await CourseMiniAppAnalyticsService(db).record_server_event(event_name='lesson_completed',user_id=1,
-            telegram_id=1001,source='course_v3',level='hsk1',lesson_order=1,dedupe_key='qa:telegram-lesson-1',
-            analytics_client='telegram')
-        assert recorded['ok'],recorded
         # Task 4.2 UI half: PWA Pro stages as the inline-event and PWA Lava start
         # routes write them; tests/test_pwa_pro_funnel_chain.py proves the routes
         # and the provider-verified payment.
@@ -162,6 +201,7 @@ async def browser_checks(output):
                                              'payment_method':'lava','transport':'iphone_pwa'})))
         await db.execute(update(AdminPwaSession).values(revoked_at=__import__('datetime').datetime.now(__import__('datetime').timezone.utc)))
         await db.commit()
+    await complete_telegram_lesson_through_route(fixture.sessions)
     settings=fixture.settings
     settings.ADMIN_PWA_MCP_ENABLED=True
     settings.ADMIN_PWA_MCP_TRANSPORT_ENABLED=True
@@ -452,13 +492,16 @@ async def browser_checks(output):
         await expect(page.locator('.feedback-analysis')).to_contain_text('Шикоятлар таҳлили')
         # Task 5.2: freshness per platform. A platform with no verified records
         # stays listed with a dash; only counts and dates reach the page.
+        # Audit #40: the global quality table says it ignores filter and period.
+        quality_title,quality_note=await page.evaluate("[window.HSKAI_ADMIN_I18N.uz.analyticsDataQuality,window.HSKAI_ADMIN_I18N.uz.analyticsQualityNote]")
+        await expect(page.locator('.analytics-panel',has=page.locator('h2',has_text=quality_title))).to_contain_text(quality_note)
         fresh_title=await page.evaluate("window.HSKAI_ADMIN_I18N.uz.analyticsFreshness")
         fresh=page.locator('.analytics-panel',has=page.locator('h2',has_text=fresh_title))
         await expect(fresh.locator('tbody tr')).to_have_count(6)
         updated=[await fresh.locator('tbody tr').nth(i).locator('td').nth(2).inner_text() for i in range(6)]
         assert updated[0]=='—' and updated[2]!='—' and updated[3]!='—' and updated[4]=='—', updated
         fresh_text=await fresh.inner_text()
-        for secret in ('1001','qa:telegram-lesson-1','"client"','telegram_bot'):
+        for secret in ('2002','"client"','telegram_bot'):
             assert secret not in fresh_text, secret
         await expect(page.locator('.feedback-analysis')).to_contain_text('Нарх')
         await page.screenshot(path=str(output/'mobile-statistics-details.png'),full_page=True)
