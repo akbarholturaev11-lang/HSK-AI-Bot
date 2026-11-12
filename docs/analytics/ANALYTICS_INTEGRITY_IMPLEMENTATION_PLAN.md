@@ -340,7 +340,7 @@ Written from the code on this branch.
 
 | Step | Requirement | Schema | Client release | Size | Reason |
 |---|---|---|---|---|---|
-| 1 | R1 Android Lesson Start | no | no (server only) | S | Smallest. Unblocks Android `features.lessons` and gives R4 an Android learning signal. **Started 2026-11-12** |
+| 1 | R1 Android Lesson Start | no | no (server only) | S | Smallest. Unblocks Android `features.lessons` and gives R4 an Android learning signal. **Implemented 2026-11-12** on `feat/analytics-android-lesson-start-20261112` (stacked on PR #285; not merged) |
 | 2 | R2 PWA Activation | no | no | M | The writer gets one argument; the reader reuses the activation funnel |
 | 3 | R4 Platform D1/D7 Retention | no | no | M | Reader only; uses R1 and R2 rows as evidence |
 | 4 | R3 Subscription Sources | **yes** (one nullable column) | no | M–L | The only migration, so it deploys alone |
@@ -369,6 +369,12 @@ Written from the code on this branch.
 - **Registry.** The name changes from `no_writer` to a declared event of the `lessons` flow.
 
 **Overall impact (intended).** From the deploy date, Android starts enter Overall `features.lessons` and Overview `started_accounts` / course engagement. Until now, Android learners never counted as started. The golden fixture has no Android start, so it stays unchanged. A new test pins the Overall change.
+
+**Status — 2026-11-12: implemented, not merged.** OpenSpec change `analytics-android-lesson-start`.
+- **Writer and reader:** as above. `android_lesson_started` is also a server-only boundary row for Android (`SERVER_ONLY_TAGGED`), so Android features are no longer missing when an account has no tagged practice rows yet.
+- **Side effect:** Report freshness dates Android learning by these opens too. They are Android learning actions.
+- **Evidence:** writer unit tests (4), stored-row tests (2) and a bearer route chain test. Each fails on the old code.
+- **Remaining:** owner acceptance on an Android device (task 3.4).
 
 **Registry and tests.**
 - **Registry.** The Android `course.features` reason drops "lessons omitted". Flow `lessons` on Android is `covered` once the chain test runs in CI. Add the critical path `app/services/android_course_service.py` with symbol `lesson`.
@@ -566,6 +572,7 @@ Written from the code on this branch.
 
 ## Session log (newest first, one or two lines each)
 
+- 2026-11-12 — R1 Android Lesson Start implemented on `feat/analytics-android-lesson-start-20261112` (writer, reader, registry, UI boundary line, tests). Fixed a wall-clock dependence in the V10 golden fixture (user 4 `last_active_at`), which made the money/overall cases fail after 12:00 UTC on unchanged code; that fix is on the PR #285 branch.
 - 2026-11-12 — Plan review: R1 writes the server-only `android_lesson_started`, because `lesson_started` drives Telegram reminders. The R4 Telegram anchor is the first tagged row, since presence is not first use. Added defaults, definition of done and risks. R1 started.
 - 2026-11-12 — Wrote the implementation plan for the four next-stage requirements (order R1 → R2 → R4 → R3, rules, per-requirement writer/reader/tests, owner decisions) from the code on this branch. Nothing implemented; waits for owner approval.
 
