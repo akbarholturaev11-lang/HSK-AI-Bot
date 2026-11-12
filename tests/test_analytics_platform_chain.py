@@ -8,6 +8,9 @@ cookie-authenticated Admin analytics API under every filter:
 - iPhone PWA: cookie + CSRF `/api/v3/pwa/lesson/start` + `/api/v3/pwa/lesson/complete`;
 - Android: bearer `/api/v3/android/course/complete`.
 
+Next-stage R1 adds Course `features.lessons` for Android: the bearer lesson
+route writes the server-only `android_lesson_started`.
+
 Each client completes a different number of lessons, so a value that leaked
 into another filter would change that filter's count.
 Run with ANALYTICS_TEST_DATABASE_URL pointing at a disposable PostgreSQL DB.
@@ -105,6 +108,7 @@ class CoursePlatformChainTests(unittest.IsolatedAsyncioTestCase):
         learner.include_router(create_android_course_router(session_factory=self.sessions, settings_obj=self.settings))
         learner.add_api_route("/api/v3/lesson/complete", main.v3_course_lesson_complete, methods=["POST"])
         learner.add_api_route("/api/v3/pwa/lesson/complete", main.pwa_v3_course_lesson_complete, methods=["POST"])
+        learner.add_api_route("/api/miniapp/event", main.miniapp_event, methods=["POST"])
         self.client = AsyncClient(transport=ASGITransport(app=learner), base_url=pwa.ORIGIN)
 
     async def asyncTearDown(self):
@@ -114,8 +118,8 @@ class CoursePlatformChainTests(unittest.IsolatedAsyncioTestCase):
             await connection.execute(text("DROP SCHEMA IF EXISTS " + self.schema + " CASCADE"))
         await self.engine.dispose()
 
-    def telegram_headers(self):
-        values = {"auth_date": str(int(time.time())), "user": json.dumps({"id": TELEGRAM_ID})}
+    def telegram_headers(self, telegram_id=TELEGRAM_ID):
+        values = {"auth_date": str(int(time.time())), "user": json.dumps({"id": telegram_id})}
         secret = hmac.new(b"WebAppData", self.settings.BOT_TOKEN.encode(), hashlib.sha256).digest()
         check = "\n".join(f"{k}={v}" for k, v in sorted(values.items()))
         values["hash"] = hmac.new(secret, check.encode(), hashlib.sha256).hexdigest()
@@ -199,6 +203,38 @@ class CoursePlatformChainTests(unittest.IsolatedAsyncioTestCase):
         for platform in ("telegram", "iphone_pwa"):
             self.assertIsNotNone(views[platform]["metrics"]["attributed_since"]["completed_user_lessons"])
         self.assertNotIn("completed_user_lessons", views["android"]["metrics"]["attributed_since"])
+
+    async def test_android_lesson_open_counts_once_under_android_and_overall(self):
+        android = await self.android_headers()
+        for _ in range(2):  # a refetch on the same UTC day
+            opened = await self.client.get("/api/v3/android/course/lesson/1", headers=android)
+            self.assertEqual(opened.status_code, 200, opened.text)
+        locked = await self.client.get("/api/v3/android/course/lesson/2", headers=android)
+        self.assertEqual(locked.status_code, 403, locked.text)
+        # The same account also starts a lesson in the Telegram Mini App, and a
+        # caller tries to write the Android name through the Telegram route.
+        telegram = self.telegram_headers(ANDROID_TELEGRAM_ID)
+        for event in ("lesson_started", "android_lesson_started"):
+            await self.client.post("/api/miniapp/event", headers=telegram,
+                                   json={"event": event, "level": "hsk1", "lesson_id": 1, "client": "android"})
+
+        async with self.sessions() as db:
+            rows = (await db.execute(select(Event.event_name, Event.user_id, Event.source, Event.lesson_order,
+                                            Event.payload_json).where(
+                Event.event_name.in_(("android_lesson_started", "lesson_started"))).order_by(Event.id))).all()
+        # One server-built Android start; reminders read `lesson_started`, which
+        # only the Telegram route wrote, with its own route key.
+        self.assertEqual([(name, uid, source, order) for name, uid, source, order, _ in rows],
+                         [("android_lesson_started", 3, "android_course", 1), ("lesson_started", 3, "course_miniapp", 1)])
+        self.assertEqual([json.loads(payload)["client"] for *_, payload in rows], ["android", "telegram"])
+
+        android_view, overall_view = await self.admin_read("android"), await self.admin_read("overall")
+        lessons = {view: next(row for row in data["metrics"]["features"] if row["key"] == "lessons")
+                   for view, data in (("android", android_view), ("overall", overall_view))}
+        self.assertEqual({view: (row["paid"], row["free"]) for view, row in lessons.items()},
+                         {"android": (1, 0), "overall": (1, 0)})
+        self.assertIsNotNone(android_view["metrics"]["attributed_since"]["features_lessons"])
+        self.assertEqual(android_view["metric_states"]["features"], {"state": "available", "reason": None})
 
 
 if __name__ == "__main__":

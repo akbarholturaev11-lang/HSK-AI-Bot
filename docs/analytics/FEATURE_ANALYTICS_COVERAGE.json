@@ -382,7 +382,7 @@
     },
     {"section": "course", "key": "features", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
       "platforms": {
-        "android": {"status": "partial", "reason": "A13-A15: tests, practice and mistakes by the route-set client android from attributed_since on. Lessons omitted (A7: no start writer); AI and voice omitted (A16/A17). No route-to-Admin chain test yet (3.4 chained Course completions)."},
+        "android": {"status": "partial", "reason": "A13-A15 and R1: tests, practice and mistakes by the route-set client android from attributed_since on; lessons from the server-only android_lesson_started from attributed_since.features_lessons on (R1, route-chain tested). AI and voice omitted (A16/A17). No route-to-Admin chain test yet (3.4 chained Course completions)."},
         "telegram": {"status": "partial", "reason": "A6/A13-A15: lessons, tests, practice and mistakes by the route-set client telegram from attributed_since on; AI and voice omitted (A16/A17). No route-to-Admin chain test yet (3.4 chained Course completions)."},
         "iphone_pwa": {"status": "partial", "reason": "A6/A13-A15: lessons, tests, practice and mistakes by the route-set client iphone_pwa from attributed_since on; AI and voice omitted (A16/A17). No route-to-Admin chain test yet (3.4 chained Course completions)."},
         "macos": {"status": "not_instrumented", "reason": "Feature-use rows lack a consistent Desktop OS dimension; Desktop freeze."},
@@ -1053,7 +1053,7 @@
     },
     {
       "id": "lessons",
-      "description": "Lesson and section starts, completions, progression, and per-lesson behavior. Existing Telegram and PWA start/completion writes now carry the route-owned client; older rows still need provenance checks and Android has no lesson-start writer.",
+      "description": "Lesson and section starts, completions, progression, and per-lesson behavior. Telegram and PWA start/completion writes carry the route-owned client; Android opens are the server-only android_lesson_started (R1); older rows still need provenance checks.",
       "events": [
         {
           "store": "course_miniapp_events",
@@ -1071,7 +1071,8 @@
             "lesson_jump_selected",
             "card_seen",
             "interaction_completed",
-            "lesson_completed"
+            "lesson_completed",
+            "android_lesson_started"
           ]
         },
         {
@@ -1086,10 +1087,9 @@
           "store": "course_miniapp_events",
           "role": "no_writer",
           "names": [
-            "android_lesson_started",
             "android_lesson_completed"
           ],
-          "reason": "Legacy names are read by V10 but have no runtime writer; Android completion uses lesson_completed with source android_course."
+          "reason": "Legacy name read by V10 with no runtime writer; Android completion uses lesson_completed with source android_course."
         },
         {
           "store": "course_miniapp_events",
@@ -1102,8 +1102,9 @@
       ],
       "platforms": {
         "android": {
-          "status": "partial",
-          "reason": "Android completions use the Android-only source android_course (course.completed_user_lessons is route-chain tested); no Android lesson-start writer exists (A7)."
+          "status": "covered",
+          "reason": "Android lesson opens write the server-only android_lesson_started (not lesson_started, which reminders read) with the route-set client android, one per account, level, lesson and UTC day (R1). Completions use the Android-only source android_course. Both reach Course > Android through bearer route chains.",
+          "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_android_lesson_open_counts_once_under_android_and_overall"
         },
         "telegram": {
           "status": "partial",

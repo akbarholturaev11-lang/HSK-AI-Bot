@@ -242,7 +242,7 @@ class CoursePlatformScopeTests(unittest.IsolatedAsyncioTestCase):
         # Neither the pre-boundary lesson start nor the nested key counts as PWA.
         self.assertEqual(self.features("iphone_pwa"),
                          {"lessons": (0, 0), "tests": (1, 0), "practice": (0, 0), "mistakes": (1, 0)})
-        # A7: no Android lesson-start writer, so no lessons entry.
+        # R1: no Android lesson start stored yet, so no lessons entry.
         self.assertEqual(self.features("android"), {"tests": (0, 0), "practice": (0, 1), "mistakes": (0, 0)})
 
     def test_attributed_since_is_the_first_server_built_tagged_row(self):
@@ -282,6 +282,48 @@ class CoursePlatformScopeTests(unittest.IsolatedAsyncioTestCase):
             for key in ("voice_minutes", "chat", "ai_usage", "activation", "sessions"):
                 self.assertEqual(states[key], {"state": "unavailable", "reason": "not_instrumented"})
             self.assertNotIn(PRIVATE, json.dumps(response))
+
+
+@unittest.skipUnless(URL, "set ANALYTICS_TEST_DATABASE_URL for the real PostgreSQL platform scope tests")
+class AndroidLessonStartScopeTests(unittest.IsolatedAsyncioTestCase):
+    """R1: Android lessons come from the tagged server-only start, from its own boundary."""
+
+    async def asyncSetUp(self):
+        def event(name, user_id, hours, payload, source="android_course"):
+            return CourseMiniAppEvent(event_name=name, user_id=user_id, source=source, level="hsk1", lesson_order=1,
+                payload_json=json.dumps(payload, separators=(",", ":")), created_at=ago(hours=hours))
+
+        async with postgres_fixture(URL) as sessions:
+            async with sessions() as db:
+                db.add_all([
+                    # An untagged legacy row: Overall only.
+                    event("android_lesson_started", 2, 30, {}),
+                    event("training_completed", 3, 20, {"mode": "training", "client": "android"}, source="course_v3"),
+                    event("android_lesson_started", 3, 5, {"client": "android"}),
+                    event("android_lesson_started", 1, 4, {"client": "android"}),
+                    # A Telegram start of the same account is not an Android lesson.
+                    event("lesson_started", 3, 3, {"lesson_order": 1, "client": "telegram"}, source="course_v3"),
+                ])
+                await db.commit()
+            self.projections = await capture(sessions)
+
+    def course(self, platform):
+        return self.projections["course", platform, "weekly"]["metrics"]
+
+    def lessons(self, platform):
+        return next((row["paid"], row["free"]) for row in self.course(platform)["features"] if row["key"] == "lessons")
+
+    def test_android_lessons_count_tagged_starts_from_their_own_boundary(self):
+        # User 1 is paid, user 3 free; user 2's untagged row is not Android.
+        self.assertEqual(self.lessons("android"), (1, 1))
+        self.assertEqual(self.course("android")["attributed_since"],
+                         {"features": ago(hours=20).isoformat(), "features_lessons": ago(hours=5).isoformat()})
+
+    def test_overall_counts_every_start_and_each_account_once(self):
+        baseline = self.projections["course", "overall", "weekly"]["metrics"]
+        lessons = next(row for row in baseline["features"] if row["key"] == "lessons")
+        # Accounts 1, 2 and 3 started; account 3 on two clients counts once.
+        self.assertEqual((lessons["paid"], lessons["free"]), (1, 2))
 
 
 @unittest.skipUnless(URL, "set ANALYTICS_TEST_DATABASE_URL for the real PostgreSQL platform scope tests")

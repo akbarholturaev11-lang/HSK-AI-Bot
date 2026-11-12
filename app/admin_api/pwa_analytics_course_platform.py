@@ -15,16 +15,22 @@ COURSE_CLIENTS = ('android', 'telegram', 'iphone_pwa')
 # a client marks when route-owned tagging was live for it. Client-writable
 # starts could carry a caller `client` key before that, so they count only
 # from this boundary on.
+# R1 (audit A7): Android lesson opens. Server-only: no client route accepts
+# this name, so it can date the Android boundary. Only the Admin readers and
+# bot-block diagnostics read it; reminders read `lesson_started`.
+ANDROID_LESSON_STARTED = 'android_lesson_started'
 SERVER_ONLY_TAGGED = ('lesson_completed', 'book_lesson_completed', 'training_completed',
-                      'test_completed', 'mistake_review_answered', 'mistake_review_completed')
+                      'test_completed', 'mistake_review_answered', 'mistake_review_completed',
+                      ANDROID_LESSON_STARTED)
 FEATURE_EVENTS = (
     ('lessons', ('lesson_started', 'section_started')),
     ('tests', ('test_started', 'test_completed')),
     ('practice', ('training_started', 'training_completed')),
     ('mistakes', ('mistake_review_started', 'mistake_review_completed')),
 )
-# A7: Android has no lesson-start writer, so its lessons entry is not reported.
-UNWRITTEN_FEATURES = {'android': frozenset({'lessons'})}
+# Android lessons are read from ANDROID_LESSON_STARTED, not the client-written
+# names above. It began later than the other Android writes, so the lessons
+# entry has its own boundary.
 COMPLETED = ('lesson_completed', 'book_lesson_completed')
 # A8: only the Android course route writes this source on a completion.
 ANDROID_COMPLETION_SOURCE = 'android_course'
@@ -62,20 +68,26 @@ async def course_platform_metrics(db, *, platform, since, now):
     attributed = [client_tag(platform), Event.created_at >= boundary] if boundary else None
     since_iso = boundary.isoformat() if boundary else None
 
+    attributed_since = {'features': since_iso}
     features = None
     if attributed is not None:
         paid = _user_segment_clause('paid', now=now)
         features = []
         for key, names in FEATURE_EVENTS:
-            if key in UNWRITTEN_FEATURES.get(platform, ()):
-                continue
+            conditions = attributed
+            if platform == 'android' and key == 'lessons':
+                lessons_since = await db.scalar(select(func.min(Event.created_at)).where(
+                    Event.event_name == ANDROID_LESSON_STARTED, client_tag(platform), Event.created_at <= now))
+                if lessons_since is None:
+                    continue
+                names, conditions = (ANDROID_LESSON_STARTED,), [client_tag(platform), Event.created_at >= lessons_since]
+                attributed_since['features_lessons'] = lessons_since.isoformat()
             values = (await db.execute(select(func.count(func.distinct(User.id)).filter(paid),
                 func.count(func.distinct(User.id)).filter(~paid)).select_from(Event).join(User, owner(Event))
-                .where(Event.event_name.in_(names), *attributed, *_window(Event.created_at, detail_since, now),
+                .where(Event.event_name.in_(names), *conditions, *_window(Event.created_at, detail_since, now),
                        User.created_at <= now))).one()
             features.append({'key': key, 'paid': values[0], 'free': values[1]})
 
-    attributed_since = {'features': since_iso}
     result = {}
     if platform != 'android':
         # The Starter 0 funnel is anchored on each learner's start. Only the

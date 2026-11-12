@@ -199,6 +199,12 @@ async def browser_checks(output):
                 db.add(ConversionFunnelEvent(user_id=2,telegram_id=2002,event_name=name,source='v3_locked_lesson',
                     payload_json=json.dumps({'event_id':f'{attempt}:{step}','attempt_id':attempt,'plan_type':'1_month',
                                              'payment_method':'lava','transport':'iphone_pwa'})))
+        # R1 UI half: an Android lesson open as the bearer lesson route writes it;
+        # tests/test_analytics_platform_chain.py proves the route.
+        from app.db.models.course_miniapp_event import CourseMiniAppEvent
+        db.add(CourseMiniAppEvent(user_id=1,telegram_id=1001,event_name='android_lesson_started',source='android_course',
+                                  level='hsk1',lesson_order=1,dedupe_key='android-lesson-start:qa',
+                                  payload_json='{"client":"android"}',created_at=datetime.now(timezone.utc)-timedelta(hours=1)))
         await db.execute(update(AdminPwaSession).values(revoked_at=__import__('datetime').datetime.now(__import__('datetime').timezone.utc)))
         await db.commit()
     await complete_telegram_lesson_through_route(fixture.sessions)
@@ -562,6 +568,9 @@ async def browser_checks(output):
                         # The Telegram completion shows under Telegram only; Android is a real zero.
                         lessons=page.locator('.stat-info-row',has_text=labels['analyticsCompletedUserLessons']).locator('strong')
                         await expect(lessons).to_have_text({'telegram':'1','android':'0','iphone_pwa':labels['analyticsStateNoData']}[platform])
+                        # R1: Android lessons carry their own boundary line, in the active locale.
+                        lessons_since=page.locator('.analytics-since',has_text=labels['analyticsFeaturelessons']+' · ')
+                        await expect(lessons_since).to_have_count(1 if platform=='android' else 0)
                     elif section=='funnel':
                         await expect(page.locator('.metric[data-state=not_instrumented]')).to_have_count(3)
                         # Task 4.2: the PWA Pro attempts panel shows under iPhone PWA only.

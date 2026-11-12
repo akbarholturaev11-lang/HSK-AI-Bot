@@ -224,7 +224,7 @@ function metric(label,value,glyph='chart',reason=null) { return `<div class="met
 const stateLabels={no_data:'analyticsStateNoData',not_instrumented:'analyticsStateNotInstrumented',attribution_not_audited:'analyticsStateNotAudited',detail_limited:'analyticsStateDetailLimited',not_applicable:'analyticsStateNotApplicable'};
 function metricReason(key){const s=key&&state.stats?.metric_states?.[key];return !s||s.state==='available'?null:stateLabels[s.reason]?s.reason:'no_data';}
 function stateBlock(key){const reason=metricReason(key)||'no_data';return `<p class="analytics-state" data-state="${esc(reason)}">${esc(t(stateLabels[reason]))}</p>`;}
-function sinceLine(m,key){const at=m.attributed_since?.[key];return at?`<p class="source-note analytics-since">${esc(t('analyticsAttributedSince'))}: ${esc(date(at))}</p>`:'';}
+function sinceLine(m,key,label){const at=m.attributed_since?.[key];return at?`<p class="source-note analytics-since">${label?`${esc(t(label))} · `:''}${esc(t('analyticsAttributedSince'))}: ${esc(date(at))}</p>`:'';}
 
 const feedbackCategoryLabels={
   price:'feedbackCatPrice',limits:'feedbackCatLimits',unclear:'feedbackCatUnclear',
@@ -362,7 +362,7 @@ function categorizedStatsView(){
     const parts=f?f.parts.map(p=>analyticTrack('analyticsPart'+p.part,p.completed_users,f.completed_users)).join(''):stateBlock('foundation');
     body+=`<div class="double">${cohorts.length?analyticPanel('analyticsCohorts',analyticTable(['analyticsMetric','analyticsNumerator','analyticsDenominator'],cohorts),'analyticsRetentionNote'):''}${analyticPanel('analyticsFoundationParts',parts+analyticRows([['completedAccounts',number(m.course_engagement?.completed_accounts),'course_engagement'],['analyticsCompletedUserLessons',number(m.completed_user_lessons),'completed_user_lessons']])+sinceLine(m,'foundation'))}</div>`;
     const featureRows=(m.features||[]).map(r=>[t('analyticsFeature'+r.key),number(r.paid),number(r.free),...(den?[percent(den.paid?100*r.paid/den.paid:null),percent(den.free?100*r.free/den.free:null)]:[])]);
-    body+=analyticPanel('analyticsFeatureUse',(m.features?analyticTable(['analyticsFeature','analyticsPaidNow','analyticsFreeNow',...(den?['analyticsPaidRate','analyticsFreeRate']:[])],featureRows):stateBlock('features'))+sinceLine(m,'features'),'analyticsFeaturesNote');
+    body+=analyticPanel('analyticsFeatureUse',(m.features?analyticTable(['analyticsFeature','analyticsPaidNow','analyticsFreeNow',...(den?['analyticsPaidRate','analyticsFreeRate']:[])],featureRows):stateBlock('features'))+sinceLine(m,'features')+sinceLine(m,'features_lessons','analyticsFeaturelessons'),'analyticsFeaturesNote');
     body+=`<p class="source-note">${esc(t('analyticsDetailWindow'))}: ${esc(date(m.detail_since))}${m.detail_limited?' · '+esc(t('analyticsDetailLimited')):''}</p>`;
   }else if(tab==='platform')body=platformAnalytics(m);
   else if(tab==='funnel'){
