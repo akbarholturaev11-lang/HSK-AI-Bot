@@ -13,9 +13,9 @@ This is the only checklist for this work. Context, audit results, decisions and 
 
 ## 1. Audit and baseline
 
-- [x] 1.1 Revalidated on `origin/main` `334368cc` (2026-11-11).
+- [x] 1.1 Revalidated on `origin/main` `680761f1` (2026-11-12; delta from `334368cc`).
   - Traced writer → table → platform signal → reader → section for Android, the Mini App, the PWA and desktop: rows A1–A20 and F1–F8, marked `verified`, `to_verify` or `gap` with code and test citations.
-  - Listed every current V10 metric key.
+  - Confirmed unchanged V10 keys and updated the audit for Android Li guest, Voice V8, feedback reservations and PWA push.
   - Decided D3: PWA foreground proof = existing `miniapp_opened` with source `pwa_course_v3`; Android shows combined values only, with no Play/Direct split.
   - Evidence: the audit section and the decisions log of the context file.
 - [ ] 1.2 Add a V10 regression fixture and test (provisional `tests/test_admin_pwa_v10_regression.py`). It seeds a mixed-platform DB covering the A/F rows and snapshots every section × platform × period output of the current code. Verify that it passes on unchanged `main`.
@@ -58,7 +58,7 @@ This is the only checklist for this work. Context, audit results, decisions and 
   - one account on three platforms counts once overall
   - two Android devices give one account and two devices
   - pre-key rows appear only in Overall
-  - a spoofed Telegram row is not PWA
+  - a spoofed Telegram row is not PWA, including historical source/transport lookalikes
   - learner responses and latency are unchanged
 - [ ] 3.3 Render the states, `attributed_since` and per-platform values in `app/static/admin-pwa/app.js`. Author UZ/RU/TJ keys in the canonical localization sources and run `scripts/i18n_build_all_catalogs.py --write` and `--check`. Verify the i18n tests and a Playwright run at 390 px in each language.
 - [ ] 3.4 Add chain tests for one representative metric per platform: Android bearer, Mini App signed and PWA cookie + CSRF routes, through PostgreSQL and the Admin analytics API to Playwright (right tab and filter). Flip those registry entries to `covered`, and update the definitions in `docs/admin-pwa/READ_PROJECTIONS.md`. Verify that the chain tests and the checker pass.
@@ -79,7 +79,7 @@ This is the only checklist for this work. Context, audit results, decisions and 
 
 - [ ] 5.1 Label `retention` as `course_open` (Mini App + PWA opens) and add `return_retention` D1/D7 (design D5), with distinct UI labels. Check the query plan with `EXPLAIN ANALYZE` on local Postgres. Verify with tests and a Playwright label check:
   - one account in two apps counts once;
-  - passive activity is excluded;
+  - passive activity, feedback reservations and Voice auto-start/end without a confirmed turn are excluded;
   - legacy values are unchanged.
 - [ ] 5.2 Add per-platform `latest_at` and unresolved-owner counts to the Report section (design D7). Verify tests showing that a stale platform is visible and that no identifiers or payloads appear in the response or the page.
 

@@ -27,7 +27,7 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 
 | Item | Location | Status |
 |---|---|---|
-| OpenSpec change | `openspec/changes/hsk-ai-analytics-integrity/` | Re-planned on `main` `334368cc`; passes `openspec validate --strict` |
+| OpenSpec change | `openspec/changes/hsk-ai-analytics-integrity/` | Re-audited on `main` `680761f1`; passes `openspec validate --strict` |
 | Checklist | `.../tasks.md` | Only checklist; 1.1 done |
 | Coverage registry | `docs/analytics/FEATURE_ANALYTICS_COVERAGE.json` | Not created (task 2.1) |
 | CI guard | `.github/workflows/analytics-integrity.yml` | Not created (task 2.3) |
@@ -35,10 +35,10 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 | Admin readers | `app/admin_api/pwa_analytics*.py`, `pwa_metrics.py` | Unchanged |
 | Monitoring requirements | `docs/monitoring/REQUIREMENTS.md` | Follows this work; reuses its identifiers (§7, §11) |
 
-## Current state — 2026-11-11
+## Current state — 2026-11-12
 
 - Planning only. No runtime code has changed.
-- The plan was re-audited and adapted on `main` `334368cc` (2026-11-11). Task 1.1 is done: the audit table, the V10 metric key list and the decisions are below.
+- Task 1.1 re-audited `334368cc..680761f1`. The delta below updates the original matrix and establishes `680761f1` as the unchanged runtime base for task 1.2.
 - **Ready to start implementation.** Next step: task 1.2, the V10 regression fixture on unchanged `main`. Then tasks 2.1–2.3, the registry, checker and CI, before any metric repair.
 - PR [akbarholturaev11-lang/HSK-AI-Bot#285](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/285) carries the planning artifacts only.
 
@@ -46,7 +46,7 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 
 | Platform | Admin filter | Role in this work |
 |---|---|---|
-| Android Play + Direct | `android` | Target. No Play/Direct split: the channel is not in analytics rows (audit row A9) |
+| Android Play + Direct | `android` | Target. No Play/Direct split: the channel is not in analytics rows (audit row A19) |
 | Telegram Mini App | `telegram` | Target |
 | iPhone PWA | `iphone_pwa` | Target |
 | macOS / Windows | `macos`, `windows` | Development freeze. Existing metrics kept; registry status only |
@@ -54,7 +54,7 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 ## Audit — task 1.1, `main` `334368cc`, 2026-11-11
 
 **Status values:**
-- `verified`: code and test cited.
+- `verified`: code and test cited for the exact claim; this does not imply a PostgreSQL-to-UI chain test.
 - `to_verify`: code cited, test still missing. The test is added by the task named in the row.
 - `gap`: verified in code that no trustworthy platform signal exists.
 
@@ -98,7 +98,19 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 | F7 | Subscription entries | PWA, Telegram | `pwa_auth.py:1689` `data.source or "iphone_pwa"` and `main.py:6322`, both client-supplied; `subscription_entry_events` has no payload column | none | Sources | `gap` (a fix needs a schema change: out of scope) |
 | F8 | PWA Pro inline funnel | PWA | inline events, `lava_checkout._start` `pwa_pro_checkout_started`, `lava/ledger.py` `pwa_pro_checkout_paid`, `lava_invoices.pwa_inline_attempt_id` | PWA-only | No reader | `to_verify` (task 4) |
 
-### V10 metric keys on `334368cc` (registry seed for 2.1)
+### Delta audit — `334368cc..680761f1`, 2026-11-12
+
+`git diff --exit-code 334368cc..680761f1 -- app/admin_api app/db/models alembic app/static/admin-pwa` found no reader, model, migration or Admin UI changes. No V10 key changed. The changed user actions and writer below affect what some existing metrics can observe.
+
+| Flow / scope | Code and test evidence | Status and impact |
+|---|---|---|
+| Android Li guest entry (A7, activation) | [Public preview](../../app/api/android_course.py#L378) returns course metadata; [guest resume](../../app/services/android_course_service.py#L464) uses [the existing canonical completion writer](../../app/services/course_miniapp_onboarding_service.py#L384). [Preview/resume tests](../../tests/test_android_course_api.py#L1058) cover default-off metadata, one completion and no overwrite. [V10 activation](../../app/admin_api/pwa_analytics_learning.py#L106) reads `onboarding_completed`; `direct_activation` remains `direct_start_v1` only. | `verified` for public metadata and one canonical completion; `to_verify` for the new variant's V10 activation output (1.2). `gap` for pre-sign-in preview/abandonment and Android lesson starts. The variant is supplied by the client, not a general platform predicate. |
+| Voice V8 (A16) | [PWA entry](../../app/static/iphone-pwa-voice.html#L399) and [Android entry](../../android/app/src/main/java/com/pomp/hskai/feature/voice/VoiceV8Screen.kt#L586) start the existing session when allowed. [PWA V8 browser tests](../../tests/e2e/test_iphone_pwa_voice_v8.py#L301), [Android UI test](../../android/app/src/androidTest/java/com/pomp/hskai/feature/voice/VoiceV8FlowTest.kt#L63) and [PWA owner test](../../tests/test_pwa_browser_auth.py#L2970) cover entry/transport, using mocked responses where applicable. [V10 Voice](../../app/admin_api/pwa_analytics_learning.py#L76) counts started session owners; minutes require completed sessions with positive turns. | `verified` for entry behavior and the existing owner contract. `to_verify` for changes to Overall participation, elapsed duration and generic CME session metrics in practice. A visit need not insert a row; the service can reuse a session. A16 remains a `gap` for per-platform minutes. Bare start/end rows cannot establish return to practice after auto-start (5.1). |
+| PWA / Android pending Telegram feedback | [Server reservation](../../app/services/activity_feedback_service.py#L132) writes `app_telegram_feedback_reserved` once per existing invite. [Route tests](../../tests/test_pwa_learning_parity.py#L302) and [PostgreSQL concurrency test](../../tests/test_pwa_learning_parity_postgres.py#L94) cover continuation and one reservation. [V10 Report](../../app/admin_api/pwa_analytics_cache.py#L49) counts every CME row; [the separate feedback projection](../../app/admin_api/pwa_feedback_analytics.py#L79) counts completed feedback. | `verified` for reservation behavior; `to_verify` for its exact raw Report count/freshness output (1.2); `gap` for platform attribution. Register the internal event in group 2. Keep it in the legacy raw Report, outside new per-platform activity/freshness. It is neither an impression nor a return. |
+| Learner PWA push | [Push rendering](../../app/services/learner_pwa_push.py#L540) and [reminder transport](../../app/services/smart_reminder_pwa.py#L201) reuse owned sources; [copy tests](../../tests/test_learner_pwa_push_copy.py) and [worker browser test](../../tests/e2e/test_pwa_push_worker.py) cover copy/delivery. No V10 reader consumes these delivery rows. | `verified` for reuse of source data. No new V10 metric or learner-activity event. Push delivery is outside the return signal. |
+| Existing V10 filter gates | [Section composition](../../app/admin_api/pwa_analytics_cache.py#L32) checks the section before its PWA check; [analytics tests](../../tests/test_admin_pwa_analytics.py) cover projections, but not the full matrix. | `to_verify` on the complete fixture (1.2): PWA Home/Overview/Platforms/Report report `not_instrumented`; PWA Course/Funnel/Finance/Sources/Experiments report `attribution_not_audited`. This main delta did not close those attribution or funnel gaps. |
+
+### V10 metric keys on `680761f1` (registry seed for 2.1)
 
 - **home:** `users_total`, `new_accounts`, `active_accounts`, `active_today`, `active_pro`, `expiring_pro`, `bot_blocked`, `blocked_current`, `payments_by_status`, `pending_current`, `paying_accounts`, `activity`
 - **overview:** the home keys, plus `course_engagement`, `levels`, `languages`
@@ -112,6 +124,7 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
   - per-account: `arpu_usd`, `active_denominator`, `arppu_usd`, `average_payment_usd`
 - **sources:** `entries`, `attribution`, `traffic`
 - **report:** `quality` (`accounts`, `payments`, `learning`, `ai`, `subscription`)
+- Projection metadata (for example `detail_since`, `detail_row_limit`, `usd_basis`, `grains`, `attribution_basis`, `traffic_grain`, `traffic_since`, `traffic_timezone` and cache/scope descriptors) is preserved in the fixture; it is not a platform metric.
 - **experiments:** out of scope (overall only)
 - Home and overview under a non-overall filter currently return the platform projection.
 
@@ -144,6 +157,7 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 
 ## Session log (newest first, one or two lines each)
 
+- 2026-11-12 — Re-audited and merged `origin/main` `680761f1`, including Li guest, Voice V8, feedback reservation and push. No analytics runtime patch. Strict OpenSpec validation passed; continue at 1.2.
 - 2026-11-11 — Merged `main` `334368cc` and re-audited the platform × V10 chain (task 1.1). Adapted proposal, design, specs and tasks to the findings, the Desktop freeze and the Analytics → Monitoring order. The plan is ready for task 1.2.
 - 2026-11-09 — Created and validated the OpenSpec change, added the owner's platform requirements, simplified the plan to 6 task groups, and turned this file into the shared context.
 

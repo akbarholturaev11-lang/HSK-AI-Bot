@@ -2,10 +2,10 @@
 
 ## Why
 
-Android, the Telegram Mini App and the iPhone PWA already record analytics, but Admin PWA Analytics V10 reads only part of it. As a result, some recorded behavior never reaches the right section or platform filter. Re-verified on `main` at `334368cc` (2026-11-11). The full audit is in the context file below.
+Android, the Telegram Mini App and the iPhone PWA already record analytics, but Admin PWA Analytics V10 reads only part of it. As a result, some recorded behavior never reaches the right section or platform filter. Re-verified on `main` at `680761f1` (2026-11-12). The full audit is in the context file below.
 
 - PWA Pro writes client `pwa_pro_*` stages, a server `pwa_pro_checkout_started` row and a ledger `pwa_pro_checkout_paid` row. No `app/admin_api` reader consumes any of them.
-- The `iphone_pwa` filter returns `not_instrumented` for every section. Yet PWA course opens, flow telemetry, checkout and payments already carry a trustworthy PWA signal.
+- The `iphone_pwa` filter returns `not_instrumented` or `attribution_not_audited`, depending on the section. PWA writers already supply usable signals, subject to the historical attribution checks in D3.
 - Every non-overall filter returns `attribution_not_audited` for the Course, Funnel, Finance and Sources sections. Some families can be attributed today:
   - Android lesson completion;
   - Android and PWA checkout;

@@ -2,11 +2,11 @@
 
 ## Context
 
-See `proposal.md` for the motivation and `specs/` for the requirements. These code facts were re-verified on `main` at `334368cc` (2026-11-11). The full writer → reader audit, with code and test citations, is the audit table in `docs/analytics/ANALYTICS_INTEGRITY_IMPLEMENTATION_PLAN.md`, which is also the only place for session state and handoff. Row IDs (A1–A20, F1–F8) refer to that table.
+See `proposal.md` for the motivation and `specs/` for the requirements. These code facts were re-verified on `main` at `680761f1` (2026-11-12). The full writer → reader audit, with code and test citations, is the audit table in `docs/analytics/ANALYTICS_INTEGRITY_IMPLEMENTATION_PLAN.md`, which is also the only place for session state and handoff. Row IDs (A1–A20, F1–F8) refer to that table.
 
 - **Admin read path.** `app/admin_api/pwa_analytics_cache.py::section_projection` builds each section. `AdminPwaStatisticsReader` caches it for 24 hours per `cache_scope='analytics_<section>_v1'`. It has two early returns:
-  - `iphone_pwa` returns `not_instrumented` for every section.
-  - Any other non-overall filter returns `attribution_not_audited` for every section except `platform/report/home/overview`.
+  - Any non-overall filter returns `attribution_not_audited` for every section except `platform/report/home/overview`.
+  - For those four remaining sections, `iphone_pwa` returns `not_instrumented`.
 - **Request filter.** `StatisticsRequest.platform` accepts `overall, telegram, android, macos, windows, iphone_pwa`.
 - **Owner resolution.** `owner()` / `analytics_user_join` already resolve the canonical `users.id` first and fall back to a positive Telegram ID.
 - **Detail bounds.** `bounded_rows()` returns `None` above 5,000 rows, and readers then expose `detail_limited`.
@@ -67,7 +67,7 @@ See `proposal.md` for the motivation and `specs/` for the requirements. These co
 3. Diff detection for `push` (`before..sha`) and `pull_request` (`base...head`).
 4. Exemption validation.
 
-A pytest contract test projects every section × platform × period on the fixture DB and compares the returned metric keys and states with `metrics[]`. Static parsing cannot see projection output, which is why this test exists.
+A contract test projects every section × platform × period on the fixture DB and compares the returned metric keys and states with `metrics[]`. Static parsing cannot see projection output, which is why this test exists.
 
 **Identifiers.** Platform keys (`android`, `telegram`, `iphone_pwa`, `macos`, `windows`) and flow IDs are stable. Monitoring will reference them from its own registry section instead of copying them.
 
@@ -100,7 +100,7 @@ A pytest contract test projects every section × platform × period on the fixtu
 - The route sets it and passes it into the existing service call. No parallel event and no migration.
 - Rows written before the key exists stay in Overall only. Their per-platform values report `attributed_since`, the earliest row with the key, so a partial window is never shown as complete.
 
-**Spoofing guard.** The Telegram routes (`/api/miniapp/event`, map `source`) stop storing a client-supplied `transport`, `client` or `pwa_course_v3` source. This must land before PWA predicates rely on A4 or A11.
+**Spoofing guard.** The Telegram routes (`/api/miniapp/event`, map `source`) stop storing a client-supplied `transport`, `client` or `pwa_course_v3` source. This must land before PWA predicates rely on A4 or A11. The fix cannot retroactively authenticate old rows. Require route-owned evidence (such as the PWA map's fixed dedupe prefix) or a proven post-guard boundary, and test historical lookalikes; do not trust source or transport alone.
 
 **Overall.** `count(distinct users.id)` over the union of qualifying rows, using the existing `owner()` resolution. Per-platform views apply the platform predicate before counting.
 
@@ -124,7 +124,7 @@ A new reader (provisional `app/admin_api/pwa_analytics_pwa_pro.py`) returns `pwa
 - `retention` keeps its values and gains the label `course_open`. Its basis is `miniapp_opened` from the Mini App and the PWA.
 - `return_retention` (D1/D7) applies the same window and cohort to an explicit allowlist of verified activity events:
   - opens: `miniapp_opened` (Mini App and PWA), `android_app_opened`, `desktop_app_opened`, `desktop_active_day`;
-  - learning: lesson, test, practice, mistake review and voice starts and completions.
+  - learning: verified lesson, test, practice and mistake-review activity. Voice V8 auto-starts and can end with zero turns. Include Voice only with server-confirmed positive turns; bare Voice start/end rows and feedback delivery reservations are not return evidence.
 - Implemented as one grouped `EXISTS` per window, with no row cap. Passive and server-derived rows are excluded because they are not on the allowlist.
 - `return_retention` is an Overall series. Per-platform views take only the open events that carry a verified platform signal.
 
@@ -140,7 +140,7 @@ A new reader (provisional `app/admin_api/pwa_analytics_pwa_pro.py`) returns `pwa
 - **Baseline.** Browser runs are compared with a pre-change baseline worktree, because those suites have known flaky timeouts.
 
 ### D7. Report freshness from existing rows
-- Extend the existing Report quality list with `latest_at` and an unresolved-owner count per platform source. It uses the D3 predicates in grouped SQL over current tables.
+- Extend the existing Report quality list with `latest_at` and an unresolved-owner count per platform source. It uses the D3 predicates in grouped SQL over current tables. Legacy raw learning totals still include internal feedback reservations; the new per-platform freshness excludes them.
 - No intake counters and no new store.
 
 ## Risks / Trade-offs
