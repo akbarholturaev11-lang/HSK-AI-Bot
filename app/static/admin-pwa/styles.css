@@ -948,3 +948,5 @@ fieldset.form-field legend{padding:0 6px;font-size:13px;font-weight:650}
 .lava-row strong{display:block;font-size:13px}.lava-row small{display:block;margin-top:3px;font-size:11px;color:var(--muted)}
 .lava-row-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
 @media (max-width:520px){.lava-term{grid-template-columns:1fr}.lava-row{flex-direction:column;align-items:stretch}.lava-row-actions{justify-content:flex-start}}
+
+/* Scratch analytics guard cosmetic proof. */
