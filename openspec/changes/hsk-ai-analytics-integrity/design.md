@@ -98,7 +98,9 @@ A contract test projects every section × platform × period on the fixture DB a
 
 **Shared writers.** The lesson start/complete, practice, exam and mistake-review writes (A6, A9, A13–A15) get one `client` payload key: `telegram`, `iphone_pwa` or `android`.
 - The route sets it and passes it into the existing service call. No parallel event and no migration.
-- Rows written before the key exists stay in Overall only. Their per-platform values report `attributed_since`, the earliest row with the key, so a partial window is never shown as complete.
+- Rows written before the key exists stay in Overall only. Their per-platform values report `attributed_since`, so a partial window is never shown as complete.
+- **Reading the key (3.2).** A row belongs to a client only when its payload *ends* with `"client":"<client>"}`. The routes drop a caller `client` and the writer appends the server key last, so a nested caller object cannot match. `attributed_since` is the first row of a server-built family (lesson, training, test and mistake-review completions) carrying that key: no caller payload reaches those writes, so the time is a proven post-guard boundary. Client-writable starts count only from that boundary on; earlier lookalikes stay in Overall. Before any tagged row exists, the per-platform value is unavailable (`no_data`), never zero.
+- Android lesson completions keep the Android-only source `android_course` (A8) for all history.
 
 **Spoofing guard.** The Telegram routes (`/api/miniapp/event`, map `source`) stop storing a client-supplied `transport`, `client` or `pwa_course_v3` source. This must land before PWA predicates rely on A4 or A11. The fix cannot retroactively authenticate old rows. Require route-owned evidence (such as the PWA map's fixed dedupe prefix) or a proven post-guard boundary, and test historical lookalikes; do not trust source or transport alone.
 

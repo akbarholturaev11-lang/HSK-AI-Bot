@@ -340,11 +340,11 @@
         "windows": {"status": "not_instrumented", "reason": "A17: user text messages do not record a platform."}
       }
     },
-    {"section": "course", "key": "completed_user_lessons", "kind": "metric", "filters": ["overall"],
+    {"section": "course", "key": "completed_user_lessons", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
       "platforms": {
-        "android": {"status": "partial", "reason": "A8: Android completions are recorded under android_course and reach Overall; no platform projection or full chain test."},
-        "telegram": {"status": "not_instrumented", "reason": "A9: the shared completion writer stores course_v3 for Mini App and PWA."},
-        "iphone_pwa": {"status": "not_instrumented", "reason": "A9: the shared completion writer stores course_v3 for PWA and Mini App."},
+        "android": {"status": "partial", "reason": "A8: completions with the Android-only source android_course, all history. Chain test pending (3.4)."},
+        "telegram": {"status": "partial", "reason": "A9: completions whose final payload key is the route-set client telegram, from attributed_since on; earlier rows Overall-only. Chain test pending (3.4)."},
+        "iphone_pwa": {"status": "partial", "reason": "A9: completions whose final payload key is the route-set client iphone_pwa, from attributed_since on; earlier rows Overall-only. Chain test pending (3.4)."},
         "macos": {"status": "not_instrumented", "reason": "The existing lesson total is not scoped by Desktop OS; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "The existing lesson total is not scoped by Desktop OS; Desktop freeze."}
       }
@@ -360,7 +360,8 @@
     },
     {"section": "course", "key": "detail_limited", "kind": "metadata", "filters": ["overall"]},
     {"section": "course", "key": "detail_row_limit", "kind": "metadata", "filters": ["overall"]},
-    {"section": "course", "key": "detail_since", "kind": "metadata", "filters": ["overall"]},
+    {"section": "course", "key": "detail_since", "kind": "metadata", "filters": ["overall", "android", "telegram", "iphone_pwa"]},
+    {"section": "course", "key": "attributed_since", "kind": "metadata", "filters": ["android", "telegram", "iphone_pwa"]},
     {"section": "course", "key": "direct_activation", "kind": "metric", "filters": ["overall"],
       "platforms": {
         "android": {"status": "not_instrumented", "reason": "A7: Android has no trustworthy lesson-start writer for the activation step."},
@@ -379,11 +380,11 @@
         "windows": {"status": "not_instrumented", "reason": "Paid and free populations use the current canonical account state and have no platform cohort."}
       }
     },
-    {"section": "course", "key": "features", "kind": "metric", "filters": ["overall"],
+    {"section": "course", "key": "features", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
       "platforms": {
-        "android": {"status": "not_instrumented", "reason": "A7/A13-A17: Android lesson-start has no writer, shared test/practice/mistake events lack client, and AI/voice session stores lack platform."},
-        "telegram": {"status": "not_instrumented", "reason": "A6/A12-A17: lesson/test/practice/mistake writers lack trusted Mini App attribution; AI and voice session stores lack platform."},
-        "iphone_pwa": {"status": "partial", "reason": "A11: PWA start telemetry exists for some learning features; historical/shared events are mixed and AI/voice sessions lack platform (A16/A17)."},
+        "android": {"status": "partial", "reason": "A13-A15: tests, practice and mistakes by the route-set client android from attributed_since on. Lessons omitted (A7: no start writer); AI and voice omitted (A16/A17). Chain test pending (3.4)."},
+        "telegram": {"status": "partial", "reason": "A6/A13-A15: lessons, tests, practice and mistakes by the route-set client telegram from attributed_since on; AI and voice omitted (A16/A17). Chain test pending (3.4)."},
+        "iphone_pwa": {"status": "partial", "reason": "A6/A13-A15: lessons, tests, practice and mistakes by the route-set client iphone_pwa from attributed_since on; AI and voice omitted (A16/A17). Chain test pending (3.4)."},
         "macos": {"status": "not_instrumented", "reason": "Feature-use rows lack a consistent Desktop OS dimension; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "Feature-use rows lack a consistent Desktop OS dimension; Desktop freeze."}
       }

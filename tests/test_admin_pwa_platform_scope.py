@@ -7,6 +7,7 @@ import json
 import unittest
 
 from app.db.models.conversion_funnel_event import ConversionFunnelEvent
+from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from tests.test_admin_pwa_v10_regression import PRIVATE, URL, ago, capture, postgres_fixture
 
 PLATFORMS = ("android", "telegram", "iphone_pwa")
@@ -185,6 +186,92 @@ class PwaPlatformCardTests(unittest.IsolatedAsyncioTestCase):
         overall = self.projections["platform", "overall", "weekly"]["metrics"]
         self.assertNotIn("iphone_pwa", [card["platform"] for card in overall["platforms"]])
         self.assertIs(overall["iphone_pwa_available"], False)
+
+
+@unittest.skipUnless(URL, "set ANALYTICS_TEST_DATABASE_URL for the real PostgreSQL platform scope tests")
+class CoursePlatformScopeTests(unittest.IsolatedAsyncioTestCase):
+    """The baseline fixture has only pre-key course rows; these add tagged ones."""
+
+    async def asyncSetUp(self):
+        def event(name, user_id, hours, payload, **fields):
+            # The analytics writer's compact JSON, with the route key last.
+            return CourseMiniAppEvent(event_name=name, user_id=user_id, source="course_v3",
+                payload_json=json.dumps(payload, separators=(",", ":")), created_at=ago(hours=hours), **fields)
+
+        async with postgres_fixture(URL) as sessions:
+            async with sessions() as db:
+                db.add_all([
+                    # A caller sent a PWA client key before tagging went live.
+                    event("lesson_started", 2, 60, {"lesson_order": 2, "client": "iphone_pwa"}),
+                    # First server-built tagged rows: the per-client boundaries.
+                    event("lesson_completed", 1, 10, {"lesson_order": 1, "client": "telegram"},
+                          level="hsk1", lesson_order=1),
+                    event("test_completed", 1, 8, {"score": 1, "client": "iphone_pwa"}),
+                    event("training_completed", 3, 6, {"mode": "training", "client": "android"}),
+                    # After the boundary: route-tagged starts, one with a nested lookalike.
+                    event("lesson_started", 2, 9, {"lesson_order": 2, "client": "telegram"}),
+                    event("test_started", 2, 5, {"meta": {"client": "iphone_pwa"}, "client": "telegram"}),
+                    event("mistake_review_started", 1, 7, {"count": 3, "client": "iphone_pwa"}),
+                    # A completion too large to tag stays Overall-only.
+                    event("mistake_review_completed", 3, 4, {"count": 2}),
+                ])
+                await db.commit()
+            self.projections = await capture(sessions)
+
+    def course(self, platform, period="weekly"):
+        return self.projections["course", platform, period]["metrics"]
+
+    def features(self, platform):
+        rows = self.course(platform)["features"]
+        return {row["key"]: (row["paid"], row["free"]) for row in rows}
+
+    def test_features_count_only_the_final_route_key_after_the_boundary(self):
+        # User 1 is paid; users 2 and 3 are free.
+        self.assertEqual(self.features("telegram"),
+                         {"lessons": (0, 1), "tests": (0, 1), "practice": (0, 0), "mistakes": (0, 0)})
+        # Neither the pre-boundary lesson start nor the nested key counts as PWA.
+        self.assertEqual(self.features("iphone_pwa"),
+                         {"lessons": (0, 0), "tests": (1, 0), "practice": (0, 0), "mistakes": (1, 0)})
+        # A7: no Android lesson-start writer, so no lessons entry.
+        self.assertEqual(self.features("android"), {"tests": (0, 0), "practice": (0, 1), "mistakes": (0, 0)})
+
+    def test_attributed_since_is_the_first_server_built_tagged_row(self):
+        self.assertEqual(self.course("telegram")["attributed_since"],
+                         {"features": ago(hours=10).isoformat(), "completed_user_lessons": ago(hours=10).isoformat()})
+        self.assertEqual(self.course("iphone_pwa")["attributed_since"],
+                         {"features": ago(hours=8).isoformat(), "completed_user_lessons": ago(hours=8).isoformat()})
+        self.assertEqual(self.course("android")["attributed_since"], {"features": ago(hours=6).isoformat()})
+
+    def test_completed_lessons_per_platform(self):
+        self.assertEqual(self.course("telegram")["completed_user_lessons"], 1)
+        # A real zero once PWA attribution exists, not a missing value.
+        self.assertEqual(self.course("iphone_pwa")["completed_user_lessons"], 0)
+        # A8: the Android-only source counts all history, independent of the key.
+        self.assertEqual((self.course("android")["completed_user_lessons"],
+                          self.course("android", "all_time")["completed_user_lessons"]), (1, 2))
+
+    def test_unattributed_course_families_are_not_platform_values(self):
+        for platform in PLATFORMS:
+            response = self.projections["course", platform, "all_time"]
+            self.assertEqual(set(response["metrics"]),
+                             {"features", "completed_user_lessons", "attributed_since", "detail_since"})
+            states = response["metric_states"]
+            self.assertEqual(states["features"], {"state": "available", "reason": None})
+            for key in ("voice_minutes", "chat", "ai_usage"):
+                self.assertEqual(states[key], {"state": "unavailable", "reason": "not_instrumented"})
+            self.assertNotIn(PRIVATE, json.dumps(response))
+
+
+@unittest.skipUnless(URL, "set ANALYTICS_TEST_DATABASE_URL for the real PostgreSQL platform scope tests")
+class CourseWithoutAttributionTests(unittest.IsolatedAsyncioTestCase):
+    async def test_pre_key_history_is_no_data_not_zero(self):
+        async with postgres_fixture(URL) as sessions:
+            projections = await capture(sessions)
+        for platform in ("telegram", "iphone_pwa"):
+            response = projections["course", platform, "weekly"]
+            self.assertIsNone(response["metrics"]["features"])
+            self.assertIsNone(response["metrics"]["completed_user_lessons"])
+            self.assertEqual(response["metric_states"]["features"], {"state": "unavailable", "reason": "no_data"})
 
 
 if __name__ == "__main__":

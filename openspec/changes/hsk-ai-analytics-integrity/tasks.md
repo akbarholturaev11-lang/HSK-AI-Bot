@@ -56,7 +56,8 @@ This is the only checklist for this work. Context, audit results, decisions and 
      - [x] Funnel (F1–F3): route-set `transport` on base openings (added to Telegram and Android manual writes), `attributed_since`; `tests/test_checkout_transport_marker.py`.
      - [x] Sources: stays Overall-only; F6 Android prefix is caller-forgeable on the Telegram route (registry `not_instrumented`).
      - [x] Platforms PWA card (A4): DAU/WAU/MAU from the route-owned `pwa-course-v3:` map dedupe prefix, under the PWA filter.
-     - [ ] Course (A8, A10, then `client`-keyed A6/A9/A13–A15 with `attributed_since`).
+     - [x] Course `features` and `completed_user_lessons` (A6, A8, A9, A13–A15): final-key `client` rule and a post-guard `attributed_since` boundary.
+     - [ ] Course `foundation` (A10) and PWA `activation` / `direct_activation` / `sessions` (A11) with the same boundary; then the closing checks below.
 
   Verify with mixed-platform tests (`to_verify` rows A4, F3, F4, F5 become `verified`):
   - each view counts only its own rows

@@ -1,0 +1,73 @@
+"""Course metrics for one client, from route-owned attribution only (task 3.2)."""
+from datetime import timedelta
+
+from sqlalchemy import func, select
+
+from app.admin_api.pwa_analytics_learning import owner
+from app.admin_api.pwa_metrics import _window
+from app.admin_api.pwa_read import _user_segment_clause
+from app.db.models.course_miniapp_event import CourseMiniAppEvent as Event
+from app.db.models.user import User
+
+COURSE_CLIENTS = ('android', 'telegram', 'iphone_pwa')
+# Server-built writes never copy a caller payload, so the first row tagged for
+# a client marks when route-owned tagging was live for it. Client-writable
+# starts could carry a caller `client` key before that, so they count only
+# from this boundary on.
+SERVER_ONLY_TAGGED = ('lesson_completed', 'book_lesson_completed', 'training_completed',
+                      'test_completed', 'mistake_review_answered', 'mistake_review_completed')
+FEATURE_EVENTS = (
+    ('lessons', ('lesson_started', 'section_started')),
+    ('tests', ('test_started', 'test_completed')),
+    ('practice', ('training_started', 'training_completed')),
+    ('mistakes', ('mistake_review_started', 'mistake_review_completed')),
+)
+# A7: Android has no lesson-start writer, so its lessons entry is not reported.
+UNWRITTEN_FEATURES = {'android': frozenset({'lessons'})}
+COMPLETED = ('lesson_completed', 'book_lesson_completed')
+# A8: only the Android course route writes this source on a completion.
+ANDROID_COMPLETION_SOURCE = 'android_course'
+
+
+def client_tag(platform):
+    """Routes drop a caller `client` before tagging, so the server key is the
+    document's final top-level key. A nested caller object cannot end it."""
+    return Event.payload_json.endswith(f'"client":"{platform}"}}', autoescape=True)
+
+
+async def _completed_lessons(db, *conditions, since, now):
+    completed = select(User.id, Event.level, Event.lesson_order).select_from(Event).join(User, owner(Event)).where(
+        Event.lesson_order.is_not(None), *conditions, *_window(Event.created_at, since, now)).distinct().subquery()
+    return int(await db.scalar(select(func.count()).select_from(completed)) or 0)
+
+
+async def course_platform_metrics(db, *, platform, since, now):
+    detail_since = since or now - timedelta(days=30)
+    boundary = await db.scalar(select(func.min(Event.created_at)).where(
+        Event.event_name.in_(SERVER_ONLY_TAGGED), client_tag(platform), Event.created_at <= now))
+    attributed = [client_tag(platform), Event.created_at >= boundary] if boundary else None
+    since_iso = boundary.isoformat() if boundary else None
+
+    features = None
+    if attributed is not None:
+        paid = _user_segment_clause('paid', now=now)
+        features = []
+        for key, names in FEATURE_EVENTS:
+            if key in UNWRITTEN_FEATURES.get(platform, ()):
+                continue
+            values = (await db.execute(select(func.count(func.distinct(User.id)).filter(paid),
+                func.count(func.distinct(User.id)).filter(~paid)).select_from(Event).join(User, owner(Event))
+                .where(Event.event_name.in_(names), *attributed, *_window(Event.created_at, detail_since, now),
+                       User.created_at <= now))).one()
+            features.append({'key': key, 'paid': values[0], 'free': values[1]})
+
+    attributed_since = {'features': since_iso}
+    if platform == 'android':
+        completed = await _completed_lessons(db, Event.event_name.in_((*COMPLETED, 'android_lesson_completed')),
+            Event.source == ANDROID_COMPLETION_SOURCE, since=since, now=now)
+    else:
+        attributed_since['completed_user_lessons'] = since_iso
+        completed = None if attributed is None else await _completed_lessons(
+            db, Event.event_name.in_(COMPLETED), *attributed, since=since, now=now)
+    return {'features': features, 'completed_user_lessons': completed,
+            'attributed_since': attributed_since, 'detail_since': detail_since.isoformat()}
