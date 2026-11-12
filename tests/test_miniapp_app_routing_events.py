@@ -125,10 +125,28 @@ class AppOfferEventTests(unittest.IsolatedAsyncioTestCase):
         payload = {"grading_snapshot": "字" * (MAX_EVENT_PAYLOAD_CHARS - 23)}
         serialized = CourseMiniAppAnalyticsService._payload_json(payload)
         self.assertEqual(json.loads(serialized), payload)
-        self.assertEqual(
-            CourseMiniAppAnalyticsService._payload_json(payload, analytics_client="iphone_pwa"),
-            serialized,
-        )
+        with self.assertLogs("app.services.course_miniapp_analytics_service", "WARNING") as logs:
+            self.assertEqual(
+                CourseMiniAppAnalyticsService._payload_json(payload, analytics_client="iphone_pwa"),
+                serialized,
+            )
+        # The omission is visible in logs; the payload itself is never logged.
+        self.assertIn("client tag omitted", logs.output[0])
+        self.assertNotIn("字", logs.output[0])
+
+    def test_route_client_is_the_final_key_even_when_a_caller_sent_one(self):
+        from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
+
+        # A server-side caller copying a client dict must not keep the key's
+        # first position: the row would then leave every platform filter.
+        tagged = CourseMiniAppAnalyticsService._payload_json(
+            {"client": "android", "lesson_order": 2}, analytics_client="telegram")
+        self.assertEqual(tagged, '{"lesson_order":2,"client":"telegram"}')
+        # An oversized row stays Overall-only and keeps no caller key either.
+        payload = {"client": "android", "snapshot": "x" * 8000}
+        with self.assertLogs("app.services.course_miniapp_analytics_service", "WARNING"):
+            fallback = CourseMiniAppAnalyticsService._payload_json(payload, analytics_client="telegram")
+        self.assertNotIn('"client"', fallback)
 
     async def test_telegram_map_preserves_campaign_source_but_not_reserved_pwa_source(self):
         app = FastAPI()

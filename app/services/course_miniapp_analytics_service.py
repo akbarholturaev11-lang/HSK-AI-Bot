@@ -53,12 +53,19 @@ class CourseMiniAppAnalyticsService:
     @staticmethod
     def _payload_json(payload: dict[str, Any] | None, *, analytics_client: AnalyticsClient | None = None) -> str | None:
         if analytics_client is not None:
-            tagged = json.dumps({**(payload or {}), "client": analytics_client},
+            # Readers match the server key as the document's final key. A caller
+            # `client` already in the dict would keep its earlier position (and
+            # the row would silently leave every platform), so it never survives.
+            payload = {key: value for key, value in (payload or {}).items() if key != "client"}
+            tagged = json.dumps({**payload, "client": analytics_client},
                                 ensure_ascii=False, default=str, separators=(",", ":"))
             if len(tagged) <= MAX_EVENT_PAYLOAD_CHARS:
                 return tagged
             # Some existing events also hold grading/attempt snapshots. An
             # optional attribution field must never cause their truncation.
+            # The row then counts in Overall only; log that it happened.
+            logger.warning("Course analytics client tag omitted: tagged payload exceeds %s chars",
+                           MAX_EVENT_PAYLOAD_CHARS)
         if not payload:
             return None
         encoded = json.dumps(payload, ensure_ascii=False, default=str, separators=(",", ":"))
