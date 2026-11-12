@@ -118,6 +118,53 @@ qisqa yoz.
 
 ---
 
+## Graphify kod grafi — xavfsiz foydalanish
+
+`graphify-out/graph.json` — butun repo’ning lokal kod grafi: AST bog‘lanishlari va
+taxminiy (`INFERRED`) bog‘lanishlar. U “nimani o‘tkazib yubordim?” savoliga tez
+javob beradi, lekin kodning o‘rnini bosmaydi.
+
+**Qachon ishlat:** reja, audit, bir nechta modulga tegadigan o‘zgarish yoki
+refactor/API o‘zgarishidan oldin. Shu sohadagi xato va alert yo‘llarini, route’larni,
+chaqiruvchilarni va ta’sir doirasini top.
+
+**Xavfsiz buyruqlar** (faqat lokal o‘qiydi, LLM va tarmoq ishlatmaydi):
+
+- `graphify explain "<symbol>"`, `graphify affected "<symbol>"`,
+  `graphify path "A" "B"`, `graphify query "<savol>"`;
+- `graphify-out/GRAPH_REPORT.md` va `graph.json`ni o‘qish (masalan, lokal Python skript bilan);
+- `graphify update .` — faqat AST, LLM’siz. Git hook’lar commit va branch almashganda
+  grafni o‘zi qayta quradi, shuning uchun qo‘lda ishga tushirish odatda shart emas.
+
+**Owner aniq ruxsatisiz taqiqlangan:**
+
+- kodni tashqi LLM’ga yuboradigan buyruqlar: `graphify extract`, `graphify label`,
+  `--no-label`’siz `graphify cluster-only`, `graphify add <url>`, `graphify clone`;
+- `--postgres` (ayniqsa production DSN), `graphify global add`, `graphify merge-graphs`;
+- `graphify hook install|uninstall`, `graphify claude|cursor|gemini install` —
+  ular doimiy konfiguratsiyani o‘zgartiradi;
+- `graphify update . --force` — eski `graphify-out/` backup qilinmasdan. Node soni
+  kamaysa, oddiy `update` o‘zi rad etadi; bu himoyani chetlab o‘tma.
+
+**Natijaga ishonch:**
+
+- Avval yangiligini tekshir: `GRAPH_REPORT.md`dagi “Built from commit” `git rev-parse HEAD`ga
+  teng bo‘lsin. Commit qilinmagan o‘zgarishlar grafda yo‘q.
+- `INFERRED` bog‘lanish faqat yo‘nalish beradi. Har bir topilmani kodni o‘qib tasdiqla;
+  hujjat, reja va PR’da grafni emas, `file:line`ni keltir.
+- Graf CI, test yoki coverage guard uchun kirish ma’lumoti bo‘lmaydi; ular kodni o‘zi o‘qiydi.
+- Desktop (freeze) tugunlarini vazifa topilmasi deb hisoblama.
+
+**Git va maxfiylik:**
+
+- `graphify-out/` `.gitignore`da, lekin tarixan kuzatiladi va har commit’dan keyin o‘zgaradi.
+  Uni commit va push qilma; boshqa ishga aloqasiz diff sifatida qoldir.
+- `graph.json`ni tashqi servis, artifact yoki chatga yuklama. `graphify query` savollari
+  `~/.cache/graphify-queries.log`ga yoziladi, shuning uchun savolga secret yoki shaxsiy
+  ma’lumot yozma.
+
+---
+
 ## Memory tizimi
 
 ### Fayllar

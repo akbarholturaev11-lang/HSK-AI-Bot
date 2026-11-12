@@ -192,3 +192,5 @@ Never store these anywhere in memory files:
 - Admin private information
 
 When documentation needs a credential example, use the variable name from `.env.example` and a non-secret placeholder value; never copy a real credential.
+
+Graphify: use only the read-only local commands. Never run a Graphify command that sends code to an external LLM, connects to a database, or installs hooks without the owner's explicit approval. Verify every graph lead in code, and never commit `graphify-out/`. The full rule is in `AGENTS.md`, section "Graphify kod grafi — xavfsiz foydalanish".
