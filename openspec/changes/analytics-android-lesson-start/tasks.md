@@ -17,5 +17,5 @@ Only checklist for R1. Context, decisions and the next step live in `docs/analyt
 
 - [x] 3.1 Route → PostgreSQL → `/api/admin/v1/analytics` chain test for Android `features.lessons`, listed in `analytics-integrity.yml`.
 - [x] 3.2 Overall: golden test unchanged; a test pins Android starts in Overall `features.lessons` with one count per account.
-- [ ] 3.3 Full unit suite, PostgreSQL modules, analytics CI list and Admin PWA browser suites; results recorded in the context file.
+- [x] 3.3 Full unit suite, PostgreSQL modules, analytics CI list and Admin PWA browser suites; results recorded in the context file. Result on the final head `1c5162ed` (local PostgreSQL 15): full unit suite 5193 passed with only the 8 known baseline failures; all 52 PostgreSQL modules 748 passed, 12 skipped, 0 failed; Admin PWA browser harness passed; checker passes in push and pull_request modes.
 - [ ] 3.4 Owner acceptance on an Android device (6.2 style) after deploy.

@@ -20,5 +20,5 @@ Only checklist for R3. Context, decisions and the next step live in `docs/analyt
 - [x] 3.3 Route → PostgreSQL → `/api/admin/v1/analytics` chain test on the Telegram, PWA and Android routes; it fails on the old code.
 - [x] 3.4 Golden test: only the three platform Sources cells change; Overall is byte-identical.
 - [x] 3.5 Performance and `EXPLAIN ANALYZE` on 300k entries / 60k payments: each platform reads faster than Overall Sources; the nearest same-client entry is an index lookup per payment. Numbers are in the context file.
-- [ ] 3.6 Full unit suite, PostgreSQL modules and Admin PWA browser suites on the final head; results recorded in the context file.
+- [x] 3.6 Full unit suite, PostgreSQL modules and Admin PWA browser suites on the final head; results recorded in the context file. Result on the final head `1c5162ed` (local PostgreSQL 15): full unit suite 5193 passed with only the 8 known baseline failures; all 52 PostgreSQL modules 748 passed, 12 skipped, 0 failed; Admin PWA browser harness passed; checker passes in push and pull_request modes.
 - [ ] 3.7 Owner approval of the migration at the PR, then owner acceptance on real clients after deploy.

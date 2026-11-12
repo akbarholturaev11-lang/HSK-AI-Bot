@@ -18,5 +18,5 @@ Only checklist for R4. Context, decisions and the next step live in `docs/analyt
   - Android opens count for all history.
 - [x] 2.2 Route → PostgreSQL → `/api/admin/v1/analytics` chain test on all three mobile routes. It fails on the old reader.
 - [x] 2.3 Performance: a 1M-row PostgreSQL fixture (20k accounts). Each platform reads no slower than Overall `return_retention` on the same data; numbers are recorded in the context file. The first-use subquery splits `owner` into its owned and legacy branches; with the OR join it took 1.1–1.8 s even for a week.
-- [ ] 2.4 Full unit suite, PostgreSQL modules and Admin PWA browser suites; results recorded in the context file.
+- [x] 2.4 Full unit suite, PostgreSQL modules and Admin PWA browser suites; results recorded in the context file. Result on the final head `1c5162ed` (local PostgreSQL 15): full unit suite 5193 passed with only the 8 known baseline failures; all 52 PostgreSQL modules 748 passed, 12 skipped, 0 failed; Admin PWA browser harness passed; checker passes in push and pull_request modes.
 - [ ] 2.5 Owner acceptance on real clients after deploy.
