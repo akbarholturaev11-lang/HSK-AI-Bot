@@ -447,6 +447,50 @@ async def browser_checks(output):
                     await expect(page.locator('.stats-category-content')).to_be_visible()
                     await page.screenshot(path=str(output/f'v10-{section}-{language}-{width}.png'),full_page=True)
                     assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
+        # Task 3.3: each platform filter renders every tab; an unavailable or
+        # not-applicable metric shows a localized state, never a number or zero.
+        await page.set_viewport_size({'width':390,'height':844})
+        state_cells="[...document.querySelectorAll('#content [data-state] .metric-value,#content [data-state].stat-info-row strong,#content .analytics-state')].map(e=>e.textContent)"
+        for language in ('uz','ru','tj'):
+            await page.locator('[data-action=more]').click()
+            await page.locator('#drawerLocale').select_option(language)
+            labels=await page.evaluate(f"window.HSKAI_ADMIN_I18N.{language}")
+            states={labels[key] for key in ('analyticsStateNoData','analyticsStateNotInstrumented','analyticsStateNotAudited','analyticsStateNotApplicable','analyticsStateDetailLimited')}
+            for platform in ('android','telegram','iphone_pwa'):
+                await page.locator('[data-action=platform]').click()
+                await page.locator(f'[data-platform={platform}]').click()
+                await expect(page.locator('.stats-scope-chip')).not_to_contain_text(labels['all'])
+                for section in ('overview','course','platform','funnel','money','sources','report'):
+                    await page.locator('[data-stats-tab='+section+']').click()
+                    await expect(page.locator(f'[data-stats-tab={section}]')).to_have_attribute('aria-selected','true')
+                    if section=='money':
+                        await expect(page.locator('.metric[data-state=not_applicable]')).to_have_count(3)
+                        await expect(page.locator('.metric[data-state=not_instrumented]')).to_have_count(2)
+                        await expect(page.locator('.analytics-state[data-state=not_instrumented]')).to_have_count(1)
+                    elif section=='course':
+                        await expect(page.locator('.stats-category-metrics .metric')).to_have_count(9)
+                        # Retention: Android not_applicable, Telegram not_instrumented, PWA not audited.
+                        await expect(page.locator('.metric[data-state=not_instrumented]')).to_have_count({'android':7,'telegram':7,'iphone_pwa':5}[platform])
+                        await expect(page.locator('.metric[data-state=not_applicable]')).to_have_count(2 if platform=='android' else 0)
+                    elif section=='funnel':
+                        await expect(page.locator('.metric[data-state=not_instrumented]')).to_have_count(3)
+                    elif section=='sources':
+                        await expect(page.locator('#content .state-panel h2')).to_have_text(labels['analyticsStateNotAudited'])
+                        await expect(page.locator('#content .state-panel p')).to_have_text(labels['analyticsStateSeeOverall'])
+                    elif section in ('overview','platform'):
+                        await expect(page.locator('.analytics-platform-grid .analytics-panel')).to_have_count(1)
+                        title={'android':'analyticsAndroid','telegram':'analyticsTelegram','iphone_pwa':'analyticsIphonePwa'}[platform]
+                        await expect(page.locator('.analytics-platform-grid h2')).to_have_text(labels[title])
+                        await expect(page.locator('.analytics-panel h2',has_text=labels['analyticsVersions'])).to_have_count(1 if platform=='android' else 0)
+                    else:
+                        # Report has no iPhone PWA scope yet: its reason panel shows instead.
+                        await expect(page.locator('#content .stats-category-content, #content .state-panel').first).to_be_visible()
+                    cells=await page.evaluate(state_cells)
+                    assert cells and set(cells)<=states or section in ('overview','platform','sources','report'), (platform,section,cells)
+                    assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth'), (language,platform,section)
+                    if language=='tj':await page.screenshot(path=str(output/f'v10-{section}-{platform}-tj-390.png'),full_page=True)
+        await page.locator('[data-action=platform]').click()
+        await page.locator('[data-platform=overall]').click()
         await page.set_viewport_size({'width':390,'height':844})
         await page.locator('[data-action=more]').click()
         await page.locator('#drawerLocale').select_option('uz')

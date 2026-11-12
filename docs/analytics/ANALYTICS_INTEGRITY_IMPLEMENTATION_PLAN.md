@@ -39,7 +39,7 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 
 - The branch has the PostgreSQL baseline, coverage guard and per-metric V10 API states. Existing values and scopes still match the baseline. The Admin UI will consume the states in 3.3.
 - Task 1.1 re-audited `334368cc..680761f1`. The delta below updates the original matrix and establishes `680761f1` as the unchanged runtime base for task 1.2.
-- **Next step: 3.3** — render the per-metric states, `attributed_since` and per-platform values in the Admin UI (UZ/RU/TJ). Task 3.2 is done: Finance (F4/F5), Funnel (F1–F3), the PWA Platforms card (A4) and Course `features`, `completed_user_lessons` and `foundation` (A6, A8–A10, A13–A15) are scoped per platform; Sources (F6) and PWA activation/sessions (A11) report `not_instrumented`. Closing checks pass: one account on three platforms counts once overall; two Android devices give one account and two devices.
+- **Next step: 3.4** — chain tests: one representative metric per platform through its real route (Android bearer, Mini App signed, PWA cookie + CSRF) → PostgreSQL → Admin analytics API, plus the Playwright tab/filter check; flip those registry entries to `covered`. Tasks 3.2 and 3.3 are done: platform values are scoped where a verified signal exists, and the Admin UI shows each unavailable or `not_applicable` metric as a localized state (never a number or zero), `attributed_since` under its panel, and the iPhone PWA card.
 - PR [akbarholturaev11-lang/HSK-AI-Bot#285](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/285) is the integration branch for this work. Main promotion is outside the current authorization.
 
 ## Platform scope
@@ -169,6 +169,8 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 - 2026-11-12 — Course `foundation` per platform: the Starter 0 cohort is anchored on the start, so only `foundation_started` must carry the route-set final `client` key (from `attributed_since` on); that learner's completion, objective and paywall rows follow it. Android has no start writer → `not_instrumented`. PWA activation, direct activation and sessions stay `not_instrumented`: their anchor and most rows have no `client` key, and `transport` is forgeable on old Telegram rows.
 
 ## Session log (newest first, one or two lines each)
+
+- 2026-11-12 — Task 3.3: Admin `app.js` renders `metric_states` (state label instead of value; unavailable cohort rows omitted; section reason + «Overall» hint), `attributed_since` per panel, the iPhone PWA card (opens only) and hides `not_applicable` version tables. Before this, Course and Funnel under a platform filter threw on missing Overall-only objects. 8 UZ/RU/TJ keys in `localization/ui/*/miniapp.json`; catalogs `--check` clean; i18n + static suites **551 passed, 15 skipped, 4065 subtests**; `tests/e2e/admin_pwa_browser.py` passes with a new 390 px loop over Android/Telegram/PWA × 7 tabs × UZ/RU/TJ (no overflow, state labels only).
 
 - 2026-11-12 — Task 3.2 closed: Course `foundation` scoped for Telegram/PWA by the tagged start (A10), Android and PWA activation/sessions `not_instrumented` (A11); closing checks added (one account on three platforms counts once overall; two Android devices = one account, two devices). Analytics CI suite **94 passed, 196 subtests**; statistics cache/export and course analytics **38 passed, 5 skipped (Redis), 24 subtests**.
 

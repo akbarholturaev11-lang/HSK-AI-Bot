@@ -348,6 +348,16 @@ gaps remain explicit. The report identifies basic aggregate downloads and overal
 coverage rather than claiming unimplemented section exports. No demo arrays,
 growth percentages, guessed platform shares or source-code filler are included.
 
+Per-platform states (analytics integrity 3.3, 2026-11-12): every tab reads the
+server `metric_states`. An unavailable metric (`no_data`, `not_instrumented`,
+`attribution_not_audited`, `detail_limited`) or a `not_applicable` one shows its
+short muted label in place of the value, never a number or zero; cohort rows of
+an unavailable metric are omitted. A whole section outside a platform's scope
+shows the reason and points to the Overall filter. Per-platform families show
+`attributed_since` as one line under their panel. The iPhone PWA card has
+foreground opens only (no device inventory); version tables are hidden where
+`not_applicable`.
+
 Canonical UZ/RU/TJ bundles own new labels. Layout uses fixed CSS/SVG attributes
 under the existing CSP, no inline styles or public private-data cache. Every
 original-editor/dirty-state/passkey/unknown-result rule above remains in force.

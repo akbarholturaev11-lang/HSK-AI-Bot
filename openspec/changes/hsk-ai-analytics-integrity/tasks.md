@@ -66,7 +66,7 @@ This is the only checklist for this work. Context, audit results, decisions and 
   - pre-key rows appear only in Overall
   - a spoofed Telegram row is not PWA, including historical source/transport lookalikes
   - learner responses and latency are unchanged
-- [ ] 3.3 Render the states, `attributed_since` and per-platform values in `app/static/admin-pwa/app.js`. Author UZ/RU/TJ keys in the canonical localization sources and run `scripts/i18n_build_all_catalogs.py --write` and `--check`. Verify the i18n tests and a Playwright run at 390 px in each language.
+- [x] 3.3 Render the states, `attributed_since` and per-platform values in `app/static/admin-pwa/app.js`. Author UZ/RU/TJ keys in the canonical localization sources and run `scripts/i18n_build_all_catalogs.py --write` and `--check`. Verify the i18n tests and a Playwright run at 390 px in each language.
 - [ ] 3.4 Add chain tests for one representative metric per platform: Android bearer, Mini App signed and PWA cookie + CSRF routes, through PostgreSQL and the Admin analytics API to Playwright (right tab and filter). Flip those registry entries to `covered`, and update the definitions in `docs/admin-pwa/READ_PROJECTIONS.md`. Verify that the chain tests and the checker pass.
 
 ## 4. PWA Pro funnel
