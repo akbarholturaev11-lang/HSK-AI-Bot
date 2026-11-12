@@ -317,7 +317,7 @@
       "platforms": {
         "android": {"status": "not_instrumented", "reason": "A7: Android has no trustworthy lesson-start writer for the activation step."},
         "telegram": {"status": "not_instrumented", "reason": "A6/A12: shared starts and historical client-supplied telemetry lack trusted Mini App provenance."},
-        "iphone_pwa": {"status": "partial", "reason": "A11: PWA learning telemetry records server-set transport; activation is mixed and has no trustworthy complete PWA cohort."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "A11: transport on PWA telemetry is forgeable on historical Telegram rows, and the cohort anchor (onboarding_completed) and most session rows carry no route-set client key."},
         "macos": {"status": "not_instrumented", "reason": "The activation cohort has no Desktop OS attribution; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "The activation cohort has no Desktop OS attribution; Desktop freeze."}
       }
@@ -358,7 +358,7 @@
         "windows": {"status": "not_instrumented", "reason": "V10 does not scope the learning event union to an individual Desktop OS; Desktop freeze."}
       }
     },
-    {"section": "course", "key": "detail_limited", "kind": "metadata", "filters": ["overall"]},
+    {"section": "course", "key": "detail_limited", "kind": "metadata", "filters": ["overall", "telegram", "iphone_pwa"]},
     {"section": "course", "key": "detail_row_limit", "kind": "metadata", "filters": ["overall"]},
     {"section": "course", "key": "detail_since", "kind": "metadata", "filters": ["overall", "android", "telegram", "iphone_pwa"]},
     {"section": "course", "key": "attributed_since", "kind": "metadata", "filters": ["android", "telegram", "iphone_pwa"]},
@@ -366,7 +366,7 @@
       "platforms": {
         "android": {"status": "not_instrumented", "reason": "A7: Android has no trustworthy lesson-start writer for the activation step."},
         "telegram": {"status": "not_instrumented", "reason": "A6/A12: shared starts and historical client-supplied telemetry lack trusted Mini App provenance."},
-        "iphone_pwa": {"status": "partial", "reason": "A11: PWA learning telemetry records server-set transport; activation is mixed and has no trustworthy complete PWA cohort."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "A11: transport on PWA telemetry is forgeable on historical Telegram rows, and the cohort anchor (onboarding_completed) and most session rows carry no route-set client key."},
         "macos": {"status": "not_instrumented", "reason": "The activation cohort has no Desktop OS attribution; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "The activation cohort has no Desktop OS attribution; Desktop freeze."}
       }
@@ -389,11 +389,11 @@
         "windows": {"status": "not_instrumented", "reason": "Feature-use rows lack a consistent Desktop OS dimension; Desktop freeze."}
       }
     },
-    {"section": "course", "key": "foundation", "kind": "metric", "filters": ["overall"],
+    {"section": "course", "key": "foundation", "kind": "metric", "filters": ["overall", "telegram", "iphone_pwa"],
       "platforms": {
-        "android": {"status": "partial", "reason": "A10: Android foundation source is covered by writer tests; V10 still aggregates all sources and no full chain test exists."},
-        "telegram": {"status": "partial", "reason": "A10: the Mini App foundation route writes its source; V10 still aggregates all sources and no full chain test exists."},
-        "iphone_pwa": {"status": "partial", "reason": "A10: the PWA foundation route writes its source; V10 still aggregates all sources and no full chain test exists."},
+        "android": {"status": "not_instrumented", "reason": "A10: Android writes the completion but no foundation_started, and the Starter 0 funnel is anchored on the start."},
+        "telegram": {"status": "partial", "reason": "A10: cohort of learners whose foundation_started has the route-set final client key telegram, from attributed_since on. Chain test pending (3.4)."},
+        "iphone_pwa": {"status": "partial", "reason": "A10: cohort of learners whose foundation_started has the route-set final client key iphone_pwa, from attributed_since on. Chain test pending (3.4)."},
         "macos": {"status": "not_instrumented", "reason": "A10 does not establish a separate Desktop OS foundation cohort; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "A10 does not establish a separate Desktop OS foundation cohort; Desktop freeze."}
       }
@@ -429,7 +429,7 @@
       "platforms": {
         "android": {"status": "not_instrumented", "reason": "The session grouping combines all CME session IDs and lacks complete Android session provenance."},
         "telegram": {"status": "not_instrumented", "reason": "A12: session groups use historical client telemetry that does not establish Mini App provenance."},
-        "iphone_pwa": {"status": "partial", "reason": "A11/A16: some PWA CME session rows carry transport; historical collisions and shared rows prevent a complete session split."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "A11: transport on PWA telemetry is forgeable on historical Telegram rows, and the cohort anchor (onboarding_completed) and most session rows carry no route-set client key."},
         "macos": {"status": "not_instrumented", "reason": "The mixed CME session grouping is not scoped to a Desktop OS; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "The mixed CME session grouping is not scoped to a Desktop OS; Desktop freeze."}
       }
@@ -438,7 +438,7 @@
       "platforms": {
         "android": {"status": "not_instrumented", "reason": "The session grouping combines all CME session IDs and lacks complete Android session provenance."},
         "telegram": {"status": "not_instrumented", "reason": "A12: session groups use historical client telemetry that does not establish Mini App provenance."},
-        "iphone_pwa": {"status": "partial", "reason": "A11/A16: some PWA CME session rows carry transport; historical collisions and shared rows prevent a complete session split."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "A11: transport on PWA telemetry is forgeable on historical Telegram rows, and the cohort anchor (onboarding_completed) and most session rows carry no route-set client key."},
         "macos": {"status": "not_instrumented", "reason": "The mixed CME session grouping is not scoped to a Desktop OS; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "The mixed CME session grouping is not scoped to a Desktop OS; Desktop freeze."}
       }

@@ -1,9 +1,9 @@
 """Course metrics for one client, from route-owned attribution only (task 3.2)."""
 from datetime import timedelta
 
-from sqlalchemy import func, select
+from sqlalchemy import and_, func, or_, select
 
-from app.admin_api.pwa_analytics_learning import owner
+from app.admin_api.pwa_analytics_learning import bounded_rows, foundation_query, foundation_summary, owner
 from app.admin_api.pwa_metrics import _window
 from app.admin_api.pwa_read import _user_segment_clause
 from app.db.models.course_miniapp_event import CourseMiniAppEvent as Event
@@ -62,6 +62,18 @@ async def course_platform_metrics(db, *, platform, since, now):
             features.append({'key': key, 'paid': values[0], 'free': values[1]})
 
     attributed_since = {'features': since_iso}
+    result = {}
+    if platform != 'android':
+        # The Starter 0 funnel is anchored on each learner's start. Only the
+        # start is attributed; the completion, objectives and paywall rows of
+        # that learner follow it, so the cohort is "started on this client".
+        # A10: Android writes no start, so it has no foundation cohort.
+        attributed_since['foundation'] = since_iso
+        rows = None if attributed is None else await bounded_rows(db, foundation_query(
+            or_(Event.event_name != 'foundation_started', and_(*attributed)), since=detail_since, now=now),
+            payload_index=5)
+        result['foundation'] = foundation_summary(rows, now=now)
+        result['detail_limited'] = attributed is not None and rows is None
     if platform == 'android':
         completed = await _completed_lessons(db, Event.event_name.in_((*COMPLETED, 'android_lesson_completed')),
             Event.source == ANDROID_COMPLETION_SOURCE, since=since, now=now)
@@ -69,5 +81,5 @@ async def course_platform_metrics(db, *, platform, since, now):
         attributed_since['completed_user_lessons'] = since_iso
         completed = None if attributed is None else await _completed_lessons(
             db, Event.event_name.in_(COMPLETED), *attributed, since=since, now=now)
-    return {'features': features, 'completed_user_lessons': completed,
+    return {**result, 'features': features, 'completed_user_lessons': completed,
             'attributed_since': attributed_since, 'detail_since': detail_since.isoformat()}

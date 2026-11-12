@@ -67,6 +67,26 @@ async def retention(db, *, since, now):
     return result
 
 
+def foundation_summary(rows, *, now):
+    if rows is None:
+        return None
+    f=build_foundation_metrics(rows,now=now)
+    return {'started_users':f['started_users'],'completed_users':f['completed_users'],
+        'completion_percent':ratio(f['completed_users'],f['started_users']),
+        'first_attempt':{'objectives':f['first_attempt']['objectives'],'correct':f['first_attempt']['correct'],
+            'percent':ratio(f['first_attempt']['correct'],f['first_attempt']['objectives'])},
+        'checkpoint':{'eligible':f['checkpoint_to_paywall']['checkpoint_users'],'reached':f['checkpoint_to_paywall']['paywall_users'],
+            'percent':ratio(f['checkpoint_to_paywall']['paywall_users'],f['checkpoint_to_paywall']['checkpoint_users'])},
+        'parts':[{'part':v['part'],'completed_users':v['completed_users']} for v in f['parts']]}
+
+
+def foundation_query(*conditions, since, now):
+    return (select(Event.event_name,User.id,Event.source,Event.level,
+        Event.lesson_order,func.substr(Event.payload_json,1,PAYLOAD_LIMIT+1),Event.created_at)
+        .select_from(Event).join(User,owner(Event)).where(Event.event_name.in_(FOUNDATION_FUNNEL_EVENT_NAMES),
+            *conditions,*_window(Event.created_at,since,now)).order_by(Event.created_at,Event.id))
+
+
 async def learning_metrics(db, *, period, since, now):
     # Historical detail intentionally retains the existing 30-day all-time cap.
     detail_since=since or now-timedelta(days=30)
@@ -116,20 +136,8 @@ async def learning_metrics(db, *, period, since, now):
             'percent':ratio(direct['lesson_started_2m'],direct['lesson_started_eligible'])}
         activation={'eligible':a['lesson_started_eligible'],'started':a['lesson_started_2m'],
             'percent':ratio(a['lesson_started_2m'],a['lesson_started_eligible'])}
-    foundation_rows=await bounded_rows(db,select(Event.event_name,User.id,Event.source,Event.level,
-        Event.lesson_order,func.substr(Event.payload_json,1,PAYLOAD_LIMIT+1),Event.created_at)
-        .select_from(Event).join(User,owner(Event)).where(Event.event_name.in_(FOUNDATION_FUNNEL_EVENT_NAMES),
-            *_window(Event.created_at,detail_since,now)).order_by(Event.created_at,Event.id),payload_index=5)
-    foundation=None
-    if foundation_rows is not None:
-        f=build_foundation_metrics(foundation_rows,now=now)
-        foundation={'started_users':f['started_users'],'completed_users':f['completed_users'],
-            'completion_percent':ratio(f['completed_users'],f['started_users']),
-            'first_attempt':{'objectives':f['first_attempt']['objectives'],'correct':f['first_attempt']['correct'],
-                'percent':ratio(f['first_attempt']['correct'],f['first_attempt']['objectives'])},
-            'checkpoint':{'eligible':f['checkpoint_to_paywall']['checkpoint_users'],'reached':f['checkpoint_to_paywall']['paywall_users'],
-                'percent':ratio(f['checkpoint_to_paywall']['paywall_users'],f['checkpoint_to_paywall']['checkpoint_users'])},
-            'parts':[{'part':v['part'],'completed_users':v['completed_users']} for v in f['parts']]}
+    foundation_rows=await bounded_rows(db,foundation_query(since=detail_since,now=now),payload_index=5)
+    foundation=foundation_summary(foundation_rows,now=now)
     completed=select(User.id,Event.level,Event.lesson_order).select_from(Event).join(User,owner(Event)).where(
         Event.event_name.in_(('lesson_completed','book_lesson_completed','android_lesson_completed')),Event.lesson_order.is_not(None),
         *_window(Event.created_at,since,now)).distinct().subquery()

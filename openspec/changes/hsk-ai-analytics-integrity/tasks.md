@@ -46,7 +46,7 @@ This is the only checklist for this work. Context, audit results, decisions and 
   - `not_applicable` and unavailable stay distinct;
   - the `gap` rows report `not_instrumented`;
   - the 1.2 fixture is unchanged.
-- [ ] 3.2 Platform attribution (design D3), in this order:
+- [x] 3.2 Platform attribution (design D3), in this order:
   1. **Spoofing guard (verified):** the Telegram `/api/miniapp/event` and map routes stop storing a client-supplied `transport`, `client` or `pwa_course_v3` source (A3, A12); PWA telemetry drops client claims and keeps its server-set transport.
   2. **Client key (verified):** add the server-set `client` key to the existing shared writes, passed from each route:
      - lesson start (A6) and lesson complete (A9);
@@ -57,7 +57,7 @@ This is the only checklist for this work. Context, audit results, decisions and 
      - [x] Sources: stays Overall-only; F6 Android prefix is caller-forgeable on the Telegram route (registry `not_instrumented`).
      - [x] Platforms PWA card (A4): DAU/WAU/MAU from the route-owned `pwa-course-v3:` map dedupe prefix, under the PWA filter.
      - [x] Course `features` and `completed_user_lessons` (A6, A8, A9, A13–A15): final-key `client` rule and a post-guard `attributed_since` boundary.
-     - [ ] Course `foundation` (A10) and PWA `activation` / `direct_activation` / `sessions` (A11) with the same boundary; then the closing checks below.
+     - [x] Course `foundation` (A10): Telegram/PWA cohort by the tagged start; Android `not_instrumented`. PWA `activation` / `direct_activation` / `sessions` (A11) `not_instrumented`. Closing checks in `CrossPlatformDedupTests`.
 
   Verify with mixed-platform tests (`to_verify` rows A4, F3, F4, F5 become `verified`):
   - each view counts only its own rows

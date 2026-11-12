@@ -214,6 +214,12 @@ class CoursePlatformScopeTests(unittest.IsolatedAsyncioTestCase):
                     event("mistake_review_started", 1, 7, {"count": 3, "client": "iphone_pwa"}),
                     # A completion too large to tag stays Overall-only.
                     event("mistake_review_completed", 3, 4, {"count": 2}),
+                    # Starter 0: a tagged Telegram start and its completion, plus
+                    # a pre-boundary PWA lookalike start.
+                    event("foundation_started", 2, 9, {"foundation_version": "v9", "entry_level": "hsk1",
+                                                        "client": "telegram"}),
+                    event("foundation_completed", 2, 8, {"foundation_version": "v9"}),
+                    event("foundation_started", 1, 60, {"foundation_version": "v9", "client": "iphone_pwa"}),
                 ])
                 await db.commit()
             self.projections = await capture(sessions)
@@ -236,10 +242,10 @@ class CoursePlatformScopeTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(self.features("android"), {"tests": (0, 0), "practice": (0, 1), "mistakes": (0, 0)})
 
     def test_attributed_since_is_the_first_server_built_tagged_row(self):
-        self.assertEqual(self.course("telegram")["attributed_since"],
-                         {"features": ago(hours=10).isoformat(), "completed_user_lessons": ago(hours=10).isoformat()})
-        self.assertEqual(self.course("iphone_pwa")["attributed_since"],
-                         {"features": ago(hours=8).isoformat(), "completed_user_lessons": ago(hours=8).isoformat()})
+        for platform, hours in (("telegram", 10), ("iphone_pwa", 8)):
+            boundary = ago(hours=hours).isoformat()
+            self.assertEqual(self.course(platform)["attributed_since"],
+                             {"features": boundary, "foundation": boundary, "completed_user_lessons": boundary})
         self.assertEqual(self.course("android")["attributed_since"], {"features": ago(hours=6).isoformat()})
 
     def test_completed_lessons_per_platform(self):
@@ -250,14 +256,26 @@ class CoursePlatformScopeTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual((self.course("android")["completed_user_lessons"],
                           self.course("android", "all_time")["completed_user_lessons"]), (1, 2))
 
+    def test_foundation_cohort_follows_the_attributed_start(self):
+        telegram = self.course("telegram")["foundation"]
+        self.assertEqual((telegram["started_users"], telegram["completed_users"]), (1, 1))
+        pwa = self.course("iphone_pwa")["foundation"]
+        self.assertEqual((pwa["started_users"], pwa["completed_users"]), (0, 0))
+        # A10: Android writes no start, so no foundation value or cohort.
+        self.assertNotIn("foundation", self.course("android"))
+        self.assertEqual(self.projections["course", "android", "weekly"]["metric_states"]["foundation"],
+                         {"state": "unavailable", "reason": "not_instrumented"})
+
     def test_unattributed_course_families_are_not_platform_values(self):
         for platform in PLATFORMS:
             response = self.projections["course", platform, "all_time"]
-            self.assertEqual(set(response["metrics"]),
-                             {"features", "completed_user_lessons", "attributed_since", "detail_since"})
+            keys = {"features", "completed_user_lessons", "attributed_since", "detail_since"}
+            if platform != "android":
+                keys |= {"foundation", "detail_limited"}
+            self.assertEqual(set(response["metrics"]), keys)
             states = response["metric_states"]
             self.assertEqual(states["features"], {"state": "available", "reason": None})
-            for key in ("voice_minutes", "chat", "ai_usage"):
+            for key in ("voice_minutes", "chat", "ai_usage", "activation", "sessions"):
                 self.assertEqual(states[key], {"state": "unavailable", "reason": "not_instrumented"})
             self.assertNotIn(PRIVATE, json.dumps(response))
 
@@ -271,7 +289,39 @@ class CourseWithoutAttributionTests(unittest.IsolatedAsyncioTestCase):
             response = projections["course", platform, "weekly"]
             self.assertIsNone(response["metrics"]["features"])
             self.assertIsNone(response["metrics"]["completed_user_lessons"])
-            self.assertEqual(response["metric_states"]["features"], {"state": "unavailable", "reason": "no_data"})
+            for key in ("features", "foundation"):
+                self.assertEqual(response["metric_states"][key], {"state": "unavailable", "reason": "no_data"})
+
+
+@unittest.skipUnless(URL, "set ANALYTICS_TEST_DATABASE_URL for the real PostgreSQL platform scope tests")
+class CrossPlatformDedupTests(unittest.IsolatedAsyncioTestCase):
+    """User 1 opens Android on two devices, the Mini App and the PWA, and pays on all three."""
+
+    async def asyncSetUp(self):
+        async with postgres_fixture(URL) as sessions:
+            self.projections = await capture(sessions)
+
+    def card(self, platform, section="platform"):
+        cards = self.projections[section, platform, "weekly"]["metrics"]["platforms"]
+        return next(card for card in cards if card["platform"] == platform)
+
+    def test_one_account_on_three_platforms_counts_once_per_view(self):
+        self.assertEqual(self.card("android")["active_dau"], 1)
+        self.assertEqual(self.card("telegram")["foreground_accounts_30d"], 1)
+        self.assertEqual(self.card("iphone_pwa")["active_wau"], 1)
+        money = {p: self.projections["money", p, "all_time"]["metrics"]["canonical_payers"]
+                 for p in ("overall", *PLATFORMS)}
+        # User 1 pays on every client but is one canonical payer overall.
+        self.assertEqual(money, {"overall": 3, "android": 2, "telegram": 2, "iphone_pwa": 1})
+        for section in ("money", "course", "funnel", "platform"):
+            for platform in PLATFORMS:
+                self.assertIs(self.projections[section, platform, "weekly"]["platform_counts_overlap"], True)
+
+    def test_two_android_devices_are_one_account_and_two_devices(self):
+        card = self.card("android")
+        # android-a and android-b belong to user 1; android-old to user 3.
+        self.assertEqual((card["devices"], card["accounts"]), (3, 2))
+        self.assertEqual(card["active_dau"], 1)
 
 
 if __name__ == "__main__":
