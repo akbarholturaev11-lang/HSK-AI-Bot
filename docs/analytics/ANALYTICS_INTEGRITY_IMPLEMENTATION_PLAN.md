@@ -30,8 +30,8 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 | OpenSpec change | `openspec/changes/hsk-ai-analytics-integrity/` | Re-audited on `main` `680761f1`; passes `openspec validate --strict` |
 | Checklist | `.../tasks.md` | Only checklist; audit, baseline and registry done |
 | Coverage registry | [FEATURE_ANALYTICS_COVERAGE.json](FEATURE_ANALYTICS_COVERAGE.json) | Present and checked locally; GitHub CI pending 2.3 |
-| CI guard | `.github/workflows/analytics-integrity.yml` | Not created (task 2.3) |
-| Agent rule | `AGENTS.md` | Active; enforcement status still "planned" |
+| CI guard | [analytics-integrity.yml](../../.github/workflows/analytics-integrity.yml) | Implemented on this branch; scratch runs pending (2.3) |
+| Agent rule | `AGENTS.md` | Active; lists the registry and check, with main enforcement verified separately |
 | Admin readers | `app/admin_api/pwa_analytics*.py`, `pwa_metrics.py` | Unchanged |
 | Monitoring requirements | `docs/monitoring/REQUIREMENTS.md` | Follows this work; reuses its identifiers (§7, §11) |
 
