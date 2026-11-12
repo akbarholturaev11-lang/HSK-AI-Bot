@@ -118,6 +118,7 @@ class GateOwnershipTests(unittest.IsolatedAsyncioTestCase):
                 )
 
         self.assertTrue(service.start.await_args.kwargs["gate_checked"])
+        self.assertEqual(service.start.await_args.kwargs["analytics_client"], "telegram")
 
     async def test_complete_does_not_re_check_the_gate(self):
         service = practice_service()
@@ -137,6 +138,7 @@ class GateOwnershipTests(unittest.IsolatedAsyncioTestCase):
                 )
 
         self.assertTrue(service.complete.await_args.kwargs["gate_checked"])
+        self.assertEqual(service.complete.await_args.kwargs["analytics_client"], "telegram")
 
     async def test_client_cannot_pass_an_ad_flag_or_access_ref(self):
         # Reklama yo'li Mini App tomonda hal qilinadi; adapter uni qabul

@@ -1,7 +1,7 @@
 import json
 import logging
 from datetime import datetime, timezone
-from typing import Any
+from typing import Any, Literal
 
 from sqlalchemy import select, update
 from sqlalchemy.exc import IntegrityError
@@ -15,6 +15,13 @@ from app.db.models.user import User
 
 
 MAX_EVENT_PAYLOAD_CHARS = 8000
+AnalyticsClient = Literal["telegram", "iphone_pwa", "android"]
+# A verified route identifies the client reporting an observed start, not a
+# grade or authorization. Leave other browser telemetry unchanged.
+ATTRIBUTED_CLIENT_EVENTS = frozenset({
+    "lesson_started", "section_started", "section_completed", "foundation_started",
+    "training_started", "test_started", "mistake_review_started",
+})
 logger = logging.getLogger(__name__)
 
 # Server-side notifications and billing/admin transitions are not evidence that
@@ -44,7 +51,14 @@ class CourseMiniAppAnalyticsService:
         return trusted
 
     @staticmethod
-    def _payload_json(payload: dict[str, Any] | None) -> str | None:
+    def _payload_json(payload: dict[str, Any] | None, *, analytics_client: AnalyticsClient | None = None) -> str | None:
+        if analytics_client is not None:
+            tagged = json.dumps({**(payload or {}), "client": analytics_client},
+                                ensure_ascii=False, default=str, separators=(",", ":"))
+            if len(tagged) <= MAX_EVENT_PAYLOAD_CHARS:
+                return tagged
+            # Some existing events also hold grading/attempt snapshots. An
+            # optional attribution field must never cause their truncation.
         if not payload:
             return None
         encoded = json.dumps(payload, ensure_ascii=False, default=str, separators=(",", ":"))
@@ -69,6 +83,7 @@ class CourseMiniAppAnalyticsService:
         session_id: str | None = None,
         dedupe_key: str | None = None,
         payload: dict[str, Any] | None = None,
+        analytics_client: AnalyticsClient | None = None,
     ) -> dict:
         event_name = str(event_name or "").strip()
         if event_name not in COURSE_MINIAPP_EVENT_NAMES:
@@ -109,7 +124,7 @@ class CourseMiniAppAnalyticsService:
             lesson_order=lesson_order,
             session_id=session_id,
             dedupe_key=dedupe_key,
-            payload_json=self._payload_json(payload),
+            payload_json=self._payload_json(payload, analytics_client=analytics_client),
         )
         try:
             async with self.session.begin_nested():

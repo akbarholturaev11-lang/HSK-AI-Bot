@@ -1024,7 +1024,7 @@
     },
     {
       "id": "lessons",
-      "description": "Lesson and section starts, completions, progression, and per-lesson behavior.",
+      "description": "Lesson and section starts, completions, progression, and per-lesson behavior. Existing Telegram and PWA start/completion writes now carry the route-owned client; older rows still need provenance checks and Android has no lesson-start writer.",
       "events": [
         {
           "store": "course_miniapp_events",
@@ -1096,7 +1096,7 @@
     },
     {
       "id": "practice",
-      "description": "Practice training and attempts, excluding quota-only storage from activity.",
+      "description": "Practice training and attempts, excluding quota-only storage from activity. Existing shared practice start and result writes accept the verified route's client without changing the result or dedupe.",
       "events": [
         {
           "store": "course_miniapp_events",
@@ -1152,7 +1152,7 @@
     },
     {
       "id": "assessments",
-      "description": "Course test and HSK exam activity and outcomes.",
+      "description": "Course test and HSK exam activity and outcomes. Android, Telegram and PWA exam adapters attach their verified client to existing writes without changing the grading snapshot or its size cap.",
       "events": [
         {
           "store": "course_miniapp_events",
@@ -1195,7 +1195,7 @@
     },
     {
       "id": "mistake_review",
-      "description": "Mistake review attempts, answers and completions.",
+      "description": "Mistake review attempts, answers and completions. Android, Telegram and PWA adapters attach the verified client to existing writes; historical attempts are not reassigned.",
       "events": [
         {
           "store": "course_miniapp_events",

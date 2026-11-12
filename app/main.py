@@ -3183,6 +3183,7 @@ async def v3_hsk_exam_start(request: Request):
                 lang=str(payload.get("lang") or ""),
                 access_ref=str(payload.get("access_ref") or ""),
                 ad_supported=bool(payload.get("ad_supported")),
+                analytics_client="telegram",
             )
     except ValueError as error:
         return JSONResponse(
@@ -3219,6 +3220,7 @@ async def v3_hsk_exam_complete(request: Request):
             telegram_id,
             session_id=str(payload.get("session_id") or ""),
             answers=payload.get("answers") if isinstance(payload.get("answers"), list) else [],
+            analytics_client="telegram",
         )
     status_code = 200 if result.get("ok") else 409 if result.get("error") == "hsk_exam_material_changed" else 400
     return JSONResponse(status_code=status_code, content=result)
@@ -3333,7 +3335,7 @@ async def v3_course_lesson_unlock(request: Request):
 async def _v3_complete_lesson_for_canonical_actor(
     session, user, payload: dict, *, lesson_order: int,
     lesson_session_id: str | None, lesson_mistakes: list[dict],
-    telegram_id: int | None,
+    telegram_id: int | None, analytics_client: str,
 ):
     """Single existing V3 completion, entitlement, proof and XP transaction.
 
@@ -3511,6 +3513,7 @@ async def _v3_complete_lesson_for_canonical_actor(
         lesson_order=lesson_order,
         session_id=lesson_session_id,
         dedupe_key=f"v3-part:{resolved_level}:{lesson_order}:completed",
+        analytics_client=analytics_client,
         payload={
             "lesson_order": lesson_order,
             "is_paid": is_paid,
@@ -3586,7 +3589,7 @@ async def v3_course_lesson_complete(request: Request):
         return await _v3_complete_lesson_for_canonical_actor(
             session, user, payload, lesson_order=lesson_order,
             lesson_session_id=lesson_session_id,
-            lesson_mistakes=lesson_mistakes, telegram_id=telegram_id,
+            lesson_mistakes=lesson_mistakes, telegram_id=telegram_id, analytics_client="telegram",
         )
 
 
@@ -3663,6 +3666,7 @@ async def pwa_v3_course_lesson_complete(request: Request):
                 lesson_session_id=lesson_session_id,
                 lesson_mistakes=lesson_mistakes,
                 telegram_id=int(user.telegram_id) if user.telegram_id else None,
+                analytics_client="iphone_pwa",
             )
             response.headers["Cache-Control"] = "no-store"
             response.headers["Referrer-Policy"] = "no-referrer"
@@ -6002,6 +6006,7 @@ async def miniapp_practice_start(request: Request):
                 level=_course_v3_user_level(user),
                 lang=_course_v3_user_lang(user),
                 skill=str(payload.get("skill") or ""),
+                analytics_client="telegram",
             )
     except ValueError as error:
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_practice_payload", "message": str(error)})
@@ -6030,6 +6035,7 @@ async def miniapp_practice_complete(request: Request):
                 lang=_course_v3_user_lang(user),
                 skill=str(payload.get("skill") or ""),
                 answers=payload.get("answers") if isinstance(payload.get("answers"), list) else [],
+                analytics_client="telegram",
             )
     except ValueError as error:
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_practice_payload", "message": str(error)})
@@ -6247,6 +6253,7 @@ async def miniapp_mistake_review_start(request: Request):
             category=str(payload.get("category") or "") or None,
             formats=payload.get("formats") if isinstance(payload.get("formats"), list) else None,
             language=str(payload.get("language") or "") or None,
+            analytics_client="telegram",
         )
     status_code = (
         200
@@ -6282,6 +6289,7 @@ async def miniapp_mistake_review_answer(request: Request):
             session_id=str(payload.get("session_id") or ""),
             question_id=str(payload.get("question_id") or ""),
             selected_index=payload.get("selected_index"),
+            analytics_client="telegram",
         )
     return JSONResponse(status_code=200 if result.get("ok") else 400, content=result)
 
@@ -6303,6 +6311,7 @@ async def miniapp_mistake_review_complete(request: Request):
             telegram_id,
             session_id=str(payload.get("session_id") or ""),
             answers=payload.get("answers") if isinstance(payload.get("answers"), list) else [],
+            analytics_client="telegram",
         )
     return JSONResponse(status_code=200 if result.get("ok") else 400, content=result)
 
@@ -6637,6 +6646,8 @@ async def subscription_miniapp_submit(request: Request):
 
 @app.post("/api/miniapp/event")
 async def miniapp_event(request: Request):
+    from app.services.course_miniapp_analytics_service import ATTRIBUTED_CLIENT_EVENTS
+
     payload = await request.json()
     event = str(payload.get("event") or "").strip()
 
@@ -6761,6 +6772,7 @@ async def miniapp_event(request: Request):
                 session_id=str(payload.get("session_id") or "") or None,
                 dedupe_key=dedupe_key,
                 payload=trusted_payload,
+                analytics_client="telegram" if event in ATTRIBUTED_CLIENT_EVENTS else None,
             )
             if result.get("ok"):
                 if event in {"desktop_promo_seen", "desktop_promo_dismissed"}:

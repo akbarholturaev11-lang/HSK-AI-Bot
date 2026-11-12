@@ -103,7 +103,7 @@ class AppOfferEventTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(names, [])
         self.assertIsNone(await self.state("ios"))
 
-    async def test_telegram_telemetry_never_stores_client_platform_markers(self):
+    async def test_telegram_telemetry_ignores_caller_platform_markers(self):
         sent = await self.send(event="section_started", source=" PWA_COURSE_V3 ",
                                client="android", transport="iphone_pwa",
                                event_id="fixture:section", session_id="fixture:session")
@@ -113,7 +113,22 @@ class AppOfferEventTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(row.source, "course_miniapp")
         self.assertEqual(row.user_id, 1)
         self.assertEqual(row.dedupe_key, "fixture:section")
-        self.assertFalse({"source", "transport", "client"} & json.loads(row.payload_json).keys())
+        payload = json.loads(row.payload_json)
+        self.assertFalse({"source", "transport"} & payload.keys())
+        self.assertEqual(payload["client"], "telegram")
+
+    def test_analytics_marker_never_truncates_an_existing_payload(self):
+        from app.services.course_miniapp_analytics_service import (
+            CourseMiniAppAnalyticsService, MAX_EVENT_PAYLOAD_CHARS,
+        )
+
+        payload = {"grading_snapshot": "字" * (MAX_EVENT_PAYLOAD_CHARS - 23)}
+        serialized = CourseMiniAppAnalyticsService._payload_json(payload)
+        self.assertEqual(json.loads(serialized), payload)
+        self.assertEqual(
+            CourseMiniAppAnalyticsService._payload_json(payload, analytics_client="iphone_pwa"),
+            serialized,
+        )
 
     async def test_telegram_map_preserves_campaign_source_but_not_reserved_pwa_source(self):
         app = FastAPI()

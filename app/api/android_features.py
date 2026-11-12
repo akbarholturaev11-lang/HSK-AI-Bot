@@ -1397,6 +1397,7 @@ def create_android_features_router(
                     skill=payload.skill,
                     access_ref=payload.access_ref,
                     ad_supported=payload.ad_supported,
+                    analytics_client="android",
                 )
             return _service_response(result)
         except (DesktopAuthError, DesktopPracticeError) as exc:
@@ -1441,6 +1442,7 @@ def create_android_features_router(
                     ],
                     access_ref=payload.access_ref,
                     ad_supported=payload.ad_supported,
+                    analytics_client="android",
                 )
             return _service_response(result)
         except (DesktopAuthError, DesktopPracticeError) as exc:
@@ -1474,6 +1476,7 @@ def create_android_features_router(
                     lang=payload.language,
                     access_ref=payload.access_ref,
                     ad_supported=payload.ad_supported,
+                    analytics_client="android",
                 )
                 user = await _optional_user(session, request)
                 if user:
@@ -1521,6 +1524,7 @@ def create_android_features_router(
                     # changed mid-exam.
                     level=payload.level or None,
                     lang=payload.language or None,
+                    analytics_client="android",
                 )
                 if result.get("ok") and user:
                     await assessment_finished(session, user.id, payload.session_id)
@@ -1578,6 +1582,7 @@ def create_android_features_router(
                     category=payload.category,
                     formats=payload.formats,
                     language=payload.language,
+                    analytics_client="android",
                 )
             return _service_response(result)
         except (DesktopAuthError, AndroidFeatureError) as exc:
@@ -1603,6 +1608,7 @@ def create_android_features_router(
                         if payload.selected_tokens is not None
                         else payload.selected_index
                     ),
+                    analytics_client="android",
                 )
             return _service_response(result)
         except (DesktopAuthError, AndroidFeatureError) as exc:
@@ -1632,6 +1638,7 @@ def create_android_features_router(
                         }
                         for item in payload.answers
                     ],
+                    analytics_client="android",
                 )
             return _service_response(result)
         except (DesktopAuthError, AndroidFeatureError) as exc:

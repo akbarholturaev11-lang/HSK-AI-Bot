@@ -841,6 +841,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                     actor, ad_supported=False,
                     access_ref=payload.access_ref, category=payload.category,
                     formats=payload.formats, language=payload.language,
+                    analytics_client="iphone_pwa",
                 )
             err = result.get("error")
             status = (200 if result.get("ok") else 403 if err in {
@@ -874,6 +875,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                     actor, session_id=payload.session_id,
                     question_id=payload.question_id,
                     selected_index=payload.selected_index,
+                    analytics_client="iphone_pwa",
                 )
             return JSONResponse(
                 result, status_code=200 if result.get("ok") else 400,
@@ -900,6 +902,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                 result = await CourseMistakeService(db).complete_review(
                     actor, session_id=payload.session_id,
                     answers=payload.answers,
+                    analytics_client="iphone_pwa",
                 )
             return JSONResponse(
                 result, status_code=200 if result.get("ok") else 400,
@@ -944,6 +947,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                     actor,
                     level=payload.level, lang=payload.lang,
                     access_ref=payload.access_ref, ad_supported=False,
+                    analytics_client="iphone_pwa",
                 )
             err = result.get("error")
             status = (200 if result.get("ok") else 403 if err in {
@@ -974,6 +978,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                 result = await CourseHskExamService(db).complete(
                     actor, session_id=payload.session_id,
                     answers=payload.answers,
+                    analytics_client="iphone_pwa",
                 )
             status = (200 if result.get("ok") else
                       409 if result.get("error") == "hsk_exam_material_changed" else 400)
