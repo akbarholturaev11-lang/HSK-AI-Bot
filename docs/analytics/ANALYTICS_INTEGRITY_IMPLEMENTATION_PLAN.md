@@ -28,8 +28,8 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 | Item | Location | Status |
 |---|---|---|
 | OpenSpec change | `openspec/changes/hsk-ai-analytics-integrity/` | Re-audited on `main` `680761f1`; passes `openspec validate --strict` |
-| Checklist | `.../tasks.md` | Only checklist; 1.1 and 1.2 done |
-| Coverage registry | `docs/analytics/FEATURE_ANALYTICS_COVERAGE.json` | Not created (task 2.1) |
+| Checklist | `.../tasks.md` | Only checklist; audit, baseline and registry done |
+| Coverage registry | [FEATURE_ANALYTICS_COVERAGE.json](FEATURE_ANALYTICS_COVERAGE.json) | Present on this branch; enforcement pending 2.2–2.3 |
 | CI guard | `.github/workflows/analytics-integrity.yml` | Not created (task 2.3) |
 | Agent rule | `AGENTS.md` | Active; enforcement status still "planned" |
 | Admin readers | `app/admin_api/pwa_analytics*.py`, `pwa_metrics.py` | Unchanged |
@@ -39,7 +39,7 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 
 - The planning branch now has a PostgreSQL V10 baseline. No analytics runtime code has changed.
 - Task 1.1 re-audited `334368cc..680761f1`. The delta below updates the original matrix and establishes `680761f1` as the unchanged runtime base for task 1.2.
-- **Next step: 2.1**, then 2.2–2.3: registry, checker and CI before metric repair.
+- **Next step: 2.2**, then 2.3: event/diff checks and CI before metric repair.
 - PR [akbarholturaev11-lang/HSK-AI-Bot#285](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/285) is the integration branch for this work. Main promotion is outside the current authorization.
 
 ## Platform scope
@@ -164,6 +164,7 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 
 ## Session log (newest first, one or two lines each)
 
+- 2026-11-12 — Task 2.1 added 84 metric keys, 29 projection metadata keys and 20 flow IDs. Schema validation passed; all 144 in-scope baseline responses match their declared keys. No `covered` status is asserted before the chain tests.
 - 2026-11-12 — Task 1.2 froze the V10 matrix from unchanged `680761f1` and reproduced it in the planning worktree. Next: registry, task 2.1.
 - 2026-11-12 — Re-audited and merged `origin/main` `680761f1`, including Li guest, Voice V8, feedback reservation and push. No analytics runtime patch. Strict OpenSpec validation passed; continue at 1.2.
 - 2026-11-11 — Merged `main` `334368cc` and re-audited the platform × V10 chain (task 1.1). Adapted proposal, design, specs and tasks to the findings, the Desktop freeze and the Analytics → Monitoring order. The plan is ready for task 1.2.

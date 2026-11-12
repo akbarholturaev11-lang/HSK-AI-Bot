@@ -56,8 +56,8 @@ See `proposal.md` for the motivation and `specs/` for the requirements. These co
 
 ### D1. One JSON registry and one stdlib checker
 `docs/analytics/FEATURE_ANALYTICS_COVERAGE.json` holds four lists:
-- `metrics[]`: section, key, and per-platform `{status, reason, chain_test}`;
-- `flows[]`: the critical flows and their events;
+- `metrics[]`: section, key and the filters whose projection emits it. Metric entries have per-platform `{status, reason, chain_test}`; projection metadata has key coverage only. API key presence is separate from metric attribution;
+- `flows[]`: the critical flows and their events. Event identities are (store, name); the registry distinguishes declarations, internal writes and known names with no writer;
 - `critical_paths[]`;
 - `exemptions[]`.
 

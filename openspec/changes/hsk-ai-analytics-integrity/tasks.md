@@ -22,13 +22,13 @@ This is the only checklist for this work. Context, audit results, decisions and 
 
 ## 2. Coverage guard (before any metric repair)
 
-- [ ] 2.1 Create `docs/analytics/FEATURE_ANALYTICS_COVERAGE.json` (design D1) from the 1.1 key list and audit rows.
+- [x] 2.1 Create `docs/analytics/FEATURE_ANALYTICS_COVERAGE.json` (design D1) from the 1.1 key list and audit rows.
   - Use honest statuses and reasons.
   - Reader names with no writer are `no_writer`.
   - Desktop entries reflect existing code only.
   - Platform keys and flow IDs are stable.
 
-  Verify that the checker's schema validation passes.
+  Verified: `scripts/check_analytics_coverage.py --schema-only` passed and declared keys matched all 144 non-experiment baseline responses.
 - [ ] 2.2 Implement `scripts/check_analytics_coverage.py` (stdlib only) and `tests/test_analytics_coverage_contract.py`. Verify with tests for each case:
   - an unmapped new event fails, naming the file and event
   - a stale entry fails
