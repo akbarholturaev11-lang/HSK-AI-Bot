@@ -65,5 +65,6 @@ jobs:
           tests/test_analytics_platform_chain.py
           tests/test_admin_pwa_pro_funnel.py
           tests/test_pwa_pro_funnel_chain.py
+          tests/test_admin_pwa_report_freshness.py
           tests/test_admin_pwa_analytics.py
           tests/test_android_analytics_service.py

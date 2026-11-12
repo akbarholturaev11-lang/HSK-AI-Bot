@@ -386,6 +386,9 @@ function categorizedStatsView(){
     body+=analyticPanel('analyticsPublicTraffic',analyticTable(['source','analyticsVisits'],m.traffic.map(r=>[r.source==='other'?t('analyticsOtherSource'):r.source,number(r.visits)])),'analyticsTrafficNote');
   }else{
     body=`<div class="double">${analyticPanel('analyticsDataQuality',analyticTable(['source','analyticsRecords','updated'],m.quality.map(r=>[t('analyticsQuality'+r.source),number(r.records),r.latest_at?date(r.latest_at):'—'])))}${analyticPanel('analyticsDefinitions',analyticRows([['analyticsRefresh',t('analyticsDailyCache')],['analyticsFinancialGrain',t('analyticsSeparateCurrencies')],['analyticsAiBasis',t('analyticsStoredEstimate')],['analyticsPlatformTotal',t('analyticsOverlapping')],['analyticsDetailBound',number(m.detail_row_limit)]]))}</div>`;
+    // D7: latest record and unowned rows per platform, from verified signals only.
+    const platformNames={android:'analyticsAndroid',telegram:'analyticsTelegram',iphone_pwa:'analyticsIphonePwa'};
+    if(Array.isArray(m.platform_freshness))body+=analyticPanel('analyticsFreshness',analyticTable(['platform','source','updated','analyticsUnresolvedOwners'],m.platform_freshness.map(r=>[t(platformNames[r.platform]),t('analyticsQuality'+r.source),r.latest_at?date(r.latest_at):'—',number(r.unresolved_owners)])),'analyticsFreshnessNote');
     body+=analyticPanel('analyticsBasicExport',`<div class="statistics-export">${exportMenu('statistics')}</div>`,'analyticsExportNote')+feedbackPanel();
   }
   if(data.platform==='overall'&&['course','funnel'].includes(tab))body+=advancedAnalyticsDisclosure();

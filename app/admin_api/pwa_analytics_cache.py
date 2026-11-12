@@ -9,6 +9,7 @@ from app.admin_api.pwa_analytics_course_platform import COURSE_CLIENTS, course_p
 from app.admin_api.pwa_analytics_finance import PAYMENT_PLATFORM_SOURCES, money_metrics, sources_metrics
 from app.admin_api.pwa_analytics_platforms import platform_metrics
 from app.admin_api.pwa_analytics_pwa_pro import pwa_pro_attempt_funnel
+from app.admin_api.pwa_analytics_freshness import platform_freshness
 from app.admin_api.pwa_analytics_experiments import experiment_metrics
 from app.admin_api.pwa_analytics_states import has_legacy_filter, metric_states
 from app.db.models.user import User
@@ -77,7 +78,9 @@ async def _legacy_projection(db,query,*,section):
             quality.append({'source':key,'records':count,'latest_at':latest.isoformat() if latest else None})
         result['scope']['quality']='all stored records through generated_at; independent of platform and period'
         result['metrics']={'quality':quality,'daily_cache_hours':24,'detail_row_limit':5000,
-            'exact_currencies':True,'ai_is_estimate':True,'platform_counts_overlap':True}
+            'exact_currencies':True,'ai_is_estimate':True,'platform_counts_overlap':True,
+            # D7: per-platform freshness, also independent of the selected filter.
+            'platform_freshness':await platform_freshness(db,now=now)}
     return result
 
 

@@ -361,7 +361,9 @@ foreground opens only (no device inventory); version tables are hidden where
 rows) under Overall and iPhone PWA only; Android and Telegram hide it. Course
 shows «Return» D1/D7 (any verified return on any app) before «Course open» D1/D7
 (Mini App/PWA course map); both appear as cards and cohort rows with distinct
-labels.
+labels. Report adds a per-platform freshness table (platform, source,
+latest record, rows without an owner); a platform with no verified rows shows a
+dash.
 
 Canonical UZ/RU/TJ bundles own new labels. Layout uses fixed CSS/SVG attributes
 under the existing CSP, no inline styles or public private-data cache. Every

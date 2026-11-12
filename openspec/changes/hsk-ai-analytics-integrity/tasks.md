@@ -87,7 +87,7 @@ This is the only checklist for this work. Context, audit results, decisions and 
   - one account in two apps counts once;
   - passive activity, feedback reservations and Voice auto-start/end without a confirmed turn are excluded;
   - legacy values are unchanged.
-- [ ] 5.2 Add per-platform `latest_at` and unresolved-owner counts to the Report section (design D7). Verify tests showing that a stale platform is visible and that no identifiers or payloads appear in the response or the page.
+- [x] 5.2 Add per-platform `latest_at` and unresolved-owner counts to the Report section (design D7). Verify tests showing that a stale platform is visible and that no identifiers or payloads appear in the response or the page.
 
 ## 6. Integration validation
 

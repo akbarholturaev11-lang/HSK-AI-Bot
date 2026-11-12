@@ -450,6 +450,16 @@ async def browser_checks(output):
         await expect(page.locator('.stats-category-content .analytics-panel')).to_have_count(3)
         await page.locator('[data-stats-tab=report]').click()
         await expect(page.locator('.feedback-analysis')).to_contain_text('Шикоятлар таҳлили')
+        # Task 5.2: freshness per platform. A platform with no verified records
+        # stays listed with a dash; only counts and dates reach the page.
+        fresh_title=await page.evaluate("window.HSKAI_ADMIN_I18N.uz.analyticsFreshness")
+        fresh=page.locator('.analytics-panel',has=page.locator('h2',has_text=fresh_title))
+        await expect(fresh.locator('tbody tr')).to_have_count(6)
+        updated=[await fresh.locator('tbody tr').nth(i).locator('td').nth(2).inner_text() for i in range(6)]
+        assert updated[0]=='—' and updated[2]!='—' and updated[3]!='—' and updated[4]=='—', updated
+        fresh_text=await fresh.inner_text()
+        for secret in ('1001','qa:telegram-lesson-1','"client"','telegram_bot'):
+            assert secret not in fresh_text, secret
         await expect(page.locator('.feedback-analysis')).to_contain_text('Нарх')
         await page.screenshot(path=str(output/'mobile-statistics-details.png'),full_page=True)
         for width in (390,1440):

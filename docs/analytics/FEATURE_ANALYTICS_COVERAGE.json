@@ -797,6 +797,15 @@
     {"section": "report", "key": "detail_row_limit", "kind": "metadata", "filters": ["overall", "android", "telegram", "macos", "windows"]},
     {"section": "report", "key": "exact_currencies", "kind": "metadata", "filters": ["overall", "android", "telegram", "macos", "windows"]},
     {"section": "report", "key": "platform_counts_overlap", "kind": "metadata", "filters": ["overall", "android", "telegram", "macos", "windows"]},
+    {"section": "report", "key": "platform_freshness", "kind": "metric", "filters": ["overall", "android", "telegram", "macos", "windows"],
+      "platforms": {
+        "android": {"status": "not_applicable", "reason": "D7: one global list with Android, Telegram and PWA rows (verified A1/A8 and route-set client signals; payments.source), returned unchanged under every filter."},
+        "telegram": {"status": "not_applicable", "reason": "D7: one global list with Android, Telegram and PWA rows (route-set client key; payments.source miniapp/telegram_bot), returned unchanged under every filter."},
+        "iphone_pwa": {"status": "not_applicable", "reason": "D7: one global list with Android, Telegram and PWA rows (A4 map opens and route-set client key; payments.source iphone_pwa/pwa); the Report has no PWA filter."},
+        "macos": {"status": "not_instrumented", "reason": "No Desktop freshness rows; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "No Desktop freshness rows; Desktop freeze."}
+      }
+    },
     {"section": "report", "key": "quality", "kind": "metric", "filters": ["overall", "android", "telegram", "macos", "windows"],
       "platforms": {
         "android": {"status": "not_applicable", "reason": "Existing quality rows are global record counts and latest timestamps, even when returned under a platform filter. No platform quality breakdown exists yet."},
