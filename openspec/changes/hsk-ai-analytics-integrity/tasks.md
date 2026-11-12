@@ -18,7 +18,7 @@ This is the only checklist for this work. Context, audit results, decisions and 
   - Confirmed unchanged V10 keys and updated the audit for Android Li guest, Voice V8, feedback reservations and PWA push.
   - Decided D3: PWA foreground proof = existing `miniapp_opened` with source `pwa_course_v3`; Android shows combined values only, with no Play/Direct split.
   - Evidence: the audit section and the decisions log of the context file.
-- [ ] 1.2 Add a V10 regression fixture and test (provisional `tests/test_admin_pwa_v10_regression.py`). It seeds a mixed-platform DB covering the A/F rows and snapshots every section × platform × period output of the current code. Verify that it passes on unchanged `main`.
+- [x] 1.2 Add the V10 regression fixture and `tests/test_admin_pwa_v10_regression.py`. Verified 162 section × filter × period outputs over fresh TCP PostgreSQL on unchanged `main` `680761f1` and on the merged planning branch (15 tests passed, no skips; see shared context).
 
 ## 2. Coverage guard (before any metric repair)
 

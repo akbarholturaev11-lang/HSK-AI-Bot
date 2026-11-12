@@ -28,7 +28,7 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 | Item | Location | Status |
 |---|---|---|
 | OpenSpec change | `openspec/changes/hsk-ai-analytics-integrity/` | Re-audited on `main` `680761f1`; passes `openspec validate --strict` |
-| Checklist | `.../tasks.md` | Only checklist; 1.1 done |
+| Checklist | `.../tasks.md` | Only checklist; 1.1 and 1.2 done |
 | Coverage registry | `docs/analytics/FEATURE_ANALYTICS_COVERAGE.json` | Not created (task 2.1) |
 | CI guard | `.github/workflows/analytics-integrity.yml` | Not created (task 2.3) |
 | Agent rule | `AGENTS.md` | Active; enforcement status still "planned" |
@@ -37,10 +37,10 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 
 ## Current state — 2026-11-12
 
-- Planning only. No runtime code has changed.
+- The planning branch now has a PostgreSQL V10 baseline. No analytics runtime code has changed.
 - Task 1.1 re-audited `334368cc..680761f1`. The delta below updates the original matrix and establishes `680761f1` as the unchanged runtime base for task 1.2.
-- **Ready to start implementation.** Next step: task 1.2, the V10 regression fixture on unchanged `main`. Then tasks 2.1–2.3, the registry, checker and CI, before any metric repair.
-- PR [akbarholturaev11-lang/HSK-AI-Bot#285](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/285) carries the planning artifacts only.
+- **Next step: 2.1**, then 2.2–2.3: registry, checker and CI before metric repair.
+- PR [akbarholturaev11-lang/HSK-AI-Bot#285](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/285) is the integration branch for this work. Main promotion is outside the current authorization.
 
 ## Platform scope
 
@@ -110,6 +110,13 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 | Learner PWA push | [Push rendering](../../app/services/learner_pwa_push.py#L540) and [reminder transport](../../app/services/smart_reminder_pwa.py#L201) reuse owned sources; [copy tests](../../tests/test_learner_pwa_push_copy.py) and [worker browser test](../../tests/e2e/test_pwa_push_worker.py) cover copy/delivery. No V10 reader consumes these delivery rows. | `verified` for reuse of source data. No new V10 metric or learner-activity event. Push delivery is outside the return signal. |
 | Existing V10 filter gates | [Section composition](../../app/admin_api/pwa_analytics_cache.py#L32) checks the section before its PWA check; [analytics tests](../../tests/test_admin_pwa_analytics.py) cover projections, but not the full matrix. | `to_verify` on the complete fixture (1.2): PWA Home/Overview/Platforms/Report report `not_instrumented`; PWA Course/Funnel/Finance/Sources/Experiments report `attribution_not_audited`. This main delta did not close those attribution or funnel gaps. |
 
+### Baseline evidence — task 1.2
+
+- [PostgreSQL fixture/test](../../tests/test_admin_pwa_v10_regression.py) and [snapshot](../../tests/fixtures/admin_pwa_v10_main_680761f1.json) pin all 162 section × filter × period responses on the unchanged `680761f1` runtime, including both PWA unavailable reasons. The fixed clock, canonical and legacy owners, synthetic payments and overlapping devices make the comparison deterministic. This verifies stored-row projections; it does not establish event-to-UI coverage.
+- `verified` on stored rows: Overall weekly Li activation is 2 eligible / 1 started while `direct_start_v1` is 1 / 1; zero-turn Voice contributes to participation but leaves the fixture at 2.0 voice minutes; the internal feedback reservation is the latest of 39 raw CME rows in Report without adding Course engagement.
+- Fresh local TCP PostgreSQL via `ANALYTICS_TEST_DATABASE_URL`: `python -m pytest -q -rs tests/test_admin_pwa_v10_regression.py tests/test_admin_pwa_analytics.py::CompleteAnalyticsTests tests/test_admin_pwa_analytics.py::AnalyticsDefinitionTests` → **15 passed, 162 subtests passed, no skips**, on both the unchanged base and the merged planning branch.
+- Delta regression suites (Android course API, PWA learning parity including PostgreSQL, browser auth, Voice V8 page, push copy and Smart Reminder PWA) → **240 passed, 303 subtests passed**. Installed clients and Playwright were not run in this baseline step.
+
 ### V10 metric keys on `680761f1` (registry seed for 2.1)
 
 - **home:** `users_total`, `new_accounts`, `active_accounts`, `active_today`, `active_pro`, `expiring_pro`, `bot_blocked`, `blocked_current`, `payments_by_status`, `pending_current`, `paying_accounts`, `activity`
@@ -157,6 +164,7 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 
 ## Session log (newest first, one or two lines each)
 
+- 2026-11-12 — Task 1.2 froze the V10 matrix from unchanged `680761f1` and reproduced it in the planning worktree. Next: registry, task 2.1.
 - 2026-11-12 — Re-audited and merged `origin/main` `680761f1`, including Li guest, Voice V8, feedback reservation and push. No analytics runtime patch. Strict OpenSpec validation passed; continue at 1.2.
 - 2026-11-11 — Merged `main` `334368cc` and re-audited the platform × V10 chain (task 1.1). Adapted proposal, design, specs and tasks to the findings, the Desktop freeze and the Analytics → Monitoring order. The plan is ready for task 1.2.
 - 2026-11-09 — Created and validated the OpenSpec change, added the owner's platform requirements, simplified the plan to 6 task groups, and turned this file into the shared context.

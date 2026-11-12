@@ -1,0 +1,1998 @@
+{
+  "origin_main": "680761f15e05f6d543da52cd021d05df41217ea3",
+  "profiles": [
+    {
+      "response": {
+        "available": true,
+        "metrics": {
+          "active_accounts": 1,
+          "active_pro": 1,
+          "active_today": 1,
+          "activity": {
+            "grain": "distinct canonical learning accounts per calendar day",
+            "points": [
+              {"accounts": 0, "date": "2026-11-06"},
+              {"accounts": 0, "date": "2026-11-07"},
+              {"accounts": 0, "date": "2026-11-08"},
+              {"accounts": 0, "date": "2026-11-09"},
+              {"accounts": 1, "date": "2026-11-10"},
+              {"accounts": 0, "date": "2026-11-11"},
+              {"accounts": 1, "date": "2026-11-12"}
+            ],
+            "scope": "calendar_7_days",
+            "since": "2026-11-05T16:00:00+00:00",
+            "source": "course_miniapp_events: recorded lesson/practice activity",
+            "through": "2026-11-12T12:00:00+00:00",
+            "timezone": "Asia/Shanghai"
+          },
+          "blocked_current": 0,
+          "bot_blocked": 0,
+          "expiring_pro": 1,
+          "new_accounts": 1,
+          "paying_accounts": 1,
+          "payments_by_status": {
+            "approved": 5,
+            "pending": 1,
+            "rejected": 0
+          },
+          "pending_current": 1,
+          "users_total": 3
+        },
+        "platform_counts_overlap": true,
+        "scope": {
+          "active_accounts": "selected period or rolling 30 days",
+          "bot_blocked": "currently bot-blocked, last block in selected period (all_time: current)",
+          "current_counts": "snapshot as of generated_at; action/profile/payment reads remain live",
+          "expiring_pro": "paid entitlement; ends within next three days",
+          "payments": "reviewed_at or submitted_at; through generated_at"
+        },
+        "source": "users + payments + canonical learning events",
+        "timezone": "Asia/Shanghai"
+      },
+      "scopes": [
+        "home:overall:weekly"
+      ]
+    },
+    {
+      "response": {
+        "available": true,
+        "metrics": {
+          "active_accounts": 2,
+          "active_pro": 1,
+          "active_today": 1,
+          "activity": {
+            "grain": "distinct canonical learning accounts per calendar day",
+            "points": [
+              {"accounts": 0, "date": "2026-10-14"},
+              {"accounts": 0, "date": "2026-10-15"},
+              {"accounts": 0, "date": "2026-10-16"},
+              {"accounts": 0, "date": "2026-10-17"},
+              {"accounts": 0, "date": "2026-10-18"},
+              {"accounts": 0, "date": "2026-10-19"},
+              {"accounts": 0, "date": "2026-10-20"},
+              {"accounts": 0, "date": "2026-10-21"},
+              {"accounts": 0, "date": "2026-10-22"},
+              {"accounts": 0, "date": "2026-10-23"},
+              {"accounts": 0, "date": "2026-10-24"},
+              {"accounts": 0, "date": "2026-10-25"},
+              {"accounts": 0, "date": "2026-10-26"},
+              {"accounts": 0, "date": "2026-10-27"},
+              {"accounts": 0, "date": "2026-10-28"},
+              {"accounts": 0, "date": "2026-10-29"},
+              {"accounts": 0, "date": "2026-10-30"},
+              {"accounts": 0, "date": "2026-10-31"},
+              {"accounts": 0, "date": "2026-11-01"},
+              {"accounts": 1, "date": "2026-11-02"},
+              {"accounts": 1, "date": "2026-11-03"},
+              {"accounts": 0, "date": "2026-11-04"},
+              {"accounts": 0, "date": "2026-11-05"},
+              {"accounts": 0, "date": "2026-11-06"},
+              {"accounts": 0, "date": "2026-11-07"},
+              {"accounts": 0, "date": "2026-11-08"},
+              {"accounts": 0, "date": "2026-11-09"},
+              {"accounts": 1, "date": "2026-11-10"},
+              {"accounts": 0, "date": "2026-11-11"},
+              {"accounts": 1, "date": "2026-11-12"}
+            ],
+            "scope": "calendar_30_days",
+            "since": "2026-10-13T16:00:00+00:00",
+            "source": "course_miniapp_events: recorded lesson/practice activity",
+            "through": "2026-11-12T12:00:00+00:00",
+            "timezone": "Asia/Shanghai"
+          },
+          "blocked_current": 0,
+          "bot_blocked": 1,
+          "expiring_pro": 1,
+          "new_accounts": 2,
+          "paying_accounts": 2,
+          "payments_by_status": {
+            "approved": 6,
+            "pending": 1,
+            "rejected": 0
+          },
+          "pending_current": 1,
+          "users_total": 3
+        },
+        "platform_counts_overlap": true,
+        "scope": {
+          "active_accounts": "selected period or rolling 30 days",
+          "bot_blocked": "currently bot-blocked, last block in selected period (all_time: current)",
+          "current_counts": "snapshot as of generated_at; action/profile/payment reads remain live",
+          "expiring_pro": "paid entitlement; ends within next three days",
+          "payments": "reviewed_at or submitted_at; through generated_at"
+        },
+        "source": "users + payments + canonical learning events",
+        "timezone": "Asia/Shanghai"
+      },
+      "scopes": [
+        "home:overall:monthly"
+      ]
+    },
+    {
+      "response": {
+        "available": true,
+        "metrics": {
+          "active_accounts": 2,
+          "active_pro": 1,
+          "active_today": 1,
+          "activity": {
+            "grain": "distinct canonical learning accounts per calendar day",
+            "points": [
+              {"accounts": 0, "date": "2026-10-14"},
+              {"accounts": 0, "date": "2026-10-15"},
+              {"accounts": 0, "date": "2026-10-16"},
+              {"accounts": 0, "date": "2026-10-17"},
+              {"accounts": 0, "date": "2026-10-18"},
+              {"accounts": 0, "date": "2026-10-19"},
+              {"accounts": 0, "date": "2026-10-20"},
+              {"accounts": 0, "date": "2026-10-21"},
+              {"accounts": 0, "date": "2026-10-22"},
+              {"accounts": 0, "date": "2026-10-23"},
+              {"accounts": 0, "date": "2026-10-24"},
+              {"accounts": 0, "date": "2026-10-25"},
+              {"accounts": 0, "date": "2026-10-26"},
+              {"accounts": 0, "date": "2026-10-27"},
+              {"accounts": 0, "date": "2026-10-28"},
+              {"accounts": 0, "date": "2026-10-29"},
+              {"accounts": 0, "date": "2026-10-30"},
+              {"accounts": 0, "date": "2026-10-31"},
+              {"accounts": 0, "date": "2026-11-01"},
+              {"accounts": 1, "date": "2026-11-02"},
+              {"accounts": 1, "date": "2026-11-03"},
+              {"accounts": 0, "date": "2026-11-04"},
+              {"accounts": 0, "date": "2026-11-05"},
+              {"accounts": 0, "date": "2026-11-06"},
+              {"accounts": 0, "date": "2026-11-07"},
+              {"accounts": 0, "date": "2026-11-08"},
+              {"accounts": 0, "date": "2026-11-09"},
+              {"accounts": 1, "date": "2026-11-10"},
+              {"accounts": 0, "date": "2026-11-11"},
+              {"accounts": 1, "date": "2026-11-12"}
+            ],
+            "scope": "calendar_30_days",
+            "since": "2026-10-13T16:00:00+00:00",
+            "source": "course_miniapp_events: recorded lesson/practice activity",
+            "through": "2026-11-12T12:00:00+00:00",
+            "timezone": "Asia/Shanghai"
+          },
+          "blocked_current": 0,
+          "bot_blocked": 1,
+          "expiring_pro": 1,
+          "new_accounts": 3,
+          "paying_accounts": 3,
+          "payments_by_status": {
+            "approved": 7,
+            "pending": 1,
+            "rejected": 0
+          },
+          "pending_current": 1,
+          "users_total": 3
+        },
+        "platform_counts_overlap": true,
+        "scope": {
+          "active_accounts": "selected period or rolling 30 days",
+          "bot_blocked": "currently bot-blocked, last block in selected period (all_time: current)",
+          "current_counts": "snapshot as of generated_at; action/profile/payment reads remain live",
+          "expiring_pro": "paid entitlement; ends within next three days",
+          "payments": "reviewed_at or submitted_at; through generated_at"
+        },
+        "source": "users + payments + canonical learning events",
+        "timezone": "Asia/Shanghai"
+      },
+      "scopes": [
+        "home:overall:all_time"
+      ]
+    },
+    {
+      "response": {
+        "available": true,
+        "metrics": {
+          "desktop_detail_limited": false,
+          "iphone_pwa_available": false,
+          "overlap": true,
+          "platforms": [
+            {"accounts": 1, "foreground_accounts_30d": 1, "platform": "telegram"}
+          ],
+          "scope": "current nonrevoked linked-device inventory; foreground proof rolling 1/7/30 days; Mini App last foreground presence",
+          "versions": [],
+          "versions_scope": "top 12 current version groups per native platform; remaining groups omitted"
+        },
+        "platform_counts_overlap": true,
+        "scope": {
+          "period_filter_applied": false
+        },
+        "source": "first-party stored aggregate projections",
+        "timezone": "Asia/Shanghai"
+      },
+      "scopes": [
+        "home:telegram:weekly",
+        "home:telegram:monthly",
+        "home:telegram:all_time",
+        "overview:telegram:weekly",
+        "overview:telegram:monthly",
+        "overview:telegram:all_time",
+        "platform:telegram:weekly",
+        "platform:telegram:monthly",
+        "platform:telegram:all_time"
+      ]
+    },
+    {
+      "response": {
+        "available": true,
+        "metrics": {
+          "desktop_detail_limited": false,
+          "iphone_pwa_available": false,
+          "overlap": true,
+          "platforms": [
+            {
+              "accounts": 2,
+              "active_dau": 1,
+              "active_mau": 1,
+              "active_wau": 1,
+              "devices": 3,
+              "online_devices_30d": 2,
+              "platform": "android"
+            }
+          ],
+          "scope": "current nonrevoked linked-device inventory; foreground proof rolling 1/7/30 days; Mini App last foreground presence",
+          "versions": [
+            {"accounts": 1, "devices": 2, "platform": "android", "version": "1.2.3"},
+            {"accounts": 1, "devices": 1, "platform": "android", "version": "1.1.0"}
+          ],
+          "versions_scope": "top 12 current version groups per native platform; remaining groups omitted"
+        },
+        "platform_counts_overlap": true,
+        "scope": {
+          "period_filter_applied": false
+        },
+        "source": "first-party stored aggregate projections",
+        "timezone": "Asia/Shanghai"
+      },
+      "scopes": [
+        "home:android:weekly",
+        "home:android:monthly",
+        "home:android:all_time",
+        "overview:android:weekly",
+        "overview:android:monthly",
+        "overview:android:all_time",
+        "platform:android:weekly",
+        "platform:android:monthly",
+        "platform:android:all_time"
+      ]
+    },
+    {
+      "response": {
+        "available": true,
+        "metrics": {
+          "desktop_detail_limited": false,
+          "iphone_pwa_available": false,
+          "overlap": true,
+          "platforms": [
+            {
+              "accounts": 1,
+              "active_dau": 0,
+              "active_mau": 1,
+              "active_wau": 0,
+              "devices": 1,
+              "online_devices_30d": 1,
+              "platform": "macos"
+            }
+          ],
+          "scope": "current nonrevoked linked-device inventory; foreground proof rolling 1/7/30 days; Mini App last foreground presence",
+          "versions": [
+            {"accounts": 1, "devices": 1, "platform": "macos", "version": "2.0.1"}
+          ],
+          "versions_scope": "top 12 current version groups per native platform; remaining groups omitted"
+        },
+        "platform_counts_overlap": true,
+        "scope": {
+          "period_filter_applied": false
+        },
+        "source": "first-party stored aggregate projections",
+        "timezone": "Asia/Shanghai"
+      },
+      "scopes": [
+        "home:macos:weekly",
+        "home:macos:monthly",
+        "home:macos:all_time",
+        "overview:macos:weekly",
+        "overview:macos:monthly",
+        "overview:macos:all_time",
+        "platform:macos:weekly",
+        "platform:macos:monthly",
+        "platform:macos:all_time"
+      ]
+    },
+    {
+      "response": {
+        "available": true,
+        "metrics": {
+          "desktop_detail_limited": false,
+          "iphone_pwa_available": false,
+          "overlap": true,
+          "platforms": [
+            {
+              "accounts": 1,
+              "active_dau": 0,
+              "active_mau": 1,
+              "active_wau": 0,
+              "devices": 1,
+              "online_devices_30d": 0,
+              "platform": "windows"
+            }
+          ],
+          "scope": "current nonrevoked linked-device inventory; foreground proof rolling 1/7/30 days; Mini App last foreground presence",
+          "versions": [
+            {"accounts": 1, "devices": 1, "platform": "windows", "version": "2.0.2"}
+          ],
+          "versions_scope": "top 12 current version groups per native platform; remaining groups omitted"
+        },
+        "platform_counts_overlap": true,
+        "scope": {
+          "period_filter_applied": false
+        },
+        "source": "first-party stored aggregate projections",
+        "timezone": "Asia/Shanghai"
+      },
+      "scopes": [
+        "home:windows:weekly",
+        "home:windows:monthly",
+        "home:windows:all_time",
+        "overview:windows:weekly",
+        "overview:windows:monthly",
+        "overview:windows:all_time",
+        "platform:windows:weekly",
+        "platform:windows:monthly",
+        "platform:windows:all_time"
+      ]
+    },
+    {
+      "response": {
+        "available": false,
+        "metrics": null,
+        "platform_counts_overlap": true,
+        "reason": "not_instrumented",
+        "scope": {},
+        "source": "first-party stored aggregate projections",
+        "timezone": "Asia/Shanghai"
+      },
+      "scopes": [
+        "home:iphone_pwa:weekly",
+        "home:iphone_pwa:monthly",
+        "home:iphone_pwa:all_time",
+        "overview:iphone_pwa:weekly",
+        "overview:iphone_pwa:monthly",
+        "overview:iphone_pwa:all_time",
+        "platform:iphone_pwa:weekly",
+        "platform:iphone_pwa:monthly",
+        "platform:iphone_pwa:all_time",
+        "report:iphone_pwa:weekly",
+        "report:iphone_pwa:monthly",
+        "report:iphone_pwa:all_time"
+      ]
+    },
+    {
+      "response": {
+        "available": true,
+        "metrics": {
+          "active_accounts": 1,
+          "active_pro": 1,
+          "active_today": 1,
+          "activity": {
+            "grain": "distinct canonical learning accounts per calendar day",
+            "points": [
+              {"accounts": 0, "date": "2026-11-06"},
+              {"accounts": 0, "date": "2026-11-07"},
+              {"accounts": 0, "date": "2026-11-08"},
+              {"accounts": 0, "date": "2026-11-09"},
+              {"accounts": 1, "date": "2026-11-10"},
+              {"accounts": 0, "date": "2026-11-11"},
+              {"accounts": 1, "date": "2026-11-12"}
+            ],
+            "scope": "calendar_7_days",
+            "since": "2026-11-05T16:00:00+00:00",
+            "source": "course_miniapp_events: recorded lesson/practice activity",
+            "through": "2026-11-12T12:00:00+00:00",
+            "timezone": "Asia/Shanghai"
+          },
+          "blocked_current": 0,
+          "bot_blocked": 0,
+          "course_engagement": {
+            "completed_accounts": 1,
+            "engaged_accounts": 1,
+            "started_accounts": 1
+          },
+          "expiring_pro": 1,
+          "languages": [
+            {"accounts": 1, "key": "uz"},
+            {"accounts": 1, "key": "ru"},
+            {"accounts": 1, "key": "tj"}
+          ],
+          "levels": [
+            {"accounts": 2, "key": "hsk1"},
+            {"accounts": 1, "key": "nhsk2"}
+          ],
+          "new_accounts": 1,
+          "paying_accounts": 1,
+          "payments_by_status": {
+            "approved": 5,
+            "pending": 1,
+            "rejected": 0
+          },
+          "pending_current": 1,
+          "users_total": 3
+        },
+        "platform_counts_overlap": true,
+        "scope": {
+          "active_accounts": "selected period or rolling 30 days",
+          "bot_blocked": "currently bot-blocked, last block in selected period (all_time: current)",
+          "current_counts": "snapshot as of generated_at; action/profile/payment reads remain live",
+          "expiring_pro": "paid entitlement; ends within next three days",
+          "payments": "reviewed_at or submitted_at; through generated_at"
+        },
+        "source": "users + payments + canonical learning events",
+        "timezone": "Asia/Shanghai"
+      },
+      "scopes": [
+        "overview:overall:weekly"
+      ]
+    },
+    {
+      "response": {
+        "available": true,
+        "metrics": {
+          "active_accounts": 2,
+          "active_pro": 1,
+          "active_today": 1,
+          "activity": {
+            "grain": "distinct canonical learning accounts per calendar day",
+            "points": [
+              {"accounts": 0, "date": "2026-10-14"},
+              {"accounts": 0, "date": "2026-10-15"},
+              {"accounts": 0, "date": "2026-10-16"},
+              {"accounts": 0, "date": "2026-10-17"},
+              {"accounts": 0, "date": "2026-10-18"},
+              {"accounts": 0, "date": "2026-10-19"},
+              {"accounts": 0, "date": "2026-10-20"},
+              {"accounts": 0, "date": "2026-10-21"},
+              {"accounts": 0, "date": "2026-10-22"},
+              {"accounts": 0, "date": "2026-10-23"},
+              {"accounts": 0, "date": "2026-10-24"},
+              {"accounts": 0, "date": "2026-10-25"},
+              {"accounts": 0, "date": "2026-10-26"},
+              {"accounts": 0, "date": "2026-10-27"},
+              {"accounts": 0, "date": "2026-10-28"},
+              {"accounts": 0, "date": "2026-10-29"},
+              {"accounts": 0, "date": "2026-10-30"},
+              {"accounts": 0, "date": "2026-10-31"},
+              {"accounts": 0, "date": "2026-11-01"},
+              {"accounts": 1, "date": "2026-11-02"},
+              {"accounts": 1, "date": "2026-11-03"},
+              {"accounts": 0, "date": "2026-11-04"},
+              {"accounts": 0, "date": "2026-11-05"},
+              {"accounts": 0, "date": "2026-11-06"},
+              {"accounts": 0, "date": "2026-11-07"},
+              {"accounts": 0, "date": "2026-11-08"},
+              {"accounts": 0, "date": "2026-11-09"},
+              {"accounts": 1, "date": "2026-11-10"},
+              {"accounts": 0, "date": "2026-11-11"},
+              {"accounts": 1, "date": "2026-11-12"}
+            ],
+            "scope": "calendar_30_days",
+            "since": "2026-10-13T16:00:00+00:00",
+            "source": "course_miniapp_events: recorded lesson/practice activity",
+            "through": "2026-11-12T12:00:00+00:00",
+            "timezone": "Asia/Shanghai"
+          },
+          "blocked_current": 0,
+          "bot_blocked": 1,
+          "course_engagement": {
+            "completed_accounts": 2,
+            "engaged_accounts": 2,
+            "started_accounts": 1
+          },
+          "expiring_pro": 1,
+          "languages": [
+            {"accounts": 1, "key": "uz"},
+            {"accounts": 1, "key": "ru"},
+            {"accounts": 1, "key": "tj"}
+          ],
+          "levels": [
+            {"accounts": 2, "key": "hsk1"},
+            {"accounts": 1, "key": "nhsk2"}
+          ],
+          "new_accounts": 2,
+          "paying_accounts": 2,
+          "payments_by_status": {
+            "approved": 6,
+            "pending": 1,
+            "rejected": 0
+          },
+          "pending_current": 1,
+          "users_total": 3
+        },
+        "platform_counts_overlap": true,
+        "scope": {
+          "active_accounts": "selected period or rolling 30 days",
+          "bot_blocked": "currently bot-blocked, last block in selected period (all_time: current)",
+          "current_counts": "snapshot as of generated_at; action/profile/payment reads remain live",
+          "expiring_pro": "paid entitlement; ends within next three days",
+          "payments": "reviewed_at or submitted_at; through generated_at"
+        },
+        "source": "users + payments + canonical learning events",
+        "timezone": "Asia/Shanghai"
+      },
+      "scopes": [
+        "overview:overall:monthly"
+      ]
+    },
+    {
+      "response": {
+        "available": true,
+        "metrics": {
+          "active_accounts": 2,
+          "active_pro": 1,
+          "active_today": 1,
+          "activity": {
+            "grain": "distinct canonical learning accounts per calendar day",
+            "points": [
+              {"accounts": 0, "date": "2026-10-14"},
+              {"accounts": 0, "date": "2026-10-15"},
+              {"accounts": 0, "date": "2026-10-16"},
+              {"accounts": 0, "date": "2026-10-17"},
+              {"accounts": 0, "date": "2026-10-18"},
+              {"accounts": 0, "date": "2026-10-19"},
+              {"accounts": 0, "date": "2026-10-20"},
+              {"accounts": 0, "date": "2026-10-21"},
+              {"accounts": 0, "date": "2026-10-22"},
+              {"accounts": 0, "date": "2026-10-23"},
+              {"accounts": 0, "date": "2026-10-24"},
+              {"accounts": 0, "date": "2026-10-25"},
+              {"accounts": 0, "date": "2026-10-26"},
+              {"accounts": 0, "date": "2026-10-27"},
+              {"accounts": 0, "date": "2026-10-28"},
+              {"accounts": 0, "date": "2026-10-29"},
+              {"accounts": 0, "date": "2026-10-30"},
+              {"accounts": 0, "date": "2026-10-31"},
+              {"accounts": 0, "date": "2026-11-01"},
+              {"accounts": 1, "date": "2026-11-02"},
+              {"accounts": 1, "date": "2026-11-03"},
+              {"accounts": 0, "date": "2026-11-04"},
+              {"accounts": 0, "date": "2026-11-05"},
+              {"accounts": 0, "date": "2026-11-06"},
+              {"accounts": 0, "date": "2026-11-07"},
+              {"accounts": 0, "date": "2026-11-08"},
+              {"accounts": 0, "date": "2026-11-09"},
+              {"accounts": 1, "date": "2026-11-10"},
+              {"accounts": 0, "date": "2026-11-11"},
+              {"accounts": 1, "date": "2026-11-12"}
+            ],
+            "scope": "calendar_30_days",
+            "since": "2026-10-13T16:00:00+00:00",
+            "source": "course_miniapp_events: recorded lesson/practice activity",
+            "through": "2026-11-12T12:00:00+00:00",
+            "timezone": "Asia/Shanghai"
+          },
+          "blocked_current": 0,
+          "bot_blocked": 1,
+          "course_engagement": {
+            "completed_accounts": 3,
+            "engaged_accounts": 3,
+            "started_accounts": 1
+          },
+          "expiring_pro": 1,
+          "languages": [
+            {"accounts": 1, "key": "uz"},
+            {"accounts": 1, "key": "ru"},
+            {"accounts": 1, "key": "tj"}
+          ],
+          "levels": [
+            {"accounts": 2, "key": "hsk1"},
+            {"accounts": 1, "key": "nhsk2"}
+          ],
+          "new_accounts": 3,
+          "paying_accounts": 3,
+          "payments_by_status": {
+            "approved": 7,
+            "pending": 1,
+            "rejected": 0
+          },
+          "pending_current": 1,
+          "users_total": 3
+        },
+        "platform_counts_overlap": true,
+        "scope": {
+          "active_accounts": "selected period or rolling 30 days",
+          "bot_blocked": "currently bot-blocked, last block in selected period (all_time: current)",
+          "current_counts": "snapshot as of generated_at; action/profile/payment reads remain live",
+          "expiring_pro": "paid entitlement; ends within next three days",
+          "payments": "reviewed_at or submitted_at; through generated_at"
+        },
+        "source": "users + payments + canonical learning events",
+        "timezone": "Asia/Shanghai"
+      },
+      "scopes": [
+        "overview:overall:all_time"
+      ]
+    },
+    {
+      "response": {
+        "available": true,
+        "metrics": {
+          "activation": {
+            "eligible": 2,
+            "percent": 50.0,
+            "started": 1
+          },
+          "ai_usage": {
+            "estimated_cost_usd": 0.25,
+            "recorded_requests": 1,
+            "tokens": 120
+          },
+          "chat": {
+            "accounts": 1,
+            "average": 1.0,
+            "messages": 1
+          },
+          "completed_user_lessons": 1,
+          "course_engagement": {
+            "completed_accounts": 1,
+            "engaged_accounts": 1,
+            "started_accounts": 1,
+            "unmatched_events": 1
+          },
+          "detail_limited": false,
+          "detail_row_limit": 5000,
+          "detail_since": "2026-11-05T12:00:00+00:00",
+          "direct_activation": {
+            "eligible": 1,
+            "percent": 100.0,
+            "started": 1
+          },
+          "feature_denominators": {
+            "free": 2,
+            "paid": 1
+          },
+          "features": [
+            {"free": 0, "key": "lessons", "paid": 1},
+            {"free": 0, "key": "tests", "paid": 0},
+            {"free": 0, "key": "practice", "paid": 1},
+            {"free": 0, "key": "mistakes", "paid": 1},
+            {"free": 0, "key": "ai", "paid": 1},
+            {"free": 1, "key": "voice", "paid": 1}
+          ],
+          "foundation": {
+            "checkpoint": {
+              "eligible": 0,
+              "percent": null,
+              "reached": 0
+            },
+            "completed_users": 1,
+            "completion_percent": 100.0,
+            "first_attempt": {
+              "correct": 0,
+              "objectives": 0,
+              "percent": null
+            },
+            "parts": [
+              {"completed_users": 0, "part": 1},
+              {"completed_users": 0, "part": 2},
+              {"completed_users": 0, "part": 3}
+            ],
+            "started_users": 1
+          },
+          "lesson_seconds": 240,
+          "registration_conversion": {
+            "converted_accounts": 1,
+            "percent": 100.0,
+            "registered_accounts": 1
+          },
+          "retention": {
+            "d1": {
+              "cohort_end": "2026-11-10T12:00:00+00:00",
+              "cohort_start": "2026-11-03T12:00:00+00:00",
+              "eligible": 1,
+              "percent": 100.0,
+              "returned": 1
+            },
+            "d7": {
+              "cohort_end": "2026-11-04T12:00:00+00:00",
+              "cohort_start": "2026-10-28T12:00:00+00:00",
+              "eligible": 1,
+              "percent": 100.0,
+              "returned": 1
+            }
+          },
+          "session_seconds": 210,
+          "sessions": 4,
+          "timed_lessons": 1,
+          "voice_minutes": 2.0
+        },
+        "platform_counts_overlap": true,
+        "scope": {},
+        "source": "first-party stored aggregate projections",
+        "timezone": "Asia/Shanghai"
+      },
+      "scopes": [
+        "course:overall:weekly"
+      ]
+    },
+    {
+      "response": {
+        "available": true,
+        "metrics": {
+          "activation": {
+            "eligible": 2,
+            "percent": 50.0,
+            "started": 1
+          },
+          "ai_usage": {
+            "estimated_cost_usd": 0.35,
+            "recorded_requests": 2,
+            "tokens": 160
+          },
+          "chat": {
+            "accounts": 1,
+            "average": 1.0,
+            "messages": 1
+          },
+          "completed_user_lessons": 2,
+          "course_engagement": {
+            "completed_accounts": 2,
+            "engaged_accounts": 2,
+            "started_accounts": 1,
+            "unmatched_events": 1
+          },
+          "detail_limited": false,
+          "detail_row_limit": 5000,
+          "detail_since": "2026-10-13T12:00:00+00:00",
+          "direct_activation": {
+            "eligible": 1,
+            "percent": 100.0,
+            "started": 1
+          },
+          "feature_denominators": {
+            "free": 2,
+            "paid": 1
+          },
+          "features": [
+            {"free": 0, "key": "lessons", "paid": 1},
+            {"free": 1, "key": "tests", "paid": 0},
+            {"free": 0, "key": "practice", "paid": 1},
+            {"free": 0, "key": "mistakes", "paid": 1},
+            {"free": 0, "key": "ai", "paid": 1},
+            {"free": 1, "key": "voice", "paid": 1}
+          ],
+          "foundation": {
+            "checkpoint": {
+              "eligible": 0,
+              "percent": null,
+              "reached": 0
+            },
+            "completed_users": 1,
+            "completion_percent": 50.0,
+            "first_attempt": {
+              "correct": 0,
+              "objectives": 0,
+              "percent": null
+            },
+            "parts": [
+              {"completed_users": 0, "part": 1},
+              {"completed_users": 0, "part": 2},
+              {"completed_users": 0, "part": 3}
+            ],
+            "started_users": 2
+          },
+          "lesson_seconds": 240,
+          "registration_conversion": {
+            "converted_accounts": 2,
+            "percent": 100.0,
+            "registered_accounts": 2
+          },
+          "retention": {
+            "d1": {
+              "cohort_end": "2026-11-10T12:00:00+00:00",
+              "cohort_start": "2026-10-11T12:00:00+00:00",
+              "eligible": 2,
+              "percent": 50.0,
+              "returned": 1
+            },
+            "d7": {
+              "cohort_end": "2026-11-04T12:00:00+00:00",
+              "cohort_start": "2026-10-05T12:00:00+00:00",
+              "eligible": 1,
+              "percent": 100.0,
+              "returned": 1
+            }
+          },
+          "session_seconds": 210,
+          "sessions": 4,
+          "timed_lessons": 1,
+          "voice_minutes": 2.0
+        },
+        "platform_counts_overlap": true,
+        "scope": {},
+        "source": "first-party stored aggregate projections",
+        "timezone": "Asia/Shanghai"
+      },
+      "scopes": [
+        "course:overall:monthly"
+      ]
+    },
+    {
+      "response": {
+        "available": true,
+        "metrics": {
+          "activation": {
+            "eligible": 2,
+            "percent": 50.0,
+            "started": 1
+          },
+          "ai_usage": {
+            "estimated_cost_usd": 0.35,
+            "recorded_requests": 3,
+            "tokens": 172
+          },
+          "chat": {
+            "accounts": 1,
+            "average": 1.0,
+            "messages": 1
+          },
+          "completed_user_lessons": 3,
+          "course_engagement": {
+            "completed_accounts": 3,
+            "engaged_accounts": 3,
+            "started_accounts": 1,
+            "unmatched_events": 1
+          },
+          "detail_limited": false,
+          "detail_row_limit": 5000,
+          "detail_since": "2026-10-13T12:00:00+00:00",
+          "direct_activation": {
+            "eligible": 1,
+            "percent": 100.0,
+            "started": 1
+          },
+          "feature_denominators": {
+            "free": 2,
+            "paid": 1
+          },
+          "features": [
+            {"free": 0, "key": "lessons", "paid": 1},
+            {"free": 1, "key": "tests", "paid": 0},
+            {"free": 0, "key": "practice", "paid": 1},
+            {"free": 0, "key": "mistakes", "paid": 1},
+            {"free": 0, "key": "ai", "paid": 1},
+            {"free": 1, "key": "voice", "paid": 1}
+          ],
+          "foundation": {
+            "checkpoint": {
+              "eligible": 0,
+              "percent": null,
+              "reached": 0
+            },
+            "completed_users": 1,
+            "completion_percent": 50.0,
+            "first_attempt": {
+              "correct": 0,
+              "objectives": 0,
+              "percent": null
+            },
+            "parts": [
+              {"completed_users": 0, "part": 1},
+              {"completed_users": 0, "part": 2},
+              {"completed_users": 0, "part": 3}
+            ],
+            "started_users": 2
+          },
+          "lesson_seconds": 240,
+          "registration_conversion": {
+            "converted_accounts": 3,
+            "percent": 100.0,
+            "registered_accounts": 3
+          },
+          "retention": {
+            "d1": {
+              "cohort_end": "2026-11-10T12:00:00+00:00",
+              "cohort_start": null,
+              "eligible": 3,
+              "percent": 33.33,
+              "returned": 1
+            },
+            "d7": {
+              "cohort_end": "2026-11-04T12:00:00+00:00",
+              "cohort_start": null,
+              "eligible": 2,
+              "percent": 50.0,
+              "returned": 1
+            }
+          },
+          "session_seconds": 210,
+          "sessions": 4,
+          "timed_lessons": 1,
+          "voice_minutes": 2.0
+        },
+        "platform_counts_overlap": true,
+        "scope": {},
+        "source": "first-party stored aggregate projections",
+        "timezone": "Asia/Shanghai"
+      },
+      "scopes": [
+        "course:overall:all_time"
+      ]
+    },
+    {
+      "response": {
+        "available": false,
+        "metrics": null,
+        "platform_counts_overlap": true,
+        "reason": "attribution_not_audited",
+        "scope": {},
+        "source": "first-party stored aggregate projections",
+        "timezone": "Asia/Shanghai"
+      },
+      "scopes": [
+        "course:telegram:weekly",
+        "course:telegram:monthly",
+        "course:telegram:all_time",
+        "course:android:weekly",
+        "course:android:monthly",
+        "course:android:all_time",
+        "course:macos:weekly",
+        "course:macos:monthly",
+        "course:macos:all_time",
+        "course:windows:weekly",
+        "course:windows:monthly",
+        "course:windows:all_time",
+        "course:iphone_pwa:weekly",
+        "course:iphone_pwa:monthly",
+        "course:iphone_pwa:all_time",
+        "funnel:telegram:weekly",
+        "funnel:telegram:monthly",
+        "funnel:telegram:all_time",
+        "funnel:android:weekly",
+        "funnel:android:monthly",
+        "funnel:android:all_time",
+        "funnel:macos:weekly",
+        "funnel:macos:monthly",
+        "funnel:macos:all_time",
+        "funnel:windows:weekly",
+        "funnel:windows:monthly",
+        "funnel:windows:all_time",
+        "funnel:iphone_pwa:weekly",
+        "funnel:iphone_pwa:monthly",
+        "funnel:iphone_pwa:all_time",
+        "money:telegram:weekly",
+        "money:telegram:monthly",
+        "money:telegram:all_time",
+        "money:android:weekly",
+        "money:android:monthly",
+        "money:android:all_time",
+        "money:macos:weekly",
+        "money:macos:monthly",
+        "money:macos:all_time",
+        "money:windows:weekly",
+        "money:windows:monthly",
+        "money:windows:all_time",
+        "money:iphone_pwa:weekly",
+        "money:iphone_pwa:monthly",
+        "money:iphone_pwa:all_time",
+        "sources:telegram:weekly",
+        "sources:telegram:monthly",
+        "sources:telegram:all_time",
+        "sources:android:weekly",
+        "sources:android:monthly",
+        "sources:android:all_time",
+        "sources:macos:weekly",
+        "sources:macos:monthly",
+        "sources:macos:all_time",
+        "sources:windows:weekly",
+        "sources:windows:monthly",
+        "sources:windows:all_time",
+        "sources:iphone_pwa:weekly",
+        "sources:iphone_pwa:monthly",
+        "sources:iphone_pwa:all_time",
+        "experiments:telegram:weekly",
+        "experiments:telegram:monthly",
+        "experiments:telegram:all_time",
+        "experiments:android:weekly",
+        "experiments:android:monthly",
+        "experiments:android:all_time",
+        "experiments:macos:weekly",
+        "experiments:macos:monthly",
+        "experiments:macos:all_time",
+        "experiments:windows:weekly",
+        "experiments:windows:monthly",
+        "experiments:windows:all_time",
+        "experiments:iphone_pwa:weekly",
+        "experiments:iphone_pwa:monthly",
+        "experiments:iphone_pwa:all_time"
+      ]
+    },
+    {
+      "response": {
+        "available": true,
+        "metrics": {
+          "desktop_detail_limited": false,
+          "iphone_pwa_available": false,
+          "overlap": true,
+          "platforms": [
+            {
+              "accounts": 2,
+              "active_dau": 1,
+              "active_mau": 1,
+              "active_wau": 1,
+              "devices": 3,
+              "online_devices_30d": 2,
+              "platform": "android"
+            },
+            {
+              "accounts": 1,
+              "active_dau": 0,
+              "active_mau": 1,
+              "active_wau": 0,
+              "devices": 1,
+              "online_devices_30d": 1,
+              "platform": "macos"
+            },
+            {
+              "accounts": 1,
+              "active_dau": 0,
+              "active_mau": 1,
+              "active_wau": 0,
+              "devices": 1,
+              "online_devices_30d": 0,
+              "platform": "windows"
+            },
+            {"accounts": 1, "foreground_accounts_30d": 1, "platform": "telegram"}
+          ],
+          "scope": "current nonrevoked linked-device inventory; foreground proof rolling 1/7/30 days; Mini App last foreground presence",
+          "versions": [
+            {"accounts": 1, "devices": 2, "platform": "android", "version": "1.2.3"},
+            {"accounts": 1, "devices": 1, "platform": "android", "version": "1.1.0"},
+            {"accounts": 1, "devices": 1, "platform": "macos", "version": "2.0.1"},
+            {"accounts": 1, "devices": 1, "platform": "windows", "version": "2.0.2"}
+          ],
+          "versions_scope": "top 12 current version groups per native platform; remaining groups omitted"
+        },
+        "platform_counts_overlap": true,
+        "scope": {
+          "period_filter_applied": false
+        },
+        "source": "first-party stored aggregate projections",
+        "timezone": "Asia/Shanghai"
+      },
+      "scopes": [
+        "platform:overall:weekly",
+        "platform:overall:monthly",
+        "platform:overall:all_time"
+      ]
+    },
+    {
+      "response": {
+        "available": true,
+        "metrics": {
+          "ai_usage": {
+            "estimated_cost_usd": 0.25,
+            "recorded_requests": 1,
+            "tokens": 120
+          },
+          "attempt_funnel": {
+            "attempts": 3,
+            "collecting": false,
+            "drops": [
+              {"from": "checkout_opened", "lost": 0, "percent": 0.0, "to": "payment_instructions_viewed"},
+              {
+                "from": "payment_instructions_viewed",
+                "lost": 0,
+                "percent": 0.0,
+                "to": "payment_receipt_selected"
+              },
+              {
+                "from": "payment_receipt_selected",
+                "lost": 0,
+                "percent": 0.0,
+                "to": "payment_screenshot_submitted"
+              },
+              {"from": "payment_screenshot_submitted", "lost": 0, "percent": 0.0, "to": "payment_approved"}
+            ],
+            "steps": [
+              {"accounts": 1, "key": "checkout_opened"},
+              {"accounts": 1, "key": "payment_instructions_viewed"},
+              {"accounts": 1, "key": "payment_receipt_selected"},
+              {"accounts": 1, "key": "payment_screenshot_submitted"},
+              {"accounts": 1, "key": "payment_approved"}
+            ]
+          },
+          "course_engagement": {
+            "completed_accounts": 1,
+            "engaged_accounts": 1,
+            "started_accounts": 1,
+            "unmatched_events": 1
+          },
+          "registration_conversion": {
+            "converted_accounts": 1,
+            "percent": 100.0,
+            "registered_accounts": 1
+          }
+        },
+        "platform_counts_overlap": true,
+        "scope": {},
+        "source": "first-party stored aggregate projections",
+        "timezone": "Asia/Shanghai"
+      },
+      "scopes": [
+        "funnel:overall:weekly"
+      ]
+    },
+    {
+      "response": {
+        "available": true,
+        "metrics": {
+          "ai_usage": {
+            "estimated_cost_usd": 0.35,
+            "recorded_requests": 2,
+            "tokens": 160
+          },
+          "attempt_funnel": {
+            "attempts": 3,
+            "collecting": false,
+            "drops": [
+              {"from": "checkout_opened", "lost": 0, "percent": 0.0, "to": "payment_instructions_viewed"},
+              {
+                "from": "payment_instructions_viewed",
+                "lost": 0,
+                "percent": 0.0,
+                "to": "payment_receipt_selected"
+              },
+              {
+                "from": "payment_receipt_selected",
+                "lost": 0,
+                "percent": 0.0,
+                "to": "payment_screenshot_submitted"
+              },
+              {"from": "payment_screenshot_submitted", "lost": 0, "percent": 0.0, "to": "payment_approved"}
+            ],
+            "steps": [
+              {"accounts": 1, "key": "checkout_opened"},
+              {"accounts": 1, "key": "payment_instructions_viewed"},
+              {"accounts": 1, "key": "payment_receipt_selected"},
+              {"accounts": 1, "key": "payment_screenshot_submitted"},
+              {"accounts": 1, "key": "payment_approved"}
+            ]
+          },
+          "course_engagement": {
+            "completed_accounts": 2,
+            "engaged_accounts": 2,
+            "started_accounts": 1,
+            "unmatched_events": 1
+          },
+          "registration_conversion": {
+            "converted_accounts": 2,
+            "percent": 100.0,
+            "registered_accounts": 2
+          }
+        },
+        "platform_counts_overlap": true,
+        "scope": {},
+        "source": "first-party stored aggregate projections",
+        "timezone": "Asia/Shanghai"
+      },
+      "scopes": [
+        "funnel:overall:monthly"
+      ]
+    },
+    {
+      "response": {
+        "available": true,
+        "metrics": {
+          "ai_usage": {
+            "estimated_cost_usd": 0.35,
+            "recorded_requests": 3,
+            "tokens": 172
+          },
+          "attempt_funnel": {
+            "attempts": 3,
+            "collecting": false,
+            "drops": [
+              {"from": "checkout_opened", "lost": 0, "percent": 0.0, "to": "payment_instructions_viewed"},
+              {
+                "from": "payment_instructions_viewed",
+                "lost": 0,
+                "percent": 0.0,
+                "to": "payment_receipt_selected"
+              },
+              {
+                "from": "payment_receipt_selected",
+                "lost": 0,
+                "percent": 0.0,
+                "to": "payment_screenshot_submitted"
+              },
+              {"from": "payment_screenshot_submitted", "lost": 0, "percent": 0.0, "to": "payment_approved"}
+            ],
+            "steps": [
+              {"accounts": 1, "key": "checkout_opened"},
+              {"accounts": 1, "key": "payment_instructions_viewed"},
+              {"accounts": 1, "key": "payment_receipt_selected"},
+              {"accounts": 1, "key": "payment_screenshot_submitted"},
+              {"accounts": 1, "key": "payment_approved"}
+            ]
+          },
+          "course_engagement": {
+            "completed_accounts": 3,
+            "engaged_accounts": 3,
+            "started_accounts": 1,
+            "unmatched_events": 1
+          },
+          "registration_conversion": {
+            "converted_accounts": 3,
+            "percent": 100.0,
+            "registered_accounts": 3
+          }
+        },
+        "platform_counts_overlap": true,
+        "scope": {},
+        "source": "first-party stored aggregate projections",
+        "timezone": "Asia/Shanghai"
+      },
+      "scopes": [
+        "funnel:overall:all_time"
+      ]
+    },
+    {
+      "response": {
+        "available": true,
+        "metrics": {
+          "active_denominator": 2,
+          "ai_models": [
+            {"model": "gemini-2.5-flash", "requests": 1, "tier": "paid_estimate", "tokens": 120, "usd": 0.25}
+          ],
+          "ai_requests": 1,
+          "ai_usd": 0.25,
+          "arppu_usd": 18.276,
+          "arpu_usd": 18.276,
+          "average_payment_usd": 7.3104,
+          "canonical_payers": 1,
+          "channels": [
+            {"channel": "lava", "payments": 2, "renewal_payments": 2, "usd": 17.9},
+            {"channel": "manual", "payments": 3, "renewal_payments": 1, "usd": 18.652}
+          ],
+          "currencies": [
+            {"amount": 80, "currency": "TJS", "payments": 1},
+            {"amount": 30, "currency": "USD", "payments": 3}
+          ],
+          "expense_usd": 0.0,
+          "first_payment_seconds": 172800,
+          "first_payments": 2,
+          "grains": {
+            "payer": "canonical account or separate retained orphan history",
+            "renewal": "approved subscription payment after first historical payment; not cohort churn"
+          },
+          "lava": {
+            "active_subscriptions": 2,
+            "cancelled": 0,
+            "chargebacks": 0,
+            "refunded": 0,
+            "renewals": 0
+          },
+          "manual_profit_usd": 4.0,
+          "net_usd": 40.302,
+          "new_paying_accounts": 1,
+          "paying_histories": 2,
+          "payments": 5,
+          "renewal_payments": 3,
+          "renewal_percent": 60.0,
+          "revenue_usd": 36.552,
+          "tagged_cac_usd": null,
+          "tagged_marketing_usd": 0.0,
+          "tokens": 120,
+          "unknown_currency_payments": 1,
+          "unpriced_payments": 1,
+          "usd_basis": {
+            "ai": "stored cost_usd at event write; not provider invoice",
+            "cny_per_usd": 6.8,
+            "estimate": true,
+            "fallback": "stored base_amount TJS",
+            "tjs_per_usd": 9.2464
+          }
+        },
+        "platform_counts_overlap": true,
+        "scope": {},
+        "source": "first-party stored aggregate projections",
+        "timezone": "Asia/Shanghai"
+      },
+      "scopes": [
+        "money:overall:weekly"
+      ]
+    },
+    {
+      "response": {
+        "available": true,
+        "metrics": {
+          "active_denominator": 3,
+          "ai_models": [
+            {"model": "gemini-2.5-flash", "requests": 2, "tier": "paid_estimate", "tokens": 160, "usd": 0.35}
+          ],
+          "ai_requests": 2,
+          "ai_usd": 0.35,
+          "arppu_usd": 15.789,
+          "arpu_usd": 15.789,
+          "average_payment_usd": 7.8945,
+          "canonical_payers": 2,
+          "channels": [
+            {"channel": "lava", "payments": 2, "renewal_payments": 2, "usd": 17.9},
+            {"channel": "manual", "payments": 4, "renewal_payments": 1, "usd": 29.467}
+          ],
+          "currencies": [
+            {"amount": 180, "currency": "TJS", "payments": 2},
+            {"amount": 30, "currency": "USD", "payments": 3}
+          ],
+          "expense_usd": 2.0,
+          "first_payment_seconds": 172800,
+          "first_payments": 3,
+          "grains": {
+            "payer": "canonical account or separate retained orphan history",
+            "renewal": "approved subscription payment after first historical payment; not cohort churn"
+          },
+          "lava": {
+            "active_subscriptions": 2,
+            "cancelled": 0,
+            "chargebacks": 0,
+            "refunded": 1,
+            "renewals": 1
+          },
+          "manual_profit_usd": 4.0,
+          "net_usd": 49.017,
+          "new_paying_accounts": 2,
+          "paying_histories": 3,
+          "payments": 6,
+          "renewal_payments": 3,
+          "renewal_percent": 50.0,
+          "revenue_usd": 47.367,
+          "tagged_cac_usd": 1.0,
+          "tagged_marketing_usd": 2.0,
+          "tokens": 160,
+          "unknown_currency_payments": 1,
+          "unpriced_payments": 1,
+          "usd_basis": {
+            "ai": "stored cost_usd at event write; not provider invoice",
+            "cny_per_usd": 6.8,
+            "estimate": true,
+            "fallback": "stored base_amount TJS",
+            "tjs_per_usd": 9.2464
+          }
+        },
+        "platform_counts_overlap": true,
+        "scope": {},
+        "source": "first-party stored aggregate projections",
+        "timezone": "Asia/Shanghai"
+      },
+      "scopes": [
+        "money:overall:monthly"
+      ]
+    },
+    {
+      "response": {
+        "available": true,
+        "metrics": {
+          "active_denominator": 3,
+          "ai_models": [
+            {"model": "gemini-2.5-flash", "requests": 2, "tier": "paid_estimate", "tokens": 160, "usd": 0.35},
+            {"model": "unknown", "requests": 1, "tier": "unpriced", "tokens": 12, "usd": 0.0}
+          ],
+          "ai_requests": 3,
+          "ai_usd": 0.35,
+          "arppu_usd": 14.3418,
+          "arpu_usd": 19.1223,
+          "average_payment_usd": 8.1953,
+          "canonical_payers": 3,
+          "channels": [
+            {"channel": "lava", "payments": 2, "renewal_payments": 2, "usd": 17.9},
+            {"channel": "manual", "payments": 5, "renewal_payments": 1, "usd": 39.467}
+          ],
+          "currencies": [
+            {"amount": 180, "currency": "TJS", "payments": 2},
+            {"amount": 40, "currency": "USD", "payments": 4}
+          ],
+          "expense_usd": 2.0,
+          "first_payment_seconds": 201600,
+          "first_payments": 4,
+          "grains": {
+            "payer": "canonical account or separate retained orphan history",
+            "renewal": "approved subscription payment after first historical payment; not cohort churn"
+          },
+          "lava": {
+            "active_subscriptions": 2,
+            "cancelled": 0,
+            "chargebacks": 0,
+            "refunded": 1,
+            "renewals": 1
+          },
+          "manual_profit_usd": 4.0,
+          "net_usd": 59.017,
+          "new_paying_accounts": 3,
+          "paying_histories": 4,
+          "payments": 7,
+          "renewal_payments": 3,
+          "renewal_percent": 42.86,
+          "revenue_usd": 57.367,
+          "tagged_cac_usd": 0.6667,
+          "tagged_marketing_usd": 2.0,
+          "tokens": 172,
+          "unknown_currency_payments": 1,
+          "unpriced_payments": 1,
+          "usd_basis": {
+            "ai": "stored cost_usd at event write; not provider invoice",
+            "cny_per_usd": 6.8,
+            "estimate": true,
+            "fallback": "stored base_amount TJS",
+            "tjs_per_usd": 9.2464
+          }
+        },
+        "platform_counts_overlap": true,
+        "scope": {},
+        "source": "first-party stored aggregate projections",
+        "timezone": "Asia/Shanghai"
+      },
+      "scopes": [
+        "money:overall:all_time"
+      ]
+    },
+    {
+      "response": {
+        "available": true,
+        "metrics": {
+          "attribution": [
+            {"payments": 1, "source": "android_subscription", "usd": 8.652},
+            {"payments": 4, "source": "unknown", "usd": 27.9}
+          ],
+          "attribution_basis": "nearest recorded entry at or before payment submission; all prior history; descriptive, not causal",
+          "entries": [
+            {"histories": 1, "source": "android_subscription", "visits": 1},
+            {"histories": 1, "source": "unknown", "visits": 2}
+          ],
+          "traffic": [
+            {"source": "youtube", "visits": 7}
+          ],
+          "traffic_grain": "anonymous tagged public-site visits by UTC calendar visit_day; not users or registrations",
+          "traffic_since": "2026-11-06",
+          "traffic_timezone": "UTC"
+        },
+        "platform_counts_overlap": true,
+        "scope": {},
+        "source": "first-party stored aggregate projections",
+        "timezone": "Asia/Shanghai"
+      },
+      "scopes": [
+        "sources:overall:weekly"
+      ]
+    },
+    {
+      "response": {
+        "available": true,
+        "metrics": {
+          "attribution": [
+            {"payments": 1, "source": "android_subscription", "usd": 8.652},
+            {"payments": 1, "source": "profile", "usd": 10.815},
+            {"payments": 4, "source": "unknown", "usd": 27.9}
+          ],
+          "attribution_basis": "nearest recorded entry at or before payment submission; all prior history; descriptive, not causal",
+          "entries": [
+            {"histories": 1, "source": "android_subscription", "visits": 1},
+            {"histories": 1, "source": "profile", "visits": 1},
+            {"histories": 1, "source": "unknown", "visits": 2}
+          ],
+          "traffic": [
+            {"source": "instagram", "visits": 3},
+            {"source": "youtube", "visits": 7}
+          ],
+          "traffic_grain": "anonymous tagged public-site visits by UTC calendar visit_day; not users or registrations",
+          "traffic_since": "2026-10-14",
+          "traffic_timezone": "UTC"
+        },
+        "platform_counts_overlap": true,
+        "scope": {},
+        "source": "first-party stored aggregate projections",
+        "timezone": "Asia/Shanghai"
+      },
+      "scopes": [
+        "sources:overall:monthly"
+      ]
+    },
+    {
+      "response": {
+        "available": true,
+        "metrics": {
+          "attribution": [
+            {"payments": 1, "source": "android_subscription", "usd": 8.652},
+            {"payments": 1, "source": "profile", "usd": 10.815},
+            {"payments": 5, "source": "unknown", "usd": 37.9}
+          ],
+          "attribution_basis": "nearest recorded entry at or before payment submission; all prior history; descriptive, not causal",
+          "entries": [
+            {"histories": 1, "source": "android_subscription", "visits": 1},
+            {"histories": 1, "source": "profile", "visits": 1},
+            {"histories": 1, "source": "unknown", "visits": 2}
+          ],
+          "traffic": [
+            {"source": "instagram", "visits": 3},
+            {"source": "youtube", "visits": 7}
+          ],
+          "traffic_grain": "anonymous tagged public-site visits by UTC calendar visit_day; not users or registrations",
+          "traffic_since": null,
+          "traffic_timezone": "UTC"
+        },
+        "platform_counts_overlap": true,
+        "scope": {},
+        "source": "first-party stored aggregate projections",
+        "timezone": "Asia/Shanghai"
+      },
+      "scopes": [
+        "sources:overall:all_time"
+      ]
+    },
+    {
+      "response": {
+        "available": true,
+        "metrics": {
+          "ai_is_estimate": true,
+          "daily_cache_hours": 24,
+          "detail_row_limit": 5000,
+          "exact_currencies": true,
+          "platform_counts_overlap": true,
+          "quality": [
+            {"latest_at": "2026-11-09T12:00:00+00:00", "records": 3, "source": "accounts"},
+            {"latest_at": "2026-11-12T11:00:00+00:00", "records": 9, "source": "payments"},
+            {"latest_at": "2026-11-12T11:59:00+00:00", "records": 39, "source": "learning"},
+            {"latest_at": "2026-11-12T09:00:00+00:00", "records": 3, "source": "ai"},
+            {"latest_at": "2026-11-12T08:00:00+00:00", "records": 4, "source": "subscription"}
+          ]
+        },
+        "platform_counts_overlap": true,
+        "scope": {
+          "quality": "all stored records through generated_at; independent of platform and period"
+        },
+        "source": "first-party stored aggregate projections",
+        "timezone": "Asia/Shanghai"
+      },
+      "scopes": [
+        "report:overall:weekly",
+        "report:overall:monthly",
+        "report:overall:all_time",
+        "report:telegram:weekly",
+        "report:telegram:monthly",
+        "report:telegram:all_time",
+        "report:android:weekly",
+        "report:android:monthly",
+        "report:android:all_time",
+        "report:macos:weekly",
+        "report:macos:monthly",
+        "report:macos:all_time",
+        "report:windows:weekly",
+        "report:windows:monthly",
+        "report:windows:all_time"
+      ]
+    },
+    {
+      "response": {
+        "available": true,
+        "metrics": {
+          "detail_limit": 5000,
+          "notification": {
+            "immature_sent": 0,
+            "open_rate": 0.0,
+            "opened_after": 0,
+            "sent": 0
+          },
+          "recovery": {
+            "arms": {
+              "control": {
+                "assigned": 0,
+                "block_rate": 0.0,
+                "blocked_48h": 0,
+                "completion_rate": 0.0,
+                "lesson_completed_48h": 0,
+                "matured": 0,
+                "open_rate": 0.0,
+                "opened_any_48h": 0,
+                "opened_attributed_48h": 0,
+                "send_failed": 0,
+                "send_rate": 0.0,
+                "sent": 0
+              },
+              "treatment": {
+                "assigned": 1,
+                "block_rate": 0.0,
+                "blocked_48h": 0,
+                "completion_rate": 0.0,
+                "lesson_completed_48h": 0,
+                "matured": 1,
+                "open_rate": 100.0,
+                "opened_any_48h": 1,
+                "opened_attributed_48h": 0,
+                "send_failed": 0,
+                "send_rate": 0.0,
+                "sent": 0
+              }
+            },
+            "assigned": 1,
+            "collecting": true,
+            "directional_only": true,
+            "matured": 1,
+            "outcome_window_hours": 48,
+            "uplift_pp": {
+              "block": 0.0,
+              "completion": 0.0,
+              "open": 100.0
+            }
+          },
+          "sales": {
+            "age_days": 0.0,
+            "arms": {
+              "control": {
+                "approval_rate": 0.0,
+                "approved_after_submit": 0,
+                "approved_payments": 0,
+                "approved_users": 0,
+                "assigned": 0,
+                "bridge_cta": 0,
+                "bridge_seen": 0,
+                "bridge_seen_rate": 0.0,
+                "checkout_opened": 0,
+                "checkout_rate": 0.0,
+                "d1_meaningful_return": 0,
+                "d1_meaningful_return_rate": 0.0,
+                "first_checkpoint_completed": 0,
+                "first_checkpoint_completion_rate": 0.0,
+                "foundation_completed": 0,
+                "foundation_completion_rate": 0.0,
+                "frontend_error_rate": 0.0,
+                "frontend_error_users": 0,
+                "matured": 0,
+                "offer_dismissed": 0,
+                "offer_seen": 0,
+                "payment_submitted": 0,
+                "paywall_rate": 0.0,
+                "paywall_seen": 0,
+                "pending_rate": 0.0,
+                "pending_users": 0,
+                "rejected_rate": 0.0,
+                "rejected_users": 0,
+                "revenue_by_currency": {},
+                "revenue_per_matured_by_currency": {},
+                "submitted_rate": 0.0,
+                "submitted_to_approved_rate": 0.0
+              },
+              "treatment": {
+                "approval_rate": 0.0,
+                "approved_after_submit": 0,
+                "approved_payments": 0,
+                "approved_users": 0,
+                "assigned": 0,
+                "bridge_cta": 0,
+                "bridge_seen": 0,
+                "bridge_seen_rate": 0.0,
+                "checkout_opened": 0,
+                "checkout_rate": 0.0,
+                "d1_meaningful_return": 0,
+                "d1_meaningful_return_rate": 0.0,
+                "first_checkpoint_completed": 0,
+                "first_checkpoint_completion_rate": 0.0,
+                "foundation_completed": 0,
+                "foundation_completion_rate": 0.0,
+                "frontend_error_rate": 0.0,
+                "frontend_error_users": 0,
+                "matured": 0,
+                "offer_dismissed": 0,
+                "offer_seen": 0,
+                "payment_submitted": 0,
+                "paywall_rate": 0.0,
+                "paywall_seen": 0,
+                "pending_rate": 0.0,
+                "pending_users": 0,
+                "rejected_rate": 0.0,
+                "rejected_users": 0,
+                "revenue_by_currency": {},
+                "revenue_per_matured_by_currency": {},
+                "submitted_rate": 0.0,
+                "submitted_to_approved_rate": 0.0
+              }
+            },
+            "assigned": 0,
+            "ci_95_pp": {
+              "high_pp": null,
+              "low_pp": null
+            },
+            "decision_ready": false,
+            "directional_only": true,
+            "excluded_assignments": 0,
+            "first_assignment_at": null,
+            "guardrails": {
+              "first_checkpoint": {
+                "delta_pp": 0.0,
+                "pass": true
+              },
+              "foundation": {
+                "delta_pp": 0.0,
+                "pass": true
+              },
+              "frontend_error": {
+                "available": true,
+                "delta_pp": 0.0,
+                "pass": true
+              },
+              "learning": {
+                "delta_pp": 0.0,
+                "pass": true
+              },
+              "pass": true,
+              "pending": {
+                "delta_pp": 0.0,
+                "pass": true
+              },
+              "rejection": {
+                "delta_pp": 0.0,
+                "pass": true
+              }
+            },
+            "matured": 0,
+            "outcome_window_days": 7,
+            "relative_lift_pct": null,
+            "srm": {
+              "checked": false,
+              "chi_square": null,
+              "expected": {
+                "control": 0,
+                "treatment": 0
+              },
+              "mismatch": false,
+              "p_value": null
+            },
+            "thresholds": {
+              "absolute_lift_pp": 2.0,
+              "approved_total": 20,
+              "error_increase_pp": 5.0,
+              "learning_decline_pp": 5.0,
+              "matured_per_arm": 200,
+              "max_days": 42,
+              "min_days": 14,
+              "relative_lift_pct": 20.0
+            },
+            "uplift_pp": 0.0
+          },
+          "sales_status": "collecting",
+          "scope": "selected assignments; all_time detail rolling 30 days; existing mature ITT estimators",
+          "since": "2026-11-05T12:00:00+00:00"
+        },
+        "platform_counts_overlap": true,
+        "scope": {},
+        "source": "first-party stored aggregate projections",
+        "timezone": "Asia/Shanghai"
+      },
+      "scopes": [
+        "experiments:overall:weekly"
+      ]
+    },
+    {
+      "response": {
+        "available": true,
+        "metrics": {
+          "detail_limit": 5000,
+          "notification": {
+            "immature_sent": 0,
+            "open_rate": 0.0,
+            "opened_after": 0,
+            "sent": 0
+          },
+          "recovery": {
+            "arms": {
+              "control": {
+                "assigned": 1,
+                "block_rate": 100.0,
+                "blocked_48h": 1,
+                "completion_rate": 0.0,
+                "lesson_completed_48h": 0,
+                "matured": 1,
+                "open_rate": 0.0,
+                "opened_any_48h": 0,
+                "opened_attributed_48h": 0,
+                "send_failed": 0,
+                "send_rate": 0.0,
+                "sent": 0
+              },
+              "treatment": {
+                "assigned": 1,
+                "block_rate": 0.0,
+                "blocked_48h": 0,
+                "completion_rate": 0.0,
+                "lesson_completed_48h": 0,
+                "matured": 1,
+                "open_rate": 100.0,
+                "opened_any_48h": 1,
+                "opened_attributed_48h": 0,
+                "send_failed": 0,
+                "send_rate": 0.0,
+                "sent": 0
+              }
+            },
+            "assigned": 2,
+            "collecting": false,
+            "directional_only": true,
+            "matured": 2,
+            "outcome_window_hours": 48,
+            "uplift_pp": {
+              "block": -100.0,
+              "completion": 0.0,
+              "open": 100.0
+            }
+          },
+          "sales": {
+            "age_days": 0.0,
+            "arms": {
+              "control": {
+                "approval_rate": 0.0,
+                "approved_after_submit": 0,
+                "approved_payments": 0,
+                "approved_users": 0,
+                "assigned": 0,
+                "bridge_cta": 0,
+                "bridge_seen": 0,
+                "bridge_seen_rate": 0.0,
+                "checkout_opened": 0,
+                "checkout_rate": 0.0,
+                "d1_meaningful_return": 0,
+                "d1_meaningful_return_rate": 0.0,
+                "first_checkpoint_completed": 0,
+                "first_checkpoint_completion_rate": 0.0,
+                "foundation_completed": 0,
+                "foundation_completion_rate": 0.0,
+                "frontend_error_rate": 0.0,
+                "frontend_error_users": 0,
+                "matured": 0,
+                "offer_dismissed": 0,
+                "offer_seen": 0,
+                "payment_submitted": 0,
+                "paywall_rate": 0.0,
+                "paywall_seen": 0,
+                "pending_rate": 0.0,
+                "pending_users": 0,
+                "rejected_rate": 0.0,
+                "rejected_users": 0,
+                "revenue_by_currency": {},
+                "revenue_per_matured_by_currency": {},
+                "submitted_rate": 0.0,
+                "submitted_to_approved_rate": 0.0
+              },
+              "treatment": {
+                "approval_rate": 0.0,
+                "approved_after_submit": 0,
+                "approved_payments": 0,
+                "approved_users": 0,
+                "assigned": 0,
+                "bridge_cta": 0,
+                "bridge_seen": 0,
+                "bridge_seen_rate": 0.0,
+                "checkout_opened": 0,
+                "checkout_rate": 0.0,
+                "d1_meaningful_return": 0,
+                "d1_meaningful_return_rate": 0.0,
+                "first_checkpoint_completed": 0,
+                "first_checkpoint_completion_rate": 0.0,
+                "foundation_completed": 0,
+                "foundation_completion_rate": 0.0,
+                "frontend_error_rate": 0.0,
+                "frontend_error_users": 0,
+                "matured": 0,
+                "offer_dismissed": 0,
+                "offer_seen": 0,
+                "payment_submitted": 0,
+                "paywall_rate": 0.0,
+                "paywall_seen": 0,
+                "pending_rate": 0.0,
+                "pending_users": 0,
+                "rejected_rate": 0.0,
+                "rejected_users": 0,
+                "revenue_by_currency": {},
+                "revenue_per_matured_by_currency": {},
+                "submitted_rate": 0.0,
+                "submitted_to_approved_rate": 0.0
+              }
+            },
+            "assigned": 0,
+            "ci_95_pp": {
+              "high_pp": null,
+              "low_pp": null
+            },
+            "decision_ready": false,
+            "directional_only": true,
+            "excluded_assignments": 0,
+            "first_assignment_at": null,
+            "guardrails": {
+              "first_checkpoint": {
+                "delta_pp": 0.0,
+                "pass": true
+              },
+              "foundation": {
+                "delta_pp": 0.0,
+                "pass": true
+              },
+              "frontend_error": {
+                "available": true,
+                "delta_pp": 0.0,
+                "pass": true
+              },
+              "learning": {
+                "delta_pp": 0.0,
+                "pass": true
+              },
+              "pass": true,
+              "pending": {
+                "delta_pp": 0.0,
+                "pass": true
+              },
+              "rejection": {
+                "delta_pp": 0.0,
+                "pass": true
+              }
+            },
+            "matured": 0,
+            "outcome_window_days": 7,
+            "relative_lift_pct": null,
+            "srm": {
+              "checked": false,
+              "chi_square": null,
+              "expected": {
+                "control": 0,
+                "treatment": 0
+              },
+              "mismatch": false,
+              "p_value": null
+            },
+            "thresholds": {
+              "absolute_lift_pp": 2.0,
+              "approved_total": 20,
+              "error_increase_pp": 5.0,
+              "learning_decline_pp": 5.0,
+              "matured_per_arm": 200,
+              "max_days": 42,
+              "min_days": 14,
+              "relative_lift_pct": 20.0
+            },
+            "uplift_pp": 0.0
+          },
+          "sales_status": "collecting",
+          "scope": "selected assignments; all_time detail rolling 30 days; existing mature ITT estimators",
+          "since": "2026-10-13T12:00:00+00:00"
+        },
+        "platform_counts_overlap": true,
+        "scope": {},
+        "source": "first-party stored aggregate projections",
+        "timezone": "Asia/Shanghai"
+      },
+      "scopes": [
+        "experiments:overall:monthly",
+        "experiments:overall:all_time"
+      ]
+    }
+  ]
+}
