@@ -494,13 +494,18 @@ async def browser_checks(output):
             await page.locator('#drawerLocale').select_option(language)
             labels=await page.evaluate(f"window.HSKAI_ADMIN_I18N.{language}")
             states={labels[key] for key in ('analyticsStateNoData','analyticsStateNotInstrumented','analyticsStateNotAudited','analyticsStateNotApplicable','analyticsStateDetailLimited')}
+            # The loading panel is also a .state-panel: wait for each read to settle, or
+            # its late render replaces the header and closes the next platform menu.
+            loading=page.locator('#content .state-panel h2').filter(has_text=labels['loading'])
             for platform in ('android','telegram','iphone_pwa'):
                 await page.locator('[data-action=platform]').click()
                 await page.locator(f'[data-platform={platform}]').click()
                 await expect(page.locator('.stats-scope-chip')).not_to_contain_text(labels['all'])
+                await expect(loading).to_have_count(0)
                 for section in ('overview','course','platform','funnel','money','sources','report'):
                     await page.locator('[data-stats-tab='+section+']').click()
                     await expect(page.locator(f'[data-stats-tab={section}]')).to_have_attribute('aria-selected','true')
+                    await expect(loading).to_have_count(0)
                     if section=='money':
                         await expect(page.locator('.metric[data-state=not_applicable]')).to_have_count(3)
                         await expect(page.locator('.metric[data-state=not_instrumented]')).to_have_count(2)
