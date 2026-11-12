@@ -332,6 +332,7 @@ def create_miniapp_entitlements_router(
                 except (TypeError, ValueError, OverflowError):
                     lesson_order = 0
                 trusted = service.trusted_client_payload(payload, user)
+                trusted.pop("client", None)
                 trusted["source"] = "pwa_course_v3"
                 trusted["transport"] = "iphone_pwa"
                 result = await service.record_client_event(

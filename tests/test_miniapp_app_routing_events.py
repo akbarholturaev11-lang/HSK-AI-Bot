@@ -4,10 +4,13 @@ Calls the real `/api/miniapp/event` handler with a SQLite session; only the
 Telegram signature check is replaced. Contract:
 docs/TELEGRAM_PWA_ANDROID_HANDOFF_CONTEXT.md.
 """
+import json
 import unittest
 from datetime import datetime, timezone
 from unittest.mock import patch
 
+from fastapi import FastAPI
+from httpx import ASGITransport, AsyncClient
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import StaticPool
@@ -99,6 +102,37 @@ class AppOfferEventTests(unittest.IsolatedAsyncioTestCase):
             names = (await session.execute(select(CourseMiniAppEvent.event_name))).scalars().all()
         self.assertEqual(names, [])
         self.assertIsNone(await self.state("ios"))
+
+    async def test_telegram_telemetry_never_stores_client_platform_markers(self):
+        sent = await self.send(event="section_started", source=" PWA_COURSE_V3 ",
+                               client="android", transport="iphone_pwa",
+                               event_id="fixture:section", session_id="fixture:session")
+        self.assertTrue(sent.get("ok"), sent)
+        async with self.sessions() as session:
+            row = (await session.execute(select(CourseMiniAppEvent))).scalar_one()
+        self.assertEqual(row.source, "course_miniapp")
+        self.assertEqual(row.user_id, 1)
+        self.assertEqual(row.dedupe_key, "fixture:section")
+        self.assertFalse({"source", "transport", "client"} & json.loads(row.payload_json).keys())
+
+    async def test_telegram_map_preserves_campaign_source_but_not_reserved_pwa_source(self):
+        app = FastAPI()
+        app.add_api_route("/api/v3/map", main.v3_course_map, methods=["GET"])
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="https://synthetic.test") as client:
+            for source, sid in (("pwa_course_v3", "reserved"), ("reviewed_campaign", "campaign")):
+                response = await client.get(
+                    "/api/v3/map", params={"source": source, "sid": sid},
+                    headers={"X-Telegram-Init-Data": "signed"},
+                )
+                self.assertEqual(response.status_code, 200, response.text)
+        async with self.sessions() as session:
+            rows = (await session.scalars(select(CourseMiniAppEvent).where(
+                CourseMiniAppEvent.event_name == "miniapp_opened"
+            ))).all()
+        self.assertEqual({row.dedupe_key: row.source for row in rows}, {
+            "course-v3:miniapp-opened:reserved": "course_v3",
+            "course-v3:miniapp-opened:campaign": "reviewed_campaign",
+        })
 
 
 if __name__ == "__main__":

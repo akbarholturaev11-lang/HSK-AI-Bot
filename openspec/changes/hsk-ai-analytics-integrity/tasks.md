@@ -47,7 +47,7 @@ This is the only checklist for this work. Context, audit results, decisions and 
   - the `gap` rows report `not_instrumented`;
   - the 1.2 fixture is unchanged.
 - [ ] 3.2 Platform attribution (design D3), in this order:
-  1. **Spoofing guard:** the Telegram `/api/miniapp/event` and map routes stop storing a client-supplied `transport`, `client` or `pwa_course_v3` source (A3, A12).
+  1. **Spoofing guard (verified):** the Telegram `/api/miniapp/event` and map routes stop storing a client-supplied `transport`, `client` or `pwa_course_v3` source (A3, A12); PWA telemetry drops client claims and keeps its server-set transport.
   2. **Client key:** add the server-set `client` key to the existing shared writes, passed from each route:
      - lesson start (A6) and lesson complete (A9);
      - practice (A13), HSK exam (A14) and mistake review (A15).

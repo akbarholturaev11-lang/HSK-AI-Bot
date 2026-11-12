@@ -790,7 +790,7 @@
   "flows": [
     {
       "id": "client_activity",
-      "description": "Canonical session link, course open, foreground and linked device activity.",
+      "description": "Canonical session link, course open, foreground and linked device activity. Telegram cannot store the reserved PWA source or platform metadata; PWA telemetry overwrites transport and drops caller client claims. Historical attribution still needs route-owned proof.",
       "events": [
         {
           "store": "course_miniapp_events",

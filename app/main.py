@@ -2914,12 +2914,14 @@ async def _course_v3_map_for_user(
 
     # Browser source attribution is fixed until a verified Smart/deep-link
     # handoff exists. Do not let a caller spoof Smart study or payment funnels.
-    # The original signed Telegram Mini App keeps its existing source behavior.
+    # Preserve Telegram campaign sources except for the reserved PWA marker.
     entry_source = _checkout_text(
         (request.query_params.get("source") if default_source == "course_v3" else None)
         or default_source,
         40,
     )
+    if default_source == "course_v3" and entry_source.casefold() == "pwa_course_v3":
+        entry_source = default_source
     course_session_id = _checkout_text(request.query_params.get("sid"), 80) or None
 
     # Dars access oqimi admin policy orqali boshqariladi:
@@ -6644,6 +6646,13 @@ async def miniapp_event(request: Request):
     )
     if not telegram_id:
         return {"ok": False, "error": "invalid_telegram_init_data"}
+
+    # Never persist browser/native attribution from signed Telegram input.
+    # Telegram signatures identify the learner, not the source of an event.
+    payload.pop("transport", None)
+    payload.pop("client", None)
+    if _checkout_text(payload.get("source"), 40).casefold() == "pwa_course_v3":
+        payload.pop("source", None)
 
     async with async_session_maker() as session:
         if event == "bot_return_clicked":

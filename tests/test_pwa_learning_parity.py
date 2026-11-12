@@ -134,7 +134,7 @@ class PwaLearningParityTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(response.status_code, 422)
         telemetry = await self.client.post('/api/v3/pwa/event', headers=headers, json={
             'event': 'interaction_completed', 'lesson_id': '²', 'source': 'android',
-            'entry_level': 'fake', 'transport': 'android', 'dedupe_key': 'f:bad-metadata',
+            'entry_level': 'fake', 'transport': 'android', 'client': 'android', 'dedupe_key': 'f:bad-metadata',
         })
         self.assertEqual(telemetry.status_code, 200)
         async with self.sessions() as db:
@@ -142,6 +142,7 @@ class PwaLearningParityTests(unittest.IsolatedAsyncioTestCase):
             self.assertIsNone(row.lesson_order)
             self.assertEqual(row.source, 'pwa_course_v3')
             self.assertEqual(json.loads(row.payload_json)['transport'], 'iphone_pwa')
+            self.assertNotIn('client', json.loads(row.payload_json))
 
     async def test_pwa_ads_use_existing_settings_and_cross_client_daily_cap(self):
         self.client._transport.app.include_router(create_miniapp_ads_router(session_factory=self.sessions, settings_obj=self.settings))
