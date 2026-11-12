@@ -8,6 +8,7 @@ from app.db.base import Base
 
 
 CONVERSION_FUNNEL_EVENT_NAMES = (
+    "analytics_ci_unmapped_proof",
     "course_cta_seen",
     "course_started",
     "lesson_started",
