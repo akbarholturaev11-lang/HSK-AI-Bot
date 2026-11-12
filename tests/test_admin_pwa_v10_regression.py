@@ -44,6 +44,9 @@ SNAPSHOT = Path(__file__).with_name("fixtures") / "admin_pwa_v10_main_680761f1.j
 PRIVATE = "synthetic-private-marker"
 BASELINE = "680761f15e05f6d543da52cd021d05df41217ea3"
 SINCE = {"weekly": "2026-11-05T12:00:00+00:00", "monthly": "2026-10-13T12:00:00+00:00", "all_time": None}
+# Section/filter cells that task 3.2 moved from `attribution_not_audited` to a
+# platform predicate. Every other cell must stay byte-identical to the golden.
+NEWLY_ATTRIBUTED = frozenset(("money", platform) for platform in ("android", "telegram", "iphone_pwa"))
 
 
 def ago(*, days=0, hours=0, minutes=0):
@@ -320,6 +323,13 @@ class AdminPwaV10RegressionTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(actual.keys(), expected.keys())
         for case, response in actual.items():
             with self.subTest(section=case[0], platform=case[1], period=case[2]):
+                self.assertNotIn(PRIVATE, json.dumps(response))
+                if case[:2] in NEWLY_ATTRIBUTED:
+                    # The baseline had no value here. Only the unavailable
+                    # envelope may change; values are pinned in the 3.2 tests.
+                    self.assertEqual((expected[case]["available"], expected[case]["reason"]),
+                                     (False, "attribution_not_audited"))
+                    self.assertIs(response["available"], True)
+                    continue
                 legacy = {key: value for key, value in response.items() if key != "metric_states"}
                 self.assertEqual(legacy, expected[case])
-                self.assertNotIn(PRIVATE, json.dumps(response))

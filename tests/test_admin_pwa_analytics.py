@@ -272,12 +272,17 @@ class CompleteAnalyticsTests(AnalyticsProjectionTests):
                     )
 
         money = await project("money", "iphone_pwa")
-        self.assertIsNone(money["metrics"])
+        # PWA payments carry a server-set source (3.2), so an empty window is a real zero.
+        self.assertEqual(money["metrics"]["revenue_usd"], 0)
+        self.assertEqual(money["metric_states"]["revenue_usd"], {"state": "available", "reason": None})
+        self.assertNotIn("ai_usd", money["metrics"])
         self.assertEqual(money["metric_states"]["ai_usd"],
                          {"state": "unavailable", "reason": "not_instrumented"})
         self.assertEqual(money["metric_states"]["manual_profit_usd"],
                          {"state": "not_applicable", "reason": "not_applicable"})
-        self.assertEqual(money["metric_states"]["revenue_usd"],
+        home = await project("home", "android")
+        self.assertNotIn("payments_by_status", home["metrics"])
+        self.assertEqual(home["metric_states"]["payments_by_status"],
                          {"state": "unavailable", "reason": "attribution_not_audited"})
         course = await project("course")
         self.assertEqual(course["metrics"]["voice_minutes"], 0)

@@ -60,5 +60,6 @@ jobs:
           python -m pytest -q -rs
           tests/test_analytics_coverage_contract.py
           tests/test_admin_pwa_v10_regression.py
+          tests/test_admin_pwa_platform_scope.py
           tests/test_admin_pwa_analytics.py
           tests/test_android_analytics_service.py
