@@ -39,7 +39,7 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 
 - The branch has the PostgreSQL baseline, coverage guard and per-metric V10 API states. Existing values and scopes still match the baseline. The Admin UI will consume the states in 3.3.
 - Task 1.1 re-audited `334368cc..680761f1`. The delta below updates the original matrix and establishes `680761f1` as the unchanged runtime base for task 1.2.
-- **Next step: 3.2, step 3, remaining sections**: Finance (F4/F5) and Funnel (F1–F3) are scoped; Sources stays Overall-only (F6 `gap`). Next are the PWA Platforms card (A4) and Course (A8, A10, then the `client`-keyed families with `attributed_since`). Steps 1–2 hardened caller metadata and tagged existing writes. A4 has the route-owned PWA map dedupe prefix; raw historic source/transport/client claims still require independent proof or a verified post-guard boundary.
+- **Next step: 3.2, step 3, remaining sections**: Finance (F4/F5) and Funnel (F1–F3) are scoped; Sources stays Overall-only (F6 `gap`); the PWA Platforms card (A4) is read. Next is Course (A8, A10, then the `client`-keyed families with `attributed_since`). Steps 1–2 hardened caller metadata and tagged existing writes. A4 has the route-owned PWA map dedupe prefix; raw historic source/transport/client claims still require independent proof or a verified post-guard boundary.
 - PR [akbarholturaev11-lang/HSK-AI-Bot#285](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/285) is the integration branch for this work. Main promotion is outside the current authorization.
 
 ## Platform scope
@@ -67,7 +67,7 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 | A1 | App open | Android | `desktop_auth_service.py:1392-1420` `android_first_open` / `android_app_opened`, source `android_app` | event-name prefix | `pwa_analytics_platforms.py` → Platforms | `verified`: `test_android_analytics_service.py`, `test_admin_pwa_read.py` |
 | A2 | Mini App presence | Telegram | `desktop_download.py:159` → `user_client_presence` surface `telegram_miniapp` | surface | Platforms | `verified`: `test_user_device_inventory_service.py` |
 | A3 | Course map open | Telegram | `main.py:2909-2931` `miniapp_opened`, source = query `source` or `course_v3`; `main.py:5706` source `course_miniapp` | none exclusive: query text is free | Course `retention` (mixed with A4) | `gap` |
-| A4 | Course map open | PWA | `/api/v3/pwa/map` (`main.py:2994`) → `main.py:2745,2921-2931` `miniapp_opened`, source `pwa_course_v3`, dedupe prefix `pwa-course-v3:` | source, server-fixed on the PWA route | Not read per platform (`iphone_pwa` → `not_instrumented`); counted in Course `retention` | `to_verify`: source seeded in `test_pwa_learning_parity_postgres.py`, no reader test (3.2) |
+| A4 | Course map open | PWA | `/api/v3/pwa/map` (`main.py:2994`) → `main.py:2745,2921-2931` `miniapp_opened`, source `pwa_course_v3`, dedupe prefix `pwa-course-v3:` | route-owned dedupe prefix `pwa-course-v3:` (the source text is forgeable on old Telegram rows) | Platforms PWA card (DAU/WAU/MAU) under the PWA filter (3.2); counted in Course `retention` | `verified`: [platform scope test](../../tests/test_admin_pwa_platform_scope.py) excludes the Telegram `pwa_course_v3` lookalike |
 | A5 | PWA sign-in device | PWA | `pwa_auth_service.py:338-352` `desktop_devices.platform='pwa'`; `last_seen_at` set only at mint | platform `pwa` | Not read by V10 | `gap` as activity: sign-in time, not use |
 | A6 | Lesson started | Telegram + PWA | Legacy Telegram flow: `course_miniapp_lesson_flow_service.py:1596`. V3 emits client observations via `course-v3.html` → Telegram/PWA event routes. V3 lesson/start writes an internal authorization grant, not a second `lesson_started`. | none on the baseline | `COURSE_EVENTS`, features, activation → Overview, Course | `gap` in the baseline; route-owned client added to existing event writes in 3.2 step 2 |
 | A7 | Lesson started | Android | No writer. Android loads lessons by GET `/api/v3/android/course/lesson/{order}`. Readers list `android_lesson_started`, which has no writer in `app/` or `android/` | — | Counted in `COURSE_EVENTS`, never written | `gap` → `not_instrumented` |
@@ -139,7 +139,7 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 
 | Section | Android | Telegram | iPhone PWA |
 |---|---|---|---|
-| Platforms | existing (A1) | existing (A2) | new card from A4, after A3/A12 spoofing is closed |
+| Platforms | existing (A1) | existing (A2) | card from A4 under the PWA filter (done); Overall list unchanged |
 | Course | completions and foundation (A8, A10). `lesson_started` → `not_instrumented` (A7). Practice, exam and mistakes after the `client` key (A13–A15) | lesson, practice, exam and mistakes after the `client` key (A6, A9, A12–A15). Foundation now (A10) | the same as Telegram, plus flow telemetry (A11) |
 | Funnel | F2 | F3 after test | F1 |
 | Finance | F4/F5 `android` | F4/F5 `miniapp`, `telegram_bot` | F4/F5 `iphone_pwa` + `pwa` |
@@ -161,11 +161,14 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 - 2026-11-11 — Handoff events (A18) keep their existing basic Statistics consumer. No V10 duplicate.
 - 2026-11-11 — Desktop freeze: macOS/Windows get registry statuses only.
 - 2026-11-11 — The registry's platform keys and feature IDs are stable. Monitoring will reference them instead of duplicating them.
+- 2026-11-12 — PWA Platforms card: DAU/WAU/MAU from `miniapp_opened` rows whose dedupe key starts with the route-owned `pwa-course-v3:` (only `/api/v3/pwa/map` builds it; callers cannot write `miniapp_opened`). No device inventory (A5). It appears under the PWA filter in Platforms/Home/Overview; the Overall card list and `iphone_pwa_available` stay as pinned.
 - 2026-11-12 — Sources stays Overall-only on every platform. F6 was planned for Android, but entry sources on the Telegram route are caller text, so `android_*` can be forged; `subscription_entry_events` has no platform column and a schema change is out of scope.
 - 2026-11-12 — Funnel per platform uses the route-set payload `transport` of the base `checkout_opened` row (existing on PWA and Android Lava; added to the two Telegram writes and the Android manual opening; desktop rows unchanged). Stage, receipt and approval rows attach to that attempt. Caller `source` and attempt text never attribute. `attributed_since.attempt_funnel` is the first marked opening; earlier rows stay in Overall. Funnel activity families (AI, engagement, registration) are not computed for a platform.
 - 2026-11-12 — Finance per platform uses the server-set `payments.source`: Android `android`; Telegram `miniapp` + bot `telegram_bot`; PWA `iphone_pwa` + Lava `pwa`. Lava lifecycle uses `lava_invoices.source`. The first-payment/renewal order stays canonical across platforms, so a later payment on another client is a renewal. AI cost, ledger, marketing and ARPU are not computed for a platform (`not_instrumented` / `not_applicable`). Desktop `desktop` payments stay out of the three mobile filters.
 
 ## Session log (newest first, one or two lines each)
+
+- 2026-11-12 — Task 3.2 step 3, Platforms: PWA card under the PWA filter from the route-owned map dedupe prefix; registry adds `iphone_pwa` to the 21 platform-projection rows. Analytics suite **107 passed, 196 subtests**.
 
 - 2026-11-12 — Task 3.2 step 3, Sources: code re-check found the F6 Android prefix forgeable from the Telegram route; registry Sources (entries, attribution) and the `subscription_entries` flow now report Android `not_instrumented`. No runtime change.
 

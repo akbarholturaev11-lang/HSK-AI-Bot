@@ -159,5 +159,33 @@ class FunnelPlatformScopeTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(states["registration_conversion"]["state"], "unavailable")
 
 
+@unittest.skipUnless(URL, "set ANALYTICS_TEST_DATABASE_URL for the real PostgreSQL platform scope tests")
+class PwaPlatformCardTests(unittest.IsolatedAsyncioTestCase):
+    async def asyncSetUp(self):
+        async with postgres_fixture(URL) as sessions:
+            self.projections = await capture(sessions)
+
+    def test_pwa_card_counts_only_route_owned_map_opens(self):
+        # User 1 opened the PWA map two days ago. User 2's Telegram row carries
+        # the PWA source text but the Telegram dedupe prefix, so it is excluded.
+        for section in ("platform", "home", "overview"):
+            with self.subTest(section=section):
+                response = self.projections[section, "iphone_pwa", "weekly"]
+                self.assertIs(response["available"], True)
+                metrics = response["metrics"]
+                self.assertEqual(metrics["platforms"], [
+                    {"platform": "iphone_pwa", "active_dau": 0, "active_wau": 1, "active_mau": 1}])
+                self.assertIs(metrics["iphone_pwa_available"], True)
+                self.assertEqual(metrics["versions"], [])
+                states = response["metric_states"]
+                self.assertEqual(states["platforms"], {"state": "available", "reason": None})
+                self.assertEqual(states["versions"], {"state": "not_applicable", "reason": "not_applicable"})
+
+    def test_overall_card_list_is_unchanged(self):
+        overall = self.projections["platform", "overall", "weekly"]["metrics"]
+        self.assertNotIn("iphone_pwa", [card["platform"] for card in overall["platforms"]])
+        self.assertIs(overall["iphone_pwa_available"], False)
+
+
 if __name__ == "__main__":
     unittest.main()

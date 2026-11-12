@@ -55,7 +55,7 @@
         "windows": {"status": "not_applicable", "reason": "Telegram bot delivery state is not Desktop activity."}
       }
     },
-    {"section": "home", "key": "desktop_detail_limited", "kind": "metadata", "filters": ["android", "telegram", "macos", "windows"]},
+    {"section": "home", "key": "desktop_detail_limited", "kind": "metadata", "filters": ["android", "telegram", "iphone_pwa", "macos", "windows"]},
     {"section": "home", "key": "expiring_pro", "kind": "metric", "filters": ["overall"],
       "platforms": {
         "android": {"status": "not_applicable", "reason": "Current Pro entitlement is a shared account snapshot without a platform dimension."},
@@ -65,7 +65,7 @@
         "windows": {"status": "not_applicable", "reason": "Current Pro entitlement is a shared account snapshot without a platform dimension."}
       }
     },
-    {"section": "home", "key": "iphone_pwa_available", "kind": "metadata", "filters": ["android", "telegram", "macos", "windows"]},
+    {"section": "home", "key": "iphone_pwa_available", "kind": "metadata", "filters": ["android", "telegram", "iphone_pwa", "macos", "windows"]},
     {"section": "home", "key": "new_accounts", "kind": "metric", "filters": ["overall"],
       "platforms": {
         "android": {"status": "not_instrumented", "reason": "Canonical account counts use users and registration time, without a trusted registration-platform dimension."},
@@ -75,7 +75,7 @@
         "windows": {"status": "not_instrumented", "reason": "Canonical account counts use users and registration time, without a trusted registration-platform dimension."}
       }
     },
-    {"section": "home", "key": "overlap", "kind": "metadata", "filters": ["android", "telegram", "macos", "windows"]},
+    {"section": "home", "key": "overlap", "kind": "metadata", "filters": ["android", "telegram", "iphone_pwa", "macos", "windows"]},
     {"section": "home", "key": "paying_accounts", "kind": "metric", "filters": ["overall"],
       "platforms": {
         "android": {"status": "partial", "reason": "F4: Android payment source exists; this V10 aggregate has no platform predicate or full chain test."},
@@ -103,16 +103,16 @@
         "windows": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."}
       }
     },
-    {"section": "home", "key": "platforms", "kind": "metric", "filters": ["android", "telegram", "macos", "windows"],
+    {"section": "home", "key": "platforms", "kind": "metric", "filters": ["android", "telegram", "iphone_pwa", "macos", "windows"],
       "platforms": {
         "android": {"status": "partial", "reason": "A1: linked device inventory and app-open accounts reach the native card; no full chain test."},
         "telegram": {"status": "partial", "reason": "A2: Mini App presence reaches the card; it has accounts and foreground accounts, no device count or DAU/WAU/MAU; no full chain test."},
-        "iphone_pwa": {"status": "partial", "reason": "A4: PWA course opens are recorded, but V10 has no PWA card and historical source is not exclusive. A5 sign-ins do not prove activity."},
+        "iphone_pwa": {"status": "partial", "reason": "A4: PWA card (DAU/WAU/MAU) under the PWA filter from course-map opens with the route-owned dedupe prefix pwa-course-v3:, not the forgeable source text; Overall list unchanged. A5 sign-ins are not activity. Chain test pending (3.4)."},
         "macos": {"status": "partial", "reason": "A20: existing linked devices and desktop foreground card, with bounded event details; Desktop freeze, no new chain test."},
         "windows": {"status": "partial", "reason": "A20: existing linked devices and desktop foreground card, with bounded event details; Desktop freeze, no new chain test."}
       }
     },
-    {"section": "home", "key": "scope", "kind": "metadata", "filters": ["android", "telegram", "macos", "windows"]},
+    {"section": "home", "key": "scope", "kind": "metadata", "filters": ["android", "telegram", "iphone_pwa", "macos", "windows"]},
     {"section": "home", "key": "users_total", "kind": "metric", "filters": ["overall"],
       "platforms": {
         "android": {"status": "not_instrumented", "reason": "Canonical account counts use users and registration time, without a trusted registration-platform dimension."},
@@ -122,7 +122,7 @@
         "windows": {"status": "not_instrumented", "reason": "Canonical account counts use users and registration time, without a trusted registration-platform dimension."}
       }
     },
-    {"section": "home", "key": "versions", "kind": "metric", "filters": ["android", "telegram", "macos", "windows"],
+    {"section": "home", "key": "versions", "kind": "metric", "filters": ["android", "telegram", "iphone_pwa", "macos", "windows"],
       "platforms": {
         "android": {"status": "partial", "reason": "Linked Android devices already supply the top 12 version groups; no full chain test. A19: Play and Direct are not split."},
         "telegram": {"status": "not_applicable", "reason": "The Mini App has no native linked-device app version inventory."},
@@ -131,7 +131,7 @@
         "windows": {"status": "partial", "reason": "Existing top 12 linked-device version groups by Desktop OS; Desktop freeze, no new chain test."}
       }
     },
-    {"section": "home", "key": "versions_scope", "kind": "metadata", "filters": ["android", "telegram", "macos", "windows"]},
+    {"section": "home", "key": "versions_scope", "kind": "metadata", "filters": ["android", "telegram", "iphone_pwa", "macos", "windows"]},
     {"section": "overview", "key": "active_accounts", "kind": "metric", "filters": ["overall"],
       "platforms": {
         "android": {"status": "not_instrumented", "reason": "This snapshot reads users.last_active_at without attribution to the action platform."},
@@ -195,7 +195,7 @@
         "windows": {"status": "not_instrumented", "reason": "V10 does not scope the learning event union to an individual Desktop OS; Desktop freeze."}
       }
     },
-    {"section": "overview", "key": "desktop_detail_limited", "kind": "metadata", "filters": ["android", "telegram", "macos", "windows"]},
+    {"section": "overview", "key": "desktop_detail_limited", "kind": "metadata", "filters": ["android", "telegram", "iphone_pwa", "macos", "windows"]},
     {"section": "overview", "key": "expiring_pro", "kind": "metric", "filters": ["overall"],
       "platforms": {
         "android": {"status": "not_applicable", "reason": "Current Pro entitlement is a shared account snapshot without a platform dimension."},
@@ -205,7 +205,7 @@
         "windows": {"status": "not_applicable", "reason": "Current Pro entitlement is a shared account snapshot without a platform dimension."}
       }
     },
-    {"section": "overview", "key": "iphone_pwa_available", "kind": "metadata", "filters": ["android", "telegram", "macos", "windows"]},
+    {"section": "overview", "key": "iphone_pwa_available", "kind": "metadata", "filters": ["android", "telegram", "iphone_pwa", "macos", "windows"]},
     {"section": "overview", "key": "languages", "kind": "metric", "filters": ["overall"],
       "platforms": {
         "android": {"status": "not_instrumented", "reason": "The account distribution uses a shared profile field and has no platform cohort."},
@@ -233,7 +233,7 @@
         "windows": {"status": "not_instrumented", "reason": "Canonical account counts use users and registration time, without a trusted registration-platform dimension."}
       }
     },
-    {"section": "overview", "key": "overlap", "kind": "metadata", "filters": ["android", "telegram", "macos", "windows"]},
+    {"section": "overview", "key": "overlap", "kind": "metadata", "filters": ["android", "telegram", "iphone_pwa", "macos", "windows"]},
     {"section": "overview", "key": "paying_accounts", "kind": "metric", "filters": ["overall"],
       "platforms": {
         "android": {"status": "partial", "reason": "F4: Android payment source exists; this V10 aggregate has no platform predicate or full chain test."},
@@ -261,16 +261,16 @@
         "windows": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."}
       }
     },
-    {"section": "overview", "key": "platforms", "kind": "metric", "filters": ["android", "telegram", "macos", "windows"],
+    {"section": "overview", "key": "platforms", "kind": "metric", "filters": ["android", "telegram", "iphone_pwa", "macos", "windows"],
       "platforms": {
         "android": {"status": "partial", "reason": "A1: linked device inventory and app-open accounts reach the native card; no full chain test."},
         "telegram": {"status": "partial", "reason": "A2: Mini App presence reaches the card; it has accounts and foreground accounts, no device count or DAU/WAU/MAU; no full chain test."},
-        "iphone_pwa": {"status": "partial", "reason": "A4: PWA course opens are recorded, but V10 has no PWA card and historical source is not exclusive. A5 sign-ins do not prove activity."},
+        "iphone_pwa": {"status": "partial", "reason": "A4: PWA card (DAU/WAU/MAU) under the PWA filter from course-map opens with the route-owned dedupe prefix pwa-course-v3:, not the forgeable source text; Overall list unchanged. A5 sign-ins are not activity. Chain test pending (3.4)."},
         "macos": {"status": "partial", "reason": "A20: existing linked devices and desktop foreground card, with bounded event details; Desktop freeze, no new chain test."},
         "windows": {"status": "partial", "reason": "A20: existing linked devices and desktop foreground card, with bounded event details; Desktop freeze, no new chain test."}
       }
     },
-    {"section": "overview", "key": "scope", "kind": "metadata", "filters": ["android", "telegram", "macos", "windows"]},
+    {"section": "overview", "key": "scope", "kind": "metadata", "filters": ["android", "telegram", "iphone_pwa", "macos", "windows"]},
     {"section": "overview", "key": "users_total", "kind": "metric", "filters": ["overall"],
       "platforms": {
         "android": {"status": "not_instrumented", "reason": "Canonical account counts use users and registration time, without a trusted registration-platform dimension."},
@@ -280,7 +280,7 @@
         "windows": {"status": "not_instrumented", "reason": "Canonical account counts use users and registration time, without a trusted registration-platform dimension."}
       }
     },
-    {"section": "overview", "key": "versions", "kind": "metric", "filters": ["android", "telegram", "macos", "windows"],
+    {"section": "overview", "key": "versions", "kind": "metric", "filters": ["android", "telegram", "iphone_pwa", "macos", "windows"],
       "platforms": {
         "android": {"status": "partial", "reason": "Linked Android devices already supply the top 12 version groups; no full chain test. A19: Play and Direct are not split."},
         "telegram": {"status": "not_applicable", "reason": "The Mini App has no native linked-device app version inventory."},
@@ -289,21 +289,21 @@
         "windows": {"status": "partial", "reason": "Existing top 12 linked-device version groups by Desktop OS; Desktop freeze, no new chain test."}
       }
     },
-    {"section": "overview", "key": "versions_scope", "kind": "metadata", "filters": ["android", "telegram", "macos", "windows"]},
-    {"section": "platform", "key": "desktop_detail_limited", "kind": "metadata", "filters": ["overall", "android", "telegram", "macos", "windows"]},
-    {"section": "platform", "key": "iphone_pwa_available", "kind": "metadata", "filters": ["overall", "android", "telegram", "macos", "windows"]},
-    {"section": "platform", "key": "overlap", "kind": "metadata", "filters": ["overall", "android", "telegram", "macos", "windows"]},
-    {"section": "platform", "key": "platforms", "kind": "metric", "filters": ["overall", "android", "telegram", "macos", "windows"],
+    {"section": "overview", "key": "versions_scope", "kind": "metadata", "filters": ["android", "telegram", "iphone_pwa", "macos", "windows"]},
+    {"section": "platform", "key": "desktop_detail_limited", "kind": "metadata", "filters": ["overall", "android", "telegram", "iphone_pwa", "macos", "windows"]},
+    {"section": "platform", "key": "iphone_pwa_available", "kind": "metadata", "filters": ["overall", "android", "telegram", "iphone_pwa", "macos", "windows"]},
+    {"section": "platform", "key": "overlap", "kind": "metadata", "filters": ["overall", "android", "telegram", "iphone_pwa", "macos", "windows"]},
+    {"section": "platform", "key": "platforms", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa", "macos", "windows"],
       "platforms": {
         "android": {"status": "partial", "reason": "A1: linked device inventory and app-open accounts reach the native card; no full chain test."},
         "telegram": {"status": "partial", "reason": "A2: Mini App presence reaches the card; it has accounts and foreground accounts, no device count or DAU/WAU/MAU; no full chain test."},
-        "iphone_pwa": {"status": "partial", "reason": "A4: PWA course opens are recorded, but V10 has no PWA card and historical source is not exclusive. A5 sign-ins do not prove activity."},
+        "iphone_pwa": {"status": "partial", "reason": "A4: PWA card (DAU/WAU/MAU) under the PWA filter from course-map opens with the route-owned dedupe prefix pwa-course-v3:, not the forgeable source text; Overall list unchanged. A5 sign-ins are not activity. Chain test pending (3.4)."},
         "macos": {"status": "partial", "reason": "A20: existing linked devices and desktop foreground card, with bounded event details; Desktop freeze, no new chain test."},
         "windows": {"status": "partial", "reason": "A20: existing linked devices and desktop foreground card, with bounded event details; Desktop freeze, no new chain test."}
       }
     },
-    {"section": "platform", "key": "scope", "kind": "metadata", "filters": ["overall", "android", "telegram", "macos", "windows"]},
-    {"section": "platform", "key": "versions", "kind": "metric", "filters": ["overall", "android", "telegram", "macos", "windows"],
+    {"section": "platform", "key": "scope", "kind": "metadata", "filters": ["overall", "android", "telegram", "iphone_pwa", "macos", "windows"]},
+    {"section": "platform", "key": "versions", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa", "macos", "windows"],
       "platforms": {
         "android": {"status": "partial", "reason": "Linked Android devices already supply the top 12 version groups; no full chain test. A19: Play and Direct are not split."},
         "telegram": {"status": "not_applicable", "reason": "The Mini App has no native linked-device app version inventory."},
@@ -312,7 +312,7 @@
         "windows": {"status": "partial", "reason": "Existing top 12 linked-device version groups by Desktop OS; Desktop freeze, no new chain test."}
       }
     },
-    {"section": "platform", "key": "versions_scope", "kind": "metadata", "filters": ["overall", "android", "telegram", "macos", "windows"]},
+    {"section": "platform", "key": "versions_scope", "kind": "metadata", "filters": ["overall", "android", "telegram", "iphone_pwa", "macos", "windows"]},
     {"section": "course", "key": "activation", "kind": "metric", "filters": ["overall"],
       "platforms": {
         "android": {"status": "not_instrumented", "reason": "A7: Android has no trustworthy lesson-start writer for the activation step."},

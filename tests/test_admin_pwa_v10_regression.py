@@ -46,7 +46,8 @@ BASELINE = "680761f15e05f6d543da52cd021d05df41217ea3"
 SINCE = {"weekly": "2026-11-05T12:00:00+00:00", "monthly": "2026-10-13T12:00:00+00:00", "all_time": None}
 # Section/filter cells that task 3.2 moved from `attribution_not_audited` to a
 # platform predicate. Every other cell must stay byte-identical to the golden.
-NEWLY_ATTRIBUTED = frozenset((section, platform) for section in ("money", "funnel")
+NEWLY_ATTRIBUTED = frozenset([("home", "iphone_pwa"), ("overview", "iphone_pwa"), ("platform", "iphone_pwa")]) | frozenset(
+    (section, platform) for section in ("money", "funnel")
                              for platform in ("android", "telegram", "iphone_pwa"))
 
 
@@ -328,8 +329,8 @@ class AdminPwaV10RegressionTests(unittest.IsolatedAsyncioTestCase):
                 if case[:2] in NEWLY_ATTRIBUTED:
                     # The baseline had no value here. Only the unavailable
                     # envelope may change; values are pinned in the 3.2 tests.
-                    self.assertEqual((expected[case]["available"], expected[case]["reason"]),
-                                     (False, "attribution_not_audited"))
+                    self.assertIs(expected[case]["available"], False)
+                    self.assertIn(expected[case]["reason"], ("attribution_not_audited", "not_instrumented"))
                     self.assertIs(response["available"], True)
                     continue
                 legacy = {key: value for key, value in response.items() if key != "metric_states"}
