@@ -157,6 +157,8 @@ class DiagnosticMiddleware:
             path = getattr(route, "path", None) or scope.get("path", "")
             if path in ("/api/v3/android/diagnostics", "/api/v3/pwa/diagnostics"):
                 return  # A reporter must not report a failure of its own intake.
+            if path == "/api/miniapp/event" and (b"x-hsk-diagnostic", b"diag.v1") in scope.get("headers", ()):
+                return  # Legacy Mini App events on the same path still get monitored.
             mapped = catalog.ROUTE_MAP.get(path)
             if mapped is None:
                 return

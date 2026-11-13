@@ -41,7 +41,7 @@ async def read_bounded_json(request: Request, limit=catalog.MAX_BODY_BYTES):
         body.extend(chunk)
     try:
         return json.loads(bytes(body))
-    except (ValueError, UnicodeDecodeError):
+    except (ValueError, RecursionError):
         raise IntakeRejected("invalid_body") from None
 
 

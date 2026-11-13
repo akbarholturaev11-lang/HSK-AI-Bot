@@ -32,29 +32,59 @@ or production acceptance.
 
 ## Task 5.1 evidence (local unless specified)
 
-- Analytics integrity workflow's PostgreSQL pytest list: 220 tests and 261
-  subtests passed; the post-pytest check proved 20 feature/platform pairs
-  through the real intake and authenticated Admin Inbox. The final Telegram
-  and shared-checker delta passed its focused run (26 tests).
-- Admin PWA Playwright: full browser script passed; diagnostic list, one-tap
-  Fixed, and reopened detail verified at 390 px in UZ/RU/TJ. Synthetic Apple
-  Push tests cover per-device deduplication, scope escalation, reopen
-  priority, rate limits, dispatch isolation, and failure isolation.
-- Learner Node, Chromium/WebKit diagnostics, cache versions, and worker asset
-  budget passed. The full Chromium/WebKit comparison retains two pre-existing
-  320 px Practice skeleton geometry failures in both the baseline and feature
-  worktree; the changed suite adds two passing diagnostic cases per browser.
-- Android: `testPlayDebugUnitTest testDirectDebugUnitTest`, `lint`,
-  `bundlePlayRelease bundleDirectRelease` passed. Direct release serialization
-  on a device still needs a smoke test.
-- PostgreSQL: migration 0156 upgrade/downgrade and live-data downgrade guard
-  passed locally. Synthetic 1M-receipt `EXPLAIN (ANALYZE, BUFFERS)`: admission
-  used the owner/time index (~0.03 ms); five-incident affected counts used the
-  incident/time index (~39 ms with ~67k matching receipts). Times describe
-  this fixture, not production.
-- OpenSpec strict validation and the localization catalog check passed. The
-  full-suite comparison, scratch-branch CI proof, staging and real-device
-  checks are tracked separately in the checklist.
+- Shared checker in push and pull-request mode, and the backend/PWA policy
+  with `--enforce-change-tests`, passed. The [feature Analytics integrity
+  run](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43412786216)
+  passed. The same suite passed locally (221 tests, 261 subtests); it proves
+  20 feature/platform pairs through the real intake and authenticated Inbox.
+- Scratch CI [rejected both an unmapped learner route and Android
+  package](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43412956667)
+  and [passed once they mapped to covered Lessons and the scratch route was
+  proved end to end](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43413255740).
+  The synthetic route and package are only on the scratch branch.
+- Admin PWA Playwright: main Inbox/Statistics browser suite plus MCP consent,
+  minimal Inbox, settings, outbound, campaigns and payout passed. Diagnostic
+  list, one-tap Fixed and reopened detail verified at 390 px in UZ/RU/TJ.
+  PostgreSQL Admin lock/regression list: 75 passed. Focused monitoring,
+  retention and dispatch: 63 passed. Onboarding, PWA auth, Pro, referrals,
+  legacy push and standalone QA bootstrap: 254 passed.
+- Learner Node, focused Chromium/WebKit diagnostics, cache versions and
+  worker asset budget passed. Local macOS Chromium/WebKit (Playwright 1.63)
+  showed the same two Russian Practice skeleton geometry failures at 320 px
+  on both `e7e6641a` and the monitoring feature. An isolated repeat of the
+  Chromium reduced-motion case gave the same 43.4 px group shift on both.
+  This is a local comparison, not evidence of a prior CI or production
+  failure. A timing-dependent partner/Postgres test also varied locally;
+  it passed in the dedicated Admin Postgres run.
+- Android: `testPlayDebugUnitTest testDirectDebugUnitTest`, `lint` and
+  `bundlePlayRelease bundleDirectRelease` passed. Actual R8 DEX extracted from
+  the Direct release AAB serialized a synthetic `diag.v1` batch on Android ART
+  (API 36 emulator) with all nine required wire fields. Physical acceptance
+  remains separate.
+- PostgreSQL: migration 0156 upgrade/downgrade and the populated downgrade
+  guard passed locally. Synthetic 1M-receipt `EXPLAIN (ANALYZE, BUFFERS)`:
+  admission used the owner/time index (~0.03 ms); five-incident affected
+  counts used the incident/time index (~39 ms with ~67k matching receipts).
+  Times describe this fixture, not production.
+- OpenSpec strict validation, generated localization catalog, Python and JS
+  syntax checks and single Alembic head passed. The full non-browser-suite
+  comparison has not been signed off; keep 5.1 open until it is recorded.
+
+## Joint Analytics and Monitoring audit (5.3, feature branch)
+
+- **Analytics Impact:** no new KPI events or writer changes. Diagnostic
+  freshness adds only the three client-source rows. The V10 golden test and
+  Telegram chain verify the projection boundary and no double counting.
+- **Monitoring Impact:** authenticated content-free client failures and
+  ownerless backend failures have a separate receipt/incident path to Admin
+  Inbox. PostgreSQL and runtime proof cover intake, deduplication, deletion,
+  triage and bounded push. A signed Telegram batch writes no Message or KPI
+  row; the legacy Message, technical push and AI context remain intact.
+  Android, PWA and Telegram diagnostic intake failures do not report
+  themselves. Shared CI enforces both registries and the writer boundary.
+- This audit covers the feature branch. Approval, rollout, physical Apple
+  Push/Safari/Android checks, the Play Data safety filing and the verified
+  `main` ref are still separate gates.
 
 ## Drift check (task 1.1)
 
@@ -62,8 +92,7 @@ or production acceptance.
   documents; no `app/`, `android/`, `.github/` or `scripts/` change.
 - Voice V8 (`origin/feat/ai-voice-v8-pwa-android-20261111`) is still at
   `680761f1` and not on `main`, so the `live_*` codes in the catalog follow the
-  current `main` sources. Re-check them if V8 lands before task 2.1/2.2.
-- Voice V8 has its own branch. Recheck the catalog mappings if it lands before promotion.
+  current `main` sources. Recheck the mappings if V8 lands before promotion.
 
 ## Implementation decisions (within the design)
 

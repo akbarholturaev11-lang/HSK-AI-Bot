@@ -169,6 +169,11 @@ class IntakeRouteTests(unittest.IsolatedAsyncioTestCase):
                                            headers={"Authorization": f"Bearer {token}",
                                                     "Content-Type": "text/plain"})
         self.assertEqual(text_body.status_code, 422)
+        nested = await self.client.post("/api/v3/android/diagnostics",
+                                        content=b"[" * 2000 + b"]" * 2000,
+                                        headers={"Authorization": f"Bearer {token}",
+                                                 "Content-Type": "application/json"})
+        self.assertEqual((nested.status_code, nested.json()["error"]), (422, "invalid_body"))
 
     async def test_off_answers_paused_without_touching_the_database(self):
         def no_database():
@@ -288,6 +293,25 @@ class DiagnosticMiddlewareTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(delivered, sent_messages)
         self.assertIs(delivered[1], sent_messages[1])
         self.assertEqual(len(fake.calls), 1)
+
+    async def test_diagnostic_transports_do_not_report_their_own_5xx(self):
+        fake = FakeReporter()
+        app = FastAPI()
+
+        async def unavailable():
+            return JSONResponse({"ok": False}, status_code=500)
+
+        paths = ("/api/v3/android/diagnostics", "/api/v3/pwa/diagnostics", "/api/miniapp/event")
+        for path in paths:
+            app.add_api_route(path, unavailable, methods=["POST"])
+        app.add_middleware(DiagnosticMiddleware, reporter_obj=fake)
+        for path in paths:
+            headers = {"X-HSK-Diagnostic": "diag.v1"} if path == paths[-1] else {}
+            self.assertEqual((await self.request(app, "POST", path, headers=headers)).status_code, 500)
+        self.assertEqual(fake.calls, [])
+        self.assertEqual((await self.request(app, "POST", paths[-1])).status_code, 500)
+        self.assertEqual(len(fake.calls), 1)
+        self.assertEqual(fake.calls[0][0], "telegram")
 
     def test_platform_follows_the_route_prefix(self):
         self.assertEqual(platform_for_route("/api/v3/android/course/map"), "android")
