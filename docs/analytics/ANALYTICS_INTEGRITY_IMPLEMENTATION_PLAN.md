@@ -35,8 +35,10 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 | Admin readers | `app/admin_api/pwa_analytics*.py`, `pwa_metrics.py` | V10 emits per-metric states; values unchanged in 3.1 |
 | Monitoring requirements | `docs/monitoring/REQUIREMENTS.md` | Follows this work; reuses its identifiers (§7, §11) |
 
-## Current state — 2026-11-12
+## Current state — 2026-11-13
 
+- **On `main` since 2026-11-13 (`f81bb64e`), deployed to production:** the owner asked to push everything to `main`. The V10 per-platform work (PR #285), R1–R4 (PR #307, merged by that push) and the final audit fixes are live; migration `0155` ran in production at deploy (`0154 → 0155`, «Migrations OK», no errors). Before the push the merged tree passed the full unit suite (5197 passed, 0 failed), all 52 PostgreSQL modules (753 passed, 0 failed), the coverage checker in push and pull_request modes, the i18n guards and a local PostgreSQL `0155` upgrade/downgrade/upgrade. The bullets below are the pre-merge history.
+- **Still open:** 6.2 owner acceptance on real clients; production data volume is not verified.
 - The branch has the PostgreSQL baseline, the coverage guard and per-metric V10 states in the API and the Admin UI. It also has per-platform scoping, route chain tests, the PWA Pro funnel, `return_retention` and Report freshness.
 - An independent audit of PR #285 (55 findings) confirmed 17. The code and process defects among them are fixed on this branch; see [Audit remediation](#audit-remediation--pr-285-2026-11-12). Every V10 value still matches the baseline except two Overall Finance averages, which were wrong on `main` too (#34).
 - **Open: 6.2 real-client acceptance** (owner devices and a deployment of this branch; checklist below) and **6.3 promotion** (owner approval). No merge to `main` without the owner's permission.
@@ -617,6 +619,7 @@ Written from the code on this branch.
 - 2026-11-13 — Final audit (O1): analytics-only rows do not count as learner activity in D1 recovery (`D1_RECOVERY_NOT_ACTIVITY_EVENTS`).
 
 ## Session log (newest first, one or two lines each)
+- 2026-11-13 — Promoted to `main` at the owner's request: merge `4a647ca5` + four baseline-test fixes, `origin/main` = `f81bb64e`; Railway deploy succeeded, `0155` applied, no 5xx after start. PRs #285 and #307 are marked merged.
 - 2026-11-13 — Final audit remediation (B1–B4, O1) verified on the working tree over `50a84d9e`: full unit suite **5192 passed, 11 failed** = the 8 known baseline failures + 3 `test_smart_reminder_dispatch_analysis` native-guard tests that fail between 00:00 and 02:00 UTC on `main` and `50a84d9e` too (a goal studied at 02:00 UTC is still in the future; test-only fix on `fix/known-baseline-test-failures-20261113`); all 52 PostgreSQL modules **753 passed, 12 skipped, 0 failed**; 8/8 Admin PWA browser suites pass. Course under production limits: 1M rows max 3.25 s, right after a bulk load 3.29 s, 600k 1.30 s.
 - 2026-11-13 — Final verification of R1–R4 on `1c5162ed`: full unit suite **5193 passed**, only the 8 known baseline failures (live voice relay ×3, practice-page coach ×3, Mini App product name ×2); all 52 PostgreSQL modules **748 passed, 12 skipped, 0 failed**; Admin PWA browser harness passed; checker passes in push and pull_request modes; four OpenSpec changes valid. Pushed as a fast-forward to the PR #307 branch (single branch). Open: owner approval of migration `0155` and owner acceptance on real clients.
 - 2026-11-13 — R3 performance on local PostgreSQL 15, 300k entries / 60k approved payments / 20k accounts (second run, seconds): weekly Overall 0.07, platforms 0.02–0.05; all-time Overall 1.45, Android 0.33, Telegram 0.40, PWA 0.49. `EXPLAIN ANALYZE` of PWA all-time attribution: 235 ms; the nearest same-client entry is a bitmap lookup on the `user_id` and `telegram_id` indexes, about 0.008 ms per payment (22,668 payments).
