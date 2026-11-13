@@ -5,7 +5,7 @@ description: Concrete HSK AI learner PWA and Android UI/UX design standards: hie
 
 # HSK AI UI/UX — concrete design standards
 
-Scope: user-visible design and interaction patterns for learner **iPhone PWA and Android**. Use these rules when creating, modifying or reviewing an HSK AI screen. Keep this skill UI/UX-only; general engineering, API, analytics, monitoring, CI, release and Git rules belong in \`AGENTS.md\` and the relevant project documents.
+Scope: user-visible design and interaction patterns for learner **iPhone PWA and Android**. Use these rules when creating, modifying or reviewing an HSK AI screen. Keep this skill UI/UX-only; general engineering, API, analytics, monitoring, CI, release and Git rules belong in `AGENTS.md` and the relevant project documents.
 
 ## 1. Unified screen alignment and vertical rhythm
 
@@ -49,7 +49,7 @@ Scope: user-visible design and interaction patterns for learner **iPhone PWA and
 
 - **The same named HSK AI character must have the same recognizable identity everywhere it appears**: silhouette, face/eyes, ears, body proportions, characteristic colors, accessories and illustration style. Do not invent a new panda face, proportions, fur style or unrelated mascot for a new screen, loading state, campaign or feature.
 - **Panda remains the established Panda character** across onboarding, course, lessons, voice and other Panda appearances. Only the pose, gesture, facial expression, gaze, reaction, movement or scene composition may change as appropriate to context. Those changes must not make it look like a different panda.
-- If another existing cast character is explicitly used, preserve **that character's** canonical identity too; do not silently replace every pre-existing character with Panda. Existing web character pack: \`app/static/assets/characters/hsk-character-pack.js\`; Android character source: \`android/app/src/main/java/com/pomp/hskai/core/design/components/HskCharacters.kt\`. Other currently used Panda renderers include \`feature/course/PandaMascot.kt\` and \`feature/onboarding/OnboardingPandaMascot.kt\`.
+- If another existing cast character is explicitly used, preserve **that character's** canonical identity too; do not silently replace every pre-existing character with Panda. Existing web character pack: `app/static/assets/characters/hsk-character-pack.js`; Android character source: `android/app/src/main/java/com/pomp/hskai/core/design/components/HskCharacters.kt`. Other currently used Panda renderers include `feature/course/PandaMascot.kt` and `feature/onboarding/OnboardingPandaMascot.kt`.
 - Reuse existing approved character artwork/rendering as the visual reference. Where multiple renderers already exist, compare their actual appearance and converge toward the established persona instead of drawing a speculative replacement. Do not treat a generated image that merely resembles a panda as matching the HSK AI character.
 - Characters are contextual teachers/companions, not mandatory decoration on every statistics row, control or loading slot.
 
@@ -67,7 +67,7 @@ Scope: user-visible design and interaction patterns for learner **iPhone PWA and
 
 ## 10. Exact layout-matched skeletons and independent reveal — mandatory
 
-**Design the loading state from the populated component, not from a generic placeholder.** This is a visual/interaction contract; implementation mechanics are governed by \`AGENTS.md\` and \`docs/PERFORMANCE_PWA_PROGRESSIVE_LOADING.md\`.
+**Design the loading state from the populated component, not from a generic placeholder.** This is a visual/interaction contract; implementation mechanics are governed by `AGENTS.md` and `docs/PERFORMANCE_PWA_PROGRESSIVE_LOADING.md`.
 
 1. **Exact geometry:** each skeleton matches its own actual content area at the relevant screen width — outer box, minimum height, padding, margins, gaps, column structure, text line slots, imagery/avatar dimensions, aspect ratios, border radii and alignment. The same screen type may need responsive presets. Do not use a generic skeleton card or spinner where the actual UI has a different composition.
 2. **Keep known UI visible:** titles, section labels, tabs, fixed nav, known field labels, static icons and other content **not dependent on the request** render immediately in their final position. Skeleton shapes cover **only unknown, not-yet-loaded data** (for example name, score, remote image, list rows, quota). Do not replace a known label with a gray bar.
@@ -79,7 +79,7 @@ Scope: user-visible design and interaction patterns for learner **iPhone PWA and
 
 ## 11. Honest UI states, readability and accessibility
 
-- Show real verified values only; distinguish \`loading\`, \`no data\`, \`unavailable/error\` and verified \`0\` visually. Do not fabricate XP, streak, score, rank, Pro rights or a completed lesson for presentation.
+- Show real verified values only; distinguish `loading`, `no data`, `unavailable/error` and verified `0` visually. Do not fabricate XP, streak, score, rank, Pro rights or a completed lesson for presentation.
 - Ensure readable contrast, clear focus/selection feedback, meaningful labels, and sufficiently large touch targets (PWA ≥44 CSS px; Android ≥48 dp) even where icon artwork is visually small.
 - Support long Uzbek/Russian/Tajik labels, Simplified Chinese, large font settings, wrapping and mobile widths without clipped core actions. Important statuses cannot rely on color alone.
 
