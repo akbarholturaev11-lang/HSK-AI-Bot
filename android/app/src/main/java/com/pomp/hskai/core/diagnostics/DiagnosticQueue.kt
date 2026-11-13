@@ -99,6 +99,16 @@ class DiagnosticQueue(
 
     fun purge() = synchronized(lock) { store.delete() }
 
+    fun purgeOwner(owner: String) = retain { it.owner != owner }
+
+    fun keepPreSignIn() = retain { it.owner.isEmpty() }
+
+    private fun retain(keep: (QueuedDiagnostic) -> Boolean) = synchronized(lock) {
+        val all = load()
+        val kept = all.filter(keep)
+        if (kept.size != all.size) save(kept)
+    }
+
     fun size(): Int = synchronized(lock) { load().size }
 
     private fun QueuedDiagnostic.isLive(now: Long) = queuedAt <= now && now - queuedAt < ttlMillis

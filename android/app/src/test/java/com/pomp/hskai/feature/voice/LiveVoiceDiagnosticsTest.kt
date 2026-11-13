@@ -84,6 +84,16 @@ class LiveVoiceDiagnosticsTest {
     }
 
     @Test
+    fun `a late socket failure from the previous account is ignored`() {
+        val socket = FakeSocket()
+        val listener = connected(socket).listener()
+        kit.reporter.clearOwner()
+        kit.reporter.bindOwner("device-b")
+        listener.onFailure(socket, IOException("reset"), null)
+        assertEquals(emptyList<String>(), kit.codes())
+    }
+
+    @Test
     fun `server-sent codes are never in the allowlist`() {
         for (code in listOf("live_voice_unavailable", "live_quota_exhausted", "budget_limit", "time_limit",
             "session_limit", "live_connect_failed", "live_network_backpressure", "live_audio_backpressure")) {

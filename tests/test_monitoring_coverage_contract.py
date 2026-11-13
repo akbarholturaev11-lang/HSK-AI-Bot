@@ -119,6 +119,13 @@ class MonitoringCoverageTests(unittest.TestCase):
         self.assertEqual(registry["monitoring"]["mode"], "require_covered")
         self.assertGreater(len(summary["routes"]), 200)
 
+    def test_mounted_learner_routes_match_the_ci_inventory(self):
+        from app.main import app
+
+        mounted = {route.path for route in app.routes
+                   if hasattr(route, "path") and monitoring.is_learner_route(route.path)}
+        self.assertEqual(mounted, set(monitoring.learner_routes(ROOT)))
+
     def test_monitoring_cannot_write_analytics_or_reuse_failure_codes_as_event_names(self):
         with self.assertRaisesRegex(monitoring.MonitoringError, "diagnostic codes used as Analytics events"):
             self.repo.validate(block(), analytics_events={"api_5xx"})
@@ -132,13 +139,32 @@ class MonitoringCoverageTests(unittest.TestCase):
         registry = checker.load_registry(REGISTRY_PATH.read_text(encoding="utf-8"))
         registry.pop("monitoring")
         checker.validate_schema(registry)
-        self.assertIsNone(checker.validate_monitoring(registry))
+        self.assertIsNone(checker.validate_monitoring(registry, self.repo.root))
 
     def test_inventory_resolves_router_prefix_and_add_api_route(self):
         routes = monitoring.learner_routes(self.repo.root)
         self.assertEqual(set(routes), set(ALL_ROUTES))
         self.assertEqual(routes["/api/v3/pwa/extra/save"][0], "app/api/sample.py")
         self.repo.validate(block())
+
+    def test_websocket_routes_are_checked_including_a_router_prefix(self):
+        self.repo.write("app/api/socket.py", """
+            from fastapi import APIRouter
+            router = APIRouter(prefix="/api/v3")
+            @router.websocket("/voice/live")
+            async def relay(): ...
+            router.add_api_websocket_route("/voice/live2", relay)
+        """)
+        self.assertFails("learner route /api/v3/voice/live has no catalog ROUTE_MAP entry")
+        self.assertEqual(set(monitoring.learner_routes(self.repo.root)) - set(ALL_ROUTES),
+                         {"/api/v3/voice/live", "/api/v3/voice/live2"})
+
+    def test_inbox_cannot_be_left_without_a_monitoring_registry(self):
+        self.repo.write(monitoring.INBOX_MODULE, 'Source = Literal["diagnostic"]')
+        registry = checker.load_registry(REGISTRY_PATH.read_text(encoding="utf-8"))
+        del registry["monitoring"]
+        with self.assertRaisesRegex(checker.CoverageError, "requires the monitoring registry"):
+            checker.validate_monitoring(registry, self.repo.root)
 
     def test_unmapped_route_names_route_and_file(self):
         for missing in ("/api/v3/pwa/extra/save", "/api/v3/ping", "/api/v3/lesson/start"):
@@ -156,6 +182,13 @@ class MonitoringCoverageTests(unittest.TestCase):
         value = block(android_packages={"lesson": "lessons", "wallet": "practice"})
         self.repo.write("app/static/course_v3_new.html", "<html></html>")
         self.assertFails("app/static/course_v3_new.html", value)
+
+    def test_inventory_covers_play_and_direct_only_packages(self):
+        for source in ("play", "direct"):
+            self.repo.write(f"{FEATURE_DIR.replace('/main/', f'/{source}/')}/{source}/Feature.kt",
+                            "class Feature")
+        self.assertEqual(monitoring.android_packages(self.repo.root), ["direct", "lesson", "play"])
+        self.assertFails("Android feature package has no monitoring mapping")
 
     def test_unknown_reporter_literal(self):
         self.repo.write("app/static/course_v3_data/x.js", "HskDiag.report('lessons', 'made_up', 'x')")
@@ -177,8 +210,9 @@ class MonitoringCoverageTests(unittest.TestCase):
                          block(exemptions=[{"target": "/api/v3/ping", "reason": " "}]))
         self.assertFails("must name one exact route",
                          block(exemptions=[{"target": "app/api/", "reason": "everything"}]))
+        self.repo.write("app/static/group/file.txt", "")
         self.assertFails("a directory cannot be exempted",
-                         block(exemptions=[{"target": f"{FEATURE_DIR}/lesson", "reason": "x"}]))
+                         block(exemptions=[{"target": "app/static/group", "reason": "x"}]))
 
     def test_duplicate_or_unknown_feature_id(self):
         value = block()
@@ -241,7 +275,10 @@ class MonitoringCoverageTests(unittest.TestCase):
             monitoring.validate_chain_proof(value, proof)
         self.assertIn("lessons/iphone_pwa", str(caught.exception))
         proof.write_text("iphone_pwa|lessons|api_5xx\n", encoding="utf-8")
-        self.assertEqual(monitoring.validate_chain_proof(value, proof), 1)
+        self.assertEqual(monitoring.validate_chain_proof(value, proof, known_failures={"api_5xx"}), 1)
+        proof.write_text("iphone_pwa|lessons|made_up\n", encoding="utf-8")
+        with self.assertRaisesRegex(monitoring.MonitoringError, "invalid runtime chain proof"):
+            monitoring.validate_chain_proof(value, proof, known_failures={"api_5xx"})
 
 
 class MonitoringDiffTests(unittest.TestCase):
@@ -249,11 +286,11 @@ class MonitoringDiffTests(unittest.TestCase):
         self.repo = Fixture()
         self.addCleanup(self.repo.close)
 
-    def diff(self, value, previous, previous_routes=None, packages=("lesson",), pages=("course-v3.html",)):
+    def diff(self, value, previous, previous_routes=None, packages=("lesson",), pages=("course-v3.html",), **kwargs):
         summary = self.repo.validate(value)
         monitoring.validate_monitoring_diff(value, previous, summary,
                                             set(previous_routes if previous_routes is not None else ALL_ROUTES),
-                                            set(packages), set(pages), self.repo.root)
+                                            set(packages), set(pages), self.repo.root, **kwargs)
 
     def test_cosmetic_change_passes(self):
         self.diff(block(), block())
@@ -271,6 +308,16 @@ class MonitoringDiffTests(unittest.TestCase):
         value["mode"] = "require_covered"
         with self.assertRaises(monitoring.MonitoringError):
             self.diff(value, block(), previous_routes=previous)
+
+    def test_changed_existing_handler_needs_coverage_or_a_fresh_exception(self):
+        path = "/api/v3/ping"
+        value = block(mode="require_covered")
+        with self.assertRaisesRegex(monitoring.MonitoringError, "changed /api/v3/ping"):
+            self.diff(value, block(), changed_routes={path})
+        value["exemptions"] = [{"target": path, "reason": "Diagnostic-only response change."}]
+        self.diff(value, block(), changed_routes={path})
+        with self.assertRaisesRegex(monitoring.MonitoringError, "changed /api/v3/ping"):
+            self.diff(value, deepcopy(value), changed_routes={path})
 
     def test_new_package_and_page_need_coverage(self):
         with self.assertRaises(monitoring.MonitoringError) as caught:

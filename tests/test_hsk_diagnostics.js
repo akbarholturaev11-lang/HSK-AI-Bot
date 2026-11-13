@@ -10,14 +10,18 @@ const KEY = "hsk-diag-v1";
 const turn = () => new Promise(setImmediate);
 const json = (status, body) => ({ status, ok: status >= 200 && status < 300, json: async () => body });
 
-function browser({ storage = new Map(), path = "/iphone-pwa/course", online = true, initData = "" } = {}) {
+function browser({ storage = new Map(), path = "/iphone-pwa/course", online = true, initData = "", storageDisabled = false, openedAt = Date.UTC(2026, 10, 13) } = {}) {
   const events = new Map(), timers = new Map(), posts = [];
   let now = Date.UTC(2026, 10, 13), actor = 1, answer = json(200, { accepted: 1 }), sequence = 0, calls = 0;
   const window = {
     location: { pathname: path, href: "https://hsk.test" + path },
     navigator: { onLine: online },
+    performance: { timeOrigin: openedAt },
     Telegram: { WebApp: { initData } },
-    localStorage: { getItem: (key) => storage.get(key), setItem: (key, value) => storage.set(key, value) },
+    get localStorage() {
+      if (storageDisabled) throw new Error("storage blocked");
+      return { getItem: (key) => storage.get(key), setItem: (key, value) => storage.set(key, value) };
+    },
     document: {
       querySelectorAll: () => [{ getAttribute: () => "/asset.js?v=20261113-0123456789ab" }],
       addEventListener() {},
@@ -46,6 +50,24 @@ function browser({ storage = new Map(), path = "/iphone-pwa/course", online = tr
 }
 
 async function main() {
+  const unverified = browser();
+  unverified.events.get("error")({error: new Error("signed-out document")});
+  unverified.actor(2);
+  unverified.diag.flush();
+  await turn();
+  assert.equal(unverified.calls(), 0, "the reporter cannot bind an unverified page to a later actor");
+  assert.equal(unverified.diag.owner(2), true);
+  unverified.diag.flush();
+  await turn();
+  assert.equal(unverified.posts.length, 0, "pre-verification failures are never adopted");
+
+  const withoutStorage = browser({ storageDisabled: true });
+  withoutStorage.diag.owner(1);
+  assert.equal(withoutStorage.diag.report("lessons", "load_failed", "lesson_open", 502), true);
+  withoutStorage.diag.flush();
+  await turn();
+  assert.equal(withoutStorage.posts.length, 1, "restricted storage falls back to the current document");
+
   const first = browser({ online: false });
   assert.equal(first.calls(), 0, "initializing does not read the session");
   first.diag.owner(1);
@@ -79,7 +101,8 @@ async function main() {
   const original = browser({ online: false });
   original.diag.owner(1);
   original.diag.report("lessons", "load_failed", "lesson_open", 500);
-  const other = browser({ storage: original.storage });
+  const oldUnbound = browser({ storage: original.storage });
+  const other = browser({ storage: original.storage, openedAt: Date.UTC(2026, 10, 13) + 1 });
   other.actor(2);
   other.diag.owner(2);
   assert.equal(original.diag.report("lessons", "save_unconfirmed", "lesson_complete", 500), false);
@@ -87,11 +110,37 @@ async function main() {
   await turn();
   assert.equal(other.posts.length, 0, "previous owner's events discarded");
   assert.equal(other.diag.report("lessons", "load_failed", "lesson_open", 500), true, "reset coalescing on owner change");
+  assert.equal(oldUnbound.diag.owner(1), false, "a stale actor reply cannot overwrite the next account");
+  assert.equal(other.queue().events.length, 1);
   other.response(json(401, {}));
   other.diag.flush();
   await turn();
   assert.equal(other.queue().events.length, 0);
   assert.equal(other.diag.report("lessons", "load_failed", "lesson_open", 502), false);
+
+  for (const staleReply of [json(403, {}), json(200, { accepted: 0, paused: true })]) {
+    const openedAt = Date.UTC(2026, 10, 13);
+    const old = browser();
+    const changedTab = browser({ storage: old.storage, openedAt: openedAt + 1 });
+    old.diag.owner(1);
+    changedTab.diag.owner(1);
+    let finishOldDelivery;
+    old.response(new Promise(resolve => { finishOldDelivery = resolve; }));
+    old.diag.report("lessons", "load_failed", "lesson_open", 500);
+    old.diag.flush();
+    await turn();
+    assert.equal(old.posts.length, 1);
+    changedTab.diag.logout(1);
+    const replacement = browser({ storage: old.storage, openedAt: openedAt + 2 });
+    assert.equal(replacement.diag.owner(1), true);
+    replacement.diag.report("lessons", "save_unconfirmed", "lesson_complete", 500);
+    finishOldDelivery(staleReply);
+    await turn();
+    assert.equal(replacement.queue().events.length, 1, "a stale reply cannot clear a later login for the same user");
+    replacement.diag.flush();
+    await turn();
+    assert.equal(replacement.posts.length, 1, "a stale paused reply cannot suppress the replacement session");
+  }
 
   const aged = browser();
   aged.diag.owner(1);
@@ -174,7 +223,7 @@ async function main() {
   assert.equal(live.queue().events.length, 0);
   const invalid = create();
   const broken = invalid.connect("fixture", "", "csrf");
-  invalid.socket.onmessage({ data: "not JSON" });
+  invalid.socket.onmessage({ data: "null" });
   await assert.rejects(broken, /live_response_invalid/);
   const disconnected = create();
   const ready = disconnected.connect("fixture", "", "csrf");
@@ -182,6 +231,14 @@ async function main() {
   await ready;
   disconnected.socket.onerror();
   disconnected.lost();
+  assert.deepEqual(live.queue().events.map((e) => e.event.site_code), ["live_response_invalid"], "offline socket closure is expected");
+  live.window.navigator.onLine = true;
+  const interrupted = create();
+  const opened = interrupted.connect("fixture", "", "csrf");
+  interrupted.socket.onmessage({ data: '{"type":"ready","input_sample_rate":16000,"output_sample_rate":24000}' });
+  await opened;
+  interrupted.socket.onerror();
+  interrupted.lost();
   assert.deepEqual(live.queue().events.map((e) => e.event.site_code), ["live_response_invalid", "live_socket_closed"]);
   console.log("Learner diagnostic privacy, owner isolation, retry, queue and Live Voice checks passed");
 }

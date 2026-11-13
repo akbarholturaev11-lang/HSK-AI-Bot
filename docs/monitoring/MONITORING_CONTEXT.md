@@ -31,6 +31,36 @@ or production acceptance.
   `MONITORING_MINIAPP_ADAPTER_ENABLED=false` by default. Promotion and
   staged acceptance remain owner gates.
 
+## Independent audit (2026-11-13–14)
+
+Compared the implementation at `b0bd6778` with the verified remote
+`main` at `33dca055`. Graphify's report matched the audit starting commit.
+The extracted graph identifies `ingest → decide_alert → enqueue_automatic_alert`
+and `unified_inbox → _diagnostic_rows`. The outbox table and network/credential
+edges were checked in source and tests: graph paths crossing test imports or
+inferred matching names are not runtime evidence.
+
+| Finding | Correction and regression evidence |
+| --- | --- |
+| Android could send account A's queue with account B's bearer; a device ID is reusable. Late requests and stale uploader results could also cross sessions. | Fence capture and upload by the server-issued session ID, keep the worker out of auth refresh, and scope queue removal to the originating session. Keep the JVM owner-switch and late-response cases. |
+| A PWA diagnostic session probe could adopt unverified events as another account, and storage errors discarded reports. | Bind to the app's verified document actor, never adopt pre-auth events, fence the delivery response, and keep bounded in-memory fallback. |
+| Monitoring could occupy the shared pool; the legacy Mini App mirror could hold up the original event reply. | Limit diagnostic writers before they open a session, bound PostgreSQL statements/locks, and move the additive legacy mirror after commit to bounded background work. Preserve the existing technical message, Push and AI context. |
+| Intake admitted overly broad version text; refused events could create empty incidents; recovered or delayed pre-Fixed observations could reopen incidents. | Platform version grammar and client-only sites, no incident creation on refusal, and timestamp/outcome checks at the existing locked triage transition. Accepted UUIDs remain idempotent; refused UUIDs are not persisted and refused counts represent observed attempts. |
+| Scope escalation depended on the Push toggle; failed reopen enqueue had no retry; a paused outbox could later deliver stale alerts. | Escalate the Inbox independently using failed distinct owners only, retry an unsent reopen on a new occurrence, and cancel diagnostic outbox rows older than 30 minutes before sending. The payment and legacy priority and transport stay unchanged. |
+| A populated DB with receipts but no triage/outbox could silently lose data on downgrade. | Migration 0156 refuses downgrade while any diagnostic data remains. Operational rollback is flags off with the additive schema retained. |
+| CI missed three mounted Voice WebSockets and flavour-only Android packages, and an unchanged URL could hide a materially changed handler. A green push-only check might have compared only its last push. | Inventory all 261 mounted learner routes, include Direct/Play packages, require coverage or a fresh exact exemption on changed surfaces, and compare feature push checks against the default-branch fork point. Android and learner browser workflows also trigger on this feature branch. |
+| GitHub had no rule requiring CI on `main`. | [Active main ruleset](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/rules/27213316) requires the GitHub Actions `analytics-integrity` check, up to date with main, with no bypass actors. The remote main commit did not change. |
+
+**Analytics Impact:** no KPI writer or entitlement authority changes.
+Diagnostic freshness remains an additive source and the V10, checkout,
+learning and Telegram separation tests verify the existing projections.
+
+**Monitoring Impact:** account binding, admission, triage, alert delivery and
+coverage proof are hardened in the existing chain. The branch remains out of
+production. A Chromium virtual passkey and a locally decrypted VAPID Web Push
+request are not physical Apple Push acceptance. Device/browser/provider and
+rollout gates below are still required.
+
 ## Task 5.1 evidence (local unless specified)
 
 - Shared checker in push and pull-request mode, and the backend/PWA policy
@@ -199,13 +229,13 @@ or production acceptance.
 - **Retention** runs in `_desktop_auth_retention_scheduler` in its own `try`.
 - **503 is not captured** by the middleware: the codebase answers 503 for a
   switched-off feature (for example `pwa_auth_unavailable`). Captured: 500, 502,
-  504 and unhandled exceptions. Integration failures behind a 503 report through
-  `report_server_failure`.
+  504 and unhandled exceptions. Integration failures behind a 503 and unexpected
+  Live Voice relay failures report through `report_server_failure`.
 - **Lava sites.** Only processing-failure alert codes become incidents
-  (`LAVA_FAILURE_SITES` in `lava/notify.py`: webhook auth and retries →
+  (`LAVA_FAILURE_SITES` in `lava/notify.py`: exhausted webhook retries →
   `lava_webhook`; activation, amount, unmatched, review, renewal, promo →
-  `lava_ledger`). Refund/chargeback/partner-credit alerts are business outcomes,
-  not failures. Every code still sends its Telegram alert unchanged.
+  `lava_ledger`). Expected webhook auth rejection and business outcomes do
+  not enter diagnostics. Every code still sends its Telegram alert unchanged.
 - **AI provider.** `AIProviderChain.chat_completion` serves several features; a
   final failure is filed as `chat_ai` at the `ai_provider` site (the site is what
   identifies the provider). STT failures are `voice_practice` / `voice_provider`.
@@ -220,11 +250,11 @@ or production acceptance.
   their real intake; the server chain runs through a `BackendReporter`, with an
   optional `trigger` (a real middleware request or `report_server_failure`).
 
-- **Android owner stamp.** The Android client never learns its `users.id`; the
-  queue is stamped with the bootstrap device session ID (`device.id`), which
-  belongs to exactly one account. Sign-in binds it (events queued before sign-in
-  are adopted by that account); logout, expiry or an account switch purges the
-  queue. The server still takes the owner only from the bearer session.
+- **Android owner stamp.** The Android queue is stamped with the verified
+  bearer session ID (`sid`), not `device.id`, which may be reassigned.
+  Capture and delivery require the originating session; unauthenticated events
+  are not adopted by a later sign-in. The server still derives the canonical
+  account only from the verified bearer.
 - **Android 503.** `apiCall` reports `api_5xx` for every 5xx except 503, the
   backend's "switched off" answer, matching the server middleware.
 - **Android cancellation.** `apiCall` keeps mapping a cancelled call to
@@ -250,10 +280,9 @@ or production acceptance.
   answer stops queueing for 24 h and empties the queue; 401/403 drops it; other
   4xx drop the batch; 5xx and transport errors retry.
 
-- **Browser queue.** Bind each open document to its verified account. A stale
-  document cannot append to a replacement account's queue. Pre-verification
-  errors stay in memory while verification is pending and are discarded on a
-  signed-out reply; no anonymous report is sent. Session CSRF is used only in
+- **Browser queue.** Bind each open document to the account verified by its
+  application code. A stale document cannot append to a replacement account's
+  queue; pre-verification PWA errors are not adopted. Session CSRF is used only in
   the request header. The worker's 40-asset limit is unchanged; it does not warm
   the course document, which is already open when warm-up starts.
 

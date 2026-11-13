@@ -4,6 +4,7 @@ import android.util.Base64
 import com.pomp.hskai.BuildConfig
 import com.pomp.hskai.core.diagnostics.DiagFailure
 import com.pomp.hskai.core.diagnostics.DiagFeature
+import com.pomp.hskai.core.diagnostics.DiagnosticReporter
 import com.pomp.hskai.core.diagnostics.Diagnostics
 import com.pomp.hskai.core.diagnostics.REPORTED_LIVE_REASONS
 import com.pomp.hskai.core.network.ApiError
@@ -88,7 +89,7 @@ class AndroidLiveVoiceGateway(
             .build()
         val url = httpUrl.toString().replaceFirst("https://", "wss://")
         val ready = CompletableDeferred<Unit>()
-        val connection = AndroidLiveVoiceConnection(ready)
+        val connection = AndroidLiveVoiceConnection(ready, Diagnostics.scope(token))
         val request = Request.Builder()
             .url(url)
             .header("Authorization", "Bearer $token")
@@ -106,6 +107,7 @@ class AndroidLiveVoiceGateway(
 
 internal class AndroidLiveVoiceConnection(
     private val ready: CompletableDeferred<Unit>,
+    private val diagnosticScope: DiagnosticReporter.Scope? = Diagnostics.scope(),
 ) : LiveVoiceConnection {
     private val mutableEvents = MutableSharedFlow<LiveVoiceEvent>(replay = 1, extraBufferCapacity = 256)
     private val eventScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
@@ -208,7 +210,7 @@ internal class AndroidLiveVoiceConnection(
             "error" -> {
                 val code = message.optString("code").ifBlank { "live_voice_unavailable" }
                 if (!ready.isCompleted) ready.completeExceptionally(IOException(code))
-                fail(code)
+                fail(code, reportDiagnostic = false)
             }
             "pong" -> Unit
         }
@@ -244,11 +246,11 @@ internal class AndroidLiveVoiceConnection(
         )
     }
 
-    private fun fail(reason: String) {
+    private fun fail(reason: String, reportDiagnostic: Boolean = true) {
         if (closed.get() || terminal.get() || !failed.compareAndSet(false, true)) return
         // Client-side reasons only; the reason becomes a fixed site code.
-        REPORTED_LIVE_REASONS[reason]?.let {
-            Diagnostics.report(DiagFeature.VOICE_PRACTICE, DiagFailure.LIVE_SESSION_FAILED, it)
+        if (reportDiagnostic) REPORTED_LIVE_REASONS[reason]?.let {
+            Diagnostics.report(diagnosticScope, DiagFeature.VOICE_PRACTICE, DiagFailure.LIVE_SESSION_FAILED, it)
         }
         emitControl(LiveVoiceEvent.Failed(reason))
     }

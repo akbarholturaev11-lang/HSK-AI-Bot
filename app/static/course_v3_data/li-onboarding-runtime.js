@@ -189,7 +189,7 @@ function session(){
       location.replace("/iphone-pwa");
       throw new Error("pwa_actor_changed");
     }
-    if(global.HskDiag)global.HskDiag.owner(data.user_id);
+    global.HskDiagVerifiedOwner=data.user_id;if(global.HskDiag)global.HskDiag.owner(data.user_id);
     actor=data;return actor;
   }).catch(function(error){
     if(global.HskDiag)global.HskDiag.report("auth_session","restore_failed","session_restore",error&&(error.status||error)||0);

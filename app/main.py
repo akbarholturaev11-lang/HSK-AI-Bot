@@ -764,10 +764,20 @@ async def lifespan(app: FastAPI):
         for task in study_ai_tasks:
             with contextlib.suppress(asyncio.CancelledError):
                 await task
+        if lava_reconcile_task is not None:
+            with contextlib.suppress(asyncio.CancelledError):
+                await lava_reconcile_task
         await admin_pwa_due_campaigns.close()
         await admin_pwa_statistics_reader.aclose()
         await admin_pwa_analytics_reader.aclose()
         await admin_pwa_feedback_reader.aclose()
+        from app.services.monitoring.miniapp import drain_legacy
+        try:
+            async with asyncio.timeout(3):
+                await drain_legacy()
+                await diagnostic_reporter.drain()
+        except TimeoutError:
+            logger.warning("Diagnostic shutdown drain timed out")
         await bot.session.close()
         await engine.dispose()
 
@@ -6676,29 +6686,40 @@ async def miniapp_event(request: Request):
 
     if request.headers.get("X-HSK-Diagnostic") == "diag.v1":
         from app.services.monitoring import catalog, miniapp as diagnostics
-        from app.services.monitoring.intake import IntakeRejected
+        from app.services.monitoring.intake import IntakeBusy, IntakeRejected, bound_write, diagnostic_slot
+
+        def reply(body, status_code=200):
+            return JSONResponse(body, status_code=status_code, headers={"Cache-Control": "no-store"})
 
         if not diagnostics.enabled(settings):
-            return diagnostics.PAUSED
+            return reply(diagnostics.PAUSED)
         try:
             payload = await read_bounded_json(request)
         except IntakeRejected as exc:
-            return JSONResponse(status_code=413 if exc.code == "too_large" else 422,
-                                content={"ok": False, "error": exc.code})
+            return reply({"ok": False, "error": exc.code}, 413 if exc.code == "too_large" else 422)
         if not isinstance(payload, dict) or payload.get("event") != "app_error" or payload.get("schema") != catalog.SCHEMA:
-            return JSONResponse(status_code=422, content={"ok": False, "error": "invalid_diagnostic_schema"})
-        telegram_id = extract_fresh_verified_webapp_user_id(
-            request.headers.get("X-Telegram-Init-Data", ""), settings.BOT_TOKEN, max_age_seconds=86400,
-        )
+            return reply({"ok": False, "error": "invalid_diagnostic_schema"}, 422)
+        proof = request.headers.get("X-Telegram-Init-Data", "")
+        telegram_id = None
+        if len(proof) <= 8192:
+            try:
+                telegram_id = extract_fresh_verified_webapp_user_id(proof, settings.BOT_TOKEN, max_age_seconds=86400)
+            except (TypeError, ValueError):
+                pass  # Malformed signed data is an auth failure.
         if not telegram_id:
-            return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+            return reply({"ok": False, "error": "invalid_telegram_init_data"}, 401)
         try:
-            async with async_session_maker() as session:
-                return await diagnostics.record_client_batch(session, telegram_id=telegram_id,
-                                                             payload=payload, settings=settings)
+            with diagnostic_slot(settings):
+                async with async_session_maker() as session:
+                    await bound_write(session)
+                    result = await diagnostics.record_client_batch(session, telegram_id=telegram_id,
+                                                                   payload=payload, settings=settings)
+            return reply(result, 403 if result.get("error") == "diagnostic_session_required" else 200)
+        except IntakeBusy:
+            return reply({"ok": False, "error": "diagnostics_unavailable"}, 503)
         except Exception:
             logger.warning("Mini App diagnostic intake failed")
-            return JSONResponse(status_code=503, content={"ok": False, "error": "diagnostics_unavailable"})
+            return reply({"ok": False, "error": "diagnostics_unavailable"}, 503)
 
     payload = await request.json()
     if not isinstance(payload, dict):
@@ -6867,14 +6888,15 @@ async def miniapp_event(request: Request):
             return {"ok": True}
 
         if event == "app_error":
-            saved = await AppErrorContextService(session).record_miniapp_error(
+            owner_user_id = await AppErrorContextService(session).record_miniapp_error_owner(
                 telegram_id=telegram_id,
                 payload=payload,
             )
-            if saved and getattr(settings, "MONITORING_MINIAPP_ADAPTER_ENABLED", False):
-                from app.services.monitoring.miniapp import record_legacy_onboarding
-                await record_legacy_onboarding(session, telegram_id=telegram_id, payload=payload, settings=settings)
-            return {"ok": bool(saved)}
+            if owner_user_id and getattr(settings, "MONITORING_MINIAPP_ADAPTER_ENABLED", False):
+                from app.services.monitoring.miniapp import queue_legacy_onboarding
+                queue_legacy_onboarding(async_session_maker, owner_user_id=owner_user_id,
+                                        payload=payload, settings=settings)
+            return {"ok": bool(owner_user_id)}
 
         service = CourseMiniAppResultService(session)
 

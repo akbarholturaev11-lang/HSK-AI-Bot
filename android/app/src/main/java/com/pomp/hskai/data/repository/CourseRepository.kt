@@ -116,7 +116,7 @@ class CourseRepository(
             is ApiResult.Success -> result.value
         }
 
-        val response = apiCall(DiagTags.PROGRESS) {
+        val response = apiCall(DiagTags.PROGRESS, token) {
             api.courseMap("Bearer $token", timezoneOffsetMinutes())
         }
         return when (response) {
@@ -321,7 +321,7 @@ class CourseRepository(
             is ApiResult.Success -> result.value
         }
         return when (
-            val result = apiCall(DiagTags.LESSON_OPEN) { api.lesson("Bearer $token", lessonOrder, accessRef) }
+            val result = apiCall(DiagTags.LESSON_OPEN, token) { api.lesson("Bearer $token", lessonOrder, accessRef) }
         ) {
             is ApiResult.Failure -> {
                 notifySessionExpired(result.error)
@@ -557,7 +557,7 @@ class CourseRepository(
             is ApiResult.Failure -> return result
             is ApiResult.Success -> result.value
         }
-        val result = apiCall(DiagTags.LESSON_OPEN) {
+        val result = apiCall(DiagTags.LESSON_OPEN, token) {
             api.unlockLesson(
                 "Bearer $token",
                 LessonUnlockRequest(
@@ -588,7 +588,7 @@ class CourseRepository(
             is ApiResult.Failure -> return result
             is ApiResult.Success -> result.value
         }
-        val result = apiCall(DiagTags.LESSON_COMPLETE) {
+        val result = apiCall(DiagTags.LESSON_COMPLETE, token) {
             api.complete(
                 "Bearer $token",
                 CourseCompleteRequest(

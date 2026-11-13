@@ -28,7 +28,7 @@ import kotlinx.serialization.json.Json
  */
 class AndroidDiagnostics(
     private val context: Context,
-    api: AndroidDiagnosticsApi,
+    api: () -> AndroidDiagnosticsApi,
     token: suspend () -> String?,
 ) {
     private val json = Json { ignoreUnknownKeys = true; explicitNulls = false }
@@ -40,6 +40,7 @@ class AndroidDiagnostics(
     }
 
     val state: DiagnosticState = PrefsDiagnosticState(context.getSharedPreferences(PREFS, Context.MODE_PRIVATE))
+    private val previousProcessOwner = state.owner
     private val queue = DiagnosticQueue(AtomicDiagnosticFile(File(dir, "queue.json")), json)
     private val crashes = CrashRecorder(AtomicDiagnosticFile(File(dir, "crash.json")), json, state)
     val reporter = DiagnosticReporter(
@@ -51,7 +52,10 @@ class AndroidDiagnostics(
         executor = executor,
         onQueued = ::scheduleFlush,
     )
-    val uploader = DiagnosticUploader(queue, state, token, api::send)
+    private val diagnosticsApi by lazy(api)
+    val uploader = DiagnosticUploader(
+        queue, state, token, send = { bearer, batch -> diagnosticsApi.send(bearer, batch) },
+    )
 
     /** First thing in `Application.onCreate`: the crash handler and the reporter. */
     fun start() {
@@ -70,16 +74,16 @@ class AndroidDiagnostics(
         }
     }
 
-    fun bindOwner(deviceId: String) = reporter.bindOwner(deviceId)
+    fun bindToken(token: String) = reporter.bindOwner(diagnosticSessionId(token))
 
-    fun clearOwner() = reporter.clearOwner()
+    fun clearOwner(keepPreSignIn: Boolean = false) = reporter.clearOwner(keepPreSignIn)
 
     @RequiresApi(Build.VERSION_CODES.R)
     private fun reportExitReasons() {
         val manager = context.getSystemService(ActivityManager::class.java) ?: return
         val exits = manager.getHistoricalProcessExitReasons(context.packageName, 0, MAX_EXITS)
             .map { ExitRecord(it.reason, it.timestamp) }
-        ExitReasons.report(exits, state, reporter, System.currentTimeMillis())
+        ExitReasons.report(exits, state, reporter, System.currentTimeMillis(), previousProcessOwner)
     }
 
     private fun scheduleFlush() {
@@ -107,7 +111,13 @@ class AndroidDiagnostics(
 class DiagnosticFlushWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
     override suspend fun doWork(): Result {
         val app = applicationContext as HskAiApplication
-        val outcome = app.diagnostics.uploader.flush()
+        val outcome = try {
+            app.diagnostics.uploader.flush()
+        } catch (cancelled: kotlin.coroutines.cancellation.CancellationException) {
+            throw cancelled
+        } catch (_: Exception) {
+            FlushOutcome.RETRY
+        }
         return if (shouldRetryFlush(outcome, runAttemptCount)) Result.retry() else Result.success()
     }
 }

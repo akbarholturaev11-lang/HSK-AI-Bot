@@ -1996,74 +1996,74 @@
     "features": [
       {"id": "app_shell", "platforms": {
         "android": {"status": "partial", "reporter": "android/app/src/main/java/com/pomp/hskai/core/diagnostics/DiagnosticReporter.kt", "reason": "Crash handler, exit reasons (crash, native crash, ANR) and the Profile tab; Priority failure-to-Inbox chain evidence pending."},
-        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
-        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "No feature-specific learner PWA failure signal is wired for this legacy pair."},
+        "telegram": {"status": "not_instrumented", "reason": "No feature-specific signed Mini App chain is wired for this legacy pair."},
         "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Priority failure-to-Inbox chain evidence pending."}
       }},
       {"id": "assessments", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter records crashes by tab only; no tagged calls for this feature yet."},
         "iphone_pwa": {"status": "partial", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "reason": "Exam load/save and JS errors; Priority failure-to-Inbox chain evidence pending."},
-        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "telegram": {"status": "not_instrumented", "reason": "No feature-specific signed Mini App chain is wired for this legacy pair."},
         "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Priority failure-to-Inbox chain evidence pending."}
       }},
       {"id": "auth_session", "platforms": {
         "android": {"status": "covered", "reporter": "android/app/src/main/java/com/pomp/hskai/core/diagnostics/DiagnosticReporter.kt", "client_test": "android/app/src/test/java/com/pomp/hskai/core/diagnostics/ApiCallDiagnosticsTest.kt", "chain_test": "tests/test_monitoring_android_chain.py::AndroidMonitoringChainTests::test_android_api_failures_reach_inbox"},
         "iphone_pwa": {"status": "covered", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "client_test": "tests/test_hsk_diagnostics.js", "chain_test": "tests/test_monitoring_pwa_chain.py::PwaMonitoringChainTests::test_pwa_priority_failures_reach_inbox_as_verified_browser_owner"},
-        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "telegram": {"status": "not_instrumented", "reason": "No feature-specific signed Mini App chain is wired for this legacy pair."},
         "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Priority failure-to-Inbox chain evidence pending."}
       }},
       {"id": "chat_ai", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter records crashes by tab only; no tagged calls for this feature yet."},
-        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
-        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "No feature-specific learner PWA failure signal is wired for this legacy pair."},
+        "telegram": {"status": "not_instrumented", "reason": "No feature-specific signed Mini App chain is wired for this legacy pair."},
         "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Priority failure-to-Inbox chain evidence pending."}
       }},
       {"id": "checkout_payments", "platforms": {
         "android": {"status": "covered", "reporter": "android/app/src/main/java/com/pomp/hskai/core/diagnostics/DiagnosticReporter.kt", "client_test": "android/app/src/test/java/com/pomp/hskai/core/diagnostics/ApiCallDiagnosticsTest.kt", "chain_test": "tests/test_monitoring_android_chain.py::AndroidMonitoringChainTests::test_android_api_failures_reach_inbox"},
         "iphone_pwa": {"status": "covered", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "client_test": "tests/test_hsk_diagnostics.js", "chain_test": "tests/test_monitoring_pwa_chain.py::PwaMonitoringChainTests::test_pwa_priority_failures_reach_inbox_as_verified_browser_owner"},
-        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "telegram": {"status": "partial", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "reason": "Manual and Lava checkout can report through the signed Mini App transport; a dedicated checkout failure-to-Inbox chain test is pending."},
         "server": {"status": "covered", "reporter": "app/services/monitoring/backend.py", "chain_test": "tests/test_monitoring_server_chain.py::ServerMonitoringChainTests::test_lava_integration_failure_reaches_postgres"}
       }},
       {"id": "client_activity", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter records crashes by tab only; no tagged calls for this feature yet."},
-        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
-        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "No feature-specific learner PWA failure signal is wired for this legacy pair."},
+        "telegram": {"status": "not_instrumented", "reason": "No feature-specific signed Mini App chain is wired for this legacy pair."},
         "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Priority failure-to-Inbox chain evidence pending."}
       }},
       {"id": "course_ads", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter records crashes by tab only; no tagged calls for this feature yet."},
-        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
-        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "No feature-specific learner PWA failure signal is wired for this legacy pair."},
+        "telegram": {"status": "not_instrumented", "reason": "No feature-specific signed Mini App chain is wired for this legacy pair."},
         "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Priority failure-to-Inbox chain evidence pending."}
       }},
       {"id": "course_track_selection", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter records crashes by tab only; no tagged calls for this feature yet."},
-        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
-        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "No feature-specific learner PWA failure signal is wired for this legacy pair."},
+        "telegram": {"status": "not_instrumented", "reason": "No feature-specific signed Mini App chain is wired for this legacy pair."},
         "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Priority failure-to-Inbox chain evidence pending."}
       }},
       {"id": "distribution_handoff", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter records crashes by tab only; no tagged calls for this feature yet."},
         "iphone_pwa": {"status": "covered", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "client_test": "tests/test_hsk_diagnostics.js", "chain_test": "tests/test_monitoring_pwa_chain.py::PwaMonitoringChainTests::test_pwa_priority_failures_reach_inbox_as_verified_browser_owner"},
-        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "telegram": {"status": "not_instrumented", "reason": "No feature-specific signed Mini App chain is wired for this legacy pair."},
         "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Priority failure-to-Inbox chain evidence pending."}
       }},
       {"id": "feedback", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter records crashes by tab only; no tagged calls for this feature yet."},
-        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
-        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "No feature-specific learner PWA failure signal is wired for this legacy pair."},
+        "telegram": {"status": "not_instrumented", "reason": "No feature-specific signed Mini App chain is wired for this legacy pair."},
         "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Priority failure-to-Inbox chain evidence pending."}
       }},
       {"id": "foundation", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter records crashes by tab only; no tagged calls for this feature yet."},
-        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
-        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "No feature-specific learner PWA failure signal is wired for this legacy pair."},
+        "telegram": {"status": "not_instrumented", "reason": "No feature-specific signed Mini App chain is wired for this legacy pair."},
         "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Priority failure-to-Inbox chain evidence pending."}
       }},
       {"id": "learning_rewards", "platforms": {
         "android": {"status": "partial", "reporter": "android/app/src/main/java/com/pomp/hskai/core/diagnostics/DiagnosticReporter.kt", "reason": "Rating-tab crashes; Priority failure-to-Inbox chain evidence pending."},
-        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
-        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "No feature-specific learner PWA failure signal is wired for this legacy pair."},
+        "telegram": {"status": "not_instrumented", "reason": "No feature-specific signed Mini App chain is wired for this legacy pair."},
         "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Priority failure-to-Inbox chain evidence pending."}
       }},
       {"id": "lessons", "platforms": {
@@ -2075,31 +2075,31 @@
       {"id": "mistake_review", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter records crashes by tab only; no tagged calls for this feature yet."},
         "iphone_pwa": {"status": "partial", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "reason": "Mistake review and JS errors; Priority failure-to-Inbox chain evidence pending."},
-        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "telegram": {"status": "not_instrumented", "reason": "No feature-specific signed Mini App chain is wired for this legacy pair."},
         "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Priority failure-to-Inbox chain evidence pending."}
       }},
       {"id": "monitoring", "platforms": {
         "android": {"status": "partial", "reporter": "android/app/src/main/java/com/pomp/hskai/core/diagnostics/DiagnosticReporter.kt", "reason": "Queue drops reported as one queue_dropped event; Priority failure-to-Inbox chain evidence pending."},
         "iphone_pwa": {"status": "partial", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "reason": "Queue drop self-check; Priority failure-to-Inbox chain evidence pending."},
-        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "telegram": {"status": "not_instrumented", "reason": "No feature-specific signed Mini App chain is wired for this legacy pair."},
         "server": {"status": "covered", "reporter": "app/services/monitoring/backend.py", "chain_test": "tests/test_monitoring_server_chain.py::ServerMonitoringChainTests::test_saturated_backend_writer_reports_its_drop_to_inbox"}
       }},
       {"id": "notifications", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter records crashes by tab only; no tagged calls for this feature yet."},
-        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
-        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "No feature-specific learner PWA failure signal is wired for this legacy pair."},
+        "telegram": {"status": "not_instrumented", "reason": "No feature-specific signed Mini App chain is wired for this legacy pair."},
         "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Priority failure-to-Inbox chain evidence pending."}
       }},
       {"id": "onboarding_activation", "platforms": {
         "android": {"status": "covered", "reporter": "android/app/src/main/java/com/pomp/hskai/core/diagnostics/DiagnosticReporter.kt", "client_test": "android/app/src/test/java/com/pomp/hskai/core/diagnostics/ApiCallDiagnosticsTest.kt", "chain_test": "tests/test_monitoring_android_chain.py::AndroidMonitoringChainTests::test_android_api_failures_reach_inbox"},
         "iphone_pwa": {"status": "covered", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "client_test": "tests/test_hsk_diagnostics.js", "chain_test": "tests/test_monitoring_pwa_chain.py::PwaMonitoringChainTests::test_pwa_priority_failures_reach_inbox_as_verified_browser_owner"},
-        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "telegram": {"status": "not_instrumented", "reason": "No feature-specific signed Mini App chain is wired for this legacy pair."},
         "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Priority failure-to-Inbox chain evidence pending."}
       }},
       {"id": "practice", "platforms": {
         "android": {"status": "covered", "reporter": "android/app/src/main/java/com/pomp/hskai/core/diagnostics/DiagnosticReporter.kt", "client_test": "android/app/src/test/java/com/pomp/hskai/core/diagnostics/ApiCallDiagnosticsTest.kt", "chain_test": "tests/test_monitoring_android_chain.py::AndroidMonitoringChainTests::test_android_api_failures_reach_inbox"},
         "iphone_pwa": {"status": "covered", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "client_test": "tests/test_hsk_diagnostics.js", "chain_test": "tests/test_monitoring_pwa_chain.py::PwaMonitoringChainTests::test_pwa_priority_failures_reach_inbox_as_verified_browser_owner"},
-        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "telegram": {"status": "not_instrumented", "reason": "No feature-specific signed Mini App chain is wired for this legacy pair."},
         "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Priority failure-to-Inbox chain evidence pending."}
       }},
       {"id": "pwa_pro_checkout", "platforms": {
@@ -2110,14 +2110,14 @@
       }},
       {"id": "referrals", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter records crashes by tab only; no tagged calls for this feature yet."},
-        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
-        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "No feature-specific learner PWA failure signal is wired for this legacy pair."},
+        "telegram": {"status": "not_instrumented", "reason": "No feature-specific signed Mini App chain is wired for this legacy pair."},
         "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Priority failure-to-Inbox chain evidence pending."}
       }},
       {"id": "subscription_entries", "platforms": {
         "android": {"status": "covered", "reporter": "android/app/src/main/java/com/pomp/hskai/core/diagnostics/DiagnosticReporter.kt", "client_test": "android/app/src/test/java/com/pomp/hskai/core/diagnostics/ApiCallDiagnosticsTest.kt", "chain_test": "tests/test_monitoring_android_chain.py::AndroidMonitoringChainTests::test_android_api_failures_reach_inbox"},
         "iphone_pwa": {"status": "partial", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "reason": "Subscription overview failures; Priority failure-to-Inbox chain evidence pending."},
-        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "telegram": {"status": "not_instrumented", "reason": "No feature-specific signed Mini App chain is wired for this legacy pair."},
         "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Priority failure-to-Inbox chain evidence pending."}
       }},
       {"id": "voice_practice", "platforms": {
@@ -2127,7 +2127,7 @@
         "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Priority failure-to-Inbox chain evidence pending."}
       }}
     ],
-    "android_packages": {"ad": "course_ads", "assistant": "chat_ai", "auth": "auth_session", "course": "lessons", "dictionary": "lessons", "feedback": "feedback", "foundation": "foundation", "hint": "app_shell", "lesson": "lessons", "limit": "subscription_entries", "offline": "app_shell", "onboarding": "onboarding_activation", "practice": "practice", "profile": "app_shell", "rating": "learning_rewards", "update": "distribution_handoff", "voice": "voice_practice"},
+    "android_packages": {"ad": "course_ads", "assistant": "chat_ai", "auth": "auth_session", "course": "lessons", "dictionary": "lessons", "feedback": "feedback", "foundation": "foundation", "hint": "app_shell", "lesson": "lessons", "limit": "subscription_entries", "offline": "app_shell", "onboarding": "onboarding_activation", "practice": "practice", "profile": "app_shell", "rating": "learning_rewards", "subscription": "checkout_payments", "update": "distribution_handoff", "voice": "voice_practice"},
     "pwa_pages": {"course-v3.html": "lessons", "course_v3_li_onboarding.html": "onboarding_activation", "course_v3_memorize.html": "practice", "course_v3_mistakes.html": "mistake_review", "course_v3_onboarding.html": "onboarding_activation", "course_v3_pronunciation.html": "practice", "course_v3_recognition.html": "practice", "course_v3_test.html": "assessments", "course_v3_voice.html": "voice_practice", "iphone-pwa-handoff.html": "distribution_handoff", "iphone-pwa-login.html": "auth_session", "iphone-pwa-voice.html": "voice_practice", "subscription.html": "checkout_payments"},
     "legacy_baseline": [
       "app_shell:android",
@@ -2197,6 +2197,10 @@
       "subscription_entries:server",
       "voice_practice:server"
     ],
-    "exemptions": []
+    "exemptions": [
+      {"target": "app/static/course_v3_test.html", "reason": "Diagnostic hooks and version pins only. Existing exam submission, grading and access behavior are unchanged; full assessment monitoring remains partial."},
+      {"target": "app/static/course_v3_mistakes.html", "reason": "Diagnostic hooks and version pins only. Existing mistake-review behavior is unchanged; full mistake-review monitoring remains partial."},
+      {"target": "/api/miniapp/event", "reason": "The changed branches are diagnostic intake and the optional legacy diagnostic mirror only. They are tested by the signed Telegram chain and excluded from self-reporting; existing learner and KPI event behavior is unchanged."}
+    ]
   }
 }

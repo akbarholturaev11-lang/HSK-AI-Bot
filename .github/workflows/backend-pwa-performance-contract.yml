@@ -6,6 +6,7 @@ on:
     branches:
       - main
       - 'perf/**'
+      - 'feat/unified-error-monitoring-**'
       - 'codex/**'
   workflow_dispatch:
 

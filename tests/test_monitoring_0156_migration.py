@@ -51,6 +51,15 @@ class MonitoringMigrationTests(unittest.IsolatedAsyncioTestCase):
                     with self.assertRaisesRegex(RuntimeError, "Archive diagnostic rows"):
                         migration.downgrade()
                     diagnostic.rollback()
+                with connection.begin_nested() as diagnostic:
+                    connection.execute(text("""INSERT INTO diagnostic_incidents
+                        (fingerprint, platform, feature_code, failure_code, site_code, severity,
+                         first_seen_at, last_seen_at)
+                        VALUES ('local-fixture', 'server', 'lessons', 'server_5xx',
+                                'v3_lesson_start', 'high', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)"""))
+                    with self.assertRaisesRegex(RuntimeError, "Archive diagnostic rows in diagnostic_incidents"):
+                        migration.downgrade()
+                    diagnostic.rollback()
                 migration.downgrade()
                 self.assertEqual(connection.execute(text("SELECT source, source_id FROM admin_pwa_inbox_triage")).one(),
                                  ("technical", 41))

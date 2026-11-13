@@ -66,7 +66,7 @@ class OnboardingRepository(
         // Keep the native client on the same interaction contract instead of
         // inheriting the application's broader 60-second HTTP call timeout.
         val result = withTimeoutOrNull(ONBOARDING_SAVE_TIMEOUT_MS) {
-            apiCall(DiagTags.ONBOARDING) {
+            apiCall(DiagTags.ONBOARDING, token) {
                 api.complete(
                     authorization = "Bearer $token",
                     body = AndroidOnboardingRequestDto(
@@ -112,7 +112,7 @@ class OnboardingRepository(
     }
 
     private suspend fun status(token: String): ApiResult<AndroidOnboardingStatusDto> =
-        apiCall(DiagTags.ONBOARDING) { api.status("Bearer $token") }
+        apiCall(DiagTags.ONBOARDING, token) { api.status("Bearer $token") }
 
     private fun ApiError.isReconcilable(): Boolean =
         this is ApiError.Timeout || this is ApiError.Offline || this is ApiError.Unknown

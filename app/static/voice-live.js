@@ -51,7 +51,7 @@
         if (event.data.type === "speech") { this.interrupt(); return; }
         if (event.data.type !== "pcm") return;
         if (this.socket.bufferedAmount > 64000) { this.fail("live_network_slow"); return; }
-        try { this.socket.send(event.data.data); } catch (_) { this.fail("live_voice_unavailable"); }
+        try { this.socket.send(event.data.data); } catch (_) { this.lost(); }
       };
     }
 
@@ -76,6 +76,9 @@
           if (this.closed) return;
           let message;
           try { message = JSON.parse(event.data); } catch (_) { this.fail("live_response_invalid"); return; }
+          if (!message || typeof message !== "object" || Array.isArray(message) || typeof message.type !== "string") {
+            this.fail("live_response_invalid"); return;
+          }
           if (message.type === "ready") {
             if (message.input_sample_rate !== 16000 || message.output_sample_rate !== 24000) {
               this.fail("live_response_invalid"); return;
@@ -148,7 +151,7 @@
       try {
         this.socket.send(JSON.stringify({ type: "text", text: String(text).slice(0, 200) }));
       } catch (_) {
-        this.fail("live_voice_unavailable");
+        this.lost();
         return false;
       }
       this.state("analyzing");
@@ -159,7 +162,7 @@
        reported); after it the live session was cut off unexpectedly. */
     lost() {
       if (this.closed) return;
-      if (this.ready) diag("live_socket_closed");
+      if (this.ready && (!root.navigator || root.navigator.onLine !== false)) diag("live_socket_closed");
       this.fail("live_voice_unavailable");
     }
 

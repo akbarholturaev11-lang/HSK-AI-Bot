@@ -27,7 +27,7 @@ from app.services.desktop_auth_service import DesktopAuthService
 from app.services.lava.notify import ADMIN_ALERT_TEXT, LavaNotifier
 from app.services.monitoring import backend, catalog
 from app.services.monitoring.backend import BackendReporter, DiagnosticMiddleware, platform_for_route
-from app.services.monitoring.intake import fingerprint
+from app.services.monitoring.intake import diagnostic_slot, fingerprint
 from app.services.pwa_auth_service import PWA_PLATFORM, PWA_SESSION_COOKIE, PwaAuthService
 from tests.monitoring_chain import client_event
 
@@ -159,6 +159,15 @@ class IntakeRouteTests(unittest.IsolatedAsyncioTestCase):
             platform = await db.scalar(select(DiagnosticIncident.platform))
         self.assertEqual(platform, "iphone_pwa")
 
+    async def test_previous_cookie_csrf_cannot_attribute_the_batch_to_a_new_account(self):
+        _, previous_csrf = await self.pwa_cookie()
+        cookie, csrf = await self.pwa_cookie(user_id=2, telegram_id=OWNER_TG)
+        payload = body(client_event("lessons", "load_failed", "lesson_open", "iphone_pwa"))
+        self.assertEqual((await self.pwa_post(cookie, previous_csrf, payload)).status_code, 403)
+        self.assertEqual(await self.receipts(), [])
+        self.assertEqual((await self.pwa_post(cookie, csrf, payload)).json()["accepted"], 1)
+        self.assertEqual(await self.receipts(), [2])
+
     async def test_oversized_or_non_json_body_is_rejected_before_parsing(self):
         token = await self.bearer()
         huge = await self.client.post("/api/v3/android/diagnostics", content=b"{" + b" " * catalog.MAX_BODY_BYTES,
@@ -185,6 +194,19 @@ class IntakeRouteTests(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual((response.status_code, response.json()), (200, PAUSED))
         finally:
             await client.aclose()
+
+    async def test_saturation_does_not_open_a_diagnostic_session(self):
+        token = await self.bearer()
+
+        def no_database():
+            self.fail("diagnostics cannot open more sessions under saturation")
+
+        async with self.make_client(self.settings, session_factory=no_database) as client:
+            with diagnostic_slot(self.settings), diagnostic_slot(self.settings):
+                response = await client.post("/api/v3/android/diagnostics", json=body(),
+                                             headers={"Authorization": f"Bearer {token}"})
+        self.assertEqual((response.status_code, response.json()["error"]), (503, "diagnostics_unavailable"))
+        self.assertEqual(await self.receipts(), [])
 
     async def test_owners_stage_admits_only_admin_accounts(self):
         await self.client.aclose()
@@ -382,12 +404,15 @@ class BackendReporterTests(unittest.IsolatedAsyncioTestCase):
             await notifier.admin_alert("activation_failed", invoice_id=7, throttle_seconds=300)
             await notifier.admin_alert("activation_failed", invoice_id=7, throttle_seconds=300)
             await notifier.admin_alert("refund_revoked", invoice_id=8)
+            await notifier.admin_alert("webhook_auth_failed")
             await reporter.drain()
         text = ADMIN_ALERT_TEXT["activation_failed"] + "\n#lava_invoice_7"
         refund = ADMIN_ALERT_TEXT["refund_revoked"] + "\n#lava_invoice_8"
         self.assertEqual([call.kwargs for call in bot.send_message.await_args_list],
                          [{"chat_id": OWNER_TG, "text": text}, {"chat_id": 9002, "text": text},
-                          {"chat_id": OWNER_TG, "text": refund}, {"chat_id": 9002, "text": refund}])
+                          {"chat_id": OWNER_TG, "text": refund}, {"chat_id": 9002, "text": refund},
+                          {"chat_id": OWNER_TG, "text": ADMIN_ALERT_TEXT["webhook_auth_failed"]},
+                          {"chat_id": 9002, "text": ADMIN_ALERT_TEXT["webhook_auth_failed"]}])
         self.assertEqual(await self.incidents(),
                          {("server", "checkout_payments", "provider_failed", "lava_ledger"): 2})
         async with self.sessions() as db:
@@ -395,6 +420,22 @@ class BackendReporterTests(unittest.IsolatedAsyncioTestCase):
             stored = await db.scalar(select(DiagnosticIncident.fingerprint))
         self.assertEqual((count, stored),
                          (1, fingerprint("server", "checkout_payments", "provider_failed", "lava_ledger")))
+
+    async def test_openai_stt_failure_reports_only_the_safe_signal(self):
+        from app.services.ai_provider import AIProviderChain
+
+        reporter = self.reporter()
+        chain = AIProviderChain.__new__(AIProviderChain)
+        chain._openai = object()
+        expected = RuntimeError("synthetic provider failure")
+        with patch.object(backend, "reporter", reporter), \
+                patch("app.services.ai_provider.settings", SimpleNamespace(GEMINI_API_KEY="")), \
+                patch.object(chain, "_openai_transcribe", new=AsyncMock(side_effect=expected)):
+            with self.assertRaises(RuntimeError) as raised:
+                await chain.transcribe(audio_bytes=b"synthetic", filename="synthetic", mime_type="audio/ogg", prompt="")
+            self.assertIs(raised.exception, expected)
+            await reporter.drain()
+        self.assertEqual(await self.incidents(), {("server", "voice_practice", "provider_failed", "voice_provider"): 1})
 
     async def test_ai_provider_reports_only_when_the_last_fallback_fails(self):
         from app.services.ai_provider import AIProviderChain

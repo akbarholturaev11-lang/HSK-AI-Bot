@@ -62,11 +62,24 @@ class ParseTests(unittest.TestCase):
         bad = (dict(app_version="1.0 <script>"), dict(build=-1), dict(build="40"), dict(channel="beta"),
                dict(category="free"), dict(event_id="not-a-uuid"), dict(platform="iphone_pwa"),
                dict(outcome="crashed"), dict(failure_code="server_5xx"),
-               dict(feature_code=[]), dict(site_code={}), dict(category=[]))
+               dict(feature_code=[]), dict(site_code={}), dict(category=[]),
+               dict(app_version="opaque_non_version_identifier"),
+               dict(site_code="lava_ledger"), dict(site_code="v3_lesson_start"))
         for override in bad:
             with self.subTest(override=override):
                 events, rejected = parse_batch(batch(event_body(**override)), platform="android", now=NOW)
                 self.assertEqual((events, rejected), ([], 1))
+
+    def test_web_build_is_bound_to_a_valid_content_token(self):
+        valid = event_body(channel=None, app_version="20261113-abcdef123456", build=20261113)
+        events, rejected = parse_batch(batch(valid), platform="iphone_pwa", now=NOW)
+        self.assertEqual((events[0].build, rejected), (20261113, 0))
+        for changes in (dict(build=20261114), dict(app_version=None),
+                        dict(app_version="20261131-abcdef123456", build=20261131),
+                        dict(app_version="20991231-abcdef123456", build=20991231)):
+            with self.subTest(changes=changes):
+                self.assertEqual(parse_batch(batch({**valid, **changes}), platform="iphone_pwa", now=NOW),
+                                 ([], 1))
 
     def test_skewed_client_time_is_flagged_and_dropped(self):
         old = int((NOW - timedelta(days=30)).timestamp() * 1000)
@@ -151,6 +164,33 @@ class SqliteIntakeTests(unittest.IsolatedAsyncioTestCase):
         later = await self.send(batch(event_body()), now=NOW + timedelta(hours=1, seconds=1))
         self.assertEqual(later.accepted, 1)
 
+    async def test_cap_deduplicates_repeated_uuid_and_does_not_create_empty_incidents(self):
+        for _ in range(catalog.HOURLY_CAP_PER_ACCOUNT // catalog.MAX_EVENTS_PER_BATCH):
+            await self.send(batch(*[event_body() for _ in range(catalog.MAX_EVENTS_PER_BATCH)]))
+        refused = event_body()
+        other = event_body(site_code="lesson_complete")
+        result = await self.send(batch(refused, refused, other))
+        (incident,), receipts = await self.counts()
+        self.assertEqual((result.accepted, result.refused, result.duplicates), (0, 2, 1))
+        self.assertEqual((incident.refused_count, receipts), (1, catalog.HOURLY_CAP_PER_ACCOUNT))
+
+    async def test_only_a_fresh_failure_reopens_a_resolved_incident(self):
+        first = await self.send(batch())
+        incident_id = first.touched[0][0].id
+        fixed_at = NOW + timedelta(minutes=1)
+        async with self.sessions() as db, db.begin():
+            db.add(AdminPwaInboxTriage(source="diagnostic", source_id=incident_id, status="resolved",
+                                       priority="normal", revision=1, updated_at=fixed_at, resolved_at=fixed_at))
+        receive_at = NOW + timedelta(minutes=2)
+        fresh = int(receive_at.timestamp() * 1000)
+        await self.send(batch(event_body(), event_body(client_time=fresh, outcome="recovered")), now=receive_at)
+        async with self.sessions() as db:
+            self.assertEqual((await db.get(AdminPwaInboxTriage, ("diagnostic", incident_id))).status, "resolved")
+        await self.send(batch(event_body(client_time=fresh)), now=receive_at)
+        async with self.sessions() as db:
+            self.assertEqual((await db.get(AdminPwaInboxTriage, ("diagnostic", incident_id))).status, "read")
+            self.assertEqual((await db.get(DiagnosticIncident, incident_id)).occurrence_count, 4)
+
     async def test_server_rows_have_no_owner_and_coalesce(self):
         async with self.sessions() as db, db.begin():
             await ingest_server(db, feature_code="lessons", failure_code="server_5xx",
@@ -222,6 +262,21 @@ class PostgresIntakeTests(unittest.IsolatedAsyncioTestCase):
                 refused = await db.scalar(select(func.sum(DiagnosticIncident.refused_count)))
             self.assertEqual(stored, catalog.HOURLY_CAP_PER_ACCOUNT)
             self.assertEqual(refused, requests * per_request - catalog.HOURLY_CAP_PER_ACCOUNT)
+
+    async def test_retention_skips_a_locked_receipt_and_does_not_double_count(self):
+        async with pg_sessions(PG_URL) as sessions:
+            old = NOW - timedelta(days=31)
+            events, _ = parse_batch(batch(event_body(), event_body()), platform="android", now=old)
+            async with sessions() as db, db.begin():
+                await ingest(db, owner_user_id=1, events=events, now=old)
+            async with sessions() as locker, locker.begin():
+                locked = await locker.scalar(select(DiagnosticReceipt.id)
+                                             .order_by(DiagnosticReceipt.id).limit(1).with_for_update())
+                async with sessions() as worker, worker.begin():
+                    self.assertEqual(await purge_diagnostics(worker, now=NOW, limit=2), (1, 0))
+                    self.assertEqual((await worker.scalars(select(DiagnosticReceipt.id))).all(), [locked])
+            async with sessions() as worker, worker.begin():
+                self.assertEqual(await purge_diagnostics(worker, now=NOW, limit=2), (1, 0))
 
     async def test_account_deletion_lowers_the_affected_count(self):
         from app.repositories.user_repo import UserRepository

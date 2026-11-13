@@ -91,10 +91,12 @@ def client_event(feature, failure, site, platform="android", **overrides):
     """One diag.v1 event, content-free, with the owner left to the session.
     Only Android sends a release channel."""
     item = {"event_id": str(uuid4()), "client_time": int(datetime.now(timezone.utc).timestamp() * 1000),
-            "app_version": "1.8.0", "build": 40, "feature_code": feature,
+            "feature_code": feature,
             "failure_code": failure, "site_code": site, "outcome": "failed"}
     if platform == "android":
-        item["channel"] = "play"
+        item.update(channel="play", app_version="1.8.0", build=40)
+    else:
+        item.update(app_version="20261113-abcdef123456", build=20261113)
     item.update(overrides)
     return item
 

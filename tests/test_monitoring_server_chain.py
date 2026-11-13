@@ -11,15 +11,16 @@ disposable `*_test` PostgreSQL database.
 import asyncio
 import unittest
 from types import SimpleNamespace
-from unittest.mock import patch
+from unittest.mock import AsyncMock, patch
 
 from fastapi import FastAPI
-from fastapi.responses import JSONResponse
 from httpx import ASGITransport, AsyncClient
 
+from app.services.lava.notify import ADMIN_ALERT_TEXT, LavaNotifier
 from app.services.monitoring import backend
-from app.services.monitoring.backend import BackendReporter, DiagnosticMiddleware, report_server_failure
+from app.services.monitoring.backend import BackendReporter, DiagnosticMiddleware
 from tests.monitoring_chain import PG_URL, assert_monitoring_chain, pg_sessions
+from tests.test_monitoring_telegram_chain import signed
 
 
 def reporter_for(sessions):
@@ -34,8 +35,13 @@ class ServerMonitoringChainTests(unittest.IsolatedAsyncioTestCase):
         async with pg_sessions(PG_URL) as sessions:
             reporter = reporter_for(sessions)
 
+            telegram = SimpleNamespace(send_message=AsyncMock())
+            notifier = LavaNotifier(bot=telegram, admin_ids=[2002])
+
             async def lava_failure():
-                report_server_failure("checkout_payments", "provider_failed", "lava_ledger")
+                await notifier.admin_alert("activation_failed", invoice_id=41)
+                telegram.send_message.assert_awaited_once_with(
+                    chat_id=2002, text=ADMIN_ALERT_TEXT["activation_failed"] + "\n#lava_invoice_41")
 
             with patch.object(backend, "reporter", reporter):
                 incident = await assert_monitoring_chain(
@@ -49,18 +55,30 @@ class ServerMonitoringChainTests(unittest.IsolatedAsyncioTestCase):
             reporter = reporter_for(sessions)
             app = FastAPI()
 
-            @app.post("/api/v3/lesson/complete")
-            async def complete():
-                return JSONResponse({"ok": False}, status_code=502)
+            from app import main
+            from app.db.models.course_progress import CourseProgress
+            from sqlalchemy import func, select
 
+            app.post("/api/v3/lesson/complete")(main.v3_course_lesson_complete)
             app.add_middleware(DiagnosticMiddleware, reporter_obj=reporter)
 
             async def route_5xx():
-                async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
-                    self.assertEqual((await client.post("/api/v3/lesson/complete", json={})).status_code, 502)
+                # Enter the real signed handler and its real PostgreSQL lookup.
+                # Inject the failure at the lesson service boundary, after auth.
+                failure = AsyncMock(side_effect=RuntimeError("synthetic lesson service failure"))
+                async with AsyncClient(transport=ASGITransport(app=app, raise_app_exceptions=False),
+                                       base_url="http://test") as client:
+                    with (patch.object(main, "async_session_maker", sessions),
+                          patch.object(main, "_v3_complete_lesson_for_canonical_actor", failure)):
+                        headers = {"X-Telegram-Init-Data": signed(main.settings.BOT_TOKEN)}
+                        response = await client.post("/api/v3/lesson/complete", headers=headers, json={"lesson_id": 1})
+                        self.assertEqual(response.status_code, 500)
+                        failure.assert_awaited_once()
+                async with sessions() as db:
+                    self.assertEqual(await db.scalar(select(func.count()).select_from(CourseProgress)), 0)
 
             await assert_monitoring_chain(
-                self, platform="server", feature="lessons", failure="server_5xx",
+                self, platform="server", feature="lessons", failure="server_exception",
                 site="v3_lesson_complete", sessions=sessions, reporter=reporter, trigger=route_5xx,
                 inbox_route="/api/admin/v1/inbox/list")
 

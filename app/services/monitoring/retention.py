@@ -15,7 +15,8 @@ async def purge_diagnostics(db, *, now, limit=catalog.PURGE_BATCH):
     """
     receipt_cutoff = now - timedelta(days=catalog.RECEIPT_RETENTION_DAYS)
     expired = select(DiagnosticReceipt.id).where(
-        DiagnosticReceipt.received_at < receipt_cutoff).order_by(DiagnosticReceipt.id).limit(limit)
+        DiagnosticReceipt.received_at < receipt_cutoff
+    ).order_by(DiagnosticReceipt.received_at).limit(limit).with_for_update(skip_locked=True)
     receipt_ids = list((await db.execute(expired)).scalars())
     if receipt_ids:
         await db.execute(delete(DiagnosticReceipt).where(DiagnosticReceipt.id.in_(receipt_ids)))

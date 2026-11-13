@@ -77,7 +77,9 @@
   if (telegram) page = MINIAPP_PAGES[path];
   var active = pwa || telegram;
   var busy = false, sent = 0, flushing = false, failures = 0, timer = null, retryAt = 0;
-  var documentOwner = "", signedOut = false, pageVersion;
+  var documentOwner = "", documentGeneration = "", signedOut = false, pageVersion;
+  var documentStartedAt = (root.performance && root.performance.timeOrigin) || Date.now();
+  var volatileStorage = Object.create(null), storageUnavailable = false;
   var pending = { owner: "", events: [], seen: {} };
 
   function telegramProof() {
@@ -85,14 +87,20 @@
     return app && typeof app.initData === "string" && app.initData.length <= 8192 ? app.initData : "";
   }
 
-  function storage() {
-    try { return root.localStorage || null; } catch (_) { return null; }
-  }
   function read(key) {
-    try { var s = storage(); return s ? JSON.parse(s.getItem(key) || "null") : null; } catch (_) { return null; }
+    if (Object.prototype.hasOwnProperty.call(volatileStorage, key)) return JSON.parse(volatileStorage[key]);
+    try { var s = root.localStorage; return s ? JSON.parse(s.getItem(key) || "null") : null; } catch (_) { return null; }
   }
   function write(key, value) {
-    try { var s = storage(); if (s) s.setItem(key, JSON.stringify(value)); } catch (_) {}
+    var encoded = JSON.stringify(value);
+    if (!storageUnavailable) {
+      try {
+        var s = root.localStorage;
+        if (s) { s.setItem(key, encoded); return; }
+      } catch (_) {}
+      storageUnavailable = true;
+    }
+    volatileStorage[key] = encoded;
   }
   function load() {
     var state = read(KEY);
@@ -100,6 +108,8 @@
     var storedOwner = typeof state.owner === "string" && /^[1-9][0-9]{0,18}$/.test(state.owner) ? state.owner : "";
     return {
       owner: storedOwner,
+      boundAt: Number.isFinite(state.boundAt) ? state.boundAt : 0,
+      generation: typeof state.generation === "string" && EVENT_ID.test(state.generation) ? state.generation : "",
       events: Array.isArray(state.events) ? state.events.filter(function (e) {
         return e && e.owner === storedOwner && Number.isFinite(e.at) && wireEvent(e.event);
       }) : [],
@@ -107,6 +117,9 @@
     };
   }
   function save(state) { write(KEY, state); }
+  function owns(state) {
+    return state.owner === documentOwner && state.generation === documentGeneration;
+  }
 
   function paused(now) {
     var until = Number(read(telegram ? PAUSE_KEY + "-telegram" : PAUSE_KEY)) || 0;
@@ -206,7 +219,9 @@
   }
 
   function enqueue(feature, failure, site, outcome, cat) {
-    if (busy || !active || signedOut) return false;
+    // Only the product's verified actor may bind a PWA document. The
+    // diagnostic transport never adopts anonymous failures for a later login.
+    if (busy || !active || signedOut || (pwa && !documentOwner)) return false;
     busy = true;
     try {
       if (![feature, failure, site].every(function (code) {
@@ -216,9 +231,7 @@
       var now = Date.now();
       if (sent >= MAX_PER_PAGE || paused(now)) return false;
       var state = telegram ? pending : load();
-      if (documentOwner && state.owner !== documentOwner) return false;
-      // An unverified document cannot append to a previous owner's queue.
-      if (!documentOwner) state = pending;
+      if (pwa && !owns(state)) return false;
       var fp = feature + "|" + failure + "|" + site + "|" + outcome;
       if (now - (Number(state.seen[fp]) || 0) < COALESCE_MS) return false;
       state.seen[fp] = now;
@@ -244,8 +257,7 @@
     } catch (_) { return false; }
   }
 
-  /* The verified account: another account's queue is discarded, events
-     recorded before sign-in (owner "") are adopted. */
+  /* Called by the app after verifying its own actor, never by a delivery probe. */
   function owner(id) {
     var value = id === null || id === undefined ? "" : String(id);
     if (!pwa || signedOut || !/^[1-9][0-9]{0,18}$/.test(value)) return false;
@@ -254,15 +266,16 @@
       return false;
     }
     var state = load();
-    if (documentOwner && state.owner && state.owner !== value) return false;
-    if (documentOwner === value && state.owner === value) return true;
-    if (state.owner && state.owner !== value) { state.events = []; state.seen = {}; }
-    state.events = state.events.concat(pending.events);
-    Object.assign(state.seen, pending.seen);
-    pending = { owner: "", events: [], seen: {} };
-    state.events.forEach(function (e) { e.owner = value; });
+    // A stale document's late session reply cannot replace a newer tab's
+    // queue or undo a logout performed after this document was opened.
+    if (documentOwner) return owns(state);
+    if (state.boundAt > documentStartedAt && state.owner !== value) return false;
+    if (state.owner !== value) { state.events = []; state.seen = {}; state.generation = ""; }
+    if (!state.generation) state.generation = uuid();
     state.owner = value;
+    state.boundAt = Math.max(state.boundAt, documentStartedAt);
     documentOwner = value;
+    documentGeneration = state.generation;
     trim(state, Date.now());
     save(state);
     if (state.events.length) schedule(0);
@@ -271,23 +284,30 @@
 
   function remove(ids) {
     var state = load();
+    if (!owns(state)) return;
     state.events = state.events.filter(function (e) { return !ids[e.event.event_id]; });
     save(state);
   }
-  function clear(id, unbind) {
+  function clear(unbind) {
     var state = load();
-    if (state.owner === id) {
-      state.events = [];
-      state.seen = {};
-      if (unbind) state.owner = "";
-      save(state);
+    if (!owns(state)) return;
+    state.events = [];
+    state.seen = {};
+    if (unbind) {
+      state.owner = "";
+      state.generation = "";
+      state.boundAt = Math.max(state.boundAt, Date.now());
     }
+    save(state);
   }
 
   function logout(id) {
     signedOut = true;
     pending.events = [];
-    if (pwa) clear(String(id || documentOwner), true);
+    if (pwa) {
+      root.HskDiagVerifiedOwner = null;
+      if (documentOwner && String(id || documentOwner) === documentOwner) clear(true);
+    }
   }
 
   function schedule(delay) {
@@ -326,8 +346,10 @@
 
   function pwaBatch(actor, round) {
     var id = String(actor.user_id);
-    if (signedOut) return Promise.resolve();
-    var batch = load().events.filter(function (e) { return e.owner === id; }).slice(0, BATCH);
+    if (signedOut || documentOwner !== id) return Promise.resolve();
+    var state = load();
+    if (!owns(state)) return Promise.resolve();
+    var batch = state.events.slice(0, BATCH);
     if (!batch.length || round >= MAX_BATCHES) return Promise.resolve();
     var ids = {};
     batch.forEach(function (e) { ids[e.event.event_id] = true; });
@@ -342,9 +364,11 @@
       return r.json().then(function (body) {
         if (!body || !Number.isSafeInteger(body.accepted)) throw new Error("retry");
         remove(ids);
-        if (body && body.paused === true) {
-          write(PAUSE_KEY, Date.now() + PAUSE_MS);
-          clear(id, false);
+        if (body.paused === true) {
+          if (owns(load())) {
+            write(PAUSE_KEY, Date.now() + PAUSE_MS);
+            clear(false);
+          }
           return;
         }
         return pwaBatch(actor, round + 1);
@@ -354,31 +378,29 @@
 
   function flush() {
     if (!active || signedOut || flushing || failures >= MAX_ATTEMPTS || typeof root.fetch !== "function") return;
+    if (pwa && !documentOwner) return;
     if (root.navigator && root.navigator.onLine === false) return;
     if (Date.now() < retryAt) { schedule(retryAt - Date.now()); return; }
     var state = telegram ? pending : load();
+    if (pwa && !owns(state)) return;
     var now = Date.now();
     if (trim(state, now) && pwa) save(state);
-    if (!state.events.length && !pending.events.length) return;
-    if (paused(now)) { if (pwa) clear(state.owner, false); else pending.events = []; return; }
+    if (!state.events.length) return;
+    if (paused(now)) { if (pwa) clear(false); else pending.events = []; return; }
     flushing = true;
     var delivery = telegram ? telegramBatch() : pwaSession().then(function (actor) {
-      if (!actor) {
-        // An anonymous failure must never become a future account's event.
-        pending = { owner: "", events: [], seen: {} };
-        if (state.owner) {
-          if (documentOwner) logout(documentOwner);
-          else clear(state.owner, true);
-        }
+      if (!actor || String(actor.user_id) !== documentOwner) {
+        logout(documentOwner);
         return;
       }
-      if (owner(actor.user_id)) return pwaBatch(actor, 0);
+      return pwaBatch(actor, 0);
     });
     delivery.then(function () {
       flushing = false;
       failures = 0;
       retryAt = 0;
-      if (telegram && pending.events.length && !paused(Date.now())) schedule(0);
+      var remaining = telegram ? pending : load();
+      if ((telegram || owns(remaining)) && remaining.events.length && !paused(Date.now())) schedule(0);
     }, function () {
       flushing = false;
       failures++;
@@ -402,11 +424,14 @@
     }, function (r) {
       if (r.status === 401 || r.status === 403) { logout(); return; }
       if (r.status >= 500) throw new Error("retry");
-      if (!r.ok) { pending.events.splice(0, batch.length); return; }
+      var sentIds = new Set(batch.map(function (e) { return e.event.event_id; }));
+      var acknowledge = function () {
+        pending.events = pending.events.filter(function (e) { return !sentIds.has(e.event.event_id); });
+      };
+      if (!r.ok) { acknowledge(); return; }
       return r.json().then(function (body) {
         if (!body || body.ok !== true || !Number.isSafeInteger(body.accepted)) { logout(); return; }
-        var sentIds = new Set(batch.map(function (e) { return e.event.event_id; }));
-        pending.events = pending.events.filter(function (e) { return !sentIds.has(e.event.event_id); });
+        acknowledge();
         if (body.paused === true) {
           pending.events = [];
           write(PAUSE_KEY + "-telegram", Date.now() + PAUSE_MS);
@@ -438,9 +463,10 @@
     root.addEventListener("error", onError);
     root.addEventListener("unhandledrejection", onRejection);
     root.addEventListener("online", flush);
+    root.addEventListener("pageshow", function (event) { if (event.persisted) schedule(0); });
     root.document.addEventListener("visibilitychange", function () {
       if (root.document.visibilityState === "hidden") flush();
     });
-    schedule(0);
+    if (pwa) owner(root.HskDiagVerifiedOwner);
   } catch (_) {}
 })(typeof window !== "undefined" ? window : null);

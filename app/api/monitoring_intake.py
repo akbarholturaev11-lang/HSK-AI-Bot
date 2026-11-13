@@ -7,6 +7,8 @@ answer `paused` without a database read, and clients pause for 24 hours.
 import json
 import logging
 
+from starlette.requests import ClientDisconnect
+
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 
@@ -14,7 +16,7 @@ from app.api.desktop_auth import auth_error_response, bearer_access_token
 from app.services.desktop_auth_service import DesktopAuthError, DesktopAuthService
 from app.services.monitoring import catalog
 from app.services.monitoring.intake import (
-    IntakeRejected, current_mode, ingest, is_owner_account, parse_batch,
+    IntakeBusy, IntakeRejected, bound_write, current_mode, diagnostic_slot, ingest, is_owner_account, parse_batch,
 )
 from app.services.pwa_auth_service import (
     PWA_SESSION_COOKIE, PwaAuthError, PwaAuthService, require_pwa_enabled, require_same_origin,
@@ -35,10 +37,13 @@ async def read_bounded_json(request: Request, limit=catalog.MAX_BODY_BYTES):
                      len(declared) > len(str(limit)) or int(declared) > limit):
         raise IntakeRejected("too_large")
     body = bytearray()
-    async for chunk in request.stream():
-        if len(body) + len(chunk) > limit:
-            raise IntakeRejected("too_large")
-        body.extend(chunk)
+    try:
+        async for chunk in request.stream():
+            if len(body) + len(chunk) > limit:
+                raise IntakeRejected("too_large")
+            body.extend(chunk)
+    except ClientDisconnect:
+        raise IntakeRejected("invalid_body") from None
     try:
         return json.loads(bytes(body))
     except (ValueError, RecursionError):
@@ -50,6 +55,10 @@ def _rejected(exc: IntakeRejected):
                         headers=_NO_STORE)
 
 
+def _unavailable():
+    return JSONResponse({"ok": False, "error": "diagnostics_unavailable"}, status_code=503, headers=_NO_STORE)
+
+
 def create_monitoring_intake_router(*, session_factory, settings_obj) -> APIRouter:
     router = APIRouter(tags=["monitoring-intake"])
 
@@ -59,29 +68,33 @@ def create_monitoring_intake_router(*, session_factory, settings_obj) -> APIRout
         if mode == "off":
             return JSONResponse(PAUSED, headers=_NO_STORE)
         try:
+            token = bearer_access_token(request)
             body = await read_bounded_json(request)
-            async with session_factory() as session:
-                context = await DesktopAuthService(session, settings_obj).authenticate(
-                    access_token=bearer_access_token(request))
-                if context.device.platform != "android":
-                    raise DesktopAuthError("android_device_required", status_code=403)
-                # A bearer access token outlives a block until it expires; refuse here.
-                if UserAccessStateService.classify(context.user) == UserAccessState.BLOCKED:
-                    raise DesktopAuthError("user_blocked", status_code=403)
-                events, rejected = parse_batch(body, platform="android")
-                result = await ingest(session, owner_user_id=context.user.id, events=events, mode=mode,
-                                      owner_admitted=is_owner_account(settings_obj, context.user.telegram_id),
-                                      settings_obj=settings_obj)
-                await session.commit()
+            with diagnostic_slot(settings_obj):
+                async with session_factory() as session:
+                    await bound_write(session)
+                    context = await DesktopAuthService(session, settings_obj).authenticate(access_token=token)
+                    if context.device.platform != "android":
+                        raise DesktopAuthError("android_device_required", status_code=403)
+                    # A bearer access token outlives a block until it expires; refuse here.
+                    if UserAccessStateService.classify(context.user) == UserAccessState.BLOCKED:
+                        raise DesktopAuthError("user_blocked", status_code=403)
+                    events, rejected = parse_batch(body, platform="android")
+                    result = await ingest(session, owner_user_id=context.user.id, events=events, mode=mode,
+                                          owner_admitted=is_owner_account(settings_obj, context.user.telegram_id),
+                                          settings_obj=settings_obj)
+                    await session.commit()
             result.rejected += rejected
             return JSONResponse(result.response(), headers=_NO_STORE)
         except IntakeRejected as exc:
             return _rejected(exc)
         except DesktopAuthError as exc:
             return auth_error_response(exc)
+        except IntakeBusy:
+            return _unavailable()
         except Exception:
             logger.warning("Android diagnostic intake failed")
-            return auth_error_response(DesktopAuthError("diagnostics_unavailable", status_code=503))
+            return _unavailable()
 
     @router.post("/api/v3/pwa/diagnostics")
     async def pwa_diagnostics(request: Request):
@@ -94,23 +107,26 @@ def create_monitoring_intake_router(*, session_factory, settings_obj) -> APIRout
             if request.query_params or request.headers.get("X-Telegram-Init-Data"):
                 raise PwaAuthError("pwa_request_invalid", status_code=422)
             body = await read_bounded_json(request)
-            async with session_factory() as session:
-                user, _ = await PwaAuthService(session, settings_obj).mutation_actor(
-                    request.cookies.get(PWA_SESSION_COOKIE), request.headers.get("X-HSK-PWA-CSRF"))
-                events, rejected = parse_batch(body, platform="iphone_pwa")
-                result = await ingest(session, owner_user_id=user.id, events=events, mode=mode,
-                                      owner_admitted=is_owner_account(settings_obj, user.telegram_id),
-                                      settings_obj=settings_obj)
-                await session.commit()
+            with diagnostic_slot(settings_obj):
+                async with session_factory() as session:
+                    await bound_write(session)
+                    user, _ = await PwaAuthService(session, settings_obj).mutation_actor(
+                        request.cookies.get(PWA_SESSION_COOKIE), request.headers.get("X-HSK-PWA-CSRF"))
+                    events, rejected = parse_batch(body, platform="iphone_pwa")
+                    result = await ingest(session, owner_user_id=user.id, events=events, mode=mode,
+                                          owner_admitted=is_owner_account(settings_obj, user.telegram_id),
+                                          settings_obj=settings_obj)
+                    await session.commit()
             result.rejected += rejected
             return JSONResponse(result.response(), headers=_NO_STORE)
         except IntakeRejected as exc:
             return _rejected(exc)
         except PwaAuthError as exc:
             return JSONResponse({"ok": False, "error": exc.code}, status_code=exc.status_code, headers=_NO_STORE)
+        except IntakeBusy:
+            return _unavailable()
         except Exception:
             logger.warning("PWA diagnostic intake failed")
-            return JSONResponse({"ok": False, "error": "diagnostics_unavailable"}, status_code=503,
-                                headers=_NO_STORE)
+            return _unavailable()
 
     return router

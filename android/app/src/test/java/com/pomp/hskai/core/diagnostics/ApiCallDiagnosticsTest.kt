@@ -95,6 +95,21 @@ class ApiCallDiagnosticsTest {
     }
 
     @Test
+    fun `authenticated responses stay bound to the request session`() = runTest {
+        kit.reporter.bindOwner(SESSION_A)
+        val old = diagnosticToken(SESSION_A)
+        apiCall(DiagTags.LESSON_OPEN, old) {
+            kit.reporter.clearOwner()
+            kit.reporter.bindOwner(SESSION_B)
+            Response.error<Unit>(500, CountingBody("{}"))
+        }
+        // Even when a stale bearer was acquired before the wrapper starts.
+        apiCall(DiagTags.LESSON_OPEN, old) { Response.error<Unit>(500, CountingBody("{}")) }
+        apiCall(DiagTags.LESSON_OPEN, diagnosticToken(SESSION_B)) { Response.error<Unit>(500, CountingBody("{}")) }
+        assertEquals(listOf("lessons/api_5xx/lesson_open"), kit.codes())
+    }
+
+    @Test
     fun `the event carries codes and versions only`() = runTest {
         failing(500, tag = DiagTags.LOGIN)
         val event = kit.events().single()

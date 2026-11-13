@@ -1,4 +1,5 @@
 """Signed Mini App diagnostics and backward-compatible legacy error capture."""
+import asyncio
 import hashlib
 import hmac
 import json
@@ -22,6 +23,8 @@ from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.diagnostic import DiagnosticIncident, DiagnosticReceipt
 from app.db.models.message import Message
 from app.services.app_error_context_service import AppErrorContextService
+from app.services.blocked_user_guard import BlockedUserApiMiddleware
+from app.services.monitoring.miniapp import drain_legacy
 from tests.monitoring_chain import PG_URL, assert_monitoring_chain, client_event, pg_sessions
 from tests.test_pwa_browser_auth import settings as learner_settings
 
@@ -37,6 +40,7 @@ def signed(token, telegram_id=1001, *, age=0):
 @asynccontextmanager
 async def telegram_client(sessions, settings):
     app = FastAPI()
+    app.add_middleware(BlockedUserApiMiddleware, session_maker=sessions, bot_token=settings.BOT_TOKEN)
     app.post("/api/miniapp/event")(main.miniapp_event)
     with (patch.object(main, "async_session_maker", sessions),
           patch.object(main, "settings", settings), patch("app.config.settings", settings)):
@@ -81,6 +85,52 @@ class TelegramMonitoringChainTests(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(await db.scalar(select(func.count()).select_from(CourseMiniAppEvent)), 0)
                 self.assertEqual(await db.scalar(select(func.count()).select_from(ConversionFunnelEvent)), 0)
 
+    async def test_off_and_malformed_proof_do_not_access_the_database(self):
+        def no_database():
+            self.fail("diagnostic request must not open a DB session")
+
+        async with telegram_client(no_database, self.settings) as client:
+            payload = {"event": "app_error", "schema": "diag.v1",
+                       "events": [client_event("lessons", "js_uncaught", "course_v3", platform="telegram")]}
+            headers = {**self.headers, "X-Telegram-Init-Data": "hash=%E2%9C%93"}
+            response = await client.post("/api/miniapp/event", json=payload, headers=headers)
+            self.assertEqual((response.status_code, response.headers["cache-control"]), (401, "no-store"))
+            self.settings.MONITORING_MODE = "off"
+            response = await client.post("/api/miniapp/event", json=payload, headers=self.headers)
+            self.assertTrue(response.json()["paused"])
+
+    async def test_blocked_signed_diagnostic_cannot_write(self):
+        from app.db.models.user import User
+
+        async with pg_sessions(PG_URL) as sessions, telegram_client(sessions, self.settings) as client:
+            async with sessions() as db, db.begin():
+                (await db.get(User, 1)).status = "blocked"
+            payload = {"event": "app_error", "schema": "diag.v1",
+                       "events": [client_event("lessons", "js_uncaught", "course_v3", platform="telegram")]}
+            response = await client.post("/api/miniapp/event", json=payload, headers=self.headers)
+            self.assertEqual(response.status_code, 403)
+            async with sessions() as db:
+                self.assertEqual(await db.scalar(select(func.count()).select_from(DiagnosticReceipt)), 0)
+
+    async def test_legacy_response_does_not_wait_on_the_diagnostic_owner_lock(self):
+        from app.services.monitoring.intake import _lock_owner
+
+        async with pg_sessions(PG_URL) as sessions, telegram_client(sessions, self.settings) as client:
+            payload = {"event": "app_error", "source": "course_v3_onboarding",
+                       "error_name": "OnboardingSaveResponseError", "error_message": "onboarding_save_timeout"}
+            headers = {"X-Telegram-Init-Data": self.headers["X-Telegram-Init-Data"]}
+            async with sessions() as lock, lock.begin():
+                await _lock_owner(lock, 1)
+                response = await asyncio.wait_for(client.post("/api/miniapp/event", json=payload, headers=headers),
+                                                  timeout=0.6)
+                self.assertEqual(response.json(), {"ok": True})
+                async with sessions() as db:
+                    self.assertEqual(await db.scalar(select(func.count()).select_from(Message)), 1)
+                    self.assertEqual(await db.scalar(select(func.count()).select_from(DiagnosticReceipt)), 0)
+            await drain_legacy()
+            async with sessions() as db:
+                self.assertEqual(await db.scalar(select(func.count()).select_from(DiagnosticReceipt)), 1)
+
     async def test_legacy_errors_keep_their_own_technical_alert_and_ai_context(self):
         async with pg_sessions(PG_URL) as sessions, telegram_client(sessions, self.settings) as client:
             now = datetime.now(timezone.utc)
@@ -94,6 +144,7 @@ class TelegramMonitoringChainTests(unittest.IsolatedAsyncioTestCase):
             headers = {"X-Telegram-Init-Data": self.headers["X-Telegram-Init-Data"]}
             for _ in range(30):
                 self.assertTrue((await client.post("/api/miniapp/event", json=payload, headers=headers)).json()["ok"])
+                await drain_legacy()
             self.settings.MONITORING_MINIAPP_ADAPTER_ENABLED = False
             self.assertTrue((await client.post("/api/miniapp/event", json=payload, headers=headers)).json()["ok"])
             self.settings.MONITORING_MINIAPP_ADAPTER_ENABLED = True

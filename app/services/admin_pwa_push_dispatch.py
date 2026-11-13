@@ -31,6 +31,7 @@ logger = logging.getLogger(__name__)
 _LEASE_SECONDS = 45
 _DEVICE_COOLDOWN_SECONDS = 30
 _MAX_ATTEMPTS = 4
+_DIAGNOSTIC_MAX_AGE = timedelta(minutes=30)
 _PUSH_SOURCES = frozenset({'payment', 'android', 'technical', 'bot', 'release', 'diagnostic'})
 
 
@@ -99,6 +100,8 @@ async def _relevant(db, row, now):
             Payment.screenshot_file_id.is_not(None), Payment.screenshot_file_id != "",
         )) is not None
     if row.source == "diagnostic":
+        if _utc(row.created_at) < now - _DIAGNOSTIC_MAX_AGE:
+            return False
         model = DiagnosticIncident
         query = select(model.id).where(model.id == row.source_id, model.alert_epoch == row.triage_revision)
     elif row.source == "android":

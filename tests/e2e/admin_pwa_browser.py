@@ -10,6 +10,7 @@ import base64
 import io
 import csv
 import json
+from contextlib import asynccontextmanager
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 import socket
@@ -17,6 +18,7 @@ import uvicorn
 from types import SimpleNamespace
 from fastapi.responses import JSONResponse
 from unittest.mock import AsyncMock, patch
+from uuid import uuid4
 from PIL import Image, ImageDraw
 
 from cryptography.hazmat.primitives import serialization
@@ -62,8 +64,10 @@ from app.admin_api.pwa_feedback_analytics import create_admin_pwa_feedback_analy
 from app.db.models.admin_pwa_command import AdminPwaCommandAudit
 from app.admin_api.pwa_inbox_triage import create_admin_pwa_inbox_triage_router
 from app.admin_api.pwa_inbox_attachments import create_admin_pwa_inbox_attachment_router
-from app.services.monitoring.intake import ingest, parse_batch
-from tests.monitoring_chain import client_event
+from app.api.monitoring_intake import create_monitoring_intake_router
+from app.services.desktop_auth_service import DesktopAuthService
+from tests.monitoring_chain import PG_URL, client_event, pg_sessions
+from tests.test_pwa_browser_auth import settings as learner_settings
 from tests.test_admin_pwa_payment_review import PaymentFixtures, COOKIE
 from tests.test_admin_pwa_webauthn_crypto_vectors import CRED_ID, HANDLE
 from tests.test_admin_pwa_receipts import png
@@ -1431,16 +1435,43 @@ async def access_grant_browser_checks(output):
     finally:await fixture.engine.dispose()
 
 
+@asynccontextmanager
+async def diagnostic_browser_sessions():
+    if PG_URL:
+        async with pg_sessions(PG_URL, users=()) as sessions:
+            yield sessions
+        return
+    engine = create_async_engine('sqlite+aiosqlite:///:memory:', poolclass=StaticPool)
+    try:
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+        yield async_sessionmaker(engine, expire_on_commit=False)
+    finally:
+        await engine.dispose()
+
+
 async def diagnostic_browser_checks(output):
-    """Actual passkey-gated Inbox, reused Fixed action, and reopened copy."""
+    """Bearer intake → database → browser passkey Inbox → Fixed → reopen."""
+    async with diagnostic_browser_sessions() as sessions:
+        await diagnostic_browser_chain(output, sessions)
+    print('Diagnostic Inbox: real Android bearer intake, ' + ('PostgreSQL' if PG_URL else 'SQLite') +
+          ', virtual WebAuthn, Fixed and reopened detail in UZ/RU/TJ passed')
+
+
+async def diagnostic_browser_chain(output, sessions):
     fixture = Fixture()
-    fixture.engine = create_async_engine('sqlite+aiosqlite:///:memory:', poolclass=StaticPool)
-    async with fixture.engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-    fixture.sessions = async_sessionmaker(fixture.engine, expire_on_commit=False)
-    await fixture.seed_payment()
+    fixture.sessions = sessions
+    await fixture.seed_payment(legacy=True)
     app = FastAPI()
-    common = dict(settings_obj=fixture.settings, session_factory=fixture.sessions)
+    auth_settings = learner_settings(MONITORING_MODE="all", admin_id_list=[])
+    async with sessions() as db:
+        auth = DesktopAuthService(db, auth_settings)
+        link = await auth.start_link(platform="android", app_version="1.8.0", installation_key=uuid4().hex * 2)
+        await auth.approve_link(display_code=link["display_code"], telegram_id=1001)
+        linked = await auth.poll_link(link_request_id=link["link_request_id"], polling_secret=link["polling_secret"])
+    bearer = {"Authorization": "Bearer " + linked["access_token"]}
+    app.include_router(create_monitoring_intake_router(session_factory=sessions, settings_obj=auth_settings))
+    common = dict(settings_obj=fixture.settings, session_factory=sessions)
     for factory in (create_admin_pwa_bootstrap_router, create_admin_pwa_google_router,
                     create_admin_pwa_passkey_login_router, create_admin_pwa_read_router,
                     create_admin_pwa_inbox_triage_router):
@@ -1464,52 +1495,53 @@ async def diagnostic_browser_checks(output):
 
     async def occurrence():
         raw = client_event('lessons', 'api_5xx', 'lesson_complete')
-        events, _ = parse_batch({'schema': 'diag.v1', 'events': [raw]}, platform='android')
-        async with fixture.sessions() as db, db.begin():
-            await ingest(db, owner_user_id=1, events=events)
+        async with AsyncClient(transport=ASGITransport(app=app), base_url=ORIGIN) as learner:
+            path = "/api/v3/android/diagnostics"
+            body = {"schema": "diag.v1", "events": [raw]}
+            response = await learner.post(path, json=body, headers=bearer)
+            assert response.status_code == 200 and response.json()["accepted"] == 1, response.text
+            retry = await learner.post(path, json=body, headers=bearer)
+            assert retry.status_code == 200 and retry.json()["duplicates"] == 1, retry.text
 
-    try:
+    await occurrence()
+    async with async_playwright() as pw:
+        browser = await pw.chromium.launch()
+        context = await browser.new_context(viewport={'width':390,'height':844}, service_workers='block')
+        await context.route('**/*', serve)
+        page = await context.new_page()
+        errors, dialogs = [], []
+        page.on('pageerror', lambda error: errors.append(str(error)))
+        page.on('dialog', lambda dialog: (dialogs.append(dialog.type), asyncio.create_task(dialog.dismiss())))
+        await setup_fresh_login(context, page, fixture)
+        await page.goto(ORIGIN + '/admin/?inbox=diagnostic')
+        await authenticate_fresh_launch(page)
+        row = page.locator('[data-inbox-open^="diagnostic:"]')
+        await expect(row).to_have_count(1)
+        assert any(path.endswith('/inbox/list') and body['source'] == 'diagnostic' for path, body in calls)
+        await row.click()
+        await expect(page.locator('.inbox-details')).to_be_visible()
+        await expect(page.locator('#overlay button:visible')).to_have_count(2)
+        await page.locator('[data-inbox-fixed]').click()
+        await expect(page.locator('.saved-animation')).to_be_visible()
+        await expect(page.locator('#overlay')).to_have_count(0, timeout=6000)
+        assert not dialogs
+        resolves = [body for path, body in calls if path.endswith('/inbox/triage') and body['operation'] == 'resolve']
+        assert len(resolves) == 1 and 'fix_kind' not in resolves[0]
         await occurrence()
-        async with async_playwright() as pw:
-            browser = await pw.chromium.launch()
-            context = await browser.new_context(viewport={'width':390,'height':844}, service_workers='block')
-            await context.route('**/*', serve)
-            page = await context.new_page()
-            errors, dialogs = [], []
-            page.on('pageerror', lambda error: errors.append(str(error)))
-            page.on('dialog', lambda dialog: (dialogs.append(dialog.type), asyncio.create_task(dialog.dismiss())))
-            await setup_fresh_login(context, page, fixture)
+        for lang, label in (('uz','Тузатилган хато яна такрорланди'),
+                            ('ru','Исправленная ошибка повторилась'),
+                            ('tj','Хатои ислоҳшуда боз такрор шуд')):
+            await page.evaluate('(lang) => localStorage.setItem("hsk-admin-locale", lang)', lang)
             await page.goto(ORIGIN + '/admin/?inbox=diagnostic')
             await authenticate_fresh_launch(page)
-            row = page.locator('[data-inbox-open^="diagnostic:"]')
-            await expect(row).to_have_count(1)
-            assert any(path.endswith('/inbox/list') and body['source'] == 'diagnostic' for path, body in calls)
+            await expect(row).to_contain_text(label)
+            await page.screenshot(path=str(output / f'diagnostic-list-{lang}.png'))
             await row.click()
-            await expect(page.locator('.inbox-details')).to_be_visible()
+            await expect(page.locator('.inbox-details')).to_contain_text(label)
             await expect(page.locator('#overlay button:visible')).to_have_count(2)
-            await page.locator('[data-inbox-fixed]').click()
-            await expect(page.locator('.saved-animation')).to_be_visible()
-            await expect(page.locator('#overlay')).to_have_count(0, timeout=6000)
-            assert not dialogs
-            resolves = [body for path, body in calls if path.endswith('/inbox/triage') and body['operation'] == 'resolve']
-            assert len(resolves) == 1 and 'fix_kind' not in resolves[0]
-            await occurrence()
-            for lang, label in (('uz','Тузатилган хато яна такрорланди'),
-                                ('ru','Исправленная ошибка повторилась'),
-                                ('tj','Хатои ислоҳшуда боз такрор шуд')):
-                await page.evaluate('(lang) => localStorage.setItem("hsk-admin-locale", lang)', lang)
-                await page.goto(ORIGIN + '/admin/?inbox=diagnostic')
-                await authenticate_fresh_launch(page)
-                await expect(row).to_contain_text(label)
-                await page.screenshot(path=str(output / f'diagnostic-list-{lang}.png'))
-                await row.click()
-                await expect(page.locator('.inbox-details')).to_contain_text(label)
-                await expect(page.locator('#overlay button:visible')).to_have_count(2)
-                await page.screenshot(path=str(output / f'diagnostic-detail-{lang}.png'))
-            assert not errors, errors
-            await browser.close()
-    finally:
-        await fixture.engine.dispose()
+            await page.screenshot(path=str(output / f'diagnostic-detail-{lang}.png'))
+        assert not errors, errors
+        await browser.close()
 
 
 async def main():

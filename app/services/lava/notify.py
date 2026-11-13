@@ -42,7 +42,6 @@ ADMIN_ALERT_TEXT = {
 
 # Admin alert codes that are processing failures, with their diagnostic site.
 LAVA_FAILURE_SITES = {
-    "webhook_auth_failed": "lava_webhook",
     "retry_exhausted": "lava_webhook",
     "activation_failed": "lava_ledger",
     "amount_mismatch": "lava_ledger",
@@ -71,8 +70,8 @@ class LavaNotifier:
                           throttle_seconds: int = 0) -> None:
         # Processing failures are also a diagnostic incident (unified-error-monitoring
         # D4), added next to the Telegram alert, never instead of it: same code,
-        # throttle and recipients below. Refund/chargeback outcomes are business
-        # events, not failures. The reporter never raises or blocks.
+        # throttle and recipients below. Rejected authentication and completed
+        # refund/chargeback outcomes are not processing failures.
         if code in LAVA_FAILURE_SITES:
             from app.services.monitoring.backend import report_server_failure
             report_server_failure("checkout_payments", "provider_failed", LAVA_FAILURE_SITES[code])

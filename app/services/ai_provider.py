@@ -320,9 +320,14 @@ class AIProviderChain:
                 logger.warning("Gemini STT xato berdi, OpenAI zaxiraga o'tilyapti: %s", error)
 
         if self._openai is not None:
-            return await self._openai_transcribe(
-                audio_bytes=audio_bytes, filename=filename, mime_type=mime_type, prompt=prompt
-            )
+            try:
+                return await self._openai_transcribe(
+                    audio_bytes=audio_bytes, filename=filename, mime_type=mime_type, prompt=prompt
+                )
+            except Exception:
+                from app.services.monitoring.backend import report_server_failure
+                report_server_failure("voice_practice", "provider_failed", "voice_provider")
+                raise
 
         if gemini_error is not None:
             from app.services.monitoring.backend import report_server_failure

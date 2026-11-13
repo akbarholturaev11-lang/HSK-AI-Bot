@@ -40,7 +40,7 @@ data class DiagnosticIntakeResponse(
     @SerialName("paused") val paused: Boolean = false,
 )
 
-/** A queued event, stamped with the owner (the signed-in device session ID). */
+/** A queued event, stamped with the owner (the signed-in bearer session ID). */
 @Serializable
 data class QueuedDiagnostic(
     @SerialName("owner") val owner: String,

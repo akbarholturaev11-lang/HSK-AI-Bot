@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>HSK AI</title>
-  <script defer src="/course_v3_data/hsk-diagnostics.js?v=20261113-59e973c45a62"></script>
+  <script defer src="/course_v3_data/hsk-diagnostics.js?v=20261114-cde219a1e184"></script>
 <script src="/assets/telegram-web-app.js?v=20261019-1"></script>
 <link rel="stylesheet" href="/course_v3_data/design-tokens.css?v=20261005">
 <style>
@@ -298,7 +298,7 @@ function onboardingPwaActor(){
       if(PWA_ONBOARDING_SESSION&&PWA_ONBOARDING_SESSION.user_id!==s.user_id){
         location.replace("/iphone-pwa");throw new Error("pwa_actor_changed");
       }
-      if(window.HskDiag)HskDiag.owner(s.user_id);
+      window.HskDiagVerifiedOwner=s.user_id;if(window.HskDiag)HskDiag.owner(s.user_id);
       PWA_ONBOARDING_SESSION=s;return s;
     }).catch(function(e){PWA_ONBOARDING_PROMISE=null;throw e});
   }

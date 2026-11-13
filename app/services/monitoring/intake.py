@@ -7,6 +7,7 @@ the same order.
 """
 from __future__ import annotations
 
+from contextlib import contextmanager
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 import hashlib
@@ -28,10 +29,44 @@ EVENT_KEYS = frozenset({
     "event_id", "client_time", "platform", "app_version", "build", "channel",
     "feature_code", "failure_code", "site_code", "outcome", "category",
 })
-VERSION = re.compile(r"[0-9A-Za-z][0-9A-Za-z._+-]{0,%d}" % (catalog.MAX_VERSION_LENGTH - 1))
+# Android's versionName and the browser's dated content token. A generic
+# alphanumeric field could otherwise persist arbitrary opaque strings.
+ANDROID_VERSION = re.compile(r"[0-9]{1,6}\.[0-9]{1,6}\.[0-9]{1,6}(?:-(?:debug|qa))?")
+WEB_VERSION = re.compile(r"[0-9]{8}-[0-9a-f]{12}")
 OWNER_LOCK_NAMESPACE = 0x6D6F6E  # "mon"
-MAX_BUILD = 10**12
 MAX_CLIENT_TIME_MS = 4_102_444_800_000  # 2100-01-01
+
+
+class IntakeBusy(RuntimeError):
+    """The shared pool has no diagnostic slot; the sender can retry."""
+
+
+_active_writes = 0
+
+
+@contextmanager
+def diagnostic_slot(settings_obj):
+    """Reserve at most a quarter of the configured pool in each app worker.
+
+    No await separates checking and claiming the slot in the ASGI event loop.
+    A request must claim before it opens its auth/write session.
+    """
+    global _active_writes
+    capacity = (getattr(settings_obj, "DB_POOL_SIZE", 5) +
+                max(0, getattr(settings_obj, "DB_MAX_OVERFLOW", 3)))
+    if _active_writes >= max(1, capacity // 4):
+        raise IntakeBusy
+    _active_writes += 1
+    try:
+        yield
+    finally:
+        _active_writes -= 1
+
+
+async def bound_write(db):
+    if db.get_bind().dialect.name == "postgresql":
+        await db.execute(text("SET LOCAL lock_timeout = '750ms'"))
+        await db.execute(text("SET LOCAL statement_timeout = '2s'"))
 
 
 class IntakeRejected(ValueError):
@@ -142,15 +177,29 @@ def _parse_event(item, *, platform, now, skew):
     outcome = item.get("outcome", "failed")
     if (event_id is None or not all(isinstance(code, str) for code in (feature, failure, site, outcome))
             or feature not in catalog.FEATURES or failure not in catalog.CLIENT_FAILURES
-            or site not in catalog.ALL_SITES or outcome not in catalog.OUTCOMES
+            or site not in catalog.CLIENT_SITES or outcome not in catalog.OUTCOMES
             or item.get("platform", platform) != platform):
         return None
     version = item.get("app_version")
-    if version is not None and not (isinstance(version, str) and VERSION.fullmatch(version)):
-        return None
+    if version is not None:
+        version_format = ANDROID_VERSION if platform == "android" else WEB_VERSION
+        if not isinstance(version, str) or not version_format.fullmatch(version):
+            return None
     build = item.get("build")
-    if build is not None and not (type(build) is int and 0 <= build < MAX_BUILD):
+    if build is not None and not (type(build) is int and 0 < build <= 2_100_000_000):
         return None
+    if platform != "android":
+        if build is not None and (version is None or build != int(version[:8])):
+            return None
+        if version is not None:
+            try:
+                # A cache token is a date, not an open-ended build claim.
+                stamp = datetime.strptime(version[:8], "%Y%m%d").date()
+                if stamp > (now + skew).date():
+                    return None
+            except ValueError:
+                return None
+            build = int(version[:8])
     channel = item.get("channel")
     if channel is not None and (platform != "android" or channel not in ("play", "direct")):
         return None
@@ -250,8 +299,11 @@ async def _reopen(db, incident, event, now):
     # Backend reports have no version, even on platform-attributed routes.
     is_server = event.failure_code in catalog.SERVER_FAILURES
     triage = await db.get(AdminPwaInboxTriage, ("diagnostic", incident.id), with_for_update=True)
-    if triage is None or triage.status != "resolved":
+    if triage is None or triage.status != "resolved" or event.outcome == "recovered":
         return False
+    if (not is_server and event.client_time is not None and triage.resolved_at is not None
+            and event.client_time < _aware(triage.resolved_at) - timedelta(seconds=1)):
+        return False  # A queued failure recorded before Fixed is not a recurrence.
     if not is_server and incident.resolved_build is not None and (
         event.build is None or event.build < incident.resolved_build
     ):
@@ -286,10 +338,10 @@ async def ingest(db, *, owner_user_id, events, mode="all", owner_admitted=True, 
     ordered = sorted(events, key=lambda e: (e.fingerprint, e.event_id))
     allowance = len(ordered)
     duplicates = set()
+    if not ordered:
+        return result
     if owner_user_id is not None:
         await _lock_owner(db, owner_user_id)
-        if not ordered:
-            return result
         allowance = max(0, catalog.HOURLY_CAP_PER_ACCOUNT - await _hourly_count(db, owner_user_id, now))
         duplicates = set((await db.scalars(select(DiagnosticReceipt.event_id).where(
             DiagnosticReceipt.user_id == owner_user_id,
@@ -300,14 +352,19 @@ async def ingest(db, *, owner_user_id, events, mode="all", owner_admitted=True, 
         if event.event_id in duplicates:
             result.duplicates += 1
             continue
+        if result.accepted >= allowance:
+            # Record incomplete impact on existing incidents. A refused
+            # signal may not by itself create an incident or send an alert.
+            incident = await db.scalar(select(DiagnosticIncident).where(
+                DiagnosticIncident.fingerprint == event.fingerprint).with_for_update())
+            if incident is not None:
+                incident.refused_count += event.occurrences
+            duplicates.add(event.event_id)
+            result.refused += 1
+            continue
         severity = catalog.severity_for(event.feature_code, event.failure_code,
                                         recovered=event.outcome == "recovered")
         incident, created = await _incident_for(db, event, now, severity)
-        if result.accepted >= allowance:
-            # Refused by the cap: counted on its incident, never stored.
-            incident.refused_count += event.occurrences
-            result.refused += 1
-            continue
         first = incident.occurrence_count == 0
         was_critical = incident.severity == "critical"
         inserted = await _record(db, incident, event, owner_user_id, now)

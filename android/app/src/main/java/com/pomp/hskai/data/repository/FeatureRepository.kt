@@ -571,7 +571,7 @@ class FeatureRepository(
             is ApiResult.Failure -> return result
             is ApiResult.Success -> result.value
         }
-        val result = apiCall(diag) { call("Bearer $token") }
+        val result = apiCall(diag, token) { call("Bearer $token") }
         if (result is ApiResult.Failure && result.error is ApiError.SessionExpired) {
             onSessionExpired()
         }

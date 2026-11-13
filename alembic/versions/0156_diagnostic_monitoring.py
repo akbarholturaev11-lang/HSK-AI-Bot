@@ -99,6 +99,9 @@ def upgrade():
 
 def downgrade():
     bind = op.get_bind()
+    for table in ("diagnostic_receipts", "diagnostic_incidents"):
+        if bind.execute(sa.text(f"SELECT EXISTS (SELECT 1 FROM {table})")).scalar_one():
+            raise RuntimeError(f"Archive diagnostic rows in {table} before downgrade")
     for table, _name in CHECKS:
         if bind.execute(sa.text(
                 f"SELECT EXISTS (SELECT 1 FROM {table} WHERE source = 'diagnostic')")).scalar_one():

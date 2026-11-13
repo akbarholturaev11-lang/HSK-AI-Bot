@@ -11,6 +11,8 @@ from pathlib import Path
 import re
 
 ANDROID_FEATURE_DIR = "android/app/src/main/java/com/pomp/hskai/feature"
+ANDROID_FEATURE_DIRS = tuple(ANDROID_FEATURE_DIR.replace("/main/", f"/{source}/")
+                             for source in ("main", "direct", "play"))
 CATALOG = "app/services/monitoring/catalog.py"
 INBOX_MODULE = "app/admin_api/pwa_inbox.py"
 ADMIN_INBOX_ROUTE = "/api/admin/v1/inbox/list"
@@ -19,7 +21,8 @@ PLATFORMS = ("android", "iphone_pwa", "telegram", "server")
 MODES = ("declare", "require_covered")
 STATUSES = ("covered", "partial", "not_instrumented", "not_applicable")
 PENDING_CONSUMER = "Admin consumer pending"
-ROUTE_METHODS = {"get", "post", "put", "patch", "delete", "api_route"}
+ROUTE_METHODS = {"get", "post", "put", "patch", "delete", "head", "options", "trace", "api_route", "websocket"}
+ROUTE_REGISTRARS = {"add_api_route", "add_api_websocket_route"}
 INTAKE_ROUTES = {
     "android": "/api/v3/android/diagnostics",
     "iphone_pwa": "/api/v3/pwa/diagnostics",
@@ -55,7 +58,8 @@ def load_catalog(root):
 
 def is_learner_route(path):
     return (path.startswith("/api/") and not path.startswith("/api/admin")
-            and not path.startswith("/api/v3/desktop"))
+            and not path.startswith("/api/v3/desktop")
+            and path != "/api/internal/admin-pwa/analytics/refresh")
 
 
 def _literal(node):
@@ -79,7 +83,7 @@ def _router_prefixes(tree):
 
 
 def routes_in_source(source, path):
-    """{full route path: handler name} declared by decorators or ``add_api_route``
+    """{full route path: handler name} declared by HTTP/WebSocket decorators or route registration calls
     in one module, resolving ``APIRouter(prefix=...)``."""
     tree = ast.parse(source, filename=path)
     prefixes = _router_prefixes(tree)
@@ -94,7 +98,7 @@ def routes_in_source(source, path):
                     if route is not None:
                         found.setdefault(prefixes.get(owner, "") + route, node.name)
         elif (isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
-              and node.func.attr == "add_api_route" and node.args):
+              and node.func.attr in ROUTE_REGISTRARS and node.args):
             route = _literal(node.args[0])
             owner = node.func.value.id if isinstance(node.func.value, ast.Name) else ""
             handler = node.args[1].id if len(node.args) > 1 and isinstance(node.args[1], ast.Name) else ""
@@ -110,7 +114,7 @@ def learner_routes(root, read_source=None):
     for file in sorted((root / "app").rglob("*.py")):
         rel = file.relative_to(root).as_posix()
         source = read_source(rel) if read_source else file.read_text(encoding="utf-8")
-        if not source or ("route" not in source and "app." not in source):
+        if not source or ("route" not in source and "app." not in source and "websocket" not in source):
             continue
         for route, handler in sorted(routes_in_source(source, rel).items()):
             if is_learner_route(route):
@@ -119,8 +123,8 @@ def learner_routes(root, read_source=None):
 
 
 def android_packages(root):
-    base = Path(root) / ANDROID_FEATURE_DIR
-    return sorted(p.name for p in base.iterdir() if p.is_dir()) if base.is_dir() else []
+    bases = (Path(root) / relative for relative in ANDROID_FEATURE_DIRS)
+    return sorted({p.name for base in bases if base.is_dir() for p in base.iterdir() if p.is_dir()})
 
 
 def pwa_pages(root):
@@ -164,7 +168,11 @@ def _client_test_ok(root, reference, label, workflow_text, android_ci_text):
     path = reference.split("::", 1)[0]
     _exact_file(root, path, label)
     if path.startswith("android/"):
-        require("UnitTest" in android_ci_text, label, "Android client tests must run in android-ci.yml")
+        require(path.startswith("android/app/src/test/") and path.endswith(".kt"), label,
+                "Android client test must be a Kotlin test in android/app/src/test/")
+        require(any("testPlayDebugUnitTest" in line and "testDirectDebugUnitTest" in line
+                    for line in re.findall(r"(?m)^\s*run:\s*[^\n]*gradlew[^\n]*", android_ci_text)), label,
+                "Android client tests must run for Play and Direct in android-ci.yml")
     elif path.endswith(".js"):
         require(f"node {path}" in workflow_text, label, f"client test is not run by the workflow: {path}")
     else:
@@ -292,7 +300,11 @@ def validate_monitoring(block, root, *, flow_ids, critical_paths, ci_modules, va
                 and (target.startswith("/api/") or target in catalog.FEATURES
                      or target.startswith("app/static/") or target.startswith(ANDROID_FEATURE_DIR)),
                 f"exemption {target!r}", "must name one exact route, page, package or feature ID")
-        require(not (Path(root) / target).is_dir(), f"exemption {target!r}", "a directory cannot be exempted")
+        package_target = next((target[len(base) + 1:] for base in ANDROID_FEATURE_DIRS
+                               if target.startswith(base + "/")), None)
+        require(not (Path(root) / target).is_dir()
+                or (package_target in mapped_packages and "/" not in package_target), f"exemption {target!r}",
+                "a directory cannot be exempted unless it is one mapped Android feature package")
         exempt.add(target)
 
     # Source inventory: everything must be mapped.
@@ -347,8 +359,8 @@ def _status_rank(status):
 
 
 def validate_monitoring_diff(block, previous_block, summary, previous_routes, previous_packages,
-                             previous_pages, root):
-    """New routes, packages and pages need coverage; the baseline only shrinks."""
+                             previous_pages, root, *, changed_routes=(), changed_packages=(), changed_pages=()):
+    """New sources and changed API handlers need coverage; the baseline only shrinks."""
     if previous_block is None:
         previous_block = {}
     mode = block["mode"]
@@ -359,34 +371,41 @@ def validate_monitoring_diff(block, previous_block, summary, previous_routes, pr
                       if row not in previous_block.get("exemptions", [])}
     errors = []
 
-    def check(target, fid, platform, where):
-        if target in exempt_now:
+    def check(target, fid, platform, where, *, changed=False):
+        if target in (new_exemptions if changed else exempt_now):
             return
         cell = features.get(fid, {}).get(platform, {})
         if not _cell_ok(cell, mode):
-            errors.append(f"{where}: new {target} maps to {fid}/{platform} with status "
+            kind = "changed" if changed else "new"
+            errors.append(f"{where}: {kind} {target} maps to {fid}/{platform} with status "
                           f"{cell.get('status')!r}; it must be covered or not_applicable"
                           + (" (or partial with an 'Admin consumer pending' reason)" if mode == "declare" else ""))
 
     for route, (file, _handler) in sorted(summary["routes"].items()):
-        if route not in previous_routes and route in catalog.ROUTE_MAP:
+        if route not in catalog.ROUTE_MAP:
+            continue
+        if route not in previous_routes:
             check(route, catalog.ROUTE_MAP[route][0], "server", file)
+        elif route in changed_routes:
+            check(route, catalog.ROUTE_MAP[route][0], "server", file, changed=True)
     for package in android_packages(root):
-        if package not in previous_packages and package in block["android_packages"]:
-            check(f"{ANDROID_FEATURE_DIR}/{package}", block["android_packages"][package], "android",
-                  f"{ANDROID_FEATURE_DIR}/{package}")
+        if package in block["android_packages"] and (package not in previous_packages or package in changed_packages):
+            path = f"{ANDROID_FEATURE_DIR}/{package}"
+            check(path, block["android_packages"][package], "android", path, changed=package in previous_packages)
     for page in pwa_pages(root):
-        if page not in previous_pages and page in block["pwa_pages"]:
-            check(f"app/static/{page}", block["pwa_pages"][page], "iphone_pwa", f"app/static/{page}")
+        if page in block["pwa_pages"] and (page not in previous_pages or page in changed_pages):
+            path = f"app/static/{page}"
+            check(path, block["pwa_pages"][page], "iphone_pwa", path, changed=page in previous_pages)
 
     old_baseline = set(previous_block.get("legacy_baseline", []))
     grown = sorted(set(block["legacy_baseline"]) - old_baseline) if previous_block else []
     for pair in grown:
-        if pair not in new_exemptions:
-            errors.append(f"legacy_baseline grew with {pair}; the baseline may only shrink")
+        errors.append(f"legacy_baseline grew with {pair}; the baseline may only shrink")
     old_features = {row["id"]: row["platforms"] for row in previous_block.get("features", [])}
     for fid, platforms in features.items():
         for platform, cell in platforms.items():
+            if (previous_block and fid not in old_features and not _cell_ok(cell, mode)):
+                errors.append(f"monitoring {fid}:{platform}: a new feature needs coverage or a justified not_applicable entry")
             before = old_features.get(fid, {}).get(platform)
             if before and _status_rank(cell["status"]) < _status_rank(before.get("status")):
                 target = f"{fid}:{platform}"
@@ -408,9 +427,16 @@ def read_chain_proof(path):
     return proven
 
 
-def validate_chain_proof(block, proof_path):
+def validate_chain_proof(block, proof_path, *, known_failures=None):
     """Every covered entry must have been proven by the shared helper in this run."""
-    proven = {(platform, feature) for platform, feature, _ in read_chain_proof(proof_path)}
+    entries = read_chain_proof(proof_path)
+    features = {row["id"] for row in block["features"]}
+    invalid = sorted((p, f, c) for p, f, c in entries
+                     if p not in PLATFORMS or f not in features
+                     or (known_failures is not None and c not in known_failures))
+    if invalid:
+        raise MonitoringError(f"invalid runtime chain proof entries: {invalid}")
+    proven = {(platform, feature) for platform, feature, _ in entries}
     missing = [f"{row['id']}/{platform}" for row in block["features"]
                for platform, cell in row["platforms"].items()
                if cell["status"] == "covered" and (platform, row["id"]) not in proven]

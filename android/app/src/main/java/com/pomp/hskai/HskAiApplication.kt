@@ -106,15 +106,15 @@ class HskAiApplication : Application() {
     val diagnostics: AndroidDiagnostics by lazy {
         AndroidDiagnostics(
             context = this,
-            api = retrofit.create(AndroidDiagnosticsApi::class.java),
-            token = { (authRepository.accessToken() as? com.pomp.hskai.core.network.ApiResult.Success)?.value },
+            api = { retrofit.create(AndroidDiagnosticsApi::class.java) },
+            token = { authRepository.cachedDiagnosticToken() },
         )
     }
 
     override fun onCreate() {
         super.onCreate()
         // First, so a crash anywhere below is recorded.
-        diagnostics.start()
+        runCatching { diagnostics.start() }
         paymentDecisionMonitor.initializeFirebase()
         applicationScope.launch {
             // Whether a newer build exists is asked here rather than from a
@@ -251,16 +251,16 @@ class HskAiApplication : Application() {
                 webClientId = BuildConfig.GOOGLE_WEB_CLIENT_ID,
             ),
             onSessionCleared = {
-                diagnostics.clearOwner()
+                runCatching { diagnostics.clearOwner() }
                 clearWidgetSession()
             },
             onSessionReplacing = {
-                diagnostics.clearOwner()
+                runCatching { diagnostics.clearOwner(keepPreSignIn = true) }
                 clearWidgetProjection()
             },
             onSessionLinked = { widgetStore.linked(newSession = true) },
+            onDiagnosticSession = { token -> runCatching { diagnostics.bindToken(token) } },
             onAuthenticated = { deviceId ->
-                diagnostics.bindOwner(deviceId)
                 paymentDecisionMonitor.bindDevice(deviceId)
                 widgetStore.linked()
                 WidgetScheduler.schedule(this)

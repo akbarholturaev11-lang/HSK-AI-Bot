@@ -87,7 +87,7 @@ class DiagnosticQueueTest {
             assertEquals("Bearer token", bearer)
             sent += batch
             answer()
-        }, clock = kit.clock::read)
+        }, clock = kit.clock::read, sessionId = { OWNER })
 
     @Test
     fun `a 2xx removes the batch and 401 or 403 drops the queue`() = runTest {
@@ -133,6 +133,47 @@ class DiagnosticQueueTest {
         val sent = mutableListOf<DiagnosticBatchDto>()
         assertEquals(FlushOutcome.DONE, uploader(kit, { response(200) }, sent).flush())
         assertTrue(sent.isEmpty())
+    }
+
+    @Test
+    fun `an old batch cannot be sent with a replacement session's token`() = runTest {
+        val kit = DiagnosticsKit(owner = SESSION_A)
+        kit.lessonFailure()
+        val uploader = DiagnosticUploader(kit.queue, kit.state, token = {
+            kit.reporter.bindOwner(SESSION_B)
+            diagnosticToken(SESSION_B)
+        }, send = { _, _ -> error("a mismatched bearer must never be sent") })
+        assertEquals(FlushOutcome.DONE, uploader.flush())
+        assertEquals(0, kit.queue.size())
+    }
+
+    @Test
+    fun `a late denial or pause cannot clear a replacement session's events`() = runTest {
+        for ((status, paused) in listOf(401 to false, 403 to false, 200 to true)) {
+            val kit = DiagnosticsKit(owner = SESSION_A)
+            kit.lessonFailure()
+            val uploader = DiagnosticUploader(kit.queue, kit.state, token = { diagnosticToken(SESSION_A) },
+                send = { _, _ ->
+                    kit.reporter.bindOwner(SESSION_B)
+                    kit.lessonFailure()
+                    response(status, paused)
+                }, clock = kit.clock::read)
+            uploader.flush()
+            assertEquals(0L, kit.state.pausedUntil)
+            assertEquals(1, kit.events(SESSION_B).size)
+        }
+    }
+
+    @Test
+    fun `first sign-in retains anonymous failures but replacement drops old session failures`() {
+        val kit = DiagnosticsKit(owner = null)
+        kit.lessonFailure()
+        kit.reporter.clearOwner(keepPreSignIn = true)
+        kit.reporter.bindOwner(SESSION_A)
+        assertEquals(1, kit.events(SESSION_A).size)
+        kit.reporter.clearOwner(keepPreSignIn = true)
+        kit.reporter.bindOwner(SESSION_B)
+        assertEquals(0, kit.queue.size())
     }
 
     @Test

@@ -7,7 +7,7 @@ arrival. The original triage transaction owns this enqueue and its rollback.
 import hashlib
 from uuid import uuid4
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 
 from app.db.models.user import User
 
@@ -77,11 +77,13 @@ async def enqueue_automatic_alert(db, *, settings_obj, source: str, source_id: i
     if alert_epoch is not None:
         identity += f":{alert_epoch}"
     event_key = hashlib.sha256(identity.encode("ascii")).hexdigest()
-    devices = (await db.scalars(select(AdminPwaPushSubscription.id)
+    device_query = (select(AdminPwaPushSubscription.id)
         .join(User, User.id == AdminPwaPushSubscription.user_id)
         .where(User.telegram_id.in_(admins),
-               AdminPwaPushSubscription.revoked_at.is_(None))
-        .order_by(AdminPwaPushSubscription.id).limit(32))).all()
+               AdminPwaPushSubscription.revoked_at.is_(None)))
+    if source == "diagnostic":
+        device_query = device_query.where(func.lower(func.trim(func.coalesce(User.status, ""))) != "blocked")
+    devices = (await db.scalars(device_query.order_by(AdminPwaPushSubscription.id).limit(32))).all()
     if not devices:
         return 0
     existing = set((await db.scalars(select(AdminPwaPushOutbox.subscription_id).where(

@@ -56,9 +56,13 @@ class AppErrorContextService:
         return "\n".join(lines)
 
     async def record_miniapp_error(self, telegram_id: int, payload: dict) -> bool:
+        return (await self.record_miniapp_error_owner(telegram_id, payload)) is not None
+
+    async def record_miniapp_error_owner(self, telegram_id: int, payload: dict) -> int | None:
+        """Commit the legacy path and return the canonical owner if saved."""
         user = await self.user_repo.get_by_telegram_id(telegram_id)
         if not user:
-            return False
+            return None
 
         content = self._format_context(payload)
         record = await self.message_repo.create(
@@ -81,8 +85,9 @@ class AppErrorContextService:
                     )
             except Exception:
                 logger.warning("Optional sanitized Mini App error push enqueue failed")
+        owner_user_id = user.id
         await self.session.commit()
-        return True
+        return owner_user_id
 
     async def build_ai_context(self, user_id: int, limit: int = 3) -> str:
         messages = await self.message_repo.get_recent_by_content_type(

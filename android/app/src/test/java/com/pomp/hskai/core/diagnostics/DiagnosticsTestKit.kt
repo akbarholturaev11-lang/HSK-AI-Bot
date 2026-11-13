@@ -51,3 +51,11 @@ internal class DiagnosticsKit(owner: String? = OWNER) {
     fun codes(owner: String = state.owner.orEmpty()): List<String> =
         events(owner).map { "${it.featureCode}/${it.failureCode}/${it.siteCode}" }
 }
+
+internal const val SESSION_A = "11111111-1111-4111-8111-111111111111"
+internal const val SESSION_B = "22222222-2222-4222-8222-222222222222"
+
+internal fun diagnosticToken(session: String): String {
+    val payload = """{"sid":"$session","did":"same-device","uid":42}""".encodeToByteArray()
+    return "header.${java.util.Base64.getUrlEncoder().withoutPadding().encodeToString(payload)}.signature"
+}

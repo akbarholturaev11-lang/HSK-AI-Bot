@@ -19,32 +19,49 @@ def _aware(stamp):
 
 
 async def decide_alert(db, *, settings_obj, incident, first, escalated, reopened, now):
-    if not (getattr(settings_obj, "MONITORING_PUSH_ENABLED", False)
-            and getattr(settings_obj, "ADMIN_PWA_ENABLED", False)
-            and getattr(settings_obj, "ADMIN_PWA_PUSH_ENABLED", False)):
-        return
-    # An open incident that was initially capped can qualify on a later event.
-    candidate = incident.severity == "high" or (incident.severity == "critical" and incident.alert_epoch == 0)
-    if not (reopened or escalated or (first and incident.severity == "critical") or candidate):
+    push_enabled = (getattr(settings_obj, "MONITORING_PUSH_ENABLED", False)
+                    and getattr(settings_obj, "ADMIN_PWA_ENABLED", False)
+                    and getattr(settings_obj, "ADMIN_PWA_PUSH_ENABLED", False))
+    # Scope severity belongs to the Inbox even if Push is disabled. A failed
+    # enqueue may be retried by a subsequent occurrence of the same reopen.
+    pending_reopen = incident.reopened_at is not None and (
+        incident.last_alerted_at is None or _aware(incident.last_alerted_at) < _aware(incident.reopened_at))
+    candidate = incident.severity == "high" or (
+        incident.severity == "critical" and incident.alert_epoch == 0)
+    if not (incident.severity == "high"
+            or (push_enabled and (pending_reopen or reopened or escalated
+                                  or (first and incident.severity == "critical") or candidate))):
         return
     try:
         async with db.begin_nested():
-            reason = "reopened" if reopened else None
-            if reason is None:
-                triage = await db.get(AdminPwaInboxTriage, ("diagnostic", incident.id))
-                if triage is not None and triage.status == "resolved":
-                    return
-                if not escalated and incident.severity == "high":
-                    owners = (select(DiagnosticReceipt.user_id)
-                              .where(DiagnosticReceipt.incident_id == incident.id,
-                                     DiagnosticReceipt.user_id.is_not(None),
-                                     DiagnosticReceipt.received_at >= now - timedelta(minutes=catalog.ESCALATION_WINDOW_MINUTES))
-                              .distinct().limit(catalog.ESCALATION_ACCOUNTS).subquery())
-                    if await db.scalar(select(func.count()).select_from(owners)) < catalog.ESCALATION_ACCOUNTS:
-                        return
+            triage = await db.get(AdminPwaInboxTriage, ("diagnostic", incident.id))
+            if triage is not None and triage.status == "resolved":
+                return
+            if incident.severity == "high":
+                owners = (select(DiagnosticReceipt.user_id)
+                          .where(DiagnosticReceipt.incident_id == incident.id,
+                                 DiagnosticReceipt.user_id.is_not(None),
+                                 DiagnosticReceipt.outcome == "failed",
+                                 DiagnosticReceipt.received_at >= now - timedelta(minutes=catalog.ESCALATION_WINDOW_MINUTES),
+                                 DiagnosticReceipt.received_at <= now)
+                          .distinct().limit(catalog.ESCALATION_ACCOUNTS).subquery())
+                if await db.scalar(select(func.count()).select_from(owners)) >= catalog.ESCALATION_ACCOUNTS:
                     incident.severity = "critical"
                     escalated = True
-                reason = "escalated" if escalated else "new"
+    except Exception:
+        logger.warning("diagnostic alert severity check failed")
+        return
+    if not push_enabled:
+        return
+    if pending_reopen or reopened:
+        reason = "reopened"
+    elif escalated or (incident.severity == "critical" and incident.alert_epoch == 0):
+        reason = "escalated" if escalated else "new"
+    else:
+        return
+    try:
+        async with db.begin_nested():
+            if reason != "reopened":
                 if incident.last_alerted_at and _aware(incident.last_alerted_at) > now - timedelta(hours=catalog.ALERT_COOLDOWN_HOURS):
                     return
                 if db.get_bind().dialect.name == "postgresql":
@@ -64,5 +81,5 @@ async def decide_alert(db, *, settings_obj, incident, first, escalated, reopened
                 incident.alert_epoch = epoch
                 incident.last_alerted_at = now
                 incident.last_alert_reason = reason
-    except Exception:  # The savepoint keeps the occurrence and triage durable.
+    except Exception:  # The savepoint keeps the occurrence, severity and triage durable.
         logger.warning("diagnostic alert enqueue failed")

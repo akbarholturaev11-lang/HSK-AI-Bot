@@ -34,6 +34,7 @@ class CrashRecorder(
     }
 
     internal fun record(error: Throwable) {
+        if (clock() < state.pausedUntil) return
         val (site, category) = crashBucket(error)
         val record = CrashRecordDto(state.owner.orEmpty(), clock(), feature().code, site.code, category)
         val bytes = json.encodeToString(CrashRecordDto.serializer(), record).encodeToByteArray()
@@ -47,7 +48,7 @@ class CrashRecorder(
         val record = runCatching { json.decodeFromString(CrashRecordDto.serializer(), bytes.decodeToString()) }
             .getOrNull() ?: return
         state.lastCrashAt = record.at
-        if (record.owner != state.owner.orEmpty()) return
+        if (record.owner != state.owner.orEmpty() || clock() - record.at !in 0 until DiagnosticQueue.TTL_MILLIS) return
         val feature = DiagFeature.entries.firstOrNull { it.code == record.feature } ?: DiagFeature.APP_SHELL
         val site = DiagSite.entries.firstOrNull { it.code == record.site } ?: DiagSite.EXC_OTHER
         reporter.report(feature, DiagFailure.CRASH_UNCAUGHT, site, record.category, at = record.at, owner = record.owner)
@@ -89,15 +90,27 @@ object ExitReasons {
      * Reports new exits and advances the last-seen mark. The first run only
      * sets the mark, so exits from before this reporter existed are not sent.
      */
-    fun report(exits: List<ExitRecord>, state: DiagnosticState, reporter: DiagnosticReporter, now: Long) {
+    fun report(
+        exits: List<ExitRecord>,
+        state: DiagnosticState,
+        reporter: DiagnosticReporter,
+        now: Long,
+        previousProcessOwner: String? = state.owner,
+    ) {
         val lastSeen = state.lastExitSeen
         val newest = exits.maxOfOrNull { it.timestamp } ?: now
         if (lastSeen <= 0L) {
             state.lastExitSeen = newest
             return
         }
-        select(exits, lastSeen, state.lastCrashAt).forEach { (failure, at) ->
-            reporter.report(DiagFeature.APP_SHELL, failure, DiagSite.PROCESS, at = at)
+        // OS exit records are package-wide. Never assign them to an account
+        // that signed in after this process started.
+        if (previousProcessOwner != null && previousProcessOwner == state.owner) {
+            select(exits, maxOf(lastSeen, now - DiagnosticQueue.TTL_MILLIS), state.lastCrashAt)
+                .filter { (_, at) -> at <= now }
+                .forEach { (failure, at) ->
+                    reporter.report(DiagFeature.APP_SHELL, failure, DiagSite.PROCESS, at = at, owner = previousProcessOwner)
+                }
         }
         if (newest > lastSeen) state.lastExitSeen = newest
     }

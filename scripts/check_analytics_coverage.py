@@ -541,6 +541,8 @@ def validate_monitoring(registry, root=ROOT, *, found_events=None):
     """Monitoring section (design D10); absent before the first monitoring work."""
     block = registry.get("monitoring")
     if block is None:
+        require(not monitoring_coverage.inbox_declares_diagnostic(root), "monitoring",
+                "the diagnostic Inbox requires the monitoring registry")
         return None
     root = Path(root)
     read = lambda rel: (root / rel).read_text(encoding="utf-8") if (root / rel).is_file() else ""
@@ -561,15 +563,16 @@ def _inventory_at(root, ref):
     for path in files:
         if path.startswith("app/") and path.endswith(".py"):
             source = git_blob(root, ref, path)
-            if "route" in source or "app." in source:
+            if "route" in source or "app." in source or "websocket" in source:
                 try:
                     found = monitoring_coverage.routes_in_source(source, path)
                 except SyntaxError:
                     continue
                 routes.update(r for r in found if monitoring_coverage.is_learner_route(r))
-    feature_dir = monitoring_coverage.ANDROID_FEATURE_DIR + "/"
+    feature_dirs = tuple(f"{path}/" for path in monitoring_coverage.ANDROID_FEATURE_DIRS)
+    package_files = git(root, "ls-tree", "-r", "--name-only", "-z", ref, "--", *feature_dirs).split("\0")
     packages = {path[len(feature_dir):].split("/", 1)[0]
-                for path in git(root, "ls-tree", "-r", "--name-only", "-z", ref, "--", feature_dir).split("\0")
+                for path in package_files for feature_dir in feature_dirs
                 if path.startswith(feature_dir) and "/" in path[len(feature_dir):]}
     pages = {Path(path).name for path in files if path.startswith("app/static/") and path.count("/") == 2
              and any(Path(path).match(pattern) for pattern in monitoring_coverage.PAGE_PATTERNS)}
@@ -577,17 +580,38 @@ def _inventory_at(root, ref):
 
 
 def check_monitoring_diff(root, registry, summary, base, head, mode):
-    if summary is None:
-        return
     base = git(root, "rev-parse", "--verify", "--end-of-options", f"{base}^{{commit}}").strip()
     head = git(root, "rev-parse", "--verify", "--end-of-options", f"{head}^{{commit}}").strip()
     if mode == "pull_request":
         base = git(root, "merge-base", base, head).strip()
     previous_text = git_blob(root, base, REGISTRY)
     previous = load_registry(previous_text) if previous_text else {}
+    if summary is None:
+        require(previous.get("monitoring") is None, "monitoring", "the monitoring registry cannot be removed")
+        return
     routes, packages, pages = _inventory_at(root, base)
+    # A new critical behavior can live inside an existing URL. Compare handler
+    # ASTs, so formatting and comments do not retroactively require coverage.
+    changed_files = set(git(root, "diff", "--name-only", "--no-renames", "-z", base, head, "--").split("\0"))
+    handler_paths = defaultdict(dict)
+    for path, (file, handler) in summary["routes"].items():
+        if file in changed_files and path in routes and handler:
+            handler_paths[file][path] = handler
+    changed_routes = set()
+    for file, handlers in handler_paths.items():
+        names = set(handlers.values())
+        before = symbol_dumps(git_blob(root, base, file), file, names)
+        after = symbol_dumps(git_blob(root, head, file), file, names)
+        changed_routes.update(path for path, handler in handlers.items() if before.get(handler) != after.get(handler))
+    changed_packages = {path[len(prefix) + 1:].split("/", 1)[0]
+                        for path in changed_files for prefix in monitoring_coverage.ANDROID_FEATURE_DIRS
+                        if path.startswith(prefix + "/") and path.endswith((".kt", ".java"))}
+    changed_pages = {Path(path).name for path in changed_files
+                     if path.startswith("app/static/") and path.count("/") == 2
+                     and any(Path(path).match(pattern) for pattern in monitoring_coverage.PAGE_PATTERNS)}
     monitoring_coverage.validate_monitoring_diff(
-        registry["monitoring"], previous.get("monitoring"), summary, routes, packages, pages, root)
+        registry["monitoring"], previous.get("monitoring"), summary, routes, packages, pages, root,
+        changed_routes=changed_routes, changed_packages=changed_packages, changed_pages=changed_pages)
 
 
 def main(argv=None):
@@ -604,8 +628,10 @@ def main(argv=None):
     try:
         registry = validate_schema(load_registry((ROOT / REGISTRY).read_text(encoding="utf-8")))
         if args.chain_proof:
-            proven = monitoring_coverage.validate_chain_proof(registry.get("monitoring") or {"features": []},
-                                                              args.chain_proof)
+            require(registry.get("monitoring") is not None, "monitoring", "runtime proof requires the monitoring registry")
+            proven = monitoring_coverage.validate_chain_proof(
+                registry["monitoring"], args.chain_proof,
+                known_failures=monitoring_coverage.load_catalog(ROOT).FAILURES)
             print(f"Monitoring chain proof valid: {proven} proven feature/platform pairs")
             return 0
         summary = None

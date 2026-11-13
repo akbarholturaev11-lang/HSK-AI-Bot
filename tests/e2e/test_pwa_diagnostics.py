@@ -47,6 +47,7 @@ def expect_report(page, trigger):
 
 def test_js_signals_and_offline_delivery(diagnostic_page):
     page, context, _, posts, _ = diagnostic_page
+    page.evaluate("HskDiag.owner(1)")
     expect_report(page, """() => { setTimeout(() => { throw new TypeError('private-message'); }, 0); }""")
     assert posts[0][0] == "fixture-csrf-1"
     first = posts[0][1]["events"][0]
@@ -87,6 +88,26 @@ def test_switch_and_unauthorized_response_drop_only_that_owner(diagnostic_page):
         HskDiag.flush();
     }""")
     second.wait_for_function("JSON.parse(localStorage.getItem('hsk-diag-v1')).events.length === 0")
+    assert len(posts) == 1
+    assert posts[0][0] == "fixture-csrf-2"
+    assert [event["site_code"] for event in posts[0][1]["events"]] == ["progress"]
+
+
+def test_reporter_does_not_bind_the_document_during_delivery(diagnostic_page):
+    page, context, actor, posts, _ = diagnostic_page
+    page.evaluate("""() => {
+        setTimeout(() => { throw new Error('unverified document'); }, 0);
+        HskDiag.flush();
+    }""")
+    second = context.new_page()
+    second.goto(ORIGIN + "/iphone-pwa/course")
+    actor["user_id"] = 2
+    second.evaluate("HskDiag.owner(2)")
+    assert not page.evaluate("HskDiag.owner(1)"), "a late response in the old document cannot replace the new owner"
+    expect_report(second, """() => {
+        HskDiag.report('lessons', 'load_failed', 'progress', 502);
+        HskDiag.flush();
+    }""")
     assert len(posts) == 1
     assert posts[0][0] == "fixture-csrf-2"
     assert [event["site_code"] for event in posts[0][1]["events"]] == ["progress"]
