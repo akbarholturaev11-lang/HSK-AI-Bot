@@ -15,7 +15,7 @@ PLURAL_KEYS = [
     for name in ("countAll", "countResults", "strokeCount")
     for category in ("one", "few", "many")
 ]
-VERSION = "hsk-course-i18n.js?v=20261021-3eff2a84e104"
+VERSION = "hsk-course-i18n.js?v=20261113-a1da547eb267"
 
 
 def source():

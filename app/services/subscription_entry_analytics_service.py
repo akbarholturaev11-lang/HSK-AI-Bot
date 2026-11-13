@@ -14,6 +14,8 @@ from app.services.account_identity import actual_telegram_id
 
 
 logger = logging.getLogger(__name__)
+# R3: route-set clients of a subscription entry. Desktop rows keep NULL.
+ENTRY_CLIENTS = frozenset({"telegram", "iphone_pwa", "android"})
 
 
 @dataclass(frozen=True)
@@ -156,7 +158,10 @@ class SubscriptionEntryAnalyticsService:
         payment_method: str | None = None,
         campaign_id: int | None = None,
         feedback_id: int | None = None,
+        client: str | None = None,
     ) -> bool:
+        """`client` is the calling route's own client (R3), never caller text;
+        an unknown value is stored as NULL, so the row stays Overall-only."""
         user_id = getattr(user, "id", None)
         # The authenticated account owns this event; caller metadata cannot
         # replace its Telegram identity or attach a native entry to another user.
@@ -173,6 +178,7 @@ class SubscriptionEntryAnalyticsService:
             payment_method=(str(payment_method).strip()[:16] if payment_method else None),
             campaign_id=campaign_id,
             feedback_id=feedback_id,
+            client=client if client in ENTRY_CLIENTS else None,
         )
 
         try:

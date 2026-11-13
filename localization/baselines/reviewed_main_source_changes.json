@@ -47,33 +47,15 @@
       "group": "ui_catalog_origins",
       "reason": "Verified exact current main Android/admin UI revision; source copy and platform resource alignment requires runtime QA."
     },
-    "android/app/src/main/res/values-ru/strings.xml": {
-      "baseline_sha1": "3ea6bde59e80c8dbbee04d0d1b8a34da08e550a2",
-      "upstream_main_sha1": "871e2a7af512b6c86f8139dd50b7c8bfef70edc4",
-      "group": "ui_catalog_origins",
-      "reason": "Verified exact current main Android/admin UI revision; source copy and platform resource alignment requires runtime QA."
-    },
     "android/app/src/main/res/values-tg/profile_miniapp_parity.xml": {
       "baseline_sha1": "e680b1ae62d7e98e59637baa599d1bbc0061ca07",
       "upstream_main_sha1": "e2be26df953845cc2c9065205d99618596aea636",
       "group": "ui_catalog_origins",
       "reason": "Verified exact current main Android/admin UI revision; source copy and platform resource alignment requires runtime QA."
     },
-    "android/app/src/main/res/values-tg/strings.xml": {
-      "baseline_sha1": "a4d435d7b1b45a26c1f34abdab6cecd1e13fc785",
-      "upstream_main_sha1": "dd299501383e15b8376048ea894cd34eced5ac58",
-      "group": "ui_catalog_origins",
-      "reason": "Verified exact current main Android/admin UI revision; source copy and platform resource alignment requires runtime QA."
-    },
     "android/app/src/main/res/values/profile_miniapp_parity.xml": {
       "baseline_sha1": "a2b6359737c76ae297c8ee4a94de05d5ef1f0c66",
       "upstream_main_sha1": "f92d3057951d13800721cabb379fbfa78e6aace1",
-      "group": "ui_catalog_origins",
-      "reason": "Verified exact current main Android/admin UI revision; source copy and platform resource alignment requires runtime QA."
-    },
-    "android/app/src/main/res/values/strings.xml": {
-      "baseline_sha1": "efa24ce8e1f0d5c2860abf9df89c130a2d439dc7",
-      "upstream_main_sha1": "1776f6f4203143ade8aa20cce1213f24b8a9feae",
       "group": "ui_catalog_origins",
       "reason": "Verified exact current main Android/admin UI revision; source copy and platform resource alignment requires runtime QA."
     },

@@ -236,6 +236,8 @@ class DesktopSubscriptionService:
             user=context.user,
             source=entry_source or self.source,
             mode=mode,
+            # R3: route-owned Android namespace only; Desktop rows stay NULL (freeze).
+            client="android" if self.source == "android_subscription" else None,
         )
 
         if result["checkout_allowed"]:

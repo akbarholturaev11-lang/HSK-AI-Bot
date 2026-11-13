@@ -59,7 +59,7 @@ CORRECTED_METRICS = {("money", "overall"): {
     "all_time": {"average_payment_usd": 9.5612, "arppu_usd": 19.1223},
 }}
 NEWLY_ATTRIBUTED = frozenset([("home", "iphone_pwa"), ("overview", "iphone_pwa"), ("platform", "iphone_pwa")]) | frozenset(
-    (section, platform) for section in ("money", "funnel", "course")
+    (section, platform) for section in ("money", "funnel", "course", "sources")
                              for platform in ("android", "telegram", "iphone_pwa"))
 
 

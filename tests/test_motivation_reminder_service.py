@@ -296,6 +296,12 @@ class MotivationReminderServiceQueryTests(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn("card_seen", lifecycle_query)
         self.assertNotIn("interaction_completed", lifecycle_query)
         self.assertIn("max(course_miniapp_events.created_at)", activity_query.lower())
+        # R1's Admin-only Android lesson open is not learner activity for D1
+        # recovery: it is excluded with the reminder system rows.
+        self.assertNotIn("android_lesson_started", lifecycle_query)
+        excluded = activity_query[activity_query.index("NOT IN"):]
+        self.assertIn("android_lesson_started", excluded)
+        self.assertIn(D1_RECOVERY_SENT_EVENT, excluded)
 
 
 class D1RecoveryDeliveryTests(unittest.IsolatedAsyncioTestCase):

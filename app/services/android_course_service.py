@@ -536,6 +536,7 @@ class AndroidCourseService(DesktopCourseService):
                 timezone_offset_minutes=timezone_offset_minutes,
                 activation_variant=activation_variant,
                 goals=goals, streak_target_days=streak_target_days, preferred_focus=preferred_focus,
+                analytics_client="android",
             )
         except ValueError as exc:
             raise DesktopCourseError("android_request_invalid", status_code=422) from exc

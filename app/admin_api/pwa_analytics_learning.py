@@ -1,7 +1,7 @@
 """Source-bound learning projections, with bounded detailed-history calculations."""
 from datetime import timedelta
 
-from sqlalchemy import and_, func, or_, select
+from sqlalchemy import and_, func, or_, select, union
 
 from app.admin_api.pwa_analytics import _known, home_overview_metrics
 from app.admin_api.pwa_metrics import _window, overall_activity_metrics
@@ -44,6 +44,30 @@ def ratio(numerator, denominator):
     return round(100*numerator/denominator, 2) if denominator else None
 
 
+ACTIVATION_EVENTS = ('onboarding_completed', 'lesson_started', 'section_completed',
+                     'lesson_completed', 'book_lesson_completed')
+
+
+def activation_query(*conditions, since, now):
+    """Rows of the activation funnel: (event, account, time, payload prefix)."""
+    return (select(Event.event_name, User.id, Event.created_at, func.substr(Event.payload_json, 1, PAYLOAD_LIMIT+1))
+        .select_from(Event).join(User, owner(Event)).where(Event.event_name.in_(ACTIVATION_EVENTS),
+            *conditions, *_window(Event.created_at, since, now)).order_by(Event.created_at, Event.id))
+
+
+def activation_values(rows, *, now):
+    """(activation, direct_activation): lesson start within 2 minutes of the
+    onboarding anchor, for every cohort and for `direct_start_v1`."""
+    if rows is None:
+        return None, None
+    funnel = _activation_funnel(rows, now=now)
+    def values(cohort):
+        return {'eligible': cohort['lesson_started_eligible'], 'started': cohort['lesson_started_2m'],
+                'percent': ratio(cohort['lesson_started_2m'], cohort['lesson_started_eligible'])}
+    direct = funnel['variants'].get('direct_start_v1')
+    return values(funnel), values(direct) if direct else None
+
+
 def owner(model, telegram_column='telegram_id'):
     return and_(analytics_user_join(model, telegram_column=telegram_column),
         or_(model.user_id.is_not(None), getattr(model, telegram_column)>0))
@@ -65,16 +89,31 @@ def shift(db, column, days):
     return func.datetime(column, f'+{days} days')
 
 
+def returned_accounts(account, *conditions, evidence):
+    """Accounts with any of the `evidence` EXISTS clauses, as a subquery.
+
+    Each clause is its own WHERE EXISTS, which PostgreSQL plans as a semi-join
+    over the whole cohort. Inside an aggregate FILTER (or OR-ed together) an
+    EXISTS runs once per account: all time on 1M events took 8 s per window and
+    hit the 5 s statement timeout (audit 2026-11-13). The union counts an
+    account once."""
+    selects=[select(account).where(*conditions,clause) for clause in evidence]
+    return (selects[0] if len(selects)==1 else union(*selects)).subquery()
+
+
 async def _cohort_returns(db, evidence, *, since, now):
     """Accounts registered in the matured cohort, and those with evidence in
-    their D1 (24-48 h) or D7 (168-192 h) window. One query per window."""
+    their D1 (24-48 h) or D7 (168-192 h) window. One query per window.
+    `evidence(low, high)` returns EXISTS clauses correlated to `User`."""
     result={}
     for days in (1,7):
         end=now-timedelta(days=days+1)
         start=end-(now-since) if since else None
-        returned=evidence(shift(db,User.created_at,days),shift(db,User.created_at,days+1))
-        eligible,count=(await db.execute(select(func.count(User.id),func.count(User.id).filter(returned))
-            .where(User.created_at<=end,*([User.created_at>start] if start else [])))).one()
+        cohort=(User.created_at<=end,*([User.created_at>start] if start else []))
+        returned=returned_accounts(User.id,*cohort,
+            evidence=evidence(shift(db,User.created_at,days),shift(db,User.created_at,days+1)))
+        eligible,count=(await db.execute(select(select(func.count(User.id)).where(*cohort).scalar_subquery(),
+            select(func.count()).select_from(returned).scalar_subquery()))).one()
         result[f'd{days}']={'eligible':eligible,'returned':count,'percent':ratio(count,eligible),
             'cohort_start':start.isoformat() if start else None,'cohort_end':end.isoformat()}
     return result
@@ -82,9 +121,9 @@ async def _cohort_returns(db, evidence, *, since, now):
 
 async def retention(db, *, since, now):
     """`course_open`: a Mini App or PWA course-map open (A3 + A4)."""
-    return await _cohort_returns(db, lambda low, high: select(Event.id).where(
+    return await _cohort_returns(db, lambda low, high: (select(Event.id).where(
         owner(Event), Event.event_name=='miniapp_opened', Event.created_at>=low,
-        Event.created_at<high, Event.created_at<=now).correlate(User).exists(), since=since, now=now)
+        Event.created_at<high, Event.created_at<=now).correlate(User).exists(),), since=since, now=now)
 
 
 async def return_retention(db, *, since, now):
@@ -108,7 +147,7 @@ async def return_retention(db, *, since, now):
         voice=select(Voice.id).where(owner(Voice,'user_telegram_id'), Voice.turn_count>0,
             Voice.started_at>=low, Voice.ended_at.is_not(None), Voice.ended_at<high,
             Voice.ended_at<=now).correlate(User).exists()
-        return or_(owned, legacy, voice_turn, legacy_turn, voice)
+        return owned, legacy, voice_turn, legacy_turn, voice
     return await _cohort_returns(db, evidence, since=since, now=now)
 
 
@@ -168,19 +207,8 @@ async def learning_metrics(db, *, period, since, now):
             Event.event_name.in_(('lesson_started','lesson_completed','book_lesson_completed')),
             *_window(Event.created_at,detail_since-timedelta(hours=8),now)).order_by(Event.created_at,Event.id))
     lesson_durations=_lesson_attempt_durations(lesson_rows,completion_since=detail_since) if lesson_rows is not None else None
-    activation_rows=await bounded_rows(db,select(Event.event_name,User.id,Event.created_at,func.substr(Event.payload_json,1,PAYLOAD_LIMIT+1))
-        .select_from(Event).join(User,owner(Event)).where(Event.event_name.in_(
-            ('onboarding_completed','lesson_started','section_completed','lesson_completed','book_lesson_completed')),
-            *_window(Event.created_at,detail_since,now)).order_by(Event.created_at,Event.id),payload_index=3)
-    activation=None
-    direct_activation=None
-    if activation_rows is not None:
-        a=_activation_funnel(activation_rows,now=now)
-        direct=a['variants'].get('direct_start_v1')
-        if direct:direct_activation={'eligible':direct['lesson_started_eligible'],'started':direct['lesson_started_2m'],
-            'percent':ratio(direct['lesson_started_2m'],direct['lesson_started_eligible'])}
-        activation={'eligible':a['lesson_started_eligible'],'started':a['lesson_started_2m'],
-            'percent':ratio(a['lesson_started_2m'],a['lesson_started_eligible'])}
+    activation_rows=await bounded_rows(db,activation_query(since=detail_since,now=now),payload_index=3)
+    activation,direct_activation=activation_values(activation_rows,now=now)
     foundation_rows=await bounded_rows(db,foundation_query(since=detail_since,now=now),payload_index=5)
     foundation=foundation_summary(foundation_rows,now=now)
     completed=select(User.id,Event.level,Event.lesson_order).select_from(Event).join(User,owner(Event)).where(

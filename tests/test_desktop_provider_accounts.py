@@ -242,7 +242,8 @@ class DesktopProviderAccountTests(unittest.IsolatedAsyncioTestCase):
                 ConversionFunnelEvent.event_name == "payment_screenshot_submitted"))).all()
             self.assertEqual([(event.user_id, event.telegram_id, event.source) for event in events], [(1, None, "android_subscription")])
             entries = (await session.scalars(select(SubscriptionEntryEvent))).all()
-            self.assertEqual([(entry.user_id, entry.telegram_id, entry.source) for entry in entries], [(1, None, "android_subscription")])
+            self.assertEqual([(entry.user_id, entry.telegram_id, entry.source, entry.client) for entry in entries],
+                             [(1, None, "android_subscription", "android")])
 
     async def test_provider_admin_delivery_failure_rolls_back_receipt_and_preview(self):
         with patch.object(AdminNotifyService, "notify_payment_review", new=AsyncMock(side_effect=RuntimeError("test delivery failure"))):

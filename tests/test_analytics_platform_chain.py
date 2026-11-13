@@ -11,6 +11,12 @@ cookie-authenticated Admin analytics API under every filter:
 Next-stage R1 adds Course `features.lessons` for Android: the bearer lesson
 route writes the server-only `android_lesson_started`.
 
+Next-stage R2 adds PWA activation: `/api/v3/pwa/onboarding` tags the cohort
+anchor, and `/api/v3/pwa-auth/handoff/redeem` writes the handoff anchor.
+Next-stage R4 adds D1/D7 return per platform from each account's first use.
+Next-stage R3 adds Sources entries: each client's subscription route sets the
+entry's `client` column, read under that client's Sources filter.
+
 Each client completes a different number of lessons, so a value that leaked
 into another filter would change that filter's count.
 Run with ANALYTICS_TEST_DATABASE_URL pointing at a disposable PostgreSQL DB.
@@ -24,13 +30,13 @@ import unittest
 from contextlib import ExitStack
 from datetime import datetime, timedelta, timezone
 from types import SimpleNamespace
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlsplit
 from unittest.mock import patch
 from uuid import uuid4
 
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
-from sqlalchemy import select, text
+from sqlalchemy import select, text, update
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 import app.main as main
@@ -46,6 +52,7 @@ from app.db.base import Base
 from app.db.models.admin_pwa import AdminPwaSession
 from app.db.models.course_miniapp_event import CourseMiniAppEvent as Event
 from app.db.models.course_progress import CourseProgress
+from app.services.desktop_app_promo_settings_service import save_desktop_app_promo_settings
 from app.services.desktop_auth_service import DesktopAuthService
 from app.services.identity_link_service import IdentityLinkService
 
@@ -109,6 +116,8 @@ class CoursePlatformChainTests(unittest.IsolatedAsyncioTestCase):
         learner.add_api_route("/api/v3/lesson/complete", main.v3_course_lesson_complete, methods=["POST"])
         learner.add_api_route("/api/v3/pwa/lesson/complete", main.pwa_v3_course_lesson_complete, methods=["POST"])
         learner.add_api_route("/api/miniapp/event", main.miniapp_event, methods=["POST"])
+        learner.add_api_route("/api/miniapp/onboarding", main.miniapp_onboarding, methods=["POST"])
+        self.learner = learner
         self.client = AsyncClient(transport=ASGITransport(app=learner), base_url=pwa.ORIGIN)
 
     async def asyncTearDown(self):
@@ -149,8 +158,8 @@ class CoursePlatformChainTests(unittest.IsolatedAsyncioTestCase):
             await db.commit()
         return {"Authorization": "Bearer " + linked["access_token"]}
 
-    async def complete_lessons(self, start, complete, headers, count):
-        for lesson in range(1, count + 1):
+    async def complete_lessons(self, start, complete, headers, count, first=1):
+        for lesson in range(first, first + count):
             body = {"lesson_id": lesson, "level": "hsk1"}
             started = await self.client.post(start, headers=headers, json=body)
             self.assertEqual(started.status_code, 200, started.text)
@@ -158,7 +167,23 @@ class CoursePlatformChainTests(unittest.IsolatedAsyncioTestCase):
                                           json={**body, "completion_proof": started.json()["completion_proof"]})
             self.assertEqual(done.status_code, 200, done.text)
 
-    async def admin_read(self, platform):
+    async def handoff_browser(self, telegram_id):
+        """A Telegram account hands off to a fresh PWA browser; returns that
+        browser and its CSRF headers."""
+        started = await self.client.post("/api/v3/pwa-auth/handoff/start", headers=self.telegram_headers(telegram_id),
+                                         json={"language": "uz", "source": "profile"})
+        self.assertEqual(started.status_code, 200, started.text)
+        token = dict(item.split("=", 1) for item in urlsplit(started.json()["url"]).fragment.split("&"))["t"]
+        browser = AsyncClient(transport=ASGITransport(app=self.learner), base_url=pwa.ORIGIN)
+        self.addAsyncCleanup(browser.aclose)
+        redeemed = await browser.post("/api/v3/pwa-auth/handoff/redeem", headers={"Origin": pwa.ORIGIN},
+                                      json={"token": token})
+        self.assertEqual(redeemed.status_code, 200, redeemed.text)
+        session = await browser.get("/api/v3/pwa-auth/session")
+        self.assertEqual(session.status_code, 200, session.text)
+        return browser, {"Origin": pwa.ORIGIN, "X-HSK-PWA-CSRF": session.json()["csrf"]}
+
+    async def admin_read(self, platform, section="course"):
         admin_settings = SimpleNamespace(ADMIN_PWA_ENABLED=True, ADMIN_PWA_PUBLIC_ORIGIN=ADMIN_ORIGIN,
                                          admin_id_list=[ADMIN_TELEGRAM_ID])
         app = FastAPI()
@@ -166,7 +191,7 @@ class CoursePlatformChainTests(unittest.IsolatedAsyncioTestCase):
                                                              session_factory=self.sessions))
         async with AsyncClient(transport=ASGITransport(app=app), base_url=ADMIN_ORIGIN) as admin:
             response = await admin.post("/api/admin/v1/analytics",
-                                        json={"section": "course", "platform": platform, "period": "weekly"},
+                                        json={"section": section, "platform": platform, "period": "weekly"},
                                         headers={"Origin": ADMIN_ORIGIN,
                                                  "Cookie": ADMIN_PWA_COOKIE_NAME + "=" + ADMIN_COOKIE})
         self.assertEqual(response.status_code, 200, response.text)
@@ -235,6 +260,133 @@ class CoursePlatformChainTests(unittest.IsolatedAsyncioTestCase):
                          {"android": (1, 0), "overall": (1, 0)})
         self.assertIsNotNone(android_view["metrics"]["attributed_since"]["features_lessons"])
         self.assertEqual(android_view["metric_states"]["features"], {"state": "available", "reason": None})
+
+    async def test_pwa_onboarding_and_handoff_reach_the_pwa_activation(self):
+        onboarding = {"level": "hsk1", "goal": "hsk_exam", "daily_minutes": 10, "start_mode": "placement",
+                      "language": "uz", "timezone_offset_minutes": 0, "activation_variant": "direct_start_v1"}
+        lesson = {"event": "lesson_started", "level": "hsk1", "lesson_id": 1}
+        # New PWA learner (account 2): onboards, starts and completes a lesson.
+        browser = await self.pwa_headers()
+        finished = await self.client.post("/api/v3/pwa/onboarding", headers=browser, json=onboarding)
+        self.assertEqual(finished.status_code, 200, finished.text)
+        started = await self.client.post("/api/v3/pwa/event", headers=browser, json=lesson)
+        self.assertEqual(started.status_code, 200, started.text)
+        await self.complete_lessons("/api/v3/pwa/lesson/start", "/api/v3/pwa/lesson/complete", browser, 1)
+        # A Telegram learner (account 1) onboards and starts in the Mini App; the
+        # caller's `client` cannot move either row to the PWA.
+        telegram = self.telegram_headers()
+        finished = await self.client.post("/api/miniapp/onboarding", headers=telegram,
+                                          json={**onboarding, "client": "iphone_pwa"})
+        self.assertEqual(finished.status_code, 200, finished.text)
+        await self.client.post("/api/miniapp/event", headers=telegram, json={**lesson, "client": "iphone_pwa"})
+        # Accounts 1 and 3 hand off from Telegram; only account 1 then learns on the PWA.
+        async with self.sessions() as db:
+            await save_desktop_app_promo_settings(db, {"platforms": {
+                "macos": True, "windows": True, "android": True, "ios": True}})
+            await db.commit()
+        handed, handed_headers = await self.handoff_browser(TELEGRAM_ID)
+        started = await handed.post("/api/v3/pwa/event", headers=handed_headers, json=lesson)
+        self.assertEqual(started.status_code, 200, started.text)
+        await self.handoff_browser(ANDROID_TELEGRAM_ID)
+
+        async with self.sessions() as db:
+            rows = (await db.execute(select(Event.event_name, Event.user_id, Event.payload_json).where(
+                Event.event_name.in_(("onboarding_completed", "lesson_started", "pwa_handoff_completed")))
+                .order_by(Event.id))).all()
+            # Age every row past the 24-hour handoff window; their order is kept.
+            await db.execute(update(Event).values(created_at=Event.created_at - timedelta(hours=25)))
+            await db.commit()
+        clients = [(name, uid, json.loads(payload).get("client")) for name, uid, payload in rows]
+        self.assertEqual(clients, [
+            ("onboarding_completed", 2, "iphone_pwa"), ("lesson_started", 2, "iphone_pwa"),
+            ("onboarding_completed", 1, "telegram"), ("lesson_started", 1, "telegram"),
+            ("pwa_handoff_completed", 1, None), ("lesson_started", 1, "iphone_pwa"),
+            ("pwa_handoff_completed", 3, None)])
+
+        pwa_view, overall_view = await self.admin_read("iphone_pwa"), await self.admin_read("overall")
+        metrics = pwa_view["metrics"]
+        self.assertEqual(metrics["activation"], {"eligible": 1, "started": 1, "percent": 100.0})
+        self.assertEqual(metrics["direct_activation"], {"eligible": 1, "started": 1, "percent": 100.0})
+        self.assertEqual(metrics["handoff_activation"], {"eligible": 2, "activated": 1, "percent": 50.0})
+        for key in ("activation", "direct_activation", "handoff_activation"):
+            self.assertEqual(pwa_view["metric_states"][key], {"state": "available", "reason": None}, key)
+            self.assertIsNotNone(metrics["attributed_since"]["activation" if key == "direct_activation" else key])
+        # Overall reads the same rows as before: both onboarded accounts.
+        self.assertEqual(overall_view["metrics"]["activation"], {"eligible": 2, "started": 2, "percent": 100.0})
+        self.assertEqual(overall_view["metrics"]["direct_activation"], {"eligible": 2, "started": 2, "percent": 100.0})
+        self.assertNotIn("handoff_activation", overall_view["metrics"])
+        telegram_view = await self.admin_read("telegram")
+        self.assertEqual(telegram_view["metric_states"]["activation"]["state"], "unavailable")
+        self.assertNotIn("handoff_activation", telegram_view["metrics"])
+
+    async def age_rows(self, hours):
+        async with self.sessions() as db:
+            await db.execute(update(Event).values(created_at=Event.created_at - timedelta(hours=hours)))
+            await db.commit()
+
+    async def test_first_use_returns_reach_each_platform_filter(self):
+        telegram, pwa_browser, android = self.telegram_headers(), await self.pwa_headers(), await self.android_headers()
+        async def learn(lesson):
+            await self.complete_lessons("/api/v3/lesson/start", "/api/v3/lesson/complete", telegram, 1, lesson)
+            await self.complete_lessons("/api/v3/pwa/lesson/start", "/api/v3/pwa/lesson/complete",
+                                        pwa_browser, 1, lesson)
+            # A completed lesson is recorded once per account, so the Android
+            # account's own lessons follow its Telegram lesson 1.
+            done = await self.client.post("/api/v3/android/course/complete", headers=android,
+                                          json={"lesson_order": lesson + 1, "event_id": f"android:{lesson:032x}"})
+            self.assertEqual(done.status_code, 200, done.text)
+        # First use on each client; the Android account also learns once in Telegram.
+        await self.complete_lessons("/api/v3/lesson/start", "/api/v3/lesson/complete",
+                                    self.telegram_headers(ANDROID_TELEGRAM_ID), 1)
+        await learn(1)
+        await self.age_rows(30)
+        # 30 hours later each account returns on its own client only (D1 window).
+        await learn(2)
+        await self.age_rows(48)  # the D1 cohort is now mature
+
+        views = {platform: await self.admin_read(platform) for platform in ("android", "telegram", "iphone_pwa")}
+        returns = {platform: (view["metrics"]["return_retention"]["d1"]["eligible"],
+                              view["metrics"]["return_retention"]["d1"]["returned"])
+                   for platform, view in views.items()}
+        # The Android account's return was on Android, so it is not a Telegram return.
+        self.assertEqual(returns, {"android": (1, 1), "telegram": (2, 1), "iphone_pwa": (1, 1)})
+        for platform, view in views.items():
+            self.assertEqual(view["metric_states"]["return_retention"], {"state": "available", "reason": None})
+            self.assertIsNotNone(view["metrics"]["attributed_since"]["return_retention"], platform)
+
+    async def test_each_client_entry_reaches_its_own_sources_filter(self):
+        from app.api.android_features import create_android_features_router
+        self.learner.include_router(create_android_features_router(session_factory=self.sessions,
+                                                                   settings_obj=self.settings))
+        self.learner.add_api_route("/api/subscription-miniapp/overview", main.subscription_miniapp_overview,
+                                   methods=["POST"])
+        telegram, pwa_browser, android = self.telegram_headers(), await self.pwa_headers(), await self.android_headers()
+        # Telegram, one entry: its caller text imitates the Android namespace and
+        # sends a client field, but the route sets the client.
+        opened = await self.client.post("/api/subscription-miniapp/overview", headers=telegram,
+                                        json={"source": "android_subscription", "mode": "subscription",
+                                              "client": "android"})
+        self.assertTrue(opened.json().get("ok"), opened.text)
+        for source in ("v3_paywall", "v3_profile"):  # PWA, two entries
+            opened = await self.client.post("/api/v3/pwa/subscription/overview", headers=pwa_browser,
+                                            json={"source": source, "mode": "subscription"})
+            self.assertEqual(opened.status_code, 200, opened.text)
+        for _ in range(3):  # Android, three entries
+            opened = await self.client.post("/api/v3/android/subscription/open", headers=android)
+            self.assertEqual(opened.status_code, 200, opened.text)
+
+        views = {platform: await self.admin_read(platform, "sources")
+                 for platform in ("overall", "android", "telegram", "iphone_pwa")}
+        visits = {platform: sum(row["visits"] for row in view["metrics"]["entries"])
+                  for platform, view in views.items()}
+        self.assertEqual(visits, {"overall": 6, "android": 3, "telegram": 1, "iphone_pwa": 2})
+        self.assertEqual(views["telegram"]["metrics"]["entries"],
+                         [{"source": "android_subscription", "visits": 1, "histories": 1}])
+        for platform in ("android", "telegram", "iphone_pwa"):
+            view = views[platform]
+            self.assertEqual(view["metric_states"]["entries"], {"state": "available", "reason": None})
+            self.assertIsNotNone(view["metrics"]["attributed_since"]["entries"], platform)
+            self.assertNotIn("traffic", view["metrics"])
 
 
 if __name__ == "__main__":

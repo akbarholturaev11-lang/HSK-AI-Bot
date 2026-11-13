@@ -87,6 +87,7 @@ class CourseMiniAppOnboardingService:
         goals: list[str] | None,
         streak_target_days: int | None,
         preferred_focus: str | None,
+        analytics_client: str | None = None,
     ) -> dict:
         requested_content_level = self.content_level(requested_level)
         requested_manifest = Hsk30ManifestService.load(requested_content_level)
@@ -222,6 +223,7 @@ class CourseMiniAppOnboardingService:
                 lesson_order=launch_lesson,
                 dedupe_key=dedupe_key,
                 payload=payload,
+                analytics_client=analytics_client,
             )
         await self.session.commit()
 
@@ -260,7 +262,11 @@ class CourseMiniAppOnboardingService:
         goals: list[str] | None = None,
         streak_target_days: int | None = None,
         preferred_focus: str | None = None,
+        analytics_client: str | None = None,
     ) -> dict:
+        """`analytics_client` is set by the calling route, never by the caller's
+        payload: it becomes the final `client` key of the onboarding rows
+        (next-stage R2). Readers of these rows use only the name and time."""
         level = await self._normalize_request_level(level)
         goal, daily_minutes, start_mode = self.profile_service.validate_preferences(
             goal=goal,
@@ -296,6 +302,7 @@ class CourseMiniAppOnboardingService:
                 timezone_offset_minutes=timezone_offset_minutes,
                 activation_variant=activation_variant,
                 onboarding_was_completed=onboarding_was_completed,
+                analytics_client=analytics_client,
                 goals=goals,
                 streak_target_days=streak_target_days,
                 preferred_focus=preferred_focus,
@@ -420,6 +427,7 @@ class CourseMiniAppOnboardingService:
                 lesson_order=launch_lesson,
                 dedupe_key=dedupe_key,
                 payload=payload,
+                analytics_client=analytics_client,
             )
         await self.session.commit()
 

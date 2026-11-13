@@ -5756,6 +5756,7 @@ async def miniapp_onboarding(request: Request):
                 goals=payload.get("goals"),
                 streak_target_days=payload.get("streak_target_days"),
                 preferred_focus=payload.get("preferred_focus"),
+                analytics_client="telegram",
             )
     except (TypeError, ValueError) as error:
         return JSONResponse(
@@ -6347,6 +6348,8 @@ async def subscription_miniapp_overview(request: Request):
                 payment_method=str(payload.get("method") or "") or None,
                 campaign_id=_positive_int(payload.get("campaign_id")),
                 feedback_id=_positive_int(payload.get("feedback_id")),
+                # R3: the signed Telegram route, whatever `source` the caller sent.
+                client="telegram",
             )
             await SubscriptionChurnService(session).mark_subscription_miniapp_opened(telegram_id, source)
             if not result.get("pending_payment"):

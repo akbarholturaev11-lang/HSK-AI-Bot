@@ -68,3 +68,5 @@ jobs:
           tests/test_admin_pwa_report_freshness.py
           tests/test_admin_pwa_analytics.py
           tests/test_android_analytics_service.py
+          tests/test_subscription_entry_analytics_service.py
+          tests/test_subscription_entry_client_0155_migration.py

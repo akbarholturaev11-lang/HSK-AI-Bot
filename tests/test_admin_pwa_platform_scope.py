@@ -7,9 +7,16 @@ import json
 import unittest
 from unittest.mock import patch
 
+from sqlalchemy import event as sa_event
+
 from app.admin_api.pwa_analytics_course_platform import course_platform_metrics
+from app.admin_api.pwa_analytics_learning import retention, return_retention
+from app.admin_api.pwa_analytics_states import metric_states
 from app.db.models.conversion_funnel_event import ConversionFunnelEvent
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
+from app.db.models.payment import Payment
+from app.db.models.subscription_entry_event import SubscriptionEntryEvent
+from app.db.models.user import User
 from tests.test_admin_pwa_v10_regression import NOW, PRIVATE, URL, ago, capture, postgres_fixture
 
 PLATFORMS = ("android", "telegram", "iphone_pwa")
@@ -248,9 +255,18 @@ class CoursePlatformScopeTests(unittest.IsolatedAsyncioTestCase):
     def test_attributed_since_is_the_first_server_built_tagged_row(self):
         for platform, hours in (("telegram", 10), ("iphone_pwa", 8)):
             boundary = ago(hours=hours).isoformat()
+            # R2: the PWA handoff cohort starts at the PWA boundary; there is no
+            # PWA-tagged onboarding, so no activation boundary.
+            handoff = {"handoff_activation": boundary} if platform == "iphone_pwa" else {}
+            # R4: returns start at the first verified use: Telegram's first tagged
+            # outcome, the fixture's PWA map open 2 days ago.
+            returns = boundary if platform == "telegram" else ago(days=2).isoformat()
             self.assertEqual(self.course(platform)["attributed_since"],
-                             {"features": boundary, "foundation": boundary, "completed_user_lessons": boundary})
-        self.assertEqual(self.course("android")["attributed_since"], {"features": ago(hours=6).isoformat()})
+                             {"features": boundary, "foundation": boundary, "completed_user_lessons": boundary,
+                              "return_retention": returns, **handoff})
+        # Android opens count for all history: the fixture's first is 44 days old.
+        self.assertEqual(self.course("android")["attributed_since"],
+                         {"features": ago(hours=6).isoformat(), "return_retention": ago(days=44).isoformat()})
 
     def test_completed_lessons_per_platform(self):
         self.assertEqual(self.course("telegram")["completed_user_lessons"], 1)
@@ -273,13 +289,17 @@ class CoursePlatformScopeTests(unittest.IsolatedAsyncioTestCase):
     def test_unattributed_course_families_are_not_platform_values(self):
         for platform in PLATFORMS:
             response = self.projections["course", platform, "all_time"]
-            keys = {"features", "completed_user_lessons", "attributed_since", "detail_since"}
+            keys = {"features", "completed_user_lessons", "attributed_since", "detail_since", "return_retention"}
             if platform != "android":
                 keys |= {"foundation", "detail_limited"}
+            if platform == "iphone_pwa":
+                # R2: PWA activation cohorts (pinned in PwaActivationScopeTests).
+                keys |= {"activation", "direct_activation", "handoff_activation"}
             self.assertEqual(set(response["metrics"]), keys)
             states = response["metric_states"]
             self.assertEqual(states["features"], {"state": "available", "reason": None})
-            for key in ("voice_minutes", "chat", "ai_usage", "activation", "sessions"):
+            for key in ("voice_minutes", "chat", "ai_usage", "sessions",
+                        *(("activation",) if platform != "iphone_pwa" else ())):
                 self.assertEqual(states[key], {"state": "unavailable", "reason": "not_instrumented"})
             self.assertNotIn(PRIVATE, json.dumps(response))
 
@@ -317,13 +337,262 @@ class AndroidLessonStartScopeTests(unittest.IsolatedAsyncioTestCase):
         # User 1 is paid, user 3 free; user 2's untagged row is not Android.
         self.assertEqual(self.lessons("android"), (1, 1))
         self.assertEqual(self.course("android")["attributed_since"],
-                         {"features": ago(hours=20).isoformat(), "features_lessons": ago(hours=5).isoformat()})
+                         {"features": ago(hours=20).isoformat(), "features_lessons": ago(hours=5).isoformat(),
+                          "return_retention": ago(days=44).isoformat()})
 
     def test_overall_counts_every_start_and_each_account_once(self):
         baseline = self.projections["course", "overall", "weekly"]["metrics"]
         lessons = next(row for row in baseline["features"] if row["key"] == "lessons")
         # Accounts 1, 2 and 3 started; account 3 on two clients counts once.
         self.assertEqual((lessons["paid"], lessons["free"]), (1, 2))
+
+
+@unittest.skipUnless(URL, "set ANALYTICS_TEST_DATABASE_URL for the real PostgreSQL platform scope tests")
+class PwaActivationScopeTests(unittest.IsolatedAsyncioTestCase):
+    """R2: PWA onboarding and Telegram -> PWA handoff cohorts from route-owned rows.
+
+    The baseline fixture adds an untagged PWA-transport onboarding of account 1
+    and account 1's handoff 24 hours ago."""
+
+    async def asyncSetUp(self):
+        def event(name, user_id, at, payload, source="course_v3"):
+            return CourseMiniAppEvent(event_name=name, user_id=user_id, source=source,
+                payload_json=json.dumps(payload, separators=(",", ":")), created_at=at)
+
+        pwa, telegram = {"client": "iphone_pwa"}, {"client": "telegram"}
+        self.rows = [
+            # A caller lookalike and an anchor before the PWA boundary: never read.
+            event("pwa_handoff_completed", 3, ago(hours=60), {}, source="pwa_handoff"),
+            event("lesson_started", 3, ago(hours=59), {"lesson_order": 1, **pwa}),
+            # The PWA boundary: the first server-built PWA-tagged row.
+            event("test_completed", 1, ago(hours=50), {"score": 1, **pwa}),
+            # Account 2 hands off but learns only in Telegram within 24 hours.
+            event("pwa_handoff_completed", 2, ago(hours=47), {}, source="pwa_handoff"),
+            event("lesson_started", 2, ago(hours=46), {"lesson_order": 1, **telegram}),
+            # Account 1 (handoff 24 hours ago in the fixture) learns on the PWA.
+            event("lesson_started", 1, ago(hours=23), {"lesson_order": 1, **pwa}),
+            # New PWA learner: onboarding and a PWA lesson start within 2 minutes.
+            event("onboarding_completed", 3, ago(hours=20), {"activation_variant": "direct_start_v1", **pwa},
+                  source="course_onboarding"),
+            event("lesson_started", 3, ago(hours=19, minutes=59), {"lesson_order": 1, **pwa}),
+            # A nested lookalike and a Telegram onboarding stay outside the PWA
+            # cohort, even with a PWA lesson start after them.
+            event("onboarding_completed", 1, ago(hours=15), {"meta": pwa, **telegram}, source="course_onboarding"),
+            event("onboarding_completed", 2, ago(hours=12), {"activation_variant": "direct_start_v1", **telegram},
+                  source="course_onboarding"),
+            event("lesson_started", 2, ago(hours=11, minutes=59), {"lesson_order": 1, **pwa}),
+            # Account 3's handoff is under 24 hours old: not yet eligible.
+            event("pwa_handoff_completed", 3, ago(hours=2), {}, source="pwa_handoff"),
+        ]
+        async with postgres_fixture(URL) as sessions:
+            async with sessions() as db:
+                db.add_all(self.rows)
+                await db.commit()
+            self.projections = await capture(sessions)
+            async with sessions() as db:
+                with patch("app.admin_api.pwa_analytics_learning.DETAIL_LIMIT", 1):
+                    self.limited = await course_platform_metrics(db, platform="iphone_pwa", since=ago(days=7), now=NOW)
+
+    def view(self, platform):
+        return self.projections["course", platform, "weekly"]
+
+    def test_pwa_activation_reads_only_the_pwa_onboarding_cohort(self):
+        metrics = self.view("iphone_pwa")["metrics"]
+        self.assertEqual(metrics["activation"], {"eligible": 1, "started": 1, "percent": 100.0})
+        self.assertEqual(metrics["direct_activation"], {"eligible": 1, "started": 1, "percent": 100.0})
+        self.assertEqual(metrics["attributed_since"]["activation"], ago(hours=20).isoformat())
+
+    def test_handoff_activation_starts_at_the_pwa_boundary(self):
+        metrics = self.view("iphone_pwa")["metrics"]
+        # Accounts 1 and 2 are eligible; only account 1 learned on the PWA.
+        self.assertEqual(metrics["handoff_activation"], {"eligible": 2, "activated": 1, "percent": 50.0})
+        self.assertEqual(metrics["attributed_since"]["handoff_activation"], ago(hours=50).isoformat())
+        for key in ("activation", "direct_activation", "handoff_activation"):
+            self.assertEqual(self.view("iphone_pwa")["metric_states"][key], {"state": "available", "reason": None})
+
+    def test_other_views_do_not_gain_the_pwa_cohorts(self):
+        for platform in ("telegram", "android"):
+            view = self.view(platform)
+            self.assertNotIn("activation", view["metrics"])
+            self.assertEqual(view["metric_states"]["activation"],
+                             {"state": "unavailable", "reason": "not_instrumented"})
+            self.assertEqual(view["metric_states"]["handoff_activation"],
+                             {"state": "not_applicable", "reason": "not_applicable"})
+        overall = self.view("overall")
+        self.assertNotIn("handoff_activation", overall["metrics"])
+        self.assertNotEqual(overall["metric_states"]["handoff_activation"]["state"], "available")
+
+    def test_too_many_rows_refuse_a_sample(self):
+        self.assertIs(self.limited["detail_limited"], True)
+        self.assertIsNone(self.limited["activation"])
+        # Audit B2: the handoff cohort is a SQL aggregate with no detail rows,
+        # so other PWA learners' rows cannot hide it.
+        self.assertEqual(self.limited["handoff_activation"], {"eligible": 2, "activated": 1, "percent": 50.0})
+
+
+@unittest.skipUnless(URL, "set ANALYTICS_TEST_DATABASE_URL for the real PostgreSQL platform scope tests")
+class PlatformReturnRetentionTests(unittest.IsolatedAsyncioTestCase):
+    """R4: D1/D7 return from each account's first verified use of a platform.
+
+    The baseline fixture already has account 1's Android first open (2 days),
+    app open (5 hours) and Android completion (2 days 54 minutes), its PWA map
+    open (2 days), account 3's Android opens 40 and 44 days ago, and account
+    2's Telegram map open stored with the PWA source but the Telegram key."""
+
+    async def asyncSetUp(self):
+        def event(name, user_id, at, payload=None, source="course_v3", **fields):
+            return CourseMiniAppEvent(event_name=name, user_id=user_id, source=source,
+                payload_json=json.dumps(payload or {}, separators=(",", ":")), created_at=at, **fields)
+
+        def tagged(name, user_id, at, client):
+            return event(name, user_id, at, {"lesson_order": 1, "client": client})
+
+        def pwa_open(user_id, at):
+            return event("miniapp_opened", user_id, at, source="pwa_course_v3",
+                         dedupe_key=f"pwa-course-v3:miniapp-opened:{user_id}-{at.timestamp()}")
+
+        async with postgres_fixture(URL) as sessions:
+            async with sessions() as db:
+                db.add_all([
+                    # Telegram: a tagged learning row before the boundary never anchors.
+                    tagged("section_attempt_scored", 3, ago(days=40), "telegram"),
+                    tagged("lesson_completed", 1, ago(days=25), "telegram"),
+                    tagged("test_completed", 1, ago(days=23, hours=18), "telegram"),
+                    # Account 2 learns in Telegram, then first opens the PWA; its next-day
+                    # PWA open is a PWA return, not a Telegram one.
+                    tagged("training_completed", 2, ago(days=20), "telegram"),
+                    pwa_open(2, ago(days=18, hours=18)),
+                    pwa_open(2, ago(days=17, hours=12)),
+                    # Account 2 on Android: first open 12 days ago, an Android lesson 7 days later.
+                    event("android_app_opened", 2, ago(days=12), source="android_app"),
+                    tagged("android_lesson_started", 2, ago(days=4, hours=22), "android"),
+                    # A client-writable start never counts, and a young cohort is not mature.
+                    tagged("lesson_started", 3, ago(days=30), "telegram"),
+                    tagged("lesson_completed", 3, ago(days=1), "telegram"),
+                ])
+                await db.commit()
+            self.projections = await capture(sessions)
+
+    def returns(self, platform, period="monthly"):
+        series = self.projections["course", platform, period]["metrics"]["return_retention"]
+        return {day: (row["eligible"], row["returned"], row["percent"]) for day, row in series.items()}
+
+    def test_telegram_counts_tagged_learning_from_its_boundary(self):
+        # Accounts 1 and 2 are mature; only account 1 returned to Telegram.
+        self.assertEqual(self.returns("telegram"), {"d1": (2, 1, 50.0), "d7": (2, 0, 0.0)})
+        self.assertEqual(self.projections["course", "telegram", "monthly"]["metrics"]["attributed_since"]
+                         ["return_retention"], ago(days=25).isoformat())
+
+    def test_pwa_cohort_starts_at_the_first_pwa_open(self):
+        # Account 2 enters the PWA cohort 18 days ago, not at its Telegram start.
+        self.assertEqual(self.returns("iphone_pwa"), {"d1": (2, 1, 50.0), "d7": (1, 0, 0.0)})
+        self.assertEqual(self.projections["course", "iphone_pwa", "monthly"]["metrics"]["attributed_since"]
+                         ["return_retention"], ago(days=18, hours=18).isoformat())
+
+    def test_android_counts_opens_and_tagged_learning(self):
+        # Account 1 returns by an app open, account 2 at D7 by a tagged lesson;
+        # account 3's 44-day-old cohort is outside the monthly window.
+        self.assertEqual(self.returns("android"), {"d1": (2, 1, 50.0), "d7": (1, 1, 100.0)})
+        self.assertEqual(self.returns("android", "all_time")["d7"][:2], (2, 1))
+
+    def test_states_and_overall(self):
+        for platform in PLATFORMS:
+            self.assertEqual(self.projections["course", platform, "monthly"]["metric_states"]["return_retention"],
+                             {"state": "available", "reason": None})
+        overall = self.projections["course", "overall", "monthly"]["metrics"]
+        self.assertNotIn("return_retention", overall.get("attributed_since") or {})
+
+
+@unittest.skipUnless(URL, "set ANALYTICS_TEST_DATABASE_URL for the real PostgreSQL platform scope tests")
+class SourcesPlatformScopeTests(unittest.IsolatedAsyncioTestCase):
+    """R3: entries carry the route-set `client` column; each platform reads its
+    own entries and its own payments, matched to the nearest earlier entry on
+    the same client. The fixture's entries have no client (Overall-only)."""
+
+    async def asyncSetUp(self):
+        def entry(user_id, source, client, at):
+            return SubscriptionEntryEvent(user_id=user_id, source=source, client=client, created_at=at)
+
+        self.rows = [
+            # Android boundary. The fixture's untagged android_subscription entry
+            # one day ago stays Overall-only.
+            entry(1, "android_course_limit", "android", ago(hours=26)),
+            # Telegram boundary; its 5-hour Mini App payment matches this entry,
+            # not the later PWA entry of the same account.
+            entry(1, "profile", "telegram", ago(hours=6)),
+            # PWA boundary; the fixture's nearer untagged iphone_pwa entry (4 h)
+            # is not a PWA entry, so the 1-hour PWA payment matches this one.
+            entry(1, "broadcast", "iphone_pwa", ago(hours=5, minutes=30)),
+            # Caller text with an android_ prefix on the Telegram route stays Telegram.
+            entry(4, "android_subscription", "telegram", ago(hours=3)),
+        ]
+        async with postgres_fixture(URL) as sessions:
+            async with sessions() as db:
+                db.add_all(self.rows)
+                # An Android payment of an account with no Android entry: unknown.
+                db.add(Payment(user_id=4, source="android", currency="USD", amount=10, plan_type="1_month",
+                               payment_method="visa", payment_status="approved",
+                               submitted_at=ago(hours=1, minutes=30), reviewed_at=ago(hours=1, minutes=30)))
+                await db.commit()
+            self.projections = await capture(sessions)
+
+    def sources(self, platform, period="all_time"):
+        return self.projections["sources", platform, period]
+
+    def test_each_platform_reads_only_its_route_set_entries(self):
+        expected = {
+            "android": [{"source": "android_subscription", "visits": 1, "histories": 1}],
+            "telegram": [{"source": "android_subscription", "visits": 1, "histories": 1},
+                         {"source": "profile", "visits": 1, "histories": 1}],
+            "iphone_pwa": [{"source": "broadcast", "visits": 1, "histories": 1}],
+        }
+        for platform, rows in expected.items():
+            with self.subTest(platform=platform):
+                response = self.sources(platform)
+                self.assertIs(response["available"], True)
+                self.assertEqual(response["metrics"]["entries"], rows)
+                self.assertNotIn(PRIVATE, json.dumps(response))
+
+    def test_payments_match_the_nearest_entry_on_the_same_platform(self):
+        # Payments before a platform's first entry (Android 42 days, PWA TJS
+        # one day, Telegram bot 2 and 8 days) have no possible entry: left out.
+        expected = {
+            "android": [{"source": "android_subscription", "payments": 1, "usd": 10.0},
+                        {"source": "unknown", "payments": 1, "usd": 10.0}],
+            "telegram": [{"source": "profile", "payments": 1, "usd": 10.0}],
+            # The PWA Lava payment counts at its USD local amount, as in Overall.
+            "iphone_pwa": [{"source": "broadcast", "payments": 1, "usd": 7.9}],
+        }
+        for platform, rows in expected.items():
+            with self.subTest(platform=platform):
+                self.assertEqual(self.sources(platform)["metrics"]["attribution"], rows)
+
+    def test_attributed_since_and_states(self):
+        since = {"android": ago(hours=26), "telegram": ago(hours=6), "iphone_pwa": ago(hours=5, minutes=30)}
+        for platform, at in since.items():
+            with self.subTest(platform=platform):
+                response = self.sources(platform, "weekly")
+                metrics = response["metrics"]
+                self.assertEqual(metrics["attributed_since"], {"entries": at.isoformat(), "attribution": at.isoformat()})
+                self.assertIn("same platform", metrics["attribution_basis"])
+                # Public-site visits are company-wide: never a platform value.
+                self.assertNotIn("traffic", metrics)
+                self.assertEqual(response["metric_states"], {
+                    "entries": {"state": "available", "reason": None},
+                    "attribution": {"state": "available", "reason": None},
+                    "traffic": {"state": "not_applicable", "reason": "not_applicable"}})
+
+    def test_overall_keeps_every_entry(self):
+        overall = self.sources("overall")["metrics"]
+        # Fixture: four entries; this class adds four tagged ones.
+        self.assertEqual(sum(row["visits"] for row in overall["entries"]), 8)
+        self.assertIn("traffic", overall)
+
+    def test_desktop_filters_stay_unavailable(self):
+        for platform in ("macos", "windows"):
+            with self.subTest(platform=platform):
+                response = self.sources(platform)
+                self.assertEqual((response["available"], response["metrics"]), (False, None))
 
 
 @unittest.skipUnless(URL, "set ANALYTICS_TEST_DATABASE_URL for the real PostgreSQL platform scope tests")
@@ -371,6 +640,20 @@ class CourseWithoutAttributionTests(unittest.IsolatedAsyncioTestCase):
             self.assertIsNone(response["metrics"]["completed_user_lessons"])
             for key in ("features", "foundation"):
                 self.assertEqual(response["metric_states"][key], {"state": "unavailable", "reason": "no_data"})
+        # R2: no PWA-tagged onboarding or boundary yet, so no PWA cohort.
+        pwa = projections["course", "iphone_pwa", "weekly"]
+        for key in ("activation", "direct_activation", "handoff_activation"):
+            self.assertIsNone(pwa["metrics"][key])
+            self.assertEqual(pwa["metric_states"][key], {"state": "unavailable", "reason": "no_data"})
+        # R3: the fixture's entries have no client, so no platform has a
+        # Sources boundary yet: no data, never an empty table or zero.
+        for platform in PLATFORMS:
+            sources = projections["sources", platform, "all_time"]
+            self.assertIs(sources["available"], True)
+            self.assertEqual({key: sources["metrics"][key] for key in ("entries", "attribution", "attributed_since")},
+                             {"entries": None, "attribution": None, "attributed_since": {}})
+            for key in ("entries", "attribution"):
+                self.assertEqual(sources["metric_states"][key], {"state": "unavailable", "reason": "no_data"})
 
 
 @unittest.skipUnless(URL, "set ANALYTICS_TEST_DATABASE_URL for the real PostgreSQL platform scope tests")
@@ -402,6 +685,129 @@ class CrossPlatformDedupTests(unittest.IsolatedAsyncioTestCase):
         # android-a and android-b belong to user 1; android-old to user 3.
         self.assertEqual((card["devices"], card["accounts"]), (3, 2))
         self.assertEqual(card["active_dau"], 1)
+
+
+def _tagged(name, at, client, *, user_id=None, telegram_id=None, source="course_v3", payload=None):
+    body = {**(payload or {}), **({"client": client} if client else {})}
+    return CourseMiniAppEvent(event_name=name, user_id=user_id, telegram_id=telegram_id, source=source,
+                              payload_json=json.dumps(body, separators=(",", ":")), created_at=at)
+
+
+@unittest.skipUnless(URL, "set ANALYTICS_TEST_DATABASE_URL for the real PostgreSQL platform scope tests")
+class PwaHandoffEdgeTests(unittest.IsolatedAsyncioTestCase):
+    """Audit B2 (2026-11-13): the handoff cohort is a SQL aggregate. Edges of
+    the 24-hour window, the first-handoff anchor, legacy Telegram ownership and
+    lookalike tags, independent of the detail-row limit."""
+
+    async def asyncSetUp(self):
+        pwa = "iphone_pwa"
+        rows = [
+            # PWA boundary: the first server-built PWA-tagged row.
+            _tagged("test_completed", ago(hours=60), pwa, user_id=10),
+            # 10: a PWA start exactly 24 hours after the handoff counts.
+            _tagged("pwa_handoff_completed", ago(hours=48), None, user_id=10, source="pwa_handoff"),
+            _tagged("lesson_started", ago(hours=24), pwa, user_id=10),
+            # 11: a step a minute before the first handoff does not; a second
+            # handoff never moves the anchor, so a step in its window does not either.
+            _tagged("pwa_handoff_completed", ago(hours=48), None, user_id=11, source="pwa_handoff"),
+            _tagged("lesson_completed", ago(hours=48, minutes=1), pwa, user_id=11),
+            _tagged("pwa_handoff_completed", ago(hours=30), None, user_id=11, source="pwa_handoff"),
+            _tagged("lesson_started", ago(hours=20), pwa, user_id=11),
+            # 12: unowned legacy Telegram rows resolve to the account.
+            _tagged("pwa_handoff_completed", ago(hours=30), None, telegram_id=2012, source="pwa_handoff"),
+            _tagged("lesson_started", ago(hours=29), pwa, telegram_id=2012),
+            # 13: a Telegram start and a nested caller lookalike are not PWA steps.
+            _tagged("pwa_handoff_completed", ago(hours=30), None, user_id=13, source="pwa_handoff"),
+            _tagged("lesson_started", ago(hours=29), "telegram", user_id=13),
+            _tagged("lesson_started", ago(hours=28), None, user_id=13, payload={"meta": {"client": pwa}}),
+            # 14: a handoff under 24 hours old is not yet eligible.
+            _tagged("pwa_handoff_completed", ago(hours=10), None, user_id=14, source="pwa_handoff"),
+            _tagged("lesson_started", ago(hours=9), pwa, user_id=14),
+        ]
+        async with postgres_fixture(URL) as sessions:
+            async with sessions() as db:
+                db.add_all([User(id=account, telegram_id=2000 + account, created_at=ago(days=20))
+                            for account in range(10, 15)])
+                await db.flush()
+                db.add_all(rows)
+                await db.commit()
+            async with sessions() as db:
+                self.values = await course_platform_metrics(db, platform="iphone_pwa", since=ago(days=7), now=NOW)
+                with patch("app.admin_api.pwa_analytics_learning.DETAIL_LIMIT", 1):
+                    self.limited = await course_platform_metrics(db, platform="iphone_pwa", since=ago(days=7), now=NOW)
+
+    def test_window_anchor_and_ownership_edges(self):
+        # Eligible: 10, 11, 12, 13 and the fixture's account 1 (handoff exactly
+        # 24 hours ago, no PWA step). Activated: 10 and 12.
+        self.assertEqual(self.values["handoff_activation"], {"eligible": 5, "activated": 2, "percent": 40.0})
+        self.assertEqual(self.values["attributed_since"]["handoff_activation"], ago(hours=60).isoformat())
+
+    def test_detail_limit_does_not_hide_the_cohort(self):
+        self.assertEqual(self.limited["handoff_activation"], self.values["handoff_activation"])
+
+
+@unittest.skipUnless(URL, "set ANALYTICS_TEST_DATABASE_URL for the real PostgreSQL platform scope tests")
+class ReturnQueriesPlanTests(unittest.IsolatedAsyncioTestCase):
+    """Audit B1 (2026-11-13): an EXISTS inside an aggregate FILTER (or OR-ed in
+    a WHERE) runs once per account, a `SubPlan` in the plan. All time on 1M
+    events that hit the 5 s statement timeout. Return and handoff evidence must
+    plan as semi-joins, whatever the data size."""
+
+    async def test_return_and_handoff_queries_have_no_per_account_subplan(self):
+        rows = [_tagged("test_completed", ago(hours=60), "iphone_pwa", user_id=1),
+                _tagged("lesson_completed", ago(hours=50), "telegram", user_id=2)]
+        async with postgres_fixture(URL) as sessions:
+            async with sessions() as db:
+                db.add_all(rows)
+                await db.commit()
+            async with sessions() as db:
+                captured = []
+                engine = db.get_bind()  # the sync Engine behind the AsyncSession
+
+                def record(conn, cursor, statement, parameters, context, executemany):
+                    captured.append((statement, parameters))
+
+                sa_event.listen(engine, "before_cursor_execute", record)
+                try:
+                    await retention(db, since=None, now=NOW)
+                    await return_retention(db, since=None, now=NOW)
+                    overall = list(captured)
+                    captured.clear()
+                    for platform in PLATFORMS:
+                        await course_platform_metrics(db, platform=platform, since=None, now=NOW)
+                finally:
+                    sa_event.remove(engine, "before_cursor_execute", record)
+                scoped = [(sql, params) for sql, params in captured
+                          if "platform_first_use" in sql or "pwa_handoff_anchor" in sql]
+                # Two Overall series x D1/D7; three platform return series and the handoff.
+                self.assertEqual(len(overall), 4)
+                self.assertEqual(len(scoped), 4)
+                connection = await db.connection()
+                for sql, params in overall + scoped:
+                    plan = "\n".join(row[0] for row in (
+                        await connection.exec_driver_sql("EXPLAIN " + sql, params)).all())
+                    self.assertNotIn("SubPlan", plan, sql[:200])
+
+
+class CourseStateReasonTests(unittest.TestCase):
+    """Audit B3 (2026-11-13): a cohort with no anchor in `attributed_since` is
+    no data, even when another metric of the view hit the detail limit."""
+
+    def metrics(self, **anchors):
+        return {"activation": None, "direct_activation": None, "handoff_activation": None, "foundation": None,
+                "features": None, "completed_user_lessons": None, "return_retention": None,
+                "detail_limited": True, "attributed_since": {"features": None, "foundation": None, **anchors}}
+
+    def test_no_anchor_is_no_data_even_when_another_metric_is_limited(self):
+        states = metric_states("course", "iphone_pwa", self.metrics())
+        for key in ("activation", "direct_activation", "handoff_activation", "foundation"):
+            self.assertEqual(states[key], {"state": "unavailable", "reason": "no_data"}, key)
+
+    def test_an_anchored_cohort_without_a_value_is_detail_limited(self):
+        anchored = ago(days=3).isoformat()
+        states = metric_states("course", "iphone_pwa", self.metrics(activation=anchored, foundation=anchored))
+        for key in ("activation", "direct_activation", "foundation"):
+            self.assertEqual(states[key], {"state": "unavailable", "reason": "detail_limited"}, key)
 
 
 if __name__ == "__main__":

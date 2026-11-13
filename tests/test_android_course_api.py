@@ -1091,6 +1091,12 @@ class AndroidCourseApiTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(state["ok"])
         self.assertTrue(state["completed"])
         self.assertEqual("daily_communication", state["profile"]["goal"])
+        # R2: the Android route, not the caller, tags the onboarding rows.
+        async with self.sessions() as session:
+            payloads = (await session.execute(select(CourseMiniAppEvent.payload_json).where(
+                CourseMiniAppEvent.event_name == "onboarding_completed"))).scalars().all()
+        self.assertEqual(len(payloads), 1)
+        self.assertTrue(payloads[0].endswith('"client":"android"}'), payloads[0])
 
     async def test_native_li_rollout_is_independent_of_live_pwa_entry(self):
         self.settings.PWA_LI_ONBOARDING_ENTRY_ENABLED = True

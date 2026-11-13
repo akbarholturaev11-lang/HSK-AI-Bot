@@ -313,11 +313,11 @@
       }
     },
     {"section": "platform", "key": "versions_scope", "kind": "metadata", "filters": ["overall", "android", "telegram", "iphone_pwa", "macos", "windows"]},
-    {"section": "course", "key": "activation", "kind": "metric", "filters": ["overall"],
+    {"section": "course", "key": "activation", "kind": "metric", "filters": ["overall", "iphone_pwa"],
       "platforms": {
-        "android": {"status": "not_instrumented", "reason": "A7: Android has no trustworthy lesson-start writer for the activation step."},
-        "telegram": {"status": "not_instrumented", "reason": "A6/A12: shared starts and historical client-supplied telemetry lack trusted Mini App provenance."},
-        "iphone_pwa": {"status": "not_instrumented", "reason": "A11: transport on PWA telemetry is forgeable on historical Telegram rows, and the cohort anchor (onboarding_completed) and most session rows carry no route-set client key."},
+        "android": {"status": "not_instrumented", "reason": "R2 tags Android onboarding rows (writer only). The activation step reads lesson_started, which Android does not write (R1 writes android_lesson_started), so there is no Android reader."},
+        "telegram": {"status": "not_instrumented", "reason": "R2 tags Telegram onboarding rows (writer only); no Telegram-scoped activation reader yet. Earlier onboarding rows have no client."},
+        "iphone_pwa": {"status": "covered", "reason": "R2: cohort anchored on onboarding_completed written by the PWA onboarding route with the route-set final client key iphone_pwa; onboarding is deduplicated per profile, so accounts onboarded on another client are outside. Only iphone_pwa-tagged steps count, from attributed_since on; earlier rows Overall-only.", "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_pwa_onboarding_and_handoff_reach_the_pwa_activation"},
         "macos": {"status": "not_instrumented", "reason": "The activation cohort has no Desktop OS attribution; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "The activation cohort has no Desktop OS attribution; Desktop freeze."}
       }
@@ -362,13 +362,22 @@
     {"section": "course", "key": "detail_row_limit", "kind": "metadata", "filters": ["overall"]},
     {"section": "course", "key": "detail_since", "kind": "metadata", "filters": ["overall", "android", "telegram", "iphone_pwa"]},
     {"section": "course", "key": "attributed_since", "kind": "metadata", "filters": ["android", "telegram", "iphone_pwa"]},
-    {"section": "course", "key": "direct_activation", "kind": "metric", "filters": ["overall"],
+    {"section": "course", "key": "direct_activation", "kind": "metric", "filters": ["overall", "iphone_pwa"],
       "platforms": {
-        "android": {"status": "not_instrumented", "reason": "A7: Android has no trustworthy lesson-start writer for the activation step."},
-        "telegram": {"status": "not_instrumented", "reason": "A6/A12: shared starts and historical client-supplied telemetry lack trusted Mini App provenance."},
-        "iphone_pwa": {"status": "not_instrumented", "reason": "A11: transport on PWA telemetry is forgeable on historical Telegram rows, and the cohort anchor (onboarding_completed) and most session rows carry no route-set client key."},
+        "android": {"status": "not_instrumented", "reason": "R2 tags Android onboarding rows (writer only). The activation step reads lesson_started, which Android does not write (R1 writes android_lesson_started), so there is no Android reader."},
+        "telegram": {"status": "not_instrumented", "reason": "R2 tags Telegram onboarding rows (writer only); no Telegram-scoped activation reader yet. Earlier onboarding rows have no client."},
+        "iphone_pwa": {"status": "covered", "reason": "R2: cohort anchored on onboarding_completed with the onboarding activation_variant direct_start_v1 written by the PWA onboarding route with the route-set final client key iphone_pwa; onboarding is deduplicated per profile, so accounts onboarded on another client are outside. Only iphone_pwa-tagged steps count, from attributed_since on; earlier rows Overall-only.", "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_pwa_onboarding_and_handoff_reach_the_pwa_activation"},
         "macos": {"status": "not_instrumented", "reason": "The activation cohort has no Desktop OS attribution; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "The activation cohort has no Desktop OS attribution; Desktop freeze."}
+      }
+    },
+    {"section": "course", "key": "handoff_activation", "kind": "metric", "filters": ["iphone_pwa"],
+      "platforms": {
+        "android": {"status": "not_applicable", "reason": "The Telegram to PWA handoff ends on the iPhone PWA only."},
+        "telegram": {"status": "not_applicable", "reason": "The Telegram to PWA handoff ends on the iPhone PWA only."},
+        "iphone_pwa": {"status": "covered", "reason": "R2: anchor is each account's first pwa_handoff_completed, written only by the PWA handoff redeem route, from the PWA attributed_since on. Activated: an iphone_pwa-tagged lesson start or completion within 24 hours.", "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_pwa_onboarding_and_handoff_reach_the_pwa_activation"},
+        "macos": {"status": "not_applicable", "reason": "The Telegram to PWA handoff ends on the iPhone PWA only."},
+        "windows": {"status": "not_applicable", "reason": "The Telegram to PWA handoff ends on the iPhone PWA only."}
       }
     },
     {"section": "course", "key": "feature_denominators", "kind": "metric", "filters": ["overall"],
@@ -425,11 +434,11 @@
         "windows": {"status": "not_applicable", "reason": "The legacy course-open series does not use Desktop app activity; Desktop freeze."}
       }
     },
-    {"section": "course", "key": "return_retention", "kind": "metric", "filters": ["overall"],
+    {"section": "course", "key": "return_retention", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
       "platforms": {
-        "android": {"status": "not_instrumented", "reason": "D5: an Overall series. Android opens (A1) are verified, but the cohort has no platform-of-registration signal, so a per-platform cohort is not defined."},
-        "telegram": {"status": "not_instrumented", "reason": "D5: an Overall series; A3 Mini App opens carry no exclusive Telegram signal."},
-        "iphone_pwa": {"status": "not_instrumented", "reason": "D5: an Overall series. PWA opens (A4) are verified, but the cohort has no platform-of-registration signal, so a per-platform cohort is not defined."},
+        "android": {"status": "covered", "reason": "R4: cohort is each account's first verified Android use (android_first_open, android_app_opened, android_course completions for all history; android-tagged learning outcomes from attributed_since on); a return is Android use 24-48 h (D1) or 168-192 h (D7) later. Matured cohorts as in Overall.", "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_first_use_returns_reach_each_platform_filter"},
+        "telegram": {"status": "covered", "reason": "R4: cohort is each account's first telegram-tagged learning outcome from the Telegram boundary on; a return is a later telegram-tagged learning outcome. A3: Mini App opens have no exclusive signal, so this is a learning return.", "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_first_use_returns_reach_each_platform_filter"},
+        "iphone_pwa": {"status": "covered", "reason": "R4: cohort is each account's first verified PWA use (A4 course-map opens with the route-owned pwa-course-v3: key for all history; iphone_pwa-tagged learning outcomes from attributed_since on); a return is PWA use in the D1/D7 window.", "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_first_use_returns_reach_each_platform_filter"},
         "macos": {"status": "not_instrumented", "reason": "Desktop opens feed the Overall series; no Desktop cohort; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "Desktop opens feed the Overall series; no Desktop cohort; Desktop freeze."}
       }
@@ -447,7 +456,7 @@
       "platforms": {
         "android": {"status": "not_instrumented", "reason": "The session grouping combines all CME session IDs and lacks complete Android session provenance."},
         "telegram": {"status": "not_instrumented", "reason": "A12: session groups use historical client telemetry that does not establish Mini App provenance."},
-        "iphone_pwa": {"status": "not_instrumented", "reason": "A11: transport on PWA telemetry is forgeable on historical Telegram rows, and the cohort anchor (onboarding_completed) and most session rows carry no route-set client key."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "A11: most session rows (card views, interactions) carry no route-set client key, and transport is forgeable on historical Telegram rows. R2 tags the activation anchor only."},
         "macos": {"status": "not_instrumented", "reason": "The mixed CME session grouping is not scoped to a Desktop OS; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "The mixed CME session grouping is not scoped to a Desktop OS; Desktop freeze."}
       }
@@ -761,21 +770,22 @@
       }
     },
     {"section": "money", "key": "usd_basis", "kind": "metadata", "filters": ["overall", "android", "telegram", "iphone_pwa"]},
-    {"section": "sources", "key": "attribution", "kind": "metric", "filters": ["overall"],
+    {"section": "sources", "key": "attribution", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
       "platforms": {
-        "android": {"status": "not_instrumented", "reason": "F6/F7: Subscription entry sources are caller text on the Telegram route, so an android_ prefix can be forged; the table has no platform column (schema change out of scope)."},
-        "telegram": {"status": "not_instrumented", "reason": "F7: Mini App entry source is client-supplied and cannot establish a platform-specific history."},
-        "iphone_pwa": {"status": "not_instrumented", "reason": "F7: PWA entry source is client-supplied and cannot establish a platform-specific history."},
+        "android": {"status": "partial", "reason": "R3: approved android payments (server-set payments.source) submitted from attributed_since on, attributed to the nearest earlier android entry of the same account, else unknown; descriptive, not causal. The entry side is route-chain tested; payments.source has PostgreSQL projection evidence only, as in Finance."},
+        "telegram": {"status": "partial", "reason": "R3: approved Telegram (miniapp or telegram_bot) payments (server-set payments.source) submitted from attributed_since on, attributed to the nearest earlier telegram entry of the same account, else unknown; descriptive, not causal. The entry side is route-chain tested; payments.source has PostgreSQL projection evidence only, as in Finance."},
+        "iphone_pwa": {"status": "partial", "reason": "R3: approved iPhone PWA (iphone_pwa or Lava pwa) payments (server-set payments.source) submitted from attributed_since on, attributed to the nearest earlier iphone_pwa entry of the same account, else unknown; descriptive, not causal. The entry side is route-chain tested; payments.source has PostgreSQL projection evidence only, as in Finance."},
         "macos": {"status": "not_instrumented", "reason": "The combined Desktop source does not establish separate OS entry or attribution histories; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "The combined Desktop source does not establish separate OS entry or attribution histories; Desktop freeze."}
       }
     },
-    {"section": "sources", "key": "attribution_basis", "kind": "metadata", "filters": ["overall"]},
-    {"section": "sources", "key": "entries", "kind": "metric", "filters": ["overall"],
+    {"section": "sources", "key": "attribution_basis", "kind": "metadata", "filters": ["overall", "android", "telegram", "iphone_pwa"]},
+    {"section": "sources", "key": "attributed_since", "kind": "metadata", "filters": ["android", "telegram", "iphone_pwa"]},
+    {"section": "sources", "key": "entries", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
       "platforms": {
-        "android": {"status": "not_instrumented", "reason": "F6/F7: Subscription entry sources are caller text on the Telegram route, so an android_ prefix can be forged; the table has no platform column (schema change out of scope)."},
-        "telegram": {"status": "not_instrumented", "reason": "F7: Mini App entry source is client-supplied and cannot establish a platform-specific history."},
-        "iphone_pwa": {"status": "not_instrumented", "reason": "F7: PWA entry source is client-supplied and cannot establish a platform-specific history."},
+        "android": {"status": "covered", "reason": "R3: entries recorded by the Android subscription routes (open and Lava overview) with the route-set column client android (never caller text), from attributed_since on; earlier rows have no client and stay Overall-only.", "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_each_client_entry_reaches_its_own_sources_filter"},
+        "telegram": {"status": "covered", "reason": "R3: entries recorded by the Mini App subscription overview route with the route-set column client telegram (never caller text), from attributed_since on; earlier rows have no client and stay Overall-only.", "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_each_client_entry_reaches_its_own_sources_filter"},
+        "iphone_pwa": {"status": "covered", "reason": "R3: entries recorded by the PWA subscription overview route with the route-set column client iphone_pwa (never caller text), from attributed_since on; earlier rows have no client and stay Overall-only.", "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_each_client_entry_reaches_its_own_sources_filter"},
         "macos": {"status": "not_instrumented", "reason": "The combined Desktop source does not establish separate OS entry or attribution histories; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "The combined Desktop source does not establish separate OS entry or attribution histories; Desktop freeze."}
       }
@@ -955,15 +965,16 @@
       "platforms": {
         "android": {
           "status": "partial",
-          "reason": "Authenticated Li guest resume uses existing deduplicated onboarding_completed. The anonymous preview and choices do not write events, and Android lesson-start activity is missing."
+          "reason": "Authenticated Li guest resume uses existing deduplicated onboarding_completed, tagged with the route-set client android since R2. The anonymous preview and choices do not write events. No Android activation reader: the step reads lesson_started, which Android does not write."
         },
         "telegram": {
           "status": "partial",
-          "reason": "The shared onboarding completion feeds Overall activation; there is no trustworthy platform signal for the cohort."
+          "reason": "The shared onboarding completion feeds Overall activation. Since R2 its rows carry the route-set client telegram, but there is no Telegram-scoped reader yet."
         },
         "iphone_pwa": {
-          "status": "partial",
-          "reason": "The shared onboarding completion feeds Overall activation; there is no trustworthy platform signal for the cohort."
+          "status": "covered",
+          "reason": "R2: the PWA onboarding route tags onboarding_completed and its choice rows with the route-set client iphone_pwa; Course > iPhone PWA reads the activation cohort from the first tagged row.",
+          "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_pwa_onboarding_and_handoff_reach_the_pwa_activation"
         },
         "macos": {
           "status": "not_instrumented",
@@ -1453,16 +1464,16 @@
       ],
       "platforms": {
         "android": {
-          "status": "not_instrumented",
-          "reason": "Subscription entry sources are caller text on the Telegram route, so an android_ prefix can be forged; the table has no platform column (schema change out of scope)."
+          "status": "partial",
+          "reason": "R3: subscription_entry_events.client is set to android by the Android subscription routes only; Sources > Android reads those entries and attributes android payments to them. Paywall and limit funnel events stay as they were."
         },
         "telegram": {
-          "status": "not_instrumented",
-          "reason": "Subscription entry sources are client-selectable and have no trusted Mini App platform marker."
+          "status": "partial",
+          "reason": "R3: the Mini App subscription overview route sets subscription_entry_events.client to telegram; the source text stays caller-chosen, but the platform is route-set. Sources > Telegram reads those entries."
         },
         "iphone_pwa": {
-          "status": "not_instrumented",
-          "reason": "Subscription entry sources are client-selectable and have no trusted PWA platform marker."
+          "status": "partial",
+          "reason": "R3: the PWA subscription overview route sets subscription_entry_events.client to iphone_pwa; the source text stays caller-chosen, but the platform is route-set. Sources > iPhone PWA reads those entries."
         },
         "macos": {
           "status": "not_instrumented",
@@ -1618,7 +1629,7 @@
         },
         "telegram": {
           "status": "partial",
-          "reason": "Existing reminder experiments read passive server records; a send or assignment is not foreground activity."
+          "reason": "Existing reminder experiments read passive server records; a send, an assignment or an analytics-only android_lesson_started row is not foreground activity."
         },
         "iphone_pwa": {
           "status": "not_instrumented",
@@ -1777,7 +1788,8 @@
       "path": "app/api/lava_checkout.py",
       "flows": [
         "checkout_payments",
-        "pwa_pro_checkout"
+        "pwa_pro_checkout",
+        "subscription_entries"
       ]
     },
     {

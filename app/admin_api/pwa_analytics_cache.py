@@ -6,7 +6,9 @@ from datetime import datetime, timedelta, timezone
 from sqlalchemy import func, select
 from app.admin_api.pwa_analytics_learning import FUNNEL_TRANSPORTS, learning_metrics, funnel_metrics
 from app.admin_api.pwa_analytics_course_platform import COURSE_CLIENTS, course_platform_metrics
-from app.admin_api.pwa_analytics_finance import PAYMENT_PLATFORM_SOURCES, money_metrics, sources_metrics
+from app.admin_api.pwa_analytics_finance import (
+    PAYMENT_PLATFORM_SOURCES, money_metrics, platform_sources_metrics, sources_metrics,
+)
 from app.admin_api.pwa_analytics_platforms import platform_metrics
 from app.admin_api.pwa_analytics_pwa_pro import pwa_pro_attempt_funnel
 from app.admin_api.pwa_analytics_freshness import platform_freshness
@@ -52,6 +54,8 @@ async def _legacy_projection(db,query,*,section):
     scoped = scoped or (section == 'money' and query.platform in PAYMENT_PLATFORM_SOURCES)
     scoped = scoped or (section == 'funnel' and query.platform in FUNNEL_TRANSPORTS)
     scoped = scoped or (section == 'course' and query.platform in COURSE_CLIENTS)
+    # R3: entries carry the route-set client column.
+    scoped = scoped or (section == 'sources' and query.platform in PAYMENT_PLATFORM_SOURCES)
     if query.platform != 'overall' and not scoped:
         reason = 'not_instrumented' if section in _LEGACY_PLATFORM_SECTIONS else 'attribution_not_audited'
         result.update(available=False, metrics=None, reason=reason)
@@ -67,6 +71,8 @@ async def _legacy_projection(db,query,*,section):
             # F8 is PWA-only; it sits beside the unchanged legacy attempt funnel.
             result['metrics']['pwa_pro_attempt_funnel']=await pwa_pro_attempt_funnel(db,since=since,now=now)
     elif section=='money':result['metrics']=await money_metrics(db,since=since,now=now,platform=query.platform)
+    elif section=='sources' and query.platform!='overall':
+        result['metrics']=await platform_sources_metrics(db,platform=query.platform,since=since,now=now)
     elif section=='sources':result['metrics']=await sources_metrics(db,since=since,now=now)
     elif section=='experiments':result['metrics']=await experiment_metrics(db,since=since,now=now)
     else:

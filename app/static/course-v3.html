@@ -588,7 +588,7 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 #s-profile .hp-promo{filter:saturate(.88);box-shadow:none}
 .phero{display:flex;align-items:center;gap:12px;padding:10px 16px 2px}
 .profile-hero-content{flex:1;min-width:0}
-.profile-identity-row{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0}
+.profile-identity-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:4px 10px;min-width:0}.profile-identity-row .profile-display-name{flex:1 1 auto}
 .profile-display-name{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:17px;font-weight:700;color:var(--ink)}
 .profile-identity-row .profile-access-badge{margin:0;flex-shrink:0}
 .profile-goal-row{margin-top:6px}
@@ -1737,7 +1737,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 </script>
 <!-- Reklama moduli: dars yakuni bloki uchun (mashq bo'limlari ham shu moduldan foydalanadi) -->
 <script src="/voice-live.js?v=20261105-87257ac03ec1"></script>
-<script defer src="/course_v3_data/ads.js?v=20261021-5288c4e06b0c"></script><script src="/course_v3_data/hsk-common-i18n.js?v=20261019-1c672dcfb10d"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261021-3eff2a84e104"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-a0dd8c0b1db1"></script><script src="/course_v3_data/p3-grammar-reservation.js?v=20261019-p3-2"></script>
+<script defer src="/course_v3_data/ads.js?v=20261021-5288c4e06b0c"></script><script src="/course_v3_data/hsk-common-i18n.js?v=20261019-1c672dcfb10d"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261113-a1da547eb267"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-a0dd8c0b1db1"></script><script src="/course_v3_data/p3-grammar-reservation.js?v=20261019-p3-2"></script>
 <script>
 /* ---------- i18n (default RU) ---------- */
 var I18N={
@@ -7621,9 +7621,9 @@ var PROFILE_DETAIL=null;function updateProfileAccuracyInPlace(){if(!PWA_COURSE_H
 var PROFILE_DETAIL_PENDING=false,PROFILE_DETAIL_FAILED=false,PROFILE_DETAIL_SETTLED=false,PROFILE_DETAIL_ERROR=false,PROFILE_DETAIL_LOADED_AT=0;
 function profileCopy(){
   var legacy=({
-    tj:{free:"Ройгон",trial:"Pro · Озмоиш",today:"Имрӯз",overall:"Ҳамагӣ",pro:"Гирифтани Pro",answers:"ҷавоби арзёбишуда",note:"Танҳо ҷавобҳои санҷидашуда · маълумоти кӯҳна метавонад нопурра бошад"},
-    ru:{free:"Бесплатно",trial:"Pro · Пробный",today:"Сегодня",overall:"Всего",pro:"Получить Pro",answers:"проверенных ответов",note:"Только проверенные ответы · история может быть неполной"},
-    uz:{free:"Bepul",trial:"Pro · Sinov",today:"Bugun",overall:"Umumiy",pro:"Pro olish",answers:"baholangan javob",note:"Faqat tekshirilgan javoblar · eski tarix to'liq bo'lmasligi mumkin"}
+    tj:{free:"Ройгон",trial:"HSK AI Pro · Озмоиш",today:"Имрӯз",overall:"Ҳамагӣ",pro:"Гирифтани HSK AI Pro",answers:"ҷавоби арзёбишуда",note:"Танҳо ҷавобҳои санҷидашуда · маълумоти кӯҳна метавонад нопурра бошад"},
+    ru:{free:"Бесплатно",trial:"HSK AI Pro · Пробный",today:"Сегодня",overall:"Всего",pro:"Получить HSK AI Pro",answers:"проверенных ответов",note:"Только проверенные ответы · история может быть неполной"},
+    uz:{free:"Bepul",trial:"HSK AI Pro · Sinov",today:"Bugun",overall:"Umumiy",pro:"HSK AI Pro olish",answers:"baholangan javob",note:"Faqat tekshirilgan javoblar · eski tarix to'liq bo'lmasligi mumkin"}
   })[LANG]||{};return {free:courseMessage("profile.free",legacy.free),trial:courseMessage("profile.trial",legacy.trial),today:courseMessage("profile.today",legacy.today),overall:courseMessage("profile.overall",legacy.overall),pro:courseMessage("profile.pro",legacy.pro),answers:courseMessage("profile.answers",legacy.answers),note:courseMessage("profile.note",legacy.note)};
 }
 function loadProfileDetail(){
@@ -7690,7 +7690,7 @@ function renderProfile(){
     +'<div class="phero">'+(PWA_COURSE_HOST
       ?'<button type="button" class="pav pwa-pav'+(PROF.avatar_key?' art':(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han"))+'" aria-label="'+esc(courseMessage("pwaProfile.edit",""))+'" onclick="App.pwaProfileEdit()">'+(PROF.avatar_key?pwaAvatarArt(PROF.avatar_key):esc(PROF.avatar||"阿"))+'<span class="ed"><i class="ti ti-pencil"></i></span></button>'
       :'<div class="pav'+(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han")+'" onclick="App.avatarEdit()">'+esc(PROF.avatar||"阿")+myAvatarImgHtml()+'<span class="ed"><i class="ti ti-pencil"></i></span></div>')
-    +'<div class="profile-hero-content"><div class="profile-identity-row"><strong class="profile-display-name">'+nickname+'</strong><span class="profile-access-badge'+(paid||trialActive||temporaryActive?' pro':'')+'">'+(paid?'<i class="ti ti-crown"></i> Pro':trialActive?'<i class="ti ti-crown"></i> '+esc(c.trial):temporaryActive?'<i class="ti ti-clock"></i> '+esc(courseMessage("profile.temporaryAccess",({ru:"Временный доступ",tj:"Дастрасии муваққатӣ",uz:"Vaqtinchalik ruxsat"}[LANG]||"Временный доступ"))):esc(c.free))+'</span></div>'
+    +'<div class="profile-hero-content"><div class="profile-identity-row"><strong class="profile-display-name">'+nickname+'</strong><span class="profile-access-badge'+(paid||trialActive||temporaryActive?' pro':'')+'">'+(paid?'<i class="ti ti-crown"></i> HSK AI Pro':trialActive?'<i class="ti ti-crown"></i> '+esc(c.trial):temporaryActive?'<i class="ti ti-clock"></i> '+esc(courseMessage("profile.temporaryAccess",({ru:"Временный доступ",tj:"Дастрасии муваққатӣ",uz:"Vaqtinchalik ruxsat"}[LANG]||"Временный доступ"))):esc(c.free))+'</span></div>'
     +(goalLabel()?'<div class="profile-goal-row"><span class="lvb goal"><i class="ti ti-target"></i> '+esc(goalLabel())+'</span></div>':'')+'</div></div>'
     +'<button type="button" class="profile-friends-link" onclick="App.openFriends()"><i class="ti ti-users" aria-hidden="true"></i><span>'+esc(courseMessage("friends",t.friends))+'</span><i class="ti ti-chevron-right" aria-hidden="true"></i></button>'
     +profileAccuracyHtml()

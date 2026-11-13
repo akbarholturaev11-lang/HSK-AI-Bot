@@ -536,9 +536,9 @@
     <string name="hsk_course_profile_free" formatted="false">Bepul</string>
     <string name="hsk_course_profile_note" formatted="false">Faqat tekshirilgan javoblar · eski tarix to\'liq bo\'lmasligi mumkin</string>
     <string name="hsk_course_profile_overall" formatted="false">Umumiy</string>
-    <string name="hsk_course_profile_pro" formatted="false">Pro olish</string>
+    <string name="hsk_course_profile_pro" formatted="false">HSK AI Pro olish</string>
     <string name="hsk_course_profile_today" formatted="false">Bugun</string>
-    <string name="hsk_course_profile_trial" formatted="false">Pro · Sinov</string>
+    <string name="hsk_course_profile_trial" formatted="false">HSK AI Pro · Sinov</string>
     <string name="hsk_course_pron" formatted="false">Talaffuz mashqi</string>
     <string name="hsk_course_pron_sub" formatted="false">Eshit, takrorla, ton tekshiruvi</string>
     <string name="hsk_course_pronunciation_again" formatted="false">Yana mashq</string>

@@ -173,6 +173,39 @@ async def money_metrics(db, *, since, now, platform="overall"):
         'arpu_usd':round(revenue/active,4) if active else None,'active_denominator':active}
 
 
+async def platform_sources_metrics(db, *, platform, since, now):
+    """R3. Entries recorded by this client's own routes (`Entry.client`), from
+    the first one; this client's payments (`PAYMENT_PLATFORM_SOURCES`) are
+    attributed to the nearest earlier entry on the same client, else unknown.
+    Payments before the first entry are left out: no entry could match them.
+    Public-site traffic is company-wide, so it is not a platform value."""
+    boundary=await db.scalar(select(func.min(Entry.created_at)).where(Entry.client==platform,Entry.created_at<=now))
+    result={'entries':None,'attribution':None,'attributed_since':{},
+        'attribution_basis':'nearest entry recorded on the same platform at or before payment submission; descriptive, not causal'}
+    if boundary is None:
+        return result
+    result['attributed_since']={'entries':boundary.isoformat(),'attribution':boundary.isoformat()}
+    source=source_group(Entry.source)
+    owner=case((Entry.user_id.is_not(None),literal('user:')+cast(Entry.user_id,String)),
+        (User.id.is_not(None),literal('user:')+cast(User.id,String)),
+        else_=literal('legacy:')+cast(Entry.telegram_id,String))
+    rows=(await db.execute(select(source,func.count(),func.count(func.distinct(owner)))
+        .select_from(Entry).outerjoin(User,and_(Entry.user_id.is_(None),Entry.telegram_id>0,User.telegram_id==Entry.telegram_id))
+        .where(Entry.client==platform,*_window(Entry.created_at,since,now)).group_by(source))).all()
+    prior=select(source_group(Entry.source)).where(Entry.client==platform,
+        ((Entry.user_id==User.id) | (Entry.user_id.is_(None)&(Entry.telegram_id>0)&(Entry.telegram_id==User.telegram_id))),
+        Entry.created_at<=Payment.submitted_at).order_by(Entry.created_at.desc(),Entry.id.desc()).limit(1).correlate(Payment,User).scalar_subquery()
+    payment_source=func.coalesce(prior,'unknown')
+    at=func.coalesce(Payment.reviewed_at,Payment.submitted_at)
+    attribution=(await db.execute(select(payment_source.label('source'),func.count(Payment.id),func.sum(usd_expression()))
+        .select_from(Payment).outerjoin(User,_payment_user_join()).where(Payment.payment_status=='approved',
+            Payment.plan_type!=HSK30_UNLOCK_PLAN_TYPE,Payment.source.in_(PAYMENT_PLATFORM_SOURCES[platform]),
+            Payment.submitted_at>=boundary,*_window(at,since,now)).group_by(payment_source))).all()
+    result['entries']=[{'source':s,'visits':n,'histories':unique} for s,n,unique in rows]
+    result['attribution']=[{'source':s,'payments':n,'usd':round(float(usd or 0),4)} for s,n,usd in attribution]
+    return result
+
+
 async def sources_metrics(db, *, since, now):
     # Collapse unknown/custom source text before it crosses the aggregate boundary.
     source=source_group(Entry.source)
