@@ -17,8 +17,20 @@ def has_legacy_filter(section, platform):
     return any(platform in row["filters"] for row in _registry().get(section, ()))
 
 
+# A platform Course view dates each cohort in `attributed_since`. A cohort with
+# no anchor there has no attributed row yet: its None is no data, even when
+# another metric of the view hit the detail limit (audit B3, 2026-11-13).
+_COURSE_COHORT_ANCHOR = {
+    "activation": "activation", "direct_activation": "activation",
+    "handoff_activation": "handoff_activation", "foundation": "foundation",
+}
+
+
 def _null_reason(section, key, metrics):
     if section == "course":
+        anchors = metrics.get("attributed_since")
+        if isinstance(anchors, dict) and key in _COURSE_COHORT_ANCHOR and not anchors.get(_COURSE_COHORT_ANCHOR[key]):
+            return "no_data"
         limited = {
             "activation": "activation", "direct_activation": "activation",
             "foundation": "foundation", "voice_minutes": "voice_minutes",

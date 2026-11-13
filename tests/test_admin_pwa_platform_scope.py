@@ -7,11 +7,16 @@ import json
 import unittest
 from unittest.mock import patch
 
+from sqlalchemy import event as sa_event
+
 from app.admin_api.pwa_analytics_course_platform import course_platform_metrics
+from app.admin_api.pwa_analytics_learning import retention, return_retention
+from app.admin_api.pwa_analytics_states import metric_states
 from app.db.models.conversion_funnel_event import ConversionFunnelEvent
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.payment import Payment
 from app.db.models.subscription_entry_event import SubscriptionEntryEvent
+from app.db.models.user import User
 from tests.test_admin_pwa_v10_regression import NOW, PRIVATE, URL, ago, capture, postgres_fixture
 
 PLATFORMS = ("android", "telegram", "iphone_pwa")
@@ -420,7 +425,9 @@ class PwaActivationScopeTests(unittest.IsolatedAsyncioTestCase):
     def test_too_many_rows_refuse_a_sample(self):
         self.assertIs(self.limited["detail_limited"], True)
         self.assertIsNone(self.limited["activation"])
-        self.assertIsNone(self.limited["handoff_activation"])
+        # Audit B2: the handoff cohort is a SQL aggregate with no detail rows,
+        # so other PWA learners' rows cannot hide it.
+        self.assertEqual(self.limited["handoff_activation"], {"eligible": 2, "activated": 1, "percent": 50.0})
 
 
 @unittest.skipUnless(URL, "set ANALYTICS_TEST_DATABASE_URL for the real PostgreSQL platform scope tests")
@@ -678,6 +685,129 @@ class CrossPlatformDedupTests(unittest.IsolatedAsyncioTestCase):
         # android-a and android-b belong to user 1; android-old to user 3.
         self.assertEqual((card["devices"], card["accounts"]), (3, 2))
         self.assertEqual(card["active_dau"], 1)
+
+
+def _tagged(name, at, client, *, user_id=None, telegram_id=None, source="course_v3", payload=None):
+    body = {**(payload or {}), **({"client": client} if client else {})}
+    return CourseMiniAppEvent(event_name=name, user_id=user_id, telegram_id=telegram_id, source=source,
+                              payload_json=json.dumps(body, separators=(",", ":")), created_at=at)
+
+
+@unittest.skipUnless(URL, "set ANALYTICS_TEST_DATABASE_URL for the real PostgreSQL platform scope tests")
+class PwaHandoffEdgeTests(unittest.IsolatedAsyncioTestCase):
+    """Audit B2 (2026-11-13): the handoff cohort is a SQL aggregate. Edges of
+    the 24-hour window, the first-handoff anchor, legacy Telegram ownership and
+    lookalike tags, independent of the detail-row limit."""
+
+    async def asyncSetUp(self):
+        pwa = "iphone_pwa"
+        rows = [
+            # PWA boundary: the first server-built PWA-tagged row.
+            _tagged("test_completed", ago(hours=60), pwa, user_id=10),
+            # 10: a PWA start exactly 24 hours after the handoff counts.
+            _tagged("pwa_handoff_completed", ago(hours=48), None, user_id=10, source="pwa_handoff"),
+            _tagged("lesson_started", ago(hours=24), pwa, user_id=10),
+            # 11: a step a minute before the first handoff does not; a second
+            # handoff never moves the anchor, so a step in its window does not either.
+            _tagged("pwa_handoff_completed", ago(hours=48), None, user_id=11, source="pwa_handoff"),
+            _tagged("lesson_completed", ago(hours=48, minutes=1), pwa, user_id=11),
+            _tagged("pwa_handoff_completed", ago(hours=30), None, user_id=11, source="pwa_handoff"),
+            _tagged("lesson_started", ago(hours=20), pwa, user_id=11),
+            # 12: unowned legacy Telegram rows resolve to the account.
+            _tagged("pwa_handoff_completed", ago(hours=30), None, telegram_id=2012, source="pwa_handoff"),
+            _tagged("lesson_started", ago(hours=29), pwa, telegram_id=2012),
+            # 13: a Telegram start and a nested caller lookalike are not PWA steps.
+            _tagged("pwa_handoff_completed", ago(hours=30), None, user_id=13, source="pwa_handoff"),
+            _tagged("lesson_started", ago(hours=29), "telegram", user_id=13),
+            _tagged("lesson_started", ago(hours=28), None, user_id=13, payload={"meta": {"client": pwa}}),
+            # 14: a handoff under 24 hours old is not yet eligible.
+            _tagged("pwa_handoff_completed", ago(hours=10), None, user_id=14, source="pwa_handoff"),
+            _tagged("lesson_started", ago(hours=9), pwa, user_id=14),
+        ]
+        async with postgres_fixture(URL) as sessions:
+            async with sessions() as db:
+                db.add_all([User(id=account, telegram_id=2000 + account, created_at=ago(days=20))
+                            for account in range(10, 15)])
+                await db.flush()
+                db.add_all(rows)
+                await db.commit()
+            async with sessions() as db:
+                self.values = await course_platform_metrics(db, platform="iphone_pwa", since=ago(days=7), now=NOW)
+                with patch("app.admin_api.pwa_analytics_learning.DETAIL_LIMIT", 1):
+                    self.limited = await course_platform_metrics(db, platform="iphone_pwa", since=ago(days=7), now=NOW)
+
+    def test_window_anchor_and_ownership_edges(self):
+        # Eligible: 10, 11, 12, 13 and the fixture's account 1 (handoff exactly
+        # 24 hours ago, no PWA step). Activated: 10 and 12.
+        self.assertEqual(self.values["handoff_activation"], {"eligible": 5, "activated": 2, "percent": 40.0})
+        self.assertEqual(self.values["attributed_since"]["handoff_activation"], ago(hours=60).isoformat())
+
+    def test_detail_limit_does_not_hide_the_cohort(self):
+        self.assertEqual(self.limited["handoff_activation"], self.values["handoff_activation"])
+
+
+@unittest.skipUnless(URL, "set ANALYTICS_TEST_DATABASE_URL for the real PostgreSQL platform scope tests")
+class ReturnQueriesPlanTests(unittest.IsolatedAsyncioTestCase):
+    """Audit B1 (2026-11-13): an EXISTS inside an aggregate FILTER (or OR-ed in
+    a WHERE) runs once per account, a `SubPlan` in the plan. All time on 1M
+    events that hit the 5 s statement timeout. Return and handoff evidence must
+    plan as semi-joins, whatever the data size."""
+
+    async def test_return_and_handoff_queries_have_no_per_account_subplan(self):
+        rows = [_tagged("test_completed", ago(hours=60), "iphone_pwa", user_id=1),
+                _tagged("lesson_completed", ago(hours=50), "telegram", user_id=2)]
+        async with postgres_fixture(URL) as sessions:
+            async with sessions() as db:
+                db.add_all(rows)
+                await db.commit()
+            async with sessions() as db:
+                captured = []
+                engine = db.get_bind()  # the sync Engine behind the AsyncSession
+
+                def record(conn, cursor, statement, parameters, context, executemany):
+                    captured.append((statement, parameters))
+
+                sa_event.listen(engine, "before_cursor_execute", record)
+                try:
+                    await retention(db, since=None, now=NOW)
+                    await return_retention(db, since=None, now=NOW)
+                    overall = list(captured)
+                    captured.clear()
+                    for platform in PLATFORMS:
+                        await course_platform_metrics(db, platform=platform, since=None, now=NOW)
+                finally:
+                    sa_event.remove(engine, "before_cursor_execute", record)
+                scoped = [(sql, params) for sql, params in captured
+                          if "platform_first_use" in sql or "pwa_handoff_anchor" in sql]
+                # Two Overall series x D1/D7; three platform return series and the handoff.
+                self.assertEqual(len(overall), 4)
+                self.assertEqual(len(scoped), 4)
+                connection = await db.connection()
+                for sql, params in overall + scoped:
+                    plan = "\n".join(row[0] for row in (
+                        await connection.exec_driver_sql("EXPLAIN " + sql, params)).all())
+                    self.assertNotIn("SubPlan", plan, sql[:200])
+
+
+class CourseStateReasonTests(unittest.TestCase):
+    """Audit B3 (2026-11-13): a cohort with no anchor in `attributed_since` is
+    no data, even when another metric of the view hit the detail limit."""
+
+    def metrics(self, **anchors):
+        return {"activation": None, "direct_activation": None, "handoff_activation": None, "foundation": None,
+                "features": None, "completed_user_lessons": None, "return_retention": None,
+                "detail_limited": True, "attributed_since": {"features": None, "foundation": None, **anchors}}
+
+    def test_no_anchor_is_no_data_even_when_another_metric_is_limited(self):
+        states = metric_states("course", "iphone_pwa", self.metrics())
+        for key in ("activation", "direct_activation", "handoff_activation", "foundation"):
+            self.assertEqual(states[key], {"state": "unavailable", "reason": "no_data"}, key)
+
+    def test_an_anchored_cohort_without_a_value_is_detail_limited(self):
+        anchored = ago(days=3).isoformat()
+        states = metric_states("course", "iphone_pwa", self.metrics(activation=anchored, foundation=anchored))
+        for key in ("activation", "direct_activation", "foundation"):
+            self.assertEqual(states[key], {"state": "unavailable", "reason": "detail_limited"}, key)
 
 
 if __name__ == "__main__":

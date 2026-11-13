@@ -1,5 +1,4 @@
 """Course metrics for one client, from route-owned attribution only (task 3.2)."""
-from collections import defaultdict
 from datetime import timedelta
 
 from sqlalchemy import and_, func, or_, select, union_all
@@ -7,14 +6,13 @@ from sqlalchemy.orm import aliased
 
 from app.admin_api.pwa_analytics_learning import (
     RETURN_LEARNING_EVENTS, activation_query, activation_values, bounded_rows, foundation_query,
-    foundation_summary, owner, ratio, shift,
+    foundation_summary, owner, ratio, returned_accounts, shift,
 )
 from app.admin_api.pwa_analytics_platforms import PWA_MAP_OPEN_PREFIX
 from app.admin_api.pwa_metrics import _window
 from app.admin_api.pwa_read import _user_segment_clause
 from app.db.models.course_miniapp_event import CourseMiniAppEvent as Event
 from app.db.models.user import User
-from app.services.admin_miniapp_service import _as_utc
 
 COURSE_CLIENTS = ('android', 'telegram', 'iphone_pwa')
 PWA = 'iphone_pwa'
@@ -52,17 +50,38 @@ ANDROID_OPENS = ('android_first_open', 'android_app_opened')
 RETURN_LEARNING = (*RETURN_LEARNING_EVENTS, ANDROID_LESSON_STARTED)
 
 
-def handoff_values(rows, *, now):
-    """Rows are (event, account, time) in time order."""
-    anchors, steps = {}, defaultdict(list)
-    for name, account, at in rows:
-        if name == HANDOFF_COMPLETED:
-            anchors.setdefault(account, _as_utc(at))
-        else:
-            steps[account].append(_as_utc(at))
-    eligible = [(account, at) for account, at in anchors.items() if at <= now - HANDOFF_WINDOW]
-    activated = sum(any(at <= step <= at + HANDOFF_WINDOW for step in steps[account]) for account, at in eligible)
-    return {'eligible': len(eligible), 'activated': activated, 'percent': ratio(activated, len(eligible))}
+async def _handoff_activation(db, *, boundary, since, now):
+    """R2 handoff cohort as one SQL aggregate: each account's first handoff from
+    the PWA boundary on is its anchor; eligible once 24 hours old; activated by
+    a PWA-tagged lesson start or completion in [anchor, anchor + 24 h].
+
+    No detail rows: reading every PWA learner's lesson rows filled the 5 000-row
+    limit and hid the cohort (audit B2, 2026-11-13)."""
+    in_period = (Event.created_at >= boundary, *_window(Event.created_at, since, now))
+    owned_first = (select(Event.user_id.label('account'), func.min(Event.created_at).label('at'))
+                   .where(Event.event_name == HANDOFF_COMPLETED, Event.user_id.is_not(None), *in_period)
+                   .group_by(Event.user_id))
+    legacy_first = (select(User.id.label('account'), func.min(Event.created_at).label('at'))
+                    .select_from(Event).join(User, and_(Event.user_id.is_(None), Event.telegram_id == User.telegram_id))
+                    .where(Event.event_name == HANDOFF_COMPLETED, Event.telegram_id > 0, *in_period)
+                    .group_by(User.id))
+    firsts = union_all(owned_first, legacy_first).subquery()
+    anchors = (select(User.id.label('account'), User.telegram_id.label('telegram_id'),
+                      func.min(firsts.c.at).label('at'))
+               .select_from(firsts).join(User, User.id == firsts.c.account)
+               .group_by(User.id, User.telegram_id).cte('pwa_handoff_anchor'))
+    step = aliased(Event)
+    in_window = (step.event_name.in_(HANDOFF_STEPS), client_tag(PWA, step), step.created_at >= boundary,
+                 *_window(step.created_at, since, now), step.created_at >= anchors.c.at,
+                 step.created_at <= shift(db, anchors.c.at, HANDOFF_WINDOW.days))
+    owned = select(step.id).where(step.user_id == anchors.c.account, *in_window).correlate(anchors).exists()
+    legacy = select(step.id).where(step.user_id.is_(None), step.telegram_id == anchors.c.telegram_id,
+                                   step.telegram_id > 0, *in_window).correlate(anchors).exists()
+    eligible = anchors.c.at <= now - HANDOFF_WINDOW
+    activated = returned_accounts(anchors.c.account, eligible, evidence=(owned, legacy))
+    total, done = (await db.execute(select(func.count().filter(eligible),
+        select(func.count()).select_from(activated).scalar_subquery()).select_from(anchors))).one()
+    return {'eligible': total, 'activated': done, 'percent': ratio(done, total)}
 
 
 async def _pwa_activation(db, *, boundary, since, now):
@@ -76,15 +95,11 @@ async def _pwa_activation(db, *, boundary, since, now):
     rows = None if onboarded_since is None else await bounded_rows(db, activation_query(
         client_tag(PWA), Event.created_at >= onboarded_since, since=since, now=now), payload_index=3)
     activation, direct = activation_values(rows, now=now)
-    handoff_rows = None if boundary is None else await bounded_rows(db, select(
-        Event.event_name, User.id, Event.created_at).select_from(Event).join(User, owner(Event)).where(
-            or_(Event.event_name == HANDOFF_COMPLETED, and_(Event.event_name.in_(HANDOFF_STEPS), client_tag(PWA))),
-            Event.created_at >= boundary, *_window(Event.created_at, since, now)).order_by(Event.created_at, Event.id))
-    limited = (onboarded_since is not None and rows is None) or (boundary is not None and handoff_rows is None)
+    handoff = None if boundary is None else await _handoff_activation(db, boundary=boundary, since=since, now=now)
+    limited = onboarded_since is not None and rows is None
     since_by_key = {key: at.isoformat() for key, at in
                     (('activation', onboarded_since), ('handoff_activation', boundary)) if at}
-    return {'activation': activation, 'direct_activation': direct,
-            'handoff_activation': None if handoff_rows is None else handoff_values(handoff_rows, now=now),
+    return {'activation': activation, 'direct_activation': direct, 'handoff_activation': handoff,
             }, since_by_key, limited
 
 
@@ -124,10 +139,12 @@ async def platform_return_retention(db, *, platform, boundary, since, now):
                     .select_from(Event).join(User, and_(Event.user_id.is_(None), Event.telegram_id == User.telegram_id))
                     .where(use, Event.telegram_id > 0, Event.created_at <= now).group_by(User.id))
     uses = union_all(owned_first, legacy_first).subquery()
+    # A CTE: PostgreSQL materializes it once for the cohort counts and both
+    # returned-account sets.
     first = (select(User.id.label('account'), User.telegram_id.label('telegram_id'),
                     func.min(uses.c.at).label('first_use'))
              .select_from(uses).join(User, User.id == uses.c.account)
-             .group_by(User.id, User.telegram_id).subquery())
+             .group_by(User.id, User.telegram_id).cte('platform_first_use'))
     later = aliased(Event)
     columns, windows = [func.min(first.c.first_use)], []
     for days in (1, 7):
@@ -136,12 +153,14 @@ async def platform_return_retention(db, *, platform, boundary, since, now):
         window = (platform_use(platform, boundary, later),
                   later.created_at >= shift(db, first.c.first_use, days),
                   later.created_at < shift(db, first.c.first_use, days + 1), later.created_at <= now)
-        # Two EXISTS instead of the OR in `owner`, as in Overall return_retention.
+        # Two EXISTS instead of the OR in `owner`, as in Overall return_retention,
+        # each a semi-join over the cohort (see `returned_accounts`).
         owned = select(later.id).where(later.user_id == first.c.account, *window).correlate(first).exists()
         legacy = select(later.id).where(later.user_id.is_(None), later.telegram_id == first.c.telegram_id,
                                         later.telegram_id > 0, *window).correlate(first).exists()
         mature = and_(first.c.first_use <= end, *([first.c.first_use > start] if start else []))
-        columns += [func.count().filter(mature), func.count().filter(and_(mature, or_(owned, legacy)))]
+        returned = returned_accounts(first.c.account, mature, evidence=(owned, legacy))
+        columns += [func.count().filter(mature), select(func.count()).select_from(returned).scalar_subquery()]
         windows.append((days, start, end))
     # One statement, so the first-use aggregation runs once for both windows.
     started, *counts = (await db.execute(select(*columns).select_from(first))).one()
