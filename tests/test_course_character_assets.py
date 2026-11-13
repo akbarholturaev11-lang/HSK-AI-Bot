@@ -115,6 +115,9 @@ class CourseCharacterAssetWiringTests(unittest.TestCase):
             "hsk-character-motion.css",
             "hsk-character-pack.js",
             "hsk-character-motion.js",
+            # The shared panda loading screen every practice page shows while
+            # its first item loads (see test_miniapp_practice_presentation_restore).
+            "hsk-study-preparing.js",
         }
 
         for page, character in PRACTICE_PAGES.items():
