@@ -2,6 +2,7 @@ package com.pomp.hskai.data.repository
 
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
+import com.pomp.hskai.core.diagnostics.DiagTags
 import com.pomp.hskai.core.network.apiCall
 import com.pomp.hskai.data.api.AndroidOnboardingApi
 import com.pomp.hskai.data.api.AndroidGuestOnboardingApi
@@ -65,7 +66,7 @@ class OnboardingRepository(
         // Keep the native client on the same interaction contract instead of
         // inheriting the application's broader 60-second HTTP call timeout.
         val result = withTimeoutOrNull(ONBOARDING_SAVE_TIMEOUT_MS) {
-            apiCall {
+            apiCall(DiagTags.ONBOARDING) {
                 api.complete(
                     authorization = "Bearer $token",
                     body = AndroidOnboardingRequestDto(
@@ -111,7 +112,7 @@ class OnboardingRepository(
     }
 
     private suspend fun status(token: String): ApiResult<AndroidOnboardingStatusDto> =
-        apiCall { api.status("Bearer $token") }
+        apiCall(DiagTags.ONBOARDING) { api.status("Bearer $token") }
 
     private fun ApiError.isReconcilable(): Boolean =
         this is ApiError.Timeout || this is ApiError.Offline || this is ApiError.Unknown

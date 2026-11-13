@@ -69,7 +69,7 @@ This is the only checklist for this work. Task 1.1 creates the single shared con
 
 ## 2. Android and PWA reporters
 
-- [ ] 2.1 Add the Android reporter (D5) in `core/diagnostics`, for both flavours:
+- [x] 2.1 Add the Android reporter (D5) in `core/diagnostics`, for both flavours:
   - the crash handler;
   - exit reasons on API ≥ 30;
   - tagged `apiCall` failures for login, lesson open/complete, practice, progress, subscription/payment and handoff, hooked inside `apiCall` (`ApiResult.kt`) and reusing the `toApiError()` result;

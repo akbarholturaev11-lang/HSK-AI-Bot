@@ -15,8 +15,11 @@ or production acceptance.
   workflow, `AGENTS.md` rule); task 1.2 (migration `0156_diagnostic_monitoring`,
   models, `ingest`, retention, switches); task 1.3 (intake routes, backend
   middleware and reporter, Lava and AI/voice sites, chain helper, `server` cells
-  `partial`).
-- **Not yet run:** PostgreSQL tests (chain and intake) — they run in task 5.1.
+  `partial`); task 2.1 (Android reporter in `core/diagnostics`, both flavours;
+  `android` cells `partial` for the instrumented features).
+- **Not yet run:** PostgreSQL tests (chain and intake) and the Android release
+  builds (`bundlePlayRelease bundleDirectRelease`, Direct DTO smoke) — they run in
+  task 5.1.
 - **Not on `main`.** No migration, intake, reporter or Admin change is deployed.
   All switches will default off.
 
@@ -89,6 +92,36 @@ or production acceptance.
   their real intake; the server chain runs through a `BackendReporter`, with an
   optional `trigger` (a real middleware request or `report_server_failure`).
 
+- **Android owner stamp.** The Android client never learns its `users.id`; the
+  queue is stamped with the bootstrap device session ID (`device.id`), which
+  belongs to exactly one account. Sign-in binds it (events queued before sign-in
+  are adopted by that account); logout, expiry or an account switch purges the
+  queue. The server still takes the owner only from the bearer session.
+- **Android 503.** `apiCall` reports `api_5xx` for every 5xx except 503, the
+  backend's "switched off" answer, matching the server middleware.
+- **Android cancellation.** `apiCall` keeps mapping a cancelled call to
+  `ApiError.Unknown` as before, but never reports it.
+- **Android AtomicFile.** The queue and crash record use write-temp, fsync,
+  rename in plain Java I/O (same guarantee as `android.util.AtomicFile`), so the
+  queue logic runs in JVM tests; files live in `noBackupFilesDir/diagnostics`.
+- **Android crash feature** comes from the selected main tab (Course → lessons,
+  Practice → practice, Voice → voice_practice, Rating → learning_rewards,
+  Profile → app_shell). Exit reasons are `app_shell` / `process`; a `REASON_CRASH`
+  within 60 s of a recorded JVM crash is not reported twice; the first run only
+  sets the last-seen mark.
+- **Android tagged calls.** Sign-in (link start/poll, OAuth start/assert) →
+  `auth_session/login`; refresh and bootstrap → `auth_session/session_restore`;
+  course map → `lessons/progress`; lesson open/unlock → `lessons/lesson_open`;
+  completion → `lessons/lesson_complete`; onboarding → `onboarding_activation`;
+  practice and drills → `practice`; subscription overview → `subscription_entries/
+  subscription`; legacy subscription open → `subscription_entries/handoff`;
+  checkout and Lava (Direct) → `checkout_payments/payment`.
+- **Android flush.** Unique work `diagnostics_flush` (KEEP, network required,
+  exponential backoff from 30 s, at most 3 attempts), scheduled after the first
+  frame and after each queued event while signed in. Batches of 20. A `paused`
+  answer stops queueing for 24 h and empties the queue; 401/403 drops it; other
+  4xx drop the batch; 5xx and transport errors retry.
+
 ## Session log
 
 - 2026-11-13: task 1.1 implemented on the feature branch (256 learner routes
@@ -96,3 +129,4 @@ or production acceptance.
 - 2026-11-13: task 1.2 implemented (migration after `0155`, intake service).
 - 2026-11-13: task 1.3 implemented (two intake routes, middleware, reporter,
   Lava/AI sites, chain helper and server chain test).
+- 2026-11-13: task 2.1 implemented (Android reporter, JVM tests, Android chain test).

@@ -3,6 +3,8 @@ package com.pomp.hskai.data.repository
 import com.pomp.hskai.BuildConfig
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
+import com.pomp.hskai.core.diagnostics.DiagTag
+import com.pomp.hskai.core.diagnostics.DiagTags
 import com.pomp.hskai.core.network.apiCall
 import com.pomp.hskai.core.settings.AppSettings
 import com.pomp.hskai.data.api.AndroidAdListResponse
@@ -137,10 +139,10 @@ class FeatureRepository(
         }
 
     suspend fun subscriptionOverview(): ApiResult<AndroidSubscriptionOverviewResponse> =
-        authorized { api.subscriptionOverview(it) }
+        authorized(DiagTags.SUBSCRIPTION) { api.subscriptionOverview(it) }
 
     suspend fun checkoutOverview(origin: String): ApiResult<SubscriptionCheckoutOverviewDto> {
-        val result = authorized { api.checkoutOverview(it, origin) }
+        val result = authorized(DiagTags.PAYMENT) { api.checkoutOverview(it, origin) }
         if (result is ApiResult.Success) {
             appSettings?.setSubscriptionDisplayCurrency(result.value.preferredCurrency)
         }
@@ -177,20 +179,20 @@ class FeatureRepository(
         authorized { api.checkoutEvent(it, request) }
 
     suspend fun checkoutQuote(request: SubscriptionQuoteRequest): ApiResult<SubscriptionQuoteResponse> =
-        authorized { api.checkoutQuote(it, request) }
+        authorized(DiagTags.PAYMENT) { api.checkoutQuote(it, request) }
 
     suspend fun checkoutSubmit(request: SubscriptionSubmitRequest): ApiResult<SubscriptionSubmitResponse> =
-        authorized { checkoutReceiptApi.checkoutSubmit(it, request) }
+        authorized(DiagTags.PAYMENT) { checkoutReceiptApi.checkoutSubmit(it, request) }
 
     suspend fun checkoutPaymentStatus(paymentId: Int): ApiResult<PaymentDecisionStatusResponse> =
-        authorized { api.checkoutPaymentStatus(it, paymentId) }
+        authorized(DiagTags.PAYMENT) { api.checkoutPaymentStatus(it, paymentId) }
 
     /**
      * Legacy handoff used by older clients. The APK now uses checkout* above;
      * the Play flavor has no manual payment screen.
      */
     suspend fun subscriptionOpen(): ApiResult<AndroidSubscriptionOpenResponse> =
-        authorized { api.subscriptionOpen(it) }
+        authorized(DiagTags.HANDOFF) { api.subscriptionOpen(it) }
 
     suspend fun trialStatus(): ApiResult<AndroidTrialStatusResponse> =
         authorized { api.trialStatus(it) }
@@ -317,7 +319,7 @@ class FeatureRepository(
         skill: String,
         accessRef: String = "",
         adSupported: Boolean = false,
-    ): ApiResult<PracticeStartResponse> = authorized {
+    ): ApiResult<PracticeStartResponse> = authorized(DiagTags.PRACTICE) {
         api.practiceStart(
             it,
             PracticeStartRequest(
@@ -340,7 +342,7 @@ class FeatureRepository(
         answers: Map<String, Int>,
         accessRef: String = "",
         adSupported: Boolean = false,
-    ): ApiResult<PracticeCompleteResponse> = authorized {
+    ): ApiResult<PracticeCompleteResponse> = authorized(DiagTags.PRACTICE) {
         api.practiceComplete(
             it,
             PracticeCompleteRequest(
@@ -462,7 +464,7 @@ class FeatureRepository(
         feature: String,
         ref: String,
         accessRef: String = "",
-    ): ApiResult<DrillGateResponse> = authorized {
+    ): ApiResult<DrillGateResponse> = authorized(DiagTags.PRACTICE) {
         api.drillGate(
             it,
             DrillGateRequest(feature = feature, ref = ref, accessRef = accessRef),
@@ -471,7 +473,7 @@ class FeatureRepository(
 
     /** The characters the server says are due for this drill. */
     suspend fun drillWords(feature: String, limit: Int = 10): ApiResult<DrillWordsResponse> =
-        authorized { api.drillWords(it, DrillWordsRequest(feature = feature, limit = limit)) }
+        authorized(DiagTags.PRACTICE) { api.drillWords(it, DrillWordsRequest(feature = feature, limit = limit)) }
 
     /** Reports a client-built drill: what was missed and what was answered. */
     suspend fun reportDrill(
@@ -480,7 +482,7 @@ class FeatureRepository(
         language: String,
         mistakes: List<DrillMistakeDto>,
         results: List<DrillResultDto>,
-    ): ApiResult<DrillReportResponse> = authorized {
+    ): ApiResult<DrillReportResponse> = authorized(DiagTags.PRACTICE) {
         api.drillReport(
             it,
             DrillReportRequest(
@@ -562,13 +564,14 @@ class FeatureRepository(
         authorized { api.dismissHint(it, AndroidHintDismissRequest(hint = key)) }
 
     private suspend fun <T : Any> authorized(
+        diag: DiagTag? = null,
         call: suspend (authorization: String) -> retrofit2.Response<T>,
     ): ApiResult<T> {
         val token = when (val result = accessToken()) {
             is ApiResult.Failure -> return result
             is ApiResult.Success -> result.value
         }
-        val result = apiCall { call("Bearer $token") }
+        val result = apiCall(diag) { call("Bearer $token") }
         if (result is ApiResult.Failure && result.error is ApiError.SessionExpired) {
             onSessionExpired()
         }

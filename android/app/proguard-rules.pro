@@ -51,3 +51,11 @@
 -keep,allowobfuscation @kotlinx.serialization.Serializable class ** {
     *;
 }
+
+# Unified error monitoring (D5): the diagnostics request/response and queue
+# models are read through their generated serializers; keep them explicitly so
+# a release build can still send and read the queue.
+-keep,allowobfuscation class com.pomp.hskai.core.diagnostics.*Dto { *; }
+-keep,allowobfuscation class com.pomp.hskai.core.diagnostics.DiagnosticIntakeResponse { *; }
+-keep,allowobfuscation class com.pomp.hskai.core.diagnostics.QueuedDiagnostic { *; }
+-keep,allowobfuscation class com.pomp.hskai.core.diagnostics.DiagnosticQueueFile { *; }

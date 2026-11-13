@@ -11,6 +11,8 @@ import com.pomp.hskai.core.audio.LiveVoiceAudioEngine
 import com.pomp.hskai.core.audio.TtsCache
 import com.pomp.hskai.core.audio.VoiceRecorder
 import com.pomp.hskai.core.auth.AuthRepository
+import com.pomp.hskai.core.diagnostics.AndroidDiagnostics
+import com.pomp.hskai.core.diagnostics.AndroidDiagnosticsApi
 import com.pomp.hskai.core.network.OriginGuardInterceptor
 import com.pomp.hskai.core.settings.AppSettings
 import com.pomp.hskai.core.storage.SecureCredentialStore
@@ -100,8 +102,19 @@ class HskAiApplication : Application() {
         AccountNoticeMonitor(this, retrofit.create(AndroidPushApi::class.java))
     }
 
+    /** Unified error monitoring (D5): crash handler, exit reasons, owner-bound queue. */
+    val diagnostics: AndroidDiagnostics by lazy {
+        AndroidDiagnostics(
+            context = this,
+            api = retrofit.create(AndroidDiagnosticsApi::class.java),
+            token = { (authRepository.accessToken() as? com.pomp.hskai.core.network.ApiResult.Success)?.value },
+        )
+    }
+
     override fun onCreate() {
         super.onCreate()
+        // First, so a crash anywhere below is recorded.
+        diagnostics.start()
         paymentDecisionMonitor.initializeFirebase()
         applicationScope.launch {
             // Whether a newer build exists is asked here rather than from a
@@ -237,10 +250,17 @@ class HskAiApplication : Application() {
                 context = this,
                 webClientId = BuildConfig.GOOGLE_WEB_CLIENT_ID,
             ),
-            onSessionCleared = ::clearWidgetSession,
-            onSessionReplacing = ::clearWidgetProjection,
+            onSessionCleared = {
+                diagnostics.clearOwner()
+                clearWidgetSession()
+            },
+            onSessionReplacing = {
+                diagnostics.clearOwner()
+                clearWidgetProjection()
+            },
             onSessionLinked = { widgetStore.linked(newSession = true) },
             onAuthenticated = { deviceId ->
+                diagnostics.bindOwner(deviceId)
                 paymentDecisionMonitor.bindDevice(deviceId)
                 widgetStore.linked()
                 WidgetScheduler.schedule(this)

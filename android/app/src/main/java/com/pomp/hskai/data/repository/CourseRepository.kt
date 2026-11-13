@@ -8,6 +8,7 @@ import com.pomp.hskai.core.hanzi.CharacterStrokes
 import com.pomp.hskai.data.local.BundledStrokes
 import com.pomp.hskai.data.local.WordAudioSource
 import androidx.compose.ui.geometry.Offset
+import com.pomp.hskai.core.diagnostics.DiagTags
 import com.pomp.hskai.core.network.apiCall
 import com.pomp.hskai.data.api.AndroidCourseApi
 import com.pomp.hskai.data.api.AndroidFoundationApi
@@ -115,7 +116,7 @@ class CourseRepository(
             is ApiResult.Success -> result.value
         }
 
-        val response = apiCall {
+        val response = apiCall(DiagTags.PROGRESS) {
             api.courseMap("Bearer $token", timezoneOffsetMinutes())
         }
         return when (response) {
@@ -320,7 +321,7 @@ class CourseRepository(
             is ApiResult.Success -> result.value
         }
         return when (
-            val result = apiCall { api.lesson("Bearer $token", lessonOrder, accessRef) }
+            val result = apiCall(DiagTags.LESSON_OPEN) { api.lesson("Bearer $token", lessonOrder, accessRef) }
         ) {
             is ApiResult.Failure -> {
                 notifySessionExpired(result.error)
@@ -556,7 +557,7 @@ class CourseRepository(
             is ApiResult.Failure -> return result
             is ApiResult.Success -> result.value
         }
-        val result = apiCall {
+        val result = apiCall(DiagTags.LESSON_OPEN) {
             api.unlockLesson(
                 "Bearer $token",
                 LessonUnlockRequest(
@@ -587,7 +588,7 @@ class CourseRepository(
             is ApiResult.Failure -> return result
             is ApiResult.Success -> result.value
         }
-        val result = apiCall {
+        val result = apiCall(DiagTags.LESSON_COMPLETE) {
             api.complete(
                 "Bearer $token",
                 CourseCompleteRequest(

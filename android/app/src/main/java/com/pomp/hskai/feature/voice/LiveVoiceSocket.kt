@@ -2,6 +2,10 @@ package com.pomp.hskai.feature.voice
 
 import android.util.Base64
 import com.pomp.hskai.BuildConfig
+import com.pomp.hskai.core.diagnostics.DiagFailure
+import com.pomp.hskai.core.diagnostics.DiagFeature
+import com.pomp.hskai.core.diagnostics.Diagnostics
+import com.pomp.hskai.core.diagnostics.REPORTED_LIVE_REASONS
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.data.api.VoiceSuggestionDto
@@ -242,6 +246,10 @@ internal class AndroidLiveVoiceConnection(
 
     private fun fail(reason: String) {
         if (closed.get() || terminal.get() || !failed.compareAndSet(false, true)) return
+        // Client-side reasons only; the reason becomes a fixed site code.
+        REPORTED_LIVE_REASONS[reason]?.let {
+            Diagnostics.report(DiagFeature.VOICE_PRACTICE, DiagFailure.LIVE_SESSION_FAILED, it)
+        }
         emitControl(LiveVoiceEvent.Failed(reason))
     }
 

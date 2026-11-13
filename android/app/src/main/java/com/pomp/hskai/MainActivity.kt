@@ -194,6 +194,8 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+        // After the first frame: the last crash record, exit reasons and a flush.
+        window.decorView.post { app.diagnostics.afterFirstFrame() }
     }
 
     override fun onNewIntent(intent: Intent) {
