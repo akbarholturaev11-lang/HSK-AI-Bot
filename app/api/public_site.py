@@ -2,6 +2,7 @@
 import json
 import logging
 import re
+from html import escape as html_escape
 from pathlib import Path
 from urllib.parse import urlencode, urlsplit
 from xml.etree.ElementTree import Element, SubElement, tostring
@@ -10,7 +11,7 @@ from fastapi import APIRouter, Request
 from fastapi.responses import FileResponse, HTMLResponse, PlainTextResponse, RedirectResponse, Response
 
 from app.public_site.account_deletion_render import render_account_deletion
-from app.public_site.content import DOWNLOAD_PATH, GOOGLE_SIGNIN_PRIVACY_PAGES, HOME_PATHS, PAGES
+from app.public_site.content import AUTOMATIC_DIAGNOSTICS_DISCLOSURE, DOWNLOAD_PATH, GOOGLE_SIGNIN_PRIVACY_PAGES, HOME_PATHS, PAGES
 from app.public_site.render import (
     BOT_URL,
     attribution,
@@ -204,6 +205,7 @@ small{color:#59534c}li{margin:0.45em 0}nav.legal-links{display:flex;flex-wrap:wr
 <li><strong>AI, images and speech:</strong> Text questions, photos, voice/audio you choose to submit, transcripts, learning feedback and any support or AI-response reports you submit. These inputs are processed to answer your questions, perform transcription or pronunciation evaluation, and handle reports. Please do not include passwords, identity documents or unnecessary sensitive details.</li>
 <li><strong>Payments and invitations:</strong> Plan and entitlement status, referrals, eligibility and usage limits, and, when you submit a manual payment, its amount, receipt and review status. The current Google Play build does not collect manual payment receipts in-app.</li>
 <li><strong>Devices and diagnostics:</strong> App/device and session identifiers, push notification tokens where enabled, app version, security or service logs, and error details or screenshots you voluntarily send for troubleshooting.</li>
+<li>__AUTOMATIC_DIAGNOSTICS_DISCLOSURE__</li>
 </ul>
 <p>The public website may count visits to the home or download pages by campaign source (for example Instagram or YouTube) in aggregate daily totals, without a visitor cookie or account identifier in those counts. Ordinary network requests may still generate technical hosting or security logs.</p>
 <h2>Microphone, photos and notifications</h2>
@@ -222,6 +224,7 @@ small{color:#59534c}li{margin:0.45em 0}nav.legal-links{display:flex;flex-wrap:wr
 <p>We may revise this policy as the application changes. The effective date at the top identifies this version; material changes will be reflected here and communicated through the service when appropriate.</p>
 <nav class="legal-links" aria-label="HSK AI legal and support links"><a href="/">HSK AI</a><a href="/privacy">Privacy Policy</a><a href="/privacy#security">Security</a><a href="/account-deletion">Account Deletion</a><a href="/privacy/google-sign-in/">Google Sign-In Privacy</a><a href="/terms">Terms of Use</a><a href="https://t.me/hskai_support_bot">Support</a></nav>
 </main></body></html>"""
+        body = body.replace("__AUTOMATIC_DIAGNOSTICS_DISCLOSURE__", html_escape(AUTOMATIC_DIAGNOSTICS_DISCLOSURE))
         return HTMLResponse(body, headers={
             "Cache-Control": "public, max-age=300",
             "Referrer-Policy": "no-referrer",

@@ -75,7 +75,7 @@ CLIENT_SITES = frozenset({
     "course_v3", "li_onboarding", "memorize", "mistakes", "pwa_onboarding", "pronunciation",
     "recognition", "test", "voice", "pwa_handoff", "pwa_login", "pwa_voice", "checkout",
     # Mini App onboarding (mirrors the Inbox technical explanation codes)
-    "onboarding_save", "onboarding_timeout", "onboarding_placement",
+    "onboarding_save", "onboarding_timeout", "onboarding_placement", "tts_fallback", "mic_unavailable",
     # live voice client-side reasons (server-sent codes are never reported)
     "live_connection_lost", "live_message_invalid", "live_message_too_large", "live_send_failed",
     "live_connection_timeout", "live_response_invalid", "live_audio_invalid", "live_socket_closed",
@@ -364,6 +364,7 @@ ALERT_GLOBAL_CAP_PER_HOUR = 6
 ESCALATION_ACCOUNTS = 5
 ESCALATION_WINDOW_MINUTES = 60
 BACKEND_WRITE_CONCURRENCY = 8
+BACKEND_PENDING_FINGERPRINTS = 128
 BACKEND_COALESCE_SECONDS = 10
 
 

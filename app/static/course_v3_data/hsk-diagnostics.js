@@ -2,8 +2,8 @@
  *
  * Sends content-free diag.v1 events: fixed feature, failure, page and
  * category codes only. It never queues or sends an error message, stack, URL,
- * learner text, credential or identity. Active on the browser PWA;
- * the Telegram Mini App transport is added in task 4.1, until then it is inert.
+ * learner text or credentials. The PWA uses its verified browser session;
+ * a Telegram Mini App uses its signed init data only as the auth header.
  *
  * HskDiag.report(feature, failure, site[, outcome | cause])
  *   outcome: "failed" (default) or "recovered".
@@ -47,6 +47,19 @@
     "/iphone-pwa/checkout": ["checkout_payments", "checkout"],
     "/iphone-pwa/handoff": ["distribution_handoff", "pwa_handoff"]
   };
+  var MINIAPP_PAGES = {
+    "/course-v3": ["lessons", "course_v3"],
+    "/course-v3.html": ["lessons", "course_v3"],
+    "/course_v3_li_onboarding.html": ["onboarding_activation", "li_onboarding"],
+    "/course_v3_onboarding.html": ["onboarding_activation", "onboarding"],
+    "/course_v3_memorize.html": ["practice", "memorize"],
+    "/course_v3_pronunciation.html": ["practice", "pronunciation"],
+    "/course_v3_recognition.html": ["practice", "recognition"],
+    "/course_v3_test.html": ["assessments", "test"],
+    "/course_v3_mistakes.html": ["mistake_review", "mistakes"],
+    "/course_v3_voice.html": ["voice_practice", "voice"],
+    "/subscription.html": ["checkout_payments", "checkout"]
+  };
   var CATEGORIES = {
     TypeError: "type", ReferenceError: "reference", RangeError: "range", SyntaxError: "syntax",
     EvalError: "other", URIError: "argument", SecurityError: "security", NotAllowedError: "security",
@@ -60,9 +73,17 @@
   var path = String(root.location && root.location.pathname || "").replace(/\/+$/, "") || "/";
   var page = PAGES[path] || null;
   var pwa = !!page;
+  var telegram = !pwa && !!MINIAPP_PAGES[path] && !!telegramProof();
+  if (telegram) page = MINIAPP_PAGES[path];
+  var active = pwa || telegram;
   var busy = false, sent = 0, flushing = false, failures = 0, timer = null, retryAt = 0;
   var documentOwner = "", signedOut = false, pageVersion;
   var pending = { owner: "", events: [], seen: {} };
+
+  function telegramProof() {
+    var app = root.Telegram && root.Telegram.WebApp;
+    return app && typeof app.initData === "string" && app.initData.length <= 8192 ? app.initData : "";
+  }
 
   function storage() {
     try { return root.localStorage || null; } catch (_) { return null; }
@@ -88,7 +109,7 @@
   function save(state) { write(KEY, state); }
 
   function paused(now) {
-    var until = Number(read(PAUSE_KEY)) || 0;
+    var until = Number(read(telegram ? PAUSE_KEY + "-telegram" : PAUSE_KEY)) || 0;
     return now < until;
   }
 
@@ -185,7 +206,7 @@
   }
 
   function enqueue(feature, failure, site, outcome, cat) {
-    if (busy || !pwa || signedOut) return false;
+    if (busy || !active || signedOut) return false;
     busy = true;
     try {
       if (![feature, failure, site].every(function (code) {
@@ -194,7 +215,7 @@
       if (outcome !== "failed" && outcome !== "recovered") return false;
       var now = Date.now();
       if (sent >= MAX_PER_PAGE || paused(now)) return false;
-      var state = load();
+      var state = telegram ? pending : load();
       if (documentOwner && state.owner !== documentOwner) return false;
       // An unverified document cannot append to a previous owner's queue.
       if (!documentOwner) state = pending;
@@ -266,11 +287,11 @@
   function logout(id) {
     signedOut = true;
     pending.events = [];
-    clear(String(id || documentOwner), true);
+    if (pwa) clear(String(id || documentOwner), true);
   }
 
   function schedule(delay) {
-    if (!pwa || signedOut || timer || flushing || failures >= MAX_ATTEMPTS) return;
+    if (!active || signedOut || timer || flushing || failures >= MAX_ATTEMPTS) return;
     delay = Math.max(delay, retryAt - Date.now());
     var run = function () { timer = null; flush(); };
     if (!delay && typeof root.requestIdleCallback === "function") {
@@ -332,30 +353,32 @@
   }
 
   function flush() {
-    if (!pwa || signedOut || flushing || failures >= MAX_ATTEMPTS || typeof root.fetch !== "function") return;
+    if (!active || signedOut || flushing || failures >= MAX_ATTEMPTS || typeof root.fetch !== "function") return;
     if (root.navigator && root.navigator.onLine === false) return;
     if (Date.now() < retryAt) { schedule(retryAt - Date.now()); return; }
-    var state = load();
+    var state = telegram ? pending : load();
     var now = Date.now();
-    if (trim(state, now)) save(state);
+    if (trim(state, now) && pwa) save(state);
     if (!state.events.length && !pending.events.length) return;
-    if (paused(now)) { clear(state.owner, false); return; }
+    if (paused(now)) { if (pwa) clear(state.owner, false); else pending.events = []; return; }
     flushing = true;
-    pwaSession().then(function (actor) {
+    var delivery = telegram ? telegramBatch() : pwaSession().then(function (actor) {
       if (!actor) {
         // An anonymous failure must never become a future account's event.
         pending = { owner: "", events: [], seen: {} };
         if (state.owner) {
-          if (documentOwner) logout(state.owner);
+          if (documentOwner) logout(documentOwner);
           else clear(state.owner, true);
         }
         return;
       }
       if (owner(actor.user_id)) return pwaBatch(actor, 0);
-    }).then(function () {
+    });
+    delivery.then(function () {
       flushing = false;
       failures = 0;
       retryAt = 0;
+      if (telegram && pending.events.length && !paused(Date.now())) schedule(0);
     }, function () {
       flushing = false;
       failures++;
@@ -363,6 +386,32 @@
         retryAt = Date.now() + RETRY_MS[failures - 1];
         schedule(RETRY_MS[failures - 1]);
       }
+    });
+  }
+
+  var initialTelegramProof = telegram ? telegramProof() : "";
+  function telegramBatch() {
+    var proof = telegramProof();
+    if (!proof || proof !== initialTelegramProof) { logout(); return Promise.resolve(); }
+    var batch = pending.events.slice(0, BATCH);
+    if (!batch.length) return Promise.resolve();
+    return boundedFetch("/api/miniapp/event", {
+      method: "POST", credentials: "omit", cache: "no-store", redirect: "error", keepalive: true,
+      headers: { "Content-Type": "application/json", "X-Telegram-Init-Data": proof, "X-HSK-Diagnostic": SCHEMA },
+      body: JSON.stringify({ event: "app_error", schema: SCHEMA, events: batch.map(function (e) { return wireEvent(e.event); }) })
+    }, function (r) {
+      if (r.status === 401 || r.status === 403) { logout(); return; }
+      if (r.status >= 500) throw new Error("retry");
+      if (!r.ok) { pending.events.splice(0, batch.length); return; }
+      return r.json().then(function (body) {
+        if (!body || body.ok !== true || !Number.isSafeInteger(body.accepted)) { logout(); return; }
+        var sentIds = new Set(batch.map(function (e) { return e.event.event_id; }));
+        pending.events = pending.events.filter(function (e) { return !sentIds.has(e.event.event_id); });
+        if (body.paused === true) {
+          pending.events = [];
+          write(PAUSE_KEY + "-telegram", Date.now() + PAUSE_MS);
+        }
+      });
     });
   }
 
@@ -384,7 +433,7 @@
   }
 
   root.HskDiag = { report: report, owner: owner, logout: logout, flush: flush };
-  if (!pwa) return;
+  if (!active) return;
   try {
     root.addEventListener("error", onError);
     root.addEventListener("unhandledrejection", onRejection);

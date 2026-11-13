@@ -933,7 +933,7 @@ app.add_middleware(
 from app.services.monitoring.backend import DiagnosticMiddleware, reporter as diagnostic_reporter
 diagnostic_reporter.configure(session_factory=async_session_maker, settings_obj=settings)
 app.add_middleware(DiagnosticMiddleware)
-from app.api.monitoring_intake import create_monitoring_intake_router
+from app.api.monitoring_intake import create_monitoring_intake_router, read_bounded_json
 app.include_router(create_monitoring_intake_router(session_factory=async_session_maker, settings_obj=settings))
 app.include_router(
     create_desktop_auth_router(
@@ -6674,8 +6674,39 @@ async def subscription_miniapp_submit(request: Request):
 async def miniapp_event(request: Request):
     from app.services.course_miniapp_analytics_service import ATTRIBUTED_CLIENT_EVENTS
 
+    if request.headers.get("X-HSK-Diagnostic") == "diag.v1":
+        from app.services.monitoring import catalog, miniapp as diagnostics
+        from app.services.monitoring.intake import IntakeRejected
+
+        if not diagnostics.enabled(settings):
+            return diagnostics.PAUSED
+        try:
+            payload = await read_bounded_json(request)
+        except IntakeRejected as exc:
+            return JSONResponse(status_code=413 if exc.code == "too_large" else 422,
+                                content={"ok": False, "error": exc.code})
+        if not isinstance(payload, dict) or payload.get("event") != "app_error" or payload.get("schema") != catalog.SCHEMA:
+            return JSONResponse(status_code=422, content={"ok": False, "error": "invalid_diagnostic_schema"})
+        telegram_id = extract_fresh_verified_webapp_user_id(
+            request.headers.get("X-Telegram-Init-Data", ""), settings.BOT_TOKEN, max_age_seconds=86400,
+        )
+        if not telegram_id:
+            return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+        try:
+            async with async_session_maker() as session:
+                return await diagnostics.record_client_batch(session, telegram_id=telegram_id,
+                                                             payload=payload, settings=settings)
+        except Exception:
+            logger.warning("Mini App diagnostic intake failed")
+            return JSONResponse(status_code=503, content={"ok": False, "error": "diagnostics_unavailable"})
+
     payload = await request.json()
+    if not isinstance(payload, dict):
+        return {"ok": False, "error": "invalid_event"}
     event = str(payload.get("event") or "").strip()
+    if event == "app_error" and payload.get("schema") == "diag.v1":
+        # A diagnostic envelope must never fall through to the legacy Message path.
+        return JSONResponse(status_code=422, content={"ok": False, "error": "diagnostic_transport_required"})
 
     telegram_id = extract_verified_webapp_user_id(
         request.headers.get("X-Telegram-Init-Data", ""),
@@ -6840,6 +6871,9 @@ async def miniapp_event(request: Request):
                 telegram_id=telegram_id,
                 payload=payload,
             )
+            if saved and getattr(settings, "MONITORING_MINIAPP_ADAPTER_ENABLED", False):
+                from app.services.monitoring.miniapp import record_legacy_onboarding
+                await record_legacy_onboarding(session, telegram_id=telegram_id, payload=payload, settings=settings)
             return {"ok": bool(saved)}
 
         service = CourseMiniAppResultService(session)

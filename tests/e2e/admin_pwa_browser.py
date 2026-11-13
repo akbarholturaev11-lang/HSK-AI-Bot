@@ -62,6 +62,8 @@ from app.admin_api.pwa_feedback_analytics import create_admin_pwa_feedback_analy
 from app.db.models.admin_pwa_command import AdminPwaCommandAudit
 from app.admin_api.pwa_inbox_triage import create_admin_pwa_inbox_triage_router
 from app.admin_api.pwa_inbox_attachments import create_admin_pwa_inbox_attachment_router
+from app.services.monitoring.intake import ingest, parse_batch
+from tests.monitoring_chain import client_event
 from tests.test_admin_pwa_payment_review import PaymentFixtures, COOKIE
 from tests.test_admin_pwa_webauthn_crypto_vectors import CRED_ID, HANDLE
 from tests.test_admin_pwa_receipts import png
@@ -517,11 +519,10 @@ async def browser_checks(output):
         await expect(page.locator('.analytics-panel',has=page.locator('h2',has_text=quality_title))).to_contain_text(quality_note)
         fresh_title=await page.evaluate("window.HSKAI_ADMIN_I18N.uz.analyticsFreshness")
         fresh=page.locator('.analytics-panel',has=page.locator('h2',has_text=fresh_title))
-        await expect(fresh.locator('tbody tr')).to_have_count(6)
-        updated=[await fresh.locator('tbody tr').nth(i).locator('td').nth(2).inner_text() for i in range(6)]
-        # Rows: Android, Telegram, PWA × learning, payments. The R1 Android start and
-        # the R2 PWA rows are verified learning, so only Android and PWA payments stay dashed.
-        assert [value=='—' for value in updated]==[False,True,False,False,False,True], updated
+        await expect(fresh.locator('tbody tr')).to_have_count(9)
+        updated=[await fresh.locator('tbody tr').nth(i).locator('td').nth(2).inner_text() for i in range(9)]
+        # Per platform: learning, payments, diagnostics. This fixture has no diagnostics.
+        assert [value=='—' for value in updated]==[False,True,True,False,False,True,False,True,True], updated
         fresh_text=await fresh.inner_text()
         for secret in ('2002','"client"','telegram_bot'):
             assert secret not in fresh_text, secret
@@ -1430,6 +1431,87 @@ async def access_grant_browser_checks(output):
     finally:await fixture.engine.dispose()
 
 
+async def diagnostic_browser_checks(output):
+    """Actual passkey-gated Inbox, reused Fixed action, and reopened copy."""
+    fixture = Fixture()
+    fixture.engine = create_async_engine('sqlite+aiosqlite:///:memory:', poolclass=StaticPool)
+    async with fixture.engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    fixture.sessions = async_sessionmaker(fixture.engine, expire_on_commit=False)
+    await fixture.seed_payment()
+    app = FastAPI()
+    common = dict(settings_obj=fixture.settings, session_factory=fixture.sessions)
+    for factory in (create_admin_pwa_bootstrap_router, create_admin_pwa_google_router,
+                    create_admin_pwa_passkey_login_router, create_admin_pwa_read_router,
+                    create_admin_pwa_inbox_triage_router):
+        app.include_router(factory(**common))
+    calls = []
+
+    async def serve(route):
+        request = route.request
+        assert request.url.startswith(ORIGIN + '/')
+        path = request.url.removeprefix(ORIGIN)
+        calls.append((path, request.post_data_json if request.method == 'POST' else None))
+        async with AsyncClient(transport=ASGITransport(app=app), base_url=ORIGIN) as client:
+            reply = await client.request(request.method, path, headers=await request.all_headers(),
+                                         content=request.post_data_buffer)
+        headers = dict(reply.headers)
+        headers.pop('content-length', None)
+        cookies = reply.headers.get_list('set-cookie')
+        if cookies:
+            headers['set-cookie'] = '\n'.join(cookies)
+        await route.fulfill(status=reply.status_code, headers=headers, body=reply.content)
+
+    async def occurrence():
+        raw = client_event('lessons', 'api_5xx', 'lesson_complete')
+        events, _ = parse_batch({'schema': 'diag.v1', 'events': [raw]}, platform='android')
+        async with fixture.sessions() as db, db.begin():
+            await ingest(db, owner_user_id=1, events=events)
+
+    try:
+        await occurrence()
+        async with async_playwright() as pw:
+            browser = await pw.chromium.launch()
+            context = await browser.new_context(viewport={'width':390,'height':844}, service_workers='block')
+            await context.route('**/*', serve)
+            page = await context.new_page()
+            errors, dialogs = [], []
+            page.on('pageerror', lambda error: errors.append(str(error)))
+            page.on('dialog', lambda dialog: (dialogs.append(dialog.type), asyncio.create_task(dialog.dismiss())))
+            await setup_fresh_login(context, page, fixture)
+            await page.goto(ORIGIN + '/admin/?inbox=diagnostic')
+            await authenticate_fresh_launch(page)
+            row = page.locator('[data-inbox-open^="diagnostic:"]')
+            await expect(row).to_have_count(1)
+            assert any(path.endswith('/inbox/list') and body['source'] == 'diagnostic' for path, body in calls)
+            await row.click()
+            await expect(page.locator('.inbox-details')).to_be_visible()
+            await expect(page.locator('#overlay button:visible')).to_have_count(2)
+            await page.locator('[data-inbox-fixed]').click()
+            await expect(page.locator('.saved-animation')).to_be_visible()
+            await expect(page.locator('#overlay')).to_have_count(0, timeout=6000)
+            assert not dialogs
+            resolves = [body for path, body in calls if path.endswith('/inbox/triage') and body['operation'] == 'resolve']
+            assert len(resolves) == 1 and 'fix_kind' not in resolves[0]
+            await occurrence()
+            for lang, label in (('uz','Тузатилган хато яна такрорланди'),
+                                ('ru','Исправленная ошибка повторилась'),
+                                ('tj','Хатои ислоҳшуда боз такрор шуд')):
+                await page.evaluate('(lang) => localStorage.setItem("hsk-admin-locale", lang)', lang)
+                await page.goto(ORIGIN + '/admin/?inbox=diagnostic')
+                await authenticate_fresh_launch(page)
+                await expect(row).to_contain_text(label)
+                await page.screenshot(path=str(output / f'diagnostic-list-{lang}.png'))
+                await row.click()
+                await expect(page.locator('.inbox-details')).to_contain_text(label)
+                await expect(page.locator('#overlay button:visible')).to_have_count(2)
+                await page.screenshot(path=str(output / f'diagnostic-detail-{lang}.png'))
+            assert not errors, errors
+            await browser.close()
+    finally:
+        await fixture.engine.dispose()
+
+
 async def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--output',default='/tmp/admin-pwa-browser')
@@ -1439,6 +1521,7 @@ async def main():
         await export_browser_checks(output)
         await access_grant_browser_checks(output)
         await attachment_browser_checks(output)
+        await diagnostic_browser_checks(output)
         await worker_checks(output)
 
 if __name__=='__main__':asyncio.run(main())

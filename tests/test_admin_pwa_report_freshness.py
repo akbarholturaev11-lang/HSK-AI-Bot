@@ -19,6 +19,8 @@ from app.db.base import Base
 from app.db.models.course_miniapp_event import CourseMiniAppEvent as Event
 from app.db.models.payment import Payment
 from app.db.models.user import User
+from app.services.monitoring.intake import ingest, ingest_server, parse_batch
+from tests.monitoring_chain import client_event
 
 URL = os.environ.get("ANALYTICS_TEST_DATABASE_URL", "")
 NOW = datetime.now(timezone.utc).replace(microsecond=0)
@@ -79,6 +81,12 @@ class ReportFreshnessTests(unittest.IsolatedAsyncioTestCase):
                 payment("desktop", ago(minutes=1), user_id=1),
             ])
             await db.commit()
+        async with self.sessions() as db, db.begin():
+            data = client_event("lessons", "js_uncaught", "course_v3", "iphone_pwa")
+            events, _ = parse_batch({"schema": "diag.v1", "events": [data]}, platform="iphone_pwa")
+            await ingest(db, owner_user_id=2, events=events, now=ago(hours=3))
+            await ingest_server(db, feature_code="lessons", failure_code="server_5xx",
+                                site_code="v3_pwa_map", platform="iphone_pwa", now=ago(minutes=1))
 
     async def asyncTearDown(self):
         async with self.engine.begin() as connection:
@@ -97,6 +105,8 @@ class ReportFreshnessTests(unittest.IsolatedAsyncioTestCase):
             ("android", "learning"): (ago(days=10), 0), ("android", "payments"): (ago(days=5), 0),
             ("telegram", "learning"): (ago(hours=1), 1), ("telegram", "payments"): (ago(hours=4), 1),
             ("iphone_pwa", "learning"): (ago(hours=2), 0), ("iphone_pwa", "payments"): (ago(days=1), 0),
+            ("android", "diagnostics"): (None, 0), ("telegram", "diagnostics"): (None, 0),
+            ("iphone_pwa", "diagnostics"): (ago(hours=3), 0),
         })
 
     async def test_a_platform_without_records_reports_none_not_zero_time(self):
@@ -124,7 +134,7 @@ class ReportFreshnessTests(unittest.IsolatedAsyncioTestCase):
                 db, analytics.AnalyticsRequest(section="report", platform="overall", period="weekly"), section="report")
         rows = report["metrics"]["platform_freshness"]
         self.assertEqual([(row["platform"], row["source"]) for row in rows],
-                         [(p, s) for p in ("android", "telegram", "iphone_pwa") for s in ("learning", "payments")])
+                         [(p, s) for p in ("android", "telegram", "iphone_pwa") for s in ("learning", "payments", "diagnostics")])
         self.assertEqual({key for row in rows for key in row}, {"platform", "source", "latest_at", "unresolved_owners"})
         encoded = json.dumps(rows)
         for secret in SECRETS:

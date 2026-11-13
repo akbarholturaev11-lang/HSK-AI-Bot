@@ -1,14 +1,14 @@
 """Server monitoring chain (task 1.3) on PostgreSQL.
 
-Backend reporter → PostgreSQL incident → proof row, through the shared helper
+Backend reporter → PostgreSQL incident → Admin Inbox, through the shared helper
 `tests/monitoring_chain.py::assert_monitoring_chain`:
 - an integration failure (`report_server_failure` at the Lava ledger site);
 - a learner route 5xx through the real `DiagnosticMiddleware`.
 
-Task 3.1 extends the helper with the Admin Inbox read. Run with
-MONITORING_TEST_DATABASE_URL or ANALYTICS_TEST_DATABASE_URL pointing at a
+Run with MONITORING_TEST_DATABASE_URL or ANALYTICS_TEST_DATABASE_URL pointing at a
 disposable `*_test` PostgreSQL database.
 """
+import asyncio
 import unittest
 from types import SimpleNamespace
 from unittest.mock import patch
@@ -40,7 +40,8 @@ class ServerMonitoringChainTests(unittest.IsolatedAsyncioTestCase):
             with patch.object(backend, "reporter", reporter):
                 incident = await assert_monitoring_chain(
                     self, platform="server", feature="checkout_payments", failure="provider_failed",
-                    site="lava_ledger", sessions=sessions, reporter=reporter, trigger=lava_failure)
+                    site="lava_ledger", sessions=sessions, reporter=reporter, trigger=lava_failure,
+                    inbox_route="/api/admin/v1/inbox/list")
             self.assertEqual(incident.severity, "critical")
 
     async def test_learner_route_5xx_reaches_postgres_through_the_middleware(self):
@@ -60,7 +61,25 @@ class ServerMonitoringChainTests(unittest.IsolatedAsyncioTestCase):
 
             await assert_monitoring_chain(
                 self, platform="server", feature="lessons", failure="server_5xx",
-                site="v3_lesson_complete", sessions=sessions, reporter=reporter, trigger=route_5xx)
+                site="v3_lesson_complete", sessions=sessions, reporter=reporter, trigger=route_5xx,
+                inbox_route="/api/admin/v1/inbox/list")
+
+    async def test_saturated_backend_writer_reports_its_drop_to_inbox(self):
+        async with pg_sessions(PG_URL) as sessions:
+            reporter = BackendReporter(session_factory=sessions, settings_obj=SimpleNamespace(MONITORING_MODE="all"),
+                                       concurrency=1, coalesce_seconds=0)
+
+            async def saturate_writer():
+                # Simulate an in-flight diagnostic write occupying the sole slot.
+                async with reporter._semaphore:
+                    reporter.report("lessons", "server_exception", "v3_lesson_start")
+                    await asyncio.gather(*tuple(reporter._tasks))
+                await reporter.flush_self_dropped()
+
+            await assert_monitoring_chain(
+                self, platform="server", feature="monitoring", failure="self_dropped", site="backend_writer",
+                sessions=sessions, reporter=reporter, trigger=saturate_writer,
+                inbox_route="/api/admin/v1/inbox/list")
 
 
 if __name__ == "__main__":

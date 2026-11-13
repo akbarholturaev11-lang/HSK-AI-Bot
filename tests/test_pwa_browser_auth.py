@@ -3440,8 +3440,9 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
                     )
                     self.assertIn(f'if(error&&error.message==="pwa_session_invalid"){sign_in};', html)
                     status = 'res.status' if name == "course-v3.html" else 'r.status'
+                    cleanup = 'if(window.HskDiag)HskDiag.logout(PWA_COURSE_USER_ID);' if name == "course-v3.html" else ''
                     self.assertIn(
-                        f'if({status}===401){{{sign_in};throw new Error("pwa_session_required")}}', html,
+                        f'if({status}===401){{{cleanup}{sign_in};throw new Error("pwa_session_required")}}', html,
                     )
                     if sign_in == 'practiceSignIn()':
                         self.assertIn('HskPwaPracticeBoot.signIn()', html)

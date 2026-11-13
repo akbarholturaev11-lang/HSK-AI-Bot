@@ -98,7 +98,7 @@ This is the only checklist for this work. Task 1.1 creates the single shared con
 
 ## 3. Admin Inbox and Apple Push
 
-- [ ] 3.1 Add the Inbox `diagnostic` source (D6):
+- [x] 3.1 Add the Inbox `diagnostic` source (D6):
   - projection, platform filter, affected state;
   - triage mapping, the resolve hook, and auto-reopen with a system audit row;
   - the D6 list row and drawer, with the existing "Тузатилди ✅" button (one tap, plain `resolve`, no prompt) and the "🔁 fixed error came back" line; strings in `localization/ui/*/miniapp.json` (`i18n_build_all_catalogs.py --write` and `--check`);
@@ -113,14 +113,14 @@ This is the only checklist for this work. Task 1.1 creates the single shared con
   - **Analytics:** `test_admin_pwa_report_freshness.py` covers the `diagnostics` rows; `test_admin_pwa_v10_regression.py` changes only the freshness shape.
   - **Browser:** Admin PWA Playwright at 390 px in three languages, with screenshots of the row, the drawer and the "came back" line; the contract tests show no new control.
   - **Registry:** the checker passes with the flipped entries.
-- [ ] 3.2 Add bounded push (D7):
+- [x] 3.2 Add bounded push (D7):
   - outbox and dispatcher allowlists, with the epoch key;
   - the `_relevant` `diagnostic` branch, and `kind: "reopened"` from `last_alert_reason`;
   - the alert decision in an intake savepoint;
   - per-incident cooldown and global cap, with reopen alerts exempt;
   - the `sw.js` labels for `diagnostic` and its `reopened` kind, and the `/admin/?inbox=diagnostic` link, applied after auth.
 
-  Set registry `mode` to `require_covered` in the same change.
+  Registry `mode` switches to `require_covered` as soon as the Inbox source exists (D10).
 
   Verify:
   - 100 identical critical events give at most one outbox row per device;
@@ -136,7 +136,7 @@ This is the only checklist for this work. Task 1.1 creates the single shared con
 
 ## 4. Mini App compatibility
 
-- [ ] 4.1 Add the additive Mini App adapter (D9, owner option A):
+- [x] 4.1 Add the additive Mini App adapter (D9, owner option A):
   - the `diag.v1` path to `ingest`;
   - the legacy onboarding mapping to `ingest`, in addition to today's `technical` path;
   - the `MONITORING_MINIAPP_ADAPTER_ENABLED` switch;

@@ -664,6 +664,8 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
             "Learning activity",
             "AI, images and speech",
             "Firebase Cloud Messaging",
+            "automatically send technical error reports",
+            "Account-linked reports are retained for up to 30 days",
             "30 days",
             "Approved payment and accounting records",
             'href="/account-deletion"',

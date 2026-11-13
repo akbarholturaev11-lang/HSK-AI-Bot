@@ -6,6 +6,7 @@ exist, as 0127 does for `technical`.
 """
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy.schema import conv
 
 revision = "0156_diagnostic_monitoring"
 down_revision = "0155_subscription_entry_client"
@@ -87,8 +88,13 @@ def upgrade():
     op.create_index("ix_diagnostic_receipts_received", "diagnostic_receipts", ["received_at"])
 
     for table, name in CHECKS:
-        op.drop_constraint(name, table, type_="check")
-        op.create_check_constraint(name, table, NEW_SOURCES)
+        _replace_source_check(table, name, NEW_SOURCES)
+    op.add_column("admin_pwa_push_outbox", sa.Column("diagnostic_kind", sa.String(16), nullable=True))
+    op.create_check_constraint(op.f("ck_admin_pwa_outbox_diagnostic_kind"), "admin_pwa_push_outbox",
+        "(source = 'diagnostic' AND diagnostic_kind IS NOT NULL AND diagnostic_kind IN ('new','escalated','reopened')) OR "
+        "(source <> 'diagnostic' AND diagnostic_kind IS NULL)")
+    op.create_index("ix_admin_pwa_outbox_diag_cap", "admin_pwa_push_outbox",
+                    ["source", "diagnostic_kind", "created_at"])
 
 
 def downgrade():
@@ -98,7 +104,30 @@ def downgrade():
                 f"SELECT EXISTS (SELECT 1 FROM {table} WHERE source = 'diagnostic')")).scalar_one():
             raise RuntimeError(f"Archive diagnostic rows in {table} before downgrade")
     for table, name in CHECKS:
-        op.drop_constraint(name, table, type_="check")
-        op.create_check_constraint(name, table, OLD_SOURCES)
+        _replace_source_check(table, name, OLD_SOURCES, restore=True)
+    op.drop_index("ix_admin_pwa_outbox_diag_cap", table_name="admin_pwa_push_outbox")
+    op.drop_constraint(op.f("ck_admin_pwa_outbox_diagnostic_kind"), "admin_pwa_push_outbox", type_="check")
+    op.drop_column("admin_pwa_push_outbox", "diagnostic_kind")
     op.drop_table("diagnostic_receipts")
     op.drop_table("diagnostic_incidents")
+
+
+def _replace_source_check(table, name, predicate, *, restore=False):
+    # The historical migration can run with or without Base's naming
+    # convention. Resolve only the two exact allowed names, then freeze it.
+    context = op.get_context()
+    legacy_name = context.dialect.identifier_preparer.truncate_and_render_constraint_name(
+        conv(f"ck_{table}_{name}"), _alembic_quote=False)
+    historical = legacy_name if context.opts.get("target_metadata") is not None else name
+    target = historical if restore else name
+    if context.as_sql:
+        op.drop_constraint(op.f(name if restore else historical), table, type_="check")
+        op.create_check_constraint(op.f(target), table, predicate)
+        return
+    bind = op.get_bind()
+    candidates = [row["name"] for row in sa.inspect(bind).get_check_constraints(table)
+                  if row["name"] in (name, legacy_name)]
+    if len(candidates) != 1:
+        raise RuntimeError(f"Expected one existing source CHECK on {table}")
+    op.drop_constraint(op.f(candidates[0]), table, type_="check")
+    op.create_check_constraint(op.f(target), table, predicate)

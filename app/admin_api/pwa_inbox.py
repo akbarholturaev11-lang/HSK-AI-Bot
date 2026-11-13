@@ -13,20 +13,22 @@ from app.db.models.admin_pwa_native_report import AdminPwaNativeReport
 from app.db.models.message import Message
 from app.db.models.admin_pwa_inbox_triage import AdminPwaInboxTriage
 from app.db.models.bot_feedback import BotFeedback
+from app.db.models.diagnostic import DiagnosticIncident, DiagnosticReceipt
 from app.db.models.payment import Payment
 from app.db.models.release_feedback import ReleaseFeedbackResponse
 from app.db.models.user import User
+from app.services.monitoring import catalog
 
-Source = Literal["bot", "release", "android", "payment", "technical"]
+Source = Literal["bot", "release", "android", "payment", "technical", "diagnostic"]
 RowId = Annotated[int, Field(strict=True, ge=1, le=2_147_483_647)]
-_RANK = {"technical": 5, "payment": 4, "android": 3, "release": 2, "bot": 1}
+_RANK = {"diagnostic": 0, "technical": 5, "payment": 4, "android": 3, "release": 2, "bot": 1}
 _MAX_MESSAGE = 2000
 
 
 class InboxCursor(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
     created_at: datetime
-    source: Literal["bot", "release", "android", "payment", "technical"]
+    source: Source
     source_id: RowId
     unread: bool = True
     important: bool = False
@@ -46,7 +48,8 @@ class InboxCursor(BaseModel):
 
 class InboxRequest(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
-    source: Literal["all", "bot", "release", "android", "payment", "technical"] = "all"
+    source: Source | Literal["all"] = "all"
+    platform: Literal["android", "iphone_pwa", "telegram", "server"] | None = None
     priority: Literal["all", "important"] = "all"
     status: Literal["all", "new", "read", "assigned", "resolved"] = "all"
     period: Literal["all_time", "weekly", "monthly"] = "all_time"
@@ -130,14 +133,14 @@ def _technical_explanation_code():
 
 
 
-def _before(query, timestamp, row_id, source, cursor):
+def _before(query, timestamp, row_id, source, cursor, *, importance=None):
     if cursor is None:
         return query
     # Keyset order: unread first, then automatic importance, then newest.
     # Derive priority only from server-owned source identity, never admin flags.
     unread = case((func.coalesce(AdminPwaInboxTriage.status, "new") == "new", 1), else_=0)
     u, priority = int(cursor.unread), int(cursor.important)
-    source_priority = int(_is_important(source))
+    source_priority = int(_is_important(source)) if importance is None else importance
     rank = _RANK[source]
     anchor_rank = _RANK[cursor.source]
     if rank > anchor_rank:
@@ -156,9 +159,10 @@ def _before(query, timestamp, row_id, source, cursor):
     ))
 
 
-def _source_order(query, timestamp, row_id, take):
+def _source_order(query, timestamp, row_id, take, *, importance=None):
     unread = case((func.coalesce(AdminPwaInboxTriage.status, "new") == "new", 1), else_=0)
-    return query.order_by(unread.desc(), timestamp.desc(), row_id.desc()).limit(take)
+    return query.order_by(unread.desc(), *((importance.desc(),) if importance is not None else ()),
+                          timestamp.desc(), row_id.desc()).limit(take)
 
 def _filters(query, request, timestamp, now):
     # Missing triage rows are new. Filter before taking each source's bounded
@@ -197,6 +201,10 @@ def source_eligible(source, now):
                     Message.content_type == "app_error_context",
                     Message.created_at >= now - timedelta(days=30),
                     Message.created_at <= now)
+    if source == "diagnostic":
+        return and_(DiagnosticIncident.occurrence_count > 0, DiagnosticIncident.last_seen_at <= now,
+                    or_(DiagnosticIncident.last_seen_at >= now - timedelta(days=catalog.RECEIPT_RETENTION_DAYS),
+                        func.coalesce(AdminPwaInboxTriage.status, "new") != "resolved"))
     raise ValueError("unsupported inbox source")
 
 
@@ -207,6 +215,7 @@ def source_timestamp(source):
         "android": AdminPwaNativeReport.created_at,
         "payment": Payment.submitted_at,
         "technical": Message.created_at,
+        "diagnostic": DiagnosticIncident.last_seen_at,
     }[source]
 
 
@@ -230,10 +239,13 @@ async def unified_inbox(db, request: InboxRequest):
     """
     now = datetime.now(timezone.utc)
     sources = tuple(source for source in _RANK if request.source in ("all", source)
-                    and (request.priority != "important" or _is_important(source)))
+                    and (request.priority != "important" or _is_important(source) or source == "diagnostic"))
     gathered = []
     take = request.limit + 1
     search_start = now - timedelta(days=30) if request.search is not None else None
+
+    if "diagnostic" in sources and request.user_id is None:
+        gathered.extend(await _diagnostic_rows(db, request, now, take))
 
     if "bot" in sources:
         stamp = func.coalesce(BotFeedback.completed_at, BotFeedback.created_at)
@@ -455,17 +467,18 @@ async def unified_inbox(db, request: InboxRequest):
             })
 
     gathered.sort(key=lambda r: (
-        int(_is_unread(r)), int(_is_important(r["source"])),
+        int(_is_unread(r)), int(r["triage_priority"] == "important"),
         r["created_at"], _RANK[r["source"]], r["source_id"],
     ), reverse=True)
     page = gathered[:request.limit]
+    await _diagnostic_impact(db, page, now)
     next_before = None
     if len(gathered) > request.limit:
         last = page[-1]
         next_before = {"created_at": last["created_at"].isoformat(),
                        "source": last["source"], "source_id": last["source_id"],
                        "unread": _is_unread(last),
-                       "important": _is_important(last["source"])}
+                       "important": last["triage_priority"] == "important"}
     for row in page:
         row["created_at"] = row["created_at"].isoformat()
     return {
@@ -477,6 +490,69 @@ async def unified_inbox(db, request: InboxRequest):
         "historical_android_reports_complete": False,
         "history_note": "Android reports previously sent only to Telegram cannot be reconstructed",
     }
+
+
+def _iso(value):
+    return _utc(value).isoformat() if value else None
+
+
+async def _diagnostic_rows(db, request, now, take):
+    incident, triage = DiagnosticIncident, AdminPwaInboxTriage
+    important = case((incident.severity.in_(("critical", "high")), 1), else_=0)
+    stamp = incident.last_seen_at
+    query = select(
+        incident.id, incident.platform, incident.feature_code, incident.failure_code, incident.site_code,
+        incident.severity, incident.first_version, incident.last_version, incident.first_seen_at, stamp,
+        incident.occurrence_count, incident.refused_count, incident.reopened_at, incident.reopened_version,
+        triage.status, triage.revision, triage.resolved_at,
+    ).outerjoin(triage, and_(triage.source == "diagnostic", triage.source_id == incident.id))
+    query = query.where(source_eligible("diagnostic", now))
+    if request.platform:
+        query = query.where(incident.platform == request.platform)
+    if request.priority == "important":
+        query = query.where(important == 1)
+    if request.search:
+        query = query.where(or_(*(_literal_contains(column, request.search) for column in (
+            incident.feature_code, incident.failure_code, incident.site_code))))
+    query = _filters(query, request, stamp, now)
+    query = _before(query, stamp, incident.id, "diagnostic", request.before, importance=important)
+    rows = (await db.execute(_source_order(query, stamp, incident.id, take, importance=important))).all()
+    return [{
+        "source": "diagnostic", "source_id": row.id, "created_at": _utc(row.last_seen_at),
+        "platform": row.platform, "feature_code": row.feature_code, "failure_code": row.failure_code,
+        "explanation_key": catalog.FAILURES.get(row.failure_code, ("normal", "diagFailureUnknown"))[1],
+        "severity": row.severity, "first_version": row.first_version, "last_version": row.last_version,
+        "first_seen_at": _iso(row.first_seen_at), "last_seen_at": _iso(row.last_seen_at),
+        "occurrences": row.occurrence_count, "reopened_at": _iso(row.reopened_at),
+        "reopened_version": row.reopened_version, "triage_status": row.status or "new",
+        "triage_revision": row.revision or 0, "triage_resolved_at": _iso(row.resolved_at),
+        "triage_priority": "important" if row.severity in ("critical", "high") else "normal",
+        "_refused": row.refused_count,
+    } for row in rows]
+
+
+async def _diagnostic_impact(db, page, now):
+    items = {item["source_id"]: item for item in page if item["source"] == "diagnostic"}
+    if not items:
+        return
+    receipt = DiagnosticReceipt
+    cutoff = now - timedelta(days=catalog.RECEIPT_RETENTION_DAYS)
+    rows = (await db.execute(select(
+        receipt.incident_id, func.count(receipt.user_id.distinct()),
+        func.max(case((receipt.channel == "play", 1), else_=0)),
+        func.max(case((receipt.channel == "direct", 1), else_=0)),
+    ).where(receipt.incident_id.in_(items), receipt.received_at >= cutoff,
+            receipt.received_at <= now).group_by(receipt.incident_id))).all()
+    by_id = {row[0]: row[1:] for row in rows}
+    for source_id, item in items.items():
+        count, play, direct = by_id.get(source_id, (0, 0, 0))
+        refused = item.pop("_refused")
+        server_only = item["failure_code"] in catalog.SERVER_FAILURES
+        partial = refused > 0 or item["first_seen_at"] < cutoff.isoformat()
+        item["affected_accounts"] = None if server_only or (partial and not count) else count
+        item["affected_state"] = ("unknown" if server_only or (partial and not count) else
+                                  "partial" if partial else "within_retention")
+        item["channels"] = [label for label, present in (("play", play), ("direct", direct)) if present]
 
 
 async def inbox_feedback_detail(db, request: InboxFeedbackDetailRequest):
@@ -561,7 +637,7 @@ async def unread_inbox(db, request: InboxUnreadRequest):
     found = 0
     for name, model in (("bot", BotFeedback), ("release", ReleaseFeedbackResponse),
                         ("android", AdminPwaNativeReport), ("payment", Payment),
-                        ("technical", Message)):
+                        ("technical", Message), ("diagnostic", DiagnosticIncident)):
         remaining = maximum - found
         if remaining <= 0:
             break
@@ -572,8 +648,7 @@ async def unread_inbox(db, request: InboxUnreadRequest):
                     AdminPwaInboxTriage.status == "new"))
         query = query.where(source_eligible(name, now))
         # The private technical feed uses its narrow, partial timestamp index.
-        ordering = ((Message.created_at.desc(), Message.id.desc()) if name == "technical"
-                    else (model.id.desc(),))
+        ordering = (source_timestamp(name).desc(), model.id.desc()) if name in ("technical", "diagnostic") else (model.id.desc(),)
         ids = (await db.execute(query.order_by(*ordering).limit(remaining))).all()
         found += len(ids)
     return {"unread_count": min(found, 99), "capped": found >= maximum,

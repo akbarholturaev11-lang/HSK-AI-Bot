@@ -4,6 +4,8 @@ For each platform and stored source: the latest record and how many records
 have no resolvable canonical owner. Counts and timestamps only; no identifier
 or payload leaves this module.
 """
+from datetime import timedelta
+
 from sqlalchemy import and_, case, false, func, or_, select
 
 from app.admin_api.pwa_analytics_course_platform import (
@@ -11,8 +13,10 @@ from app.admin_api.pwa_analytics_course_platform import (
 from app.admin_api.pwa_analytics_finance import PAYMENT_PLATFORM_SOURCES
 from app.admin_api.pwa_analytics_platforms import PWA_MAP_OPEN_PREFIX
 from app.db.models.course_miniapp_event import CourseMiniAppEvent as Event
+from app.db.models.diagnostic import DiagnosticIncident, DiagnosticReceipt
 from app.db.models.payment import Payment
 from app.db.models.user import User
+from app.services.monitoring.catalog import RECEIPT_RETENTION_DAYS
 
 PLATFORMS = ('android', 'telegram', 'iphone_pwa')
 
@@ -65,9 +69,17 @@ async def platform_freshness(db, *, now):
     learning = await _grouped(db, predicates, Event.created_at, Event.user_id, Event.telegram_id, now=now)
     payments = await _grouped(db, {key: Payment.source.in_(sources) for key, sources in PAYMENT_PLATFORM_SOURCES.items()},
         Payment.submitted_at, Payment.user_id, Payment.user_telegram_id, now=now)
+    diagnostics = {}
+    for platform in PLATFORMS:
+        latest = await db.scalar(select(DiagnosticReceipt.received_at).join(
+            DiagnosticIncident, DiagnosticIncident.id == DiagnosticReceipt.incident_id,
+        ).where(DiagnosticIncident.platform == platform, DiagnosticReceipt.user_id.is_not(None),
+                DiagnosticReceipt.received_at.between(now - timedelta(days=RECEIPT_RETENTION_DAYS), now),
+        ).order_by(DiagnosticReceipt.received_at.desc()).limit(1))
+        diagnostics[platform] = (latest, 0)
     result = []
     for platform in PLATFORMS:
-        for source, values in (('learning', learning), ('payments', payments)):
+        for source, values in (('learning', learning), ('payments', payments), ('diagnostics', diagnostics)):
             latest, unresolved = values.get(platform, (None, 0))
             result.append({'platform': platform, 'source': source,
                            'latest_at': latest.isoformat() if latest else None, 'unresolved_owners': unresolved})

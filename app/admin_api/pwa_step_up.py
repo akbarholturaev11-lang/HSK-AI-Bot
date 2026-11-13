@@ -91,7 +91,7 @@ def _session_digest(cookie: str) -> str:
     return hashlib.sha256(cookie.encode("ascii")).hexdigest()
 
 
-async def _locked_session(db: Any, cookie: str, settings_obj: Any, stamp: datetime):
+async def _locked_session(db: Any, cookie: str, settings_obj: Any, stamp: datetime, *, allow_owner_fk=False):
     if not isinstance(cookie, str) or not _COOKIE_PATTERN.fullmatch(cookie):
         return None
     row = (await db.execute(select(AdminPwaSession).where(
@@ -102,7 +102,7 @@ async def _locked_session(db: Any, cookie: str, settings_obj: Any, stamp: dateti
         return None
     user = (await db.execute(select(User).where(
         User.id == row.user_id,
-    ).with_for_update().execution_options(populate_existing=True))).scalar_one_or_none()
+    ).with_for_update(key_share=allow_owner_fk).execution_options(populate_existing=True))).scalar_one_or_none()
     if not _authorized_admin(user, settings_obj):
         return None
     return row, user

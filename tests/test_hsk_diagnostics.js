@@ -10,12 +10,13 @@ const KEY = "hsk-diag-v1";
 const turn = () => new Promise(setImmediate);
 const json = (status, body) => ({ status, ok: status >= 200 && status < 300, json: async () => body });
 
-function browser({ storage = new Map(), path = "/iphone-pwa/course", online = true } = {}) {
+function browser({ storage = new Map(), path = "/iphone-pwa/course", online = true, initData = "" } = {}) {
   const events = new Map(), timers = new Map(), posts = [];
   let now = Date.UTC(2026, 10, 13), actor = 1, answer = json(200, { accepted: 1 }), sequence = 0, calls = 0;
   const window = {
     location: { pathname: path, href: "https://hsk.test" + path },
     navigator: { onLine: online },
+    Telegram: { WebApp: { initData } },
     localStorage: { getItem: (key) => storage.get(key), setItem: (key, value) => storage.set(key, value) },
     document: {
       querySelectorAll: () => [{ getAttribute: () => "/asset.js?v=20261113-0123456789ab" }],
@@ -26,8 +27,9 @@ function browser({ storage = new Map(), path = "/iphone-pwa/course", online = tr
     async fetch(url, options) {
       calls++;
       if (url === "/api/v3/pwa-auth/session") return actor ? json(200, { ok: true, user_id: actor, csrf: "csrf-" + actor }) : json(401, {});
-      assert.equal(url, "/api/v3/pwa/diagnostics");
-      posts.push({ header: options.headers["X-HSK-PWA-CSRF"], wire: JSON.parse(options.body) });
+      assert.ok(["/api/v3/pwa/diagnostics", "/api/miniapp/event"].includes(url));
+      posts.push({ header: options.headers["X-HSK-PWA-CSRF"] || options.headers["X-Telegram-Init-Data"],
+        wire: JSON.parse(options.body) });
       return answer;
     },
   };
@@ -121,9 +123,39 @@ async function main() {
   limit.diag.owner(1);
   for (let i = 0; i < 12; i++) limit.diag.report("lessons", "load_failed", "site_" + i, 500);
   assert.equal(limit.queue().events.length, 10, "one document cannot flood the queue");
+  const signals = browser({ online: false });
+  signals.diag.owner(1);
+  // Exercise the fixed tuples used by the priority call sites.
+  for (const [feature, failure, site] of [
+    ["auth_session", "restore_failed", "session_restore"],
+    ["onboarding_activation", "save_unconfirmed", "li_onboarding"],
+    ["practice", "save_unconfirmed", "practice"],
+    ["checkout_payments", "save_unconfirmed", "payment"],
+    ["pwa_pro_checkout", "save_unconfirmed", "payment"],
+    ["distribution_handoff", "restore_failed", "pwa_handoff"],
+  ]) {
+    assert.equal(signals.diag.report(feature, failure, site, 502), true);
+    const event = signals.queue().events.at(-1).event;
+    assert.deepEqual([event.feature_code, event.failure_code, event.site_code], [feature, failure, site]);
+  }
   const telegram = browser({ path: "/course-v3.html" });
   assert.equal(telegram.diag.report("lessons", "load_failed", "lesson_open", 500), false);
   assert.equal(telegram.calls(), 0);
+  const miniApp = browser({ path: "/course-v3.html", initData: "synthetic-auth-only" });
+  miniApp.response(json(200, { ok: true, accepted: 1 }));
+  miniApp.events.get("error")({ error: new ReferenceError("private message") });
+  miniApp.diag.flush();
+  await turn();
+  assert.equal(miniApp.posts[0].header, "synthetic-auth-only");
+  assert.equal(miniApp.posts[0].wire.event, "app_error");
+  assert.equal(miniApp.posts[0].wire.events[0].site_code, "course_v3");
+  assert.equal(miniApp.storage.has(KEY), false, "no Telegram owner or queue is persisted");
+  assert.ok(!JSON.stringify(miniApp.posts[0].wire).includes("synthetic-auth-only"));
+  miniApp.diag.report("voice_practice", "load_failed", "voice");
+  miniApp.window.Telegram.WebApp.initData = "different-launch";
+  miniApp.diag.flush();
+  await turn();
+  assert.equal(miniApp.posts.length, 1, "do not deliver after Telegram proof changes");
 
   const live = browser({ path: "/iphone-pwa/practice/voice", online: false });
   live.diag.owner(1);

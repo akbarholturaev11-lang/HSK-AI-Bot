@@ -61,7 +61,8 @@ class ParseTests(unittest.TestCase):
     def test_values_are_bounded(self):
         bad = (dict(app_version="1.0 <script>"), dict(build=-1), dict(build="40"), dict(channel="beta"),
                dict(category="free"), dict(event_id="not-a-uuid"), dict(platform="iphone_pwa"),
-               dict(outcome="crashed"), dict(failure_code="server_5xx"))
+               dict(outcome="crashed"), dict(failure_code="server_5xx"),
+               dict(feature_code=[]), dict(site_code={}), dict(category=[]))
         for override in bad:
             with self.subTest(override=override):
                 events, rejected = parse_batch(batch(event_body(**override)), platform="android", now=NOW)
@@ -199,6 +200,16 @@ class PostgresIntakeTests(unittest.IsolatedAsyncioTestCase):
             async with sessions() as db:
                 incidents = (await db.execute(select(DiagnosticIncident))).scalars().all()
             self.assertEqual([row.occurrence_count for row in incidents], [2])
+
+    async def test_retry_at_the_hourly_cap_never_inflates_refused_counts(self):
+        async with pg_sessions(PG_URL) as sessions:
+            initial = event_body()
+            await self.send(sessions, 1, initial)
+            for n in range(1, catalog.HOURLY_CAP_PER_ACCOUNT, catalog.MAX_EVENTS_PER_BATCH):
+                count = min(catalog.MAX_EVENTS_PER_BATCH, catalog.HOURLY_CAP_PER_ACCOUNT - n)
+                await self.send(sessions, 1, *[event_body() for _ in range(count)])
+            result = await self.send(sessions, 1, initial)
+            self.assertEqual((result.duplicates, result.refused), (1, 0))
 
     async def test_cap_holds_under_parallel_requests(self):
         async with pg_sessions(PG_URL) as sessions:

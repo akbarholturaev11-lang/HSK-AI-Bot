@@ -31,13 +31,14 @@ async def read_bounded_json(request: Request, limit=catalog.MAX_BODY_BYTES):
     if request.headers.get("Content-Type", "").split(";")[0].strip().lower() != "application/json":
         raise IntakeRejected("invalid_body")
     declared = request.headers.get("Content-Length", "").strip()
-    if declared and (not declared.isdigit() or int(declared) > limit):
+    if declared and (not declared.isascii() or not declared.isdecimal() or
+                     len(declared) > len(str(limit)) or int(declared) > limit):
         raise IntakeRejected("too_large")
     body = bytearray()
     async for chunk in request.stream():
-        body.extend(chunk)
-        if len(body) > limit:
+        if len(body) + len(chunk) > limit:
             raise IntakeRejected("too_large")
+        body.extend(chunk)
     try:
         return json.loads(bytes(body))
     except (ValueError, UnicodeDecodeError):
@@ -69,7 +70,8 @@ def create_monitoring_intake_router(*, session_factory, settings_obj) -> APIRout
                     raise DesktopAuthError("user_blocked", status_code=403)
                 events, rejected = parse_batch(body, platform="android")
                 result = await ingest(session, owner_user_id=context.user.id, events=events, mode=mode,
-                                      owner_admitted=is_owner_account(settings_obj, context.user.telegram_id))
+                                      owner_admitted=is_owner_account(settings_obj, context.user.telegram_id),
+                                      settings_obj=settings_obj)
                 await session.commit()
             result.rejected += rejected
             return JSONResponse(result.response(), headers=_NO_STORE)
@@ -78,7 +80,7 @@ def create_monitoring_intake_router(*, session_factory, settings_obj) -> APIRout
         except DesktopAuthError as exc:
             return auth_error_response(exc)
         except Exception:
-            logger.exception("Android diagnostic intake failed")
+            logger.warning("Android diagnostic intake failed")
             return auth_error_response(DesktopAuthError("diagnostics_unavailable", status_code=503))
 
     @router.post("/api/v3/pwa/diagnostics")
@@ -97,7 +99,8 @@ def create_monitoring_intake_router(*, session_factory, settings_obj) -> APIRout
                     request.cookies.get(PWA_SESSION_COOKIE), request.headers.get("X-HSK-PWA-CSRF"))
                 events, rejected = parse_batch(body, platform="iphone_pwa")
                 result = await ingest(session, owner_user_id=user.id, events=events, mode=mode,
-                                      owner_admitted=is_owner_account(settings_obj, user.telegram_id))
+                                      owner_admitted=is_owner_account(settings_obj, user.telegram_id),
+                                      settings_obj=settings_obj)
                 await session.commit()
             result.rejected += rejected
             return JSONResponse(result.response(), headers=_NO_STORE)
@@ -106,7 +109,7 @@ def create_monitoring_intake_router(*, session_factory, settings_obj) -> APIRout
         except PwaAuthError as exc:
             return JSONResponse({"ok": False, "error": exc.code}, status_code=exc.status_code, headers=_NO_STORE)
         except Exception:
-            logger.exception("PWA diagnostic intake failed")
+            logger.warning("PWA diagnostic intake failed")
             return JSONResponse({"ok": False, "error": "diagnostics_unavailable"}, status_code=503,
                                 headers=_NO_STORE)
 

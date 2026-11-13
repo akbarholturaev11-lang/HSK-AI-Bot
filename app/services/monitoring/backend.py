@@ -61,7 +61,13 @@ class BackendReporter:
                 return
             key = (platform, feature_code, failure_code, site_code)
             if key in self._pending:
-                self._pending[key] += 1
+                if self._pending[key] < 10_000:
+                    self._pending[key] += 1
+                else:
+                    self.dropped += 1
+                return
+            if len(self._pending) >= catalog.BACKEND_PENDING_FINGERPRINTS:
+                self.dropped += 1
                 return
             self._pending[key] = 1
             task = asyncio.get_running_loop().create_task(self._flush_later(key))
@@ -90,7 +96,8 @@ class BackendReporter:
             async with self.session_factory() as session:
                 async with session.begin():
                     await ingest_server(session, feature_code=feature, failure_code=failure, site_code=site,
-                                        platform=platform, occurrences=count, mode=self._mode())
+                                        platform=platform, occurrences=count, mode=self._mode(),
+                                        settings_obj=self.settings_obj)
         except Exception:  # noqa: BLE001 - counted, never re-reported in a loop
             self.dropped += count
             logger.warning("diagnostic backend write failed")
@@ -148,6 +155,8 @@ class DiagnosticMiddleware:
         try:
             route = scope.get("route")
             path = getattr(route, "path", None) or scope.get("path", "")
+            if path in ("/api/v3/android/diagnostics", "/api/v3/pwa/diagnostics"):
+                return  # A reporter must not report a failure of its own intake.
             mapped = catalog.ROUTE_MAP.get(path)
             if mapped is None:
                 return

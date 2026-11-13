@@ -809,9 +809,9 @@
     {"section": "report", "key": "platform_counts_overlap", "kind": "metadata", "filters": ["overall", "android", "telegram", "macos", "windows"]},
     {"section": "report", "key": "platform_freshness", "kind": "metric", "filters": ["overall", "android", "telegram", "macos", "windows"],
       "platforms": {
-        "android": {"status": "not_applicable", "reason": "D7: one global list with Android, Telegram and PWA rows (verified A1/A8 and route-set client signals; payments.source), returned unchanged under every filter."},
-        "telegram": {"status": "not_applicable", "reason": "D7: one global list with Android, Telegram and PWA rows (route-set client key; payments.source miniapp/telegram_bot), returned unchanged under every filter."},
-        "iphone_pwa": {"status": "not_applicable", "reason": "D7: one global list with Android, Telegram and PWA rows (A4 map opens and route-set client key; payments.source iphone_pwa/pwa); the Report has no PWA filter."},
+        "android": {"status": "not_applicable", "reason": "D7: one global list with Android, Telegram and PWA rows (verified A1/A8 and route-set client signals; payments.source), with verified diagnostic-receipt freshness; returned unchanged under every filter."},
+        "telegram": {"status": "not_applicable", "reason": "D7: one global list with Android, Telegram and PWA rows (route-set client key; payments.source miniapp/telegram_bot), with verified diagnostic-receipt freshness; returned unchanged under every filter."},
+        "iphone_pwa": {"status": "not_applicable", "reason": "D7: one global list with Android, Telegram and PWA rows (A4 map opens and route-set client key; payments.source iphone_pwa/pwa); and verified diagnostic-receipt freshness; the Report has no PWA filter."},
         "macos": {"status": "not_instrumented", "reason": "No Desktop freshness rows; Desktop freeze."},
         "windows": {"status": "not_instrumented", "reason": "No Desktop freshness rows; Desktop freeze."}
       }
@@ -1985,141 +1985,146 @@
       ]
     }
   ],
-  "exemptions": [],
+  "exemptions": [
+    {
+      "path": "app/main.py",
+      "reason": "The Mini App app_error handler adds a content-free diagnostic path. Existing signed lesson, activity and conversion event writers are unchanged; the Telegram diagnostic chain verifies no course or conversion KPI writes."
+    }
+  ],
   "monitoring": {
-    "mode": "declare",
+    "mode": "require_covered",
     "features": [
       {"id": "app_shell", "platforms": {
-        "android": {"status": "partial", "reporter": "android/app/src/main/java/com/pomp/hskai/core/diagnostics/DiagnosticReporter.kt", "reason": "Crash handler, exit reasons (crash, native crash, ANR) and the Profile tab; Admin consumer pending (task 3.1)."},
+        "android": {"status": "partial", "reporter": "android/app/src/main/java/com/pomp/hskai/core/diagnostics/DiagnosticReporter.kt", "reason": "Crash handler, exit reasons (crash, native crash, ANR) and the Profile tab; Priority failure-to-Inbox chain evidence pending."},
         "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Priority failure-to-Inbox chain evidence pending."}
       }},
       {"id": "assessments", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter records crashes by tab only; no tagged calls for this feature yet."},
-        "iphone_pwa": {"status": "partial", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "reason": "Exam load/save and JS errors; Admin consumer pending (task 3.1)."},
+        "iphone_pwa": {"status": "partial", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "reason": "Exam load/save and JS errors; Priority failure-to-Inbox chain evidence pending."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Priority failure-to-Inbox chain evidence pending."}
       }},
       {"id": "auth_session", "platforms": {
-        "android": {"status": "partial", "reporter": "android/app/src/main/java/com/pomp/hskai/core/diagnostics/DiagnosticReporter.kt", "reason": "Tagged sign-in and session-restore calls (5xx, decode); Admin consumer pending (task 3.1)."},
-        "iphone_pwa": {"status": "partial", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "reason": "Sign-in and session restore; Admin consumer pending (task 3.1)."},
+        "android": {"status": "covered", "reporter": "android/app/src/main/java/com/pomp/hskai/core/diagnostics/DiagnosticReporter.kt", "client_test": "android/app/src/test/java/com/pomp/hskai/core/diagnostics/ApiCallDiagnosticsTest.kt", "chain_test": "tests/test_monitoring_android_chain.py::AndroidMonitoringChainTests::test_android_api_failures_reach_inbox"},
+        "iphone_pwa": {"status": "covered", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "client_test": "tests/test_hsk_diagnostics.js", "chain_test": "tests/test_monitoring_pwa_chain.py::PwaMonitoringChainTests::test_pwa_priority_failures_reach_inbox_as_verified_browser_owner"},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Priority failure-to-Inbox chain evidence pending."}
       }},
       {"id": "chat_ai", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter records crashes by tab only; no tagged calls for this feature yet."},
         "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Priority failure-to-Inbox chain evidence pending."}
       }},
       {"id": "checkout_payments", "platforms": {
-        "android": {"status": "partial", "reporter": "android/app/src/main/java/com/pomp/hskai/core/diagnostics/DiagnosticReporter.kt", "reason": "Tagged checkout and Lava calls (Direct build); Admin consumer pending (task 3.1)."},
-        "iphone_pwa": {"status": "partial", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "reason": "Checkout and payment status; Admin consumer pending (task 3.1)."},
+        "android": {"status": "covered", "reporter": "android/app/src/main/java/com/pomp/hskai/core/diagnostics/DiagnosticReporter.kt", "client_test": "android/app/src/test/java/com/pomp/hskai/core/diagnostics/ApiCallDiagnosticsTest.kt", "chain_test": "tests/test_monitoring_android_chain.py::AndroidMonitoringChainTests::test_android_api_failures_reach_inbox"},
+        "iphone_pwa": {"status": "covered", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "client_test": "tests/test_hsk_diagnostics.js", "chain_test": "tests/test_monitoring_pwa_chain.py::PwaMonitoringChainTests::test_pwa_priority_failures_reach_inbox_as_verified_browser_owner"},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
+        "server": {"status": "covered", "reporter": "app/services/monitoring/backend.py", "chain_test": "tests/test_monitoring_server_chain.py::ServerMonitoringChainTests::test_lava_integration_failure_reaches_postgres"}
       }},
       {"id": "client_activity", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter records crashes by tab only; no tagged calls for this feature yet."},
         "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Priority failure-to-Inbox chain evidence pending."}
       }},
       {"id": "course_ads", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter records crashes by tab only; no tagged calls for this feature yet."},
         "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Priority failure-to-Inbox chain evidence pending."}
       }},
       {"id": "course_track_selection", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter records crashes by tab only; no tagged calls for this feature yet."},
         "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Priority failure-to-Inbox chain evidence pending."}
       }},
       {"id": "distribution_handoff", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter records crashes by tab only; no tagged calls for this feature yet."},
-        "iphone_pwa": {"status": "partial", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "reason": "Browser handoff and session restore; Admin consumer pending (task 3.1)."},
+        "iphone_pwa": {"status": "covered", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "client_test": "tests/test_hsk_diagnostics.js", "chain_test": "tests/test_monitoring_pwa_chain.py::PwaMonitoringChainTests::test_pwa_priority_failures_reach_inbox_as_verified_browser_owner"},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Priority failure-to-Inbox chain evidence pending."}
       }},
       {"id": "feedback", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter records crashes by tab only; no tagged calls for this feature yet."},
         "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Priority failure-to-Inbox chain evidence pending."}
       }},
       {"id": "foundation", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter records crashes by tab only; no tagged calls for this feature yet."},
         "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Priority failure-to-Inbox chain evidence pending."}
       }},
       {"id": "learning_rewards", "platforms": {
-        "android": {"status": "partial", "reporter": "android/app/src/main/java/com/pomp/hskai/core/diagnostics/DiagnosticReporter.kt", "reason": "Rating-tab crashes; Admin consumer pending (task 3.1)."},
+        "android": {"status": "partial", "reporter": "android/app/src/main/java/com/pomp/hskai/core/diagnostics/DiagnosticReporter.kt", "reason": "Rating-tab crashes; Priority failure-to-Inbox chain evidence pending."},
         "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Priority failure-to-Inbox chain evidence pending."}
       }},
       {"id": "lessons", "platforms": {
-        "android": {"status": "partial", "reporter": "android/app/src/main/java/com/pomp/hskai/core/diagnostics/DiagnosticReporter.kt", "reason": "Tagged course map, lesson open/unlock and completion calls; Course-tab crashes; Admin consumer pending (task 3.1)."},
-        "iphone_pwa": {"status": "partial", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "reason": "Course JS errors, map load, lesson open and save; Admin consumer pending (task 3.1)."},
-        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
+        "android": {"status": "covered", "reporter": "android/app/src/main/java/com/pomp/hskai/core/diagnostics/DiagnosticReporter.kt", "client_test": "android/app/src/test/java/com/pomp/hskai/core/diagnostics/ApiCallDiagnosticsTest.kt", "chain_test": "tests/test_monitoring_android_chain.py::AndroidMonitoringChainTests::test_android_api_failures_reach_inbox"},
+        "iphone_pwa": {"status": "covered", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "client_test": "tests/test_hsk_diagnostics.js", "chain_test": "tests/test_monitoring_pwa_chain.py::PwaMonitoringChainTests::test_pwa_priority_failures_reach_inbox_as_verified_browser_owner"},
+        "telegram": {"status": "covered", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "client_test": "tests/test_hsk_diagnostics.js", "chain_test": "tests/test_monitoring_telegram_chain.py::TelegramMonitoringChainTests::test_signed_web_report_reaches_inbox_without_a_message_or_kpi_event"},
+        "server": {"status": "covered", "reporter": "app/services/monitoring/backend.py", "chain_test": "tests/test_monitoring_server_chain.py::ServerMonitoringChainTests::test_learner_route_5xx_reaches_postgres_through_the_middleware"}
       }},
       {"id": "mistake_review", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter records crashes by tab only; no tagged calls for this feature yet."},
-        "iphone_pwa": {"status": "partial", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "reason": "Mistake review and JS errors; Admin consumer pending (task 3.1)."},
+        "iphone_pwa": {"status": "partial", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "reason": "Mistake review and JS errors; Priority failure-to-Inbox chain evidence pending."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Priority failure-to-Inbox chain evidence pending."}
       }},
       {"id": "monitoring", "platforms": {
-        "android": {"status": "partial", "reporter": "android/app/src/main/java/com/pomp/hskai/core/diagnostics/DiagnosticReporter.kt", "reason": "Queue drops reported as one queue_dropped event; Admin consumer pending (task 3.1)."},
-        "iphone_pwa": {"status": "partial", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "reason": "Queue drop self-check; Admin consumer pending (task 3.1)."},
+        "android": {"status": "partial", "reporter": "android/app/src/main/java/com/pomp/hskai/core/diagnostics/DiagnosticReporter.kt", "reason": "Queue drops reported as one queue_dropped event; Priority failure-to-Inbox chain evidence pending."},
+        "iphone_pwa": {"status": "partial", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "reason": "Queue drop self-check; Priority failure-to-Inbox chain evidence pending."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
+        "server": {"status": "covered", "reporter": "app/services/monitoring/backend.py", "chain_test": "tests/test_monitoring_server_chain.py::ServerMonitoringChainTests::test_saturated_backend_writer_reports_its_drop_to_inbox"}
       }},
       {"id": "notifications", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter records crashes by tab only; no tagged calls for this feature yet."},
         "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Priority failure-to-Inbox chain evidence pending."}
       }},
       {"id": "onboarding_activation", "platforms": {
-        "android": {"status": "partial", "reporter": "android/app/src/main/java/com/pomp/hskai/core/diagnostics/DiagnosticReporter.kt", "reason": "Tagged onboarding calls (5xx, decode); Admin consumer pending (task 3.1)."},
-        "iphone_pwa": {"status": "partial", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "reason": "Onboarding save and JS errors; Admin consumer pending (task 3.1)."},
+        "android": {"status": "covered", "reporter": "android/app/src/main/java/com/pomp/hskai/core/diagnostics/DiagnosticReporter.kt", "client_test": "android/app/src/test/java/com/pomp/hskai/core/diagnostics/ApiCallDiagnosticsTest.kt", "chain_test": "tests/test_monitoring_android_chain.py::AndroidMonitoringChainTests::test_android_api_failures_reach_inbox"},
+        "iphone_pwa": {"status": "covered", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "client_test": "tests/test_hsk_diagnostics.js", "chain_test": "tests/test_monitoring_pwa_chain.py::PwaMonitoringChainTests::test_pwa_priority_failures_reach_inbox_as_verified_browser_owner"},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Priority failure-to-Inbox chain evidence pending."}
       }},
       {"id": "practice", "platforms": {
-        "android": {"status": "partial", "reporter": "android/app/src/main/java/com/pomp/hskai/core/diagnostics/DiagnosticReporter.kt", "reason": "Tagged practice and drill calls; Practice-tab crashes; Admin consumer pending (task 3.1)."},
-        "iphone_pwa": {"status": "partial", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "reason": "Practice load/save and JS errors; Admin consumer pending (task 3.1)."},
+        "android": {"status": "covered", "reporter": "android/app/src/main/java/com/pomp/hskai/core/diagnostics/DiagnosticReporter.kt", "client_test": "android/app/src/test/java/com/pomp/hskai/core/diagnostics/ApiCallDiagnosticsTest.kt", "chain_test": "tests/test_monitoring_android_chain.py::AndroidMonitoringChainTests::test_android_api_failures_reach_inbox"},
+        "iphone_pwa": {"status": "covered", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "client_test": "tests/test_hsk_diagnostics.js", "chain_test": "tests/test_monitoring_pwa_chain.py::PwaMonitoringChainTests::test_pwa_priority_failures_reach_inbox_as_verified_browser_owner"},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Priority failure-to-Inbox chain evidence pending."}
       }},
       {"id": "pwa_pro_checkout", "platforms": {
         "android": {"status": "not_applicable", "reason": "The inline Lava Pro checkout exists only in the learner PWA."},
-        "iphone_pwa": {"status": "partial", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "reason": "Lava checkout start and status; Admin consumer pending (task 3.1)."},
+        "iphone_pwa": {"status": "covered", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "client_test": "tests/test_hsk_diagnostics.js", "chain_test": "tests/test_monitoring_pwa_chain.py::PwaMonitoringChainTests::test_pwa_priority_failures_reach_inbox_as_verified_browser_owner"},
         "telegram": {"status": "not_applicable", "reason": "The inline Lava Pro checkout exists only in the learner PWA."},
-        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Priority failure-to-Inbox chain evidence pending."}
       }},
       {"id": "referrals", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter records crashes by tab only; no tagged calls for this feature yet."},
         "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Priority failure-to-Inbox chain evidence pending."}
       }},
       {"id": "subscription_entries", "platforms": {
-        "android": {"status": "partial", "reporter": "android/app/src/main/java/com/pomp/hskai/core/diagnostics/DiagnosticReporter.kt", "reason": "Tagged subscription overview and handoff calls; Admin consumer pending (task 3.1)."},
-        "iphone_pwa": {"status": "partial", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "reason": "Subscription overview failures; Admin consumer pending (task 3.1)."},
+        "android": {"status": "covered", "reporter": "android/app/src/main/java/com/pomp/hskai/core/diagnostics/DiagnosticReporter.kt", "client_test": "android/app/src/test/java/com/pomp/hskai/core/diagnostics/ApiCallDiagnosticsTest.kt", "chain_test": "tests/test_monitoring_android_chain.py::AndroidMonitoringChainTests::test_android_api_failures_reach_inbox"},
+        "iphone_pwa": {"status": "partial", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "reason": "Subscription overview failures; Priority failure-to-Inbox chain evidence pending."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Priority failure-to-Inbox chain evidence pending."}
       }},
       {"id": "voice_practice", "platforms": {
-        "android": {"status": "partial", "reporter": "android/app/src/main/java/com/pomp/hskai/core/diagnostics/DiagnosticReporter.kt", "reason": "Live voice client-side failures (allowlist); Voice-tab crashes; Admin consumer pending (task 3.1)."},
-        "iphone_pwa": {"status": "partial", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "reason": "Live voice client failures and JS errors; Admin consumer pending (task 3.1)."},
-        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
+        "android": {"status": "covered", "reporter": "android/app/src/main/java/com/pomp/hskai/core/diagnostics/DiagnosticReporter.kt", "client_test": "android/app/src/test/java/com/pomp/hskai/feature/voice/LiveVoiceDiagnosticsTest.kt", "chain_test": "tests/test_monitoring_android_chain.py::AndroidMonitoringChainTests::test_android_api_failures_reach_inbox"},
+        "iphone_pwa": {"status": "covered", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "client_test": "tests/test_hsk_diagnostics.js", "chain_test": "tests/test_monitoring_pwa_chain.py::PwaMonitoringChainTests::test_pwa_priority_failures_reach_inbox_as_verified_browser_owner"},
+        "telegram": {"status": "covered", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "client_test": "tests/test_hsk_diagnostics.js", "chain_test": "tests/test_monitoring_telegram_chain.py::TelegramMonitoringChainTests::test_signed_web_report_reaches_inbox_without_a_message_or_kpi_event"},
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Priority failure-to-Inbox chain evidence pending."}
       }}
     ],
     "android_packages": {"ad": "course_ads", "assistant": "chat_ai", "auth": "auth_session", "course": "lessons", "dictionary": "lessons", "feedback": "feedback", "foundation": "foundation", "hint": "app_shell", "lesson": "lessons", "limit": "subscription_entries", "offline": "app_shell", "onboarding": "onboarding_activation", "practice": "practice", "profile": "app_shell", "rating": "learning_rewards", "update": "distribution_handoff", "voice": "voice_practice"},
@@ -2133,18 +2138,13 @@
       "assessments:iphone_pwa",
       "assessments:telegram",
       "assessments:server",
-      "auth_session:android",
-      "auth_session:iphone_pwa",
       "auth_session:telegram",
       "auth_session:server",
       "chat_ai:android",
       "chat_ai:iphone_pwa",
       "chat_ai:telegram",
       "chat_ai:server",
-      "checkout_payments:android",
-      "checkout_payments:iphone_pwa",
       "checkout_payments:telegram",
-      "checkout_payments:server",
       "client_activity:android",
       "client_activity:iphone_pwa",
       "client_activity:telegram",
@@ -2158,7 +2158,6 @@
       "course_track_selection:telegram",
       "course_track_selection:server",
       "distribution_handoff:android",
-      "distribution_handoff:iphone_pwa",
       "distribution_handoff:telegram",
       "distribution_handoff:server",
       "feedback:android",
@@ -2173,10 +2172,6 @@
       "learning_rewards:iphone_pwa",
       "learning_rewards:telegram",
       "learning_rewards:server",
-      "lessons:android",
-      "lessons:iphone_pwa",
-      "lessons:telegram",
-      "lessons:server",
       "mistake_review:android",
       "mistake_review:iphone_pwa",
       "mistake_review:telegram",
@@ -2184,32 +2179,22 @@
       "monitoring:android",
       "monitoring:iphone_pwa",
       "monitoring:telegram",
-      "monitoring:server",
       "notifications:android",
       "notifications:iphone_pwa",
       "notifications:telegram",
       "notifications:server",
-      "onboarding_activation:android",
-      "onboarding_activation:iphone_pwa",
       "onboarding_activation:telegram",
       "onboarding_activation:server",
-      "practice:android",
-      "practice:iphone_pwa",
       "practice:telegram",
       "practice:server",
-      "pwa_pro_checkout:iphone_pwa",
       "pwa_pro_checkout:server",
       "referrals:android",
       "referrals:iphone_pwa",
       "referrals:telegram",
       "referrals:server",
-      "subscription_entries:android",
       "subscription_entries:iphone_pwa",
       "subscription_entries:telegram",
       "subscription_entries:server",
-      "voice_practice:android",
-      "voice_practice:iphone_pwa",
-      "voice_practice:telegram",
       "voice_practice:server"
     ],
     "exemptions": []

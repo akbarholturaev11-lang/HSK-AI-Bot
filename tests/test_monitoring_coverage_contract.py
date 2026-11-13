@@ -91,13 +91,13 @@ class Fixture:
         file.parent.mkdir(parents=True, exist_ok=True)
         file.write_text(textwrap.dedent(text), encoding="utf-8")
 
-    def validate(self, value, critical_paths=None):
+    def validate(self, value, critical_paths=None, analytics_events=()):
         return monitoring.validate_monitoring(
             value, self.root, flow_ids={"lessons", "practice"},
             critical_paths=critical_paths or {}, ci_modules=checker.ci_test_modules(self.root),
             validate_chain=checker.validate_chain,
             workflow_text=(self.root / ".github/workflows/analytics-integrity.yml").read_text(),
-            android_ci_text="testPlayDebugUnitTest")
+            android_ci_text="testPlayDebugUnitTest", analytics_events=analytics_events)
 
     def close(self):
         self._dir.cleanup()
@@ -116,8 +116,17 @@ class MonitoringCoverageTests(unittest.TestCase):
     def test_real_registry_and_catalog_pass(self):
         registry = checker.validate_schema(checker.load_registry(REGISTRY_PATH.read_text(encoding="utf-8")))
         summary = checker.validate_monitoring(registry)
-        self.assertEqual(registry["monitoring"]["mode"], "declare")
+        self.assertEqual(registry["monitoring"]["mode"], "require_covered")
         self.assertGreater(len(summary["routes"]), 200)
+
+    def test_monitoring_cannot_write_analytics_or_reuse_failure_codes_as_event_names(self):
+        with self.assertRaisesRegex(monitoring.MonitoringError, "diagnostic codes used as Analytics events"):
+            self.repo.validate(block(), analytics_events={"api_5xx"})
+        self.repo.write("app/services/monitoring/adapter.py", """
+            from app.services.conversion_funnel_service import ConversionFunnelService as Funnel
+        """)
+        with self.assertRaisesRegex(monitoring.MonitoringError, "Analytics writer or store"):
+            self.repo.validate(block())
 
     def test_analytics_registry_without_monitoring_still_validates(self):
         registry = checker.load_registry(REGISTRY_PATH.read_text(encoding="utf-8"))
@@ -150,6 +159,10 @@ class MonitoringCoverageTests(unittest.TestCase):
 
     def test_unknown_reporter_literal(self):
         self.repo.write("app/static/course_v3_data/x.js", "HskDiag.report('lessons', 'made_up', 'x')")
+        self.assertFails("reporter code 'made_up' is not in the server catalog")
+
+    def test_unknown_reporter_site(self):
+        self.repo.write("app/static/course_v3_data/x.js", "HskDiag.report('lessons', 'api_5xx', 'made_up')")
         self.assertFails("reporter code 'made_up' is not in the server catalog")
 
     def test_route_mapped_against_its_analytics_critical_path(self):

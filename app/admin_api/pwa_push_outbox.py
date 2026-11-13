@@ -49,7 +49,8 @@ async def enqueue_important_triage(db, *, settings_obj, actor_id: int, source: s
         await db.flush()
     return len(rows)
 
-async def enqueue_automatic_alert(db, *, settings_obj, source: str, source_id: int, now) -> int:
+async def enqueue_automatic_alert(db, *, settings_obj, source: str, source_id: int, now,
+                                  alert_epoch=None, diagnostic_kind=None) -> int:
     """Queue a newly submitted payment receipt or durable Android error.
 
     Only current allowlisted admins with explicitly enrolled devices qualify.
@@ -60,13 +61,22 @@ async def enqueue_automatic_alert(db, *, settings_obj, source: str, source_id: i
     if (not getattr(settings_obj, "ADMIN_PWA_ENABLED", False)
             or not getattr(settings_obj, "ADMIN_PWA_PUSH_ENABLED", False)):
         return 0
-    if source not in ("payment", "android", "technical") or source_id < 1:
+    if source not in ("payment", "android", "technical", "diagnostic") or source_id < 1:
         raise ValueError("invalid_automatic_alert")
+    if source == "diagnostic":
+        if not getattr(settings_obj, "MONITORING_PUSH_ENABLED", False):
+            return 0
+        if type(alert_epoch) is not int or alert_epoch < 1 or diagnostic_kind not in ("new", "escalated", "reopened"):
+            raise ValueError("invalid_diagnostic_epoch")
+    elif alert_epoch is not None or diagnostic_kind is not None:
+        raise ValueError("unexpected_diagnostic_epoch")
     admins = getattr(settings_obj, "admin_id_list", [])
     if not admins:
         return 0
-    event_key = hashlib.sha256(
-        f"automatic-important-v1:{source}:{source_id}".encode("ascii")).hexdigest()
+    identity = f"automatic-important-v1:{source}:{source_id}"
+    if alert_epoch is not None:
+        identity += f":{alert_epoch}"
+    event_key = hashlib.sha256(identity.encode("ascii")).hexdigest()
     devices = (await db.scalars(select(AdminPwaPushSubscription.id)
         .join(User, User.id == AdminPwaPushSubscription.user_id)
         .where(User.telegram_id.in_(admins),
@@ -82,7 +92,8 @@ async def enqueue_automatic_alert(db, *, settings_obj, source: str, source_id: i
             continue
         db.add(AdminPwaPushOutbox(
             id=str(uuid4()), subscription_id=device_id, event_key=event_key,
-            source=source, source_id=source_id, triage_revision=1,
+            source=source, source_id=source_id, triage_revision=alert_epoch or 1,
+            diagnostic_kind=diagnostic_kind,
             state="pending", attempts=0, created_at=now, updated_at=now,
             next_attempt_at=now,
         ))

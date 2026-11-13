@@ -537,18 +537,21 @@ def _critical_paths(registry):
             for row in registry["critical_paths"]}
 
 
-def validate_monitoring(registry, root=ROOT):
+def validate_monitoring(registry, root=ROOT, *, found_events=None):
     """Monitoring section (design D10); absent before the first monitoring work."""
     block = registry.get("monitoring")
     if block is None:
         return None
     root = Path(root)
     read = lambda rel: (root / rel).read_text(encoding="utf-8") if (root / rel).is_file() else ""
+    if found_events is None:
+        found_events = inventory(root)
     return monitoring_coverage.validate_monitoring(
         block, root, flow_ids={row["id"] for row in registry["flows"]},
         critical_paths=_critical_paths(registry), ci_modules=ci_test_modules(root),
         validate_chain=validate_chain, workflow_text=read(WORKFLOW),
-        android_ci_text=read(".github/workflows/android-ci.yml"))
+        android_ci_text=read(".github/workflows/android-ci.yml"),
+        analytics_events={name for _, name in found_events})
 
 
 def _inventory_at(root, ref):
@@ -607,8 +610,9 @@ def main(argv=None):
             return 0
         summary = None
         if not args.schema_only:
-            validate_events(registry, inventory(ROOT))
-            summary = validate_monitoring(registry)
+            found_events = inventory(ROOT)
+            validate_events(registry, found_events)
+            summary = validate_monitoring(registry, found_events=found_events)
         if args.base:
             check_git_diff(ROOT, registry, args.base, args.head, args.mode)
             check_monitoring_diff(ROOT, registry, summary, args.base, args.head, args.mode)

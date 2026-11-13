@@ -78,6 +78,15 @@ class ApiCallDiagnosticsTest {
     }
 
     @Test
+    fun `priority API failures use the deployed feature and site codes`() = runTest {
+        for (tag in listOf(DiagTags.LOGIN, DiagTags.ONBOARDING, DiagTags.PRACTICE, DiagTags.SUBSCRIPTION)) {
+            failing(502, tag = tag)
+        }
+        assertEquals(listOf("auth_session/api_5xx/login", "onboarding_activation/api_5xx/onboarding",
+            "practice/api_5xx/practice", "subscription_entries/api_5xx/subscription"), kit.codes())
+    }
+
+    @Test
     fun `untagged calls and cancellation report nothing`() = runTest {
         failing(500, tag = null)
         apiCall<Unit>(null) { throw SerializationException("x") }

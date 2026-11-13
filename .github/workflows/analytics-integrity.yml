@@ -69,6 +69,10 @@ jobs:
           tests/test_monitoring_server_chain.py
           tests/test_monitoring_android_chain.py
           tests/test_monitoring_pwa_chain.py
+          tests/test_monitoring_admin_inbox.py
+          tests/test_monitoring_push.py
+          tests/test_monitoring_telegram_chain.py
+          tests/test_monitoring_0156_migration.py
           tests/test_admin_pwa_v10_regression.py
           tests/test_admin_pwa_platform_scope.py
           tests/test_checkout_transport_marker.py

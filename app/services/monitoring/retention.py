@@ -26,8 +26,16 @@ async def purge_diagnostics(db, *, now, limit=catalog.PURGE_BATCH):
                                              AdminPwaInboxTriage.source_id == DiagnosticIncident.id))
              .where(AdminPwaInboxTriage.status == "resolved",
                     DiagnosticIncident.last_seen_at < incident_cutoff)
-             .order_by(DiagnosticIncident.id).limit(limit))
+             .order_by(DiagnosticIncident.fingerprint).limit(limit)
+             .with_for_update(of=DiagnosticIncident, skip_locked=True))
     incident_ids = list((await db.execute(stale)).scalars())
+    if incident_ids:
+        # Recheck triage in a fresh statement after acquiring the same
+        # incident locks used by mark-read, resolve and intake.
+        incident_ids = list((await db.scalars(select(AdminPwaInboxTriage.source_id).where(
+            AdminPwaInboxTriage.source == "diagnostic", AdminPwaInboxTriage.source_id.in_(incident_ids),
+            AdminPwaInboxTriage.status == "resolved",
+        ))).all())
     if incident_ids:
         await db.execute(delete(DiagnosticReceipt).where(DiagnosticReceipt.incident_id.in_(incident_ids)))
         await db.execute(delete(AdminPwaInboxTriage).where(

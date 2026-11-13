@@ -18,7 +18,9 @@ from sqlalchemy.dialects import postgresql as pg_dialect
 from sqlalchemy.dialects import sqlite as sqlite_dialect
 
 from app.db.models.diagnostic import DiagnosticIncident, DiagnosticReceipt
+from app.db.models.admin_pwa_inbox_triage import AdminPwaInboxTriage, AdminPwaInboxTriageAudit
 from app.services.monitoring import catalog
+from app.services.monitoring.alerts import decide_alert
 
 MODES = ("off", "owners", "all")
 BATCH_KEYS = frozenset({"schema", "events"})
@@ -69,7 +71,7 @@ class IngestResult:
     refused: int = 0
     dropped: int = 0
     paused: bool = False
-    touched: list = field(default_factory=list)  # (incident, created, inserted) for alert hooks
+    touched: list = field(default_factory=list)  # (incident, created, inserted)
 
     def response(self):
         if self.paused:
@@ -138,7 +140,8 @@ def _parse_event(item, *, platform, now, skew):
     event_id = _uuid(item.get("event_id"))
     feature, failure, site = item.get("feature_code"), item.get("failure_code"), item.get("site_code")
     outcome = item.get("outcome", "failed")
-    if (event_id is None or feature not in catalog.FEATURES or failure not in catalog.CLIENT_FAILURES
+    if (event_id is None or not all(isinstance(code, str) for code in (feature, failure, site, outcome))
+            or feature not in catalog.FEATURES or failure not in catalog.CLIENT_FAILURES
             or site not in catalog.ALL_SITES or outcome not in catalog.OUTCOMES
             or item.get("platform", platform) != platform):
         return None
@@ -152,7 +155,7 @@ def _parse_event(item, *, platform, now, skew):
     if channel is not None and (platform != "android" or channel not in ("play", "direct")):
         return None
     category = item.get("category")
-    if category is not None and category not in catalog.CATEGORIES:
+    if category is not None and (not isinstance(category, str) or category not in catalog.CATEGORIES):
         return None
     client_time, untrusted = None, False
     raw_time = item.get("client_time")
@@ -220,8 +223,8 @@ async def _record(db, incident, event, owner_user_id, now):
         incident.last_seen_at = now
     if event.app_version and incident.first_version is None:
         incident.first_version = event.app_version
-    if event.app_version and (event.build is None or incident.last_build is None
-                              or event.build >= incident.last_build):
+    if event.app_version and (incident.last_build is None or
+                              (event.build is not None and event.build >= incident.last_build)):
         incident.last_version = event.app_version
         if event.build is not None:
             incident.last_build = event.build
@@ -242,18 +245,31 @@ async def _hourly_count(db, owner_user_id, now):
                DiagnosticReceipt.received_at >= now - timedelta(hours=1)))).scalar_one())
 
 
-# Hooks run inside the intake transaction after each occurrence (reopen in
-# task 3.1, alert decision in task 3.2). Each receives
-# (db, incident, created, inserted, event, now) and must never raise into intake.
-OCCURRENCE_HOOKS = []
+async def _reopen(db, incident, event, now):
+    """Reopen once under the incident lock, with a system triage audit."""
+    # Backend reports have no version, even on platform-attributed routes.
+    is_server = event.failure_code in catalog.SERVER_FAILURES
+    triage = await db.get(AdminPwaInboxTriage, ("diagnostic", incident.id), with_for_update=True)
+    if triage is None or triage.status != "resolved":
+        return False
+    if not is_server and incident.resolved_build is not None and (
+        event.build is None or event.build < incident.resolved_build
+    ):
+        return False
+    triage.status = "assigned" if triage.assigned_to_user_id else "read"
+    triage.resolved_at = None
+    triage.updated_at = now
+    triage.updated_by_user_id = None
+    triage.revision += 1
+    incident.reopened_at = now
+    incident.reopened_version = event.app_version
+    db.add(AdminPwaInboxTriageAudit(id=str(uuid.uuid4()), source="diagnostic",
+                                  source_id=incident.id, operation="reopen",
+                                  actor_user_id=None, created_at=now))
+    return True
 
 
-async def _run_hooks(db, incident, created, inserted, event, now):
-    for hook in OCCURRENCE_HOOKS:
-        await hook(db, incident, created, inserted, event, now)
-
-
-async def ingest(db, *, owner_user_id, events, mode="all", owner_admitted=True, now=None):
+async def ingest(db, *, owner_user_id, events, mode="all", owner_admitted=True, now=None, settings_obj=None):
     """Store validated events for one verified owner (or None for server rows).
 
     `mode` is the current intake mode; `owner_admitted` tells whether the
@@ -269,31 +285,55 @@ async def ingest(db, *, owner_user_id, events, mode="all", owner_admitted=True, 
         return result
     ordered = sorted(events, key=lambda e: (e.fingerprint, e.event_id))
     allowance = len(ordered)
+    duplicates = set()
     if owner_user_id is not None:
         await _lock_owner(db, owner_user_id)
+        if not ordered:
+            return result
         allowance = max(0, catalog.HOURLY_CAP_PER_ACCOUNT - await _hourly_count(db, owner_user_id, now))
-    for index, event in enumerate(ordered):
+        duplicates = set((await db.scalars(select(DiagnosticReceipt.event_id).where(
+            DiagnosticReceipt.user_id == owner_user_id,
+            DiagnosticReceipt.event_id.in_({event.event_id for event in ordered}),
+        ))).all())
+    alerts = {}
+    for event in ordered:
+        if event.event_id in duplicates:
+            result.duplicates += 1
+            continue
         severity = catalog.severity_for(event.feature_code, event.failure_code,
                                         recovered=event.outcome == "recovered")
         incident, created = await _incident_for(db, event, now, severity)
-        if index >= allowance:
+        if result.accepted >= allowance:
             # Refused by the cap: counted on its incident, never stored.
             incident.refused_count += event.occurrences
             result.refused += 1
             continue
+        first = incident.occurrence_count == 0
+        was_critical = incident.severity == "critical"
         inserted = await _record(db, incident, event, owner_user_id, now)
         if inserted:
+            duplicates.add(event.event_id)
             result.accepted += 1
+            reopened = not created and await _reopen(db, incident, event, now)
+            previous = alerts.get(incident.id, (None, False, False, False))
+            alerts[incident.id] = (incident, previous[1] or first,
+                                   previous[2] or (not was_critical and incident.severity == "critical"),
+                                   previous[3] or reopened)
         else:
             result.duplicates += 1
         result.touched.append((incident, created, inserted))
-        await _run_hooks(db, incident, created, inserted, event, now)
+    # All incident locks are acquired before the shared alert cap lock.
+    # Another worker can therefore never hold an incident we still need
+    # while it waits for our cap lock.
+    for incident, first, escalated, reopened in alerts.values():
+        await decide_alert(db, settings_obj=settings_obj, incident=incident, first=first,
+                           escalated=escalated, reopened=reopened, now=now)
     await db.flush()
     return result
 
 
 async def ingest_server(db, *, feature_code, failure_code, site_code, platform="server", occurrences=1,
-                        mode="all", now=None):
+                        mode="all", now=None, settings_obj=None):
     """One backend occurrence (or a coalesced count) without an owner."""
     if (feature_code not in catalog.FEATURES or failure_code not in catalog.SERVER_FAILURES
             or site_code not in catalog.ALL_SITES or platform not in catalog.PLATFORMS):
@@ -301,4 +341,4 @@ async def ingest_server(db, *, feature_code, failure_code, site_code, platform="
     event = DiagEvent(event_id=str(uuid.uuid4()), platform=platform, feature_code=feature_code,
                       failure_code=failure_code, site_code=site_code, outcome="failed",
                       occurrences=max(1, min(int(occurrences), 10_000)))
-    return await ingest(db, owner_user_id=None, events=[event], mode=mode, now=now)
+    return await ingest(db, owner_user_id=None, events=[event], mode=mode, now=now, settings_obj=settings_obj)

@@ -297,8 +297,9 @@ shared [coverage registry](docs/analytics/FEATURE_ANALYTICS_COVERAGE.json) and t
 same [`analytics-integrity` CI check](.github/workflows/analytics-integrity.yml)
 enforce it on any branch that contains them: an unmapped learner route, Android
 feature package or learner page fails, as does a new one mapped to an uncovered
-feature. The registry is in `declare` mode until the Admin Inbox `diagnostic`
-source exists. Verify on `main` before reporting enforcement there.
+feature. With the Admin Inbox `diagnostic` source, the registry requires
+`covered` or a justified `not_applicable` entry for new work, and CI verifies
+runtime proof for covered pairs. Verify on `main` before reporting enforcement there.
 
 ---
 

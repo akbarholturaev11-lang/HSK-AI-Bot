@@ -3,6 +3,15 @@
 DOWNLOAD_PATH = "/download"
 
 # Legal notices are kept outside PAGES so they are not treated as marketing pages.
+AUTOMATIC_DIAGNOSTICS_DISCLOSURE = (
+    "When enabled, Android and our browser apps automatically send technical error reports "
+    "to help us fix failures. These reports contain codes, app version and timing, and "
+    "are linked to your signed-in account. They do not include your messages, lesson answers, "
+    "audio, screenshots or payment details. Account-linked reports are retained for up to "
+    "30 days and removed when your account is deleted. We do not share them with advertisers "
+    "or other third parties for their own use; our hosting providers process them to operate HSK AI."
+)
+
 GOOGLE_SIGNIN_PRIVACY_PAGES = {
     "/privacy/google-sign-in/uz/": {
         "lang": "uz",

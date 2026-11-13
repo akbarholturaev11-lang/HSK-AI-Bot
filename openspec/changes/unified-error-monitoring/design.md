@@ -266,7 +266,7 @@ Defaults (catalog constants, not owner decisions): cap 60 events per account per
   - a reopen alert is exempt from the cooldown and the cap. Each reopen needs a human "Fixed" first, so its rate is bounded, and the epoch key gives one alert per reopen.
 - **Dispatcher.**
   - `_relevant` gains a `diagnostic` branch: the incident exists and its triage is not `resolved`. Priority is not required, so a `normal` reopen is still sent.
-  - `_webpush` keeps `kind: "important"` for every source. It sends `kind: "reopened"` only for `diagnostic` when `last_alert_reason = reopened`.
+  - `_webpush` keeps `kind: "important"` for every source. It sends `kind: "reopened"` only for `diagnostic` when the outbox row’s immutable `diagnostic_kind` is `reopened`; intake copies that epoch’s `last_alert_reason` to the row.
   - The payload stays two fixed enum fields.
 - **Service worker.**
   - `sw.js` accepts `reopened` only together with `source: "diagnostic"`.
@@ -288,7 +288,7 @@ Defaults (catalog constants, not owner decisions): cap 60 events per account per
 **Switch.** One boolean setting, `MONITORING_MINIAPP_ADAPTER_ENABLED`, separate from the mode; default off. The adapter acts only on events the current `MONITORING_MODE` admits.
 
 In the `app_error` branch of `/api/miniapp/event`:
-- **`schema:"diag.v1"` events from the shared script.** They are new signals, so they go to `ingest` only. No `messages` row is written, so no new rows reach the AI context.
+- **`schema:"diag.v1"` events from the shared script.** The `X-HSK-Diagnostic: diag.v1` header selects the bounded transport with fresh signed Telegram proof. These signals go to `ingest` only. No `messages` row is written, so no new rows reach the AI context.
 - **Legacy onboarding `app_error`.**
   - It still writes its `messages` row and still enqueues its per-row `technical` push. Bot AI context, `bot_block_cause_service`, the experiments count and the `technical` listing are unchanged.
   - It is also mapped to the onboarding failure codes, mirroring `_technical_explanation_code`, and sent to `ingest`. A recovered variant only lowers severity.

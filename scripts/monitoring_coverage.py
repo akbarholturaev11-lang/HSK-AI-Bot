@@ -28,7 +28,9 @@ INTAKE_ROUTES = {
 }
 PAGE_PATTERNS = ("course-v3.html", "course_v3_*.html", "iphone-pwa-*.html", "subscription.html")
 KOTLIN_CATALOG = "android/app/src/main/java/com/pomp/hskai/core/diagnostics/DiagnosticCatalog.kt"
-JS_REPORTER_CALL = re.compile(r"HskDiag\.report\(\s*['\"]([a-z][a-z0-9_]*)['\"]\s*,\s*['\"]([a-z][a-z0-9_]*)['\"]")
+JS_REPORTER_CALL = re.compile(
+    r"HskDiag\.report\(\s*['\"]([a-z][a-z0-9_]*)['\"]\s*,\s*['\"]([a-z][a-z0-9_]*)['\"]"
+    r"(?:\s*,\s*['\"]([a-z][a-z0-9_]*)['\"])?")
 KOTLIN_CODE = re.compile(r"\bDiag(?:Feature|Failure)\.code\(\s*\"([a-z][a-z0-9_]*)\"\s*\)"
                          r"|\bcode\s*=\s*\"([a-z][a-z0-9_]*)\"")
 
@@ -139,9 +141,11 @@ def reporter_literals(root):
         if file.suffix not in {".js", ".html"} or not file.is_file():
             continue
         rel = file.relative_to(root).as_posix()
-        for feature, failure in JS_REPORTER_CALL.findall(file.read_text(encoding="utf-8", errors="ignore")):
+        for feature, failure, site in JS_REPORTER_CALL.findall(file.read_text(encoding="utf-8", errors="ignore")):
             found.setdefault(("feature", feature), rel)
             found.setdefault(("failure", failure), rel)
+            if site:
+                found.setdefault(("site", site), rel)
     return found
 
 
@@ -186,8 +190,37 @@ def _chain_test_ok(root, reference, label, *, platform, feature, failures, ci_mo
     require(feature in literals, label, f"chain test must name feature {feature!r}: {reference}")
 
 
+def _validate_analytics_boundary(root, catalog, analytics_events):
+    overlap = set(catalog.FAILURES) & set(analytics_events)
+    require(not overlap, "monitoring", f"diagnostic codes used as Analytics events: {sorted(overlap)}")
+    root = Path(root)
+    paths = [*(root / "app/services/monitoring").rglob("*.py"), root / "app/api/monitoring_intake.py"]
+    writer_names = {"record_client_event", "record_server_event", "ConversionFunnelService",
+                    "CourseMiniAppAnalyticsService", "ConversionFunnelEvent", "CourseMiniAppEvent"}
+    writer_modules = {"conversion_funnel_service", "course_miniapp_analytics_service",
+                      "conversion_funnel_event", "course_miniapp_event"}
+    for path in sorted(paths):
+        if not path.is_file():
+            continue
+        label = path.relative_to(root).as_posix()
+        for node in ast.walk(ast.parse(path.read_text(encoding="utf-8"), filename=label)):
+            if isinstance(node, ast.Name):
+                name = node.id
+            elif isinstance(node, ast.Attribute):
+                name = node.attr
+            elif isinstance(node, ast.alias):
+                name = node.name
+            elif isinstance(node, ast.ImportFrom):
+                name = node.module or ""
+            else:
+                continue
+            symbol = name.rsplit(".", 1)[-1]
+            require(symbol not in writer_names | writer_modules, label,
+                    f"monitoring must not use Analytics writer or store {symbol!r}")
+
+
 def validate_monitoring(block, root, *, flow_ids, critical_paths, ci_modules, validate_chain,
-                        workflow_text="", android_ci_text=""):
+                        workflow_text="", android_ci_text="", analytics_events=()):
     """Schema, source inventory and evidence checks. Returns a summary dict."""
     label = "monitoring"
     require(isinstance(block, dict), label, "expected an object")
@@ -195,6 +228,7 @@ def validate_monitoring(block, root, *, flow_ids, critical_paths, ci_modules, va
     require(set(block) == allowed, label, f"fields must be exactly {sorted(allowed)}")
     require(block["mode"] in MODES, label, f"mode must be one of {MODES}")
     catalog = load_catalog(root)
+    _validate_analytics_boundary(root, catalog, analytics_events)
     monitoring_only = set(catalog.MONITORING_ONLY_FEATURES)
     require(not monitoring_only & set(flow_ids), "catalog",
             "a monitoring-only feature ID duplicates an Analytics flow ID")
@@ -290,6 +324,7 @@ def validate_monitoring(block, root, *, flow_ids, critical_paths, ci_modules, va
             errors.append(f"app/static/{page}: learner page has no monitoring mapping")
     for (kind, code), file in sorted(reporter_literals(root).items()):
         known = (catalog.FEATURES if kind == "feature" else catalog.FAILURES if kind == "failure"
+                 else catalog.ALL_SITES if kind == "site"
                  else set(catalog.FEATURES) | set(catalog.FAILURES) | set(catalog.ALL_SITES))
         if code not in known:
             errors.append(f"{file}: reporter code {code!r} is not in the server catalog")

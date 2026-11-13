@@ -18,14 +18,43 @@ or production acceptance.
   `partial`); task 2.1 (Android reporter in `core/diagnostics`, both flavours;
   `android` cells `partial` for the instrumented features); task 2.2 (learner
   browser reporter and PWA transport, content-pinned assets, Live Voice and
-  priority flow hooks, PostgreSQL PWA chain). Next: task 3.1, Admin Inbox.
-- **Local validation:** PWA Node, Chromium/WebKit diagnostics, asset budget and
-  authenticated PostgreSQL chain passed. The existing 320 px Practice
-  skeleton geometry cases fail on both the baseline `e7e6641a` and this work;
-  keep them visible at the task 5.1 gate. Full integration validation,
-  Android release builds and the Direct DTO smoke remain for 5.1.
+  priority flow hooks, PostgreSQL PWA chain); task 3.1 (Admin Inbox and
+  audit, resolve/reopen, diagnostic freshness); task 3.2 (bounded Apple Push
+  on the existing outbox); task 4.1 (signed Mini App transport and additive
+  legacy adapter). The English public privacy copy for 5.2 is prepared.
+- **Verification in progress:** see task 5.1 evidence below. Local validation
+  uses disposable data only; a browser or synthetic push test does not prove
+  delivery on an Apple device.
 - **Not on `main`.** No migration, intake, reporter or Admin change is deployed.
-  All switches will default off.
+  `MONITORING_MODE=off`, `MONITORING_PUSH_ENABLED=false` and
+  `MONITORING_MINIAPP_ADAPTER_ENABLED=false` by default. Promotion and
+  staged acceptance remain owner gates.
+
+## Task 5.1 evidence (local unless specified)
+
+- Analytics integrity workflow's PostgreSQL pytest list: 220 tests and 261
+  subtests passed; the post-pytest check proved 20 feature/platform pairs
+  through the real intake and authenticated Admin Inbox. The final Telegram
+  and shared-checker delta passed its focused run (26 tests).
+- Admin PWA Playwright: full browser script passed; diagnostic list, one-tap
+  Fixed, and reopened detail verified at 390 px in UZ/RU/TJ. Synthetic Apple
+  Push tests cover per-device deduplication, scope escalation, reopen
+  priority, rate limits, dispatch isolation, and failure isolation.
+- Learner Node, Chromium/WebKit diagnostics, cache versions, and worker asset
+  budget passed. The full Chromium/WebKit comparison retains two pre-existing
+  320 px Practice skeleton geometry failures in both the baseline and feature
+  worktree; the changed suite adds two passing diagnostic cases per browser.
+- Android: `testPlayDebugUnitTest testDirectDebugUnitTest`, `lint`,
+  `bundlePlayRelease bundleDirectRelease` passed. Direct release serialization
+  on a device still needs a smoke test.
+- PostgreSQL: migration 0156 upgrade/downgrade and live-data downgrade guard
+  passed locally. Synthetic 1M-receipt `EXPLAIN (ANALYZE, BUFFERS)`: admission
+  used the owner/time index (~0.03 ms); five-incident affected counts used the
+  incident/time index (~39 ms with ~67k matching receipts). Times describe
+  this fixture, not production.
+- OpenSpec strict validation and the localization catalog check passed. The
+  full-suite comparison, scratch-branch CI proof, staging and real-device
+  checks are tracked separately in the checklist.
 
 ## Drift check (task 1.1)
 
@@ -34,7 +63,7 @@ or production acceptance.
 - Voice V8 (`origin/feat/ai-voice-v8-pwa-android-20261111`) is still at
   `680761f1` and not on `main`, so the `live_*` codes in the catalog follow the
   current `main` sources. Re-check them if V8 lands before task 2.1/2.2.
-- Graphify was not re-run; nothing in the monitored code moved.
+- Voice V8 has its own branch. Recheck the catalog mappings if it lands before promotion.
 
 ## Implementation decisions (within the design)
 
@@ -133,6 +162,20 @@ or production acceptance.
   the request header. The worker's 40-asset limit is unchanged; it does not warm
   the course document, which is already open when warm-up starts.
 
+- **Inbox and push.** The affected count is a distinct-account count over
+  retained receipts, with explicit `partial`/`unknown` states. Resolve and
+  reopen lock the incident before triage. Reopens create an audit entry; a
+  separate outbox reason identifies the exact epoch even if the incident
+  changes later. Existing sources dispatch ahead of new diagnostic alerts.
+- **Mini App.** `X-HSK-Diagnostic: diag.v1` selects bounded JSON intake on the
+  existing endpoint and requires fresh signed Telegram init data. The browser
+  keeps Telegram reports in memory only. Legacy onboarding still writes its
+  original Message and sends its technical push before the optional adapter.
+- **Analytics separation.** Diagnostics use their own tables and Inbox,
+  including no writes to course or conversion KPI stores. Freshness adds
+  diagnostic rows only, under the bumped Analytics snapshot key. The shared
+  guard checks the writer/event boundary and runs with `require_covered`.
+
 ## Session log
 
 - 2026-11-13: task 1.1 implemented on the feature branch (256 learner routes
@@ -144,3 +187,5 @@ or production acceptance.
 - 2026-11-13: resumed at task 2.2 from `e7e6641a`, with the reporter draft and
   Live Voice edits present locally. Completed the PWA integration and focused
   verification; diagnostic visibility and full coverage proof wait for 3.1.
+- 2026-11-13: completed tasks 3.1–4.1 and began 5.1; the monitoring
+  surface is ready for staged acceptance after the remaining gates.
