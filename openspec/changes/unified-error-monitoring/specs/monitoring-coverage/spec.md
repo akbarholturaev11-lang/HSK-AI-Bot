@@ -24,16 +24,28 @@ The existing Analytics coverage registry SHALL gain one monitoring section. It r
 - **WHEN** a monitoring entry defines a feature ID or platform key that duplicates an existing Analytics flow or platform under another name
 - **THEN** the coverage check fails and names the entry
 
+#### Scenario: Mapping disagrees with Analytics
+- **WHEN** a route in an Analytics critical path is mapped to a feature that is neither one of that path's flows nor a monitoring-only ID
+- **THEN** the check fails and names the route and both mappings
+
+#### Scenario: Analytics registry unaffected
+- **WHEN** the monitoring section is added or changed
+- **THEN** the existing Analytics schema, chain-test and diff checks give the same results as before
+
 #### Scenario: Status without evidence
 - **WHEN** an entry is `partial`, `not_instrumented` or `not_applicable` without a reason, or `covered` without its tests
 - **THEN** the check fails and names the entry
 
 ### Requirement: Covered requires a real chain test
-A monitoring entry SHALL be `covered` only with two tests, both executed by CI. A client-side test proves the reporter emits the event on the failure. An integration test sends it through the real authenticated intake into PostgreSQL, deduplicates it, and reads it from the authenticated Admin Inbox API. An enum, registry row, mocked intake or stored row alone MUST NOT count.
+A monitoring entry SHALL be `covered` only with two tests, both executed by CI. A client-side test proves the reporter emits the event on the failure. An integration test sends it through the real authenticated intake into PostgreSQL, deduplicates it, and reads it from the authenticated Admin Inbox API. The integration test SHALL leave a runtime proof in the same CI run. An enum, registry row, mocked intake or stored row alone MUST NOT count.
 
 #### Scenario: Test not run by CI
 - **WHEN** a `covered` entry names a test that the CI workflow does not execute
 - **THEN** the check fails
+
+#### Scenario: Chain test skipped
+- **WHEN** a `covered` entry's chain test is skipped, or never reaches the shared chain helper, in the CI run
+- **THEN** no proof row exists for it, and the check fails
 
 #### Scenario: Test does not reach the Inbox
 - **WHEN** a named integration test does not call the real intake route and the Admin Inbox API with the entry's failure code
@@ -70,7 +82,11 @@ Existing features without full monitoring coverage SHALL be listed in a frozen b
 - **THEN** CI passes, and the entry leaves the baseline
 
 ### Requirement: Guard against bypass
-The check SHALL detect learner routes, Android feature packages, PWA pages and reporter code literals from source, not from a hand-written list. Exemptions MUST name exact paths or feature IDs with a concrete reason. Directory-wide or empty-reason exemptions MUST fail.
+The check SHALL detect learner routes, Android feature packages, PWA pages and reporter code literals from source, not from a hand-written list. Route detection SHALL include router prefixes and programmatic registration. Exemptions MUST name exact paths or feature IDs with a concrete reason. Directory-wide or empty-reason exemptions MUST fail.
+
+#### Scenario: Route added through a router prefix
+- **WHEN** a change adds a learner route through an `APIRouter` prefix or `add_api_route`, with no monitoring entry
+- **THEN** the check fails and names the full route path
 
 #### Scenario: Directory exemption
 - **WHEN** an exemption names a whole directory or has an empty reason

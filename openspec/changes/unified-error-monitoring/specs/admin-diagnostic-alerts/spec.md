@@ -18,7 +18,7 @@ The existing Admin PWA Inbox SHALL list incidents as one `diagnostic` source bes
 - **THEN** it is refused as today, and no incident data is returned
 
 ### Requirement: Safe incident view
-An incident item SHALL show its platform, feature, a localized explanation of the failure code, first and last version, first and last seen time, occurrence count, affected accounts (or partial/unknown), priority and triage status. It SHALL offer filters by platform, status and priority. It MUST NOT show any forbidden telemetry field or account identifier.
+An incident item SHALL show its platform, feature, a localized explanation of the failure code, first and last version, first and last seen time, occurrence count, affected accounts, priority and triage status. The Inbox API SHALL filter incidents by platform, status and priority; the minimal Inbox MUST NOT gain new filter controls or buttons. No forbidden telemetry field or account identifier SHALL be shown.
 
 #### Scenario: Explanation in the admin's language
 - **WHEN** an admin reads an incident in UZ, RU or TJ
@@ -26,18 +26,18 @@ An incident item SHALL show its platform, feature, a localized explanation of th
 
 #### Scenario: Unknown affected count
 - **WHEN** the affected-account count is limited by retention or by refused events
-- **THEN** the view shows it as partial or unknown, never as a confident number or zero
+- **THEN** the view shows "at least N" or "unknown" in the admin's language, never a confident number or zero
 
 #### Scenario: No private data
 - **WHEN** an incident and its detail are rendered
 - **THEN** no stack, message, URL, payload, token or account ID appears in the response or the page
 
 ### Requirement: Triage with audited automatic reopen
-Incident triage SHALL use the existing audited triage store and operations: New is `new`, Investigating is `assigned`, Resolved is `resolved`. The incident view SHALL offer the existing "Fixed" button, which resolves without a learner notice. A resolved incident SHALL reopen automatically on a new occurrence from a version not older than the newest version at resolution (backend: any occurrence), and SHALL show a localized "fixed error came back" notice. Every change SHALL be audited.
+Incident triage SHALL use the existing audited triage store: New is `new`, Investigating is `read` (set when an admin opens it) or `assigned`, Resolved is `resolved`. The existing "Fixed" button SHALL resolve in one tap, with no prompt or learner notice. A resolved incident SHALL reopen automatically on an occurrence from a version not older than the newest at resolution (backend: any occurrence), with a localized "fixed error came back" notice. Every change SHALL be audited.
 
 #### Scenario: Admin investigates and resolves
-- **WHEN** an admin assigns an incident to themselves and later taps "Fixed"
-- **THEN** its status moves from new to assigned to resolved, each step has an audit row, and no learner is notified
+- **WHEN** an admin opens a new incident and later taps "Fixed"
+- **THEN** its status moves from new to read to resolved, each step has an audit row, no confirmation prompt appears, and no learner is notified
 
 #### Scenario: Failure returns on the fixed version
 - **WHEN** a resolved Android incident gets a new occurrence from the same or a newer app version
@@ -47,7 +47,7 @@ Incident triage SHALL use the existing audited triage store and operations: New 
 - **WHEN** a resolved incident gets a new occurrence only from a version older than the newest one at resolution
 - **THEN** it stays resolved, and the occurrence is still counted
 
-### Requirement: Bounded critical Apple Push
+### Requirement: Bounded diagnostic Apple Push
 Diagnostic Apple Push SHALL go through the existing Admin PWA push outbox and dispatcher, and only in three cases: an incident is new at critical severity, its server-observed scope raises it to critical, or an incident marked fixed reopens at any severity. New and escalation alerts SHALL have a per-incident cooldown and a global hourly cap. A reopen alert SHALL be sent once per reopen, exempt from both.
 
 #### Scenario: Many identical events

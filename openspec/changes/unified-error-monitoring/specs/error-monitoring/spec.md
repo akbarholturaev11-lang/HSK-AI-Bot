@@ -157,7 +157,7 @@ Receipts SHALL be deleted after a bounded retention period by the existing hourl
 - **THEN** the housekeeping deletes them in bounded batches, and the incident shows its affected-account count as limited to the retention window
 
 ### Requirement: Rollout and kill switch
-Monitoring SHALL default off and roll out in stages: off, then owner accounts, then all. One switch SHALL stop all intake writes. Diagnostic push and the Mini App adapter SHALL each have their own switch. Turning any of them off MUST NOT disable payments, lessons, manual bug reports or existing Admin pushes.
+Monitoring SHALL default off and roll out in stages: off, then owner accounts, then all. One switch SHALL stop all intake writes. Diagnostic push and the Mini App adapter SHALL each have their own switch. Turning any of them off MUST NOT disable payments, lessons, manual bug reports or existing Admin pushes. The `all` stage MUST wait until the privacy policy discloses automatic, content-free error reports and the owner has updated the Play Data safety declaration.
 
 #### Scenario: Kill switch on
 - **WHEN** the intake mode is set to off
@@ -166,6 +166,10 @@ Monitoring SHALL default off and roll out in stages: off, then owner accounts, t
 #### Scenario: Owners-only stage
 - **WHEN** the intake mode is owners
 - **THEN** only the existing admin allowlist's accounts have their events stored; the others are acknowledged and dropped
+
+#### Scenario: Disclosure missing
+- **WHEN** the privacy policy does not yet mention automatic error reports
+- **THEN** the rollout does not move past the owners stage
 
 ### Requirement: Separation from analytics and manual reports
 Diagnostic events SHALL NOT be written to analytics event stores, and analytics events SHALL NOT create incidents. Monitoring SHALL reuse the Analytics platform keys and flow IDs. Manual bug reports SHALL remain a separate source, and their intake, delivery and retention SHALL stay unchanged.

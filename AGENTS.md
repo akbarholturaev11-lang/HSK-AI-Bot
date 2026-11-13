@@ -151,7 +151,9 @@ chaqiruvchilarni va ta’sir doirasini top.
 **Natijaga ishonch:**
 
 - Avval yangiligini tekshir: `GRAPH_REPORT.md`dagi “Built from commit” `git rev-parse HEAD`ga
-  teng bo‘lsin. Commit qilinmagan o‘zgarishlar grafda yo‘q.
+  teng bo‘lsin. Commit qilinmagan o‘zgarishlar grafda yo‘q. `git merge`/`git pull` grafni
+  qayta qurmaydi (post-merge hook faqat git-lfs): keyingi commit yoki checkout’gacha
+  merge bilan kelgan fayllarni grafsiz, to‘g‘ridan-to‘g‘ri o‘qi.
 - `INFERRED` bog‘lanish faqat yo‘nalish beradi. Har bir topilmani kodni o‘qib tasdiqla;
   hujjat, reja va PR’da grafni emas, `file:line`ni keltir.
 - Graf zanjirli chaqiruvlarni ko‘rmaydi (masalan, `Service(db).method(...)`). Bog‘lanish

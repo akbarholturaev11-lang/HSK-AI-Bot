@@ -2,11 +2,12 @@
 
 ## Why
 
-HSK AI learns about technical failures mostly when a learner complains. Audited on this branch (`origin/main` `680761f1` plus the Analytics Integrity work, 2026-11-12):
+HSK AI learns about technical failures mostly when a learner complains. Re-audited on `origin/main` `5ea7c22f` (2026-11-13), which contains Analytics Integrity and its R1–R4:
 
 - **Android** has no crash handler and no automatic failure intake. Only the manual bug report exists (`/api/v3/android/bug-report` → `admin_pwa_native_reports`).
 - **iPhone/browser PWA** has no `window.onerror` / `unhandledrejection` capture. `/api/v3/pwa/event` rejects `app_error`. Only the manual shake report exists (`/api/v3/pwa/bug-report`, same table).
 - **Telegram Mini App** sends `app_error` from onboarding only. `AppErrorContextService` stores the raw message, stack and URL in `messages`, and every row enqueues its own Admin PWA `technical` push. Identical failures are not grouped.
+- **Lava payments** alert admins by Telegram only. **Live voice** failures are shown to the learner only.
 - **Backend** has no 5xx or integration-failure capture beyond process logs.
 - `/api/v3/clientlog` writes unauthenticated user-agent and message text to logs.
 
@@ -16,10 +17,10 @@ Monitoring adds a schema, authenticated intake on three clients, Admin Inbox and
 
 **Authoritative sources:**
 - `docs/monitoring/REQUIREMENTS.md`: goals and mandatory requirements.
-- Analytics Integrity, which Monitoring follows and reuses (REQUIREMENTS §8, §11):
+- Analytics Integrity on `main`, which Monitoring follows and reuses (REQUIREMENTS §8, §11):
   - its context file `docs/analytics/ANALYTICS_INTEGRITY_IMPLEMENTATION_PLAN.md` ("Monitoring handoff");
-  - the OpenSpec change `hsk-ai-analytics-integrity`;
-  - the registry `docs/analytics/FEATURE_ANALYTICS_COVERAGE.json`.
+  - the OpenSpec changes `hsk-ai-analytics-integrity` and `analytics-*` (R1–R4);
+  - the registry `docs/analytics/FEATURE_ANALYTICS_COVERAGE.json`, `scripts/check_analytics_coverage.py` and `analytics-integrity.yml`.
 - `AGENTS.md`, `AI_RULES.md`, `PROJECT_MEMORY.md`.
 - `docs/admin-pwa/BROWSER_UI_CONTRACT.md` and `docs/PERFORMANCE_PWA_PROGRESSIVE_LOADING.md`.
 
@@ -40,26 +41,26 @@ Where these disagree, code and tests win.
 
   The owner comes only from the verified session. Forbidden fields are rejected.
 - **Reporters**:
-  - Android (Direct + Play): crash handler, process-exit reasons, critical API failures.
-  - PWA: JS errors, rejections, critical API, load, save and restore failures.
+  - Android (Direct + Play): crash handler, process-exit reasons, critical API failures and live-voice failures.
+  - PWA: JS errors, rejections, critical API, load, save and restore failures, and live-voice failures.
 
   Both use a bounded, owner-bound offline queue with backoff. Neither ever blocks the learner.
 - **Admin PWA:**
-  - a `diagnostic` source in the existing Inbox and triage (New → Investigating → Resolved), with the existing "Fixed" button and an audited reopen that shows a "fixed error came back" notice;
+  - a `diagnostic` source in the existing Inbox and triage (New → Investigating → Resolved), with no new filter control, the existing "Fixed" button and an audited reopen that shows a "fixed error came back" notice;
   - bounded Apple Push through the existing outbox for new or escalated critical incidents, plus one push whenever an incident marked fixed comes back, at any severity.
 - **Mini App compatibility.** The Mini App `app_error` and `clog` signals feed the same intake. The adapter is additive (owner decision 2026-11-13). The `technical` item, its per-error push, bot AI context and the other existing consumers stay unchanged.
 - **P0 coverage enforcement from the first group:**
   - a `Monitoring Impact` rule in `AGENTS.md`;
-  - a `monitoring` block in the existing registry, keyed by Analytics flow IDs and platform keys;
-  - checks added to the existing `check_analytics_coverage.py` and `analytics-integrity.yml`.
+  - an optional `monitoring` block in the existing registry, keyed by Analytics flow IDs and platform keys;
+  - checks added to the existing `check_analytics_coverage.py` (reusing its chain-test proof, plus a runtime proof that each chain test really ran) and `analytics-integrity.yml`.
 
   A new learner route, Android feature package or PWA page without monitoring coverage fails CI. Legacy gaps sit in a frozen baseline that can only shrink.
 - **Rollout:**
   - an intake mode `off` / `owners` / `all` that doubles as the kill switch;
-  - a separate diagnostic-push switch;
-  - a separate Mini App adapter switch.
+  - a separate diagnostic-push switch (`MONITORING_PUSH_ENABLED`);
+  - a separate Mini App adapter switch (`MONITORING_MINIAPP_ADAPTER_ENABLED`).
 
-  All default off. Turning them off never touches payments, lessons or existing pushes.
+  All default off. Turning them off never touches payments, lessons or existing pushes. Before `all`, `/privacy` and the Play Data safety declaration disclose automatic error reports.
 
 ## Capabilities
 
@@ -69,7 +70,7 @@ Where these disagree, code and tests win.
 - `monitoring-coverage`: The durable Monitoring Impact rule, the monitoring section of the shared coverage registry, and the CI merge-block for unmonitored important features.
 
 ### Modified Capabilities
-None. `admin-real-analytics` keeps its requirements: Report freshness gains a diagnostics row, but no requirement changes. The Analytics change `hsk-ai-analytics-integrity` is not yet archived, so its `analytics-feature-coverage` capability is not a base spec. Its identifiers are referenced, not modified.
+None. `admin-real-analytics` keeps its requirements. Report freshness gains a `diagnostics` source, which the "Per-platform source freshness" requirement of `hsk-ai-analytics-integrity` already covers. The Analytics change `hsk-ai-analytics-integrity` is not yet archived, so its `analytics-feature-coverage` capability is not a base spec. Its identifiers are referenced, not modified.
 
 ## Impact
 
@@ -79,11 +80,13 @@ None. `admin-real-analytics` keeps its requirements: Report freshness gains a di
   - the Admin PWA on iPhone and macOS (Inbox and Push).
   - **Desktop (macOS/Windows): no code, adapter, test or CI** (development freeze). The intake contract stays platform-neutral.
 - **Server:**
-  - one Alembic migration: two tables, plus `diagnostic` in three existing source CHECK constraints;
+  - one Alembic migration after head `0155`: two tables, plus `diagnostic` in three existing source CHECK constraints;
   - a monitoring service package, two intake routes, a backend reporter hook and the Mini App `app_error` adapter in `app/main.py`;
   - the Inbox projection in `app/admin_api/pwa_inbox.py` and its triage hook;
   - the push outbox and dispatcher, `app/static/admin-pwa/{app.js,sw.js}`;
-  - the hourly housekeeping loop.
+  - the hourly housekeeping loop (`_desktop_auth_retention_scheduler`);
+  - a `diagnostics` source in Report freshness;
+  - the automatic-report sentence in `/privacy`.
 - **Clients:**
   - an Android `core/diagnostics` reporter, with R8 keep rules for both flavours;
   - one shared learner JS reporter used by `course-v3.html` and the PWA pages (with the `?v=` asset version);
@@ -96,11 +99,11 @@ None. `admin-real-analytics` keeps its requirements: Report freshness gains a di
   - the manual bug reports (Android and PWA) and their Telegram delivery;
   - analytics event stores and KPI values;
   - payment, entitlement, auth, grading and lesson flows;
-  - the existing payment/Android pushes and their priority;
+  - the existing payment, Android and Mini App `technical` pushes and their priority, and the Lava Telegram alerts;
   - Desktop.
 - **No new infrastructure:** no Redis use, vendor SDK, Sentry/Crashlytics or new worker. PostgreSQL and the existing hourly loop and push dispatcher are reused.
-- **Learner-visible change:** none. Reporting is silent and best-effort.
-- **Prerequisite:** the Analytics registry, checker and workflow (PR #285) are on `main` first, or this work stacks on that branch. Monitoring extends them; it does not copy them.
+- **Learner-visible change:** only the disclosure sentence in `/privacy`. Reporting is silent and best-effort.
+- **Prerequisite (met):** the Analytics registry, checker, workflow and R1–R4 are on `main`. Monitoring extends them; it does not copy them.
 - **Rollback:**
   - Intake mode `off` stops all writes.
   - The push switch stops diagnostic alerts only.
