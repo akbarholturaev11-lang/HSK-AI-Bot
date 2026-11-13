@@ -73,6 +73,10 @@ jobs:
           tests/test_monitoring_push.py
           tests/test_monitoring_telegram_chain.py
           tests/test_monitoring_0156_migration.py
+          tests/test_i18n_miniapp_hotspot_triage.py
+          tests/test_i18n_miniapp_inline_adoption.py
+          tests/test_i18n_miniapp_lesson_fetch_audit.py
+          tests/test_miniapp_onboarding_save_confirmation.py
           tests/test_admin_pwa_v10_regression.py
           tests/test_admin_pwa_platform_scope.py
           tests/test_checkout_transport_marker.py

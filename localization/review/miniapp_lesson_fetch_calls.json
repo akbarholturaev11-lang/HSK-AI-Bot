@@ -2,12 +2,12 @@
   "schema_version": 1,
   "status": "PURPOSE_SPECIFIC_APIS_SOURCE_REVIEWED",
   "source": "app/static/course-v3.html",
-  "source_revision": "200cd2ccc5d4c44cfba8fbe97a4d5647724f1e48",
+  "source_revision": "ed41339e6863645bacc8dd87eb38512462d3cf68",
   "scope": "Three direct loadLessonData(...) expressions remain: audio warmup, nearby prefetch, and the post-reservation interactive lesson. Sales preview, Starter 0, and skip-test use separate purpose-specific endpoints. No client caller reads the legacy public lesson JSON route.",
   "read_calls": [
     {
       "ordinal": 1,
-      "line": 2676,
+      "line": 2685,
       "anchor": "loadLessonData(lv,n)",
       "owner": "warmLessonPreviewAudio",
       "intent": "audio_preload_before_continue",
@@ -17,7 +17,7 @@
     },
     {
       "ordinal": 2,
-      "line": 3692,
+      "line": 3702,
       "anchor": "loadLessonData(lv,l.n)",
       "owner": "prefetchNearbyLessons",
       "intent": "background_nearby_prefetch",
@@ -27,7 +27,7 @@
     },
     {
       "ordinal": 3,
-      "line": 4811,
+      "line": 4824,
       "anchor": "loadLessonData(lv,l.n)",
       "owner": "startLesson",
       "intent": "interactive_lesson_after_reservation",
@@ -38,17 +38,17 @@
   ],
   "additional_indirect_entrypoints": [
     {
-      "line": 4108,
+      "line": 4293,
       "name": "warmLessonPreviewAudio",
       "intent": "preview_on_sheet_open"
     },
     {
-      "line": 6007,
+      "line": 6235,
       "name": "prefetchNearbyLessons",
       "intent": "track_switch_background"
     },
     {
-      "line": 9261,
+      "line": 9749,
       "name": "prefetchNearbyLessons",
       "intent": "initial_course_boot_background"
     }
@@ -91,6 +91,10 @@
     "previous_source_lines": 10004,
     "merged_source_lines": 10006,
     "scope": "Exact reviewed direct and indirect lesson load callsite anchors were remapped after current main merge; access/consumption, signed auth and active lesson reservation remain server-owned."
+  },
+  "monitoring_anchor_review": {
+    "source_blob_sha": "ed41339e6863645bacc8dd87eb38512462d3cf68",
+    "scope": "Verified all direct and indirect lesson reads exactly match the pre-monitoring source; only locations moved."
   },
   "pwa_source_review": {
     "source_blob_sha": "40180e1be8f683e1d85e5313dad2a4ed9263f396",

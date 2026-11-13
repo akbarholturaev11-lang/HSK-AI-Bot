@@ -35,8 +35,9 @@ or production acceptance.
 - Shared checker in push and pull-request mode, and the backend/PWA policy
   with `--enforce-change-tests`, passed. The [feature Analytics integrity
   run](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43412786216)
-  passed. The same suite passed locally (221 tests, 261 subtests); it proves
-  20 feature/platform pairs through the real intake and authenticated Inbox.
+  passed. The [follow-up Analytics run](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43414811984)
+  passed 222 tests and proved 20 feature/platform pairs through the real
+  intake and authenticated Inbox.
 - Scratch CI [rejected both an unmapped learner route and Android
   package](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43412956667)
   and [passed once they mapped to covered Lessons and the scratch route was
@@ -45,16 +46,25 @@ or production acceptance.
 - Admin PWA Playwright: main Inbox/Statistics browser suite plus MCP consent,
   minimal Inbox, settings, outbound, campaigns and payout passed. Diagnostic
   list, one-tap Fixed and reopened detail verified at 390 px in UZ/RU/TJ.
-  PostgreSQL Admin lock/regression list: 75 passed. Focused monitoring,
+  PostgreSQL Admin lock/regression list: 75 passed; the separately configured
+  Smart Reminder suite passed 270 tests (12 skips). Focused monitoring,
   retention and dispatch: 63 passed. Onboarding, PWA auth, Pro, referrals,
-  legacy push and standalone QA bootstrap: 254 passed.
+  legacy push and standalone QA bootstrap: 254 passed. Three targeted
+  Telegram Mini App browser onboarding regressions also passed. A broad local
+  Mini App smoke run had 27 failures across 132 tests. A six-case local
+  comparison reproduced the same five failures on both revisions, including
+  the unmocked Memorize access fixture. The other broad smoke failures were
+  not individually compared; the targeted onboarding browser cases passed.
 - Learner Node, focused Chromium/WebKit diagnostics, cache versions and
-  worker asset budget passed. Local macOS Chromium/WebKit (Playwright 1.63)
+  worker asset budget passed. The [GitHub Linux performance workflow](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43414756219)
+  passed all 68 tests per browser with the pinned tools, plus backend and
+  policy jobs. Local macOS Chromium/WebKit (Playwright 1.63)
   showed the same two Russian Practice skeleton geometry failures at 320 px
   on both `e7e6641a` and the monitoring feature. An isolated repeat of the
   Chromium reduced-motion case gave the same 43.4 px group shift on both.
   This is a local comparison, not evidence of a prior CI or production
-  failure. A timing-dependent partner/Postgres test also varied locally;
+  failure; it did not reproduce on GitHub CI. A timing-dependent
+  partner/Postgres test also varied locally;
   it passed in the dedicated Admin Postgres run.
 - Android: `testPlayDebugUnitTest testDirectDebugUnitTest`, `lint` and
   `bundlePlayRelease bundleDirectRelease` passed. Actual R8 DEX extracted from
@@ -66,9 +76,20 @@ or production acceptance.
   admission used the owner/time index (~0.03 ms); five-incident affected
   counts used the incident/time index (~39 ms with ~67k matching receipts).
   Times describe this fixture, not production.
-- OpenSpec strict validation, generated localization catalog, Python and JS
-  syntax checks and single Alembic head passed. The full non-browser-suite
-  comparison has not been signed off; keep 5.1 open until it is recorded.
+- OpenSpec strict validation, generated localization catalog, protected-source
+  baseline (zero blockers), Python and JS syntax and single Alembic head passed.
+- Full non-browser comparison: `pytest -q --ignore=tests/e2e --tb=no tests`
+  ran to completion on both trees. The starting commit had 5,381 passed,
+  3 failures in stale initializer/head checks and 771 skips. The feature run
+  before the final correction had 5,393 passed, the same 771 skips, one
+  timing-sensitive partner/Postgres failure and four failing source guards
+  (one expanded into 60 line-anchor subtests). The source guards were fixed:
+  62 locale lines/130 predicates and all direct/indirect lesson read
+  expressions matched exactly and were re-anchored. The source guards now run
+  in Analytics integrity CI. The corrected source and Telegram tests passed
+  on rerun (35 tests, 202 subtests), as did the
+  isolated partner and initializer checks (4 tests). The entire suite was not
+  rerun after this last correction, so 5.1 remains open.
 
 ## Joint Analytics and Monitoring audit (5.3, feature branch)
 

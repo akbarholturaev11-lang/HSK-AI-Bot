@@ -25,7 +25,7 @@
     },
     "app/static/course_v3_onboarding.html": {
       "baseline_sha1": "321c28c34cf4ed0550bb5187d8f6b680654ea51e",
-      "reviewed_sha1": "0423a3cf5b10caa828b21027cc4b3277cb96142f",
+      "reviewed_sha1": "e33ef34f25534f58a08e3e955407177bb5b3d4bd",
       "reason": "Reviewed local-first fixed UI adoption and content-addressed bundle refresh; original Chinese/answers/lesson IDs and auth, access, payment and progress contracts unchanged. Legacy fallback retained; source and runtime adoption regressions added.; 2026-11-03 reviewed PR #257 per-file diff for original practice/onboarding child with authenticated PWA transport, owner-scoped state, retained Telegram implementation and preserved original quiz/grading services; exact PWA branch blob only, runtime/locale/real-device acceptance remains pending; 2026-11-03 reviewed Safari BFCache/foreground PWA-session owner revalidation only; original Mini App branch and course/grade/UI text unchanged; 2026-11-04 PWA-only shake feedback, responsive practice panda loader, session-scoped return navigation; preserved upstream main Apple push Settings fix and exact source revisions for PR #261.; 2026-11-08 PR #282 reviewer-scoped diff: original 3-question server onboarding preserves signed Telegram and PWA owner identity, renders an immediate real track loading/error/retry shell with a bounded WebView timeout and asynchronous CTA re-enable. No lesson/quiz/HSK3.0 entitlement or payment access bypass; matching Playwright and static contracts authored.; 2026-11-13 reviewed monitoring-only deferred asset and failure hooks; the localized text, course answers and original user-visible flow are unchanged."
     },
     "app/static/course_v3_test.html": {

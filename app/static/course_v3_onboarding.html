@@ -656,6 +656,8 @@ function finish(){
     location.href=(PWA_ONBOARDING_HOST?"/iphone-pwa/course":"/course-v3.html")+"?"+query.toString()+location.hash;
   }
   function fail(reason){
+    // Telegram already reports this save failure through its legacy adapter.
+    if(PWA_ONBOARDING_HOST&&window.HskDiag)HskDiag.report("onboarding_activation","save_unconfirmed","onboarding_save",reason&&(reason.httpStatus||reason)||0);
     saveNeedsVerification=true;
     setSubmitting(false);cta.textContent=L.retry;
     errorBox.textContent=reason&&reason.code==="invalid_telegram_init_data"?L.authError
@@ -668,13 +670,9 @@ function finish(){
       confirmSavedOnServer(payload).then(function(saved){
         reportOnboardingSaveError(reason,!!saved);
         if(saved)go(saved);
-        else {
-          if(window.HskDiag)HskDiag.report("onboarding_activation","save_unconfirmed","onboarding_save",reason&&(reason.httpStatus||reason)||0);
-          fail(reason);
-        }
+        else fail(reason);
       },function(verifyError){
         reportOnboardingSaveError(reason||verifyError,false);
-        if(window.HskDiag)HskDiag.report("onboarding_activation","save_unconfirmed","onboarding_save",reason&&(reason.httpStatus||reason)||0);
         fail(reason);
       });
     },300);
