@@ -58,3 +58,57 @@ Keep the three sizes crisp and proportional; adjust particle count, dot radius, 
 - No dependency on a live backend, microphone, TTS or React Native.
 - Rendering capped at a sensible rate (the lab currently targets ~30 fps), paused when hidden; reduced-motion displays a stable composition.
 - The learner production files and `main` remain unchanged.
+
+## Implemented visual pass — 2026-11-13 (prototype only)
+
+**Selected pattern:** restrained, size-aware Canvas overlays over the original
+red/pearl base. Comparison with the starting lab's shared, relatively dense
+particle formula favored separate visual signatures and fewer dots at 62/80 px:
+- **Listening:** a soft amplitude-responsive crescent/ripple with 5/7/11 dots
+  at Typing/Chat/Focus and a restrained inner contour.
+- **Thinking:** two coherent, slowly counter-rotating elliptical tracks (one
+  simplified track at 62px), 5/7/11 small pearl points. No random per-frame jitter.
+- **Speaking:** central harmonic wave lines (2/3/4 bands) with 3/5/9
+  amplitude-driven points and gentle pearl light bloom; visually distinct
+  from the listening arc.
+- Idle/connecting/error stay quiet; a readable local state label sits outside
+  the orb. The original red/pearl gradient, waves, glaze and shape remain.
+- State transitions crossfade weighted overlays over 410ms; rapid repeated
+  selections continue from the current blend instead of resetting or popping.
+  Audio amplitude has a ~105ms smoothing constant. All presets retain the
+  fixed **173/80/62 CSS px** dimensions.
+- A local All/Focus/Chat/Typing view picker makes individual size inspection
+  possible. Default shows all three. The slider is synthetic only; no actual
+  sound, microphone, network, API, backend or TTS integration.
+- RAF capped at 30 fps, no RAF when reduced motion is requested, pause on hidden
+  tab, repaint on resize/DPR change; internal canvas pixel size matches CSS×DPR
+  up to a 3× cap. No new dependency or runtime framework.
+
+### Local verification evidence
+
+- node --check on extracted inline JS: **pass**.
+- Chromium headless: viewport widths **320, 390, 430px**, DPR **2×**;
+  six states, three exact CSS sizes, all size-picker modes, amplitude input,
+  no horizontal overflow and no page/console JavaScript errors: **pass**.
+- Chromium reduced motion: **320px / 3× DPR**; stable single-frame
+  composition, selected state and slider still update, FPS remains zero: **pass**.
+- Repeated state changes (42 switches), manual visibility hidden/resume,
+  live reduced-motion toggle and resume: **pass**.
+- Headless Chromium sampled **22–23 displayed FPS** while the renderer is
+  capped at 30; performance differs from a real iPhone/Android device.
+  Chromium JS heap after explicit GC sampled ~1008 / 997 / 997 KiB across
+  three intervals (short-run smoke check, not a long-duration leak proof).
+- Visual review: compared Idle/Listening/Thinking/Speaking/Connecting/Error
+  Focus captures and the 390px full-page composition; patterns have separate
+  visual signatures without making the small orbs crowded.
+- **WebKit/iOS browser not available** in the execution environment; needs
+  an actual WebKit/iPhone validation before any production port.
+- Screenshots were inspection artifacts outside the tracked repo: keep this
+  branch restricted to the prototype HTML and this handoff file only.
+
+**Analytics Impact:** none; standalone local synthetic renderer with no
+product user flow or telemetry events.
+
+**Release boundary:** DO NOT merge to main or copy into production
+PWA/Android Voice without the owner's separate visual approval and real-device
+checks. No production source was changed by this task.

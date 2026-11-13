@@ -5,16 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>HSK AI · Voice Orb Motion Lab</title>
 <style>
-:root{color-scheme:light;--bg:#f7f5f0;--ink:#302926;--muted:#8d847f;--line:rgba(78,52,48,.12);--accent:#b63738;--warm:#fefdf9}
+:root{color-scheme:light;--bg:#f7f5f0;--ink:#302926;--muted:#837873;--line:rgba(78,52,48,.12);--accent:#b63738}
 *{box-sizing:border-box}body{margin:0;min-height:100dvh;background:radial-gradient(ellipse at 50% 5%,#fff9f3,transparent 55%),var(--bg);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--ink)}
 main{width:min(900px,100%);margin:auto;padding:24px 18px 55px}header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:24px}header b{font-size:15px;letter-spacing:-.02em}.eyebrow{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#9e5751;font-weight:800}.chip{font-size:11px;color:#876f69;border:1px solid var(--line);border-radius:100px;padding:5px 10px;white-space:nowrap}
 h1{font-size:clamp(24px,5vw,35px);line-height:1.12;letter-spacing:-.05em;margin:5px 0 10px}p{color:var(--muted);margin:0}.lead{max-width:620px;font-size:13px}
-.toolbar{display:grid;gap:15px;margin:27px 0 22px}.legend{font-size:11px;font-weight:700;letter-spacing:.025em;margin-bottom:8px;color:#716662}.segments{display:flex;gap:6px;flex-wrap:wrap}button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}button.option{border:1px solid #e8dcd5;border-radius:11px;background:rgba(255,255,255,.65);padding:8px 13px;min-height:38px;color:#625651;font-size:12px;font-weight:650;transition:background .15s,border-color .15s;white-space:nowrap}button.option[aria-pressed="true"]{background:#aa3435;color:white;border-color:#aa3435}button:focus-visible,input:focus-visible{outline:3px solid #b46d54;outline-offset:3px}
-.row{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.level{display:flex;align-items:center;gap:10px;min-width:260px}.level input{accent-color:#a93435;min-width:125px;flex:1}.level output{font-variant-numeric:tabular-nums;color:#a93435;font-weight:800;width:32px;text-align:right}.toggle{display:flex;align-items:center;gap:8px;font-size:12px;color:#5d534f;cursor:pointer}.toggle input{accent-color:#ab3837}
-.previews{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:12px;align-items:stretch}.preview{border:1px solid var(--line);border-radius:23px;background:rgba(255,255,255,.73);min-height:300px;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;box-shadow:0 8px 35px rgba(88,51,39,.025)}.preview:before{content:"";position:absolute;inset:18% 10%;border-radius:50%;background:radial-gradient(closest-side,rgba(226,102,83,.095),transparent);filter:blur(19px);pointer-events:none}.preview .headline{position:relative;align-self:flex-start;padding:18px 20px 0}.preview .headline strong{font-size:12px}.preview .headline span{font-size:11px;color:var(--muted);display:block}.stage{height:224px;width:100%;display:grid;place-items:center;isolation:isolate}.orb{display:block;border-radius:50%;width:var(--orb-size);height:var(--orb-size);filter:drop-shadow(0 8px 15px rgba(154,42,37,.12));transition:width .25s ease,height .25s ease}.preview .foot{margin-top:auto;margin-bottom:17px;font-size:11px;color:#9e918a;letter-spacing:.02em}
+.toolbar{display:grid;gap:15px;margin:25px 0 13px}.legend{font-size:11px;font-weight:700;letter-spacing:.025em;margin-bottom:8px;color:#716662}.segments{display:flex;gap:6px;flex-wrap:wrap}button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}button.option{border:1px solid #e8dcd5;border-radius:11px;background:rgba(255,255,255,.72);padding:9px 13px;min-height:44px;color:#625651;font-size:12px;font-weight:650;transition:background .18s,border-color .18s,color .18s;white-space:nowrap}button.option[aria-pressed="true"]{background:#aa3435;color:white;border-color:#aa3435}button:focus-visible,input:focus-visible{outline:3px solid #b46d54;outline-offset:3px}
+.row{display:flex;gap:14px 23px;align-items:center;flex-wrap:wrap}.level{display:flex;align-items:center;gap:12px;min-width:260px}.level input{accent-color:#a93435;min-width:125px;flex:1;height:28px}.level output{font-variant-numeric:tabular-nums;color:#a93435;font-weight:800;width:32px;text-align:right}.toggle{display:flex;align-items:center;gap:8px;min-height:44px;font-size:12px;color:#5d534f;cursor:pointer}.toggle input{accent-color:#ab3837;width:16px;height:16px}
+.state-line{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 15px;min-height:19px;font-size:11px;color:#7a6661}.state-line strong{color:#a7403f;font-weight:700}.state-line .telemetry{font-variant-numeric:tabular-nums;color:#958782}
+.previews{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:12px;align-items:stretch}.previews.single{grid-template-columns:minmax(0,1fr)}.preview[hidden]{display:none!important}.preview{border:1px solid var(--line);border-radius:23px;background:rgba(255,255,255,.73);min-height:300px;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;box-shadow:0 8px 35px rgba(88,51,39,.025)}.preview:before{content:"";position:absolute;inset:18% 10%;border-radius:50%;background:radial-gradient(closest-side,rgba(226,102,83,.095),transparent);filter:blur(19px);pointer-events:none}.preview .headline{position:relative;align-self:flex-start;padding:18px 20px 0}.preview .headline strong{font-size:12px}.preview .headline span{font-size:11px;color:var(--muted);display:block}.stage{height:224px;width:100%;display:grid;place-items:center;isolation:isolate}.orb{display:block;border-radius:50%;width:var(--orb-size);height:var(--orb-size);flex:none;filter:drop-shadow(0 8px 15px rgba(154,42,37,.12))}.preview .foot{margin-top:auto;margin-bottom:17px;font-size:11px;color:#9e918a;letter-spacing:.02em}
 .note{font-size:12px;color:#817671;line-height:1.5;margin-top:18px;border-left:2px solid #d9a7a1;padding-left:12px}footer{font-size:11px;color:#9a8b83;margin-top:22px}
-@media(max-width:650px){main{padding:17px 13px 30px}header{margin-bottom:22px}.previews{grid-template-columns:1fr 1fr;gap:9px}.preview:first-child{grid-column:span 2;min-height:280px}.preview{min-height:235px;border-radius:18px}.preview .headline{padding:14px 14px 0}.stage{height:155px}.preview:first-child .stage{height:215px}.preview .foot{margin-bottom:12px}.level{min-width:0;width:100%}}
-@media(prefers-reduced-motion:reduce){.orb,button.option{transition:none!important}}
+@media(max-width:650px){main{padding:17px 13px 30px}header{margin-bottom:19px}.previews{grid-template-columns:1fr 1fr;gap:9px}.preview:first-child{grid-column:span 2;min-height:280px}.previews.single .preview:first-child{grid-column:auto}.preview{min-height:235px;border-radius:18px}.preview .headline{padding:14px 14px 0}.stage{height:155px}.preview:first-child .stage{height:215px}.preview .foot{margin-bottom:12px}.level{min-width:0;width:100%}.toolbar{gap:12px;margin-top:20px}button.option{padding:9px 11px}}
+@media(max-width:350px){main{padding-inline:10px}.segments{gap:5px}button.option{padding-inline:9px;font-size:11px}.state-line{font-size:10px}}
+@media(prefers-reduced-motion:reduce){button.option{transition:none!important}}
 </style>
 </head>
 <body>
@@ -22,72 +24,94 @@ h1{font-size:clamp(24px,5vw,35px);line-height:1.12;letter-spacing:-.05em;margin:
 <header><b>HSK <span style="color:#b63738">AI</span></b><span class="chip">Visual sandbox · no API calls</span></header>
 <div class="eyebrow">Voice V8 · isolated motion prototype</div>
 <h1>Red Orb × motion</h1>
-<p class="lead">Только визуальные состояния и реальные размеры HSK AI. Не подключено к микрофону, TTS, сессиям или платежам.</p>
+<p class="lead">Фирменный красный шар HSK AI: реакции и точные размеры. Микрофон, TTS и сервер не подключены.</p>
 <section class="toolbar" aria-label="Orb preview controls">
 <div><div class="legend">Состояние шара</div><div class="segments" role="group" aria-label="Состояние">
-<button class="option" data-state="idle" aria-pressed="false">Idle</button>
-<button class="option" data-state="listening" aria-pressed="true">Listening</button>
-<button class="option" data-state="thinking" aria-pressed="false">Thinking</button>
-<button class="option" data-state="speaking" aria-pressed="false">Speaking</button>
-<button class="option" data-state="connecting" aria-pressed="false">Connecting</button>
-<button class="option" data-state="error" aria-pressed="false">Error</button>
+<button class="option" type="button" data-state="idle" aria-pressed="false">Idle</button>
+<button class="option" type="button" data-state="listening" aria-pressed="true">Listening</button>
+<button class="option" type="button" data-state="thinking" aria-pressed="false">Thinking</button>
+<button class="option" type="button" data-state="speaking" aria-pressed="false">Speaking</button>
+<button class="option" type="button" data-state="connecting" aria-pressed="false">Connecting</button>
+<button class="option" type="button" data-state="error" aria-pressed="false">Error</button>
+</div></div>
+<div><div class="legend">Размер</div><div class="segments" role="group" aria-label="Размер">
+<button class="option" type="button" data-view="all" aria-pressed="true">Все три</button>
+<button class="option" type="button" data-view="focus" aria-pressed="false">Focus · 173</button>
+<button class="option" type="button" data-view="chat" aria-pressed="false">Chat · 80</button>
+<button class="option" type="button" data-view="typing" aria-pressed="false">Typing · 62</button>
 </div></div>
 <div class="row"><div class="level"><label for="level" class="legend" style="margin:0">Audio level</label><input id="level" type="range" min="0" max="100" value="36" step="1"><output id="levelValue" for="level">36</output></div>
-<label class="toggle"><input id="simulate" type="checkbox" checked> Simulate live amplitude</label></div>
+<label class="toggle"><input id="simulate" type="checkbox" checked> Simulate amplitude</label></div>
 </section>
-<div class="previews">
-<section class="preview"><div class="headline"><strong>Focus</strong><span>173 CSS px / dp</span></div><div class="stage"><canvas id="focus" class="orb" style="--orb-size:173px" width="346" height="346" role="img" aria-label="Большой красный шар HSK AI"></canvas></div><div class="foot">173 × 173</div></section>
-<section class="preview"><div class="headline"><strong>Chat</strong><span>80 CSS px / dp</span></div><div class="stage"><canvas id="chat" class="orb" style="--orb-size:80px" width="160" height="160" role="img" aria-label="Средний красный шар HSK AI"></canvas></div><div class="foot">80 × 80</div></section>
-<section class="preview"><div class="headline"><strong>Typing</strong><span>62 CSS px / dp</span></div><div class="stage"><canvas id="typing" class="orb" style="--orb-size:62px" width="124" height="124" role="img" aria-label="Компактный красный шар HSK AI"></canvas></div><div class="foot">62 × 62</div></section>
+<div class="state-line"><span id="stateHint" role="status" aria-live="polite"><strong>Listening</strong> · реагирует на громкость</span><span class="telemetry" id="telemetry" aria-live="off">30 fps max</span></div>
+<div class="previews" id="previews">
+<section class="preview" data-size="focus"><div class="headline"><strong>Focus</strong><span>173 CSS px / dp</span></div><div class="stage"><canvas id="focus" class="orb" style="--orb-size:173px" width="346" height="346" role="img" aria-label="Красный шар HSK AI, размер Focus"></canvas></div><div class="foot">173 × 173</div></section>
+<section class="preview" data-size="chat"><div class="headline"><strong>Chat</strong><span>80 CSS px / dp</span></div><div class="stage"><canvas id="chat" class="orb" style="--orb-size:80px" width="160" height="160" role="img" aria-label="Красный шар HSK AI, размер Chat"></canvas></div><div class="foot">80 × 80</div></section>
+<section class="preview" data-size="typing"><div class="headline"><strong>Typing</strong><span>62 CSS px / dp</span></div><div class="stage"><canvas id="typing" class="orb" style="--orb-size:62px" width="124" height="124" role="img" aria-label="Красный шар HSK AI, размер Typing"></canvas></div><div class="foot">62 × 62</div></section>
 </div>
-<p class="note">Источник формы и красно-перламутровых переливов: действующий <code>iphone-pwa-voice.html</code>. Частицы — только дополнительный слой поверх фирменного шара. Амплитуда сейчас синтетическая: реальные audio levels подключаются позже отдельной задачей.</p>
-<footer>HSK AI Orb Lab · separate branch · production runtime untouched</footer>
+<p class="note">Основа — красно-перламутровый Canvas-шар из <code>iphone-pwa-voice.html</code>. Эффекты наложены поверх исходной формы. Амплитуда только синтетическая; реальные уровни звука подключаются отдельно.</p>
+<footer>HSK AI Orb Lab · isolated branch · production runtime untouched</footer>
 </main>
 <script>
 (()=>{'use strict';
-const reduced=matchMedia('(prefers-reduced-motion: reduce)');
-const buttons=[...document.querySelectorAll('[data-state]')];
-let current='listening',previous='listening',transitionAt=0,auto=document.getElementById('simulate').checked,level=.36;
-const input=document.getElementById('level'),out=document.getElementById('levelValue');
-const canvases=['focus','chat','typing'].map(id=>({el:document.getElementById(id),ctx:document.getElementById(id).getContext('2d',{alpha:true})}));
-buttons.forEach(b=>b.addEventListener('click',()=>{if(current===b.dataset.state)return;previous=current;current=b.dataset.state;transitionAt=performance.now();buttons.forEach(x=>x.setAttribute('aria-pressed',String(x===b)));if(reduced.matches)drawAll(performance.now())}));
-input.addEventListener('input',()=>{level=Number(input.value)/100;out.textContent=input.value;if(reduced.matches)drawAll(performance.now())});
-document.getElementById('simulate').addEventListener('change',e=>{auto=e.target.checked;if(reduced.matches)drawAll(performance.now())});
+const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
+const states=['idle','listening','thinking','speaking','connecting','error'];
+const stateNotes={idle:'спокойное ожидание',listening:'реагирует на громкость',thinking:'упорядоченное движение',speaking:'ритм речи и световые волны',connecting:'мягкий сигнал соединения',error:'сдержанное состояние ошибки'};
+const stateButtons=[...document.querySelectorAll('[data-state]')],viewButtons=[...document.querySelectorAll('[data-view]')];
+const levelInput=document.getElementById('level'),levelOutput=document.getElementById('levelValue'),telemetry=document.getElementById('telemetry');
+const previews=document.getElementById('previews');
+const canvases=['focus','chat','typing'].map(id=>({id,el:document.getElementById(id),ctx:document.getElementById(id).getContext('2d',{alpha:true})}));
+let current='listening',view='all',auto=document.getElementById('simulate').checked,level=.36,smoothed=.36;
+let weights={idle:0,listening:1,thinking:0,speaking:0,connecting:0,error:0},from={...weights},transitionAt=0,frameTime=0,raf=0,frameCount=0,fpsSince=0,fps=0;
+const TWO_PI=Math.PI*2,clamp=x=>Math.max(0,Math.min(1,x)),ease=x=>x*x*(3-2*x);
+function blend(ms){if(reduced.matches){for(const k of states)weights[k]=Number(k===current);return}const k=ease(clamp((ms-transitionAt)/410));for(const st of states)weights[st]=from[st]*(1-k)+Number(st===current)*k}
+function selectState(next){if(current===next)return;const now=performance.now();blend(now);from={...weights};current=next;transitionAt=now;for(const b of stateButtons)b.setAttribute('aria-pressed',String(b.dataset.state===current));document.getElementById('stateHint').innerHTML='<strong>'+current[0].toUpperCase()+current.slice(1)+'</strong> · '+stateNotes[current];restart()}
+for(const b of stateButtons)b.addEventListener('click',()=>selectState(b.dataset.state));
+for(const b of viewButtons)b.addEventListener('click',()=>{view=b.dataset.view;previews.classList.toggle('single',view!=='all');for(const p of previews.children)p.hidden=view!=='all'&&p.dataset.size!==view;for(const v of viewButtons)v.setAttribute('aria-pressed',String(v===b));restart()});
+levelInput.addEventListener('input',()=>{level=Number(levelInput.value)/100;levelOutput.textContent=levelInput.value;if(reduced.matches){smoothed=level;restart()}});
+document.getElementById('simulate').addEventListener('change',e=>{auto=e.target.checked;if(reduced.matches)restart()});
 const noise=document.createElement('canvas');noise.width=64;noise.height=64;const nctx=noise.getContext('2d');const ndata=nctx.createImageData(64,64);let seed=8;const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296};for(let i=0;i<ndata.data.length;i+=4){const v=144+rand()*105;ndata.data[i]=v;ndata.data[i+1]=v;ndata.data[i+2]=v;ndata.data[i+3]=Math.round(rand()*22)}nctx.putImageData(ndata,0,0);
-const TWO_PI=Math.PI*2;const ease=x=>x*x*(3-2*x);
-function activity(t){if(!auto||reduced.matches)return level;return Math.max(0,Math.min(1,level*(.63+.28*Math.sin(t*4.4)+.18*Math.sin(t*10.8)+.18*Math.sin(t*17.1))))}
-function paintBase(ctx,size,dpr,t,a,state){const c=size/2,r=c-.75*dpr;const active=(state==='speaking'||state==='listening')?1+.16*a:1;
+function sampleAmplitude(ms){const t=ms*.001;const target=auto&&!reduced.matches?clamp(level*(.73+.2*Math.sin(t*4.3)+.13*Math.sin(t*9.7)+.12*Math.sin(t*15.1))):level;if(reduced.matches){smoothed=target;return target}const elapsed=frameTime?Math.min(ms-frameTime,150):32;smoothed+=(target-smoothed)*(1-Math.exp(-Math.max(0,elapsed)/105));return smoothed}
+function paintBase(ctx,size,dpr,t,a){const c=size/2,r=c-.75*dpr;const breath=1+.018*Math.sin(t*.84);const active=1+.085*a*weights.speaking;
 ctx.save();ctx.beginPath();ctx.arc(c,c,r,0,TWO_PI);ctx.clip();
 const bg=ctx.createLinearGradient(size*(.15+.12*Math.sin(t*.42)),0,size*(.78+.1*Math.cos(t*.38)),size);bg.addColorStop(0,'#B63738');bg.addColorStop(.29,'#DB554C');bg.addColorStop(.62,'#F18E72');bg.addColorStop(1,'#FFF5DF');ctx.fillStyle=bg;ctx.fillRect(0,0,size,size);
 function blob(x,y,rad,color){const g=ctx.createRadialGradient(x,y,rad*.04,x,y,rad);g.addColorStop(0,color);g.addColorStop(1,'rgba(255,255,255,0)');ctx.fillStyle=g;ctx.fillRect(x-rad,y-rad,rad*2,rad*2)}
 blob(size*(.25+.12*Math.sin(t*.91)),size*(.17+.10*Math.cos(t*.51)),size*.74,'rgba(121,13,28,.58)');blob(size*(.82+.1*Math.cos(t*.78)),size*(.40+.10*Math.sin(t*.83)),size*.73,'rgba(205,43,46,.58)');blob(size*(.30+.18*Math.sin(t*.63+1)),size*(.78+.10*Math.sin(t*.51)),size*.66,'rgba(255,251,234,.76)');blob(size*(.63+.20*Math.sin(t*.48)),size*(.58+.08*Math.cos(t*.74)),size*.45,'rgba(255,225,189,.4)');
 function crest(base,amp,phase,rate,color){ctx.beginPath();ctx.moveTo(-size*.17,size*1.14);for(let i=-.17;i<=1.18;i+=.022){const y=base+amp*(Math.sin(i*9.8+t*rate+phase)*.7+Math.sin(i*16.6-t*.69+phase)*.23+Math.sin(i*4.1+t*.51)*.2);ctx.lineTo(i*size,y*size)}ctx.lineTo(size*1.19,size*1.17);ctx.closePath();ctx.fillStyle=color;ctx.fill()}
-ctx.filter=`blur(${Math.max(1,Math.round(size*.045))}px)`;crest(.58,.105*active,0,1.35,'rgba(255,241,216,.51)');crest(.68,.095*active,2.15,-1.1,'rgba(255,254,244,.53)');crest(.77,.075*active,4.12,1.42,'rgba(251,240,230,.48)');ctx.filter='none';
+ctx.filter=`blur(${Math.max(1,Math.round(size*.045))}px)`;crest(.58,.105*active*breath,0,1.35,'rgba(255,241,216,.51)');crest(.68,.095*active*breath,2.15,-1.1,'rgba(255,254,244,.53)');crest(.77,.075*active*breath,4.12,1.42,'rgba(251,240,230,.48)');ctx.filter='none';
 ctx.globalCompositeOperation='screen';ctx.beginPath();for(let i=0;i<=1;i+=.027){const y=.57+.073*Math.sin(i*9.8+t*1.35)+.018*Math.sin(i*18-t*.62);if(i===0)ctx.moveTo(0,y*size);else ctx.lineTo(i*size,y*size)}ctx.strokeStyle='rgba(255,242,228,.12)';ctx.lineWidth=size*.026;ctx.stroke();ctx.globalCompositeOperation='source-over';
 const glaze=ctx.createRadialGradient(size*.43,size*.39,size*.03,c,c,size*.73);glaze.addColorStop(0,'rgba(255,255,255,.06)');glaze.addColorStop(.77,'rgba(255,255,255,0)');glaze.addColorStop(1,'rgba(54,6,17,.27)');ctx.fillStyle=glaze;ctx.fillRect(0,0,size,size);
 ctx.globalAlpha=.09;ctx.fillStyle=ctx.createPattern(noise,'repeat');ctx.fillRect(0,0,size,size);ctx.globalAlpha=1;ctx.restore();
-ctx.strokeStyle='rgba(255,234,220,.27)';ctx.lineWidth=1.1*dpr;ctx.beginPath();ctx.arc(c,c,r-.8,0,TWO_PI);ctx.stroke();}
-function dots(ctx,size,dpr,t,a,st,alpha){if(st==='idle'||st==='error'||alpha<=.004)return;
-const cap=Math.max(5,Math.round(size/dpr*.13)),c=size/2,rad=size*.36;
-const count=(st==='thinking'?cap+5:st==='listening'?cap:st==='speaking'?cap+2:Math.round(cap*.72));
-ctx.save();ctx.beginPath();ctx.arc(c,c,size*.475,0,TWO_PI);ctx.clip();ctx.globalCompositeOperation='screen';
-for(let j=0;j<count;j++){const u=j/Math.max(1,count),phase=TWO_PI*u,twirl=t*(st==='thinking'?.48:st==='connecting'?.23:.18);
-let ang=phase,dist=rad*(.6+.3*Math.sin(phase*2+t*.35)),dotAlpha=.45;
-if(st==='thinking'){ang=phase+twirl+1.1*Math.sin(u*3.6+t*.43);dist=rad*(.38+.4*u+.1*Math.sin(t*.6+phase));dotAlpha=.48+.21*Math.sin(t*.9+phase)}
-if(st==='listening'){ang=phase+Math.sin(t*.85+phase)*.08;dist=rad*(.68+.13*a*Math.sin(phase*3-t*5));dotAlpha=.33+.40*a}
-if(st==='speaking'){ang=phase+Math.sin(t*2+phase)*.19;dist=rad*(.45+.34*a+.05*Math.sin(t*8+phase));dotAlpha=.31+.5*a}
-if(st==='connecting'){ang=phase+twirl;dist=rad*.63;dotAlpha=.32+.16*Math.sin(t+phase)}
-const x=c+Math.cos(ang)*dist,y=c+Math.sin(ang)*dist,rr=dpr*(size/dpr<=62?.72:size/dpr<=80?.84:1.05)*(st==='speaking'?1+.4*a:1);
-ctx.beginPath();ctx.arc(x,y,rr,0,TWO_PI);ctx.fillStyle=`rgba(255,244,218,${Math.min(.75,Math.max(0,dotAlpha*alpha))})`;ctx.fill();
+ctx.strokeStyle='rgba(255,234,220,.27)';ctx.lineWidth=1.1*dpr;ctx.beginPath();ctx.arc(c,c,r-.8*dpr,0,TWO_PI);ctx.stroke()}
+function pearlDot(ctx,x,y,r,alpha){if(alpha<=.005)return;ctx.beginPath();ctx.arc(x,y,r,0,TWO_PI);ctx.fillStyle=`rgba(255,248,226,${clamp(alpha)})`;ctx.fill()}
+function paintOverlay(ctx,size,dpr,t,a,st,opacity){if(opacity<.005||st==='idle')return;const css=size/dpr,c=size/2,small=css<=62,mid=css<=80;ctx.save();ctx.beginPath();ctx.arc(c,c,size*.464,0,TWO_PI);ctx.clip();ctx.globalCompositeOperation='screen';
+if(st==='listening'){
+  const n=small?5:mid?7:11,radius=size*(.33+.021*a);ctx.lineWidth=dpr*(small?.65:mid?.8:1.15);
+  for(let ring=0;ring<(small?1:2);ring++){ctx.beginPath();const r=radius-ring*size*.058;for(let i=0;i<=54;i++){const theta=-Math.PI*.87+(i/54)*Math.PI*1.74;const wave=(.006+.019*a)*size*Math.sin(theta*5.5-t*4.2-ring*.9);const rr=r+wave;const x=c+Math.cos(theta)*rr,y=c+Math.sin(theta)*rr;if(!i)ctx.moveTo(x,y);else ctx.lineTo(x,y)}ctx.strokeStyle=`rgba(255,247,223,${opacity*(.16+.25*a-ring*.06)})`;ctx.stroke()}
+  for(let j=0;j<n;j++){const theta=-Math.PI*.83+(j/Math.max(1,n-1))*Math.PI*1.66;const push=size*(.011+.035*a)*Math.sin(theta*4.5-t*4.7);const rr=radius+push;pearlDot(ctx,c+Math.cos(theta)*rr,c+Math.sin(theta)*rr,dpr*(small?.66:mid?.82:1.08)*(1+.12*a),opacity*(.31+.49*a))}
+}else if(st==='thinking'){
+  const n=small?5:mid?7:11;for(let path=0;path<(small?1:2);path++){const r=size*(path?.285:.185);ctx.beginPath();ctx.ellipse(c,c,r,r*(path?.87:1.22),-.47+t*.15,0,TWO_PI);ctx.strokeStyle=`rgba(255,247,227,${opacity*(small?.12:.16)})`;ctx.lineWidth=dpr*.75;ctx.stroke()}
+  for(let j=0;j<n;j++){const outer=j%2===0,angle=t*(outer?.58:-.38)+(j/n)*TWO_PI+(.24*Math.sin(j*1.8));const rx=size*(outer?.29:.17),ry=size*(outer?.245:.215);const x=c+Math.cos(angle)*rx,y=c+Math.sin(angle)*ry;const luminous=(.39+.16*Math.sin(angle*1.7+j));pearlDot(ctx,x,y,dpr*(small?.71:mid?.84:1.12),opacity*luminous)}
+}else if(st==='speaking'){
+  const pulse=.25+.75*a;const bands=small?2:mid?3:4;
+  for(let j=0;j<bands;j++){const yBase=size*(.39+j*(small?.18:.105));ctx.beginPath();for(let k=0;k<=36;k++){const x=size*(.17+k/36*.66);const envelope=Math.sin(k/36*Math.PI);const y=yBase+size*(.009+.036*pulse)*Math.sin(k*.42-t*6.8+j*1.9)*envelope;if(k===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)}ctx.strokeStyle=`rgba(255,251,228,${opacity*(.12+.26*pulse)*(1-j*.1)})`;ctx.lineWidth=dpr*(small?.78:mid?1.0:1.5);ctx.stroke()}
+  const n=small?3:mid?5:9;for(let j=0;j<n;j++){const f=j/(n-1),envelope=Math.sin(f*Math.PI),x=size*(.24+.52*f);const y=c+Math.sin(t*7.5-j*.75)*size*(.012+.084*a)*envelope;pearlDot(ctx,x,y,dpr*(small?.72:mid?.98:1.35)*(1+.32*a),opacity*(.29+.55*pulse))}
+  const gl=ctx.createRadialGradient(c,c,size*.07,c,c,size*.31);gl.addColorStop(0,`rgba(255,246,224,${opacity*(.07+.15*a)})`);gl.addColorStop(1,'rgba(255,246,224,0)');ctx.fillStyle=gl;ctx.fillRect(c-size*.32,c-size*.32,size*.64,size*.64);
+}else if(st==='connecting'){
+  const n=small?4:mid?5:7;for(let j=0;j<n;j++){const angle=-Math.PI*.9+TWO_PI*j/n+t*.65;const rr=size*.29;pearlDot(ctx,c+rr*Math.cos(angle),c+rr*Math.sin(angle),dpr*(small?.74:mid?.85:1.05),opacity*(.21+.28*(j+1)/n))}
+}else if(st==='error'){
+  ctx.beginPath();ctx.arc(c,c,size*.31,-Math.PI*.77,Math.PI*.18);ctx.strokeStyle=`rgba(115,22,39,${opacity*.24})`;ctx.lineWidth=dpr*(small?1.2:1.8);ctx.stroke();pearlDot(ctx,c,c-size*.055,dpr*(small?.96:1.35),opacity*.47);pearlDot(ctx,c,c+size*.078,dpr*(small?.75:1.0),opacity*.32)
 }
-ctx.restore();}
-function draw(obj,ms){const width=obj.el.getBoundingClientRect().width;if(width<8)return;const dpr=Math.min(2,devicePixelRatio||1),size=Math.round(width*dpr);if(obj.el.width!==size||obj.el.height!==size){obj.el.width=size;obj.el.height=size}const ctx=obj.ctx;ctx.clearRect(0,0,size,size);
-const t=reduced.matches?1.2:ms*.00083,a=activity(t),mix=reduced.matches?1:ease(Math.max(0,Math.min(1,(ms-transitionAt)/320)));
-paintBase(ctx,size,dpr,t,a,current);if(previous!==current&&mix<1)dots(ctx,size,dpr,t,a,previous,1-mix);dots(ctx,size,dpr,t,a,current,mix);
-}
-function drawAll(ms){for(const c of canvases)draw(c,ms)}let raf=0,last=0;function tick(ms){if(document.hidden)return;if(ms-last>=32){last=ms;drawAll(ms)}if(!reduced.matches)raf=requestAnimationFrame(tick)}
-function restart(){cancelAnimationFrame(raf);if(!document.hidden){drawAll(performance.now());if(!reduced.matches)raf=requestAnimationFrame(tick)}}
-document.addEventListener('visibilitychange',restart);reduced.addEventListener?.('change',restart);restart();
+ctx.restore()}
+function drawOne(obj,ms,a){if(obj.el.closest('.preview').hidden)return;const width=obj.el.getBoundingClientRect().width;if(width<8)return;const dpr=Math.min(3,window.devicePixelRatio||1),size=Math.round(width*dpr);if(obj.el.width!==size||obj.el.height!==size){obj.el.width=size;obj.el.height=size}const ctx=obj.ctx;ctx.clearRect(0,0,size,size);const t=reduced.matches?1.3:ms*.001;paintBase(ctx,size,dpr,t,a);for(const st of states)paintOverlay(ctx,size,dpr,t,a,st,weights[st])}
+function drawAll(ms){blend(ms);const a=sampleAmplitude(ms);for(const obj of canvases)drawOne(obj,ms,a);frameTime=ms}
+function tick(ms){if(document.hidden)return;if(ms-frameTime>=1000/30){drawAll(ms);frameCount++;if(!fpsSince)fpsSince=ms;if(ms-fpsSince>=1200){fps=Math.round(frameCount*1000/(ms-fpsSince));telemetry.textContent=fps+' fps · max 30';frameCount=0;fpsSince=ms}}raf=requestAnimationFrame(tick)}
+function restart(){cancelAnimationFrame(raf);raf=0;frameTime=0;fpsSince=0;frameCount=0;if(document.hidden){telemetry.textContent='Paused · hidden tab';return}if(reduced.matches){telemetry.textContent='Reduced motion · static';drawAll(performance.now());return}telemetry.textContent='30 fps max';drawAll(performance.now());raf=requestAnimationFrame(tick)}
+document.addEventListener('visibilitychange',restart);if(reduced.addEventListener)reduced.addEventListener('change',restart);else if(reduced.addListener)reduced.addListener(restart);
+if('ResizeObserver' in window)new ResizeObserver(()=>{if(!document.hidden)drawAll(performance.now())}).observe(previews);
+window.addEventListener('resize',()=>{if(!document.hidden)drawAll(performance.now())},{passive:true});
+window.__orbLabDiagnostics=()=>({state:current,view,level,smoothed,auto,reduced:reduced.matches,visible:!document.hidden,fps,frames:canvases.map(({id,el})=>({id,cssWidth:el.getBoundingClientRect().width,bitmapWidth:el.width,hidden:el.closest('.preview').hidden}))});
+restart();
 })();
 </script>
 </body>
