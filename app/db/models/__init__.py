@@ -76,3 +76,4 @@ from .admin_pwa_push_outbox import AdminPwaPushOutbox
 from .learner_pwa_push import LearnerPwaPushSubscription, LearnerPwaPushOutbox
 from .admin_pwa_command import AdminPwaCommandAudit
 from .admin_pwa_outbound import AdminPwaOutboundJob, AdminPwaOutboundRecipient, AdminPwaOutboundEvent
+from .diagnostic import DiagnosticIncident, DiagnosticReceipt

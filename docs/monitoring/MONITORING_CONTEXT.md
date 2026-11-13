@@ -12,7 +12,8 @@ or production acceptance.
   Owner instruction (2026-11-13): push each finished part to this branch; tests
   and verification run together at the end (task 5.1), then promotion.
 - **Done in code:** task 1.1 (catalog, registry block in `declare` mode, checker,
-  workflow, `AGENTS.md` rule).
+  workflow, `AGENTS.md` rule); task 1.2 (migration `0156_diagnostic_monitoring`,
+  models, `ingest`, retention, switches).
 - **Not on `main`.** No migration, intake, reporter or Admin change is deployed.
   All switches will default off.
 
@@ -50,7 +51,21 @@ or production acceptance.
   `platform|feature|failure` written by `tests/monitoring_chain.py` (task 1.3)
   into `MONITORING_CHAIN_PROOF`; the post-pytest `--chain-proof` step checks it.
 
+- **Receipts store more than D2 lists, all content-free:** `build` (comparable
+  Android versionCode / PWA token date), `category` (a catalog category),
+  `client_time_untrusted` and `occurrences` (coalesced backend writes). Incidents
+  add `last_build`, `resolved_build`, `reopened_at` and `reopened_version` for the
+  version-aware reopen and the "came back" line.
+- **Client time** is epoch milliseconds. Outside ±7 days it is not stored and the
+  receipt is flagged untrusted; ordering uses the server receive time.
+- **`owners` stage** admits client events only from accounts whose Telegram ID is
+  in `ADMIN_IDS`. Owner-free backend rows are admitted in `owners` and `all`.
+- **Account deletion** deletes receipts explicitly in `UserRepository._delete_account`
+  (the repository does not rely on FK cascades), besides the FK `ON DELETE CASCADE`.
+- **Retention** runs in `_desktop_auth_retention_scheduler` in its own `try`.
+
 ## Session log
 
 - 2026-11-13: task 1.1 implemented on the feature branch (256 learner routes
   mapped, 22 features, 86 baseline pairs, 2 justified `not_applicable`).
+- 2026-11-13: task 1.2 implemented (migration after `0155`, intake service).

@@ -615,6 +615,11 @@ class UserRepository:
                       SmartReminderConsent, SmartReminderPreference, SmartReminderMutation, SmartReminderRouting):
             await self.session.execute(sql_delete(model).where(model.user_id == uid))
 
+        # Diagnostic receipts are owner-bound; incidents keep owner-free
+        # aggregates only (unified-error-monitoring D8).
+        from app.db.models.diagnostic import DiagnosticReceipt
+        await self.session.execute(sql_delete(DiagnosticReceipt).where(DiagnosticReceipt.user_id == uid))
+
         # Native/desktop auth zanjiri. SQLite test muhitida ham FK CASCADEga
         # suyanib qolmaslik uchun child rowlar aniq tartibda o'chiriladi.
         device_ids = select(DesktopDevice.id).where(

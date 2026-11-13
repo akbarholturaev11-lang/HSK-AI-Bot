@@ -41,7 +41,7 @@ This is the only checklist for this work. Task 1.1 creates the single shared con
   - A cosmetic-only change passes.
   - A scratch push shows the job failing on an unmapped route.
   - `openspec validate unified-error-monitoring --strict` passes.
-- [ ] 1.2 Add the migration (next number after `0155`), models and the `ingest` service (D2, D3, D8):
+- [x] 1.2 Add the migration (next number after `0155`), models and the `ingest` service (D2, D3, D8):
   - the tables and source CHECKs, with the downgrade guard;
   - advisory-lock admission and the receipt/incident upserts;
   - refused counts;
