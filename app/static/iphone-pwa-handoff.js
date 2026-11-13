@@ -56,7 +56,11 @@
   function json(path, options) {
     return fetch(path, Object.assign({ credentials: "same-origin", cache: "no-store" }, options))
       .then(function (response) {
-        return response.json().catch(function () { return {}; }).then(function (data) {
+        if (!response.ok && window.HskDiag) HskDiag.report("distribution_handoff", "restore_failed", "pwa_handoff", response.status);
+        return response.json().catch(function (error) {
+          if (response.ok && window.HskDiag) HskDiag.report("distribution_handoff", "restore_failed", "pwa_handoff", error);
+          return {};
+        }).then(function (data) {
           return { status: response.status, data: data || {} };
         });
       });
@@ -67,6 +71,7 @@
   function continueSignedIn() {
     return json("/api/v3/pwa-auth/session").then(function (reply) {
       if (reply.status !== 200 || reply.data.ok !== true) return failed();
+      if (window.HskDiag) HskDiag.owner(reply.data.user_id);
       setLanguage(reply.data.language);
       var guide = window.HSKAILiInstallGuide, opened = false;
       try {

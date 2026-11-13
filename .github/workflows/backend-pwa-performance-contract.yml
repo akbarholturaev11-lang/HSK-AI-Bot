@@ -106,6 +106,7 @@ jobs:
           tests/e2e/test_pwa_initial_shell.py
           tests/e2e/test_pwa_progressive_sections.py
           tests/e2e/test_pwa_learning_parity.py
+          tests/e2e/test_pwa_diagnostics.py
 
   backend-course-cache-regression:
     needs: policy-and-tests

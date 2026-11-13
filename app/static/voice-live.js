@@ -5,6 +5,12 @@
     return !!(root.isSecureContext && root.WebSocket && root.AudioWorkletNode &&
       (root.AudioContext || root.webkitAudioContext) && navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
   }
+  // Client-side failures only (design D5). Server-sent codes, limits, a slow
+  // network, a suspended audio context and a learner close are never reported.
+  const REPORTED = new Set(["live_connection_timeout", "live_response_invalid", "live_audio_invalid", "live_socket_closed"]);
+  function diag(code) {
+    try { if (REPORTED.has(code) && root.HskDiag) root.HskDiag.report("voice_practice", "live_session_failed", code); } catch (_) {}
+  }
 
   class LiveVoice {
     constructor(callbacks) {
@@ -85,13 +91,13 @@
           } else if (message.type === "turn_complete") {
             if (this.callbacks.onturn) this.callbacks.onturn(message);
           } else if (["time_limit", "budget_limit", "session_limit"].includes(message.type)) {
-            this.fail(message.type);
+            this.fail(message.type, true);
           } else if (message.type === "error") {
-            this.fail(message.code || "live_voice_unavailable");
+            this.fail(message.code || "live_voice_unavailable", true);
           }
         };
-        socket.onerror = () => this.fail("live_voice_unavailable");
-        socket.onclose = () => { if (!this.closed) this.fail("live_voice_unavailable"); };
+        socket.onerror = () => this.lost();
+        socket.onclose = () => { if (!this.closed) this.lost(); };
       });
     }
 
@@ -149,8 +155,17 @@
       return true;
     }
 
-    fail(code) {
+    /* The socket dropped. Before "ready" it is a connect failure (not
+       reported); after it the live session was cut off unexpectedly. */
+    lost() {
       if (this.closed) return;
+      if (this.ready) diag("live_socket_closed");
+      this.fail("live_voice_unavailable");
+    }
+
+    fail(code, fromServer) {
+      if (this.closed) return;
+      if (!fromServer) diag(code);
       this.rejectConnect && this.rejectConnect(code);
       this.stop();
       if (this.callbacks.onerror) this.callbacks.onerror(code);

@@ -2550,6 +2550,7 @@ async def course_v3_data_file(filename: str):
         "hsk30-words.js": "application/javascript",
         "hsk30-dictionary-examples.js": "application/javascript",
         "hsk-common-i18n.js": "application/javascript",
+        "hsk-diagnostics.js": "application/javascript",
         "hsk-miniapp-i18n.js": "application/javascript",
         "hsk-course-i18n.js": "application/javascript",
         "li-onboarding-runtime.js": "application/javascript",

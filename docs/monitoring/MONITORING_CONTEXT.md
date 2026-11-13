@@ -16,10 +16,14 @@ or production acceptance.
   models, `ingest`, retention, switches); task 1.3 (intake routes, backend
   middleware and reporter, Lava and AI/voice sites, chain helper, `server` cells
   `partial`); task 2.1 (Android reporter in `core/diagnostics`, both flavours;
-  `android` cells `partial` for the instrumented features).
-- **Not yet run:** PostgreSQL tests (chain and intake) and the Android release
-  builds (`bundlePlayRelease bundleDirectRelease`, Direct DTO smoke) — they run in
-  task 5.1.
+  `android` cells `partial` for the instrumented features); task 2.2 (learner
+  browser reporter and PWA transport, content-pinned assets, Live Voice and
+  priority flow hooks, PostgreSQL PWA chain). Next: task 3.1, Admin Inbox.
+- **Local validation:** PWA Node, Chromium/WebKit diagnostics, asset budget and
+  authenticated PostgreSQL chain passed. The existing 320 px Practice
+  skeleton geometry cases fail on both the baseline `e7e6641a` and this work;
+  keep them visible at the task 5.1 gate. Full integration validation,
+  Android release builds and the Direct DTO smoke remain for 5.1.
 - **Not on `main`.** No migration, intake, reporter or Admin change is deployed.
   All switches will default off.
 
@@ -122,6 +126,13 @@ or production acceptance.
   answer stops queueing for 24 h and empties the queue; 401/403 drops it; other
   4xx drop the batch; 5xx and transport errors retry.
 
+- **Browser queue.** Bind each open document to its verified account. A stale
+  document cannot append to a replacement account's queue. Pre-verification
+  errors stay in memory while verification is pending and are discarded on a
+  signed-out reply; no anonymous report is sent. Session CSRF is used only in
+  the request header. The worker's 40-asset limit is unchanged; it does not warm
+  the course document, which is already open when warm-up starts.
+
 ## Session log
 
 - 2026-11-13: task 1.1 implemented on the feature branch (256 learner routes
@@ -130,3 +141,6 @@ or production acceptance.
 - 2026-11-13: task 1.3 implemented (two intake routes, middleware, reporter,
   Lava/AI sites, chain helper and server chain test).
 - 2026-11-13: task 2.1 implemented (Android reporter, JVM tests, Android chain test).
+- 2026-11-13: resumed at task 2.2 from `e7e6641a`, with the reporter draft and
+  Live Voice edits present locally. Completed the PWA integration and focused
+  verification; diagnostic visibility and full coverage proof wait for 3.1.

@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Talaffuz mashqi</title>
 <link rel="icon" href="/assets/hsk-ai-logo-256.png" type="image/png">
+  <script defer src="/course_v3_data/hsk-diagnostics.js?v=20261113-e8d79a34d98e"></script>
 <script src="/assets/telegram-web-app.js?v=20261019-1"></script>
 <script src="/course_v3_data/hsk-course-i18n.js?v=20261113-a1da547eb267"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-a0dd8c0b1db1"></script>
 <script defer src="/audio/words/index.js?v=20261014-offline-1"></script>
@@ -357,6 +358,7 @@ function pronunciationPwaSession(){
       if(PWA_PRONUNCIATION_SESSION&&PWA_PRONUNCIATION_SESSION.user_id!==s.user_id){
         practiceSignIn();throw new Error("pwa_actor_changed");
       }
+      if(window.HskDiag)HskDiag.owner(s.user_id);
       PWA_PRONUNCIATION_SESSION=s;return s;
     }).catch(function(e){PWA_PRONUNCIATION_PROMISE=null;throw e});
   }
@@ -397,6 +399,12 @@ function pronunciationPost(url,body,keepalive){
       method:"POST",headers:{"Content-Type":"application/json","X-HSK-PWA-CSRF":s.csrf},
       credentials:"same-origin",cache:"no-store",redirect:"error",
       body:JSON.stringify(payload),keepalive:!!keepalive
+    }).then(function(response){
+      if(!response.ok&&window.HskDiag){
+        if(url==="/api/v3/practice/report")HskDiag.report("practice","save_unconfirmed","practice",response.status);
+        else HskDiag.report("practice","load_failed","practice",response.status);
+      }
+      return response;
     });
   });
 }

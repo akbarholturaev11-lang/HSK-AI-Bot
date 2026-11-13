@@ -1997,13 +1997,13 @@
       }},
       {"id": "assessments", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter records crashes by tab only; no tagged calls for this feature yet."},
-        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
+        "iphone_pwa": {"status": "partial", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "reason": "Exam load/save and JS errors; Admin consumer pending (task 3.1)."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
         "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
       }},
       {"id": "auth_session", "platforms": {
         "android": {"status": "partial", "reporter": "android/app/src/main/java/com/pomp/hskai/core/diagnostics/DiagnosticReporter.kt", "reason": "Tagged sign-in and session-restore calls (5xx, decode); Admin consumer pending (task 3.1)."},
-        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
+        "iphone_pwa": {"status": "partial", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "reason": "Sign-in and session restore; Admin consumer pending (task 3.1)."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
         "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
       }},
@@ -2015,7 +2015,7 @@
       }},
       {"id": "checkout_payments", "platforms": {
         "android": {"status": "partial", "reporter": "android/app/src/main/java/com/pomp/hskai/core/diagnostics/DiagnosticReporter.kt", "reason": "Tagged checkout and Lava calls (Direct build); Admin consumer pending (task 3.1)."},
-        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
+        "iphone_pwa": {"status": "partial", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "reason": "Checkout and payment status; Admin consumer pending (task 3.1)."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
         "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
       }},
@@ -2039,7 +2039,7 @@
       }},
       {"id": "distribution_handoff", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter records crashes by tab only; no tagged calls for this feature yet."},
-        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
+        "iphone_pwa": {"status": "partial", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "reason": "Browser handoff and session restore; Admin consumer pending (task 3.1)."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
         "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
       }},
@@ -2063,19 +2063,19 @@
       }},
       {"id": "lessons", "platforms": {
         "android": {"status": "partial", "reporter": "android/app/src/main/java/com/pomp/hskai/core/diagnostics/DiagnosticReporter.kt", "reason": "Tagged course map, lesson open/unlock and completion calls; Course-tab crashes; Admin consumer pending (task 3.1)."},
-        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
+        "iphone_pwa": {"status": "partial", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "reason": "Course JS errors, map load, lesson open and save; Admin consumer pending (task 3.1)."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
         "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
       }},
       {"id": "mistake_review", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter records crashes by tab only; no tagged calls for this feature yet."},
-        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
+        "iphone_pwa": {"status": "partial", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "reason": "Mistake review and JS errors; Admin consumer pending (task 3.1)."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
         "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
       }},
       {"id": "monitoring", "platforms": {
         "android": {"status": "partial", "reporter": "android/app/src/main/java/com/pomp/hskai/core/diagnostics/DiagnosticReporter.kt", "reason": "Queue drops reported as one queue_dropped event; Admin consumer pending (task 3.1)."},
-        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
+        "iphone_pwa": {"status": "partial", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "reason": "Queue drop self-check; Admin consumer pending (task 3.1)."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
         "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
       }},
@@ -2087,19 +2087,19 @@
       }},
       {"id": "onboarding_activation", "platforms": {
         "android": {"status": "partial", "reporter": "android/app/src/main/java/com/pomp/hskai/core/diagnostics/DiagnosticReporter.kt", "reason": "Tagged onboarding calls (5xx, decode); Admin consumer pending (task 3.1)."},
-        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
+        "iphone_pwa": {"status": "partial", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "reason": "Onboarding save and JS errors; Admin consumer pending (task 3.1)."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
         "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
       }},
       {"id": "practice", "platforms": {
         "android": {"status": "partial", "reporter": "android/app/src/main/java/com/pomp/hskai/core/diagnostics/DiagnosticReporter.kt", "reason": "Tagged practice and drill calls; Practice-tab crashes; Admin consumer pending (task 3.1)."},
-        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
+        "iphone_pwa": {"status": "partial", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "reason": "Practice load/save and JS errors; Admin consumer pending (task 3.1)."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
         "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
       }},
       {"id": "pwa_pro_checkout", "platforms": {
         "android": {"status": "not_applicable", "reason": "The inline Lava Pro checkout exists only in the learner PWA."},
-        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
+        "iphone_pwa": {"status": "partial", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "reason": "Lava checkout start and status; Admin consumer pending (task 3.1)."},
         "telegram": {"status": "not_applicable", "reason": "The inline Lava Pro checkout exists only in the learner PWA."},
         "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
       }},
@@ -2111,13 +2111,13 @@
       }},
       {"id": "subscription_entries", "platforms": {
         "android": {"status": "partial", "reporter": "android/app/src/main/java/com/pomp/hskai/core/diagnostics/DiagnosticReporter.kt", "reason": "Tagged subscription overview and handoff calls; Admin consumer pending (task 3.1)."},
-        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
+        "iphone_pwa": {"status": "partial", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "reason": "Subscription overview failures; Admin consumer pending (task 3.1)."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
         "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
       }},
       {"id": "voice_practice", "platforms": {
         "android": {"status": "partial", "reporter": "android/app/src/main/java/com/pomp/hskai/core/diagnostics/DiagnosticReporter.kt", "reason": "Live voice client-side failures (allowlist); Voice-tab crashes; Admin consumer pending (task 3.1)."},
-        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
+        "iphone_pwa": {"status": "partial", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "reason": "Live voice client failures and JS errors; Admin consumer pending (task 3.1)."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
         "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
       }}

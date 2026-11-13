@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>HSK AI</title>
+  <script defer src="/course_v3_data/hsk-diagnostics.js?v=20261113-e8d79a34d98e"></script>
 <script src="/assets/telegram-web-app.js?v=20261019-1"></script>
 <link rel="stylesheet" href="/course_v3_data/design-tokens.css?v=20261005">
 <style>
@@ -297,6 +298,7 @@ function onboardingPwaActor(){
       if(PWA_ONBOARDING_SESSION&&PWA_ONBOARDING_SESSION.user_id!==s.user_id){
         location.replace("/iphone-pwa");throw new Error("pwa_actor_changed");
       }
+      if(window.HskDiag)HskDiag.owner(s.user_id);
       PWA_ONBOARDING_SESSION=s;return s;
     }).catch(function(e){PWA_ONBOARDING_PROMISE=null;throw e});
   }
@@ -666,9 +668,13 @@ function finish(){
       confirmSavedOnServer(payload).then(function(saved){
         reportOnboardingSaveError(reason,!!saved);
         if(saved)go(saved);
-        else fail(reason);
+        else {
+          if(window.HskDiag)HskDiag.report("onboarding_activation","save_unconfirmed","onboarding_save",reason&&(reason.httpStatus||reason)||0);
+          fail(reason);
+        }
       },function(verifyError){
         reportOnboardingSaveError(reason||verifyError,false);
+        if(window.HskDiag)HskDiag.report("onboarding_activation","save_unconfirmed","onboarding_save",reason&&(reason.httpStatus||reason)||0);
         fail(reason);
       });
     },300);

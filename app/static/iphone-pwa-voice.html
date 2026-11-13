@@ -182,8 +182,9 @@ button,input{font:inherit}button{cursor:pointer;-webkit-tap-highlight-color:tran
 @keyframes orbSpring{0%{transform:scale(var(--stretch-x,1),var(--stretch-y,1))}37%{transform:scale(1.08,.93)}64%{transform:scale(.975,1.045)}83%{transform:scale(1.015,.98)}100%{transform:scale(1,1)}}
 @media(prefers-reduced-motion:reduce){#app #orb.dragging canvas{transform:none!important}#app #orb.rebounding canvas{animation:none!important}}
 </style>
+  <script defer src="/course_v3_data/hsk-diagnostics.js?v=20261113-e8d79a34d98e"></script>
 <script src="/course_v3_data/hsk-course-i18n.js?v=20261113-a1da547eb267"></script>
-<script defer src="/voice-live.js?v=20261105-87257ac03ec1"></script>
+<script defer src="/voice-live.js?v=20261113-0cd8167ebac1"></script>
 </head>
 <body>
 <div id="app" aria-label="HSK AI Voice">
@@ -372,13 +373,13 @@ async function speakTurn(text){text=String(text||'').trim();if(!text||liveReady|
  try{const a=ttsAudio||(ttsAudio=new Audio());a.onended=finish;a.onerror=fallback;a.src='/api/v3/tts?text='+encodeURIComponent(text.slice(0,240));await a.play();if(token===ttsToken&&!fallen)setState('speaking')}catch(_){fallback()}}
 class VoiceApiError extends Error{constructor(code,status){super(code);this.code=code;this.status=status||0}}
 async function safeFetch(url,options={}){const {timeout=15000,...rest}=options;const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeout);try{return await fetch(url,{credentials:'same-origin',cache:'no-store',redirect:'error',...rest,signal:controller.signal})}catch(error){throw new VoiceApiError(error&&error.name==='AbortError'?'network_slow':(navigator.onLine?'network_error':'offline'))}finally{clearTimeout(timer)}}
-async function readJson(r){let body={};try{body=await r.json()}catch(_){}if(!r.ok||body.ok===false)throw new VoiceApiError(String(body.code||body.error||'request_failed'),r.status);return body}
+async function readJson(r){let body={};try{body=await r.json()}catch(error){if(r.ok&&window.HskDiag)HskDiag.report("voice_practice","api_decode","pwa_voice",error)}if(!r.ok){if(window.HskDiag)HskDiag.report("voice_practice","api_5xx","pwa_voice",r.status)}if(!r.ok||body.ok===false)throw new VoiceApiError(String(body.code||body.error||'request_failed'),r.status);return body}
 async function getActor(force=false){if(!IS_PWA)throw new VoiceApiError('pwa_session_required',401);if(authPromise&&!force)return authPromise;
  const pending=(async()=>{const r=await safeFetch('/api/v3/pwa-auth/session',{timeout:10000});if(!r.ok)throw new VoiceApiError(r.status===401?'pwa_session_required':'pwa_session_unavailable',r.status);let a=null;try{a=await r.json()}catch(_){}
   if(!a||a.ok!==true||!Number.isSafeInteger(a.user_id)||a.user_id<=0||typeof a.csrf!=='string'||!a.csrf)throw new VoiceApiError('pwa_session_invalid');
-  if(ownerId!==null&&ownerId!==a.user_id){await hardReset();dialogue.replaceChildren();throw new VoiceApiError('pwa_actor_changed',401)}
+  if(ownerId!==null&&ownerId!==a.user_id){if(window.HskDiag)HskDiag.logout(ownerId);await hardReset();dialogue.replaceChildren();throw new VoiceApiError('pwa_actor_changed',401)}
   const resource=host();if(resource&&!resource.acceptPracticeActor(window,a.user_id))throw new VoiceApiError('pwa_actor_changed',401);
-  ownerId=a.user_id;actor=a;applyLocale(a.language);return a})();
+  ownerId=a.user_id;actor=a;if(window.HskDiag)HskDiag.owner(ownerId);applyLocale(a.language);return a})();
  authPromise=pending;try{return await pending}catch(e){if(authPromise===pending)authPromise=null;throw e}}
 async function safeStatus(){const a=await getActor();const r=await safeFetch('/api/v3/pwa/voice/me',{timeout:10000});if(r.status===401||(r.ok&&r.headers.get('X-HSK-PWA-User-ID')!==String(a.user_id))){authPromise=null;throw new VoiceApiError('pwa_actor_changed',401)}const data=await readJson(r);quota=typeof data.remaining_voice_limit==='number'?data.remaining_voice_limit:undefined;applyLocale(data.language);return data}
 async function apiPost(path,init,timeout){for(let attempt=0;;attempt++){const a=await getActor(attempt>0);const r=await safeFetch(path,{method:'POST',...init(a.csrf),timeout});if(r.status===403&&attempt===0){let body={};try{body=await r.clone().json()}catch(_){}if(body.error==='pwa_csrf_invalid')continue}return readJson(r)}}
