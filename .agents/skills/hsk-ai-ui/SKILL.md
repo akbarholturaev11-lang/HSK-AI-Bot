@@ -37,6 +37,8 @@ Scope: user-visible design and interaction patterns for learner **iPhone PWA and
 - Do not display duplicate controls for the same action, repeat the same statistic in adjacent sections, or add redundant Back/Close/Cancel/Save entry points without distinct purpose.
 - Each context should have one visually dominant primary action; secondary actions remain available but quieter. Do not make two competing primary CTAs.
 - Interactive controls must have clear affordances and distinct selected, loading, disabled and error states. Decoration must not look tappable.
+- **Immediate interaction feedback:** tap/press must visually acknowledge the action without waiting for the network. If an operation is pending, show loading/progress on the **affected control or region**, prevent accidental repeat taps where necessary, and keep unrelated controls usable. Do not display a full-page loader for a local action.
+- **Contextual feedback:** display ordinary success, validation and recoverable error feedback next to the relevant field, button or section; prefer in-place feedback over a modal/toast for routine actions. Use a modal only when the user must make an important decision or the context genuinely requires interruption.
 
 ## 6. Consistent design language and platform parity
 
@@ -75,6 +77,7 @@ Scope: user-visible design and interaction patterns for learner **iPhone PWA and
 4. **In-place settlement:** once verified data for a section becomes available, replace only that section's skeleton **inside its reserved geometry**. Already visible sections, header and bottom navigation must not jump or be remounted visually. A short opacity cross-fade (~150–250 ms) is acceptable; **do not animate the entire screen height or shift neighbouring content**. With reduced motion, replace instantly.
 5. **Realistic variable-content design:** provide bounded/known-size text slots, stable rows, line wrapping rules and image aspect ratios when those can be established. Truly unpredictable content cannot be guaranteed pixel-exact before retrieval: reserve the stable visible structure and let overflow grow inside a suitable scroll/content area without shifting fixed anchors. Never clip essential lesson, price or warning text merely to claim zero layout shift.
 6. **Local error/empty/retry:** a failing section presents its own compact, meaningful error/empty state and recovery action in the same area while successfully loaded siblings stay visible. Do not imply an unloaded result is zero, complete or successful.
+   - **Media fallback:** remote photos, illustrations, voice thumbnails and character art must reserve their final geometry. On failure, show a deliberate, visually compatible fallback within that exact slot — never a broken-image icon, empty collapsing box, sudden substitute layout or an unrelated Panda likeness. If the canonical character cannot be loaded, prefer a neutral non-character fallback over an off-brand replacement.
 7. **Visual review:** compare skeleton → partial data → fully loaded at narrow, normal and large mobile widths on both PWA and Android, including long translations, slow/failing sections and reduced motion. Check top/header/nav and surrounding section anchor positions; any visible jump is a design defect to investigate, not something to disguise with shimmer.
 
 ## 11. Honest UI states, readability and accessibility
@@ -82,6 +85,47 @@ Scope: user-visible design and interaction patterns for learner **iPhone PWA and
 - Show real verified values only; distinguish `loading`, `no data`, `unavailable/error` and verified `0` visually. Do not fabricate XP, streak, score, rank, Pro rights or a completed lesson for presentation.
 - Ensure readable contrast, clear focus/selection feedback, meaningful labels, and sufficiently large touch targets (PWA ≥44 CSS px; Android ≥48 dp) even where icon artwork is visually small.
 - Support long Uzbek/Russian/Tajik labels, Simplified Chinese, large font settings, wrapping and mobile widths without clipped core actions. Important statuses cannot rely on color alone.
+
+## 12. Preserve local UI state — mandatory
+
+- When a learner navigates to a detail screen and returns, preserve the previous **scroll position, selected tab, search query, dictionary/HSK filter, expanded panels and local display mode** where the task still makes sense. Do not reset the screen simply because its view was temporarily left or recomposed.
+- Preserve in-progress typed text or an unsent draft while the user temporarily opens another in-app panel, as appropriate to that flow. Do not restore stale state across a different user, logout, completed session or invalidated task.
+- Going Back from a vocabulary detail should return to the same item and list position, not the beginning of the dictionary; changing a filter intentionally may reset the list to the relevant new starting position.
+- Check restoration after navigation, keyboard open/close, PWA view changes and Android recomposition. State retention must not show outdated or unauthorized account information.
+
+## 13. Keyboard-aware layout — mandatory
+
+- When the on-screen keyboard opens, the active input, its prompt and the primary Submit/Send action remain **visible and reachable**, including at narrow widths and with safe-area/IME insets.
+- Resize or scroll the **appropriate content region**, not the entire fixed navigation/header indiscriminately. Preserve the current reading/scroll context as much as possible; avoid sudden orb, composer, chat or form jumps.
+- When the keyboard closes, return smoothly to the intended previous layout. Do not let the keyboard obscure the latest AI Voice message, essential field labels, validation or checkout CTA.
+- Handle focus movement, multiline text, external keyboards, orientation changes and reduced motion deliberately; distinguish normal keyboard movement from unintended layout shift.
+
+## 14. No unexpected interruption or popups — mandatory
+
+- Never interrupt an active lesson, quiz, homework, recording, AI Voice turn, text composition, login, permission grant or payment/checkout with a promotional/news/rating/upsell popup.
+- Non-urgent overlays (including Feature Spotlight) must wait until a **safe idle/navigation point**. Do not stack multiple popups on first render, resume or login.
+- An overlay initiated by a learner, a necessary confirmation or an actionable error may appear when appropriate. It must have clear purpose, correct dismissal behavior and must not steal focus from a critical flow without cause.
+- Keep the screen usable when optional announcements are not available; dismissal must not erase the user's current work.
+
+## 15. Immediate interaction feedback — mandatory
+
+- Every actionable tap/press has immediate, visible and accessible feedback (pressed/selected/pending/disabled) without waiting for a server round-trip.
+- Show a loading state only in the affected control/section; leave independent content accessible. While saving/submitting, prevent accidental duplicate actions without making the whole page unresponsive.
+- After completion, show concise context-appropriate success/error feedback at the action's location. Don't display a modal or toast for every routine click. See section 5 for the shared interaction and contextual-feedback style.
+
+## 16. Predictable back navigation — mandatory
+
+- Back behaves consistently with the learner's navigation history: from details to the previous list and position, from an open transient layer to the underlying screen, and from a keyboard-focused state without losing unsent work.
+- Closing a modal, drawer or sheet returns focus to its initiating control where possible; avoid duplicate Back and Close controls for the same action.
+- Before a destructive navigation that would lose meaningful unsaved input, present a brief, explicit choice. Do **not** warn or confirm for harmless navigation with no work to lose.
+- Respect native Android system Back and PWA browser/history behavior rather than creating a competing navigation stack.
+
+## 17. No manipulative purchase or engagement UI — mandatory
+
+- Do not fabricate urgency, countdowns, discount scarcity, guaranteed results or fake social proof to push Pro subscriptions or engagement.
+- Present real prices, duration, renewal terms and limits clearly at the point where a user makes a choice. Decline/dismiss/Back paths must remain discoverable; do not use deceptive button order, disguised links or misleading visual prominence.
+- Never imply that a Pro purchase is mandatory for a free feature, or that a normal paywall/limit is a technical error.
+- Design honest, legible CTAs; product entitlement and payment enforcement remain governed by the project's separate product/security contracts.
 
 ## One-Line Expandable Text — UI/UX standard
 
