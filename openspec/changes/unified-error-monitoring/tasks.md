@@ -154,7 +154,7 @@ This is the only checklist for this work. Task 1.1 creates the single shared con
 
 ## 5. Validation and staged acceptance
 
-- [ ] 5.1 Integration validation, compared with the baseline:
+- [x] 5.1 Integration validation, compared with the baseline:
   - `openspec validate --strict`;
   - the checker in push and PR modes;
   - the full unit suite (only known baseline failures);

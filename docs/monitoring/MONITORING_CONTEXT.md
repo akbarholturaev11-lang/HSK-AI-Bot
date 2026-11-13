@@ -10,7 +10,8 @@ or production acceptance.
 
 - **Branch:** `feat/unified-error-monitoring-20261113`, from `main` `33dca055`.
   Owner instruction (2026-11-13): push each finished part to this branch; tests
-  and verification run together at the end (task 5.1), then promotion.
+  and verification run together at the end (task 5.1). Do not merge or push
+  to `main` without the owner’s explicit instruction.
 - **Done in code:** task 1.1 (catalog, registry block in `declare` mode, checker,
   workflow, `AGENTS.md` rule); task 1.2 (migration `0156_diagnostic_monitoring`,
   models, `ingest`, retention, switches); task 1.3 (intake routes, backend
@@ -22,9 +23,9 @@ or production acceptance.
   audit, resolve/reopen, diagnostic freshness); task 3.2 (bounded Apple Push
   on the existing outbox); task 4.1 (signed Mini App transport and additive
   legacy adapter). The English public privacy copy for 5.2 is prepared.
-- **Verification in progress:** see task 5.1 evidence below. Local validation
-  uses disposable data only; a browser or synthetic push test does not prove
-  delivery on an Apple device.
+- **Integration verification:** the final code passed the full non-browser
+  suite and Analytics integrity CI. Staging and physical-device checks
+  remain separate.
 - **Not on `main`.** No migration, intake, reporter or Admin change is deployed.
   `MONITORING_MODE=off`, `MONITORING_PUSH_ENABLED=false` and
   `MONITORING_MINIAPP_ADAPTER_ENABLED=false` by default. Promotion and
@@ -37,7 +38,9 @@ or production acceptance.
   run](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43412786216)
   passed. The [follow-up Analytics run](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43414811984)
   passed 222 tests and proved 20 feature/platform pairs through the real
-  intake and authenticated Inbox.
+  intake and authenticated Inbox. The [final code commit’s CI run](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43417721339)
+  passed the expanded suite. Its matching local run passed 255 tests and 463
+  subtests, with the same 20 runtime-proven pairs.
 - Scratch CI [rejected both an unmapped learner route and Android
   package](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43412956667)
   and [passed once they mapped to covered Lessons and the scratch route was
@@ -47,14 +50,16 @@ or production acceptance.
   minimal Inbox, settings, outbound, campaigns and payout passed. Diagnostic
   list, one-tap Fixed and reopened detail verified at 390 px in UZ/RU/TJ.
   PostgreSQL Admin lock/regression list: 75 passed; the separately configured
-  Smart Reminder suite passed 270 tests (12 skips). Focused monitoring,
+  Smart Reminder suite passed 270 tests (12 skips), and the dedicated
+  native account/Lava PostgreSQL suite passed 182 tests. Focused monitoring,
   retention and dispatch: 63 passed. Onboarding, PWA auth, Pro, referrals,
   legacy push and standalone QA bootstrap: 254 passed. Three targeted
-  Telegram Mini App browser onboarding regressions also passed. A broad local
-  Mini App smoke run had 27 failures across 132 tests. A six-case local
-  comparison reproduced the same five failures on both revisions, including
-  the unmocked Memorize access fixture. The other broad smoke failures were
-  not individually compared; the targeted onboarding browser cases passed.
+  Telegram Mini App browser onboarding regressions also passed. Compared
+  all 132 cases in `test_miniapp_smoke.py`, `test_miniapp_app_routing.py` and
+  `test_pwa_telegram_handoff_page.py` with the same Chromium runtime and
+  synthetic fixtures on `e7e6641a` and `fb0865a8`: 105 passed and the exact
+  same 27 failed on each, with zero feature-only failures. This comparison
+  records local test behavior; it does not certify a deployed Mini App.
 - Learner Node, focused Chromium/WebKit diagnostics, cache versions and
   worker asset budget passed. The [GitHub Linux performance workflow](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43414756219)
   passed all 68 tests per browser with the pinned tools, plus backend and
@@ -78,18 +83,58 @@ or production acceptance.
   Times describe this fixture, not production.
 - OpenSpec strict validation, generated localization catalog, protected-source
   baseline (zero blockers), Python and JS syntax and single Alembic head passed.
-- Full non-browser comparison: `pytest -q --ignore=tests/e2e --tb=no tests`
-  ran to completion on both trees. The starting commit had 5,381 passed,
-  3 failures in stale initializer/head checks and 771 skips. The feature run
-  before the final correction had 5,393 passed, the same 771 skips, one
-  timing-sensitive partner/Postgres failure and four failing source guards
-  (one expanded into 60 line-anchor subtests). The source guards were fixed:
-  62 locale lines/130 predicates and all direct/indirect lesson read
-  expressions matched exactly and were re-anchored. The source guards now run
-  in Analytics integrity CI. The corrected source and Telegram tests passed
-  on rerun (35 tests, 202 subtests), as did the
-  isolated partner and initializer checks (4 tests). The entire suite was not
-  rerun after this last correction, so 5.1 remains open.
+- Full non-browser comparison: the starting commit ran
+  `pytest -q --ignore=tests/e2e --tb=no tests` with 5,381 passes, 3 failures
+  in stale initializer/head checks and 771 skips. The first feature run
+  found four source guard failures and one timing-sensitive Postgres case.
+  The guards were re-anchored after confirming 62 locale lines/130 predicates
+  and all direct/indirect lesson reads still matched byte for byte; the
+  isolated partner and initializer checks passed on rerun.
+- Final code `fb0865a8`: collected 6,170 tests across all 499 non-browser
+  modules, then ran each module once with `pytest -q --tb=short` in six
+  parallel groups, each with its own disposable PostgreSQL database.
+  **5,399 passed, 771 skipped, zero failed; 85,238 subtests passed.** The
+  expanded Analytics CI and staging rehearsal cover the changed runtime.
+
+## Staging readiness (5.2)
+
+- **Local rehearsal, not Railway:** from the reviewed empty ORM baseline,
+  applied the real Alembic chain to `0155_subscription_entry_client` in a
+  disposable loopback PostgreSQL database. Ran
+  `python -m alembic upgrade 0156_diagnostic_monitoring` by itself. The stamp
+  advanced to `0156_diagnostic_monitoring`; the seeded technical triage row
+  was preserved and both new tables started empty. On that schema, the real
+  app ASGI intake returned paused in `off`, dropped a non-owner and admitted
+  an owner in `owners`, and stopped writing again in `off`. The single owner
+  receipt was visible in the authenticated Inbox; push stayed off.
+- **Remote target:** Railway lists no `staging` environment for the HSK AI
+  app project. The existing separate Smart Reminder QA service is scoped to
+  its own synthetic application. Its bootstrap is not an upgrade mechanism
+  for an existing database. No Railway deployment, DB mutation or flag
+  change was made. Identify an approved isolated target before any staging
+  write; leave the production environment and QA service alone.
+- **When a target is available:** record its project, environment, app and
+  DB pairing; verify isolated synthetic credentials, no live integrations,
+  no production routes and exactly one database revision. From a verified
+  0155 database, run the pinned 0156 migration separately with all monitoring
+  switches off. Verify the new revision and preserved legacy sources before
+  starting the candidate application. The normal startup script upgrades to
+  head automatically and launches production workers; it is not the
+  migration-only or isolated staging entrypoint. A version mismatch stops
+  rollout rather than being corrected by stamping.
+- **Acceptance:** run owner/non-owner intake and a controlled staging 5xx,
+  then the Android Direct/Play, iPhone Home Screen and Telegram flows. Use
+  staging-only accounts and a controlled Admin push receiver; verify the
+  actual notification, authenticated tap and Fixed → repeat → reopen on
+  iPhone and Mac. A device that already received a paused response can
+  suppress reporting for 24 h; use a fresh staging test install/session
+  when checking a just-enabled switch. Restore `off` and verify the absence
+  of new receipts. Do not infer push display from provider acceptance.
+- **Before public enablement:** verify the deployed `/privacy` wording and
+  the owner’s Play Console Data Safety filing. The monitoring delta is
+  Crash logs and Diagnostics; reconcile it with the existing declaration.
+  Do not publish an APK, change live flags or promote this branch based on
+  the local rehearsal.
 
 ## Joint Analytics and Monitoring audit (5.3, feature branch)
 
