@@ -17,6 +17,7 @@ from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from httpx import ASGITransport, AsyncClient
 
+from app.api.monitoring_guard_fixture import router as scratch_router
 from app.services.monitoring import backend
 from app.services.monitoring.backend import BackendReporter, DiagnosticMiddleware, report_server_failure
 from tests.monitoring_chain import PG_URL, assert_monitoring_chain, pg_sessions
@@ -62,6 +63,22 @@ class ServerMonitoringChainTests(unittest.IsolatedAsyncioTestCase):
             await assert_monitoring_chain(
                 self, platform="server", feature="lessons", failure="server_5xx",
                 site="v3_lesson_complete", sessions=sessions, reporter=reporter, trigger=route_5xx,
+                inbox_route="/api/admin/v1/inbox/list")
+
+    async def test_scratch_covered_route_reaches_inbox(self):
+        async with pg_sessions(PG_URL) as sessions:
+            reporter = reporter_for(sessions)
+            app = FastAPI()
+            app.include_router(scratch_router)
+            app.add_middleware(DiagnosticMiddleware, reporter_obj=reporter)
+
+            async def route_5xx():
+                async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+                    self.assertEqual((await client.get("/api/v3/monitoring-guard-fixture")).status_code, 502)
+
+            await assert_monitoring_chain(
+                self, platform="server", feature="lessons", failure="server_5xx",
+                site="v3_monitoring_guard_fixture", sessions=sessions, reporter=reporter, trigger=route_5xx,
                 inbox_route="/api/admin/v1/inbox/list")
 
     async def test_saturated_backend_writer_reports_its_drop_to_inbox(self):

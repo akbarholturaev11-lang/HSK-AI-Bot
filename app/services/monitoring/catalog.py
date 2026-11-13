@@ -88,6 +88,7 @@ INTEGRATION_SITES = frozenset({"lava_webhook", "lava_ledger", "ai_provider", "vo
 # source inventory (task 1.1) and reviewed; each new learner route adds one line.
 # The coverage check fails on a missing or stale entry.
 ROUTE_MAP = {
+    "/api/v3/monitoring-guard-fixture": ("lessons", "v3_monitoring_guard_fixture"),
     "/api/account-deletion/confirm": ("auth_session", "account_deletion_confirm"),
     "/api/account-deletion/prepare": ("auth_session", "account_deletion_prepare"),
     "/api/account-deletion/providers": ("auth_session", "account_deletion_providers"),
