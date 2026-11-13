@@ -34,7 +34,7 @@ class RecognitionUIAdoptionTests(unittest.TestCase):
     def test_preloaded_local_asset_and_unchanged_practice_gate(self):
         html = (ROOT / "app/static/course_v3_recognition.html").read_text(encoding="utf-8")
         self.assertLess(
-            html.index("hsk-course-i18n.js?v=20261021-3eff2a84e104"),
+            html.index("hsk-course-i18n.js?v=20261113-a1da547eb267"),
             html.index("var L={"),
         )
         self.assertIn('RECOGNITION_UI["recognition."+k]', html)

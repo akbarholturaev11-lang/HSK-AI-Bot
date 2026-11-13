@@ -10,8 +10,8 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 LOCALES = ("uz", "ru", "tj")
-VERSION = "hsk-course-i18n.js?v=20261021-3eff2a84e104"
-DICTIONARY_VERSION = "hsk-course-i18n.js?v=20261021-3eff2a84e104"
+VERSION = "hsk-course-i18n.js?v=20261113-a1da547eb267"
+DICTIONARY_VERSION = "hsk-course-i18n.js?v=20261113-a1da547eb267"
 KEY_RE = re.compile(r"([{,]\s*)([A-Za-z_]\w*)(\s*:)")
 
 

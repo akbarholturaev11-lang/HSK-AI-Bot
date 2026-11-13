@@ -536,9 +536,9 @@
     <string name="hsk_course_profile_free" formatted="false">Ройгон</string>
     <string name="hsk_course_profile_note" formatted="false">Танҳо ҷавобҳои санҷидашуда · маълумоти кӯҳна метавонад нопурра бошад</string>
     <string name="hsk_course_profile_overall" formatted="false">Ҳамагӣ</string>
-    <string name="hsk_course_profile_pro" formatted="false">Гирифтани Pro</string>
+    <string name="hsk_course_profile_pro" formatted="false">Гирифтани HSK AI Pro</string>
     <string name="hsk_course_profile_today" formatted="false">Имрӯз</string>
-    <string name="hsk_course_profile_trial" formatted="false">Pro · Озмоиш</string>
+    <string name="hsk_course_profile_trial" formatted="false">HSK AI Pro · Озмоиш</string>
     <string name="hsk_course_pron" formatted="false">Машқи талаффуз</string>
     <string name="hsk_course_pron_sub" formatted="false">Гӯш кун, такрор кун</string>
     <string name="hsk_course_pronunciation_again" formatted="false">Боз</string>
