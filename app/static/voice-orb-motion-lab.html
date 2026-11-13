@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HSK AI · Voice Orb Motion Lab</title>
+<style>
+:root{color-scheme:light;--bg:#f7f5f0;--ink:#302926;--muted:#8d847f;--line:rgba(78,52,48,.12);--accent:#b63738;--warm:#fefdf9}
+*{box-sizing:border-box}body{margin:0;min-height:100dvh;background:radial-gradient(ellipse at 50% 5%,#fff9f3,transparent 55%),var(--bg);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--ink)}
+main{width:min(900px,100%);margin:auto;padding:24px 18px 55px}header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:24px}header b{font-size:15px;letter-spacing:-.02em}.eyebrow{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#9e5751;font-weight:800}.chip{font-size:11px;color:#876f69;border:1px solid var(--line);border-radius:100px;padding:5px 10px;white-space:nowrap}
+h1{font-size:clamp(24px,5vw,35px);line-height:1.12;letter-spacing:-.05em;margin:5px 0 10px}p{color:var(--muted);margin:0}.lead{max-width:620px;font-size:13px}
+.toolbar{display:grid;gap:15px;margin:27px 0 22px}.legend{font-size:11px;font-weight:700;letter-spacing:.025em;margin-bottom:8px;color:#716662}.segments{display:flex;gap:6px;flex-wrap:wrap}button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}button.option{border:1px solid #e8dcd5;border-radius:11px;background:rgba(255,255,255,.65);padding:8px 13px;min-height:38px;color:#625651;font-size:12px;font-weight:650;transition:background .15s,border-color .15s;white-space:nowrap}button.option[aria-pressed="true"]{background:#aa3435;color:white;border-color:#aa3435}button:focus-visible,input:focus-visible{outline:3px solid #b46d54;outline-offset:3px}
+.row{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.level{display:flex;align-items:center;gap:10px;min-width:260px}.level input{accent-color:#a93435;min-width:125px;flex:1}.level output{font-variant-numeric:tabular-nums;color:#a93435;font-weight:800;width:32px;text-align:right}.toggle{display:flex;align-items:center;gap:8px;font-size:12px;color:#5d534f;cursor:pointer}.toggle input{accent-color:#ab3837}
+.previews{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:12px;align-items:stretch}.preview{border:1px solid var(--line);border-radius:23px;background:rgba(255,255,255,.73);min-height:300px;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;box-shadow:0 8px 35px rgba(88,51,39,.025)}.preview:before{content:"";position:absolute;inset:18% 10%;border-radius:50%;background:radial-gradient(closest-side,rgba(226,102,83,.095),transparent);filter:blur(19px);pointer-events:none}.preview .headline{position:relative;align-self:flex-start;padding:18px 20px 0}.preview .headline strong{font-size:12px}.preview .headline span{font-size:11px;color:var(--muted);display:block}.stage{height:224px;width:100%;display:grid;place-items:center;isolation:isolate}.orb{display:block;border-radius:50%;width:var(--orb-size);height:var(--orb-size);filter:drop-shadow(0 8px 15px rgba(154,42,37,.12));transition:width .25s ease,height .25s ease}.preview .foot{margin-top:auto;margin-bottom:17px;font-size:11px;color:#9e918a;letter-spacing:.02em}
+.note{font-size:12px;color:#817671;line-height:1.5;margin-top:18px;border-left:2px solid #d9a7a1;padding-left:12px}footer{font-size:11px;color:#9a8b83;margin-top:22px}
+@media(max-width:650px){main{padding:17px 13px 30px}header{margin-bottom:22px}.previews{grid-template-columns:1fr 1fr;gap:9px}.preview:first-child{grid-column:span 2;min-height:280px}.preview{min-height:235px;border-radius:18px}.preview .headline{padding:14px 14px 0}.stage{height:155px}.preview:first-child .stage{height:215px}.preview .foot{margin-bottom:12px}.level{min-width:0;width:100%}}
+@media(prefers-reduced-motion:reduce){.orb,button.option{transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+<header><b>HSK <span style="color:#b63738">AI</span></b><span class="chip">Visual sandbox · no API calls</span></header>
+<div class="eyebrow">Voice V8 · isolated motion prototype</div>
+<h1>Red Orb × motion</h1>
+<p class="lead">Только визуальные состояния и реальные размеры HSK AI. Не подключено к микрофону, TTS, сессиям или платежам.</p>
+<section class="toolbar" aria-label="Orb preview controls">
+<div><div class="legend">Состояние шара</div><div class="segments" role="group" aria-label="Состояние">
+<button class="option" data-state="idle" aria-pressed="false">Idle</button>
+<button class="option" data-state="listening" aria-pressed="true">Listening</button>
+<button class="option" data-state="thinking" aria-pressed="false">Thinking</button>
+<button class="option" data-state="speaking" aria-pressed="false">Speaking</button>
+<button class="option" data-state="connecting" aria-pressed="false">Connecting</button>
+<button class="option" data-state="error" aria-pressed="false">Error</button>
+</div></div>
+<div class="row"><div class="level"><label for="level" class="legend" style="margin:0">Audio level</label><input id="level" type="range" min="0" max="100" value="36" step="1"><output id="levelValue" for="level">36</output></div>
+<label class="toggle"><input id="simulate" type="checkbox" checked> Simulate live amplitude</label></div>
+</section>
+<div class="previews">
+<section class="preview"><div class="headline"><strong>Focus</strong><span>173 CSS px / dp</span></div><div class="stage"><canvas id="focus" class="orb" style="--orb-size:173px" width="346" height="346" role="img" aria-label="Большой красный шар HSK AI"></canvas></div><div class="foot">173 × 173</div></section>
+<section class="preview"><div class="headline"><strong>Chat</strong><span>80 CSS px / dp</span></div><div class="stage"><canvas id="chat" class="orb" style="--orb-size:80px" width="160" height="160" role="img" aria-label="Средний красный шар HSK AI"></canvas></div><div class="foot">80 × 80</div></section>
+<section class="preview"><div class="headline"><strong>Typing</strong><span>62 CSS px / dp</span></div><div class="stage"><canvas id="typing" class="orb" style="--orb-size:62px" width="124" height="124" role="img" aria-label="Компактный красный шар HSK AI"></canvas></div><div class="foot">62 × 62</div></section>
+</div>
+<p class="note">Источник формы и красно-перламутровых переливов: действующий <code>iphone-pwa-voice.html</code>. Частицы — только дополнительный слой поверх фирменного шара. Амплитуда сейчас синтетическая: реальные audio levels подключаются позже отдельной задачей.</p>
+<footer>HSK AI Orb Lab · separate branch · production runtime untouched</footer>
+</main>
+<script>
+(()=>{'use strict';
+const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+const buttons=[...document.querySelectorAll('[data-state]')];
+let current='listening',previous='listening',transitionAt=0,auto=document.getElementById('simulate').checked,level=.36;
+const input=document.getElementById('level'),out=document.getElementById('levelValue');
+const canvases=['focus','chat','typing'].map(id=>({el:document.getElementById(id),ctx:document.getElementById(id).getContext('2d',{alpha:true})}));
+buttons.forEach(b=>b.addEventListener('click',()=>{if(current===b.dataset.state)return;previous=current;current=b.dataset.state;transitionAt=performance.now();buttons.forEach(x=>x.setAttribute('aria-pressed',String(x===b)));if(reduced.matches)drawAll(performance.now())}));
+input.addEventListener('input',()=>{level=Number(input.value)/100;out.textContent=input.value;if(reduced.matches)drawAll(performance.now())});
+document.getElementById('simulate').addEventListener('change',e=>{auto=e.target.checked;if(reduced.matches)drawAll(performance.now())});
+const noise=document.createElement('canvas');noise.width=64;noise.height=64;const nctx=noise.getContext('2d');const ndata=nctx.createImageData(64,64);let seed=8;const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296};for(let i=0;i<ndata.data.length;i+=4){const v=144+rand()*105;ndata.data[i]=v;ndata.data[i+1]=v;ndata.data[i+2]=v;ndata.data[i+3]=Math.round(rand()*22)}nctx.putImageData(ndata,0,0);
+const TWO_PI=Math.PI*2;const ease=x=>x*x*(3-2*x);
+function activity(t){if(!auto||reduced.matches)return level;return Math.max(0,Math.min(1,level*(.63+.28*Math.sin(t*4.4)+.18*Math.sin(t*10.8)+.18*Math.sin(t*17.1))))}
+function paintBase(ctx,size,dpr,t,a,state){const c=size/2,r=c-.75*dpr;const active=(state==='speaking'||state==='listening')?1+.16*a:1;
+ctx.save();ctx.beginPath();ctx.arc(c,c,r,0,TWO_PI);ctx.clip();
+const bg=ctx.createLinearGradient(size*(.15+.12*Math.sin(t*.42)),0,size*(.78+.1*Math.cos(t*.38)),size);bg.addColorStop(0,'#B63738');bg.addColorStop(.29,'#DB554C');bg.addColorStop(.62,'#F18E72');bg.addColorStop(1,'#FFF5DF');ctx.fillStyle=bg;ctx.fillRect(0,0,size,size);
+function blob(x,y,rad,color){const g=ctx.createRadialGradient(x,y,rad*.04,x,y,rad);g.addColorStop(0,color);g.addColorStop(1,'rgba(255,255,255,0)');ctx.fillStyle=g;ctx.fillRect(x-rad,y-rad,rad*2,rad*2)}
+blob(size*(.25+.12*Math.sin(t*.91)),size*(.17+.10*Math.cos(t*.51)),size*.74,'rgba(121,13,28,.58)');blob(size*(.82+.1*Math.cos(t*.78)),size*(.40+.10*Math.sin(t*.83)),size*.73,'rgba(205,43,46,.58)');blob(size*(.30+.18*Math.sin(t*.63+1)),size*(.78+.10*Math.sin(t*.51)),size*.66,'rgba(255,251,234,.76)');blob(size*(.63+.20*Math.sin(t*.48)),size*(.58+.08*Math.cos(t*.74)),size*.45,'rgba(255,225,189,.4)');
+function crest(base,amp,phase,rate,color){ctx.beginPath();ctx.moveTo(-size*.17,size*1.14);for(let i=-.17;i<=1.18;i+=.022){const y=base+amp*(Math.sin(i*9.8+t*rate+phase)*.7+Math.sin(i*16.6-t*.69+phase)*.23+Math.sin(i*4.1+t*.51)*.2);ctx.lineTo(i*size,y*size)}ctx.lineTo(size*1.19,size*1.17);ctx.closePath();ctx.fillStyle=color;ctx.fill()}
+ctx.filter=`blur(${Math.max(1,Math.round(size*.045))}px)`;crest(.58,.105*active,0,1.35,'rgba(255,241,216,.51)');crest(.68,.095*active,2.15,-1.1,'rgba(255,254,244,.53)');crest(.77,.075*active,4.12,1.42,'rgba(251,240,230,.48)');ctx.filter='none';
+ctx.globalCompositeOperation='screen';ctx.beginPath();for(let i=0;i<=1;i+=.027){const y=.57+.073*Math.sin(i*9.8+t*1.35)+.018*Math.sin(i*18-t*.62);if(i===0)ctx.moveTo(0,y*size);else ctx.lineTo(i*size,y*size)}ctx.strokeStyle='rgba(255,242,228,.12)';ctx.lineWidth=size*.026;ctx.stroke();ctx.globalCompositeOperation='source-over';
+const glaze=ctx.createRadialGradient(size*.43,size*.39,size*.03,c,c,size*.73);glaze.addColorStop(0,'rgba(255,255,255,.06)');glaze.addColorStop(.77,'rgba(255,255,255,0)');glaze.addColorStop(1,'rgba(54,6,17,.27)');ctx.fillStyle=glaze;ctx.fillRect(0,0,size,size);
+ctx.globalAlpha=.09;ctx.fillStyle=ctx.createPattern(noise,'repeat');ctx.fillRect(0,0,size,size);ctx.globalAlpha=1;ctx.restore();
+ctx.strokeStyle='rgba(255,234,220,.27)';ctx.lineWidth=1.1*dpr;ctx.beginPath();ctx.arc(c,c,r-.8,0,TWO_PI);ctx.stroke();}
+function dots(ctx,size,dpr,t,a,st,alpha){if(st==='idle'||st==='error'||alpha<=.004)return;
+const cap=Math.max(5,Math.round(size/dpr*.13)),c=size/2,rad=size*.36;
+const count=(st==='thinking'?cap+5:st==='listening'?cap:st==='speaking'?cap+2:Math.round(cap*.72));
+ctx.save();ctx.beginPath();ctx.arc(c,c,size*.475,0,TWO_PI);ctx.clip();ctx.globalCompositeOperation='screen';
+for(let j=0;j<count;j++){const u=j/Math.max(1,count),phase=TWO_PI*u,twirl=t*(st==='thinking'?.48:st==='connecting'?.23:.18);
+let ang=phase,dist=rad*(.6+.3*Math.sin(phase*2+t*.35)),dotAlpha=.45;
+if(st==='thinking'){ang=phase+twirl+1.1*Math.sin(u*3.6+t*.43);dist=rad*(.38+.4*u+.1*Math.sin(t*.6+phase));dotAlpha=.48+.21*Math.sin(t*.9+phase)}
+if(st==='listening'){ang=phase+Math.sin(t*.85+phase)*.08;dist=rad*(.68+.13*a*Math.sin(phase*3-t*5));dotAlpha=.33+.40*a}
+if(st==='speaking'){ang=phase+Math.sin(t*2+phase)*.19;dist=rad*(.45+.34*a+.05*Math.sin(t*8+phase));dotAlpha=.31+.5*a}
+if(st==='connecting'){ang=phase+twirl;dist=rad*.63;dotAlpha=.32+.16*Math.sin(t+phase)}
+const x=c+Math.cos(ang)*dist,y=c+Math.sin(ang)*dist,rr=dpr*(size/dpr<=62?.72:size/dpr<=80?.84:1.05)*(st==='speaking'?1+.4*a:1);
+ctx.beginPath();ctx.arc(x,y,rr,0,TWO_PI);ctx.fillStyle=`rgba(255,244,218,${Math.min(.75,Math.max(0,dotAlpha*alpha))})`;ctx.fill();
+}
+ctx.restore();}
+function draw(obj,ms){const width=obj.el.getBoundingClientRect().width;if(width<8)return;const dpr=Math.min(2,devicePixelRatio||1),size=Math.round(width*dpr);if(obj.el.width!==size||obj.el.height!==size){obj.el.width=size;obj.el.height=size}const ctx=obj.ctx;ctx.clearRect(0,0,size,size);
+const t=reduced.matches?1.2:ms*.00083,a=activity(t),mix=reduced.matches?1:ease(Math.max(0,Math.min(1,(ms-transitionAt)/320)));
+paintBase(ctx,size,dpr,t,a,current);if(previous!==current&&mix<1)dots(ctx,size,dpr,t,a,previous,1-mix);dots(ctx,size,dpr,t,a,current,mix);
+}
+function drawAll(ms){for(const c of canvases)draw(c,ms)}let raf=0,last=0;function tick(ms){if(document.hidden)return;if(ms-last>=32){last=ms;drawAll(ms)}if(!reduced.matches)raf=requestAnimationFrame(tick)}
+function restart(){cancelAnimationFrame(raf);if(!document.hidden){drawAll(performance.now());if(!reduced.matches)raf=requestAnimationFrame(tick)}}
+document.addEventListener('visibilitychange',restart);reduced.addEventListener?.('change',restart);restart();
+})();
+</script>
+</body>
+</html>
