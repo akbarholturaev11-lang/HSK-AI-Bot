@@ -259,6 +259,45 @@ class CompleteAnalyticsTests(AnalyticsProjectionTests):
         self.assertEqual(values['course']['metrics']['retention']['d1']['returned'],0)
         self.assertEqual(values['platform']['metrics']['platforms'][0]['devices'],1)
 
+    async def test_metric_states_separate_unavailable_not_applicable_and_real_zero(self):
+        from app.admin_api.pwa_analytics_cache import AnalyticsRequest, section_projection
+        from unittest.mock import patch
+
+        async def project(section, platform="overall"):
+            async with self.sessions() as db, read_transaction(db):
+                with patch("app.admin_api.pwa_analytics_cache.datetime") as clock:
+                    clock.now.return_value = NOW
+                    return await section_projection(
+                        db, AnalyticsRequest(section=section, platform=platform), section=section,
+                    )
+
+        money = await project("money", "iphone_pwa")
+        # PWA payments carry a server-set source (3.2), so an empty window is a real zero.
+        self.assertEqual(money["metrics"]["revenue_usd"], 0)
+        self.assertEqual(money["metric_states"]["revenue_usd"], {"state": "available", "reason": None})
+        self.assertNotIn("ai_usd", money["metrics"])
+        self.assertEqual(money["metric_states"]["ai_usd"],
+                         {"state": "unavailable", "reason": "not_instrumented"})
+        self.assertEqual(money["metric_states"]["manual_profit_usd"],
+                         {"state": "not_applicable", "reason": "not_applicable"})
+        home = await project("home", "android")
+        self.assertNotIn("payments_by_status", home["metrics"])
+        self.assertEqual(home["metric_states"]["payments_by_status"],
+                         {"state": "unavailable", "reason": "attribution_not_audited"})
+        course = await project("course")
+        self.assertEqual(course["metrics"]["voice_minutes"], 0)
+        self.assertEqual(course["metric_states"]["voice_minutes"], {"state": "available", "reason": None})
+        self.assertIsNone(course["metrics"]["direct_activation"])
+        self.assertEqual(course["metric_states"]["direct_activation"],
+                         {"state": "unavailable", "reason": "no_data"})
+
+        await self.seed_analytics()
+        with patch("app.admin_api.pwa_analytics_learning.DETAIL_LIMIT", 1):
+            limited = await project("course")
+        self.assertIsNone(limited["metrics"]["lesson_seconds"])
+        self.assertEqual(limited["metric_states"]["lesson_seconds"],
+                         {"state": "unavailable", "reason": "detail_limited"})
+
     async def test_detail_limit_refuses_partial_metric_and_exact_expiring_cohort(self):
         from app.admin_api.pwa_analytics_learning import bounded_rows
         from app.admin_api.pwa_read import _user_segment_clause
@@ -288,6 +327,79 @@ class AnalyticsDefinitionTests(AnalyticsProjectionTests):
         self.assertEqual(result['d1']['percent'],100)
         self.assertEqual(result['d7']['percent'],None)
 
+    async def test_return_retention_counts_verified_returns_once_and_excludes_passive_rows(self):
+        # Task 5.1 (design D5): beside the unchanged `course_open` series.
+        from app.admin_api.pwa_analytics_learning import retention, return_retention
+        from app.db.models.voice_practice_session import VoicePracticeSession as Voice
+        def voice(user_id,turns):
+            return Voice(id=f'voice-{user_id}',user_id=user_id,role='friend',level='hsk1',language='uz',voice='female',status='completed',
+                turn_count=turns,started_at=day1+timedelta(hours=2),ended_at=day1+timedelta(hours=3))
+        registered=NOW-timedelta(days=2);day1=registered+timedelta(days=1)
+        async with self.sessions() as db:
+            for user_id in (1,2,101):(await db.get(User,user_id)).created_at=registered
+            db.add(User(id=3,telegram_id=3003,status='free',created_at=registered))
+            await db.flush()
+            db.add_all([
+                # One account returning in two apps counts once; the Mini App row
+                # is owned by Telegram ID only.
+                Event(user_id=None,telegram_id=2002,event_name='miniapp_opened',created_at=day1+timedelta(hours=1)),
+                Event(user_id=2,event_name='android_app_opened',created_at=day1+timedelta(hours=5)),
+                # Passive or client-writable rows, a feedback reservation and bare
+                # Voice telemetry are not return evidence; nor is a day-0 open.
+                *[Event(user_id=1,event_name=name,created_at=day1+timedelta(hours=1)) for name in
+                  ('card_seen','lesson_started','paywall_seen','app_telegram_feedback_reserved','voice_started','voice_completed')],
+                Event(user_id=1,event_name='miniapp_opened',created_at=registered+timedelta(hours=1)),
+                voice(1,0),
+                # A confirmed Voice turn and a server-written learning outcome are.
+                voice(101,2),
+                Event(user_id=3,event_name='mistake_review_completed',created_at=day1+timedelta(hours=1)),
+            ])
+            await db.commit()
+            since=NOW-timedelta(days=7)
+            legacy=await retention(db,since=since,now=NOW)
+            returned=await return_retention(db,since=since,now=NOW)
+        self.assertEqual((returned['d1']['eligible'],returned['d1']['returned'],returned['d1']['percent']),(4,3,75))
+        self.assertEqual((returned['d7']['eligible'],returned['d7']['percent']),(0,None))
+        # The legacy series still reads course-map opens only.
+        self.assertEqual((legacy['d1']['eligible'],legacy['d1']['returned']),(4,1))
+        self.assertEqual({k:v for k,v in returned['d1'].items() if k.startswith('cohort')},
+                         {k:v for k,v in legacy['d1'].items() if k.startswith('cohort')})
+
+    async def test_return_retention_dates_a_voice_return_by_its_turn(self):
+        # Audit #31: a session started before day 1 with a spoken turn on day 1
+        # is a day-1 return; one that only spans into day 1 without a turn is not.
+        from app.admin_api.pwa_analytics_learning import return_retention
+        from app.db.models.ai_usage import AIUsageEvent
+        from app.db.models.voice_practice_session import VoicePracticeSession as Voice
+        registered=NOW-timedelta(days=2);day1=registered+timedelta(days=1)
+        def spanning(user_id):
+            return Voice(id=f'voice-span-{user_id}',user_id=user_id,role='friend',level='hsk1',language='uz',voice='female',
+                status='completed',turn_count=3,started_at=day1-timedelta(minutes=30),ended_at=day1+timedelta(minutes=30))
+        def turn(source,at,**account):
+            return AIUsageEvent(source=source,model='fixture',created_at=at,**account)
+        async with self.sessions() as db:
+            for user_id in (1,2,101):(await db.get(User,user_id)).created_at=registered
+            db.add(User(id=3,telegram_id=3003,status='free',created_at=registered))
+            await db.flush()
+            db.add_all([spanning(1),spanning(2),
+                turn('voice_practice_reply',day1+timedelta(minutes=10),user_id=1),
+                # Legacy usage owned by Telegram ID only.
+                turn('voice_live_audio',day1+timedelta(hours=2),user_telegram_id=9001),
+                # Text chat usage and a day-0 turn are not Voice returns.
+                turn('chat',day1+timedelta(hours=2),user_id=3),
+                turn('voice_practice_reply',day1-timedelta(minutes=20),user_id=2)])
+            await db.commit()
+            returned=await return_retention(db,since=NOW-timedelta(days=7),now=NOW)
+        self.assertEqual((returned['d1']['eligible'],returned['d1']['returned']),(4,2))
+
+    def test_return_evidence_is_server_written_only(self):
+        from app.admin_api.pwa_analytics_learning import RETURN_LEARNING_EVENTS, RETURN_OPEN_EVENTS
+        from app.db.models.course_miniapp_event import CLIENT_COURSE_MINIAPP_EVENT_NAMES
+        from app.services.activity_feedback_service import APP_TELEGRAM_FEEDBACK_RESERVATION
+        allow=set(RETURN_OPEN_EVENTS+RETURN_LEARNING_EVENTS)
+        self.assertFalse(allow&set(CLIENT_COURSE_MINIAPP_EVENT_NAMES))
+        self.assertFalse(allow&{APP_TELEGRAM_FEEDBACK_RESERVATION,'voice_started','voice_completed','card_seen'})
+
     async def test_finance_uses_full_prior_canonical_history_and_unknown_currency_is_not_priced(self):
         from app.admin_api.pwa_analytics_finance import money_metrics, sources_metrics, Entry
         await self.seed_analytics()
@@ -308,6 +420,21 @@ class AnalyticsDefinitionTests(AnalyticsProjectionTests):
         self.assertNotIn('PRIVATE',json.dumps(m))
         self.assertEqual(next(row['payments'] for row in sources['attribution'] if row['source']=='profile'),1)
         self.assertFalse(any(row['source']=='broadcast' for row in sources['attribution']))
+
+    async def test_finance_averages_exclude_unpriced_payments_and_payers(self):
+        # Audit #34: an unpriced payment is reported apart, never as a $0 sale.
+        from app.admin_api.pwa_analytics_finance import money_metrics
+        def approved(user_id,amount,currency,minutes):
+            return Payment(user_id=user_id,amount=amount,currency=currency,plan_type='1_month',payment_method='visa',
+                payment_status='approved',submitted_at=NOW-timedelta(minutes=minutes),reviewed_at=NOW-timedelta(minutes=minutes))
+        async with self.sessions() as db:
+            db.add_all([approved(1,10,'USD',60),approved(1,20,'USD',30),approved(2,999,'PRIVATE',20)])
+            await db.commit()
+            m=await money_metrics(db,since=NOW-timedelta(days=7),now=NOW)
+        self.assertEqual((m['payments'],m['unpriced_payments'],m['paying_histories'],m['revenue_usd']),(3,1,2,30))
+        # $30 over two priced payments and one payer with a priced payment
+        # (was $30/3 and $30/2).
+        self.assertEqual((m['average_payment_usd'],m['arppu_usd']),(15,30))
 
     async def test_finance_splits_manual_and_lava_channels_and_counts_lava_lifecycle(self):
         from app.admin_api.pwa_analytics_finance import money_metrics
@@ -366,7 +493,10 @@ class AnalyticsPostgresTests(fixtures.PaymentFixtures,unittest.IsolatedAsyncioTe
     seed_analytics=AnalyticsProjectionTests.seed_analytics
     test_all_sections_execute_real_sql_and_never_export_private_records=CompleteAnalyticsTests.test_all_sections_execute_real_sql_and_never_export_private_records
     test_retention_maturity_and_exact_window_boundaries=AnalyticsDefinitionTests.test_retention_maturity_and_exact_window_boundaries
+    test_return_retention_counts_verified_returns_once_and_excludes_passive_rows=AnalyticsDefinitionTests.test_return_retention_counts_verified_returns_once_and_excludes_passive_rows
+    test_return_retention_dates_a_voice_return_by_its_turn=AnalyticsDefinitionTests.test_return_retention_dates_a_voice_return_by_its_turn
     test_finance_uses_full_prior_canonical_history_and_unknown_currency_is_not_priced=AnalyticsDefinitionTests.test_finance_uses_full_prior_canonical_history_and_unknown_currency_is_not_priced
+    test_finance_averages_exclude_unpriced_payments_and_payers=AnalyticsDefinitionTests.test_finance_averages_exclude_unpriced_payments_and_payers
     test_lazy_experiments_empty_and_mature_recovery_have_no_private_payload=AnalyticsDefinitionTests.test_lazy_experiments_empty_and_mature_recovery_have_no_private_payload
 
 class AnalyticsR2Tests(unittest.IsolatedAsyncioTestCase):
@@ -378,7 +508,8 @@ class AnalyticsR2Tests(unittest.IsolatedAsyncioTestCase):
             async def load(db,query):
                 calls[section]+=1
                 return {'platform':query.platform,'period':query.period,'generated_at':datetime.fromtimestamp(fixture.clock,timezone.utc).isoformat(),
-                    'available':True,'scope':{'section':section},'metrics':{'accounts':calls[section]}}
+                    'available':True,'scope':{'section':section},'metrics':{'accounts':calls[section]},
+                    'metric_states': {'accounts': {'state': 'available', 'reason': None}}}
             return load
         args=dict(settings_obj=fixture.settings,session_factory=fixture.sessions,
             projections={s:projection(s) for s in calls},reader_options={'r2_store':fixture.r2,'clock':lambda:fixture.clock})
@@ -389,6 +520,8 @@ class AnalyticsR2Tests(unittest.IsolatedAsyncioTestCase):
             restored=await second(AnalyticsRequest(section='home'))
             self.assertEqual(calls,{'home':1,'overview':1})
             self.assertEqual(restored['generated_at'],original['generated_at'])
+            self.assertEqual(restored['metric_states'], original['metric_states'])
+            self.assertTrue(first._readers['home'].prefix.endswith(':analytics_home_v2'))
             self.assertEqual(len(fixture.r2.items),2)
             fixture.clock+=86401
             await second(AnalyticsRequest(section='home'))

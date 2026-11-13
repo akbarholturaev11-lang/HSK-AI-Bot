@@ -113,6 +113,52 @@ async def authenticate_fresh_launch(page):
         await expect(page.locator('.app')).to_be_visible(timeout=20000)
 
 
+async def complete_telegram_lesson_through_route(sessions):
+    """Audit #43: the Telegram completion that Course > Telegram shows below is
+    written by the real signed Mini App lesson routes (start, then complete with
+    its proof), so route -> stored row -> Admin analytics -> browser is one run.
+    tests/test_analytics_platform_chain.py proves the same chain on PostgreSQL."""
+    import hashlib, hmac, time
+    from contextlib import ExitStack
+    from urllib.parse import urlencode
+    import app.main as main
+    import tests.test_pwa_browser_auth as pwa
+    from app.api.miniapp_entitlements import create_miniapp_entitlements_router
+    learner_settings=pwa.settings()
+    async with sessions() as db:
+        # A learner placed at HSK 1, so the beginner Starter 0 gate does not apply.
+        (await db.get(User,2)).level='hsk1'
+        await db.commit()
+    with ExitStack() as stack:
+        for key,value in vars(learner_settings).items():
+            stack.enter_context(patch.object(main.settings,key,value))
+        for target in ('app.main.async_session_maker','app.services.conversion_funnel_service.async_session_maker',
+                       'app.services.entitlements.shadow.async_session_maker'):
+            stack.enter_context(patch(target,sessions))
+        learner=FastAPI()
+        learner.include_router(create_miniapp_entitlements_router(session_factory=sessions,settings_obj=learner_settings))
+        learner.add_api_route('/api/v3/lesson/complete',main.v3_course_lesson_complete,methods=['POST'])
+        # Account 2 (Pro trial) is the fixture's Telegram learner (ID 2002).
+        values={'auth_date':str(int(time.time())),'user':json.dumps({'id':2002})}
+        secret=hmac.new(b'WebAppData',learner_settings.BOT_TOKEN.encode(),hashlib.sha256).digest()
+        check='\n'.join(f'{key}={value}' for key,value in sorted(values.items()))
+        values['hash']=hmac.new(secret,check.encode(),hashlib.sha256).hexdigest()
+        headers={'X-Telegram-Init-Data':urlencode(values)}
+        body={'lesson_id':1,'level':'hsk1'}
+        async with AsyncClient(transport=ASGITransport(app=learner),base_url=pwa.ORIGIN) as client:
+            started=await client.post('/api/v3/lesson/start',headers=headers,json=body)
+            assert started.status_code==200,started.text
+            done=await client.post('/api/v3/lesson/complete',headers=headers,
+                                   json={**body,'completion_proof':started.json()['completion_proof']})
+            assert done.status_code==200,done.text
+    from app.db.models.course_miniapp_event import CourseMiniAppEvent
+    async with sessions() as db:
+        payloads=(await db.execute(select(CourseMiniAppEvent.payload_json).where(
+            CourseMiniAppEvent.event_name=='lesson_completed'))).scalars().all()
+    # The route, not the caller, set the client as the payload's final key.
+    assert len(payloads)==1 and payloads[0].endswith('"client":"telegram"}'),payloads
+
+
 async def browser_checks(output):
     fixture=Fixture()
     fixture.engine=create_async_engine('sqlite+aiosqlite:///:memory:',poolclass=StaticPool)
@@ -143,8 +189,39 @@ async def browser_checks(output):
         db.add(BotFeedback(user_id=2,telegram_id=2002,status='completed',disliked_text='other account QA feedback'))
         for index in range(11):
             db.add(Payment(user_id=1,amount=index+1,currency='TJS',plan_type='1_month',payment_status='approved'))
+        # Task 4.2 UI half: PWA Pro stages as the inline-event and PWA Lava start
+        # routes write them; tests/test_pwa_pro_funnel_chain.py proves the routes
+        # and the provider-verified payment.
+        from app.db.models.conversion_funnel_event import ConversionFunnelEvent
+        for attempt,names in (('qa-pwa-browse',('pwa_pro_opened',)),
+                              ('qa-pwa-buy',('pwa_pro_opened','pwa_pro_plan_selected','pwa_pro_checkout_started'))):
+            for step,name in enumerate(names,1):
+                db.add(ConversionFunnelEvent(user_id=2,telegram_id=2002,event_name=name,source='v3_locked_lesson',
+                    payload_json=json.dumps({'event_id':f'{attempt}:{step}','attempt_id':attempt,'plan_type':'1_month',
+                                             'payment_method':'lava','transport':'iphone_pwa'})))
+        # R1 UI half: an Android lesson open as the bearer lesson route writes it;
+        # tests/test_analytics_platform_chain.py proves the route.
+        from app.db.models.course_miniapp_event import CourseMiniAppEvent
+        db.add(CourseMiniAppEvent(user_id=1,telegram_id=1001,event_name='android_lesson_started',source='android_course',
+                                  level='hsk1',lesson_order=1,dedupe_key='android-lesson-start:qa',
+                                  payload_json='{"client":"android"}',created_at=datetime.now(timezone.utc)-timedelta(hours=1)))
+        # R2 UI half: PWA rows as the PWA onboarding, event and handoff routes
+        # write them; tests/test_analytics_platform_chain.py proves the routes.
+        for name,hours,payload in (('test_completed',30,'{"score":1,"client":"iphone_pwa"}'),
+                                   ('pwa_handoff_completed',26,'{"target_platform":"ios"}'),
+                                   ('lesson_started',25,'{"lesson_order":1,"client":"iphone_pwa"}'),
+                                   ('onboarding_completed',3,'{"activation_variant":"direct_start_v1","client":"iphone_pwa"}'),
+                                   ('lesson_started',2.99,'{"lesson_order":1,"client":"iphone_pwa"}')):
+            db.add(CourseMiniAppEvent(user_id=2,telegram_id=2002,event_name=name,source='pwa_course_v3',
+                                      payload_json=payload,created_at=datetime.now(timezone.utc)-timedelta(hours=hours)))
+        # R3 UI half: an Android entry as the Android subscription routes write
+        # it; tests/test_analytics_platform_chain.py proves the routes.
+        from app.db.models.subscription_entry_event import SubscriptionEntryEvent
+        db.add(SubscriptionEntryEvent(user_id=1,telegram_id=1001,source='android_course_limit',client='android',
+                                      created_at=datetime.now(timezone.utc)-timedelta(hours=2)))
         await db.execute(update(AdminPwaSession).values(revoked_at=__import__('datetime').datetime.now(__import__('datetime').timezone.utc)))
         await db.commit()
+    await complete_telegram_lesson_through_route(fixture.sessions)
     settings=fixture.settings
     settings.ADMIN_PWA_MCP_ENABLED=True
     settings.ADMIN_PWA_MCP_TRANSPORT_ENABLED=True
@@ -414,7 +491,7 @@ async def browser_checks(output):
         await page.keyboard.press('Home')
         await expect(page.locator('[data-stats-tab=overview]')).to_have_attribute('aria-selected','true')
         await page.locator('[data-stats-tab=course]').click()
-        await expect(page.locator('.stats-category-metrics .metric')).to_have_count(9)
+        await expect(page.locator('.stats-category-metrics .metric')).to_have_count(11)
         course_experiment_reads=sum(body.get('section')=='experiments' for path,method,body in calls if path=='/api/admin/v1/analytics' and body)
         # The Course > Sales A/B tab requests its own real metrics; the Stats disclosure
         # must remain lazy and issue exactly one *additional* read when expanded.
@@ -433,6 +510,21 @@ async def browser_checks(output):
         await expect(page.locator('.stats-category-content .analytics-panel')).to_have_count(3)
         await page.locator('[data-stats-tab=report]').click()
         await expect(page.locator('.feedback-analysis')).to_contain_text('Шикоятлар таҳлили')
+        # Task 5.2: freshness per platform. A platform with no verified records
+        # stays listed with a dash; only counts and dates reach the page.
+        # Audit #40: the global quality table says it ignores filter and period.
+        quality_title,quality_note=await page.evaluate("[window.HSKAI_ADMIN_I18N.uz.analyticsDataQuality,window.HSKAI_ADMIN_I18N.uz.analyticsQualityNote]")
+        await expect(page.locator('.analytics-panel',has=page.locator('h2',has_text=quality_title))).to_contain_text(quality_note)
+        fresh_title=await page.evaluate("window.HSKAI_ADMIN_I18N.uz.analyticsFreshness")
+        fresh=page.locator('.analytics-panel',has=page.locator('h2',has_text=fresh_title))
+        await expect(fresh.locator('tbody tr')).to_have_count(6)
+        updated=[await fresh.locator('tbody tr').nth(i).locator('td').nth(2).inner_text() for i in range(6)]
+        # Rows: Android, Telegram, PWA × learning, payments. The R1 Android start and
+        # the R2 PWA rows are verified learning, so only Android and PWA payments stay dashed.
+        assert [value=='—' for value in updated]==[False,True,False,False,False,True], updated
+        fresh_text=await fresh.inner_text()
+        for secret in ('2002','"client"','telegram_bot'):
+            assert secret not in fresh_text, secret
         await expect(page.locator('.feedback-analysis')).to_contain_text('Нарх')
         await page.screenshot(path=str(output/'mobile-statistics-details.png'),full_page=True)
         for width in (390,1440):
@@ -445,8 +537,103 @@ async def browser_checks(output):
                 for section in ('overview','course','platform','funnel','money','sources','report'):
                     await page.locator('[data-stats-tab='+section+']').click()
                     await expect(page.locator('.stats-category-content')).to_be_visible()
+                    if section=='course':
+                        # Task 5.1: cross-app return and course-open series carry distinct labels.
+                        names=await page.evaluate(f"[window.HSKAI_ADMIN_I18N.{language}.analyticsReturnD1,window.HSKAI_ADMIN_I18N.{language}.analyticsRetentionD1]")
+                        assert names[0]!=names[1],names
+                        for name in names:
+                            await expect(page.locator('.stats-category-metrics .metric',has_text=name)).to_have_count(1)
+                    if section=='funnel':
+                        # Overall shows the iPhone PWA Pro attempts beside the shared funnel.
+                        title=await page.evaluate(f"window.HSKAI_ADMIN_I18N.{language}.analyticsPwaPro")
+                        pro=page.locator('.analytics-panel',has=page.locator('h2',has_text=title))
+                        await expect(pro.locator('.stat-step-label span')).to_have_text(['2','1','1','0'])
                     await page.screenshot(path=str(output/f'v10-{section}-{language}-{width}.png'),full_page=True)
                     assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
+        # Task 3.3: each platform filter renders every tab; an unavailable or
+        # not-applicable metric shows a localized state, never a number or zero.
+        await page.set_viewport_size({'width':390,'height':844})
+        state_cells="[...document.querySelectorAll('#content [data-state] .metric-value,#content [data-state].stat-info-row strong,#content .analytics-state')].map(e=>e.textContent)"
+        for language in ('uz','ru','tj'):
+            await page.locator('[data-action=more]').click()
+            await page.locator('#drawerLocale').select_option(language)
+            labels=await page.evaluate(f"window.HSKAI_ADMIN_I18N.{language}")
+            states={labels[key] for key in ('analyticsStateNoData','analyticsStateNotInstrumented','analyticsStateNotAudited','analyticsStateNotApplicable','analyticsStateDetailLimited')}
+            # The loading panel is also a .state-panel: wait for each read to settle, or
+            # its late render replaces the header and closes the next platform menu.
+            loading=page.locator('#content .state-panel h2').filter(has_text=labels['loading'])
+            for platform in ('android','telegram','iphone_pwa'):
+                await page.locator('[data-action=platform]').click()
+                await page.locator(f'[data-platform={platform}]').click()
+                await expect(page.locator('.stats-scope-chip')).not_to_contain_text(labels['all'])
+                await expect(loading).to_have_count(0)
+                for section in ('overview','course','platform','funnel','money','sources','report'):
+                    await page.locator('[data-stats-tab='+section+']').click()
+                    await expect(page.locator(f'[data-stats-tab={section}]')).to_have_attribute('aria-selected','true')
+                    await expect(loading).to_have_count(0)
+                    if section=='money':
+                        await expect(page.locator('.metric[data-state=not_applicable]')).to_have_count(3)
+                        await expect(page.locator('.metric[data-state=not_instrumented]')).to_have_count(2)
+                        await expect(page.locator('.analytics-state[data-state=not_instrumented]')).to_have_count(1)
+                    elif section=='course':
+                        await expect(page.locator('.stats-category-metrics .metric')).to_have_count(11)
+                        # Course open: Android not_applicable, Telegram not_instrumented, PWA not
+                        # audited. The cross-app return series is Overall-only (not_instrumented).
+                        # R2: PWA activation is attributed, so its card is available.
+                        # R4: D1/D7 return is attributed on every platform.
+                        await expect(page.locator('.metric[data-state=not_instrumented]')).to_have_count({'android':7,'telegram':7,'iphone_pwa':4}[platform])
+                        await expect(page.locator('.metric[data-state=not_applicable]')).to_have_count(2 if platform=='android' else 0)
+                        # The Telegram completion shows under Telegram only; Android is a real zero.
+                        lessons=page.locator('.stat-info-row',has_text=labels['analyticsCompletedUserLessons']).locator('strong')
+                        await expect(lessons).to_have_text({'telegram':'1','android':'0','iphone_pwa':'0'}[platform])
+                        # R1: Android lessons carry their own boundary line, in the active locale.
+                        lessons_since=page.locator('.analytics-since',has_text=labels['analyticsFeaturelessons']+' · ')
+                        await expect(lessons_since).to_have_count(1 if platform=='android' else 0)
+                        # R2: the Telegram -> PWA row and both cohort boundaries show under the PWA only.
+                        handoff=page.locator('.analytics-panel tr',has_text=labels['analyticsHandoffActivation'])
+                        await expect(handoff).to_have_count(1 if platform=='iphone_pwa' else 0)
+                        await expect(page.locator('.analytics-since',has_text=labels['analyticsPlatformReturnNote']+' · ')).to_have_count(1)
+                        for key in ('analyticsActivation','analyticsHandoffActivation'):
+                            await expect(page.locator('.analytics-since',has_text=labels[key]+' · ')).to_have_count(1 if platform=='iphone_pwa' else 0)
+                        if platform=='iphone_pwa':
+                            await expect(handoff.locator('td')).to_have_text([labels['analyticsHandoffActivation'],'1','1'])
+                            activation=page.locator('.analytics-panel tr',has_text=labels['analyticsActivation'])
+                            await expect(activation.locator('td')).to_have_text([labels['analyticsActivation'],'1','1'])
+                    elif section=='funnel':
+                        await expect(page.locator('.metric[data-state=not_instrumented]')).to_have_count(3)
+                        # Task 4.2: the PWA Pro attempts panel shows under iPhone PWA only.
+                        pro=page.locator('.analytics-panel',has=page.locator('h2',has_text=labels['analyticsPwaPro']))
+                        await expect(pro).to_have_count(1 if platform=='iphone_pwa' else 0)
+                        if platform=='iphone_pwa':
+                            await expect(pro.locator('.stat-step-label span')).to_have_text(['2','1','1','0'])
+                    elif section=='sources':
+                        # R3: entries and payments of this platform; public-site traffic is Overall-only.
+                        panels=page.locator('.stats-category-content .analytics-panel')
+                        await expect(panels).to_have_count(2)
+                        await expect(panels.nth(1)).to_contain_text(labels['analyticsPlatformAttributionNote'])
+                        await expect(page.locator('.analytics-panel h2',has_text=labels['analyticsPublicTraffic'])).to_have_count(0)
+                        if platform=='android':
+                            await expect(panels.nth(0).locator('tbody tr td')).to_have_text([labels['analyticsSourceandroid_subscription'],'1','1'])
+                            await expect(panels.nth(1).locator('tbody tr td')).to_have_text([labels['empty']])
+                            await expect(page.locator('.analytics-since')).to_have_count(2)
+                        else:
+                            # No route-set entry yet: no data, never an empty table.
+                            await expect(page.locator('.analytics-state[data-state=no_data]')).to_have_count(2)
+                            await expect(page.locator('.analytics-since')).to_have_count(0)
+                    elif section in ('overview','platform'):
+                        await expect(page.locator('.analytics-platform-grid .analytics-panel')).to_have_count(1)
+                        title={'android':'analyticsAndroid','telegram':'analyticsTelegram','iphone_pwa':'analyticsIphonePwa'}[platform]
+                        await expect(page.locator('.analytics-platform-grid h2')).to_have_text(labels[title])
+                        await expect(page.locator('.analytics-panel h2',has_text=labels['analyticsVersions'])).to_have_count(1 if platform=='android' else 0)
+                    else:
+                        # Report has no iPhone PWA scope yet: its reason panel shows instead.
+                        await expect(page.locator('#content .stats-category-content, #content .state-panel').first).to_be_visible()
+                    cells=await page.evaluate(state_cells)
+                    assert cells and set(cells)<=states or section in ('overview','platform','sources','report'), (platform,section,cells)
+                    assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth'), (language,platform,section)
+                    if language=='tj':await page.screenshot(path=str(output/f'v10-{section}-{platform}-tj-390.png'),full_page=True)
+        await page.locator('[data-action=platform]').click()
+        await page.locator('[data-platform=overall]').click()
         await page.set_viewport_size({'width':390,'height':844})
         await page.locator('[data-action=more]').click()
         await page.locator('#drawerLocale').select_option('uz')

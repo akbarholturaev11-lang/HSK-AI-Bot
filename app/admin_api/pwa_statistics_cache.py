@@ -28,6 +28,12 @@ _REDIS_IO_SECONDS = .35
 _MAX_BYTES = 128 * 1024
 _FIELDS = {"platform", "period", "since", "generated_at", "timezone", "platform_counts_overlap",
            "available", "metrics", "source", "scope", "reason", "metric_definitions"}
+_MANUAL_SECTIONS = frozenset(("course", "funnel", "money", "sources", "report"))
+# A scoped section refresh may target any filter whose snapshot it owns, so an
+# acceptance check never waits for a 24-hour platform snapshot (audit #44).
+_REFRESH_PLATFORMS = frozenset(("overall", "android", "telegram", "iphone_pwa"))
+_V10_STATE_SCOPES = frozenset(f"analytics_{section}_v2" for section in
+                             ("home", "overview", "platform", "report", *_MANUAL_SECTIONS))
 _PUBLISH = """
 if redis.call('GET', KEYS[1]) == ARGV[1] then
     redis.call('SET', KEYS[2], ARGV[2], 'EX', ARGV[3])
@@ -76,6 +82,8 @@ class AdminPwaStatisticsReader:
             raise ValueError("Invalid internal aggregate cache scope")
         base_prefix = "hsk:admin:stats:v1:{"+(namespace or digest)+"}"
         self.prefix = base_prefix + (":"+cache_scope if cache_scope else "")
+        self._cache_scope = cache_scope
+        self._fields = _FIELDS | {"metric_states"} if cache_scope in _V10_STATE_SCOPES else _FIELDS
         # Scoped payloads stay separate while healthy workers share one refresh
         # lease/hash slot across basic stats and on-demand analytics sections.
         self._lease_key = base_prefix+":refresh"
@@ -86,9 +94,10 @@ class AdminPwaStatisticsReader:
         # Owner refresh may update R2 while another worker holds a valid local
         # analytics snapshot. Recheck approved manually refreshable sections
         # at most once per minute; do not re-run SQL on cache hits.
-        self._overview_local_revalidate = cache_scope in (
-            "analytics_overview_v1", "analytics_course_v1", "analytics_funnel_v1",
-            "analytics_money_v1", "analytics_sources_v1")
+        self._overview_local_revalidate = cache_scope in {
+            f"analytics_{section}_v{version}"
+            for section in ("overview", *_MANUAL_SECTIONS) for version in (1, 2)
+        }
         self._local_checked_at = {}
         self._mutex = refresh_mutex if refresh_mutex is not None else asyncio.Lock()
         self._redis_retry_at = 0.0
@@ -130,7 +139,7 @@ class AdminPwaStatisticsReader:
             if not self.clock() < expires <= self.clock()+SNAPSHOT_SECONDS:
                 return None
             data = envelope["data"]
-            if (not isinstance(data, dict) or set(data)-_FIELDS or data.get("platform") != query.platform
+            if (not isinstance(data, dict) or set(data)-self._fields or data.get("platform") != query.platform
                     or data.get("period") != query.period or type(data.get("available")) is not bool):
                 return None
             generated = datetime.fromisoformat(data["generated_at"])
@@ -293,18 +302,18 @@ class AdminPwaStatisticsReader:
         A short PostgreSQL advisory lock and the per-worker shared mutex bound
         concurrent recomputation. The scheduled GitHub mirror never calls SQL.
         """
-        allowed = frozenset(("course", "funnel", "money", "sources"))
         query = StatisticsRequest.model_validate(query.model_dump())
-        if (section not in allowed
-                or not self.prefix.endswith(":analytics_" + section + "_v1")
-                or query.platform != "overall"
+        if (section not in _MANUAL_SECTIONS
+                or self._cache_scope not in (f"analytics_{section}_v1", f"analytics_{section}_v2")
+                or query.platform not in _REFRESH_PLATFORMS
                 or query.period not in ("weekly", "monthly", "all_time")
                 or not getattr(self.settings, "ADMIN_PWA_ENABLED", False)
                 or not self._r2.enabled):
             raise StatisticsUnavailable("Manual statistics refresh unavailable")
         try:
             async with asyncio.timeout(65), self._mutex:
-                if self.clock() - getattr(self, "_last_manual_section_refresh_at", 0) < 60:
+                recent_at = getattr(self, "_last_manual_section_refresh_at", {})
+                if self.clock() - recent_at.get(query.platform, 0) < 60:
                     raise StatisticsUnavailable("Manual refresh recently completed")
                 async with self.sessions() as db:
                     async with read_transaction(db):
@@ -322,9 +331,10 @@ class AdminPwaStatisticsReader:
                         elif dialect != "sqlite":
                             raise StatisticsUnavailable("Manual refresh requires PostgreSQL")
 
+                        variant = query.platform + "_" + query.period
                         previous = await self._r2.get(
                             kind="statistics", namespace=self._r2_namespace,
-                            variant="overall_" + query.period)
+                            variant=variant)
                         stored = self._decode(previous, query)
                         if stored is not None:
                             observed = datetime.fromisoformat(
@@ -335,7 +345,7 @@ class AdminPwaStatisticsReader:
                         data = await self.loader(db, query)
                         if (not isinstance(data, dict)
                                 or data.get("available") is not True
-                                or data.get("platform") != "overall"
+                                or data.get("platform") != query.platform
                                 or data.get("period") != query.period
                                 or data.get("source") != "first-party stored aggregate projections"
                                 or not isinstance(data.get("scope"), dict)
@@ -352,12 +362,12 @@ class AdminPwaStatisticsReader:
                         # Durable R2 first; no local success on failed storage.
                         await self._r2.put(
                             kind="statistics", namespace=self._r2_namespace,
-                            variant="overall_" + query.period, raw=raw)
+                            variant=variant, raw=raw)
 
-                self._remember(("overall", query.period), envelope)
-                self._last_manual_section_refresh_at = self.clock()
+                self._remember((query.platform, query.period), envelope)
+                self._last_manual_section_refresh_at = {**recent_at, query.platform: self.clock()}
                 return {
-                    "section": section, "period": query.period,
+                    "section": section, "platform": query.platform, "period": query.period,
                     "generated_at": envelope["data"]["generated_at"],
                     "expires_at": datetime.fromtimestamp(
                         envelope["expires_at"], timezone.utc).isoformat(),

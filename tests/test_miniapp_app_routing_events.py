@@ -4,10 +4,13 @@ Calls the real `/api/miniapp/event` handler with a SQLite session; only the
 Telegram signature check is replaced. Contract:
 docs/TELEGRAM_PWA_ANDROID_HANDOFF_CONTEXT.md.
 """
+import json
 import unittest
 from datetime import datetime, timezone
 from unittest.mock import patch
 
+from fastapi import FastAPI
+from httpx import ASGITransport, AsyncClient
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import StaticPool
@@ -99,6 +102,70 @@ class AppOfferEventTests(unittest.IsolatedAsyncioTestCase):
             names = (await session.execute(select(CourseMiniAppEvent.event_name))).scalars().all()
         self.assertEqual(names, [])
         self.assertIsNone(await self.state("ios"))
+
+    async def test_telegram_telemetry_ignores_caller_platform_markers(self):
+        sent = await self.send(event="section_started", source=" PWA_COURSE_V3 ",
+                               client="android", transport="iphone_pwa",
+                               event_id="fixture:section", session_id="fixture:session")
+        self.assertTrue(sent.get("ok"), sent)
+        async with self.sessions() as session:
+            row = (await session.execute(select(CourseMiniAppEvent))).scalar_one()
+        self.assertEqual(row.source, "course_miniapp")
+        self.assertEqual(row.user_id, 1)
+        self.assertEqual(row.dedupe_key, "fixture:section")
+        payload = json.loads(row.payload_json)
+        self.assertFalse({"source", "transport"} & payload.keys())
+        self.assertEqual(payload["client"], "telegram")
+
+    def test_analytics_marker_never_truncates_an_existing_payload(self):
+        from app.services.course_miniapp_analytics_service import (
+            CourseMiniAppAnalyticsService, MAX_EVENT_PAYLOAD_CHARS,
+        )
+
+        payload = {"grading_snapshot": "字" * (MAX_EVENT_PAYLOAD_CHARS - 23)}
+        serialized = CourseMiniAppAnalyticsService._payload_json(payload)
+        self.assertEqual(json.loads(serialized), payload)
+        with self.assertLogs("app.services.course_miniapp_analytics_service", "WARNING") as logs:
+            self.assertEqual(
+                CourseMiniAppAnalyticsService._payload_json(payload, analytics_client="iphone_pwa"),
+                serialized,
+            )
+        # The omission is visible in logs; the payload itself is never logged.
+        self.assertIn("client tag omitted", logs.output[0])
+        self.assertNotIn("字", logs.output[0])
+
+    def test_route_client_is_the_final_key_even_when_a_caller_sent_one(self):
+        from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
+
+        # A server-side caller copying a client dict must not keep the key's
+        # first position: the row would then leave every platform filter.
+        tagged = CourseMiniAppAnalyticsService._payload_json(
+            {"client": "android", "lesson_order": 2}, analytics_client="telegram")
+        self.assertEqual(tagged, '{"lesson_order":2,"client":"telegram"}')
+        # An oversized row stays Overall-only and keeps no caller key either.
+        payload = {"client": "android", "snapshot": "x" * 8000}
+        with self.assertLogs("app.services.course_miniapp_analytics_service", "WARNING"):
+            fallback = CourseMiniAppAnalyticsService._payload_json(payload, analytics_client="telegram")
+        self.assertNotIn('"client"', fallback)
+
+    async def test_telegram_map_preserves_campaign_source_but_not_reserved_pwa_source(self):
+        app = FastAPI()
+        app.add_api_route("/api/v3/map", main.v3_course_map, methods=["GET"])
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="https://synthetic.test") as client:
+            for source, sid in (("pwa_course_v3", "reserved"), ("reviewed_campaign", "campaign")):
+                response = await client.get(
+                    "/api/v3/map", params={"source": source, "sid": sid},
+                    headers={"X-Telegram-Init-Data": "signed"},
+                )
+                self.assertEqual(response.status_code, 200, response.text)
+        async with self.sessions() as session:
+            rows = (await session.scalars(select(CourseMiniAppEvent).where(
+                CourseMiniAppEvent.event_name == "miniapp_opened"
+            ))).all()
+        self.assertEqual({row.dedupe_key: row.source for row in rows}, {
+            "course-v3:miniapp-opened:reserved": "course_v3",
+            "course-v3:miniapp-opened:campaign": "reviewed_campaign",
+        })
 
 
 if __name__ == "__main__":

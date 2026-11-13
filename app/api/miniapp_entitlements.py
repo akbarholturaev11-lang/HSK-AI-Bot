@@ -306,7 +306,7 @@ def create_miniapp_entitlements_router(
 
     @router.post("/api/v3/pwa/event")
     async def pwa_course_event(request: Request):
-        from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
+        from app.services.course_miniapp_analytics_service import ATTRIBUTED_CLIENT_EVENTS, CourseMiniAppAnalyticsService
 
         try:
             require_same_origin(request, settings_obj)
@@ -332,6 +332,7 @@ def create_miniapp_entitlements_router(
                 except (TypeError, ValueError, OverflowError):
                     lesson_order = 0
                 trusted = service.trusted_client_payload(payload, user)
+                trusted.pop("client", None)
                 trusted["source"] = "pwa_course_v3"
                 trusted["transport"] = "iphone_pwa"
                 result = await service.record_client_event(
@@ -341,6 +342,7 @@ def create_miniapp_entitlements_router(
                     session_id=str(payload.get("session_id") or "")[:80] or None,
                     dedupe_key=str(payload.get("dedupe_key") or "")[:120] or None,
                     payload=trusted,
+                    analytics_client="iphone_pwa" if event_name in ATTRIBUTED_CLIENT_EVENTS else None,
                 )
                 if result.get("ok"):
                     await session.commit()

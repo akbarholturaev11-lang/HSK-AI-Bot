@@ -15,6 +15,8 @@ from app.db.models.user import User
 from app.db.models.user_client_presence import UserClientPresence as Presence
 from app.services.desktop_analytics_service import DesktopAnalyticsService
 
+PWA_MAP_OPEN_PREFIX = 'pwa-course-v3:'
+
 
 async def platform_metrics(db, *, since, now, platform='overall'):
     keys=('android','macos','windows') if platform=='overall' else (platform,)
@@ -53,6 +55,17 @@ async def platform_metrics(db, *, since, now, platform='overall'):
             for card in cards:
                 if card['platform'] in counts:card.update({k:len(v) for k,v in zip(
                     ('active_dau','active_wau','active_mau'),counts[card['platform']])})
+    if platform=='iphone_pwa':
+        # A4: only /api/v3/pwa/map builds this dedupe prefix. Telegram map rows
+        # use `course-v3:`, even when a caller sent the PWA source text, and no
+        # client event route may write `miniapp_opened`. A PWA sign-in device
+        # is not use (A5), so this card has foreground proof and no inventory.
+        opened=(Event.event_name=='miniapp_opened')&Event.dedupe_key.like(PWA_MAP_OPEN_PREFIX+'%')
+        active=(await db.execute(select(*[func.count(func.distinct(User.id)).filter(
+            Event.created_at>=now-timedelta(days=days)) for days in (1,7,30)])
+            .select_from(Event).join(User,owner(Event)).where(opened,
+                *_window(Event.created_at,now-timedelta(days=30),now)))).one()
+        cards.append({'platform':'iphone_pwa',**dict(zip(('active_dau','active_wau','active_mau'),active))})
     if platform in ('overall','telegram'):
         values=(await db.execute(select(func.count(func.distinct(Presence.user_id)),
             func.count(func.distinct(Presence.user_id)).filter(Presence.last_foreground_at>=now-timedelta(days=30)))
@@ -68,6 +81,7 @@ async def platform_metrics(db, *, since, now, platform='overall'):
             versions.append({'platform':key,'version':version if re.fullmatch(r'\d{1,5}(?:\.\d{1,5}){1,3}(?:[-+][A-Za-z0-9.]{1,15})?',version or '') else 'unknown',
                 'devices':n,'accounts':accounts})
     return {'platforms':cards,'versions':versions,'desktop_detail_limited':detail_limited,
-        'iphone_pwa_available':False,'scope':'current nonrevoked linked-device inventory; foreground proof rolling 1/7/30 days; Mini App last foreground presence',
+        # Overall keeps its pinned card list; the PWA card is read under its filter.
+        'iphone_pwa_available':platform=='iphone_pwa','scope':'current nonrevoked linked-device inventory; foreground proof rolling 1/7/30 days; Mini App last foreground presence',
         'versions_scope':'top 12 current version groups per native platform; remaining groups omitted',
         'overlap':True}

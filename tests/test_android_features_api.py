@@ -412,6 +412,7 @@ class AndroidSubscriptionHandoffApiTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual("android_subscription", entries[0].source)
         self.assertEqual("subscription", entries[0].mode)
         self.assertEqual(1001, entries[0].telegram_id)
+        self.assertEqual("android", entries[0].client)
 
     async def test_a_failed_message_still_hands_the_learner_the_bot_link(self):
         # Telegram can refuse the message (the user blocked the bot, a network
@@ -816,9 +817,9 @@ class AndroidExamRouteTests(unittest.IsolatedAsyncioTestCase):
             def __init__(self, session):
                 self.session = session
 
-            async def start(self, telegram_id, *, level, lang, access_ref, ad_supported=False):
+            async def start(self, telegram_id, *, level, lang, access_ref, ad_supported=False, analytics_client=None):
                 outer.calls.append(
-                    ("start", telegram_id, level, lang, access_ref, ad_supported)
+                    ("start", telegram_id, level, lang, access_ref, ad_supported, analytics_client)
                 )
                 return {
                     "ok": True,
@@ -831,8 +832,8 @@ class AndroidExamRouteTests(unittest.IsolatedAsyncioTestCase):
                     },
                 }
 
-            async def complete(self, telegram_id, *, session_id, answers, level=None, lang=None):
-                outer.calls.append(("complete", telegram_id, session_id, answers, level, lang))
+            async def complete(self, telegram_id, *, session_id, answers, level=None, lang=None, analytics_client=None):
+                outer.calls.append(("complete", telegram_id, session_id, answers, level, lang, analytics_client))
                 return {"ok": True, "result": {"percent": 75, "passed": True}}
 
         app = FastAPI()
@@ -878,7 +879,7 @@ class AndroidExamRouteTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(200, response.status_code)
         self.assertTrue(response.json()["ok"])
         self.assertEqual(
-            ("start", 4242, "hsk2", "uz", "ref-1", True),
+            ("start", 4242, "hsk2", "uz", "ref-1", True, "android"),
             self.calls[0],
         )
 
@@ -902,6 +903,7 @@ class AndroidExamRouteTests(unittest.IsolatedAsyncioTestCase):
                 [{"question_id": "q1", "selected_index": 2}],
                 "hsk2",
                 "uz",
+                "android",
             ),
             self.calls[0],
         )

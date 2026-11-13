@@ -1189,6 +1189,7 @@ class CourseMistakeService:
         self,
         telegram_id: int | User,
         *,
+        analytics_client: str | None = None,
         ad_supported: bool = False,
         access_ref: str = "",
         category: str | None = None,
@@ -1319,6 +1320,7 @@ class CourseMistakeService:
             session_id=session_id,
             dedupe_key=f"{session_id}:started",
             payload=started_payload,
+            analytics_client=analytics_client,
         )
         if not event.get("ok"):
             return {"ok": False, "error": "mistake_review_session_write_failed"}
@@ -1382,6 +1384,7 @@ class CourseMistakeService:
         self,
         telegram_id: int | User,
         *,
+        analytics_client: str | None = None,
         session_id: str,
         question_id: str,
         selected_index,
@@ -1505,6 +1508,7 @@ class CourseMistakeService:
             session_id=session_id,
             dedupe_key=dedupe_key,
             payload=answer_payload,
+            analytics_client=analytics_client,
         )
         if not event.get("ok"):
             return {"ok": False, "error": "mistake_review_answer_write_failed"}
@@ -1596,7 +1600,7 @@ class CourseMistakeService:
         except Exception:  # noqa: BLE001
             logger.exception("Word mastery hand-off failed for user %s", getattr(user, "id", None))
 
-    async def _complete_review_v3(self, user, telegram_id: int | User, session_id: str, started_payload: dict) -> dict:
+    async def _complete_review_v3(self, user, telegram_id: int | User, session_id: str, started_payload: dict, *, analytics_client: str | None = None) -> dict:
         snapshot = started_payload.get("questions")
         if not isinstance(snapshot, list) or not snapshot:
             return {"ok": False, "error": "invalid_mistake_review_session"}
@@ -1718,6 +1722,7 @@ class CourseMistakeService:
                 "cleared_targets": cleared_items[:10],
                 "category": started_payload.get("category") or "all",
             },
+            analytics_client=analytics_client,
         )
         if not event.get("ok"):
             return {"ok": False, "error": "mistake_review_result_write_failed"}
@@ -1746,7 +1751,11 @@ class CourseMistakeService:
             "reward": reward,
         }
 
-    async def complete_review(self, telegram_id: int | User, *, session_id: str, answers: list) -> dict:
+    async def complete_review(
+        self, telegram_id: int | User, *,
+        analytics_client: str | None = None,
+        session_id: str, answers: list,
+    ) -> dict:
         user = (telegram_id if isinstance(telegram_id, User) else await self.user_repo.get_by_telegram_id(telegram_id))
         if not user:
             return {"ok": False, "error": "access_start_first"}
@@ -1775,7 +1784,9 @@ class CourseMistakeService:
             return self._completed_review_response(completed)
         v3_payload = self._json_dict(getattr(started, "payload_json", None))
         if int(v3_payload.get("version") or 0) == MISTAKE_REVIEW_VERSION:
-            return await self._complete_review_v3(user, telegram_id, session_id, v3_payload)
+            return await self._complete_review_v3(
+                user, telegram_id, session_id, v3_payload, analytics_client=analytics_client,
+            )
         try:
             started_payload = json.loads(started.payload_json or "{}")
             mistake_ids = [int(value) for value in started_payload.get("mistake_ids", [])]
@@ -1946,6 +1957,7 @@ class CourseMistakeService:
                 "resolved": resolved_delta,
                 "reward_eligible_resolved": reward_eligible_resolved,
             },
+            analytics_client=analytics_client,
         )
         if not event.get("ok"):
             return {"ok": False, "error": "mistake_review_result_write_failed"}

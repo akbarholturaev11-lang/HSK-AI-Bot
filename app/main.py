@@ -2914,12 +2914,14 @@ async def _course_v3_map_for_user(
 
     # Browser source attribution is fixed until a verified Smart/deep-link
     # handoff exists. Do not let a caller spoof Smart study or payment funnels.
-    # The original signed Telegram Mini App keeps its existing source behavior.
+    # Preserve Telegram campaign sources except for the reserved PWA marker.
     entry_source = _checkout_text(
         (request.query_params.get("source") if default_source == "course_v3" else None)
         or default_source,
         40,
     )
+    if default_source == "course_v3" and entry_source.casefold() == "pwa_course_v3":
+        entry_source = default_source
     course_session_id = _checkout_text(request.query_params.get("sid"), 80) or None
 
     # Dars access oqimi admin policy orqali boshqariladi:
@@ -3181,6 +3183,7 @@ async def v3_hsk_exam_start(request: Request):
                 lang=str(payload.get("lang") or ""),
                 access_ref=str(payload.get("access_ref") or ""),
                 ad_supported=bool(payload.get("ad_supported")),
+                analytics_client="telegram",
             )
     except ValueError as error:
         return JSONResponse(
@@ -3217,6 +3220,7 @@ async def v3_hsk_exam_complete(request: Request):
             telegram_id,
             session_id=str(payload.get("session_id") or ""),
             answers=payload.get("answers") if isinstance(payload.get("answers"), list) else [],
+            analytics_client="telegram",
         )
     status_code = 200 if result.get("ok") else 409 if result.get("error") == "hsk_exam_material_changed" else 400
     return JSONResponse(status_code=status_code, content=result)
@@ -3331,7 +3335,7 @@ async def v3_course_lesson_unlock(request: Request):
 async def _v3_complete_lesson_for_canonical_actor(
     session, user, payload: dict, *, lesson_order: int,
     lesson_session_id: str | None, lesson_mistakes: list[dict],
-    telegram_id: int | None,
+    telegram_id: int | None, analytics_client: str,
 ):
     """Single existing V3 completion, entitlement, proof and XP transaction.
 
@@ -3509,6 +3513,7 @@ async def _v3_complete_lesson_for_canonical_actor(
         lesson_order=lesson_order,
         session_id=lesson_session_id,
         dedupe_key=f"v3-part:{resolved_level}:{lesson_order}:completed",
+        analytics_client=analytics_client,
         payload={
             "lesson_order": lesson_order,
             "is_paid": is_paid,
@@ -3584,7 +3589,7 @@ async def v3_course_lesson_complete(request: Request):
         return await _v3_complete_lesson_for_canonical_actor(
             session, user, payload, lesson_order=lesson_order,
             lesson_session_id=lesson_session_id,
-            lesson_mistakes=lesson_mistakes, telegram_id=telegram_id,
+            lesson_mistakes=lesson_mistakes, telegram_id=telegram_id, analytics_client="telegram",
         )
 
 
@@ -3661,6 +3666,7 @@ async def pwa_v3_course_lesson_complete(request: Request):
                 lesson_session_id=lesson_session_id,
                 lesson_mistakes=lesson_mistakes,
                 telegram_id=int(user.telegram_id) if user.telegram_id else None,
+                analytics_client="iphone_pwa",
             )
             response.headers["Cache-Control"] = "no-store"
             response.headers["Referrer-Policy"] = "no-referrer"
@@ -5750,6 +5756,7 @@ async def miniapp_onboarding(request: Request):
                 goals=payload.get("goals"),
                 streak_target_days=payload.get("streak_target_days"),
                 preferred_focus=payload.get("preferred_focus"),
+                analytics_client="telegram",
             )
     except (TypeError, ValueError) as error:
         return JSONResponse(
@@ -6000,6 +6007,7 @@ async def miniapp_practice_start(request: Request):
                 level=_course_v3_user_level(user),
                 lang=_course_v3_user_lang(user),
                 skill=str(payload.get("skill") or ""),
+                analytics_client="telegram",
             )
     except ValueError as error:
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_practice_payload", "message": str(error)})
@@ -6028,6 +6036,7 @@ async def miniapp_practice_complete(request: Request):
                 lang=_course_v3_user_lang(user),
                 skill=str(payload.get("skill") or ""),
                 answers=payload.get("answers") if isinstance(payload.get("answers"), list) else [],
+                analytics_client="telegram",
             )
     except ValueError as error:
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_practice_payload", "message": str(error)})
@@ -6245,6 +6254,7 @@ async def miniapp_mistake_review_start(request: Request):
             category=str(payload.get("category") or "") or None,
             formats=payload.get("formats") if isinstance(payload.get("formats"), list) else None,
             language=str(payload.get("language") or "") or None,
+            analytics_client="telegram",
         )
     status_code = (
         200
@@ -6280,6 +6290,7 @@ async def miniapp_mistake_review_answer(request: Request):
             session_id=str(payload.get("session_id") or ""),
             question_id=str(payload.get("question_id") or ""),
             selected_index=payload.get("selected_index"),
+            analytics_client="telegram",
         )
     return JSONResponse(status_code=200 if result.get("ok") else 400, content=result)
 
@@ -6301,6 +6312,7 @@ async def miniapp_mistake_review_complete(request: Request):
             telegram_id,
             session_id=str(payload.get("session_id") or ""),
             answers=payload.get("answers") if isinstance(payload.get("answers"), list) else [],
+            analytics_client="telegram",
         )
     return JSONResponse(status_code=200 if result.get("ok") else 400, content=result)
 
@@ -6336,6 +6348,8 @@ async def subscription_miniapp_overview(request: Request):
                 payment_method=str(payload.get("method") or "") or None,
                 campaign_id=_positive_int(payload.get("campaign_id")),
                 feedback_id=_positive_int(payload.get("feedback_id")),
+                # R3: the signed Telegram route, whatever `source` the caller sent.
+                client="telegram",
             )
             await SubscriptionChurnService(session).mark_subscription_miniapp_opened(telegram_id, source)
             if not result.get("pending_payment"):
@@ -6349,6 +6363,8 @@ async def subscription_miniapp_overview(request: Request):
                         "mode": str(payload.get("mode") or ""),
                         "campaign_id": _positive_int(payload.get("campaign_id")),
                         "feedback_id": _positive_int(payload.get("feedback_id")),
+                        # Route-owned platform marker; source and attempt ID are caller text.
+                        "transport": "telegram",
                     },
                 )
         elif (
@@ -6501,6 +6517,7 @@ async def subscription_miniapp_event(request: Request):
                 "plan_type": _checkout_text(payload.get("plan_type"), 32),
                 "payment_method": _checkout_text(payload.get("payment_method"), 32),
                 "mode": _checkout_text(payload.get("mode"), 32),
+                "transport": "telegram",
             },
         )
     # A failed best-effort analytics write is not a successful delivery.
@@ -6635,6 +6652,8 @@ async def subscription_miniapp_submit(request: Request):
 
 @app.post("/api/miniapp/event")
 async def miniapp_event(request: Request):
+    from app.services.course_miniapp_analytics_service import ATTRIBUTED_CLIENT_EVENTS
+
     payload = await request.json()
     event = str(payload.get("event") or "").strip()
 
@@ -6644,6 +6663,13 @@ async def miniapp_event(request: Request):
     )
     if not telegram_id:
         return {"ok": False, "error": "invalid_telegram_init_data"}
+
+    # Never persist browser/native attribution from signed Telegram input.
+    # Telegram signatures identify the learner, not the source of an event.
+    payload.pop("transport", None)
+    payload.pop("client", None)
+    if _checkout_text(payload.get("source"), 40).casefold() == "pwa_course_v3":
+        payload.pop("source", None)
 
     async with async_session_maker() as session:
         if event == "bot_return_clicked":
@@ -6752,6 +6778,7 @@ async def miniapp_event(request: Request):
                 session_id=str(payload.get("session_id") or "") or None,
                 dedupe_key=dedupe_key,
                 payload=trusted_payload,
+                analytics_client="telegram" if event in ATTRIBUTED_CLIENT_EVENTS else None,
             )
             if result.get("ok"):
                 if event in {"desktop_promo_seen", "desktop_promo_dismissed"}:

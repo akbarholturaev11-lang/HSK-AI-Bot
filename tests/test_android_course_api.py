@@ -684,6 +684,53 @@ class AndroidCourseServiceTests(unittest.IsolatedAsyncioTestCase):
                 await service.skip_test_questions(token, lesson_order=499)
             self.assertEqual(404, questions.exception.status_code)
 
+    async def _starts(self, session, name="android_lesson_started"):
+        return (await session.execute(select(CourseMiniAppEvent).where(
+            CourseMiniAppEvent.event_name == name))).scalars().all()
+
+    async def test_an_opened_lesson_records_one_tagged_server_start_per_day(self):
+        async with self.sessions() as session:
+            token = await self._token(session)
+            service = AndroidCourseService(session, _settings())
+            for _ in range(2):
+                self.assertTrue((await service.lesson(token, lesson_order=1))["ok"])
+            starts = await self._starts(session)
+            reminder_starts = await self._starts(session, "lesson_started")
+
+        self.assertEqual(1, len(starts))
+        start = starts[0]
+        self.assertEqual((1, 1001, "android_course", "hsk1", 1),
+                         (start.user_id, start.telegram_id, start.source, start.level, start.lesson_order))
+        self.assertEqual({"client": "android"}, json.loads(start.payload_json))
+        day = datetime.now(timezone.utc).date().isoformat()
+        self.assertEqual(f"android-lesson-start:hsk1:1:{day}", start.dedupe_key)
+        # The D1 recovery and unfinished-lesson reminders read lesson_started.
+        self.assertEqual([], reminder_starts)
+
+    async def test_a_refused_lesson_records_no_start(self):
+        async with self.sessions() as session:
+            token = await self._token(session)
+            with self.assertRaises(DesktopCourseError):
+                await AndroidCourseService(session, _settings()).lesson(token, lesson_order=2)
+            self.assertEqual([], await self._starts(session))
+
+    async def test_a_failed_start_write_still_returns_the_lesson(self):
+        async with self.sessions() as session:
+            token = await self._token(session)
+            with patch("app.services.android_course_service.CourseMiniAppAnalyticsService") as analytics, \
+                    self.assertLogs("app.services.android_course_service", level="ERROR"):
+                analytics.return_value.record_server_event = AsyncMock(side_effect=RuntimeError("down"))
+                lesson = await AndroidCourseService(session, _settings()).lesson(token, lesson_order=1)
+            self.assertTrue(lesson["ok"])
+            self.assertTrue(lesson["lesson"]["sections"])
+            self.assertEqual([], await self._starts(session))
+
+    async def test_desktop_lessons_record_no_start(self):
+        async with self.sessions() as session:
+            token = await self._token(session, platform="macos", installation="m" * 48)
+            await DesktopCourseService(session, _settings()).lesson(token, lesson_order=1)
+            self.assertEqual([], await self._starts(session))
+
     async def test_lesson_payload_matches_the_checked_in_material(self):
         async with self.sessions() as session:
             token = await self._token(session)
@@ -1044,6 +1091,12 @@ class AndroidCourseApiTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(state["ok"])
         self.assertTrue(state["completed"])
         self.assertEqual("daily_communication", state["profile"]["goal"])
+        # R2: the Android route, not the caller, tags the onboarding rows.
+        async with self.sessions() as session:
+            payloads = (await session.execute(select(CourseMiniAppEvent.payload_json).where(
+                CourseMiniAppEvent.event_name == "onboarding_completed"))).scalars().all()
+        self.assertEqual(len(payloads), 1)
+        self.assertTrue(payloads[0].endswith('"client":"android"}'), payloads[0])
 
     async def test_native_li_rollout_is_independent_of_live_pwa_entry(self):
         self.settings.PWA_LI_ONBOARDING_ENTRY_ENABLED = True

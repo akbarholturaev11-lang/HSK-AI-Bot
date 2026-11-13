@@ -348,6 +348,23 @@ gaps remain explicit. The report identifies basic aggregate downloads and overal
 coverage rather than claiming unimplemented section exports. No demo arrays,
 growth percentages, guessed platform shares or source-code filler are included.
 
+Per-platform states (analytics integrity 3.3, 2026-11-12): every tab reads the
+server `metric_states`. An unavailable metric (`no_data`, `not_instrumented`,
+`attribution_not_audited`, `detail_limited`) or a `not_applicable` one shows its
+short muted label in place of the value, never a number or zero; cohort rows of
+an unavailable metric are omitted. A whole section outside a platform's scope
+shows the reason and points to the Overall filter. Per-platform families show
+`attributed_since` as one line under their panel. The iPhone PWA card has
+foreground opens only (no device inventory); version tables are hidden where
+`not_applicable`. The Conversion tab adds the iPhone PWA Pro attempts panel
+(opened, plan, checkout, verified payment; reversals and unlinked payments as
+rows) under Overall and iPhone PWA only; Android and Telegram hide it. Course
+shows «Return» D1/D7 (any verified return on any app) before «Course open» D1/D7
+(Mini App/PWA course map); both appear as cards and cohort rows with distinct
+labels. Report adds a per-platform freshness table (platform, source,
+latest record, rows without an owner); a platform with no verified rows shows a
+dash.
+
 Canonical UZ/RU/TJ bundles own new labels. Layout uses fixed CSS/SVG attributes
 under the existing CSP, no inline styles or public private-data cache. Every
 original-editor/dirty-state/passkey/unknown-result rule above remains in force.

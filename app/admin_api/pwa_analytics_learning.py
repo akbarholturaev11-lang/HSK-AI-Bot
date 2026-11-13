@@ -1,14 +1,16 @@
 """Source-bound learning projections, with bounded detailed-history calculations."""
 from datetime import timedelta
 
-from sqlalchemy import and_, func, or_, select
+from sqlalchemy import and_, func, or_, select, union
 
 from app.admin_api.pwa_analytics import _known, home_overview_metrics
 from app.admin_api.pwa_metrics import _window, overall_activity_metrics
 from app.admin_api.pwa_read import _user_segment_clause
 from app.db.models.ai_usage import AIUsageEvent
 from app.db.models.conversion_funnel_event import ConversionFunnelEvent as Funnel
-from app.db.models.course_miniapp_event import CourseMiniAppEvent as Event
+from app.db.models.course_miniapp_event import (
+    SMART_PRACTICE_SCORED, SMART_PRACTICE_STARTED, CourseMiniAppEvent as Event,
+)
 from app.db.models.message import Message
 from app.db.models.user import User
 from app.db.models.payment import Payment
@@ -25,10 +27,45 @@ from app.services.course_miniapp_admin_analytics_service import (
 
 DETAIL_LIMIT = 5000
 PAYLOAD_LIMIT = 4096
+# D5 return evidence: an app open on any client, or a learning outcome the
+# server writes itself. Client-writable starts, passive views, feedback
+# reservations and bare Voice start/end rows are not on the list.
+RETURN_OPEN_EVENTS = ('miniapp_opened', 'android_app_opened', 'desktop_app_opened', 'desktop_active_day')
+RETURN_LEARNING_EVENTS = ('lesson_completed', 'book_lesson_completed', 'section_attempt_scored',
+    'test_completed', 'training_completed', SMART_PRACTICE_STARTED, SMART_PRACTICE_SCORED,
+    'mistake_review_answered', 'mistake_review_completed')
+# One server usage row per spoken Voice turn, written in the turn's own commit
+# (`voice_practice_service`: reply for turn mode, audio/evaluation for live).
+# Their time is the turn's time; a reused session's `started_at` is not (#31).
+VOICE_TURN_USAGE_SOURCES = ('voice_practice_reply', 'voice_live_audio', 'voice_live_evaluation')
 
 
 def ratio(numerator, denominator):
     return round(100*numerator/denominator, 2) if denominator else None
+
+
+ACTIVATION_EVENTS = ('onboarding_completed', 'lesson_started', 'section_completed',
+                     'lesson_completed', 'book_lesson_completed')
+
+
+def activation_query(*conditions, since, now):
+    """Rows of the activation funnel: (event, account, time, payload prefix)."""
+    return (select(Event.event_name, User.id, Event.created_at, func.substr(Event.payload_json, 1, PAYLOAD_LIMIT+1))
+        .select_from(Event).join(User, owner(Event)).where(Event.event_name.in_(ACTIVATION_EVENTS),
+            *conditions, *_window(Event.created_at, since, now)).order_by(Event.created_at, Event.id))
+
+
+def activation_values(rows, *, now):
+    """(activation, direct_activation): lesson start within 2 minutes of the
+    onboarding anchor, for every cohort and for `direct_start_v1`."""
+    if rows is None:
+        return None, None
+    funnel = _activation_funnel(rows, now=now)
+    def values(cohort):
+        return {'eligible': cohort['lesson_started_eligible'], 'started': cohort['lesson_started_2m'],
+                'percent': ratio(cohort['lesson_started_2m'], cohort['lesson_started_eligible'])}
+    direct = funnel['variants'].get('direct_start_v1')
+    return values(funnel), values(direct) if direct else None
 
 
 def owner(model, telegram_column='telegram_id'):
@@ -52,19 +89,86 @@ def shift(db, column, days):
     return func.datetime(column, f'+{days} days')
 
 
-async def retention(db, *, since, now):
+def returned_accounts(account, *conditions, evidence):
+    """Accounts with any of the `evidence` EXISTS clauses, as a subquery.
+
+    Each clause is its own WHERE EXISTS, which PostgreSQL plans as a semi-join
+    over the whole cohort. Inside an aggregate FILTER (or OR-ed together) an
+    EXISTS runs once per account: all time on 1M events took 8 s per window and
+    hit the 5 s statement timeout (audit 2026-11-13). The union counts an
+    account once."""
+    selects=[select(account).where(*conditions,clause) for clause in evidence]
+    return (selects[0] if len(selects)==1 else union(*selects)).subquery()
+
+
+async def _cohort_returns(db, evidence, *, since, now):
+    """Accounts registered in the matured cohort, and those with evidence in
+    their D1 (24-48 h) or D7 (168-192 h) window. One query per window.
+    `evidence(low, high)` returns EXISTS clauses correlated to `User`."""
     result={}
     for days in (1,7):
         end=now-timedelta(days=days+1)
         start=end-(now-since) if since else None
-        returned=select(Event.id).where(owner(Event), Event.event_name=='miniapp_opened',
-            Event.created_at>=shift(db,User.created_at,days),
-            Event.created_at<shift(db,User.created_at,days+1),Event.created_at<=now).correlate(User).exists()
-        eligible,count=(await db.execute(select(func.count(User.id),func.count(User.id).filter(returned))
-            .where(User.created_at<=end,*([User.created_at>start] if start else [])))).one()
+        cohort=(User.created_at<=end,*([User.created_at>start] if start else []))
+        returned=returned_accounts(User.id,*cohort,
+            evidence=evidence(shift(db,User.created_at,days),shift(db,User.created_at,days+1)))
+        eligible,count=(await db.execute(select(select(func.count(User.id)).where(*cohort).scalar_subquery(),
+            select(func.count()).select_from(returned).scalar_subquery()))).one()
         result[f'd{days}']={'eligible':eligible,'returned':count,'percent':ratio(count,eligible),
             'cohort_start':start.isoformat() if start else None,'cohort_end':end.isoformat()}
     return result
+
+
+async def retention(db, *, since, now):
+    """`course_open`: a Mini App or PWA course-map open (A3 + A4)."""
+    return await _cohort_returns(db, lambda low, high: (select(Event.id).where(
+        owner(Event), Event.event_name=='miniapp_opened', Event.created_at>=low,
+        Event.created_at<high, Event.created_at<=now).correlate(User).exists(),), since=since, now=now)
+
+
+async def return_retention(db, *, since, now):
+    """D5: any verified return on any client; one account counts once."""
+    def evidence(low, high):
+        window=(Event.event_name.in_(RETURN_OPEN_EVENTS+RETURN_LEARNING_EVENTS),
+            Event.created_at>=low, Event.created_at<high, Event.created_at<=now)
+        # `owner(Event)` as two EXISTS: with its OR the planner intersects the
+        # created_at index for every account (EXPLAIN ANALYZE, task 5.1).
+        owned=select(Event.id).where(Event.user_id==User.id, *window).correlate(User).exists()
+        legacy=select(Event.id).where(Event.user_id.is_(None), Event.telegram_id==User.telegram_id,
+            Event.telegram_id>0, *window).correlate(User).exists()
+        # Voice auto-starts and can end with no turn: only a spoken turn counts,
+        # at its own time. A session counts as a whole only when it started and
+        # ended inside the window, so none of its turns can fall outside it.
+        turn=(AIUsageEvent.source.in_(VOICE_TURN_USAGE_SOURCES), AIUsageEvent.created_at>=low,
+            AIUsageEvent.created_at<high, AIUsageEvent.created_at<=now)
+        voice_turn=select(AIUsageEvent.id).where(AIUsageEvent.user_id==User.id, *turn).correlate(User).exists()
+        legacy_turn=select(AIUsageEvent.id).where(AIUsageEvent.user_id.is_(None),
+            AIUsageEvent.user_telegram_id==User.telegram_id, AIUsageEvent.user_telegram_id>0, *turn).correlate(User).exists()
+        voice=select(Voice.id).where(owner(Voice,'user_telegram_id'), Voice.turn_count>0,
+            Voice.started_at>=low, Voice.ended_at.is_not(None), Voice.ended_at<high,
+            Voice.ended_at<=now).correlate(User).exists()
+        return owned, legacy, voice_turn, legacy_turn, voice
+    return await _cohort_returns(db, evidence, since=since, now=now)
+
+
+def foundation_summary(rows, *, now):
+    if rows is None:
+        return None
+    f=build_foundation_metrics(rows,now=now)
+    return {'started_users':f['started_users'],'completed_users':f['completed_users'],
+        'completion_percent':ratio(f['completed_users'],f['started_users']),
+        'first_attempt':{'objectives':f['first_attempt']['objectives'],'correct':f['first_attempt']['correct'],
+            'percent':ratio(f['first_attempt']['correct'],f['first_attempt']['objectives'])},
+        'checkpoint':{'eligible':f['checkpoint_to_paywall']['checkpoint_users'],'reached':f['checkpoint_to_paywall']['paywall_users'],
+            'percent':ratio(f['checkpoint_to_paywall']['paywall_users'],f['checkpoint_to_paywall']['checkpoint_users'])},
+        'parts':[{'part':v['part'],'completed_users':v['completed_users']} for v in f['parts']]}
+
+
+def foundation_query(*conditions, since, now):
+    return (select(Event.event_name,User.id,Event.source,Event.level,
+        Event.lesson_order,func.substr(Event.payload_json,1,PAYLOAD_LIMIT+1),Event.created_at)
+        .select_from(Event).join(User,owner(Event)).where(Event.event_name.in_(FOUNDATION_FUNNEL_EVENT_NAMES),
+            *conditions,*_window(Event.created_at,since,now)).order_by(Event.created_at,Event.id))
 
 
 async def learning_metrics(db, *, period, since, now):
@@ -103,39 +207,17 @@ async def learning_metrics(db, *, period, since, now):
             Event.event_name.in_(('lesson_started','lesson_completed','book_lesson_completed')),
             *_window(Event.created_at,detail_since-timedelta(hours=8),now)).order_by(Event.created_at,Event.id))
     lesson_durations=_lesson_attempt_durations(lesson_rows,completion_since=detail_since) if lesson_rows is not None else None
-    activation_rows=await bounded_rows(db,select(Event.event_name,User.id,Event.created_at,func.substr(Event.payload_json,1,PAYLOAD_LIMIT+1))
-        .select_from(Event).join(User,owner(Event)).where(Event.event_name.in_(
-            ('onboarding_completed','lesson_started','section_completed','lesson_completed','book_lesson_completed')),
-            *_window(Event.created_at,detail_since,now)).order_by(Event.created_at,Event.id),payload_index=3)
-    activation=None
-    direct_activation=None
-    if activation_rows is not None:
-        a=_activation_funnel(activation_rows,now=now)
-        direct=a['variants'].get('direct_start_v1')
-        if direct:direct_activation={'eligible':direct['lesson_started_eligible'],'started':direct['lesson_started_2m'],
-            'percent':ratio(direct['lesson_started_2m'],direct['lesson_started_eligible'])}
-        activation={'eligible':a['lesson_started_eligible'],'started':a['lesson_started_2m'],
-            'percent':ratio(a['lesson_started_2m'],a['lesson_started_eligible'])}
-    foundation_rows=await bounded_rows(db,select(Event.event_name,User.id,Event.source,Event.level,
-        Event.lesson_order,func.substr(Event.payload_json,1,PAYLOAD_LIMIT+1),Event.created_at)
-        .select_from(Event).join(User,owner(Event)).where(Event.event_name.in_(FOUNDATION_FUNNEL_EVENT_NAMES),
-            *_window(Event.created_at,detail_since,now)).order_by(Event.created_at,Event.id),payload_index=5)
-    foundation=None
-    if foundation_rows is not None:
-        f=build_foundation_metrics(foundation_rows,now=now)
-        foundation={'started_users':f['started_users'],'completed_users':f['completed_users'],
-            'completion_percent':ratio(f['completed_users'],f['started_users']),
-            'first_attempt':{'objectives':f['first_attempt']['objectives'],'correct':f['first_attempt']['correct'],
-                'percent':ratio(f['first_attempt']['correct'],f['first_attempt']['objectives'])},
-            'checkpoint':{'eligible':f['checkpoint_to_paywall']['checkpoint_users'],'reached':f['checkpoint_to_paywall']['paywall_users'],
-                'percent':ratio(f['checkpoint_to_paywall']['paywall_users'],f['checkpoint_to_paywall']['checkpoint_users'])},
-            'parts':[{'part':v['part'],'completed_users':v['completed_users']} for v in f['parts']]}
+    activation_rows=await bounded_rows(db,activation_query(since=detail_since,now=now),payload_index=3)
+    activation,direct_activation=activation_values(activation_rows,now=now)
+    foundation_rows=await bounded_rows(db,foundation_query(since=detail_since,now=now),payload_index=5)
+    foundation=foundation_summary(foundation_rows,now=now)
     completed=select(User.id,Event.level,Event.lesson_order).select_from(Event).join(User,owner(Event)).where(
         Event.event_name.in_(('lesson_completed','book_lesson_completed','android_lesson_completed')),Event.lesson_order.is_not(None),
         *_window(Event.created_at,since,now)).distinct().subquery()
     completed_lessons=int(await db.scalar(select(func.count()).select_from(completed)) or 0)
     result=await overall_activity_metrics(db,since=since,now=now)
-    result.update({'retention':await retention(db,since=since,now=now),'features':features,
+    result.update({'retention':await retention(db,since=since,now=now),
+        'return_retention':await return_retention(db,since=since,now=now),'features':features,
         'feature_denominators':{'paid':denominators[0],'free':denominators[1]},'activation':activation,
         'direct_activation':direct_activation,'completed_user_lessons':completed_lessons,
         'foundation':foundation,'chat':{'messages':messages,'accounts':chat_users,'average':round(messages/chat_users,2) if chat_users else None},
@@ -148,16 +230,36 @@ async def learning_metrics(db, *, period, since, now):
     return result
 
 
-async def funnel_metrics(db, *, since, now):
-    result=await overall_activity_metrics(db,since=since,now=now)
+FUNNEL_TRANSPORTS = {'android': 'android', 'telegram': 'telegram', 'iphone_pwa': 'iphone_pwa'}
+
+
+def checkout_transport(platform):
+    """Server-set payload marker of an opening. Caller text is JSON-escaped, so
+    a quoted key cannot be injected through mode, source or attempt values."""
+    return Funnel.payload_json.like(f'%"transport": "{FUNNEL_TRANSPORTS[platform]}"%')
+
+
+async def funnel_metrics(db, *, since, now, platform='overall'):
+    scoped=platform!='overall'
+    # Activity families have no platform predicate; a platform view omits them.
+    result={} if scoped else await overall_activity_metrics(db,since=since,now=now)
     names=('checkout_opened','payment_screenshot_submitted','payment_approved')
     payment_owner=select(Payment.id).where(Payment.id==Funnel.payment_id,_payment_user_join(),
         (Funnel.event_name!='payment_approved') | (Payment.payment_status=='approved')).correlate(Funnel,User).exists()
+    # Only a base opening starts an attempt; stage, receipt and approval rows
+    # attach to that owner's attempt, so scoping the opening scopes the attempt.
+    opening=[or_(Funnel.event_name!='checkout_opened',Funnel.payload_json.like('%"stage":%'),
+        checkout_transport(platform))] if scoped else []
     rows=await bounded_rows(db,select(Funnel.event_name,User.id,Funnel.payment_id,
         func.substr(Funnel.payload_json,1,PAYLOAD_LIMIT+1),Funnel.created_at)
         .select_from(Funnel).join(User,owner(Funnel)).where(Funnel.event_name.in_(names),
-            (Funnel.event_name=='checkout_opened') | payment_owner,
+            (Funnel.event_name=='checkout_opened') | payment_owner,*opening,
             *_window(Funnel.created_at,since,now)).order_by(Funnel.created_at,Funnel.id),payload_index=3)
+    if scoped:
+        # Rows written before the route-owned marker stay in Overall only.
+        first=await db.scalar(select(func.min(Funnel.created_at)).where(
+            Funnel.event_name=='checkout_opened',checkout_transport(platform),Funnel.created_at<=now))
+        result['attributed_since']={'attempt_funnel':first.isoformat() if first else None}
     if rows is None:
         result['attempt_funnel']=None
     else:

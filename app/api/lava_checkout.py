@@ -323,7 +323,7 @@ def create_lava_router(*, runtime_getter, session_factory, settings_obj) -> APIR
                     from app.services.subscription_entry_analytics_service import SubscriptionEntryAnalyticsService
                     await SubscriptionEntryAnalyticsService(db).record_entry(
                         user=user, source=ANDROID_CHECKOUT_ORIGIN_SOURCES.get(data.origin, "android_subscription"),
-                        mode=data.mode, payment_method="lava")
+                        mode=data.mode, payment_method="lava", client="android")
             return JSONResponse({"ok": True, "lava": block}, headers=_NO_STORE)
         except LavaCheckoutError as exc:
             return _checkout_error(exc)

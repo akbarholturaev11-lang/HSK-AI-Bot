@@ -573,6 +573,7 @@ class CourseMiniAppPracticeService:
         self,
         telegram_id: int | User,
         *,
+        analytics_client: str | None = None,
         mode: str,
         level: str,
         lang: str,
@@ -649,6 +650,7 @@ class CourseMiniAppPracticeService:
                 "question_count": len(questions),
                 "max_part": max_part,
             },
+            analytics_client=analytics_client,
         )
         await self.session.commit()
         return {
@@ -666,6 +668,7 @@ class CourseMiniAppPracticeService:
         self,
         telegram_id: int | User,
         *,
+        analytics_client: str | None = None,
         session_id: str,
         mode: str,
         level: str,
@@ -813,6 +816,7 @@ class CourseMiniAppPracticeService:
                 "recommendation": recommendation,
                 "wrong": json.dumps(wrong, ensure_ascii=False)[:4000],
             },
+            analytics_client=analytics_client,
         )
         reward = await self.gamification.award(
             user,

@@ -1,0 +1,1989 @@
+{
+  "version": 1,
+  "metrics": [
+    {"section": "home", "key": "active_accounts", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_instrumented", "reason": "This snapshot reads users.last_active_at without attribution to the action platform."},
+        "telegram": {"status": "not_instrumented", "reason": "This snapshot reads users.last_active_at without attribution to the action platform."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "This snapshot reads users.last_active_at without attribution to the action platform."},
+        "macos": {"status": "not_instrumented", "reason": "This snapshot reads users.last_active_at without attribution to the action platform."},
+        "windows": {"status": "not_instrumented", "reason": "This snapshot reads users.last_active_at without attribution to the action platform."}
+      }
+    },
+    {"section": "home", "key": "active_pro", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_applicable", "reason": "Current Pro entitlement is a shared account snapshot without a platform dimension."},
+        "telegram": {"status": "not_applicable", "reason": "Current Pro entitlement is a shared account snapshot without a platform dimension."},
+        "iphone_pwa": {"status": "not_applicable", "reason": "Current Pro entitlement is a shared account snapshot without a platform dimension."},
+        "macos": {"status": "not_applicable", "reason": "Current Pro entitlement is a shared account snapshot without a platform dimension."},
+        "windows": {"status": "not_applicable", "reason": "Current Pro entitlement is a shared account snapshot without a platform dimension."}
+      }
+    },
+    {"section": "home", "key": "active_today", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_instrumented", "reason": "This snapshot reads users.last_active_at without attribution to the action platform."},
+        "telegram": {"status": "not_instrumented", "reason": "This snapshot reads users.last_active_at without attribution to the action platform."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "This snapshot reads users.last_active_at without attribution to the action platform."},
+        "macos": {"status": "not_instrumented", "reason": "This snapshot reads users.last_active_at without attribution to the action platform."},
+        "windows": {"status": "not_instrumented", "reason": "This snapshot reads users.last_active_at without attribution to the action platform."}
+      }
+    },
+    {"section": "home", "key": "activity", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "partial", "reason": "A8: Android completions have a source and A13-A15 Android routes set the client android, but this Overall aggregate has no Android-scoped reader. A7: no lesson-start writer."},
+        "telegram": {"status": "not_instrumented", "reason": "A6/A9/A13-A15 rows carry the route-set client telegram from its attributed_since on, but this Overall aggregate has no Telegram-scoped reader; earlier rows have no client."},
+        "iphone_pwa": {"status": "partial", "reason": "A11: server-set PWA flow telemetry exists and A6/A9/A13-A15 rows carry the route-set client iphone_pwa from its attributed_since on, but this Overall aggregate has no PWA-scoped reader."},
+        "macos": {"status": "not_instrumented", "reason": "V10 does not scope the learning event union to an individual Desktop OS; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "V10 does not scope the learning event union to an individual Desktop OS; Desktop freeze."}
+      }
+    },
+    {"section": "home", "key": "blocked_current", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_applicable", "reason": "The current block flag is shared account state rather than an action on a client."},
+        "telegram": {"status": "not_applicable", "reason": "The current block flag is shared account state rather than an action on a client."},
+        "iphone_pwa": {"status": "not_applicable", "reason": "The current block flag is shared account state rather than an action on a client."},
+        "macos": {"status": "not_applicable", "reason": "The current block flag is shared account state rather than an action on a client."},
+        "windows": {"status": "not_applicable", "reason": "The current block flag is shared account state rather than an action on a client."}
+      }
+    },
+    {"section": "home", "key": "bot_blocked", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_applicable", "reason": "Telegram bot delivery state is not Android activity."},
+        "telegram": {"status": "not_applicable", "reason": "Telegram bot delivery state is separate from Telegram Mini App activity."},
+        "iphone_pwa": {"status": "not_applicable", "reason": "Telegram bot delivery state is not PWA activity."},
+        "macos": {"status": "not_applicable", "reason": "Telegram bot delivery state is not Desktop activity."},
+        "windows": {"status": "not_applicable", "reason": "Telegram bot delivery state is not Desktop activity."}
+      }
+    },
+    {"section": "home", "key": "desktop_detail_limited", "kind": "metadata", "filters": ["android", "telegram", "iphone_pwa", "macos", "windows"]},
+    {"section": "home", "key": "expiring_pro", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_applicable", "reason": "Current Pro entitlement is a shared account snapshot without a platform dimension."},
+        "telegram": {"status": "not_applicable", "reason": "Current Pro entitlement is a shared account snapshot without a platform dimension."},
+        "iphone_pwa": {"status": "not_applicable", "reason": "Current Pro entitlement is a shared account snapshot without a platform dimension."},
+        "macos": {"status": "not_applicable", "reason": "Current Pro entitlement is a shared account snapshot without a platform dimension."},
+        "windows": {"status": "not_applicable", "reason": "Current Pro entitlement is a shared account snapshot without a platform dimension."}
+      }
+    },
+    {"section": "home", "key": "iphone_pwa_available", "kind": "metadata", "filters": ["android", "telegram", "iphone_pwa", "macos", "windows"]},
+    {"section": "home", "key": "new_accounts", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_instrumented", "reason": "Canonical account counts use users and registration time, without a trusted registration-platform dimension."},
+        "telegram": {"status": "not_instrumented", "reason": "Canonical account counts use users and registration time, without a trusted registration-platform dimension."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "Canonical account counts use users and registration time, without a trusted registration-platform dimension."},
+        "macos": {"status": "not_instrumented", "reason": "Canonical account counts use users and registration time, without a trusted registration-platform dimension."},
+        "windows": {"status": "not_instrumented", "reason": "Canonical account counts use users and registration time, without a trusted registration-platform dimension."}
+      }
+    },
+    {"section": "home", "key": "overlap", "kind": "metadata", "filters": ["android", "telegram", "iphone_pwa", "macos", "windows"]},
+    {"section": "home", "key": "paying_accounts", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "partial", "reason": "F4: Android payment source exists; this V10 aggregate has no platform predicate or full chain test."},
+        "telegram": {"status": "partial", "reason": "F4: Mini App and bot payment sources exist; this V10 aggregate has no platform predicate or full chain test."},
+        "iphone_pwa": {"status": "partial", "reason": "F4: browser and Lava PWA payment sources exist; this V10 aggregate has no platform predicate or full chain test."},
+        "macos": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."}
+      }
+    },
+    {"section": "home", "key": "payments_by_status", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "partial", "reason": "F4: Android payment source exists; this V10 aggregate has no platform predicate or full chain test."},
+        "telegram": {"status": "partial", "reason": "F4: Mini App and bot payment sources exist; this V10 aggregate has no platform predicate or full chain test."},
+        "iphone_pwa": {"status": "partial", "reason": "F4: browser and Lava PWA payment sources exist; this V10 aggregate has no platform predicate or full chain test."},
+        "macos": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."}
+      }
+    },
+    {"section": "home", "key": "pending_current", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "partial", "reason": "F4: Android payment source exists; this V10 aggregate has no platform predicate or full chain test."},
+        "telegram": {"status": "partial", "reason": "F4: Mini App and bot payment sources exist; this V10 aggregate has no platform predicate or full chain test."},
+        "iphone_pwa": {"status": "partial", "reason": "F4: browser and Lava PWA payment sources exist; this V10 aggregate has no platform predicate or full chain test."},
+        "macos": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."}
+      }
+    },
+    {"section": "home", "key": "platforms", "kind": "metric", "filters": ["android", "telegram", "iphone_pwa", "macos", "windows"],
+      "platforms": {
+        "android": {"status": "partial", "reason": "A1: linked device inventory and app-open accounts reach the native card; no full chain test."},
+        "telegram": {"status": "partial", "reason": "A2: Mini App presence reaches the card; it has accounts and foreground accounts, no device count or DAU/WAU/MAU; no full chain test."},
+        "iphone_pwa": {"status": "partial", "reason": "A4: PWA card (DAU/WAU/MAU) under the PWA filter from course-map opens with the route-owned dedupe prefix pwa-course-v3:, not the forgeable source text; Overall list unchanged. A5 sign-ins are not activity. No route-to-Admin chain test yet (3.4 chained Course completions)."},
+        "macos": {"status": "partial", "reason": "A20: existing linked devices and desktop foreground card, with bounded event details; Desktop freeze, no new chain test."},
+        "windows": {"status": "partial", "reason": "A20: existing linked devices and desktop foreground card, with bounded event details; Desktop freeze, no new chain test."}
+      }
+    },
+    {"section": "home", "key": "scope", "kind": "metadata", "filters": ["android", "telegram", "iphone_pwa", "macos", "windows"]},
+    {"section": "home", "key": "users_total", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_instrumented", "reason": "Canonical account counts use users and registration time, without a trusted registration-platform dimension."},
+        "telegram": {"status": "not_instrumented", "reason": "Canonical account counts use users and registration time, without a trusted registration-platform dimension."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "Canonical account counts use users and registration time, without a trusted registration-platform dimension."},
+        "macos": {"status": "not_instrumented", "reason": "Canonical account counts use users and registration time, without a trusted registration-platform dimension."},
+        "windows": {"status": "not_instrumented", "reason": "Canonical account counts use users and registration time, without a trusted registration-platform dimension."}
+      }
+    },
+    {"section": "home", "key": "versions", "kind": "metric", "filters": ["android", "telegram", "iphone_pwa", "macos", "windows"],
+      "platforms": {
+        "android": {"status": "partial", "reason": "Linked Android devices already supply the top 12 version groups; no full chain test. A19: Play and Direct are not split."},
+        "telegram": {"status": "not_applicable", "reason": "The Mini App has no native linked-device app version inventory."},
+        "iphone_pwa": {"status": "not_applicable", "reason": "The browser PWA has no native linked-device app version inventory."},
+        "macos": {"status": "partial", "reason": "Existing top 12 linked-device version groups by Desktop OS; Desktop freeze, no new chain test."},
+        "windows": {"status": "partial", "reason": "Existing top 12 linked-device version groups by Desktop OS; Desktop freeze, no new chain test."}
+      }
+    },
+    {"section": "home", "key": "versions_scope", "kind": "metadata", "filters": ["android", "telegram", "iphone_pwa", "macos", "windows"]},
+    {"section": "overview", "key": "active_accounts", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_instrumented", "reason": "This snapshot reads users.last_active_at without attribution to the action platform."},
+        "telegram": {"status": "not_instrumented", "reason": "This snapshot reads users.last_active_at without attribution to the action platform."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "This snapshot reads users.last_active_at without attribution to the action platform."},
+        "macos": {"status": "not_instrumented", "reason": "This snapshot reads users.last_active_at without attribution to the action platform."},
+        "windows": {"status": "not_instrumented", "reason": "This snapshot reads users.last_active_at without attribution to the action platform."}
+      }
+    },
+    {"section": "overview", "key": "active_pro", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_applicable", "reason": "Current Pro entitlement is a shared account snapshot without a platform dimension."},
+        "telegram": {"status": "not_applicable", "reason": "Current Pro entitlement is a shared account snapshot without a platform dimension."},
+        "iphone_pwa": {"status": "not_applicable", "reason": "Current Pro entitlement is a shared account snapshot without a platform dimension."},
+        "macos": {"status": "not_applicable", "reason": "Current Pro entitlement is a shared account snapshot without a platform dimension."},
+        "windows": {"status": "not_applicable", "reason": "Current Pro entitlement is a shared account snapshot without a platform dimension."}
+      }
+    },
+    {"section": "overview", "key": "active_today", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_instrumented", "reason": "This snapshot reads users.last_active_at without attribution to the action platform."},
+        "telegram": {"status": "not_instrumented", "reason": "This snapshot reads users.last_active_at without attribution to the action platform."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "This snapshot reads users.last_active_at without attribution to the action platform."},
+        "macos": {"status": "not_instrumented", "reason": "This snapshot reads users.last_active_at without attribution to the action platform."},
+        "windows": {"status": "not_instrumented", "reason": "This snapshot reads users.last_active_at without attribution to the action platform."}
+      }
+    },
+    {"section": "overview", "key": "activity", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "partial", "reason": "A8: Android completions have a source and A13-A15 Android routes set the client android, but this Overall aggregate has no Android-scoped reader. A7: no lesson-start writer."},
+        "telegram": {"status": "not_instrumented", "reason": "A6/A9/A13-A15 rows carry the route-set client telegram from its attributed_since on, but this Overall aggregate has no Telegram-scoped reader; earlier rows have no client."},
+        "iphone_pwa": {"status": "partial", "reason": "A11: server-set PWA flow telemetry exists and A6/A9/A13-A15 rows carry the route-set client iphone_pwa from its attributed_since on, but this Overall aggregate has no PWA-scoped reader."},
+        "macos": {"status": "not_instrumented", "reason": "V10 does not scope the learning event union to an individual Desktop OS; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "V10 does not scope the learning event union to an individual Desktop OS; Desktop freeze."}
+      }
+    },
+    {"section": "overview", "key": "blocked_current", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_applicable", "reason": "The current block flag is shared account state rather than an action on a client."},
+        "telegram": {"status": "not_applicable", "reason": "The current block flag is shared account state rather than an action on a client."},
+        "iphone_pwa": {"status": "not_applicable", "reason": "The current block flag is shared account state rather than an action on a client."},
+        "macos": {"status": "not_applicable", "reason": "The current block flag is shared account state rather than an action on a client."},
+        "windows": {"status": "not_applicable", "reason": "The current block flag is shared account state rather than an action on a client."}
+      }
+    },
+    {"section": "overview", "key": "bot_blocked", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_applicable", "reason": "Telegram bot delivery state is not Android activity."},
+        "telegram": {"status": "not_applicable", "reason": "Telegram bot delivery state is separate from Telegram Mini App activity."},
+        "iphone_pwa": {"status": "not_applicable", "reason": "Telegram bot delivery state is not PWA activity."},
+        "macos": {"status": "not_applicable", "reason": "Telegram bot delivery state is not Desktop activity."},
+        "windows": {"status": "not_applicable", "reason": "Telegram bot delivery state is not Desktop activity."}
+      }
+    },
+    {"section": "overview", "key": "course_engagement", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "partial", "reason": "A8: Android completions have a source and A13-A15 Android routes set the client android, but this Overall aggregate has no Android-scoped reader. A7: no lesson-start writer."},
+        "telegram": {"status": "not_instrumented", "reason": "A6/A9/A13-A15 rows carry the route-set client telegram from its attributed_since on, but this Overall aggregate has no Telegram-scoped reader; earlier rows have no client."},
+        "iphone_pwa": {"status": "partial", "reason": "A11: server-set PWA flow telemetry exists and A6/A9/A13-A15 rows carry the route-set client iphone_pwa from its attributed_since on, but this Overall aggregate has no PWA-scoped reader."},
+        "macos": {"status": "not_instrumented", "reason": "V10 does not scope the learning event union to an individual Desktop OS; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "V10 does not scope the learning event union to an individual Desktop OS; Desktop freeze."}
+      }
+    },
+    {"section": "overview", "key": "desktop_detail_limited", "kind": "metadata", "filters": ["android", "telegram", "iphone_pwa", "macos", "windows"]},
+    {"section": "overview", "key": "expiring_pro", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_applicable", "reason": "Current Pro entitlement is a shared account snapshot without a platform dimension."},
+        "telegram": {"status": "not_applicable", "reason": "Current Pro entitlement is a shared account snapshot without a platform dimension."},
+        "iphone_pwa": {"status": "not_applicable", "reason": "Current Pro entitlement is a shared account snapshot without a platform dimension."},
+        "macos": {"status": "not_applicable", "reason": "Current Pro entitlement is a shared account snapshot without a platform dimension."},
+        "windows": {"status": "not_applicable", "reason": "Current Pro entitlement is a shared account snapshot without a platform dimension."}
+      }
+    },
+    {"section": "overview", "key": "iphone_pwa_available", "kind": "metadata", "filters": ["android", "telegram", "iphone_pwa", "macos", "windows"]},
+    {"section": "overview", "key": "languages", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_instrumented", "reason": "The account distribution uses a shared profile field and has no platform cohort."},
+        "telegram": {"status": "not_instrumented", "reason": "The account distribution uses a shared profile field and has no platform cohort."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "The account distribution uses a shared profile field and has no platform cohort."},
+        "macos": {"status": "not_instrumented", "reason": "The account distribution uses a shared profile field and has no platform cohort."},
+        "windows": {"status": "not_instrumented", "reason": "The account distribution uses a shared profile field and has no platform cohort."}
+      }
+    },
+    {"section": "overview", "key": "levels", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_instrumented", "reason": "The account distribution uses a shared profile field and has no platform cohort."},
+        "telegram": {"status": "not_instrumented", "reason": "The account distribution uses a shared profile field and has no platform cohort."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "The account distribution uses a shared profile field and has no platform cohort."},
+        "macos": {"status": "not_instrumented", "reason": "The account distribution uses a shared profile field and has no platform cohort."},
+        "windows": {"status": "not_instrumented", "reason": "The account distribution uses a shared profile field and has no platform cohort."}
+      }
+    },
+    {"section": "overview", "key": "new_accounts", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_instrumented", "reason": "Canonical account counts use users and registration time, without a trusted registration-platform dimension."},
+        "telegram": {"status": "not_instrumented", "reason": "Canonical account counts use users and registration time, without a trusted registration-platform dimension."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "Canonical account counts use users and registration time, without a trusted registration-platform dimension."},
+        "macos": {"status": "not_instrumented", "reason": "Canonical account counts use users and registration time, without a trusted registration-platform dimension."},
+        "windows": {"status": "not_instrumented", "reason": "Canonical account counts use users and registration time, without a trusted registration-platform dimension."}
+      }
+    },
+    {"section": "overview", "key": "overlap", "kind": "metadata", "filters": ["android", "telegram", "iphone_pwa", "macos", "windows"]},
+    {"section": "overview", "key": "paying_accounts", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "partial", "reason": "F4: Android payment source exists; this V10 aggregate has no platform predicate or full chain test."},
+        "telegram": {"status": "partial", "reason": "F4: Mini App and bot payment sources exist; this V10 aggregate has no platform predicate or full chain test."},
+        "iphone_pwa": {"status": "partial", "reason": "F4: browser and Lava PWA payment sources exist; this V10 aggregate has no platform predicate or full chain test."},
+        "macos": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."}
+      }
+    },
+    {"section": "overview", "key": "payments_by_status", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "partial", "reason": "F4: Android payment source exists; this V10 aggregate has no platform predicate or full chain test."},
+        "telegram": {"status": "partial", "reason": "F4: Mini App and bot payment sources exist; this V10 aggregate has no platform predicate or full chain test."},
+        "iphone_pwa": {"status": "partial", "reason": "F4: browser and Lava PWA payment sources exist; this V10 aggregate has no platform predicate or full chain test."},
+        "macos": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."}
+      }
+    },
+    {"section": "overview", "key": "pending_current", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "partial", "reason": "F4: Android payment source exists; this V10 aggregate has no platform predicate or full chain test."},
+        "telegram": {"status": "partial", "reason": "F4: Mini App and bot payment sources exist; this V10 aggregate has no platform predicate or full chain test."},
+        "iphone_pwa": {"status": "partial", "reason": "F4: browser and Lava PWA payment sources exist; this V10 aggregate has no platform predicate or full chain test."},
+        "macos": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."}
+      }
+    },
+    {"section": "overview", "key": "platforms", "kind": "metric", "filters": ["android", "telegram", "iphone_pwa", "macos", "windows"],
+      "platforms": {
+        "android": {"status": "partial", "reason": "A1: linked device inventory and app-open accounts reach the native card; no full chain test."},
+        "telegram": {"status": "partial", "reason": "A2: Mini App presence reaches the card; it has accounts and foreground accounts, no device count or DAU/WAU/MAU; no full chain test."},
+        "iphone_pwa": {"status": "partial", "reason": "A4: PWA card (DAU/WAU/MAU) under the PWA filter from course-map opens with the route-owned dedupe prefix pwa-course-v3:, not the forgeable source text; Overall list unchanged. A5 sign-ins are not activity. No route-to-Admin chain test yet (3.4 chained Course completions)."},
+        "macos": {"status": "partial", "reason": "A20: existing linked devices and desktop foreground card, with bounded event details; Desktop freeze, no new chain test."},
+        "windows": {"status": "partial", "reason": "A20: existing linked devices and desktop foreground card, with bounded event details; Desktop freeze, no new chain test."}
+      }
+    },
+    {"section": "overview", "key": "scope", "kind": "metadata", "filters": ["android", "telegram", "iphone_pwa", "macos", "windows"]},
+    {"section": "overview", "key": "users_total", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_instrumented", "reason": "Canonical account counts use users and registration time, without a trusted registration-platform dimension."},
+        "telegram": {"status": "not_instrumented", "reason": "Canonical account counts use users and registration time, without a trusted registration-platform dimension."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "Canonical account counts use users and registration time, without a trusted registration-platform dimension."},
+        "macos": {"status": "not_instrumented", "reason": "Canonical account counts use users and registration time, without a trusted registration-platform dimension."},
+        "windows": {"status": "not_instrumented", "reason": "Canonical account counts use users and registration time, without a trusted registration-platform dimension."}
+      }
+    },
+    {"section": "overview", "key": "versions", "kind": "metric", "filters": ["android", "telegram", "iphone_pwa", "macos", "windows"],
+      "platforms": {
+        "android": {"status": "partial", "reason": "Linked Android devices already supply the top 12 version groups; no full chain test. A19: Play and Direct are not split."},
+        "telegram": {"status": "not_applicable", "reason": "The Mini App has no native linked-device app version inventory."},
+        "iphone_pwa": {"status": "not_applicable", "reason": "The browser PWA has no native linked-device app version inventory."},
+        "macos": {"status": "partial", "reason": "Existing top 12 linked-device version groups by Desktop OS; Desktop freeze, no new chain test."},
+        "windows": {"status": "partial", "reason": "Existing top 12 linked-device version groups by Desktop OS; Desktop freeze, no new chain test."}
+      }
+    },
+    {"section": "overview", "key": "versions_scope", "kind": "metadata", "filters": ["android", "telegram", "iphone_pwa", "macos", "windows"]},
+    {"section": "platform", "key": "desktop_detail_limited", "kind": "metadata", "filters": ["overall", "android", "telegram", "iphone_pwa", "macos", "windows"]},
+    {"section": "platform", "key": "iphone_pwa_available", "kind": "metadata", "filters": ["overall", "android", "telegram", "iphone_pwa", "macos", "windows"]},
+    {"section": "platform", "key": "overlap", "kind": "metadata", "filters": ["overall", "android", "telegram", "iphone_pwa", "macos", "windows"]},
+    {"section": "platform", "key": "platforms", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa", "macos", "windows"],
+      "platforms": {
+        "android": {"status": "partial", "reason": "A1: linked device inventory and app-open accounts reach the native card; no full chain test."},
+        "telegram": {"status": "partial", "reason": "A2: Mini App presence reaches the card; it has accounts and foreground accounts, no device count or DAU/WAU/MAU; no full chain test."},
+        "iphone_pwa": {"status": "partial", "reason": "A4: PWA card (DAU/WAU/MAU) under the PWA filter from course-map opens with the route-owned dedupe prefix pwa-course-v3:, not the forgeable source text; Overall list unchanged. A5 sign-ins are not activity. No route-to-Admin chain test yet (3.4 chained Course completions)."},
+        "macos": {"status": "partial", "reason": "A20: existing linked devices and desktop foreground card, with bounded event details; Desktop freeze, no new chain test."},
+        "windows": {"status": "partial", "reason": "A20: existing linked devices and desktop foreground card, with bounded event details; Desktop freeze, no new chain test."}
+      }
+    },
+    {"section": "platform", "key": "scope", "kind": "metadata", "filters": ["overall", "android", "telegram", "iphone_pwa", "macos", "windows"]},
+    {"section": "platform", "key": "versions", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa", "macos", "windows"],
+      "platforms": {
+        "android": {"status": "partial", "reason": "Linked Android devices already supply the top 12 version groups; no full chain test. A19: Play and Direct are not split."},
+        "telegram": {"status": "not_applicable", "reason": "The Mini App has no native linked-device app version inventory."},
+        "iphone_pwa": {"status": "not_applicable", "reason": "The browser PWA has no native linked-device app version inventory."},
+        "macos": {"status": "partial", "reason": "Existing top 12 linked-device version groups by Desktop OS; Desktop freeze, no new chain test."},
+        "windows": {"status": "partial", "reason": "Existing top 12 linked-device version groups by Desktop OS; Desktop freeze, no new chain test."}
+      }
+    },
+    {"section": "platform", "key": "versions_scope", "kind": "metadata", "filters": ["overall", "android", "telegram", "iphone_pwa", "macos", "windows"]},
+    {"section": "course", "key": "activation", "kind": "metric", "filters": ["overall", "iphone_pwa"],
+      "platforms": {
+        "android": {"status": "not_instrumented", "reason": "R2 tags Android onboarding rows (writer only). The activation step reads lesson_started, which Android does not write (R1 writes android_lesson_started), so there is no Android reader."},
+        "telegram": {"status": "not_instrumented", "reason": "R2 tags Telegram onboarding rows (writer only); no Telegram-scoped activation reader yet. Earlier onboarding rows have no client."},
+        "iphone_pwa": {"status": "covered", "reason": "R2: cohort anchored on onboarding_completed written by the PWA onboarding route with the route-set final client key iphone_pwa; onboarding is deduplicated per profile, so accounts onboarded on another client are outside. Only iphone_pwa-tagged steps count, from attributed_since on; earlier rows Overall-only.", "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_pwa_onboarding_and_handoff_reach_the_pwa_activation"},
+        "macos": {"status": "not_instrumented", "reason": "The activation cohort has no Desktop OS attribution; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "The activation cohort has no Desktop OS attribution; Desktop freeze."}
+      }
+    },
+    {"section": "course", "key": "ai_usage", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_instrumented", "reason": "A17: AI usage records a feature source and stored cost without a trusted platform dimension."},
+        "telegram": {"status": "not_instrumented", "reason": "A17: AI usage records a feature source and stored cost without a trusted platform dimension."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "A17: AI usage records a feature source and stored cost without a trusted platform dimension."},
+        "macos": {"status": "not_instrumented", "reason": "A17: AI usage records a feature source and stored cost without a trusted platform dimension."},
+        "windows": {"status": "not_instrumented", "reason": "A17: AI usage records a feature source and stored cost without a trusted platform dimension."}
+      }
+    },
+    {"section": "course", "key": "chat", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_instrumented", "reason": "A17: user text messages do not record a platform."},
+        "telegram": {"status": "not_instrumented", "reason": "A17: user text messages do not record a platform."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "A17: user text messages do not record a platform."},
+        "macos": {"status": "not_instrumented", "reason": "A17: user text messages do not record a platform."},
+        "windows": {"status": "not_instrumented", "reason": "A17: user text messages do not record a platform."}
+      }
+    },
+    {"section": "course", "key": "completed_user_lessons", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
+      "platforms": {
+        "android": {"status": "covered", "reason": "A8: completions with the Android-only source android_course, all history; bearer route chain.", "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_each_client_route_reaches_its_own_admin_filter_and_overall"},
+        "telegram": {"status": "covered", "reason": "A9: completions whose final payload key is the route-set client telegram, from attributed_since on; earlier rows Overall-only; signed route chain.", "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_each_client_route_reaches_its_own_admin_filter_and_overall"},
+        "iphone_pwa": {"status": "covered", "reason": "A9: completions whose final payload key is the route-set client iphone_pwa, from attributed_since on; earlier rows Overall-only; cookie + CSRF route chain.", "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_each_client_route_reaches_its_own_admin_filter_and_overall"},
+        "macos": {"status": "not_instrumented", "reason": "The existing lesson total is not scoped by Desktop OS; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "The existing lesson total is not scoped by Desktop OS; Desktop freeze."}
+      }
+    },
+    {"section": "course", "key": "course_engagement", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "partial", "reason": "A8: Android completions have a source and A13-A15 Android routes set the client android, but this Overall aggregate has no Android-scoped reader. A7: no lesson-start writer."},
+        "telegram": {"status": "not_instrumented", "reason": "A6/A9/A13-A15 rows carry the route-set client telegram from its attributed_since on, but this Overall aggregate has no Telegram-scoped reader; earlier rows have no client."},
+        "iphone_pwa": {"status": "partial", "reason": "A11: server-set PWA flow telemetry exists and A6/A9/A13-A15 rows carry the route-set client iphone_pwa from its attributed_since on, but this Overall aggregate has no PWA-scoped reader."},
+        "macos": {"status": "not_instrumented", "reason": "V10 does not scope the learning event union to an individual Desktop OS; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "V10 does not scope the learning event union to an individual Desktop OS; Desktop freeze."}
+      }
+    },
+    {"section": "course", "key": "detail_limited", "kind": "metadata", "filters": ["overall", "telegram", "iphone_pwa"]},
+    {"section": "course", "key": "detail_row_limit", "kind": "metadata", "filters": ["overall"]},
+    {"section": "course", "key": "detail_since", "kind": "metadata", "filters": ["overall", "android", "telegram", "iphone_pwa"]},
+    {"section": "course", "key": "attributed_since", "kind": "metadata", "filters": ["android", "telegram", "iphone_pwa"]},
+    {"section": "course", "key": "direct_activation", "kind": "metric", "filters": ["overall", "iphone_pwa"],
+      "platforms": {
+        "android": {"status": "not_instrumented", "reason": "R2 tags Android onboarding rows (writer only). The activation step reads lesson_started, which Android does not write (R1 writes android_lesson_started), so there is no Android reader."},
+        "telegram": {"status": "not_instrumented", "reason": "R2 tags Telegram onboarding rows (writer only); no Telegram-scoped activation reader yet. Earlier onboarding rows have no client."},
+        "iphone_pwa": {"status": "covered", "reason": "R2: cohort anchored on onboarding_completed with the onboarding activation_variant direct_start_v1 written by the PWA onboarding route with the route-set final client key iphone_pwa; onboarding is deduplicated per profile, so accounts onboarded on another client are outside. Only iphone_pwa-tagged steps count, from attributed_since on; earlier rows Overall-only.", "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_pwa_onboarding_and_handoff_reach_the_pwa_activation"},
+        "macos": {"status": "not_instrumented", "reason": "The activation cohort has no Desktop OS attribution; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "The activation cohort has no Desktop OS attribution; Desktop freeze."}
+      }
+    },
+    {"section": "course", "key": "handoff_activation", "kind": "metric", "filters": ["iphone_pwa"],
+      "platforms": {
+        "android": {"status": "not_applicable", "reason": "The Telegram to PWA handoff ends on the iPhone PWA only."},
+        "telegram": {"status": "not_applicable", "reason": "The Telegram to PWA handoff ends on the iPhone PWA only."},
+        "iphone_pwa": {"status": "covered", "reason": "R2: anchor is each account's first pwa_handoff_completed, written only by the PWA handoff redeem route, from the PWA attributed_since on. Activated: an iphone_pwa-tagged lesson start or completion within 24 hours.", "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_pwa_onboarding_and_handoff_reach_the_pwa_activation"},
+        "macos": {"status": "not_applicable", "reason": "The Telegram to PWA handoff ends on the iPhone PWA only."},
+        "windows": {"status": "not_applicable", "reason": "The Telegram to PWA handoff ends on the iPhone PWA only."}
+      }
+    },
+    {"section": "course", "key": "feature_denominators", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_instrumented", "reason": "Paid and free populations use the current canonical account state and have no platform cohort."},
+        "telegram": {"status": "not_instrumented", "reason": "Paid and free populations use the current canonical account state and have no platform cohort."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "Paid and free populations use the current canonical account state and have no platform cohort."},
+        "macos": {"status": "not_instrumented", "reason": "Paid and free populations use the current canonical account state and have no platform cohort."},
+        "windows": {"status": "not_instrumented", "reason": "Paid and free populations use the current canonical account state and have no platform cohort."}
+      }
+    },
+    {"section": "course", "key": "features", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
+      "platforms": {
+        "android": {"status": "partial", "reason": "A13-A15 and R1: tests, practice and mistakes by the route-set client android from attributed_since on; lessons from the server-only android_lesson_started from attributed_since.features_lessons on (R1, route-chain tested). AI and voice omitted (A16/A17). No route-to-Admin chain test yet (3.4 chained Course completions)."},
+        "telegram": {"status": "partial", "reason": "A6/A13-A15: lessons, tests, practice and mistakes by the route-set client telegram from attributed_since on; AI and voice omitted (A16/A17). No route-to-Admin chain test yet (3.4 chained Course completions)."},
+        "iphone_pwa": {"status": "partial", "reason": "A6/A13-A15: lessons, tests, practice and mistakes by the route-set client iphone_pwa from attributed_since on; AI and voice omitted (A16/A17). No route-to-Admin chain test yet (3.4 chained Course completions)."},
+        "macos": {"status": "not_instrumented", "reason": "Feature-use rows lack a consistent Desktop OS dimension; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "Feature-use rows lack a consistent Desktop OS dimension; Desktop freeze."}
+      }
+    },
+    {"section": "course", "key": "foundation", "kind": "metric", "filters": ["overall", "telegram", "iphone_pwa"],
+      "platforms": {
+        "android": {"status": "not_instrumented", "reason": "A10: Android writes the completion but no foundation_started, and the Starter 0 funnel is anchored on the start."},
+        "telegram": {"status": "partial", "reason": "A10: cohort of learners whose foundation_started has the route-set final client key telegram, from attributed_since on. No route-to-Admin chain test yet (3.4 chained Course completions)."},
+        "iphone_pwa": {"status": "partial", "reason": "A10: cohort of learners whose foundation_started has the route-set final client key iphone_pwa, from attributed_since on. No route-to-Admin chain test yet (3.4 chained Course completions)."},
+        "macos": {"status": "not_instrumented", "reason": "A10 does not establish a separate Desktop OS foundation cohort; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "A10 does not establish a separate Desktop OS foundation cohort; Desktop freeze."}
+      }
+    },
+    {"section": "course", "key": "lesson_seconds", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_instrumented", "reason": "A7/A8: Android completion is recorded but lesson-start timing has no trusted writer."},
+        "telegram": {"status": "not_instrumented", "reason": "A6/A9: start and completion timings lack a trusted Mini App signal."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "A6/A9: shared timing endpoints do not provide a complete trusted PWA start/completion pair."},
+        "macos": {"status": "not_instrumented", "reason": "A trusted timing pair is not established for the individual Desktop OS; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "A trusted timing pair is not established for the individual Desktop OS; Desktop freeze."}
+      }
+    },
+    {"section": "course", "key": "registration_conversion", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_instrumented", "reason": "The registration denominator has no trusted platform dimension. Payment source alone cannot attribute registration conversion."},
+        "telegram": {"status": "not_instrumented", "reason": "The registration denominator has no trusted platform dimension. Payment source alone cannot attribute registration conversion."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "The registration denominator has no trusted platform dimension. Payment source alone cannot attribute registration conversion."},
+        "macos": {"status": "not_instrumented", "reason": "The registration denominator has no trusted platform dimension. Payment source alone cannot attribute registration conversion."},
+        "windows": {"status": "not_instrumented", "reason": "The registration denominator has no trusted platform dimension. Payment source alone cannot attribute registration conversion."}
+      }
+    },
+    {"section": "course", "key": "retention", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_applicable", "reason": "The legacy course-open retention only reads miniapp_opened; Android uses different lifecycle events (A1)."},
+        "telegram": {"status": "not_instrumented", "reason": "A3: historical miniapp_opened source is not exclusive, so the mixed course-open series cannot establish a Mini App value."},
+        "iphone_pwa": {"status": "partial", "reason": "A4: PWA course opens feed Overall retention, but A3 prevents trusting a historical source-only split."},
+        "macos": {"status": "not_applicable", "reason": "The legacy course-open series does not use Desktop app activity; Desktop freeze."},
+        "windows": {"status": "not_applicable", "reason": "The legacy course-open series does not use Desktop app activity; Desktop freeze."}
+      }
+    },
+    {"section": "course", "key": "return_retention", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
+      "platforms": {
+        "android": {"status": "covered", "reason": "R4: cohort is each account's first verified Android use (android_first_open, android_app_opened, android_course completions for all history; android-tagged learning outcomes from attributed_since on); a return is Android use 24-48 h (D1) or 168-192 h (D7) later. Matured cohorts as in Overall.", "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_first_use_returns_reach_each_platform_filter"},
+        "telegram": {"status": "covered", "reason": "R4: cohort is each account's first telegram-tagged learning outcome from the Telegram boundary on; a return is a later telegram-tagged learning outcome. A3: Mini App opens have no exclusive signal, so this is a learning return.", "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_first_use_returns_reach_each_platform_filter"},
+        "iphone_pwa": {"status": "covered", "reason": "R4: cohort is each account's first verified PWA use (A4 course-map opens with the route-owned pwa-course-v3: key for all history; iphone_pwa-tagged learning outcomes from attributed_since on); a return is PWA use in the D1/D7 window.", "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_first_use_returns_reach_each_platform_filter"},
+        "macos": {"status": "not_instrumented", "reason": "Desktop opens feed the Overall series; no Desktop cohort; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "Desktop opens feed the Overall series; no Desktop cohort; Desktop freeze."}
+      }
+    },
+    {"section": "course", "key": "session_seconds", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_instrumented", "reason": "The session grouping combines all CME session IDs and lacks complete Android session provenance."},
+        "telegram": {"status": "not_instrumented", "reason": "A12: session groups use historical client telemetry that does not establish Mini App provenance."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "A11: transport on PWA telemetry is forgeable on historical Telegram rows, and the cohort anchor (onboarding_completed) and most session rows carry no route-set client key."},
+        "macos": {"status": "not_instrumented", "reason": "The mixed CME session grouping is not scoped to a Desktop OS; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "The mixed CME session grouping is not scoped to a Desktop OS; Desktop freeze."}
+      }
+    },
+    {"section": "course", "key": "sessions", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_instrumented", "reason": "The session grouping combines all CME session IDs and lacks complete Android session provenance."},
+        "telegram": {"status": "not_instrumented", "reason": "A12: session groups use historical client telemetry that does not establish Mini App provenance."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "A11: most session rows (card views, interactions) carry no route-set client key, and transport is forgeable on historical Telegram rows. R2 tags the activation anchor only."},
+        "macos": {"status": "not_instrumented", "reason": "The mixed CME session grouping is not scoped to a Desktop OS; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "The mixed CME session grouping is not scoped to a Desktop OS; Desktop freeze."}
+      }
+    },
+    {"section": "course", "key": "timed_lessons", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_instrumented", "reason": "A7/A8: Android completion is recorded but lesson-start timing has no trusted writer."},
+        "telegram": {"status": "not_instrumented", "reason": "A6/A9: start and completion timings lack a trusted Mini App signal."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "A6/A9: shared timing endpoints do not provide a complete trusted PWA start/completion pair."},
+        "macos": {"status": "not_instrumented", "reason": "A trusted timing pair is not established for the individual Desktop OS; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "A trusted timing pair is not established for the individual Desktop OS; Desktop freeze."}
+      }
+    },
+    {"section": "course", "key": "voice_minutes", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_instrumented", "reason": "A16: the completed sessions with a turn used for minutes do not have a platform. CME voice transport does not tag the duration rows."},
+        "telegram": {"status": "not_instrumented", "reason": "A16: the completed sessions with a turn used for minutes do not have a platform. CME voice transport does not tag the duration rows."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "A16: the completed sessions with a turn used for minutes do not have a platform. CME voice transport does not tag the duration rows."},
+        "macos": {"status": "not_instrumented", "reason": "A16: the completed sessions with a turn used for minutes do not have a platform. CME voice transport does not tag the duration rows."},
+        "windows": {"status": "not_instrumented", "reason": "A16: the completed sessions with a turn used for minutes do not have a platform. CME voice transport does not tag the duration rows."}
+      }
+    },
+    {"section": "funnel", "key": "attributed_since", "kind": "metadata", "filters": ["android", "telegram", "iphone_pwa"]},
+    {"section": "funnel", "key": "ai_usage", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_instrumented", "reason": "A17: AI usage records a feature source and stored cost without a trusted platform dimension."},
+        "telegram": {"status": "not_instrumented", "reason": "A17: AI usage records a feature source and stored cost without a trusted platform dimension."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "A17: AI usage records a feature source and stored cost without a trusted platform dimension."},
+        "macos": {"status": "not_instrumented", "reason": "A17: AI usage records a feature source and stored cost without a trusted platform dimension."},
+        "windows": {"status": "not_instrumented", "reason": "A17: AI usage records a feature source and stored cost without a trusted platform dimension."}
+      }
+    },
+    {"section": "funnel", "key": "attempt_funnel", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
+      "platforms": {
+        "android": {"status": "partial", "reason": "F2: openings with the route-set transport android (Lava and manual); earlier manual rows stay Overall-only (attributed_since). No route-to-Admin chain test yet (3.4 chained Course completions)."},
+        "telegram": {"status": "partial", "reason": "F3: openings with the route-set transport telegram; caller source and attempt text are ignored, earlier rows stay Overall-only (attributed_since). No route-to-Admin chain test yet (3.4 chained Course completions)."},
+        "iphone_pwa": {"status": "partial", "reason": "F1: openings with the route-set transport iphone_pwa. F8 (PWA Pro inline) is a separate flow, task 4. No route-to-Admin chain test yet (3.4 chained Course completions)."},
+        "macos": {"status": "not_instrumented", "reason": "The legacy attempt chain does not establish end-to-end attribution to either Desktop OS; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "The legacy attempt chain does not establish end-to-end attribution to either Desktop OS; Desktop freeze."}
+      }
+    },
+    {"section": "funnel", "key": "pwa_pro_attempt_funnel", "kind": "metric", "filters": ["overall", "iphone_pwa"],
+      "platforms": {
+        "android": {"status": "not_applicable", "reason": "F8: the inline Pro offer and its Lava attempt exist only in the iPhone PWA."},
+        "telegram": {"status": "not_applicable", "reason": "F8: the inline Pro offer and its Lava attempt exist only in the iPhone PWA."},
+        "iphone_pwa": {"status": "covered", "reason": "F8: attempts keyed by account and attempt ID from PWA-only rows; paid only from the ledger row with its approved payment; refund/lost chargeback reversed. Inline-event, Lava start and webhook route chain.", "chain_test": "tests/test_pwa_pro_funnel_chain.py::PwaProFunnelChainTests::test_pwa_routes_reach_the_pwa_pro_funnel_under_overall_and_pwa_only"},
+        "macos": {"status": "not_applicable", "reason": "F8: the inline Pro offer and its Lava attempt exist only in the iPhone PWA."},
+        "windows": {"status": "not_applicable", "reason": "F8: the inline Pro offer and its Lava attempt exist only in the iPhone PWA."}
+      }
+    },
+    {"section": "funnel", "key": "course_engagement", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "partial", "reason": "A8: Android completions have a source and A13-A15 Android routes set the client android, but this Overall aggregate has no Android-scoped reader. A7: no lesson-start writer."},
+        "telegram": {"status": "not_instrumented", "reason": "A6/A9/A13-A15 rows carry the route-set client telegram from its attributed_since on, but this Overall aggregate has no Telegram-scoped reader; earlier rows have no client."},
+        "iphone_pwa": {"status": "partial", "reason": "A11: server-set PWA flow telemetry exists and A6/A9/A13-A15 rows carry the route-set client iphone_pwa from its attributed_since on, but this Overall aggregate has no PWA-scoped reader."},
+        "macos": {"status": "not_instrumented", "reason": "V10 does not scope the learning event union to an individual Desktop OS; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "V10 does not scope the learning event union to an individual Desktop OS; Desktop freeze."}
+      }
+    },
+    {"section": "funnel", "key": "registration_conversion", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_instrumented", "reason": "The registration denominator has no trusted platform dimension. Payment source alone cannot attribute registration conversion."},
+        "telegram": {"status": "not_instrumented", "reason": "The registration denominator has no trusted platform dimension. Payment source alone cannot attribute registration conversion."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "The registration denominator has no trusted platform dimension. Payment source alone cannot attribute registration conversion."},
+        "macos": {"status": "not_instrumented", "reason": "The registration denominator has no trusted platform dimension. Payment source alone cannot attribute registration conversion."},
+        "windows": {"status": "not_instrumented", "reason": "The registration denominator has no trusted platform dimension. Payment source alone cannot attribute registration conversion."}
+      }
+    },
+    {"section": "money", "key": "active_denominator", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_instrumented", "reason": "The active-account denominator uses shared last_active_at without platform, so per-platform ARPU cannot be measured."},
+        "telegram": {"status": "not_instrumented", "reason": "The active-account denominator uses shared last_active_at without platform, so per-platform ARPU cannot be measured."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "The active-account denominator uses shared last_active_at without platform, so per-platform ARPU cannot be measured."},
+        "macos": {"status": "not_instrumented", "reason": "The active-account denominator uses shared last_active_at without platform, so per-platform ARPU cannot be measured."},
+        "windows": {"status": "not_instrumented", "reason": "The active-account denominator uses shared last_active_at without platform, so per-platform ARPU cannot be measured."}
+      }
+    },
+    {"section": "money", "key": "ai_models", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_instrumented", "reason": "A17: AI usage records a feature source and stored cost without a trusted platform dimension."},
+        "telegram": {"status": "not_instrumented", "reason": "A17: AI usage records a feature source and stored cost without a trusted platform dimension."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "A17: AI usage records a feature source and stored cost without a trusted platform dimension."},
+        "macos": {"status": "not_instrumented", "reason": "A17: AI usage records a feature source and stored cost without a trusted platform dimension."},
+        "windows": {"status": "not_instrumented", "reason": "A17: AI usage records a feature source and stored cost without a trusted platform dimension."}
+      }
+    },
+    {"section": "money", "key": "ai_requests", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_instrumented", "reason": "A17: AI usage records a feature source and stored cost without a trusted platform dimension."},
+        "telegram": {"status": "not_instrumented", "reason": "A17: AI usage records a feature source and stored cost without a trusted platform dimension."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "A17: AI usage records a feature source and stored cost without a trusted platform dimension."},
+        "macos": {"status": "not_instrumented", "reason": "A17: AI usage records a feature source and stored cost without a trusted platform dimension."},
+        "windows": {"status": "not_instrumented", "reason": "A17: AI usage records a feature source and stored cost without a trusted platform dimension."}
+      }
+    },
+    {"section": "money", "key": "ai_usd", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_instrumented", "reason": "A17: AI usage records a feature source and stored cost without a trusted platform dimension."},
+        "telegram": {"status": "not_instrumented", "reason": "A17: AI usage records a feature source and stored cost without a trusted platform dimension."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "A17: AI usage records a feature source and stored cost without a trusted platform dimension."},
+        "macos": {"status": "not_instrumented", "reason": "A17: AI usage records a feature source and stored cost without a trusted platform dimension."},
+        "windows": {"status": "not_instrumented", "reason": "A17: AI usage records a feature source and stored cost without a trusted platform dimension."}
+      }
+    },
+    {"section": "money", "key": "arppu_usd", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
+      "platforms": {
+        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "macos": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."}
+      }
+    },
+    {"section": "money", "key": "arpu_usd", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_instrumented", "reason": "The active-account denominator uses shared last_active_at without platform, so per-platform ARPU cannot be measured."},
+        "telegram": {"status": "not_instrumented", "reason": "The active-account denominator uses shared last_active_at without platform, so per-platform ARPU cannot be measured."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "The active-account denominator uses shared last_active_at without platform, so per-platform ARPU cannot be measured."},
+        "macos": {"status": "not_instrumented", "reason": "The active-account denominator uses shared last_active_at without platform, so per-platform ARPU cannot be measured."},
+        "windows": {"status": "not_instrumented", "reason": "The active-account denominator uses shared last_active_at without platform, so per-platform ARPU cannot be measured."}
+      }
+    },
+    {"section": "money", "key": "average_payment_usd", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
+      "platforms": {
+        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "macos": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."}
+      }
+    },
+    {"section": "money", "key": "canonical_payers", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
+      "platforms": {
+        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "macos": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."}
+      }
+    },
+    {"section": "money", "key": "channels", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
+      "platforms": {
+        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "macos": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."}
+      }
+    },
+    {"section": "money", "key": "currencies", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
+      "platforms": {
+        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "macos": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."}
+      }
+    },
+    {"section": "money", "key": "expense_usd", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_applicable", "reason": "The ledger and marketing measures, and the net and CAC derived from them, are company-wide."},
+        "telegram": {"status": "not_applicable", "reason": "The ledger and marketing measures, and the net and CAC derived from them, are company-wide."},
+        "iphone_pwa": {"status": "not_applicable", "reason": "The ledger and marketing measures, and the net and CAC derived from them, are company-wide."},
+        "macos": {"status": "not_applicable", "reason": "The ledger and marketing measures, and the net and CAC derived from them, are company-wide."},
+        "windows": {"status": "not_applicable", "reason": "The ledger and marketing measures, and the net and CAC derived from them, are company-wide."}
+      }
+    },
+    {"section": "money", "key": "first_payment_seconds", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
+      "platforms": {
+        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "macos": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."}
+      }
+    },
+    {"section": "money", "key": "first_payments", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
+      "platforms": {
+        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "macos": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."}
+      }
+    },
+    {"section": "money", "key": "grains", "kind": "metadata", "filters": ["overall", "android", "telegram", "iphone_pwa"]},
+    {"section": "money", "key": "lava", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
+      "platforms": {
+        "android": {"status": "partial", "reason": "F5: route-set lava_invoices.source android; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "telegram": {"status": "partial", "reason": "F5: route-set lava_invoices.source miniapp; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "iphone_pwa": {"status": "partial", "reason": "F5: route-set lava_invoices.source pwa; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "macos": {"status": "not_instrumented", "reason": "F5 does not establish a Lava lifecycle cohort by Desktop OS; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "F5 does not establish a Lava lifecycle cohort by Desktop OS; Desktop freeze."}
+      }
+    },
+    {"section": "money", "key": "manual_profit_usd", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_applicable", "reason": "The ledger and marketing measures, and the net and CAC derived from them, are company-wide."},
+        "telegram": {"status": "not_applicable", "reason": "The ledger and marketing measures, and the net and CAC derived from them, are company-wide."},
+        "iphone_pwa": {"status": "not_applicable", "reason": "The ledger and marketing measures, and the net and CAC derived from them, are company-wide."},
+        "macos": {"status": "not_applicable", "reason": "The ledger and marketing measures, and the net and CAC derived from them, are company-wide."},
+        "windows": {"status": "not_applicable", "reason": "The ledger and marketing measures, and the net and CAC derived from them, are company-wide."}
+      }
+    },
+    {"section": "money", "key": "net_usd", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_applicable", "reason": "The ledger and marketing measures, and the net and CAC derived from them, are company-wide."},
+        "telegram": {"status": "not_applicable", "reason": "The ledger and marketing measures, and the net and CAC derived from them, are company-wide."},
+        "iphone_pwa": {"status": "not_applicable", "reason": "The ledger and marketing measures, and the net and CAC derived from them, are company-wide."},
+        "macos": {"status": "not_applicable", "reason": "The ledger and marketing measures, and the net and CAC derived from them, are company-wide."},
+        "windows": {"status": "not_applicable", "reason": "The ledger and marketing measures, and the net and CAC derived from them, are company-wide."}
+      }
+    },
+    {"section": "money", "key": "new_paying_accounts", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
+      "platforms": {
+        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "macos": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."}
+      }
+    },
+    {"section": "money", "key": "paying_histories", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
+      "platforms": {
+        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "macos": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."}
+      }
+    },
+    {"section": "money", "key": "payments", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
+      "platforms": {
+        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "macos": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."}
+      }
+    },
+    {"section": "money", "key": "renewal_payments", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
+      "platforms": {
+        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "macos": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."}
+      }
+    },
+    {"section": "money", "key": "renewal_percent", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
+      "platforms": {
+        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "macos": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."}
+      }
+    },
+    {"section": "money", "key": "revenue_usd", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
+      "platforms": {
+        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "macos": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."}
+      }
+    },
+    {"section": "money", "key": "tagged_cac_usd", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_applicable", "reason": "The ledger and marketing measures, and the net and CAC derived from them, are company-wide."},
+        "telegram": {"status": "not_applicable", "reason": "The ledger and marketing measures, and the net and CAC derived from them, are company-wide."},
+        "iphone_pwa": {"status": "not_applicable", "reason": "The ledger and marketing measures, and the net and CAC derived from them, are company-wide."},
+        "macos": {"status": "not_applicable", "reason": "The ledger and marketing measures, and the net and CAC derived from them, are company-wide."},
+        "windows": {"status": "not_applicable", "reason": "The ledger and marketing measures, and the net and CAC derived from them, are company-wide."}
+      }
+    },
+    {"section": "money", "key": "tagged_marketing_usd", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_applicable", "reason": "The ledger and marketing measures, and the net and CAC derived from them, are company-wide."},
+        "telegram": {"status": "not_applicable", "reason": "The ledger and marketing measures, and the net and CAC derived from them, are company-wide."},
+        "iphone_pwa": {"status": "not_applicable", "reason": "The ledger and marketing measures, and the net and CAC derived from them, are company-wide."},
+        "macos": {"status": "not_applicable", "reason": "The ledger and marketing measures, and the net and CAC derived from them, are company-wide."},
+        "windows": {"status": "not_applicable", "reason": "The ledger and marketing measures, and the net and CAC derived from them, are company-wide."}
+      }
+    },
+    {"section": "money", "key": "tokens", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_instrumented", "reason": "A17: AI usage records a feature source and stored cost without a trusted platform dimension."},
+        "telegram": {"status": "not_instrumented", "reason": "A17: AI usage records a feature source and stored cost without a trusted platform dimension."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "A17: AI usage records a feature source and stored cost without a trusted platform dimension."},
+        "macos": {"status": "not_instrumented", "reason": "A17: AI usage records a feature source and stored cost without a trusted platform dimension."},
+        "windows": {"status": "not_instrumented", "reason": "A17: AI usage records a feature source and stored cost without a trusted platform dimension."}
+      }
+    },
+    {"section": "money", "key": "unknown_currency_payments", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
+      "platforms": {
+        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "macos": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."}
+      }
+    },
+    {"section": "money", "key": "unpriced_payments", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
+      "platforms": {
+        "android": {"status": "partial", "reason": "F4: server-set payments.source android; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "telegram": {"status": "partial", "reason": "F4: server-set payments.source miniapp or telegram_bot; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "iphone_pwa": {"status": "partial", "reason": "F4: server-set payments.source iphone_pwa or Lava pwa; PostgreSQL projection test only; no route-to-Admin chain test yet."},
+        "macos": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "F4: the shared desktop payment source does not identify the individual OS; Desktop freeze."}
+      }
+    },
+    {"section": "money", "key": "usd_basis", "kind": "metadata", "filters": ["overall", "android", "telegram", "iphone_pwa"]},
+    {"section": "sources", "key": "attribution", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
+      "platforms": {
+        "android": {"status": "partial", "reason": "R3: approved android payments (server-set payments.source) submitted from attributed_since on, attributed to the nearest earlier android entry of the same account, else unknown; descriptive, not causal. The entry side is route-chain tested; payments.source has PostgreSQL projection evidence only, as in Finance."},
+        "telegram": {"status": "partial", "reason": "R3: approved Telegram (miniapp or telegram_bot) payments (server-set payments.source) submitted from attributed_since on, attributed to the nearest earlier telegram entry of the same account, else unknown; descriptive, not causal. The entry side is route-chain tested; payments.source has PostgreSQL projection evidence only, as in Finance."},
+        "iphone_pwa": {"status": "partial", "reason": "R3: approved iPhone PWA (iphone_pwa or Lava pwa) payments (server-set payments.source) submitted from attributed_since on, attributed to the nearest earlier iphone_pwa entry of the same account, else unknown; descriptive, not causal. The entry side is route-chain tested; payments.source has PostgreSQL projection evidence only, as in Finance."},
+        "macos": {"status": "not_instrumented", "reason": "The combined Desktop source does not establish separate OS entry or attribution histories; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "The combined Desktop source does not establish separate OS entry or attribution histories; Desktop freeze."}
+      }
+    },
+    {"section": "sources", "key": "attribution_basis", "kind": "metadata", "filters": ["overall", "android", "telegram", "iphone_pwa"]},
+    {"section": "sources", "key": "attributed_since", "kind": "metadata", "filters": ["android", "telegram", "iphone_pwa"]},
+    {"section": "sources", "key": "entries", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa"],
+      "platforms": {
+        "android": {"status": "covered", "reason": "R3: entries recorded by the Android subscription routes (open and Lava overview) with the route-set column client android (never caller text), from attributed_since on; earlier rows have no client and stay Overall-only.", "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_each_client_entry_reaches_its_own_sources_filter"},
+        "telegram": {"status": "covered", "reason": "R3: entries recorded by the Mini App subscription overview route with the route-set column client telegram (never caller text), from attributed_since on; earlier rows have no client and stay Overall-only.", "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_each_client_entry_reaches_its_own_sources_filter"},
+        "iphone_pwa": {"status": "covered", "reason": "R3: entries recorded by the PWA subscription overview route with the route-set column client iphone_pwa (never caller text), from attributed_since on; earlier rows have no client and stay Overall-only.", "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_each_client_entry_reaches_its_own_sources_filter"},
+        "macos": {"status": "not_instrumented", "reason": "The combined Desktop source does not establish separate OS entry or attribution histories; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "The combined Desktop source does not establish separate OS entry or attribution histories; Desktop freeze."}
+      }
+    },
+    {"section": "sources", "key": "traffic", "kind": "metric", "filters": ["overall"],
+      "platforms": {
+        "android": {"status": "not_applicable", "reason": "Public-site visits are anonymous source aggregates, not learner-client activity."},
+        "telegram": {"status": "not_applicable", "reason": "Public-site visits are anonymous source aggregates, not learner-client activity."},
+        "iphone_pwa": {"status": "not_applicable", "reason": "Public-site visits are anonymous source aggregates, not learner-client activity."},
+        "macos": {"status": "not_applicable", "reason": "Public-site visits are anonymous source aggregates, not learner-client activity."},
+        "windows": {"status": "not_applicable", "reason": "Public-site visits are anonymous source aggregates, not learner-client activity."}
+      }
+    },
+    {"section": "sources", "key": "traffic_grain", "kind": "metadata", "filters": ["overall"]},
+    {"section": "sources", "key": "traffic_since", "kind": "metadata", "filters": ["overall"]},
+    {"section": "sources", "key": "traffic_timezone", "kind": "metadata", "filters": ["overall"]},
+    {"section": "report", "key": "ai_is_estimate", "kind": "metadata", "filters": ["overall", "android", "telegram", "macos", "windows"]},
+    {"section": "report", "key": "daily_cache_hours", "kind": "metadata", "filters": ["overall", "android", "telegram", "macos", "windows"]},
+    {"section": "report", "key": "detail_row_limit", "kind": "metadata", "filters": ["overall", "android", "telegram", "macos", "windows"]},
+    {"section": "report", "key": "exact_currencies", "kind": "metadata", "filters": ["overall", "android", "telegram", "macos", "windows"]},
+    {"section": "report", "key": "platform_counts_overlap", "kind": "metadata", "filters": ["overall", "android", "telegram", "macos", "windows"]},
+    {"section": "report", "key": "platform_freshness", "kind": "metric", "filters": ["overall", "android", "telegram", "macos", "windows"],
+      "platforms": {
+        "android": {"status": "not_applicable", "reason": "D7: one global list with Android, Telegram and PWA rows (verified A1/A8 and route-set client signals; payments.source), returned unchanged under every filter."},
+        "telegram": {"status": "not_applicable", "reason": "D7: one global list with Android, Telegram and PWA rows (route-set client key; payments.source miniapp/telegram_bot), returned unchanged under every filter."},
+        "iphone_pwa": {"status": "not_applicable", "reason": "D7: one global list with Android, Telegram and PWA rows (A4 map opens and route-set client key; payments.source iphone_pwa/pwa); the Report has no PWA filter."},
+        "macos": {"status": "not_instrumented", "reason": "No Desktop freshness rows; Desktop freeze."},
+        "windows": {"status": "not_instrumented", "reason": "No Desktop freshness rows; Desktop freeze."}
+      }
+    },
+    {"section": "report", "key": "quality", "kind": "metric", "filters": ["overall", "android", "telegram", "macos", "windows"],
+      "platforms": {
+        "android": {"status": "not_applicable", "reason": "Global record counts and latest timestamps, returned unchanged under every filter; the Report labels the table as all platforms, independent of filter and period. No platform quality breakdown exists yet."},
+        "telegram": {"status": "not_applicable", "reason": "Global record counts and latest timestamps, returned unchanged under every filter; the Report labels the table as all platforms, independent of filter and period. No platform quality breakdown exists yet."},
+        "iphone_pwa": {"status": "not_applicable", "reason": "Global record counts and latest timestamps, returned unchanged under every filter; the Report labels the table as all platforms, independent of filter and period. No platform quality breakdown exists yet."},
+        "macos": {"status": "not_applicable", "reason": "Global record counts and latest timestamps, returned unchanged under every filter; the Report labels the table as all platforms, independent of filter and period. No platform quality breakdown exists yet."},
+        "windows": {"status": "not_applicable", "reason": "Global record counts and latest timestamps, returned unchanged under every filter; the Report labels the table as all platforms, independent of filter and period. No platform quality breakdown exists yet."}
+      }
+    }
+  ],
+  "flows": [
+    {
+      "id": "client_activity",
+      "description": "Canonical session link, course open, foreground and linked device activity. Telegram cannot store the reserved PWA source or platform metadata; PWA telemetry overwrites transport and drops caller client claims. Historical attribution still needs route-owned proof.",
+      "events": [
+        {
+          "store": "course_miniapp_events",
+          "role": "declared",
+          "names": [
+            "miniapp_opened",
+            "android_link_started",
+            "android_session_linked",
+            "android_first_open",
+            "android_app_opened",
+            "android_update_installed",
+            "desktop_session_linked",
+            "desktop_first_open",
+            "desktop_app_opened",
+            "desktop_active_day",
+            "desktop_update_installed"
+          ]
+        },
+        {
+          "store": "course_miniapp_events",
+          "role": "no_writer",
+          "names": [
+            "android_active_day",
+            "android_course_opened"
+          ],
+          "reason": "Legacy declared names have no observed runtime writer. Android foreground is written as android_app_opened."
+        }
+      ],
+      "platforms": {
+        "android": {
+          "status": "partial",
+          "reason": "android_app_opened and linked-device inventory feed Platforms; analytics do not distinguish Play and Direct, and no chain test has been established."
+        },
+        "telegram": {
+          "status": "partial",
+          "reason": "Platforms reads telegram_miniapp presence; course-open sources are client-selectable on the Telegram route and cannot isolate Telegram course opens."
+        },
+        "iphone_pwa": {
+          "status": "partial",
+          "reason": "The authenticated PWA map writes miniapp_opened, but V10 does not expose PWA foreground and the historical source also needs attribution safeguards."
+        },
+        "macos": {
+          "status": "partial",
+          "reason": "Existing desktop open and linked-device projections remain in place; no new Desktop testing or instrumentation is in scope."
+        },
+        "windows": {
+          "status": "partial",
+          "reason": "Existing desktop open and linked-device projections remain in place; no new Desktop testing or instrumentation is in scope."
+        }
+      }
+    },
+    {
+      "id": "distribution_handoff",
+      "description": "APK, Play, PWA sign-in handoff, and existing frozen Desktop distribution stages.",
+      "events": [
+        {
+          "store": "course_miniapp_events",
+          "role": "declared",
+          "names": [
+            "android_apk_requested",
+            "android_apk_sent",
+            "android_play_opened",
+            "pwa_handoff_issued",
+            "pwa_handoff_completed",
+            "desktop_promo_seen",
+            "desktop_promo_dismissed",
+            "desktop_download_entry_seen",
+            "desktop_download_chooser_opened",
+            "desktop_download_destination_selected",
+            "desktop_download_requested",
+            "desktop_download_started",
+            "desktop_download_link_clicked"
+          ]
+        },
+        {
+          "store": "course_miniapp_events",
+          "role": "no_writer",
+          "names": [
+            "desktop_download_message_sent"
+          ],
+          "reason": "Historical compatibility only; current direct Desktop distribution does not emit it."
+        }
+      ],
+      "platforms": {
+        "android": {
+          "status": "partial",
+          "reason": "Basic Statistics reads APK and Play stages; an opened listing is not an install, and there is no duplicate V10 funnel."
+        },
+        "telegram": {
+          "status": "partial",
+          "reason": "Telegram's Play/PWA handoff events have a basic Statistics reader; issuing the handoff does not establish a completed sign-in."
+        },
+        "iphone_pwa": {
+          "status": "partial",
+          "reason": "Issued and completed handoff records are already read by basic Statistics; no V10 duplicate is planned."
+        },
+        "macos": {
+          "status": "partial",
+          "reason": "Existing distribution events and reader are frozen; no new Desktop chain test is in scope."
+        },
+        "windows": {
+          "status": "partial",
+          "reason": "Existing distribution events and reader are frozen; no new Desktop chain test is in scope."
+        }
+      }
+    },
+    {
+      "id": "onboarding_activation",
+      "description": "Canonical onboarding completion, choices, and lesson activation cohorts.",
+      "events": [
+        {
+          "store": "course_miniapp_events",
+          "role": "declared",
+          "names": [
+            "onboarding_started",
+            "onboarding_completed",
+            "level_selected",
+            "goal_selected",
+            "daily_time_selected",
+            "start_point_selected"
+          ]
+        },
+        {
+          "store": "conversion_funnel_events",
+          "role": "declared",
+          "names": [
+            "course_cta_seen",
+            "course_started",
+            "onboarding_completed"
+          ]
+        }
+      ],
+      "platforms": {
+        "android": {
+          "status": "partial",
+          "reason": "Authenticated Li guest resume uses existing deduplicated onboarding_completed, tagged with the route-set client android since R2. The anonymous preview and choices do not write events. No Android activation reader: the step reads lesson_started, which Android does not write."
+        },
+        "telegram": {
+          "status": "partial",
+          "reason": "The shared onboarding completion feeds Overall activation. Since R2 its rows carry the route-set client telegram, but there is no Telegram-scoped reader yet."
+        },
+        "iphone_pwa": {
+          "status": "covered",
+          "reason": "R2: the PWA onboarding route tags onboarding_completed and its choice rows with the route-set client iphone_pwa; Course > iPhone PWA reads the activation cohort from the first tagged row.",
+          "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_pwa_onboarding_and_handoff_reach_the_pwa_activation"
+        },
+        "macos": {
+          "status": "not_instrumented",
+          "reason": "No verified Desktop platform attribution for the V10 activation cohort; Desktop remains frozen."
+        },
+        "windows": {
+          "status": "not_instrumented",
+          "reason": "No verified Desktop platform attribution for the V10 activation cohort; Desktop remains frozen."
+        }
+      }
+    },
+    {
+      "id": "course_track_selection",
+      "description": "Track switches and HSK 3.0 promotion and selection events.",
+      "events": [
+        {
+          "store": "course_miniapp_events",
+          "role": "declared",
+          "names": [
+            "course_track_switched",
+            "hsk30_promo_shown",
+            "hsk30_promo_cta_clicked",
+            "hsk30_promo_dismissed",
+            "hsk30_level_selected",
+            "hsk30_checkout_failed"
+          ]
+        }
+      ],
+      "platforms": {
+        "android": {
+          "status": "partial",
+          "reason": "Authenticated track switch and promotion events exist; the V10 Course section has no track funnel consumer."
+        },
+        "telegram": {
+          "status": "partial",
+          "reason": "Track/promo stages are declared in the course event store; there is no verified Mini App V10 track funnel."
+        },
+        "iphone_pwa": {
+          "status": "not_instrumented",
+          "reason": "No verified PWA-specific V10 track funnel."
+        },
+        "macos": {
+          "status": "not_instrumented",
+          "reason": "No verified Desktop-specific V10 track funnel; Desktop remains frozen."
+        },
+        "windows": {
+          "status": "not_instrumented",
+          "reason": "No verified Desktop-specific V10 track funnel; Desktop remains frozen."
+        }
+      }
+    },
+    {
+      "id": "foundation",
+      "description": "Starter 0 foundation progress, completion, and checkpoint metrics.",
+      "events": [
+        {
+          "store": "course_miniapp_events",
+          "role": "declared",
+          "names": [
+            "foundation_started",
+            "foundation_completed"
+          ]
+        }
+      ],
+      "platforms": {
+        "android": {
+          "status": "partial",
+          "reason": "Android source android_course feeds the Overall foundation reader; Android writes no foundation_started (A10), so Course > Android has no foundation cohort."
+        },
+        "telegram": {
+          "status": "partial",
+          "reason": "Course > Telegram counts the Starter 0 cohort whose foundation_started carries the route-set client telegram as the final payload key (a caller client is dropped), from attributed_since on; the cohort's later rows follow its start. No route chain test."
+        },
+        "iphone_pwa": {
+          "status": "partial",
+          "reason": "Course > iPhone PWA counts the Starter 0 cohort whose foundation_started carries the route-set client iphone_pwa as the final payload key (a caller client is dropped), from attributed_since on; the cohort's later rows follow its start. No route chain test."
+        },
+        "macos": {
+          "status": "not_instrumented",
+          "reason": "No verified Desktop-specific V10 foundation coverage; Desktop remains frozen."
+        },
+        "windows": {
+          "status": "not_instrumented",
+          "reason": "No verified Desktop-specific V10 foundation coverage; Desktop remains frozen."
+        }
+      }
+    },
+    {
+      "id": "lessons",
+      "description": "Lesson and section starts, completions, progression, and per-lesson behavior. Telegram and PWA start/completion writes carry the route-owned client; Android opens are the server-only android_lesson_started (R1); older rows still need provenance checks.",
+      "events": [
+        {
+          "store": "course_miniapp_events",
+          "role": "declared",
+          "names": [
+            "section_attempt_scored",
+            "hint_dismissed",
+            "lesson_started",
+            "section_started",
+            "section_completed",
+            "chapter_started",
+            "chapter_completed",
+            "book_lesson_completed",
+            "level_completed",
+            "lesson_jump_selected",
+            "card_seen",
+            "interaction_completed",
+            "lesson_completed",
+            "android_lesson_started"
+          ]
+        },
+        {
+          "store": "conversion_funnel_events",
+          "role": "declared",
+          "names": [
+            "lesson_started",
+            "homework_completed"
+          ]
+        },
+        {
+          "store": "course_miniapp_events",
+          "role": "no_writer",
+          "names": [
+            "android_lesson_completed"
+          ],
+          "reason": "Legacy name read by V10 with no runtime writer; Android completion uses lesson_completed with source android_course."
+        },
+        {
+          "store": "course_miniapp_events",
+          "role": "internal",
+          "names": [
+            "v3_lesson_authorized_start"
+          ],
+          "reason": "Single-use server lesson grant consumed by result authorization, not evidence of learner activity or a counted start."
+        }
+      ],
+      "platforms": {
+        "android": {
+          "status": "covered",
+          "reason": "Android lesson opens write the server-only android_lesson_started (not lesson_started, which reminders read) with the route-set client android, one per account, level, lesson and UTC day (R1). Completions use the Android-only source android_course. Both reach Course > Android through bearer route chains.",
+          "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_android_lesson_open_counts_once_under_android_and_overall"
+        },
+        "telegram": {
+          "status": "partial",
+          "reason": "Signed Mini App lesson starts and completions carry the route-set client telegram as the final payload key (a caller client is dropped); Course > Telegram reads them from attributed_since on, earlier rows Overall only. Only course.completed_user_lessons is route-chain tested."
+        },
+        "iphone_pwa": {
+          "status": "partial",
+          "reason": "PWA lesson starts and completions carry the route-set client iphone_pwa as the final payload key (a caller client is dropped); Course > iPhone PWA reads them from attributed_since on, earlier rows Overall only. Only course.completed_user_lessons is route-chain tested."
+        },
+        "macos": {
+          "status": "not_instrumented",
+          "reason": "No verified Desktop-specific V10 learning attribution; existing shared consumers are frozen."
+        },
+        "windows": {
+          "status": "not_instrumented",
+          "reason": "No verified Desktop-specific V10 learning attribution; existing shared consumers are frozen."
+        }
+      }
+    },
+    {
+      "id": "practice",
+      "description": "Practice training and attempts, excluding quota-only storage from activity. Existing shared practice start and result writes accept the verified route's client without changing the result or dedupe.",
+      "events": [
+        {
+          "store": "course_miniapp_events",
+          "role": "declared",
+          "names": [
+            "smart_practice_attempt_started",
+            "smart_practice_attempt_scored",
+            "practice_attempt_scored",
+            "training_started",
+            "training_completed"
+          ]
+        },
+        {
+          "store": "course_miniapp_events",
+          "role": "internal",
+          "names": [
+            "practice_daily_used"
+          ],
+          "reason": "Daily quota usage marker used by access logic; it is not a standalone practice start or completion."
+        },
+        {
+          "store": "course_miniapp_events",
+          "role": "no_writer",
+          "names": [
+            "android_practice_started",
+            "android_practice_completed"
+          ],
+          "reason": "Legacy names are read by V10 but have no runtime writer; actual shared practice uses generic names."
+        }
+      ],
+      "platforms": {
+        "android": {
+          "status": "partial",
+          "reason": "Android practice routes tag training starts and completions with the route-set client android; Course > Android features read them from attributed_since on. No route chain test."
+        },
+        "telegram": {
+          "status": "partial",
+          "reason": "Signed Mini App practice routes tag training starts and completions with the route-set client telegram; Course > Telegram features read them from attributed_since on. No route chain test."
+        },
+        "iphone_pwa": {
+          "status": "not_instrumented",
+          "reason": "No verified PWA-specific practice training writer feeding V10."
+        },
+        "macos": {
+          "status": "not_instrumented",
+          "reason": "No verified Desktop-specific V10 practice attribution; Desktop remains frozen."
+        },
+        "windows": {
+          "status": "not_instrumented",
+          "reason": "No verified Desktop-specific V10 practice attribution; Desktop remains frozen."
+        }
+      }
+    },
+    {
+      "id": "assessments",
+      "description": "Course test and HSK exam activity and outcomes. Android, Telegram and PWA exam adapters attach their verified client to existing writes without changing the grading snapshot or its size cap.",
+      "events": [
+        {
+          "store": "course_miniapp_events",
+          "role": "declared",
+          "names": [
+            "test_started",
+            "test_completed"
+          ]
+        },
+        {
+          "store": "conversion_funnel_events",
+          "role": "declared",
+          "names": [
+            "quiz_completed"
+          ]
+        }
+      ],
+      "platforms": {
+        "android": {
+          "status": "partial",
+          "reason": "Android exam routes tag test starts and completions with the route-set client android; Course > Android features read them from attributed_since on. No route chain test."
+        },
+        "telegram": {
+          "status": "partial",
+          "reason": "Signed Mini App exam routes tag test starts and completions with the route-set client telegram; Course > Telegram features read them from attributed_since on. No route chain test."
+        },
+        "iphone_pwa": {
+          "status": "partial",
+          "reason": "PWA exam routes tag test starts and completions with the route-set client iphone_pwa; Course > iPhone PWA features read them from attributed_since on. No route chain test."
+        },
+        "macos": {
+          "status": "not_instrumented",
+          "reason": "No verified Desktop-specific V10 assessment attribution; Desktop remains frozen."
+        },
+        "windows": {
+          "status": "not_instrumented",
+          "reason": "No verified Desktop-specific V10 assessment attribution; Desktop remains frozen."
+        }
+      }
+    },
+    {
+      "id": "mistake_review",
+      "description": "Mistake review attempts, answers and completions. Android, Telegram and PWA adapters attach the verified client to existing writes; historical attempts are not reassigned.",
+      "events": [
+        {
+          "store": "course_miniapp_events",
+          "role": "declared",
+          "names": [
+            "mistake_review_started",
+            "mistake_review_answered",
+            "mistake_review_completed"
+          ]
+        }
+      ],
+      "platforms": {
+        "android": {
+          "status": "partial",
+          "reason": "Android mistake review routes tag starts, answers and completions with the route-set client android; Course > Android features read starts and completions from attributed_since on. No route chain test."
+        },
+        "telegram": {
+          "status": "partial",
+          "reason": "Signed Mini App mistake review routes tag starts, answers and completions with the route-set client telegram; Course > Telegram features read starts and completions from attributed_since on. No route chain test."
+        },
+        "iphone_pwa": {
+          "status": "partial",
+          "reason": "PWA mistake review routes tag starts, answers and completions with the route-set client iphone_pwa; Course > iPhone PWA features read starts and completions from attributed_since on. No route chain test."
+        },
+        "macos": {
+          "status": "not_instrumented",
+          "reason": "No verified Desktop-specific V10 mistake-review attribution; Desktop remains frozen."
+        },
+        "windows": {
+          "status": "not_instrumented",
+          "reason": "No verified Desktop-specific V10 mistake-review attribution; Desktop remains frozen."
+        }
+      }
+    },
+    {
+      "id": "voice_practice",
+      "description": "Voice starts and completions; V10 duration uses persisted session rows.",
+      "events": [
+        {
+          "store": "course_miniapp_events",
+          "role": "declared",
+          "names": [
+            "voice_started",
+            "voice_completed"
+          ]
+        },
+        {
+          "store": "course_miniapp_events",
+          "role": "no_writer",
+          "names": [
+            "android_voice_started",
+            "android_voice_completed"
+          ],
+          "reason": "No observed runtime writer of these legacy names; Android persists shared voice sessions."
+        }
+      ],
+      "platforms": {
+        "android": {
+          "status": "partial",
+          "reason": "Existing Voice V8 calls use canonical shared sessions; voice_practice_sessions lacks a platform field."
+        },
+        "telegram": {
+          "status": "partial",
+          "reason": "Existing voice routes use canonical shared sessions; voice_practice_sessions lacks a platform field."
+        },
+        "iphone_pwa": {
+          "status": "partial",
+          "reason": "PWA voice flow events may carry transport, but duration comes from shared voice_practice_sessions, which lacks a platform field."
+        },
+        "macos": {
+          "status": "not_instrumented",
+          "reason": "No verified platform-specific voice duration in V10; Desktop remains frozen."
+        },
+        "windows": {
+          "status": "not_instrumented",
+          "reason": "No verified platform-specific voice duration in V10; Desktop remains frozen."
+        }
+      }
+    },
+    {
+      "id": "chat_ai",
+      "description": "Text chat, AI usage and estimated cost; not provider invoice reconciliation.",
+      "events": [
+        {
+          "store": "conversion_funnel_events",
+          "role": "declared",
+          "names": [
+            "ai_explanation_seen"
+          ]
+        }
+      ],
+      "platforms": {
+        "android": {
+          "status": "not_instrumented",
+          "reason": "AI usage source describes the feature and messages lack a platform field; no Android-scoped V10 measure."
+        },
+        "telegram": {
+          "status": "not_instrumented",
+          "reason": "AI usage source describes the feature and messages lack a platform field; no Mini App-scoped V10 measure."
+        },
+        "iphone_pwa": {
+          "status": "not_instrumented",
+          "reason": "AI usage source describes the feature and messages lack a platform field; no PWA-scoped V10 measure."
+        },
+        "macos": {
+          "status": "not_instrumented",
+          "reason": "No verified Desktop-scoped V10 AI/chat cost or usage; existing Desktop analytics are frozen."
+        },
+        "windows": {
+          "status": "not_instrumented",
+          "reason": "No verified Desktop-scoped V10 AI/chat cost or usage; existing Desktop analytics are frozen."
+        }
+      }
+    },
+    {
+      "id": "learning_rewards",
+      "description": "Existing XP, streak and league activity records.",
+      "events": [
+        {
+          "store": "course_miniapp_events",
+          "role": "declared",
+          "names": [
+            "xp_earned",
+            "streak_updated",
+            "league_points_earned"
+          ]
+        }
+      ],
+      "platforms": {
+        "android": {
+          "status": "not_instrumented",
+          "reason": "No verified V10 Android XP/streak/league projection."
+        },
+        "telegram": {
+          "status": "partial",
+          "reason": "Shared gamification records exist; V10 has no dedicated XP/streak/league section metric."
+        },
+        "iphone_pwa": {
+          "status": "not_instrumented",
+          "reason": "No verified V10 PWA XP/streak/league projection."
+        },
+        "macos": {
+          "status": "not_instrumented",
+          "reason": "No verified Desktop-specific V10 reward attribution; Desktop remains frozen."
+        },
+        "windows": {
+          "status": "not_instrumented",
+          "reason": "No verified Desktop-specific V10 reward attribution; Desktop remains frozen."
+        }
+      }
+    },
+    {
+      "id": "course_ads",
+      "description": "Course ad viewing and conversion signals.",
+      "events": [
+        {
+          "store": "course_miniapp_events",
+          "role": "declared",
+          "names": [
+            "course_ad_attempt_started",
+            "course_ad_viewed"
+          ]
+        },
+        {
+          "store": "conversion_funnel_events",
+          "role": "declared",
+          "names": [
+            "ad_shown",
+            "ad_skipped"
+          ]
+        }
+      ],
+      "platforms": {
+        "android": {
+          "status": "partial",
+          "reason": "Native ad view telemetry exists; no scoped V10 ad metric has a chain test."
+        },
+        "telegram": {
+          "status": "partial",
+          "reason": "Ad outcomes are recorded by Mini App ad handlers; V10 does not expose a platform-scoped ad measure."
+        },
+        "iphone_pwa": {
+          "status": "not_instrumented",
+          "reason": "No verified platform-specific PWA V10 ad attribution."
+        },
+        "macos": {
+          "status": "not_instrumented",
+          "reason": "No verified Desktop-specific V10 ad attribution; Desktop remains frozen."
+        },
+        "windows": {
+          "status": "not_instrumented",
+          "reason": "No verified Desktop-specific V10 ad attribution; Desktop remains frozen."
+        }
+      }
+    },
+    {
+      "id": "subscription_entries",
+      "description": "Paywall and subscription entry-source analytics; includes existing sales experiments.",
+      "events": [
+        {
+          "store": "course_miniapp_events",
+          "role": "declared",
+          "names": [
+            "paywall_seen",
+            "sales_offer_assigned",
+            "sales_bridge_seen",
+            "sales_bridge_cta",
+            "sales_offer_seen",
+            "sales_offer_dismissed"
+          ]
+        },
+        {
+          "store": "conversion_funnel_events",
+          "role": "declared",
+          "names": [
+            "paywall_seen",
+            "plan_choice_seen",
+            "paywall_cta_clicked",
+            "limit_hit",
+            "trial_started",
+            "trial_expired",
+            "trial_converted"
+          ]
+        }
+      ],
+      "platforms": {
+        "android": {
+          "status": "partial",
+          "reason": "R3: subscription_entry_events.client is set to android by the Android subscription routes only; Sources > Android reads those entries and attributes android payments to them. Paywall and limit funnel events stay as they were."
+        },
+        "telegram": {
+          "status": "partial",
+          "reason": "R3: the Mini App subscription overview route sets subscription_entry_events.client to telegram; the source text stays caller-chosen, but the platform is route-set. Sources > Telegram reads those entries."
+        },
+        "iphone_pwa": {
+          "status": "partial",
+          "reason": "R3: the PWA subscription overview route sets subscription_entry_events.client to iphone_pwa; the source text stays caller-chosen, but the platform is route-set. Sources > iPhone PWA reads those entries."
+        },
+        "macos": {
+          "status": "not_instrumented",
+          "reason": "No verified scoped Desktop subscription entry analytics in V10; Desktop remains frozen."
+        },
+        "windows": {
+          "status": "not_instrumented",
+          "reason": "No verified scoped Desktop subscription entry analytics in V10; Desktop remains frozen."
+        }
+      }
+    },
+    {
+      "id": "checkout_payments",
+      "description": "Checkout attempts, submitted/approved payments, and source-derived Finance.",
+      "events": [
+        {
+          "store": "course_miniapp_events",
+          "role": "declared",
+          "names": [
+            "checkout_opened",
+            "subscription_approved"
+          ]
+        },
+        {
+          "store": "conversion_funnel_events",
+          "role": "declared",
+          "names": [
+            "checkout_opened",
+            "payment_screenshot_submitted",
+            "payment_approved",
+            "payment_rejected"
+          ]
+        },
+        {
+          "store": "course_miniapp_events",
+          "role": "no_writer",
+          "names": [
+            "android_checkout_opened",
+            "android_play_purchase_verified"
+          ],
+          "reason": "No observed runtime writer of these CME names; Android checkout is recorded in conversion_funnel_events."
+        },
+        {
+          "store": "course_miniapp_events",
+          "role": "no_writer",
+          "names": [
+            "hsk30_unlock_approved"
+          ],
+          "reason": "Historical admin call is rejected by the CME writer allowlist; do not infer a stored event."
+        },
+        {
+          "store": "conversion_funnel_events",
+          "role": "no_writer",
+          "names": [
+            "hsk30_unlock_approved",
+            "hsk30_unlock_rejected"
+          ],
+          "reason": "Historical admin calls are rejected by the conversion writer allowlist and are absent from its DB CHECK."
+        }
+      ],
+      "platforms": {
+        "android": {
+          "status": "partial",
+          "reason": "Finance by payments.source android and Funnel by the route-set transport android are scoped (3.2); no route-to-Admin chain proof yet; Play/Direct are combined."
+        },
+        "telegram": {
+          "status": "partial",
+          "reason": "Finance by payments.source miniapp/telegram_bot and Funnel by the route-set transport telegram are scoped (3.2); earlier openings are Overall-only; no route-to-Admin chain proof yet."
+        },
+        "iphone_pwa": {
+          "status": "partial",
+          "reason": "Finance by payments.source iphone_pwa/pwa and Funnel by the route-set transport iphone_pwa are scoped (3.2); no route-to-Admin chain proof yet."
+        },
+        "macos": {
+          "status": "partial",
+          "reason": "Legacy Desktop payment source and checkout remain; no change to Desktop Finance or Funnel is planned."
+        },
+        "windows": {
+          "status": "partial",
+          "reason": "Legacy Desktop payment source and checkout remain; no change to Desktop Finance or Funnel is planned."
+        }
+      }
+    },
+    {
+      "id": "pwa_pro_checkout",
+      "description": "PWA inline Pro offer, provider checkout, and verified/reversed Lava payment.",
+      "events": [
+        {
+          "store": "conversion_funnel_events",
+          "role": "declared",
+          "names": [
+            "pwa_pro_opened",
+            "pwa_pro_plan_selected",
+            "pwa_pro_more_opened",
+            "pwa_pro_method_selected",
+            "pwa_pro_exit_offered",
+            "pwa_pro_exit_claimed",
+            "pwa_pro_exit_declined",
+            "pwa_pro_dismissed",
+            "pwa_pro_checkout_started",
+            "pwa_pro_checkout_failed",
+            "pwa_pro_checkout_paid"
+          ]
+        }
+      ],
+      "platforms": {
+        "android": {
+          "status": "not_applicable",
+          "reason": "This attempt series is specific to the iPhone PWA inline Pro UI."
+        },
+        "telegram": {
+          "status": "not_applicable",
+          "reason": "This attempt series is specific to the iPhone PWA inline Pro UI."
+        },
+        "iphone_pwa": {
+          "status": "partial",
+          "reason": "Opened, plan, invoice start and verified Lava payment reach funnel.pwa_pro_attempt_funnel through the route chain (4.2); more/method/exit/dismiss/failed UI rows are stored but not projected."
+        },
+        "macos": {
+          "status": "not_applicable",
+          "reason": "This attempt series is specific to the iPhone PWA inline Pro UI."
+        },
+        "windows": {
+          "status": "not_applicable",
+          "reason": "This attempt series is specific to the iPhone PWA inline Pro UI."
+        }
+      }
+    },
+    {
+      "id": "notifications",
+      "description": "Notification delivery-related observations and existing reminder experiments.",
+      "events": [
+        {
+          "store": "course_miniapp_events",
+          "role": "declared",
+          "names": [
+            "android_widget_onboarding_viewed",
+            "android_widget_pin_requested",
+            "android_widget_pinned",
+            "android_widget_opened",
+            "android_notification_opened",
+            "motivation_lesson_unfinished_sent",
+            "d1_recovery_assigned",
+            "d1_recovery_sent",
+            "d1_recovery_send_failed"
+          ]
+        }
+      ],
+      "platforms": {
+        "android": {
+          "status": "partial",
+          "reason": "Authenticated widget/notification events exist; no V10 delivery or conversion KPI has a chain test."
+        },
+        "telegram": {
+          "status": "partial",
+          "reason": "Existing reminder experiments read passive server records; a send, an assignment or an analytics-only android_lesson_started row is not foreground activity."
+        },
+        "iphone_pwa": {
+          "status": "not_instrumented",
+          "reason": "Owned PWA push notices and delivery attempts exist, but there is no V10 engagement metric or trusted return proof for them."
+        },
+        "macos": {
+          "status": "not_instrumented",
+          "reason": "No verified Desktop notification V10 metric; Desktop remains frozen."
+        },
+        "windows": {
+          "status": "not_instrumented",
+          "reason": "No verified Desktop notification V10 metric; Desktop remains frozen."
+        }
+      }
+    },
+    {
+      "id": "feedback",
+      "description": "Canonical feedback continuation and completion; internal reservation is not an impression.",
+      "events": [
+        {
+          "store": "course_miniapp_events",
+          "role": "internal",
+          "names": [
+            "app_telegram_feedback_reserved"
+          ],
+          "reason": "Server-only reservation across Android/PWA for one pending Telegram feedback; legacy Report counts raw CME rows, but this is not learner activity."
+        }
+      ],
+      "platforms": {
+        "android": {
+          "status": "partial",
+          "reason": "Android can complete the existing canonical BotFeedback row; separate Feedback analytics reads completed rows, without Android attribution."
+        },
+        "telegram": {
+          "status": "partial",
+          "reason": "Separate Feedback analytics reads completed BotFeedback, outside V10 and without a Mini App-scoped measure."
+        },
+        "iphone_pwa": {
+          "status": "partial",
+          "reason": "PWA can complete the existing canonical BotFeedback row; separate Feedback analytics reads completed rows, without PWA attribution."
+        },
+        "macos": {
+          "status": "not_instrumented",
+          "reason": "No verified Desktop-specific feedback measure in V10; Desktop remains frozen."
+        },
+        "windows": {
+          "status": "not_instrumented",
+          "reason": "No verified Desktop-specific feedback measure in V10; Desktop remains frozen."
+        }
+      }
+    },
+    {
+      "id": "referrals",
+      "description": "Canonical referral attachment, qualification, and reward; no inferred conversion.",
+      "events": [],
+      "platforms": {
+        "android": {
+          "status": "not_instrumented",
+          "reason": "No verified V10 Android referral conversion metric from canonical referral activity."
+        },
+        "telegram": {
+          "status": "not_instrumented",
+          "reason": "No verified V10 Mini App referral conversion metric from canonical referral activity."
+        },
+        "iphone_pwa": {
+          "status": "not_instrumented",
+          "reason": "No verified V10 PWA referral conversion metric from canonical referral activity."
+        },
+        "macos": {
+          "status": "not_instrumented",
+          "reason": "No verified Desktop-specific V10 referral projection; Desktop remains frozen."
+        },
+        "windows": {
+          "status": "not_instrumented",
+          "reason": "No verified Desktop-specific V10 referral projection; Desktop remains frozen."
+        }
+      }
+    },
+    {
+      "id": "desktop_client_sync",
+      "description": "Existing Desktop offline AI pack and course sync telemetry; freeze only.",
+      "events": [
+        {
+          "store": "course_miniapp_events",
+          "role": "declared",
+          "names": [
+            "desktop_ai_pack_started",
+            "desktop_ai_pack_completed",
+            "desktop_offline_ai_used",
+            "desktop_progress_sync_succeeded",
+            "desktop_progress_sync_failed"
+          ]
+        }
+      ],
+      "platforms": {
+        "android": {
+          "status": "not_applicable",
+          "reason": "These existing event names are specific to the frozen Desktop client."
+        },
+        "telegram": {
+          "status": "not_applicable",
+          "reason": "These existing event names are specific to the frozen Desktop client."
+        },
+        "iphone_pwa": {
+          "status": "not_applicable",
+          "reason": "These existing event names are specific to the frozen Desktop client."
+        },
+        "macos": {
+          "status": "partial",
+          "reason": "Existing Desktop offline/sync names remain declared; no new Desktop code, test, or CI is planned."
+        },
+        "windows": {
+          "status": "partial",
+          "reason": "Existing Desktop offline/sync names remain declared; no new Desktop code, test, or CI is planned."
+        }
+      }
+    }
+  ],
+  "critical_paths": [
+    {
+      "path": "app/api/android_auth.py",
+      "flows": [
+        "client_activity"
+      ]
+    },
+    {
+      "path": "app/api/android_course.py",
+      "flows": [
+        "onboarding_activation",
+        "course_track_selection",
+        "foundation",
+        "lessons"
+      ]
+    },
+    {
+      "path": "app/api/android_events.py",
+      "flows": [
+        "notifications"
+      ]
+    },
+    {
+      "path": "app/api/android_features.py",
+      "flows": [
+        "practice",
+        "assessments",
+        "mistake_review",
+        "voice_practice",
+        "chat_ai",
+        "course_ads",
+        "subscription_entries",
+        "checkout_payments",
+        "feedback"
+      ]
+    },
+    {
+      "path": "app/api/lava_checkout.py",
+      "flows": [
+        "checkout_payments",
+        "pwa_pro_checkout",
+        "subscription_entries"
+      ]
+    },
+    {
+      "path": "app/api/miniapp_ads.py",
+      "flows": [
+        "course_ads"
+      ]
+    },
+    {
+      "path": "app/api/miniapp_entitlements.py",
+      "flows": [
+        "client_activity",
+        "foundation",
+        "lessons",
+        "practice",
+        "assessments",
+        "mistake_review"
+      ]
+    },
+    {
+      "path": "app/api/miniapp_practice.py",
+      "flows": [
+        "practice"
+      ],
+      "symbols": [
+        "miniapp_practice_start",
+        "miniapp_practice_complete"
+      ]
+    },
+    {
+      "path": "app/api/pwa_auth.py",
+      "flows": [
+        "client_activity",
+        "distribution_handoff",
+        "onboarding_activation",
+        "assessments",
+        "mistake_review",
+        "voice_practice",
+        "chat_ai",
+        "subscription_entries",
+        "checkout_payments",
+        "pwa_pro_checkout",
+        "feedback"
+      ]
+    },
+    {
+      "path": "app/main.py",
+      "flows": [
+        "client_activity",
+        "foundation",
+        "lessons",
+        "practice",
+        "assessments",
+        "mistake_review"
+      ],
+      "symbols": [
+        "v3_hsk_exam_start",
+        "v3_hsk_exam_complete",
+        "_v3_complete_lesson_for_canonical_actor",
+        "v3_course_lesson_complete",
+        "pwa_v3_course_lesson_complete",
+        "miniapp_practice_start",
+        "miniapp_practice_complete",
+        "miniapp_mistake_review_start",
+        "miniapp_mistake_review_answer",
+        "miniapp_mistake_review_complete",
+        "miniapp_event"
+      ]
+    },
+    {
+      "path": "app/services/activity_feedback_service.py",
+      "flows": [
+        "feedback"
+      ]
+    },
+    {
+      "path": "app/services/android_course_service.py",
+      "flows": [
+        "onboarding_activation",
+        "course_track_selection",
+        "foundation",
+        "lessons"
+      ]
+    },
+    {
+      "path": "app/services/course_gamification_service.py",
+      "flows": [
+        "learning_rewards"
+      ]
+    },
+    {
+      "path": "app/services/course_hsk_exam_service.py",
+      "flows": [
+        "assessments"
+      ]
+    },
+    {
+      "path": "app/services/course_lesson_start_grant.py",
+      "flows": [
+        "lessons"
+      ]
+    },
+    {
+      "path": "app/services/course_miniapp_analytics_service.py",
+      "flows": [
+        "client_activity",
+        "foundation",
+        "lessons",
+        "practice",
+        "assessments",
+        "mistake_review"
+      ]
+    },
+    {
+      "path": "app/services/course_miniapp_lesson_flow_service.py",
+      "flows": [
+        "lessons"
+      ]
+    },
+    {
+      "path": "app/services/course_miniapp_onboarding_service.py",
+      "flows": [
+        "onboarding_activation"
+      ]
+    },
+    {
+      "path": "app/services/course_miniapp_practice_service.py",
+      "flows": [
+        "practice"
+      ]
+    },
+    {
+      "path": "app/services/course_mistake_service.py",
+      "flows": [
+        "mistake_review"
+      ]
+    },
+    {
+      "path": "app/services/desktop_auth_service.py",
+      "flows": [
+        "client_activity"
+      ]
+    },
+    {
+      "path": "app/services/desktop_subscription_service.py",
+      "flows": [
+        "subscription_entries",
+        "checkout_payments"
+      ]
+    },
+    {
+      "path": "app/services/lava/ledger.py",
+      "flows": [
+        "checkout_payments",
+        "pwa_pro_checkout"
+      ]
+    },
+    {
+      "path": "app/services/learner_pwa_push.py",
+      "flows": [
+        "notifications"
+      ]
+    },
+    {
+      "path": "app/services/motivation_reminder_service.py",
+      "flows": [
+        "notifications"
+      ]
+    },
+    {
+      "path": "app/services/pwa_auth_service.py",
+      "flows": [
+        "client_activity",
+        "distribution_handoff"
+      ]
+    },
+    {
+      "path": "app/services/referral_service.py",
+      "flows": [
+        "referrals"
+      ]
+    },
+    {
+      "path": "app/services/subscription_entry_analytics_service.py",
+      "flows": [
+        "subscription_entries"
+      ]
+    },
+    {
+      "path": "app/services/voice_practice_service.py",
+      "flows": [
+        "voice_practice"
+      ]
+    }
+  ],
+  "exemptions": []
+}

@@ -149,6 +149,11 @@ class MiniAppCourseContextTests(unittest.IsolatedAsyncioTestCase):
         )
         self.assertEqual(complete.status_code, 200, complete.text)
         self.assertEqual(complete.json()["completed_lessons_count"], 1)
+        async with self.sessions() as session:
+            event = await session.scalar(select(CourseMiniAppEvent).where(
+                CourseMiniAppEvent.event_name == "lesson_completed",
+            ))
+            self.assertEqual(json.loads(event.payload_json)["client"], "telegram")
         snapshot = await self._snapshot()
         self.assertEqual(snapshot[5], 1)  # Exactly one XP event.
         again = await self.client.post(
