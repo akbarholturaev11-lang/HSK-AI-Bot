@@ -205,6 +205,8 @@ Defaults (catalog constants, not owner decisions): cap 60 events per account per
   - a scope escalation: a `high` incident that reaches ≥ 5 distinct accounts in 1 h becomes `critical`, a bounded indexed count;
   - the reopen of any incident the admin marked fixed, at any severity (owner request 2026-11-13). A fixed error that comes back always alerts.
 
+  Owner confirmed (2026-11-13, option B): a new non-critical Android, PWA or backend incident stays in the Inbox without a push. Do not widen the new-incident push without a new owner decision.
+
   Further conditions:
   - a 6 h per-incident cooldown;
   - a global cap of 6 distinct diagnostic alerts per hour, counted by `event_key` in the outbox under an advisory lock on a constant key;
