@@ -83,13 +83,20 @@ class TheLimitOffersOneThingTests(unittest.TestCase):
                 self.assertIn(PRODUCT, label)
                 self.assertIn("⭐️", label)
 
-    def test_the_trial_is_the_only_second_option(self):
-        """Reklama tugmasi butunlay yo'q — u hech narsani ochmaydi."""
+    def test_the_limit_sheet_has_no_second_option(self):
+        """Reklama tugmasi butunlay yo'q — u hech narsani ochmaydi.
+
+        2026-10-13 dagi yagona limit oynasidan (0db61857) beri trial ham bu
+        yerda taklif qilinmaydi: u onboarding va profilda qoladi
+        (`tests/test_trial_entry_points.py`). Shuning uchun `limAd` hech
+        qachon ko'rinmaydi va asosiy tugma yagona bo'lib qoladi.
+        """
         text = self.ADS.read_text(encoding="utf-8")
 
-        # `limAd` elementi endi FAQAT trial uchun ishlatiladi.
-        self.assertIn("showTrialButton", text)
         self.assertNotIn("onContinueAd", text)
+        self.assertNotIn("showTrialButton", text)
+        self.assertIn("els.limAd.hidden=true", text)
+        self.assertNotRegex(text, r"limAd\.hidden\s*=\s*false")
 
     def test_no_limit_screen_still_offers_an_ad(self):
         """Matn "reklama ko'ring" deb turgani — eng chalg'ituvchi ziddiyat:
