@@ -40,7 +40,8 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 - The branch has the PostgreSQL baseline, the coverage guard and per-metric V10 states in the API and the Admin UI. It also has per-platform scoping, route chain tests, the PWA Pro funnel, `return_retention` and Report freshness.
 - An independent audit of PR #285 (55 findings) confirmed 17. The code and process defects among them are fixed on this branch; see [Audit remediation](#audit-remediation--pr-285-2026-11-12). Every V10 value still matches the baseline except two Overall Finance averages, which were wrong on `main` too (#34).
 - **Open: 6.2 real-client acceptance** (owner devices and a deployment of this branch; checklist below) and **6.3 promotion** (owner approval). No merge to `main` without the owner's permission.
-- **Next stage (implemented, not merged):** R1, R2, R4 and R3 from [Next stage](#next-stage--mandatory-requirements-not-implemented) are implemented on `feat/analytics-next-stage-20261112`, stacked on this PR, with one OpenSpec change each. Open there: final verification on the final head, the R4 performance numbers, the owner's approval of the R3 migration, and owner acceptance on real clients.
+- **Next stage (implemented, not merged):** R1, R2, R4 and R3 from [Next stage](#next-stage--mandatory-requirements-not-implemented) are implemented on `feat/analytics-next-stage-20261112`, stacked on this PR, with one OpenSpec change each. Open there: the owner's approval of the R3 migration and owner acceptance on real clients.
+- **Final audit, 2026-11-13:** all-time Course hit the 5 s statement timeout on 1M events, the PWA handoff cohort hid behind the detail limit, two state labels were wrong and R1 rows reached D1 recovery. All fixed on `feat/analytics-next-stage-20261112`; see [Final audit remediation](#final-audit-remediation--2026-11-13). Production data volume is not verified.
 - PR [akbarholturaev11-lang/HSK-AI-Bot#285](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/285) is the integration branch for this work.
 
 ## Platform scope
@@ -244,7 +245,21 @@ Remaining from the audit (not code defects in this change):
 - #45/#46: CI and full-suite results are recorded in the validation table, including known baseline failures.
 - #47: few `covered` cells. More route chains are follow-up work, not a defect.
 - #48/#49: real devices and staging are 6.2.
-- #24/#51/#53: need production-scale or production-data evidence. Local 1M-row runs stayed far below the 8 s limit.
+- #24/#51/#53: need production-scale or production-data evidence. Local 1M-row runs stayed far below the 8 s limit. **Corrected 2026-11-13:** not for all-time Course, which hit the 5 s statement timeout on 1M events; see [Final audit remediation](#final-audit-remediation--2026-11-13).
+
+## Final audit remediation — 2026-11-13
+
+An independent final audit of `50a84d9e` (R1–R4 on PR #285) against `main` `1eb14684`. Formulas were recomputed outside the readers on real PostgreSQL: 238 checks per seed, 0 mismatches. Fixed here:
+
+| # | Defect | Root cause | Fix | Evidence |
+|---|---|---|---|---|
+| B1 (high) | All-time Course failed under production limits. On 1M synthetic events / 20k accounts, Overall, Android and PWA hit the 5 s `statement_timeout` (17–18 s without it). After the 24-hour snapshot expires, the whole all-time Course section is unavailable and is retried every 30 s. A regression against `main` for Overall (2.26 s there) | Return evidence was an `EXISTS` inside an aggregate `FILTER`, or OR-ed. PostgreSQL cannot plan that as a semi-join, so it ran as a `SubPlan` once per account: a `BitmapAnd` of the `user_id` and `created_at` indexes, 0.4 ms × 20 000 × 2 windows | `returned_accounts()`: each evidence clause is its own `WHERE EXISTS` over the cohort, joined by `UNION`; counts are scalar subqueries. Used by Overall `retention` / `return_retention` (`_cohort_returns`), R4 `platform_return_retention` (first use is a CTE) and the R2 handoff. No schema change | Old and new projections are identical on 300k and 1M rows for every platform and period, except the B2/B3 keys. Under the 5 s / 8 s limits every section passes; the slowest is all-time Overall Course, 3.3 s; platforms ≤ 1.7 s; also right after a bulk load. `ReturnQueriesPlanTests` (no `SubPlan` in the plan) fails on the old code |
+| B2 (medium) | `handoff_activation` was null, shown as «no data», once the window had more than 5 000 PWA-tagged lesson rows | The reader loaded every PWA learner's lesson rows through `bounded_rows`, not only handoff accounts | `_handoff_activation`: one SQL aggregate. Anchor = first handoff per account from the boundary; eligible after 24 h; activated by a PWA-tagged start or completion in [anchor, anchor + 24 h]. No detail rows | `PwaHandoffEdgeTests` (24 h edge, first-handoff anchor, legacy Telegram owner, Telegram and nested lookalikes) gives the same values on the old and new code; its limit case fails on the old code. On 1M rows, PWA monthly and all time now show the cohort |
+| B3 (low) | A cohort with no anchor was labelled `detail_limited` when another metric of the view hit the limit (`activation`, `direct_activation`, `foundation`) | `_null_reason` read the view-wide `detail_limited` flag | A Course platform cohort with no anchor in `attributed_since` is `no_data` | `CourseStateReasonTests`, fails on the old code |
+| O1 (low) | R1 `android_lesson_started` rows moved the D1 recovery's last activity, against R1's «not read by product flows» | The activity query excluded only reminder system rows | `D1_RECOVERY_NOT_ACTIVITY_EVENTS` also excludes `android_lesson_started`; D1 recovery behaves as before R1 | Reminder test asserts the exclusion; fails on the old code |
+| B4 (doc) | This file said 1M-row runs stayed far below 8 s, while the R4 log recorded 8.6–18.1 s, and said snapshot reads are not limited | — | Corrected: a snapshot is computed under the same limits, 5 s per statement and 8 s per section (`read_transaction`, `_LOAD_SECONDS`) | — |
+
+Kept as recorded limits, not defects: Telegram first use is the first tagged learning row after the boundary (A3); a course-map open without a session is stored once per UTC day, so a second open that day is not a separate D1 return; the registry is read at runtime from `docs/` (the image copies the whole tree); payments without a source default to `telegram_bot`. Production data volume and distribution are not verified.
 
 ## Analytics Impact summary — task 6.3
 
@@ -355,7 +370,7 @@ Written from the code on this branch.
 **Why not `lesson_started`.** `motivation_reminder_service.py` reads `lesson_started` for the D1 recovery and the unfinished-lesson reminder. An Android start under that name would send new Telegram messages to Android learners: a behavior change. `android_lesson_started` has these properties:
 - **Server-only.** It is not in `CLIENT_COURSE_MINIAPP_EVENT_NAMES`, and `/api/v3/android/events` accepts only widget and notification names. No caller can write a lookalike.
 - **Already expected by the Admin readers.** Overall V10 reads it in `features.lessons`, `started_accounts` and `COURSE_EVENTS`; bot-block diagnostics read it too. These readers were written for it and simply had no writer.
-- **Not read by product flows.** Reminders, the activation funnel and lesson durations do not read it. Overall `activation` and `lesson_seconds` stay unchanged.
+- **Not read by product flows.** Reminders, the activation funnel and lesson durations do not read it. Overall `activation` and `lesson_seconds` stay unchanged. The D1 recovery's activity query reads any non-system row, so it excludes this name explicitly (final audit O1, 2026-11-13).
 
 **Writer.**
 - **Location:** `AndroidCourseService.lesson` (`app/services/android_course_service.py`), after `super().lesson()` returns. The shared `DesktopCourseService.lesson` is not changed.
@@ -492,7 +507,7 @@ Written from the code on this branch.
 **Reader.**
 - `platform_return_retention(db, platform, since, now)`, next to `return_retention`.
 - Per-account first use is computed in one grouped subquery.
-- Performance gate: an EXPLAIN on a 1M-row fixture stays within the current `return_retention` budget (all-time 1.06 s locally).
+- Performance gate: an EXPLAIN on a 1M-row fixture stays within the current `return_retention` budget (all-time 1.06 s locally). Final audit 2026-11-13: the gate was missed (all time 17–18 s); returns are now semi-joins, all time ≤ 1.7 s per platform on 1M rows.
 
 **UI.** A retention card under a platform filter, with a one-line cohort note «first use on this platform», in UZ/RU/TJ.
 
@@ -563,7 +578,7 @@ Written from the code on this branch.
 | An analytics write breaks a learner response | Savepoint, separate commit, failure test | — |
 | Double counting on refetch | Dedupe key per day; unit test | — |
 | Overall values move | Golden test; intended moves pinned and listed in Impact | Revert the reader commit |
-| A per-platform read is slow | `bounded_rows`; EXPLAIN on a 1M-row fixture before merge | Hide the cell (`not_instrumented`) |
+| A per-platform read is slow | `bounded_rows`; EXPLAIN on a 1M-row fixture before merge; time every section under the 5 s / 8 s snapshot limits; per-account evidence as `WHERE EXISTS` semi-joins, never inside `FILTER` (`ReturnQueriesPlanTests`) | Hide the cell (`not_instrumented`) |
 | R3 migration on production | Additive nullable column, upgrade/downgrade test | `alembic downgrade` drops the column; old readers ignore it |
 
 ## Decisions log
@@ -597,8 +612,12 @@ Written from the code on this branch.
 - 2026-11-12 — Audit remediation (#37): Report freshness uses the Course boundary per client (first server-built tagged completion), computed in one grouped scan.
 - 2026-11-12 — Audit remediation (#44): the internal section refresh takes an optional `platform` and refreshes that filter's own snapshot; the cooldown is per platform; Report is refreshable. The empty-body Overall overview refresh is unchanged. There is still no Admin UI refresh button.
 - 2026-11-12 — Audit remediation (#6–#8): the diff guard ignores flow `description` and whitespace; `covered` needs a CI-run test that reads the metric from the Admin analytics route for that platform; large shared modules are guarded per function through `symbols`.
+- 2026-11-13 — Final audit (B1): per-account evidence (returns, handoff) is a `WHERE EXISTS` per clause over the cohort, combined with `UNION`, never an `EXISTS` inside an aggregate `FILTER` or an OR of `EXISTS`. Values are unchanged; no index or schema change was needed.
+- 2026-11-13 — Final audit (B2/B3): the PWA handoff cohort is a SQL aggregate with no detail rows. A Course platform cohort with no anchor in `attributed_since` reports `no_data`, never `detail_limited`.
+- 2026-11-13 — Final audit (O1): analytics-only rows do not count as learner activity in D1 recovery (`D1_RECOVERY_NOT_ACTIVITY_EVENTS`).
 
 ## Session log (newest first, one or two lines each)
+- 2026-11-13 — Final audit remediation (B1–B4, O1) verified on the working tree over `50a84d9e`: full unit suite **5192 passed, 11 failed** = the 8 known baseline failures + 3 `test_smart_reminder_dispatch_analysis` native-guard tests that fail between 00:00 and 02:00 UTC on `main` and `50a84d9e` too (a goal studied at 02:00 UTC is still in the future; test-only fix on `fix/known-baseline-test-failures-20261113`); all 52 PostgreSQL modules **753 passed, 12 skipped, 0 failed**; 8/8 Admin PWA browser suites pass. Course under production limits: 1M rows max 3.25 s, right after a bulk load 3.29 s, 600k 1.30 s.
 - 2026-11-13 — Final verification of R1–R4 on `1c5162ed`: full unit suite **5193 passed**, only the 8 known baseline failures (live voice relay ×3, practice-page coach ×3, Mini App product name ×2); all 52 PostgreSQL modules **748 passed, 12 skipped, 0 failed**; Admin PWA browser harness passed; checker passes in push and pull_request modes; four OpenSpec changes valid. Pushed as a fast-forward to the PR #307 branch (single branch). Open: owner approval of migration `0155` and owner acceptance on real clients.
 - 2026-11-13 — R3 performance on local PostgreSQL 15, 300k entries / 60k approved payments / 20k accounts (second run, seconds): weekly Overall 0.07, platforms 0.02–0.05; all-time Overall 1.45, Android 0.33, Telegram 0.40, PWA 0.49. `EXPLAIN ANALYZE` of PWA all-time attribution: 235 ms; the nearest same-client entry is a bitmap lookup on the `user_id` and `telegram_id` indexes, about 0.008 ms per payment (22,668 payments).
 - 2026-11-13 — R4 performance on local PostgreSQL 15, 1M CME rows / 20k accounts, idle machine (second run, seconds): weekly Overall 0.84, Android 0.19, Telegram 0.11, PWA 0.15; monthly Overall 2.20, platforms 0.11–0.19; all-time Overall 18.1, Android 10.7, Telegram 8.6, PWA 9.7. Before the fix the first-use subquery joined users through `owner`'s OR and looped over every account (weekly 1.1–1.8 s, slower than Overall); it now takes the owned and legacy branches separately, as Overall return_retention does. Same cohorts and counts; R4 scope, chain and golden tests pass. These reads run in the 24-hour snapshot, not per request.
