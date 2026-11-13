@@ -1629,7 +1629,7 @@
         },
         "telegram": {
           "status": "partial",
-          "reason": "Existing reminder experiments read passive server records; a send or assignment is not foreground activity."
+          "reason": "Existing reminder experiments read passive server records; a send, an assignment or an analytics-only android_lesson_started row is not foreground activity."
         },
         "iphone_pwa": {
           "status": "not_instrumented",

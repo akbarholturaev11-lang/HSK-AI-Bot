@@ -63,6 +63,10 @@ D1_RECOVERY_SYSTEM_EVENTS = {
     D1_RECOVERY_SENT_EVENT,
     D1_RECOVERY_FAILED_EVENT,
 }
+# Admin-analytics-only rows (R1 `android_lesson_started`, written by
+# android_course_service) are not learner activity for reminders: product flows
+# do not read them, so D1 recovery behaves as before R1 (audit 2026-11-13).
+D1_RECOVERY_NOT_ACTIVITY_EVENTS = {*D1_RECOVERY_SYSTEM_EVENTS, "android_lesson_started"}
 D1_RECOVERY_STATE_EVENTS = {
     "onboarding_completed",
     "lesson_started",
@@ -393,7 +397,7 @@ class MotivationReminderService:
                 .where(
                     CourseMiniAppEvent.telegram_id.in_(candidate_ids),
                     CourseMiniAppEvent.created_at >= now - D1_RECOVERY_LOOKBACK,
-                    CourseMiniAppEvent.event_name.notin_(D1_RECOVERY_SYSTEM_EVENTS),
+                    CourseMiniAppEvent.event_name.notin_(D1_RECOVERY_NOT_ACTIVITY_EVENTS),
                 )
                 .group_by(CourseMiniAppEvent.telegram_id)
             )
