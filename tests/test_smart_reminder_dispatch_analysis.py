@@ -36,7 +36,11 @@ class NativeGuardChecks:
         return await self.f.fixture.rows(table)
 
     async def goal(self):
-        await self.case.study(order=5, xp=20)
+        # The native claim runs at the real clock (`tick = now`), but study()
+        # defaults to 02:00 UTC of that day: between 00:00 and 02:00 UTC the
+        # goal would lie in the future and the job is cancelled as
+        # shadow_context_changed instead. Midnight is never after the claim.
+        await self.case.study(order=5, xp=20, hour=0)
 
     async def test_actual_goal_refusal_records_original_reason_and_never_issues_grant(self):
         await self.goal()
