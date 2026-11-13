@@ -17,7 +17,7 @@ This is the only checklist for this work. Task 1.1 creates the single shared con
 
 ## 1. Foundation: catalog, coverage guard, intake
 
-- [ ] 1.1 Context file and the P0 coverage guard in `declare` mode (D1, D10):
+- [x] 1.1 Context file and the P0 coverage guard in `declare` mode (D1, D10):
   - Create `docs/monitoring/MONITORING_CONTEXT.md` as the single context file, starting from the 2026-11-13 audit in design.md.
   - Before coding, check drift since `5ea7c22f` with `git diff --stat` over the Context paths. Check the voice `live_*` codes if Voice V8 has landed. Use read-only Graphify only after the graph matches `HEAD`. Apply any delta to design.md.
   - Add `app/services/monitoring/catalog.py`.

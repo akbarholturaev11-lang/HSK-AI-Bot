@@ -1985,5 +1985,233 @@
       ]
     }
   ],
-  "exemptions": []
+  "exemptions": [],
+  "monitoring": {
+    "mode": "declare",
+    "features": [
+      {"id": "app_shell", "platforms": {
+        "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
+        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+      }},
+      {"id": "assessments", "platforms": {
+        "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
+        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+      }},
+      {"id": "auth_session", "platforms": {
+        "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
+        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+      }},
+      {"id": "chat_ai", "platforms": {
+        "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
+        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+      }},
+      {"id": "checkout_payments", "platforms": {
+        "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
+        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+      }},
+      {"id": "client_activity", "platforms": {
+        "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
+        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+      }},
+      {"id": "course_ads", "platforms": {
+        "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
+        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+      }},
+      {"id": "course_track_selection", "platforms": {
+        "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
+        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+      }},
+      {"id": "distribution_handoff", "platforms": {
+        "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
+        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+      }},
+      {"id": "feedback", "platforms": {
+        "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
+        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+      }},
+      {"id": "foundation", "platforms": {
+        "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
+        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+      }},
+      {"id": "learning_rewards", "platforms": {
+        "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
+        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+      }},
+      {"id": "lessons", "platforms": {
+        "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
+        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+      }},
+      {"id": "mistake_review", "platforms": {
+        "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
+        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+      }},
+      {"id": "monitoring", "platforms": {
+        "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
+        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+      }},
+      {"id": "notifications", "platforms": {
+        "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
+        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+      }},
+      {"id": "onboarding_activation", "platforms": {
+        "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
+        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+      }},
+      {"id": "practice", "platforms": {
+        "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
+        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+      }},
+      {"id": "pwa_pro_checkout", "platforms": {
+        "android": {"status": "not_applicable", "reason": "The inline Lava Pro checkout exists only in the learner PWA."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
+        "telegram": {"status": "not_applicable", "reason": "The inline Lava Pro checkout exists only in the learner PWA."},
+        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+      }},
+      {"id": "referrals", "platforms": {
+        "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
+        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+      }},
+      {"id": "subscription_entries", "platforms": {
+        "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
+        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+      }},
+      {"id": "voice_practice", "platforms": {
+        "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
+        "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
+        "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
+        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+      }}
+    ],
+    "android_packages": {"ad": "course_ads", "assistant": "chat_ai", "auth": "auth_session", "course": "lessons", "dictionary": "lessons", "feedback": "feedback", "foundation": "foundation", "hint": "app_shell", "lesson": "lessons", "limit": "subscription_entries", "offline": "app_shell", "onboarding": "onboarding_activation", "practice": "practice", "profile": "app_shell", "rating": "learning_rewards", "update": "distribution_handoff", "voice": "voice_practice"},
+    "pwa_pages": {"course-v3.html": "lessons", "course_v3_li_onboarding.html": "onboarding_activation", "course_v3_memorize.html": "practice", "course_v3_mistakes.html": "mistake_review", "course_v3_onboarding.html": "onboarding_activation", "course_v3_pronunciation.html": "practice", "course_v3_recognition.html": "practice", "course_v3_test.html": "assessments", "course_v3_voice.html": "voice_practice", "iphone-pwa-handoff.html": "distribution_handoff", "iphone-pwa-login.html": "auth_session", "iphone-pwa-voice.html": "voice_practice", "subscription.html": "checkout_payments"},
+    "legacy_baseline": [
+      "app_shell:android",
+      "app_shell:iphone_pwa",
+      "app_shell:telegram",
+      "app_shell:server",
+      "assessments:android",
+      "assessments:iphone_pwa",
+      "assessments:telegram",
+      "assessments:server",
+      "auth_session:android",
+      "auth_session:iphone_pwa",
+      "auth_session:telegram",
+      "auth_session:server",
+      "chat_ai:android",
+      "chat_ai:iphone_pwa",
+      "chat_ai:telegram",
+      "chat_ai:server",
+      "checkout_payments:android",
+      "checkout_payments:iphone_pwa",
+      "checkout_payments:telegram",
+      "checkout_payments:server",
+      "client_activity:android",
+      "client_activity:iphone_pwa",
+      "client_activity:telegram",
+      "client_activity:server",
+      "course_ads:android",
+      "course_ads:iphone_pwa",
+      "course_ads:telegram",
+      "course_ads:server",
+      "course_track_selection:android",
+      "course_track_selection:iphone_pwa",
+      "course_track_selection:telegram",
+      "course_track_selection:server",
+      "distribution_handoff:android",
+      "distribution_handoff:iphone_pwa",
+      "distribution_handoff:telegram",
+      "distribution_handoff:server",
+      "feedback:android",
+      "feedback:iphone_pwa",
+      "feedback:telegram",
+      "feedback:server",
+      "foundation:android",
+      "foundation:iphone_pwa",
+      "foundation:telegram",
+      "foundation:server",
+      "learning_rewards:android",
+      "learning_rewards:iphone_pwa",
+      "learning_rewards:telegram",
+      "learning_rewards:server",
+      "lessons:android",
+      "lessons:iphone_pwa",
+      "lessons:telegram",
+      "lessons:server",
+      "mistake_review:android",
+      "mistake_review:iphone_pwa",
+      "mistake_review:telegram",
+      "mistake_review:server",
+      "monitoring:android",
+      "monitoring:iphone_pwa",
+      "monitoring:telegram",
+      "monitoring:server",
+      "notifications:android",
+      "notifications:iphone_pwa",
+      "notifications:telegram",
+      "notifications:server",
+      "onboarding_activation:android",
+      "onboarding_activation:iphone_pwa",
+      "onboarding_activation:telegram",
+      "onboarding_activation:server",
+      "practice:android",
+      "practice:iphone_pwa",
+      "practice:telegram",
+      "practice:server",
+      "pwa_pro_checkout:iphone_pwa",
+      "pwa_pro_checkout:server",
+      "referrals:android",
+      "referrals:iphone_pwa",
+      "referrals:telegram",
+      "referrals:server",
+      "subscription_entries:android",
+      "subscription_entries:iphone_pwa",
+      "subscription_entries:telegram",
+      "subscription_entries:server",
+      "voice_practice:android",
+      "voice_practice:iphone_pwa",
+      "voice_practice:telegram",
+      "voice_practice:server"
+    ],
+    "exemptions": []
+  }
 }

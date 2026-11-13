@@ -274,6 +274,34 @@ linked context.
 
 ---
 
+## Permanent error monitoring coverage
+
+**This is a cross-session rule for every future feature change**, paired with the
+Analytics rule above. Canonical context:
+[`docs/monitoring/MONITORING_CONTEXT.md`](docs/monitoring/MONITORING_CONTEXT.md);
+plan: `openspec/changes/unified-error-monitoring/`.
+
+For every new or materially changed **PWA, Android or Backend feature**, state the
+**Monitoring Impact** in the same task: failure signals; `feature_code` (an Analytics
+flow ID) and catalog failure codes (`app/services/monitoring/catalog.py`); the
+authenticated intake used; the incident mapping; the Admin Inbox consumer; and the
+tests. A new learner API route gets its `ROUTE_MAP` line in the same change. Or give
+a concrete `not_applicable` reason. Copy, styling and localization-only changes need
+no invented telemetry. Reporting must never block a learner flow, and no report may
+carry tokens, `initData`, answers, payment data, raw stacks, messages, URLs or bodies.
+
+Put both `Analytics Impact: ...` and `Monitoring Impact: ...` in the completion notes.
+
+**Enforcement status:** this agent rule is active. The `monitoring` block of the
+shared [coverage registry](docs/analytics/FEATURE_ANALYTICS_COVERAGE.json) and the
+same [`analytics-integrity` CI check](.github/workflows/analytics-integrity.yml)
+enforce it on any branch that contains them: an unmapped learner route, Android
+feature package or learner page fails, as does a new one mapped to an uncovered
+feature. The registry is in `declare` mode until the Admin Inbox `diagnostic`
+source exists. Verify on `main` before reporting enforcement there.
+
+---
+
 ## Doimiy lokalizatsiya qoidasi
 
 UI matni qo‘shish, tarjimani tahrirlash yoki yangi til kiritishdan oldin
