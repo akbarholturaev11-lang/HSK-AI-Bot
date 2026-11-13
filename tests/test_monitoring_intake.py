@@ -1,14 +1,11 @@
 """Diagnostic intake: validation, idempotency, admission, retention (task 1.2)."""
 import asyncio
-from contextlib import asynccontextmanager
 from datetime import datetime, timedelta, timezone
-import os
 from types import SimpleNamespace
 import unittest
-from urllib.parse import urlsplit
 from uuid import uuid4
 
-from sqlalchemy import event, func, select, text
+from sqlalchemy import event, func, select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import StaticPool
 
@@ -22,8 +19,8 @@ from app.services.monitoring.intake import (
     IntakeRejected, current_mode, ingest, ingest_server, is_owner_account, parse_batch,
 )
 from app.services.monitoring.retention import purge_diagnostics
+from tests.monitoring_chain import PG_URL, pg_sessions
 
-PG_URL = os.getenv("MONITORING_TEST_DATABASE_URL") or os.getenv("ANALYTICS_TEST_DATABASE_URL")
 NOW = datetime(2026, 11, 13, 12, 0, tzinfo=timezone.utc)
 
 
@@ -187,29 +184,6 @@ class SqliteIntakeTests(unittest.IsolatedAsyncioTestCase):
         async with self.sessions() as db, db.begin():
             self.assertEqual(await purge_diagnostics(db, now=NOW), (0, 1))
         self.assertEqual(await self.counts(), ([], 0))
-
-
-@asynccontextmanager
-async def pg_sessions(url):
-    parsed = urlsplit(url)
-    if parsed.scheme != "postgresql+asyncpg" or parsed.hostname not in {"127.0.0.1", "::1", "localhost"} \
-            or not parsed.path.endswith("_test"):
-        raise ValueError("the monitoring PostgreSQL URL must name a disposable *_test database over loopback")
-    schema = "monitoring_test_" + uuid4().hex
-    engine = create_async_engine(url, pool_size=4, connect_args={"server_settings": {"search_path": schema,
-                                                                                      "timezone": "UTC"}})
-    try:
-        async with engine.begin() as connection:
-            await connection.execute(text(f"CREATE SCHEMA {schema}"))
-            await connection.run_sync(Base.metadata.create_all)
-        sessions = async_sessionmaker(engine, expire_on_commit=False)
-        async with sessions() as db, db.begin():
-            db.add_all([User(id=1, telegram_id=1001, status="free"), User(id=2, telegram_id=2002, status="free")])
-        yield sessions
-    finally:
-        async with engine.begin() as connection:
-            await connection.execute(text(f"DROP SCHEMA IF EXISTS {schema} CASCADE"))
-        await engine.dispose()
 
 
 @unittest.skipUnless(PG_URL, "set MONITORING_TEST_DATABASE_URL or ANALYTICS_TEST_DATABASE_URL")

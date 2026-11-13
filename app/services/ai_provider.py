@@ -233,6 +233,8 @@ class AIProviderChain:
             except Exception as error:  # noqa: BLE001 — har qanday xatoda zaxiraga o'tamiz
                 last_error = error
                 if is_last:
+                    from app.services.monitoring.backend import report_server_failure
+                    report_server_failure("chat_ai", "provider_failed", "ai_provider")
                     raise
                 logger.warning(
                     "AI provayder '%s' (model=%s) xato berdi, zaxiraga o'tilyapti: %s",
@@ -323,5 +325,7 @@ class AIProviderChain:
             )
 
         if gemini_error is not None:
+            from app.services.monitoring.backend import report_server_failure
+            report_server_failure("voice_practice", "provider_failed", "voice_provider")
             raise gemini_error
         raise RuntimeError("STT uchun AI provayder sozlanmagan")

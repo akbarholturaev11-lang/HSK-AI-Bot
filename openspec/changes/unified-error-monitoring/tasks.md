@@ -53,7 +53,7 @@ This is the only checklist for this work. Task 1.1 creates the single shared con
   - **Unit tests:** forbidden, unknown and oversized events are rejected; a retry is idempotent; a skewed client time is flagged; `off` pauses and `owners` admits only owners.
   - **PostgreSQL module:** two workers produce one incident with count 2; the cap holds under parallel requests; account deletion cascades the receipts and lowers the affected count; the purge is bounded, and a purge failure does not skip the native-report purge (`test_admin_pwa_retention_links.py` stays green).
   - **Query plans:** `EXPLAIN` on 1M receipts for the admission and affected-count queries.
-- [ ] 1.3 Add the intake routes and the backend reporter (D3, D4):
+- [x] 1.3 Add the intake routes and the backend reporter (D3, D4):
   - Android bearer and PWA cookie + CSRF routes;
   - the ASGI middleware over `route_map`;
   - `report_server_failure` at the Lava and AI/voice provider sites, next to the Lava Telegram `admin_alert`, never replacing it;

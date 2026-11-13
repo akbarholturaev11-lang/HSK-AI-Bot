@@ -13,7 +13,10 @@ or production acceptance.
   and verification run together at the end (task 5.1), then promotion.
 - **Done in code:** task 1.1 (catalog, registry block in `declare` mode, checker,
   workflow, `AGENTS.md` rule); task 1.2 (migration `0156_diagnostic_monitoring`,
-  models, `ingest`, retention, switches).
+  models, `ingest`, retention, switches); task 1.3 (intake routes, backend
+  middleware and reporter, Lava and AI/voice sites, chain helper, `server` cells
+  `partial`).
+- **Not yet run:** PostgreSQL tests (chain and intake) — they run in task 5.1.
 - **Not on `main`.** No migration, intake, reporter or Admin change is deployed.
   All switches will default off.
 
@@ -63,9 +66,33 @@ or production acceptance.
 - **Account deletion** deletes receipts explicitly in `UserRepository._delete_account`
   (the repository does not rely on FK cascades), besides the FK `ON DELETE CASCADE`.
 - **Retention** runs in `_desktop_auth_retention_scheduler` in its own `try`.
+- **503 is not captured** by the middleware: the codebase answers 503 for a
+  switched-off feature (for example `pwa_auth_unavailable`). Captured: 500, 502,
+  504 and unhandled exceptions. Integration failures behind a 503 report through
+  `report_server_failure`.
+- **Lava sites.** Only processing-failure alert codes become incidents
+  (`LAVA_FAILURE_SITES` in `lava/notify.py`: webhook auth and retries →
+  `lava_webhook`; activation, amount, unmatched, review, renewal, promo →
+  `lava_ledger`). Refund/chargeback/partner-credit alerts are business outcomes,
+  not failures. Every code still sends its Telegram alert unchanged.
+- **AI provider.** `AIProviderChain.chat_completion` serves several features; a
+  final failure is filed as `chat_ai` at the `ai_provider` site (the site is what
+  identifies the provider). STT failures are `voice_practice` / `voice_provider`.
+- **Blocked accounts on Android.** A bearer access token outlives a block until
+  it expires (`authenticate` does not check the status), so the Android intake
+  refuses blocked accounts itself. The PWA actor already refuses them.
+- **Registry `server` cells** are `partial` with an "Admin consumer pending"
+  reason. The baseline stays: pairs leave it only when they become `covered`
+  (task 3.1).
+- **Chain helper.** `assert_monitoring_chain(case, platform, feature, failure,
+  site, sessions, …)` requires a PostgreSQL bind. Client platforms post through
+  their real intake; the server chain runs through a `BackendReporter`, with an
+  optional `trigger` (a real middleware request or `report_server_failure`).
 
 ## Session log
 
 - 2026-11-13: task 1.1 implemented on the feature branch (256 learner routes
   mapped, 22 features, 86 baseline pairs, 2 justified `not_applicable`).
 - 2026-11-13: task 1.2 implemented (migration after `0155`, intake service).
+- 2026-11-13: task 1.3 implemented (two intake routes, middleware, reporter,
+  Lava/AI sites, chain helper and server chain test).

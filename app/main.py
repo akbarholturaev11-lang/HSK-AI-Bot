@@ -667,6 +667,7 @@ async def _desktop_auth_retention_scheduler() -> None:
             async with async_session_maker() as session:
                 async with session.begin():
                     receipts, incidents = await purge_diagnostics(session, now=datetime.now(timezone.utc))
+            await diagnostic_reporter.flush_self_dropped()
             if receipts or incidents:
                 logger.info("Diagnostic retention removed %d receipts, %d incidents", receipts, incidents)
         except Exception:
@@ -927,6 +928,13 @@ app.add_middleware(
     bot_token=settings.BOT_TOKEN,
     admin_ids=settings.admin_id_list,
 )
+# Unified error monitoring (D4): records 5xx and unhandled exceptions on
+# learner routes after the response; never reads bodies or changes responses.
+from app.services.monitoring.backend import DiagnosticMiddleware, reporter as diagnostic_reporter
+diagnostic_reporter.configure(session_factory=async_session_maker, settings_obj=settings)
+app.add_middleware(DiagnosticMiddleware)
+from app.api.monitoring_intake import create_monitoring_intake_router
+app.include_router(create_monitoring_intake_router(session_factory=async_session_maker, settings_obj=settings))
 app.include_router(
     create_desktop_auth_router(
         session_factory=async_session_maker,

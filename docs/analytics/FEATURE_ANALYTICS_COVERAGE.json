@@ -1993,133 +1993,133 @@
         "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
         "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
       }},
       {"id": "assessments", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
         "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
       }},
       {"id": "auth_session", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
         "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
       }},
       {"id": "chat_ai", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
         "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
       }},
       {"id": "checkout_payments", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
         "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
       }},
       {"id": "client_activity", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
         "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
       }},
       {"id": "course_ads", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
         "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
       }},
       {"id": "course_track_selection", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
         "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
       }},
       {"id": "distribution_handoff", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
         "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
       }},
       {"id": "feedback", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
         "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
       }},
       {"id": "foundation", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
         "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
       }},
       {"id": "learning_rewards", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
         "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
       }},
       {"id": "lessons", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
         "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
       }},
       {"id": "mistake_review", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
         "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
       }},
       {"id": "monitoring", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
         "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
       }},
       {"id": "notifications", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
         "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
       }},
       {"id": "onboarding_activation", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
         "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
       }},
       {"id": "practice", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
         "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
       }},
       {"id": "pwa_pro_checkout", "platforms": {
         "android": {"status": "not_applicable", "reason": "The inline Lava Pro checkout exists only in the learner PWA."},
         "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
         "telegram": {"status": "not_applicable", "reason": "The inline Lava Pro checkout exists only in the learner PWA."},
-        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
       }},
       {"id": "referrals", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
         "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
       }},
       {"id": "subscription_entries", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
         "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
       }},
       {"id": "voice_practice", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter not built yet; planned in task 2.1."},
         "iphone_pwa": {"status": "not_instrumented", "reason": "Learner web reporter not built yet; planned in task 2.2."},
         "telegram": {"status": "not_instrumented", "reason": "Mini App adapter not built yet; planned in task 4.1."},
-        "server": {"status": "not_instrumented", "reason": "Backend reporter not built yet; planned in task 1.3."}
+        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Admin consumer pending (task 3.1)."}
       }}
     ],
     "android_packages": {"ad": "course_ads", "assistant": "chat_ai", "auth": "auth_session", "course": "lessons", "dictionary": "lessons", "feedback": "feedback", "foundation": "foundation", "hint": "app_shell", "lesson": "lessons", "limit": "subscription_entries", "offline": "app_shell", "onboarding": "onboarding_activation", "practice": "practice", "profile": "app_shell", "rating": "learning_rewards", "update": "distribution_handoff", "voice": "voice_practice"},
