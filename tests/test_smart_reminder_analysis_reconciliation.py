@@ -3,13 +3,13 @@ import asyncio
 from datetime import timedelta
 from types import SimpleNamespace
 import unittest
-from unittest.mock import AsyncMock, Mock
+from unittest.mock import AsyncMock, Mock, patch
 
 from sqlalchemy import event, insert, select, update
 
 from app.db.models.user import User
 from app.services.smart_reminder_analysis import (
-    AnalysisSourcePage, EVENT, MONTHLY, RAW_RETENTION,
+    AnalysisOwnerBusy, AnalysisSourcePage, EVENT, MONTHLY, RAW_RETENTION,
     SmartReminderAnalysisObserver, SmartReminderAnalysisService,
 )
 from tests import test_smart_reminder_analysis as fixture
@@ -19,13 +19,51 @@ class ReconciliationWorkerTests(unittest.IsolatedAsyncioTestCase):
     def observer(self, **options):
         return SmartReminderAnalysisObserver(SimpleNamespace(SMART_REMINDER_ANALYSIS_ENABLED=True), Mock(), **options)
 
+    async def test_tick_budget_yields_between_healthy_captures_without_cancelling_one(self):
+        # Each capture needs 1.2s, below its 2s operation limit. The old
+        # shrinking timeout gives the second capture only .8s and cancels it.
+        for baseline in (False, True):
+            with self.subTest(baseline=baseline):
+                observer = self.observer(timeout=2)
+                clock = SimpleNamespace(now=0)
+                calls = []
+                async def capture(*args, **kwargs):
+                    calls.append(args)
+                    clock.now += 1.2
+                    return 1
+                async def wait_for(awaitable, *, timeout):
+                    before = clock.now
+                    result = await awaitable
+                    if clock.now - before > timeout:
+                        raise asyncio.TimeoutError
+                    return result
+                if baseline:
+                    observer.baseline.aggregation_page = AsyncMock(return_value=((1, 2, 3), False))
+                    observer.baseline.observe_member = capture
+                    tick = observer.baseline_tick
+                else:
+                    observer.service.reconciliation_page = AsyncMock(return_value=
+                        AnalysisSourcePage(((1, "a"), (2, "b"), (3, "c")), False))
+                    observer.service.capture_job = capture
+                    tick = observer.reconcile_tick
+                proxy = SimpleNamespace(get_running_loop=lambda: SimpleNamespace(time=lambda: clock.now),
+                                        wait_for=wait_for, TimeoutError=asyncio.TimeoutError)
+                with patch("app.services.smart_reminder_analysis.asyncio", proxy), \
+                        self.assertNoLogs("app.services.smart_reminder_analysis", level="WARNING"):
+                    result = await tick()
+                self.assertEqual(len(calls), 2)
+                self.assertEqual(result["examined"], 2)
+                self.assertEqual(result["unavailable"], 0)
+                self.assertFalse(result["pass_finished"])
+                self.assertEqual(result["updated_observations" if baseline else "inserted_facts"], 2)
+
     async def test_failed_owner_advances_cursor_and_retries_on_next_pass(self):
         observer = self.observer(timeout=.01)
         async def page(**kwargs):
             return AnalysisSourcePage(((2, "b"),), False) if kwargs["after_job_id"] == "a" else AnalysisSourcePage(((1, "a"), (2, "b")), False)
         observer.service.reconciliation_page = AsyncMock(side_effect=page)
         cleaned = asyncio.Event()
-        async def capture(uid, job):
+        async def capture(uid, job, **options):
             if job == "a":
                 try:
                     await asyncio.Event().wait()
@@ -35,13 +73,26 @@ class ReconciliationWorkerTests(unittest.IsolatedAsyncioTestCase):
         observer.service.capture_job = AsyncMock(side_effect=capture)
         with self.assertLogs("app.services.smart_reminder_analysis", level="WARNING") as logs:
             first = await observer.reconcile_tick()
-        self.assertEqual(first, dict(examined=1, inserted_facts=0, unavailable=1, pass_finished=False))
+        self.assertEqual(first, dict(examined=1, inserted_facts=0, unavailable=1, deferred=0, pass_finished=False))
         self.assertTrue(cleaned.is_set())
-        self.assertEqual(logs.output, ["WARNING:app.services.smart_reminder_analysis:Smart analysis reconciliation capture unavailable"])
-        self.assertEqual(await observer.reconcile_tick(), dict(examined=1, inserted_facts=1, unavailable=0, pass_finished=True))
+        self.assertEqual(logs.output, ["WARNING:app.services.smart_reminder_analysis:Smart analysis reconciliation capture unavailable; reason=timeout"])
+        self.assertEqual(await observer.reconcile_tick(), dict(examined=1, inserted_facts=1, unavailable=0, deferred=0, pass_finished=True))
         observer.service.capture_job = AsyncMock(return_value=0)
         await observer.reconcile_tick()
         self.assertEqual(observer.service.capture_job.await_args_list[0].args, (1, "a"))
+
+    async def test_busy_deferral_does_not_hide_a_real_capture_error(self):
+        observer = self.observer()
+        observer.service.reconciliation_page = AsyncMock(return_value=
+            AnalysisSourcePage(((1, "a"), (2, "b")), False))
+        observer.service.capture_job = AsyncMock(side_effect=
+            (AnalysisOwnerBusy(), RuntimeError("synthetic-private-proof")))
+        with self.assertLogs("app.services.smart_reminder_analysis", level="WARNING") as logs:
+            result = await observer.reconcile_tick()
+        self.assertEqual(result, dict(examined=2, inserted_facts=0, unavailable=1,
+                                      deferred=1, pass_finished=True))
+        self.assertEqual(logs.output,
+            ["WARNING:app.services.smart_reminder_analysis:Smart analysis reconciliation capture unavailable"])
 
     async def test_worker_query_failure_is_sanitized_and_retention_is_independent(self):
         observer = self.observer(interval=.001)
@@ -132,7 +183,7 @@ class ReconciliationSourceChecks:
         self.assertEqual(await self.case.rows(EVENT), [])
         before = await self.snapshot()
         result = await self.observer.reconcile_tick()
-        self.assertEqual(result, dict(examined=1, inserted_facts=3, unavailable=0, pass_finished=True))
+        self.assertEqual(result, dict(examined=1, inserted_facts=3, unavailable=0, deferred=0, pass_finished=True))
         self.assertEqual(await self.case.stages(), {"reserved", "in_flight", "client_posted_unverified"})
         self.assertEqual((await self.observer.reconcile_tick())["inserted_facts"], 0)
         self.assertEqual(sum(r["fact_count"] for r in await self.case.rows(MONTHLY)), 3)
@@ -154,7 +205,7 @@ class ReconciliationSourceChecks:
         self.assertEqual((first["examined"], first["inserted_facts"], first["pass_finished"]), (1, 1, False))
         grant = await self.native.claim()
         await self.native.receipt(grant)
-        self.assertEqual(await self.observer.reconcile_tick(), dict(examined=1, inserted_facts=1, unavailable=0, pass_finished=True))
+        self.assertEqual(await self.observer.reconcile_tick(), dict(examined=1, inserted_facts=1, unavailable=0, deferred=0, pass_finished=True))
         self.assertEqual((await self.observer.reconcile_tick())["inserted_facts"], 2)
         self.assertEqual((await self.observer.reconcile_tick())["inserted_facts"], 0)
         self.assertEqual({r["job_id"] for r in await self.case.rows(EVENT)}, {self.native.job_id, other})
@@ -206,6 +257,10 @@ class ReconciliationSourceChecks:
         self.assertEqual((await self.observer.reconcile_tick())["inserted_facts"], 0)
         self.assertEqual(await self.case.rows(EVENT), [])
 
+    async def test_missing_owner_is_not_reported_as_busy(self):
+        self.assertEqual(await self.observer.service.capture_job(9999, self.native.job_id, skip_locked=True), 0)
+        self.assertEqual(await self.observer.baseline.observe_member(9999, skip_locked=True), 0)
+
     async def test_expired_replay_after_retention_never_recounts(self):
         await self.observer.reconcile_tick()
         self.case.moment += RAW_RETENTION
@@ -231,18 +286,20 @@ class ReconciliationSourceChecks:
             self.assertEqual(self.case.engine.sync_engine.pool.checkedout(), 0)
         self.assertEqual((await self.observer.reconcile_tick())["inserted_facts"], 1)
 
-    async def test_postgres_locked_owner_does_not_starve_other_owner_or_leak_lock(self):
+    async def test_postgres_busy_owner_is_deferred_without_starving_next_or_leaking_lock(self):
         if not self.postgres:
             self.skipTest("PostgreSQL real User lock and cancellation")
         other = await self.second_job()
-        self.observer.timeout = .15
+        self.observer.timeout = 2
         async with self.sessions.begin() as blocker:
-            await blocker.execute(select(User.id).where(User.id == 1).with_for_update())
-            with self.assertLogs("app.services.smart_reminder_analysis", level="WARNING"):
+            # Actual legacy delivery bookkeeping writes User and flushes without
+            # owning commit; hold that transaction as the known local blocker.
+            from app.services.bot_block_status_service import BotBlockStatusService
+            await BotBlockStatusService(blocker).handle_send_success(await blocker.get(User, 1))
+            with self.assertNoLogs("app.services.smart_reminder_analysis", level="WARNING"):
                 first = await self.observer.reconcile_tick()
-            self.assertEqual((first["examined"], first["unavailable"], first["pass_finished"]), (1, 1, False))
-            self.observer.timeout = 1
-            self.assertEqual((await self.observer.reconcile_tick())["inserted_facts"], 1)
+            self.assertEqual((first["examined"], first["unavailable"], first["deferred"],
+                              first["pass_finished"]), (2, 0, 1, True))
             self.assertEqual({r["job_id"] for r in await self.case.rows(EVENT)}, {other})
         self.assertEqual((await self.observer.reconcile_tick())["inserted_facts"], 1)
         self.assertEqual({r["job_id"] for r in await self.case.rows(EVENT)}, {other, self.native.job_id})

@@ -11,7 +11,7 @@ from app.db.models.smart_reminder import SmartReminderJob
 from app.db.models.smart_reminder_analysis import SmartReminderBaselineMember, SmartReminderBaselineTotal
 from app.db.models.user import User
 from app.services.course_levels import legacy_content_levels, hsk30_content_levels
-from app.services.smart_reminder_analysis import MAX_BATCH, RAW_RETENTION, oldest_month
+from app.services.smart_reminder_analysis import AnalysisOwnerBusy, MAX_BATCH, RAW_RETENTION, oldest_month
 from app.services.smart_reminder_coordination import _owner
 from app.services.motivation_reminder_service import D1_RECOVERY_ASSIGNED_EVENT, D1_RECOVERY_EXPERIMENT, D1_RECOVERY_HOLDOUT
 from app.services.smart_reminder_policy import _aware_utc, day_window
@@ -118,7 +118,7 @@ class SmartReminderBaselineService:
             rows=(await s.scalars(query.order_by(MEMBER.c.user_id).limit(limit+1))).all()
         return tuple(rows[:limit]),len(rows)>limit
 
-    async def observe_member(self,user_id):
+    async def observe_member(self,user_id,*,skip_locked=False):
         if type(user_id) is not int or user_id<=0: raise ValueError("Canonical baseline owner required")
         now=_aware_utc(self.clock())
         async with self.sessions.begin() as s:
@@ -126,7 +126,9 @@ class SmartReminderBaselineService:
                 if s.bind.dialect.name=="postgresql":
                     await s.execute(text("SET LOCAL statement_timeout = '5000'"))
                 owner=(await s.execute(select(User.id,User.status,User.telegram_id).where(
-                    User.id==user_id).with_for_update())).one_or_none()
+                    User.id==user_id).with_for_update(skip_locked=skip_locked))).one_or_none()
+                if owner is None and skip_locked and await s.scalar(select(User.id).where(User.id==user_id)) is not None:
+                    raise AnalysisOwnerBusy
                 pending=await s.scalar(select(AccountDeletionRequest.id).where(
                     AccountDeletionRequest.status=="submitted",or_(AccountDeletionRequest.user_id==user_id,
                         AccountDeletionRequest.active_user_id==user_id)).limit(1))
