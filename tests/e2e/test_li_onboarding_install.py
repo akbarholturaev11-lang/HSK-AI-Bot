@@ -249,6 +249,9 @@ def test_telegram_in_app_browser_shows_safari_link_not_video():
           return HSKAILiInstallGuide.open({userId:53,lang:"ru"},()=>{});
         }""") is True
         assert page.locator(".li-install-panda").is_visible()
+        assert page.locator(".li-install-browser-title").inner_text() == "Откройте HSK AI в Safari"
+        assert page.locator(".li-install-safari-icon svg").is_visible()
+        assert page.locator(".li-install-browser-hint").text_content().startswith("Скопируйте ссылку и откройте её в Safari, чтобы установить приложение.")
         assert page.locator(".li-install-browser-link").get_attribute("href") == "https://hskai.app/iphone-pwa"
         assert page.locator(".li-install-video, .li-install-steps, .li-install-title").count() == 0
         assert page.locator(".li-install-copy").inner_text() == "Скопировать ссылку"
@@ -271,6 +274,7 @@ def test_other_ios_browser_copies_the_safari_link(clipboard_works):
             {userId:61,lang:"tj"},()=>{})""") is True
         copy = page.locator(".li-install-copy")
         assert copy.inner_text() == "Нусхаи пайванд"
+        assert page.locator(".li-install-browser-title").inner_text() == "HSK AI-ро дар Safari кушоед"
         copy.click()
         if clipboard_works:
             page.wait_for_function("window.__copied === 'https://hskai.app/iphone-pwa'")
@@ -299,6 +303,7 @@ def test_chrome_on_ios_is_not_mistaken_for_safari():
         assert page.locator(".li-install-panda").is_visible()
         assert page.locator(".li-install-video").count() == 0
         assert page.locator(".li-install-browser-hint").inner_text().count("Safari") == 1
+        assert page.locator(".li-install-browser-title").inner_text() == "HSK AI’ni Safari’da oching"
         assert not errors
         browser.close()
 
