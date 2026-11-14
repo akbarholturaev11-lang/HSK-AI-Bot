@@ -156,6 +156,11 @@ Receipts SHALL be deleted after a bounded retention period by the existing hourl
 - **WHEN** receipts are older than the retention period
 - **THEN** the housekeeping deletes them in bounded batches, and the incident shows its affected-account count as limited to the retention window
 
+#### Scenario: Expired receipts span multiple batches
+- **WHEN** a scheduled cleanup fills its first batch
+- **THEN** it commits that batch before processing the next, stops at its per-pass limit, and resumes at the next scheduled cleanup
+- **AND** expired receipts never contribute to account counts while awaiting deletion
+
 ### Requirement: Rollout and kill switch
 Monitoring SHALL default off and roll out in stages: off, then owner accounts, then all. One switch SHALL stop all intake writes. Diagnostic push and the Mini App adapter SHALL each have their own switch. Turning any of them off MUST NOT disable payments, lessons, manual bug reports or existing Admin pushes. The `all` stage MUST wait until the privacy policy discloses automatic, content-free error reports and the owner has updated the Play Data safety declaration.
 

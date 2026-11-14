@@ -48,6 +48,14 @@ The two historical diagnostic-only exceptions for AI provider and the signed
 onboarding runtime are pinned to their source contents. Later edits do not
 inherit them.
 
+Retention repair: hourly housekeeping can commit up to eight batches of
+1,000 receipts instead of one, releasing database locks and its diagnostic
+pool slot after each batch. The public notice distinguishes the 30-day
+affected-account window from physical cleanup. The PostgreSQL backlog test
+seeds 8,003 expired receipts, verifies the first pass deletes 8,000, and
+checks that the next pass removes the remainder and preserves a fresh
+receipt and the open incident.
+
 | Finding | Correction and regression evidence |
 | --- | --- |
 | Android could send account A's queue with account B's bearer; a device ID is reusable. Late requests and stale uploader results could also cross sessions. | Fence capture and upload by the server-issued session ID, keep the worker out of auth refresh, and scope queue removal to the originating session. Keep the JVM owner-switch and late-response cases. |

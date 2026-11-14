@@ -278,7 +278,15 @@ Defaults (catalog constants, not owner decisions): cap 60 events per account per
 - **Unchanged:** payment, Android-report, bot and release payloads, and Lava Telegram alerts (D4). The cap protects them from a diagnostic flood.
 
 ### D8. Retention and deletion
-- **Hourly loop.** In `_desktop_auth_retention_scheduler`, next to `purge_expired_native_reports` and in its own `try`, so one failure never skips the other. It deletes receipts older than 30 days and resolved incidents unseen for 180 days, together with their triage rows. Both use bounded batches (≤ 1000). Audit rows stay; they hold no telemetry.
+- **Hourly loop.** In `_desktop_auth_retention_scheduler`, next to
+  `purge_expired_native_reports` and in its own `try`, so one failure never skips
+  the other. It deletes receipts older than 30 days and resolved incidents
+  unseen for 180 days with their triage rows. On a full batch, it catches up
+  with at most seven more batches in that pass. Each batch commits separately
+  and uses the diagnostic pool and statement limits. Audit rows stay; they
+  hold no telemetry. Account counts exclude expired rows immediately; the
+  privacy notice distinguishes expiry from physical removal by housekeeping
+  after an outage or backlog.
 - **Account deletion.** Account deletion cascades the receipts through the FK, in the existing deletion transaction; incidents keep aggregates only.
 - **Blocked or revoked accounts.** The existing transports refuse them. A 401/403 makes the client drop that owner's queue.
 
@@ -389,7 +397,7 @@ In the `app_error` branch of `/api/miniapp/event`:
    2. `MONITORING_MODE=owners` on production, with owner devices;
    3. diagnostic push on;
    4. Mini App adapter on;
-   5. disclosure. `/privacy` (English-only today) states that the apps send automatic, content-free error reports: codes, app version and time, linked to the account, kept 30 days, deleted with the account and not shared. The owner files Play Data safety: App info and performance → Crash logs and Diagnostics, collected and not shared;
+   5. disclosure. `/privacy` (English-only today) states that the apps send automatic, content-free error reports: codes, app version and time, linked to the account, expired after 30 days, removed by scheduled cleanup or when the account is deleted, and not shared for third-party use. The owner files Play Data safety: App info and performance → Crash logs and Diagnostics, collected and not shared;
    6. `all`.
 4. **Rollback.**
    - `MONITORING_MODE=off` stops all writes, and clients pause.

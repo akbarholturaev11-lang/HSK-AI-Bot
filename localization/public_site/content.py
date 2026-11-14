@@ -7,9 +7,10 @@ AUTOMATIC_DIAGNOSTICS_DISCLOSURE = (
     "When enabled, Android and our browser apps automatically send technical error reports "
     "to help us fix failures. These reports contain codes, app version and timing, and "
     "are linked to your signed-in account. They do not include your messages, lesson answers, "
-    "audio, screenshots or payment details. Account-linked reports are retained for up to "
-    "30 days and removed when your account is deleted. We do not share them with advertisers "
-    "or other third parties for their own use; our hosting providers process them to operate HSK AI."
+    "audio, screenshots or payment details. After 30 days, account-linked reports no longer count "
+    "toward affected-account totals. Scheduled cleanup then deletes the reports. Service interruptions "
+    "or a backlog can delay deletion. Deleting your account also removes its reports. We do not share them "
+    "with advertisers or other third parties for their own use; our hosting providers process them to operate HSK AI."
 )
 
 GOOGLE_SIGNIN_PRIVACY_PAGES = {

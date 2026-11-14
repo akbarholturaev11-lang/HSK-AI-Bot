@@ -5,7 +5,7 @@ from types import SimpleNamespace
 import unittest
 from uuid import uuid4
 
-from sqlalchemy import event, func, select
+from sqlalchemy import event, func, insert, select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import StaticPool
 
@@ -18,7 +18,7 @@ from app.services.monitoring import catalog
 from app.services.monitoring.intake import (
     IntakeRejected, current_mode, ingest, ingest_server, is_owner_account, parse_batch,
 )
-from app.services.monitoring.retention import purge_diagnostics
+from app.services.monitoring.retention import MAX_BATCHES_PER_PASS, purge_diagnostics, run_diagnostic_retention
 from tests.monitoring_chain import PG_URL, pg_sessions
 
 NOW = datetime(2026, 11, 13, 12, 0, tzinfo=timezone.utc)
@@ -277,6 +277,27 @@ class PostgresIntakeTests(unittest.IsolatedAsyncioTestCase):
                     self.assertEqual((await worker.scalars(select(DiagnosticReceipt.id))).all(), [locked])
             async with sessions() as worker, worker.begin():
                 self.assertEqual(await purge_diagnostics(worker, now=NOW, limit=2), (1, 0))
+
+    async def test_hourly_retention_catches_up_in_bounded_batches_without_deleting_fresh_rows(self):
+        old = NOW - timedelta(days=31)
+        expired = catalog.PURGE_BATCH * MAX_BATCHES_PER_PASS + 3
+        async with pg_sessions(PG_URL) as sessions:
+            await self.send(sessions, 1, event_body())
+            async with sessions() as db, db.begin():
+                incident_id = await db.scalar(select(DiagnosticIncident.id))
+                await db.execute(insert(DiagnosticReceipt), [
+                    dict(incident_id=incident_id, user_id=1, event_id=str(uuid4()),
+                         received_at=old, outcome="failed")
+                    for _ in range(expired)
+                ])
+            settings = SimpleNamespace(DB_POOL_SIZE=5, DB_MAX_OVERFLOW=3)
+            self.assertEqual(await run_diagnostic_retention(sessions, settings, now=NOW), (expired - 3, 0))
+            async with sessions() as db:
+                self.assertEqual(await db.scalar(select(func.count()).select_from(DiagnosticReceipt)), 4)
+            self.assertEqual(await run_diagnostic_retention(sessions, settings, now=NOW), (3, 0))
+            async with sessions() as db:
+                self.assertEqual((await db.scalars(select(DiagnosticReceipt.received_at))).all(), [NOW])
+                self.assertIsNotNone(await db.get(DiagnosticIncident, incident_id))
 
     async def test_account_deletion_lowers_the_affected_count(self):
         from app.repositories.user_repo import UserRepository

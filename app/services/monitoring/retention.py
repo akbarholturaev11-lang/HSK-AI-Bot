@@ -1,4 +1,5 @@
 """Bounded diagnostic retention for the hourly housekeeping loop (D8)."""
+import asyncio
 from datetime import timedelta
 
 from sqlalchemy import and_, delete, select
@@ -6,6 +7,28 @@ from sqlalchemy import and_, delete, select
 from app.db.models.admin_pwa_inbox_triage import AdminPwaInboxTriage
 from app.db.models.diagnostic import DiagnosticIncident, DiagnosticReceipt
 from app.services.monitoring import catalog
+from app.services.monitoring.intake import IntakeBusy, bound_write, diagnostic_slot
+
+MAX_BATCHES_PER_PASS = 8
+
+
+async def run_diagnostic_retention(session_factory, settings_obj, *, now, limit=catalog.PURGE_BATCH):
+    """Catch up after downtime without holding locks or a pool slot across batches."""
+    receipts = incidents = 0
+    for _ in range(MAX_BATCHES_PER_PASS):
+        try:
+            with diagnostic_slot(settings_obj):
+                async with session_factory() as db, db.begin():
+                    await bound_write(db)
+                    removed_receipts, removed_incidents = await purge_diagnostics(db, now=now, limit=limit)
+        except IntakeBusy:
+            break  # Intake already needs every diagnostic slot; defer to the next pass.
+        receipts += removed_receipts
+        incidents += removed_incidents
+        if max(removed_receipts, removed_incidents) < limit:
+            break  # Only fewer rows or temporarily locked rows remain.
+        await asyncio.sleep(0)
+    return receipts, incidents
 
 
 async def purge_diagnostics(db, *, now, limit=catalog.PURGE_BATCH):

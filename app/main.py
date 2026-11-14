@@ -663,10 +663,9 @@ async def _desktop_auth_retention_scheduler() -> None:
         try:
             # Diagnostic receipts (30 days) and long-resolved incidents; its own
             # try so a failure here never skips the native-report purge above.
-            from app.services.monitoring.retention import purge_diagnostics
-            async with async_session_maker() as session:
-                async with session.begin():
-                    receipts, incidents = await purge_diagnostics(session, now=datetime.now(timezone.utc))
+            from app.services.monitoring.retention import run_diagnostic_retention
+            receipts, incidents = await run_diagnostic_retention(
+                async_session_maker, settings, now=datetime.now(timezone.utc))
             await diagnostic_reporter.flush_self_dropped()
             if receipts or incidents:
                 logger.info("Diagnostic retention removed %d receipts, %d incidents", receipts, incidents)
