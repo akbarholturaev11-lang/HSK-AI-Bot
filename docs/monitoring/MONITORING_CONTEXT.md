@@ -8,10 +8,9 @@ or production acceptance.
 
 ## Current state
 
-- **Branch:** `feat/unified-error-monitoring-20261113`, from `main` `33dca055`.
-  Owner instruction (2026-11-13): push each finished part to this branch; tests
-  and verification run together at the end (task 5.1). Do not merge or push
-  to `main` without the owner’s explicit instruction.
+- **Merged:** feature head `224d9f0b3e8798832210bb27601ae79347be61af` was merged
+  by PR #308. On 2026-11-14, the remote ref was verified at
+  `ba499cd38c1c6105a348ee9a5436cabc3c7880be`.
 - **Done in code:** task 1.1 (catalog, registry block in `declare` mode, checker,
   workflow, `AGENTS.md` rule); task 1.2 (migration `0156_diagnostic_monitoring`,
   models, `ingest`, retention, switches); task 1.3 (intake routes, backend
@@ -23,13 +22,24 @@ or production acceptance.
   audit, resolve/reopen, diagnostic freshness); task 3.2 (bounded Apple Push
   on the existing outbox); task 4.1 (signed Mini App transport and additive
   legacy adapter). The English public privacy copy for 5.2 is prepared.
-- **Integration verification:** the final code passed the full non-browser
-  suite and Analytics integrity CI. Staging and physical-device checks
-  remain separate.
-- **Not on `main`.** No migration, intake, reporter or Admin change is deployed.
-  `MONITORING_MODE=off`, `MONITORING_PUSH_ENABLED=false` and
-  `MONITORING_MINIAPP_ADAPTER_ENABLED=false` by default. Promotion and
-  staged acceptance remain owner gates.
+- **Promotion CI:** PR #308 completed with 29 successful checks. Pinned
+  Chromium and WebKit checks passed. The macOS native-auth check was cancelled
+  because its runner configuration is unsupported; one duplicate
+  progressive-browser check was skipped. Both Analytics runs passed 322 tests,
+  skipped 30, and proved 20 runtime chain pairs: [PR run](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43577080310),
+  [feature branch push run](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43577075893).
+- **Production deployment:** Railway reported deployment
+  `d5a9c7f5-88db-46b5-ab10-2e1f557fc377` for commit `ba499cd3` successful and
+  online (1/1 replicas), created 2026-11-14 09:35 UTC. This was the normal app
+  deployment triggered by the merge, not an isolated migration-only rollout.
+  The production DB revision was not independently read. Railway exposed the
+  names of the monitoring switches but redacted their values, so their
+  effective production state is unknown. Their source defaults are off.
+- **Still open (task 5.2):** no isolated Railway staging environment was
+  available; Android Direct/Play physical acceptance, iPhone Safari and
+  Apple Push display/tap on iPhone and Mac, Mini App staging regression, and
+  Play Data safety filing remain unverified. Production deployment and CI do
+  not substitute for those checks.
 
 ## Independent audit (2026-11-13–14)
 
@@ -67,7 +77,7 @@ receipt cannot cause cascade deletion or hold up the resolved-incident pass.
 | Scope escalation depended on the Push toggle; failed reopen enqueue had no retry; a paused outbox could later deliver stale alerts. | Escalate the Inbox independently using failed distinct owners only, retry an unsent reopen on a new occurrence, and cancel diagnostic outbox rows older than 30 minutes before sending. The payment and legacy priority and transport stay unchanged. |
 | A populated DB with receipts but no triage/outbox could silently lose data on downgrade. | Migration 0156 refuses downgrade while any diagnostic data remains. Operational rollback is flags off with the additive schema retained. |
 | CI missed three mounted Voice WebSockets and flavour-only Android packages, and an unchanged URL could hide a materially changed handler. A green push-only check might have compared only its last push. | Inventory all 261 mounted learner routes, include Direct/Play packages, require coverage or a fresh exact exemption on changed surfaces, and compare feature push checks against the default-branch fork point. Android and learner browser workflows also trigger on this feature branch. |
-| GitHub had no rule requiring CI on `main`. | [Active main ruleset](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/rules/27213316) requires the GitHub Actions `analytics-integrity` check, up to date with main, with no bypass actors. The remote main commit did not change. |
+| GitHub had no rule requiring CI on `main`. | [Active main ruleset](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/rules/27213316) requires the GitHub Actions `analytics-integrity` check, up to date with main, with no bypass actors. At the time of this original audit, the remote main ref had not changed; promotion was later completed through PR #308 as recorded above. |
 
 Independent verification on the implementation commit:
 
@@ -118,17 +128,19 @@ Independent verification on the implementation commit:
   bounded diagnostics); lost/refused reports make impact partial. A hard
   process stop may lose in-memory reports, and an unusually large backlog can
   delay physical receipt cleanup even though projections exclude expired data.
-  Signed-out browser failures are never assigned to the next account.
+  Signed-out browser failures are never assigned to the next account. Main's
+  Railway deployment succeeded, but that does not verify production switch
+  values, physical clients, or push display/tap.
 
 **Analytics Impact:** no KPI writer or entitlement authority changes.
 Diagnostic freshness remains an additive source and the V10, checkout,
 learning and Telegram separation tests verify the existing projections.
 
 **Monitoring Impact:** account binding, admission, triage, alert delivery and
-coverage proof are hardened in the existing chain. The branch remains out of
-production. A Chromium virtual passkey and a locally decrypted VAPID Web Push
-request are not physical Apple Push acceptance. Device/browser/provider and
-rollout gates below are still required.
+coverage proof are hardened in the existing chain. The merged code has a
+successful Railway production app deployment. A Chromium virtual passkey and
+a locally decrypted VAPID Web Push request are not physical Apple Push
+acceptance. Device/browser/provider and rollout gates below are still required.
 
 ## Task 5.1 evidence (local unless specified)
 
@@ -197,7 +209,7 @@ rollout gates below are still required.
 
 ## Staging readiness (5.2)
 
-- **Local rehearsal, not Railway:** from the reviewed empty ORM baseline,
+- **Local rehearsal, not staging:** from the reviewed empty ORM baseline,
   applied the real Alembic chain to `0155_subscription_entry_client` in a
   disposable loopback PostgreSQL database. Ran
   `python -m alembic upgrade 0156_diagnostic_monitoring` by itself. The stamp
@@ -209,10 +221,13 @@ rollout gates below are still required.
 - **Remote target:** Railway lists no `staging` environment for the HSK AI
   app project. The existing separate Smart Reminder QA service is scoped to
   its own synthetic application. Its bootstrap is not an upgrade mechanism
-  for an existing database. No Railway deployment, DB mutation or flag
-  change was made. Identify an approved isolated target before any staging
-  write; leave the production environment and QA service alone.
-- **When a target is available:** record its project, environment, app and
+  for an existing database. PR #308 triggered the successful production app
+  deployment recorded above; it was not staging or a migration-only deploy.
+  The production DB revision was not independently read. Monitoring variable
+  values were redacted, so do not infer the effective production switches.
+  Identify an approved isolated target before any staging write; the separate
+  QA service remains out of scope.
+- **If a target becomes available:** record its project, environment, app and
   DB pairing; verify isolated synthetic credentials, no live integrations,
   no production routes and exactly one database revision. From a verified
   0155 database, run the pinned 0156 migration separately with all monitoring
@@ -232,10 +247,11 @@ rollout gates below are still required.
 - **Before public enablement:** verify the deployed `/privacy` wording and
   the owner’s Play Console Data Safety filing. The monitoring delta is
   Crash logs and Diagnostics; reconcile it with the existing declaration.
-  Do not publish an APK, change live flags or promote this branch based on
-  the local rehearsal.
+  The local rehearsal and successful app deployment do not establish public
+  rollout readiness. Do not change live flags or publish an APK until the
+  remaining staged and owner-approval checks are recorded.
 
-## Joint Analytics and Monitoring audit (5.3, feature branch)
+## Joint Analytics and Monitoring audit (5.3, merged to main)
 
 - **Analytics Impact:** no new KPI events or writer changes. Diagnostic
   freshness adds only the three client-source rows. The V10 golden test and
@@ -247,17 +263,21 @@ rollout gates below are still required.
   row; the legacy Message, technical push and AI context remain intact.
   Android, PWA and Telegram diagnostic intake failures do not report
   themselves. Shared CI enforces both registries and the writer boundary.
-- This audit covers the feature branch. Approval, rollout, physical Apple
-  Push/Safari/Android checks, the Play Data safety filing and the verified
-  `main` ref are still separate gates.
+- This audit covered the feature branch and was completed before PR #308
+  promotion. The remote `main` ref and successful production deployment are
+  verified above. Staging, physical Apple Push/Safari/Android checks and the
+  Play Data safety filing remain separate and open under task 5.2.
 
 ## Drift check (task 1.1)
 
-- `main` `33dca055` differs from the audited `5ea7c22f` only by the plan
-  documents; no `app/`, `android/`, `.github/` or `scripts/` change.
+- **Historical preimplementation check:** `main` `33dca055` differed from the
+  audited `5ea7c22f` only by plan documents; no `app/`, `android/`, `.github/`
+  or `scripts/` change was found at that point. The later feature implementation
+  was promoted through PR #308.
 - Voice V8 (`origin/feat/ai-voice-v8-pwa-android-20261111`) is still at
   `680761f1` and not on `main`, so the `live_*` codes in the catalog follow the
-  current `main` sources. Recheck the mappings if V8 lands before promotion.
+  current merged `main` sources. Recheck the mappings if Voice V8 is later
+  promoted.
 
 ## Implementation decisions (within the design)
 
@@ -384,3 +404,9 @@ rollout gates below are still required.
   verification; diagnostic visibility and full coverage proof wait for 3.1.
 - 2026-11-13: completed tasks 3.1–4.1 and began 5.1; the monitoring
   surface is ready for staged acceptance after the remaining gates.
+- 2026-11-14: PR #308 merged feature head `224d9f0b` into `main` at
+  `ba499cd3`; required Analytics CI passed (322 passed, 30 skipped, 20 runtime
+  chain pairs). Railway production app deployment for `ba499cd3` succeeded
+  and came online. Task 5.3 is complete; isolated staging, production DB
+  revision/switch verification, physical device and Apple Push acceptance,
+  and Play Data safety filing remain open in 5.2.

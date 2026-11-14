@@ -167,7 +167,8 @@ This is the only checklist for this work. Task 1.1 creates the single shared con
 
   Verify by recording the commands and results in the context file.
 - [ ] 5.2 Staged rollout and real-device acceptance, recorded separately from CI:
-  1. The migration deploys alone.
+  - Open: PR #308 triggered a normal Railway production app deployment; there was no isolated staging or migration-only deployment. The production database revision was not independently read, and the effective monitoring switch values are redacted. This deployment does not satisfy the checks below.
+  1. In isolated staging, deploy the migration alone and verify its revision and preserved legacy rows.
   2. Staging, then `owners` on production.
   3. Android Direct and Play: a crash, an ANR if it can be reproduced, an API 5xx, offline → retry, an account switch.
   4. iPhone Safari home-screen PWA: a JS error, a rejection, offline → retry, an owner switch.
@@ -178,13 +179,13 @@ This is the only checklist for this work. Task 1.1 creates the single shared con
   9. Before `all`: the `/privacy` sentence and the owner's Play Data safety filing, as worded in the design Migration Plan. Then `all`, with owner approval.
 
   Verify by recording the evidence. A push accepted by the provider is not proof that it was displayed.
-- [ ] 5.3 Joint Analytics/Monitoring integration audit (REQUIREMENTS §11), then promotion. Audit:
-  - both Impact rules and the one workflow;
-  - KPI event → Analytics versus incident → Inbox, with no double counting;
-  - privacy, dedup and non-blocking behavior;
-  - regressions.
-
-  Set the `AGENTS.md` enforcement status only for mechanisms on `main`. Promote with owner approval. Verify the `main` commit through the remote ref.
+- [x] 5.3 Joint Analytics/Monitoring integration audit (REQUIREMENTS §11), then promotion. Completed 2026-11-14.
+  - PR #308 merged feature head `224d9f0b3e8798832210bb27601ae79347be61af` into `main` at `ba499cd38c1c6105a348ee9a5436cabc3c7880be`; the remote `main` ref was verified.
+  - CI: 29 successful checks; pinned Chromium and WebKit passed. One macOS native-auth check was cancelled because its runner configuration is unsupported; one duplicate progressive-browser check was skipped.
+  - Both Analytics runs passed (322 passed, 30 skipped, 20 runtime-proof pairs): [PR](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43577080310), [feature branch push](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43577075893).
+  - Railway reported the `ba499cd3` production app deployment successful and online; deployment details and unresolved staging/device acceptance are in `MONITORING_CONTEXT.md`.
+  - Audit covered both Impact rules and the shared workflow, Analytics event versus incident/Inbox separation, privacy, deduplication, non-blocking behavior and regressions. The merged `main` rule records registry/checker/workflow enforcement.
+  - This completes source integration and promotion only. Real staging, physical device, Apple Push display/tap and Play Data safety acceptance remain open in 5.2.
 
 ## 6. Follow-up — Diagnostic Precision: actionable Admin debugging
 
