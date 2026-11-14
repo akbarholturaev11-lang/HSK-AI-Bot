@@ -109,7 +109,7 @@ class DiagnosticQueue(
         if (kept.size != all.size) save(kept)
     }
 
-    fun size(): Int = synchronized(lock) { load().size }
+    internal fun queuedCount(): Int = synchronized(lock) { load().size }
 
     private fun QueuedDiagnostic.isLive(now: Long) = queuedAt <= now && now - queuedAt < ttlMillis
 

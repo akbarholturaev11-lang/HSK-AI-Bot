@@ -56,7 +56,7 @@ class CrashAndExitDiagnosticsTest {
         recorder.record(NullPointerException())
         kit.state.owner = "device-b"
         recorder.collect(kit.reporter)
-        assertEquals(0, kit.queue.size())
+        assertEquals(0, kit.queue.queuedCount())
         assertNull(crashStore.bytes)
     }
 
@@ -101,7 +101,7 @@ class CrashAndExitDiagnosticsTest {
     fun `the first run only sets the mark`() {
         val kit = DiagnosticsKit()
         ExitReasons.report(listOf(ExitRecord(ExitReasons.REASON_ANR, START - 1)), kit.state, kit.reporter, START)
-        assertEquals(0, kit.queue.size())
+        assertEquals(0, kit.queue.queuedCount())
         assertEquals(START - 1, kit.state.lastExitSeen)
     }
 }

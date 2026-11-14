@@ -45,10 +45,10 @@ class DiagnosticQueueTest {
         kit.reporter.bindOwner(OWNER)
         assertEquals(1, kit.codes(OWNER).size)
         kit.reporter.bindOwner("device-b")
-        assertEquals(0, kit.queue.size())
+        assertEquals(0, kit.queue.queuedCount())
         kit.lessonFailure()
         kit.reporter.clearOwner()
-        assertEquals(0, kit.queue.size())
+        assertEquals(0, kit.queue.queuedCount())
     }
 
     @Test
@@ -56,17 +56,17 @@ class DiagnosticQueueTest {
         val kit = DiagnosticsKit()
         kit.state.pausedUntil = kit.clock.now + 1_000
         kit.lessonFailure()
-        assertEquals(0, kit.queue.size())
+        assertEquals(0, kit.queue.queuedCount())
         kit.clock.now += 1_000
         kit.lessonFailure()
-        assertEquals(1, kit.queue.size())
+        assertEquals(1, kit.queue.queuedCount())
     }
 
     @Test
     fun `a corrupt queue starts over and the atomic file round-trips`() {
         val kit = DiagnosticsKit()
         kit.store.bytes = "not json".encodeToByteArray()
-        assertEquals(0, kit.queue.size())
+        assertEquals(0, kit.queue.queuedCount())
         val dir = Files.createTempDirectory("diag").toFile()
         val file = AtomicDiagnosticFile(File(dir, "queue.json"))
         file.write("one".encodeToByteArray())
@@ -97,11 +97,11 @@ class DiagnosticQueueTest {
         assertEquals(FlushOutcome.DONE, uploader(kit, { response(200) }, sent).flush())
         assertEquals(DIAG_SCHEMA, sent.single().schema)
         assertEquals(3, sent.single().events.size)
-        assertEquals(0, kit.queue.size())
+        assertEquals(0, kit.queue.queuedCount())
         for (code in listOf(401, 403)) {
             kit.lessonFailure()
             assertEquals(FlushOutcome.DROPPED, uploader(kit, { response(code) }, mutableListOf()).flush())
-            assertEquals(0, kit.queue.size())
+            assertEquals(0, kit.queue.queuedCount())
         }
     }
 
@@ -111,9 +111,9 @@ class DiagnosticQueueTest {
         kit.lessonFailure()
         assertEquals(FlushOutcome.RETRY, uploader(kit, { response(503) }, mutableListOf()).flush())
         assertEquals(FlushOutcome.RETRY, uploader(kit, { throw java.io.IOException("offline") }, mutableListOf()).flush())
-        assertEquals(1, kit.queue.size())
+        assertEquals(1, kit.queue.queuedCount())
         assertEquals(FlushOutcome.DONE, uploader(kit, { response(422) }, mutableListOf()).flush())
-        assertEquals(0, kit.queue.size())
+        assertEquals(0, kit.queue.queuedCount())
     }
 
     @Test
@@ -123,7 +123,7 @@ class DiagnosticQueueTest {
         uploader(kit, { response(200, paused = true) }, mutableListOf()).flush()
         assertEquals(kit.clock.now + DiagnosticUploader.PAUSE_MILLIS, kit.state.pausedUntil)
         kit.lessonFailure()
-        assertEquals(0, kit.queue.size())
+        assertEquals(0, kit.queue.queuedCount())
     }
 
     @Test
@@ -144,7 +144,7 @@ class DiagnosticQueueTest {
             diagnosticToken(SESSION_B)
         }, send = { _, _ -> error("a mismatched bearer must never be sent") })
         assertEquals(FlushOutcome.DONE, uploader.flush())
-        assertEquals(0, kit.queue.size())
+        assertEquals(0, kit.queue.queuedCount())
     }
 
     @Test
@@ -173,7 +173,7 @@ class DiagnosticQueueTest {
         assertEquals(1, kit.events(SESSION_A).size)
         kit.reporter.clearOwner(keepPreSignIn = true)
         kit.reporter.bindOwner(SESSION_B)
-        assertEquals(0, kit.queue.size())
+        assertEquals(0, kit.queue.queuedCount())
     }
 
     @Test

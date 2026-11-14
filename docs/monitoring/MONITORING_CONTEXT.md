@@ -51,6 +51,41 @@ inferred matching names are not runtime evidence.
 | CI missed three mounted Voice WebSockets and flavour-only Android packages, and an unchanged URL could hide a materially changed handler. A green push-only check might have compared only its last push. | Inventory all 261 mounted learner routes, include Direct/Play packages, require coverage or a fresh exact exemption on changed surfaces, and compare feature push checks against the default-branch fork point. Android and learner browser workflows also trigger on this feature branch. |
 | GitHub had no rule requiring CI on `main`. | [Active main ruleset](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/rules/27213316) requires the GitHub Actions `analytics-integrity` check, up to date with main, with no bypass actors. The remote main commit did not change. |
 
+Independent verification on the implementation commit:
+
+- Local CI suite: 273 passed, 470 subtests and 20 runtime-proven pairs.
+  Separate focused login, checkout/Pro, analytics and shell run: 184 passed;
+  Lava, block, Voice and migration regression run: 74 passed. These suites overlap.
+- PostgreSQL 0156: clean upgrade/downgrade/upgrade, populated downgrade refusal,
+  and real app `off → owners → off` with one authorized receipt and no push.
+  The synthetic 1M-receipt plans used the owner and incident indexes (about
+  0.36 ms admission, 21.72 ms five-incident aggregate, 57.45 ms retention
+  candidate lock locally; these are not production latency).
+- Android API 36: both debug QA flavours ran Keystore refresh → actual HTTPS
+  bearer bootstrap → controlled Course 502 → WorkManager → PostgreSQL →
+  authenticated Inbox. Direct 725 and Play 667 JVM tests passed; the first
+  Play attempt hit a transient pre-existing Voice coroutine teardown error.
+  Local lint and both R8 release bundles passed.
+- Admin Chromium: bearer intake, real PostgreSQL, virtual WebAuthn and
+  UZ/RU/TJ Fixed → reopen passed. The real Web Push encoder produced an
+  encrypted, VAPID-signed request; decryption yielded only `kind` and
+  `source`. The test intercepts HTTP before it leaves the machine.
+- The GitHub [Analytics run](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43461334435)
+  and [Backend/PWA run](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43461333953)
+  passed for `c0468aaf`. The [Android run](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43461334201)
+  caught a short-name collision in the static checker: the new queue's
+  test-only `size()` was mistaken for Compose `Modifier.size(width, height)`.
+  Renamed the queue helper to `queuedCount()` so the guard stays intact.
+- Unrelated, reproducible on both `33dca055` and the branch: the local
+  Playwright 1.63 Practice layout shifts about 38–44 px at 320 px in normal
+  and reduced motion. Neither engine showed it on pinned GitHub CI. This
+  audit did not change Practice layout.
+- Residuals: no client attestation (authenticated clients can still fabricate
+  bounded diagnostics); lost/refused reports make impact partial. A hard
+  process stop may lose in-memory reports, and an unusually large backlog can
+  delay physical receipt cleanup even though projections exclude expired data.
+  Signed-out browser failures are never assigned to the next account.
+
 **Analytics Impact:** no KPI writer or entitlement authority changes.
 Diagnostic freshness remains an additive source and the V10, checkout,
 learning and Telegram separation tests verify the existing projections.
@@ -228,9 +263,9 @@ rollout gates below are still required.
   (the repository does not rely on FK cascades), besides the FK `ON DELETE CASCADE`.
 - **Retention** runs in `_desktop_auth_retention_scheduler` in its own `try`.
 - **503 is not captured** by the middleware: the codebase answers 503 for a
-  switched-off feature (for example `pwa_auth_unavailable`). Captured: 500, 502,
-  504 and unhandled exceptions. Integration failures behind a 503 and unexpected
-  Live Voice relay failures report through `report_server_failure`.
+  switched-off feature (for example `pwa_auth_unavailable`). Other 5xx and
+  unhandled exceptions are captured. Integration failures behind a 503 and
+  unexpected Live Voice relay failures report through `report_server_failure`.
 - **Lava sites.** Only processing-failure alert codes become incidents
   (`LAVA_FAILURE_SITES` in `lava/notify.py`: exhausted webhook retries →
   `lava_webhook`; activation, amount, unmatched, review, renewal, promo →
