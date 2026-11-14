@@ -21,13 +21,15 @@ from app.admin_api.pwa_push_outbox import enqueue_important_triage
 from app.services.admin_feedback_resolution import enqueue_android_fix_notice, published_version_is_newer
 from app.services.android_release_service import AndroidReleaseService
 from app.db.models.bot_feedback import BotFeedback
+from app.db.models.diagnostic import DiagnosticIncident
 from app.db.models.payment import Payment
 from app.db.models.message import Message
 from app.db.models.release_feedback import ReleaseFeedbackResponse
 
 logger = logging.getLogger(__name__)
 _OPERATIONS = ("mark_read", "assign_self", "resolve", "resolve_fixed", "reopen", "mark_important", "clear_important")
-_SOURCES = {"bot": BotFeedback, "release": ReleaseFeedbackResponse, "android": AdminPwaNativeReport, "payment": Payment, "technical": Message}
+_SOURCES = {"bot": BotFeedback, "release": ReleaseFeedbackResponse, "android": AdminPwaNativeReport,
+            "payment": Payment, "technical": Message, "diagnostic": DiagnosticIncident}
 
 
 class TriageRequest(BaseModel):
@@ -45,6 +47,8 @@ class TriageRequest(BaseModel):
                 raise ValueError("fix notice requires an Android report and fix kind")
         elif self.fix_kind is not None:
             raise ValueError("fix kind must only accompany resolve_fixed")
+        if self.source == "diagnostic" and self.operation in ("mark_important", "clear_important"):
+            raise ValueError("diagnostic priority is server-owned")
         return self
 
 
@@ -80,7 +84,9 @@ async def mark_unread_batch(db, *, session_cookie, settings_obj, command, now=No
     batch_limit = 200
     modified = 0
     async with db.begin():
-        pair = await _locked_session(db, session_cookie, settings_obj, stamp)
+        # FOR NO KEY UPDATE still fences changes to the admin but does not
+        # block a diagnostic receipt's owner FK while we wait on its incident.
+        pair = await _locked_session(db, session_cookie, settings_obj, stamp, allow_owner_fk=True)
         if pair is None:
             return None
         _, actor = pair
@@ -97,7 +103,7 @@ async def mark_unread_batch(db, *, session_cookie, settings_obj, command, now=No
                     source_timestamp(source) <= cutoff,
                     or_(AdminPwaInboxTriage.status.is_(None),
                         AdminPwaInboxTriage.status == "new"),
-                ).order_by(model.id.desc()).limit(batch_limit - modified)
+                ).order_by(model.fingerprint if source == "diagnostic" else model.id.desc()).limit(batch_limit - modified)
                 .with_for_update(of=model)
             )).scalars().all()
             for source_id in row_ids:
@@ -161,11 +167,17 @@ async def mutate_triage(db, *, session_cookie, command, settings_obj, now=None):
         return None
     stamp = _utc(now or datetime.now(timezone.utc))
     async with db.begin():
-        pair = await _locked_session(db, session_cookie, settings_obj, stamp)
+        pair = await _locked_session(db, session_cookie, settings_obj, stamp,
+                                     allow_owner_fk=command.source == "diagnostic")
         if pair is None:
             return None
         _, actor = pair
-        if command.source == "technical":
+        if command.source == "diagnostic":
+            # Same lock order as intake: incident first, then its triage row.
+            source_row = await db.get(DiagnosticIncident, command.source_id, with_for_update=True)
+            if source_row is None or not source_row.occurrence_count:
+                return None
+        elif command.source == "technical":
             # Message.content holds raw stack, URL and user input. Restrict
             # the locked projection to the ID of an eligible recent marker.
             # Never hydrate the raw Message ORM row during Inbox triage.
@@ -254,6 +266,11 @@ async def mutate_triage(db, *, session_cookie, command, settings_obj, now=None):
             raise TriageConflict()
         current = (row.status, row.priority, row.assigned_to_user_id, row.read_at, row.resolved_at)
         if previous != current:
+            if command.source == "diagnostic" and command.operation == "resolve":
+                source_row.resolved_build = source_row.last_build
+                source_row.resolved_version = source_row.last_version
+                source_row.reopened_at = None
+                source_row.reopened_version = None
             row.updated_at = stamp
             row.updated_by_user_id = int(actor.id)
             row.revision = revision + 1
@@ -280,7 +297,9 @@ async def mutate_triage(db, *, session_cookie, command, settings_obj, now=None):
                 db.expunge(row)
         return {
             "source": command.source, "source_id": command.source_id, "status": row.status,
-            "priority": row.priority, "assigned_to_user_id": row.assigned_to_user_id,
+            "priority": ("important" if source_row.severity in ("critical", "high") else "normal")
+                        if command.source == "diagnostic" else row.priority,
+            **({} if command.source == "diagnostic" else {"assigned_to_user_id": row.assigned_to_user_id}),
             "read_at": _utc(row.read_at).isoformat() if row.read_at else None,
             "resolved_at": _utc(row.resolved_at).isoformat() if row.resolved_at else None,
             "revision": row.revision,

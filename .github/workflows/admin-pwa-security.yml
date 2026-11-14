@@ -288,7 +288,12 @@ jobs:
                   names = await conn.run_sync(lambda c: set(inspect(c).get_table_names()))
                   for model in (AdminPwaPaymentReview, AdminPwaPaymentOutbox, AdminPwaNativeReport, AdminPwaInboxTriage, AdminPwaInboxTriageAudit, AdminPwaPushSubscription, AdminPwaPushOutbox, AdminPwaCommandAudit, AdminPwaOutboundJob, AdminPwaOutboundRecipient, AdminPwaOutboundEvent, AdminPwaPayoutProof, AdminPwaCampaignAsset):
                       columns = await conn.run_sync(lambda c: {v["name"] for v in inspect(c).get_columns(model.__tablename__)})
-                      assert columns == set(model.__table__.columns.keys())
+                      expected = set(model.__table__.columns.keys())
+                      if model is AdminPwaPushOutbox:
+                          # This smoke intentionally ends at 0132; Analytics
+                          # integrity tests the actual 0156 upgrade separately.
+                          expected.remove("diagnostic_kind")
+                      assert columns == expected, (model.__tablename__, columns ^ expected)
               await engine.dispose()
               for name in (
                   "admin_pwa_sessions", "admin_pwa_approvals",

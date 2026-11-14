@@ -100,7 +100,7 @@ class AdminPwaAnalyticsReader:
         projections=projections if projections is not None else {section:partial(section_projection,section=section) for section in ('home','overview','course','platform','funnel','money','sources','report','experiments')}
         self._mutex=refresh_mutex if refresh_mutex is not None else asyncio.Lock()
         self._readers={section:AdminPwaStatisticsReader(settings_obj=settings_obj,session_factory=session_factory,
-            loader=projection,cache_scope=f"analytics_{section}_v{1 if section == 'experiments' else 2}",refresh_mutex=self._mutex,
+            loader=projection,cache_scope=f"analytics_{section}_v{3 if section == 'report' else 1 if section == 'experiments' else 2}",refresh_mutex=self._mutex,
             **(reader_options or {})) for section,projection in projections.items()}
 
     async def __call__(self,query):

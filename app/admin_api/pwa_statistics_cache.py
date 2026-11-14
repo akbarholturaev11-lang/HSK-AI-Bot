@@ -33,7 +33,7 @@ _MANUAL_SECTIONS = frozenset(("course", "funnel", "money", "sources", "report"))
 # acceptance check never waits for a 24-hour platform snapshot (audit #44).
 _REFRESH_PLATFORMS = frozenset(("overall", "android", "telegram", "iphone_pwa"))
 _V10_STATE_SCOPES = frozenset(f"analytics_{section}_v2" for section in
-                             ("home", "overview", "platform", "report", *_MANUAL_SECTIONS))
+                             ("home", "overview", "platform", *_MANUAL_SECTIONS)) | {"analytics_report_v3"}
 _PUBLISH = """
 if redis.call('GET', KEYS[1]) == ARGV[1] then
     redis.call('SET', KEYS[2], ARGV[2], 'EX', ARGV[3])
@@ -304,7 +304,8 @@ class AdminPwaStatisticsReader:
         """
         query = StatisticsRequest.model_validate(query.model_dump())
         if (section not in _MANUAL_SECTIONS
-                or self._cache_scope not in (f"analytics_{section}_v1", f"analytics_{section}_v2")
+                or (self._cache_scope not in (f"analytics_{section}_v1", f"analytics_{section}_v2")
+                    and not (section == "report" and self._cache_scope == "analytics_report_v3"))
                 or query.platform not in _REFRESH_PLATFORMS
                 or query.period not in ("weekly", "monthly", "all_time")
                 or not getattr(self.settings, "ADMIN_PWA_ENABLED", False)

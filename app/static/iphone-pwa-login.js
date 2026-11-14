@@ -47,7 +47,19 @@
     const response = await fetch(path, Object.assign({
       credentials: "same-origin", cache: "no-store",
     }, options));
-    const payload = await response.json();
+    // Do not report an expected signed-out or provider refusal response.
+    const session = path === "/api/v3/pwa-auth/session";
+    const diagnose = (cause) => {
+      if (!window.HskDiag) return;
+      if (session) HskDiag.report("auth_session", "restore_failed", "session_restore", cause);
+      else if (path === "/api/v3/pwa-auth/start" || path === "/api/v3/pwa-auth/telegram/start")
+        HskDiag.report("auth_session", "load_failed", "login", cause);
+    };
+    if (!response.ok) diagnose(response.status);
+    const payload = await response.json().catch((error) => {
+      if (response.ok) diagnose(error);
+      throw error;
+    });
     if (!response.ok || !payload.ok) throw new Error(typeof payload.error === "string" ? payload.error : "request_failed");
     return payload;
   }
@@ -129,6 +141,7 @@
     }
     try {
       const actor = await json("/api/v3/pwa-auth/session");
+      if (window.HskDiag) HskDiag.owner(actor.user_id);
       if (["uz", "ru", "tj"].includes(actor.language)) {
         locale = actor.language;
         language.value = locale;

@@ -170,6 +170,11 @@ class Settings(BaseSettings):
     # Sender starts automatically when the VAPID pair/subject and storage key validate.
     # ADMIN_PWA_PUSH_SEND_ENABLED=false remains an emergency kill switch.
     ADMIN_PWA_PUSH_SEND_ENABLED: bool = True
+    # Unified error monitoring (openspec unified-error-monitoring D3/D7/D9).
+    # off | owners | all; an unknown value means off. Each change redeploys.
+    MONITORING_MODE: str = "off"
+    MONITORING_PUSH_ENABLED: bool = False
+    MONITORING_MINIAPP_ADAPTER_ENABLED: bool = False
     # URL-safe base64 raw 32-byte private EC scalar, matching the public VAPID key.
     ADMIN_PWA_PUSH_VAPID_PRIVATE_KEY: str = ""
     ADMIN_PWA_PUSH_VAPID_SUBJECT: str = ""

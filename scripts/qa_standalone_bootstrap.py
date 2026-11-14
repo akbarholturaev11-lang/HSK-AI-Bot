@@ -24,7 +24,7 @@ QA_ENVIRONMENT = "qa"
 QA_HOST = "postgres.railway.internal"
 QA_DATABASE = "railway"
 EXPECTED_BASELINE = "0102_payment_review_preview"
-EXPECTED_HEAD = "0155_subscription_entry_client"
+EXPECTED_HEAD = "0156_diagnostic_monitoring"
 # These reviewed migrations create tables unconditionally. Defer their DDL
 # until after the empty ORM baseline is stamped; never precreate and then skip
 # their migrations. This list is reviewed alongside EXPECTED_HEAD.
@@ -52,6 +52,7 @@ MIGRATION_CREATED_TABLES = frozenset({
     "admin_pwa_push_subscriptions", "admin_pwa_push_outbox", "admin_pwa_command_audit",
     "learner_pwa_push_subscriptions", "learner_pwa_push_outbox",
     "admin_pwa_mcp_audit", "admin_pwa_mcp_quotas",
+    "diagnostic_incidents", "diagnostic_receipts",
 })
 
 

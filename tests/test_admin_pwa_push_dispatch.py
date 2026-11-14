@@ -82,18 +82,21 @@ class AdminPwaAppleDeliveryTests(AdminPwaPushOutboxTests):
         def provider(**kwargs):
             sent.append(json.loads(kwargs["data"]))
             return SimpleNamespace(status_code=201)
-        sources = ("payment", "android", "technical", "bot", "release")
+        sources = ("payment", "android", "technical", "bot", "release", "diagnostic")
         with patch("pywebpush.webpush", side_effect=provider):
             for source in sources:
                 self.assertEqual(await _webpush(
                     {}, self.settings.ADMIN_PWA_PUSH_VAPID_PRIVATE_KEY,
                     self.settings.ADMIN_PWA_PUSH_VAPID_SUBJECT, source=source), 201)
+            for source in ("diagnostic", "payment"):
+                self.assertEqual(await _webpush({}, self.settings.ADMIN_PWA_PUSH_VAPID_PRIVATE_KEY,
+                    self.settings.ADMIN_PWA_PUSH_VAPID_SUBJECT, source=source, kind="reopened"), 201)
             with self.assertRaises(ValueError):
                 await _webpush({}, self.settings.ADMIN_PWA_PUSH_VAPID_PRIVATE_KEY,
                                self.settings.ADMIN_PWA_PUSH_VAPID_SUBJECT, source="secret")
         self.assertEqual(sent, [
             {"kind": "important", "source": source} for source in sources
-        ])
+        ] + [{"kind": "reopened", "source": "diagnostic"}, {"kind": "important", "source": "payment"}])
 
     async def test_payment_push_takes_priority_over_earlier_feedback(self):
         from app.admin_api.pwa_push_outbox import enqueue_automatic_alert

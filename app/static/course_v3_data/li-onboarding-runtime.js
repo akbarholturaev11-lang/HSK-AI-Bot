@@ -135,7 +135,7 @@ function safeMessage(){return ERR[global.LANG]||ERR.ru}
 function retryMessage(){return TRY[global.LANG]||TRY.ru}
 function pageCourse(){return hostPwa?"/iphone-pwa/course":"/course-v3.html"}
 function actorHeaders(){return hostPwa?{}:{"X-Telegram-Init-Data":initData}}
-function errorFromResponse(response){return new Error("server_status_"+response.status)}
+function errorFromResponse(response){var error=new Error("server_status_"+response.status);error.status=response.status;return error}
 function api(path,options){
   options=Object.assign({},options||{});
   options.credentials=hostPwa?"same-origin":"omit";
@@ -185,10 +185,15 @@ function session(){
       throw new Error("pwa_actor_unverified");
     }
     if(actor&&Number(actor.user_id)!==Number(data.user_id)){
+      if(global.HskDiag)global.HskDiag.logout(actor.user_id);
       location.replace("/iphone-pwa");
       throw new Error("pwa_actor_changed");
     }
+    global.HskDiagVerifiedOwner=data.user_id;if(global.HskDiag)global.HskDiag.owner(data.user_id);
     actor=data;return actor;
+  }).catch(function(error){
+    if(global.HskDiag)global.HskDiag.report("auth_session","restore_failed","session_restore",error&&(error.status||error)||0);
+    throw error;
   });
 }
 function userKey(){
@@ -518,6 +523,7 @@ function saveProfile(){
     justResumedGuestRegistration=false;
     offerIfEligible();
   }).catch(function(error){
+    if(global.HskDiag)global.HskDiag.report("onboarding_activation","save_unconfirmed","li_onboarding",error&&(error.status||error)||0);
     console.warn("[li-onboarding] save not confirmed",String(error&&error.message||"save_failed").slice(0,100));
     renderError(saveProfile);
   });

@@ -22,6 +22,7 @@ from app.db.models.admin_pwa_inbox_triage import AdminPwaInboxTriage
 from app.db.models.admin_pwa_native_report import AdminPwaNativeReport
 from app.db.models.admin_pwa_push import AdminPwaPushSubscription
 from app.db.models.admin_pwa_push_outbox import AdminPwaPushOutbox
+from app.db.models.diagnostic import DiagnosticIncident
 from app.db.models.payment import Payment
 from app.db.models.message import Message
 from app.db.models.user import User
@@ -30,7 +31,8 @@ logger = logging.getLogger(__name__)
 _LEASE_SECONDS = 45
 _DEVICE_COOLDOWN_SECONDS = 30
 _MAX_ATTEMPTS = 4
-_PUSH_SOURCES = frozenset({'payment', 'android', 'technical', 'bot', 'release'})
+_DIAGNOSTIC_MAX_AGE = timedelta(minutes=30)
+_PUSH_SOURCES = frozenset({'payment', 'android', 'technical', 'bot', 'release', 'diagnostic'})
 
 
 def _utc(value):
@@ -72,11 +74,12 @@ def sender_config(settings_obj):
         return None
 
 
-async def _webpush(subscription, encoded_key, subject, *, source):
+async def _webpush(subscription, encoded_key, subject, *, source, kind="important"):
     """Send only a trusted event category, never report text or payment details."""
     if source not in _PUSH_SOURCES:
         raise ValueError('invalid_push_source')
-    public_data = json.dumps({'kind': 'important', 'source': source}, separators=(',', ':'))
+    kind = "reopened" if source == "diagnostic" and kind == "reopened" else "important"
+    public_data = json.dumps({'kind': kind, 'source': source}, separators=(',', ':'))
     from app.services.webpush_transport import send_webpush
     return await send_webpush(subscription, public_data, encoded_key, subject, ttl=180, timeout=8)
 
@@ -96,7 +99,12 @@ async def _relevant(db, row, now):
             Payment.id == row.source_id, Payment.payment_status == "pending",
             Payment.screenshot_file_id.is_not(None), Payment.screenshot_file_id != "",
         )) is not None
-    if row.source == "android":
+    if row.source == "diagnostic":
+        if _utc(row.created_at) < now - _DIAGNOSTIC_MAX_AGE:
+            return False
+        model = DiagnosticIncident
+        query = select(model.id).where(model.id == row.source_id, model.alert_epoch == row.triage_revision)
+    elif row.source == "android":
         model = AdminPwaNativeReport
         query = select(AdminPwaNativeReport.id).where(
             AdminPwaNativeReport.id == row.source_id, AdminPwaNativeReport.expires_at > now,
@@ -147,9 +155,14 @@ async def _claim_one(session_factory, settings_obj, now, worker_id):
                              ((AdminPwaPushOutbox.state == "leased")
                               & (AdminPwaPushOutbox.lease_expires_at <= now)),
                          ))
-                     .order_by(case((AdminPwaPushOutbox.source == 'payment', 0), else_=1),
+                     .order_by(case((AdminPwaPushOutbox.source == 'payment', 0),
+                                    (AdminPwaPushOutbox.source == 'diagnostic', 2), else_=1),
                                AdminPwaPushOutbox.created_at, AdminPwaPushOutbox.id)
                      .limit(24).with_for_update(skip_locked=True, of=AdminPwaPushOutbox))
+            diagnostic_enabled = (getattr(settings_obj, "MONITORING_PUSH_ENABLED", False)
+                                  and str(getattr(settings_obj, "MONITORING_MODE", "off")).strip().lower() in ("owners", "all"))
+            if not diagnostic_enabled:
+                query = query.where(AdminPwaPushOutbox.source != "diagnostic")
             rows = (await db.scalars(query)).all()
             for row in rows:
                 # Serializing on the subscription row prevents concurrent sends
@@ -182,6 +195,7 @@ async def _claim_one(session_factory, settings_obj, now, worker_id):
                     row.updated_at = now
                     row.next_attempt_at = None
                     continue
+                kind = "reopened" if row.source == "diagnostic" and row.diagnostic_kind == "reopened" else "important"
                 row.state = "leased"
                 row.lease_owner = worker_id
                 row.lease_expires_at = now + timedelta(seconds=_LEASE_SECONDS)
@@ -189,7 +203,7 @@ async def _claim_one(session_factory, settings_obj, now, worker_id):
                 row.attempts += 1
                 row.next_attempt_at = None
                 await db.flush()
-                return row.id, subscription.id, subscription.encrypted_payload, row.source
+                return row.id, subscription.id, subscription.encrypted_payload, row.source, kind
     return None
 
 
@@ -249,7 +263,7 @@ async def dispatch_batch(session_factory, *, settings_obj, limit=10, sender=None
         item = await _claim_one(session_factory, settings_obj, current, worker_id)
         if item is None:
             break
-        event_id, subscription_id, sealed, source = item
+        event_id, subscription_id, sealed, source, kind = item
         if subscription_id in sent_to:
             # No second send on one device during one batch, even with fake clocks.
             state = await _finish(session_factory, event_id=event_id,
@@ -266,7 +280,7 @@ async def dispatch_batch(session_factory, *, settings_obj, limit=10, sender=None
             if _validate_subscription(command) is None:
                 raise ValueError("corrupt_subscription")
             if sender is None:
-                status = await _webpush(payload, private_key, subject, source=source)
+                status = await _webpush(payload, private_key, subject, source=source, kind=kind)
             else:
                 status = await sender(payload, private_key, subject, source)
         except Exception as exc:

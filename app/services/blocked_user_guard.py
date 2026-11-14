@@ -19,6 +19,7 @@ from sqlalchemy import select
 from starlette.responses import JSONResponse
 
 from app.db.models.user import User
+from app.services.monitoring import is_intake_request
 from app.services.support_contact_service import get_admin_contact_url
 from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
 
@@ -124,6 +125,11 @@ class BlockedUserApiMiddleware:
             "/api/account-deletion/status", "/api/account-deletion/confirm",
             "/api/account-deletion/providers",
         } or not path.startswith(GUARDED_PATH_PREFIX) or path.startswith(EXEMPT_PATH_PREFIXES):
+            return await self.app(scope, receive, send)
+
+        if is_intake_request(scope, path):
+            # These routes validate the verified actor's current block state
+            # themselves, within a bounded write slot. Off mode must not read.
             return await self.app(scope, receive, send)
 
         init_data = _init_data_header(scope)

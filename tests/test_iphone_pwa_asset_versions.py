@@ -19,6 +19,8 @@ class IphonePwaAssetVersionTests(unittest.TestCase):
     def test_every_pwa_asset_reference_is_content_addressed(self):
         assets = sorted(p for p in (STATIC / "course_v3_data").glob("iphone-pwa-*")
                         if p.suffix in {".js", ".css"})
+        assets += [STATIC / name for name in (
+            "course_v3_data/hsk-diagnostics.js", "course_v3_data/li-onboarding-runtime.js", "voice-live.js")]
         self.assertTrue(assets)
         pages = {page: page.read_text(encoding="utf-8") for page in STATIC.rglob("*.html")}
         for asset in assets:
@@ -57,7 +59,7 @@ class IphonePwaAssetVersionTests(unittest.TestCase):
             self.assertEqual((value.func.value.id, value.func.attr), ("dict", "fromkeys"))
             keys, media_type = (ast.literal_eval(arg) for arg in value.args)
             allowed.update(dict.fromkeys(keys, media_type))
-        for asset in sorted((STATIC / "course_v3_data").glob("iphone-pwa-*")):
+        for asset in sorted((STATIC / "course_v3_data").glob("iphone-pwa-*")) + [STATIC / "course_v3_data/hsk-diagnostics.js"]:
             if asset.suffix in {".js", ".css"}:
                 with self.subTest(asset=asset.name):
                     self.assertEqual(
@@ -81,6 +83,21 @@ class IphonePwaAssetVersionTests(unittest.TestCase):
         self.assertIn('url.pathname.indexOf("/api/") !== 0', worker)
         self.assertIn('url.pathname.indexOf("/iphone-pwa") !== 0', worker)
         self.assertIn("return fetch(request);", worker)
+
+    def test_diagnostic_pages_within_worker_warm_budget(self):
+        worker = (STATIC / "iphone-pwa-sw.js").read_text(encoding="utf-8")
+        cap = int(re.search(r"WARM_MAX_ASSETS_PER_PAGE = (\d+)", worker)[1])
+        ref = re.compile(r"""["']((?:/|\.{1,2}/)?[\w./-]+\.(?:js|css)\?v=[\w.-]+)["']""")
+        warm_pages = worker.split("var WARM_PAGES = [", 1)[1].split("];", 1)[0]
+        self.assertNotIn('"/iphone-pwa/course', warm_pages, "course is already loaded before warming")
+        for page in STATIC.glob("*.html"):
+            html = page.read_text(encoding="utf-8")
+            if "hsk-diagnostics.js" not in html:
+                continue
+            assets = {path for path in ref.findall(html) if not path.startswith("/iphone-pwa")}
+            # The already-loaded course is not warmed. Checkout can gain
+            # three inline assets in the authenticated response.
+            self.assertLessEqual(len(assets) + (3 if page.name == "subscription.html" else 0), cap, page.name)
 
 
 if __name__ == "__main__":

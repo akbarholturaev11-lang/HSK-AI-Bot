@@ -2,6 +2,7 @@ package com.pomp.hskai.feature.subscription
 
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
+import com.pomp.hskai.core.diagnostics.DiagTags
 import com.pomp.hskai.core.network.apiCall
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.serialization.Serializable
@@ -60,9 +61,9 @@ class LavaCheckoutRepository(private val api: AndroidLavaApi,
     private suspend fun <T : Any> call(block: suspend (String) -> Response<T>): ApiResult<T> {
         val auth = when (val value = token()) {
             is ApiResult.Failure -> return value
-            is ApiResult.Success -> "Bearer ${value.value}"
+            is ApiResult.Success -> value.value
         }
-        val result = withTimeoutOrNull(20_000) { apiCall { block(auth) } } ?: ApiResult.Failure(ApiError.Timeout)
+        val result = withTimeoutOrNull(20_000) { apiCall(DiagTags.PAYMENT, auth) { block("Bearer $auth") } } ?: ApiResult.Failure(ApiError.Timeout)
         if (result is ApiResult.Failure && result.error is ApiError.SessionExpired) expired()
         return result
     }

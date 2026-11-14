@@ -46,6 +46,7 @@ let epoch=0, view=0, drawerId=0, confirmation=null, paymentPreview=null, reviewC
 let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false, feedbackUserId=null, inboxNextCursor=null, inboxUpdating=false, inboxUnread=null, pushChanging=false, pushReady=null;
 let inboxAttachment=null;
 let inboxLoadingMore=false,inboxListScrollTop=0,inboxRequestNonce=0,inboxBulkReading=false;
+let inboxSource='all';
 let inboxRefreshTimer=null,inboxRefreshControl=null;
 let drawerBack=null, backSwipeInProgress=false, backSwipeStart=null, blockSwipeClickUntil=0;
 const sectionBackStack=[];
@@ -71,7 +72,7 @@ function clearPrivate(phase) {
   stopApprovalWatch();stopInboxRefresh();
   cancelAdvancedAnalytics();cancelStatisticsDownload();feedbackLoadId++;
   feedbackStats.data=null;feedbackStats.loading=false;feedbackStats.error=false;
-  epoch++;view++;financePortfolioRequest++;financePortfolio=null;financePortfolioLoading=false;closeDrawer();inboxUnread=null;pushReady=null;state.actor=null;state.rows=[];state.stats=null;state.approval=null;state.enrollment=false;state.enrollmentOptions=null;
+  epoch++;view++;financePortfolioRequest++;financePortfolio=null;financePortfolioLoading=false;closeDrawer();inboxUnread=null;currentInboxRows=[];activeInboxDetail=null;inboxSource='all';pushReady=null;state.actor=null;state.rows=[];state.stats=null;state.approval=null;state.enrollment=false;state.enrollmentOptions=null;
   courseData=null;courseLimitDraft=null;courseTrialDraft=null;courseLimitTouched={FREE:false,TRIAL_ACTIVE:false};courseAnalytics=null;courseAnalyticsToken++;courseAnalyticsLoading=false;courseSalesMetrics=null;courseSalesLoading=false;courseSalesError=false;courseSalesToken++;state.phase=phase;state.error=null;render();
 }
 function releaseManagementMediaPreview(){if(managementMediaPreviewUrl){URL.revokeObjectURL(managementMediaPreviewUrl);managementMediaPreviewUrl=null;}}
@@ -931,9 +932,10 @@ async function boot() {
     void restorePushAfterLogin().catch(()=>{});
     await Promise.all([load(),refreshInboxUnread()]);
     if(current===epoch&&state.actor)startInboxRefresh();
-    if(current===epoch&&state.actor&&location.pathname==='/admin/'&&location.search==='?inbox=1'){
+    const inboxLink=location.search; // Consume notification links only after a verified session.
+    if(current===epoch&&state.actor&&location.pathname==='/admin/'&&['?inbox=1','?inbox=diagnostic'].includes(inboxLink)){
       history.replaceState(null,'','/admin/');
-      await inbox(); // Only after current passkey Admin PWA login is verified.
+      await inbox(null,null,inboxLink==='?inbox=diagnostic'?'diagnostic':'all');
     }}
   catch(error) {
     if(current!==epoch)return;
@@ -2823,7 +2825,18 @@ function inboxTechnicalSummary(row){
     ?technicalDescriptions[row.technical_code]:'inboxTechUnknown';
   return t(key);
 }
+const diagnosticPlatforms={android:'analyticsAndroid',telegram:'analyticsTelegram',iphone_pwa:'analyticsIphonePwa',server:'diagBackend'};
+function diagnosticTitle(row){
+  const key=String(row.explanation_key||'');
+  return t(/^diagFailure[A-Za-z0-9]+$/.test(key)?key:'diagFailureUnknown');
+}
+function diagnosticFeature(row){return t('diagFeature_'+row.feature_code);}
+function diagnosticReopened(row){
+  return row.reopened_at&&row.triage_status!=='resolved'
+    ?[t('diagReopened'),date(row.reopened_at),row.reopened_version].filter(Boolean).join(' · '):'';
+}
 function inboxKind(row){
+  if(row.source==='diagnostic')return diagnosticTitle(row);
   if(row.source==='technical'&&Object.prototype.hasOwnProperty.call(technicalDescriptions,row.technical_code))
     return t('inboxTechOnboardingTitle');
   const label=row.source==='payment'?'inboxPaymentReceipt':row.source==='android'?'inboxAndroid':row.source==='technical'?'inboxTechnical':row.source==='release'?'releaseFeedback':'botFeedback';
@@ -2833,6 +2846,7 @@ function inboxPlatform(row){
   // Never attribute an unmarked payment to Android, Telegram or Desktop.
   if(row.source==='android')return 'Android';
   if(row.source==='technical')return 'Telegram Mini App';
+  if(row.source==='diagnostic')return t(diagnosticPlatforms[row.platform]);
   if(row.source==='bot'||row.source==='release')return 'Telegram Bot';
   return null;
 }
@@ -2846,22 +2860,50 @@ function inboxPreview(row){
     (row.rating?row.rating+'/5':row.has_attachment?t('viewAttachment'):row.source==='payment'?t('inboxPaymentReceipt'):t('empty'));
 }
 function inboxEntry(row){
-  const unread=row.triage_status==='new',important=autoImportantSources.has(row.source);
-  if(!['bot','release','android','payment','technical'].includes(row.source)||
+  const diagnostic=row.source==='diagnostic';
+  const unread=row.triage_status==='new',important=diagnostic?row.triage_priority==='important':autoImportantSources.has(row.source);
+  if(!['bot','release','android','payment','technical','diagnostic'].includes(row.source)||
      !Number.isSafeInteger(row.source_id)||row.source_id<1)return '';
   const platform=inboxPlatform(row);
-  const kindIcon=icon(row.source==='android'?'device':row.source==='payment'?'credit':row.source==='technical'?'settings':'send');
+  const kindIcon=icon(row.source==='android'?'device':row.source==='payment'?'credit':diagnostic||row.source==='technical'?'settings':'send');
+  const reopened=diagnostic?diagnosticReopened(row):'';
+  const summary=diagnostic?'<span class="inbox-row-meta"><span>'+esc(platform)+'</span><span>'+esc(diagnosticFeature(row))+
+    '</span><span>×'+esc(number(row.occurrences))+'</span></span>'+
+    (reopened?'<span class="inbox-row-preview">'+esc(reopened)+'</span>':''):
+    '<span class="inbox-row-preview">'+esc(inboxPreview(row))+'</span>'+
+    '<span class="inbox-row-meta"><span>'+esc(platform||t('unavailable'))+'</span>'+
+    '<span>#'+esc(row.source_id)+'</span>'+(row.user_id?'<span>'+esc(t('account'))+' '+esc(row.user_id)+'</span>':'')+'</span>';
   return '<button type="button" class="inbox-minimal-row '+(unread?'is-unread':'is-read')+' '+(important?'is-important':'')+'"'+
     ' data-inbox-open="'+row.source+':'+row.source_id+'" aria-label="'+esc(inboxTitle(row))+'">'+
     '<span class="inbox-platform-icon" aria-hidden="true">'+kindIcon+'</span>'+
     '<span class="inbox-row-main"><span class="inbox-row-heading"><strong class="inbox-row-title">'+esc(inboxKind(row))+'</strong>'+
     '<time class="inbox-row-date">'+esc(date(row.created_at))+'</time></span>'+
-    '<span class="inbox-row-preview">'+esc(inboxPreview(row))+'</span>'+
-    '<span class="inbox-row-meta"><span>'+esc(platform||t('unavailable'))+'</span>'+
-    '<span>#'+esc(row.source_id)+'</span>'+(row.user_id?'<span>'+esc(t('account'))+' '+esc(row.user_id)+'</span>':'')+
-    '</span></span><span class="inbox-row-dot" aria-hidden="true"></span></button>';
+    summary+'</span><span class="inbox-row-dot" aria-hidden="true"></span></button>';
+}
+function diagnosticDetails(row){
+  const channels=(row.channels||[]).map(channel=>channel==='play'?'Google Play':channel==='direct'?'Direct':'').filter(Boolean);
+  const count=number(row.affected_accounts);
+  const affected=row.affected_state==='unknown'?t('diagUnknown'):
+    row.affected_state==='partial'?t('diagAtLeast').replace('{count}',count):count;
+  const status=row.triage_status==='resolved'?fixText('fixed'):t(row.triage_status==='new'?'inboxStatusNew':'diagInvestigating');
+  const facts=[
+    ['platform',[inboxPlatform(row),...channels].join(' · ')],['diagFeature',diagnosticFeature(row)],
+    ['diagVersions',[row.first_version,row.last_version].filter((v,i,a)=>v&&a.indexOf(v)===i).join(' → ')||'—'],
+    ['diagFirstSeen',date(row.first_seen_at)],['diagLastSeen',date(row.last_seen_at)],
+    ['diagOccurrences',number(row.occurrences)],['diagAffected',affected],
+    ['diagPriority',t(row.triage_priority==='important'?'inboxImportant':'diagNormal')],['status',status]
+  ];
+  const reopened=diagnosticReopened(row);
+  return '<div class="inbox-details"><div class="inbox-detail-heading"><span class="inbox-platform-icon">'+icon('settings')+
+    '</span><div><h2>'+esc(diagnosticTitle(row))+'</h2></div></div>'+
+    (reopened?'<p class="inbox-details-text">'+esc(reopened)+'</p>':'')+
+    '<dl class="review-summary">'+facts.map(([label,value])=>'<dt>'+esc(t(label))+'</dt><dd>'+esc(value)+'</dd>').join('')+'</dl>'+
+    (row.triage_status==='resolved'?'':'<div class="inbox-detail-toolbar inbox-fix-toolbar">'+
+      '<button type="button" class="btn primary" data-inbox-fixed="server" data-fix-source="diagnostic" data-fix-id="'+row.source_id+'">'+
+      icon('check')+esc(fixText('fixed'))+'</button></div>')+'</div>';
 }
 function inboxDetails(row) {
+  if(row.source==='diagnostic')return diagnosticDetails(row);
   const source=row.source,id=row.source_id,platform=inboxPlatform(row);
   const canView=(source==='android'?row.has_attachment:['bot','release'].includes(source)&&row.image_preview_available===true)
     &&Number.isSafeInteger(id)&&id>0&&id<=2147483647;
@@ -2928,7 +2970,7 @@ const fixLabels={
 };
 const fixText=key=>(fixLabels[locale]||fixLabels.uz)[key];
 function inboxRequest(before=null,userId=feedbackUserId,requestSignal=null) {
-  return api('inbox/list',{source:'all',priority:'all',status:'all',period:'all_time',
+  return api('inbox/list',{source:inboxSource,priority:'all',status:'all',period:'all_time',
     search:null,user_id:userId,before,limit:30},{requestSignal});
 }
 function stopInboxRefresh(){
@@ -2988,7 +3030,7 @@ function renderInboxList(scrollTop=0){
       icon('check')+esc(t('inboxMarkAllRead'))+'</button></div>':'')+
     '<div class="inbox-minimal-list">'+(currentInboxRows.map(inboxEntry).join('')||statePanel('empty'))+'</div>'+
     '<p class="inbox-scroll-status" aria-live="polite" role="status"></p></div>';
-  drawer('feedback',body,null,'inbox-drawer');
+  drawer(inboxSource==='diagnostic'?'inboxDiagnostic':'feedback',body,null,'inbox-drawer');
   const scroller=$('drawerContent');
   scroller.scrollTop=scrollTop;
   scroller.addEventListener('scroll',maybeLoadInbox,{passive:true});
@@ -3047,27 +3089,34 @@ async function markAllInboxRead(){
     inboxBulkReading=false;
     if(at===epoch&&nonce===inboxRequestNonce&&state.actor){
       await refreshInboxUnread();
-      if(document.querySelector('.inbox-minimal-list'))await inbox(null,feedbackUserId);
+      if(document.querySelector('.inbox-minimal-list'))await inbox(null,feedbackUserId,inboxSource);
       showNotice(problem?'inboxActionError':'inboxSaved');
     }
   }
 }
 async function resolveInboxFix(source,id,mode){
-  if(inboxFixing||!state.actor||source!=='android'||!['server','app_update'].includes(mode))return;
+  const diagnostic=source==='diagnostic';
+  if(inboxFixing||!state.actor||!['android','diagnostic'].includes(source)||
+     !(diagnostic?mode==='server':['server','app_update'].includes(mode)))return;
   const row=currentInboxRows.find(item=>item.source===source&&item.source_id===id);
-  if(!row||row.triage_status==='resolved'||!Number.isSafeInteger(row.user_id)||row.user_id<1)return;
-  if(!window.confirm(fixText('confirm')))return;
+  if(!row||row.triage_status==='resolved'||(!diagnostic&&(!Number.isSafeInteger(row.user_id)||row.user_id<1)))return;
+  if(!diagnostic&&!window.confirm(fixText('confirm')))return;
   const buttons=[...document.querySelectorAll('[data-inbox-fixed]')];
   inboxFixing=true;
   for(const button of buttons){button.disabled=true;button.setAttribute('aria-busy','true');}
   const at=epoch,current=drawerId;
   try{
-    const result=await api('inbox/triage',{source,source_id:id,operation:'resolve_fixed',
-      fix_kind:mode,expected_revision:row.triage_revision});
+    const operation=diagnostic?{operation:'resolve'}:{operation:'resolve_fixed',fix_kind:mode};
+    const result=await api('inbox/triage',{source,source_id:id,...operation,expected_revision:row.triage_revision});
     if(at!==epoch||current!==drawerId||!state.actor)return;
-    if(result.status!=='resolved'||result.notice_queued!==true)throw new Error('invalid_fix_receipt');
+    if(result.status!=='resolved'||result.notice_queued===diagnostic||typeof result.notice_queued!=='boolean')throw new Error('invalid_fix_receipt');
     Object.assign(row,{triage_status:result.status,triage_revision:result.revision,
       triage_resolved_at:result.resolved_at});
+    if(diagnostic){
+      showSavedAndDismiss('inboxSaved');
+      void refreshInboxUnread();
+      return;
+    }
     if(activeInboxDetail?.source===source&&activeInboxDetail?.source_id===id){
       activeInboxDetail={...activeInboxDetail,...row};
       const panel=document.querySelector('.inbox-details');
@@ -3122,7 +3171,7 @@ async function openInbox(source,id) {
   }catch(error){
     if(current!==drawerId||at!==epoch||!state.actor)return;
     showNotice(error.status===409?'inboxChanged':'inboxActionError');
-    await inbox(null,feedbackUserId);
+    await inbox(null,feedbackUserId,inboxSource);
   }finally{inboxUpdating=false;}
 }
 async function refreshInboxUnread(requestSignal=null) {
@@ -3152,8 +3201,8 @@ async function refreshInboxUnread(requestSignal=null) {
     bell.setAttribute('aria-label',t('feedback')+' · '+t('inboxUnread')+': '+(data.capped?'99+':data.unread_count));
   }catch(_){/* Never invent a zero badge on an unavailable private read. */}
 }
-async function inbox(before=null,userId=null) {
-  closeDrawer();feedbackUserId=userId;inboxNextCursor=null;currentInboxRows=[];inboxListScrollTop=0;
+async function inbox(before=null,userId=null,source='all') {
+  closeDrawer();feedbackUserId=userId;inboxSource=source;inboxNextCursor=null;currentInboxRows=[];inboxListScrollTop=0;
   const current=drawerId,at=epoch;
   drawer('feedback',statePanel('loading'),null,'inbox-drawer');
   try {
@@ -3606,7 +3655,7 @@ document.addEventListener('click',event=>{
     else if(button.dataset.profilePayments){await moreUserPayments(Number(button.dataset.profilePayments),Number(button.dataset.before),button);}
     else if(button.dataset.userFeedback){await inbox(null,Number(button.dataset.userFeedback));}
     else if(button.dataset.inboxOpen){
-      const match=/^(bot|release|android|payment|technical):([1-9][0-9]*)$/.exec(button.dataset.inboxOpen);
+      const match=/^(bot|release|android|payment|technical|diagnostic):([1-9][0-9]*)$/.exec(button.dataset.inboxOpen);
       if(match)await openInbox(match[1],Number(match[2]));
     }
     else if(button.dataset.inboxFixed){await resolveInboxFix(button.dataset.fixSource,Number(button.dataset.fixId),button.dataset.inboxFixed);}

@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
+  <script defer src="/course_v3_data/hsk-diagnostics.js?v=20261114-cde219a1e184"></script>
 <script src="/assets/telegram-web-app.js?v=20261019-1"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261113-a1da547eb267"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-a0dd8c0b1db1"></script>
 <link rel="stylesheet" href="/course_v3_data/design-tokens.css?v=20261005">
 <title>HSK AI Pro</title>
@@ -493,6 +494,7 @@ function checkoutPwaActor(){
       if(PWA_CHECKOUT_ACTOR&&PWA_CHECKOUT_ACTOR.user_id!==a.user_id){
         location.replace("/iphone-pwa");throw new Error("pwa_actor_changed");
       }
+      window.HskDiagVerifiedOwner=a.user_id;if(window.HskDiag)HskDiag.owner(a.user_id);
       PWA_CHECKOUT_ACTOR=a;return a;
     }).catch(function(err){PWA_CHECKOUT_PROMISE=null;throw err});
   }
@@ -1499,13 +1501,26 @@ function api(path,body,timeoutMs){
     throw apiError(error&&error.name==="AbortError"?"request_timeout":"network_error");
   }).then(async response=>{
     clear();
-    const data=await response.json().catch(()=>({ok:false,error:"bad_json"}));
+    if(!response.ok)reportCheckoutFailure(path,response.status);
+    const data=await response.json().catch((cause)=>{
+      if(response.ok)reportCheckoutFailure(path,cause);
+      return {ok:false,error:"bad_json"};
+    });
     if(!response.ok||!data.ok)throw apiError(data.error||"api_error",data.support_url,data.reason);
     return data;
   });
 }
 /* Xato matni bilan birga KODI ham saqlanadi: ekranda admin kontaktini
    ko'rsatish yoki ko'rsatmaslik shu kodga qarab hal qilinadi. */
+function reportCheckoutFailure(path,cause){
+  if(!window.HskDiag)return;
+  const checkoutFeature=PWA_CHECKOUT_HOST?"pwa_pro_checkout":"checkout_payments";
+  if(path===API.lavaStart||path===API.lavaCancel)HskDiag.report(checkoutFeature,"save_unconfirmed","payment",cause);
+  if(path===API.lavaStatus)HskDiag.report(checkoutFeature,"load_failed","payment",cause);
+  if(path===API.submit)HskDiag.report("checkout_payments","save_unconfirmed","payment",cause);
+  if(path===API.paymentStatus||path===API.quote)HskDiag.report("checkout_payments","load_failed","payment",cause);
+  if(path===API.overview)HskDiag.report("subscription_entries","load_failed","subscription",cause);
+}
 function apiError(code,supportUrl,reason){
   const error=new Error(errorText(code));
   error.code=code;

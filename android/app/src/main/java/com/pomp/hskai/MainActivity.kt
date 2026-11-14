@@ -49,6 +49,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.core.view.doOnPreDraw
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -193,6 +194,10 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+        }
+        // After the first frame: the last crash record, exit reasons and a flush.
+        window.decorView.doOnPreDraw { view ->
+            view.post { runCatching { app.diagnostics.afterFirstFrame() } }
         }
     }
 

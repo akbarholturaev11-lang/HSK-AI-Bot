@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Ieroglif tanish</title>
 <link rel="icon" href="/assets/hsk-ai-logo-256.png" type="image/png">
+  <script defer src="/course_v3_data/hsk-diagnostics.js?v=20261114-cde219a1e184"></script>
 <script src="/assets/telegram-web-app.js?v=20261019-1"></script>
 <script src="/course_v3_data/hsk-course-i18n.js?v=20261113-a1da547eb267"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-a0dd8c0b1db1"></script>
 <script defer src="/audio/words/index.js?v=20261014-offline-1"></script>
@@ -100,6 +101,7 @@ function recognitionPwaSession(){
       if(PWA_RECOGNITION_SESSION&&PWA_RECOGNITION_SESSION.user_id!==s.user_id){
         practiceSignIn();throw new Error("pwa_actor_changed");
       }
+      window.HskDiagVerifiedOwner=s.user_id;if(window.HskDiag)HskDiag.owner(s.user_id);
       PWA_RECOGNITION_SESSION=s;return s;
     }).catch(function(e){PWA_RECOGNITION_PROMISE=null;throw e});
   }
@@ -140,6 +142,12 @@ function recognitionPost(url,body,keepalive){
       method:"POST",headers:{"Content-Type":"application/json","X-HSK-PWA-CSRF":s.csrf},
       credentials:"same-origin",cache:"no-store",redirect:"error",
       body:JSON.stringify(payload),keepalive:!!keepalive
+    }).then(function(response){
+      if(!response.ok&&window.HskDiag){
+        if(url==="/api/v3/practice/report")HskDiag.report("practice","save_unconfirmed","practice",response.status);
+        else HskDiag.report("practice","load_failed","practice",response.status);
+      }
+      return response;
     });
   });
 }

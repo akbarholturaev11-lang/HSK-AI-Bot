@@ -660,6 +660,17 @@ async def _desktop_auth_retention_scheduler() -> None:
             # Authentication remains fail-closed even if housekeeping is
             # temporarily unavailable; retry independently on the next hour.
             logger.exception("Desktop auth retention cleanup failed")
+        try:
+            # Diagnostic receipts (30 days) and long-resolved incidents; its own
+            # try so a failure here never skips the native-report purge above.
+            from app.services.monitoring.retention import run_diagnostic_retention
+            receipts, incidents = await run_diagnostic_retention(
+                async_session_maker, settings, now=datetime.now(timezone.utc))
+            await diagnostic_reporter.flush_self_dropped()
+            if receipts or incidents:
+                logger.info("Diagnostic retention removed %d receipts, %d incidents", receipts, incidents)
+        except Exception:
+            logger.exception("Diagnostic retention cleanup failed")
         await asyncio.sleep(60 * 60)
 
 
@@ -752,10 +763,21 @@ async def lifespan(app: FastAPI):
         for task in study_ai_tasks:
             with contextlib.suppress(asyncio.CancelledError):
                 await task
+        if lava_reconcile_task is not None:
+            with contextlib.suppress(asyncio.CancelledError):
+                await lava_reconcile_task
         await admin_pwa_due_campaigns.close()
         await admin_pwa_statistics_reader.aclose()
         await admin_pwa_analytics_reader.aclose()
         await admin_pwa_feedback_reader.aclose()
+        from app.services.monitoring.backend import reporter as shutdown_reporter
+        from app.services.monitoring.miniapp import drain_legacy
+        try:
+            async with asyncio.timeout(3):
+                await drain_legacy()
+                await shutdown_reporter.drain()
+        except TimeoutError:
+            logger.warning("Diagnostic shutdown drain timed out")
         await bot.session.close()
         await engine.dispose()
 
@@ -916,6 +938,13 @@ app.add_middleware(
     bot_token=settings.BOT_TOKEN,
     admin_ids=settings.admin_id_list,
 )
+# Unified error monitoring (D4): records 5xx and unhandled exceptions on
+# learner routes after the response; never reads bodies or changes responses.
+from app.services.monitoring.backend import DiagnosticMiddleware, reporter as diagnostic_reporter
+diagnostic_reporter.configure(session_factory=async_session_maker, settings_obj=settings)
+app.add_middleware(DiagnosticMiddleware)
+from app.api.monitoring_intake import create_monitoring_intake_router, read_bounded_json
+app.include_router(create_monitoring_intake_router(session_factory=async_session_maker, settings_obj=settings))
 app.include_router(
     create_desktop_auth_router(
         session_factory=async_session_maker,
@@ -2531,6 +2560,7 @@ async def course_v3_data_file(filename: str):
         "hsk30-words.js": "application/javascript",
         "hsk30-dictionary-examples.js": "application/javascript",
         "hsk-common-i18n.js": "application/javascript",
+        "hsk-diagnostics.js": "application/javascript",
         "hsk-miniapp-i18n.js": "application/javascript",
         "hsk-course-i18n.js": "application/javascript",
         "li-onboarding-runtime.js": "application/javascript",
@@ -6654,8 +6684,50 @@ async def subscription_miniapp_submit(request: Request):
 async def miniapp_event(request: Request):
     from app.services.course_miniapp_analytics_service import ATTRIBUTED_CLIENT_EVENTS
 
+    if request.headers.get("X-HSK-Diagnostic") == "diag.v1":
+        from app.services.monitoring import catalog, miniapp as diagnostics
+        from app.services.monitoring.intake import IntakeBusy, IntakeRejected, bound_write, diagnostic_slot
+
+        def reply(body, status_code=200):
+            return JSONResponse(body, status_code=status_code, headers={"Cache-Control": "no-store"})
+
+        if not diagnostics.enabled(settings):
+            return reply(diagnostics.PAUSED)
+        try:
+            payload = await read_bounded_json(request)
+        except IntakeRejected as exc:
+            return reply({"ok": False, "error": exc.code}, 413 if exc.code == "too_large" else 422)
+        if not isinstance(payload, dict) or payload.get("event") != "app_error" or payload.get("schema") != catalog.SCHEMA:
+            return reply({"ok": False, "error": "invalid_diagnostic_schema"}, 422)
+        proof = request.headers.get("X-Telegram-Init-Data", "")
+        telegram_id = None
+        if len(proof) <= 8192:
+            try:
+                telegram_id = extract_fresh_verified_webapp_user_id(proof, settings.BOT_TOKEN, max_age_seconds=86400)
+            except (TypeError, ValueError):
+                pass  # Malformed signed data is an auth failure.
+        if not telegram_id:
+            return reply({"ok": False, "error": "invalid_telegram_init_data"}, 401)
+        try:
+            with diagnostic_slot(settings):
+                async with async_session_maker() as session:
+                    await bound_write(session)
+                    result = await diagnostics.record_client_batch(session, telegram_id=telegram_id,
+                                                                   payload=payload, settings=settings)
+            return reply(result, 403 if result.get("error") == "diagnostic_session_required" else 200)
+        except IntakeBusy:
+            return reply({"ok": False, "error": "diagnostics_unavailable"}, 503)
+        except Exception:
+            logger.warning("Mini App diagnostic intake failed")
+            return reply({"ok": False, "error": "diagnostics_unavailable"}, 503)
+
     payload = await request.json()
+    if not isinstance(payload, dict):
+        return {"ok": False, "error": "invalid_event"}
     event = str(payload.get("event") or "").strip()
+    if event == "app_error" and payload.get("schema") == "diag.v1":
+        # A diagnostic envelope must never fall through to the legacy Message path.
+        return JSONResponse(status_code=422, content={"ok": False, "error": "diagnostic_transport_required"})
 
     telegram_id = extract_verified_webapp_user_id(
         request.headers.get("X-Telegram-Init-Data", ""),
@@ -6816,11 +6888,15 @@ async def miniapp_event(request: Request):
             return {"ok": True}
 
         if event == "app_error":
-            saved = await AppErrorContextService(session).record_miniapp_error(
+            owner_user_id = await AppErrorContextService(session).record_miniapp_error_owner(
                 telegram_id=telegram_id,
                 payload=payload,
             )
-            return {"ok": bool(saved)}
+            if owner_user_id and getattr(settings, "MONITORING_MINIAPP_ADAPTER_ENABLED", False):
+                from app.services.monitoring.miniapp import queue_legacy_onboarding
+                queue_legacy_onboarding(async_session_maker, owner_user_id=owner_user_id,
+                                        payload=payload, settings=settings)
+            return {"ok": bool(owner_user_id)}
 
         service = CourseMiniAppResultService(session)
 

@@ -151,7 +151,7 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_minimal_inbox_and_seamless_passkey_launch_contract(self):
         script=(await self.get('/admin/assets/app.js')).text
-        list_section=script.split('async function inbox(before=null,userId=null)',1)[1].split('async function mutateInbox(',1)[0]
+        list_section=script.split('async function inbox(',1)[1].split('// Apple-first Web Push',1)[0]
         self.assertNotIn('inboxSearchForm',list_section)
         self.assertNotIn('filterSelect',list_section)
         self.assertNotIn('inboxHistoryNote',list_section)
@@ -277,6 +277,9 @@ class AdminPwaShellTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("payment: {title:", push_handler)
         self.assertIn("android: {title:", push_handler)
         self.assertIn("technical: {title:", push_handler)
+        self.assertIn("diagnostic: {title:", push_handler)
+        self.assertIn("payload.kind === 'reopened' && payload.source === 'diagnostic'", push_handler)
+        self.assertIn("'/admin/?inbox=diagnostic'", worker.text)
         self.assertNotIn("tag: 'hsk-admin-important'", push_handler)
         self.assertNotIn("payload.title", push_handler)
         self.assertNotIn("payload.body", push_handler)

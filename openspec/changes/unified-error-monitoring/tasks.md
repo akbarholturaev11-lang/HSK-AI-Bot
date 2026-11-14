@@ -17,7 +17,7 @@ This is the only checklist for this work. Task 1.1 creates the single shared con
 
 ## 1. Foundation: catalog, coverage guard, intake
 
-- [ ] 1.1 Context file and the P0 coverage guard in `declare` mode (D1, D10):
+- [x] 1.1 Context file and the P0 coverage guard in `declare` mode (D1, D10):
   - Create `docs/monitoring/MONITORING_CONTEXT.md` as the single context file, starting from the 2026-11-13 audit in design.md.
   - Before coding, check drift since `5ea7c22f` with `git diff --stat` over the Context paths. Check the voice `live_*` codes if Voice V8 has landed. Use read-only Graphify only after the graph matches `HEAD`. Apply any delta to design.md.
   - Add `app/services/monitoring/catalog.py`.
@@ -41,7 +41,7 @@ This is the only checklist for this work. Task 1.1 creates the single shared con
   - A cosmetic-only change passes.
   - A scratch push shows the job failing on an unmapped route.
   - `openspec validate unified-error-monitoring --strict` passes.
-- [ ] 1.2 Add the migration (next number after `0155`), models and the `ingest` service (D2, D3, D8):
+- [x] 1.2 Add the migration (next number after `0155`), models and the `ingest` service (D2, D3, D8):
   - the tables and source CHECKs, with the downgrade guard;
   - advisory-lock admission and the receipt/incident upserts;
   - refused counts;
@@ -53,7 +53,7 @@ This is the only checklist for this work. Task 1.1 creates the single shared con
   - **Unit tests:** forbidden, unknown and oversized events are rejected; a retry is idempotent; a skewed client time is flagged; `off` pauses and `owners` admits only owners.
   - **PostgreSQL module:** two workers produce one incident with count 2; the cap holds under parallel requests; account deletion cascades the receipts and lowers the affected count; the purge is bounded, and a purge failure does not skip the native-report purge (`test_admin_pwa_retention_links.py` stays green).
   - **Query plans:** `EXPLAIN` on 1M receipts for the admission and affected-count queries.
-- [ ] 1.3 Add the intake routes and the backend reporter (D3, D4):
+- [x] 1.3 Add the intake routes and the backend reporter (D3, D4):
   - Android bearer and PWA cookie + CSRF routes;
   - the ASGI middleware over `route_map`;
   - `report_server_failure` at the Lava and AI/voice provider sites, next to the Lava Telegram `admin_alert`, never replacing it;
@@ -69,7 +69,7 @@ This is the only checklist for this work. Task 1.1 creates the single shared con
 
 ## 2. Android and PWA reporters
 
-- [ ] 2.1 Add the Android reporter (D5) in `core/diagnostics`, for both flavours:
+- [x] 2.1 Add the Android reporter (D5) in `core/diagnostics`, for both flavours:
   - the crash handler;
   - exit reasons on API ≥ 30;
   - tagged `apiCall` failures for login, lesson open/complete, practice, progress, subscription/payment and handoff, hooked inside `apiCall` (`ApiResult.kt`) and reusing the `toApiError()` result;
@@ -84,7 +84,7 @@ This is the only checklist for this work. Task 1.1 creates the single shared con
   - **JVM tests** (`testPlayDebugUnitTest testDirectDebugUnitTest`): offline, timeout, 4xx, limit and paywall are not reported; a 5xx and a 2xx decode failure are reported once, and the error body is read only once; an unexpected live-voice connection loss is reported once, while a learner close, a server limit code or backpressure is not; a crash record is written without network and the previous handler still runs; an exit reason is reported once; queue cap, TTL and backoff hold, and drops become one `queue_dropped` event; an account switch purges the queue; 401/403 drops it.
   - **Release builds:** `bundlePlayRelease bundleDirectRelease`, plus a Direct release smoke that the DTO serializes.
   - **Chain test:** `tests/test_monitoring_android_chain.py`, bearer intake → PostgreSQL incident.
-- [ ] 2.2 Add the learner web reporter `course_v3_data/hsk-diagnostics.js` (D5) with the PWA transport. Include it with a `?v=` token in `course-v3.html`, `course_v3_li_onboarding.html` and the PWA practice, checkout and voice pages. Report the `voice-live.js` client-side failure codes, and hook the D5 priority call sites. Registry PWA entries are `partial` with "Admin consumer pending 3.1".
+- [x] 2.2 Add the learner web reporter `course_v3_data/hsk-diagnostics.js` (D5) with the PWA transport. Include it with a `?v=` token in `course-v3.html`, `course_v3_li_onboarding.html` and the PWA practice, checkout and voice pages. Report the `voice-live.js` client-side failure codes, and hook the D5 priority call sites. Registry PWA entries are `partial` with "Admin consumer pending 3.1".
 
   Verify:
   - **Node test:** category mapping; no message, stack or URL in the payload; loop guard; coalescing; owner-mismatch discard; TTL and the `queue_dropped` event; the voice allowlist reports client-side codes only.
@@ -98,7 +98,7 @@ This is the only checklist for this work. Task 1.1 creates the single shared con
 
 ## 3. Admin Inbox and Apple Push
 
-- [ ] 3.1 Add the Inbox `diagnostic` source (D6):
+- [x] 3.1 Add the Inbox `diagnostic` source (D6):
   - projection, platform filter, affected state;
   - triage mapping, the resolve hook, and auto-reopen with a system audit row;
   - the D6 list row and drawer, with the existing "Тузатилди ✅" button (one tap, plain `resolve`, no prompt) and the "🔁 fixed error came back" line; strings in `localization/ui/*/miniapp.json` (`i18n_build_all_catalogs.py --write` and `--check`);
@@ -113,14 +113,14 @@ This is the only checklist for this work. Task 1.1 creates the single shared con
   - **Analytics:** `test_admin_pwa_report_freshness.py` covers the `diagnostics` rows; `test_admin_pwa_v10_regression.py` changes only the freshness shape.
   - **Browser:** Admin PWA Playwright at 390 px in three languages, with screenshots of the row, the drawer and the "came back" line; the contract tests show no new control.
   - **Registry:** the checker passes with the flipped entries.
-- [ ] 3.2 Add bounded push (D7):
+- [x] 3.2 Add bounded push (D7):
   - outbox and dispatcher allowlists, with the epoch key;
   - the `_relevant` `diagnostic` branch, and `kind: "reopened"` from `last_alert_reason`;
   - the alert decision in an intake savepoint;
   - per-incident cooldown and global cap, with reopen alerts exempt;
   - the `sw.js` labels for `diagnostic` and its `reopened` kind, and the `/admin/?inbox=diagnostic` link, applied after auth.
 
-  Set registry `mode` to `require_covered` in the same change.
+  Registry `mode` switches to `require_covered` as soon as the Inbox source exists (D10).
 
   Verify:
   - 100 identical critical events give at most one outbox row per device;
@@ -136,7 +136,7 @@ This is the only checklist for this work. Task 1.1 creates the single shared con
 
 ## 4. Mini App compatibility
 
-- [ ] 4.1 Add the additive Mini App adapter (D9, owner option A):
+- [x] 4.1 Add the additive Mini App adapter (D9, owner option A):
   - the `diag.v1` path to `ingest`;
   - the legacy onboarding mapping to `ingest`, in addition to today's `technical` path;
   - the `MONITORING_MINIAPP_ADAPTER_ENABLED` switch;
@@ -154,7 +154,7 @@ This is the only checklist for this work. Task 1.1 creates the single shared con
 
 ## 5. Validation and staged acceptance
 
-- [ ] 5.1 Integration validation, compared with the baseline:
+- [x] 5.1 Integration validation, compared with the baseline:
   - `openspec validate --strict`;
   - the checker in push and PR modes;
   - the full unit suite (only known baseline failures);

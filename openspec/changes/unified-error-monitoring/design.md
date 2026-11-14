@@ -266,7 +266,7 @@ Defaults (catalog constants, not owner decisions): cap 60 events per account per
   - a reopen alert is exempt from the cooldown and the cap. Each reopen needs a human "Fixed" first, so its rate is bounded, and the epoch key gives one alert per reopen.
 - **Dispatcher.**
   - `_relevant` gains a `diagnostic` branch: the incident exists and its triage is not `resolved`. Priority is not required, so a `normal` reopen is still sent.
-  - `_webpush` keeps `kind: "important"` for every source. It sends `kind: "reopened"` only for `diagnostic` when `last_alert_reason = reopened`.
+  - `_webpush` keeps `kind: "important"` for every source. It sends `kind: "reopened"` only for `diagnostic` when the outbox row’s immutable `diagnostic_kind` is `reopened`; intake copies that epoch’s `last_alert_reason` to the row.
   - The payload stays two fixed enum fields.
 - **Service worker.**
   - `sw.js` accepts `reopened` only together with `source: "diagnostic"`.
@@ -278,7 +278,16 @@ Defaults (catalog constants, not owner decisions): cap 60 events per account per
 - **Unchanged:** payment, Android-report, bot and release payloads, and Lava Telegram alerts (D4). The cap protects them from a diagnostic flood.
 
 ### D8. Retention and deletion
-- **Hourly loop.** In `_desktop_auth_retention_scheduler`, next to `purge_expired_native_reports` and in its own `try`, so one failure never skips the other. It deletes receipts older than 30 days and resolved incidents unseen for 180 days, together with their triage rows. Both use bounded batches (≤ 1000). Audit rows stay; they hold no telemetry.
+- **Hourly loop.** In `_desktop_auth_retention_scheduler`, next to
+  `purge_expired_native_reports` and in its own `try`, so one failure never skips
+  the other. It deletes receipts older than 30 days and resolved incidents
+  unseen for 180 days with their triage rows. On a full batch, it catches up
+  with at most seven more batches in that pass. Each batch commits separately
+  and uses the diagnostic pool and statement limits. An incident waits until
+  its receipts have been removed by that bounded pass. Audit rows stay; they
+  hold no telemetry. Account counts exclude expired rows immediately; the
+  privacy notice distinguishes expiry from physical removal by housekeeping
+  after an outage or backlog.
 - **Account deletion.** Account deletion cascades the receipts through the FK, in the existing deletion transaction; incidents keep aggregates only.
 - **Blocked or revoked accounts.** The existing transports refuse them. A 401/403 makes the client drop that owner's queue.
 
@@ -288,7 +297,7 @@ Defaults (catalog constants, not owner decisions): cap 60 events per account per
 **Switch.** One boolean setting, `MONITORING_MINIAPP_ADAPTER_ENABLED`, separate from the mode; default off. The adapter acts only on events the current `MONITORING_MODE` admits.
 
 In the `app_error` branch of `/api/miniapp/event`:
-- **`schema:"diag.v1"` events from the shared script.** They are new signals, so they go to `ingest` only. No `messages` row is written, so no new rows reach the AI context.
+- **`schema:"diag.v1"` events from the shared script.** The `X-HSK-Diagnostic: diag.v1` header selects the bounded transport with fresh signed Telegram proof. These signals go to `ingest` only. No `messages` row is written, so no new rows reach the AI context.
 - **Legacy onboarding `app_error`.**
   - It still writes its `messages` row and still enqueues its per-row `technical` push. Bot AI context, `bot_block_cause_service`, the experiments count and the `technical` listing are unchanged.
   - It is also mapped to the onboarding failure codes, mirroring `_technical_explanation_code`, and sent to `ingest`. A recovered variant only lowers severity.
@@ -302,6 +311,8 @@ In the `app_error` branch of `/api/miniapp/event`:
   - status `covered` / `partial` / `not_instrumented` / `not_applicable` and a `reason`;
   - `reporter` path, `client_test` and `chain_test`;
 - `android_packages` and `pwa_pages`, each mapped to features;
+- `critical_paths`, exact shared source files mapped to affected feature/platform
+  pairs when an unchanged route, screen or package can hide a behavior change;
 - `legacy_baseline` (`feature:platform` pairs);
 - `exemptions`, exact and with a reason.
 
@@ -322,6 +333,13 @@ In the `app_error` branch of `/api/miniapp/event`:
 4. **Diff rules** (reusing the push/PR base resolution):
    - In `require_covered` mode, a new route, package or page must map to a feature that is `covered` or `not_applicable` on its platform.
    - In `declare` mode, `partial` is also allowed, with a pending-consumer reason.
+   - A changed critical source checks every mapped pair against the existing
+     runtime coverage contract, or needs a fresh exact-file exemption pinned to
+     the SHA-256 of the reviewed Git source. CI
+     uses both revisions' mappings and rejects silently dropping a binding
+     from an existing file. Python comments and formatting do not trigger
+     this check; JavaScript and Kotlin changes are conservatively checked by
+     file content. This is an explicit inventory, not dynamic call tracing.
    - The baseline may only shrink, and a lowered status needs an exemption.
 5. **Mode tie.** If `pwa_inbox.py` declares the `diagnostic` source, the mode must be `require_covered`.
 
@@ -380,7 +398,7 @@ In the `app_error` branch of `/api/miniapp/event`:
    2. `MONITORING_MODE=owners` on production, with owner devices;
    3. diagnostic push on;
    4. Mini App adapter on;
-   5. disclosure. `/privacy` (English-only today) states that the apps send automatic, content-free error reports: codes, app version and time, linked to the account, kept 30 days, deleted with the account and not shared. The owner files Play Data safety: App info and performance → Crash logs and Diagnostics, collected and not shared;
+   5. disclosure. `/privacy` (English-only today) states that the apps send automatic, content-free error reports: codes, app version and time, linked to the account, expired after 30 days, removed by scheduled cleanup or when the account is deleted, and not shared for third-party use. The owner files Play Data safety: App info and performance → Crash logs and Diagnostics, collected and not shared;
    6. `all`.
 4. **Rollback.**
    - `MONITORING_MODE=off` stops all writes, and clients pause.

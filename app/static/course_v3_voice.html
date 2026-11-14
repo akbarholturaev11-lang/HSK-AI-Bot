@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>AI Voice</title>
+  <script defer src="/course_v3_data/hsk-diagnostics.js?v=20261114-cde219a1e184"></script>
 <script>
 var PWA_VOICE_HOST=location.pathname==="/iphone-pwa/practice/voice";
 if(PWA_VOICE_HOST)document.documentElement.classList.add("hsk-pwa-browser");
@@ -299,6 +300,7 @@ function voicePwaActor(){
       if(PWA_VOICE_SESSION&&PWA_VOICE_SESSION.user_id!==s.user_id){
         location.replace("/iphone-pwa");throw new Error("pwa_actor_changed");
       }
+      window.HskDiagVerifiedOwner=s.user_id;if(window.HskDiag)HskDiag.owner(s.user_id);
       PWA_VOICE_SESSION=s;return s;
     }).catch(function(e){PWA_VOICE_PROMISE=null;throw e});
   }
@@ -333,6 +335,11 @@ function voicePost(url,body,keepalive){
     return fetch(mapped,{
       method:"POST",headers:{"Content-Type":"application/json","X-HSK-PWA-CSRF":s.csrf},
       credentials:"same-origin",cache:"no-store",redirect:"error",body:JSON.stringify(payload),keepalive:!!keepalive
+    }).then(function(response){
+      if(!response.ok&&window.HskDiag){
+        HskDiag.report("voice_practice","api_5xx","voice",response.status);
+      }
+      return response;
     });
   });
 }
