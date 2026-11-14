@@ -24,6 +24,8 @@
   at most one additional two-second operation. Batch size and minute interval
   remain unchanged. Genuine operation timeouts still warn with `reason=timeout`;
   other exceptions remain visible without SQL, user IDs or exception text.
+  Each existing scan logs anonymous INFO counts so production verification can
+  distinguish actual capture/recovery from a stopped or endlessly deferred scan.
 - **Safety:** keep User-first locking and fresh deletion/block checks, separate
   committed delivery and projection transactions, source-stage deduplication,
   monthly atomicity and parent cancellation. `pass_finished` still means cursor

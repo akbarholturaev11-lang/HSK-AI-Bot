@@ -87,12 +87,14 @@ class ReconciliationWorkerTests(unittest.IsolatedAsyncioTestCase):
             AnalysisSourcePage(((1, "a"), (2, "b")), False))
         observer.service.capture_job = AsyncMock(side_effect=
             (AnalysisOwnerBusy(), RuntimeError("synthetic-private-proof")))
-        with self.assertLogs("app.services.smart_reminder_analysis", level="WARNING") as logs:
+        with self.assertLogs("app.services.smart_reminder_analysis", level="INFO") as logs:
             result = await observer.reconcile_tick()
         self.assertEqual(result, dict(examined=2, inserted_facts=0, unavailable=1,
                                       deferred=1, pass_finished=True))
-        self.assertEqual(logs.output,
+        self.assertEqual([line for line in logs.output if line.startswith("WARNING:")],
             ["WARNING:app.services.smart_reminder_analysis:Smart analysis reconciliation capture unavailable"])
+        self.assertIn("examined=2 inserted_facts=0 deferred=1 unavailable=1", logs.output[-1])
+        self.assertNotIn("synthetic-private-proof", str(logs.output))
 
     async def test_worker_query_failure_is_sanitized_and_retention_is_independent(self):
         observer = self.observer(interval=.001)

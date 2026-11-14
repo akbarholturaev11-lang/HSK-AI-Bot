@@ -614,6 +614,8 @@ class SmartReminderAnalysisObserver:
         finished = examined == len(page.sources) and not page.has_more
         if finished:
             self._reconcile_after = None
+        logger.info("Smart analysis reconciliation: examined=%d inserted_facts=%d deferred=%d unavailable=%d",
+                    examined, inserted, deferred, unavailable)
         return {"examined": examined, "inserted_facts": inserted,
                 "unavailable": unavailable, "deferred": deferred, "pass_finished": finished}
 
@@ -657,5 +659,7 @@ class SmartReminderAnalysisObserver:
         finished = examined == len(owners) and not has_more
         if finished:
             self._baseline_after = None
+        logger.info("Smart baseline aggregation: examined=%d updated_observations=%d deferred=%d unavailable=%d",
+                    examined, updated, deferred, unavailable)
         return {"examined": examined, "updated_observations": updated,
                 "unavailable": unavailable, "deferred": deferred, "pass_finished": finished}
