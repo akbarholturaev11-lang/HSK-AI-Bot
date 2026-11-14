@@ -23,7 +23,10 @@
 .li-install-steps li::marker{font-weight:800;color:#b44739}
 .li-install-panda{width:min(250px,65vw);max-height:270px;display:grid;place-items:center;margin:clamp(60px,15dvh,140px) auto 24px}
 .li-install-panda .hsk-character{width:100%;height:auto;max-height:270px}
-.li-install-browser-hint{max-width:400px;margin:0 auto;text-align:center;font-size:18px;font-weight:650;line-height:1.6;overflow-wrap:anywhere}
+.li-install-browser-title{max-width:400px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;gap:10px;text-align:center;font-size:clamp(20px,5.7vw,25px);font-weight:800;line-height:1.22;letter-spacing:-.3px}
+.li-install-safari-icon{display:inline-grid;place-items:center;flex:0 0 34px;width:34px;height:34px;border-radius:10px;background:linear-gradient(145deg,#4ac3ff,#0874de);color:#fff;box-shadow:0 2px 7px rgba(8,116,222,.2)}
+.li-install-safari-icon svg{display:block;width:27px;height:27px}
+.li-install-browser-hint{max-width:400px;margin:0 auto;text-align:center;font-size:16px;font-weight:550;line-height:1.45;overflow-wrap:anywhere}
 .li-install-browser-link{display:block;margin-top:12px;color:#a94336;text-decoration:underline;text-underline-offset:4px;user-select:text;-webkit-user-select:text}
 .li-install-copy{max-width:400px;margin:28px auto 0}
 .li-install-close:focus-visible,.li-install-how:focus-visible,.li-install-copy:focus-visible,.li-install-browser-link:focus-visible{outline:3px solid #182c46;outline-offset:3px}
