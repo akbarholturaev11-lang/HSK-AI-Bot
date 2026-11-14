@@ -195,9 +195,9 @@ class OutcomeChecks:
         await self.analysis.capture_job(2,second)
         self.observer.baseline=self.baseline;self.observer.batch=1
         original=self.baseline.observe_member
-        async def fail(uid):
+        async def fail(uid, **options):
             if uid==1: raise RuntimeError("synthetic-private-owner")
-            return await original(uid)
+            return await original(uid, **options)
         with patch.object(self.baseline,"observe_member",side_effect=fail), \
                 self.assertLogs("app.services.smart_reminder_analysis",level="WARNING") as logs:
             first=await self.observer.baseline_tick()
@@ -299,20 +299,19 @@ class OutcomeChecks:
         total=(await self.rows(TOTAL))[0]
         self.assertEqual((total["observed_accounts"],total["observed_units"],total["observed_d7_accounts"]),(1,1,1))
 
-    async def test_real_locked_owner_timeout_releases_connection_and_does_not_starve_next(self):
+    async def test_real_busy_owner_defers_without_cancelling_or_starving_next(self):
         if not self.postgres: self.skipTest("PostgreSQL actual User lock and observation cancellation")
         await self.positive()
         job=(await self.rows(MEMBER))[0]["source_job_id"]
         second=await self.clone_job(job)
         await self.analysis.capture_job(2,second)
-        self.observer.baseline=self.baseline;self.observer.timeout=.15
+        self.observer.baseline=self.baseline;self.observer.timeout=2
         async with self.q.sessions.begin() as blocker:
             await blocker.execute(select(User.id).where(User.id==1).with_for_update())
-            with self.assertLogs("app.services.smart_reminder_analysis",level="WARNING"):
+            with self.assertNoLogs("app.services.smart_reminder_analysis",level="WARNING"):
                 first=await self.observer.baseline_tick()
-            self.assertEqual((first["examined"],first["unavailable"],first["pass_finished"]),(1,1,False))
-            self.observer.timeout=1
-            self.assertEqual((await self.observer.baseline_tick())["updated_observations"],1)
+            self.assertEqual((first["examined"],first["unavailable"],first["deferred"],
+                              first["updated_observations"],first["pass_finished"]),(2,0,1,1,True))
         self.assertEqual((await self.observer.baseline_tick())["updated_observations"],1)
         self.assertEqual(self.q.engine.sync_engine.pool.checkedout(),0)
         self.assertEqual((await self.rows(TOTAL))[0]["observed_accounts"],2)

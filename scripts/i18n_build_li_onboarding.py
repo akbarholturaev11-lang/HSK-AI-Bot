@@ -18,7 +18,7 @@ LOCALES = ("uz", "ru", "tj")
 NAMESPACE = "li_onboarding"
 # Original demo has 66 copy keys; Li's verified HSK 3.0 access gate adds 3.
 COPY_COUNT = 69
-INSTALL_KEYS = ("install.title", "install.description", "install.videoLabel", "install.videoFallback", "install.safariHint", "install.step1", "install.step2", "install.step3", "install.step4", "install.note", "install.continue", "install.close", "install.how", "install.heroAlt", "install.back", "install.authWaitTitle", "install.authWaitSubtitle", "install.authSaveTitle", "install.authSaveSubtitle", "install.guideTitle", "install.copyLink", "install.copied",)
+INSTALL_KEYS = ("install.title", "install.description", "install.videoLabel", "install.videoFallback", "install.safariHint", "install.safariTitle", "install.step1", "install.step2", "install.step3", "install.step4", "install.note", "install.continue", "install.close", "install.how", "install.heroAlt", "install.back", "install.authWaitTitle", "install.authWaitSubtitle", "install.authSaveTitle", "install.authSaveSubtitle", "install.guideTitle", "install.copyLink", "install.copied",)
 # Telegram Mini App -> PWA handoff landing (/iphone-pwa/handoff). It shares the
 # install guide with onboarding, so its few strings live in the same catalog.
 HANDOFF_KEYS = ("handoff.signingIn", "handoff.failed", "handoff.signIn", "handoff.accountMismatch", "handoff.switchAccount", "handoff.keepAccount",)

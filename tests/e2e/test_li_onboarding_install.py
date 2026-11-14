@@ -249,6 +249,9 @@ def test_telegram_in_app_browser_shows_safari_link_not_video():
           return HSKAILiInstallGuide.open({userId:53,lang:"ru"},()=>{});
         }""") is True
         assert page.locator(".li-install-panda").is_visible()
+        assert page.locator(".li-install-browser-title").inner_text() == "Откройте HSK AI в Safari"
+        assert page.locator(".li-install-safari-icon svg").is_visible()
+        assert page.locator(".li-install-browser-hint").text_content().startswith("Скопируйте ссылку и откройте её в Safari, чтобы установить приложение.")
         assert page.locator(".li-install-browser-link").get_attribute("href") == "https://hskai.app/iphone-pwa"
         assert page.locator(".li-install-video, .li-install-steps, .li-install-title").count() == 0
         assert page.locator(".li-install-copy").inner_text() == "Скопировать ссылку"
@@ -271,6 +274,7 @@ def test_other_ios_browser_copies_the_safari_link(clipboard_works):
             {userId:61,lang:"tj"},()=>{})""") is True
         copy = page.locator(".li-install-copy")
         assert copy.inner_text() == "Нусхаи пайванд"
+        assert page.locator(".li-install-browser-title").inner_text() == "HSK AI-ро дар Safari кушоед"
         copy.click()
         if clipboard_works:
             page.wait_for_function("window.__copied === 'https://hskai.app/iphone-pwa'")
@@ -299,6 +303,7 @@ def test_chrome_on_ios_is_not_mistaken_for_safari():
         assert page.locator(".li-install-panda").is_visible()
         assert page.locator(".li-install-video").count() == 0
         assert page.locator(".li-install-browser-hint").inner_text().count("Safari") == 1
+        assert page.locator(".li-install-browser-title").inner_text() == "HSK AI’ni Safari’da oching"
         assert not errors
         browser.close()
 
@@ -433,4 +438,23 @@ def test_real_course_document_shows_guide_then_resumes_the_course():
         page.locator("#s-course .uban").first.wait_for(state="visible")
         assert page.evaluate(f"sessionStorage.getItem('{SHOWN_KEY}')") == "1"
         assert not errors, errors
+        browser.close()
+
+def test_other_ios_browser_short_viewport_can_scroll_to_copy_button():
+    # The localized heading must not push Copy outside an unscrollable card.
+    with pw.sync_playwright() as p:
+        browser = getattr(p, os.environ.get('PWA_E2E_ENGINE', 'chromium')).launch()
+        page, errors = _prepare(
+            browser, user_agent=IOS.replace("Version/18.6 ", "CriOS/130.0.0.0 "))
+        page.set_viewport_size({"width": 320, "height": 568})
+        assert page.evaluate("""() => HSKAILiInstallGuide.open(
+          {userId:53,lang:"ru"},()=>{})""") is True
+        assert page.locator(".li-install-card.li-install-browser-mode").count() == 1
+        copy = page.locator(".li-install-copy")
+        copy.scroll_into_view_if_needed()
+        assert copy.evaluate("""(node) => {
+          const rect=node.getBoundingClientRect();
+          return rect.top >= 0 && rect.bottom <= innerHeight;
+        }""")
+        assert not errors
         browser.close()

@@ -27,7 +27,7 @@ or production acceptance.
   because its runner configuration is unsupported; one duplicate
   progressive-browser check was skipped. Both Analytics runs passed 322 tests,
   skipped 30, and proved 20 runtime chain pairs: [PR run](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43577080310),
-  [main push run](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43577075893).
+  [feature branch push run](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43577075893).
 - **Production deployment:** Railway reported deployment
   `d5a9c7f5-88db-46b5-ab10-2e1f557fc377` for commit `ba499cd3` successful and
   online (1/1 replicas), created 2026-11-14 09:35 UTC. This was the normal app
