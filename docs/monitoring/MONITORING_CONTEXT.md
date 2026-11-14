@@ -66,6 +66,11 @@ Independent verification on the implementation commit:
   authenticated Inbox. Direct 725 and Play 667 JVM tests passed; the first
   Play attempt hit a transient pre-existing Voice coroutine teardown error.
   Local lint and both R8 release bundles passed.
+- Learner Chromium and WebKit against local HTTPS and migrated PostgreSQL:
+  real PWA session and map, uncaught error, offline retry with the same
+  UUID, cross-tab account replacement, authenticated checkout and Voice
+  pages, signed Telegram Mini App error and authenticated Inbox all passed.
+  The Telegram SDK ran in a browser; no physical Telegram WebView was tested.
 - Admin Chromium: bearer intake, real PostgreSQL, virtual WebAuthn and
   UZ/RU/TJ Fixed → reopen passed. The real Web Push encoder produced an
   encrypted, VAPID-signed request; decryption yielded only `kind` and
@@ -76,10 +81,21 @@ Independent verification on the implementation commit:
   caught a short-name collision in the static checker: the new queue's
   test-only `size()` was mistaken for Compose `Modifier.size(width, height)`.
   Renamed the queue helper to `queuedCount()` so the guard stays intact.
+  At `c2bd8dd8`, both Android JVM suites, lint and R8 release bundles passed
+  again locally. [Analytics CI](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43550687853)
+  passed 273 tests and 20 runtime chains on that commit. Its
+  [Android CI](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43550687823)
+  is separate from the local evidence.
+- The independent full-suite run found seven Smart Reminder lifespan failures
+  from an unbound shutdown dependency in the extracted-lifespan contract
+  test. Bind the same production reporter locally in the shutdown block and
+  run the Smart Reminder observer and runtime modules in the shared CI suite.
 - Unrelated, reproducible on both `33dca055` and the branch: the local
   Playwright 1.63 Practice layout shifts about 38–44 px at 320 px in normal
   and reduced motion. Neither engine showed it on pinned GitHub CI. This
-  audit did not change Practice layout.
+  audit did not change Practice layout. Also reproduced on both revisions:
+  the Mini App requests `/assets/hsk-launch-gold.mp3` and receives 404, even
+  though the file is in the repository under `app/static/assets/`.
 - Residuals: no client attestation (authenticated clients can still fabricate
   bounded diagnostics); lost/refused reports make impact partial. A hard
   process stop may lose in-memory reports, and an unusually large backlog can
@@ -287,9 +303,11 @@ rollout gates below are still required.
 
 - **Android owner stamp.** The Android queue is stamped with the verified
   bearer session ID (`sid`), not `device.id`, which may be reassigned.
-  Capture and delivery require the originating session; unauthenticated events
-  are not adopted by a later sign-in. The server still derives the canonical
-  account only from the verified bearer.
+  A signed-in event can only be delivered using its original session.
+  Content-free errors captured before the first verified sign-in may be
+  adopted by that initial session, but existing-owner events are purged
+  on logout or replacement. The server still derives the canonical account
+  only from the verified bearer.
 - **Android 503.** `apiCall` reports `api_5xx` for every 5xx except 503, the
   backend's "switched off" answer, matching the server middleware.
 - **Android cancellation.** `apiCall` keeps mapping a cancelled call to

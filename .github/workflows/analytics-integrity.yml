@@ -76,6 +76,8 @@ jobs:
           tests/test_monitoring_push.py
           tests/test_monitoring_telegram_chain.py
           tests/test_monitoring_0156_migration.py
+          tests/test_smart_reminder_analysis_observer.py
+          tests/test_smart_reminder_runtime.py
           tests/test_i18n_miniapp_hotspot_triage.py
           tests/test_i18n_miniapp_inline_adoption.py
           tests/test_i18n_miniapp_lesson_fetch_audit.py

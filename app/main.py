@@ -771,11 +771,12 @@ async def lifespan(app: FastAPI):
         await admin_pwa_statistics_reader.aclose()
         await admin_pwa_analytics_reader.aclose()
         await admin_pwa_feedback_reader.aclose()
+        from app.services.monitoring.backend import reporter as shutdown_reporter
         from app.services.monitoring.miniapp import drain_legacy
         try:
             async with asyncio.timeout(3):
                 await drain_legacy()
-                await diagnostic_reporter.drain()
+                await shutdown_reporter.drain()
         except TimeoutError:
             logger.warning("Diagnostic shutdown drain timed out")
         await bot.session.close()
