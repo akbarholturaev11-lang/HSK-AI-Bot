@@ -230,6 +230,8 @@
       });
       card.append(intro, detail);
     } else {
+      // Other iOS browsers may have short viewports; keep Copy reachable.
+      card.classList.add("li-install-browser-mode");
       var panda = element("div", "li-install-panda");
       panda.setAttribute("aria-hidden", "true");
       var draw = global.HSKCharacters && global.HSKCharacters.render;

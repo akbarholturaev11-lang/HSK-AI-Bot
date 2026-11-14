@@ -71,6 +71,18 @@ class LiOnboardingCanonicalCatalogTests(unittest.TestCase):
         for relative, data in output.items():
             self.assertEqual((Path(relative)).read_text(encoding="utf-8"), data)
 
+    def test_guest_li_install_assets_use_current_versioned_blobs(self):
+        # The guest Li page is outside the shared cache-token generator.
+        # Stale versions make Safari PWA Cache First serve old UI and copy.
+        html = Path("app/static/course_v3_li_onboarding.html").read_text(encoding="utf-8")
+        for asset in ("li-onboarding-install.js", "li-onboarding-install.css",
+                      "hsk-li-onboarding-i18n.js"):
+            raw = (Path("app/static/course_v3_data") / asset).read_bytes()
+            digest = hashlib.sha1(b"blob " + str(len(raw)).encode("ascii")
+                                  + b"\0" + raw).hexdigest()[:12]
+            pattern = rf'(?:href|src)="/course_v3_data/{re.escape(asset)}\?v=\d{{8}}-{digest}"'
+            self.assertRegex(html, pattern, asset)
+
     def test_visual_demo_pinned_and_real_app_uses_catalog_not_copy_duplicates(self):
         demo = Path("docs/onboarding-li/DEMO_REFERENCE_ONLY.html").read_bytes()
         self.assertEqual(hashlib.sha256(demo).hexdigest(),
