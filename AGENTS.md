@@ -303,7 +303,10 @@ feature. Changes to registered shared sources check every mapped pair; an exact
 source exemption names the file, explains the change, and pins its Git source
 SHA-256. With the Admin Inbox `diagnostic` source, the registry requires
 `covered` or a justified `not_applicable` entry for new work, and CI verifies
-runtime proof for covered pairs. Verify on `main` before reporting enforcement there.
+runtime proof for covered pairs. **Main verification:** as of 2026-11-14,
+`origin/main` at `ba499cd38c1c6105a348ee9a5436cabc3c7880be` (PR #308) contains
+the registry, checker, workflow and this rule. Future reports should still
+check the current remote `main` ref before stating its enforcement status.
 
 ---
 

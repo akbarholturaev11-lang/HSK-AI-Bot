@@ -386,6 +386,10 @@ In the `app_error` branch of `/api/miniapp/event`:
 
 ## Migration Plan
 
+The sequence below is the intended rollout. Actual merge/deployment evidence
+and remaining acceptance gates are tracked in
+[`MONITORING_CONTEXT.md`](../../../docs/monitoring/MONITORING_CONTEXT.md).
+
 1. **Prerequisite: met.** The Analytics registry, checker and workflow, plus R1–R4, are on `main` (`4a647ca5`, recorded at `5ea7c22f`). Work branches start from the current `main`.
 2. **Order** (`tasks.md`):
    1. foundation: catalog, registry block in `declare` mode, rule, migration, intake, backend reporter;
