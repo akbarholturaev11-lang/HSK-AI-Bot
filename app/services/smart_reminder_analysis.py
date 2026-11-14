@@ -35,6 +35,11 @@ MAX_BATCH = 128  # Bounded work, not product cadence or experiment calibration.
 UNAVAILABLE_OUTCOMES = ("verified_shown", "read", "opened", "attributed_server_learning")
 logger = logging.getLogger(__name__)
 
+
+class AnalysisOwnerBusy(Exception):
+    """Optional projection deferred; never a missing owner or measured zero."""
+
+
 # Reviewed server reasons only. Unknown/new codes require a source review,
 # never persist arbitrary job text into analysis.
 SHADOW_CADENCE_REASONS = frozenset({
@@ -314,13 +319,17 @@ class SmartReminderAnalysisService:
                 set_={"fact_count": MONTHLY.c.fact_count + 1}))
         return 1
 
-    async def capture_job(self, user_id, job_id):
-        """Internal committed-source capture. No client event/outcome input."""
+    async def capture_job(self, user_id, job_id, *, skip_locked=False):
+        """Capture committed sources; background scans may defer a busy owner."""
         async with self.sessions.begin() as session:
             with session.no_autoflush:
                 owner_row = (await session.execute(select(User.id, User.status).where(
-                    User.id == user_id).with_for_update())).one_or_none()
+                    User.id == user_id).with_for_update(skip_locked=skip_locked))).one_or_none()
                 if owner_row is None:
+                    if skip_locked and await session.scalar(select(User.id).where(User.id == user_id)) is not None:
+                        # A source writer owns this account. Release this session
+                        # and let the cursor revisit it on the next durable pass.
+                        raise AnalysisOwnerBusy
                     return 0
                 owner = owner_row.id
                 pending = await session.scalar(select(AccountDeletionRequest.id).where(
@@ -578,13 +587,23 @@ class SmartReminderAnalysisObserver:
         deadline = loop.time() + self.timeout
         page = await asyncio.wait_for(self.service.reconciliation_page(
             after_job_id=self._reconcile_after, limit=self.batch), timeout=self.timeout)
-        examined = inserted = unavailable = 0
+        examined = inserted = unavailable = deferred = 0
         for user_id, job_id in page.sources:
             remaining = deadline - loop.time()
             if not self.enabled or remaining <= 0:
                 break
             try:
-                inserted += await asyncio.wait_for(self.service.capture_job(user_id, job_id), timeout=remaining)
+                # The tick deadline bounds admission, not an already-started
+                # transaction. A shrinking timeout cancelled healthy captures
+                # near every page boundary; at most one operation can overrun
+                # admission, still bounded by the same per-operation timeout.
+                inserted += await asyncio.wait_for(self.service.capture_job(
+                    user_id, job_id, skip_locked=True), timeout=self.timeout)
+            except AnalysisOwnerBusy:
+                deferred += 1
+            except asyncio.TimeoutError:
+                logger.warning("Smart analysis reconciliation capture unavailable; reason=timeout")
+                unavailable += 1
             except Exception:
                 logger.warning("Smart analysis reconciliation capture unavailable")
                 unavailable += 1
@@ -595,8 +614,10 @@ class SmartReminderAnalysisObserver:
         finished = examined == len(page.sources) and not page.has_more
         if finished:
             self._reconcile_after = None
+        logger.info("Smart analysis reconciliation: examined=%d inserted_facts=%d deferred=%d unavailable=%d",
+                    examined, inserted, deferred, unavailable)
         return {"examined": examined, "inserted_facts": inserted,
-                "unavailable": unavailable, "pass_finished": finished}
+                "unavailable": unavailable, "deferred": deferred, "pass_finished": finished}
 
     async def run_reconciliation(self):
         while self.enabled:
@@ -617,13 +638,19 @@ class SmartReminderAnalysisObserver:
         deadline = loop.time() + self.timeout
         owners, has_more = await asyncio.wait_for(self.baseline.aggregation_page(
             after_user_id=self._baseline_after, limit=self.batch), timeout=self.timeout)
-        examined = updated = unavailable = 0
+        examined = updated = unavailable = deferred = 0
         for user_id in owners:
             remaining = deadline - loop.time()
             if not self.enabled or remaining <= 0:
                 break
             try:
-                updated += await asyncio.wait_for(self.baseline.observe_member(user_id), timeout=remaining)
+                updated += await asyncio.wait_for(self.baseline.observe_member(
+                    user_id, skip_locked=True), timeout=self.timeout)
+            except AnalysisOwnerBusy:
+                deferred += 1
+            except asyncio.TimeoutError:
+                logger.warning("Smart baseline observation unavailable; reason=timeout")
+                unavailable += 1
             except Exception:
                 logger.warning("Smart baseline observation unavailable")
                 unavailable += 1
@@ -632,5 +659,7 @@ class SmartReminderAnalysisObserver:
         finished = examined == len(owners) and not has_more
         if finished:
             self._baseline_after = None
+        logger.info("Smart baseline aggregation: examined=%d updated_observations=%d deferred=%d unavailable=%d",
+                    examined, updated, deferred, unavailable)
         return {"examined": examined, "updated_observations": updated,
-                "unavailable": unavailable, "pass_finished": finished}
+                "unavailable": unavailable, "deferred": deferred, "pass_finished": finished}
