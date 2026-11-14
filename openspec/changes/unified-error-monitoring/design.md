@@ -302,6 +302,8 @@ In the `app_error` branch of `/api/miniapp/event`:
   - status `covered` / `partial` / `not_instrumented` / `not_applicable` and a `reason`;
   - `reporter` path, `client_test` and `chain_test`;
 - `android_packages` and `pwa_pages`, each mapped to features;
+- `critical_paths`, exact shared source files mapped to affected feature/platform
+  pairs when an unchanged route, screen or package can hide a behavior change;
 - `legacy_baseline` (`feature:platform` pairs);
 - `exemptions`, exact and with a reason.
 
@@ -322,6 +324,13 @@ In the `app_error` branch of `/api/miniapp/event`:
 4. **Diff rules** (reusing the push/PR base resolution):
    - In `require_covered` mode, a new route, package or page must map to a feature that is `covered` or `not_applicable` on its platform.
    - In `declare` mode, `partial` is also allowed, with a pending-consumer reason.
+   - A changed critical source checks every mapped pair against the existing
+     runtime coverage contract, or needs a fresh exact-file exemption pinned to
+     the SHA-256 of the reviewed Git source. CI
+     uses both revisions' mappings and rejects silently dropping a binding
+     from an existing file. Python comments and formatting do not trigger
+     this check; JavaScript and Kotlin changes are conservatively checked by
+     file content. This is an explicit inventory, not dynamic call tracing.
    - The baseline may only shrink, and a lowered status needs an exemption.
 5. **Mode tie.** If `pwa_inbox.py` declares the `diagnostic` source, the mode must be `require_covered`.
 

@@ -40,6 +40,14 @@ and `unified_inbox → _diagnostic_rows`. The outbox table and network/credentia
 edges were checked in source and tests: graph paths crossing test imports or
 inferred matching names are not runtime evidence.
 
+Coverage repair: the shared registry's `monitoring.critical_paths` maps
+important dependencies to exact feature/platform pairs. The same required
+check evaluates their Git diff even when entry points are unchanged. New shared
+dependencies need explicit bindings; the checker does not infer dynamic calls.
+The two historical diagnostic-only exceptions for AI provider and the signed
+onboarding runtime are pinned to their source contents. Later edits do not
+inherit them.
+
 | Finding | Correction and regression evidence |
 | --- | --- |
 | Android could send account A's queue with account B's bearer; a device ID is reusable. Late requests and stale uploader results could also cross sessions. | Fence capture and upload by the server-issued session ID, keep the worker out of auth refresh, and scope queue removal to the originating session. Keep the JVM owner-switch and late-response cases. |

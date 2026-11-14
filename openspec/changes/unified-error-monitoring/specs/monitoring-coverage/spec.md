@@ -96,6 +96,11 @@ The check SHALL detect learner routes, Android feature packages, PWA pages and r
 - **WHEN** Android or PWA reporter code uses a failure code that is not in the server catalog
 - **THEN** the check fails, naming the file and the code
 
+#### Scenario: Shared behavior changes behind the same entry point
+- **WHEN** a registered backend service, Android repository or shared browser script changes without a route, package or page change
+- **THEN** CI checks every registered feature and platform for runtime-backed coverage and rejects a gap without a fresh exact-file exemption
+- **AND** removing its binding in the same change does not bypass the check
+
 ### Requirement: Monitor self-checks
 The CI suite SHALL include regression tests for the monitor itself. They cover schema compatibility of the intake, auth and privacy rejection, deduplication under concurrency, rate limits, offline retry and account switch, and the Admin projection. CI results SHALL be reported separately from staging and real-device acceptance.
 

@@ -6,11 +6,13 @@ the application is never imported. The runtime catalog is read by path.
 """
 
 import ast
+from hashlib import sha256
 import importlib.util
 from pathlib import Path
 import re
 
-ANDROID_FEATURE_DIR = "android/app/src/main/java/com/pomp/hskai/feature"
+ANDROID_SOURCE_DIR = "android/app/src"
+ANDROID_FEATURE_DIR = f"{ANDROID_SOURCE_DIR}/main/java/com/pomp/hskai/feature"
 ANDROID_FEATURE_DIRS = tuple(ANDROID_FEATURE_DIR.replace("/main/", f"/{source}/")
                              for source in ("main", "direct", "play"))
 CATALOG = "app/services/monitoring/catalog.py"
@@ -30,6 +32,7 @@ INTAKE_ROUTES = {
     "server": "report_server_failure",
 }
 PAGE_PATTERNS = ("course-v3.html", "course_v3_*.html", "iphone-pwa-*.html", "subscription.html")
+SOURCE_FILE = re.compile(r"(?:[a-zA-Z0-9_.-]+/)*[a-zA-Z0-9_.-]+")
 KOTLIN_CATALOG = "android/app/src/main/java/com/pomp/hskai/core/diagnostics/DiagnosticCatalog.kt"
 JS_REPORTER_CALL = re.compile(
     r"HskDiag\.report\(\s*['\"]([a-z][a-z0-9_]*)['\"]\s*,\s*['\"]([a-z][a-z0-9_]*)['\"]"
@@ -163,6 +166,20 @@ def _exact_file(root, value, label):
             and (Path(root) / value).is_file(), label, f"expected an existing file, got {value!r}")
 
 
+def _critical_source(path):
+    return (isinstance(path, str) and SOURCE_FILE.fullmatch(path)
+            and not {".", ".."} & set(path.split("/"))
+            and ((path.startswith("app/") and path.endswith(".py"))
+                 or (path.startswith("app/static/") and path.endswith(".js"))
+                 or (path.startswith(tuple(f"{ANDROID_SOURCE_DIR}/{flavor}/java/"
+                                           for flavor in ("main", "direct", "play")))
+                     and path.endswith((".kt", ".java")))))
+
+
+def source_digest(text):
+    return sha256(text.encode("utf-8")).hexdigest()
+
+
 def _client_test_ok(root, reference, label, workflow_text, android_ci_text):
     require(isinstance(reference, str) and reference, label, "covered requires a client_test")
     path = reference.split("::", 1)[0]
@@ -232,7 +249,8 @@ def validate_monitoring(block, root, *, flow_ids, critical_paths, ci_modules, va
     """Schema, source inventory and evidence checks. Returns a summary dict."""
     label = "monitoring"
     require(isinstance(block, dict), label, "expected an object")
-    allowed = {"mode", "features", "android_packages", "pwa_pages", "legacy_baseline", "exemptions"}
+    allowed = {"mode", "features", "android_packages", "pwa_pages", "critical_paths",
+               "legacy_baseline", "exemptions"}
     require(set(block) == allowed, label, f"fields must be exactly {sorted(allowed)}")
     require(block["mode"] in MODES, label, f"mode must be one of {MODES}")
     catalog = load_catalog(root)
@@ -287,24 +305,44 @@ def validate_monitoring(block, root, *, flow_ids, critical_paths, ci_modules, va
         fid, _, platform = pair.partition(":")
         require(fid in features and platform in PLATFORMS, "legacy_baseline", f"invalid pair {pair!r}")
 
+    sources = block["critical_paths"]
+    require(isinstance(sources, dict), "monitoring critical_paths", "expected an object")
+    for path, pairs in sources.items():
+        scope = f"monitoring critical_paths/{path}"
+        require(_critical_source(path) and (root / path).is_file()
+                and (root / path).resolve().is_relative_to(root.resolve()),
+                scope, "expected an exact existing production source file")
+        require(isinstance(pairs, list) and pairs, scope, "expected non-empty feature:platform pairs")
+        for pair in pairs:
+            require(isinstance(pair, str), scope, "expected a feature:platform pair")
+            fid, _, platform = pair.partition(":")
+            require(fid in features and platform in PLATFORMS, scope, f"invalid pair {pair!r}")
+        require(len(pairs) == len(set(pairs)), scope, "duplicate feature:platform pair")
+
     exemptions = block["exemptions"]
     require(isinstance(exemptions, list), "monitoring exemptions", "expected a list")
     exempt = set()
     for row in exemptions:
-        require(isinstance(row, dict) and set(row) == {"target", "reason"}, "monitoring exemption",
-                "needs exactly target and reason")
+        require(isinstance(row, dict) and {"target", "reason"} <= set(row) <= {"target", "reason", "sha256"},
+                "monitoring exemption", "needs target and reason, with sha256 for critical sources")
         target = row["target"]
         require(isinstance(row["reason"], str) and row["reason"].strip(), f"exemption {target!r}",
                 "a non-empty reason is required")
         require(isinstance(target, str) and target and not target.endswith("/") and "*" not in target
                 and (target.startswith("/api/") or target in catalog.FEATURES
-                     or target.startswith("app/static/") or target.startswith(ANDROID_FEATURE_DIR)),
-                f"exemption {target!r}", "must name one exact route, page, package or feature ID")
+                     or target.startswith("app/static/") or target.startswith(ANDROID_FEATURE_DIR)
+                     or _critical_source(target)),
+                f"exemption {target!r}", "must name one exact route, page, package, feature ID or source file")
         package_target = next((target[len(base) + 1:] for base in ANDROID_FEATURE_DIRS
                                if target.startswith(base + "/")), None)
         require(not (Path(root) / target).is_dir()
                 or (package_target in mapped_packages and "/" not in package_target), f"exemption {target!r}",
                 "a directory cannot be exempted unless it is one mapped Android feature package")
+        require(target not in exempt, f"exemption {target!r}", "duplicate target")
+        if target in sources or "sha256" in row:
+            require(_critical_source(target) and isinstance(row.get("sha256"), str)
+                    and re.fullmatch(r"[0-9a-f]{64}", row["sha256"]), f"exemption {target!r}",
+                    "critical source exemptions need the exact Git source SHA-256")
         exempt.add(target)
 
     # Source inventory: everything must be mapped.
@@ -359,20 +397,24 @@ def _status_rank(status):
 
 
 def validate_monitoring_diff(block, previous_block, summary, previous_routes, previous_packages,
-                             previous_pages, root, *, changed_routes=(), changed_packages=(), changed_pages=()):
-    """New sources and changed API handlers need coverage; the baseline only shrinks."""
+                             previous_pages, root, *, changed_routes=(), changed_packages=(),
+                             changed_pages=(), critical_diffs=None):
+    """New or changed surfaces need coverage; the baseline only shrinks."""
     if previous_block is None:
         previous_block = {}
     mode = block["mode"]
     catalog = summary["catalog"]
     features = summary["features"]
     exempt_now = {row["target"] for row in block["exemptions"]}
-    new_exemptions = {row["target"] for row in block["exemptions"]
-                      if row not in previous_block.get("exemptions", [])}
+    critical_diffs = critical_diffs or {}
+    prior_exemptions = {(row["target"], " ".join(row["reason"].split()), row.get("sha256"))
+                        for row in previous_block.get("exemptions", [])}
+    new_exemptions = {row["target"]: row.get("sha256") for row in block["exemptions"]
+                      if (row["target"], " ".join(row["reason"].split()), row.get("sha256")) not in prior_exemptions}
     errors = []
 
-    def check(target, fid, platform, where, *, changed=False):
-        if target in (new_exemptions if changed else exempt_now):
+    def check(target, fid, platform, where, *, changed=False, critical=False):
+        if not critical and target in (new_exemptions if changed else exempt_now):
             return
         cell = features.get(fid, {}).get(platform, {})
         if not _cell_ok(cell, mode):
@@ -397,6 +439,21 @@ def validate_monitoring_diff(block, previous_block, summary, previous_routes, pr
             path = f"app/static/{page}"
             check(path, block["pwa_pages"][page], "iphone_pwa", path, changed=page in previous_pages)
 
+    old_sources = previous_block.get("critical_paths", {})
+    sources = block["critical_paths"]
+    for path in sorted(old_sources.keys() | sources.keys()):
+        before = set(old_sources.get(path, ()))
+        after = set(sources.get(path, ()))
+        removed = before - after
+        exempt_source = path in critical_diffs and new_exemptions.get(path) == critical_diffs[path]
+        if removed and ((root / path).exists() or not exempt_source):
+            errors.append(f"{path}: removed critical monitoring bindings {', '.join(sorted(removed))}; "
+                          "keep the bindings for an existing file, or review its deletion with an exact-file exemption")
+        if path in critical_diffs and not exempt_source:
+            for pair in sorted(before | after):
+                fid, platform = pair.split(":")
+                check(path, fid, platform, "monitoring critical source", changed=True, critical=True)
+
     old_baseline = set(previous_block.get("legacy_baseline", []))
     grown = sorted(set(block["legacy_baseline"]) - old_baseline) if previous_block else []
     for pair in grown:
@@ -407,7 +464,8 @@ def validate_monitoring_diff(block, previous_block, summary, previous_routes, pr
             if (previous_block and fid not in old_features and not _cell_ok(cell, mode)):
                 errors.append(f"monitoring {fid}:{platform}: a new feature needs coverage or a justified not_applicable entry")
             before = old_features.get(fid, {}).get(platform)
-            if before and _status_rank(cell["status"]) < _status_rank(before.get("status")):
+            if before and (_status_rank(cell["status"]) < _status_rank(before.get("status"))
+                           or (before["status"] == "covered" and cell["status"] == "not_applicable")):
                 target = f"{fid}:{platform}"
                 if target not in new_exemptions and fid not in new_exemptions:
                     errors.append(f"monitoring {target}: status lowered from {before['status']} to "

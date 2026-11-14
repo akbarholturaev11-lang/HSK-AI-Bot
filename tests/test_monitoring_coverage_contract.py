@@ -66,6 +66,7 @@ def block(**overrides):
         ],
         "android_packages": {"lesson": "lessons"},
         "pwa_pages": {"course-v3.html": "lessons"},
+        "critical_paths": {},
         "legacy_baseline": ["lessons:server"],
         "exemptions": [],
     }
@@ -214,6 +215,16 @@ class MonitoringCoverageTests(unittest.TestCase):
         self.assertFails("a directory cannot be exempted",
                          block(exemptions=[{"target": "app/static/group", "reason": "x"}]))
 
+    def test_shared_source_bindings_require_an_exact_source_and_known_pair(self):
+        self.repo.write("app/static/runtime.js", "// shared")
+        for path, pairs, message in (
+            ("app/static/*.js", ["lessons:iphone_pwa"], "exact existing production source file"),
+            ("app/static/runtime.js", ["missing:iphone_pwa"], "invalid pair"),
+            ("app/static/runtime.js", ["lessons:desktop"], "invalid pair"),
+        ):
+            with self.subTest(path=path, pairs=pairs):
+                self.assertFails(message, block(critical_paths={path: pairs}))
+
     def test_duplicate_or_unknown_feature_id(self):
         value = block()
         value["features"].append(deepcopy(value["features"][0]))
@@ -340,6 +351,132 @@ class MonitoringDiffTests(unittest.TestCase):
 
     def test_baseline_may_shrink(self):
         self.diff(block(legacy_baseline=[]), block())
+
+    def test_covered_cannot_be_reclassified_as_not_applicable_without_review(self):
+        previous = block()
+        previous["features"][0]["platforms"]["server"] = {"status": "covered"}
+        value = block()
+        value["features"][0]["platforms"]["server"] = cell("not_applicable", "The service no longer owns this action.")
+        with self.assertRaisesRegex(monitoring.MonitoringError, "status lowered from covered to not_applicable"):
+            self.diff(value, previous)
+
+
+class MonitoringSharedSourceGitTests(unittest.TestCase):
+    # Commit the actual file change while the route, page, feature package
+    # and registry stay identical. This exercises the same Git diff as CI.
+    SOURCES = {
+        "app/services/lesson_result.py": ("def save():\n    return 'saved'\n",
+                                          "def save():\n    return 'pending'\n", "lessons:server"),
+        "android/app/src/main/java/com/pomp/hskai/data/repository/LessonRepository.kt":
+            ('fun lesson() = "saved"\n', 'fun lesson() = "pending"\n', "lessons:android"),
+        "app/static/course_v3_data/lesson-runtime.js":
+            ('function lesson() { return "saved"; }\n', 'function lesson() { return "pending"; }\n',
+             "lessons:iphone_pwa"),
+    }
+
+    def setUp(self):
+        self.repo = Fixture()
+        self.addCleanup(self.repo.close)
+        self.git("init", "-q")
+        self.git("config", "user.email", "monitoring-test@example.invalid")
+        self.git("config", "user.name", "Monitoring test")
+        for path, (before, _, _) in self.SOURCES.items():
+            self.repo.write(path, before)
+        self.value = block(mode="require_covered",
+                           critical_paths={path: [pair] for path, (_, _, pair) in self.SOURCES.items()})
+        self.write_registry()
+        self.base = self.commit("base")
+
+    def git(self, *args):
+        return checker.git(self.repo.root, *args)
+
+    def commit(self, message):
+        self.git("add", "-A")
+        self.git("-c", "core.hooksPath=/dev/null", "-c", "commit.gpgsign=false", "commit", "-qm", message)
+        return self.git("rev-parse", "HEAD").strip()
+
+    def write_registry(self):
+        self.repo.write(checker.REGISTRY, json.dumps({"monitoring": self.value}))
+
+    def check(self, mode):
+        checker.check_monitoring_diff(self.repo.root, {"monitoring": self.value},
+                                      self.repo.validate(self.value), self.base, "HEAD", mode)
+
+    def test_blocks_only_the_changed_shared_files_in_both_ci_modes(self):
+        for path, (_, after, pair) in self.SOURCES.items():
+            with self.subTest(path=path):
+                self.git("checkout", "--detach", "-q", self.base)
+                self.repo.write(path, after)
+                self.commit("shared behavior")
+                for mode in ("push", "pull_request"):
+                    with self.subTest(mode=mode), self.assertRaises(monitoring.MonitoringError) as caught:
+                        self.check(mode)
+                    self.assertEqual(len(str(caught.exception).splitlines()), 1)
+                    self.assertIn(f"changed {path} maps to {pair.replace(':', '/')}", str(caught.exception))
+
+    def test_requires_every_pair_and_accepts_justified_not_applicable(self):
+        path = "app/static/course_v3_data/lesson-runtime.js"
+        self.value["critical_paths"][path].append("lessons:telegram")
+        lesson = self.value["features"][0]["platforms"]
+        lesson["iphone_pwa"] = cell("not_applicable", "This fixture only serves the signed Telegram transport.")
+        self.repo.write(path, self.SOURCES[path][1])
+        self.write_registry()
+        self.commit("partially reviewed shared behavior")
+        with self.assertRaisesRegex(monitoring.MonitoringError, "lessons/telegram"):
+            self.check("pull_request")
+        # The real PostgreSQL proof is a separate CI step. Here the fixture
+        # exercises the decision once both bindings have valid dispositions.
+        lesson["telegram"] = cell("not_applicable", "This fixture has no live transport.")
+        self.write_registry()
+        self.commit("review all pairs")
+        self.check("pull_request")
+
+    def test_python_comments_do_not_trigger_the_shared_source_check(self):
+        path = "app/services/lesson_result.py"
+        self.repo.write(path, self.SOURCES[path][0] + "\n# Documentation only.\n")
+        self.commit("comments only")
+        self.check("pull_request")
+
+    def test_exemption_is_bound_to_the_reviewed_blob_even_with_the_same_pr_base(self):
+        path = "app/services/lesson_result.py"
+        after = self.SOURCES[path][1]
+        self.repo.write(path, after)
+        self.value["exemptions"] = [{"target": path, "reason": "Only updates the diagnostic status label.",
+                                     "sha256": monitoring.source_digest(after)}]
+        self.write_registry()
+        self.commit("reviewed diagnostic change")
+        self.check("pull_request")
+        self.repo.write(path, after.replace("pending", "failed"))
+        self.commit("unreviewed follow-up")
+        with self.assertRaisesRegex(monitoring.MonitoringError, "lessons/server"):
+            self.check("pull_request")
+
+    def test_existing_binding_cannot_be_removed_even_with_a_file_exemption(self):
+        path = "app/services/lesson_result.py"
+        after = self.SOURCES[path][1]
+        del self.value["critical_paths"][path]
+        self.value["exemptions"] = [{"target": path, "reason": "Updates the diagnostic status label.",
+                                     "sha256": monitoring.source_digest(after)}]
+        self.repo.write(path, after)
+        self.write_registry()
+        self.commit("remove binding from changed file")
+        with self.assertRaisesRegex(monitoring.MonitoringError, "removed critical monitoring bindings"):
+            self.check("pull_request")
+
+    def test_source_deletion_requires_review_of_the_removed_blob(self):
+        path = "app/services/lesson_result.py"
+        before = self.SOURCES[path][0]
+        (self.repo.root / path).unlink()
+        del self.value["critical_paths"][path]
+        self.write_registry()
+        self.commit("delete shared source")
+        with self.assertRaisesRegex(monitoring.MonitoringError, "removed critical monitoring bindings"):
+            self.check("pull_request")
+        self.value["exemptions"] = [{"target": path, "reason": "Remove the unused legacy service.",
+                                     "sha256": monitoring.source_digest(before)}]
+        self.write_registry()
+        self.commit("review deletion")
+        self.check("pull_request")
 
 
 if __name__ == "__main__":

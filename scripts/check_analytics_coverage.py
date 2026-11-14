@@ -609,9 +609,20 @@ def check_monitoring_diff(root, registry, summary, base, head, mode):
     changed_pages = {Path(path).name for path in changed_files
                      if path.startswith("app/static/") and path.count("/") == 2
                      and any(Path(path).match(pattern) for pattern in monitoring_coverage.PAGE_PATTERNS)}
+    old_block = previous.get("monitoring") or {}
+    sources = old_block.get("critical_paths", {}).keys() | registry["monitoring"]["critical_paths"].keys()
+    critical_diffs = {}
+    for path in sorted(changed_files & sources):
+        before = git_blob(root, base, path)
+        after = git_blob(root, head, path)
+        if path.endswith(".py") and before and after:
+            if ast.dump(ast.parse(before, filename=path)) == ast.dump(ast.parse(after, filename=path)):
+                continue
+        critical_diffs[path] = monitoring_coverage.source_digest(after if (root / path).is_file() else before)
     monitoring_coverage.validate_monitoring_diff(
         registry["monitoring"], previous.get("monitoring"), summary, routes, packages, pages, root,
-        changed_routes=changed_routes, changed_packages=changed_packages, changed_pages=changed_pages)
+        changed_routes=changed_routes, changed_packages=changed_packages, changed_pages=changed_pages,
+        critical_diffs=critical_diffs)
 
 
 def main(argv=None):
