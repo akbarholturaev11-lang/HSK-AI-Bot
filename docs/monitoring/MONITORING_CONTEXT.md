@@ -55,6 +55,8 @@ affected-account window from physical cleanup. The PostgreSQL backlog test
 seeds 8,003 expired receipts, verifies the first pass deletes 8,000, and
 checks that the next pass removes the remainder and preserves a fresh
 receipt and the open incident.
+Resolved incidents also wait for their last receipt to be purged. A locked
+receipt cannot cause cascade deletion or hold up the resolved-incident pass.
 
 | Finding | Correction and regression evidence |
 | --- | --- |

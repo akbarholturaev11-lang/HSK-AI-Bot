@@ -283,7 +283,8 @@ Defaults (catalog constants, not owner decisions): cap 60 events per account per
   the other. It deletes receipts older than 30 days and resolved incidents
   unseen for 180 days with their triage rows. On a full batch, it catches up
   with at most seven more batches in that pass. Each batch commits separately
-  and uses the diagnostic pool and statement limits. Audit rows stay; they
+  and uses the diagnostic pool and statement limits. An incident waits until
+  its receipts have been removed by that bounded pass. Audit rows stay; they
   hold no telemetry. Account counts exclude expired rows immediately; the
   privacy notice distinguishes expiry from physical removal by housekeeping
   after an outage or backlog.

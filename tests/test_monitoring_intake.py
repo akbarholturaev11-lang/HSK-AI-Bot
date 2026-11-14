@@ -299,6 +299,27 @@ class PostgresIntakeTests(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual((await db.scalars(select(DiagnosticReceipt.received_at))).all(), [NOW])
                 self.assertIsNotNone(await db.get(DiagnosticIncident, incident_id))
 
+    async def test_resolved_incident_waits_for_bounded_receipt_cleanup(self):
+        old = NOW - timedelta(days=181)
+        async with pg_sessions(PG_URL) as sessions:
+            events, _ = parse_batch(batch(*[event_body() for _ in range(5)]), platform="android", now=old)
+            async with sessions() as db, db.begin():
+                await ingest(db, owner_user_id=1, events=events, now=old)
+                incident_id = await db.scalar(select(DiagnosticIncident.id))
+                db.add(AdminPwaInboxTriage(source="diagnostic", source_id=incident_id, status="resolved",
+                                           priority="normal", revision=1, updated_at=old))
+            async with sessions() as locker, locker.begin():
+                await locker.scalar(select(DiagnosticReceipt.id)
+                                    .order_by(DiagnosticReceipt.id).limit(1).with_for_update())
+                async with sessions() as worker, worker.begin():
+                    self.assertEqual(await purge_diagnostics(worker, now=NOW, limit=2), (2, 0))
+                    self.assertEqual(await worker.scalar(select(func.count()).select_from(DiagnosticReceipt)), 3)
+            async with sessions() as worker, worker.begin():
+                self.assertEqual(await purge_diagnostics(worker, now=NOW, limit=2), (2, 0))
+            async with sessions() as worker, worker.begin():
+                self.assertEqual(await purge_diagnostics(worker, now=NOW, limit=2), (1, 1))
+                self.assertIsNone(await worker.get(DiagnosticIncident, incident_id))
+
     async def test_account_deletion_lowers_the_affected_count(self):
         from app.repositories.user_repo import UserRepository
         async with pg_sessions(PG_URL) as sessions:
