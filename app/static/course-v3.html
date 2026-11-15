@@ -1633,7 +1633,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 <link href="/course_v3_data/profile-carousel.css?v=20261017-link-cards-1" rel="stylesheet">
 <link href="/course_v3_data/rating-podium.css?v=20261105-1" rel="stylesheet">
 <link rel="stylesheet" href="/assets/characters/hsk-scene-background.css?v=20261009-preparing-compact-1">
-  <script defer src="/course_v3_data/hsk-diagnostics.js?v=20261115-5408a5e8b789"></script><script>if(document.documentElement.classList.contains("hsk-pwa-browser")){document.documentElement.dataset.hskDesignScreen="course-shell";var hskP45Style=document.createElement("link");hskP45Style.rel="stylesheet";hskP45Style.href="/course_v3_data/pwa-professional45.css?v=20261116-1";document.head.appendChild(hskP45Style)}</script>
+  <script defer src="/course_v3_data/hsk-diagnostics.js?v=20261115-5408a5e8b789"></script><script>if(document.documentElement.classList.contains("hsk-pwa-browser")){document.documentElement.dataset.hskDesignScreen="course-shell";var hskP45Style=document.createElement("link");hskP45Style.rel="stylesheet";hskP45Style.href="/course_v3_data/pwa-professional45.css?v=20261116-1";document.head.appendChild(hskP45Style);var p45ProgressCss=document.createElement("link");p45ProgressCss.rel="stylesheet";p45ProgressCss.href="/course_v3_data/pwa-professional45-progress.css?v=20261116-1";document.head.appendChild(p45ProgressCss);var p45ProgressScript=document.createElement("script");p45ProgressScript.src="/course_v3_data/pwa-professional45-progress.js?v=20261116-1";document.head.appendChild(p45ProgressScript)}</script>
 </head>
 <body class="hsk-scene-page">
 <div id="hsk-launch-splash" class="is-playing" role="img" aria-label="HSK AI">
@@ -4120,8 +4120,8 @@ function renderCourse(){
      reja birga tepada qoladi. Ilgari faqat `.htop` yopishqoq edi va reja
      tasmasi pastga suriganda uning ostiga kirib ko'rinmay ketardi. */
   var h='<div class="cleft"><div class="ctop"><div class="htop"><h1 class="section-title"><button type="button" class="course-heading-button" onclick="App.courseTrackPicker()" aria-label="'+esc(trackUi().courseVersion)+'">'+esc(courseLevelLabel((MAP&&MAP.level)||getSelectedLevel()))+'</button></h1>'
-    +'<span class="chip" style="margin-left:auto;color:var(--cin)"><i class="ti ti-flame"></i> '+(MAP.progress.streak||0)+'</span>'
-    +'<span class="chip" style="color:var(--gold)"><i class="ti ti-diamond"></i> '+(MAP.progress.xp||0).toLocaleString("ru")+'</span>'
+    +(PWA_COURSE_HOST?'<button type="button" class="chip p45-progress-chip" style="margin-left:auto;color:var(--cin)" onclick="window.HskPwaProgress&&HskPwaProgress.open(\'streak\')" aria-label="Streak"><i class="ti ti-flame"></i> '+(MAP.progress.streak||0)+'</button>':'<span class="chip" style="margin-left:auto;color:var(--cin)"><i class="ti ti-flame"></i> '+(MAP.progress.streak||0)+'</span>')
+    +(PWA_COURSE_HOST?'<button type="button" class="chip p45-progress-chip" style="color:var(--gold)" onclick="window.HskPwaProgress&&HskPwaProgress.open(\'xp\')" aria-label="XP"><i class="ti ti-diamond"></i> '+(MAP.progress.xp||0).toLocaleString("ru")+'</button>':'<span class="chip" style="color:var(--gold)"><i class="ti ti-diamond"></i> '+(MAP.progress.xp||0).toLocaleString("ru")+'</span>')
     +goalRingHtml()+'</div>'
     /* Starter 0 hali MAJBURIY va tugatilmagan bo'lsa reja ko'rsatilmaydi:
        boshlovchida ikkita raqobatchi chaqiriq bo'lmasin. Starter tugagach
@@ -7714,14 +7714,13 @@ function renderProfile(){
       :'<div class="pav'+(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han")+'" onclick="App.avatarEdit()">'+esc(PROF.avatar||"阿")+myAvatarImgHtml()+'<span class="ed"><i class="ti ti-pencil"></i></span></div>')
     +'<div class="profile-hero-content"><div class="profile-identity-row"><strong class="profile-display-name">'+nickname+'</strong><span class="profile-access-badge'+(paid||trialActive||temporaryActive?' pro':'')+'">'+(paid?'<i class="ti ti-crown"></i> HSK AI Pro':trialActive?'<i class="ti ti-crown"></i> '+esc(c.trial):temporaryActive?'<i class="ti ti-clock"></i> '+esc(courseMessage("profile.temporaryAccess",({ru:"Временный доступ",tj:"Дастрасии муваққатӣ",uz:"Vaqtinchalik ruxsat"}[LANG]||"Временный доступ"))):esc(c.free))+'</span></div>'
     +(goalLabel()?'<div class="profile-goal-row"><span class="lvb goal"><i class="ti ti-target"></i> '+esc(goalLabel())+'</span></div>':'')+'</div></div>'
-    +'<button type="button" class="profile-friends-link" onclick="App.openFriends()"><i class="ti ti-users" aria-hidden="true"></i><span>'+esc(courseMessage("friends",t.friends))+'</span><i class="ti ti-chevron-right" aria-hidden="true"></i></button>'
     +profileAccuracyHtml()
     +'<div id="pomp-desktop-profile-root"></div>'
-    +'<div class="sech" style="display:flex;justify-content:space-between"><span>'+p.calTitle+'</span><span style="color:var(--cin)"><i class="ti ti-flame" style="font-size:12px"></i> '+streak+' '+courseMessage("streak",t.streak)+'</span></div><div class="card2"><div class="cal">'+streakCalHtml()+'</div></div>'
+    +'<div class="sech" style="display:flex;justify-content:space-between;align-items:center"><span>'+p.calTitle+'</span>'+(PWA_COURSE_HOST?'<button type="button" class="p45-profile-streak-link" onclick="window.HskPwaProgress&&HskPwaProgress.open(\'streak\')" aria-label="Streak"><i class="ti ti-flame" aria-hidden="true"></i> '+streak+' '+courseMessage("streak",t.streak)+' <i class="ti ti-chevron-right" aria-hidden="true"></i></button>':'<span style="color:var(--cin)"><i class="ti ti-flame" style="font-size:12px"></i> '+streak+' '+courseMessage("streak",t.streak)+'</span>')+'</div><div class="card2"><div class="cal">'+streakCalHtml()+'</div></div>'
     +(showProLink?'<button type="button" class="profile-pro-link" onclick="App.goPay(\'profile_after_streak\')"><i class="ti ti-crown" aria-hidden="true"></i><span>'+esc(c.pro)+'</span><i class="ti ti-chevron-right" aria-hidden="true"></i></button>':'')
     +'<div class="sech">'+p.ach+'</div><div class="profile-compact-ach">'
-    +'<div class="arow"><div class="aic c1"><i class="ti ti-book"></i></div><div class="at"><div class="ah"><span>'+p.a2+'</span><small>'+completedLessons+' / 100</small></div><div class="abar"><i style="width:'+lessonAchPct+'%"></i></div></div></div>'
-    +'<div class="arow"><div class="aic c2"><i class="ti ti-flame"></i></div><div class="at"><div class="ah"><span>'+p.a3+'</span><small>'+streak+' / 30</small></div><div class="abar"><i style="width:'+streakAchPct+'%"></i></div></div></div></div>'
+    +'<div class="arow"><div class="aic c1"><i class="ti ti-book"></i></div><div class="at"><div class="ah"><span>'+p.a2+'</span><small>'+completedLessons+' / 100</small></div><div class="abar"><i style="width:'+lessonAchPct+'%"></i></div></div></div></div>'
+    +'<button type="button" class="profile-friends-link" onclick="App.openFriends()"><i class="ti ti-users" aria-hidden="true"></i><span>'+esc(courseMessage("friends",t.friends))+'</span><i class="ti ti-chevron-right" aria-hidden="true"></i></button>'
     +'<div id="hsk-profile-promo-root"></div>'
     +(SIGNIN_STATE.note?'<p class="hp-promo-note" role="status">'+esc(SIGNIN_STATE.note)+'</p>':"")
     +'<div style="height:14px"></div>';
@@ -9842,6 +9841,7 @@ var NavBack={
   MIN:88,    /* The browser PWA uses a shorter, position-aware horizontal threshold. */
   /* Qatlamlar ustkisidan boshlab tekshiriladi. */
   LAYERS:[{id:"pwa-shake",target:function(){return PWA_COURSE_HOST&&window.HskPwaShake&&HskPwaShake.backTarget()},close:function(){HskPwaShake.close()}},
+    {id:"p45-progress",target:function(){return PWA_COURSE_HOST&&window.HskPwaProgress&&HskPwaProgress.backTarget()},close:function(){HskPwaProgress.close()}},
     {id:"pwa-checkout-layer",target:function(){return $("#pwa-checkout-layer")},close:pwaCheckoutBack},
     {id:"pwa-practice-layer",target:function(){return PWA_COURSE_HOST&&RESOURCE.practiceBackTarget()},close:function(){RESOURCE.practiceBack()}},
     {id:"pwa-inbox",target:function(){return PWA_COURSE_HOST&&window.HskPwaInbox&&HskPwaInbox.backTarget&&HskPwaInbox.backTarget()},close:function(){HskPwaInbox.back()}},
