@@ -358,8 +358,7 @@
     if (view==="exit") {
       header("gift",txt("exitTitle"),txt("exitText"));
       actions.appendChild(btn(txt("accept"),"hip-primary",claimExit));
-      actions.appendChild(btn(txt("decline"),"hip-secondary",function(){emit("pwa_pro_exit_declined");close()}));
-      actions.appendChild(el("p","hip-small hip-center",txt("renewal")));
+      // Offer-close uses the existing top-right X; no second CTA.
       return;
     }
     if (view==="success") {
@@ -531,18 +530,29 @@
   }
   function requestDismiss() {
     if (!state) return;
-    // An invoice may be in flight or already open: never interrupt it with
-    // a discount offer that would start a second checkout.
-    if (state.mode==="exit_discount"||state.paying||state.checkoutId||
-        state.screen==="success"||state.screen==="waiting"||state.screen==="manual") {emit("pwa_pro_dismissed");close();return}
-    if (state.screen==="exit") {emit("pwa_pro_exit_declined");close();return}
+    if (state.screen==="exit") {
+      state.offerDismissed=true;
+      state.screen=state.offerReturnScreen||"main";
+      emit("pwa_pro_exit_declined");render();return;
+    }
+    // The second checkout X exits directly; a pending payment never gets another invoice.
+    if (state.offerDismissed||state.mode==="exit_discount"||state.paying||state.checkoutId||
+        state.screen==="success"||state.screen==="waiting"||state.screen==="manual") {
+      emit("pwa_pro_dismissed");close();return;
+    }
+    if (state.offerChecking)return;
     var current=++run;
-    state.screen="loading";render();
+    state.offerChecking=true;state.offerReturnScreen=state.screen;
+    closeButton.disabled=true;
     request(API.offer,{action:"view",source:state.source}).then(function(data) {
-      if (!state||current!==run) return;
+      if (!state||current!==run)return;
+      state.offerChecking=false;closeButton.disabled=false;
       if (!data.available) {emit("pwa_pro_dismissed");close();return}
       emit("pwa_pro_exit_offered");state.screen="exit";render();
-    }).catch(function(){if(state&&current===run){emit("pwa_pro_dismissed");close()}});
+    }).catch(function(){if(state&&current===run){
+      state.offerChecking=false;closeButton.disabled=false;
+      emit("pwa_pro_dismissed");close();
+    }});
   }
   function claimExit() {
     if (!state) return;
@@ -550,13 +560,14 @@
     state.screen="loading";render();
     request(API.offer,{action:"claim",source:state.source}).then(function(data) {
       if (!state||current!==run) return;
-      if (!data.available) {close();return}
-      emit("pwa_pro_exit_claimed");state.mode="exit_discount";
+      if (!data.available) {state.offerDismissed=true;state.screen=state.offerReturnScreen||"main";render();return}
+      emit("pwa_pro_exit_claimed");state.mode="exit_discount";state.offerDismissed=true;
       load();
-    }).catch(function(){if(state&&current===run){state.error=txt("error");state.screen="main";render()}});
+    }).catch(function(){if(state&&current===run){state.error=txt("error");state.offerDismissed=true;state.screen=state.offerReturnScreen||"main";render()}});
   }
   function goBack() {
     if (!state) return;
+    if (state.screen==="exit"){requestDismiss();return}
     if (state.screen==="manual")state.screen=available().length?"more":"main";
     else if (state.screen==="email")state.screen=state.emailFrom==="more"?"more":"main";
     else if (state.screen==="more")state.screen="main";
@@ -639,7 +650,8 @@
     state={lang:lang,source:String(opts.source||"v3_paywall").slice(0,80),
       mode:"subscription",screen:"loading",plan:"1_month",email:"",attempt:"inline-"+Date.now()+"-"+Math.floor(Math.random()*1000000),eventSeq:0,
       data:null,error:"",pendingError:"",polling:false,paying:false,redirecting:false,emailFrom:"main",onClose:opts.onClose,
-      previousOverflow:document.documentElement.style.overflow};
+      previousOverflow:document.documentElement.style.overflow,
+      offerDismissed:false,offerChecking:false,offerReturnScreen:"main"};
     root.hidden=false;
     document.documentElement.style.overflow="hidden";
     root.setAttribute("aria-label","HSK AI Pro");
