@@ -389,8 +389,17 @@ body.dark::before{background-color:#FFFFFF;opacity:.55}
 </style>
 <link rel="stylesheet" href="/course_v3_data/li-onboarding-install.css?v=20261114-c3f73ad6df67">
   <script defer src="/course_v3_data/hsk-diagnostics.js?v=20261115-5408a5e8b789"></script>
-<script data-hsk-p45="source">if(location.pathname.startsWith("/iphone-pwa/"))document.documentElement.classList.add("hsk-pwa-browser");document.documentElement.dataset.hskDesignScreen="li-onboarding";</script>
-<link rel="stylesheet" href="/course_v3_data/pwa-professional45.css?v=20261116-1">
+<script data-hsk-p45="source">
+if (location.pathname.startsWith("/iphone-pwa/")) {
+  var p45Element = document.documentElement;
+  p45Element.classList.add("hsk-pwa-browser");
+  p45Element.dataset.hskDesignScreen = "li-onboarding";
+  var p45Styles = document.createElement("link");
+  p45Styles.rel = "stylesheet";
+  p45Styles.href = "/course_v3_data/pwa-professional45.css?v=20261116-1";
+  document.head.appendChild(p45Styles);
+}
+</script>
 </head>
 <body>
 <div class="wrap">

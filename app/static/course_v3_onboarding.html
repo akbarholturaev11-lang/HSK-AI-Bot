@@ -130,8 +130,17 @@ button:disabled{cursor:default}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}.pd-blink{transform:scaleY(0)}}
 </style>
 <link rel="stylesheet" href="/assets/characters/hsk-scene-background.css?v=20261009-preparing-compact-1">
-<script data-hsk-p45="source">if(location.pathname.startsWith("/iphone-pwa/"))document.documentElement.classList.add("hsk-pwa-browser");document.documentElement.dataset.hskDesignScreen="legacy-onboarding";</script>
-<link rel="stylesheet" href="/course_v3_data/pwa-professional45.css?v=20261116-1">
+<script data-hsk-p45="source">
+if (location.pathname.startsWith("/iphone-pwa/")) {
+  var p45Element = document.documentElement;
+  p45Element.classList.add("hsk-pwa-browser");
+  p45Element.dataset.hskDesignScreen = "legacy-onboarding";
+  var p45Styles = document.createElement("link");
+  p45Styles.rel = "stylesheet";
+  p45Styles.href = "/course_v3_data/pwa-professional45.css?v=20261116-1";
+  document.head.appendChild(p45Styles);
+}
+</script>
 </head>
 <body class="hsk-scene-page">
 <div class="wrap">

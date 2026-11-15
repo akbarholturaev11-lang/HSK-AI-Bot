@@ -244,8 +244,17 @@ html.hsk-pwa-browser .app{padding-bottom:calc(104px + env(safe-area-inset-bottom
 }
 </style>
 <link rel="stylesheet" href="/assets/characters/hsk-scene-background.css?v=20261008-scene-1">
-<script data-hsk-p45="source">if(location.pathname.startsWith("/iphone-pwa/"))document.documentElement.classList.add("hsk-pwa-browser");document.documentElement.dataset.hskDesignScreen="checkout";</script>
-<link rel="stylesheet" href="/course_v3_data/pwa-professional45.css?v=20261116-1">
+<script data-hsk-p45="source">
+if (location.pathname.startsWith("/iphone-pwa/")) {
+  var p45Element = document.documentElement;
+  p45Element.classList.add("hsk-pwa-browser");
+  p45Element.dataset.hskDesignScreen = "checkout";
+  var p45Styles = document.createElement("link");
+  p45Styles.rel = "stylesheet";
+  p45Styles.href = "/course_v3_data/pwa-professional45.css?v=20261116-1";
+  document.head.appendChild(p45Styles);
+}
+</script>
 </head>
 <body class="hsk-scene-page">
 <main class="app">
