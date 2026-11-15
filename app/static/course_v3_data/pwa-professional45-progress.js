@@ -99,7 +99,7 @@
     if(root){active=kind;refresh();return;}
     active=kind;origin=document.activeElement;
     root=document.createElement("section");
-    root.id="p45-progress";root.className="on";root.setAttribute("role","dialog");root.setAttribute("aria-modal","true");
+    root.id="p45-progress";root.className="on";root.setAttribute("role","main");
     root.setAttribute("aria-label",kind==="xp"?lang().xp:lang().streak);
     root.innerHTML='<div class="p45-progress-header"><button type="button" class="p45-progress-back" data-p45="back" aria-label="'+lang().back+'">‹</button>'
       +'<h1 class="p45-progress-title"></h1></div><div class="p45-progress-body" tabindex="-1"></div>';
