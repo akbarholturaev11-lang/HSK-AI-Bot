@@ -348,6 +348,8 @@ ROUTE_MAP = {
     "/api/v3/pwa/course-tracks/promo-shown": ("course_track_selection", "v3_pwa_course_tracks_promo_shown"),
     "/api/v3/pwa/course-tracks/switch": ("course_track_selection", "v3_pwa_course_tracks_switch"),
     "/api/v3/pwa/diagnostics": ("monitoring", "v3_pwa_diagnostics"),
+    "/api/v3/pwa/dictionary/saved/list": ("lessons", "v3_pwa_dictionary_saved_list"),
+    "/api/v3/pwa/dictionary/saved/set": ("lessons", "v3_pwa_dictionary_saved_set"),
     "/api/v3/pwa/event": ("app_shell", "v3_pwa_event"),
     "/api/v3/pwa/exams/complete": ("assessments", "v3_pwa_exams_complete"),
     "/api/v3/pwa/exams/start": ("assessments", "v3_pwa_exams_start"),
