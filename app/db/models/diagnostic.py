@@ -2,13 +2,15 @@
 
 Content-free by construction: only catalog codes, versions, times and counts.
 No message, stack, URL, payload or device identifier is ever stored here.
+A learner-web JS receipt may add allowlisted debug evidence (design D12): an
+exception name, a generic reason code and first-party source coordinates.
 The triage status lives only in ``admin_pwa_inbox_triage`` (source
 ``diagnostic``), never in these tables.
 """
 from datetime import datetime
 
 from sqlalchemy import (
-    BigInteger, Boolean, CheckConstraint, DateTime, ForeignKey, Index, Integer, SmallInteger, String,
+    JSON, BigInteger, Boolean, CheckConstraint, DateTime, ForeignKey, Index, Integer, SmallInteger, String,
     UniqueConstraint, text,
 )
 from sqlalchemy.orm import Mapped, mapped_column
@@ -66,6 +68,12 @@ class DiagnosticReceipt(Base):
         Index("ix_diagnostic_receipts_owner_received", "user_id", "received_at"),
         Index("ix_diagnostic_receipts_incident_received", "incident_id", "received_at"),
         Index("ix_diagnostic_receipts_received", "received_at"),
+        # The Admin "last reported sample" reads one newest row per incident
+        # from these, never the incident's whole receipt history (D12).
+        Index("ix_diagnostic_receipts_sample_location", "incident_id", "received_at", "id",
+              postgresql_where=text("locations IS NOT NULL"), sqlite_where=text("locations IS NOT NULL")),
+        Index("ix_diagnostic_receipts_sample_category", "incident_id", "received_at", "id",
+              postgresql_where=text("category IS NOT NULL"), sqlite_where=text("category IS NOT NULL")),
     )
 
     id: Mapped[int] = mapped_column(BigInteger().with_variant(Integer, "sqlite"), primary_key=True,
@@ -84,3 +92,11 @@ class DiagnosticReceipt(Base):
     category: Mapped[str | None] = mapped_column(String(24), nullable=True)
     # Coalesced backend writes carry their count; client receipts are always 1.
     occurrences: Mapped[int] = mapped_column(SmallInteger, nullable=False, default=1)
+    # Debug evidence (D12), all from server allowlists and null when not captured.
+    error_name: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    reason_code: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    # Up to six {asset_id, line, column, asset_version, verified}; the first is
+    # the primary location. SQL NULL, never JSON null, when nothing was captured.
+    locations: Mapped[list | None] = mapped_column(JSON(none_as_null=True), nullable=True)
+    # The deployed commit whose file bytes matched a reported asset version.
+    source_commit: Mapped[str | None] = mapped_column(String(40), nullable=True)

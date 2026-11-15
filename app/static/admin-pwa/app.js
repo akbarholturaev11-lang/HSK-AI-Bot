@@ -2880,6 +2880,36 @@ function inboxEntry(row){
     '<time class="inbox-row-date">'+esc(date(row.created_at))+'</time></span>'+
     summary+'</span><span class="inbox-row-dot" aria-hidden="true"></span></button>';
 }
+// The last reported sample: allowlisted codes and first-party source
+// coordinates of one receipt. A link is rendered only for the exact GitHub
+// blob URL the server builds after verifying the asset against a commit.
+const diagnosticSourceLink=/^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+\/blob\/[0-9a-f]{40}\/app\/static\/[A-Za-z0-9_.\/-]+\.js#L[1-9][0-9]{0,6}$/;
+function diagnosticPlace(place){
+  if(!place||typeof place.path!=='string'||!/^app\/static\/[A-Za-z0-9_.\/-]+\.js$/.test(place.path)||
+     !Number.isSafeInteger(place.line)||place.line<1)return '';
+  const text=esc(place.path+':'+place.line+(Number.isSafeInteger(place.column)&&place.column>0?':'+place.column:''));
+  return typeof place.source_url==='string'&&diagnosticSourceLink.test(place.source_url)
+    ?'<a href="'+esc(place.source_url)+'" target="_blank" rel="noopener noreferrer">'+text+'</a>':text;
+}
+function diagnosticSample(row){
+  const sample=row.sample&&typeof row.sample==='object'?row.sample:null;
+  const script=['js_uncaught','js_rejection'].includes(row.failure_code);
+  const code=(prefix,value)=>typeof value==='string'&&/^[a-z_]{1,32}$/.test(value)?t(prefix+value):'';
+  const category=code('diagCategory_',sample&&sample.category)||t('diagUnknown');
+  const places=(sample&&Array.isArray(sample.locations)?sample.locations:[]).slice(0,6).map(diagnosticPlace).filter(Boolean);
+  const name=sample&&typeof sample.error_name==='string'&&/^[A-Za-z]{1,32}$/.test(sample.error_name)?sample.error_name:'';
+  if(!script&&!name&&!places.length)return '<dl class="review-summary"><dt>'+esc(t('diagCategory'))+'</dt><dd>'+esc(category)+'</dd></dl>';
+  const missing=esc(t('diagNotCaptured'));
+  const rows=[
+    ['diagErrorName',name?esc(name):missing],['diagCategory',esc(category)],
+    ['diagReason',esc(code('diagReason_',sample&&sample.reason_code))||missing],
+    ['diagLocation',places[0]||missing]
+  ];
+  if(places.length>1)rows.push(['diagFrames',places.slice(1).join('<br>')]);
+  const heading=[t('diagSample'),sample?date(sample.received_at):'',sample&&sample.app_version].filter(Boolean).join(' · ');
+  return '<p class="inbox-details-text">'+esc(heading)+'</p><dl class="review-summary">'+
+    rows.map(([label,value])=>'<dt>'+esc(t(label))+'</dt><dd>'+value+'</dd>').join('')+'</dl>';
+}
 function diagnosticDetails(row){
   const channels=(row.channels||[]).map(channel=>channel==='play'?'Google Play':channel==='direct'?'Direct':'').filter(Boolean);
   const count=number(row.affected_accounts);
@@ -2898,6 +2928,7 @@ function diagnosticDetails(row){
     '</span><div><h2>'+esc(diagnosticTitle(row))+'</h2></div></div>'+
     (reopened?'<p class="inbox-details-text">'+esc(reopened)+'</p>':'')+
     '<dl class="review-summary">'+facts.map(([label,value])=>'<dt>'+esc(t(label))+'</dt><dd>'+esc(value)+'</dd>').join('')+'</dl>'+
+    diagnosticSample(row)+
     (row.triage_status==='resolved'?'':'<div class="inbox-detail-toolbar inbox-fix-toolbar">'+
       '<button type="button" class="btn primary" data-inbox-fixed="server" data-fix-source="diagnostic" data-fix-id="'+row.source_id+'">'+
       icon('check')+esc(fixText('fixed'))+'</button></div>')+'</div>';

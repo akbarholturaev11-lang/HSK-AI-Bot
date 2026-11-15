@@ -8,6 +8,7 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 from sqlalchemy import String, and_, case, func, or_, select
+from sqlalchemy.orm import aliased
 
 from app.db.models.admin_pwa_native_report import AdminPwaNativeReport
 from app.db.models.message import Message
@@ -17,7 +18,7 @@ from app.db.models.diagnostic import DiagnosticIncident, DiagnosticReceipt
 from app.db.models.payment import Payment
 from app.db.models.release_feedback import ReleaseFeedbackResponse
 from app.db.models.user import User
-from app.services.monitoring import catalog
+from app.services.monitoring import catalog, source
 
 Source = Literal["bot", "release", "android", "payment", "technical", "diagnostic"]
 RowId = Annotated[int, Field(strict=True, ge=1, le=2_147_483_647)]
@@ -472,6 +473,7 @@ async def unified_inbox(db, request: InboxRequest):
     ), reverse=True)
     page = gathered[:request.limit]
     await _diagnostic_impact(db, page, now)
+    await _diagnostic_samples(db, page, now)
     next_before = None
     if len(gathered) > request.limit:
         last = page[-1]
@@ -553,6 +555,53 @@ async def _diagnostic_impact(db, page, now):
         item["affected_state"] = ("unknown" if server_only or (partial and not count) else
                                   "partial" if partial else "within_retention")
         item["channels"] = [label for label, present in (("play", play), ("direct", direct)) if present]
+
+
+async def _diagnostic_samples(db, page, now):
+    """Attach the last reported sample to each diagnostic row on the page.
+
+    One newest retained receipt per incident: the latest carrying a source
+    location, else the latest carrying a category. Each is one row from its
+    partial index, so the read never scans an incident's receipt history.
+    Only server-allowlisted values are stored on a receipt and returned here.
+    """
+    items = {item["source_id"]: item for item in page if item["source"] == "diagnostic"}
+    if not items:
+        return
+    receipt, incident = DiagnosticReceipt, DiagnosticIncident
+    cutoff = now - timedelta(days=catalog.RECEIPT_RETENTION_DAYS)
+
+    def latest(column):
+        candidate = aliased(DiagnosticReceipt)
+        return select(candidate.id).where(
+            candidate.incident_id == incident.id, candidate.received_at >= cutoff, candidate.received_at <= now,
+            getattr(candidate, column).is_not(None),
+        ).order_by(candidate.received_at.desc(), candidate.id.desc()).limit(1).scalar_subquery()
+
+    chosen = func.coalesce(latest("locations"), latest("category"))
+    rows = (await db.execute(select(
+        incident.id, receipt.received_at, receipt.app_version, receipt.category, receipt.error_name,
+        receipt.reason_code, receipt.locations, receipt.source_commit,
+    ).select_from(incident).join(receipt, receipt.id == chosen).where(incident.id.in_(items)))).all()
+    for item in items.values():
+        item["sample"] = None
+    for row in rows:
+        items[row.id]["sample"] = {
+            "received_at": _iso(row.received_at), "app_version": row.app_version,
+            "category": row.category if row.category in catalog.CATEGORIES else None,
+            "error_name": row.error_name if row.error_name in catalog.ERROR_NAMES else None,
+            "reason_code": row.reason_code if row.reason_code in catalog.REASONS else None,
+            "locations": [{
+                "asset_id": place["asset_id"], "path": catalog.DEBUG_ASSETS[place["asset_id"]],
+                "line": place["line"],
+                "column": place["column"] if type(place.get("column")) is int else None,
+                # A link only for bytes proven identical to an immutable commit.
+                "source_url": (source.source_url(row.source_commit, place["asset_id"], place["line"])
+                               if place.get("verified") is True else None),
+            } for place in (row.locations or [])[:catalog.MAX_FRAMES + 1]
+                if isinstance(place, dict) and place.get("asset_id") in catalog.DEBUG_ASSETS
+                and type(place.get("line")) is int],
+        }
 
 
 async def inbox_feedback_detail(db, request: InboxFeedbackDetailRequest):

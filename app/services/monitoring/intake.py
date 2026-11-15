@@ -20,7 +20,7 @@ from sqlalchemy.dialects import sqlite as sqlite_dialect
 
 from app.db.models.diagnostic import DiagnosticIncident, DiagnosticReceipt
 from app.db.models.admin_pwa_inbox_triage import AdminPwaInboxTriage, AdminPwaInboxTriageAudit
-from app.services.monitoring import catalog
+from app.services.monitoring import catalog, source
 from app.services.monitoring.alerts import decide_alert
 
 MODES = ("off", "owners", "all")
@@ -28,7 +28,11 @@ BATCH_KEYS = frozenset({"schema", "events"})
 EVENT_KEYS = frozenset({
     "event_id", "client_time", "platform", "app_version", "build", "channel",
     "feature_code", "failure_code", "site_code", "outcome", "category",
+    # Optional debug evidence on a learner-web JS failure (D12).
+    "error_name", "reason_code", "location", "frames",
 })
+DEBUG_KEYS = ("error_name", "reason_code", "location", "frames")
+LOCATION_KEYS = frozenset({"asset_id", "line", "column", "asset_version"})
 # Android's versionName and the browser's dated content token. A generic
 # alphanumeric field could otherwise persist arbitrary opaque strings.
 ANDROID_VERSION = re.compile(r"[0-9]{1,6}\.[0-9]{1,6}\.[0-9]{1,6}(?:-(?:debug|qa))?")
@@ -92,6 +96,10 @@ class DiagEvent:
     client_time: datetime | None = None
     client_time_untrusted: bool = False
     occurrences: int = 1
+    error_name: str | None = None
+    reason_code: str | None = None
+    # (asset_id, line, column | None, asset_version | None); the first is primary.
+    locations: tuple = ()
 
     @property
     def fingerprint(self):
@@ -160,6 +168,12 @@ def parse_batch(body, *, platform, now=None):
             # Covers token, cookie, initData, password, message, stack, url,
             # body, user_id, telegram_id, fingerprint, severity and the like.
             raise IntakeRejected("forbidden_field")
+        frames = item.get("frames")
+        for place in (item.get("location"), *(frames if isinstance(frames, list) else ())):
+            # The same rule inside a location: a file name, URL, function
+            # name or stack text has no key to arrive under.
+            if isinstance(place, dict) and set(place) - LOCATION_KEYS:
+                raise IntakeRejected("forbidden_field")
     events, rejected = [], 0
     skew = timedelta(days=catalog.CLOCK_SKEW_DAYS)
     for item in items:
@@ -216,9 +230,55 @@ def _parse_event(item, *, platform, now, skew):
             untrusted = True  # server receive time keeps the ordering
         else:
             client_time = stamp
+    debug = _parse_debug(item, platform=platform, failure=failure, category=category)
+    if debug is None:
+        return None
     return DiagEvent(event_id=event_id, platform=platform, feature_code=feature, failure_code=failure,
                      site_code=site, outcome=outcome, app_version=version, build=build, channel=channel,
-                     category=category, client_time=client_time, client_time_untrusted=untrusted)
+                     category=category, client_time=client_time, client_time_untrusted=untrusted,
+                     error_name=debug[0], reason_code=debug[1], locations=debug[2])
+
+
+def _parse_location(place):
+    if not isinstance(place, dict):
+        return None
+    asset, line, column, version = (place.get(key) for key in ("asset_id", "line", "column", "asset_version"))
+    if (not isinstance(asset, str) or asset not in catalog.DEBUG_ASSETS
+            or type(line) is not int or not 1 <= line <= catalog.MAX_SOURCE_LINE
+            or (column is not None and (type(column) is not int or not 1 <= column <= catalog.MAX_SOURCE_COLUMN))
+            or (version is not None and (not isinstance(version, str)
+                                         or not source.ASSET_VERSION.fullmatch(version)))):
+        return None
+    return asset, line, column, version
+
+
+def _parse_debug(item, *, platform, failure, category):
+    """(error_name, reason_code, locations), or None to reject the event.
+
+    Every value must come from a server allowlist; one forged or malformed
+    value refuses the whole event, so nothing from it is stored.
+    """
+    if not any(key in item for key in DEBUG_KEYS):
+        return None, None, ()
+    if (platform not in catalog.DEBUG_PLATFORMS or failure not in catalog.DEBUG_FAILURES
+            or category is None or any(item[key] is None for key in DEBUG_KEYS if key in item)):
+        return None
+    name, reason = item.get("error_name"), item.get("reason_code")
+    if name is not None and (not isinstance(name, str) or catalog.ERROR_NAMES.get(name) != category):
+        return None
+    if reason is not None and (not isinstance(reason, str) or name not in catalog.REASONS.get(reason, ())):
+        return None
+    frames = item.get("frames", [])
+    if (not isinstance(frames, list) or len(frames) > catalog.MAX_FRAMES
+            or ("frames" in item and (not frames or "location" not in item))):
+        return None
+    locations = []
+    for place in ([item["location"]] if "location" in item else []) + frames:
+        parsed = _parse_location(place)
+        if parsed is None:
+            return None
+        locations.append(parsed)
+    return name, reason, tuple(locations)
 
 
 def _insert(db, model):
@@ -253,12 +313,25 @@ def _raise_severity(current, candidate):
     return candidate if order.index(candidate) > order.index(current) else current
 
 
-async def _record(db, incident, event, owner_user_id, now):
+def _debug_values(event, settings_obj):
+    """Receipt columns for the debug evidence. A location is `verified` when
+    its asset version is a content hash of the file this deployment serves;
+    only then is the deployed commit recorded beside it."""
+    locations = [{"asset_id": asset, "line": line, "column": column, "asset_version": version,
+                  "verified": source.is_deployed_version(asset, version)}
+                 for asset, line, column, version in event.locations]
+    commit = source.deployed_commit(settings_obj) if any(place["verified"] for place in locations) else None
+    return dict(error_name=event.error_name, reason_code=event.reason_code,
+                locations=locations or None, source_commit=commit)
+
+
+async def _record(db, incident, event, owner_user_id, now, settings_obj=None):
     stmt, _ = _insert(db, DiagnosticReceipt)
     values = dict(incident_id=incident.id, user_id=owner_user_id, event_id=event.event_id, received_at=now,
                   client_time=event.client_time, client_time_untrusted=event.client_time_untrusted,
                   app_version=event.app_version, build=event.build, channel=event.channel,
-                  outcome=event.outcome, category=event.category, occurrences=event.occurrences)
+                  outcome=event.outcome, category=event.category, occurrences=event.occurrences,
+                  **_debug_values(event, settings_obj))
     if owner_user_id is None:
         conflict = stmt.values(**values).on_conflict_do_nothing(
             index_elements=["event_id"], index_where=text("user_id IS NULL"))
@@ -367,7 +440,7 @@ async def ingest(db, *, owner_user_id, events, mode="all", owner_admitted=True, 
         incident, created = await _incident_for(db, event, now, severity)
         first = incident.occurrence_count == 0
         was_critical = incident.severity == "critical"
-        inserted = await _record(db, incident, event, owner_user_id, now)
+        inserted = await _record(db, incident, event, owner_user_id, now, settings_obj)
         if inserted:
             duplicates.add(event.event_id)
             result.accepted += 1
