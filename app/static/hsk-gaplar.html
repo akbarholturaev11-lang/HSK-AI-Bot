@@ -579,17 +579,40 @@ if (location.pathname.startsWith("/iphone-pwa/")) {
         if (new URLSearchParams(location.search).get("embedded") !== "1" && document.visibilityState === "visible") syncPhraseTelegramChrome();
       });
 
+      function showPwaPhraseSkeleton() {
+        if (!location.pathname.startsWith("/iphone-pwa/")) return;
+        elements.list.replaceChildren();
+        elements.count.textContent = "";
+        elements.list.setAttribute("aria-busy", "true");
+        for (var k = 0; k < 4; ++k) {
+          var row = document.createElement("article");
+          row.className = "phrase phrase-skeleton";
+          row.setAttribute("aria-hidden", "true");
+          var line = document.createElement("span");
+          line.className = "phrase-skeleton-text";
+          var actions = document.createElement("span");
+          actions.className = "phrase-skeleton-actions";
+          row.append(line, actions);
+          elements.list.appendChild(row);
+        }
+      }
+
       function loadCatalog() {
         elements.error.hidden = true;
+        showPwaPhraseSkeleton();
         fetch("/course_v3_data/ready-phrases-v1.json", { cache: "force-cache" })
           .then(function (response) { if (!response.ok) throw new Error("phrasebook unavailable"); return response.json(); })
           .then(function (data) {
             if (!data || !Array.isArray(data.categories) || !Array.isArray(data.phrases)) throw new Error("phrasebook has invalid data");
             catalog = data;
+            elements.list.removeAttribute("aria-busy");
             renderFilters();
             renderPhrases();
           })
           .catch(function () {
+            elements.list.removeAttribute("aria-busy");
+            elements.list.replaceChildren();
+            elements.count.textContent = "";
             elements.error.replaceChildren();
             var message = document.createElement("p");
             message.textContent = text.loadError;
