@@ -1989,6 +1989,10 @@
     {
       "path": "app/main.py",
       "reason": "The Mini App app_error handler adds a content-free diagnostic path. Existing signed lesson, activity and conversion event writers are unchanged; the Telegram diagnostic chain verifies no course or conversion KPI writes."
+    },
+    {
+      "path": "app/api/pwa_auth.py",
+      "reason": "Only the handoff page's own script URL gains a derived content token, so a diagnostic report can prove which bytes ran. No route, session, event writer or KPI behavior changes; the handoff page tests cover the served HTML."
     }
   ],
   "monitoring": {
