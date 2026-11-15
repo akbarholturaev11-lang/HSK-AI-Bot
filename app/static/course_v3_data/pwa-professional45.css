@@ -704,3 +704,49 @@ html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-profile .p45-prof
 html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] :is(.p45-progress-chip,.p45-profile-streak-link):focus-visible {
   outline:3px solid var(--cin);outline-offset:2px;
 }
+
+
+/* UIUX-003 authoritative dictionary saved controls, PWA only.
+   The legacy Telegram Mini App keeps its original two-row filter and rows. */
+html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] #version-filters:empty{display:none!important}
+html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] #level-filters{
+  display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-height:44px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] .p45-dictionary-version{
+  display:inline-flex;align-items:center;min-height:32px;padding:5px 7px;
+  color:var(--text2,var(--ink2));font-size:11px;font-weight:700;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] .p45-saved-filter{
+  display:inline-flex;align-items:center;justify-content:center;gap:4px;
+  min-height:44px;white-space:nowrap;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] .list .row{
+  gap:8px;min-height:88px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] .row .info{min-width:0;flex:1}
+html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] .p45-dict-save{
+  -webkit-appearance:none;appearance:none;border:0;background:transparent;
+  color:var(--hsk-gold,#d99c12);min-width:44px;min-height:44px;
+  flex:none;border-radius:11px;font-size:25px;cursor:pointer;line-height:1;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] .p45-dict-save[disabled]{
+  opacity:.45;cursor:wait;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] .p45-dict-save:focus-visible{
+  outline:3px solid var(--cin,#e04a40);outline-offset:2px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] .p45-dict-status{
+  font-size:12px;line-height:1.5;color:var(--ink2);text-align:center;
+  min-height:0;padding:0 12px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] .p45-dict-status:not(:empty){
+  padding:9px 12px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] .detail-header{
+  display:flex;align-items:center;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] .p45-dict-detail-save{margin-left:auto}
+@media(max-width:350px){
+  html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] .list .row .lv{padding:4px 5px;font-size:10px}
+  html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] .list .row{gap:5px}
+}
