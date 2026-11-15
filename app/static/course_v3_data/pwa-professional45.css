@@ -567,6 +567,43 @@ html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase.is-open {
   }
 }
 
+/* A first-viewport loading composition matches the closed phrase list anatomy.
+   Four fixed rows, no random bar sizes, no simulated learner records. */
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-skeleton {
+  min-height: 78px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-skeleton-text {
+  display: block;
+  flex: 1 1 auto;
+  max-width: 55%;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--hsk-divider);
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-skeleton-actions {
+  display: block;
+  flex: 0 0 94px;
+  height: 28px;
+  border-radius: 10px;
+  background: linear-gradient(90deg,
+    var(--hsk-divider) 0, var(--hsk-divider) 43%,
+    transparent 43%, transparent 54%,
+    var(--hsk-divider) 54%, var(--hsk-divider) 100%);
+  opacity: .8;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-skeleton:nth-child(even) .phrase-skeleton-text {
+  max-width: 42%;
+}
+@media(prefers-reduced-motion:reduce) {
+  html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-skeleton * {
+    animation: none !important;
+  }
+}
+
 /* Checkout: exact prices, real quote, permissions and failure states stay JS-owned. */
 html.hsk-pwa-browser[data-hsk-design-screen="checkout"] :is(.app,.section,.screen) {
   min-width: 0;
