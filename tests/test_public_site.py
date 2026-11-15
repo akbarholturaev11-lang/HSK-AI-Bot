@@ -665,6 +665,7 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
             "AI, images and speech",
             "Firebase Cloud Messaging",
             "automatically send technical error reports",
+            "the error type and the place in our own app code where it happened",
             "After 30 days, account-linked reports no longer count toward affected-account totals",
             "or a backlog can delay deletion. Deleting your account also removes its reports",
             "30 days",

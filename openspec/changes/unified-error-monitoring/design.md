@@ -364,6 +364,39 @@ In the `app_error` branch of `/api/miniapp/event`:
 - **Mini App counts.** With the additive adapter (D9), `app_error_context` rows are still written once per error. The experiments count and `admin_miniapp_service` counts therefore stay the same, and receipts are never added to them.
 - **Data loss.** A silent reporter shows as a stale freshness row. Refused or dropped events show as `partial` incidents and `monitoring` self-incidents, never as zero.
 
+### D12. Diagnostic precision: allowlisted debug evidence on a JS receipt
+Follow-up to D5/D6 (tasks 6.1–6.4, owner decision 2026-11-14). The same tables, intake, Inbox and drawer; no new service, endpoint, button or setting.
+
+**What a learner-web JS failure may add** (`js_uncaught`, `js_rejection` on `iphone_pwa` and `telegram` only, and only with a category). Every value comes from a fixed list in `catalog.py`, mirrored by the reporter and checked by a contract test:
+- `error_name`: an allowlisted exception name (`ERROR_NAMES`) that must agree with the event's category.
+- `reason_code`: a generic class of mistake (`REASONS`: `null_access`, `not_callable`, `not_defined`, `json_parse`, `syntax`, `stack_overflow`, `storage_quota`). The reporter derives it from the engine's fixed wording in memory. An unrecognised message gives no reason; a property name or value is never part of it.
+- `location` and up to five `frames`: `{asset_id, line, column, asset_version}`. `asset_id` names a first-party script in `DEBUG_ASSETS`; line and column are bounded integers; `asset_version` is the 12-hex content token the page loaded that script with.
+
+**Reporter rules.**
+- The `ErrorEvent` position gives the primary location. A stack is read in memory only to match a trailing `url:line:column` on each line; a rejection takes its location from the first approved frame.
+- A URL counts only when it is same-origin, without credentials, and its exact path is a listed script. Inline, `eval`, `blob:`, cross-origin, vendored, minified and unlisted frames are dropped. Function names, the URL, its query and fragment, the message and the stack text are never queued or sent.
+- WebKit removes the query from stack URLs (verified in Playwright WebKit). The token then comes from the page's own `<script src>` element for that exact path, and only when it is unambiguous.
+- No evidence never suppresses the incident: the plain `diag.v1` event is still sent.
+- The fields are additive within `diag.v1`. A server that does not know them answers `forbidden_field`; the reporter resends that batch once without them. Batches stay under the 16 KB body limit by dropping whole events from the end.
+
+**Server rules.**
+- An unknown key at any level, including inside a location, rejects the whole request, so a message, stack, URL or function name has no key to arrive under.
+- A forged or malformed value (unknown asset, path, URL, out-of-range position, bad token, more than five frames, a name that disagrees with the category, a reason that disagrees with the name) rejects that event alone. Nothing from it is stored.
+- The evidence is stored on the receipt only. It is never part of the fingerprint, deduplication, severity, triage or alert decision, and never reaches a push payload.
+
+**Storage** (migration `0157_diagnostic_precision`, additive). `diagnostic_receipts` gains nullable `error_name`, `reason_code`, `locations` (JSON, at most six entries, SQL NULL when absent) and `source_commit`. Two partial indexes on `(incident_id, received_at, id)` serve the sample read: one where `locations IS NOT NULL`, one where `category IS NOT NULL`. The downgrade refuses while any receipt holds debug evidence. Retention and account deletion are unchanged; the columns leave with the receipt.
+
+**Admin "last reported sample".** For the page's incidents, one query picks one retained receipt per incident: the newest with a location, else the newest with a category. Each choice is one row from its partial index, never a scan of the incident's receipts. The drawer shows that receipt's own time and version, the exception name, the localized category and reason, the primary `path:line:column` and the further frames. A missing value reads "not captured" and an incident without any sample shows the category as "unknown". The reason is labelled as a general likely cause, not a proven root cause. The incident is a group: other receipts may have another version or cause.
+
+**Verified source link.** A link `https://github.com/<repo>/blob/<commit>/<path>#L<line>` is built by the server only when both hold:
+1. the location's `asset_version` equals a content hash of the file this deployment serves (the Git blob ID prefix used by `<date>-<blob>` tokens, or the SHA-256 prefix used by derived tokens), so the learner ran exactly the deployed bytes;
+2. the deployment's immutable commit is known at intake: `MONITORING_SOURCE_COMMIT`, a 40-hex SHA that Railway provides as `RAILWAY_GIT_COMMIT_SHA`. The image is built with `COPY . .` and no asset generation, so the deployed files are the commit's files.
+
+The commit is stored on the receipt at intake, because the server may run another commit when the admin reads it. A `?v=` token is only ever compared with file bytes and is never used as a commit. Without a match or a commit, the coordinates are shown without a link. The Admin page renders a link only for that exact URL shape. The handoff page's own script gets a derived token for this purpose; the route stays `no-store`.
+
+- *Why:* the owner asked for an Admin view that points at the likely code, inside the existing privacy rule.
+- *Alternatives rejected:* sending the raw stack or message (forbidden data); source maps or a vendor SDK (new infrastructure); using the deploy time or a `?v=` token to guess the commit (not a verified mapping); inline-script positions (the served HTML differs from the repository file, so a line could be wrong).
+
 ## Risks / Trade-offs
 
 - [Coarse grouping without stacks] → Fixed categories plus feature and site codes. The Admin view states that root cause needs investigation. The Play/Direct channel and versions narrow it down.
@@ -382,6 +415,10 @@ In the `app_error` branch of `/api/miniapp/event`:
 - [Extending the Analytics checker breaks Analytics CI] → `monitoring` is optional in `validate_schema`, and `validate_chain` keeps its default route. `test_analytics_coverage_contract.py` must pass unchanged before the monitoring tests are added.
 - [Freshness adds work to the daily Analytics snapshot] → One indexed `max(received_at)` per platform over retained receipts. The snapshot tests stay green.
 - [The kill switch needs a redeploy] → It follows the project's `app/config.py` switch pattern. Caps and the semaphore bound bursts without a redeploy; `off` is for sustained problems.
+- [Inline code has no location] → Most of `course-v3.html` runs inline, so its failures show the exception name and reason only. External first-party scripts, including the handoff and install guide, are located. Moving inline code out is separate work.
+- [An authenticated client can forge plausible coordinates] → The existing residual: there is no client attestation. Forged values can only name listed files and bounded positions, never change grouping, severity or alerts, and a link only opens this repository.
+- [A stale cached script reports another version's lines] → Its token does not match the deployed file, so the coordinates are shown without a link.
+- [An asset ID removed from the catalog] → Events from a page still holding the old reporter name it and are refused alone. Do not reuse an ID, and remove one only together with its file.
 - [Automatic reports are not yet disclosed] → `/privacy` and the Play Data safety declaration are updated before the `all` stage (task 5.2). The `owners` stage covers admin accounts only.
 
 ## Migration Plan

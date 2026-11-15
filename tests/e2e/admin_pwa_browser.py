@@ -1544,6 +1544,184 @@ async def diagnostic_browser_chain(output, sessions):
         await browser.close()
 
 
+async def diagnostic_precision_checks(output):
+    """Real learner page failure → cookie + CSRF intake → database → Admin detail."""
+    async with diagnostic_browser_sessions() as sessions:
+        await diagnostic_precision_chain(output, sessions)
+    print('Diagnostic precision: real handoff page and first-party script error, ' +
+          ('PostgreSQL' if PG_URL else 'SQLite') +
+          ', verified source link and last-sample detail in UZ/RU/TJ at 390 px passed')
+
+
+async def diagnostic_precision_chain(output, sessions):
+    import hashlib
+    import tests.test_pwa_browser_auth as pwa
+    from app.api.pwa_auth import create_pwa_auth_router
+    from app.db.models.desktop import DesktopLinkRequest
+    from app.db.models.diagnostic import DiagnosticReceipt
+    from app.services.pwa_auth_service import PWA_SESSION_COOKIE, PwaAuthService
+
+    learner_origin = pwa.ORIGIN
+    commit = '0123456789abcdef0123456789abcdef01234567'
+    guide = Path('app/static/course_v3_data/li-onboarding-install.js')
+    guide_source = guide.read_text(encoding='utf-8').split('\n')
+    # The line the forced failure happens on, found in the repository file.
+    failing_line = next(n for n, line in enumerate(guide_source, 1) if 'global.matchMedia("(display-mode' in line)
+    fixture = Fixture()
+    fixture.sessions = sessions
+    await fixture.seed_payment(legacy=True)
+    settings = learner_settings(MONITORING_MODE='all', admin_id_list=[], MONITORING_SOURCE_COMMIT=commit)
+    async with sessions() as db, db.begin():
+        learner = pwa.user(71, 7100071)
+        db.add(learner)
+        await db.flush()
+        cookie = await PwaAuthService(db, settings)._mint_session(
+            learner, DesktopLinkRequest(installation_key_hash=uuid4().hex * 2))
+    app = FastAPI()
+    app.include_router(create_pwa_auth_router(session_factory=sessions, settings_obj=settings))
+    app.include_router(create_monitoring_intake_router(session_factory=sessions, settings_obj=settings))
+    common = dict(settings_obj=fixture.settings, session_factory=sessions)
+    for factory in (create_admin_pwa_bootstrap_router, create_admin_pwa_google_router,
+                    create_admin_pwa_passkey_login_router, create_admin_pwa_read_router,
+                    create_admin_pwa_inbox_triage_router):
+        app.include_router(factory(**common))
+    posts = []
+
+    async def serve(route):
+        request = route.request
+        origin = next((base for base in (ORIGIN, learner_origin) if request.url.startswith(base + '/')), None)
+        assert origin, request.url
+        path = request.url.removeprefix(origin)
+        static = Path('app/static' + path.split('?')[0].split('#')[0])
+        if origin == learner_origin and path.startswith(('/course_v3_data/', '/assets/')):
+            # Shared assets are app.main routes; serve the same repository bytes.
+            if not static.is_file():
+                return await route.fulfill(status=404, body='')
+            kind = 'application/javascript' if static.suffix == '.js' else 'text/css' if static.suffix == '.css' else 'application/octet-stream'
+            return await route.fulfill(body=static.read_bytes(), content_type=kind)
+        if path == '/api/v3/pwa/diagnostics':
+            posts.append(request.post_data_json)
+        async with AsyncClient(transport=ASGITransport(app=app), base_url=origin) as client:
+            reply = await client.request(request.method, path, headers=await request.all_headers(),
+                                         content=request.post_data_buffer)
+        headers = dict(reply.headers)
+        headers.pop('content-length', None)
+        cookies = reply.headers.get_list('set-cookie')
+        if cookies:
+            headers['set-cookie'] = '\n'.join(cookies)
+        await route.fulfill(status=reply.status_code, headers=headers, body=reply.content)
+
+    ios = ('Mozilla/5.0 (iPhone; CPU iPhone OS 18_6 like Mac OS X) AppleWebKit/605.1.15 '
+           '(KHTML, like Gecko) Version/18.6 Mobile/15E148 Safari/604.1')
+    async with async_playwright() as pw:
+        browser = await pw.chromium.launch()
+        # 1. A verified learner on the real handoff page, with unmodified scripts.
+        phone = await browser.new_context(viewport={'width': 390, 'height': 844}, user_agent=ios,
+                                          service_workers='block')
+        await phone.route('**/*', serve)
+        await phone.add_cookies([{'name': PWA_SESSION_COOKIE, 'value': cookie, 'url': learner_origin}])
+        landing = await phone.new_page()
+        await landing.goto(learner_origin + '/iphone-pwa/handoff')
+        await expect(landing.locator('.li-install-overlay')).to_be_visible()
+        assert landing.url == learner_origin + '/iphone-pwa/handoff'
+        async with landing.expect_response(learner_origin + '/api/v3/pwa/diagnostics') as delivery:
+            # A browser API answering with an unexpected value breaks real
+            # first-party code; nothing in the script itself is changed.
+            await landing.evaluate("""() => {
+                window.matchMedia = () => null;
+                setTimeout(() => window.HSKAILiInstallGuide.standalone(), 0);
+            }""")
+        reply = await delivery.value
+        assert reply.status == 200 and (await reply.json())['accepted'] == 1
+        event, = posts[0]['events']
+        token = hashlib.sha256(guide.read_bytes()).hexdigest()[:12]
+        assert (event['feature_code'], event['failure_code'], event['site_code']) == (
+            'distribution_handoff', 'js_uncaught', 'pwa_handoff')
+        assert (event['error_name'], event['reason_code'], event['category']) == ('TypeError', 'null_access', 'type')
+        assert (event['location']['asset_id'], event['location']['line'], event['location']['asset_version']) == (
+            'li_onboarding_install', failing_line, token)
+        wire = json.dumps(posts)
+        for private in ('matchMedia', 'Cannot read', 'standalone', 'api.example.test', 'http', '?v=', cookie):
+            assert private not in wire, private
+        await phone.close()
+        # A second incident from a client without the new fields: nothing is invented.
+        async with AsyncClient(transport=ASGITransport(app=app), base_url=learner_origin,
+                               cookies={PWA_SESSION_COOKIE: cookie}) as client:
+            csrf = (await client.get('/api/v3/pwa-auth/session')).json()['csrf']
+            old = client_event('lessons', 'js_uncaught', 'course_v3', 'iphone_pwa', category='reference')
+            plain = await client.post('/api/v3/pwa/diagnostics', json={'schema': 'diag.v1', 'events': [old]},
+                                      headers={'Origin': learner_origin, 'X-HSK-PWA-CSRF': csrf})
+            assert plain.status_code == 200 and plain.json()['accepted'] == 1, plain.text
+        async with sessions() as db:
+            receipts = (await db.scalars(select(DiagnosticReceipt).order_by(DiagnosticReceipt.id))).all()
+        first, second = receipts
+        assert (first.user_id, first.error_name, first.reason_code, first.source_commit) == (
+            71, 'TypeError', 'null_access', commit)
+        assert first.locations[0]['verified'] is True and first.locations[0]['line'] == failing_line
+        assert (second.category, second.error_name, second.locations, second.source_commit) == (
+            'reference', None, None, None)
+
+        # 2. The authenticated Admin detail, at phone width, in three languages.
+        context = await browser.new_context(viewport={'width': 390, 'height': 844}, service_workers='block')
+        await context.route('**/*', serve)
+        page = await context.new_page()
+        errors = []
+        page.on('pageerror', lambda error: errors.append(str(error)))
+        await setup_fresh_login(context, page, fixture)
+        link = (f'https://github.com/akbarholturaev11-lang/HSK-AI-Bot/blob/{commit}/'
+                f'app/static/course_v3_data/li-onboarding-install.js#L{failing_line}')
+        place = f'app/static/course_v3_data/li-onboarding-install.js:{failing_line}:{event["location"]["column"]}'
+        copy = {
+            'uz': ('Охирги юборилган намуна', 'Хато номи', 'Тур хатоси',
+                   'null ёки undefined қийматнинг хоссасига мурожаат', 'Код манзили', 'Қайд этилмаган', 'Ҳавола хатоси'),
+            'ru': ('Последний присланный образец', 'Имя исключения', 'Ошибка типа',
+                   'Обращение к свойству null или undefined', 'Место в коде', 'Не зафиксировано', 'Ошибка ссылки'),
+            'tj': ('Намунаи охирини фиристода', 'Номи истисно', 'Хатои навъ',
+                   'Муроҷиат ба хосияти null ё undefined', 'Ҷой дар код', 'Сабт нашудааст', 'Хатои истинод'),
+        }
+        for lang, (sample, name, category, reason, where, missing, old_category) in copy.items():
+            await page.goto(ORIGIN + '/admin/?inbox=diagnostic')
+            await authenticate_fresh_launch(page)
+            await page.evaluate('(lang) => localStorage.setItem("hsk-admin-locale", lang)', lang)
+            await page.goto(ORIGIN + '/admin/?inbox=diagnostic')
+            await authenticate_fresh_launch(page)
+            rows = page.locator('[data-inbox-open^="diagnostic:"]')
+            await expect(rows).to_have_count(2)
+            await page.locator(f'[data-inbox-open="diagnostic:{first.incident_id}"]').click()
+            details = page.locator('.inbox-details')
+            await expect(details).to_be_visible()
+            for text in (sample, name, 'TypeError', category, reason, where, place):
+                await expect(details).to_contain_text(text)
+            await expect(details).not_to_contain_text(missing)
+            anchor = details.locator('a')
+            await expect(anchor).to_have_count(1)
+            assert await anchor.get_attribute('href') == link
+            assert (await anchor.get_attribute('target'), await anchor.get_attribute('rel')) == (
+                '_blank', 'noopener noreferrer')
+            assert (await anchor.inner_text()).strip() == place
+            # No new control: the drawer still has only its X and "Fixed".
+            await expect(page.locator('#overlay button:visible')).to_have_count(2)
+            fits = await page.evaluate("""() => {
+                const drawer = document.querySelector('.inbox-details');
+                return document.documentElement.scrollWidth <= window.innerWidth &&
+                    drawer.scrollWidth <= drawer.clientWidth;
+            }""")
+            assert fits, 'the detail must not scroll sideways at 390 px'
+            await page.screenshot(path=str(output / f'diagnostic-precision-detail-{lang}.png'), full_page=True)
+            await page.goto(ORIGIN + '/admin/?inbox=diagnostic')
+            await authenticate_fresh_launch(page)
+            await page.locator(f'[data-inbox-open="diagnostic:{second.incident_id}"]').click()
+            await expect(details).to_be_visible()
+            for text in (sample, old_category, missing):
+                await expect(details).to_contain_text(text)
+            await expect(details.locator('a')).to_have_count(0)
+            await expect(details).not_to_contain_text('li-onboarding-install')
+            await page.screenshot(path=str(output / f'diagnostic-precision-missing-{lang}.png'), full_page=True)
+        assert guide_source[failing_line - 1].strip().startswith('return !!((global.matchMedia')
+        assert not errors, errors
+        await browser.close()
+
+
 async def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--output',default='/tmp/admin-pwa-browser')
@@ -1554,6 +1732,7 @@ async def main():
         await access_grant_browser_checks(output)
         await attachment_browser_checks(output)
         await diagnostic_browser_checks(output)
+        await diagnostic_precision_checks(output)
         await worker_checks(output)
 
 if __name__=='__main__':asyncio.run(main())

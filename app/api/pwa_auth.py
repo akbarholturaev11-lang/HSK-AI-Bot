@@ -187,8 +187,10 @@ def _pwa_inline_html(request: Request, path: str, headers: dict[str, str],
 # deriving their tokens here means an edit to those files can never leave this
 # page pointing at a stale cached copy.
 _HANDOFF_HTML = "app/static/iphone-pwa-handoff.html"
+# The page's own script is served `no-store`; its token only lets a diagnostic
+# report prove which bytes the learner ran (monitoring design D12).
 _HANDOFF_ASSET = re.compile(
-    rb'"(/(?:course_v3_data|assets/characters)/[A-Za-z0-9._-]+)\?v=AUTO"')
+    rb'"(/(?:course_v3_data|assets/characters)/[A-Za-z0-9._-]+|/iphone-pwa-handoff\.js)\?v=AUTO"')
 _HANDOFF_HTML_CACHE: dict[tuple, bytes] = {}
 
 

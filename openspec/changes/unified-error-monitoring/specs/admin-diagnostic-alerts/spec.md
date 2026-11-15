@@ -32,6 +32,40 @@ An incident item SHALL show its platform, feature, a localized explanation of th
 - **WHEN** an incident and its detail are rendered
 - **THEN** no stack, message, URL, payload, token or account ID appears in the response or the page
 
+### Requirement: Last reported sample in the incident detail
+The diagnostic detail SHALL show the debug evidence of one retained receipt, labelled as the last reported sample with its own time and version: exception name, category, a generic reason marked as a likely cause, and source locations. A missing value SHALL read "not captured". The read MUST be bounded per incident, and the drawer MUST NOT gain a new control.
+
+#### Scenario: Sample attribution
+- **WHEN** an incident has receipts of several versions, some with a location and newer ones without
+- **THEN** the detail shows the newest retained receipt that has a location, with its own time, version, name and reason
+
+#### Scenario: Evidence predates the feature
+- **WHEN** an incident's receipts carry only a category
+- **THEN** the detail shows the category and "not captured" for the rest, and no location is invented
+
+#### Scenario: No sample at all
+- **WHEN** no retained receipt of an incident carries a category
+- **THEN** the detail shows the category as "unknown"
+
+#### Scenario: Large incident
+- **WHEN** an incident has tens of thousands of receipts
+- **THEN** the sample is read from one indexed row per incident, without scanning its receipts
+
+#### Scenario: Three languages
+- **WHEN** an admin reads the sample in UZ, RU or TJ
+- **THEN** the labels, category and reason come from the canonical catalog in that language
+
+### Requirement: Source link only for a verified commit
+A link to an exact source line SHALL be shown only when the reported script version equals the file the deployment serves and the deployment's immutable commit was known when the receipt was stored. A cache token MUST NOT be used as a commit. Otherwise the coordinates SHALL be shown without a link.
+
+#### Scenario: Verified location
+- **WHEN** the script version matches the deployed file and the deployment commit is known
+- **THEN** the location links to that file and line at that exact commit
+
+#### Scenario: Stale or unknown version
+- **WHEN** the script version does not match, is missing, or no deployment commit is configured
+- **THEN** the location shows its file, line and column as text only
+
 ### Requirement: Triage with audited automatic reopen
 Incident triage SHALL use the existing audited triage store: New is `new`, Investigating is `read` (set when an admin opens it) or `assigned`, Resolved is `resolved`. The existing "Fixed" button SHALL resolve in one tap, with no prompt or learner notice. A resolved incident SHALL reopen automatically on an occurrence from a version not older than the newest at resolution (backend: any occurrence), with a localized "fixed error came back" notice. Every change SHALL be audited.
 

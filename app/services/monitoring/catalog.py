@@ -61,6 +61,77 @@ CATEGORIES = frozenset({
     "memory", "security", "network", "serialization", "abort", "other",
 })
 
+# Diagnostic precision (tasks 6.1-6.4): optional, content-free debug evidence
+# on a learner-web JS failure. Stored on the receipt only; never part of the
+# fingerprint, deduplication, severity, triage or alert decision.
+DEBUG_PLATFORMS = frozenset({"iphone_pwa", "telegram"})
+DEBUG_FAILURES = frozenset({"js_uncaught", "js_rejection"})
+# Reported exception name -> the category the reporter derives from it.
+ERROR_NAMES = {
+    "TypeError": "type", "ReferenceError": "reference", "RangeError": "range", "SyntaxError": "syntax",
+    "EvalError": "other", "URIError": "argument", "SecurityError": "security", "NotAllowedError": "security",
+    "InvalidStateError": "state", "DataCloneError": "serialization", "NetworkError": "network",
+    "AbortError": "abort", "Error": "other", "AggregateError": "other", "QuotaExceededError": "other",
+    "NotFoundError": "other", "NotSupportedError": "other", "InvalidAccessError": "other",
+    "OperationError": "other", "TimeoutError": "other",
+}
+# Generic reason -> exception names it may accompany. A reason is a general
+# class of mistake, never a property name, value or exception text.
+REASONS = {
+    "null_access": frozenset({"TypeError"}),
+    "not_callable": frozenset({"TypeError"}),
+    "not_defined": frozenset({"ReferenceError"}),
+    "json_parse": frozenset({"SyntaxError"}),
+    "syntax": frozenset({"SyntaxError"}),
+    "stack_overflow": frozenset({"RangeError"}),
+    "storage_quota": frozenset({"QuotaExceededError"}),
+}
+# asset_id -> repository path of a first-party learner script. The reporter's
+# own map (`ASSET_FILES` in hsk-diagnostics.js) must list exactly these files;
+# the ID is the file name with `-` as `_`. Vendored, minified, generated-data
+# and inline scripts are deliberately absent, so their frames are discarded.
+# Never reuse an ID for another file: old receipts keep pointing at it.
+DEBUG_ASSETS = {
+    "iphone_pwa_handoff": "app/static/iphone-pwa-handoff.js",
+    "iphone_pwa_login": "app/static/iphone-pwa-login.js",
+    "voice_live": "app/static/voice-live.js",
+    "ads": "app/static/course_v3_data/ads.js",
+    "desktop_download": "app/static/course_v3_data/desktop-download.js",
+    "hsk_common_i18n": "app/static/course_v3_data/hsk-common-i18n.js",
+    "hsk_course_i18n": "app/static/course_v3_data/hsk-course-i18n.js",
+    "hsk_diagnostics": "app/static/course_v3_data/hsk-diagnostics.js",
+    "hsk_li_onboarding_i18n": "app/static/course_v3_data/hsk-li-onboarding-i18n.js",
+    "hsk_miniapp_i18n": "app/static/course_v3_data/hsk-miniapp-i18n.js",
+    "iphone_pwa_feedback": "app/static/course_v3_data/iphone-pwa-feedback.js",
+    "iphone_pwa_fx": "app/static/course_v3_data/iphone-pwa-fx.js",
+    "iphone_pwa_inline_pro": "app/static/course_v3_data/iphone-pwa-inline-pro.js",
+    "iphone_pwa_inline_pro_bridge": "app/static/course_v3_data/iphone-pwa-inline-pro-bridge.js",
+    "iphone_pwa_invite": "app/static/course_v3_data/iphone-pwa-invite.js",
+    "iphone_pwa_notices": "app/static/course_v3_data/iphone-pwa-notices.js",
+    "iphone_pwa_perf": "app/static/course_v3_data/iphone-pwa-perf.js",
+    "iphone_pwa_practice_boot": "app/static/course_v3_data/iphone-pwa-practice-boot.js",
+    "iphone_pwa_refresh": "app/static/course_v3_data/iphone-pwa-refresh.js",
+    "iphone_pwa_shake_report": "app/static/course_v3_data/iphone-pwa-shake-report.js",
+    "lesson_gate": "app/static/course_v3_data/lesson_gate.js",
+    "lesson_gate_hsk30": "app/static/course_v3_data/lesson_gate_hsk30.js",
+    "li_onboarding_install": "app/static/course_v3_data/li-onboarding-install.js",
+    "li_onboarding_runtime": "app/static/course_v3_data/li-onboarding-runtime.js",
+    "memo": "app/static/course_v3_data/memo.js",
+    "p3_grammar_reservation": "app/static/course_v3_data/p3-grammar-reservation.js",
+    "profile_carousel": "app/static/course_v3_data/profile-carousel.js",
+    "hsk_character_motion": "app/static/assets/characters/hsk-character-motion.js",
+    "hsk_character_pack": "app/static/assets/characters/hsk-character-pack.js",
+    "hsk_lesson_presentation": "app/static/assets/characters/hsk-lesson-presentation.js",
+    "hsk_practice_coach": "app/static/assets/characters/hsk-practice-coach.js",
+    "hsk_study_preparing": "app/static/assets/characters/hsk-study-preparing.js",
+}
+MAX_FRAMES = 5
+MAX_SOURCE_LINE = 1_000_000
+MAX_SOURCE_COLUMN = 1_000_000
+# The repository a verified source link points into (D12). A link is built
+# only for a receipt whose asset bytes matched the deployed commit's file.
+SOURCE_REPOSITORY = "akbarholturaev11-lang/HSK-AI-Bot"
+
 # Client sites: Android screens and API call tags, web page IDs, crash buckets,
 # live-voice reasons and self-check sites. Server sites come from ROUTE_MAP and
 # INTEGRATION_SITES.

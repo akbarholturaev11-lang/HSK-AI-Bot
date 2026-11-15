@@ -1,9 +1,14 @@
-/* Learner web failure reporter (unified error monitoring, design D5).
+/* Learner web failure reporter (unified error monitoring, design D5, D12).
  *
  * Sends content-free diag.v1 events: fixed feature, failure, page and
  * category codes only. It never queues or sends an error message, stack, URL,
  * learner text or credentials. The PWA uses its verified browser session;
  * a Telegram Mini App uses its signed init data only as the auth header.
+ *
+ * A JS failure may add debug evidence from fixed allowlists: the exception
+ * name, a generic reason code and source coordinates (asset ID, line, column,
+ * asset content token) inside first-party scripts listed in ASSET_FILES. The
+ * message, stack text and script URL are read in memory only to derive these.
  *
  * HskDiag.report(feature, failure, site[, outcome | cause])
  *   outcome: "failed" (default) or "recovered".
@@ -31,6 +36,14 @@
   var TOKEN = /[?&]v=(\d{8})-([0-9a-f]{12})(?:&|$)/;
   var VERSION = /^\d{8}-[0-9a-f]{12}$/;
   var EVENT_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+  var MAX_BATCH_CHARS = 12000;  // the intake accepts 16 KB
+  var MAX_FRAMES = 5;
+  var MAX_POSITION = 1000000;
+  var MAX_STACK_CHARS = 4096;
+  var MAX_STACK_LINES = 24;
+  var ASSET_VERSION = /^[0-9a-f]{12}$/;
+  var ASSET_TOKEN = /[?&]v=(?:\d{8}-)?([0-9a-f]{12})(?:&|$)/;
+  var FRAME = /(https?:\/\/[^\s()]+):(\d{1,7}):(\d{1,7})\)?\s*$/;
 
   // Page path -> [feature, site]; mirrors `pwa_pages` in the coverage registry.
   var PAGES = {
@@ -66,6 +79,25 @@
     InvalidStateError: "state", DataCloneError: "serialization", NetworkError: "network",
     AbortError: "abort"
   };
+  // Exception names sent as-is; every other name is omitted.
+  var EXTRA_NAMES = ["Error", "AggregateError", "QuotaExceededError", "NotFoundError", "NotSupportedError",
+    "InvalidAccessError", "OperationError", "TimeoutError"];
+  var REASONS = ["null_access", "not_callable", "not_defined", "json_parse", "syntax", "stack_overflow",
+    "storage_quota"];
+  // First-party scripts a source location may name: directory -> file names.
+  // The asset ID is the name with "-" as "_"; mirrors DEBUG_ASSETS in the
+  // server catalog. Vendored, minified, data and inline scripts are absent.
+  var ASSET_FILES = {
+    "/": ["iphone-pwa-handoff", "iphone-pwa-login", "voice-live"],
+    "/course_v3_data/": ["ads", "desktop-download", "hsk-common-i18n", "hsk-course-i18n", "hsk-diagnostics",
+      "hsk-li-onboarding-i18n", "hsk-miniapp-i18n", "iphone-pwa-feedback", "iphone-pwa-fx",
+      "iphone-pwa-inline-pro", "iphone-pwa-inline-pro-bridge", "iphone-pwa-invite", "iphone-pwa-notices",
+      "iphone-pwa-perf", "iphone-pwa-practice-boot", "iphone-pwa-refresh", "iphone-pwa-shake-report",
+      "lesson_gate", "lesson_gate_hsk30", "li-onboarding-install", "li-onboarding-runtime", "memo",
+      "p3-grammar-reservation", "profile-carousel"],
+    "/assets/characters/": ["hsk-character-motion", "hsk-character-pack", "hsk-lesson-presentation",
+      "hsk-practice-coach", "hsk-study-preparing"]
+  };
   // Expected rejections an app flow already handles by navigating or retrying.
   var EXPECTED = /^(?:cancelled|pwa_actor_changed|pwa_session_required|pwa_route_unavailable|lesson_identity_changed)$/;
   var NETWORK = /failed to fetch|load failed|networkerror|network request failed/i;
@@ -81,6 +113,7 @@
   var documentStartedAt = (root.performance && root.performance.timeOrigin) || Date.now();
   var volatileStorage = Object.create(null), storageUnavailable = false;
   var pending = { owner: "", events: [], seen: {} };
+  var assets = null, assetIds = null, origin, plain = false;
 
   function telegramProof() {
     var app = root.Telegram && root.Telegram.WebApp;
@@ -158,6 +191,133 @@
     return Object.prototype.hasOwnProperty.call(CATEGORIES, name) ? CATEGORIES[name] : "other";
   }
 
+  function assetMap() {
+    if (assets) return assets;
+    assets = Object.create(null); assetIds = Object.create(null);
+    Object.keys(ASSET_FILES).forEach(function (dir) {
+      ASSET_FILES[dir].forEach(function (name) {
+        var id = name.replace(/-/g, "_");
+        assets[dir + name + ".js"] = id; assetIds[id] = true;
+      });
+    });
+    return assets;
+  }
+
+  function position(value) { return Number.isSafeInteger(value) && value >= 1 && value <= MAX_POSITION; }
+
+  /* The content token this document loaded a script path with. WebKit drops
+     the query from stack URLs, so the page's own script element supplies it;
+     two elements for one path with different tokens give no answer. */
+  function loadedToken(pathname) {
+    var found = null;
+    try {
+      var nodes = root.document.querySelectorAll("script[src]");
+      for (var i = 0; i < nodes.length; i++) {
+        var src = new URL(nodes[i].getAttribute("src") || "", root.location.href);
+        if (src.origin !== origin || src.pathname !== pathname) continue;
+        var token = ASSET_TOKEN.exec(src.search);
+        if (!token || (found && found !== token[1])) return null;
+        found = token[1];
+      }
+    } catch (_) { return null; }
+    return found;
+  }
+
+  /* A script URL and position -> an allowlisted location, or null. Only a
+     same-origin URL whose exact path is a listed first-party script passes;
+     the URL itself, its query and fragment are never kept. */
+  function place(url, line, column) {
+    try {
+      if (typeof url !== "string" || !url || url.length > 2048 || !position(line)) return null;
+      if (origin === undefined) origin = new URL(root.location.href).origin;
+      var parsed = new URL(url, root.location.href);
+      if (parsed.origin !== origin || parsed.username || parsed.password) return null;
+      var id = assetMap()[parsed.pathname];
+      if (!id) return null;
+      var out = { asset_id: id, line: line };
+      if (position(column)) out.column = column;
+      var token = ASSET_TOKEN.exec(parsed.search);
+      var loaded = token ? token[1] : loadedToken(parsed.pathname);
+      if (loaded) out.asset_version = loaded;
+      return out;
+    } catch (_) { return null; }
+  }
+
+  /* The first-party locations of a stack, innermost first: one that may be
+     the primary location plus up to five frames. Each line
+     is matched for a trailing url:line:column only; function names and any
+     frame that is cross-origin, inline, eval or unlisted are discarded. */
+  function stackPlaces(error) {
+    var out = [];
+    try {
+      var stack = error && typeof error === "object" ? error.stack : null;
+      if (typeof stack !== "string") return out;
+      var lines = stack.slice(0, MAX_STACK_CHARS).split("\n", MAX_STACK_LINES);
+      for (var i = 0; i < lines.length && out.length <= MAX_FRAMES; i++) {
+        var match = FRAME.exec(lines[i]);
+        var found = match && place(match[1], Number(match[2]), Number(match[3]));
+        if (found) out.push(found);
+      }
+    } catch (_) {}
+    return out;
+  }
+
+  function errorName(error) {
+    var name = error && typeof error === "object" ? error.name : null;
+    return typeof name === "string" && (Object.prototype.hasOwnProperty.call(CATEGORIES, name) ||
+      EXTRA_NAMES.indexOf(name) >= 0) ? name : null;
+  }
+
+  /* A generic class of mistake from the engine's fixed wording. The message
+     is matched in memory and never kept; an unrecognised one gives no reason. */
+  function reasonCode(name, error) {
+    if (name === "QuotaExceededError") return "storage_quota";
+    var text = error && typeof error.message === "string" ? error.message.slice(0, 300) : "";
+    if (!text) return null;
+    if (name === "TypeError") {
+      if (/^Cannot (?:read|set) propert(?:y|ies) (?:of (?:undefined|null)\b|'[^']*' of (?:undefined|null)$)/.test(text) ||
+          /^(?:undefined|null) is not an object\b/.test(text) || /^can't access property /.test(text)) return "null_access";
+      if (/ is not a (?:function|constructor)\b/.test(text)) return "not_callable";
+    } else if (name === "ReferenceError") {
+      if (/ is not defined$/.test(text) || /^Can't find variable: /.test(text)) return "not_defined";
+    } else if (name === "SyntaxError") {
+      return /JSON/.test(text) ? "json_parse" : "syntax";
+    } else if (name === "RangeError") {
+      if (/^Maximum call stack size exceeded/.test(text)) return "stack_overflow";
+    }
+    return null;
+  }
+
+  /* Debug evidence for one failure; `at` is an ErrorEvent position or null. */
+  function evidence(error, at) {
+    var out = {};
+    try {
+      var name = errorName(error);
+      if (name) {
+        out.error_name = name;
+        var why = reasonCode(name, error);
+        if (why) out.reason_code = why;
+      }
+      var frames = stackPlaces(error);
+      var first = at || frames.shift();
+      if (first) {
+        out.location = first;
+        if (at && frames.length && frames[0].asset_id === at.asset_id && frames[0].line === at.line) frames.shift();
+        if (frames.length) out.frames = frames.slice(0, MAX_FRAMES);
+      }
+    } catch (_) {}
+    return out;
+  }
+
+  function wirePlace(value) {
+    if (!value || typeof value !== "object" || typeof value.asset_id !== "string" || !assetIds ||
+        !assetIds[value.asset_id] || !position(value.line)) return null;
+    var out = { asset_id: value.asset_id, line: value.line };
+    if (position(value.column)) out.column = value.column;
+    if (typeof value.asset_version === "string" && ASSET_VERSION.test(value.asset_version)) out.asset_version = value.asset_version;
+    return out;
+  }
+
   function serverSide(cause) {
     if (typeof cause === "number") return cause >= 500 && cause <= 599 && cause !== 503;
     return !!(cause && typeof cause === "object" && cause.name === "SyntaxError");
@@ -189,7 +349,7 @@
     return dropped || state.events.length !== count;
   }
 
-  function build(feature, failure, site, outcome, cat, now) {
+  function build(feature, failure, site, outcome, cat, now, debug) {
     var event = {
       event_id: uuid(), client_time: now, feature_code: feature, failure_code: failure,
       site_code: site, outcome: outcome
@@ -197,6 +357,11 @@
     var v = version();
     if (v) { event.app_version = v.app_version; event.build = v.build; }
     if (cat) event.category = cat;
+    if (cat && debug) {
+      ["error_name", "reason_code", "location", "frames"].forEach(function (key) {
+        if (debug[key]) event[key] = debug[key];
+      });
+    }
     return event;
   }
 
@@ -215,10 +380,35 @@
       out.build = Number(e.app_version.slice(0, 8));
     }
     if (typeof e.category === "string" && Object.values(CATEGORIES).indexOf(e.category) >= 0) out.category = e.category;
+    // Debug evidence is rebuilt from the allowlists too, and left out for a
+    // server that answered that it does not know these fields yet.
+    if (plain || !out.category || (e.failure_code !== "js_uncaught" && e.failure_code !== "js_rejection")) return out;
+    assetMap();
+    if (typeof e.error_name === "string" && (EXTRA_NAMES.indexOf(e.error_name) >= 0 ||
+        Object.prototype.hasOwnProperty.call(CATEGORIES, e.error_name))) {
+      out.error_name = e.error_name;
+      if (typeof e.reason_code === "string" && REASONS.indexOf(e.reason_code) >= 0) out.reason_code = e.reason_code;
+    }
+    var at = wirePlace(e.location);
+    if (at) {
+      out.location = at;
+      var frames = Array.isArray(e.frames) ? e.frames.slice(0, MAX_FRAMES).map(wirePlace).filter(Boolean) : [];
+      if (frames.length) out.frames = frames;
+    }
     return out;
   }
 
-  function enqueue(feature, failure, site, outcome, cat) {
+  // Whole events only, within the intake's body limit.
+  function wireBatch(events) {
+    var batch = events.slice(0, BATCH);
+    while (batch.length > 1 && JSON.stringify(batch.map(function (e) { return wireEvent(e.event); })).length > MAX_BATCH_CHARS) batch.pop();
+    return batch;
+  }
+  function rich(batch) {
+    return !plain && batch.some(function (e) { return e.event.error_name || e.event.location; });
+  }
+
+  function enqueue(feature, failure, site, outcome, cat, debug) {
     // Only the product's verified actor may bind a PWA document. The
     // diagnostic transport never adopts anonymous failures for a later login.
     if (busy || !active || signedOut || (pwa && !documentOwner)) return false;
@@ -236,7 +426,8 @@
       if (now - (Number(state.seen[fp]) || 0) < COALESCE_MS) return false;
       state.seen[fp] = now;
       sent++;
-      state.events.push({ owner: state.owner, at: now, event: build(feature, failure, site, outcome, cat, now) });
+      state.events.push({ owner: state.owner, at: now,
+        event: build(feature, failure, site, outcome, cat, now, typeof debug === "function" ? debug() : null) });
       trim(state, now);
       if (state !== pending) save(state);
       schedule(0);
@@ -349,7 +540,7 @@
     if (signedOut || documentOwner !== id) return Promise.resolve();
     var state = load();
     if (!owns(state)) return Promise.resolve();
-    var batch = state.events.slice(0, BATCH);
+    var batch = wireBatch(state.events);
     if (!batch.length || round >= MAX_BATCHES) return Promise.resolve();
     var ids = {};
     batch.forEach(function (e) { ids[e.event.event_id] = true; });
@@ -360,6 +551,8 @@
     }, function (r) {
       if (r.status === 401 || r.status === 403) { logout(id); return; }
       if (r.status >= 500) throw new Error("retry");
+      // An older server refuses the optional debug fields: resend without them.
+      if (r.status === 422 && rich(batch)) { plain = true; return pwaBatch(actor, round); }
       if (!r.ok) { remove(ids); return pwaBatch(actor, round + 1); }
       return r.json().then(function (body) {
         if (!body || !Number.isSafeInteger(body.accepted)) throw new Error("retry");
@@ -415,7 +608,7 @@
   function telegramBatch() {
     var proof = telegramProof();
     if (!proof || proof !== initialTelegramProof) { logout(); return Promise.resolve(); }
-    var batch = pending.events.slice(0, BATCH);
+    var batch = wireBatch(pending.events);
     if (!batch.length) return Promise.resolve();
     return boundedFetch("/api/miniapp/event", {
       method: "POST", credentials: "omit", cache: "no-store", redirect: "error", keepalive: true,
@@ -430,6 +623,7 @@
       };
       if (!r.ok) { acknowledge(); return; }
       return r.json().then(function (body) {
+        if (body && body.error === "forbidden_field" && rich(batch)) { plain = true; return telegramBatch(); }
         if (!body || body.ok !== true || !Number.isSafeInteger(body.accepted)) { logout(); return; }
         acknowledge();
         if (body.paused === true) {
@@ -442,7 +636,11 @@
 
   function onError(event) {
     if (!page || !event) return;
-    try { enqueue(page[0], "js_uncaught", page[1], "failed", category(event.error)); } catch (_) {}
+    try {
+      enqueue(page[0], "js_uncaught", page[1], "failed", category(event.error), function () {
+        return evidence(event.error, place(event.filename, event.lineno, event.colno));
+      });
+    } catch (_) {}
   }
   function onRejection(event) {
     if (!page || !event) return;
@@ -453,7 +651,9 @@
       // Read locally to skip expected cases; never stored or sent.
       if (name === "AbortError" || name === "TimeoutError" || name === "NetworkError" || EXPECTED.test(message)) return;
       if (name === "TypeError" && NETWORK.test(message)) return;
-      enqueue(page[0], "js_rejection", page[1], "failed", category(reason));
+      enqueue(page[0], "js_rejection", page[1], "failed", category(reason), function () {
+        return evidence(reason, null);
+      });
     } catch (_) {}
   }
 

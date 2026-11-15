@@ -32,6 +32,7 @@ HSK AI’даги техник хатоликларни **фойдаланувч
 ## 4. Хавфсиз telemetry ва incident модели
 
 - Клиент фақат версияланган, чекланган майдонларни юборади: `event_id`, вақт, client/platform, app/build версияси, `feature_code`, `failure_code`, `site_code`, натижа ва хавфсиз техник категория.
+- **Diagnostic precision (2026-11-14 қарори, design D12):** браузердаги JS хатоси учун қўшимча равишда фақат сервер allowlist’идаги қийматлар юборилиши мумкин: exception номи, умумий `reason_code` ва first-party скрипт ичидаги манзил (asset ID, қатор, устун, asset контент токени; 5 тагача frame). Хабар матни, stack, URL ва функция номи аввалгидек тақиқланган.
 - `users.id` фақат текширилган сервер сессиясидан аниқланади; client юборган owner ID, severity ва arbitrary fingerprint’га ишонилмасин.
 - **Тақиқланган:** token/cookie, Telegram `initData`, password, шахсий ёзишмалар, дарс жавоблари, payment маълумоти, screenshot, raw stack/error message, URL query, request/response body ва device fingerprint. Ҳеч бири Inbox, Push, лог ёки аналитикага чиқмасин.
 - Бир event’нинг retry’лари `event_id` билан идемпотент бўлсин. Бир хил ҳақиқий хатоликлар сервер ҳисоблаган fingerprint орқали битта **incident**га йиғилсин; occurrence сони, first/last seen, версия ва таъсир доираси сақлансин.

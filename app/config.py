@@ -1,5 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic import field_validator
+from pydantic import AliasChoices, Field, field_validator
 from typing import List, Literal
 
 
@@ -175,6 +175,11 @@ class Settings(BaseSettings):
     MONITORING_MODE: str = "off"
     MONITORING_PUSH_ENABLED: bool = False
     MONITORING_MINIAPP_ADAPTER_ENABLED: bool = False
+    # The immutable commit this deployment was built from (40 hex). Railway
+    # provides it for GitHub deployments; blank means no source links in the
+    # Admin diagnostic detail. Never a `?v=` cache token.
+    MONITORING_SOURCE_COMMIT: str = Field(
+        default="", validation_alias=AliasChoices("MONITORING_SOURCE_COMMIT", "RAILWAY_GIT_COMMIT_SHA"))
     # URL-safe base64 raw 32-byte private EC scalar, matching the public VAPID key.
     ADMIN_PWA_PUSH_VAPID_PRIVATE_KEY: str = ""
     ADMIN_PWA_PUSH_VAPID_SUBJECT: str = ""

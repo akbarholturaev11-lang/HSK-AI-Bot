@@ -111,3 +111,139 @@ def test_reporter_does_not_bind_the_document_during_delivery(diagnostic_page):
     assert len(posts) == 1
     assert posts[0][0] == "fixture-csrf-2"
     assert [event["site_code"] for event in posts[0][1]["events"]] == ["progress"]
+
+
+# --- Diagnostic precision (tasks 6.2/6.4): real engine errors and stacks ----
+# Fixture bodies are served at allowlisted first-party URLs, so the expected
+# line of each failure is known exactly; the reporter itself is the real file.
+HANDOFF_JS = """window.fixtureThrow = function () {
+  var state;
+  return state.value;
+};
+window.fixtureReject = function () {
+  return Promise.resolve().then(function inner() {
+    return undefinedFixtureFunction();
+  });
+};
+"""
+GUIDE_JS = """window.fixtureOuter = function () {
+  return window.fixtureThrow();
+};
+"""
+VENDOR_JS = "window.vendorThrow=function(){var a;return a.b};"
+FOREIGN_JS = "window.crossThrow=function(){setTimeout(function(){throw new TypeError('private-cross-origin')},0)};"
+PRECISION_HTML = f"""<!doctype html><title>handoff</title>
+<script defer src="{ASSET}?v=20261113-0123456789ab"></script>
+<script src="/iphone-pwa-handoff.js?v=aaaaaaaaaaaa"></script>
+<script src="/course_v3_data/li-onboarding-install.js?v=20261114-bbbbbbbbbbbb&token=private-query"></script>
+<script src="/course_v3_data/vendor/html2canvas.min.js"></script>
+<script src="https://cdn.other.test/widget.js"></script>
+<script>
+window.inlineThrow = function () {{ var gone = null; return gone.value; }};
+window.addEventListener('error', function (event) {{
+  window.__seen = {{ line: event.lineno, column: event.colno, hasError: !!event.error }};
+}});
+</script>"""
+DEBUG_KEYS = ("error_name", "reason_code", "location", "frames")
+# Nothing a page, URL, message or stack contains may leave the browser.
+PRIVATE = ("private", "hsk.test", "http", "?v=", "token", "fixtureThrow", "fixtureOuter", "inner",
+           "undefinedFixtureFunction", "state", "Cannot", "undefined is not", "Can't find", "not defined")
+
+
+@pytest.fixture()
+def precision_page():
+    posts = []
+    with pw.sync_playwright() as playwright:
+        browser = getattr(playwright, os.environ.get("PWA_E2E_ENGINE", "chromium")).launch()
+        try:
+            context = browser.new_context(viewport={"width": 390, "height": 844})
+            script = "application/javascript"
+
+            def post(route):
+                posts.append(route.request.post_data_json)
+                route.fulfill(json={"accepted": 1})
+
+            def serve(body):
+                return lambda route: route.fulfill(body=body, content_type=script)
+
+            context.route(ORIGIN + "/api/v3/pwa-auth/session", lambda route: route.fulfill(
+                json={"ok": True, "user_id": 1, "csrf": "fixture-csrf-1"}))
+            context.route(ORIGIN + "/api/v3/pwa/diagnostics", post)
+            for path, body in ((ASSET + "?*", REPORTER), ("/iphone-pwa-handoff.js?*", HANDOFF_JS),
+                               ("/course_v3_data/li-onboarding-install.js?*", GUIDE_JS),
+                               ("/course_v3_data/vendor/html2canvas.min.js", VENDOR_JS)):
+                context.route(ORIGIN + path, serve(body))
+            context.route("https://cdn.other.test/widget.js", serve(FOREIGN_JS))
+            context.route(ORIGIN + "/iphone-pwa/handoff", lambda route: route.fulfill(
+                body=PRECISION_HTML, content_type="text/html; charset=utf-8"))
+            page = context.new_page()
+            page.goto(ORIGIN + "/iphone-pwa/handoff")
+            page.evaluate("HskDiag.owner(1)")
+            yield page, posts
+        finally:
+            browser.close()
+
+
+def reported(page, posts, trigger):
+    """Run one failure and return its wire event after the privacy checks."""
+    expect_report(page, trigger)
+    assert len(posts) == 1 and len(posts[0]["events"]) == 1
+    wire = str(posts[0])
+    queued = page.evaluate("localStorage.getItem('hsk-diag-v1')")
+    for secret in PRIVATE:
+        assert secret not in wire, secret
+        assert secret not in queued, secret
+    event = posts[0]["events"][0]
+    assert (event["feature_code"], event["site_code"]) == ("distribution_handoff", "pwa_handoff")
+    return event
+
+
+def test_uncaught_error_reports_exact_first_party_file_line_and_column(precision_page):
+    page, posts = precision_page
+    event = reported(page, posts, "() => { setTimeout(() => window.fixtureOuter(), 0); }")
+    seen = page.evaluate("window.__seen")
+    assert seen["hasError"] and seen["line"] == 3
+    assert (event["failure_code"], event["category"], event["error_name"], event["reason_code"]) == (
+        "js_uncaught", "type", "TypeError", "null_access")
+    # The browser's own ErrorEvent position, with the asset's content token.
+    assert event["location"] == {"asset_id": "iphone_pwa_handoff", "line": 3, "column": seen["column"],
+                                 "asset_version": "aaaaaaaaaaaa"}
+    # The caller in a second first-party file; the test's own frame is not one.
+    assert len(event["frames"]) == 1
+    frame = event["frames"][0]
+    assert (frame["asset_id"], frame["line"], frame["asset_version"]) == ("li_onboarding_install", 2, "bbbbbbbbbbbb")
+    assert isinstance(frame["column"], int) and 1 <= frame["column"] <= len("  return window.fixtureThrow();")
+
+
+def test_unhandled_rejection_takes_its_location_from_the_first_party_stack(precision_page):
+    page, posts = precision_page
+    event = reported(page, posts, "() => { window.fixtureReject(); }")
+    assert (event["failure_code"], event["category"], event["error_name"], event["reason_code"]) == (
+        "js_rejection", "reference", "ReferenceError", "not_defined")
+    location = event["location"]
+    assert (location["asset_id"], location["line"], location["asset_version"]) == (
+        "iphone_pwa_handoff", 7, "aaaaaaaaaaaa")
+    assert isinstance(location["column"], int) and 1 <= location["column"] <= len("    return undefinedFixtureFunction();")
+    for frame in event.get("frames", []):
+        assert frame["asset_id"] == "iphone_pwa_handoff"
+
+
+@pytest.mark.parametrize("trigger, name, reason", [
+    ("() => { setTimeout(() => window.inlineThrow(), 0); }", "TypeError", "null_access"),  # inline script
+    ("() => { setTimeout(() => window.vendorThrow(), 0); }", "TypeError", "null_access"),  # vendored, minified
+])
+def test_inline_and_vendored_scripts_report_no_location(precision_page, trigger, name, reason):
+    page, posts = precision_page
+    event = reported(page, posts, trigger)
+    assert page.evaluate("window.__seen.hasError")
+    assert (event["failure_code"], event["error_name"], event["reason_code"]) == ("js_uncaught", name, reason)
+    assert "location" not in event and "frames" not in event
+
+
+def test_cross_origin_script_error_has_no_error_object_and_no_debug_fields(precision_page):
+    page, posts = precision_page
+    event = reported(page, posts, "() => { window.crossThrow(); }")
+    seen = page.evaluate("window.__seen")
+    assert not seen["hasError"] and seen["line"] == 0, "the engine hides a foreign script's error"
+    assert (event["failure_code"], event["category"]) == ("js_uncaught", "other")
+    assert [key for key in DEBUG_KEYS if key in event] == []

@@ -7,7 +7,7 @@ Detects technical failures on Android, the learner PWA, the Telegram Mini App an
 ## ADDED Requirements
 
 ### Requirement: Versioned privacy-safe failure event
-A client failure event SHALL contain only versioned bounded fields: `event_id`, client time, client/platform, app/build version, `feature_code`, `failure_code`, `site_code`, outcome and a safe technical category. Codes MUST come from the server-owned catalog. The server MUST reject an event that carries a forbidden field and MUST NOT store, log, push or project any forbidden value.
+A client failure event SHALL contain only versioned bounded fields: `event_id`, client time, client/platform, app/build version, `feature_code`, `failure_code`, `site_code`, outcome and a safe technical category. A learner-web JS failure MAY add the allowlisted debug evidence defined below. Codes MUST come from the server-owned catalog. The server MUST reject an event that carries a forbidden field and MUST NOT store, log, push or project any forbidden value.
 
 #### Scenario: Forbidden field rejected
 - **WHEN** an event carries a token, cookie, Telegram `initData`, password, chat or lesson answer text, payment data, screenshot, raw stack or error message, URL query, request/response body or device fingerprint
@@ -20,6 +20,33 @@ A client failure event SHALL contain only versioned bounded fields: `event_id`, 
 #### Scenario: Oversized request rejected
 - **WHEN** a request exceeds the maximum body size or the maximum events per batch
 - **THEN** it is rejected without a partial write
+
+### Requirement: Allowlisted debug evidence for learner-web JS failures
+A learner-web `js_uncaught` or `js_rejection` event MAY carry an exception name, a generic reason code and up to six source locations (catalog asset ID, bounded line and column, optional content token). Every value MUST come from a server-owned list. The reporter MUST NOT queue or send a message, stack text, function name or URL. The server MUST NOT use this evidence for grouping, severity, triage or alerts.
+
+#### Scenario: First-party error with a location
+- **WHEN** an uncaught error happens in a listed first-party script
+- **THEN** the event carries the exception name, the asset ID, line and column the browser reported, and no message or URL
+
+#### Scenario: Location cannot be established
+- **WHEN** the failing code is inline, cross-origin, vendored, minified or unlisted, or the browser gives no error object
+- **THEN** the event is still sent without a location, and no location is guessed
+
+#### Scenario: Raw text sent under any key
+- **WHEN** an event or one of its locations carries a key such as `message`, `stack`, `url` or `function`
+- **THEN** the whole request is rejected, and nothing from it is stored or logged
+
+#### Scenario: Forged or malformed evidence
+- **WHEN** an event names an unknown asset, a path, a URL, an out-of-range position, more than five frames, or a name and reason that disagree
+- **THEN** that event is rejected, and other valid events in the same batch are still accepted
+
+#### Scenario: Older server
+- **WHEN** a server that does not know the evidence fields refuses a batch
+- **THEN** the reporter resends that batch once without them, with the same event IDs
+
+#### Scenario: Grouping unchanged
+- **WHEN** two failures differ only in their debug evidence
+- **THEN** they join the same incident with the same severity
 
 ### Requirement: Owner from the verified session only
 The intake SHALL derive the account (`users.id`) only from the verified session of its transport: Android bearer, PWA cookie with CSRF and same origin, or verified Telegram `initData`. A client-supplied owner ID MUST NOT be trusted.
