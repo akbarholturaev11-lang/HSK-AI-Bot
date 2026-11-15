@@ -146,6 +146,7 @@
       var expandedPhraseId = null;
       var phraseAudio = null;
       var phraseAudioToken = 0;
+      var phraseAudioButton = null;
       var toastTimer = 0;
 
       // Keep the page named for assistive technologies without a redundant visible hero.
@@ -265,6 +266,13 @@
       function playPhrase(phrase, button) {
         ++phraseAudioToken;
         var token = phraseAudioToken;
+        if (phraseAudioButton) {
+          phraseAudioButton.disabled = false;
+          phraseAudioButton.removeAttribute("aria-busy");
+          phraseAudioButton.removeAttribute("aria-pressed");
+          phraseAudioButton.textContent = "🔊";
+        }
+        phraseAudioButton = button;
         try { if (phraseAudio) { phraseAudio.pause(); phraseAudio = null; } } catch (_) {}
         try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch (_) {}
         button.disabled = true;
@@ -275,7 +283,9 @@
           if (token !== phraseAudioToken) return;
           button.disabled = false;
           button.removeAttribute("aria-busy");
+          button.removeAttribute("aria-pressed");
           button.textContent = "🔊";
+          if (phraseAudioButton === button) phraseAudioButton = null;
         }
         function failed() {
           if (token !== phraseAudioToken) return;
@@ -306,7 +316,8 @@
             if (token === phraseAudioToken) {
               button.disabled = false;
               button.removeAttribute("aria-busy");
-              button.textContent = "◼";
+              button.textContent = "🔊";
+              button.setAttribute("aria-pressed", "true");
             }
           }).catch(fallbackSpeech);
         } catch (_) { fallbackSpeech(); }
