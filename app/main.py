@@ -187,6 +187,7 @@ from app.services.notification_delivery_service import (
 from app.services.desktop_analytics_service import DesktopAnalyticsService
 from app.services.desktop_auth_service import DesktopAuthService
 from app.api.pwa_auth import create_pwa_auth_router
+from app.api.pwa_saved_words import create_pwa_saved_words_router
 from app.api.lava_checkout import attach_lava_block, create_lava_router
 from app.admin_api.pwa_lava import create_admin_pwa_lava_router
 from app.services.lava.events import LavaRuntime
@@ -1079,6 +1080,7 @@ app.include_router(
 # Separate, default-OFF learner browser sessions; no legacy Mini App cookie bypass.
 app.include_router(create_pwa_auth_router(session_factory=async_session_maker, settings_obj=settings, bot=bot,
                                             lava_runtime_getter=lambda: lava_runtime))
+app.include_router(create_pwa_saved_words_router(session_factory=async_session_maker, settings_obj=settings))
 app.include_router(create_lava_router(runtime_getter=lambda: lava_runtime,
                                      session_factory=async_session_maker, settings_obj=settings))
 app.include_router(
