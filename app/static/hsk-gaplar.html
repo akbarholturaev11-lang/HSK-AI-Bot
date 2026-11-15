@@ -6,8 +6,18 @@
   <script src="/assets/telegram-web-app.js?v=20261019-1"></script>
   <script src="/course_v3_data/hsk-course-i18n.js?v=20261113-a1da547eb267"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-a0dd8c0b1db1"></script>
   <meta name="theme-color" content="#FDF9F0">
-  <script defer src="/audio/words/index.js?v=20261014-offline-1"></script>
-<script defer src="/audio/words/client.js?v=20261014-persist-1"></script>
+  <script>
+  /* Load existing Chinese-audio cache client only in the PWA presentation. */
+  if (location.pathname.startsWith("/iphone-pwa/")) {
+    ["/audio/words/index.js?v=20261014-offline-1",
+     "/audio/words/client.js?v=20261014-persist-1"].forEach(function (src) {
+      var el = document.createElement("script");
+      el.src = src;
+      el.async = false;
+      document.head.appendChild(el);
+    });
+  }
+</script>
   <title>Tayyor gaplar · HSK AI</title>
   <link rel="stylesheet" href="/course_v3_data/design-tokens.css?v=20261005-section-title">
   <style>
@@ -323,7 +333,52 @@
         } catch (_) { fallbackSpeech(); }
       }
 
+      function createLegacyPhraseCard(phrase, category) {
+        var card = document.createElement("article");
+        card.className = "phrase";
+        var top = document.createElement("div");
+        top.className = "phrase-top";
+        var hanzi = document.createElement("p");
+        hanzi.className = "hanzi";
+        hanzi.lang = "zh";
+        hanzi.textContent = phrase.zh;
+        var isSaved = savedIds.has(phrase.id);
+        var save = makeButton("save", isSaved ? "★" : "☆", function () {
+          var wasSaved = savedIds.has(phrase.id);
+          if (wasSaved) savedIds.delete(phrase.id); else savedIds.add(phrase.id);
+          if (!persistSavedIds()) {
+            if (wasSaved) savedIds.add(phrase.id); else savedIds.delete(phrase.id);
+            return;
+          }
+          announce(wasSaved ? text.removed : text.savedOne);
+          renderPhrases();
+        });
+        save.setAttribute("aria-label", isSaved ? text.savedOne : text.save);
+        save.setAttribute("aria-pressed", String(isSaved));
+        top.append(hanzi, save);
+
+        var pinyin = document.createElement("p");
+        pinyin.className = "pinyin";
+        pinyin.textContent = phrase.pinyin;
+        var translation = document.createElement("p");
+        translation.className = "translation";
+        translation.textContent = phrase.translations[LANGUAGE];
+        var bottom = document.createElement("div");
+        bottom.className = "phrase-bottom";
+        var categoryLabel = document.createElement("span");
+        categoryLabel.className = "category";
+        categoryLabel.textContent = category.labels[LANGUAGE];
+        var copy = makeButton("copy", text.copy, function () {
+          copyText(phrase.zh).then(function () { announce(text.copied); }).catch(function () { announce(text.copy); });
+        });
+        bottom.append(categoryLabel, copy);
+        card.append(top, pinyin, translation, bottom);
+        return card;
+      }
+
       function createPhraseCard(phrase, category) {
+        /* Mini App retains its exact original browse UI and interactions. */
+        if (!location.pathname.startsWith("/iphone-pwa/")) return createLegacyPhraseCard(phrase, category);
         var card = document.createElement("article");
         card.className = "phrase";
         card.dataset.phraseId = phrase.id;
