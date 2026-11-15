@@ -452,6 +452,94 @@ html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .count {
   letter-spacing: 0;
 }
 
+/* UIUX-004: actual phrase browse interaction; one disclosure, two micro-actions. */
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-top {
+  align-items: center;
+  gap: 8px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  text-align: start;
+  min-width: 0;
+  min-height: 48px;
+  flex: 1 1 auto;
+  border: 0;
+  background: transparent;
+  color: var(--hsk-ink);
+  padding: 0;
+  cursor: pointer;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-toggle .hanzi {
+  display: block;
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-chevron {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  color: var(--hsk-ink-secondary);
+  font-size: 19px;
+  line-height: 1;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-actions {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 2px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] :is(.phrase-play,.phrase-actions .save) {
+  display: grid;
+  place-items: center;
+  min-width: 44px;
+  min-height: 44px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 12px;
+  font-size: 21px;
+  color: var(--hsk-ink-secondary);
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-actions .save[aria-pressed="true"] {
+  color: var(--hsk-gold-ink);
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-play[aria-busy="true"] {
+  opacity: .72;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-details {
+  padding-top: 8px;
+  border-top: 1px solid var(--hsk-divider);
+  margin-top: 10px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-details[hidden] {
+  display: none !important;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-details .copy {
+  min-height: 44px;
+  font-size: 12px;
+  padding-inline: 14px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase.is-open {
+  border-color: var(--hsk-cinnabar);
+}
+@media (max-width: 350px) {
+  html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-actions {
+    gap: 0;
+  }
+  html.hsk-pwa-browser[data-hsk-design-screen="phrases"] :is(.phrase-play,.phrase-actions .save) {
+    min-width: 40px;
+    width: 40px;
+  }
+}
+
 /* Checkout: exact prices, real quote, permissions and failure states stay JS-owned. */
 html.hsk-pwa-browser[data-hsk-design-screen="checkout"] :is(.app,.section,.screen) {
   min-width: 0;
