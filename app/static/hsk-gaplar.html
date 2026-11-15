@@ -504,6 +504,13 @@
           if (webApp && webApp.BackButton) webApp.BackButton.show();
         } catch (_) {}
       });
+      window.addEventListener("pagehide", function () {
+        ++phraseAudioToken;
+        try { if (phraseAudio) phraseAudio.pause(); } catch (_) {}
+        try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch (_) {}
+        phraseAudio = null;
+        phraseAudioButton = null;
+      });
       document.addEventListener("visibilitychange", function () {
         if (new URLSearchParams(location.search).get("embedded") !== "1" && document.visibilityState === "visible") syncPhraseTelegramChrome();
       });
