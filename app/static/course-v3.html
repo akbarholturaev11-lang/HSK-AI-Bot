@@ -7888,7 +7888,7 @@ var RESOURCE=(function(){
     var q=new URLSearchParams({lang:LANG,theme:"light",embedded:"1",from:"course-v3"});
     if(k==="dict"){
       var level=normalizeLevel((MAP&&MAP.level)||getSelectedLevel());
-      q.set("level",level);q.set("filter",level);
+      q.set("level",level);if(PWA_COURSE_HOST){q.set("version",currentCourseTrack());q.set("filter","all")}else{q.set("filter",level)}
       return (PWA_COURSE_HOST?"/iphone-pwa/dictionary?":"/hsk-lugat.html?")+q.toString();
     }
     return (PWA_COURSE_HOST?"/iphone-pwa/phrases?":"/hsk-gaplar.html?")+q.toString();
