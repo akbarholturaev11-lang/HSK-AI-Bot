@@ -144,6 +144,22 @@ PostgreSQL 15 on loopback, a fresh database per run; Playwright 1.63.
   clean; all 31 `i18n-p0` scripts passed after the nine learner pages were
   re-anchored for their one-line token change.
 - **OpenSpec:** `openspec validate unified-error-monitoring --strict` passed.
+- **Full non-browser suite** (`pytest -q --ignore=tests/e2e tests`, no
+  PostgreSQL variables, so PostgreSQL-only tests skip): 5,290 passed, 934
+  skipped, none failed. A first run, started before the nine learner pages
+  were re-anchored, failed 11 cases in `test_i18n_all_catalogs.py` and
+  `test_i18n_common_ui_adoption.py`; both modules pass on the final tree.
+
+### Evidence (GitHub CI)
+
+- Branch head `a5f205c6`, pushed 2026-11-15. The
+  [Analytics integrity run](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43723286237)
+  passed: registry valid, Node reporter test, 342 passed and 30 skipped on
+  PostgreSQL 16, and 20 runtime chain pairs proven.
+- No pull request is open, so the pull-request-only workflows (Admin PWA
+  security with the browser harness, Backend/PWA performance contract,
+  `i18n-p0`, shake-report guard, OpenSpec planning) have not run on GitHub.
+  Their commands were run locally as listed above.
 
 ### Graphify audit
 
