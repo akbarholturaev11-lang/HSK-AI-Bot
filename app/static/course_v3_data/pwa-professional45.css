@@ -1,0 +1,536 @@
+/*
+ * HSK AI learner PWA: professional-first visual harmonisation.
+ * Based on the existing PWA source; never substitutes an imagined product.
+ * References (HSK-AI-Design-System guidelines, 44 originals + product-ux):
+ * foundations/layout, spacing, typography, semantic colors, borders, surfaces,
+ * iconography, motion; components/buttons, summaries, progress, badges,
+ * modals, search, fields, selection, toasts; patterns/composition, data
+ * reports, filter-sort; hsk-ai-product-ux-contract sections 2.1-2.3.
+ *
+ * Branch-only and PWA-only. Existing routes, course nodes, Panda/character
+ * SVGs, red Voice Orb, entitlement, checkout, quiz, SDK, and API untouched.
+ * No JS-generated fake data, new features, or experimental token registry.
+ */
+html.hsk-pwa-browser {
+  --hsk-p45-focus: var(--hsk-jade-ink, #175B3A);
+  --hsk-p45-gutter: 16px;
+  --hsk-p45-min-hit: 44px;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+html.hsk-pwa-browser *,
+html.hsk-pwa-browser *::before,
+html.hsk-pwa-browser *::after { box-sizing: border-box; }
+html.hsk-pwa-browser :is(button, a, input, select, textarea, [role="button"]):focus-visible {
+  outline: 3px solid var(--hsk-p45-focus) !important;
+  outline-offset: 3px;
+}
+html.hsk-pwa-browser :is(button, a, input, select, textarea):disabled {
+  cursor: not-allowed;
+}
+html.hsk-pwa-browser :is(input:not([type="checkbox"]):not([type="radio"]), textarea, select) {
+  font-size: max(16px, 1em);
+  min-width: 0;
+}
+html.hsk-pwa-browser :is(.han, [lang="zh"]) {
+  overflow-wrap: anywhere;
+}
+html.hsk-pwa-browser :is(.scr, .resource-pane, .view, #app, .page, .app) {
+  min-width: 0;
+}
+html.hsk-pwa-browser .resource-status {
+  line-height: 1.55;
+  max-width: 100%;
+}
+html.hsk-pwa-browser .resource-status button {
+  min-height: 44px;
+}
+
+/* Main learner navigation: keep iOS Liquid Glass and real five-tab layout. */
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .scr {
+  padding-bottom: calc(90px + env(safe-area-inset-bottom, 0px));
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .nav {
+  isolation: isolate;
+  justify-content: space-around;
+  align-items: flex-start;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .nav button:not(.center) {
+  min-height: 48px;
+  padding: 4px 0 2px;
+  font-size: 11px;
+  line-height: 1.2;
+  font-weight: 560;
+  overflow-wrap: anywhere;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .nav button.on:not(.center) {
+  font-weight: 740;
+  color: var(--hsk-cinnabar-ink);
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .nav button:focus-visible {
+  border-radius: 10px;
+  outline-offset: -3px !important;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .nav .center .fab {
+  box-shadow: 0 4px 12px rgba(133, 49, 38, .16);
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .htop {
+  column-gap: 8px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .section-title,
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .profile-title,
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .rating-title {
+  font-size: clamp(20px, 5.7vw, 24px);
+  line-height: 1.24;
+  font-weight: 730;
+  letter-spacing: -.025em;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .scr:not(#s-course)>.htop {
+  min-height: 64px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .scr:not(#s-course)>.htop + .phead {
+  padding-top: 0;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .sech {
+  margin: 22px 16px 10px;
+  color: var(--hsk-ink-secondary);
+  font-size: 14px;
+  line-height: 1.36;
+  font-weight: 710;
+  letter-spacing: -.006em;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .phead .sub {
+  font-size: 14px;
+  line-height: 1.45;
+  margin: 2px 0 10px;
+  color: var(--hsk-ink-secondary);
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .chip {
+  font-weight: 680;
+  font-variant-numeric: tabular-nums;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .ctop {
+  background: var(--hsk-paper);
+  border-bottom: 1px solid var(--hsk-divider);
+  box-shadow: 0 5px 12px -10px rgba(33, 29, 23, .17);
+}
+
+/* Course remains the actual milestone path, NOT a fabricated card list. */
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-course .uban {
+  border-color: var(--hsk-divider);
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-course .node {
+  touch-action: manipulation;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-course .node:focus-visible {
+  outline-offset: 5px !important;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-course .nlabel,
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-course .utt {
+  overflow-wrap: anywhere;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-course .tplan-h {
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* Practice: one structural list surface, not six unrelated elevated cards. */
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-mashq .mashq-group {
+  border-radius: var(--hsk-radius-medium, 12px);
+  border: 1px solid var(--hsk-divider);
+  background: var(--hsk-card-surface);
+  box-shadow: none;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-mashq .row-card {
+  min-height: 72px;
+  padding: 12px 13px;
+  cursor: pointer;
+  background: transparent;
+  box-shadow: none;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-mashq .row-card .rt b {
+  font-weight: 720;
+  font-size: 15px;
+  line-height: 1.35;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-mashq .row-card .rt small {
+  display: block;
+  color: var(--hsk-ink-secondary);
+  font-size: 12.5px;
+  line-height: 1.45;
+  margin-top: 3px;
+  white-space: normal;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-mashq .row-card .ti2 {
+  flex-basis: 40px;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-mashq .row-card .ar {
+  align-self: center;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-mashq .row-card:active {
+  background: var(--hsk-cinnabar-soft);
+}
+
+/* Voice tab: preserve the production black stage and red V8 Orb. */
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-voice .voicebox {
+  margin: 12px 16px 20px;
+  border-radius: 22px;
+  padding: 28px 20px 24px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-voice .voicebox h3 {
+  font-size: 20px;
+  line-height: 1.3;
+  font-weight: 700;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-voice .voicebox > p:not(.voice-quota) {
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 21px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-voice .voicebox .voice-quota {
+  font-size: 13px;
+  min-height: 20px;
+  line-height: 1.45;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-voice .voicebox button {
+  min-height: 48px;
+  font-weight: 720;
+}
+
+/* Ranking: dense, aligned numbers, real podium and clear row actions. */
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-rating .rating-title {
+  margin: 12px 16px 16px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-rating .rating-podium {
+  margin-top: 6px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-rating .rating-podium-meta,
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-rating .rating-podium-queue {
+  line-height: 1.4;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-rating .lr {
+  min-height: 65px;
+  padding-top: 11px;
+  padding-bottom: 11px;
+  border-bottom-color: var(--hsk-divider);
+  font-variant-numeric: tabular-nums;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-rating .lr .nm {
+  font-weight: 640;
+  line-height: 1.35;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-rating .lr .xp {
+  font-weight: 700;
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-rating .lr.me {
+  background: var(--hsk-cinnabar-soft);
+  border-radius: var(--hsk-radius-medium, 12px);
+  border-bottom-color: transparent;
+}
+
+/* Profile: visual hierarchy, truthful status, one consistent section rhythm. */
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-profile .phero {
+  padding: 12px 16px 8px;
+  gap: 14px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-profile .profile-display-name {
+  font-size: 19px;
+  line-height: 1.3;
+  font-weight: 750;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-profile .profile-access-badge {
+  line-height: 1.4;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-profile .profile-friends-link,
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-profile .profile-pro-link {
+  min-height: 48px;
+  font-size: 14px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-profile .profile-accuracy {
+  border-radius: var(--hsk-radius-medium, 12px);
+  margin-top: 14px;
+  margin-bottom: 8px;
+  box-shadow: none;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-profile .profile-accuracy .accuracy-label {
+  font-size: 13px;
+  line-height: 1.35;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-profile .profile-accuracy .accuracy-note,
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-profile .profile-accuracy-help {
+  font-size: 12px;
+  line-height: 1.5;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-profile .profile-compact-ach {
+  gap: 8px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-profile .profile-compact-ach .arow {
+  border-color: var(--hsk-divider);
+  box-shadow: none;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-profile .profile-compact-ach .ah span {
+  font-size: 13px;
+  font-weight: 700;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-profile .card2 {
+  border-radius: var(--hsk-radius-medium, 12px);
+  box-shadow: none;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-profile .cell {
+  min-width: 0;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] :is(.profile-settings,.pwa-notices-button) {
+  min-width: 44px;
+  min-height: 44px;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+/* Settings and overlays: preserve Back/close logic, action reachability. */
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] :is(.srow,.profile-friends-link,.profile-pro-link) {
+  min-height: 48px;
+  line-height: 1.45;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .srow .sv {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  text-align: end;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #sheet .si {
+  overscroll-behavior: contain;
+  scroll-padding-bottom: 20px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .sheet .scta,
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .sheet button {
+  touch-action: manipulation;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .fcta,
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .fbtn {
+  min-height: 48px;
+  font-weight: 700;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .rc-ix {
+  min-height: 44px;
+  min-width: 44px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+}
+
+/* Asynchronous slots: preserve actual first-paint composition, no fake text. */
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .pwa-initial-shell .pwa-skel-line,
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .pwa-layout-ink {
+  background: var(--hsk-divider);
+  background-clip: padding-box;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .pwa-initial-shell .pwa-skel-head {
+  min-height: 48px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .pwa-rating-row {
+  min-height: 65px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .pwa-profile-accuracy-pending {
+  min-height: 128px;
+}
+
+/* The existing PWA practice routes use their original HTML/JS, not cloned cards. */
+html.hsk-pwa-browser[data-hsk-design-screen^="practice-"] .top {
+  gap: 10px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen^="practice-"] :is(.ix,.ix2,.rc-ix) {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 0;
+  border-radius: 12px;
+  color: var(--hsk-ink-secondary);
+}
+html.hsk-pwa-browser[data-hsk-design-screen^="practice-"] :is(h1,.sech) {
+  font-weight: 730;
+  line-height: 1.3;
+}
+html.hsk-pwa-browser[data-hsk-design-screen^="practice-"] h1 {
+  font-size: 23px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen^="practice-"] :is(.opt,.opt-row,.tile,.ex,.row,.choice) {
+  min-height: 48px;
+  line-height: 1.4;
+}
+html.hsk-pwa-browser[data-hsk-design-screen^="practice-"] :is(.qcard,.card,.ex) {
+  border-color: var(--hsk-divider, #EAE0CC);
+}
+html.hsk-pwa-browser[data-hsk-design-screen^="practice-"] :is(.cta,.ghost,.go,.restart) {
+  min-height: 48px;
+  line-height: 1.4;
+}
+html.hsk-pwa-browser[data-hsk-design-screen^="practice-"] :is(.sub,.qlead,.hint) {
+  line-height: 1.5;
+}
+html.hsk-pwa-browser[data-hsk-design-screen^="practice-"] .han {
+  line-height: 1.3;
+}
+
+/* Dictionary: keep real list, level/version controls, search and detail routes. */
+html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] .hero {
+  padding: 14px 16px 12px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] .hero-title {
+  font-size: 23px;
+  line-height: 1.24;
+  letter-spacing: -.02em;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] .eyebrow {
+  letter-spacing: .03em;
+  font-size: 12px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] .list-back-btn {
+  background: transparent;
+  border: 0;
+  border-radius: 12px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] .row {
+  min-height: 88px;
+  border-bottom-color: var(--hsk-divider);
+}
+html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] .row .h {
+  font-family: var(--hsk-font-cjk, "Songti SC", serif);
+  font-weight: 620;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] .row .p,
+html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] .row .m {
+  line-height: 1.45;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] #search {
+  min-height: 48px;
+  font-size: 16px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] .filter-pill {
+  min-height: 44px;
+  font-size: 13px;
+}
+
+/* Ready phrases: retain search, save, audio and real PWA route. */
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .page {
+  width: min(100%, 480px);
+  padding-inline: 16px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase {
+  background: var(--hsk-card-surface);
+  border-color: var(--hsk-divider);
+  border-radius: var(--hsk-radius-medium, 12px);
+  padding: 14px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .hanzi {
+  font-size: 26px;
+  line-height: 1.38;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .pinyin,
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .translation {
+  line-height: 1.48;
+  overflow-wrap: anywhere;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] :is(.back,.save,.copy,.chip) {
+  min-width: 44px;
+  min-height: 44px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .count {
+  font-size: 12px;
+  line-height: 1.45;
+  letter-spacing: 0;
+}
+
+/* Checkout: exact prices, real quote, permissions and failure states stay JS-owned. */
+html.hsk-pwa-browser[data-hsk-design-screen="checkout"] :is(.app,.section,.screen) {
+  min-width: 0;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="checkout"] .hero h2 {
+  font-size: 23px;
+  line-height: 1.27;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="checkout"] .hero p,
+html.hsk-pwa-browser[data-hsk-design-screen="checkout"] .value-copy {
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 480;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="checkout"] .plan {
+  border-color: var(--hsk-divider);
+  min-height: 132px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="checkout"] :is(.plan,.choice,.discount-btn,.sheet-primary,.help-btn) {
+  min-height: 48px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="checkout"] .section h3 {
+  font-size: 16px;
+  line-height: 1.35;
+  font-weight: 740;
+}
+
+/* Li onboarding: its approved 23-state Panda flow stays intact. */
+html.hsk-pwa-browser[data-hsk-design-screen="li-onboarding"] :is(button,select) {
+  touch-action: manipulation;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="li-onboarding"] :is(.helper,.body) {
+  overflow-wrap: anywhere;
+}
+
+/* The V8 Voice conversation keeps black background and canonical red orb. */
+html.hsk-pwa-browser[data-hsk-design-screen="voice-v8"] :is(.circle.topbtn,.footbtn) {
+  min-width: 48px;
+  min-height: 48px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="voice-v8"] #prompt {
+  font-size: 17px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="voice-v8"] .msg {
+  overflow-wrap: anywhere;
+}
+
+/* Low-powered and reduced-motion: no loading shimmer competition or layout animation. */
+@media (prefers-reduced-motion: reduce) {
+  html.hsk-pwa-browser .pwa-layout-ink,
+  html.hsk-pwa-browser .pwa-initial-shell .pwa-skel-line,
+  html.hsk-pwa-browser .pwa-initial-shell .pwa-skel-node {
+    animation: none !important;
+  }
+  html.hsk-pwa-browser .pwa-rating-settle :is(.rating-podium,.lr) {
+    animation: none !important;
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .nav {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: var(--hsk-paper);
+  }
+}
+@media (max-width: 350px) {
+  html.hsk-pwa-browser { --hsk-p45-gutter: 14px; }
+  html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .section-title,
+  html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .profile-title {
+    font-size: 20px;
+  }
+  html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .chip {
+    font-size: 12px;
+    padding-inline: 7px;
+  }
+  html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-mashq .row-card {
+    padding: 12px 10px;
+  }
+  html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-profile .profile-display-name {
+    font-size: 17px;
+  }
+}
