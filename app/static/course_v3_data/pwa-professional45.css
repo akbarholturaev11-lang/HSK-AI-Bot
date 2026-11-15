@@ -60,11 +60,11 @@ html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .nav button:not(.cen
   padding: 4px 0 2px;
   font-size: 11px;
   line-height: 1.2;
-  font-weight: 560;
+  font-weight: 600;
   overflow-wrap: anywhere;
 }
 html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .nav button.on:not(.center) {
-  font-weight: 740;
+  font-weight: 700;
   color: var(--hsk-cinnabar-ink);
 }
 html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .nav button:focus-visible {
@@ -82,7 +82,7 @@ html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .profile-title,
 html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .rating-title {
   font-size: clamp(20px, 5.7vw, 24px);
   line-height: 1.24;
-  font-weight: 730;
+  font-weight: 700;
   letter-spacing: -.025em;
 }
 html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .scr:not(#s-course)>.htop {
@@ -98,7 +98,7 @@ html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .sech {
   color: var(--hsk-ink-secondary);
   font-size: 14px;
   line-height: 1.36;
-  font-weight: 710;
+  font-weight: 700;
   letter-spacing: -.006em;
 }
 html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .phead .sub {
@@ -108,7 +108,7 @@ html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .phead .sub {
   color: var(--hsk-ink-secondary);
 }
 html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .chip {
-  font-weight: 680;
+  font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
 html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .ctop {
@@ -151,7 +151,7 @@ html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-mashq .row-card {
   box-shadow: none;
 }
 html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-mashq .row-card .rt b {
-  font-weight: 720;
+  font-weight: 700;
   font-size: 15px;
   line-height: 1.35;
 }
@@ -199,7 +199,7 @@ html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-voice .voicebox .
 }
 html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-voice .voicebox button {
   min-height: 48px;
-  font-weight: 720;
+  font-weight: 700;
 }
 
 /* Ranking: dense, aligned numbers, real podium and clear row actions. */
@@ -221,7 +221,7 @@ html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-rating .lr {
   font-variant-numeric: tabular-nums;
 }
 html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-rating .lr .nm {
-  font-weight: 640;
+  font-weight: 600;
   line-height: 1.35;
 }
 html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-rating .lr .xp {
@@ -243,7 +243,7 @@ html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-profile .phero {
 html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-profile .profile-display-name {
   font-size: 19px;
   line-height: 1.3;
-  font-weight: 750;
+  font-weight: 700;
 }
 html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-profile .profile-access-badge {
   line-height: 1.4;
@@ -369,7 +369,7 @@ html.hsk-pwa-browser[data-hsk-design-screen^="practice-"] :is(.ix,.ix2,.rc-ix) {
   color: var(--hsk-ink-secondary);
 }
 html.hsk-pwa-browser[data-hsk-design-screen^="practice-"] :is(h1,.sech) {
-  font-weight: 730;
+  font-weight: 700;
   line-height: 1.3;
 }
 html.hsk-pwa-browser[data-hsk-design-screen^="practice-"] h1 {
@@ -417,11 +417,14 @@ html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] .row {
 }
 html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] .row .h {
   font-family: var(--hsk-font-cjk, "Songti SC", serif);
-  font-weight: 620;
+  font-weight: 600;
 }
 html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] .row .p,
 html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] .row .m {
   line-height: 1.45;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] .row .p {
+  font-size: 16px;
 }
 html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] #search {
   min-height: 48px;
@@ -532,6 +535,20 @@ html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-details {
 html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-details[hidden] {
   display: none !important;
 }
+/* The revealed pronunciation and meaning are teaching content, not tiny metadata. */
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-details .pinyin {
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 600;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-details .translation {
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 400;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-details .category {
+  font-size: 12px;
+}
 html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-details .copy {
   min-height: 44px;
   font-size: 12px;
@@ -562,7 +579,7 @@ html.hsk-pwa-browser[data-hsk-design-screen="checkout"] .hero p,
 html.hsk-pwa-browser[data-hsk-design-screen="checkout"] .value-copy {
   font-size: 14px;
   line-height: 1.5;
-  font-weight: 480;
+  font-weight: 500;
 }
 html.hsk-pwa-browser[data-hsk-design-screen="checkout"] .plan {
   border-color: var(--hsk-divider);
@@ -574,7 +591,7 @@ html.hsk-pwa-browser[data-hsk-design-screen="checkout"] :is(.plan,.choice,.disco
 html.hsk-pwa-browser[data-hsk-design-screen="checkout"] .section h3 {
   font-size: 16px;
   line-height: 1.35;
-  font-weight: 740;
+  font-weight: 700;
 }
 
 /* Li onboarding: its approved 23-state Panda flow stays intact. */
