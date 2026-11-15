@@ -129,7 +129,7 @@ PostgreSQL 15 on loopback, a fresh database per run; Playwright 1.63.
   report through cookie + CSRF intake and the database into the Admin drawer
   at 390 px in UZ/RU/TJ. The link points at the failing repository line. The
   same chain passed on SQLite.
-- **CI module list of `analytics-integrity.yml`:** 343 passed, 30 skipped,
+- **CI module list of `analytics-integrity.yml`:** 342 passed, 30 skipped,
   20 runtime chain pairs proven; the checker passed in push and pull-request
   modes, and the performance policy passed with `--enforce-change-tests`.
 - **Head-pinned PostgreSQL modules**, each on its own database:
