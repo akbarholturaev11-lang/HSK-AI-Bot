@@ -286,3 +286,31 @@
   }
   #hsk-inline-pro .hip-pd-blink{transform:scaleY(0)}
 }
+
+
+/* UIUX-012 — eligible first checkout X opens a compact centered modal.
+   Unlike the full purchase view, only one CTA and the top-right X are shown. */
+#hsk-inline-pro[data-screen="exit"]{
+  background:rgba(22,17,13,.52);
+  padding:max(12px,env(safe-area-inset-top,0px)) 16px max(12px,env(safe-area-inset-bottom,0px));
+  align-items:center;justify-content:center;
+}
+#hsk-inline-pro[data-screen="exit"] .hip-sheet{
+  width:100%;max-width:350px;height:auto;max-height:min(620px,calc(100dvh - 32px));
+  min-height:0;border-radius:20px;border:1px solid var(--hip-line);
+  background:var(--hip-paper);box-shadow:0 14px 40px rgba(0,0,0,.17);
+  padding:46px 8px 18px;
+}
+#hsk-inline-pro[data-screen="exit"] .hip-scroll{
+  padding:0;flex:0 1 auto;overflow-y:auto;
+}
+#hsk-inline-pro[data-screen="exit"] .hip-header{margin:0;max-width:none;padding:0 22px}
+#hsk-inline-pro[data-screen="exit"] .hip-panda{width:82px;height:82px;margin-bottom:6px}
+#hsk-inline-pro[data-screen="exit"] .hip-panda svg{width:77px;height:82px}
+#hsk-inline-pro[data-screen="exit"] .hip-title{font-size:22px;line-height:1.25}
+#hsk-inline-pro[data-screen="exit"] .hip-summary{font-size:13px;line-height:1.45;margin-top:6px}
+#hsk-inline-pro[data-screen="exit"] .hip-body{padding:0}
+#hsk-inline-pro[data-screen="exit"] .hip-actions{padding:15px 14px 0}
+#hsk-inline-pro[data-screen="exit"] .hip-close{right:8px;top:7px}
+#hsk-inline-pro[data-screen="exit"] .hip-back{display:none}
+@media(prefers-reduced-motion:reduce){#hsk-inline-pro[data-screen="exit"]{animation:none}}
