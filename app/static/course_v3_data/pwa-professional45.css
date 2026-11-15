@@ -337,6 +337,16 @@ html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .pwa-initial-shell .
 html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .pwa-rating-row {
   min-height: 65px;
 }
+/* Keep the loading geometry in the exact same slots after visual retuning. */
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-mashq .pwa-mashq-shell .pwa-practice-row {
+  min-height: 72px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-voice .pwa-voice-shell .voicebox {
+  padding: 28px 20px 24px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-voice .pwa-voice-shell .pwa-voice-title {
+  height: 26px;
+}
 html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .pwa-profile-accuracy-pending {
   min-height: 128px;
 }
