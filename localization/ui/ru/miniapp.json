@@ -1188,6 +1188,7 @@
     "ui.admin_pwa.analyticsStateNotApplicable": "К платформе не относится",
     "ui.admin_pwa.analyticsStateDetailLimited": "Превышен лимит расчёта",
     "ui.admin_pwa.analyticsStateSeeOverall": "Общие показатели — в фильтре «Общий»",
+    "ui.admin_pwa.analyticsOmittedForPlatform": "Для этой платформы не показывается",
     "ui.admin_pwa.analyticsAttributedSince": "Учёт по платформе с",
     "ui.admin_pwa.analyticsIphonePwa": "iPhone PWA",
     "ui.admin_pwa.analyticsPwaPro": "Путь iPhone PWA Pro",

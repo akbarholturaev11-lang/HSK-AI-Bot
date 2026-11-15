@@ -1188,6 +1188,7 @@
     "ui.admin_pwa.analyticsStateNotApplicable": "Platformaga taalluqli emas",
     "ui.admin_pwa.analyticsStateDetailLimited": "Hisob chegarasidan oshdi",
     "ui.admin_pwa.analyticsStateSeeOverall": "Jami ko‘rsatkichlar «Umumiy» filtrida",
+    "ui.admin_pwa.analyticsOmittedForPlatform": "Bu platformada ko‘rsatilmaydi",
     "ui.admin_pwa.analyticsAttributedSince": "Platforma bo‘yicha hisob boshlanishi",
     "ui.admin_pwa.analyticsIphonePwa": "iPhone PWA",
     "ui.admin_pwa.analyticsPwaPro": "iPhone PWA Pro yo‘li",

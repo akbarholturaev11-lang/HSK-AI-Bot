@@ -225,6 +225,20 @@ function metric(label,value,glyph='chart',reason=null) { return `<div class="met
 const stateLabels={no_data:'analyticsStateNoData',not_instrumented:'analyticsStateNotInstrumented',attribution_not_audited:'analyticsStateNotAudited',detail_limited:'analyticsStateDetailLimited',not_applicable:'analyticsStateNotApplicable'};
 function metricReason(key){const s=key&&state.stats?.metric_states?.[key];return !s||s.state==='available'?null:stateLabels[s.reason]?s.reason:'no_data';}
 function stateBlock(key){const reason=metricReason(key)||'no_data';return `<p class="analytics-state" data-state="${esc(reason)}">${esc(t(stateLabels[reason]))}</p>`;}
+// Platform views: a metric this platform can never show is listed once under the
+// tab, not drawn as a filler card or row. Overall and «no data yet» keep their place.
+const scopedOutReasons=['not_instrumented','attribution_not_audited','not_applicable'];
+let omittedMetrics=[];
+function scopedOut(key,label){
+  const reason=metricReason(key);
+  if(state.platform==='overall'||!scopedOutReasons.includes(reason))return false;
+  if(label&&!omittedMetrics.some(row=>row[1]===label))omittedMetrics.push([reason,label]);
+  return true;
+}
+function omittedDisclosure(){
+  const groups=scopedOutReasons.map(reason=>[reason,omittedMetrics.filter(row=>row[0]===reason).map(row=>t(row[1]))]).filter(group=>group[1].length);
+  return groups.length?`<details class="stat-details analytics-omitted"><summary>${esc(t('analyticsOmittedForPlatform'))} · ${omittedMetrics.length}</summary><div>${groups.map(([reason,labels])=>`<p data-state="${esc(reason)}"><strong>${esc(t(stateLabels[reason]))}:</strong> ${esc(labels.join(', '))}</p>`).join('')}</div></details>`:'';
+}
 function sinceLine(m,key,label){const at=m.attributed_since?.[key];return at?`<p class="source-note analytics-since">${label?`${esc(t(label))} · `:''}${esc(t('analyticsAttributedSince'))}: ${esc(date(at))}</p>`:'';}
 
 const feedbackCategoryLabels={
@@ -304,8 +318,8 @@ const number=value=>typeof value==='number'&&Number.isFinite(value)?new Intl.Num
 const percent=value=>value===null||value===undefined?'—':number(value)+'%';
 const usd=(value,precise=false)=>value===null||value===undefined?'—':new Intl.NumberFormat(locale==='tj'?'tg':locale,{maximumFractionDigits:precise?8:2}).format(value)+' USD';
 const seconds=value=>{if(value===null||value===undefined)return '—';let remaining=Math.max(0,Math.round(value)),parts=[];for(const [unit,size] of [['analyticsDays',86400],['analyticsHours',3600],['analyticsMinutes',60],['analyticsSeconds',1]]){const amount=Math.floor(remaining/size);remaining%=size;if(amount||(size===1&&!parts.length))parts.push(number(amount)+' '+t(unit));if(parts.length===2)break;}return parts.join(' ');};
-function analyticCards(fields){return `<div class="grid metrics stats-many stats-category-metrics">${fields.map(([label,value,glyph,key])=>metric(label,value,glyph,metricReason(key))).join('')}</div>`;}
-function analyticRows(fields){return fields.map(([label,value,key])=>{const reason=metricReason(key);return `<div class="stat-info-row"${reason?` data-state="${esc(reason)}"`:''}><span>${esc(t(label))}</span>${reason?`<strong class="state-text">${esc(t(stateLabels[reason]))}</strong>`:`<strong>${esc(value??'—')}</strong>`}</div>`;}).join('');}
+function analyticCards(fields){const cards=fields.filter(([label,,,key])=>!scopedOut(key,label));return cards.length?`<div class="grid metrics stats-many stats-category-metrics">${cards.map(([label,value,glyph,key])=>metric(label,value,glyph,metricReason(key))).join('')}</div>`:'';}
+function analyticRows(fields){return fields.filter(([label,,key])=>!scopedOut(key,label)).map(([label,value,key])=>{const reason=metricReason(key);return `<div class="stat-info-row"${reason?` data-state="${esc(reason)}"`:''}><span>${esc(t(label))}</span>${reason?`<strong class="state-text">${esc(t(stateLabels[reason]))}</strong>`:`<strong>${esc(value??'—')}</strong>`}</div>`;}).join('');}
 function analyticTable(headers,rows){return `<div class="table-wrap analytics-table-wrap"><table class="data-table stat-table"><thead><tr>${headers.map(h=>`<th scope="col">${esc(t(h))}</th>`).join('')}</tr></thead><tbody>${rows.map(cells=>`<tr>${cells.map(c=>`<td>${esc(c??'—')}</td>`).join('')}</tr>`).join('')||`<tr><td colspan="${headers.length}">${esc(t('empty'))}</td></tr>`}</tbody></table></div>`;}
 function activityChart(activity){
   const points=activity?.points||[],max=Math.max(1,...points.map(p=>p.accounts)),width=600,step=width/Math.max(points.length,1);
@@ -348,7 +362,7 @@ document.addEventListener('toggle',event=>{if(event.target.matches('[data-advanc
 function categorizedStatsView(){
   const data=state.stats,nav=statsCategoryNav();if(!data)return nav+statePanel('loading');
   const footer=analyticsFooter(data);if(!data.available)return nav+(stateLabels[data.reason]?statePanel(stateLabels[data.reason],'analyticsStateSeeOverall'):statePanel('unavailable','statsPlatformChoose'))+footer;
-  const m=data.metrics,tab=state.statsTab;let body='';
+  const m=data.metrics,tab=state.statsTab;let body='';omittedMetrics=[];
   if(data.platform!=='overall'&&['home','overview','platform'].includes(tab))body=platformAnalytics(m);
   else if(tab==='overview'){
     body=analyticCards([['usersTotal',number(m.users_total),'users'],['newAccounts',number(m.new_accounts),'users'],[state.period==='all_time'?'active30':'activeAccounts',number(m.active_accounts),'chart'],['analyticsActivePro',number(m.active_pro),'spark'],['analyticsPayers',number(m.paying_accounts),'wallet'],['pending',number(m.pending_current),'clock'],['approved',number(m.payments_by_status.approved),'check'],['userFilterBotBlocked',number(m.bot_blocked),'shield']]);
@@ -360,8 +374,9 @@ function categorizedStatsView(){
     body=analyticCards([['analyticsReturnD1',percent(r1?.percent),'users','return_retention'],['analyticsReturnD7',percent(r7?.percent),'users','return_retention'],['analyticsRetentionD1',percent(d1?.percent),'users','retention'],['analyticsRetentionD7',percent(d7?.percent),'users','retention'],['analyticsActivation',percent(a?.percent),'target','activation'],['analyticsStarter',percent(f?.completion_percent),'book','foundation'],['analyticsFirstAttempt',percent(f?.first_attempt?.percent),'check','foundation'],['analyticsSessionTime',seconds(m.session_seconds),'clock','session_seconds'],['analyticsLessonTime',seconds(m.lesson_seconds),'clock','lesson_seconds'],['analyticsChatAverage',number(m.chat?.average),'spark','chat'],['analyticsVoiceMinutes',number(m.voice_minutes),'clock','voice_minutes']]);
     // Cohort rows of an unavailable metric are omitted; its card states why.
     const cohorts=[[t('analyticsReturnD1'),r1?.returned,r1?.eligible,'return_retention'],[t('analyticsReturnD7'),r7?.returned,r7?.eligible,'return_retention'],[t('analyticsRetentionD1'),d1?.returned,d1?.eligible,'retention'],[t('analyticsRetentionD7'),d7?.returned,d7?.eligible,'retention'],[t('analyticsActivation'),a?.started,a?.eligible,'activation'],[t('analyticsStarter'),f?.completed_users,f?.started_users,'foundation'],[t('analyticsFirstAttempt'),f?.first_attempt?.correct,f?.first_attempt?.objectives,'foundation'],[t('analyticsCheckpoint'),f?.checkpoint?.reached,f?.checkpoint?.eligible,'foundation'],[t('analyticsDirectStart'),m.direct_activation?.started,m.direct_activation?.eligible,'direct_activation'],[t('analyticsHandoffActivation'),m.handoff_activation?.activated,m.handoff_activation?.eligible,'handoff_activation']].filter(row=>!metricReason(row[3])).map(([label,n,d])=>[label,number(n),number(d)]);
-    const parts=f?f.parts.map(p=>analyticTrack('analyticsPart'+p.part,p.completed_users,f.completed_users)).join(''):stateBlock('foundation');
-    body+=`<div class="double">${cohorts.length?analyticPanel('analyticsCohorts',analyticTable(['analyticsMetric','analyticsNumerator','analyticsDenominator'],cohorts)+sinceLine(m,'return_retention','analyticsPlatformReturnNote')+sinceLine(m,'activation','analyticsActivation')+sinceLine(m,'handoff_activation','analyticsHandoffActivation'),'analyticsRetentionNote'):''}${analyticPanel('analyticsFoundationParts',parts+analyticRows([['completedAccounts',number(m.course_engagement?.completed_accounts),'course_engagement'],['analyticsCompletedUserLessons',number(m.completed_user_lessons),'completed_user_lessons']])+sinceLine(m,'foundation'))}</div>`;
+    const noStarter=!f&&scopedOut('foundation');
+    const parts=f?f.parts.map(p=>analyticTrack('analyticsPart'+p.part,p.completed_users,f.completed_users)).join(''):noStarter?'':stateBlock('foundation');
+    body+=`<div class="double">${cohorts.length?analyticPanel('analyticsCohorts',analyticTable(['analyticsMetric','analyticsNumerator','analyticsDenominator'],cohorts)+sinceLine(m,'return_retention','analyticsPlatformReturnNote')+sinceLine(m,'activation','analyticsActivation')+sinceLine(m,'handoff_activation','analyticsHandoffActivation'),'analyticsRetentionNote'):''}${analyticPanel(noStarter?'courseEngagement':'analyticsFoundationParts',parts+analyticRows([['completedAccounts',number(m.course_engagement?.completed_accounts),'course_engagement'],['analyticsCompletedUserLessons',number(m.completed_user_lessons),'completed_user_lessons']])+sinceLine(m,'foundation'))}</div>`;
     const featureRows=(m.features||[]).map(r=>[t('analyticsFeature'+r.key),number(r.paid),number(r.free),...(den?[percent(den.paid?100*r.paid/den.paid:null),percent(den.free?100*r.free/den.free:null)]:[])]);
     body+=analyticPanel('analyticsFeatureUse',(m.features?analyticTable(['analyticsFeature','analyticsPaidNow','analyticsFreeNow',...(den?['analyticsPaidRate','analyticsFreeRate']:[])],featureRows):stateBlock('features'))+sinceLine(m,'features')+sinceLine(m,'features_lessons','analyticsFeaturelessons'),'analyticsFeaturesNote');
     body+=`<p class="source-note">${esc(t('analyticsDetailWindow'))}: ${esc(date(m.detail_since))}${m.detail_limited?' · '+esc(t('analyticsDetailLimited')):''}</p>`;
@@ -380,7 +395,7 @@ function categorizedStatsView(){
       const lava=m.lava;
       body+=`<div class="double">${analyticPanel('analyticsChannels',analyticTable(['analyticsChannel','payments','analyticsRepeatPayments','analyticsRevenue'],m.channels.map(r=>[t('analyticsChannel'+r.channel),number(r.payments),number(r.renewal_payments),usd(r.usd)])),'analyticsCurrencyBasis')}${analyticPanel('analyticsLava',analyticRows([['analyticsLavaActive',number(lava.active_subscriptions)],['analyticsLavaRenewals',number(lava.renewals)],['analyticsLavaCancelled',number(lava.cancelled)],['analyticsLavaRefunded',number(lava.refunded)],['analyticsLavaChargebacks',number(lava.chargebacks)]]),'analyticsLavaNote')}</div>`;
     }
-    body+=analyticPanel('aiSpend',m.ai_models?analyticTable(['aiModel','analyticsBillingTier','recordedRequests','tokens','estimatedCost'],m.ai_models.map(r=>[r.model==='unknown'?t('analyticsUnknown'):r.model,t('analyticsTier'+r.tier),number(r.requests),number(r.tokens),usd(r.usd,true)])):stateBlock('ai_models'),'aiCostNote');
+    if(m.ai_models||!scopedOut('ai_models','aiSpend'))body+=analyticPanel('aiSpend',m.ai_models?analyticTable(['aiModel','analyticsBillingTier','recordedRequests','tokens','estimatedCost'],m.ai_models.map(r=>[r.model==='unknown'?t('analyticsUnknown'):r.model,t('analyticsTier'+r.tier),number(r.requests),number(r.tokens),usd(r.usd,true)])):stateBlock('ai_models'),'aiCostNote');
   }else if(tab==='sources'){
     const sourceName=key=>t('analyticsSource'+key)!=='—'?t('analyticsSource'+key):t('analyticsOtherSource');
     // R3: a platform view is null before its first route-set entry.
@@ -397,7 +412,7 @@ function categorizedStatsView(){
     body+=analyticPanel('analyticsBasicExport',`<div class="statistics-export">${exportMenu('statistics')}</div>`,'analyticsExportNote')+feedbackPanel();
   }
   if(data.platform==='overall'&&['course','funnel'].includes(tab))body+=advancedAnalyticsDisclosure();
-  return nav+`<div class="stats-category-content">${body}</div>`+footer;
+  return nav+`<div class="stats-category-content">${body}${omittedDisclosure()}</div>`+footer;
 }
 function statsView(){
   if(state.route==='stats')return categorizedStatsView();

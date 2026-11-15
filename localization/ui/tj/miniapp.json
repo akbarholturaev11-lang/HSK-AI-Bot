@@ -1188,6 +1188,7 @@
     "ui.admin_pwa.analyticsStateNotApplicable": "Ба платформа дахл надорад",
     "ui.admin_pwa.analyticsStateDetailLimited": "Аз ҳадди ҳисоб гузашт",
     "ui.admin_pwa.analyticsStateSeeOverall": "Нишондиҳандаҳои умумӣ дар филтри «Умумӣ»",
+    "ui.admin_pwa.analyticsOmittedForPlatform": "Барои ин платформа нишон дода намешавад",
     "ui.admin_pwa.analyticsAttributedSince": "Ҳисоби платформа аз",
     "ui.admin_pwa.analyticsIphonePwa": "iPhone PWA",
     "ui.admin_pwa.analyticsPwaPro": "Роҳи iPhone PWA Pro",
