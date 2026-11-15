@@ -63,7 +63,7 @@ class SavedWordsApiTests(unittest.IsolatedAsyncioTestCase):
     async def test_invalid_payload_rejected_before_database_write(self):
         route="/api/v3/pwa/dictionary/saved/set"
         for invalid in (
-            {"hanzi":"${'}notHan}","saved":True},
+            {"hanzi":"not-a-Chinese-word","saved":True},
             {"hanzi":"结果","saved":"yes"},
             {"hanzi":"你好","saved":True,"user_id":102},
             {"hanzi":"","saved":True},
