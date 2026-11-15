@@ -7,6 +7,8 @@ description: Concrete HSK AI learner PWA and Android UI/UX design standards: hie
 
 Scope: user-visible design and interaction patterns for learner **iPhone PWA and Android**. Use these rules when creating, modifying or reviewing an HSK AI screen. Keep this skill UI/UX-only; general engineering, API, analytics, monitoring, CI, release and Git rules belong in `AGENTS.md` and the relevant project documents.
 
+**Professional-first rulebook (45 pages):** [44 professional foundation/component/pattern rules and the HSK AI-specific UX supplement](https://github.com/akbarholturaev11-lang/HSK-AI-Design-System/blob/restore/hsk-ai-professional-unified-audit-20261115/docs/portable/README.md). For UI tasks read that rulebook's introduction, applicable layout/foundation/component/pattern pages, and its `hsk-ai-product-ux-contract.md`. For an entire-app redesign audit all 45; preserve real product behavior and user-approved overrides. In case of conflicting old product skill examples, the professional-first design standard and newer owner-approved specific UX choices win except for safety, privacy, verified learning, payments, or technical platform contracts. Don't create fake components/features or claim planned work is shipped.
+
 ## 1. Unified screen alignment and vertical rhythm
 
 - Screens of the same category use consistent header height, title baseline, back/action icon positions, top inset, horizontal gutters and first-content start position.
@@ -30,7 +32,7 @@ Scope: user-visible design and interaction patterns for learner **iPhone PWA and
 - Never show internal system explanations, backend/API/database terminology, debug codes, implementation details or long developer-style descriptions on learner screens.
 - Prefer a short title and an actionable, plain-language sentence only when needed. Do not add explanatory copy solely to fill space.
 - Preserve material user-facing information: actual limits, payments/renewal conditions, critical errors with recovery, and essential lesson/question instructions must remain clear and accessible.
-- Long **optional** hints follow the dedicated One-Line Expandable Text pattern below; do not conceal essential facts.
+- Long **optional** hints follow the approved Two-Line Expandable Text pattern below; do not conceal essential facts.
 
 ## 5. No duplicate UI; one clear primary action
 
@@ -59,7 +61,7 @@ Scope: user-visible design and interaction patterns for learner **iPhone PWA and
 
 - Show the information necessary to understand and complete the current task immediately. Reveal optional secondary explanations in place only on demand.
 - Avoid opening an entire sheet/page/modal simply to expand a short hint. Do not add decorative expand buttons, duplicate labels or a second card.
-- For a one-line expandable helper, follow the exact One-Line Expandable Text specification below (do not invent a different “Подробнее” pattern).
+- For an optional expandable helper, follow the approved Two-Line Expandable Text specification below (do not invent a different “Подробнее” pattern).
 
 ## 9. Motion with a purpose
 
@@ -133,23 +135,23 @@ Scope: user-visible design and interaction patterns for learner **iPhone PWA and
 
 1. **Back is stepwise:** the visible Back chevron and the platform Back navigation first dismiss a currently open preview/sheet, then return exactly **one logical checkout step** (e.g. requisites → payment method → selected plan). Preserve already selected valid inputs. Never unexpectedly jump back to the course from the middle of a normal multistep checkout.
 2. **X means exit, not disguised Back:** when an X is displayed, it is an honest close affordance. Do **not** make the learner press X once per previous step; that would be misleading. Before the learner reaches a meaningful checkout commitment, X exits promptly without a retention prompt.
-3. **Single smart-exit decision at high intent:** if the learner is already viewing payment requisites/QR or has completed meaningful payment selections, tapping X may present **at most one** concise, non-manipulative decision in the current attempt: primary action **Continue payment** (return to the current payment step) and clearly visible **Exit checkout**. Both actions must work immediately; no repetitive exit confirmation, stacked discounts, countdown or guilt-based language. If a temporary sheet itself was opened, close that layer first.
+3. **Smart exit general pattern; override for the approved eligible 20% offer:** the older Continue payment + Exit checkout confirmation applies only when an applicable checkout has no owner-approved eligible UIUX-012 offer. For **UIUX-012 eligible PWA checkout**, first checkout X displays a compact **server-authorized 20% modal** with exactly **one Apply discount CTA and its own top-right X**. Offer-X dismisses only the offer, preserving checkout. Next checkout-X exits directly. Ineligible, pending-payment and provider cases must retain truthful direct exit; no stacked dialogs or fake prices. Back remains stepwise. Payment service owns all eligibility and quotes.
 4. **Resumable selections:** when the learner explicitly exits and later reopens checkout in the same valid account/session, restore the selected plan, region/method and the last still-valid step where feasible. Revalidate availability, price, rights and pending-payment state before showing/payment submission. **Never retain payment card credentials, secrets or unverified transaction status** as UX draft state.
 5. **Real payment/pending status overrides retention:** after a payment is initiated, authorized, submitted or awaiting manual review, do not misleadingly present the learner as having an unpaid abandoned cart or attempt to start a duplicate payment. Show accurate payment status and a safe route back to the app; exiting the screen must not silently cancel or duplicate a transaction.
 6. **Existing offer integration:** Android Lava already has an eligible, conditional exit-offer interaction (`LavaCheckoutViewModel.requestProviderClose()`). Preserve its eligibility/terms and avoid layering the new smart-exit decision on top of that offer. For an unavailable/failed offer, the close path must still work. Do not fabricate discounts or add multiple retention screens.
 7. **Native and PWA parity:** ensure the semantic flow is consistent for iPhone PWA inline checkout, Android Direct/manual checkout and applicable provider checkout; honor native/browser Back behavior and external provider redirects. Do not interfere with Android Play purchase restrictions.
 8. **UX review cases:** first-step close, method-step Back, requisites-step Back, first high-intent X, confirmed Exit, Continue payment, immediate subsequent exit, reopening with safe restored choices, pending payment, manual-review state, provider error, sheet/QR preview and account change. Verify that leaving remains straightforward.
 
-## One-Line Expandable Text — UI/UX standard
+## Two-Line Expandable Text — UI/UX standard
 
 Apply this presentation to **non-essential helper text, secondary descriptions, and explanatory hints** in HSK AI learner PWA and Android. Match the established Admin PWA interaction in `app/static/admin-pwa/app.js` (`foldHints`, `toggleHint`) and `app/static/admin-pwa/styles.css` (`.hint-clamp`, `.hint-fold`) visually; implement with the appropriate native controls for each platform rather than importing Admin PWA code.
 
-1. **Collapsed by default:** show at most **one rendered text line**, with an ellipsis (`…`) when the text overflows.
-2. **Conditional indicator:** only when the text actually overflows, show a small, unobtrusive **chevron-down** (`⌄`) at the right edge. If the full text fits on one line, show no chevron and do not present an expand control.
-3. **In-place expand:** tapping either the truncated text or the chevron reveals the **entire text in the same location**; the indicator becomes **chevron-up** (`⌃`). Tapping again collapses it to one line. Never navigate to a new screen or open a modal for this.
+1. **Collapsed by default:** show at most **two complete rendered text lines**, with an ellipsis (`…`) when the text overflows. Preserve normal wrapping and the actual Hanzi/UZ/RU/TJ content width.
+2. **Conditional indicator:** only when the text actually overflows **two lines**, show a small, unobtrusive **top-right** chevron-down (`⌄`). If the full text fits within two lines, show no chevron and no inert disclosure control.
+3. **In-place expand:** tapping the text/disclosure reveals the **entire text in the same location**; the top-right indicator becomes **chevron-up** (`⌃`). Tapping again collapses it to two lines. Never navigate to a new screen or open a modal for this.
 4. **Minimal presentation:** no `Подробнее` / `Свернуть` labels, additional buttons, decorative cards, icon backplates, borders, shadows, or extra background surfaces. The text and chevron form one accessible interaction target.
 5. **Motion:** use a subtle 150–250 ms expansion/collapse transition without abrupt jumps or blocking the interface. Respect the system's reduced-motion preference.
 6. **Accessibility:** make the interaction keyboard/screen-reader operable, expose its expanded/collapsed state, and preserve a usable touch target (**at least 44 CSS px on PWA / 48 dp on Android**) without making the visual chevron oversized.
 7. **Do not truncate essential content:** lesson explanations required to answer, question/answer text, instructions, critical feedback, payment prices/terms, limits, error recovery, or important safety notices must remain fully understandable without expanding a hint. Apply this pattern only where optional detail can safely be hidden.
 
-**Review check:** test short vs overflowing text, very narrow screens, long UZ/RU/TJ translations, large text settings, expanded/collapsed state, and reduced motion. Avoid applying a one-line clamp indiscriminately to all text elements.
+**Review check:** test short vs overflowing text, very narrow screens, long UZ/RU/TJ translations, large text settings, expanded/collapsed state, and reduced motion. Avoid applying a two-line clamp indiscriminately to all text elements.
