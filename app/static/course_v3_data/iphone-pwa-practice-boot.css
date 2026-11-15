@@ -54,3 +54,57 @@ html.hsk-pwa-practice #hsk-pwa-practice-loader .hsk-study-preparing-panda{max-wi
 html.hsk-pwa-practice .ix,html.hsk-pwa-practice .hsk-native-back-duplicate{
   background:transparent;border:0;box-shadow:none;
 }
+
+/* Professional-first PWA practice: shared by original test, mistakes,
+   recognition, pronunciation and memorize documents. No analytics writers,
+   Mini App layout or per-page HTML is modified for this change.
+   Authority: 45 HSK AI portable guidelines (layout, typography, buttons,
+   borders, focus, interaction density and product-specific visual states). */
+html.hsk-pwa-practice .top {
+  gap: 10px;
+}
+html.hsk-pwa-practice :is(.ix,.ix2,.rc-ix) {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 0;
+  border-radius: 12px;
+  color: var(--hsk-ink-secondary,#665D50);
+}
+html.hsk-pwa-practice h1 {
+  font-size: 23px;
+  font-weight: 730;
+  line-height: 1.3;
+}
+html.hsk-pwa-practice .sech {
+  font-size: 14px;
+  line-height: 1.35;
+  font-weight: 710;
+}
+html.hsk-pwa-practice :is(.opt,.opt-row,.tile,.ex,.row,.choice,.cta,.ghost,.go,.restart) {
+  min-height: 48px;
+  line-height: 1.4;
+}
+html.hsk-pwa-practice :is(.sub,.qlead,.hint) {
+  line-height: 1.5;
+}
+html.hsk-pwa-practice :is(.qcard,.card,.ex) {
+  border-color: var(--hsk-divider,#EAE0CC);
+}
+html.hsk-pwa-practice :is(button,a,input,textarea,[role="button"]):focus-visible {
+  outline: 3px solid var(--hsk-jade-ink,#175B3A);
+  outline-offset: 3px;
+}
+html.hsk-pwa-practice .han {
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+@media(max-width:350px) {
+  html.hsk-pwa-practice .top {gap:8px;}
+  html.hsk-pwa-practice h1 {font-size:21px;}
+}
