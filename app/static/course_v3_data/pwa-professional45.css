@@ -686,3 +686,21 @@ html.hsk-pwa-browser[data-hsk-design-screen="voice-v8"] .msg {
     font-size: 17px;
   }
 }
+
+
+/* UIUX-002 verified progress navigation — 44px hit area without another decorative plate. */
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-course .p45-progress-chip {
+  -webkit-appearance:none;appearance:none;border:0;background:transparent;
+  min-width:44px;min-height:44px;display:inline-flex;align-items:center;
+  justify-content:center;gap:5px;border-radius:11px;cursor:pointer;
+  font:inherit;font-size:13px;font-weight:700;padding:6px 8px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-profile .p45-profile-streak-link {
+  -webkit-appearance:none;appearance:none;border:0;background:transparent;
+  color:var(--cin);display:inline-flex;align-items:center;gap:6px;
+  min-width:44px;min-height:44px;border-radius:11px;padding:7px 0 7px 10px;
+  font:inherit;font-size:13px;font-weight:700;cursor:pointer;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] :is(.p45-progress-chip,.p45-profile-streak-link):focus-visible {
+  outline:3px solid var(--cin);outline-offset:2px;
+}
