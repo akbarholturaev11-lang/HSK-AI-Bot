@@ -41,6 +41,145 @@ or production acceptance.
   Play Data safety filing remain unverified. Production deployment and CI do
   not substitute for those checks.
 
+- **Diagnostic precision (tasks 6.1–6.4):** implemented on the branch
+  `feat/monitoring-diagnostic-precision-20261115`, not on `main` and not
+  deployed. See "Diagnostic precision" below.
+
+## Diagnostic precision (tasks 6.1–6.4, branch only)
+
+Started from `main` `f4a1f8aa`. Design is D12; the migration is
+`0157_diagnostic_precision`. Nothing was pushed to `main` or deployed, and no
+production setting was read or changed.
+
+### What exists
+
+- **6.1** `_diagnostic_samples` (`app/admin_api/pwa_inbox.py`) adds one
+  `sample` per diagnostic row on an Inbox page: the newest retained receipt
+  with a location, else the newest with a category. Two partial indexes serve
+  it. The drawer shows the localized category, or "unknown".
+- **6.2** `hsk-diagnostics.js` adds, for `js_uncaught` and `js_rejection`
+  only: an allowlisted exception name, a generic `reason_code`, and a primary
+  location plus up to five frames (`asset_id`, line, column, 12-hex
+  `asset_version`). `intake.py` validates every value against `catalog.py`
+  (`ERROR_NAMES`, `REASONS`, `DEBUG_ASSETS`, 32 first-party scripts). Android
+  and the backend reporter are unchanged.
+- **6.3** The existing drawer shows the last reported sample in UZ/RU/TJ. No
+  control was added. `app/services/monitoring/source.py` builds a GitHub link
+  only for a verified asset version and a known deployment commit.
+- **6.4** Tests below. Physical-device acceptance is still open.
+
+### Decisions within D12
+
+- **Asset version.** Each location may carry the 12-hex content token of its
+  script. The task text lists asset ID, line and column; the token was added
+  because a link needs proof of which bytes ran. It is a hash of a public
+  first-party file. The server compares it with the Git blob ID prefix and the
+  SHA-256 prefix of the file it serves; both token conventions are in use.
+- **WebKit stacks have no query.** Playwright WebKit reports stack URLs
+  without `?v=…`, while `ErrorEvent.filename` keeps it. The reporter therefore
+  reads the token from the page's own `<script src>` for that exact path, and
+  gives none when two elements disagree.
+- **Deployment commit.** `MONITORING_SOURCE_COMMIT` (40 hex) is read from that
+  variable or from Railway's `RAILWAY_GIT_COMMIT_SHA`. It is stored on the
+  receipt at intake. Blank or malformed means no link. The Dockerfile copies
+  the repository as is, so deployed files equal the commit's files.
+- **Invalid evidence rejects the event**, as an unknown site code does. An
+  unknown key at any level rejects the request.
+- **Inline scripts have no location.** The PWA response of `course-v3.html` is
+  modified by the server, so a document line could differ from the repository
+  file. Most course code is inline; its failures show name and reason only.
+- **Handoff script token.** `iphone-pwa-handoff.html` now loads
+  `/iphone-pwa-handoff.js?v=AUTO`, derived like the other handoff assets. The
+  route stays `no-store`, and the learner worker ignores `/iphone-pwa*` paths.
+  `/iphone-pwa-login.js` has no token, so its locations never get a link.
+- **Compatibility.** The fields are optional inside `diag.v1`. On a
+  `forbidden_field` answer the reporter resends the batch once without them.
+- **Not checked boxes.** Section 6 of `tasks.md` requires device acceptance,
+  so 6.1–6.4 stay unchecked with a dated status line.
+
+### Evidence (local, macOS, 2026-11-15)
+
+PostgreSQL 15 on loopback, a fresh database per run; Playwright 1.63.
+
+- **Server contract and PostgreSQL:** `tests/test_monitoring_precision.py`,
+  20 passed. It covers forged asset IDs, path traversal, URL, query, token
+  and PII strings, raw `stack` and `message` keys, function names, negative
+  and overflowing positions, too many frames, platform and failure limits;
+  cookie + CSRF intake to receipt to the authenticated Inbox with a verified
+  link; no link for a stale version, a missing commit or a cache token used
+  as a commit; last-sample attribution; receipts from before this change;
+  Fixed, reopen and the `{kind, source}` push payload; account deletion and
+  retention; migration upgrade, downgrade and guard. Raw strings were absent
+  from five tables, the Admin response and the captured logs.
+- **Sample read plan:** with 40,000 newer receipts on one incident, both
+  lookups used their partial index, no sequential scan, at most one row.
+- **Alembic CLI:** `0157 → 0156 → 0157` on PostgreSQL; the downgrade refused
+  while a receipt held evidence, then ran and kept the receipt.
+- **Reporter, Node:** `node tests/test_hsk_diagnostics.js` passed, including
+  Chromium- and WebKit-shaped stacks, the reason table, a tampered queue, the
+  older-server resend and the 16 KB batch bound.
+- **Reporter, real engines:** `tests/e2e/test_pwa_diagnostics.py`, 8 passed in
+  Chromium and 8 in WebKit: exact file, line and column against the browser's
+  own `ErrorEvent`, a second first-party frame, a rejection located from its
+  stack, inline, vendored and cross-origin scripts, and a missing error object.
+- **End to end:** `tests.e2e.admin_pwa_browser` (Chromium, virtual WebAuthn),
+  full run passed on PostgreSQL. The new chain opens the real
+  `/iphone-pwa/handoff` page with unmodified scripts as a verified learner,
+  breaks a browser API so `li-onboarding-install.js` throws, and follows the
+  report through cookie + CSRF intake and the database into the Admin drawer
+  at 390 px in UZ/RU/TJ. The link points at the failing repository line. The
+  same chain passed on SQLite.
+- **CI module list of `analytics-integrity.yml`:** 343 passed, 30 skipped,
+  20 runtime chain pairs proven; the checker passed in push and pull-request
+  modes, and the performance policy passed with `--enforce-change-tests`.
+- **Head-pinned PostgreSQL modules**, each on its own database:
+  `test_admin_pwa_postgres.py` 20 passed (real chain to head `0157`),
+  `test_smart_reminder_qa.py` 7, `test_smart_reminder_storage.py` 20,
+  `test_smart_reminder_telegram.py` 73, Inbox retention modules 6.
+- **Learner browser suites** (initial shell, progressive sections, learning
+  parity, diagnostics, handoff page): 81 passed and 2 failed in each engine.
+  The two are the known 320 px Practice skeleton cases; they fail the same
+  way on unchanged `main` `f4a1f8aa` in both engines.
+- **Localization and source guards:** `i18n_build_all_catalogs.py --check`
+  clean; all 31 `i18n-p0` scripts passed after the nine learner pages were
+  re-anchored for their one-line token change.
+- **OpenSpec:** `openspec validate unified-error-monitoring --strict` passed.
+
+### Graphify audit
+
+The graph was built from the branch head at the time (`2c52e609`).
+`graphify affected` was run for `parse_batch`, `DiagnosticReceipt`,
+`unified_inbox` and `_handoff_html`, and each lead was confirmed by `grep`.
+
+- `parse_batch` serves the Android, PWA and Mini App intake and the legacy
+  onboarding mirror. The new keys are optional; the Android, PWA, Telegram and
+  server chain tests pass.
+- `DiagnosticReceipt` is read by freshness, alerts, retention and account
+  deletion. None selects the new columns; their tests pass.
+- `unified_inbox` has one runtime caller, the Admin read route. No MCP or
+  export path returns Inbox rows.
+- The graph showed no caller for `_handoff_html`; source has one, the handoff
+  route. `graphify path` returned only inferred name matches and was not used.
+
+### Open
+
+- Physical iPhone Safari (Home Screen PWA) and Telegram WebView: a real JS
+  error with a location, a rejection, offline then retry, an owner switch.
+- An isolated staging run: migration `0157` alone, then a controlled failure.
+- Production: whether `RAILWAY_GIT_COMMIT_SHA` is present on the deployment.
+- Owner review of the changed `/privacy` sentence. Play Data Safety is not
+  affected: Android sends nothing new.
+- Promotion to `main` needs the owner's approval.
+
+**Analytics Impact:** none. No KPI writer, event or projection changes; the
+evidence lives on diagnostic receipts and in the Inbox only. The registry
+records a reviewed exemption for the token-only change in `pwa_auth.py`.
+
+**Monitoring Impact:** the existing `diag.v1` chain carries optional evidence
+for learner-web JS failures through the same authenticated intake, incident
+mapping and Admin Inbox. Fingerprint, severity, triage, alerts, push payload
+and retention are unchanged. Covered pairs keep their runtime proof.
+
 ## Independent audit (2026-11-13–14)
 
 Compared the implementation at `b0bd6778` with the verified remote
@@ -410,3 +549,7 @@ acceptance. Device/browser/provider and rollout gates below are still required.
   and came online. Task 5.3 is complete; isolated staging, production DB
   revision/switch verification, physical device and Apple Push acceptance,
   and Play Data safety filing remain open in 5.2.
+- 2026-11-15: tasks 6.1–6.4 implemented on
+  `feat/monitoring-diagnostic-precision-20261115` (design D12, migration
+  `0157`). Local Chromium, WebKit, PostgreSQL and end-to-end evidence passed;
+  device acceptance and promotion remain open.
