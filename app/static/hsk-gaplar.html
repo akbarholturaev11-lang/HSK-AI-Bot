@@ -6,6 +6,8 @@
   <script src="/assets/telegram-web-app.js?v=20261019-1"></script>
   <script src="/course_v3_data/hsk-course-i18n.js?v=20261113-a1da547eb267"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-a0dd8c0b1db1"></script>
   <meta name="theme-color" content="#FDF9F0">
+  <script defer src="/audio/words/index.js?v=20261014-offline-1"></script>
+<script defer src="/audio/words/client.js?v=20261014-persist-1"></script>
   <title>Tayyor gaplar · HSK AI</title>
   <link rel="stylesheet" href="/course_v3_data/design-tokens.css?v=20261005-section-title">
   <style>
@@ -117,6 +119,11 @@
         if(typeof value==="string"&&value)UI[LANGUAGE][key]=value;
       });
       var text = UI[LANGUAGE];
+      var phraseActions = {
+        uz: {open:"Iborani ochish",close:"Iborani yopish",listen:"Iborani tinglash",soundError:"Ovoz ijro etilmadi. Qayta urinib ko‘ring."},
+        ru: {open:"Раскрыть фразу",close:"Свернуть фразу",listen:"Прослушать фразу",soundError:"Не удалось воспроизвести звук. Попробуйте ещё раз."},
+        tj: {open:"Кушодани ибора",close:"Пӯшидани ибора",listen:"Шунидани ибора",soundError:"Овоз пахш нашуд. Боз кӯшиш кунед."}
+      }[LANGUAGE];
       var theme = new URLSearchParams(location.search).get("theme");
       if (theme === "dark") {
         document.documentElement.dataset.hskTheme = "dark";
@@ -136,6 +143,9 @@
       var catalog = null;
       var currentFilter = "all";
       var savedIds = readSavedIds();
+      var expandedPhraseId = null;
+      var phraseAudio = null;
+      var phraseAudioToken = 0;
       var toastTimer = 0;
 
       // Keep the page named for assistive technologies without a redundant visible hero.
@@ -230,15 +240,104 @@
         });
       }
 
+      /* UIUX-004: one expanded browse phrase at a time; save/audio never
+         change the expansion state. Existing local phrase persistence remains
+         unchanged; this is a presentation change, not account sync. */
+      function setPhraseExpanded(card, expanded) {
+        var detail = card.querySelector(".phrase-details");
+        var toggle = card.querySelector(".phrase-toggle");
+        if (!detail || !toggle) return;
+        detail.hidden = !expanded;
+        toggle.setAttribute("aria-expanded", String(expanded));
+        toggle.setAttribute("aria-label", (expanded ? phraseActions.close : phraseActions.open) + ": " + card.dataset.phraseZh);
+        var chev = toggle.querySelector(".phrase-chevron");
+        if (chev) chev.textContent = expanded ? "⌃" : "⌄";
+        card.classList.toggle("is-open", expanded);
+      }
+
+      function togglePhrase(phraseId) {
+        expandedPhraseId = expandedPhraseId === phraseId ? null : phraseId;
+        elements.list.querySelectorAll(".phrase").forEach(function (card) {
+          setPhraseExpanded(card, card.dataset.phraseId === expandedPhraseId);
+        });
+      }
+
+      function playPhrase(phrase, button) {
+        ++phraseAudioToken;
+        var token = phraseAudioToken;
+        try { if (phraseAudio) { phraseAudio.pause(); phraseAudio = null; } } catch (_) {}
+        try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch (_) {}
+        button.disabled = true;
+        button.setAttribute("aria-busy", "true");
+        button.textContent = "…";
+
+        function reset() {
+          if (token !== phraseAudioToken) return;
+          button.disabled = false;
+          button.removeAttribute("aria-busy");
+          button.textContent = "🔊";
+        }
+        function failed() {
+          if (token !== phraseAudioToken) return;
+          reset();
+          announce(phraseActions.soundError);
+        }
+        function fallbackSpeech() {
+          if (token !== phraseAudioToken) return;
+          try {
+            if (!window.speechSynthesis || !window.SpeechSynthesisUtterance) { failed(); return; }
+            var utterance = new SpeechSynthesisUtterance(phrase.zh);
+            utterance.lang = "zh-CN";
+            utterance.rate = .9;
+            utterance.onend = reset;
+            utterance.onerror = failed;
+            window.speechSynthesis.speak(utterance);
+          } catch (_) { failed(); }
+        }
+        try {
+          var src = (window.HSKOfflineAudio &&
+            (window.HSKOfflineAudio.cachedUrl(phrase.zh) || window.HSKOfflineAudio.url(phrase.zh))) ||
+            ("/api/v3/tts?text=" + encodeURIComponent(phrase.zh));
+          var audio = new Audio(src);
+          phraseAudio = audio;
+          audio.onended = reset;
+          audio.onerror = fallbackSpeech;
+          audio.play().then(function () {
+            if (token === phraseAudioToken) {
+              button.disabled = false;
+              button.removeAttribute("aria-busy");
+              button.textContent = "◼";
+            }
+          }).catch(fallbackSpeech);
+        } catch (_) { fallbackSpeech(); }
+      }
+
       function createPhraseCard(phrase, category) {
         var card = document.createElement("article");
         card.className = "phrase";
+        card.dataset.phraseId = phrase.id;
+        card.dataset.phraseZh = phrase.zh;
+
         var top = document.createElement("div");
         top.className = "phrase-top";
-        var hanzi = document.createElement("p");
+        var toggle = makeButton("phrase-toggle", "", function () { togglePhrase(phrase.id); });
+        var hanzi = document.createElement("span");
         hanzi.className = "hanzi";
         hanzi.lang = "zh";
         hanzi.textContent = phrase.zh;
+        var chevron = document.createElement("span");
+        chevron.className = "phrase-chevron";
+        chevron.setAttribute("aria-hidden", "true");
+        toggle.append(hanzi, chevron);
+        var details = document.createElement("div");
+        details.className = "phrase-details";
+        details.id = "phrase-details-" + String(phrase.id).replace(/[^a-z0-9_-]/gi, "-");
+        toggle.setAttribute("aria-controls", details.id);
+
+        var actions = document.createElement("div");
+        actions.className = "phrase-actions";
+        var play = makeButton("phrase-play", "🔊", function () { playPhrase(phrase, play); });
+        play.setAttribute("aria-label", phraseActions.listen + ": " + phrase.zh);
         var isSaved = savedIds.has(phrase.id);
         var save = makeButton("save", isSaved ? "★" : "☆", function () {
           var wasSaved = savedIds.has(phrase.id);
@@ -252,7 +351,8 @@
         });
         save.setAttribute("aria-label", isSaved ? text.savedOne : text.save);
         save.setAttribute("aria-pressed", String(isSaved));
-        top.append(hanzi, save);
+        actions.append(play, save);
+        top.append(toggle, actions);
 
         var pinyin = document.createElement("p");
         pinyin.className = "pinyin";
@@ -269,7 +369,15 @@
           copyText(phrase.zh).then(function () { announce(text.copied); }).catch(function () { announce(text.copy); });
         });
         bottom.append(categoryLabel, copy);
-        card.append(top, pinyin, translation, bottom);
+        details.append(pinyin, translation, bottom);
+        card.append(top, details);
+        setPhraseExpanded(card, phrase.id === expandedPhraseId);
+
+        /* The empty area of a browse card toggles it; explicit buttons do not. */
+        card.addEventListener("click", function (event) {
+          if (event.target.closest("button")) return;
+          togglePhrase(phrase.id);
+        });
         return card;
       }
 
