@@ -610,6 +610,92 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   document.documentElement.classList.toggle('theme-light', isLight);
   if(isLight) document.documentElement.removeAttribute('data-hsk-theme');
   else document.documentElement.setAttribute('data-hsk-theme','dark');
+  /* UIUX-003: only signed-in browser PWA has server-owned bookmarks.
+     Mini App dictionary keeps its proven legacy filters and behavior. */
+  var PWA_DICT = document.documentElement.classList.contains('hsk-pwa-browser');
+  if(PWA_DICT && currentVersionFilter === 'all'){
+    var courseLevel = String(params.get('level') || localStorage.getItem('hsk_v3_level') || '').toLowerCase();
+    currentVersionFilter = /^nhsk[1-3]$/.test(courseLevel) ? 'hsk30' : 'hsk20';
+  }
+  if(PWA_DICT) currentFilterLevel = 'all';
+  var savedWords = new Set(), savedOnly = false, savedReady = !PWA_DICT;
+  var savedPending = new Set(), savedError = false, savedNotice = null;
+  function savedLabels(){
+    return ({uz:{saved:"Saqlangan",save:"Saqlash",remove:"Saqlanganlardan olish",loading:"Saqlangan so'zlar yuklanmoqda…",error:"Saqlangan so'zlarni yuklab bo'lmadi",retry:"Qayta urinish",saveError:"So'z saqlanmadi. Qayta urinib ko'ring."},
+      ru:{saved:"Сохранённые",save:"Сохранить",remove:"Убрать из сохранённых",loading:"Загрузка сохранённых слов…",error:"Не удалось загрузить сохранённые слова",retry:"Повторить",saveError:"Не удалось сохранить слово. Повторите."},
+      tj:{saved:"Нигоҳдоштаҳо",save:"Нигоҳ доштан",remove:"Ҳазф аз нигоҳдоштаҳо",loading:"Калимаҳои нигоҳдошта бор мешаванд…",error:"Калимаҳои нигоҳдошта бор нашуданд",retry:"Такрор",saveError:"Калима нигоҳ дошта нашуд. Боз кӯшиш кунед."}})[currentLang] || ({saved:"Сохранённые",save:"Сохранить",remove:"Убрать из сохранённых",loading:"Загрузка…",error:"Ошибка",retry:"Повторить",saveError:"Ошибка"}) ;
+  }
+  async function savedRequest(path,payload){
+    var token;
+    if(window.parent !== window && typeof window.parent.pwaCourseActor === 'function'){
+      token = await window.parent.pwaCourseActor();
+    } else {
+      var session = await fetch('/api/v3/pwa-auth/session',{credentials:'same-origin',cache:'no-store',redirect:'error'});
+      if(!session.ok) throw new Error('session_unavailable');
+      token = await session.json();
+    }
+    if(!token || !token.csrf) throw new Error('session_unavailable');
+    var response = await fetch(path,{
+      method:'POST',credentials:'same-origin',cache:'no-store',redirect:'error',
+      headers:{'Content-Type':'application/json','X-HSK-PWA-CSRF':token.csrf},
+      body:JSON.stringify(payload)
+    });
+    if(!response.ok) throw new Error('saved_request_failed');
+    var json = await response.json();
+    if(!json || json.ok !== true) throw new Error('saved_request_failed');
+    return json;
+  }
+  function savedFeedback(message){
+    if(!savedNotice) return;
+    savedNotice.textContent=message || '';
+  }
+  function refreshSavedRows(){
+    var before = listEl.scrollTop;
+    rebuildActiveWords();
+    renderList(searchEl.value);
+    listEl.scrollTop = Math.min(before, Math.max(0,listEl.scrollHeight-listEl.clientHeight));
+    renderVisibleWindow(true);
+    if(detailSaveBtn && currentWord){
+      detailSaveBtn.textContent = savedWords.has(currentWord.h) ? '★' : '☆';
+      detailSaveBtn.setAttribute('aria-label',savedWords.has(currentWord.h)?savedLabels().remove:savedLabels().save);
+      detailSaveBtn.setAttribute('aria-pressed',String(savedWords.has(currentWord.h)));
+      detailSaveBtn.disabled = !savedReady || savedPending.has(currentWord.h);
+    }
+  }
+  function loadSaved(){
+    if(!PWA_DICT) return;
+    savedReady=false;savedError=false;
+    refreshSavedRows();
+    savedRequest('/api/v3/pwa/dictionary/saved/list',{}).then(function(data){
+      savedWords=new Set(Array.isArray(data.words)?data.words.filter(function(w){return typeof w==='string'}):[]);
+      savedReady=true;savedError=false;savedFeedback('');
+      refreshSavedRows();
+    }).catch(function(){
+      savedReady=false;savedError=true;
+      savedFeedback(savedLabels().error);
+      refreshSavedRows();
+    });
+  }
+  function toggleSavedWord(zh){
+    if(!PWA_DICT) return;
+    if(!savedReady){savedFeedback(savedLabels().error);return}
+    if(savedPending.has(zh))return;
+    var wasSaved=savedWords.has(zh),next=!wasSaved;
+    savedPending.add(zh);
+    if(next)savedWords.add(zh);else savedWords.delete(zh);
+    refreshSavedRows();
+    savedRequest('/api/v3/pwa/dictionary/saved/set',{hanzi:zh,saved:next}).then(function(data){
+      if(data.hanzi!==zh||data.saved!==next) throw new Error('unexpected_response');
+      savedFeedback('');
+    }).catch(function(){
+      if(wasSaved)savedWords.add(zh);else savedWords.delete(zh);
+      savedFeedback(savedLabels().saveError);
+    }).finally(function(){
+      savedPending.delete(zh);
+      refreshSavedRows();
+    });
+  }
+  var detailSaveBtn = null;
   var activeWords = [];
   var currentWord = null;
 
@@ -858,7 +944,7 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     return true;
   }
   function wordMatchesFilter(word){
-    return wordMatchesVersionKey(word, currentVersionFilter) && wordMatchesLevelKey(word, currentFilterLevel);
+    return wordMatchesVersionKey(word, currentVersionFilter) && wordMatchesLevelKey(word, currentFilterLevel) && (!PWA_DICT || !savedOnly || savedWords.has(word.h));
   }
   function localizedExample(ex){
     if(!ex) return '';
@@ -1179,16 +1265,18 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   function renderFilterRows(){
     var t = UI[currentLang] || UI.uz;
     var versions = ['all','hsk20','hsk30'];
-    versionFilters.innerHTML = versions.map(function(version){
+    versionFilters.innerHTML = PWA_DICT ? '' : versions.map(function(version){
       var label = version === 'all' ? t.allVersions : levelLabels[version];
       return '<button class="filter-pill '+(version === currentVersionFilter ? 'active' : '')+'" type="button" data-version="'+version+'" aria-pressed="'+(version === currentVersionFilter)+'">'+
         escapeHtml(label)+'</button>';
     }).join('');
-    levelFilters.innerHTML = levelsForVersion(currentVersionFilter).map(function(level){
+    levelFilters.innerHTML = (PWA_DICT ? '<span class="p45-dictionary-version">'+escapeHtml(currentVersionFilter === 'hsk30'?'HSK 3.0':'HSK 2.0')+'</span>' : '')
+      +levelsForVersion(currentVersionFilter).map(function(level){
       var label = level === 'all' ? t.allLevels : level.indexOf('nhsk') === 0 ? 'N' + level.slice(-1) : 'HSK ' + level.slice(-1);
       return '<button class="filter-pill '+(level === currentFilterLevel ? 'active' : '')+'" type="button" data-level="'+level+'" aria-pressed="'+(level === currentFilterLevel)+'">'+
         escapeHtml(label)+'</button>';
-    }).join('');
+    }).join('')
+      +(PWA_DICT?'<button class="filter-pill p45-saved-filter'+(savedOnly?' active':'')+'" type="button" data-saved-only="1" aria-pressed="'+savedOnly+'">★ '+escapeHtml(savedLabels().saved)+'</button>':'');
   }
 
   function applyStaticText(){
@@ -1263,9 +1351,10 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   var DICT_ROW_HEIGHT=88,DICT_WINDOW_ROWS=90,DICT_WINDOW_STEP=18;
   var listResults=[],virtualStart=-1,virtualEnd=-1,dictScrollFrame=0;
   function dictRowHtml(w){
+    var saved = PWA_DICT ? '<button type="button" class="p45-dict-save" data-saved-word="'+escapeHtml(w.h)+'" aria-label="'+escapeHtml(savedWords.has(w.h)?savedLabels().remove:savedLabels().save)+'" aria-pressed="'+savedWords.has(w.h)+'"'+(!savedReady||savedPending.has(w.h)?' disabled aria-busy="true"':'')+'>'+(savedWords.has(w.h)?'★':'☆')+'</button>' : '';
     return '<div class="row" role="button" tabindex="0" data-idx="'+w.id+'"><div class="h">'+escapeHtml(w.h)+'</div>'+
       '<div class="info"><div class="p">'+escapeHtml(w.p)+'</div><div class="m">'+escapeHtml(text(w.m))+'</div></div>'+
-      '<div class="lv">'+escapeHtml(formatDictionaryLevel(w.lv))+'</div></div>';
+      '<div class="lv">'+escapeHtml(formatDictionaryLevel(w.lv))+'</div>'+saved+'</div>';
   }
   function renderVisibleWindow(force){
     if(!listResults.length)return;
@@ -1285,6 +1374,11 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     countEl.setAttribute('aria-label',q?t.countResults(listResults.length):t.countAll(listResults.length,filterCountLabel(t)));
     searchClear.classList.toggle('visible',!!searchEl.value);
     virtualStart=-1;virtualEnd=-1;listEl.scrollTop=0;
+    if(PWA_DICT && savedOnly && !savedReady){
+      listEl.innerHTML='<div class="empty">'+escapeHtml(savedError?savedLabels().error:savedLabels().loading)
+        +(savedError?'<br><button type="button" class="filter-pill" data-retry-saved="1">'+escapeHtml(savedLabels().retry)+'</button>':'')+'</div>';
+      return;
+    }
     if(!listResults.length){listEl.innerHTML='<div class="empty">'+escapeHtml(t.emptyTitle)+'<br>'+escapeHtml(t.emptySub)+'</div>';return}
     renderVisibleWindow(true);
   }
@@ -1715,6 +1809,12 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
       setPlayIcon();
     }
 
+    if(PWA_DICT && detailSaveBtn){
+      detailSaveBtn.textContent=savedWords.has(word.h)?'★':'☆';
+      detailSaveBtn.setAttribute('aria-label',savedWords.has(word.h)?savedLabels().remove:savedLabels().save);
+      detailSaveBtn.setAttribute('aria-pressed',String(savedWords.has(word.h)));
+      detailSaveBtn.disabled=!savedReady||savedPending.has(word.h);
+    }
     renderMemo(word);
     renderExample(word);
     renderGrammar(word);
@@ -1744,6 +1844,10 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   }
 
   listEl.addEventListener('click', function(e){
+    var savedButton=e.target.closest('[data-saved-word]');
+    if(savedButton){e.stopPropagation();toggleSavedWord(savedButton.dataset.savedWord);return;}
+    var retry=e.target.closest('[data-retry-saved]');
+    if(retry){e.stopPropagation();loadSaved();return;}
     var row = e.target.closest('.row');
     if(!row) return;
     saveSearchQuery(searchEl.value);
@@ -1753,7 +1857,7 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   });
   listEl.addEventListener('keydown', function(e){
     var row = e.target.closest('.row[role="button"]');
-    if(!row || (e.key !== 'Enter' && e.key !== ' ')) return;
+    if(e.target.closest('[data-saved-word]') || !row || (e.key !== 'Enter' && e.key !== ' ')) return;
     e.preventDefault();
     row.click();
   });
@@ -1815,6 +1919,9 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     renderList(searchEl.value);
   });
   levelFilters.addEventListener('click', function(e){
+    if(PWA_DICT && e.target.closest('[data-saved-only]')){
+      savedOnly=!savedOnly;rebuildActiveWords();applyStaticText();renderList(searchEl.value);return;
+    }
     var button = e.target.closest('[data-level]');
     if(!button) return;
     currentFilterLevel = normalizeFilterLevel(button.dataset.level);
@@ -1902,8 +2009,19 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     }catch(e){}
   }
   function init(){
+    if(PWA_DICT){
+      savedNotice=document.createElement('div');savedNotice.className='p45-dict-status';
+      savedNotice.setAttribute('role','status');savedNotice.setAttribute('aria-live','polite');
+      listEl.parentNode.insertBefore(savedNotice,listEl);
+      detailSaveBtn=document.createElement('button');detailSaveBtn.type='button';
+      detailSaveBtn.className='p45-dict-save p45-dict-detail-save';
+      detailSaveBtn.setAttribute('aria-label',savedLabels().save);
+      detailSaveBtn.addEventListener('click',function(){if(currentWord)toggleSavedWord(currentWord.h)});
+      detailHeader.appendChild(detailSaveBtn);
+    }
     applyStaticText();
     renderList('');
+    if(PWA_DICT)loadSaved();
     var deepChar = params.get('char');
     if(deepChar){ openDeepChar(deepChar); }
     try{
