@@ -222,6 +222,7 @@ class CourseMiniAppProfileService:
             "daily_minutes": getattr(profile, "daily_minutes", _DEFAULT_DAILY_MINUTES),
             "preferred_focus": focus,
             "daily_goal_xp": cls.resolve_daily_goal_xp(profile),
+            "streak_target_days": getattr(profile, "streak_target_days", None),
             "daily_goal_is_custom": getattr(profile, "daily_goal_xp", None) is not None,
             "plan_size": cls.daily_plan_size(getattr(profile, "daily_minutes", None)),
             "pending_goal": pending_goal,
