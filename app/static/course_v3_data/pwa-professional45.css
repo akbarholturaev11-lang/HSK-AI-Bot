@@ -750,3 +750,50 @@ html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] .p45-dict-detail-save{
   html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] .list .row .lv{padding:4px 5px;font-size:10px}
   html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] .list .row{gap:5px}
 }
+
+
+/* UIUX-008 source-bound in-lesson self-rating, not a parallel course/XP source. */
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #flow .p45-lesson-flash{
+  display:flex;flex-direction:column;gap:11px;align-items:stretch;
+  width:100%;max-width:520px;margin:0 auto;padding:12px 4px 26px;
+  color:var(--ink);
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #flow .p45-lesson-flash-kicker{
+  color:var(--ink2);font-size:12px;font-weight:700;margin:0;text-align:center;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #flow .p45-lesson-flash-hint{
+  font-size:13px;line-height:1.5;color:var(--ink2);text-align:center;margin:0;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #flow .p45-lesson-flash-hanzi{
+  font-family:var(--hsk-font-hanzi,"Noto Serif SC","STSong",serif);
+  font-size:clamp(42px,14vw,62px);line-height:1.35;text-align:center;
+  padding:30px 12px;margin:8px 0;border-radius:15px;background:var(--card);
+  border:1px solid var(--line);overflow-wrap:anywhere;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #flow .p45-lesson-flash-answer{
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  font-size:15px;line-height:1.5;text-align:center;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #flow .p45-lesson-flash-pinyin{
+  font-size:16px;color:var(--ink2);margin:0;overflow-wrap:anywhere;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #flow .p45-lesson-flash-meaning{
+  font-weight:700;line-height:1.5;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #flow .p45-lesson-flash button{
+  min-height:48px;padding:12px;border:1px solid var(--line);border-radius:13px;
+  background:var(--card);color:var(--ink);font:inherit;font-weight:700;cursor:pointer;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #flow .p45-lesson-flash-reveal,
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #flow .p45-lesson-flash-know{
+  background:var(--cin);color:var(--cin-ink,#fff);border-color:transparent;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #flow .p45-lesson-flash-actions{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #flow .p45-lesson-flash-disclaimer{
+  margin:3px 0 0;color:var(--ink2);font-size:11px;line-height:1.5;text-align:center;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #flow .p45-lesson-flash button:focus-visible{
+  outline:3px solid var(--cin);outline-offset:2px;
+}
