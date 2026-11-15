@@ -205,6 +205,24 @@
 
   function position(value) { return Number.isSafeInteger(value) && value >= 1 && value <= MAX_POSITION; }
 
+  /* The content token this document loaded a script path with. WebKit drops
+     the query from stack URLs, so the page's own script element supplies it;
+     two elements for one path with different tokens give no answer. */
+  function loadedToken(pathname) {
+    var found = null;
+    try {
+      var nodes = root.document.querySelectorAll("script[src]");
+      for (var i = 0; i < nodes.length; i++) {
+        var src = new URL(nodes[i].getAttribute("src") || "", root.location.href);
+        if (src.origin !== origin || src.pathname !== pathname) continue;
+        var token = ASSET_TOKEN.exec(src.search);
+        if (!token || (found && found !== token[1])) return null;
+        found = token[1];
+      }
+    } catch (_) { return null; }
+    return found;
+  }
+
   /* A script URL and position -> an allowlisted location, or null. Only a
      same-origin URL whose exact path is a listed first-party script passes;
      the URL itself, its query and fragment are never kept. */
@@ -219,7 +237,8 @@
       var out = { asset_id: id, line: line };
       if (position(column)) out.column = column;
       var token = ASSET_TOKEN.exec(parsed.search);
-      if (token) out.asset_version = token[1];
+      var loaded = token ? token[1] : loadedToken(parsed.pathname);
+      if (loaded) out.asset_version = loaded;
       return out;
     } catch (_) { return null; }
   }

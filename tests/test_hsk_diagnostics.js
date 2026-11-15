@@ -10,7 +10,7 @@ const KEY = "hsk-diag-v1";
 const turn = () => new Promise(setImmediate);
 const json = (status, body) => ({ status, ok: status >= 200 && status < 300, json: async () => body });
 
-function browser({ storage = new Map(), path = "/iphone-pwa/course", online = true, initData = "", storageDisabled = false, openedAt = Date.UTC(2026, 10, 13) } = {}) {
+function browser({ storage = new Map(), path = "/iphone-pwa/course", online = true, initData = "", storageDisabled = false, openedAt = Date.UTC(2026, 10, 13), scripts = ["/asset.js?v=20261113-0123456789ab"] } = {}) {
   const events = new Map(), timers = new Map(), posts = [];
   let now = Date.UTC(2026, 10, 13), actor = 1, answer = json(200, { accepted: 1 }), sequence = 0, calls = 0;
   const window = {
@@ -23,7 +23,7 @@ function browser({ storage = new Map(), path = "/iphone-pwa/course", online = tr
       return { getItem: (key) => storage.get(key), setItem: (key, value) => storage.set(key, value) };
     },
     document: {
-      querySelectorAll: () => [{ getAttribute: () => "/asset.js?v=20261113-0123456789ab" }],
+      querySelectorAll: () => scripts.map((src) => ({ getAttribute: () => src })),
       addEventListener() {},
     },
     addEventListener: (name, callback) => events.set(name, callback),
@@ -253,8 +253,8 @@ const DEBUG_KEYS = ["error_name", "reason_code", "location", "frames"];
 const SECRETS = ["secretProp", "evilFn", "hsk.test", "https://", "?v=", "token=", "initData", "learner@example.com",
   "private", "<script"];
 
-async function captured(trigger, { path = "/iphone-pwa/handoff", kind = "error" } = {}) {
-  const page = browser({ path });
+async function captured(trigger, { path = "/iphone-pwa/handoff", kind = "error", scripts } = {}) {
+  const page = browser({ path, scripts });
   page.diag.owner(1);
   page.events.get(kind)(trigger);
   page.diag.flush();
@@ -307,6 +307,24 @@ async function precision() {
   assert.deepEqual([webkit.failure_code, webkit.error_name, webkit.reason_code], ["js_rejection", "TypeError", "null_access"]);
   assert.deepEqual(webkit.location, { asset_id: "iphone_pwa_handoff", line: 91, column: 22 });
   assert.deepEqual(webkit.frames.map((f) => f.line), [118, 131]);
+
+  // WebKit drops the query from stack URLs: the token comes from the page's
+  // own script element for that exact path, and only when it is unambiguous.
+  const stackOnly = { reason: { name: "TypeError", stack: "redeem@" + ORIGIN + "/iphone-pwa-handoff.js:91:22\n" +
+    "open@" + ORIGIN + "/course_v3_data/li-onboarding-install.js:120:14\n" +
+    "draw@" + ORIGIN + "/assets/characters/hsk-character-pack.js:8:3" } };
+  const loaded = await captured(stackOnly, { kind: "unhandledrejection", scripts: [
+    "/iphone-pwa-handoff.js?v=aaaaaaaaaaaa", "/course_v3_data/hsk-diagnostics.js?v=20261114-cde219a1e184",
+    "/course_v3_data/li-onboarding-install.js?v=20261114-bbbbbbbbbbbb",
+    "https://cdn.example.net/course_v3_data/li-onboarding-install.js?v=cccccccccccc",
+    "/assets/characters/hsk-character-pack.js?v=20260921c", "/assets/characters/hsk-character-pack.js?v=dddddddddddd"] });
+  assert.deepEqual(loaded.location, { asset_id: "iphone_pwa_handoff", line: 91, column: 22, asset_version: "aaaaaaaaaaaa" });
+  assert.deepEqual(loaded.frames, [
+    { asset_id: "li_onboarding_install", line: 120, column: 14, asset_version: "bbbbbbbbbbbb" },
+    { asset_id: "hsk_character_pack", line: 8, column: 3 }], "a foreign copy is ignored; an untokened duplicate gives no version");
+  const twice = await captured(stackOnly, { kind: "unhandledrejection", scripts: [
+    "/iphone-pwa-handoff.js?v=aaaaaaaaaaaa", "/iphone-pwa-handoff.js?v=eeeeeeeeeeee"] });
+  assert.deepEqual(twice.location, { asset_id: "iphone_pwa_handoff", line: 91, column: 22 });
 
   // More than five approved frames: the first is the location, five follow.
   const deep = await captured({ reason: { name: "RangeError", message: "Maximum call stack size exceeded.",

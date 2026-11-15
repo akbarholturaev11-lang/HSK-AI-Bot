@@ -249,6 +249,26 @@ class ContractTests(unittest.TestCase):
             self.assertEqual(source.deployed_commit(settings), expected)
         self.assertIsNone(source.deployed_commit(pwa.settings()))
 
+    def test_every_category_and_reason_is_localized_in_uz_ru_tj(self):
+        labels = ("diagSample", "diagErrorName", "diagCategory", "diagReason", "diagLocation", "diagFrames",
+                  "diagNotCaptured")
+        keys = [*labels, *("diagCategory_" + code for code in catalog.CATEGORIES),
+                *("diagReason_" + code for code in catalog.REASONS)]
+        generated = (ROOT / "app/static/admin-pwa/catalog.js").read_text(encoding="utf-8")
+        seen = {}
+        for lang in ("uz", "ru", "tj"):
+            copy = json.loads((ROOT / f"localization/ui/{lang}/miniapp.json").read_text(encoding="utf-8"))
+            flat = json.dumps(copy, ensure_ascii=False)
+            for key in keys:
+                with self.subTest(lang=lang, key=key):
+                    found = re.search(r'"ui\.admin_pwa\.%s": "([^"]+)"' % re.escape(key), flat)
+                    self.assertIsNotNone(found)
+                    self.assertTrue(found.group(1).strip())
+                    self.assertIn(found.group(1), generated)
+                    seen.setdefault(key, set()).add(found.group(1))
+        # A reason is a general explanation; no copy claims a proven root cause.
+        self.assertEqual(len(seen["diagReason"]), 3)
+
     def test_admin_page_renders_a_link_only_for_the_exact_github_blob_shape(self):
         app_js = (ROOT / "app/static/admin-pwa/app.js").read_text(encoding="utf-8")
         match = re.search(r"const diagnosticSourceLink=/(.+)/;\n", app_js)

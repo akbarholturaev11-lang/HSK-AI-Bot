@@ -516,7 +516,12 @@ class HandoffIsolationTests(HandoffFixture):
         for path, token in versioned:
             digest = hashlib.sha256(Path("app/static" + path).read_bytes()).hexdigest()
             self.assertEqual(token, digest[:12], path)
-        script = await self.browser.get("/iphone-pwa-handoff.js")
+        # The page's own script stays `no-store`; its token only identifies the
+        # exact bytes for a diagnostic report (monitoring design D12).
+        own = re.findall(r'<script defer src="/iphone-pwa-handoff\.js\?v=([0-9a-f]{12})"></script>', html)
+        self.assertEqual(own, [hashlib.sha256(Path("app/static/iphone-pwa-handoff.js").read_bytes()).hexdigest()[:12]])
+        self.assertEqual(html.count("iphone-pwa-handoff.js"), 1)
+        script = await self.browser.get("/iphone-pwa-handoff.js?v=" + own[0])
         self.assertEqual(script.status_code, 200)
         self.assertEqual(script.headers["cache-control"], "no-store")
         source = script.text

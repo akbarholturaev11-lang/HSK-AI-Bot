@@ -2894,7 +2894,10 @@ function diagnosticPlace(place){
 function diagnosticSample(row){
   const sample=row.sample&&typeof row.sample==='object'?row.sample:null;
   const script=['js_uncaught','js_rejection'].includes(row.failure_code);
-  const code=(prefix,value)=>typeof value==='string'&&/^[a-z_]{1,32}$/.test(value)?t(prefix+value):'';
+  const code=(prefix,value)=>{
+    const text=typeof value==='string'&&/^[a-z_]{1,32}$/.test(value)?t(prefix+value):'';
+    return text==='—'?'':text;
+  };
   const category=code('diagCategory_',sample&&sample.category)||t('diagUnknown');
   const places=(sample&&Array.isArray(sample.locations)?sample.locations:[]).slice(0,6).map(diagnosticPlace).filter(Boolean);
   const name=sample&&typeof sample.error_name==='string'&&/^[A-Za-z]{1,32}$/.test(sample.error_name)?sample.error_name:'';
