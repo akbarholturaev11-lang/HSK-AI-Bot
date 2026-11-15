@@ -37,6 +37,7 @@ from .course_mistake import CourseMistake
 from .course_mistake_target import CourseMistakeTarget
 from .course_xp_event import CourseXpEvent
 from .course_word_mastery import CourseWordMastery
+from .course_saved_word import CourseSavedWord
 from .course_challenge import CourseChallenge
 from .course_user_notification import CourseUserNotification
 from .subscription_entry_event import SubscriptionEntryEvent
