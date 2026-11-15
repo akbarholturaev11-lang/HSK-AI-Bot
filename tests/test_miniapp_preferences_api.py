@@ -184,6 +184,40 @@ class DailyGoalTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(item.daily_plan_key, "v1:hsk1:2026-09-05")
 
 
+class StreakTargetTests(unittest.IsolatedAsyncioTestCase):
+    async def test_only_streak_target_is_saved_and_returned(self):
+        item = profile(streak_target_days=None)
+        response, _ = await post(item, {"streak_target_days": 14, "initData": VALID_INIT_DATA})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(item.streak_target_days, 14)
+        self.assertEqual(response.json()["profile"]["streak_target_days"], 14)
+        self.assertEqual(item.daily_plan_key, "v1:hsk1:2026-09-05")
+        self.assertIsNone(item.daily_goal_xp)
+
+    async def test_all_allowed_targets_are_accepted(self):
+        for target in (7, 14, 30, 50):
+            item = profile(streak_target_days=None)
+            response, _ = await post(item, {"streak_target_days": target, "initData": VALID_INIT_DATA})
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(item.streak_target_days, target)
+
+    async def test_invalid_streak_targets_are_rejected(self):
+        for invalid in (0, 10, 29, 60, "not-a-number"):
+            item = profile(streak_target_days=7)
+            response, _ = await post(item, {"streak_target_days": invalid, "initData": VALID_INIT_DATA})
+            self.assertEqual(response.status_code, 422)
+            self.assertEqual(item.streak_target_days, 7)
+
+    async def test_signed_in_target_does_not_accept_unknown_fields(self):
+        item = profile(streak_target_days=7)
+        response, _ = await post(
+            item, {"streak_target_days": 14, "user_id": 9999, "initData": VALID_INIT_DATA}
+        )
+        self.assertEqual(response.status_code, 422)
+        self.assertEqual(item.streak_target_days, 7)
+
+
 class GuardTests(unittest.IsolatedAsyncioTestCase):
     async def test_an_empty_body_changes_nothing(self):
         item = profile()
