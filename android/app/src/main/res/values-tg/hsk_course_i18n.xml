@@ -237,6 +237,8 @@
     <string name="hsk_course_download_page_windows_security_title" formatted="false">Ҳангоми кушодани аввал огоҳӣ пайдо шуда метавонад</string>
     <string name="hsk_course_download_page_windows_title" formatted="false">HSK AI барои Windows</string>
     <string name="hsk_course_finish_prev" formatted="false">Дарси пешинаро анҷом диҳед</string>
+    <string name="hsk_course_first_lesson_next_start" formatted="false">Оғоз 🔥</string>
+    <string name="hsk_course_first_lesson_next_title" formatted="false">Дарси дуюмро оғоз мекунем! Биё бубинем, то чӣ андоза тайёрӣ 🙃</string>
     <string name="hsk_course_foundation_guided_repair_body" formatted="false">Ҷавоби дурустро бинед ва тасдиқ кунед.</string>
     <string name="hsk_course_foundation_internet_retry" formatted="false">Интернетро санҷед ва аз нав бор кунед.</string>
     <string name="hsk_course_foundation_natural_pronunciation" formatted="false">талаффузи табиӣ</string>
