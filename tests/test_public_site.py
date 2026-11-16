@@ -162,6 +162,14 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
             sitemap = await client.get("/sitemap.xml")
             self.assertIn("<loc>https://hskai.app/tj/guide/</loc>", sitemap.text)
             self.assertIn("<loc>https://hskai.app/uz/guide/</loc>", sitemap.text)
+            # Previously indexed Railway copies must 301 to the official URL.
+            for path in ("/tj/guide/", "/uz/guide/"):
+                redirect = await client.get(
+                    "https://telegram-chinese-bot-production.up.railway.app" + path,
+                    follow_redirects=False,
+                )
+                self.assertEqual(redirect.status_code, 301)
+                self.assertEqual(redirect.headers["location"], "https://hskai.app" + path)
 
     async def test_account_deletion_request_is_accessible_outside_app(self):
         page = await self.client.get("/account-deletion")
