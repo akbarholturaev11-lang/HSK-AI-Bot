@@ -9,6 +9,8 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -21,6 +23,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
@@ -197,10 +200,27 @@ internal fun FirstLessonNextScreen(
     onExit: () -> Unit,
 ) {
     var starting by remember { mutableStateOf(false) }
+    val backdropInteraction = remember { MutableInteractionSource() }
+    val cardInteraction = remember { MutableInteractionSource() }
     HskCelebrationStage {
-        Box(Modifier.fillMaxSize().systemBarsPadding()) {
+        // Tapping the empty stage dismisses the prompt. Taps on the central
+        // card are consumed and cannot accidentally exit the lesson.
+        Box(
+            Modifier.fillMaxSize().systemBarsPadding().clickable(
+                interactionSource = backdropInteraction,
+                indication = null,
+                onClickLabel = stringResource(R.string.lesson_back_to_course),
+                onClick = { if (!starting) onExit() },
+            ),
+        ) {
             Column(
-                modifier = Modifier.align(Alignment.Center).padding(horizontal = 24.dp),
+                modifier = Modifier.align(Alignment.Center)
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp)
+                    .background(HskStageTile, RoundedCornerShape(24.dp))
+                    .border(BorderStroke(1.dp, HskStageTileBorder), RoundedCornerShape(24.dp))
+                    .clickable(interactionSource = cardInteraction, indication = null, onClick = {})
+                    .padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 HskCelebrationEmblem(glyph = "学")
@@ -212,12 +232,7 @@ internal fun FirstLessonNextScreen(
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(top = 22.dp),
                 )
-            }
-            Column(
-                modifier = Modifier.align(Alignment.BottomCenter)
-                    .fillMaxWidth().padding(horizontal = 16.dp, vertical = 20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
+                Spacer(Modifier.height(24.dp))
                 PrimaryAction(
                     text = stringResource(R.string.hsk_course_first_lesson_next_start),
                     enabled = !starting,
@@ -228,8 +243,6 @@ internal fun FirstLessonNextScreen(
                         }
                     },
                 )
-                Spacer(Modifier.height(10.dp))
-                SecondaryAction(stringResource(R.string.lesson_back_to_course), onExit)
             }
         }
     }
