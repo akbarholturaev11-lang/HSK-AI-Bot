@@ -28,6 +28,7 @@ enum class DiagFailure(val code: String) {
     ANR(code = "anr"),
     API_5XX(code = "api_5xx"),
     API_DECODE(code = "api_decode"),
+    LOAD_FAILED(code = "load_failed"),
     LIVE_SESSION_FAILED(code = "live_session_failed"),
     QUEUE_DROPPED(code = "queue_dropped"),
 }
@@ -38,6 +39,8 @@ enum class DiagSite(val code: String) {
     SESSION_RESTORE(code = "session_restore"),
     ONBOARDING(code = "onboarding"),
     LESSON_OPEN(code = "lesson_open"),
+    FIRST_LESSON_ENTRY(code = "first_lesson_entry"),
+    SECOND_LESSON_ENTRY(code = "second_lesson_entry"),
     LESSON_COMPLETE(code = "lesson_complete"),
     PRACTICE(code = "practice"),
     PROGRESS(code = "progress"),
