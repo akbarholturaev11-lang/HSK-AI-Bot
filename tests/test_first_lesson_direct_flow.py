@@ -107,7 +107,7 @@ function open(host, track, launch) {
     URLSearchParams, pageCourse:()=>host?'/iphone-pwa/course':'/course-v3.html',
     saveProfile(){}, renderError(){this.blocked=true}, blocked:false
   };
-  vm.runInNewContext(fn+'\\ntoCourse()',ctx);
+  vm.runInNewContext(fn+'\ntoCourse()',ctx);
   const link = new URL(ctx.location.href || '/unconfirmed','https://hskai.app');
   return {path:link.pathname,start:link.searchParams.get('autostart'),
     resume:link.searchParams.get('resume'),lesson:link.searchParams.get('lesson'),
