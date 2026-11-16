@@ -2960,6 +2960,35 @@ var App={
     fr.src=url;
   },
   closeWriter:function(){var ov=$("#writeov"),fr=$("#writeframe");ov.classList.remove("on");ov.classList.remove("loading");try{fr.onload=null;fr.src="about:blank"}catch(e){}},
+  showFirstLessonNext:function(nextOrder){
+    window._pendingFirstLessonNextOrder=Number(nextOrder)||0;
+    // Completion/XP/streak/ranking are already persisted by applyLessonDone.
+    // First-lesson navigation alone skips the automatic league scene.
+    pendingRankUp=null;
+    var ov=$("#levelup");ov.classList.remove("cine");ov.classList.remove("sales-bridge");
+    $("#lu-panda").innerHTML=lessonCharacterHtml("panda","celebrate");
+    $("#lu-stage").innerHTML='<h2>'+esc(courseMessage("firstLessonNext.title","Қани, кўрайликчи, кейинги дарсга қанчалик тайёрсан! 🙃"))+'</h2>';
+    var cta=$("#lu-cta");cta.disabled=false;cta.onclick=App.openFirstLessonNext;
+    cta.textContent=courseMessage("firstLessonNext.start","Бошлаш 🔥");
+    ov.classList.add("on");
+  },
+  openFirstLessonNext:function(){
+    var order=Number(window._pendingFirstLessonNextOrder)||0;
+    window._pendingFirstLessonNextOrder=0;
+    var idx=allLessons().findIndex(function(l){return Number(l.n)===order});
+    $("#levelup").classList.remove("on","cine","sales-bridge");
+    $("#lu-panda").innerHTML="";
+    window._pendingStreak=null;pendingRankUp=null;
+    window._pendingCheckpointNextIdx=null;
+    window._pendingLessonEndAd=0;window._pendingDesktopLessonPromo=0;
+    window._pendingPwaLessonFeedback=null;
+    App.exitFlow();
+    if(idx<0){App.show("course");renderAll();return}
+    // Open lessons bypass the preview sheet; locked lessons keep the
+    // pre-existing skip/Pro/HSK gates rather than granting access here.
+    if(allLessons()[idx].status==="locked")openLessonSheet(idx);
+    else startLesson(idx);
+  },
   showLevelUp:function(type,data,extra){
     $("#levelup").classList.remove("sales-bridge");
     var lu=(window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.course_v3.lu.copy1",{ru:{cont:"Продолжить",lessonH:"Урок завершён!",lessonP:"Отличная работа! Следующий этап ждёт.",cpH:"Урок {n} полностью пройден!",cpP:"Весь урок ваш: слова, диалог и грамматика. Теперь вы можете использовать их в речи.",acc:"точность",combo:"комбо",levelH:"HSK 1 пройден!",levelP:"Поздравляем! Открыт HSK 2.",opened:"открыт",xpH:"Уровень 5!",xpP:"Так держать! Новый уровень — новые возможности.",lvl:"Уровень",bonusXp:"бонус XP",chest:"новый сундук"},
@@ -6239,6 +6268,7 @@ var PWA_LEVEL_REQUEST_SEQ=0,PWA_LEVEL_ABORT=null; function loadLevel(lv){if(PWA_
   });
 }
 function applyLessonDone(cur,d){
+  var firstNewLesson=!!(cur&&Number(cur.n)===1&&cur.status==="current"&&d&&d.ok&&!d.duplicate);
   var rankBefore=Number(d&&d.rank_before)||0;
   if(PWA_COURSE_HOST&&d&&d.ok===true&&!d.duplicate){
     window._pendingPwaLessonFeedback={kind:"lesson",confirmed:true,lessonId:Number(cur&&cur.n)||0,
@@ -6294,6 +6324,12 @@ function applyLessonDone(cur,d){
     var pending=hasReleaseFields?(d.next_level_pending||""):"";
     if(nxt){App.showLevelUp("level",d);setTimeout(function(){loadLevel(nxt)},2200);return;}
     if(pending){App.showLevelUp("level",d);return;}
+  }
+  /* Only a newly confirmed first lesson gets the one-tap next-lesson bridge. */
+  if(firstNewLesson&&next){
+    window._pendingLessonEndAd=0;
+    App.showFirstLessonNext(next.n);
+    return;
   }
   /* Checkpoint (HSK darsining yakuniy qismi) — kattaroq bayram varianti. */
   App.showLevelUp(cur&&cur.checkpoint?"checkpoint":"lesson",d,{src:cur&&cur.src});
@@ -9757,12 +9793,17 @@ var finishHskLaunchSplash=(function(){
     if(initialLesson<=0&&sp.get("resume")==="1"){
       var all=allLessons();
       var ci=-1;all.forEach(function(l,i){if(ci<0&&l.status==="current")ci=i});
-      if(ci<0)all.forEach(function(l,i){if(ci<0&&l.status!=="done")ci=i});
+      if(ci<0&&sp.get("onboarded")!=="1")
+        all.forEach(function(l,i){if(ci<0&&l.status!=="done")ci=i});
       if(ci>=0)initialLesson=Number(all[ci].n)||0;
     }
     function openInitialLesson(){
       if(initialLesson<=0)return;
       var idx=-1;allLessons().forEach(function(l,i){if(Number(l.n)===initialLesson)idx=i});
+      if(sp.get("onboarded")==="1"&&sp.get("autostart")==="1"&&
+         (idx<0||allLessons()[idx].status!=="current")){
+        idx=allLessons().findIndex(function(l){return l.status==="current"});
+      }
       if(idx>=0)setTimeout(function(){
         App.show("course");
         if(sp.get("autostart")==="1"){
