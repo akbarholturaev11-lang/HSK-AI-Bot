@@ -238,7 +238,7 @@
     <string name="hsk_course_download_page_windows_title" formatted="false">Windows uchun HSK AI</string>
     <string name="hsk_course_finish_prev" formatted="false">Avvalgi darsni tugating</string>
     <string name="hsk_course_first_lesson_next_start" formatted="false">Boshlash 🔥</string>
-    <string name="hsk_course_first_lesson_next_title" formatted="false">2-darsni boshlaymiz! Qani, ko‘raylik-chi, qanchalik tayyorsan? 🙃</string>
+    <string name="hsk_course_first_lesson_next_title" formatted="false">Keyingi qismni boshlaymiz! Qani, ko‘raylik-chi, qanchalik tayyorsan? 🙃</string>
     <string name="hsk_course_foundation_guided_repair_body" formatted="false">To\'g\'ri javobni ko\'ring va o\'zingiz tasdiqlang.</string>
     <string name="hsk_course_foundation_internet_retry" formatted="false">Internetni tekshiring va qayta yuklang.</string>
     <string name="hsk_course_foundation_natural_pronunciation" formatted="false">tabiiy talaffuzi</string>
