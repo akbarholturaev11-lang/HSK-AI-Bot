@@ -189,6 +189,52 @@ internal fun LessonCompletionCelebration(
     }
 }
 
+// The first completed lesson has one clear action instead of a rating/streak
+// detour. XP and streak have already been committed on the server.
+@Composable
+internal fun FirstLessonNextScreen(
+    onStartNext: () -> Unit,
+    onExit: () -> Unit,
+) {
+    var starting by remember { mutableStateOf(false) }
+    HskCelebrationStage {
+        Box(Modifier.fillMaxSize().systemBarsPadding()) {
+            Column(
+                modifier = Modifier.align(Alignment.Center).padding(horizontal = 24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                HskCelebrationEmblem(glyph = "学")
+                Text(
+                    text = stringResource(R.string.hsk_course_first_lesson_next_title),
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = HskStageInkOn,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(top = 22.dp),
+                )
+            }
+            Column(
+                modifier = Modifier.align(Alignment.BottomCenter)
+                    .fillMaxWidth().padding(horizontal = 16.dp, vertical = 20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                PrimaryAction(
+                    text = stringResource(R.string.hsk_course_first_lesson_next_start),
+                    enabled = !starting,
+                    onClick = {
+                        if (!starting) {
+                            starting = true
+                            onStartNext()
+                        }
+                    },
+                )
+                Spacer(Modifier.height(10.dp))
+                SecondaryAction(stringResource(R.string.lesson_back_to_course), onExit)
+            }
+        }
+    }
+}
+
 private enum class CelebrationScene(val entrance: HskEntrance) {
     COMPLETE(HskEntrance.LAND),
     STREAK(HskEntrance.FLY),
