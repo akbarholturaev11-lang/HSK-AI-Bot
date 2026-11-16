@@ -210,7 +210,10 @@ internal fun FirstLessonNextScreen(
                 interactionSource = backdropInteraction,
                 indication = null,
                 onClickLabel = stringResource(R.string.lesson_back_to_course),
-                onClick = { if (!starting) onExit() },
+                // The network request may be slow. Outside dismissal must
+                // remain available even after Start; the parent invalidates the
+                // attempt key so any late map response cannot reopen a lesson.
+                onClick = onExit,
             ),
         ) {
             Column(

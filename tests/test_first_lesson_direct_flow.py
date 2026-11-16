@@ -241,7 +241,8 @@ process.stdout.write(JSON.stringify({
         first_screen = celebration.split("internal fun FirstLessonNextScreen(", 1)[1].split("private enum class CelebrationScene", 1)[0]
         self.assertNotIn("SecondaryAction(", first_screen)
         self.assertIn("clickable(", first_screen)
-        self.assertIn("onClick = { if (!starting) onExit() }", first_screen)
+        self.assertIn("onClick = onExit", first_screen)
+        self.assertNotIn("if (!starting) onExit()", first_screen)
 
     def test_translations_are_shared_and_generated(self):
         for locale, suffix in (("uz", ""), ("ru", "-ru"), ("tj", "-tg")):
