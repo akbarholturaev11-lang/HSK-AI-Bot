@@ -172,5 +172,5 @@ def test_android_ready_phrases_search_follows_compact_back_control():
     layout = screen.split("fun ReadyPhrasesScreen(", 1)[1].split("private fun ReadyPhraseCard(", 1)[0]
     assert "R.string.ready_phrases_title" not in layout
     assert "R.string.ready_phrases_intro" not in layout
-    assert "R.string.ready_phrases_back" in layout
+    assert "R.string.hsk_common_action_back" in layout
     assert layout.index("IconButton(") < layout.index("OutlinedTextField(") < layout.index("LazyRow(")
