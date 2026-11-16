@@ -111,19 +111,6 @@ async def pwa_entry():
     return RedirectResponse("/iphone-pwa/course?lang=ru", status_code=302, headers=_no_store)
 
 
-@app.get("/{path:path}")
-async def qa_static(path: str, request: Request):
-    url_path = "/" + path
-    if url_path in _PAGE_MAP:
-        return FileResponse(STATIC / _PAGE_MAP[url_path], headers=_no_store)
-    if url_path.startswith("/api/"):
-        raise HTTPException(status_code=404, detail="No production API in visual QA")
-    candidate = (STATIC / path).resolve()
-    if not candidate.is_relative_to(STATIC) or not candidate.is_file():
-        raise HTTPException(status_code=404)
-    return FileResponse(candidate, headers=_no_store)
-
-
 # Exact fixture read endpoints; do not create a QA-owned account or a DB.
 @app.get("/api/v3/pwa-auth/session")
 async def session():
@@ -182,6 +169,18 @@ async def preferences(request: Request):
     return _response({"ok": True, "profile": {"streak_target_days": val}})
 
 
-@app.api_route("/api/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH"])
-async def reject_external_actions(path: str):
-    return _response({"ok": False, "error": "visual_qa_only"}, 503)
+# Must be LAST: Starlette matches routes in declaration order. Serving files
+# before fixtures would intercept /api/v3/pwa/map and show a 404 on every load.
+@app.api_route("/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"])
+async def qa_static(path: str, request: Request):
+    if path.startswith("api/"):
+        return _response({"ok": False, "error": "visual_qa_only"}, 503)
+    if request.method != "GET":
+        return _response({"ok": False, "error": "method_not_allowed"}, 405)
+    url_path = "/" + path
+    if url_path in _PAGE_MAP:
+        return FileResponse(STATIC / _PAGE_MAP[url_path], headers=_no_store)
+    candidate = (STATIC / path).resolve()
+    if not candidate.is_relative_to(STATIC) or not candidate.is_file():
+        raise HTTPException(status_code=404)
+    return FileResponse(candidate, headers=_no_store)
