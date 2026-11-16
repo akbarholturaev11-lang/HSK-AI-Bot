@@ -226,6 +226,8 @@ process.stdout.write(JSON.stringify({
         self.assertIn("app.courseRepository.courseMap()", android)
         self.assertIn("openLesson?.attemptKey != expectedAttempt", android)
         self.assertIn("fresh?.level == expectedLevel", android)
+        self.assertIn("R.string.hsk_course_course_load_error_body", android)
+        self.assertIn("R.string.hsk_course_lesson_flow_not_ready", android)
         self.assertIn("it.order == launch.lesson.order + 1", android)
         self.assertIn("next.access == LessonAccess.Open", android)
         self.assertIn("!outcome.gamification.duplicate && onStartNext != null", screen)

@@ -1538,7 +1538,24 @@ private fun AppRoot(
                                 launchLesson(next)
                                 courseViewModel.load()
                             } else {
-                                if (offline) lessonNeedsInternet()
+                                // The CTA should never fail silently on a slow or
+                                // rejected follow-up map request.
+                                when {
+                                    offline -> lessonNeedsInternet()
+                                    fresh == null -> android.widget.Toast.makeText(
+                                        context, R.string.hsk_course_course_load_error_body,
+                                        android.widget.Toast.LENGTH_SHORT,
+                                    ).show()
+                                    next == null || next.status != com.pomp.hskai.domain.model.LessonStatus.CURRENT ->
+                                        android.widget.Toast.makeText(
+                                            context, R.string.hsk_course_lesson_flow_not_ready,
+                                            android.widget.Toast.LENGTH_SHORT,
+                                        ).show()
+                                    else -> android.widget.Toast.makeText(
+                                        context, R.string.hsk_course_locked_lesson,
+                                        android.widget.Toast.LENGTH_SHORT,
+                                    ).show()
+                                }
                                 openLesson = null
                                 onboardingFirstLessonFinished = true
                                 courseViewModel.load()
