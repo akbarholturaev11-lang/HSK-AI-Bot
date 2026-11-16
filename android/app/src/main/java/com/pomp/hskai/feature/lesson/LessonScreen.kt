@@ -148,6 +148,7 @@ fun LessonScreen(
     onShowWriterCharacter: (Int) -> Unit,
     onCloseWriter: () -> Unit,
     onExit: () -> Unit,
+    onStartNext: (() -> Unit)? = null,
     onAskAssistant: ((question: String, readyAnswer: String) -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
@@ -181,7 +182,11 @@ fun LessonScreen(
                 }
                 outcome is LessonOutcome.PreviewExhausted -> PreviewEndBlock(onExit)
                 outcome is LessonOutcome.Completed ->
-                    CompletedBlock(
+                    if (state.lesson?.order == 1 && !outcome.duplicate &&
+                        !outcome.gamification.duplicate && onStartNext != null
+                    ) {
+                        FirstLessonNextScreen(onStartNext = onStartNext, onExit = onExit)
+                    } else CompletedBlock(
                         outcome = outcome,
                         isCheckpoint = state.lesson?.isCheckpoint == true,
                         rankBoard = state.rankBoard,
