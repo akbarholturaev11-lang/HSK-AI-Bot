@@ -7,6 +7,7 @@ on:
       - main
       - 'perf/**'
       - 'feat/unified-error-monitoring-**'
+      - 'feat/pwa-professional-45-*'
       - 'codex/**'
   workflow_dispatch:
 
@@ -108,6 +109,10 @@ jobs:
           tests/e2e/test_pwa_progressive_sections.py
           tests/e2e/test_pwa_learning_parity.py
           tests/e2e/test_pwa_diagnostics.py
+          tests/e2e/test_pwa_inline_pro.py
+          tests/e2e/test_pwa_checkout_navigation.py
+          tests/e2e/test_ready_phrases.py
+          tests/e2e/test_dictionary_virtual_list.py
 
   backend-course-cache-regression:
     needs: policy-and-tests
