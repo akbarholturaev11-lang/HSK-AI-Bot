@@ -97,7 +97,7 @@ const base = (host, level, launch) => {
     localStorage:{setItem(){},removeItem(){}},
     isHsk30Level:s=>s.startsWith('nhsk'),
   };
-  vm.runInNewContext(goSource + '\\ngo(input)', ctx);
+  vm.runInNewContext(goSource + '\ngo(input)', ctx);
   return new URL(ctx.location.href,'https://hskai.app');
 };
 const eligible={ok:true,level:'nhsk1',lesson:1,tab:'course'};
