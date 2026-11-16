@@ -840,6 +840,10 @@ html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #flow .p45-lesson-fl
   min-height:48px;padding:12px;border:1px solid var(--line);border-radius:13px;
   background:var(--card);color:var(--ink);font:inherit;font-weight:700;cursor:pointer;
 }
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #flow .p45-lesson-flash-audio{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #flow .p45-lesson-flash-audio i{font-size:18px}
 html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #flow .p45-lesson-flash-reveal,
 html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #flow .p45-lesson-flash-know{
   background:var(--cin);color:var(--cin-ink,#fff);border-color:transparent;
@@ -997,6 +1001,8 @@ html.p45-detail-open,html.p45-detail-open body{overflow:hidden!important}
 #p45-progress .p45-progress-title{font-size:20px;line-height:1.25;font-weight:700;letter-spacing:-.025em;margin:0}
 #p45-progress .p45-progress-back{width:44px;height:44px;flex:none;display:grid;place-items:center;background:transparent;border:0;border-radius:12px;color:var(--ink,#211d17);font-size:32px;line-height:1;cursor:pointer}
 #p45-progress .p45-progress-back:focus-visible,#p45-progress button:focus-visible{outline:3px solid var(--cin,#e04a40);outline-offset:2px}
+#p45-progress .p45-progress-back i{font-size:24px}
+#p45-progress .p45-progress-flame{color:var(--cin,#e04a40);font-size:.78em;vertical-align:-.02em}
 #p45-progress .p45-progress-body{overflow-y:auto;overscroll-behavior:contain;min-height:0;flex:1;padding:8px 20px calc(36px + env(safe-area-inset-bottom,0px));-webkit-overflow-scrolling:touch}
 #p45-progress .p45-progress-hero{text-align:center;padding:27px 6px 20px;display:flex;align-items:center;flex-direction:column;gap:7px}
 #p45-progress .p45-progress-kicker{font-size:12px;line-height:1.4;color:var(--ink2,#736d63);font-weight:650}
@@ -1074,6 +1080,11 @@ html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-mashq
 }
 html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-profile
 .pwa-profile-shell .profile-friends-link {margin-top:10px}
+/* UIUX-005 left one achievement (lessons) on the PWA; one row spans the width
+   instead of leaving an empty second grid column. */
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-profile .profile-compact-ach {
+  grid-template-columns: minmax(0, 1fr);
+}
 /* Measured: the real achievement row is 70px above 340px (shell was 64px). */
 @media (min-width:341px) {
   html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-profile

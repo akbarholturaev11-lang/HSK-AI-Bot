@@ -99,6 +99,9 @@ def test_real_course_practice_profile_and_detail_flow(real_source_qa, width):
             assert progress_diag["loaded"], "Real XP/Streak source was not loaded: "+str(progress_diag)+" JS "+str(errors[:10])
             page.evaluate('HskPwaProgress.open("streak")')
             assert page.locator("#p45-progress").is_visible()
+            # Iconography: line icons, never emoji or text-glyph icons in new UI.
+            assert not page.evaluate("/[\\u{1F300}-\\u{1FAFF}\\u2039\\u203A]/u.test(document.querySelector('#p45-progress').innerText)")
+            assert page.locator("#p45-progress .p45-progress-back .ti-chevron-left").count() == 1
             assert page.locator(".p45-cal-day.active").count() >= 1
             assert page.evaluate("document.documentElement.scrollWidth <= innerWidth + 4"), "Streak overflows viewport"
             page.screenshot(path=str(SHOT/f"source-streak-{width}.png"),full_page=True)

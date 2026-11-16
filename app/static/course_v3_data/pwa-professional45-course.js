@@ -65,7 +65,7 @@
     var now=safeNum(p.streak),longest=safeNum(p.longest_streak);
     var target=[7,14,30,50].includes(st.streak_target_days)?st.streak_target_days:null;
     var width=target && now!=null?Math.min(100,now/target*100):0;
-    return '<div class="p45-progress-hero"><span class="p45-progress-kicker">'+t.streak+'</span><strong>🔥 '+fmt(now)+'</strong><small>'+t.days+'</small></div>'
+    return '<div class="p45-progress-hero"><span class="p45-progress-kicker">'+t.streak+'</span><strong><i class="ti ti-flame p45-progress-flame" aria-hidden="true"></i> '+fmt(now)+'</strong><small>'+t.days+'</small></div>'
       +'<section class="p45-progress-card"><div class="p45-progress-line"><span>'+t.goal+'</span><b>'+(target?target+" "+t.days:t.choose)+'</b></div>'
       +(target?'<div class="p45-progress-track"><i style="width:'+width+'%"></i></div>'
         +'<p>'+Math.max(0,target-(now||0))+' '+t.days+' '+t.left+'</p>':'')
@@ -88,7 +88,7 @@
     root=document.createElement("section");
     root.id="p45-progress";root.className="on";root.setAttribute("role","main");
     root.setAttribute("aria-label",kind==="xp"?lang().xp:lang().streak);
-    root.innerHTML='<div class="p45-progress-header"><button type="button" class="p45-progress-back" data-p45="back" aria-label="'+lang().back+'">‹</button>'
+    root.innerHTML='<div class="p45-progress-header"><button type="button" class="p45-progress-back" data-p45="back" aria-label="'+lang().back+'"><i class="ti ti-chevron-left" aria-hidden="true"></i></button>'
       +'<h1 class="p45-progress-title"></h1></div><div class="p45-progress-body" tabindex="-1"></div>';
     document.body.appendChild(root);
     root.addEventListener("click",handleClick);
@@ -189,7 +189,10 @@ function renderCard(word){
    answer.appendChild(node("p","p45-lesson-flash-pinyin",word.pinyin));
    answer.appendChild(node("strong","p45-lesson-flash-meaning",trn));
    root.appendChild(answer);
-   root.appendChild(btn("🔊 "+dict.listen,function(){if(typeof speak==="function")speak(word.zh)}, "p45-lesson-flash-audio"));
+   var listen=btn(dict.listen,function(){if(typeof speak==="function")speak(word.zh)}, "p45-lesson-flash-audio");
+   var listenIcon=document.createElement("i");listenIcon.className="ti ti-volume";listenIcon.setAttribute("aria-hidden","true");
+   listen.insertBefore(listenIcon,listen.firstChild);
+   root.appendChild(listen);
    var choice=node("div","p45-lesson-flash-actions");
    choice.appendChild(btn(dict.again,function(){dismiss("again")},"p45-lesson-flash-repeat"));
    choice.appendChild(btn(dict.know,function(){dismiss("know")},"p45-lesson-flash-know"));
