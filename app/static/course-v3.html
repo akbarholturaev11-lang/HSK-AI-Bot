@@ -2983,11 +2983,14 @@ var App={
     window._pendingLessonEndAd=0;window._pendingDesktopLessonPromo=0;
     window._pendingPwaLessonFeedback=null;
     App.exitFlow();
-    if(idx<0){App.show("course");renderAll();return}
+    if(idx<0){
+      if(window.HskDiag)HskDiag.report("lessons","load_failed","second_lesson_entry");
+      App.show("course");renderAll();return
+    }
     // Open lessons bypass the preview sheet; locked lessons keep the
     // pre-existing skip/Pro/HSK gates rather than granting access here.
     if(allLessons()[idx].status==="locked")openLessonSheet(idx);
-    else startLesson(idx);
+    else startLesson(idx,{transition:"second_lesson_entry"});
   },
   showLevelUp:function(type,data,extra){
     $("#levelup").classList.remove("sales-bridge");
@@ -4801,10 +4804,7 @@ function setLessonFlowControls(){
 function reserveLessonStart(l){P3_RESERVED_GRAMMAR=null;LESSON_COMPLETION_PROOF="";if(INIT_DATA&&l&&l.status==="done"&&normalizeLevel((MAP&&MAP.level)||getSelectedLevel())==="nhsk2")return reserveCompletedP3Grammar(l);
   if((!INIT_DATA&&!PWA_COURSE_HOST)||!l||l.status!=="current")return Promise.resolve({ok:true,allowed:true});
   return _apiPost("/api/v3/lesson/start",{lesson_id:l.n,level:(MAP&&MAP.level)||"hsk1",lang:LANG})
-    .then(function(r){return r.json().catch(function(error){
-      if(r.ok&&window.HskDiag)HskDiag.report("lessons","load_failed","lesson_open",error);
-      return{};
-    }).then(function(d){
+    .then(function(r){return r.json().then(function(d){
       d._status=r.status;
       if(!r.ok||d.ok!==true||d.allowed!==true){
         var err=new Error(d.error||"lesson_start_denied");
@@ -4885,7 +4885,7 @@ function startLesson(idx,opts){
     });
   }).catch(function(err){
     if(lessonEntry&&lessonEntry.cancel)lessonEntry.cancel();
-    if(window.HskDiag)HskDiag.report("lessons","load_failed","lesson_open",err&&(err.status||err)||0);
+    if(window.HskDiag)HskDiag.report("lessons","load_failed",opts.transition||"lesson_open",err&&(err.status||err)||0);
     if(err&&err.data){handleLessonStartDenied(err,idx);return}
     var msg=courseMessage("lessonFlow.notReady",LANG==="ru"?"Дарс пока не готов":LANG==="tj"?"Дарс ҳанӯз тайёр нест":"Dars hali tayyor emas");
     toast(msg,2500);
@@ -9804,10 +9804,12 @@ var finishHskLaunchSplash=(function(){
          (idx<0||allLessons()[idx].status!=="current")){
         idx=allLessons().findIndex(function(l){return l.status==="current"});
       }
+      if(idx<0&&sp.get("onboarded")==="1"&&sp.get("autostart")==="1"&&window.HskDiag)
+        HskDiag.report("lessons","load_failed","first_lesson_entry");
       if(idx>=0)setTimeout(function(){
         App.show("course");
         if(sp.get("autostart")==="1"){
-          startLesson(idx);
+          startLesson(idx,sp.get("onboarded")==="1"?{transition:"first_lesson_entry"}:{});
           try{sp.delete("autostart");history.replaceState(null,"",location.pathname+"?"+sp.toString()+location.hash)}catch(e){}
         }else openLessonSheet(idx);
       },80);
