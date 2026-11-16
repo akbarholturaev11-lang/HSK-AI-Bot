@@ -4295,10 +4295,6 @@
     {
       "path": "app/api/pwa_auth.py",
       "reason": "Only the handoff page's own script URL gains a derived content token, so a diagnostic report can prove which bytes ran. No route, session, event writer or KPI behavior changes; the handoff page tests cover the served HTML."
-    },
-    {
-      "path": "app/static/course_v3_mistakes.html",
-      "reason": "The only change in this existing PWA mistake-review page is the content-addressed hsk-course-i18n.js cache token after adding the first-lesson CTA translations. Mistake review UI, event writer, assessment and lesson business flow are unchanged; the documented partial cross-platform measurement remains unchanged."
     }
   ],
   "monitoring": {
@@ -5119,7 +5115,7 @@
       },
       {
         "target": "app/static/course_v3_mistakes.html",
-        "reason": "Diagnostic precision (task 6.2) changes only the content token of the shared reporter script on this page. Existing mistake-review behavior is unchanged; full mistake-review monitoring remains partial."
+        "reason": "This reviewed change only updates the hsk-course-i18n.js content-addressed cache token to serve two new first-lesson CTA translations. No mistake-review behavior, access, event or diagnostic reporter changes; the existing incomplete mistake-review monitoring coverage and its separate chain work are not expanded by this unrelated asset version."
       },
       {
         "target": "/api/miniapp/event",
