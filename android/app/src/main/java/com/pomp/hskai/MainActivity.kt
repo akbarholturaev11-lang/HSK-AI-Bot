@@ -1514,20 +1514,26 @@ private fun AppRoot(
                         }
                     },
                     onStartNext = {
-                        // A new map read, not the pre-completion cache, decides
-                        // whether the next lesson can be launched.
+                        // Never reopen a lesson after Back, account switch or an
+                        // out-of-order response. Check authoritative access again.
+                        val expectedAttempt = launch.attemptKey
+                        val expectedLevel = courseState.map?.level
                         scope.launch {
+                            if (openLesson?.attemptKey != expectedAttempt) return@launch
                             val fresh = (app.courseRepository.courseMap()
                                 as? com.pomp.hskai.core.network.ApiResult.Success)
                                 ?.value?.takeUnless { it.isStale }?.map
+                            if (openLesson?.attemptKey != expectedAttempt) return@launch
                             val next = fresh?.lessons?.firstOrNull { it.order == launch.lesson.order + 1 }
-                            if (next != null &&
+                            if (!offline && fresh?.level == expectedLevel &&
+                                courseState.map?.level == expectedLevel && next != null &&
                                 (next.access == LessonAccess.Open ||
                                  next.access == LessonAccess.HalfPreview)
                             ) {
                                 launchLesson(next)
                                 courseViewModel.load()
                             } else {
+                                if (offline) lessonNeedsInternet()
                                 openLesson = null
                                 onboardingFirstLessonFinished = true
                                 courseViewModel.load()
