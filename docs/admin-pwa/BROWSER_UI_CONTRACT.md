@@ -365,6 +365,18 @@ labels. Report adds a per-platform freshness table (platform, source,
 latest record, rows without an owner); a platform with no verified rows shows a
 dash.
 
+Clear platform views (integration audit, owner request, 2026-11-16): under the
+Android, Telegram Mini App and iPhone PWA filters a metric the platform can
+never show (`not_instrumented`, `attribution_not_audited`, `not_applicable`) is
+**not** drawn as a card, row or panel. Each is named once, grouped by its
+localized reason, in one closed `details` line under the tab («not shown for
+this platform · N»). `no_data`, `detail_limited` and real zeros keep their
+place, so what stays on screen is that platform's own data. Overall is
+unchanged and the server `metric_states` are unchanged. This supersedes the
+«muted label in place of the value» rule above for those three reasons under a
+platform filter only. Do not reintroduce filler cards for them. The Report is
+one global list under every filter, the iPhone PWA included.
+
 Canonical UZ/RU/TJ bundles own new labels. Layout uses fixed CSS/SVG attributes
 under the existing CSP, no inline styles or public private-data cache. Every
 original-editor/dirty-state/passkey/unknown-result rule above remains in force.

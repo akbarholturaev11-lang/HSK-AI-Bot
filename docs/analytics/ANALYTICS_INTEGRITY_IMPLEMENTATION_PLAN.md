@@ -30,13 +30,14 @@ Connect the existing analytics of Android (Play/Direct), the Telegram Mini App a
 | OpenSpec change | `openspec/changes/hsk-ai-analytics-integrity/` | Re-audited on `main` `680761f1`; passes `openspec validate --strict` |
 | Checklist | `.../tasks.md` | Only checklist; audit, baseline and coverage guard done |
 | Coverage registry | [FEATURE_ANALYTICS_COVERAGE.json](FEATURE_ANALYTICS_COVERAGE.json) | Present; schema, event inventory and projection checks pass |
-| CI guard | [analytics-integrity.yml](../../.github/workflows/analytics-integrity.yml) | Verified on the scratch branch (2.3); not promoted to main |
+| CI guard | [analytics-integrity.yml](../../.github/workflows/analytics-integrity.yml) | On `main`; a required check of the active `main` ruleset (strict, no bypass), verified 2026-11-16 |
 | Agent rule | `AGENTS.md` | Active; lists the registry and check, with main enforcement verified separately |
 | Admin readers | `app/admin_api/pwa_analytics*.py`, `pwa_metrics.py` | V10 emits per-metric states; values unchanged in 3.1 |
 | Monitoring requirements | `docs/monitoring/REQUIREMENTS.md` | Follows this work; reuses its identifiers (§7, §11) |
 
-## Current state — 2026-11-13
+## Current state — 2026-11-16
 
+- **Joint integration audit, 2026-11-16:** Analytics and Unified Error Monitoring on `main` `a6689aaf` were audited together; see [Joint integration audit](#joint-integration-audit--2026-11-16). Two Admin PWA platform-filter defects are fixed on `audit/analytics-monitoring-integration-20261116`, not on `main`. No monitoring defect was confirmed. Real-device acceptance is still open.
 - **On `main` since 2026-11-13 (`f81bb64e`), deployed to production:** the owner asked to push everything to `main`. The V10 per-platform work (PR #285), R1–R4 (PR #307, merged by that push) and the final audit fixes are live; migration `0155` ran in production at deploy (`0154 → 0155`, «Migrations OK», no errors). Before the push the merged tree passed the full unit suite (5197 passed, 0 failed), all 52 PostgreSQL modules (753 passed, 0 failed), the coverage checker in push and pull_request modes, the i18n guards and a local PostgreSQL `0155` upgrade/downgrade/upgrade. The bullets below are the pre-merge history.
 - **Still open:** 6.2 owner acceptance on real clients; production data volume is not verified.
 - The branch has the PostgreSQL baseline, the coverage guard and per-metric V10 states in the API and the Admin UI. It also has per-platform scoping, route chain tests, the PWA Pro funnel, `return_retention` and Report freshness.
@@ -619,6 +620,7 @@ Written from the code on this branch.
 - 2026-11-13 — Final audit (O1): analytics-only rows do not count as learner activity in D1 recovery (`D1_RECOVERY_NOT_ACTIVITY_EVENTS`).
 
 ## Session log (newest first, one or two lines each)
+- 2026-11-16 — Joint integration audit of Analytics and Monitoring on `main` `a6689aaf`: both chains pass in code and tests; two Admin PWA platform-filter defects fixed on `audit/analytics-monitoring-integration-20261116` (`c892bc1b`), not on `main`. See [Joint integration audit](#joint-integration-audit--2026-11-16).
 - 2026-11-13 — Promoted to `main` at the owner's request: merge `4a647ca5` + four baseline-test fixes, `origin/main` = `f81bb64e`; Railway deploy succeeded, `0155` applied, no 5xx after start. PRs #285 and #307 are marked merged.
 - 2026-11-13 — Final audit remediation (B1–B4, O1) verified on the working tree over `50a84d9e`: full unit suite **5192 passed, 11 failed** = the 8 known baseline failures + 3 `test_smart_reminder_dispatch_analysis` native-guard tests that fail between 00:00 and 02:00 UTC on `main` and `50a84d9e` too (a goal studied at 02:00 UTC is still in the future; test-only fix on `fix/known-baseline-test-failures-20261113`); all 52 PostgreSQL modules **753 passed, 12 skipped, 0 failed**; 8/8 Admin PWA browser suites pass. Course under production limits: 1M rows max 3.25 s, right after a bulk load 3.29 s, 600k 1.30 s.
 - 2026-11-13 — Final verification of R1–R4 on `1c5162ed`: full unit suite **5193 passed**, only the 8 known baseline failures (live voice relay ×3, practice-page coach ×3, Mini App product name ×2); all 52 PostgreSQL modules **748 passed, 12 skipped, 0 failed**; Admin PWA browser harness passed; checker passes in push and pull_request modes; four OpenSpec changes valid. Pushed as a fast-forward to the PR #307 branch (single branch). Open: owner approval of migration `0155` and owner acceptance on real clients.
@@ -679,4 +681,62 @@ The original long plan (phases 0–5, OpenSpec authoring handoff, per-feature co
 
 - **First:** deliver the Analytics Impact rule, coverage registry and scoped CI guard; continue metric repair in bounded packages. This prerequisite does **not** require finishing every Analytics report.
 - **Then:** Monitoring reuses verified canonical user/platform/feature identifiers and compatible coverage/CI conventions. Keep business/KPI events separate from privacy-safe diagnostic incidents; no duplicate pipelines.
-- **Finally:** one joint integration audit (not a third rebuild) checks both Impact/CI obligations, end-to-end Admin Analytics/Inbox coverage, dedup/privacy, nonblocking flows and affected regressions. Recheck the latest `main` and integrate tested changes sequentially.
+- **Finally:** one joint integration audit (not a third rebuild) checks both Impact/CI obligations, end-to-end Admin Analytics/Inbox coverage, dedup/privacy, nonblocking flows and affected regressions. Recheck the latest `main` and integrate tested changes sequentially. Done on 2026-11-16; see below.
+
+## Joint integration audit — 2026-11-16
+
+Base: `origin/main` `a6689aaf` (Analytics R1–R4 and Monitoring 1.1–6.4). Work branch: `audit/analytics-monitoring-integration-20261116` (fix commit `c892bc1b` plus documentation). Nothing was pushed to `main`. No production setting, database or deployment was read or changed. No real device was used.
+
+### Verdict
+
+| Check | Result | Evidence |
+|---|---|---|
+| Analytics chain: Android / Telegram / iPhone PWA route → PostgreSQL → V10 Admin API → UI | PASS | Route chain tests (lessons, PWA Pro funnel, R1–R4) on fresh PostgreSQL; the 162-response V10 matrix (9 sections × 6 filters × 3 periods) |
+| KPI accuracy, attribution, dedup | PASS | Overall Finance (payments, revenue, first/renewal, unpriced) equals the sum of the three platforms in every period; one account on three platforms counts once; the writer drops a caller `client` key and keeps the route key final; dedupe by owner + event + key with the IntegrityError fallback |
+| Admin PWA platform filter | FIXED | Two defects, below |
+| Monitoring chain: error → intake → incident → Inbox → Apple Push | PASS in code and tests; device delivery not verified | Route auth (Android bearer, PWA cookie + CSRF + same origin, Mini App signed initData); content-free `diag.v1`; fingerprint dedupe; owner advisory lock; hourly cap, batch and body limits; a retried batch with the same event IDs is all duplicates; `bound_write` timeouts on the diagnostic pool; `decide_alert` gating; backend reporter (5xx except 503) |
+| Analytics ↔ Monitoring boundary | PASS | Probe on the golden fixture: four client batches (each sent twice) and one server failure create 4 incidents and 5 receipts; `course_miniapp_events`, `conversion_funnel_events` and `messages` do not change; of 162 V10 responses only the 18 Report responses change, and only in `platform_freshness` (its diagnostics row) |
+| Shared identifiers and registry | PASS | 22 registry features match the monitoring catalog; every Android catalog literal is known; monitoring-only features are `app_shell`, `auth_session`, `monitoring`; `desktop_client_sync` has no monitoring feature (Desktop freeze) |
+| CI merge block | PASS | `analytics-integrity.yml` is a required check of the active `main` ruleset (strict, no bypass); the coverage checker passes in push and pull_request modes; the monitoring chain proof has 20 feature/platform pairs |
+| Regression | See the table below | |
+| Android CI on `main` | Flaky, not caused by this work | `a6689aaf`: `RatingNavigationTest` failed, then the emulator disappeared ("Expected 99 tests, received 74"); `58a816ac`: a different test (`ProfileSettingsUxTest`, duplicate node). Locally both classes pass on Play and Direct (17/17 each, API 36 emulator) |
+| Real-device acceptance | BLOCKED (owner devices) | See "Not verified" |
+
+### Fixes (commit `c892bc1b`)
+
+1. **Report was refused under the iPhone PWA filter.** The Report is one global list returned under every filter, but its seven registry rows listed every platform except `iphone_pwa`, so `has_legacy_filter` refused that filter alone with `not_instrumented`. The rows now list `iphone_pwa`. The golden test pins the iPhone PWA Report metrics and states equal to Android's for every period.
+2. **Platform views were filled with metrics the platform can never show.** Under a platform filter a metric whose state is `not_instrumented`, `attribution_not_audited` or `not_applicable` was drawn as its own card, row or panel (Android Course showed 9 of 11 such cards). It is now named once, with its reason, in one closed list at the bottom of the tab («Bu platformada ko‘rsatilmaydi» / «Для этой платформы не показывается» / «Барои ин платформа нишон дода намешавад»). `no_data`, `detail_limited` and real zeros keep their place. Overall and the server `metric_states` are unchanged. The browser suite checks each tab's cards, the list counts and reasons, and that only `no_data` and `detail_limited` states are drawn outside the list. Rule recorded in `docs/admin-pwa/BROWSER_UI_CONTRACT.md`.
+
+### Analytics Impact
+
+- Changed: the registry filters of the seven `report` rows; Admin PWA rendering under a platform filter (`app.js`, `styles.css`); one UZ/RU/TJ key and the generated catalog.
+- Unchanged: events, writers, dedupe, SQL readers, KPI definitions, cache scopes, Overall values and every other `metric_states` value. The only server change is the iPhone PWA Report, which is now returned like Android's.
+- Deploy note: a Report snapshot cached under the iPhone PWA filter before the deploy can keep the old refusal for up to 24 hours, or until a manual Report refresh for that filter. The Admin shell version is a hash of the assets, so the new `app.js` reaches installed Admin PWAs by itself.
+
+### Monitoring Impact
+
+`not_applicable`: Admin statistics UI and registry metadata only; no learner flow, intake, incident, Inbox or push code changed.
+
+### Regression evidence
+
+Local runs on the branch: PostgreSQL 15 on a scratch port, one fresh database per real-PostgreSQL module. Where `main` was also run, it matched.
+
+| Suite | Result |
+|---|---|
+| `analytics-integrity.yml` test list (fresh PostgreSQL) | 342 passed, 30 skipped, 733 subtests; identical on `main` |
+| Monitoring chain proof / coverage checker (push, pull_request) | 20 pairs / valid |
+| Node diagnostics reporter | pass |
+| Full unit suite without PostgreSQL | 5290 passed, 934 skipped, 0 failed (the fix commit landed during the run; the Admin suites were also run on each state separately) |
+| Every real-PostgreSQL module | 56 modules: 781 passed, 12 skipped, 0 failed (`tests/monitoring_chain.py` is a helper with no tests) |
+| Admin PWA security workflow test lines | 733 passed, 125 skipped, 629 subtests; legacy payment 103 passed |
+| Admin PWA browser suites | 7 of 7 pass; the analytics suite also passes on `main` |
+| Learner browser suites, Chromium and WebKit | 72 passed and 2 failed in each: the known 320 px Practice loading-geometry baseline. No learner file changed |
+| Performance contract (policy and unit), i18n (82 artifacts, 0 stale), OpenSpec strict (both changes), Alembic (one head `0157`) | pass |
+| Android JVM unit tests, rerun without the build cache | Play 667, Direct 725, 0 failed; 8 Android static checkers pass |
+| Android instrumentation: `RatingNavigationTest`, `ProfileSettingsUxTest` (API 36 emulator) | Play 17/17, Direct 17/17 |
+
+### Not verified
+
+- Real devices: Android Play and Direct on a phone, iPhone Safari PWA, Telegram WebView, Apple Push display and tap on iPhone and Mac, staging.
+- Production: switch values, deployment of `0157`, data volume.
+- Known gaps that stay as decided: no Play/Direct split (A19); A3/A12 historical rows, AI/chat/voice per platform (A16/A17) stay `not_instrumented`.
