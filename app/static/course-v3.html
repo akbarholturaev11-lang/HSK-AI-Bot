@@ -2964,9 +2964,9 @@ var App={
   showFirstLessonNext:function(nextOrder){
     window._firstLessonNextOrder=Number(nextOrder)||0;window._firstLessonNextLevel=MAP&&MAP.level;window._firstLessonNextScope=localUserScope();
     pendingRankUp=null;window._pendingStreak=null;window._pendingCheckpointNextIdx=null;
-    window._pendingPwaLessonFeedback=null;
-    // Do not interrupt the first-to-second lesson handoff with an ad or promo.
-    window._pendingLessonEndAd=0;window._pendingDesktopLessonPromo=0;
+    // Keep feedback for Back-to-course; do not show it on immediate Start.
+    // Keep server-controlled lesson-end ads for Back; Start skips the detour.
+    window._pendingDesktopLessonPromo=0;
     var overlay=$("#levelup");overlay.classList.remove("cine","sales-bridge","flying");
     $("#lu-panda").innerHTML=pandaChar("celebrate");
     $("#lu-stage").innerHTML='<div class="lu-emb"><span class="h2 han">学</span></div><h2>'

@@ -2,7 +2,7 @@
   "schema_version": 1,
   "status": "PURPOSE_SPECIFIC_APIS_SOURCE_REVIEWED",
   "source": "app/static/course-v3.html",
-  "source_revision": "8ff1b3b3f9602529f5c64f4b492ace96847b2a2a",
+  "source_revision": "1224b3b4d61b220f1311d5d9e6bc960beb1b3a15",
   "scope": "Three direct loadLessonData(...) expressions remain: audio warmup, nearby prefetch, and the post-reservation interactive lesson. Sales preview, Starter 0, and skip-test use separate purpose-specific endpoints. No client caller reads the legacy public lesson JSON route. 2026-11-16: first lesson next CTA uses the existing reserveLessonStart→loadLessonData API chain; source lines were re-reviewed without changing these three direct read intents. 2026-11-16: audit confirmed the three direct and three indirect lesson-content read sites remain unchanged; PWA-only first-lesson gate shifted one subsequent indirect anchor. 2026-11-16 follow-up: re-reviewed unchanged reservation-first lesson fetch calls after current-lesson identity guard.",
   "read_calls": [
     {
@@ -93,11 +93,11 @@
     "scope": "Exact reviewed direct and indirect lesson load callsite anchors were remapped after current main merge; access/consumption, signed auth and active lesson reservation remain server-owned."
   },
   "monitoring_anchor_review": {
-    "source_blob_sha": "8ff1b3b3f9602529f5c64f4b492ace96847b2a2a",
+    "source_blob_sha": "1224b3b4d61b220f1311d5d9e6bc960beb1b3a15",
     "scope": "Verified all direct and indirect lesson reads exactly match the pre-monitoring source; only locations moved."
   },
   "pwa_source_review": {
-    "source_blob_sha": "8ff1b3b3f9602529f5c64f4b492ace96847b2a2a",
+    "source_blob_sha": "1224b3b4d61b220f1311d5d9e6bc960beb1b3a15",
     "identity": "Telegram Mini App signed API and PWA account-bound content GET use separate server-authenticated transports; canonical entitlement and quota policies remain in shared service",
     "direct_calls": 3,
     "indirect_calls": 3,

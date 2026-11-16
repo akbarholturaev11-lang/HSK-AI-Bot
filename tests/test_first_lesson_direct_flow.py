@@ -27,7 +27,7 @@ function $(selector) {
     setAttribute(k,v){this[k]=v},disabled:false,innerHTML:'',textContent:''
   };
 }
-const window = {};
+const window = {_pendingPwaLessonFeedback:{lessonId:1},_pendingLessonEndAd:1};
 const MAP = {level:'hsk1'};
 let scope = 'account-A';
 const localUserScope = () => scope;
@@ -49,6 +49,7 @@ const App = {
   show:screen => events.push('show:'+screen)
 };
 App.showFirstLessonNext(2);
+const preserved = {feedback:window._pendingPwaLessonFeedback.lessonId,ad:window._pendingLessonEndAd};
 const title = $('#lu-stage').innerHTML;
 const button = $('#lu-cta').textContent;
 const action = $('#lu-cta').onclick;
@@ -61,7 +62,7 @@ MAP.level = 'hsk1';
 App.showFirstLessonNext(2);
 scope = 'account-B';
 App.startFirstLessonNext(); // no stale cross-account auto launch
-process.stdout.write(JSON.stringify({title,button,action,events}));
+process.stdout.write(JSON.stringify({title,button,action,events,preserved}));
 """;
         result = subprocess.run(
             ["node", "-e", script],
@@ -69,6 +70,7 @@ process.stdout.write(JSON.stringify({title,button,action,events}));
         )
         values = json.loads(result.stdout)
         self.assertIn("NEXT TITLE", values["title"])
+        self.assertEqual(values["preserved"], {"feedback": 1, "ad": 1})
         self.assertEqual(values["button"], "START 🔥")
         self.assertEqual(values["action"], "App.startFirstLessonNext()")
         self.assertEqual(values["events"].count("lesson:1"), 1)
