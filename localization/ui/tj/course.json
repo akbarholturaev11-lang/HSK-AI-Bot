@@ -1109,6 +1109,8 @@
     "voiceV8.endBody": "Суҳбати ҷорӣ анҷом меёбад.",
     "voiceV8.endCancel": "Идома додан",
     "voiceV8.endConfirm": "Анҷом додан",
-    "voiceV8.restart": "Оғози суҳбати нав"
+    "voiceV8.restart": "Оғози суҳбати нав",
+    "firstLessonNext.title": "Дарси дуюмро оғоз мекунем! Биё бубинем, то чӣ андоза тайёрӣ 🙃",
+    "firstLessonNext.start": "Оғоз 🔥"
   }
 }
