@@ -20,13 +20,14 @@ class OnboardingViewModelTest {
     private class Fake(private var li: Boolean, private val completed: Boolean = false) : AndroidOnboardingApi {
         var request: AndroidOnboardingRequestDto? = null
         var statusReads = 0
+        var accountLevel = "hsk1"
         var writeAuthorization: String? = null
         var writes = 0
         var disableOnSave = false
         var track = AndroidHsk30OnboardingDto()
         override suspend fun status(authorization: String): Response<AndroidOnboardingStatusDto> {
             statusReads++
-            return Response.success(AndroidOnboardingStatusDto(ok = true, completed = completed, liEnabled = li, hsk30 = track))
+            return Response.success(AndroidOnboardingStatusDto(ok = true, completed = completed, liEnabled = li, level = accountLevel, hsk30 = track))
         }
         override suspend fun complete(authorization: String, body: AndroidOnboardingRequestDto): Response<AndroidOnboardingCompleteDto> {
             writes++; request = body; writeAuthorization = authorization
@@ -173,6 +174,18 @@ class OnboardingViewModelTest {
         assertEquals("hsk20", model.state.value.ui.selectedTrack)
         assertTrue(model.state.value.ui.hsk30Enabled)
         assertFalse(model.state.value.ui.hsk30Allowed)
+    }
+
+    @Test fun unavailableSavedHsk30TrackDoesNotBlockFreshOnboarding() = runTest(dispatcher) {
+        val fake = Fake(true)
+        fake.accountLevel = "nhsk1"
+        fake.track = AndroidHsk30OnboardingDto(
+            enabled = true, allowed = false, liveLevels = listOf("nhsk1"),
+        )
+        val model = fake.model()
+        runCurrent()
+        assertEquals("hsk20", model.state.value.ui.selectedTrack)
+        assertEquals("beginner", model.state.value.ui.selectedLevel)
     }
 
     @Test fun allowedNewLearnerStillCanDefaultToHsk30() = runTest(dispatcher) {
