@@ -780,6 +780,9 @@ html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] .list .row{
   gap:8px;min-height:88px;
 }
 html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] .row .info{min-width:0;flex:1}
+/* The tighter row gap makes room for the badge and the 44px save target; the
+   hanzi keeps main's 14px reading space before pinyin (3-character words). */
+html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] .list .row > .h{margin-right:6px}
 html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] .p45-dict-save{
   -webkit-appearance:none;appearance:none;border:0;background:transparent;
   color:var(--hsk-gold,#d99c12);min-width:44px;min-height:44px;
@@ -805,6 +808,7 @@ html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] .p45-dict-detail-save{
 @media(max-width:350px){
   html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] .list .row .lv{padding:4px 5px;font-size:10px}
   html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] .list .row{gap:5px}
+  html.hsk-pwa-browser[data-hsk-design-screen="dictionary"] .list .row > .h{margin-right:7px}
 }
 
 

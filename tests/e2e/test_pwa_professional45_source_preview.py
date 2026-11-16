@@ -180,6 +180,11 @@ def test_audit_fixes_on_real_source_screens(real_source_qa):
             assert page.evaluate("document.getElementById('filter-count').textContent") == ""
             badges = page.evaluate("[...document.querySelectorAll('.row .lv')].slice(0,5).map(x => x.textContent)")
             assert badges and all(b.startswith("HSK ") and "3.0" not in b for b in badges), badges
+            # Hanzi keeps main's reading space before pinyin (3-character words touched it).
+            gaps = page.evaluate("[...document.querySelectorAll('.list .row')].slice(0,30).map(r => {"
+                                 "const h=r.querySelector('.h'), i=r.querySelector('.info'); if(!h||!i) return 99;"
+                                 "return Math.round(i.getBoundingClientRect().left-h.getBoundingClientRect().right)})")
+            assert gaps and min(gaps) >= 12, gaps
 
             # Practice error state: one primary action, no pre-session counter.
             page.goto(BASE + "/iphone-pwa/practice/recognition?lang=ru", wait_until="domcontentloaded", timeout=25000)
