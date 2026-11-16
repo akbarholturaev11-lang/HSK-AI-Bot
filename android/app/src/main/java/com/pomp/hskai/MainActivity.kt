@@ -892,6 +892,8 @@ private fun AppRoot(
 
             var openLesson by remember { mutableStateOf<LessonLaunch?>(null) }
             var firstNextLimitedLesson by remember { mutableStateOf<CourseLesson?>(null) }
+            var firstNextLimitText by remember { mutableStateOf<String?>(null) }
+            var firstNextLimitResetAt by remember { mutableStateOf<String?>(null) }
             var skipTestLesson by remember { mutableStateOf<CourseLesson?>(null) }
             LaunchedEffect(courseState.completedTrackSwitch) {
                 if (courseState.completedTrackSwitch == null) return@LaunchedEffect
@@ -1030,10 +1032,12 @@ private fun AppRoot(
                 onboardingState.launch,
                 onboardingState.completed,
                 courseState.map,
+                courseState.isStale,
                 offline,
             ) {
                 val onboardingLaunch = onboardingState.launch ?: return@LaunchedEffect
-                if (!onboardingState.completed || onboardingAutoStartHandled || offline) return@LaunchedEffect
+                if (!onboardingState.completed || onboardingAutoStartHandled ||
+                    offline || courseState.isStale) return@LaunchedEffect
                 val map = courseState.map ?: return@LaunchedEffect
                 val launchLevel = onboardingLaunch.level.trim().lowercase()
                 if (launchLevel.isNotBlank() && map.level.trim().lowercase() != launchLevel) {
@@ -1053,14 +1057,29 @@ private fun AppRoot(
                 val requestedOrder = onboardingLaunch.lesson?.takeIf { it > 0 }
                     ?: map.currentLesson?.order
                 val candidate = requestedOrder?.let { order ->
-                    map.lessons.firstOrNull { it.order == order }
-                } ?: map.currentLesson ?: return@LaunchedEffect
-                if (
-                    candidate.access == LessonAccess.Open ||
-                    candidate.access == LessonAccess.HalfPreview
-                ) {
+                    map.lessons.firstOrNull { it.order == order }?.takeIf { it.isCurrent }
+                } ?: map.currentLesson?.takeIf { it.isCurrent }
+                if (candidate == null) {
+                    // A successful onboarding with no current node is a state
+                    // mismatch, not a reason to fabricate an open lesson.
                     onboardingAutoStartHandled = true
-                    launchLesson(candidate)
+                    Diagnostics.reporter?.report(
+                        DiagFeature.LESSONS, DiagFailure.LOAD_FAILED,
+                        DiagSite.FIRST_LESSON_ENTRY, "state",
+                    )
+                    return@LaunchedEffect
+                }
+                onboardingAutoStartHandled = true
+                if (map.level.startsWith("nhsk") && map.hsk30?.access?.allowed != true) {
+                    openHsk30ContentGate()
+                } else when (candidate.access) {
+                    LessonAccess.Open, LessonAccess.HalfPreview -> launchLesson(candidate)
+                    LessonAccess.PremiumLocked -> {
+                        firstNextLimitText = map.lessonLimit?.limitText
+                        firstNextLimitResetAt = map.lessonLimit?.resetAt
+                        firstNextLimitedLesson = candidate
+                    }
+                    LessonAccess.NotReached -> skipTestLesson = candidate
                 }
             }
 
@@ -1503,7 +1522,11 @@ private fun AppRoot(
                                 courseViewModel.load()
                                 when (target.access) {
                                     LessonAccess.Open, LessonAccess.HalfPreview -> launchLesson(target)
-                                    LessonAccess.PremiumLocked -> firstNextLimitedLesson = target
+                                    LessonAccess.PremiumLocked -> {
+                                        firstNextLimitText = map.lessonLimit?.limitText
+                                        firstNextLimitResetAt = map.lessonLimit?.resetAt
+                                        firstNextLimitedLesson = target
+                                    }
                                     LessonAccess.NotReached -> skipTestLesson = target
                                 }
                             }
@@ -1863,9 +1886,13 @@ private fun AppRoot(
                             sectionTitle = stringResource(R.string.hsk_common_navigation_course),
                             sourceKey = "course_lesson_limit",
                             limit = limitGate,
-                            reason = courseState.map?.lessonLimit?.limitText,
-                            resetAt = courseState.map?.lessonLimit?.resetAt,
-                            onClose = { firstNextLimitedLesson = null },
+                            reason = firstNextLimitText,
+                            resetAt = firstNextLimitResetAt,
+                            onClose = {
+                                firstNextLimitedLesson = null
+                                firstNextLimitText = null
+                                firstNextLimitResetAt = null
+                            },
                         )
                     }
 
