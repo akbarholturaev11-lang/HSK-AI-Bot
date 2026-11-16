@@ -2960,6 +2960,34 @@ var App={
     fr.src=url;
   },
   closeWriter:function(){var ov=$("#writeov"),fr=$("#writeframe");ov.classList.remove("on");ov.classList.remove("loading");try{fr.onload=null;fr.src="about:blank"}catch(e){}},
+  // First verified lesson: one direct learning action, without a rating detour.
+  showFirstLessonNext:function(nextOrder){
+    window._firstLessonNextOrder=Number(nextOrder)||0;
+    pendingRankUp=null;window._pendingStreak=null;window._pendingCheckpointNextIdx=null;
+    window._pendingPwaLessonFeedback=null;
+    // Do not interrupt the first-to-second lesson handoff with an ad or promo.
+    window._pendingLessonEndAd=0;window._pendingDesktopLessonPromo=0;
+    var overlay=$("#levelup");overlay.classList.remove("cine","sales-bridge","flying");
+    $("#lu-panda").innerHTML=pandaChar("celebrate");
+    $("#lu-stage").innerHTML='<div class="lu-emb"><span class="h2 han">学</span></div><h2>'
+      +esc(courseMessage("firstLessonNext.title","2-darsni boshlaymiz! Qani, ko‘raylik-chi, qanchalik tayyorsan? 🙃"))+'</h2>';
+    $("#lu-cta").disabled=false;
+    $("#lu-cta").setAttribute("onclick","App.startFirstLessonNext()");
+    $("#lu-cta").textContent=courseMessage("firstLessonNext.start","Boshlash 🔥");
+    overlay.classList.add("on");
+    setTimeout(function(){var icon=document.querySelector("#lu-stage .lu-emb");if(icon)icon.classList.add("in")},30);
+  },
+  startFirstLessonNext:function(){
+    var order=Number(window._firstLessonNextOrder)||0;
+    if(!order)return;
+    $("#lu-cta").disabled=true;
+    window._firstLessonNextOrder=0;
+    $("#levelup").classList.remove("on");
+    $("#lu-panda").innerHTML="";
+    App.exitFlow();App.show("course");renderAll();
+    var idx=allLessons().findIndex(function(lesson){return Number(lesson.n)===order});
+    if(idx>=0)startLesson(idx); // reserveLessonStart is the final server access check
+  },
   showLevelUp:function(type,data,extra){
     $("#levelup").classList.remove("sales-bridge");
     var lu=(window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.course_v3.lu.copy1",{ru:{cont:"Продолжить",lessonH:"Урок завершён!",lessonP:"Отличная работа! Следующий этап ждёт.",cpH:"Урок {n} полностью пройден!",cpP:"Весь урок ваш: слова, диалог и грамматика. Теперь вы можете использовать их в речи.",acc:"точность",combo:"комбо",levelH:"HSK 1 пройден!",levelP:"Поздравляем! Открыт HSK 2.",opened:"открыт",xpH:"Уровень 5!",xpP:"Так держать! Новый уровень — новые возможности.",lvl:"Уровень",bonusXp:"бонус XP",chest:"новый сундук"},
@@ -4833,7 +4861,7 @@ function startLesson(idx,opts){
     trackCourseEvent("lesson_started",{
       source:"course_v3",
       lesson_order:l.n,
-      activation_variant:activationVariant(),
+      activation_variant:opts.activationVariant||activationVariant(),
       dedupe_key:lessonEventKey("lesson_started",l.n)
     });
     HP=5;$("#f-hp").textContent=HP;
@@ -6239,6 +6267,8 @@ var PWA_LEVEL_REQUEST_SEQ=0,PWA_LEVEL_ABORT=null; function loadLevel(lv){if(PWA_
   });
 }
 function applyLessonDone(cur,d){
+  var firstVerifiedLesson=!!(d&&d.ok===true&&!d.duplicate&&cur&&Number(cur.n)===1&&
+    Number(MAP&&MAP.progress&&MAP.progress.completed||0)===0);
   var rankBefore=Number(d&&d.rank_before)||0;
   if(PWA_COURSE_HOST&&d&&d.ok===true&&!d.duplicate){
     window._pendingPwaLessonFeedback={kind:"lesson",confirmed:true,lessonId:Number(cur&&cur.n)||0,
@@ -6288,6 +6318,10 @@ function applyLessonDone(cur,d){
   window._pendingCheckpointNextIdx=(cur&&cur.checkpoint&&normalizeLevel((MAP&&MAP.level)||"hsk1")==="hsk1"&&Number(cur.src)===1&&next)?al.indexOf(next):null;
   renderAll();
   if(d&&d.ok)refreshCourseProgress(true);
+  // Keep server XP/streak/rank writes; skip only their extra first-lesson screens.
+  if(firstVerifiedLesson&&next&&next.status==="current"&&!isPremiumLocked(next)){
+    App.showFirstLessonNext(next.n);return;
+  }
   if(al.every(function(l){return l.status==="done"})){
     var hasReleaseFields=!!(d&&("next_level" in d||"next_level_pending" in d));
     var nxt=hasReleaseFields?(d.next_level||""):_NEXT_LEVEL[MAP.level||"hsk1"];
@@ -9766,8 +9800,9 @@ var finishHskLaunchSplash=(function(){
       if(idx>=0)setTimeout(function(){
         App.show("course");
         if(sp.get("autostart")==="1"){
-          startLesson(idx);
-          try{sp.delete("autostart");history.replaceState(null,"",location.pathname+"?"+sp.toString()+location.hash)}catch(e){}
+          var variant=activationVariant(); // capture before consuming one-shot URL intent
+          startLesson(idx,{activationVariant:variant});
+          try{sp.delete("autostart");sp.delete("resume");history.replaceState(null,"",location.pathname+"?"+sp.toString()+location.hash)}catch(e){}
         }else openLessonSheet(idx);
       },80);
     }
