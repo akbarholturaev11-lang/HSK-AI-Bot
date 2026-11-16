@@ -892,6 +892,7 @@ private fun AppRoot(
 
             var openLesson by remember { mutableStateOf<LessonLaunch?>(null) }
             var firstNextLimitedLesson by remember { mutableStateOf<CourseLesson?>(null) }
+            var secondLessonEntryPending by remember { mutableStateOf(false) }
             var firstNextLimitText by remember { mutableStateOf<String?>(null) }
             var firstNextLimitResetAt by remember { mutableStateOf<String?>(null) }
             var skipTestLesson by remember { mutableStateOf<CourseLesson?>(null) }
@@ -1488,9 +1489,11 @@ private fun AppRoot(
                     limit = limitGate,
                     accessChanged = accessActive,
                     onStartNext = {
-                        // Do not trust the post-completion cached map: the next lesson
-                        // gets a fresh authoritative access snapshot, like deep links.
-                        scope.launch {
+                        if (!secondLessonEntryPending) {
+                            secondLessonEntryPending = true
+                            // One fresh server map, even under rapid repeated taps.
+                            scope.launch {
+                                try {
                             val fresh = (app.courseRepository.courseMap() as? ApiResult.Success)
                                 ?.value?.takeUnless { it.isStale }
                             val map = fresh?.map?.takeIf { it.level == currentLevel }
@@ -1528,6 +1531,10 @@ private fun AppRoot(
                                         firstNextLimitedLesson = target
                                     }
                                     LessonAccess.NotReached -> skipTestLesson = target
+                                }
+                            }
+                                } finally {
+                                    secondLessonEntryPending = false
                                 }
                             }
                         }
