@@ -52,6 +52,11 @@ def public_origin(settings_obj):
     if (parsed.scheme != "https" or not parsed.hostname or parsed.username or parsed.password
             or (explicit and (parsed.path not in ("", "/") or parsed.query or parsed.fragment))):
         raise ValueError("PUBLIC_SITE_URL must be an HTTPS origin without credentials, path or query")
+    # The legacy Railway host still serves the bot and API, but public SEO URLs
+    # have permanently moved to hskai.app. Never publish Railway canonicals
+    # when PUBLIC_SITE_URL is unset or accidentally retains the old origin.
+    if parsed.hostname == "telegram-chinese-bot-production.up.railway.app":
+        return "https://hskai.app"
     return f"https://{parsed.netloc}"
 
 
