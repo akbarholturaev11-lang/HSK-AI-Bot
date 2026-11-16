@@ -509,6 +509,9 @@ private fun AppRoot(
             var widgetPlacedNotice by remember { mutableStateOf(false) }
             var widgetPromptFromOnboarding by rememberSaveable { mutableStateOf(false) }
             var widgetOfferHandled by rememberSaveable { mutableStateOf(false) }
+            // The post-onboarding notification/widget offer waits until the
+            // learner leaves the first automatically opened lesson.
+            var onboardingFirstLessonFinished by rememberSaveable { mutableStateOf(false) }
             var widgetForegroundTick by remember { mutableStateOf(0) }
             val widgetLifecycle = LocalLifecycleOwner.current.lifecycle
             val widgetSession by app.widgetStore.state.collectAsStateWithLifecycle(initialValue = WidgetSession())
@@ -547,8 +550,10 @@ private fun AppRoot(
             // Onboarding uses the same full-screen widget prompt as the daily reminder.
             // The widget offer stays in this position; only the old Pro/trial
             // interruption after onboarding was removed.
-            LaunchedEffect(onboardingState.launch, hsk30PromoMustPrecedeWidget) {
-                if (hsk30PromoMustPrecedeWidget) return@LaunchedEffect
+            LaunchedEffect(onboardingState.launch, hsk30PromoMustPrecedeWidget, onboardingFirstLessonFinished) {
+                if (hsk30PromoMustPrecedeWidget ||
+                    (onboardingState.launch != null && !onboardingFirstLessonFinished)
+                ) return@LaunchedEffect
                 if (onboardingState.launch != null && !widgetOfferHandled && !widgetSetupOpen) {
                     val today = LocalDate.now().toString()
                     val session = app.widgetStore.read()
@@ -613,9 +618,11 @@ private fun AppRoot(
                 studySetupState.visible,
                 widgetSession.lastInstallPromptDay,
                 hsk30PromoMustPrecedeWidget,
+                onboardingFirstLessonFinished,
             ) {
                 if (!onboardingState.completed || widgetSetupOpen || studySetupState.visible ||
-                    hsk30PromoMustPrecedeWidget
+                    hsk30PromoMustPrecedeWidget ||
+                    (onboardingState.launch != null && !onboardingFirstLessonFinished)
                 ) {
                     return@LaunchedEffect
                 }
@@ -1037,47 +1044,34 @@ private fun AppRoot(
                 )
             }
 
-            // HSK 2.0 onboarding may open its first lesson after the one-time
-            // notification/widget prompts. HSK 3.0 always lands on the course map;
-            // its lesson and practice access is checked when the learner enters.
-            // Beginner onboarding enters Starter 0 first; FoundationActivity
-            // returns through the canonical current-lesson deep link.
+            // Both HSK tracks enter the verified first lesson directly after
+            // onboarding. Notification/widget prompts are deferred until exit.
+            // Beginner learners still pass through the required Starter 0.
             LaunchedEffect(
                 onboardingState.launch,
                 onboardingState.completed,
                 courseState.map,
                 offline,
-                notificationPrimerSeen,
-                widgetSession.reminderEnabled,
-                widgetOfferHandled,
-                widgetSetupOpen,
-                widgetPlacedNotice,
             ) {
                 val onboardingLaunch = onboardingState.launch ?: return@LaunchedEffect
                 if (!onboardingState.completed || onboardingAutoStartHandled || offline) return@LaunchedEffect
-                if (!notificationPrimerSeen && !widgetSession.reminderEnabled) {
-                    return@LaunchedEffect
-                }
-                if (!widgetOfferHandled || widgetSetupOpen || widgetPlacedNotice) {
-                    return@LaunchedEffect
-                }
-
                 val map = courseState.map ?: return@LaunchedEffect
+                if (courseState.isStale) return@LaunchedEffect
                 val launchLevel = onboardingLaunch.level.trim().lowercase()
                 if (launchLevel.isNotBlank() && map.level.trim().lowercase() != launchLevel) {
                     return@LaunchedEffect
                 }
 
-                if (launchLevel.startsWith("nhsk")) {
+                if (onboardingLaunch.placement || onboardingLaunch.reviewOnly ||
+                    (launchLevel.startsWith("nhsk") && map.hsk30?.access?.allowed != true)
+                ) {
                     onboardingAutoStartHandled = true
-                    return@LaunchedEffect
-                }
-                if (onboardingLaunch.placement || onboardingLaunch.reviewOnly) {
-                    onboardingAutoStartHandled = true
+                    onboardingFirstLessonFinished = true
                     return@LaunchedEffect
                 }
                 if (onboardingLaunch.foundationRequired || map.foundation?.mustComeFirst == true) {
                     onboardingAutoStartHandled = true
+                    onboardingFirstLessonFinished = true
                     context.startActivity(Intent(context, FoundationActivity::class.java))
                     return@LaunchedEffect
                 }
@@ -1086,13 +1080,15 @@ private fun AppRoot(
                     ?: map.currentLesson?.order
                 val candidate = requestedOrder?.let { order ->
                     map.lessons.firstOrNull { it.order == order }
-                } ?: map.currentLesson ?: return@LaunchedEffect
-                if (
-                    candidate.access == LessonAccess.Open ||
-                    candidate.access == LessonAccess.HalfPreview
+                } ?: map.currentLesson
+                onboardingAutoStartHandled = true
+                if (candidate != null &&
+                    (candidate.access == LessonAccess.Open ||
+                     candidate.access == LessonAccess.HalfPreview)
                 ) {
-                    onboardingAutoStartHandled = true
                     launchLesson(candidate)
+                } else {
+                    onboardingFirstLessonFinished = true // keep normal locked/empty map fallback
                 }
             }
 
@@ -1292,7 +1288,9 @@ private fun AppRoot(
                     onBack = onboardingViewModel::back,
                     onNext = onboardingViewModel::next,
                 )
-            } else if (!onboardingUnknown && !notificationPrimerSeen && !widgetSession.reminderEnabled) {
+            } else if (!onboardingUnknown && !notificationPrimerSeen && !widgetSession.reminderEnabled &&
+                (onboardingState.launch == null || onboardingFirstLessonFinished)
+            ) {
                 // Asked once, at the end of onboarding, for both kinds of
                 // notification at once: Android grants them for the whole app,
                 // not per kind, and it stops showing its dialog after two
@@ -1503,6 +1501,7 @@ private fun AppRoot(
                         val finishedOrder = launch.lesson.order
                         if (completed) activityFeedback.prepare("lesson", currentLevel, finishedOrder)
                         openLesson = null
+                        if (onboardingState.launch != null) onboardingFirstLessonFinished = true
                         courseViewModel.load()
                         if (completed && adsUnlockedAfterLimit) {
                             // The lesson-end placement joins the same product
@@ -1512,6 +1511,27 @@ private fun AppRoot(
                                 placement = AdViewModel.PLACEMENT_LESSON_END,
                                 lessonOrder = finishedOrder,
                             )
+                        }
+                    },
+                    onStartNext = {
+                        // A new map read, not the pre-completion cache, decides
+                        // whether the next lesson can be launched.
+                        scope.launch {
+                            val fresh = (app.courseRepository.courseMap()
+                                as? com.pomp.hskai.core.network.ApiResult.Success)
+                                ?.value?.takeUnless { it.isStale }?.map
+                            val next = fresh?.lessons?.firstOrNull { it.order == launch.lesson.order + 1 }
+                            if (next != null &&
+                                (next.access == LessonAccess.Open ||
+                                 next.access == LessonAccess.HalfPreview)
+                            ) {
+                                launchLesson(next)
+                                courseViewModel.load()
+                            } else {
+                                openLesson = null
+                                onboardingFirstLessonFinished = true
+                                courseViewModel.load()
+                            }
                         }
                     },
                 )
