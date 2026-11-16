@@ -143,6 +143,26 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
             Path("app/main.py").read_text(encoding="utf-8"),
         )
 
+    async def test_guide_canonicals_use_official_domain_with_legacy_fallback(self):
+        # The Railway URL remains the bot/API origin, not the indexed site.
+        old = "https://telegram-chinese-bot-production.up.railway.app/course-v3.html"
+        app = FastAPI()
+        app.include_router(create_public_site_router(
+            settings_obj=settings(PUBLIC_SITE_URL="", MINI_APP_BASE_URL=old)
+        ))
+        async with AsyncClient(transport=ASGITransport(app=app),
+                               base_url="https://hskai.app") as client:
+            for path in ("/tj/guide/", "/uz/guide/"):
+                response = await client.get(path)
+                self.assertEqual(response.status_code, 200)
+                canonical = Tags(response.text).find("link", rel="canonical")
+                self.assertEqual(len(canonical), 1)
+                self.assertEqual(canonical[0]["href"], "https://hskai.app" + path)
+                self.assertNotIn('rel="canonical" href="https://telegram-', response.text)
+            sitemap = await client.get("/sitemap.xml")
+            self.assertIn("<loc>https://hskai.app/tj/guide/</loc>", sitemap.text)
+            self.assertIn("<loc>https://hskai.app/uz/guide/</loc>", sitemap.text)
+
     async def test_account_deletion_request_is_accessible_outside_app(self):
         page = await self.client.get("/account-deletion")
         self.assertEqual(page.status_code, 200)
@@ -695,6 +715,11 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
             with self.assertRaises(ValueError):
                 public_origin(settings(PUBLIC_SITE_URL=bad))
         self.assertEqual(public_origin(settings(PUBLIC_SITE_URL="", MINI_APP_BASE_URL=ORIGIN + "/course-v3.html")), ORIGIN)
+        old_host = "https://telegram-chinese-bot-production.up.railway.app"
+        self.assertEqual(public_origin(settings(
+            PUBLIC_SITE_URL="", MINI_APP_BASE_URL=old_host + "/course-v3.html"
+        )), "https://hskai.app")
+        self.assertEqual(public_origin(settings(PUBLIC_SITE_URL=old_host)), "https://hskai.app")
         self.assertEqual(attribution({"token": "secret", "utm_source": "x" * 1000}), {"utm_source": "x" * 80})
         self.assertNotIn("\n", attribution({"source": "bad\nlog"})["source"])
 
