@@ -107,7 +107,7 @@ function open(host, track, launch) {
     launch, hostPwa:host, global:{LANG:'uz',track},
     location:{search:'?source=onboarding',href:'',assign(url){this.href=url;}},
     URLSearchParams, pageCourse:()=>host?'/iphone-pwa/course':'/course-v3.html',
-    saveProfile(){}, renderError(){this.blocked=true}, blocked:false
+    saveProfile(){}, renderError(){ctx.blocked=true}, blocked:false
   };
   vm.runInNewContext(fn+'\ntoCourse()',ctx);
   const link = new URL(ctx.location.href || '/unconfirmed','https://hskai.app');
