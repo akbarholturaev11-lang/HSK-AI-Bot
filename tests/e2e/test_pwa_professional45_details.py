@@ -65,8 +65,8 @@ def test_xp_streak_full_screens_keep_genuine_values_and_unknown_days(width):
                   return {ok:true,profile:{streak_target_days:payload.streak_target_days}};
                 };
             }""")
-            page.add_style_tag(url=ORIGIN + "/course_v3_data/pwa-professional45-progress.css")
-            page.add_script_tag(url=ORIGIN + "/course_v3_data/pwa-professional45-progress.js")
+            page.add_style_tag(url=ORIGIN + "/course_v3_data/pwa-professional45.css")
+            page.add_script_tag(url=ORIGIN + "/course_v3_data/pwa-professional45-course.js")
             page.evaluate("HskPwaProgress.open('xp')")
             assert page.locator("#p45-progress").is_visible()
             assert page.locator("#p45-progress .p45-progress-hero").inner_text().find("1 250") >= 0 or "1 250" in page.locator("#p45-progress .p45-progress-hero").inner_text()
@@ -119,7 +119,7 @@ def test_flashcards_only_from_previous_word_and_never_grade_the_lesson():
                   document.querySelector("#f-cta").style.display="flex";
                 };
             }""")
-            page.add_script_tag(url=ORIGIN + "/course_v3_data/pwa-professional45-flashcards.js")
+            page.add_script_tag(url=ORIGIN + "/course_v3_data/pwa-professional45-course.js")
             page.evaluate("renderFlowCard()")
             assert page.locator(".p45-lesson-flash").count() == 1
             assert page.get_by_text("以前", exact=True).count() == 1
