@@ -186,6 +186,12 @@ def test_audit_fixes_on_real_source_screens(real_source_qa):
                                  "return Math.round(i.getBoundingClientRect().left-h.getBoundingClientRect().right)})")
             assert gaps and min(gaps) >= 12, gaps
 
+            # Li onboarding language picker is a full 44px touch target.
+            page.goto(BASE + "/iphone-pwa/onboarding/li?lang=uz", wait_until="domcontentloaded", timeout=25000)
+            page.wait_for_selector(".lang-control .language", timeout=20000)
+            picker = page.evaluate("(() => {const r=document.querySelector('.lang-control .language').getBoundingClientRect(); return [r.width, r.height]})()")
+            assert min(picker) >= 44, picker
+
             # Practice error state: one primary action, no pre-session counter.
             page.goto(BASE + "/iphone-pwa/practice/recognition?lang=ru", wait_until="domcontentloaded", timeout=25000)
             page.wait_for_selector(".done button.ghost", timeout=20000)

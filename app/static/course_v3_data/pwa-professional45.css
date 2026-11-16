@@ -679,6 +679,15 @@ html.hsk-pwa-browser[data-hsk-design-screen="li-onboarding"] :is(button,select) 
 html.hsk-pwa-browser[data-hsk-design-screen="li-onboarding"] :is(.helper,.body) {
   overflow-wrap: anywhere;
 }
+/* The language picker was a 43x20px select inside a 38px pill: give it the
+   44px touch target without changing the pill's look. */
+html.hsk-pwa-browser[data-hsk-design-screen="li-onboarding"] .lang-control {
+  height: 44px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="li-onboarding"] .lang-control .language {
+  align-self: stretch;
+  min-width: 44px;
+}
 
 /* The V8 Voice conversation keeps black background and canonical red orb. */
 html.hsk-pwa-browser[data-hsk-design-screen="voice-v8"] :is(.circle.topbtn,.footbtn) {
