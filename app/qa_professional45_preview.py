@@ -43,7 +43,8 @@ def qa_guard() -> None:
 qa_guard()
 app = FastAPI(title="HSK AI Professional45 isolated visual QA", docs_url=None, redoc_url=None, openapi_url=None)
 _no_store = {"Cache-Control": "no-store", "X-HSK-QA-Preview": "visual-only",
-             "Referrer-Policy": "no-referrer", "X-Content-Type-Options": "nosniff"}
+             "Referrer-Policy": "no-referrer", "X-Content-Type-Options": "nosniff",
+             "X-HSK-PWA-User-ID": "900001"}
 _session_words: set[str] = set()
 _streak_target = 14
 
@@ -57,6 +58,10 @@ def _course_map() -> dict:
     now = datetime.now(timezone.utc)
     local_date = now.strftime("%Y-%m-%d")
     week_start = (now - timedelta(days=now.weekday())).strftime("%Y-%m-%d")
+    # Keep the course map's visible status consistent with 28 completed lessons.
+    lessons = [item for unit in payload.get("units", []) for item in unit.get("lessons", [])]
+    for n, lesson in enumerate(lessons):
+        lesson["status"] = "done" if n < 28 else ("current" if n == 28 else "locked")
     payload.update({
         "authenticated": True, "level": "hsk3",
         "user": {
@@ -117,7 +122,7 @@ async def session():
     return _response({"ok": True, "user_id": 900001, "csrf": "isolated-visual-qa"})
 
 
-@app.get("/api/v3/pwa/map")
+@app.post("/api/v3/pwa/map")
 async def course_map():
     return _response(_course_map())
 
