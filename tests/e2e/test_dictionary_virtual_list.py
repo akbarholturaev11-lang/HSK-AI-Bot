@@ -22,6 +22,8 @@ def test_dictionary_virtual_scroll_large_word_list_iPhone():
                 '<div id="list" class="list" style="height:460px;flex:none"></div></body></html>'
             )
             script = r"""
+              var PWA_DICT=false, savedReady=true, savedWords=new Set(), savedPending=new Set();
+              function savedLabels(){return {save:'Save', remove:'Remove'}}
               var listEl=document.getElementById('list'),searchEl={value:''},
                 countEl={textContent:'',setAttribute(){}},searchClear={classList:{toggle(){}}},
                 currentLang='uz',UI={uz:{
