@@ -23,7 +23,7 @@ const events = [];
 const nodes = {};
 function $(selector) {
   return nodes[selector] ||= {
-    classList: {add(k){events.push('add:'+k)},remove(k){events.push('remove:'+k)}},
+    classList: {flags:new Set(),add(...ks){for(const k of ks){this.flags.add(k);events.push('add:'+k)}},remove(...ks){for(const k of ks){this.flags.delete(k);events.push('remove:'+k)}},contains(k){return this.flags.has(k)}}, 
     setAttribute(k,v){this[k]=v},disabled:false,innerHTML:'',textContent:''
   };
 }
@@ -46,7 +46,8 @@ const setTimeout = fn => fn();
 let pendingRankUp = null;
 const App = {
 """ + body + r"""
-  show:screen => events.push('show:'+screen)
+  show:screen => events.push('show:'+screen),
+  closeLevelUp: () => events.push('dismiss:outside')
 };
 App.showFirstLessonNext(2);
 const preserved = {feedback:window._pendingPwaLessonFeedback.lessonId,ad:window._pendingLessonEndAd};
@@ -62,7 +63,14 @@ MAP.level = 'hsk1';
 App.showFirstLessonNext(2);
 scope = 'account-B';
 App.startFirstLessonNext(); // no stale cross-account auto launch
-process.stdout.write(JSON.stringify({title,button,action,events,preserved}));
+scope = 'account-A'; MAP.level = 'hsk1';
+App.showFirstLessonNext(2);
+const overlay = $('#levelup');
+overlay.onclick({target:{closest(){return {tag:'central-card'}}}}); // inside must stay
+const insideDidNotClose = !events.includes('dismiss:outside');
+overlay.onclick({target:{closest(){return null}}}); // outside closes
+const outsideClosed = events.includes('dismiss:outside');
+process.stdout.write(JSON.stringify({title,button,action,events,preserved,insideDidNotClose,outsideClosed}));
 """;
         result = subprocess.run(
             ["node", "-e", script],
@@ -74,6 +82,8 @@ process.stdout.write(JSON.stringify({title,button,action,events,preserved}));
         self.assertEqual(values["button"], "START 🔥")
         self.assertEqual(values["action"], "App.startFirstLessonNext()")
         self.assertEqual(values["events"].count("lesson:1"), 1)
+        self.assertTrue(values["insideDidNotClose"])
+        self.assertTrue(values["outsideClosed"])
         self.assertNotIn("show:rating", values["events"])
 
     def test_pwa_onboarding_autostart_is_pwa_only_and_access_checked(self):
@@ -204,6 +214,10 @@ process.stdout.write(JSON.stringify({
         self.assertIn("FirstLessonNextScreen(onStartNext = onStartNext, onExit = onExit)", screen)
         self.assertIn("hsk_course_first_lesson_next_title", celebration)
         self.assertIn("hsk_course_first_lesson_next_start", celebration)
+        first_screen = celebration.split("internal fun FirstLessonNextScreen(", 1)[1].split("private enum class CelebrationScene", 1)[0]
+        self.assertNotIn("SecondaryAction(", first_screen)
+        self.assertIn("clickable(", first_screen)
+        self.assertIn("onClick = { if (!starting) onExit() }", first_screen)
 
     def test_translations_are_shared_and_generated(self):
         for locale, suffix in (("uz", ""), ("ru", "-ru"), ("tj", "-tg")):
