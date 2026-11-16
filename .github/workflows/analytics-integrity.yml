@@ -88,6 +88,7 @@ jobs:
           tests/test_checkout_transport_marker.py
           tests/test_miniapp_preferences_api.py
           tests/test_pwa_saved_words_api.py
+          tests/test_qa_professional45_preview.py
           tests/test_analytics_platform_chain.py
           tests/test_admin_pwa_pro_funnel.py
           tests/test_pwa_pro_funnel_chain.py
