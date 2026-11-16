@@ -820,7 +820,7 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 .lu-rw.a-jade{border-color:rgba(72,217,154,.45)}.lu-rw.a-jade b{color:#48D99A}
 .lu-result-note{margin-top:14px;color:rgba(255,255,255,.72);font-size:13px;line-height:1.4;text-align:center}
 .lu-rw.a-blue{border-color:rgba(126,221,246,.45)}.lu-rw.a-blue b{color:#7EDDF6}
-.lu-cta{margin:0 16px calc(16px + var(--safe-b));padding:16px;background:var(--cin);color:var(--cin-ink);border:none;border-radius:15px;font-family:inherit;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px;z-index:2}
+.lu-cta{margin:0 16px calc(16px + var(--safe-b));padding:16px;background:var(--cin);color:var(--cin-ink);border:none;border-radius:15px;font-family:inherit;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px;z-index:2}.levelup.first-lesson-next>.lu-cta{display:none}.levelup.first-lesson-next .lu-stage{padding:24px 16px;overflow-y:auto}.first-lesson-next-card{width:100%;max-width:380px;margin:auto 0;padding:24px;border:1px solid rgba(255,255,255,.16);border-radius:24px;background:rgba(255,255,255,.08);display:flex;flex-direction:column;align-items:center;box-sizing:border-box}.levelup .first-lesson-next-card h2{font-size:24px;line-height:1.3}.levelup .first-lesson-next-card .lu-cta{width:100%;margin:22px 0 0;cursor:pointer}
 .lu-conf{position:absolute;top:-14px;width:9px;height:13px;border-radius:2px;opacity:0;z-index:3}
 .lu-conf.fall{opacity:1;transition:transform 1.7s ease-in,opacity 1.7s}
 .ru-wrap{width:100%;display:flex;flex-direction:column;align-items:center}
@@ -2968,13 +2968,20 @@ var App={
     // Keep server-controlled lesson-end ads for Back; Start skips the detour.
     window._pendingDesktopLessonPromo=0;
     var overlay=$("#levelup");overlay.classList.remove("cine","sales-bridge","flying");
+    overlay.onclick=function(e){if(overlay.classList.contains("first-lesson-next")&&
+      !(e.target&&e.target.closest&&e.target.closest(".first-lesson-next-card"))){
+      window._firstLessonNextOrder=0;overlay.classList.remove("first-lesson-next");App.closeLevelUp();
+    }};
     $("#lu-panda").innerHTML=pandaChar("celebrate");
-    $("#lu-stage").innerHTML='<div class="lu-emb"><span class="h2 han">学</span></div><h2>'
-      +esc(courseMessage("firstLessonNext.title","2-darsni boshlaymiz! Qani, ko‘raylik-chi, qanchalik tayyorsan? 🙃"))+'</h2>';
+    $("#lu-stage").innerHTML='<div class="first-lesson-next-card" role="dialog" aria-modal="true">'
+      +'<div class="lu-emb"><span class="h2 han">学</span></div><h2>'
+      +esc(courseMessage("firstLessonNext.title","2-darsni boshlaymiz! Qani, ko‘raylik-chi, qanchalik tayyorsan? 🙃"))+'</h2>'
+      +'<button class="lu-cta first-lesson-start" onclick="App.startFirstLessonNext()">'
+      +esc(courseMessage("firstLessonNext.start","Boshlash 🔥"))+'</button></div>';
     $("#lu-cta").disabled=false;
     $("#lu-cta").setAttribute("onclick","App.startFirstLessonNext()");
     $("#lu-cta").textContent=courseMessage("firstLessonNext.start","Boshlash 🔥");
-    overlay.classList.add("on");
+    overlay.classList.add("on","first-lesson-next");
     setTimeout(function(){var icon=document.querySelector("#lu-stage .lu-emb");if(icon)icon.classList.add("in")},30);
   },
   startFirstLessonNext:function(){
@@ -2983,7 +2990,7 @@ var App={
     if(!MAP||MAP.level!==window._firstLessonNextLevel||localUserScope()!==window._firstLessonNextScope){window._firstLessonNextOrder=0;$("#levelup").classList.remove("on");App.show("course");renderAll();return}
     $("#lu-cta").disabled=true;
     window._firstLessonNextOrder=0;
-    $("#levelup").classList.remove("on");
+    $("#levelup").classList.remove("on","first-lesson-next");
     $("#lu-panda").innerHTML="";
     // Do not flush deferred centre ads into the first-to-second handoff.
     cancelLessonPron();stopTourAudio();$("#flow").classList.remove("on");edgeGlow(0);window._pendingCourseUnlockOrder=0;window._pendingCourseUnlockRetries=0;
@@ -2992,7 +2999,7 @@ var App={
     if(idx>=0)startLesson(idx); // reserveLessonStart is the final server access check
   },
   showLevelUp:function(type,data,extra){
-    $("#levelup").classList.remove("sales-bridge");
+    $("#levelup").classList.remove("sales-bridge","first-lesson-next");
     var lu=(window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.course_v3.lu.copy1",{ru:{cont:"Продолжить",lessonH:"Урок завершён!",lessonP:"Отличная работа! Следующий этап ждёт.",cpH:"Урок {n} полностью пройден!",cpP:"Весь урок ваш: слова, диалог и грамматика. Теперь вы можете использовать их в речи.",acc:"точность",combo:"комбо",levelH:"HSK 1 пройден!",levelP:"Поздравляем! Открыт HSK 2.",opened:"открыт",xpH:"Уровень 5!",xpP:"Так держать! Новый уровень — новые возможности.",lvl:"Уровень",bonusXp:"бонус XP",chest:"новый сундук"},
       uz:{cont:"Davom etish",lessonH:"Dars tugadi!",lessonP:"Ajoyib! Keyingi bosqich kutyapti.",cpH:"{n}-dars to'liq yakunlandi!",cpP:"Butun dars sizniki: so'zlar, dialog va grammatika. Endi ularni gapda ishlata olasiz.",acc:"aniqlik",combo:"combo",levelH:"HSK 1 tugadi!",levelP:"Tabriklaymiz! HSK 2 ochildi.",opened:"ochildi",xpH:"5-daraja!",xpP:"Zo'r! Yangi daraja — yangi imkoniyatlar.",lvl:"Daraja",bonusXp:"bonus XP",chest:"yangi sandiq"},
       tj:{cont:"Идома",lessonH:"Дарс анҷом ёфт!",lessonP:"Офарин! Зинаи навбатӣ интизор аст.",cpH:"Дарси {n} пурра анҷом ёфт!",cpP:"Тамоми дарс аз они шумост: калимаҳо, гуфтугӯ ва грамматика. Акнун онҳоро дар нутқ истифода бурда метавонед.",acc:"дақиқӣ",combo:"комбо",levelH:"HSK 1 тамом!",levelP:"Табрик! HSK 2 кушода шуд.",opened:"кушода шуд",xpH:"Сатҳи 5!",xpP:"Офарин! Сатҳи нав — имкониятҳои нав.",lvl:"Сатҳ",bonusXp:"бонус XP",chest:"сандуқи нав"}})[LANG];lu={cont:courseMessage("levelUp.cont",lu.cont),lessonH:courseMessage("levelUp.lessonH",lu.lessonH),lessonP:courseMessage("levelUp.lessonP",lu.lessonP),cpH:courseMessage("levelUp.cpH",lu.cpH),cpP:courseMessage("levelUp.cpP",lu.cpP),acc:courseMessage("levelUp.acc",lu.acc),combo:courseMessage("levelUp.combo",lu.combo),levelH:courseMessage("levelUp.levelH",lu.levelH),levelP:courseMessage("levelUp.levelP",lu.levelP),opened:courseMessage("levelUp.opened",lu.opened),xpH:courseMessage("levelUp.xpH",lu.xpH),xpP:courseMessage("levelUp.xpP",lu.xpP),lvl:courseMessage("levelUp.lvl",lu.lvl),bonusXp:courseMessage("levelUp.bonusXp",lu.bonusXp),chest:courseMessage("levelUp.chest",lu.chest)};
@@ -3168,7 +3175,7 @@ var App={
   },
   closeLevelUp:function(dest){
     if(!dest&&pendingRankUp){App.showRankUp();return}
-    var ov=$("#levelup");ov.classList.remove("on");ov.classList.remove("cine");ov.classList.remove("sales-bridge");
+    var ov=$("#levelup");ov.classList.remove("on","first-lesson-next");ov.classList.remove("cine");ov.classList.remove("sales-bridge");
     var cine=$("#lu-cine");if(cine)cine.innerHTML="";
     App.exitFlow();
     var desktopLesson=Number(window._pendingDesktopLessonPromo)||0;
