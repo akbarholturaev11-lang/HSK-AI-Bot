@@ -148,6 +148,8 @@ fun LessonScreen(
     onShowWriterCharacter: (Int) -> Unit,
     onCloseWriter: () -> Unit,
     onExit: () -> Unit,
+    isFirstLesson: Boolean = false,
+    onStartNext: () -> Unit = onExit,
     onAskAssistant: ((question: String, readyAnswer: String) -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
@@ -185,6 +187,8 @@ fun LessonScreen(
                         outcome = outcome,
                         isCheckpoint = state.lesson?.isCheckpoint == true,
                         rankBoard = state.rankBoard,
+                        isFirstLesson = isFirstLesson && !outcome.duplicate,
+                        onStartNext = onStartNext,
                         onExit = onExit,
                     )
                 outcome is LessonOutcome.Failed -> FailedBlock(outcome, onRetryCompletion, onExit)
@@ -1059,6 +1063,8 @@ private fun CompletedBlock(
     outcome: LessonOutcome.Completed,
     isCheckpoint: Boolean,
     rankBoard: LessonRankBoard?,
+    isFirstLesson: Boolean,
+    onStartNext: () -> Unit,
     onExit: () -> Unit,
 ) {
     LessonCompletionCelebration(
@@ -1066,6 +1072,8 @@ private fun CompletedBlock(
         isCheckpoint = isCheckpoint,
         rankBoard = rankBoard,
         onExit = onExit,
+        firstLessonNext = isFirstLesson,
+        onStartNext = onStartNext,
     )
 }
 
