@@ -137,6 +137,11 @@ html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-course .utt {
 html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-course .path .prow {
   height: 96px;
 }
+/* The current node's "continue" bubble sits 42px above it, exactly where the
+   previous row's two-line label ends; reserve that band only on this row. */
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-course .path .prow:has(.bubble) {
+  margin-top: 44px;
+}
 html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-course .tplan-h {
   font-size: 12px;
   line-height: 1.4;

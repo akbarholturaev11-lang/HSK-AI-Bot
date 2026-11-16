@@ -201,6 +201,13 @@ def test_audit_fixes_on_real_source_screens(real_source_qa):
                   return q.top<r.bottom && q.bottom>r.top && q.left<r.right && q.right>r.left})) n++;}
               return n})()""")
             assert overlaps == 0, overlaps
+            # The current node's "continue" bubble must not hide the previous label.
+            page.wait_for_selector("#s-course .bubble", timeout=15000)
+            covered = page.evaluate("""(() => {const bub=document.querySelector('#s-course .bubble'); const b=bub.getBoundingClientRect();
+              return [...document.querySelectorAll('#s-course .nlabel')].filter(l => !bub.contains(l)).map(l => {const r=l.getBoundingClientRect();
+                return Math.max(0,Math.min(r.right,b.right)-Math.max(r.left,b.left))*Math.max(0,Math.min(r.bottom,b.bottom)-Math.max(r.top,b.top))})
+                .reduce((a,c)=>a+c,0)})()""")
+            assert covered == 0, covered
 
             # UIUX-005 profile: one titled accuracy block from catalog copy.
             page.evaluate('App.show("profile")')
