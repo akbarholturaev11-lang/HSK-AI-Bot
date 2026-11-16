@@ -127,6 +127,27 @@ async def course_map():
     return _response(_course_map())
 
 
+@app.get("/api/v3/pwa/lesson/content/{level}/{lesson_order}")
+async def lesson_content(level: str, lesson_order: int):
+    # Serve canonical lesson JSON unchanged, never generate a fake curriculum.
+    if level != "hsk3" or not 1 <= lesson_order <= 109:
+        raise HTTPException(status_code=404)
+    path = STATIC / "course_v3_data" / "hsk3" / f"lesson_{lesson_order:02d}.json"
+    if not path.is_file():
+        raise HTTPException(status_code=404)
+    return FileResponse(path, headers=_no_store, media_type="application/json")
+
+
+@app.post("/api/v3/pwa/lesson/start")
+async def lesson_start(request: Request):
+    payload = await request.json()
+    if (not isinstance(payload, dict) or payload.get("level") != "hsk3"
+            or payload.get("lesson_id") != 29):
+        return _response({"ok": False, "error": "qa_lesson_not_available"}, 422)
+    # Synthetic allow only inside this credential-free QA service.
+    return _response({"ok": True, "allowed": True, "completion_proof": "qa-only-lesson"})
+
+
 @app.get("/api/v3/pwa/profile")
 async def profile():
     return _response({
