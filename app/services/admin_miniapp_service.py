@@ -286,7 +286,8 @@ def _activation_funnel(rows: list[tuple], *, now: datetime) -> dict:
             if onboarding_at <= now - timedelta(minutes=2):
                 result["lesson_started_eligible"] += 1
                 if any(
-                    name == "lesson_started" and onboarding_at <= at <= onboarding_at + timedelta(minutes=2)
+                    name in {"lesson_started", "android_lesson_started"}
+                    and onboarding_at <= at <= onboarding_at + timedelta(minutes=2)
                     for name, at, _payload in events
                 ):
                     result["lesson_started_2m"] += 1
