@@ -1109,6 +1109,8 @@
     "voiceV8.endBody": "Текущий разговор будет завершён.",
     "voiceV8.endCancel": "Продолжить",
     "voiceV8.endConfirm": "Завершить",
-    "voiceV8.restart": "Начать новый разговор"
+    "voiceV8.restart": "Начать новый разговор",
+    "firstLessonNext.title": "Начнём второй урок! Посмотрим, насколько ты готов 🙃",
+    "firstLessonNext.start": "Начать 🔥"
   }
 }
