@@ -2984,7 +2984,9 @@ var App={
     window._firstLessonNextOrder=0;
     $("#levelup").classList.remove("on");
     $("#lu-panda").innerHTML="";
-    App.exitFlow();App.show("course");renderAll();
+    // Do not flush deferred centre ads into the first-to-second handoff.
+    cancelLessonPron();stopTourAudio();$("#flow").classList.remove("on");edgeGlow(0);
+    App.show("course");renderAll();
     var idx=allLessons().findIndex(function(lesson){return Number(lesson.n)===order});
     if(idx>=0)startLesson(idx); // reserveLessonStart is the final server access check
   },
