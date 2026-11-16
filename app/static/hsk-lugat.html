@@ -14,7 +14,7 @@
 })();
 </script>
 <script src="/assets/telegram-web-app.js?v=20261019-1"></script>
-<script src="/course_v3_data/hsk-course-i18n.js?v=20261113-a1da547eb267"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-a0dd8c0b1db1"></script>
+<script src="/course_v3_data/hsk-course-i18n.js?v=20261113-a1b42577166c"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-a0dd8c0b1db1"></script>
 <script defer src="/audio/words/index.js?v=20261014-offline-1"></script>
 <script defer src="/audio/words/client.js?v=20261014-persist-1"></script>
 <link rel="stylesheet" href="/course_v3_data/design-tokens.css?v=20261005">
@@ -283,7 +283,7 @@ if (location.pathname.startsWith("/iphone-pwa/")) {
   p45Element.dataset.hskDesignScreen = "dictionary";
   var p45Styles = document.createElement("link");
   p45Styles.rel = "stylesheet";
-  p45Styles.href = "/course_v3_data/pwa-professional45.css?v=20261116-1";
+  p45Styles.href = "/course_v3_data/pwa-professional45.css?v=20261116-68b12ec9555a";
   document.head.appendChild(p45Styles);
 }
 </script>
@@ -620,10 +620,12 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   if(PWA_DICT) currentFilterLevel = 'all';
   var savedWords = new Set(), savedOnly = false, savedReady = !PWA_DICT;
   var savedPending = new Set(), savedError = false, savedNotice = null;
+  /* UIUX-003 saved-word copy: canonical dictionaryPage.saved* catalog keys. */
+  var SAVED_LABEL_KEYS = {"saved": "savedFilter", "save": "saveWord", "remove": "unsaveWord", "loading": "savedLoading", "error": "savedLoadError", "retry": "savedRetry", "saveError": "savedSaveError"};
   function savedLabels(){
-    return ({uz:{saved:"Saqlangan",save:"Saqlash",remove:"Saqlanganlardan olish",loading:"Saqlangan so'zlar yuklanmoqda…",error:"Saqlangan so'zlarni yuklab bo'lmadi",retry:"Qayta urinish",saveError:"So'z saqlanmadi. Qayta urinib ko'ring."},
-      ru:{saved:"Сохранённые",save:"Сохранить",remove:"Убрать из сохранённых",loading:"Загрузка сохранённых слов…",error:"Не удалось загрузить сохранённые слова",retry:"Повторить",saveError:"Не удалось сохранить слово. Повторите."},
-      tj:{saved:"Нигоҳдоштаҳо",save:"Нигоҳ доштан",remove:"Ҳазф аз нигоҳдоштаҳо",loading:"Калимаҳои нигоҳдошта бор мешаванд…",error:"Калимаҳои нигоҳдошта бор нашуданд",retry:"Такрор",saveError:"Калима нигоҳ дошта нашуд. Боз кӯшиш кунед."}})[currentLang] || ({saved:"Сохранённые",save:"Сохранить",remove:"Убрать из сохранённых",loading:"Загрузка…",error:"Ошибка",retry:"Повторить",saveError:"Ошибка"}) ;
+    var out = {};
+    Object.keys(SAVED_LABEL_KEYS).forEach(function(k){ out[k] = dictionaryMessage('dictionaryPage.' + SAVED_LABEL_KEYS[k], ''); });
+    return out;
   }
   async function savedRequest(path,payload){
     var token;
@@ -1204,6 +1206,19 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     var hasNewHsk = labels.slice(1).some(function(v){return /^N\d+$/i.test(v)});
     return hasNewHsk ? levelName.toUpperCase() + ' · 3.0' : levelName;
   }
+  /* UIUX-003: the PWA list is already scoped to one course version, so a row
+     shows only its level inside that version (same label as the level pill). */
+  function pwaDictionaryLevel(level){
+    var tags = String(level || '').split('|').map(function(v){return v.replace(/\s/g,'')}).filter(Boolean);
+    if(currentVersionFilter === 'hsk30'){
+      var n = tags.filter(function(v){return /^N\d+$/i.test(v)})[0];
+      if(n) return 'N' + n.slice(1);
+    } else {
+      var h = tags.filter(function(v){return /^HSK\d+$/i.test(v)})[0];
+      if(h) return 'HSK ' + h.slice(3);
+    }
+    return formatDictionaryLevel(level);
+  }
   function syncFilterParams(){
     if(currentVersionFilter === 'all') params.delete('version');
     else params.set('version', currentVersionFilter);
@@ -1286,7 +1301,7 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     heroTitle.textContent = t.title; backBtn.setAttribute('aria-label',dictionaryMessage('onboarding.back','Orqaga')); listBackBtn.setAttribute('aria-label',dictionaryMessage('onboarding.back','Orqaga')); [audioBtn,exampleAudioBtn,grammarAudioBtn].forEach(function(button){button.setAttribute('aria-label',dictionaryMessage('listen','Tinglash'))}); ctrlRestart.setAttribute('aria-label',dictionaryMessage('dictionaryFastWriter.previous','Bir chiziq orqaga')); ctrlSkip.setAttribute('aria-label',dictionaryMessage('dictionaryFastWriter.next','Bir chiziq oldinga')); setPlayIcon();
     searchEl.placeholder = t.placeholder;
     searchClear.setAttribute('aria-label', t.clearSearch);
-    var activeFilterCount = (currentVersionFilter === 'all' ? 0 : 1) + (currentFilterLevel === 'all' ? 0 : 1);
+    var activeFilterCount = (currentVersionFilter === 'all' || PWA_DICT ? 0 : 1) + (currentFilterLevel === 'all' ? 0 : 1);
     filterCount.textContent = activeFilterCount ? String(activeFilterCount) : '';
     filterToggle.setAttribute('aria-label', filterStack.classList.contains('collapsed') ? t.showFilters : t.hideFilters);
     filterToggle.setAttribute('aria-expanded', String(!filterStack.classList.contains('collapsed')));
@@ -1354,7 +1369,7 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     var saved = PWA_DICT ? '<button type="button" class="p45-dict-save" data-saved-word="'+escapeHtml(w.h)+'" aria-label="'+escapeHtml(savedWords.has(w.h)?savedLabels().remove:savedLabels().save)+'" aria-pressed="'+savedWords.has(w.h)+'"'+(!savedReady||savedPending.has(w.h)?' disabled aria-busy="true"':'')+'>'+(savedWords.has(w.h)?'★':'☆')+'</button>' : '';
     return '<div class="row" role="button" tabindex="0" data-idx="'+w.id+'"><div class="h">'+escapeHtml(w.h)+'</div>'+
       '<div class="info"><div class="p">'+escapeHtml(w.p)+'</div><div class="m">'+escapeHtml(text(w.m))+'</div></div>'+
-      '<div class="lv">'+escapeHtml(formatDictionaryLevel(w.lv))+'</div>'+saved+'</div>';
+      '<div class="lv">'+escapeHtml(PWA_DICT ? pwaDictionaryLevel(w.lv) : formatDictionaryLevel(w.lv))+'</div>'+saved+'</div>';
   }
   function renderVisibleWindow(force){
     if(!listResults.length)return;
@@ -2010,6 +2025,10 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   }
   function init(){
     if(PWA_DICT){
+      /* UIUX-003: one always-visible level row; the version is automatic, so
+         the extra filter disclosure button is not needed in the PWA. */
+      filterStack.classList.remove('collapsed');
+      filterToggle.hidden = true;
       savedNotice=document.createElement('div');savedNotice.className='p45-dict-status';
       savedNotice.setAttribute('role','status');savedNotice.setAttribute('aria-live','polite');
       listEl.parentNode.insertBefore(savedNotice,listEl);

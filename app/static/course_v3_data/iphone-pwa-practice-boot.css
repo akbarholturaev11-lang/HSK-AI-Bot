@@ -108,3 +108,31 @@ html.hsk-pwa-practice .han {
   html.hsk-pwa-practice .top {gap:8px;}
   html.hsk-pwa-practice h1 {font-size:21px;}
 }
+/* Access/load error state: one primary action (retry); "back" is secondary,
+   with an 8px step between stacked actions. */
+html.hsk-pwa-practice .done button.ghost {
+  background: transparent;
+  border: 1px solid var(--hsk-divider,#EAE0CC);
+  color: var(--hsk-ink-secondary,#665D50);
+}
+html.hsk-pwa-practice .done button + button {
+  margin-top: var(--hsk-space-2,8px);
+}
+/* The large state glyph rule (.state i) must not reach the icon inside the
+   retry button: it made the icon cinnabar-on-cinnabar and pushed the label. */
+html.hsk-pwa-practice .state button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 48px;
+}
+html.hsk-pwa-practice .state button i {
+  font-size: 18px;
+  color: inherit;
+}
+/* Zero/missing/loading/error stay distinct: the static "0 ✓", "1/1",
+   "1 / 10" placeholders are not shown before a session really starts. */
+html.hsk-pwa-practice .wrap:has(.loading, .hsk-study-preparing, .done button.ghost) > .top .pill {
+  visibility: hidden;
+}

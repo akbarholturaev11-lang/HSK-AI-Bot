@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <script src="/assets/telegram-web-app.js?v=20261019-1"></script>
-  <script src="/course_v3_data/hsk-course-i18n.js?v=20261113-a1da547eb267"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-a0dd8c0b1db1"></script>
+  <script src="/course_v3_data/hsk-course-i18n.js?v=20261113-a1b42577166c"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-a0dd8c0b1db1"></script>
   <meta name="theme-color" content="#FDF9F0">
   <script>
   /* Load existing Chinese-audio cache client only in the PWA presentation. */
@@ -93,7 +93,7 @@ if (location.pathname.startsWith("/iphone-pwa/")) {
   p45Element.dataset.hskDesignScreen = "phrases";
   var p45Styles = document.createElement("link");
   p45Styles.rel = "stylesheet";
-  p45Styles.href = "/course_v3_data/pwa-professional45.css?v=20261116-1";
+  p45Styles.href = "/course_v3_data/pwa-professional45.css?v=20261116-68b12ec9555a";
   document.head.appendChild(p45Styles);
 }
 </script>
@@ -138,11 +138,12 @@ if (location.pathname.startsWith("/iphone-pwa/")) {
         if(typeof value==="string"&&value)UI[LANGUAGE][key]=value;
       });
       var text = UI[LANGUAGE];
-      var phraseActions = {
-        uz: {open:"Iborani ochish",close:"Iborani yopish",listen:"Iborani tinglash",soundError:"Ovoz ijro etilmadi. Qayta urinib ko‘ring."},
-        ru: {open:"Раскрыть фразу",close:"Свернуть фразу",listen:"Прослушать фразу",soundError:"Не удалось воспроизвести звук. Попробуйте ещё раз."},
-        tj: {open:"Кушодани ибора",close:"Пӯшидани ибора",listen:"Шунидани ибора",soundError:"Овоз пахш нашуд. Боз кӯшиш кунед."}
-      }[LANGUAGE];
+      /* Phrase card action labels come from the canonical readyPhrases.* catalog. */
+      var phraseActions = {};
+      Object.entries({'open': 'expand', 'close': 'collapse', 'listen': 'listen', 'soundError': 'soundError'}).forEach(function (pair) {
+        var value = PHRASE_UI["readyPhrases." + pair[1]];
+        phraseActions[pair[0]] = typeof value === "string" && value ? value : "";
+      });
       var theme = new URLSearchParams(location.search).get("theme");
       if (theme === "dark") {
         document.documentElement.dataset.hskTheme = "dark";
@@ -167,6 +168,20 @@ if (location.pathname.startsWith("/iphone-pwa/")) {
       var phraseAudioToken = 0;
       var phraseAudioButton = null;
       var toastTimer = 0;
+      /* Same 24px line-icon vocabulary as the PWA dictionary (stroke, round
+         caps) instead of emoji/text glyphs; PWA path only. */
+      var PWA_PHRASES = location.pathname.startsWith("/iphone-pwa/");
+      var LINE_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">';
+      var PHRASE_ICONS = {
+        speaker: LINE_ICON + '<path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4 4 0 0 1 0 6"/><path d="M18 6.5a7.5 7.5 0 0 1 0 11"/></svg>',
+        chevron: LINE_ICON + '<path d="m6 9 6 6 6-6"/></svg>',
+        copy: LINE_ICON + '<rect x="8.5" y="8.5" width="11" height="11" rx="2.2"/><path d="M15.5 8.5V6.7a2.2 2.2 0 0 0-2.2-2.2H6.7a2.2 2.2 0 0 0-2.2 2.2v6.6a2.2 2.2 0 0 0 2.2 2.2h1.8"/></svg>',
+        search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true" focusable="false"><circle cx="10.8" cy="10.8" r="6.3"></circle><path d="m16 16 4.5 4.5"></path></svg>'
+      };
+      if (PWA_PHRASES) {
+        var searchIcon = document.querySelector(".search-icon");
+        if (searchIcon) searchIcon.innerHTML = PHRASE_ICONS.search;
+      }
 
       // Keep the page named for assistive technologies without a redundant visible hero.
       document.title = text.title + " · HSK AI";
@@ -270,8 +285,6 @@ if (location.pathname.startsWith("/iphone-pwa/")) {
         detail.hidden = !expanded;
         toggle.setAttribute("aria-expanded", String(expanded));
         toggle.setAttribute("aria-label", (expanded ? phraseActions.close : phraseActions.open) + ": " + card.dataset.phraseZh);
-        var chev = toggle.querySelector(".phrase-chevron");
-        if (chev) chev.textContent = expanded ? "⌃" : "⌄";
         card.classList.toggle("is-open", expanded);
       }
 
@@ -289,21 +302,19 @@ if (location.pathname.startsWith("/iphone-pwa/")) {
           phraseAudioButton.disabled = false;
           phraseAudioButton.removeAttribute("aria-busy");
           phraseAudioButton.removeAttribute("aria-pressed");
-          phraseAudioButton.textContent = "🔊";
+          phraseAudioButton.innerHTML = PHRASE_ICONS.speaker;
         }
         phraseAudioButton = button;
         try { if (phraseAudio) { phraseAudio.pause(); phraseAudio = null; } } catch (_) {}
         try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch (_) {}
         button.disabled = true;
         button.setAttribute("aria-busy", "true");
-        button.textContent = "…";
 
         function reset() {
           if (token !== phraseAudioToken) return;
           button.disabled = false;
           button.removeAttribute("aria-busy");
           button.removeAttribute("aria-pressed");
-          button.textContent = "🔊";
           if (phraseAudioButton === button) phraseAudioButton = null;
         }
         function failed() {
@@ -335,7 +346,6 @@ if (location.pathname.startsWith("/iphone-pwa/")) {
             if (token === phraseAudioToken) {
               button.disabled = false;
               button.removeAttribute("aria-busy");
-              button.textContent = "🔊";
               button.setAttribute("aria-pressed", "true");
             }
           }).catch(fallbackSpeech);
@@ -403,6 +413,7 @@ if (location.pathname.startsWith("/iphone-pwa/")) {
         var chevron = document.createElement("span");
         chevron.className = "phrase-chevron";
         chevron.setAttribute("aria-hidden", "true");
+        chevron.innerHTML = PHRASE_ICONS.chevron;
         toggle.append(hanzi, chevron);
         var details = document.createElement("div");
         details.className = "phrase-details";
@@ -411,7 +422,8 @@ if (location.pathname.startsWith("/iphone-pwa/")) {
 
         var actions = document.createElement("div");
         actions.className = "phrase-actions";
-        var play = makeButton("phrase-play", "🔊", function () { playPhrase(phrase, play); });
+        var play = makeButton("phrase-play", "", function () { playPhrase(phrase, play); });
+        play.innerHTML = PHRASE_ICONS.speaker;
         play.setAttribute("aria-label", phraseActions.listen + ": " + phrase.zh);
         var isSaved = savedIds.has(phrase.id);
         var save = makeButton("save", isSaved ? "★" : "☆", function () {
@@ -443,6 +455,7 @@ if (location.pathname.startsWith("/iphone-pwa/")) {
         var copy = makeButton("copy", text.copy, function () {
           copyText(phrase.zh).then(function () { announce(text.copied); }).catch(function () { announce(text.copy); });
         });
+        copy.innerHTML = PHRASE_ICONS.copy;
         bottom.append(categoryLabel, copy);
         details.append(pinyin, translation, bottom);
         card.append(top, details);
