@@ -2,8 +2,8 @@
   "schema_version": 1,
   "status": "SOURCE_CLASSIFIED_ALL_EXPLICIT_LANG_EQUALS_BRANCH_LINES_NOT_RUNTIME_VALIDATION",
   "source": "app/static/course-v3.html",
-  "source_revision": "0181bb7593a9bb70b4348aa5bd3d3789108a9809",
-  "counting_note": "62 unique physical source lines cover all 130 current LANG ==/=== literal-locale predicates in course-v3.html after main integration and the reviewed PWA browser bridge. Multiple predicates per line remain one classification; source review only, not runtime UI verification. Reviewed PWA browser and shake line shifts against the exact current source blob; the reviewed locale predicate inventory remains unchanged.; 2026-11-04 iPhone PWA-only immediate practice loader adds 20 non-locale lines before the last reviewed access predicate; that predicate now resides at source line 8277.; 2026-11-09 performance audit: re-anchored all 62 reviewed LANG branches using exact, unchanged source lines after progressive loading additions; 130 predicates unchanged.; 2026-11-09 PWA profile memory reuse re-reviewed: identical 62 locale predicate source lines, 130 branches unchanged.; 2026-11-09 PWA Voice quota local failure/retry: retained 62 reviewed literal-locale source lines and 130 predicates, re-anchored exact lines after scoped status UX edit. 2026-11-16: first-lesson direct handoff re-anchored by exact original source line identity; the same 62 classified lines and 130 locale predicates remain, without changing translation categories.",
+  "source_revision": "f32649b6a6be35bbbabf56ff7af4fd4bd5ee56b8",
+  "counting_note": "62 unique physical source lines cover all 130 current LANG ==/=== literal-locale predicates in course-v3.html after main integration and the reviewed PWA browser bridge. Multiple predicates per line remain one classification; source review only, not runtime UI verification. Reviewed PWA browser and shake line shifts against the exact current source blob; the reviewed locale predicate inventory remains unchanged.; 2026-11-04 iPhone PWA-only immediate practice loader adds 20 non-locale lines before the last reviewed access predicate; that predicate now resides at source line 8277.; 2026-11-09 performance audit: re-anchored all 62 reviewed LANG branches using exact, unchanged source lines after progressive loading additions; 130 predicates unchanged.; 2026-11-09 PWA profile memory reuse re-reviewed: identical 62 locale predicate source lines, 130 branches unchanged.; 2026-11-09 PWA Voice quota local failure/retry: retained 62 reviewed literal-locale source lines and 130 predicates, re-anchored exact lines after scoped status UX edit. 2026-11-16: first-lesson direct handoff re-anchored by exact original source line identity; the same 62 classified lines and 130 locale predicates remain, without changing translation categories. 2026-11-16 audit: source re-anchored after PWA-only completion gate and duplicate guard; 62 predicates lines retain exact reviewed originals and 130 predicates.",
   "coverage_note": "Current PWA implementation source only: all LANG ==/=== 'uz'|'ru'|'tj' predicates are classified; added PWA unavailable-practice error fallback is canonical; lesson/grade/Pro/auth unaffected. All other localized source expressions, dynamic content and rendered UI require separate QA.",
   "classifications": [
     {
@@ -263,7 +263,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 6438,
+      "line": 6439,
       "anchor": "LANG===\"ru\"",
       "category": "quota_ui_copy",
       "reason": "AI Voice remaining quota display; billing unchanged",
@@ -271,7 +271,7 @@
       "predicate_occurrences": 1
     },
     {
-      "line": 6440,
+      "line": 6441,
       "anchor": "LANG===\"tj\"",
       "category": "quota_ui_copy",
       "reason": "Continuation of AI Voice unlimited versus remaining quota ternary",
@@ -279,7 +279,7 @@
       "predicate_occurrences": 1
     },
     {
-      "line": 6760,
+      "line": 6761,
       "anchor": "LANG===\"ru\"",
       "category": "error_recovery_copy",
       "reason": "Rating retry-loading CTA Local-first rating/social overlay now checks centralized course catalog with exact old UZ/RU/TJ inline fallback; condition counts and side effects unchanged.",
@@ -287,7 +287,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 6765,
+      "line": 6766,
       "anchor": "LANG===\"ru\"",
       "category": "time_formatting_copy",
       "reason": "Countdown abbreviations require locale-aware formatter",
@@ -295,7 +295,7 @@
       "predicate_occurrences": 1
     },
     {
-      "line": 6766,
+      "line": 6767,
       "anchor": "LANG===\"ru\"",
       "category": "time_formatting_copy",
       "reason": "Hours/minutes countdown format keeps its locale-specific hour abbreviation",
@@ -303,7 +303,7 @@
       "predicate_occurrences": 1
     },
     {
-      "line": 6953,
+      "line": 6954,
       "anchor": "LANG===\"ru\"",
       "category": "rating_copy",
       "reason": "Rating page heading if friends tab not selected",
@@ -311,7 +311,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 6972,
+      "line": 6973,
       "anchor": "LANG===\"ru\"",
       "category": "referral_copy",
       "reason": "Joined and active user counts; preserve referral count calculation",
@@ -319,7 +319,7 @@
       "predicate_occurrences": 4
     },
     {
-      "line": 6994,
+      "line": 6995,
       "anchor": "LANG===\"ru\"",
       "category": "rating_copy",
       "reason": "Weekly podium Top-5 heading preserves the exact canonical UZ/RU/TJ catalog/fallbacks; authenticated PWA now retains the heading for 0-4 users including a genuine neutral empty region (no fabricated users) with matching initial slot heights, while Telegram Mini App retains its old empty/short-list behavior.",
@@ -327,7 +327,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 7009,
+      "line": 7010,
       "anchor": "LANG===\"ru\"",
       "category": "feedback_copy",
       "reason": "Copy-success toast Local-first rating/social overlay now checks centralized course catalog with exact old UZ/RU/TJ inline fallback; condition counts and side effects unchanged.",
@@ -335,7 +335,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 7031,
+      "line": 7032,
       "anchor": "LANG===\"ru\"",
       "category": "social_copy",
       "reason": "Telegram username missing warning Local-first rating/social overlay now checks centralized course catalog with exact old UZ/RU/TJ inline fallback; condition counts and side effects unchanged.",
@@ -343,7 +343,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 7043,
+      "line": 7044,
       "anchor": "LANG===\"ru\"",
       "category": "cooldown_copy",
       "reason": "Challenge-rate-limit message uses minutes variable",
@@ -351,7 +351,7 @@
       "predicate_occurrences": 1
     },
     {
-      "line": 7044,
+      "line": 7045,
       "anchor": "LANG===\"tj\"",
       "category": "cooldown_copy",
       "reason": "Tajik branch of duel cooldown with interpolated minutes",
@@ -359,7 +359,7 @@
       "predicate_occurrences": 1
     },
     {
-      "line": 7051,
+      "line": 7052,
       "anchor": "LANG===\"ru\"",
       "category": "social_copy",
       "reason": "Duel recipient not eligible warning Local-first rating/social overlay now checks centralized course catalog with exact old UZ/RU/TJ inline fallback; condition counts and side effects unchanged.",
@@ -367,7 +367,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 7062,
+      "line": 7063,
       "anchor": "LANG===\"ru\"",
       "category": "social_copy",
       "reason": "Duel invitation submission failure Local-first rating/social overlay now checks centralized course catalog with exact old UZ/RU/TJ inline fallback; condition counts and side effects unchanged.",
@@ -375,7 +375,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 7063,
+      "line": 7064,
       "anchor": "LANG===\"ru\"",
       "category": "social_copy",
       "reason": "Duel request network failure fallback Local-first rating/social overlay now checks centralized course catalog with exact old UZ/RU/TJ inline fallback; condition counts and side effects unchanged.",
@@ -383,7 +383,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 7111,
+      "line": 7112,
       "anchor": "LANG===\"ru\"",
       "category": "social_copy",
       "reason": "Duel rejection state label Local-first rating/social overlay now checks centralized course catalog with exact old UZ/RU/TJ inline fallback; condition counts and side effects unchanged.",
@@ -391,7 +391,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 7217,
+      "line": 7218,
       "anchor": "LANG===\"ru\"",
       "category": "navigation_copy",
       "reason": "Copy preset invitation text action",
@@ -399,7 +399,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 7219,
+      "line": 7220,
       "anchor": "LANG===\"ru\"",
       "category": "navigation_copy",
       "reason": "Write a message action",
@@ -407,7 +407,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 7229,
+      "line": 7230,
       "anchor": "LANG===\"ru\"",
       "category": "social_copy",
       "reason": "Send invitation message action",
@@ -415,7 +415,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 7230,
+      "line": 7231,
       "anchor": "LANG===\"ru\"",
       "category": "social_copy",
       "reason": "Invite friend modal title",
@@ -423,7 +423,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 7231,
+      "line": 7232,
       "anchor": "LANG===\"ru\"",
       "category": "social_copy",
       "reason": "Share via Telegram instruction body",
@@ -431,7 +431,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 7232,
+      "line": 7233,
       "anchor": "LANG===\"ru\"",
       "category": "referral_copy",
       "reason": "Active/joined invite counters; preserve numeric business rules",
@@ -439,7 +439,7 @@
       "predicate_occurrences": 4
     },
     {
-      "line": 7239,
+      "line": 7240,
       "anchor": "LANG===\"ru\"",
       "category": "loading_copy",
       "reason": "Referral URL loading state",
@@ -447,7 +447,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 7245,
+      "line": 7246,
       "anchor": "LANG===\"ru\"",
       "category": "error_recovery_copy",
       "reason": "Failed invite-link retrieval fallback",
@@ -455,7 +455,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 7260,
+      "line": 7261,
       "anchor": "LANG===\"ru\"",
       "category": "rating_copy",
       "reason": "Learner level label on friend profile",
@@ -463,7 +463,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 7274,
+      "line": 7275,
       "anchor": "LANG===\"ru\"",
       "category": "rating_copy",
       "reason": "Weekly leaderboard rival comparison heading Local-first rating/social overlay now checks centralized course catalog with exact old UZ/RU/TJ inline fallback; condition counts and side effects unchanged.",
@@ -471,7 +471,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 7745,
+      "line": 7746,
       "anchor": "profile-title",
       "category": "profile_copy",
       "reason": "Profile heading",
@@ -479,7 +479,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 8014,
+      "line": 8015,
       "anchor": "LANG===\"ru\"",
       "category": "loading_copy",
       "reason": "Resource iframe loading placeholder Local catalog lookup with the exact RU/TJ/UZ inline fallback; existing runtime branch, completion, formatting and physical source line preserved.",
@@ -487,7 +487,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 8141,
+      "line": 8142,
       "anchor": "courseLoadError.title",
       "category": "error_recovery_copy",
       "reason": "PWA-only blocked unported practice route displays the existing canonical course loading error, preserving exact UZ/RU/TJ fallback. Does not open an unsigned Telegram page; source classification only, not runtime QA.",
@@ -495,7 +495,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 8856,
+      "line": 8857,
       "anchor": "LANG===\"ru\"",
       "category": "access_copy",
       "reason": "Test entitlement/limit progress label",
