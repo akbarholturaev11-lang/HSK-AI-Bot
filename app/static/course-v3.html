@@ -9780,7 +9780,8 @@ var finishHskLaunchSplash=(function(){
     /* Avvalgi kunlarda dars qilgan, lekin savolga hali javob bermagan
        o'quvchi (masalan boshqa qurilmada tugatgan) — xarita chizilgach
        so'raymiz. Yopib yuborsa 24 soat qayta so'ralmaydi. */
-    if(STUDY_SETUP&&STUDY_SETUP.pending&&studySetupPending())
+    if(STUDY_SETUP&&STUDY_SETUP.pending&&studySetupPending()&&
+       !(bootParams.get("onboarded")==="1"&&bootParams.get("autostart")==="1"))
       setTimeout(askPendingStudySetup,1200);
     if(PWA_COURSE_HOST&&typeof requestAnimationFrame==="function"){requestAnimationFrame(function(){setTimeout(function(){if(document.visibilityState!=="hidden"&&MAP)prefetchNearbyLessons()},0)})}else prefetchNearbyLessons();
     var sp=bootParams;
