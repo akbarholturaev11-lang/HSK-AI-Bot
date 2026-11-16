@@ -151,8 +151,11 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn('var step=0,track="hsk30",sel="nhsk1"', onboarding)
         self.assertIn('if(pendingHsk30Draft){track="hsk20";sel="beginner"}', onboarding)
         self.assertIn('fetch("/api/v3/course-tracks"', onboarding)
-        self.assertIn('track=h30Enabled?"hsk30":"hsk20"', onboarding)
-        self.assertIn('sel=h30Enabled?"nhsk1":"beginner"', onboarding)
+        # The existing Telegram default can still offer HSK 3.0; on PWA
+        # an enabled feature is not an entitlement to the first lesson.
+        self.assertIn('var preferHsk30=h30Enabled&&(!PWA_ONBOARDING_HOST||access.allowed===true)', onboarding)
+        self.assertIn('track=preferHsk30?"hsk30":"hsk20"', onboarding)
+        self.assertIn('sel=preferHsk30?"nhsk1":"beginner"', onboarding)
         # A *verified* disabled HSK 3.0 track retains the HSK 2.0 beginner fallback.
         # A failed fetch must NOT invent feature access or silently change the
         # learner's choice: show the honest retryable loading-error state instead.
