@@ -78,6 +78,9 @@ def test_checkout_return_keeps_profile_interactive_while_overview_is_pending(ret
         page.on("pageerror", lambda error: errors.append(str(error)))
         page.route("**/*", respond)
         page.goto(ORIGIN + "/iphone-pwa/course?tab=profile", wait_until="domcontentloaded")
+        # Test the real five-tab navigation, not an uncontracted ?tab=profile shortcut.
+        page.wait_for_function("window.MAP && MAP.units && typeof App.show === 'function'")
+        page.evaluate("App.show('profile')")
         page.locator("#s-profile.on .profile-pro-link").click()
         frame = page.frame_locator("#pwa-checkout-layer iframe")
         frame.locator("#countries [role=status]").wait_for()

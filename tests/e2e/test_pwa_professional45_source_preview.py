@@ -84,7 +84,19 @@ def test_real_course_practice_profile_and_detail_flow(real_source_qa, width):
             assert page.locator("#s-profile").count() == 1
             page.screenshot(path=str(SHOT/f"source-profile-{width}.png"),full_page=True)
 
-            page.wait_for_function("typeof window.HskPwaProgress?.open === 'function'",timeout=12000)
+            try:
+                page.wait_for_function("typeof window.HskPwaProgress?.open === 'function'",timeout=12000)
+            except Exception:
+                pass  # the diagnostic assertion below reports what did not load
+            progress_diag=page.evaluate("""() => ({
+                url:location.href,
+                pwa:document.documentElement.classList.contains('hsk-pwa-browser'),
+                loaded:!!window.HskPwaProgress,
+                scripts:[...document.scripts].filter(x=>x.src.includes('professional45')).map(x=>x.src),
+                resources:performance.getEntriesByType('resource').filter(x=>x.name.includes('professional45')).map(x=>({name:x.name,duration:x.duration,transferSize:x.transferSize})),
+                css:document.querySelector('link[href*="professional45"]')?.href||null
+            })""")
+            assert progress_diag["loaded"], "Real XP/Streak source was not loaded: "+str(progress_diag)+" JS "+str(errors[:10])
             page.evaluate('HskPwaProgress.open("streak")')
             assert page.locator("#p45-progress").is_visible()
             assert page.locator(".p45-cal-day.active").count() >= 1

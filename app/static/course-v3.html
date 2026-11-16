@@ -1633,7 +1633,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 <link href="/course_v3_data/profile-carousel.css?v=20261017-link-cards-1" rel="stylesheet">
 <link href="/course_v3_data/rating-podium.css?v=20261105-1" rel="stylesheet">
 <link rel="stylesheet" href="/assets/characters/hsk-scene-background.css?v=20261009-preparing-compact-1">
-  <script defer src="/course_v3_data/hsk-diagnostics.js?v=20261115-5408a5e8b789"></script><script>if(document.documentElement.classList.contains("hsk-pwa-browser")){document.documentElement.dataset.hskDesignScreen="course-shell";var hskP45Style=document.createElement("link");hskP45Style.rel="stylesheet";hskP45Style.href="/course_v3_data/pwa-professional45.css?v=20261116-68b12ec9555a";document.head.appendChild(hskP45Style);var p45CourseScript=document.createElement("script");p45CourseScript.src="/course_v3_data/pwa-professional45-course.js?v=20261116-8467a6dbce0e";document.head.appendChild(p45CourseScript)}</script>
+  <script defer src="/course_v3_data/hsk-diagnostics.js?v=20261115-5408a5e8b789"></script><script>if(document.documentElement.classList.contains("hsk-pwa-browser")){document.documentElement.dataset.hskDesignScreen="course-shell";var hskP45Style=document.createElement("link");hskP45Style.rel="stylesheet";hskP45Style.href="/course_v3_data/pwa-professional45.css?v=20261116-5a70e4f9d8a2";document.head.appendChild(hskP45Style);var p45CourseScript=document.createElement("script");p45CourseScript.src="/course_v3_data/pwa-professional45-course.js?v=20261116-8467a6dbce0e";document.head.appendChild(p45CourseScript)}</script>
 </head>
 <body class="hsk-scene-page">
 <div id="hsk-launch-splash" class="is-playing" role="img" aria-label="HSK AI">
@@ -7681,7 +7681,9 @@ function p45AccuracyHtml(){
   function skeleton(){return '<div class="p45-acc-cell" aria-hidden="true"><span class="p45-acc-skel"></span><span class="p45-acc-skel short"></span><i class="p45-acc-bar"></i></div>'}
   if(!PROFILE_DETAIL&&PROFILE_DETAIL_ERROR){
     var copy=profileStatsErrorCopy();
-    return '<section class="p45-accuracy" aria-label="'+esc(title)+'">'+head
+    /* The unpainted grid keeps the data geometry; the error sits over it. */
+    return '<section class="p45-accuracy p45-accuracy-failed" aria-label="'+esc(title)+'">'+head
+      +'<div class="p45-accuracy-grid" aria-hidden="true">'+skeleton()+skeleton()+'</div>'
       +'<div class="hsk-pwa-profile-stats-error p45-accuracy-error" role="alert"><p>'+esc(copy[0])+'</p><button type="button" class="sec" onclick="loadProfileDetail()">'+esc(copy[1])+'</button></div></section>';
   }
   if(!PROFILE_DETAIL&&!PROFILE_DETAIL_FAILED&&(typeof PROFILE_DETAIL_SETTLED==="undefined"||!PROFILE_DETAIL_SETTLED)){

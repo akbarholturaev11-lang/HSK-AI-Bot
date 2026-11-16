@@ -27,8 +27,8 @@ def _serve_static(route):
     }
     route.fulfill(
         status=200,
-        content_type=content_types.get(path.suffix, "text/plain"),
-        body=path.read_text(encoding="utf-8"),
+        content_type=content_types.get(path.suffix, "application/octet-stream"),
+        path=str(path),
     )
 
 
@@ -67,7 +67,8 @@ def test_practice_menu_phrasebook_search_and_favorites_are_local():
             page.evaluate("LANG='uz'; renderMashq()")
             row = page.locator("#m-ready-phrases")
             assert row.count() == 1
-            assert row.locator(".new-section-badge").inner_text() == "NEW"
+            # Localized by the canonical course catalog (uz: "YANGI"), not a hardcoded English label.
+            assert row.locator(".new-section-badge").inner_text() == "YANGI"
             # The Mashq tab is hidden until selected; exercise the rendered row
             # handler, which opens the cached resource overlay without reloading.
             row.evaluate("element => element.click()")
@@ -172,5 +173,5 @@ def test_android_ready_phrases_search_follows_compact_back_control():
     layout = screen.split("fun ReadyPhrasesScreen(", 1)[1].split("private fun ReadyPhraseCard(", 1)[0]
     assert "R.string.ready_phrases_title" not in layout
     assert "R.string.ready_phrases_intro" not in layout
-    assert "R.string.ready_phrases_back" in layout
+    assert "R.string.hsk_common_action_back" in layout
     assert layout.index("IconButton(") < layout.index("OutlinedTextField(") < layout.index("LazyRow(")

@@ -950,12 +950,22 @@ html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-profile .p45-acc-
   border-radius: inherit;
   background: var(--jade, var(--hsk-jade));
 }
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-profile .p45-accuracy-failed {
+  position: relative;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-profile .p45-accuracy-failed .p45-accuracy-grid {
+  visibility: hidden;
+}
 html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-profile .p45-accuracy-error {
+  position: absolute;
+  right: 16px;
+  bottom: 8px;
+  left: 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  min-height: 62px;
+  min-height: 72px;
 }
 html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-profile .p45-accuracy-error p {
   margin: 0;
@@ -1023,3 +1033,44 @@ html.p45-detail-open,html.p45-detail-open body{overflow:hidden!important}
 #p45-progress .p45-progress-empty{padding:32px 0;text-align:center;font-size:14px;color:var(--ink2,#736d63)}
 @media(max-width:359px){#p45-progress .p45-progress-body{padding-inline:14px}#p45-progress .p45-progress-hero strong{font-size:37px}#p45-progress .p45-progress-stats{gap:7px}#p45-progress .p45-progress-card{padding:12px}}
 @media(prefers-reduced-motion:reduce){#p45-progress .p45-progress-track i{transition:none}}
+
+
+/* PWA actual-source CLS reconciliation, measured Chromium first-paint/ready at
+   320/390/430 (not a stale screenshot). Do not shrink real learning labels. */
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-mashq
+.pwa-mashq-shell > .htop {
+  min-height:64px;padding-top:10px;padding-bottom:10px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-mashq
+.pwa-mashq-shell .pwa-practice-group-title {
+  height:19px;
+}
+@media (min-width:341px) and (max-width:400px) {
+  html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-mashq
+  .pwa-mashq-shell > .mashq-group:nth-child(4) > .pwa-practice-row:nth-child(2) {
+    min-height:84.5px;
+  }
+  html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-mashq
+  .pwa-mashq-shell > .mashq-group:nth-child(4) > .pwa-practice-row:nth-child(4) {
+    min-height:74px;
+  }
+}
+@media (max-width:340px) {
+  html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-mashq
+  .pwa-mashq-shell > .mashq-group:nth-child(4) > .pwa-practice-row:nth-child(1) {min-height:83.5px}
+  html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-mashq
+  .pwa-mashq-shell > .mashq-group:nth-child(4) > .pwa-practice-row:nth-child(2) {min-height:84.5px}
+  html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-mashq
+  .pwa-mashq-shell > .mashq-group:nth-child(4) > .pwa-practice-row:nth-child(3) {min-height:86.7px}
+  html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-mashq
+  .pwa-mashq-shell > .mashq-group:nth-child(4) > .pwa-practice-row:nth-child(4) {min-height:84.5px}
+  html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-mashq
+  .pwa-mashq-shell > .mashq-group:nth-child(6) > .pwa-practice-row:nth-child(1) {min-height:83.5px}
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-profile
+.pwa-profile-shell .profile-friends-link {margin-top:10px}
+/* Measured: the real achievement row is 70px above 340px (shell was 64px). */
+@media (min-width:341px) {
+  html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-profile
+  .pwa-profile-shell .pwa-profile-ach-text {height:48px}
+}

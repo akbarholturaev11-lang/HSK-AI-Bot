@@ -1,5 +1,6 @@
 """Real Chromium dictionary list stress test (source-backed, no backend network)."""
 import re
+import os
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 
@@ -12,7 +13,7 @@ CSS = re.search(r"<style>([\s\S]*?)</style>", SOURCE).group(1)
 
 def test_dictionary_virtual_scroll_large_word_list_iPhone():
     with sync_playwright() as p:
-        browser = p.chromium.launch()
+        browser = getattr(p, os.getenv("PWA_E2E_ENGINE", "chromium")).launch()
         for width, height in ((320,568),(390,844),(430,932)):
             page = browser.new_page(viewport={"width":width,"height":height},
                                     device_scale_factor=2,is_mobile=True,has_touch=True)
@@ -22,6 +23,8 @@ def test_dictionary_virtual_scroll_large_word_list_iPhone():
                 '<div id="list" class="list" style="height:460px;flex:none"></div></body></html>'
             )
             script = r"""
+              var PWA_DICT=false, savedReady=true, savedWords=new Set(), savedPending=new Set();
+              function savedLabels(){return {save:'Save', remove:'Remove'}}
               var listEl=document.getElementById('list'),searchEl={value:''},
                 countEl={textContent:'',setAttribute(){}},searchClear={classList:{toggle(){}}},
                 currentLang='uz',UI={uz:{

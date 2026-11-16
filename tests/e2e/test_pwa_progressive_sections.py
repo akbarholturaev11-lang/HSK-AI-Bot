@@ -199,14 +199,15 @@ def test_course_ready_while_rating_referrals_and_profile_stats_load_independentl
             assert page.locator("#s-rating .pwa-initial-shell").count() == 0
 
             page.locator('#nav button[data-s="profile"]').click()
-            page.locator("#s-profile .hsk-pwa-profile-accuracy-loading").wait_for()
+            page.locator("#s-profile .p45-accuracy[aria-busy='true']").wait_for()
             assert len(held["profile"]) == 1
             # The independently loaded accuracy block must not rebuild Profile.
             from tests.pwa_layout_geometry import capture_geometry, assert_reserved_layout
             accuracy_anchors = {
-                "overall-ring": "#s-profile .profile-accuracy>div:nth-child(1) .accuracy-ring",
-                "today-ring": "#s-profile .profile-accuracy>div:nth-child(2) .accuracy-ring",
-                "accuracy": "#s-profile .profile-accuracy",
+                # PWA (UIUX-005): one titled block; loading/error keep its cells.
+                "overall-cell": "#s-profile .p45-accuracy .p45-acc-cell:nth-child(1)",
+                "today-cell": "#s-profile .p45-accuracy .p45-acc-cell:nth-child(2)",
+                "accuracy": "#s-profile .p45-accuracy",
                 "nav": "#nav",
             }
             profile_loading_boxes = capture_geometry(page, accuracy_anchors)
@@ -227,14 +228,14 @@ def test_course_ready_while_rating_referrals_and_profile_stats_load_independentl
                 }},
             })
             page.wait_for_function(
-                "() => !!document.querySelector('#s-profile .profile-accuracy') &&"
-                " !document.querySelector('#s-profile .hsk-pwa-profile-accuracy-loading')"
+                "() => !!document.querySelector('#s-profile .p45-accuracy') &&"
+                " !document.querySelector('#s-profile .p45-accuracy[aria-busy]')"
             )
             profile_ready_boxes = capture_geometry(page, accuracy_anchors)
             assert_reserved_layout(profile_loading_boxes, profile_ready_boxes)
             assert page.locator("#s-profile .profile-head").get_attribute("data-api-preserve") == "yes"
-            assert "79%" in page.locator("#s-profile .profile-accuracy").inner_text()
-            assert page.locator("#s-profile .hsk-pwa-profile-accuracy-loading").count() == 0
+            assert "79%" in page.locator("#s-profile .p45-accuracy").inner_text()
+            assert page.locator("#s-profile .p45-accuracy[aria-busy]").count() == 0
 
             page.evaluate("App.show('rating', 'friends')")
             page.locator("#s-rating .hsk-pwa-section-loading").wait_for()
@@ -274,7 +275,7 @@ def test_course_ready_while_rating_referrals_and_profile_stats_load_independentl
             # Returning to the same verified PWA account inside the short
             # freshness window must reuse memory (no duplicate SQL-backed GET).
             page.locator('#nav button[data-s="profile"]').click()
-            page.locator("#s-profile .profile-accuracy").wait_for()
+            page.locator("#s-profile .p45-accuracy:not([aria-busy])").wait_for()
             assert len(held["profile"]) == 0
             page.evaluate("PROFILE_DETAIL_LOADED_AT=Date.now()-31000")
             page.locator('#nav button[data-s="rating"]').click()
@@ -296,14 +297,14 @@ def test_course_ready_while_rating_referrals_and_profile_stats_load_independentl
             assert page.locator("#s-profile .profile-head").get_attribute("data-api-preserve") == "yes"
             assert page.locator("#s-profile .profile-display-name").is_visible()
             page.locator("#s-profile .hsk-pwa-profile-stats-error button").click()
-            page.locator("#s-profile .hsk-pwa-profile-accuracy-loading").wait_for()
+            page.locator("#s-profile .p45-accuracy[aria-busy='true']").wait_for()
             assert len(held["profile"]) == 1
             held["profile"].pop().fulfill(status=200, headers={"X-HSK-PWA-User-ID": "31"}, json={
                 "ok": True, "stats": {"answer_accuracy": {
                     "overall": {"percent": 84}, "today": {"percent": 88},
                 }},
             })
-            page.locator("#s-profile .profile-accuracy").wait_for()
+            page.locator("#s-profile .p45-accuracy:not([aria-busy])").wait_for()
             assert page.locator("#s-profile .hsk-pwa-profile-stats-error").count() == 0
             assert errors == []
 
@@ -722,11 +723,12 @@ def test_practice_initial_loading_geometry_matches_six_real_cards(width, motion)
             page.locator("#s-mashq .pwa-mashq-shell[aria-busy=true]").wait_for()
             assert len(held) == 1
             assert page.locator("#s-mashq .row-card").count() == 0
-            # Reserve actual two-line labels at narrow widths. Never relax
+            # Real post-design measured row heights from Chromium first-paint→ready.
+            # Never relax
             # the <=8px anchor threshold or hide the real six-card layout.
             expected_heights = (
-                [78, 78, 68, 78, 80, 68] if width <= 340 else
-                [68, 80, 68, 68, 68, 68] if width <= 400 else
+                [83.5, 84.5, 86.7, 84.5, 83.5, 68] if width <= 340 else
+                [68, 84.5, 68, 74, 68, 68] if width <= 400 else
                 [68] * 6
             )
             for i, expected in enumerate(expected_heights):
@@ -892,8 +894,8 @@ def test_profile_first_paint_shell_matches_identity_accuracy_and_calendar(width,
         "hero": "#s-profile .phero",
         "avatar": "#s-profile .pav",
         "friend-row": "#s-profile .profile-friends-link",
-        "accuracy": "#s-profile .profile-accuracy",
-        "ring-1": "#s-profile .profile-accuracy .accuracy-ring",
+        "accuracy": "#s-profile .p45-accuracy",
+        "cell-1": "#s-profile .p45-accuracy .p45-acc-cell",
         "first-section": "#s-profile .sech",
         "calendar": "#s-profile .card2",
         "achievements": "#s-profile .profile-compact-ach",
@@ -921,7 +923,7 @@ def test_profile_first_paint_shell_matches_identity_accuracy_and_calendar(width,
                 "X-HSK-PWA-User-ID":"31", "Cache-Control":"no-store",
             })
             page.locator("#s-profile .profile-display-name").wait_for()
-            page.locator("#s-profile .hsk-pwa-profile-accuracy-loading").wait_for()
+            page.locator("#s-profile .p45-accuracy[aria-busy='true']").wait_for()
             after = capture_geometry(page, selectors)
             assert_reserved_layout(before, after)
             assert page.locator("#s-profile .pwa-profile-shell").count() == 0
