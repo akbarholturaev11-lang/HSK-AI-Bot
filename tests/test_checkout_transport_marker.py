@@ -17,7 +17,8 @@ class AndroidCheckoutMarkerTests(unittest.IsolatedAsyncioTestCase):
         service.source = source
         record = AsyncMock(return_value=True)
         with patch("app.services.desktop_subscription_service.ConversionFunnelService") as funnel:
-            funnel.return_value.record = record
+            # The checked opening writer always stores `checkout_opened`.
+            funnel.return_value.record_checkout_opened = record
             await service._record_checkout_opened(
                 user=SimpleNamespace(telegram_id=1001), attempt_id="attempt-1",
             )
@@ -25,7 +26,6 @@ class AndroidCheckoutMarkerTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_android_opening_carries_the_route_marker(self):
         kwargs = await self.opened_payload("android_subscription")
-        self.assertEqual(kwargs["event_name"], "checkout_opened")
         self.assertEqual(kwargs["payload"], {"attempt_id": "attempt-1", "mode": "subscription",
                                              "transport": "android"})
 
@@ -42,9 +42,11 @@ class TelegramCheckoutMarkerTests(unittest.TestCase):
     def test_both_telegram_opening_writes_set_the_marker_server_side(self):
         overview = self.route('@app.post("/api/subscription-miniapp/overview")', "\n@app.")
         event = self.route('@app.post("/api/subscription-miniapp/event")', "\n@app.")
+        # The opening goes through the checked writer; the stage writes directly.
+        self.assertEqual(overview.count(".record_checkout_opened("), 1)
+        self.assertEqual(event.count('event_name="checkout_opened"'), 1)
         for body in (overview, event):
             with self.subTest(route=body[:40]):
-                self.assertEqual(body.count('event_name="checkout_opened"'), 1)
                 self.assertEqual(body.count('"transport": "telegram"'), 1)
                 # The caller never supplies the marker.
                 self.assertNotIn('payload.get("transport")', body)

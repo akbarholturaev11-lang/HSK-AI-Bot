@@ -6384,8 +6384,8 @@ async def subscription_miniapp_overview(request: Request):
             )
             await SubscriptionChurnService(session).mark_subscription_miniapp_opened(telegram_id, source)
             if not result.get("pending_payment"):
-                await ConversionFunnelService().record(
-                    event_name="checkout_opened",
+                # Checked, retried once, never doubled; never changes this response.
+                await ConversionFunnelService().record_checkout_opened(
                     user=user,
                     telegram_id=telegram_id,
                     source=source,

@@ -1537,15 +1537,15 @@
       "platforms": {
         "android": {
           "status": "partial",
-          "reason": "Finance by payments.source android and Funnel by the route-set transport android are scoped (3.2); no route-to-Admin chain proof yet; Play/Direct are combined."
+          "reason": "Finance by payments.source android and Funnel by the route-set transport android are scoped (3.2); no route-to-Admin chain proof yet; Play/Direct are combined. Base openings use the checked writer: one retry only while that exact row is absent, so one failed opening write no longer turns the later stages into 409 (2026-11-16)."
         },
         "telegram": {
           "status": "partial",
-          "reason": "Finance by payments.source miniapp/telegram_bot and Funnel by the route-set transport telegram are scoped (3.2); earlier openings are Overall-only; no route-to-Admin chain proof yet."
+          "reason": "Finance by payments.source miniapp/telegram_bot and Funnel by the route-set transport telegram are scoped (3.2); earlier openings are Overall-only; no route-to-Admin chain proof yet. Base openings use the checked writer: one retry only while that exact row is absent, so one failed opening write no longer turns the later stages into 409 (2026-11-16)."
         },
         "iphone_pwa": {
           "status": "partial",
-          "reason": "Finance by payments.source iphone_pwa/pwa and Funnel by the route-set transport iphone_pwa are scoped (3.2); no route-to-Admin chain proof yet."
+          "reason": "Finance by payments.source iphone_pwa/pwa and Funnel by the route-set transport iphone_pwa are scoped (3.2); no route-to-Admin chain proof yet. Base openings use the checked writer: one retry only while that exact row is absent, so one failed opening write no longer turns the later stages into 409 (2026-11-16)."
         },
         "macos": {
           "status": "partial",
@@ -2251,7 +2251,10 @@
       {"target": "app/static/course_v3_data/li-onboarding-runtime.js", "sha256": "dd94367c4a2fca79ce58155e336bac76d2728f9d2f3a9d92a510997ab38ea858", "reason": "Adds diagnostic reporting and ties it to the verified document actor. Existing signed Telegram login and onboarding requests are unchanged; their feature-specific Inbox proof remains pending."},
       {"target": "app/static/course_v3_test.html", "reason": "Diagnostic precision (task 6.2) changes only the content token of the shared reporter script on this page. Existing exam submission, grading and access behavior are unchanged; full assessment monitoring remains partial."},
       {"target": "app/static/course_v3_mistakes.html", "reason": "Diagnostic precision (task 6.2) changes only the content token of the shared reporter script on this page. Existing mistake-review behavior is unchanged; full mistake-review monitoring remains partial."},
-      {"target": "/api/miniapp/event", "reason": "The changed branches are diagnostic intake and the optional legacy diagnostic mirror only. They are tested by the signed Telegram chain and excluded from self-reporting; existing learner and KPI event behavior is unchanged."}
+      {"target": "/api/miniapp/event", "reason": "The changed branches are diagnostic intake and the optional legacy diagnostic mirror only. They are tested by the signed Telegram chain and excluded from self-reporting; existing learner and KPI event behavior is unchanged."},
+      {"target": "/api/subscription-miniapp/overview", "reason": "Only the analytics write of the base checkout opening changed: it is checked and retried once while that exact row is absent. The overview response, prices, payment flow and Pro access are unchanged; subscription monitoring remains partial."},
+      {"target": "/api/v3/pwa/subscription/overview", "reason": "Only the analytics opening changed: it is stored under the stage route's attempt-id form and written by the checked writer (one retry, never doubled). The overview response, prices, Lava block and Pro access are unchanged; subscription monitoring remains partial."},
+      {"target": "/api/v3/pwa/subscription/event", "reason": "Attempt-id validation moved into one helper shared with the overview, with identical rules (trimmed, 1-80 chars of A-Za-z0-9:.-). Responses and stored stage rows are unchanged; subscription monitoring remains partial."}
     ]
   }
 }

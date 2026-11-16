@@ -128,6 +128,53 @@ class ConversionFunnelService:
             logger.exception("Failed to record conversion funnel event: %s", event_name)
             return False
 
+    async def record_checkout_opened(
+        self,
+        *,
+        user=None,
+        telegram_id: int | None = None,
+        source: str | None = None,
+        payload: dict[str, Any],
+    ) -> bool:
+        """Base checkout opening of one attempt: checked, retried once, never doubled.
+
+        Every later stage, the receipt and the approval join this row by owner
+        + attempt_id. Losing it makes the stage routes answer 409 and drops the
+        whole attempt from the payment funnel. Callers never let the result
+        change their checkout response: payment does not wait on analytics.
+        """
+        event = {"event_name": "checkout_opened", "user": user, "telegram_id": telegram_id,
+                 "source": source, "payload": payload}
+        if await self.record(**event):
+            return True
+        attempt_id, transport = payload.get("attempt_id"), payload.get("transport")
+        if attempt_id:
+            # A commit that raised may still be stored: retry only when this
+            # exact opening is absent, and never when that cannot be read.
+            if (written := await self._checkout_opening_stored(user, telegram_id, payload)) is True:
+                return True
+            if written is False and await self.record(**event):
+                logger.warning("checkout_opened_recovered transport=%s", transport)
+                return True
+        logger.error("checkout_opened_lost transport=%s attempt=%s", transport, attempt_id)
+        return False
+
+    async def _checkout_opening_stored(self, user, telegram_id, payload) -> bool | None:
+        owner = user if user is not None else telegram_id
+        try:
+            async with async_session_maker() as read_session:
+                found = await read_session.scalar(
+                    select(ConversionFunnelEvent.id).where(
+                        owner_clause(ConversionFunnelEvent, owner, telegram_column="telegram_id"),
+                        ConversionFunnelEvent.event_name == "checkout_opened",
+                        ConversionFunnelEvent.payload_json == self._payload_json(payload),
+                    ).limit(1)
+                )
+            return found is not None
+        except Exception:
+            logger.exception("checkout_opened state unreadable; retry skipped")
+            return None
+
     async def record_in_transaction(
         self,
         *,
