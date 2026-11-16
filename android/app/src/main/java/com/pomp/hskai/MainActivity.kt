@@ -2019,6 +2019,7 @@ private fun LessonHost(
     accessChanged: Boolean,
     /** [completed] says whether the lesson was actually finished and reported. */
     onExit: (completed: Boolean) -> Unit,
+    onStartNext: () -> Unit,
 ) {
     val lesson = launch.lesson
     val model: LessonViewModel = viewModel(
@@ -2089,6 +2090,10 @@ private fun LessonHost(
             val completed = lessonState.outcome is LessonOutcome.Completed
             model.endAttempt(launch.attemptKey)
             onExit(completed)
+        },
+        onStartNext = {
+            model.endAttempt(launch.attemptKey)
+            onStartNext()
         },
         onAskAssistant = if (assistant != null && assistantEnabled) assistant.ask else null,
     )
