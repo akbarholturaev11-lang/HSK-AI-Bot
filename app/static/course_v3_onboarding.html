@@ -650,9 +650,15 @@ function finish(){
     var query=new URLSearchParams(params.toString());
     query.set("lang",LANG);query.set("level",chosenLevel);query.set("tab",String(launch.tab||"course"));query.set("onboarded","1");
     if(launch.foundation_required)query.set("foundation","1");else query.delete("foundation");
-    var lesson=Number(launch.lesson||1);
-    if(isHsk30Level(sel)){query.delete("lesson");query.delete("autostart")}
-    else if(lesson>0&&!launch.placement){query.set("lesson",String(lesson));query.set("autostart","1")}
+    // Only a verified save can request a lesson; the server map resolves an
+    // unnumbered first-open lesson and still enforces Starter 0/Pro/HSK gates.
+    query.delete("lesson");query.delete("resume");query.delete("autostart");
+    if(!launch.placement&&!launch.review_only&&!launch.reviewOnly){
+      var lesson=Number(launch.lesson||0);
+      if(lesson>0&&!launch.reconciled)query.set("lesson",String(lesson));
+      else query.set("resume","1");
+      query.set("autostart","1");
+    }
     location.href=(PWA_ONBOARDING_HOST?"/iphone-pwa/course":"/course-v3.html")+"?"+query.toString()+location.hash;
   }
   function fail(reason){
