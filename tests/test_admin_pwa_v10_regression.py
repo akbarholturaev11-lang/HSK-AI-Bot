@@ -58,7 +58,10 @@ CORRECTED_METRICS = {("money", "overall"): {
     "monthly": {"average_payment_usd": 9.4734, "arppu_usd": 23.6835},
     "all_time": {"average_payment_usd": 9.5612, "arppu_usd": 19.1223},
 }}
-NEWLY_ATTRIBUTED = frozenset([("home", "iphone_pwa"), ("overview", "iphone_pwa"), ("platform", "iphone_pwa")]) | frozenset(
+# ("report", "iphone_pwa"): the Report is one global list under every filter;
+# the baseline refused it for the PWA filter alone (integration audit 2026-11-16).
+NEWLY_ATTRIBUTED = frozenset([("home", "iphone_pwa"), ("overview", "iphone_pwa"), ("platform", "iphone_pwa"),
+                              ("report", "iphone_pwa")]) | frozenset(
     (section, platform) for section in ("money", "funnel", "course", "sources")
                              for platform in ("android", "telegram", "iphone_pwa"))
 
@@ -364,3 +367,10 @@ class AdminPwaV10RegressionTests(unittest.IsolatedAsyncioTestCase):
                         legacy["metrics"]["revenue_usd"]
                         / (legacy["metrics"]["payments"] - legacy["metrics"]["unpriced_payments"]), 4))
                 self.assertEqual(legacy, expected[case])
+        for period in SINCE:
+            # The same global Report under the PWA filter as under Android and
+            # Telegram: no platform is refused, and none shows platform numbers.
+            pwa, android = actual["report", "iphone_pwa", period], actual["report", "android", period]
+            self.assertEqual(pwa["metrics"], android["metrics"])
+            self.assertEqual(pwa["metric_states"], android["metric_states"])
+            self.assertEqual({state["state"] for state in pwa["metric_states"].values()}, {"not_applicable"})

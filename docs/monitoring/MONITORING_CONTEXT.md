@@ -41,15 +41,20 @@ or production acceptance.
   Play Data safety filing remain unverified. Production deployment and CI do
   not substitute for those checks.
 
-- **Diagnostic precision (tasks 6.1–6.4):** implemented on the branch
-  `feat/monitoring-diagnostic-precision-20261115`, not on `main` and not
-  deployed. See "Diagnostic precision" below.
+- **Diagnostic precision (tasks 6.1–6.4):** merged into `main` by PR #317;
+  the remote ref was verified at `a6689aaf` on 2026-11-16. Its production
+  deployment and DB revision were not independently verified. See
+  "Diagnostic precision" below.
+- **Joint integration audit (2026-11-16):** see
+  [Joint integration audit](../analytics/ANALYTICS_INTEGRITY_IMPLEMENTATION_PLAN.md#joint-integration-audit--2026-11-16)
+  in the Analytics context. No monitoring defect was confirmed and no
+  monitoring code changed.
 
-## Diagnostic precision (tasks 6.1–6.4, branch only)
+## Diagnostic precision (tasks 6.1–6.4, on main since PR #317)
 
 Started from `main` `f4a1f8aa`. Design is D12; the migration is
-`0157_diagnostic_precision`. Nothing was pushed to `main` or deployed, and no
-production setting was read or changed.
+`0157_diagnostic_precision`. The evidence below was recorded on the branch
+before the merge; no production setting was read or changed.
 
 ### What exists
 

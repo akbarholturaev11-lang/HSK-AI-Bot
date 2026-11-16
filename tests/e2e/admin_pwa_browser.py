@@ -576,18 +576,26 @@ async def browser_checks(output):
                     await page.locator('[data-stats-tab='+section+']').click()
                     await expect(page.locator(f'[data-stats-tab={section}]')).to_have_attribute('aria-selected','true')
                     await expect(loading).to_have_count(0)
+                    # A metric the platform can never show is not a card, a row or a panel:
+                    # it is named once, with its reason, in the closed list under the tab.
+                    omitted=page.locator('#content .analytics-omitted')
                     if section=='money':
-                        await expect(page.locator('.metric[data-state=not_applicable]')).to_have_count(3)
-                        await expect(page.locator('.metric[data-state=not_instrumented]')).to_have_count(2)
-                        await expect(page.locator('.analytics-state[data-state=not_instrumented]')).to_have_count(1)
+                        # AI cost, ARPU and the ledger have no platform; revenue and payments stay.
+                        await expect(page.locator('.stats-category-metrics .metric')).to_have_count(3)
+                        await expect(page.locator('.analytics-panel h2',has_text=labels['aiSpend'])).to_have_count(0)
+                        await expect(omitted.locator('summary')).to_have_text(labels['analyticsOmittedForPlatform']+' · 8')
+                        await expect(omitted.locator('p[data-state=not_instrumented]')).to_contain_text(labels['analyticsStateNotInstrumented']+': '+labels['estimatedCost'])
+                        await expect(omitted.locator('p[data-state=not_applicable]')).to_contain_text(labels['analyticsStateNotApplicable']+': '+labels['analyticsManualProfit'])
                     elif section=='course':
-                        await expect(page.locator('.stats-category-metrics .metric')).to_have_count(11)
                         # Course open: Android not_applicable, Telegram not_instrumented, PWA not
-                        # audited. The cross-app return series is Overall-only (not_instrumented).
-                        # R2: PWA activation is attributed, so its card is available.
-                        # R4: D1/D7 return is attributed on every platform.
-                        await expect(page.locator('.metric[data-state=not_instrumented]')).to_have_count({'android':7,'telegram':7,'iphone_pwa':4}[platform])
-                        await expect(page.locator('.metric[data-state=not_applicable]')).to_have_count(2 if platform=='android' else 0)
+                        # audited: listed below, not drawn. R4: D1/D7 return is attributed on
+                        # every platform. Telegram and PWA add Starter 0; R2: PWA adds activation.
+                        await expect(page.locator('.stats-category-metrics .metric')).to_have_count({'android':2,'telegram':4,'iphone_pwa':5}[platform])
+                        reasons={'android':{'not_instrumented':1,'attribution_not_audited':1,'not_applicable':1},
+                            'telegram':{'not_instrumented':1},'iphone_pwa':{'not_instrumented':1,'attribution_not_audited':1}}[platform]
+                        for reason in ('not_instrumented','attribution_not_audited','not_applicable'):
+                            await expect(omitted.locator(f'p[data-state={reason}]')).to_have_count(reasons.get(reason,0))
+                        await expect(omitted.locator('p[data-state=not_instrumented]')).to_contain_text(labels['analyticsVoiceMinutes'])
                         # The Telegram completion shows under Telegram only; Android is a real zero.
                         lessons=page.locator('.stat-info-row',has_text=labels['analyticsCompletedUserLessons']).locator('strong')
                         await expect(lessons).to_have_text({'telegram':'1','android':'0','iphone_pwa':'0'}[platform])
@@ -605,7 +613,9 @@ async def browser_checks(output):
                             activation=page.locator('.analytics-panel tr',has_text=labels['analyticsActivation'])
                             await expect(activation.locator('td')).to_have_text([labels['analyticsActivation'],'1','1'])
                     elif section=='funnel':
-                        await expect(page.locator('.metric[data-state=not_instrumented]')).to_have_count(3)
+                        # Registration conversion has no platform cohort: no card grid at all.
+                        await expect(page.locator('.stats-category-metrics')).to_have_count(0)
+                        await expect(omitted.locator('summary')).to_have_text(labels['analyticsOmittedForPlatform']+' · 3')
                         # Task 4.2: the PWA Pro attempts panel shows under iPhone PWA only.
                         pro=page.locator('.analytics-panel',has=page.locator('h2',has_text=labels['analyticsPwaPro']))
                         await expect(pro).to_have_count(1 if platform=='iphone_pwa' else 0)
@@ -631,10 +641,16 @@ async def browser_checks(output):
                         await expect(page.locator('.analytics-platform-grid h2')).to_have_text(labels[title])
                         await expect(page.locator('.analytics-panel h2',has_text=labels['analyticsVersions'])).to_have_count(1 if platform=='android' else 0)
                     else:
-                        # Report has no iPhone PWA scope yet: its reason panel shows instead.
-                        await expect(page.locator('#content .stats-category-content, #content .state-panel').first).to_be_visible()
+                        await expect(page.locator('#content .stats-category-content')).to_be_visible()
                     cells=await page.evaluate(state_cells)
-                    assert cells and set(cells)<=states or section in ('overview','platform','sources','report'), (platform,section,cells)
+                    assert set(cells)<=states or section in ('overview','platform','sources','report'), (platform,section,cells)
+                    drawn=await page.evaluate("[...document.querySelectorAll('#content [data-state]')].filter(e=>!e.closest('.analytics-omitted')).map(e=>e.dataset.state)")
+                    assert set(drawn)<={'no_data','detail_limited'}, (platform,section,drawn)
+                    if section in ('overview','platform','sources','report'):await expect(omitted).to_have_count(0)
+                    if section=='report':
+                        # One global Report under every filter, the iPhone PWA included.
+                        await expect(page.locator('.analytics-panel h2',has_text=labels['analyticsDataQuality'])).to_have_count(1)
+                        await expect(page.locator('.analytics-panel h2',has_text=labels['analyticsFreshness'])).to_have_count(1)
                     assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth'), (language,platform,section)
                     if language=='tj':await page.screenshot(path=str(output/f'v10-{section}-{platform}-tj-390.png'),full_page=True)
         await page.locator('[data-action=platform]').click()

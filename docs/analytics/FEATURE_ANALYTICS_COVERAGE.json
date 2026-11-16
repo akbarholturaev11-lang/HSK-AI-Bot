@@ -802,12 +802,12 @@
     {"section": "sources", "key": "traffic_grain", "kind": "metadata", "filters": ["overall"]},
     {"section": "sources", "key": "traffic_since", "kind": "metadata", "filters": ["overall"]},
     {"section": "sources", "key": "traffic_timezone", "kind": "metadata", "filters": ["overall"]},
-    {"section": "report", "key": "ai_is_estimate", "kind": "metadata", "filters": ["overall", "android", "telegram", "macos", "windows"]},
-    {"section": "report", "key": "daily_cache_hours", "kind": "metadata", "filters": ["overall", "android", "telegram", "macos", "windows"]},
-    {"section": "report", "key": "detail_row_limit", "kind": "metadata", "filters": ["overall", "android", "telegram", "macos", "windows"]},
-    {"section": "report", "key": "exact_currencies", "kind": "metadata", "filters": ["overall", "android", "telegram", "macos", "windows"]},
-    {"section": "report", "key": "platform_counts_overlap", "kind": "metadata", "filters": ["overall", "android", "telegram", "macos", "windows"]},
-    {"section": "report", "key": "platform_freshness", "kind": "metric", "filters": ["overall", "android", "telegram", "macos", "windows"],
+    {"section": "report", "key": "ai_is_estimate", "kind": "metadata", "filters": ["overall", "android", "telegram", "iphone_pwa", "macos", "windows"]},
+    {"section": "report", "key": "daily_cache_hours", "kind": "metadata", "filters": ["overall", "android", "telegram", "iphone_pwa", "macos", "windows"]},
+    {"section": "report", "key": "detail_row_limit", "kind": "metadata", "filters": ["overall", "android", "telegram", "iphone_pwa", "macos", "windows"]},
+    {"section": "report", "key": "exact_currencies", "kind": "metadata", "filters": ["overall", "android", "telegram", "iphone_pwa", "macos", "windows"]},
+    {"section": "report", "key": "platform_counts_overlap", "kind": "metadata", "filters": ["overall", "android", "telegram", "iphone_pwa", "macos", "windows"]},
+    {"section": "report", "key": "platform_freshness", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa", "macos", "windows"],
       "platforms": {
         "android": {"status": "not_applicable", "reason": "D7: one global list with Android, Telegram and PWA rows (verified A1/A8 and route-set client signals; payments.source), with verified diagnostic-receipt freshness; returned unchanged under every filter."},
         "telegram": {"status": "not_applicable", "reason": "D7: one global list with Android, Telegram and PWA rows (route-set client key; payments.source miniapp/telegram_bot), with verified diagnostic-receipt freshness; returned unchanged under every filter."},
@@ -816,7 +816,7 @@
         "windows": {"status": "not_instrumented", "reason": "No Desktop freshness rows; Desktop freeze."}
       }
     },
-    {"section": "report", "key": "quality", "kind": "metric", "filters": ["overall", "android", "telegram", "macos", "windows"],
+    {"section": "report", "key": "quality", "kind": "metric", "filters": ["overall", "android", "telegram", "iphone_pwa", "macos", "windows"],
       "platforms": {
         "android": {"status": "not_applicable", "reason": "Global record counts and latest timestamps, returned unchanged under every filter; the Report labels the table as all platforms, independent of filter and period. No platform quality breakdown exists yet."},
         "telegram": {"status": "not_applicable", "reason": "Global record counts and latest timestamps, returned unchanged under every filter; the Report labels the table as all platforms, independent of filter and period. No platform quality breakdown exists yet."},
