@@ -2962,7 +2962,7 @@ var App={
   closeWriter:function(){var ov=$("#writeov"),fr=$("#writeframe");ov.classList.remove("on");ov.classList.remove("loading");try{fr.onload=null;fr.src="about:blank"}catch(e){}},
   // First verified lesson: one direct learning action, without a rating detour.
   showFirstLessonNext:function(nextOrder){
-    window._firstLessonNextOrder=Number(nextOrder)||0;
+    window._firstLessonNextOrder=Number(nextOrder)||0;window._firstLessonNextLevel=MAP&&MAP.level;window._firstLessonNextScope=localUserScope();
     pendingRankUp=null;window._pendingStreak=null;window._pendingCheckpointNextIdx=null;
     window._pendingPwaLessonFeedback=null;
     // Do not interrupt the first-to-second lesson handoff with an ad or promo.
@@ -2980,12 +2980,13 @@ var App={
   startFirstLessonNext:function(){
     var order=Number(window._firstLessonNextOrder)||0;
     if(!order)return;
+    if(!MAP||MAP.level!==window._firstLessonNextLevel||localUserScope()!==window._firstLessonNextScope){window._firstLessonNextOrder=0;$("#levelup").classList.remove("on");App.show("course");renderAll();return}
     $("#lu-cta").disabled=true;
     window._firstLessonNextOrder=0;
     $("#levelup").classList.remove("on");
     $("#lu-panda").innerHTML="";
     // Do not flush deferred centre ads into the first-to-second handoff.
-    cancelLessonPron();stopTourAudio();$("#flow").classList.remove("on");edgeGlow(0);
+    cancelLessonPron();stopTourAudio();$("#flow").classList.remove("on");edgeGlow(0);window._pendingCourseUnlockOrder=0;window._pendingCourseUnlockRetries=0;
     App.show("course");renderAll();
     var idx=allLessons().findIndex(function(lesson){return Number(lesson.n)===order});
     if(idx>=0)startLesson(idx); // reserveLessonStart is the final server access check
@@ -6270,7 +6271,8 @@ var PWA_LEVEL_REQUEST_SEQ=0,PWA_LEVEL_ABORT=null; function loadLevel(lv){if(PWA_
 }
 function applyLessonDone(cur,d){
   var firstVerifiedLesson=!!(d&&d.ok===true&&!d.duplicate&&
-    !(d.gamification&&d.gamification.duplicate)&&cur&&Number(cur.n)===1&&
+    !(d.gamification&&d.gamification.duplicate)&&
+    (typeof d.completed_lessons_count==="undefined"||Number(d.completed_lessons_count)===1)&&cur&&Number(cur.n)===1&&
     Number(MAP&&MAP.progress&&MAP.progress.completed||0)===0);
   var rankBefore=Number(d&&d.rank_before)||0;
   if(PWA_COURSE_HOST&&d&&d.ok===true&&!d.duplicate){
@@ -9800,7 +9802,7 @@ var finishHskLaunchSplash=(function(){
     function openInitialLesson(){
       if(initialLesson<=0)return;
       var idx=-1;allLessons().forEach(function(l,i){if(Number(l.n)===initialLesson)idx=i});
-      if(idx>=0)setTimeout(function(){
+      if(sp.get("onboarded")==="1"&&sp.get("autostart")==="1"&&(idx<0||allLessons()[idx].status!=="current"))idx=allLessons().findIndex(function(l){return l.status==="current"});if(idx>=0)setTimeout(function(){
         App.show("course");
         if(sp.get("autostart")==="1"){
           var variant=activationVariant(); // capture before consuming one-shot URL intent
