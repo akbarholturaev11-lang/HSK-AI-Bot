@@ -17,7 +17,8 @@ STATIC = Path("app/static")
 
 class IphonePwaAssetVersionTests(unittest.TestCase):
     def test_every_pwa_asset_reference_is_content_addressed(self):
-        assets = sorted(p for p in (STATIC / "course_v3_data").glob("iphone-pwa-*")
+        assets = sorted(p for pattern in ("iphone-pwa-*", "pwa-professional45*")
+                        for p in (STATIC / "course_v3_data").glob(pattern)
                         if p.suffix in {".js", ".css"})
         assets += [STATIC / name for name in (
             "course_v3_data/hsk-diagnostics.js", "course_v3_data/li-onboarding-runtime.js", "voice-live.js")]
@@ -59,7 +60,13 @@ class IphonePwaAssetVersionTests(unittest.TestCase):
             self.assertEqual((value.func.value.id, value.func.attr), ("dict", "fromkeys"))
             keys, media_type = (ast.literal_eval(arg) for arg in value.args)
             allowed.update(dict.fromkeys(keys, media_type))
-        for asset in sorted((STATIC / "course_v3_data").glob("iphone-pwa-*")) + [STATIC / "course_v3_data/hsk-diagnostics.js"]:
+        # The PWA design-system layer is loaded by the real pages too; the QA
+        # preview serves app/static directly and cannot catch a missing route.
+        served = (sorted((STATIC / "course_v3_data").glob("iphone-pwa-*"))
+                  + sorted((STATIC / "course_v3_data").glob("pwa-professional45*"))
+                  + [STATIC / "course_v3_data/hsk-diagnostics.js"])
+        self.assertTrue(any(p.name.startswith("pwa-professional45") for p in served))
+        for asset in served:
             if asset.suffix in {".js", ".css"}:
                 with self.subTest(asset=asset.name):
                     self.assertEqual(

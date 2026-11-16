@@ -2549,6 +2549,9 @@ async def course_v3_data_file(filename: str):
         "iphone-pwa-shake-report.css": "text/css",
         "iphone-pwa-practice-boot.js": "application/javascript",
         "iphone-pwa-practice-boot.css": "text/css",
+        # Browser-PWA design-system layer (path-gated by the pages themselves).
+        "pwa-professional45.css": "text/css",
+        "pwa-professional45-course.js": "application/javascript",
         "iphone-pwa-fx.js": "application/javascript",
         "iphone-pwa-refresh.js": "application/javascript",
         "iphone-pwa-invite.js": "application/javascript",
