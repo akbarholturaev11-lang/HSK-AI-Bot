@@ -140,7 +140,8 @@ CLIENT_SITES = frozenset({
     "exc_state", "exc_argument", "exc_null", "exc_index", "exc_memory", "exc_security",
     "exc_network", "exc_serialization", "exc_other", "process",
     # Android tagged API calls and screens
-    "login", "session_restore", "onboarding", "lesson_open", "lesson_complete", "practice",
+    "login", "session_restore", "onboarding", "lesson_open",
+    "first_lesson_entry", "second_lesson_entry", "lesson_complete", "practice",
     "progress", "subscription", "payment", "handoff", "app",
     # learner web pages
     "course_v3", "li_onboarding", "memorize", "mistakes", "pwa_onboarding", "pronunciation",

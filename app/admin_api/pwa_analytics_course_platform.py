@@ -84,6 +84,24 @@ async def _handoff_activation(db, *, boundary, since, now):
     return {'eligible': total, 'activated': done, 'percent': ratio(done, total)}
 
 
+async def _android_activation(db, *, since, now):
+    """R2 Android onboarding → R1 server-only lesson start, without a new event.
+
+    The cohort is only the Android-tagged onboarding save. The server-only
+    android_lesson_started row is already daily-deduplicated by the Android
+    course route and is scoped to this client by its route-written tag.
+    """
+    onboarded_since = await db.scalar(select(func.min(Event.created_at)).where(
+        Event.event_name == 'onboarding_completed', client_tag('android'), Event.created_at <= now))
+    if onboarded_since is None:
+        return {'activation': None}, {}, False
+    rows = await bounded_rows(db, activation_query(
+        client_tag('android'), Event.created_at >= onboarded_since, since=since, now=now),
+        payload_index=3)
+    activation, _direct = activation_values(rows, now=now)
+    return {'activation': activation}, {'activation': onboarded_since.isoformat()}, rows is None
+
+
 async def _pwa_activation(db, *, boundary, since, now):
     """R2. The onboarding cohort is anchored on `onboarding_completed` tagged by
     the PWA onboarding route. Onboarding is deduplicated per profile, so an
@@ -248,6 +266,11 @@ async def course_platform_metrics(db, *, platform, since, now):
         result.update(values)
         attributed_since.update(since_by_key)
         result['detail_limited'] = result['detail_limited'] or limited
+    if platform == 'android':
+        activation, since_by_key, limited = await _android_activation(db, since=detail_since, now=now)
+        result.update(activation)
+        attributed_since.update(since_by_key)
+        result['detail_limited'] = result.get('detail_limited', False) or limited
     if platform == 'android':
         completed = await _completed_lessons(db, Event.event_name.in_((*COMPLETED, 'android_lesson_completed')),
             Event.source == ANDROID_COMPLETION_SOURCE, since=since, now=now)

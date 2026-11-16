@@ -261,6 +261,46 @@ class CoursePlatformChainTests(unittest.IsolatedAsyncioTestCase):
         self.assertIsNotNone(android_view["metrics"]["attributed_since"]["features_lessons"])
         self.assertEqual(android_view["metric_states"]["features"], {"state": "available", "reason": None})
 
+    async def test_android_onboarding_first_lesson_activation_counts_one_server_start(self):
+        """Android onboarding and first lesson use existing server-owned R1/R2 events."""
+        android = await self.android_headers()
+        save = await self.client.post(
+            "/api/v3/android/course/onboarding",
+            headers=android,
+            json={
+                "level": "hsk1", "goal": "hsk_exam", "daily_minutes": 10,
+                "start_mode": "lesson_1", "language": "uz",
+                "activation_variant": "direct_start_v1",
+            },
+        )
+        self.assertEqual(save.status_code, 200, save.text)
+        for _ in range(2):
+            opened = await self.client.get("/api/v3/android/course/lesson/1", headers=android)
+            self.assertEqual(opened.status_code, 200, opened.text)
+        async with self.sessions() as db:
+            tagged = (await db.execute(
+                select(Event.event_name, Event.user_id, Event.source, Event.payload_json)
+                .where(Event.event_name.in_(("onboarding_completed", "android_lesson_started")))
+                .order_by(Event.id)
+            )).all()
+        self.assertEqual([row[0] for row in tagged],
+                         ["onboarding_completed", "android_lesson_started"])
+        self.assertTrue(all(row[1] == 3 for row in tagged))
+        self.assertTrue(all(json.loads(row[3])["client"] == "android" for row in tagged))
+
+        # Mature the 2-minute cohort without changing the relative event times.
+        await self.age_rows(1)
+        android_view = await self.admin_read("android")
+        overall_view = await self.admin_read("overall")
+        expected = {"eligible": 1, "started": 1, "percent": 100.0}
+        self.assertEqual(android_view["metrics"]["activation"], expected)
+        self.assertEqual(overall_view["metrics"]["activation"], expected)
+        self.assertEqual(android_view["metric_states"]["activation"],
+                         {"state": "available", "reason": None})
+        self.assertIsNotNone(
+            android_view["metrics"]["attributed_since"]["activation"]
+        )
+
     async def test_pwa_onboarding_and_handoff_reach_the_pwa_activation(self):
         onboarding = {"level": "hsk1", "goal": "hsk_exam", "daily_minutes": 10, "start_mode": "placement",
                       "language": "uz", "timezone_offset_minutes": 0, "activation_variant": "direct_start_v1"}
