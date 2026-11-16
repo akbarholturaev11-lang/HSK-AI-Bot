@@ -10,15 +10,87 @@ import logging
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 
+from app.admin_api.pwa_full_refresh_manifest import MANIFEST_VERSION, group_for, manifest
 from app.admin_api.pwa_google_transport import _PRIVATE_HEADERS, _reply
 from app.admin_api.pwa_statistics_cache import StatisticsUnavailable
 from app.admin_api.pwa_webauthn_transport import _body
 
 logger = logging.getLogger(__name__)
 _PATH = "/api/internal/admin-pwa/analytics/refresh"
+# Fixed reason codes for a full-refresh group; never exception text.
+_FULL_REFRESH_REASONS = {
+    "Manual refresh already in progress": "busy",
+    "Manual statistics R2 read unavailable": "r2_read",
+    "Manual statistics R2 write unavailable": "r2_write",
+    "Manual statistics refresh timed out": "timeout",
+    "Unexpected bundle projection": "invalid_projection",
+    "Invalid bundle projection": "invalid_projection",
+    "Unexpected overview projection": "invalid_projection",
+    "Invalid overview projection": "invalid_projection",
+}
 
 
-def create_manual_aggregate_refresh_router(*, settings_obj, analytics_reader):
+async def _full_refresh(data, *, analytics_reader, feedback_reader):
+    """One allowlisted group per request (ADMIN_PWA_FULL_REFRESH_ENABLED only).
+
+    The orchestrator calls groups one after another; this handler never fans
+    out. Bodies carry statuses, timestamps and fixed reason codes only.
+    """
+    if data == {"mode": "manifest"}:
+        return JSONResponse({"ok": True, "mode": "manifest", **manifest()}, headers=_PRIVATE_HEADERS)
+    if set(data) != {"mode", "section", "platform"} or data.get("mode") != "bundle":
+        return _reply(400, "admin_pwa_invalid_payload")
+    section, platform = data.get("section"), data.get("platform")
+    group = group_for(section, platform) if isinstance(section, str) and isinstance(platform, str) else None
+    if group is None:
+        return _reply(400, "admin_pwa_invalid_payload")
+
+    def reply(code, status, periods=None, reason=None):
+        periods = dict(periods or {})
+        for period, why in group["unsupported"].items():
+            periods[period] = {"status": "unsupported", "reason": why}
+        body = {"ok": status == "refreshed", "mode": "bundle", "manifest_version": MANIFEST_VERSION,
+                "section": section, "platform": platform, "status": status, "periods": periods}
+        if reason is not None:
+            body["reason"] = reason
+        return JSONResponse(body, status_code=code, headers=_PRIVATE_HEADERS)
+
+    try:
+        if section == "overview":
+            reader = getattr(analytics_reader, "_readers", {}).get("overview")
+            if reader is None:
+                return reply(503, "failed", reason="unavailable")
+            # The existing coherent Overview bundle, exactly as `{}` runs it.
+            done = await reader.refresh_overview_bundle()
+            result = {"status": "refreshed", "periods": {
+                period: {"status": "refreshed", **done[period]} for period in group["periods"]}}
+        elif section == "feedback":
+            if feedback_reader is None:
+                return reply(503, "failed", reason="unavailable")
+            result = await feedback_reader.refresh_feedback_bundle(periods=group["periods"])
+        else:
+            reader = getattr(analytics_reader, "_readers", {}).get(section)
+            if reader is None:
+                return reply(503, "failed", reason="unavailable")
+            result = await reader.refresh_section_bundle(
+                section=section, platform=platform, periods=group["periods"])
+    except StatisticsUnavailable as exc:
+        if str(exc) == "Manual refresh recently completed":
+            return reply(429, "unchanged_recent")
+        reason = _FULL_REFRESH_REASONS.get(str(exc), "unavailable")
+        logger.warning("Full analytics refresh failed; section=%s platform=%s reason=%s",
+                       section, platform, reason)
+        return reply(503, "failed", reason=reason)
+    except Exception:
+        logger.error("Full analytics refresh failed; section=%s platform=%s", section, platform)
+        return reply(503, "failed", reason="unavailable")
+    status = result["status"]
+    if status in ("partial", "failed"):
+        logger.warning("Full analytics refresh %s; section=%s platform=%s", status, section, platform)
+    return reply(200 if status in ("refreshed", "unavailable") else 503, status, result["periods"])
+
+
+def create_manual_aggregate_refresh_router(*, settings_obj, analytics_reader, feedback_reader=None):
     router = APIRouter(tags=["admin-pwa-internal-analytics"])
 
     @router.post(_PATH, include_in_schema=False)
@@ -46,6 +118,13 @@ def create_manual_aggregate_refresh_router(*, settings_obj, analytics_reader):
         data = await _body(request, 128)
         if not isinstance(data, dict):
             return _reply(400, "admin_pwa_invalid_payload")
+        if "mode" in data:
+            # Full refresh is additive and default OFF; while OFF, a `mode`
+            # body is rejected exactly like any other unknown payload.
+            if getattr(settings_obj, "ADMIN_PWA_FULL_REFRESH_ENABLED", False) is not True:
+                return _reply(400, "admin_pwa_invalid_payload")
+            return await _full_refresh(data, analytics_reader=analytics_reader,
+                                       feedback_reader=feedback_reader)
         scoped = data != {}
         if scoped:
             # `platform` is optional: a filter's own snapshot (audit #44).

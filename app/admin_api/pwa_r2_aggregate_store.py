@@ -5,9 +5,22 @@ permissions must be private; never expose R2 object links, signed client URLs,
 secrets or raw PII. Snapshot freshness/schema validation belongs to the reader.
 """
 import asyncio
+import logging
 import re
+import time
 
 MAX_OBJECT_BYTES = 128 * 1024
+logger = logging.getLogger(__name__)
+
+# Only these failure classes may be retried by an owner refresh: the request
+# never reached a decision at the provider, or the provider asked to retry.
+TRANSIENT_FAILURES = frozenset((
+    "timeout", "connect_timeout", "read_timeout", "network", "provider_5xx", "provider_throttled",
+))
+_NETWORK_ERRORS = frozenset((
+    "EndpointConnectionError", "ConnectionClosedError", "ProxyConnectionError", "ConnectionError",
+    "HTTPClientError", "IncompleteReadError", "ResponseStreamingError",
+))
 
 
 class R2ConfigurationError(RuntimeError):
@@ -15,7 +28,41 @@ class R2ConfigurationError(RuntimeError):
 
 
 class R2Unavailable(RuntimeError):
-    pass
+    """Sanitized R2 failure: the operation and an enumerated class, never a
+    key, namespace, URL, credential, provider message or object body."""
+
+    def __init__(self, message, *, op=None, failure_class="other", elapsed_ms=None):
+        super().__init__(message)
+        self.op = op
+        self.failure_class = failure_class
+        self.elapsed_ms = elapsed_ms
+        self.transient = failure_class in TRANSIENT_FAILURES
+
+
+def classify_r2_failure(exc):
+    """Map a provider/transport exception to a fixed class without its text."""
+    if isinstance(exc, (asyncio.TimeoutError, TimeoutError)):
+        return "timeout"
+    name = type(exc).__name__
+    if name == "ConnectTimeoutError":
+        return "connect_timeout"
+    if name == "ReadTimeoutError":
+        return "read_timeout"
+    response = getattr(exc, "response", None)
+    if isinstance(response, dict):
+        status = (response.get("ResponseMetadata") or {}).get("HTTPStatusCode")
+        code = str((response.get("Error") or {}).get("Code") or "")
+        if status == 429 or code in ("SlowDown", "TooManyRequests"):
+            return "provider_throttled"
+        if isinstance(status, int) and 500 <= status <= 599:
+            return "provider_5xx"
+        if code in ("InternalError", "ServiceUnavailable"):
+            return "provider_5xx"
+        if isinstance(status, int) and 400 <= status <= 499:
+            return "provider_4xx"
+    if name in _NETWORK_ERRORS or isinstance(exc, (ConnectionError, OSError)):
+        return "network"
+    return "other"
 
 
 class PrivateR2AggregateStore:
@@ -75,13 +122,14 @@ class PrivateR2AggregateStore:
             finally:
                 body.close()
 
+        started = time.monotonic()
         try:
             return await asyncio.wait_for(asyncio.to_thread(read), timeout=3)
         except Exception as exc:
             # R2 may return NoSuchKey; cache absence is not a server error.
             if getattr(getattr(exc, "response", {}), "get", lambda *_: {})("Error", {}).get("Code") in ("NoSuchKey", "404"):
                 return None
-            raise R2Unavailable("Private R2 aggregate read unavailable") from None
+            raise self._failure("get", exc, started) from None
 
     async def put(self, *, kind, namespace, variant, raw):
         if not self.enabled:
@@ -96,7 +144,19 @@ class PrivateR2AggregateStore:
                 CacheControl="private, no-store",
                 Metadata={"schema": "admin-pwa-aggregates-v1"},
             )
+        started = time.monotonic()
         try:
             await asyncio.wait_for(asyncio.to_thread(write), timeout=3)
-        except Exception:
-            raise R2Unavailable("Private R2 aggregate write unavailable") from None
+        except Exception as exc:
+            raise self._failure("put", exc, started) from None
+
+    @staticmethod
+    def _failure(op, exc, started):
+        failure_class = classify_r2_failure(exc)
+        elapsed_ms = int((time.monotonic() - started) * 1000)
+        # Diagnostic only: enumerated values. No key, URL, provider text or body.
+        logger.warning("Private R2 aggregate %s failed: class=%s elapsed_ms=%d",
+                       op, failure_class, elapsed_ms)
+        message = ("Private R2 aggregate read unavailable" if op == "get"
+                   else "Private R2 aggregate write unavailable")
+        return R2Unavailable(message, op=op, failure_class=failure_class, elapsed_ms=elapsed_ms)
