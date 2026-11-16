@@ -28,6 +28,9 @@ function $(selector) {
   };
 }
 const window = {};
+const MAP = {level:'hsk1'};
+let scope = 'account-A';
+const localUserScope = () => scope;
 const document = {querySelector(){return {classList:{add(){}}}}};
 const pandaChar = () => '<span>Panda</span>';
 const courseMessage = (key, fallback) => ({'firstLessonNext.title':'NEXT TITLE',
@@ -51,6 +54,13 @@ const button = $('#lu-cta').textContent;
 const action = $('#lu-cta').onclick;
 App.startFirstLessonNext();
 App.startFirstLessonNext();
+App.showFirstLessonNext(2);
+MAP.level = 'nhsk1';
+App.startFirstLessonNext(); // no stale cross-track auto launch
+MAP.level = 'hsk1';
+App.showFirstLessonNext(2);
+scope = 'account-B';
+App.startFirstLessonNext(); // no stale cross-account auto launch
 process.stdout.write(JSON.stringify({title,button,action,events}));
 """;
         result = subprocess.run(
@@ -76,6 +86,9 @@ process.stdout.write(JSON.stringify({title,button,action,events}));
         self.assertIn('else if(!PWA_ONBOARDING_HOST&&!isHsk30Level(sel)&&!launch.placement)', legacy)
         self.assertIn('opts.activationVariant||activationVariant()', course)
         self.assertIn("reserveLessonStart(l)", course)
+        self.assertIn('if(sp.get("onboarded")==="1"&&sp.get("autostart")==="1"&&(idx<0||allLessons()[idx].status!=="current"))', course)
+        self.assertIn('localUserScope()!==window._firstLessonNextScope', course)
+        self.assertIn('Number(d.completed_lessons_count)===1', course)
         self.assertIn('if(PWA_COURSE_HOST&&firstVerifiedLesson&&next&&next.status==="current"&&!isPremiumLocked(next))', course)
 
     def test_legacy_onboarding_keeps_telegram_track_handoff_unchanged(self):
