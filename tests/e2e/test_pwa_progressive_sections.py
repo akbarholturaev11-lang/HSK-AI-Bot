@@ -722,11 +722,12 @@ def test_practice_initial_loading_geometry_matches_six_real_cards(width, motion)
             page.locator("#s-mashq .pwa-mashq-shell[aria-busy=true]").wait_for()
             assert len(held) == 1
             assert page.locator("#s-mashq .row-card").count() == 0
-            # Reserve actual two-line labels at narrow widths. Never relax
+            # Real post-design measured row heights from Chromium first-paint→ready.
+            # Never relax
             # the <=8px anchor threshold or hide the real six-card layout.
             expected_heights = (
-                [78, 78, 68, 78, 80, 68] if width <= 340 else
-                [68, 80, 68, 68, 68, 68] if width <= 400 else
+                [83.5, 84.5, 86.7, 84.5, 83.5, 68] if width <= 340 else
+                [68, 84.5, 68, 74, 68, 68] if width <= 400 else
                 [68] * 6
             )
             for i, expected in enumerate(expected_heights):
