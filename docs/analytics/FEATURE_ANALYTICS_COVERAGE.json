@@ -5111,7 +5111,7 @@
       },
       {
         "target": "app/static/course_v3_test.html",
-        "reason": "Diagnostic precision (task 6.2) changes only the content token of the shared reporter script on this page. Existing exam submission, grading and access behavior are unchanged; full assessment monitoring remains partial."
+        "reason": "This reviewed change updates only the hsk-course-i18n.js content-addressed cache token to deliver the localized first-to-second lesson CTA elsewhere. Exam questions, submissions, grading, access and error reporter remain byte-identical; assessment monitoring is still partial and unchanged by this unrelated asset version."
       },
       {
         "target": "app/static/course_v3_mistakes.html",
