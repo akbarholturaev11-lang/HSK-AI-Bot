@@ -591,10 +591,14 @@ function toCourse(){
   // A confirmed onboarding save can launch the server-selected current lesson
   // on either HSK track. A reconciled POST has no trusted lesson number:
   // resume=1 resolves it from the authenticated course map instead.
-  if(!launch.placement&&!launch.review_only){
+  if(hostPwa&& !launch.placement&&!launch.review_only){
     if(!launch.reconciled&&Number(launch.lesson)>0)q.set("lesson",String(launch.lesson));
     else q.delete("lesson");
     q.set("resume","1");q.set("autostart","1");
+  }else if(!hostPwa&&!launch.reconciled&&global.track==="hsk20"&&
+     Number(launch.lesson)>0&&!launch.placement){
+    // Keep the existing Telegram Mini App course handoff unchanged.
+    q.set("lesson",String(launch.lesson));q.set("autostart","1");q.delete("resume");
   }else{q.delete("lesson");q.delete("resume");q.delete("autostart")}
   location.assign(pageCourse()+"?"+q.toString());
 }
