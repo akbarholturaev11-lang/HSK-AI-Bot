@@ -2987,27 +2987,16 @@ var App={
   startFirstLessonNext:function(){
     var order=Number(window._firstLessonNextOrder)||0;
     if(!order)return;
-    if(!MAP||MAP.level!==window._firstLessonNextLevel||localUserScope()!==window._firstLessonNextScope){window._firstLessonNextOrder=0;$("#levelup").classList.remove("on");App.show("course");renderAll();return}
-    var lessons=allLessons();
-    var idx=lessons.findIndex(function(lesson){return Number(lesson.n)===order});
-    var next=idx>=0?lessons[idx]:null;
-    // A background progress refresh or another device may have advanced or
-    // locked this mini-part. Never auto-launch a stale/done lesson.
-    if(!next||next.status!=="current"||isPremiumLocked(next)){
-      window._firstLessonNextOrder=0;window._pendingLessonEndAd=0;window._pendingPwaLessonFeedback=null;
-      $("#levelup").classList.remove("on","first-lesson-next");App.show("course");renderAll();return;
-    }
+    if(!MAP||MAP.level!==window._firstLessonNextLevel||localUserScope()!==window._firstLessonNextScope){window._firstLessonNextOrder=0;window._pendingLessonEndAd=0;window._pendingPwaLessonFeedback=null;$("#levelup").classList.remove("on");App.show("course");renderAll();return}
     $("#lu-cta").disabled=true;
-    window._firstLessonNextOrder=0;
-    // Start deliberately skips the first part's ad and feedback detours.
-    // Consume both intents now so a later closeLevelUp cannot replay them.
-    window._pendingLessonEndAd=0;window._pendingPwaLessonFeedback=null;
+    window._firstLessonNextOrder=0;window._pendingLessonEndAd=0;window._pendingPwaLessonFeedback=null;
     $("#levelup").classList.remove("on","first-lesson-next");
     $("#lu-panda").innerHTML="";
     // Do not flush deferred centre ads into the first-to-second handoff.
     cancelLessonPron();stopTourAudio();$("#flow").classList.remove("on");edgeGlow(0);window._pendingCourseUnlockOrder=0;window._pendingCourseUnlockRetries=0;
     App.show("course");renderAll();
-    startLesson(idx); // reserveLessonStart is the final server access check
+    var idx=allLessons().findIndex(function(lesson){return Number(lesson.n)===order});
+    if(idx>=0&&allLessons()[idx].status==="current"&&!isPremiumLocked(allLessons()[idx]))startLesson(idx); // reserveLessonStart is the final server access check
   },
   showLevelUp:function(type,data,extra){
     $("#levelup").classList.remove("sales-bridge","first-lesson-next");
