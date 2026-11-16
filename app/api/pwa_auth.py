@@ -480,6 +480,19 @@ async def _small_json(request: Request, model, *, max_bytes: int = 1024):
         raise PwaAuthError("pwa_request_invalid", status_code=422)
 
 
+_CHECKOUT_ATTEMPT_CHARS = frozenset(
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-:."
+)
+
+
+def _checkout_attempt(value: str | None) -> str | None:
+    """The one attempt-id form a checkout opening and its stages share."""
+    attempt = str(value or "").strip()
+    if 1 <= len(attempt) <= 80 and set(attempt) <= _CHECKOUT_ATTEMPT_CHARS:
+        return attempt
+    return None
+
+
 def _error(exc: PwaAuthError) -> JSONResponse:
     return JSONResponse(
         {"ok": False, "error": exc.code},
@@ -1707,14 +1720,16 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                     )
                     # Retain the canonical funnel event. PWA users may have no
                     # Telegram provider, so the accountable key is users.id.
-                    if not result.get("pending_payment") and data.attempt_id:
-                        await ConversionFunnelService().record(
-                            event_name="checkout_opened",
+                    # Stored under the stage route's attempt form; the result
+                    # never changes this payment response.
+                    attempt = _checkout_attempt(data.attempt_id)
+                    if not result.get("pending_payment") and attempt:
+                        await ConversionFunnelService().record_checkout_opened(
                             user=actor,
                             telegram_id=actor.telegram_id,
                             source=(data.source or "iphone_pwa")[:80],
                             payload={
-                                "attempt_id": data.attempt_id,
+                                "attempt_id": attempt,
                                 "mode": data.mode or "",
                                 "campaign_id": data.campaign_id,
                                 "feedback_id": data.feedback_id,
@@ -1842,9 +1857,8 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                     request.headers.get("X-HSK-PWA-CSRF"),
                 )
                 data = await _small_json(request, PwaCheckoutEvent, max_bytes=4096)
-                attempt = str(data.attempt_id or "").strip()
-                allowed = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-:."
-                if not (1 <= len(attempt) <= 80) or any(c not in allowed for c in attempt):
+                attempt = _checkout_attempt(data.attempt_id)
+                if attempt is None:
                     raise PwaAuthError("invalid_checkout_attempt", status_code=422)
                 opened = (await db.execute(
                     select(ConversionFunnelEvent.id).where(

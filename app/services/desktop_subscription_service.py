@@ -163,8 +163,8 @@ class DesktopSubscriptionService:
         if self.source == "android_subscription":
             # Route-owned marker, as on Android Lava rows. Desktop rows are frozen.
             payload["transport"] = "android"
-        await ConversionFunnelService().record(
-            event_name="checkout_opened",
+        # Stages answer 409 without this row: checked, retried once, never doubled.
+        await ConversionFunnelService().record_checkout_opened(
             user=user,
             telegram_id=user.telegram_id,
             source=entry_source or self.source,

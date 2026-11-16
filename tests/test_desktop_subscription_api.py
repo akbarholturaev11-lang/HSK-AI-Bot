@@ -295,6 +295,42 @@ class DesktopSubscriptionApiTests(unittest.IsolatedAsyncioTestCase):
             "checkout_attempt_not_opened",
         )
 
+    async def test_android_checkout_opening_survives_one_failed_write(self):
+        import json
+        from tests.checkout_funnel_faults import FlakyFunnelSessions
+
+        base = "/api/v3/android/subscription/checkout"
+        flaky = FlakyFunnelSessions(self.sessions, drop={1})
+        with patch("app.services.conversion_funnel_service.async_session_maker", flaky):
+            overview = await self.client.get(
+                base + "/overview?origin=course_limit",
+                headers=self._headers(self.token_a),
+            )
+            attempt_id = overview.json()["attempt_id"]
+            event = await self.client.post(
+                base + "/event", headers=self._headers(self.token_a),
+                json={
+                    "attempt_id": attempt_id,
+                    "stage": "payment_instructions_viewed",
+                    "plan_type": "1_month",
+                    "payment_method": "alipay",
+                },
+            )
+        # Prices are served whatever happens to the analytics write.
+        self.assertEqual(overview.status_code, 200, overview.text)
+        self.assertTrue(overview.json()["checkout_allowed"])
+        # Before the fix the opening was silently lost and this answered 409.
+        self.assertEqual(event.status_code, 200, event.text)
+        async with self.sessions() as session:
+            rows = (await session.execute(
+                select(ConversionFunnelEvent.payload_json).where(
+                    ConversionFunnelEvent.event_name == "checkout_opened",
+                )
+            )).scalars().all()
+        mine = [p for p in map(json.loads, rows) if p.get("attempt_id") == attempt_id]
+        self.assertEqual(len([p for p in mine if "stage" not in p]), 1)  # never doubled
+        self.assertEqual([p.get("stage") for p in mine if "stage" in p], ["payment_instructions_viewed"])
+
     async def test_submit_creates_one_pending_payment_for_authenticated_user(self):
         overview = await self.client.get(
             "/api/v3/desktop/subscription/overview",

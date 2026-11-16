@@ -3406,6 +3406,73 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(record.await_args.kwargs["user"].id, 1)
             self.assertEqual(record.await_args.kwargs["payload"]["stage"], "payment_receipt_selected")
 
+    async def _pwa_checkout_rows(self, attempt):
+        async with self.sessions() as db:
+            rows = (await db.execute(select(ConversionFunnelEvent.payload_json).where(
+                ConversionFunnelEvent.event_name == "checkout_opened",
+            ))).scalars().all()
+        mine = [p for p in map(json.loads, rows) if p.get("attempt_id") == attempt]
+        return [p for p in mine if "stage" not in p], [p["stage"] for p in mine if "stage" in p]
+
+    async def _pwa_checkout(self, overview_attempt, stage_attempt, flaky=None):
+        from tests.checkout_funnel_faults import FlakyFunnelSessions
+        state = await self.begin()
+        await self.callback(state)
+        csrf = (await self.client.get("/api/v3/pwa-auth/session")).json()["csrf"]
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf}
+        with patch(
+            "app.services.subscription_miniapp_service.SubscriptionMiniAppService.overview",
+            new_callable=AsyncMock,
+            return_value={"ok": True, "mode": "subscription", "pending_payment": None,
+                          "prices": {"visa": {"1_month": {"final_amount": 89}}}},
+        ), patch(
+            "app.services.conversion_funnel_service.async_session_maker",
+            flaky or FlakyFunnelSessions(self.sessions),
+        ):
+            opened = await self.client.post(
+                "/api/v3/pwa/subscription/overview", headers=headers,
+                json={"source": "v3_paywall", "mode": "subscription", "plan": "1_month",
+                      "attempt_id": overview_attempt},
+            )
+            event = await self.client.post(
+                "/api/v3/pwa/subscription/event", headers=headers,
+                json={"attempt_id": stage_attempt, "stage": "payment_instructions_viewed",
+                      "source": "v3_paywall", "mode": "subscription",
+                      "plan_type": "1_month", "payment_method": "visa"},
+            )
+        return opened, event
+
+    async def test_pwa_checkout_opening_survives_one_failed_write(self):
+        from tests.checkout_funnel_faults import FlakyFunnelSessions
+        attempt = "sub-1794800000000-a1b2c3d4"
+        opened, event = await self._pwa_checkout(
+            attempt, attempt, FlakyFunnelSessions(self.sessions, drop={1}),
+        )
+        # The payment overview never depends on the analytics write.
+        self.assertEqual(opened.status_code, 200, opened.text)
+        self.assertEqual(opened.json()["prices"]["visa"]["1_month"]["final_amount"], 89)
+        # Before the fix the opening was silently lost and this answered 409.
+        self.assertEqual(event.status_code, 200, event.text)
+        base, stages = await self._pwa_checkout_rows(attempt)
+        self.assertEqual(len(base), 1)  # recovered once, never duplicated
+        self.assertEqual(base[0]["transport"], "iphone_pwa")
+        self.assertEqual(stages, ["payment_instructions_viewed"])
+
+    async def test_pwa_checkout_opening_uses_the_stage_route_attempt_id(self):
+        # The stage route trims the attempt and accepts only [A-Za-z0-9:.-]
+        # up to 80 chars; the opening must be stored under that same id.
+        attempt = "sub-1794800000000-a1b2c3d4"
+        opened, event = await self._pwa_checkout(f"  {attempt} ", attempt)
+        self.assertEqual(opened.status_code, 200, opened.text)
+        self.assertEqual(event.status_code, 200, event.text)
+        base, stages = await self._pwa_checkout_rows(attempt)
+        self.assertEqual((len(base), stages), (1, ["payment_instructions_viewed"]))
+        # An id no stage can ever reference opens no dead attempt.
+        opened, event = await self._pwa_checkout("sub-1%x", "sub-1%x")
+        self.assertEqual(opened.status_code, 200, opened.text)
+        self.assertEqual(event.status_code, 422)
+        self.assertEqual(await self._pwa_checkout_rows("sub-1%x"), ([], []))
+
     def test_home_screen_resume_revalidates_server_actor_in_existing_pages(self):
         pages = {
             "course-v3.html": ("PWA_COURSE_HOST", "PWA_COURSE_ACTOR_PROMISE", "pwaCourseActor"),
