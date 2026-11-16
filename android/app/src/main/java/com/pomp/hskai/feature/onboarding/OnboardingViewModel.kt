@@ -96,7 +96,7 @@ internal class OnboardingViewModel(
         val serverLevel = normalizeLevel(status.level)
         val selectedTrack = when {
             hasLiveHsk30 && serverLevel in HSK30_LEVELS -> "hsk30"
-            !status.completed && hasLiveHsk30 -> "hsk30"
+            !status.completed && hasLiveHsk30 && status.hsk30.allowed -> "hsk30"
             else -> "hsk20"
         }
         val selectedLevel = when {
