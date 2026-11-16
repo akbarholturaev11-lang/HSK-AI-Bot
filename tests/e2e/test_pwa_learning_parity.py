@@ -412,8 +412,10 @@ def test_completed_part_continues_to_one_line_next_part_sheet(lang, chip):
 
             def lines():
                 return page.evaluate("""() => [...document.querySelectorAll('#sheet.on .shead .fit1')].map(el => {
-                  const fs=parseFloat(getComputedStyle(el).fontSize);
-                  return {fs, oneLine: el.getBoundingClientRect().height < fs*1.6, fits: el.scrollWidth <= el.clientWidth};
+                  const fs=parseFloat(getComputedStyle(el).fontSize), text=document.createRange();
+                  text.selectNodeContents(el);  // exact width: no clipped "…" at the end
+                  return {fs, oneLine: el.getBoundingClientRect().height < fs*1.6,
+                    fits: text.getBoundingClientRect().width <= el.getBoundingClientRect().width};
                 })""")
             short = lines()
             assert [line['fs'] for line in short] == [34, 15]

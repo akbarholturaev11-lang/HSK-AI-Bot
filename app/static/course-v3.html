@@ -4295,14 +4295,17 @@ function lessonSheetHead(l,chip){
     +'<div class="zh han fit1"'+(chip?'':label)+'>'+esc(l.zh)+'</div><div class="py fit1">'+esc(l.py||"")+'</div>';
 }
 /* A long line shrinks from its normal size until it fits; a short one never
-   grows. Measured once the sheet is visible. */
+   grows. Measured once the sheet is visible, with the exact (fractional) text
+   width: scrollWidth is rounded and would leave a sub-pixel "…" overflow. */
 function fitOneLine(el,min){
   el.style.fontSize="";
-  var max=parseFloat(getComputedStyle(el).fontSize)||0,w=el.clientWidth;
-  if(!max||!w||el.scrollWidth<=w)return;
-  var size=Math.max(min,Math.floor(max*w/el.scrollWidth*2)/2);
+  var max=parseFloat(getComputedStyle(el).fontSize)||0,w=el.clientWidth-1,range=document.createRange();
+  range.selectNodeContents(el);
+  var need=function(){return range.getBoundingClientRect().width};
+  if(!max||w<=0||need()<=w)return;
+  var size=Math.max(min,Math.floor(max*w/need()*2)/2);
   el.style.fontSize=size+"px";
-  while(el.scrollWidth>el.clientWidth&&size>min){size=Math.max(min,size-.5);el.style.fontSize=size+"px"}
+  while(need()>w&&size>min){size=Math.max(min,size-.5);el.style.fontSize=size+"px"}
 }
 function fitSheetHeader(){
   document.querySelectorAll("#sheet.on .shead .fit1").forEach(function(el){fitOneLine(el,el.classList.contains("zh")?14:10)});
