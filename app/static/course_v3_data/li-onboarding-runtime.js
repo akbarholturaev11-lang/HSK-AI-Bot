@@ -588,11 +588,15 @@ function toCourse(){
   q.set("tab",String(launch.tab||"course"));
   q.set("onboarded","1");
   if(launch.foundation_required)q.set("foundation","1");else q.delete("foundation");
-  // Lost POST response: do not fabricate a lesson ID/autostart.
-  if(!launch.reconciled&&global.track==="hsk20"&&
-     Number(launch.lesson)>0&&!launch.placement){
-    q.set("lesson",String(launch.lesson));q.set("autostart","1");
-  }else{q.delete("lesson");q.delete("autostart")}
+  // The verified course map selects the first open lesson. A reconciled save
+  // confirms onboarding but does not authorize a guessed lesson ID.
+  q.delete("lesson");q.delete("autostart");q.delete("resume");
+  if(!launch.placement&&!launch.review_only&&!launch.reviewOnly){
+    if(!launch.reconciled&&Number(launch.lesson)>0)
+      q.set("lesson",String(launch.lesson));
+    else q.set("resume","1");
+    q.set("autostart","1");
+  }
   location.assign(pageCourse()+"?"+q.toString());
 }
 function showLiveBooks(){
