@@ -42,7 +42,7 @@ const startLesson = idx => events.push('lesson:'+idx);
 const setTimeout = fn => fn();
 let pendingRankUp = null;
 const App = {
-""" + BODY + r"""
+""" + body + r"""
   show:screen => events.push('show:'+screen)
 };
 App.showFirstLessonNext(2);
@@ -54,7 +54,7 @@ App.startFirstLessonNext();
 process.stdout.write(JSON.stringify({title,button,action,events}));
 """;
         result = subprocess.run(
-            ["node", "-e", script.replace("BODY", body)],
+            ["node", "-e", script],
             text=True, capture_output=True, check=True,
         )
         values = json.loads(result.stdout)
