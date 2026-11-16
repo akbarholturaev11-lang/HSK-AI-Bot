@@ -86,7 +86,13 @@ internal fun LessonCompletionCelebration(
     rankBoard: LessonRankBoard? = null,
     rankUp: LessonRankUp? = null,
     onExit: () -> Unit,
+    firstLessonNext: Boolean = false,
+    onStartNext: () -> Unit = onExit,
 ) {
+    if (firstLessonNext && !outcome.duplicate) {
+        FirstLessonNextPrompt(onStartNext)
+        return
+    }
     val gamification = outcome.gamification
     val verifiedRankUp = rankUp ?: outcome.let {
         if (
@@ -193,6 +199,39 @@ private enum class CelebrationScene(val entrance: HskEntrance) {
     COMPLETE(HskEntrance.LAND),
     STREAK(HskEntrance.FLY),
     RANK_UP(HskEntrance.ZOOM),
+}
+
+/**
+ * The single post-first-lesson bridge. Completion is already confirmed by
+ * LessonViewModel and server-owned rewards are unchanged. The existing
+ * celebration background and primary CTA keep both platforms visually aligned.
+ */
+@Composable
+private fun FirstLessonNextPrompt(onStartNext: () -> Unit) {
+    HskCelebrationStage {
+        Column(
+            modifier = Modifier.fillMaxSize().systemBarsPadding()
+                .padding(horizontal = 24.dp),
+        ) {
+            Box(
+                modifier = Modifier.weight(1f).fillMaxWidth(),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = stringResource(R.string.hsk_course_first_lesson_next_title),
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = HskStageInkOn,
+                    textAlign = TextAlign.Center,
+                )
+            }
+            PrimaryAction(
+                text = stringResource(R.string.hsk_course_first_lesson_next_start),
+                onClick = onStartNext,
+            )
+            Spacer(Modifier.height(20.dp))
+        }
+    }
 }
 
 /** `showRankUp()`: the rows swap and the confetti falls 420 ms after the scene opens. */
