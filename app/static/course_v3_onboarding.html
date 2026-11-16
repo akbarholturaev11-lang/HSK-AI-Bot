@@ -752,8 +752,11 @@ function refreshOnboardingTracks(){
         var restoredChoices=levelsForTrack();
         if(!restoredChoices.some(function(l){return l.k===sel}))sel=restoredChoices[0].k;
       }else if(!hasSavedTrack&&!userSelectedTrack){
-        track=h30Enabled?"hsk30":"hsk20";
-        sel=h30Enabled?"nhsk1":"beginner";
+        // A new PWA learner should start with an accessible course; an
+        // HSK 3.0 feature flag alone does not grant access.
+        var preferHsk30=h30Enabled&&(!PWA_ONBOARDING_HOST||access.allowed===true);
+        track=preferHsk30?"hsk30":"hsk20";
+        sel=preferHsk30?"nhsk1":"beginner";
       }else if(track==="hsk30"&&!h30Enabled){
         track="hsk20";sel="beginner";
       }else{

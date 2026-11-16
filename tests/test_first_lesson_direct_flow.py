@@ -103,6 +103,28 @@ process.stdout.write(JSON.stringify({title,button,action,events,preserved,inside
         self.assertIn('Number(d.completed_lessons_count)===1', course)
         self.assertIn('if(PWA_COURSE_HOST&&firstVerifiedLesson&&next&&next.status==="current"&&!isPremiumLocked(next))', course)
 
+    def test_legacy_pwa_default_requires_hsk30_entitlement(self):
+        """An advertised HSK 3.0 option is not a default unlocked lesson."""
+        html=(ROOT / "app/static/course_v3_onboarding.html").read_text(encoding="utf-8")
+        script=html.split("}else if(!hasSavedTrack&&!userSelectedTrack){",1)[1].split("}else if(track===\"hsk30\"&&!h30Enabled){",1)[0]
+        node=r"""
+const body=JSON.parse(process.argv[1]);
+function choose(host,allowed){
+  const f=new Function('PWA_ONBOARDING_HOST','h30Enabled','access',
+    'var track,sel;'+body+';return {track,sel};');
+  return f(host,true,{feature_enabled:true,allowed});
+}
+process.stdout.write(JSON.stringify({
+  deniedPwa:choose(true,false),allowedPwa:choose(true,true),
+  deniedMiniapp:choose(false,false)
+}));
+"""
+        result=subprocess.run(["node","-e",node,json.dumps(script)],capture_output=True,text=True,check=True)
+        data=json.loads(result.stdout)
+        self.assertEqual(data["deniedPwa"],{"track":"hsk20","sel":"beginner"})
+        self.assertEqual(data["allowedPwa"],{"track":"hsk30","sel":"nhsk1"})
+        self.assertEqual(data["deniedMiniapp"],{"track":"hsk30","sel":"nhsk1"})
+
     def test_li_onboarding_handoff_never_fabricates_lesson_or_entitlement(self):
         """Run the actual Li onboarding handler with PWA/Telegram launch variants."""
         text = (ROOT / "app/static/course_v3_data/li-onboarding-runtime.js").read_text(encoding="utf-8")
