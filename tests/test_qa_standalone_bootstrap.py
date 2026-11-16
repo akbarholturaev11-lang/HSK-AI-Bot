@@ -46,6 +46,30 @@ class StandaloneQAInitializerTests(unittest.TestCase):
             with self.subTest(delta=delta), self.assertRaises(RuntimeError):
                 mod.validate_target(SAFE | delta)
 
+    def test_professional45_project_has_its_own_exact_binding(self):
+        pro45 = {
+            "RAILWAY_PROJECT_ID": mod.PRO45_QA_PROJECT_ID,
+            "RAILWAY_ENVIRONMENT_ID": mod.PRO45_QA_ENVIRONMENT_ID,
+            "RAILWAY_SERVICE_ID": mod.PRO45_QA_SERVICE_ID,
+            "RAILWAY_ENVIRONMENT_NAME": "staging",
+        }
+        mod.validate_target(SAFE | pro45)
+        crossed = [
+            # One project's IDs never unlock the other project.
+            {"RAILWAY_ENVIRONMENT_ID": mod.QA_ENVIRONMENT_ID},
+            {"RAILWAY_SERVICE_ID": mod.QA_SERVICE_ID},
+            {"RAILWAY_SERVICE_ID": "b5a3241c-a752-47f6-9961-40e2678302db"},
+            {"RAILWAY_ENVIRONMENT_NAME": "qa"},
+            {"RAILWAY_ENVIRONMENT_NAME": "production"},
+            {"HSK_QA_EMPTY_DB_BOOTSTRAP": ""},
+            {"DATABASE_URL": SAFE["DATABASE_URL"].replace("postgres.railway.internal", "production-postgres.railway.internal")},
+        ]
+        for delta in crossed:
+            with self.subTest(delta=delta), self.assertRaises(RuntimeError):
+                mod.validate_target(SAFE | pro45 | delta)
+        with self.assertRaisesRegex(RuntimeError, "wrong_environment"):
+            mod.validate_target(SAFE | {"RAILWAY_ENVIRONMENT_NAME": "staging"})
+
     def test_only_empty_database_is_initialized(self):
         source = SCRIPT.read_text(encoding="utf-8")
         self.assertIn("standalone_qa_database_not_empty", source)
@@ -62,7 +86,7 @@ class StandaloneQAInitializerTests(unittest.TestCase):
                          [mod.EXPECTED_HEAD])
         self.assertEqual(mod.EXPECTED_BASELINE, "0102_payment_review_preview")
         # This is an explicit reviewed upgrade, not an arbitrary accepted head.
-        self.assertEqual(mod.EXPECTED_HEAD, "0157_diagnostic_precision")
+        self.assertEqual(mod.EXPECTED_HEAD, "0158_course_saved_words")
 
     def test_new_or_multiple_heads_stop_before_any_schema_creation_or_stamp(self):
         for heads in ([], ["0110_unreviewed"], [mod.EXPECTED_HEAD, "other_head"]):
@@ -103,6 +127,7 @@ class StandaloneQAInitializerTests(unittest.TestCase):
             "learner_pwa_push_subscriptions", "learner_pwa_push_outbox",
             "lava_invoices", "lava_webhook_events", "pwa_exit_offers",
             "diagnostic_incidents", "diagnostic_receipts",
+            "course_saved_words",
         }
         self.assertEqual(set(metadata.tables) - initial, expected)
         self.assertIn("user_identities", initial)
@@ -169,7 +194,8 @@ class StandaloneQASchemaSafetyTests(unittest.IsolatedAsyncioTestCase):
         columns = [{"name": name, "nullable": False} for name in ("visit_day", "source", "visits")]
         primary = {"constrained_columns": ["visit_day", "source"]}
         for case in ("valid", "missing_table", "missing_notification_table",
-                     "bad_columns", "bad_primary_key", "identity_rows", "pwa_rows"):
+                     "bad_columns", "bad_primary_key", "identity_rows", "pwa_rows",
+                     "rollout_changed"):
             with self.subTest(case=case):
                 missing = ("public_site_traffic_daily" if case == "missing_table" else
                            "notification_templates" if case == "missing_notification_table" else None)
@@ -180,7 +206,11 @@ class StandaloneQASchemaSafetyTests(unittest.IsolatedAsyncioTestCase):
                     query = str(statement)
                     value = (mod.EXPECTED_HEAD if "version_num" in query else
                              1 if ((case == "identity_rows" and "FROM user_identities" in query)
-                                   or (case == "pwa_rows" and "FROM admin_pwa_credentials" in query)) else 0)
+                                   or (case == "pwa_rows" and "FROM admin_pwa_credentials" in query)
+                                   or (case == "rollout_changed" and "FROM smart_reminder_rollout" in query)) else 0)
+                    if "FROM smart_reminder_rollout" in query:
+                        # Only the migration's untouched control seed is exempt.
+                        self.assertIn("WHERE NOT (id = 1", query)
                     return SimpleNamespace(scalar=lambda: value)
                 connection = SimpleNamespace(
                     run_sync=AsyncMock(side_effect=[tables, (shape, key)]),
@@ -192,7 +222,7 @@ class StandaloneQASchemaSafetyTests(unittest.IsolatedAsyncioTestCase):
                         await mod.verify_qa_tables()
                     else:
                         expected = ("missing_schema_tables" if missing else
-                                    "unexpected_user_rows" if case in {"identity_rows", "pwa_rows"} else
+                                    "unexpected_user_rows" if case in {"identity_rows", "pwa_rows", "rollout_changed"} else
                                     "bad_public_traffic_schema")
                         with self.assertRaisesRegex(RuntimeError, expected):
                             await mod.verify_qa_tables()

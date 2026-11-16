@@ -21,10 +21,22 @@ QA_PROJECT_ID = "adfa0e91-0905-4cf6-82cb-ddcc806fa3c3"
 QA_ENVIRONMENT_ID = "3fcae398-1bca-4162-b839-57875ac20bc6"
 QA_SERVICE_ID = "a56e0543-d4b3-44dd-a080-eb5c93174756"
 QA_ENVIRONMENT = "qa"
+# Separate "HSK AI Professional 45 QA" project (PWA design QA). Its own empty
+# Postgres; never production, never the Universal QA database above.
+PRO45_QA_PROJECT_ID = "06a405a4-9ec7-4d1f-87b6-b2f745d8fc76"
+PRO45_QA_ENVIRONMENT_ID = "aa22456f-c3f7-47d8-ad90-904856fc10bd"
+PRO45_QA_SERVICE_ID = "af3ace37-df4c-4109-bd09-726a898df508"
+PRO45_QA_ENVIRONMENT = "staging"
+# Each reviewed binding is an exact (project, environment id, service id,
+# environment name) tuple. A project id never unlocks another project's IDs.
+QA_BINDINGS = {
+    QA_PROJECT_ID: (QA_ENVIRONMENT_ID, QA_SERVICE_ID, QA_ENVIRONMENT),
+    PRO45_QA_PROJECT_ID: (PRO45_QA_ENVIRONMENT_ID, PRO45_QA_SERVICE_ID, PRO45_QA_ENVIRONMENT),
+}
 QA_HOST = "postgres.railway.internal"
 QA_DATABASE = "railway"
 EXPECTED_BASELINE = "0102_payment_review_preview"
-EXPECTED_HEAD = "0157_diagnostic_precision"
+EXPECTED_HEAD = "0158_course_saved_words"
 # These reviewed migrations create tables unconditionally. Defer their DDL
 # until after the empty ORM baseline is stamped; never precreate and then skip
 # their migrations. This list is reviewed alongside EXPECTED_HEAD.
@@ -53,7 +65,15 @@ MIGRATION_CREATED_TABLES = frozenset({
     "learner_pwa_push_subscriptions", "learner_pwa_push_outbox",
     "admin_pwa_mcp_audit", "admin_pwa_mcp_quotas",
     "diagnostic_incidents", "diagnostic_receipts",
+    "course_saved_words",
 })
+
+# Control rows a reviewed migration itself inserts (not learner data). Only the
+# exact untouched seed is excluded from the zero-row check; any other row fails.
+MIGRATION_SEEDED_ROWS = {
+    "smart_reminder_rollout": (" WHERE NOT (id = 1 AND generation = 0 AND stage = 0"
+                               " AND status = 'waiting' AND stage_started_at IS NULL)"),
+}
 
 
 def _registered_model_metadata():
@@ -67,11 +87,13 @@ def _registered_model_metadata():
 
 
 def validate_target(env: dict[str, str]) -> None:
-    if env.get("RAILWAY_PROJECT_ID") != QA_PROJECT_ID:
+    binding = QA_BINDINGS.get(env.get("RAILWAY_PROJECT_ID") or "")
+    if binding is None:
         raise RuntimeError("standalone_qa_wrong_project")
-    if env.get("RAILWAY_ENVIRONMENT_NAME") != QA_ENVIRONMENT:
+    environment_id, service_id, environment_name = binding
+    if env.get("RAILWAY_ENVIRONMENT_NAME") != environment_name:
         raise RuntimeError("standalone_qa_wrong_environment")
-    if env.get("RAILWAY_ENVIRONMENT_ID") != QA_ENVIRONMENT_ID or env.get("RAILWAY_SERVICE_ID") != QA_SERVICE_ID:
+    if env.get("RAILWAY_ENVIRONMENT_ID") != environment_id or env.get("RAILWAY_SERVICE_ID") != service_id:
         raise RuntimeError("standalone_qa_wrong_operator_binding")
     if env.get("HSK_QA_EMPTY_DB_BOOTSTRAP") != "I_APPROVE_EMPTY_QA_DB":
         raise RuntimeError("standalone_qa_not_approved")
@@ -118,7 +140,9 @@ async def verify_qa_tables() -> None:
                 raise RuntimeError("standalone_qa_bad_public_traffic_schema")
             for table in ("users", "payments", "referrals", "course_progress",
                           "user_identities", *sorted(MIGRATION_CREATED_TABLES)):
-                n = (await con.execute(text(f"SELECT count(*) FROM {table}"))).scalar()
+                n = (await con.execute(text(
+                    f"SELECT count(*) FROM {table}" + MIGRATION_SEEDED_ROWS.get(table, "")
+                ))).scalar()
                 if n != 0:
                     raise RuntimeError("standalone_qa_unexpected_user_rows")
     finally:
