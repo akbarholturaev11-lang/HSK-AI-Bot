@@ -144,7 +144,7 @@ html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-mashq .mashq-grou
   box-shadow: none;
 }
 html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-mashq .row-card {
-  min-height: 72px;
+  min-height: 68px;
   padding: 12px 13px;
   cursor: pointer;
   background: transparent;
@@ -339,7 +339,7 @@ html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] .pwa-rating-row {
 }
 /* Keep the loading geometry in the exact same slots after visual retuning. */
 html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-mashq .pwa-mashq-shell .pwa-practice-row {
-  min-height: 72px;
+  min-height: 68px;
 }
 html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-voice .pwa-voice-shell .voicebox {
   padding: 28px 20px 24px;
@@ -796,4 +796,31 @@ html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #flow .p45-lesson-fl
 }
 html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #flow .p45-lesson-flash button:focus-visible{
   outline:3px solid var(--cin);outline-offset:2px;
+}
+
+
+/* Preserve measured loading→ready layout on iPhone 320/390/430px.
+   Matched to the existing HSK AI progressive skeleton contracts. */
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-voice > .pwa-voice-shell > .htop {
+  min-height:64px;
+  padding-top:10px;
+  padding-bottom:10px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-profile > .pwa-profile-shell > .p45-profile-streak-loading {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  min-height:44px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-profile > .pwa-profile-shell .p45-profile-streak-skel {
+  width:83px;
+  height:21px;
+  border-radius:8px;
+  flex:none;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="course-shell"] #s-profile > .pwa-profile-shell > .profile-friends-link {
+  min-height:48px;
+  display:flex;
+  align-items:center;
+  padding-inline:16px;
 }
