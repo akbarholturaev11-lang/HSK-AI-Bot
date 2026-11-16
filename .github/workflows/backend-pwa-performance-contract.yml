@@ -83,7 +83,7 @@ jobs:
 
   progressive-browser:
     needs: policy-and-tests
-    if: needs.policy-and-tests.outputs.web_changed == 'true'
+    if: needs.policy-and-tests.outputs.web_changed == 'true' || github.ref_name == 'feat/pwa-professional-45-design-real-source-20261116'
     # Playwright 1.56 does not provide browser binaries for ubuntu-26.04.
     runs-on: ubuntu-24.04
     timeout-minutes: 18
@@ -126,7 +126,7 @@ jobs:
 
   backend-course-cache-regression:
     needs: policy-and-tests
-    if: needs.policy-and-tests.outputs.backend_changed == 'true'
+    if: needs.policy-and-tests.outputs.backend_changed == 'true' || github.ref_name == 'feat/pwa-professional-45-design-real-source-20261116'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
