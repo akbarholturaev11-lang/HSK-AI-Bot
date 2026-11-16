@@ -1079,8 +1079,12 @@ private fun AppRoot(
                 val requestedOrder = onboardingLaunch.lesson?.takeIf { it > 0 }
                     ?: map.currentLesson?.order
                 val candidate = requestedOrder?.let { order ->
-                    map.lessons.firstOrNull { it.order == order }
-                } ?: map.currentLesson
+                    map.lessons.firstOrNull {
+                        it.order == order && it.status == com.pomp.hskai.domain.model.LessonStatus.CURRENT
+                    }
+                } ?: map.currentLesson?.takeIf {
+                    it.status == com.pomp.hskai.domain.model.LessonStatus.CURRENT
+                }
                 onboardingAutoStartHandled = true
                 if (candidate != null &&
                     (candidate.access == LessonAccess.Open ||
@@ -1527,6 +1531,7 @@ private fun AppRoot(
                             val next = fresh?.lessons?.firstOrNull { it.order == launch.lesson.order + 1 }
                             if (!offline && fresh?.level == expectedLevel &&
                                 courseState.map?.level == expectedLevel && next != null &&
+                                next.status == com.pomp.hskai.domain.model.LessonStatus.CURRENT &&
                                 (next.access == LessonAccess.Open ||
                                  next.access == LessonAccess.HalfPreview)
                             ) {
