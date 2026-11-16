@@ -418,7 +418,9 @@ def test_completed_part_continues_to_one_line_next_part_sheet(lang, chip):
                     fits: text.getBoundingClientRect().width <= el.getBoundingClientRect().width};
                 })""")
             short = lines()
-            assert [line['fs'] for line in short] == [34, 15]
+            # Short lines keep their normal size (never grow; WebKit may trim
+            # half a pixel at the 1px safety margin).
+            assert 33 <= short[0]['fs'] <= 34 and 14 <= short[1]['fs'] <= 15
             assert all(line['oneLine'] and line['fits'] for line in short)
             page.evaluate("""() => {const l=allLessons()[1]; l.zh='熟悉 · 不仅 · 性格 · 开玩笑 · 一直 · 互相';
                 l.py='shúxī · bùjǐn · xìnggé · kāi wánxiào · yìzhí · hùxiāng · xíguàn'; openLessonSheet(1)}""")
