@@ -914,12 +914,18 @@ private fun AppRoot(
 
             var openLesson by remember { mutableStateOf<LessonLaunch?>(null) }
             var skipTestLesson by remember { mutableStateOf<CourseLesson?>(null) }
+            // After a completed part: waits for the refreshed map, then shows
+            // the next part's sheet (PWA `openLessonSheet`) on the course map.
+            var pendingNextPart by remember { mutableStateOf<NextPartOffer?>(null) }
+            var nextPartSheet by remember { mutableStateOf<NextPartOffer?>(null) }
             LaunchedEffect(courseState.completedTrackSwitch) {
                 if (courseState.completedTrackSwitch == null) return@LaunchedEffect
                 openLesson = null
                 practiceRequest = null
                 openDrill = null
                 skipTestLesson = null
+                pendingNextPart = null
+                nextPartSheet = null
                 phrasebookOpen = false
                 dictionaryOpen = false
                 openChallenge = null
@@ -976,9 +982,29 @@ private fun AppRoot(
             LaunchedEffect(feedbackState.completed) {
                 if (feedbackState.completed) { profileViewModel.load(); courseViewModel.load() }
             }
-            if (openLesson == null && adRequest == null && !checkoutVisible)
+            if (openLesson == null && adRequest == null && !checkoutVisible && nextPartSheet == null)
                 com.pomp.hskai.feature.feedback.ActivityFeedbackDialog(feedbackState, activityFeedback::answer,
                     activityFeedback::next, activityFeedback::back, activityFeedback::close)
+
+            // Resolve a completed part once the lesson-end ad is gone and the
+            // refreshed server map is in: the next part opens as a sheet only
+            // when the server already shows it current and open. Otherwise the
+            // learner stays on the map and the usual lesson feedback follows.
+            LaunchedEffect(pendingNextPart, courseState.map, courseState.isRefreshing, adRequest) {
+                val pending = pendingNextPart ?: return@LaunchedEffect
+                if (adRequest != null || courseState.isRefreshing) return@LaunchedEffect
+                pendingNextPart = null
+                val map = courseState.map?.takeIf { !courseState.isStale && it.level == pending.level }
+                val next = map?.lessons?.firstOrNull { it.order == pending.finishedOrder + 1 }
+                if (!offline && next != null &&
+                    next.status == com.pomp.hskai.domain.model.LessonStatus.CURRENT &&
+                    (next.access == LessonAccess.Open || next.access == LessonAccess.HalfPreview)
+                ) {
+                    nextPartSheet = pending.copy(next = next)
+                } else {
+                    activityFeedback.prepare("lesson", pending.level, pending.finishedOrder)
+                }
+            }
 
             val currentLanguage = state.account.language.backendCode
             LaunchedEffect(selectedTab, voiceViewModel) {
@@ -1503,7 +1529,9 @@ private fun AppRoot(
                     accessChanged = accessActive,
                     onExit = { completed ->
                         val finishedOrder = launch.lesson.order
-                        if (completed) activityFeedback.prepare("lesson", currentLevel, finishedOrder)
+                        // A completed part first offers the next part's sheet;
+                        // its feedback prompt waits until that is resolved.
+                        if (completed) pendingNextPart = NextPartOffer(currentLevel, finishedOrder)
                         openLesson = null
                         if (onboardingState.launch != null) onboardingFirstLessonFinished = true
                         courseViewModel.load()
@@ -1515,51 +1543,6 @@ private fun AppRoot(
                                 placement = AdViewModel.PLACEMENT_LESSON_END,
                                 lessonOrder = finishedOrder,
                             )
-                        }
-                    },
-                    onStartNext = {
-                        // Never reopen a lesson after Back, account switch or an
-                        // out-of-order response. Check authoritative access again.
-                        val expectedAttempt = launch.attemptKey
-                        val expectedLevel = courseState.map?.level
-                        scope.launch {
-                            if (openLesson?.attemptKey != expectedAttempt) return@launch
-                            val fresh = (app.courseRepository.courseMap()
-                                as? com.pomp.hskai.core.network.ApiResult.Success)
-                                ?.value?.takeUnless { it.isStale }?.map
-                            if (openLesson?.attemptKey != expectedAttempt) return@launch
-                            val next = fresh?.lessons?.firstOrNull { it.order == launch.lesson.order + 1 }
-                            if (!offline && fresh?.level == expectedLevel &&
-                                courseState.map?.level == expectedLevel && next != null &&
-                                next.status == com.pomp.hskai.domain.model.LessonStatus.CURRENT &&
-                                (next.access == LessonAccess.Open ||
-                                 next.access == LessonAccess.HalfPreview)
-                            ) {
-                                launchLesson(next)
-                                courseViewModel.load()
-                            } else {
-                                // The CTA should never fail silently on a slow or
-                                // rejected follow-up map request.
-                                when {
-                                    offline -> lessonNeedsInternet()
-                                    fresh == null -> android.widget.Toast.makeText(
-                                        context, R.string.hsk_course_course_load_error_body,
-                                        android.widget.Toast.LENGTH_SHORT,
-                                    ).show()
-                                    next == null || next.status != com.pomp.hskai.domain.model.LessonStatus.CURRENT ->
-                                        android.widget.Toast.makeText(
-                                            context, R.string.hsk_course_lesson_flow_not_ready,
-                                            android.widget.Toast.LENGTH_SHORT,
-                                        ).show()
-                                    else -> android.widget.Toast.makeText(
-                                        context, R.string.hsk_course_locked_lesson,
-                                        android.widget.Toast.LENGTH_SHORT,
-                                    ).show()
-                                }
-                                openLesson = null
-                                onboardingFirstLessonFinished = true
-                                courseViewModel.load()
-                            }
                         }
                     },
                 )
@@ -1598,31 +1581,55 @@ private fun AppRoot(
                         },
                     ) { tab, contentModifier ->
                         when (tab) {
-                            MainTab.COURSE -> CourseScreen(
-                                state = courseState,
-                                dailyGoal = dailyGoal,
-                                limit = limitGate,
-                                hints = hints,
-                                onDismissHint = hintsViewModel::dismiss,
-                                onLesson = { lesson -> launchLesson(lesson) },
-                                onLockedLesson = { lesson ->
-                                    if (offline) lessonNeedsInternet() else skipTestLesson = lesson
-                                },
-                                onTodayTask = ::openTodayTask,
-                                onOpenGoal = { goalPickerOpen = true },
-                                onOpenChest = courseViewModel::openRewardChest,
-                                onChestRewardConsumed = courseViewModel::consumeChestReward,
-                                onUnlockAnimationConsumed = courseViewModel::consumeLessonUnlock,
-                                onSwitchTrack = courseViewModel::switchCourseTrack,
-                                onHsk30PromoShown = courseViewModel::markHsk30PromoShown,
-                                onDismissHsk30Promo = courseViewModel::dismissHsk30Promo,
-                                hsk30PromoAllowed = adRequest == null && !limitOverlayVisible &&
-                                    !widgetSetupOpen && !widgetPlacedNotice && !studySetupState.visible &&
-                                    !languagePickerOpen && !goalPickerOpen && !checkoutVisible,
-                                onUnlockHsk30 = ::openHsk30ContentGate,
-                                onRetry = courseViewModel::load,
-                                modifier = contentModifier,
-                            )
+                            MainTab.COURSE -> {
+                                CourseScreen(
+                                    state = courseState,
+                                    dailyGoal = dailyGoal,
+                                    limit = limitGate,
+                                    hints = hints,
+                                    onDismissHint = hintsViewModel::dismiss,
+                                    onLesson = { lesson -> launchLesson(lesson) },
+                                    onLockedLesson = { lesson ->
+                                        if (offline) lessonNeedsInternet() else skipTestLesson = lesson
+                                    },
+                                    onTodayTask = ::openTodayTask,
+                                    onOpenGoal = { goalPickerOpen = true },
+                                    onOpenChest = courseViewModel::openRewardChest,
+                                    onChestRewardConsumed = courseViewModel::consumeChestReward,
+                                    onUnlockAnimationConsumed = courseViewModel::consumeLessonUnlock,
+                                    onSwitchTrack = courseViewModel::switchCourseTrack,
+                                    onHsk30PromoShown = courseViewModel::markHsk30PromoShown,
+                                    onDismissHsk30Promo = courseViewModel::dismissHsk30Promo,
+                                    hsk30PromoAllowed = adRequest == null && !limitOverlayVisible &&
+                                        !widgetSetupOpen && !widgetPlacedNotice && !studySetupState.visible &&
+                                        !languagePickerOpen && !goalPickerOpen && !checkoutVisible &&
+                                        nextPartSheet == null,
+                                    onUnlockHsk30 = ::openHsk30ContentGate,
+                                    onRetry = courseViewModel::load,
+                                    modifier = contentModifier,
+                                )
+                                // One sheet at a time: onboarding/study prompts
+                                // first, then the next part waits on the map.
+                                nextPartSheet?.let { offer ->
+                                    val next = offer.next
+                                    if (next != null && adRequest == null && !limitOverlayVisible &&
+                                        !widgetSetupOpen && !widgetPlacedNotice && !studySetupState.visible &&
+                                        !languagePickerOpen && !goalPickerOpen && !checkoutVisible
+                                    ) {
+                                        com.pomp.hskai.feature.course.NextPartSheet(
+                                            lesson = next,
+                                            onContinue = {
+                                                nextPartSheet = null
+                                                launchLesson(next)
+                                            },
+                                            onDismiss = {
+                                                nextPartSheet = null
+                                                activityFeedback.prepare("lesson", offer.level, offer.finishedOrder)
+                                            },
+                                        )
+                                    }
+                                }
+                            }
 
                             MainTab.PRACTICE -> PracticeScreen(
                                 state = practiceState,
@@ -2047,7 +2054,6 @@ private fun LessonHost(
     accessChanged: Boolean,
     /** [completed] says whether the lesson was actually finished and reported. */
     onExit: (completed: Boolean) -> Unit,
-    onStartNext: () -> Unit,
 ) {
     val lesson = launch.lesson
     val model: LessonViewModel = viewModel(
@@ -2118,10 +2124,6 @@ private fun LessonHost(
             val completed = lessonState.outcome is LessonOutcome.Completed
             model.endAttempt(launch.attemptKey)
             onExit(completed)
-        },
-        onStartNext = {
-            model.endAttempt(launch.attemptKey)
-            onStartNext()
         },
         onAskAssistant = if (assistant != null && assistantEnabled) assistant.ask else null,
     )
@@ -2243,6 +2245,13 @@ private data class AdRequest(
 private data class LessonLaunch(
     val lesson: CourseLesson,
     val attemptKey: String,
+)
+
+/** A completed part and, once the refreshed map confirms it, the next one. */
+private data class NextPartOffer(
+    val level: String,
+    val finishedOrder: Int,
+    val next: CourseLesson? = null,
 )
 
 internal data class DrillLaunch(

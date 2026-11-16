@@ -1109,8 +1109,6 @@
     "voiceV8.endBody": "Hozirgi suhbat yakunlanadi.",
     "voiceV8.endCancel": "Davom etish",
     "voiceV8.endConfirm": "Tugatish",
-    "voiceV8.restart": "Yangi suhbatni boshlash",
-    "firstLessonNext.title": "Keyingi qismni boshlaymiz! Qani, ko‘raylik-chi, qanchalik tayyorsan? 🙃",
-    "firstLessonNext.start": "Boshlash 🔥"
+    "voiceV8.restart": "Yangi suhbatni boshlash"
   }
 }

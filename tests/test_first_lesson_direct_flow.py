@@ -1,4 +1,4 @@
-"""First-lesson direct-flow regressions for the existing PWA and Android hosts.
+"""Onboarding autostart and next-part sheet regressions for web and Android hosts.
 
 The Node check executes the actual course App handlers against a small DOM stub.
 Android source checks are structural; emulator acceptance remains separate.
@@ -12,87 +12,78 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class FirstLessonDirectFlowTests(unittest.TestCase):
-    def test_pwa_next_button_invokes_existing_lesson_start_once(self):
+    def test_next_part_sheet_opens_only_for_current_open_part_and_defers_prompts(self):
+        """Execute the actual openNextPartSheet helper against small stubs."""
         source = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
-        beginning = "  showFirstLessonNext:function(nextOrder){"
-        ending = "  showLevelUp:function(type,data,extra){"
+        beginning = "function openNextPartSheet(idx,firstCheckpoint,afterClose){"
+        ending = "function openLessonSheet(idx){"
         self.assertEqual(source.count(beginning), 1)
         body = beginning + source.split(beginning, 1)[1].split(ending, 1)[0]
         script = r"""
-const events = [];
-const nodes = {};
-function $(selector) {
-  return nodes[selector] ||= {
-    classList: {flags:new Set(),add(...ks){for(const k of ks){this.flags.add(k);events.push('add:'+k)}},remove(...ks){for(const k of ks){this.flags.delete(k);events.push('remove:'+k)}},contains(k){return this.flags.has(k)}}, 
-    setAttribute(k,v){this[k]=v},disabled:false,innerHTML:'',textContent:''
+const vm = require('node:vm');
+function run(lesson, opts) {
+  const events = [];
+  const ctx = {
+    events, window:{}, MAP:{level:'hsk4'}, SCREEN:'course',
+    allLessons:()=>[{n:1,status:'done'}, lesson],
+    isPremiumLocked:l=>!!l.locked_premium,
+    openLessonSheet:idx=>{events.push('sheet:'+idx);ctx.sheetOn=!opts.noSheet},
+    $:()=>({classList:{contains:()=>ctx.sheetOn}}),
+    setTimeout:fn=>{if(opts.switchLevel)ctx.MAP.level='nhsk1';fn()},
+    sheetOn:false,
   };
+  vm.runInNewContext(process.argv[1] + '\nopenNextPartSheet(1,' + !!opts.firstCheckpoint +
+    ',function(){events.push("prompts")})', ctx);
+  return {events, deferred:typeof ctx.window._afterLessonSheetClose === 'function'};
 }
-const window = {_pendingPwaLessonFeedback:{lessonId:1},_pendingLessonEndAd:1};
-const MAP = {level:'hsk1'};
-let scope = 'account-A';
-const localUserScope = () => scope;
-const document = {querySelector(){return {classList:{add(){}}}}};
-const pandaChar = () => '<span>Panda</span>';
-const courseMessage = (key, fallback) => ({'firstLessonNext.title':'NEXT TITLE',
-  'firstLessonNext.start':'START 🔥'}[key] || fallback);
-const esc = s => s;
-const cancelLessonPron = () => {};
-const stopTourAudio = () => {};
-const edgeGlow = () => {};
-const renderAll = () => {};
-const lessonList = [{n:1,status:'done'},{n:2,status:'current'}];
-const allLessons = () => lessonList;
-const isPremiumLocked = (lesson) => !!lesson.locked_premium;
-const startLesson = idx => events.push('lesson:'+idx);
-const setTimeout = fn => fn();
-let pendingRankUp = null;
-const App = {
-""" + body + r"""
-  show:screen => events.push('show:'+screen),
-  closeLevelUp: () => events.push('dismiss:outside')
-};
-App.showFirstLessonNext(2);
-const preserved = {feedback:window._pendingPwaLessonFeedback.lessonId,ad:window._pendingLessonEndAd};
-const title = $('#lu-stage').innerHTML;
-const button = $('#lu-cta').textContent;
-const action = $('#lu-cta').onclick;
-App.startFirstLessonNext();
-const consumedOnStart = {ad:window._pendingLessonEndAd,feedback:window._pendingPwaLessonFeedback};
-App.startFirstLessonNext();
-App.showFirstLessonNext(2);
-lessonList[1].status='locked';
-App.startFirstLessonNext(); // stale locked next part must not auto-launch
-lessonList[1].status='current';
-App.showFirstLessonNext(2);
-MAP.level = 'nhsk1';
-App.startFirstLessonNext(); // no stale cross-track auto launch
-MAP.level = 'hsk1';
-App.showFirstLessonNext(2);
-scope = 'account-B';
-App.startFirstLessonNext(); // no stale cross-account auto launch
-scope = 'account-A'; MAP.level = 'hsk1';
-App.showFirstLessonNext(2);
-const overlay = $('#levelup');
-overlay.onclick({target:{closest(){return {tag:'central-card'}}}}); // inside must stay
-const insideDidNotClose = !events.includes('dismiss:outside');
-overlay.onclick({target:{closest(){return null}}}); // outside closes
-const outsideClosed = events.includes('dismiss:outside');
-process.stdout.write(JSON.stringify({title,button,action,events,preserved,consumedOnStart,insideDidNotClose,outsideClosed}));
+process.stdout.write(JSON.stringify({
+  open:run({n:2,status:'current'},{}),
+  pro:run({n:2,status:'current',locked_premium:true},{}),
+  locked:run({n:2,status:'locked'},{}),
+  otherLevel:run({n:2,status:'current'},{switchLevel:true}),
+  firstCheckpoint:run({n:4,status:'locked'},{firstCheckpoint:true,noSheet:true}),
+}));
 """;
-        result = subprocess.run(
-            ["node", "-e", script],
-            text=True, capture_output=True, check=True,
-        )
-        values = json.loads(result.stdout)
-        self.assertIn("NEXT TITLE", values["title"])
-        self.assertEqual(values["preserved"], {"feedback": 1, "ad": 1})
-        self.assertEqual(values["consumedOnStart"], {"ad": 0, "feedback": None})
-        self.assertEqual(values["button"], "START 🔥")
-        self.assertEqual(values["action"], "App.startFirstLessonNext()")
-        self.assertEqual(values["events"].count("lesson:1"), 1)
-        self.assertTrue(values["insideDidNotClose"])
-        self.assertTrue(values["outsideClosed"])
-        self.assertNotIn("show:rating", values["events"])
+        values = json.loads(subprocess.run(
+            ["node", "-e", script, body], text=True, capture_output=True, check=True,
+        ).stdout)
+        # The sheet opens and study setup/feedback wait for its close.
+        self.assertEqual(values["open"], {"events": ["sheet:1"], "deferred": True})
+        # Pro-locked, not-yet-open or stale-level parts keep the course map.
+        for case in ("pro", "locked", "otherLevel"):
+            self.assertEqual(values[case], {"events": ["prompts"], "deferred": False})
+        # The first HSK1 checkpoint keeps its original sheet/skip-test/paywall path.
+        self.assertEqual(values["firstCheckpoint"], {"events": ["sheet:1", "prompts"], "deferred": False})
+
+    def test_last_celebration_screen_continues_to_next_part_sheet(self):
+        course = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
+        # Every saved part whose next part is now current and open.
+        self.assertIn('var nextPartSheet=!!(d&&d.ok&&next&&next.status==="current"&&!isPremiumLocked(next));', course)
+        self.assertIn('window._pendingCheckpointNextIdx=(firstCheckpointNext||nextPartSheet)?al.indexOf(next):null;', course)
+        # Lesson done -> streak -> (Telegram) rank-up -> next part sheet.
+        self.assertIn("toNextPart?(showStreak?\"App.showStreakScreen('next')\":\"App.openCheckpointNext()\")", course)
+        self.assertIn('var toNext=next==="checkpoint"||next==="next";', course)
+        self.assertIn('if(pendingRankUp){App.showRankUp("checkpoint_next");return}', course)
+        # The sales bridge stays limited to its original first-checkpoint trigger.
+        self.assertIn('if(window._pendingCheckpointSalesBridge&&App.showSalesBridge())return;', course)
+        self.assertIn('openNextPartSheet(checkpointNext,firstCheckpointNext,afterReturn)', course)
+        # Starting the part drops the deferred map prompts; closing the sheet runs them.
+        self.assertIn('window._afterLessonSheetClose=null; // starting a part is not a return to the map', course)
+        self.assertIn('if(typeof afterLessonSheet==="function")setTimeout(afterLessonSheet,revealUnlock?260:0);', course)
+        self.assertNotIn("showFirstLessonNext", course)
+        self.assertNotIn("first-lesson-next", course)
+
+    def test_lesson_sheet_header_is_label_then_one_line_hanzi_and_pinyin(self):
+        course = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
+        head = course.split("function lessonSheetHead(l,chip){", 1)[1].split("\n}", 1)[0]
+        self.assertIn("esc(chip)", head)
+        self.assertIn('<div class="zh han fit1"', head)
+        self.assertIn('<div class="py fit1">', head)
+        self.assertNotIn("tr(l.tr)", head)
+        self.assertEqual(course.count("App.openSheet(lessonSheetHead(l,chip)"), 2)
+        self.assertNotIn("你好 · nǐ hǎo · ", course)
+        self.assertIn(".shead .fit1{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;transition:none}", course)
+        self.assertEqual(course.count("  fitSheetHeader();\n"), 2)
 
     def test_pwa_onboarding_autostart_is_pwa_only_and_access_checked(self):
         li = (ROOT / "app/static/course_v3_data/li-onboarding-runtime.js").read_text(encoding="utf-8")
@@ -107,9 +98,6 @@ process.stdout.write(JSON.stringify({title,button,action,events,preserved,consum
         self.assertIn('opts.activationVariant||activationVariant()', course)
         self.assertIn("reserveLessonStart(l)", course)
         self.assertIn('if(sp.get("onboarded")==="1"&&sp.get("autostart")==="1"&&(idx<0||allLessons()[idx].status!=="current"))', course)
-        self.assertIn('localUserScope()!==window._firstLessonNextScope', course)
-        self.assertIn('Number(d.completed_lessons_count)===1', course)
-        self.assertIn('if(PWA_COURSE_HOST&&firstVerifiedLesson&&next&&next.status==="current"&&!isPremiumLocked(next))', course)
 
     def test_legacy_pwa_default_requires_hsk30_entitlement(self):
         """An advertised HSK 3.0 option is not a default unlocked lesson."""
@@ -225,43 +213,52 @@ process.stdout.write(JSON.stringify({
         self.assertEqual(data["pwaHsk3"], {"path": "/iphone-pwa/course", "start": "1", "resume": "1"})
         self.assertEqual(data["reconciled"], {"start": "1", "resume": "1", "lesson": None})
 
-    def test_android_first_lesson_gate_and_fresh_next_access(self):
+    def test_android_onboarding_autostart_and_next_part_sheet(self):
         android = (ROOT / "android/app/src/main/java/com/pomp/hskai/MainActivity.kt").read_text(encoding="utf-8")
         screen = (ROOT / "android/app/src/main/java/com/pomp/hskai/feature/lesson/LessonScreen.kt").read_text(encoding="utf-8")
         celebration = (ROOT / "android/app/src/main/java/com/pomp/hskai/feature/lesson/LessonCompletionCelebration.kt").read_text(encoding="utf-8")
+        sheet = (ROOT / "android/app/src/main/java/com/pomp/hskai/feature/course/NextPartSheet.kt").read_text(encoding="utf-8")
+        # Onboarding still opens the verified first lesson; prompts wait for its exit.
         self.assertIn("onboardingFirstLessonFinished", android)
         self.assertIn('launchLevel.startsWith("nhsk") && map.hsk30?.access?.allowed != true', android)
-        self.assertIn("app.courseRepository.courseMap()", android)
-        self.assertIn("openLesson?.attemptKey != expectedAttempt", android)
-        self.assertIn("fresh?.level == expectedLevel", android)
-        self.assertIn("R.string.hsk_course_course_load_error_body", android)
-        self.assertIn("R.string.hsk_course_lesson_flow_not_ready", android)
-        self.assertIn("it.order == launch.lesson.order + 1", android)
-        self.assertIn("next.access == LessonAccess.Open", android)
-        self.assertIn("!outcome.gamification.duplicate && onStartNext != null", screen)
-        course = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
-        self.assertIn('!(d.gamification&&d.gamification.duplicate)', course)
+        # The celebration scenes are unchanged: no direct first-lesson card.
+        for text in (screen, celebration, android):
+            self.assertNotIn("FirstLessonNextScreen", text)
+            self.assertNotIn("onStartNext", text)
+            self.assertNotIn("hsk_course_first_lesson_next", text)
+        # A completed part waits for the ad and the refreshed map, then offers
+        # the next part only when the server shows it current and open.
+        self.assertIn("if (completed) pendingNextPart = NextPartOffer(currentLevel, finishedOrder)", android)
+        self.assertIn("if (adRequest != null || courseState.isRefreshing) return@LaunchedEffect", android)
+        self.assertIn("!courseState.isStale && it.level == pending.level", android)
+        self.assertIn("it.order == pending.finishedOrder + 1", android)
         self.assertIn("next.status == com.pomp.hskai.domain.model.LessonStatus.CURRENT", android)
-        self.assertIn("it.status == com.pomp.hskai.domain.model.LessonStatus.CURRENT", android)
-        self.assertIn("FirstLessonNextScreen(onStartNext = onStartNext, onExit = onExit)", screen)
-        self.assertIn("hsk_course_first_lesson_next_title", celebration)
-        self.assertIn("hsk_course_first_lesson_next_start", celebration)
-        first_screen = celebration.split("internal fun FirstLessonNextScreen(", 1)[1].split("private enum class CelebrationScene", 1)[0]
-        self.assertNotIn("SecondaryAction(", first_screen)
-        self.assertIn("clickable(", first_screen)
-        self.assertIn("onClick = onExit", first_screen)
-        self.assertNotIn("if (!starting) onExit()", first_screen)
+        self.assertIn("(next.access == LessonAccess.Open || next.access == LessonAccess.HalfPreview)", android)
+        # Lesson feedback follows when the sheet is dismissed or not offered.
+        self.assertEqual(android.count('activityFeedback.prepare("lesson", pending.level, pending.finishedOrder)'), 1)
+        self.assertEqual(android.count('activityFeedback.prepare("lesson", offer.level, offer.finishedOrder)'), 1)
+        self.assertIn("!checkoutVisible && nextPartSheet == null)", android)
+        self.assertIn("launchLesson(next)", android.split("NextPartSheet(", 1)[1].split("onDismiss", 1)[0])
+        # Same header as the web sheet: label, then one-line hanzi and pinyin.
+        self.assertIn("R.string.hsk_course_lesson_flow_lesson_prefix", sheet)
+        self.assertIn("R.string.hsk_course_lesson_flow_part_prefix", sheet)
+        self.assertIn("maxLines = 1", sheet)
+        self.assertIn("softWrap = false", sheet)
+        self.assertIn("maxSize = 34.sp", sheet)
+        self.assertIn("maxSize = 15.sp", sheet)
+        self.assertNotIn("subtitle", sheet)
 
-    def test_translations_are_shared_and_generated(self):
+    def test_no_new_course_copy(self):
         for locale, suffix in (("uz", ""), ("ru", "-ru"), ("tj", "-tg")):
-            source = json.loads((ROOT / f"localization/ui/{locale}/course.json").read_text(encoding="utf-8"))
-            messages = source["messages"]
-            self.assertEqual(len(messages), 1109)
-            self.assertTrue(messages["firstLessonNext.title"].strip())
-            self.assertTrue(messages["firstLessonNext.start"].endswith("🔥"))
+            messages = json.loads((ROOT / f"localization/ui/{locale}/course.json").read_text(encoding="utf-8"))["messages"]
+            self.assertEqual(len(messages), 1107)
+            self.assertNotIn("firstLessonNext.title", messages)
             generated = (ROOT / f"android/app/src/main/res/values{suffix}/hsk_course_i18n.xml").read_text(encoding="utf-8")
-            self.assertIn('name="hsk_course_first_lesson_next_title"', generated)
-            self.assertIn('name="hsk_course_first_lesson_next_start"', generated)
+            self.assertNotIn("hsk_course_first_lesson_next", generated)
+            for name in ("hsk_course_lesson_flow_lesson_prefix", "hsk_course_lesson_flow_part_prefix",
+                         "hsk_course_part_sections_w", "hsk_course_stage", "hsk_course_complete_of",
+                         "hsk_course_cont"):
+                self.assertIn(f'name="{name}"', generated)
 
 
 if __name__ == "__main__":

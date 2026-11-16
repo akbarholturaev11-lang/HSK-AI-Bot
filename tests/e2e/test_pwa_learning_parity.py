@@ -312,21 +312,15 @@ def test_existing_ads_two_placements_use_pwa_transport_and_resume_after_close():
                 try {applyLessonDone(allLessons()[0], {ok:true,duplicate:false,completed_lessons_count:1});}
                 finally {App.showLevelUp=celebrate;refreshCourseProgress=refresh;}
                 if(window._pendingLessonEndAd!==1)throw Error('PWA saved lesson did not queue its existing ad');
-                // The direct next-part prompt deliberately holds lesson-end
-                // advertising until the learner dismisses it. Verify that
-                // outside-dismiss invokes the same pre-existing ad path.
-                const prompt=document.getElementById('levelup');
-                if(!prompt.classList.contains('first-lesson-next'))throw Error('first-part prompt missing');
-                if(!prompt.querySelector('.first-lesson-start'))throw Error('next-part start missing');
-                prompt.click();
+                window.adReturned=0;playLessonEndAd(function(){window.adReturned++});
             }""")
             ad.wait_for(state='visible')
             assert 'lesson-end' in ad.get_attribute('class')
             ad.locator('.caa-app-x').click()
-            page.wait_for_function('!document.querySelector(".caa-app").classList.contains("on") && SCREEN === "course"')
+            page.wait_for_function('window.adReturned === 1')
             page.evaluate('CourseAds.closeCenterAd()')
             page.wait_for_timeout(100)
-            assert not page.locator('#levelup.on').count()
+            assert page.evaluate('window.adReturned') == 1
             assert [v['placement'] for v in fixture.ad_views] == ['screen_center', 'lesson_end']
             assert len(page.locator('.caa-app').all()) == 1
         finally:
@@ -382,5 +376,58 @@ def test_stalled_lesson_ad_does_not_block_returning_to_course():
             page.wait_for_function('window.adReturned === 1')
             assert not page.locator('.caa-app.on').count()
             assert page.locator('#nav').is_visible()
+        finally:
+            browser.close()
+
+
+@pytest.mark.parametrize('lang, chip', [('ru', 'Урок 1 · Часть 2'), ('uz', '1-dars · 2-qism'), ('tj', 'Дарси 1 · Қисми 2')])
+def test_completed_part_continues_to_one_line_next_part_sheet(lang, chip):
+    """Lesson done -> streak -> Continue opens the next part's sheet; feedback waits for its close."""
+    fixture = LearningPage(lang=lang)
+    with sync_playwright() as pw:
+        browser = getattr(pw, os.getenv('PWA_E2E_ENGINE', 'chromium')).launch()
+        try:
+            page = fixture.open(browser)
+            errors = []
+            page.on('pageerror', lambda error: errors.append(str(error)))
+            page.evaluate("""() => {
+                refreshCourseProgress=()=>Promise.resolve(true);
+                applyLessonDone(allLessons()[0], {ok:true,duplicate:false,completed_lessons_count:1,
+                  gamification:{awarded_xp:25,xp:25,streak:1,previous_streak:0,streak_updated:true,
+                    local_date:'2026-11-16',week_start:'2026-11-16',week_activity_dates:['2026-11-16'],daily_xp:25}});
+            }""")
+            page.wait_for_function('''document.querySelector("#levelup.on") &&
+                document.querySelector("#lu-cta").getAttribute("onclick").endsWith("App.showStreakScreen('next')")''')
+            page.locator('#lu-cta').click()
+            page.wait_for_function('document.querySelector("#lu-cta").getAttribute("onclick") === "App.openCheckpointNext()"')
+            page.locator('#lu-cta').click()
+            head = page.locator('#sheet.on .shead')
+            head.wait_for()
+            assert head.locator('[role="heading"]').inner_text() == chip
+            assert head.locator('.tr').count() == 0
+            assert '你好 · nǐ hǎo' not in head.inner_text()
+            assert page.locator('#sheet.on .scta').count() == 1
+            page.wait_for_timeout(1200)
+            assert fixture.prepares == [], 'lesson feedback must not cover the next part sheet'
+
+            def lines():
+                return page.evaluate("""() => [...document.querySelectorAll('#sheet.on .shead .fit1')].map(el => {
+                  const fs=parseFloat(getComputedStyle(el).fontSize);
+                  return {fs, oneLine: el.getBoundingClientRect().height < fs*1.6, fits: el.scrollWidth <= el.clientWidth};
+                })""")
+            short = lines()
+            assert [line['fs'] for line in short] == [34, 15]
+            assert all(line['oneLine'] and line['fits'] for line in short)
+            page.evaluate("""() => {const l=allLessons()[1]; l.zh='熟悉 · 不仅 · 性格 · 开玩笑 · 一直 · 互相';
+                l.py='shúxī · bùjǐn · xìnggé · kāi wánxiào · yìzhí · hùxiāng · xíguàn'; openLessonSheet(1)}""")
+            long = lines()
+            assert 14 <= long[0]['fs'] < 34 and 10 <= long[1]['fs'] < 15
+            assert all(line['oneLine'] and line['fits'] for line in long)
+
+            page.evaluate('App.closeSheet()')
+            page.wait_for_timeout(1500)
+            assert [p['context'] for p in fixture.prepares] == [{'kind': 'lesson', 'level': 'hsk1', 'lesson_id': 1}], \
+                'closing the sheet returns to the map with the usual feedback'
+            assert errors == []
         finally:
             browser.close()

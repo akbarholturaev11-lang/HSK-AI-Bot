@@ -99,7 +99,9 @@ result.absent=vm.runInNewContext('(window.HSKAILocaleMap||function(_,fallback){r
         # inventory re-anchored (62 original locale lines/130 predicates),
         # with the exact source blob recorded in miniapp_course_hotspot_triage.json.
         # 2026-11-13: re-anchored the same exact reviewed lines after diagnostics hooks.
-        self.assertEqual(len((ROOT / "app/static/course-v3.html").read_text().splitlines()), 10119)
+        # 2026-11-16: next-part sheet handoff and one-line sheet header (61 lines/128
+        # predicates after the fixed greeting line was removed).
+        self.assertEqual(len((ROOT / "app/static/course-v3.html").read_text().splitlines()), 10125)
 
     def test_graded_placement_blocks_remain_byte_identical(self):
         proof = json.loads((ROOT / "localization/review/miniapp_inline_map_migration.json").read_text())

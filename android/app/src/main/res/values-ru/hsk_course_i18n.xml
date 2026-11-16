@@ -237,8 +237,6 @@
     <string name="hsk_course_download_page_windows_security_title" formatted="false">При первом запуске может появиться предупреждение</string>
     <string name="hsk_course_download_page_windows_title" formatted="false">HSK AI для Windows</string>
     <string name="hsk_course_finish_prev" formatted="false">Завершите предыдущий урок</string>
-    <string name="hsk_course_first_lesson_next_start" formatted="false">Начать 🔥</string>
-    <string name="hsk_course_first_lesson_next_title" formatted="false">Начнём следующую часть! Посмотрим, насколько ты готов 🙃</string>
     <string name="hsk_course_foundation_guided_repair_body" formatted="false">Посмотрите на правильный ответ и подтвердите его.</string>
     <string name="hsk_course_foundation_internet_retry" formatted="false">Проверьте интернет и повторите загрузку.</string>
     <string name="hsk_course_foundation_natural_pronunciation" formatted="false">естественное произношение</string>
