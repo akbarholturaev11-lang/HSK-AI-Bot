@@ -313,9 +313,9 @@
       }
     },
     {"section": "platform", "key": "versions_scope", "kind": "metadata", "filters": ["overall", "android", "telegram", "iphone_pwa", "macos", "windows"]},
-    {"section": "course", "key": "activation", "kind": "metric", "filters": ["overall", "iphone_pwa"],
+    {"section": "course", "key": "activation", "kind": "metric", "filters": ["overall", "android", "iphone_pwa"],
       "platforms": {
-        "android": {"status": "not_instrumented", "reason": "R2 tags Android onboarding rows (writer only). The activation step reads lesson_started, which Android does not write (R1 writes android_lesson_started), so there is no Android reader."},
+        "android": {"status": "partial", "reason": "R2 server-attributed Android onboarding cohort and R1 server-only android_lesson_started now reach the existing activation funnel. The new real-route regression is awaiting CI validation; historical untagged rows remain Overall-only.", "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_android_onboarding_first_lesson_activation_counts_one_server_start"},
         "telegram": {"status": "not_instrumented", "reason": "R2 tags Telegram onboarding rows (writer only); no Telegram-scoped activation reader yet. Earlier onboarding rows have no client."},
         "iphone_pwa": {"status": "covered", "reason": "R2: cohort anchored on onboarding_completed written by the PWA onboarding route with the route-set final client key iphone_pwa; onboarding is deduplicated per profile, so accounts onboarded on another client are outside. Only iphone_pwa-tagged steps count, from attributed_since on; earlier rows Overall-only.", "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_pwa_onboarding_and_handoff_reach_the_pwa_activation"},
         "macos": {"status": "not_instrumented", "reason": "The activation cohort has no Desktop OS attribution; Desktop freeze."},
@@ -358,13 +358,13 @@
         "windows": {"status": "not_instrumented", "reason": "V10 does not scope the learning event union to an individual Desktop OS; Desktop freeze."}
       }
     },
-    {"section": "course", "key": "detail_limited", "kind": "metadata", "filters": ["overall", "telegram", "iphone_pwa"]},
+    {"section": "course", "key": "detail_limited", "kind": "metadata", "filters": ["overall", "android", "telegram", "iphone_pwa"]},
     {"section": "course", "key": "detail_row_limit", "kind": "metadata", "filters": ["overall"]},
     {"section": "course", "key": "detail_since", "kind": "metadata", "filters": ["overall", "android", "telegram", "iphone_pwa"]},
     {"section": "course", "key": "attributed_since", "kind": "metadata", "filters": ["android", "telegram", "iphone_pwa"]},
     {"section": "course", "key": "direct_activation", "kind": "metric", "filters": ["overall", "iphone_pwa"],
       "platforms": {
-        "android": {"status": "not_instrumented", "reason": "R2 tags Android onboarding rows (writer only). The activation step reads lesson_started, which Android does not write (R1 writes android_lesson_started), so there is no Android reader."},
+        "android": {"status": "not_instrumented", "reason": "The new Android activation cohort reads verified first lesson starts, but the Android direct_start_v1 variant has no independently audited scoped reader yet."},
         "telegram": {"status": "not_instrumented", "reason": "R2 tags Telegram onboarding rows (writer only); no Telegram-scoped activation reader yet. Earlier onboarding rows have no client."},
         "iphone_pwa": {"status": "covered", "reason": "R2: cohort anchored on onboarding_completed with the onboarding activation_variant direct_start_v1 written by the PWA onboarding route with the route-set final client key iphone_pwa; onboarding is deduplicated per profile, so accounts onboarded on another client are outside. Only iphone_pwa-tagged steps count, from attributed_since on; earlier rows Overall-only.", "chain_test": "tests/test_analytics_platform_chain.py::CoursePlatformChainTests::test_pwa_onboarding_and_handoff_reach_the_pwa_activation"},
         "macos": {"status": "not_instrumented", "reason": "The activation cohort has no Desktop OS attribution; Desktop freeze."},
@@ -965,7 +965,7 @@
       "platforms": {
         "android": {
           "status": "partial",
-          "reason": "Authenticated Li guest resume uses existing deduplicated onboarding_completed, tagged with the route-set client android since R2. The anonymous preview and choices do not write events. No Android activation reader: the step reads lesson_started, which Android does not write."
+          "reason": "Authenticated Li guest resume uses existing deduplicated onboarding_completed, tagged by the Android route since R2. The existing Android activation reader now consumes server-only android_lesson_started (R1) without a new event. Anonymous preview/choices still write no events; reader chain test awaits CI."
         },
         "telegram": {
           "status": "partial",
