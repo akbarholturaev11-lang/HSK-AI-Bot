@@ -78,6 +78,50 @@ process.stdout.write(JSON.stringify({title,button,action,events}));
         self.assertIn("reserveLessonStart(l)", course)
         self.assertIn('if(PWA_COURSE_HOST&&firstVerifiedLesson&&next&&next.status==="current"&&!isPremiumLocked(next))', course)
 
+    def test_legacy_onboarding_keeps_telegram_track_handoff_unchanged(self):
+        """Execute the actual existing go() handler for PWA and Telegram cases."""
+        html = (ROOT / "app/static/course_v3_onboarding.html").read_text(encoding="utf-8")
+        start = "  function go(result){"
+        end = "  function fail(reason){"
+        self.assertEqual(html.count(start), 1)
+        block = start + html.split(start, 1)[1].split(end, 1)[0]
+        script = r"""
+const vm = require('node:vm');
+const goSource = JSON.parse(process.argv[1]);
+const base = (host, level, launch) => {
+  const ctx = {
+    input: launch, moved:false, saveNeedsVerification:false,
+    PWA_ONBOARDING_HOST:host, LANG:'uz', sel:level,
+    params:new URLSearchParams('campaign=default'),
+    location:{href:'',hash:''}, URLSearchParams,
+    localStorage:{setItem(){},removeItem(){}},
+    isHsk30Level:s=>s.startsWith('nhsk'),
+  };
+  vm.runInNewContext(goSource + '\\ngo(input)', ctx);
+  return new URL(ctx.location.href,'https://hskai.app');
+};
+const eligible={ok:true,level:'nhsk1',lesson:1,tab:'course'};
+const oldTrack=base(false,'nhsk1',eligible);
+const oldHsk2=base(false,'hsk1',{ok:true,level:'hsk1',lesson:1});
+const pwaHsk3=base(true,'nhsk1',eligible);
+const pwaReconciled=base(true,'hsk1',{ok:true,level:'hsk1',reconciled:true});
+process.stdout.write(JSON.stringify({
+  oldTrack:{path:oldTrack.pathname,start:oldTrack.searchParams.get('autostart')},
+  oldHsk2:{path:oldHsk2.pathname,start:oldHsk2.searchParams.get('autostart'),lesson:oldHsk2.searchParams.get('lesson')},
+  pwaHsk3:{path:pwaHsk3.pathname,start:pwaHsk3.searchParams.get('autostart'),resume:pwaHsk3.searchParams.get('resume')},
+  reconciled:{start:pwaReconciled.searchParams.get('autostart'),resume:pwaReconciled.searchParams.get('resume'),lesson:pwaReconciled.searchParams.get('lesson')}
+}));
+""";
+        result = subprocess.run(
+            ["node", "-e", script, json.dumps(block)], check=True,
+            text=True, capture_output=True,
+        )
+        data = json.loads(result.stdout)
+        self.assertEqual(data["oldTrack"], {"path": "/course-v3.html", "start": None})
+        self.assertEqual(data["oldHsk2"], {"path": "/course-v3.html", "start": "1", "lesson": "1"})
+        self.assertEqual(data["pwaHsk3"], {"path": "/iphone-pwa/course", "start": "1", "resume": "1"})
+        self.assertEqual(data["reconciled"], {"start": "1", "resume": "1", "lesson": None})
+
     def test_android_first_lesson_gate_and_fresh_next_access(self):
         android = (ROOT / "android/app/src/main/java/com/pomp/hskai/MainActivity.kt").read_text(encoding="utf-8")
         screen = (ROOT / "android/app/src/main/java/com/pomp/hskai/feature/lesson/LessonScreen.kt").read_text(encoding="utf-8")
