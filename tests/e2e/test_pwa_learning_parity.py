@@ -312,15 +312,21 @@ def test_existing_ads_two_placements_use_pwa_transport_and_resume_after_close():
                 try {applyLessonDone(allLessons()[0], {ok:true,duplicate:false,completed_lessons_count:1});}
                 finally {App.showLevelUp=celebrate;refreshCourseProgress=refresh;}
                 if(window._pendingLessonEndAd!==1)throw Error('PWA saved lesson did not queue its existing ad');
-                window.adReturned=0;playLessonEndAd(function(){window.adReturned++});
+                // The direct next-part prompt deliberately holds lesson-end
+                // advertising until the learner dismisses it. Verify that
+                // outside-dismiss invokes the same pre-existing ad path.
+                const prompt=document.getElementById('levelup');
+                if(!prompt.classList.contains('first-lesson-next'))throw Error('first-part prompt missing');
+                if(!prompt.querySelector('.first-lesson-start'))throw Error('next-part start missing');
+                prompt.click();
             }""")
             ad.wait_for(state='visible')
             assert 'lesson-end' in ad.get_attribute('class')
             ad.locator('.caa-app-x').click()
-            page.wait_for_function('window.adReturned === 1')
+            page.wait_for_function('!document.querySelector(".caa-app").classList.contains("on") && SCREEN === "course"')
             page.evaluate('CourseAds.closeCenterAd()')
             page.wait_for_timeout(100)
-            assert page.evaluate('window.adReturned') == 1
+            assert not page.locator('#levelup.on').count()
             assert [v['placement'] for v in fixture.ad_views] == ['screen_center', 'lesson_end']
             assert len(page.locator('.caa-app').all()) == 1
         finally:

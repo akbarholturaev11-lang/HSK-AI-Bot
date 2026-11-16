@@ -31,7 +31,7 @@ class OnboardingCourseCatalogTests(unittest.TestCase):
     def test_bundle_loads_before_original_fallback_and_preserves_flow(self):
         html = (ROOT / "app/static/course_v3_onboarding.html").read_text(encoding="utf-8")
         self.assertEqual(html.count("var ONBOARDING_LEGACY={"), 1)
-        self.assertLess(html.index("hsk-course-i18n.js?v=20261113-22b6cc209f28"),
+        self.assertLess(html.index("hsk-course-i18n.js?v=20261113-9ee2dff4edfd"),
                         html.index("var ONBOARDING_LEGACY={"))
         self.assertIn('ONBOARDING_CATALOG["onboarding."+key]', html)
         self.assertIn('L[key]=typeof value==="string"&&value?value:ONBOARDING_LEGACY[key]', html)
