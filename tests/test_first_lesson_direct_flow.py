@@ -40,7 +40,9 @@ const cancelLessonPron = () => {};
 const stopTourAudio = () => {};
 const edgeGlow = () => {};
 const renderAll = () => {};
-const allLessons = () => [{n:1},{n:2}];
+const lessonList = [{n:1,status:'done'},{n:2,status:'current'}];
+const allLessons = () => lessonList;
+const isPremiumLocked = (lesson) => !!lesson.locked_premium;
 const startLesson = idx => events.push('lesson:'+idx);
 const setTimeout = fn => fn();
 let pendingRankUp = null;
@@ -55,7 +57,12 @@ const title = $('#lu-stage').innerHTML;
 const button = $('#lu-cta').textContent;
 const action = $('#lu-cta').onclick;
 App.startFirstLessonNext();
+const consumedOnStart = {ad:window._pendingLessonEndAd,feedback:window._pendingPwaLessonFeedback};
 App.startFirstLessonNext();
+App.showFirstLessonNext(2);
+lessonList[1].status='locked';
+App.startFirstLessonNext(); // stale locked next part must not auto-launch
+lessonList[1].status='current';
 App.showFirstLessonNext(2);
 MAP.level = 'nhsk1';
 App.startFirstLessonNext(); // no stale cross-track auto launch
@@ -70,7 +77,7 @@ overlay.onclick({target:{closest(){return {tag:'central-card'}}}}); // inside mu
 const insideDidNotClose = !events.includes('dismiss:outside');
 overlay.onclick({target:{closest(){return null}}}); // outside closes
 const outsideClosed = events.includes('dismiss:outside');
-process.stdout.write(JSON.stringify({title,button,action,events,preserved,insideDidNotClose,outsideClosed}));
+process.stdout.write(JSON.stringify({title,button,action,events,preserved,consumedOnStart,insideDidNotClose,outsideClosed}));
 """;
         result = subprocess.run(
             ["node", "-e", script],
@@ -79,6 +86,7 @@ process.stdout.write(JSON.stringify({title,button,action,events,preserved,inside
         values = json.loads(result.stdout)
         self.assertIn("NEXT TITLE", values["title"])
         self.assertEqual(values["preserved"], {"feedback": 1, "ad": 1})
+        self.assertEqual(values["consumedOnStart"], {"ad": 0, "feedback": None})
         self.assertEqual(values["button"], "START 🔥")
         self.assertEqual(values["action"], "App.startFirstLessonNext()")
         self.assertEqual(values["events"].count("lesson:1"), 1)
