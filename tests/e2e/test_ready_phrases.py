@@ -27,8 +27,8 @@ def _serve_static(route):
     }
     route.fulfill(
         status=200,
-        content_type=content_types.get(path.suffix, "text/plain"),
-        body=path.read_text(encoding="utf-8"),
+        content_type=content_types.get(path.suffix, "application/octet-stream"),
+        path=str(path),
     )
 
 
