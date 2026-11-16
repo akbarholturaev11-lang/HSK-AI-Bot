@@ -6269,7 +6269,8 @@ var PWA_LEVEL_REQUEST_SEQ=0,PWA_LEVEL_ABORT=null; function loadLevel(lv){if(PWA_
   });
 }
 function applyLessonDone(cur,d){
-  var firstVerifiedLesson=!!(d&&d.ok===true&&!d.duplicate&&cur&&Number(cur.n)===1&&
+  var firstVerifiedLesson=!!(d&&d.ok===true&&!d.duplicate&&
+    !(d.gamification&&d.gamification.duplicate)&&cur&&Number(cur.n)===1&&
     Number(MAP&&MAP.progress&&MAP.progress.completed||0)===0);
   var rankBefore=Number(d&&d.rank_before)||0;
   if(PWA_COURSE_HOST&&d&&d.ok===true&&!d.duplicate){
@@ -6321,7 +6322,7 @@ function applyLessonDone(cur,d){
   renderAll();
   if(d&&d.ok)refreshCourseProgress(true);
   // Keep server XP/streak/rank writes; skip only their extra first-lesson screens.
-  if(firstVerifiedLesson&&next&&next.status==="current"&&!isPremiumLocked(next)){
+  if(PWA_COURSE_HOST&&firstVerifiedLesson&&next&&next.status==="current"&&!isPremiumLocked(next)){
     App.showFirstLessonNext(next.n);return;
   }
   if(al.every(function(l){return l.status==="done"})){
