@@ -91,6 +91,54 @@ process.stdout.write(JSON.stringify({title,button,action,events}));
         self.assertIn('Number(d.completed_lessons_count)===1', course)
         self.assertIn('if(PWA_COURSE_HOST&&firstVerifiedLesson&&next&&next.status==="current"&&!isPremiumLocked(next))', course)
 
+    def test_li_onboarding_handoff_never_fabricates_lesson_or_entitlement(self):
+        """Run the actual Li onboarding handler with PWA/Telegram launch variants."""
+        text = (ROOT / "app/static/course_v3_data/li-onboarding-runtime.js").read_text(encoding="utf-8")
+        beginning, ending = "function toCourse(){", "function showLiveBooks(){"
+        self.assertEqual(text.count(beginning), 1)
+        function = beginning + text.split(beginning, 1)[1].split(ending, 1)[0]
+        script = r"""
+const vm = require('node:vm');
+const fn = JSON.parse(process.argv[1]);
+function open(host, track, launch) {
+  const ctx = {
+    launch, hostPwa:host, global:{LANG:'uz',track},
+    location:{search:'?source=onboarding',href:'',assign(url){this.href=url;}},
+    URLSearchParams, pageCourse:()=>host?'/iphone-pwa/course':'/course-v3.html',
+    saveProfile(){}, renderError(){this.blocked=true}, blocked:false
+  };
+  vm.runInNewContext(fn+'\\ntoCourse()',ctx);
+  const link = new URL(ctx.location.href || '/unconfirmed','https://hskai.app');
+  return {path:link.pathname,start:link.searchParams.get('autostart'),
+    resume:link.searchParams.get('resume'),lesson:link.searchParams.get('lesson'),
+    blocked:ctx.blocked};
+}
+const cases = {
+ pwaHsk3:open(true,'hsk30',{ok:true,level:'nhsk1',lesson:1}),
+ pwaReconciled:open(true,'hsk20',{ok:true,level:'hsk1',reconciled:true}),
+ pwaPlacement:open(true,'hsk20',{ok:true,level:'hsk1',placement:true,lesson:1}),
+ denied:open(true,'hsk30',{ok:false}),
+ miniHsk2:open(false,'hsk20',{ok:true,level:'hsk1',lesson:1}),
+ miniHsk3:open(false,'hsk30',{ok:true,level:'nhsk1',lesson:1})
+};
+process.stdout.write(JSON.stringify(cases));
+"""
+        run = subprocess.run(
+            ["node", "-e", script, json.dumps(function)], capture_output=True,
+            text=True, check=True,
+        )
+        cases = json.loads(run.stdout)
+        self.assertEqual(cases["pwaHsk3"]["start"], "1")
+        self.assertEqual(cases["pwaHsk3"]["lesson"], "1")
+        self.assertEqual(cases["pwaReconciled"]["start"], "1")
+        self.assertIsNone(cases["pwaReconciled"]["lesson"])
+        self.assertEqual(cases["pwaReconciled"]["resume"], "1")
+        self.assertIsNone(cases["pwaPlacement"]["start"])
+        self.assertTrue(cases["denied"]["blocked"])
+        self.assertEqual(cases["denied"]["path"], "/unconfirmed")
+        self.assertEqual(cases["miniHsk2"]["start"], "1")
+        self.assertIsNone(cases["miniHsk3"]["start"])
+
     def test_legacy_onboarding_keeps_telegram_track_handoff_unchanged(self):
         """Execute the actual existing go() handler for PWA and Telegram cases."""
         html = (ROOT / "app/static/course_v3_onboarding.html").read_text(encoding="utf-8")
