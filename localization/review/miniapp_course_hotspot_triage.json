@@ -471,7 +471,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 7709,
+      "line": 7736,
       "anchor": "profile-title",
       "category": "profile_copy",
       "reason": "Profile heading",
@@ -479,7 +479,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 7977,
+      "line": 8010,
       "anchor": "LANG===\"ru\"",
       "category": "loading_copy",
       "reason": "Resource iframe loading placeholder Local catalog lookup with the exact RU/TJ/UZ inline fallback; existing runtime branch, completion, formatting and physical source line preserved.",
@@ -487,7 +487,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 8104,
+      "line": 8137,
       "anchor": "courseLoadError.title",
       "category": "error_recovery_copy",
       "reason": "PWA-only blocked unported practice route displays the existing canonical course loading error, preserving exact UZ/RU/TJ fallback. Does not open an unsigned Telegram page; source classification only, not runtime QA.",
@@ -495,7 +495,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 8819,
+      "line": 8852,
       "anchor": "LANG===\"ru\"",
       "category": "access_copy",
       "reason": "Test entitlement/limit progress label",

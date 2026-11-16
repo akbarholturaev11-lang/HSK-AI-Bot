@@ -36,7 +36,7 @@
 | 26 | `design-components/modals-selection.md` | Conditional | Only for real option changes, avoid fake goal selection | Goal save from server |
 | 27 | `design-components/modals.md` | Applicable | Two-X checkout discount; focus/Back; compact centered offer | Existing inline Pro implementation |
 | 28 | `design-components/popovers.md` | Conditional | Only existing context help; no invented tutorials | Existing UI states |
-| 29 | `design-components/progress-charts.md` | Applicable | Real XP today/daily goal, Streak target; honest unknown periods | pwa-professional45-progress.js |
+| 29 | `design-components/progress-charts.md` | Applicable | Real XP today/daily goal, Streak target; honest unknown periods | pwa-professional45-course.js |
 | 30 | `design-components/progress-stepper.md` | Applicable | Existing onboarding steps, preserve progression/Back | Canonical onboarding |
 | 31 | `design-components/radio-button.md` | Conditional | Only when real exclusive choices need it | No decorative radio controls |
 | 32 | `design-components/search-field.md` | Applicable | Hanzi/pinyin/translation search, clear and keyboard states | Real dictionary and phrases |

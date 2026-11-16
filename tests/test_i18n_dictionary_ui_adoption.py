@@ -15,7 +15,7 @@ PLURAL_KEYS = [
     for name in ("countAll", "countResults", "strokeCount")
     for category in ("one", "few", "many")
 ]
-VERSION = "hsk-course-i18n.js?v=20261113-a1da547eb267"
+VERSION = "hsk-course-i18n.js?v=20261113-a1b42577166c"
 
 
 def source():
@@ -85,7 +85,7 @@ class DictionaryUIAdoptionTests(unittest.TestCase):
         self.assertIn('if(typeof value==="string"&&value)labels[key]=value', html)
         self.assertIn('if(typeof value==="string"&&value)messages[lang][key]=value', html)
         # 2026-11-05: non-blocking strokes/examples loader (+6 lines).
-        self.assertEqual(len(html.split("\n")), 1936)
+        self.assertEqual(len(html.split("\n")), 2084)
         for marker in (
             "function initFastWriter(fastParams){",
             "function normalizeLevel(value){",
