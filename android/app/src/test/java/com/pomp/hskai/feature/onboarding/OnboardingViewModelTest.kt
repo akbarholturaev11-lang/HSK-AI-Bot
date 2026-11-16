@@ -163,4 +163,27 @@ class OnboardingViewModelTest {
         assertEquals("hsk20", model.state.value.ui.selectedTrack)
         assertEquals(20, model.state.value.ui.dailyMinutes)
     }
+    @Test fun newLearnerWithoutHsk30EntitlementDefaultsToAccessibleHsk20() = runTest(dispatcher) {
+        val fake = Fake(true)
+        fake.track = AndroidHsk30OnboardingDto(
+            enabled = true, allowed = false, liveLevels = listOf("nhsk1"),
+        )
+        val model = fake.model()
+        runCurrent()
+        assertEquals("hsk20", model.state.value.ui.selectedTrack)
+        assertTrue(model.state.value.ui.hsk30Enabled)
+        assertFalse(model.state.value.ui.hsk30Allowed)
+    }
+
+    @Test fun allowedNewLearnerStillCanDefaultToHsk30() = runTest(dispatcher) {
+        val fake = Fake(true)
+        fake.track = AndroidHsk30OnboardingDto(
+            enabled = true, allowed = true, liveLevels = listOf("nhsk1"),
+        )
+        val model = fake.model()
+        runCurrent()
+        assertEquals("hsk30", model.state.value.ui.selectedTrack)
+        assertEquals("nhsk1", model.state.value.ui.selectedLevel)
+    }
+
 }
