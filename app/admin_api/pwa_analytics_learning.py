@@ -44,7 +44,8 @@ def ratio(numerator, denominator):
     return round(100*numerator/denominator, 2) if denominator else None
 
 
-ACTIVATION_EVENTS = ('onboarding_completed', 'lesson_started', 'section_completed',
+ACTIVATION_EVENTS = ('onboarding_completed', 'lesson_started', 'android_lesson_started',
+                     'section_completed',
                      'lesson_completed', 'book_lesson_completed')
 
 
