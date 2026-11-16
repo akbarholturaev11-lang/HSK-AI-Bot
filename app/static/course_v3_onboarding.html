@@ -651,9 +651,13 @@ function finish(){
     query.set("lang",LANG);query.set("level",chosenLevel);query.set("tab",String(launch.tab||"course"));query.set("onboarded","1");
     if(launch.foundation_required)query.set("foundation","1");else query.delete("foundation");
     var lesson=Number(launch.lesson||0);
-    if(!launch.placement&&!launch.review_only){
+    if(PWA_ONBOARDING_HOST&&!launch.placement&&!launch.review_only){
+      // PWA starts the server-selected current lesson on either eligible track.
       if(lesson>0)query.set("lesson",String(lesson));else query.delete("lesson");
       query.set("resume","1");query.set("autostart","1");
+    }else if(!PWA_ONBOARDING_HOST&&!isHsk30Level(sel)&&!launch.placement){
+      // Preserve the existing Telegram HSK 2.0 handoff, including its lesson=1 fallback.
+      query.set("lesson",String(lesson>0?lesson:1));query.set("autostart","1");query.delete("resume");
     }else{query.delete("lesson");query.delete("resume");query.delete("autostart")}
     location.href=(PWA_ONBOARDING_HOST?"/iphone-pwa/course":"/course-v3.html")+"?"+query.toString()+location.hash;
   }
