@@ -21,4 +21,4 @@
 - [x] 3.4 ON/OFF equivalence: identical completion payload/counters for identical base answers (PWA flow test and Android ViewModel test)
 - [x] 3.5 Android unit tests and compile for play and direct flavours
 - [ ] 3.6 Device QA still required before rollout: Safari + Home Screen PWA, Android Play and Direct, HSK 2.0/3.0, UZ/RU/TJ
-- [ ] 3.7 Rollout: shadow → allowlist → percentage; owner approval before `main` merge and production flag change
+- [ ] 3.7 Rollout: shadow → allowlist → percentage; owner approved the `main` push on 2026-11-17 with the flag off; turning the production flag on still needs owner approval

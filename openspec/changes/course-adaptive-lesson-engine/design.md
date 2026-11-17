@@ -165,9 +165,10 @@ wrong answer is not an incident.
 
 - [Wrong adaptive answer reopens a Xatolarim target] → this is the existing
   rule for a new verified mistake; XP rules are untouched because `adaptive`
-  is not a trusted reward source.
+  is not a trusted reward source. Owner confirmed on 2026-11-17.
 - [Retirement does not clear the Xatolarim target] → deliberate: Xatolarim
-  clearing rules stay owner-defined; listed as an owner question.
+  keeps its own clearing checks and XP. Owner delegated the decision on
+  2026-11-17; it stays as built.
 - [Lesson mistakes are client-reported selections] → the server re-grades the
   selection against the canonical key; a forged report can only add review for
   oneself and grants nothing.
