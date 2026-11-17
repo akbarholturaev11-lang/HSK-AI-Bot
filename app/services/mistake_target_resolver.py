@@ -287,6 +287,19 @@ def resolve_target(
 
     # 3) Bo'sh joy (dars `gap_fill`, imtihon `text_choice` "我___学过汉语。").
     if bank.GAP_RE.search(sentence) and bank.has_cjk(correct) and len(bank.GAP_RE.findall(sentence)) == 1:
+        # HSK exam text_choice blanks test the selected word. The option's
+        # translation is that word's meaning, NOT the filled sentence's meaning.
+        if source == "test" and fmt == "text_choice":
+            word = bank.lookup_word(bank.normalize_zh(correct))
+            if word:
+                return _word_target(word)
+            return _adhoc_word(
+                correct,
+                pinyin=_text(material.get("pinyin"), 120),
+                meaning=_text(material.get("translation"), 300),
+                language=language,
+                level=level,
+            )
         block = _choice_block(material, correct)
         full = bank.GAP_RE.sub(correct, sentence)
         if fmt in _DIALOG_FORMATS or "\n" in sentence or re.search(r"(^|\s)[AB]:", sentence):
