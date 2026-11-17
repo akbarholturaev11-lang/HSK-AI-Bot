@@ -72,7 +72,8 @@ integrations, any change to Xatolarim XP/clearing rules, lesson JSON or grading.
   `0158_course_adaptive_lessons`, `app/config.py`, analytics event registry.
 - PWA: `app/static/course-v3.html` (overlay only), course UI catalog keys.
 - Android: new `AndroidAdaptiveApi`, `AdaptiveLessonRepository`, overlay in
-  `LessonViewModel`/`LessonScreen`, new canonical `adaptive_review.xml` strings.
+  `LessonViewModel`/`LessonScreen`; strings come from the generated course
+  catalog (`hsk_course_adaptive_*`), no separate bundle.
 - Risks: a client bug could change lesson counters (guarded by the ON/OFF
   equivalence tests); Xatolarim reopening on a wrong adaptive answer (same rule
   as any new verified mistake); extra DB rows (bounded, 14-day retention).

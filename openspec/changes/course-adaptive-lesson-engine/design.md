@@ -142,8 +142,12 @@ next eligible boundary. Plan loading never delays the first card (async,
 timeout); failure → no overlay. The overlay card uses existing option styles
 and its own feedback bar; it does not call the lesson's heart, streak,
 objective, mistake, resume or interaction-analytics code. PWA keeps an
-offline outbox (max 10, per user scope) and replays answers on the next plan
-load; Android keeps an in-memory retry queue for the attempt.
+offline outbox (max 10, 36 h, per user scope) and replays answers on the next
+plan load; Android keeps the same limits in an app-scoped in-memory outbox sent
+before the next plan. A 5xx/network failure keeps the answer; any 4xx drops it
+and the lesson continues. Android reuses the Xatolarim question renderer
+(`ReviewMaterial`, `ReviewTokenBuilder`, practice footers) and the generated
+`hsk_course_adaptive_*` strings.
 
 ### D9. Flags, analytics, monitoring
 `COURSE_ADAPTIVE_ENABLED` (false), `COURSE_ADAPTIVE_ROLLOUT_PERCENT` (100,
@@ -151,8 +155,9 @@ stable hash of `user_id`), `COURSE_ADAPTIVE_ALLOWLIST` (user IDs),
 `COURSE_ADAPTIVE_SHADOW_ENABLED` (false; selection computed and counted, no
 state writes, nothing delivered). Server events: `adaptive_assigned`,
 `adaptive_answer_verified` (payload `skill`, `kind`, `correct`, `counted`,
-`relearned`, `retired`), `adaptive_shadow_planned`; PWA client event
-`adaptive_shown`. None of them is a lesson event or a master state. Technical
+`relearned`, `retired`), `adaptive_shadow_planned`. A client `adaptive_shown`
+event is deferred (not instrumented in this change). None of them is a lesson
+event or a master state. Technical
 failures log with `logger.exception` and degrade to no overlay; a learner's
 wrong answer is not an incident.
 
@@ -172,3 +177,12 @@ wrong answer is not an incident.
   no official result is affected.
 - [JSON state on a shared row] → serialized by the user row lock used by all
   writers.
+- [Xatolarim clear writes `adaptive_due_on` while the flag is OFF] → additive,
+  read only by the adaptive service; it lets a later rollout find cleared
+  targets due for the final check.
+- [Targets cleared before deploy] → no `adaptive_due_on`, so no final check;
+  they stay cleared under the existing Xatolarim rules.
+- [Telegram Mini App shares `course-v3.html`] → it gets the same overlay,
+  behind the same server flag.
+- [Flag OFF still costs one plan POST per lesson start] → the server answers
+  `enabled: false` without touching learning state.
