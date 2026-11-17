@@ -145,6 +145,13 @@ class Settings(BaseSettings):
     COURSE_ADAPTIVE_ALLOWLIST: str = ""
     # Computes and counts selection without state writes or delivery.
     COURSE_ADAPTIVE_SHADOW_ENABLED: bool = False
+    # UIUX-008 lesson plan: onboarding-length budget + picture pronunciation
+    # deck. Off = no `lesson_plan` in lesson payloads, original lessons.
+    COURSE_LESSON_PLAN_ENABLED: bool = False
+    # Stable user-id bucket (0-100) that receives plans while enabled.
+    COURSE_LESSON_PLAN_ROLLOUT_PERCENT: int = 100
+    # Comma-separated canonical user IDs that always receive plans while enabled.
+    COURSE_LESSON_PLAN_ALLOWLIST: str = ""
     # Observes existing Smart shadow reservations only; grants no delivery.
     SMART_REMINDER_SHADOW_ENABLED: bool = False
     # D25 ordinary runtime with the automatic four-stage rollout and admission.

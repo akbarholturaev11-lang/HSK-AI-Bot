@@ -749,6 +749,32 @@ class AndroidCourseServiceTests(unittest.IsolatedAsyncioTestCase):
             self.assertNotIn("type", section)
 
 
+    async def test_lesson_plan_is_absent_while_the_flag_is_off(self):
+        async with self.sessions() as session:
+            token = await self._token(session)
+            lesson = await AndroidCourseService(session, _settings()).lesson(token, lesson_order=1)
+        self.assertNotIn("lesson_plan", lesson["lesson"])
+
+    async def test_lesson_plan_follows_the_onboarding_length(self):
+        from app.db.models.course_miniapp_profile import CourseMiniAppProfile
+
+        settings = _settings()
+        settings.COURSE_LESSON_PLAN_ENABLED = True
+        settings.COURSE_LESSON_PLAN_ROLLOUT_PERCENT = 100
+        settings.COURSE_LESSON_PLAN_ALLOWLIST = ""
+        async with self.sessions() as session:
+            session.add(CourseMiniAppProfile(user_id=1, goal="travel", daily_minutes=5))
+            await session.commit()
+            token = await self._token(session)
+            lesson = await AndroidCourseService(session, settings).lesson(token, lesson_order=1)
+        plan = lesson["lesson"]["lesson_plan"]
+        self.assertEqual(plan["version"], 1)
+        self.assertEqual(plan["daily_minutes"], 5)
+        self.assertTrue(plan["omit"])
+        # 1-qismda hali o'rganilgan so'z yo'q — rasmli deck ham yo'q.
+        self.assertNotIn("picture_review", plan)
+
+
 class AndroidLessonAdGateTests(unittest.IsolatedAsyncioTestCase):
     """A watched ad opens a premium lesson — but only a real, recorded one.
 

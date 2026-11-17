@@ -27,6 +27,7 @@ from app.repositories.user_repo import UserRepository
 from app.repositories.course_progress_repo import CourseProgressRepository
 from app.services.entitlements.lesson_access import LessonAccessService
 from app.services.course_lesson_completion_proof import issue_lesson_completion_proof
+from app.services.course_lesson_plan_service import lesson_plan_for, with_lesson_plan
 from app.services.course_lesson_start_grant import remember_authorized_lesson_start
 from app.services.course_p3_grammar_localization import miniapp_reserved_grammar_patch
 from app.services.course_v3_parts import total_parts
@@ -400,7 +401,13 @@ def create_miniapp_entitlements_router(
             return _private_content_response(
                 {"ok": False, "error": "course_lesson_not_found"}, status_code=404,
             )
-        return _private_content_response(lesson)
+        # UIUX-008: optional plan after every access decision; any failure
+        # returns the unchanged lesson.
+        plan = await lesson_plan_for(
+            session, settings_obj, user_id=int(user.id), level=normalized_level,
+            lesson_order=lesson_order, lesson=lesson,
+        )
+        return _private_content_response(with_lesson_plan(lesson, plan))
 
     @router.get("/api/v3/lesson/content/{level}/{lesson_order}")
     async def v3_course_lesson_content(request: Request, level: str, lesson_order: int):
