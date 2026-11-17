@@ -38,7 +38,8 @@ _ORIGIN = "https://hskai.app"
 _RP_ID = "hskai.app"
 _ACTIONS = frozenset({"payments.review", "users.delete", "broadcast.send", "users.grant_access",
                       "course.access_policy", "hsk30.settings", "limits.update", "subscription.prices",
-                      "settings.update", "marketing.update", "users.block", "channels.update", "portfolio.add", "notifications.update", "partners.update", "partners.payout", "payments.delivery_reconcile", "broadcast.control", "subscription.qr_media"})
+                      "settings.update", "marketing.update", "users.block", "channels.update", "portfolio.add", "notifications.update", "partners.update", "partners.payout", "payments.delivery_reconcile", "broadcast.control", "subscription.qr_media",
+                      "lava.settings", "lava.recheck", "lava.link", "lava.cancel", "lava.chargeback"})
 _TARGET = re.compile(r"^[A-Za-z0-9_-]{1,64}$")
 _UUID = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
 _CHALLENGE_TTL = timedelta(minutes=2)
@@ -90,7 +91,7 @@ def _session_digest(cookie: str) -> str:
     return hashlib.sha256(cookie.encode("ascii")).hexdigest()
 
 
-async def _locked_session(db: Any, cookie: str, settings_obj: Any, stamp: datetime):
+async def _locked_session(db: Any, cookie: str, settings_obj: Any, stamp: datetime, *, allow_owner_fk=False):
     if not isinstance(cookie, str) or not _COOKIE_PATTERN.fullmatch(cookie):
         return None
     row = (await db.execute(select(AdminPwaSession).where(
@@ -101,7 +102,7 @@ async def _locked_session(db: Any, cookie: str, settings_obj: Any, stamp: dateti
         return None
     user = (await db.execute(select(User).where(
         User.id == row.user_id,
-    ).with_for_update().execution_options(populate_existing=True))).scalar_one_or_none()
+    ).with_for_update(key_share=allow_owner_fk).execution_options(populate_existing=True))).scalar_one_or_none()
     if not _authorized_admin(user, settings_obj):
         return None
     return row, user

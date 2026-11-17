@@ -28,8 +28,15 @@ VOICE_RESOURCES = {
     "voice_you": "hsk_course_you",
     "voice_box_title": "hsk_course_voice_title",
 }
+# AI Voice V8 replaced the call screen; its copy lives in hsk_course_voice_v8_*.
+# The remaining generated resources are still read by these screens.
+STILL_USED = (
+    "hsk_course_course_voice_inline_a11y_mic",
+    "hsk_course_voice_start",
+    "hsk_course_voice_title",
+)
 VOICE_FILES = (
-    "android/app/src/main/java/com/pomp/hskai/feature/voice/VoiceCallScreen.kt",
+    "android/app/src/main/java/com/pomp/hskai/feature/voice/VoiceV8Screen.kt",
     "android/app/src/main/java/com/pomp/hskai/feature/voice/VoiceScreen.kt",
     "android/app/src/main/java/com/pomp/hskai/feature/practice/WordDrillScreen.kt",
     "android/app/src/main/java/com/pomp/hskai/feature/lesson/LessonCards.kt",
@@ -62,16 +69,17 @@ class AndroidVoiceUIAdoptionTests(unittest.TestCase):
         combined = "\n".join(sources.values())
         for original_key, generated_key in VOICE_RESOURCES.items():
             with self.subTest(key=original_key):
-                self.assertIn(f"R.string.{generated_key}", combined)
                 self.assertNotIn(f"R.string.{original_key}", combined)
-        call_screen = sources[VOICE_FILES[0]]
-        self.assertIn("state.isLiveMuted -> stringResource(R.string.voice_status_muted)",
-                      call_screen)
-        self.assertIn("state.isLive && !state.isLiveConnected -> stringResource(R.string.voice_status_live_disconnected)",
-                      call_screen)
-        self.assertIn("else R.string.voice_setting_off", call_screen)
-        for callback in ("onToggleRecording", "onSendText", "onEndSession"):
-            self.assertIn(callback, call_screen)
+        for generated_key in STILL_USED:
+            with self.subTest(key=generated_key):
+                self.assertIn(f"R.string.{generated_key}", combined)
+        v8_screen = sources[VOICE_FILES[0]]
+        self.assertIn("if (state.isLiveReconnecting) VoiceV8Status.RECONNECT else VoiceV8Status.CONNECT",
+                      v8_screen)
+        self.assertIn("state.isLiveMuted -> VoiceV8Status.READY", v8_screen)
+        for call in ("latestActions.toggleRecording()", "latestActions.sendText(value)",
+                     "latestActions.endSession()"):
+            self.assertIn(call, v8_screen)
 
     def test_listen_and_choose_keeps_legacy_resource_without_exact_catalog_match(self):
         lesson_cards = (ROOT / VOICE_FILES[3]).read_text(encoding="utf-8")

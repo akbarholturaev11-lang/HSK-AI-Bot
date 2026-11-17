@@ -190,7 +190,7 @@ class ProTrialService:
                 ends_at=ends_at,
             )
 
-        await ConversionFunnelService().record(
+        await ConversionFunnelService(self.session).record_in_transaction(
             event_name="trial_started",
             user=user,
             source=source or client or "pro_trial",

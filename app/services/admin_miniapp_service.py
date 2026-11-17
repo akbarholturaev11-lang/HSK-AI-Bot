@@ -1332,7 +1332,7 @@ def _plan_label(value: str | None) -> str:
 
 
 def _method_label(value: str | None) -> str:
-    labels = {"visa": "Visa/карта", "alipay": "Alipay", "wechat": "WeChat"}
+    labels = {"visa": "Visa/карта", "alipay": "Alipay", "wechat": "WeChat", "lava": "lava.top"}
     return labels.get(str(value or "").lower(), value or "—")
 
 

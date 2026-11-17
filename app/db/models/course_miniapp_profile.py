@@ -24,6 +24,7 @@ class CourseMiniAppProfile(Base):
             name="goal",
         ),
         CheckConstraint("daily_minutes IN (5, 10, 15, 20, 30)", name="daily_minutes"),
+        CheckConstraint("streak_target_days IS NULL OR streak_target_days IN (7, 14, 30, 50)", name="streak_target_days"),
         CheckConstraint(
             "start_mode IN ('lesson_1', 'continue', 'placement')",
             name="start_mode",
@@ -44,6 +45,10 @@ class CourseMiniAppProfile(Base):
         nullable=False,
     )
     goal: Mapped[str] = mapped_column(String(32), default="hsk_exam", nullable=False)
+    # Ordered primary-first goal selection for new onboarding; NULL = legacy scalar.
+    goals_json: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    # An aspiration only: never a substitute for verified current_streak.
+    streak_target_days: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     daily_minutes: Mapped[int] = mapped_column(Integer, default=10, nullable=False)
     start_mode: Mapped[str] = mapped_column(String(24), default="continue", nullable=False)
     # Onboardingdagi "nimaga urg'u beraylik" javobi. Kuzatilgan zaiflikning

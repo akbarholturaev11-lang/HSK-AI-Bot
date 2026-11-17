@@ -111,7 +111,8 @@ class AIUsageBudgetService:
         if canonical_id is None and telegram_id is None:
             return None
         rates = await self._live_or_manual_usd_rates()
-        total_budget = self._ai_budget_usd(payment.amount, payment.currency, rates)
+        from app.services.payment_amounts import payment_amount
+        total_budget = self._ai_budget_usd(payment_amount(payment), payment.currency, rates)
         budget_amount = payment.amount
         budget_currency = payment.currency
         if total_budget is None and getattr(payment, "base_amount", None):

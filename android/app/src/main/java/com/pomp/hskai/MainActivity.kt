@@ -49,6 +49,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.core.view.doOnPreDraw
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -56,6 +57,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.pomp.hskai.core.auth.AuthRepository
 import com.pomp.hskai.core.auth.AuthState
+import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.auth.authActivity
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompHskAiTheme
@@ -89,6 +91,10 @@ import com.pomp.hskai.feature.dictionary.DictionaryActions
 import com.pomp.hskai.feature.dictionary.DictionaryScreen
 import com.pomp.hskai.feature.dictionary.DictionaryViewModel
 import com.pomp.hskai.feature.foundation.FoundationActivity
+import com.pomp.hskai.data.api.AndroidOnboardingStatusDto
+import com.pomp.hskai.feature.onboarding.GuestLiDraft
+import com.pomp.hskai.feature.onboarding.LiGuestEntry
+import java.io.IOException
 import com.pomp.hskai.feature.onboarding.OnboardingScreen
 import com.pomp.hskai.feature.onboarding.OnboardingViewModel
 import com.pomp.hskai.feature.profile.IdentitiesViewModel
@@ -141,6 +147,10 @@ import com.pomp.hskai.feature.rating.RatingTab
 import com.pomp.hskai.feature.rating.RatingUserScreen
 import com.pomp.hskai.feature.rating.RatingViewModel
 import com.pomp.hskai.feature.voice.VoiceScreen
+import com.pomp.hskai.feature.voice.VoiceV8Actions
+import com.pomp.hskai.feature.voice.VoiceV8Prefs
+import com.pomp.hskai.feature.voice.VoiceV8Topic
+import com.pomp.hskai.feature.voice.VoiceV8Screen
 import com.pomp.hskai.feature.voice.VoiceViewModel
 import java.util.UUID
 import java.time.LocalDate
@@ -184,6 +194,10 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+        }
+        // After the first frame: the last crash record, exit reasons and a flush.
+        window.decorView.doOnPreDraw { view ->
+            view.post { runCatching { app.diagnostics.afterFirstFrame() } }
         }
     }
 
@@ -293,27 +307,68 @@ private fun AppRoot(
                     viewModel.loadProviders()
                 }
             }
-            LinkScreen(
-                state = linkState,
-                language = loginLanguage,
-                onLanguageSelected = { language ->
-                    loginLanguage = language
-                    if (AppLocale.choose(localeHost, language)) {
-                        localeHost.authActivity()?.recreate()
+            var previewLoaded by remember { mutableStateOf(false) }
+            var preview by remember { mutableStateOf<AndroidOnboardingStatusDto?>(null) }
+            var initialDraft by remember { mutableStateOf<GuestLiDraft?>(null) }
+            LaunchedEffect(Unit) {
+                preview = app.onboardingRepository.guestPreview()
+                if (preview != null) initialDraft = app.guestLiDraftStore.read()
+                previewLoaded = true
+            }
+            val chooseLanguage: (AppLanguage) -> Unit = { language ->
+                loginLanguage = language
+                if (AppLocale.choose(localeHost, language)) localeHost.authActivity()?.recreate()
+            }
+            val provider: @Composable (Boolean, (() -> Unit)?) -> Unit = { signup, onBack ->
+                val providerScope = rememberCoroutineScope()
+                var draftError by remember { mutableStateOf(false) }
+                fun startProvider(action: () -> Unit) {
+                    providerScope.launch {
+                        draftError = false
+                        try {
+                            if (signup) {
+                                if (!app.guestLiDraftStore.arm()) {
+                                    draftError = true
+                                    return@launch
+                                }
+                            } else app.guestLiDraftStore.clear()
+                            action()
+                        } catch (_: IOException) {
+                            draftError = true
+                        }
                     }
-                },
-                onContinueWithTelegram = {
-                    viewModel.continueWithTelegram(AppLocale.current(localeHost))
-                },
-                onSignInWithGoogle = {
-                    viewModel.signInWithGoogle(localeHost.authActivity(), AppLocale.current(localeHost))
-                },
-                onSignInWithApple = { viewModel.signInWithApple(AppLocale.current(localeHost)) },
-                onBrowserUrlOpened = viewModel::browserUrlOpened,
-                onTelegramUrlOpened = viewModel::telegramUrlOpened,
-                onExternalLaunchFailed = viewModel::externalLaunchFailed,
-                onDismissWaiting = viewModel::dismissWaiting,
-            )
+                }
+                LinkScreen(
+                    state = if (draftError) linkState.copy(error = ApiError.Unknown) else linkState,
+                    language = loginLanguage,
+                    onLanguageSelected = chooseLanguage,
+                    onContinueWithTelegram = {
+                        startProvider { viewModel.continueWithTelegram(AppLocale.current(localeHost)) }
+                    },
+                    onSignInWithGoogle = {
+                        startProvider { viewModel.signInWithGoogle(localeHost.authActivity(), AppLocale.current(localeHost)) }
+                    },
+                    onSignInWithApple = {
+                        startProvider { viewModel.signInWithApple(AppLocale.current(localeHost)) }
+                    },
+                    onBrowserUrlOpened = viewModel::browserUrlOpened,
+                    onTelegramUrlOpened = viewModel::telegramUrlOpened,
+                    onExternalLaunchFailed = viewModel::externalLaunchFailed,
+                    onDismissWaiting = viewModel::dismissWaiting,
+                    signup = signup,
+                    onBack = onBack,
+                )
+            }
+            val availablePreview = preview
+            when {
+                !previewLoaded -> LaunchWaitScreen()
+                availablePreview == null -> provider(false, null)
+                else -> LiGuestEntry(
+                    repository = app.onboardingRepository, preview = availablePreview, initialDraft = initialDraft,
+                    owner = sessionOwner, language = loginLanguage, onLanguageSelected = chooseLanguage,
+                    saveDraft = app.guestLiDraftStore::save, provider = provider,
+                )
+            }
         }
 
         is AuthState.SignedIn -> {
@@ -350,9 +405,20 @@ private fun AppRoot(
                 factory = OnboardingViewModel.Factory(
                     repository = app.onboardingRepository,
                     language = state.account.language.backendCode,
+                    claimGuestDraft = {
+                        try { app.guestLiDraftStore.takeArmed() } catch (_: IOException) { null }
+                    },
                 ),
             )
             val onboardingState by onboardingViewModel.state.collectAsStateWithLifecycle()
+            val activityFeedback: com.pomp.hskai.feature.feedback.ActivityFeedbackViewModel = viewModel(
+                viewModelStoreOwner = sessionOwner,
+                factory = object : androidx.lifecycle.ViewModelProvider.Factory {
+                    @Suppress("UNCHECKED_CAST")
+                    override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T =
+                        com.pomp.hskai.feature.feedback.ActivityFeedbackViewModel(app.activityFeedbackRepository) as T
+                })
+            val feedbackState by activityFeedback.state.collectAsStateWithLifecycle()
             val courseViewModel: CourseViewModel = viewModel(
                 viewModelStoreOwner = sessionOwner,
                 factory = CourseViewModel.Factory(app.courseRepository),
@@ -443,6 +509,9 @@ private fun AppRoot(
             var widgetPlacedNotice by remember { mutableStateOf(false) }
             var widgetPromptFromOnboarding by rememberSaveable { mutableStateOf(false) }
             var widgetOfferHandled by rememberSaveable { mutableStateOf(false) }
+            // The post-onboarding notification/widget offer waits until the
+            // learner leaves the first automatically opened lesson.
+            var onboardingFirstLessonFinished by rememberSaveable { mutableStateOf(false) }
             var widgetForegroundTick by remember { mutableStateOf(0) }
             val widgetLifecycle = LocalLifecycleOwner.current.lifecycle
             val widgetSession by app.widgetStore.state.collectAsStateWithLifecycle(initialValue = WidgetSession())
@@ -481,8 +550,10 @@ private fun AppRoot(
             // Onboarding uses the same full-screen widget prompt as the daily reminder.
             // The widget offer stays in this position; only the old Pro/trial
             // interruption after onboarding was removed.
-            LaunchedEffect(onboardingState.launch, hsk30PromoMustPrecedeWidget) {
-                if (hsk30PromoMustPrecedeWidget) return@LaunchedEffect
+            LaunchedEffect(onboardingState.launch, hsk30PromoMustPrecedeWidget, onboardingFirstLessonFinished) {
+                if (hsk30PromoMustPrecedeWidget ||
+                    (onboardingState.launch != null && !onboardingFirstLessonFinished)
+                ) return@LaunchedEffect
                 if (onboardingState.launch != null && !widgetOfferHandled && !widgetSetupOpen) {
                     val today = LocalDate.now().toString()
                     val session = app.widgetStore.read()
@@ -547,9 +618,11 @@ private fun AppRoot(
                 studySetupState.visible,
                 widgetSession.lastInstallPromptDay,
                 hsk30PromoMustPrecedeWidget,
+                onboardingFirstLessonFinished,
             ) {
                 if (!onboardingState.completed || widgetSetupOpen || studySetupState.visible ||
-                    hsk30PromoMustPrecedeWidget
+                    hsk30PromoMustPrecedeWidget ||
+                    (onboardingState.launch != null && !onboardingFirstLessonFinished)
                 ) {
                     return@LaunchedEffect
                 }
@@ -706,10 +779,15 @@ private fun AppRoot(
 
             val dailyGoal by app.appSettings.dailyGoal
                 .collectAsStateWithLifecycle(initialValue = DailyGoal.DEFAULT)
-            val voiceSubtitles by app.appSettings.voiceSubtitles
-                .collectAsStateWithLifecycle(initialValue = true)
-            val voiceSlowSpeech by app.appSettings.voiceSlowSpeech
+            // AI Voice V8 settings sheet; defaults match the PWA's switches.
+            val voiceV8Pinyin by app.appSettings.voiceV8Pinyin
                 .collectAsStateWithLifecycle(initialValue = false)
+            val voiceV8Translation by app.appSettings.voiceV8Translation
+                .collectAsStateWithLifecycle(initialValue = true)
+            val voiceV8Backdrop by app.appSettings.voiceV8Backdrop
+                .collectAsStateWithLifecycle(initialValue = true)
+            // The open V8 conversation's topic; null while it is closed.
+            var voiceV8Topic by rememberSaveable { mutableStateOf<String?>(null) }
             // Starts as "seen" so the primer cannot flash on top of the app
             // in the moment before the store has been read.
             val notificationPrimerSeen by app.appSettings.notificationPrimerSeen
@@ -747,7 +825,6 @@ private fun AppRoot(
                     }
                 }
             }
-            LaunchedEffect(voiceSlowSpeech) { voiceViewModel.setSlowSpeech(voiceSlowSpeech) }
             var goalPickerOpen by remember { mutableStateOf(false) }
             var practiceRequest by remember { mutableStateOf<PracticeRequest?>(null) }
             var openDrill by remember { mutableStateOf<DrillLaunch?>(null) }
@@ -837,12 +914,18 @@ private fun AppRoot(
 
             var openLesson by remember { mutableStateOf<LessonLaunch?>(null) }
             var skipTestLesson by remember { mutableStateOf<CourseLesson?>(null) }
+            // After a completed part: waits for the refreshed map, then shows
+            // the next part's sheet (PWA `openLessonSheet`) on the course map.
+            var pendingNextPart by remember { mutableStateOf<NextPartOffer?>(null) }
+            var nextPartSheet by remember { mutableStateOf<NextPartOffer?>(null) }
             LaunchedEffect(courseState.completedTrackSwitch) {
                 if (courseState.completedTrackSwitch == null) return@LaunchedEffect
                 openLesson = null
                 practiceRequest = null
                 openDrill = null
                 skipTestLesson = null
+                pendingNextPart = null
+                nextPartSheet = null
                 phrasebookOpen = false
                 dictionaryOpen = false
                 openChallenge = null
@@ -879,8 +962,53 @@ private fun AppRoot(
             var onboardingAutoStartHandled by rememberSaveable { mutableStateOf(false) }
             val deepLinkRefreshGate = remember { DeepLinkRefreshGate() }
             val currentLevel = courseState.map?.level ?: state.account.level
+            var feedbackPreviousTab by remember { mutableStateOf(selectedTab) }
+            LaunchedEffect(selectedTab) {
+                val previous = feedbackPreviousTab
+                feedbackPreviousTab = selectedTab
+                if (previous != selectedTab && !offline) when (previous) {
+                    MainTab.PRACTICE -> activityFeedback.prepare("practice", currentLevel)
+                    MainTab.VOICE -> activityFeedback.prepare("voice", currentLevel)
+                    else -> Unit
+                }
+            }
+            LaunchedEffect(onboardingState.completed) {
+                val activity = context.authActivity()
+                if (onboardingState.completed && activity?.intent?.getStringExtra("hsk_feedback_context") == "foundation") {
+                    activity.intent.removeExtra("hsk_feedback_context")
+                    activityFeedback.prepare("foundation", currentLevel)
+                }
+            }
+            LaunchedEffect(feedbackState.completed) {
+                if (feedbackState.completed) { profileViewModel.load(); courseViewModel.load() }
+            }
+            if (openLesson == null && adRequest == null && !checkoutVisible && nextPartSheet == null)
+                com.pomp.hskai.feature.feedback.ActivityFeedbackDialog(feedbackState, activityFeedback::answer,
+                    activityFeedback::next, activityFeedback::back, activityFeedback::close)
+
+            // Resolve a completed part once the lesson-end ad is gone and the
+            // refreshed server map is in: the next part opens as a sheet only
+            // when the server already shows it current and open. Otherwise the
+            // learner stays on the map and the usual lesson feedback follows.
+            LaunchedEffect(pendingNextPart, courseState.map, courseState.isRefreshing, adRequest) {
+                val pending = pendingNextPart ?: return@LaunchedEffect
+                if (adRequest != null || courseState.isRefreshing) return@LaunchedEffect
+                pendingNextPart = null
+                val map = courseState.map?.takeIf { !courseState.isStale && it.level == pending.level }
+                val next = map?.lessons?.firstOrNull { it.order == pending.finishedOrder + 1 }
+                if (!offline && next != null &&
+                    next.status == com.pomp.hskai.domain.model.LessonStatus.CURRENT &&
+                    (next.access == LessonAccess.Open || next.access == LessonAccess.HalfPreview)
+                ) {
+                    nextPartSheet = pending.copy(next = next)
+                } else {
+                    activityFeedback.prepare("lesson", pending.level, pending.finishedOrder)
+                }
+            }
+
             val currentLanguage = state.account.language.backendCode
             LaunchedEffect(selectedTab, voiceViewModel) {
+                if (selectedTab != MainTab.VOICE) voiceV8Topic = null
                 val voice = voiceViewModel.state.value
                 if (selectedTab != MainTab.VOICE && (voice.hasSession || voice.isStarting)) {
                     voiceViewModel.endSession()
@@ -942,46 +1070,34 @@ private fun AppRoot(
                 )
             }
 
-            // HSK 2.0 onboarding may open its first lesson after the one-time
-            // notification/widget prompts. HSK 3.0 always lands on the course map;
-            // its lesson and practice access is checked when the learner enters.
-            // Beginner onboarding enters Starter 0 first; FoundationActivity
-            // returns through the canonical current-lesson deep link.
+            // Both HSK tracks enter the verified first lesson directly after
+            // onboarding. Notification/widget prompts are deferred until exit.
+            // Beginner learners still pass through the required Starter 0.
             LaunchedEffect(
                 onboardingState.launch,
+                onboardingState.completed,
                 courseState.map,
                 offline,
-                notificationPrimerSeen,
-                widgetSession.reminderEnabled,
-                widgetOfferHandled,
-                widgetSetupOpen,
-                widgetPlacedNotice,
             ) {
                 val onboardingLaunch = onboardingState.launch ?: return@LaunchedEffect
-                if (onboardingAutoStartHandled || offline) return@LaunchedEffect
-                if (!notificationPrimerSeen && !widgetSession.reminderEnabled) {
-                    return@LaunchedEffect
-                }
-                if (!widgetOfferHandled || widgetSetupOpen || widgetPlacedNotice) {
-                    return@LaunchedEffect
-                }
-
+                if (!onboardingState.completed || onboardingAutoStartHandled || offline) return@LaunchedEffect
                 val map = courseState.map ?: return@LaunchedEffect
+                if (courseState.isStale) return@LaunchedEffect
                 val launchLevel = onboardingLaunch.level.trim().lowercase()
                 if (launchLevel.isNotBlank() && map.level.trim().lowercase() != launchLevel) {
                     return@LaunchedEffect
                 }
 
-                if (launchLevel.startsWith("nhsk")) {
+                if (onboardingLaunch.placement || onboardingLaunch.reviewOnly ||
+                    (launchLevel.startsWith("nhsk") && map.hsk30?.access?.allowed != true)
+                ) {
                     onboardingAutoStartHandled = true
-                    return@LaunchedEffect
-                }
-                if (onboardingLaunch.placement || onboardingLaunch.reviewOnly) {
-                    onboardingAutoStartHandled = true
+                    onboardingFirstLessonFinished = true
                     return@LaunchedEffect
                 }
                 if (onboardingLaunch.foundationRequired || map.foundation?.mustComeFirst == true) {
                     onboardingAutoStartHandled = true
+                    onboardingFirstLessonFinished = true
                     context.startActivity(Intent(context, FoundationActivity::class.java))
                     return@LaunchedEffect
                 }
@@ -989,14 +1105,20 @@ private fun AppRoot(
                 val requestedOrder = onboardingLaunch.lesson?.takeIf { it > 0 }
                     ?: map.currentLesson?.order
                 val candidate = requestedOrder?.let { order ->
-                    map.lessons.firstOrNull { it.order == order }
-                } ?: map.currentLesson ?: return@LaunchedEffect
-                if (
-                    candidate.access == LessonAccess.Open ||
-                    candidate.access == LessonAccess.HalfPreview
+                    map.lessons.firstOrNull {
+                        it.order == order && it.status == com.pomp.hskai.domain.model.LessonStatus.CURRENT
+                    }
+                } ?: map.currentLesson?.takeIf {
+                    it.status == com.pomp.hskai.domain.model.LessonStatus.CURRENT
+                }
+                onboardingAutoStartHandled = true
+                if (candidate != null &&
+                    (candidate.access == LessonAccess.Open ||
+                     candidate.access == LessonAccess.HalfPreview)
                 ) {
-                    onboardingAutoStartHandled = true
                     launchLesson(candidate)
+                } else {
+                    onboardingFirstLessonFinished = true // keep normal locked/empty map fallback
                 }
             }
 
@@ -1174,7 +1296,20 @@ private fun AppRoot(
             } else if (onboardingState.loading && !onboardingUnknown) {
                 LaunchWaitScreen()
             } else if (!onboardingState.completed && !onboardingUnknown) {
-                OnboardingScreen(
+                if (onboardingState.ui.liEnabled && onboardingState.ui.step >= 3) {
+                    com.pomp.hskai.feature.onboarding.LiOnboardingChoices(
+                        state = onboardingState.ui, profile = profileState,
+                        onGoal = onboardingViewModel::selectGoal,
+                        onMinutes = onboardingViewModel::selectDailyMinutes,
+                        onFocus = onboardingViewModel::selectFocus,
+                        onStreak = onboardingViewModel::selectStreak,
+                        onBack = onboardingViewModel::back,
+                        onNext = onboardingViewModel::next,
+                        onFinish = onboardingViewModel::finishIntro,
+                        onTrial = profileViewModel::startTrial,
+                        onRetryTrial = profileViewModel::loadTrial,
+                    )
+                } else OnboardingScreen(
                     language = currentLanguage,
                     state = onboardingState.ui,
                     onTrackSelected = onboardingViewModel::selectTrack,
@@ -1183,7 +1318,9 @@ private fun AppRoot(
                     onBack = onboardingViewModel::back,
                     onNext = onboardingViewModel::next,
                 )
-            } else if (!onboardingUnknown && !notificationPrimerSeen && !widgetSession.reminderEnabled) {
+            } else if (!onboardingUnknown && !notificationPrimerSeen && !widgetSession.reminderEnabled &&
+                (onboardingState.launch == null || onboardingFirstLessonFinished)
+            ) {
                 // Asked once, at the end of onboarding, for both kinds of
                 // notification at once: Android grants them for the whole app,
                 // not per kind, and it stops showing its dialog after two
@@ -1392,7 +1529,11 @@ private fun AppRoot(
                     accessChanged = accessActive,
                     onExit = { completed ->
                         val finishedOrder = launch.lesson.order
+                        // A completed part first offers the next part's sheet;
+                        // its feedback prompt waits until that is resolved.
+                        if (completed) pendingNextPart = NextPartOffer(currentLevel, finishedOrder)
                         openLesson = null
+                        if (onboardingState.launch != null) onboardingFirstLessonFinished = true
                         courseViewModel.load()
                         if (completed && adsUnlockedAfterLimit) {
                             // The lesson-end placement joins the same product
@@ -1406,12 +1547,9 @@ private fun AppRoot(
                     },
                 )
             } else {
-                // A running AI Voice conversation takes the whole screen:
-                // the tabs are not a place to leave a call from, the Close
-                // button is, and the Mini App shows no tabs there either.
-                val voiceCallActive = selectedTab == MainTab.VOICE &&
-                    voiceState.hasSession &&
-                    voiceState.result == null
+                // The AI Voice V8 conversation takes the whole screen, as the
+                // PWA page does: no tabs there, Back or Close leaves it.
+                val voiceV8Open = selectedTab == MainTab.VOICE && voiceV8Topic != null
                 val practiceImmersive = selectedTab == MainTab.PRACTICE && practiceState.isImmersive
 
                 // Kurs is the home screen: back from any other tab lands on it,
@@ -1436,38 +1574,62 @@ private fun AppRoot(
                                 else -> selectedTab = it
                             }
                         },
-                        bottomBarVisible = !voiceCallActive && !practiceImmersive &&
+                        bottomBarVisible = !voiceV8Open && !practiceImmersive &&
                             !(selectedTab == MainTab.PROFILE && profileSettingsOpen),
                         topNotice = reconnect?.let { retry ->
                             { OfflineBanner(retrying = retry.retrying, onRetry = retry::retryNow) }
                         },
                     ) { tab, contentModifier ->
                         when (tab) {
-                            MainTab.COURSE -> CourseScreen(
-                                state = courseState,
-                                dailyGoal = dailyGoal,
-                                limit = limitGate,
-                                hints = hints,
-                                onDismissHint = hintsViewModel::dismiss,
-                                onLesson = { lesson -> launchLesson(lesson) },
-                                onLockedLesson = { lesson ->
-                                    if (offline) lessonNeedsInternet() else skipTestLesson = lesson
-                                },
-                                onTodayTask = ::openTodayTask,
-                                onOpenGoal = { goalPickerOpen = true },
-                                onOpenChest = courseViewModel::openRewardChest,
-                                onChestRewardConsumed = courseViewModel::consumeChestReward,
-                                onUnlockAnimationConsumed = courseViewModel::consumeLessonUnlock,
-                                onSwitchTrack = courseViewModel::switchCourseTrack,
-                                onHsk30PromoShown = courseViewModel::markHsk30PromoShown,
-                                onDismissHsk30Promo = courseViewModel::dismissHsk30Promo,
-                                hsk30PromoAllowed = adRequest == null && !limitOverlayVisible &&
-                                    !widgetSetupOpen && !widgetPlacedNotice && !studySetupState.visible &&
-                                    !languagePickerOpen && !goalPickerOpen && !checkoutVisible,
-                                onUnlockHsk30 = ::openHsk30ContentGate,
-                                onRetry = courseViewModel::load,
-                                modifier = contentModifier,
-                            )
+                            MainTab.COURSE -> {
+                                CourseScreen(
+                                    state = courseState,
+                                    dailyGoal = dailyGoal,
+                                    limit = limitGate,
+                                    hints = hints,
+                                    onDismissHint = hintsViewModel::dismiss,
+                                    onLesson = { lesson -> launchLesson(lesson) },
+                                    onLockedLesson = { lesson ->
+                                        if (offline) lessonNeedsInternet() else skipTestLesson = lesson
+                                    },
+                                    onTodayTask = ::openTodayTask,
+                                    onOpenGoal = { goalPickerOpen = true },
+                                    onOpenChest = courseViewModel::openRewardChest,
+                                    onChestRewardConsumed = courseViewModel::consumeChestReward,
+                                    onUnlockAnimationConsumed = courseViewModel::consumeLessonUnlock,
+                                    onSwitchTrack = courseViewModel::switchCourseTrack,
+                                    onHsk30PromoShown = courseViewModel::markHsk30PromoShown,
+                                    onDismissHsk30Promo = courseViewModel::dismissHsk30Promo,
+                                    hsk30PromoAllowed = adRequest == null && !limitOverlayVisible &&
+                                        !widgetSetupOpen && !widgetPlacedNotice && !studySetupState.visible &&
+                                        !languagePickerOpen && !goalPickerOpen && !checkoutVisible &&
+                                        nextPartSheet == null,
+                                    onUnlockHsk30 = ::openHsk30ContentGate,
+                                    onRetry = courseViewModel::load,
+                                    modifier = contentModifier,
+                                )
+                                // One sheet at a time: onboarding/study prompts
+                                // first, then the next part waits on the map.
+                                nextPartSheet?.let { offer ->
+                                    val next = offer.next
+                                    if (next != null && adRequest == null && !limitOverlayVisible &&
+                                        !widgetSetupOpen && !widgetPlacedNotice && !studySetupState.visible &&
+                                        !languagePickerOpen && !goalPickerOpen && !checkoutVisible
+                                    ) {
+                                        com.pomp.hskai.feature.course.NextPartSheet(
+                                            lesson = next,
+                                            onContinue = {
+                                                nextPartSheet = null
+                                                launchLesson(next)
+                                            },
+                                            onDismiss = {
+                                                nextPartSheet = null
+                                                activityFeedback.prepare("lesson", offer.level, offer.finishedOrder)
+                                            },
+                                        )
+                                    }
+                                }
+                            }
 
                             MainTab.PRACTICE -> PracticeScreen(
                                 state = practiceState,
@@ -1525,22 +1687,11 @@ private fun AppRoot(
                                 limit = limitGate,
                                 hints = hints,
                                 onDismissHint = hintsViewModel::dismiss,
-                                subtitlesOn = voiceSubtitles,
-                                slowSpeech = voiceSlowSpeech,
-                                onToggleSubtitles = { on ->
-                                    scope.launch { app.appSettings.setVoiceSubtitles(on) }
-                                },
-                                onToggleSlowSpeech = { slow ->
-                                    scope.launch { app.appSettings.setVoiceSlowSpeech(slow) }
-                                },
                                 onSelectRole = voiceViewModel::selectRole,
-                                onStartSession = voiceViewModel::startSession,
-                                onToggleRecording = voiceViewModel::toggleRecording,
-                                onSendText = voiceViewModel::sendTypedMessage,
-                                onEndSession = voiceViewModel::endSession,
-                                onSwapPartner = { role ->
-                                    voiceViewModel.swapPartner(role, currentLevel, currentLanguage)
+                                onOpenVoice = {
+                                    voiceV8Topic = VoiceV8Topic.forRole(voiceState.selectedRole).id
                                 },
+                                onEndSession = voiceViewModel::endSession,
                                 onReset = voiceViewModel::reset,
                                 onRetryStatus = voiceViewModel::loadStatus,
                                 modifier = contentModifier,
@@ -1647,6 +1798,46 @@ private fun AppRoot(
                                 onDismissAccountDeletion = accountDeletionViewModel::dismiss,
                             )
                         }
+                    }
+
+                    if (voiceV8Open) {
+                        VoiceV8Screen(
+                            state = voiceState,
+                            topicId = voiceV8Topic ?: VoiceV8Topic.FREE.id,
+                            onTopicSelected = { voiceV8Topic = it },
+                            prefs = VoiceV8Prefs(
+                                pinyin = voiceV8Pinyin,
+                                translation = voiceV8Translation,
+                                backdrop = voiceV8Backdrop,
+                            ),
+                            onPrefsChange = { next ->
+                                scope.launch {
+                                    app.appSettings.setVoiceV8Pinyin(next.pinyin)
+                                    app.appSettings.setVoiceV8Translation(next.translation)
+                                    app.appSettings.setVoiceV8Backdrop(next.backdrop)
+                                }
+                            },
+                            limit = limitGate,
+                            actions = VoiceV8Actions(
+                                startFromMicrophone = { live ->
+                                    voiceViewModel.startFromMicrophone(currentLevel, currentLanguage, live)
+                                },
+                                startWithText = { text ->
+                                    voiceViewModel.startWithText(currentLevel, currentLanguage, text)
+                                },
+                                toggleRecording = voiceViewModel::toggleRecording,
+                                sendText = voiceViewModel::sendTypedMessage,
+                                endSession = voiceViewModel::endSession,
+                                changeTopic = voiceViewModel::changeTopic,
+                                selectRole = voiceViewModel::selectRole,
+                                cancelRecording = voiceViewModel::cancelRecording,
+                                restart = voiceViewModel::reset,
+                                exit = {
+                                    voiceViewModel.exitConversation()
+                                    voiceV8Topic = null
+                                },
+                            ),
+                        )
                     }
 
                     if (widgetSetupOpen) {
@@ -1879,6 +2070,7 @@ private fun LessonHost(
             // the learner up the weekly league.
             featureRepository = app.featureRepository,
             voiceRecorder = app.voiceRecorder,
+            adaptiveRepository = app.adaptiveLessonRepository,
         ),
     )
     val lessonState by model.state.collectAsStateWithLifecycle()
@@ -1929,6 +2121,8 @@ private fun LessonHost(
         onOpenWriter = model::openWriter,
         onShowWriterCharacter = model::showWriterCharacter,
         onCloseWriter = model::closeWriter,
+        onAnswerAdaptive = model::answerAdaptive,
+        onContinueAdaptive = model::continueAdaptive,
         onExit = {
             val completed = lessonState.outcome is LessonOutcome.Completed
             model.endAttempt(launch.attemptKey)
@@ -2054,6 +2248,13 @@ private data class AdRequest(
 private data class LessonLaunch(
     val lesson: CourseLesson,
     val attemptKey: String,
+)
+
+/** A completed part and, once the refreshed map confirms it, the next one. */
+private data class NextPartOffer(
+    val level: String,
+    val finishedOrder: Int,
+    val next: CourseLesson? = null,
 )
 
 internal data class DrillLaunch(

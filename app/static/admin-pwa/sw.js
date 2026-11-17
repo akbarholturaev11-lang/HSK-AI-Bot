@@ -30,21 +30,26 @@ self.addEventListener('push', event => {
     payment: {title: '🧾 Yangi to‘lov cheki', body: 'Chekni tekshirish kerak.'},
     android: {title: '🐞 HSK AI xatolik hisoboti', body: 'Android yoki iPhone PWA foydalanuvchisidan yangi xatolik xabari keldi.'},
     technical: {title: '⚠️ Texnik xatolik', body: 'Tizimda xatolik qayd etildi.'},
+    diagnostic: {title: '🛠 Avtomatik xatolik', body: 'Muhim xatolik qayd etildi.'},
     bot: {title: '💬 Bot fikr-mulohazasi', body: 'Muhim belgilangan fikr keldi.'},
     release: {title: '🚀 Reliz xabari', body: 'Muhim reliz xabari keldi.'},
   };
   let source = null;
+  let reopened = false;
   try {
     const payload = event.data ? event.data.json() : null;
-    if (payload && payload.kind === 'important' &&
+    if (payload && (payload.kind === 'important' ||
+        (payload.kind === 'reopened' && payload.source === 'diagnostic')) &&
         typeof payload.source === 'string' &&
         Object.prototype.hasOwnProperty.call(labels, payload.source)) {
       source = payload.source;
+      reopened = payload.kind === 'reopened';
     }
   } catch (_) {
     // Old or malformed pushes still show a safe fallback notification.
   }
-  const message = source ? labels[source] :
+  const message = reopened ? {title: '🔁 Tuzatilgan xato yana takrorlandi', body: 'Tuzatilgan deb belgilangan xatolik qaytdi.'} :
+    source ? labels[source] :
     {title: 'HSK AI Admin', body: 'Yangi admin bildirishnomasi.'};
   event.waitUntil(self.registration.showNotification(message.title, {
     body: message.body,
@@ -52,14 +57,15 @@ self.addEventListener('push', event => {
     badge: '/admin/assets/icon.png',
     // Do not share a single notification tag: iOS may replace a receipt alert
     // with an unrelated Android error instead of showing both.
-    data: {path: '/admin/?inbox=1'},
+    data: {path: source === 'diagnostic' ? '/admin/?inbox=diagnostic' : '/admin/?inbox=1'},
   }));
 });
 self.addEventListener('notificationclick', event => {
   event.notification.close();
   event.waitUntil((async () => {
     // Fixed first-party link only, irrespective of notification or push data.
-    const url = new URL('/admin/?inbox=1', self.location.origin).href;
+    const path = event.notification.data?.path === '/admin/?inbox=diagnostic' ? '/admin/?inbox=diagnostic' : '/admin/?inbox=1';
+    const url = new URL(path, self.location.origin).href;
     const open = await self.clients.matchAll({type: 'window', includeUncontrolled: true});
     for (const client of open) {
       const current = new URL(client.url);

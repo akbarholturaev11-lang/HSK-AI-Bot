@@ -51,6 +51,20 @@ class NotificationLanguageTests(unittest.TestCase):
         self.assertIn("3", payload["body"])
         self.assertIn("2", payload["body"])
 
+    def test_limit_prefix_keeps_original_quota_after_language_switch(self):
+        from app.bot.utils.i18n import t
+        from app.services.entitlements.decision import limit_text
+        from app.services.course_notification_service import clean_notification_text
+        context = {"action": "ai.question", "state": "TRIAL_ACTIVE", "limit": 5,
+                   "remaining": 0, "window": "daily"}
+        row = _Row(language="uz", title=UZ_TITLE, body=UZ_BODY, key="limit_daily_spent", params={
+            "template": "limit_daily_spent_notice", "reset_time": "06:20", "limit_context": context})
+        for language in ("ru", "tj"):
+            payload = CourseNotificationService.payload(row, language)
+            expected = limit_text(**context, language=language) + "\n\n" + t(
+                "limit_daily_spent_notice", language, reset_time="06:20")
+            self.assertEqual(payload["body"], clean_notification_text(expected))
+
     def test_rows_without_params_still_get_a_translated_title(self):
         row = _Row(language="uz", title=UZ_TITLE, body=UZ_BODY)
         payload = CourseNotificationService.payload(row, "ru")

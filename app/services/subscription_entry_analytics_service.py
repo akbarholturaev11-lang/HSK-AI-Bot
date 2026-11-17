@@ -14,6 +14,8 @@ from app.services.account_identity import actual_telegram_id
 
 
 logger = logging.getLogger(__name__)
+# R3: route-set clients of a subscription entry. Desktop rows keep NULL.
+ENTRY_CLIENTS = frozenset({"telegram", "iphone_pwa", "android"})
 
 
 @dataclass(frozen=True)
@@ -43,6 +45,9 @@ class SubscriptionEntryAnalyticsService:
         "desktop_subscription": "Desktop -> Obuna",
         "course_locked_lesson": "Qulflangan dars",
         "pronunciation_limit": "Talaffuz limiti",
+        "voice_limit": "AI Voice limiti",
+        "memorize_limit": "So'z yodlash limiti",
+        "mistake_review_limit": "Xatolarni takrorlash limiti",
         "recognition_limit": "Rasm/ieroglif limiti",
         "test_limit": "Test limiti",
         "profile": "Profil",
@@ -63,6 +68,9 @@ class SubscriptionEntryAnalyticsService:
         "pronunciation_limit": {"pronunciation_limit", "pron_limit", "v3_pronunciation_limit"},
         "recognition_limit": {"recognition_limit", "v3_recognition_limit", "photo_limit", "image_limit"},
         "test_limit": {"test_limit", "v3_test_limit"},
+        "voice_limit": {"voice_limit", "v3_voice_limit"},
+        "memorize_limit": {"memorize_limit", "v3_memorize_limit"},
+        "mistake_review_limit": {"mistake_review_limit", "v3_mistake_review"},
         "profile": {"profile", "profile_subscription", "v3_profile"},
         "broadcast": {"broadcast", "admin_broadcast", "admin_miniapp_broadcast"},
     }
@@ -91,6 +99,10 @@ class SubscriptionEntryAnalyticsService:
         "v3_voice_trial_used": "Course v3 — Voice trial tugadi",
         "v3_pronunciation_limit": "Course v3 — Talaffuz limiti",
         "v3_mistake_review": "Course v3 — Xatolar mashqi limiti",
+        "v3_voice_limit": "Course v3 — AI Voice limiti",
+        "v3_memorize_limit": "Course v3 — So'z yodlash limiti",
+        "v3_recognition_limit": "Course v3 — Ieroglif limiti",
+        "v3_test_limit": "Course v3 — Test limiti",
         "course_voice": "Kurs voice",
         "admin_discount": "Admin chegirma",
         "release_feedback_try": "Release feedback",
@@ -146,7 +158,10 @@ class SubscriptionEntryAnalyticsService:
         payment_method: str | None = None,
         campaign_id: int | None = None,
         feedback_id: int | None = None,
+        client: str | None = None,
     ) -> bool:
+        """`client` is the calling route's own client (R3), never caller text;
+        an unknown value is stored as NULL, so the row stays Overall-only."""
         user_id = getattr(user, "id", None)
         # The authenticated account owns this event; caller metadata cannot
         # replace its Telegram identity or attach a native entry to another user.
@@ -163,6 +178,7 @@ class SubscriptionEntryAnalyticsService:
             payment_method=(str(payment_method).strip()[:16] if payment_method else None),
             campaign_id=campaign_id,
             feedback_id=feedback_id,
+            client=client if client in ENTRY_CLIENTS else None,
         )
 
         try:

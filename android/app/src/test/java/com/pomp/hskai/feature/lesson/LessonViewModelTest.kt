@@ -75,7 +75,7 @@ private const val LESSON_BODY = """
  ]}]}}
 """
 
-private class NoopDao : CourseMapDao {
+internal class NoopDao : CourseMapDao {
     override suspend fun find(level: String): CourseMapCacheEntity? = null
     override suspend fun findMostRecent(): CourseMapCacheEntity? = null
     override suspend fun upsert(entity: CourseMapCacheEntity) = Unit
@@ -87,7 +87,7 @@ private fun lessonPayload() = Json.parseToJsonElement(LESSON_BODY)
     .getValue("lesson")
     .jsonObject
 
-private open class FakeLessonApi(
+internal open class FakeLessonApi(
     private val previewHalf: Boolean = false,
     private val previewCardLimit: Int = if (previewHalf) 3 else 6,
 ) : AndroidCourseApi {
@@ -220,7 +220,7 @@ private class ManyChoicesLessonApi(private val count: Int) : FakeLessonApi() {
     }
 }
 
-private class FakeLessonAudioPlayer : LessonAudioPlayer {
+internal class FakeLessonAudioPlayer : LessonAudioPlayer {
     val clips = mutableListOf<ByteArray>()
     var releaseCalls = 0
 

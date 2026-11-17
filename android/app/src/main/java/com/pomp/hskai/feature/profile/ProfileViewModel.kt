@@ -8,7 +8,6 @@ import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.data.api.AndroidProfileResponse
 import com.pomp.hskai.data.api.AndroidTrialDto
 import com.pomp.hskai.data.repository.FeatureRepository
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,6 +19,8 @@ data class ProfileUiState(
     val profile: AndroidProfileResponse? = null,
     /** Serverning javobi: bu odam 7 kunlik bepul Pro ola oladimi. */
     val trial: AndroidTrialDto? = null,
+    val trialLoading: Boolean = true,
+    val trialStatusError: ApiError? = null,
     /** Trial boshlanayotgan lahza — tugma ikki marta bosilmasin. */
     val trialStarting: Boolean = false,
     /** Server rad etsa sababi. Jimgina "hech narsa bo'lmadi" eng yomon variant. */
@@ -36,6 +37,9 @@ class ProfileViewModel(
     private val _state = MutableStateFlow(ProfileUiState())
     val state: StateFlow<ProfileUiState> = _state.asStateFlow()
     private var loadGeneration = 0L
+    private var trialGeneration = 0L
+    private var trialJob: kotlinx.coroutines.Job? = null
+    private var profileJob: kotlinx.coroutines.Job? = null
 
     init {
         load()
@@ -43,26 +47,31 @@ class ProfileViewModel(
 
     fun load() {
         val generation = ++loadGeneration
+        profileJob?.cancel()
         _state.update { it.copy(isLoading = true, error = null) }
-        viewModelScope.launch {
-            val profile = async { repository.profile() }
-            val trial = async { repository.trialStatus() }
-
-            val profileResult = profile.await()
-            val trialResult = trial.await()
+        loadTrial()
+        profileJob = viewModelScope.launch {
+            val result = repository.profile()
             if (generation != loadGeneration) return@launch
-
-            // Trial is an optional offer. A trial-status failure must not turn
-            // a perfectly usable profile into an error screen.
-            val firstError = (profileResult as? ApiResult.Failure)?.error
-
             _state.update {
-                it.copy(
-                    isLoading = false,
-                    profile = (profileResult as? ApiResult.Success)?.value ?: it.profile,
-                    trial = (trialResult as? ApiResult.Success)?.value?.trial ?: it.trial,
-                    error = firstError,
-                )
+                it.copy(isLoading = false,
+                    profile = (result as? ApiResult.Success)?.value ?: it.profile,
+                    error = (result as? ApiResult.Failure)?.error)
+            }
+        }
+    }
+
+    fun loadTrial() {
+        val generation = ++trialGeneration
+        trialJob?.cancel()
+        _state.update { it.copy(trialLoading = true, trialStatusError = null, trial = null) }
+        trialJob = viewModelScope.launch {
+            val result = repository.trialStatus()
+            if (generation != trialGeneration) return@launch
+            _state.update {
+                it.copy(trialLoading = false,
+                    trial = (result as? ApiResult.Success)?.value?.trial,
+                    trialStatusError = (result as? ApiResult.Failure)?.error)
             }
         }
     }

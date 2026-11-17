@@ -1,0 +1,576 @@
+# Unified error monitoring — context
+
+The single context file for this work: state, decisions and session log.
+The checklist is only `openspec/changes/unified-error-monitoring/tasks.md`;
+goals are in `docs/monitoring/REQUIREMENTS.md`; the design (D1–D11) is in the
+same OpenSpec change. A checked task is not proof of passing tests, promotion
+or production acceptance.
+
+## Current state
+
+- **Merged:** feature head `224d9f0b3e8798832210bb27601ae79347be61af` was merged
+  by PR #308. On 2026-11-14, the remote ref was verified at
+  `ba499cd38c1c6105a348ee9a5436cabc3c7880be`.
+- **Done in code:** task 1.1 (catalog, registry block in `declare` mode, checker,
+  workflow, `AGENTS.md` rule); task 1.2 (migration `0156_diagnostic_monitoring`,
+  models, `ingest`, retention, switches); task 1.3 (intake routes, backend
+  middleware and reporter, Lava and AI/voice sites, chain helper, `server` cells
+  `partial`); task 2.1 (Android reporter in `core/diagnostics`, both flavours;
+  `android` cells `partial` for the instrumented features); task 2.2 (learner
+  browser reporter and PWA transport, content-pinned assets, Live Voice and
+  priority flow hooks, PostgreSQL PWA chain); task 3.1 (Admin Inbox and
+  audit, resolve/reopen, diagnostic freshness); task 3.2 (bounded Apple Push
+  on the existing outbox); task 4.1 (signed Mini App transport and additive
+  legacy adapter). The English public privacy copy for 5.2 is prepared.
+- **Promotion CI:** PR #308 completed with 29 successful checks. Pinned
+  Chromium and WebKit checks passed. The macOS native-auth check was cancelled
+  because its runner configuration is unsupported; one duplicate
+  progressive-browser check was skipped. Both Analytics runs passed 322 tests,
+  skipped 30, and proved 20 runtime chain pairs: [PR run](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43577080310),
+  [feature branch push run](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43577075893).
+- **Production deployment:** Railway reported deployment
+  `d5a9c7f5-88db-46b5-ab10-2e1f557fc377` for commit `ba499cd3` successful and
+  online (1/1 replicas), created 2026-11-14 09:35 UTC. This was the normal app
+  deployment triggered by the merge, not an isolated migration-only rollout.
+  The production DB revision was not independently read. Railway exposed the
+  names of the monitoring switches but redacted their values, so their
+  effective production state is unknown. Their source defaults are off.
+- **Still open (task 5.2):** no isolated Railway staging environment was
+  available; Android Direct/Play physical acceptance, iPhone Safari and
+  Apple Push display/tap on iPhone and Mac, Mini App staging regression, and
+  Play Data safety filing remain unverified. Production deployment and CI do
+  not substitute for those checks.
+
+- **Diagnostic precision (tasks 6.1–6.4):** merged into `main` by PR #317;
+  the remote ref was verified at `a6689aaf` on 2026-11-16. Its production
+  deployment and DB revision were not independently verified. See
+  "Diagnostic precision" below.
+- **Joint integration audit (2026-11-16):** see
+  [Joint integration audit](../analytics/ANALYTICS_INTEGRITY_IMPLEMENTATION_PLAN.md#joint-integration-audit--2026-11-16)
+  in the Analytics context. No monitoring defect was confirmed and no
+  monitoring code changed.
+
+## Diagnostic precision (tasks 6.1–6.4, on main since PR #317)
+
+Started from `main` `f4a1f8aa`. Design is D12; the migration is
+`0157_diagnostic_precision`. The evidence below was recorded on the branch
+before the merge; no production setting was read or changed.
+
+### What exists
+
+- **6.1** `_diagnostic_samples` (`app/admin_api/pwa_inbox.py`) adds one
+  `sample` per diagnostic row on an Inbox page: the newest retained receipt
+  with a location, else the newest with a category. Two partial indexes serve
+  it. The drawer shows the localized category, or "unknown".
+- **6.2** `hsk-diagnostics.js` adds, for `js_uncaught` and `js_rejection`
+  only: an allowlisted exception name, a generic `reason_code`, and a primary
+  location plus up to five frames (`asset_id`, line, column, 12-hex
+  `asset_version`). `intake.py` validates every value against `catalog.py`
+  (`ERROR_NAMES`, `REASONS`, `DEBUG_ASSETS`, 32 first-party scripts). Android
+  and the backend reporter are unchanged.
+- **6.3** The existing drawer shows the last reported sample in UZ/RU/TJ. No
+  control was added. `app/services/monitoring/source.py` builds a GitHub link
+  only for a verified asset version and a known deployment commit.
+- **6.4** Tests below. Physical-device acceptance is still open.
+
+### Decisions within D12
+
+- **Asset version.** Each location may carry the 12-hex content token of its
+  script. The task text lists asset ID, line and column; the token was added
+  because a link needs proof of which bytes ran. It is a hash of a public
+  first-party file. The server compares it with the Git blob ID prefix and the
+  SHA-256 prefix of the file it serves; both token conventions are in use.
+- **WebKit stacks have no query.** Playwright WebKit reports stack URLs
+  without `?v=…`, while `ErrorEvent.filename` keeps it. The reporter therefore
+  reads the token from the page's own `<script src>` for that exact path, and
+  gives none when two elements disagree.
+- **Deployment commit.** `MONITORING_SOURCE_COMMIT` (40 hex) is read from that
+  variable or from Railway's `RAILWAY_GIT_COMMIT_SHA`. It is stored on the
+  receipt at intake. Blank or malformed means no link. The Dockerfile copies
+  the repository as is, so deployed files equal the commit's files.
+- **Invalid evidence rejects the event**, as an unknown site code does. An
+  unknown key at any level rejects the request.
+- **Inline scripts have no location.** The PWA response of `course-v3.html` is
+  modified by the server, so a document line could differ from the repository
+  file. Most course code is inline; its failures show name and reason only.
+- **Handoff script token.** `iphone-pwa-handoff.html` now loads
+  `/iphone-pwa-handoff.js?v=AUTO`, derived like the other handoff assets. The
+  route stays `no-store`, and the learner worker ignores `/iphone-pwa*` paths.
+  `/iphone-pwa-login.js` has no token, so its locations never get a link.
+- **Compatibility.** The fields are optional inside `diag.v1`. On a
+  `forbidden_field` answer the reporter resends the batch once without them.
+- **Not checked boxes.** Section 6 of `tasks.md` requires device acceptance,
+  so 6.1–6.4 stay unchecked with a dated status line.
+
+### Evidence (local, macOS, 2026-11-15)
+
+PostgreSQL 15 on loopback, a fresh database per run; Playwright 1.63.
+
+- **Server contract and PostgreSQL:** `tests/test_monitoring_precision.py`,
+  20 passed. It covers forged asset IDs, path traversal, URL, query, token
+  and PII strings, raw `stack` and `message` keys, function names, negative
+  and overflowing positions, too many frames, platform and failure limits;
+  cookie + CSRF intake to receipt to the authenticated Inbox with a verified
+  link; no link for a stale version, a missing commit or a cache token used
+  as a commit; last-sample attribution; receipts from before this change;
+  Fixed, reopen and the `{kind, source}` push payload; account deletion and
+  retention; migration upgrade, downgrade and guard. Raw strings were absent
+  from five tables, the Admin response and the captured logs.
+- **Sample read plan:** with 40,000 newer receipts on one incident, both
+  lookups used their partial index, no sequential scan, at most one row.
+- **Alembic CLI:** `0157 → 0156 → 0157` on PostgreSQL; the downgrade refused
+  while a receipt held evidence, then ran and kept the receipt.
+- **Reporter, Node:** `node tests/test_hsk_diagnostics.js` passed, including
+  Chromium- and WebKit-shaped stacks, the reason table, a tampered queue, the
+  older-server resend and the 16 KB batch bound.
+- **Reporter, real engines:** `tests/e2e/test_pwa_diagnostics.py`, 8 passed in
+  Chromium and 8 in WebKit: exact file, line and column against the browser's
+  own `ErrorEvent`, a second first-party frame, a rejection located from its
+  stack, inline, vendored and cross-origin scripts, and a missing error object.
+- **End to end:** `tests.e2e.admin_pwa_browser` (Chromium, virtual WebAuthn),
+  full run passed on PostgreSQL. The new chain opens the real
+  `/iphone-pwa/handoff` page with unmodified scripts as a verified learner,
+  breaks a browser API so `li-onboarding-install.js` throws, and follows the
+  report through cookie + CSRF intake and the database into the Admin drawer
+  at 390 px in UZ/RU/TJ. The link points at the failing repository line. The
+  same chain passed on SQLite.
+- **CI module list of `analytics-integrity.yml`:** 342 passed, 30 skipped,
+  20 runtime chain pairs proven; the checker passed in push and pull-request
+  modes, and the performance policy passed with `--enforce-change-tests`.
+- **Head-pinned PostgreSQL modules**, each on its own database:
+  `test_admin_pwa_postgres.py` 20 passed (real chain to head `0157`),
+  `test_smart_reminder_qa.py` 7, `test_smart_reminder_storage.py` 20,
+  `test_smart_reminder_telegram.py` 73, Inbox retention modules 6.
+- **Learner browser suites** (initial shell, progressive sections, learning
+  parity, diagnostics, handoff page): 81 passed and 2 failed in each engine.
+  The two are the known 320 px Practice skeleton cases; they fail the same
+  way on unchanged `main` `f4a1f8aa` in both engines.
+- **Localization and source guards:** `i18n_build_all_catalogs.py --check`
+  clean; all 31 `i18n-p0` scripts passed after the nine learner pages were
+  re-anchored for their one-line token change.
+- **OpenSpec:** `openspec validate unified-error-monitoring --strict` passed.
+- **Full non-browser suite** (`pytest -q --ignore=tests/e2e tests`, no
+  PostgreSQL variables, so PostgreSQL-only tests skip): 5,290 passed, 934
+  skipped, none failed. A first run, started before the nine learner pages
+  were re-anchored, failed 11 cases in `test_i18n_all_catalogs.py` and
+  `test_i18n_common_ui_adoption.py`; both modules pass on the final tree.
+
+### Evidence (GitHub CI)
+
+- Branch head `a5f205c6`, pushed 2026-11-15. The
+  [Analytics integrity run](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43723286237)
+  passed: registry valid, Node reporter test, 342 passed and 30 skipped on
+  PostgreSQL 16, and 20 runtime chain pairs proven.
+- No pull request is open, so the pull-request-only workflows (Admin PWA
+  security with the browser harness, Backend/PWA performance contract,
+  `i18n-p0`, shake-report guard, OpenSpec planning) have not run on GitHub.
+  Their commands were run locally as listed above.
+
+### Graphify audit
+
+The graph was built from the branch head at the time (`2c52e609`).
+`graphify affected` was run for `parse_batch`, `DiagnosticReceipt`,
+`unified_inbox` and `_handoff_html`, and each lead was confirmed by `grep`.
+
+- `parse_batch` serves the Android, PWA and Mini App intake and the legacy
+  onboarding mirror. The new keys are optional; the Android, PWA, Telegram and
+  server chain tests pass.
+- `DiagnosticReceipt` is read by freshness, alerts, retention and account
+  deletion. None selects the new columns; their tests pass.
+- `unified_inbox` has one runtime caller, the Admin read route. No MCP or
+  export path returns Inbox rows.
+- The graph showed no caller for `_handoff_html`; source has one, the handoff
+  route. `graphify path` returned only inferred name matches and was not used.
+
+### Open
+
+- Physical iPhone Safari (Home Screen PWA) and Telegram WebView: a real JS
+  error with a location, a rejection, offline then retry, an owner switch.
+- An isolated staging run: migration `0157` alone, then a controlled failure.
+- Production: whether `RAILWAY_GIT_COMMIT_SHA` is present on the deployment.
+- Owner review of the changed `/privacy` sentence. Play Data Safety is not
+  affected: Android sends nothing new.
+- Promotion to `main` needs the owner's approval.
+
+**Analytics Impact:** none. No KPI writer, event or projection changes; the
+evidence lives on diagnostic receipts and in the Inbox only. The registry
+records a reviewed exemption for the token-only change in `pwa_auth.py`.
+
+**Monitoring Impact:** the existing `diag.v1` chain carries optional evidence
+for learner-web JS failures through the same authenticated intake, incident
+mapping and Admin Inbox. Fingerprint, severity, triage, alerts, push payload
+and retention are unchanged. Covered pairs keep their runtime proof.
+
+## Independent audit (2026-11-13–14)
+
+Compared the implementation at `b0bd6778` with the verified remote
+`main` at `33dca055`. Graphify's report matched the audit starting commit.
+The extracted graph identifies `ingest → decide_alert → enqueue_automatic_alert`
+and `unified_inbox → _diagnostic_rows`. The outbox table and network/credential
+edges were checked in source and tests: graph paths crossing test imports or
+inferred matching names are not runtime evidence.
+
+Coverage repair: the shared registry's `monitoring.critical_paths` maps
+important dependencies to exact feature/platform pairs. The same required
+check evaluates their Git diff even when entry points are unchanged. New shared
+dependencies need explicit bindings; the checker does not infer dynamic calls.
+The two historical diagnostic-only exceptions for AI provider and the signed
+onboarding runtime are pinned to their source contents. Later edits do not
+inherit them.
+
+Retention repair: hourly housekeeping can commit up to eight batches of
+1,000 receipts instead of one, releasing database locks and its diagnostic
+pool slot after each batch. The public notice distinguishes the 30-day
+affected-account window from physical cleanup. The PostgreSQL backlog test
+seeds 8,003 expired receipts, verifies the first pass deletes 8,000, and
+checks that the next pass removes the remainder and preserves a fresh
+receipt and the open incident.
+Resolved incidents also wait for their last receipt to be purged. A locked
+receipt cannot cause cascade deletion or hold up the resolved-incident pass.
+
+| Finding | Correction and regression evidence |
+| --- | --- |
+| Android could send account A's queue with account B's bearer; a device ID is reusable. Late requests and stale uploader results could also cross sessions. | Fence capture and upload by the server-issued session ID, keep the worker out of auth refresh, and scope queue removal to the originating session. Keep the JVM owner-switch and late-response cases. |
+| A PWA diagnostic session probe could adopt unverified events as another account, and storage errors discarded reports. | Bind to the app's verified document actor, never adopt pre-auth events, fence the delivery response, and keep bounded in-memory fallback. |
+| Monitoring could occupy the shared pool; the legacy Mini App mirror could hold up the original event reply. | Limit diagnostic writers before they open a session, bound PostgreSQL statements/locks, and move the additive legacy mirror after commit to bounded background work. Preserve the existing technical message, Push and AI context. |
+| Intake admitted overly broad version text; refused events could create empty incidents; recovered or delayed pre-Fixed observations could reopen incidents. | Platform version grammar and client-only sites, no incident creation on refusal, and timestamp/outcome checks at the existing locked triage transition. Accepted UUIDs remain idempotent; refused UUIDs are not persisted and refused counts represent observed attempts. |
+| Scope escalation depended on the Push toggle; failed reopen enqueue had no retry; a paused outbox could later deliver stale alerts. | Escalate the Inbox independently using failed distinct owners only, retry an unsent reopen on a new occurrence, and cancel diagnostic outbox rows older than 30 minutes before sending. The payment and legacy priority and transport stay unchanged. |
+| A populated DB with receipts but no triage/outbox could silently lose data on downgrade. | Migration 0156 refuses downgrade while any diagnostic data remains. Operational rollback is flags off with the additive schema retained. |
+| CI missed three mounted Voice WebSockets and flavour-only Android packages, and an unchanged URL could hide a materially changed handler. A green push-only check might have compared only its last push. | Inventory all 261 mounted learner routes, include Direct/Play packages, require coverage or a fresh exact exemption on changed surfaces, and compare feature push checks against the default-branch fork point. Android and learner browser workflows also trigger on this feature branch. |
+| GitHub had no rule requiring CI on `main`. | [Active main ruleset](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/rules/27213316) requires the GitHub Actions `analytics-integrity` check, up to date with main, with no bypass actors. At the time of this original audit, the remote main ref had not changed; promotion was later completed through PR #308 as recorded above. |
+
+Independent verification on the implementation commit:
+
+- Local CI suite: 273 passed, 470 subtests and 20 runtime-proven pairs.
+  Separate focused login, checkout/Pro, analytics and shell run: 184 passed;
+  Lava, block, Voice and migration regression run: 74 passed. These suites overlap.
+- PostgreSQL 0156: clean upgrade/downgrade/upgrade, populated downgrade refusal,
+  and real app `off → owners → off` with one authorized receipt and no push.
+  The synthetic 1M-receipt plans used the owner and incident indexes (about
+  0.36 ms admission, 21.72 ms five-incident aggregate, 57.45 ms retention
+  candidate lock locally; these are not production latency).
+- Android API 36: both debug QA flavours ran Keystore refresh → actual HTTPS
+  bearer bootstrap → controlled Course 502 → WorkManager → PostgreSQL →
+  authenticated Inbox. Direct 725 and Play 667 JVM tests passed; the first
+  Play attempt hit a transient pre-existing Voice coroutine teardown error.
+  Local lint and both R8 release bundles passed.
+- Learner Chromium and WebKit against local HTTPS and migrated PostgreSQL:
+  real PWA session and map, uncaught error, offline retry with the same
+  UUID, cross-tab account replacement, authenticated checkout and Voice
+  pages, signed Telegram Mini App error and authenticated Inbox all passed.
+  The Telegram SDK ran in a browser; no physical Telegram WebView was tested.
+- Admin Chromium: bearer intake, real PostgreSQL, virtual WebAuthn and
+  UZ/RU/TJ Fixed → reopen passed. The real Web Push encoder produced an
+  encrypted, VAPID-signed request; decryption yielded only `kind` and
+  `source`. The test intercepts HTTP before it leaves the machine.
+- The GitHub [Analytics run](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43461334435)
+  and [Backend/PWA run](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43461333953)
+  passed for `c0468aaf`. The [Android run](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43461334201)
+  caught a short-name collision in the static checker: the new queue's
+  test-only `size()` was mistaken for Compose `Modifier.size(width, height)`.
+  Renamed the queue helper to `queuedCount()` so the guard stays intact.
+  At `c2bd8dd8`, both Android JVM suites, lint and R8 release bundles passed
+  again locally. [Analytics CI](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43550687853)
+  passed 273 tests and 20 runtime chains on that commit. Its
+  [Android CI](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43550687823)
+  is separate from the local evidence.
+- The independent full-suite run found seven Smart Reminder lifespan failures
+  from an unbound shutdown dependency in the extracted-lifespan contract
+  test. Bind the same production reporter locally in the shutdown block and
+  run the Smart Reminder observer and runtime modules in the shared CI suite.
+- Unrelated, reproducible on both `33dca055` and the branch: the local
+  Playwright 1.63 Practice layout shifts about 38–44 px at 320 px in normal
+  and reduced motion. Neither engine showed it on pinned GitHub CI. This
+  audit did not change Practice layout. Also reproduced on both revisions:
+  the Mini App requests `/assets/hsk-launch-gold.mp3` and receives 404, even
+  though the file is in the repository under `app/static/assets/`.
+- Residuals: no client attestation (authenticated clients can still fabricate
+  bounded diagnostics); lost/refused reports make impact partial. A hard
+  process stop may lose in-memory reports, and an unusually large backlog can
+  delay physical receipt cleanup even though projections exclude expired data.
+  Signed-out browser failures are never assigned to the next account. Main's
+  Railway deployment succeeded, but that does not verify production switch
+  values, physical clients, or push display/tap.
+
+**Analytics Impact:** no KPI writer or entitlement authority changes.
+Diagnostic freshness remains an additive source and the V10, checkout,
+learning and Telegram separation tests verify the existing projections.
+
+**Monitoring Impact:** account binding, admission, triage, alert delivery and
+coverage proof are hardened in the existing chain. The merged code has a
+successful Railway production app deployment. A Chromium virtual passkey and
+a locally decrypted VAPID Web Push request are not physical Apple Push
+acceptance. Device/browser/provider and rollout gates below are still required.
+
+## Task 5.1 evidence (local unless specified)
+
+- Shared checker in push and pull-request mode, and the backend/PWA policy
+  with `--enforce-change-tests`, passed. The [feature Analytics integrity
+  run](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43412786216)
+  passed. The [follow-up Analytics run](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43414811984)
+  passed 222 tests and proved 20 feature/platform pairs through the real
+  intake and authenticated Inbox. The [final code commit’s CI run](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43417721339)
+  passed the expanded suite. Its matching local run passed 255 tests and 463
+  subtests, with the same 20 runtime-proven pairs.
+- Scratch CI [rejected both an unmapped learner route and Android
+  package](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43412956667)
+  and [passed once they mapped to covered Lessons and the scratch route was
+  proved end to end](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43413255740).
+  The synthetic route and package are only on the scratch branch.
+- Admin PWA Playwright: main Inbox/Statistics browser suite plus MCP consent,
+  minimal Inbox, settings, outbound, campaigns and payout passed. Diagnostic
+  list, one-tap Fixed and reopened detail verified at 390 px in UZ/RU/TJ.
+  PostgreSQL Admin lock/regression list: 75 passed; the separately configured
+  Smart Reminder suite passed 270 tests (12 skips), and the dedicated
+  native account/Lava PostgreSQL suite passed 182 tests. Focused monitoring,
+  retention and dispatch: 63 passed. Onboarding, PWA auth, Pro, referrals,
+  legacy push and standalone QA bootstrap: 254 passed. Three targeted
+  Telegram Mini App browser onboarding regressions also passed. Compared
+  all 132 cases in `test_miniapp_smoke.py`, `test_miniapp_app_routing.py` and
+  `test_pwa_telegram_handoff_page.py` with the same Chromium runtime and
+  synthetic fixtures on `e7e6641a` and `fb0865a8`: 105 passed and the exact
+  same 27 failed on each, with zero feature-only failures. This comparison
+  records local test behavior; it does not certify a deployed Mini App.
+- Learner Node, focused Chromium/WebKit diagnostics, cache versions and
+  worker asset budget passed. The [GitHub Linux performance workflow](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/43414756219)
+  passed all 68 tests per browser with the pinned tools, plus backend and
+  policy jobs. Local macOS Chromium/WebKit (Playwright 1.63)
+  showed the same two Russian Practice skeleton geometry failures at 320 px
+  on both `e7e6641a` and the monitoring feature. An isolated repeat of the
+  Chromium reduced-motion case gave the same 43.4 px group shift on both.
+  This is a local comparison, not evidence of a prior CI or production
+  failure; it did not reproduce on GitHub CI. A timing-dependent
+  partner/Postgres test also varied locally;
+  it passed in the dedicated Admin Postgres run.
+- Android: `testPlayDebugUnitTest testDirectDebugUnitTest`, `lint` and
+  `bundlePlayRelease bundleDirectRelease` passed. Actual R8 DEX extracted from
+  the Direct release AAB serialized a synthetic `diag.v1` batch on Android ART
+  (API 36 emulator) with all nine required wire fields. Physical acceptance
+  remains separate.
+- PostgreSQL: migration 0156 upgrade/downgrade and the populated downgrade
+  guard passed locally. Synthetic 1M-receipt `EXPLAIN (ANALYZE, BUFFERS)`:
+  admission used the owner/time index (~0.03 ms); five-incident affected
+  counts used the incident/time index (~39 ms with ~67k matching receipts).
+  Times describe this fixture, not production.
+- OpenSpec strict validation, generated localization catalog, protected-source
+  baseline (zero blockers), Python and JS syntax and single Alembic head passed.
+- Full non-browser comparison: the starting commit ran
+  `pytest -q --ignore=tests/e2e --tb=no tests` with 5,381 passes, 3 failures
+  in stale initializer/head checks and 771 skips. The first feature run
+  found four source guard failures and one timing-sensitive Postgres case.
+  The guards were re-anchored after confirming 62 locale lines/130 predicates
+  and all direct/indirect lesson reads still matched byte for byte; the
+  isolated partner and initializer checks passed on rerun.
+- Final code `fb0865a8`: collected 6,170 tests across all 499 non-browser
+  modules, then ran each module once with `pytest -q --tb=short` in six
+  parallel groups, each with its own disposable PostgreSQL database.
+  **5,399 passed, 771 skipped, zero failed; 85,238 subtests passed.** The
+  expanded Analytics CI and staging rehearsal cover the changed runtime.
+
+## Staging readiness (5.2)
+
+- **Local rehearsal, not staging:** from the reviewed empty ORM baseline,
+  applied the real Alembic chain to `0155_subscription_entry_client` in a
+  disposable loopback PostgreSQL database. Ran
+  `python -m alembic upgrade 0156_diagnostic_monitoring` by itself. The stamp
+  advanced to `0156_diagnostic_monitoring`; the seeded technical triage row
+  was preserved and both new tables started empty. On that schema, the real
+  app ASGI intake returned paused in `off`, dropped a non-owner and admitted
+  an owner in `owners`, and stopped writing again in `off`. The single owner
+  receipt was visible in the authenticated Inbox; push stayed off.
+- **Remote target:** Railway lists no `staging` environment for the HSK AI
+  app project. The existing separate Smart Reminder QA service is scoped to
+  its own synthetic application. Its bootstrap is not an upgrade mechanism
+  for an existing database. PR #308 triggered the successful production app
+  deployment recorded above; it was not staging or a migration-only deploy.
+  The production DB revision was not independently read. Monitoring variable
+  values were redacted, so do not infer the effective production switches.
+  Identify an approved isolated target before any staging write; the separate
+  QA service remains out of scope.
+- **If a target becomes available:** record its project, environment, app and
+  DB pairing; verify isolated synthetic credentials, no live integrations,
+  no production routes and exactly one database revision. From a verified
+  0155 database, run the pinned 0156 migration separately with all monitoring
+  switches off. Verify the new revision and preserved legacy sources before
+  starting the candidate application. The normal startup script upgrades to
+  head automatically and launches production workers; it is not the
+  migration-only or isolated staging entrypoint. A version mismatch stops
+  rollout rather than being corrected by stamping.
+- **Acceptance:** run owner/non-owner intake and a controlled staging 5xx,
+  then the Android Direct/Play, iPhone Home Screen and Telegram flows. Use
+  staging-only accounts and a controlled Admin push receiver; verify the
+  actual notification, authenticated tap and Fixed → repeat → reopen on
+  iPhone and Mac. A device that already received a paused response can
+  suppress reporting for 24 h; use a fresh staging test install/session
+  when checking a just-enabled switch. Restore `off` and verify the absence
+  of new receipts. Do not infer push display from provider acceptance.
+- **Before public enablement:** verify the deployed `/privacy` wording and
+  the owner’s Play Console Data Safety filing. The monitoring delta is
+  Crash logs and Diagnostics; reconcile it with the existing declaration.
+  The local rehearsal and successful app deployment do not establish public
+  rollout readiness. Do not change live flags or publish an APK until the
+  remaining staged and owner-approval checks are recorded.
+
+## Joint Analytics and Monitoring audit (5.3, merged to main)
+
+- **Analytics Impact:** no new KPI events or writer changes. Diagnostic
+  freshness adds only the three client-source rows. The V10 golden test and
+  Telegram chain verify the projection boundary and no double counting.
+- **Monitoring Impact:** authenticated content-free client failures and
+  ownerless backend failures have a separate receipt/incident path to Admin
+  Inbox. PostgreSQL and runtime proof cover intake, deduplication, deletion,
+  triage and bounded push. A signed Telegram batch writes no Message or KPI
+  row; the legacy Message, technical push and AI context remain intact.
+  Android, PWA and Telegram diagnostic intake failures do not report
+  themselves. Shared CI enforces both registries and the writer boundary.
+- This audit covered the feature branch and was completed before PR #308
+  promotion. The remote `main` ref and successful production deployment are
+  verified above. Staging, physical Apple Push/Safari/Android checks and the
+  Play Data safety filing remain separate and open under task 5.2.
+
+## Drift check (task 1.1)
+
+- **Historical preimplementation check:** `main` `33dca055` differed from the
+  audited `5ea7c22f` only by plan documents; no `app/`, `android/`, `.github/`
+  or `scripts/` change was found at that point. The later feature implementation
+  was promoted through PR #308.
+- Voice V8 (`origin/feat/ai-voice-v8-pwa-android-20261111`) is still at
+  `680761f1` and not on `main`, so the `live_*` codes in the catalog follow the
+  current merged `main` sources. Recheck the mappings if Voice V8 is later
+  promoted.
+
+## Implementation decisions (within the design)
+
+- **Checker layout.** Monitoring checks live in `scripts/monitoring_coverage.py`,
+  imported by `scripts/check_analytics_coverage.py`. One registry, one checker
+  run, one workflow; the module only keeps the Analytics file readable.
+- **Catalog loading.** The checker executes `app/services/monitoring/catalog.py`
+  by path (stdlib only), never importing the app package.
+- **Which registry cell each source checks.** Learner routes check the feature's
+  `server` cell (backend capture), Android feature packages the `android` cell,
+  learner pages the `iphone_pwa` cell. The `telegram` cell is checked through its
+  entries only (Mini App compatibility).
+- **Critical-path consistency.** A route in an Analytics critical-path file maps
+  to one of that path's flows or a monitoring-only ID. For a symbol-scoped path
+  (`app/main.py`, `miniapp_practice.py`) only the listed handlers are bound.
+  This is why, for example, `/api/v3/pwa/push/*` maps to `app_shell` and the
+  `/api/v3/trial/*` routes in `miniapp_entitlements.py` map to `lessons`.
+- **Sites.** `site_code` is validated against one bounded catalog set
+  (`ALL_SITES`: client sites, integration sites and one site per learner route).
+- **Severity.** `severity_for()`: the failure's default, one step up in
+  `CRITICAL_FEATURES` (checkout, PWA Pro checkout, auth session), one step down
+  for a client-confirmed recovery.
+- **Runtime chain proof.** `covered` entries need a row
+  `platform|feature|failure` written by `tests/monitoring_chain.py` (task 1.3)
+  into `MONITORING_CHAIN_PROOF`; the post-pytest `--chain-proof` step checks it.
+
+- **Receipts store more than D2 lists, all content-free:** `build` (comparable
+  Android versionCode / PWA token date), `category` (a catalog category),
+  `client_time_untrusted` and `occurrences` (coalesced backend writes). Incidents
+  add `last_build`, `resolved_build`, `reopened_at` and `reopened_version` for the
+  version-aware reopen and the "came back" line.
+- **Client time** is epoch milliseconds. Outside ±7 days it is not stored and the
+  receipt is flagged untrusted; ordering uses the server receive time.
+- **`owners` stage** admits client events only from accounts whose Telegram ID is
+  in `ADMIN_IDS`. Owner-free backend rows are admitted in `owners` and `all`.
+- **Account deletion** deletes receipts explicitly in `UserRepository._delete_account`
+  (the repository does not rely on FK cascades), besides the FK `ON DELETE CASCADE`.
+- **Retention** runs in `_desktop_auth_retention_scheduler` in its own `try`.
+- **503 is not captured** by the middleware: the codebase answers 503 for a
+  switched-off feature (for example `pwa_auth_unavailable`). Other 5xx and
+  unhandled exceptions are captured. Integration failures behind a 503 and
+  unexpected Live Voice relay failures report through `report_server_failure`.
+- **Lava sites.** Only processing-failure alert codes become incidents
+  (`LAVA_FAILURE_SITES` in `lava/notify.py`: exhausted webhook retries →
+  `lava_webhook`; activation, amount, unmatched, review, renewal, promo →
+  `lava_ledger`). Expected webhook auth rejection and business outcomes do
+  not enter diagnostics. Every code still sends its Telegram alert unchanged.
+- **AI provider.** `AIProviderChain.chat_completion` serves several features; a
+  final failure is filed as `chat_ai` at the `ai_provider` site (the site is what
+  identifies the provider). STT failures are `voice_practice` / `voice_provider`.
+- **Blocked accounts on Android.** A bearer access token outlives a block until
+  it expires (`authenticate` does not check the status), so the Android intake
+  refuses blocked accounts itself. The PWA actor already refuses them.
+- **Registry `server` cells** are `partial` with an "Admin consumer pending"
+  reason. The baseline stays: pairs leave it only when they become `covered`
+  (task 3.1).
+- **Chain helper.** `assert_monitoring_chain(case, platform, feature, failure,
+  site, sessions, …)` requires a PostgreSQL bind. Client platforms post through
+  their real intake; the server chain runs through a `BackendReporter`, with an
+  optional `trigger` (a real middleware request or `report_server_failure`).
+
+- **Android owner stamp.** The Android queue is stamped with the verified
+  bearer session ID (`sid`), not `device.id`, which may be reassigned.
+  A signed-in event can only be delivered using its original session.
+  Content-free errors captured before the first verified sign-in may be
+  adopted by that initial session, but existing-owner events are purged
+  on logout or replacement. The server still derives the canonical account
+  only from the verified bearer.
+- **Android 503.** `apiCall` reports `api_5xx` for every 5xx except 503, the
+  backend's "switched off" answer, matching the server middleware.
+- **Android cancellation.** `apiCall` keeps mapping a cancelled call to
+  `ApiError.Unknown` as before, but never reports it.
+- **Android AtomicFile.** The queue and crash record use write-temp, fsync,
+  rename in plain Java I/O (same guarantee as `android.util.AtomicFile`), so the
+  queue logic runs in JVM tests; files live in `noBackupFilesDir/diagnostics`.
+- **Android crash feature** comes from the selected main tab (Course → lessons,
+  Practice → practice, Voice → voice_practice, Rating → learning_rewards,
+  Profile → app_shell). Exit reasons are `app_shell` / `process`; a `REASON_CRASH`
+  within 60 s of a recorded JVM crash is not reported twice; the first run only
+  sets the last-seen mark.
+- **Android tagged calls.** Sign-in (link start/poll, OAuth start/assert) →
+  `auth_session/login`; refresh and bootstrap → `auth_session/session_restore`;
+  course map → `lessons/progress`; lesson open/unlock → `lessons/lesson_open`;
+  completion → `lessons/lesson_complete`; onboarding → `onboarding_activation`;
+  practice and drills → `practice`; subscription overview → `subscription_entries/
+  subscription`; legacy subscription open → `subscription_entries/handoff`;
+  checkout and Lava (Direct) → `checkout_payments/payment`.
+- **Android flush.** Unique work `diagnostics_flush` (KEEP, network required,
+  exponential backoff from 30 s, at most 3 attempts), scheduled after the first
+  frame and after each queued event while signed in. Batches of 20. A `paused`
+  answer stops queueing for 24 h and empties the queue; 401/403 drops it; other
+  4xx drop the batch; 5xx and transport errors retry.
+
+- **Browser queue.** Bind each open document to the account verified by its
+  application code. A stale document cannot append to a replacement account's
+  queue; pre-verification PWA errors are not adopted. Session CSRF is used only in
+  the request header. The worker's 40-asset limit is unchanged; it does not warm
+  the course document, which is already open when warm-up starts.
+
+- **Inbox and push.** The affected count is a distinct-account count over
+  retained receipts, with explicit `partial`/`unknown` states. Resolve and
+  reopen lock the incident before triage. Reopens create an audit entry; a
+  separate outbox reason identifies the exact epoch even if the incident
+  changes later. Existing sources dispatch ahead of new diagnostic alerts.
+- **Mini App.** `X-HSK-Diagnostic: diag.v1` selects bounded JSON intake on the
+  existing endpoint and requires fresh signed Telegram init data. The browser
+  keeps Telegram reports in memory only. Legacy onboarding still writes its
+  original Message and sends its technical push before the optional adapter.
+- **Analytics separation.** Diagnostics use their own tables and Inbox,
+  including no writes to course or conversion KPI stores. Freshness adds
+  diagnostic rows only, under the bumped Analytics snapshot key. The shared
+  guard checks the writer/event boundary and runs with `require_covered`.
+
+## Session log
+
+- 2026-11-13: task 1.1 implemented on the feature branch (256 learner routes
+  mapped, 22 features, 86 baseline pairs, 2 justified `not_applicable`).
+- 2026-11-13: task 1.2 implemented (migration after `0155`, intake service).
+- 2026-11-13: task 1.3 implemented (two intake routes, middleware, reporter,
+  Lava/AI sites, chain helper and server chain test).
+- 2026-11-13: task 2.1 implemented (Android reporter, JVM tests, Android chain test).
+- 2026-11-13: resumed at task 2.2 from `e7e6641a`, with the reporter draft and
+  Live Voice edits present locally. Completed the PWA integration and focused
+  verification; diagnostic visibility and full coverage proof wait for 3.1.
+- 2026-11-13: completed tasks 3.1–4.1 and began 5.1; the monitoring
+  surface is ready for staged acceptance after the remaining gates.
+- 2026-11-14: PR #308 merged feature head `224d9f0b` into `main` at
+  `ba499cd3`; required Analytics CI passed (322 passed, 30 skipped, 20 runtime
+  chain pairs). Railway production app deployment for `ba499cd3` succeeded
+  and came online. Task 5.3 is complete; isolated staging, production DB
+  revision/switch verification, physical device and Apple Push acceptance,
+  and Play Data safety filing remain open in 5.2.
+- 2026-11-15: tasks 6.1–6.4 implemented on
+  `feat/monitoring-diagnostic-precision-20261115` (design D12, migration
+  `0157`). Local Chromium, WebKit, PostgreSQL and end-to-end evidence passed;
+  device acceptance and promotion remain open.

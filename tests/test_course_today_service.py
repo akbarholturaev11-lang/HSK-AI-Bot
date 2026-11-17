@@ -231,6 +231,32 @@ class CourseTodayServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(lesson["access"], ACCESS_OPEN)
         self.assertTrue(lesson["available"])
 
+    async def test_practice_and_mistake_gate_reuse_one_entitlement_read(self):
+        # Both tasks use the same training_test entitlement, including when
+        # the learner is locked out. A map load must not query it twice.
+        async with self.factory() as session:
+            service = CourseTodayService(session)
+            for allowed in (False, True):
+                with self.subTest(allowed=allowed):
+                    daily_status = AsyncMock(return_value={"allowed": allowed})
+                    service.access.daily_status = daily_status
+                    with patch(
+                        "app.services.course_today_service.LessonAccessService",
+                    ) as lesson_service, patch(
+                        "app.services.course_today_service.VoicePracticeService",
+                    ) as voice_service:
+                        lesson_service.return_value.status = AsyncMock(return_value={"allowed": True})
+                        voice_service.return_value.remaining_free_sessions = AsyncMock(return_value=None)
+                        view = await service._access_view(
+                            self.user, level="hsk1", current_part=12,
+                            is_paid=False, access_policy=FakePolicy(),
+                        )
+
+                    daily_status.assert_awaited_once_with(self.user, "training_test")
+                    expected = ACCESS_OPEN if allowed else ACCESS_LOCKED
+                    self.assertEqual(view["training_test"], expected)
+                    self.assertEqual(view["mistake_review"], expected)
+
     async def test_paid_learner_sees_everything_open(self):
         view = await self._payload(is_paid=True, voice_left=None)
         self.assertTrue(all(item["access"] == ACCESS_OPEN for item in view["tasks"]))

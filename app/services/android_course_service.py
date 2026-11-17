@@ -11,12 +11,16 @@ the desktop funnel.
 
 from __future__ import annotations
 
+from app.services.onboarding_goal_selection import read_onboarding_goals
+
 import json
+import logging
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 from app.services.course_gamification_service import CourseGamificationService
+from app.services.course_levels import is_hsk30_level
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
 from app.services.course_miniapp_onboarding_service import CourseMiniAppOnboardingService
 from app.services.course_track_service import CourseTrackService
@@ -42,10 +46,17 @@ from app.services.smart_widget_context_service import SmartWidgetContextService
 
 __all__ = ["AndroidCourseError", "AndroidCourseService"]
 
+logger = logging.getLogger(__name__)
+
 AndroidCourseError = DesktopCourseError
 
 _FOUNDATION_SOURCE = Path("app/static/course_v3_data/hsk1/lesson_01.json")
 _FOUNDATION_REQUIRED_ERROR = "android_foundation_required"
+# Next-stage R1 (audit A7). Not `lesson_started`: the D1 recovery and
+# unfinished-lesson Telegram reminders read that name, so reusing it would send
+# Android learners new messages. This name is server-only (no client route can
+# write it) and only the Admin readers and bot-block diagnostics read it.
+ANDROID_LESSON_STARTED = "android_lesson_started"
 _SKIP_CHOICE_TYPES = frozenset({
     "meaning_guess", "translation_choice", "hanzi_choice", "pinyin_choice",
     "quick_quiz", "gap_fill", "listening_choice", "dialog_cloze",
@@ -58,11 +69,12 @@ class AndroidCourseService(DesktopCourseService):
     async def _foundation_status(self, user) -> dict:
         return await CourseMiniAppProfileService(self.session).foundation_status(user)
 
-    async def _require_foundation_complete(self, access_token: str) -> None:
+    async def _require_foundation_complete(self, access_token: str):
         context = await self._context(access_token)
         status = await self._foundation_status(context.user)
         if bool(status.get("required")) and not bool(status.get("completed")):
             raise DesktopCourseError(_FOUNDATION_REQUIRED_ERROR, status_code=403)
+        return context
 
     async def _safe_rank(self, user) -> int:
         """Return the current leaderboard rank without breaking completion UX.
@@ -216,12 +228,43 @@ class AndroidCourseService(DesktopCourseService):
         lesson_order: int,
         access_ref: str = "",
     ) -> dict[str, Any]:
-        await self._require_foundation_complete(access_token)
-        return await super().lesson(
+        context = await self._require_foundation_complete(access_token)
+        # The parent commits before returning, which expires ORM objects.
+        user_id, telegram_id = context.user.id, context.user.telegram_id
+        result = await super().lesson(
             access_token,
             lesson_order=lesson_order,
             access_ref=access_ref,
         )
+        await self._record_lesson_start(user_id=user_id, telegram_id=telegram_id, result=result)
+        return result
+
+    async def _record_lesson_start(self, *, user_id: int, telegram_id: int | None, result: dict) -> None:
+        """One start per account, level, lesson and UTC day, after the lesson
+        was allowed. Best-effort: the lesson is already committed and returned
+        unchanged whatever happens here."""
+        level = str(result.get("level") or "")
+        lesson_order = int(result.get("lesson_order") or 0)
+        day = datetime.now(timezone.utc).date().isoformat()
+        try:
+            recorded = await CourseMiniAppAnalyticsService(self.session).record_server_event(
+                event_name=ANDROID_LESSON_STARTED,
+                telegram_id=telegram_id,
+                user_id=user_id,
+                source=f"{self.CLIENT_NAMESPACE}_course",
+                level=level,
+                lesson_order=lesson_order,
+                dedupe_key=f"{self.CLIENT_NAMESPACE}-lesson-start:{level}:{lesson_order}:{day}",
+                analytics_client="android",
+            )
+            if recorded.get("recorded"):
+                await self.session.commit()
+        except Exception:
+            logger.exception("Android lesson start analytics failed")
+            try:
+                await self.session.rollback()
+            except Exception:
+                logger.exception("Android lesson start analytics rollback failed")
 
     async def skip_test_questions(
         self,
@@ -386,28 +429,15 @@ class AndroidCourseService(DesktopCourseService):
             raise DesktopCourseError("android_request_invalid", status_code=422)
 
         context = await self._context(access_token)
-        analytics = CourseMiniAppAnalyticsService(self.session)
-        result = await analytics.record_server_event(
-            event_name="foundation_completed",
-            telegram_id=context.user.telegram_id,
-            user_id=getattr(context.user, "id", None),
-            source="android_course",
-            level="hsk1",
-            dedupe_key=dedupe_key,
-            payload={
-                "foundation_id": COURSE_FOUNDATION_ID,
-                "foundation_version": COURSE_FOUNDATION_VERSION,
-                "speaking_bonus": bool(speaking_bonus),
-            },
+        result = await CourseMiniAppProfileService(self.session).complete_foundation(
+            context.user, foundation_id=foundation_id,
+            foundation_version=foundation_version, speaking_bonus=speaking_bonus,
+            event_id=dedupe_key, source="android_course",
         )
         if not result.get("ok"):
             raise DesktopCourseError("android_foundation_save_failed", status_code=503)
         await self.session.commit()
-        return {
-            "ok": True,
-            "duplicate": bool(result.get("duplicate")),
-            "foundation": await self._foundation_status(context.user),
-        }
+        return result
 
     async def onboarding_status(self, access_token: str) -> dict:
         """Return the canonical onboarding state for the authenticated learner."""
@@ -426,9 +456,13 @@ class AndroidCourseService(DesktopCourseService):
         return {
             "ok": True,
             "completed": profile.onboarding_completed_at is not None,
+            "li_enabled": bool(getattr(self.settings, "ANDROID_LI_ONBOARDING_ENABLED", False)),
             "level": str(getattr(context.user, "level", "") or ""),
             "profile": {
                 "goal": profile.goal,
+                "goals": read_onboarding_goals(getattr(profile, "goals_json", None), primary_goal=profile.goal),
+                "streak_target_days": getattr(profile, "streak_target_days", None),
+                "preferred_focus": getattr(profile, "preferred_focus", None),
                 "daily_minutes": profile.daily_minutes,
                 "start_mode": profile.start_mode,
                 "timezone_offset_minutes": profile.timezone_offset_minutes,
@@ -462,19 +496,50 @@ class AndroidCourseService(DesktopCourseService):
         language: str | None = None,
         timezone_offset_minutes: int = 0,
         activation_variant: str | None = None,
+        goals: list[str] | None = None,
+        streak_target_days: int | None = None,
+        preferred_focus: str | None = None,
     ) -> dict:
         """Complete onboarding through the exact service used by the Mini App."""
         context = await self._context(access_token)
-        return await CourseMiniAppOnboardingService(self.session).complete(
-            context.user,
-            level=level,
-            goal=goal,
-            daily_minutes=daily_minutes,
-            start_mode=start_mode,
-            language=language,
-            timezone_offset_minutes=timezone_offset_minutes,
-            activation_variant=activation_variant,
-        )
+        guest_resume = activation_variant == "native_li_guest_v1"
+        has_li_choices = any(value is not None for value in (goals, streak_target_days, preferred_focus))
+        if (guest_resume or has_li_choices) and not getattr(self.settings, "ANDROID_LI_ONBOARDING_ENABLED", False):
+            raise DesktopCourseError("android_li_onboarding_disabled", status_code=422)
+        try:
+            service = CourseMiniAppOnboardingService(self.session)
+            if guest_resume:
+                # get_or_create takes the same User lock as canonical saves.
+                # Do not apply anonymous choices over a completed profile or
+                # an account that has already started lessons.
+                profile = await service.profile_service.get_or_create(context.user.id)
+                progress = await service.engine.progress_repo.get_by_user_id(context.user.id, for_update=True)
+                if profile.onboarding_completed_at is not None or (
+                    progress and (progress.current_lesson_id or progress.completed_lessons_count)
+                ):
+                    raise DesktopCourseError("android_li_guest_not_fresh", status_code=409)
+                tracks = (await CourseTrackService(self.session).status(context.user)).get("tracks") or {}
+                if any(track.get("completed_lessons_count") for track in tracks.values()):
+                    raise DesktopCourseError("android_li_guest_not_fresh", status_code=409)
+                hsk30 = tracks.get("hsk30") or {}
+                if is_hsk30_level(level) and (
+                    not (hsk30.get("access") or {}).get("allowed") or level not in (hsk30.get("live_levels") or [])
+                ):
+                    raise DesktopCourseError("android_li_guest_track_locked", status_code=403)
+            return await service.complete(
+                context.user,
+                level=level,
+                goal=goal,
+                daily_minutes=daily_minutes,
+                start_mode=start_mode,
+                language=language,
+                timezone_offset_minutes=timezone_offset_minutes,
+                activation_variant=activation_variant,
+                goals=goals, streak_target_days=streak_target_days, preferred_focus=preferred_focus,
+                analytics_client="android",
+            )
+        except ValueError as exc:
+            raise DesktopCourseError("android_request_invalid", status_code=422) from exc
 
     async def set_study_preferences(
         self,

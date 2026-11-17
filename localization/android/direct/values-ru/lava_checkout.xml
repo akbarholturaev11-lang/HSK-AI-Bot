@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lava_title">Pro с оплатой картой</string>
+    <string name="lava_email">Электронная почта</string>
+    <string name="lava_months">%1$d мес.</string>
+    <string name="lava_price">%1$s %2$s</string>
+    <string name="lava_pay">Перейти к оплате</string>
+    <string name="lava_manual">Оплатить вручную</string>
+    <string name="lava_terms">Подписка продлевается автоматически. Следующий платёж можно отменить в профиле; оплаченный срок сохранится.</string>
+    <string name="lava_pending">Сервер проверяет оплату. Возврат из браузера не подтверждает платёж.</string>
+    <string name="lava_failed">Оплата не подтверждена. Обновите статус или обратитесь в поддержку.</string>
+    <string name="lava_open">Открыть страницу оплаты</string>
+    <string name="lava_check">Проверить оплату</string>
+    <string name="lava_cancel">Отменить автопродление</string>
+    <string name="lava_cancelled">Автопродление отключено. Оплаченный срок сохранится.</string>
+    <string name="lava_error">Не удалось проверить статус. Попробуйте снова.</string>
+    <string name="lava_blocked">Новая оплата сейчас недоступна. Проверьте текущий платёж или подписку.</string>
+    <string name="lava_exit_title">Получить скидку %1$d%%?</string>
+    <string name="lava_exit_body">Предложение выдаётся один раз на аккаунт. Действует до: %1$s.</string>
+    <string name="lava_exit_claim">Получить скидку</string>
+    <string name="lava_exit_later">Не сейчас</string>
+    <string name="lava_uncertain">Ответ на запрос оплаты потерян. Проверьте серверный статус перед новой попыткой.</string>
+    <string name="lava_other_plans">Другие тарифы</string>
+</resources>

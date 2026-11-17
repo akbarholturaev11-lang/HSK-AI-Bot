@@ -172,6 +172,36 @@ class ProTrialServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(second["ok"])
         self.assertEqual(REASON_ALREADY_USED, second["error"])
 
+    async def test_trial_funnel_uses_the_same_transaction_without_a_second_writer(self):
+        """PostgreSQL FK lock must never wait on this request's own locked user."""
+        await self._seed()
+        # The independent analytics session is forbidden while start() holds
+        # its FOR UPDATE lock. That was the 20-second PWA activation timeout.
+        with patch(
+            "app.services.conversion_funnel_service.async_session_maker",
+            side_effect=AssertionError("independent analytics transaction"),
+        ):
+            async with self.sessions() as session:
+                result = await ProTrialService(session).start(
+                    await self._get(session), source="pwa_onboarding", client="iphone_pwa"
+                )
+                self.assertTrue(result["ok"])
+                await session.commit()
+        self.assertEqual((await self._events()).count("trial_started"), 1)
+
+    async def test_trial_event_and_entitlement_roll_back_together(self):
+        await self._seed()
+        async with self.sessions() as session:
+            result = await ProTrialService(session).start(
+                await self._get(session), source="pwa_onboarding"
+            )
+            self.assertTrue(result["ok"])
+            await session.rollback()
+        self.assertNotIn("trial_started", await self._events())
+        async with self.sessions() as session:
+            user = await self._get(session)
+            self.assertFalse(bool(user.trial_used))
+
     async def test_start_refreshes_the_locked_row_before_deciding(self):
         """A stale identity-map value must not reopen an already-used trial."""
         await self._seed()

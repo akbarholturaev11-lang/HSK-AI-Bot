@@ -70,7 +70,8 @@ def main():
         assert page.locator("[data-site-selected-lang]").inner_text() == "Русский"
         page.goto("http://127.0.0.1:8765/")
         page.wait_for_load_state("networkidle")
-        assert page.url.endswith("/ru/"), page.url
+        assert page.url.endswith("/"), page.url
+        assert page.locator("html").get_attribute("lang") == "ru"
         assert not errors, errors
         no_js = browser.new_context(java_script_enabled=False, viewport={"width": 390, "height": 844})
         source_page = no_js.new_page()

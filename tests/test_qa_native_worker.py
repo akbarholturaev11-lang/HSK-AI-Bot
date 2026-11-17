@@ -36,14 +36,31 @@ class QANativeWorkerTests(TestCase):
                     assert_qa_runtime(env=env, database_url=url, username=name)
 
     def test_no_normal_onboarding_or_schedulers_are_registered(self):
-        dp = create_qa_dispatcher()
-        self.assertEqual(len(dp.sub_routers), 2)
-        self.assertEqual(dp.sub_routers[1].name, "qa_native_start")
+        # aiogram routers are module singletons: once any earlier test has
+        # imported app.main, its Dispatcher owns them. Check the QA worker in
+        # a fresh interpreter so the result does not depend on test order.
+        import json
+        import subprocess
+        import sys
+        from pathlib import Path
+        probe = (
+            "import json\n"
+            "from app.bot.qa_native_worker import create_qa_dispatcher\n"
+            "from app.bot.handlers.desktop_auth import router as native\n"
+            "dp = create_qa_dispatcher()\n"
+            "print(json.dumps({'count': len(dp.sub_routers),"
+            " 'names': [x.name for x in dp.sub_routers],"
+            " 'native_first': dp.sub_routers[0] is native}))\n"
+        )
+        result = subprocess.run([sys.executable, "-c", probe], capture_output=True, text=True,
+                                cwd=Path(__file__).resolve().parents[1], check=True)
+        data = json.loads(result.stdout.strip().splitlines()[-1])
+        self.assertEqual(data["count"], 2)
+        self.assertEqual(data["names"][1], "qa_native_start")
         # The explicit Telegram link router is mounted; the broadcast,
         # payment, course, admin and ordinary /start routers are not.
-        from app.bot.handlers.desktop_auth import router as native
-        self.assertIs(dp.sub_routers[0], native)
-        self.assertNotIn("start", [x.name for x in dp.sub_routers])
+        self.assertTrue(data["native_first"])
+        self.assertNotIn("start", data["names"])
 
     def test_start_bot_does_not_delete_telegram_webhook(self):
         from pathlib import Path

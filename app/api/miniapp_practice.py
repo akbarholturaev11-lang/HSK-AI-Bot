@@ -286,6 +286,7 @@ def create_miniapp_practice_router(
                     lang=payload.language,
                     skill=payload.skill,
                     gate_checked=True,
+                    analytics_client="telegram",
                 )
             return _service_response(result)
         except MiniAppPracticeError as exc:
@@ -328,6 +329,7 @@ def create_miniapp_practice_router(
                         for item in payload.answers
                     ],
                     gate_checked=True,
+                    analytics_client="telegram",
                 )
             return _service_response(result)
         except MiniAppPracticeError as exc:

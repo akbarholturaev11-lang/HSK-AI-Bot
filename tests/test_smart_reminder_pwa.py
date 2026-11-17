@@ -92,7 +92,8 @@ class SmartReminderPwaDeliveryTests(unittest.IsolatedAsyncioTestCase):
         args = sender.await_args.args
         payload = json.loads(args[1])
         self.assertEqual(payload["url"], "/iphone-pwa/course?notice=1")
-        self.assertNotIn("lesson", payload["body"].lower())
+        self.assertNotIn("HSK AI", payload["title"] + payload["body"])
+        self.assertIn("📖", payload["title"])
         async with self.case.sessions() as session:
             attempt = (await session.scalars(select(SmartReminderAttempt).where(
                 SmartReminderAttempt.job_id == self.job_id))).one()
@@ -104,15 +105,21 @@ class SmartReminderPwaDeliveryTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual((attempt.channel, attempt.device_id, attempt.state),
             ("pwa", self.device_id, "provider_accepted"))
         self.assertEqual((job.state, job.selected_channel), ("provider_accepted", "pwa"))
+        self.assertIn(str(job.lesson_order), payload["title"])
+        self.assertEqual((notices[0].title, notices[0].body), (payload["title"], payload["body"]))
         self.assertEqual([notice.source for notice in notices], ["smart_pwa"])
         self.assertEqual(outbox, [])
 
     async def test_job_is_not_sent_before_its_scheduled_time(self):
-        # Regression: planning used to dispatch a PWA reminder immediately.
+        # Regression: a future job must never dispatch early. A reminder
+        # cannot be scheduled *outside* its UTC/local-day window. The former
+        # +2h/+6h fixture broke this DB CHECK for evening CI runs despite
+        # the delivery logic being correct. Use the future instant strictly
+        # within the fixture's original, valid expiry window instead.
         async with self.case.sessions.begin() as session:
             await session.execute(update(JOB).where(JOB.c.id == self.job_id).values(
-                scheduled_at=self.tick + timedelta(hours=2),
-                expires_at=self.tick + timedelta(hours=6)))
+                scheduled_at=self.tick + timedelta(microseconds=1),
+                expires_at=self.case.expiry))
         sender = AsyncMock(return_value=201)
         result = await self._dispatch(sender)
         self.assertEqual(result.reason, "pwa_job_not_due")

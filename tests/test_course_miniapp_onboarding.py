@@ -492,6 +492,112 @@ class CourseMiniAppOnboardingFlowTests(unittest.IsolatedAsyncioTestCase):
         ):
             self.assertEqual(await service._normalize_request_level("nhsk1"), "nhsk1")
 
+    async def test_locked_hsk30_onboarding_cannot_switch_or_persist(self):
+        # Direct PWA/Telegram POST must never bypass the live HSK 3.0
+        # payment/access gate merely because content has been published.
+        session = SimpleNamespace(commit=AsyncMock())
+        service = CourseMiniAppOnboardingService(session)
+        actor = SimpleNamespace(id=4, level="hsk1", telegram_id=41)
+        profile = self._profile()
+        with (
+            patch("app.services.course_miniapp_onboarding_service.Hsk30ManifestService.load",
+                  return_value=SimpleNamespace(first_lesson_order=1, lesson_count=20)),
+            patch("app.services.course_miniapp_onboarding_service.CourseTrackService") as tracks,
+        ):
+            tracks.return_value.hsk30_feature.is_level_live = AsyncMock(return_value=True)
+            tracks.return_value.hsk30_access = AsyncMock(
+                return_value=SimpleNamespace(allowed=False, reason="hsk30_unlock_required")
+            )
+            result = await service._complete_hsk30(
+                user=actor, profile=profile, requested_level="nhsk1",
+                goal="hsk_exam", daily_minutes=10, start_mode="lesson_1",
+                language="uz", timezone_offset_minutes=0,
+                activation_variant="li_onboarding_v1",
+                onboarding_was_completed=False, goals=["hsk_exam"],
+                streak_target_days=14, preferred_focus="speaking",
+            )
+            self.assertEqual(result, {"ok": False, "error": "hsk30_unlock_required"})
+            tracks.return_value.switch.assert_not_called()
+            session.commit.assert_not_awaited()
+            self.assertIsNone(profile.onboarding_completed_at)
+            self.assertEqual(actor.level, "hsk1")
+
+    async def test_unlocked_hsk30_can_finish_without_bypass_flag(self):
+        session = SimpleNamespace(commit=AsyncMock())
+        service = CourseMiniAppOnboardingService(session)
+        actor = SimpleNamespace(id=5, level="hsk1", telegram_id=45)
+        profile = self._profile()
+        progress = SimpleNamespace(completed_lessons_count=0)
+        service.engine.progress_repo.get_by_user_id = AsyncMock(
+            return_value=progress
+        )
+
+        async def save_real_choices(profile, **kwargs):
+            profile.goal = kwargs["goal"]
+            profile.daily_minutes = kwargs["daily_minutes"]
+            profile.start_mode = kwargs["start_mode"]
+            profile.timezone_offset_minutes = kwargs["timezone_offset_minutes"]
+            profile.goals_json = '["hsk_exam", "travel"]'
+            profile.streak_target_days = kwargs["streak_target_days"]
+            profile.preferred_focus = kwargs["preferred_focus"]
+            profile.onboarding_completed_at = datetime.now(timezone.utc)
+            return profile
+
+        service.profile_service.save_preferences = AsyncMock(
+            side_effect=save_real_choices
+        )
+        with (
+            patch("app.services.course_miniapp_onboarding_service.Hsk30ManifestService.load",
+                  return_value=SimpleNamespace(first_lesson_order=1, lesson_count=20)),
+            patch("app.services.course_miniapp_onboarding_service.CourseTrackService") as tracks,
+            patch("app.services.course_miniapp_onboarding_service.CourseMiniAppAnalyticsService") as analytics,
+        ):
+            tracks.return_value.hsk30_feature.is_level_live = AsyncMock(
+                return_value=True
+            )
+            tracks.return_value.hsk30_access = AsyncMock(
+                return_value=SimpleNamespace(allowed=True, reason="paid_subscription")
+            )
+            tracks.return_value.track_for_level.return_value = "hsk20"
+            tracks.return_value.switch = AsyncMock(return_value={})
+            analytics.return_value.record_server_event = AsyncMock()
+            result = await service._complete_hsk30(
+                user=actor, profile=profile, requested_level="nhsk1",
+                goal="hsk_exam", daily_minutes=10, start_mode="placement",
+                language="uz", timezone_offset_minutes=0,
+                activation_variant="li_onboarding_v1",
+                onboarding_was_completed=False, goals=["hsk_exam", "travel"],
+                streak_target_days=14, preferred_focus="speaking",
+            )
+            self.assertTrue(result["ok"], result)
+            self.assertEqual(result["profile"]["goals"], ["hsk_exam", "travel"])
+            self.assertEqual(result["profile"]["streak_target_days"], 14)
+            self.assertEqual(actor.level, "nhsk1")
+            tracks.return_value.switch.assert_awaited_once_with(
+                actor, target_track="hsk30",
+                requested_level="nhsk1", allow_locked_hsk30=False,
+            )
+            self.assertEqual(session.commit.await_count, 2)
+
+    async def test_invalid_li_choices_rejected_before_user_lookup_or_progress(self):
+        service = CourseMiniAppOnboardingService(SimpleNamespace())
+        service.user_repo.get_by_actor = AsyncMock(
+            side_effect=AssertionError("invalid user choice reached a DB lookup")
+        )
+        kwargs = dict(
+            level="hsk1", goal="hsk_exam", daily_minutes=10,
+            start_mode="continue", language="uz",
+        )
+        for fields in (
+            {"goals": ["travel", "hsk_exam"]},
+            {"streak_target_days": 99},
+            {"preferred_focus": "unsupported_mode"},
+        ):
+            with self.subTest(fields=fields), self.assertRaises(ValueError):
+                await service.complete(SimpleNamespace(id=37, telegram_id=None),
+                                       **kwargs, **fields)
+        service.user_repo.get_by_actor.assert_not_awaited()
+
     @staticmethod
     def _profile():
         return SimpleNamespace(
@@ -592,6 +698,86 @@ class CourseMiniAppOnboardingFlowTests(unittest.IsolatedAsyncioTestCase):
             completed_call.kwargs["payload"]["activation_variant"],
             "direct_start_v1",
         )
+
+    async def test_route_client_tags_every_onboarding_row(self):
+        """R2: the route sets `analytics_client`; without it the rows are unchanged."""
+        for client in (None, "telegram"):
+            with self.subTest(client=client):
+                session = SimpleNamespace(commit=AsyncMock())
+                service = CourseMiniAppOnboardingService(session)
+                user = SimpleNamespace(id=4, telegram_id=123, level="beginner", learning_mode="qa",
+                                       voice_mode="none", status="trial", payment_status="none",
+                                       trial_course_lesson_id=None, trial_course_started_at=None)
+                service.user_repo = SimpleNamespace(get_by_telegram_id=AsyncMock(return_value=user))
+                service.profile_service = SimpleNamespace(
+                    validate_preferences=CourseMiniAppProfileService.validate_preferences,
+                    get_or_create=AsyncMock(return_value=self._profile()),
+                    save_preferences=AsyncMock(side_effect=self._save_profile),
+                )
+                service.engine = SimpleNamespace(
+                    progress_repo=SimpleNamespace(
+                        get_by_user_id=AsyncMock(return_value=None),
+                        create=AsyncMock(return_value=SimpleNamespace(level="beginner", current_lesson_id=None)),
+                        set_current_lesson_and_step=AsyncMock()),
+                    lesson_repo=SimpleNamespace(
+                        get_by_id=AsyncMock(return_value=None),
+                        get_first_by_level=AsyncMock(return_value=SimpleNamespace(id=10, lesson_order=1,
+                                                                                  level="hsk1"))),
+                )
+                analytics = SimpleNamespace(record_server_event=AsyncMock(return_value={"ok": True}))
+                with (
+                    patch("app.services.course_miniapp_onboarding_service.CourseTrialService") as trial_class,
+                    patch("app.services.course_miniapp_onboarding_service.CourseMiniAppAnalyticsService",
+                          return_value=analytics),
+                ):
+                    trial_class.return_value.mark_trial_lesson = AsyncMock(return_value=None)
+                    extra = {"analytics_client": client} if client else {}
+                    result = await service.complete(123, level="beginner", goal="hsk_exam", daily_minutes=10,
+                                                    start_mode="lesson_1", timezone_offset_minutes=0, **extra)
+                self.assertTrue(result["ok"], result)
+                calls = analytics.record_server_event.await_args_list
+                self.assertEqual(len(calls), 5)
+                self.assertEqual({call.kwargs["analytics_client"] for call in calls}, {client})
+
+    async def test_route_client_reaches_hsk30_onboarding_rows(self):
+        service = CourseMiniAppOnboardingService(SimpleNamespace(commit=AsyncMock()))
+        service.user_repo = SimpleNamespace(get_by_telegram_id=AsyncMock(
+            return_value=SimpleNamespace(id=5, telegram_id=45, level="hsk1")))
+        service.profile_service = SimpleNamespace(
+            validate_preferences=CourseMiniAppProfileService.validate_preferences,
+            get_or_create=AsyncMock(return_value=self._profile()))
+        service._normalize_request_level = AsyncMock(return_value="nhsk1")
+        service._complete_hsk30 = AsyncMock(return_value={"ok": True})
+        await service.complete(45, level="nhsk1", goal="hsk_exam", daily_minutes=10, start_mode="placement",
+                               timezone_offset_minutes=0, analytics_client="iphone_pwa")
+        self.assertEqual(service._complete_hsk30.await_args.kwargs["analytics_client"], "iphone_pwa")
+
+        session = SimpleNamespace(commit=AsyncMock())
+        service = CourseMiniAppOnboardingService(session)
+        actor = SimpleNamespace(id=5, level="hsk1", telegram_id=45)
+        service.engine.progress_repo.get_by_user_id = AsyncMock(return_value=SimpleNamespace(
+            completed_lessons_count=0))
+        service.profile_service.save_preferences = AsyncMock(side_effect=lambda profile, **kwargs: profile)
+        with (
+            patch("app.services.course_miniapp_onboarding_service.Hsk30ManifestService.load",
+                  return_value=SimpleNamespace(first_lesson_order=1, lesson_count=20)),
+            patch("app.services.course_miniapp_onboarding_service.CourseTrackService") as tracks,
+            patch("app.services.course_miniapp_onboarding_service.CourseMiniAppAnalyticsService") as analytics,
+        ):
+            tracks.return_value.hsk30_feature.is_level_live = AsyncMock(return_value=True)
+            tracks.return_value.hsk30_access = AsyncMock(
+                return_value=SimpleNamespace(allowed=True, reason="paid_subscription"))
+            tracks.return_value.track_for_level.return_value = "hsk20"
+            tracks.return_value.switch = AsyncMock(return_value={})
+            analytics.return_value.record_server_event = AsyncMock()
+            await service._complete_hsk30(
+                user=actor, profile=self._profile(), requested_level="nhsk1", goal="hsk_exam",
+                daily_minutes=10, start_mode="placement", language="uz", timezone_offset_minutes=0,
+                activation_variant="li_onboarding_v1", onboarding_was_completed=False, goals=None,
+                streak_target_days=None, preferred_focus=None, analytics_client="iphone_pwa")
+        calls = analytics.return_value.record_server_event.await_args_list
+        self.assertIn("onboarding_completed", {call.kwargs["event_name"] for call in calls})
+        self.assertEqual({call.kwargs["analytics_client"] for call in calls}, {"iphone_pwa"})
 
     async def test_cross_level_lesson_one_does_not_reset_existing_progress(self):
         session = SimpleNamespace(commit=AsyncMock())

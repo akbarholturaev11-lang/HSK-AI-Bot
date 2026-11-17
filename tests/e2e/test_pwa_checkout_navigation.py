@@ -42,6 +42,9 @@ def test_checkout_return_keeps_profile_interactive_while_overview_is_pending(ret
                 headers["X-HSK-PWA-User-ID"] = "7"
             else:
                 data = {"ok": True}
+                if path in {"/api/v3/pwa/profile", "/api/v3/pwa/invite", "/api/v3/pwa/voice/me"}:
+                    # Real owner-scoped reads carry the verified account id.
+                    headers["X-HSK-PWA-User-ID"] = "7"
             route.fulfill(status=200, json=data, headers=headers)
         else:
             names = {

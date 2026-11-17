@@ -9,7 +9,9 @@ from app.repositories.required_channel_repo import RequiredChannelRepository
 
 FORCE_CHANNEL_SETTING_KEY = "force_channel_subscription_enabled"
 MEMBER_STATUSES = {"creator", "administrator", "member"}
-MAIN_CHANNEL_USERNAME = "aibotsakbar"
+MAIN_CHANNEL_USERNAME = "hskaiapp"
+# Existing database rows may still contain the former public username.
+LEGACY_MAIN_CHANNEL_USERNAME = "aibotsakbar"
 
 
 def normalize_channel_username(value: str | None) -> str:
@@ -25,8 +27,8 @@ def normalize_channel_username(value: str | None) -> str:
 
 def is_main_channel(chat_id: str | None, invite_link: str | None = None) -> bool:
     return (
-        normalize_channel_username(chat_id) == MAIN_CHANNEL_USERNAME
-        or normalize_channel_username(invite_link) == MAIN_CHANNEL_USERNAME
+        normalize_channel_username(chat_id) in {MAIN_CHANNEL_USERNAME, LEGACY_MAIN_CHANNEL_USERNAME}
+        or normalize_channel_username(invite_link) in {MAIN_CHANNEL_USERNAME, LEGACY_MAIN_CHANNEL_USERNAME}
     )
 
 
@@ -82,7 +84,10 @@ class RequiredChannelService:
         missing = []
         for channel in await self.repo.list_active():
             try:
-                member = await bot.get_chat_member(channel.chat_id, user_id)
+                chat_id = (f"@{MAIN_CHANNEL_USERNAME}"
+                           if normalize_channel_username(channel.chat_id) == LEGACY_MAIN_CHANNEL_USERNAME
+                           else channel.chat_id)
+                member = await bot.get_chat_member(chat_id, user_id)
                 status = str(member.status).split(".")[-1].lower()
                 if status in MEMBER_STATUSES:
                     continue
@@ -95,8 +100,13 @@ class RequiredChannelService:
         rows = []
         for channel in channels:
             url = channel.invite_link
+            if normalize_channel_username(url) == LEGACY_MAIN_CHANNEL_USERNAME:
+                url = f"https://t.me/{MAIN_CHANNEL_USERNAME}"
             if not url and str(channel.chat_id).startswith("@"):
-                url = f"https://t.me/{str(channel.chat_id).lstrip('@')}"
+                name = (MAIN_CHANNEL_USERNAME
+                        if normalize_channel_username(channel.chat_id) == LEGACY_MAIN_CHANNEL_USERNAME
+                        else str(channel.chat_id).lstrip("@"))
+                url = f"https://t.me/{name}"
             if not url:
                 continue
             rows.append([InlineKeyboardButton(text=channel.title, url=url)])

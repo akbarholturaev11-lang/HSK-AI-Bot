@@ -72,7 +72,11 @@ class AdminDeleteSafetyTest(unittest.TestCase):
         self.assertIn('Payment.payment_status == "approved"', block)
         self.assertIn("screenshot_file_id=None", block)
         self.assertIn("admin_comment=None", block)
-        self.assertIn('Payment.payment_status != "approved"', block)
+        # Only non-financial drafts/pending/rejected rows are deleted; lava.top
+        # refunded/chargeback rows are retained anonymously like approved ones.
+        self.assertIn('retained_statuses = ("approved", "refunded", "chargeback")', block)
+        self.assertIn("Payment.payment_status.not_in(retained_statuses)", block)
+        self.assertIn(".values(user_id=None, buyer_email=None)", block)
         self.assertNotIn("(Payment, Payment.user_telegram_id)", block)
         self.assertIn("PartnerReferral", block)
 

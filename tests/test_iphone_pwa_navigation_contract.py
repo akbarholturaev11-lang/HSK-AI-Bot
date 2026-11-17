@@ -21,7 +21,8 @@ class IphonePwaNavigationContractTests(unittest.TestCase):
         self.assertIn("async def login_page(request: Request)", route)
         self.assertIn("request.cookies.get(PWA_SESSION_COOKIE)", route)
         self.assertIn("await PwaAuthService(db, settings_obj).actor(cookie)", route)
-        self.assertIn('"/iphone-pwa/course", status_code=303', route)
+        self.assertIn('"/iphone-pwa/onboarding/li" if resuming_li else "/iphone-pwa/course"', route)
+        self.assertIn('status_code=303, headers=_NO_STORE', route)
 
     def test_pwa_course_progress_refresh_uses_browser_actor(self):
         refresh = COURSE.split("function refreshCourseProgress(afterWrite)", 1)[1].split(

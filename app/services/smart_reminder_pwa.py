@@ -14,11 +14,11 @@ from app.db.models.desktop import DesktopDevice, DesktopSession
 from app.db.models.learner_pwa_push import LearnerPwaPushSubscription
 from app.db.models.smart_reminder import SmartReminderAttempt, SmartReminderPreference, SmartReminderJob
 from app.db.models.user import User
-from app.services.course_notification_service import CourseNotificationService, notification_title
+from app.services.course_notification_service import CourseNotificationService
 from app.services.learner_pwa_push import (
     PushKeys, SubscribeRequest, _PUSH_PATH, _validate_subscription, sender_config,
 )
-from app.services.notification_i18n import notification_message
+from app.services.learner_pwa_push_copy import fallback_copy, push_copy
 from app.services.notification_template_service import KEY_SMART_STUDY, NotificationTemplateService
 from app.services.smart_reminder_destination import PWA_POLICY_VERSION
 from app.services.smart_reminder_preferences import SmartReminderPreferencesService, _utc, pwa_study_consent
@@ -198,10 +198,17 @@ class SmartReminderPwaService:
             ))
             await session.flush()
             language = user.language if user.language in {"uz", "ru", "tj"} else "ru"
+            resolved = await NotificationTemplateService(session).resolve(KEY_SMART_STUDY, language)
+            title, body = fallback_copy(KEY_SMART_STUDY, language)
+            text = ""
+            if resolved:
+                try:
+                    text = resolved["text"].format(lesson=row["lesson_order"])
+                except (KeyError, IndexError, ValueError):
+                    pass
+            title, body = push_copy(text, title=title, body=body)
             public_payload = json.dumps({
-                "title": notification_message("pwa.push.title", language, "HSK AI"),
-                "body": notification_message("pwa.push.body", language,
-                    "У вас новое уведомление. Откройте HSK AI."),
+                "title": title, "body": body, "lang": language,
                 "url": _PUSH_PATH, "tag": "hsk-smart-" + job_id.replace("-", "")[:20],
             }, ensure_ascii=False, separators=(",", ":"))
             endpoint_payload = raw
@@ -251,11 +258,9 @@ class SmartReminderPwaService:
                     user = await session.get(User, actor.user_id)
                     if user is not None:
                         row = (await session.execute(select(JOB).where(JOB.c.id == job_id))).mappings().one()
-                        language = user.language if user.language in {"uz", "ru", "tj"} else "ru"
                         await CourseNotificationService(session).record(
                             user, key=KEY_SMART_STUDY, lang=language,
-                            title=notification_title(KEY_SMART_STUDY, language),
-                            body=notification_title(KEY_SMART_STUDY, language),
+                            title=title, body=body,
                             action="course", source="smart_pwa", level=row["course_key"],
                             lesson_order=row["lesson_order"], dedupe_key="job:" + job_id,
                             params={"template_service": KEY_SMART_STUDY, "lesson": row["lesson_order"]},

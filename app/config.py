@@ -1,5 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic import field_validator
+from pydantic import AliasChoices, Field, field_validator
 from typing import List, Literal
 
 
@@ -48,6 +48,18 @@ class Settings(BaseSettings):
     ADMIN_IDS: str = "7965751363"
     FEEDBACK_NOTIFY_CHAT_IDS: str = "-1004311413349"
     PAYMENT_DETAILS: str = ""
+    # lava.top automated Pro subscriptions (second checkout path).
+    # LAVA_ENABLED gates only NEW sales; webhooks/reconciliation for already
+    # created contracts keep working while a webhook secret is configured.
+    LAVA_ENABLED: bool = False
+    LAVA_API_KEY: str = ""
+    LAVA_WEBHOOK_SECRET: str = ""
+    LAVA_API_BASE: str = "https://gate.lava.top"
+    # Emergency stop: webhooks are stored durably as queued but not applied.
+    LAVA_PROCESSING_PAUSED: bool = False
+    # Optional comma-separated defense-in-depth allowlist (lava: 158.160.60.174).
+    LAVA_WEBHOOK_ALLOWED_IPS: str = ""
+    LAVA_RECONCILE_ENABLED: bool = True
     BOT_USERNAME: str = ""
     # Canonical HTTPS origin; blank derives origin from MINI_APP_BASE_URL.
     PUBLIC_SITE_URL: str = ""
@@ -60,6 +72,11 @@ class Settings(BaseSettings):
     MINI_APP_BASE_URL: str = "https://telegram-chinese-bot-production.up.railway.app/course-v3.html"
     # Dedicated learner browser OAuth; launch only after iPhone/login security QA.
     PWA_AUTH_ENABLED: bool = False
+    # Disabled by default until iPhone Safari, OAuth and analytics release gates pass.
+    # When enabled, only anonymous /iphone-pwa navigation enters the public Li shell.
+    PWA_LI_ONBOARDING_ENTRY_ENABLED: bool = False
+    # Independent native rollout; a PWA release must not activate Android.
+    ANDROID_LI_ONBOARDING_ENABLED: bool = False
     PWA_VOICE_LIVE_ENABLED: bool = False
     # Learner iPhone Web Push stays independently disabled until explicit QA/release gates pass.
     PWA_PUSH_ENABLED: bool = False
@@ -119,6 +136,15 @@ class Settings(BaseSettings):
     ADMIN_MINIAPP_AUTH_MAX_AGE_SECONDS: int = 86400
     # Separate browser Admin PWA stays disabled until Google/TG + passkey auth exists.
     ADMIN_PWA_ENABLED: bool = False
+    # UIUX-007 personal review questions inside ordinary lessons. Off = every
+    # client runs the original lesson (instant rollback, no client release).
+    COURSE_ADAPTIVE_ENABLED: bool = False
+    # Stable user-id bucket (0-100) that receives plans while enabled.
+    COURSE_ADAPTIVE_ROLLOUT_PERCENT: int = 100
+    # Comma-separated canonical user IDs that always receive plans while enabled.
+    COURSE_ADAPTIVE_ALLOWLIST: str = ""
+    # Computes and counts selection without state writes or delivery.
+    COURSE_ADAPTIVE_SHADOW_ENABLED: bool = False
     # Observes existing Smart shadow reservations only; grants no delivery.
     SMART_REMINDER_SHADOW_ENABLED: bool = False
     # D25 ordinary runtime with the automatic four-stage rollout and admission.
@@ -141,6 +167,10 @@ class Settings(BaseSettings):
     # overview aggregates. Store a distinct random >=48-character secret in
     # Railway and the analytics GitHub Actions secrets; disabled when blank.
     ADMIN_PWA_MANUAL_AGGREGATE_REFRESH_TOKEN: str = ""
+    # Kill switch for the additive full refresh (manifest + one section/platform
+    # group per request) on the same owner endpoint. OFF keeps the legacy
+    # `{}` and single-window contract exactly as before.
+    ADMIN_PWA_FULL_REFRESH_ENABLED: bool = False
     # Independent kill switch; no public MCP resource/OAuth flow is mounted.
     ADMIN_PWA_MCP_ENABLED: bool = False
     # Never enable before complete OAuth consent UI, client registration and security review.
@@ -153,6 +183,16 @@ class Settings(BaseSettings):
     # Sender starts automatically when the VAPID pair/subject and storage key validate.
     # ADMIN_PWA_PUSH_SEND_ENABLED=false remains an emergency kill switch.
     ADMIN_PWA_PUSH_SEND_ENABLED: bool = True
+    # Unified error monitoring (openspec unified-error-monitoring D3/D7/D9).
+    # off | owners | all; an unknown value means off. Each change redeploys.
+    MONITORING_MODE: str = "off"
+    MONITORING_PUSH_ENABLED: bool = False
+    MONITORING_MINIAPP_ADAPTER_ENABLED: bool = False
+    # The immutable commit this deployment was built from (40 hex). Railway
+    # provides it for GitHub deployments; blank means no source links in the
+    # Admin diagnostic detail. Never a `?v=` cache token.
+    MONITORING_SOURCE_COMMIT: str = Field(
+        default="", validation_alias=AliasChoices("MONITORING_SOURCE_COMMIT", "RAILWAY_GIT_COMMIT_SHA"))
     # URL-safe base64 raw 32-byte private EC scalar, matching the public VAPID key.
     ADMIN_PWA_PUSH_VAPID_PRIVATE_KEY: str = ""
     ADMIN_PWA_PUSH_VAPID_SUBJECT: str = ""

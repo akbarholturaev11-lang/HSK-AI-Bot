@@ -18,13 +18,14 @@ import logging
 from dataclasses import dataclass, field
 from datetime import timedelta
 
-from sqlalchemy import func, or_, select
+from sqlalchemy import case, func, or_, select
 
 from app.db.models.course_mistake import CourseMistake
 from app.db.models.course_xp_event import CourseXpEvent
 from app.services.course_daily_window import local_day_key
 from app.services.course_levels import is_hsk30_level
 from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
+from app.services.onboarding_goal_selection import read_onboarding_goals
 from app.services.course_v3_parts import current_part, total_parts
 
 
@@ -80,6 +81,8 @@ class LearningSignals:
     active_days_7: int = 0
     done_refs_today: frozenset[str] = frozenset()
     done_types_today: frozenset[str] = frozenset()
+    # New onboarding choices. Empty = legacy scalar goal only.
+    goals: tuple[str, ...] = ()
 
     @property
     def has_next_part(self) -> bool:
@@ -195,21 +198,28 @@ class LearningSignalsService:
 
     async def _evidence_and_pace(self, user_id: int, local_day) -> tuple[int, int]:
         """Dalil hajmi (o'quv faoliyatlari soni) va oxirgi 7 kundagi faol kunlar."""
+        window_start = local_day - timedelta(days=6)
+        # Keep the original all-time evidence count and inclusive seven-day
+        # window, but aggregate in SQL instead of loading every XP row into
+        # Python on each course-map request.
+        active_date = case(
+            (
+                CourseXpEvent.activity_date.between(window_start, local_day),
+                CourseXpEvent.activity_date,
+            ),
+            else_=None,
+        )
         result = await self.session.execute(
-            select(CourseXpEvent.activity_date, CourseXpEvent.activity_type).where(
+            select(
+                func.count(CourseXpEvent.id),
+                func.count(func.distinct(active_date)),
+            ).where(
                 CourseXpEvent.user_id == user_id,
                 CourseXpEvent.activity_type.in_(LEARNING_ACTIVITY_TYPES),
             )
         )
-        rows = result.all()
-        evidence = len(rows)
-        window_start = local_day - timedelta(days=6)
-        active_days = {
-            activity_date
-            for activity_date, _ in rows
-            if activity_date and window_start <= activity_date <= local_day
-        }
-        return evidence, len(active_days)
+        evidence, active_days = result.one()
+        return int(evidence or 0), int(active_days or 0)
 
     async def load(self, user, *, profile, progress, level: str) -> LearningSignals:
         level = str(level or "hsk1").strip().lower()
@@ -240,6 +250,10 @@ class LearningSignalsService:
         return LearningSignals(
             level=level,
             goal=str(getattr(profile, "goal", "") or "hsk_exam"),
+            goals=tuple(read_onboarding_goals(
+                getattr(profile, "goals_json", None),
+                primary_goal=str(getattr(profile, "goal", "") or "hsk_exam"),
+            )),
             daily_minutes=int(setup["daily_minutes"]),
             preferred_focus=setup["preferred_focus"],
             plan_size=int(setup["plan_size"]),

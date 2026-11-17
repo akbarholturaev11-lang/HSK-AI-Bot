@@ -676,7 +676,14 @@
     "inline.handlers.desktop_auth.pwa.confirm": "🌐 <b>HSK AI iPhone PWA — вход через Telegram</b>\n\nПодтвердите, только если вы сами начали вход в браузере. Подтверждение откроет в этом браузере ваш аккаунт с курсом и подпиской.",
     "inline.handlers.desktop_auth.pwa.denied": "Вход отменён. Эта ссылка больше не работает.",
     "inline.handlers.desktop_auth.pwa.invalid": "Ссылка входа в PWA недействительна или устарела. Начните заново в браузере.",
-    "inline.handlers.desktop_auth.pwa.success": "✅ <b>Вход подтверждён</b>\n\nВернитесь на страницу HSK AI в браузере iPhone."
+    "inline.handlers.desktop_auth.pwa.success": "✅ <b>Вход подтверждён</b>\n\nВернитесь на страницу HSK AI в браузере iPhone.",
+    "lava.user_renewal_failed": "⚠️ Не удалось списать оплату за продление HSK AI Pro.\n\nПроверьте карту или оформите подписку заново в приложении. Оплаченный период Pro продолжает действовать.",
+    "lava.user_subscription_cancelled": "Автопродление отключено.\n\nHSK AI Pro действует до {date}, дальше списаний с карты не будет.",
+    "lava.user_refund_revoked": "Ваш платёж возвращён 💳\n\nДни HSK AI Pro, выданные за этот платёж, отменены.",
+    "lava.user_chargeback_revoked": "По платежу открыт спор через банк (chargeback).\n\nДо его решения дни HSK AI Pro за этот платёж приостановлены.",
+    "lava.user_chargeback_restored": "Спор по платежу закрыт ✅\n\nHSK AI Pro восстановлен до {date}.",
+    "lava.return_title": "Проверяем оплату",
+    "lava.return_body": "Спасибо! После подтверждения оплаты HSK AI Pro включится автоматически. Вернитесь в приложение — статус обновится сам."
   },
   "namespace": "bot",
   "references": {

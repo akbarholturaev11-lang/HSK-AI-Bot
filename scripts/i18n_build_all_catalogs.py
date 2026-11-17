@@ -21,6 +21,7 @@ from scripts import (
     i18n_build_course_catalogs as course,
     i18n_build_desktop_catalogs as desktop,
     i18n_build_local_catalogs as common,
+    i18n_build_li_onboarding as li_onboarding,
     i18n_build_miniapp_catalogs as miniapp,
     i18n_build_notification_catalogs as notifications,
     i18n_build_public_site_catalog as public_site,
@@ -40,6 +41,7 @@ def output_files(root: Path = ROOT) -> dict[str, bytes]:
     sources = [
         common.output_files(common.read_sources(root)),
         course.output_files(course.read_sources(root)),
+        li_onboarding.output_files(li_onboarding.read_sources(root)),
         bot.output_files(bot.read_sources(root)),
         desktop.output_files(desktop.read_sources(root)),
         notifications.output_files(notifications.read_sources(root)),

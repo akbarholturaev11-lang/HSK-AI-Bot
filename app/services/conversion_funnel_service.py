@@ -44,6 +44,17 @@ class ConversionFunnelService:
         "paywall_cta_clicked": "Paywall bosildi",
         "ad_shown": "Reklama ko'rsatildi",
         "ad_skipped": "Reklama tashlandi",
+        "pwa_pro_opened": "PWA Pro oynasi",
+        "pwa_pro_plan_selected": "PWA tarif tanlandi",
+        "pwa_pro_more_opened": "PWA boshqa tariflar",
+        "pwa_pro_method_selected": "PWA tolov usuli",
+        "pwa_pro_exit_offered": "PWA 20% taklif",
+        "pwa_pro_exit_claimed": "PWA 20% qabul",
+        "pwa_pro_exit_declined": "PWA 20% rad",
+        "pwa_pro_dismissed": "PWA Pro yopildi",
+        "pwa_pro_checkout_started": "PWA Lava checkout",
+        "pwa_pro_checkout_failed": "PWA checkout xato",
+        "pwa_pro_checkout_paid": "PWA tolov tasdiq",
     }
     RATE_PAIRS = (
         ("CTA → Kurs", "course_started", "course_cta_seen"),
@@ -115,6 +126,94 @@ class ConversionFunnelService:
             return True
         except Exception:
             logger.exception("Failed to record conversion funnel event: %s", event_name)
+            return False
+
+    async def record_checkout_opened(
+        self,
+        *,
+        user=None,
+        telegram_id: int | None = None,
+        source: str | None = None,
+        payload: dict[str, Any],
+    ) -> bool:
+        """Base checkout opening of one attempt: checked, retried once, never doubled.
+
+        Every later stage, the receipt and the approval join this row by owner
+        + attempt_id. Losing it makes the stage routes answer 409 and drops the
+        whole attempt from the payment funnel. Callers never let the result
+        change their checkout response: payment does not wait on analytics.
+        """
+        event = {"event_name": "checkout_opened", "user": user, "telegram_id": telegram_id,
+                 "source": source, "payload": payload}
+        if await self.record(**event):
+            return True
+        attempt_id, transport = payload.get("attempt_id"), payload.get("transport")
+        if attempt_id:
+            # A commit that raised may still be stored: retry only when this
+            # exact opening is absent, and never when that cannot be read.
+            if (written := await self._checkout_opening_stored(user, telegram_id, payload)) is True:
+                return True
+            if written is False and await self.record(**event):
+                logger.warning("checkout_opened_recovered transport=%s", transport)
+                return True
+        logger.error("checkout_opened_lost transport=%s attempt=%s", transport, attempt_id)
+        return False
+
+    async def _checkout_opening_stored(self, user, telegram_id, payload) -> bool | None:
+        owner = user if user is not None else telegram_id
+        try:
+            async with async_session_maker() as read_session:
+                found = await read_session.scalar(
+                    select(ConversionFunnelEvent.id).where(
+                        owner_clause(ConversionFunnelEvent, owner, telegram_column="telegram_id"),
+                        ConversionFunnelEvent.event_name == "checkout_opened",
+                        ConversionFunnelEvent.payload_json == self._payload_json(payload),
+                    ).limit(1)
+                )
+            return found is not None
+        except Exception:
+            logger.exception("checkout_opened state unreadable; retry skipped")
+            return None
+
+    async def record_in_transaction(
+        self,
+        *,
+        event_name: str,
+        user,
+        source: str | None = None,
+        payload: dict[str, Any] | None = None,
+    ) -> bool:
+        """Optional funnel event in the caller's DB transaction.
+
+        A trial activation holds a FOR UPDATE lock on users. Calling record()
+        here uses a second connection and its FK key-share lock can wait on
+        the *same request's* uncommitted user row until the browser times out.
+        A savepoint keeps telemetry best-effort without a second connection.
+        The event commits atomically with the trial grant, never before it.
+        """
+        if self.session is None:
+            raise ValueError("record_in_transaction requires a DB session")
+        if event_name not in self.EVENT_NAMES:
+            logger.warning("Unknown conversion funnel event ignored: %s", event_name)
+            return False
+        user_id = getattr(user, "id", None)
+        telegram_id = getattr(user, "telegram_id", None)
+        if not user_id and not telegram_id:
+            return False
+        try:
+            async with self.session.begin_nested():
+                self.session.add(ConversionFunnelEvent(
+                    user_id=user_id,
+                    telegram_id=int(telegram_id) if telegram_id else None,
+                    event_name=event_name,
+                    source=source or None,
+                    payload_json=self._payload_json(payload),
+                    created_at=datetime.now(timezone.utc),
+                ))
+                await self.session.flush()
+            return True
+        except Exception:
+            logger.exception("Failed to record transactional funnel event: %s", event_name)
             return False
 
     async def record_once(
@@ -256,6 +355,12 @@ class ConversionFunnelService:
             ("quiz_completed", "ai_explanation_seen", "homework_completed"),
             ("paywall_seen", "checkout_opened", "payment_screenshot_submitted"),
             ("payment_approved", "payment_rejected"),
+            # PWA inline Pro uses separate keys: checkout means a real Lava
+            # invoice and paid means a verified server-side activation.
+            ("pwa_pro_opened", "pwa_pro_plan_selected", "pwa_pro_more_opened"),
+            ("pwa_pro_method_selected", "pwa_pro_dismissed"),
+            ("pwa_pro_exit_offered", "pwa_pro_exit_claimed", "pwa_pro_exit_declined"),
+            ("pwa_pro_checkout_started", "pwa_pro_checkout_paid", "pwa_pro_checkout_failed"),
         ]
         lines = ["<b>🧭 FUNNEL unique (all/7 kun)</b>"]
         for row in compact_rows:

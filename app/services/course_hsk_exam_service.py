@@ -396,6 +396,7 @@ class CourseHskExamService:
         self,
         telegram_id: int | User,
         *,
+        analytics_client: str | None = None,
         level: str,
         lang: str,
         access_ref: str,
@@ -480,6 +481,7 @@ class CourseHskExamService:
             session_id=session_id,
             dedupe_key=self._started_dedupe_key(access_key),
             payload=started_payload,
+            analytics_client=analytics_client,
         )
         if not event.get("ok"):
             return {"ok": False, "error": "exam_session_start_failed"}
@@ -538,6 +540,7 @@ class CourseHskExamService:
         self,
         telegram_id: int | User,
         *,
+        analytics_client: str | None = None,
         session_id: str,
         answers: list,
         level: str | None = None,
@@ -694,6 +697,7 @@ class CourseHskExamService:
             session_id=session_id,
             dedupe_key=f"{session_id}:completed",
             payload=self._completed_event_payload(completed_payload),
+            analytics_client=analytics_client,
         )
         if not event.get("ok"):
             return {"ok": False, "error": "hsk_exam_result_write_failed"}

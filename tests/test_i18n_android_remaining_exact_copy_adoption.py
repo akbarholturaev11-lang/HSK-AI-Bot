@@ -56,10 +56,10 @@ LEGACY_TO_GENERATED = {
 
 # Includes six existing call sites that already used the destination resource.
 EXPECTED_GENERATED_CALLS = {
-    "hsk_common_action_back": 5,
+    "hsk_common_action_back": 6,
     "hsk_course_dictionary_page_clear_history": 1,
-    "hsk_common_action_close": 21,  # Includes the compact account editor close button.
-    "hsk_common_action_continue": 16,
+    "hsk_common_action_close": 23,  # Includes the compact account editor and next-part sheet close buttons.
+    "hsk_common_action_continue": 19,  # Includes the in-lesson personal review feedback and offline panels (UIUX-007).
     "hsk_common_action_done": 2,
     "hsk_course_lang": 2,
     "hsk_common_action_finish": 1,
@@ -78,15 +78,16 @@ EXPECTED_GENERATED_CALLS = {
     "hsk_course_help": 1,
     "hsk_common_action_logout": 1,
     "hsk_common_state_loading": 1,
-    "hsk_course_voice_page_what_to_say": 1,
-    "hsk_course_lesson_flow_retry": 11,
+    # The AI Voice V8 screen replaced the call screen that used these two.
+    "hsk_course_voice_page_what_to_say": 0,
+    "hsk_course_lesson_flow_retry": 12,
     "hsk_common_desktopAuth_referralInvalid": 1,
     "hsk_common_desktopAuth_providerFailed": 1,
     "hsk_course_rating_weekly_top_five": 1,
     "hsk_course_rating_referral_joined": 1,
     "hsk_course_rating_weekly_heading": 1,
     "hsk_common_desktopA11y_courseNavigation": 1,
-    "hsk_course_memorize_finish": 1,
+    "hsk_course_memorize_finish": 0,
     "hsk_course_rating_write_telegram": 1,
     "hsk_common_navigation_challenges": 1,
 }

@@ -930,3 +930,27 @@ fieldset.form-field legend{padding:0 6px;font-size:13px;font-weight:650}
 .smart-results .mini-metric{padding:11px 12px;border-radius:11px;min-width:0;display:flex;flex-direction:column;justify-content:space-between}
 .smart-results .mini-metric .label{font-size:11px;line-height:1.35}
 .smart-results .mini-metric .num{font-size:18px;margin:6px 0 0}
+/* lava.top second checkout path: status, terms and contextual row actions. */
+.lava-status{border:1px solid var(--line);border-radius:14px;padding:14px;background:#fbfcfd;margin-bottom:14px}
+.lava-status h3,.lava-list h3{margin:0 0 10px;font-size:13px;font-weight:780;color:var(--ink)}
+.lava-auth-warning{display:grid;gap:5px;border:1px solid #f2c1a6;border-radius:12px;background:#fff5ed;color:#763c24;padding:12px;margin-bottom:14px;font-size:12px;line-height:1.45}
+.lava-auth-warning strong{font-size:13px}.lava-auth-warning small{opacity:.72}
+
+.lava-checks{list-style:none;margin:0;padding:0;display:grid;gap:6px;font-size:13px}
+.lava-checks li.ok{color:var(--green)}.lava-checks li.bad{color:var(--red)}
+.lava-term{display:grid;grid-template-columns:minmax(96px,auto) 1fr;gap:10px;align-items:center;margin-top:10px}
+.lava-term-toggle{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--ink)}
+.lava-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:16px}
+.lava-metric{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff}
+.lava-metric span{display:block;font-size:11px;color:var(--muted)}.lava-metric strong{display:block;margin-top:6px;font-size:20px}
+.lava-list{display:grid;gap:8px;margin-bottom:16px}
+.lava-row{display:flex;justify-content:space-between;gap:10px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:11px 12px;background:#fff}
+.lava-row strong{display:block;font-size:13px}.lava-row small{display:block;margin-top:3px;font-size:11px;color:var(--muted)}
+.lava-row-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+@media (max-width:520px){.lava-term{grid-template-columns:1fr}.lava-row{flex-direction:column;align-items:stretch}.lava-row-actions{justify-content:flex-start}}
+/* Metric states: unavailable or not applicable reads as a short muted label, never a number. */
+.stats-many .metric .metric-value.metric-state,.metric-value.metric-state{font-size:13px;font-weight:650;letter-spacing:0;line-height:1.4;color:var(--muted);white-space:normal;overflow-wrap:anywhere}
+.stat-info-row strong.state-text{color:var(--muted);font-weight:600;white-space:normal;text-align:right;overflow-wrap:anywhere}
+.analytics-omitted p{margin:0 0 8px;color:var(--muted);font-size:12px;line-height:1.6;overflow-wrap:anywhere}.analytics-omitted p:last-child{margin-bottom:0}.analytics-omitted strong{color:#355260;font-weight:650}
+.analytics-state{margin:4px 0 0;padding:14px;border:1px dashed var(--line);border-radius:12px;color:var(--muted);font-size:12px;line-height:1.5;text-align:center;overflow-wrap:anywhere}
+@media(max-width:760px){.stats-many .metric .metric-value.metric-state,.metric-value.metric-state{font-size:12px}}

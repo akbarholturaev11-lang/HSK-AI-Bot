@@ -993,7 +993,14 @@
   box-shadow: 0 20px 38px rgba(0, 0, 0, 0.3);
 }
 
+/* Admin media is square (1:1): show the whole picture, never a crop.
+   On short screens the square shrinks so the title and action still fit;
+   `contain` then keeps the full image visible. */
 .pdd-promo-visual[data-media="true"] {
+  flex: 0 1 auto;
+  height: auto;
+  max-height: 52dvh;
+  aspect-ratio: 1 / 1;
   padding: 0;
   background: #0e1116;
 }
@@ -1003,7 +1010,11 @@
   width: 100%;
   height: 100%;
   background: #0e1116;
-  object-fit: cover;
+  object-fit: contain;
+}
+
+.pdd-promo-shell:focus {
+  outline: none;
 }
 
 .pdd-laptop {

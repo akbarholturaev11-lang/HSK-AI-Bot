@@ -62,6 +62,18 @@ class SubscriptionEntryAnalyticsServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(session.added[0].telegram_id, 123)
         self.assertEqual(session.added[0].source, "menu_subscription")
 
+    async def test_record_entry_keeps_only_a_known_route_client(self):
+        # R3: routes pass their own client; anything else is stored as NULL.
+        for client, stored in (("telegram", "telegram"), ("iphone_pwa", "iphone_pwa"),
+                               ("android", "android"), (None, None), ("macos", None),
+                               ("Android", None), ("android_subscription", None)):
+            with self.subTest(client=client):
+                session = _RecordSession()
+                ok = await SubscriptionEntryAnalyticsService(session).record_entry(
+                    user=SimpleNamespace(id=7), source="android_subscription", client=client)
+                self.assertTrue(ok)
+                self.assertEqual(session.added[0].client, stored)
+
     async def test_admin_text_orders_by_week_unique_users(self):
         session = _StatsSession(
             [

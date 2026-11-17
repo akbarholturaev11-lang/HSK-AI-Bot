@@ -7,6 +7,9 @@ import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.data.api.AndroidFeatureApi
 import com.pomp.hskai.data.api.VoiceEndResponse
+import com.pomp.hskai.data.api.VoiceMessageRequest
+import com.pomp.hskai.data.api.VoiceMessageResponse
+import com.pomp.hskai.data.api.VoiceStartRequest
 import com.pomp.hskai.data.api.VoiceStartResponse
 import com.pomp.hskai.data.api.VoiceStatusResponse
 import com.pomp.hskai.data.repository.FeatureRepository
@@ -78,12 +81,15 @@ class VoiceViewModelTest {
         var starts = 0
         var ends = 0
         var startFails = false
+        var startMode = "live"
+        val startModes = mutableListOf<String?>()
+        val typed = mutableListOf<String>()
         var connect: suspend (Int) -> LiveVoiceConnection = { first }
         // Only Voice methods may be called; unrelated API methods fail loudly.
         private val api = Proxy.newProxyInstance(
             AndroidFeatureApi::class.java.classLoader,
             arrayOf(AndroidFeatureApi::class.java),
-        ) { _, method, _ ->
+        ) { _, method, args ->
             when (method.name) {
                 "voiceStatus" -> {
                     statusCalls++
@@ -91,8 +97,17 @@ class VoiceViewModelTest {
                 }
                 "voiceStart" -> {
                     starts++
+                    startModes += (args[1] as VoiceStartRequest).mode
                     check(!startFails) { "fixture unavailable" }
-                    Response.success(VoiceStartResponse(ok = true, sessionId = "owned-session", mode = "live"))
+                    Response.success(VoiceStartResponse(ok = true, sessionId = "owned-session", mode = startMode))
+                }
+                "voiceMessage" -> {
+                    val text = (args[1] as VoiceMessageRequest).text
+                    typed += text
+                    Response.success(VoiceMessageResponse(
+                        ok = true, transcription = text, chineseReply = "好的", pinyin = "hǎo de",
+                        translation = "Mayli", remainingLimit = 2, turnCount = typed.size,
+                    ))
                 }
                 "voiceEnd" -> { ends++; Response.success(VoiceEndResponse(ok = true)) }
                 else -> error("Unexpected API call: ${method.name}")
@@ -243,6 +258,50 @@ class VoiceViewModelTest {
             assertEquals(2, f.statusCalls)
             assertNull(f.vm.state.value.error)
             assertEquals(3, f.vm.state.value.remainingLimit)
+        } finally { f.dispose(); runCurrent() }
+    }
+
+    @Test fun aTypedFirstMessageStartsATurnSessionAndShowsTheTextOnce() = runTest(dispatcher) {
+        val f = Fixture()
+        f.startMode = "turn"
+        try {
+            f.vm.ensureStatusLoaded(); runCurrent()
+            f.vm.startWithText("hsk1", "uz", "  你好  "); runCurrent()
+            // Text never asks for Live, even when Live is available.
+            assertEquals(listOf<String?>(null), f.startModes)
+            assertEquals(listOf("你好"), f.typed)
+            val state = f.vm.state.value
+            assertEquals(listOf("你好"), state.lines.filter { it.speaker == VoiceSpeaker.USER }.map { it.text })
+            assertEquals("好的", state.lines.last().hanzi)
+            assertFalse(state.isSending)
+            assertEquals(1, state.turnCount)
+        } finally { f.dispose(); runCurrent() }
+    }
+
+    @Test fun theMicrophoneStartsLiveWhenItIsAllowed() = runTest(dispatcher) {
+        val f = Fixture()
+        try {
+            f.vm.ensureStatusLoaded(); runCurrent()
+            f.vm.startFromMicrophone("hsk1", "uz", liveAllowed = true); runCurrent()
+            assertEquals(listOf<String?>("live"), f.startModes)
+            assertTrue(f.vm.state.value.isLiveConnected)
+            assertEquals(1, f.audio.starts)
+        } finally { f.dispose(); runCurrent() }
+    }
+
+    @Test fun changingTheTopicQuietlyClosesTheConversationAndKeepsTheNewPartner() = runTest(dispatcher) {
+        val f = Fixture()
+        f.startMode = "turn"
+        try {
+            f.vm.ensureStatusLoaded(); runCurrent()
+            f.vm.startWithText("hsk1", "uz", "你好"); runCurrent()
+            f.vm.changeTopic("seller"); runCurrent()
+            val state = f.vm.state.value
+            assertEquals(1, f.ends)
+            assertNull(state.sessionId)
+            assertNull(state.result)
+            assertTrue(state.lines.isEmpty())
+            assertEquals("seller", state.selectedRole)
         } finally { f.dispose(); runCurrent() }
     }
 }

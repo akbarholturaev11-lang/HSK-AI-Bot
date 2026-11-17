@@ -45,10 +45,10 @@
   }
   var site = {get: read, set: function(lang) { save(lang); updateLinks(lang); }, syncLinks: updateLinks, normalize: normalize};
   window.HSKSiteLanguage = site;
-  // The root is the default Tajik entry for crawlers and first visits. Only
-  // visitors with an explicit stored preference are sent to their own home.
+  // The server renders the root in Russian, including for no-JavaScript crawlers.
+  // Respect a previously chosen language without overriding the Russian default.
   var remembered = read();
-  if (window.location.pathname === "/" && remembered && remembered !== "tg") {
+  if (window.location.pathname === "/" && remembered && remembered !== "ru") {
     var preferred = new URL(HOME[remembered], window.location.origin);
     var incoming = new URL(window.location.href);
     ["utm_source","utm_medium","utm_campaign","utm_term","utm_content","source"].forEach(function (key) {
@@ -62,5 +62,33 @@
   document.querySelectorAll("[data-site-lang]").forEach(function (link) {
     link.addEventListener("click", function () { save(link.getAttribute("data-site-lang")); });
   });
-  updateLinks(current || read() || "tg");
+  updateLinks(current || read() || "ru");
+
+  // Exclusive mobile header menus. Without this, both anchored overlays can
+  // cover each other after a quick globe/menu sequence on narrow screens.
+  var headerMenus = ".site-header details.language-switch, .site-header details.mobile-nav";
+  function compactHeader() {
+    return window.matchMedia ? window.matchMedia("(max-width: 850px)").matches : window.innerWidth <= 850;
+  }
+  document.addEventListener("toggle", function (event) {
+    var menu = event.target;
+    if (!compactHeader() || !menu.matches || !menu.matches(headerMenus) || !menu.open) return;
+    document.querySelectorAll(headerMenus).forEach(function (other) {
+      if (other !== menu) other.open = false;
+    });
+  }, true);
+  document.addEventListener("keydown", function (event) {
+    if (!compactHeader() || event.key !== "Escape") return;
+    document.querySelectorAll(headerMenus).forEach(function (menu) {
+      if (menu.open) {
+        menu.open = false;
+        var summary = menu.querySelector("summary");
+        if (summary) summary.focus();
+      }
+    });
+  });
+  document.addEventListener("click", function (event) {
+    if (!compactHeader() || (event.target.closest && event.target.closest(headerMenus))) return;
+    document.querySelectorAll(headerMenus).forEach(function (menu) { menu.open = false; });
+  });
 })();

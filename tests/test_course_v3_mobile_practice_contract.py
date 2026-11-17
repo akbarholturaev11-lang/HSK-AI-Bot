@@ -34,7 +34,10 @@ class CourseMobilePracticeContractTests(unittest.TestCase):
         # stage after the server-side access check succeeds.
         self.assertIn('el("rc-body").innerHTML=renderStudyPreparing();', SOURCE)
         self.assertIn('el("pr-stage").innerHTML=renderStudyPreparing();', SOURCE)
-        self.assertEqual(SOURCE.count('=renderStudyPreparing();'), 2)
+        # The iPhone PWA practice layer (b4768bdf) shows the same placeholder
+        # while its iframe loads; the framed practice page enforces its own gate.
+        self.assertIn('entry.className="pwa-practice-entry";entry.innerHTML=renderStudyPreparing();', SOURCE)
+        self.assertEqual(SOURCE.count('=renderStudyPreparing();'), 3)
 
     def test_unauthenticated_practice_cannot_skip_the_server_gate(self):
         # A missing/expired Telegram initData must never open a free practice.
@@ -42,8 +45,11 @@ class CourseMobilePracticeContractTests(unittest.TestCase):
         self.assertEqual(SOURCE.count('if(!INIT_DATA){showPracticeAuthRequired("rc-body");return}'), 2)
         self.assertEqual(SOURCE.count('if(!INIT_DATA){showPracticeAuthRequired("pr-stage");return}'), 2)
         self.assertNotIn('if(!INIT_DATA){start();return}', SOURCE)
-        # The panda appears only after an approved server-side gate.
-        self.assertEqual(SOURCE.count('=renderStudyPreparing();'), 2)
+        # The panda appears only after an approved server-side gate (two
+        # Telegram stages) or as the PWA iframe loading layer, whose framed
+        # practice page performs the same server gate itself.
+        self.assertEqual(SOURCE.count('=renderStudyPreparing();'), 3)
+        self.assertEqual(SOURCE.count('entry.innerHTML=renderStudyPreparing();'), 1)
 
     def test_hsk30_practice_rechecks_stale_denial(self):
         start = SOURCE.index("  show:function(s,ratingSource){")

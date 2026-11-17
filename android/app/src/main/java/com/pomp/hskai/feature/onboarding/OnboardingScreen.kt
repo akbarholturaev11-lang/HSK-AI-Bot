@@ -68,6 +68,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.progressBarRangeInfo
@@ -75,6 +76,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.pomp.hskai.R
@@ -96,6 +98,11 @@ data class OnboardingUiState(
     val selectedTrack: String = "hsk20",
     val selectedLevel: String = "beginner",
     val selectedGoal: String = "hsk_exam",
+    val liEnabled: Boolean = false,
+    val selectedGoals: List<String> = listOf("hsk_exam"),
+    val dailyMinutes: Int = 10,
+    val preferredFocus: String = "none",
+    val streakTargetDays: Int = 7,
     val hsk30Enabled: Boolean = false,
     val hsk30Allowed: Boolean = false,
     val hsk30LiveLevels: List<String> = listOf("nhsk1"),
@@ -359,12 +366,19 @@ fun OnboardingScreen(
     onBack: () -> Unit,
     onNext: () -> Unit,
     modifier: Modifier = Modifier,
+    guestEntry: Boolean = false,
 ) {
-    BackHandler(enabled = state.step > 0 && !state.submitting, onBack = onBack)
+    BackHandler(enabled = (state.step > 0 || guestEntry) && !state.submitting, onBack = onBack)
     val context = LocalContext.current
-    val copy = remember(language, context) {
+    val bundledCopy = remember(language, context) {
         OnboardingCopy.forLanguage(language).withBundledCatalog(context, language)
     }
+    val copy = if (guestEntry) bundledCopy.copy(
+        hello = stringResource(R.string.li_copy_hello),
+        boot = stringResource(R.string.li_copy_intro),
+        start = stringResource(R.string.li_copy_cont),
+        welcomeNote = "",
+    ) else bundledCopy
     val view = LocalView.current
     val configuration = LocalConfiguration.current
     val layoutSpec = remember(configuration.screenWidthDp, configuration.screenHeightDp) {
@@ -428,7 +442,7 @@ fun OnboardingScreen(
                     }
                     .windowInsetsPadding(WindowInsets.safeDrawing),
             ) {
-                if (state.step > 0) {
+                if (state.step > 0 || guestEntry) {
                     OnboardingTopBar(
                         step = state.step,
                         backLabel = copy.back,
@@ -436,6 +450,9 @@ fun OnboardingScreen(
                         disabled = state.submitting,
                         motionEnabled = motionEnabled,
                         layoutSpec = layoutSpec,
+                        totalSteps = if (state.liEnabled) 5 else 3,
+                        showStepCount = !state.liEnabled && state.step > 0,
+                        showProgress = state.step > 0,
                     )
                 }
 
@@ -525,16 +542,19 @@ fun OnboardingScreen(
 }
 
 @Composable
-private fun OnboardingTopBar(
+internal fun OnboardingTopBar(
     step: Int,
     backLabel: String,
     onBack: () -> Unit,
     disabled: Boolean,
     motionEnabled: Boolean,
     layoutSpec: OnboardingLayoutSpec,
+    totalSteps: Int = 3,
+    showStepCount: Boolean = true,
+    showProgress: Boolean = true,
 ) {
     val progress by animateFloatAsState(
-        targetValue = step / 3f,
+        targetValue = (step.toFloat() / totalSteps).coerceIn(0f, 1f),
         animationSpec = tween(
             durationMillis = if (motionEnabled) 300 else 0,
             easing = cssEase,
@@ -566,34 +586,38 @@ private fun OnboardingTopBar(
             )
         }
         Spacer(Modifier.width(layoutSpec.topGap.dp))
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .height(8.dp)
-                .clip(RoundedCornerShape(20.dp))
-                .background(PompColors.Divider)
-                .semantics {
-                    progressBarRangeInfo = androidx.compose.ui.semantics.ProgressBarRangeInfo(
-                        current = step.toFloat(),
-                        range = 0f..3f,
-                        steps = 1,
-                    )
-                },
-        ) {
+        if (showProgress) {
             Box(
                 modifier = Modifier
-                    .fillMaxWidth(progress)
+                    .weight(1f)
                     .height(8.dp)
-                    .background(PompColors.Cinnabar),
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(PompColors.Divider)
+                    .semantics {
+                        progressBarRangeInfo = androidx.compose.ui.semantics.ProgressBarRangeInfo(
+                            current = step.toFloat(),
+                            range = 0f..totalSteps.toFloat(),
+                            steps = totalSteps - 1,
+                        )
+                    },
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(progress)
+                        .height(8.dp)
+                        .background(PompColors.Cinnabar),
+                )
+            }
+        }
+        if (showStepCount) {
+            Spacer(Modifier.width(layoutSpec.topGap.dp))
+            Text(
+                "$step / $totalSteps",
+                color = PompColors.InkSecondary,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium,
             )
         }
-        Spacer(Modifier.width(layoutSpec.topGap.dp))
-        Text(
-            "$step / 3",
-            color = PompColors.InkSecondary,
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Medium,
-        )
     }
 }
 
@@ -655,7 +679,7 @@ private fun WelcomeStep(
 }
 
 @Composable
-private fun ChoiceStep(
+internal fun ChoiceStep(
     question: String,
     helper: String?,
     reactionKey: Int,
@@ -663,6 +687,7 @@ private fun ChoiceStep(
     layoutSpec: OnboardingLayoutSpec,
     fillAvailableHeight: Boolean = false,
     scrollable: Boolean = true,
+    liGuide: Boolean = false,
     choices: @Composable ColumnScope.() -> Unit,
 ) {
     Column(
@@ -702,6 +727,7 @@ private fun ChoiceStep(
                     large = true,
                     largeFontSize = layoutSpec.questionFontSize,
                     compactPadding = layoutSpec.compactWidth,
+                    liGuide = liGuide,
                 )
             }
         }
@@ -776,12 +802,13 @@ private fun CourseVersionChoiceStep(
 }
 
 @Composable
-private fun SpeechBubble(
+internal fun SpeechBubble(
     text: String,
     centeredTail: Boolean,
     large: Boolean,
     largeFontSize: Int = 21,
     compactPadding: Boolean = false,
+    liGuide: Boolean = false,
 ) {
     Box {
         Surface(
@@ -793,10 +820,14 @@ private fun SpeechBubble(
             Text(
                 text,
                 color = PompColors.Ink,
-                fontSize = if (large) largeFontSize.sp else 17.sp,
-                lineHeight = if (large) (largeFontSize * 1.35f).sp else 25.sp,
-                letterSpacing = if (large) (-0.35).sp else 0.sp,
-                fontWeight = if (large) FontWeight.SemiBold else FontWeight.Medium,
+                fontSize = if (large && !liGuide) largeFontSize.sp else 17.sp,
+                lineHeight = if (large && !liGuide) (largeFontSize * 1.35f).sp else 25.sp,
+                letterSpacing = if (large && !liGuide) (-0.35).sp else 0.sp,
+                fontWeight = when {
+                    liGuide -> FontWeight.Normal
+                    large -> FontWeight.SemiBold
+                    else -> FontWeight.Medium
+                },
                 modifier = Modifier.padding(
                     horizontal = if (large) {
                         if (compactPadding) 14.dp else 18.dp
@@ -1049,7 +1080,7 @@ private fun GoalChoices(
 }
 
 @Composable
-private fun ChoiceCard(
+internal fun ChoiceCard(
     selected: Boolean,
     enabled: Boolean,
     motionEnabled: Boolean,
@@ -1059,6 +1090,7 @@ private fun ChoiceCard(
     leading: @Composable () -> Unit,
     onClick: () -> Unit,
     badge: String? = null,
+    minHeight: Dp = 72.dp,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
@@ -1094,7 +1126,7 @@ private fun ChoiceCard(
         border = BorderStroke(1.dp, if (selected) PompColors.Cinnabar else PompColors.Divider),
         modifier = Modifier
             .fillMaxWidth()
-            .heightIn(min = 72.dp)
+            .heightIn(min = minHeight)
             .graphicsLayer {
                 scaleX = cardScale
                 scaleY = cardScale
@@ -1112,7 +1144,7 @@ private fun ChoiceCard(
             modifier = Modifier.padding(layoutSpec.cardPadding.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Box(Modifier.size(42.dp), contentAlignment = Alignment.Center) { leading() }
+            Box(Modifier.size(if (subtitle.isBlank()) 32.dp else 42.dp), contentAlignment = Alignment.Center) { leading() }
             Spacer(Modifier.width(layoutSpec.cardGap.dp))
             Column(Modifier.weight(1f)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -1129,8 +1161,10 @@ private fun ChoiceCard(
                         NewBadge(badge)
                     }
                 }
-                Spacer(Modifier.height(4.dp))
-                Text(subtitle, color = PompColors.InkSecondary, fontSize = 12.sp, lineHeight = 17.sp)
+                if (subtitle.isNotBlank()) {
+                    Spacer(Modifier.height(4.dp))
+                    Text(subtitle, color = PompColors.InkSecondary, fontSize = 12.sp, lineHeight = 17.sp)
+                }
             }
             Spacer(Modifier.width(10.dp))
             Surface(
@@ -1202,19 +1236,20 @@ private fun NewBadge(label: String) {
 }
 
 @Composable
-private fun OnboardingFooter(
+internal fun OnboardingFooter(
     copy: OnboardingCopy,
     state: OnboardingUiState,
     onNext: () -> Unit,
     motionEnabled: Boolean,
     layoutSpec: OnboardingLayoutSpec,
+    labelOverride: String? = null,
 ) {
     val label = when {
         state.submitting -> copy.saving
         state.error -> copy.retry
         state.step == 0 -> copy.start
         state.step < 3 -> copy.continueLabel
-        else -> copy.firstLesson
+        else -> labelOverride ?: copy.firstLesson
     }
     val interactionSource = remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
@@ -1242,7 +1277,7 @@ private fun OnboardingFooter(
                 ),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            if (state.step == 0) {
+            if (state.step == 0 && copy.welcomeNote.isNotBlank()) {
                 Text(
                     copy.welcomeNote,
                     color = PompColors.InkSecondary,

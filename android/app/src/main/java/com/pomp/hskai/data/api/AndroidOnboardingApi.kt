@@ -19,3 +19,9 @@ interface AndroidOnboardingApi {
         @Body body: AndroidOnboardingRequestDto,
     ): Response<AndroidOnboardingCompleteDto>
 }
+
+/** Anonymous preview exposes flag and public track metadata only. */
+interface AndroidGuestOnboardingApi {
+    @GET("api/v3/android/course/onboarding/preview")
+    suspend fun preview(): Response<AndroidOnboardingStatusDto>
+}

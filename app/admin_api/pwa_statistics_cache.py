@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 import hashlib
 import json
 import logging
+import random
 import re
 import time
 from uuid import uuid4
@@ -26,8 +27,26 @@ _RETRY_SECONDS = 30
 _REDIS_SOCKET_SECONDS = .25
 _REDIS_IO_SECONDS = .35
 _MAX_BYTES = 128 * 1024
+# Owner refreshes only: at most three attempts per R2 object, and only for a
+# transient failure class. Every attempt keeps the store's own 3 s bound, so one
+# object costs at most about 11.5 s. Browser reads keep their single attempt.
+_R2_RETRY_DELAYS = (0.5, 1.5)
+# Full-refresh group: up to three windows, i.e. three R2 reads and three writes
+# at the bound above, plus the unchanged loaders under their 5 s statements.
+_BUNDLE_SECONDS = 120
+_SOURCE_OVERVIEW = "users + payments + canonical learning events"
+_SOURCE_SCOPED = "first-party stored aggregate projections"
+_UNAVAILABLE_REASONS = frozenset((
+    "not_instrumented", "attribution_not_audited", "not_applicable", "detail_limited", "no_data",
+))
 _FIELDS = {"platform", "period", "since", "generated_at", "timezone", "platform_counts_overlap",
            "available", "metrics", "source", "scope", "reason", "metric_definitions"}
+_MANUAL_SECTIONS = frozenset(("course", "funnel", "money", "sources", "report"))
+# A scoped section refresh may target any filter whose snapshot it owns, so an
+# acceptance check never waits for a 24-hour platform snapshot (audit #44).
+_REFRESH_PLATFORMS = frozenset(("overall", "android", "telegram", "iphone_pwa"))
+_V10_STATE_SCOPES = frozenset(f"analytics_{section}_v2" for section in
+                             ("home", "overview", "platform", *_MANUAL_SECTIONS)) | {"analytics_report_v3"}
 _PUBLISH = """
 if redis.call('GET', KEYS[1]) == ARGV[1] then
     redis.call('SET', KEYS[2], ARGV[2], 'EX', ARGV[3])
@@ -76,6 +95,8 @@ class AdminPwaStatisticsReader:
             raise ValueError("Invalid internal aggregate cache scope")
         base_prefix = "hsk:admin:stats:v1:{"+(namespace or digest)+"}"
         self.prefix = base_prefix + (":"+cache_scope if cache_scope else "")
+        self._cache_scope = cache_scope
+        self._fields = _FIELDS | {"metric_states"} if cache_scope in _V10_STATE_SCOPES else _FIELDS
         # Scoped payloads stay separate while healthy workers share one refresh
         # lease/hash slot across basic stats and on-demand analytics sections.
         self._lease_key = base_prefix+":refresh"
@@ -86,13 +107,43 @@ class AdminPwaStatisticsReader:
         # Owner refresh may update R2 while another worker holds a valid local
         # analytics snapshot. Recheck approved manually refreshable sections
         # at most once per minute; do not re-run SQL on cache hits.
-        self._overview_local_revalidate = cache_scope in (
-            "analytics_overview_v1", "analytics_course_v1", "analytics_funnel_v1",
-            "analytics_money_v1", "analytics_sources_v1")
+        self._overview_local_revalidate = cache_scope in {
+            f"analytics_{section}_v{version}"
+            for section in ("overview", *_MANUAL_SECTIONS) for version in (1, 2)
+        }
         self._local_checked_at = {}
         self._mutex = refresh_mutex if refresh_mutex is not None else asyncio.Lock()
         self._redis_retry_at = 0.0
         self._load_retry_at = 0.0
+        self._r2_retry_delays = _R2_RETRY_DELAYS
+        self._last_bundle_refresh_at = {}
+
+    async def _r2_refresh_io(self, op, **kwargs):
+        """Bounded, idempotent R2 retry for owner refreshes only.
+
+        A GET is a read; a PUT rewrites the same key with the same validated
+        bytes, so repeating it after an uncertain timeout cannot corrupt data.
+        Non-transient failures (provider 4xx, bad configuration, invalid
+        payload) and unclassified fixture errors fail on the first attempt.
+        """
+        call = self._r2.get if op == "get" else self._r2.put
+        for attempt, delay in enumerate((*self._r2_retry_delays, None), start=1):
+            try:
+                return await call(**kwargs)
+            except R2Unavailable as exc:
+                exc.attempts = attempt
+                if delay is None or not getattr(exc, "transient", False):
+                    raise
+                logger.warning("Admin PWA refresh R2 %s retry: class=%s attempt=%d",
+                               op, exc.failure_class, attempt)
+                await asyncio.sleep(delay * random.uniform(0.8, 1.2))
+
+    @staticmethod
+    def _log_r2_refresh_failure(path, exc):
+        logger.warning("%s failed: R2Unavailable op=%s class=%s attempts=%s", path,
+                       getattr(exc, "op", None) or "unknown",
+                       getattr(exc, "failure_class", None) or "other",
+                       getattr(exc, "attempts", 1))
 
     async def aclose(self):
         if self._client is not None:
@@ -130,7 +181,7 @@ class AdminPwaStatisticsReader:
             if not self.clock() < expires <= self.clock()+SNAPSHOT_SECONDS:
                 return None
             data = envelope["data"]
-            if (not isinstance(data, dict) or set(data)-_FIELDS or data.get("platform") != query.platform
+            if (not isinstance(data, dict) or set(data)-self._fields or data.get("platform") != query.platform
                     or data.get("period") != query.period or type(data.get("available")) is not bool):
                 return None
             generated = datetime.fromisoformat(data["generated_at"])
@@ -293,18 +344,19 @@ class AdminPwaStatisticsReader:
         A short PostgreSQL advisory lock and the per-worker shared mutex bound
         concurrent recomputation. The scheduled GitHub mirror never calls SQL.
         """
-        allowed = frozenset(("course", "funnel", "money", "sources"))
         query = StatisticsRequest.model_validate(query.model_dump())
-        if (section not in allowed
-                or not self.prefix.endswith(":analytics_" + section + "_v1")
-                or query.platform != "overall"
+        if (section not in _MANUAL_SECTIONS
+                or (self._cache_scope not in (f"analytics_{section}_v1", f"analytics_{section}_v2")
+                    and not (section == "report" and self._cache_scope == "analytics_report_v3"))
+                or query.platform not in _REFRESH_PLATFORMS
                 or query.period not in ("weekly", "monthly", "all_time")
                 or not getattr(self.settings, "ADMIN_PWA_ENABLED", False)
                 or not self._r2.enabled):
             raise StatisticsUnavailable("Manual statistics refresh unavailable")
         try:
             async with asyncio.timeout(65), self._mutex:
-                if self.clock() - getattr(self, "_last_manual_section_refresh_at", 0) < 60:
+                recent_at = getattr(self, "_last_manual_section_refresh_at", {})
+                if self.clock() - recent_at.get(query.platform, 0) < 60:
                     raise StatisticsUnavailable("Manual refresh recently completed")
                 async with self.sessions() as db:
                     async with read_transaction(db):
@@ -322,9 +374,10 @@ class AdminPwaStatisticsReader:
                         elif dialect != "sqlite":
                             raise StatisticsUnavailable("Manual refresh requires PostgreSQL")
 
-                        previous = await self._r2.get(
-                            kind="statistics", namespace=self._r2_namespace,
-                            variant="overall_" + query.period)
+                        variant = query.platform + "_" + query.period
+                        previous = await self._r2_refresh_io(
+                            "get", kind="statistics", namespace=self._r2_namespace,
+                            variant=variant)
                         stored = self._decode(previous, query)
                         if stored is not None:
                             observed = datetime.fromisoformat(
@@ -335,7 +388,7 @@ class AdminPwaStatisticsReader:
                         data = await self.loader(db, query)
                         if (not isinstance(data, dict)
                                 or data.get("available") is not True
-                                or data.get("platform") != "overall"
+                                or data.get("platform") != query.platform
                                 or data.get("period") != query.period
                                 or data.get("source") != "first-party stored aggregate projections"
                                 or not isinstance(data.get("scope"), dict)
@@ -350,19 +403,20 @@ class AdminPwaStatisticsReader:
                         if envelope is None:
                             raise StatisticsUnavailable("Invalid scoped projection")
                         # Durable R2 first; no local success on failed storage.
-                        await self._r2.put(
-                            kind="statistics", namespace=self._r2_namespace,
-                            variant="overall_" + query.period, raw=raw)
+                        await self._r2_refresh_io(
+                            "put", kind="statistics", namespace=self._r2_namespace,
+                            variant=variant, raw=raw)
 
-                self._remember(("overall", query.period), envelope)
-                self._last_manual_section_refresh_at = self.clock()
+                self._remember((query.platform, query.period), envelope)
+                self._last_manual_section_refresh_at = {**recent_at, query.platform: self.clock()}
                 return {
-                    "section": section, "period": query.period,
+                    "section": section, "platform": query.platform, "period": query.period,
                     "generated_at": envelope["data"]["generated_at"],
                     "expires_at": datetime.fromtimestamp(
                         envelope["expires_at"], timezone.utc).isoformat(),
                 }
-        except R2Unavailable:
+        except R2Unavailable as exc:
+            self._log_r2_refresh_failure("Manual scoped refresh", exc)
             raise StatisticsUnavailable("Manual statistics R2 write unavailable") from None
         except TimeoutError:
             raise StatisticsUnavailable("Manual statistics refresh timed out") from None
@@ -416,8 +470,8 @@ class AdminPwaStatisticsReader:
                         recent = True
                         for period in periods:
                             query = StatisticsRequest(platform="overall", period=period)
-                            previous = await self._r2.get(
-                                kind="statistics", namespace=self._r2_namespace,
+                            previous = await self._r2_refresh_io(
+                                "get", kind="statistics", namespace=self._r2_namespace,
                                 variant="overall_" + period)
                             stored = self._decode(previous, query)
                             if stored is None:
@@ -454,8 +508,8 @@ class AdminPwaStatisticsReader:
                         # cannot mark this request successful. No fake numbers
                         # or old latest aliases are returned by the workflow.
                         for period in periods:
-                            await self._r2.put(
-                                kind="statistics", namespace=self._r2_namespace,
+                            await self._r2_refresh_io(
+                                "put", kind="statistics", namespace=self._r2_namespace,
                                 variant="overall_" + period, raw=prepared[period][0])
 
                 for period in periods:
@@ -468,8 +522,11 @@ class AdminPwaStatisticsReader:
                     }
                 self._last_manual_refresh_at = self.clock()
                 return results
-        except R2Unavailable:
+        except R2Unavailable as exc:
+            # Keep the established line for log searches; the second line adds
+            # the sanitized operation (get/put) and failure class.
             logger.warning("Manual overview refresh failed: R2Unavailable")
+            self._log_r2_refresh_failure("Manual overview refresh", exc)
             raise StatisticsUnavailable("Manual statistics R2 write unavailable") from None
         except TimeoutError:
             raise StatisticsUnavailable("Manual statistics refresh timed out") from None
@@ -480,6 +537,139 @@ class AdminPwaStatisticsReader:
         except Exception as exc:
             logger.warning("Manual overview refresh failed: %s", type(exc).__name__)
             raise StatisticsUnavailable("Manual statistics refresh unavailable") from None
+
+    async def refresh_section_bundle(self, *, section, platform, periods):
+        """Full refresh (behind ADMIN_PWA_FULL_REFRESH_ENABLED): one section and
+        platform, every listed window, from this reader's UNCHANGED loader.
+
+        Unlike `refresh_approved_section`, the windows share one repeatable-read
+        transaction, one advisory lock and one group cooldown, so three windows
+        never meet the legacy single-window cooldown. Returns per-window outcomes.
+        """
+        if (not isinstance(self._cache_scope, str)
+                or not self._cache_scope.startswith(f"analytics_{section}_v")
+                or platform not in _REFRESH_PLATFORMS or not periods
+                or len(set(periods)) != len(periods)
+                or any(period not in ("weekly", "monthly", "all_time") for period in periods)):
+            raise StatisticsUnavailable("Manual statistics refresh unavailable")
+        expected = (_SOURCE_OVERVIEW if section in ("home", "overview") and platform == "overall"
+                    else _SOURCE_SCOPED)
+
+        def accept(data, query):
+            if (not isinstance(data, dict) or data.get("platform") != query.platform
+                    or data.get("period") != query.period
+                    or not isinstance(data.get("scope"), dict)
+                    or data["scope"].get("section") != section):
+                raise StatisticsUnavailable("Unexpected bundle projection")
+            if data.get("available") is not True:
+                # The loader's own verdict (e.g. not_instrumented) is reported,
+                # never written to R2 and never turned into zeros.
+                reason = data.get("reason")
+                return reason if reason in _UNAVAILABLE_REASONS else "unavailable"
+            if data.get("source") != expected or not isinstance(data.get("metrics"), dict):
+                raise StatisticsUnavailable("Unexpected bundle projection")
+            return None
+
+        items = [(period, StatisticsRequest(platform=platform, period=period),
+                  platform + "_" + period, (platform, period)) for period in periods]
+        return await self._refresh_bundle(kind="statistics", group=platform, items=items, accept=accept)
+
+    async def _refresh_bundle(self, *, kind, group, items, accept):
+        if not getattr(self.settings, "ADMIN_PWA_ENABLED", False) or not self._r2.enabled:
+            raise StatisticsUnavailable("Manual statistics refresh unavailable")
+        outcomes, prepared, written = {}, [], []
+        try:
+            async with asyncio.timeout(_BUNDLE_SECONDS), self._mutex:
+                if self.clock() - self._last_bundle_refresh_at.get(group, 0) < 60:
+                    raise StatisticsUnavailable("Manual refresh recently completed")
+                async with self.sessions() as db:
+                    async with read_transaction(db):
+                        dialect = db.get_bind().dialect.name
+                        if dialect == "postgresql":
+                            # Same lock as every refresh of this exact namespace.
+                            lock_id = int.from_bytes(
+                                hashlib.blake2b(self.prefix.encode(), digest_size=8).digest(),
+                                "big", signed=True)
+                            locked = (await db.execute(
+                                text("SELECT pg_try_advisory_xact_lock(:lock_id)"),
+                                {"lock_id": lock_id})).scalar()
+                            if locked is not True:
+                                raise StatisticsUnavailable("Manual refresh already in progress")
+                        elif dialect != "sqlite":
+                            raise StatisticsUnavailable("Manual refresh requires PostgreSQL")
+
+                        # R2 timestamps are the cooldown across API workers.
+                        recent = True
+                        for _period, query, variant, _local in items:
+                            try:
+                                stored = self._decode(await self._r2_refresh_io(
+                                    "get", kind=kind, namespace=self._r2_namespace,
+                                    variant=variant), query)
+                            except R2Unavailable as exc:
+                                self._log_r2_refresh_failure("Full refresh", exc)
+                                raise StatisticsUnavailable("Manual statistics R2 read unavailable") from None
+                            if stored is None or not 0 <= self.clock() - datetime.fromisoformat(
+                                    stored["data"]["generated_at"]).timestamp() < 60:
+                                recent = False
+                        if recent:
+                            raise StatisticsUnavailable("Manual refresh recently completed")
+
+                        # Prepare and validate every window before the first write.
+                        for period, query, variant, local in items:
+                            data = await self.loader(db, query)
+                            reason = accept(data, query)
+                            if reason is not None:
+                                outcomes[period] = {"status": "unavailable", "reason": reason}
+                                continue
+                            expires = (datetime.fromisoformat(data["generated_at"]).timestamp()
+                                       + SNAPSHOT_SECONDS)
+                            raw = json.dumps({"version": 1, "expires_at": expires, "data": data},
+                                             allow_nan=False, separators=(",", ":")).encode()
+                            envelope = self._decode(raw, query)
+                            if envelope is None:
+                                raise StatisticsUnavailable("Invalid bundle projection")
+                            prepared.append((period, variant, local, raw, envelope))
+
+                        for period, variant, local, raw, envelope in prepared:
+                            try:
+                                await self._r2_refresh_io("put", kind=kind,
+                                                          namespace=self._r2_namespace,
+                                                          variant=variant, raw=raw)
+                            except R2Unavailable as exc:
+                                # Earlier windows stay written (reported), later
+                                # ones are not attempted; old snapshots remain.
+                                self._log_r2_refresh_failure("Full refresh", exc)
+                                outcomes[period] = {"status": "failed", "reason": "r2_write",
+                                                    "failure_class": exc.failure_class}
+                                for later, *_ in prepared[len(written) + 1:]:
+                                    outcomes[later] = {"status": "failed", "reason": "not_attempted"}
+                                break
+                            written.append((period, local, envelope))
+                            outcomes[period] = {
+                                "status": "refreshed",
+                                "generated_at": envelope["data"]["generated_at"],
+                                "expires_at": datetime.fromtimestamp(
+                                    envelope["expires_at"], timezone.utc).isoformat(),
+                            }
+                for _period, local, envelope in written:
+                    self._remember(local, envelope)
+                if written:
+                    self._last_bundle_refresh_at = {**self._last_bundle_refresh_at,
+                                                    group: self.clock()}
+        except TimeoutError:
+            raise StatisticsUnavailable("Manual statistics refresh timed out") from None
+        except (StatisticsUnavailable, asyncio.CancelledError):
+            raise
+        except Exception as exc:
+            logger.warning("Full refresh failed: %s", type(exc).__name__)
+            raise StatisticsUnavailable("Manual statistics refresh unavailable") from None
+        statuses = {outcome["status"] for outcome in outcomes.values()}
+        if "failed" in statuses:
+            status = "partial" if "refreshed" in statuses else "failed"
+        else:
+            status = "refreshed" if "refreshed" in statuses else "unavailable"
+        return {"status": status, "periods": {period: outcomes[period]
+                                              for period, *_ in items if period in outcomes}}
 
     async def __call__(self, query):
         query = StatisticsRequest.model_validate(query.model_dump())

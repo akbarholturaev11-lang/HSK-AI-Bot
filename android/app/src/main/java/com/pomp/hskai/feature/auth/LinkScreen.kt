@@ -3,6 +3,7 @@ package com.pomp.hskai.feature.auth
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -28,6 +29,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Language
@@ -35,6 +37,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -99,8 +102,14 @@ fun LinkScreen(
     onTelegramUrlOpened: () -> Unit = {},
     onExternalLaunchFailed: (String) -> Unit = {},
     onDismissWaiting: () -> Unit = {},
+    signup: Boolean = false,
+    onBack: (() -> Unit)? = null,
 ) {
     val context = LocalContext.current
+    val waiting = state.isRequestingCode || state.isLinked || state.busyProvider != null
+    BackHandler(enabled = onBack != null && !state.isLinked) {
+        if (waiting) onDismissWaiting() else onBack?.invoke()
+    }
     // Google and Apple use a Custom Tab. Browser return reopens the app;
     // the result comes only through the original request's proof poll.
     LaunchedEffect(state.pendingBrowserUrl) {
@@ -132,19 +141,20 @@ fun LinkScreen(
                     .padding(horizontal = 24.dp, vertical = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                BrandHeader(language = language, onLanguageSelected = onLanguageSelected)
+                BrandHeader(language = language, onLanguageSelected = onLanguageSelected,
+                    onBack = onBack?.takeUnless { waiting })
                 Spacer(Modifier.height(12.dp))
                 HeroPanda()
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    text = stringResource(R.string.auth_welcome_greeting),
+                    text = stringResource(if (signup) R.string.li_copy_signuptitle else R.string.auth_welcome_greeting),
                     style = MaterialTheme.typography.headlineLarge,
                     color = PompColors.Ink,
                     textAlign = TextAlign.Center,
                 )
                 Spacer(Modifier.height(6.dp))
                 Text(
-                    text = stringResource(R.string.auth_choose_method),
+                    text = stringResource(if (signup) R.string.li_copy_signupsub else R.string.auth_choose_method),
                     style = MaterialTheme.typography.bodyLarge,
                     color = PompColors.InkSecondary,
                     textAlign = TextAlign.Center,
@@ -245,16 +255,21 @@ private fun DrawScope.drawSquareFret(left: Float, top: Float, tile: Float, color
 private fun BrandHeader(
     language: AppLanguage,
     onLanguageSelected: (AppLanguage) -> Unit,
+    onBack: (() -> Unit)? = null,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Text(
-            text = brandWordmark(),
-            style = MaterialTheme.typography.titleLarge,
-        )
+        if (onBack == null) {
+            Text(text = brandWordmark(), style = MaterialTheme.typography.titleLarge)
+        } else {
+            IconButton(onClick = onBack) {
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.li_copy_back),
+                    tint = PompColors.InkSecondary)
+            }
+        }
         LanguageSwitch(language = language, onLanguageSelected = onLanguageSelected)
     }
 }
@@ -284,7 +299,7 @@ private fun brandWordmark(): AnnotatedString {
  * and replaced by the account's language on the first bootstrap.
  */
 @Composable
-private fun LanguageSwitch(
+internal fun LanguageSwitch(
     language: AppLanguage,
     onLanguageSelected: (AppLanguage) -> Unit,
 ) {

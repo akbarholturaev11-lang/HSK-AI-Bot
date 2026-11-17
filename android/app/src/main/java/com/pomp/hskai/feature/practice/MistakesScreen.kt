@@ -719,7 +719,7 @@ internal fun MistakesReviewRun(
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun ReviewTokenBuilder(
+internal fun ReviewTokenBuilder(
     tokens: List<String>,
     laid: List<Int>,
     enabled: Boolean,
@@ -786,7 +786,7 @@ private fun ReviewTile(text: String, enabled: Boolean, onClick: () -> Unit) {
  * its pinyin. It sits in the coach's bubble, so it has no card of its own.
  */
 @Composable
-private fun ReviewMaterial(
+internal fun ReviewMaterial(
     question: MistakeReviewQuestionDto,
     isAudioLoading: Boolean,
     audioError: ApiError?,

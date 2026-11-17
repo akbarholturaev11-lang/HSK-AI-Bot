@@ -143,8 +143,25 @@ def plan_key(*, level: str, local_day: str) -> str:
 
 class DailyPlanService:
     @staticmethod
-    def _goal_weights(goal: str) -> dict[str, float]:
-        return GOAL_WEIGHTS.get(str(goal or "").strip().lower(), GOAL_WEIGHTS[DEFAULT_GOAL])
+    def _goal_weights(goal: str, goals: tuple[str, ...] = ()) -> dict[str, float]:
+        """Deterministic mixture, preserving the old scalar result byte-for-byte.
+
+        Multiple selected purposes are planning *preferences*, never evidence
+        of study or a new content entitlement. Primary goal owns 60% and the
+        remaining 40% is divided evenly across the extra valid selections.
+        Existing frozen daily-plan task IDs are not mutated by this function.
+        """
+        primary = str(goal or "").strip().lower()
+        base = GOAL_WEIGHTS.get(primary, GOAL_WEIGHTS[DEFAULT_GOAL])
+        others = tuple(g for g in goals if g in GOAL_WEIGHTS and g != primary)
+        if not others:
+            return base
+        fraction = 0.4 / len(others)
+        return {
+            key: 0.6 * float(base.get(key, 0.0)) +
+                 fraction * sum(float(GOAL_WEIGHTS[g].get(key, 0.0)) for g in others)
+            for key in base
+        }
 
     @staticmethod
     def _tie_break(seed: str, task_type: str) -> float:
@@ -195,7 +212,7 @@ class DailyPlanService:
     ) -> list[dict]:
         """Bugungi vazifalar (faqat IDENTITY). Sof funksiya."""
         access = access or {}
-        weights = cls._goal_weights(signals.goal)
+        weights = cls._goal_weights(signals.goal, signals.goals)
         focus_boost = FOCUS_TASK_BOOST.get(signals.preferred_focus or "", {})
 
         def issuable(task_type: str) -> bool:

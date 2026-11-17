@@ -496,7 +496,8 @@ class SmartReminderPolicyContextService:
             profile_row = (await self.session.execute(select(
                 CourseMiniAppProfile.daily_goal_xp, CourseMiniAppProfile.daily_minutes,
                 CourseMiniAppProfile.timezone_offset_minutes, CourseMiniAppProfile.daily_plan_key,
-                CourseMiniAppProfile.daily_plan_json,
+                CourseMiniAppProfile.daily_plan_json, CourseMiniAppProfile.current_streak,
+                CourseMiniAppProfile.last_activity_date, CourseMiniAppProfile.streak_target_days,
             ).where(CourseMiniAppProfile.user_id == uid))).mappings().one_or_none()
             profile = SimpleNamespace(**profile_row) if profile_row else None
             epoch = await self.session.scalar(select(SmartReminderPreference.grant_epoch).where(
@@ -526,6 +527,25 @@ class SmartReminderPolicyContextService:
                 coverage = tuple(sorted(set(coverage) | {"habit_calendar_window_unknown"}))
             course_day = local_day_key(profile.timezone_offset_minutes, now=now) if profile else None
             daily_goal = CourseMiniAppProfileService.resolve_daily_goal_xp(profile) if profile else None
+            # A stored streak is a summary, not proof of learning on this local
+            # day. Keep user selection separate from actual earned days.
+            # If last activity is older than yesterday, display progress is 0
+            # rather than presenting an expired streak as still active.
+            streak_current = None
+            streak_target = None
+            if profile:
+                raw_target = getattr(profile, "streak_target_days", None)
+                if type(raw_target) is int and raw_target in (7, 14, 30, 50):
+                    streak_target = raw_target
+                last_day = getattr(profile, "last_activity_date", None)
+                today = datetime.fromisoformat(course_day).date() if course_day else None
+                previous = today - timedelta(days=1) if today else None
+                if last_day is None:
+                    streak_current = 0
+                elif today and last_day in (today, previous):
+                    streak_current = max(0, int(getattr(profile, "current_streak", 0) or 0))
+                elif today:
+                    streak_current = 0
             plan_completed = None
             if profile:
                 tasks = CourseTodayService._stored_tasks(profile, plan_key(level=level, local_day=course_day))
@@ -592,6 +612,7 @@ class SmartReminderPolicyContextService:
                 preferred_channel=pref["preferred_channel"], quiet_start=_clock(pref["quiet_start"]),
                 quiet_end=_clock(pref["quiet_end"]),
                 pause_until=datetime.fromisoformat(pref["pause_until"]) if pref["pause_until"] else None,
+                streak_current=streak_current, streak_target_days=streak_target,
             )
             if personal_time and habit_history_needs_extension(context, APPROVED_HABIT_CALIBRATION):
                 try:

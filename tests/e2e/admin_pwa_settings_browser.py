@@ -645,6 +645,35 @@ async def browser_checks(output, *, media_only=False):
                     assert cleared_promo.media_path is None and cleared_promo.media_type is None
                 assert not (Path(media_directory.name)/promo.media_path).exists()
                 await close_or_wait()
+                # Google Play destination: one field in the same editor. A foreign
+                # listing never reaches the passkey sheet; ours is stored canonically.
+                await page.locator('[data-marketing-kind="desktop_promo"]').click()
+                assert await page.locator('#promoPlayUrl').input_value()==''
+                assert await page.locator('[data-action="managementPrepare"]').is_disabled()
+                await page.locator('#promoPlayUrl').fill('https://play.google.com/store/apps/details?id=com.other.app')
+                prepares=sum(path=='/api/admin/v1/marketing/prepare' for path,_ in calls)
+                await page.locator('[data-action="managementPrepare"]').click()
+                await expect(page.locator('#promoPlayUrlValidation')).to_be_visible()
+                assert sum(path=='/api/admin/v1/marketing/prepare' for path,_ in calls)==prepares
+                assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
+                await page.screenshot(path=str(output/'desktop-promo-play-url-invalid-390.png'))
+                play_url='https://play.google.com/store/apps/details?id=com.pomp.hskai'
+                await page.locator('#promoPlayUrl').fill(play_url+'&hl=ru')
+                await begin_management()
+                await finish_step_up(page)
+                await expect(page.locator('#drawerTitle')).to_have_text(saved_title,timeout=15000)
+                async with fixture.sessions() as db:
+                    assert (await get_desktop_app_promo_settings(db)).android_play_url==play_url
+                await close_or_wait()
+                await page.locator('[data-marketing-kind="desktop_promo"]').click()
+                assert await page.locator('#promoPlayUrl').input_value()==play_url
+                await page.locator('#promoPlayUrl').fill('')
+                await begin_management()
+                await finish_step_up(page)
+                await expect(page.locator('#drawerTitle')).to_have_text(saved_title,timeout=15000)
+                async with fixture.sessions() as db:
+                    assert (await get_desktop_app_promo_settings(db)).android_play_url==''
+                await close_or_wait()
                 await page.set_viewport_size({'width':1440,'height':1000})
                 if media_only:
                     await page.locator('[data-marketing-kind="course_ad"]').click()

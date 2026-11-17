@@ -728,10 +728,28 @@ class AdminPwaReadTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
         self.assertEqual((await self.post("statistics",{})).json()["metrics"]["users_total"],3)
 
     async def test_unmeasured_platforms_are_unavailable_instead_of_fake_zero(self):
-        for platform in ("telegram","iphone_pwa"):
-            response=await self.post("statistics",{"platform":platform})
-            self.assertFalse(response.json()["available"])
-            self.assertIsNone(response.json()["metrics"])
+        response=await self.post("statistics",{"platform":"telegram"})
+        self.assertFalse(response.json()["available"])
+        self.assertIsNone(response.json()["metrics"])
+
+    async def test_iphone_pwa_reports_only_the_measured_telegram_handoff(self):
+        from app.db.models.course_miniapp_event import CourseMiniAppEvent
+        old=datetime.now(timezone.utc)-timedelta(days=40)
+        async with self.sessions() as db:
+            db.add_all([
+                CourseMiniAppEvent(telegram_id=1001,user_id=1,event_name="pwa_handoff_issued",source="miniapp_profile",dedupe_key="i1"),
+                CourseMiniAppEvent(telegram_id=1001,user_id=1,event_name="pwa_handoff_issued",source="miniapp_profile",dedupe_key="i2"),
+                CourseMiniAppEvent(telegram_id=1001,user_id=1,event_name="pwa_handoff_completed",source="pwa_handoff",dedupe_key="c1"),
+                CourseMiniAppEvent(telegram_id=1001,user_id=1,event_name="pwa_handoff_issued",source="miniapp_profile",dedupe_key="i0",created_at=old),
+                CourseMiniAppEvent(telegram_id=1001,user_id=1,event_name="desktop_promo_seen",source="home_prompt",dedupe_key="s1")])
+            await db.commit()
+        data=(await self.post("statistics",{"platform":"iphone_pwa","period":"monthly"})).json()
+        self.assertTrue(data["available"])
+        self.assertEqual(data["scope"]["install_and_activity"],"not_instrumented")
+        self.assertEqual(data["metrics"],{"telegram_handoff":{
+            "issued":{"users":1,"events":2},"completed":{"users":1,"events":1}}})
+        all_time=(await self.post("statistics",{"platform":"iphone_pwa","period":"all_time"})).json()
+        self.assertEqual(all_time["metrics"]["telegram_handoff"]["issued"],{"users":1,"events":3})
 
     async def test_flag_csrf_cookie_revocation_and_strict_bounds(self):
         paths=(("payments/list",{}),("statistics",{}),("users/search",{}),("feedback/list",{"source":"bot"}),

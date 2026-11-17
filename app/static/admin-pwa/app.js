@@ -46,6 +46,7 @@ let epoch=0, view=0, drawerId=0, confirmation=null, paymentPreview=null, reviewC
 let publicRegistration=null, installPrompt=null, returnFocus=null, revokeTarget=null, revoking=false, feedbackUserId=null, inboxNextCursor=null, inboxUpdating=false, inboxUnread=null, pushChanging=false, pushReady=null;
 let inboxAttachment=null;
 let inboxLoadingMore=false,inboxListScrollTop=0,inboxRequestNonce=0,inboxBulkReading=false;
+let inboxSource='all';
 let inboxRefreshTimer=null,inboxRefreshControl=null;
 let drawerBack=null, backSwipeInProgress=false, backSwipeStart=null, blockSwipeClickUntil=0;
 const sectionBackStack=[];
@@ -57,7 +58,7 @@ let statisticsDownload=null;
 let userFilterOpen=false;
 const USER_SEGMENTS=[['all','userFilterAll'],['active_today','userFilterActiveToday'],['paid','userFilterPaid'],['pending','userFilterPending'],['wants_pay','userFilterWantsPay'],['trial','userFilterTrial'],['free','userFilterFree'],['expired','userFilterExpired'],['blocked','userFilterBlocked'],['bot_blocked','userFilterBotBlocked'],['expiring_pro','analyticsExpiringPro']];
 let managementDraft=null,managementReview=null,managementPreparing=false,preparingEditor=null;
-let coursePolicyRevision=null,hsk30Baseline=null;
+let coursePolicyRevision=null,hsk30Baseline=null,lavaBaseline=null;
 let courseData=null,courseLimitDraft=null,courseTrialDraft=null,courseLimitPlan='FREE';
 let courseLimitTouched={FREE:false,TRIAL_ACTIVE:false};
 let courseAnalytics=null,courseAnalyticsDays=30,courseAnalyticsLoading=false,courseAnalyticsToken=0;
@@ -71,7 +72,7 @@ function clearPrivate(phase) {
   stopApprovalWatch();stopInboxRefresh();
   cancelAdvancedAnalytics();cancelStatisticsDownload();feedbackLoadId++;
   feedbackStats.data=null;feedbackStats.loading=false;feedbackStats.error=false;
-  epoch++;view++;financePortfolioRequest++;financePortfolio=null;financePortfolioLoading=false;closeDrawer();inboxUnread=null;pushReady=null;state.actor=null;state.rows=[];state.stats=null;state.approval=null;state.enrollment=false;state.enrollmentOptions=null;
+  epoch++;view++;financePortfolioRequest++;financePortfolio=null;financePortfolioLoading=false;closeDrawer();inboxUnread=null;currentInboxRows=[];activeInboxDetail=null;inboxSource='all';pushReady=null;state.actor=null;state.rows=[];state.stats=null;state.approval=null;state.enrollment=false;state.enrollmentOptions=null;
   courseData=null;courseLimitDraft=null;courseTrialDraft=null;courseLimitTouched={FREE:false,TRIAL_ACTIVE:false};courseAnalytics=null;courseAnalyticsToken++;courseAnalyticsLoading=false;courseSalesMetrics=null;courseSalesLoading=false;courseSalesError=false;courseSalesToken++;state.phase=phase;state.error=null;render();
 }
 function releaseManagementMediaPreview(){if(managementMediaPreviewUrl){URL.revokeObjectURL(managementMediaPreviewUrl);managementMediaPreviewUrl=null;}}
@@ -219,7 +220,26 @@ function filterSelect(id,label,value,options){
   return `<label class="compact-filter" for="${id}"><span>${esc(t(label))}</span><select id="${id}">${options.map(([key,text])=>`<option value="${key}" ${value===key?'selected':''}>${esc(t(text))}</option>`).join('')}</select></label>`;
 }
 function statePanel(key, hint='', retry=false) { return `<section class="state-panel"><h2>${esc(t(key))}</h2>${hint?`<p>${esc(t(hint))}</p>`:''}${retry?btn('retry','reload','primary'):''}</section>`; }
-function metric(label,value,glyph='chart') { return `<div class="metric"><div class="metric-top"><span>${esc(t(label))}</span><span class="metric-icon">${icon(glyph)}</span></div><div class="metric-value">${esc(value ?? '—')}</div></div>`; }
+function metric(label,value,glyph='chart',reason=null) { return `<div class="metric"${reason?` data-state="${esc(reason)}"`:''}><div class="metric-top"><span>${esc(t(label))}</span><span class="metric-icon">${icon(glyph)}</span></div>${reason?`<div class="metric-value metric-state">${esc(t(stateLabels[reason]))}</div>`:`<div class="metric-value">${esc(value ?? '—')}</div>`}</div>`; }
+// Server metric states: a value outside its verified scope is never a number or zero.
+const stateLabels={no_data:'analyticsStateNoData',not_instrumented:'analyticsStateNotInstrumented',attribution_not_audited:'analyticsStateNotAudited',detail_limited:'analyticsStateDetailLimited',not_applicable:'analyticsStateNotApplicable'};
+function metricReason(key){const s=key&&state.stats?.metric_states?.[key];return !s||s.state==='available'?null:stateLabels[s.reason]?s.reason:'no_data';}
+function stateBlock(key){const reason=metricReason(key)||'no_data';return `<p class="analytics-state" data-state="${esc(reason)}">${esc(t(stateLabels[reason]))}</p>`;}
+// Platform views: a metric this platform can never show is listed once under the
+// tab, not drawn as a filler card or row. Overall and «no data yet» keep their place.
+const scopedOutReasons=['not_instrumented','attribution_not_audited','not_applicable'];
+let omittedMetrics=[];
+function scopedOut(key,label){
+  const reason=metricReason(key);
+  if(state.platform==='overall'||!scopedOutReasons.includes(reason))return false;
+  if(label&&!omittedMetrics.some(row=>row[1]===label))omittedMetrics.push([reason,label]);
+  return true;
+}
+function omittedDisclosure(){
+  const groups=scopedOutReasons.map(reason=>[reason,omittedMetrics.filter(row=>row[0]===reason).map(row=>t(row[1]))]).filter(group=>group[1].length);
+  return groups.length?`<details class="stat-details analytics-omitted"><summary>${esc(t('analyticsOmittedForPlatform'))} · ${omittedMetrics.length}</summary><div>${groups.map(([reason,labels])=>`<p data-state="${esc(reason)}"><strong>${esc(t(stateLabels[reason]))}:</strong> ${esc(labels.join(', '))}</p>`).join('')}</div></details>`:'';
+}
+function sinceLine(m,key,label){const at=m.attributed_since?.[key];return at?`<p class="source-note analytics-since">${label?`${esc(t(label))} · `:''}${esc(t('analyticsAttributedSince'))}: ${esc(date(at))}</p>`:'';}
 
 const feedbackCategoryLabels={
   price:'feedbackCatPrice',limits:'feedbackCatLimits',unclear:'feedbackCatUnclear',
@@ -298,8 +318,8 @@ const number=value=>typeof value==='number'&&Number.isFinite(value)?new Intl.Num
 const percent=value=>value===null||value===undefined?'—':number(value)+'%';
 const usd=(value,precise=false)=>value===null||value===undefined?'—':new Intl.NumberFormat(locale==='tj'?'tg':locale,{maximumFractionDigits:precise?8:2}).format(value)+' USD';
 const seconds=value=>{if(value===null||value===undefined)return '—';let remaining=Math.max(0,Math.round(value)),parts=[];for(const [unit,size] of [['analyticsDays',86400],['analyticsHours',3600],['analyticsMinutes',60],['analyticsSeconds',1]]){const amount=Math.floor(remaining/size);remaining%=size;if(amount||(size===1&&!parts.length))parts.push(number(amount)+' '+t(unit));if(parts.length===2)break;}return parts.join(' ');};
-function analyticCards(fields){return `<div class="grid metrics stats-many stats-category-metrics">${fields.map(([label,value,glyph])=>metric(label,value,glyph)).join('')}</div>`;}
-function analyticRows(fields){return fields.map(([label,value])=>`<div class="stat-info-row"><span>${esc(t(label))}</span><strong>${esc(value??'—')}</strong></div>`).join('');}
+function analyticCards(fields){const cards=fields.filter(([label,,,key])=>!scopedOut(key,label));return cards.length?`<div class="grid metrics stats-many stats-category-metrics">${cards.map(([label,value,glyph,key])=>metric(label,value,glyph,metricReason(key))).join('')}</div>`:'';}
+function analyticRows(fields){return fields.filter(([label,,key])=>!scopedOut(key,label)).map(([label,value,key])=>{const reason=metricReason(key);return `<div class="stat-info-row"${reason?` data-state="${esc(reason)}"`:''}><span>${esc(t(label))}</span>${reason?`<strong class="state-text">${esc(t(stateLabels[reason]))}</strong>`:`<strong>${esc(value??'—')}</strong>`}</div>`;}).join('');}
 function analyticTable(headers,rows){return `<div class="table-wrap analytics-table-wrap"><table class="data-table stat-table"><thead><tr>${headers.map(h=>`<th scope="col">${esc(t(h))}</th>`).join('')}</tr></thead><tbody>${rows.map(cells=>`<tr>${cells.map(c=>`<td>${esc(c??'—')}</td>`).join('')}</tr>`).join('')||`<tr><td colspan="${headers.length}">${esc(t('empty'))}</td></tr>`}</tbody></table></div>`;}
 function activityChart(activity){
   const points=activity?.points||[],max=Math.max(1,...points.map(p=>p.accounts)),width=600,step=width/Math.max(points.length,1);
@@ -308,10 +328,14 @@ function activityChart(activity){
 function analyticTrack(label,value,total){const width=typeof value==='number'&&total>0?Math.min(100,100*value/total):0;return `<div class="stat-step"><div class="stat-step-label"><strong>${esc(t(label))}</strong><span>${esc(number(value))}</span></div><svg class="analytics-track" viewBox="0 0 100 2" preserveAspectRatio="none" aria-hidden="true"><rect width="100" height="2" rx="1" class="track-bg"/><rect width="${width}" height="2" rx="1" class="track-fill"/></svg></div>`;}
 function analyticsFooter(data){return `<p class="source-note analytics-age">${esc(t('updated'))}: ${esc(date(data.generated_at))} · ${esc(t('analyticsDailyCache'))}</p>`;}
 function platformAnalytics(m){
-  const cards=(m.platforms||[]).map(row=>analyticPanel(row.platform==='telegram'?'analyticsTelegram':row.platform==='android'?'analyticsAndroid':row.platform==='macos'?'analyticsMac':'analyticsWindows',
-    analyticRows([['installedDevices',number(row.devices)],['installedUsers',number(row.accounts)],
+  const names={telegram:'analyticsTelegram',android:'analyticsAndroid',macos:'analyticsMac',windows:'analyticsWindows',iphone_pwa:'analyticsIphonePwa'};
+  const active=row=>[['analyticsDau',number(row.active_dau)],['active7',number(row.active_wau)],['active30',number(row.active_mau)]];
+  // The PWA has no device inventory; its card is foreground opens only.
+  const cards=(m.platforms||[]).map(row=>analyticPanel(names[row.platform]||'analyticsUnknown',
+    analyticRows(row.platform==='iphone_pwa'?active(row):[['installedDevices',number(row.devices)],['installedUsers',number(row.accounts)],
       ...(row.platform==='telegram'?[['analyticsForeground30',number(row.foreground_accounts_30d)]]:
-        [['analyticsDau',number(row.active_dau)],['active7',number(row.active_wau)],['active30',number(row.active_mau)],['analyticsOnline30',number(row.online_devices_30d)]])]))).join('');
+        [...active(row),['analyticsOnline30',number(row.online_devices_30d)]])]))).join('');
+  if(metricReason('versions')==='not_applicable')return `<div class="grid analytics-platform-grid">${cards}</div>`;
   return `<div class="grid analytics-platform-grid">${cards}</div>`+analyticPanel('analyticsVersions',analyticTable(['platform','analyticsVersion','installedDevices','installedUsers'],(m.versions||[]).map(row=>[t('analytics'+({android:'Android',macos:'Mac',windows:'Windows'}[row.platform]||'Unknown')),row.version==='unknown'?t('analyticsUnknown'):row.version,number(row.devices),number(row.accounts)])),'analyticsPlatformNote');
 }
 let advancedAnalytics=null,advancedController=null;
@@ -337,8 +361,8 @@ async function loadAdvancedAnalytics(){
 document.addEventListener('toggle',event=>{if(event.target.matches('[data-advanced-analytics]')&&event.target.open)void loadAdvancedAnalytics();},true);
 function categorizedStatsView(){
   const data=state.stats,nav=statsCategoryNav();if(!data)return nav+statePanel('loading');
-  const footer=analyticsFooter(data);if(!data.available)return nav+statePanel('unavailable','statsPlatformChoose')+footer;
-  const m=data.metrics,tab=state.statsTab;let body='';
+  const footer=analyticsFooter(data);if(!data.available)return nav+(stateLabels[data.reason]?statePanel(stateLabels[data.reason],'analyticsStateSeeOverall'):statePanel('unavailable','statsPlatformChoose'))+footer;
+  const m=data.metrics,tab=state.statsTab;let body='';omittedMetrics=[];
   if(data.platform!=='overall'&&['home','overview','platform'].includes(tab))body=platformAnalytics(m);
   else if(tab==='overview'){
     body=analyticCards([['usersTotal',number(m.users_total),'users'],['newAccounts',number(m.new_accounts),'users'],[state.period==='all_time'?'active30':'activeAccounts',number(m.active_accounts),'chart'],['analyticsActivePro',number(m.active_pro),'spark'],['analyticsPayers',number(m.paying_accounts),'wallet'],['pending',number(m.pending_current),'clock'],['approved',number(m.payments_by_status.approved),'check'],['userFilterBotBlocked',number(m.bot_blocked),'shield']]);
@@ -346,35 +370,54 @@ function categorizedStatsView(){
     body+=`<div class="columns">${analyticPanel('courseEngagement',analyticTrack('engagedAccounts',c.engaged_accounts,c.engaged_accounts)+analyticTrack('startedAccounts',c.started_accounts,c.engaged_accounts)+analyticTrack('completedAccounts',c.completed_accounts,c.engaged_accounts),'courseMetricNote')}${analyticPanel('analyticsLearningActivity',activityChart(m.activity))}</div>`;
     body+=`<div class="double">${analyticPanel('analyticsLevels',analyticTable(['level','analyticsAccounts'],m.levels.map(r=>[(r.key==='beginner'?t('messageBeginner'):r.key==='unknown'?t('analyticsUnknown'):r.key.toUpperCase()),number(r.accounts)])))}${analyticPanel('analyticsLanguages',analyticTable(['language','analyticsAccounts'],m.languages.map(r=>[(r.key==='unknown'?t('analyticsUnknown'):r.key.toUpperCase()),number(r.accounts)])))}</div>`;
   }else if(tab==='course'){
-    const d1=m.retention.d1,d7=m.retention.d7,f=m.foundation,a=m.activation;
-    body=analyticCards([['analyticsRetentionD1',percent(d1.percent),'users'],['analyticsRetentionD7',percent(d7.percent),'users'],['analyticsActivation',percent(a?.percent),'target'],['analyticsStarter',percent(f?.completion_percent),'book'],['analyticsFirstAttempt',percent(f?.first_attempt?.percent),'check'],['analyticsSessionTime',seconds(m.session_seconds),'clock'],['analyticsLessonTime',seconds(m.lesson_seconds),'clock'],['analyticsChatAverage',number(m.chat.average),'spark'],['analyticsVoiceMinutes',number(m.voice_minutes),'clock']]);
-    body+=`<div class="double">${analyticPanel('analyticsCohorts',analyticTable(['analyticsMetric','analyticsNumerator','analyticsDenominator'],[['D1',number(d1.returned),number(d1.eligible)],['D7',number(d7.returned),number(d7.eligible)],[t('analyticsActivation'),number(a?.started),number(a?.eligible)],[t('analyticsStarter'),number(f?.completed_users),number(f?.started_users)],[t('analyticsFirstAttempt'),number(f?.first_attempt?.correct),number(f?.first_attempt?.objectives)],[t('analyticsCheckpoint'),number(f?.checkpoint?.reached),number(f?.checkpoint?.eligible)],[t('analyticsDirectStart'),number(m.direct_activation?.started),number(m.direct_activation?.eligible)]]),'analyticsRetentionNote')}${analyticPanel('analyticsFoundationParts',f?f.parts.map(p=>analyticTrack('analyticsPart'+p.part,p.completed_users,f.completed_users)).join('')+analyticRows([['completedAccounts',number(m.course_engagement.completed_accounts)],['analyticsCompletedUserLessons',number(m.completed_user_lessons)]]):statePanel('unavailable'))}</div>`;
-    body+=analyticPanel('analyticsFeatureUse',analyticTable(['analyticsFeature','analyticsPaidNow','analyticsFreeNow','analyticsPaidRate','analyticsFreeRate'],m.features.map(r=>[t('analyticsFeature'+r.key),number(r.paid),number(r.free),percent(m.feature_denominators.paid?100*r.paid/m.feature_denominators.paid:null),percent(m.feature_denominators.free?100*r.free/m.feature_denominators.free:null)])),'analyticsFeaturesNote');
+    const d1=m.retention?.d1,d7=m.retention?.d7,r1=m.return_retention?.d1,r7=m.return_retention?.d7,f=m.foundation,a=m.activation,den=m.feature_denominators;
+    body=analyticCards([['analyticsReturnD1',percent(r1?.percent),'users','return_retention'],['analyticsReturnD7',percent(r7?.percent),'users','return_retention'],['analyticsRetentionD1',percent(d1?.percent),'users','retention'],['analyticsRetentionD7',percent(d7?.percent),'users','retention'],['analyticsActivation',percent(a?.percent),'target','activation'],['analyticsStarter',percent(f?.completion_percent),'book','foundation'],['analyticsFirstAttempt',percent(f?.first_attempt?.percent),'check','foundation'],['analyticsSessionTime',seconds(m.session_seconds),'clock','session_seconds'],['analyticsLessonTime',seconds(m.lesson_seconds),'clock','lesson_seconds'],['analyticsChatAverage',number(m.chat?.average),'spark','chat'],['analyticsVoiceMinutes',number(m.voice_minutes),'clock','voice_minutes']]);
+    // Cohort rows of an unavailable metric are omitted; its card states why.
+    const cohorts=[[t('analyticsReturnD1'),r1?.returned,r1?.eligible,'return_retention'],[t('analyticsReturnD7'),r7?.returned,r7?.eligible,'return_retention'],[t('analyticsRetentionD1'),d1?.returned,d1?.eligible,'retention'],[t('analyticsRetentionD7'),d7?.returned,d7?.eligible,'retention'],[t('analyticsActivation'),a?.started,a?.eligible,'activation'],[t('analyticsStarter'),f?.completed_users,f?.started_users,'foundation'],[t('analyticsFirstAttempt'),f?.first_attempt?.correct,f?.first_attempt?.objectives,'foundation'],[t('analyticsCheckpoint'),f?.checkpoint?.reached,f?.checkpoint?.eligible,'foundation'],[t('analyticsDirectStart'),m.direct_activation?.started,m.direct_activation?.eligible,'direct_activation'],[t('analyticsHandoffActivation'),m.handoff_activation?.activated,m.handoff_activation?.eligible,'handoff_activation']].filter(row=>!metricReason(row[3])).map(([label,n,d])=>[label,number(n),number(d)]);
+    const noStarter=!f&&scopedOut('foundation');
+    const parts=f?f.parts.map(p=>analyticTrack('analyticsPart'+p.part,p.completed_users,f.completed_users)).join(''):noStarter?'':stateBlock('foundation');
+    body+=`<div class="double">${cohorts.length?analyticPanel('analyticsCohorts',analyticTable(['analyticsMetric','analyticsNumerator','analyticsDenominator'],cohorts)+sinceLine(m,'return_retention','analyticsPlatformReturnNote')+sinceLine(m,'activation','analyticsActivation')+sinceLine(m,'handoff_activation','analyticsHandoffActivation'),'analyticsRetentionNote'):''}${analyticPanel(noStarter?'courseEngagement':'analyticsFoundationParts',parts+analyticRows([['completedAccounts',number(m.course_engagement?.completed_accounts),'course_engagement'],['analyticsCompletedUserLessons',number(m.completed_user_lessons),'completed_user_lessons']])+sinceLine(m,'foundation'))}</div>`;
+    const featureRows=(m.features||[]).map(r=>[t('analyticsFeature'+r.key),number(r.paid),number(r.free),...(den?[percent(den.paid?100*r.paid/den.paid:null),percent(den.free?100*r.free/den.free:null)]:[])]);
+    body+=analyticPanel('analyticsFeatureUse',(m.features?analyticTable(['analyticsFeature','analyticsPaidNow','analyticsFreeNow',...(den?['analyticsPaidRate','analyticsFreeRate']:[])],featureRows):stateBlock('features'))+sinceLine(m,'features')+sinceLine(m,'features_lessons','analyticsFeaturelessons'),'analyticsFeaturesNote');
     body+=`<p class="source-note">${esc(t('analyticsDetailWindow'))}: ${esc(date(m.detail_since))}${m.detail_limited?' · '+esc(t('analyticsDetailLimited')):''}</p>`;
   }else if(tab==='platform')body=platformAnalytics(m);
   else if(tab==='funnel'){
-    const c=m.registration_conversion,f=m.attempt_funnel;
-    body=analyticCards([['registeredCohort',number(c.registered_accounts),'users'],['convertedAccounts',number(c.converted_accounts),'wallet'],['conversion',percent(c.percent),'target']]);
-    body+=`<div class="double">${analyticPanel('analyticsPaymentJourney',f&&!f.collecting?f.steps.map(row=>analyticTrack('analyticsStage'+row.key,row.accounts,f.steps[0]?.accounts)).join(''):statePanel('analyticsCollecting'),'analyticsAttemptNote')}${analyticPanel('analyticsLosses',f&&!f.collecting?analyticTable(['analyticsStage','analyticsLost','analyticsPercent'],f.drops.map(r=>[t('analyticsStage'+r.from)+' → '+t('analyticsStage'+r.to),number(r.lost),percent(r.percent)])):statePanel('analyticsCollecting'))}</div>`;
+    const c=m.registration_conversion,f=m.attempt_funnel,pending=f?statePanel('analyticsCollecting'):stateBlock('attempt_funnel');
+    body=analyticCards([['registeredCohort',number(c?.registered_accounts),'users','registration_conversion'],['convertedAccounts',number(c?.converted_accounts),'wallet','registration_conversion'],['conversion',percent(c?.percent),'target','registration_conversion']]);
+    body+=`<div class="double">${analyticPanel('analyticsPaymentJourney',(f&&!f.collecting?f.steps.map(row=>analyticTrack('analyticsStage'+row.key,row.accounts,f.steps[0]?.accounts)).join(''):pending)+sinceLine(m,'attempt_funnel'),'analyticsAttemptNote')}${analyticPanel('analyticsLosses',f&&!f.collecting?analyticTable(['analyticsStage','analyticsLost','analyticsPercent'],f.drops.map(r=>[t('analyticsStage'+r.from)+' → '+t('analyticsStage'+r.to),number(r.lost),percent(r.percent)])):pending)}</div>`;
+    // iPhone PWA Pro attempts: shown under Overall and iPhone PWA only.
+    const pro=m.pwa_pro_attempt_funnel;
+    if(state.stats?.metric_states?.pwa_pro_attempt_funnel&&metricReason('pwa_pro_attempt_funnel')!=='not_applicable')body+=analyticPanel('analyticsPwaPro',pro?pro.steps.map(row=>analyticTrack('analyticsPwaStage'+row.key,row.attempts,pro.steps[0]?.attempts)).join('')+analyticRows([['analyticsPwaReversed',number(pro.reversed)],['analyticsPwaUnlinked',number(pro.unlinked)]]):stateBlock('pwa_pro_attempt_funnel'),'analyticsPwaProNote');
   }else if(tab==='money'){
-    body=analyticCards([['analyticsRevenue',usd(m.revenue_usd),'wallet'],['estimatedCost',usd(m.ai_usd,true),'spark'],['analyticsManualProfit',usd(m.manual_profit_usd),'wallet'],['analyticsExpense',usd(m.expense_usd),'wallet'],['analyticsNet',usd(m.net_usd),'chart'],['analyticsArpu',usd(m.arpu_usd),'users'],['analyticsArppu',usd(m.arppu_usd),'users'],['analyticsAverageCheck',usd(m.average_payment_usd),'wallet']]);
-    body+=`<div class="double">${analyticPanel('approvedAmounts',analyticTable(['currency','amount','payments'],m.currencies.map(r=>[r.currency,number(r.amount),number(r.payments)])),'analyticsCurrencyBasis')}${analyticPanel('analyticsRenewals',analyticRows([['payments',number(m.payments)],['analyticsFirstPayments',number(m.first_payments)],['analyticsRepeatPayments',number(m.renewal_payments)],['analyticsRenewalShare',percent(m.renewal_percent)],['analyticsUnpriced',number(m.unpriced_payments)],['analyticsArpuDenominator',number(m.active_denominator)],['analyticsFirstPaymentTime',seconds(m.first_payment_seconds)],['analyticsTaggedCac',usd(m.tagged_cac_usd)]]),'analyticsRenewalNote')}</div>`;
-    body+=analyticPanel('aiSpend',m.ai_models?analyticTable(['aiModel','analyticsBillingTier','recordedRequests','tokens','estimatedCost'],m.ai_models.map(r=>[r.model==='unknown'?t('analyticsUnknown'):r.model,t('analyticsTier'+r.tier),number(r.requests),number(r.tokens),usd(r.usd,true)])):statePanel('unavailable'),'aiCostNote');
+    body=analyticCards([['analyticsRevenue',usd(m.revenue_usd),'wallet','revenue_usd'],['estimatedCost',usd(m.ai_usd,true),'spark','ai_usd'],['analyticsManualProfit',usd(m.manual_profit_usd),'wallet','manual_profit_usd'],['analyticsExpense',usd(m.expense_usd),'wallet','expense_usd'],['analyticsNet',usd(m.net_usd),'chart','net_usd'],['analyticsArpu',usd(m.arpu_usd),'users','arpu_usd'],['analyticsArppu',usd(m.arppu_usd),'users','arppu_usd'],['analyticsAverageCheck',usd(m.average_payment_usd),'wallet','average_payment_usd']]);
+    body+=`<div class="double">${analyticPanel('approvedAmounts',analyticTable(['currency','amount','payments'],m.currencies.map(r=>[r.currency,number(r.amount),number(r.payments)])),'analyticsCurrencyBasis')}${analyticPanel('analyticsRenewals',analyticRows([['payments',number(m.payments),'payments'],['analyticsFirstPayments',number(m.first_payments),'first_payments'],['analyticsRepeatPayments',number(m.renewal_payments),'renewal_payments'],['analyticsRenewalShare',percent(m.renewal_percent),'renewal_percent'],['analyticsUnpriced',number(m.unpriced_payments),'unpriced_payments'],['analyticsArpuDenominator',number(m.active_denominator),'active_denominator'],['analyticsFirstPaymentTime',seconds(m.first_payment_seconds),'first_payment_seconds'],['analyticsTaggedCac',usd(m.tagged_cac_usd),'tagged_cac_usd']]),'analyticsRenewalNote')}</div>`;
+    if(Array.isArray(m.channels)&&m.lava){
+      const lava=m.lava;
+      body+=`<div class="double">${analyticPanel('analyticsChannels',analyticTable(['analyticsChannel','payments','analyticsRepeatPayments','analyticsRevenue'],m.channels.map(r=>[t('analyticsChannel'+r.channel),number(r.payments),number(r.renewal_payments),usd(r.usd)])),'analyticsCurrencyBasis')}${analyticPanel('analyticsLava',analyticRows([['analyticsLavaActive',number(lava.active_subscriptions)],['analyticsLavaRenewals',number(lava.renewals)],['analyticsLavaCancelled',number(lava.cancelled)],['analyticsLavaRefunded',number(lava.refunded)],['analyticsLavaChargebacks',number(lava.chargebacks)]]),'analyticsLavaNote')}</div>`;
+    }
+    if(m.ai_models||!scopedOut('ai_models','aiSpend'))body+=analyticPanel('aiSpend',m.ai_models?analyticTable(['aiModel','analyticsBillingTier','recordedRequests','tokens','estimatedCost'],m.ai_models.map(r=>[r.model==='unknown'?t('analyticsUnknown'):r.model,t('analyticsTier'+r.tier),number(r.requests),number(r.tokens),usd(r.usd,true)])):stateBlock('ai_models'),'aiCostNote');
   }else if(tab==='sources'){
     const sourceName=key=>t('analyticsSource'+key)!=='—'?t('analyticsSource'+key):t('analyticsOtherSource');
-    body=`<div class="double">${analyticPanel('analyticsSubscriptionEntries',analyticTable(['source','analyticsVisits','analyticsHistories'],m.entries.map(r=>[sourceName(r.source),number(r.visits),number(r.histories)])))}${analyticPanel('analyticsPaymentSources',analyticTable(['source','payments','analyticsRevenue'],m.attribution.map(r=>[sourceName(r.source),number(r.payments),usd(r.usd)])),'analyticsAttributionNote')}</div>`;
-    body+=analyticPanel('analyticsPublicTraffic',analyticTable(['source','analyticsVisits'],m.traffic.map(r=>[r.source==='other'?t('analyticsOtherSource'):r.source,number(r.visits)])),'analyticsTrafficNote');
+    // R3: a platform view is null before its first route-set entry.
+    const entries=m.entries?analyticTable(['source','analyticsVisits','analyticsHistories'],m.entries.map(r=>[sourceName(r.source),number(r.visits),number(r.histories)])):stateBlock('entries');
+    const paid=m.attribution?analyticTable(['source','payments','analyticsRevenue'],m.attribution.map(r=>[sourceName(r.source),number(r.payments),usd(r.usd)])):stateBlock('attribution');
+    body=`<div class="double">${analyticPanel('analyticsSubscriptionEntries',entries+sinceLine(m,'entries'))}${analyticPanel('analyticsPaymentSources',paid+sinceLine(m,'attribution'),data.platform==='overall'?'analyticsAttributionNote':'analyticsPlatformAttributionNote')}</div>`;
+    // Public-site visits are company-wide, so only Overall carries them.
+    if(Array.isArray(m.traffic))body+=analyticPanel('analyticsPublicTraffic',analyticTable(['source','analyticsVisits'],m.traffic.map(r=>[r.source==='other'?t('analyticsOtherSource'):r.source,number(r.visits)])),'analyticsTrafficNote');
   }else{
-    body=`<div class="double">${analyticPanel('analyticsDataQuality',analyticTable(['source','analyticsRecords','updated'],m.quality.map(r=>[t('analyticsQuality'+r.source),number(r.records),r.latest_at?date(r.latest_at):'—'])))}${analyticPanel('analyticsDefinitions',analyticRows([['analyticsRefresh',t('analyticsDailyCache')],['analyticsFinancialGrain',t('analyticsSeparateCurrencies')],['analyticsAiBasis',t('analyticsStoredEstimate')],['analyticsPlatformTotal',t('analyticsOverlapping')],['analyticsDetailBound',number(m.detail_row_limit)]]))}</div>`;
+    body=`<div class="double">${analyticPanel('analyticsDataQuality',analyticTable(['source','analyticsRecords','updated'],m.quality.map(r=>[t('analyticsQuality'+r.source),number(r.records),r.latest_at?date(r.latest_at):'—'])),'analyticsQualityNote')}${analyticPanel('analyticsDefinitions',analyticRows([['analyticsRefresh',t('analyticsDailyCache')],['analyticsFinancialGrain',t('analyticsSeparateCurrencies')],['analyticsAiBasis',t('analyticsStoredEstimate')],['analyticsPlatformTotal',t('analyticsOverlapping')],['analyticsDetailBound',number(m.detail_row_limit)]]))}</div>`;
+    // D7: latest record and unowned rows per platform, from verified signals only.
+    const platformNames={android:'analyticsAndroid',telegram:'analyticsTelegram',iphone_pwa:'analyticsIphonePwa'};
+    if(Array.isArray(m.platform_freshness))body+=analyticPanel('analyticsFreshness',analyticTable(['platform','source','updated','analyticsUnresolvedOwners'],m.platform_freshness.map(r=>[t(platformNames[r.platform]),t('analyticsQuality'+r.source),r.latest_at?date(r.latest_at):'—',number(r.unresolved_owners)])),'analyticsFreshnessNote');
     body+=analyticPanel('analyticsBasicExport',`<div class="statistics-export">${exportMenu('statistics')}</div>`,'analyticsExportNote')+feedbackPanel();
   }
   if(data.platform==='overall'&&['course','funnel'].includes(tab))body+=advancedAnalyticsDisclosure();
-  return nav+`<div class="stats-category-content">${body}</div>`+footer;
+  return nav+`<div class="stats-category-content">${body}${omittedDisclosure()}</div>`+footer;
 }
 function statsView(){
   if(state.route==='stats')return categorizedStatsView();
   const data=state.stats;if(!data)return statePanel('loading');
-  if(!data.available)return statePanel('unavailable')+analyticsFooter(data);
+  if(!data.available)return (stateLabels[data.reason]?statePanel(stateLabels[data.reason],'analyticsStateSeeOverall'):statePanel('unavailable'))+analyticsFooter(data);
   const m=data.metrics;if(data.platform!=='overall')return platformAnalytics(m)+analyticsFooter(data);
   const task=(label,count,glyph,attributes)=>`<button class="task analytics-task" ${attributes}><span class="task-icon">${icon(glyph)}</span><span class="task-text"><strong>${esc(t(label))}</strong><small>${esc(number(count))}</small></span>${icon('chevron')}</button>`;
   const quick=(label,glyph,attributes)=>`<button class="quick-item" ${attributes}><span class="qi-icon">${icon(glyph)}</span><span>${esc(t(label))}</span></button>`;
@@ -841,7 +884,9 @@ function financeView(){
     body='<section class="finance-group"><h2>'+esc(t('paymentDetails'))+'</h2><div class="finance-card-grid">'+
       tile('paymentDetails','data-setting-kind="payment_details" data-bank="dc_city"','credit').replace('<strong>'+esc(t('paymentDetails'))+'</strong>','<strong>DC City</strong>')+
       tile('paymentDetails','data-setting-kind="payment_details" data-bank="alif"','credit').replace('<strong>'+esc(t('paymentDetails'))+'</strong>','<strong>Alif</strong>')+
-      '</div></section><section class="finance-group"><h2>'+esc(t('paymentQrTitle'))+'</h2><div class="finance-card-grid">'+qr+'</div></section>';
+      '</div></section><section class="finance-group"><h2>'+esc(t('paymentQrTitle'))+'</h2><div class="finance-card-grid">'+qr+'</div></section>'+
+      '<section class="finance-group"><h2>'+esc(t('lavaTop'))+'</h2><div class="finance-card-grid">'+
+      tile('lavaSettings','data-action="lavaSettings"','sliders')+tile('lavaPayments','data-action="lavaPayments"','wallet')+'</div></section>';
   }else{
     // No extra "Ledger" tile inside the already-selected Ledger tab.
     const entries=(financePortfolio?.items||[]).map(row=>
@@ -902,9 +947,10 @@ async function boot() {
     void restorePushAfterLogin().catch(()=>{});
     await Promise.all([load(),refreshInboxUnread()]);
     if(current===epoch&&state.actor)startInboxRefresh();
-    if(current===epoch&&state.actor&&location.pathname==='/admin/'&&location.search==='?inbox=1'){
+    const inboxLink=location.search; // Consume notification links only after a verified session.
+    if(current===epoch&&state.actor&&location.pathname==='/admin/'&&['?inbox=1','?inbox=diagnostic'].includes(inboxLink)){
       history.replaceState(null,'','/admin/');
-      await inbox(); // Only after current passkey Admin PWA login is verified.
+      await inbox(null,null,inboxLink==='?inbox=diagnostic'?'diagnostic':'all');
     }}
   catch(error) {
     if(current!==epoch)return;
@@ -1009,13 +1055,13 @@ function drawer(title,body,foot='',className='') {
   // Editors have a single top-right dismissal control; a second bottom
   // Close/Cancel button adds no action and crowds the iPhone safe area.
   const footer=$('drawerFoot');
-  if(footer.querySelector('[data-action="managementPrepare"],[data-action="coursePrepare"],[data-action="hsk30Prepare"]'))
+  if(footer.querySelector('[data-action="managementPrepare"],[data-action="coursePrepare"],[data-action="hsk30Prepare"],[data-action="lavaPrepare"]'))
     footer.querySelectorAll('[data-action="close"]').forEach(button=>button.remove());
   updateManagementAction();
   // Capture hydrated values after editors synchronously populate dependent
   // inputs (price amount, media type, notification language, help video).
   const panel=$('overlay');
-  for(const button of panel.querySelectorAll('[data-action="managementPrepare"],[data-action="coursePrepare"],[data-action="hsk30Prepare"]'))button.disabled=true;
+  for(const button of panel.querySelectorAll('[data-action="managementPrepare"],[data-action="coursePrepare"],[data-action="hsk30Prepare"],[data-action="lavaPrepare"]'))button.disabled=true;
   queueMicrotask(()=>{
     if(panel!==$('overlay'))return;
     editorBaseline={panel,value:editorValue()};
@@ -1088,7 +1134,7 @@ function editorActionOnly(){
     d.type==='user'&&d.userOperation!=='delete');
 }
 function updateEditorSaveEnabled(){
-  const b=document.querySelector('#drawerFoot [data-action="managementPrepare"],#drawerFoot [data-action="coursePrepare"],#drawerFoot [data-action="hsk30Prepare"]');
+  const b=document.querySelector('#drawerFoot [data-action="managementPrepare"],#drawerFoot [data-action="coursePrepare"],#drawerFoot [data-action="hsk30Prepare"],#drawerFoot [data-action="lavaPrepare"]');
   if(!b||!editorBaseline||editorBaseline.panel!==$('overlay'))return;
   const dirty=editorActionOnly()||editorValue()!==editorBaseline.value;
   const requiresProof=managementDraft?.type==='payout'&&$('payoutOperation')?.value==='complete'&&!managementDraft.proofLoaded;
@@ -1239,7 +1285,7 @@ function userManagementEditor(userId,operation){
 const marketingLabels={sales_experiment:'salesExperiment',desktop_promo:'desktopPromo',course_ad:'courseAds'};
 const courseAdTypeLabels={odiy:'adTypeStandard',hamkorlik:'adTypePartner',bot:'adTypeBot',dars_yakuni:'adTypeLessonEnd'};
 const salesModes={off:'salesOff',shadow:'salesShadow',ab:'salesAB',treatment:'salesTreatment'};
-const promoLabels={home_prompt:'promoHome',lesson_end_promo:'promoLesson',ad_promo:'promoAd',macos:'macOS',windows:'Windows',android:'Android',ios:'iOS'};
+const promoLabels={home_prompt:'promoHome',lesson_end_promo:'promoLesson',ad_promo:'promoAd',macos:'macOS',windows:'Windows',android:'Android',ios:'iPhone PWA'};
 function managementNamespace(type){return type==='campaign'?'campaigns':['message','message_control'].includes(type)?'messages':type==='delivery'?'payment-deliveries':type==='payout'?'partner-payouts':type==='partner'?'partners':type==='notice'?'notifications':type==='portfolio'?'portfolio':type==='channel'?'channels':type==='user'?'users':type==='price'?'subscription-prices':type==='payment_qr'?'payment-qr':type==='marketing'?'marketing':'settings';}
 function managementEndpoint(type,phase){if(type==='payout_completion')return 'partner-payouts/'+(phase==='prepare'?'prepare-completion':'complete');return type==='message_control'?'messages/'+(phase==='prepare'?'prepare-control':'control'):type==='user'?'users/'+(phase==='prepare'?'prepare-management':'manage'):managementNamespace(type)+'/'+phase;}
 function managementAction(type,operation){return type==='campaign'?'marketing.update':type==='message'?'broadcast.send':type==='message_control'?'broadcast.control':type==='delivery'?'payments.delivery_reconcile':['payout','payout_completion'].includes(type)?'partners.payout':type==='partner'?'partners.update':type==='notice'?'notifications.update':type==='portfolio'?'portfolio.add':type==='channel'?'channels.update':type==='user'?(operation==='delete'?'users.delete':'users.block'):type==='price'?'subscription.prices':type==='payment_qr'?'subscription.qr_media':type==='marketing'?'marketing.update':'settings.update';}
@@ -1487,6 +1533,7 @@ function marketingFields(value){
   if(value.kind==='desktop_promo')return profileFields([['status',yes(value.enabled)],['dailyLimit',value.daily_limit],['requireProgress',yes(value.require_learning_progress)],
     ['promoPlacements',Object.entries(value.placements||{}).filter(([,enabled])=>enabled).map(([key])=>t(promoLabels[key])).join(', ')||'—'],
     ['platform',Object.entries(value.platforms||{}).filter(([,enabled])=>enabled).map(([key])=>promoLabels[key]).join(', ')||'—'],
+    ['promoPlayUrl',value.android_play_url||t('notSet')],
     ['promoMedia',value.media_sha256?(value.media_name||t('mediaSelected')):t(value.clear_media?'notSet':value.has_media?'mediaAttached':'notSet')]]);
   if(value.deleted_id)return profileFields([['courseAdId',value.deleted_id],['status',t('deleted')]]);
   const fields=[['courseAdId',value.ad_id||value.id]];
@@ -1734,7 +1781,7 @@ async function marketingEditor(kind,before=null){
     if(kind==='sales_experiment')body=`<div class="form-field"><label for="salesMode">${esc(t('salesMode'))}</label><select id="salesMode" class="input">${Object.entries(salesModes).map(([mode,label])=>`<option value="${mode}" ${value.mode===mode?'selected':''}>${esc(t(label))}</option>`).join('')}</select></div><div class="form-field"><label for="salesPercent">${esc(t('salesPercent'))}</label><select id="salesPercent" class="input">${[0,50,90,100].map(percent=>`<option value="${percent}" ${value.treatment_percent===percent?'selected':''}>${percent}%</option>`).join('')}</select></div>`;
     else{
       const check=(key,value,label)=>`<label class="management-check"><input type="checkbox" id="promo-${key}" ${value?'checked':''}>${esc(label)}</label>`;
-      body=boolSelect('promoEnabled','status',value.enabled)+`<div class="form-field"><label for="promoLimit">${esc(t('dailyLimit'))}</label><input class="input" id="promoLimit" type="number" min="1" max="3" step="1" value="${esc(value.daily_limit)}" required></div><label class="management-check"><input id="promoProgress" type="checkbox" ${value.require_learning_progress?'checked':''}>${esc(t('requireProgress'))}</label><fieldset class="form-field"><legend>${esc(t('promoPlacements'))}</legend>${['home_prompt','lesson_end_promo','ad_promo'].map(key=>check(key,value.placements?.[key],t(promoLabels[key]))).join('')}</fieldset><fieldset class="form-field"><legend>${esc(t('platform'))}</legend>${['macos','windows','android','ios'].map(key=>check(key,value.platforms?.[key],promoLabels[key])).join('')}</fieldset><div class="form-field"><label for="promoMediaFile">${esc(t('promoMedia'))}</label><input class="input" id="promoMediaFile" type="file" accept="image/jpeg,image/png,image/webp"><p class="form-hint">${esc(t('promoMediaHint'))}</p><div id="promoMediaPreview" aria-live="polite"></div><p class="alert" id="promoMediaValidation" hidden>${esc(t('promoMediaValidation'))}</p></div>${value.has_media?`<label class="management-check"><input id="promoMediaClear" type="checkbox">${esc(t('promoMediaRemove'))}</label>`:''}`;
+      body=boolSelect('promoEnabled','status',value.enabled)+`<div class="form-field"><label for="promoLimit">${esc(t('dailyLimit'))}</label><input class="input" id="promoLimit" type="number" min="1" max="3" step="1" value="${esc(value.daily_limit)}" required></div><label class="management-check"><input id="promoProgress" type="checkbox" ${value.require_learning_progress?'checked':''}>${esc(t('requireProgress'))}</label><fieldset class="form-field"><legend>${esc(t('promoPlacements'))}</legend>${['home_prompt','lesson_end_promo','ad_promo'].map(key=>check(key,value.placements?.[key],t(promoLabels[key]))).join('')}</fieldset><fieldset class="form-field"><legend>${esc(t('platform'))}</legend>${['macos','windows','android','ios'].map(key=>check(key,value.platforms?.[key],promoLabels[key])).join('')}</fieldset><div class="form-field"><label for="promoPlayUrl">${esc(t('promoPlayUrl'))}</label><input class="input" id="promoPlayUrl" type="url" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="512" placeholder="https://play.google.com/store/apps/details?id=com.pomp.hskai" value="${esc(value.android_play_url||'')}"><p class="form-hint">${esc(t('promoPlayUrlHint'))}</p><p class="alert" id="promoPlayUrlValidation" hidden>${esc(t('promoPlayUrlInvalid'))}</p></div><div class="form-field"><label for="promoMediaFile">${esc(t('promoMedia'))}</label><input class="input" id="promoMediaFile" type="file" accept="image/jpeg,image/png,image/webp"><p class="form-hint">${esc(t('promoMediaHint'))}</p><div id="promoMediaPreview" aria-live="polite"></div><p class="alert" id="promoMediaValidation" hidden>${esc(t('promoMediaValidation'))}</p></div>${value.has_media?`<label class="management-check"><input id="promoMediaClear" type="checkbox">${esc(t('promoMediaRemove'))}</label>`:''}`;
     }
     drawer(marketingLabels[kind],`<form id="managementForm">${body}</form>`,btn('saveChanges','managementPrepare','primary'));
   }catch(error){if(current===drawerId&&at===epoch&&state.actor)drawer(marketingLabels[kind],statePanel(errorKey(error)),btn('close','close')+managementReread({type:'marketing',kind}));}
@@ -2123,6 +2170,14 @@ async function prepareManagementCommand(current,at){
       placements:Object.fromEntries(['home_prompt','lesson_end_promo','ad_promo'].map(key=>[key,$('promo-'+key).checked])),
       platforms:Object.fromEntries(['macos','windows','android','ios'].map(key=>[key,$('promo-'+key).checked]))});
     if(draft.kind==='desktop_promo'){
+      // Only the official listing of our package; the server re-validates and
+      // stores the canonical form. Empty clears it (Direct APK route).
+      const playUrl=$('promoPlayUrl').value.trim(),playValidation=$('promoPlayUrlValidation');
+      let playOk=!playUrl;
+      if(playUrl)try{const u=new URL(playUrl);playOk=u.protocol==='https:'&&u.host==='play.google.com'&&u.pathname==='/store/apps/details'&&!u.hash&&!u.username&&!u.password&&u.searchParams.getAll('id').join('|')==='com.pomp.hskai';}catch(_){playOk=false;}
+      playValidation.hidden=playOk;
+      if(!playOk)return;
+      change.android_play_url=playUrl;
       const file=draft.mediaFile,clearMedia=$('promoMediaClear')?.checked===true;
       change.clear_media=clearMedia;
       if(file){
@@ -2429,6 +2484,222 @@ async function executeHsk30Settings(){
   }finally{if(signing===control)signing=null;}
 }
 
+const LAVA_TERMS=[['1_month','lavaTerm1','MONTHLY'],['3_months','lavaTerm3','PERIOD_90_DAYS'],['6_months','lavaTerm6','PERIOD_180_DAYS'],['12_months','lavaTerm12','PERIOD_YEAR']];
+function lavaErrorKey(error){
+  const key='lavaErr_'+(error?.message||'');
+  return window.HSKAI_ADMIN_I18N?.[locale]?.[key]?key:errorKey(error);
+}
+function lavaCheckLabel(code){
+  if(String(code).startsWith('offer_')){const term=LAVA_TERMS.find(([plan])=>'offer_'+plan===code);return t('lavaCheck_offer')+(term?' · '+t(term[1]):'');}
+  const key='lavaCheck_'+code;return window.HSKAI_ADMIN_I18N?.[locale]?.[key]?t(key):code;
+}
+function lavaStatusLabel(status){const key='lavaStatus_'+status;return window.HSKAI_ADMIN_I18N?.[locale]?.[key]?t(key):status;}
+function lavaWebhookWarning(status){
+  const failed=Date.parse(status?.last_auth_failure_at||''),accepted=Date.parse(status?.last_webhook_at||'');
+  if(!Number.isFinite(failed)||(Number.isFinite(accepted)&&accepted>=failed))return '';
+  const reason=['missing_key','key_mismatch','ip_not_allowed'].includes(status?.last_auth_failure_reason)
+    ?status.last_auth_failure_reason:'unknown';
+  return '<section class="lava-auth-warning" role="alert"><strong>'+esc(t('lavaWebhookAuthProblem'))+'</strong>'
+    +'<span>'+esc(t('lavaWebhookAuth_'+reason))+'</span>'
+    +'<small>'+esc(date(status.last_auth_failure_at))+'</small></section>';
+}
+function lavaOfferOptions(catalog,plan,periodicity,currency,selected){
+  const rows=(catalog?.offers||[]).map(offer=>{
+    const price=(offer.prices||[]).find(p=>p.currency===currency&&p.periodicity===periodicity);
+    const label=(offer.offer_name||offer.offer_id.slice(0,8))+' · '+(offer.product_title||'')+(price?' — '+price.amount+' '+price.currency:'');
+    return '<option value="'+esc(offer.offer_id)+'" '+(offer.offer_id===selected?'selected':'')+'>'+esc(label)+'</option>';
+  });
+  if(selected&&!(catalog?.offers||[]).some(offer=>offer.offer_id===selected))
+    rows.unshift('<option value="'+esc(selected)+'" selected>'+esc(selected)+'</option>');
+  return '<option value="" '+(selected?'':'selected')+'>'+esc(t('lavaOfferNone'))+'</option>'+rows.join('');
+}
+async function lavaSettings(){
+  closeDrawer();const current=drawerId,at=epoch;
+  drawer('lavaSettings',statePanel('loading'));
+  try{
+    const [data,catalog]=await Promise.all([api('lava/read',{}),api('lava/catalog',{},{timeoutMs:25000}).catch(()=>null)]);
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    const lava=data.lava,config=lava.config,preflight=catalog?.preflight||null;
+    lavaBaseline=structuredClone(config);
+    const checks=(preflight?.checks||[]).map(check=>'<li class="'+(check.ok?'ok':'bad')+'">'+(check.ok?'✓ ':'✕ ')+esc(lavaCheckLabel(check.code))+'</li>').join('');
+    const status='<section class="lava-status"><h3>'+esc(t('lavaConnection'))+'</h3><ul class="lava-checks">'+(checks||'<li class="bad">✕ '+esc(t('lavaErr_lava_provider_unavailable'))+'</li>')+'</ul>'
+      +'<p class="source-note">'+esc(t('lavaLastWebhook'))+': '+esc(lava.status.last_webhook_at?date(lava.status.last_webhook_at):t('lavaNever'))+'</p></section>'
+      +lavaWebhookWarning(lava.status);
+    const option=(value,label,selected)=>'<option value="'+value+'" '+(selected?'selected':'')+'>'+esc(t(label))+'</option>';
+    const mode='<div class="form-field"><label for="lavaMode">'+esc(t('lavaMode'))+'</label><select id="lavaMode" class="input">'
+      +option('manual_only','lavaModeManual',config.checkout_mode==='manual_only')+option('both','lavaModeBoth',config.checkout_mode==='both')
+      +option('lava_only','lavaModeLava',config.checkout_mode==='lava_only')+'</select></div>';
+    const currency='<div class="form-field"><label for="lavaCurrency">'+esc(t('lavaCurrency'))+'</label><select id="lavaCurrency" class="input">'
+      +['USD','RUB'].map(code=>'<option value="'+code+'" '+(config.currency===code?'selected':'')+'>'+code+'</option>').join('')+'</select></div>';
+    const terms=LAVA_TERMS.map(([plan,label,periodicity])=>{
+      const term=config.plans?.[plan]||{enabled:false,offer_id:''};
+      const offer=preflight
+        ?'<select class="input" id="lavaOffer_'+plan+'" aria-label="'+esc(t('lavaOffer'))+'">'+lavaOfferOptions(preflight,plan,periodicity,config.currency,term.offer_id||'')+'</select>'
+        :'<input class="input" id="lavaOffer_'+plan+'" maxlength="36" autocomplete="off" spellcheck="false" aria-label="'+esc(t('lavaOffer'))+'" value="'+esc(term.offer_id||'')+'">';
+      return '<div class="lava-term"><label class="lava-term-toggle"><input type="checkbox" id="lavaOn_'+plan+'" '+(term.enabled?'checked':'')+'> '+esc(t(label))+'</label>'+offer+'</div>';
+    }).join('');
+    const promos=config.promo_codes||{};
+    const promoInput=(id,value)=>'<input class="input" id="'+id+'" maxlength="36" autocomplete="off" spellcheck="false" autocapitalize="characters" placeholder="'+esc(t('lavaPromoCode'))+'" value="'+esc(value||'')+'">';
+    const adminPromos=Object.entries(promos).filter(([key])=>key.startsWith('admin_campaign:'));
+    const adminRows=[0,1,2].map(index=>{
+      const [key,code]=adminPromos[index]||['',''];
+      return '<div class="lava-term"><input class="input" id="lavaPromoPct_'+index+'" type="number" min="1" max="90" step="1" inputmode="numeric" placeholder="'+esc(t('lavaPromoPercent'))+'" value="'+esc(key?key.split(':')[1]:'')+'">'+promoInput('lavaPromoAdmin_'+index,code)+'</div>';
+    }).join('');
+    const promo='<fieldset class="form-field"><legend>'+esc(t('lavaPromo'))+'</legend><p class="source-note">'+esc(t('lavaPromoHint'))+'</p>'
+      +'<div class="lava-term"><span class="lava-term-toggle">'+esc(t('lavaPromoReferral'))+'</span>'+promoInput('lavaPromoReferral',promos['referral:20'])+'</div>'
+      +'<div class="lava-term"><span class="lava-term-toggle">'+esc(t('lavaPromoFeedback'))+'</span>'+promoInput('lavaPromoFeedback',promos['feedback_price_offer:20'])+'</div>'
+      +'<div class="lava-term"><span class="lava-term-toggle">PWA Exit Offer · 20%</span>'+promoInput('lavaPromoExit',promos['exit_offer:20'])+'</div>'
+      +'<p class="source-note">'+esc(t('lavaPromoAdmin'))+'</p>'+adminRows+'</fieldset>';
+    const body=status+mode+currency+'<fieldset class="form-field"><legend>'+esc(t('lavaTerms'))+'</legend>'+terms+'</fieldset>'+promo;
+    drawer('lavaSettings',body,btn('saveChanges','lavaPrepare','primary'));
+  }catch(error){
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    drawer('lavaSettings',statePanel(lavaErrorKey(error)),btn('close','close')+btn('retry','lavaSettings','primary'));
+  }
+}
+async function prepareLavaSettingsCommand(){
+  if(!state.actor||signing)return;
+  const plans={};
+  for(const [plan] of LAVA_TERMS)plans[plan]={enabled:$('lavaOn_'+plan)?.checked===true,offer_id:String($('lavaOffer_'+plan)?.value||'').trim().toLowerCase()};
+  const promo_codes={};
+  const code=id=>String($(id)?.value||'').trim();
+  if(code('lavaPromoReferral'))promo_codes['referral:20']=code('lavaPromoReferral');
+  if(code('lavaPromoFeedback'))promo_codes['feedback_price_offer:20']=code('lavaPromoFeedback');
+  if(code('lavaPromoExit'))promo_codes['exit_offer:20']=code('lavaPromoExit');
+  for(const index of [0,1,2]){
+    const pct=Number($('lavaPromoPct_'+index)?.value),value=code('lavaPromoAdmin_'+index);
+    if(value&&Number.isInteger(pct)&&pct>=1&&pct<=90)promo_codes['admin_campaign:'+pct]=value;
+  }
+  const request={checkout_mode:$('lavaMode')?.value,currency:$('lavaCurrency')?.value,plans,promo_codes};
+  const current=drawerId,at=epoch;
+  try{
+    const response=await api('lava/prepare',request,{timeoutMs:25000});
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    confirmation=Object.freeze(structuredClone(response.operation));
+    if(confirmation.action!=='lava.settings'||confirmation.target!=='global')throw Error('invalid_lava');
+    if(JSON.stringify(response.current)!==JSON.stringify(lavaBaseline))throw new ApiError('confirmation_changed',409);
+    await executeLavaCommand('lava/save','lavaSettings',()=>showSavedAndDismiss('lavaSaved'));
+  }catch(error){
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    confirmation=null;
+    drawer('lavaSettings',statePanel(lavaErrorKey(error)),btn('close','close')+btn('retry','lavaSettings','primary'));
+  }
+}
+async function executeLavaCommand(endpoint,retryAction,onDone){
+  if(!String(confirmation?.action||'').startsWith('lava.')||!supportsPasskey()||signing)return;
+  const operation=structuredClone(confirmation),current=drawerId,at=epoch,control=new AbortController();
+  signing=control;let submitted=false;
+  $('drawerFoot')?.querySelectorAll('button').forEach(b=>b.disabled=true);
+  try{
+    const options=await api('auth/step-up/options',operation);
+    if(current!==drawerId||at!==epoch)return;
+    const credential=await navigator.credentials.get({publicKey:publicKey(options.publicKey),signal:control.signal});
+    if(current!==drawerId||at!==epoch)return;
+    await api('auth/step-up/verify',{step_up_id:options.step_up_id,credential:serialize(credential)});
+    if(current!==drawerId||at!==epoch)return;
+    submitted=true;
+    const result=await api(endpoint,{...operation.payload,step_up_id:options.step_up_id},{timeoutMs:30000});
+    if(current!==drawerId||at!==epoch)return;
+    confirmation=null;
+    await onDone(result);
+  }catch(error){
+    if(current!==drawerId||at!==epoch)return;
+    confirmation=null;
+    if(!submitted&&['NotAllowedError','AbortError'].includes(error.name)){showNotice('passkeyCancelled');return;}
+    const rejected=[400,403,404,409].includes(error.status);
+    drawer(retryAction,statePanel(submitted&&!rejected?'uncertain':lavaErrorKey(error)),
+      btn('close','close')+btn('retry',retryAction,'primary'));
+  }finally{if(signing===control)signing=null;}
+}
+function lavaInvoiceRow(row,actions){
+  const who=row.user_id?'#'+row.user_id:(row.email||'—');
+  const money=row.amount?row.amount+' '+row.currency:row.currency;
+  const plan=LAVA_TERMS.find(([plan])=>plan===row.plan_type);
+  const reasonKey='lavaReviewReason_'+row.review_reason;
+  const reason=row.review_reason?(window.HSKAI_ADMIN_I18N?.[locale]?.[reasonKey]?t(reasonKey):t('lavaTechnicalReview')):'';
+  return '<article class="lava-row"><div><strong>'+esc(lavaStatusLabel(row.status))+' · '+esc(money)+'</strong>'
+    +'<small>'+esc(who)+(plan?' · '+esc(t(plan[1])):'')+' · '+esc(date(row.paid_at||row.created_at))+'</small>'
+    +(reason?'<small>'+esc(reason)+'</small>':'')+'</div>'
+    +(actions?'<div class="lava-row-actions">'+actions+'</div>':'')+'</article>';
+}
+function lavaRowButton(label,kind,row,extra=''){
+  return '<button type="button" class="btn" data-lava-act="'+kind+'" data-lava-invoice="'+row.id+'" '+(row.user_id?'data-lava-user="'+row.user_id+'"':'')+' '+extra+'>'+esc(t(label))+'</button>';
+}
+async function lavaPayments(){
+  closeDrawer();const current=drawerId,at=epoch;
+  drawer('lavaPayments',statePanel('loading'));
+  try{
+    const data=await api('lava/read',{});
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    const lava=data.lava,c=lava.counts;
+    const metric=(label,value)=>'<div class="lava-metric"><span>'+esc(t(label))+'</span><strong>'+esc(String(value??0))+'</strong></div>';
+    const metrics='<div class="lava-metrics">'+metric('lavaActiveSubs',c.active_subscriptions)+metric('lavaPaid30',c.paid_30d)+metric('lavaAwaitingCount',c.awaiting_payment)+metric('lavaUnsuccessfulCount',c.unsuccessful_payments)+metric('lavaQueued',c.queued_events)+metric('lavaReviewEvents',c.review_events)+'</div>';
+    const attention=(lava.attention||[]).map(row=>{
+      let actions='';
+      if(row.status==='unmatched')actions=lavaRowButton('lavaLink','link',row);
+      else if(row.status==='chargeback_open')actions=lavaRowButton('lavaChargebackWon','chargeback',row,'data-lava-outcome="won"')+lavaRowButton('lavaChargebackLost','chargeback',row,'data-lava-outcome="lost"');
+      else actions=lavaRowButton('lavaRecheck','recheck',row);
+      return lavaInvoiceRow(row,actions);
+    }).join('');
+    const recent=(lava.recent||[]).map(row=>lavaInvoiceRow(row,
+      row.status==='paid'&&row.kind!=='renewal'&&row.user_id&&(!row.subscription_status||row.subscription_status==='active')
+        ?lavaRowButton('lavaCancelRenewal','cancel',row):'')).join('');
+    const awaiting=(lava.awaiting||[]).map(row=>lavaInvoiceRow(row,'')).join('');
+    const unsuccessful=(lava.unsuccessful||[]).map(row=>lavaInvoiceRow(row,'')).join('');
+    const group=(heading,hint,rows)=>rows?'<section class="lava-list"><h3>'+esc(t(heading))+'</h3>'
+      +'<p class="source-note">'+esc(t(hint))+'</p>'+rows+'</section>':'';
+    const body=metrics+lavaWebhookWarning(lava.status)
+      +(attention?'<section class="lava-list"><h3>'+esc(t('lavaAttention'))+'</h3>'+attention+'</section>':'')
+      +group('lavaAwaiting','lavaAwaitingHint',awaiting)
+      +group('lavaUnsuccessful','lavaUnsuccessfulHint',unsuccessful)
+      +'<section class="lava-list"><h3>'+esc(t('lavaRecent'))+'</h3>'+(recent||statePanel('empty'))+'</section>';
+    drawer('lavaPayments',body,btn('close','close'));
+  }catch(error){
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    drawer('lavaPayments',statePanel(lavaErrorKey(error)),btn('close','close')+btn('retry','lavaPayments','primary'));
+  }
+}
+let lavaLinkInvoice=null;
+async function lavaRowAction(kind,invoiceId,userId,outcome){
+  if(!['recheck','link','cancel','chargeback'].includes(kind))return;
+  if(kind==='link'){
+    closeDrawer();lavaLinkInvoice=invoiceId;
+    const plans=LAVA_TERMS.map(([plan,label])=>'<option value="'+plan+'">'+esc(t(label))+'</option>').join('');
+    drawer('lavaLink','<div class="form-field"><label for="lavaLinkUser">'+esc(t('lavaUserId'))+'</label><input class="input" id="lavaLinkUser" type="number" min="1" step="1" inputmode="numeric" required></div>'
+      +'<div class="form-field"><label for="lavaLinkPlan">'+esc(t('lavaTerms'))+'</label><select class="input" id="lavaLinkPlan">'+plans+'</select></div>',
+      btn('lavaLink','lavaLinkPrepare','primary'));
+    return;
+  }
+  const payload={kind};
+  if(kind==='cancel')payload.user_id=userId;else payload.invoice_id=invoiceId;
+  if(kind==='chargeback')payload.outcome=outcome;
+  await singleEditorAction(()=>runLavaAction(payload));
+}
+async function prepareLavaLink(){
+  const user=Number($('lavaLinkUser')?.value);
+  if(!$('lavaLinkUser')?.reportValidity()||!Number.isInteger(user)||user<1||!lavaLinkInvoice)return;
+  await runLavaAction({kind:'link',invoice_id:lavaLinkInvoice,user_id:user,plan_type:$('lavaLinkPlan')?.value});
+}
+async function runLavaAction(payload){
+  if(!state.actor||signing)return;
+  const current=drawerId,at=epoch;
+  try{
+    const prepared=await api('lava/prepare-action',payload);
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    confirmation=Object.freeze(structuredClone(prepared.operation));
+    if(confirmation.action!=='lava.'+payload.kind)throw Error('invalid_lava');
+    await executeLavaCommand('lava/action','lavaPayments',async result=>{
+      const uncertain=['retry','failed','cancel_uncertain','needs_review'].includes(result.outcome);
+      await lavaPayments();
+      showNotice(uncertain?'lavaUncertain':'lavaDone');
+    });
+  }catch(error){
+    if(current!==drawerId||at!==epoch||!state.actor)return;
+    confirmation=null;
+    drawer('lavaPayments',statePanel(lavaErrorKey(error)),btn('close','close')+btn('retry','lavaPayments','primary'));
+  }
+}
+
 function summary(operation) {
   const p=operation.payload,s=p.expected;
   const fields=[['payment','#'+p.payment_id],['account',s.user_id],['plan',t(s.plan_type)],['amount',s.amount+' '+s.currency],['method',s.payment_method],['source',s.source],['submitted',date(s.submitted_at)]];
@@ -2569,7 +2840,18 @@ function inboxTechnicalSummary(row){
     ?technicalDescriptions[row.technical_code]:'inboxTechUnknown';
   return t(key);
 }
+const diagnosticPlatforms={android:'analyticsAndroid',telegram:'analyticsTelegram',iphone_pwa:'analyticsIphonePwa',server:'diagBackend'};
+function diagnosticTitle(row){
+  const key=String(row.explanation_key||'');
+  return t(/^diagFailure[A-Za-z0-9]+$/.test(key)?key:'diagFailureUnknown');
+}
+function diagnosticFeature(row){return t('diagFeature_'+row.feature_code);}
+function diagnosticReopened(row){
+  return row.reopened_at&&row.triage_status!=='resolved'
+    ?[t('diagReopened'),date(row.reopened_at),row.reopened_version].filter(Boolean).join(' · '):'';
+}
 function inboxKind(row){
+  if(row.source==='diagnostic')return diagnosticTitle(row);
   if(row.source==='technical'&&Object.prototype.hasOwnProperty.call(technicalDescriptions,row.technical_code))
     return t('inboxTechOnboardingTitle');
   const label=row.source==='payment'?'inboxPaymentReceipt':row.source==='android'?'inboxAndroid':row.source==='technical'?'inboxTechnical':row.source==='release'?'releaseFeedback':'botFeedback';
@@ -2579,6 +2861,7 @@ function inboxPlatform(row){
   // Never attribute an unmarked payment to Android, Telegram or Desktop.
   if(row.source==='android')return 'Android';
   if(row.source==='technical')return 'Telegram Mini App';
+  if(row.source==='diagnostic')return t(diagnosticPlatforms[row.platform]);
   if(row.source==='bot'||row.source==='release')return 'Telegram Bot';
   return null;
 }
@@ -2592,22 +2875,84 @@ function inboxPreview(row){
     (row.rating?row.rating+'/5':row.has_attachment?t('viewAttachment'):row.source==='payment'?t('inboxPaymentReceipt'):t('empty'));
 }
 function inboxEntry(row){
-  const unread=row.triage_status==='new',important=autoImportantSources.has(row.source);
-  if(!['bot','release','android','payment','technical'].includes(row.source)||
+  const diagnostic=row.source==='diagnostic';
+  const unread=row.triage_status==='new',important=diagnostic?row.triage_priority==='important':autoImportantSources.has(row.source);
+  if(!['bot','release','android','payment','technical','diagnostic'].includes(row.source)||
      !Number.isSafeInteger(row.source_id)||row.source_id<1)return '';
   const platform=inboxPlatform(row);
-  const kindIcon=icon(row.source==='android'?'device':row.source==='payment'?'credit':row.source==='technical'?'settings':'send');
+  const kindIcon=icon(row.source==='android'?'device':row.source==='payment'?'credit':diagnostic||row.source==='technical'?'settings':'send');
+  const reopened=diagnostic?diagnosticReopened(row):'';
+  const summary=diagnostic?'<span class="inbox-row-meta"><span>'+esc(platform)+'</span><span>'+esc(diagnosticFeature(row))+
+    '</span><span>×'+esc(number(row.occurrences))+'</span></span>'+
+    (reopened?'<span class="inbox-row-preview">'+esc(reopened)+'</span>':''):
+    '<span class="inbox-row-preview">'+esc(inboxPreview(row))+'</span>'+
+    '<span class="inbox-row-meta"><span>'+esc(platform||t('unavailable'))+'</span>'+
+    '<span>#'+esc(row.source_id)+'</span>'+(row.user_id?'<span>'+esc(t('account'))+' '+esc(row.user_id)+'</span>':'')+'</span>';
   return '<button type="button" class="inbox-minimal-row '+(unread?'is-unread':'is-read')+' '+(important?'is-important':'')+'"'+
     ' data-inbox-open="'+row.source+':'+row.source_id+'" aria-label="'+esc(inboxTitle(row))+'">'+
     '<span class="inbox-platform-icon" aria-hidden="true">'+kindIcon+'</span>'+
     '<span class="inbox-row-main"><span class="inbox-row-heading"><strong class="inbox-row-title">'+esc(inboxKind(row))+'</strong>'+
     '<time class="inbox-row-date">'+esc(date(row.created_at))+'</time></span>'+
-    '<span class="inbox-row-preview">'+esc(inboxPreview(row))+'</span>'+
-    '<span class="inbox-row-meta"><span>'+esc(platform||t('unavailable'))+'</span>'+
-    '<span>#'+esc(row.source_id)+'</span>'+(row.user_id?'<span>'+esc(t('account'))+' '+esc(row.user_id)+'</span>':'')+
-    '</span></span><span class="inbox-row-dot" aria-hidden="true"></span></button>';
+    summary+'</span><span class="inbox-row-dot" aria-hidden="true"></span></button>';
+}
+// The last reported sample: allowlisted codes and first-party source
+// coordinates of one receipt. A link is rendered only for the exact GitHub
+// blob URL the server builds after verifying the asset against a commit.
+const diagnosticSourceLink=/^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+\/blob\/[0-9a-f]{40}\/app\/static\/[A-Za-z0-9_.\/-]+\.js#L[1-9][0-9]{0,6}$/;
+function diagnosticPlace(place){
+  if(!place||typeof place.path!=='string'||!/^app\/static\/[A-Za-z0-9_.\/-]+\.js$/.test(place.path)||
+     !Number.isSafeInteger(place.line)||place.line<1)return '';
+  const text=esc(place.path+':'+place.line+(Number.isSafeInteger(place.column)&&place.column>0?':'+place.column:''));
+  return typeof place.source_url==='string'&&diagnosticSourceLink.test(place.source_url)
+    ?'<a href="'+esc(place.source_url)+'" target="_blank" rel="noopener noreferrer">'+text+'</a>':text;
+}
+function diagnosticSample(row){
+  const sample=row.sample&&typeof row.sample==='object'?row.sample:null;
+  const script=['js_uncaught','js_rejection'].includes(row.failure_code);
+  const code=(prefix,value)=>{
+    const text=typeof value==='string'&&/^[a-z_]{1,32}$/.test(value)?t(prefix+value):'';
+    return text==='—'?'':text;
+  };
+  const category=code('diagCategory_',sample&&sample.category)||t('diagUnknown');
+  const places=(sample&&Array.isArray(sample.locations)?sample.locations:[]).slice(0,6).map(diagnosticPlace).filter(Boolean);
+  const name=sample&&typeof sample.error_name==='string'&&/^[A-Za-z]{1,32}$/.test(sample.error_name)?sample.error_name:'';
+  if(!script&&!name&&!places.length)return '<dl class="review-summary"><dt>'+esc(t('diagCategory'))+'</dt><dd>'+esc(category)+'</dd></dl>';
+  const missing=esc(t('diagNotCaptured'));
+  const rows=[
+    ['diagErrorName',name?esc(name):missing],['diagCategory',esc(category)],
+    ['diagReason',esc(code('diagReason_',sample&&sample.reason_code))||missing],
+    ['diagLocation',places[0]||missing]
+  ];
+  if(places.length>1)rows.push(['diagFrames',places.slice(1).join('<br>')]);
+  const heading=[t('diagSample'),sample?date(sample.received_at):'',sample&&sample.app_version].filter(Boolean).join(' · ');
+  return '<p class="inbox-details-text">'+esc(heading)+'</p><dl class="review-summary">'+
+    rows.map(([label,value])=>'<dt>'+esc(t(label))+'</dt><dd>'+value+'</dd>').join('')+'</dl>';
+}
+function diagnosticDetails(row){
+  const channels=(row.channels||[]).map(channel=>channel==='play'?'Google Play':channel==='direct'?'Direct':'').filter(Boolean);
+  const count=number(row.affected_accounts);
+  const affected=row.affected_state==='unknown'?t('diagUnknown'):
+    row.affected_state==='partial'?t('diagAtLeast').replace('{count}',count):count;
+  const status=row.triage_status==='resolved'?fixText('fixed'):t(row.triage_status==='new'?'inboxStatusNew':'diagInvestigating');
+  const facts=[
+    ['platform',[inboxPlatform(row),...channels].join(' · ')],['diagFeature',diagnosticFeature(row)],
+    ['diagVersions',[row.first_version,row.last_version].filter((v,i,a)=>v&&a.indexOf(v)===i).join(' → ')||'—'],
+    ['diagFirstSeen',date(row.first_seen_at)],['diagLastSeen',date(row.last_seen_at)],
+    ['diagOccurrences',number(row.occurrences)],['diagAffected',affected],
+    ['diagPriority',t(row.triage_priority==='important'?'inboxImportant':'diagNormal')],['status',status]
+  ];
+  const reopened=diagnosticReopened(row);
+  return '<div class="inbox-details"><div class="inbox-detail-heading"><span class="inbox-platform-icon">'+icon('settings')+
+    '</span><div><h2>'+esc(diagnosticTitle(row))+'</h2></div></div>'+
+    (reopened?'<p class="inbox-details-text">'+esc(reopened)+'</p>':'')+
+    '<dl class="review-summary">'+facts.map(([label,value])=>'<dt>'+esc(t(label))+'</dt><dd>'+esc(value)+'</dd>').join('')+'</dl>'+
+    diagnosticSample(row)+
+    (row.triage_status==='resolved'?'':'<div class="inbox-detail-toolbar inbox-fix-toolbar">'+
+      '<button type="button" class="btn primary" data-inbox-fixed="server" data-fix-source="diagnostic" data-fix-id="'+row.source_id+'">'+
+      icon('check')+esc(fixText('fixed'))+'</button></div>')+'</div>';
 }
 function inboxDetails(row) {
+  if(row.source==='diagnostic')return diagnosticDetails(row);
   const source=row.source,id=row.source_id,platform=inboxPlatform(row);
   const canView=(source==='android'?row.has_attachment:['bot','release'].includes(source)&&row.image_preview_available===true)
     &&Number.isSafeInteger(id)&&id>0&&id<=2147483647;
@@ -2674,7 +3019,7 @@ const fixLabels={
 };
 const fixText=key=>(fixLabels[locale]||fixLabels.uz)[key];
 function inboxRequest(before=null,userId=feedbackUserId,requestSignal=null) {
-  return api('inbox/list',{source:'all',priority:'all',status:'all',period:'all_time',
+  return api('inbox/list',{source:inboxSource,priority:'all',status:'all',period:'all_time',
     search:null,user_id:userId,before,limit:30},{requestSignal});
 }
 function stopInboxRefresh(){
@@ -2734,7 +3079,7 @@ function renderInboxList(scrollTop=0){
       icon('check')+esc(t('inboxMarkAllRead'))+'</button></div>':'')+
     '<div class="inbox-minimal-list">'+(currentInboxRows.map(inboxEntry).join('')||statePanel('empty'))+'</div>'+
     '<p class="inbox-scroll-status" aria-live="polite" role="status"></p></div>';
-  drawer('feedback',body,null,'inbox-drawer');
+  drawer(inboxSource==='diagnostic'?'inboxDiagnostic':'feedback',body,null,'inbox-drawer');
   const scroller=$('drawerContent');
   scroller.scrollTop=scrollTop;
   scroller.addEventListener('scroll',maybeLoadInbox,{passive:true});
@@ -2793,27 +3138,34 @@ async function markAllInboxRead(){
     inboxBulkReading=false;
     if(at===epoch&&nonce===inboxRequestNonce&&state.actor){
       await refreshInboxUnread();
-      if(document.querySelector('.inbox-minimal-list'))await inbox(null,feedbackUserId);
+      if(document.querySelector('.inbox-minimal-list'))await inbox(null,feedbackUserId,inboxSource);
       showNotice(problem?'inboxActionError':'inboxSaved');
     }
   }
 }
 async function resolveInboxFix(source,id,mode){
-  if(inboxFixing||!state.actor||source!=='android'||!['server','app_update'].includes(mode))return;
+  const diagnostic=source==='diagnostic';
+  if(inboxFixing||!state.actor||!['android','diagnostic'].includes(source)||
+     !(diagnostic?mode==='server':['server','app_update'].includes(mode)))return;
   const row=currentInboxRows.find(item=>item.source===source&&item.source_id===id);
-  if(!row||row.triage_status==='resolved'||!Number.isSafeInteger(row.user_id)||row.user_id<1)return;
-  if(!window.confirm(fixText('confirm')))return;
+  if(!row||row.triage_status==='resolved'||(!diagnostic&&(!Number.isSafeInteger(row.user_id)||row.user_id<1)))return;
+  if(!diagnostic&&!window.confirm(fixText('confirm')))return;
   const buttons=[...document.querySelectorAll('[data-inbox-fixed]')];
   inboxFixing=true;
   for(const button of buttons){button.disabled=true;button.setAttribute('aria-busy','true');}
   const at=epoch,current=drawerId;
   try{
-    const result=await api('inbox/triage',{source,source_id:id,operation:'resolve_fixed',
-      fix_kind:mode,expected_revision:row.triage_revision});
+    const operation=diagnostic?{operation:'resolve'}:{operation:'resolve_fixed',fix_kind:mode};
+    const result=await api('inbox/triage',{source,source_id:id,...operation,expected_revision:row.triage_revision});
     if(at!==epoch||current!==drawerId||!state.actor)return;
-    if(result.status!=='resolved'||result.notice_queued!==true)throw new Error('invalid_fix_receipt');
+    if(result.status!=='resolved'||result.notice_queued===diagnostic||typeof result.notice_queued!=='boolean')throw new Error('invalid_fix_receipt');
     Object.assign(row,{triage_status:result.status,triage_revision:result.revision,
       triage_resolved_at:result.resolved_at});
+    if(diagnostic){
+      showSavedAndDismiss('inboxSaved');
+      void refreshInboxUnread();
+      return;
+    }
     if(activeInboxDetail?.source===source&&activeInboxDetail?.source_id===id){
       activeInboxDetail={...activeInboxDetail,...row};
       const panel=document.querySelector('.inbox-details');
@@ -2868,7 +3220,7 @@ async function openInbox(source,id) {
   }catch(error){
     if(current!==drawerId||at!==epoch||!state.actor)return;
     showNotice(error.status===409?'inboxChanged':'inboxActionError');
-    await inbox(null,feedbackUserId);
+    await inbox(null,feedbackUserId,inboxSource);
   }finally{inboxUpdating=false;}
 }
 async function refreshInboxUnread(requestSignal=null) {
@@ -2898,8 +3250,8 @@ async function refreshInboxUnread(requestSignal=null) {
     bell.setAttribute('aria-label',t('feedback')+' · '+t('inboxUnread')+': '+(data.capped?'99+':data.unread_count));
   }catch(_){/* Never invent a zero badge on an unavailable private read. */}
 }
-async function inbox(before=null,userId=null) {
-  closeDrawer();feedbackUserId=userId;inboxNextCursor=null;currentInboxRows=[];inboxListScrollTop=0;
+async function inbox(before=null,userId=null,source='all') {
+  closeDrawer();feedbackUserId=userId;inboxSource=source;inboxNextCursor=null;currentInboxRows=[];inboxListScrollTop=0;
   const current=drawerId,at=epoch;
   drawer('feedback',statePanel('loading'),null,'inbox-drawer');
   try {
@@ -3119,6 +3471,10 @@ async function action(name) {
   if(name==='campaignMediaClear'){clearCampaignMedia();return;}
   if(name==='managementPrepare'){await prepareManagement();return;}
   if(name==='hsk30Settings'){await hsk30Settings();return;}
+  if(name==='lavaSettings'){await lavaSettings();return;}
+  if(name==='lavaPrepare'){await singleEditorAction(prepareLavaSettingsCommand);return;}
+  if(name==='lavaPayments'){await lavaPayments();return;}
+  if(name==='lavaLinkPrepare'){await singleEditorAction(prepareLavaLink);return;}
   if(name==='hsk30Prepare'){await prepareHsk30Settings();return;}
   if(name==='coursePrepare'){await prepareCoursePolicy();return;}
   if(name==='pushEnable'){await enablePush();return;}
@@ -3292,6 +3648,7 @@ document.addEventListener('click',event=>{
       const match=/^(visa|alipay|wechat)-(10_days|1_month|3_months)$/.exec(button.dataset.priceTarget);
       if(match)await priceSettings(match[1],match[2]);
     }
+    else if(button.dataset.lavaAct){await lavaRowAction(button.dataset.lavaAct,Number(button.dataset.lavaInvoice)||null,Number(button.dataset.lavaUser)||null,button.dataset.lavaOutcome||null);}
     else if(button.dataset.financePortfolioNext){await loadFinancePortfolio(Number(button.dataset.financePortfolioNext));}
     else if(button.dataset.paymentQrTarget){
       const match=/^(alipay|wechat)-(10_days|1_month|3_months)$/.exec(button.dataset.paymentQrTarget);
@@ -3347,7 +3704,7 @@ document.addEventListener('click',event=>{
     else if(button.dataset.profilePayments){await moreUserPayments(Number(button.dataset.profilePayments),Number(button.dataset.before),button);}
     else if(button.dataset.userFeedback){await inbox(null,Number(button.dataset.userFeedback));}
     else if(button.dataset.inboxOpen){
-      const match=/^(bot|release|android|payment|technical):([1-9][0-9]*)$/.exec(button.dataset.inboxOpen);
+      const match=/^(bot|release|android|payment|technical|diagnostic):([1-9][0-9]*)$/.exec(button.dataset.inboxOpen);
       if(match)await openInbox(match[1],Number(match[2]));
     }
     else if(button.dataset.inboxFixed){await resolveInboxFix(button.dataset.fixSource,Number(button.dataset.fixId),button.dataset.inboxFixed);}

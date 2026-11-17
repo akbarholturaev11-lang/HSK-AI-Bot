@@ -87,7 +87,11 @@ class CourseV3StaticMapTests(unittest.TestCase):
         # birga turganda qaysi biri ishlayotganini hech kim ayta olmasdi —
         # aslida esa hech qaysi biri ishlamasdi.
         self.assertNotIn("/api/v3/ad?placement=", html)
-        self.assertNotIn("/api/v3/ad/view", html)
+        # The single PWA route adapter is transport metadata; ads.js still
+        # owns the only overlay and impression request implementation.
+        self.assertEqual(html.count('"/api/v3/ad/view"'), 1)
+        self.assertIn('"/api/v3/ad/view":"/api/v3/pwa/ad/view"', html)
+        self.assertNotIn('fetch("/api/v3/ad/view"', html)
         self.assertNotIn("AdFlow", html)
         ads_js = (BASE / "ads.js").read_text(encoding="utf-8")
         self.assertIn('"/api/v3/ad?placement="', ads_js)
@@ -147,16 +151,25 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn('var step=0,track="hsk30",sel="nhsk1"', onboarding)
         self.assertIn('if(pendingHsk30Draft){track="hsk20";sel="beginner"}', onboarding)
         self.assertIn('fetch("/api/v3/course-tracks"', onboarding)
-        self.assertIn('track=h30Enabled?"hsk30":"hsk20"', onboarding)
-        self.assertIn('sel=h30Enabled?"nhsk1":"beginner"', onboarding)
-        self.assertIn('if(track==="hsk30"){track="hsk20";sel="beginner";saveDraft()}', onboarding)
+        # The existing Telegram default can still offer HSK 3.0; on PWA
+        # an enabled feature is not an entitlement to the first lesson.
+        self.assertIn('var preferHsk30=h30Enabled&&(!PWA_ONBOARDING_HOST||access.allowed===true)', onboarding)
+        self.assertIn('track=preferHsk30?"hsk30":"hsk20"', onboarding)
+        self.assertIn('sel=preferHsk30?"nhsk1":"beginner"', onboarding)
+        # A *verified* disabled HSK 3.0 track retains the HSK 2.0 beginner fallback.
+        # A failed fetch must NOT invent feature access or silently change the
+        # learner's choice: show the honest retryable loading-error state instead.
+        self.assertIn('else if(track==="hsk30"&&!h30Enabled){', onboarding)
+        self.assertIn('ONB_TRACK_REMOTE="error"', onboarding)
+        self.assertIn('HSK30_STATUS=null;', onboarding)
+        self.assertIn('if(step===1)render(false);', onboarding)
         self.assertLess(onboarding.index('{k:"beginner"'), onboarding.index('{k:"hsk1"'))
         self.assertIn('localStorage.removeItem("hsk_v3_start_mode")', onboarding)
         self.assertNotIn('startMode=localStorage.getItem("hsk_v3_start_mode")', onboarding)
         self.assertIn('var query=new URLSearchParams(params.toString())', onboarding)
         self.assertIn('d.user&&d.user.onboarding_completed===false', course)
         self.assertIn('typeof d.user.onboarding_completed!=="boolean"', course)
-        self.assertIn('authoritative.completed===false', course)
+        self.assertIn('authoritative.completed!==true', course)
         self.assertIn('if(required){', course)
         self.assertIn('if(typeof afterComplete==="function")afterComplete()', course)
 
@@ -670,7 +683,7 @@ class CourseV3StaticMapTests(unittest.TestCase):
         # Dars tugagach belgilanadi. Obunachi tekshiruvi klientda EMAS: joy
         # auditoriyasini admin sozlaydi ("faqat bepul" yoki "hammaga") va
         # serverning o'zi kerak bo'lsa bo'sh javob qaytaradi.
-        self.assertIn("window._pendingLessonEndAd=INIT_DATA?", html)
+        self.assertIn("window._pendingLessonEndAd=(INIT_DATA||PWA_COURSE_HOST)?", html)
         self.assertIn("paid:isPaidUser()", html)
         # Bayram/streak/reyting ekranlaridan KEYIN — closeLevelUp ichida.
         self.assertIn("if(playLessonEndAd(go))return;", html)
@@ -871,9 +884,10 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn("function shouldShowAdPromoEntry()", download)
         self.assertIn('state.promoReason === "already_installed"', download)
         self.assertIn('actions.classList.add("pdd-ad-download-actions")', download)
-        # Android qo'shildi; iOS'ga alohida ilova yo'q, shuning uchun u yo'q.
+        # Android qo'shildi; iOS'ning maqsadi native ilova emas, iPhone PWA
+        # (bir martalik kirish havolasi orqali).
         self.assertIn(
-            'var APP_PROMO_PLATFORMS = ["macos", "windows", "android"]', download
+            'var APP_PROMO_PLATFORMS = ["macos", "windows", "android", "ios"]', download
         )
         self.assertIn("buildOsButton(platform, source)", download)
         self.assertNotIn('buildOsButton("android", source)', download)
@@ -898,7 +912,8 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn('src="/assets/hsk-ai-logo-256.png"', landing)
         self.assertIn('<link rel="canonical" href="/download">', landing)
         self.assertIn('<meta name="robots" content="index,follow">', landing)
-        self.assertIn('HSK AI Apps / Download — macOS, Windows va Android', landing)
+        self.assertIn('Скачать HSK AI — Android, macOS, Windows и PWA для iPhone', landing)
+        self.assertIn('Safari', landing)
         self.assertIn('image.src = "/assets/hsk-ai-logo-256.png"', download)
         self.assertIn('var source = "/assets/hsk-ai-devices.jpg"', download)
         self.assertIn('image.addEventListener("error", function ()', download)
@@ -927,7 +942,7 @@ class CourseV3StaticMapTests(unittest.TestCase):
         ):
             html = Path("app/static", page).read_text(encoding="utf-8")
             self.assertIn(
-                "/course_v3_data/desktop-download.css?v=20261003-1", html, page
+                "/course_v3_data/desktop-download.css?v=20261110-d3164c95f1bd", html, page
             )
             # Ikkala skript `immutable`, bir yillik cache bilan beriladi
             # (`app/main.py`, STATIC_ASSET_HEADERS), ya'ni faylni o'zgartirish
@@ -955,7 +970,8 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn('HskProfileCarousel.select("apps")', download)
         self.assertNotIn('host.appendChild(card)', download)
         self.assertIn("function openProfileApps()", download)
-        self.assertIn('detectPlatform() !== "android" || !telegramInitData()', download)
+        self.assertIn('if (!telegramInitData() || (device !== "android" && !iphone))', download)
+        self.assertIn('var iphone = device === "ios" && isPlatformAvailable("ios");', download)
         self.assertIn("openProfileAppsSite();", download)
         self.assertIn('sendAndroidToChat("profile")', download)
         self.assertIn('event: "android_apk_to_chat"', download)

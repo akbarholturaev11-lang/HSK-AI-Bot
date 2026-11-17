@@ -17,6 +17,7 @@ from app.admin_api.pwa_metrics import METRIC_DEFINITIONS, overall_activity_metri
 from app.admin_api.pwa_sessions import ADMIN_PWA_COOKIE_NAME, authenticate_admin_pwa_session
 from app.admin_api.pwa_webauthn_transport import _body, _guard_post
 from app.db.models.bot_feedback import BotFeedback
+from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.course_progress import CourseProgress
 from app.db.models.course_track_state import CourseTrackState
 from app.db.models.desktop import DesktopDevice
@@ -113,6 +114,26 @@ def _iso(value):
     return _utc(value).isoformat() if value else None
 
 
+# Telegram Mini App -> iPhone PWA one-time sign-in links, both server-written
+# (docs/TELEGRAM_PWA_ANDROID_HANDOFF_CONTEXT.md). A completed link is a
+# sign-in in a browser, never proof of a Home Screen install.
+IPHONE_HANDOFF_STAGES = (("issued", "pwa_handoff_issued"), ("completed", "pwa_handoff_completed"))
+IPHONE_HANDOFF_SOURCE = "course_miniapp_events.pwa_handoff"
+
+
+async def _iphone_handoff_counts(db, *, since):
+    conditions = [CourseMiniAppEvent.event_name.in_([name for _, name in IPHONE_HANDOFF_STAGES])]
+    if since is not None:
+        conditions.append(CourseMiniAppEvent.created_at >= since)
+    rows = (await db.execute(
+        select(CourseMiniAppEvent.event_name, func.count(CourseMiniAppEvent.id),
+               func.count(func.distinct(CourseMiniAppEvent.user_id)))
+        .where(*conditions).group_by(CourseMiniAppEvent.event_name))).all()
+    found = {name: (int(events), int(users)) for name, events, users in rows}
+    return {key: {"users": found.get(name, (0, 0))[1], "events": found.get(name, (0, 0))[0]}
+            for key, name in IPHONE_HANDOFF_STAGES}
+
+
 async def statistics(db, request: StatisticsRequest):
     now = datetime.now(timezone.utc)
     days = {"weekly": 7, "monthly": 30, "all_time": None}[request.period]
@@ -120,11 +141,18 @@ async def statistics(db, request: StatisticsRequest):
     result = {"platform": request.platform, "period": request.period,
               "since": _iso(since), "generated_at": _iso(now), "timezone": "UTC",
               "platform_counts_overlap": True}
-    if request.platform in {"iphone_pwa", "telegram"}:
-        # No false iPhone telemetry, and no relabeling global course events as
-        # proven Telegram-only activity before its attribution is audited.
+    if request.platform == "telegram":
+        # No relabeling global course events as proven Telegram-only activity
+        # before its attribution is audited.
         return {**result, "available": False, "metrics": None,
-                "reason": "not_instrumented" if request.platform == "iphone_pwa" else "attribution_not_audited"}
+                "reason": "attribution_not_audited"}
+    if request.platform == "iphone_pwa":
+        # Only the Telegram handoff is measured. Installs and app activity are
+        # not: a browser cannot prove a Home Screen install, so none is shown.
+        return {**result, "available": True, "source": IPHONE_HANDOFF_SOURCE,
+                "scope": {"telegram_handoff": request.period,
+                          "install_and_activity": "not_instrumented"},
+                "metrics": {"telegram_handoff": await _iphone_handoff_counts(db, since=since)}}
     if request.platform == "android":
         snapshot = await AndroidAnalyticsService(db).snapshot(now=now, since=since)
         return {**result, "available": True, "source": "AndroidAnalyticsService.snapshot",

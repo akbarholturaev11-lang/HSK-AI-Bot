@@ -149,7 +149,8 @@ class PartnerService:
         if currency_key in {"somoni", "tjs", "сомони"}:
             revenue_usd = Decimal(str(payment.amount)) / await self.get_usdt_tjs_rate()
         else:
-            converted = PortfolioService(None).amount_to_usd(payment.amount, payment.currency)
+            from app.services.payment_amounts import payment_amount
+            converted = PortfolioService(None).amount_to_usd(payment_amount(payment), payment.currency)
             revenue_usd = Decimal(str(converted)) if converted is not None else None
         if revenue_usd is None:
             return Decimal("0.00")

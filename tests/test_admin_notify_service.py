@@ -21,6 +21,7 @@ class AdminNotifyServiceTests(unittest.IsolatedAsyncioTestCase):
 
     def _user(self):
         return SimpleNamespace(
+            id=7,  # canonical account ID shown in admin alerts since e7706c32
             telegram_id=222,
             full_name="Akbar",
             language="uz",

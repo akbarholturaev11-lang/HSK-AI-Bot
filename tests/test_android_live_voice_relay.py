@@ -86,7 +86,7 @@ class _Provider:
 
 
 class AndroidLiveVoiceRelayTests(unittest.TestCase):
-    def _client(self, *, turns=8, cost_per_turn=0.001, started_seconds_ago=0):
+    def _client(self, *, turns=8, cost_per_turn=0.001, started_seconds_ago=0, provider_error=None):
         settings = SimpleNamespace(
             ANDROID_VOICE_LIVE_ENABLED=True,
             ANDROID_VOICE_LIVE_ALLOWED_USERS="4242",
@@ -113,6 +113,8 @@ class AndroidLiveVoiceRelayTests(unittest.TestCase):
 
         @asynccontextmanager
         async def connector(settings_obj, live_item):
+            if provider_error is not None:
+                raise provider_error
             yield provider
 
         recorded = []
@@ -174,6 +176,18 @@ class AndroidLiveVoiceRelayTests(unittest.TestCase):
             self.assertEqual(socket.receive_json()["type"], "budget_limit")
             self.assertEqual(socket.receive()["type"], "websocket.close")
         self.assertEqual(len(recorded), 2)
+
+    def test_unexpected_provider_failure_keeps_close_and_reports_safe_site(self):
+        client, recorded = self._client(provider_error=RuntimeError("fixture provider outage"))
+        with self._authenticate(), patch("app.services.monitoring.backend.report_server_failure") as report, \
+                client, client.websocket_connect(
+                    "/api/v3/android/voice/live?session_id=session-live",
+                    headers={"Authorization": "Bearer test-token"},
+                ) as socket:
+            self.assertEqual(socket.receive_json(), {"type": "error", "code": "live_voice_unavailable"})
+            self.assertEqual(socket.receive()["code"], 1011)
+        report.assert_called_once_with("voice_practice", "server_exception", "android_voice_live", "android")
+        self.assertFalse(recorded)
 
     def test_elapsed_session_time_still_closes_a_quiet_connection(self):
         client, recorded = self._client(turns=0, started_seconds_ago=177)

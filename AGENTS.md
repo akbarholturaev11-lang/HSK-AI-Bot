@@ -15,6 +15,41 @@ mos bo‘lishi kerak; haqiqiy kontraktni kod va tegishli testlardan tekshir.
 
 ---
 
+## Hozirgi mahsulot ustuvorligi: PWA + Android (owner decision, 2026-11-10)
+
+**Barcha keyingi agentlar uchun doimiy scope qoidasi.** Asosiy mahsulot —
+foydalanuvchi PWA'si (iPhone/iOS va browser) hamda Android (Play/direct).
+Backend, auth, kurs, obuna/to‘lov, Admin PWA, public sayt va infratuzilmaga
+faqat shu ikki asosiy client'ni ishlatish, qo‘llab-quvvatlash yoki ularga
+foydalanuvchi olib kelish uchun kerakli miqyosda vaqt/token ajrat.
+
+- **macOS/Windows Desktop — hozircha development freeze.** Desktop'ga xos
+  yangi funksiya, UI/UX, bugfix, DMG/EXE packaging, parity sinxronlash,
+  alohida test/CI, refactor yoki kelajak uchun oldindan kod yozma.
+  PWA/Android task'ini Desktop'ni rivojlantirish uchun bahona qilma.
+- Shared backend/API/domain o‘zgarishida mavjud umumiy kontraktlarni
+  imkon qadar barqaror, platformadan mustaqil va keyinchalik Desktop ulanishi
+  oson bo‘ladigan qilib saqla. **Bu faqat arxitektura ehtiyot chorasi:**
+  Desktop uchun yangi adapter, shim, stub, endpoint, scaffolding, test yoki
+  funksiyani oldindan yaratish talab qilinmaydi.
+- Mavjud Desktop kodini o‘chirma, ataylab sindirma. PWA/Android uchun
+  zarur shared o‘zgarish Desktop'ga muqarrar jiddiy regression tug‘dirsa,
+  faqat eng kichik compatibility fix'ni ko‘rib chiq yoki konfliktni aniq
+  hisobot qil; butun Desktop feature/parity ishini boshlama.
+- **Telegram botning kelajakdagi roli** — foydalanuvchini PWA yoki
+  Android'ga yo‘naltirish, botning o‘zida dars bermaslik. **Bu kelajak
+  strategiyasi, hozirgi migratsiya topshirig‘i emas.** Hozir bot/Mini App'ning
+  ishlayotgan dars, login, referral, to‘lov, Pro va progress oqimlarini
+  o‘chirib yoki o‘zgartirib yuborma. Yangi bot-only ta’lim funksiyalariga
+  default holatda investitsiya qilma; keyingi migratsiya uchun alohida
+  scope, xavfsiz account/entitlement/progress handoff va release talab qilinadi.
+- Noaniq task'da PWA/Android foydasiga eng tor scope'ni tanla. Faqat egasi
+  Desktop'ni aniq qayta ustuvor qilsa, shu task doirasida Desktop ishini och.
+  Pastdagi Desktop-specific qoidalar **faqat shunday ruxsatlangan task** uchun
+  amal qiladi; bu ustuvorlikni bekor qilmaydi.
+
+---
+
 ## Javob qoidalari
 
 - Qisqa va aniq yoz
@@ -31,6 +66,21 @@ mos bo‘lishi kerak; haqiqiy kontraktni kod va tegishli testlardan tekshir.
 Mavjud project style va tuzilishini saqla. Talabni bajaradigan eng sodda, tushunarli va qo‘llab-quvvatlash oson yechimni tanla; qayta ishlatiladigan abstraksiyani faqat real takrorni kamaytirsa qo‘sh. Yangi dependency’ni faqat real talab uchun zarur bo‘lsa qo‘sh va avval mavjud kutubxonalarni tekshir. Bog‘liq bo‘lmagan refactor qilma. Yangi fayl ochishdan oldin mavjud kodni tekshir va kerak bo‘lsa kengaytir.
 
 ---
+
+
+## Permanent Backend / learner PWA performance contract
+
+Before implementing **any future** Backend API or learner PWA screen, section or feature (including modifications to existing ones), read and apply [docs/PERFORMANCE_PWA_PROGRESSIVE_LOADING.md](docs/PERFORMANCE_PWA_PROGRESSIVE_LOADING.md). These rules remain active after the current optimization PR is merged; do not treat them as a one-time sprint.
+
+**Permanent outcome/requirements source for future planning:** [docs/PERFORMANCE_BACKEND_PWA_GOALS_REQUIREMENTS.md](docs/PERFORMANCE_BACKEND_PWA_GOALS_REQUIREMENTS.md). Read it together with the detailed performance contract before expanding or replacing a performance plan; it defines the goals and non-negotiable requirements, **not** an implementation plan. The current owner-directed performance initiative **includes PWA, Android native and shared Backend together from the outset**. Audit and plan all three in one OpenSpec effort based on the latest main; use smaller testable work packages only when needed, without deferring Android to a separate later project. Older Backend/PWA-only documentation is historical scope, not a current Android prohibition. Follow the active PWA/Android product priority above and the repository OpenSpec skill.
+
+- PWA: verified-session-first safe shell, above-the-fold logo/mascot priority, per-section skeleton/loading/empty/error/retry, progressive updates, stable layout, lazy offscreen assets, and no duplicate in-flight reads. Never block all UI on an unrelated API call.
+- **Permanent layout-first skeleton requirement:** all new or modified learner PWA sections reserve the final visual layout before data arrives (e.g., Rating podium + header + member/countdown row + first leaderboard rows). No generic loading card in place of a complex screen, no large blank gap, no layout jump. Verified data replaces placeholders **in their own slot** with a short opacity fade; reduced-motion disables it. Check on iPhone/WebKit and include stable-geometry assertions in the affected browser test. See the mandatory "Layout-matched skeletons and smooth in-place settlement" section in the linked contract.
+- Backend: before adding a route/query, check N+1, bounded data/pagination, pool/transaction scope, indexes based on plans, timeouts, request concurrency and cache invalidation/owner isolation; use existing infrastructure before Redis/new servers.
+- Protect Trial/Free/Pro, payments, auth, CSRF, lesson progress and shared Mini App/Android contracts. No cached private cross-account content or optimistic entitlements.
+- A Backend/PWA feature is not done without focused regression tests and relevant slow-network/SQL or browser evidence; if an optimization is unnecessary, document evidence rather than adding it.
+- `.github/workflows/backend-pwa-performance-contract.yml` remains the existing Backend/PWA CI guard. Never bypass it or weaken assertions. For the **same active performance initiative**, use existing native Android CI/tests and add justified Android-specific performance/regression gates. The historical Backend/PWA-only restriction does **not** prohibit Android changes in the current joint scope; do not postpone Android to a future standalone stage.
+
 
 ## Bug fix standarti
 
@@ -68,6 +118,60 @@ qisqa yoz.
 
 ---
 
+## Graphify kod grafi — xavfsiz foydalanish
+
+`graphify-out/graph.json` — butun repo’ning lokal kod grafi: AST bog‘lanishlari va
+taxminiy (`INFERRED`) bog‘lanishlar. U “nimani o‘tkazib yubordim?” savoliga tez
+javob beradi, lekin kodning o‘rnini bosmaydi.
+
+**Qachon ishlat:** reja, audit, bir nechta modulga tegadigan o‘zgarish yoki
+refactor/API o‘zgarishidan oldin. Shu sohadagi xato va alert yo‘llarini, route’larni,
+chaqiruvchilarni va ta’sir doirasini top.
+
+**Xavfsiz buyruqlar** (faqat lokal o‘qiydi, LLM va tarmoq ishlatmaydi):
+
+- `graphify explain "<symbol>"`, `graphify affected "<symbol>"`,
+  `graphify path "A" "B"`, `graphify query "<savol>"`;
+- `GRAPH_REPORT.md`ni grep yoki `head` bilan o‘qish. ~45 MB `graph.json`ni to‘liq o‘qima va
+  diff qilma; kerak bo‘lsa uni lokal skript bilan filtrla.
+- `graphify update .`, `watch`’ni qo‘lda ishga tushirma: git hook’lar commit va branch
+  almashganda grafni fonda o‘zi qayta quradi (faqat AST, LLM’siz). Rebuild ketayotganda
+  (`pgrep -fl graphify`) tezlik o‘lchovi olma.
+
+**Owner aniq ruxsatisiz taqiqlangan:**
+
+- kodni tashqi LLM’ga yuboradigan buyruqlar: `graphify extract`, `graphify label`,
+  `--no-label`’siz `graphify cluster-only`, `graphify add <url>`, `graphify clone`;
+- `--postgres` (ayniqsa production DSN), `graphify global add`, `graphify merge-graphs`;
+- `graphify hook install|uninstall`, `graphify claude|cursor|gemini install` —
+  ular doimiy konfiguratsiyani o‘zgartiradi;
+- `graphify update . --force` — eski `graphify-out/` backup qilinmasdan. Node soni
+  kamaysa, oddiy `update` o‘zi rad etadi; bu himoyani chetlab o‘tma.
+
+**Natijaga ishonch:**
+
+- Avval yangiligini tekshir: `GRAPH_REPORT.md`dagi “Built from commit” `git rev-parse HEAD`ga
+  teng bo‘lsin. Commit qilinmagan o‘zgarishlar grafda yo‘q. `git merge`/`git pull` grafni
+  qayta qurmaydi (post-merge hook faqat git-lfs): keyingi commit yoki checkout’gacha
+  merge bilan kelgan fayllarni grafsiz, to‘g‘ridan-to‘g‘ri o‘qi.
+- `INFERRED` bog‘lanish faqat yo‘nalish beradi. Har bir topilmani kodni o‘qib tasdiqla;
+  hujjat, reja va PR’da grafni emas, `file:line`ni keltir.
+- Graf zanjirli chaqiruvlarni ko‘rmaydi (masalan, `Service(db).method(...)`). Bog‘lanish
+  yo‘qligi chaqiruvchi yo‘qligini isbotlamaydi: “boshqa joyda ishlatilmaydi” deyishdan
+  oldin grep bilan tasdiqla.
+- Graf CI, test yoki coverage guard uchun kirish ma’lumoti bo‘lmaydi; ular kodni o‘zi o‘qiydi.
+- Desktop (freeze) tugunlarini vazifa topilmasi deb hisoblama.
+
+**Git va maxfiylik:**
+
+- `graphify-out/` `.gitignore`da, lekin tarixan kuzatiladi va har commit’dan keyin o‘zgaradi.
+  Uni commit va push qilma; boshqa ishga aloqasiz diff sifatida qoldir.
+- `graph.json`ni tashqi servis, artifact yoki chatga yuklama. `graphify query` savollari
+  `~/.cache/graphify-queries.log`ga yoziladi, shuning uchun savolga secret yoki shaxsiy
+  ma’lumot yozma.
+
+---
+
 ## Memory tizimi
 
 ### Fayllar
@@ -100,6 +204,109 @@ Foydalanuvchiga qisqa ayt:
 - Keyingi step
 
 Har taskdan keyin kunlik log yaratish shart emas.
+
+---
+
+## Public site / iPhone PWA download invariant
+
+Website UI navigation is **mobile-only** at widths <= 850px: brand, globe-only
+language control, and a three-line menu. Desktop inline navigation must remain
+unchanged. The canonical UZ/RU/TJ public copy is in
+`localization/public_site/content.py` and must be regenerated into
+`app/public_site/content.py` without manual divergence.
+
+The official iOS/iPadOS entry on `/download` is **the browser PWA**
+(`/iphone-pwa`), not a native IPA and not a Telegram Mini App launch.
+Preserve the selected `lang=uz|ru|tj` from the public download page
+through unauthenticated `/iphone-pwa` → `/iphone-pwa/onboarding/li`
+when the Li entry flag is enabled; never let unrelated tokens, arbitrary query
+parameters or legacy referral secrets pass through the handoff. An existing
+verified PWA session keeps its own server account/language authority.
+
+Keep the reviewed iPhone Safari installation video at
+`/assets/onboarding/iphone-home-screen.mp4`, with explicit Share → Add to
+Home Screen instructions and textual fallback. The 2026-11-09 replacement
+shows the official `hskai.app/iphone-pwa` address rather than the obsolete
+Railway URL; verify the committed SHA-256, browser playback and deployment
+before releasing publicly. Android APK social-browser Telegram fallback
+and the optional **verified** iPhone Telegram-referral path are separate
+contracts and must not be silently removed or credited as PWA referrals.
+Update UZ/RU/TJ local copy, metadata/JSON-LD, docs, tests and analytics
+impact together; see `docs/iphone-pwa/SITE_DOWNLOAD_HANDOFF_2026-11-09.md`.
+
+---
+
+## Permanent analytics integrity and feature coverage
+
+**This is a cross-session rule for Codex, cloud AI and every future feature change**, not
+a one-time cleanup task. Read the canonical plan:
+[`docs/analytics/ANALYTICS_INTEGRITY_IMPLEMENTATION_PLAN.md`](docs/analytics/ANALYTICS_INTEGRITY_IMPLEMENTATION_PLAN.md).
+
+Before implementing or completing any **user-observable behavior or business-flow
+change** (onboarding, lessons, practice, AI/voice, Pro/paywall, checkout/payment,
+referral, notifications, login, app/platform flows, and related error paths):
+
+1. Inspect existing actual event writers, trusted identity and payment/access
+   authority, persistence, Admin PWA aggregation, UI/report consumer and tests.
+2. State the **Analytics Impact** explicitly: reuse an existing verified event,
+   add/version needed instrumentation, report an unsupported metric as unavailable
+   with a reason, or demonstrate **no measurement impact**. Cosmetic text/CSS or
+   non-behavioral refactors do not require invented telemetry.
+3. When behavior needs measurement, connect the **complete chain in the same
+   task**: client/server event → authenticated canonical user/attempt →
+   deduplicated storage → metric contract and Admin consumer → focused tests →
+   analytics coverage registry (once created). A new event enum alone is NOT
+   implementation; a working feature with an unconnected dashboard is unfinished.
+4. Check affected platforms, cohort/time window, denominator, event loss and
+   attribution limits. Never treat missing instrumentation as zero, infer
+   conversions from unrelated events or call estimates verified revenue.
+5. Put `Analytics Impact: ...` and evidence or the justified exemption in the
+   PR/task completion notes. Preserve existing auth, payments, Pro, lesson results,
+   privacy and performance. Telemetry must never block the user's critical flow.
+
+**Enforcement status:** this agent rule is active. The
+[coverage registry](docs/analytics/FEATURE_ANALYTICS_COVERAGE.json) and the
+[`analytics-integrity` CI check](.github/workflows/analytics-integrity.yml)
+enforce it on any branch that contains both files. Keep justified
+`not_applicable` entries. Verify both files on `main` before reporting
+enforcement there; CI results and pending metric repairs are tracked in the
+linked context.
+
+---
+
+## Permanent error monitoring coverage
+
+**This is a cross-session rule for every future feature change**, paired with the
+Analytics rule above. Canonical context:
+[`docs/monitoring/MONITORING_CONTEXT.md`](docs/monitoring/MONITORING_CONTEXT.md);
+plan: `openspec/changes/unified-error-monitoring/`.
+
+For every new or materially changed **PWA, Android or Backend feature**, state the
+**Monitoring Impact** in the same task: failure signals; `feature_code` (an Analytics
+flow ID) and catalog failure codes (`app/services/monitoring/catalog.py`); the
+authenticated intake used; the incident mapping; the Admin Inbox consumer; and the
+tests. A new learner API route gets its `ROUTE_MAP` line in the same change. Register
+shared code that controls important behavior in `monitoring.critical_paths`, with
+its exact source path and affected feature/platform pairs. Or give a concrete
+`not_applicable` reason. Copy, styling and localization-only changes need
+no invented telemetry. Reporting must never block a learner flow, and no report may
+carry tokens, `initData`, answers, payment data, raw stacks, messages, URLs or bodies.
+
+Put both `Analytics Impact: ...` and `Monitoring Impact: ...` in the completion notes.
+
+**Enforcement status:** this agent rule is active. The `monitoring` block of the
+shared [coverage registry](docs/analytics/FEATURE_ANALYTICS_COVERAGE.json) and the
+same [`analytics-integrity` CI check](.github/workflows/analytics-integrity.yml)
+enforce it on any branch that contains them: an unmapped learner route, Android
+feature package or learner page fails, as does a new one mapped to an uncovered
+feature. Changes to registered shared sources check every mapped pair; an exact
+source exemption names the file, explains the change, and pins its Git source
+SHA-256. With the Admin Inbox `diagnostic` source, the registry requires
+`covered` or a justified `not_applicable` entry for new work, and CI verifies
+runtime proof for covered pairs. **Main verification:** as of 2026-11-14,
+`origin/main` at `ba499cd38c1c6105a348ee9a5436cabc3c7880be` (PR #308) contains
+the registry, checker, workflow and this rule. Future reports should still
+check the current remote `main` ref before stating its enforcement status.
 
 ---
 
@@ -144,6 +351,37 @@ do not merge or release with unresolved content/safety failures.
 For high-risk/cross-platform features, auth, payments, entitlements, database schema changes, or substantial new modules, use the HSK AI planning skill at `.agents/skills/hsk-ai-openspec-planning/SKILL.md` and the project configuration `openspec/config.yaml` **before implementation**. Start from current source, tests, and authoritative scoped handoff documents. OpenSpec records a **proposed delta**, not a replacement for `AGENTS.md`, `AI_RULES.md`, `PROJECT_MEMORY.md`, localization policy, or existing product contracts.
 
 Do not require OpenSpec for small UI/copy changes, isolated bug fixes, routine documentation, or already-scoped tasks. Do not retroactively migrate active plans or maintain parallel progress logs. If using OpenSpec, keep the proposal linked to the canonical relevant feature handoff; it must not silently overrule it. Never equate a spec or checked task with passing tests, a main push, or production acceptance. Continue to follow the repository's existing risk-based tests and Git rules.
+
+## Graphify impact audit for substantial changes
+
+For **substantial new features, architecture changes, cross-module or
+cross-platform changes, and high-risk shared contracts** (auth, payments,
+entitlements, course/progress, analytics, schema/API), use the **Graphify
+code/dependency graph** as an additional review step **when the tool is
+available**:
+
+1. Before coding, map affected entry points, callers, imports, data/event
+   flows and likely blast radius from the **current branch**, including PWA,
+   Android and relevant shared backend/Admin consumers.
+2. After implementation, refresh/recheck the graph against the actual diff;
+   inspect impacted call paths, contracts and potentially overlooked consumers.
+   Validate every material Graphify finding in real source; prioritize
+   affected regression, integration and end-to-end tests.
+3. In the completion report, briefly state what Graphify was used to check,
+   any confirmed dependency risks and the tests that verified them.
+
+**Graphify is supplementary, not proof of runtime correctness**: its graph
+cannot replace code review, PostgreSQL/API tests, CI, browser tests or
+real-device verification where relevant. Do not treat inferred edges as
+confirmed defects. Keep scope on active PWA/Android and necessary shared
+systems; do not activate Desktop work.
+
+**Do not require Graphify for** isolated small fixes, copy/CSS, routine
+documentation or low-risk changes. If Graphify is not installed or cannot run,
+record that limitation and perform the same focused manual dependency/impact
+audit; do not block the task, silently skip risk analysis, auto-install
+unapproved tooling or add a runtime/CI/cloud dependency. Keep generated graph
+artifacts out of Git unless explicitly requested.
 
 ## Git intizomi
 

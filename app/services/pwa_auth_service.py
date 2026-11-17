@@ -12,13 +12,16 @@ import secrets
 from datetime import datetime, timedelta, timezone
 from uuid import uuid4
 
-from sqlalchemy import select, update, or_
+from sqlalchemy import func, select, text, update, or_
 
 from app.db.models.desktop import DesktopDevice, DesktopLinkRequest, DesktopSession
 from app.db.models.user import User
 from app.db.models.user_identity import UserIdentity
 from app.public_site.render import public_origin
-from app.services.desktop_auth_service import DesktopAuthService
+from app.services.desktop_app_promo_settings_service import get_desktop_app_promo_settings
+from app.services.desktop_auth_service import (
+    MINIAPP_HANDOFF_FLOW, DesktopAuthError, DesktopAuthService,
+)
 from app.services.native_oauth_service import NativeOAuthService, redirect_base_url
 from app.services.user_access_state_service import UserAccessState, UserAccessStateService
 
@@ -28,6 +31,13 @@ PWA_OAUTH_COOKIE = "__Host-hskai-pwa-oauth"
 PWA_TELEGRAM_COOKIE = "__Host-hskai-pwa-telegram"
 PWA_SESSION_AGE_SECONDS = 7 * 24 * 3600
 PWA_OAUTH_AGE_SECONDS = 600
+# Telegram Mini App -> external browser. The secret is a bearer credential in
+# a URL fragment, so it lives just long enough for the browser to open.
+PWA_HANDOFF_TTL_SECONDS = 120
+PWA_HANDOFF_INIT_DATA_MAX_AGE_SECONDS = 3600
+PWA_HANDOFF_RATE_LIMIT_COUNT = 5
+PWA_HANDOFF_RATE_LIMIT_WINDOW_SECONDS = 600
+_PWA_HANDOFF_ISSUE_LOCK_NAMESPACE = 1_215_521_090
 
 
 class PwaAuthError(RuntimeError):
@@ -183,6 +193,144 @@ class PwaAuthService:
         ):
             raise PwaAuthError("pwa_telegram_owner_invalid", status_code=403)
         return "complete", await self._mint_session(user, row, replace_cookie=replace_cookie)
+
+    def _handoff_hash(self, secret: str) -> str:
+        # Own HMAC purpose: the native "polling" namespace can never match it.
+        return self.desktop._hash("pwa-handoff", secret)
+
+    async def _require_handoff_routing(self) -> None:
+        """Admin iPhone switch. OFF stops new handoffs, never existing sessions."""
+        promo = await get_desktop_app_promo_settings(self.session)
+        if not promo.platforms.get("ios"):
+            raise PwaAuthError("pwa_handoff_unavailable", status_code=403)
+
+    async def issue_handoff(
+        self, *, telegram_id: int, language: str | None = None,
+    ) -> tuple[str, str, User]:
+        """Create a single-use transfer for an already verified Telegram learner.
+
+        The caller must have verified fresh signed Mini App data; ``telegram_id``
+        is never client-chosen. The row is born approved for exactly this
+        canonical user, so no other approval path can attach an owner to it.
+        Returns ``(link_request_id, secret, user)``; only a keyed hash of the
+        secret is stored.
+        """
+        require_pwa_enabled(self.settings)
+        try:
+            self.desktop._signing_secret()
+        except DesktopAuthError:
+            raise PwaAuthError("pwa_auth_unavailable", status_code=503) from None
+        await self._require_handoff_routing()
+        from app.repositories.user_repo import UserRepository
+        user = await UserRepository(self.session).get_by_telegram_id(int(telegram_id))
+        if user is None or UserAccessStateService.classify(user) == UserAccessState.BLOCKED:
+            raise PwaAuthError("pwa_handoff_user_unavailable", status_code=403)
+        # Serialize one learner's issuance without holding their user row:
+        # redemption locks request -> user, so a user lock here could deadlock.
+        if self.session.get_bind().dialect.name == "postgresql":
+            await self.session.execute(
+                text("SELECT pg_advisory_xact_lock(:namespace, :user_id)"),
+                {"namespace": _PWA_HANDOFF_ISSUE_LOCK_NAMESPACE,
+                 "user_id": int(user.id) % 2**31},
+            )
+        now = _now()
+        own = (
+            DesktopLinkRequest.platform == PWA_PLATFORM,
+            DesktopLinkRequest.flow == MINIAPP_HANDOFF_FLOW,
+            DesktopLinkRequest.approved_user_id == user.id,
+        )
+        recent = await self.session.scalar(
+            select(func.count()).select_from(DesktopLinkRequest).where(
+                *own,
+                DesktopLinkRequest.created_at >= now - timedelta(
+                    seconds=PWA_HANDOFF_RATE_LIMIT_WINDOW_SECONDS),
+            )
+        )
+        if int(recent or 0) >= PWA_HANDOFF_RATE_LIMIT_COUNT:
+            raise PwaAuthError("pwa_handoff_rate_limited", status_code=429)
+        # Newest wins: at most one live bearer link per learner.
+        await self.session.execute(
+            update(DesktopLinkRequest).where(
+                *own,
+                DesktopLinkRequest.status == "approved",
+                DesktopLinkRequest.consumed_at.is_(None),
+            ).values(status="cancelled")
+        )
+        secret = secrets.token_urlsafe(32)
+        row = DesktopLinkRequest(
+            id=str(uuid4()),
+            # Server-only random values: no display code or installation key
+            # for this row ever exists outside this function.
+            display_code_hash=self.desktop._hash("pwa-handoff-code", secrets.token_urlsafe(32)),
+            polling_secret_hash=self._handoff_hash(secret),
+            installation_key_hash=self.desktop._hash("installation", secrets.token_urlsafe(32)),
+            platform=PWA_PLATFORM, app_version="1.0.0",
+            language=language if language in {"uz", "ru", "tj"} else None,
+            flow=MINIAPP_HANDOFF_FLOW, intent="signin", status="approved",
+            approved_user_id=user.id, approved_telegram_id=user.telegram_id,
+            approved_at=now,
+            expires_at=now + timedelta(seconds=PWA_HANDOFF_TTL_SECONDS),
+        )
+        self.session.add(row)
+        await self.session.commit()
+        return row.id, secret, user
+
+    async def redeem_handoff(
+        self, *, secret: str | None, current_cookie: str | None = None,
+        switch: bool = False,
+    ) -> tuple[str | None, str, User]:
+        """Exchange a handoff once. Returns ``(new_cookie, link_request_id, user)``.
+
+        ``new_cookie`` is None when this browser already holds a valid session
+        of the same learner (the handoff is still used up). A valid session of
+        a DIFFERENT learner is never replaced unless ``switch`` is explicit;
+        in that case the handoff stays unused so the person can decide.
+        """
+        require_pwa_enabled(self.settings)
+        if (not isinstance(secret, str) or not secret.isascii()
+                or not 32 <= len(secret) <= 200):
+            raise PwaAuthError("pwa_handoff_invalid")
+        row = (await self.session.execute(
+            select(DesktopLinkRequest).where(
+                DesktopLinkRequest.polling_secret_hash == self._handoff_hash(secret)
+            ).with_for_update().execution_options(populate_existing=True)
+        )).scalar_one_or_none()
+        if (
+            row is None or row.platform != PWA_PLATFORM
+            or row.flow != MINIAPP_HANDOFF_FLOW or row.intent != "signin"
+            or row.status != "approved" or row.consumed_at is not None
+            or not row.approved_user_id or not row.approved_telegram_id
+        ):
+            # Unknown, already used and superseded links are indistinguishable.
+            raise PwaAuthError("pwa_handoff_invalid")
+        if (_aware(row.expires_at) or _now()) <= _now():
+            raise PwaAuthError("pwa_handoff_expired", status_code=410)
+        await self._require_handoff_routing()
+        user = (await self.session.execute(
+            select(User).where(User.id == row.approved_user_id)
+            .with_for_update().execution_options(populate_existing=True)
+        )).scalar_one_or_none()
+        if (
+            user is None or UserAccessStateService.classify(user) == UserAccessState.BLOCKED
+            or int(user.telegram_id or 0) != int(row.approved_telegram_id)
+        ):
+            raise PwaAuthError("pwa_handoff_owner_invalid", status_code=403)
+        current_user = None
+        if current_cookie:
+            try:
+                current_user, _ = await self.actor(current_cookie)
+            except PwaAuthError:
+                current_user = None  # Stale cookie: nobody is signed in here.
+        if current_user is not None and current_user.id == user.id:
+            row.status = "consumed"
+            row.consumed_at = _now()
+            await self.session.commit()
+            return None, row.id, user
+        if current_user is not None and not switch:
+            raise PwaAuthError("pwa_handoff_account_mismatch", status_code=409)
+        link_request_id = row.id
+        cookie = await self._mint_session(user, row, replace_cookie=current_cookie)
+        return cookie, link_request_id, user
 
     async def _mint_session(
         self, user: User, row: DesktopLinkRequest, *, replace_cookie: str | None = None,

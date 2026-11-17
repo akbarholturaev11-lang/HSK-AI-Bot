@@ -53,6 +53,11 @@ PWA_OAUTH_PLATFORMS = frozenset({"pwa"})
 TELEGRAM_FLOW = "telegram"
 OAUTH_FLOWS = frozenset({"google", "apple"})
 LINK_FLOWS = frozenset({TELEGRAM_FLOW}) | OAUTH_FLOWS
+# Telegram Mini App -> learner PWA one-time handoff. Deliberately NOT a member
+# of LINK_FLOWS: `start_link` can never create such a row, the bot can never
+# approve it and no provider callback matches it. Only PwaAuthService issues
+# and redeems it, for an already verified Telegram learner.
+MINIAPP_HANDOFF_FLOW = "miniapp"
 
 # "signin" rows may be exchanged for a session. "link" rows only attach an
 # identity to an already authenticated user and must NEVER mint tokens.
@@ -422,7 +427,11 @@ class DesktopAuthService:
             .select_from(DesktopLinkRequest)
             .where(
                 DesktopLinkRequest.created_at
-                >= now - timedelta(seconds=global_window)
+                >= now - timedelta(seconds=global_window),
+                # This limiter protects the anonymous public start. Handoffs
+                # are issued to verified learners under their own per-account
+                # limit and must not be able to throttle everyone's sign-in.
+                DesktopLinkRequest.flow != MINIAPP_HANDOFF_FLOW,
             )
         )
         if int(global_result.scalar() or 0) >= global_limit:

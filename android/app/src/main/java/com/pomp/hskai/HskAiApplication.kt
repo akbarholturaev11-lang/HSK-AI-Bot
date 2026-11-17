@@ -11,6 +11,8 @@ import com.pomp.hskai.core.audio.LiveVoiceAudioEngine
 import com.pomp.hskai.core.audio.TtsCache
 import com.pomp.hskai.core.audio.VoiceRecorder
 import com.pomp.hskai.core.auth.AuthRepository
+import com.pomp.hskai.core.diagnostics.AndroidDiagnostics
+import com.pomp.hskai.core.diagnostics.AndroidDiagnosticsApi
 import com.pomp.hskai.core.network.OriginGuardInterceptor
 import com.pomp.hskai.core.settings.AppSettings
 import com.pomp.hskai.core.storage.SecureCredentialStore
@@ -22,7 +24,11 @@ import com.pomp.hskai.data.api.AndroidCourseApi
 import com.pomp.hskai.data.api.AndroidFeatureApi
 import com.pomp.hskai.data.api.AndroidFoundationApi
 import com.pomp.hskai.data.api.AndroidOnboardingApi
+import com.pomp.hskai.data.api.AndroidGuestOnboardingApi
+import com.pomp.hskai.feature.onboarding.GuestLiDraftStore
 import com.pomp.hskai.data.api.AndroidStudyPreferencesApi
+import com.pomp.hskai.data.api.AndroidAdaptiveApi
+import com.pomp.hskai.data.repository.AdaptiveLessonRepository
 import com.pomp.hskai.data.local.BundledDictionaryInsights
 import com.pomp.hskai.data.local.BundledStrokes
 import com.pomp.hskai.data.local.CdnWordAudio
@@ -98,8 +104,19 @@ class HskAiApplication : Application() {
         AccountNoticeMonitor(this, retrofit.create(AndroidPushApi::class.java))
     }
 
+    /** Unified error monitoring (D5): crash handler, exit reasons, owner-bound queue. */
+    val diagnostics: AndroidDiagnostics by lazy {
+        AndroidDiagnostics(
+            context = this,
+            api = { retrofit.create(AndroidDiagnosticsApi::class.java) },
+            token = { authRepository.cachedDiagnosticToken() },
+        )
+    }
+
     override fun onCreate() {
         super.onCreate()
+        // First, so a crash anywhere below is recorded.
+        runCatching { diagnostics.start() }
         paymentDecisionMonitor.initializeFirebase()
         applicationScope.launch {
             // Whether a newer build exists is asked here rather than from a
@@ -162,6 +179,9 @@ class HskAiApplication : Application() {
             .followSslRedirects(false)
             .build()
     }
+
+    /** Flavor-owned transports use the same allowlisted network stack. */
+    fun <T> nativeApi(type: Class<T>): T = retrofit.create(type)
 
     private val retrofit: Retrofit by lazy {
         Retrofit.Builder()
@@ -232,9 +252,16 @@ class HskAiApplication : Application() {
                 context = this,
                 webClientId = BuildConfig.GOOGLE_WEB_CLIENT_ID,
             ),
-            onSessionCleared = ::clearWidgetSession,
-            onSessionReplacing = ::clearWidgetProjection,
+            onSessionCleared = {
+                runCatching { diagnostics.clearOwner() }
+                clearWidgetSession()
+            },
+            onSessionReplacing = {
+                runCatching { diagnostics.clearOwner(keepPreSignIn = true) }
+                clearWidgetProjection()
+            },
             onSessionLinked = { widgetStore.linked(newSession = true) },
+            onDiagnosticSession = { token -> runCatching { diagnostics.bindToken(token) } },
             onAuthenticated = { deviceId ->
                 paymentDecisionMonitor.bindDevice(deviceId)
                 widgetStore.linked()
@@ -281,6 +308,14 @@ class HskAiApplication : Application() {
         )
     }
 
+    /** In-lesson personal review (UIUX-007); quiet on every failure. */
+    val adaptiveLessonRepository: AdaptiveLessonRepository by lazy {
+        AdaptiveLessonRepository(
+            api = retrofit.create(AndroidAdaptiveApi::class.java),
+            accessToken = authRepository::accessToken,
+        )
+    }
+
     val accountDeletionRepository: AccountDeletionRepository by lazy {
         AccountDeletionRepository(
             api = retrofit.create(AccountDeletionApi::class.java),
@@ -289,13 +324,22 @@ class HskAiApplication : Application() {
         )
     }
 
+    val activityFeedbackRepository by lazy {
+        com.pomp.hskai.feature.feedback.ActivityFeedbackRepository(
+            nativeApi(com.pomp.hskai.feature.feedback.AndroidActivityFeedbackApi::class.java),
+            authRepository::accessToken, authRepository::invalidateSession)
+    }
+
     val onboardingRepository: OnboardingRepository by lazy {
         OnboardingRepository(
             api = onboardingApi,
             accessToken = authRepository::accessToken,
             onSessionExpired = authRepository::invalidateSession,
+            previewApi = retrofit.create(AndroidGuestOnboardingApi::class.java),
         )
     }
+
+    internal val guestLiDraftStore by lazy { GuestLiDraftStore(this) }
 
     val studyPreferencesRepository: StudyPreferencesRepository by lazy {
         StudyPreferencesRepository(
