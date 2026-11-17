@@ -129,6 +129,9 @@ private fun com.pomp.hskai.domain.model.LessonCard.visibleDescription(answer: An
         if (answer is AnswerState.Checked) appendLine("Correct order shown: ${answerTokens.joinToString(" ")}")
     }.trim()
     is UnsupportedCard -> "Unsupported lesson card type: $rawType"
+    // The answers are the exercise: they are not described before a try.
+    is com.pomp.hskai.domain.model.PictureReviewCard ->
+        "Picture pronunciation review: the learner names ${words.size} pictured words they learned earlier."
 }
 
 fun practiceAssistantContext(state: PracticeUiState, level: String, mistakesOpen: Boolean): ScreenContext {

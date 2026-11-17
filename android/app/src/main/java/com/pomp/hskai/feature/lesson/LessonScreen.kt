@@ -94,6 +94,7 @@ import com.pomp.hskai.domain.model.GrammarCard
 import com.pomp.hskai.domain.model.LessonCard
 import com.pomp.hskai.domain.model.MatchPairsCard
 import com.pomp.hskai.domain.model.NewWordCard
+import com.pomp.hskai.domain.model.PictureReviewCard
 import com.pomp.hskai.domain.model.PronunciationCard
 import com.pomp.hskai.domain.model.ReverseBuilderCard
 import com.pomp.hskai.domain.model.SentenceBuilderCard
@@ -152,6 +153,10 @@ fun LessonScreen(
     /** In-lesson personal review (UIUX-007): its answer and its own Continue. */
     onAnswerAdaptive: (selectedIndex: Int?, selectedTokens: List<String>?) -> Unit = { _, _ -> },
     onContinueAdaptive: () -> Unit = {},
+    /** UIUX-008 picture deck: say the word, skip the card, move a revealed card on. */
+    onSpeakPicture: () -> Unit = {},
+    onSkipPicture: () -> Unit = {},
+    onContinuePicture: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val outcome = state.outcome
@@ -215,6 +220,9 @@ fun LessonScreen(
                         onPlayAudio = onPlayAudio,
                         onSpeakPronunciation = onSpeakPronunciation,
                         onSkipPronunciation = onSkipPronunciation,
+                        onSpeakPicture = onSpeakPicture,
+                        onSkipPicture = onSkipPicture,
+                        onContinuePicture = onContinuePicture,
                         onOpenPinyinSettings = onOpenPinyinSettings,
                         onOpenWriter = onOpenWriter,
                         onShowWriterCharacter = onShowWriterCharacter,
@@ -295,6 +303,7 @@ private fun lessonHeading(card: LessonCard, section: String): String? {
     return when (card) {
         is ChoiceCard -> card.title.ifBlank { if (card.kind == ChoiceKind.LISTENING) listenTitle else section }
         is PronunciationCard -> repeatTitle
+        is PictureReviewCard -> stringResource(R.string.hsk_course_picture_review_title)
         is MatchPairsCard -> pairsTitle
         else -> null
     }
@@ -312,6 +321,9 @@ private fun LessonBody(
     onPlayAudio: (String) -> Unit,
     onSpeakPronunciation: () -> Unit,
     onSkipPronunciation: () -> Unit,
+    onSpeakPicture: () -> Unit,
+    onSkipPicture: () -> Unit,
+    onContinuePicture: () -> Unit,
     onOpenPinyinSettings: () -> Unit,
     onOpenWriter: (WriterTarget) -> Unit,
     onShowWriterCharacter: (Int) -> Unit,
@@ -421,7 +433,8 @@ private fun LessonBody(
 
             // Teaching cards and the builders keep the coach above: there is
             // nothing to stand beside. The pairs keep the whole width for the grid.
-            val coachAbove = card !is ChoiceCard && card !is PronunciationCard && card !is MatchPairsCard
+            val coachAbove = card !is ChoiceCard && card !is PronunciationCard && card !is MatchPairsCard &&
+                card !is PictureReviewCard
             if (coachAbove) {
                 HskStageCoach(
                     character = coachCharacter,
@@ -491,6 +504,7 @@ private fun LessonBody(
                             onPlayAudio = onPlayAudio,
                             onSpeak = onSpeakPronunciation,
                             onSkip = onSkipPronunciation,
+                            isUnclear = state.pronunciationUnclear,
                             coach = {
                                 val stage = Modifier.size(width = 150.dp, height = 165.dp)
                                 if (coachReady) {
@@ -537,6 +551,19 @@ private fun LessonBody(
                     is UnsupportedCard -> {
                         UnsupportedCardView(card, onAcknowledge)
                         LessonCardErrors(state)
+                    }
+                    is PictureReviewCard -> {
+                        val deck = state.pictureDeck
+                        if (deck != null) {
+                            PictureReviewDeckView(
+                                card = card,
+                                deck = deck,
+                                pinyin = pinyin,
+                                onSpeak = onSpeakPicture,
+                                onSkip = onSkipPicture,
+                                onContinue = onContinuePicture,
+                            )
+                        }
                     }
                 }
               }
