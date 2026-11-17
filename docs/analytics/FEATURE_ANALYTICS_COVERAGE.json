@@ -1272,6 +1272,43 @@
       }
     },
     {
+      "id": "adaptive_review",
+      "description": "Personal adaptive review inside ordinary lessons (UIUX-007). The server writes plan assignment, verified answers and shadow-plan counts with the route-set client; these are passive events that never touch last_active_at, lesson results, XP or progress. Client-side display is not instrumented.",
+      "events": [
+        {
+          "store": "course_miniapp_events",
+          "role": "declared",
+          "names": [
+            "adaptive_assigned",
+            "adaptive_answer_verified",
+            "adaptive_shadow_planned"
+          ]
+        }
+      ],
+      "platforms": {
+        "android": {
+          "status": "partial",
+          "reason": "Android adaptive plan and answer routes tag assignments and verified answers with the route-set client android; no Admin reader or route chain test yet."
+        },
+        "telegram": {
+          "status": "partial",
+          "reason": "Signed Mini App adaptive plan and answer routes tag assignments and verified answers with the route-set client telegram; no Admin reader or route chain test yet."
+        },
+        "iphone_pwa": {
+          "status": "partial",
+          "reason": "PWA adaptive plan and answer routes tag assignments and verified answers with the route-set client iphone_pwa; no Admin reader or route chain test yet."
+        },
+        "macos": {
+          "status": "not_applicable",
+          "reason": "Adaptive review is not served to the frozen Desktop client."
+        },
+        "windows": {
+          "status": "not_applicable",
+          "reason": "Adaptive review is not served to the frozen Desktop client."
+        }
+      }
+    },
+    {
       "id": "voice_practice",
       "description": "Voice starts and completions; V10 duration uses persisted session rows.",
       "events": [
@@ -1785,6 +1822,13 @@
       ]
     },
     {
+      "path": "app/api/course_adaptive.py",
+      "flows": [
+        "lessons",
+        "adaptive_review"
+      ]
+    },
+    {
       "path": "app/api/lava_checkout.py",
       "flows": [
         "checkout_payments",
@@ -1875,6 +1919,12 @@
       ]
     },
     {
+      "path": "app/services/course_adaptive_lesson_service.py",
+      "flows": [
+        "adaptive_review"
+      ]
+    },
+    {
       "path": "app/services/course_gamification_service.py",
       "flows": [
         "learning_rewards"
@@ -1900,7 +1950,8 @@
         "lessons",
         "practice",
         "assessments",
-        "mistake_review"
+        "mistake_review",
+        "adaptive_review"
       ]
     },
     {
@@ -1924,7 +1975,8 @@
     {
       "path": "app/services/course_mistake_service.py",
       "flows": [
-        "mistake_review"
+        "mistake_review",
+        "adaptive_review"
       ]
     },
     {
@@ -2249,8 +2301,8 @@
     "exemptions": [
       {"target": "app/services/ai_provider.py", "sha256": "911b221ae56f26dad6e2a4fc03f4c64fbf5377d0b2d6951592211279ca1dee4c", "reason": "Reports terminal provider errors before rethrowing them; provider selection, fallback and responses are unchanged. The Chat and Voice server cells remain partial until each has its own failure-to-Inbox proof."},
       {"target": "app/static/course_v3_data/li-onboarding-runtime.js","sha256": "720a456612151d2f02145b88fa98f78ae0db1e60a4e68918b8b1f98e96240f86","reason": "The change is scoped by hostPwa to the verified iPhone PWA onboarding-to-first-lesson navigation after its saved profile, reusing existing autostart, reserve/access diagnostics. The signed Telegram Mini App conditional retains its original branch and request behavior; its independent feature-specific Inbox chain remains uninstrumented. This exact source digest pins the reviewed PWA-only change."},
-      {"target": "app/static/course_v3_test.html", "reason": "Diagnostic precision (task 6.2) changes only the content token of the shared reporter script on this page. Existing exam submission, grading and access behavior are unchanged; full assessment monitoring remains partial."},
-      {"target": "app/static/course_v3_mistakes.html", "reason": "Diagnostic precision (task 6.2) changes only the content token of the shared reporter script on this page. Existing mistake-review behavior is unchanged; full mistake-review monitoring remains partial."},
+      {"target": "app/static/course_v3_test.html", "reason": "Diagnostic precision (task 6.2) and the adaptive lesson catalog (UIUX-007, 2026-11-17) change only the content tokens of shared scripts on this page. Existing exam submission, grading and access behavior are unchanged; full assessment monitoring remains partial."},
+      {"target": "app/static/course_v3_mistakes.html", "reason": "Diagnostic precision (task 6.2) and the adaptive lesson catalog (UIUX-007, 2026-11-17) change only the content tokens of shared scripts on this page. Existing mistake-review behavior is unchanged; full mistake-review monitoring remains partial."},
       {"target": "/api/miniapp/event", "reason": "The changed branches are diagnostic intake and the optional legacy diagnostic mirror only. They are tested by the signed Telegram chain and excluded from self-reporting; existing learner and KPI event behavior is unchanged."},
       {"target": "/api/subscription-miniapp/overview", "reason": "Only the analytics write of the base checkout opening changed: it is checked and retried once while that exact row is absent. The overview response, prices, payment flow and Pro access are unchanged; subscription monitoring remains partial."},
       {"target": "/api/v3/pwa/subscription/overview", "reason": "Only the analytics opening changed: it is stored under the stage route's attempt-id form and written by the checked writer (one retry, never doubled). The overview response, prices, Lava block and Pro access are unchanged; subscription monitoring remains partial."},

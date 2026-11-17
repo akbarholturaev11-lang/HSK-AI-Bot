@@ -15,6 +15,7 @@ import com.pomp.hskai.data.api.VoiceStatusResponse
 import com.pomp.hskai.data.repository.FeatureRepository
 import java.lang.reflect.Proxy
 import java.util.concurrent.CountDownLatch
+import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.Continuation
@@ -267,6 +268,13 @@ class VoiceCourseChangeTest {
             changer?.join(5_000)
             f.vm.endSession()
             io.close()
+            // The released IO start resumes on Dispatchers.Main. Let it do so
+            // while this test still owns Main; after resetMain() the late
+            // resume is an uncaught error that fails the next coroutine test.
+            check((io.executor as ExecutorService).awaitTermination(5, TimeUnit.SECONDS)) {
+                "live voice IO thread did not finish"
+            }
+            runCurrent()
         }
     }
 

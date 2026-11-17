@@ -250,6 +250,14 @@ jobs:
           node tests/test_pwa_notices_ui.js
           node tests/test_pwa_feedback_ui.js
           node tests/test_pwa_shake_report_ui.js
+      - name: Verify in-lesson adaptive review never changes official lesson results
+        env:
+          BOT_TOKEN: "9123456:synthetic-test-only-unusable-secret"
+          DATABASE_URL: "postgresql+asyncpg://qa:qa@127.0.0.1:1/qa"
+          REDIS_URL: "redis://127.0.0.1:1/0"
+        run: |
+          python -m unittest tests.test_course_adaptive_lesson_service tests.test_course_adaptive_api
+          node tests/test_course_adaptive_pwa.js
       - name: Test 0108 native audit facts and personal discount account isolation
         run: |
           python -m unittest \

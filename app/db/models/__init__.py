@@ -35,6 +35,7 @@ from .course_feature_usage import CourseFeatureUsage
 from .course_miniapp_event import CourseMiniAppEvent
 from .course_mistake import CourseMistake
 from .course_mistake_target import CourseMistakeTarget
+from .course_adaptive_plan import CourseAdaptivePlan
 from .course_xp_event import CourseXpEvent
 from .course_word_mastery import CourseWordMastery
 from .course_challenge import CourseChallenge

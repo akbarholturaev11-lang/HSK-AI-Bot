@@ -136,6 +136,15 @@ class Settings(BaseSettings):
     ADMIN_MINIAPP_AUTH_MAX_AGE_SECONDS: int = 86400
     # Separate browser Admin PWA stays disabled until Google/TG + passkey auth exists.
     ADMIN_PWA_ENABLED: bool = False
+    # UIUX-007 personal review questions inside ordinary lessons. Off = every
+    # client runs the original lesson (instant rollback, no client release).
+    COURSE_ADAPTIVE_ENABLED: bool = False
+    # Stable user-id bucket (0-100) that receives plans while enabled.
+    COURSE_ADAPTIVE_ROLLOUT_PERCENT: int = 100
+    # Comma-separated canonical user IDs that always receive plans while enabled.
+    COURSE_ADAPTIVE_ALLOWLIST: str = ""
+    # Computes and counts selection without state writes or delivery.
+    COURSE_ADAPTIVE_SHADOW_ENABLED: bool = False
     # Observes existing Smart shadow reservations only; grants no delivery.
     SMART_REMINDER_SHADOW_ENABLED: bool = False
     # D25 ordinary runtime with the automatic four-stage rollout and admission.

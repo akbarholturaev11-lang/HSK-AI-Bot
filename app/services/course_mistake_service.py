@@ -20,6 +20,7 @@ from app.services.course_miniapp_analytics_service import (
 )
 from app.services.course_gamification_service import CourseGamificationService
 from app.services.course_levels import is_hsk30_level
+from app.services.course_adaptive_schedule import final_check_due_on
 from app.services.course_mistake_target_store import (
     UNRESOLVABLE_TARGET_KEY,
     CourseMistakeTargetStore,
@@ -1666,6 +1667,9 @@ class CourseMistakeService:
                 row.status = "cleared"
                 row.cleared_at = now
                 row.cleared_count = int(row.cleared_count or 0) + 1
+                # Dars ichidagi yakuniy tekshiruv (UIUX-007) shu sanadan keyin
+                # navbatga tushadi. Faqat adaptive ustuni: XP/progress emas.
+                row.adaptive_due_on = final_check_due_on(now)
                 row.passed_formats = ""
                 await self.targets.resolve_rows(row, now)
                 cleared.append(row)

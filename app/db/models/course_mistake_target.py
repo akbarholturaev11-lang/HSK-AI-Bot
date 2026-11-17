@@ -1,8 +1,9 @@
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from typing import Optional
 
 from sqlalchemy import (
     CheckConstraint,
+    Date,
     DateTime,
     ForeignKey,
     Index,
@@ -45,6 +46,7 @@ class CourseMistakeTarget(Base):
         ),
         # Issiq yo'l: "shu o'quvchining faol nishonlari (kategoriya bo'yicha)".
         Index("ix_course_mistake_targets_user_status", "user_id", "status", "category"),
+        Index("ix_course_mistake_targets_user_adaptive_due", "user_id", "adaptive_due_on"),
         CheckConstraint(
             "category IN ('word', 'grammar', 'character', 'pronunciation')",
             name="category",
@@ -93,3 +95,12 @@ class CourseMistakeTarget(Base):
         DateTime(timezone=True),
         nullable=True,
     )
+    # Dars ichidagi shaxsiy takror (UIUX-007): ko'nikma bo'yicha interval
+    # holati shu nishonda turadi — Xatolarim bilan bitta yozuv, ikkinchi
+    # xato jadvali yo'q. Faqat `CourseAdaptiveLessonService` yozadi.
+    adaptive_state_json: Mapped[str] = mapped_column(
+        Text, nullable=False, default="{}", server_default="{}"
+    )
+    # Eng yaqin takror kuni (o'quvchining mahalliy sanasi); rejalashtiruvchi
+    # muddati kelgan nishonlarni shu ustun bo'yicha chegaralangan so'rov bilan oladi.
+    adaptive_due_on: Mapped[Optional[date]] = mapped_column(Date, nullable=True)

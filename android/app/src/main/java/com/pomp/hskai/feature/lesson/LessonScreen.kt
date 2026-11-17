@@ -149,6 +149,9 @@ fun LessonScreen(
     onCloseWriter: () -> Unit,
     onExit: () -> Unit,
     onAskAssistant: ((question: String, readyAnswer: String) -> Unit)? = null,
+    /** In-lesson personal review (UIUX-007): its answer and its own Continue. */
+    onAnswerAdaptive: (selectedIndex: Int?, selectedTokens: List<String>?) -> Unit = { _, _ -> },
+    onContinueAdaptive: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val outcome = state.outcome
@@ -188,6 +191,15 @@ fun LessonScreen(
                         onExit = onExit,
                     )
                 outcome is LessonOutcome.Failed -> FailedBlock(outcome, onRetryCompletion, onExit)
+                state.adaptive != null -> LessonAdaptiveReview(
+                    state = state,
+                    review = state.adaptive,
+                    onAnswer = onAnswerAdaptive,
+                    onContinue = onContinueAdaptive,
+                    onPlayAudio = onPlayAudio,
+                    onOpenPinyinSettings = onOpenPinyinSettings,
+                    onExit = requestExit,
+                )
                 else -> Box(modifier = Modifier.fillMaxSize()) {
                     // The faded ink landscape sits under the cards only; the
                     // loader, the errors and the celebration keep their own ground.
@@ -647,7 +659,7 @@ private val WriterButtonGap = 16.dp
 private const val VOICE_CARD_SPEAK_DELAY_MILLIS = 300L
 
 @Composable
-private fun LessonTopBar(
+internal fun LessonTopBar(
     progress: Float,
     hearts: Int,
     onOpenPinyinSettings: () -> Unit,

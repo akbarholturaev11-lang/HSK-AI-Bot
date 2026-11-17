@@ -105,6 +105,12 @@ class LearningPage:
             self.ad_views.append(route.request.post_data_json)
             assert route.request.headers.get('x-hsk-pwa-csrf') == 'test-csrf'
             route.fulfill(json={'ok': True})
+        elif path == '/api/v3/pwa/voice/me':
+            # The verified owner's own quota. An unowned reply is the
+            # actor-changed logout path (location.replace), which races the
+            # session re-check and fails WebKit runs at random.
+            route.fulfill(headers={'X-HSK-PWA-User-ID': '31'},
+                          json={'ok': True, 'remaining_voice_limit': -1 if self.paid else 3})
         elif path.startswith('/api/'):
             route.fulfill(json={'ok': False})
         else:
