@@ -2,6 +2,9 @@
 # Bundled at deploy time; legacy Bot tj locale retained.
 COURSE_MESSAGES = {
   "ru": {
+    "adaptive.hint": "По вашей прошлой ошибке",
+    "adaptive.label": "Личное повторение",
+    "adaptive.savedOffline": "Ответ сохранён — проверим, когда появится интернет",
     "androidOnboarding.beginner": "Я совсем с нуля",
     "androidOnboarding.beginnerSub": "Сначала разберём ханцзы, пиньинь и тоны",
     "androidOnboarding.saveError": "Не удалось сохранить выбор. Проверьте соединение и попробуйте снова.",
@@ -1111,6 +1114,9 @@ COURSE_MESSAGES = {
     "you": "Вы"
   },
   "tj": {
+    "adaptive.hint": "Аз рӯи хатои пешинаатон",
+    "adaptive.label": "Такрори шахсӣ",
+    "adaptive.savedOffline": "Ҷавоб сабт шуд — вақте интернет барқарор шавад, тафтиш мекунем",
     "androidOnboarding.beginner": "Забони чиниро тамоман намедонам",
     "androidOnboarding.beginnerSub": "Аввал ханзӣ, пинйин ва оҳангҳоро мефаҳмем",
     "androidOnboarding.saveError": "Интихоб сабт нашуд. Пайвастро санҷида, боз кӯшиш кунед.",
@@ -2220,6 +2226,9 @@ COURSE_MESSAGES = {
     "you": "Шумо"
   },
   "uz": {
+    "adaptive.hint": "Avvalgi xatongiz asosida",
+    "adaptive.label": "Shaxsiy takror",
+    "adaptive.savedOffline": "Javob saqlandi — internet qaytganda tekshiriladi",
     "androidOnboarding.beginner": "Xitoy tilini umuman bilmayman",
     "androidOnboarding.beginnerSub": "Avval hanzi, pinyin va tonlarni tushunamiz",
     "androidOnboarding.saveError": "Tanlov saqlanmadi. Internetni tekshirib, qayta urinib ko'ring.",

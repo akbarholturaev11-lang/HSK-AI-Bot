@@ -2,12 +2,12 @@
   "schema_version": 1,
   "status": "PURPOSE_SPECIFIC_APIS_SOURCE_REVIEWED",
   "source": "app/static/course-v3.html",
-  "source_revision": "ed41339e6863645bacc8dd87eb38512462d3cf68",
-  "scope": "Three direct loadLessonData(...) expressions remain: audio warmup, nearby prefetch, and the post-reservation interactive lesson. Sales preview, Starter 0, and skip-test use separate purpose-specific endpoints. No client caller reads the legacy public lesson JSON route. 2026-11-16: next-part sheet handoff and one-line sheet header re-reviewed; the three direct and three indirect lesson read sites are unchanged and were re-anchored by exact source identity.",
+  "source_revision": "1606cf7e9aef633540623953e91b9cf3a9799d50",
+  "scope": "Three direct loadLessonData(...) expressions remain: audio warmup, nearby prefetch, and the post-reservation interactive lesson. Sales preview, Starter 0, and skip-test use separate purpose-specific endpoints. No client caller reads the legacy public lesson JSON route. 2026-11-16: next-part sheet handoff and one-line sheet header re-reviewed; the three direct and three indirect lesson read sites are unchanged and were re-anchored by exact source identity. 2026-11-17: UIUX-007 adaptive review overlay re-reviewed; the three direct and three indirect lesson read sites are unchanged and were re-anchored by exact source identity.",
   "read_calls": [
     {
       "ordinal": 1,
-      "line": 2687,
+      "line": 2690,
       "anchor": "loadLessonData(lv,n)",
       "owner": "warmLessonPreviewAudio",
       "intent": "audio_preload_before_continue",
@@ -17,7 +17,7 @@
     },
     {
       "ordinal": 2,
-      "line": 3716,
+      "line": 3720,
       "anchor": "loadLessonData(lv,l.n)",
       "owner": "prefetchNearbyLessons",
       "intent": "background_nearby_prefetch",
@@ -27,7 +27,7 @@
     },
     {
       "ordinal": 3,
-      "line": 4874,
+      "line": 4878,
       "anchor": "loadLessonData(lv,l.n)",
       "owner": "startLesson",
       "intent": "interactive_lesson_after_reservation",
