@@ -1899,6 +1899,12 @@ def test_course_v3_d1_recovery_resumes_saved_lesson_card_once(page):
         "**/api/miniapp/event",
         lambda route: json_response(route, {"ok": True}),
     )
+    # UIUX-007: an ordinary lesson asks for its personal review plan; with the
+    # server flag off the answer is `enabled: false` and the resume is unchanged.
+    page.route(
+        "**/api/v3/adaptive/plan",
+        lambda route: json_response(route, {"ok": True, "enabled": False, "plan": None}),
+    )
     page.add_init_script(
         """
         localStorage.setItem("hsk_v3_onb", "1");
