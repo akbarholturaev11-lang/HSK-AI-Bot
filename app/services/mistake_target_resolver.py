@@ -291,15 +291,24 @@ def resolve_target(
         # translation is that word's meaning, NOT the filled sentence's meaning.
         if source == "test" and fmt == "text_choice":
             word = bank.lookup_word(bank.normalize_zh(correct))
-            if word:
-                return _word_target(word)
-            return _adhoc_word(
-                correct,
-                pinyin=_text(material.get("pinyin"), 120),
-                meaning=_text(material.get("translation"), 300),
-                language=language,
-                level=level,
+            target = (
+                _word_target(word)
+                if word
+                else _adhoc_word(
+                    correct,
+                    pinyin=_text(material.get("pinyin"), 120),
+                    meaning=_text(material.get("translation"), 300),
+                    language=language,
+                    level=level,
+                )
             )
+            if target:
+                # Reuse the original exam blank and answer options as context;
+                # never turn the option meaning into a sentence translation.
+                block = _choice_block(material, correct)
+                if block:
+                    target["payload"]["gap"] = {"sentence": sentence, **block}
+            return target
         block = _choice_block(material, correct)
         full = bank.GAP_RE.sub(correct, sentence)
         if fmt in _DIALOG_FORMATS or "\n" in sentence or re.search(r"(^|\s)[AB]:", sentence):
