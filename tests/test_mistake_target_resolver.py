@@ -6,6 +6,7 @@ import unittest
 from collections import Counter
 
 from app.services.course_lesson_mistake_material_service import CourseLessonMistakeMaterialService as Lessons
+from app.services import mistake_drill_factory as drills
 from app.services.course_miniapp_practice_service import CourseMiniAppPracticeService as Practice
 from app.services.course_mistake_service import CourseMistakeService
 from app.services.course_question_material import canonicalize_hsk_exam_material
@@ -96,6 +97,53 @@ class LessonCoverageTests(unittest.TestCase):
 
 
 class ExamCoverageTests(unittest.TestCase):
+    def test_hsk4_exam_blanks_review_exact_missing_word(self):
+        source = json.load(open("app/static/course_v3_data/exams/hsk4.json", encoding="utf-8"))
+        material = canonicalize_hsk_exam_material(source, level="hsk4", lang="ru", source_path="exam")
+        blanks = [
+            question for question in material["questions"]
+            if question["format"] == "text_choice" and "___" in question["sentence"]
+        ]
+        self.assertGreaterEqual(len(blanks), 5)
+        for question in blanks:
+            with self.subTest(question=question["id"]):
+                correct = question["answer_index"]
+                option = question["option_materials"][correct]
+                target = resolve_target(
+                    category="word",
+                    source="test",
+                    material={
+                        "format": question["format"],
+                        "language": "ru",
+                        "prompt": question["prompt"],
+                        "sentence": question["sentence"],
+                        "pinyin": option["pinyin"],
+                        "translation": option["translation"],
+                        "options": question["options"],
+                        "correct_answer": question["options"][correct],
+                    },
+                    prompt=question["prompt"],
+                    correct_answer=question["options"][correct],
+                    user_answer=question["options"][(correct + 1) % len(question["options"])],
+                    explanation=question["explanation"],
+                    level="hsk4",
+                    language="ru",
+                )
+                self.assertIsNotNone(target)
+                self.assertEqual((target["kind"], target["zh"]), ("word", option["zh"]))
+                self.assertTrue(target["payload"]["meaning"].get("ru"))
+                review = drills.build_question(
+                    {"id": 1, "category": "word", **target},
+                    "meaning_choice",
+                    language="ru",
+                    seed=question["id"],
+                )
+                self.assertIsNotNone(review)
+                self.assertEqual(review["sentence"], option["zh"])
+                self.assertNotEqual(review["sentence"], question["sentence"].replace("___", option["zh"]))
+                if option["zh"] == "成长":
+                    self.assertEqual(target["payload"]["pinyin"], "chéngzhǎng")
+
     def test_every_exam_question_resolves(self):
         missing = []
         for level in ("hsk1", "hsk2", "hsk3", "hsk4"):
@@ -135,6 +183,27 @@ class ExamCoverageTests(unittest.TestCase):
 
 
 class SourceTests(unittest.TestCase):
+    def test_lesson_gap_fill_still_targets_full_sentence(self):
+        target = resolve_target(
+            category="grammar",
+            source="lesson",
+            material={
+                "format": "gap_fill",
+                "sentence": "通过这次经历，他____了很多。",
+                "options": ["成长", "出发", "迟到"],
+                "correct_answer": "成长",
+                "translation": "Благодаря этому опыту он сильно вырос.",
+            },
+            prompt="Выберите слово для пропуска",
+            correct_answer="成长",
+            user_answer="出发",
+            explanation="",
+            level="hsk4",
+            language="ru",
+        )
+        self.assertEqual((target["kind"], target["zh"]), ("sentence", "通过这次经历，他成长了很多。"))
+        self.assertIn("gap", target["payload"])
+
     def test_voice_correction_keeps_the_learners_wrong_sentence(self):
         target = voice("我是学生。", "我是学生吗")
         self.assertEqual((target["kind"], target["zh"]), ("sentence", "我是学生。"))
