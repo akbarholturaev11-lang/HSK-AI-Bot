@@ -1040,6 +1040,12 @@ data class VoicePronounceResponse(
     /** What the server actually heard, so a miss can be explained. */
     @SerialName("heard") val heard: String = "",
     @SerialName("message") val message: String = "",
+    /**
+     * Nothing recognisable was heard (silence, noise, a cut recording). Not a
+     * verdict: the learner is asked to say it again and the server records
+     * neither mastery nor a mistake.
+     */
+    @SerialName("unclear") val unclear: Boolean = false,
 )
 
 @Serializable

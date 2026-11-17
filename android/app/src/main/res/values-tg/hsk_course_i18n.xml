@@ -516,6 +516,8 @@
     <string name="hsk_course_part_sections_x" formatted="false">Такрори омехта</string>
     <string name="hsk_course_pay_sub" formatted="false">Тамоми роҳи HSK</string>
     <string name="hsk_course_pay_title" formatted="false">HSK AI Pro</string>
+    <string name="hsk_course_picture_review_label" formatted="false">Такрор бо расм</string>
+    <string name="hsk_course_picture_review_title" formatted="false">Ба расм нигоҳ кунед ва ба хитоӣ гӯед</string>
     <string name="hsk_course_pinyin_settings_all" formatted="false">Дар ҳама ҷо нишон додан</string>
     <string name="hsk_course_pinyin_settings_h" formatted="false">Пиньин (талаффуз)</string>
     <string name="hsk_course_pinyin_settings_nw" formatted="false">Танҳо дар калимаҳои нав</string>

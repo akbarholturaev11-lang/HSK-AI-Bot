@@ -37,6 +37,7 @@ from app.services.desktop_course_service import (
     DesktopCourseService,
     course_v3_lesson_card_count,
 )
+from app.services.course_lesson_plan_service import lesson_plan_for, with_lesson_plan
 from app.services.course_v3_parts import total_parts
 from app.services.entitlements.lesson_access import LessonAccessService
 from app.services.smart_reminder_preferences import SmartReminderActor, SmartReminderPreferencesService
@@ -237,6 +238,16 @@ class AndroidCourseService(DesktopCourseService):
             access_ref=access_ref,
         )
         await self._record_lesson_start(user_id=user_id, telegram_id=telegram_id, result=result)
+        # UIUX-008: only a lesson the learner can complete gets a plan; the
+        # helper never raises and returns the unchanged lesson on any failure.
+        lesson = result.get("lesson")
+        if result.get("completion_allowed") and isinstance(lesson, dict):
+            plan = await lesson_plan_for(
+                self.session, self.settings, user_id=int(user_id),
+                level=str(result.get("level") or ""),
+                lesson_order=int(result.get("lesson_order") or 0), lesson=lesson,
+            )
+            result["lesson"] = with_lesson_plan(lesson, plan)
         return result
 
     async def _record_lesson_start(self, *, user_id: int, telegram_id: int | None, result: dict) -> None:

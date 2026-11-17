@@ -29,6 +29,7 @@ import com.pomp.hskai.data.api.NotificationsRequest
 import com.pomp.hskai.data.api.OkResponse
 import com.pomp.hskai.data.api.RewardChestOpenResponse
 import com.pomp.hskai.data.lesson.LessonParser
+import com.pomp.hskai.data.lesson.LessonPlan
 import com.pomp.hskai.data.local.CourseMapCacheEntity
 import com.pomp.hskai.data.local.CourseMapDao
 import com.pomp.hskai.data.local.LessonCacheDao
@@ -80,6 +81,8 @@ class CourseRepository(
     private val timezoneOffsetMinutes: () -> Int = {
         TimeZone.getDefault().getOffset(System.currentTimeMillis()) / 60_000
     },
+    /** UIUX-008: whether this device can draw a picture-deck emoji. */
+    private val pictureDrawable: (String) -> Boolean = { true },
 ) {
 
     /**
@@ -390,13 +393,25 @@ class CourseRepository(
         ) {
             return null
         }
+        // UIUX-008: the learner's lesson-length plan and picture deck, applied
+        // after the total_cards check above so that check keeps counting the
+        // lesson the server served. A preview or a disk copy shows the lesson
+        // as served: the deck needs the network to score, and a preview's
+        // card limit is counted on the unplanned lesson.
+        val lesson = if (envelope.completionAllowed && !isStale) {
+            runCatching {
+                LessonPlan.apply(parsed, envelope.lesson, language, pictureDrawable)
+            }.getOrDefault(parsed).takeIf { it.cards.isNotEmpty() } ?: parsed
+        } else {
+            parsed
+        }
         val limit = if (envelope.completionAllowed) {
-            cardCount
+            lesson.cards.size
         } else {
             envelope.previewCardLimit.coerceIn(1, cardCount)
         }
         return LessonSnapshot(
-            lesson = parsed,
+            lesson = lesson,
             isHalfPreview = envelope.previewHalf,
             previewCardLimit = limit,
             completionAllowed = envelope.completionAllowed,

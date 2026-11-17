@@ -1531,6 +1531,21 @@ class VoicePracticeService:
             raise VoicePracticeError("AI_FAILED", "Voice AI failed. Try again.", 502) from error
 
         heard = (transcription_result.content or "").strip()
+        if not self._cjk_chars(heard) and not re.search(r"[A-Za-z]", heard):
+            # Nothing recognisable was heard (silence, noise, a cut recording).
+            # That is not evidence of a wrong pronunciation: no mastery or
+            # mistake write, and callers can show "say it again" instead of
+            # guessing a verdict. `score`/`passed` keep the old shape (0/False).
+            return {
+                "ok": True,
+                "score": 0,
+                "passed": False,
+                "unclear": True,
+                "heard": heard,
+                "target": target,
+                "target_pinyin": target_pinyin,
+                "budget_notice": self._budget_notice_payload(record),
+            }
         score = self._pronunciation_score(target, heard, target_pinyin)
         passed = score >= PRONOUNCE_PASS_SCORE
         # Interval takrori: to'g'ri talaffuz so'zni siyraklashtiradi, xato

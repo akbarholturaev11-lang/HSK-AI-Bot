@@ -516,6 +516,8 @@
     <string name="hsk_course_part_sections_x" formatted="false">Смешанное повторение</string>
     <string name="hsk_course_pay_sub" formatted="false">Откройте весь путь HSK</string>
     <string name="hsk_course_pay_title" formatted="false">HSK AI Pro</string>
+    <string name="hsk_course_picture_review_label" formatted="false">Повторение по картинкам</string>
+    <string name="hsk_course_picture_review_title" formatted="false">Посмотрите на картинку и скажите по-китайски</string>
     <string name="hsk_course_pinyin_settings_all" formatted="false">Показывать везде</string>
     <string name="hsk_course_pinyin_settings_h" formatted="false">Пиньинь (произношение)</string>
     <string name="hsk_course_pinyin_settings_nw" formatted="false">Только в новых словах</string>

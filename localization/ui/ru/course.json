@@ -1112,6 +1112,8 @@
     "voiceV8.endBody": "Текущий разговор будет завершён.",
     "voiceV8.endCancel": "Продолжить",
     "voiceV8.endConfirm": "Завершить",
-    "voiceV8.restart": "Начать новый разговор"
+    "voiceV8.restart": "Начать новый разговор",
+    "pictureReview.label": "Повторение по картинкам",
+    "pictureReview.title": "Посмотрите на картинку и скажите по-китайски"
   }
 }

@@ -344,7 +344,9 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 .fpbar{flex:1;height:9px;background:var(--line);border-radius:6px;overflow:hidden}
 .fpbar>i{display:block;height:100%;width:0;background:var(--cin);border-radius:6px;transition:width .3s}
 .fheart{display:flex;align-items:center;gap:3px;color:var(--cin2);font-size:15px;font-weight:500}
-.fstage{padding:4px 18px 0;font-size:11px;color:var(--cin2);font-weight:600;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.fstage{padding:4px 18px 0;font-size:11px;color:var(--cin2);font-weight:600;text-transform:uppercase;display:flex;align-items:center;justify-content:center;text-align:center;gap:8px}
+.fcount{font-size:12px;font-weight:600;color:var(--cin2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.fcount:empty{display:none}
 .fstage .foundation-step{margin:0;max-width:72%;min-width:0;font-size:11px;line-height:1.25;text-transform:none;letter-spacing:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:1}
 /* Murabbiy qatori: chapda personaj, o'ngda u aytayotgan gap.
    Ilgari personaj o'ng chetda YOLG'IZ turardi, yonida esa uning ISMI
@@ -1411,7 +1413,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 #sheet.lesson-exit-confirm .si{border-radius:24px;max-height:85dvh}
 #sheet.lesson-exit-confirm .grip{display:none}
 .lesson-exit{color:var(--cin2);margin-top:12px}
-.ftop .fx.fgear{border:1px solid var(--line);background:var(--card);color:var(--ink2)}
+.ftop .fx.fgear{border:0;background:none;color:var(--ink2)}
 .fbody.has-lesson-pron{display:flex;flex-direction:column;padding-bottom:0}
 .lesson-pron{display:flex;flex-direction:column;flex:1;min-height:460px}
 .lesson-pron>.qq{text-align:center}
@@ -1422,6 +1424,39 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 .lesson-pron-phrase .au{margin:0 auto 10px}
 .lesson-pron-controls{margin-top:auto;flex-shrink:0}
 .lesson-pron-controls .pron-skip{letter-spacing:normal;font-weight:500;margin:2px 0 0;display:inline-flex}
+/* UIUX-008 rasmli takror: ustma-ust navbat, orqadagilar biroz yuqorida. */
+.pic-stage{flex:1;display:flex;align-items:center;justify-content:center;padding:34px 0 14px}
+.pic-stack{position:relative;width:min(100%,280px);height:clamp(210px,38vh,290px)}
+.pic-card{position:absolute;inset:0;transform-origin:50% 0;transition:transform .32s cubic-bezier(.2,.8,.25,1),opacity .32s ease;perspective:1100px;cursor:default}
+.pic-card.d0{transform:none}
+.pic-card.d1{transform:translateY(-15px) scale(.93)}
+.pic-card.d2{transform:translateY(-28px) scale(.86)}
+.pic-card.dn{transform:translateY(-28px) scale(.86);opacity:0;pointer-events:none}
+.pic-card.pic-gone{display:none}
+.pic-card.d1 .pic-img,.pic-card.d2 .pic-img,.pic-card.dn .pic-img{visibility:hidden}
+.pic-hop{width:100%;height:100%;perspective:1100px}
+.pic-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d}
+.pic-face{position:absolute;inset:0;border-radius:24px;background:var(--card);border:1.5px solid var(--line);box-shadow:0 6px 0 var(--shadow);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:18px;text-align:center;backface-visibility:hidden;-webkit-backface-visibility:hidden;transition:background-color .2s ease,border-color .2s ease}
+.pic-back{transform:rotateY(180deg)}
+.pic-img{font-size:clamp(84px,24vw,112px);line-height:1;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
+.pic-zh{font-size:44px;line-height:1.15;color:var(--ink)}
+.pic-py{font-size:17px;color:var(--cin2);font-weight:600}
+.pic-tr{font-size:15px;color:var(--ink2);line-height:1.35}
+#flow.pyoff .pic-py,#flow.pynew .pic-py{display:none}
+.pic-card.pic-ok .pic-face{background:var(--jadebg);border-color:var(--jade)}
+.pic-card.pic-no .pic-face{background:var(--goldbg);border-color:var(--gold)}
+.pic-card.pic-ok .pic-hop,.pic-card.pic-no .pic-hop{animation:picHop .26s cubic-bezier(.3,1.6,.5,1)}
+.pic-card.pic-flip{cursor:pointer}
+.pic-card.pic-flip .pic-inner{transform:rotateY(180deg);animation:picFlip .5s cubic-bezier(.3,.7,.2,1)}
+.pic-card.pic-out-ok{transform:translateX(118%) rotate(9deg);opacity:0}
+.pic-card.pic-out-skip{transform:translateX(-118%) rotate(-7deg);opacity:0}
+.pic-card.pic-out-back{transform:translateY(46px) scale(.9);opacity:0}
+.pic-stack.pic-deal .pic-hop{animation:picDeal .42s cubic-bezier(.2,.85,.25,1) both}
+.pic-review .pr-mic:disabled{opacity:.45}
+@keyframes picHop{0%{transform:translateY(0)}45%{transform:translateY(-14px)}100%{transform:translateY(0)}}
+@keyframes picFlip{0%{transform:rotateY(0)}72%{transform:rotateY(160deg)}100%{transform:rotateY(180deg)}}
+@keyframes picDeal{0%{transform:translateY(-70px) rotateX(58deg) scale(.92);opacity:0}100%{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.pic-card,.pic-face{transition:none}.pic-card .pic-hop,.pic-card .pic-inner,.pic-stack.pic-deal .pic-hop{animation:none!important}}
 
 /* Inline nav skin: no extra static-asset endpoint or CSS request. */
 /* Telegram Mini App bottom navigation: lightweight Liquid Glass surface.
@@ -1705,7 +1740,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
   </div>
 
   <div class="flow" id="flow">
-    <div class="ftop"><button class="fx fgear" onclick="App.pinyinSheet()"><i class="ti ti-settings"></i></button><div class="fpbar"><i id="f-prog"></i></div><span class="fheart"><i class="ti ti-heart"></i><span id="f-hp">5</span></span></div>
+    <div class="ftop"><button class="fx fgear" onclick="App.pinyinSheet()"><i class="ti ti-settings"></i></button><div class="fpbar"><i id="f-prog"></i></div><span class="fcount" id="f-count"></span><span class="fheart"><i class="ti ti-heart"></i><span id="f-hp">5</span></span></div>
     <div class="fstage" id="f-stage"></div>
     <div class="fcoach-dock" id="f-coach-dock"><div class="fcoach hsk-character-stage" id="f-coach" aria-hidden="true"></div><div class="fcoach-col"><p class="fcoach-bubble" id="f-coach-bubble"></p><div class="fcoach-slot" id="f-coach-slot"></div></div></div>
     <div class="fbody" id="f-body"></div>
@@ -1741,7 +1776,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 </script>
 <!-- Reklama moduli: dars yakuni bloki uchun (mashq bo'limlari ham shu moduldan foydalanadi) -->
 <script src="/voice-live.js?v=20261114-43a09dcc7b1d"></script>
-<script defer src="/course_v3_data/ads.js?v=20261021-5288c4e06b0c"></script><script src="/course_v3_data/hsk-common-i18n.js?v=20261019-1c672dcfb10d"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261113-61bd77761242"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-a0dd8c0b1db1"></script><script src="/course_v3_data/p3-grammar-reservation.js?v=20261019-p3-2"></script>
+<script defer src="/course_v3_data/ads.js?v=20261021-5288c4e06b0c"></script><script src="/course_v3_data/hsk-common-i18n.js?v=20261019-1c672dcfb10d"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261113-642a79197e7f"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-a0dd8c0b1db1"></script><script src="/course_v3_data/p3-grammar-reservation.js?v=20261019-p3-2"></script>
 <script>
 /* ---------- i18n (default RU) ---------- */
 var I18N={
@@ -4876,7 +4911,7 @@ function startLesson(idx,opts){
     ?HSKLessonPresentation.beginLessonEntry({lang:LANG,character:"panda"}):null;
   var lv=MAP.level||"hsk1";
   reserveLessonStart(l).then(function(){return loadLessonData(lv,l.n)}).then(function(d){d=applyReservedP3Grammar(d,lv,l.n);
-    Flow.queue=buildQueue(d);Flow.exitRequired=((d.exit_ticket&&d.exit_ticket.required_objectives)||[]).slice();Flow.queue=restoreLessonMastery(lv,l.n,Flow.queue);Flow.i=typeof Flow._restoredResumeIndex==="number"?Flow._restoredResumeIndex:loadLessonResume(lv,l.n,Flow.queue.length);Flow.correct=0;Flow.graded=0;Flow.streak=0;Flow.mistakes=[];Flow.test=null;Flow.challenge=null;Flow.lessonIdx=idx;Flow.ad=null;Flow._cheered=false;Flow._wrongPending=false;Flow.startedAt=Date.now();
+    Flow.queue=buildQueue(d,{previewHalf:!!l.preview_half});Flow.exitRequired=((d.exit_ticket&&d.exit_ticket.required_objectives)||[]).slice();Flow.queue=restoreLessonMastery(lv,l.n,Flow.queue);Flow.i=typeof Flow._restoredResumeIndex==="number"?Flow._restoredResumeIndex:loadLessonResume(lv,l.n,Flow.queue.length);Flow.correct=0;Flow.graded=0;Flow.streak=0;Flow.mistakes=[];Flow.test=null;Flow.challenge=null;Flow.lessonIdx=idx;Flow.ad=null;Flow._cheered=false;Flow._wrongPending=false;Flow.startedAt=Date.now();
     Flow.salesOutcome=d.outcome||null;Flow.salesNextOutcome=d.next_outcome_preview||null;rememberSalesValueContent(d);
     setLessonFlowControls();
     /* Eski levelardagi preview_half serverdan kelsa saqlanadi. HSK1 checkpoint
@@ -4922,8 +4957,17 @@ function lessonMaterialRef(d,sectionNo,cardNo){
   var lesson=Number((d&&d.lesson_id)||flowLessonOrder()||0);
   return "lesson:"+level+":"+lesson+":section:"+Number(sectionNo||0)+":card:"+Number(cardNo||0);
 }
-function buildQueue(d){
+function buildQueue(d,opts){
   var q=[];
+  /* UIUX-008: server rejasi. `omit` faqat practice/retention_review dagi
+     qo'shimcha mashqlarni yashiradi — material_ref asl pozitsiyadan
+     hisoblangani uchun server qayta baholashi o'zgarmaydi. */
+  var plan=lessonPlanOf(d,opts),omit={},deck=null;
+  if(plan){
+    (Array.isArray(plan.omit)?plan.omit:[]).forEach(function(o){if(o)omit[Number(o.section_no)+":"+Number(o.card_no)]=1});
+    var pr=plan.picture_review,words=pr&&pictureReviewWords(pr.words);
+    if(pr&&pr.anchor&&words.length)deck={sNo:Number(pr.anchor.section_no),start:pr.anchor.position==="start",words:words};
+  }
   /* Noldan boshlovchi uchun tanishtiruv kartalari (hsk1, 1-qism). `sections`
      dan tashqarida turadi — material_ref pozitsiyalari surilmasin. Javob
      so'ramaydi, shuning uchun _materialRef ham berilmaydi. */
@@ -4936,6 +4980,9 @@ function buildQueue(d){
     cards.forEach(function(c,cardIndex){
       if(c&&typeof c==="object")c._materialRef=lessonMaterialRef(d,sNo,cardIndex+1);
     });
+    if(plan&&(sec.section_purpose==="practice"||sec.section_purpose==="retention_review")){
+      cards=cards.filter(function(c,cardIndex){return !omit[Number(sNo)+":"+(cardIndex+1)]});
+    }
     /* New lessons ship an already-interleaved intro (teach + immediate check)
        and set intro_prebuilt — use their cards as-is. Older lessons lack the
        flag and keep the legacy client-side drill (teach 4 words, 4 formats). */
@@ -4960,7 +5007,10 @@ function buildQueue(d){
     }
     /* Dialog is now fully interactive (audio/cloze/char-gap) — no passive dump. */
     var sTitle=tr(sec.section_title)||(secNames()[(sec.section_no||1)-1]||"");
+    var pictureStep=deck&&deck.sNo===Number(sNo)?{type:"_picture_review",words:deck.words,_sNo:sNo,_sTitle:sTitle,_sPurpose:sec.section_purpose||""}:null;
+    if(pictureStep&&deck.start){q.push(pictureStep);pictureStep=null}
     cards.forEach(function(c){c._sNo=sNo;c._sTitle=sTitle;c._sPurpose=sec.section_purpose||"";q.push(c)});
+    if(pictureStep)q.push(pictureStep);
   });
   /* Versionlangan exit-ticket `sections` tashqarisida: eski material_ref va
      resume indekslari surilmaydi. U faqat checkpoint oxirida enqueue qilinadi. */
@@ -5041,7 +5091,7 @@ function lessonCharacterLabel(id){
 }
 function lessonCardHasEmbeddedCoach(card){
   var t=String(card&&card.type||"");
-  return t==="_basics"||t==="_grammar"||t==="pronunciation";
+  return t==="_basics"||t==="_grammar"||t==="pronunciation"||t==="_picture_review";
 }
 /* Murabbiyning gapi kartaning O'Z ko'rsatmasi (`.qq`). U karta chizilgandan
    keyin ko'chiriladi — `renderLessonCoach` kartadan OLDIN chaqiriladi, ya'ni
@@ -5525,7 +5575,9 @@ function flyXp(xp){
   },1300);
 }
 var writeChar="",writeMeta={};
-function writerA11yLabel(){var fallback={uz:"书写 Yozish",ru:"书写 Письмо",tj:"书写 Навиштан"}[LANG]||"书写 Yozish";return courseMessage("testHub.write",fallback)}function setWriteBtn(ch,meta){writeChar=ch||"";writeMeta=meta||{};var b=$("#writebtn");if(b){b.setAttribute("aria-label",writerA11yLabel());b.style.display=writeChar?"flex":"none"}}
+function writerA11yLabel(){var fallback={uz:"书写 Yozish",ru:"书写 Письмо",tj:"书写 Навиштан"}[LANG]||"书写 Yozish";return courseMessage("testHub.write",fallback)}/* The lesson header: "N / M" sits before the hearts, the label centred under the bar. */
+function setFlowStage(count,labelHtml){var c=$("#f-count");if(c)c.textContent=count||"";var st=$("#f-stage");if(st)st.innerHTML=labelHtml||""}
+function setWriteBtn(ch,meta){writeChar=ch||"";writeMeta=meta||{};var b=$("#writebtn");if(b){b.setAttribute("aria-label",writerA11yLabel());b.style.display=writeChar?"flex":"none"}}
 /* Pinyin ko'rsatish rejimi: all (default) / new (faqat yangi so'z kartasi) / off */
 function pinyinMode(){try{var v=localStorage.getItem("hsk_v3_pinyin");return v==="new"||v==="off"?v:"all"}catch(e){return "all"}}
 function applyPinyinMode(){var f=$("#flow");if(!f)return;var m=pinyinMode();f.classList.toggle("pyoff",m==="off");f.classList.toggle("pynew",m==="new")}
@@ -5554,7 +5606,7 @@ function renderFlowCard(){
     writeTarget=c.source_words[0];writeInfo={pinyin:"",meaning:""};
   }
   setWriteBtn(writeTarget,writeInfo);
-  var stEl=$("#f-stage");if(stEl)stEl.innerHTML=c._sNo?'<span>'+(Flow.i+1)+' / '+Flow.queue.length+'</span><b>'+esc(c._sTitle||"")+'</b>':'';
+  setFlowStage(c._sNo?(Flow.i+1)+" / "+Flow.queue.length:"",c._sNo?'<b>'+esc(c._sTitle||"")+'</b>':"");
   if(c._repairSpacer)return cardRepairSpacer(c);
   if(c._guided)return cardGuidedRepair(c);
   if(t==="active_word")return cardWord(c);
@@ -5569,6 +5621,7 @@ function renderFlowCard(){
   if(t==="reverse_builder")return cardReverse(c);
   if(t==="match_pairs")return cardMatch(c);
   if(t==="pronunciation")return cardPron(c);
+  if(t==="_picture_review")return cardPictureReview(c);
   return cardChoice(c); /* meaning_guess, pinyin_choice, hanzi_choice, translation_choice, quick_quiz, gap_fill, listening_choice, dialog_context */
 }
 function repairAnswerText(c){
@@ -5806,7 +5859,7 @@ Foundation.render=function(){
   $("#f-body").classList.remove("has-lesson-pron");
   var c=Foundation.queue[Foundation.i];if(!c)return Foundation.finish();
   $("#f-prog").style.width=Math.round(Foundation.i/Math.max(Foundation.queue.length,1)*100)+"%";
-  var st=$("#f-stage");if(st)st.innerHTML='<span>'+(Foundation.i+1)+' / '+Foundation.queue.length+'</span><span class="foundation-step"><i class="ti ti-info-circle" aria-hidden="true"></i> '+esc(foundationStepLabel(c))+'</span>';
+  setFlowStage((Foundation.i+1)+" / "+Foundation.queue.length,'<span class="foundation-step"><i class="ti ti-info-circle" aria-hidden="true"></i> '+esc(foundationStepLabel(c))+'</span>');
   var cta=$("#f-cta");cta.style.display="flex";cta.innerHTML='<i class="ti ti-arrow-right"></i> '+(c.type==="result"?courseMessage("check",T().check):courseMessage("cont",T().cont));
   if(c._repairSpacer)return foundationRepairSpacer(c);
   if(c._guided)return foundationGuidedCard(c);
@@ -6014,13 +6067,59 @@ function lessonPronHtml(phrase,pinyin,translation,buttonId,hintId,record,skip){
   $("#f-body").classList.add("has-lesson-pron");
   return '<div class="lesson-pron"><div class="qq">'+esc(title)+'</div><div class="lesson-pron-stage"><div class="lesson-pron-phrase say-bub"><button class="au" onclick="speak(\''+esc(phrase)+'\')"><i class="ti ti-volume"></i></button><div class="z4 han">'+esc(phrase)+'</div><div class="p4">'+esc(pinyin||"")+'</div><div class="t4">'+esc(translation||"")+'</div></div><div class="lesson-pron-character">'+lessonCharacterHtml("panda","talk")+'</div></div><div class="pr-ctrl lesson-pron-controls"><div class="pr-micwrap"><button class="pr-mic" id="'+buttonId+'" aria-label="'+esc(courseMessage("say",T().say))+'" onclick="'+record+'"><i class="ti ti-microphone"></i></button></div><div class="pr-hint" role="status" id="'+hintId+'"></div><button class="pr-skip pron-skip" onclick="'+skip+'">'+esc(skipText)+' <i class="ti ti-player-skip-forward"></i></button></div></div>';
 }
+/* Bitta talaffuz yozuvi: mikrofon -> MediaRecorder (4 s avto-stop) -> server
+   ballari. Dars talaffuz kartasi va rasmli takror (UIUX-008) shu yagona
+   yo'ldan foydalanadi. `st` — bitta urinish holati; `ui` — karta UI'si. */
+function lessonPronRelease(st){try{if(st.stream)st.stream.getTracks().forEach(function(t){t.stop()})}catch(e){}st.stream=null}
+function lessonPronAbort(st){if(!st)return;st.cancelled=true;clearTimeout(st.auto);try{if(st.rec){st.rec.onstop=null;if(st.rec.state!=="inactive")st.rec.stop()}}catch(e){}lessonPronRelease(st)}
+function lessonPronRecord(st,target,pinyin,ui){
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder){clog("mic_nosupport","",{md:!!navigator.mediaDevices,gum:!!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia),mr:!!window.MediaRecorder});ui.hint(_prL().noSupport);return;}
+  if(st.busy)return;st.busy=true;
+  navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
+    if(st.cancelled){stream.getTracks().forEach(function(t){t.stop()});return}
+    st.stream=stream;st.chunks=[];
+    var mimes=["audio/webm;codecs=opus","audio/webm","audio/mp4","audio/ogg;codecs=opus"],mime="";
+    for(var k=0;k<mimes.length;k++){if(window.MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported(mimes[k])){mime=mimes[k];break}}
+    try{st.rec=mime?new MediaRecorder(stream,{mimeType:mime,audioBitsPerSecond:32000}):new MediaRecorder(stream)}catch(_){st.rec=new MediaRecorder(stream)}
+    st.rec.ondataavailable=function(e){if(e.data&&e.data.size>0)st.chunks.push(e.data)};
+    st.rec.onstop=function(){
+      var _mt=(st.rec&&st.rec.mimeType)||"audio/webm";var blob=new Blob(st.chunks,{type:_mt});lessonPronRelease(st);
+      if(st.cancelled)return;
+      if(blob.size<1200){st.busy=false;ui.setBtn(courseMessage("say",T().say));ui.hint(_prL().retry);return;}
+      var _e=(blob.type||_mt).toLowerCase(),_ext=/mp4|m4a|aac/.test(_e)?"mp4":(/ogg/.test(_e)?"ogg":(/mpeg|mp3/.test(_e)?"mp3":(/wav/.test(_e)?"wav":"webm")));
+      var fd=new FormData();fd.append("initData",initData());fd.append("target",target||"");fd.append("target_pinyin",pinyin||"");fd.append("language",LANG);fd.append("level",MAP&&MAP.level||"");fd.append("audio",blob,"voice."+_ext);
+      coursePronounce(fd)
+        .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j}})})
+        .then(function(o){
+          if(st.cancelled)return;st.busy=false;
+          clog("mic_result",(o&&o.j&&o.j.ok===true)?"ok":"fail",{mime:blob.type||_mt,ext:_ext,size:blob.size,heard:((o&&o.j&&o.j.heard)||"").slice(0,24),code:(o&&o.j&&o.j.code)||""});
+          ui.result(o);
+        })
+        .catch(function(){if(st.cancelled)return;st.busy=false;clog("mic_neterr","",{mime:blob.type||_mt,ext:_ext,size:blob.size});ui.setBtn(courseMessage("say",T().say));ui.hint(_prL().netErr)});
+    };
+    st.rec.start(250);try{navigator.vibrate&&navigator.vibrate(20)}catch(e){}
+    ui.setBtn(_prL().listening);ui.hint(_prL().listening);haptic("light");
+    clearTimeout(st.auto);st.auto=setTimeout(ui.stop,4000);
+  }).catch(function(err){lessonPronRelease(st);if(st.cancelled)return;st.busy=false;clog("mic_deny",(err&&err.name)||"",{});ui.hint(_prL().micDeny)});
+}
+/* Server javobining umumiy qismi. true — natija (ball) bor; false — natija
+   yo'q (limit, tarmoq yoki "aniq eshitilmadi"): taxminiy baho berilmaydi. */
+function lessonPronVerdictReady(o,ui,onLimit){
+  if(!o.ok||!o.j||o.j.ok!==true){
+    ui.setBtn(courseMessage("say",T().say));
+    if(o.j&&o.j.code==="PRONOUNCE_LIMIT_EXCEEDED"){onLimit();return false;}
+    ui.hint((o.j&&o.j.code==="INVALID_INIT_DATA")?_prL().needTg:(o.j&&o.j.message)||_prL().netErr);return false;
+  }
+  if(o.j.unclear){ui.setBtn(courseMessage("say",T().say));ui.hint(_prL().retry);return false;}
+  return true;
+}
 function cardPron(c){
   $("#f-cta").style.display="none";
   $("#f-body").innerHTML=lessonPronHtml(c.phrase,c.pinyin,tr(c.translation||""),"pron-btn","pron-hint","window._pron()","window._pronSkip()");
   setWriteBtn("");
   var st={stream:null,rec:null,chunks:[],auto:null,cancelled:false,busy:false};
   var audioTimer=setTimeout(function(){if(!st.cancelled)speak(c.phrase)},350);
-  LESSON_PRON_CANCEL=function(){st.cancelled=true;clearTimeout(audioTimer);clearTimeout(st.auto);try{if(st.rec){st.rec.onstop=null;if(st.rec.state!=="inactive")st.rec.stop()}}catch(e){}release()};
+  LESSON_PRON_CANCEL=function(){clearTimeout(audioTimer);lessonPronAbort(st)};
   window._pronSkip=function(){
     if(Flow.answered||st.cancelled)return;
     cancelLessonPron();
@@ -6028,48 +6127,137 @@ function cardPron(c){
   };
   function setBtn(label){var b=$("#pron-btn");if(b){b.setAttribute("aria-label",label);b.classList.toggle("pr-rec",label===_prL().listening)}}
   function hint(t){var h=$("#pron-hint");if(h)h.textContent=t||""}
-  function release(){try{if(st.stream)st.stream.getTracks().forEach(function(t){t.stop()})}catch(e){}st.stream=null}
   function stop(){clearTimeout(st.auto);if(st.rec&&st.rec.state!=="inactive"){setBtn(_prL().analyzing);hint(_prL().analyzing);st.rec.stop()}}
+  var ui={setBtn:setBtn,hint:hint,stop:stop,result:function(o){
+    if(!lessonPronVerdictReady(o,ui,function(){App.openPaywall("pronLimit")}))return;
+    var sc=Number(o.j.score)||0,pass=sc>=60,heard=o.j.heard?(_prL().heard+" "+esc(o.j.heard)):"";
+    Flow.answered=true;Flow.graded=(Flow.graded||0)+1;if(pass)Flow.correct=(Flow.correct||0)+1;
+    beep(pass?[523,659,784]:[220,180]);haptic(pass?"ok":"no");
+    showBar(pass,(pass?courseMessage("correct",T().correct):courseMessage("wrong",T().wrong))+" "+sc+"%",heard||(pass?"":esc(c.phrase)));
+  }};
   window._pron=function(){
     if(Flow.answered||st.cancelled)return;
     if(st.rec&&st.rec.state!=="inactive"){stop();return;}
-    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder){clog("mic_nosupport","",{md:!!navigator.mediaDevices,gum:!!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia),mr:!!window.MediaRecorder});hint(_prL().noSupport);return;}
-    if(st.busy)return;st.busy=true;
-    navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
-      if(st.cancelled){stream.getTracks().forEach(function(t){t.stop()});return}
-      st.stream=stream;st.chunks=[];
-      var mimes=["audio/webm;codecs=opus","audio/webm","audio/mp4","audio/ogg;codecs=opus"],mime="";
-      for(var k=0;k<mimes.length;k++){if(window.MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported(mimes[k])){mime=mimes[k];break}}
-      try{st.rec=mime?new MediaRecorder(stream,{mimeType:mime,audioBitsPerSecond:32000}):new MediaRecorder(stream)}catch(_){st.rec=new MediaRecorder(stream)}
-      st.rec.ondataavailable=function(e){if(e.data&&e.data.size>0)st.chunks.push(e.data)};
-      st.rec.onstop=function(){
-        var _mt=(st.rec&&st.rec.mimeType)||"audio/webm";var blob=new Blob(st.chunks,{type:_mt});release();
-        if(st.cancelled)return;
-        if(blob.size<1200){st.busy=false;setBtn(courseMessage("say",T().say));hint(_prL().retry);return;}
-        var _e=(blob.type||_mt).toLowerCase(),_ext=/mp4|m4a|aac/.test(_e)?"mp4":(/ogg/.test(_e)?"ogg":(/mpeg|mp3/.test(_e)?"mp3":(/wav/.test(_e)?"wav":"webm")));
-        var fd=new FormData();fd.append("initData",initData());fd.append("target",c.phrase||"");fd.append("target_pinyin",c.pinyin||"");fd.append("language",LANG);fd.append("level",MAP&&MAP.level||"");fd.append("audio",blob,"voice."+_ext);
-        coursePronounce(fd)
-          .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j}})})
-          .then(function(o){
-            if(st.cancelled)return;st.busy=false;
-            clog("mic_result",(o&&o.j&&o.j.ok===true)?"ok":"fail",{mime:blob.type||_mt,ext:_ext,size:blob.size,heard:((o&&o.j&&o.j.heard)||"").slice(0,24),code:(o&&o.j&&o.j.code)||""});
-            if(!o.ok||!o.j||o.j.ok!==true){
-              setBtn(courseMessage("say",T().say));
-              if(o.j&&o.j.code==="PRONOUNCE_LIMIT_EXCEEDED"){App.openPaywall("pronLimit");return;}
-              hint((o.j&&o.j.code==="INVALID_INIT_DATA")?_prL().needTg:(o.j&&o.j.message)||_prL().netErr);return;
-            }
-            var sc=Number(o.j.score)||0,pass=sc>=60,heard=o.j.heard?(_prL().heard+" "+esc(o.j.heard)):"";
-            Flow.answered=true;Flow.graded=(Flow.graded||0)+1;if(pass)Flow.correct=(Flow.correct||0)+1;
-            beep(pass?[523,659,784]:[220,180]);haptic(pass?"ok":"no");
-            showBar(pass,(pass?courseMessage("correct",T().correct):courseMessage("wrong",T().wrong))+" "+sc+"%",heard||(pass?"":esc(c.phrase)));
-          })
-          .catch(function(){if(st.cancelled)return;st.busy=false;clog("mic_neterr","",{mime:blob.type||_mt,ext:_ext,size:blob.size});setBtn(courseMessage("say",T().say));hint(_prL().netErr)});
-      };
-      st.rec.start(250);try{navigator.vibrate&&navigator.vibrate(20)}catch(e){}
-      setBtn(_prL().listening);hint(_prL().listening);haptic("light");
-      clearTimeout(st.auto);st.auto=setTimeout(stop,4000);
-    }).catch(function(err){release();if(st.cancelled)return;st.busy=false;clog("mic_deny",(err&&err.name)||"",{});hint(_prL().micDeny)});
+    lessonPronRecord(st,c.phrase||"",c.pinyin||"",ui);
   };
+}
+/* ---------- Rasmli takror (UIUX-008) ----------
+   Server `lesson_plan.picture_review` da o'quvchi OLDIN o'rgangan va aniq
+   rasmi bor so'zlarni beradi (ko'pi bilan 10). Bu bitta dars qadami: ball,
+   yurak, streak, XP, xatolar ro'yxati va resume indeksi o'zgarmaydi;
+   talaffuz mavjud endpoint va mavjud kunlik limit bilan serverda baholanadi.
+   Javob (iyeroglif/pinyin/tarjima) faqat tekshiruvdan KEYIN chiziladi. */
+var PIC_REVIEW_MAX=10,PIC_REVIEW_MAX_TRIES=3;
+function pictureText(key){
+  var F={title:{uz:"Rasmga qarang va xitoycha ayting",ru:"Посмотрите на картинку и скажите по-китайски",tj:"Ба расм нигоҳ кунед ва ба хитоӣ гӯед"},
+    label:{uz:"Rasmli takror",ru:"Повторение по картинкам",tj:"Такрор бо расм"}};
+  var f=F[key]||{};return courseMessage("pictureReview."+key,f[LANG]||f.uz||"");
+}
+function lessonPlanOf(d,opts){
+  var p=d&&d.lesson_plan;
+  if(!p||typeof p!=="object"||Number(p.version)!==1||(opts&&opts.previewHalf))return null;
+  return p;
+}
+function pictureReviewWords(list){
+  var out=[],seen={};
+  (Array.isArray(list)?list:[]).forEach(function(w){
+    if(!w||typeof w!=="object"||out.length>=PIC_REVIEW_MAX)return;
+    var zh=String(w.zh||"").trim(),img=String(w.image||"").trim();
+    if(!zh||!img||seen[zh])return;
+    seen[zh]=1;out.push({zh:zh,pinyin:String(w.pinyin||""),meaning:(w.meaning&&typeof w.meaning==="object")?w.meaning:{},image:img});
+  });
+  return out;
+}
+/* Navbat qoidasi: to'g'ri yoki o'tkazilgan karta chiqadi; xato karta javobi
+   ko'rsatilgach navbat oxiriga qaytadi (bir so'z ko'pi bilan 3 marta). */
+function pictureDeckAdvance(deck,outcome){
+  var k=deck.order.shift();
+  if(outcome==="wrong"){
+    deck.tries[k]=(deck.tries[k]||0)+1;
+    if(deck.tries[k]<PIC_REVIEW_MAX_TRIES)deck.order.push(k);
+  }
+  return deck;
+}
+function cardPictureReview(c){
+  var words=pictureReviewWords(c.words),body=$("#f-body");
+  $("#f-cta").style.display="none";setWriteBtn("");
+  if(!words.length){Flow.answered=true;Flow.next();return}
+  var skipText=(window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.course_v3.skipText.copy1",{uz:"O‘tkazib yuborish",ru:"Пропустить",tj:"Гузарондан"})[LANG];
+  var motion=!fxOff(),deck={order:words.map(function(_,k){return k}),tries:{},phase:"ask",timer:null},st=null;
+  setFlowStage((Flow.i+1)+" / "+Flow.queue.length,'<b>'+esc(pictureText("label"))+'</b>');
+  body.classList.add("has-lesson-pron");
+  body.innerHTML='<div class="lesson-pron pic-review"><div class="qq">'+esc(pictureText("title"))+'</div><div class="pic-stage"><div class="pic-stack" id="pic-stack"></div></div><div class="pr-ctrl lesson-pron-controls"><div class="pr-micwrap"><button class="pr-mic" id="pic-btn" aria-label="'+esc(courseMessage("say",T().say))+'" onclick="window._picSay()"><i class="ti ti-microphone"></i></button></div><div class="pr-hint" role="status" id="pic-hint"></div><button class="pr-skip pron-skip" onclick="window._picSkip()">'+esc(skipText)+' <i class="ti ti-player-skip-forward"></i></button></div></div>';
+  var stack=$("#pic-stack");
+  var els=words.map(function(w,k){
+    var el=document.createElement("div");el.className="pic-card";
+    el.innerHTML='<div class="pic-hop"><div class="pic-inner"><div class="pic-face pic-front"><span class="pic-img" role="img" aria-label="'+esc(tr(w.meaning))+'">'+esc(w.image)+'</span></div><div class="pic-face pic-back" aria-hidden="true"></div></div></div>';
+    el.onclick=function(){if(deck.phase==="reveal"&&deck.order[0]===k)advance()};
+    stack.appendChild(el);return el;
+  });
+  function layout(){
+    els.forEach(function(el,k){el.classList.remove("d0","d1","d2","dn");if(deck.order.indexOf(k)<0)el.classList.add("pic-gone")});
+    deck.order.forEach(function(k,pos){els[k].classList.add(pos<3?"d"+pos:"dn");els[k].style.zIndex=String(40-pos)});
+  }
+  function setBtn(label){var b=$("#pic-btn");if(b){b.setAttribute("aria-label",label);b.classList.toggle("pr-rec",label===_prL().listening);b.disabled=deck.phase!=="ask"}}
+  function hint(t){var h=$("#pic-hint");if(h)h.textContent=t||""}
+  function stop(){if(!st)return;clearTimeout(st.auto);if(st.rec&&st.rec.state!=="inactive"){setBtn(_prL().analyzing);hint(_prL().analyzing);st.rec.stop()}}
+  function freshAttempt(){lessonPronAbort(st);st={stream:null,rec:null,chunks:[],auto:null,cancelled:false,busy:false}}
+  function later(fn,ms){return setTimeout(fn,motion?ms:0)}
+  function finish(){
+    if(deck.phase==="done")return;
+    deck.phase="done";clearTimeout(deck.timer);lessonPronAbort(st);LESSON_PRON_CANCEL=null;
+    Flow.answered=true;Flow.next();
+  }
+  function settle(el,gone){
+    el.classList.remove("pic-ok","pic-no","pic-flip","pic-out-ok","pic-out-back","pic-out-skip");
+    var back=el.querySelector(".pic-back");back.innerHTML="";back.setAttribute("aria-hidden","true");
+    if(gone)el.classList.add("pic-gone");
+  }
+  function move(outcome,cls){
+    var k=deck.order[0],el=els[k];deck.phase="moving";clearTimeout(deck.timer);freshAttempt();setBtn(courseMessage("say",T().say));
+    el.classList.add(cls);
+    later(function(){
+      if(deck.phase!=="moving")return;
+      pictureDeckAdvance(deck,outcome);settle(el,deck.order.indexOf(k)<0);
+      if(!deck.order.length){finish();return}
+      deck.phase="ask";layout();hint("");setBtn(courseMessage("say",T().say));
+    },340);
+  }
+  function advance(){if(deck.phase!=="reveal")return;var el=els[deck.order[0]];var pass=el.classList.contains("pic-ok");move(pass?"pass":"wrong",pass?"pic-out-ok":"pic-out-back")}
+  function verdict(pass,w,el){
+    deck.phase="reveal";setBtn(courseMessage("say",T().say));
+    var back=el.querySelector(".pic-back");
+    back.innerHTML='<div class="pic-zh han">'+esc(w.zh)+'</div>'+(w.pinyin?'<div class="pic-py">'+esc(w.pinyin)+'</div>':'')+(tr(w.meaning)?'<div class="pic-tr">'+esc(tr(w.meaning))+'</div>':'');
+    back.setAttribute("aria-hidden","false");
+    el.classList.add(pass?"pic-ok":"pic-no");
+    beep(pass?[523,659,784]:[220,180]);haptic(pass?"ok":"no");
+    hint(pass?courseMessage("correct",T().correct):courseMessage("wrong",T().wrong));
+    later(function(){if(deck.phase==="reveal"&&els[deck.order[0]]===el){el.classList.add("pic-flip");if(!pass)speak(w.zh)}},260);
+    deck.timer=setTimeout(advance,pass?1300:2600);
+  }
+  window._picSay=function(){
+    if(deck.phase!=="ask")return;
+    if(st&&st.rec&&st.rec.state!=="inactive"){stop();return}
+    if(!st||st.cancelled)freshAttempt();
+    var k=deck.order[0],w=words[k],el=els[k],attempt=st;
+    lessonPronRecord(attempt,w.zh,w.pinyin,{setBtn:setBtn,hint:hint,stop:stop,result:function(o){
+      if(attempt!==st||deck.phase!=="ask")return;
+      if(!lessonPronVerdictReady(o,{setBtn:setBtn,hint:hint},function(){finish();App.openPaywall("pronLimit")}))return;
+      verdict(Number(o.j.score)>=60,w,el);
+    }});
+  };
+  window._picSkip=function(){
+    if(deck.phase==="reveal"){advance();return}
+    if(deck.phase!=="ask")return;
+    move("skip","pic-out-skip");
+  };
+  LESSON_PRON_CANCEL=function(){deck.phase="done";clearTimeout(deck.timer);lessonPronAbort(st)};
+  freshAttempt();layout();setBtn(courseMessage("say",T().say));
+  if(motion){
+    stack.classList.add("pic-deal");
+    deck.order.slice(0,3).forEach(function(k,pos){els[k].querySelector(".pic-hop").style.animationDelay=(pos*70)+"ms"});
+    setTimeout(function(){stack.classList.remove("pic-deal")},700);
+  }
 }
 /* ---------- Shaxsiy takror (UIUX-007) ----------
    Server tasdiqlangan xatolardan tanlagan 0-3 ta savol oddiy kartalar ORASIDA
@@ -6159,7 +6347,7 @@ function adaptiveShow(){
   var dock=$("#f-coach-dock");if(dock)dock.classList.remove("on");
   saveLessonResume();
   $("#f-cta").style.display="none";
-  var st=$("#f-stage");if(st)st.innerHTML='<span class="foundation-step"><i class="ti ti-history" aria-hidden="true"></i> '+esc(adaptiveText("label"))+'</span>';
+  var fc=$("#f-count");if(fc)fc.textContent="";var st=$("#f-stage");if(st)st.innerHTML='<span class="foundation-step"><i class="ti ti-history" aria-hidden="true"></i> '+esc(adaptiveText("label"))+'</span>';
   var material="";
   if(q.audio_text)material+='<button class="audio" type="button" id="ad-audio" aria-label="'+esc(courseMessage("listen",T().listen||""))+'"><i class="ti ti-volume"></i></button>';
   if(q.sentence){var long=String(q.sentence).length>4;material+='<div class="'+(long?"gap":"qh")+' han"'+(long?' style="margin-top:6px"':'')+'>'+esc(q.sentence).replace("____","<u>?</u>")+'</div>'}

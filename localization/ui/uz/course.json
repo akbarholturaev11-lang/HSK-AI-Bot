@@ -1112,6 +1112,8 @@
     "voiceV8.endBody": "Hozirgi suhbat yakunlanadi.",
     "voiceV8.endCancel": "Davom etish",
     "voiceV8.endConfirm": "Tugatish",
-    "voiceV8.restart": "Yangi suhbatni boshlash"
+    "voiceV8.restart": "Yangi suhbatni boshlash",
+    "pictureReview.label": "Rasmli takror",
+    "pictureReview.title": "Rasmga qarang va xitoycha ayting"
   }
 }
