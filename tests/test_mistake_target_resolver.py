@@ -135,7 +135,7 @@ class ExamCoverageTests(unittest.TestCase):
                         )
                         self.assertIsNotNone(target)
                         self.assertEqual((target["kind"], target["zh"]), ("word", option["zh"]))
-                        self.assertTrue(target["payload"]["meaning"].get(language))
+                        self.assertTrue(target["payload"]["pinyin"])
                         gap = target["payload"]["gap"]
                         self.assertEqual(gap["sentence"], question["sentence"])
                         self.assertEqual(gap["options"][gap["answer_index"]], option["zh"])
