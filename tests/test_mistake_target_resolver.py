@@ -141,6 +141,7 @@ class ExamCoverageTests(unittest.TestCase):
                         self.assertEqual(gap["options"][gap["answer_index"]], option["zh"])
                         self.assertEqual(gap["options"], question["options"])
                         self.assertEqual(gap["answer_index"], correct)
+                        self.assertEqual(gap["meaning"][language], option["translation"])
                         review = drills.build_question(
                             {"id": 1, "category": "word", **target},
                             "gap_fill",
@@ -160,6 +161,7 @@ class ExamCoverageTests(unittest.TestCase):
                             self.assertIsNotNone(review, (level, question["id"]))
                             self.assertEqual(review["sentence"], question["sentence"])
                             self.assertEqual(review["options"][review["answer_index"]], option["zh"])
+                            self.assertIn(option["translation"], review["explanation"])
                             self.assertIsNone(drills.validate_question(review))
                         if option["zh"] == "成长":
                             self.assertEqual(target["payload"]["pinyin"], "chéngzhǎng")
