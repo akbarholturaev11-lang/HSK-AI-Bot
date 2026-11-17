@@ -516,6 +516,8 @@
     <string name="hsk_course_part_sections_x" formatted="false">Aralash takror</string>
     <string name="hsk_course_pay_sub" formatted="false">Butun HSK yo\'lini oching</string>
     <string name="hsk_course_pay_title" formatted="false">HSK AI Pro</string>
+    <string name="hsk_course_picture_review_label" formatted="false">Rasmli takror</string>
+    <string name="hsk_course_picture_review_title" formatted="false">Rasmga qarang va xitoycha ayting</string>
     <string name="hsk_course_pinyin_settings_all" formatted="false">Hammasida ko\'rsatish</string>
     <string name="hsk_course_pinyin_settings_h" formatted="false">Pinyin (talaffuz yozuvi)</string>
     <string name="hsk_course_pinyin_settings_nw" formatted="false">Faqat yangi so\'zlarda</string>

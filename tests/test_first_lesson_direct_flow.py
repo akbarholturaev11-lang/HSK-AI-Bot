@@ -251,7 +251,7 @@ process.stdout.write(JSON.stringify({
     def test_no_new_course_copy(self):
         for locale, suffix in (("uz", ""), ("ru", "-ru"), ("tj", "-tg")):
             messages = json.loads((ROOT / f"localization/ui/{locale}/course.json").read_text(encoding="utf-8"))["messages"]
-            self.assertEqual(len(messages), 1110)
+            self.assertEqual(len(messages), 1112)
             self.assertNotIn("firstLessonNext.title", messages)
             generated = (ROOT / f"android/app/src/main/res/values{suffix}/hsk_course_i18n.xml").read_text(encoding="utf-8")
             self.assertNotIn("hsk_course_first_lesson_next", generated)
