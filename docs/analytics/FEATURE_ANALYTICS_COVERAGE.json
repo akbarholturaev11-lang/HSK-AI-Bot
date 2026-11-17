@@ -1272,6 +1272,43 @@
       }
     },
     {
+      "id": "adaptive_review",
+      "description": "Personal adaptive review inside ordinary lessons (UIUX-007). The server writes plan assignment, verified answers and shadow-plan counts with the route-set client; these are passive events that never touch last_active_at, lesson results, XP or progress. Client-side display is not instrumented.",
+      "events": [
+        {
+          "store": "course_miniapp_events",
+          "role": "declared",
+          "names": [
+            "adaptive_assigned",
+            "adaptive_answer_verified",
+            "adaptive_shadow_planned"
+          ]
+        }
+      ],
+      "platforms": {
+        "android": {
+          "status": "partial",
+          "reason": "Android adaptive plan and answer routes tag assignments and verified answers with the route-set client android; no Admin reader or route chain test yet."
+        },
+        "telegram": {
+          "status": "partial",
+          "reason": "Signed Mini App adaptive plan and answer routes tag assignments and verified answers with the route-set client telegram; no Admin reader or route chain test yet."
+        },
+        "iphone_pwa": {
+          "status": "partial",
+          "reason": "PWA adaptive plan and answer routes tag assignments and verified answers with the route-set client iphone_pwa; no Admin reader or route chain test yet."
+        },
+        "macos": {
+          "status": "not_applicable",
+          "reason": "Adaptive review is not served to the frozen Desktop client."
+        },
+        "windows": {
+          "status": "not_applicable",
+          "reason": "Adaptive review is not served to the frozen Desktop client."
+        }
+      }
+    },
+    {
       "id": "voice_practice",
       "description": "Voice starts and completions; V10 duration uses persisted session rows.",
       "events": [
@@ -1785,6 +1822,13 @@
       ]
     },
     {
+      "path": "app/api/course_adaptive.py",
+      "flows": [
+        "lessons",
+        "adaptive_review"
+      ]
+    },
+    {
       "path": "app/api/lava_checkout.py",
       "flows": [
         "checkout_payments",
@@ -1875,6 +1919,12 @@
       ]
     },
     {
+      "path": "app/services/course_adaptive_lesson_service.py",
+      "flows": [
+        "adaptive_review"
+      ]
+    },
+    {
       "path": "app/services/course_gamification_service.py",
       "flows": [
         "learning_rewards"
@@ -1900,7 +1950,8 @@
         "lessons",
         "practice",
         "assessments",
-        "mistake_review"
+        "mistake_review",
+        "adaptive_review"
       ]
     },
     {
@@ -1924,7 +1975,8 @@
     {
       "path": "app/services/course_mistake_service.py",
       "flows": [
-        "mistake_review"
+        "mistake_review",
+        "adaptive_review"
       ]
     },
     {

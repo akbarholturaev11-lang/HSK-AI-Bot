@@ -106,6 +106,7 @@ from app.services.pro_trial_service import ProTrialService
 from app.services.trial_reminder_service import TrialReminderService
 from app.services.entitlements.shadow import EntitlementShadowService
 from app.api.miniapp_practice import create_miniapp_practice_router
+from app.api.course_adaptive import create_course_adaptive_router
 from app.api.miniapp_preferences import create_miniapp_preferences_router
 from app.api.desktop_rating import create_desktop_rating_router
 from app.api.desktop_referral import create_desktop_referral_router
@@ -1004,6 +1005,14 @@ app.include_router(
         session_factory=async_session_maker,
         settings_obj=settings,
         bot=bot,
+    )
+)
+# Dars ichidagi shaxsiy takror (UIUX-007): Telegram, PWA va Android.
+# COURSE_ADAPTIVE_ENABLED=false bo'lsa reja doim bo'sh qaytadi.
+app.include_router(
+    create_course_adaptive_router(
+        session_factory=async_session_maker,
+        settings_obj=settings,
     )
 )
 # Bepul limit darvozalari. `app/main.py` dan ajratildi, chunki bu yerdagi
