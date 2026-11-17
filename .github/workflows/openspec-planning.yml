@@ -30,8 +30,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
+      # Pinned: 2.1.0 (2026-11-17) writes Codex skills to ~/.agents/skills
+      # instead of the repository, which breaks the checks below. Upgrade on
+      # purpose, together with those checks.
       - name: Install official OpenSpec CLI
-        run: npm install --global @fission-ai/openspec@latest
+        run: npm install --global @fission-ai/openspec@2.0.0
       - name: Verify Codex compatibility and config
         run: |
           openspec --version
