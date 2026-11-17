@@ -512,7 +512,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         source = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
         selections = {
             "buildSent": 1, "dialog": 1, "listen": 2, "matchPairs": 1,
-            "say": 6, "check": 2, "next": 3, "rightAns": 2,
+            "say": 12, "check": 2, "next": 3, "rightAns": 2,
             "you": 4,
         }
         for key, count in selections.items():
@@ -585,7 +585,8 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         import re
 
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
-        from_global = {"correct": 10, "wrong": 7}
+        # UIUX-008: the picture deck reuses the same reviewed keys (say/correct/wrong).
+        from_global = {"correct": 11, "wrong": 8}
         from_local = {
             "trialLeft": 1, "trialLeftHours": 1, "trialLeftSoon": 2,
             "lockedLesson": 1, "payTitle": 1,

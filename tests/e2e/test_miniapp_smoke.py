@@ -1924,7 +1924,7 @@ def test_course_v3_d1_recovery_resumes_saved_lesson_card_once(page):
     )
 
     expect(page.locator("#flow")).to_have_class(re.compile(r"\bon\b"))
-    expect(page.locator("#f-stage")).to_contain_text("4 /")
+    expect(page.locator("#f-count")).to_contain_text("4 /")
     assert page.evaluate("Flow.i") == 3
     assert "autostart" not in page.url
     assert runtime_errors == []
