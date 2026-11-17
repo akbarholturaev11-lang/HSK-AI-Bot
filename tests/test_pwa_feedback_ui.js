@@ -48,6 +48,7 @@ function makeHarness({page = "/iphone-pwa/course",ordinary = null,release = [],
   const routes={
     "/api/v3/pwa/feedback/available": {ok:true,ordinary,release},
     "/api/v3/pwa/feedback/lesson/prepare": {ok:true,ordinary:prepared===null?ordinary:prepared},
+    "/api/v3/pwa/feedback/ordinary/prepare": {ok:true,ordinary:prepared===null?ordinary:prepared},
     "/api/v3/pwa/feedback/ordinary/submit": {ok:true,completed:true},
     "/api/v3/pwa/feedback/release/respond": {ok:true,response_id:9}
   };
@@ -71,9 +72,10 @@ function makeHarness({page = "/iphone-pwa/course",ordinary = null,release = [],
     document:doc,window,location,fetch,
     pwaCourseActor:async()=>({user_id:account}),
     commonMessage:(key)=>key, courseMessage:(key)=>key,
-    LANG:"uz",App:{},Number,Promise,Array,String,JSON,Set
+    LANG:"uz",App:{},Number,Promise,Array,String,JSON,Set,setTimeout
   },{filename:"iphone-pwa-feedback.js",timeout:1000});
   return {root:()=>root,window,requests,navigation,
+    respond(path, data){routes[path]=data;},
     pauseSession(){sessionGate=new Promise(resolve=>{resumeSession=resolve;});},
     releaseSession(){if(resumeSession)resumeSession();sessionGate=null;resumeSession=null;},
     form:()=>root.querySelector("#hsk-pwa-feedback-form"),
@@ -81,7 +83,8 @@ function makeHarness({page = "/iphone-pwa/course",ordinary = null,release = [],
     send:()=>root.querySelector("#hsk-pwa-feedback-submit").listeners.click(),
     selects:()=>root.querySelector("#hsk-pwa-feedback-form").children
       .filter(e=>e.tag==="label"||e.tag==="div")
-      .map(e=>({symbol:e.attributes["data-mark"]||e.children[0].textContent,input:e.children[1]})),
+      .map(e=>({symbol:e.attributes["data-mark"]||e.children[0].textContent,
+        input:e.children.find(child=>child.tag==="textarea"||child.attributes.role==="radiogroup")})),
     choose(symbol,code){
       // Text variants are buttons (like the bot's inline keyboard), not a select.
       const field=this.selects().find(e=>e.symbol===symbol);
@@ -212,6 +215,69 @@ async function main(){
   assert.equal(cancellation.requests.filter(r=>r.url.endsWith("/ordinary/submit")).length,1,
     "reopened dialog should still accept its authorized feedback");
 
-  console.log("PWA feedback UI: 10 contextual/authentication/ordinary scenarios passed");
+  const activity={kind:"practice",level:"hsk1",confirmed:true};
+  const canonical={feedback_id:51,paid:false,presentation:"bot",choices:{
+    liked:choices([["practice","Practice"],["other","Other"]]),
+    liked_sub:{practice:choices([["daily","Daily"],["other","Other"]])},
+    disliked:choices([["limits","Limits"],["other","Other"]]),
+    disliked_detail_required:["other"]
+  }};
+  const guided=makeHarness({ordinary:canonical});
+  await guided.window.HskPwaFeedback.open(activity);
+  assert.equal(guided.root().querySelector("#hsk-pwa-feedback-title").textContent,"pwaFeedback.likedQ");
+  assert.equal(guided.form().children[0].children.length,1,"question is in the heading, without a duplicate line");
+  assert.equal(guided.selects().length,1,"one bot question at a time");
+  assert.deepEqual(JSON.parse(guided.requests.find(r=>r.url.endsWith("/ordinary/prepare")).opt.body),
+    {context:{kind:"practice",level:"hsk1"},presentation:"bot"});
+  guided.choose("👍","practice");
+  assert.equal(guided.selects()[0].symbol,"›");
+  guided.window.HskPwaFeedback.back();
+  assert.equal(guided.selects()[0].symbol,"👍","back edits the previous answer");
+  guided.choose("👍","practice");
+  guided.choose("›","daily");
+  assert.equal(guided.root().querySelector("#hsk-pwa-feedback-title").textContent,"pwaFeedback.dislikedQ");
+  assert.equal(guided.selects()[0].symbol,"👎");
+  guided.choose("👎","limits");
+  await new Promise(setImmediate);
+  const guidedPost=guided.requests.filter(r=>r.url.endsWith("/ordinary/submit"));
+  assert.equal(guidedPost.length,1,"last radio answer saves without extra confirmation");
+  assert.equal(JSON.parse(guidedPost[0].opt.body).liked_sub_code,"daily");
+  assert.equal(JSON.parse(guidedPost[0].opt.body).disliked_code,"limits");
+  assert.equal(JSON.parse(guidedPost[0].opt.body).answer,undefined,"original bot codes are stored");
+  guided.window.HskPwaFeedback.back(); // The success state dismisses safely.
+  assert(guided.root().hidden);
+
+  const guidedPaid=makeHarness({ordinary:{feedback_id:52,paid:true,presentation:"bot",choices:{
+    paid:choices([["useful","Useful"],["regret","Regret"]]),
+    paid_sub_positive:choices([["lessons","Lessons"]]),
+    paid_sub_negative:choices([["other","Other"]])
+  }}});
+  await guidedPaid.window.HskPwaFeedback.open({...activity,kind:"voice"});
+  assert.equal(guidedPaid.root().querySelector("#hsk-pwa-feedback-title").textContent,"pwaFeedback.paidQ");
+  assert.equal(guidedPaid.selects()[0].symbol,"✓");
+  guidedPaid.choose("✓","useful");
+  guidedPaid.choose("›","lessons");
+  await new Promise(setImmediate);
+  assert.equal(JSON.parse(guidedPaid.requests.find(r=>r.url.endsWith("/ordinary/submit")).opt.body).paid_code,"useful");
+
+  const details=makeHarness({ordinary:canonical});
+  await details.window.HskPwaFeedback.open(activity);
+  details.choose("👍","other");
+  assert(details.root().querySelector("#hsk-pwa-feedback-submit").disabled);
+  details.type("bot.releaseFeedback.commentButton","Vocabulary");
+  await details.send();
+  assert.equal(details.selects()[0].symbol,"👎");
+  details.choose("👎","other");
+  details.type("bot.releaseFeedback.commentButton","Audio failed");
+  details.respond("/api/v3/pwa/feedback/ordinary/submit",{ok:false,error:"temporary"});
+  await details.send();
+  assert.equal(details.status(),"subscriptionPage.error");
+  assert.equal(details.selects()[0].input.value,"Audio failed","failed writes retain text");
+  details.respond("/api/v3/pwa/feedback/ordinary/submit",{ok:true,completed:true});
+  await details.send();
+  const attempts=details.requests.filter(r=>r.url.endsWith("/ordinary/submit"));
+  assert.equal(attempts.length,2);
+  assert.equal(attempts[0].opt.body,attempts[1].opt.body,"retry preserves the complete answer");
+  console.log("PWA feedback UI: 13 contextual/authentication/bot questionnaire scenarios passed");
 }
 main().catch(err=>{console.error(err);process.exitCode=1;});

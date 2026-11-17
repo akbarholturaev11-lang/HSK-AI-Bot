@@ -67,6 +67,7 @@ class FoundationActivity : ComponentActivity() {
     private fun returnToFreshCourse() {
         startActivity(
             Intent(this, MainActivity::class.java)
+                .putExtra("hsk_feedback_context", "foundation")
                 .setData(
                     android.net.Uri.parse(
                         DeepLinkRouter.uriFor(AppDestination.CurrentLesson)

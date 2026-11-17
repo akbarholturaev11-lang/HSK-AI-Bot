@@ -676,7 +676,14 @@
     "inline.handlers.desktop_auth.pwa.confirm": "🌐 <b>HSK AI iPhone PWA — Telegram orqali kirish</b>\n\nBrauzerda kirish so‘rovini o‘zingiz boshlagan bo‘lsangizgina tasdiqlang. Tasdiqlash hisobingizdagi kurs va obunani shu brauzerda ochishga ruxsat beradi.",
     "inline.handlers.desktop_auth.pwa.denied": "Kirish bekor qilindi. Bu havola endi ishlamaydi.",
     "inline.handlers.desktop_auth.pwa.invalid": "Bu PWA kirish havolasi eskirgan yoki noto‘g‘ri. Brauzerdan qaytadan boshlang.",
-    "inline.handlers.desktop_auth.pwa.success": "✅ <b>Kirish tasdiqlandi</b>\n\niPhone brauzeridagi HSK AI sahifasiga qayting."
+    "inline.handlers.desktop_auth.pwa.success": "✅ <b>Kirish tasdiqlandi</b>\n\niPhone brauzeridagi HSK AI sahifasiga qayting.",
+    "lava.user_renewal_failed": "⚠️ HSK AI Pro obunasini yangilash uchun to'lov o'tmadi.\n\nKartangizni tekshiring yoki ilovada obunani qayta rasmiylashtiring. To'langan muddat oxirigacha Pro ishlayveradi.",
+    "lava.user_subscription_cancelled": "Avtomatik yangilanish o'chirildi.\n\nHSK AI Pro {date} gacha amal qiladi, keyin kartadan pul yechilmaydi.",
+    "lava.user_refund_revoked": "To'lovingiz qaytarildi 💳\n\nShu to'lov uchun berilgan HSK AI Pro kunlari bekor qilindi.",
+    "lava.user_chargeback_revoked": "To'lov bo'yicha bank orqali nizo (chargeback) ochildi.\n\nNizo hal bo'lguncha shu to'lov uchun berilgan HSK AI Pro kunlari to'xtatildi.",
+    "lava.user_chargeback_restored": "To'lov bo'yicha nizo yopildi ✅\n\nHSK AI Pro {date} gacha qayta tiklandi.",
+    "lava.return_title": "To'lov tekshirilmoqda",
+    "lava.return_body": "Rahmat! To'lov tasdiqlangach, HSK AI Pro avtomatik faollashadi. Ilovaga qayting — holat o'zi yangilanadi."
   },
   "namespace": "bot",
   "references": {

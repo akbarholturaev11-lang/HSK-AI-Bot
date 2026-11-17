@@ -540,6 +540,14 @@ def create_android_live_voice_router(
         except WebSocketDisconnect:
             pass
         except Exception:  # noqa: BLE001
+            from app.services.monitoring import catalog
+            from app.services.monitoring.backend import report_server_failure
+            path = getattr(websocket.scope.get("route"), "path", None)
+            mapped = catalog.ROUTE_MAP.get(path)
+            if actor is not None and mapped:
+                feature, site = mapped
+                platform = {"android": "android", "pwa": "iphone_pwa", "miniapp": "telegram"}[transport]
+                report_server_failure(feature, "server_exception", site, platform)
             logger.exception("Live Voice relay failed for user %s", account_user_id(actor) or actual_telegram_id(actor) or "unknown")
             try:
                 await websocket.send_json({"type": "error", "code": "live_voice_unavailable"})

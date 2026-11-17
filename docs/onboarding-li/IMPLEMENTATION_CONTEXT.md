@@ -1,0 +1,475 @@
+# HSK AI — Li Panda Onboarding | IMPLEMENTATION CONTEXT
+
+> **BU FAYL — YAGONa LIVE TASK HANDOFF/JURNAL.** Yangi chat yoki Codex agent shu faylni o'qib real davom ettiradi. Bajarilmagan ishni bajarilgan deb belgilash TAQIQLANADI.
+>
+> **Sister document:** [PRODUCT_GOAL.md](PRODUCT_GOAL.md) — final product behavior, fixed scope, 23-state demo, acceptance criteria. Maqsad bu yerda qayta ixtiro qilinmaydi.
+>
+> **Last verified:** 2026-11-09; **active new-main branch:** `feature/li-onboarding-mainffbff9-20261108`; **branch baseline:** `main@ffbff9492e0713686f57a76443bef17a45c4041c`; **source:** GitHub `akbarholturaev11-lang/HSK-AI-Bot`. Prior docs-only branch `feature/li-onboarding-handoff-20261108` is archival (based on old 4ca0d2d); **do not implement there**.
+>
+> **REAL ONBOARDING IMPLEMENTATION STATUS: PARTIAL ON FEATURE BRANCH.** The isolated 23-state Li UI, optional iPhone install guide and server adapters are committed; final all-green CI/device validation, default route cutover, production deploy are NOT complete (approved real MP4 is committed).
+
+## 2026-11-09 RELEASE PREPARATION — UPDATED CURRENT MAIN
+
+- Last verified main for this operation: `8ff505b352f88c0155e9d390f04d1205669fa0d5`. Feature branch previously `4664ebfb4e0ddae8d08f6bfd881ede1a113f527b` (4 commits behind), now synchronized via **two-parent merge** `a53774fdb0637e71b41b0887e4a71cd0466108ab`; `git compare main..branch` verified **behind=0**, preserving all onboarding files. Main changed only `AGENTS.md` and added `docs/analytics/ANALYTICS_INTEGRITY_IMPLEMENTATION_PLAN.md`. No force push or main modification.
+- `app/config.py` adds **`PWA_LI_ONBOARDING_ENTRY_ENABLED: bool = False`**. `app/api/pwa_auth.py` redirects only anonymous `GET /iphone-pwa` to public Li shell when flag enabled; verified sessions still use canonical course and OAuth resume remains single-use. Default remains original login flow. Roll back by turning the flag off, without reversing user choices or migration.
+- `tests/test_pwa_browser_auth.py::test_li_entry_release_switch_is_disabled_by_default_and_guest_only` checks disabled legacy login, enabled guest 303, forged-cookie isolation, verified actor course redirect and global PWA auth kill switch.
+- **Analytics Impact:** existing `CourseMiniAppOnboardingService` writes canonical `onboarding_completed` to `CourseMiniAppEvent` with server-owned `user_id` and a profile dedupe key; `app/admin_api/pwa_analytics_learning.py` has a consumer for that event, but verified Li **guest-view/step-to-payment conversion denominator is not instrumented** and `iphone_pwa` Admin metrics include `not_instrumented`. Treat those as **unavailable**, not zero; don't invent per-platform conversions. Default-disabled rollout switch has no measured live exposure. See [RELEASE_READINESS.md](RELEASE_READINESS.md).
+- QA gates still open: final new-HEAD CI, staging Alembic `0154_li_onboarding_choices`, physical iPhone Safari real OAuth, MP4 playback and slow networks, 23-state accessibility/visual signoff, Push/VAPID and Telegram Mini App route release. The PWA flag is not an instruction to enable anything in production.
+- **No main merge, production deploy, production env change, or PR-ready status.** PR #282 stays draft.
+
+## 2026-11-09 WEBKIT VIDEO CI FAILURE ROOT CAUSE + REAL MP4 TEST
+
+- CI `42570969144` / job `miniapp-ui` WebKit `tests/e2e/test_li_onboarding_install.py::test_media_stays_optional_but_real_metadata_can_swap_to_vertical_video` failed (1 of 25 tests; 24 passed). **This exposed a faulty test fixture**, NOT proof the real MP4 is invalid: `_prepare(...,has_video=True)` returned only a 12-byte `ftypmp42` fake with status 206 and no `Content-Range`, then manually dispatched a `loadedmetadata` event. WebKit correctly fired an asynchronous decoder error and the app retained its usable text fallback.
+- Corrected test fixture in `tests/e2e/test_li_onboarding_install.py`: load actual committed `app/static/assets/onboarding/iphone-home-screen.mp4` (709,956 bytes); serve `200` or legitimate `206 Partial Content` with valid `Content-Range` and `Accept-Ranges`; remove fabricated event; assert the native video player becomes visible only after real metadata. Commit `c1c0f949011621c0150b6465c00776d2df807077`.
+- No production video/player was changed. Its original fail-closed text fallback remains intact if Safari cannot decode the file or download stalls. **Latest-head WebKit CI remains unverified until it completes.** Physical iPhone playback is a separate release acceptance gate.
+
+## 2026-11-09 PWA TRIAL POST RESPONSE-LOSS AUDIT — feature branch only
+
+- Before this patch, current `87b4ee6a2c15` CI confirmed **Backend targeted SUCCESS** (targeted-tests + miniapp-ui + native-postgres), **RU/UZ/TJ source-contract SUCCESS** and **Android SUCCESS**; Smart Reminder storage still ran. No main merge or production deploy.
+- **Real defect identified:** after PWA `/api/v3/pwa/trial/start` had committed but Safari lost the HTTP response, `li-onboarding-runtime.js` rendered a generic failed-start state and encouraged another POST, despite the server owning a one-time grant. The previous UI could not distinguish active trial from a refused trial.
+- **Backend fix:** `app/api/pwa_auth.py` PWA-only authenticated `GET /api/v3/pwa/trial/status` now returns additive `trial.active` and `trial.ends_at`. `active` is derived exclusively from canonical `resolve_state(actor) == EntitlementState.TRIAL_ACTIVE` (blocked, paid, expired, revoked and trial_used flag alone are **not** proof). The endpoint retains no-store cookie-based actor verification and no mutation. Commit `c1dfc79fc12484b0b2e204deb60fdcf12c033478`.
+- **Follow-up UTC fix** commit `8eac7b63e83d47135169b9a3668c6ed3ac741168`: the status endpoint gets trial expiry via canonical `access_expires_at(actor, TRIAL_ACTIVE)`, which normalizes SQLAlchemy/SQLite naive timestamps to UTC. This avoids browser date ambiguity and preserves a reliable ISO-8601 offset without inventing expiration times.
+- **Client fix:** PWA-only failed trial POST now calls `trialStatus()` once and shows `trialDone` **only** if server confirms `active === true` with non-empty `ends_at`. Otherwise the existing real Retry and free continuation remain. Telegram Mini App still uses its existing signed owner and one-time server grant; no client-generated entitlement. Commit `9422ce676619f0d28e1c9091b0515012ae312030`.
+- Cache-bust after actual JS edit: `app/static/course_v3_li_onboarding.html` now loads `li-onboarding-runtime.js?v=20261109-6e61ddf9b2b7`, commit `d059fec07f8efd7ec6c36efd45bf8603e2de8d71`.
+- **Tests:** `tests/test_pwa_browser_auth.py::test_browser_trial_status_only_confirms_real_active_entitlement` checks verified/401, live grant, revoked and expired expiry; commits `14b0e9580db8c4ebfb61b3a5b23436cc7660704d` + `da84aac2de4e065195847ea748f6b00f0dfe4956`. `tests/e2e/test_li_onboarding_runtime.py::test_pwa_lost_trial_start_reply_reconciles_without_duplicate_grant` simulates 503 *after* a committed grant and asserts only one POST and no false error, commit `17e768db2290e82e4fe3dc44f746a9d61007a5f9`. Existing denied-start test verifies the negative fallback.
+- `PRODUCT_GOAL.md` now explicitly requires verified server entitlement reconciliation and forbids interpreting `trial_used` or an HTTP timeout as success. Commit `0a393961e706f4147ffe0e06a943bb2c1abf5b96`.
+- **CI at this journal checkpoint:** Backend targeted run `42570409535`, Smart Reminder run `42570409603`, localization run `42570409480`, Admin PWA run `42570409418` were in progress on the previous documentation HEAD. This note changes the HEAD and triggers a fresh CI; **do not claim all green until fresh final-HEAD runs conclude**.
+- **Audited related contracts:** `CourseTrackService.switch()` flushes but does not independently commit before profile save; `TrialReminderService` uses canonical entitlement guard and per-user PWA outbox; trial status reads the verified actor, not client-supplied ID. Remaining unverified: actual physical Safari push delivery, device-specific slow-network video, real external OAuth providers, production flags and final post-merge migration.
+
+## 2026-11-09 LATEST CONTINUATION — exact code and CI evidence
+
+**Working feature branch:** `feature/li-onboarding-mainffbff9-20261108`; PR #282 remains **draft**, no merge to `main`, no production deploy.
+
+1. Commit `6b8c0ea0a7a66df155112b2dcdf412b962943698`: `tests/e2e/test_li_onboarding_runtime.py` corrected failed external-JavaScript scenario. The live HTML deliberately replaces loading skeleton with a localized, accessible `role=alert` and actionable retry when character/catalog dependencies fail. No production JS was changed for this; it would be wrong to keep a busy skeleton indefinitely. Previous run `42567424989`, job `miniapp-ui` had one failed assertion expecting the obsolete skeleton.
+2. Commit `5b022ca24e6be3ee8425d338ef953e32047b8a16`: `app/static/course_v3_data/li-onboarding-runtime.js` now throttles in-memory **public-only** track metadata revalidation. Valid public cache shows immediately; no extra GET for every rapid back/forward; revalidates after 60 s with 30 s throttle, and expires normal cache after 120 s. **No session, subscription, HSK 3.0 access, CSRF, trial or progress caching.**
+3. Commit `612a037120556fab429042f1051bd59c66f59441`: `app/static/course_v3_li_onboarding.html` now references exact updated JS blob hash `21814dea415e` to avoid stale Safari cache.
+4. Commit `1896fd20bc5e4eec5417b42bb75c8f4050fb34b8`: added Playwright `test_li_cached_public_tracks_do_not_refetch_on_rapid_back_navigation`. Server `app/api/pwa_auth.py` public-tracks endpoint was separately reviewed: anonymous HSK3 `access.allowed` is always `false`; user access checked via private endpoint.
+5. CI run `42568225118`, `miniapp-ui`: initial Pro/glass and 11 progressive-shell checks passed; 1 Li test failed because older `test_pwa_guest_sees_panda_first_and_oauth_resumes_saved_draft_safely` expected `public_track_get >= 2` (the redundant request eliminated by item 2). Corrected in commit `24bcabd3d43edf49d3d121c0b39691ab158a6acf` to assert exactly 1 public GET; separate rapid-navigation test proves no duplicate GET. No production auth logic changed to satisfy the test.
+6. New code/test CI `42568544408` (Backend targeted), `42568544410` (localization), `42568544323` (Smart Reminder) was **pending** immediately after the test correction. The final HEAD must be fetched and tested afresh. Previous canceled runs DO NOT count as an all-green result.
+
+**Remaining release gates:** physical Safari iPhone video/slow network, WebKit, real Google/Telegram callback, actual Web Push capability and authorization, no duplicate/incorrect Pro grants, complete UI acceptance. Note that the original user requirement states `main` must not change and PR must not merge/deploy without explicit approval.
+
+## 2026-11-09 CI audit continuation — 975fa78ac6ec2a3ff53958f104cbf1e917084c07
+
+**Current branch:** `feature/li-onboarding-mainffbff9-20261108`; PR #282 draft. No main merge, no production deploy.
+
+- Previous HEAD `573ba2ff8536966664db16231574721a2025ca14`: backend targeted job **SUCCESS**; native PostgreSQL **SUCCESS**; localization P0 **SUCCESS**; Android **SUCCESS**; Admin PWA **SUCCESS**; Smart Reminder and miniapp-ui overall **FAILURE**.
+- Miniapp-ui failure (run `42552066084`, job `128949691275`): `tests/e2e/test_pwa_progressive_shell.py::test_first_paint_localizes_before_any_account_api[tj]` asserted HTML lang `tj`, while initial shell correctly emits standard BCP 47 `tg`. App locale remains `tj`. Fixed regression test, **not** the canonical HTML language.
+- Smart Reminder failure (run `42552066114`, job `128949622480`): `tests/test_smart_reminder_pwa.py::test_job_is_not_sent_before_its_scheduled_time` used `self.expiry` but only child fixture `self.case.expiry` exists. Fixed test reference without changing sender behavior.
+- Fixes committed as `d30200efd444df0ce2aaf46070fa37103944131b` and `975fa78ac6ec2a3ff53958f104cbf1e917084c07` respectively.
+- New HEAD's CI: Backend targeted run `42567353011`, Local-first i18n run `42567353014`, Smart Reminder run `42567353017` triggered; **not complete when last checked**. Do not claim green or approve PR until current HEAD CI completes.
+- Progressive-loading status is partial PWA shell/independent section loading implementation; unchanged default onboarding cutover remains a release gate. Do not cache or trust Pro/auth/course progress from local UI.
+- **Video note:** approved 709,956-byte MP4 has been committed on the feature branch, but real Safari device/network validation remains outstanding. Earlier header prose still contains a stale `real MP4 ... NOT complete` statement; do not take it literally.
+
+### Next
+1. Check current HEAD and statuses before any new edits; inspect failures from **current** CI, not prior SHA.
+2. Audit any failed browser tests against real route constraints and avoid relaxing validations.
+3. Preserve RU/UZ/TJ, Mini App behavior, secure actor ownership and 9916-line course source localization baseline; log real CI verification.
+4. Do not merge/deploy or enable live default routes without explicit authorization.
+
+## 2026-11-09 USER SCOPE CLARIFICATION — progressive loading applies ONLY to our Li onboarding
+
+**Scope:** user expressly narrowed Initial Render & Progressive Loading to the newly added **23-state Li Panda onboarding**. No change to existing authenticated course homepage, rating, profile, paywall, Android, or `app/static/course-v3.html` belongs to this new task. Everything below is **only feature-branch work**, not a main merge/deploy.
+
+**Real code changes made:**
+
+1. `app/static/course_v3_li_onboarding.html`: first paint is a branded HTML header/main/footer skeleton with reserved layout before external pack/Telegram/catalog JS. Their script tags moved after initial body shell. Added local skeleton CSS with reduced-motion fallback and corrected width/alignment. `loadCourse` and `loadLesson` preserve header and inline SVG panda, show book/tracks/lesson blocks with stable geometry instead of a blank fullscreen spinner. Added accessible Back action for slow read states. Runtime version query updated after source edits.
+2. `app/static/course_v3_data/li-onboarding-runtime.js`: real book JPEG remains original authoritative art; image element uses 340×255, `loading=eager`, `decoding=async`, `fetchpriority=high`, a reserved overlay skeleton, and true onload/error fallback. No nonexistent WebP/AVIF URLs invented (actual book files are JPG, 167151 and 310301 bytes). Login/signup providers show independent skeleton cards pending real provider API; duplicate in-flight provider reads collapse into one promise. Save, trial-status, trial-start and OAuth launch show local status blocks without replacing the underlying page. Public *anonymous* HSK track metadata uses only a short 120s **in-memory** preview with background revalidation and request dedupe; paid/Pro, actor, CSRF, trial, private progress and subscription data are never cached by this feature. The onboarding status GET no longer repeats a proven same-bootstrap PWA session read; status endpoint still authenticates independently. Back during `loadCourse`/`loadLesson` advances generation and ignores late results; writes remain blocking by design.
+3. `tests/e2e/test_li_onboarding_runtime.py`: added Playwright tests for HTML shell with scripts failing, slow course API and independent book/track skeleton, safe public cache while background refresh hangs, save-specific status skeleton with scene retained, and slow-track Back discarding late response. Existing Chromium/WebKit CI steps exercise the entire test module.
+4. `docs/onboarding-li/PRODUCT_GOAL.md`: added strict scope statement, explicit progressive loading / no-CLS / safe-cache / auth acceptance contract.
+
+**Code reviewed but not changed in this scoped task:** `app/static/course-v3.html` (existing course/profile/rating UI); existing PWA paywall and Android sources. No access/Pro/lesson backend contract is modified here. Official book JPEGs reused; the iPhone video guide remains its existing separate media component.
+
+**Validation:** `li-onboarding-runtime.js` and the inline Li HTML script passed JavaScript parse in the connector V8 check before the final cache/back amendments; newer code should be checked again. Latest fresh GitHub CI after edits must be confirmed before marking complete; no physical iPhone Safari, Web Push or production deploy evidence. See PR #282 and GitHub Actions for the exact head. Do not claim completed without fresh pass.
+
+## 2026-11-09 VERIFIED VIDEO IMPORT — USER ZIP EXTRACTED TO REAL MP4
+
+- User uploaded the whole `HSK_AI_iPhone_install_video_GitHub_asset.zip` to the feature branch under `app/static/assets/onboarding/`, not the inner MP4. The ZIP itself cannot be played by the browser.
+- Executed a temporary, SHA-locked GitHub Actions extraction workflow. [Run 42505992013](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/42505992013) completed **SUCCESS**.
+- Verified GitHub feature branch tree contains **`app/static/assets/onboarding/iphone-home-screen.mp4`** (709,956 bytes) with blob SHA-1 `4c263a39cb0a6dba12a43379702ed3dd907d1d06`; checked the same SHA against local `git hash-object`.
+- Original optimized MP4 SHA-256 `727be15b30229aedffee780eab61ee781ef3727e9cd7bcf8af5aab6d99bacb8f`, as in asset README.
+- Confirmed **both** the uploaded ZIP and the one-time GitHub Actions workflow were removed in the import commit. This left only the actual video asset, README and existing /assets route.
+- Existing `GET /assets/onboarding/iphone-home-screen.mp4` now resolves to a real file **on this feature branch** after it is served by the app. `li-onboarding-install.js` uses same path. However no preview server was deployed in this conversation and no real-device Safari or throttled-network playback test passed here.
+- PR #282 remains **draft**; no `main` merge, no production deploy. Before approval, run asset validation CI `tests.test_li_install_video_asset` and real Safari range/slow-network playback QA. Review video content for old URL wording.
+
+## 2026-11-09 USER VIDEO RECEIVED — compression complete, repo binary import pending
+
+- User attached a 16.333 s, 512×1114, H.264/AAC iPhone Safari Home Screen instructional screen recording, **6,624,465 bytes**.
+- Actual local transcoding: `ffmpeg -c:v libx264 -preset slow -crf 27 -profile:v main -level:v 3.1 -pix_fmt yuv420p -c:a aac -b:a 32k -ac 1 -movflags +faststart`. Output `iphone-home-screen.mp4`, **709,956 bytes (89.28% smaller)**, 16.345 s, average 347,485 bps, same display size. `moov` at byte 36 before `mdat` at 18,940. SSIM=0.993621.
+- **Optimized MP4 SHA-256**: `727be15b30229aedffee780eab61ee781ef3727e9cd7bcf8af5aab6d99bacb8f`.
+- File exists in current conversation container at `/mnt/data/hsk_video/iphone-home-screen.mp4` and is downloadable from the assistant conversation. **Important: do NOT confuse local conversation files with GitHub!** The GitHub plugin's text-file API cannot read a local binary; as of this checkpoint, the video **has NOT been committed to feature branch**. Do not claim published/tested Safari integration.
+- Required GitHub path (after obtaining the exact optimized binary): `app/static/assets/onboarding/iphone-home-screen.mp4`. Existing GET route will then serve with `video/mp4` and byte-range support; existing runtime uses `preload=metadata`, `playsinline` and a fallback when missing. `app/static/assets/onboarding/README.md` includes exact codec/compression/copy instructions. `tests/test_li_install_video_asset.py` validates expected hash (<1 MB, faststart) only if file actually exists; CI step runs it.
+- **Content-review warning:** One recording frame shows truncated `telegram-chinese-bot-...` URL. Before publishing, confirm it is still an intended official PWA hostname, or replace with current one. No visual content was changed during compression.
+- **Do not merge/deploy** until binary is imported, and the actual iPhone Safari video opens correctly under slow-network throttling (plus 23-state onboarding acceptance).
+- GitHub PR #282 remains draft on feature branch. At checkpoint CI for latest content was queued/pending, no new all-green claim.
+
+## 2026-11-09 SOURCE-BASED SECURITY AND RELEASE-BLOCKER AUDIT (current)
+
+**Read first:** [AUDIT_RISKS_2026-11-09.md](AUDIT_RISKS_2026-11-09.md), an evidence-based file/bug/test matrix. Only facts in the present feature branch have been used; no production tests/deploy/merge.
+
+- User's final extra `Add files via upload` commit `65a6aaff` has exactly the same Git tree as its parent: **NO duplicate video is present**. Keep the one approved 709,956-byte `iphone-home-screen.mp4` and unrelated admin test fixture, do not force-rewrite Git history just to delete an empty commit.
+- Security: closed direct HSK3.0 locked-level onboarding bypass before state mutation and added denial unit test.
+- Correctness: paid Pro account no longer receives old trial-expiry warning; SQL due-window filtering and `NOT EXISTS` slot dedupe before 200-row LIMIT prevent non-due and already-sent users from starving true T-48h notifications. Added paid/oversized cohort unit tests.
+- UX: timeout now covers full API JSON body, not just response headers; trial failure shows real retry plus separate free-course continuation; repeated errors no longer stack. Added mock-hung-response and trial-denial Playwright cases.
+- Safari: real optional MP4 now committed; test actual FastAPI 206 Range response, SHA-256 and byte-for-byte partial content; execute Li runtime and install-guide suites on both Chromium and WebKit in CI.
+- Video content still shows `up.railway.app` in the Safari Share panel. **Do not claim this is the official/current PWA hostname** without verification.
+- Platform security: no PWA push permission is granted by the Li onboarding sheet, no Pro granted by the client, and Android native onboarding is unchanged.
+- QA: these new tests were committed, but their final post-change GitHub Actions results were **NOT YET VERIFIED** at this journal checkpoint. No physical iOS Safari, real push receipt, prod flags, or production Alembic migration confirmed.
+- Branch stays draft PR #282; main and production remain untouched.
+
+## 2026-11-09 ADDITIONAL AUDIT HARDENING — through approved-scope feature branch
+
+- **No extra video to delete:** the separate user-upload commit had exactly the same tree as previous. Only required `iphone-home-screen.mp4` (709,956 bytes) exists; do NOT delete it or unrelated MP4 test fixtures. ZIP has already been deleted.
+- **Trial release bug fixed:** canonical entitlement guard prevents paid Pro users with historical unexpired trial stamps from receiving expiry notices. A direct unit test proves this.
+- **HSK 3.0 server bypass fixed:** Li onboarding now checks per-user `CourseTrackService.hsk30_access(...).allowed` before any switch/progress persistence. Explicitly disabled `allow_locked_hsk30` for the onboarding switch; added both denied and allowed unit cases.
+- **48h queue starvation fixed:** query limits to actual due windows and excludes already recorded reminder slots using correlated `NOT EXISTS` before `MAX_BATCH=200`. Added 201-not-due and 5-due-users/2-page-unit regression; new cohorts drain over successive runs rather than endlessly repeating the same rows.
+- **Network/UI hardening:** API 12s GET/20s POST deadline now covers complete JSON decoding, not just fetch headers. Trial activation now gives honest Retry and separate free course exit; error panel does not duplicate. Tests added in `tests/e2e/test_li_onboarding_runtime.py`.
+- **Safari asset audit:** real FastAPI MP4 `Range`/HTTP 206 test verifies first/middle/final bytes and canonical SHA-256; test was placed in backend CI job with full dependencies, not the browser-only job.
+- **WebKit coverage:** Li 23-state and install guide suites now run in both Chromium and actual Playwright WebKit browser engine in CI. WebKit is not a physical iPhone.
+- **Remaining:** official PWA hostname vs video `up.railway.app`, real iPhone Safari slow network/seek/VoiceOver, production Web Push flags and device permission, production Alembic, end-to-end real Google/Telegram OAuth, CSP inline-script hardening. See [AUDIT_RISKS_2026-11-09.md](AUDIT_RISKS_2026-11-09.md).
+- **Test claims:** code/CI steps have been committed, but latest fresh GitHub Actions are still running at this checkpoint; no full-green claim. PR #282 stays draft and production/main unchanged.
+
+## 0. Yangi chatni boshlash — shu tartib majburiy
+
+1. Repository `akbarholturaev11-lang/HSK-AI-Bot`ni och, **branch `feature/li-onboarding-mainffbff9-20261108`** mavjudligini va uning remote HEAD SHA'sini tekshir. Default `main`dan ko'r-ko'rona davom etma. Local workspace allaqachon dirty bo'lsa user o'zgarishlarini saqla; rebase/reset/force yo'q.
+2. `AGENTS.md`, `AI_RULES.md`, `PROJECT_MEMORY.md`, **shu fayl**, [`PRODUCT_GOAL.md`](PRODUCT_GOAL.md), `localization/README.md`, `.agents/skills/hsk-ai-ui/SKILL.md` va scoped auth/Smart Reminder rules ni o'qi.
+3. **Current branch HEAD'ni `main` bilan solishtir:** code diff/commits, migrations current head, related tests; loggi statusga emas real diffga ishonsin. Boshqa agent allaqachon o'zgartirgan bo'lsa hammasini qayta ko'rib, shu jurnalni real holatga mosla.
+4. Demo reference: current branch `docs/onboarding-li/DEMO_REFERENCE_ONLY.html`ni o'qi va SHA-256 `767c2de59116229dab9304e3036ae589399379340013f1d137eae7df82644b30` bilan solishtir. Undagi `SCREEN_MAP.md`, `CODEX_TASK.md` foydali audit attachment; repo runtime manbasi emas. **Demo now exists in this GitHub branch as reference-only.** Original SHA-256 locally verified; preserve it. Its presence alone does NOT prove live UI copy/visual fidelity.
+5. Quyi `CURRENT STATUS` va `NEXT ACTION`ni tekshir. Faqat undan keyin code ishlari davom etsin. Yangi session avvalgi xatolarni takrorlamasin.
+6. Har bir **haqiqiy** muhim code slice/migration/test tugagach `CURRENT STATUS`, `VERIFIED CODE CHANGES`, `TEST EVIDENCE`, `NEXT ACTION`, `OPEN RISKS`ni **shu fayl ichida** yangila va kod bilan **o'sha branch commit**da saqla. Har bir token/CSS micro-editni emas, tekshiriladigan fayl/behavior bo'lagini qayd et.
+7. Yangi chatga qisqa topshiriq: **"`feature/li-onboarding-mainffbff9-20261108` branch'da `docs/onboarding-li/PRODUCT_GOAL.md` va `docs/onboarding-li/IMPLEMENTATION_CONTEXT.md`ni o'qi. Hozirgi HEAD/diff/testlarni tekshir, jurnalning NEXT ACTION joyidan davom et, har verified code slice'dan so'ng jurnalni actual sha va test evidence bilan yangila. `main`ni o'zgartirma, release qilma."**
+
+## 2026-11-09 — Latest implementation/audit checkpoint (draft PR #282)
+
+- Verified updated main c80d72184b853ec4b83141403f7e2c77dcffb557 was already included in the onboarding feature branch (0 behind). This feature branch remains isolated; no merge into main or production deploy.
+- New user-initiated iPhone install-guide implementation exists in app/static/course_v3_data/li-onboarding-install.js and .css. The real onboarding runtime calls it ONLY after verified guest OAuth registration and confirmed server save; it does not grant user rights. Apple/iPhone, standalone and Telegram source conditions were inspected. app/main.py has fixed optional video route /assets/onboarding/iphone-home-screen.mp4; the required real MP4 file is NOT in repository, so the server returns 404 and UI shows the canonical RU/UZ/TJ 3-step guide.
+- Confirmed the first implementation displayed a blank pending video region. Fixed in commit f1ec2713e3a5f185896b035976d4865ca1f46298: text fallback now paints immediately, media appears only after loadedmetadata, and vertical 9:16 video geometry is supported. Bust JS/CSS URL cache in HTML commit 31a1da12229a95abf73e021d1b7d9bae215a7bfd.
+- Added further Playwright assertions in a8bc8e42a046974089b8756f53273720490f3374: video metadata transition and fallback, iOS/standalone/Telegram exclusion; tests are authored, NOT necessarily passed in latest run. Later commits added full first-time OAuth + server-save-gated guide E2E and canonical source checks; check actual GitHub CI before claiming PASS.
+- Previous backend run 42494394481: native-postgres SUCCESS, targeted-tests SUCCESS, miniapp-ui FAILED because the synthetic OAuth test tried reading sessionStorage on Chromium's blocked error document; not proof of actual account corruption. Added safe navigation diagnostics in a7d8c6b8 and simulated external provider full-document callback in 21960e2d; verify latest miniapp-ui result before removing the blocker.
+- Open release gates: full current CI; physical iPhone Safari video and Home Screen behavior, actual reviewed MP4, Telegram callback, end-to-end 23-scene screenshot diff in UZ/RU/TJ, exact T-48h PWA push consent/delivery, analytics/event ownership, and migration rehearsal. Legacy default onboarding remains deployed and must not be silently swapped.
+- Next step: inspect latest branch HEAD/CI after this checkpoint, repair any real failing assertions/flows, validate optional video file route and future source integrity, then separately approve default PWA/Mini App cutover after device tests. Update this same file with evidence.
+
+## 2026-11-08 CHECKPOINT — public PWA panda-first, real OAuth draft resume, bounded API loading
+
+**Active branch:** `feature/li-onboarding-mainffbff9-20261108`. No `main` merge or production deployment. After re-audit `main` moved to `c80d72184b853ec4b83141403f7e2c77dcffb557`; that main was merged **into feature only** via commit `4b6d8b35b61920c989ab2835b5d4bb33d8301ba3`, preserving latest Lava paid/Pro Safari patches and custom onboarding endpoints. The branch was 0 commits behind after merge.
+
+### Implemented code
+- `app/api/pwa_auth.py`: `GET /iphone-pwa/onboarding/li` now serves **public static UI only**, without actor ID, subscription, session or course data. Existing signed-account `GET /api/v3/pwa/onboarding/status`, POST onboarding and trial endpoints retain full session/CSRF rules. `GET /api/v3/pwa/onboarding/public-tracks` exposes only server-confirmed HSK feature metadata with anonymous HSK3.0 `allowed:false`. `POST /api/v3/pwa/onboarding/li/resume` sets a short-lived, secure HttpOnly `__Host-hskai-li-resume` navigation cookie **only after same-origin check**. Verified `GET /iphone-pwa` session handling consumes the hint once and returns to Li after Google/Telegram sign-in; no client ID/token is trusted to grant account access.
+- `app/static/course_v3_data/li-onboarding-runtime.js`: guest first-screen + local non-secret, same-tab choices; guest `loadCourse`/lesson preview fetch public metadata, never authenticated course data. Guest `signup` enters real provider screen instead of writing profile. Real Google provider starts through canonical `/api/v3/pwa-auth/start`; Telegram delegates browser-bound claim/polling to existing PWA login page; Apple hidden until actually supported. After OAuth, only authenticated owner `user_id` may adopt same-tab draft; full personal HSK track entitlement is reloaded before profile save. Existing completed users still redirect to real course. GET/POST fetches have 12/20s bounded wait and honest loading/error retry; no fake delays. Failed trial eligibility shows Retry and Continue free (not fake ineligibility).
+- `app/static/iphone-pwa-login.js`: after verified Telegram claim, navigate via `/iphone-pwa` so the trusted server can consume Li resume hint; normal users still land on course. `app/static/course_v3_li_onboarding.html` content-addresses the updated adapter and shows network-in-flight indicator with reduced motion rules.
+- `tests/test_pwa_browser_auth.py`: public shell privacy and protected session/POST checks, same-origin resume cookie, one-time return, no anonymous HSK3 grant; existing PWA OAuth/trial checks maintained.
+- `tests/e2e/test_li_onboarding_runtime.py`: guest visual progression, public-only track reads, provider UI and actual OAuth initiation, same-tab draft restore after simulated Google callback, no POST before authentication; trial status offline Retry/Continue free, Mini App/PWA real choice persistence.
+
+### Test evidence and open status
+- Pre-public-flow PR CI on feature: `42486168023` launched after latest main integration; `miniapp-ui` = **SUCCESS**, `native-postgres` = **SUCCESS**. Remaining broader jobs may have been superseded by subsequent commits.
+- First guest browser CI `42487595257`: 4 Li E2E tests passed, new guest test failed because test counted **authenticated** `track_get` (correctly zero for a guest) instead of separate public endpoint fetches; fixed in `81815861a92a08cb2704a59687266b1ce28e2371` without weakening real user/CSRF guards.
+- **Latest CI after fix:** `42487829821` backend workflow started and was **queued/in progress** when this checkpoint was prepared. Recheck actual jobs and failing assertions; do not claim success.
+- The original 23-state copy reference is pinned exactly in `docs/onboarding-li/DEMO_REFERENCE_ONLY.html`; canonical locale artifacts stay in sync. Real physical device/iPhone installed-app push permission, all 23 screenshot diffs and production impact are **NOT VERIFIED**.
+- **Known remaining auth limitation:** Telegram-from-Li signup deliberately reuses canonical login page to avoid duplicating browser-bound Telegram proof, so it currently includes an additional existing provider selection step. This is safer than a fake Telegram login and needs final UX parity audit.
+- **Release blocker:** default `/iphone-pwa/onboarding` and primary Mini App route still use legacy onboarding; Li currently preview/opt-in routes only. No feature auto rollout. PWA new UI is public but mutation endpoints remain private.
+
+### NEXT ACTION
+1. Inspect latest PR #282 CI run after commit `81815861` and fix real browser/HTTP/OAuth regressions. Recheck `main` SHA drift.
+2. Verify PWA anonymous preview, same-origin resume cookie, OAuth callback and Telegram browser claim redirect via actual API test; verify no cross-account draft.
+3. Audit server-first lesson readiness: current Li `loadLesson` re-reads real track access but not actual lesson content; implement proper real lesson loader or amend copy/contract. Check aborted requests/back/retry.
+4. Canonical review screenshot diff for 23 states on RU/UZ/TJ, mobile widths and iPhone safe area.
+5. Only once tests and device flows pass consider guarded default-route cutover. Keep `main` and prod unchanged.
+
+## 2026-11-08 — Follow-up CI defect triage on draft PR #282
+
+**Current base/branch context:** branch `feature/li-onboarding-mainffbff9-20261108`, main has advanced; compare `main` before any subsequent merge. NO production deployment/merge.
+
+**Verified prior GitHub Actions run `42487942737` at `6acd54173acee0cc5888fad1f81c7ddcb9aa95dc`:**
+- `native-postgres`: SUCCESS.
+- `miniapp-ui`: FAILED on `test_pwa_guest_sees_panda_first_and_oauth_resumes_saved_draft_safely` due 30-second `window.screen==='profile'` wait; exact post-OAuth state not yet known.
+- `targeted-tests`: FAILED four test executions across two assertions:
+  1. Anonymous `POST /api/v3/pwa/onboarding` test expected 401 but supplied invalid payload missing REQUIRED `language` + `timezone_offset_minutes`, causing schema 422 *before* auth. Updated test with fully valid payload to test actual auth boundary (`tests/test_pwa_browser_auth.py`, commit `cdadeebbb039b87408ce84e005092a9e59b93d03`).
+  2. Old test expected exactly two direct `location.replace("/iphone-pwa/course")` browser login redirects; verified new Telegram OAuth route intentionally enters `/iphone-pwa` to consume a one-shot Li resume cookie. Updated test to assert one session-verified direct course and one server-return route without bypassing verified session (`cdadeebb`).
+- `local-first localization`, `Admin PWA isolated`, `Smart Reminder`: SUCCESS for this prior head.
+- Guest OAuth browser failure is still **OPEN**. `tests/e2e/test_li_onboarding_runtime.py` now outputs location, current screen, visible error/CTA, draft presence and captured API requests if no return to profile within 10 seconds (commit `9d3c5d623c2eeaeee09f9b6f90aa28be05b310fc`). **Diagnostic instrumentation only, not the actual fix.**
+- A new GitHub Actions cycle at current head `9d3c5d62` was **PENDING** when last inspected (`42494317495` Backend targeted, `42494317523` localization, `42494317547` Smart Reminder, `42494317542` Admin PWA); do NOT count PASS until the runs finish. No test claim for latest head yet.
+
+**Next exact work:** inspect 10-second OAuth diagnostics from latest `miniapp-ui`, fix underlying `li-onboarding-runtime.js` navigation/draft restoration rather than loosening assertions; rerun and record full workflow results, then review valid-cookie/guest smoke tests and project migration head. Do not activate default onboarding or merge until green and device acceptance.
+
+## 2026-11-08 VERIFIED WORK RESUMPTION — 23-screen UI, multi-goal planning, PWA trial push
+
+**Current branch:** `feature/li-onboarding-mainffbff9-20261108`, draft PR #282; do **not** merge into `main` until all CI jobs, UI regression and migration contracts pass. Main was fast-forward merged **into the feature branch only** at `8ffe7d556e716a8f554ef8adf1ddbe4eea9c015f` with shared PWA Pro Safari/Lava changes. It did not modify production.
+
+### Implemented code (real files, not inferred)
+- `app/static/course_v3_li_onboarding.html`: independent full 23-state visual shell based on user HTML. All original visual and text copy comes from canonical localized sources below. `app/static/course_v3_data/li-onboarding-runtime.js`: one web interface for PWA and signed Telegram Mini App, live course-track fetch, retry/loading, original course-book JPGs, browser actor/cookie CSRF or Telegram signed initData, multi-goal save with POST response reconciliation, no fake login/trial or client Pro grant.
+- Served at **`/iphone-pwa/onboarding/li`** with verified PWA cookie (protected preview) and **`/course_v3_li_onboarding.html`** Mini App preview. The deployed default onboarding and native Android remain untouched. Do not activate until visual/API/device acceptance.
+- `localization/ui/{uz,ru,tj}/li_onboarding.json`: all **66** original demo text keys per locale and options/reactions (**127** keys total/locale), `scripts/i18n_build_li_onboarding.py` owns a generated `app/static/course_v3_data/hsk-li-onboarding-i18n.js` bundle. `scripts/i18n_build_all_catalogs.py` includes this generated artifact. CI catalog artifact count is now **76** (previously 75). `tests/test_li_onboarding_catalog.py` verifies original copy and pinned supplied demo.
+- `docs/onboarding-li/DEMO_REFERENCE_ONLY.html` **RESTORED byte-for-byte to user-supplied original**: source had lost two newline characters during original GitHub upload (at the `trial2`→`trial3` split and trailing EOF); this was corrected without changing wording or UI. Pinned SHA-256 should now match original `767c2de59116229dab9304e3036ae589399379340013f1d137eae7df82644b30`; confirm on CI.
+- `app/services/learning_signals.py` and `app/services/daily_plan_service.py`: carry canonical ordered `goals`, compute deterministic primary-weighted 60% / remaining 40% multi-goal task preference. Scalar-only learners preserve identical build behavior; existing daily-plan IDs remain frozen. `tests/test_daily_plan_service.py` covers both.
+- `app/services/smart_reminder_policy.py`, `app/services/smart_reminder_policy_context.py`: add read-only actual `current_streak` (valid last activity) and `streak_target_days` to Smart policy context. **No** new consent/sending/scheduling authority, no false progress grant. `tests/test_smart_reminder_policy.py` ensures policy outcome unchanged.
+- `app/services/trial_reminder_service.py` integrates PWA opt-in subscriber into existing `CourseNotificationService` + `learner_pwa_push.enqueue_event` outbox for genuine T-48h (limited 12h late grace window). Existing Android/Telegram fallback remains when no PWA event queued. Dedupe via existing per-trial reminder key; `app/services/learner_pwa_push.py` prevents stale sends after trial revoked/expired/converted. `tests/test_trial_reminder_service.py` exercises due-time and push queue. Push receipt/provider success, install consent, and cross-device delivery still require CI/manual QA.
+- `alembic/versions/0154_li_onboarding_choices.py` safe additive goals/streak schema on existing metadata QA. No production migration applied.
+- Browser UI coverage `tests/e2e/test_li_onboarding_runtime.py` added to Mini App UI workflow; `tests/test_pwa_browser_auth.py` includes PWA protected preview/trial endpoints.
+
+### CI traceability and current blockers
+- Prior workflow `42480653632`: `targeted-tests`=**SUCCESS** and `native-postgres`=**SUCCESS**. `miniapp-ui`=failure because reference HTML was 2 newlines shorter than the user's original SHA-256; fixed in commit `2e0e0bcb`, with original pinned hash preserved.
+- Prior `42480653535` local-first i18n failure: generator produced 76 artifacts, test still expected 75. Fixed in `a6cdbeb2` (never hide or omit new catalog artifact). Prior Admin PWA `42480653547` only failed same two stale artifact count assertions; its postgres migration job was **SUCCESS**.
+- Current branch head after fixes: `a6cdbeb213b4a3c81631225a461d62a71be436ba`. CI workflow `42483948401` (backend), `42483948302` (i18n) were **pending when last checked**; do NOT mark green before rechecking their actual results.
+- Distinguish committed/source syntax from validated features: user-visible 23 screens are on isolated preview routes only; exact live click flow, PWA/Telegram signed actor, push receipt and all device Safari/Android compatibility are **not yet proven**. Do not call launch-ready until verified.
+
+### NEXT ACTION after context loss
+1. Check latest feature-branch HEAD and GitHub Actions. Fix the actual new failing CI logs, especially `tests/e2e/test_li_onboarding_runtime.py`, with minimal patches and honest tests.
+2. Review `app/static/course_v3_data/li-onboarding-runtime.js` against demo's inline function contracts, particularly login, course loading, 23-state stepping and server POST payload response; no fake authenticated progression.
+3. Verify `/course_v3_li_onboarding.html` Mini App and `/iphone-pwa/onboarding/li` PWA manually, 3 languages, 390px screen, HSK3.0 locked/live, returning account and trial consent/expiry/revocation.
+4. Ensure original onboarding routes still work. Update both journal and product goal when needed, no merge/main deploy without acceptance.
+5. PWA T-48h Web Push: user requested exact reminder, but notification permission and active PWA push subscription are necessary; clearly communicate that unreachable users cannot be guaranteed a push.
+
+## 2026-11-08 NEW MAIN AUDIT — latest 401de151 (read-only source + Railway logs)
+
+**Delta evidence:** GitHub compare from `4ca0d2d1` to `401de151`: **1 merged/squashed commit, 29 changed files**. Main is new code, but production isn't. Its Railway deployment `dee3fc58-678d-4ec9-8dc6-83100fd72014` FAILED in **BUILD_IMAGE**, logs repeat `failed to download build driver` for GitHub `nixpacks-v1.41.0`. No Python runtime exception, app migration failure, or test failure demonstrated by that build. Railway production service still **Online** on prior successful deployment `70cf40e4-7ad2-45d3-9b00-2be043be424e`, commit `4ca0d2d1`. New code runtime on production **NOT VERIFIED/NOT DEPLOYED**. GitHub combined status showed Railway failure; GitHub PR workflow-runs query for this SHA returned none, so **test success was not established**.
+
+### 29 changed files — relevance grouping
+- **High / direct contract impact:** `app/api/pwa_auth.py` (+ PWA inline UI injection and CSRF event/exit-offer APIs), `app/api/lava_checkout.py`, `app/services/lava/{checkout,config,ledger}.py`, `app/services/pwa_exit_offer_service.py`, `app/db/models/{pwa_exit_offer,lava,conversion_funnel_event}.py`, `alembic/versions/0152_pwa_exit_offer.py`, `alembic/versions/0153_pwa_inline_funnel.py`, `app/static/course_v3_data/iphone-pwa-inline-pro.{js,css}`, `iphone-pwa-inline-pro-bridge.js`, `app/services/{conversion_funnel_service,subscription_entry_analytics_service}.py`.
+- **Routing/quality and secondary:** `app/main.py` adds explicit new asset allowlist (CSS/JS) without changing onboarding routes; `app/admin_api/pwa_lava.py`, `app/static/admin-pwa/app.js` map provider promo; `app/db/models/__init__.py` registers new model; `scripts/qa_standalone_bootstrap.py` and `tests/test_qa_standalone_bootstrap.py` advance reviewed head to **`0153_pwa_inline_funnel`**; `.github/workflows/backend-ci.yml` includes new PWA tests; `tests/test_pwa_browser_auth.py`, `tests/test_pwa_exit_offer.py`, `tests/e2e/test_pwa_inline_pro.py`, `tests/e2e/test_pwa_inline_pro_routes.py` cover portions; `docs/iphone-pwa/PWA_INLINE_PRO_CONTEXT.md` documents module (its header still refers to prior 4ca baseline, so treat that header as historical).
+- **Unrelated to our runtime goal:** native Android Compose UI test geometry changes in `android/app/src/androidTest/java/com/pomp/hskai/feature/profile/ProfilePromoCarouselTest.kt`; Android production onboarding code was not changed in this delta.
+- **Unchanged** between old/main: `app/static/course_v3_onboarding.html`, `app/static/course-v3.html`, `app/static/subscription.html`, `app/services/course_miniapp_onboarding_service.py`, `app/db/models/course_miniapp_profile.py`, `app/services/trial_reminder_service.py`, Smart Reminder policy and PWA reminder services, `app/static/iphone-pwa-sw.js` and original book JPG files. Old proposed implementation remains unimplemented.
+
+### Exact behavior of NEW PWA Pro module — preserve and separate
+- `app/api/pwa_auth.py::_pwa_inline_html` injects content-addressed `iphone-pwa-inline-pro.{css,js}` + bridge into **authenticated PWA course, voice, five practice and checkout HTML routes**. It does **not** inject into `/iphone-pwa/onboarding`; it keeps shared original Mini App static HTML unchanged. The inline JS itself is guarded to `/iphone-pwa/(course|practice/...)` only.
+- New UI opens instantly on **real limit** through `App.openPaywall`, `App.goPay` and practice bridge, with instant 2-plan skeleton, panda and animated sheet. Actual price/terms from `/api/v3/pwa/subscription/overview`; 1/12 month default, 3/6 and real manual/Alipay/WeChat in additional tariffs. No fake pricing API values. Display-only higher comparison ~30% with .99 ending is **NOT historical/former price**.
+- `PwaExitOfferService` creates one account-scoped 20% exit offer for 24h; depends on actual `exit_offer:20` Lava provider mapping, sellable terms, eligibility and claim; only consumed on verified paid invoice. Its API uses PWA cookie+CSRF + same origin; note **it authenticates an account but does not cryptographically prove a physical X click**, despite the docstring saying verified X. Never treat that as a general trial entitlement.
+- New funnel: 11 `pwa_pro_*` events, CSRF + event_id/attempt scoped UI reporting for allowlisted limit sources, `inline_preview=true` prevents a price preview from counting checkout, Lava invoice-start event comes after provider invoice, paid event only inside verified payment-grant ledger. Source values are allowlisted but from client UI: they are **telemetry**, not proof of a genuine server limit. Reuse backend payment flow where appropriate; onboarding trial/Pro impressions should use **separate source/event namespace**, not forge a limit funnel.
+- Schema: new `pwa_exit_offers` table at Alembic 0152, new `lava_invoices.pwa_inline_attempt_id/source` and funnel CHECK at Alembic 0153. All future onboarding schema migrations MUST start from the **new current head**, verify actual Alembic graph, follow migration QA, and do not assume production has applied 0152/0153.
+- New paywall `WORDS` holds RU/UZ/TJ inline even though `AGENTS.md` requires canonical `localization/ui/` authoring. Don't copy that into onboarding; separate future cleanup from this scope unless necessary.
+
+### Two newly clarified HIGH-RISK integration gaps
+1. **Public PWA first state / login flow:** `GET /iphone-pwa/onboarding` requires `PwaAuthService.actor` before returning HTML. Meanwhile `GET /iphone-pwa` redirects an already authenticated session to `/iphone-pwa/course`. Demo requires panda `account` before provider signup/login. Implement a **safe public first-screen shell** with temporary non-secret draft and a protected authenticated completion API, restoring draft only to the verified actor after OAuth; never unlock existing private API by simply removing auth.
+2. **Pro trial differs from new inline paid paywall:** `app/api/miniapp_entitlements.py` has signed Telegram `/api/v3/trial/{start,status}`. `app/api/pwa_auth.py` exposes **no matching authenticated PWA trial start/status endpoint** as of main 401de. The PWA inline paid exit offer API does not solve this; add a secure account-cookie+CSRF trial adapter reusing canonical trial service, observing eligibility/risk/expiry/cancel/no-auto-charge contracts. Keep paid checkout source/path separate.
+
+### Existing PWA push + Smart Reminder remains unchanged
+- `TrialReminderService.REMINDER_DAYS=(2,0)`, `days_left=(ends_at-now).days` (floor), `pwa_push_suppressed=True`; real 48-hour PWA push still needs work with existing outbox and duplicate/fallback control.
+- `CourseMiniAppProfile` still only scalar `goal`; `streak_target_days` absent, `current_streak` server-owned. Smart policy still has daily XP/plan/time/consent but no target. Existing legacy motivation streak notifications still present and may duplicate; onboarding shouldn't enable reminders without consent.
+- `app/static/iphone-pwa-sw.js` unchanged; any new JS/i18n assets must be content-hashed and tested against PWA cache.
+- Production `PWA_PUSH_ENABLED`/`PWA_PUSH_SEND_ENABLED` values and real iOS Home Screen push are **NOT inspected/NOT verified**.
+
+### Testing/QA evidence on new main
+- New **test SOURCE** inspected: `tests/test_pwa_exit_offer.py` (one-time offer/provider/verified grant), `tests/test_pwa_browser_auth.py` (PWA event auth/CSRF/dedupe/preview), `tests/e2e/test_pwa_inline_pro.py` (synthetic visual), `tests/e2e/test_pwa_inline_pro_routes.py` (limit routes + manual iframe), `tests/test_qa_standalone_bootstrap.py` (head 0153). `backend-ci.yml` includes related jobs.
+- Before this feature, no tests executed; see CI evidence at top for the new branch. Do not call PR checks PASS until a completed CI run confirms it. Railway build didn't reach app startup. **NOT VERIFIED; no PASS claim**.
+- Recommend targeted baseline: `python -m unittest tests.test_pwa_browser_auth tests.test_pwa_exit_offer tests.test_lava_promo_codes tests.test_course_miniapp_onboarding tests.test_course_track_service tests.test_trial_reminder_service tests.test_smart_reminder_policy tests.test_smart_reminder_pwa tests.test_qa_standalone_bootstrap`; i18n `python3 scripts/i18n_build_all_catalogs.py --check`; `python -m pytest -q tests/e2e/test_pwa_inline_pro.py tests/e2e/test_pwa_inline_pro_routes.py` (assuming environment deps available); plus migration single-head and synthetic/real-device PWA behavior. Record exact results; these are **proposed commands, not completed tests**.
+
+### Audit conclusion and agreed work boundary
+- **Recommend implementing from new main 401de, NOT the obsolete docs branch on 4ca.** This new docs branch was created exactly from 401de, with PRODUCT_GOAL and this context only; no runtime changed. On next task, refresh remote main for further commits and compare before coding.
+- **Not started:** user requested AUDIT FIRST, coding NEXT; do not begin P1 without new user instruction. Production Railway failed to deploy new main due Nixpacks driver download; the prior live app stays online. No automatic deployment/merge on this audit.
+
+## 2026-11-08 LATEST CHECKPOINT — implemented PWA trial adapter + real CI evidence
+
+**Active implementation branch:** `feature/li-onboarding-mainffbff9-20261108` based on deployed `main@ffbff949`. Draft PR **#282** open; **not merged, not deployed, no production migration**.
+
+### Additional committed feature behavior
+- `app/api/pwa_auth.py`: **GET `/api/v3/pwa/trial/status`** returns canonical `ProTrialService.eligibility` + `TrialRiskService` evaluation for the cookie-verified PWA account; status never grants rights. **POST `/api/v3/pwa/trial/start`** requires PWA enabled, same-origin and cookie+CSRF; rejects Telegram initData spoof, evaluates existing risk and calls the existing one-time `ProTrialService.start`. Only successful start records risk, commits and returns `ends_at`. No independent trial/entitlement/payment engine created, no client-side Pro grant.
+- `tests/test_pwa_browser_auth.py`: tests for PWA status auth/risk, trial start unauthorized/wrong-origin/no-CSRF/cross-channel, risk denial, failed eligibility and confirmed server result. **Do not claim these tests passed until full targeted-tests job finishes.**
+- `tests/test_course_v3_static_data.py`: updated legacy assertion that demanded silent HSK2.0 fallback on remote failure. Now asserts server-known disabled fallback and **honest retry on failed network**; did not reintroduce a fake access status.
+- `tests/test_iphone_pwa_asset_versions.py`: updated allowlist test to inspect actual route `public_assets` membership with both literal keys and existing `dict.fromkeys` JS group; former brittle test falsely rejected five JS assets already in deployed main.
+- `app/static/course_v3_onboarding.html`: restored CTA to enabled on successful metadata response; forced deadline for old WebViews without AbortController. No full 23-state activation yet.
+
+### GitHub Actions evidence (NOT ALL GREEN)
+- First attempted PR run `42472514663`: Playwright failed due CTA still disabled; old Mini App save confirmation test failed due additive profile shape. Both fixed in commits `0048e1cf` and `2062aa8f`.
+- Subsequent run `42472859223`: old static string assertion failed, corrected without weakening fail-closed logic in commit `bbbe3554`.
+- Subsequent `42473153502` PWA asset test failed because deployed main had switched to `dict.fromkeys`; updated test in commit `8aa67b91`.
+- **Latest specifically inspected completed jobs on commit `6c446b6f`, workflow `42473482755`:** `native-postgres` = **SUCCESS**, `miniapp-ui` = **SUCCESS** (includes `tests/e2e/test_li_onboarding_loading.py`). `targeted-tests` was **IN PROGRESS** as last checked (running `tests.test_pwa_browser_auth`). It must not be marked passed. Other workflows (Smart Reminder, localization, Android) are not fully assessed here; use full current CI before release.
+- Tests authored + remote CI actual, but **no dedicated physical iPhone/Telegram device run**, **no manual PostgreSQL production migration**, **no visual 23-screen screenshot regression** and no proof PWA trial UI started from demo.
+
+### Explicit scope not yet delivered
+1. User demo 23-state pixel/text fidelity live PWA+Telegram UI (reference-only HTML pinned, current live UI still legacy three-question flow).
+2. Public PWA panda-first registration, OAuth return/temporary drafts, signed Telegram auth UX and real first-lesson launch.
+3. Bind `goals[]`, time, focus, streak target selections from 23-screen UI; deterministic multi-goal daily-plan weighting and no post-first-lesson duplicate questions.
+4. PWA 48-hour trial-expiry Web Push, platform permission/consent, exact dedupe and push receipt evidence.
+5. Smart Reminder canonical streak target context and legacy notification cross-channel dedupe.
+6. Onboarding event funnel/canonical RU/UZ/TJ source catalogs + builder, full device regression and release safety.
+
+### Next exact action
+Review **latest** branch HEAD and `targeted-tests` CI conclusion; fix actual failures. Then implement P1 23-state shared UI from `docs/onboarding-li/DEMO_REFERENCE_ONLY.html` with same copy/poses but **no fake timers/auth/trial**, original course book JPGs and canonical localizations. Continue updating this journal after tested code slices.
+
+## CI evidence — first test cycle and bug fixes (2026-11-08)
+
+- Draft PR [#282](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/282) opened on the feature branch to run tests; **DRAFT, no merge or deploy**.
+- GitHub Actions run `42472514663` DID execute tests; `miniapp-ui` failed in `tests/e2e/test_li_onboarding_loading.py::test_track_loading_is_visible_retryable_and_server_authoritative`: after server success, `#cta` stayed disabled. **Actual root cause:** loading render disabled CTA; successful remote render did not re-enable it. **Fix committed:** `app/static/course_v3_onboarding.html` now restores CTA on verified ready state (`0048e1cff92e989a8b5891d4606e39578a9b99b2`).
+- Same run `targeted-tests` failed `tests/test_miniapp_onboarding_save_confirmation.py::test_completed_hsk30_choice_is_confirmed_without_any_write` due newly additive `goals/streak_target_days/preferred_focus` status fields. **Fix committed:** adjusted exact expected response for old legacy profile while preserving read-only/no-write requirement (`2062aa8faa9473114de089ec43c1ab84c4279614`).
+- A new PR CI cycle began after fixes: GitHub workflow run `42472708714` (backend targeted). **At this journal write it is IN PROGRESS; not PASS**. Check workflow jobs and logs before advancing claims.
+- Original demo `docs/onboarding-li/DEMO_REFERENCE_ONLY.html` was compared character-by-character to the attached original through GitHub + Files tools: **identical, all 23 cases present**. Local SHA-256 already matched. This is reference QA only, not a visual browser pass.
+
+## 2026-11-08 IMPLEMENTATION CHECKPOINT — first partial code slice on deployed main ffbff949
+
+**Source:** base `main@ffbff9492e0713686f57a76443bef17a45c4041c`, feature `feature/li-onboarding-mainffbff9-20261108`. Railway production deploy for base ffbff949 verified **SUCCESS**. Source code changes below **only on feature branch**, no production deployment or main merge.
+
+**Exact original demo source now located and pinned:** `docs/onboarding-li/DEMO_REFERENCE_ONLY.html`, original 1038-line, 99,339-byte user-provided HTML. Local container SHA256 computed and matched `767c2de59116229dab9304e3036ae589399379340013f1d137eae7df82644b30`. Source file is REFERENCE-ONLY; it is **not** live 23-screen onboarding, and its fake auth/trial/timers must never be shipped as-is.
+
+### Verified code changes (GitHub source writes, not executed runtime)
+- `alembic/versions/0154_li_onboarding_choices.py`: additive nullable profile columns `goals_json` and `streak_target_days`, PostgreSQL CHECK for 7/14/30/50, Alembic named-constraint `op.f`; down-revision `0153_pwa_inline_funnel`. Old goal/progress untouched by migration.
+- `app/db/models/course_miniapp_profile.py`: ORM mapping and matching CHECK.
+- `app/services/onboarding_goal_selection.py`: strict ordered primary-first multi-goal input, valid streak target and backwards read fallback. Uses no reward/activity data.
+- `app/services/course_miniapp_profile_service.py`: optional `goals`, `streak_target_days` accepted and stored, existing scalar goal preserved, old scalar-change clears a mismatched legacy JSON array, verified focus optional. Current streak and XP not touched.
+- `app/services/course_miniapp_onboarding_service.py`: pass choices through both legacy HSK2.0 and live HSK3.0 completion paths; profile return includes all choices without resetting server-owned XP.
+- `app/api/pwa_auth.py`: authenticated same-origin/CSRF optional request schema, invalid goal array returns 422 before course mutation, status reads persisted choices.
+- `app/main.py`: verified Telegram `X-Telegram-Init-Data` onboarding request and status support optional choices, invalid input 400 with existing semantics.
+- `app/static/course_v3_onboarding.html`: version screen now shows immediate panda loading shell/skeleton while real track API unresolved, error+retry without inventing HSK3.0 access; 12s abort timeout, request-sequence guard; success replaces skeleton with real version and original book JPG. **Existing UI is still 3-question flow, not 23-state demo.**
+- Tests authored: `tests/test_li_onboarding_choices.py`, additions to `tests/test_pwa_browser_auth.py`, `tests/e2e/test_li_onboarding_loading.py`; `.github/workflows/backend-ci.yml` includes new unit and Playwright steps. QA bootstrap/test reviewed expected head advanced to `0154_li_onboarding_choices`.
+
+### Current status (do not overclaim)
+- P0 baseline: **PARTIAL**. Source/main/deployment SHA and demo hash verified, but no fully local project checkout or CLI migration/test baseline.
+- P1 23-state 1:1 UI: **NOT STARTED** (exact demo pinned as source, not live).
+- P2 universal loading UX: **PARTIAL** (only first course-track metadata request path; lesson, auth, Pro, trial, push etc remain).
+- P3 public/auth draft: **NOT STARTED**.
+- P4 goals/time/focus/streak persistence: **PARTIAL** (DB + server endpoints exist in branch, demo UI not connected, plan weighting not migrated).
+- P5 real HSK course/lesson integration: **NOT STARTED** (legacy behavior preserved).
+- P6 Pro trial new PWA adapter: **NOT STARTED**.
+- P7 exact 48h PWA trial push: **NOT STARTED**.
+- P8 Smart Reminder streak-context integration and duplicate-notice owner: **NOT STARTED**.
+- P9 onboarding-specific analytics and canonical RU/UZ/TJ copy: **NOT STARTED**.
+- P10 acceptance/visual/iOS E2E: **NOT STARTED**.
+
+### Test evidence
+- Authored files and new CI steps: **YES**.
+- GitHub Actions DID execute targeted unittest and synthetic Playwright in PR #282: first run failures described in CI evidence; fixes are committed and the new CI run is pending. Direct local test/physical-device QA and migration rehearsal remain **NOT RUN**.
+- Do not mark migration safe or production ready before sandboxed database migration+regression and CI proof.
+- Source-driven checks performed: GitHub read-after-write and source-anchor validation; these are **not** test execution.
+
+### New risk / review before next code
+1. First check `0154` single Alembic head + PostgreSQL physical CHECK naming, migrate existing sample profile, downgrade rehearsal without deleting real data; do NOT run this on prod just to test.
+2. Review PWA/Telegram profile request actor boundaries, potential retry-after-lost-POST progress mutations, and prompt/post-first-lesson suppression.
+3. Verify profile goal lists integrate into versioned daily-plan weighting without mutating frozen plan.
+4. Current loader uses existing canonical `onboarding.progress` and `courseLoadError` strings; for exact demo `loadCourse` copy, add canonical RU/UZ/TJ keys and generate resources in a real checkout before final UI.
+5. No PWA public panda-first account route yet, no PWA trial status/start, and no 48h push. Never claim user-visible full onboarding.
+6. Do not overwrite PWA-only inline Pro limit module, Lava attribution, or existing Mini App plan gating.
+
+### Next action
+**Run branch CI/targeted tests, fix failures, then P1 implement the hash-verified 23-state UI using the pinned demo CSS/copy/panda and real course book JPEGs, with secure per-platform account adapters.** Continue from `PRODUCT_GOAL.md`, not an invented redesign.
+
+## 1. CURRENT STATUS — faqat tekshirilgan holat
+
+| Slice | Status at last verification | Evidence / note |
+| --- | --- | --- |
+| P0 — source baseline | **PARTIAL; CLI baseline NOT run** | deployed ffbff949 confirmed, original demo pinned |
+| P1 — 23-state shared visual UI | **NOT STARTED** | Demo reference is separate attachment |
+| P2 — real loading state everywhere | **PARTIAL** | track metadata load state + retry added in shared HTML; other remote flows pending |
+| P3 — PWA/Telegram auth/draft | **NOT STARTED** | Existing endpoints audited |
+| P4 — multi-goal/time/focus/streak schema | **PARTIAL** | additive 0154 + PWA/Telegram endpoint support, UI and daily-plan consumers pending |
+| P5 — real HSK track/lesson | **NOT STARTED** | Existing course routes audited |
+| P6 — Pro offer/trial activation | **NOT STARTED** | Existing Telegram trial endpoint, PWA gap |
+| P7 — 48h PWA trial push | **NOT STARTED** | Existing push engine; actual flags unknown |
+| P8 — streak ↔ Smart Reminder | **NOT STARTED** | Existing Smart planner; integration gap |
+| P9 — analytics + canonical locales | **NOT STARTED** | Current analytics/i18n infra audited |
+| P10 — regression, screenshot, device QA | **NOT RUN** | tests authored, CI step added; no pass evidence yet |
+
+### VERIFIED CODE CHANGES
+
+- **Runtime code, schema, migrations, endpoints:** partial; see 2026-11-08 IMPLEMENTATION CHECKPOINT above. This older section describes the initial docs-only point-in-time, not the current branch.
+- **Documentation-only commits in NEW branch:** `docs/onboarding-li/PRODUCT_GOAL.md` created in `a241f6c434a30d0115514384f8980cee06b47ece`; this journal created subsequently. Previous archived branch commits (`6a09d036`, `666c9922`) are not the active implementation base. Confirm latest branch diff/commit SHA.
+- Do **not** conflate audit findings, source references, earlier chat task prose, fake/demo UI, or planned designs with written/tested production code.
+
+### TEST EVIDENCE
+
+- Executed unit/API/Playwright/i18n commands in the current implementation session: **none yet**. See latest checkpoint above.
+- GitHub `fetch_file`/read-only code inspection conducted; reading test names does **not** mean tests passed.
+- User device/iOS Home Screen push, env credentials, VAPID readiness and production delivery: **not verified**.
+- Documentation can be manually checked via remote GitHub `fetch_file` + compare commits after creation; that does not test app behavior.
+
+## 2. Audited current code — facts from `main@4ca0d2d`
+
+The paths below existed and were reviewed **read-only** on 2026-11-08; recheck fresh code before editing.
+
+### Frontend / identity / onboarding
+- `app/static/course_v3_onboarding.html`: existing shared Mini App + PWA course onboarding (welcome plus track/level/one goal); book image handling includes actual JPEGs.
+- `app/static/course-v3.html`: checks `onboarding_completed === false` on course entry; after-first-lesson setup asks `daily_minutes` and `preferred_focus`. It also has a prior explicit rule suppressing Pro/trial immediately after onboarding, so the demo offer changes this behavior intentionally; avoid second overlapping paywall.
+- `app/static/iphone-pwa-login.html`, `app/static/iphone-pwa-login.js`: real login/provider browser flows; PWA auth cookies/callback and return destination must be preserved.
+- `app/api/pwa_auth.py`: `/iphone-pwa/onboarding`, PWA auth `PwaAuthService.actor` vs `mutation_actor` (cookie + CSRF); POST `/api/v3/pwa/onboarding`; existing provider and push endpoints.
+- `app/main.py`: `/api/miniapp/onboarding` POST and `/api/miniapp/onboarding/status` GET with signed `X-Telegram-Init-Data` check. Common `CourseMiniAppOnboardingService.complete`; status GET helps reconcile uncertain writes. PWA and Mini App share frontend but **not authentication trust mechanism**.
+- Telegram already verified account should not be asked for fake signup; existing account/Pro/progress should never be reset on a mere revisit.
+
+### Course / goal / daily plan / streak
+- `app/db/models/course_miniapp_profile.py`: scalar `goal`, `daily_minutes`, `preferred_focus`, `goal_chosen_at`, `current_streak`, `longest_streak`; **no confirmed `goals_json` or `streak_target_days` yet**.
+- `app/services/course_miniapp_profile_service.py`, `app/api/miniapp_preferences.py`, `app/services/learning_signals.py`: scalar goal consumers; migration and serialization backward compatibility needed.
+- `app/services/daily_plan_service.py`: goal-specific weighting; frozen daily-plan keys/schema; do not retroactively rebuild user's already-frozen current plan.
+- `app/services/course_gamification_service.py`: XP award drives canonical `current_streak`, `longest_streak`, `last_activity_date`; missed/future day streak is display-corrected. Goal selection must not award activity.
+- `app/services/course_track_service.py` / course track endpoints: server `live_levels`, allowed state, HSK3.0 preview vs real lesson entitlement; trial does not automatically unlock HSK 3.0. Do not route old users to destructive `lesson_1` start.
+- Book assets **actual repo images**: `app/static/assets/hsk20-course-books.jpg`, `app/static/assets/hsk30-course-books.jpg` (runtime cache version `v=20261003c` observed). Fake demo CSS book should be removed.
+
+### Pro trial / PWA push — the exact implementation gap
+- `app/services/trial_reminder_service.py`: `REMINDER_DAYS=(2,0)`; due check uses `days_left=max(0,(ends_at-now).days)`, i.e. floor, **not precise 48-hour due**; existing Inbox row uses `dedupe_key="trial_reminder:{ends_at.date()}:{days_left}"` and `pwa_push_suppressed=True`.
+- `app/services/notification_delivery_service.py`: Android-first, Telegram fallback; learner PWA outbox may be additionally enqueued on existing notice rows. **Do not simply remove `pwa_push_suppressed=True` blindly**: inspect overlapping `NotificationDeliveryService.deliver` enqueue, duplicate channels and return status; design exactly-once user-visible 48h PWA notice.
+- `app/services/learner_pwa_push.py`: opt-in PWA subscribers, outbox, dedupe, dispatch; generic lock-screen notice by default; end user auth/endpoint binding and session checks.
+- `app/api/pwa_auth.py`: GET `/api/v3/pwa/push/status`, POST `/push/subscribe`, POST `/push/revoke`; subscription requires cookie + CSRF + same origin; proper device binding.
+- `app/static/iphone-pwa-sw.js`: PWA service worker push handling, click-to-open authenticated Inbox; cache versioning must be updated with changed asset references.
+- `app/main.py` `_background_scheduler`: every ~60s checks trial reminders; `_admin_pwa_apple_push_scheduler` dispatches learner outbox about every 60s if configured.
+- `app/config.py`: `PWA_PUSH_ENABLED=False` and `PWA_PUSH_SEND_ENABLED=False` as defaults; **production configuration not audited**, so no guarantee that push is active.
+- `app/api/miniapp_entitlements.py`: trial status/start uses real signed Telegram identity; **PWA needs its cookie + CSRF authenticated service adapter** (not insecure Telegram initData mimic).
+- Trial eligibility, paid and previously used trials must obey existing services. Provider acceptance != notification displayed.
+
+### Smart Reminder / legacy motivation collision
+- `app/services/smart_reminder_policy.py`: `PolicyContext` has verified `studies`, `daily_goal_xp`, `plan_completed`, IANA timezone, quiet hours, manual/auto time and consent; **no explicit streak-target field**.
+- `app/services/smart_reminder_policy_context.py`: verified XP/progress, scoped history and plan context; extend here rather than compute stale client-only streak.
+- `app/services/smart_reminder_planner.py`, `smart_reminder_destination.py`, `smart_reminder_pwa.py`, `smart_reminder_preferences.py`: per-user/day ownership, PWA delivery, consent and routing. PWA subscription alone is not Smart Reminder consent.
+- `app/db/models/smart_reminder.py`: source consent accepts 'telegram'/'android' with additional PWA transport based on Smart ON + subscriber; do not silently invent a conflicting third user opt-in state.
+- `app/services/motivation_reminder_service.py`: existing Telegram evening streak/goal reminders; today's verification uses `last_activity_date` and current streak, with special D1 recovery and routing holds. Must avoid duplicate reminders with new Smart cross-channel state.
+
+### Analytics/i18n/testing audit
+- `app/services/course_miniapp_analytics_service.py` and `app/db/models/course_miniapp_event.py`: existing tracked event list/dedupe (PWA needs cookie+CSRF transport).
+- `localization/ui/{ru,uz,tj}/{course,common,miniapp}.json`: canonical copy sources; `scripts/i18n_build_all_catalogs.py --write` then `--check` required for actual UI changes.
+- Inspected test paths: `tests/test_pwa_browser_auth.py`, `tests/test_course_miniapp_onboarding.py`, `tests/test_course_track_service.py`, `tests/test_daily_plan_service.py`, `tests/test_pro_trial_service.py`, `tests/test_trial_risk_service.py`, `tests/test_trial_reminder_service.py`, `tests/test_smart_reminder_policy.py`, `tests/test_smart_reminder_pwa.py`, `tests/test_course_gamification_service.py`, `tests/test_motivation_reminder_service.py`, `tests/test_iphone_pwa_asset_versions.py`, `tests/test_iphone_pwa_navigation_contract.py`.
+- **No tests were executed as part of this audit**, including no full local baseline (GitHub tool reading only).
+
+## 3. NEXT ACTION — immediate planned work
+
+**P0 before P1 code:**
+
+1. Refresh repo SHA and branch diff, confirm two docs and original demo availability/checksum, check local working tree and migration head.
+2. Read required project rules/UI skill and `localization/README.md`; examine `course_v3_onboarding.html` vs demo side by side, create a concise 23-state-to-source mapping **within this journal or implementation PR** (do not add a competing progress file).
+3. Run and record baseline targeted tests as environment permits; record the actual command, result and blockers (especially Auth, course track, preferences, PWA push, Smart Reminder and i18n).
+4. Implement **P1** shared visual shell/state machine, source-verified demo copy/assets and **P2** universal loading states in small reviewable commits. Avoid changing real account/Pro/trial while only UI renders.
+5. Then implement P3–P8 in dependency order, keeping migration/consent/auth/legacy guards; update this file after **every verified code slice**.
+6. Commit updated journal together with code, not minutes later, and verify remote branch state. Do **not** treat a successful commit as tested/released.
+
+## 4. Open risks / facts still to verify (not invented)
+
+- Exact demo asset is a prior conversation artifact, not yet committed to repo. Its availability/hash must be checked in next agent session. **If absent, visual/text "1:1" acceptance is blocked**.
+- Current database Alembic head, local dependency/test environment and working-tree conflicts have **not** been checked.
+- PWA Web Push is feature-flagged; production VAPID/config and actual installed iOS permission unknown.
+- Trial 48-hour scheduler and durable send are **not** confirmed; old `.days` logic has a boundary bug; dual push/inbox delivery may duplicate without carefully unified ownership.
+- PWA auth trial start may not exist under cookie+CSRF; do not reuse Telegram endpoint insecurely.
+- Multi-goal + streak target requires additive schema and downstream consumer tests; analytics/event allowlist may need migration/validation.
+- Existing Pro onboarding suppression and legacy motivation delivery overlap new demo behavior; test both.
+- Smart Reminder has careful rollout/shadow/admission/consent/quiet/no-retry semantics: never turn ON or bypass them just to send streak notices.
+- PWA push device eligibility and service worker cache update may require real-device QA; failed provider doesn't prove failed display and accepted provider doesn't prove success.
+- Some `main` code may move before implementation; compare current code and update this audit section if materially changed.
+
+## 5. Checkpoint format — update AFTER implemented code, not merely a plan
+
+Append **one checkpoint per meaningful verified slice** and update sections 1/3/4:
+
+```text
+### YYYY-MM-DD HH:MM (+timezone) — P# <slice name>
+Base HEAD: <sha>; working branch: <name>; new commit: <sha or UNCOMMITTED>
+Actual changed files: <exact paths>
+Actual behavior in runtime: <specific observed behavior and API/schema contract>
+Migration: <revision or none>; rollback: <how>; existing user impact: <facts>
+Tests EXECUTED: <exact command> -> PASS / FAIL / NOT RUN + counts/output
+Manual/visual/device evidence: <proof or NOT VERIFIED>
+Regressions/risks: <remaining exact risks>
+Next single action: <specific file/step to work on>
+```
+
+**Rules:** Mark PASS only after command output, NOT RUN when not executed, distinguish unit/CI/device/prod. Every feature claim must be tied to an actual committed file and test/evidence. Do not copy secrets, endpoints, user data, raw auth tokens or private admin credentials. Small CSS/typo changes can share a checkpoint; do not duplicate full Git history. Important stable architectural decisions go to `PROJECT_MEMORY.md` according to `AI_RULES.md`, not as competing diary. If a test fails or rollback occurs, revise CURRENT STATUS rather than keeping false done.
+
+## 6. CHRONOLOGICAL CHECKPOINTS
+
+### 2026-11-08 — NEW MAIN audit refresh and docs-only transfer
+
+- Confirmed `main` moved from `4ca0d2d1` to `401de151` (29 changed paths). Read route-level PWA inline-Pro and payment/analytics/DB diffs; verified unchanged onboarding/trial/Smart sources.
+- Railway deployment for `401de151` failed in build driver download, previous `4ca0d2d1` stays Online. No evidence of new app/runtime or tests succeeding.
+- Created docs-only `feature/li-onboarding-mainffbff9-20261108` from exact `401de151` and transferred the two handoff files with this refreshed audit. Old docs-only branch is archival.
+- **Actual onboarding runtime implementation: NONE. Tests: NOT RUN. No main merge or deployment.**
+- Next: after user requests coding, establish P0 test/migration/demo baseline, then implement shared UI plus safe public PWA entry and new billing/analytics adapter separation.
+
+### 2026-11-08 — Documentation/structure only (historical, old base)
+
+- Base main HEAD verified: `4ca0d2d1c7e89e517f6d9e6ab781c12963287b9a`.
+- Created initial archival docs-only branch `feature/li-onboarding-handoff-20261108` from that SHA. This was replaced with a new latest-main docs-only branch, see checkpoint above.
+- Added `docs/onboarding-li/PRODUCT_GOAL.md` — explicit 23-state final goal, original book JPG exception, all server loading UX, real PWA+Mini App auth, multi-goal/time/focus/streak, 48h PWA push and Smart Reminder integration, DoD/test scopes.
+- Added **this** `docs/onboarding-li/IMPLEMENTATION_CONTEXT.md` — factual audit, not code implementation, current status, next session instructions.
+- Real code changed: **NONE**. App migrations/tests/visual QA: **NOT RUN**. Production deployment: **NO**. Main push/merge: **NO**.
+- **Next:** P0 environment/test baseline + SHA-verified demo, then P1/P2 implementation.

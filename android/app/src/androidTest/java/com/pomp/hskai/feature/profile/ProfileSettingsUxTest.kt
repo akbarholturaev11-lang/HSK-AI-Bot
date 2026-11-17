@@ -19,6 +19,7 @@ import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isToggleable
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -155,6 +156,11 @@ class ProfileSettingsUxTest {
         compose.onNodeWithText(text(R.string.profile_account_save)).assertIsEnabled().performClick()
         compose.runOnIdle { assertEquals(listOf("Renamed learner" to ""), saves) }
         compose.onNodeWithContentDescription(text(R.string.hsk_common_action_close)).performClick()
+        // The account bottom sheet may still be in its dismiss animation on CI emulators.
+        // Wait until it leaves the semantics tree so "Hisob" resolves to the settings row only.
+        compose.waitUntil(5_000) {
+            compose.onAllNodesWithTag("profile-account").fetchSemanticsNodes().isEmpty()
+        }
         compose.onNodeWithTag("profile-settings-scroll").assertIsDisplayed()
         compose.onNodeWithText(text(R.string.profile_account_title)).assertIsDisplayed()
     }

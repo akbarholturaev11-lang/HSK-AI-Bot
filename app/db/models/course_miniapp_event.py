@@ -54,6 +54,11 @@ COURSE_MINIAPP_EVENT_NAMES = (
     "mistake_review_started",
     "mistake_review_answered",
     "mistake_review_completed",
+    # UIUX-007 personal review inside ordinary lessons. Server-only facts;
+    # never lesson score/completion events and never the review master state.
+    "adaptive_assigned",
+    "adaptive_answer_verified",
+    "adaptive_shadow_planned",
     "course_ad_attempt_started",
     "course_ad_viewed",
     "paywall_seen",
@@ -119,6 +124,12 @@ COURSE_MINIAPP_EVENT_NAMES = (
     # Telegram reports nothing back about it.
     "android_apk_requested",
     "android_apk_sent",
+    # Telegram Mini App routing (docs/TELEGRAM_PWA_ANDROID_HANDOFF_CONTEXT.md).
+    # An opened Play listing is not an install, and an issued handoff is not a
+    # sign-in: each fact is its own event and none is inferred from another.
+    "android_play_opened",
+    "pwa_handoff_issued",
+    "pwa_handoff_completed",
 )
 
 CLIENT_COURSE_MINIAPP_EVENT_NAMES = (
@@ -154,6 +165,7 @@ CLIENT_COURSE_MINIAPP_EVENT_NAMES = (
     "desktop_download_entry_seen",
     "desktop_download_chooser_opened",
     "desktop_download_destination_selected",
+    "android_play_opened",
 )
 
 

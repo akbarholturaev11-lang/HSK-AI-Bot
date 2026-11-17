@@ -1,8 +1,11 @@
 {
   "schema_version": 1,
   "files": [
+    "direct/values-ru/lava_checkout.xml",
     "direct/values-ru/strings.xml",
+    "direct/values-tg/lava_checkout.xml",
     "direct/values-tg/strings.xml",
+    "direct/values/lava_checkout.xml",
     "direct/values/strings.xml",
     "main/values-ru/account_deletion.xml",
     "main/values-ru/assistant.xml",

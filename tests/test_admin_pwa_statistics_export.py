@@ -86,7 +86,13 @@ class StatisticsExportTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTe
                         data = response.json()
                         self.assertEqual((data["platform"], data["period"]), (platform, period))
                         self.assertEqual(data["since"] is None, period == "all_time")
-                        if platform in ("telegram", "iphone_pwa"):
+                        if platform == "iphone_pwa":
+                            self.assertTrue(data["available"])
+                            self.assertEqual(data["scope"]["install_and_activity"], "not_instrumented")
+                            self.assertEqual([row["metric"] for row in data["metrics"]], [
+                                f"telegram_handoff.{stage}.{kind}" for stage in ("issued", "completed")
+                                for kind in ("users", "events")])
+                        elif platform == "telegram":
                             self.assertFalse(data["available"])
                             self.assertEqual(data["metrics"], [])
                             rows = list(csv.DictReader(io.StringIO((await self.export(client, "csv", platform=platform, period=period)).text)))
@@ -98,7 +104,8 @@ class StatisticsExportTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTe
                             self.assertEqual(len(data["metrics"]), 3)
                         elif platform == "android":
                             self.assertEqual(data["scope"]["active"], "rolling_1_7_30_days")
-                            self.assertEqual(len(data["metrics"]), 28)
+                            self.assertEqual(len(data["metrics"]), 30)
+                            self.assertIn("funnel.play_opened.users", [row["metric"] for row in data["metrics"]])
                         else:
                             percent = next(row for row in data["metrics"] if row["metric"] == "registration_conversion.percent")
                             self.assertEqual(percent["value"], 0.0)

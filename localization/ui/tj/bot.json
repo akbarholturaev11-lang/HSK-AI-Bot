@@ -676,7 +676,14 @@
     "inline.handlers.desktop_auth.pwa.confirm": "🌐 <b>HSK AI iPhone PWA — воридшавӣ тавассути Telegram</b>\n\nТанҳо агар худатон воридшавиро дар браузер оғоз карда бошед, тасдиқ кунед. Пас аз тасдиқ курс ва обунаи ҳисоби шумо дар ҳамин браузер кушода мешаванд.",
     "inline.handlers.desktop_auth.pwa.denied": "Воридшавӣ бекор шуд. Ин пайванд дигар кор намекунад.",
     "inline.handlers.desktop_auth.pwa.invalid": "Пайванди воридшавӣ ба PWA нодуруст ё куҳна аст. Аз браузер аз нав оғоз кунед.",
-    "inline.handlers.desktop_auth.pwa.success": "✅ <b>Воридшавӣ тасдиқ шуд</b>\n\nБа саҳифаи HSK AI дар браузери iPhone баргардед."
+    "inline.handlers.desktop_auth.pwa.success": "✅ <b>Воридшавӣ тасдиқ шуд</b>\n\nБа саҳифаи HSK AI дар браузери iPhone баргардед.",
+    "lava.user_renewal_failed": "⚠️ Пардохт барои тамдиди обунаи HSK AI Pro анҷом наёфт.\n\nКортро санҷед ё обунаро дар барнома аз нав расмӣ кунед. Мӯҳлати пардохтшудаи Pro то охир амал мекунад.",
+    "lava.user_subscription_cancelled": "Тамдиди худкор хомӯш карда шуд.\n\nHSK AI Pro то {date} амал мекунад, баъд аз корт пул гирифта намешавад.",
+    "lava.user_refund_revoked": "Пардохти шумо баргардонида шуд 💳\n\nРӯзҳои HSK AI Pro, ки барои ин пардохт дода шуда буданд, бекор карда шуданд.",
+    "lava.user_chargeback_revoked": "Оид ба пардохт тавассути бонк баҳс (chargeback) кушода шуд.\n\nТо ҳалли он рӯзҳои HSK AI Pro барои ин пардохт боздошта шуданд.",
+    "lava.user_chargeback_restored": "Баҳс оид ба пардохт пӯшида шуд ✅\n\nHSK AI Pro то {date} барқарор карда шуд.",
+    "lava.return_title": "Пардохт санҷида мешавад",
+    "lava.return_body": "Ташаккур! Пас аз тасдиқи пардохт HSK AI Pro худкор фаъол мешавад. Ба барнома баргардед — ҳолат худаш нав мешавад."
   },
   "namespace": "bot",
   "references": {

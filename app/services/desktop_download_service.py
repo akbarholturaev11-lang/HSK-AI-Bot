@@ -13,6 +13,7 @@ from sqlalchemy import func, select
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.repositories.user_repo import UserRepository
 from app.services.android_release_service import AndroidReleaseService
+from app.services import app_promo_decision_service
 from app.services.app_promo_decision_service import AppPromoDecisionService
 from app.services.desktop_app_promo_settings_service import (
     DesktopAppPromoSettings,
@@ -29,7 +30,6 @@ logger = logging.getLogger(__name__)
 PLATFORMS = ("macos", "windows")
 REQUEST_TOKEN_RE = re.compile(r"^[0-9a-f]{32}$")
 SAFE_FILE_NAME_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._+-]{0,119}$")
-PROMO_COOLDOWN_DAYS = 14
 PROMO_COMPLETION_EVENTS = (
     "section_completed",
     "lesson_completed",
@@ -319,9 +319,15 @@ class DesktopDownloadService:
             )
             for platform in PLATFORMS
         }
-        android_ready = bool(
-            promo_settings.platforms.get("android")
-        ) and await self._android_release_ready()
+        android_ready = await self._android_ready(promo_settings)
+        ios_ready = self._ios_ready(promo_settings)
+        # Admin-owned Play listing wins over the Direct APK when it is set.
+        payload["downloads"]["android_play"] = (
+            promo_settings.android_play_url
+            if promo_settings.platforms.get("android") and promo_settings.android_play_url
+            else None
+        )
+        payload["platforms"]["ios"] = ios_ready
         # Mini App oldin Android availability uchun yana public-status so'rar
         # edi. Shu authenticated status allaqachon ayni release'ni tekshiradi,
         # shuning uchun natijani bitta payload'da beramiz.
@@ -333,6 +339,20 @@ class DesktopDownloadService:
             current_platform=current_platform,
         )
         return payload
+
+    async def _android_ready(self, promo_settings: DesktopAppPromoSettings) -> bool:
+        """Android switch on, and a Play listing or a deliverable APK exists."""
+        if not promo_settings.platforms.get("android"):
+            return False
+        if promo_settings.android_play_url:
+            return True
+        return await self._android_release_ready()
+
+    def _ios_ready(self, promo_settings: DesktopAppPromoSettings) -> bool:
+        """iPhone PWA switch on and the learner PWA can actually sign people in."""
+        from app.services.pwa_auth_service import pwa_enabled
+
+        return bool(promo_settings.platforms.get("ios")) and pwa_enabled(self.settings)
 
     async def _android_release_ready(self) -> bool:
         """Android buildi hozir tarqatishga tayyormi.
@@ -382,15 +402,13 @@ class DesktopDownloadService:
             for platform in PLATFORMS
         }
         if android_ready is None:
-            android_ready = bool(
-                promo_settings.platforms.get("android")
-            ) and await self._android_release_ready()
+            android_ready = await self._android_ready(promo_settings)
 
         available_targets = {
             "macos": bool(desktop_targets.get("macos")),
             "windows": bool(desktop_targets.get("windows")),
             "android": bool(android_ready),
-            "ios": False,
+            "ios": self._ios_ready(promo_settings),
         }
         release_ready = any(available_targets.values())
         feature_enabled = bool(promo_settings.enabled and release_ready)
@@ -440,7 +458,8 @@ class DesktopDownloadService:
             "eligible": eligible,
             "reason": str(decision.get("reason") or "not_ready"),
             "target_platform": decision.get("target_platform"),
-            "cooldown_days": PROMO_COOLDOWN_DAYS,
+            # One source of truth with the server decision (0 = no rest).
+            "cooldown_days": app_promo_decision_service.PROMO_COOLDOWN_DAYS,
             "daily_limit": promo_settings.daily_limit,
             "cooldown_remaining_seconds": int(
                 decision.get("cooldown_remaining_seconds") or 0

@@ -9,7 +9,8 @@ RINGS = Path("android/app/src/main/java/com/pomp/hskai/feature/profile/ProfileAc
 
 def test_ranking_has_header_in_both_apps():
     assert 'class="section-title rating-title"' in WEB
-    assert "R.string.nav_rating" in RATING
+    # Android labels were centralized into generated i18n resources (313b7bc6).
+    assert "R.string.hsk_common_navigation_rating" in RATING
 
 
 def test_single_display_name_and_subscription_badge_after_avatar():
@@ -17,7 +18,7 @@ def test_single_display_name_and_subscription_badge_after_avatar():
     assert '<strong class="profile-display-name">' in profile
     assert profile.count("profile-access-badge") == 1
     assert 'class="pun"' not in profile
-    assert "text = stringResource(R.string.nav_profile)" in ANDROID
+    assert "text = stringResource(R.string.hsk_common_navigation_profile)" in ANDROID
     hero = ANDROID.split("private fun ProfileHero(", 1)[1].split("private fun profileAvatarDrawable", 1)[0]
     assert hero.count("AccessPill(") == 1
     assert 'text = "@$username"' not in hero
@@ -28,7 +29,11 @@ def test_paid_pro_status_is_inline_without_brown_card_in_both_apps():
     # A paid learner still sees the crown and "Pro", but not an oversized tile.
     assert ".profile-access-badge.pro{background:transparent" in WEB
     assert ".profile-access-badge.pro .ti-crown" in WEB
-    assert "profile-access-badge'+(paid||trialActive?' pro':'')" in WEB
+    # PR #284: the PWA also styles server TEMP_ACCESS as active (clock icon),
+    # never as paid Pro; Mini App has no map-state branch so it is unchanged.
+    assert "profile-access-badge'+(paid||trialActive||temporaryActive?' pro':'')" in WEB
+    assert 'var temporaryActive=hasMapState&&mapState==="TEMP_ACCESS";' in WEB
+    assert 'var paid=hasMapState?mapState==="PRO_ACTIVE":' in WEB
     assert "background:linear-gradient(115deg,#2b2018,#684124)" not in WEB
 
     pill = ANDROID.split("private fun AccessPill(", 1)[1].split(

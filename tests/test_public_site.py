@@ -60,6 +60,117 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
     async def asyncTearDown(self):
         await self.client.aclose()
 
+    async def test_railway_host_moves_only_public_html_to_official_domain(self):
+        from app.api.public_site import (
+            LEGACY_RAILWAY_PUBLIC_HOST, legacy_public_site_redirect,
+        )
+        from fastapi import Request
+        from starlette.requests import Request as StarletteRequest
+
+        assert Request is StarletteRequest
+        official = "https://hskai.app"
+        old = "https://" + LEGACY_RAILWAY_PUBLIC_HOST
+        app = FastAPI()
+        app.include_router(create_public_site_router(
+            settings_obj=settings(PUBLIC_SITE_URL=official)
+        ))
+        @app.get("/api/private-probe")
+        async def private_probe():
+            return {"safe": True}
+
+        async with AsyncClient(transport=ASGITransport(app=app),
+                               base_url=official, follow_redirects=False) as client:
+            # Every existing language/guide page, public privacy and legal page
+            # gets an exact-path 301; no unexpected home-page catch-all.
+            paths = tuple(PAGES) + tuple(GOOGLE_SIGNIN_PRIVACY_PAGES) + (
+                "/privacy", "/terms", "/account-deletion",
+            )
+            for path in paths:
+                moved = await client.get(old + path)
+                self.assertEqual(moved.status_code, 301, path)
+                self.assertEqual(moved.headers["location"], official + path)
+                self.assertEqual(moved.headers["cache-control"], "public, max-age=300")
+                original = await client.get(official + path)
+                self.assertEqual(original.status_code, 200, path)
+
+            # Critical service endpoints, ownership checks and crawler discovery
+            # must stay on the old host; never redirect the whole Railway domain.
+            for path in (
+                "/robots.txt", "/sitemap.xml", "/llms.txt",
+                "/google4575dc78c69e5824.html", "/public-assets/logo.png",
+            ):
+                response = await client.get(old + path)
+                self.assertEqual(response.status_code, 200, path)
+                self.assertNotIn("location", response.headers)
+            self.assertEqual((await client.get(old + "/api/private-probe")).json(),
+                             {"safe": True})
+            self.assertEqual((await client.get(old + "/unknown-private-path")).status_code, 404)
+            self.assertEqual((await client.get(official + "/ru/")).status_code, 200)
+            # Referral campaign tag remains, arbitrary auth token does not.
+            forwarded = await client.get(old + "/ru/?utm_source=organic&token=secret")
+            self.assertEqual(forwarded.headers["location"],
+                             official + "/ru/?utm_source=organic")
+
+        # The download route is owned by main.py, so test the shared pure guard
+        # without initializing Telegram polling, OAuth or the database.
+        def request_for(path, query=b""):
+            return StarletteRequest({
+                "type": "http", "method": "GET", "scheme": "https",
+                "path": path, "raw_path": path.encode(), "query_string": query,
+                "headers": [(b"host", LEGACY_RAILWAY_PUBLIC_HOST.encode())],
+                "server": (LEGACY_RAILWAY_PUBLIC_HOST, 443),
+                "client": ("127.0.0.1", 9000),
+            })
+        for path in ("/download", "/apps", "/desktop-download",
+                     "/desktop-download.html"):
+            redirect = legacy_public_site_redirect(
+                request_for(path, b"lang=uz&utm_campaign=seo&token=private"),
+                official,
+            )
+            self.assertEqual(redirect.status_code, 301)
+            self.assertEqual(
+                redirect.headers["location"],
+                official + path + "?utm_campaign=seo&lang=uz",
+            )
+        for path in ("/api/v3/apps/public-status", "/iphone-pwa",
+                     "/api/account-deletion/status", "/webhook"):
+            self.assertIsNone(legacy_public_site_redirect(request_for(path), official))
+        self.assertIsNone(legacy_public_site_redirect(
+            request_for("/"), "https://unrelated.example"
+        ))
+        self.assertIn(
+            "legacy_public_site_redirect(request, public_origin(settings))",
+            Path("app/main.py").read_text(encoding="utf-8"),
+        )
+
+    async def test_guide_canonicals_use_official_domain_with_legacy_fallback(self):
+        # The Railway URL remains the bot/API origin, not the indexed site.
+        old = "https://telegram-chinese-bot-production.up.railway.app/course-v3.html"
+        app = FastAPI()
+        app.include_router(create_public_site_router(
+            settings_obj=settings(PUBLIC_SITE_URL="", MINI_APP_BASE_URL=old)
+        ))
+        async with AsyncClient(transport=ASGITransport(app=app),
+                               base_url="https://hskai.app") as client:
+            for path in ("/tj/guide/", "/uz/guide/"):
+                response = await client.get(path)
+                self.assertEqual(response.status_code, 200)
+                canonical = Tags(response.text).find("link", rel="canonical")
+                self.assertEqual(len(canonical), 1)
+                self.assertEqual(canonical[0]["href"], "https://hskai.app" + path)
+                self.assertNotIn('rel="canonical" href="https://telegram-', response.text)
+            sitemap = await client.get("/sitemap.xml")
+            self.assertIn("<loc>https://hskai.app/tj/guide/</loc>", sitemap.text)
+            self.assertIn("<loc>https://hskai.app/uz/guide/</loc>", sitemap.text)
+            # Previously indexed Railway copies must 301 to the official URL.
+            for path in ("/tj/guide/", "/uz/guide/"):
+                redirect = await client.get(
+                    "https://telegram-chinese-bot-production.up.railway.app" + path,
+                    follow_redirects=False,
+                )
+                self.assertEqual(redirect.status_code, 301)
+                self.assertEqual(redirect.headers["location"], "https://hskai.app" + path)
+
     async def test_account_deletion_request_is_accessible_outside_app(self):
         page = await self.client.get("/account-deletion")
         self.assertEqual(page.status_code, 200)
@@ -121,11 +232,27 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
                 {page["lang"]: path},
             )
             self.assertEqual(
-                {t["hreflang"]: t["href"] for t in parsed.find("link", rel="alternate")},
+                {t["hreflang"]: t["href"] for t in parsed.find("link", rel="alternate") if "hreflang" in t},
                 {lang: ORIGIN + p for lang, p in expected.items()},
             )
             graph = json.loads(re.search(r'<script type="application/ld\+json">(.*?)</script>', html, re.S)[1])["@graph"]
             self.assertTrue({"Organization", "WebSite", "SoftwareApplication", "WebPage"}.issubset({n["@type"] for n in graph}))
+            website = next(n for n in graph if n["@type"] == "WebSite")
+            self.assertEqual(website["name"], "HSK AI")
+            self.assertEqual(website["url"], ORIGIN + "/")
+            self.assertEqual(
+                website["alternateName"],
+                ["HSKAI", "HSK-AI", "HSK Ai", "HSK AI App", "hskai.app"],
+            )
+            org = next(n for n in graph if n["@type"] == "Organization")
+            self.assertEqual(org["alternateName"], website["alternateName"])
+            application = next(n for n in graph if n["@type"] == "SoftwareApplication")
+            self.assertEqual(application["url"], ORIGIN + "/")
+            self.assertEqual(
+                application["alternateName"],
+                ["HSKAI", "HSK-AI", "HSK Ai", "HSK AI App"],
+            )
+            self.assertTrue(parsed.find("a", **{"class": "footer-brand", "href": "/"}))
             self.assertFalse(any("aggregateRating" in n or "review" in n for n in graph))
             if path == "/tj/hsk/":
                 self.assertEqual([n["name"] for n in graph if n["@type"] == "Course"], [f"HSK {i}" for i in range(1, 5)])
@@ -139,6 +266,51 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(len(titles), len(PAGES))
         self.assertEqual(len(descriptions), len(PAGES))
 
+    async def test_branded_homepage_is_distinct_and_canonical(self):
+        home = await self.client.get("/")
+        self.assertEqual(home.status_code, 200)
+        self.assertEqual(Tags(home.text).find("html")[0]["lang"], "ru")
+        self.assertIn("HSK AI — официальный сайт приложения", home.text)
+        self.assertIn("Это самостоятельный образовательный продукт", home.text)
+        self.assertIn('rel="canonical" href="' + ORIGIN + '/"', home.text)
+        self.assertNotIn("telegram-chinese-bot-production.up.railway.app", home.text)
+        site = json.loads(re.search(
+            r'<script type="application/ld\+json">(.*?)</script>',
+            home.text, re.S,
+        )[1])["@graph"]
+        self.assertEqual(next(x for x in site if x["@type"] == "WebSite")["url"], ORIGIN + "/")
+
+    def test_iphone_pwa_download_js_syntax_and_fallback_contract(self):
+        import shutil
+        import subprocess
+
+        script_path = Path("app/static/desktop-download-page.js")
+        script = script_path.read_text(encoding="utf-8")
+        self.assertIn('button.href = pwaLaunchUrl();', script)
+        self.assertIn('status.lastElementChild.textContent = localized.referralAndroidStatus;', script)
+        self.assertIn('iosReferralLink.href = referralLinkFor("ios");', script)
+        self.assertIn('url.searchParams.set("lang", state.language);', script)
+        self.assertNotIn('button.href = referralCode ? referralLinkFor("ios") : BOT_URL;', script)
+        if not shutil.which("node"):
+            self.skipTest("Node.js not installed for JS syntax check")
+        result = subprocess.run(
+            ["node", "--check", str(script_path)],
+            capture_output=True, text=True, timeout=20,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_mobile_menu_locale_labels_and_pwa_public_guide_copy(self):
+        from app.public_site.content import NAV_LABELS, PAGES
+        for lang, label in (("tg", "Меню"), ("ru", "Меню"), ("uz", "Menyu")):
+            self.assertEqual(NAV_LABELS[lang]["more"], label)
+        for locale in ("tj", "ru", "uz"):
+            guide = PAGES[f"/{locale}/guide/"]
+            faq = PAGES[f"/{locale}/guide/faq/"]
+            self.assertTrue(any("Safari" in body and "PWA" in body
+                                for _, body in guide["sections"]))
+            self.assertTrue(any("Safari" in body and "PWA" in body
+                                for _, body in faq["sections"]))
+
     async def test_product_first_header_language_and_download_contract(self):
         # Content remains crawlable without JavaScript, with one URL per locale.
         for language, url_code in (("tg", "tj"), ("ru", "ru"), ("uz", "uz")):
@@ -147,6 +319,8 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
             self.assertIn('class="course-cta"', html)
             self.assertIn('class="product-summary"', html)
             self.assertIn('<details class="language-switch">', html)
+            self.assertIn('<details class="mobile-nav">', html)
+            self.assertIn('class="mobile-nav-links"', html)
             self.assertIn('data-site-nav="features"', html)
             self.assertIn('data-site-nav="download"', html)
             self.assertIn("lang=" + url_code, html)
@@ -159,6 +333,11 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('data-site-nav="courses"', download)
         self.assertIn('data-site-nav="features"', download)
         self.assertIn('data-site-selected-lang', download)
+        self.assertIn('<details class="mobile-nav">', download)
+        self.assertIn('data-ios-install', download)
+        self.assertIn('/assets/onboarding/iphone-home-screen.mp4', download)
+        self.assertIn("PWA для iPhone", download)
+        self.assertIn("Safari", download)
         self.assertIn('/public-assets/navigation.css', download)
         self.assertIn('/public-assets/language.js', download)
         script = Path("app/static/desktop-download-page.js").read_text(encoding="utf-8")
@@ -201,6 +380,225 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
             verification.text,
             "google-site-verification: google4575dc78c69e5824.html",
         )
+
+    async def test_hsk_ai_brand_identity_and_verified_official_links(self):
+        from app.public_site.render import BOT_URL, NEWS_URL, SUPPORT_URL, OFFICIAL_SOCIAL_LINKS
+
+        for path in ("/", "/tj/", "/ru/", "/uz/"):
+            page = await self.client.get(path)
+            self.assertEqual(page.status_code, 200)
+            self.assertTrue(PAGES[path]["title"].startswith("HSK AI"), path)
+            self.assertTrue(PAGES[path]["h1"].startswith("HSK AI"), path)
+            self.assertIn('name="application-name" content="HSK AI"', page.text)
+            self.assertIn('class="official-footer-links"', page.text)
+            self.assertIn(SUPPORT_URL, page.text)
+            self.assertIn(NEWS_URL, page.text)
+            self.assertIn("/iphone-pwa", page.text)
+            graph = json.loads(re.search(r'<script type="application/ld\+json">(.*?)</script>', page.text, re.S)[1])["@graph"]
+            org = next(node for node in graph if node["@type"] == "Organization")
+            self.assertEqual(org["name"], "HSK AI")
+            self.assertIn(BOT_URL, org["sameAs"])
+            self.assertIn(NEWS_URL, org["sameAs"])
+            self.assertEqual({url for _, url in OFFICIAL_SOCIAL_LINKS},
+                             set(org["sameAs"]) - {BOT_URL})
+            self.assertEqual(org["contactPoint"][0]["url"], SUPPORT_URL)
+
+        for path in ("/tj/guide/faq/", "/ru/guide/faq/", "/uz/guide/faq/"):
+            page = await self.client.get(path)
+            self.assertIn("HSK AI", page.text)
+            self.assertIn(SUPPORT_URL, page.text)
+        download_source = Path("app/static/desktop-download.html").read_text(encoding="utf-8")
+        self.assertIn('class="official-footer-links"', download_source)
+        self.assertIn(SUPPORT_URL, download_source)
+        self.assertIn(NEWS_URL, download_source)
+        self.assertIn("https://facebook.com/1159152280609531", download_source)
+        privacy = await self.client.get("/privacy")
+        self.assertIn(SUPPORT_URL, privacy.text)
+        self.assertNotIn('href="' + BOT_URL + '"', privacy.text)
+
+    async def test_every_legal_and_account_page_is_linked(self):
+        legal_paths = ("/privacy", "/privacy#security", "/terms", "/account-deletion")
+        google_by_lang = {
+            "/": "/privacy/google-sign-in/ru/",
+            "/tj/": "/privacy/google-sign-in/tj/",
+            "/ru/": "/privacy/google-sign-in/ru/",
+            "/uz/": "/privacy/google-sign-in/uz/",
+        }
+        for path, google in google_by_lang.items():
+            response = await self.client.get(path)
+            self.assertEqual(response.status_code, 200)
+            for expected in (*legal_paths, google):
+                with self.subTest(page=path, legal=expected):
+                    self.assertIn(f'href="{expected}"', response.text)
+
+        download = Path("app/static/desktop-download.html").read_text(encoding="utf-8")
+        for expected in (*legal_paths, "/privacy/google-sign-in/"):
+            self.assertIn(f'href="{expected}"', download)
+
+        privacy = await self.client.get("/privacy")
+        self.assertEqual(privacy.status_code, 200)
+        self.assertIn('<h2 id="security">Security</h2>', privacy.text)
+        terms = await self.client.get("/terms")
+        deletion = await self.client.get("/account-deletion")
+        self.assertEqual(terms.status_code, 200)
+        self.assertEqual(deletion.status_code, 200)
+        for page in (privacy, terms, deletion):
+            for expected in ("/privacy", "/privacy#security", "/privacy/google-sign-in/", "https://t.me/hskai_support_bot"):
+                with self.subTest(url=page.url.path, link=expected):
+                    self.assertIn(f'href="{expected}"', page.text)
+        self.assertIn("/terms", SITEMAP_PATHS)
+        sitemap = await self.client.get("/sitemap.xml")
+        self.assertIn(f"<loc>{ORIGIN}/terms</loc>", sitemap.text)
+
+    async def test_russian_first_visit_and_ai_readable_public_inventory(self):
+        default = await self.client.get("/")
+        self.assertEqual(default.status_code, 200)
+        self.assertEqual(default.headers["content-language"], "ru")
+        self.assertEqual(Tags(default.text).find("html")[0]["lang"], "ru")
+        self.assertIn("HSK AI — официальный сайт приложения", default.text)
+        self.assertIn('<link rel="canonical" href="' + ORIGIN + '/">', default.text)
+        self.assertIn('href="/llms.txt"', default.text)
+        self.assertIn("Удаление аккаунта", default.text)
+        self.assertIn("Конфиденциальность", default.text)
+
+        for path, lang in (("/tj/", "tg"), ("/ru/", "ru"), ("/uz/", "uz")):
+            response = await self.client.get(path)
+            self.assertEqual(response.headers["content-language"], lang)
+            self.assertIn("<h1>", response.text)
+            self.assertIn('<nav class="official-footer-links"', response.text)
+
+        policy = await self.client.get("/privacy/google-sign-in/")
+        self.assertEqual(policy.headers["content-language"], "ru")
+        self.assertIn("Вход через Google", policy.text)
+        uz_policy = await self.client.get("/privacy/google-sign-in/uz/")
+        self.assertEqual(uz_policy.headers["content-language"], "uz")
+        self.assertIn("Google bilan kirish", uz_policy.text)
+
+        inventory = await self.client.get("/llms.txt")
+        self.assertEqual(inventory.status_code, 200)
+        self.assertTrue(inventory.headers["content-type"].startswith("text/plain"))
+        for expected in ("/ru/", "/tj/", "/uz/", "/download", "/privacy",
+                         "/account-deletion", "/terms", "/privacy/google-sign-in/",
+                         "https://t.me/hskai_support_bot"):
+            self.assertIn(expected, inventory.text)
+        for denied in ("telegram_user_id", "BOT_TOKEN", "/api/admin/"):
+            self.assertNotIn(denied, inventory.text)
+        robots = (await self.client.get("/robots.txt")).text
+        self.assertTrue(allowed(robots, "OAI-SearchBot", "/llms.txt"))
+        self.assertFalse(allowed(robots, "OAI-SearchBot", "/course-v3.html"))
+
+        download_source = Path("app/static/desktop-download.html").read_text(encoding="utf-8")
+        self.assertIn('<html lang="ru">', download_source)
+        self.assertIn('href="/download?lang=ru"', download_source)
+        self.assertIn("Скачать HSK AI", download_source)
+        self.assertIn('href="/llms.txt"', download_source)
+        shared = Path("app/static/public-site-language.js").read_text(encoding="utf-8")
+        self.assertIn('updateLinks(current || read() || "ru")', shared)
+        installer = Path("app/static/desktop-download-page.js").read_text(encoding="utf-8")
+        self.assertIn('return "ru";', installer)
+
+    def test_public_download_has_absolute_russian_hreflang(self):
+        # Test the pure metadata helper without importing app.main or touching
+        # Telegram, the database, Railway or an application startup hook.
+        import ast
+
+        main_source = Path("app/main.py").read_text(encoding="utf-8")
+        helper = next(
+            item for item in ast.parse(main_source).body
+            if isinstance(item, ast.FunctionDef)
+            and item.name == "_absolute_download_seo_urls"
+        )
+        namespace = {}
+        exec(compile(ast.Module(body=[helper], type_ignores=[]),
+                     "app/main.py", "exec"), namespace)
+
+        html = Path("app/static/desktop-download.html").read_text(encoding="utf-8")
+        self.assertIn('<link rel="alternate" hreflang="ru" href="/download">', html)
+        rendered = namespace["_absolute_download_seo_urls"](html, "https://hskai.app")
+        for metadata in (
+            '<link rel="canonical" href="https://hskai.app/download">',
+            '<link rel="alternate" hreflang="ru" href="https://hskai.app/download">',
+            '<meta property="og:url" content="https://hskai.app/download">',
+        ):
+            self.assertIn(metadata, rendered)
+        self.assertNotIn('hreflang="uz" href="/download"', rendered)
+
+    async def test_r2_confirmed_standard_prices_and_limits_are_public(self):
+        # R2 hsk-ai-support-kb/knowledge/subscriptions.json, owner-verified
+        # 2026-11-07. Publish standard data, not a guaranteed user checkout quote.
+        standard_prices = (
+            "3.15", "7.49", "19.44", "¥19", "¥49", "¥149",
+            "7.90", "19.00", "34.90", "64.90",
+        )
+        for lang in ("ru", "tj", "uz"):
+            with self.subTest(language=lang):
+                guide = await self.client.get(f"/{lang}/guide/subscription/")
+                faq = await self.client.get(f"/{lang}/guide/faq/")
+                self.assertEqual(guide.status_code, 200)
+                self.assertEqual(faq.status_code, 200)
+                for html in (guide.text, faq.text):
+                    for price in standard_prices:
+                        self.assertIn(price, html)
+                    self.assertIn("1.50", html)
+                    self.assertIn("2026", html)
+                    self.assertIn("5", html)
+                    self.assertIn("20", html)
+                    self.assertIn("Google Play", html)
+                # The FAQ's standard prices are real source data, not placeholders.
+                self.assertNotIn("Не используйте цену с этой страницы", faq.text)
+                self.assertNotIn("не считайте их безлимитными", guide.text)
+                self.assertNotIn("avtomatik tarzda cheksiz hisoblanmaydi", guide.text)
+                self.assertNotIn("худкор бемаҳдуд нестанд", guide.text)
+                self.assertNotIn("Bu sahifadagi matnni joriy narx deb qabul qilmang", faq.text)
+                self.assertNotIn("Нархи дар ин саҳифа навишташуда ҳисобида нашавад", faq.text)
+
+        index = await self.client.get("/llms.txt")
+        self.assertEqual(index.status_code, 200)
+        self.assertIn("## Стандартные цены Pro", index.text)
+        self.assertIn("Основное название бренда: HSK AI", index.text)
+        for spelling in ("HSKAI", "HSK-AI", "HSK Ai", "HSK AI App", "hskai.app"):
+            self.assertIn(spelling, index.text)
+        self.assertIn("## Стандартные лимиты Free", index.text)
+        self.assertIn("## Pro Trial и ограничения", index.text)
+        self.assertIn("USD 1.50", index.text)
+        self.assertIn("все прочие квоты действий Trial безлимитны", index.text)
+        for price in standard_prices:
+            self.assertIn(price, index.text)
+
+    async def test_play_pro_help_prefers_browser_pwa_without_reinstall(self):
+        # The user-facing guidance and the AI-readable source must agree.
+        cases = {
+            "tg": ("/tj/guide/subscription/", "/tj/guide/faq/",
+                   "Обуна дар браузер (PWA)", "насб кардан"),
+            "ru": ("/ru/guide/subscription/", "/ru/guide/faq/",
+                   "Оформить Pro в браузере (PWA)", "устанавливать APK"),
+            "uz": ("/uz/guide/subscription/", "/uz/guide/faq/",
+                   "Brauzerda Pro olish (PWA)", "APK o‘rnatish"),
+        }
+        for lang, (guide_path, faq_path, label, no_install) in cases.items():
+            with self.subTest(locale=lang):
+                guide = await self.client.get(guide_path)
+                faq = await self.client.get(faq_path)
+                self.assertEqual(guide.status_code, 200)
+                self.assertEqual(faq.status_code, 200)
+                for html in (guide.text, faq.text):
+                    self.assertIn("https://hskai.app/iphone-pwa", html)
+                    self.assertIn("Google Play", html)
+                    self.assertIn(no_install, html)
+                self.assertIn(
+                    f'<a class="pwa-subscription-link" href="/iphone-pwa">{label}</a>',
+                    guide.text,
+                )
+                self.assertEqual(
+                    len(Tags(guide.text).find("a", **{"class": "pwa-subscription-link"})), 1
+                )
+
+        ai_index = await self.client.get("/llms.txt")
+        self.assertEqual(ai_index.status_code, 200)
+        self.assertIn("## Как купить Pro, если в Google Play закончился лимит", ai_index.text)
+        self.assertIn("https://hskai.app/iphone-pwa", ai_index.text.replace(ORIGIN, "https://hskai.app"))
+        self.assertIn("добавлять PWA на главный экран не нужно", ai_index.text)
+        self.assertIn("Удалять приложение из Google Play", ai_index.text)
 
     async def test_attribution_click_and_no_open_redirect(self):
         with self.assertLogs("uvicorn.error.public_analytics", level="INFO") as captured:
@@ -294,6 +692,10 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
             "Learning activity",
             "AI, images and speech",
             "Firebase Cloud Messaging",
+            "automatically send technical error reports",
+            "the error type and the place in our own app code where it happened",
+            "After 30 days, account-linked reports no longer count toward affected-account totals",
+            "or a backlog can delay deletion. Deleting your account also removes its reports",
             "30 days",
             "Approved payment and accounting records",
             'href="/account-deletion"',
@@ -321,6 +723,11 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
             with self.assertRaises(ValueError):
                 public_origin(settings(PUBLIC_SITE_URL=bad))
         self.assertEqual(public_origin(settings(PUBLIC_SITE_URL="", MINI_APP_BASE_URL=ORIGIN + "/course-v3.html")), ORIGIN)
+        old_host = "https://telegram-chinese-bot-production.up.railway.app"
+        self.assertEqual(public_origin(settings(
+            PUBLIC_SITE_URL="", MINI_APP_BASE_URL=old_host + "/course-v3.html"
+        )), "https://hskai.app")
+        self.assertEqual(public_origin(settings(PUBLIC_SITE_URL=old_host)), "https://hskai.app")
         self.assertEqual(attribution({"token": "secret", "utm_source": "x" * 1000}), {"utm_source": "x" * 80})
         self.assertNotIn("\n", attribution({"source": "bad\nlog"})["source"])
 

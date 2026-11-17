@@ -78,7 +78,7 @@ class AndroidContextualAppPromoTests(unittest.TestCase):
         self.assertIn('state.profileFocusDone = true', profile)
         self.assertNotIn('host.appendChild(card)', profile)
         apps = _function_body(self.js, "openProfileApps")
-        self.assertIn('detectPlatform() !== "android"', apps)
+        self.assertIn('device !== "android" && !iphone', apps)
         self.assertIn('openProfileAppsSite();', apps)
         self.assertIn('sendAndroidToChat("profile")', apps)
         self.assertIn('document.getElementById("hp-app-apk")', apps)

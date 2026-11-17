@@ -57,10 +57,12 @@ class CourseTodayService:
             user, level=level, lesson_order=current_part,
         )
         view["lesson"] = ACCESS_OPEN if lesson["allowed"] else ACCESS_LOCKED
-        for feature in (PRACTICE_FEATURE, "mistake_review"):
-            action = "training_test" if feature == "mistake_review" else feature
-            status = await self.access.daily_status(user, action)
-            view[feature] = ACCESS_OPEN if status.get("allowed") else ACCESS_LOCKED
+        # Training tests and mistake review share the same entitlement action.
+        # Reading it twice would repeat policy/usage DB checks on every map load.
+        practice_status = await self.access.daily_status(user, PRACTICE_FEATURE)
+        practice_access = ACCESS_OPEN if practice_status.get("allowed") else ACCESS_LOCKED
+        view[PRACTICE_FEATURE] = practice_access
+        view["mistake_review"] = practice_access
 
         # Voice: reklama yo'li YO'Q — bepul limit tugasa faqat obuna.
         try:

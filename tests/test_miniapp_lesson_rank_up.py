@@ -9,11 +9,20 @@ MAIN = (ROOT / "app/main.py").read_text(encoding="utf-8")
 COURSE = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
 
 
+def _completion_body():
+    """Telegram and PWA completion routes share one canonical body."""
+    route = MAIN.split('@app.post("/api/v3/lesson/complete")', 1)[1].split(
+        "def _voice_practice_user_id", 1
+    )[0]
+    assert "await _v3_complete_lesson_for_canonical_actor(" in route
+    return MAIN.split("async def _v3_complete_lesson_for_canonical_actor(", 1)[1].split(
+        '@app.post("/api/v3/lesson/complete")', 1
+    )[0]
+
+
 class MiniAppLessonRankUpTests(unittest.TestCase):
     def test_completion_returns_verified_rank_snapshots(self):
-        handler = MAIN.split('@app.post("/api/v3/lesson/complete")', 1)[1].split(
-            "def _voice_practice_user_id", 1
-        )[0]
+        handler = _completion_body()
         self.assertIn("rank_before = int((await gamification.leaderboard(user))", handler)
         self.assertIn("updated_rating = await gamification.leaderboard(user)", handler)
         self.assertIn('rank_after = int(updated_rating.get("rank") or 0)', handler)
@@ -52,9 +61,7 @@ class MiniAppLessonRankUpTests(unittest.TestCase):
         self.assertIn('$("#lu-cta").disabled=false;', COURSE)
 
     def test_completion_includes_immediate_rank_neighbours(self):
-        handler = MAIN.split('@app.post("/api/v3/lesson/complete")', 1)[1].split(
-            "def _voice_practice_user_id", 1
-        )[0]
+        handler = _completion_body()
         self.assertIn('"rank_up_board": rank_up_board', handler)
         self.assertIn("if 0 < rank_after < rank_before:", handler)
         self.assertIn("leaderboard[max(0, me_idx - 1):me_idx + 2]", handler)

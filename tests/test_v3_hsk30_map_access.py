@@ -56,8 +56,13 @@ def map_handler(session_factory):
     # Compile the actual endpoint alone: importing app.main starts unrelated
     # bot/router configuration. Access, profile and progress services are real.
     source = Path("app/main.py").read_text(encoding="utf-8")
-    handler = next(node for node in ast.parse(source).body
+    # The endpoint delegates to the shared Telegram/PWA map body (d2915fc6);
+    # compile both so the real access/profile/progress logic is exercised.
+    tree = ast.parse(source).body
+    handler = next(node for node in tree
                    if isinstance(node, ast.AsyncFunctionDef) and node.name == "v3_course_map")
+    shared = next(node for node in tree
+                  if isinstance(node, ast.AsyncFunctionDef) and node.name == "_course_v3_map_for_user")
     handler.decorator_list = []
     snapshot = {"xp": 0, "streak": 0, "weekly_xp": 0, "league": "bronze"}
     namespace = dict(globals())
@@ -79,7 +84,7 @@ def map_handler(session_factory):
         "CourseMiniAppAnalyticsService": lambda session: SimpleNamespace(record_server_event=AsyncMock()),
         "CourseSalesExperimentService": lambda session: SimpleNamespace(resolve_offer=AsyncMock(return_value={})),
     })
-    exec(compile(ast.Module(body=[handler], type_ignores=[]), "app/main.py", "exec"), namespace)
+    exec(compile(ast.Module(body=[shared, handler], type_ignores=[]), "app/main.py", "exec"), namespace)
     return namespace["v3_course_map"]
 
 

@@ -233,6 +233,8 @@ class AIProviderChain:
             except Exception as error:  # noqa: BLE001 — har qanday xatoda zaxiraga o'tamiz
                 last_error = error
                 if is_last:
+                    from app.services.monitoring.backend import report_server_failure
+                    report_server_failure("chat_ai", "provider_failed", "ai_provider")
                     raise
                 logger.warning(
                     "AI provayder '%s' (model=%s) xato berdi, zaxiraga o'tilyapti: %s",
@@ -318,10 +320,17 @@ class AIProviderChain:
                 logger.warning("Gemini STT xato berdi, OpenAI zaxiraga o'tilyapti: %s", error)
 
         if self._openai is not None:
-            return await self._openai_transcribe(
-                audio_bytes=audio_bytes, filename=filename, mime_type=mime_type, prompt=prompt
-            )
+            try:
+                return await self._openai_transcribe(
+                    audio_bytes=audio_bytes, filename=filename, mime_type=mime_type, prompt=prompt
+                )
+            except Exception:
+                from app.services.monitoring.backend import report_server_failure
+                report_server_failure("voice_practice", "provider_failed", "voice_provider")
+                raise
 
         if gemini_error is not None:
+            from app.services.monitoring.backend import report_server_failure
+            report_server_failure("voice_practice", "provider_failed", "voice_provider")
             raise gemini_error
         raise RuntimeError("STT uchun AI provayder sozlanmagan")

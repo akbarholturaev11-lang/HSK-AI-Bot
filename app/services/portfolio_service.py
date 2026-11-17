@@ -66,8 +66,10 @@ class PortfolioService:
         )
 
     async def record_subscription_profit(self, payment: Payment) -> None:
-        revenue_usd = self.amount_to_usd(payment.amount, payment.currency)
-        original_amount = payment.amount
+        from app.services.payment_amounts import payment_amount
+        exact = payment_amount(payment)
+        revenue_usd = self.amount_to_usd(exact, payment.currency)
+        original_amount = exact
         original_currency = payment.currency
         if revenue_usd is None and payment.base_amount:
             revenue_usd = self.amount_to_usd(payment.base_amount, "TJS")

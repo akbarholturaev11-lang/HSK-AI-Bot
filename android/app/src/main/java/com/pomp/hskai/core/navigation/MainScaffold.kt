@@ -32,6 +32,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -52,6 +53,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
+import com.pomp.hskai.core.diagnostics.DiagFeature
+import com.pomp.hskai.core.diagnostics.DiagnosticContext
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompShapes
 import com.pomp.hskai.core.design.components.HskGlassSurface
@@ -71,6 +74,16 @@ enum class MainTab(val labelRes: Int, val icon: ImageVector) {
         val visible: List<MainTab> get() = entries
     }
 }
+
+/** The monitoring feature a crash on this tab belongs to. */
+internal val MainTab.diagnosticFeature: DiagFeature
+    get() = when (this) {
+        MainTab.COURSE -> DiagFeature.LESSONS
+        MainTab.PRACTICE -> DiagFeature.PRACTICE
+        MainTab.VOICE -> DiagFeature.VOICE_PRACTICE
+        MainTab.RATING -> DiagFeature.LEARNING_REWARDS
+        MainTab.PROFILE -> DiagFeature.APP_SHELL
+    }
 
 fun AppDestination.toTab(): MainTab? = when (this) {
     AppDestination.Today,
@@ -131,6 +144,8 @@ fun MainScaffold(
     content: @Composable (MainTab, Modifier) -> Unit,
 ) {
     val tabs = remember { MainTab.visible }
+    // The crash record names the feature in front, never the screen's content.
+    SideEffect { DiagnosticContext.feature = selectedTab.diagnosticFeature }
     val density = LocalDensity.current
     val gestureInset = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 

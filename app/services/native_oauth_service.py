@@ -27,6 +27,7 @@ from sqlalchemy import select
 
 from app.db.models.desktop import DesktopLinkRequest, DesktopDevice, DesktopSession
 from app.db.models.user import User
+from app.public_site.render import public_origin
 from app.repositories.user_repo import UserRepository
 from app.services import apple_auth, google_auth
 from app.services.desktop_auth_service import (
@@ -141,8 +142,20 @@ class NativeOAuthService:
             raise NativeOAuthError("oauth_state_invalid", status_code=400)
         return link_request_id
 
-    def redirect_uri(self, provider: str) -> str:
-        base = redirect_base_url(self.settings)
+    def redirect_uri(self, provider: str, *, platform: str | None = None) -> str:
+        # The PWA's SameSite=None, __Host- scoped OAuth proof is bound to
+        # PUBLIC_SITE_URL. Redirecting it to Railway cannot send that cookie.
+        # Preserve the existing redirect base for native/desktop and Apple;
+        # only browser PWA Google uses its canonical public-site origin.
+        if provider == "google" and platform == "pwa" and str(
+            getattr(self.settings, "PUBLIC_SITE_URL", "") or ""
+        ).strip():
+            try:
+                base = public_origin(self.settings)
+            except ValueError:
+                raise NativeOAuthError("oauth_provider_unconfigured", status_code=503) from None
+        else:
+            base = redirect_base_url(self.settings)
         if not base:
             raise NativeOAuthError("oauth_provider_unconfigured", status_code=503)
         return f"{base}/api/v3/native-auth/oauth/callback/{provider}"
@@ -216,7 +229,7 @@ class NativeOAuthService:
 
         authorize_url = None
         if mode == BROWSER_REDIRECT_MODE:
-            redirect_uri = self.redirect_uri(provider)
+            redirect_uri = self.redirect_uri(provider, platform=platform)
             challenge = self.code_challenge(self.code_verifier(link_request_id))
             state = self.state(link_request_id)
             builder = (
@@ -382,7 +395,7 @@ class NativeOAuthService:
         if row.flow != provider:
             raise NativeOAuthError("oauth_state_invalid", status_code=400)
 
-        redirect_uri = self.redirect_uri(provider)
+        redirect_uri = self.redirect_uri(provider, platform=row.platform)
         verifier = self.code_verifier(row.id)
         if provider == "google":
             id_token = await self._verify_or_fail(

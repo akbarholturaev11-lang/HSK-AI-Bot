@@ -1600,6 +1600,7 @@ class CourseMiniAppLessonFlowService:
             lesson_id=lesson.id,
             lesson_order=lesson.lesson_order,
             dedupe_key=f"lesson:{lesson.id}:started",
+            analytics_client="telegram",
             payload={"flow_version": LESSON_FLOW_VERSION, "card_count": len(cards), "section_key": section["section_key"]},
         )
         await self.session.commit()
@@ -1963,6 +1964,7 @@ class CourseMiniAppLessonFlowService:
                 lesson_id=lesson.id,
                 lesson_order=lesson.lesson_order,
                 dedupe_key=f"book-lesson:{lesson.id}:completed",
+                analytics_client="telegram",
                 payload=book_payload,
             )
             await analytics.record_server_event(
@@ -1973,6 +1975,7 @@ class CourseMiniAppLessonFlowService:
                 lesson_id=lesson.id,
                 lesson_order=lesson.lesson_order,
                 dedupe_key=f"lesson:{lesson.id}:completed",
+                analytics_client="telegram",
                 payload=book_payload,
             )
         if level_completed:

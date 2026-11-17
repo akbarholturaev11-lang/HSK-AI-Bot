@@ -122,6 +122,7 @@ class LimitNotificationService:
         dedupe_key: str,
         level: str | None = None,
         bot=None,
+        params: dict | None = None,
     ) -> bool:
         """Lentaga yozadi va yangi bo'lsa Telegram'ga yuboradi.
 
@@ -141,6 +142,7 @@ class LimitNotificationService:
             source="limit_notice",
             level=level,
             dedupe_key=dedupe_key,
+            params=params,
         )
         telegram_id = actual_telegram_id(user)
         if not recorded or bot is None or telegram_id is None:
@@ -201,6 +203,8 @@ class LimitNotificationService:
             text=text,
             dedupe_key=f"limit:lesson:{normalized_level}:{stage}",
             level=normalized_level,
+            params={"template": "limit_lesson_spent_notice"} if stage == "spent" else
+                   {"template": "limit_lesson_warning_notice", "remaining": remaining},
             bot=bot,
         )
         return stage if sent else None
@@ -227,13 +231,18 @@ class LimitNotificationService:
             text = t("limit_daily_spent_notice", lang, reset_time=clock)
         else:
             text = t("limit_daily_spent_notice_no_time", lang)
+        params = ({"template": "limit_daily_spent_notice", "reset_time": clock} if clock else
+                  {"template": "limit_daily_spent_notice_no_time"})
         if limit is not None:
             from app.services.entitlements.decision import limit_text
             from app.services.entitlements.state import resolve_state
             from app.services.course_miniapp_access_service import CourseMiniAppAccessService
-            text = limit_text(CourseMiniAppAccessService.action_for_feature(feature_key),
-                state=resolve_state(user), limit=limit, remaining=0,
-                window="lifetime" if lifetime else "daily", language=lang) + "\n\n" + text
+            params["limit_context"] = {
+                "action": CourseMiniAppAccessService.action_for_feature(feature_key),
+                "state": resolve_state(user), "limit": limit, "remaining": 0,
+                "window": "lifetime" if lifetime else "daily",
+            }
+            text = limit_text(**params["limit_context"], language=lang) + "\n\n" + text
         day_key = "lifetime" if lifetime else course_daily_window.local_day_key(offset)
         return await self._deliver(
             user,
@@ -241,5 +250,6 @@ class LimitNotificationService:
             lang=lang,
             text=text,
             dedupe_key=f"limit:daily:{str(feature_key or '').strip().lower()}:{day_key}",
+            params=params,
             bot=bot,
         )

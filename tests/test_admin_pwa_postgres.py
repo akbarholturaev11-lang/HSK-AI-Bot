@@ -355,7 +355,16 @@ class AdminPwaPostgresConcurrencyTests(AccessGrantFixtures, PaymentFixtures, uni
                     column["name"] for column in inspect(sync).get_columns(name, schema=schema)
                 })
                 self.assertEqual(columns, set(metadata.tables[name].columns.keys()), name)
-                self.assertEqual((await conn.execute(text(f"SELECT count(*) FROM {name}"))).scalar_one(), 0)
+                count = (await conn.execute(text(f"SELECT count(*) FROM {name}"))).scalar_one()
+                if name == "smart_reminder_rollout":
+                    # Migration 0150 intentionally inserts one singleton control row.
+                    self.assertEqual(count, 1, name)
+                    row = (await conn.execute(text(
+                        "SELECT id, generation, stage, status FROM smart_reminder_rollout"
+                    ))).one()
+                    self.assertEqual(tuple(row), (1, 0, 0, "waiting"))
+                else:
+                    self.assertEqual(count, 0, name)
             await conn.execute(text(f"DROP SCHEMA {schema} CASCADE"))
 
     async def test_actual_0117_migration_preserves_nonempty_financial_audit(self):

@@ -11,7 +11,7 @@ bo'lardi va dedupe uni ushlab qololmasdi.
 
 import unittest
 from datetime import datetime, timedelta, timezone
-from unittest.mock import patch
+from unittest.mock import AsyncMock, patch
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
@@ -56,8 +56,10 @@ class TrialReminderTests(unittest.IsolatedAsyncioTestCase):
             user = _user()
             user.trial_used = True
             user.pro_trial_started_at = self.now - timedelta(days=7 - days_left)
-            # `.days` pastga yaxlitlaydi, shuning uchun bir soat qo'shamiz.
-            user.pro_trial_ends_at = self.now + timedelta(days=days_left, hours=1)
+            # T-48 is an actual 48-hour threshold, not timedelta.days.
+            # The fixture for slot 2 is 47h away; day 0 is one hour away.
+            delta = timedelta(hours=47) if days_left == 2 else timedelta(days=days_left, hours=1)
+            user.pro_trial_ends_at = self.now + delta
             session.add(user)
             await session.commit()
 
@@ -89,6 +91,119 @@ class TrialReminderTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(course_notice_calls[0]["pwa_push_suppressed"])
         self.assertEqual(1, len(bot.sent))
         self.assertIn("2", bot.sent[0][1])
+
+    async def test_48_hour_boundary_is_not_an_early_72_hour_notice(self):
+        from app.services.trial_reminder_service import _due_notice_slot
+        cutoff = self.now + timedelta(days=7)
+        self.assertIsNone(_due_notice_slot(cutoff, cutoff - timedelta(hours=49)))
+        self.assertEqual(_due_notice_slot(cutoff, cutoff - timedelta(hours=48)), 2)
+        self.assertEqual(_due_notice_slot(cutoff, cutoff - timedelta(hours=47)), 2)
+        self.assertEqual(_due_notice_slot(cutoff, cutoff - timedelta(hours=36)), 2)
+        self.assertIsNone(_due_notice_slot(cutoff, cutoff - timedelta(hours=35)))
+        self.assertEqual(_due_notice_slot(cutoff, cutoff - timedelta(hours=24)), 0)
+        self.assertIsNone(_due_notice_slot(cutoff, cutoff))
+
+    async def test_verified_pwa_subscription_owns_only_one_durable_48h_push(self):
+        await self._seed(days_left=2)
+        bot = _BotSpy()
+        with (
+            patch("app.services.learner_pwa_push.sender_config",
+                  return_value=("synthetic-key", "synthetic-subject", object())),
+            patch("app.services.learner_pwa_push.active_subscriptions",
+                  new=AsyncMock(return_value=[("subscription-test", "device-test")])),
+            patch("app.services.learner_pwa_push.enqueue_event",
+                  new=AsyncMock(return_value=1)) as queued,
+        ):
+            async with self.sessions() as session:
+                service = TrialReminderService(session)
+                first = await service.send_due_reminders(bot, now=self.now)
+                second = await service.send_due_reminders(bot, now=self.now)
+        # Queue count is not the same as a provider-accepted Web Push.
+        self.assertEqual((first, second), (0, 0))
+        self.assertEqual(bot.sent, [])
+        queued.assert_awaited_once()
+        self.assertEqual(queued.await_args.kwargs["source"], "course")
+        self.assertEqual(queued.await_args.kwargs["language"], "uz")
+        self.assertEqual(len(await self._notifications()), 1)
+
+    async def test_not_due_rows_cannot_starve_the_48_hour_batch(self):
+        # Previously the first 200 trials (even 60 hours away) could fill
+        # MAX_BATCH and the one genuinely due trial would never be processed.
+        async with self.sessions() as session:
+            for number in range(1, 202):
+                candidate = _user(user_id=number, telegram_id=5000 + number)
+                candidate.trial_used = True
+                candidate.pro_trial_started_at = self.now - timedelta(days=4)
+                candidate.pro_trial_ends_at = self.now + timedelta(hours=60)
+                session.add(candidate)
+            due = _user(user_id=1000, telegram_id=8500)
+            due.trial_used = True
+            due.pro_trial_started_at = self.now - timedelta(days=5)
+            due.pro_trial_ends_at = self.now + timedelta(hours=47)
+            session.add(due)
+            await session.commit()
+
+        bot = _BotSpy()
+        async with self.sessions() as session:
+            count = await TrialReminderService(session).send_due_reminders(
+                bot, now=self.now
+            )
+        self.assertEqual(count, 1)
+        self.assertEqual(len(bot.sent), 1)
+        self.assertEqual(bot.sent[0][0], 8500)
+
+    async def test_large_due_cohort_drains_across_bounded_runs_without_duplicates(self):
+        # A scheduler should process the next page on each invocation,
+        # even if the first page's reminder rows remain in the database.
+        async with self.sessions() as session:
+            for number in range(5):
+                user = _user(user_id=100 + number, telegram_id=8100 + number)
+                user.trial_used = True
+                user.pro_trial_started_at = self.now - timedelta(days=5)
+                user.pro_trial_ends_at = self.now + timedelta(hours=47)
+                session.add(user)
+            await session.commit()
+        bot = _BotSpy()
+        with patch("app.services.trial_reminder_service.MAX_BATCH", 2):
+            async with self.sessions() as session:
+                service = TrialReminderService(session)
+                sent = [
+                    await service.send_due_reminders(bot, now=self.now)
+                    for _ in range(4)
+                ]
+        self.assertEqual(sent, [2, 2, 1, 0])
+        self.assertEqual(len(bot.sent), 5)
+        self.assertEqual(len({chat_id for chat_id, _ in bot.sent}), 5)
+        self.assertEqual(len(await self._notifications()), 5)
+
+    async def test_paid_and_temp_access_rows_do_not_starve_real_due_trials(self):
+        # A bounded SQL page must not repeatedly select old Pro timestamps
+        # belonging to accounts whose active PAID/TEMP access takes precedence.
+        async with self.sessions() as session:
+            for number in range(4):
+                non_trial = _user(user_id=200 + number, telegram_id=9200 + number)
+                non_trial.trial_used = True
+                non_trial.pro_trial_started_at = self.now - timedelta(days=5)
+                non_trial.pro_trial_ends_at = self.now + timedelta(hours=2)
+                non_trial.status = "active"
+                non_trial.end_date = self.now + timedelta(days=30)
+                non_trial.payment_status = "approved" if number < 2 else "none"
+                session.add(non_trial)
+            due = _user(user_id=900, telegram_id=9900)
+            due.trial_used = True
+            due.pro_trial_started_at = self.now - timedelta(days=5)
+            due.pro_trial_ends_at = self.now + timedelta(hours=47)
+            session.add(due)
+            await session.commit()
+
+        bot = _BotSpy()
+        with patch("app.services.trial_reminder_service.MAX_BATCH", 2):
+            async with self.sessions() as session:
+                count = await TrialReminderService(session).send_due_reminders(
+                    bot, now=self.now
+                )
+        self.assertEqual(count, 1)
+        self.assertEqual([chat_id for chat_id, _ in bot.sent], [9900])
 
     async def test_a_reminder_goes_out_on_the_last_day(self):
         await self._seed(days_left=0)
@@ -128,6 +243,27 @@ class TrialReminderTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(1, first)
         self.assertEqual(0, second)
         self.assertEqual(1, len(bot.sent))
+
+    async def test_paid_pro_user_never_gets_a_stale_trial_expiry_notice(self):
+        # A successful payment may convert the user to Pro before the old
+        # trial end timestamp is cleared. Never warn that paid access ends.
+        await self._seed(days_left=2)
+        async with self.sessions() as session:
+            user = (await session.execute(
+                select(User).where(User.telegram_id == 4100)
+            )).scalar_one()
+            user.status = "active"
+            user.payment_status = "approved"
+            user.end_date = self.now + timedelta(days=30)
+            await session.commit()
+        bot = _BotSpy()
+        async with self.sessions() as session:
+            count = await TrialReminderService(session).send_due_reminders(
+                bot, now=self.now
+            )
+        self.assertEqual(count, 0)
+        self.assertEqual(bot.sent, [])
+        self.assertEqual(await self._notifications(), [])
 
     async def test_a_revoked_trial_is_left_alone(self):
         await self._seed(days_left=2)

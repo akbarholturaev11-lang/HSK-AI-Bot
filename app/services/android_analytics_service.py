@@ -42,6 +42,10 @@ ANDROID_PLATFORMS = tuple(sorted(MOBILE_PLATFORMS))
 # The APK funnel, in the order a phone actually walks it. Every stage is a
 # server-written event; none of them is inferred from another.
 ANDROID_FUNNEL_STAGES = (
+    # Opening the admin-set Google Play listing from the Mini App. It is the
+    # alternative entry to the Direct APK, and an opened listing is not an
+    # install: installs still appear only as session_linked/first_open.
+    ("play_opened", "android_play_opened"),
     ("apk_requested", "android_apk_requested"),
     ("apk_sent", "android_apk_sent"),
     ("session_linked", "android_session_linked"),

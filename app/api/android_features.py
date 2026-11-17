@@ -218,6 +218,36 @@ def _bug_report_image(data_url: str) -> bytes | None:
     return raw
 
 
+class AndroidActivityFeedbackContext(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    kind: Literal["lesson", "foundation", "practice", "voice"]
+    level: Literal["hsk1", "hsk2", "hsk3", "hsk4", "nhsk1", "nhsk2", "nhsk3"]
+    lesson_id: int | None = Field(default=None, ge=1, le=500)
+
+
+class AndroidActivityFeedbackPrepare(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    context: AndroidActivityFeedbackContext
+    presentation: Literal["bot"] = "bot"
+
+
+class AndroidActivityFeedbackSubmit(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    feedback_id: int = Field(gt=0, le=2147483647)
+    liked_code: str | None = Field(default=None, max_length=64)
+    liked_sub_code: str | None = Field(default=None, max_length=64)
+    liked_other_text: str | None = Field(default=None, max_length=1000)
+    disliked_code: str | None = Field(default=None, max_length=64)
+    disliked_detail_text: str | None = Field(default=None, max_length=1000)
+    paid_code: str | None = Field(default=None, max_length=64)
+    paid_sub_code: str | None = Field(default=None, max_length=64)
+    paid_other_text: str | None = Field(default=None, max_length=1000)
+    # Native always uses the canonical full question flow.
+    context: None = None
+    answer: None = None
+    comment: None = None
+
+
 class AndroidVoiceStartRequest(DesktopVoiceStartRequest):
     """Android can opt into Live only when the server advertises the pilot."""
 
@@ -1320,6 +1350,7 @@ def create_android_features_router(
                     user=user,
                     source="android_subscription",
                     mode="subscription",
+                    client="android",
                 )
                 delivered = False
                 if bot is not None:
@@ -1367,6 +1398,7 @@ def create_android_features_router(
                     skill=payload.skill,
                     access_ref=payload.access_ref,
                     ad_supported=payload.ad_supported,
+                    analytics_client="android",
                 )
             return _service_response(result)
         except (DesktopAuthError, DesktopPracticeError) as exc:
@@ -1411,6 +1443,7 @@ def create_android_features_router(
                     ],
                     access_ref=payload.access_ref,
                     ad_supported=payload.ad_supported,
+                    analytics_client="android",
                 )
             return _service_response(result)
         except (DesktopAuthError, DesktopPracticeError) as exc:
@@ -1444,6 +1477,7 @@ def create_android_features_router(
                     lang=payload.language,
                     access_ref=payload.access_ref,
                     ad_supported=payload.ad_supported,
+                    analytics_client="android",
                 )
                 user = await _optional_user(session, request)
                 if user:
@@ -1491,6 +1525,7 @@ def create_android_features_router(
                     # changed mid-exam.
                     level=payload.level or None,
                     lang=payload.language or None,
+                    analytics_client="android",
                 )
                 if result.get("ok") and user:
                     await assessment_finished(session, user.id, payload.session_id)
@@ -1548,6 +1583,7 @@ def create_android_features_router(
                     category=payload.category,
                     formats=payload.formats,
                     language=payload.language,
+                    analytics_client="android",
                 )
             return _service_response(result)
         except (DesktopAuthError, AndroidFeatureError) as exc:
@@ -1573,6 +1609,7 @@ def create_android_features_router(
                         if payload.selected_tokens is not None
                         else payload.selected_index
                     ),
+                    analytics_client="android",
                 )
             return _service_response(result)
         except (DesktopAuthError, AndroidFeatureError) as exc:
@@ -1602,6 +1639,7 @@ def create_android_features_router(
                         }
                         for item in payload.answers
                     ],
+                    analytics_client="android",
                 )
             return _service_response(result)
         except (DesktopAuthError, AndroidFeatureError) as exc:
@@ -2241,5 +2279,35 @@ def create_android_features_router(
             except Exception as exc:
                 logger.error("Native report outcome unavailable (%s)", type(exc).__name__)
         return _error_response(failure)
+
+    @router.post("/api/v3/android/feedback/prepare")
+    async def android_activity_feedback_prepare(request: Request):
+        from app.services.activity_feedback_service import ActivityFeedbackError, ActivityFeedbackService
+        try:
+            data = await _validated_payload(request, AndroidActivityFeedbackPrepare)
+            async with session_factory() as db:
+                actor = await _user(db, request)
+                payload = await ActivityFeedbackService(db).prepare(actor.id, data)
+            return JSONResponse({"ok": True, "ordinary": payload}, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, AndroidFeatureError, ActivityFeedbackError) as exc:
+            return _error_response(exc)
+
+    @router.post("/api/v3/android/feedback/submit")
+    async def android_activity_feedback_submit(request: Request):
+        from app.services.activity_feedback_service import ActivityFeedbackError, ActivityFeedbackService
+        try:
+            data = await _validated_payload(request, AndroidActivityFeedbackSubmit)
+            async with session_factory() as db:
+                actor = await _user(db, request)
+                learner, feedback = await ActivityFeedbackService(db).submit(actor.id, data)
+            if bot is not None:
+                try:
+                    await AdminNotifyService().notify_bot_feedback(bot=bot, feedback=feedback, user=learner)
+                except Exception:
+                    logger.exception("Android ordinary feedback admin notice failed")
+            return JSONResponse({"ok": True, "feedback_id": data.feedback_id, "completed": True},
+                                headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, AndroidFeatureError, ActivityFeedbackError) as exc:
+            return _error_response(exc)
 
     return router

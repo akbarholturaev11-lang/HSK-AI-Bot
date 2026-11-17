@@ -4,6 +4,7 @@ import android.app.Activity
 import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
+import com.pomp.hskai.core.diagnostics.DiagTags
 import com.pomp.hskai.core.network.apiCall
 import com.pomp.hskai.core.storage.CredentialStore
 import com.pomp.hskai.data.api.AndroidAuthApi
@@ -45,6 +46,7 @@ class AuthRepository(
     private val onSessionLinked: suspend () -> Unit = {},
     private val onAuthenticated: suspend (String) -> Unit = {},
     private val onSessionReplacing: suspend () -> Unit = {},
+    private val onDiagnosticSession: (String) -> Unit = {},
 ) {
 
     private val refreshMutex = Mutex()
@@ -70,7 +72,7 @@ class AuthRepository(
         val referralCode = SignupReferral.code(_signupReferralCode.value)
         val installationKey = store.installationKey()
         return when (
-            val result = apiCall {
+            val result = apiCall(DiagTags.LOGIN) {
                 api.startLink(
                     LinkStartRequest(
                         appVersion = appVersion,
@@ -112,7 +114,7 @@ class AuthRepository(
      */
     suspend fun pollLink(pending: PendingLink): ApiResult<Boolean> {
         val generation = refreshMutex.withLock { sessionGeneration }
-        val result = apiCall {
+        val result = apiCall(DiagTags.LOGIN) {
             api.linkStatus(
                 LinkStatusRequest(
                     linkRequestId = pending.linkRequestId,
@@ -156,6 +158,7 @@ class AuthRepository(
                             value = access,
                             expiresAtMillis = now() + (body.accessExpiresIn ?: 0) * 1_000L,
                         )
+                        onDiagnosticSession(access)
                         true
                     }
                     ApiResult.Success(accepted)
@@ -258,7 +261,7 @@ class AuthRepository(
         if (pending.sessionGeneration != null && !sessionIsCurrent(pending.sessionGeneration)) {
             return ApiResult.Failure(ApiError.SessionExpired)
         }
-        val asserted = apiCall {
+        val asserted = apiCall(DiagTags.LOGIN) {
             oauth.oauthAssert(
                 OAuthAssertRequest(
                     linkRequestId = pending.linkRequestId,
@@ -337,7 +340,7 @@ class AuthRepository(
         val result = if (session != null) {
             apiCall { oauth.identityLinkStart("Bearer ${session.token}", body) }
         } else {
-            apiCall { oauth.oauthStart(body) }
+            apiCall(DiagTags.LOGIN) { oauth.oauthStart(body) }
         }
         currentCoroutineContext().ensureActive()
         if (session != null && !sessionIsCurrent(session.generation)) {
@@ -539,7 +542,7 @@ class AuthRepository(
                 return@withLock ApiResult.Failure(ApiError.SessionExpired)
             }
 
-            when (val result = apiCall { api.refresh(RefreshRequest(stored)) }) {
+            when (val result = apiCall(DiagTags.SESSION_RESTORE) { api.refresh(RefreshRequest(stored)) }) {
                 is ApiResult.Failure -> {
                     if (result.error is ApiError.SessionExpired) {
                         clearLocalSession()
@@ -561,12 +564,16 @@ class AuthRepository(
                             expiresAtMillis = now() + body.accessExpiresIn * 1_000L,
                         )
                         accessToken = token
+                        onDiagnosticSession(token.value)
                         ApiResult.Success(token.value)
                     }
                 }
             }
         }
     }
+
+    /** Diagnostics must never refresh credentials or enter the learner's auth recovery path. */
+    internal fun cachedDiagnosticToken(): String? = accessToken?.takeIf { it.isUsable(now()) }?.value
 
     // -------------------------------------------------------------- lifecycle
 
@@ -599,7 +606,7 @@ class AuthRepository(
             is ApiResult.Success -> result.value
         }
 
-        val result = apiCall { api.bootstrap("Bearer $token", appVersion) }
+        val result = apiCall(DiagTags.SESSION_RESTORE, token) { api.bootstrap("Bearer $token", appVersion) }
         return refreshMutex.withLock {
             if (sessionGeneration != generation) return@withLock ApiResult.Failure(ApiError.SessionExpired)
             when (result) {

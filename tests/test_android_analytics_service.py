@@ -207,6 +207,11 @@ class AndroidFunnelTest(unittest.TestCase):
         self.assertEqual(funnel["apk_sent"], {"users": 8, "events": 10})
         self.assertEqual(funnel["session_linked"], {"users": 5, "events": 5})
         self.assertEqual(funnel["first_open"], {"users": 0, "events": 0})
+        # The Play entry is its own fact and is never inferred from the APK path.
+        self.assertEqual(funnel["play_opened"], {"users": 0, "events": 0})
+        played = _snapshot(totals=_totals(android_play_opened=(3, 4)))["funnel"]
+        self.assertEqual(played["play_opened"], {"users": 3, "events": 4})
+        self.assertEqual(played["apk_requested"], {"users": 0, "events": 0})
 
     def test_update_totals_are_reported_separately(self):
         snapshot = _snapshot(totals=_totals(**{ANDROID_UPDATE_EVENT: (3, 4)}))

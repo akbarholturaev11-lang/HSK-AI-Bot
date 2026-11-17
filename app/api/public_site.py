@@ -2,15 +2,16 @@
 import json
 import logging
 import re
+from html import escape as html_escape
 from pathlib import Path
-from urllib.parse import urlsplit
+from urllib.parse import urlencode, urlsplit
 from xml.etree.ElementTree import Element, SubElement, tostring
 
 from fastapi import APIRouter, Request
 from fastapi.responses import FileResponse, HTMLResponse, PlainTextResponse, RedirectResponse, Response
 
 from app.public_site.account_deletion_render import render_account_deletion
-from app.public_site.content import DOWNLOAD_PATH, GOOGLE_SIGNIN_PRIVACY_PAGES, HOME_PATHS, PAGES
+from app.public_site.content import AUTOMATIC_DIAGNOSTICS_DISCLOSURE, DOWNLOAD_PATH, GOOGLE_SIGNIN_PRIVACY_PAGES, HOME_PATHS, PAGES
 from app.public_site.render import (
     BOT_URL,
     attribution,
@@ -27,7 +28,47 @@ logger = logging.getLogger("uvicorn.error.public_analytics")
 STATIC = Path(__file__).resolve().parents[1] / "static"
 GOOGLE_VERIFICATION_FILENAME = "google4575dc78c69e5824.html"
 GOOGLE_VERIFICATION_CONTENT = b"google-site-verification: google4575dc78c69e5824.html"
-SITEMAP_PATHS = tuple(PAGES) + (DOWNLOAD_PATH, "/privacy", "/account-deletion") + tuple(GOOGLE_SIGNIN_PRIVACY_PAGES)
+SITEMAP_PATHS = tuple(PAGES) + (DOWNLOAD_PATH, "/privacy", "/terms", "/account-deletion") + tuple(GOOGLE_SIGNIN_PRIVACY_PAGES)
+
+# Keep the Railway-generated hostname for bot/webhook/API/OAuth traffic.
+# Only existing public marketing and legal GET URLs move to the official host.
+LEGACY_RAILWAY_PUBLIC_HOST = "telegram-chinese-bot-production.up.railway.app"
+LEGACY_PUBLIC_REDIRECT_PATHS = frozenset(PAGES) | frozenset(GOOGLE_SIGNIN_PRIVACY_PAGES) | frozenset({
+    "/download", "/apps", "/desktop-download", "/desktop-download.html",
+    "/privacy", "/terms", "/account-deletion",
+})
+
+
+def legacy_public_site_redirect(request: Request, official_origin: str):
+    """Permanently move only HTML public pages off the old Railway hostname.
+
+    Deliberately do NOT change /api/, login, PWA, assets, sitemap, robots,
+    Google verification, Telegram webhooks or any other service route.
+    Exact host and path checks prevent accidental changes to those endpoints.
+    """
+    if request.method not in ("GET", "HEAD"):
+        return None
+    if request.url.hostname != LEGACY_RAILWAY_PUBLIC_HOST:
+        return None
+    if official_origin != "https://hskai.app":
+        return None
+    path = request.url.path
+    if path not in LEGACY_PUBLIC_REDIRECT_PATHS:
+        return None
+    # Preserve only public campaign attribution and a valid download language.
+    # Do not reflect tokens, callbacks or arbitrary query parameters.
+    params = attribution(request.query_params)
+    if path in {"/download", "/apps", "/desktop-download", "/desktop-download.html"}:
+        lang = request.query_params.get("lang", "")
+        if lang in {"ru", "uz", "tj"}:
+            params["lang"] = lang
+    destination = official_origin + path + ("?" + urlencode(params) if params else "")
+    return RedirectResponse(
+        destination,
+        status_code=301,
+        headers={"Cache-Control": "public, max-age=300"},
+    )
+
 
 
 def indexnow_key(settings_obj):
@@ -83,6 +124,7 @@ def robots_text(origin):
         "Allow: /terms?*",
         "Allow: /sitemap.xml$",
         "Allow: /robots.txt$",
+        "Allow: /llms.txt$",
     ])
     return "\n\n".join("User-agent: " + agent + "\n" + "\n".join(rules)
                           for agent in ("*", "Googlebot", "Bingbot", "OAI-SearchBot")) + f"\n\nSitemap: {origin}/sitemap.xml\n"
@@ -117,6 +159,9 @@ def create_public_site_router(*, settings_obj, session_factory=None):
         return Response(GOOGLE_VERIFICATION_CONTENT, media_type="text/html")
 
     async def landing(request: Request):
+        redirect = legacy_public_site_redirect(request, origin)
+        if redirect is not None:
+            return redirect
         path = request.url.path
         tags = attribution(request.query_params)
         if request.method == "GET":
@@ -132,24 +177,27 @@ def create_public_site_router(*, settings_obj, session_factory=None):
         router.add_api_route(path, landing, methods=["GET", "HEAD"], name="public_" + path.replace("/", "_"))
 
     @router.get("/privacy")
-    async def privacy_policy():
+    async def privacy_policy(request: Request):
+        redirect = legacy_public_site_redirect(request, origin)
+        if redirect is not None:
+            return redirect
         # Public legal notice used by Android Settings and the Play store listing.
         # It must not require authentication, JavaScript, or a database session.
         body = """<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>HSK AI Privacy Policy</title><meta name="robots" content="index,follow">
+<title>HSK AI Privacy Policy</title><meta name="robots" content="index,follow"><link rel="alternate" type="text/plain" href="/llms.txt">
 <style>
 *{box-sizing:border-box}
 body{font-family:system-ui,-apple-system,sans-serif;max-width:760px;margin:32px auto;padding:0 20px 40px;line-height:1.65;color:#211d17;background:#fcfaf7}
 h1,h2{line-height:1.25}h1{font-size:clamp(1.7rem,5vw,2.2rem)}h2{font-size:1.25rem;margin-top:1.6em}
 a{color:#8b3929;overflow-wrap:anywhere}a:focus-visible{outline:2px solid #8b3929;outline-offset:3px}
-small{color:#59534c}li{margin:0.45em 0}
+small{color:#59534c}li{margin:0.45em 0}nav.legal-links{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:16px;padding-top:12px;border-top:1px solid #d8d0c5;font-size:12px}
 </style></head><body><main>
 <h1>HSK AI Privacy Policy</h1>
 <p><small>Effective date: 3 November 2026</small></p>
 <h2>Who operates HSK AI</h2>
-<p>Pomp HSK AI operates HSK AI, a Chinese-learning service available through its Android app, Telegram bot and Mini App, desktop clients and website. This policy explains what information we process, why we use it, who may receive it, and how you can request deletion. Questions about privacy can be sent to <a href="mailto:hskaiapp@gmail.com">hskaiapp@gmail.com</a> or through <a href="https://t.me/darsi_chini_bot">the official HSK AI support bot</a>.</p>
+<p>Pomp HSK AI operates HSK AI, a Chinese-learning service available through its Android app, Telegram bot and Mini App, desktop clients and website. This policy explains what information we process, why we use it, who may receive it, and how you can request deletion. Questions about privacy can be sent to <a href="mailto:hskaiapp@gmail.com">hskaiapp@gmail.com</a> or through <a href="https://t.me/hskai_support_bot">the official HSK AI Support bot</a>.</p>
 <h2>Information we collect and use</h2>
 <ul>
 <li><strong>Account and profile:</strong> Your chosen Telegram, Google or Apple sign-in identifier, linked identity information, any email and name supplied by that provider, profile display name or avatar choice, language and HSK level, and authentication or session records. Google or Apple can create an account without Telegram; equal email addresses do not merge unrelated accounts.</li>
@@ -157,13 +205,14 @@ small{color:#59534c}li{margin:0.45em 0}
 <li><strong>AI, images and speech:</strong> Text questions, photos, voice/audio you choose to submit, transcripts, learning feedback and any support or AI-response reports you submit. These inputs are processed to answer your questions, perform transcription or pronunciation evaluation, and handle reports. Please do not include passwords, identity documents or unnecessary sensitive details.</li>
 <li><strong>Payments and invitations:</strong> Plan and entitlement status, referrals, eligibility and usage limits, and, when you submit a manual payment, its amount, receipt and review status. The current Google Play build does not collect manual payment receipts in-app.</li>
 <li><strong>Devices and diagnostics:</strong> App/device and session identifiers, push notification tokens where enabled, app version, security or service logs, and error details or screenshots you voluntarily send for troubleshooting.</li>
+<li>__AUTOMATIC_DIAGNOSTICS_DISCLOSURE__</li>
 </ul>
 <p>The public website may count visits to the home or download pages by campaign source (for example Instagram or YouTube) in aggregate daily totals, without a visitor cookie or account identifier in those counts. Ordinary network requests may still generate technical hosting or security logs.</p>
 <h2>Microphone, photos and notifications</h2>
 <p>The microphone is used when you choose pronunciation practice or AI Voice. Photos and audio are submitted only when you initiate a feature that needs them; the feature may send them through HSK AI servers to an AI or speech-processing provider. Android may ask for notification permission for optional study reminders, account updates or payment status. You can change app reminder settings and revoke microphone or notification permission in Android settings.</p>
 <h2>Service providers and sharing</h2>
 <p>We do not sell personal data. To operate the service, necessary information may be processed by Google, Apple or Telegram for your selected sign-in method; by cloud hosting, database, storage, security and delivery providers; by AI or speech-processing providers for features you initiate; and by push notification services such as Firebase Cloud Messaging when enabled. Support staff may review user-submitted bug reports, payment receipts and AI-response reports. Information may also be disclosed where legally required or necessary to prevent abuse. These providers may process information in other countries. We do not use the daily aggregated website source counts to identify individual visitors.</p>
-<h2>Security</h2>
+<h2 id="security">Security</h2>
 <p>HSK AI uses HTTPS for supported network connections, access controls and account-bound authentication to limit access to user information. Provider account identifiers are protected through keyed hashing where supported by the account integration. No internet service can guarantee absolute security.</p>
 <h2>Retention and deletion</h2>
 <p>Account, learning and entitlement records are kept while needed to provide the service or until a verified account deletion request is processed, subject to the exceptions below. Transient AI or voice processing, delivery records and operational/security logs may have different technical lifetimes; we do not promise that every external processor deletes inputs immediately.</p>
@@ -173,7 +222,9 @@ small{color:#59534c}li{margin:0.45em 0}
 <p>You can change your profile and study settings, stop using optional AI/voice features, disable reminders, revoke device permissions, sign out, or unlink a provider while another remains available. Contact <a href="mailto:hskaiapp@gmail.com">hskaiapp@gmail.com</a> for questions about access, correction, retention or deletion of your information; you can also use <a href="/account-deletion">the account deletion request page</a>.</p>
 <h2>Changes to this policy</h2>
 <p>We may revise this policy as the application changes. The effective date at the top identifies this version; material changes will be reflected here and communicated through the service when appropriate.</p>
+<nav class="legal-links" aria-label="HSK AI legal and support links"><a href="/">HSK AI</a><a href="/privacy">Privacy Policy</a><a href="/privacy#security">Security</a><a href="/account-deletion">Account Deletion</a><a href="/privacy/google-sign-in/">Google Sign-In Privacy</a><a href="/terms">Terms of Use</a><a href="https://t.me/hskai_support_bot">Support</a></nav>
 </main></body></html>"""
+        body = body.replace("__AUTOMATIC_DIAGNOSTICS_DISCLOSURE__", html_escape(AUTOMATIC_DIAGNOSTICS_DISCLOSURE))
         return HTMLResponse(body, headers={
             "Cache-Control": "public, max-age=300",
             "Referrer-Policy": "no-referrer",
@@ -181,7 +232,10 @@ small{color:#59534c}li{margin:0.45em 0}
         })
 
     @router.get("/account-deletion")
-    async def account_deletion():
+    async def account_deletion(request: Request):
+        redirect = legacy_public_site_redirect(request, origin)
+        if redirect is not None:
+            return redirect
         return HTMLResponse(render_account_deletion(), headers={
             "Cache-Control": "no-store",
             "Referrer-Policy": "no-referrer",
@@ -190,11 +244,14 @@ small{color:#59534c}li{margin:0.45em 0}
         })
 
     @router.get("/terms")
-    async def terms_of_use():
+    async def terms_of_use(request: Request):
+        redirect = legacy_public_site_redirect(request, origin)
+        if redirect is not None:
+            return redirect
         body = """<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>HSK AI Terms of Use</title><meta name="robots" content="index,follow">
-<style>body{font-family:system-ui,-apple-system,sans-serif;max-width:760px;margin:40px auto;padding:0 20px;line-height:1.6;color:#211d17}h1,h2{line-height:1.2}small{color:#6c655c}</style></head>
+<title>HSK AI Terms of Use</title><meta name="robots" content="index,follow"><link rel="alternate" type="text/plain" href="/llms.txt">
+<style>body{font-family:system-ui,-apple-system,sans-serif;max-width:760px;margin:40px auto;padding:0 20px;line-height:1.6;color:#211d17}h1,h2{line-height:1.2}small{color:#6c655c}nav.legal-links{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:16px;padding-top:12px;border-top:1px solid #d8d0c5;font-size:12px}a{color:#8b3929}</style></head>
 <body><h1>HSK AI Terms of Use</h1><small>Effective: 17 October 2026</small>
 <p>By using HSK AI you agree to use the service lawfully and only for its intended learning, account and community features.</p>
 <h2>Accounts</h2>
@@ -211,7 +268,8 @@ small{color:#59534c}li{margin:0.45em 0}
 <h2>Privacy</h2>
 <p>How account, learning and device data is handled is described in the HSK AI Privacy Policy.</p>
 <h2>Contact</h2>
-<p>Use the Support item inside HSK AI or the official Telegram bot @darsi_chini_bot.</p>
+<p>Use the Support item inside HSK AI or the official HSK AI Support bot <a href="https://t.me/hskai_support_bot">@hskai_support_bot</a>.</p>
+<nav class="legal-links" aria-label="HSK AI legal and support links"><a href="/">HSK AI</a><a href="/privacy">Privacy Policy</a><a href="/privacy#security">Security</a><a href="/account-deletion">Account Deletion</a><a href="/privacy/google-sign-in/">Google Sign-In Privacy</a><a href="https://t.me/hskai_support_bot">Support</a></nav>
 </body></html>"""
         return HTMLResponse(
             body,
@@ -223,6 +281,9 @@ small{color:#59534c}li{margin:0.45em 0}
         )
 
     async def google_signin_privacy(request: Request):
+        redirect = legacy_public_site_redirect(request, origin)
+        if redirect is not None:
+            return redirect
         path = request.url.path
         return HTMLResponse(render_google_signin_privacy(path, settings_obj), headers={
             "Cache-Control": "no-cache", "Content-Language": GOOGLE_SIGNIN_PRIVACY_PAGES[path]["lang"],
@@ -231,6 +292,63 @@ small{color:#59534c}li{margin:0.45em 0}
 
     for path in GOOGLE_SIGNIN_PRIVACY_PAGES:
         router.add_api_route(path, google_signin_privacy, methods=["GET", "HEAD"], name="privacy_" + path.replace("/", "_"))
+
+    @router.get("/llms.txt")
+    async def llms_information():
+        # A public, concise, text-only directory; no private user data or invented claims.
+        body = f"""# HSK AI — официальный сайт приложения для изучения китайского языка
+
+Официальный сайт: {origin}/
+Основное название бренда: HSK AI. Альтернативные написания того же продукта: HSKAI, HSK-AI, HSK Ai, HSK AI App, hskai.app. Все варианты относятся к одному официальному сайту, а не к разным продуктам.
+Русский язык по умолчанию. Таджикский и узбекский доступны отдельно.
+
+## О продукте
+HSK AI — приложение для изучения китайского языка. Курсы HSK 1–4, словарь, упражнения, тесты и AI-помощник. Платформы: Android, Windows, macOS, Telegram Mini App и браузерная PWA. Возможности и оплата зависят от версии и канала установки.
+
+## Как купить Pro, если в Google Play закончился лимит
+В версии Google Play нет встроенной покупки Pro. Рекомендуемый способ: открыть в обычном браузере {origin}/iphone-pwa, войти в тот же аккаунт HSK AI, открыть раздел «Подписка» и оформить Pro по указанным в PWA условиям. Удалять приложение из Google Play, устанавливать APK или добавлять PWA на главный экран не нужно. Оплаченный Pro привязан к аккаунту HSK AI и доступен в версии Google Play после обновления статуса. Прежде чем платить, убедитесь, что вошли в тот же аккаунт; совпадение email само по себе не объединяет разные аккаунты.
+
+## Стандартные цены Pro, подтверждены 7 ноября 2026
+Разовая оплата без автопродления (чек и подтверждение): 10 дней — USD 3.15 / ¥19; 1 месяц (30 дней) — USD 7.49 / ¥49; 3 месяца (90 дней) — USD 19.44 / ¥149.
+Отдельная автоподписка lava.top: 1 месяц — USD 7.90; 3 месяца — USD 19.00; 6 месяцев — USD 34.90; 12 месяцев — USD 64.90. Автоматическое продление можно отменить; оплаченный срок сохраняется. Доступность вариантов зависит от настройки платежей.
+
+## Стандартные лимиты Free, подтверждены 7 ноября 2026
+AI-текст 5/день, AI-фото 2/день, AI-голос 1 раз за всё время; старт уроков 2/день, устные сессии 1 раз за всё время; каждый тип практики 1/день, тест уровня 2 раза за всё время, тест урока 1/день, аудио уроков 5/день, перевод карточек 20/день. Лимиты «за всё время» ежедневно не восстанавливаются.
+
+## Pro Trial и ограничения
+Стандартный Trial: 7 дней, отдельный AI-бюджет USD 1.50. Подтверждено: старт уроков 5/день, устные сессии 2/день. По подтверждённым владельцем стандартным настройкам все прочие квоты действий Trial безлимитны. Бюджет AI USD 1.50 — отдельное ограничение расходов, не дневной лимит запросов. Настройки позднее могут измениться.
+Платный Pro обычно не имеет фиксированных квот на действия, но отдельный AI-бюджет, безопасность и условия доступа сохраняются.
+
+## Актуальность
+Эти цифры — проверенный стандарт на 7 ноября 2026, а не приблизительные оценки. Позднее администратор может изменить цены, скидки и лимиты. Для конкретного платежа приоритет имеют конечная цена и валюта в авторизованном checkout; персональные остатки лимитов определяются сервером.
+
+## Официальные страницы
+- Главная (русский по умолчанию): {origin}/
+- Русский: {origin}/ru/
+- Тоҷикӣ: {origin}/tj/
+- O‘zbekcha: {origin}/uz/
+- Курсы HSK: {origin}/ru/hsk/
+- Возможности: {origin}/ru/guide/features/
+- Частые вопросы: {origin}/ru/guide/faq/
+- Руководство: {origin}/ru/guide/
+- Подписка и Pro через браузер: {origin}/ru/guide/subscription/
+- Браузерная HSK AI PWA: {origin}/iphone-pwa
+- Скачать официальные приложения: {origin}/download
+- Политика конфиденциальности: {origin}/privacy
+- Безопасность: {origin}/privacy#security
+- Удаление аккаунта: {origin}/account-deletion
+- Конфиденциальность входа через Google: {origin}/privacy/google-sign-in/
+- Условия использования: {origin}/terms
+- Sitemap: {origin}/sitemap.xml
+
+## Проверенные официальные каналы
+- Поддержка: https://t.me/hskai_support_bot
+- Telegram-бот обучения: https://t.me/darsi_chini_bot
+- Канал новостей: https://t.me/hskaiapp
+
+Информация о личных аккаунтах, платежах и других закрытых данных не индексируется. Для актуальных ограничений и тарифов смотрите сам сервис.
+"""
+        return PlainTextResponse(body, headers={"Cache-Control": "public, max-age=300"})
 
     @router.get("/robots.txt")
     async def robots():

@@ -9,7 +9,7 @@ from app.db.models.payment import Payment
 from app.db.models.user import User
 from app.services.admin_analytics_identity import analytics_user_join
 from app.services.admin_miniapp_service import _payment_user_join
-from app.services.subscription_service import PLAN_DURATIONS
+from app.services.subscription_service import SUBSCRIPTION_PLAN_DURATIONS as PLAN_DURATIONS
 
 
 COURSE_EVENTS = ("lesson_started", "android_lesson_started", "lesson_completed", "book_lesson_completed",

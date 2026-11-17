@@ -135,6 +135,284 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         await self.client.aclose()
         await self.engine.dispose()
 
+    async def test_public_li_shell_contains_no_private_user_or_course_access(self):
+        route = "/iphone-pwa/onboarding/li"
+        anonymous = await self.client.get(route, follow_redirects=False)
+        self.assertEqual(anonymous.status_code, 200)
+        self.assertEqual(anonymous.headers.get("cache-control"), "no-store")
+        self.assertEqual(anonymous.headers.get("x-frame-options"), "DENY")
+        self.assertIn("frame-ancestors 'none'", anonymous.headers.get("content-security-policy", ""))
+        self.assertIn("li-onboarding-runtime.js?v=", anonymous.text)
+        self.assertIn("hsk-character-pack.js?v=", anonymous.text)
+        self.assertNotIn("timer=setTimeout(function(){trail.push(screen)", anonymous.text)
+        self.assertNotIn("user_id", anonymous.text)
+        self.assertEqual((await self.client.get("/api/v3/pwa/onboarding/status")).status_code, 401)
+        self.assertEqual((await self.client.post(
+            "/api/v3/pwa/onboarding", headers={"Origin": ORIGIN},
+            json={"level": "hsk1", "goal": "hsk_exam", "daily_minutes": 10,
+                  "start_mode": "continue", "language": "uz",
+                  "timezone_offset_minutes": 0},
+        )).status_code, 401)
+        await self.callback(await self.begin())
+        signed = await self.client.get(route)
+        self.assertEqual(signed.status_code, 200)
+        self.assertEqual(signed.text, anonymous.text)
+
+    async def test_li_resume_hint_requires_same_origin_and_verified_oauth(self):
+        path = "/api/v3/pwa/onboarding/li/resume"
+        self.assertEqual((await self.client.post(
+            path, headers={"Origin": "https://other.test"},
+        )).status_code, 403)
+        started = await self.client.post(path, headers={"Origin": ORIGIN})
+        self.assertEqual(started.status_code, 200, started.text)
+        self.assertIn("__Host-hskai-li-resume", started.headers.get("set-cookie", ""))
+        # No cookie hint creates a browser login session or entitlements.
+        self.assertEqual((await self.client.get("/api/v3/pwa-auth/session")).status_code, 401)
+        await self.callback(await self.begin())
+        redirected = await self.client.get("/iphone-pwa", follow_redirects=False)
+        self.assertEqual(redirected.status_code, 303)
+        self.assertEqual(redirected.headers["location"], "/iphone-pwa/onboarding/li")
+        self.assertIn("max-age=0", redirected.headers.get("set-cookie", "").lower())
+        return_again = await self.client.get("/iphone-pwa", follow_redirects=False)
+        self.assertEqual(return_again.headers["location"], "/iphone-pwa/course")
+
+    async def test_li_public_track_metadata_never_claims_anonymous_hsk3_access(self):
+        from app.services.hsk30_feature_service import Hsk30FeatureService
+        with (
+            patch.object(Hsk30FeatureService, "is_enabled", new_callable=AsyncMock) as enabled,
+            patch.object(Hsk30FeatureService, "live_levels", new_callable=AsyncMock) as levels,
+        ):
+            enabled.return_value = True
+            levels.return_value = ["nhsk1", "nhsk2"]
+            result = await self.client.get("/api/v3/pwa/onboarding/public-tracks")
+            self.assertEqual(result.status_code, 200, result.text)
+            payload = result.json()
+            self.assertFalse(payload["tracks"]["hsk30"]["access"]["allowed"])
+            self.assertEqual(payload["tracks"]["hsk30"]["live_levels"], ["nhsk1", "nhsk2"])
+            self.assertNotIn("user_id", payload)
+            self.assertNotIn("unlocked_at", str(payload))
+
+    async def test_browser_trial_status_uses_verified_user_and_risk_without_grant(self):
+        from app.services.pro_trial_service import ProTrialService
+        from app.services.trial_risk_service import TrialRiskService
+
+        path = "/api/v3/pwa/trial/status"
+        self.assertEqual((await self.client.get(path)).status_code, 401)
+        await self.callback(await self.begin())
+        with (
+            patch.object(ProTrialService, "eligibility", new_callable=AsyncMock) as eligibility,
+            patch.object(TrialRiskService, "analyze", new_callable=AsyncMock) as analyze,
+            patch.object(TrialRiskService, "evaluate") as evaluate,
+        ):
+            eligibility.return_value = {"eligible": True, "reason": "", "days": 7}
+            analyze.return_value = SimpleNamespace()
+            evaluate.return_value = SimpleNamespace(denied=False)
+            response = await self.client.get(path)
+            self.assertEqual(response.status_code, 200, response.text)
+            self.assertTrue(response.json()["trial"]["eligible"])
+            self.assertEqual(eligibility.await_args.args[0].id, 1)
+            self.assertEqual(analyze.await_args.kwargs["client"], "iphone_pwa")
+            evaluate.return_value = SimpleNamespace(denied=True)
+            denied = await self.client.get(path)
+            self.assertEqual(denied.status_code, 200)
+            self.assertFalse(denied.json()["trial"]["eligible"])
+        # Signed Telegram initData can never substitute for PWA browser auth.
+        mixed = await self.client.get(path, headers={"X-Telegram-Init-Data": "fake"})
+        self.assertEqual(mixed.status_code, 422)
+
+    async def test_browser_trial_status_only_confirms_real_active_entitlement(self):
+        from app.services.pro_trial_service import ProTrialService
+        path = "/api/v3/pwa/trial/status"
+        self.assertEqual((await self.client.get(path)).status_code, 401)
+        await self.callback(await self.begin())
+        stamp = datetime.now(timezone.utc)
+        async with self.sessions() as session:
+            actor = await session.get(User, 1)
+            actor.trial_used = True
+            actor.pro_trial_started_at = stamp - timedelta(hours=2)
+            actor.pro_trial_ends_at = stamp + timedelta(days=6)
+            actor.pro_trial_revoked_at = None
+            await session.commit()
+        with patch.object(ProTrialService, "eligibility", new_callable=AsyncMock) as eligibility:
+            eligibility.return_value = {"eligible": False, "reason": "trial_already_used", "days": 7}
+            verified = await self.client.get(path)
+            self.assertEqual(verified.status_code, 200, verified.text)
+            info = verified.json()["trial"]
+            self.assertFalse(info["eligible"])
+            self.assertTrue(info["active"])
+            self.assertEqual(info["ends_at"], (stamp + timedelta(days=6)).isoformat())
+            self.assertEqual(verified.headers["cache-control"], "no-store")
+            # Revoked, expired or paid conversions cannot be mistaken for an
+            # active seven-day trial even when trial_used is still true.
+            async with self.sessions() as session:
+                actor = await session.get(User, 1)
+                actor.pro_trial_revoked_at = stamp
+                await session.commit()
+            revoked = (await self.client.get(path)).json()["trial"]
+            self.assertFalse(revoked["active"])
+            self.assertIsNone(revoked["ends_at"])
+            # Trial-used and an historical expiry date also cannot fabricate
+            # Pro status on the browser after a successful or failed payment.
+            async with self.sessions() as session:
+                actor = await session.get(User, 1)
+                actor.pro_trial_revoked_at = None
+                actor.pro_trial_ends_at = stamp - timedelta(hours=1)
+                await session.commit()
+            expired = (await self.client.get(path)).json()["trial"]
+            self.assertFalse(expired["active"])
+            self.assertIsNone(expired["ends_at"])
+
+    async def test_browser_trial_start_requires_same_origin_csrf_and_real_server_result(self):
+        from app.services.pro_trial_service import ProTrialService
+        from app.services.trial_risk_service import TrialRiskService
+
+        path = "/api/v3/pwa/trial/start"
+        self.assertEqual((await self.client.post(
+            path, headers={"Origin": ORIGIN},
+        )).status_code, 401)
+        await self.callback(await self.begin())
+        csrf = (await self.client.get("/api/v3/pwa-auth/session")).json()["csrf"]
+        self.assertEqual((await self.client.post(
+            path, headers={"Origin": ORIGIN},
+        )).status_code, 403)
+        self.assertEqual((await self.client.post(
+            path, headers={"Origin": "https://malicious.test",
+                           "X-HSK-PWA-CSRF": csrf},
+        )).status_code, 403)
+        self.assertEqual((await self.client.post(
+            path, headers={"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf,
+                           "X-Telegram-Init-Data": "fake"},
+        )).status_code, 422)
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf}
+        with (
+            patch.object(TrialRiskService, "analyze", new_callable=AsyncMock) as analyze,
+            patch.object(TrialRiskService, "evaluate") as evaluate,
+            patch.object(TrialRiskService, "record_started",
+                         new_callable=AsyncMock) as recorded,
+            patch.object(ProTrialService, "start", new_callable=AsyncMock) as start,
+        ):
+            analyze.return_value = SimpleNamespace()
+            evaluate.return_value = SimpleNamespace(denied=True)
+            refused = await self.client.post(path, headers=headers)
+            self.assertEqual(refused.status_code, 409)
+            start.assert_not_awaited()
+            recorded.assert_not_awaited()
+
+            evaluate.return_value = SimpleNamespace(denied=False)
+            start.return_value = {"ok": False, "error": "trial_already_used"}
+            used = await self.client.post(path, headers=headers)
+            self.assertEqual(used.status_code, 409)
+            recorded.assert_not_awaited()
+
+            start.return_value = {"ok": True, "days": 7,
+                                  "ends_at": "2026-11-15T10:00:00+00:00"}
+            approved = await self.client.post(path, headers=headers)
+            self.assertEqual(approved.status_code, 200, approved.text)
+            self.assertTrue(approved.json()["ok"])
+            self.assertEqual(start.await_args.args[0].id, 1)
+            self.assertEqual(start.await_args.kwargs["source"], "pwa_onboarding")
+            recorded.assert_awaited_once()
+
+    async def test_inline_preview_never_counts_fake_checkout(self):
+        # Price discovery must not inflate paid-conversion metrics, including
+        # on a repeat overview after accepting an exit discount.
+        await self.callback(await self.begin())
+        info = (await self.client.get("/api/v3/pwa-auth/session")).json()
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": info["csrf"]}
+        overview = {
+            "source":"v3_locked_lesson",
+            "mode":"subscription","plan":"1_month",
+            "supports_lava":False,"attempt_id":"inline-qa-preview",
+            "inline_preview":True,
+        }
+        with patch(
+            "app.services.subscription_miniapp_service.SubscriptionMiniAppService.overview",
+            new=AsyncMock(return_value={"ok": True, "mode": "subscription"})
+        ), patch(
+            "app.services.conversion_funnel_service.ConversionFunnelService.record",
+            new=AsyncMock(return_value=True)
+        ) as recorded:
+            a=await self.client.post("/api/v3/pwa/subscription/overview",
+                                      json=overview,headers=headers)
+            self.assertEqual(a.status_code,200,a.text)
+            b=await self.client.post("/api/v3/pwa/subscription/overview",
+                                      json={**overview,"mode":"exit_discount"},
+                                      headers=headers)
+            self.assertEqual(b.status_code,200,b.text)
+            recorded.assert_not_awaited()
+            c=await self.client.post("/api/v3/pwa/subscription/overview",
+                                      json={**overview,"inline_preview":False},
+                                      headers=headers)
+            self.assertEqual(c.status_code,200,c.text)
+            self.assertEqual(recorded.await_count,1)
+
+    async def test_inline_pro_analytics_is_authenticated_and_deduplicated(self):
+        path = "/api/v3/pwa/subscription/inline-event"
+        event = {
+            "event": "pwa_pro_opened",
+            "source": "v3_locked_lesson",
+            "attempt_id": "inline-qa-123",
+            "event_id": "inline-qa-123:1",
+            "plan_type": "1_month",
+            "method": None,
+        }
+        self.assertEqual((await self.client.post(path, json=event,
+                         headers={"Origin": ORIGIN})).status_code, 401)
+        await self.callback(await self.begin())
+        a = (await self.client.get("/api/v3/pwa-auth/session")).json()
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": a["csrf"]}
+        self.assertEqual((await self.client.post(path,json=event,
+                         headers={"Origin":"https://attacker.invalid",
+                         "X-HSK-PWA-CSRF":a["csrf"]})).status_code,403)
+        for invalid in (
+            {**event, "event": "pwa_pro_checkout_paid"},
+            {**event, "event_id": "from-another-attempt:1"},
+            {**event, "source": "v3_fake"},
+            {**event, "user_id": 1000},
+        ):
+            self.assertEqual((await self.client.post(path,json=invalid,
+                             headers=headers)).status_code, 422)
+        first = await self.client.post(path,json=event,headers=headers)
+        self.assertEqual(first.status_code,200,first.text)
+        self.assertTrue(first.json()["recorded"])
+        second = await self.client.post(path,json=event,headers=headers)
+        self.assertEqual(second.status_code,200,second.text)
+        self.assertFalse(second.json()["recorded"])
+        next_event = {**event,"event_id":"inline-qa-123:2"}
+        self.assertTrue((await self.client.post(
+            path,json=next_event,headers=headers)).json()["recorded"])
+        async with self.sessions() as db:
+            found = (await db.execute(sa.select(ConversionFunnelEvent).where(
+                ConversionFunnelEvent.event_name=="pwa_pro_opened",
+                ConversionFunnelEvent.user_id==1,
+            ))).scalars().all()
+            self.assertEqual(len(found),2)
+            self.assertTrue(all(row.source=="v3_locked_lesson" for row in found))
+
+    async def test_pwa_exit_offer_requires_session_csrf_and_origin(self):
+        path = "/api/v3/pwa/subscription/exit-offer"
+        payload = {"action": "view", "source": "v3_locked_lesson"}
+        unauthorized = await self.client.post(path, json=payload, headers={"Origin": ORIGIN})
+        self.assertEqual(unauthorized.status_code, 401)
+        await self.callback(await self.begin())
+        actor = (await self.client.get("/api/v3/pwa-auth/session")).json()
+        no_csrf = await self.client.post(path, json=payload, headers={"Origin": ORIGIN})
+        self.assertEqual(no_csrf.status_code, 403)
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": actor["csrf"]}
+        wrong_origin = await self.client.post(
+            path, json=payload,
+            headers={"Origin": "https://attacker.invalid", "X-HSK-PWA-CSRF": actor["csrf"]},
+        )
+        self.assertEqual(wrong_origin.status_code, 403)
+        for invalid in ({"action": "fake"}, {"action": "claim", "user_id": 1}, {}):
+            bad = await self.client.post(path, json=invalid, headers=headers)
+            self.assertEqual(bad.status_code, 422)
+        valid = await self.client.post(path, json=payload, headers=headers)
+        self.assertEqual(valid.status_code, 200, valid.text)
+        self.assertEqual(valid.headers["cache-control"], "no-store")
+        # Sales are disabled in this isolated PWA auth fixture.
+        self.assertFalse(valid.json()["available"])
+
     async def begin(self):
         response = await self.client.post(
             "/api/v3/pwa-auth/start", headers={"Origin": ORIGIN},
@@ -180,6 +458,83 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             profile = (await db.scalars(select(CourseMiniAppProfile))).one()
             self.assertEqual(profile.user_id, actor["user_id"])
             self.assertEqual(profile.daily_goal_xp, 80)
+
+    async def test_li_entry_release_switch_is_disabled_by_default_and_guest_only(self):
+        # The release switch changes only the unauthenticated entry URL.
+        # Never trust an unsigned cookie and never alter returning sessions.
+        path = "/iphone-pwa"
+        legacy = await self.client.get(path, follow_redirects=False)
+        self.assertEqual(legacy.status_code, 200)  # default OFF
+        self.settings.PWA_LI_ONBOARDING_ENTRY_ENABLED = True
+        guest = await self.client.get(path, follow_redirects=False)
+        self.assertEqual(guest.status_code, 303)
+        self.assertEqual(guest.headers["location"], "/iphone-pwa/onboarding/li")
+        translated = await self.client.get(
+            "/iphone-pwa?lang=ru&utm_source=instagram&source=download&ref=secret&request=abcdef",
+            follow_redirects=False,
+        )
+        self.assertEqual(translated.status_code, 303)
+        self.assertEqual(
+            translated.headers["location"],
+            "/iphone-pwa/onboarding/li?lang=ru&utm_source=instagram&source=download",
+        )
+        duplicate = await self.client.get(
+            "/iphone-pwa?lang=tj&utm_source=a&utm_source=b",
+            follow_redirects=False,
+        )
+        self.assertEqual(duplicate.headers["location"], "/iphone-pwa/onboarding/li?lang=tj")
+        invalid = await self.client.get("/iphone-pwa?lang=%3Cscript%3E", follow_redirects=False)
+        self.assertEqual(invalid.headers["location"], "/iphone-pwa/onboarding/li")
+        self.assertEqual(guest.headers["cache-control"], "no-store")
+        self.assertEqual(guest.headers["referrer-policy"], "no-referrer")
+        public_shell = await self.client.get(guest.headers["location"])
+        self.assertEqual(public_shell.status_code, 200)
+        self.assertNotIn("user_id", public_shell.text)
+        self.assertEqual(
+            (await self.client.get("/api/v3/pwa/onboarding/status")).status_code, 401
+        )
+        self.client.cookies.set(PWA_SESSION_COOKIE, "forged-session")
+        forged = await self.client.get(path, follow_redirects=False)
+        self.assertEqual(forged.headers["location"], "/iphone-pwa/onboarding/li")
+        self.client.cookies.clear()
+        await self.callback(await self.begin())
+        signed = await self.client.get(path, follow_redirects=False)
+        self.assertEqual(signed.status_code, 303)
+        self.assertEqual(signed.headers["location"], "/iphone-pwa/course")
+        self.settings.PWA_AUTH_ENABLED = False
+        disabled = await self.client.get(path, follow_redirects=False)
+        self.assertEqual(disabled.status_code, 503)
+        self.assertEqual(disabled.json()["error"], "pwa_auth_unavailable")
+
+    async def test_explicit_telegram_login_bypasses_guest_li_redirect_without_auth_bypass(self):
+        # The guest Li entry is ON, yet its Telegram button must reach the
+        # original browser-bound Telegram approval and polling screen.
+        self.settings.PWA_LI_ONBOARDING_ENTRY_ENABLED = True
+        path = "/iphone-pwa"
+        self.assertEqual(
+            (await self.client.get(path, follow_redirects=False)).status_code, 303
+        )
+        login = await self.client.get(path, params={"login": "1", "lang": "ru"},
+                                      follow_redirects=False)
+        self.assertEqual(login.status_code, 200)
+        self.assertIn('data-provider="telegram"', login.text)
+        self.assertIn("no-store", login.headers["cache-control"])
+        self.assertEqual((await self.client.get(path, params={"login": "0"},
+                         follow_redirects=False)).headers["location"],
+                         "/iphone-pwa/onboarding/li")
+        self.client.cookies.set(PWA_SESSION_COOKIE, "forged-session")
+        self.assertEqual((await self.client.get(path, params={"login": "1"},
+                         follow_redirects=False)).status_code, 200)
+        self.client.cookies.clear()
+        await self.callback(await self.begin())
+        signed = await self.client.get(path, params={"login": "1"},
+                                       follow_redirects=False)
+        self.assertEqual(signed.status_code, 303)
+        self.assertEqual(signed.headers["location"], "/iphone-pwa/course")
+        self.settings.PWA_AUTH_ENABLED = False
+        disabled = await self.client.get(path, params={"login": "1"},
+                                         follow_redirects=False)
+        self.assertEqual(disabled.status_code, 503)
 
     async def test_home_screen_entry_skips_login_only_for_verified_browser(self):
         self.assertEqual((await self.client.get("/iphone-pwa")).status_code, 200)
@@ -601,6 +956,8 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         allowed = await self.client.get(endpoint, params={"lang": "uz", "tz": 480})
         self.assertEqual(allowed.status_code, 200, allowed.text)
         self.assertEqual(allowed.headers["cache-control"], "no-store")
+        self.assertEqual(allowed.headers["x-hsk-pwa-user-id"],
+                         str((await self.client.get("/api/v3/pwa-auth/session")).json()["user_id"]))
         body = allowed.json()
         self.assertTrue(body["ok"])
         self.assertEqual(body["joined_count"], 0)
@@ -682,6 +1039,8 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         response = await self.client.get(path)
         self.assertEqual(response.status_code, 200, response.text)
         self.assertEqual(response.headers["cache-control"], "no-store")
+        self.assertEqual(response.headers["x-hsk-pwa-user-id"],
+                         str((await self.client.get("/api/v3/pwa-auth/session")).json()["user_id"]))
         data = response.json()
         self.assertTrue(data["ok"])
         self.assertEqual(data["user"]["name"], "Existing learner")
@@ -737,8 +1096,8 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('"/api/v3/lesson/foundation":"/api/v3/pwa/lesson/foundation"', course)
         self.assertIn('"/api/miniapp/gamification":"/api/v3/pwa/gamification"', course)
         self.assertIn('if(!ratingLoaded&&(INIT_DATA||PWA_COURSE_HOST)){', course)
-        self.assertIn('_apiPost("/api/miniapp/gamification",{timezone_offset_minutes:timezoneOffset})', course)
-        self.assertIn('_apiGet("/api/miniapp/gamification?tz="+encodeURIComponent(timezoneOffset))', course)
+        self.assertIn('_apiPost("/api/miniapp/gamification",{timezone_offset_minutes:timezoneOffset},opts)', course)
+        self.assertIn('_apiGet("/api/miniapp/gamification?tz="+encodeURIComponent(timezoneOffset),opts)', course)
         get_paths = course.split("var PWA_COURSE_GET_PATHS={", 1)[1].split("};", 1)[0]
         self.assertNotIn('"/api/miniapp/gamification"', get_paths)
         self.assertIn('mapped=parsed.pathname.replace("/api/v3/lesson/content/","/api/v3/pwa/lesson/content/")', course)
@@ -757,7 +1116,11 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('if(!INIT_DATA&&!PWA_COURSE_HOST)return Promise.reject(new Error("auth"));', course)
         self.assertIn('if((!INIT_DATA&&!PWA_COURSE_HOST)||!l||l.status!=="current")', course)
         # Only a server-confirmed sign-in may enter the authenticated course.
-        self.assertEqual(login.count('location.replace("/iphone-pwa/course");'), 2)
+        # Telegram OAuth may first re-enter the server redirect at /iphone-pwa
+        # to honor an explicit Li onboarding resume hint. The existing
+        # session-verified direct course redirect is still mandatory.
+        self.assertEqual(login.count('location.replace("/iphone-pwa/course");'), 1)
+        self.assertIn('location.replace("/iphone-pwa");', login)
         self.assertIn('await json("/api/v3/pwa-auth/session")', login)
         self.assertIn('reply.status === "complete"', login)
         self.assertNotIn('localStorage.setItem("pwa', login)
@@ -2535,6 +2898,16 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             api_url, headers=headers,
             json={**payload, "telegram_id": 1},
         )).status_code, 422)
+        for invalid_choices in (
+            {"goals": ["travel", "hsk_exam"]},
+            {"goals": ["hsk_exam", "hsk_exam"]},
+            {"goals": []},
+            {"streak_target_days": 99},
+            {"preferred_focus": "unknown"},
+        ):
+            self.assertEqual((await self.client.post(
+                api_url, headers=headers, json={**payload, **invalid_choices},
+            )).status_code, 422)
         with patch(
             "app.services.course_miniapp_onboarding_service.CourseMiniAppOnboardingService.complete",
             new_callable=AsyncMock,
@@ -2548,6 +2921,13 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(complete.await_args.args[0].id, 1)
             self.assertEqual(complete.await_args.kwargs["level"], "hsk1")
             self.assertEqual(complete.await_args.kwargs["language"], "uz")
+            choices = {**payload, "goals": ["hsk_exam", "travel"],
+                       "streak_target_days": 14, "preferred_focus": "speaking"}
+            selected = await self.client.post(api_url, headers=headers, json=choices)
+            self.assertEqual(selected.status_code, 200, selected.text)
+            self.assertEqual(complete.await_args.kwargs["goals"], ["hsk_exam", "travel"])
+            self.assertEqual(complete.await_args.kwargs["streak_target_days"], 14)
+            self.assertEqual(complete.await_args.kwargs["preferred_focus"], "speaking")
         self.settings.PWA_AUTH_ENABLED = False
         self.assertEqual((await self.client.get(page_url)).status_code, 503)
 
@@ -2799,7 +3179,7 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             self.assertIsNone((await db.get(VoicePracticeSession, own_id)).live_connection_token)
             self.assertEqual((await db.get(VoicePracticeSession, other_id)).mode, "live")
 
-    async def test_pwa_standalone_voice_keeps_original_page_without_telegram_session(self):
+    async def test_pwa_voice_v8_page_requires_session_and_frames_only_in_course(self):
         path = "/iphone-pwa/practice/voice"
         self.assertEqual(
             (await self.client.get(path, follow_redirects=False)).status_code, 303,
@@ -2813,8 +3193,20 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(page.status_code, 200, page.text[:150])
         self.assertEqual(page.headers.get("cache-control"), "no-store")
         self.assertEqual(page.headers.get("x-frame-options"), "DENY")
+        self.assertEqual(page.headers.get("content-security-policy"), "frame-ancestors 'none'")
+        self.assertIn('<div id="orb" role="button"', page.text)
         self.assertNotIn("maximum-scale=1", page.text)
-        self.assertIn('font-size:16px;line-height:1.35', page.text)
+        self.assertNotIn("user-scalable=no", page.text)
+        self.assertIn("#prompt{font-size:16px}", page.text)
+        self.assertIn("/course_v3_data/iphone-pwa-inline-pro-bridge.js?v=", page.text)
+        self.assertLess(page.text.index("window.showPaywall=function"),
+                        page.text.index("iphone-pwa-inline-pro-bridge.js"))
+        self.assertNotIn("telegram-web-app.js", page.text)
+        self.assertNotIn("data:image/jpeg;base64", page.text)
+        embedded = await self.client.get(path + "?embedded=1&lang=uz")
+        self.assertEqual(embedded.status_code, 200)
+        self.assertEqual(embedded.headers.get("x-frame-options"), "SAMEORIGIN")
+        self.assertEqual(embedded.headers.get("content-security-policy"), "frame-ancestors 'self'")
         with patch(
             "app.services.voice_practice_service.VoicePracticeService.user_status",
             new_callable=AsyncMock,
@@ -2825,6 +3217,8 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             }
             result = await self.client.get("/api/v3/pwa/voice/me")
             self.assertEqual(result.status_code, 200, result.text)
+            self.assertEqual(result.headers.get("x-hsk-pwa-user-id"), "1")
+            self.assertEqual(result.headers.get("cache-control"), "no-store")
             self.assertEqual(status.await_args.args[0].id, 1)
         self.settings.PWA_AUTH_ENABLED = False
         self.assertEqual((await self.client.get(path)).status_code, 503)
@@ -2933,6 +3327,8 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(overview.await_args.args[0].id, 1)
             self.assertIs(overview.await_args.kwargs["bot"], self.receipt_bot)
             self.assertEqual(entry.await_args.kwargs["user"].id, 1)
+            # R3: the route sets the client; the body has no field for it.
+            self.assertEqual(entry.await_args.kwargs["client"], "iphone_pwa")
             self.assertEqual(funnel.await_args.kwargs["user"].id, 1)
             quoted = await self.client.post(quote_url, headers=headers, json={**ctx, **order})
             self.assertEqual(quoted.status_code, 200, quoted.text)
@@ -3010,6 +3406,73 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(record.await_args.kwargs["user"].id, 1)
             self.assertEqual(record.await_args.kwargs["payload"]["stage"], "payment_receipt_selected")
 
+    async def _pwa_checkout_rows(self, attempt):
+        async with self.sessions() as db:
+            rows = (await db.execute(select(ConversionFunnelEvent.payload_json).where(
+                ConversionFunnelEvent.event_name == "checkout_opened",
+            ))).scalars().all()
+        mine = [p for p in map(json.loads, rows) if p.get("attempt_id") == attempt]
+        return [p for p in mine if "stage" not in p], [p["stage"] for p in mine if "stage" in p]
+
+    async def _pwa_checkout(self, overview_attempt, stage_attempt, flaky=None):
+        from tests.checkout_funnel_faults import FlakyFunnelSessions
+        state = await self.begin()
+        await self.callback(state)
+        csrf = (await self.client.get("/api/v3/pwa-auth/session")).json()["csrf"]
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf}
+        with patch(
+            "app.services.subscription_miniapp_service.SubscriptionMiniAppService.overview",
+            new_callable=AsyncMock,
+            return_value={"ok": True, "mode": "subscription", "pending_payment": None,
+                          "prices": {"visa": {"1_month": {"final_amount": 89}}}},
+        ), patch(
+            "app.services.conversion_funnel_service.async_session_maker",
+            flaky or FlakyFunnelSessions(self.sessions),
+        ):
+            opened = await self.client.post(
+                "/api/v3/pwa/subscription/overview", headers=headers,
+                json={"source": "v3_paywall", "mode": "subscription", "plan": "1_month",
+                      "attempt_id": overview_attempt},
+            )
+            event = await self.client.post(
+                "/api/v3/pwa/subscription/event", headers=headers,
+                json={"attempt_id": stage_attempt, "stage": "payment_instructions_viewed",
+                      "source": "v3_paywall", "mode": "subscription",
+                      "plan_type": "1_month", "payment_method": "visa"},
+            )
+        return opened, event
+
+    async def test_pwa_checkout_opening_survives_one_failed_write(self):
+        from tests.checkout_funnel_faults import FlakyFunnelSessions
+        attempt = "sub-1794800000000-a1b2c3d4"
+        opened, event = await self._pwa_checkout(
+            attempt, attempt, FlakyFunnelSessions(self.sessions, drop={1}),
+        )
+        # The payment overview never depends on the analytics write.
+        self.assertEqual(opened.status_code, 200, opened.text)
+        self.assertEqual(opened.json()["prices"]["visa"]["1_month"]["final_amount"], 89)
+        # Before the fix the opening was silently lost and this answered 409.
+        self.assertEqual(event.status_code, 200, event.text)
+        base, stages = await self._pwa_checkout_rows(attempt)
+        self.assertEqual(len(base), 1)  # recovered once, never duplicated
+        self.assertEqual(base[0]["transport"], "iphone_pwa")
+        self.assertEqual(stages, ["payment_instructions_viewed"])
+
+    async def test_pwa_checkout_opening_uses_the_stage_route_attempt_id(self):
+        # The stage route trims the attempt and accepts only [A-Za-z0-9:.-]
+        # up to 80 chars; the opening must be stored under that same id.
+        attempt = "sub-1794800000000-a1b2c3d4"
+        opened, event = await self._pwa_checkout(f"  {attempt} ", attempt)
+        self.assertEqual(opened.status_code, 200, opened.text)
+        self.assertEqual(event.status_code, 200, event.text)
+        base, stages = await self._pwa_checkout_rows(attempt)
+        self.assertEqual((len(base), stages), (1, ["payment_instructions_viewed"]))
+        # An id no stage can ever reference opens no dead attempt.
+        opened, event = await self._pwa_checkout("sub-1%x", "sub-1%x")
+        self.assertEqual(opened.status_code, 200, opened.text)
+        self.assertEqual(event.status_code, 422)
+        self.assertEqual(await self._pwa_checkout_rows("sub-1%x"), ([], []))
+
     def test_home_screen_resume_revalidates_server_actor_in_existing_pages(self):
         pages = {
             "course-v3.html": ("PWA_COURSE_HOST", "PWA_COURSE_ACTOR_PROMISE", "pwaCourseActor"),
@@ -3044,8 +3507,9 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
                     )
                     self.assertIn(f'if(error&&error.message==="pwa_session_invalid"){sign_in};', html)
                     status = 'res.status' if name == "course-v3.html" else 'r.status'
+                    cleanup = 'if(window.HskDiag)HskDiag.logout(PWA_COURSE_USER_ID);' if name == "course-v3.html" else ''
                     self.assertIn(
-                        f'if({status}===401){{{sign_in};throw new Error("pwa_session_required")}}', html,
+                        f'if({status}===401){{{cleanup}{sign_in};throw new Error("pwa_session_required")}}', html,
                     )
                     if sign_in == 'practiceSignIn()':
                         self.assertIn('HskPwaPracticeBoot.signIn()', html)
@@ -3681,7 +4145,11 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             json={"timezone_offset_minutes": 330},
         )).status_code, 503)
 
-    async def test_pwa_site_origin_is_separate_from_oauth_callback_origin(self):
+    async def test_pwa_google_callback_same_site_as_browser_proof_with_native_isolation(self):
+        """Google must return to the PWA cookie host, not Railway/native OAuth."""
+        from app.services import google_auth
+        from app.services.native_oauth_service import NativeOAuthService
+
         site_origin = "https://pwa.example.test"
         callback_origin = "https://oauth.example.test"
         self.settings.PUBLIC_SITE_URL = site_origin
@@ -3693,12 +4161,48 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             json={"provider": "google", "language": "uz"},
         )
         self.assertEqual(started.status_code, 200, started.text)
-        redirect_uri = parse_qs(
-            urlparse(started.json()["authorize_url"]).query
-        )["redirect_uri"][0]
+        self.assertIn(PWA_OAUTH_COOKIE, started.cookies)
+        query = parse_qs(urlparse(started.json()["authorize_url"]).query)
+        redirect_uri = query["redirect_uri"][0]
+        state = query["state"][0]
         self.assertEqual(
             redirect_uri,
-            callback_origin + "/api/v3/native-auth/oauth/callback/google",
+            site_origin + "/api/v3/native-auth/oauth/callback/google",
+        )
+        async with self.sessions() as db:
+            oauth = NativeOAuthService(db, self.settings)
+            self.assertEqual(oauth.redirect_uri("google", platform="macos"),
+                             callback_origin + "/api/v3/native-auth/oauth/callback/google")
+            self.assertEqual(oauth.redirect_uri("google", platform="windows"),
+                             callback_origin + "/api/v3/native-auth/oauth/callback/google")
+            self.assertEqual(oauth.redirect_uri("apple", platform="pwa"),
+                             callback_origin + "/api/v3/native-auth/oauth/callback/apple")
+
+        # Simulate the regression: Railway cannot receive a __Host- PWA
+        # proof cookie set by the other origin. It must not authenticate.
+        wrong_host = await self.client.get(
+            f"{callback_origin}/api/v3/native-auth/oauth/callback/google",
+            params={"state": state, "code": "auth-code"},
+        )
+        self.assertIn("pwa_oauth_proof_invalid", wrong_host.text)
+        self.assertNotIn(PWA_SESSION_COOKIE, wrong_host.cookies)
+
+        # On the real cookie origin the exact same request succeeds, and
+        # the Google token exchange must reuse the start redirect_uri.
+        with patch.object(google_auth, "exchange_code", return_value="google-id-token") as exchange, patch.object(
+            google_auth, "verify_desktop_id_token", return_value=identity(),
+        ):
+            completed = await self.client.get(
+                redirect_uri, params={"state": state, "code": "auth-code"},
+                follow_redirects=False,
+            )
+        self.assertEqual(completed.status_code, 303, completed.text)
+        self.assertEqual(completed.headers["location"], "/iphone-pwa")
+        self.assertIn(PWA_SESSION_COOKIE, completed.cookies)
+        self.assertEqual(exchange.call_args.kwargs["redirect_uri"], redirect_uri)
+        self.assertEqual(
+            (await self.client.get(f"{site_origin}/api/v3/pwa-auth/session")).json()["user_id"],
+            1,
         )
 
         legacy_origin = await self.client.post(
@@ -3714,6 +4218,20 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             json={"provider": "google", "language": "uz"},
         )
         self.assertEqual(wrong_origin.status_code, 403)
+
+    async def test_pwa_google_fails_closed_on_invalid_public_origin_without_affecting_desktop(self):
+        from app.services.native_oauth_service import NativeOAuthService
+        self.settings.PUBLIC_SITE_URL = "https://attacker.test/redirect"
+        self.settings.OAUTH_REDIRECT_BASE_URL = "https://oauth.example.test"
+        async with self.sessions() as db:
+            oauth = NativeOAuthService(db, self.settings)
+            self.assertEqual(
+                oauth.redirect_uri("google", platform="macos"),
+                "https://oauth.example.test/api/v3/native-auth/oauth/callback/google",
+            )
+            with self.assertRaises(Exception) as caught:
+                oauth.redirect_uri("google", platform="pwa")
+            self.assertEqual(str(caught.exception), "oauth_provider_unconfigured")
 
     async def test_pwa_only_rollback_fences_existing_sessions_without_account_deletion(self):
         """Feature OFF must close both browser HTML and API routes, not Telegram.
@@ -4756,6 +5274,7 @@ const settle = () => new Promise(resolve => setImmediate(resolve));
             await db.flush()
             self.assertEqual(await enqueue_event(db, user_id=1, source="payment",
                 source_id=4401, language="uz", now=now), 1)
+            outbox_id = await db.scalar(select(LearnerPwaPushOutbox.id))
             await db.commit()
         delivered = []
         async def accepted_sender(payload, public_payload, private_key, subject, source):
@@ -4767,10 +5286,15 @@ const settle = () => new Promise(resolve => setImmediate(resolve));
             notification_message("pwa.push.paymentRejectedTitle", lang, "")
             for lang in ("uz", "ru", "tj")
         })
-        self.assertNotIn("149", json.dumps(delivered[0], ensure_ascii=False))
+        self.assertEqual(set(delivered[0]), {"title", "body", "lang", "url", "tag"})
+        # The opaque UUID tag may coincidentally contain the amount's digits.
+        # Verify its origin separately from the human-readable notification.
+        self.assertEqual(delivered[0]["tag"], "hsk-" + outbox_id.replace("-", "")[:24])
+        visible = {key: value for key, value in delivered[0].items() if key != "tag"}
+        self.assertNotIn("149", json.dumps(visible, ensure_ascii=False))
         self.assertNotIn("Summa", json.dumps(delivered[0], ensure_ascii=False))
 
-    async def test_push_outbox_deduplicates_and_sends_content_free_payload_with_bounded_cleanup(self):
+    async def test_push_outbox_deduplicates_and_sends_event_copy_with_bounded_cleanup(self):
         self.settings.PWA_PUSH_ENABLED = True
         self.settings.PWA_PUSH_SEND_ENABLED = True
         self.settings.PWA_PUSH_STORAGE_KEY = Fernet.generate_key().decode("ascii")
@@ -4800,7 +5324,7 @@ const settle = () => new Promise(resolve => setImmediate(resolve));
         async with self.sessions() as db:
             notices = [CourseUserNotification(
                 user_id=1, telegram_id=1001, key="daily_goal", source="pwa_push_test",
-                language="uz", title="Private title", body="Private answer text must never reach push",
+                language="uz", title="⏳ Bugungi maqsad", body="⏳ Bugungi maqsad\nDarsni davom ettiring 🎯",
                 action="course", created_at=now,
             ) for _ in range(2)]
             db.add_all(notices)
@@ -4821,8 +5345,9 @@ const settle = () => new Promise(resolve => setImmediate(resolve));
         self.assertEqual(first["accepted"], 1)
         self.assertEqual(delivered[0][0]["endpoint"], subscription["endpoint"])
         self.assertEqual(delivered[0][2], "course")
-        self.assertNotIn("Private", delivered[0][1]["title"] + delivered[0][1]["body"])
-        self.assertNotIn("answer", json.dumps(delivered[0][1]))
+        self.assertEqual(delivered[0][1]["title"], "⏳ Bugungi maqsad")
+        self.assertEqual(delivered[0][1]["body"], "Darsni davom ettiring 🎯")
+        self.assertEqual(delivered[0][1]["lang"], "uz")
         self.assertEqual(delivered[0][1]["url"], "/iphone-pwa/course?notice=1")
 
         async def gone_sender(*_):
@@ -4834,6 +5359,65 @@ const settle = () => new Promise(resolve => setImmediate(resolve));
             self.assertCountEqual([row.state for row in rows], ["accepted", "dead"])
             subscription_row = (await db.scalars(select(LearnerPwaPushSubscription))).one()
             self.assertIsNotNone(subscription_row.revoked_at)
+
+    async def test_all_push_sources_use_current_account_language_and_retry_keeps_tag(self):
+        from app.services.learner_pwa_push_copy import account_push_copy, course_push_copy, payment_push_copy
+        await self.callback(await self.begin())
+        now = datetime.now(timezone.utc)
+        fernet = Fernet(Fernet.generate_key())
+        endpoint = {"endpoint": "https://web.push.apple.com/test/synthetic", "keys": {}}
+        async with self.sessions() as db:
+            device_id = await db.scalar(select(DesktopSession.device_id).where(DesktopSession.revoked_at.is_(None)))
+            db.add(LearnerPwaPushSubscription(
+                id=str(uuid4()), device_id=device_id, endpoint_hash="a" * 64,
+                encrypted_payload=fernet.encrypt(json.dumps(endpoint).encode("ascii")).decode("ascii"),
+                created_at=now, updated_at=now,
+            ))
+            await db.commit()
+        delivered = []
+        async def sender(_, payload, *args):
+            delivered.append(json.loads(payload))
+            return 503 if len(delivered) == 1 else 201
+        with patch("app.services.learner_pwa_push.sender_config",
+                   return_value=("test-private-key", "mailto:test@example.test", fernet)):
+            for language in ("uz", "ru", "tj"):
+                async with self.sessions() as db:
+                    actor = await db.get(User, 1)
+                    actor.language = language
+                    course = CourseUserNotification(
+                        user_id=1, telegram_id=1001, key="daily_goal", source="motivation_reminder",
+                        language="uz", title="Old title", body="Old text",
+                        params={"template_service": "daily_goal", "minutes": 15}, action="course", created_at=now,
+                    )
+                    account = AccountNoticeDelivery(user_id=1, key="subscription_expiring", language="uz",
+                        title="Old title", body="Old text", status="telegram_sent", action="subscription", created_at=now)
+                    payment = Payment(user_id=1, user_telegram_id=1001, plan_type="1_month", amount=149,
+                        currency="TJS", payment_status="approved", reviewed_at=now)
+                    db.add_all([course, account, payment])
+                    await db.flush()
+                    expected = [await course_push_copy(db, course, language),
+                                account_push_copy(account, language), payment_push_copy(payment, language)]
+                    for source, row in zip(("course", "account", "payment"), (course, account, payment)):
+                        await enqueue_event(db, user_id=1, source=source, source_id=row.id, language="uz", now=now)
+                    await db.commit()
+                start = len(delivered)
+                await dispatch_batch(self.sessions, settings_obj=self.settings, sender=sender, now=now, limit=3)
+                self.assertCountEqual([(item["title"], item["body"]) for item in delivered[start:]], expected)
+                self.assertTrue(all(item["lang"] == language for item in delivered[start:]))
+                self.assertTrue(all("HSK AI" not in item["title"]+item["body"] for item in delivered[start:]))
+            # One retry remains. Change preference after enqueue and before retry:
+            # it gets fresh language and text, with the same dedupe/click identity.
+            async with self.sessions() as db:
+                actor = await db.get(User, 1)
+                actor.language = "ru"
+                await db.commit()
+            result = await dispatch_batch(self.sessions, settings_obj=self.settings, sender=sender,
+                                          now=now+timedelta(minutes=3), limit=1)
+            self.assertEqual(result["accepted"], 1)
+            self.assertEqual(delivered[-1]["tag"], delivered[0]["tag"])
+            self.assertEqual(delivered[-1]["lang"], "ru")
+            self.assertEqual(delivered[-1]["url"], delivered[0]["url"])
+            self.assertNotEqual(delivered[-1]["title"], delivered[0]["title"])
 
     async def test_accepted_telegram_smart_reminder_is_not_mirrored_to_pwa(self):
         from app.services.learner_pwa_push import _smart_study_event_allowed

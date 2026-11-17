@@ -38,7 +38,11 @@
      ko'rinmasdi. Shuning uchun sessiya o'rni SHU joyga bo'shatiladi: u
      o'rinni bir marta egallay oladi, undan keyin sessiya yopiladi. */
   var PROMO_PRIORITY_SOURCE = "lesson_end_promo";
-  var APP_PROMO_PLATFORMS = ["macos", "windows", "android"];
+  /* iPhone has no native app: its target is the learner PWA, reached through
+     a one-time sign-in link (docs/TELEGRAM_PWA_ANDROID_HANDOFF_CONTEXT.md). */
+  var APP_PROMO_PLATFORMS = ["macos", "windows", "android", "ios"];
+  var PWA_HANDOFF_ENDPOINT = "/api/v3/pwa-auth/handoff/start";
+  var ANDROID_PLAY_PACKAGE = "com.pomp.hskai";
 
   var COPY = (window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.desktop_download.COPY.copy1",{
     uz: {
@@ -369,11 +373,13 @@
     platforms: { macos: false, windows: false, android: false, ios: false },
     platformTargets: { macos: true, windows: true, android: true, ios: false },
     transferUrls: { macos: "", windows: "" },
+    androidPlayUrl: "",
+    iphoneHandoff: { url: "", expiresAt: 0 },
     runtimeUnavailable: { macos: false, windows: false, android: false, ios: true },
     promoEligible: false,
     promoReason: "",
     autoTargetPlatform: "",
-    promoCooldownDays: 0,
+    promoCooldownDays: null,
     homePromptDailyLimit: DEFAULT_HOME_PROMPT_DAILY_LIMIT,
     promoPlacements: {
       home_prompt: false,
@@ -438,6 +444,26 @@
     if (screen === "voice") return "voice";
     if (screen === "dictionary" || screen === "lugat") return "dictionary";
     return "course";
+  }
+
+  /* Canonical UZ/RU/TJ strings: localization/ui/<locale>/miniapp.json. */
+  function miniappText(key) {
+    var all = window.HSKAI_MINIAPP_I18N || {};
+    var id = "ui.desktop_download." + key;
+    return (all[language()] || {})[id] || (all.ru || {})[id] || "";
+  }
+
+  function iphonePromoCopy() {
+    if (detectPlatform() !== "ios" || state.autoTargetPlatform !== "ios") {
+      return null;
+    }
+    var title = miniappText("iphone.title");
+    if (!title) return null;
+    return { title: title, body: miniappText("iphone.body") };
+  }
+
+  function promoCopyFor(source, meta) {
+    return iphonePromoCopy() || androidPromoCopy(source, meta);
   }
 
   function androidPromoCopy(source, meta) {
@@ -703,6 +729,11 @@
       // send is a release this button can offer.
       return Boolean(state.platforms.android);
     }
+    if (platform === "ios") {
+      // The server already combines the admin iPhone PWA switch with the
+      // learner PWA being able to sign people in.
+      return Boolean(state.platforms.ios);
+    }
     return Boolean(
       state.enabled &&
         state.platforms[platform] &&
@@ -715,7 +746,8 @@
     return (
       isPlatformAvailable("macos") ||
       isPlatformAvailable("windows") ||
-      isPlatformAvailable("android")
+      isPlatformAvailable("android") ||
+      isPlatformAvailable("ios")
     );
   }
 
@@ -752,39 +784,10 @@
       desktop_download_open_failed: copy.messageFailed,
       android_release_unavailable: copy.releaseUnavailable,
       android_apk_send_failed: copy.chatSendFailed,
+      pwa_handoff_rate_limited: miniappText("iphone.rateLimited"),
+      pwa_handoff_failed: miniappText("iphone.failed"),
       network_error: copy.networkError
     }[code] || copy.networkError;
-  }
-
-  function buildBenefit(iconName, label) {
-    var item = element("span", "pdd-benefit");
-    item.appendChild(icon(iconName));
-    item.appendChild(document.createTextNode(label));
-    return item;
-  }
-
-  function buildBenefits(includeProgress) {
-    var copy = text();
-    var row = element("div", "pdd-benefits");
-    row.appendChild(buildBenefit("device-desktop", copy.bigScreen));
-    row.appendChild(buildBenefit("refresh", copy.autoUpdate));
-    if (includeProgress) {
-      row.appendChild(buildBenefit("arrows-exchange", copy.sharedProgress));
-    }
-    return row;
-  }
-
-  function buildPromoBenefits(source, meta, includeProgress) {
-    var contextual = androidPromoCopy(source, meta);
-    if (!contextual || !Array.isArray(contextual.benefits)) {
-      return buildBenefits(includeProgress);
-    }
-    var row = element("div", "pdd-benefits");
-    contextual.benefits.forEach(function (definition) {
-      if (!Array.isArray(definition) || definition.length < 2) return;
-      row.appendChild(buildBenefit(definition[0], definition[1]));
-    });
-    return row;
   }
 
   function buildProfileDeviceVisual() {
@@ -876,8 +879,12 @@
     if (isPlatformAvailable(platform)) {
       if (platform === "macos") return copy.mac;
       if (platform === "windows") return copy.windows;
-      if (platform === "android") return copy.android;
-      return copy.ios;
+      if (platform === "android") {
+        return state.androidPlayUrl ? miniappText("android.play") || copy.android : copy.android;
+      }
+      return iphoneHandoffReady()
+        ? miniappText("iphone.openAgain") || copy.ios
+        : miniappText("iphone.action") || copy.ios;
     }
     if (platform === "macos") return copy.macUnavailable;
     if (platform === "windows") return copy.windowsUnavailable;
@@ -986,9 +993,11 @@
   function openProfileAppsSite() { openTrackedLink(appsPageUrl()); }
   function openProfileApps() {
     trackEntrySeen("profile",{placement:"profile_carousel"});
-    // Only the Telegram Mini App on Android can send an APK back to the chat.
-    // The Android native app and iOS/Mac/Windows go straight to the website.
-    if (detectPlatform() !== "android" || !telegramInitData()) {
+    // Only the Telegram Mini App can hand over the Android app or the iPhone
+    // PWA sign-in. The native apps and Mac/Windows go straight to the website.
+    var device = detectPlatform();
+    var iphone = device === "ios" && isPlatformAvailable("ios");
+    if (!telegramInitData() || (device !== "android" && !iphone)) {
       openProfileAppsSite();
       return;
     }
@@ -998,21 +1007,28 @@
       tj:{title:"Барномаҳои HSK AI",apk:"Гирифтани APK дар Telegram",site:"Кушодани сомонаи боргирӣ",close:"Бекор кардан",missing:"APK ҳоло дастрас нест"}
     })[language()] || {};
     if(!window.App || !App.openSheet){openProfileAppsSite();return}
+    var first=iphone?platformButtonLabel("ios"):(state.androidPlayUrl&&miniappText("android.play"))||copy.apk;
     App.openSheet('<h2 class="hp-confirm-title">'+copy.title+'</h2>'
-      +'<div class="hp-confirm-buttons"><button type="button" id="hp-app-apk">'+copy.apk+'</button>'
+      +'<div class="hp-confirm-buttons"><button type="button" id="hp-app-apk"></button>'
       +'<button type="button" id="hp-app-site">'+copy.site+'</button>'
       +'<button type="button" class="hp-confirm-cancel" id="hp-app-cancel">'+copy.close+'</button></div>'
       +'<p role="status" aria-live="polite" id="hp-app-download-status" class="hp-confirm-body"></p>');
     document.getElementById("sheet").classList.add("profile-apps-choice");
     var apk=document.getElementById("hp-app-apk");
+    apk.textContent=first;
+    if(iphone){
+      apk.onclick=function(){openIphonePwa("profile")};
+    }else{
     apk.disabled=state.availabilityLoaded && !isPlatformAvailable("android");
     if(apk.disabled)showProfileAppsError(copy.missing);
     apk.onclick=function(){
       if(state.pendingPlatform)return;
+      if(state.androidPlayUrl){App.closeSheet();openAndroidPlay("profile");return}
       apk.disabled=true;
       showProfileAppsError("…");
       sendAndroidToChat("profile");
     };
+    }
     document.getElementById("hp-app-site").onclick=function(){App.closeSheet();openProfileAppsSite()};
     document.getElementById("hp-app-cancel").onclick=function(){App.closeSheet()};
   }
@@ -1255,7 +1271,9 @@
       var label = button.querySelector("span");
       if (label) {
         label.textContent = pending
-          ? copy.sendingShort
+          ? platform === "ios"
+            ? miniappText("iphone.preparing") || copy.sendingShort
+            : copy.sendingShort
           : platformButtonLabel(platform);
       }
     });
@@ -1274,7 +1292,9 @@
         label.textContent = state.pendingPlatform
           ? state.pendingPlatform === "android"
             ? copy.sendingToChat
-            : copy.sending
+            : state.pendingPlatform === "ios"
+              ? miniappText("iphone.preparing") || copy.sending
+              : copy.sending
           : errorText(state.errorCode);
       }
     });
@@ -1355,7 +1375,14 @@
     // the file, so the Mini App asks for it, closes, and the learner finds it
     // in the chat they came from.
     if (platform === "android") {
-      sendAndroidToChat(source);
+      // An admin-set Play listing replaces the Direct APK; without one the
+      // APK still arrives in the chat exactly as before.
+      if (state.androidPlayUrl) openAndroidPlay(source);
+      else sendAndroidToChat(source);
+      return;
+    }
+    if (platform === "ios") {
+      openIphonePwa(source);
       return;
     }
     if (!telegramInitData()) {
@@ -1420,6 +1447,140 @@
         syncControls();
         showProfileAppsError(state.errorCode);
         var retry=document.getElementById("hp-app-apk");if(retry)retry.disabled=false;
+      });
+  }
+
+  function cleanPlayUrl(value) {
+    // Same rule as the server: only HSK AI's own Play listing is ever opened.
+    if (typeof value !== "string" || !value) return "";
+    try {
+      var url = new URL(value);
+      if (
+        url.protocol !== "https:" ||
+        url.hostname !== "play.google.com" ||
+        url.username || url.password || url.port || url.hash ||
+        url.pathname !== "/store/apps/details" ||
+        url.searchParams.getAll("id").length !== 1 ||
+        url.searchParams.get("id") !== ANDROID_PLAY_PACKAGE
+      ) {
+        return "";
+      }
+      return url.toString();
+    } catch (error) {
+      return "";
+    }
+  }
+
+  function openAndroidPlay(source) {
+    var url = state.androidPlayUrl;
+    if (!url) return;
+    storeNumber("download_requested", Date.now());
+    track("android_play_opened", { source: source, target_platform: "android" });
+    openTrackedLink(url);
+  }
+
+  function cleanHandoffUrl(value) {
+    // The one-time secret lives only in the fragment of the PWA landing page.
+    if (typeof value !== "string") return "";
+    try {
+      var url = new URL(value);
+      if (
+        url.protocol !== "https:" || url.username || url.password ||
+        url.pathname !== "/iphone-pwa/handoff" || url.search ||
+        !/^t=[A-Za-z0-9_-]{32,200}&lang=(uz|ru|tj)$/.test(url.hash.slice(1))
+      ) {
+        return "";
+      }
+      return url.toString();
+    } catch (error) {
+      return "";
+    }
+  }
+
+  function iphoneHandoffReady() {
+    return Boolean(
+      state.iphoneHandoff.url && Date.now() < state.iphoneHandoff.expiresAt
+    );
+  }
+
+  function openInSafari(url) {
+    var app = telegramWebApp();
+    try {
+      if (app && typeof app.openLink === "function") {
+        // Add to Home Screen needs Safari itself, not an in-app browser.
+        app.openLink(url, { try_browser: "safari" });
+        return true;
+      }
+    } catch (error) {}
+    return openTrackedLink(url);
+  }
+
+  function syncProfileIphoneButton(errorCode) {
+    var button = document.getElementById("hp-app-apk");
+    if (!button) return;
+    button.disabled = false;
+    button.textContent = platformButtonLabel("ios");
+    showProfileAppsError(errorCode ? errorText(errorCode) : "");
+  }
+
+  function openIphonePwa(source) {
+    // A link issued moments ago is reopened inside this same tap, so a
+    // browser that ignored the first open still gets a user gesture.
+    if (iphoneHandoffReady()) {
+      openInSafari(state.iphoneHandoff.url);
+      return;
+    }
+    if (state.pendingPlatform) return;
+    if (!telegramInitData()) {
+      state.errorCode = "invalid_telegram_init_data";
+      syncControls();
+      return;
+    }
+    state.pendingPlatform = "ios";
+    state.errorCode = "";
+    syncControls();
+    var profileButton = document.getElementById("hp-app-apk");
+    if (profileButton) {
+      profileButton.disabled = true;
+      profileButton.textContent = miniappText("iphone.preparing");
+    }
+    fetch(PWA_HANDOFF_ENDPOINT, {
+      method: "POST",
+      cache: "no-store",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Telegram-Init-Data": telegramInitData()
+      },
+      body: JSON.stringify({ language: language(), source: source })
+    })
+      .then(function (response) {
+        return response.json().catch(function () {
+          return null;
+        }).then(function (data) {
+          var url = data && data.ok === true ? cleanHandoffUrl(data.url) : "";
+          if (!url) {
+            var error = new Error("pwa_handoff_failed");
+            error.code = response.status === 429
+              ? "pwa_handoff_rate_limited"
+              : "pwa_handoff_failed";
+            throw error;
+          }
+          var seconds = Math.max(0, Math.min(120, Number(data.expires_in) || 0) - 10);
+          state.iphoneHandoff.url = url;
+          state.iphoneHandoff.expiresAt = Date.now() + seconds * 1000;
+          storeNumber("download_requested", Date.now());
+          state.pendingPlatform = "";
+          syncControls();
+          syncProfileIphoneButton("");
+          openInSafari(url);
+        });
+      })
+      .catch(function (error) {
+        state.pendingPlatform = "";
+        state.iphoneHandoff.url = "";
+        state.errorCode = (error && error.code) || "pwa_handoff_failed";
+        syncControls();
+        syncProfileIphoneButton(state.errorCode);
       });
   }
 
@@ -1853,9 +2014,18 @@
     });
   }
 
+  /* 0 from the server means no rest between offers; only a missing or
+     invalid value falls back to the default. */
+  function cooldownDays(value) {
+    var days = Number(value);
+    if (value === null || value === undefined || value === "" || !isFinite(days)) {
+      days = DEFAULT_PROMO_COOLDOWN_DAYS;
+    }
+    return Math.max(0, Math.min(90, days));
+  }
+
   function promoCooldownMs() {
-    var days = Number(state.promoCooldownDays) || DEFAULT_PROMO_COOLDOWN_DAYS;
-    return Math.max(1, Math.min(90, days)) * 24 * 60 * 60 * 1000;
+    return cooldownDays(state.promoCooldownDays) * 24 * 60 * 60 * 1000;
   }
 
   /* Sovish muddati HAR JOY UCHUN ALOHIDA sanaladi.
@@ -2054,7 +2224,7 @@
       return false;
     }
     var copy = text();
-    var contextualCopy = androidPromoCopy(source, meta);
+    var contextualCopy = promoCopyFor(source, meta);
     if (state.promoTimer) window.clearTimeout(state.promoTimer);
     if (state.queuedPromoTimer) window.clearTimeout(state.queuedPromoTimer);
     state.promoTimer = 0;
@@ -2094,14 +2264,10 @@
     shell.appendChild(close);
     shell.appendChild(buildPromoVisual());
 
+    /* Owner review 2026-11-10: picture, title, one short line and one
+       action. No eyebrow, benefit chips or second "later" button; the
+       close button and the backdrop still dismiss it. */
     var body = element("div", "pdd-promo-body");
-    body.appendChild(
-      element(
-        "span",
-        "pdd-eyebrow",
-        contextualCopy ? contextualCopy.eyebrow : copy.eyebrow
-      )
-    );
     var title = element(
       "h2",
       "",
@@ -2112,17 +2278,19 @@
     body.appendChild(
       element("p", "", contextualCopy ? contextualCopy.body : copy.promoBody)
     );
-    body.appendChild(buildPromoBenefits(source, meta, true));
     body.appendChild(buildActions(source));
     body.appendChild(buildInlineStatus());
-    var later = element("button", "pdd-promo-dismiss", copy.dismiss);
-    later.type = "button";
-    later.addEventListener("click", dismissPromo);
-    body.appendChild(later);
     shell.appendChild(body);
     promoRoot.appendChild(shell);
     syncControls();
-    close.focus();
+    // Focus moves into the dialog itself, not onto the close button, so a
+    // touch screen does not show a stuck focus ring around the X.
+    shell.tabIndex = -1;
+    try {
+      shell.focus({ preventScroll: true });
+    } catch (error) {
+      shell.focus();
+    }
     return true;
   }
 
@@ -2163,7 +2331,7 @@
 
   function buildAdDownloadBlock(meta) {
     var copy = text();
-    var contextualCopy = androidPromoCopy("ad_promo", meta);
+    var contextualCopy = promoCopyFor("ad_promo", meta);
     var block = element("section", "pdd-ad-download");
     block.dataset.pddAdDownload = "true";
 
@@ -2286,7 +2454,12 @@
             state.platforms.android = Boolean(
               data.platforms && data.platforms.android
             );
-            state.platforms.ios = false;
+            state.platforms.ios = Boolean(
+              data.platforms && data.platforms.ios
+            );
+            state.androidPlayUrl = cleanPlayUrl(
+              data.downloads && data.downloads.android_play
+            );
             state.transferUrls.macos = cleanTransferUrl(
               data.downloads && data.downloads.macos,
               "macos"
@@ -2309,13 +2482,7 @@
               APP_PROMO_PLATFORMS.indexOf(promo.target_platform) >= 0
                 ? promo.target_platform
                 : "";
-            state.promoCooldownDays = Math.max(
-              1,
-              Math.min(
-                90,
-                Number(promo.cooldown_days) || DEFAULT_PROMO_COOLDOWN_DAYS
-              )
-            );
+            state.promoCooldownDays = cooldownDays(promo.cooldown_days);
             state.homePromptDailyLimit = Math.max(
               1,
               Math.min(
@@ -2330,7 +2497,6 @@
             APP_PROMO_PLATFORMS.forEach(function (platform) {
               state.platformTargets[platform] = targets[platform] !== false;
             });
-            state.platformTargets.ios = false;
             state.promoMedia.url = safePromoMediaUrl(promo.media_url);
             state.promoMedia.type = state.promoMedia.url
               ? promoMediaType(promo.media_type)
@@ -2347,13 +2513,14 @@
         state.enabled = false;
         state.platforms.macos = false;
         state.platforms.windows = false;
+        state.platforms.ios = false;
+        state.androidPlayUrl = "";
         state.transferUrls.macos = "";
         state.transferUrls.windows = "";
         state.homePromptDailyLimit = DEFAULT_HOME_PROMPT_DAILY_LIMIT;
         APP_PROMO_PLATFORMS.forEach(function (platform) {
           state.platformTargets[platform] = true;
         });
-        state.platformTargets.ios = false;
         state.promoMedia.url = "";
         state.promoMedia.type = "";
         state.promoEligible = false;

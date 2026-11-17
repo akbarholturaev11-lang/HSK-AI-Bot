@@ -44,7 +44,11 @@ def test_liquid_glass_navigation_is_inline_and_keeps_existing_routes():
 
 def test_practice_tab_renders_without_waiting_for_background_preloads():
     course = (STATIC / "course-v3.html").read_text(encoding="utf-8")
-    assert 'if(!$("#s-mashq").firstElementChild)renderMashq()' in course
+    # The canonical HTML contains a neutral PWA skeleton before map load.
+    # On the first Practice visit, that placeholder must be replaced by real
+    # cards; Telegram (without a PWA shell) retains its eager tab behavior.
+    assert 'if(!$("#s-mashq").firstElementChild||$("#s-mashq").querySelector(".pwa-initial-shell"))renderMashq()' in course
+    assert 'if(!PWA_COURSE_HOST||SCREEN==="mashq"||' in course
     assert 'requestIdleCallback(warmInIdle,{timeout:1800})' in course
     assert 'prefetchPracticeAssets();' in course
     assert 'if(window.RESOURCE)RESOURCE.warm();' in course

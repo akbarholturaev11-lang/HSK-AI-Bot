@@ -60,6 +60,73 @@ def create_miniapp_ads_router(
             return None
         return extract_verified_webapp_user_id(init_data, settings_obj.BOT_TOKEN)
 
+    @router.get("/api/v3/pwa/ad")
+    @router.post("/api/v3/pwa/ad/view")
+    async def pwa_ad(request: Request):
+        from app.services.pwa_auth_service import (
+            PWA_SESSION_COOKIE, PwaAuthError, PwaAuthService, require_same_origin,
+        )
+
+        headers = {"Cache-Control": "no-store"}
+        try:
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            writing = request.method == "POST"
+            if writing:
+                require_same_origin(request, settings_obj)
+                if request.query_params or len(await request.body()) > 2048:
+                    raise PwaAuthError("pwa_request_invalid", status_code=422)
+                payload = await _body(request)
+                if set(payload) - {"ad_id", "placement", "watched_seconds", "level", "lesson_order", "lang"}:
+                    raise PwaAuthError("pwa_request_invalid", status_code=422)
+            else:
+                if set(request.query_params) - {"placement", "lesson", "lang"}:
+                    raise PwaAuthError("pwa_request_invalid", status_code=422)
+                payload = dict(request.query_params)
+            placement = payload.get("placement")
+            if not isinstance(placement, str) or placement not in {"screen_center", "lesson_end"}:
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            try:
+                lesson = int(payload.get("lesson_order") or payload.get("lesson") or 0)
+                watched = int(payload.get("watched_seconds") or 0)
+                ad_id = int(payload.get("ad_id") or 0)
+                if not 0 <= lesson <= 500 or not 0 <= watched <= 3600:
+                    raise ValueError
+            except (TypeError, ValueError):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            async with session_factory() as session:
+                auth = PwaAuthService(session, settings_obj)
+                if writing:
+                    user, _ = await auth.mutation_actor(
+                        request.cookies.get(PWA_SESSION_COOKIE), request.headers.get("X-HSK-PWA-CSRF"),
+                    )
+                    user = await UserRepository(session).get_by_user_id(user.id, lock=True)
+                else:
+                    user, _ = await auth.actor(request.cookies.get(PWA_SESSION_COOKIE))
+                if user is None or user.status == "blocked":
+                    raise PwaAuthError("pwa_session_required")
+                service = AdPlacementService(session)
+                # PWA is the browser delivery of the same Mini App placements;
+                # existing Admin client toggles remain authoritative.
+                ad = await service.next_ad(
+                    user, placement=placement, client=CLIENT, lesson_order=lesson,
+                    language=payload.get("lang") if isinstance(payload.get("lang"), str) and payload["lang"] in {"uz", "ru", "tj"} else user.language,
+                )
+                if writing:
+                    if not ad or ad["id"] != ad_id:
+                        raise PwaAuthError("ad_not_available", status_code=409)
+                    result = await service.record_view(
+                        user, placement=placement, ad_id=ad_id, watched_seconds=watched,
+                        level=str(payload.get("level") or "hsk1")[:16], lesson_order=lesson,
+                    )
+                    await session.commit()
+                else:
+                    result = {"ok": True, "ad": ad, "placement": placement}
+                headers["X-HSK-PWA-User-ID"] = str(user.id)
+                return JSONResponse(result, headers=headers)
+        except PwaAuthError as exc:
+            return JSONResponse({"ok": False, "error": exc.code}, status_code=exc.status_code, headers=headers)
+
     @router.get("/api/v3/ad")
     async def v3_ad(request: Request):
         """Shu joy uchun reklama, yoki bo'sh javob.

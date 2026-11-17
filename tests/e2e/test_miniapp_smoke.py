@@ -1026,6 +1026,7 @@ def test_course_v3_asks_daily_time_and_focus_after_the_first_lesson(page):
                     "ok": True,
                     "profile": {
                         "goal": "hsk_exam",
+                        "goal_chosen": True,
                         "daily_minutes": 20,
                         "preferred_focus": saved[-1].get("preferred_focus"),
                         "daily_goal_xp": 40,
@@ -1050,7 +1051,11 @@ def test_course_v3_asks_daily_time_and_focus_after_the_first_lesson(page):
         "onboarding_completed": True,
     }
     data["notify"] = {"enabled": True}
+    # This scenario starts after an actual goal choice; the server now
+    # distinguishes an explicit choice from its default HSK-exam prior.
     data["study_setup"] = {
+        "goal": "hsk_exam",
+        "goal_chosen": True,
         "daily_minutes": 10,
         "preferred_focus": None,
         "daily_goal_xp": 30,
@@ -1167,19 +1172,24 @@ def test_course_v3_starter_repair_mic_denied_and_completion(page):
     page.route(re.compile(r".*/api/v3/map(\?.*)?$"), lambda route: json_response(route, data))
 
     def capture_event(route):
+        events.append(route.request.post_data_json)
+        json_response(route, {"ok": True})
+
+    def capture_completion(route):
         payload = route.request.post_data_json
-        events.append(payload)
-        completion_attempts = sum(
-            1 for item in events if item.get("event") == "foundation_completed"
-        )
-        # The first completion write fails: the result screen must remain and
-        # let the next CTA press retry instead of trusting local state.
-        if payload.get("event") == "foundation_completed" and completion_attempts == 1:
-            json_response(route, {"ok": False, "error": "course_event_write_failed"})
+        events.append({**payload, "event": "foundation_completed"})
+        completions = [item for item in events if item.get("event") == "foundation_completed"]
+        if len(completions) == 1:
+            json_response(route, {"ok": False, "error": "foundation_save_failed"})
         else:
-            json_response(route, {"ok": True})
+            assert completions[0]["event_id"] == payload["event_id"]
+            json_response(route, {"ok": True, "duplicate": True, "foundation": {
+                "id": "starter0_hsk1", "version": 1, "required": True,
+                "completed": True, "status": "completed",
+            }})
 
     page.route("**/api/miniapp/event", capture_event)
+    page.route("**/api/v3/lesson/foundation/complete", capture_completion)
     page.add_init_script(
         """
         localStorage.clear();
@@ -1304,6 +1314,82 @@ def test_course_v3_starter_mic_skip_stops_recording_and_late_upload(page):
     assert voice_requests == []
 
 
+
+def test_course_v3_starter_mic_success_advances_to_result(page):
+    """A 100% spoken score must show a real next CTA, not trap the learner."""
+    runtime_errors = []
+    voice_requests = []
+    page.on("pageerror", lambda error: runtime_errors.append(str(error)))
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+    mock_learning_audio(page)
+    page.route(
+        "**/api/voice-practice/pronounce",
+        lambda route: voice_requests.append(route.request.url)
+        or json_response(route, {"ok": True, "score": 100}),
+    )
+    page.route("**/api/miniapp/event", lambda route: json_response(route, {"ok": True}))
+    page.add_init_script(
+        """
+        localStorage.clear();localStorage.setItem('hsk_v3_onb','1');
+        class FakeRecorder {
+          constructor(stream, options) {
+            this.state='inactive';this.mimeType='audio/webm';window.__starterRecorder=this;
+          }
+          static isTypeSupported(){return true}
+          start(){this.state='recording'}
+          stop(){
+            if(this.state==='inactive')return;
+            this.state='inactive';
+            if(this.ondataavailable)this.ondataavailable({
+              data:new Blob([new Uint8Array(800)],{type:'audio/webm'})
+            });
+            if(this.onstop)setTimeout(()=>this.onstop(),0);
+          }
+        }
+        window.MediaRecorder=FakeRecorder;
+        Object.defineProperty(navigator,'mediaDevices',{
+          configurable:true,
+          value:{getUserMedia:()=>Promise.resolve({
+            getTracks:()=>[{stop:()=>{}}]
+          })}
+        });
+        """
+    )
+    page.goto(
+        app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1&foundation=1"),
+        wait_until="networkidle",
+    )
+    page.wait_for_function("Foundation.active && Foundation.queue.length > 0")
+    # One badge only, at the top next to the step count, never twice.
+    expect(page.locator("#f-stage .foundation-step")).to_have_text(re.compile("0 dan asoslar"))
+    expect(page.locator("#f-body .foundation-step")).to_have_count(0)
+    page.evaluate(
+        """() => {
+          Foundation.i=Foundation.queue.findIndex(card=>card.type==='speak');
+          if(Foundation.i<0)throw new Error('starter_speak_missing');
+          Foundation.render();
+        }"""
+    )
+    expect(page.locator("#foundation-mic")).to_be_visible()
+    expect(page.locator("#f-cta")).to_be_hidden()
+    page.locator("#foundation-mic").click()
+    page.wait_for_function("window.__starterRecorder && window.__starterRecorder.state==='recording'")
+    page.evaluate("window.__starterRecorder.stop()")
+    expect(page.locator("#foundation-mic-hint")).to_contain_text("100%")
+    expect(page.locator("#f-cta")).to_be_visible()
+    expect(page.locator("#f-cta")).to_contain_text("Davom etish")
+    assert page.evaluate("Foundation.answered && Foundation.speakingBonus") is True
+    assert page.locator("#foundation-mic").is_disabled()
+    expect(page.locator("#f-body .pron-skip")).to_be_hidden()
+    assert len(voice_requests) == 1
+    page.locator("#f-cta").click()
+    assert page.evaluate("Foundation.queue[Foundation.i].type") == "result"
+    assert len(voice_requests) == 1
+    assert runtime_errors == []
+
+
 def test_course_v3_checkpoint_exit_ticket_mastery_and_paywall_boundary(page):
     mock_price_preview(page)
     mock_telegram_ready(page)
@@ -1413,8 +1499,9 @@ def test_course_v3_checkpoint_exit_ticket_mastery_and_paywall_boundary(page):
     expect(page.locator(".caa-ls-pay")).to_contain_text("HSK AI Pro")
 
 
-def test_course_v3_sales_treatment_bridge_preview_and_cutoff_paywall(page):
+def test_course_v3_sales_bridge_preserves_server_denied_next_lesson(page):
     events = []
+    lesson_starts = []
     mock_price_preview(page)
     mock_telegram_ready(page)
     mock_learning_audio(page)
@@ -1426,6 +1513,12 @@ def test_course_v3_sales_treatment_bridge_preview_and_cutoff_paywall(page):
             "trigger": "hsk1_first_checkpoint",
         },
     )
+
+    def capture_start(route):
+        lesson_starts.append(route.request.post_data_json)
+        json_response(route, {"ok": True, "allowed": True})
+
+    page.route("**/api/v3/lesson/start", capture_start)
 
     def capture_event(route):
         events.append(route.request.post_data_json)
@@ -1490,35 +1583,25 @@ def test_course_v3_sales_treatment_bridge_preview_and_cutoff_paywall(page):
     assert page.evaluate("window._pendingLessonEndAd") == 0
     assert page.evaluate("window._pendingDesktopLessonPromo") == 0
 
+    # The existing backend strips preview_half and denies the next part
+    # after the free allowance. A marketing bridge must not grant access.
     bridge.locator(".sales-secondary").click()
-    expect(page.locator("#sheet")).to_have_class(re.compile(r"\bon\b"))
-    expect(page.locator("#sheet")).to_contain_text("2-dars · 1-qism")
-    page.locator("#sheet .scta").click()
-    expect(page.locator("#flow")).to_have_class(re.compile(r"\bon\b"))
-    page.wait_for_function("Flow.previewHalf === true && Flow.previewHalfAt > 0")
-    page.evaluate("Flow.i = Flow.previewHalfAt - 1; Flow.next()")
-
-    paywall = page.locator("#paywall")
+    paywall = page.locator(".caa-ov.limit")
     expect(paywall).to_have_class(re.compile(r"\bon\b"))
-    expect(paywall).to_contain_text(
-        "Bepul namuna yakunlandi. HSK yo'lingizni davom ettirish uchun to'liq kursni oching."
-    )
-    expect(paywall).to_contain_text("HSK maqsadingizgacha aniq yo'l")
-    expect(paywall).to_contain_text("谢谢你！")
-    expect(paywall.locator(".spromo")).to_have_count(0)
-    expect(paywall.locator(".sales-offer .scta")).to_contain_text(
-        "HSK yo'lini to'liq ochish"
-    )
-    page.locator("#paywall .sx").click()
+    expect(paywall).to_contain_text("Bugungi bepul darslaring tugadi")
+    expect(paywall.locator(".caa-ls-pay")).to_contain_text("HSK AI Pro")
+    expect(page.locator("#flow")).not_to_have_class(re.compile(r"\bon\b"))
+    assert not any(entry.get("lesson_id") == 4 for entry in lesson_starts)
+    page.locator(".caa-ls-close").click()
     page.wait_for_timeout(100)
 
     sales_events = [event for event in events if event["event"].startswith("sales_")]
     assert {event["event"] for event in sales_events} >= {
         "sales_bridge_seen",
         "sales_bridge_cta",
-        "sales_offer_seen",
-        "sales_offer_dismissed",
     }
+    assert any(event.get("event") == "paywall_seen" and event.get("source") == "v3_locked_lesson"
+               for event in events)
     cta = next(event for event in sales_events if event["event"] == "sales_bridge_cta")
     assert cta["action"] == "free_preview"
     assert all("arm" not in event for event in sales_events)
@@ -1815,6 +1898,12 @@ def test_course_v3_d1_recovery_resumes_saved_lesson_card_once(page):
     page.route(
         "**/api/miniapp/event",
         lambda route: json_response(route, {"ok": True}),
+    )
+    # UIUX-007: an ordinary lesson asks for its personal review plan; with the
+    # server flag off the answer is `enabled: false` and the resume is unchanged.
+    page.route(
+        "**/api/v3/adaptive/plan",
+        lambda route: json_response(route, {"ok": True, "enabled": False, "plan": None}),
     )
     page.add_init_script(
         """
@@ -5308,9 +5397,9 @@ def test_lesson_end_promo_still_gets_its_turn_after_the_home_prompt(page):
     page.locator('#nav button[data-s="course"]').click()
 
     def dismiss_open_promo():
-        later = page.locator(".pdd-promo-dismiss")
-        if later.count() and later.is_visible():
-            later.click()
+        close = page.locator(".pdd-promo-shell .pdd-promo-close")
+        if close.count() and close.is_visible():
+            close.click()
         expect(page.locator(".pdd-promo-shell")).to_have_count(0)
 
     # 1. Ochilgandagi promo o'rinni egallaydi. U boot paytida o'zi chiqib
@@ -5966,7 +6055,71 @@ def test_desktop_course_modal_covers_full_viewport_and_mobile_keeps_bottom_sheet
       return {width:b.width,height:b.height,cardBottom:c.bottom,align:getComputedStyle(document.querySelector('#sheet')).alignItems};
     }""")
     assert abs(mobile["width"] - 390) <= 1
-    assert mobile["align"] == "flex-end"
+    # The CSS says `flex-end`; Chromium from Playwright 1.65 reports the
+    # computed value as `flow-end`. Same layout: the card bottom check below
+    # is what proves the sheet stays anchored.
+    assert mobile["align"] in ("flex-end", "flow-end")
     assert abs(mobile["cardBottom"] - 844) <= 2
     page.evaluate("App.closeSheet()")
     expect(sheet).not_to_have_class(re.compile(r"\bon\b"))
+
+
+def test_rating_pending_request_survives_render_all_without_duplicate_or_empty_rank(page):
+    """A language re-render during a slow leaderboard cannot show an empty rank.
+
+    The first request remains pending; another render must neither issue a
+    second read nor replace the loading boundary with fake empty results.
+    """
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+    pending = []
+
+    def hold_rating(route):
+        pending.append(route)
+
+    page.route("**/api/miniapp/gamification?*", hold_rating)
+    page.add_init_script(
+        "localStorage.setItem('hsk_v3_onb','1'); localStorage.setItem('hsk_v3_level','hsk1');"
+    )
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+    page.locator('#nav button[data-s="rating"]').click()
+    expect(page.locator("#s-rating")).to_contain_text("…")
+    page.wait_for_function("() => typeof ratingMeta !== 'undefined' && ratingMeta.loading === true")
+    assert len(pending) == 1
+
+    page.evaluate("App.setLang('ru')")
+    expect(page.locator("#s-rating")).to_contain_text("…")
+    assert len(pending) == 1, "re-render must deduplicate a pending rating API call"
+
+    json_response(pending.pop(), {
+        "ok": True, "league": "Bronze", "league_size": 1,
+        "weekly_reset_seconds": 3600, "weekly_xp": 35,
+        "xp": 60, "streak": 1,
+        "leaderboard": [{"rank": 1, "name": "Pending learner",
+                         "weekly_xp": 35, "xp": 60, "level": "hsk1", "me": True}],
+    })
+    expect(page.locator("#s-rating")).to_contain_text("Pending learner")
+    assert page.evaluate("ratingMeta.loading") is None or page.evaluate("ratingMeta.loading") is False
+
+
+def test_friends_pending_request_keeps_its_own_loading_boundary(page):
+    """A slow referrals API cannot hide its own skeleton on a second render."""
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+    pending = []
+    page.route("**/api/v3/invite?*", lambda route: pending.append(route))
+    page.add_init_script("localStorage.setItem('hsk_v3_onb','1')")
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+    page.evaluate("App.show('rating','friends')")
+    page.wait_for_function("() => typeof referralMeta !== 'undefined' && referralMeta.loading === true")
+    expect(page.locator("#s-rating")).to_contain_text("…")
+    assert len(pending) == 1
+    page.evaluate("App.setLang('ru')")
+    expect(page.locator("#s-rating")).to_contain_text("…")
+    assert len(pending) == 1
+    json_response(pending.pop(), {"ok": True, "joined_count": 0, "active_count": 0,
+                                   "required": 2, "referrals": []})
+    page.wait_for_function("() => typeof referralMeta !== 'undefined' && !referralMeta.loading")
+    expect(page.locator("#s-rating")).not_to_contain_text("…")

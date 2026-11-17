@@ -28,6 +28,17 @@ CONVERSION_FUNNEL_EVENT_NAMES = (
     "paywall_cta_clicked",
     "ad_shown",
     "ad_skipped",
+    "pwa_pro_opened",
+    "pwa_pro_plan_selected",
+    "pwa_pro_more_opened",
+    "pwa_pro_method_selected",
+    "pwa_pro_exit_offered",
+    "pwa_pro_exit_claimed",
+    "pwa_pro_exit_declined",
+    "pwa_pro_dismissed",
+    "pwa_pro_checkout_started",
+    "pwa_pro_checkout_failed",
+    "pwa_pro_checkout_paid",
 )
 
 
@@ -55,7 +66,18 @@ class ConversionFunnelEvent(Base):
             "'limit_hit', "
             "'paywall_cta_clicked', "
             "'ad_shown', "
-            "'ad_skipped'"
+            "'ad_skipped', "
+            "'pwa_pro_opened', "
+            "'pwa_pro_plan_selected', "
+            "'pwa_pro_more_opened', "
+            "'pwa_pro_method_selected', "
+            "'pwa_pro_exit_offered', "
+            "'pwa_pro_exit_claimed', "
+            "'pwa_pro_exit_declined', "
+            "'pwa_pro_dismissed', "
+            "'pwa_pro_checkout_started', "
+            "'pwa_pro_checkout_failed', "
+            "'pwa_pro_checkout_paid'"
             ")",
             name="ck_conversion_funnel_events_event_name",
         ),

@@ -68,9 +68,10 @@ class SectionTests(unittest.TestCase):
     def test_every_platform_is_named_with_its_version_and_link(self):
         html = downloads_section(_status(), origin=ORIGIN, language="uz")
 
-        for label in ("macOS", "Windows", "Android"):
+        for label in ("iOS (PWA)", "macOS", "Windows", "Android"):
             self.assertIn(label, html)
         self.assertIn("/downloads/android", html)
+        self.assertIn('href="/iphone-pwa"', html)
         self.assertIn("1.1.1 (3)", html)
         self.assertIn("3.7 MB", html)
 
@@ -105,9 +106,15 @@ class StructuredDataTests(unittest.TestCase):
     def test_each_published_platform_is_described(self):
         graph = self._graph(_status())
 
-        self.assertEqual(len(graph), 3)
+        self.assertEqual(len(graph), 4)
         systems = sorted(node["operatingSystem"] for node in graph)
-        self.assertEqual(systems, ["Android", "Windows", "macOS"])
+        self.assertEqual(systems, ["Android", "Windows", "iOS", "macOS"])
+
+    def test_ios_pwa_is_web_app_not_fake_native_download(self):
+        ios = next(node for node in self._graph(_status()) if node["operatingSystem"] == "iOS")
+        self.assertEqual(ios["@type"], "WebApplication")
+        self.assertEqual(ios["installUrl"], ORIGIN + "/iphone-pwa")
+        self.assertNotIn("downloadUrl", ios)
 
     def test_the_android_entry_carries_what_an_assistant_would_quote(self):
         android = next(n for n in self._graph(_status()) if n["operatingSystem"] == "Android")
@@ -125,16 +132,18 @@ class StructuredDataTests(unittest.TestCase):
                              "file": None, "size": None})
         )
 
-        self.assertEqual(len(graph), 2)
+        self.assertEqual(len(graph), 3)
         self.assertNotIn("Android", [node["operatingSystem"] for node in graph])
 
-    def test_nothing_published_means_no_block_at_all(self):
+    def test_no_native_release_still_advertises_the_available_pwa(self):
         empty = {
             name: {"available": False, "version": None, "download": None,
                    "file": None, "size": None}
             for name in ("macos", "windows", "android")
         }
-        self.assertEqual(structured_data({"platforms": empty}, origin=ORIGIN, page_url="/download"), "")
+        graph = self._graph({"platforms": empty})
+        self.assertEqual(len(graph), 1)
+        self.assertEqual(graph[0]["operatingSystem"], "iOS")
 
     def test_a_closing_script_tag_cannot_escape_the_block(self):
         graph = structured_data(

@@ -173,7 +173,7 @@ def contract(sources: dict[str, str]) -> dict:
                 r'COURSE_V3_PUBLIC_MAP_FILES = frozenset\([\s\S]{0,200}nhsk3\.json',
             ) and _has(
                 backend_main,
-                r'async def course_v3_data_file\([\s\S]{0,1800}filename not in COURSE_V3_PUBLIC_MAP_FILES',
+                r'async def course_v3_data_file\([\s\S]{0,2300}filename not in COURSE_V3_PUBLIC_MAP_FILES',
             ),
         },
         "android": {

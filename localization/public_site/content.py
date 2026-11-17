@@ -3,8 +3,20 @@
 DOWNLOAD_PATH = "/download"
 
 # Legal notices are kept outside PAGES so they are not treated as marketing pages.
+AUTOMATIC_DIAGNOSTICS_DISCLOSURE = (
+    "When enabled, Android and our browser apps automatically send technical error reports "
+    "to help us fix failures. These reports contain codes, app version and timing, and "
+    "are linked to your signed-in account. For an error in our browser apps they can also name "
+    "the error type and the place in our own app code where it happened. "
+    "They do not include your messages, lesson answers, "
+    "audio, screenshots or payment details. After 30 days, account-linked reports no longer count "
+    "toward affected-account totals. Scheduled cleanup then deletes the reports. Service interruptions "
+    "or a backlog can delay deletion. Deleting your account also removes its reports. We do not share them "
+    "with advertisers or other third parties for their own use; our hosting providers process them to operate HSK AI."
+)
+
 GOOGLE_SIGNIN_PRIVACY_PAGES = {
-    "/privacy/google-sign-in/": {
+    "/privacy/google-sign-in/uz/": {
         "lang": "uz",
         "title": "Google bilan kirish maxfiyligi — HSK AI",
         "description": "HSK AI Google bilan kirishida qaysi ma’lumotlar ishlatilishi haqida maxfiylik eslatmasi.",
@@ -51,23 +63,28 @@ GOOGLE_SIGNIN_PRIVACY_PAGES = {
     },
 }
 
+# The unlocalized legal URL is Russian by default; Uzbek has its own locale URL.
+GOOGLE_SIGNIN_PRIVACY_PAGES["/privacy/google-sign-in/"] = dict(
+    GOOGLE_SIGNIN_PRIVACY_PAGES["/privacy/google-sign-in/ru/"]
+)
+
 PAGES = {
     "/": {
-        "lang": "tg", "title": "HSK AI — омӯзиши забони чинӣ ва HSK",
-        "description": "Забони чиниро бо курсҳои HSK 1–4, машқ ва шарҳи AI омӯзед. HSK AI дар Android, desktop ва Telegram Mini App тоҷикӣ, русӣ ва ӯзбекиро дастгирӣ мекунад.",
-        "h1": "Забони чиниро қадам ба қадам омӯзед",
-        "intro": "HSK AI курси пайдарпайи забони чинӣ, машқи луғат ва саволу ҷавоби AI-ро дар Android, desktop ва Telegram Mini App муттаҳид мекунад. Шарҳҳоро ба тоҷикӣ, русӣ ё ӯзбекӣ интихоб кунед.",
+        "lang": "ru", "title": "HSK AI — официальный сайт приложения для изучения китайского языка",
+        "description": "HSK AI — официальный сайт приложения: уроки китайского языка HSK 1–4, AI-репетитор, словарь, тесты и упражнения. Android, Windows, macOS, Telegram и PWA.",
+        "h1": "HSK AI — изучайте китайский язык с курсами и AI",
+        "intro": "HSK AI — приложение и учебная платформа для изучения китайского языка: уроки HSK 1–4, упражнения, словарь, тесты и ответы AI. Русский — язык сайта по умолчанию; доступны также таджикский и узбекский. Официальный адрес — hskai.app.",
         "sections": [
-            ("Курсҳои HSK 1–4", "Курси пайдарпайи HSK 1–4 луғат, грамматика, гуфтугӯ ва тестҳоро дар як роҳи омӯзиш мепайвандад. Пешравии дарсҳо дар ҳисоби HSK AI нигоҳ дошта мешавад."),
-            ("Шарҳро бо забони худ хонед", "Тоҷикӣ, русӣ ё ӯзбекиро интихоб кунед. Иероглиф, пинйин ва тарҷума ба шумо калимаро хондан, шунидан ва маънояшро санҷидан кӯмак мекунанд."),
-            ("Бо AI ва овоз машқ кунед", "Дар бораи калима ё ҷумла саволи мушаххас диҳед, намунаи талаффузро гӯш кунед ва ҷавобро бо маводи дарс муқоиса намоед."),
-            ("Барномаи мувофиқро интихоб кунед", "Барномаи Android, macOS ё Windows-ро аз саҳифаи зеркашӣ гиред. Дар барнома бо Google, Apple ё Telegram, агар пешниҳод шавад, ворид шавед. Telegram Mini App низ дастрас аст."),
+            ("Изучайте китайский с HSK AI", "Обучение организовано по уровням HSK 1–4: лексика, грамматика, диалоги и проверочные упражнения. Прогресс сохраняется в едином аккаунте HSK AI."),
+            ("Словарь, тесты и AI-помощник", "Повторяйте слова, тренируйте произношение, задавайте вопросы AI и проверяйте понимание китайских предложений. Ответы AI могут содержать ошибки."),
+            ("На телефоне, компьютере и в Telegram", "Используйте HSK AI на Android, macOS или Windows, через Telegram Mini App или веб-приложение PWA на iPhone. Доступность конкретных способов входа и оплаты зависит от версии."),
+            ("Официальный сайт HSK AI", "Именно hskai.app — официальный адрес приложения HSK AI. Это самостоятельный образовательный продукт, а не сайт экзаменационного центра HSK. Здесь доступны загрузки, руководство, поддержка, политика конфиденциальности и удаление аккаунта."),
         ],
     },
     "/tj/": {
-        "lang": "tg", "title": "Омӯзиши забони чинӣ ба тоҷикӣ — HSK AI",
+        "lang": "tg", "title": "HSK AI — омӯзиши забони чинӣ ба тоҷикӣ",
         "description": "HSK AI — платформаи омӯзиши чинӣ ба тоҷикӣ: HSK 1–4, луғат, тестҳо, AI ва барномаҳои Android, macOS, Windows ё Telegram Mini App.",
-        "h1": "Забони чиниро ба тоҷикӣ омӯзед",
+        "h1": "HSK AI — забони чиниро ба тоҷикӣ омӯзед",
         "intro": "HSK AI — платформаи омӯзиши забони чинӣ бо ёрии AI барои омӯзандагони тоҷикзабон. Дарсро хонед, маъноро ба тоҷикӣ фаҳмед ва баъд бо ҷумлаи худ машқ кунед. Русӣ ва ӯзбекӣ низ дастгирӣ мешаванд.",
         "sections": [
             ("Курсҳои HSK 1–4", "Курсҳо калима, грамматика ва гуфтугӯро бо машқ мепайванданд. Дар HSK 1 аз ибораҳои сода оғоз кунед; барои идомаи омӯзиш маводи HSK 2, HSK 3 ва HSK 4 мавҷуд аст. Пешрафти дарсҳо дар барнома нишон дода мешавад."),
@@ -77,9 +94,9 @@ PAGES = {
         ],
     },
     "/ru/": {
-        "lang": "ru", "title": "Китайский язык и курсы HSK — HSK AI",
+        "lang": "ru", "title": "HSK AI — китайский язык и курсы HSK",
         "description": "Изучайте китайский по курсам HSK 1–4 с AI и повторением слов. HSK AI поддерживает русский, таджикский и узбекский в Android, desktop и Telegram Mini App.",
-        "h1": "Учите китайский шаг за шагом",
+        "h1": "HSK AI — учите китайский шаг за шагом",
         "intro": "HSK AI объединяет последовательный курс китайского языка, практику лексики и ответы AI в Android, desktop и Telegram Mini App. Выберите объяснения на русском, таджикском или узбекском.",
         "sections": [
             ("Курсы HSK 1–4", "Последовательные уроки HSK 1–4 объединяют лексику, грамматику, диалоги и задания. Результаты обучения сохраняются в аккаунте HSK AI."),
@@ -89,9 +106,9 @@ PAGES = {
         ],
     },
     "/uz/": {
-        "lang": "uz", "title": "Xitoy tili va HSK kurslari — HSK AI",
-        "description": "Xitoy tilini HSK 1–4 kurslari bilan o‘rganing, AI yordamchida mashq qiling va so‘zlarni takrorlang. HSK AI o‘zbek, rus va tojik tillarini qo‘llaydi.",
-        "h1": "Xitoy tilini bosqichma-bosqich o‘rganing",
+        "lang": "uz", "title": "HSK AI — xitoy tili va HSK kurslari",
+        "description": "HSK AI — xitoy tilini HSK 1–4 kurslari bilan o‘rganish, AI yordamchida mashq qilish va so‘zlarni takrorlash ilovasi. O‘zbek, rus va tojik tillarida.",
+        "h1": "HSK AI — xitoy tilini bosqichma-bosqich o‘rganing",
         "intro": "HSK AI xitoy tili kursi, lug‘at mashqlari va AI savol-javobini Android, desktop va Telegram Mini App’da birlashtiradi. O‘zbekcha, ruscha yoki tojikcha izohlarni tanlang.",
         "sections": [
             ("HSK 1–4 kurslari", "Bosqichma-bosqich HSK 1–4 darslari lug‘at, grammatika, dialog va mashqlarni birlashtiradi. O‘quv natijalari HSK AI hisobida saqlanadi."),
@@ -248,7 +265,7 @@ PAGES.update({
         "Роҳнамои HSK AI",
         "Дар ин ҷо тарзи оғоз, истифодаи курс ва функсияҳо, инчунин қадамҳои обуна шарҳ дода мешаванд. Шартҳои дастрасӣ ва нархи ҷорӣ ҳамеша дар худи барнома нишон дода мешаванд.",
         [
-            ("Оғоз ва омӯзиш", "Барномаи HSK AI-ро гиред ё Telegram Mini App-ро кушоед, забонро интихоб кунед ва аз курси дастрас оғоз намоед. Дар Android ва desktop ҳисоби навро бо Google ё Apple бе Telegram сохтан мумкин аст."),
+            ("Оғоз ва омӯзиш", "Дар iPhone/iPad аз саҳифаи «Боргирӣ» HSK AI PWA-ро дар Safari кушоед: «Мубодила» → «Ба экрани асосӣ» → «Илова кардан». Барои Android ва desktop барномаи мувофиқро гиред; Telegram Mini App низ дастрас аст. Бо ҳисоби HSK AI-и пешина ворид шавед."),
             ("Курс ва функсияҳо", "Дарсҳо луғат, грамматика ва машқро мепайванданд. Тестҳоро анҷом диҳед, талаффузро машқ кунед ва ба хатоҳо баргардед."),
             ("Обуна ва пардохт", "Муддатро интихоб кунед, нархи дар экрани пардохт нишон додашударо бинед ва танҳо бо реквизитҳои ҳамон экран пардохт кунед. Расиди пардохт барои санҷиш фиристода мешавад."),
         ],
@@ -260,7 +277,7 @@ PAGES.update({
         "Руководство HSK AI",
         "Здесь собраны инструкции по началу обучения, курсу и функциям, а также по оформлению подписки. Актуальные условия доступа и цены всегда отображаются в приложении.",
         [
-            ("Начало обучения", "Скачайте HSK AI или откройте Telegram Mini App, выберите язык и начните с доступного курса. В Android и desktop новый аккаунт можно создать через Google или Apple без Telegram."),
+            ("Начало обучения", "На iPhone/iPad откройте HSK AI PWA со страницы «Скачать» в Safari, затем «Поделиться» → «На экран «Домой»» → «Добавить». Для Android и desktop скачайте соответствующее приложение; Telegram Mini App остаётся дополнительным способом. Для сохранения прогресса войдите в прежний аккаунт HSK AI."),
             ("Курс и функции", "Уроки объединяют лексику, грамматику и практику. Выполняйте тесты, тренируйте произношение и возвращайтесь к ошибкам."),
             ("Подписка и оплата", "Выберите срок, проверьте цену на экране оплаты и используйте только показанные там реквизиты. Для проверки потребуется отправить подтверждение платежа."),
         ],
@@ -272,7 +289,7 @@ PAGES.update({
         "HSK AI qo‘llanmasi",
         "Bu bo‘limda o‘qishni boshlash, kurs va funksiyalardan foydalanish hamda obuna olish tartibi tushuntiriladi. Joriy kirish shartlari va narx ilovaning o‘zida ko‘rsatiladi.",
         [
-            ("O‘qishni boshlash", "HSK AI ilovasini oling yoki Telegram Mini App’ni oching, tilni tanlang va o‘zingizga ochiq kursdan boshlang. Android va desktop’da Google yoki Apple orqali Telegramsiz yangi hisob yaratish mumkin."),
+            ("O‘qishni boshlash", "iPhone/iPad’da «Yuklab olish» sahifasidan HSK AI PWA’ni Safari’da oching: «Ulashish» → «Bosh ekranga qo‘shish» → «Qo‘shish». Android va desktop uchun mos ilovani yuklang; Telegram Mini App ham alohida variant. Progressni saqlash uchun avvalgi HSK AI hisobingizga kiring."),
             ("Kurs va funksiyalar", "Darslarda lug‘at, grammatika va mashqlar birlashadi. Testlarni bajaring, talaffuzni mashq qiling va xatolaringizga qayting."),
             ("Obuna va to‘lov", "Muddatni tanlang, to‘lov oynasidagi narxni tekshiring va faqat o‘sha yerda ko‘rsatilgan rekvizitlardan foydalaning. To‘lovni tekshirish uchun chek rasmi yuboriladi."),
         ],
@@ -324,13 +341,15 @@ PAGES.update({
         "Чӣ гуна обунаи HSK AI-ро харидан мумкин аст?",
         "Қадамҳои харидани обунаи HSK AI: интихоби муҳлат, дидани нархи ҷорӣ, пардохт, фиристодани расид ва тасдиқ.",
         "Обуна чӣ гуна гирифта мешавад?",
-        "Обуна дар барномаи аз сайт гирифташудаи Android, desktop ё бот расмӣ мешавад. Харид ба ҳисоби HSK AI вобаста аст; Google ё Apple ҳам мувофиқанд. Дар версияи Google Play харид нест. Нарх ва усули ҷориро дар экрани пардохт бинед.",
+        "Агар дар версияи Google Play лимит тамом шавад ё хариди Pro дастрас набошад, аввал обунаро дар браузер тавассути HSK AI PWA гиред: https://hskai.app/iphone-pwa. Ба ҳамон ҳисоби HSK AI ворид шавед ва бахши обунаро кушоед. Барномаи Android-ро ҳазф кардан ё APK-и дигар насб кардан лозим нест. Нарх ва роҳи пардохт дар PWA нишон дода мешаванд.",
         [
-            ("Обуна ва муҳлатро кушоед", "Ба ҳисоби лозимаи HSK AI ворид шавед ва бахши обунаро дар барномаи дорои харид кушоед. Муҳлатро интихоб кунед: 10 рӯз, 1 моҳ ё 3 моҳ. Telegram барои ҳисоби Google ё Apple лозим нест."),
+            ("Google Play: Pro-ро дар браузер (PWA) гиред", "Дар браузер https://hskai.app/iphone-pwa-ро кушоед, бо ҳамон ҳисоби HSK AI ворид шавед ва Обунаро интихоб кунед. Пас аз тасдиқи пардохт, Pro ба ҳамин ҳисоб вобаста мешавад ва дар версияи Google Play ҳам дастрас мегардад. Насб кардани APK шарт нест."),
+            ("Обуна ва муҳлатро кушоед", "Ба ҳисоби лозимаи HSK AI ворид шавед ва бахши обунаро дар PWA ё канали дигари дорои харид кушоед. Муҳлати дастрасро аз экрани обуна интихоб кунед. Telegram барои ҳисоби Google лозим нест."),
             ("Нарх ва роҳи пардохтро бинед", "Нарх мувофиқи танзимоти ҷорӣ ва кишвари пардохт нишон дода мешавад. Барои корт ё Alipay/WeChat танҳо маълумот ва QR-и дохили экрани пардохтро истифода баред; имконот аз минтақа вобастаанд."),
+            ("Ду роҳи обуна", "Агар дар экрани пардохт саволи «Бо корти Visa пардохт мекунед?» бошад, ду роҳ ҳаст. «Ҳа» — обунаи худкор бо корти Visa ё Mastercard (1, 3, 6 ё 12 моҳ): пардохт дар саҳифаи lava.top, пас аз тасдиқ Pro худаш фаъол мешавад, чек лозим нест. «Не, корти маҳаллӣ» — роҳи оддӣ: пардохт бо реквизит ё QR ва фиристодани чек."),
             ("Расиди пардохтро фиристед", "Пас аз пардохт акси расидро дар ҳамин раванд бор кунед. То ҳалли дархости интизорӣ пардохти нав нафиристед; система метавонад дар як вақт пардохти дигари интизориро қабул накунад."),
             ("Тасдиқро интизор шавед", "Расид аз тарафи админ дастӣ санҷида мешавад. Пас аз тасдиқ обуна барои ҳамин ҳисоби HSK AI фаъол мегардад; ҳолатро дар барнома бинед."),
-            ("Оё обуна худкор тамдид мешавад?", "Не. Барои гирифтани муҳлати нав, онро аз нав интихоб карда, пардохтро алоҳида анҷом диҳед."),
+            ("Оё обуна худкор тамдид мешавад?", "Дар пардохти оддӣ бо чек — не: муҳлати навро аз нав интихоб карда, алоҳида пардохт мекунед. Дар обунаи худкор бо корт — ҳа, пас аз анҷоми муҳлати интихобшуда пул худкор гирифта мешавад. Тамдиди худкорро дар бахши обуна ҳар вақт хомӯш кардан мумкин; мӯҳлати пардохтшудаи Pro боқӣ мемонад."),
             ("Тамдид ва кушодани HSK 3.0", "Агар обунаи пулакӣ ҳоло фаъол бошад, муҳлати нав ба охири муҳлати мавҷуда илова мешавад. Якбор кушодани HSK 3.0 маҳсулоти алоҳида аст ва бо обуна омехта намешавад."),
         ],
     ),
@@ -339,13 +358,15 @@ PAGES.update({
         "Как оформить подписку HSK AI?",
         "Пошаговая инструкция: выбрать срок подписки HSK AI, проверить актуальную цену, оплатить, отправить чек и дождаться подтверждения.",
         "Как оформить подписку?",
-        "Подписка оформляется в Android-приложении с сайта, desktop или боте. Покупка принадлежит аккаунту HSK AI; вход через Google или Apple также подходит. В версии Google Play покупок нет. Актуальная цена и способ оплаты показаны на экране платежа.",
+        "Если в версии HSK AI из Google Play закончился лимит или недоступна покупка Pro, оформляйте подписку прежде всего через браузерную PWA: https://hskai.app/iphone-pwa. Войдите в тот же аккаунт HSK AI и откройте раздел подписки. Удалять приложение Google Play или устанавливать APK не нужно. Цена и доступные способы оплаты показываются в PWA.",
         [
-            ("Откройте подписку и выберите срок", "Войдите в нужный аккаунт HSK AI и откройте подписку в версии с покупками. Выберите срок: 10 дней, 1 месяц или 3 месяца. Аккаунту Google или Apple Telegram не требуется."),
+            ("Google Play: оформите Pro в браузере (PWA)", "Откройте https://hskai.app/iphone-pwa в браузере, войдите в тот же аккаунт HSK AI и выберите «Подписка». После подтверждения платежа Pro закрепляется за аккаунтом и доступен в приложении Google Play. Переустанавливать Android-приложение не требуется."),
+            ("Откройте подписку и выберите срок", "Войдите в нужный аккаунт HSK AI и откройте подписку в PWA или другом канале с покупками. Выберите доступный срок на экране оплаты. Для входа через Google Telegram не требуется."),
             ("Проверьте цену и способ оплаты", "Цена рассчитывается по текущим настройкам и стране оплаты. Для карты или Alipay/WeChat используйте только реквизиты и QR-код, показанные на экране оплаты; доступность зависит от региона."),
+            ("Два способа оформить подписку", "Если на экране оплаты есть вопрос «Будете оплачивать картой Visa?», способов два. «Да» — автоподписка картой Visa или Mastercard (1, 3, 6 или 12 месяцев): оплата на странице lava.top, после подтверждения Pro включается сам, чек не нужен. «Нет, местная карта» — обычный способ: оплата по реквизитам или QR и отправка чека."),
             ("Отправьте подтверждение платежа", "После оплаты загрузите фотографию чека в том же процессе. Не отправляйте новый платёж, пока предыдущий запрос ожидает проверки: система может не принять второй ожидающий платёж."),
             ("Дождитесь проверки", "Администратор проверит чек вручную. После подтверждения подписка активируется для того же аккаунта HSK AI; статус показан в приложении."),
-            ("Подписка продлевается автоматически?", "Нет. Чтобы получить новый срок, выберите его и оплатите отдельно."),
+            ("Подписка продлевается автоматически?", "При обычной оплате с чеком — нет: новый срок выбирается и оплачивается отдельно. При автоподписке картой — да, по окончании выбранного срока списание происходит автоматически. Автопродление можно отключить в разделе подписки в любой момент; оплаченный срок Pro сохраняется."),
             ("Продление и HSK 3.0", "Если платная подписка ещё действует, новый срок добавляется к её текущей дате окончания. Разовая разблокировка HSK 3.0 оформляется отдельно и не является подпиской."),
         ],
     ),
@@ -354,13 +375,15 @@ PAGES.update({
         "HSK AI obunasini qanday olish mumkin?",
         "HSK AI obunasini olish bo‘yicha qadamlar: muddat va joriy narxni ko‘rish, to‘lov, chekni yuborish va tasdiqni kutish.",
         "Obuna qanday olinadi?",
-        "Obuna saytdan olingan Android ilovasida, desktop’da yoki botda rasmiylashtiriladi. Xarid HSK AI hisobiga tegishli; Google yoki Apple bilan kirish ham mos. Google Play versiyasida xarid yo‘q. Joriy narx va to‘lov usuli to‘lov oynasida ko‘rsatiladi.",
+        "Agar HSK AI’ning Google Play versiyasida limit tugasa yoki Pro sotib olish mavjud bo‘lmasa, avvalo brauzerdagi PWA’dan obuna oling: https://hskai.app/iphone-pwa. O‘sha HSK AI akkauntingizga kiring va obuna bo‘limini oching. Google Play ilovasini o‘chirish yoki boshqa APK o‘rnatish shart emas. Narx va to‘lov usullari PWA’da ko‘rsatiladi.",
         [
-            ("Obunani ochib, muddatni tanlang", "Kerakli HSK AI hisobiga kiring va xarid mavjud ilovada obuna bo‘limini oching. Muddatni tanlang: 10 kun, 1 oy yoki 3 oy. Google yoki Apple hisobiga Telegram talab qilinmaydi."),
+            ("Google Play: Pro’ni brauzerdagi PWA orqali oling", "Brauzerda https://hskai.app/iphone-pwa ni oching, o‘sha HSK AI akkauntingizga kiring va «Obuna»ni tanlang. To‘lov tasdiqlangach Pro shu akkauntda faollashadi va Google Play ilovasida ham ishlaydi. APK o‘rnatish shart emas."),
+            ("Obunani ochib, muddatni tanlang", "O‘sha HSK AI akkauntingizda PWA yoki to‘lov mavjud boshqa versiyaning obuna bo‘limini oching. Mavjud muddatni to‘lov oynasidan tanlang. Google orqali kirish uchun Telegram talab qilinmaydi."),
             ("Narx va to‘lov usulini tekshiring", "Narx joriy sozlamalar va to‘lov mamlakatiga qarab ko‘rsatiladi. Karta yoki Alipay/WeChat uchun faqat to‘lov oynasidagi rekvizit va QR’dan foydalaning; usullar hududga qarab farq qiladi."),
+            ("Obunaning ikki yo‘li", "To‘lov oynasida «Visa karta orqali to‘laysizmi?» savoli chiqsa, ikki yo‘l bor. «Ha» — Visa yoki Mastercard bilan avtomatik obuna (1, 3, 6 yoki 12 oy): to‘lov lava.top sahifasida qilinadi, tasdiqlangach Pro o‘zi yoqiladi, chek kerak emas. «Yo‘q, mahalliy karta» — oddiy yo‘l: rekvizit yoki QR orqali to‘lab, chek yuborasiz."),
             ("To‘lov chekini yuboring", "To‘lovdan so‘ng chek rasmini shu jarayonda yuklang. Oldingi so‘rov tekshirilayotgan paytda yana to‘lov yubormang: tizim bir vaqtda ikkinchi kutilayotgan to‘lovni qabul qilmasligi mumkin."),
             ("Tekshiruv yakunini kuting", "Chekni admin qo‘lda tekshiradi. Tasdiqlangach obuna aynan shu HSK AI hisobi uchun faollashadi; holatni ilovada ko‘ring."),
-            ("Obuna avtomatik uzayadimi?", "Yo‘q. Yangi muddat olish uchun uni qayta tanlab, to‘lovni alohida amalga oshiring."),
+            ("Obuna avtomatik uzayadimi?", "Oddiy (chek bilan) to‘lovda — yo‘q: yangi muddatni qayta tanlab to‘laysiz. Karta orqali avtomatik obunada — ha, tanlangan muddat tugaganda kartadan yechiladi. Avtomatik yangilashni obuna bo‘limida istalgan vaqtda o‘chirish mumkin; to‘langan muddat oxirigacha Pro ishlayveradi."),
             ("Uzaytirish va HSK 3.0", "Agar pulli obunangiz hali faol bo‘lsa, yangi muddat amaldagi tugash sanasiga qo‘shiladi. HSK 3.0’ni bir marta ochish alohida mahsulot, obunaning bir qismi emas."),
         ],
     ),
@@ -383,48 +406,51 @@ PAGE_TRANSLATIONS["guide-faq"] = {
 PAGES.update({
     "/tj/guide/faq/": _page(
         "tg", "guide-faq", "faq",
-        "Саволҳои маъмул дар бораи HSK AI",
+        "HSK AI — саволҳои маъмул",
         "Ҷавоб ба саволҳои маъмул дар бораи забонҳои HSK AI, лимитҳо, AI ва санҷиши пардохти обуна.",
         "Саволҳои маъмул",
         "Ҷавобҳои кӯтоҳ ба саволҳое, ки ҳангоми омӯзиш ва истифодаи HSK AI пайдо мешаванд. Маълумоти ҳисоби шумо ва нархи ҷорӣ дар барнома нишон дода мешаванд.",
         [
-            ("HSK AI-ро аз куҷо оғоз кунам?", "Барномаи Android ё desktop-ро гиред ва бо Google, Apple ё Telegram-и дастрас ворид шавед. Telegram Mini App низ дастрас аст. Забон ва курси худро интихоб кунед."),
-            ("Обуна чӣ қадар арзиш дорад?", "Нарх аз рӯйи муҳлат, минтақа ва усули пардохт муайян шуда, пеш аз пардохт дар экран нишон дода мешавад. Нархи дар ин саҳифа навишташуда ҳисобида нашавад."),
+            ("HSK AI чист?", "HSK AI платформаи омӯзиши забони чинӣ бо курсҳои HSK 1–4, луғат, тестҳо ва AI-ёрдамчӣ мебошад. Он дар Android, компютер, Telegram Mini App ва iPhone PWA дастрас аст; забонҳо: тоҷикӣ, русӣ ва ӯзбекӣ. Сомонаи расмӣ: https://hskai.app."),
+            ("HSK AI-ро аз куҷо оғоз кунам?", "Барои iPhone/iPad дар саҳифаи «Боргирӣ» PWA-ро интихоб карда, дар Safari кушоед ва бо «Мубодила» → «Ба экрани асосӣ» илова кунед. Барои Android ва desktop барномаи мувофиқро гиред. Telegram Mini App низ дастрас аст; ҳисоби пешинаи худро истифода баред."),
+            ("Обуна чӣ қадар арзиш дорад?", "Нархҳои стандартии 7 ноябри 2026: пардохти якдафъаина 10 рӯз USD 3.15 / ¥19, 1 моҳ USD 7.49 / ¥49, 3 моҳ USD 19.44 / ¥149; обунаи худкори lava.top барои 1/3/6/12 моҳ USD 7.90 / 19.00 / 34.90 / 64.90. Пеш аз пардохт нархи ниҳоии экранро санҷед; шартҳо метавонанд тағйир ёбанд."),
             ("Пас аз фиристодани расид чӣ кор кунам?", "Расидро админ месанҷад. Дархости интизориро такрор накунед; ҳолати тасдиқ ё рад шудани пардохтро дар барнома бинед."),
-            ("Обуна худкор тамдид мешавад?", "Не. Барои муҳлати нав онро аз нав интихоб карда, пардохтро алоҳида анҷом диҳед."),
-            ("Оё дар барномаи Android обуна харидан мумкин аст?", "Дар APK-и аз сайти HSK AI гирифташуда обуна бо пардохт ва расид дастрас аст, аз ҷумла барои ҳисоби Google ё Apple. Версияи Google Play харид надорад ва дастрасии ҳамин ҳисоби HSK AI-ро нишон медиҳад."),
+            ("Обуна худкор тамдид мешавад?", "Дар пардохти оддӣ бо чек — не. Дар обунаи худкор бо корти Visa/Mastercard — ҳа; онро дар бахши обуна хомӯш кардан мумкин, мӯҳлати пардохтшуда боқӣ мемонад."),
+            ("Агар дар Google Play лимит тамом шавад, Pro-ро аз куҷо гирам?", "Аввал дар браузер https://hskai.app/iphone-pwa-ро кушоед ва бо ҳамон ҳисоби HSK AI ба бахши обуна дароед. Версияи Google Play хариди дохилӣ надорад, аммо Pro-и ҳамин ҳисобро мешиносад. Барои харид барномаи ҳозираро ҳазф кардан ё APK насб кардан шарт нест."),
             ("Оё ҷавобҳои AI ҳамеша дурустанд?", "Не. AI метавонад иштибоҳ кунад; шарҳи шубҳанокро бо маводи дарс ё омӯзгор санҷед."),
             ("Чаро ягон функсия барои ман дастрас нест?", "Баъзе функсияҳо метавонанд аз дастрасии ҳисоби шумо вобаста бошанд. Шартҳои ҷорӣ ва лимитҳоро дар профил ва бахши обуна бинед."),
         ],
     ),
     "/ru/guide/faq/": _page(
         "ru", "guide-faq", "faq",
-        "Частые вопросы о HSK AI",
+        "HSK AI — частые вопросы",
         "Ответы на вопросы о языках HSK AI, лимитах, AI-помощнике и проверке оплаты подписки.",
         "Частые вопросы",
         "Короткие ответы на вопросы, которые возникают при обучении и использовании HSK AI. Состояние аккаунта и актуальная цена отображаются в приложении.",
         [
-            ("С чего начать в HSK AI?", "Скачайте Android или desktop и войдите через доступный Google, Apple или Telegram. Также доступен Telegram Mini App. Выберите язык и свой курс."),
-            ("Сколько стоит подписка?", "Цена зависит от срока, региона и способа оплаты и показывается перед платежом. Не используйте цену с этой страницы как актуальную."),
+            ("Что такое HSK AI?", "HSK AI — приложение для изучения китайского языка с курсами HSK 1–4, словарём, тестами и AI-помощником. Доступно на Android, компьютере, в Telegram Mini App и как iPhone PWA; языки: русский, таджикский и узбекский. Официальный сайт: https://hskai.app."),
+            ("С чего начать в HSK AI?", "Для iPhone/iPad выберите PWA на странице «Скачать», откройте её в Safari и добавьте через «Поделиться» → «На экран «Домой»». Для Android и desktop скачайте соответствующее приложение. Telegram Mini App также доступен; используйте прежний аккаунт для сохранения прогресса."),
+            ("Сколько стоит подписка?", "Стандартные цены на 7 ноября 2026: разовая оплата 10 дней USD 3.15 / ¥19, 1 месяц USD 7.49 / ¥49, 3 месяца USD 19.44 / ¥149; автоподписка lava.top на 1/3/6/12 месяцев USD 7.90 / 19.00 / 34.90 / 64.90. Перед оплатой проверяйте итоговую цену: условия могут измениться."),
             ("Что делать после отправки чека?", "Чек проверяет администратор. Не отправляйте повторный запрос, пока он ожидает проверки; статус подтверждения или отклонения показан в приложении."),
-            ("Подписка продлевается автоматически?", "Нет. Чтобы получить новый срок, выберите его заново и оплатите отдельно."),
-            ("Можно ли купить подписку в Android-приложении?", "APK с сайта HSK AI поддерживает оплату с отправкой чека, в том числе для аккаунтов Google или Apple. Версия Google Play не содержит покупок и показывает доступ того же аккаунта HSK AI."),
+            ("Подписка продлевается автоматически?", "При обычной оплате с чеком — нет. При автоподписке картой Visa/Mastercard — да; её можно отключить в разделе подписки, оплаченный срок сохраняется."),
+            ("Как купить Pro, если в Google Play закончился лимит?", "Рекомендуемый способ — открыть https://hskai.app/iphone-pwa в браузере, войти в тот же аккаунт HSK AI и оформить Pro в разделе «Подписка». В версии Google Play нет покупки внутри приложения, но она распознаёт Pro этого аккаунта. Удалять приложение или устанавливать APK не нужно."),
             ("Ответы AI всегда точны?", "Нет. AI может ошибаться; сомнительное объяснение сверьте с материалом урока или преподавателем."),
             ("Почему функция мне недоступна?", "Доступ к некоторым функциям может зависеть от состояния аккаунта. Проверьте текущие лимиты и условия в профиле и разделе подписки."),
         ],
     ),
     "/uz/guide/faq/": _page(
         "uz", "guide-faq", "faq",
-        "HSK AI haqida ko‘p so‘raladigan savollar",
+        "HSK AI — ko‘p so‘raladigan savollar",
         "HSK AI tillari, kunlik limitlar, AI yordamchi va obuna to‘lovini tekshirish haqida savollarga javoblar.",
         "Ko‘p so‘raladigan savollar",
         "HSK AI’dan foydalanish va o‘rganish paytida ko‘p uchraydigan savollarga qisqa javoblar. Hisob holati va joriy narx ilovada ko‘rsatiladi.",
         [
-            ("HSK AI’dan foydalanishni nimadan boshlayman?", "Android yoki desktop ilovasini oling va mavjud Google, Apple yoki Telegram orqali kiring. Telegram Mini App’dan ham foydalanish mumkin. Til va kursingizni tanlang."),
-            ("Obuna qancha turadi?", "Narx muddat, hudud va to‘lov usuliga qarab belgilanadi va to‘lovdan oldin oynada ko‘rsatiladi. Bu sahifadagi matnni joriy narx deb qabul qilmang."),
+            ("HSK AI nima?", "HSK AI — xitoy tilini o‘rganish uchun HSK 1–4 kurslari, lug‘at, testlar va AI yordamchiga ega ilova. Android, kompyuter, Telegram Mini App va iPhone PWA’da ishlaydi. O‘zbek, rus va tojik tillari mavjud. Rasmiy sayt: https://hskai.app."),
+            ("HSK AI’dan foydalanishni nimadan boshlayman?", "iPhone/iPad’da «Yuklab olish» sahifasidan PWA’ni tanlab, Safari’da «Ulashish» → «Bosh ekranga qo‘shish» orqali o‘rnating. Android yoki desktop uchun mos ilovani oling. Telegram Mini App ham mavjud; progress uchun avvalgi hisobingizga kiring."),
+            ("Obuna qancha turadi?", "2026-yil 7-noyabrdagi standart narxlar: bir martalik 10 kun USD 3.15 / ¥19, 1 oy USD 7.49 / ¥49, 3 oy USD 19.44 / ¥149; lava.top avtomatik obunasi 1/3/6/12 oy USD 7.90 / 19.00 / 34.90 / 64.90. To‘lovdan oldin yakuniy narxni tekshiring: shartlar keyin o‘zgarishi mumkin."),
             ("Chek yuborgandan keyin nima qilaman?", "Chekni admin tekshiradi. So‘rov tekshirilayotgan paytda uni qayta yubormang; tasdiq yoki rad holatini ilovada ko‘ring."),
-            ("Obuna avtomatik uzayadimi?", "Yo‘q. Yangi muddat olish uchun uni qayta tanlab, to‘lovni alohida amalga oshiring."),
-            ("Android ilovasida obuna sotib olsa bo‘ladimi?", "HSK AI saytidan olingan APK’da to‘lov va chek orqali obuna olish mumkin, jumladan Google yoki Apple hisobi uchun ham. Google Play versiyasida xarid yo‘q; u aynan shu HSK AI hisobidagi kirish holatini ko‘rsatadi."),
+            ("Obuna avtomatik uzayadimi?", "Chek bilan oddiy to‘lovda — yo‘q. Visa/Mastercard orqali avtomatik obunada — ha; uni obuna bo‘limida istalgan vaqtda o‘chirish mumkin, to‘langan muddat saqlanadi."),
+            ("Google Play versiyasida limit tugasa, Pro’ni qayerdan olaman?", "Tavsiya etilgan yo‘l — brauzerda https://hskai.app/iphone-pwa ni ochib, aynan o‘sha HSK AI akkauntiga kirish va «Obuna» orqali Pro olish. Google Play ilovasining o‘zida xarid yo‘q, ammo u shu akkauntdagi Pro huquqini taniydi. Ilovani o‘chirish yoki APK o‘rnatish shart emas."),
             ("AI javoblari doim to‘g‘rimi?", "Yo‘q. AI xato qilishi mumkin; shubhali izohni dars materiali yoki o‘qituvchi bilan tekshiring."),
             ("Nega biror funksiya ochilmayapti?", "Ayrim funksiyalar hisobingizdagi kirish shartlariga bog‘liq bo‘lishi mumkin. Joriy limit va shartlarni profil hamda obuna bo‘limidan ko‘ring."),
         ],
@@ -453,10 +479,45 @@ for path, page in PAGES.items():
     if page.get("content_group") in {"home", "guide", "subscription", "faq"}:
         page["sections"].append(_ACCOUNT_GUIDANCE[page["lang"]])
 
+# Standard customer-facing terms checked against the R2 support KB on 2026-11-07.
+# These are published standard offers, not live checkout quote overrides.
+PUBLIC_STANDARD_TERMS = {
+    "ru": [
+        ("Стандартные цены Pro — разовая оплата", "Подтверждено 7 ноября 2026: 10 дней (10 суток) — USD 3.15 или ¥19; 1 месяц (30 суток) — USD 7.49 или ¥49; 3 месяца (90 суток) — USD 19.44 или ¥149. Это стандартные разовые предложения с подтверждением платежа, а не автопродление. Итоговая цена и валюта перед оплатой определяются в приложении."),
+        ("Стандартные цены Pro — автоподписка lava.top", "Подтверждено 7 ноября 2026: 1 месяц — USD 7.90; 3 месяца — USD 19.00; 6 месяцев — USD 34.90; 12 месяцев — USD 64.90. Это отдельная подписка с автоматическим продлением; его можно отменить, сохранив уже оплаченный срок. Доступность зависит от конфигурации оплаты."),
+        ("Free: лимиты AI и уроков", "Стандартные лимиты 7 ноября 2026: текстовые запросы AI — 5 в день; фото AI — 2 в день; голосовой AI — 1 раз за всё время; начало уроков — 2 в день; устная сессия — 1 раз за всё время."),
+        ("Free: упражнения, тесты и аудио", "Стандартные лимиты 7 ноября 2026: каждый вид практики — 1 раз в день; тест определения уровня — 2 раза за всё время; учебный тест — 1 в день; учебное аудио — 5 воспроизведений в день; переводы карточек — 20 в день. Пожизненные лимиты не обновляются ежедневно."),
+        ("Pro Trial: подтверждённые условия", "Стандартная пробная версия Pro действует 7 дней с AI-бюджетом USD 1.50. Подтверждённые лимиты Trial: начало уроков — 5 в день; устные сессии — 2 в день. По подтверждённым владельцем стандартным настройкам все остальные квоты действий Trial безлимитны. Отдельный AI-бюджет USD 1.50 остаётся расходным ограничением, а не дневной квотой запросов."),
+        ("Статус цен и лимитов", "Это проверенные стандартные условия на 7 ноября 2026, а не приблизительные оценки. Администратор может изменить тарифы, акции и лимиты позднее. Перед платежом решающей является актуальная цена в авторизованной форме оплаты; персональные остатки лимитов показывает аккаунт. Pro по умолчанию не имеет фиксированных квот на действия, но отдельный AI-бюджет и условия доступа сохраняются."),
+    ],
+    "uz": [
+        ("Pro standart narxlari — bir martalik to‘lov", "2026-yil 7-noyabrda tasdiqlangan standart narxlar: 10 kun — USD 3.15 yoki ¥19; 1 oy (30 kun) — USD 7.49 yoki ¥49; 3 oy (90 kun) — USD 19.44 yoki ¥149. Bu avtomatik yangilanmaydigan, to‘lov tasdig‘ini talab qiladigan alohida tariflar. Yakuniy narx va valyuta to‘lov oynasida ko‘rsatiladi."),
+        ("Pro standart narxlari — lava.top avtomatik obunasi", "2026-yil 7-noyabrdagi standart narxlar: 1 oy — USD 7.90; 3 oy — USD 19.00; 6 oy — USD 34.90; 12 oy — USD 64.90. Bu alohida avtomatik yangilanadigan obuna; yangilanishni bekor qilganda to‘langan muddat saqlanadi. Mavjudligi to‘lov sozlamalariga bog‘liq."),
+        ("Free: AI va dars limitlari", "2026-yil 7-noyabrdagi standart limitlar: AI matnli savol — kuniga 5 ta; AI rasm — kuniga 2 ta; AI ovoz — jami 1 marta; dars boshlash — kuniga 2 ta; og‘zaki suhbat — jami 1 marta."),
+        ("Free: mashqlar, testlar va audio", "2026-yil 7-noyabrdagi standart limitlar: har bir mashq turi — kuniga 1 ta; darajani aniqlash testi — jami 2 marta; dars testi — kuniga 1 ta; dars audiosi — kuniga 5 marta; kartochka tarjimasi — kuniga 20 ta. Umumiy (lifetime) limitlar har kuni tiklanmaydi."),
+        ("Pro Trial: tasdiqlangan shartlar", "Pro sinov muddati odatda 7 kun, AI byudjeti USD 1.50. Tasdiqlangan Trial limitlari: dars boshlash — kuniga 5 ta; og‘zaki suhbat — kuniga 2 ta. Egasi tasdiqlagan standart sozlamalarda Trial’ning qolgan barcha harakat limitlari cheksiz. Alohida USD 1.50 AI byudjeti esa kunlik so‘rov limiti emas, xarajat cheklovidir."),
+        ("Narx va limitlarning amal qilishi", "Bular 2026-yil 7-noyabrda tasdiqlangan standart shartlar, taxmin emas. Keyinchalik admin tarif, aksiya yoki limitni o‘zgartirishi mumkin. To‘lovdan oldin akkauntdagi rasmiy yakuniy narxni va limit hisoblagichini tekshiring. Pro’da odatiy harakat limitlari cheksiz, lekin AI byudjeti va ayrim kirish shartlari saqlanadi."),
+    ],
+    "tg": [
+        ("Нархҳои стандартии Pro — пардохти якдафъаина", "Нархҳои стандартии тасдиқшуда аз 7 ноябри 2026: 10 рӯз — USD 3.15 ё ¥19; 1 моҳ (30 рӯз) — USD 7.49 ё ¥49; 3 моҳ (90 рӯз) — USD 19.44 ё ¥149. Ин тарифҳо худкор тамдид намешаванд ва тасдиқи пардохтро талаб мекунанд. Нарх ва асъори ниҳоӣ дар экрани пардохт нишон дода мешаванд."),
+        ("Нархҳои стандартии Pro — обунаи худкори lava.top", "Нархҳои стандартии 7 ноябри 2026: 1 моҳ — USD 7.90; 3 моҳ — USD 19.00; 6 моҳ — USD 34.90; 12 моҳ — USD 64.90. Ин обуна худкор тамдид мешавад; онро бекор кардан мумкин, муҳлати аллакай пардохтшуда боқӣ мемонад. Дастрасӣ аз танзимоти пардохт вобаста аст."),
+        ("Free: лимитҳои AI ва дарс", "Лимитҳои стандартӣ аз 7 ноябри 2026: саволи матнии AI — 5 бор дар рӯз; акси AI — 2 бор дар рӯз; овози AI — ҷамъ 1 бор; оғози дарс — 2 бор дар рӯз; сессияи гуфтугӯи шифоҳӣ — ҷамъ 1 бор."),
+        ("Free: машқ, санҷиш ва аудио", "Лимитҳои стандартӣ аз 7 ноябри 2026: ҳар намуди машқ — 1 бор дар рӯз; санҷиши муайян кардани сатҳ — ҷамъ 2 бор; санҷиши дарс — 1 бор дар рӯз; аудиои дарс — 5 бор дар рӯз; тарҷумаи кортҳо — 20 бор дар рӯз. Лимитҳои умумӣ ҳар рӯз барқарор намешаванд."),
+        ("Pro Trial: шартҳои тасдиқшуда", "Муҳлати стандартии санҷиши Pro — 7 рӯз, буҷети AI — USD 1.50. Лимитҳои тасдиқшудаи Trial: оғози дарс — 5 бор дар рӯз; сессияи гуфтугӯ — 2 бор дар рӯз. Мувофиқи танзимоти стандартии тасдиқкардаи соҳиб, ҳамаи квотаҳои дигари амалҳои Trial номаҳдуданд. Буҷети ҷудогонаи AI — USD 1.50 маҳдудияти хароҷот аст, на лимити рӯзонаи саволҳо."),
+        ("Эътибори нархҳо ва лимитҳо", "Ин шартҳои стандартии 7 ноябри 2026 тасдиқшудаанд, тахмин нестанд. Администратор метавонад баъдтар тариф, тахфиф ва лимитро тағйир диҳад. Нарх ва асъори ниҳоии экрани пардохт ва бақияи лимити ҳисоб афзалият доранд. Барои Pro лимитҳои маъмулии амалҳо номаҳдуданд, аммо буҷети ҷудогонаи AI ва шартҳои дастрасӣ боқӣ мемонанд."),
+    ],
+}
+
+for _path, _page in PAGES.items():
+    if _page.get("translation_group") == "guide-subscription":
+        _page["sections"].extend(PUBLIC_STANDARD_TERMS[_page["lang"]])
+    elif _page.get("translation_group") == "guide-faq":
+        _page["sections"].extend(PUBLIC_STANDARD_TERMS[_page["lang"]][2:5])
+
 NAV_LABELS = {
-    "tg": {"courses": "Курсҳои HSK", "features": "Имкониятҳо", "guide": "Роҳнамо", "download": "Боргирӣ", "language": "Забон", "more": "Идома диҳед", "home": "Саҳифаи асосӣ"},
-    "ru": {"courses": "Курсы HSK", "features": "Возможности", "guide": "Руководство", "download": "Скачать", "language": "Язык", "more": "Продолжить", "home": "Главная"},
-    "uz": {"courses": "HSK kurslari", "features": "Imkoniyatlar", "guide": "Qo‘llanma", "download": "Yuklab olish", "language": "Til", "more": "Davom eting", "home": "Bosh sahifa"},
+    "tg": {"courses": "Курсҳои HSK", "features": "Имкониятҳо", "guide": "Роҳнамо", "download": "Боргирӣ", "language": "Забон", "more": "Меню", "home": "Саҳифаи асосӣ"},
+    "ru": {"courses": "Курсы HSK", "features": "Возможности", "guide": "Руководство", "download": "Скачать", "language": "Язык", "more": "Меню", "home": "Главная"},
+    "uz": {"courses": "HSK kurslari", "features": "Imkoniyatlar", "guide": "Qo‘llanma", "download": "Yuklab olish", "language": "Til", "more": "Menyu", "home": "Bosh sahifa"},
 }
 
 RELATED_LINKS = {

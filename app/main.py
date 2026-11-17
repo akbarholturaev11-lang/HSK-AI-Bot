@@ -19,6 +19,7 @@ from starlette.middleware.gzip import GZipMiddleware
 
 from app.api.public_site import (
     create_public_site_router,
+    legacy_public_site_redirect,
     record_attributed_source_visit,
     record_event,
 )
@@ -105,6 +106,7 @@ from app.services.pro_trial_service import ProTrialService
 from app.services.trial_reminder_service import TrialReminderService
 from app.services.entitlements.shadow import EntitlementShadowService
 from app.api.miniapp_practice import create_miniapp_practice_router
+from app.api.course_adaptive import create_course_adaptive_router
 from app.api.miniapp_preferences import create_miniapp_preferences_router
 from app.api.desktop_rating import create_desktop_rating_router
 from app.api.desktop_referral import create_desktop_referral_router
@@ -186,6 +188,11 @@ from app.services.notification_delivery_service import (
 from app.services.desktop_analytics_service import DesktopAnalyticsService
 from app.services.desktop_auth_service import DesktopAuthService
 from app.api.pwa_auth import create_pwa_auth_router
+from app.api.lava_checkout import attach_lava_block, create_lava_router
+from app.admin_api.pwa_lava import create_admin_pwa_lava_router
+from app.services.lava.events import LavaRuntime
+from app.services.lava.notify import LavaNotifier
+from app.services.lava.reconcile import LavaReconcileWorker
 from app.services.desktop_release_manifest_service import (
     resolve_desktop_latest_versions,
 )
@@ -335,6 +342,21 @@ from app.bot.utils.course_miniapp import (
 logger = logging.getLogger(__name__)
 
 bot, dp = create_bot(settings)
+
+
+async def _lava_on_approved(session, result):
+    # Same post-commit delivery/analytics as an admin-approved manual receipt.
+    await _emit_admin_payment_review_effects(session, result, source_prefix="lava")
+
+
+# lava.top second checkout path. Sales are gated by LAVA_ENABLED + Admin PWA
+# mode; webhook/reconcile processing of existing contracts is independent.
+lava_runtime = LavaRuntime(
+    settings=settings,
+    session_factory=async_session_maker,
+    notifier=LavaNotifier(bot=bot, admin_ids=settings.admin_id_list),
+    on_approved=_lava_on_approved,
+)
 _study_ai_tasks = set()
 
 
@@ -639,6 +661,17 @@ async def _desktop_auth_retention_scheduler() -> None:
             # Authentication remains fail-closed even if housekeeping is
             # temporarily unavailable; retry independently on the next hour.
             logger.exception("Desktop auth retention cleanup failed")
+        try:
+            # Diagnostic receipts (30 days) and long-resolved incidents; its own
+            # try so a failure here never skips the native-report purge above.
+            from app.services.monitoring.retention import run_diagnostic_retention
+            receipts, incidents = await run_diagnostic_retention(
+                async_session_maker, settings, now=datetime.now(timezone.utc))
+            await diagnostic_reporter.flush_self_dropped()
+            if receipts or incidents:
+                logger.info("Diagnostic retention removed %d receipts, %d incidents", receipts, incidents)
+        except Exception:
+            logger.exception("Diagnostic retention cleanup failed")
         await asyncio.sleep(60 * 60)
 
 
@@ -680,6 +713,9 @@ async def lifespan(app: FastAPI):
         logger.warning("Admin PWA Apple Push unavailable: verify VAPID/storage/subject config")
     apple_push_task = (asyncio.create_task(_admin_pwa_apple_push_scheduler())
                        if push_ready else None)
+    # Lost-webhook repair runs whenever an API key exists, even with sales off.
+    lava_reconcile_task = (asyncio.create_task(LavaReconcileWorker(lava_runtime).run())
+                           if getattr(settings, "LAVA_API_KEY", "") else None)
     try:
         yield                                                # /health darhol ishlaydi
     finally:
@@ -697,6 +733,8 @@ async def lifespan(app: FastAPI):
         desktop_auth_cleanup_task.cancel()
         if apple_push_task is not None:
             apple_push_task.cancel()
+        if lava_reconcile_task is not None:
+            lava_reconcile_task.cancel()
         study_ai_tasks = tuple(_study_ai_tasks)
         for task in study_ai_tasks:
             task.cancel()
@@ -726,10 +764,21 @@ async def lifespan(app: FastAPI):
         for task in study_ai_tasks:
             with contextlib.suppress(asyncio.CancelledError):
                 await task
+        if lava_reconcile_task is not None:
+            with contextlib.suppress(asyncio.CancelledError):
+                await lava_reconcile_task
         await admin_pwa_due_campaigns.close()
         await admin_pwa_statistics_reader.aclose()
         await admin_pwa_analytics_reader.aclose()
         await admin_pwa_feedback_reader.aclose()
+        from app.services.monitoring.backend import reporter as shutdown_reporter
+        from app.services.monitoring.miniapp import drain_legacy
+        try:
+            async with asyncio.timeout(3):
+                await drain_legacy()
+                await shutdown_reporter.drain()
+        except TimeoutError:
+            logger.warning("Diagnostic shutdown drain timed out")
         await bot.session.close()
         await engine.dispose()
 
@@ -769,6 +818,8 @@ app.include_router(create_admin_pwa_course_access_router(settings_obj=settings, 
 app.include_router(create_admin_pwa_hsk30_settings_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_limits_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_subscription_prices_router(settings_obj=settings, session_factory=async_session_maker))
+app.include_router(create_admin_pwa_lava_router(settings_obj=settings, session_factory=async_session_maker,
+                                              runtime_getter=lambda: lava_runtime))
 app.include_router(create_admin_pwa_payment_qr_router(
     settings_obj=settings, session_factory=async_session_maker, bot_client=bot,
 ))
@@ -856,7 +907,8 @@ app.include_router(create_admin_pwa_feedback_analytics_router(settings_obj=setti
 app.include_router(create_admin_pwa_read_router(settings_obj=settings, session_factory=async_session_maker,
     statistics_reader=admin_pwa_statistics_reader,analytics_reader=admin_pwa_analytics_reader))
 app.include_router(create_manual_aggregate_refresh_router(
-    settings_obj=settings, analytics_reader=admin_pwa_analytics_reader))
+    settings_obj=settings, analytics_reader=admin_pwa_analytics_reader,
+    feedback_reader=admin_pwa_feedback_reader))
 app.include_router(create_admin_pwa_inbox_triage_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_inbox_attachment_router(
     settings_obj=settings, session_factory=async_session_maker,
@@ -888,6 +940,13 @@ app.add_middleware(
     bot_token=settings.BOT_TOKEN,
     admin_ids=settings.admin_id_list,
 )
+# Unified error monitoring (D4): records 5xx and unhandled exceptions on
+# learner routes after the response; never reads bodies or changes responses.
+from app.services.monitoring.backend import DiagnosticMiddleware, reporter as diagnostic_reporter
+diagnostic_reporter.configure(session_factory=async_session_maker, settings_obj=settings)
+app.add_middleware(DiagnosticMiddleware)
+from app.api.monitoring_intake import create_monitoring_intake_router, read_bounded_json
+app.include_router(create_monitoring_intake_router(session_factory=async_session_maker, settings_obj=settings))
 app.include_router(
     create_desktop_auth_router(
         session_factory=async_session_maker,
@@ -946,6 +1005,14 @@ app.include_router(
         session_factory=async_session_maker,
         settings_obj=settings,
         bot=bot,
+    )
+)
+# Dars ichidagi shaxsiy takror (UIUX-007): Telegram, PWA va Android.
+# COURSE_ADAPTIVE_ENABLED=false bo'lsa reja doim bo'sh qaytadi.
+app.include_router(
+    create_course_adaptive_router(
+        session_factory=async_session_maker,
+        settings_obj=settings,
     )
 )
 # Bepul limit darvozalari. `app/main.py` dan ajratildi, chunki bu yerdagi
@@ -1020,7 +1087,10 @@ app.include_router(
     )
 )
 # Separate, default-OFF learner browser sessions; no legacy Mini App cookie bypass.
-app.include_router(create_pwa_auth_router(session_factory=async_session_maker, settings_obj=settings, bot=bot))
+app.include_router(create_pwa_auth_router(session_factory=async_session_maker, settings_obj=settings, bot=bot,
+                                            lava_runtime_getter=lambda: lava_runtime))
+app.include_router(create_lava_router(runtime_getter=lambda: lava_runtime,
+                                     session_factory=async_session_maker, settings_obj=settings))
 app.include_router(
     create_android_course_router(
         session_factory=async_session_maker,
@@ -2104,7 +2174,7 @@ async def course_data_file(level: str):
 
 # ── Course v3 Mini App ──────────────────────────────────────────────────────
 
-_COURSE_V3_PAGES = {"onboarding", "recognition", "pronunciation", "test", "mistakes", "voice", "memorize"}
+_COURSE_V3_PAGES = {"onboarding", "li_onboarding", "recognition", "pronunciation", "test", "mistakes", "voice", "memorize"}
 _COURSE_V3_LEVELS = {"hsk1", "hsk2", "hsk3", "hsk4", "nhsk1", "nhsk2", "nhsk3"}
 
 
@@ -2203,8 +2273,8 @@ def _absolute_download_seo_urls(html: str, origin: str) -> str:
             f'<link rel="canonical" href="{origin}/download">',
         )
         .replace(
-            '<link rel="alternate" hreflang="uz" href="/download">',
-            f'<link rel="alternate" hreflang="uz" href="{origin}/download">',
+            '<link rel="alternate" hreflang="ru" href="/download">',
+            f'<link rel="alternate" hreflang="ru" href="{origin}/download">',
         )
         .replace(
             '<meta property="og:url" content="/download">',
@@ -2244,7 +2314,7 @@ async def _rendered_downloads_page() -> Response:
         )
         origin = public_origin(settings)
         html = _absolute_download_seo_urls(html, origin)
-        section = downloads_section(status, origin=origin, language="uz")
+        section = downloads_section(status, origin=origin, language="ru")
         schema = app_downloads_structured_data(
             status, origin=origin, page_url="/download"
         )
@@ -2262,6 +2332,9 @@ async def _rendered_downloads_page() -> Response:
 @app.get("/desktop-download.html")
 @app.get("/desktop-download")
 async def desktop_download_page(request: Request):
+    redirect = legacy_public_site_redirect(request, public_origin(settings))
+    if redirect is not None:
+        return redirect
     tags = attribution(request.query_params)
     record_event("landing_view", request.url.path, tags)
     await record_attributed_source_visit(request, async_session_maker)
@@ -2411,6 +2484,43 @@ async def desktop_install_screenshot(filename: str):
     )
 
 
+@app.get("/assets/voice-v8/{filename}")
+async def pwa_voice_topic_photo(filename: str):
+    import re
+    if not re.fullmatch(r"(?:free|daily|shopping|food|travel|school|friends|work|hsk)\.jpg", filename):
+        return JSONResponse(status_code=404, content={"error": "not_found"})
+    return static_asset_response(f"app/static/assets/voice-v8/{filename}", "image/jpeg")
+
+
+@app.get("/assets/onboarding/iphone-install-home-focus.jpg")
+async def li_iphone_install_hero_image():
+    """Fixed reviewed user-provided Home Screen image, no dynamic path."""
+    return static_asset_response(
+        "app/static/assets/onboarding/iphone-install-home-focus.jpg", "image/jpeg"
+    )
+
+
+@app.get("/assets/onboarding/iphone-home-screen.mp4")
+async def li_iphone_install_guide_video():
+    """Fixed, optional iPhone Safari tutorial asset for first PWA registration.
+
+    The video is deliberately not synthesized or silently substituted with
+    other user media. Missing approved MP4 returns 404; the Li guide displays
+    the canonical three-step fallback and still allows course continuation.
+    """
+    path = Path("app/static/assets/onboarding/iphone-home-screen.mp4")
+    if not path.is_file():
+        return JSONResponse(status_code=404, content={"error": "guide_not_published"},
+                            headers={"Cache-Control": "no-store"})
+    # MP4 is already compressed. Global GZipMiddleware must not recompress
+    # 206 byte ranges: their Content-Range offsets refer to the original
+    # file bytes. The compressed approved MP4 can be cached briefly.
+    return FileResponse(path, media_type="video/mp4",
+                        headers={"X-Content-Type-Options": "nosniff",
+                                 "Content-Encoding": "identity",
+                                 "Cache-Control": "public, max-age=3600, no-transform"})
+
+
 @app.get("/course_v3_{page}.html")
 async def course_v3_sub_page(page: str):
     if page not in _COURSE_V3_PAGES:
@@ -2439,9 +2549,10 @@ async def course_v3_data_file(filename: str):
     public_assets = {
         "design-tokens.css": "text/css",
         "iphone-pwa-glass.css": "text/css",
-        "iphone-pwa-notices.js": "application/javascript",
-        "iphone-pwa-feedback.js": "application/javascript",
-        "iphone-pwa-shake-report.js": "application/javascript",
+        "iphone-pwa-inline-pro.css": "text/css",
+        **dict.fromkeys(("iphone-pwa-inline-pro.js", "iphone-pwa-inline-pro-bridge.js",
+                         "iphone-pwa-notices.js", "iphone-pwa-feedback.js",
+                         "iphone-pwa-shake-report.js"), "application/javascript"),
         "iphone-pwa-shake-report.css": "text/css",
         "iphone-pwa-practice-boot.js": "application/javascript",
         "iphone-pwa-practice-boot.css": "text/css",
@@ -2459,8 +2570,13 @@ async def course_v3_data_file(filename: str):
         "hsk30-words.js": "application/javascript",
         "hsk30-dictionary-examples.js": "application/javascript",
         "hsk-common-i18n.js": "application/javascript",
+        "hsk-diagnostics.js": "application/javascript",
         "hsk-miniapp-i18n.js": "application/javascript",
         "hsk-course-i18n.js": "application/javascript",
+        "li-onboarding-runtime.js": "application/javascript",
+        "li-onboarding-install.js": "application/javascript",
+        "li-onboarding-install.css": "text/css",
+        "hsk-li-onboarding-i18n.js": "application/javascript",
         "p3-grammar-reservation.js": "application/javascript",
         "ready-phrases-v1.json": "application/json",
     }
@@ -2671,8 +2787,7 @@ async def _course_v3_map_for_user(
     Both callers acquire the User row lock before this shared read/write. The
     existing map owns level restoration, HSK30 access, XP, policy and analytics.
     """
-    import json as _json
-    from pathlib import Path
+    from app.services.course_map_template_cache import load_course_map_template
     from app.services.smart_reminder_preferences import automatic_timezone_initialization_allowed
 
     dedupe_prefix = "course-v3" if default_source == "course_v3" else "pwa-course-v3"
@@ -2741,11 +2856,10 @@ async def _course_v3_map_for_user(
 
     resolved_level = target_band
 
-    map_path = Path(f"app/static/course_v3_data/{resolved_level}.json")
-    if not map_path.exists():
-        map_path = Path("app/static/course_v3_data/hsk1.json")
+    # Only public, versioned templates are cached. Every request gets its own
+    # mutable deep copy before applying private progress and entitlement data.
     try:
-        data = _json.loads(map_path.read_text())
+        data = load_course_map_template(resolved_level)
     except Exception:
         return JSONResponse(status_code=500, content={"ok": False, "error": "map_load_failed"})
 
@@ -2840,12 +2954,14 @@ async def _course_v3_map_for_user(
 
     # Browser source attribution is fixed until a verified Smart/deep-link
     # handoff exists. Do not let a caller spoof Smart study or payment funnels.
-    # The original signed Telegram Mini App keeps its existing source behavior.
+    # Preserve Telegram campaign sources except for the reserved PWA marker.
     entry_source = _checkout_text(
         (request.query_params.get("source") if default_source == "course_v3" else None)
         or default_source,
         40,
     )
+    if default_source == "course_v3" and entry_source.casefold() == "pwa_course_v3":
+        entry_source = default_source
     course_session_id = _checkout_text(request.query_params.get("sid"), 80) or None
 
     # Dars access oqimi admin policy orqali boshqariladi:
@@ -3107,6 +3223,7 @@ async def v3_hsk_exam_start(request: Request):
                 lang=str(payload.get("lang") or ""),
                 access_ref=str(payload.get("access_ref") or ""),
                 ad_supported=bool(payload.get("ad_supported")),
+                analytics_client="telegram",
             )
     except ValueError as error:
         return JSONResponse(
@@ -3143,6 +3260,7 @@ async def v3_hsk_exam_complete(request: Request):
             telegram_id,
             session_id=str(payload.get("session_id") or ""),
             answers=payload.get("answers") if isinstance(payload.get("answers"), list) else [],
+            analytics_client="telegram",
         )
     status_code = 200 if result.get("ok") else 409 if result.get("error") == "hsk_exam_material_changed" else 400
     return JSONResponse(status_code=status_code, content=result)
@@ -3257,7 +3375,7 @@ async def v3_course_lesson_unlock(request: Request):
 async def _v3_complete_lesson_for_canonical_actor(
     session, user, payload: dict, *, lesson_order: int,
     lesson_session_id: str | None, lesson_mistakes: list[dict],
-    telegram_id: int | None,
+    telegram_id: int | None, analytics_client: str,
 ):
     """Single existing V3 completion, entitlement, proof and XP transaction.
 
@@ -3435,6 +3553,7 @@ async def _v3_complete_lesson_for_canonical_actor(
         lesson_order=lesson_order,
         session_id=lesson_session_id,
         dedupe_key=f"v3-part:{resolved_level}:{lesson_order}:completed",
+        analytics_client=analytics_client,
         payload={
             "lesson_order": lesson_order,
             "is_paid": is_paid,
@@ -3510,7 +3629,7 @@ async def v3_course_lesson_complete(request: Request):
         return await _v3_complete_lesson_for_canonical_actor(
             session, user, payload, lesson_order=lesson_order,
             lesson_session_id=lesson_session_id,
-            lesson_mistakes=lesson_mistakes, telegram_id=telegram_id,
+            lesson_mistakes=lesson_mistakes, telegram_id=telegram_id, analytics_client="telegram",
         )
 
 
@@ -3587,6 +3706,7 @@ async def pwa_v3_course_lesson_complete(request: Request):
                 lesson_session_id=lesson_session_id,
                 lesson_mistakes=lesson_mistakes,
                 telegram_id=int(user.telegram_id) if user.telegram_id else None,
+                analytics_client="iphone_pwa",
             )
             response.headers["Cache-Control"] = "no-store"
             response.headers["Referrer-Policy"] = "no-referrer"
@@ -5673,6 +5793,10 @@ async def miniapp_onboarding(request: Request):
                 language=str(payload.get("language") or ""),
                 timezone_offset_minutes=timezone_offset,
                 activation_variant=_checkout_text(payload.get("activation_variant"), 32),
+                goals=payload.get("goals"),
+                streak_target_days=payload.get("streak_target_days"),
+                preferred_focus=payload.get("preferred_focus"),
+                analytics_client="telegram",
             )
     except (TypeError, ValueError) as error:
         return JSONResponse(
@@ -5722,6 +5846,7 @@ async def miniapp_onboarding_status(request: Request):
             foundation = await CourseMiniAppProfileService(session).foundation_status(user)
             foundation_required = bool(foundation["required"] and not foundation["completed"])
 
+        from app.services.onboarding_goal_selection import read_onboarding_goals
         return JSONResponse(
             content={
                 "ok": True,
@@ -5729,6 +5854,9 @@ async def miniapp_onboarding_status(request: Request):
                 "level": str(user.level or "").strip().lower(),
                 "profile": {
                     "goal": profile.goal,
+                    "goals": read_onboarding_goals(getattr(profile, "goals_json", None), primary_goal=profile.goal),
+                    "streak_target_days": getattr(profile, "streak_target_days", None),
+                    "preferred_focus": getattr(profile, "preferred_focus", None),
                     "daily_minutes": profile.daily_minutes,
                     "start_mode": profile.start_mode,
                 } if completed else None,
@@ -5919,6 +6047,7 @@ async def miniapp_practice_start(request: Request):
                 level=_course_v3_user_level(user),
                 lang=_course_v3_user_lang(user),
                 skill=str(payload.get("skill") or ""),
+                analytics_client="telegram",
             )
     except ValueError as error:
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_practice_payload", "message": str(error)})
@@ -5947,6 +6076,7 @@ async def miniapp_practice_complete(request: Request):
                 lang=_course_v3_user_lang(user),
                 skill=str(payload.get("skill") or ""),
                 answers=payload.get("answers") if isinstance(payload.get("answers"), list) else [],
+                analytics_client="telegram",
             )
     except ValueError as error:
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_practice_payload", "message": str(error)})
@@ -6164,6 +6294,7 @@ async def miniapp_mistake_review_start(request: Request):
             category=str(payload.get("category") or "") or None,
             formats=payload.get("formats") if isinstance(payload.get("formats"), list) else None,
             language=str(payload.get("language") or "") or None,
+            analytics_client="telegram",
         )
     status_code = (
         200
@@ -6199,6 +6330,7 @@ async def miniapp_mistake_review_answer(request: Request):
             session_id=str(payload.get("session_id") or ""),
             question_id=str(payload.get("question_id") or ""),
             selected_index=payload.get("selected_index"),
+            analytics_client="telegram",
         )
     return JSONResponse(status_code=200 if result.get("ok") else 400, content=result)
 
@@ -6220,6 +6352,7 @@ async def miniapp_mistake_review_complete(request: Request):
             telegram_id,
             session_id=str(payload.get("session_id") or ""),
             answers=payload.get("answers") if isinstance(payload.get("answers"), list) else [],
+            analytics_client="telegram",
         )
     return JSONResponse(status_code=200 if result.get("ok") else 400, content=result)
 
@@ -6255,11 +6388,13 @@ async def subscription_miniapp_overview(request: Request):
                 payment_method=str(payload.get("method") or "") or None,
                 campaign_id=_positive_int(payload.get("campaign_id")),
                 feedback_id=_positive_int(payload.get("feedback_id")),
+                # R3: the signed Telegram route, whatever `source` the caller sent.
+                client="telegram",
             )
             await SubscriptionChurnService(session).mark_subscription_miniapp_opened(telegram_id, source)
             if not result.get("pending_payment"):
-                await ConversionFunnelService().record(
-                    event_name="checkout_opened",
+                # Checked, retried once, never doubled; never changes this response.
+                await ConversionFunnelService().record_checkout_opened(
                     user=user,
                     telegram_id=telegram_id,
                     source=source,
@@ -6268,6 +6403,8 @@ async def subscription_miniapp_overview(request: Request):
                         "mode": str(payload.get("mode") or ""),
                         "campaign_id": _positive_int(payload.get("campaign_id")),
                         "feedback_id": _positive_int(payload.get("feedback_id")),
+                        # Route-owned platform marker; source and attempt ID are caller text.
+                        "transport": "telegram",
                     },
                 )
         elif (
@@ -6280,6 +6417,13 @@ async def subscription_miniapp_overview(request: Request):
                 payment_method=str(payload.get("method") or ""),
                 stage="overview",
                 error=str(result.get("error") or "checkout_unavailable"),
+            )
+        if result.get("ok"):
+            result = await attach_lava_block(
+                session, lava_runtime, await UserRepository(session).get_by_telegram_id(telegram_id), result,
+                mode=str(payload.get("mode") or ""), supports_lava=payload.get("supports_lava") is True,
+                campaign_id=_positive_int(payload.get("campaign_id")),
+                feedback_id=_positive_int(payload.get("feedback_id")),
             )
         return result
 
@@ -6413,6 +6557,7 @@ async def subscription_miniapp_event(request: Request):
                 "plan_type": _checkout_text(payload.get("plan_type"), 32),
                 "payment_method": _checkout_text(payload.get("payment_method"), 32),
                 "mode": _checkout_text(payload.get("mode"), 32),
+                "transport": "telegram",
             },
         )
     # A failed best-effort analytics write is not a successful delivery.
@@ -6547,8 +6692,52 @@ async def subscription_miniapp_submit(request: Request):
 
 @app.post("/api/miniapp/event")
 async def miniapp_event(request: Request):
+    from app.services.course_miniapp_analytics_service import ATTRIBUTED_CLIENT_EVENTS
+
+    if request.headers.get("X-HSK-Diagnostic") == "diag.v1":
+        from app.services.monitoring import catalog, miniapp as diagnostics
+        from app.services.monitoring.intake import IntakeBusy, IntakeRejected, bound_write, diagnostic_slot
+
+        def reply(body, status_code=200):
+            return JSONResponse(body, status_code=status_code, headers={"Cache-Control": "no-store"})
+
+        if not diagnostics.enabled(settings):
+            return reply(diagnostics.PAUSED)
+        try:
+            payload = await read_bounded_json(request)
+        except IntakeRejected as exc:
+            return reply({"ok": False, "error": exc.code}, 413 if exc.code == "too_large" else 422)
+        if not isinstance(payload, dict) or payload.get("event") != "app_error" or payload.get("schema") != catalog.SCHEMA:
+            return reply({"ok": False, "error": "invalid_diagnostic_schema"}, 422)
+        proof = request.headers.get("X-Telegram-Init-Data", "")
+        telegram_id = None
+        if len(proof) <= 8192:
+            try:
+                telegram_id = extract_fresh_verified_webapp_user_id(proof, settings.BOT_TOKEN, max_age_seconds=86400)
+            except (TypeError, ValueError):
+                pass  # Malformed signed data is an auth failure.
+        if not telegram_id:
+            return reply({"ok": False, "error": "invalid_telegram_init_data"}, 401)
+        try:
+            with diagnostic_slot(settings):
+                async with async_session_maker() as session:
+                    await bound_write(session)
+                    result = await diagnostics.record_client_batch(session, telegram_id=telegram_id,
+                                                                   payload=payload, settings=settings)
+            return reply(result, 403 if result.get("error") == "diagnostic_session_required" else 200)
+        except IntakeBusy:
+            return reply({"ok": False, "error": "diagnostics_unavailable"}, 503)
+        except Exception:
+            logger.warning("Mini App diagnostic intake failed")
+            return reply({"ok": False, "error": "diagnostics_unavailable"}, 503)
+
     payload = await request.json()
+    if not isinstance(payload, dict):
+        return {"ok": False, "error": "invalid_event"}
     event = str(payload.get("event") or "").strip()
+    if event == "app_error" and payload.get("schema") == "diag.v1":
+        # A diagnostic envelope must never fall through to the legacy Message path.
+        return JSONResponse(status_code=422, content={"ok": False, "error": "diagnostic_transport_required"})
 
     telegram_id = extract_verified_webapp_user_id(
         request.headers.get("X-Telegram-Init-Data", ""),
@@ -6556,6 +6745,13 @@ async def miniapp_event(request: Request):
     )
     if not telegram_id:
         return {"ok": False, "error": "invalid_telegram_init_data"}
+
+    # Never persist browser/native attribution from signed Telegram input.
+    # Telegram signatures identify the learner, not the source of an event.
+    payload.pop("transport", None)
+    payload.pop("client", None)
+    if _checkout_text(payload.get("source"), 40).casefold() == "pwa_course_v3":
+        payload.pop("source", None)
 
     async with async_session_maker() as session:
         if event == "bot_return_clicked":
@@ -6611,6 +6807,21 @@ async def miniapp_event(request: Request):
         if event == "v2_lesson_completed":
             return {"ok": False, "error": "course_lesson_flow_required"}
 
+        if event == "foundation_completed":
+            user = await UserRepository(session).get_by_telegram_id(telegram_id)
+            if user is None:
+                return {"ok": False, "error": "access_start_first"}
+            result = await CourseMiniAppProfileService(session).complete_foundation(
+                user, foundation_id=payload.get("foundation_id") or "starter0_hsk1",
+                foundation_version=payload.get("foundation_version"),
+                speaking_bonus=payload.get("speaking_bonus", False),
+                event_id=str(payload.get("event_id") or payload.get("dedupe_key") or "foundation:starter0_hsk1:v1"),
+                source="course_v3", session_id=str(payload.get("session_id") or "")[:80] or None,
+            )
+            if result.get("ok"):
+                await session.commit()
+            return result
+
         if event in analytics_service.CLIENT_EVENT_NAMES:
             user = await UserRepository(session).get_by_telegram_id(telegram_id)
             if event in SALES_EXPERIMENT_CLIENT_EVENTS:
@@ -6649,6 +6860,7 @@ async def miniapp_event(request: Request):
                 session_id=str(payload.get("session_id") or "") or None,
                 dedupe_key=dedupe_key,
                 payload=trusted_payload,
+                analytics_client="telegram" if event in ATTRIBUTED_CLIENT_EVENTS else None,
             )
             if result.get("ok"):
                 if event in {"desktop_promo_seen", "desktop_promo_dismissed"}:
@@ -6664,6 +6876,14 @@ async def miniapp_event(request: Request):
                         ),
                         action=action,
                     )
+                elif event == "android_play_opened":
+                    # Opening the Play listing is the Android offer accepted:
+                    # the same cooldown the Direct APK request starts.
+                    await AppPromoDecisionService(session).mark(
+                        telegram_id=telegram_id,
+                        target_platform="android",
+                        action="download_requested",
+                    )
                 await session.commit()
             return result
 
@@ -6678,11 +6898,15 @@ async def miniapp_event(request: Request):
             return {"ok": True}
 
         if event == "app_error":
-            saved = await AppErrorContextService(session).record_miniapp_error(
+            owner_user_id = await AppErrorContextService(session).record_miniapp_error_owner(
                 telegram_id=telegram_id,
                 payload=payload,
             )
-            return {"ok": bool(saved)}
+            if owner_user_id and getattr(settings, "MONITORING_MINIAPP_ADAPTER_ENABLED", False):
+                from app.services.monitoring.miniapp import queue_legacy_onboarding
+                queue_legacy_onboarding(async_session_maker, owner_user_id=owner_user_id,
+                                        payload=payload, settings=settings)
+            return {"ok": bool(owner_user_id)}
 
         service = CourseMiniAppResultService(session)
 
