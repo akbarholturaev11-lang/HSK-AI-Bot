@@ -66,6 +66,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.annotation.StringRes
 import androidx.compose.ui.unit.sp
@@ -387,8 +388,18 @@ private fun LessonBody(
             LessonTopBar(
                 progress = state.progress,
                 hearts = state.hearts,
+                counter = "${(state.cardIndex + 1).coerceAtMost(state.totalCards.coerceAtLeast(1))} / ${state.totalCards.coerceAtLeast(1)}",
                 onOpenPinyinSettings = onOpenPinyinSettings,
                 onExit = onExit,
+            )
+            // The Mini App's `.fstage`: which part of the lesson this is, centred
+            // under the bar. A card that already shows it as its heading skips it.
+            LessonStageLabel(
+                if (card is PictureReviewCard) {
+                    stringResource(R.string.hsk_course_picture_review_label)
+                } else {
+                    state.currentSectionTitle
+                }.takeUnless { it == lessonHeading(card, state.currentSectionTitle) },
             )
             if (state.isStale) StaleBanner()
 
@@ -562,6 +573,8 @@ private fun LessonBody(
                                 onSpeak = onSpeakPicture,
                                 onSkip = onSkipPicture,
                                 onContinue = onContinuePicture,
+                                // Column padding: 14 dp above, 20 dp below.
+                                minHeight = viewport - 34.dp,
                             )
                         }
                     }
@@ -691,6 +704,8 @@ internal fun LessonTopBar(
     hearts: Int,
     onOpenPinyinSettings: () -> Unit,
     onExit: () -> Unit,
+    /** "3 / 12", shown right before the hearts like the Mini App's `.fcount`. */
+    counter: String? = null,
 ) {
     val heartColor = if (PompColors.IsDark) PompColors.Flame else PompColors.Cinnabar
     Row(
@@ -721,11 +736,38 @@ internal fun LessonTopBar(
             tint = PompColors.InkDisabled,
         )
 
+        if (counter != null) {
+            Text(
+                text = counter,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = PompColors.CinnabarDark,
+                maxLines = 1,
+                softWrap = false,
+            )
+        }
+
         AnimatedHeartCounter(
             hearts = hearts,
             heartColor = heartColor,
         )
     }
+}
+
+/** The part of the lesson this card belongs to: small, bold, centred, upper case. */
+@Composable
+private fun LessonStageLabel(text: String?) {
+    if (text.isNullOrBlank()) return
+    Text(
+        text = text.uppercase(),
+        fontSize = 11.sp,
+        fontWeight = FontWeight.SemiBold,
+        color = PompColors.CinnabarDark,
+        textAlign = TextAlign.Center,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+        modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 2.dp),
+    )
 }
 
 @Composable

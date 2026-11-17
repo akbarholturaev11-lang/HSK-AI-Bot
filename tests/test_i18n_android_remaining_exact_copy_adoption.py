@@ -69,7 +69,7 @@ EXPECTED_GENERATED_CALLS = {
     "hsk_course_dictionary_page_all_versions": 1,
     "hsk_course_dictionary_fast_writer_next": 1,
     "hsk_course_dictionary_fast_writer_previous": 1,
-    "hsk_course_pronunciation_skip": 1,
+    "hsk_course_pronunciation_skip": 2,  # + UIUX-008 picture deck Skip
     "hsk_common_action_exit": 1,
     "hsk_course_streak_display_many": 1,
     "hsk_course_subscription_page_payment_approved_title": 1,

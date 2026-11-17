@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
@@ -22,11 +23,14 @@ import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompHskAiTheme
 import com.pomp.hskai.core.settings.PinyinVisibility
+import com.pomp.hskai.domain.model.Lesson
+import com.pomp.hskai.domain.model.LessonSection
 import com.pomp.hskai.domain.model.PictureReviewCard
 import com.pomp.hskai.domain.model.PictureWord
 import java.io.File
 import java.io.FileOutputStream
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -133,5 +137,66 @@ class PictureReviewDeckTest {
 
         compose.onNodeWithContentDescription("mushuk").assertIsDisplayed()
         compose.onNodeWithContentDescription("olma").assertDoesNotExist()
+    }
+
+    /**
+     * The whole lesson screen around the deck, like the Mini App's header: the
+     * "3 / 5" counter sits just before the hearts, the section label is
+     * centred under the bar, and the microphone and Skip are at the bottom.
+     */
+    @Test
+    fun theLessonHeaderAndTheBottomControlsMatchTheMiniApp() {
+        val lesson = Lesson(
+            level = "hsk1", order = 5, sourceLesson = 5, part = 1, partCount = 1,
+            isCheckpoint = false, title = "5", subtitle = "5",
+            sections = listOf(LessonSection(sectionNo = 2, title = "Mashq", purpose = "practice", cards = listOf(card))),
+        )
+        compose.setContent {
+            PompHskAiTheme {
+                LessonScreen(
+                    state = LessonUiState(
+                        isLoading = false, lesson = lesson, cardIndex = 0,
+                        completionAllowed = true, pictureDeck = deck.value,
+                    ),
+                    pinyin = PinyinVisibility.ALL,
+                    onAnswerChoice = { _, _ -> }, onAnswerBuilder = { _, _ -> }, onAnswerPairs = {},
+                    onAcknowledge = {}, onAdvance = {}, onPlayAudio = {}, onSpeakPronunciation = {},
+                    onSkipPronunciation = {}, onRetryCompletion = {}, onOpenPinyinSettings = {},
+                    onOpenWriter = {}, onShowWriterCharacter = {}, onCloseWriter = {}, onExit = {},
+                    onSpeakPicture = {}, onSkipPicture = { skips++ }, onContinuePicture = {},
+                )
+            }
+        }
+        // The full screen has looping coach animations the Compose capture waits
+        // on forever; the display itself can still be grabbed.
+        // The entry cinematic plays over the first frames of a lesson.
+        compose.waitUntil(timeoutMillis = 15_000) {
+            compose.onAllNodesWithText(text(R.string.lesson_entry_title)).fetchSemanticsNodes().isEmpty()
+        }
+        compose.waitForIdle()
+        InstrumentationRegistry.getInstrumentation().uiAutomation.takeScreenshot()?.let { bitmap ->
+            val dir = InstrumentationRegistry.getInstrumentation().targetContext.filesDir
+            FileOutputStream(File(dir, "picture-screen.png")).use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
+        }
+
+        val root = compose.onRoot().fetchSemanticsNode().boundsInRoot
+        val counter = compose.onNodeWithText("1 / 1").assertIsDisplayed().fetchSemanticsNode().boundsInRoot
+        val hearts = compose.onNodeWithText("5").assertIsDisplayed().fetchSemanticsNode().boundsInRoot
+        assertTrue("counter must sit before the hearts", counter.right <= hearts.left)
+        assertTrue("counter must share the hearts' row", kotlin.math.abs(counter.center.y - hearts.center.y) < 24f)
+
+        val label = compose.onNodeWithText(text(R.string.hsk_course_picture_review_label).uppercase())
+            .assertIsDisplayed().fetchSemanticsNode().boundsInRoot
+        assertTrue("the label is centred", kotlin.math.abs(label.center.x - root.center.x) < 4f)
+        assertTrue("the label is under the bar row", label.top >= hearts.bottom)
+
+        val mic = compose.onNodeWithContentDescription(text(R.string.hsk_course_course_voice_inline_a11y_mic))
+            .assertIsDisplayed().fetchSemanticsNode().boundsInRoot
+        val skip = compose.onNodeWithText(text(R.string.hsk_course_pronunciation_skip))
+            .assertIsDisplayed().fetchSemanticsNode().boundsInRoot
+        assertTrue("the microphone is centred", kotlin.math.abs(mic.center.x - root.center.x) < 4f)
+        assertTrue("the microphone is round", kotlin.math.abs(mic.width - mic.height) < 2f)
+        assertTrue("Skip is under the microphone", skip.top > mic.bottom)
+        assertTrue("the controls sit in the lower half", mic.center.y > root.height * 0.55f)
     }
 }

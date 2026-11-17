@@ -8,8 +8,13 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.StartOffset
+import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
@@ -29,10 +34,10 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Mic
-import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -48,8 +53,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.path
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -93,19 +104,29 @@ fun PictureReviewDeckView(
     onSpeak: () -> Unit,
     onSkip: () -> Unit,
     onContinue: () -> Unit,
+    /** The room the lesson leaves for the card; the controls sit at its bottom. */
+    minHeight: Dp = PICTURE_DECK_MIN_HEIGHT,
 ) {
     val context = LocalContext.current
     val motion = remember { !hskMotionOff(context) }
     var permissionDenied by remember { mutableStateOf(false) }
     val phase = deck.phase
-    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
-        PictureStack(card = card, deck = deck, pinyin = pinyin, motion = motion, onContinue = onContinue)
-        Spacer(Modifier.height(26.dp))
+    // The Mini App's `.lesson-pron`: the stack is centred in the space that
+    // is left and the microphone, hint and Skip are pinned to the bottom.
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxWidth().height(maxOf(minHeight, PICTURE_DECK_MIN_HEIGHT)),
+    ) {
+        Box(modifier = Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
+            PictureStack(card = card, deck = deck, pinyin = pinyin, motion = motion, onContinue = onContinue)
+        }
+        Spacer(Modifier.height(8.dp))
         val revealed = phase is PicturePhase.Reveal || phase is PicturePhase.Leaving
         Box(modifier = Modifier.alpha(if (revealed) 0.45f else 1f)) {
-            LessonMicButton(
+            PictureMicButton(
                 enabled = phase == PicturePhase.Ask,
                 isRecording = phase == PicturePhase.Recording,
+                motion = motion,
                 onSpeak = onSpeak,
                 onPermissionResult = { denied -> permissionDenied = denied },
             )
@@ -143,10 +164,14 @@ fun PictureReviewDeckView(
                 textAlign = TextAlign.Center,
             )
         }
-        Spacer(Modifier.height(10.dp))
+        Spacer(Modifier.height(2.dp))
         PictureSkipButton(enabled = phase !is PicturePhase.Leaving, onClick = onSkip)
+        Spacer(Modifier.height(24.dp))
     }
 }
+
+/** The Mini App's `.lesson-pron { min-height: 460px }`. */
+private val PICTURE_DECK_MIN_HEIGHT = 460.dp
 
 /** The Mini App's `.pr-skip`: quiet text and a skip icon, no button chrome. */
 @Composable
@@ -167,10 +192,10 @@ private fun PictureSkipButton(enabled: Boolean, onClick: () -> Unit) {
             color = PompColors.InkDisabled,
         )
         Icon(
-            imageVector = Icons.Filled.SkipNext,
+            imageVector = SkipForwardIcon,
             contentDescription = null,
             tint = PompColors.InkDisabled,
-            modifier = Modifier.size(16.dp),
+            modifier = Modifier.size(13.dp),
         )
     }
 }
@@ -189,7 +214,7 @@ private fun PictureStack(
         if (motion) intro.animateTo(1f, tween(durationMillis = 560, easing = LinearEasing))
     }
     BoxWithConstraints(
-        modifier = Modifier.fillMaxWidth().padding(top = 34.dp),
+        modifier = Modifier.fillMaxWidth().padding(top = 34.dp, bottom = 14.dp),
         contentAlignment = Alignment.TopCenter,
     ) {
         val width = if (maxWidth < 280.dp) maxWidth else 280.dp
@@ -388,6 +413,112 @@ private fun PictureStackCard(
         }
     }
 }
+
+/**
+ * The Mini App's `.pr-mic`: a flat 78 dp round button on an 84 dp slot, with
+ * two rings that ripple outwards while it listens (still when motion is off).
+ */
+@Composable
+private fun PictureMicButton(
+    enabled: Boolean,
+    isRecording: Boolean,
+    motion: Boolean,
+    onSpeak: () -> Unit,
+    onPermissionResult: (denied: Boolean) -> Unit,
+) {
+    val context = LocalContext.current
+    val permission = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { granted ->
+        onPermissionResult(!granted)
+        if (granted) onSpeak()
+    }
+    Box(modifier = Modifier.size(84.dp), contentAlignment = Alignment.Center) {
+        if (isRecording && motion) {
+            val transition = rememberInfiniteTransition(label = "picture-mic-rings")
+            for (offset in listOf(0, 700)) {
+                val t by transition.animateFloat(
+                    initialValue = 0f,
+                    targetValue = 1f,
+                    animationSpec = infiniteRepeatable(
+                        animation = tween(durationMillis = 1_400, easing = FastOutSlowInEasing),
+                        repeatMode = RepeatMode.Restart,
+                        initialStartOffset = StartOffset(offset),
+                    ),
+                    label = "picture-mic-ring",
+                )
+                Box(
+                    modifier = Modifier
+                        .size(78.dp)
+                        .graphicsLayer {
+                            val grow = 1f + 0.7f * t
+                            scaleX = grow
+                            scaleY = grow
+                            alpha = 0.6f * (1f - t)
+                        }
+                        .border(3.dp, PompColors.Cinnabar, CircleShape),
+                )
+            }
+        }
+        Surface(
+            onClick = {
+                val granted = ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.RECORD_AUDIO,
+                ) == PackageManager.PERMISSION_GRANTED
+                if (granted) {
+                    onPermissionResult(false)
+                    onSpeak()
+                } else {
+                    permission.launch(Manifest.permission.RECORD_AUDIO)
+                }
+            },
+            enabled = enabled,
+            shape = CircleShape,
+            color = PompColors.Cinnabar,
+            modifier = Modifier.size(78.dp),
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Icon(
+                    imageVector = Icons.Filled.Mic,
+                    contentDescription = stringResource(R.string.hsk_course_course_voice_inline_a11y_mic),
+                    tint = PompColors.Paper,
+                    modifier = Modifier.size(31.dp),
+                )
+            }
+        }
+    }
+}
+
+/** Tabler `player-skip-forward`, the outline the Mini App's Skip uses. */
+private val SkipForwardIcon: ImageVector = ImageVector.Builder(
+    name = "SkipForward",
+    defaultWidth = 24.dp,
+    defaultHeight = 24.dp,
+    viewportWidth = 24f,
+    viewportHeight = 24f,
+).apply {
+    path(
+        stroke = SolidColor(androidx.compose.ui.graphics.Color.Black),
+        strokeLineWidth = 2f,
+        strokeLineCap = StrokeCap.Round,
+        strokeLineJoin = StrokeJoin.Round,
+    ) {
+        moveTo(4f, 5f)
+        verticalLineToRelative(14f)
+        lineToRelative(12f, -7f)
+        close()
+    }
+    path(
+        stroke = SolidColor(androidx.compose.ui.graphics.Color.Black),
+        strokeLineWidth = 2f,
+        strokeLineCap = StrokeCap.Round,
+        strokeLineJoin = StrokeJoin.Round,
+    ) {
+        moveTo(20f, 5f)
+        verticalLineToRelative(14f)
+    }
+}.build()
 
 /**
  * The lesson's microphone: the pronunciation card's wide cinnabar button, with
