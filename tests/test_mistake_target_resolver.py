@@ -147,11 +147,20 @@ class ExamCoverageTests(unittest.TestCase):
                             language=language,
                             seed=question["id"],
                         )
-                        self.assertIsNotNone(review, (level, question["id"]))
-                        self.assertEqual(review["sentence"], question["sentence"])
-                        self.assertEqual(review["options"][review["answer_index"]], option["zh"])
                         self.assertIn("gap_fill", drills.ladder({"category": "word", **target}))
-                        self.assertIsNone(drills.validate_question(review))
+                        if option["zh"] in question["sentence"]:
+                            # Existing HSK2 source has 你___想去... with 想 as answer:
+                            # the visible answer must never leak into a new card.
+                            self.assertIsNone(review)
+                            self.assertIsNotNone(drills.build_question(
+                                {"id": 1, "category": "word", **target},
+                                "meaning_choice", language=language, seed=question["id"],
+                            ))
+                        else:
+                            self.assertIsNotNone(review, (level, question["id"]))
+                            self.assertEqual(review["sentence"], question["sentence"])
+                            self.assertEqual(review["options"][review["answer_index"]], option["zh"])
+                            self.assertIsNone(drills.validate_question(review))
                         if option["zh"] == "成长":
                             self.assertEqual(target["payload"]["pinyin"], "chéngzhǎng")
 
