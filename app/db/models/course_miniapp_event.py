@@ -54,6 +54,11 @@ COURSE_MINIAPP_EVENT_NAMES = (
     "mistake_review_started",
     "mistake_review_answered",
     "mistake_review_completed",
+    # UIUX-007 personal review inside ordinary lessons. Server-only facts;
+    # never lesson score/completion events and never the review master state.
+    "adaptive_assigned",
+    "adaptive_answer_verified",
+    "adaptive_shadow_planned",
     "course_ad_attempt_started",
     "course_ad_viewed",
     "paywall_seen",

@@ -78,6 +78,23 @@ def local_today(timezone_offset_minutes: int = 0) -> date:
     return date.fromisoformat(local_day_key(timezone_offset_minutes))
 
 
+def schedule_box(box: int, due_on: date, *, correct: bool, today: date) -> tuple[int, date]:
+    """Yagona interval takrori qoidasi: `(yangi box, yangi muddat)`.
+
+    To'g'ri javob faqat MUDDATI KELGAN bo'lsa ko'taradi — aks holda bir kunda
+    to'rt marta mashq qilib so'zni +21 kunga surib yuborish mumkin bo'lardi.
+    Xato 0-boxga qaytaradi va bugun muddatli qiladi. Mashq va dars ichidagi
+    shaxsiy takror (`CourseAdaptiveLessonService`) shu bitta qoidadan foydalanadi.
+    """
+    box = int(box or 0)
+    if not correct:
+        return 0, today
+    if due_on <= today:
+        box = min(box + 1, WORD_MASTERY_MAX_BOX)
+        return box, today + timedelta(days=WORD_MASTERY_INTERVALS[box])
+    return box, due_on
+
+
 class CourseWordMasteryService:
     def __init__(self, session):
         self.session = session
@@ -270,13 +287,9 @@ class CourseWordMasteryService:
         """
         if correct:
             row.correct_count = int(row.correct_count or 0) + 1
-            if row.due_on <= today:
-                row.box = min(int(row.box or 0) + 1, WORD_MASTERY_MAX_BOX)
-                row.due_on = today + timedelta(days=WORD_MASTERY_INTERVALS[row.box])
         else:
             row.wrong_count = int(row.wrong_count or 0) + 1
-            row.box = 0
-            row.due_on = today
+        row.box, row.due_on = schedule_box(row.box, row.due_on, correct=correct, today=today)
         row.last_result_at = datetime.now(timezone.utc)
 
     async def apply_results(

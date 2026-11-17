@@ -62,7 +62,7 @@ class StandaloneQAInitializerTests(unittest.TestCase):
                          [mod.EXPECTED_HEAD])
         self.assertEqual(mod.EXPECTED_BASELINE, "0102_payment_review_preview")
         # This is an explicit reviewed upgrade, not an arbitrary accepted head.
-        self.assertEqual(mod.EXPECTED_HEAD, "0157_diagnostic_precision")
+        self.assertEqual(mod.EXPECTED_HEAD, "0158_course_adaptive_lessons")
 
     def test_new_or_multiple_heads_stop_before_any_schema_creation_or_stamp(self):
         for heads in ([], ["0110_unreviewed"], [mod.EXPECTED_HEAD, "other_head"]):
@@ -103,6 +103,7 @@ class StandaloneQAInitializerTests(unittest.TestCase):
             "learner_pwa_push_subscriptions", "learner_pwa_push_outbox",
             "lava_invoices", "lava_webhook_events", "pwa_exit_offers",
             "diagnostic_incidents", "diagnostic_receipts",
+            "course_adaptive_plans",
         }
         self.assertEqual(set(metadata.tables) - initial, expected)
         self.assertIn("user_identities", initial)

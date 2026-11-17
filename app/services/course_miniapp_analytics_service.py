@@ -33,6 +33,11 @@ PASSIVE_SERVER_EVENT_NAMES = frozenset({
     "d1_recovery_sent",
     "d1_recovery_send_failed",
     "sales_offer_assigned",
+    # Adaptive review happens inside a lesson that already records activity;
+    # keeping it passive leaves learner activity identical with the flag on/off.
+    "adaptive_assigned",
+    "adaptive_answer_verified",
+    "adaptive_shadow_planned",
 })
 
 
