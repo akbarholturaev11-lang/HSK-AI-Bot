@@ -308,7 +308,7 @@ def resolve_target(
                 block = _choice_block(material, correct)
                 if block:
                     authored_meaning = _text(material.get("translation"), 300)
-                    if language in bank.LANGUAGES and authored_meaning and not bank.has_cjk(authored_meaning):
+                    if language in bank.LANGUAGES and authored_meaning:
                         block["meaning"] = {language: authored_meaning}
                     target["payload"]["gap"] = {"sentence": sentence, **block}
             return target
