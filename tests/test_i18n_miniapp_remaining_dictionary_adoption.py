@@ -171,7 +171,9 @@ class RemainingMiniappDictionaryAdoptionTests(unittest.TestCase):
         self.assertEqual(catalog_sources()["uz"]["track.switchConfirmBody"], expected)
         self.assertIn(expected, source)
         self.assertNotIn("qayтишингиз мумкин", source)
-        for key in ("lessonPreview.helloGloss", "rating.leagueName", "rating.membersTotal"):
+        # The lesson sheet no longer shows the fixed 你好 greeting line.
+        self.assertNotIn('courseMessage("lessonPreview.helloGloss",', source)
+        for key in ("rating.leagueName", "rating.membersTotal"):
             self.assertIn('courseMessage("' + key + '",', source)
 
     @unittest.skipUnless(shutil.which("node"), "Node.js unavailable")

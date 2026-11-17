@@ -588,11 +588,18 @@ function toCourse(){
   q.set("tab",String(launch.tab||"course"));
   q.set("onboarded","1");
   if(launch.foundation_required)q.set("foundation","1");else q.delete("foundation");
-  // Lost POST response: do not fabricate a lesson ID/autostart.
-  if(!launch.reconciled&&global.track==="hsk20"&&
+  // A confirmed onboarding save can launch the server-selected current lesson
+  // on either HSK track. A reconciled POST has no trusted lesson number:
+  // resume=1 resolves it from the authenticated course map instead.
+  if(hostPwa&& !launch.placement&&!launch.review_only){
+    if(!launch.reconciled&&Number(launch.lesson)>0)q.set("lesson",String(launch.lesson));
+    else q.delete("lesson");
+    q.set("resume","1");q.set("autostart","1");
+  }else if(!hostPwa&&!launch.reconciled&&global.track==="hsk20"&&
      Number(launch.lesson)>0&&!launch.placement){
-    q.set("lesson",String(launch.lesson));q.set("autostart","1");
-  }else{q.delete("lesson");q.delete("autostart")}
+    // Keep the existing Telegram Mini App course handoff unchanged.
+    q.set("lesson",String(launch.lesson));q.set("autostart","1");q.delete("resume");
+  }else{q.delete("lesson");q.delete("resume");q.delete("autostart")}
   location.assign(pageCourse()+"?"+q.toString());
 }
 function showLiveBooks(){

@@ -82,10 +82,12 @@ jobs:
           tests/test_i18n_miniapp_hotspot_triage.py
           tests/test_i18n_miniapp_inline_adoption.py
           tests/test_i18n_miniapp_lesson_fetch_audit.py
+          tests/test_first_lesson_direct_flow.py
           tests/test_miniapp_onboarding_save_confirmation.py
           tests/test_admin_pwa_v10_regression.py
           tests/test_admin_pwa_platform_scope.py
           tests/test_checkout_transport_marker.py
+          tests/test_checkout_opening_reliability.py
           tests/test_analytics_platform_chain.py
           tests/test_admin_pwa_pro_funnel.py
           tests/test_pwa_pro_funnel_chain.py

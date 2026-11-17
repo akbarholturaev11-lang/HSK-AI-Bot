@@ -3,11 +3,11 @@
   "status": "PURPOSE_SPECIFIC_APIS_SOURCE_REVIEWED",
   "source": "app/static/course-v3.html",
   "source_revision": "ed41339e6863645bacc8dd87eb38512462d3cf68",
-  "scope": "Three direct loadLessonData(...) expressions remain: audio warmup, nearby prefetch, and the post-reservation interactive lesson. Sales preview, Starter 0, and skip-test use separate purpose-specific endpoints. No client caller reads the legacy public lesson JSON route.",
+  "scope": "Three direct loadLessonData(...) expressions remain: audio warmup, nearby prefetch, and the post-reservation interactive lesson. Sales preview, Starter 0, and skip-test use separate purpose-specific endpoints. No client caller reads the legacy public lesson JSON route. 2026-11-16: next-part sheet handoff and one-line sheet header re-reviewed; the three direct and three indirect lesson read sites are unchanged and were re-anchored by exact source identity.",
   "read_calls": [
     {
       "ordinal": 1,
-      "line": 2685,
+      "line": 2687,
       "anchor": "loadLessonData(lv,n)",
       "owner": "warmLessonPreviewAudio",
       "intent": "audio_preload_before_continue",
@@ -17,7 +17,7 @@
     },
     {
       "ordinal": 2,
-      "line": 3702,
+      "line": 3716,
       "anchor": "loadLessonData(lv,l.n)",
       "owner": "prefetchNearbyLessons",
       "intent": "background_nearby_prefetch",
@@ -27,7 +27,7 @@
     },
     {
       "ordinal": 3,
-      "line": 4824,
+      "line": 4874,
       "anchor": "loadLessonData(lv,l.n)",
       "owner": "startLesson",
       "intent": "interactive_lesson_after_reservation",
@@ -38,17 +38,17 @@
   ],
   "additional_indirect_entrypoints": [
     {
-      "line": 4293,
+      "line": 4342,
       "name": "warmLessonPreviewAudio",
       "intent": "preview_on_sheet_open"
     },
     {
-      "line": 6235,
+      "line": 6285,
       "name": "prefetchNearbyLessons",
       "intent": "track_switch_background"
     },
     {
-      "line": 9749,
+      "line": 9804,
       "name": "prefetchNearbyLessons",
       "intent": "initial_course_boot_background"
     }

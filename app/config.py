@@ -158,6 +158,10 @@ class Settings(BaseSettings):
     # overview aggregates. Store a distinct random >=48-character secret in
     # Railway and the analytics GitHub Actions secrets; disabled when blank.
     ADMIN_PWA_MANUAL_AGGREGATE_REFRESH_TOKEN: str = ""
+    # Kill switch for the additive full refresh (manifest + one section/platform
+    # group per request) on the same owner endpoint. OFF keeps the legacy
+    # `{}` and single-window contract exactly as before.
+    ADMIN_PWA_FULL_REFRESH_ENABLED: bool = False
     # Independent kill switch; no public MCP resource/OAuth flow is mounted.
     ADMIN_PWA_MCP_ENABLED: bool = False
     # Never enable before complete OAuth consent UI, client registration and security review.

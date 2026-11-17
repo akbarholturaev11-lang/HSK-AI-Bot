@@ -46,7 +46,7 @@ internal class OnboardingViewModel(
             val state = initial.withStatus(guestPreview)
             val preview = state.ui.copy(selectedTrack = "hsk20", selectedLevel = "beginner")
             val restored = initialDraft?.takeIf {
-                it.track != "hsk30" || (preview.hsk30Enabled && it.level in preview.hsk30LiveLevels)
+                it.track != "hsk30" || (preview.hsk30Enabled && preview.hsk30Allowed && it.level in preview.hsk30LiveLevels)
             }
             state.copy(ui = restored?.applyTo(preview)?.copy(step = 7) ?: preview)
         }
@@ -95,8 +95,8 @@ internal class OnboardingViewModel(
         val hasLiveHsk30 = status.hsk30.enabled && liveHsk30Levels.isNotEmpty()
         val serverLevel = normalizeLevel(status.level)
         val selectedTrack = when {
-            hasLiveHsk30 && serverLevel in HSK30_LEVELS -> "hsk30"
-            !status.completed && hasLiveHsk30 -> "hsk30"
+            hasLiveHsk30 && serverLevel in HSK30_LEVELS && (status.completed || status.hsk30.allowed) -> "hsk30"
+            !status.completed && hasLiveHsk30 && status.hsk30.allowed -> "hsk30"
             else -> "hsk20"
         }
         val selectedLevel = when {

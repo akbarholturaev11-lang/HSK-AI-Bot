@@ -906,7 +906,8 @@ app.include_router(create_admin_pwa_feedback_analytics_router(settings_obj=setti
 app.include_router(create_admin_pwa_read_router(settings_obj=settings, session_factory=async_session_maker,
     statistics_reader=admin_pwa_statistics_reader,analytics_reader=admin_pwa_analytics_reader))
 app.include_router(create_manual_aggregate_refresh_router(
-    settings_obj=settings, analytics_reader=admin_pwa_analytics_reader))
+    settings_obj=settings, analytics_reader=admin_pwa_analytics_reader,
+    feedback_reader=admin_pwa_feedback_reader))
 app.include_router(create_admin_pwa_inbox_triage_router(settings_obj=settings, session_factory=async_session_maker))
 app.include_router(create_admin_pwa_inbox_attachment_router(
     settings_obj=settings, session_factory=async_session_maker,
@@ -6383,8 +6384,8 @@ async def subscription_miniapp_overview(request: Request):
             )
             await SubscriptionChurnService(session).mark_subscription_miniapp_opened(telegram_id, source)
             if not result.get("pending_payment"):
-                await ConversionFunnelService().record(
-                    event_name="checkout_opened",
+                # Checked, retried once, never doubled; never changes this response.
+                await ConversionFunnelService().record_checkout_opened(
                     user=user,
                     telegram_id=telegram_id,
                     source=source,

@@ -299,6 +299,8 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 .shead .zh{font-size:34px;line-height:1}
 .shead .py{font-size:15px;color:var(--cin2);font-weight:500;margin-top:5px}
 .shead .tr{font-size:13px;color:var(--ink2);margin-top:2px}
+.shead .fit1{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;transition:none}
+.shead .zh.fit1{line-height:1.2;margin:-.1em 0}
 .shead .stars{color:var(--gold);font-size:15px;margin-top:6px;letter-spacing:2px}
 .pmeta{font-size:12px;color:var(--ink2);font-weight:500;margin:0 2px 8px;display:flex;justify-content:space-between}
 .secs{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
@@ -2877,6 +2879,8 @@ var App={
     SETTINGS_SHEET=PWA_COURSE_HOST&&SCREEN==="settings";
     var sheet=$("#sheet");sheet.classList.remove("on","hsk30-promo-center","hsk30-book-card","course-choice-sheet","profile-apps-choice","lesson-exit-confirm");sheet.removeAttribute("role");sheet.removeAttribute("aria-modal");sheet.removeAttribute("aria-label");sheet.removeAttribute("aria-labelledby");sheet.removeAttribute("tabindex");stopSheetPromo();setSheetBackgroundInert(false);var returnFocus=SHEET_RETURN_FOCUS;SHEET_RETURN_FOCUS=null;if(returnFocus&&returnFocus.isConnected&&typeof returnFocus.focus==="function")returnFocus.focus({preventScroll:true});
     var revealUnlock=!!window._pendingUnlockAfterSheet;window._pendingUnlockAfterSheet=false;
+    var afterLessonSheet=window._afterLessonSheetClose;window._afterLessonSheetClose=null;
+    if(typeof afterLessonSheet==="function")setTimeout(afterLessonSheet,revealUnlock?260:0);
     /* Qulf ochilishi animatsiyasi ustiga reklama chiqmaydi — u o'quvchi
        kutgan mukofot. Kechiktirilgan markaz reklamasi keyingi safar
        varaq yopilganda chiqadi. */
@@ -3014,7 +3018,9 @@ var App={
       var streak=window._pendingStreak;
       var showStreak=!!(streak&&streak.extended&&Number(streak.now)>0);
       $("#lu-stage").innerHTML='<div class="lu-emb">'+V.emb+'</div><h2>'+V.h+'</h2><p>'+V.p+'</p>'+rewards;
-      $("#lu-cta").setAttribute("onclick",(showStreak?"event.stopPropagation();":"")+(firstCp?(showStreak?"App.showStreakScreen('checkpoint')":"App.openCheckpointNext()"):(showStreak?"App.showStreakScreen()":"App.closeLevelUp()")));
+      /* A completed part whose next part is ready ends on that part's sheet. */
+      var toNextPart=!firstCp&&t0!=="level"&&typeof window._pendingCheckpointNextIdx==="number";
+      $("#lu-cta").setAttribute("onclick",(showStreak?"event.stopPropagation();":"")+(firstCp?(showStreak?"App.showStreakScreen('checkpoint')":"App.openCheckpointNext()"):toNextPart?(showStreak?"App.showStreakScreen('next')":"App.openCheckpointNext()"):(showStreak?"App.showStreakScreen()":"App.closeLevelUp()")));
       var nextLabel=courseMessage("nextLessonOpen",LANG==="ru"?"Открыть следующий урок":LANG==="tj"?"Кушодани дарси оянда":"Keyingi darsni ochish");
       $("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+(firstCp&&!showStreak?nextLabel:lu.cont);
       $("#levelup").classList.add("on");
@@ -3026,7 +3032,8 @@ var App={
   showStreakScreen:function(next){
     var ps=window._pendingStreak;window._pendingStreak=null;
     var n=ps?ps.now:0;
-    if(!ps||!n||!ps.extended){if(next==="checkpoint")App.openCheckpointNext();else App.closeLevelUp();return}
+    var toNext=next==="checkpoint"||next==="next";
+    if(!ps||!n||!ps.extended){if(toNext)App.openCheckpointNext();else App.closeLevelUp();return}
     var W=(window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.course_v3.W.copy1",{ru:{one:"день в ударе!",few:"дня в ударе!",many:"дней в ударе!",cont:"Продолжить"},
       uz:{one:"kun ketma-ket!",few:"kun ketma-ket!",many:"kun ketma-ket!",cont:"Davom etish"},
       tj:{one:"рӯз пайдарпай!",few:"рӯз пайдарпай!",many:"рӯз пайдарпай!",cont:"Идома"}})[LANG];W={one:courseMessage("streakDisplay.one",W.one),few:courseMessage("streakDisplay.few",W.few),many:courseMessage("streakDisplay.many",W.many),cont:courseMessage("streakDisplay.cont",W.cont)};
@@ -3040,7 +3047,7 @@ var App={
         +'<div class="sk-panda">'+pandaChar("celebrate")+'</div></div>'
         +'<div class="sk-num">'+n+'</div><h2>'+lbl+'</h2><p>'+desc+'</p>'
         +'<div class="sk-days">'+skDaysHtml(n,true,ps)+'</div>'+skWeekGoalHtml(ps);
-      $("#lu-cta").setAttribute("onclick",next==="checkpoint"?"App.openCheckpointNext()":"App.closeLevelUp()");
+      $("#lu-cta").setAttribute("onclick",toNext?"App.openCheckpointNext()":"App.closeLevelUp()");
       var nextLabel=courseMessage("nextLessonOpen",LANG==="ru"?"Открыть следующий урок":LANG==="tj"?"Кушодани дарси оянда":"Keyingi darsni ochish");
       $("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+(next==="checkpoint"?nextLabel:W.cont);
       $("#levelup").classList.add("on");
@@ -3102,7 +3109,7 @@ var App={
      o'quvchi kurs xaritasiga qaytadi (bo'sh reyting oynasi ochilmaydi). */
   openCheckpointNext:function(){
     if(pendingRankUp){App.showRankUp("checkpoint_next");return}
-    if(App.showSalesBridge())return;
+    if(window._pendingCheckpointSalesBridge&&App.showSalesBridge())return;
     window._pendingStreak=null;pendingRankUp=null;App.closeLevelUp("checkpoint_next");
   },
   showSalesBridge:function(){
@@ -3143,31 +3150,38 @@ var App={
     var desktopLesson=Number(window._pendingDesktopLessonPromo)||0;
     window._pendingDesktopLessonPromo=0;
     var checkpointNext=Number(window._pendingCheckpointNextIdx);
-    window._pendingCheckpointNextIdx=null;
+    var firstCheckpointNext=!!window._pendingCheckpointSalesBridge;
+    window._pendingCheckpointNextIdx=null;window._pendingCheckpointSalesBridge=false;
     if(dest==="checkpoint_next"){window._pendingCourseUnlockOrder=0;window._pendingCourseUnlockRetries=0}
     var go=function(){
       if(dest==="rating"){App.show("rating");renderRating()}
       else{App.show("course");renderAll()}
       if(dest!=="rating"&&dest!=="checkpoint_next")setTimeout(animatePendingCourseUnlock,140);
-      if(dest==="checkpoint_next"&&checkpointNext>=0&&allLessons()[checkpointNext])setTimeout(function(){openLessonSheet(checkpointNext)},80);
       if(desktopLesson&&window.PompDesktopDownload&&window.PompDesktopDownload.queuePromo){
         window.PompDesktopDownload.queuePromo("lesson_end_promo",{lesson_id:desktopLesson});
       }
-      /* Birinchi dars tugagach kunlik vaqt va fokus so'raladi — bayram,
-         reklama va desktop promo'dan KEYIN, ya'ni hech biri bilan
-         to'qnashmaydi. Server javob bermaguncha so'ralmaydi. */
-      if(studySetupPending())setTimeout(askPendingStudySetup,700);
       var lessonFeedback=window._pendingPwaLessonFeedback||null;
       window._pendingPwaLessonFeedback=null;
-      if(PWA_COURSE_HOST&&lessonFeedback&&!dest&&document.visibilityState==="visible"){
-        lessonFeedback.canOpen=function(){
-          return SCREEN==="course"&&MAP&&MAP.level===lessonFeedback.level&&
-            document.visibilityState==="visible"&&!NavBack.blocked()&&!NavBack.top();
-        };
-        setTimeout(function(){
-          if(lessonFeedback.canOpen()&&window.HskPwaFeedback)HskPwaFeedback.open(lessonFeedback);
-        },900);
-      }
+      var afterReturn=function(){
+        /* Birinchi dars tugagach kunlik vaqt va fokus so'raladi — bayram,
+           reklama va desktop promo'dan KEYIN, ya'ni hech biri bilan
+           to'qnashmaydi. Server javob bermaguncha so'ralmaydi. */
+        if(studySetupPending())setTimeout(askPendingStudySetup,700);
+        if(PWA_COURSE_HOST&&lessonFeedback&&dest!=="rating"&&document.visibilityState==="visible"){
+          lessonFeedback.canOpen=function(){
+            return SCREEN==="course"&&MAP&&MAP.level===lessonFeedback.level&&
+              document.visibilityState==="visible"&&!NavBack.blocked()&&!NavBack.top();
+          };
+          setTimeout(function(){
+            if(lessonFeedback.canOpen()&&window.HskPwaFeedback)HskPwaFeedback.open(lessonFeedback);
+          },900);
+        }
+      };
+      /* The next part's sheet stays on top: study setup and feedback wait
+         until the learner closes it without starting the part. */
+      if(dest==="checkpoint_next"&&checkpointNext>=0&&allLessons()[checkpointNext])openNextPartSheet(checkpointNext,firstCheckpointNext,afterReturn);
+      else if(!dest||dest==="checkpoint_next")afterReturn();
+      else if(studySetupPending())setTimeout(askPendingStudySetup,700);
     };
     /* Bepul userga dars yakuni reklamasi — bayram/streak/reyting ekranlaridan
        KEYIN, xaritaga qaytishdan oldin. Reklama yo'q yoki yuklanmasa jim o'tadi. */
@@ -4273,6 +4287,41 @@ function showCourseMapFailure(res){
   else showCourseLoadError();
   return true;
 }
+/* Lesson sheet head: "Lesson · Part" label, then hanzi and pinyin, each kept
+   on one line. Returns the still-open .shead for the caller's extras. */
+function lessonSheetHead(l,chip){
+  var label=' role="heading" aria-level="2"';
+  return '<div class="shead">'+(chip?'<div class="py"'+label+' style="margin-bottom:2px">'+esc(chip)+'</div>':'')
+    +'<div class="zh han fit1"'+(chip?'':label)+'>'+esc(l.zh)+'</div><div class="py fit1">'+esc(l.py||"")+'</div>';
+}
+/* A long line shrinks from its normal size until it fits; a short one never
+   grows. Measured once the sheet is visible, with the exact (fractional) text
+   width: scrollWidth is rounded and would leave a sub-pixel "…" overflow. */
+function fitOneLine(el,min){
+  el.style.fontSize="";
+  var max=parseFloat(getComputedStyle(el).fontSize)||0,w=el.clientWidth-1,range=document.createRange();
+  range.selectNodeContents(el);
+  var need=function(){return range.getBoundingClientRect().width};
+  if(!max||w<=0||need()<=w)return;
+  var size=Math.max(min,Math.floor(max*w/need()*2)/2);
+  el.style.fontSize=size+"px";
+  while(need()>w&&size>min){size=Math.max(min,size-.5);el.style.fontSize=size+"px"}
+}
+function fitSheetHeader(){
+  document.querySelectorAll("#sheet.on .shead .fit1").forEach(function(el){fitOneLine(el,el.classList.contains("zh")?14:10)});
+}
+window.addEventListener("resize",fitSheetHeader);
+/* After a completed part: open the next part's sheet on the course map.
+   The first HSK1 checkpoint keeps its original sheet/skip-test/paywall path. */
+function openNextPartSheet(idx,firstCheckpoint,afterClose){
+  var lv=MAP&&MAP.level;
+  setTimeout(function(){
+    var l=MAP&&MAP.level===lv?allLessons()[idx]:null;
+    if(!l||SCREEN!=="course"||(!firstCheckpoint&&(l.status!=="current"||isPremiumLocked(l)))){afterClose();return}
+    openLessonSheet(idx);
+    if($("#sheet").classList.contains("on"))window._afterLessonSheetClose=afterClose;else afterClose();
+  },80);
+}
 function openLessonSheet(idx){
   var l=allLessons()[idx];if(!l)return;
   if(isPremiumLocked(l)){openLockedLessonSheet(idx);return}
@@ -4286,9 +4335,9 @@ function openLessonSheet(idx){
      "davom etish" yoki "takrorlash" qoladi. */
   var cta=l.status==="current"?'<button class="scta" onclick="startLesson('+idx+')"><i class="ti ti-player-play"></i> '+courseMessage("cont",T().cont)+'</button>'
     :'<button class="scta ghost" onclick="startLesson('+idx+')"><i class="ti ti-refresh"></i> '+courseMessage("repeat",T().repeat)+'</button>';
-  App.openSheet('<div class="shead">'+(chip?'<div class="py" style="margin-bottom:2px">'+esc(chip)+'</div>':'')
-    +'<div class="zh han">'+esc(l.zh)+'</div><div class="py">'+esc(l.py||"")+'</div><div class="tr">'+esc(tr(l.tr))+'</div>'+(Number(l.src)===1?'<div class="tr" style="margin-top:5px;color:var(--cin2)">你好 · nǐ hǎo · '+esc(courseMessage("lessonPreview.helloGloss",LANG==="ru"?"привет":LANG==="tj"?"салом":"salom"))+'</div>':'')+stars+'</div>'
+  App.openSheet(lessonSheetHead(l,chip)+stars+'</div>'
     +'<div class="pmeta"><span>'+n+' '+courseMessage("stage",T().stage)+'</span><span>'+prog+' / '+n+' '+courseMessage("completeOf",T().completeOf)+'</span></div><div class="secs">'+secs+'</div>'+cta);
+  fitSheetHeader();
   /* Start fetching the initial pronunciation before "Continue" is tapped. */
   warmLessonPreviewAudio((MAP&&MAP.level)||"hsk1",l.n);
 }
@@ -4318,11 +4367,11 @@ function skipI18n(){
 function offerSkipTest(idx){
   var l=allLessons()[idx];if(!l)return;
   var s=skipI18n();var chip=partChip(l);
-  App.openSheet('<div class="shead">'+(chip?'<div class="py" style="margin-bottom:2px">'+esc(chip)+'</div>':'')
-    +'<div class="zh han">'+esc(l.zh)+'</div><div class="py">'+esc(l.py||"")+'</div><div class="tr">'+esc(tr(l.tr))+'</div></div>'
+  App.openSheet(lessonSheetHead(l,chip)+'</div>'
     +'<div class="pmeta" style="justify-content:center"><span><i class="ti ti-bolt"></i> '+esc(s.offerTag)+'</span></div>'
     +'<div class="tr" style="margin:2px 6px 16px;text-align:center;color:var(--ink2);line-height:1.5">'+esc(s.offerP)+'</div>'
     +'<button class="scta" onclick="startSkipTest('+idx+')"><i class="ti ti-bolt"></i> '+esc(s.offerBtn)+'</button>');
+  fitSheetHeader();
 }
 function buildTestQueue(d){
   var pool=Array.isArray(d&&d.questions)?d.questions.slice(0,6):[];
@@ -4811,6 +4860,7 @@ function showLessonCompleteRetry(msg){
 function startLesson(idx,opts){
   opts=opts||{};
   if(!opts.foundationCleared&&requireFoundationBefore(function(){var nextOpts={};for(var ok in opts)nextOpts[ok]=opts[ok];nextOpts.foundationCleared=true;startLesson(idx,nextOpts)}))return;
+  window._afterLessonSheetClose=null; // starting a part is not a return to the map
   var l=allLessons()[idx];App.closeSheet();
   if(!l)return;
   if(isPremiumLocked(l)){openLockedLessonSheet(idx);return}
@@ -4833,7 +4883,7 @@ function startLesson(idx,opts){
     trackCourseEvent("lesson_started",{
       source:"course_v3",
       lesson_order:l.n,
-      activation_variant:activationVariant(),
+      activation_variant:opts.activationVariant||activationVariant(),
       dedupe_key:lessonEventKey("lesson_started",l.n)
     });
     HP=5;$("#f-hp").textContent=HP;
@@ -6285,7 +6335,12 @@ function applyLessonDone(cur,d){
   if(typeof d.completed_lessons_count!=="undefined")applyLocalProgress(d.completed_lessons_count);
   else applyLocalProgress(Math.max(Number(MAP.progress&&MAP.progress.completed)||0,Number(cur.n)||0));
   if(nextWasLocked&&next&&next.status!=="locked")window._pendingCourseUnlockOrder=Number(next.n)||0;
-  window._pendingCheckpointNextIdx=(cur&&cur.checkpoint&&normalizeLevel((MAP&&MAP.level)||"hsk1")==="hsk1"&&Number(cur.src)===1&&next)?al.indexOf(next):null;
+  var firstCheckpointNext=!!(cur&&cur.checkpoint&&normalizeLevel((MAP&&MAP.level)||"hsk1")==="hsk1"&&Number(cur.src)===1&&next);
+  /* Every saved part continues to the next part's sheet when that part is
+     now current and open; locked or Pro-locked parts keep the course map. */
+  var nextPartSheet=!!(d&&d.ok&&next&&next.status==="current"&&!isPremiumLocked(next));
+  window._pendingCheckpointNextIdx=(firstCheckpointNext||nextPartSheet)?al.indexOf(next):null;
+  window._pendingCheckpointSalesBridge=firstCheckpointNext;
   renderAll();
   if(d&&d.ok)refreshCourseProgress(true);
   if(al.every(function(l){return l.status==="done"})){
@@ -9763,11 +9818,12 @@ var finishHskLaunchSplash=(function(){
     function openInitialLesson(){
       if(initialLesson<=0)return;
       var idx=-1;allLessons().forEach(function(l,i){if(Number(l.n)===initialLesson)idx=i});
-      if(idx>=0)setTimeout(function(){
+      if(sp.get("onboarded")==="1"&&sp.get("autostart")==="1"&&(idx<0||allLessons()[idx].status!=="current"))idx=allLessons().findIndex(function(l){return l.status==="current"});if(idx>=0)setTimeout(function(){
         App.show("course");
         if(sp.get("autostart")==="1"){
-          startLesson(idx);
-          try{sp.delete("autostart");history.replaceState(null,"",location.pathname+"?"+sp.toString()+location.hash)}catch(e){}
+          var variant=activationVariant(); // capture before consuming one-shot URL intent
+          startLesson(idx,{activationVariant:variant});
+          try{sp.delete("autostart");sp.delete("resume");history.replaceState(null,"",location.pathname+"?"+sp.toString()+location.hash)}catch(e){}
         }else openLessonSheet(idx);
       },80);
     }

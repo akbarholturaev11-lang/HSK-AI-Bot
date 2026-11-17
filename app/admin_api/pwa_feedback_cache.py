@@ -102,6 +102,26 @@ class AdminPwaFeedbackReader(AdminPwaStatisticsReader):
         except (ValueError, TypeError, KeyError, OverflowError, RecursionError):
             return None
 
+    async def refresh_feedback_bundle(self, *, periods):
+        """Full refresh of the existing all-source category aggregate only.
+
+        Same loader, schema and strict `_decode` as the read path: category
+        counts from the latest 500 records per source, never feedback text.
+        There is no all-time window, so only weekly and monthly are accepted.
+        """
+        if (not periods or len(set(periods)) != len(periods)
+                or any(period not in ("weekly", "monthly") for period in periods)):
+            raise StatisticsUnavailable("Manual statistics refresh unavailable")
+
+        def accept(data, query):
+            if not isinstance(data, dict) or data.get("source") != "all" or data.get("period") != query.period:
+                raise StatisticsUnavailable("Unexpected bundle projection")
+            return None
+
+        items = [(period, FeedbackAnalyticsRequest(period=period, source="all"),
+                  "all_" + period, ("all", period)) for period in periods]
+        return await self._refresh_bundle(kind="feedback", group="all", items=items, accept=accept)
+
     async def __call__(self, query):
         query = FeedbackAnalyticsRequest.model_validate(query.model_dump())
         if not getattr(self.settings, "ADMIN_PWA_ENABLED", False):
