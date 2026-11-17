@@ -97,52 +97,63 @@ class LessonCoverageTests(unittest.TestCase):
 
 
 class ExamCoverageTests(unittest.TestCase):
-    def test_hsk4_exam_blanks_review_exact_missing_word(self):
-        source = json.load(open("app/static/course_v3_data/exams/hsk4.json", encoding="utf-8"))
-        material = canonicalize_hsk_exam_material(source, level="hsk4", lang="ru", source_path="exam")
-        blanks = [
-            question for question in material["questions"]
-            if question["format"] == "text_choice" and "___" in question["sentence"]
-        ]
-        self.assertGreaterEqual(len(blanks), 5)
-        for question in blanks:
-            with self.subTest(question=question["id"]):
-                correct = question["answer_index"]
-                option = question["option_materials"][correct]
-                target = resolve_target(
-                    category="word",
-                    source="test",
-                    material={
-                        "format": question["format"],
-                        "language": "ru",
-                        "prompt": question["prompt"],
-                        "sentence": question["sentence"],
-                        "pinyin": option["pinyin"],
-                        "translation": option["translation"],
-                        "options": question["options"],
-                        "correct_answer": question["options"][correct],
-                    },
-                    prompt=question["prompt"],
-                    correct_answer=question["options"][correct],
-                    user_answer=question["options"][(correct + 1) % len(question["options"])],
-                    explanation=question["explanation"],
-                    level="hsk4",
-                    language="ru",
+    def test_hsk1_to_hsk4_exam_blanks_keep_word_and_original_context(self):
+        for level in ("hsk1", "hsk2", "hsk3", "hsk4"):
+            source = json.load(open(f"app/static/course_v3_data/exams/{level}.json", encoding="utf-8"))
+            for language in ("uz", "ru", "tj"):
+                material = canonicalize_hsk_exam_material(
+                    source, level=level, lang=language, source_path="exam"
                 )
-                self.assertIsNotNone(target)
-                self.assertEqual((target["kind"], target["zh"]), ("word", option["zh"]))
-                self.assertTrue(target["payload"]["meaning"].get("ru"))
-                review = drills.build_question(
-                    {"id": 1, "category": "word", **target},
-                    "meaning_choice",
-                    language="ru",
-                    seed=question["id"],
-                )
-                self.assertIsNotNone(review)
-                self.assertEqual(review["sentence"], option["zh"])
-                self.assertNotEqual(review["sentence"], question["sentence"].replace("___", option["zh"]))
-                if option["zh"] == "成长":
-                    self.assertEqual(target["payload"]["pinyin"], "chéngzhǎng")
+                blanks = [
+                    question for question in material["questions"]
+                    if question["format"] == "text_choice" and "___" in question["sentence"]
+                ]
+                self.assertGreaterEqual(len(blanks), 5, level)
+                for question in blanks:
+                    with self.subTest(level=level, language=language, question=question["id"]):
+                        correct = question["answer_index"]
+                        option = question["option_materials"][correct]
+                        target = resolve_target(
+                            category="word",
+                            source="test",
+                            material={
+                                "format": question["format"],
+                                "language": language,
+                                "prompt": question["prompt"],
+                                "sentence": question["sentence"],
+                                "pinyin": option["pinyin"],
+                                "translation": option["translation"],
+                                "options": question["options"],
+                                "correct_answer": question["options"][correct],
+                            },
+                            prompt=question["prompt"],
+                            correct_answer=question["options"][correct],
+                            user_answer=question["options"][(correct + 1) % len(question["options"])],
+                            explanation=question["explanation"],
+                            level=level,
+                            language=language,
+                        )
+                        self.assertIsNotNone(target)
+                        self.assertEqual((target["kind"], target["zh"]), ("word", option["zh"]))
+                        self.assertTrue(target["payload"]["meaning"].get(language))
+                        gap = target["payload"]["gap"]
+                        self.assertEqual(gap["sentence"], question["sentence"])
+                        self.assertEqual(gap["options"][gap["answer_index"]], option["zh"])
+                        self.assertEqual(gap["options"], question["options"])
+                        self.assertEqual(gap["answer_index"], correct)
+                        review = drills.build_question(
+                            {"id": 1, "category": "word", **target},
+                            "gap_fill",
+                            language=language,
+                            seed=question["id"],
+                        )
+                        self.assertIsNotNone(review, (level, question["id"]))
+                        self.assertEqual(review["sentence"], question["sentence"])
+                        self.assertEqual(review["options"][review["answer_index"]], option["zh"])
+                        self.assertIn("gap_fill", drills.ladder({"category": "word", **target}))
+                        self.assertIsNone(drills.validate_question(review))
+                        if option["zh"] == "成长":
+                            self.assertEqual(target["payload"]["pinyin"], "chéngzhǎng")
 
     def test_every_exam_question_resolves(self):
         missing = []
