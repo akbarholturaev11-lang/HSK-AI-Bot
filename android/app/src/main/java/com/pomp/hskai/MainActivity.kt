@@ -2070,6 +2070,7 @@ private fun LessonHost(
             // the learner up the weekly league.
             featureRepository = app.featureRepository,
             voiceRecorder = app.voiceRecorder,
+            adaptiveRepository = app.adaptiveLessonRepository,
         ),
     )
     val lessonState by model.state.collectAsStateWithLifecycle()
@@ -2120,6 +2121,8 @@ private fun LessonHost(
         onOpenWriter = model::openWriter,
         onShowWriterCharacter = model::showWriterCharacter,
         onCloseWriter = model::closeWriter,
+        onAnswerAdaptive = model::answerAdaptive,
+        onContinueAdaptive = model::continueAdaptive,
         onExit = {
             val completed = lessonState.outcome is LessonOutcome.Completed
             model.endAttempt(launch.attemptKey)

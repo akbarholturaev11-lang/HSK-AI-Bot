@@ -27,6 +27,8 @@ import com.pomp.hskai.data.api.AndroidOnboardingApi
 import com.pomp.hskai.data.api.AndroidGuestOnboardingApi
 import com.pomp.hskai.feature.onboarding.GuestLiDraftStore
 import com.pomp.hskai.data.api.AndroidStudyPreferencesApi
+import com.pomp.hskai.data.api.AndroidAdaptiveApi
+import com.pomp.hskai.data.repository.AdaptiveLessonRepository
 import com.pomp.hskai.data.local.BundledDictionaryInsights
 import com.pomp.hskai.data.local.BundledStrokes
 import com.pomp.hskai.data.local.CdnWordAudio
@@ -303,6 +305,14 @@ class HskAiApplication : Application() {
             ttsCache = ttsCache,
             bundledStrokes = bundledStrokes,
             cdnAudio = cdnWordAudio,
+        )
+    }
+
+    /** In-lesson personal review (UIUX-007); quiet on every failure. */
+    val adaptiveLessonRepository: AdaptiveLessonRepository by lazy {
+        AdaptiveLessonRepository(
+            api = retrofit.create(AndroidAdaptiveApi::class.java),
+            accessToken = authRepository::accessToken,
         )
     }
 

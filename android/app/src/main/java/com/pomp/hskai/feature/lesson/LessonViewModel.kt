@@ -11,12 +11,18 @@ import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.core.settings.LessonResumeStore
+import com.pomp.hskai.data.api.AdaptiveAnswerResponseDto
+import com.pomp.hskai.data.api.AdaptiveItemDto
+import com.pomp.hskai.data.api.AdaptivePlanDto
 import com.pomp.hskai.data.api.CourseCompleteResponse
 import com.pomp.hskai.data.api.CourseGamificationDto
 import com.pomp.hskai.data.api.CourseMistakeDto
 import com.pomp.hskai.data.api.RatingResponse
 import com.pomp.hskai.data.api.VoicePronounceResponse
+import com.pomp.hskai.data.repository.AdaptiveAnswerOutcome
+import com.pomp.hskai.data.repository.AdaptiveLessonRepository
 import com.pomp.hskai.data.repository.CourseRepository
+import com.pomp.hskai.data.repository.MISTAKE_REVIEW_FORMATS
 import com.pomp.hskai.data.repository.FeatureRepository
 import com.pomp.hskai.domain.model.ChoiceCard
 import com.pomp.hskai.domain.model.PronunciationCard
@@ -61,6 +67,64 @@ internal fun nextN1PilotCardIndex(
     }
     return cursor
 }
+
+/*
+ * In-lesson personal review (UIUX-007), the Mini App's `adaptivePlace`:
+ * a server-planned question may stand in front of a base card, only right
+ * after a graded card and never inside the exit/repair part. The base deck,
+ * its index, score, hearts, streak, mistakes and completion never see it.
+ */
+private val ADAPTIVE_STOP_PURPOSES = setOf("exit_ticket", "learning_exit_check", "learning_repair_bank")
+
+private fun LessonCard.isAdaptiveGraded(): Boolean =
+    this is ChoiceCard || this is SentenceBuilderCard || this is ReverseBuilderCard || this is MatchPairsCard
+
+/** Card indexes a review may stand in front of, from [cardIndex] on. */
+internal fun adaptiveBoundaries(lesson: Lesson, cardIndex: Int): List<Int> {
+    val cards = lesson.cards
+    var stopAt = cards.size
+    var offset = 0
+    for (section in lesson.sections) {
+        if (section.purpose in ADAPTIVE_STOP_PURPOSES) {
+            stopAt = offset
+            break
+        }
+        offset += section.cards.size
+    }
+    return (maxOf(2, cardIndex + 1) until stopAt).filter { cards[it - 1].isAdaptiveGraded() }
+}
+
+/** The server's `placement_slots`, so a resumed lesson spreads reviews the same way. */
+internal fun adaptiveSlots(eligible: List<Int>, count: Int): List<Int> {
+    val picked = mutableListOf<Int>()
+    val wanted = minOf(count, eligible.size)
+    for (k in 0 until wanted) {
+        var pos = ((k + 1) * eligible.size / (wanted + 1)).coerceIn(0, eligible.size - 1)
+        while (eligible[pos] in picked && pos < eligible.size - 1) pos++
+        if (eligible[pos] !in picked) picked += eligible[pos]
+    }
+    return picked
+}
+
+/** Only questions this build can draw and has not answered yet. */
+internal fun AdaptiveItemDto.isDrawable(): Boolean {
+    val q = question
+    if (answered || id.isBlank() || q.id.isBlank() || q.prompt.isBlank() || q.format !in MISTAKE_REVIEW_FORMATS) return false
+    return if (q.format == "sentence_builder" || q.format == "listen_builder") q.tokens.size >= 2 else q.options.size in 2..4
+}
+
+/** A personal review question standing in front of [LessonUiState.currentCard]. */
+data class AdaptiveReviewState(
+    val planId: Long,
+    val item: AdaptiveItemDto,
+    val checking: Boolean = false,
+    val selectedIndex: Int? = null,
+    val selectedTokens: List<String>? = null,
+    /** The server's verdict. Null until it lands. */
+    val feedback: AdaptiveAnswerResponseDto? = null,
+    /** No connection: kept on the phone and checked before the next plan. */
+    val savedOffline: Boolean = false,
+)
 
 /** What the learner has done with the card currently on screen. */
 sealed interface AnswerState {
@@ -164,6 +228,11 @@ data class LessonUiState(
     val writerIndex: Int = 0,
     val writerStrokes: CharacterStrokes? = null,
     val isWriterLoading: Boolean = false,
+    /**
+     * A personal review shown before [currentCard]. It has its own answer and
+     * verdict; nothing above (index, score, hearts, streak) changes for it.
+     */
+    val adaptive: AdaptiveReviewState? = null,
 ) {
     val cards: List<LessonCard> get() = lesson?.cards.orEmpty()
     val currentCard: LessonCard? get() = cards.getOrNull(cardIndex)
@@ -269,6 +338,8 @@ class LessonViewModel(
     private val accessRef: String = "",
     /** Absent in tests, where there is no device storage to resume from. */
     private val resumeStore: LessonResumeStore? = null,
+    /** In-lesson personal review; absent where it is not wired (tests, previews). */
+    private val adaptiveRepository: AdaptiveLessonRepository? = null,
     /**
      * A new id is created only when [beginAttempt] receives a new launch key.
      * Completion retries inside that attempt keep the same id. Trailing, so a
@@ -298,6 +369,10 @@ class LessonViewModel(
     private var audioJob: Job? = null
     private var pronunciationJob: Job? = null
 
+    /** Planned personal reviews by the card index they stand in front of. */
+    private val adaptivePending = sortedMapOf<Int, AdaptiveItemDto>()
+    private var adaptivePlanId: Long = 0
+
     /** The stroke fetch for the character the writing sheet is on. */
     private var writerJob: Job? = null
 
@@ -317,6 +392,7 @@ class LessonViewModel(
         mistakes.clear()
         n1FailedCheckIndices.clear()
         n1CheckHistoryKnown = true
+        resetAdaptive()
         _state.value = LessonUiState()
         load()
     }
@@ -326,6 +402,7 @@ class LessonViewModel(
         if (activeAttemptKey != attemptKey) return
         activeAttemptKey = null
         loadGeneration++
+        resetAdaptive()
         stopAudio()
         stopPronunciation()
         _state.update { it.copy(isAudioLoading = false, audioError = null) }
@@ -363,6 +440,7 @@ class LessonViewModel(
                         completionError = snapshot.completionError,
                         isStale = snapshot.isStale,
                     )
+                    loadAdaptive(generation)
                 }
 
                 is ApiResult.Failure -> if (generation == loadGeneration) {
@@ -614,6 +692,8 @@ class LessonViewModel(
 
     /** Moves past the feedback bar to the next card, or finishes the lesson. */
     fun advance() {
+        // The review's own Continue clears it; nothing advances behind it.
+        if (_state.value.adaptive != null) return
         stopPronunciation()
         val current = _state.value
         val next = nextN1PilotCardIndex(
@@ -639,6 +719,7 @@ class LessonViewModel(
         }
 
         rememberPosition(next)
+        val review = takeAdaptive(next)
         _state.update {
             it.copy(
                 cardIndex = next,
@@ -646,8 +727,88 @@ class LessonViewModel(
                 audioError = null,
                 pronunciationScore = null,
                 pronunciationError = null,
+                adaptive = review,
             )
         }
+    }
+
+    /**
+     * Asks for this lesson's personal reviews. Any failure means none: the
+     * lesson is already on screen and never waits for this. A free preview
+     * or a deck opened from the phone's own copy gets none either.
+     */
+    private fun loadAdaptive(generation: Long) {
+        resetAdaptive()
+        val repo = adaptiveRepository ?: return
+        val current = _state.value
+        val lesson = current.lesson ?: return
+        if (!current.completionAllowed || current.isStale) return
+        val attemptKey = activeAttemptKey ?: return
+        viewModelScope.launch {
+            val plan = repo.plan(lesson.level.ifBlank { level }, lessonOrder, language.backendCode) ?: return@launch
+            if (generation != loadGeneration || activeAttemptKey != attemptKey) return@launch
+            placeAdaptive(plan)
+        }
+    }
+
+    private fun placeAdaptive(plan: AdaptivePlanDto) {
+        val state = _state.value
+        val lesson = state.lesson ?: return
+        // A plan for another lesson (the request outlived a reopen) is not this deck's.
+        if (plan.lessonOrder != 0 && plan.lessonOrder != lessonOrder) return
+        val items = plan.items.filter { it.isDrawable() }
+        adaptivePending.clear()
+        adaptivePlanId = plan.id
+        adaptiveSlots(adaptiveBoundaries(lesson, state.cardIndex), items.size)
+            .forEachIndexed { k, boundary -> adaptivePending[boundary] = items[k] }
+    }
+
+    /** The earliest planned review at or before [index]; a skipped boundary keeps its question. */
+    private fun takeAdaptive(index: Int): AdaptiveReviewState? {
+        if (adaptiveRepository == null || adaptivePlanId <= 0) return null
+        val boundary = adaptivePending.keys.firstOrNull { it <= index } ?: return null
+        val item = adaptivePending.remove(boundary) ?: return null
+        return AdaptiveReviewState(planId = adaptivePlanId, item = item)
+    }
+
+    private fun resetAdaptive() {
+        adaptivePending.clear()
+        adaptivePlanId = 0
+    }
+
+    /** Sends the review answer; the server alone decides whether it was right. */
+    fun answerAdaptive(selectedIndex: Int? = null, selectedTokens: List<String>? = null) {
+        val review = _state.value.adaptive ?: return
+        if (review.checking || review.feedback != null || review.savedOffline) return
+        if ((selectedIndex == null) == (selectedTokens == null)) return
+        val repo = adaptiveRepository ?: return
+        val attemptKey = activeAttemptKey ?: return
+        _state.update {
+            it.copy(adaptive = review.copy(checking = true, selectedIndex = selectedIndex, selectedTokens = selectedTokens))
+        }
+        viewModelScope.launch {
+            val outcome = repo.answer(review.planId, review.item.id, selectedIndex, selectedTokens)
+            if (activeAttemptKey != attemptKey) return@launch
+            _state.update { current ->
+                val shown = current.adaptive
+                if (shown == null || shown.item.id != review.item.id) return@update current
+                when (outcome) {
+                    is AdaptiveAnswerOutcome.Verified -> current.copy(
+                        adaptive = shown.copy(checking = false, feedback = outcome.response),
+                    )
+                    AdaptiveAnswerOutcome.Saved -> current.copy(adaptive = shown.copy(checking = false, savedOffline = true))
+                    // A refused answer (stale plan, feature switched off) never stops the lesson.
+                    AdaptiveAnswerOutcome.Rejected -> current.copy(adaptive = null)
+                }
+            }
+        }
+    }
+
+    /** Leaves the review; the base card it stood in front of comes up unchanged. */
+    fun continueAdaptive() {
+        val review = _state.value.adaptive ?: return
+        if (review.checking) return
+        _state.update { it.copy(adaptive = null) }
     }
 
     private fun finish() {
@@ -793,6 +954,7 @@ class LessonViewModel(
         private val accessRef: String = "",
         private val featureRepository: FeatureRepository? = null,
         private val voiceRecorder: VoiceRecorder,
+        private val adaptiveRepository: AdaptiveLessonRepository? = null,
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T = LessonViewModel(
@@ -805,6 +967,7 @@ class LessonViewModel(
             language = language,
             accessRef = accessRef,
             resumeStore = resumeStore,
+            adaptiveRepository = adaptiveRepository,
         ) as T
     }
 
