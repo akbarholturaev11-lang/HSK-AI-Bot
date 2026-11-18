@@ -42,9 +42,104 @@ Bu fayl loyiha egasi kelajakda bajarish uchun saqlagan g‘oya va vazifalarning 
 - Acceptance: Real qurilmada davomli nutq, javob boshlanish kechikishi, audio uzilishlar, noto‘g‘ri interruptlar, qayta ulanish, pedagogik sifat va bir suhbat narxi solishtirilib, regressiya testlari o‘tgach `VERIFY`ga o‘tadi.
 - Implementation: Hozircha faqat rejalashtirilgan; kod o‘zgartirilmagan.
 
+
+## UI/UX rejadagi tugallanmagan ishlar (2026-11-18 main auditi)
+
+Manba: [HSK_AI_UI_UX_IMPROVEMENTS.md](HSK_AI_UI_UX_IMPROVEMENTS.md); kod ko‘rilgan `main` HEAD: `5bbbf707ad5874284d1a509561abb54ceee48055`.
+Bu yozuvlar **takror implementatsiya qilish buyrug‘i emas**. Boshlashdan avval hozirgi `main`, tegishli OpenSpec va loyiha qoidalarini qayta tekshiring. `VERIFY` — asosan amalga oshirilgan, ammo real qurilma/rollout tekshiruvi tugamagan; `PLANNED` — kelishilgan yakuniy UX hali bajarilmagan (qisman mavjud kod qayta ishlatiladi).
+
+### NXT-003 — UIUX-007: Adaptive Learning'ni qurilmada tasdiqlash va rollout
+- Status: VERIFY
+- Added: 2026-11-18
+- Priority: UI/UX rejadagi 1
+- Goal: Oddiy dars ichida avvalgi xatolar bo‘yicha shaxsiy tekshiruvlarni xavfsiz ishga tushirish.
+- Implemented: Server, PWA va Android oqimlari `main`ga PR #325 orqali qo‘shilgan; `openspec/changes/course-adaptive-lesson-engine/tasks.md` dagi 1–3.5 bandlari bajarilgan deb qayd etilgan.
+- Remaining: Shu checklistdagi **3.6** — Safari/Home Screen PWA, Android Play/Direct, HSK 2.0/3.0, UZ/RU/TJ real qurilma QA; **3.7** — shadow → allowlist → percent rollout va egasining production flag yoqish qarori.
+- Risks / open questions: Feature flag default OFF; XP, oddiy dars natijasi, xatolar va progressga aralashmasin. Real qurilma va production yoqilishi tekshirilmagan.
+- Acceptance: Device QA natijalari, regressiya va xavfsiz rollback isboti; egasi tasdig‘idan keyin yopilsin.
+- Implementation: [OpenSpec tasks](openspec/changes/course-adaptive-lesson-engine/tasks.md), PR #325.
+
+### NXT-004 — UIUX-008: Rasmli talaffuz kartochkalarini tasdiqlash va rollout
+- Status: VERIFY
+- Added: 2026-11-18
+- Priority: UI/UX rejadagi 2
+- Goal: O‘tilgan xitoycha so‘zni aniq rasm/emoji orqali aytib tekshiradigan kartochkalarni ishonchli ishlatish.
+- Implemented: Server reja, PWA/Android deck va kuratsiya qilingan mapping `main`ga PR #326 va #328 orqali qo‘shilgan. `lesson_picture_words.json`ni qayta yaratish shart emas.
+- Remaining: `openspec/changes/course-interactive-flashcards/tasks.md` **3.5** — Android parser/ViewModel unit test, static gates, Direct debug build va emulator; **4.1** — iPhone PWA + Android real ovoz sinovi; **4.2** — allowlist → percent rollout va staging'da flag-off rollback. O‘rganilgan so‘zlar, aniq tasvir semantikasi va HSK darajalari qamrovi ham real darslarda tekshirilsin.
+- Risks / open questions: Noto‘g‘ri emoji/so‘z ma'nosi, mikrofondagi aniqlash xatosi, Android emoji glyph va mavjud talaffuz kvotasi; tugallanmagan device acceptance.
+- Acceptance: Checklistdagi ochiq bandlar sinov dalili bilan yopilib, egasi tasdiqlasin.
+- Implementation: [OpenSpec tasks](openspec/changes/course-interactive-flashcards/tasks.md), PR #326 / #328.
+
+### NXT-005 — UIUX-012: Checkout'dan chiqishda aniq 20% taklif UX'ni yakunlash
+- Status: PLANNED
+- Added: 2026-11-18
+- Priority: UI/UX rejadagi 3
+- Goal: Eligible foydalanuvchi checkout'ni yopmoqchi bo‘lsa bir marta markaziy 20% taklif berish, rad etgach esa keyingi X'da bevosita chiqish.
+- Existing: `app/services/pwa_exit_offer_service.py` va Android Lava'da 20% exit-offer ning qismi bor; PWA inline checkout X hozir to‘g‘ridan-to‘g‘ri qaytishga ulanadi, Android Direct manual X ham bevosita yopadi.
+- Remaining: PWA va Android qo‘llaydigan checkout yo‘llarida bir xil bir-attempt X → offer → X dismiss → keyingi X exit oqimi; qadamli Back va checkout tanlovlari saqlansin; real server quote bilan chegirma aktivatsiyasi; owner tasdiqlagan **never paid OR never redeemed discount** tarixiy eligibility va repeat-attempt semantikasi, invoice/paid/refund test matritsasi; RU/TJ/UZ va accessibility.
+- Risks / open questions: Hozirgi 24 soatlik/consumed offer modeli talab etilgan eligibility bilan bir xil emas. `OR` iqtisodiy jihatdan avval to‘lagan, lekin chegirma ishlatmaganlarga ham 20% berishi mumkin — owner qarori o‘zgarmasdan `AND`ga aylantirilmasin. Play payment policy, double offer va pending invoice saqlansin.
+- Acceptance: [UIUX-012](HSK_AI_UI_UX_IMPROVEMENTS.md) dagi 1–8 qabul ssenariysi va server-paid tasdiqlari o‘tsin.
+- Implementation: Mavjud checkout/offer kodi; yangi to‘liq UX hali tasdiqlanmagan.
+
+### NXT-006 — UIUX-002: Alohida XP va Streak ekranlari
+- Status: PLANNED
+- Added: 2026-11-18
+- Priority: UI/UX rejadagi 4
+- Goal: Kurs tepasidagi 🔥 Streak va 💎 XP ko‘rsatkichlaridan har biri alohida **to‘liq ekran** ochsin.
+- Existing: Backend real XP/streak hisoblaydi, onboarding'da 7/14/30/50 kunlik maqsad mavjud, profilda haftalik kalendar bor. Android `CourseScreen.kt` statistik chip'lari faqat son ko‘rsatmoqda.
+- Remaining: PWA + Android full-screen Streak (serverdagi oy kalendari, haqiqiy shaxsiy target, o‘zgartirish) va XP (jami/kun/hafta, tekshirilgan award qoidalari, mavjud bo‘lsa xavfsiz event tarixi) ekranlari; kurs indikatorlari bosiladigan bo‘lsin; haqiqiy ma'lumot bo‘lmagan davr to‘ldirib ko‘rsatilmasin.
+- Risks / open questions: XP valyuta emas; server anti-dedupe va timezone saqlansin. Oldingi `showStreakScreen` level-up ko‘rinishi yangi target detail ekranining o‘rnini bosmaydi.
+- Acceptance: [UIUX-002](HSK_AI_UI_UX_IMPROVEMENTS.md) 1–6 mezonlari UZ/RU/TJ va real PWA/Android'da o‘tsin.
+- Implementation: Rejalashtirilgan; tayyor progress servislari qayta ishlatilsin.
+
+### NXT-007 — UIUX-003: Smart Dictionary filter va akkauntga bog‘langan saqlangan so‘zlar
+- Status: PLANNED
+- Added: 2026-11-18
+- Priority: UI/UX rejadagi 5
+- Goal: Lug‘at avtomatik joriy HSK 2.0/3.0 versiyasini olsin, yagona level qatori va ⭐ Saved filtri bo‘lsin.
+- Existing: PWA `hsk-lugat.html`da versiya/level ikkita filter, Android `DictionaryScreen.kt`da versiya bottom sheet va `DictionaryViewModel.kt`da qo‘lda filtrlash bor; tayyor iboralarda mahalliy favorites mexanizmi mavjud.
+- Remaining: Joriy account/course versiyasi asosida default `All levels`, versiyani oddiy lug‘at ekranida qayta tanlamaslik; har so‘zga ☆/★; saved filter; PWA↔Android account-scoped sync uchun minimal xavfsiz API/store (agar mavjud bo‘lmasa), stable word identity va user-switch xavfsizligi.
+- Risks / open questions: Tayyor iboralar localStorage'ini so‘zlarga server authority deb ko‘chirmang. HSK 2.0/3.0 kesishadigan so‘zlar yo‘qolmasin.
+- Acceptance: [UIUX-003](HSK_AI_UI_UX_IMPROVEMENTS.md) bo‘yicha qayta login, ikki qurilma, HSK switch, qidiruv va empty/error tekshiruvi.
+- Implementation: Yakuniy UX hali kodda yo‘q.
+
+### NXT-008 — UIUX-004: Tayyor iboralarni yig‘iladigan audio kartochkalarga o‘tkazish
+- Status: PLANNED
+- Added: 2026-11-18
+- Priority: UI/UX rejadagi 6
+- Goal: Tayyor iboralar default yopiq: faqat hanzi + ☆/★ + 🔊 + chevron; bosilganda pinyin, tarjima, kategoriya, kichik copy.
+- Existing: `hsk-gaplar.html` va Android `ReadyPhrasesScreen.kt`da iboralar, qidiruv va favorites ishlashi yozilgan, ammo hozir pinyin/tarjima doimo ko‘rinadi, hammasi collapsed emas va 🔊 har kartada yo‘q.
+- Remaining: Bir vaqtning o‘zida faqat bitta kartani ochish, alohida save/audio harakatlari, Chinese-only TTS'ni mavjud servis orqali tekshirish, audio loading/play/stop/error va UZ/RU/TJ/VoiceOver/TalkBack.
+- Risks / open questions: Ovoz xizmati narxi, PWA playback ruxsati, Android audio lifecycle va skroll tezligi; mavjud favorites va qidiruv regressiyasi bo‘lmasin.
+- Acceptance: [UIUX-004](HSK_AI_UI_UX_IMPROVEMENTS.md) da aniq berilgan yopiq/ochiq ko‘rinish va qurilma testlari.
+- Implementation: Asosiy iboralar funksiyasi tayyor, UX o‘zgarishi rejalashtirilgan.
+
+### NXT-009 — UIUX-005: Profilni ixchamlashtirish, dublikat bloklarni olib tashlash
+- Status: PLANNED
+- Added: 2026-11-18
+- Priority: UI/UX rejadagi 7
+- Goal: PWA va Android profilda bitta haqiqiy Pro holati/CTA, bitta aniqlik bloki, haftalik streak, bitta «100 dars» achievement va do‘stlar bo‘lsin.
+- Existing: Ikkala client'da profil, accuracy, haftalik kalendar va achievement'lar mavjud. Lekin PWA `renderProfile()`da alohida Pro link, «30 kun» dublikati va promo root; Android profilida Pro CTA, achievements va promo carousel alohida qo‘shiladi.
+- Remaining: Tasdiqlangan UIUX-005 tartibiga moslashtirish; dublikat «30 kun» va takror Pro CTA'larni olib tashlash; Free/Trial/Temporary/Pro state va haqiqiy ma'lumotni saqlash; Liquid Glass pastki panel va safe-area'ga tegmaslik; yangi UIUX-002 detail ekranga ulash.
+- Risks / open questions: Checkout, notification, settings, account va scrolling yo‘qolmasin. UIUX-002 tayyorlanishi bilan mos bog‘lash.
+- Acceptance: [UIUX-005](HSK_AI_UI_UX_IMPROVEMENTS.md) profil acceptance va client parity, barcha access state'lar tekshirilsin.
+- Implementation: Mavjud profil kodini minimal qayta joylash; final UX hali to‘liq qilinmagan.
+
+### NXT-010 — UIUX-009: Ikkinchi darajali ikonkalarning ortiqcha fonlarini tozalash
+- Status: PLANNED
+- Added: 2026-11-18
+- Priority: UI/UX rejadagi 8
+- Goal: PWA va Android lesson/course/practice/profile da utility ikonkalarning ikki qavat kartochka, qalin doira, takroriy border/dekor fonlarini bir xil qoida asosida kamaytirish.
+- Existing: Alohida ekranlarda minimalistik o‘zgarishlar bor, ammo [UIUX-009](HSK_AI_UI_UX_IMPROVEMENTS.md) dagi **ilova bo‘ylab tekshirilgan yagona cleanup** uchun tugallangan acceptance dalili topilmadi.
+- Remaining: Aniq screenshot/component inventari, faqat ortiqcha dekorni olib tashlash, touch target va focus/contrast/VoiceOver/TalkBack saqlanishi, PWA/Android visual regression.
+- Risks / open questions: Primary CTA va Liquid Glass pastki navigatsiyani bekor qilmang; hamma ikonkalardan fonni ko‘r-ko‘rona olib tashlamang.
+- Acceptance: Katta ekranlarda izchil dizayn, mos contrast/press/focus/safe area sinovlari.
+- Implementation: Vizual QA talab qilinadi; avtomatik universal CSS almashtirish emas.
+
+
 <!-- Yozuv namunasi (vazifa emas):
 
-### NXT-001 — Qisqa nom
+### NXT-XXX — Qisqa nom
 - Status: PLANNED
 - Added: YYYY-MM-DD
 - Priority: normal
