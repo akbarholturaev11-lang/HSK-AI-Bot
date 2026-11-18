@@ -1673,7 +1673,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 <link rel="stylesheet" href="/assets/characters/hsk-scene-background.css?v=20261009-preparing-compact-1">
   <script defer src="/course_v3_data/hsk-diagnostics.js?v=20261115-5408a5e8b789"></script>
 </head>
-<body class="hsk-scene-page">
+<body class="hsk-scene-page">\n<div id="pwa-glass-wall" aria-hidden="true"></div>
 <div id="hsk-launch-splash" class="is-playing" role="img" aria-label="HSK AI">
   <div class="hsk-launch-stage">
     <div class="hsk-launch-halo" aria-hidden="true"></div>
@@ -1721,7 +1721,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
        bo'limning o'ziga o'xshab turmaydi. Bo'lim almashganda yangilanadi. -->
   <div id="hint-float" aria-live="polite"></div>
 
-  <nav class="nav" id="nav">
+  <nav class="nav glass" id="nav">
     <button class="on" data-s="course" aria-current="page"><i class="ti ti-map-2" id="i-c"></i><span data-i="course">Курс</span></button>
     <button data-s="mashq"><i class="ti ti-cards"></i><span data-i="mashq">Практика</span></button>
     <button class="center" data-s="voice"><span class="fab"><i class="ti ti-microphone"></i></span><span class="lbl" data-i="voice">AI Voice</span></button>
@@ -10508,5 +10508,12 @@ window.addEventListener("pageshow",function(ev){
     !document.querySelector("#hsk-launch-splash:not(.is-done),#hsk-pwa-notice-root:not([hidden]),#tour.on,#sheet.on,#flow.on")}});
 },6000)},{once:true});</script>
 <script src="/course_v3_data/iphone-pwa-shake-report.js?v=20261105-cde548d60e7a"></script><script>if(location.pathname==="/iphone-pwa/course"){var hskPwaInvite=document.createElement("script");hskPwaInvite.src="/course_v3_data/iphone-pwa-invite.js?v=20261105-f6bf81e66fe4";document.head.appendChild(hskPwaInvite)}</script><script>if(location.pathname==="/iphone-pwa/course"&&new URLSearchParams(location.search).get("pwa_perf")==="1"){var hskPwaPerfScript=document.createElement("script");hskPwaPerfScript.src="/course_v3_data/iphone-pwa-perf.js?v=20261105-0dbef5d08a9d";document.head.appendChild(hskPwaPerfScript)}</script>
+<script type="module">
+if (document.documentElement.classList.contains("hsk-pwa-browser")) {
+  import("/course_v3_data/liquid-glass.js?v=20261118-pwa-nav-1")
+    .then(({liquidGlass}) => liquidGlass(document.getElementById("pwa-glass-wall"), "#nav.glass"))
+    .catch(() => {}); // Keep existing blurred navigation if the optional effect fails.
+}
+</script>
 </body>
 </html>
