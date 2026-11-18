@@ -11,6 +11,7 @@ Read these existing root files before code changes:
 - `AGENTS.md`
 - `AI_RULES.md`
 - `PROJECT_MEMORY.md`
+- `NEXTATION.md` — read the owner-approved future-work queue at session start; only suggest open items when no current task is specified, and never implement one without owner approval.
 
 Read `CLAUDE.md` as Claude-specific guidance, plus the README and other docs
 relevant to the task. The repository's `AGENTS.md` defines the shared session
