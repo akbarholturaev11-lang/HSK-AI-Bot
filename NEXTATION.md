@@ -21,7 +21,15 @@ Bu fayl loyiha egasi kelajakda bajarish uchun saqlagan g‘oya va vazifalarning 
 
 ## Kelgusi vazifalar
 
-Hozircha saqlangan vazifa yo‘q.
+### NXT-001 — HSK AI optimizatsiyasi (PWA + Android + Backend)
+- Status: IN_PROGRESS
+- Added: 2026-11-18
+- Priority: current
+- Goal: HSK AI ilovasining tezligi va ishlash samaradorligini yaxshilash.
+- Scope: Avval kelishilgan umumiy PWA + Android + Backend optimizatsiyasi; [talablar](docs/PERFORMANCE_BACKEND_PWA_GOALS_REQUIREMENTS.md) va [performance qoidalari](docs/PERFORMANCE_PWA_PROGRESSIVE_LOADING.md) bo‘yicha. Desktop rivojlantirish hozircha scope'dan tashqarida.
+- Risks / open questions: Tezlikni yaxshilash auth, kurs, progress, Pro va to‘lov oqimlarini buzmasligi kerak. Realizatsiya bosqichi egasining 2026-11-18 dagi xabariga asoslangan; aniq bajarilgan qismlar va testlar bu qaydda hali tasdiqlanmagan.
+- Acceptance: Tegishli performance talablari, platformalararo regression testlari va real o‘lchovlar tekshirilgach `VERIFY` bosqichiga o‘tkaziladi.
+- Implementation: Realizatsiya jarayonida; aniq PR/commit havolalari keyin qo‘shiladi.
 
 <!-- Yozuv namunasi (vazifa emas):
 
