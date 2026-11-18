@@ -125,6 +125,12 @@ _PWA_INSTALL_GUIDE_ASSETS = (
     "/course_v3_data/hsk-li-onboarding-i18n.js",
     "/course_v3_data/li-onboarding-install.css",
 )
+# PWA-only optical surface. Keep the canonical Mini App course HTML untouched:
+# source-hash and line-number localization reviews depend on exact bytes.
+_PWA_LIQUID_NAV_ASSETS = (
+    "/course_v3_data/liquid-glass.css",
+    "/course_v3_data/liquid-glass.js",
+)
 
 
 def _static_version(url: str) -> str:
@@ -139,6 +145,20 @@ def _pwa_install_guide_html() -> bytes:
             f'data-i18n="{catalog}" data-css="{style}"></script>\n').encode("utf-8")
 
 
+def _pwa_liquid_nav_html() -> tuple[bytes, bytes]:
+    style, module = _PWA_LIQUID_NAV_ASSETS
+    stylesheet = f'<link rel="stylesheet" href="{style}?v={_static_version(style)}">\n'
+    script = (
+        '<script type="module">'
+        f'import("{module}?v={_static_version(module)}")'
+        '.then(({liquidGlass}) => liquidGlass('
+        'document.getElementById("pwa-glass-wall"), "#nav.glass"))'
+        '.catch(() => {});'
+        '</script>\n'
+    )
+    return stylesheet.encode("utf-8"), script.encode("utf-8")
+
+
 def _pwa_inline_html(request: Request, path: str, headers: dict[str, str],
                      *, revalidate: bool = True) -> Response:
     stat = os.stat(path)
@@ -146,7 +166,8 @@ def _pwa_inline_html(request: Request, path: str, headers: dict[str, str],
     if path == _PWA_COURSE_HTML:
         # An edited guide asset must never leave a stale ?v= token cached.
         key += tuple((item.st_mtime_ns, item.st_size) for item in
-                     (os.stat("app/static" + url) for url in _PWA_INSTALL_GUIDE_ASSETS))
+                     (os.stat("app/static" + url) for url in
+                      (*_PWA_INSTALL_GUIDE_ASSETS, *_PWA_LIQUID_NAV_ASSETS)))
     cached = _PWA_INLINE_CACHE.get(key)
     if cached is None:
         with open(path, "rb") as handle:
@@ -160,10 +181,26 @@ def _pwa_inline_html(request: Request, path: str, headers: dict[str, str],
                 source = source.replace(_PWA_TELEGRAM_SDK_SCRIPT, b"", 1)
             else:
                 logging.getLogger(__name__).warning("pwa_telegram_sdk_tag_changed")
-            # The new upstream shell is already in shared HTML. Inject CSS
-            # only for independent Rating/Friends/Profile loading boundaries.
-            source = source.replace(b"</head>", _PWA_PROGRESSIVE_SECTIONS_CSS + b"</head>", 1)
-            source = source.replace(b"</body>", _pwa_install_guide_html() + b"</body>", 1)
+            # The new upstream shell is already in shared HTML. Inject only
+            # into verified PWA output; Mini App source bytes must not change.
+            if source.count(b'<body class="hsk-scene-page">') != 1 or source.count(
+                b'<nav class="nav" id="nav">'
+            ) != 1:
+                raise RuntimeError("pwa_liquid_nav_markup_changed")
+            style, script = _pwa_liquid_nav_html()
+            source = source.replace(
+                b'<body class="hsk-scene-page">',
+                b'<body class="hsk-scene-page"><div id="pwa-glass-wall" aria-hidden="true"></div>', 1
+            )
+            source = source.replace(
+                b'<nav class="nav" id="nav">', b'<nav class="nav glass" id="nav">', 1
+            )
+            source = source.replace(
+                b"</head>", _PWA_PROGRESSIVE_SECTIONS_CSS + style + b"</head>", 1
+            )
+            source = source.replace(
+                b"</body>", _pwa_install_guide_html() + script + b"</body>", 1
+            )
         document = source.replace(b"</body>", _PWA_INLINE_PRO_HTML + b"</body>", 1)
         etag = 'W/"' + hashlib.sha256(document).hexdigest()[:32] + '"'
         cached = document, etag
