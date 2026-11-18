@@ -44,6 +44,15 @@
    ]
   },
   {
+   "zh": "人",
+   "pinyin": "rén",
+   "emoji": "🧍",
+   "levels": [
+    "hsk1",
+    "nhsk1"
+   ]
+  },
+  {
    "zh": "伞",
    "pinyin": "sǎn",
    "emoji": "☂️",
@@ -59,6 +68,14 @@
    "emoji": "✉️",
    "levels": [
     "hsk4"
+   ]
+  },
+  {
+   "zh": "信用卡",
+   "pinyin": "xìnyòngkǎ",
+   "emoji": "💳",
+   "levels": [
+    "nhsk3"
    ]
   },
   {
@@ -83,6 +100,14 @@
    "emoji": "🚌",
    "levels": [
     "hsk2"
+   ]
+  },
+  {
+   "zh": "公园",
+   "pinyin": "gōngyuán",
+   "emoji": "🏞️",
+   "levels": [
+    "hsk3"
    ]
   },
   {
@@ -122,6 +147,14 @@
    ]
   },
   {
+   "zh": "勺子",
+   "pinyin": "sháozi",
+   "emoji": "🥄",
+   "levels": [
+    "nhsk3"
+   ]
+  },
+  {
    "zh": "包",
    "pinyin": "bāo",
    "emoji": "👜",
@@ -146,6 +179,14 @@
    "levels": [
     "hsk1",
     "nhsk1"
+   ]
+  },
+  {
+   "zh": "卫生间",
+   "pinyin": "wèishēngjiān",
+   "emoji": "🚻",
+   "levels": [
+    "nhsk3"
    ]
   },
   {
@@ -255,12 +296,36 @@
    ]
   },
   {
+   "zh": "外卖",
+   "pinyin": "wàimài",
+   "emoji": "🥡",
+   "levels": [
+    "nhsk3"
+   ]
+  },
+  {
+   "zh": "大衣",
+   "pinyin": "dàyī",
+   "emoji": "🧥",
+   "levels": [
+    "nhsk3"
+   ]
+  },
+  {
    "zh": "太阳",
    "pinyin": "tàiyáng",
    "emoji": "☀️",
    "levels": [
     "hsk3",
     "nhsk3"
+   ]
+  },
+  {
+   "zh": "奶茶",
+   "pinyin": "nǎichá",
+   "emoji": "🧋",
+   "levels": [
+    "nhsk2"
    ]
   },
   {
@@ -314,6 +379,14 @@
    "emoji": "⛰️",
    "levels": [
     "nhsk3"
+   ]
+  },
+  {
+   "zh": "左边",
+   "pinyin": "zuǒbian",
+   "emoji": "⬅️",
+   "levels": [
+    "hsk2"
    ]
   },
   {
@@ -411,6 +484,14 @@
    ]
   },
   {
+   "zh": "果汁",
+   "pinyin": "guǒzhī",
+   "emoji": "🧃",
+   "levels": [
+    "hsk4"
+   ]
+  },
+  {
    "zh": "树",
    "pinyin": "shù",
    "emoji": "🌳",
@@ -420,12 +501,37 @@
    ]
   },
   {
+   "zh": "植物",
+   "pinyin": "zhíwù",
+   "emoji": "🪴",
+   "levels": [
+    "hsk4"
+   ]
+  },
+  {
+   "zh": "毕业",
+   "pinyin": "bìyè",
+   "emoji": "🎓",
+   "levels": [
+    "hsk4"
+   ]
+  },
+  {
    "zh": "水",
    "pinyin": "shuǐ",
    "emoji": "💧",
    "levels": [
     "hsk1",
     "nhsk1"
+   ]
+  },
+  {
+   "zh": "沙发",
+   "pinyin": "shāfā",
+   "emoji": "🛋️",
+   "levels": [
+    "hsk4",
+    "nhsk3"
    ]
   },
   {
@@ -556,6 +662,14 @@
    ]
   },
   {
+   "zh": "现金",
+   "pinyin": "xiànjīn",
+   "emoji": "💵",
+   "levels": [
+    "hsk4"
+   ]
+  },
+  {
    "zh": "生日",
    "pinyin": "shēngrì",
    "emoji": "🎂",
@@ -571,6 +685,14 @@
    "levels": [
     "hsk1",
     "nhsk1"
+   ]
+  },
+  {
+   "zh": "电梯",
+   "pinyin": "diàntī",
+   "emoji": "🛗",
+   "levels": [
+    "nhsk3"
    ]
   },
   {
@@ -606,6 +728,14 @@
    "levels": [
     "hsk2",
     "nhsk1"
+   ]
+  },
+  {
+   "zh": "白色",
+   "pinyin": "báisè",
+   "emoji": "⬜",
+   "levels": [
+    "nhsk2"
    ]
   },
   {
@@ -680,6 +810,14 @@
    ]
   },
   {
+   "zh": "窗户",
+   "pinyin": "chuānghu",
+   "emoji": "🪟",
+   "levels": [
+    "hsk4"
+   ]
+  },
+  {
    "zh": "笔",
    "pinyin": "bǐ",
    "emoji": "🖊️",
@@ -722,12 +860,45 @@
    ]
   },
   {
+   "zh": "红绿灯",
+   "pinyin": "hóng-lǜdēng",
+   "emoji": "🚦",
+   "levels": [
+    "nhsk3"
+   ]
+  },
+  {
+   "zh": "红色",
+   "pinyin": "hóngsè",
+   "emoji": "🟥",
+   "levels": [
+    "hsk2",
+    "nhsk2"
+   ]
+  },
+  {
+   "zh": "纸",
+   "pinyin": "zhǐ",
+   "emoji": "📄",
+   "levels": [
+    "nhsk3"
+   ]
+  },
+  {
    "zh": "结婚",
    "pinyin": "jié hūn",
    "emoji": "💒",
    "levels": [
     "hsk3",
     "nhsk3"
+   ]
+  },
+  {
+   "zh": "绿色",
+   "pinyin": "lǜsè",
+   "emoji": "🟩",
+   "levels": [
+    "nhsk2"
    ]
   },
   {
@@ -745,6 +916,14 @@
    "emoji": "🐑",
    "levels": [
     "nhsk3"
+   ]
+  },
+  {
+   "zh": "美国",
+   "pinyin": "Měiguó",
+   "emoji": "🇺🇸",
+   "levels": [
+    "hsk1"
    ]
   },
   {
@@ -982,6 +1161,14 @@
    ]
   },
   {
+   "zh": "购物",
+   "pinyin": "gòuwù",
+   "emoji": "🛍️",
+   "levels": [
+    "hsk4"
+   ]
+  },
+  {
    "zh": "足球",
    "pinyin": "zúqiú",
    "emoji": "⚽",
@@ -1075,6 +1262,14 @@
    ]
   },
   {
+   "zh": "镜子",
+   "pinyin": "jìngzi",
+   "emoji": "🪞",
+   "levels": [
+    "hsk4"
+   ]
+  },
+  {
    "zh": "门",
    "pinyin": "mén",
    "emoji": "🚪",
@@ -1118,6 +1313,14 @@
    ]
   },
   {
+   "zh": "面条儿",
+   "pinyin": "miàntiáor",
+   "emoji": "🍜",
+   "levels": [
+    "nhsk1"
+   ]
+  },
+  {
    "zh": "鞋",
    "pinyin": "xié",
    "emoji": "👟",
@@ -1149,6 +1352,14 @@
    "levels": [
     "hsk1",
     "nhsk1"
+   ]
+  },
+  {
+   "zh": "饮料",
+   "pinyin": "yǐnliào",
+   "emoji": "🥤",
+   "levels": [
+    "nhsk3"
    ]
   },
   {
@@ -1227,6 +1438,14 @@
    "levels": [
     "hsk2",
     "nhsk1"
+   ]
+  },
+  {
+   "zh": "黑色",
+   "pinyin": "hēisè",
+   "emoji": "⬛",
+   "levels": [
+    "nhsk2"
    ]
   },
   {
