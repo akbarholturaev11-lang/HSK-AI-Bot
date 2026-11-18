@@ -15,17 +15,23 @@ PUSH = Path("app/static/iphone-pwa-sw.js").read_text(encoding="utf-8")
 
 class IphonePwaNavigationContractTests(unittest.TestCase):
     def test_pwa_nav_opt_in_pixel_refraction_keeps_fallback_and_routes(self):
-        # This verifies wiring only; real Safari/WebKit rendering still needs QA.
-        from app.main import course_v3_data_file
-        import inspect
-        css = Path("app/static/course_v3_data/iphone-pwa-glass.css").read_text(encoding="utf-8")
+        # The shared Mini App HTML remains byte-for-byte unchanged.
+        from starlette.requests import Request
+        from app.api.pwa_auth import _pwa_inline_html
+        css = Path("app/static/course_v3_data/liquid-glass.css").read_text(encoding="utf-8")
         js = Path("app/static/course_v3_data/liquid-glass.js").read_text(encoding="utf-8")
-        self.assertIn('<div id="pwa-glass-wall" aria-hidden="true"></div>', COURSE)
-        self.assertIn('<nav class="nav glass" id="nav">', COURSE)
+        request = Request({"type": "http", "method": "GET",
+                           "path": "/iphone-pwa/course", "query_string": b"", "headers": []})
+        pwa = _pwa_inline_html(request, "app/static/course-v3.html", {}).body.decode()
+        self.assertNotIn('id="pwa-glass-wall"', COURSE)
+        self.assertNotIn('<nav class="nav glass"', COURSE)
+        self.assertIn('<div id="pwa-glass-wall" aria-hidden="true"></div>', pwa)
+        self.assertIn('<nav class="nav glass" id="nav">', pwa)
         for tab in ('course', 'mashq', 'voice', 'rating', 'profile'):
-            self.assertIn('data-s="' + tab + '"', COURSE)
-        self.assertIn('classList.contains("hsk-pwa-browser")', COURSE)
-        self.assertIn('liquidGlass(document.getElementById("pwa-glass-wall"), "#nav.glass")', COURSE)
+            self.assertIn('data-s="' + tab + '"', pwa)
+        self.assertIn('liquidGlass(document.getElementById("pwa-glass-wall"), "#nav.glass")', pwa)
+        self.assertIn('liquid-glass.css?v=', pwa)
+        self.assertIn('liquid-glass.js?v=', pwa)
         self.assertIn("feDisplacementMap", js)
         self.assertIn("ResizeObserver", js)
         self.assertIn("prefers-reduced-transparency", js)
@@ -34,7 +40,8 @@ class IphonePwaNavigationContractTests(unittest.TestCase):
         self.assertIn('filter:url("#hsk-pwa-nav-refraction")', css)
         self.assertIn('pointer-events:none', css)
         self.assertIn('prefers-reduced-transparency:reduce', css)
-        self.assertIn('"liquid-glass.js": "application/javascript"', inspect.getsource(course_v3_data_file))
+        self.assertIn('"liquid-glass.css": "text/css"', Path("app/main.py").read_text())
+        self.assertIn('"liquid-glass.js": "application/javascript"', Path("app/main.py").read_text())
 
     def test_returning_user_skips_login_welcome_on_server(self):
         route = AUTH.split('@router.get("/iphone-pwa")', 1)[1].split(
