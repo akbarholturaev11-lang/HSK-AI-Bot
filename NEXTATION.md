@@ -31,6 +31,17 @@ Bu fayl loyiha egasi kelajakda bajarish uchun saqlagan g‘oya va vazifalarning 
 - Acceptance: Tegishli performance talablari, platformalararo regression testlari va real o‘lchovlar tekshirilgach `VERIFY` bosqichiga o‘tkaziladi.
 - Implementation: Realizatsiya jarayonida; aniq PR/commit havolalari keyin qo‘shiladi.
 
+
+### NXT-002 — AI Voice: ustozdek tabiiy gapirish va uzilishlarni kamaytirish
+- Status: PLANNED
+- Added: 2026-11-18
+- Priority: normal (NXT-001 dan keyin, egasi o‘zgartirmasa)
+- Goal: HSK AI ovozli mashg‘ulotlari haqiqiy xitoy tili ustoziga o‘xshab tabiiy, izchil, tez va uzilishlarsiz o‘tishi; o‘quvchi gapiga moslashib, xatosini foydali tuzatishi.
+- Scope: Avval PWA va Android Live Voice kechikishi, gap o‘rtasidagi audio uzilishlari, turn-taking, uzilib-qayta ulanish va audioni buferlashni o‘lchash; keyin ustoz roli va javob uzunligi bo‘yicha prompt/UX yaxshilash; shundan keyin joriy Live modelni kuchliroq muqobil bilan bir xil ssenariylarda solishtirish. Model almashishi oldindan qabul qilingan qaror emas.
+- Risks / open questions: Uzilishlarning ildiz sababi hozircha isbotlanmagan; server, tarmoq, VAD, audio playback va model kechikishini ajratish kerak. Kuchliroq model narx yoki kechikishni oshirishi mumkin. Joriy Live kod konfiguratsiyasi production konfiguratsiyasini tasdiqlamaydi.
+- Acceptance: Real qurilmada davomli nutq, javob boshlanish kechikishi, audio uzilishlar, noto‘g‘ri interruptlar, qayta ulanish, pedagogik sifat va bir suhbat narxi solishtirilib, regressiya testlari o‘tgach `VERIFY`ga o‘tadi.
+- Implementation: Hozircha faqat rejalashtirilgan; kod o‘zgartirilmagan.
+
 <!-- Yozuv namunasi (vazifa emas):
 
 ### NXT-001 — Qisqa nom
