@@ -257,6 +257,7 @@ jobs:
           REDIS_URL: "redis://127.0.0.1:1/0"
         run: |
           python -m unittest tests.test_course_adaptive_lesson_service tests.test_course_adaptive_api
+          python -m unittest tests.test_mistake_target_resolver tests.test_mistake_drill_factory
           node tests/test_course_adaptive_pwa.js
       - name: Test 0108 native audit facts and personal discount account isolation
         run: |

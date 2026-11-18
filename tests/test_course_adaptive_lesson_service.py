@@ -35,6 +35,7 @@ from app.services.course_adaptive_lesson_service import (
 from app.services.course_adaptive_schedule import final_check_due_on
 from app.services.course_lesson_mistake_material_service import CourseLessonMistakeMaterialService
 from app.services.course_mistake_service import CourseMistakeService
+from app.services.course_question_material import canonicalize_hsk_exam_material
 
 
 ALL_FORMATS = sorted(drills.ALL_FORMATS)
@@ -357,6 +358,51 @@ class AdaptiveLessonFlowTests(unittest.IsolatedAsyncioTestCase):
         target = await self.target()
         self.assertEqual(target.adaptive_due_on, self.today)
         self.assertIn("meaning", json.loads(target.adaptive_state_json)["skills"])
+
+    async def test_verified_exam_blank_repeats_exact_word_in_original_context(self):
+        source = json.load(open("app/static/course_v3_data/exams/hsk1.json", encoding="utf-8"))
+        exam = canonicalize_hsk_exam_material(source, level="hsk1", lang="uz", source_path="exam")
+        question = next(
+            item for item in exam["questions"]
+            if item["format"] == "text_choice" and item["sentence"] == "我___学生。"
+        )
+        correct = question["answer_index"]
+        option = question["option_materials"][correct]
+        await self.record(
+            [{
+                "question": question["prompt"],
+                "selected_answer": question["options"][(correct + 1) % len(question["options"])],
+                "correct_answer": question["options"][correct],
+                "category": "word",
+                "material": {
+                    "material_ref": question["id"],
+                    "format": question["format"],
+                    "category": "word",
+                    "language": "uz",
+                    "prompt": question["prompt"],
+                    "sentence": question["sentence"],
+                    "pinyin": option["pinyin"],
+                    "translation": option["translation"],
+                    "options": question["options"],
+                    "answer_index": correct,
+                    "correct_answer": question["options"][correct],
+                },
+            }],
+            source="test",
+            lesson_order=1,
+        )
+        target = await self.target()
+        self.assertEqual((target.kind, target.zh), ("word", option["zh"]))
+        self.assertEqual(json.loads(target.payload_json)["gap"]["sentence"], question["sentence"])
+
+        result = await self.plan()
+        self.assertTrue(result["enabled"])
+        [item] = result["plan"]["items"]
+        self.assertEqual((item["skill"], item["question"]["format"]), ("grammar", "gap_fill"))
+        self.assertEqual(item["question"]["sentence"], question["sentence"])
+        self.assertFalse(HIDDEN & set(item["question"]))
+        feedback = await self.answer(result["plan"], item)
+        self.assertTrue(feedback["ok"] and feedback["correct"])
 
     async def test_plan_is_retry_stable_and_resumes_answered_items(self):
         await self.record(lesson_items((WORD_CARD, 0)))

@@ -474,13 +474,19 @@ def _authored_gap(target, fmt, block_key, language, seed):
         if translation
         else _instruction(fmt, language)
     )
+    explanation = _word_explanation(target, language) if target["kind"] == "word" else _sentence_explanation(target, language)
+    if target["kind"] == "word" and isinstance(block.get("meaning"), dict):
+        authored = _text(block["meaning"].get(language), 300)
+        if authored:
+            pinyin = _text(target["payload"].get("pinyin"), 120)
+            explanation = target["zh"] + (f" ({pinyin})" if pinyin else "") + f" — {authored}"
     return _choice(
         target, fmt, language=language, seed=seed,
         prompt=prompt,
         correct=correct,
         distractors=[value for index, value in enumerate(options) if index != answer_index],
         sentence=_text(block.get("sentence"), 600),
-        explanation=_sentence_explanation(target, language),
+        explanation=explanation,
     )
 
 
@@ -577,7 +583,8 @@ def ladder(target: dict) -> tuple[str, ...]:
     kind = target.get("kind")
     category = target.get("category") or "word"
     if kind == "word":
-        return WORD_LADDERS.get(category, WORD_LADDERS["word"])
+        regular = WORD_LADDERS.get(category, WORD_LADDERS["word"])
+        return (("gap_fill",) + regular) if target.get("payload", {}).get("gap") else regular
     if kind == "sentence":
         return SENTENCE_LADDERS.get(category, SENTENCE_LADDERS["default"])
     if kind == "question":
