@@ -1120,6 +1120,10 @@
     "voiceV8.endConfirm": "Завершить",
     "voiceV8.restart": "Начать новый разговор",
     "pictureReview.label": "Повторение по картинкам",
-    "pictureReview.title": "Посмотрите на картинку и скажите по-китайски"
+    "pictureReview.title": "Посмотрите на картинку и скажите по-китайски",
+    "readyPhrases.expand": "Раскрыть фразу",
+    "readyPhrases.collapse": "Свернуть фразу",
+    "readyPhrases.listen": "Прослушать фразу",
+    "readyPhrases.soundError": "Не удалось воспроизвести звук. Попробуйте ещё раз."
   }
 }

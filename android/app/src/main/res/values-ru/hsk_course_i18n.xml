@@ -635,10 +635,13 @@
     <string name="hsk_course_rating_write_title" formatted="false">Написать</string>
     <string name="hsk_course_ready_phrases" formatted="false">Готовые фразы</string>
     <string name="hsk_course_ready_phrases_all" formatted="false">Все фразы</string>
+    <string name="hsk_course_ready_phrases_collapse" formatted="false">Свернуть фразу</string>
     <string name="hsk_course_ready_phrases_copied" formatted="false">Скопировано</string>
     <string name="hsk_course_ready_phrases_copy" formatted="false">Копировать</string>
     <string name="hsk_course_ready_phrases_count" formatted="false">{shown} из {total} фраз</string>
     <string name="hsk_course_ready_phrases_empty" formatted="false">По этому запросу ничего не найдено. Попробуйте другие слова.</string>
+    <string name="hsk_course_ready_phrases_expand" formatted="false">Раскрыть фразу</string>
+    <string name="hsk_course_ready_phrases_listen" formatted="false">Прослушать фразу</string>
     <string name="hsk_course_ready_phrases_load_error" formatted="false">Не удалось загрузить фразы. Подключитесь к интернету и попробуйте ещё раз.</string>
     <string name="hsk_course_ready_phrases_no_saved" formatted="false">Сохранённые фразы появятся здесь.</string>
     <string name="hsk_course_ready_phrases_removed" formatted="false">Удалено из сохранённых</string>
@@ -647,6 +650,7 @@
     <string name="hsk_course_ready_phrases_saved" formatted="false">Сохранённые</string>
     <string name="hsk_course_ready_phrases_saved_one" formatted="false">Сохранено</string>
     <string name="hsk_course_ready_phrases_search" formatted="false">Поиск по китайскому, пиньиню или переводу</string>
+    <string name="hsk_course_ready_phrases_sound_error" formatted="false">Не удалось воспроизвести звук. Попробуйте ещё раз.</string>
     <string name="hsk_course_ready_phrases_storage_error" formatted="false">Не удалось сохранить. Проверьте настройки телефона.</string>
     <string name="hsk_course_ready_phrases_title" formatted="false">Готовые фразы</string>
     <string name="hsk_course_ready_phrases_sub" formatted="false">Китайские фразы для повседневных ситуаций</string>

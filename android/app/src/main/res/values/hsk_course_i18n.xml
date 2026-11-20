@@ -635,10 +635,13 @@
     <string name="hsk_course_rating_write_title" formatted="false">Yozish</string>
     <string name="hsk_course_ready_phrases" formatted="false">Tayyor gaplar</string>
     <string name="hsk_course_ready_phrases_all" formatted="false">Barchasi</string>
+    <string name="hsk_course_ready_phrases_collapse" formatted="false">Iborani yopish</string>
     <string name="hsk_course_ready_phrases_copied" formatted="false">Nusxalandi</string>
     <string name="hsk_course_ready_phrases_copy" formatted="false">Nusxalash</string>
     <string name="hsk_course_ready_phrases_count" formatted="false">{shown} / {total} ta gap</string>
     <string name="hsk_course_ready_phrases_empty" formatted="false">Bu qidiruvga mos gap topilmadi. Boshqa so‘z bilan qidiring.</string>
+    <string name="hsk_course_ready_phrases_expand" formatted="false">Iborani ochish</string>
+    <string name="hsk_course_ready_phrases_listen" formatted="false">Iborani tinglash</string>
     <string name="hsk_course_ready_phrases_load_error" formatted="false">Gaplar jamlanmasi yuklanmadi. Internetga ulaning va qayta urinib ko‘ring.</string>
     <string name="hsk_course_ready_phrases_no_saved" formatted="false">Saqlangan gaplaringiz shu yerda ko‘rinadi.</string>
     <string name="hsk_course_ready_phrases_removed" formatted="false">Saqlanganlardan olib tashlandi</string>
@@ -647,6 +650,7 @@
     <string name="hsk_course_ready_phrases_saved" formatted="false">Saqlanganlar</string>
     <string name="hsk_course_ready_phrases_saved_one" formatted="false">Saqlandi</string>
     <string name="hsk_course_ready_phrases_search" formatted="false">Xitoycha, pinyin yoki tarjima bo‘yicha qidiring</string>
+    <string name="hsk_course_ready_phrases_sound_error" formatted="false">Ovoz ijro etilmadi. Qayta urinib ko‘ring.</string>
     <string name="hsk_course_ready_phrases_storage_error" formatted="false">Saqlash imkoni bo‘lmadi. Telefon sozlamalarini tekshiring.</string>
     <string name="hsk_course_ready_phrases_title" formatted="false">Tayyor gaplar</string>
     <string name="hsk_course_ready_phrases_sub" formatted="false">Kundalik vaziyatlar uchun xitoycha gaplar</string>
