@@ -424,7 +424,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         "mashqSub": 1,
         "mistakes": 2,
         "mistakesSub": 1,
-        "nav.mashq": 2,  # tab label + PWA practice-layer dialog label
+        "nav.mashq": 3,  # ready title, practice-layer label and known public PWA shell title
         "nav.profile": 1,
         "pron": 3,
         "pronSub": 1,

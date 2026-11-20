@@ -847,20 +847,30 @@ def test_practice_initial_loading_geometry_matches_six_real_cards(width, motion,
             page.locator("#s-mashq .pwa-mashq-shell[aria-busy=true]").wait_for()
             assert len(held) == 1
             assert page.locator("#s-mashq .row-card").count() == 0
-            # Reserve actual two-line labels at narrow widths. Never relax
-            # the <=8px anchor threshold or hide the real six-card layout.
-            expected_heights = (
-                {"ru": [80, 80, 100, 80, 80, 68],
-                 "uz": [80, 80, 68, 68, 80, 68],
-                 "tj": [80, 68, 80, 68, 80, 68]}[language] if width <= 340 else
-                [68, 80 if language == "ru" else 68, 68, 68, 68, 68] if width <= 400 else
-                [68] * 6
-            )
-            for i, expected in enumerate(expected_heights):
-                actual = page.locator("#s-mashq .pwa-practice-row").nth(i).evaluate(
-                    "(el) => parseFloat(getComputedStyle(el).minHeight)"
-                )
-                assert actual == expected
+            # Known labels use the exact ready typography and natural font
+            # wrapping; only the icon slots remain placeholders. No links or
+            # buttons become actionable before the authenticated map arrives.
+            rows = page.locator("#s-mashq .pwa-practice-row")
+            assert rows.count() == 6
+            initial_title = rows.first.locator("b").inner_text()
+            page.evaluate("language => App.setLang(language === 'ru' ? 'uz' : 'ru')", language)
+            assert rows.first.locator("b").inner_text() != initial_title
+            page.evaluate("language => App.setLang(language)", language)
+            assert rows.first.locator("b").inner_text() == initial_title
+            assert page.locator("#s-mashq .pwa-mashq-shell button, #s-mashq .pwa-mashq-shell a").count() == 0
+            shell_copy = page.evaluate("""() => ({
+                title: document.querySelector('#s-mashq h1').textContent,
+                subtitle: document.querySelector('#s-mashq .sub').textContent,
+                sections: [...document.querySelectorAll('#s-mashq .sech')].map(el => el.textContent),
+                rows: [...document.querySelectorAll('#s-mashq .pwa-practice-row .rt')].map(el => el.textContent),
+            })""")
+            assert shell_copy["title"] and shell_copy["subtitle"]
+            for row in rows.all():
+                assert row.evaluate("el => parseFloat(getComputedStyle(el).minHeight)") == 68
+                assert row.locator("b").is_visible() and row.locator("b").inner_text().strip()
+                assert row.locator("small").is_visible() and row.locator("small").inner_text().strip()
+                assert row.locator(".ti2.pwa-layout-ink[aria-hidden=true]").count() == 1
+                assert row.get_attribute("aria-hidden") is None
             before = geometry(page)
             if motion == "reduce":
                 assert page.locator("#s-mashq .pwa-layout-ink").first.evaluate(
@@ -872,6 +882,12 @@ def test_practice_initial_loading_geometry_matches_six_real_cards(width, motion,
             page.locator("#s-mashq .row-card").first.wait_for()
             after = geometry(page)
             assert_reserved_layout(before, after)
+            assert shell_copy == page.evaluate("""() => ({
+                title: document.querySelector('#s-mashq h1').textContent,
+                subtitle: document.querySelector('#s-mashq .sub').textContent,
+                sections: [...document.querySelectorAll('#s-mashq .sech')].map(el => el.textContent),
+                rows: [...document.querySelectorAll('#s-mashq .row-card .rt')].map(el => el.textContent),
+            })""")
             assert page.locator("#s-mashq .pwa-mashq-shell").count() == 0
             assert page.locator("#s-mashq .row-card").count() == 6
             assert page.locator("#s-course .uban").count() > 0
