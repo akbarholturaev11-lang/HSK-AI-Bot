@@ -1120,6 +1120,10 @@
     "voiceV8.endConfirm": "Анҷом додан",
     "voiceV8.restart": "Оғози суҳбати нав",
     "pictureReview.label": "Такрор бо расм",
-    "pictureReview.title": "Ба расм нигоҳ кунед ва ба хитоӣ гӯед"
+    "pictureReview.title": "Ба расм нигоҳ кунед ва ба хитоӣ гӯед",
+    "readyPhrases.expand": "Кушодани ибора",
+    "readyPhrases.collapse": "Пӯшидани ибора",
+    "readyPhrases.listen": "Шунидани ибора",
+    "readyPhrases.soundError": "Овоз пахш нашуд. Боз кӯшиш кунед."
   }
 }

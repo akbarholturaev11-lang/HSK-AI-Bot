@@ -2,7 +2,7 @@
   "schema_version": 1,
   "status": "PURPOSE_SPECIFIC_APIS_SOURCE_REVIEWED",
   "source": "app/static/course-v3.html",
-  "source_revision": "04c88001ba7dce4648ae43b9efeac8d9c7360590",
+  "source_revision": "b78fd1d23b79ca29b979bdca4ea5b7e2bb8cd8d8",
   "scope": "Three direct loadLessonData(...) expressions remain: audio warmup, nearby prefetch, and the post-reservation interactive lesson. Sales preview, Starter 0, and skip-test use separate purpose-specific endpoints. No client caller reads the legacy public lesson JSON route. 2026-11-16: next-part sheet handoff and one-line sheet header re-reviewed; the three direct and three indirect lesson read sites are unchanged and were re-anchored by exact source identity. 2026-11-17: UIUX-007 adaptive review overlay re-reviewed; the three direct and three indirect lesson read sites are unchanged and were re-anchored by exact source identity. 2026-11-17: UIUX-008 lesson plan trimming and picture review deck re-reviewed; buildQueue only filters the already loaded lesson, so the three direct and three indirect lesson read sites are unchanged and were re-anchored by exact source identity. 2026-11-20: the result reads the already loaded topic and the existing authenticated completion response. All six lesson read sites retain exact source identity and were re-anchored.",
   "read_calls": [
     {

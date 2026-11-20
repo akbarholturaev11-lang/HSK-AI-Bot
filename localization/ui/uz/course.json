@@ -1120,6 +1120,10 @@
     "voiceV8.endConfirm": "Tugatish",
     "voiceV8.restart": "Yangi suhbatni boshlash",
     "pictureReview.label": "Rasmli takror",
-    "pictureReview.title": "Rasmga qarang va xitoycha ayting"
+    "pictureReview.title": "Rasmga qarang va xitoycha ayting",
+    "readyPhrases.expand": "Iborani ochish",
+    "readyPhrases.collapse": "Iborani yopish",
+    "readyPhrases.listen": "Iborani tinglash",
+    "readyPhrases.soundError": "Ovoz ijro etilmadi. Qayta urinib ko‘ring."
   }
 }
