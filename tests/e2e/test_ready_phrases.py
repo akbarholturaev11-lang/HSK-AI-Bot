@@ -372,8 +372,10 @@ def test_recovered_phrase_catalog_failure_retry_and_missing_bundle_fallback():
             assert page.locator('.toast.on').is_visible()
             # An unavailable new catalog retains the fully readable legacy fallback.
             page.route('**/hsk-course-i18n.js*',lambda route:route.fulfill(status=503,body=''))
+            # Resume the real static fixture; DOMContentLoaded does not promise
+            # that the fallback's async catalog request has reached the route.
+            page.unroute('**/ready-phrases-v1.json')
             page.reload(wait_until='domcontentloaded')
-            pending.pop().fulfill(path=str(STATIC_ROOT/'course_v3_data/ready-phrases-v1.json'),content_type='application/json')
             page.locator('.pinyin').first.wait_for()
             assert page.locator('.phrase-play,.phrase-toggle').count()==0
             assert page.locator('.translation').first.is_visible()
