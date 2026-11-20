@@ -842,7 +842,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
             payload = await _small_json(request, PwaMistakeStart, max_bytes=4096)
             if (not payload.access_ref or len(payload.access_ref) > 100
                     or (payload.formats is not None and (
-                        len(payload.formats) > 10
+                        len(payload.formats) > 40
                         or any(not isinstance(v, str) or len(v) > 40
                                for v in payload.formats)
                     ))):
