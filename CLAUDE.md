@@ -47,16 +47,6 @@ use a focused source check and relevant screen smoke test instead of a full audi
 An explicitly requested in-scope change needs no second approval; clarify only
 materially unresolved behavior, business policy or scope.
 
-Avoid awkward UI, unnecessary animation, random badges, confusing buttons, and
-decoration without a clear user benefit.
-
-Mini App changes must be:
-- clean
-- simple
-- modern
-- useful
-- consistent with existing design
-
 If uncertainty would materially change behavior, content, or scope and cannot
 be resolved from the request or existing code, ask. Otherwise proceed using the
 best-supported interpretation.
