@@ -585,7 +585,7 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 .profile-compact-ach .at .ah small{font-size:11px}
 .profile-compact-ach .abar{margin-top:7px;height:5px}
 @media(max-width:340px){.profile-compact-ach .arow{padding:8px;gap:6px}.profile-compact-ach .aic{width:26px;height:26px;flex-basis:26px}}
-.rating-title{margin:5px 16px 10px;font-size:var(--hsk-section-title-size,20px)}
+.rating-title{margin:5px 16px 10px;font-size:var(--hsk-section-title-size,20px)}/* PWA reports share root chrome; headings grow naturally with localized text. */html.hsk-pwa-browser #s-rating :is(.rating-title,.rating-friends-heading){display:flex;align-items:center;min-height:calc(var(--hsk-space-12) + var(--hsk-space-4));margin:0;padding:var(--hsk-space-2) var(--hsk-space-4);font-size:var(--hsk-section-title-size);line-height:var(--hsk-section-title-line-height);font-weight:700;letter-spacing:-.01em;white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere;position:sticky;top:var(--safe-t);z-index:4;background:var(--paper)}
 /* Profile panels use the same warm paper surface and divider as subscription checkout.
    Keep semantic status, progress and Pro promotion colors unchanged. */
 #s-profile .profile-accuracy,#s-profile .profile-friends-link,#s-profile .profile-compact-ach .arow,#s-profile .ach .arow,#s-profile .card2,#s-profile .profile-quick-links,#s-profile .profile-stats .stat,#s-profile .set,#s-profile .pgoal,#s-profile .social-btn{background:var(--hsk-card-surface,var(--paper));border-color:var(--line);box-shadow:none}
