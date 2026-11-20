@@ -26,7 +26,7 @@ Paths below are under `app/static/` unless stated otherwise. Related states are 
 | Lessons: vocabulary, grammar, listening, ordering, pronunciation, homework/exit check | 🔍 | `startLesson`, `renderFlowCard`. Preserve grading and reactions; verify long UZ/RU/TJ, reveal timing and result persistence. |
 | Adaptive review and picture deck | 🔍 | Current main lesson implementation. Retain its server contracts; check reveal/recording/results without old flashcard replacement. |
 | Lesson completion, streak/rank celebrations, next-part handoff | 🔍 | Existing course lesson-end flow. Verify saved-result retry and next-part CTA. |
-| Practice root and loading shell | 🟡 | `renderMashq`, `.pwa-mashq-shell`. Header geometry differs from Profile; current first slice below. Reuse existing resource/practice entries. |
+| Practice root and loading shell | 🟡 | `renderMashq`, `.pwa-mashq-shell`. Root header/loading geometry accepted in PR #335; keep the recorded device/theme checks open. Reuse existing resource/practice entries. |
 | Dictionary search/list/filter/empty | 🟡 | `hsk-lugat.html`. Reuse version/level/search/history; approved course-aware saved words are incomplete. |
 | Dictionary word detail, examples, grammar/mnemonic, strokes/writer | 🟡 | `hsk-lugat.html` detail/writer functions. Check restoration and audio; `.audio-btn.small` is 26px in source, requiring actual hit-area review. |
 | Ready phrases/search/categories/saved/copy | 🟡 | `hsk-gaplar.html` `createPhraseCard`. Existing saving/filtering stays; compact single expansion and independent audio remain absent. |
@@ -37,8 +37,8 @@ Paths below are under `app/static/` unless stated otherwise. Related states are 
 | Test centre/placement/exam/results | 🔍 | `course_v3_test.html`. Check long questions, submit pending/error and saved result. |
 | AI Voice root/quota | 🔍 | `renderVoice`. Check quota loading/error geometry independently of immersive conversation. |
 | AI Voice V8/conversation/topics/settings/hints/end/restart | 🔍 | `iphone-pwa-voice.html`. Preserve Orb; independently check keyboard, safe areas, audio and state changes. |
-| Rating/league/Friends/referrals/user detail/challenges/invite | 🔍 | `course-v3.html` rating functions. Measure separate `.rating-title` layout; check long names and independent list states. |
-| Profile/accuracy/streak/achievements | 🟡 | `renderProfile`. Header differs from Practice; streak calendar plus separate 30-day achievement repeats information. Keep real 100-lesson/access data. |
+| Rating/league/Friends/referrals/user detail/challenges/invite | 🔍 | `course-v3.html` rating functions. Rating/Friends chrome aligned in the second Stage 1 slice below; long-name/device and other nested-flow checks remain open. |
+| Profile/accuracy/streak/achievements | 🟡 | `renderProfile`. Root header alignment accepted in PR #335; streak calendar plus separate 30-day achievement repeats information. Keep real 100-lesson/access data. |
 | XP/Streak detail destinations | 🟡 | Course header has passive chips; approved full-screen destinations are absent on main. Existing goal picker is not an XP detail page. |
 | Settings/study/notifications/profile editor/identities/help/logout | 🔍 | `renderPwaSettings` and existing App methods. Keep dedicated detail header; check drafts/save/revert/Back/account switch. |
 | Inbox/push settings/payment notice | 🔍 | `iphone-pwa-notices.js`. Check permissions, local states and truthful payment outcomes. |
@@ -84,7 +84,7 @@ Sources below are under `android/app/src/main/java/com/pomp/hskai/feature/` unle
 5. **Special screens:** inspect onboarding/auth, contextual Pro/checkout and Voice independently; recover only evidenced gaps with their actual navigation/payment/keyboard constraints.
 6. **Android:** compare accepted PWA decisions with native source, fix one small native group at a time, then verify Direct/Play as applicable, system Back, IME and font scaling. Do not copy browser code.
 
-## Current slice and acceptance record
+## First accepted slice — PR #335
 
 - **Stage 1 scope:** Practice/Profile root headers and Practice's existing loading geometry. No other screen was redesigned.
 - **Before:** at 390px the Practice ready header was 40px and Profile 60px; Practice title moved 8px on shell settlement, Profile 7px. A source-baseline check also reproduced Practice's 320px recognition-row reserve mismatch (68px placeholder versus approximately 99–100px ready content).
@@ -94,5 +94,15 @@ Sources below are under `android/app/src/main/java/com/pomp/hskai/feature/` unle
 - **Evidence limits:** local tests use actual assets/renderers with synthetic account/API responses. External icon-font requests are omitted by the isolated fixture; glyph appearance, live accounts, installed-iPhone safe areas, real keyboard/audio, native Android and production deployment are not certified by these tests. Existing body/theme/other-screen QA remains open.
 - **Analytics Impact:** header geometry and public static shell labels only, no measurement change or new event. **Monitoring Impact:** no new route/failure contract; existing diagnostics remain intact. **Performance Impact:** same requests/lazy mounting; corrected reserved geometry, no claimed network/LCP improvement. Backend/SQL changes are not applicable to this presentation-only slice; the repository’s native PostgreSQL CI also remains required when triggered.
 - **Source guards:** preserve the original 10,553 physical source lines and the exact existing locale/lesson-call anchors. Reviewed source fingerprints are refreshed only for the audited header CSS and public-shell display helper; original Chinese/grade/access baseline hashes and guard assertions stay intact.
-- **Promotion:** task branch `codex/hsk-ui-staged-20261120`; keep Draft until applicable checks pass and verify remote main after promotion. Do not confuse source acceptance with installed-device/production acceptance.
+- **Promotion:** PR #335 merged and remote main verified at `572d560e`; tested head `aaaebf97`, 114 local cases per browser engine and all nine PR workflows passed. Installed-device/production acceptance remains separate.
 - **Next:** continue Stage 1 with measured Rating/title and detail chrome, retaining all existing functional controls. Close remaining checks screen by screen before moving to the next phase.
+
+## Second Stage 1 slice — Rating/Friends chrome (2026-11-21)
+
+- **Baseline:** fresh main `572d560e`. At 390px, Practice text begins at y=20px, Rating at y=5px and Friends at y=9px. Rating has only a 24px title box plus margins, Friends a 36px heading; comparable root headers reserve 64px.
+- **Change:** CSS-only, PWA-scoped Rating/Friends headings use the same 64px minimum row, token-based 8/16px padding, 20px/1.2 title role and natural wrapping. They retain the root sticky-header/safe-area behavior. No new controls, cards, animations or fixed page heights.
+- **Preserved:** podium/list/referrals/results, ranking values, all API/navigation callbacks, Course/Lesson/Voice/checkout, Telegram and Android. All runtime changes fit the existing CSS line 588; the 10,553 source lines and locale/lesson anchors stay unchanged. Three reviewed-source fingerprints reflect only that audited CSS change.
+- **Checked:** new 18-case matrix in each Chromium and WebKit engine (320/390/430 × UZ/RU/TJ × light/dark), comparing real text/header/nav anchors across initial/loading/error/retry/empty Rating and Friends states. Header anchors match Practice within 1px; long 200% localized titles wrap without horizontal clipping. API fixtures preserve owner checks and real renderers; no production accounts used.
+- **Status:** scoped checks passed; final full suites/current-head CI and main promotion must still be verified. Whole Rating/Friends screens remain partial/unverified for untouched detail, real-device and full accessibility states.
+- **Analytics Impact:** CSS-only, no measurement change. **Monitoring Impact:** no new route or failure path. **Performance Impact:** no request/caching/mount changes; only header geometry. No backend/SQL/native runtime change.
+- **Next:** finish this slice’s checks and promotion, then measure existing Settings/resource/detail chrome individually. Keep completed headers intact and preserve each screen’s distinct task.

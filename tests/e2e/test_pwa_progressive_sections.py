@@ -1164,3 +1164,113 @@ def test_rating_short_leaderboard_preserves_first_row_geometry(width, participan
             browser.close()
 
 
+@pytest.mark.parametrize("width", [320, 390, 430])
+@pytest.mark.parametrize("language", ["uz", "ru", "tj"])
+@pytest.mark.parametrize("theme", ["light", "dark"])
+def test_rating_and_friends_headers_match_root_chrome_across_states(width, language, theme):
+    """Compare real text/header anchors; all API responses are synthetic."""
+    payload = json.loads((STATIC / "course_v3_data/hsk1.json").read_text())
+    payload.update(authenticated=True, level="hsk1")
+    payload["user"] = {"name": "Layout fixture", "avatar": "阿", "language": language,
+                       "is_paid": True, "state": "PRO_ACTIVE", "onboarding_completed": True}
+    held, errors, snapshots = {"rating": [], "friends": []}, [], {}
+
+    def serve(route):
+        path = urlsplit(route.request.url).path
+        if path == "/iphone-pwa/course":
+            route.fulfill(status=200, content_type="text/html", body=pwa_document().replace(
+                'lang="ru"', f'lang="ru" data-hsk-theme="{theme}"', 1))
+        elif path == "/api/v3/pwa-auth/session":
+            route.fulfill(status=200, json={"ok": True, "user_id": 31, "csrf": "test-csrf"})
+        elif path == "/api/v3/pwa/map":
+            route.fulfill(status=200, json=payload, headers={"X-HSK-PWA-User-ID": "31"})
+        elif path == "/api/v3/pwa/gamification":
+            held["rating"].append(route)
+        elif path == "/api/v3/pwa/invite":
+            held["friends"].append(route)
+        elif path.startswith("/api/"):
+            route.fulfill(status=404, json={"ok": False})
+        else:
+            file = (STATIC / path.lstrip("/")).resolve()
+            if file.is_file() and file.is_relative_to(STATIC.resolve()):
+                mime, _ = mimetypes.guess_type(file)
+                route.fulfill(path=str(file), content_type=mime or "application/octet-stream")
+            else:
+                route.fulfill(status=404, body="")
+
+    def snapshot(page, name, selector):
+        snapshots[name] = page.locator(selector).evaluate("""el => {
+            const range = document.createRange(); range.selectNodeContents(el);
+            const text = range.getBoundingClientRect(), box = el.getBoundingClientRect();
+            return {text: {x:text.x,y:text.y,height:text.height},
+                    box:{x:box.x,y:box.y,width:box.width,height:box.height},
+                    navY:document.querySelector('#nav').getBoundingClientRect().y};
+        }""")
+        folder = os.getenv("HSK_RATING_REVIEW_DIR")
+        if folder:
+            Path(folder).mkdir(parents=True, exist_ok=True)
+            engine = os.getenv("PWA_E2E_ENGINE", "chromium")
+            page.screenshot(path=str(Path(folder) / f"{engine}-{width}-{language}-{theme}-{name}.png"))
+
+    with sync_playwright() as playwright:
+        browser = getattr(playwright, os.getenv("PWA_E2E_ENGINE", "chromium")).launch()
+        try:
+            page = browser.new_page(viewport={"width": width, "height": 568 if width == 320 else 932},
+                                    is_mobile=True, color_scheme=theme, reduced_motion="reduce")
+            page.on("pageerror", lambda error: errors.append(str(error)))
+            page.route("**/*", serve)
+            page.goto(ORIGIN + f"/iphone-pwa/course?lang={language}", wait_until="domcontentloaded")
+            page.locator("#s-course .uban").first.wait_for()
+            page.locator('#nav button[data-s="mashq"]').click()
+            snapshot(page, "reference", "#s-mashq h1")
+            reference_header = page.locator("#s-mashq > .htop").bounding_box()
+            page.locator('#nav button[data-s="rating"]').click()
+            page.locator("#s-rating .pwa-rating-shell[aria-busy=true]").wait_for()
+            snapshot(page, "initial", "#s-rating h1")
+            assert len(held["rating"]) == 1
+            held["rating"].pop().fulfill(status=503, json={"ok": False})
+            page.locator("#s-rating .pwa-rating-error button").wait_for()
+            snapshot(page, "error", "#s-rating h1")
+            page.locator("#s-rating .pwa-rating-error button").click()
+            page.locator("#s-rating [aria-busy=true]").wait_for()
+            snapshot(page, "retry", "#s-rating h1")
+            held["rating"].pop().fulfill(status=200, json={
+                "ok": True, "league": "Bronze", "league_size": 0, "leaderboard": []})
+            page.locator("#s-rating .pwa-rating-empty").wait_for()
+            snapshot(page, "empty", "#s-rating h1")
+            page.evaluate("App.openFriends()")
+            page.locator("#s-rating .pwa-friends-body[aria-busy=true]").wait_for()
+            snapshot(page, "friends-pending", "#s-rating h1")
+            assert len(held["friends"]) == 1
+            held["friends"].pop().fulfill(status=503, json={"ok": False})
+            page.locator("#s-rating .pwa-rating-error button").wait_for()
+            snapshot(page, "friends-error", "#s-rating h1")
+            page.locator("#s-rating .pwa-rating-error button").click()
+            page.locator("#s-rating .pwa-friends-body[aria-busy=true]").wait_for()
+            snapshot(page, "friends-retry", "#s-rating h1")
+            assert len(held["friends"]) == 1
+            held["friends"].pop().fulfill(status=200, headers={"X-HSK-PWA-User-ID": "31"}, json={
+                "ok": True, "joined_count": 0, "active_count": 0, "required": 3, "referrals": []})
+            page.locator("#s-rating .ref-stat").wait_for()
+            snapshot(page, "friends-empty", "#s-rating h1")
+            folder = os.getenv("HSK_RATING_REVIEW_DIR")
+            if folder:
+                (Path(folder) / f"{width}-{language}-{theme}.json").write_text(json.dumps(snapshots, indent=2))
+            for name, actual in snapshots.items():
+                if name == "reference":
+                    continue
+                for key in ("x", "y", "height"):
+                    assert abs(actual["text"][key] - snapshots["reference"]["text"][key]) <= 1, (name, snapshots)
+                assert abs(actual["box"]["height"] - reference_header["height"]) <= 1, (name, snapshots)
+                assert abs(actual["navY"] - snapshots["reference"]["navY"]) <= 1
+            # Long localized text remains fully visible and grows in normal flow.
+            title = page.locator("#s-rating h1")
+            title.evaluate("el => {el.textContent = Array(4).fill(el.textContent).join(' '); el.style.fontSize='40px'}")
+            assert title.evaluate("el => el.scrollWidth <= el.clientWidth + 1 && el.scrollHeight <= el.clientHeight + 1")
+            assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
+            assert title.evaluate("el => {const a=el.getBoundingClientRect(),b=el.nextElementSibling.getBoundingClientRect(); return b.y >= a.bottom-1}")
+            page.locator('#nav button[data-s="course"]').click()
+            assert page.locator("#s-course.on .uban").first.is_visible()
+            assert not errors
+        finally:
+            browser.close()
