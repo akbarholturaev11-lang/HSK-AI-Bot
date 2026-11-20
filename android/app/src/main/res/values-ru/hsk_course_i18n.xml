@@ -276,6 +276,12 @@
     <string name="hsk_course_later" formatted="false">Позже</string>
     <string name="hsk_course_league" formatted="false">Лига 朱雀</string>
     <string name="hsk_course_learner" formatted="false">ученик</string>
+    <string name="hsk_course_learning_pro_lesson" formatted="false">Продолжайте уроки HSK с Pro.</string>
+    <string name="hsk_course_learning_pro_mistakes" formatted="false">Продолжайте работу над ошибками с Pro.</string>
+    <string name="hsk_course_learning_result_continue" formatted="false">Продолжить учиться</string>
+    <string name="hsk_course_learning_result_next_hint" formatted="false">Следующее упражнение — в плане на сегодня.</string>
+    <string name="hsk_course_learning_result_review" formatted="false">Что повторить</string>
+    <string name="hsk_course_learning_result_review_hint" formatted="false">Потренируйтесь в разделе «Мои ошибки».</string>
     <string name="hsk_course_lesson_done" formatted="false">Урок завершён!</string>
     <string name="hsk_course_lesson_done_sub" formatted="false">Отличная работа. Следующий этап ждёт.</string>
     <string name="hsk_course_lesson_flow_choose_hanzi_question" formatted="false">Выберите иероглиф</string>

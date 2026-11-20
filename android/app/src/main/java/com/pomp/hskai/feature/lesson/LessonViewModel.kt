@@ -15,6 +15,7 @@ import com.pomp.hskai.data.api.AdaptiveAnswerResponseDto
 import com.pomp.hskai.data.api.AdaptiveItemDto
 import com.pomp.hskai.data.api.AdaptivePlanDto
 import com.pomp.hskai.data.api.CourseCompleteResponse
+import com.pomp.hskai.data.api.CourseLearningReviewDto
 import com.pomp.hskai.data.api.CourseGamificationDto
 import com.pomp.hskai.data.api.CourseMistakeDto
 import com.pomp.hskai.data.api.RatingResponse
@@ -157,6 +158,7 @@ sealed interface LessonOutcome {
         val rankAfter: Int = 0,
         /** Wall-clock seconds spent in the deck, measured on device only. */
         val elapsedSeconds: Int = 0,
+        val learningResult: LessonLearningResult? = null,
     ) : LessonOutcome
 
     /** The free half-preview ran out. Completion is not possible. */
@@ -164,6 +166,12 @@ sealed interface LessonOutcome {
 
     data class Failed(val error: ApiError) : LessonOutcome
 }
+
+data class LessonLearningResult(
+    val title: String,
+    val subtitle: String,
+    val review: CourseLearningReviewDto?,
+)
 
 /** One row of the rank-up board: the Mini App shows three, centred on you. */
 data class LessonRankRow(
@@ -1003,6 +1011,12 @@ class LessonViewModel(
                             rankBefore = result.value.rankBefore,
                             rankAfter = result.value.rankAfter,
                             elapsedSeconds = elapsedSeconds(),
+                            learningResult = result.value.takeIf {
+                                !it.duplicate && !it.gamification.duplicate &&
+                                    it.completedLesson == lesson.order
+                            }?.learningResult?.let {
+                                LessonLearningResult(lesson.title, lesson.subtitle, it.review)
+                            },
                         ),
                     )
 

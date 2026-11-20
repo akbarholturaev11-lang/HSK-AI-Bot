@@ -276,6 +276,12 @@
     <string name="hsk_course_later" formatted="false">Дертар</string>
     <string name="hsk_course_league" formatted="false">Лигаи 朱雀</string>
     <string name="hsk_course_learner" formatted="false">донишҷӯ</string>
+    <string name="hsk_course_learning_pro_lesson" formatted="false">Бо Pro дарсҳои HSK-ро идома диҳед.</string>
+    <string name="hsk_course_learning_pro_mistakes" formatted="false">Бо Pro аз рӯйи хатоҳоятон боз машқ кунед.</string>
+    <string name="hsk_course_learning_result_continue" formatted="false">Идомаи омӯзиш</string>
+    <string name="hsk_course_learning_result_next_hint" formatted="false">Машқи навбатиро дар нақшаи имрӯз ёбед.</string>
+    <string name="hsk_course_learning_result_review" formatted="false">Барои такрор</string>
+    <string name="hsk_course_learning_result_review_hint" formatted="false">Дар бахши «Хатоҳои ман» машқ кунед.</string>
     <string name="hsk_course_lesson_done" formatted="false">Дарс анҷом ёфт!</string>
     <string name="hsk_course_lesson_done_sub" formatted="false">Офарин! Зинаи навбатӣ интизор аст.</string>
     <string name="hsk_course_lesson_flow_choose_hanzi_question" formatted="false">Иероглифро интихоб кунед</string>

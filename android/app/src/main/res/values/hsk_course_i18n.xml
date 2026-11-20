@@ -276,6 +276,12 @@
     <string name="hsk_course_later" formatted="false">Keyinroq</string>
     <string name="hsk_course_league" formatted="false">朱雀 ligasi</string>
     <string name="hsk_course_learner" formatted="false">o\'quvchi</string>
+    <string name="hsk_course_learning_pro_lesson" formatted="false">Pro bilan HSK darslarini davom ettiring.</string>
+    <string name="hsk_course_learning_pro_mistakes" formatted="false">Pro bilan xatolaringiz ustida yana mashq qiling.</string>
+    <string name="hsk_course_learning_result_continue" formatted="false">O‘qishni davom ettirish</string>
+    <string name="hsk_course_learning_result_next_hint" formatted="false">Keyingi mashqni bugungi rejadan toping.</string>
+    <string name="hsk_course_learning_result_review" formatted="false">Takrorlash uchun</string>
+    <string name="hsk_course_learning_result_review_hint" formatted="false">Xatolaringizni «Xatolarim» bo‘limida takrorlang.</string>
     <string name="hsk_course_lesson_done" formatted="false">Dars tugadi!</string>
     <string name="hsk_course_lesson_done_sub" formatted="false">Ajoyib! Keyingi bosqich kutyapti.</string>
     <string name="hsk_course_lesson_flow_choose_hanzi_question" formatted="false">Ieroglifni tanlang</string>

@@ -28,8 +28,10 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.pomp.hskai.BuildConfig
 import com.pomp.hskai.HskAiApplication
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompHskAiTheme
@@ -48,6 +50,58 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class SectionLimitOverlayTest {
     @get:Rule val compose = createComposeRule()
+
+    @Test fun learningLimitUsesContextualCopyAndTheInstalledChannelsAction() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val app = context.applicationContext as HskAiApplication
+        val cases = listOf(
+            "course_lesson_limit" to R.string.hsk_course_learning_pro_lesson,
+            "practice_mistakes" to R.string.hsk_course_learning_pro_mistakes,
+        )
+        val source = mutableStateOf(cases.first().first)
+        val opened = mutableListOf<String>()
+        var rechecks = 0
+        compose.setContent {
+            PompHskAiTheme {
+                val limit = rememberLimitGate(
+                    repository = app.featureRepository,
+                    viewModelStoreOwner = checkNotNull(LocalViewModelStoreOwner.current),
+                    supportUrl = "",
+                    isRefreshing = false,
+                    onRefreshAccess = { rechecks++ },
+                    onOpenSubscription = { opened.add(it) },
+                )
+                SectionLimitOverlay(sectionTitle = "Study", sourceKey = source.value, limit = limit, onClose = {})
+            }
+        }
+
+        val checkout = compose.onNodeWithText(context.getString(R.string.limit_sheet_get_pro))
+        val recheck = compose.onNodeWithText(context.getString(R.string.play_limit_check_access))
+        for ((key, description) in cases) {
+            compose.runOnIdle { source.value = key }
+            val offer = compose.onNodeWithText(context.getString(description))
+            if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) {
+                offer.performScrollTo().assertIsDisplayed()
+                recheck.assertDoesNotExist()
+                checkout.performScrollTo().performClick()
+            } else {
+                offer.assertDoesNotExist()
+                checkout.assertDoesNotExist()
+                compose.onNodeWithText(context.getString(R.string.play_limit_description))
+                    .performScrollTo().assertIsDisplayed()
+                recheck.performScrollTo().performClick()
+            }
+        }
+        compose.runOnIdle {
+            if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) {
+                assertEquals(cases.map { it.first }, opened)
+                assertEquals(0, rechecks)
+            } else {
+                assertTrue(opened.isEmpty())
+                assertEquals(cases.size, rechecks)
+            }
+        }
+    }
 
     @Test fun compactLargeTextPaywallKeepsItsActionVisibleAndSuppressesTheAssistant() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext

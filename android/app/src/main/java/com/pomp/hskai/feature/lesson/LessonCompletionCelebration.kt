@@ -85,6 +85,7 @@ internal fun LessonCompletionCelebration(
     /** Named rows for the board; null while it loads, or when it never came. */
     rankBoard: LessonRankBoard? = null,
     rankUp: LessonRankUp? = null,
+    showTodayPlanHint: Boolean = false,
     onExit: () -> Unit,
 ) {
     val gamification = outcome.gamification
@@ -179,6 +180,7 @@ internal fun LessonCompletionCelebration(
                     isCheckpoint = isCheckpoint,
                     rankUp = verifiedRankUp,
                     rankBoard = rankBoard,
+                    showTodayPlanHint = showTodayPlanHint,
                     isLast = index >= scenes.lastIndex,
                     onNext = {
                         if (sceneIndex < scenes.lastIndex) sceneIndex++ else onExit()
@@ -209,6 +211,7 @@ private fun RevealedScene(
     isCheckpoint: Boolean,
     rankUp: LessonRankUp?,
     rankBoard: LessonRankBoard?,
+    showTodayPlanHint: Boolean,
     isLast: Boolean,
     onNext: () -> Unit,
 ) {
@@ -265,7 +268,8 @@ private fun RevealedScene(
                         verticalArrangement = Arrangement.Center,
                     ) {
                         when (scene) {
-                            CelebrationScene.COMPLETE -> CompletionScene(outcome, isCheckpoint)
+                            CelebrationScene.COMPLETE ->
+                                CompletionScene(outcome, isCheckpoint, showTodayPlanHint)
                             CelebrationScene.STREAK -> HskStreakCelebration(outcome.gamification)
                             CelebrationScene.RANK_UP -> rankUp?.let { RankUpScene(it, rankBoard) }
                         }
@@ -275,11 +279,13 @@ private fun RevealedScene(
 
             HskFadeIn(durationMillis = 400) {
                 PrimaryAction(
-                    text = if (isLast) {
-                        stringResource(R.string.lesson_back_to_course)
-                    } else {
-                        stringResource(R.string.hsk_common_action_continue)
-                    },
+                    text = stringResource(
+                        when {
+                            !isLast -> R.string.hsk_common_action_continue
+                            outcome.learningResult != null -> R.string.hsk_course_learning_result_continue
+                            else -> R.string.lesson_back_to_course
+                        }
+                    ),
                     onClick = onNext,
                 )
             }
@@ -292,10 +298,12 @@ private fun RevealedScene(
 private fun CompletionScene(
     outcome: LessonOutcome.Completed,
     isCheckpoint: Boolean,
+    showTodayPlanHint: Boolean,
 ) {
     val gamification = outcome.gamification
     val graded = outcome.graded
     val accuracy = if (graded > 0) outcome.correct * 100 / graded else -1
+    val learningResult = outcome.learningResult
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         // `.lu-emb`: 毕 "done" for a lesson, 胜 "won" for a checkpoint. The
         // glyph is the Mini App's own and reads the same in every language.
@@ -304,7 +312,8 @@ private fun CompletionScene(
         }
         HskReveal(delayMillis = 90) {
             Text(
-                text = completionTitle(accuracy, outcome.seed()),
+                text = if (learningResult != null) stringResource(R.string.lesson_done_title)
+                    else completionTitle(accuracy, outcome.seed()),
                 style = MaterialTheme.typography.headlineMedium,
                 color = HskStageInkOn,
                 textAlign = TextAlign.Center,
@@ -312,7 +321,11 @@ private fun CompletionScene(
                 modifier = Modifier.padding(top = 14.dp),
             )
         }
-        completionSubtitle(accuracy)?.let { subtitle ->
+        if (learningResult != null) {
+            HskReveal(delayMillis = 170) {
+                LearningResultBlock(learningResult, showTodayPlanHint)
+            }
+        } else completionSubtitle(accuracy)?.let { subtitle ->
             HskReveal(delayMillis = 170) {
                 Text(
                     text = subtitle,
@@ -360,6 +373,69 @@ private fun CompletionScene(
                     modifier = Modifier.padding(top = 12.dp),
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun LearningResultBlock(result: LessonLearningResult, showTodayPlanHint: Boolean) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
+        if (result.title.isNotBlank()) {
+            Text(
+                text = result.title,
+                style = MaterialTheme.typography.titleMedium,
+                color = HskStageInkOn,
+                textAlign = TextAlign.Center,
+            )
+        }
+        if (result.subtitle.isNotBlank() && result.subtitle != result.title) {
+            Text(
+                text = result.subtitle,
+                style = MaterialTheme.typography.bodyMedium,
+                color = HskStageInkMuted,
+                textAlign = TextAlign.Center,
+            )
+        }
+        val review = result.review
+        if (review != null) {
+            Text(
+                text = stringResource(R.string.hsk_course_learning_result_review),
+                style = MaterialTheme.typography.labelLarge,
+                color = HskStageInkOn,
+                modifier = Modifier.padding(top = 6.dp),
+            )
+            Text(
+                text = review.prompt,
+                style = MaterialTheme.typography.bodyMedium,
+                color = HskStageInkMuted,
+                textAlign = TextAlign.Center,
+            )
+            Text(
+                text = review.correction,
+                style = MaterialTheme.typography.titleMedium,
+                color = HskStageInkOn,
+                fontWeight = FontWeight.SemiBold,
+                textAlign = TextAlign.Center,
+            )
+        }
+        val hint = when {
+            review != null -> R.string.hsk_course_learning_result_review_hint
+            showTodayPlanHint -> R.string.hsk_course_learning_result_next_hint
+            else -> null
+        }
+        if (hint != null) {
+            Text(
+                text = stringResource(hint),
+                style = MaterialTheme.typography.bodySmall,
+                color = HskStageInkMuted,
+                textAlign = TextAlign.Center,
+            )
         }
     }
 }

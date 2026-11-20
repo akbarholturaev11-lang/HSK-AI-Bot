@@ -3376,6 +3376,7 @@ async def _v3_complete_lesson_for_canonical_actor(
     session, user, payload: dict, *, lesson_order: int,
     lesson_session_id: str | None, lesson_mistakes: list[dict],
     telegram_id: int | None, analytics_client: str,
+    include_learning_result: bool = False,
 ):
     """Single existing V3 completion, entitlement, proof and XP transaction.
 
@@ -3574,8 +3575,9 @@ async def _v3_complete_lesson_for_canonical_actor(
             # Optional mistake telemetry must never block a valid lesson
             # completion when checked-in material is unavailable/corrupt.
             lesson_mistakes = []
+    recorded_mistakes = 0
     if lesson_mistakes:
-        await CourseMistakeService(session).record_items(
+        recorded_mistakes = await CourseMistakeService(session).record_items(
             user,
             lesson_mistakes,
             source="lesson",
@@ -3584,20 +3586,23 @@ async def _v3_complete_lesson_for_canonical_actor(
             lesson_order=lesson_order,
         )
     await session.commit()
-    return JSONResponse(
-        content={
-            "ok": True,
-            "completed_lesson": lesson_order,
-            "next_lesson": next_order,
-            "next_level": next_level,
-            "next_level_pending": next_level_pending,
-            "completed_lessons_count": int(getattr(progress, "completed_lessons_count", 0) or 0),
-            "gamification": snapshot,
-            "rank_before": rank_before,
-            "rank_after": rank_after,
-            "rank_up_board": rank_up_board,
-        }
-    )
+    result = {
+        "ok": True,
+        "completed_lesson": lesson_order,
+        "next_lesson": next_order,
+        "next_level": next_level,
+        "next_level_pending": next_level_pending,
+        "completed_lessons_count": int(getattr(progress, "completed_lessons_count", 0) or 0),
+        "gamification": snapshot,
+        "rank_before": rank_before,
+        "rank_after": rank_after,
+        "rank_up_board": rank_up_board,
+    }
+    if include_learning_result and lesson_order == 1:
+        result["learning_result"] = CourseLessonMistakeMaterialService.learning_result(
+            lesson_mistakes, recorded=recorded_mistakes,
+        )
+    return JSONResponse(content=result)
 
 
 @app.post("/api/v3/lesson/complete")
@@ -3707,6 +3712,7 @@ async def pwa_v3_course_lesson_complete(request: Request):
                 lesson_mistakes=lesson_mistakes,
                 telegram_id=int(user.telegram_id) if user.telegram_id else None,
                 analytics_client="iphone_pwa",
+                include_learning_result=True,
             )
             response.headers["Cache-Control"] = "no-store"
             response.headers["Referrer-Policy"] = "no-referrer"
