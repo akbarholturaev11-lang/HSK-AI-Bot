@@ -121,6 +121,34 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 .scr:not(#s-course)>.htop{padding-top:6px}
 .section-title,.profile-title{margin:0;color:var(--ink);font-size:var(--hsk-section-title-size,20px);line-height:var(--hsk-section-title-line-height,1.2);font-weight:700;letter-spacing:-.01em}
 .section-title{flex:0 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* Comparable PWA root headers share a reserved row, including first paint.
+   Minimum height only: long localized titles may grow with their content. */
+html.hsk-pwa-browser :is(#s-mashq,#s-profile)>.htop,
+html.hsk-pwa-browser :is(#s-mashq,#s-profile)>.pwa-initial-shell>.htop{
+  min-height:calc(var(--hsk-space-12) + var(--hsk-space-4));
+  padding:var(--hsk-space-2) var(--hsk-space-4);gap:var(--hsk-space-2);
+}
+html.hsk-pwa-browser :is(#s-mashq,#s-profile) .htop>h1{
+  font-size:var(--hsk-section-title-size);line-height:var(--hsk-section-title-line-height);
+  white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere;
+}
+html.hsk-pwa-browser #s-profile .profile-head-actions{gap:var(--hsk-space-2)}
+html.hsk-pwa-browser #s-profile .profile-head-actions :is(.profile-settings,.profile-pro-cta,.pwa-profile-action){
+  width:44px;height:44px;flex:0 0 44px;
+}
+/* Match known localized Practice rows without changing ready content. */
+html.hsk-pwa-browser #s-mashq .pwa-mashq-shell :is(.sub,.sech){min-height:var(--hsk-space-4)}
+@media(max-width:400px){
+  html.hsk-pwa-browser[lang] #s-mashq .pwa-mashq-shell>.mashq-group:nth-child(n)>.pwa-practice-row:nth-child(n){min-height:68px}
+  html.hsk-pwa-browser:lang(ru) #s-mashq .pwa-mashq-shell>.mashq-group:nth-child(4)>.pwa-practice-row:nth-child(2){min-height:80px}
+}
+@media(max-width:340px){
+  html.hsk-pwa-browser[lang] #s-mashq .pwa-mashq-shell>.mashq-group:nth-child(n)>.pwa-practice-row:first-child{min-height:80px}
+  html.hsk-pwa-browser:lang(ru) #s-mashq .pwa-mashq-shell>.mashq-group:nth-child(4)>.pwa-practice-row:nth-child(3){min-height:100px}
+  html.hsk-pwa-browser:lang(ru) #s-mashq .pwa-mashq-shell>.mashq-group:nth-child(4)>.pwa-practice-row:nth-child(4),
+  html.hsk-pwa-browser:lang(uz) #s-mashq .pwa-mashq-shell>.mashq-group:nth-child(4)>.pwa-practice-row:nth-child(2),
+  html.hsk-pwa-browser:is(:lang(tg),:lang(tj)) #s-mashq .pwa-mashq-shell>.mashq-group:nth-child(4)>.pwa-practice-row:nth-child(3){min-height:80px}
+}
 .profile-settings{width:44px;height:44px;flex:0 0 44px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:50%;background:var(--card);color:var(--ink2);box-shadow:0 2px 8px rgba(33,29,23,.08);cursor:pointer}
 .profile-settings i{font-size:21px}
 .profile-settings:focus-visible{outline:2px solid var(--cin);outline-offset:2px}
