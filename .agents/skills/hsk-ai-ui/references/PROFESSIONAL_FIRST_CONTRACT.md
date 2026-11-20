@@ -2,7 +2,7 @@
 
 **Status:** normative guideline-authoring and future UI/UX evaluation contract. **Not** a feature announcement, implementation instruction or statement that HSK AI already meets all target criteria.
 
-**Scope:** professional guidelines for existing and potential HSK AI **iPhone PWA and native Android** screens. This file is a companion to `AGENTS.md` (which takes precedence for safety and product facts), `DESIGN_SYSTEM_APPROVED_DECISIONS_AND_RESTORATION_TASKS.md` (unaltered owner decisions) and the [45-page historical source reconciliation](docs/audits/professional-rules-source-to-hsk-ai-matrix-2026-11-15.md).
+**Scope:** professional guidelines for existing and potential HSK AI **iPhone PWA and native Android** screens. This file is a companion to `AGENTS.md` (which takes precedence for safety and product facts), `DESIGN_SYSTEM_APPROVED_DECISIONS_AND_RESTORATION_TASKS.md` (unaltered owner decisions) and the [45-page historical source reconciliation](https://github.com/akbarholturaev11-lang/HSK-AI-Design-System/blob/restore/hsk-ai-professional-unified-audit-20261115/docs/audits/professional-rules-source-to-hsk-ai-matrix-2026-11-15.md).
 
 ## 1. One-sentence rule
 
@@ -84,7 +84,7 @@ Use this table as the minimum page-by-page review contract. The named documents 
 | `design-patterns/professional-reference-gallery.mdx` | Source professional spatial/structural evidence and granular rationales | Historic image must remain clearly non-product and **not assumed rights-cleared** |
 | `introduction.mdx` | Global design philosophy and implementation expectations | Exact function/brand exceptions and phased future handoff |
 
-**Coverage rule:** the historic source contains **45 original MDX documents**, with **3 vendor-exclusive pages excluded** and **2 HSK AI-only additions**, resulting in **44 active docs**. A prior page-by-page [reconciliation matrix](docs/audits/professional-rules-source-to-hsk-ai-matrix-2026-11-15.md) records each disposition. Do not claim full parity merely from this checklist: consult the actual page text and the historical reference for details before removing or rewording any rule.
+**Coverage rule:** the historic source contains **45 original MDX documents**, with **3 vendor-exclusive pages excluded** and **2 HSK AI-only additions**, resulting in **44 active docs**. A prior page-by-page [reconciliation matrix](https://github.com/akbarholturaev11-lang/HSK-AI-Design-System/blob/restore/hsk-ai-professional-unified-audit-20261115/docs/audits/professional-rules-source-to-hsk-ai-matrix-2026-11-15.md) records each disposition. Do not claim full parity merely from this checklist: consult the actual page text and the historical reference for details before removing or rewording any rule.
 
 ## 6. Mandatory exception register
 
@@ -104,7 +104,7 @@ Every substantive divergence must be recorded where it occurs, using:
 
 The owner specified **no publication** and a simple visual distinction: **retain/migrate useful generic sample illustrations that teach component anatomy or design decisions, exclude real screenshots of other apps and vendor business screens.** Judge the actual image, not its filename or the fact that it is historical. Selected examples remain **illustrative** and do not change the official HSK AI brand palette/spacing/functionality. Preserve every transferable professional micro-detail from an excluded screenshot in the surrounding design text.
 
-The source contains many different image types; do not call every PNG a foreign screen, or drop a valid neutral reference image on that basis. For documented visually verified examples and the remainder's `REVIEW_REQUIRED` handling, use [visual reference selection](docs/migration/VISUAL_REFERENCE_SELECTION.md). There is no public-site publication in the current plan; source rights statements should be accurate but cannot substitute for the user's selection criteria.
+The source contains many different image types; do not call every PNG a foreign screen, or drop a valid neutral reference image on that basis. For documented visually verified examples and the remainder's `REVIEW_REQUIRED` handling, use [visual reference selection](https://github.com/akbarholturaev11-lang/HSK-AI-Design-System/blob/restore/hsk-ai-professional-unified-audit-20261115/docs/migration/VISUAL_REFERENCE_SELECTION.md). There is no public-site publication in the current plan; source rights statements should be accurate but cannot substitute for the user's selection criteria.
 
 ## 7. Publication / artwork provenance boundary
 
