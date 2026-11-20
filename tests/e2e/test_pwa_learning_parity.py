@@ -25,6 +25,7 @@ class LearningPage:
         self.data['notify'] = {'enabled': True}
         self.events = []
         self.completions = []
+        self.lesson_completions = []
         self.prepares = []
         self.submissions = []
         self.ad_views = []
@@ -71,6 +72,9 @@ class LearningPage:
         elif path == '/api/v3/pwa/event':
             self.events.append(route.request.post_data_json)
             route.fulfill(json={'ok': True})
+        elif path == '/api/v3/pwa/lesson/complete':
+            assert route.request.headers.get('x-hsk-pwa-csrf') == 'test-csrf'
+            self.lesson_completions.append(route)
         elif path == '/api/v3/pwa/lesson/foundation/complete':
             assert route.request.headers.get('x-hsk-pwa-csrf') == 'test-csrf'
             self.completions.append(route)
@@ -390,6 +394,8 @@ def test_stalled_lesson_ad_does_not_block_returning_to_course():
 def test_completed_part_continues_to_one_line_next_part_sheet(lang, chip):
     """Lesson done -> streak -> Continue opens the next part's sheet; feedback waits for its close."""
     fixture = LearningPage(lang=lang)
+    # Exercise a genuinely short line before the explicitly long fitting case.
+    fixture.data['units'][0]['lessons'][1].update(zh='你们 · 对不起', py='nǐmen · duìbuqǐ')
     with sync_playwright() as pw:
         browser = getattr(pw, os.getenv('PWA_E2E_ENGINE', 'chromium')).launch()
         try:
@@ -438,6 +444,146 @@ def test_completed_part_continues_to_one_line_next_part_sheet(lang, chip):
             page.wait_for_timeout(1500)
             assert [p['context'] for p in fixture.prepares] == [{'kind': 'lesson', 'level': 'hsk1', 'lesson_id': 1}], \
                 'closing the sheet returns to the map with the usual feedback'
+            assert errors == []
+        finally:
+            browser.close()
+
+
+def _submit_first_part_result(page):
+    # Start from the final lesson card and exercise the actual save/render path.
+    with page.expect_request('**/api/v3/pwa/lesson/complete'):
+        page.evaluate("""() => {
+            document.querySelector('#flow').classList.add('on');
+            Object.assign(Flow, {lessonIdx: 0, exitRequired: [], graded: 2, correct: 1,
+                                 startedAt: Date.now() - 21000});
+            flowDone();
+        }""")
+
+
+@pytest.mark.parametrize('lang,width', [('uz', 320), ('ru', 390), ('tj', 430)])
+def test_confirmed_learning_result_renders_verified_topic_and_review(lang, width):
+    fixture = LearningPage(lang=lang)
+    course_copy = json.loads((STATIC.parent.parent / f'localization/ui/{lang}/course.json')
+                             .read_text())['messages']
+    topic = fixture.data['units'][0]['lessons'][0]
+    # An oversized word plus quoted markup tests scrolling and text escaping.
+    prompt = '你好 <img onerror="throw Error(1)"> & nǐ hǎo'
+    correction = '你' * 175 + ' & nǐ'
+    with sync_playwright() as pw:
+        browser = getattr(pw, os.getenv('PWA_E2E_ENGINE', 'chromium')).launch()
+        try:
+            page = fixture.open(browser, width)
+            if width == 320:
+                page.set_viewport_size({'width': width, 'height': 480})
+            requests = []
+            errors = []
+            page.on('request', lambda request: requests.append(urlsplit(request.url).path))
+            page.on('pageerror', lambda error: errors.append(str(error)))
+            _submit_first_part_result(page)
+            assert not page.locator('#levelup.on').count()
+            assert len(fixture.lesson_completions) == 1
+            assert fixture.lesson_completions[0].request.post_data_json['lesson_id'] == 1
+            assert not page.locator('.lu-learning-topic').count()
+            fixture.data['progress']['completed'] = 1
+            fixture.lesson_completions[0].fulfill(json={
+                'ok': True, 'completed_lessons_count': 1, 'gamification': {'awarded_xp': 20},
+                'learning_result': {'review': {'prompt': prompt, 'correction': correction}},
+            })
+            result = page.locator('#levelup.on')
+            result.locator('.lu-review-correction').wait_for()
+            page.wait_for_function('PROGRESS_REFRESH === null')
+            assert result.locator('h2').inner_text() == course_copy['levelUp.lessonH']
+            assert result.locator('.lu-learning-topic span').all_inner_texts() == [
+                topic['tr'][lang], topic['zh'], topic['py'],
+            ]
+            assert '50%' in result.locator('.lu-rewards').inner_text()
+            assert result.locator('.lu-learning-review strong').inner_text() == course_copy['learningResult.review']
+            assert result.locator('.lu-review-prompt').inner_text() == prompt
+            assert result.locator('.lu-review-correction').inner_text() == correction
+            assert result.locator('.lu-learning-review img').count() == 0
+            assert result.locator('.lu-result-note').inner_text() == course_copy['learningResult.reviewHint']
+            assert result.get_by_role('button').count() == 1
+            action = result.locator('#lu-cta')
+            assert action.inner_text().strip() == course_copy['learningResult.continue']
+            stage = result.locator('#lu-stage')
+            geometry = stage.evaluate("""el => ({
+                  width: el.clientWidth, scrollWidth: el.scrollWidth,
+                  height: el.clientHeight, scrollHeight: el.scrollHeight,
+            })""")
+            assert geometry['scrollWidth'] == geometry['width']
+            if width == 320:
+                assert geometry['scrollHeight'] > geometry['height']
+                before = capture_geometry(page, {'continue': '#lu-cta'})
+                stage.evaluate('el => { el.scrollTop = el.scrollHeight; }')
+                assert stage.evaluate('el => el.scrollTop') > 0
+                assert_reserved_layout(before, capture_geometry(page, {'continue': '#lu-cta'}))
+            assert action.bounding_box()['height'] >= 44
+            assert requests.count('/api/v3/pwa/map') == 1
+            assert not any('sales-preview' in request for request in requests)
+            action.click()
+            result.wait_for(state='hidden')
+            assert page.locator('.lu-learning-review').count() == 0
+            page.locator('#sheet.on .scta').wait_for()
+            assert page.locator('#paywall.on').count() == 0
+            assert errors == []
+        finally:
+            browser.close()
+
+
+@pytest.mark.parametrize('variant', ['no_review', 'legacy', 'retried_duplicate', 'changed_owner'])
+def test_learning_result_falls_back_without_current_confirmed_review(variant):
+    fixture = LearningPage()
+    fixture.data['today'] = {'complete': False, 'goal_xp': 40, 'tasks': [
+        {'type': 'mistake_review', 'done': False, 'available': True, 'access': 'open'},
+    ]}
+    # The first part remains complete even if access to the next part is spent.
+    fixture.data['units'][0]['lessons'][1].update(locked_premium=True, completion_allowed=False)
+    with sync_playwright() as pw:
+        browser = getattr(pw, os.getenv('PWA_E2E_ENGINE', 'chromium')).launch()
+        try:
+            page = fixture.open(browser)
+            errors = []
+            page.on('pageerror', lambda error: errors.append(str(error)))
+            _submit_first_part_result(page)
+            assert not page.locator('#levelup.on').count()
+            assert len(fixture.lesson_completions) == 1
+            response = {'ok': True, 'completed_lessons_count': 1}
+            if variant == 'retried_duplicate':
+                original_payload = fixture.lesson_completions[0].request.post_data_json
+                fixture.lesson_completions[0].fulfill(status=503, json={
+                    'ok': False, 'error': 'temporary', 'learning_result': {'review': None},
+                })
+                retry = page.locator('#flow.on #f-cta')
+                retry.wait_for()
+                assert not page.locator('#levelup.on').count()
+                assert page.evaluate('MAP.progress.completed') == 0
+                with page.expect_request('**/api/v3/pwa/lesson/complete'):
+                    retry.click()
+                assert not page.locator('#levelup.on').count()
+                assert len(fixture.lesson_completions) == 2
+                assert fixture.lesson_completions[1].request.post_data_json == original_payload
+                response.update(duplicate=True, learning_result={'review': {'prompt': '例子', 'correction': '示例'}})
+            elif variant == 'no_review':
+                response['learning_result'] = {'review': None}
+            elif variant == 'changed_owner':
+                response['learning_result'] = {'review': {'prompt': '例子', 'correction': '示例'}}
+                page.evaluate('PWA_COURSE_USER_ID=99')
+            fixture.data['progress']['completed'] = 1
+            fixture.lesson_completions[-1].fulfill(json=response)
+            result = page.locator('#levelup.on')
+            result.wait_for()
+            assert result.locator('.lu-learning-review').count() == 0
+            if variant == 'no_review':
+                assert result.locator('.lu-learning-topic').count() == 1
+                assert result.locator('.lu-result-note').inner_text() == page.evaluate(
+                    'courseMessage("learningResult.nextHint", "")',
+                )
+                result.locator('#lu-cta').click()
+                result.wait_for(state='hidden')
+                assert page.locator('#s-course .tplan').is_visible()
+                assert page.locator('#sheet.on, #paywall.on').count() == 0
+            else:
+                assert result.locator('.lu-learning-topic, .lu-result-note').count() == 0
             assert errors == []
         finally:
             browser.close()

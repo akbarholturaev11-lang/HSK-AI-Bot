@@ -824,6 +824,15 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 .lu-rw b{display:block;font-size:18px;font-weight:600;color:var(--gold)}.lu-rw small{font-size:11px;color:rgba(255,255,255,.7)}
 .lu-rw.a-jade{border-color:rgba(72,217,154,.45)}.lu-rw.a-jade b{color:#48D99A}
 .lu-result-note{margin-top:14px;color:rgba(255,255,255,.72);font-size:13px;line-height:1.4;text-align:center}
+.lu-stage:has(.lu-learning-topic){min-height:0;overflow-y:auto;justify-content:safe center}
+.lu-stage:has(.lu-learning-topic)>*,.lu-stage:has(.lu-learning-topic)+.lu-cta{flex-shrink:0}
+.lu-learning-topic,.lu-learning-review{width:100%;max-width:320px;overflow-wrap:anywhere}
+.lu-learning-topic{display:grid;gap:4px;margin:0 0 18px;color:rgba(255,255,255,.84);font-size:15px}
+.lu-learning-topic .han{color:#fff;font-size:20px}
+.lu-learning-review{display:grid;gap:5px;margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.2)}
+.lu-learning-review strong{color:var(--gold)}
+.lu-review-prompt{color:rgba(255,255,255,.84)}.lu-review-correction{font-weight:600}
+.lu-learning-review .lu-result-note{margin-top:4px}
 .lu-rw.a-blue{border-color:rgba(126,221,246,.45)}.lu-rw.a-blue b{color:#7EDDF6}
 .lu-cta{margin:0 16px calc(16px + var(--safe-b));padding:16px;background:var(--cin);color:var(--cin-ink);border:none;border-radius:15px;font-family:inherit;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px;z-index:2}
 .lu-conf{position:absolute;top:-14px;width:9px;height:13px;border-radius:2px;opacity:0;z-index:3}
@@ -1776,7 +1785,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 </script>
 <!-- Reklama moduli: dars yakuni bloki uchun (mashq bo'limlari ham shu moduldan foydalanadi) -->
 <script src="/voice-live.js?v=20261114-43a09dcc7b1d"></script>
-<script defer src="/course_v3_data/ads.js?v=20261021-5288c4e06b0c"></script><script src="/course_v3_data/hsk-common-i18n.js?v=20261019-1c672dcfb10d"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261113-642a79197e7f"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-a0dd8c0b1db1"></script><script src="/course_v3_data/p3-grammar-reservation.js?v=20261019-p3-2"></script>
+<script defer src="/course_v3_data/ads.js?v=20261021-5288c4e06b0c"></script><script src="/course_v3_data/hsk-common-i18n.js?v=20261019-1c672dcfb10d"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261113-50d161e8ed06"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-a0dd8c0b1db1"></script><script src="/course_v3_data/p3-grammar-reservation.js?v=20261019-p3-2"></script>
 <script>
 /* ---------- i18n (default RU) ---------- */
 var I18N={
@@ -3049,6 +3058,9 @@ var App={
     if(!$("#lu-rays").innerHTML){var r="";for(var a=0;a<24;a++)r+='<rect x="99" y="0" width="2" height="100" fill="#FFC800" transform="rotate('+(a*15)+' 100 100)"/>';$("#lu-rays").innerHTML=r;}
     var rewards=V.rw&&V.rw.length?'<div class="lu-rewards">'+V.rw.map(function(x){return '<div class="lu-rw '+(x[2]||"")+'"><b>'+esc(x[0])+'</b><small>'+esc(x[1])+'</small></div>'}).join("")+'</div>':"";
     var t0=type||"lesson";
+    var learningLesson=t0==="lesson"&&extra&&extra.learningLesson;
+    var topic=learningLesson?learningResultTopicHtml(learningLesson):"";
+    var review=learningLesson?learningResultReviewHtml(data.learning_result.review):"";
     var finishChar=(t0==="checkpoint"||t0==="level")?"dragon":"panda";
     /* Normal darsda Panda asosiy maskot bo'lib qoladi; checkpoint/level
        marra ekranida energiyali Xitoy ajdari chiqadi. Server flow o'zgarmaydi. */
@@ -3056,12 +3068,15 @@ var App={
       $("#lu-panda").innerHTML=lessonCharacterHtml(finishChar,"celebrate");
       var streak=window._pendingStreak;
       var showStreak=!!(streak&&streak.extended&&Number(streak.now)>0);
-      $("#lu-stage").innerHTML='<div class="lu-emb">'+V.emb+'</div><h2>'+V.h+'</h2><p>'+V.p+'</p>'+rewards;
+      var heading=learningLesson?esc(lu.lessonH):V.h;
+      $("#lu-stage").innerHTML='<div class="lu-emb">'+V.emb+'</div><h2>'+heading+'</h2>'
+        +(learningLesson?topic:'<p>'+V.p+'</p>')+rewards+review;
       /* A completed part whose next part is ready ends on that part's sheet. */
       var toNextPart=!firstCp&&t0!=="level"&&typeof window._pendingCheckpointNextIdx==="number";
       $("#lu-cta").setAttribute("onclick",(showStreak?"event.stopPropagation();":"")+(firstCp?(showStreak?"App.showStreakScreen('checkpoint')":"App.openCheckpointNext()"):toNextPart?(showStreak?"App.showStreakScreen('next')":"App.openCheckpointNext()"):(showStreak?"App.showStreakScreen()":"App.closeLevelUp()")));
       var nextLabel=courseMessage("nextLessonOpen",LANG==="ru"?"Открыть следующий урок":LANG==="tj"?"Кушодани дарси оянда":"Keyingi darsni ochish");
-      $("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+(firstCp&&!showStreak?nextLabel:lu.cont);
+      var continueLabel=learningLesson?esc(courseMessage("learningResult.continue",lu.cont)):lu.cont;
+      $("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+(firstCp&&!showStreak?nextLabel:continueLabel);
       $("#levelup").classList.add("on");
       setTimeout(function(){var e=document.querySelector("#lu-stage .lu-emb");if(e)e.classList.add("in")},60);
       if(!fxOff())luRain();beep([523,659,784,1046]);haptic("ok");
@@ -3185,6 +3200,7 @@ var App={
     if(!dest&&pendingRankUp){App.showRankUp();return}
     var ov=$("#levelup");ov.classList.remove("on");ov.classList.remove("cine");ov.classList.remove("sales-bridge");
     var cine=$("#lu-cine");if(cine)cine.innerHTML="";
+    var stage=$("#lu-stage");if(stage.querySelector(".lu-learning-topic"))stage.replaceChildren();
     App.exitFlow();
     var desktopLesson=Number(window._pendingDesktopLessonPromo)||0;
     window._pendingDesktopLessonPromo=0;
@@ -6672,7 +6688,24 @@ var PWA_LEVEL_REQUEST_SEQ=0,PWA_LEVEL_ABORT=null; function loadLevel(lv){if(PWA_
     showCourseLoadError();
   });
 }
-function applyLessonDone(cur,d){
+function learningResultTopicHtml(lesson){
+  return '<div class="lu-learning-topic"><span>'+esc(tr(lesson.tr)||partChip(lesson))+'</span>'
+    +(lesson.zh?'<span class="han" lang="zh">'+esc(lesson.zh)+'</span>':"")
+    +(lesson.py?'<span>'+esc(lesson.py)+'</span>':"")+'</div>';
+}
+function learningResultReviewHtml(review){
+  if(review&&typeof review.prompt==="string"&&review.prompt.trim()&&
+     typeof review.correction==="string"&&review.correction.trim()){
+    return '<div class="lu-learning-review"><strong>'+esc(courseMessage("learningResult.review",""))+'</strong>'
+      +'<span class="lu-review-prompt">'+esc(review.prompt)+'</span>'
+      +'<span class="lu-review-correction">'+esc(review.correction)+'</span>'
+      +'<div class="lu-result-note">'+esc(courseMessage("learningResult.reviewHint",""))+'</div></div>';
+  }
+  var plan=MAP&&MAP.today;
+  return plan&&!plan.complete&&todayPlanNextIdx(plan)>=0
+    ?'<div class="lu-result-note">'+esc(courseMessage("learningResult.nextHint",""))+'</div>':"";
+}
+function applyLessonDone(cur,d,showLearningResult){
   var rankBefore=Number(d&&d.rank_before)||0;
   if(PWA_COURSE_HOST&&d&&d.ok===true&&!d.duplicate){
     window._pendingPwaLessonFeedback={kind:"lesson",confirmed:true,lessonId:Number(cur&&cur.n)||0,
@@ -6735,7 +6768,9 @@ function applyLessonDone(cur,d){
     if(pending){App.showLevelUp("level",d);return;}
   }
   /* Checkpoint (HSK darsining yakuniy qismi) — kattaroq bayram varianti. */
-  App.showLevelUp(cur&&cur.checkpoint?"checkpoint":"lesson",d,{src:cur&&cur.src});
+  App.showLevelUp(cur&&cur.checkpoint?"checkpoint":"lesson",d,{
+    src:cur&&cur.src,learningLesson:showLearningResult?cur:null
+  });
 }
 function flowDone(){
   if(Flow.challenge){return finishChallengeRound()}
@@ -6746,6 +6781,7 @@ function flowDone(){
   if(!cur){App.showLevelUp("lesson");return}
   if(!INIT_DATA&&!PWA_COURSE_HOST){applyLessonDone(cur,null);return}
   var doneIdx=Flow.lessonIdx;
+  var resultOwner=PWA_COURSE_USER_ID,resultLevel=MAP.level;
   _apiPost("/api/v3/lesson/complete",{lesson_id:cur.n,level:MAP.level||"hsk1",lang:LANG,session_id:COURSE_SESSION_ID,completion_proof:LESSON_COMPLETION_PROOF,mistakes:(Flow.mistakes||[]).slice(0,50)})
     .then(function(r){
       if(window.HskDiag)HskDiag.report("lessons","save_unconfirmed","lesson_complete",r.status);
@@ -6766,7 +6802,12 @@ function flowDone(){
         }
         showLessonCompleteRetry(serverSaveErrorText(d.error,d.limit_text));return;
       }
-      applyLessonDone(cur,d);
+      var result=d.learning_result;
+      var showLearningResult=PWA_COURSE_HOST&&resultOwner&&resultOwner===PWA_COURSE_USER_ID&&
+        !PWA_LOGOUT_PENDING&&MAP&&MAP.level===resultLevel&&d._status>=200&&d._status<300&&
+        d.ok===true&&!d.duplicate&&!(d.gamification&&d.gamification.duplicate)&&
+        result&&Object.prototype.hasOwnProperty.call(result,"review");
+      applyLessonDone(cur,d,showLearningResult);
     })
     .catch(function(){showLessonCompleteRetry(serverSaveErrorText())});
 }

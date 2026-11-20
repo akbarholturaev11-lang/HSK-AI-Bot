@@ -95,7 +95,7 @@ def _pwa_html(request: Request, path: str, headers: dict[str, str]) -> Response:
 # The reviewed shared HTML bytes MUST remain unchanged for source/translation
 # audit anchors. Inject PWA-only assets only after an authenticated route check.
 # The injected HTML is separately ETagged by its FULL bytes, not by file SHA.
-_PWA_INLINE_PRO_HTML = "\n<link rel=\"stylesheet\" href=\"/course_v3_data/iphone-pwa-inline-pro.css?v=20261108-e8010ea28fdc\">\n<script src=\"/course_v3_data/iphone-pwa-inline-pro.js?v=20261108-8d96888d601f\"></script>\n<script src=\"/course_v3_data/iphone-pwa-inline-pro-bridge.js?v=20261108-afd4f9d80534\"></script>\n".encode("utf-8")
+_PWA_INLINE_PRO_HTML = "\n<link rel=\"stylesheet\" href=\"/course_v3_data/iphone-pwa-inline-pro.css?v=20261108-e8010ea28fdc\">\n<script src=\"/course_v3_data/iphone-pwa-inline-pro.js?v=20261120-b2c9be0efaaf\"></script>\n<script src=\"/course_v3_data/iphone-pwa-inline-pro-bridge.js?v=20261108-afd4f9d80534\"></script>\n".encode("utf-8")
 
 # Scope only to the verified browser PWA. The native first-paint skeleton
 # stays in course-v3.html; these are ONLY independent secondary section states.
@@ -1684,6 +1684,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
 
     @router.post("/api/v3/pwa/subscription/overview")
     async def pwa_checkout_overview(request: Request):
+        from app.services.entitlements.state import EntitlementState, resolve_state
         from app.services.subscription_miniapp_service import SubscriptionMiniAppService
         from app.services.subscription_entry_analytics_service import (
             SubscriptionEntryAnalyticsService,
@@ -1709,6 +1710,16 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                     campaign_id=data.campaign_id,
                     feedback_id=data.feedback_id,
                 )
+                if (
+                    data.inline_preview
+                    and data.mode == "subscription"
+                    and data.source in {"v3_locked_lesson", "v3_mistake_review"}
+                    and result.get("ok")
+                ):
+                    result["learning_pro_eligible"] = (
+                        not result.get("pending_payment")
+                        and resolve_state(actor) in {EntitlementState.FREE, EntitlementState.EXPIRED}
+                    )
                 if result.get("ok") and not data.inline_preview:
                     await SubscriptionEntryAnalyticsService(db).record_entry(
                         user=actor, source=data.source or "iphone_pwa",

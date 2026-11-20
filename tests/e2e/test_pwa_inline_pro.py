@@ -226,3 +226,68 @@ def test_inline_pro_manual_only_and_blocked_states_are_honest(lava, expected):
             assert page.locator("#hsk-inline-pro").is_hidden()
         assert not errors, errors
         browser.close()
+
+
+@pytest.mark.parametrize("lang,source,expected", [
+    ("uz", "v3_locked_lesson", "Pro bilan HSK darslarini davom ettiring."),
+    ("ru", "v3_mistake_review", "Продолжайте работу над ошибками с Pro."),
+    ("tj", "v3_locked_lesson", "Бо Pro дарсҳои HSK-ро идома диҳед."),
+])
+def test_inline_pro_learning_benefit_requires_authorized_offer(lang, source, expected):
+    overview = {}
+    attempts = []
+
+    def respond(route):
+        path = urlsplit(route.request.url).path
+        if path == "/iphone-pwa/course":
+            route.fulfill(status=200, content_type="text/html", body="""
+                <!DOCTYPE html><html><head><meta charset="utf-8">
+                <meta name="viewport" content="width=device-width,initial-scale=1">
+                <link rel="stylesheet" href="/course_v3_data/iphone-pwa-inline-pro.css?v=qa">
+                <script src="/course_v3_data/hsk-course-i18n.js?v=qa"></script>
+                </head><body><script src="/course_v3_data/iphone-pwa-inline-pro.js?v=qa"></script>
+                </body></html>""")
+        elif path == "/api/v3/pwa-auth/session":
+            route.fulfill(status=200, json={"ok": True, "user_id": 7, "csrf": "qa-csrf"})
+        elif path == "/api/v3/pwa/subscription/overview":
+            attempts.append(json.loads(route.request.post_data or "{}"))
+            route.fulfill(status=200, json=overview)
+        elif path.startswith("/api/"):
+            route.fulfill(status=200, json={"ok": True, "available": False})
+        else:
+            _serve_static(route, path)
+
+    offers = (
+        ({**_overview(), "learning_pro_eligible": True}, "main", True),
+        ({**_overview(), "learning_pro_eligible": False}, "main", False),
+        ({"ok": True, "learning_pro_eligible": True, "lava": {"mode": "lava_only", "plans": []}},
+         "main", False),
+        ({"ok": True, "learning_pro_eligible": False, "pending_payment": {"status": "pending"}},
+         "status", False),
+        ({"ok": True, "learning_pro_eligible": False, "access": {"is_paid": True}},
+         "status", False),
+    )
+
+    with playwright.sync_playwright() as pw:
+        browser = getattr(pw, os.getenv("PWA_E2E_ENGINE", "chromium")).launch()
+        page = browser.new_context(is_mobile=True, has_touch=True, viewport={"width": 320, "height": 750}).new_page()
+        page.set_default_timeout(8000)
+        errors = []
+        page.on("pageerror", lambda exc: errors.append(str(exc)))
+        page.route("**/*", respond)
+        for offer, screen, shows_benefit in offers:
+            overview = offer
+            page.goto(ORIGIN + "/iphone-pwa/course")
+            page.evaluate("opts => HSKPwaInlinePro.open(opts)", {"source": source, "lang": lang})
+            panel = page.locator(f'#hsk-inline-pro[data-screen="{screen}"]')
+            panel.wait_for()
+            assert panel.get_by_text(expected, exact=True).is_visible() == shows_benefit
+            if screen == "main":
+                assert panel.locator(".hip-benefit").count() == 3
+            else:
+                assert panel.locator(".hip-plan").count() == 0
+            assert panel.locator(".hip-close").count() == 1
+        assert len(attempts) == len(offers)
+        assert all(a.get("source") == source and a.get("inline_preview") is True for a in attempts)
+        assert not errors
+        browser.close()

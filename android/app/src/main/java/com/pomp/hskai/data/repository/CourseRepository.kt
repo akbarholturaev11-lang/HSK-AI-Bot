@@ -615,6 +615,9 @@ class CourseRepository(
                 ),
             )
         }
+        if (result is ApiResult.Success && !result.value.ok) {
+            return ApiResult.Failure(ApiError.Unknown)
+        }
         if (result is ApiResult.Failure) notifySessionExpired(result.error)
         return result
     }

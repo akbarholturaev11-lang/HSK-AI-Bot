@@ -3,7 +3,10 @@ package com.pomp.hskai.data.api
 import com.pomp.hskai.core.i18n.AppLanguage
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 
 /**
  * Course v3 ships its user-facing strings as a `{uz, ru, tj}` object.
@@ -284,7 +287,27 @@ data class CourseCompleteResponse(
     @SerialName("rank_before") val rankBefore: Int = 0,
     @SerialName("rank_after") val rankAfter: Int = 0,
     @SerialName("duplicate") val duplicate: Boolean = false,
-)
+    @SerialName("learning_result") private val learningResultPayload: JsonElement? = null,
+) {
+    /** Display data can fail independently of the saved completion acknowledgement. */
+    val learningResult: CourseLearningResultDto?
+        get() {
+            val payload = learningResultPayload as? JsonObject ?: return null
+            val review = payload["review"]
+            if (review == JsonNull) return CourseLearningResultDto(review = null)
+            val fields = review as? JsonObject ?: return null
+            val prompt = fields.learningResultText("prompt") ?: return null
+            val correction = fields.learningResultText("correction") ?: return null
+            return CourseLearningResultDto(CourseLearningReviewDto(prompt, correction))
+        }
+}
+
+data class CourseLearningResultDto(val review: CourseLearningReviewDto?)
+
+data class CourseLearningReviewDto(val prompt: String, val correction: String)
+
+private fun JsonObject.learningResultText(key: String): String? =
+    (get(key) as? JsonPrimitive)?.takeIf { it.isString }?.content?.takeIf { it.isNotBlank() }
 
 @Serializable
 data class LessonUnlockRequest(

@@ -346,6 +346,61 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(c.status_code,200,c.text)
             self.assertEqual(recorded.await_count,1)
 
+    async def test_inline_learning_pro_uses_canonical_access_and_pending_status(self):
+        await self.callback(await self.begin())
+        session_info = (await self.client.get("/api/v3/pwa-auth/session")).json()
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": session_info["csrf"]}
+        url = "/api/v3/pwa/subscription/overview"
+        request = {
+            "source": "v3_mistake_review", "mode": "subscription", "inline_preview": True,
+        }
+        with patch(
+            "app.services.subscription_miniapp_service.SubscriptionMiniAppService.overview",
+            new=AsyncMock(side_effect=lambda *a, **k: {"ok": True}),
+        ):
+            for overrides in ({"source": "profile"}, {"mode": "exit_discount"}):
+                response = await self.client.post(url, headers=headers, json={**request, **overrides})
+                self.assertEqual(response.status_code, 200)
+                self.assertNotIn("learning_pro_eligible", response.json())
+
+        now = datetime.now(timezone.utc)
+        states = (
+            ("free", {}, False, True),
+            ("expired", {"status": "expired"}, False, True),
+            ("trial", {"pro_trial_ends_at": now + timedelta(days=1)}, False, False),
+            ("paid", {"status": "active", "payment_status": "approved",
+                      "end_date": now + timedelta(days=1)}, False, False),
+            ("temporary", {"status": "active", "end_date": now + timedelta(days=1)}, False, False),
+            ("pending", {}, True, False),
+            ("blocked", {"status": "blocked"}, False, False),
+        )
+        for name, values, pending, expected in states:
+            with self.subTest(name=name):
+                async with self.sessions() as db:
+                    actor = await db.get(User, 1)
+                    actor.status = "free"
+                    actor.payment_status = "none"
+                    actor.end_date = None
+                    actor.pro_trial_ends_at = None
+                    for key, value in values.items():
+                        setattr(actor, key, value)
+                    await db.commit()
+
+                payload = {"ok": True, "pending_payment": {"status": "pending"} if pending else None}
+                with patch(
+                    "app.services.subscription_miniapp_service.SubscriptionMiniAppService.overview",
+                    new=AsyncMock(return_value=payload),
+                ):
+                    response = await self.client.post(url, headers=headers, json=request)
+                if name == "blocked":
+                    self.assertEqual(response.status_code, 401)
+                    self.assertNotIn("learning_pro_eligible", response.json())
+                    continue
+                self.assertEqual(response.status_code, 200)
+                self.assertIs(response.json()["learning_pro_eligible"], expected)
+                self.assertEqual(response.headers["cache-control"], "no-store")
+
+
     async def test_inline_pro_analytics_is_authenticated_and_deduplicated(self):
         path = "/api/v3/pwa/subscription/inline-event"
         event = {

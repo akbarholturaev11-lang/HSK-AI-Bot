@@ -10,8 +10,8 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 LOCALES = ("uz", "ru", "tj")
-VERSION = "hsk-course-i18n.js?v=20261113-642a79197e7f"
-DICTIONARY_VERSION = "hsk-course-i18n.js?v=20261113-642a79197e7f"
+VERSION = "hsk-course-i18n.js?v=20261113-50d161e8ed06"
+DICTIONARY_VERSION = "hsk-course-i18n.js?v=20261113-50d161e8ed06"
 KEY_RE = re.compile(r"([{,]\s*)([A-Za-z_]\w*)(\s*:)")
 
 
@@ -68,7 +68,7 @@ class VoiceMemorizeDictionaryUIAdoptionTests(unittest.TestCase):
                 messages = json.loads(
                     (ROOT / f"localization/ui/{locale}/course.json").read_text(encoding="utf-8")
                 )["messages"]
-                self.assertEqual(len(messages), 1112)
+                self.assertEqual(len(messages), 1118)
                 for key, value in voice[locale].items():
                     self.assertEqual(messages["voicePage." + key], value)
                 for key, labels in limit.items():

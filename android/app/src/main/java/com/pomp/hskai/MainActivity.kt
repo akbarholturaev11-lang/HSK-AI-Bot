@@ -1527,6 +1527,9 @@ private fun AppRoot(
                     pinyin = pinyin,
                     limit = limitGate,
                     accessChanged = accessActive,
+                    showTodayPlanHint = !courseState.isStale && courseState.map?.today?.tasks?.any {
+                        it.type != "continue_lesson" && it.available && !it.done
+                    } == true,
                     onExit = { completed ->
                         val finishedOrder = launch.lesson.order
                         // A completed part first offers the next part's sheet;
@@ -2052,6 +2055,7 @@ private fun LessonHost(
     pinyin: PinyinVisibility,
     limit: LimitGate,
     accessChanged: Boolean,
+    showTodayPlanHint: Boolean,
     /** [completed] says whether the lesson was actually finished and reported. */
     onExit: (completed: Boolean) -> Unit,
 ) {
@@ -2108,6 +2112,7 @@ private fun LessonHost(
         state = lessonState,
         limit = limit,
         pinyin = pinyin,
+        showTodayPlanHint = showTodayPlanHint,
         onAnswerChoice = model::answerChoice,
         onAnswerBuilder = model::answerBuilder,
         onAnswerPairs = model::answerMatchPairs,

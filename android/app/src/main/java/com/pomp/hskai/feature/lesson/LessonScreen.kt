@@ -136,6 +136,7 @@ fun LessonScreen(
     state: LessonUiState,
     limit: LimitGate? = null,
     pinyin: PinyinVisibility,
+    showTodayPlanHint: Boolean = false,
     onAnswerChoice: (ChoiceCard, Int) -> Unit,
     onAnswerBuilder: (LessonCard, List<String>) -> Unit,
     onAnswerPairs: (MatchPairsCard) -> Unit,
@@ -190,10 +191,11 @@ fun LessonScreen(
                 }
                 outcome is LessonOutcome.PreviewExhausted -> PreviewEndBlock(onExit)
                 outcome is LessonOutcome.Completed ->
-                    CompletedBlock(
+                    LessonCompletionCelebration(
                         outcome = outcome,
                         isCheckpoint = state.lesson?.isCheckpoint == true,
                         rankBoard = state.rankBoard,
+                        showTodayPlanHint = showTodayPlanHint,
                         onExit = onExit,
                     )
                 outcome is LessonOutcome.Failed -> FailedBlock(outcome, onRetryCompletion, onExit)
@@ -1133,21 +1135,6 @@ private fun PreviewEndBlock(onExit: () -> Unit) {
         Spacer(Modifier.height(24.dp))
         SecondaryAction(stringResource(R.string.hsk_common_action_close), onExit)
     }
-}
-
-@Composable
-private fun CompletedBlock(
-    outcome: LessonOutcome.Completed,
-    isCheckpoint: Boolean,
-    rankBoard: LessonRankBoard?,
-    onExit: () -> Unit,
-) {
-    LessonCompletionCelebration(
-        outcome = outcome,
-        isCheckpoint = isCheckpoint,
-        rankBoard = rankBoard,
-        onExit = onExit,
-    )
 }
 
 @Composable
