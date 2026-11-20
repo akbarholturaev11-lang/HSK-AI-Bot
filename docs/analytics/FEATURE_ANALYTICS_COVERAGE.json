@@ -2048,7 +2048,7 @@
     },
     {
       "path": "app/api/pwa_auth.py",
-      "reason": "Only the handoff page's own script URL gains a derived content token, so a diagnostic report can prove which bytes ran. No route, session, event writer or KPI behavior changes; the handoff page tests cover the served HTML. The inline preview adds a display-only hint based on the verified learner's current access state. It does not change recorded entry, source, price, entitlement, or verified payment. The inline-preview and PostgreSQL Pro-funnel tests retain these boundaries."
+      "reason": "Only the handoff page's own script URL gains a derived content token, so a diagnostic report can prove which bytes ran. No route, session, event writer or KPI behavior changes; the handoff page tests cover the served HTML. The inline preview adds a display-only hint based on the verified learner's current access state. It does not change recorded entry, source, price, entitlement, or verified payment. The inline-preview and PostgreSQL Pro-funnel tests retain these boundaries. The mistake review start request accepts the full browser capability list within the Android and shared service bound. Its canonical owner, telemetry writer, events and aggregation are unchanged."
     },
     {
       "path": "app/api/miniapp_entitlements.py",
@@ -2325,6 +2325,7 @@
       {"target": "app/services/android_course_service.py", "sha256": "53ce53cdcf0c13cf4cd29f2cd5b6fe248123cd26f43d6bfd2fad391dfc1ff2ce", "reason": "The existing lesson-plan scope and this response-only first-part learning result preserve foundation, track and onboarding behavior. Lesson completion diagnostics use the existing Android and server chains. The other mapped server coverage remains partial."},
       {"target": "/api/miniapp/event", "reason": "The changed branches are diagnostic intake and the optional legacy diagnostic mirror only. They are tested by the signed Telegram chain and excluded from self-reporting; existing learner and KPI event behavior is unchanged."},
       {"target": "/api/subscription-miniapp/overview", "reason": "Only the analytics write of the base checkout opening changed: it is checked and retried once while that exact row is absent. The overview response, prices, payment flow and Pro access are unchanged; subscription monitoring remains partial."},
+      {"target": "/api/v3/pwa/mistakes/review/start", "reason": "The existing request now accepts the shipped browser capability list up to the shared 40-item bound. It uses the same authenticated mistake review service and existing load failure reporting. Full server mistake-review Inbox coverage remains partial."},
       {"target": "/api/v3/pwa/subscription/overview", "reason": "The inline preview now returns one display-only eligibility hint. The existing overview, auth, checkout error reporting and analytics attempt contract remain in use. Subscription-entry server monitoring remains partial."},
       {"target": "/api/v3/pwa/subscription/event", "reason": "Attempt-id validation moved into one helper shared with the overview, with identical rules (trimmed, 1-80 chars of A-Za-z0-9:.-). Responses and stored stage rows are unchanged; subscription monitoring remains partial."}
     ]

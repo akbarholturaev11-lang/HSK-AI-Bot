@@ -2848,7 +2848,8 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(overview.await_args.kwargs["view"], "targets")
 
         start_url = "/api/v3/pwa/mistakes/review/start"
-        payload = {"ad_supported": False, "access_ref": "pwa-review-1"}
+        formats = json.loads(page.text.split("var SUPPORTED_FORMATS=", 1)[1].split(";", 1)[0])
+        payload = {"ad_supported": False, "access_ref": "pwa-review-1", "formats": formats}
         self.assertEqual((await self.client.post(
             start_url, headers={"Origin": ORIGIN}, json=payload,
         )).status_code, 403)
@@ -2880,6 +2881,16 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(opened.status_code, 200, opened.text)
             self.assertEqual(start.await_args.args[0].id, 1)
             self.assertIs(start.await_args.kwargs["ad_supported"], False)
+            self.assertEqual(start.await_args.kwargs["formats"], formats)
+            excessive = await self.client.post(
+                start_url, headers=headers, json={**payload, "formats": [formats[0]] * 41},
+            )
+            self.assertEqual(excessive.status_code, 422)
+            start.assert_awaited_once()
+            start.return_value = {"ok": False, "error": "free_feature_limit_reached"}
+            limited = await self.client.post(start_url, headers=headers, json=payload)
+            self.assertEqual(limited.status_code, 403)
+            self.assertEqual(limited.json()["error"], "free_feature_limit_reached")
             marked = await self.client.post(
                 "/api/v3/pwa/mistakes/review/answer", headers=headers,
                 json={"session_id": "review-1", "question_id": "q1", "selected_index": 1},
