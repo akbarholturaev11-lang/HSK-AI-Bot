@@ -2,7 +2,7 @@
 
 > **Document 45 of the portable rulebook (HSK AI supplement).** The original 44 professional guideline pages are unchanged. This is an independently organized, **HSK AI-owned** product-specific decision contract, **not** a 45th historical MDX conversion. This file defines design requirements and records approved future work; it does not prove those features have shipped.
 >
-> **Status:** internal, design-repository-only specification. No HSK-AI-Bot source, PWA/Android runtime, product agent, or production UI skill has been modified by creating this file. UI implementation, product skill reconciliation, CI, and device validation require separately scoped work.
+> **Status:** original internal draft, now referenced from the existing HSK-AI-Bot UI skill as documentation-only material. Application runtime and business logic remain unchanged; screen implementation, app CI and device verification are separate work. Source-derived prose rights are not certified.
 >
 > **Reviewed source:** `akbarholturaev11-lang/HSK-AI-Bot` **main** at `77c332f61340880e476999e747c4baabb0fff0b8` (2026-11-15); `.agents/skills/hsk-ai-ui/SKILL.md` blob `c626f2b543034fcd341a6b4d257ca3dcb5dfe4d3`; `HSK_AI_UI_UX_IMPROVEMENTS.md` blob `ce11f89b29ea3afd7cddca610ebd03d76467db0e`; `AGENTS.md` blob `bbc550084e3cdab2f8be209df9ec8af688f4b3c0`. Re-read the **current** product main and decision history immediately before implementing a task.
 
@@ -158,7 +158,7 @@ The no-unnecessary-utility-backplates rule is already authoritative in [Surfaces
 - [HSK AI production UI skill](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/blob/main/.agents/skills/hsk-ai-ui/SKILL.md) — 18 evergreen UI/UX sections plus obsolete one-line helper rule and older generic smart-exit wording.
 - [HSK AI approved UI/UX optimization plan](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/blob/main/HSK_AI_UI_UX_IMPROVEMENTS.md) — the **eight** approved tasks with detailed integration/acceptance requirements, **not implemented by this file**.
 - [HSK AI root AGENTS](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/blob/main/AGENTS.md), [AI_RULES](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/blob/main/AI_RULES.md), [progressive loading contract](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/blob/main/docs/PERFORMANCE_PWA_PROGRESSIVE_LOADING.md) — current product safety, localization, scope and loading contracts.
-- [Design-system root AGENTS](../../../AGENTS.md), [approved design decisions](../APPROVED_DECISIONS.md), [professional-first decision contract](../PROFESSIONAL_FIRST_CONTRACT.md), [future target root/skill insertion instructions](../../migration/TARGET_AUTHORITY_INSERT.md).
+- [Design-system root AGENTS](../../../../../AGENTS.md), [approved design decisions](../APPROVED_DECISIONS.md), [professional-first decision contract](../PROFESSIONAL_FIRST_CONTRACT.md), [future target root/skill insertion instructions](https://github.com/akbarholturaev11-lang/HSK-AI-Design-System/blob/restore/hsk-ai-professional-unified-audit-20261115/docs/migration/TARGET_AUTHORITY_INSERT.md).
 - [Portable guideline directory](../README.md) — 44 historical professional guideline copies, now indexed together with this one HSK AI-specific supplement.
 - [Permanent performance goals / requirements](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/blob/main/docs/PERFORMANCE_BACKEND_PWA_GOALS_REQUIREMENTS.md) — visual loading expectations and acceptance; all platform/backend implementation details remain there.
 
