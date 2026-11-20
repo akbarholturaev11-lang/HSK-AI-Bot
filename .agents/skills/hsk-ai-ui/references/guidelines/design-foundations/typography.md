@@ -101,6 +101,32 @@ Upper-right corner: **⌃**
 
 **No visible text label** accompanies either icon. The localized control name exists only in accessibility semantics. This is a documentation example, not an already deployed HSK AI UI change.
 
+## No Redundant UI Copy — mandatory cross-screen rule
+
+**Purpose:** prohibit AI-generated or manually authored explanatory text that merely narrates information the same screen has already clearly communicated. Apply this to learner iPhone PWA and Android screens, including headings, helper copy, status messages, cards, progress indicators, buttons, onboarding, Profile, XP/Streak, lessons, and checkout. The goal is **higher information value and clearer next actions**, not fewer words at any cost.
+
+### Decision rule for every visible text block
+
+1. **One message, one clear presentation:** if a nearby number, status label, progress indicator, chart, action label, or other visible element already communicates a fact unambiguously, do not add a sentence that repeats the same fact without new meaning. Do not use AI to describe what is already apparent on screen.
+2. **Each added sentence must earn its space:** keep text only if it contributes a genuinely new fact, necessary context or reason, actionable next step, disambiguation, safety/recovery guidance, or required learning feedback. If none applies, remove the extra sentence rather than rephrasing it.
+3. **Prefer useful action over narration:** where a real next step exists, show one clear action in the relevant place instead of a paragraph restating the current state. **Do not invent a CTA, navigation destination, premium capability, account permission, or server-verified result** to make a screen look complete.
+4. **Do not multiply the same status:** avoid presenting an identical value in several adjacent hero cards, badges, subheadings or explanatory captions. However, retain a concise numeric/text equivalent when needed to identify what a graphic means; a progress bar alone is often insufficient.
+5. **Never sacrifice clarity to minimalism:** retain legally or operationally important pricing, limits, renewal, permissions, errors and recovery instructions; real lesson questions, required instructions, accurate Hanzi, pinyin, translation, answer explanations and feedback; and useful guidance for non-obvious gestures or controls. Intentional pedagogical repetition that advances learning is **not** redundant UI narration.
+6. **Accessibility and localization are hard constraints:** a graphic-only progress state needs an accessible text equivalent, and icon-only actions need meaningful accessible labels. Where a visible label makes a graphic intelligible to sighted users, keep it. Validate semantic meaning and natural UZ/RU/TJ copy rather than removing essential text to meet an arbitrary line count. The accessible name can convey the same value without requiring a second visible sentence.
+
+### HSK AI examples — replace duplication, not meaning
+
+| Avoid | Prefer | Why |
+| --- | --- | --- |
+| Progress label **3/5** plus “You are on step 3 of 5” immediately below | **Step 3/5** in one clear location, with an accessible progress description | Same progress fact should not be narrated twice |
+| **🔥 7 days** plus “Your streak is seven days” | **🔥 Streak: 7 days** | One unambiguous metric is enough |
+| **Start lesson** button plus “Press Start lesson to begin” | **Start lesson** button | An obvious action needs no narrated instruction |
+| **1/1 used** plus “You have used 1 of your 1 available slots” | **1/1 used** plus a real eligible next action or a concise explanation of *why* the limit matters | Preserve new meaning, not repeated arithmetic |
+| “Incorrect” without telling the learner what was wrong | **Incorrect**, followed by the actual needed correction/explanation | Educational feedback adds genuine learning value |
+| A drag handle with no visible or accessible usage hint, where reordering is not discoverable | Retain a brief “Drag to reorder” hint or equally discoverable affordance and accessible controls | An instruction is not redundant when the interaction is otherwise unclear |
+
+**Review/acceptance:** during each screen audit, identify duplicate adjacent information, confirm what the user can already infer, remove only copy with no additional value, and check the result at 320/390/430 CSS px (PWA) and supported Android sizes, in UZ/RU/TJ, large text and accessibility modes. Never remove vital learning or payment information, or rely on an icon/animation alone to communicate meaning.
+
 ## Learning text hierarchy
 
 | Role | Example | Presentation and semantics |
