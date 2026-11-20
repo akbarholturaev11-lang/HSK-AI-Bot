@@ -14,6 +14,7 @@ from tests.pwa_layout_geometry import capture_geometry, assert_reserved_layout
 
 class LearningPage:
     def __init__(self, *, lang='uz', required=False, paid=False):
+        self.owner_id = 31
         self.data = json.loads((STATIC / 'course_v3_data/hsk1.json').read_text())
         self.foundation = json.loads((STATIC / 'course_v3_data/hsk1/lesson_01.json').read_text())['foundation']
         self.data.update(authenticated=True, level='hsk1', user={
@@ -64,9 +65,9 @@ class LearningPage:
                 parent.RESOURCE.revealPracticeFrame(window);
                 </script></body>''')
         elif path == '/api/v3/pwa-auth/session':
-            route.fulfill(json={'ok': True, 'user_id': 31, 'csrf': 'test-csrf'})
+            route.fulfill(json={'ok': True, 'user_id': self.owner_id, 'csrf': 'test-csrf'})
         elif path == '/api/v3/pwa/map':
-            route.fulfill(json=self.data, headers={'X-HSK-PWA-User-ID': '31'})
+            route.fulfill(json=self.data, headers={'X-HSK-PWA-User-ID': str(self.owner_id)})
         elif path == '/api/v3/pwa/lesson/foundation':
             route.fulfill(json={'ok': True, 'foundation': self.foundation})
         elif path == '/api/v3/pwa/event':
@@ -100,7 +101,7 @@ class LearningPage:
                 self.held_ads.append(route)
                 return
             placement = 'lesson_end' if 'placement=lesson_end' in route.request.url else 'screen_center'
-            route.fulfill(headers={'X-HSK-PWA-User-ID': '31'}, json={'ok': True, 'ad': {
+            route.fulfill(headers={'X-HSK-PWA-User-ID': str(self.owner_id)}, json={'ok': True, 'ad': {
                 'id': 1, 'title': 'HSK AI', 'media_type': 'photo',
                 'media_url': '/assets/pwa/icon-192.png', 'media_available': True,
                 'placement': placement, 'skip_after_seconds': 0,
@@ -113,7 +114,7 @@ class LearningPage:
             # The verified owner's own quota. An unowned reply is the
             # actor-changed logout path (location.replace), which races the
             # session re-check and fails WebKit runs at random.
-            route.fulfill(headers={'X-HSK-PWA-User-ID': '31'},
+            route.fulfill(headers={'X-HSK-PWA-User-ID': str(self.owner_id)},
                           json={'ok': True, 'remaining_voice_limit': -1 if self.paid else 3})
         elif path.startswith('/api/'):
             route.fulfill(json={'ok': False})
@@ -567,7 +568,11 @@ def test_learning_result_falls_back_without_current_confirmed_review(variant):
                 response['learning_result'] = {'review': None}
             elif variant == 'changed_owner':
                 response['learning_result'] = {'review': {'prompt': '例子', 'correction': '示例'}}
-                page.evaluate('PWA_COURSE_USER_ID=99')
+                # The saved request belonged to the first actor, but the refreshed
+                # session/map must describe the replacement already active in this tab.
+                fixture.owner_id = 99
+                page.evaluate('(owner) => { PWA_COURSE_USER_ID=owner; PWA_COURSE_ACTOR_PROMISE=null; }',
+                              fixture.owner_id)
             fixture.data['progress']['completed'] = 1
             fixture.lesson_completions[-1].fulfill(json=response)
             result = page.locator('#levelup.on')
