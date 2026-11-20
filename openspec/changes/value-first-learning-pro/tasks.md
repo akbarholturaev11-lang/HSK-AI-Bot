@@ -31,6 +31,12 @@
 - Existing initial-shell, independently rendered course and browser diagnostics passed 12 cases per engine. The progressive-loading comparison passed 11 of 13 per engine. The same two Russian Practice 320 px layout cases fail on main and this branch at both tested motion settings. They belong to the existing performance effort and are excluded from the result-screen delta.
 - Rollback was checked using the previous completion response without the optional block, and a checkout preview without the display hint. Both paths retain their original actions. No data migration is involved.
 
+## Safari simulator rehearsal (2026-11-20)
+
+- Candidate `d03564c8` passed all three locale cases in iOS 26.4 Safari on an iPhone 17e simulator, using the actual browser app and authenticated API over loopback HTTPS with a disposable PostgreSQL database. The local fixture supplied the session and final-card input. Safari reserved and loaded the course part, then submitted through the existing completion UI and server handlers.
+- UZ and RU each showed one verified correction and saved one mistake. The TJ case supplied no missed answer and showed no correction. Each learner advanced one part and wrote one completion event after the replay request. The existing continue sequence closed the result, and the existing inline Pro screen showed the localized benefit using the real checkout-preview response with synthetic configuration. Only display was exercised at checkout.
+- Railway inspection found the existing staging environment paired with Professional 45 services. The Value-First candidate has no verified remote staging target. The iPhone was unavailable and ADB showed no Android device. Physical-device Home Screen, provider and staged-cohort acceptance remain open.
+
 ## Workflow follow-up
 
 - Physical Safari/Home Screen, native Play/Direct and Telegram device acceptance, staged timing and privacy-safe cohort baselines require environment access and deployment permission.
