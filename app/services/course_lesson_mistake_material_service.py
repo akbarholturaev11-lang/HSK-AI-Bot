@@ -15,6 +15,7 @@ from typing import Any
 
 
 LESSON_MISTAKE_MATERIAL_VERSION = 2
+LEARNING_REVIEW_TEXT_LIMIT = 200
 LESSON_MATERIAL_LANGUAGES = {"uz", "ru", "tj"}
 LESSON_MATERIAL_LEVELS = {"hsk1", "hsk2", "hsk3", "hsk4", "nhsk1", "nhsk2", "nhsk3"}
 LESSON_STATIC_DIR = Path(__file__).resolve().parents[1] / "static" / "course_v3_data"
@@ -476,3 +477,31 @@ class CourseLessonMistakeMaterialService:
                 seen_refs.add(material_ref)
                 canonical.append(item)
         return canonical
+
+    @staticmethod
+    def learning_result(items: list[dict], *, recorded: int) -> dict:
+        """Project one usable example from an already recorded canonical batch."""
+        if not recorded or recorded != len(items):
+            return {"review": None}
+        for item in items:
+            prompt = item.get("question") or ""
+            correction = item.get("correct_answer") or ""
+            card_format = item.get("format")
+            # A generic listening instruction needs its canonical stimulus.
+            # Sentence builders already store the answer in their sentence field.
+            stimulus = item.get("audio_text") or (
+                item.get("sentence")
+                if card_format not in {"sentence_builder", "reverse_builder"}
+                else None
+            )
+            if stimulus and stimulus != correction and stimulus not in prompt:
+                prompt = stimulus if not prompt or prompt == card_format else f"{prompt} · {stimulus}"
+            if (
+                prompt
+                and prompt != card_format
+                and correction
+                and prompt != correction
+                and max(len(prompt), len(correction)) <= LEARNING_REVIEW_TEXT_LIMIT
+            ):
+                return {"review": {"prompt": prompt, "correction": correction}}
+        return {"review": None}

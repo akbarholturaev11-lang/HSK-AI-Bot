@@ -111,6 +111,32 @@ class CourseLessonMistakeMaterialServiceTests(unittest.TestCase):
             },
         )
 
+    def test_learning_result_is_bounded_and_requires_recorded_evidence(self):
+        too_long = {
+            "question": "你" * 201,
+            "correct_answer": "您好",
+            "format": "listening_choice",
+        }
+        listening = {
+            "question": "Что прозвучало?",
+            "correct_answer": "Привет",
+            "format": "listening_choice",
+            "audio_text": "你好",
+        }
+        items = [too_long, listening]
+        self.assertEqual(
+            {"review": None},
+            CourseLessonMistakeMaterialService.learning_result(items, recorded=0),
+        )
+        self.assertEqual(
+            {"review": None},
+            CourseLessonMistakeMaterialService.learning_result(items, recorded=1),
+        )
+        self.assertEqual(
+            {"review": {"prompt": "Что прозвучало? · 你好", "correction": "Привет"}},
+            CourseLessonMistakeMaterialService.learning_result(items, recorded=2),
+        )
+
     def test_correct_forged_and_out_of_lesson_answers_are_ignored(self):
         items = CourseLessonMistakeMaterialService.canonicalize_items(
             level="hsk1",

@@ -736,6 +736,79 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         )
         self.assertEqual(legacy.status_code, 401, legacy.text)
 
+    async def test_pwa_first_part_learning_result_uses_persisted_canonical_material(self):
+        from app.config import settings as main_settings
+        from app.db.models.course_miniapp_event import CourseMiniAppEvent
+        from app.db.models.course_mistake import CourseMistake
+        from app.services.course_lesson_completion_proof import issue_lesson_completion_proof
+
+        with patch.object(main_settings, "BOT_TOKEN", self.settings.BOT_TOKEN):
+            import app.main as main
+
+        await self.callback(await self.begin())
+        csrf = (await self.client.get("/api/v3/pwa-auth/session")).json()["csrf"]
+        cookie = self.client.cookies.get(PWA_SESSION_COOKIE)
+        app = FastAPI()
+        path = "/api/v3/pwa/lesson/complete"
+        app.add_api_route(path, main.pwa_v3_course_lesson_complete, methods=["POST"])
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf}
+        payload = {
+            "lesson_id": 1,
+            "level": "hsk1",
+            "completion_proof": issue_lesson_completion_proof(
+                user_id=1, level="hsk1", lesson_order=1, secret=self.settings.BOT_TOKEN,
+            ),
+            "mistakes": [
+                {"material_ref": "lesson:hsk1:2:section:1:card:3", "selected_index": 0},
+                {
+                    "material_ref": "lesson:hsk1:1:section:1:card:3",
+                    "selected_index": 0,
+                    "question": "FORGED PROMPT",
+                    "correct_answer": "FORGED ANSWER",
+                },
+            ],
+        }
+        with (
+            patch.object(main, "async_session_maker", self.sessions),
+            patch.object(main, "settings", self.settings),
+            patch("app.services.conversion_funnel_service.async_session_maker", self.sessions),
+            patch("app.services.entitlements.shadow.async_session_maker", self.sessions),
+        ):
+            async with AsyncClient(transport=ASGITransport(app=app), base_url=ORIGIN) as client:
+                denied = await client.post(path, headers=headers, json=payload)
+                self.assertEqual(401, denied.status_code, denied.text)
+                self.assertNotIn("learning_result", denied.json())
+                client.cookies.set(PWA_SESSION_COOKIE, cookie)
+                invalid_csrf = await client.post(path, headers={"Origin": ORIGIN}, json=payload)
+                self.assertEqual(403, invalid_csrf.status_code, invalid_csrf.text)
+                self.assertNotIn("learning_result", invalid_csrf.json())
+                invalid_proof = await client.post(
+                    path, headers=headers, json={**payload, "completion_proof": "invalid"},
+                )
+                self.assertEqual(403, invalid_proof.status_code, invalid_proof.text)
+                self.assertNotIn("learning_result", invalid_proof.json())
+                saved = await client.post(path, headers=headers, json=payload)
+                retry = await client.post(path, headers=headers, json=payload)
+
+        self.assertEqual(200, saved.status_code, saved.text)
+        self.assertEqual("no-store", saved.headers["cache-control"])
+        self.assertEqual(1, saved.json()["completed_lessons_count"])
+        self.assertEqual(saved.json()["learning_result"], {
+            "review": {"prompt": "你 so'zining ma'nosini tanlang:", "correction": "sen (birlik)"},
+        })
+        self.assertEqual(200, retry.status_code, retry.text)
+        self.assertTrue(retry.json()["duplicate"])
+        self.assertNotIn("learning_result", retry.json())
+        async with self.sessions() as session:
+            mistake = (await session.execute(select(CourseMistake))).scalar_one()
+            self.assertEqual(1, mistake.wrong_count)
+            self.assertEqual(1, mistake.user_id)
+            self.assertEqual("sen (birlik)", mistake.correct_answer)
+            event = (await session.execute(select(CourseMiniAppEvent).where(
+                CourseMiniAppEvent.event_name == "lesson_completed",
+            ))).scalar_one()
+            self.assertNotIn("learning_result", json.loads(event.payload_json))
+
     async def test_pwa_lesson_content_uses_exact_miniapp_policy_without_initdata(self):
         path = "/api/v3/pwa/lesson/content/hsk1/1"
         denied = await self.client.get(path)

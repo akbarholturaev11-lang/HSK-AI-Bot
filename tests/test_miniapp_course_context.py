@@ -328,6 +328,7 @@ class MiniAppCourseContextTests(unittest.IsolatedAsyncioTestCase):
                                                  "session_id": "current-course-finish"})
         self.assertEqual(response.status_code, 200, response.text)
         self.assertEqual(response.json()["completed_lessons_count"], 1)
+        self.assertNotIn("learning_result", response.json())
         before = await self._snapshot()
         response = await self._post("complete", {"lesson_id": 1})
         self.assertEqual(response.status_code, 200, response.text)
