@@ -1,6 +1,6 @@
 ---
 name: hsk-ai-ui
-description: Canonical professional UI/UX design reference router for HSK AI learner iPhone PWA and native Android; source-linked 45-page guideline corpus.
+description: HSK AI single mandatory UI/UX reference entrypoint; 45 professional/adapted guideline pages, learner iPhone PWA and native Android first.
 ---
 
 # HSK AI UI/UX — professional design system
@@ -24,6 +24,20 @@ This is the **existing HSK AI UI skill**, now the single entrypoint for the adap
 - **One unified layout system:** use the six screen families in [Layout](references/guidelines/design-foundations/layout.md) and the 4-point [Spacing](references/guidelines/design-foundations/spacing.md). Match comparable screen chrome, header/title baselines, horizontal gutters, safe-area edges, content-start anchors, navigation and visual rhythm. **Do not impose one fixed page/content height** on all screen types. Content may grow/scroll; immersive Lesson/AI Voice/checkout flows may have deliberate exceptions.
 - **Platform parity is semantic, not pixel-identical:** respect iPhone PWA safe areas/browser/keyboard and Android insets, IME, system Back and scalable dp/sp type; verify concrete widths and interaction states on each platform.
 - **Loading/interaction stability:** reuse the product's existing progressive-loading, layout-faithful skeleton and local loading/empty/error/retry contracts, including `docs/PERFORMANCE_PWA_PROGRESSIVE_LOADING.md`; do not create another loading system or blank an unrelated screen.
+
+## HSK Chinese-learning and quiz presentation
+
+These HSK-specific UI requirements formerly repeated in root guidance now live here. Course progression, correct grading and instructional truth remain governed by the real backend/course source.
+
+- Make the **course** the primary learning task. AI Voice, XP, streak, rewards and Pro UX should support it, not displace the lesson or invent achievements.
+- Display correct **Hanzi (汉字), pinyin and the learner-language translation** at the step where each is pedagogically required. Never hide a question, required explanation, answer feedback or real price/limit behind optional description collapse. A separately approved ready-phrase browse card may intentionally reveal its pinyin and meaning on expansion.
+- Appropriate existing quiz interaction families include **full-sentence fill-in**, correct Chinese word, correct pinyin, correct translation, sentence ordering, listening choice and guided mistake correction. These are permitted exercise shapes, not approval to add new exercises or alter scoring and lesson order.
+- Avoid rote school-exam presentation, ambiguous correct/incorrect feedback, overwhelming text density and hidden lesson progress. Keep instructions and feedback explicit, accessible, localizable to UZ/RU/TJ, and grounded in verified data.
+- Implement visual hierarchy, layout, navigation, color, icons, progress, feedback and error/loading states using the linked detailed 45-page design references rather than duplicating their component specifications here.
+
+## Other surfaces
+
+The skill is the mandatory **starting point** for UI/UX work across HSK AI; its learner iPhone PWA/Android guidelines are the primary scope. For **Mini App**, **Admin PWA**, public site or an explicitly authorized desktop task, apply compatible general principles only after inspecting that surface's actual constraints. Admin PWA's independent `docs/admin-pwa/BROWSER_UI_CONTRACT.md` remains binding; platform-specific auth/Telegram/browser and server-state rules are not replaced by this skill.
 
 ## Implementation boundary
 
