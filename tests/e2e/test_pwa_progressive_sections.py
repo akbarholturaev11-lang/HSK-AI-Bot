@@ -19,6 +19,130 @@ STATIC = Path(__file__).resolve().parents[2] / "app/static"
 ORIGIN = "http://hsk-ai.local"
 
 
+@pytest.mark.parametrize("width", [320, 390, 430])
+@pytest.mark.parametrize("theme", ["light", "dark"])
+@pytest.mark.parametrize("language", ["uz", "ru", "tj"])
+def test_practice_profile_root_headers_share_stable_accessible_geometry(width, theme, language):
+    """Real root renderers: matching chrome, not matching whole-page heights.
+
+    APIs are synthetic; this establishes layout/navigation acceptance only,
+    never real-account, checkout or installed-device acceptance.
+    """
+    from tests.pwa_layout_geometry import assert_reserved_layout, capture_geometry
+
+    payload = json.loads((STATIC / "course_v3_data/hsk1.json").read_text(encoding="utf-8"))
+    payload.update(authenticated=True, level="hsk1")
+    payload["user"] = {
+        "name": "Layout fixture", "avatar": "阿", "language": language,
+        "is_paid": True, "state": "TRIAL_ACTIVE", "onboarding_completed": True,
+    }
+    maps, errors, profile_reads = [], [], []
+
+    def serve(route):
+        path = urlsplit(route.request.url).path
+        if path == "/iphone-pwa/course":
+            route.fulfill(status=200, content_type="text/html", body=pwa_document().replace('lang="ru"', f'lang="ru" data-hsk-theme="{theme}"', 1))
+        elif path == "/api/v3/pwa-auth/session":
+            route.fulfill(status=200, json={"ok": True, "user_id": 31, "csrf": "test-csrf"})
+        elif path == "/api/v3/pwa/map":
+            maps.append(route)
+        elif path == "/api/v3/pwa/profile":
+            profile_reads.append(route)
+        elif path.startswith("/api/"):
+            route.fulfill(status=404, json={"ok": False, "error": "not_mocked"})
+        else:
+            file = (STATIC / path.lstrip("/")).resolve()
+            if file.is_file() and file.is_relative_to(STATIC.resolve()):
+                mime, _ = mimetypes.guess_type(file)
+                route.fulfill(path=str(file), content_type=mime or "application/octet-stream")
+            else:
+                route.fulfill(status=404, body="")
+
+    def geometry(page, tab):
+        return capture_geometry(page, {
+            "header": f"#s-{tab} .htop",
+            "title": f"#s-{tab} h1",
+            "nav": "#nav",
+        })
+
+    with sync_playwright() as playwright:
+        engine = os.getenv("PWA_E2E_ENGINE", "chromium")
+        browser = getattr(playwright, engine).launch()
+        try:
+            page = browser.new_page(
+                viewport={"width": width, "height": 568 if width == 320 else 932},
+                is_mobile=True, reduced_motion="reduce", color_scheme=theme,
+            )
+            page.set_default_timeout(15000)
+            page.on("pageerror", lambda error: errors.append(str(error)))
+            page.route("**/*", serve)
+            page.goto(ORIGIN + f"/iphone-pwa/course?lang={language}", wait_until="domcontentloaded")
+            page.wait_for_function("() => typeof App === 'object' && typeof App.show === 'function'")
+            shells = {}
+            for tab in ("mashq", "profile"):
+                page.evaluate("tab => App.show(tab)", tab)
+                page.locator(f"#s-{tab} .pwa-initial-shell").wait_for()
+                shells[tab] = geometry(page, tab)
+            assert len(maps) == 1
+            maps.pop().fulfill(status=200, json=payload, headers={"X-HSK-PWA-User-ID": "31"})
+            page.locator("#s-profile .profile-display-name").wait_for()
+            assert len(profile_reads) == 1
+            profile_reads.pop().fulfill(status=503, json={"ok": False})
+            page.locator("#s-profile .hsk-pwa-profile-stats-error").wait_for()
+            ready = {"profile": geometry(page, "profile")}
+            page.locator("#s-profile .hsk-pwa-profile-stats-error button").click()
+            page.locator("#s-profile .hsk-pwa-profile-accuracy-loading").wait_for()
+            assert_reserved_layout(ready["profile"], geometry(page, "profile"), max_anchor_shift_px=1, max_dimension_delta_px=1)
+            assert len(profile_reads) == 1
+            profile_reads.pop().fulfill(status=200, headers={"X-HSK-PWA-User-ID": "31"}, json={
+                "ok": True, "stats": {"answer_accuracy": {
+                    "overall": {"percent": 77}, "today": {"percent": 83},
+                }},
+            })
+            page.get_by_text("77%", exact=True).wait_for()
+            assert_reserved_layout(ready["profile"], geometry(page, "profile"), max_anchor_shift_px=1, max_dimension_delta_px=1)
+            artifacts = os.getenv("HSK_HEADER_REVIEW_DIR")
+            for tab in ("profile", "mashq"):
+                page.locator(f'#nav button[data-s="{tab}"]').click()
+                page.locator(f"#s-{tab}.on > .htop").wait_for()
+                ready[tab] = geometry(page, tab)
+                if artifacts:
+                    folder = Path(artifacts)
+                    folder.mkdir(parents=True, exist_ok=True)
+                    page.screenshot(path=str(folder / f"{engine}-{width}-{theme}-{language}-{tab}.png"))
+            if artifacts:
+                (Path(artifacts) / f"{engine}-{width}-{theme}-{language}.json").write_text(
+                    json.dumps({"shells": shells, "ready": ready}, indent=2), encoding="utf-8",
+                )
+            for tab in ("mashq", "profile"):
+                assert_reserved_layout(shells[tab], ready[tab], max_anchor_shift_px=1, max_dimension_delta_px=1)
+            # A title-only Practice row and a Profile row with actions occupy
+            # the same root-header slot, with the same title center/gutter.
+            for key in ("y", "height"):
+                assert abs(ready["mashq"]["header"][key] - ready["profile"]["header"][key]) <= 1
+            for key in ("x", "y", "height"):
+                assert abs(ready["mashq"]["title"][key] - ready["profile"]["title"][key]) <= 1
+            # Stress long actual localized titles at 200% text size: natural
+            # header growth, no ellipsis/clipping/overlap or horizontal scroll.
+            for tab in ("mashq", "profile"):
+                page.locator(f'#nav button[data-s="{tab}"]').click()
+                title = page.locator(f"#s-{tab} h1")
+                title.evaluate("el => {el.textContent = Array(8).fill(el.textContent).join(' '); el.style.fontSize = '40px'}")
+                assert title.evaluate("el => el.scrollHeight <= el.clientHeight + 1 && el.scrollWidth <= el.clientWidth + 1")
+                header = page.locator(f"#s-{tab} > .htop").bounding_box()
+                body = page.locator(f"#s-{tab} > .htop + *").bounding_box()
+                assert body["y"] >= header["y"] + header["height"] - 1
+                assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
+                if tab == "profile":
+                    for button in page.locator(".profile-head-actions button").all():
+                        box = button.bounding_box()
+                        assert box["width"] >= 44 and box["height"] >= 44
+                        assert title.bounding_box()["x"] + title.bounding_box()["width"] <= box["x"]
+            assert errors == []
+        finally:
+            browser.close()
+
+
 def pwa_document():
     # Reconstruct only the actual authenticated PWA response-side CSS and SDK
     # optimization. Current main owns the ONE static first-paint shell in the
@@ -647,7 +771,8 @@ def test_rating_retry_keeps_podium_and_rows_in_place():
 
 @pytest.mark.parametrize("width", [320, 390, 430])
 @pytest.mark.parametrize("motion", ["reduce", "no-preference"])
-def test_practice_initial_loading_geometry_matches_six_real_cards(width, motion):
+@pytest.mark.parametrize("language", ["uz", "ru", "tj"])
+def test_practice_initial_loading_geometry_matches_six_real_cards(width, motion, language):
     """Measure the actual Practice first-paint placeholders against rendered cards.
 
     Keep /api/v3/pwa/map unresolved while App.show selects Practice. No real
@@ -660,7 +785,7 @@ def test_practice_initial_loading_geometry_matches_six_real_cards(width, motion)
     payload["level"] = "hsk1"
     payload["user"] = {
         "name": "Authorized test account", "avatar": "阿",
-        "language": "ru", "is_paid": True, "state": "PRO_ACTIVE",
+        "language": language, "is_paid": True, "state": "PRO_ACTIVE",
         "onboarding_completed": True,
     }
     held = []
@@ -715,25 +840,37 @@ def test_practice_initial_loading_geometry_matches_six_real_cards(width, motion)
             page.set_default_timeout(15000)
             page.on("pageerror", lambda error: errors.append(str(error)))
             page.route("**/*", serve)
-            page.goto(ORIGIN + "/iphone-pwa/course?lang=ru", wait_until="domcontentloaded")
+            page.goto(ORIGIN + f"/iphone-pwa/course?lang={language}", wait_until="domcontentloaded")
             page.wait_for_function("() => typeof App === 'object' && typeof App.show === 'function'")
             page.wait_for_function("() => !!document.querySelector('#s-mashq .pwa-mashq-shell')")
             page.evaluate("App.show('mashq')")
             page.locator("#s-mashq .pwa-mashq-shell[aria-busy=true]").wait_for()
             assert len(held) == 1
             assert page.locator("#s-mashq .row-card").count() == 0
-            # Reserve actual two-line labels at narrow widths. Never relax
-            # the <=8px anchor threshold or hide the real six-card layout.
-            expected_heights = (
-                [78, 78, 68, 78, 80, 68] if width <= 340 else
-                [68, 80, 68, 68, 68, 68] if width <= 400 else
-                [68] * 6
-            )
-            for i, expected in enumerate(expected_heights):
-                actual = page.locator("#s-mashq .pwa-practice-row").nth(i).evaluate(
-                    "(el) => parseFloat(getComputedStyle(el).minHeight)"
-                )
-                assert actual == expected
+            # Known labels use the exact ready typography and natural font
+            # wrapping; only the icon slots remain placeholders. No links or
+            # buttons become actionable before the authenticated map arrives.
+            rows = page.locator("#s-mashq .pwa-practice-row")
+            assert rows.count() == 6
+            initial_title = rows.first.locator("b").inner_text()
+            page.evaluate("language => App.setLang(language === 'ru' ? 'uz' : 'ru')", language)
+            assert rows.first.locator("b").inner_text() != initial_title
+            page.evaluate("language => App.setLang(language)", language)
+            assert rows.first.locator("b").inner_text() == initial_title
+            assert page.locator("#s-mashq .pwa-mashq-shell button, #s-mashq .pwa-mashq-shell a").count() == 0
+            shell_copy = page.evaluate("""() => ({
+                title: document.querySelector('#s-mashq h1').textContent,
+                subtitle: document.querySelector('#s-mashq .sub').textContent,
+                sections: [...document.querySelectorAll('#s-mashq .sech')].map(el => el.textContent),
+                rows: [...document.querySelectorAll('#s-mashq .pwa-practice-row .rt')].map(el => el.textContent),
+            })""")
+            assert shell_copy["title"] and shell_copy["subtitle"]
+            for row in rows.all():
+                assert row.evaluate("el => parseFloat(getComputedStyle(el).minHeight)") == 68
+                assert row.locator("b").is_visible() and row.locator("b").inner_text().strip()
+                assert row.locator("small").is_visible() and row.locator("small").inner_text().strip()
+                assert row.locator(".ti2.pwa-layout-ink[aria-hidden=true]").count() == 1
+                assert row.get_attribute("aria-hidden") is None
             before = geometry(page)
             if motion == "reduce":
                 assert page.locator("#s-mashq .pwa-layout-ink").first.evaluate(
@@ -745,6 +882,12 @@ def test_practice_initial_loading_geometry_matches_six_real_cards(width, motion)
             page.locator("#s-mashq .row-card").first.wait_for()
             after = geometry(page)
             assert_reserved_layout(before, after)
+            assert shell_copy == page.evaluate("""() => ({
+                title: document.querySelector('#s-mashq h1').textContent,
+                subtitle: document.querySelector('#s-mashq .sub').textContent,
+                sections: [...document.querySelectorAll('#s-mashq .sech')].map(el => el.textContent),
+                rows: [...document.querySelectorAll('#s-mashq .row-card .rt')].map(el => el.textContent),
+            })""")
             assert page.locator("#s-mashq .pwa-mashq-shell").count() == 0
             assert page.locator("#s-mashq .row-card").count() == 6
             assert page.locator("#s-course .uban").count() > 0
