@@ -1,6 +1,4 @@
 {
-  "schema_version": 1,
-  "namespace": "li_onboarding",
   "locale": "tj",
   "messages": {
     "FOCUS.grammar.hd": "Грамматика",
@@ -69,6 +67,7 @@
     "copy.askGoal": "Забони чинӣ ба шумо барои чӣ лозим аст?",
     "copy.askVersion": "Бо кадом версияи HSK оғоз мекунед?",
     "copy.back": "Бозгашт",
+    "copy.buyPro": "Харидани HSK AI Pro",
     "copy.close": "Пӯшидан",
     "copy.cont": "Идома",
     "copy.createAccount": "Сохтани ҳисоб",
@@ -172,6 +171,12 @@
     "proGoal.travel.title": "Дар сафар ба чинӣ муошират кунед",
     "proGoal.work_china.subtitle": "Суҳбатҳои корӣ ва калимаҳои муҳимро машқ кунед.",
     "proGoal.work_china.title": "Забони чиниро барои кор беҳтар кунед",
-    "copy.buyPro": "Харидани HSK AI Pro"
-  }
+    "trialOffer.activated": "7 рӯзи ройгон фаъол шуд",
+    "trialOffer.begin": "Оғоз мекунем 🔥",
+    "trialOffer.daily": "Реҷаи шумо — {minutes} дақиқа дар як рӯз.",
+    "trialOffer.start": "Бо 0.00$ гирифтан",
+    "trialOffer.streak": "Ҳадафи силсилаи шумо — {days} рӯз пайиҳам."
+  },
+  "namespace": "li_onboarding",
+  "schema_version": 1
 }

@@ -4,7 +4,7 @@
   var pwa=location.pathname==="/iphone-pwa/course";
   var current=pwa?0:1,timer=null,root=null,track=null,resizeObserver=null,settleTimer=null;
   var suppressClickUntil=0,interacting=false,hovered=false;
-  var ORDER=pwa?["pro","apps","hsk30"]:["apps","hsk30","pro"],order=ORDER.slice();
+  var ORDER=pwa?["pro","hsk30"]:["apps","hsk30","pro"],order=ORDER.slice();
   var LABELS=(window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.profile_carousel.LABELS.copy1",{
     ru:{apps:"Приложения HSK AI",appsBody:"Android, MacBook и Windows — учитесь на своём устройстве",appsCta:"Смотреть приложения",newBody:"Новые учебники HSK 1–3. Ваш прогресс сохранится.",versionCta:"Выбрать версию",proActive:"Подписка активна",proAction:"Тарифы HSK AI Pro",carousel:"Возможности аккаунта",slide:"Карточка",linkTitle:"Подключить {provider}",linkBody:"Входите в этот аккаунт через {provider}. Прогресс и подписка сохранятся.",linkCta:"Подключить",linkWait:"Ожидаем подтверждения…"},
     uz:{apps:"HSK AI ilovalari",appsBody:"Android, MacBook va Windows — o'zingizga qulay qurilmada o'qing",appsCta:"Ilovalarni ko'rish",newBody:"HSK 1–3 yangi darsliklari. Progressingiz saqlanadi.",versionCta:"Versiyani tanlash",proActive:"Obuna faol",proAction:"HSK AI Pro tariflari",carousel:"Akkaunt imkoniyatlari",slide:"Karta",linkTitle:"{provider}’ni ulash",linkBody:"Shu akkauntga {provider} orqali ham kiring. Progress va obunangiz saqlanadi.",linkCta:"Ulash",linkWait:"Tasdiqlash kutilmoqda…"},
@@ -105,7 +105,7 @@
     }).join("")+'</div><div class="hp-promo-dots" role="group" aria-label="'+esc(copy.carousel)+'">'+order.map(function(kind,i){
       return '<button type="button" data-promo-dot="'+i+'" aria-label="'+esc(slideInfo(kind).title)+'"></button>';
     }).join("")+'</div>';
-    root.style.setProperty("--hp-dots-width",(order.length>1?19+(order.length-1)*11+12:0)+"px");
+    root.style.setProperty("--hp-dots-width",(pwa?order.length*44+8:(order.length>1?19+(order.length-1)*11+12:0))+"px");
     track=root.querySelector(".hp-promo-track");
     var mountedTrack=track,mountedRoot=root;
     track.querySelectorAll(".hp-promo-slide").forEach(function(slide){

@@ -20,9 +20,14 @@ def real_pwa_document():
 
 
 class TrialPage(LearningPage):
-    def __init__(self, language="uz", *, eligible=True, standalone=False, hsk30=False):
+    def __init__(self, language="uz", *, eligible=True, standalone=False, hsk30=False, goals=None, daily_minutes=20, streak_target_days=14):
         super().__init__(lang=language)
         self.installed = standalone
+        self.saved_profile = {"goal": (goals or ["hsk_exam"])[0], "goals": goals or ["hsk_exam"],
+                              "daily_minutes": daily_minutes, "preferred_focus": "listening",
+                              "streak_target_days": streak_target_days}
+        self.hold_runtime = False
+        self.runtime_held = []
         self.trial = {"eligible": eligible, "active": False, "ends_at": None, "days": 7}
         self.data["study_setup"] = {"goal": "hsk_exam", "goal_chosen": True, "daily_minutes": 20,
                                     "preferred_focus": "listening", "pending": False}
@@ -46,7 +51,9 @@ class TrialPage(LearningPage):
 
     def serve(self, route):
         path = urlsplit(route.request.url).path
-        if path.endswith("/iphone-pwa-inline-pro-bridge.js") and self.hold_bridge:
+        if path.endswith("/li-onboarding-runtime.js") and self.hold_runtime:
+            self.runtime_held.append(route)
+        elif path.endswith("/iphone-pwa-inline-pro-bridge.js") and self.hold_bridge:
             self.bridge_held.append(route)
         elif path == "/iphone-pwa/course":
             route.fulfill(content_type="text/html", body=real_pwa_document())
@@ -60,10 +67,7 @@ class TrialPage(LearningPage):
             route.fulfill(json={"ok": True, "user_id": owner, "csrf": "test-csrf"})
         elif path == "/api/v3/pwa/onboarding/status":
             route.fulfill(headers={"X-HSK-PWA-User-ID": str(self.child_owner)}, json={
-                "ok": True, "saved": True, "level": self.data["level"], "profile": {
-                    "goal": "hsk_exam", "goals": ["hsk_exam"], "daily_minutes": 20,
-                    "preferred_focus": "listening", "streak_target_days": 14,
-                },
+                "ok": True, "saved": True, "level": self.data["level"], "profile": self.saved_profile,
             })
         elif path == "/api/v3/pwa/onboarding":
             self.onboarding_writes.append(route.request.post_data_json)
@@ -304,9 +308,10 @@ def test_profile_pro_is_first_and_current_hsk30_has_no_repeat_card(browser):
     page.locator('.hp-promo-slide[data-promo-kind="pro"] .hp-promo-action').click()
     frame = trial_frame(page)
     assert fixture.starts == [] and fixture.onboarding_writes == []
-    frame.locator("#footer .cta.ghost").click()
-    page.locator('#pwa-checkout-layer iframe[src*="/iphone-pwa/checkout?"]').wait_for()
-    assert "source=profile" in page.locator("#pwa-checkout-layer iframe").get_attribute("src")
+    assert frame.locator("#footer .cta").count() == 1
+    assert page.locator('.hp-promo-slide[data-promo-kind="apps"]').count() == 0
+    frame.locator(".li-trial-close").click()
+    assert page.locator("#pwa-checkout-layer").count() == 0
     assert fixture.starts == []
 
 
@@ -502,12 +507,12 @@ def test_trial_keyboard_focus_is_contained_and_escape_restores_the_parent(browse
     frame = trial_frame(page)
     close = frame.locator(".li-trial-close")
     assert close.evaluate("el=>el===document.activeElement")
-    paid = frame.locator("#footer .cta.later")
-    paid.focus()
+    start = frame.locator("#footer .cta")
+    start.focus()
     page.keyboard.press("Tab")
     assert close.evaluate("el=>el===document.activeElement")
     page.keyboard.press("Shift+Tab")
-    assert paid.evaluate("el=>el===document.activeElement")
+    assert start.evaluate("el=>el===document.activeElement")
     frame.locator("#footer .cta").first.click()
     assert frame.get_by_role("progressbar", name="HSK AI Pro").get_attribute("aria-valuetext") == "1 / 4"
     page.evaluate("window.mapBeforeKeyboardClose=MAP")
@@ -534,3 +539,68 @@ def test_profile_trial_confirmation_restores_focus_after_verified_access_refresh
     page.wait_for_function("document.activeElement.matches('.hp-promo-action')")
     assert page.evaluate("SCREEN") == "profile"
     assert len(fixture.starts) == 1 and fixture.onboarding_writes == []
+
+
+@pytest.mark.parametrize("language", ["uz", "ru", "tj"])
+@pytest.mark.parametrize("goal,width,minutes,days", [
+    ("hsk_exam", 320, 5, 7), ("travel", 390, 10, 14),
+    ("work_china", 430, 15, 30), ("study_china", 320, 20, 50),
+    ("daily_communication", 390, 30, 14),
+])
+def test_trial_has_one_free_action_persistent_brand_and_saved_personal_plan(browser, language, goal, width, minutes, days):
+    from scripts.i18n_build_li_onboarding import read_sources
+    copy = read_sources()[language]
+    fixture = TrialPage(language, standalone=True, goals=[goal], daily_minutes=minutes, streak_target_days=days)
+    page = fixture.open(browser, width)
+    errors = []
+    page.on("pageerror", lambda error: errors.append(str(error)))
+    frame = trial_frame(page)
+    assert frame.locator("#footer .cta").count() == 1
+    assert frame.locator("#footer .cta").inner_text() == copy["trialOffer.start"]
+    assert page.locator('meta[name="theme-color"]').get_attribute("content") == "#211D17"
+    assert page.locator("#pwa-checkout-layer").evaluate("el => getComputedStyle(el).backgroundColor") == "rgb(33, 29, 23)"
+    for step in ("trialIntro", "trial1", "trial2", "trial3", "trialDone"):
+        if step != "trialIntro":
+            frame.locator("#footer .cta").first.click()
+            page.wait_for_function("step => document.querySelector('#pwa-checkout-layer iframe').contentWindow.screen===step", arg=step)
+        assert frame.get_by_role("heading", name="HSK AI PRO", exact=True).is_visible()
+        assert frame.locator(".wrap").evaluate("el => getComputedStyle(el).backgroundColor") == "rgb(33, 29, 23)"
+        assert frame.locator("#stage").evaluate("el => el.scrollWidth<=el.clientWidth+1")
+        if step in ("trial1", "trial2", "trial3"):
+            assert frame.locator(".trial h2").inner_text() == copy[f"proGoal.{goal}.title"]
+        if step == "trial2":
+            assert copy["trialOffer.daily"].replace("{minutes}", str(minutes)) in frame.locator(".trial p").inner_text()
+        if step == "trial3":
+            assert copy["trialOffer.streak"].replace("{days}", str(days)) in frame.locator(".trial p").inner_text()
+            assert not fixture.starts
+        if step == "trialDone":
+            assert frame.locator(".trial h2").inner_text() == copy["trialOffer.activated"]
+            assert frame.locator(".trial p").count() == 0
+            assert frame.locator("#footer .cta").inner_text() == copy["trialOffer.begin"]
+            assert len(fixture.starts) == 1
+    directory = os.getenv("HSK_TRIAL_REVIEW_DIR")
+    if directory:
+        Path(directory).mkdir(parents=True, exist_ok=True)
+        page.screenshot(path=str(Path(directory) / f"{os.getenv('PWA_E2E_ENGINE', 'chromium')}-{width}-{language}-{goal}-done.png"))
+    frame.locator("#footer .cta").click()
+    page.wait_for_function("!document.querySelector('#pwa-checkout-layer')")
+    assert page.locator('meta[name="theme-color"]').get_attribute("content") == "#FDF9F0"
+    assert fixture.onboarding_writes == [] and errors == []
+
+
+def test_trial_slow_runtime_does_not_flash_account_or_onboarding_screens(browser):
+    fixture = TrialPage(standalone=True)
+    fixture.hold_runtime = True
+    page = fixture.open(browser, wait_until="domcontentloaded")
+    page.wait_for_function("() => !!document.querySelector('#pwa-checkout-layer iframe')?.contentDocument?.documentElement?.classList.contains('li-trial-pending')")
+    frame = page.frame_locator("#pwa-checkout-layer iframe")
+    assert frame.locator(".wrap").evaluate("el => getComputedStyle(el).visibility") == "hidden"
+    assert frame.locator("body").evaluate("el => getComputedStyle(el).backgroundColor") == "rgb(33, 29, 23)"
+    page.wait_for_function("() => !!document.querySelector('#pwa-checkout-layer iframe')?.contentDocument?.querySelector('script[src*=li-onboarding-runtime]')")
+    assert len(fixture.runtime_held) == 1
+    fixture.hold_runtime = False
+    fixture.runtime_held.pop().fulfill(content_type="application/javascript", path=str(STATIC / "course_v3_data/li-onboarding-runtime.js"))
+    trial_frame(page)
+    assert frame.locator(".li-pro-welcome").is_visible()
+    assert frame.locator("#footer .cta").count() == 1
+    assert fixture.starts == [] and fixture.onboarding_writes == []

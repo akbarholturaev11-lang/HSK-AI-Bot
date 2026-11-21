@@ -22,6 +22,7 @@ INSTALL_KEYS = ("install.title", "install.description", "install.videoLabel", "i
 # Telegram Mini App -> PWA handoff landing (/iphone-pwa/handoff). It shares the
 # install guide with onboarding, so its few strings live in the same catalog.
 HANDOFF_KEYS = ("handoff.signingIn", "handoff.failed", "handoff.signIn", "handoff.accountMismatch", "handoff.switchAccount", "handoff.keepAccount",)
+TRIAL_OFFER_KEYS = tuple("trialOffer." + key for key in ("start", "activated", "begin", "daily", "streak"))
 SHAPES = {
     "LV20": ("beginner", "hsk1", "hsk2", "hsk3", "hsk4"),
     "LV30": ("nhsk1", "nhsk2", "nhsk3"),
@@ -75,7 +76,7 @@ def read_sources(root: Path = ROOT) -> dict[str, dict[str, str]]:
     copy_keys = {key for key in keys if key.startswith("copy.")}
     if len(copy_keys) != COPY_COUNT:
         raise ValueError("Li canonical copy count changed")
-    required = set(copy_keys) | set(INSTALL_KEYS) | set(PRO_GOAL_KEYS) | set(HANDOFF_KEYS)
+    required = set(copy_keys) | set(INSTALL_KEYS) | set(PRO_GOAL_KEYS) | set(HANDOFF_KEYS) | set(TRIAL_OFFER_KEYS)
     for group, codes in SHAPES.items():
         for code in codes:
             for field in FIELDS[group]:
@@ -97,7 +98,7 @@ def output_files(catalogs: dict[str, dict[str, str]]) -> dict[str, str]:
     copy = {
         lang: {
             key.removeprefix("copy."): value
-            for key, value in source.items() if key.startswith("copy.") or key in INSTALL_KEYS or key in PRO_GOAL_KEYS or key in HANDOFF_KEYS
+            for key, value in source.items() if key.startswith("copy.") or key in INSTALL_KEYS or key in PRO_GOAL_KEYS or key in HANDOFF_KEYS or key in TRIAL_OFFER_KEYS
         }
         for lang, source in catalogs.items()
     }

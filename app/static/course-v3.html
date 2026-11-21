@@ -44,7 +44,7 @@ html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-famil
 .scr{display:none;padding-bottom:calc(82px + var(--safe-b))}
 .scr.on{display:block}
 #pwa-practice-layer{position:fixed;inset:0;z-index:9600;display:flex;flex-direction:column;overscroll-behavior:contain;background:var(--paper);padding:var(--safe-t) 0 var(--safe-b)}
-#pwa-practice-layer[hidden],#pwa-practice-layer [hidden]{display:none!important}
+#pwa-practice-layer:has(iframe[data-practice-kind="mistakes"]){padding-bottom:0}#pwa-practice-layer[hidden],#pwa-practice-layer [hidden]{display:none!important}
 #pwa-practice-layer iframe{width:100%;flex:1;min-height:0;border:0}#pwa-practice-layer.pwa-practice-dark{background:#000} /* AI Voice is full screen: its page draws under the status bar and home indicator itself, and nothing cream shows around it or under the keyboard. */ #pwa-practice-layer.pwa-practice-dark{padding:0}html.pwa-practice-voice,html.pwa-practice-voice body{background:#000}
 .pwa-practice-entry{position:relative;flex:1;display:grid;place-items:center}
 .pwa-practice-entry .pwa-practice-back{position:absolute;top:5px;left:12px;width:44px;height:44px;border:1px solid var(--line);border-radius:50%;background:var(--card);color:var(--ink);display:grid;place-items:center;font-size:20px}
@@ -60,7 +60,7 @@ html.hsk-pwa-browser #hsk-launch-splash.is-playing .hsk-launch-brandline,
 html.hsk-pwa-browser #hsk-launch-splash.is-playing .hsk-launch-book{animation-duration:300ms;animation-delay:390ms}
 html.hsk-pwa-browser #hsk-launch-splash.is-playing .hsk-launch-title{animation-duration:360ms;animation-delay:520ms}
 #pwa-checkout-layer{position:fixed;inset:0;z-index:9700;background:var(--paper);padding:var(--safe-t) 0 var(--safe-b);display:flex;flex-direction:column;overscroll-behavior:contain}
-html.hsk-pwa-browser #pwa-checkout-layer{padding-bottom:0}#pwa-checkout-layer iframe{flex:1;min-height:0;width:100%;border:0}
+html.hsk-pwa-browser #pwa-checkout-layer{padding-bottom:0}#pwa-checkout-layer.pwa-checkout-trial,html.hsk-pwa-browser:has(.pwa-checkout-trial),html.hsk-pwa-browser:has(.pwa-checkout-trial) body{background:#211D17}#pwa-checkout-layer iframe{flex:1;min-height:0;width:100%;border:0}
 html.hsk-pwa-browser:has(#pwa-checkout-layer){overflow:hidden}
 .hsk-launch-stage{position:relative;display:flex;flex-direction:column;align-items:center}
 .hsk-launch-halo{position:absolute;top:48px;left:50%;width:132px;height:132px;border-radius:50%;background:radial-gradient(circle,rgba(224,74,64,.24),rgba(224,74,64,0));opacity:.1;transform:translate(-50%,-50%) scale(.84);animation:hsk-launch-halo-breathe 1.45s ease-in-out infinite alternate}
@@ -120,7 +120,7 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 /* Compact secondary tab headers; keep the native safe area in .wrap. */
 .scr:not(#s-course)>.htop{padding-top:6px}
 .section-title,.profile-title{margin:0;color:var(--ink);font-size:var(--hsk-section-title-size,20px);line-height:var(--hsk-section-title-line-height,1.2);font-weight:700;letter-spacing:-.01em}
-.section-title{flex:0 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}/* Comparable PWA root headers share a reserved row, including first paint.Minimum height only: long localized titles may grow with their content. */html.hsk-pwa-browser :is(#s-mashq,#s-profile)>.htop,html.hsk-pwa-browser :is(#s-mashq,#s-profile)>.pwa-initial-shell>.htop{min-height:calc(var(--hsk-space-12) + var(--hsk-space-4));padding:var(--hsk-space-2) var(--hsk-space-4);gap:var(--hsk-space-2);}html.hsk-pwa-browser :is(#s-mashq,#s-profile) .htop>h1{font-size:var(--hsk-section-title-size);line-height:var(--hsk-section-title-line-height);white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere;}html.hsk-pwa-browser #s-profile .profile-head-actions{gap:var(--hsk-space-2)}html.hsk-pwa-browser #s-profile .profile-head-actions :is(.profile-settings,.profile-pro-cta,.pwa-profile-action){width:44px;height:44px;flex:0 0 44px;}/* Known Practice copy wraps with the ready row typography, not font-specific pixel presets. */html.hsk-pwa-browser[lang] #s-mashq .pwa-mashq-shell>.mashq-group:nth-child(n)>.pwa-practice-row:nth-child(n){min-height:68px}html.hsk-pwa-browser #s-mashq .pwa-practice-row .rt b{display:block;font-size:15px;font-weight:500}html.hsk-pwa-browser #s-mashq .pwa-practice-row .rt small{font-size:13px;line-height:1.35;color:var(--ink2)}html.hsk-pwa-browser #s-mashq .pwa-practice-row .ar{width:auto;height:auto;flex-shrink:1;font-size:20px;color:var(--ink3)}
+.section-title{flex:0 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}/* Comparable PWA root headers share a reserved row, including first paint.Minimum height only: long localized titles may grow with their content. */html.hsk-pwa-browser #s-course .ctop>.htop,html.hsk-pwa-browser :is(#s-mashq,#s-profile,#s-voice)>.htop,html.hsk-pwa-browser :is(#s-mashq,#s-profile,#s-voice)>.pwa-initial-shell>.htop{min-height:calc(var(--hsk-space-12) + var(--hsk-space-4));padding:var(--hsk-space-2) var(--hsk-space-4);gap:var(--hsk-space-2);}html.hsk-pwa-browser :is(#s-course,#s-mashq,#s-profile,#s-voice) .htop>h1{font-size:var(--hsk-section-title-size);line-height:var(--hsk-section-title-line-height);white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere;}html.hsk-pwa-browser #s-profile .profile-head-actions{gap:var(--hsk-space-2)}html.hsk-pwa-browser #s-profile .profile-head-actions :is(.profile-settings,.profile-pro-cta,.pwa-profile-action){width:44px;height:44px;flex:0 0 44px;}/* Known Practice copy wraps with the ready row typography, not font-specific pixel presets. */html.hsk-pwa-browser[lang] #s-mashq .pwa-mashq-shell>.mashq-group:nth-child(n)>.pwa-practice-row:nth-child(n){min-height:68px}html.hsk-pwa-browser #s-mashq .pwa-practice-row .rt b{display:block;font-size:15px;font-weight:500}html.hsk-pwa-browser #s-mashq .pwa-practice-row .rt small{font-size:13px;line-height:1.35;color:var(--ink2)}html.hsk-pwa-browser #s-mashq .pwa-practice-row .ar{width:auto;height:auto;flex-shrink:1;font-size:20px;color:var(--ink3)}
 .profile-settings{width:44px;height:44px;flex:0 0 44px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:50%;background:var(--card);color:var(--ink2);box-shadow:0 2px 8px rgba(33,29,23,.08);cursor:pointer}
 .profile-settings i{font-size:21px}
 .profile-settings:focus-visible{outline:2px solid var(--cin);outline-offset:2px}
@@ -1677,7 +1677,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 <link rel="stylesheet" href="/course_v3_data/iphone-pwa-glass.css?v=20261105-59648ec92079">
 <link rel="stylesheet" href="/course_v3_data/iphone-pwa-shake-report.css?v=20261105-c97d140b3930">
 <link href="/course_v3_data/desktop-download.css?v=20261110-d3164c95f1bd" rel="stylesheet">
-<link href="/course_v3_data/profile-carousel.css?v=20261121-251599ab0544" rel="stylesheet">
+<link href="/course_v3_data/profile-carousel.css?v=20261121-ae83ad0561d3" rel="stylesheet">
 <link href="/course_v3_data/rating-podium.css?v=20261105-1" rel="stylesheet">
 <link rel="stylesheet" href="/assets/characters/hsk-scene-background.css?v=20261009-preparing-compact-1">
   <script defer src="/course_v3_data/hsk-diagnostics.js?v=20261115-5408a5e8b789"></script><script defer src="/course_v3_data/iphone-pwa-progress.js?v=20261121-d3b4d28c5e31"></script><script>if(location.pathname==="/iphone-pwa/course"){var progressStyle=document.createElement("link");progressStyle.rel="stylesheet";progressStyle.href="/course_v3_data/iphone-pwa-progress.css?v=20261121-eca6c2678e92";document.head.appendChild(progressStyle)}</script>
@@ -2826,7 +2826,7 @@ document.addEventListener("keydown",function(event){
   }
 });
 var MASHQ_ACCESS_PENDING=null;
-var PWA_CHECKOUT_FRAME=null,PWA_CHECKOUT_RETURN_FOCUS=null;
+var PWA_CHECKOUT_FRAME=null,PWA_CHECKOUT_RETURN_FOCUS=null,PWA_CHECKOUT_THEME=null;
 function pwaCheckoutBack(){
   if(!PWA_CHECKOUT_FRAME)return false;
   try{
@@ -2843,7 +2843,7 @@ var App={
     var layer=document.createElement("section"),frame=document.createElement("iframe");
     layer.id="pwa-checkout-layer";layer.setAttribute("role","dialog");layer.setAttribute("aria-modal","true");
     layer.setAttribute("aria-label","HSK AI Pro");
-    frame.title="HSK AI Pro";query.set("embedded","1");if(query.get("offer")==="trial")frame.src="/iphone-pwa/onboarding/li?"+query.toString();else frame.src="/iphone-pwa/checkout?"+query.toString();
+    if(query.get("offer")==="trial"){layer.classList.add("pwa-checkout-trial");var theme=document.querySelector('meta[name="theme-color"]');if(theme){PWA_CHECKOUT_THEME=theme.getAttribute("content");theme.setAttribute("content","#211D17")} }frame.title="HSK AI Pro";query.set("embedded","1");if(query.get("offer")==="trial")frame.src="/iphone-pwa/onboarding/li?"+query.toString();else frame.src="/iphone-pwa/checkout?"+query.toString();
     PWA_CHECKOUT_FRAME=frame;PWA_CHECKOUT_RETURN_FOCUS=document.activeElement;
     layer.append(frame);document.body.appendChild(layer);$(".wrap").inert=true;
     try{frame.focus({preventScroll:true})}catch(e){}
@@ -2853,7 +2853,7 @@ var App={
     if(!PWA_CHECKOUT_FRAME||PWA_CHECKOUT_FRAME.contentWindow!==child)return false;
     var focus=PWA_CHECKOUT_RETURN_FOCUS;
     PWA_CHECKOUT_FRAME=null;PWA_CHECKOUT_RETURN_FOCUS=null;CHECKOUT_NAVIGATING=false;INTERNAL_NAVIGATING_UNTIL=0;
-    $("#pwa-checkout-layer").remove();$(".wrap").inert=false;
+    $("#pwa-checkout-layer").remove();$(".wrap").inert=false; if(PWA_CHECKOUT_THEME!==null){var theme=document.querySelector('meta[name="theme-color"]');if(theme)theme.setAttribute("content",PWA_CHECKOUT_THEME);PWA_CHECKOUT_THEME=null;}
     if(focus&&focus.isConnected)focus.focus({preventScroll:true});
     NavBack.sync();
     // The current screen is interactive immediately. Refresh server-owned
@@ -8554,7 +8554,7 @@ var RESOURCE=(function(){
     var background=Array.from(wrap.children).filter(function(node){return !node.inert});
     PRACTICE={layer:layer,entry:entry,frame:frame,background:background,focus:document.activeElement,feature:target.pathname.split("/").pop()};
     background.forEach(function(node){node.inert=true});
-    frame.title=label;frame.hidden=true;
+    frame.title=label;frame.hidden=true;frame.dataset.practiceKind=PRACTICE.feature;
     if(/^\/iphone-pwa\/practice\/(?:pronunciation|voice)$/.test(target.pathname))frame.allow="microphone 'self'";
     frame.addEventListener("load",function(){
       if(!isPracticeFrame(frame.contentWindow)||entry.hidden)return;
@@ -10537,7 +10537,7 @@ window.addEventListener("pageshow",function(ev){
 });
 </script>
 <script src="/course_v3_data/desktop-download.js?v=20261021-b18e06983176"></script>
-<script src="/course_v3_data/profile-carousel.js?v=20261021-7f5b8894b4bf"></script>
+<script src="/course_v3_data/profile-carousel.js?v=20261121-c91d00c2b368"></script>
 <script src="/course_v3_data/iphone-pwa-fx.js?v=20261105-3f4db4191370"></script>
 <script src="/course_v3_data/iphone-pwa-refresh.js?v=20261105-e7852ac39c9d"></script>
 <script src="/course_v3_data/iphone-pwa-notices.js?v=20261110-e985617de198"></script>

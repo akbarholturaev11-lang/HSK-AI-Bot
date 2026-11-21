@@ -92,3 +92,18 @@ class LiOnboardingCanonicalCatalogTests(unittest.TestCase):
         self.assertIn("var T=window.HSKAI_LI_I18N||{};", html)
         self.assertNotIn('accountTitle:"У вас есть аккаунт', html)
         self.assertIn("window.HSKAI_LI_OPTIONS", html)
+
+
+class PwaTrialCopyTests(unittest.TestCase):
+    def test_trial_copy_has_localized_time_placeholders_and_no_new_native_keys(self):
+        sources = li.read_sources()
+        generated = li.output_files(sources)
+        for language, messages in sources.items():
+            for key in li.TRIAL_OFFER_KEYS:
+                self.assertIn(json.dumps(messages[key], ensure_ascii=False), generated[li.OUTPUT])
+            self.assertEqual(re.findall(r"\{\w+\}", messages["trialOffer.daily"]), ["{minutes}"])
+            self.assertEqual(re.findall(r"\{\w+\}", messages["trialOffer.streak"]), ["{days}"])
+            self.assertIn("0.00$", messages["trialOffer.start"])
+        for path, text in generated.items():
+            if path.startswith("android/"):
+                self.assertNotIn("trialoffer", text)
