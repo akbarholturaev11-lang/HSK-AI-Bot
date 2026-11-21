@@ -41,6 +41,21 @@ html.hsk-pwa-browser textarea,html.hsk-pwa-browser select{font-size:16px!importa
 html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-family:var(--hsk-font-ui)}
 .han{font-family:var(--hsk-font-cjk);font-weight:600;letter-spacing:1px}
 .wrap{max-width:var(--shell);margin:0 auto;min-height:100vh;position:relative;padding-top:var(--safe-t)}
+
+/* Installed iPhone PWA: scrolling sections must not show through the OS status-bar
+   inset above the sticky headers. This paints only that existing inset; it does
+   not reserve space or change header height, scroll position, or Mini App UI.
+   Use .wrap instead of body::before (owned by the scenic page background). */
+html.hsk-pwa-browser .wrap::before{
+  content:"";
+  position:fixed;
+  inset:0 0 auto;
+  height:var(--safe-t);
+  background:var(--paper);
+  z-index:6;
+  pointer-events:none;
+}
+
 .scr{display:none;padding-bottom:calc(82px + var(--safe-b))}
 .scr.on{display:block}
 #pwa-practice-layer{position:fixed;inset:0;z-index:9600;display:flex;flex-direction:column;overscroll-behavior:contain;background:var(--paper);padding:var(--safe-t) 0 var(--safe-b)}
