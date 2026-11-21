@@ -631,13 +631,25 @@ def test_cached_profile_trial_uses_existing_limit_panda_and_restores_status_bar(
     assert frame.locator('.li-pro-welcome-panda svg text').text_content() == "PRO"
     assert frame.locator(".li-pro-welcome-panda").evaluate(
         "el => { const canonical=document.createElement('div'); canonical.innerHTML=parent.HSKPwaInlinePro.trialPandaSvg(); return el.innerHTML===canonical.innerHTML; }")
-    assert status_bar.get_attribute("content") == "black-translucent"
+    # The installed native meta stays stable; an ordinary fixed colour strip
+    # paints the current safe inset and is sampleable by newer iOS chrome.
+    assert status_bar.get_attribute("content") == old_style
+    edge = page.locator("#pwa-checkout-layer .pwa-trial-status-edge")
+    assert edge.count() == 1
+    assert edge.get_attribute("aria-hidden") == "true"
+    assert edge.evaluate("""el => {
+        const s=getComputedStyle(el),r=el.getBoundingClientRect();
+        return s.position==='fixed' && s.pointerEvents==='none' &&
+          s.backgroundColor==='rgb(33, 29, 23)' && r.y===0 &&
+          r.width===innerWidth && r.height>=16;
+    }""")
     assert page.locator('meta[name="theme-color"]').get_attribute("content") == "#211D17"
     assert frame.locator("body").evaluate(
         "el => getComputedStyle(el).backgroundColor") == "rgb(33, 29, 23)"
     page.keyboard.press("Escape")
     page.locator("#pwa-checkout-layer").wait_for(state="detached")
     assert status_bar.get_attribute("content") == old_style
+    assert page.locator(".pwa-trial-status-edge").count() == 0
     assert page.locator('meta[name="theme-color"]').get_attribute("content") == "#FDF9F0"
     assert fixture.starts == [] and fixture.onboarding_writes == []
     page.context.close()
@@ -688,7 +700,8 @@ def test_unloaded_trial_frame_back_restores_parent_status_and_reopens(browser):
         'script[src*=li-onboarding-runtime]')""")
     assert fixture.runtime_held
     assert page.locator('meta[name="apple-mobile-web-app-status-bar-style"]').get_attribute(
-        "content") == "black-translucent"
+        "content") == original
+    assert page.locator(".pwa-trial-status-edge").count() == 1
     assert page.evaluate("""() => typeof document.querySelector(
         '#pwa-checkout-layer iframe').contentWindow.hskPwaCheckoutBack""") == "undefined"
     page.evaluate("window.__mapBeforeEarlyClose=MAP; NavBack.goBack()")
@@ -696,6 +709,7 @@ def test_unloaded_trial_frame_back_restores_parent_status_and_reopens(browser):
     page.wait_for_function("MAP!==window.__mapBeforeEarlyClose")
     assert page.locator('meta[name="apple-mobile-web-app-status-bar-style"]').get_attribute(
         "content") == original
+    assert page.locator(".pwa-trial-status-edge").count() == 0
     assert page.locator('meta[name="theme-color"]').get_attribute("content") == "#FDF9F0"
     assert not page.locator(".wrap").evaluate("el => el.inert")
     fixture.hold_runtime = False
