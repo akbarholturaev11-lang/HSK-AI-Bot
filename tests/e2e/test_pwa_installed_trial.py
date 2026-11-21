@@ -663,3 +663,39 @@ def test_cached_parent_trial_never_grants_or_displays_an_eligibility_reversal(br
     assert fixture.starts == [] and fixture.onboarding_writes == []
     assert page.evaluate("MAP.user.state") == "FREE"
     page.context.close()
+
+
+def test_unloaded_trial_frame_back_restores_parent_status_and_reopens(browser):
+    """Parent Back before the Li script loads must clear all trial-only state."""
+    fixture = TrialPage("ru")
+    fixture.hold_runtime = True
+    page = fixture.open(browser)
+    profile(page)
+    page.wait_for_function("TRIAL_LOADED && TRIAL_STATE?.eligible === true")
+    original = page.locator(
+        'meta[name="apple-mobile-web-app-status-bar-style"]').get_attribute("content")
+    button = page.locator('.hp-promo-slide[data-promo-kind="pro"] .hp-promo-action')
+    button.click()
+    page.wait_for_function("""() => !!document.querySelector('#pwa-checkout-layer iframe')
+        ?.contentDocument?.documentElement?.classList.contains('li-trial-pending')""")
+    page.wait_for_function("""() => !!document.querySelector(
+        '#pwa-checkout-layer iframe')?.contentDocument?.querySelector(
+        'script[src*=li-onboarding-runtime]')""")
+    assert fixture.runtime_held
+    assert page.locator('meta[name="apple-mobile-web-app-status-bar-style"]').get_attribute(
+        "content") == "black-translucent"
+    assert page.evaluate("""() => typeof document.querySelector(
+        '#pwa-checkout-layer iframe').contentWindow.hskPwaCheckoutBack""") == "undefined"
+    page.evaluate("NavBack.goBack()")
+    page.locator("#pwa-checkout-layer").wait_for(state="detached")
+    assert page.locator('meta[name="apple-mobile-web-app-status-bar-style"]').get_attribute(
+        "content") == original
+    assert page.locator('meta[name="theme-color"]').get_attribute("content") == "#FDF9F0"
+    assert not page.locator(".wrap").evaluate("el => el.inert")
+    fixture.hold_runtime = False
+    button.click()
+    trial_frame(page)
+    page.keyboard.press("Escape")
+    page.locator("#pwa-checkout-layer").wait_for(state="detached")
+    assert fixture.starts == [] and fixture.onboarding_writes == []
+    page.context.close()
