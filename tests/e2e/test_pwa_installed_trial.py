@@ -686,8 +686,9 @@ def test_unloaded_trial_frame_back_restores_parent_status_and_reopens(browser):
         "content") == "black-translucent"
     assert page.evaluate("""() => typeof document.querySelector(
         '#pwa-checkout-layer iframe').contentWindow.hskPwaCheckoutBack""") == "undefined"
-    page.evaluate("NavBack.goBack()")
+    page.evaluate("window.__mapBeforeEarlyClose=MAP; NavBack.goBack()")
     page.locator("#pwa-checkout-layer").wait_for(state="detached")
+    page.wait_for_function("MAP!==window.__mapBeforeEarlyClose")
     assert page.locator('meta[name="apple-mobile-web-app-status-bar-style"]').get_attribute(
         "content") == original
     assert page.locator('meta[name="theme-color"]').get_attribute("content") == "#FDF9F0"
