@@ -604,3 +604,51 @@ def test_trial_slow_runtime_does_not_flash_account_or_onboarding_screens(browser
     assert frame.locator(".li-pro-welcome").is_visible()
     assert frame.locator("#footer .cta").count() == 1
     assert fixture.starts == [] and fixture.onboarding_writes == []
+
+
+def test_cached_profile_trial_uses_existing_limit_panda_and_restores_status_bar(browser):
+    """Cached owner-specific eligibility must avoid a second parent RTT.
+
+    The child still performs its own verified session and status read; SVG is
+    the same function that paints the existing Pro limit modal.
+    """
+    fixture = TrialPage("ru", standalone=False)
+    page = fixture.open(browser, 390)
+    profile(page)
+    page.wait_for_function("TRIAL_LOADED && TRIAL_STATE?.eligible === true")
+    before = len(fixture.status_reads)
+    status_bar = page.locator('meta[name="apple-mobile-web-app-status-bar-style"]')
+    old_style = status_bar.get_attribute("content")
+    page.locator('.hp-promo-slide[data-promo-kind="pro"] .hp-promo-action').click()
+    frame = trial_frame(page)
+    assert len(fixture.status_reads) == before + 1  # child only, no redundant parent fetch
+    assert frame.locator('.li-pro-welcome-panda svg.hip-pd-char').count() == 1
+    assert frame.locator('.li-pro-welcome-panda svg text').inner_text() == "PRO"
+    assert frame.locator(".li-pro-welcome-panda").evaluate(
+        "el => el.innerHTML === parent.HSKPwaInlinePro.trialPandaSvg()")
+    assert status_bar.get_attribute("content") == "black-translucent"
+    assert page.locator('meta[name="theme-color"]').get_attribute("content") == "#211D17"
+    assert frame.locator("body").evaluate(
+        "el => getComputedStyle(el).backgroundColor") == "rgb(33, 29, 23)"
+    page.keyboard.press("Escape")
+    page.locator("#pwa-checkout-layer").wait_for(state="detached")
+    assert status_bar.get_attribute("content") == old_style
+    assert page.locator('meta[name="theme-color"]').get_attribute("content") == "#FDF9F0"
+    assert fixture.starts == [] and fixture.onboarding_writes == []
+    page.context.close()
+
+
+def test_cached_parent_trial_never_grants_or_displays_an_eligibility_reversal(browser):
+    """A cached valid presentation hint cannot override the child's fresh status."""
+    fixture = TrialPage("ru", standalone=False)
+    page = fixture.open(browser)
+    profile(page)
+    page.wait_for_function("TRIAL_LOADED && TRIAL_STATE?.eligible === true")
+    fixture.trial["eligible"] = False  # server state changed after the cached parent read
+    before = len(fixture.status_reads)
+    page.locator('.hp-promo-slide[data-promo-kind="pro"] .hp-promo-action').click()
+    page.wait_for_function("() => !document.getElementById('pwa-checkout-layer') && TRIAL_PROMISE===null")
+    assert len(fixture.status_reads) == before + 1  # child revalidated the real server
+    assert fixture.starts == [] and fixture.onboarding_writes == []
+    assert page.evaluate("MAP.user.state") == "FREE"
+    page.context.close()
