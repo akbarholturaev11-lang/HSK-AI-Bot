@@ -108,7 +108,20 @@
     var app = window.App;
     if (!app || typeof app.openPaywall !== "function") return;
     var trialReadOwner=null,trialReadAt=0,trialEpoch=0,trialIntentPending=false;
-    var trialOffer=null,installedShown={};
+    var trialOffer=null,installedShown={},trialPreviousStatusBar=null;
+    // iOS may only apply this metadata at Home Screen launch; this scoped
+    // hint and the existing dark theme are restored on offer close.
+    function trialStatusBar(active){
+      var meta=document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
+      if(!meta)return;
+      if(active){
+        if(trialPreviousStatusBar===null)trialPreviousStatusBar=meta.getAttribute("content")||"default";
+        meta.setAttribute("content","black-translucent");
+      }else if(trialPreviousStatusBar!==null){
+        meta.setAttribute("content",trialPreviousStatusBar);
+        trialPreviousStatusBar=null;
+      }
+    }
     function standalone(){return !!(navigator.standalone===true||window.matchMedia&&matchMedia("(display-mode: standalone)").matches)}
     function installedKey(owner){return "hskai.pwa.trial.presented.v1:"+owner}
     function wasPresented(owner){try{return installedShown[owner]||localStorage.getItem(installedKey(owner))==="1"}catch(_){return !!installedShown[owner]}}
@@ -149,6 +162,7 @@
         if(trigger)window.PWA_CHECKOUT_RETURN_FOCUS=trigger;
       }
       if(!window.PWA_CHECKOUT_FRAME){trialOffer=null;return false;}
+      trialStatusBar(true);
       return true;
     }
     function closeTrial(child,activated){
@@ -171,6 +185,7 @@
           if(trigger)trigger.focus({preventScroll:true});
         }
       }))return false;
+      trialStatusBar(false);
       if(activated!==true)resume();
       return true;
     }
@@ -217,7 +232,7 @@
       open:function(source){
         if(trialIntentPending||trialOffer)return Promise.resolve(false);
         var owner=PWA_COURSE_USER_ID,map=MAP,intent=viewIntent();trialIntentPending=true;
-        return getTrial(true).then(function(state){
+        return getTrial(false).then(function(state){
           if(!sameOwner(owner,map)||!sameIntent(intent))return false;
           if(!state){trialError();return false;}
           if(!state.eligible){if(SCREEN==="profile")renderProfile();return false;}
