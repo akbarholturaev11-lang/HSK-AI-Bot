@@ -688,7 +688,7 @@
     if(document.visibilityState==="visible"){actorPromise=null;cameBack();}
   });
   window.addEventListener("pageshow",function(e){if(e.persisted){actorPromise=null;cameBack();}});
-  window.HSKPwaInlinePro={open:open,close:close,closeEmbeddedCheckout:closeEmbeddedCheckout,safeArea:safeArea};
+  window.HSKPwaInlinePro={open:open,close:close,closeEmbeddedCheckout:closeEmbeddedCheckout,safeArea:safeArea,trialPandaSvg:function(){return pandaSvg('pro')}};
   // The provider returns to /iphone-pwa/course?pro_checkout=<id>&pro_return=…
   (function resumeFromProvider() {
     if (location.pathname!=="/iphone-pwa/course") return;
