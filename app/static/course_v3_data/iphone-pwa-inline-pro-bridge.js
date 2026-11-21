@@ -189,6 +189,23 @@
       if(activated!==true)resume();
       return true;
     }
+    // Back/Escape can dismiss the parent iframe before Li's child runtime has
+    // loaded and registered hskPwaCheckoutBack. In that case the host falls
+    // back to App.closePwaCheckout directly. Route that same-origin, owned
+    // fallback through the normal trial cleanup so no stale trialOffer, dark
+    // status bar or deferred course continuation is left behind.
+    var closeCheckoutUnwrapped=app.closePwaCheckout;
+    app.closePwaCheckout=function(child,afterRefresh){
+      if(trialOffer&&window.PWA_CHECKOUT_FRAME&&PWA_CHECKOUT_FRAME.contentWindow===child){
+        if(offerChild(child))return closeTrial(child,false);
+        // Map/actor changed while the child was loading: close without
+        // resuming the old actor's lesson intent.
+        var closed=closeCheckoutUnwrapped.apply(this,arguments);
+        if(closed){trialOffer=null;trialStatusBar(false)}
+        return closed;
+      }
+      return closeCheckoutUnwrapped.apply(this,arguments);
+    };
     function trialError(){if(typeof window.toast==="function")toast(courseMessage("trialFail",T().trialFail),2200)}
     function viewIntent(){return {screen:SCREEN,layer:NavBack.top(),blocked:NavBack.blocked()}}
     function sameIntent(intent){return SCREEN===intent.screen&&NavBack.top()===intent.layer&&NavBack.blocked()===intent.blocked}
