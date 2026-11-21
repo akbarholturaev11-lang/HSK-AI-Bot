@@ -1,6 +1,4 @@
 {
-  "schema_version": 1,
-  "namespace": "li_onboarding",
   "locale": "ru",
   "messages": {
     "FOCUS.grammar.hd": "Грамматика",
@@ -69,6 +67,7 @@
     "copy.askGoal": "Зачем вам китайский?",
     "copy.askVersion": "С какой версии HSK вы хотите начать?",
     "copy.back": "Назад",
+    "copy.buyPro": "Купить HSK AI Pro",
     "copy.close": "Закрыть",
     "copy.cont": "Продолжить",
     "copy.createAccount": "Создать аккаунт",
@@ -172,6 +171,12 @@
     "proGoal.travel.title": "Общайтесь по-китайски в поездке",
     "proGoal.work_china.subtitle": "Тренируйте повседневные рабочие диалоги и важные слова.",
     "proGoal.work_china.title": "Развивайте китайский для работы",
-    "copy.buyPro": "Купить HSK AI Pro"
-  }
+    "trialOffer.activated": "7 дней бесплатно активированы",
+    "trialOffer.begin": "Начинаем 🔥",
+    "trialOffer.daily": "Ваш ритм — {minutes} минут в день.",
+    "trialOffer.start": "Получить за 0.00$",
+    "trialOffer.streak": "Ваша цель серии — {days} дней подряд."
+  },
+  "namespace": "li_onboarding",
+  "schema_version": 1
 }

@@ -125,10 +125,12 @@ function setAuthWaitPhase(phase){
   var saving=phase==="saving";
   var title=authWaitNode.querySelector(".li-auth-wait-title");
   var subtitle=authWaitNode.querySelector(".li-auth-wait-subtitle");
+  if(offerMode){if(title)title.textContent="HSK AI PRO";if(subtitle)subtitle.textContent="";return;}
   if(title)title.textContent=word(saving?"install.authSaveTitle":"install.authWaitTitle");
   if(subtitle)subtitle.textContent=word(saving?"install.authSaveSubtitle":"install.authWaitSubtitle");
 }
 function hideAuthWait(){
+  document.documentElement.classList.remove("li-trial-pending");
   document.documentElement.classList.remove("li-auth-resuming");
   if(authWaitNode){authWaitNode.remove();authWaitNode=null}
   var wrap=document.querySelector(".wrap");
@@ -851,17 +853,35 @@ global.render=function(animate){
     }[global.screen]||[];
     var selected=preferred.find(function(key){
       return Array.isArray(global.goals)&&global.goals.indexOf(key)>=0;
-    });
+    })||(Array.isArray(global.goals)&&global.goals[0]);
     if(selected){
       var heading=document.querySelector("#stage .trial h2");
       var subtitle=document.querySelector("#stage .trial p");
       if(heading)heading.textContent=word("proGoal."+selected+".title");
-      if(subtitle)subtitle.textContent=word("proGoal."+selected+".subtitle");
+      if(subtitle){
+        var details=word("proGoal."+selected+".subtitle");
+        if(global.screen==="trial2"&&global.minutes)details+=" "+word("trialOffer.daily").replace("{minutes}",global.minutes);
+        if(global.screen==="trial3"&&global.streakGoal)details+=" "+word("trialOffer.streak").replace("{days}",global.streakGoal);
+        subtitle.textContent=details;
+      }
     }
   }
   if(global.screen==="trialDone"){
     var heading=document.querySelector("#stage .trial h2");
-    if(heading)heading.textContent=word("trialOn");
+    if(heading)heading.textContent=hostPwa?word("trialOffer.activated"):word("trialOn");
+    if(hostPwa){
+      document.querySelector("#stage .trial p")?.remove();
+      var begin=document.querySelector("#footer .cta");if(begin)begin.textContent=word("trialOffer.begin");
+    }
+  }
+  if(hostPwa&&trialOfferSteps.indexOf(global.screen)>=0){
+    var welcome=document.querySelector(".li-pro-welcome h1");
+    if(welcome)welcome.remove();
+    var brand=document.createElement("h1");brand.className="li-trial-brand";
+    brand.innerHTML="HSK AI <strong>PRO</strong>";document.getElementById("stage").prepend(brand);
+    if(global.screen==="trialIntro"){
+      var first=document.querySelector("#footer .cta");if(first)first.textContent=word("trialOffer.start");
+    }
   }
   if(offerMode&&trialOfferSteps.indexOf(global.screen)>=0){
     var top=document.getElementById("top"),exit=document.createElement("button");
@@ -874,10 +894,6 @@ global.render=function(animate){
       indicator.setAttribute("aria-label","HSK AI Pro");indicator.setAttribute("aria-valuemin","0");
       indicator.setAttribute("aria-valuemax","4");indicator.setAttribute("aria-valuenow",String(position));
       indicator.setAttribute("aria-valuetext",position+" / 4");
-    }
-    if(global.screen==="trialIntro"){
-      var paid=document.createElement("button");paid.type="button";paid.className="cta ghost later";
-      paid.textContent=word("buyPro");paid.onclick=purchaseFromOffer;document.getElementById("footer").appendChild(paid);
     }
     if(global.screen==="trial3"){
       var startButton=document.querySelector("#footer .cta");if(startButton)startButton.textContent=word("proCta");
@@ -1026,7 +1042,9 @@ async function bootstrap(){
       // Read the saved learner choices without posting onboarding again.
       global.track=String(status.level||"").indexOf("nhsk")===0?"hsk30":"hsk20";
       global.level=status.level;
-      global.goals=(Array.isArray(status.profile.goals)?status.profile.goals:[status.profile.goal]).filter(function(key){return global.GOALS&&global.GOALS[key]});
+      global.goals=(Array.isArray(status.profile.goals)?status.profile.goals:[status.profile.goal]).filter(function(key){return Array.isArray(global.GOALS)&&global.GOALS.some(function(goal){return goal.k===key})});
+      global.minutes=[5,10,15,20,30].indexOf(status.profile.daily_minutes)>=0?status.profile.daily_minutes:null;
+      global.streakGoal=[7,14,30,50].indexOf(status.profile.streak_target_days)>=0?status.profile.streak_target_days:null;
       requestBusy=false;offerIfEligible();return;
     }
     if(status.saved){
@@ -1104,6 +1122,6 @@ global.addEventListener("pagehide",stopTelegramPoll);
 // HttpOnly session, server profile ownership and course access before any save.
 if(hostPwa&&(validAuthHandoff()||telegramPendingId()))
   showAuthWait("waiting");
-global.render(false);
+if(!offerMode)global.render(false);
 bootstrap();
 })(window);
