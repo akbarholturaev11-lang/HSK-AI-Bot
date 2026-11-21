@@ -2849,7 +2849,7 @@ var App={
     try{frame.focus({preventScroll:true})}catch(e){}
     NavBack.sync();
   },
-  closePwaCheckout:function(child){
+  closePwaCheckout:function(child,afterRefresh){
     if(!PWA_CHECKOUT_FRAME||PWA_CHECKOUT_FRAME.contentWindow!==child)return false;
     var focus=PWA_CHECKOUT_RETURN_FOCUS;
     PWA_CHECKOUT_FRAME=null;PWA_CHECKOUT_RETURN_FOCUS=null;CHECKOUT_NAVIGATING=false;INTERNAL_NAVIGATING_UNTIL=0;
@@ -2858,7 +2858,7 @@ var App={
     NavBack.sync();
     // The current screen is interactive immediately. Refresh server-owned
     // access/plan after closing, never while a lesson/checkout is drawing.
-    pwaCourseActor().then(function(){return refreshPwaCheckoutMap()}).catch(function(){});
+    pwaCourseActor().then(function(){return refreshPwaCheckoutMap()}).catch(function(){}).then(function(updated){if(typeof afterRefresh==="function")afterRefresh(updated===true)});
     return true;
   },
   setLang:function(l){if(!I18N[l])return;LANG=l;syncDocumentLanguage();renderAll()},

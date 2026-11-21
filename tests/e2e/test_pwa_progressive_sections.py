@@ -279,9 +279,11 @@ def test_course_ready_while_rating_referrals_and_profile_stats_load_independentl
             assert page.locator("#s-course .hsk-pwa-boot-shell").count() == 0
             assert not page.locator("#nav").get_attribute("inert")
 
-            # Onboarded PWA startup resolves legacy trial-status locally. It
-            # must not undo lazy Profile mounting while Course is active.
-            page.wait_for_function("() => typeof TRIAL_LOADED !== 'undefined' && TRIAL_LOADED")
+            # This section-only response fixture omits the optional Pro
+            # bridge. Trial eligibility stays unknown; a completed read must
+            # still never mount hidden Profile content while Course is active.
+            assert page.evaluate("trialFetchStatus()") is None
+            assert page.evaluate("TRIAL_LOADED") is False
             assert page.locator("#s-profile .profile-display-name").count() == 0
             assert page.evaluate("refreshCourseProgress()") is True
             assert page.locator("#s-profile .profile-display-name").count() == 0

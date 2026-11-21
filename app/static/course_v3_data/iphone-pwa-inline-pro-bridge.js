@@ -148,12 +148,16 @@
     function closeTrial(child,activated){
       if(!offerChild(child))return false;
       var current=trialOffer;trialOffer=null;
-      if(!app.closePwaCheckout(child))return false;
-      function resume(){if(sameOwner(current.owner,current.map)&&typeof current.done==="function")current.done()}
-      if(activated===true){
-        TRIAL_STATE=null;TRIAL_LOADED=false;trialReadAt=0;
-        refreshCourseProgress(true).then(resume);
-      }else resume();
+      function resume(updated){
+        if(activated===true&&updated!==true)return;
+        if(PWA_COURSE_USER_ID===current.owner&&window.MAP&&MAP.level===current.map.level&&
+           SCREEN==="course"&&!NavBack.top()&&!NavBack.blocked()&&typeof current.done==="function")current.done();
+      }
+      if(activated===true){TRIAL_STATE=null;TRIAL_LOADED=false;trialReadAt=0;}
+      // Use the layer's existing access refresh; a second progress read can
+      // race its map replacement and lose the deferred foundation intent.
+      if(!app.closePwaCheckout(child,activated===true?resume:null))return false;
+      if(activated!==true)resume();
       return true;
     }
     function trialError(){if(typeof window.toast==="function")toast(courseMessage("trialFail",T().trialFail),2200)}

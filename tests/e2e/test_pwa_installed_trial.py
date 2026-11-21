@@ -298,3 +298,19 @@ def test_fast_map_waits_for_late_trial_bridge_before_boot_intents(browser):
     assert len(fixture.status_reads) == 2  # parent check + child recheck
     assert fixture.starts == [] and fixture.onboarding_writes == []
     page.close()
+
+
+def test_confirmed_trial_resumes_required_foundation_after_the_access_map_refresh(browser):
+    fixture = TrialPage(standalone=True)
+    fixture.data["foundation"].update(required=True, status="required")
+    page = fixture.open(browser)
+    frame = trial_frame(page)
+    page.evaluate("window.foundationResumes=[];window.startFoundationFromMap=function(){foundationResumes.push(MAP.user.state);return true};void 0")
+    for _ in range(4):
+        frame.locator("#footer .cta").first.click()
+    frame.locator(".done-hero").wait_for()
+    frame.locator("#footer .cta").first.click()
+    page.wait_for_function("MAP.user.state==='TRIAL_ACTIVE'")
+    page.wait_for_function("foundationResumes.length===1", timeout=3000)
+    assert page.evaluate("foundationResumes") == ["TRIAL_ACTIVE"]
+    assert len(fixture.starts) == 1 and fixture.onboarding_writes == []
