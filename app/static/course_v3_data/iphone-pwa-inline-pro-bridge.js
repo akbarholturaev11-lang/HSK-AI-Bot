@@ -108,18 +108,23 @@
     var app = window.App;
     if (!app || typeof app.openPaywall !== "function") return;
     var trialReadOwner=null,trialReadAt=0,trialEpoch=0,trialIntentPending=false;
-    var trialOffer=null,installedShown={},trialPreviousStatusBar=null;
-    // iOS may only apply this metadata at Home Screen launch; this scoped
-    // hint and the existing dark theme are restored on offer close.
+    var trialOffer=null,installedShown={},trialStatusEdge=null;
+    // Do not dynamically mutate apple-mobile-web-app-status-bar-style:
+    // installed iOS can freeze it at launch, and switching translucent modes
+    // can change viewport geometry. A real fixed strip can be sampled by newer
+    // WebKit status-bar chrome and also paints the existing viewport safe inset.
+    // This node neither participates in flex layout nor intercepts touches.
     function trialStatusBar(active){
-      var meta=document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
-      if(!meta)return;
       if(active){
-        if(trialPreviousStatusBar===null)trialPreviousStatusBar=meta.getAttribute("content")||"default";
-        meta.setAttribute("content","black-translucent");
-      }else if(trialPreviousStatusBar!==null){
-        meta.setAttribute("content",trialPreviousStatusBar);
-        trialPreviousStatusBar=null;
+        var layer=document.getElementById("pwa-checkout-layer");
+        if(!layer||!layer.classList.contains("pwa-checkout-trial")||trialStatusEdge)return;
+        var edge=document.createElement("div");
+        edge.className="pwa-trial-status-edge";
+        edge.setAttribute("aria-hidden","true");
+        edge.style.cssText="position:fixed;top:0;left:0;right:0;height:max(16px,var(--safe-t,0px));background:#211D17;pointer-events:none;z-index:1";
+        layer.appendChild(edge);trialStatusEdge=edge;
+      }else if(trialStatusEdge){
+        trialStatusEdge.remove();trialStatusEdge=null;
       }
     }
     function standalone(){return !!(navigator.standalone===true||window.matchMedia&&matchMedia("(display-mode: standalone)").matches)}
@@ -193,7 +198,7 @@
     // loaded and registered hskPwaCheckoutBack. In that case the host falls
     // back to App.closePwaCheckout directly. Route that same-origin, owned
     // fallback through the normal trial cleanup so no stale trialOffer, dark
-    // status bar or deferred course continuation is left behind.
+    // top-edge overlay or deferred course continuation is left behind.
     var closeCheckoutUnwrapped=app.closePwaCheckout;
     app.closePwaCheckout=function(child,afterRefresh){
       if(trialOffer&&window.PWA_CHECKOUT_FRAME&&PWA_CHECKOUT_FRAME.contentWindow===child){
