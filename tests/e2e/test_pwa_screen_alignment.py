@@ -99,3 +99,51 @@ def test_mistakes_list_reaches_bottom_without_footer_band(browser, language, wid
     frame.locator('.top .ix').click()
     assert page.locator('#pwa-practice-layer').count() == 0
     assert not errors
+
+
+@pytest.mark.parametrize('width', [320, 390, 430])
+def test_pwa_status_bar_inset_covers_scrolling_headers_without_resizing(browser, width):
+    """The installed iPhone's status bar must never expose scrolled account text.
+
+    Simulate a real nonzero safe inset: the shell already reserves this height.
+    The translucent scene owns body::before, so only the PWA .wrap may paint
+    the scroll-proof, fixed shield. Its pseudo-element must not affect layout.
+    """
+    fixture = ScreenPage('ru')
+    page = fixture.open(browser, width)
+    page.add_style_tag(content=':root{--safe-t:47px}')
+    assert page.evaluate("document.documentElement.classList.contains('hsk-pwa-browser')")
+    for tab, header_selector in (
+        ('course', '#s-course .ctop'),
+        ('rating', '#s-rating .rating-title'),
+        ('profile', '#s-profile .htop.profile-head'),
+    ):
+        page.locator(f'#nav [data-s="{tab}"]').click()
+        header = page.locator(header_selector)
+        header.wait_for(state='visible')
+        header_height = header.bounding_box()['height']
+        metrics = page.evaluate("""() => {
+            const shield = getComputedStyle(document.querySelector('.wrap'), '::before');
+            const header = document.querySelector('#s-' + document.querySelector('#nav .on').dataset.s);
+            return {
+                content: shield.content, position: shield.position,
+                top: shield.top, left: shield.left, right: shield.right,
+                height: shield.height, z: Number(shield.zIndex),
+                pointerEvents: shield.pointerEvents, background: shield.backgroundColor,
+                paper: getComputedStyle(document.body).backgroundColor,
+                screen: header?.id,
+            };
+        }""")
+        assert metrics['content'] != 'none'
+        assert metrics['position'] == 'fixed'
+        assert metrics['top'] == '0px' and metrics['left'] == '0px' and metrics['right'] == '0px'
+        assert metrics['height'] == '47px'
+        assert metrics['background'] == metrics['paper']
+        assert metrics['z'] > 5 and metrics['pointerEvents'] == 'none'
+        page.evaluate('window.scrollTo(0, 250)')
+        assert abs(header.bounding_box()['height'] - header_height) <= 1
+        assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
+    # App remains interactive: leaving Profile for Course is not blocked by
+    # the fixed shield, and the unchanged primary header remains visible.
+    page.locator('#nav [data-s="course"]').click()
+    assert page.locator('#s-course .ctop').is_visible()
