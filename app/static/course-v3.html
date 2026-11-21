@@ -1680,7 +1680,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 <link href="/course_v3_data/profile-carousel.css?v=20261017-link-cards-1" rel="stylesheet">
 <link href="/course_v3_data/rating-podium.css?v=20261105-1" rel="stylesheet">
 <link rel="stylesheet" href="/assets/characters/hsk-scene-background.css?v=20261009-preparing-compact-1">
-  <script defer src="/course_v3_data/hsk-diagnostics.js?v=20261115-5408a5e8b789"></script>
+  <script defer src="/course_v3_data/hsk-diagnostics.js?v=20261115-5408a5e8b789"></script><script defer src="/course_v3_data/iphone-pwa-progress.js?v=20261121-d3b4d28c5e31"></script><script>if(location.pathname==="/iphone-pwa/course"){var progressStyle=document.createElement("link");progressStyle.rel="stylesheet";progressStyle.href="/course_v3_data/iphone-pwa-progress.css?v=20261121-104c3351c1d5";document.head.appendChild(progressStyle)}</script>
 </head>
 <body class="hsk-scene-page">
 <div id="hsk-launch-splash" class="is-playing" role="img" aria-label="HSK AI">
@@ -1785,7 +1785,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 </script>
 <!-- Reklama moduli: dars yakuni bloki uchun (mashq bo'limlari ham shu moduldan foydalanadi) -->
 <script src="/voice-live.js?v=20261114-43a09dcc7b1d"></script>
-<script defer src="/course_v3_data/ads.js?v=20261021-5288c4e06b0c"></script><script src="/course_v3_data/hsk-common-i18n.js?v=20261019-1c672dcfb10d"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261113-0fcc11745518"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-a0dd8c0b1db1"></script><script src="/course_v3_data/p3-grammar-reservation.js?v=20261019-p3-2"></script>
+<script defer src="/course_v3_data/ads.js?v=20261021-5288c4e06b0c"></script><script src="/course_v3_data/hsk-common-i18n.js?v=20261019-1c672dcfb10d"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261113-efe520888dad"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-a0dd8c0b1db1"></script><script src="/course_v3_data/p3-grammar-reservation.js?v=20261019-p3-2"></script>
 <script>
 /* ---------- i18n (default RU) ---------- */
 var I18N={
@@ -2759,9 +2759,9 @@ function adoptStudySetup(d){
   STUDY_SETUP=(d&&d.study_setup)||null;
   if(STUDY_SETUP&&Number(STUDY_SETUP.daily_goal_xp)>0)dailyGoal=Number(STUDY_SETUP.daily_goal_xp);
 }
-function savePreferences(body){
+function savePreferences(body,opts){var preferenceMap=MAP,preferenceOwner=PWA_COURSE_USER_ID;
   if(!INIT_DATA&&!PWA_COURSE_HOST)return Promise.resolve(null);
-  return _apiPost("/api/v3/preferences",body).then(function(r){return r.json()}).then(function(j){
+  return _apiPost("/api/v3/preferences",body,opts).then(function(r){return r.json()}).then(function(j){if(PWA_COURSE_HOST&&(MAP!==preferenceMap||PWA_COURSE_USER_ID!==preferenceOwner))return null;
       if(j&&j.ok&&j.profile){STUDY_SETUP=j.profile;if(Number(j.profile.daily_goal_xp)>0)dailyGoal=Number(j.profile.daily_goal_xp)}
       return j;
     }).catch(function(){return null});
@@ -4178,7 +4178,7 @@ function foundationEntryHtml(){
   })[LANG];m.go=done?m.review:m.start;
   return '<div class="foundation-entry"><span class="fi han">零</span><span class="ft"><b>'+esc(m.h)+(done?' <i class="ti ti-circle-check" style="color:var(--jade)"></i>':'')+'</b><small>'+esc(m.p)+'</small></span><button onclick="startFoundationFromMap(true)">'+esc(m.go)+'</button></div>';
 }
-function renderCourse(){
+function renderCourse(){if(window.HskPwaProgress)HskPwaProgress.refresh();
   if(MAP&&MAP.course_access_locked)return;
   /* Daraja yagona manbadan (botdagi user.level) keladi — mini app ichida daraja
      tanlash ko'rsatilmaydi, shuning uchun bu statik yorliq (tugma emas). */
@@ -4189,8 +4189,8 @@ function renderCourse(){
      reja birga tepada qoladi. Ilgari faqat `.htop` yopishqoq edi va reja
      tasmasi pastga suriganda uning ostiga kirib ko'rinmay ketardi. */
   var h='<div class="cleft"><div class="ctop"><div class="htop"><h1 class="section-title"><button type="button" class="course-heading-button" onclick="App.courseTrackPicker()" aria-label="'+esc(trackUi().courseVersion)+'">'+esc(courseLevelLabel((MAP&&MAP.level)||getSelectedLevel()))+'</button></h1>'
-    +'<span class="chip" style="margin-left:auto;color:var(--cin)"><i class="ti ti-flame"></i> '+(MAP.progress.streak||0)+'</span>'
-    +'<span class="chip" style="color:var(--gold)"><i class="ti ti-diamond"></i> '+(MAP.progress.xp||0).toLocaleString("ru")+'</span>'
+    +(PWA_COURSE_HOST?'<button type="button" class="chip p45-progress-chip" data-progress="streak" style="margin-left:auto;color:var(--cin)" onclick="window.HskPwaProgress&&HskPwaProgress.open(\'streak\')" aria-label="'+esc(courseMessage("pwaProgress.streak","STREAK"))+'"><i class="ti ti-flame" aria-hidden="true"></i> '+(MAP.progress.streak||0)+'</button>':'<span class="chip" style="margin-left:auto;color:var(--cin)"><i class="ti ti-flame"></i> '+(MAP.progress.streak||0)+'</span>')
+    +(PWA_COURSE_HOST?'<button type="button" class="chip p45-progress-chip" data-progress="xp" style="color:var(--gold)" onclick="window.HskPwaProgress&&HskPwaProgress.open(\'xp\')" aria-label="'+esc(courseMessage("pwaProgress.xp","XP"))+'"><i class="ti ti-diamond" aria-hidden="true"></i> '+(MAP.progress.xp||0).toLocaleString("ru")+'</button>':'<span class="chip" style="color:var(--gold)"><i class="ti ti-diamond"></i> '+(MAP.progress.xp||0).toLocaleString("ru")+'</span>')
     +goalRingHtml()+'</div>'
     /* Starter 0 hali MAJBURIY va tugatilmagan bo'lsa reja ko'rsatilmaydi:
        boshlovchida ikkita raqobatchi chaqiriq bo'lmasin. Starter tugagach
@@ -8197,7 +8197,7 @@ function renderProfile(){
     +'<button type="button" class="profile-friends-link" onclick="App.openFriends()"><i class="ti ti-users" aria-hidden="true"></i><span>'+esc(courseMessage("friends",t.friends))+'</span><i class="ti ti-chevron-right" aria-hidden="true"></i></button>'
     +profileAccuracyHtml()
     +'<div id="pomp-desktop-profile-root"></div>'
-    +'<div class="sech" style="display:flex;justify-content:space-between"><span>'+p.calTitle+'</span><span style="color:var(--cin)"><i class="ti ti-flame" style="font-size:12px"></i> '+streak+' '+courseMessage("streak",t.streak)+'</span></div><div class="card2"><div class="cal">'+streakCalHtml()+'</div></div>'
+    +(PWA_COURSE_HOST?'<div class="sech p45-profile-streak-heading"><span>'+esc(courseMessage("pwaProgress.streak",p.calTitle))+'</span><button type="button" class="p45-profile-streak-link" data-progress="streak" onclick="window.HskPwaProgress&&HskPwaProgress.open(\'streak\')" aria-label="'+esc(courseMessage("pwaProgress.streak",p.calTitle))+'"><i class="ti ti-flame" aria-hidden="true"></i> '+streak+' <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button></div><div class="card2"><div class="cal">'+streakCalHtml()+'</div></div>':'<div class="sech" style="display:flex;justify-content:space-between"><span>'+p.calTitle+'</span><span style="color:var(--cin)"><i class="ti ti-flame" style="font-size:12px"></i> '+streak+' '+courseMessage("streak",t.streak)+'</span></div><div class="card2"><div class="cal">'+streakCalHtml()+'</div></div>')
     +(showProLink?'<button type="button" class="profile-pro-link" onclick="App.goPay(\'profile_after_streak\')"><i class="ti ti-crown" aria-hidden="true"></i><span>'+esc(c.pro)+'</span><i class="ti ti-chevron-right" aria-hidden="true"></i></button>':'')
     +'<div class="sech">'+p.ach+'</div><div class="profile-compact-ach">'
     +'<div class="arow"><div class="aic c1"><i class="ti ti-book"></i></div><div class="at"><div class="ah"><span>'+p.a2+'</span><small>'+completedLessons+' / 100</small></div><div class="abar"><i style="width:'+lessonAchPct+'%"></i></div></div></div>'
@@ -10328,7 +10328,7 @@ var NavBack={
     {id:"pwa-inbox",target:function(){return PWA_COURSE_HOST&&window.HskPwaInbox&&HskPwaInbox.backTarget&&HskPwaInbox.backTarget()},close:function(){HskPwaInbox.back()}},
     {id:"pwa-feedback",target:function(){return PWA_COURSE_HOST&&window.HskPwaFeedback&&HskPwaFeedback.backTarget()},close:function(){HskPwaFeedback.back()}},
     {id:"pwa-voice",target:function(){return PWA_COURSE_HOST&&window.VOICE&&VOICE.backTarget&&VOICE.backTarget()},close:function(){VOICE.back()}},
-    {id:"tour",    close:function(){App.tourEnd()}},
+    {id:"p45-progress",target:function(){return PWA_COURSE_HOST&&window.HskPwaProgress&&HskPwaProgress.backTarget()},close:function(){HskPwaProgress.close()}},{id:"tour",    close:function(){App.tourEnd()}},
     {id:"sheet",   close:function(){App.closeSheet()}},
     {id:"upov",    close:function(){closeUserProfile()}},
     {id:"writeov", close:function(){App.closeWriter()}},
