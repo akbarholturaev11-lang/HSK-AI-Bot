@@ -135,6 +135,29 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         await self.client.aclose()
         await self.engine.dispose()
 
+    async def test_trial_only_li_embed_requires_actor_and_keeps_guest_frame_prohibition(self):
+        route = "/iphone-pwa/onboarding/li"
+        anonymous = await self.client.get(route + "?offer=trial&embedded=1")
+        self.assertEqual(anonymous.status_code, 401, anonymous.text)
+        public = await self.client.get(route + "?embedded=1")
+        self.assertEqual(public.headers["x-frame-options"], "DENY")
+        self.assertIn("frame-ancestors 'none'", public.headers["content-security-policy"])
+        await self.callback(await self.begin())
+        for query in ("?offer=trial&offer=trial&embedded=1", "?offer=other&embedded=1"):
+            response = await self.client.get(route + query)
+            self.assertEqual(response.status_code, 422, response.text)
+        embedded = await self.client.get(route + "?offer=trial&embedded=1")
+        self.assertEqual(embedded.status_code, 200, embedded.text[:100])
+        self.assertEqual(embedded.headers["x-frame-options"], "SAMEORIGIN")
+        self.assertIn("frame-ancestors 'self'", embedded.headers["content-security-policy"])
+        self.assertIn("default-src 'self'", embedded.headers["content-security-policy"])
+        self.assertEqual(embedded.headers["cache-control"], "no-store")
+        self.assertNotIn("Existing learner", embedded.text)
+        duplicate = await self.client.get(route + "?offer=trial&embedded=1&embedded=1")
+        self.assertEqual(duplicate.headers["x-frame-options"], "DENY")
+        status = await self.client.get("/api/v3/pwa/onboarding/status")
+        self.assertEqual(status.headers["x-hsk-pwa-user-id"], "1")
+
     async def test_public_li_shell_contains_no_private_user_or_course_access(self):
         route = "/iphone-pwa/onboarding/li"
         anonymous = await self.client.get(route, follow_redirects=False)
@@ -210,6 +233,7 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             response = await self.client.get(path)
             self.assertEqual(response.status_code, 200, response.text)
             self.assertTrue(response.json()["trial"]["eligible"])
+            self.assertEqual(response.headers["x-hsk-pwa-user-id"], "1")
             self.assertEqual(eligibility.await_args.args[0].id, 1)
             self.assertEqual(analyze.await_args.kwargs["client"], "iphone_pwa")
             evaluate.return_value = SimpleNamespace(denied=True)

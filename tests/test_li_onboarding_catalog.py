@@ -12,7 +12,7 @@ class LiOnboardingCanonicalCatalogTests(unittest.TestCase):
     def test_all_three_locales_have_exact_demo_copy_and_reactions(self):
         sources = li.read_sources()
         self.assertEqual(set(sources), {"uz", "ru", "tj"})
-        self.assertEqual(len({k for k in sources["ru"] if k.startswith("copy.")}), 69)
+        self.assertEqual(len({k for k in sources["ru"] if k.startswith("copy.")}), 70)
         self.assertEqual(sources["uz"]["copy.firstTime"], "HSK AI'da birinchi marta")
         self.assertEqual(sources["ru"]["copy.loadCourse"], "Загружаем курс…")
         self.assertEqual(sources["tj"]["STREAKS.14.say"],
@@ -39,7 +39,7 @@ class LiOnboardingCanonicalCatalogTests(unittest.TestCase):
         for lang in ("uz", "ru", "tj"):
             for key in li.PRO_GOAL_KEYS:
                 self.assertTrue(sources[lang][key].strip(), (lang, key))
-        self.assertEqual(len({k for k in sources["uz"] if k.startswith("copy.")}), 69)
+        self.assertEqual(len({k for k in sources["uz"] if k.startswith("copy.")}), 70)
 
     def test_telegram_handoff_landing_strings_are_canonical_in_three_languages(self):
         sources = li.read_sources()

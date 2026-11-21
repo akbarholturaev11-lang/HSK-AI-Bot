@@ -73,7 +73,7 @@ class TrialEntryPointTests(unittest.TestCase):
 
     def test_the_profile_carousel_uses_server_trial_status(self):
         self.assertIn('id="hsk-profile-promo-root"', COURSE)
-        self.assertIn('var ORDER=["apps","hsk30","pro"]', CAROUSEL)
+        self.assertIn('var ORDER=pwa?["pro","apps","hsk30"]:["apps","hsk30","pro"]', CAROUSEL)
         self.assertIn('if(plan==="trial")', CAROUSEL)
         self.assertIn("trialLeftText(until)", CAROUSEL)
         self.assertIn("TRIAL_LOADED&&trialEligible()", CAROUSEL)

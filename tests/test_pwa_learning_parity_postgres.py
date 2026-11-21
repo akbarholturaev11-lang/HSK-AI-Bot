@@ -86,6 +86,13 @@ class FeedbackPostgresTests(unittest.IsolatedAsyncioTestCase):
             case_type=PwaBrowserAuthTests,
         )
 
+    async def test_trial_offer_embed_is_authenticated_and_guest_frames_stay_denied(self):
+        from tests.test_pwa_browser_auth import PwaBrowserAuthTests
+        await self._exercise(
+            'test_trial_only_li_embed_requires_actor_and_keeps_guest_frame_prohibition',
+            case_type=PwaBrowserAuthTests,
+        )
+
     async def test_free_bot_questionnaire_commits_one_reward(self):
         await self._exercise('test_bot_questionnaire_free_answers_keep_canonical_codes_and_single_reward')
 

@@ -95,7 +95,7 @@ def _pwa_html(request: Request, path: str, headers: dict[str, str]) -> Response:
 # The reviewed shared HTML bytes MUST remain unchanged for source/translation
 # audit anchors. Inject PWA-only assets only after an authenticated route check.
 # The injected HTML is separately ETagged by its FULL bytes, not by file SHA.
-_PWA_INLINE_PRO_HTML = "\n<link rel=\"stylesheet\" href=\"/course_v3_data/iphone-pwa-inline-pro.css?v=20261108-e8010ea28fdc\">\n<script src=\"/course_v3_data/iphone-pwa-inline-pro.js?v=20261120-b2c9be0efaaf\"></script>\n<script src=\"/course_v3_data/iphone-pwa-inline-pro-bridge.js?v=20261108-afd4f9d80534\"></script>\n".encode("utf-8")
+_PWA_INLINE_PRO_HTML = "\n<link rel=\"stylesheet\" href=\"/course_v3_data/iphone-pwa-inline-pro.css?v=20261108-e8010ea28fdc\">\n<script src=\"/course_v3_data/iphone-pwa-inline-pro.js?v=20261120-b2c9be0efaaf\"></script>\n<script src=\"/course_v3_data/iphone-pwa-inline-pro-bridge.js?v=20261121-10b525b820e8\"></script>\n".encode("utf-8")
 
 # Scope only to the verified browser PWA. The native first-paint skeleton
 # stays in course-v3.html; these are ONLY independent secondary section states.
@@ -1114,16 +1114,31 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
         """
         try:
             require_pwa_enabled(settings_obj)
+            trial_offer = request.query_params.getlist("offer") == ["trial"]
+            if request.query_params.getlist("offer") and not trial_offer:
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            embedded_trial = False
+            if trial_offer:
+                # Reuse only the saved learner's trial scenes inside the
+                # existing same-origin Pro layer. Public guest onboarding
+                # retains its frame prohibition and all writes need CSRF.
+                async with session_factory() as db:
+                    await PwaAuthService(db, settings_obj).actor(
+                        request.cookies.get(PWA_SESSION_COOKIE)
+                    )
+                embedded_trial = request.query_params.getlist("embedded") == ["1"]
             return FileResponse(
                 "app/static/course_v3_li_onboarding.html",
                 media_type="text/html",
                 headers={
                     **_NO_STORE, "X-Content-Type-Options": "nosniff",
-                    "X-Frame-Options": "DENY",
+                    "X-Frame-Options": "SAMEORIGIN" if embedded_trial else "DENY",
                     "Content-Security-Policy": (
                         "default-src 'self'; script-src 'self' 'unsafe-inline'; "
                         "style-src 'self' 'unsafe-inline'; img-src 'self' data:; "
-                        "connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; "
+                        "connect-src 'self'; "
+                        + ("frame-ancestors 'self'; " if embedded_trial else "frame-ancestors 'none'; ")
+                        + "base-uri 'none'; "
                         "form-action 'none'"
                     ),
                 },
@@ -1212,7 +1227,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                         "start_mode": profile.start_mode,
                     } if completed else None),
                     "foundation_required": foundation_required,
-                }, headers=_NO_STORE)
+                }, headers={**_NO_STORE, "X-HSK-PWA-User-ID": str(user.id)})
         except PwaAuthError as exc:
             return _error(exc)
 
@@ -1298,7 +1313,8 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                 expires = access_expires_at(actor, EntitlementState.TRIAL_ACTIVE) if active else None
                 verdict = {**verdict, "active": active,
                            "ends_at": expires.isoformat() if expires else None}
-            return JSONResponse({"ok": True, "trial": verdict}, headers=_NO_STORE)
+            return JSONResponse({"ok": True, "trial": verdict},
+                                headers={**_NO_STORE, "X-HSK-PWA-User-ID": str(actor.id)})
         except PwaAuthError as exc:
             return _error(exc)
 

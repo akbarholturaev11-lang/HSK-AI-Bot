@@ -130,18 +130,19 @@ process.stdout.write(JSON.stringify({
         script = r"""
 const vm = require('node:vm');
 const fn = JSON.parse(process.argv[1]);
-function open(host, track, launch) {
+function open(host, track, launch, offerMode=false, trialConfirmed=false) {
   const ctx = {
-    launch, hostPwa:host, global:{LANG:'uz',track},
+    launch, hostPwa:host, offerMode, trialConfirmed, global:{LANG:'uz',track},
     location:{search:'?source=onboarding',href:'',assign(url){this.href=url;}},
     URLSearchParams, pageCourse:()=>host?'/iphone-pwa/course':'/course-v3.html',
-    saveProfile(){}, renderError(){ctx.blocked=true}, blocked:false
+    saveProfile(){}, renderError(){ctx.blocked=true}, blocked:false,
+    returnFromOffer(active){ctx.returned=active}
   };
   vm.runInNewContext(fn+'\ntoCourse()',ctx);
   const link = new URL(ctx.location.href || '/unconfirmed','https://hskai.app');
   return {path:link.pathname,start:link.searchParams.get('autostart'),
     resume:link.searchParams.get('resume'),lesson:link.searchParams.get('lesson'),
-    blocked:ctx.blocked};
+    blocked:ctx.blocked,returned:ctx.returned};
 }
 const cases = {
  pwaHsk3:open(true,'hsk30',{ok:true,level:'nhsk1',lesson:1}),
@@ -149,7 +150,9 @@ const cases = {
  pwaPlacement:open(true,'hsk20',{ok:true,level:'hsk1',placement:true,lesson:1}),
  denied:open(true,'hsk30',{ok:false}),
  miniHsk2:open(false,'hsk20',{ok:true,level:'hsk1',lesson:1}),
- miniHsk3:open(false,'hsk30',{ok:true,level:'nhsk1',lesson:1})
+ miniHsk3:open(false,'hsk30',{ok:true,level:'nhsk1',lesson:1}),
+ trialDismissed:open(true,'hsk20',null,true,false),
+ trialConfirmed:open(true,'hsk20',null,true,true)
 };
 process.stdout.write(JSON.stringify(cases));
 """
@@ -165,6 +168,12 @@ process.stdout.write(JSON.stringify(cases));
         self.assertEqual(cases["pwaReconciled"]["resume"], "1")
         self.assertIsNone(cases["pwaPlacement"]["start"])
         self.assertTrue(cases["denied"]["blocked"])
+        for name, activated in (("trialDismissed", False), ("trialConfirmed", True)):
+            self.assertEqual(cases[name]["path"], "/unconfirmed")
+            self.assertIs(cases[name]["returned"], activated)
+            self.assertIsNone(cases[name]["start"])
+            self.assertIsNone(cases[name]["resume"])
+            self.assertIsNone(cases[name]["lesson"])
         self.assertEqual(cases["denied"]["path"], "/unconfirmed")
         self.assertEqual(cases["miniHsk2"]["start"], "1")
         self.assertIsNone(cases["miniHsk3"]["start"])
