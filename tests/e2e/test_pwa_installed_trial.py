@@ -625,7 +625,7 @@ def test_cached_profile_trial_uses_existing_limit_panda_and_restores_status_bar(
     assert frame.locator('.li-pro-welcome-panda svg.hip-pd-char').count() == 1
     assert frame.locator('.li-pro-welcome-panda svg text').text_content() == "PRO"
     assert frame.locator(".li-pro-welcome-panda").evaluate(
-        "el => el.innerHTML === parent.HSKPwaInlinePro.trialPandaSvg()")
+        "el => { const canonical=document.createElement('div'); canonical.innerHTML=parent.HSKPwaInlinePro.trialPandaSvg(); return el.innerHTML===canonical.innerHTML; }")
     assert status_bar.get_attribute("content") == "black-translucent"
     assert page.locator('meta[name="theme-color"]').get_attribute("content") == "#211D17"
     assert frame.locator("body").evaluate(
