@@ -99,7 +99,8 @@ class IphonePwaNavigationContractTests(unittest.TestCase):
         self.assertIn('App.show("settings")', COURSE)
         self.assertIn("#s-settings", css)
         self.assertIn('if(!INIT_DATA&&!PWA_COURSE_HOST)return Promise.resolve(null)', COURSE)
-        self.assertIn('_apiPost("/api/v3/preferences",body)', COURSE)
+        self.assertIn('_apiPost("/api/v3/preferences",body,opts)', COURSE)
+        self.assertIn('MAP!==preferenceMap||PWA_COURSE_USER_ID!==preferenceOwner', COURSE)
         self.assertIn('if(!saved||saved.ok!==true){dailyGoal=previous;', COURSE)
 
     def test_slow_network_cannot_restore_an_older_hsk_level(self):
