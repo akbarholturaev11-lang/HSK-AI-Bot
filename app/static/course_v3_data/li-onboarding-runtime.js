@@ -23,7 +23,7 @@ if(hostPwa){
   [["apple-mobile-web-app-capable","yes"],
    ["apple-mobile-web-app-status-bar-style","default"],
    ["apple-mobile-web-app-title","HSK AI"],
-   ["theme-color","#FDF9F0"]].forEach(function(pair){
+   ["theme-color",offerMode?"#211D17":"#FDF9F0"]].forEach(function(pair){
      if(head.querySelector('meta[name="'+pair[0]+'"]'))return;
      var meta=document.createElement("meta");
      meta.name=pair[0];meta.content=pair[1];head.appendChild(meta);
@@ -543,10 +543,12 @@ function trialStatus(){
   return hostPwa?api("/api/v3/pwa/trial/status"):
     guardedPost("/api/v3/trial/status",{});
 }
-function offerIfEligible(){
+function offerIfEligible(prefetched){
   if(requestBusy)return;
   setBusy(true,"trial-status");
-  trialStatus().then(function(result){
+  // When bootstrap already checked status for this verified actor, reuse that
+  // exact response instead of issuing a third serial same-origin GET.
+  (prefetched?Promise.resolve(prefetched):trialStatus()).then(function(result){
     trialEligibility=result.trial||null;
     requestBusy=false;
     if(offerMode&&(!trialEligibility||trialEligibility.eligible!==true)){
@@ -882,6 +884,14 @@ global.render=function(animate){
     var brandTop=document.getElementById("top");brandTop.hidden=false;brandTop.prepend(brand);
     if(global.screen==="trialIntro"){
       var first=document.querySelector("#footer .cta");if(first)first.textContent=word("trialOffer.start");
+      // The limit modal owns the canonical PRO-card panda. Reuse its renderer
+      // only inside the verified same-origin embedded offer; regular Li remains unchanged.
+      if(offerMode){
+        try{var mascot=document.querySelector(".li-pro-welcome-panda");
+          var renderer=global.parent.HSKPwaInlinePro&&global.parent.HSKPwaInlinePro.trialPandaSvg;
+          if(mascot&&typeof renderer==="function")mascot.innerHTML=renderer();
+        }catch(_){} // Keep the existing local panda when opened outside the PWA host.
+      }
     }
   }
   if(offerMode&&trialOfferSteps.indexOf(global.screen)>=0){
@@ -1036,7 +1046,11 @@ async function bootstrap(){
       var parentOffer=offerHost();
       if(parentOffer&&!parentOffer.acceptActor(global,actor&&actor.user_id))throw new Error("pwa_actor_changed");
     }
+    // The two read-only endpoints are independent after session/CSRF verification.
+    // Parallelize ONLY for the embedded trial; all other onboarding paths stay serial.
+    var trialRead=offerMode?trialStatus():null;
     var status=await statusApi();
+    var verifiedTrial=trialRead?await trialRead:null;
     identityKey=userKey();
     if(offerMode){
       if(!status.saved||!status.profile){renderError(bootstrap,function(){returnFromOffer(false)});return;}
@@ -1046,7 +1060,7 @@ async function bootstrap(){
       global.goals=(Array.isArray(status.profile.goals)?status.profile.goals:[status.profile.goal]).filter(function(key){return Array.isArray(global.GOALS)&&global.GOALS.some(function(goal){return goal.k===key})});
       global.minutes=[5,10,15,20,30].indexOf(status.profile.daily_minutes)>=0?status.profile.daily_minutes:null;
       global.streakGoal=[7,14,30,50].indexOf(status.profile.streak_target_days)>=0?status.profile.streak_target_days:null;
-      requestBusy=false;offerIfEligible();return;
+      requestBusy=false;offerIfEligible(verifiedTrial);return;
     }
     if(status.saved){
       // Existing learners should not leave stale anonymous choices that
