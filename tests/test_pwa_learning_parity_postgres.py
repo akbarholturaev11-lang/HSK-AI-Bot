@@ -59,11 +59,11 @@ class FoundationPostgresTests(unittest.IsolatedAsyncioTestCase):
 
 @unittest.skipUnless(URL.startswith('postgresql+asyncpg://'), 'PWA_PARITY_TEST_DATABASE_URL not set')
 class FeedbackPostgresTests(unittest.IsolatedAsyncioTestCase):
-    async def _exercise(self, name, **options):
+    async def _exercise(self, name, case_type=None, **options):
         from tests.test_pwa_learning_parity import PwaLearningParityTests, fixture
         schema = 'pwa_feedback_' + uuid4().hex
         engine = create_async_engine(URL, connect_args={'server_settings': {'search_path': schema}})
-        case = PwaLearningParityTests(name)
+        case = (case_type or PwaLearningParityTests)(name)
         try:
             async with engine.begin() as connection:
                 await connection.execute(text('CREATE SCHEMA ' + schema))
@@ -78,6 +78,13 @@ class FeedbackPostgresTests(unittest.IsolatedAsyncioTestCase):
             async with engine.begin() as connection:
                 await connection.execute(text('DROP SCHEMA IF EXISTS ' + schema + ' CASCADE'))
             await engine.dispose()
+
+    async def test_streak_target_owner_save_reload_and_rollback(self):
+        from tests.test_pwa_browser_auth import PwaBrowserAuthTests
+        await self._exercise(
+            'test_pwa_streak_target_persistence_owner_guards_and_failed_write',
+            case_type=PwaBrowserAuthTests,
+        )
 
     async def test_free_bot_questionnaire_commits_one_reward(self):
         await self._exercise('test_bot_questionnaire_free_answers_keep_canonical_codes_and_single_reward')

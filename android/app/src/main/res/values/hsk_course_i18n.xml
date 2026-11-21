@@ -593,6 +593,38 @@
     <string name="hsk_course_pwa_profile_edit" formatted="false">Profilni tahrirlash</string>
     <string name="hsk_course_pwa_profile_name" formatted="false">Ism</string>
     <string name="hsk_course_pwa_profile_save" formatted="false">Saqlash</string>
+    <string name="hsk_course_pwa_progress_back" formatted="false">Orqaga</string>
+    <string name="hsk_course_pwa_progress_calendar" formatted="false">Oylik faollik</string>
+    <string name="hsk_course_pwa_progress_change" formatted="false">Maqsadni o‘zgartirish</string>
+    <string name="hsk_course_pwa_progress_choose" formatted="false">Maqsadni tanlang</string>
+    <string name="hsk_course_pwa_progress_continue" formatted="false">O‘qishni davom ettirish</string>
+    <string name="hsk_course_pwa_progress_daily" formatted="false">Kunlik maqsad</string>
+    <string name="hsk_course_pwa_progress_day_few" formatted="false">kun</string>
+    <string name="hsk_course_pwa_progress_day_many" formatted="false">kun</string>
+    <string name="hsk_course_pwa_progress_day_one" formatted="false">kun</string>
+    <string name="hsk_course_pwa_progress_days" formatted="false">kun</string>
+    <string name="hsk_course_pwa_progress_earned" formatted="false">XP qanday to‘planadi?</string>
+    <string name="hsk_course_pwa_progress_goal" formatted="false">Shaxsiy maqsad</string>
+    <string name="hsk_course_pwa_progress_left" formatted="false">Maqsadgacha {count} {unit} qoldi</string>
+    <string name="hsk_course_pwa_progress_legend_future" formatted="false">Kelgusi kun</string>
+    <string name="hsk_course_pwa_progress_legend_no" formatted="false">O‘qilmagan</string>
+    <string name="hsk_course_pwa_progress_legend_other" formatted="false">Ma’lumot yo‘q</string>
+    <string name="hsk_course_pwa_progress_legend_today" formatted="false">Bugun</string>
+    <string name="hsk_course_pwa_progress_legend_yes" formatted="false">Faol kun</string>
+    <string name="hsk_course_pwa_progress_lesson" formatted="false">Darslar va tekshirilgan topshiriqlar</string>
+    <string name="hsk_course_pwa_progress_nohistory" formatted="false">XP hisoblash tarixi hozircha mavjud emas</string>
+    <string name="hsk_course_pwa_progress_other" formatted="false">Mashqlar va testlar</string>
+    <string name="hsk_course_pwa_progress_record" formatted="false">Eng uzun seriya</string>
+    <string name="hsk_course_pwa_progress_retry" formatted="false">Qayta urinish</string>
+    <string name="hsk_course_pwa_progress_save" formatted="false">Saqlanmoqda…</string>
+    <string name="hsk_course_pwa_progress_save_error" formatted="false">Maqsad saqlanmadi</string>
+    <string name="hsk_course_pwa_progress_streak" formatted="false">Ketma-ket kunlar</string>
+    <string name="hsk_course_pwa_progress_today" formatted="false">Bugun</string>
+    <string name="hsk_course_pwa_progress_total" formatted="false">Jami XP</string>
+    <string name="hsk_course_pwa_progress_unavailable" formatted="false">O‘quv ma’lumoti hali yuklanmagan</string>
+    <string name="hsk_course_pwa_progress_unknown" formatted="false">Oyning boshqa kunlari bo‘yicha ma’lumot yo‘q</string>
+    <string name="hsk_course_pwa_progress_week" formatted="false">Shu hafta</string>
+    <string name="hsk_course_pwa_progress_xp" formatted="false">O‘quv tajribasi XP</string>
     <string name="hsk_course_pwa_settings_account_notices" formatted="false">To‘lov va hisob xabarlari</string>
     <string name="hsk_course_pwa_settings_always_on" formatted="false">Doim yoqiq</string>
     <string name="hsk_course_pwa_settings_daily_time" formatted="false">Kunlik vaqt</string>

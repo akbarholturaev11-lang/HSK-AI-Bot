@@ -514,6 +514,56 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(profile.user_id, actor["user_id"])
             self.assertEqual(profile.daily_goal_xp, 80)
 
+    async def test_pwa_streak_target_persistence_owner_guards_and_failed_write(self):
+        from app.db.models.course_miniapp_profile import CourseMiniAppProfile
+        from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
+        from sqlalchemy.ext.asyncio import AsyncSession
+
+        path = "/api/v3/pwa/preferences"
+        payload = {"streak_target_days": 14}
+        self.assertEqual((await self.client.post(path, headers={"Origin": ORIGIN}, json=payload)).status_code, 401)
+        await self.callback(await self.begin())
+        actor = (await self.client.get("/api/v3/pwa-auth/session")).json()
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": actor["csrf"]}
+        async with self.sessions() as db:
+            db.add(user(2, None))
+            owner = await CourseMiniAppProfileService(db).get_or_create(actor["user_id"])
+            owner.streak_target_days = 7
+            owner.xp_total = 137
+            owner.current_streak = 3
+            owner.daily_plan_key = "preserved-plan"
+            owner.daily_plan_json = '[]'
+            other = await CourseMiniAppProfileService(db).get_or_create(2)
+            other.streak_target_days = 50
+            await db.commit()
+        for invalid_headers, expected in (
+            ({"Origin": ORIGIN}, 403),
+            ({**headers, "Origin": "https://other.test"}, 403),
+            ({**headers, "X-HSK-PWA-CSRF": "invalid"}, 403),
+            ({**headers, "X-Telegram-Init-Data": "forged"}, 422),
+        ):
+            self.assertEqual((await self.client.post(path, headers=invalid_headers, json=payload)).status_code, expected)
+        for invalid in ({"streak_target_days": 99}, {"streak_target_days": "14"},
+                        {**payload, "user_id": 2}, {**payload, "initData": "forged"}):
+            self.assertEqual((await self.client.post(path, headers=headers, json=invalid)).status_code, 422)
+        for days in (7, 14, 30, 50):
+            response = await self.client.post(path, headers=headers, json={"streak_target_days": days})
+            self.assertEqual(response.status_code, 200, response.text)
+            self.assertEqual(response.headers["cache-control"], "no-store")
+            self.assertEqual(response.json()["profile"]["streak_target_days"], days)
+            # A new DB session exercises the same read serializer used by map.
+            async with self.sessions() as db:
+                owner = await db.get(CourseMiniAppProfile, actor["user_id"])
+                self.assertEqual(CourseMiniAppProfileService.study_setup(owner)["streak_target_days"], days)
+                self.assertEqual((owner.xp_total, owner.current_streak, owner.daily_plan_key), (137, 3, "preserved-plan"))
+                self.assertEqual((await db.get(CourseMiniAppProfile, 2)).streak_target_days, 50)
+        with patch.object(AsyncSession, "commit", new=AsyncMock(side_effect=RuntimeError("isolated write failure"))):
+            failed = await self.client.post(path, headers=headers, json={"streak_target_days": 14})
+        self.assertEqual(failed.status_code, 503, failed.text)
+        self.assertFalse(failed.json()["ok"])
+        async with self.sessions() as db:
+            self.assertEqual((await db.get(CourseMiniAppProfile, actor["user_id"])).streak_target_days, 50)
+
     async def test_li_entry_release_switch_is_disabled_by_default_and_guest_only(self):
         # The release switch changes only the unauthenticated entry URL.
         # Never trust an unsigned cookie and never alter returning sessions.

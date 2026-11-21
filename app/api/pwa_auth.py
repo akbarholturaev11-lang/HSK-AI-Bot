@@ -2069,6 +2069,11 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
             return _error(PwaAuthError(exc.code, status_code=exc.status_code))
         except ValueError:
             return _error(PwaAuthError("preferences_request_invalid", status_code=422))
+        except Exception:
+            # Exiting the session rolls back an uncommitted preference. The
+            # progress screen must receive a failure, never a saved response.
+            logging.getLogger(__name__).exception("PWA preferences update failed")
+            return _error(PwaAuthError("preferences_unavailable", status_code=503))
 
     @router.post("/api/v3/pwa/language")
     async def pwa_set_language(request: Request):
