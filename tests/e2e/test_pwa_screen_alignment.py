@@ -119,9 +119,20 @@ def test_pwa_status_bar_inset_covers_scrolling_headers_without_resizing(browser,
         ('profile', '#s-profile .htop.profile-head'),
     ):
         page.locator(f'#nav [data-s="{tab}"]').click()
-        header = page.locator(header_selector)
-        header.wait_for(state='visible')
-        header_height = header.bounding_box()['height']
+        # Profile/Rating can replace a visible header during an async data
+        # refresh. Measure it atomically in the browser: a Playwright
+        # wait_for(visible) followed by bounding_box() may hit a detached node.
+        # A genuinely missing or zero-height header still fails this wait.
+        def stable_header_height():
+            handle = page.wait_for_function("""selector => {
+                const node = document.querySelector(selector);
+                if (!node || !node.isConnected || !node.getClientRects().length) return false;
+                const bounds = node.getBoundingClientRect();
+                return bounds.height > 0 ? bounds.height : false;
+            }""", arg=header_selector)
+            return float(handle.json_value())
+
+        header_height = stable_header_height()
         metrics = page.evaluate("""() => {
             const shield = getComputedStyle(document.querySelector('.wrap'), '::before');
             const header = document.querySelector('#s-' + document.querySelector('#nav .on').dataset.s);
@@ -141,7 +152,7 @@ def test_pwa_status_bar_inset_covers_scrolling_headers_without_resizing(browser,
         assert metrics['background'] == metrics['paper']
         assert metrics['z'] > 5 and metrics['pointerEvents'] == 'none'
         page.evaluate('window.scrollTo(0, 250)')
-        assert abs(header.bounding_box()['height'] - header_height) <= 1
+        assert abs(stable_header_height() - header_height) <= 1
         assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
     # App remains interactive: leaving Profile for Course is not blocked by
     # the fixed shield, and the unchanged primary header remains visible.

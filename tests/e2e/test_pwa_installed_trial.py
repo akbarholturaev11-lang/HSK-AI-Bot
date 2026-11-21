@@ -46,6 +46,8 @@ class TrialPage(LearningPage):
         self.child_owner = self.owner_id
         self.status_held = []
         self.hold_status = False
+        self.hold_onboarding_status = False
+        self.onboarding_status_held = []
         self.hold_bridge = False
         self.bridge_held = []
 
@@ -66,6 +68,9 @@ class TrialPage(LearningPage):
             owner = self.child_owner if route.request.frame.parent_frame else self.owner_id
             route.fulfill(json={"ok": True, "user_id": owner, "csrf": "test-csrf"})
         elif path == "/api/v3/pwa/onboarding/status":
+            if self.hold_onboarding_status:
+                self.onboarding_status_held.append(route)
+                return
             route.fulfill(headers={"X-HSK-PWA-User-ID": str(self.child_owner)}, json={
                 "ok": True, "saved": True, "level": self.data["level"], "profile": self.saved_profile,
             })
@@ -604,3 +609,153 @@ def test_trial_slow_runtime_does_not_flash_account_or_onboarding_screens(browser
     assert frame.locator(".li-pro-welcome").is_visible()
     assert frame.locator("#footer .cta").count() == 1
     assert fixture.starts == [] and fixture.onboarding_writes == []
+
+
+def test_cached_profile_trial_uses_existing_limit_panda_and_restores_status_bar(browser):
+    """Cached owner-specific eligibility must avoid a second parent RTT.
+
+    The child still performs its own verified session and status read; SVG is
+    the same function that paints the existing Pro limit modal.
+    """
+    fixture = TrialPage("ru", standalone=False)
+    page = fixture.open(browser, 390)
+    profile(page)
+    page.wait_for_function("TRIAL_LOADED && TRIAL_STATE?.eligible === true")
+    before = len(fixture.status_reads)
+    status_bar = page.locator('meta[name="apple-mobile-web-app-status-bar-style"]')
+    old_style = status_bar.get_attribute("content")
+    page.locator('.hp-promo-slide[data-promo-kind="pro"] .hp-promo-action').click()
+    frame = trial_frame(page)
+    assert len(fixture.status_reads) == before + 1  # child only, no redundant parent fetch
+    assert frame.locator('.li-pro-welcome-panda svg.hip-pd-char').count() == 1
+    assert frame.locator('.li-pro-welcome-panda svg text').text_content() == "PRO"
+    assert frame.locator(".li-pro-welcome-panda").evaluate(
+        "el => { const canonical=document.createElement('div'); canonical.innerHTML=parent.HSKPwaInlinePro.trialPandaSvg(); return el.innerHTML===canonical.innerHTML; }")
+    # The installed native meta stays stable; an ordinary fixed colour strip
+    # paints the current safe inset and is sampleable by newer iOS chrome.
+    assert status_bar.get_attribute("content") == old_style
+    edge = page.locator("#pwa-checkout-layer .pwa-trial-status-edge")
+    assert edge.count() == 1
+    assert edge.get_attribute("aria-hidden") == "true"
+    assert edge.evaluate("""el => {
+        const s=getComputedStyle(el),r=el.getBoundingClientRect();
+        return s.position==='fixed' && s.pointerEvents==='none' &&
+          s.backgroundColor==='rgb(33, 29, 23)' && r.y===0 &&
+          r.width===innerWidth && r.height>=16;
+    }""")
+    assert page.locator('meta[name="theme-color"]').get_attribute("content") == "#211D17"
+    assert frame.locator("body").evaluate(
+        "el => getComputedStyle(el).backgroundColor") == "rgb(33, 29, 23)"
+    page.keyboard.press("Escape")
+    page.locator("#pwa-checkout-layer").wait_for(state="detached")
+    assert status_bar.get_attribute("content") == old_style
+    assert page.locator(".pwa-trial-status-edge").count() == 0
+    assert page.locator('meta[name="theme-color"]').get_attribute("content") == "#FDF9F0"
+    assert fixture.starts == [] and fixture.onboarding_writes == []
+    page.context.close()
+
+
+def test_cached_parent_trial_never_grants_or_displays_an_eligibility_reversal(browser):
+    """A cached valid presentation hint cannot override the child's fresh status."""
+    fixture = TrialPage("ru", standalone=False)
+    page = fixture.open(browser)
+    profile(page)
+    page.wait_for_function("TRIAL_LOADED && TRIAL_STATE?.eligible === true")
+    fixture.trial["eligible"] = False  # server state changed after the cached parent read
+    before = len(fixture.status_reads)
+    # Observe the actual modal's lifecycle so a quick initial false condition
+    # cannot be mistaken for the eligibility reversal having settled.
+    page.evaluate("""() => {
+        window.__trialOfferWasMounted = false;
+        const observe = new MutationObserver(() => {
+            if(document.getElementById('pwa-checkout-layer')){
+                window.__trialOfferWasMounted = true; observe.disconnect();
+            }
+        });
+        observe.observe(document.body, {childList:true, subtree:true});
+    }""")
+    page.locator('.hp-promo-slide[data-promo-kind="pro"] .hp-promo-action').click()
+    page.wait_for_function("() => __trialOfferWasMounted && !document.getElementById('pwa-checkout-layer') && TRIAL_PROMISE===null")
+    assert len(fixture.status_reads) == before + 1  # child revalidated the real server
+    assert fixture.starts == [] and fixture.onboarding_writes == []
+    assert page.evaluate("MAP.user.state") == "FREE"
+    page.context.close()
+
+
+def test_unloaded_trial_frame_back_restores_parent_status_and_reopens(browser):
+    """Parent Back before the Li script loads must clear all trial-only state."""
+    fixture = TrialPage("ru")
+    fixture.hold_runtime = True
+    page = fixture.open(browser)
+    profile(page)
+    page.wait_for_function("TRIAL_LOADED && TRIAL_STATE?.eligible === true")
+    original = page.locator(
+        'meta[name="apple-mobile-web-app-status-bar-style"]').get_attribute("content")
+    button = page.locator('.hp-promo-slide[data-promo-kind="pro"] .hp-promo-action')
+    button.click()
+    page.wait_for_function("""() => !!document.querySelector('#pwa-checkout-layer iframe')
+        ?.contentDocument?.documentElement?.classList.contains('li-trial-pending')""")
+    page.wait_for_function("""() => !!document.querySelector(
+        '#pwa-checkout-layer iframe')?.contentDocument?.querySelector(
+        'script[src*=li-onboarding-runtime]')""")
+    assert fixture.runtime_held
+    assert page.locator('meta[name="apple-mobile-web-app-status-bar-style"]').get_attribute(
+        "content") == original
+    assert page.locator(".pwa-trial-status-edge").count() == 1
+    assert page.evaluate("""() => typeof document.querySelector(
+        '#pwa-checkout-layer iframe').contentWindow.hskPwaCheckoutBack""") == "undefined"
+    page.evaluate("window.__mapBeforeEarlyClose=MAP; NavBack.goBack()")
+    page.locator("#pwa-checkout-layer").wait_for(state="detached")
+    page.wait_for_function("MAP!==window.__mapBeforeEarlyClose")
+    assert page.locator('meta[name="apple-mobile-web-app-status-bar-style"]').get_attribute(
+        "content") == original
+    assert page.locator(".pwa-trial-status-edge").count() == 0
+    assert page.locator('meta[name="theme-color"]').get_attribute("content") == "#FDF9F0"
+    assert not page.locator(".wrap").evaluate("el => el.inert")
+    fixture.hold_runtime = False
+    button.click()
+    trial_frame(page)
+    page.keyboard.press("Escape")
+    page.locator("#pwa-checkout-layer").wait_for(state="detached")
+    assert fixture.starts == [] and fixture.onboarding_writes == []
+    page.context.close()
+
+
+def test_verified_child_trial_reads_onboarding_and_eligibility_in_parallel(browser):
+    """Independent GETs overlap after verified session; no extra status GET."""
+    from time import monotonic
+
+    fixture = TrialPage("ru")
+    page = fixture.open(browser)
+    profile(page)
+    page.wait_for_function("TRIAL_LOADED && TRIAL_STATE?.eligible === true && TRIAL_PROMISE===null")
+    fixture.hold_onboarding_status = True
+    fixture.hold_status = True
+    before = len(fixture.status_reads)
+    page.locator('.hp-promo-slide[data-promo-kind="pro"] .hp-promo-action').click()
+    page.locator('#pwa-checkout-layer iframe').wait_for()
+
+    deadline = monotonic() + 8
+    while monotonic() < deadline and (
+        not fixture.onboarding_status_held or not fixture.status_held
+    ):
+        page.wait_for_timeout(25)
+    # A serial implementation would be stuck on onboarding/status without
+    # issuing trial/status; this pair proves read concurrency.
+    assert len(fixture.onboarding_status_held) == 1
+    assert len(fixture.status_held) == 1
+    assert len(fixture.status_reads) == before + 1
+    fixture.hold_onboarding_status = False
+    fixture.hold_status = False
+    fixture.onboarding_status_held.pop().fulfill(
+        headers={"X-HSK-PWA-User-ID": str(fixture.child_owner)},
+        json={"ok": True, "saved": True, "level": fixture.data["level"],
+              "profile": fixture.saved_profile},
+    )
+    release_trial_status(fixture)
+    trial_frame(page)
+    assert len(fixture.status_reads) == before + 1
+    assert fixture.starts == [] and fixture.onboarding_writes == []
+    page.keyboard.press("Escape")
+    page.locator("#pwa-checkout-layer").wait_for(state="detached")
+    page.context.close()

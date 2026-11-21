@@ -182,6 +182,7 @@ body::before{content:"";position:fixed;inset:0;max-width:480px;margin:0 auto;z-i
 /* ---- Pro trial welcome: same look as course-v3.html .levelup.sales-bridge ---- */
 /* A trial offer never paints the ordinary account/onboarding shell. */
 html.li-trial-offer,html.li-trial-offer body,html.li-trial-offer .wrap.dark{background:#211D17}
+html.li-trial-offer{color-scheme:dark}
 html.li-trial-pending .wrap{visibility:hidden}
 html.li-trial-offer .li-auth-wait{background:#211D17;color:#fff}
 .li-trial-brand{flex:0 0 auto;text-align:center;color:#fff;font-size:clamp(24px,7vw,32px);line-height:1.2;font-weight:850;width:100%;padding:4px 28px}
@@ -202,6 +203,8 @@ body.dark::before{background-color:#FFFFFF;opacity:.55}
 .li-pro-welcome h1 strong{color:#F6C75B;font-weight:900}
 .li-pro-welcome-panda{flex:1;min-height:0;width:min(75vw,300px);max-width:300px;display:flex;justify-content:center;align-items:center;margin:20px 0}
 .li-pro-welcome-panda .hsk-character{width:100%;height:auto;max-height:44dvh}
+html.li-trial-offer .li-pro-welcome-panda{width:min(62vw,240px)}
+html.li-trial-offer .li-pro-welcome-panda .hip-pd-char{display:block;width:100%;height:auto;max-height:44dvh}
 /* Pro intro: logo on top, mascot flying in on a light trail */
 .pro-intro{flex:1;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;padding-top:42px}
 .pro-mark{text-align:center;position:relative;z-index:2}
@@ -786,6 +789,6 @@ if(T[LANG]&&window.HSKCharacters&&typeof window.HSKCharacters.render==="function
 </script>
 <script src="/course_v3_data/hsk-common-i18n.js"></script>
 <script src="/course_v3_data/li-onboarding-install.js?v=20261114-b32fe2d0770a"></script>
-<script src="/course_v3_data/li-onboarding-runtime.js?v=20261121-f6e5d94c110c" onerror="liCriticalAssetFailed()"></script>
+<script src="/course_v3_data/li-onboarding-runtime.js?v=20261122-7483993d365b" onerror="liCriticalAssetFailed()"></script>
 </body>
 </html>

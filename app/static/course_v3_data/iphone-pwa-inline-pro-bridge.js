@@ -108,7 +108,25 @@
     var app = window.App;
     if (!app || typeof app.openPaywall !== "function") return;
     var trialReadOwner=null,trialReadAt=0,trialEpoch=0,trialIntentPending=false;
-    var trialOffer=null,installedShown={};
+    var trialOffer=null,installedShown={},trialStatusEdge=null;
+    // Do not dynamically mutate apple-mobile-web-app-status-bar-style:
+    // installed iOS can freeze it at launch, and switching translucent modes
+    // can change viewport geometry. A real fixed strip can be sampled by newer
+    // WebKit status-bar chrome and also paints the existing viewport safe inset.
+    // This node neither participates in flex layout nor intercepts touches.
+    function trialStatusBar(active){
+      if(active){
+        var layer=document.getElementById("pwa-checkout-layer");
+        if(!layer||!layer.classList.contains("pwa-checkout-trial")||trialStatusEdge)return;
+        var edge=document.createElement("div");
+        edge.className="pwa-trial-status-edge";
+        edge.setAttribute("aria-hidden","true");
+        edge.style.cssText="position:fixed;top:0;left:0;right:0;height:max(16px,var(--safe-t,0px));background:#211D17;pointer-events:none;z-index:1";
+        layer.appendChild(edge);trialStatusEdge=edge;
+      }else if(trialStatusEdge){
+        trialStatusEdge.remove();trialStatusEdge=null;
+      }
+    }
     function standalone(){return !!(navigator.standalone===true||window.matchMedia&&matchMedia("(display-mode: standalone)").matches)}
     function installedKey(owner){return "hskai.pwa.trial.presented.v1:"+owner}
     function wasPresented(owner){try{return installedShown[owner]||localStorage.getItem(installedKey(owner))==="1"}catch(_){return !!installedShown[owner]}}
@@ -149,6 +167,7 @@
         if(trigger)window.PWA_CHECKOUT_RETURN_FOCUS=trigger;
       }
       if(!window.PWA_CHECKOUT_FRAME){trialOffer=null;return false;}
+      trialStatusBar(true);
       return true;
     }
     function closeTrial(child,activated){
@@ -171,9 +190,27 @@
           if(trigger)trigger.focus({preventScroll:true});
         }
       }))return false;
+      trialStatusBar(false);
       if(activated!==true)resume();
       return true;
     }
+    // Back/Escape can dismiss the parent iframe before Li's child runtime has
+    // loaded and registered hskPwaCheckoutBack. In that case the host falls
+    // back to App.closePwaCheckout directly. Route that same-origin, owned
+    // fallback through the normal trial cleanup so no stale trialOffer, dark
+    // top-edge overlay or deferred course continuation is left behind.
+    var closeCheckoutUnwrapped=app.closePwaCheckout;
+    app.closePwaCheckout=function(child,afterRefresh){
+      if(trialOffer&&window.PWA_CHECKOUT_FRAME&&PWA_CHECKOUT_FRAME.contentWindow===child){
+        if(offerChild(child))return closeTrial(child,false);
+        // Map/actor changed while the child was loading: close without
+        // resuming the old actor's lesson intent.
+        var closed=closeCheckoutUnwrapped.apply(this,arguments);
+        if(closed){trialOffer=null;trialStatusBar(false)}
+        return closed;
+      }
+      return closeCheckoutUnwrapped.apply(this,arguments);
+    };
     function trialError(){if(typeof window.toast==="function")toast(courseMessage("trialFail",T().trialFail),2200)}
     function viewIntent(){return {screen:SCREEN,layer:NavBack.top(),blocked:NavBack.blocked()}}
     function sameIntent(intent){return SCREEN===intent.screen&&NavBack.top()===intent.layer&&NavBack.blocked()===intent.blocked}
@@ -217,7 +254,7 @@
       open:function(source){
         if(trialIntentPending||trialOffer)return Promise.resolve(false);
         var owner=PWA_COURSE_USER_ID,map=MAP,intent=viewIntent();trialIntentPending=true;
-        return getTrial(true).then(function(state){
+        return getTrial(false).then(function(state){
           if(!sameOwner(owner,map)||!sameIntent(intent))return false;
           if(!state){trialError();return false;}
           if(!state.eligible){if(SCREEN==="profile")renderProfile();return false;}
