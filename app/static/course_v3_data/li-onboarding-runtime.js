@@ -865,7 +865,7 @@ global.render=function(animate){
     exit.innerHTML=global.icon("close");exit.onclick=function(){returnFromOffer(trialConfirmed)};
     top.hidden=false;top.appendChild(exit);
     if(global.screen==="trialIntro"){
-      var paid=document.createElement("button");paid.type="button";paid.className="cta ghost";
+      var paid=document.createElement("button");paid.type="button";paid.className="cta ghost later";
       paid.textContent=word("buyPro");paid.onclick=purchaseFromOffer;document.getElementById("footer").appendChild(paid);
     }
     if(global.screen==="trial3"){
