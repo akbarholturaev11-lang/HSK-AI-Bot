@@ -623,7 +623,7 @@ def test_cached_profile_trial_uses_existing_limit_panda_and_restores_status_bar(
     frame = trial_frame(page)
     assert len(fixture.status_reads) == before + 1  # child only, no redundant parent fetch
     assert frame.locator('.li-pro-welcome-panda svg.hip-pd-char').count() == 1
-    assert frame.locator('.li-pro-welcome-panda svg text').inner_text() == "PRO"
+    assert frame.locator('.li-pro-welcome-panda svg text').text_content() == "PRO"
     assert frame.locator(".li-pro-welcome-panda").evaluate(
         "el => el.innerHTML === parent.HSKPwaInlinePro.trialPandaSvg()")
     assert status_bar.get_attribute("content") == "black-translucent"
