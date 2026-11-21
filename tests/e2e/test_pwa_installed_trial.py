@@ -46,6 +46,8 @@ class TrialPage(LearningPage):
         self.child_owner = self.owner_id
         self.status_held = []
         self.hold_status = False
+        self.hold_onboarding_status = False
+        self.onboarding_status_held = []
         self.hold_bridge = False
         self.bridge_held = []
 
@@ -66,6 +68,9 @@ class TrialPage(LearningPage):
             owner = self.child_owner if route.request.frame.parent_frame else self.owner_id
             route.fulfill(json={"ok": True, "user_id": owner, "csrf": "test-csrf"})
         elif path == "/api/v3/pwa/onboarding/status":
+            if self.hold_onboarding_status:
+                self.onboarding_status_held.append(route)
+                return
             route.fulfill(headers={"X-HSK-PWA-User-ID": str(self.child_owner)}, json={
                 "ok": True, "saved": True, "level": self.data["level"], "profile": self.saved_profile,
             })
@@ -699,4 +704,44 @@ def test_unloaded_trial_frame_back_restores_parent_status_and_reopens(browser):
     page.keyboard.press("Escape")
     page.locator("#pwa-checkout-layer").wait_for(state="detached")
     assert fixture.starts == [] and fixture.onboarding_writes == []
+    page.context.close()
+
+
+def test_verified_child_trial_reads_onboarding_and_eligibility_in_parallel(browser):
+    """Independent GETs overlap after verified session; no extra status GET."""
+    from time import monotonic
+
+    fixture = TrialPage("ru")
+    page = fixture.open(browser)
+    profile(page)
+    page.wait_for_function("TRIAL_LOADED && TRIAL_STATE?.eligible === true && TRIAL_PROMISE===null")
+    fixture.hold_onboarding_status = True
+    fixture.hold_status = True
+    before = len(fixture.status_reads)
+    page.locator('.hp-promo-slide[data-promo-kind="pro"] .hp-promo-action').click()
+    page.locator('#pwa-checkout-layer iframe').wait_for()
+
+    deadline = monotonic() + 8
+    while monotonic() < deadline and (
+        not fixture.onboarding_status_held or not fixture.status_held
+    ):
+        page.wait_for_timeout(25)
+    # A serial implementation would be stuck on onboarding/status without
+    # issuing trial/status; this pair proves read concurrency.
+    assert len(fixture.onboarding_status_held) == 1
+    assert len(fixture.status_held) == 1
+    assert len(fixture.status_reads) == before + 1
+    fixture.hold_onboarding_status = False
+    fixture.hold_status = False
+    fixture.onboarding_status_held.pop().fulfill(
+        headers={"X-HSK-PWA-User-ID": str(fixture.child_owner)},
+        json={"ok": True, "saved": True, "level": fixture.data["level"],
+              "profile": fixture.saved_profile},
+    )
+    release_trial_status(fixture)
+    trial_frame(page)
+    assert len(fixture.status_reads) == before + 1
+    assert fixture.starts == [] and fixture.onboarding_writes == []
+    page.keyboard.press("Escape")
+    page.locator("#pwa-checkout-layer").wait_for(state="detached")
     page.context.close()
