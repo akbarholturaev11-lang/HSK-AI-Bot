@@ -137,6 +137,113 @@ def profile(page):
     page.evaluate("HskProfileCarousel.pause()")
 
 
+@pytest.mark.parametrize("language,width,theme", [
+    ("uz", 320, "light"), ("ru", 390, "dark"), ("tj", 430, "light"),
+    ("uz", 430, "dark"), ("ru", 320, "light"), ("tj", 390, "dark"),
+])
+def test_profile_one_hierarchy_preserves_all_verified_access_states(browser, language, width, theme):
+    """The real server-map fixture changes presentation, never entitlement logic."""
+    for state in ("FREE", "EXPIRED", "BLOCKED", "TEMP_ACCESS", "TRIAL_ACTIVE", "PRO_ACTIVE"):
+        fixture = TrialPage(language)
+        fixture.data["user"].update(state=state, is_paid=state.endswith("ACTIVE") or state == "TEMP_ACCESS")
+        fixture.data["progress"].update(completed=8, streak=7)
+        page = fixture.open(browser, width)
+        errors = []
+        page.on("pageerror", lambda error: errors.append(str(error)))
+        page.set_viewport_size({"width": width, "height": 568 if width == 320 else 932})
+        page.evaluate("theme=>document.documentElement.dataset.hskTheme=theme", theme)
+        profile(page)
+        assert page.locator("#s-profile .profile-pro-link").count() == 0
+        assert page.locator("#s-profile .profile-compact-ach .arow").count() == 1
+        assert page.locator("#s-profile .profile-compact-ach small").inner_text() == "8 / 100"
+        assert page.locator("#s-profile .p45-profile-streak-link").inner_text().strip() == "7"
+        expected = page.evaluate("""state=>state==='PRO_ACTIVE'?'HSK AI Pro':
+          state==='TRIAL_ACTIVE'?profileCopy().trial:state==='TEMP_ACCESS'?
+          ({uz:'Vaqtinchalik ruxsat',ru:'Временный доступ',tj:'Дастрасии муваққатӣ'})[LANG]:profileCopy().free""", state)
+        assert page.locator("#s-profile .profile-access-badge").inner_text().strip() == expected
+        selectors = [".profile-head", ".phero", ".profile-accuracy", ".p45-profile-streak-heading",
+                     ".card2", ".profile-compact-ach", "#hsk-profile-promo-root", ".profile-friends-link"]
+        boxes = [page.locator("#s-profile " + selector).bounding_box() for selector in selectors]
+        assert all(a["y"] + a["height"] <= b["y"] + 1 for a, b in zip(boxes, boxes[1:]))
+        assert page.locator("#s-profile").evaluate("el=>el.scrollWidth<=el.clientWidth+1")
+        buttons = page.locator("#s-profile .profile-friends-link, #hsk-profile-promo-root button")
+        for button in buttons.all():
+            box = button.bounding_box()
+            assert box and box["width"] >= 44 and box["height"] >= 44
+        friends = page.locator("#s-profile .profile-friends-link")
+        friends.scroll_into_view_if_needed()
+        page.evaluate("window.scrollTo(0,document.scrollingElement.scrollHeight)")
+        assert friends.bounding_box()["y"] + friends.bounding_box()["height"] <= page.locator("#nav").bounding_box()["y"]
+        assert not fixture.starts and not fixture.onboarding_writes and not errors
+        directory = os.getenv("HSK_PROFILE_REVIEW_DIR")
+        if directory and state in ("FREE", "PRO_ACTIVE"):
+            Path(directory).mkdir(parents=True, exist_ok=True)
+            page.evaluate("window.scrollTo(0,0)")
+            page.wait_for_function("window.scrollY<1")
+            page.screenshot(path=str(Path(directory) / f'{os.getenv("PWA_E2E_ENGINE", "chromium")}-{width}-{language}-{theme}-{state}.png'), full_page=True)
+        page.context.close()
+
+
+@pytest.mark.parametrize("language", ["uz", "ru", "tj"])
+@pytest.mark.parametrize("theme", ["light", "dark"])
+def test_profile_large_text_keeps_pro_terms_controls_and_last_item_reachable(browser, language, theme):
+    fixture = TrialPage(language)
+    page = fixture.open(browser, 320)
+    page.set_viewport_size({"width": 320, "height": 568})
+    page.evaluate("t=>document.documentElement.dataset.hskTheme=t", theme)
+    profile(page)
+    page.evaluate("""() => {
+      const root=document.getElementById('s-profile'), rules=[];
+      for(const el of root.querySelectorAll('strong,small,p,.ah span,.profile-access-badge,.profile-goal-row,.hp-promo-action,.profile-friends-link span')){
+        rules.push([el,parseFloat(getComputedStyle(el).fontSize)*2]);
+      }
+      for(const [el,size] of rules)el.style.fontSize=size+'px';
+    }""")
+    assert page.locator("#s-profile").evaluate("el=>el.scrollWidth<=el.clientWidth+1")
+    action = page.locator('.hp-promo-slide[data-promo-kind="pro"] .hp-promo-action')
+    action.scroll_into_view_if_needed()
+    assert action.evaluate("el=>el.scrollWidth<=el.clientWidth+1 && el.scrollHeight<=el.clientHeight+1")
+    # Essential Pro status/terms must not be silently line-clamped.
+    assert page.locator('.hp-promo-slide.hp-promo-pro .hp-promo-copy p').evaluate("el=>el.scrollHeight<=el.clientHeight+1")
+    friends = page.locator("#s-profile .profile-friends-link")
+    friends.scroll_into_view_if_needed()
+    page.evaluate("window.scrollTo(0,document.scrollingElement.scrollHeight)")
+    box = friends.bounding_box()
+    assert box["y"] + box["height"] <= page.locator("#nav").bounding_box()["y"]
+    assert page.locator("#s-profile .profile-compact-ach small").is_visible()
+    assert not fixture.starts
+
+
+def test_profile_carousel_failure_has_one_trial_first_fallback_and_late_mount_stays_in_slot(browser):
+    from tests.pwa_layout_geometry import capture_geometry, assert_reserved_layout
+
+    fixture = TrialPage("ru")
+    original = fixture.serve
+    def serve(route):
+        if urlsplit(route.request.url).path.endswith("/profile-carousel.js"):
+            route.fulfill(content_type="application/javascript", body="")
+        else:
+            original(route)
+    fixture.serve = serve
+    page = fixture.open(browser, 430)
+    page.locator('#nav [data-s="profile"]').click()
+    fallback = page.locator("#hsk-profile-promo-root .profile-pro-link")
+    fallback.wait_for()
+    anchors = {"pro": "#hsk-profile-promo-root", "friends": "#s-profile .profile-friends-link"}
+    before = capture_geometry(page, anchors)
+    fallback.click()
+    trial_frame(page)
+    assert not fixture.starts
+    page.keyboard.press("Escape")
+    page.locator("#pwa-checkout-layer").wait_for(state="detached")
+    # Execute the real optional bundle after failure, without replacing Profile.
+    page.add_script_tag(content=(STATIC / "course_v3_data/profile-carousel.js").read_text())
+    page.evaluate("HskProfileCarousel.pause()")
+    assert page.locator("#s-profile .profile-pro-link").count() == 0
+    assert page.locator('.hp-promo-slide[data-promo-kind="pro"]').count() == 1
+    assert_reserved_layout(before, capture_geometry(page, anchors))
+
+
 @pytest.mark.parametrize("language", ["uz", "ru", "tj"])
 @pytest.mark.parametrize("width", [320, 430])
 def test_installed_first_open_shows_real_trial_scenes_once_without_rewriting_profile(browser, language, width):

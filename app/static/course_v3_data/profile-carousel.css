@@ -80,3 +80,29 @@
 .hp-promo-slide .hp-promo-action:disabled{opacity:.65;cursor:wait}
 @media(prefers-reduced-motion:reduce){.hp-promo-track{scroll-behavior:auto}}
 .hp-promo-note{margin:0 16px 12px;color:var(--ink2);font-size:12px;line-height:1.4}
+
+/* Learner PWA Profile: UIUX-005 hierarchy, using the existing single Pro slot.
+   The static shell reserves the same slot; real content may grow and scroll. */
+html.hsk-pwa-browser #s-profile .profile-compact-ach{grid-template-columns:minmax(0,1fr);gap:var(--hsk-space-2)}
+html.hsk-pwa-browser #s-profile .profile-compact-ach .arow{min-height:64px;padding:var(--hsk-space-3);gap:var(--hsk-space-2);align-items:center}
+html.hsk-pwa-browser #s-profile .profile-compact-ach .ah{min-height:0;flex-direction:row;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:var(--hsk-space-2);font-size:14px;line-height:1.4}
+html.hsk-pwa-browser #s-profile .profile-compact-ach .ah small{font-size:12px}
+html.hsk-pwa-browser #s-profile .profile-compact-ach .abar{margin-top:var(--hsk-space-2)}
+html.hsk-pwa-browser #s-profile .pwa-profile-shell .profile-compact-ach .arow{height:64px}
+html.hsk-pwa-browser #s-profile .profile-friends-link{min-height:44px;margin:var(--hsk-space-3) var(--hsk-space-4) 0;padding:var(--hsk-space-2) var(--hsk-space-3);gap:var(--hsk-space-2)}
+html.hsk-pwa-browser #s-profile .profile-friends-link span{min-width:0;overflow-wrap:anywhere}
+html.hsk-pwa-browser #s-profile .profile-friends-link:focus-visible,html.hsk-pwa-browser #s-profile .profile-pro-link:focus-visible{outline:2px solid var(--cin2);outline-offset:2px}
+html.hsk-pwa-browser #hsk-profile-promo-root,html.hsk-pwa-browser .pwa-profile-promo-slot{box-sizing:border-box;min-height:214px;margin:var(--hsk-space-3) var(--hsk-space-4);border:1px solid var(--line);border-radius:var(--hsk-radius-medium)}
+html.hsk-pwa-browser .pwa-profile-promo-slot{display:flex;flex-direction:column;justify-content:space-between;padding:var(--hsk-space-4);background:var(--hsk-card-surface)}
+html.hsk-pwa-browser #hsk-profile-promo-root:not(.hp-promo){display:flex;align-items:center;background:var(--hsk-card-surface)}
+html.hsk-pwa-browser #hsk-profile-promo-root .profile-pro-link{margin:var(--hsk-space-4);min-height:44px;padding:var(--hsk-space-3);gap:var(--hsk-space-2);white-space:normal}
+html.hsk-pwa-browser #hsk-profile-promo-root .hp-promo-slide{min-height:160px;padding:var(--hsk-space-4);gap:var(--hsk-space-2)}
+html.hsk-pwa-browser #hsk-profile-promo-root .hp-promo-content{gap:var(--hsk-space-2)}
+html.hsk-pwa-browser #hsk-profile-promo-root .hp-promo-slide.hp-promo-pro .hp-promo-copy p{display:block;overflow:visible;-webkit-line-clamp:unset;max-width:100%;margin-top:var(--hsk-space-1)}
+html.hsk-pwa-browser #hsk-profile-promo-root .hp-promo-footer{padding-right:0}
+html.hsk-pwa-browser #hsk-profile-promo-root .hp-promo-action{min-height:44px;padding:var(--hsk-space-2) var(--hsk-space-3)}
+html.hsk-pwa-browser #hsk-profile-promo-root>.hp-promo-dots{position:static;justify-content:flex-end;gap:0;padding:0 var(--hsk-space-3) var(--hsk-space-2)}
+html.hsk-pwa-browser #hsk-profile-promo-root>.hp-promo-dots button{display:grid;place-items:center;flex:0 0 44px;width:44px;min-height:44px;background:transparent;border-radius:var(--hsk-radius-small)}
+html.hsk-pwa-browser #hsk-profile-promo-root>.hp-promo-dots button::after{position:static;inset:auto;content:"";width:6px;height:6px;border-radius:99px;background:rgba(255,255,255,.55)}
+html.hsk-pwa-browser #hsk-profile-promo-root>.hp-promo-dots button.on::after{width:19px;background:var(--gold)}
+html.hsk-pwa-browser #s-profile .pwa-profile-ach-text{height:32px}

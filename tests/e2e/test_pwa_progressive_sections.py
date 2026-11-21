@@ -1042,6 +1042,7 @@ def test_profile_first_paint_shell_matches_identity_accuracy_and_calendar(width,
         "first-section": "#s-profile .sech",
         "calendar": "#s-profile .card2",
         "achievements": "#s-profile .profile-compact-ach",
+        "subscription": "#s-profile :is(.pwa-profile-promo-slot,#hsk-profile-promo-root)",
         "nav": "#nav",
     }
 
