@@ -149,6 +149,23 @@ Bu yozuvlar **takror implementatsiya qilish buyrug‘i emas**. Boshlashdan avval
 - Implementation: Hozircha faqat navbatga yozildi; kod o‘zgartirilmagan, CI/deploy o'tkazilmagan. Tegishli manbalar: [monitoring talablari](docs/monitoring/REQUIREMENTS.md), [context](docs/monitoring/MONITORING_CONTEXT.md), [PR #317](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/317).
 
 
+
+### NXT-012 — iPhone PWA: dars, Streak va reyting push kelmasligi — avval isbotlash
+- Status: PLANNED (faqat diagnostika; kodni tuzatishga avtomatik ruxsat EMAS)
+- Added: 2026-11-22
+- Priority: normal; reproduksiya va real ta'sir tasdiqlansa qayta baholansin.
+- Goal: PWA qurilmasida to‘lov push'i ishlayotgan, ammo dars/lesson, Streak va reyting push'lari kelmayotgani haqidagi murojaatni tekshirish. **Faqat aynan noto‘g‘ri ishlayotgan kod yo‘li va talab qilingan xulq isbotlangandan keyingina fix talab qilinsin.**
+- Observed evidence: iPhone'da HSK AI'dan to‘lov rad etilgani haqidagi push ko‘ringan. 2026-11-11 17:52 UTC'dan keyingi production outbox umumiy agregatida 74 ta `accepted` va HTTP 201 qayd etilgan; bu sonlar aynan shu qurilmaning study push'i yoki iOS ekranda ko‘rsatilgan xabarlar sonini **isbotlamaydi**.
+- Code facts (2026-11-21 `main` baseline, yangidan audit talab qilinadi): `app/services/motivation_reminder_service.py` dagi study/streak/rating triggerlar Telegram bilan bog‘liqlik, bot holati, `notifications_enabled`, kunlik/timezone shartlari, template enabled, oldingi send/dedupe va Smart routing'ga bog‘liq. `_send()` avval Telegram'ga yuboradi, **muvaffaqiyatli yuborilgandan keyin** `CourseNotificationService.record()` chaqiradi. `app/services/course_reminder_service.py` dagi `lesson_time` oqimi ham Telegram send'dan keyin yoziladi. `app/services/course_notification_service.py` course notice'dan PWA outbox'ga yozadi; `app/services/learner_pwa_push.py` esa subscription/session/eligibility, payload rendering va provider status'ni tekshiradi. `app/services/smart_reminder_pwa.py` Smart study uchun **alohida** consent/destination oqimidir. **Telegram-first kod tartibi tasdiqlangan, ammo u aynan foydalanuvchining yo‘qolgan xabarlariga sabab ekani isbotlanmagan.**
+- Required proof BEFORE any fix:
+  1. Hozirgi `main`, biznes talab, mavjud testlar va barcha lesson/streak/rating yuborish yo‘llarini qayta o‘qing. PWA study push'i Telegram'dan mustaqil ishlashi shartligi yoki hozirgi cheklov ongli siyosat ekanini aniqlang; tasavvurga asoslanib mustaqil fanout qo‘shmang.
+  2. Faqat read-only, vakolatli production query/loglarda payment push'i kelgan **aniq device/subscription + user** uchun faol PWA session, push consent, `notifications_enabled`, Telegram link/block, timezone, streak/goal/rank, template toggle, Smart hold/channel preference va trigger vaqtlarini tekshiring. Public repo, issue va loglarda user ID, endpoint, message payload, secret yoki shaxsiy ma'lumotni tarqatmang.
+  3. Yo‘qolgan deb hisoblangan **aniq eligible event** bo‘yicha scheduler decision → `course_user_notifications` → `learner_pwa_push_outbox` (source/key, pending/retry/cancelled/accepted/dead, HTTP status) → Apple provider → iOS display zanjirini dalil bilan ajrating. Voqea umuman shartlarga tushmaganmi, Telegram send to‘xtatganmi, enqueue bo‘lmaganmi, yoki Apple qabul qilgandan so‘ng telefonda ko‘rinmaganmi — alohida tasdiqlang.
+  4. **Fix gate: tasdiqlangan product contract + aniq root cause + avval yiqiladigan reproduksiya/regression test** bo‘lmasa **KODGA TEGMANG**. Faqat noto‘g‘ri ishlash isbotlansa minimal o‘zgarish qiling. Qoida bo‘yicha xabar yuborilmasligi to‘g‘ri bo‘lsa, no-fix xulosasi va dalilni yozing.
+- Risks / acceptance: Telegram, Android, payment/status push, Smart one-per-day ownership, Free/Trial/Pro, consent, local-day/timezone, dedupe, blocked/revoked device, multiple account/session va no-spam saqlansin; userga asoslanmagan notification jo‘natilmasin. Fix kerak bo‘lsa failing→passing targeted tests, worker/transport regression, CI hamda `Analytics Impact` / `Monitoring Impact` bahosi bo‘lsin. 201 provider acceptance iPhone'da real display bo‘lganini anglatmaydi. Egasining aniq keyingi ruxsatisiz implementatsiyani boshlamang.
+- Implementation: Faqat keyingi tekshiruv uchun yozildi; kod, production flag, database va deploy o‘zgartirilmagan. Root cause **unproven**.
+
+
 <!-- Yozuv namunasi (vazifa emas):
 
 ### NXT-XXX — Qisqa nom
