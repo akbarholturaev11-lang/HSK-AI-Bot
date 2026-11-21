@@ -108,7 +108,7 @@ if (typeof window !== "undefined") {
     "timeQ": "Сколько минут в день у вас есть?",
     "timeSub": "От этого зависит длина плана на день.",
     "trialDone": "7-дневный пробный период начался! За <em>2 дня</em> до его окончания мы пришлём напоминание.",
-    "trialOffer.activated": "7 дней бесплатно активированы",
+    "trialOffer.activated": "7 бесплатных дней активированы",
     "trialOffer.begin": "Начинаем 🔥",
     "trialOffer.daily": "Ваш ритм — {minutes} минут в день.",
     "trialOffer.start": "Получить за 0.00$",

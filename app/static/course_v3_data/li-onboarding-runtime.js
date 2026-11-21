@@ -878,7 +878,8 @@ global.render=function(animate){
     var welcome=document.querySelector(".li-pro-welcome h1");
     if(welcome)welcome.remove();
     var brand=document.createElement("h1");brand.className="li-trial-brand";
-    brand.innerHTML="HSK AI <strong>PRO</strong>";document.getElementById("stage").prepend(brand);
+    brand.innerHTML="HSK AI <strong>PRO</strong>";
+    var brandTop=document.getElementById("top");brandTop.hidden=false;brandTop.prepend(brand);
     if(global.screen==="trialIntro"){
       var first=document.querySelector("#footer .cta");if(first)first.textContent=word("trialOffer.start");
     }
