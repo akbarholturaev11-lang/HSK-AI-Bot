@@ -1,6 +1,4 @@
 {
-  "schema_version": 1,
-  "namespace": "li_onboarding",
   "locale": "uz",
   "messages": {
     "FOCUS.grammar.hd": "Grammatika",
@@ -69,6 +67,7 @@
     "copy.askGoal": "Xitoy tili sizga nima uchun kerak?",
     "copy.askVersion": "Qaysi HSK versiyasi orqali boshlamoqchisiz?",
     "copy.back": "Orqaga",
+    "copy.buyPro": "HSK AI Pro olish",
     "copy.close": "Yopish",
     "copy.cont": "Davom etish",
     "copy.createAccount": "Hisob ochish",
@@ -171,6 +170,13 @@
     "proGoal.travel.subtitle": "AI bilan safarga oid oddiy suhbatlarni mashq qiling.",
     "proGoal.travel.title": "Safarda xitoycha muloqot qiling",
     "proGoal.work_china.subtitle": "Ishdagi oddiy suhbatlar va muhim so‘zlarni mashq qiling.",
-    "proGoal.work_china.title": "Ish uchun xitoychangizni rivojlantiring"
-  }
+    "proGoal.work_china.title": "Ish uchun xitoychangizni rivojlantiring",
+    "trialOffer.activated": "7 kunlik bepul foydalanish faollashtirildi",
+    "trialOffer.begin": "Boshlaymiz 🔥",
+    "trialOffer.daily": "Sizning sur’atingiz — kuniga {minutes} daqiqa.",
+    "trialOffer.start": "0.00$ ga olish",
+    "trialOffer.streak": "Seriya maqsadingiz — ketma-ket {days} kun."
+  },
+  "namespace": "li_onboarding",
+  "schema_version": 1
 }

@@ -4,8 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <script src="/assets/telegram-web-app.js?v=20261019-1"></script>
-  <script src="/course_v3_data/hsk-course-i18n.js?v=20261113-642a79197e7f"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-a0dd8c0b1db1"></script>
+  <script src="/course_v3_data/hsk-course-i18n.js?v=20261113-efe520888dad"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-a0dd8c0b1db1"></script>
   <meta name="theme-color" content="#FDF9F0">
+  <script>
+  /* Load existing Chinese-audio cache client only in the PWA presentation. */
+  if (location.pathname === "/iphone-pwa/phrases") {
+    ["/audio/words/index.js?v=20261014-offline-1",
+     "/audio/words/client.js?v=20261014-persist-1"].forEach(function (src) {
+      var el = document.createElement("script");
+      el.src = src;
+      el.async = false;
+      document.head.appendChild(el);
+    });
+  }
+</script>
   <title>Tayyor gaplar · HSK AI</title>
   <link rel="stylesheet" href="/course_v3_data/design-tokens.css?v=20261005-section-title">
   <style>
@@ -73,7 +85,222 @@
     [hidden] { display: none !important; }
     @media (min-width: 600px) { .page { padding-right: 24px; padding-left: 24px; } .list { gap: 11px; } }
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; } }
+
+/* Recovered from pro45 5cdb0cbc; only this screen's prepared rules are included. */
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] :is(button,input):focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] :is(.phrase-toggle,.phrase-play,.save,.copy,.chip):active {
+  background: var(--accent-soft);
+}
+/* Ready phrases: retain search, save, audio and real PWA route. */
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .page {
+  width: min(100%, 480px);
+  padding-inline: 16px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase {
+  background: var(--hsk-card-surface);
+  border-color: var(--hsk-divider);
+  border-radius: var(--hsk-radius-medium, 12px);
+  padding: 14px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .hanzi {
+  font-size: 26px;
+  line-height: 1.38;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .pinyin,
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .translation {
+  line-height: 1.48;
+  overflow-wrap: anywhere;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] :is(.back,.save,.copy,.chip) {
+  min-width: 44px;
+  min-height: 44px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .count {
+  font-size: 12px;
+  line-height: 1.45;
+  letter-spacing: 0;
+  min-height: calc(1em * 1.45 + 13px);
+}
+
+/* UIUX-004: actual phrase browse interaction; one disclosure, two micro-actions. */
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-top {
+  align-items: center;
+  gap: 8px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  text-align: start;
+  min-width: 0;
+  min-height: 48px;
+  flex: 1 1 auto;
+  border: 0;
+  background: transparent;
+  color: var(--hsk-ink);
+  padding: 0;
+  cursor: pointer;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-toggle .hanzi {
+  display: block;
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-chevron {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  color: var(--hsk-ink-secondary);
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-chevron svg {
+  width: 18px;
+  height: 18px;
+  transition: transform .18s ease;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-toggle[aria-expanded="true"] .phrase-chevron svg {
+  transform: rotate(180deg);
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .search-icon {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .search-icon svg,
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] :is(.phrase-play,.phrase-details .copy) svg {
+  width: 100%;
+  height: 100%;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] :is(.phrase-play,.phrase-details .copy) svg {
+  width: 22px;
+  height: 22px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-actions {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 2px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] :is(.phrase-play,.phrase-actions .save) {
+  display: grid;
+  place-items: center;
+  min-width: 44px;
+  min-height: 44px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 12px;
+  font-size: 21px;
+  color: var(--hsk-ink-secondary);
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-play[aria-pressed="true"] {
+  color: var(--hsk-cinnabar-ink);
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-actions .save[aria-pressed="true"] {
+  color: var(--hsk-gold-ink);
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-play[aria-busy="true"] {
+  opacity: .72;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-details {
+  padding-top: 8px;
+  border-top: 1px solid var(--hsk-divider);
+  margin-top: 10px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-details[hidden] {
+  display: none !important;
+}
+/* The revealed pronunciation and meaning are teaching content, not tiny metadata. */
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-details .pinyin {
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 600;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-details .translation {
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 400;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-details .category {
+  font-size: 12px;
+}
+/* UIUX-004/009: copy is an icon action (label stays in aria-label), no outline plate. */
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-details .copy {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  min-height: 44px;
+  padding: 0;
+  margin-right: -10px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--hsk-ink-secondary);
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase.is-open {
+  border-color: var(--hsk-cinnabar);
+}
+/* Narrow phones keep the 44 CSS px target; only the gap tightens. */
+@media (max-width: 350px) {
+  html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-actions {
+    gap: 0;
+  }
+}
+
+/* A first-viewport loading composition matches the closed phrase list anatomy.
+   Four fixed rows, no random bar sizes, no simulated learner records. */
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-skeleton {
+  min-height: 78px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-skeleton-text {
+  display: block;
+  flex: 1 1 auto;
+  max-width: 55%;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--hsk-divider);
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-skeleton-actions {
+  display: block;
+  flex: 0 0 94px;
+  height: 28px;
+  border-radius: 10px;
+  background: linear-gradient(90deg,
+    var(--hsk-divider) 0, var(--hsk-divider) 43%,
+    transparent 43%, transparent 54%,
+    var(--hsk-divider) 54%, var(--hsk-divider) 100%);
+  opacity: .8;
+}
+html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-skeleton:nth-child(even) .phrase-skeleton-text {
+  max-width: 42%;
+}
+@media(prefers-reduced-motion:reduce) {
+  html.hsk-pwa-browser[data-hsk-design-screen="phrases"] .phrase-skeleton * {
+    animation: none !important;
+  }
+}
+
   </style>
+<script data-hsk-p45-recovered="phrases">
+if (location.pathname === "/iphone-pwa/phrases") {
+  document.documentElement.classList.add("hsk-pwa-browser");
+  document.documentElement.dataset.hskDesignScreen = "phrases";
+}
+</script>
 </head>
 <body>
   <main class="page">
@@ -115,6 +342,12 @@
         if(typeof value==="string"&&value)UI[LANGUAGE][key]=value;
       });
       var text = UI[LANGUAGE];
+      /* Phrase card action labels come from the canonical readyPhrases.* catalog. */
+      var phraseActions = {};
+      Object.entries({'open': 'expand', 'close': 'collapse', 'listen': 'listen', 'soundError': 'soundError'}).forEach(function (pair) {
+        var value = PHRASE_UI["readyPhrases." + pair[1]];
+        phraseActions[pair[0]] = typeof value === "string" && value ? value : "";
+      });
       var theme = new URLSearchParams(location.search).get("theme");
       if (theme === "dark") {
         document.documentElement.dataset.hskTheme = "dark";
@@ -134,7 +367,25 @@
       var catalog = null;
       var currentFilter = "all";
       var savedIds = readSavedIds();
+      var expandedPhraseId = null;
+      var phraseAudio = null;
+      var phraseAudioToken = 0;
+      var phraseAudioId = null, phraseAudioState = "idle", phraseSpeech = null, phraseAudioTimer = 0;
       var toastTimer = 0;
+      /* Same 24px line-icon vocabulary as the PWA dictionary (stroke, round
+         caps) instead of emoji/text glyphs; PWA path only. */
+      var PWA_PHRASES = location.pathname === "/iphone-pwa/phrases" && Object.values(phraseActions).every(Boolean);
+      var LINE_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">';
+      var PHRASE_ICONS = {
+        speaker: LINE_ICON + '<path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4 4 0 0 1 0 6"/><path d="M18 6.5a7.5 7.5 0 0 1 0 11"/></svg>',
+        chevron: LINE_ICON + '<path d="m6 9 6 6 6-6"/></svg>',
+        copy: LINE_ICON + '<rect x="8.5" y="8.5" width="11" height="11" rx="2.2"/><path d="M15.5 8.5V6.7a2.2 2.2 0 0 0-2.2-2.2H6.7a2.2 2.2 0 0 0-2.2 2.2v6.6a2.2 2.2 0 0 0 2.2 2.2h1.8"/></svg>',
+        search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true" focusable="false"><circle cx="10.8" cy="10.8" r="6.3"></circle><path d="m16 16 4.5 4.5"></path></svg>'
+      };
+      if (PWA_PHRASES) {
+        var searchIcon = document.querySelector(".search-icon");
+        if (searchIcon) searchIcon.innerHTML = PHRASE_ICONS.search;
+      }
 
       // Keep the page named for assistive technologies without a redundant visible hero.
       document.title = text.title + " · HSK AI";
@@ -228,7 +479,90 @@
         });
       }
 
-      function createPhraseCard(phrase, category) {
+      /* UIUX-004: one expanded browse phrase at a time; save/audio never
+         change the expansion state. Existing local phrase persistence remains
+         unchanged; this is a presentation change, not account sync. */
+      function setPhraseExpanded(card, expanded) {
+        var detail = card.querySelector(".phrase-details");
+        var toggle = card.querySelector(".phrase-toggle");
+        if (!detail || !toggle) return;
+        detail.hidden = !expanded;
+        toggle.setAttribute("aria-expanded", String(expanded));
+        toggle.setAttribute("aria-label", (expanded ? phraseActions.close : phraseActions.open) + ": " + card.dataset.phraseZh);
+        card.classList.toggle("is-open", expanded);
+      }
+
+      function togglePhrase(phraseId) {
+        expandedPhraseId = expandedPhraseId === phraseId ? null : phraseId;
+        elements.list.querySelectorAll(".phrase").forEach(function (card) {
+          setPhraseExpanded(card, card.dataset.phraseId === expandedPhraseId);
+        });
+      }
+
+      function syncPhraseAudioButtons() {
+        elements.list.querySelectorAll('.phrase-play').forEach(function (button) {
+          var current = button.closest('.phrase').dataset.phraseId === phraseAudioId;
+          button.disabled = current && phraseAudioState === 'loading';
+          button.setAttribute('aria-pressed', String(current && phraseAudioState === 'playing'));
+          if (button.disabled) button.setAttribute('aria-busy', 'true');
+          else button.removeAttribute('aria-busy');
+        });
+      }
+
+      function stopPhraseAudio() {
+        ++phraseAudioToken;
+        clearTimeout(phraseAudioTimer);
+        try { if (phraseAudio) { phraseAudio.onended = null; phraseAudio.onerror = null; phraseAudio.pause(); } } catch (_) {}
+        try { if (phraseSpeech && window.speechSynthesis) window.speechSynthesis.cancel(); } catch (_) {}
+        phraseAudio = null; phraseSpeech = null; phraseAudioId = null; phraseAudioState = 'idle';
+        syncPhraseAudioButtons();
+      }
+
+      function playPhrase(phrase) {
+        if (phraseAudioId === phrase.id) { stopPhraseAudio(); return; }
+        stopPhraseAudio();
+        var token = phraseAudioToken, fallbackStarted = false;
+        phraseAudioId = phrase.id; phraseAudioState = 'loading';
+        syncPhraseAudioButtons();
+        function reset() { if (token === phraseAudioToken) stopPhraseAudio(); }
+        function failed() {
+          if (token !== phraseAudioToken) return;
+          stopPhraseAudio(); announce(phraseActions.soundError);
+        }
+        function started() {
+          if (token !== phraseAudioToken) return;
+          clearTimeout(phraseAudioTimer); phraseAudioState = 'playing'; syncPhraseAudioButtons();
+        }
+        function fallbackSpeech() {
+          if (token !== phraseAudioToken || fallbackStarted) return;
+          fallbackStarted = true;
+          clearTimeout(phraseAudioTimer);
+          try {
+            if (phraseAudio) { phraseAudio.onended = null; phraseAudio.onerror = null; phraseAudio.pause(); phraseAudio = null; }
+            if (!window.speechSynthesis || !window.SpeechSynthesisUtterance) { failed(); return; }
+            var utterance = new SpeechSynthesisUtterance(phrase.zh);
+            phraseSpeech = utterance; utterance.lang = 'zh-CN'; utterance.rate = .9;
+            utterance.onstart = started; utterance.onend = reset; utterance.onerror = failed;
+            phraseAudioTimer = setTimeout(failed, 10000);
+            window.speechSynthesis.speak(utterance);
+          } catch (_) { failed(); }
+        }
+        phraseAudioTimer = setTimeout(fallbackSpeech, 10000);
+        try {
+          var src = (window.HSKOfflineAudio &&
+            (window.HSKOfflineAudio.cachedUrl(phrase.zh) || window.HSKOfflineAudio.url(phrase.zh))) ||
+            ('/api/v3/tts?text=' + encodeURIComponent(phrase.zh));
+          var audio = new Audio(src); phraseAudio = audio;
+          audio.onended = reset; audio.onerror = fallbackSpeech;
+          audio.play().then(function () {
+            if (token !== phraseAudioToken || fallbackStarted) return;
+            started();
+            if (window.HSKOfflineAudio && window.HSKOfflineAudio.rememberPlayed) window.HSKOfflineAudio.rememberPlayed(phrase.zh, src);
+          }).catch(fallbackSpeech);
+        } catch (_) { fallbackSpeech(); }
+      }
+
+      function createLegacyPhraseCard(phrase, category) {
         var card = document.createElement("article");
         card.className = "phrase";
         var top = document.createElement("div");
@@ -271,6 +605,83 @@
         return card;
       }
 
+      function createPhraseCard(phrase, category) {
+        /* Mini App retains its exact original browse UI and interactions. */
+        if (!PWA_PHRASES) return createLegacyPhraseCard(phrase, category);
+        var card = document.createElement("article");
+        card.className = "phrase";
+        card.dataset.phraseId = phrase.id;
+        card.dataset.phraseZh = phrase.zh;
+
+        var top = document.createElement("div");
+        top.className = "phrase-top";
+        var toggle = makeButton("phrase-toggle", "", function () { togglePhrase(phrase.id); });
+        var hanzi = document.createElement("span");
+        hanzi.className = "hanzi";
+        hanzi.lang = "zh";
+        hanzi.textContent = phrase.zh;
+        var chevron = document.createElement("span");
+        chevron.className = "phrase-chevron";
+        chevron.setAttribute("aria-hidden", "true");
+        chevron.innerHTML = PHRASE_ICONS.chevron;
+        toggle.append(hanzi, chevron);
+        var details = document.createElement("div");
+        details.className = "phrase-details";
+        details.id = "phrase-details-" + String(phrase.id).replace(/[^a-z0-9_-]/gi, "-");
+        toggle.setAttribute("aria-controls", details.id);
+
+        var actions = document.createElement("div");
+        actions.className = "phrase-actions";
+        var play = makeButton("phrase-play", "", function () { playPhrase(phrase); });
+        play.innerHTML = PHRASE_ICONS.speaker;
+        play.setAttribute("aria-label", phraseActions.listen + ": " + phrase.zh);
+        var isSaved = savedIds.has(phrase.id);
+        var save = makeButton("save", isSaved ? "★" : "☆", function () {
+          var wasSaved = savedIds.has(phrase.id);
+          if (wasSaved) savedIds.delete(phrase.id); else savedIds.add(phrase.id);
+          if (!persistSavedIds()) {
+            if (wasSaved) savedIds.add(phrase.id); else savedIds.delete(phrase.id);
+            return;
+          }
+          announce(wasSaved ? text.removed : text.savedOne);
+          renderPhrases();
+          var same = Array.from(elements.list.querySelectorAll('.phrase')).find(function (entry) { return entry.dataset.phraseId === phrase.id; });
+          var focus = same ? same.querySelector('.save') : elements.filters.querySelector('[aria-pressed="true"]');
+          if (focus) focus.focus({preventScroll: true});
+        });
+        save.setAttribute("aria-label", isSaved ? text.savedOne : text.save);
+        save.setAttribute("aria-pressed", String(isSaved));
+        actions.append(play, save);
+        top.append(toggle, actions);
+
+        var pinyin = document.createElement("p");
+        pinyin.className = "pinyin";
+        pinyin.textContent = phrase.pinyin;
+        var translation = document.createElement("p");
+        translation.className = "translation";
+        translation.textContent = phrase.translations[LANGUAGE];
+        var bottom = document.createElement("div");
+        bottom.className = "phrase-bottom";
+        var categoryLabel = document.createElement("span");
+        categoryLabel.className = "category";
+        categoryLabel.textContent = category.labels[LANGUAGE];
+        var copy = makeButton("copy", text.copy, function () {
+          copyText(phrase.zh).then(function () { announce(text.copied); }).catch(function () { announce(text.copy); });
+        });
+        copy.innerHTML = PHRASE_ICONS.copy;
+        bottom.append(categoryLabel, copy);
+        details.append(pinyin, translation, bottom);
+        card.append(top, details);
+        setPhraseExpanded(card, phrase.id === expandedPhraseId);
+
+        /* The empty area of a browse card toggles it; explicit buttons do not. */
+        card.addEventListener("click", function (event) {
+          if (event.target.closest("button")) return;
+          togglePhrase(phrase.id);
+        });
+        return card;
+      }
+
       function renderPhrases() {
         var query = queryTerms(elements.query.value);
         var visible = catalog.phrases.map(function (phrase, position) {
@@ -292,6 +703,10 @@
           var category = catalog.categories.find(function (entry) { return entry.id === item.phrase.category_id; });
           if (category) elements.list.appendChild(createPhraseCard(item.phrase, category));
         });
+        if (PWA_PHRASES) {
+          var retained = Array.from(elements.list.querySelectorAll('.phrase')).some(function (card) { return card.dataset.phraseId === phraseAudioId; });
+          if (phraseAudioId && !retained) stopPhraseAudio(); else syncPhraseAudioButtons();
+        }
       }
 
       function copyText(value) {
@@ -312,6 +727,7 @@
       }
 
       function goBack() {
+        if (PWA_PHRASES) stopPhraseAudio();
         if (new URLSearchParams(location.search).get("embedded") === "1" && window.parent !== window && window.parent.RESOURCE) {
           window.parent.RESOURCE.close(); return;
         }
@@ -383,21 +799,52 @@
           if (webApp && webApp.BackButton) webApp.BackButton.show();
         } catch (_) {}
       });
+      if (PWA_PHRASES) {
+        window.HSKResourcePause = stopPhraseAudio;
+        window.addEventListener("pagehide", stopPhraseAudio);
+        document.addEventListener("visibilitychange", function () { if (document.visibilityState === "hidden") stopPhraseAudio(); });
+      }
       document.addEventListener("visibilitychange", function () {
         if (new URLSearchParams(location.search).get("embedded") !== "1" && document.visibilityState === "visible") syncPhraseTelegramChrome();
       });
 
+      function showPwaPhraseSkeleton() {
+        if (!PWA_PHRASES) return;
+        elements.list.replaceChildren();
+        elements.count.textContent = "\u00a0";
+        elements.filters.replaceChildren();
+        createFilter("all", text.all); createFilter("saved", text.saved);
+        elements.filters.querySelectorAll("button").forEach(function (button) { button.disabled = true; });
+        elements.list.setAttribute("aria-busy", "true");
+        for (var k = 0; k < 4; ++k) {
+          var row = document.createElement("article");
+          row.className = "phrase phrase-skeleton";
+          row.setAttribute("aria-hidden", "true");
+          var line = document.createElement("span");
+          line.className = "phrase-skeleton-text";
+          var actions = document.createElement("span");
+          actions.className = "phrase-skeleton-actions";
+          row.append(line, actions);
+          elements.list.appendChild(row);
+        }
+      }
+
       function loadCatalog() {
         elements.error.hidden = true;
+        showPwaPhraseSkeleton();
         fetch("/course_v3_data/ready-phrases-v1.json", { cache: "force-cache" })
           .then(function (response) { if (!response.ok) throw new Error("phrasebook unavailable"); return response.json(); })
           .then(function (data) {
             if (!data || !Array.isArray(data.categories) || !Array.isArray(data.phrases)) throw new Error("phrasebook has invalid data");
             catalog = data;
+            elements.list.removeAttribute("aria-busy");
             renderFilters();
             renderPhrases();
           })
           .catch(function () {
+            elements.list.removeAttribute("aria-busy");
+            elements.list.replaceChildren();
+            elements.count.textContent = "";
             elements.error.replaceChildren();
             var message = document.createElement("p");
             message.textContent = text.loadError;

@@ -133,6 +133,7 @@ class DesktopCourseService:
     # dedupe key with a desktop one and never lands in the desktop funnel.
     # Every other rule — access policy, XP, mistakes, idempotency — is shared.
     CLIENT_NAMESPACE = "desktop"
+    _INCLUDE_LEARNING_RESULT = False
 
     def __init__(self, session, settings_obj, bot=None):
         self.session = session
@@ -761,8 +762,9 @@ class DesktopCourseService:
                 )
             except CourseLessonMistakeMaterialError:
                 canonical_mistakes = []
+        recorded_mistakes = 0
         if canonical_mistakes:
-            await CourseMistakeService(self.session).record_items(
+            recorded_mistakes = await CourseMistakeService(self.session).record_items(
                 user,
                 canonical_mistakes,
                 source="lesson",
@@ -796,6 +798,14 @@ class DesktopCourseService:
                 "desktop_course_save_failed",
                 status_code=503,
             )
+        if self._INCLUDE_LEARNING_RESULT and lesson_order == 1:
+            # This response-only block stays outside analytics and replay data.
+            completion_result = {
+                **completion_result,
+                "learning_result": CourseLessonMistakeMaterialService.learning_result(
+                    canonical_mistakes, recorded=recorded_mistakes,
+                ),
+            }
         return completion_result
 
     async def unlock_lesson(

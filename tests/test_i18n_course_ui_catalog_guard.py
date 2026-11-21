@@ -13,9 +13,9 @@ class CourseUICatalogGuardTests(unittest.TestCase):
     def test_existing_three_locale_1019_key_contract(self):
         result = review_sources(ROOT)
         self.assertEqual(result["status"], "SOURCE_CONTRACT_VALID_RUNTIME_NOT_TESTED")
-        self.assertEqual(result["message_keys"], 1112)
+        self.assertEqual(result["message_keys"], 1154)
         self.assertEqual(result["locales"], list(LOCALES))
-        self.assertEqual(result["placeholder_keys"], 45)
+        self.assertEqual(result["placeholder_keys"], 46)
         self.assertEqual(len(result["sources"]), 3)
         for locale in LOCALES:
             source = json.loads(
@@ -47,7 +47,7 @@ class CourseUICatalogGuardTests(unittest.TestCase):
                 "dictionaryPage.strokeCount.one", "dictionaryPage.strokeCount.few",
                 "dictionaryPage.strokeCount.many",
                 "track.permanent", "track.promoUnlock", "rating.leagueName",
-                "pwaFeedback.title",
+                "pwaFeedback.title", "pwaProgress.left",
             })
         self.assertNotIn("HSK AI Pro открыт", str(result))
 

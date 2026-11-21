@@ -1436,15 +1436,39 @@ class AndroidCourseApiTests(unittest.IsolatedAsyncioTestCase):
         )
         self.assertEqual(422, bad.status_code)
 
+    async def test_first_part_result_has_no_review_for_forged_evidence(self):
+        headers = await self._bearer()
+        path = "/api/v3/android/course/complete"
+        body = {
+            "lesson_order": 1,
+            "event_id": "android:verified-first-part",
+            "mistakes": [
+                {"material_ref": "lesson:hsk1:2:section:1:card:3", "selected_index": 0},
+                {"material_ref": "lesson:hsk1:1:section:1:card:3", "selected_index": 2},
+            ],
+        }
+        first = await self.client.post(path, headers=headers, json=body)
+        self.assertEqual(200, first.status_code, first.text)
+        self.assertEqual({"review": None}, first.json()["learning_result"])
+        async with self.sessions() as session:
+            self.assertIsNone(await session.scalar(select(CourseMistake)))
+
     async def test_duplicate_completion_over_http_returns_the_stored_result(self):
         headers = await self._bearer()
-        body = {"lesson_order": 1, "event_id": "android:" + "b" * 32}
+        body = {
+            "lesson_order": 1,
+            "event_id": "android:" + "b" * 32,
+            "mistakes": [{"material_ref": "lesson:hsk1:1:section:1:card:3", "selected_index": 0}],
+        }
         first = await self.client.post(
             "/api/v3/android/course/complete",
             headers=headers,
             json=body,
         )
-        self.assertEqual(200, first.status_code)
+        self.assertEqual(200, first.status_code, first.text)
+        self.assertEqual(first.json()["learning_result"], {
+            "review": {"prompt": "你 so'zining ma'nosini tanlang:", "correction": "sen (birlik)"},
+        })
         retry = await self.client.post(
             "/api/v3/android/course/complete",
             headers=headers,
@@ -1452,6 +1476,16 @@ class AndroidCourseApiTests(unittest.IsolatedAsyncioTestCase):
         )
         self.assertEqual(200, retry.status_code)
         self.assertTrue(retry.json()["duplicate"])
+        self.assertNotIn("learning_result", retry.json())
+        async with self.sessions() as session:
+            event = (await session.execute(select(CourseMiniAppEvent).where(
+                CourseMiniAppEvent.event_name == "lesson_completed",
+            ))).scalar_one()
+            replay = json.loads(event.payload_json)["result"]
+            self.assertNotIn("learning_result", replay)
+            self.assertNotIn("sen (birlik)", event.payload_json)
+            mistake = (await session.execute(select(CourseMistake))).scalar_one()
+            self.assertEqual(1, mistake.wrong_count)
         self.assertEqual(
             first.json()["completed_lessons_count"],
             retry.json()["completed_lessons_count"],

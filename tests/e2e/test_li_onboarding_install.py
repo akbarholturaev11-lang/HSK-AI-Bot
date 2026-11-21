@@ -28,7 +28,7 @@ COURSE_TAG = (
     "data-css='/course_v3_data/li-onboarding-install.css?v=t'></script>"
 )
 COURSE_HTML = (
-    "<!doctype html><html lang='ru'><head><meta name='viewport' content='width=device-width'></head>"
+    "<!doctype html><html lang='ru'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width'></head>"
     "<body><main id='course'>Course map</main><script>"
     "var LANG='uz';var NavBack={BLOCK:['#paywall.on']};window.__actor=0;window.__flushed=0;"
     "function pwaCourseActor(){window.__actor++;"
@@ -55,9 +55,9 @@ def _prepare(browser, *, ios=True, installed=False, has_video=False, context=Non
             "Object.defineProperty(navigator,'standalone',{get:()=>true});"
         )
     page.route("**/course_v3_data/hsk-li-onboarding-i18n.js*", lambda route: route.fulfill(
-        body=CAT, content_type="application/javascript"))
+        body=CAT, content_type="application/javascript; charset=utf-8"))
     page.route("**/course_v3_data/li-onboarding-install.js*", lambda route: route.fulfill(
-        body=JS, content_type="application/javascript"))
+        body=JS, content_type="application/javascript; charset=utf-8"))
     page.route("**/course_v3_data/li-onboarding-install.css*", lambda route: route.fulfill(
         body=CSS, content_type="text/css"))
     def video_response(route):
@@ -94,7 +94,7 @@ def _prepare(browser, *, ios=True, installed=False, has_video=False, context=Non
         content_type="image/jpeg"))
     if html is None:
         html = (
-            "<!doctype html><html lang='uz'><head><meta name='viewport' content='width=device-width'>"
+            "<!doctype html><html lang='uz'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width'>"
             "<style>" + CSS + "</style></head>"
             "<body><main>Authenticated onboarding complete</main>"
             "<script src='/course_v3_data/hsk-li-onboarding-i18n.js'></script>"

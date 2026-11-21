@@ -979,7 +979,7 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn('return {"ok": False, "error": "android_apk_send_failed"}', main)
 
         # The carousel owns only presentation, not subscriptions or saved progress.
-        self.assertIn('var ORDER=["apps","hsk30","pro"]', carousel)
+        self.assertIn('var ORDER=pwa?["pro","hsk30"]:["apps","hsk30","pro"]', carousel)
         self.assertIn('TRIAL_LOADED&&trialEligible()', carousel)
         self.assertIn('App.startTrial("profile")', carousel)
         self.assertIn('App.goPay(', carousel)

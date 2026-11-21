@@ -135,6 +135,29 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         await self.client.aclose()
         await self.engine.dispose()
 
+    async def test_trial_only_li_embed_requires_actor_and_keeps_guest_frame_prohibition(self):
+        route = "/iphone-pwa/onboarding/li"
+        anonymous = await self.client.get(route + "?offer=trial&embedded=1")
+        self.assertEqual(anonymous.status_code, 401, anonymous.text)
+        public = await self.client.get(route + "?embedded=1")
+        self.assertEqual(public.headers["x-frame-options"], "DENY")
+        self.assertIn("frame-ancestors 'none'", public.headers["content-security-policy"])
+        await self.callback(await self.begin())
+        for query in ("?offer=trial&offer=trial&embedded=1", "?offer=other&embedded=1"):
+            response = await self.client.get(route + query)
+            self.assertEqual(response.status_code, 422, response.text)
+        embedded = await self.client.get(route + "?offer=trial&embedded=1")
+        self.assertEqual(embedded.status_code, 200, embedded.text[:100])
+        self.assertEqual(embedded.headers["x-frame-options"], "SAMEORIGIN")
+        self.assertIn("frame-ancestors 'self'", embedded.headers["content-security-policy"])
+        self.assertIn("default-src 'self'", embedded.headers["content-security-policy"])
+        self.assertEqual(embedded.headers["cache-control"], "no-store")
+        self.assertNotIn("Existing learner", embedded.text)
+        duplicate = await self.client.get(route + "?offer=trial&embedded=1&embedded=1")
+        self.assertEqual(duplicate.headers["x-frame-options"], "DENY")
+        status = await self.client.get("/api/v3/pwa/onboarding/status")
+        self.assertEqual(status.headers["x-hsk-pwa-user-id"], "1")
+
     async def test_public_li_shell_contains_no_private_user_or_course_access(self):
         route = "/iphone-pwa/onboarding/li"
         anonymous = await self.client.get(route, follow_redirects=False)
@@ -210,6 +233,7 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             response = await self.client.get(path)
             self.assertEqual(response.status_code, 200, response.text)
             self.assertTrue(response.json()["trial"]["eligible"])
+            self.assertEqual(response.headers["x-hsk-pwa-user-id"], "1")
             self.assertEqual(eligibility.await_args.args[0].id, 1)
             self.assertEqual(analyze.await_args.kwargs["client"], "iphone_pwa")
             evaluate.return_value = SimpleNamespace(denied=True)
@@ -346,6 +370,61 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(c.status_code,200,c.text)
             self.assertEqual(recorded.await_count,1)
 
+    async def test_inline_learning_pro_uses_canonical_access_and_pending_status(self):
+        await self.callback(await self.begin())
+        session_info = (await self.client.get("/api/v3/pwa-auth/session")).json()
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": session_info["csrf"]}
+        url = "/api/v3/pwa/subscription/overview"
+        request = {
+            "source": "v3_mistake_review", "mode": "subscription", "inline_preview": True,
+        }
+        with patch(
+            "app.services.subscription_miniapp_service.SubscriptionMiniAppService.overview",
+            new=AsyncMock(side_effect=lambda *a, **k: {"ok": True}),
+        ):
+            for overrides in ({"source": "profile"}, {"mode": "exit_discount"}):
+                response = await self.client.post(url, headers=headers, json={**request, **overrides})
+                self.assertEqual(response.status_code, 200)
+                self.assertNotIn("learning_pro_eligible", response.json())
+
+        now = datetime.now(timezone.utc)
+        states = (
+            ("free", {}, False, True),
+            ("expired", {"status": "expired"}, False, True),
+            ("trial", {"pro_trial_ends_at": now + timedelta(days=1)}, False, False),
+            ("paid", {"status": "active", "payment_status": "approved",
+                      "end_date": now + timedelta(days=1)}, False, False),
+            ("temporary", {"status": "active", "end_date": now + timedelta(days=1)}, False, False),
+            ("pending", {}, True, False),
+            ("blocked", {"status": "blocked"}, False, False),
+        )
+        for name, values, pending, expected in states:
+            with self.subTest(name=name):
+                async with self.sessions() as db:
+                    actor = await db.get(User, 1)
+                    actor.status = "free"
+                    actor.payment_status = "none"
+                    actor.end_date = None
+                    actor.pro_trial_ends_at = None
+                    for key, value in values.items():
+                        setattr(actor, key, value)
+                    await db.commit()
+
+                payload = {"ok": True, "pending_payment": {"status": "pending"} if pending else None}
+                with patch(
+                    "app.services.subscription_miniapp_service.SubscriptionMiniAppService.overview",
+                    new=AsyncMock(return_value=payload),
+                ):
+                    response = await self.client.post(url, headers=headers, json=request)
+                if name == "blocked":
+                    self.assertEqual(response.status_code, 401)
+                    self.assertNotIn("learning_pro_eligible", response.json())
+                    continue
+                self.assertEqual(response.status_code, 200)
+                self.assertIs(response.json()["learning_pro_eligible"], expected)
+                self.assertEqual(response.headers["cache-control"], "no-store")
+
+
     async def test_inline_pro_analytics_is_authenticated_and_deduplicated(self):
         path = "/api/v3/pwa/subscription/inline-event"
         event = {
@@ -458,6 +537,56 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             profile = (await db.scalars(select(CourseMiniAppProfile))).one()
             self.assertEqual(profile.user_id, actor["user_id"])
             self.assertEqual(profile.daily_goal_xp, 80)
+
+    async def test_pwa_streak_target_persistence_owner_guards_and_failed_write(self):
+        from app.db.models.course_miniapp_profile import CourseMiniAppProfile
+        from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
+        from sqlalchemy.ext.asyncio import AsyncSession
+
+        path = "/api/v3/pwa/preferences"
+        payload = {"streak_target_days": 14}
+        self.assertEqual((await self.client.post(path, headers={"Origin": ORIGIN}, json=payload)).status_code, 401)
+        await self.callback(await self.begin())
+        actor = (await self.client.get("/api/v3/pwa-auth/session")).json()
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": actor["csrf"]}
+        async with self.sessions() as db:
+            db.add(user(2, None))
+            owner = await CourseMiniAppProfileService(db).get_or_create(actor["user_id"])
+            owner.streak_target_days = 7
+            owner.xp_total = 137
+            owner.current_streak = 3
+            owner.daily_plan_key = "preserved-plan"
+            owner.daily_plan_json = '[]'
+            other = await CourseMiniAppProfileService(db).get_or_create(2)
+            other.streak_target_days = 50
+            await db.commit()
+        for invalid_headers, expected in (
+            ({"Origin": ORIGIN}, 403),
+            ({**headers, "Origin": "https://other.test"}, 403),
+            ({**headers, "X-HSK-PWA-CSRF": "invalid"}, 403),
+            ({**headers, "X-Telegram-Init-Data": "forged"}, 422),
+        ):
+            self.assertEqual((await self.client.post(path, headers=invalid_headers, json=payload)).status_code, expected)
+        for invalid in ({"streak_target_days": 99}, {"streak_target_days": "14"},
+                        {**payload, "user_id": 2}, {**payload, "initData": "forged"}):
+            self.assertEqual((await self.client.post(path, headers=headers, json=invalid)).status_code, 422)
+        for days in (7, 14, 30, 50):
+            response = await self.client.post(path, headers=headers, json={"streak_target_days": days})
+            self.assertEqual(response.status_code, 200, response.text)
+            self.assertEqual(response.headers["cache-control"], "no-store")
+            self.assertEqual(response.json()["profile"]["streak_target_days"], days)
+            # A new DB session exercises the same read serializer used by map.
+            async with self.sessions() as db:
+                owner = await db.get(CourseMiniAppProfile, actor["user_id"])
+                self.assertEqual(CourseMiniAppProfileService.study_setup(owner)["streak_target_days"], days)
+                self.assertEqual((owner.xp_total, owner.current_streak, owner.daily_plan_key), (137, 3, "preserved-plan"))
+                self.assertEqual((await db.get(CourseMiniAppProfile, 2)).streak_target_days, 50)
+        with patch.object(AsyncSession, "commit", new=AsyncMock(side_effect=RuntimeError("isolated write failure"))):
+            failed = await self.client.post(path, headers=headers, json={"streak_target_days": 14})
+        self.assertEqual(failed.status_code, 503, failed.text)
+        self.assertFalse(failed.json()["ok"])
+        async with self.sessions() as db:
+            self.assertEqual((await db.get(CourseMiniAppProfile, actor["user_id"])).streak_target_days, 50)
 
     async def test_li_entry_release_switch_is_disabled_by_default_and_guest_only(self):
         # The release switch changes only the unauthenticated entry URL.
@@ -735,6 +864,79 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             "/api/v3/lesson/start", json=payload,
         )
         self.assertEqual(legacy.status_code, 401, legacy.text)
+
+    async def test_pwa_first_part_learning_result_uses_persisted_canonical_material(self):
+        from app.config import settings as main_settings
+        from app.db.models.course_miniapp_event import CourseMiniAppEvent
+        from app.db.models.course_mistake import CourseMistake
+        from app.services.course_lesson_completion_proof import issue_lesson_completion_proof
+
+        with patch.object(main_settings, "BOT_TOKEN", self.settings.BOT_TOKEN):
+            import app.main as main
+
+        await self.callback(await self.begin())
+        csrf = (await self.client.get("/api/v3/pwa-auth/session")).json()["csrf"]
+        cookie = self.client.cookies.get(PWA_SESSION_COOKIE)
+        app = FastAPI()
+        path = "/api/v3/pwa/lesson/complete"
+        app.add_api_route(path, main.pwa_v3_course_lesson_complete, methods=["POST"])
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf}
+        payload = {
+            "lesson_id": 1,
+            "level": "hsk1",
+            "completion_proof": issue_lesson_completion_proof(
+                user_id=1, level="hsk1", lesson_order=1, secret=self.settings.BOT_TOKEN,
+            ),
+            "mistakes": [
+                {"material_ref": "lesson:hsk1:2:section:1:card:3", "selected_index": 0},
+                {
+                    "material_ref": "lesson:hsk1:1:section:1:card:3",
+                    "selected_index": 0,
+                    "question": "FORGED PROMPT",
+                    "correct_answer": "FORGED ANSWER",
+                },
+            ],
+        }
+        with (
+            patch.object(main, "async_session_maker", self.sessions),
+            patch.object(main, "settings", self.settings),
+            patch("app.services.conversion_funnel_service.async_session_maker", self.sessions),
+            patch("app.services.entitlements.shadow.async_session_maker", self.sessions),
+        ):
+            async with AsyncClient(transport=ASGITransport(app=app), base_url=ORIGIN) as client:
+                denied = await client.post(path, headers=headers, json=payload)
+                self.assertEqual(401, denied.status_code, denied.text)
+                self.assertNotIn("learning_result", denied.json())
+                client.cookies.set(PWA_SESSION_COOKIE, cookie)
+                invalid_csrf = await client.post(path, headers={"Origin": ORIGIN}, json=payload)
+                self.assertEqual(403, invalid_csrf.status_code, invalid_csrf.text)
+                self.assertNotIn("learning_result", invalid_csrf.json())
+                invalid_proof = await client.post(
+                    path, headers=headers, json={**payload, "completion_proof": "invalid"},
+                )
+                self.assertEqual(403, invalid_proof.status_code, invalid_proof.text)
+                self.assertNotIn("learning_result", invalid_proof.json())
+                saved = await client.post(path, headers=headers, json=payload)
+                retry = await client.post(path, headers=headers, json=payload)
+
+        self.assertEqual(200, saved.status_code, saved.text)
+        self.assertEqual("no-store", saved.headers["cache-control"])
+        self.assertEqual(1, saved.json()["completed_lessons_count"])
+        self.assertEqual(saved.json()["learning_result"], {
+            "review": {"prompt": "你 so'zining ma'nosini tanlang:", "correction": "sen (birlik)"},
+        })
+        self.assertEqual(200, retry.status_code, retry.text)
+        self.assertTrue(retry.json()["duplicate"])
+        self.assertNotIn("learning_result", retry.json())
+        async with self.sessions() as session:
+            mistake = (await session.execute(select(CourseMistake))).scalar_one()
+            self.assertEqual(1, mistake.wrong_count)
+            self.assertEqual(1, mistake.user_id)
+            self.assertEqual("sen (birlik)", mistake.correct_answer)
+            event = (await session.execute(select(CourseMiniAppEvent).where(
+                CourseMiniAppEvent.event_name == "lesson_completed",
+            ))).scalar_one()
+            self.assertNotIn("learning_result", json.loads(event.payload_json))
 
     async def test_pwa_lesson_content_uses_exact_miniapp_policy_without_initdata(self):
         path = "/api/v3/pwa/lesson/content/hsk1/1"
@@ -2720,7 +2922,8 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(overview.await_args.kwargs["view"], "targets")
 
         start_url = "/api/v3/pwa/mistakes/review/start"
-        payload = {"ad_supported": False, "access_ref": "pwa-review-1"}
+        formats = json.loads(page.text.split("var SUPPORTED_FORMATS=", 1)[1].split(";", 1)[0])
+        payload = {"ad_supported": False, "access_ref": "pwa-review-1", "formats": formats}
         self.assertEqual((await self.client.post(
             start_url, headers={"Origin": ORIGIN}, json=payload,
         )).status_code, 403)
@@ -2752,6 +2955,16 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(opened.status_code, 200, opened.text)
             self.assertEqual(start.await_args.args[0].id, 1)
             self.assertIs(start.await_args.kwargs["ad_supported"], False)
+            self.assertEqual(start.await_args.kwargs["formats"], formats)
+            excessive = await self.client.post(
+                start_url, headers=headers, json={**payload, "formats": [formats[0]] * 41},
+            )
+            self.assertEqual(excessive.status_code, 422)
+            start.assert_awaited_once()
+            start.return_value = {"ok": False, "error": "free_feature_limit_reached"}
+            limited = await self.client.post(start_url, headers=headers, json=payload)
+            self.assertEqual(limited.status_code, 403)
+            self.assertEqual(limited.json()["error"], "free_feature_limit_reached")
             marked = await self.client.post(
                 "/api/v3/pwa/mistakes/review/answer", headers=headers,
                 json={"session_id": "review-1", "question_id": "q1", "selected_index": 1},

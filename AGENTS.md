@@ -75,7 +75,7 @@ Before implementing **any future** Backend API or learner PWA screen, section or
 **Permanent outcome/requirements source for future planning:** [docs/PERFORMANCE_BACKEND_PWA_GOALS_REQUIREMENTS.md](docs/PERFORMANCE_BACKEND_PWA_GOALS_REQUIREMENTS.md). Read it together with the detailed performance contract before expanding or replacing a performance plan; it defines the goals and non-negotiable requirements, **not** an implementation plan. The current owner-directed performance initiative **includes PWA, Android native and shared Backend together from the outset**. Audit and plan all three in one OpenSpec effort based on the latest main; use smaller testable work packages only when needed, without deferring Android to a separate later project. Older Backend/PWA-only documentation is historical scope, not a current Android prohibition. Follow the active PWA/Android product priority above and the repository OpenSpec skill.
 
 - PWA: verified-session-first safe shell, above-the-fold logo/mascot priority, per-section skeleton/loading/empty/error/retry, progressive updates, stable layout, lazy offscreen assets, and no duplicate in-flight reads. Never block all UI on an unrelated API call.
-- **Permanent layout-first skeleton requirement:** all new or modified learner PWA sections reserve the final visual layout before data arrives (e.g., Rating podium + header + member/countdown row + first leaderboard rows). No generic loading card in place of a complex screen, no large blank gap, no layout jump. Verified data replaces placeholders **in their own slot** with a short opacity fade; reduced-motion disables it. Check on iPhone/WebKit and include stable-geometry assertions in the affected browser test. See the mandatory "Layout-matched skeletons and smooth in-place settlement" section in the linked contract.
+- **PWA loading-geometry performance invariant:** use the final-layout skeleton and per-section settlement requirements in the linked performance contract; the `hsk-ai-ui` skill owns visual anatomy. Keep relevant WebKit/Chromium stable-geometry regression coverage and reduced-motion handling.
 - Backend: before adding a route/query, check N+1, bounded data/pagination, pool/transaction scope, indexes based on plans, timeouts, request concurrency and cache invalidation/owner isolation; use existing infrastructure before Redis/new servers.
 - Protect Trial/Free/Pro, payments, auth, CSRF, lesson progress and shared Mini App/Android contracts. No cached private cross-account content or optimistic entitlements.
 - A Backend/PWA feature is not done without focused regression tests and relevant slow-network/SQL or browser evidence; if an optimization is unnecessary, document evidence rather than adding it.
@@ -509,50 +509,14 @@ UI o‘zgarishini xavfiga qarab tekshir:
 - Aniq so‘ralgan o‘zgarish uchun qayta ruxsat so‘rama; mahsulot xulqi yoki
   scope noaniq bo‘lsa aniqlashtir.
 
-## Skills to use
+## UI/UX — single mandatory design entrypoint
 
-Use these skills when relevant:
-- hsk-ai-ui
-- frontend-design
-- webapp-testing
-- playwright
+**The only repository-level routing rule for UI/UX work:** for **every design task** (planning, auditing, adding or changing a screen, navigation, typography, spacing, components, feedback, states or visual QA), start with [`.agents/skills/hsk-ai-ui/SKILL.md`](.agents/skills/hsk-ai-ui/SKILL.md) and follow its [design reference index](.agents/skills/hsk-ai-ui/references/README.md) and task-relevant guidelines **before** proposing or implementing a visual decision. Do not maintain a second UI style/quiz-presentation rulebook in `AGENTS.md`, `AI_RULES.md`, `CLAUDE.md` or generic project context files. The existing skill, not incidental old screen styling, is the visual/UI/UX source of truth.
 
-## Admin PWA — mandatory minimal-action UX contract
-
-All Admin PWA screens and editors MUST follow [docs/admin-pwa/BROWSER_UI_CONTRACT.md](docs/admin-pwa/BROWSER_UI_CONTRACT.md) whenever adding or modifying UI. **Do not reintroduce redundant buttons, duplicate Cancel/Close actions, secondary Save/Confirm/Passkey prompts, or buttons that repeat an existing X, swipe-back or contextual action.** An edit drawer has one top-right X dismissal, supported right-swipe dismissal and at most one contextual primary action (Save/Send/etc.); no redundant footer Cancel/Close. Save remains disabled until there is a real persisted-value change and must disable again if reverted. On server-confirmed success show the existing animated checkmark then dismiss after 2.5 s. Existing transaction-bound WebAuthn, legally necessary confirmations and explicit unknown/error states are exceptions to *simplification*, not grounds to add duplicate UI. Before adding a control, verify it performs a necessary **distinct** task not already available; changes that intentionally add a second control for the same action require explicit owner approval. Keep this invariant across desktop, mobile, all future Admin PWA pages, and test updates.
-
-## UI/UX rules
-
-The interface must be:
-- mobile-first
-- Telegram Mini App safe-area compatible
-- premium, clean, not childish
-- clear for Uzbek, Russian, and Tajik users
-- optimized for HSK learners
-
-Chinese learning content must show:
-- Chinese characters
-- pinyin
-- translation
-
-Course is the core product. AI, voice, XP, streak, rewards, and subscription must support the course, not replace it.
-
-## Quiz rules
-
-Good quiz formats:
-- fill blank in full sentence
-- choose correct Chinese word
-- choose correct pinyin
-- choose correct translation
-- arrange sentence order
-- listen and choose
-- mistake correction
-
-Avoid:
-- dry school-test layout
-- unclear correct/wrong feedback
-- too much text on one screen
-- hidden progress
+- Primary product scope is learner iPhone PWA and native Android. For an explicitly requested Mini App, Admin PWA, website or desktop change, consult the same skill for generally applicable design principles, but respect that surface's actual behavior, native platform constraints and separately binding contracts. **Admin PWA** additionally follows [its browser UI contract](docs/admin-pwa/BROWSER_UI_CONTRACT.md); this does not authorize a learner-screen redesign of Admin or dormant desktop work.
+- Root product, data, pedagogy, security, performance, localization, Git and CI policies remain in force; UI guidelines cannot override server-side entitlement/results, real pricing, safe authentication, actual lesson/quiz semantics, existing course data or owner-approved feature scope. A design reference or roadmap entry is not proof a feature is already shipped.
+- Keep the skill references readable and prefer targeted existing component/layout guidance. Do not add duplicate visual rules here. Use `frontend-design`, `webapp-testing` and Playwright when relevant to implementation/testing, subordinate to the HSK AI skill and the repository's technical policies.
+- The transferred 44 professional Markdown reference drafts include source-derived material with **unverified upstream reuse rights**. Do not treat their availability in Git as permission for commercial redistribution or vendor artwork/font reuse; verify rights or independently re-author them before publication/reuse outside internal review.
 
 ## Testing
 

@@ -66,6 +66,7 @@ _SKIP_CHOICE_TYPES = frozenset({
 
 class AndroidCourseService(DesktopCourseService):
     CLIENT_NAMESPACE = "android"
+    _INCLUDE_LEARNING_RESULT = True
 
     async def _foundation_status(self, user) -> dict:
         return await CourseMiniAppProfileService(self.session).foundation_status(user)

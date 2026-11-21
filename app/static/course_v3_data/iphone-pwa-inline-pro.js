@@ -261,6 +261,14 @@
     if (d.lava && d.lava.blocked_reason) return "blocked";
     return "";
   }
+  function learningBenefit(plans) {
+    var data=state.data;
+    if (!data || data.learning_pro_eligible!==true || state.error ||
+        (!plans.length && !(manualAllowed() && data.payment_details_configured===true))) return "";
+    var key=state.source==="v3_locked_lesson" ? "learningPro.lesson" :
+      state.source==="v3_mistake_review" ? "learningPro.mistakes" : "";
+    return window.HSKAI_COURSE_I18N?.[state.lang]?.[key] || "";
+  }
   function elementPlans(all) {
     var plans=available().filter(function(p){return all||p.plan_type==="1_month"||p.plan_type==="12_months"});
     var grid=el("div","hip-plans");
@@ -334,8 +342,9 @@
     if (view==="main"||view==="loading") {
       header("pro",txt("title"),txt("subtitle"));
       var benefits=el("ul","hip-benefits");
-      (txt("benefits")||[]).forEach(function(value){
-        benefits.appendChild(el("li","hip-benefit",value));
+      var learning=view==="main" ? learningBenefit(plans) : "";
+      (txt("benefits")||[]).forEach(function(value,index){
+        benefits.appendChild(el("li","hip-benefit",index===0 && learning ? learning : value));
       });
       body.appendChild(benefits);
     }
