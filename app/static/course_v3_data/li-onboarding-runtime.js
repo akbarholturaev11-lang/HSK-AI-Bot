@@ -1048,9 +1048,11 @@ async function bootstrap(){
     }
     // The two read-only endpoints are independent after session/CSRF verification.
     // Parallelize ONLY for the embedded trial; all other onboarding paths stay serial.
-    var trialRead=offerMode?trialStatus():null;
-    var status=await statusApi();
-    var verifiedTrial=trialRead?await trialRead:null;
+    var status,verifiedTrial=null;
+    if(offerMode){
+      var reads=await Promise.all([statusApi(),trialStatus()]);
+      status=reads[0];verifiedTrial=reads[1];
+    }else status=await statusApi();
     identityKey=userKey();
     if(offerMode){
       if(!status.saved||!status.profile){renderError(bootstrap,function(){returnFromOffer(false)});return;}
