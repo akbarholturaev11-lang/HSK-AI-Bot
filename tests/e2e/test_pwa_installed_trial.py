@@ -150,6 +150,9 @@ def test_installed_first_open_shows_real_trial_scenes_once_without_rewriting_pro
         page.wait_for_function("state => document.querySelector('#pwa-checkout-layer iframe').contentWindow.screen===state", arg=state)
         assert frame.locator("#stage").evaluate("el => el.scrollWidth<=el.clientWidth+1")
         assert frame.locator(".li-trial-close").bounding_box()["width"] >= 44
+        indicator=frame.get_by_role("progressbar", name="HSK AI Pro")
+        assert indicator.get_attribute("aria-valuenow") == state[-1]
+        assert indicator.get_attribute("aria-valuemax") == "4"
         assert fixture.starts == []
     directory = os.getenv("HSK_TRIAL_REVIEW_DIR")
     if directory:
@@ -264,6 +267,8 @@ def test_trial_write_cannot_be_dismissed_before_its_result(browser):
         frame.locator("#footer .cta").first.click()
     page.wait_for_timeout(30)
     assert len(fixture.start_held) == 1
+    page.keyboard.press("Escape")
+    assert page.locator("#pwa-checkout-layer").count() == 1
     page.evaluate("NavBack.goBack()")
     assert page.locator("#pwa-checkout-layer").count() == 1
     fixture.start_held.pop().fulfill(status=503, json={"ok": False})
@@ -357,3 +362,47 @@ def test_late_profile_purchase_read_preserves_a_new_course_sheet(browser):
     assert page.locator("#sheet.on #learner-current-sheet").is_visible()
     assert page.locator("#pwa-checkout-layer").count() == 0
     assert fixture.starts == [] and fixture.onboarding_writes == []
+
+
+@pytest.mark.parametrize("standalone", [False, True])
+def test_trial_keyboard_focus_is_contained_and_escape_restores_the_parent(browser, standalone):
+    fixture = TrialPage(standalone=standalone)
+    page = fixture.open(browser)
+    if not standalone:
+        profile(page)
+        page.locator('.hp-promo-slide[data-promo-kind="pro"] .hp-promo-action').click()
+    frame = trial_frame(page)
+    close = frame.locator(".li-trial-close")
+    assert close.evaluate("el=>el===document.activeElement")
+    paid = frame.locator("#footer .cta.later")
+    paid.focus()
+    page.keyboard.press("Tab")
+    assert close.evaluate("el=>el===document.activeElement")
+    page.keyboard.press("Shift+Tab")
+    assert paid.evaluate("el=>el===document.activeElement")
+    frame.locator("#footer .cta").first.click()
+    assert frame.get_by_role("progressbar", name="HSK AI Pro").get_attribute("aria-valuetext") == "1 / 4"
+    page.evaluate("window.mapBeforeKeyboardClose=MAP")
+    page.keyboard.press("Escape")
+    assert page.locator("#pwa-checkout-layer").count() == 0
+    page.wait_for_function("MAP!==mapBeforeKeyboardClose")
+    assert not page.locator(".wrap").evaluate("el=>el.inert")
+    if not standalone:
+        assert page.locator('.hp-promo-slide[data-promo-kind="pro"] .hp-promo-action').evaluate("el=>el===document.activeElement")
+    assert fixture.starts == [] and fixture.onboarding_writes == []
+
+
+def test_profile_trial_confirmation_restores_focus_after_verified_access_refresh(browser):
+    fixture = TrialPage()
+    page = fixture.open(browser)
+    profile(page)
+    page.locator('.hp-promo-slide[data-promo-kind="pro"] .hp-promo-action').click()
+    frame = trial_frame(page)
+    for _ in range(4):
+        frame.locator("#footer .cta").first.click()
+    frame.locator(".done-hero").wait_for()
+    frame.locator("#footer .cta").first.click()
+    page.wait_for_function("MAP.user.state==='TRIAL_ACTIVE'")
+    page.wait_for_function("document.activeElement.matches('.hp-promo-action')")
+    assert page.evaluate("SCREEN") == "profile"
+    assert len(fixture.starts) == 1 and fixture.onboarding_writes == []

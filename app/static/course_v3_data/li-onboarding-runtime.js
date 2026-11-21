@@ -13,6 +13,7 @@ var hostPwa=location.pathname.indexOf("/iphone-pwa/")===0;
 var offerQuery=new URLSearchParams(location.search);
 var offerMode=hostPwa&&offerQuery.getAll("offer").length===1&&offerQuery.get("offer")==="trial";
 var trialConfirmed=false,trialStartInFlight=false;
+var trialOfferSteps=["trialIntro","trial1","trial2","trial3","trialDone"];
 var tg=global.Telegram&&global.Telegram.WebApp;
 var initData=hostPwa?"":String(tg&&tg.initData||"");
 if(hostPwa){
@@ -132,6 +133,9 @@ function hideAuthWait(){
   if(authWaitNode){authWaitNode.remove();authWaitNode=null}
   var wrap=document.querySelector(".wrap");
   if(wrap)wrap.inert=false;
+  if(offerMode&&document.activeElement===document.body){
+    var exit=document.querySelector(".li-trial-close");if(exit)exit.focus({preventScroll:true});
+  }
 }
 
 function safeMessage(){return ERR[global.LANG]||ERR.ru}
@@ -859,11 +863,18 @@ global.render=function(animate){
     var heading=document.querySelector("#stage .trial h2");
     if(heading)heading.textContent=word("trialOn");
   }
-  if(offerMode&&["trialIntro","trial1","trial2","trial3","trialDone"].indexOf(global.screen)>=0){
+  if(offerMode&&trialOfferSteps.indexOf(global.screen)>=0){
     var top=document.getElementById("top"),exit=document.createElement("button");
     exit.type="button";exit.className="bk li-trial-close";exit.setAttribute("aria-label",word("close"));
     exit.innerHTML=global.icon("close");exit.onclick=function(){returnFromOffer(trialConfirmed)};
     top.hidden=false;top.appendChild(exit);
+    var indicator=top.querySelector(".stepper"),position=trialOfferSteps.indexOf(global.screen);
+    if(indicator){
+      indicator.removeAttribute("aria-hidden");indicator.setAttribute("role","progressbar");
+      indicator.setAttribute("aria-label","HSK AI Pro");indicator.setAttribute("aria-valuemin","0");
+      indicator.setAttribute("aria-valuemax","4");indicator.setAttribute("aria-valuenow",String(position));
+      indicator.setAttribute("aria-valuetext",position+" / 4");
+    }
     if(global.screen==="trialIntro"){
       var paid=document.createElement("button");paid.type="button";paid.className="cta ghost later";
       paid.textContent=word("buyPro");paid.onclick=purchaseFromOffer;document.getElementById("footer").appendChild(paid);
@@ -871,6 +882,7 @@ global.render=function(animate){
     if(global.screen==="trial3"){
       var startButton=document.querySelector("#footer .cta");if(startButton)startButton.textContent=word("proCta");
     }
+    if(document.activeElement===document.body)exit.focus({preventScroll:true});
   }
   if(global.screen==="profile"&&identityKey&&(!hostPwa||actor)){
     var button=document.querySelector("#footer .cta");
@@ -1057,9 +1069,22 @@ async function bootstrap(){
 }
 if(offerMode){
   var offerStyle=document.createElement("style");
-  offerStyle.textContent="#top{position:relative;min-height:56px}#top .stepper{margin-right:52px;width:calc(100% - 52px)}#top .li-trial-close{position:absolute;right:0;top:0;width:44px;height:44px}";
+  offerStyle.textContent="#top{position:relative;min-height:56px}#top .stepper{margin-right:52px;width:calc(100% - 52px)}#top .li-trial-close{position:absolute;right:0;top:0;width:44px;height:44px}.wrap.dark button:focus-visible{outline-color:var(--hsk-paper)}";
   document.head.appendChild(offerStyle);
   global.hskPwaCheckoutBack=function(){returnFromOffer(trialConfirmed)};
+  global.addEventListener("keydown",function(event){
+    if(event.key==="Escape"){
+      event.preventDefault();event.stopPropagation();returnFromOffer(trialConfirmed);return;
+    }
+    if(event.key!=="Tab")return;
+    var controls=Array.from(document.querySelectorAll('button:not([disabled]),a[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]'))
+      .filter(function(node){return node.tabIndex>=0&&node.getClientRects().length>0});
+    if(!controls.length){event.preventDefault();return;}
+    var first=controls[0],last=controls[controls.length-1],active=document.activeElement;
+    if(controls.indexOf(active)<0){event.preventDefault();first.focus();}
+    else if(event.shiftKey&&active===first){event.preventDefault();last.focus();}
+    else if(!event.shiftKey&&active===last){event.preventDefault();first.focus();}
+  });
 }
 global.addEventListener("pageshow",function(ev){
   if(!hostPwa)return;

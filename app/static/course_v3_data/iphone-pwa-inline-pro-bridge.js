@@ -142,6 +142,12 @@
       query.set("offer","trial");query.set("lang",language());
       trialOffer={source:source||"profile_subscription",entry:entry||"profile",owner:PWA_COURSE_USER_ID,map:MAP,done:done};
       app.openPwaCheckout(query);
+      // WebKit pointer activation need not focus its button. Restore the
+      // existing Profile Pro control rather than the document body on exit.
+      if(SCREEN==="profile"&&window.PWA_CHECKOUT_RETURN_FOCUS===document.body){
+        var trigger=document.querySelector('.hp-promo-slide[data-promo-kind="pro"] .hp-promo-action');
+        if(trigger)window.PWA_CHECKOUT_RETURN_FOCUS=trigger;
+      }
       if(!window.PWA_CHECKOUT_FRAME){trialOffer=null;return false;}
       return true;
     }
@@ -156,7 +162,15 @@
       if(activated===true){TRIAL_STATE=null;TRIAL_LOADED=false;trialReadAt=0;}
       // Use the layer's existing access refresh; a second progress read can
       // race its map replacement and lose the deferred foundation intent.
-      if(!app.closePwaCheckout(child,activated===true?resume:null))return false;
+      if(!app.closePwaCheckout(child,function(updated){
+        if(activated===true)resume(updated);
+        // Refresh can remount Profile after its original trigger was focused.
+        if(updated&&PWA_COURSE_USER_ID===current.owner&&SCREEN==="profile"&&
+           !window.PWA_CHECKOUT_FRAME&&!NavBack.top()&&!NavBack.blocked()&&document.activeElement===document.body){
+          var trigger=document.querySelector('.hp-promo-slide[data-promo-kind="pro"] .hp-promo-action');
+          if(trigger)trigger.focus({preventScroll:true});
+        }
+      }))return false;
       if(activated!==true)resume();
       return true;
     }
