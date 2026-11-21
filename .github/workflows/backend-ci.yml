@@ -553,6 +553,7 @@ jobs:
           tests/e2e/test_miniapp_smoke.py::test_practice_tab_is_usable_during_unfinished_background_load
           tests/e2e/test_miniapp_smoke.py::test_desktop_course_modal_covers_full_viewport_and_mobile_keeps_bottom_sheet
           tests/test_miniapp_top_spacing_contract.py
+          tests/test_iphone_pwa_navigation_contract.py
       - name: Verify critical learning and checkout flows with synthetic APIs
         env:
           MINIAPP_E2E_BASE_URL: "http://hsk-ai.local"
