@@ -161,14 +161,16 @@
       return true;
     }
     function trialError(){if(typeof window.toast==="function")toast(courseMessage("trialFail",T().trialFail),2200)}
+    function viewIntent(){return {screen:SCREEN,layer:NavBack.top(),blocked:NavBack.blocked()}}
+    function sameIntent(intent){return SCREEN===intent.screen&&NavBack.top()===intent.layer&&NavBack.blocked()===intent.blocked}
     function beforePurchase(source,fallback){
       if(trialIntentPending||CHECKOUT_NAVIGATING||trialOffer)return Promise.resolve(false);
-      var owner=PWA_COURSE_USER_ID,map=MAP,control=document.activeElement;
+      var owner=PWA_COURSE_USER_ID,map=MAP,control=document.activeElement,intent=viewIntent();
       if(["PRO_ACTIVE","TRIAL_ACTIVE","TEMP_ACCESS","BLOCKED"].indexOf(map.user&&map.user.state)>=0){fallback();return Promise.resolve(true);}
       trialIntentPending=true;
       if(control&&control.tagName==="BUTTON")control.setAttribute("aria-busy","true");
       return getTrial(true).then(function(state){
-        if(!sameOwner(owner,map))return false;
+        if(!sameOwner(owner,map)||!sameIntent(intent))return false;
         if(!state){trialError();return false;}
         if(state.eligible)return showTrial(source,"purchase");
         fallback();return true;
@@ -184,8 +186,10 @@
       }
       getTrial(true).then(function(state){
         if(!sameOwner(owner,map))return;
-        // A click made during the read takes priority over an automatic offer.
-        if(SCREEN!=="course"||NavBack.top()||NavBack.blocked()||document.hidden){next();return;}
+        // A new learner interaction takes over from startup. In particular,
+        // never launch the deferred foundation beneath a newly opened section.
+        // Lesson entry retains its existing required-foundation gate.
+        if(trialIntentPending||SCREEN!=="course"||NavBack.top()||NavBack.blocked()||document.hidden)return;
         if(!state||!state.eligible||!showTrial("installed_pwa","installed",next))next();
       });
     }
@@ -198,9 +202,9 @@
       },
       open:function(source){
         if(trialIntentPending||trialOffer)return Promise.resolve(false);
-        var owner=PWA_COURSE_USER_ID,map=MAP;trialIntentPending=true;
+        var owner=PWA_COURSE_USER_ID,map=MAP,intent=viewIntent();trialIntentPending=true;
         return getTrial(true).then(function(state){
-          if(!sameOwner(owner,map))return false;
+          if(!sameOwner(owner,map)||!sameIntent(intent))return false;
           if(!state){trialError();return false;}
           if(!state.eligible){if(SCREEN==="profile")renderProfile();return false;}
           return showTrial(source,"profile");

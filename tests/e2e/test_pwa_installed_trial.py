@@ -104,7 +104,7 @@ class TrialPage(LearningPage):
         else:
             super().serve(route)
 
-    def open(self, browser, width=390):
+    def open(self, browser, width=390, *, wait_until="networkidle"):
         context = browser.new_context(viewport={"width": width, "height": 844},
                                       reduced_motion="reduce", is_mobile=True)
         page = context.new_page()
@@ -112,7 +112,7 @@ class TrialPage(LearningPage):
             page.add_init_script("Object.defineProperty(navigator,'standalone',{get:()=>true})")
         page.set_default_timeout(12000)
         page.route("**/*", self.serve)
-        page.goto(ORIGIN + "/iphone-pwa/course?lang=" + self.lang, wait_until="networkidle")
+        page.goto(ORIGIN + "/iphone-pwa/course?lang=" + self.lang, wait_until=wait_until)
         page.wait_for_function("window.HskPwaTrialOffer && window.MAP && MAP.authenticated")
         return page
 
@@ -314,3 +314,46 @@ def test_confirmed_trial_resumes_required_foundation_after_the_access_map_refres
     page.wait_for_function("foundationResumes.length===1", timeout=3000)
     assert page.evaluate("foundationResumes") == ["TRIAL_ACTIVE"]
     assert len(fixture.starts) == 1 and fixture.onboarding_writes == []
+
+
+def release_trial_status(fixture):
+    fixture.hold_status = False
+    for route in fixture.status_held:
+        route.fulfill(headers={"X-HSK-PWA-User-ID": str(fixture.status_owner)},
+                      json={"ok": True, "trial": fixture.trial})
+    fixture.status_held.clear()
+
+
+def test_late_installed_eligibility_does_not_interrupt_a_new_profile_intent(browser):
+    fixture = TrialPage(standalone=True)
+    fixture.hold_status = True
+    fixture.data["foundation"].update(required=True, status="required")
+    page = fixture.open(browser, wait_until="domcontentloaded")
+    page.wait_for_function("TRIAL_PROMISE!==null")
+    page.evaluate("window.foundationResumes=0;window.startFoundationFromMap=function(){foundationResumes++;return true};void 0")
+    profile(page)
+    assert fixture.status_held
+    release_trial_status(fixture)
+    page.wait_for_function("TRIAL_PROMISE===null")
+    assert page.evaluate("SCREEN") == "profile"
+    assert page.evaluate("foundationResumes") == 0
+    assert page.locator("#pwa-checkout-layer").count() == 0
+    page.evaluate("App.goPay('profile_subscription');void 0")
+    trial_frame(page)
+    assert fixture.starts == [] and fixture.onboarding_writes == []
+
+
+def test_late_profile_purchase_read_preserves_a_new_course_sheet(browser):
+    fixture = TrialPage()
+    page = fixture.open(browser)
+    profile(page)
+    fixture.hold_status = True
+    page.evaluate("App.goPay('profile_subscription');void 0")
+    page.wait_for_function("TRIAL_PROMISE!==null")
+    page.evaluate("App.show('course');App.openSheet('<p id=learner-current-sheet>Current lesson choice</p>');void 0")
+    assert fixture.status_held
+    release_trial_status(fixture)
+    page.wait_for_function("TRIAL_PROMISE===null")
+    assert page.locator("#sheet.on #learner-current-sheet").is_visible()
+    assert page.locator("#pwa-checkout-layer").count() == 0
+    assert fixture.starts == [] and fixture.onboarding_writes == []
