@@ -47,7 +47,7 @@ class CourseUICatalogGuardTests(unittest.TestCase):
                 "dictionaryPage.strokeCount.one", "dictionaryPage.strokeCount.few",
                 "dictionaryPage.strokeCount.many",
                 "track.permanent", "track.promoUnlock", "rating.leagueName",
-                "pwaFeedback.title",
+                "pwaFeedback.title", "pwaProgress.left",
             })
         self.assertNotIn("HSK AI Pro открыт", str(result))
 
