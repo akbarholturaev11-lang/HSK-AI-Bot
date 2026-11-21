@@ -204,31 +204,35 @@ def test_profile_one_hierarchy_preserves_all_verified_access_states(browser, lan
 @pytest.mark.parametrize("language", ["uz", "ru", "tj"])
 @pytest.mark.parametrize("theme", ["light", "dark"])
 def test_profile_large_text_keeps_pro_terms_controls_and_last_item_reachable(browser, language, theme):
-    fixture = TrialPage(language)
-    page = fixture.open(browser, 320)
-    page.set_viewport_size({"width": 320, "height": 568})
-    page.evaluate("t=>document.documentElement.dataset.hskTheme=t", theme)
-    profile(page)
-    page.evaluate("""() => {
-      const root=document.getElementById('s-profile'), rules=[];
-      for(const el of root.querySelectorAll('strong,small,p,.ah span,.profile-access-badge,.profile-goal-row,.hp-promo-action,.profile-friends-link span')){
-        rules.push([el,parseFloat(getComputedStyle(el).fontSize)*2]);
-      }
-      for(const [el,size] of rules)el.style.fontSize=size+'px';
-    }""")
-    assert page.locator("#s-profile").evaluate("el=>el.scrollWidth<=el.clientWidth+1")
-    action = page.locator('.hp-promo-slide[data-promo-kind="pro"] .hp-promo-action')
-    action.scroll_into_view_if_needed()
-    assert action.evaluate("el=>el.scrollWidth<=el.clientWidth+1 && el.scrollHeight<=el.clientHeight+1")
-    # Essential Pro status/terms must not be silently line-clamped.
-    assert page.locator('.hp-promo-slide.hp-promo-pro .hp-promo-copy p').evaluate("el=>el.scrollHeight<=el.clientHeight+1")
-    friends = page.locator("#s-profile .profile-friends-link")
-    friends.scroll_into_view_if_needed()
-    page.evaluate("window.scrollTo(0,document.scrollingElement.scrollHeight)")
-    box = friends.bounding_box()
-    assert box["y"] + box["height"] <= page.locator("#nav").bounding_box()["y"]
-    assert page.locator("#s-profile .profile-compact-ach small").is_visible()
-    assert not fixture.starts
+    for state in ("FREE", "TEMP_ACCESS", "TRIAL_ACTIVE", "PRO_ACTIVE"):
+        fixture = TrialPage(language)
+        fixture.data["user"].update(state=state, is_paid=state != "FREE")
+        page = fixture.open(browser, 320)
+        page.set_viewport_size({"width": 320, "height": 568})
+        page.evaluate("t=>document.documentElement.dataset.hskTheme=t", theme)
+        profile(page)
+        page.evaluate("PROF.display_name=\'Жуда узун исм / Очень длинное имя / Номи хеле дароз\';renderProfile();HskProfileCarousel.pause()")
+        page.evaluate("""() => {
+          const root=document.getElementById('s-profile'), rules=[];
+          for(const el of root.querySelectorAll('strong,small,p,.ah span,.profile-access-badge,.profile-goal-row .goal,.hp-promo-action,.profile-friends-link span')){
+            rules.push([el,parseFloat(getComputedStyle(el).fontSize)*2]);
+          }
+          for(const [el,size] of rules)el.style.setProperty('font-size',size+'px','important');
+        }""")
+        assert page.locator("#s-profile").evaluate("el=>el.scrollWidth<=el.clientWidth+1")
+        action = page.locator('.hp-promo-slide[data-promo-kind="pro"] .hp-promo-action')
+        action.scroll_into_view_if_needed()
+        assert action.evaluate("el=>el.scrollWidth<=el.clientWidth+1 && el.scrollHeight<=el.clientHeight+1")
+        # Essential Pro status/terms must not be silently line-clamped.
+        assert page.locator('.hp-promo-slide.hp-promo-pro .hp-promo-copy p').evaluate("el=>el.scrollHeight<=el.clientHeight+1")
+        friends = page.locator("#s-profile .profile-friends-link")
+        friends.scroll_into_view_if_needed()
+        page.evaluate("window.scrollTo(0,document.scrollingElement.scrollHeight)")
+        box = friends.bounding_box()
+        assert box["y"] + box["height"] <= page.locator("#nav").bounding_box()["y"]
+        assert page.locator("#s-profile .profile-compact-ach small").is_visible()
+        assert not fixture.starts
+        page.context.close()
 
 
 def test_profile_carousel_failure_has_one_trial_first_fallback_and_late_mount_stays_in_slot(browser):

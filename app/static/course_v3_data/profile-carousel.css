@@ -106,3 +106,6 @@ html.hsk-pwa-browser #hsk-profile-promo-root>.hp-promo-dots button{display:grid;
 html.hsk-pwa-browser #hsk-profile-promo-root>.hp-promo-dots button::after{position:static;inset:auto;content:"";width:6px;height:6px;border-radius:99px;background:rgba(255,255,255,.55)}
 html.hsk-pwa-browser #hsk-profile-promo-root>.hp-promo-dots button.on::after{width:19px;background:var(--gold)}
 html.hsk-pwa-browser #s-profile .pwa-profile-ach-text{height:32px}
+html.hsk-pwa-browser #s-profile .profile-identity-row{gap:var(--hsk-space-1) var(--hsk-space-2)}
+html.hsk-pwa-browser #s-profile .profile-display-name{max-width:100%;white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere}
+html.hsk-pwa-browser #s-profile .profile-access-badge{min-width:0;max-width:100%;flex-shrink:1;white-space:normal;overflow-wrap:anywhere;gap:var(--hsk-space-1)}
