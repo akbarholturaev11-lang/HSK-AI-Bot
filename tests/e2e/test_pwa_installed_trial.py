@@ -646,8 +646,19 @@ def test_cached_parent_trial_never_grants_or_displays_an_eligibility_reversal(br
     page.wait_for_function("TRIAL_LOADED && TRIAL_STATE?.eligible === true")
     fixture.trial["eligible"] = False  # server state changed after the cached parent read
     before = len(fixture.status_reads)
+    # Observe the actual modal's lifecycle so a quick initial false condition
+    # cannot be mistaken for the eligibility reversal having settled.
+    page.evaluate("""() => {
+        window.__trialOfferWasMounted = false;
+        const observe = new MutationObserver(() => {
+            if(document.getElementById('pwa-checkout-layer')){
+                window.__trialOfferWasMounted = true; observe.disconnect();
+            }
+        });
+        observe.observe(document.body, {childList:true, subtree:true});
+    }""")
     page.locator('.hp-promo-slide[data-promo-kind="pro"] .hp-promo-action').click()
-    page.wait_for_function("() => !document.getElementById('pwa-checkout-layer') && TRIAL_PROMISE===null")
+    page.wait_for_function("() => __trialOfferWasMounted && !document.getElementById('pwa-checkout-layer') && TRIAL_PROMISE===null")
     assert len(fixture.status_reads) == before + 1  # child revalidated the real server
     assert fixture.starts == [] and fixture.onboarding_writes == []
     assert page.evaluate("MAP.user.state") == "FREE"
