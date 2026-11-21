@@ -592,7 +592,7 @@ def test_trial_slow_runtime_does_not_flash_account_or_onboarding_screens(browser
     fixture = TrialPage(standalone=True)
     fixture.hold_runtime = True
     page = fixture.open(browser, wait_until="domcontentloaded")
-    page.wait_for_function("() => !!document.querySelector('#pwa-checkout-layer iframe')?.contentDocument?.documentElement.classList.contains('li-trial-pending')")
+    page.wait_for_function("() => !!document.querySelector('#pwa-checkout-layer iframe')?.contentDocument?.documentElement?.classList.contains('li-trial-pending')")
     frame = page.frame_locator("#pwa-checkout-layer iframe")
     assert frame.locator(".wrap").evaluate("el => getComputedStyle(el).visibility") == "hidden"
     assert frame.locator("body").evaluate("el => getComputedStyle(el).backgroundColor") == "rgb(33, 29, 23)"
