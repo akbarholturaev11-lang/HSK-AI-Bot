@@ -7755,7 +7755,7 @@ function pl(){return (window.HSKAILocaleMap||function(_,fallback){return fallbac
    Nomlar `studySetupT().goals` da — onboarding bilan AYNI manba, shunda
    profildagi maqsad tanlov ekranidagidek yoziladi. */
 function goalLabel(){
-  var code=String((MAP&&MAP.study_setup&&MAP.study_setup.goal)||"");
+  var setup=(MAP&&MAP.study_setup)||{},code=String(setup.goal||"");if(PWA_COURSE_HOST&&setup.goal_chosen!==true)return "";
   if(!code)return "";
   var goals=(studySetupT&&studySetupT().goals)||{};
   return goals[code]||"";

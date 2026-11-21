@@ -24,7 +24,7 @@ class TrialPage(LearningPage):
         super().__init__(lang=language)
         self.installed = standalone
         self.trial = {"eligible": eligible, "active": False, "ends_at": None, "days": 7}
-        self.data["study_setup"] = {"goal": "hsk_exam", "daily_minutes": 20,
+        self.data["study_setup"] = {"goal": "hsk_exam", "goal_chosen": True, "daily_minutes": 20,
                                     "preferred_focus": "listening", "pending": False}
         self.data["user"].update(plan="free", state="FREE", is_paid=False)
         if hsk30:
@@ -135,6 +135,23 @@ def profile(page):
     page.locator('#nav [data-s="profile"]').click()
     page.locator('.hp-promo-slide[data-promo-kind="pro"] .hp-promo-action').wait_for()
     page.evaluate("HskProfileCarousel.pause()")
+
+
+@pytest.mark.parametrize("language", ["uz", "ru", "tj"])
+@pytest.mark.parametrize("chosen", [True, False, None])
+def test_profile_goal_requires_a_verified_real_choice(browser, language, chosen):
+    fixture = TrialPage(language)
+    if chosen is None:
+        fixture.data["study_setup"].pop("goal_chosen")
+    else:
+        fixture.data["study_setup"]["goal_chosen"] = chosen
+    page = fixture.open(browser, 320)
+    profile(page)
+    goal = page.locator("#s-profile .profile-goal-row")
+    assert goal.count() == (1 if chosen is True else 0)
+    if chosen is True:
+        assert goal.inner_text().strip() == page.evaluate("studySetupT().goals.hsk_exam")
+    assert not fixture.onboarding_writes and not fixture.starts
 
 
 @pytest.mark.parametrize("language,width,theme", [
