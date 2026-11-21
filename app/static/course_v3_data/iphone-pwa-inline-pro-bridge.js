@@ -107,6 +107,120 @@
   if (path === "/iphone-pwa/course") {
     var app = window.App;
     if (!app || typeof app.openPaywall !== "function") return;
+    var trialReadOwner=null,trialReadAt=0,trialEpoch=0,trialIntentPending=false;
+    var trialOffer=null,installedShown={};
+    function standalone(){return !!(navigator.standalone===true||window.matchMedia&&matchMedia("(display-mode: standalone)").matches)}
+    function installedKey(owner){return "hskai.pwa.trial.presented.v1:"+owner}
+    function wasPresented(owner){try{return installedShown[owner]||localStorage.getItem(installedKey(owner))==="1"}catch(_){return !!installedShown[owner]}}
+    function sameOwner(owner,map){return window.PWA_COURSE_USER_ID===owner&&window.MAP===map}
+    function getTrial(force){
+      var owner=window.PWA_COURSE_USER_ID,map=window.MAP;
+      if(!owner||!map||typeof window._apiGet!=="function")return Promise.resolve(null);
+      if(TRIAL_PROMISE&&trialReadOwner===owner)return TRIAL_PROMISE;
+      if(!force&&TRIAL_LOADED&&trialReadOwner===owner&&Date.now()-trialReadAt<30000)return Promise.resolve(TRIAL_STATE);
+      var epoch=++trialEpoch,controller=new AbortController();
+      trialReadOwner=owner;
+      var request=boundedSectionRequest(_apiGet("/api/v3/trial/status",{signal:controller.signal}).then(function(response){
+        if(!response.ok)throw Error("trial_status_http");return response.json();
+      }),controller).then(function(result){
+        if(epoch!==trialEpoch||!sameOwner(owner,map))return null;
+        if(!result||result.ok!==true||!result.trial||typeof result.trial.eligible!=="boolean")throw Error("trial_status_invalid");
+        TRIAL_STATE=result.trial;TRIAL_LOADED=true;trialReadAt=Date.now();return TRIAL_STATE;
+      }).catch(function(){
+        if(epoch===trialEpoch&&sameOwner(owner,map)){TRIAL_STATE=null;TRIAL_LOADED=false;}
+        return null;
+      }).finally(function(){if(TRIAL_PROMISE===request)TRIAL_PROMISE=null});
+      TRIAL_PROMISE=request;return request;
+    }
+    function offerChild(child){
+      return trialOffer&&sameOwner(trialOffer.owner,trialOffer.map)&&
+        window.PWA_CHECKOUT_FRAME&&PWA_CHECKOUT_FRAME.contentWindow===child;
+    }
+    function showTrial(source,entry,done){
+      if(trialOffer||window.PWA_CHECKOUT_FRAME)return false;
+      var query=typeof window.courseCheckoutReturnParams==="function"?courseCheckoutReturnParams():new URLSearchParams();
+      query.set("offer","trial");query.set("lang",language());
+      trialOffer={source:source||"profile_subscription",entry:entry||"profile",owner:PWA_COURSE_USER_ID,map:MAP,done:done};
+      app.openPwaCheckout(query);
+      if(!window.PWA_CHECKOUT_FRAME){trialOffer=null;return false;}
+      return true;
+    }
+    function closeTrial(child,activated){
+      if(!offerChild(child))return false;
+      var current=trialOffer;trialOffer=null;
+      if(!app.closePwaCheckout(child))return false;
+      function resume(){if(sameOwner(current.owner,current.map)&&typeof current.done==="function")current.done()}
+      if(activated===true){
+        TRIAL_STATE=null;TRIAL_LOADED=false;trialReadAt=0;
+        refreshCourseProgress(true).then(resume);
+      }else resume();
+      return true;
+    }
+    function trialError(){if(typeof window.toast==="function")toast(courseMessage("trialFail",T().trialFail),2200)}
+    function beforePurchase(source,fallback){
+      if(trialIntentPending||CHECKOUT_NAVIGATING||trialOffer)return Promise.resolve(false);
+      var owner=PWA_COURSE_USER_ID,map=MAP,control=document.activeElement;
+      if(["PRO_ACTIVE","TRIAL_ACTIVE","TEMP_ACCESS","BLOCKED"].indexOf(map.user&&map.user.state)>=0){fallback();return Promise.resolve(true);}
+      trialIntentPending=true;
+      if(control&&control.tagName==="BUTTON")control.setAttribute("aria-busy","true");
+      return getTrial(true).then(function(state){
+        if(!sameOwner(owner,map))return false;
+        if(!state){trialError();return false;}
+        if(state.eligible)return showTrial(source,"purchase");
+        fallback();return true;
+      }).finally(function(){trialIntentPending=false;if(control&&control.isConnected)control.removeAttribute("aria-busy")});
+    }
+    function afterBoot(next){
+      var owner=window.PWA_COURSE_USER_ID,map=window.MAP,q=new URLSearchParams(location.search);
+      if(!standalone()||!owner||!map||wasPresented(owner)||document.hidden||
+         ["PRO_ACTIVE","TRIAL_ACTIVE","TEMP_ACCESS","BLOCKED"].indexOf(map.user&&map.user.state)>=0||
+         q.has("pro_checkout")||q.has("pro_return")||q.has("lesson")||q.has("resume")||q.has("autostart")||q.has("challenge_id")||q.has("tour")||
+         (q.get("tab")&&q.get("tab")!=="course")||SCREEN!=="course"||NavBack.top()||NavBack.blocked()){
+        next();return;
+      }
+      getTrial(true).then(function(state){
+        if(!sameOwner(owner,map))return;
+        // A click made during the read takes priority over an automatic offer.
+        if(SCREEN!=="course"||NavBack.top()||NavBack.blocked()||document.hidden){next();return;}
+        if(!state||!state.eligible||!showTrial("installed_pwa","installed",next))next();
+      });
+    }
+    window.HskPwaTrialOffer={
+      get:getTrial,afterBoot:afterBoot,
+      acceptActor:function(child,owner){
+        if(!offerChild(child))return false;
+        if(Number(owner)!==trialOffer.owner){location.replace("/iphone-pwa");return false;}
+        return true;
+      },
+      open:function(source){
+        if(trialIntentPending||trialOffer)return Promise.resolve(false);
+        var owner=PWA_COURSE_USER_ID,map=MAP;trialIntentPending=true;
+        return getTrial(true).then(function(state){
+          if(!sameOwner(owner,map))return false;
+          if(!state){trialError();return false;}
+          if(!state.eligible){if(SCREEN==="profile")renderProfile();return false;}
+          return showTrial(source,"profile");
+        }).finally(function(){trialIntentPending=false});
+      },
+      presented:function(child,owner){
+        if(!this.acceptActor(child,owner))return false;
+        if(standalone()){
+          installedShown[trialOffer.owner]=true;
+          try{localStorage.setItem(installedKey(trialOffer.owner),"1")}catch(_){}
+        }
+        return true;
+      },
+      close:closeTrial,
+      purchase:function(child){
+        if(!offerChild(child))return false;
+        var source=trialOffer.source;
+        // An explicit paid choice continues the existing checkout, without a
+        // second trial prompt. X/Back simply returns to the prior screen.
+        trialOffer.done=null;
+        if(!closeTrial(child,false))return false;
+        originalGoPay.call(app,source);return true;
+      }
+    };
     var legacy = app.openPaywall;
     app.openPaywall = function (ctx) {
       var limit = ctx === "lockedLesson" || ctx === "pronLimit" ||
@@ -130,6 +244,9 @@
           v3_locked_lesson:1,v3_qa_limit:1
         };
         if (limitSources[src] && offer(src)) return;
+        var self=this,args=arguments;
+        if(window.MAP&&window.PWA_COURSE_USER_ID)
+          return beforePurchase(src||window.PAY_SOURCE,function(){originalGoPay.apply(self,args)});
         return originalGoPay.apply(this,arguments);
       };
     }

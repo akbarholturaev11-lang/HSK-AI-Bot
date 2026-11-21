@@ -2385,7 +2385,7 @@ var SALES_PAYWALL_ACTIVE=false,SALES_PAYWALL_IMPRESSION="";
 var SALES_VALUE_PRIME_PROMISE=null,SALES_VALUE_PRIME_DONE=false;
 function _apiHeaders(){return{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA}}
 var PWA_COURSE_GET_PATHS={
-  "/api/v3/course-tracks":"/api/v3/pwa/course-tracks",
+  "/api/v3/trial/status":"/api/v3/pwa/trial/status","/api/v3/course-tracks":"/api/v3/pwa/course-tracks",
   "/api/v3/ad":"/api/v3/pwa/ad",
   "/api/v3/lesson/foundation":"/api/v3/pwa/lesson/foundation","/api/v3/invite":"/api/v3/pwa/invite",
   "/api/miniapp/mistakes":"/api/v3/pwa/mistakes", "/api/miniapp/profile":"/api/v3/pwa/profile"
@@ -2430,7 +2430,7 @@ function _apiGet(url,opts){
         // Read-only profile/referrals accept a cookie (not CSRF), so a login in
         // another tab could switch the HTTP actor while this PWA tab still
         // holds the prior map. Never combine the two accounts' data.
-        if(mapped==="/api/v3/pwa/profile"||mapped==="/api/v3/pwa/invite"||mapped==="/api/v3/pwa/ad"){
+        if(mapped==="/api/v3/pwa/profile"||mapped==="/api/v3/pwa/invite"||mapped==="/api/v3/pwa/ad"||mapped==="/api/v3/pwa/trial/status"){
           var owner=response.headers.get("X-HSK-PWA-User-ID");
           if(response.status===401||response.ok&&
              (!PWA_COURSE_USER_ID||String(actor.user_id)!==String(PWA_COURSE_USER_ID)||
@@ -2843,7 +2843,7 @@ var App={
     var layer=document.createElement("section"),frame=document.createElement("iframe");
     layer.id="pwa-checkout-layer";layer.setAttribute("role","dialog");layer.setAttribute("aria-modal","true");
     layer.setAttribute("aria-label","HSK AI Pro");
-    frame.title="HSK AI Pro";query.set("embedded","1");frame.src="/iphone-pwa/checkout?"+query.toString();
+    frame.title="HSK AI Pro";query.set("embedded","1");if(query.get("offer")==="trial")frame.src="/iphone-pwa/onboarding/li?"+query.toString();else frame.src="/iphone-pwa/checkout?"+query.toString();
     PWA_CHECKOUT_FRAME=frame;PWA_CHECKOUT_RETURN_FOCUS=document.activeElement;
     layer.append(frame);document.body.appendChild(layer);$(".wrap").inert=true;
     try{frame.focus({preventScroll:true})}catch(e){}
@@ -3795,7 +3795,7 @@ function openLockedLessonSheet(idx){
    ola oladimi" degan qarorni O'ZI qabul qilmaydi. Sabab oddiy: bir Telegram
    akkaunt bir marta trial olishi kerak, va buni faqat server biladi. */
 var TRIAL_STATE=null,TRIAL_PROMISE=null,TRIAL_LOADED=false;
-function trialFetchStatus(){
+function trialFetchStatus(force){if(PWA_COURSE_HOST)return window.HskPwaTrialOffer?HskPwaTrialOffer.get(force):Promise.resolve(null);
   if(TRIAL_LOADED)return Promise.resolve(TRIAL_STATE);
   if(TRIAL_PROMISE)return TRIAL_PROMISE;
   if(!INIT_DATA){TRIAL_LOADED=true;return Promise.resolve(null)}
@@ -3812,7 +3812,7 @@ function trialEligibilityValue(){return TRIAL_LOADED?trialEligible():undefined}
 window.HskTrialState={get:trialFetchStatus,eligibility:trialEligibilityValue};
 /* Trialni boshlaydi. Server rad etsa sababni ko'rsatamiz — jimgina
    "hech narsa bo'lmadi" holati eng yomon variant. */
-function trialStart(source){
+function trialStart(source){if(PWA_COURSE_HOST)return window.HskPwaTrialOffer?HskPwaTrialOffer.open(source):Promise.resolve(false);
   if(!INIT_DATA)return Promise.resolve(false);
   return fetch("/api/v3/trial/start",{method:"POST",
     headers:{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA},
@@ -10272,7 +10272,7 @@ var finishHskLaunchSplash=(function(){
     /* Starter majburiy bo'lsa deep-link, tour va app-open reklama uning ustiga
        chiqmaydi. Foundation tugagach asl intent davom etadi; reklama esa bu
        birinchi natija sessiyasida butunlay o'tkazib yuboriladi. */
-    if(foundationRequired){HSK30_PROMO_PENDING=true;startFoundationFromMap(false,function(){launchBootIntents(true)})}else launchBootIntents(false);
+    function finishBootIntents(){if(foundationRequired){HSK30_PROMO_PENDING=true;startFoundationFromMap(false,function(){launchBootIntents(true)})}else launchBootIntents(false);}function finishBootWithTrial(){if(PWA_COURSE_HOST&&window.HskPwaTrialOffer)HskPwaTrialOffer.afterBoot(finishBootIntents);else finishBootIntents();}if(PWA_COURSE_HOST&&document.readyState==="loading")document.addEventListener("DOMContentLoaded",finishBootWithTrial,{once:true});else finishBootWithTrial();
   });
 })();
 
@@ -10537,7 +10537,7 @@ window.addEventListener("pageshow",function(ev){
 });
 </script>
 <script src="/course_v3_data/desktop-download.js?v=20261021-b18e06983176"></script>
-<script src="/course_v3_data/profile-carousel.js?v=20261021-bbc40872c23c"></script>
+<script src="/course_v3_data/profile-carousel.js?v=20261021-7f5b8894b4bf"></script>
 <script src="/course_v3_data/iphone-pwa-fx.js?v=20261105-3f4db4191370"></script>
 <script src="/course_v3_data/iphone-pwa-refresh.js?v=20261105-e7852ac39c9d"></script>
 <script src="/course_v3_data/iphone-pwa-notices.js?v=20261110-e985617de198"></script>

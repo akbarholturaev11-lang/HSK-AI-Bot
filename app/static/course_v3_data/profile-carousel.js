@@ -1,9 +1,10 @@
 (function(){
   "use strict";
   /* Presentation only: existing server-owned link, course and checkout actions. */
-  var current=1,timer=null,root=null,track=null,resizeObserver=null,settleTimer=null;
+  var pwa=location.pathname==="/iphone-pwa/course";
+  var current=pwa?0:1,timer=null,root=null,track=null,resizeObserver=null,settleTimer=null;
   var suppressClickUntil=0,interacting=false,hovered=false;
-  var ORDER=["apps","hsk30","pro"],order=ORDER.slice();
+  var ORDER=pwa?["pro","apps","hsk30"]:["apps","hsk30","pro"],order=ORDER.slice();
   var LABELS=(window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.profile_carousel.LABELS.copy1",{
     ru:{apps:"Приложения HSK AI",appsBody:"Android, MacBook и Windows — учитесь на своём устройстве",appsCta:"Смотреть приложения",newBody:"Новые учебники HSK 1–3. Ваш прогресс сохранится.",versionCta:"Выбрать версию",proActive:"Подписка активна",proAction:"Тарифы HSK AI Pro",carousel:"Возможности аккаунта",slide:"Карточка",linkTitle:"Подключить {provider}",linkBody:"Входите в этот аккаунт через {provider}. Прогресс и подписка сохранятся.",linkCta:"Подключить",linkWait:"Ожидаем подтверждения…"},
     uz:{apps:"HSK AI ilovalari",appsBody:"Android, MacBook va Windows — o'zingizga qulay qurilmada o'qing",appsCta:"Ilovalarni ko'rish",newBody:"HSK 1–3 yangi darsliklari. Progressingiz saqlanadi.",versionCta:"Versiyani tanlash",proActive:"Obuna faol",proAction:"HSK AI Pro tariflari",carousel:"Akkaunt imkoniyatlari",slide:"Karta",linkTitle:"{provider}’ni ulash",linkBody:"Shu akkauntga {provider} orqali ham kiring. Progress va obunangiz saqlanadi.",linkCta:"Ulash",linkWait:"Tasdiqlash kutilmoqda…"},
@@ -16,6 +17,7 @@
   function busy(){return typeof SIGNIN_STATE!=="undefined"&&!!SIGNIN_STATE.busy}
   function availableOrder(){
     var next=ORDER.slice();
+    if(pwa&&currentCourseTrack()==="hsk30")next=next.filter(function(kind){return kind!=="hsk30"});
     if(typeof SIGNIN_STATE==="undefined"||!SIGNIN_STATE.loaded)return next;
     ["google","apple"].forEach(function(provider){
       if(SIGNIN_STATE.providers.indexOf(provider)>=0&&!SIGNIN_STATE.identities.some(function(it){return it.provider===provider}))next.push("link-"+provider);
@@ -29,6 +31,7 @@
   }
   function proDetails(){
     var t=T(),p=pl(),u=(MAP&&MAP.user)||{},plan=u.plan||(isPaidUser()?"pro":"free"),until=u.access_ends_at||null;
+    if(pwa)plan=({PRO_ACTIVE:"pro",TEMP_ACCESS:"temp",TRIAL_ACTIVE:"trial",FREE:"free",EXPIRED:"free",BLOCKED:"free"})[u.state]||plan;
     if(plan==="pro"||plan==="temp"){
       var status=plan==="pro"?p.statusPro:p.statusTemp;
       return {title:status,body:until?String(p.statusUntil).replace("{d}",fmtAccessDate(until)):strings().proActive,cta:plan==="pro"?p.renew:t.unlockBtn,action:"pay",renew:plan==="pro"};

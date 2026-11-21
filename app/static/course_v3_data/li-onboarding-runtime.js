@@ -10,6 +10,9 @@
 if(!global.T||!global.T[global.LANG]||!global.HSKCharacters||
    typeof global.HSKCharacters.render!=="function")return;
 var hostPwa=location.pathname.indexOf("/iphone-pwa/")===0;
+var offerQuery=new URLSearchParams(location.search);
+var offerMode=hostPwa&&offerQuery.getAll("offer").length===1&&offerQuery.get("offer")==="trial";
+var trialConfirmed=false,trialStartInFlight=false;
 var tg=global.Telegram&&global.Telegram.WebApp;
 var initData=hostPwa?"":String(tg&&tg.initData||"");
 if(hostPwa){
@@ -158,6 +161,8 @@ function api(path,options){
   // racing fetch alone would leave onboarding stuck at a loading skeleton.
   var completed=fetch(path,options).then(function(response){
     if(!response.ok)throw errorFromResponse(response);
+    if(offerMode&&actor&&(path==="/api/v3/pwa/trial/status"||path==="/api/v3/pwa/onboarding/status")&&
+       response.headers.get("X-HSK-PWA-User-ID")!==String(actor.user_id))throw new Error("pwa_actor_changed");
     return response.json();
   }).then(function(data){
     if(!data||data.ok!==true)throw new Error("server_response_invalid");
@@ -202,7 +207,7 @@ function userKey(){
   return id?"miniapp:"+String(id):"telegram:verified";
 }
 function saveDraft(){
-  if(!identityKey||requestBusy)return;
+  if(offerMode||!identityKey||requestBusy)return;
   var payload={at:Date.now(),lang:global.LANG,track:global.track,
     level:global.level,goals:global.goals.slice(),minutes:global.minutes,
     focus:global.focus,streakGoal:global.streakGoal,step:global.screen};
@@ -538,9 +543,13 @@ function offerIfEligible(){
   trialStatus().then(function(result){
     trialEligibility=result.trial||null;
     requestBusy=false;
+    if(offerMode&&(!trialEligibility||trialEligibility.eligible!==true)){
+      returnFromOffer(!!(trialEligibility&&trialEligibility.active));return;
+    }
     // The old generic Pro offer repeats the first trial slide; enter the
     // panda + HSK AI PRO welcome directly, then goal-matched slides.
     progress(trialEligibility&&trialEligibility.eligible?"trialIntro":"end");
+    if(offerMode){var parentOffer=offerHost();if(parentOffer)parentOffer.presented(global,actor&&actor.user_id);}
   }).catch(function(error){
     console.warn("[li-onboarding] eligibility unavailable",String(error&&error.message||"unknown").slice(0,100));
     trialEligibility=null;
@@ -552,12 +561,15 @@ function offerIfEligible(){
 }
 function beginTrial(){
   if(requestBusy||!trialEligibility||!trialEligibility.eligible){window.go("end");return}
+  trialStartInFlight=true;
   setBusy(true,"trial-start");
   var endpoint=hostPwa?"/api/v3/pwa/trial/start":"/api/v3/trial/start";
   function confirmed(){
+    trialConfirmed=true;trialStartInFlight=false;
     requestBusy=false;global.trail.push(global.screen);global.screen="trialDone";global.render();
   }
   function failed(e){
+    trialStartInFlight=false;
     console.warn("[li-onboarding] trial activation",String(e&&e.message||"trial_denied").slice(0,100));
     // Retry remains available but never claim Pro based on a timeout or
     // client-side state. The real server holds the one-time entitlement.
@@ -579,7 +591,25 @@ function beginTrial(){
     }).catch(function(){failed(e)});
   });
 }
+function offerHost(){
+  try{return global.parent!==global&&global.parent.location.origin===location.origin&&global.parent.HskPwaTrialOffer||null}catch(_){return null}
+}
+function returnFromOffer(activated){
+  if(trialStartInFlight)return false;
+  if(requestBusy){requestBusy=false;++requestGeneration;}
+  var parentOffer=offerHost();
+  if(parentOffer)return parentOffer.close(global,activated===true);
+  if(global.parent!==global)return false;
+  location.replace(pageCourse()+"?lang="+encodeURIComponent(global.LANG)+"&tab=profile");return true;
+}
+function purchaseFromOffer(){
+  if(requestBusy)return;
+  var parentOffer=offerHost();
+  if(parentOffer){parentOffer.purchase(global);return;}
+  if(global.parent===global)location.assign("/iphone-pwa/checkout?mode=subscription&source=profile_subscription&return_to=course&return_tab=profile&lang="+encodeURIComponent(global.LANG));
+}
 function toCourse(){
+  if(offerMode){returnFromOffer(trialConfirmed);return;}
   // No preview may claim the first lesson is ready without a server save.
   if(!launch||!launch.ok){renderError(saveProfile);return}
   var q=new URLSearchParams(location.search);
@@ -829,6 +859,19 @@ global.render=function(animate){
     var heading=document.querySelector("#stage .trial h2");
     if(heading)heading.textContent=word("trialOn");
   }
+  if(offerMode&&["trialIntro","trial1","trial2","trial3","trialDone"].indexOf(global.screen)>=0){
+    var top=document.getElementById("top"),exit=document.createElement("button");
+    exit.type="button";exit.className="bk li-trial-close";exit.setAttribute("aria-label",word("close"));
+    exit.innerHTML=global.icon("close");exit.onclick=function(){returnFromOffer(trialConfirmed)};
+    top.hidden=false;top.appendChild(exit);
+    if(global.screen==="trialIntro"){
+      var paid=document.createElement("button");paid.type="button";paid.className="cta ghost";
+      paid.textContent=word("buyPro");paid.onclick=purchaseFromOffer;document.getElementById("footer").appendChild(paid);
+    }
+    if(global.screen==="trial3"){
+      var startButton=document.querySelector("#footer .cta");if(startButton)startButton.textContent=word("proCta");
+    }
+  }
   if(global.screen==="profile"&&identityKey&&(!hostPwa||actor)){
     var button=document.querySelector("#footer .cta");
     if(button)button.textContent=word("cont");
@@ -877,6 +920,7 @@ global.back=function(){
 };
 global.go=function(next){
   if(requestBusy)return;
+  if(offerMode&&next==="end"){returnFromOffer(trialConfirmed);return;}
   if(next==="login"){
     if(!hostPwa&&identityKey){location.assign(pageCourse());return}
     if(hostPwa&&actor){location.assign(pageCourse());return}
@@ -918,11 +962,13 @@ global.LiRuntime={authenticate:authenticate,
 });
 async function bootstrap(){
   try{
+    if(offerMode)showAuthWait("waiting");
     if(hostPwa&&(validAuthHandoff()||telegramPendingId()))showAuthWait("waiting");
     if(hostPwa){
       try{await session()}
       catch(error){
         if(error&&error.message==="server_status_401"){
+          if(offerMode){renderError(bootstrap,function(){returnFromOffer(false)});return;}
           // This is a public panda-first UI, not a public user account.
           // All course writes remain inaccessible until verified OAuth.
           actor=null;identityKey="pwa:guest";
@@ -957,8 +1003,20 @@ async function bootstrap(){
       await session();
     }
     clearTelegramPending();
+    if(offerMode){
+      var parentOffer=offerHost();
+      if(parentOffer&&!parentOffer.acceptActor(global,actor&&actor.user_id))throw new Error("pwa_actor_changed");
+    }
     var status=await statusApi();
     identityKey=userKey();
+    if(offerMode){
+      if(!status.saved||!status.profile){renderError(bootstrap,function(){returnFromOffer(false)});return;}
+      // Read the saved learner choices without posting onboarding again.
+      global.track=String(status.level||"").indexOf("nhsk")===0?"hsk30":"hsk20";
+      global.level=status.level;
+      global.goals=(Array.isArray(status.profile.goals)?status.profile.goals:[status.profile.goal]).filter(function(key){return global.GOALS&&global.GOALS[key]});
+      requestBusy=false;offerIfEligible();return;
+    }
     if(status.saved){
       // Existing learners should not leave stale anonymous choices that
       // a later account could inadvertently inherit on this device.
@@ -994,8 +1052,14 @@ async function bootstrap(){
     }
   }catch(e){
     console.warn("[li-onboarding] authentication/status",String(e&&e.message||"not_ready").slice(0,100));
-    renderError(bootstrap);
+    renderError(bootstrap,offerMode?function(){returnFromOffer(false)}:undefined);
   }finally{initializing=false}
+}
+if(offerMode){
+  var offerStyle=document.createElement("style");
+  offerStyle.textContent="#top{position:relative;min-height:56px}#top .stepper{margin-right:52px;width:calc(100% - 52px)}#top .li-trial-close{position:absolute;right:0;top:0;width:44px;height:44px}";
+  document.head.appendChild(offerStyle);
+  global.hskPwaCheckoutBack=function(){returnFromOffer(trialConfirmed)};
 }
 global.addEventListener("pageshow",function(ev){
   if(!hostPwa)return;

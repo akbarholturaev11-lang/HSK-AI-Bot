@@ -55,6 +55,7 @@ class IphonePwaNavigationContractTests(unittest.TestCase):
         # layer; the embedded checkout asks its parent to close that layer.
         self.assertIn("App.openPwaCheckout(query);return}", COURSE)
         self.assertIn('frame.src="/iphone-pwa/checkout?"+query.toString()', COURSE)
+        self.assertIn('if(query.get("offer")==="trial")frame.src="/iphone-pwa/onboarding/li?"+query.toString();else ', COURSE)
         action = CHECKOUT.split("function returnToCourseFromCheckout()", 1)[1].split(
             "function initTelegramCourseReturn()", 1
         )[0]
