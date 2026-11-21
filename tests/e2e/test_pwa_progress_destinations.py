@@ -183,3 +183,47 @@ def test_goal_timeout_unknown_values_calendar_rollover_and_refresh_geometry(brow
     assert_readable(page)
     page.keyboard.press("Escape")
     assert page.locator('#s-course [data-progress="xp"]').evaluate("el => el===document.activeElement")
+
+
+@pytest.mark.parametrize("language", ["uz", "ru", "tj"])
+@pytest.mark.parametrize("theme", ["light", "dark"])
+def test_progress_large_text_keeps_goal_controls_and_month_scroll_reachable(browser, language, theme):
+    fixture = ProgressPage(language, theme)
+    page = fixture.open(browser, 320)
+    page.set_viewport_size({"width": 320, "height": 568})
+    page.locator('#s-course [data-progress="streak"]').click()
+    page.locator('[data-p45="select"]').click()
+    page.locator('#p45-progress').evaluate("""root=>{
+        const rules=[];
+        for(const el of root.querySelectorAll('*')){
+            if(el.tagName==='I'||el.closest('svg'))continue;
+            const path=[];
+            for(let node=el;node!==root;node=node.parentElement){
+                path.unshift(node.tagName.toLowerCase()+[...node.classList].map(x=>'.'+CSS.escape(x)).join(''));
+            }
+            rules.push('#p45-progress>'+path.join('>')+'{font-size:'+(parseFloat(getComputedStyle(el).fontSize)*2)+'px!important}');
+        }
+        // Keep the same scale after a legitimate save/error rerenders nodes.
+        const style=document.createElement('style');style.textContent=rules.join('');document.head.appendChild(style);
+    }""")
+    assert_readable(page)
+    # Enlarged text changes the natural height; no fixed page/body height or
+    # spacing assertion may hide a lost goal action or the month calendar.
+    goal=page.locator('[data-p45="goal"][data-value="30"]')
+    goal.scroll_into_view_if_needed()
+    box=goal.bounding_box()
+    header=page.locator('.p45-progress-header').bounding_box()
+    assert box['y']>=header['y']+header['height']-1 and box['y']+box['height']<=568
+    goal.click()
+    page.wait_for_function("document.querySelector('[data-p45=goal]').disabled")
+    fixture.respond(ok=False)
+    page.wait_for_function("document.querySelector('.p45-progress-save-status').textContent===HSKAI_COURSE_I18N[LANG]['pwaProgress.saveError']")
+    page.locator('.p45-progress-save-status').scroll_into_view_if_needed()
+    assert page.locator('.p45-progress-save-status').is_visible()
+    day=page.locator('.p45-cal-day').last
+    day.scroll_into_view_if_needed()
+    assert day.is_visible()
+    assert page.locator('.p45-progress-body').evaluate('el=>el.scrollHeight>el.clientHeight&&el.scrollTop>0')
+    assert_readable(page)
+    page.keyboard.press('Escape')
+    assert page.locator('#s-course [data-progress="streak"]').evaluate('el=>el===document.activeElement')
