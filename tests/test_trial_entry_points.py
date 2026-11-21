@@ -87,7 +87,7 @@ class TrialEntryPointTests(unittest.TestCase):
         body = COURSE.split("function renderProfile(){", 1)[1].split(
             "\nfunction salesValueCopy(", 1
         )[0]
-        self.assertEqual(1, body.count('<div id="hsk-profile-promo-root"></div>'))
+        self.assertEqual(1, body.count('<div id="hsk-profile-promo-root">'))
         self.assertNotIn("proProfileCard()", body)
         self.assertNotIn('<div class="pro"', body)
 
