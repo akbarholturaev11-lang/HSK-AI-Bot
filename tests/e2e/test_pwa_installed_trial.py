@@ -562,14 +562,14 @@ def test_trial_has_one_free_action_persistent_brand_and_saved_personal_plan(brow
     frame = trial_frame(page)
     assert frame.locator("#footer .cta").count() == 1
     assert frame.locator("#footer .cta").inner_text() == copy["trialOffer.start"]
-    assert page.locator('meta[name="theme-color"]').get_attribute("content") == "#211D17"
-    assert page.locator("#pwa-checkout-layer").evaluate("el => getComputedStyle(el).backgroundColor") == "rgb(33, 29, 23)"
+    assert page.locator('meta[name="theme-color"]').get_attribute("content") == "#FDF9F0"
+    assert page.locator("#pwa-checkout-layer").evaluate("el => getComputedStyle(el).backgroundColor") == "rgb(253, 249, 240)"
     for step in ("trialIntro", "trial1", "trial2", "trial3", "trialDone"):
         if step != "trialIntro":
             frame.locator("#footer .cta").first.click()
             page.wait_for_function("step => document.querySelector('#pwa-checkout-layer iframe').contentWindow.screen===step", arg=step)
         assert frame.get_by_role("heading", name="HSK AI PRO", exact=True).is_visible()
-        assert frame.locator(".wrap").evaluate("el => getComputedStyle(el).backgroundColor") == "rgb(33, 29, 23)"
+        assert frame.locator(".wrap").evaluate("el => getComputedStyle(el).backgroundColor") == "rgb(253, 249, 240)"
         assert frame.locator("#stage").evaluate("el => el.scrollWidth<=el.clientWidth+1")
         if step in ("trial1", "trial2", "trial3"):
             assert frame.locator(".trial h2").inner_text() == copy[f"proGoal.{goal}.title"]
@@ -600,7 +600,7 @@ def test_trial_slow_runtime_does_not_flash_account_or_onboarding_screens(browser
     page.wait_for_function("() => !!document.querySelector('#pwa-checkout-layer iframe')?.contentDocument?.documentElement?.classList.contains('li-trial-pending')")
     frame = page.frame_locator("#pwa-checkout-layer iframe")
     assert frame.locator(".wrap").evaluate("el => getComputedStyle(el).visibility") == "hidden"
-    assert frame.locator("body").evaluate("el => getComputedStyle(el).backgroundColor") == "rgb(33, 29, 23)"
+    assert frame.locator("body").evaluate("el => getComputedStyle(el).backgroundColor") == "rgb(253, 249, 240)"
     page.wait_for_function("() => !!document.querySelector('#pwa-checkout-layer iframe')?.contentDocument?.querySelector('script[src*=li-onboarding-runtime]')")
     assert len(fixture.runtime_held) == 1
     fixture.hold_runtime = False
@@ -640,12 +640,12 @@ def test_cached_profile_trial_uses_existing_limit_panda_and_restores_status_bar(
     assert edge.evaluate("""el => {
         const s=getComputedStyle(el),r=el.getBoundingClientRect();
         return s.position==='fixed' && s.pointerEvents==='none' &&
-          s.backgroundColor==='rgb(33, 29, 23)' && r.y===0 &&
+          s.backgroundColor==='rgb(253, 249, 240)' && r.y===0 &&
           r.width===innerWidth && r.height>=16;
     }""")
-    assert page.locator('meta[name="theme-color"]').get_attribute("content") == "#211D17"
+    assert page.locator('meta[name="theme-color"]').get_attribute("content") == "#FDF9F0"
     assert frame.locator("body").evaluate(
-        "el => getComputedStyle(el).backgroundColor") == "rgb(33, 29, 23)"
+        "el => getComputedStyle(el).backgroundColor") == "rgb(253, 249, 240)"
     page.keyboard.press("Escape")
     page.locator("#pwa-checkout-layer").wait_for(state="detached")
     assert status_bar.get_attribute("content") == old_style

@@ -121,7 +121,7 @@
         var edge=document.createElement("div");
         edge.className="pwa-trial-status-edge";
         edge.setAttribute("aria-hidden","true");
-        edge.style.cssText="position:fixed;top:0;left:0;right:0;height:max(16px,var(--safe-t,0px));background:#211D17;pointer-events:none;z-index:1";
+        edge.style.cssText="position:fixed;top:0;left:0;right:0;height:max(16px,var(--safe-t,0px));background:var(--paper,#FDF9F0);pointer-events:none;z-index:1";
         layer.appendChild(edge);trialStatusEdge=edge;
       }else if(trialStatusEdge){
         trialStatusEdge.remove();trialStatusEdge=null;

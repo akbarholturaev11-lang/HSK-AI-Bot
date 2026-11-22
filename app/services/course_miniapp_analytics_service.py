@@ -38,6 +38,8 @@ PASSIVE_SERVER_EVENT_NAMES = frozenset({
     "adaptive_assigned",
     "adaptive_answer_verified",
     "adaptive_shadow_planned",
+    # The app opens this daily widget offer by itself; seeing it is not activity.
+    "android_widget_daily_prompt_viewed",
 })
 
 
