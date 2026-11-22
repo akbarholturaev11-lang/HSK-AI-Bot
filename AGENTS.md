@@ -76,10 +76,12 @@ Before implementing **any future** Backend API or learner PWA screen, section or
 
 - PWA: verified-session-first safe shell, above-the-fold logo/mascot priority, per-section skeleton/loading/empty/error/retry, progressive updates, stable layout, lazy offscreen assets, and no duplicate in-flight reads. Never block all UI on an unrelated API call.
 - **PWA loading-geometry performance invariant:** use the final-layout skeleton and per-section settlement requirements in the linked performance contract; the `hsk-ai-ui` skill owns visual anatomy. Keep relevant WebKit/Chromium stable-geometry regression coverage and reduced-motion handling.
+- Android: same first-frame/section-state/no-duplicate-read rules in the existing Compose/ViewModel architecture; state that must survive detail→back (scroll, search, filters) is owned above the branch that leaves composition. A changed `android/app/src/main/**/*.kt` needs a changed Android `*Test.kt` (guard-enforced).
+- Navigation: one gesture = one back step on every surface (PWA edge swipe, Telegram BackButton, browser/Android back). New PWA layers register with `NavBack`, stay opaque while dragged, and extend `tests/e2e/test_pwa_swipe_back.py`.
 - Backend: before adding a route/query, check N+1, bounded data/pagination, pool/transaction scope, indexes based on plans, timeouts, request concurrency and cache invalidation/owner isolation; use existing infrastructure before Redis/new servers.
 - Protect Trial/Free/Pro, payments, auth, CSRF, lesson progress and shared Mini App/Android contracts. No cached private cross-account content or optimistic entitlements.
 - A Backend/PWA feature is not done without focused regression tests and relevant slow-network/SQL or browser evidence; if an optimization is unnecessary, document evidence rather than adding it.
-- `.github/workflows/backend-pwa-performance-contract.yml` remains the existing Backend/PWA CI guard. Never bypass it or weaken assertions. For the **same active performance initiative**, use existing native Android CI/tests and add justified Android-specific performance/regression gates. The historical Backend/PWA-only restriction does **not** prohibit Android changes in the current joint scope; do not postpone Android to a future standalone stage.
+- `.github/workflows/backend-pwa-performance-contract.yml` remains the existing Backend/PWA/Android CI guard. Never bypass it or weaken assertions. For the **same active performance initiative**, use existing native Android CI/tests and add justified Android-specific performance/regression gates. The historical Backend/PWA-only restriction does **not** prohibit Android changes in the current joint scope; do not postpone Android to a future standalone stage.
 
 
 ## Bug fix standarti

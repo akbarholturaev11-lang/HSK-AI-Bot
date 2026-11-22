@@ -1,10 +1,10 @@
-"""Regression tests for the permanent Backend/PWA CI policy guard."""
+"""Regression tests for the permanent Backend/PWA/Android CI policy guard."""
 import tempfile
 import unittest
 from pathlib import Path
 
 from scripts.check_backend_pwa_performance_contract import (
-    change_issues, is_backend_source, is_pwa_source, policy_issues,
+    change_issues, is_android_source, is_backend_source, is_pwa_source, policy_issues,
 )
 
 
@@ -35,10 +35,22 @@ class PerformanceContractGuardTests(unittest.TestCase):
             "tests/e2e/test_pwa_initial_shell.py",
         ]), [])
 
-    def test_android_native_not_gated(self):
-        self.assertFalse(is_backend_source("android/app/Example.kt"))
-        self.assertFalse(is_pwa_source("android/app/Example.kt"))
-        self.assertEqual(change_issues(["android/app/Example.kt"]), [])
+    def test_android_change_requires_android_test(self):
+        screen = "android/app/src/main/java/com/pomp/hskai/feature/x/XScreen.kt"
+        self.assertTrue(is_android_source(screen))
+        self.assertFalse(is_backend_source(screen))
+        self.assertFalse(is_pwa_source(screen))
+        self.assertEqual(len(change_issues([screen])), 1)
+        # A web or backend test does not cover native code.
+        self.assertEqual(len(change_issues([screen, "tests/e2e/test_pwa_swipe_back.py"])), 1)
+        self.assertEqual(change_issues([
+            screen, "android/app/src/test/java/com/pomp/hskai/feature/x/XViewModelTest.kt"]), [])
+        self.assertEqual(change_issues([
+            screen, "android/app/src/androidTest/java/com/pomp/hskai/feature/x/XScreenTest.kt"]), [])
+        # Build scripts, resources and docs are not gated here.
+        self.assertEqual(change_issues([
+            "android/app/build.gradle.kts", "android/app/src/main/res/values/strings.xml",
+            "android/README.md"]), [])
 
     def test_permanent_policy_links_and_sections(self):
         with tempfile.TemporaryDirectory() as directory:
