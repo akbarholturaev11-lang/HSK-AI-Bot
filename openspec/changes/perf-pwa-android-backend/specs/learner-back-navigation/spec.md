@@ -44,8 +44,16 @@ off-screen; it never flashes back to its open position first.
 - **THEN** the word page closes before its transform is reset, with no frame showing it at x=0
 
 #### Scenario: Dragging back from a root tab
-- **WHEN** the learner drags back from Practice, Rating or Profile in the PWA
-- **THEN** either the painted Course screen shows underneath, or the tab does not follow the finger and the swipe still goes back one step; empty paper is never shown
+- **WHEN** the learner drags back from Practice, Voice, Rating or Profile in the PWA
+- **THEN** the painted screen that back will open (the previous tab, or Course when there is none) shows underneath, or, under reduced motion or a failed performance gate, the tab does not follow the finger and the swipe still goes back one step; empty paper is never shown
+
+#### Scenario: Releasing a root-tab drag lands without a jump
+- **WHEN** the learner releases a root-tab drag past the back threshold
+- **THEN** the destination opens in one history step, and its anchor (the current lesson on Course) is within 8 px of where the peek showed it
+
+#### Scenario: Cancelling a root-tab drag
+- **WHEN** the learner releases a root-tab drag before the back threshold
+- **THEN** the tab returns to place, the peek is removed, and the current screen and history are unchanged
 
 ### Requirement: Returning keeps the previous position
 Returning from a detail to its list MUST restore the list's scroll position, search

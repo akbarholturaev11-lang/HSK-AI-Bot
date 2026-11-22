@@ -123,3 +123,31 @@ Nor may it cache private data across accounts.
 #### Scenario: Back gesture over an access gate
 - **WHEN** the paywall, level-up or an ad overlay is open
 - **THEN** a back gesture does not dismiss it
+
+#### Scenario: Another account signs in on the same Android install
+- **WHEN** a learner signs out on Android and another account signs in without restarting the app
+- **THEN** no course, profile or rating data cached for the first account is shown to the second
+
+### Requirement: External calls on learner paths are bounded
+Every call from a learner-facing backend path to an external service MUST
+have an explicit timeout and a bounded retry count. This covers the AI
+providers (primary and fallback), TTS, Telegram and identity providers. A
+provider outage then ends in a timely error the client can retry, not a
+request held for minutes.
+
+#### Scenario: The AI fallback provider hangs
+- **WHEN** the primary AI provider fails and the fallback provider does not answer
+- **THEN** the request ends within the configured fallback timeout and the learner sees the existing error with retry
+
+### Requirement: Android reliability-critical flows are covered
+The flows below MUST each have a passing automated test on the direct
+flavour, or a recorded reason why one is not possible:
+- foreground/background, app resume after process death;
+- network loss and reconnect, offline learning;
+- push and deep links, the login callback;
+- account switching;
+- mandatory updates.
+
+#### Scenario: Process death during a lesson
+- **WHEN** Android kills the app in the background during a lesson and the learner returns
+- **THEN** the app restores the lesson screen and position, or returns to Course with progress intact, never a blank screen or a crash

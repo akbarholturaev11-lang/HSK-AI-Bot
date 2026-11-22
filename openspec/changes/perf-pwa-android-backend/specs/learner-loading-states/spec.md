@@ -63,6 +63,38 @@ navigation, tabs and already-settled sections.
 - **WHEN** a PWA layer settles from placeholders to data at 320 px width
 - **THEN** its header and the first row's top edge move by at most 8 px, and its CLS is at most 0.1
 
+### Requirement: A session start shows the panda only when preparation is slow
+In the PWA, a session start (a lesson, Recognition, Pronunciation, Memorize, a
+Test exam or a Mistakes review) MUST open directly when ready within 300 ms.
+Otherwise it MUST show the existing panda preparing screen until ready, for at
+least 300 ms once shown. Back stays usable, and one loader shows at a time.
+
+#### Scenario: Fast session start
+- **WHEN** the learner starts a lesson or a practice session in the PWA and it is ready within 300 ms
+- **THEN** the first usable card appears with no panda frame and no added wait
+
+#### Scenario: Slow session start
+- **WHEN** a session start in the PWA is still preparing after 300 ms
+- **THEN** the panda preparing screen appears, stays until the session is ready, and the Back control works while it is shown
+
+#### Scenario: Telegram lesson entry
+- **WHEN** a lesson starts in the Telegram Mini App
+- **THEN** its preparing screen timing is the same as before this change
+
+### Requirement: Hubs use skeletons, not the panda
+In the PWA, hub screens (Test centre, Mistakes centre, Dictionary and Ready
+Phrases) MUST NOT show the panda preparing screen. They MUST show
+layout-faithful skeletons, and a page that never becomes ready MUST offer a
+localized retry.
+
+#### Scenario: Opening the Test or Mistakes centre
+- **WHEN** the learner opens the Test centre or the Mistakes centre in the PWA
+- **THEN** the hub shows its header and placeholders shaped like its exam cards or mistake rows, never the panda, and they settle with anchors moving by at most 8 px
+
+#### Scenario: Practice page never becomes ready
+- **WHEN** a PWA practice page has not become ready after its fallback timeout
+- **THEN** it shows the existing localized error with Retry and Back, and Retry loads the page again
+
 ### Requirement: Loading states use existing copy and design
 Loading, error and retry states MUST:
 - reuse the surface's existing localized labels for UZ, RU and TJ, and its

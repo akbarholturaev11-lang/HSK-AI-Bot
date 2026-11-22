@@ -39,42 +39,59 @@ Authoritative sources, not restated here:
 - Android cache-first Course and offline start.
 - The CI guard extended to Android and navigation.
 
+**Done in this change so far:** the repeatable PWA lab profile (task 1.1).
+
 **To do, PWA first:**
-1. A repeatable lab profile and privacy-safe real-user timing, both built on
-   existing harnesses and the existing `/api/v3/clientlog` diagnostics. No new
-   telemetry stack.
+1. Privacy-safe real-user timing through the existing `/api/v3/clientlog`
+   diagnostics. No new telemetry stack.
 2. Baselines and targets for the key learner actions:
    - navigation;
-   - lesson open;
-   - exercise advance;
+   - login and onboarding;
+   - lesson open, exercise advance and lesson finish;
+   - session starts;
    - dictionary search;
    - swipe-back.
 3. Inbox: a layout-faithful loading state and an in-place retry. Today the
    loading state is text only and an error has no retry.
 4. Embedded layers: no text-only blank frame before the layer paints. Fixed
    only if a measured threshold is crossed.
-5. Back and scroll audit of the remaining layers, plus the root-tab swipe
-   behaviour (owner's design choice).
+5. Root-tab drag: a live peek of the back destination (owner choice a),
+   behind a performance gate.
+6. Panda only when a session start is slow (over 300 ms). The Test and
+   Mistakes centres use skeletons. These are owner decisions; today the
+   panda shows on every practice open and lesson entry, with a 720 ms
+   minimum.
+7. A back and scroll audit of the remaining layers, then the §7 condition
+   matrix.
 
 **To do, Android (same initiative, same regression matrix):**
-- Startup baseline and `reportFullyDrawn`.
+- Startup baseline and `reportFullyDrawn`, with memory and network bytes,
+  for both flavours on Pixel_8 and the owner's weak device.
 - Layout-matched loading for the two full-screen loaders: first-ever Course
   open and Ready Phrases.
-- Back and scroll audit.
-- Jank and ANR from vitals data.
+- A back, scroll and action-state audit.
+- Jank, ANR and duplicate requests from frame stats and vitals data.
+- Tests for the two uncovered reliability flows: process death and an
+  account switch without a restart.
 
 **To do, Backend:**
 - `lesson/complete`: the full-league leaderboard is computed twice inside the
   user's lock.
 - The `lesson/start` p90 tail.
 - The `pwa/profile` p99 spike.
+- The network gap and launch payload sizes.
+- The OpenAI fallback client has no timeout (SDK default 600 s). AI time to
+  first useful response is unmeasured.
 
 **Unnecessary now, with evidence:**
 - Redis, new queues, OpenTelemetry, CDN migration, SSR.
-- A per-language i18n split, image format conversion and AI streaming.
+- A per-language i18n split and image format conversion.
 - Removing desktop scripts from the PWA.
+- Text web fonts (system fonts only).
+- Extra backend replicas (no saturation evidence).
 
-Each one is reopened only by the evidence named in design.md.
+AI streaming is decided by the 4.5 measurement. Each item above is reopened
+only by the evidence named in design.md.
 
 ## Capabilities
 
@@ -100,14 +117,20 @@ Each one is reopened only by the evidence named in design.md.
   - `app/static/course-v3.html`, `app/static/hsk-lugat.html`,
     `app/static/hsk-gaplar.html`;
   - `app/static/course_v3_data/iphone-pwa-notices.js` (Inbox);
-  - the practice pages under `/iphone-pwa/practice/*`.
+  - the practice pages under `/iphone-pwa/practice/*`, especially
+    `course_v3_test.html` and `course_v3_mistakes.html`;
+  - `app/static/course_v3_data/iphone-pwa-practice-boot.js`;
+  - `app/static/assets/characters/hsk-lesson-presentation.js` (PWA-only
+    option; Telegram default unchanged).
 - **Native Android, Play and direct:**
   - `feature/course`, `feature/practice/ReadyPhrasesScreen.kt`,
     `feature/dictionary`;
-  - `MainActivity.kt` (first-drawn report).
-- **Backend:** `/api/v3/lesson/complete`, `/api/v3/lesson/start`,
-  `/api/v3/pwa/profile`, and `/api/v3/clientlog` (read only for real-user
-  samples).
+  - `MainActivity.kt` (first-drawn report);
+  - new instrumentation tests for process death and account switch.
+- **Backend:**
+  - `/api/v3/lesson/complete`, `/api/v3/lesson/start`, `/api/v3/pwa/profile`;
+  - `app/services/ai_provider.py` (fallback timeout);
+  - `/api/v3/clientlog` (read only for real-user samples).
 
 **Current evidence:** measured on 2026-11-22 against main `50231bee`; details
 in design.md.
@@ -118,9 +141,11 @@ in design.md.
   - `lesson/start` p50 ≈62 ms, p90 ≈400 ms;
   - `lesson/complete` p50 ≈215 ms, p95 ≈490–670 ms;
   - `pwa/profile` p99 spike 3.4 s.
-- PWA lab cold load (slow 4G, 4× CPU, production-like gzip): FCP 0.9–1.1 s,
-  course map ready 2.9–3.1 s, CLS ≈0.
-- PWA lab warm load: FCP ≈0.4 s, map ready ≈1.9 s.
+- PWA lab (task 1.1 harness, 390 px; slow 4G; 4× CPU on Chromium;
+  production-like gzip and cache headers):
+  - cold: FCP 1.24 s on Chromium and 2.18 s on WebKit; course ready
+    3.6–3.7 s;
+  - warm: FCP ≈0.3 s; course ready ≈0.7 s; 4.4 KB transferred.
 - From one network, client-side TLS and TTFB to production were 1.2–2.5 s,
   against a server p95 of 39 ms. Real-user timing is needed to tell whether
   this is typical.
