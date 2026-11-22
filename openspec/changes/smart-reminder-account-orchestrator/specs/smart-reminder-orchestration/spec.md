@@ -60,7 +60,7 @@ The policy SHALL use verified study behavior to adapt reminder time and frequenc
 - **THEN** that open alone is neither a completed goal nor conclusive evidence that the reminder improved learning
 
 ### Requirement: Personal reactivation
-Reactivation SHALL reflect the account's normal study rhythm and offer a real accessible lightweight learning action. Without useful study return, successive reactivation attempts MUST become less frequent and ultimately stop. In ordinary mode the sequence after the personal gap is the D32/D33 one in `smart-reminder-messages`; no invented lesson duration is allowed (D08).
+Reactivation SHALL reflect the account's normal study rhythm and offer a real accessible lightweight learning action. In native complete-coverage mode, attempts without useful study return MUST become less frequent and ultimately stop. Ordinary mode instead reminds daily during a break per D32 in `smart-reminder-messages`. No invented lesson duration is allowed (D08).
 
 #### Scenario: Different normal rhythms
 - **WHEN** a daily learner and a twice-weekly learner both have a three-day gap

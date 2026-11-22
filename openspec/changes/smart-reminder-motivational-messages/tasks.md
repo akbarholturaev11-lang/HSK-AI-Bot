@@ -9,16 +9,16 @@ The owner approved D31–D33 and implementation on 2026-11-22. Evidence goes int
 
 ## 2. Copy library (UZ/RU/TJ)
 
-- [ ] 2.1 Add `smart.msg.<situation>.<nn>.title|body` to `localization/ui/{uz,ru,tj}/notifications.json` (daily 8, streak 6, comeback 8, last_call 2), plural-safe for `{streak}`, no day counts in comeback, then run `python3 scripts/i18n_build_all_catalogs.py --write` and `--check`; verify the generated catalog diff contains only these keys.
+- [ ] 2.1 Add `smart.msg.<situation>.v<n>.title|body` to `localization/ui/{uz,ru,tj}/notifications.json` (daily 8, streak 6, comeback 8, long_break 10), plural-safe for `{streak}`, no day counts, then run `python3 scripts/i18n_build_all_catalogs.py --write` and `--check`; verify the generated catalog diff contains only these keys.
 - [ ] 2.2 Extend `tests/test_notification_catalog_runtime.py` to fail on a missing language, placeholder other than `{lesson}`/`{streak}`, placeholder mismatch between languages, or length above the Telegram text/caption limit and the Web Push/Android title/body limits; verify it fails on a seeded bad key and passes on the real catalog.
 - [ ] 2.3 Agent semantic QA of all variants under `localization/AI_CONTENT_QA_POLICY.md` (natural UZ Latin, RU, TJ Cyrillic; warm, honest tone); record the reviewed key list in the Master Plan checkpoint.
 
 ## 3. Backend selection and storage
 
 - [ ] 3.1 Add the Alembic revision after the current head with nullable `smart_reminder_jobs.content_key VARCHAR(48)` and matching ORM field; verify upgrade → downgrade → upgrade on PostgreSQL and SQLite and identical migration/ORM columns.
-- [ ] 3.2 Create `app/services/smart_reminder_messages.py`: pure situation precedence (`last_call` → `comeback` → `streak` → `daily`), 14-day recency rotation with stable hash tie-break, and rendering with only verified `{lesson}`/`{streak}` (reusing `PolicyContext.streak_current`); add `tests/test_smart_reminder_messages.py` covering the spec scenarios, including no repeat across a full pool and a pool smaller than 14 days.
-- [ ] 3.3 Add a bounded loader for unanswered count and keys sent in the last 14 local days to `SmartReminderPolicyContextService`; verify with a SQL test that another account's jobs never affect the result.
-- [ ] 3.4 Add `smart-rules-observed-v2` to `smart_reminder_cadence.py` (D31 weekly ceiling, D32 sequence, `reactivation_stopped` at 5) without touching native complete-coverage mode; extend `tests/test_smart_reminder_cadence.py` for D+1/2/3/5/7 then stop, reset on verified study, weekly ceiling deferral and personal-gap start; check whether the calibration version is bound into job/review digests and record the deploy consequence.
+- [ ] 3.2 Create `app/services/smart_reminder_messages.py`: pure situation precedence (`long_break` → `comeback` → `streak` → `daily`), 14-day recency rotation with stable hash tie-break, and rendering with only verified `{lesson}`/`{streak}` (reusing `PolicyContext.streak_current`); add `tests/test_smart_reminder_messages.py` covering the spec scenarios, including no repeat across a full pool and a pool smaller than 14 days.
+- [ ] 3.3 Add a bounded loader for the keys this account received in the last 14 local days to `SmartReminderPolicyContextService`; verify with a SQL test that another account's jobs never affect the result.
+- [ ] 3.4 Add `smart-rules-observed-v2` (weekly maximum 7) to `smart_reminder_cadence.py` and select it where `OBSERVED_RULES` is used, without touching native complete-coverage mode; extend `tests/test_smart_reminder_cadence.py` for one reminder on each of 30 break days, no reminder on a studied day, the personal-gap start and one per day; check whether the calibration version is bound into job/review digests and record the deploy consequence.
 
 ## 4. Channels
 
@@ -40,5 +40,5 @@ The owner approved D31–D33 and implementation on 2026-11-22. Evidence goes int
 ## 7. Integration and acceptance
 
 - [ ] 7.1 Run the Smart suites (`tests/test_smart_reminder_*.py`, motivation, Admin notifications, notification catalogs) on PostgreSQL and SQLite and the Android unit suite; record counts in the Master Plan checkpoint.
-- [ ] 7.2 Owner test accounts: over 7 days confirm different texts on Telegram, iPhone PWA and Android (new APK, if released), and one simulated lapse on a test account ending with `last_call` and silence; record server job/attempt evidence separately from what the owner saw on the phone.
-- [ ] 7.3 First production week: watch Admin per-situation counts, bot blocks, OFF changes and rollout pause reasons; record them before calling the feature done.
+- [ ] 7.2 Owner test accounts: over 7 days confirm different texts on Telegram, iPhone PWA and Android (new APK, if released), and that a test account on a break moves from `comeback` to `long_break` copy; record server job/attempt evidence separately from what the owner saw on the phone.
+- [ ] 7.3 First two production weeks: watch Admin per-situation counts, bot blocks, OFF changes and rollout pause reasons; report them to the owner and record them before calling the feature done.
