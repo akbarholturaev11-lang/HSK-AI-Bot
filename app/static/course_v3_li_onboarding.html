@@ -201,11 +201,15 @@ body.dark{background:var(--li-pro-paper)}
 .li-pro-welcome h1{font-size:clamp(29px,8vw,41px);line-height:1.1;font-weight:850;letter-spacing:-.7px;color:var(--li-pro-ink);margin:0}
 .li-pro-welcome h1 strong{color:var(--li-pro-gold-ink);font-weight:900}
 .li-pro-welcome-panda{position:relative}
-.li-pro-welcome-panda:before{content:"";position:absolute;inset:-8%;border-radius:50%;background:radial-gradient(circle,rgba(233,169,22,.26),transparent 66%);pointer-events:none}
+.li-pro-welcome-panda:before{content:"";position:absolute;left:50%;top:50%;width:min(118%,320px);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(233,169,22,.26),transparent 66%);pointer-events:none}
 .li-pro-welcome-panda{flex:1;min-height:0;width:min(75vw,300px);max-width:300px;display:flex;justify-content:center;align-items:center;margin:20px 0}
 .li-pro-welcome-panda .hsk-character{width:100%;height:auto;max-height:44dvh}
 html.li-trial-offer .li-pro-welcome-panda{width:min(62vw,240px)}
 html.li-trial-offer .li-pro-welcome-panda .hip-pd-char{display:block;width:100%;height:auto;max-height:44dvh}
+/* The shared Pro panda SVG draws closed eyelids; without the Pro sheet CSS they stayed shut here. */
+html.li-trial-offer .li-pro-welcome-panda .hip-pd-blink{transform-box:fill-box;transform-origin:center;transform:scaleY(0);animation:liPdBlink 4.2s ease-in-out infinite}
+@keyframes liPdBlink{0%,90%,100%{transform:scaleY(0)}94%{transform:scaleY(1)}}
+@media(prefers-reduced-motion:reduce){html.li-trial-offer .li-pro-welcome-panda .hip-pd-blink{animation:none}}
 /* Pro intro: logo on top, mascot flying in on a light trail */
 .pro-intro{flex:1;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;padding-top:42px}
 .pro-mark{text-align:center;position:relative;z-index:2}
