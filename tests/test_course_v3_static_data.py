@@ -522,7 +522,11 @@ class CourseV3StaticMapTests(unittest.TestCase):
         # touchmove passiv BO'LMASLIGI kerak — aks holda Telegram'ning o'z
         # gorizontal gesture'ini bostirib bo'lmaydi.
         self.assertIn('"touchmove",NavBack.move,{passive:false}', html)
-        self.assertIn('"touchstart",NavBack.start,{passive:true}', html)
+        # touchstart ham passiv emas: brauzer PWA'da chap chetdagi tegish
+        # tizimning o'z history-swipe'ini to'xtatish uchun egallanadi, aks holda
+        # bitta svayp 2 bo'lim orqaga qaytaradi (qarang SYS_EDGE).
+        self.assertIn('"touchstart",NavBack.start,{passive:false}', html)
+        self.assertIn("PWA_COURSE_HOST&&t.clientX<=NavBack.SYS_EDGE&&ev.cancelable", html)
 
         # Lesson exit is explicit and confirmed; forced access exits remain separate.
         self.assertIn('onclick="App.requestExitFlow()"', html)

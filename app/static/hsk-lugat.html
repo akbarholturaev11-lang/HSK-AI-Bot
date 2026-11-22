@@ -39,6 +39,17 @@ button:active{transform:scale(.98)}
 #app{max-width:480px;margin:0 auto;height:100vh;height:100dvh;position:relative;overflow:hidden;background:var(--bg);}
 .view{position:absolute;inset:var(--safe-top) 0 var(--safe-bottom);display:flex;flex-direction:column;transition:opacity .16s ease;}
 .view.hidden{display:none}
+/* Course swipe-back drags an open entry over the list (classes set by the
+   embedding course page): the entry moves as one opaque page with its own
+   landscape, never as text floating over the list. */
+.nb-drag{transition:none!important;will-change:transform}
+.nb-snap{transition:transform .22s cubic-bezier(.32,.72,0,1)!important}
+#view-detail.nb-drag,#view-detail.nb-snap{background:var(--bg);isolation:isolate;box-shadow:-12px 0 28px rgba(20,17,13,.16)}
+@supports (mask-image:url("")) or (-webkit-mask-image:url("")){
+  #view-detail.nb-drag::before,#view-detail.nb-snap::before{content:"";position:absolute;inset:calc(-1 * var(--safe-top)) 0 calc(-1 * var(--safe-bottom));z-index:-1;pointer-events:none;background-color:var(--ink,var(--text,var(--hsk-ink,#211d17)));-webkit-mask:url("/assets/characters/hsk-scene-background.svg?v=20261008-scene-1") center bottom/100% auto no-repeat;mask:url("/assets/characters/hsk-scene-background.svg?v=20261008-scene-1") center bottom/100% auto no-repeat}
+  :root[data-hsk-theme="dark"] #view-detail.nb-drag::before,:root[data-hsk-theme="dark"] #view-detail.nb-snap::before{opacity:.85}
+}
+@media (prefers-reduced-motion:reduce){.nb-snap{transition:none!important}}
 /* The parent WebView already accounts for native top insets in embedded mode. */
 html.hsk-embedded .view{top:0}
 

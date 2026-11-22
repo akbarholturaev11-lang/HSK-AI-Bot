@@ -104,7 +104,8 @@ result.absent=vm.runInNewContext('(window.HSKAILocaleMap||function(_,fallback){r
         # 2026-11-17: UIUX-007 adaptive review overlay (no locale predicates added).
         # 2026-11-17: UIUX-008 lesson plan + picture review deck (no locale predicates added).
         # 2026-11-20: PWA first-part result and exact predicate re-anchoring.
-        self.assertEqual(len((ROOT / "app/static/course-v3.html").read_text().splitlines()), 10553)
+        # 2026-11-22: PWA edge swipe-back fix (no locale predicates added).
+        self.assertEqual(len((ROOT / "app/static/course-v3.html").read_text().splitlines()), 10580)
 
     def test_graded_placement_blocks_remain_byte_identical(self):
         proof = json.loads((ROOT / "localization/review/miniapp_inline_map_migration.json").read_text())

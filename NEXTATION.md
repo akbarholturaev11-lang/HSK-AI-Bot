@@ -29,7 +29,7 @@ Bu fayl loyiha egasi kelajakda bajarish uchun saqlagan g‘oya va vazifalarning 
 - Scope: Avval kelishilgan umumiy PWA + Android + Backend optimizatsiyasi; [talablar](docs/PERFORMANCE_BACKEND_PWA_GOALS_REQUIREMENTS.md) va [performance qoidalari](docs/PERFORMANCE_PWA_PROGRESSIVE_LOADING.md) bo‘yicha. Desktop rivojlantirish hozircha scope'dan tashqarida.
 - Risks / open questions: Tezlikni yaxshilash auth, kurs, progress, Pro va to‘lov oqimlarini buzmasligi kerak. Realizatsiya bosqichi egasining 2026-11-18 dagi xabariga asoslangan; aniq bajarilgan qismlar va testlar bu qaydda hali tasdiqlanmagan.
 - Acceptance: Tegishli performance talablari, platformalararo regression testlari va real o‘lchovlar tekshirilgach `VERIFY` bosqichiga o‘tkaziladi.
-- Implementation: Realizatsiya jarayonida; aniq PR/commit havolalari keyin qo‘shiladi.
+- Implementation: Reja — [OpenSpec perf-pwa-android-backend](openspec/changes/perf-pwa-android-backend/tasks.md). 2026-11-22: PWA chetdan svayp 2 bo‘lim orqaga qaytishi va lug‘at so‘z sahifasi shaffofligi tuzatildi (1.1–1.2), Android lug‘at scroll joyi saqlanadi (2.1), doimiy guard Android va svayp regressiyasini qamraydi (5.1). Qolgani: root-tab svayp ko‘rinishi (egasi tanlovi), qatlamlar auditi, Android start/jank, `lesson/complete`/`lesson/start`/`pwa/profile` backend yo‘llari, real o‘lchovlar va qurilma QA.
 
 
 ### NXT-002 — AI Voice: ustozdek tabiiy gapirish va uzilishlarni kamaytirish
