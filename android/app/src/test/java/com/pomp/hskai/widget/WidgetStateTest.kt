@@ -1,5 +1,7 @@
 package com.pomp.hskai.widget
 
+import com.pomp.hskai.R
+import com.pomp.hskai.core.network.ApiError
 import java.time.ZonedDateTime
 import org.junit.Assert.*
 import org.junit.Test
@@ -35,5 +37,24 @@ class WidgetStateTest {
         assertTrue(WidgetPolicy.REFRESH_MINUTES <= 60)
         assertTrue(WidgetPolicy.SCHEDULE_VERSION > 0)
         assertTrue(WidgetPolicy.REMINDER_VARIANTS > 0)
+    }
+
+    @Test fun `only a server rejection of the event body drops it from the queue`() {
+        // NXT-013: a body the server refuses would fail on every retry and hold
+        // back every valid event queued behind it.
+        assertTrue(WidgetPolicy.isPermanentEventRejection(ApiError.fromCode("desktop_request_invalid")))
+        assertTrue(WidgetPolicy.isPermanentEventRejection(ApiError.fromCode("desktop_request_too_large")))
+        // Transient, auth and rate-limit failures keep the event for the next retry.
+        listOf(
+            ApiError.Offline,
+            ApiError.Timeout,
+            ApiError.Unknown,
+            ApiError.SessionExpired,
+            ApiError.fromCode("desktop_access_invalid"),
+            ApiError.fromCode("desktop_link_rate_limited"),
+            ApiError.fromCode("android_events_unavailable"),
+            ApiError.fromCode("android_device_required"),
+            ApiError.Server("course_event_not_allowed", R.string.error_unknown),
+        ).forEach { assertFalse(it.toString(), WidgetPolicy.isPermanentEventRejection(it)) }
     }
 }

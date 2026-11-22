@@ -104,6 +104,12 @@ class WidgetCoordinator(private val app: HskAiApplication, private val eventsApi
             when (val result = apiCall { eventsApi.record("Bearer $token", event) }) {
                 is ApiResult.Success -> if (result.value.ok) app.widgetStore.acknowledge(session.epoch, event.event_id)
                 is ApiResult.Failure -> {
+                    if (WidgetPolicy.isPermanentEventRejection(result.error)) {
+                        // The server refused this body itself; it would fail forever
+                        // and hold back every valid event queued behind it.
+                        app.widgetStore.acknowledge(session.epoch, event.event_id)
+                        continue
+                    }
                     if (result.error is com.pomp.hskai.core.network.ApiError.SessionExpired) app.authRepository.invalidateSession()
                     break // Stable IDs are retried on the next open/refresh.
                 }
