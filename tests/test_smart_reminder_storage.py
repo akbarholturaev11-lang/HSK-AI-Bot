@@ -39,6 +39,10 @@ PWA_ANALYSIS_SPEC = importlib.util.spec_from_file_location(
     "smart_pwa_analysis_channel_migration", ROOT / "alembic/versions/0149_smart_pwa_analysis_channel.py")
 PWA_ANALYSIS_MIGRATION = importlib.util.module_from_spec(PWA_ANALYSIS_SPEC)
 PWA_ANALYSIS_SPEC.loader.exec_module(PWA_ANALYSIS_MIGRATION)
+CONTENT_KEY_SPEC = importlib.util.spec_from_file_location(
+    "smart_content_key_migration", ROOT / "alembic/versions/0159_smart_reminder_content_key.py")
+CONTENT_KEY_MIGRATION = importlib.util.module_from_spec(CONTENT_KEY_SPEC)
+CONTENT_KEY_SPEC.loader.exec_module(CONTENT_KEY_MIGRATION)
 TABLES = {name: Base.metadata.tables[name] for name in MIGRATION.TABLES}
 PREF = SmartReminderPreference.__table__
 CONSENT = SmartReminderConsent.__table__
@@ -93,7 +97,9 @@ class StorageChecks:
                 ANALYSIS_MIGRATION.upgrade()
                 PWA_MIGRATION.upgrade()
                 PWA_ANALYSIS_MIGRATION.upgrade()
+                CONTENT_KEY_MIGRATION.upgrade()
             else:
+                CONTENT_KEY_MIGRATION.downgrade()
                 PWA_ANALYSIS_MIGRATION.downgrade()
                 PWA_MIGRATION.downgrade()
                 ANALYSIS_MIGRATION.downgrade()

@@ -30,6 +30,7 @@ from app.services.desktop_auth_service import DesktopAuthService
 from app.services.notification_template_service import KEY_SMART_STUDY, NotificationTemplateService
 from app.services.smart_reminder_android import AndroidAdmission, GRANT, SmartReminderAndroidService
 from app.services.smart_reminder_lifecycle import SmartReminderLifecycleService
+from app.services.smart_reminder_messages import is_key
 from app.services.smart_reminder_preferences import SmartReminderActor, SmartReminderPatch, SmartReminderPreferencesService
 from app.services.smart_reminder_shadow_queue import ATTEMPT, JOB, day_window
 from app.services.smart_reminder_telegram import LearningCoverage, _android_inventory
@@ -232,6 +233,27 @@ class AndroidChecks:
         self.assertEqual(len(await self.rows(GRANT)),1)
         self.assertEqual(len(await self.rows(ATTEMPT)),1)
         self.assertNotIn('job_id',await self.due())
+
+    async def test_claim_carries_the_jobs_server_rendered_message(self):
+        grant = await self.claim()
+        self.assertTrue(grant['dispatch_allowed'], grant)
+        key = (await self.rows(JOB))[0]['content_key']
+        self.assertTrue(is_key(key))
+        message = grant['message']
+        self.assertEqual((message['content_key'], message['situation']), (key, key.split('.')[0]))
+        self.assertTrue(message['title'].strip() and message['body'].strip())
+        self.assertNotIn('<b>', message['title'] + message['body'])
+        self.assertNotIn('{', message['title'] + message['body'])
+
+    async def test_admin_custom_text_reaches_android_as_the_rendered_message(self):
+        async with self.sessions.begin() as s:
+            await NotificationTemplateService(s).update_text(KEY_SMART_STUDY, enabled=True,
+                text_uz='Admin {lesson}', text_ru='Admin {lesson}', text_tj='Admin {lesson}', updated_by=None)
+        grant = await self.claim()
+        message = grant['message']
+        self.assertEqual((message['content_key'], message['situation']), (None, None))
+        self.assertIn('Admin', message['body'])
+        self.assertIsNone((await self.rows(JOB))[0]['content_key'])
 
     async def test_learned_due_clock_matches_widget_and_overrides_saved_fallback(self):
         from app.services.smart_widget_context import WidgetContextRequest

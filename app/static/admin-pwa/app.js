@@ -1464,16 +1464,16 @@ async function noticeEditor(key=null){
         +`<div class="smart-results-head"><span>${esc(t('smartResults'))} · ${esc(overview.month)}</span>${overview.observation_enabled?'':`<span class="pill gray">${esc(t('smartObservationOff'))}</span>`}</div>`
         +`<div class="smart-results">${metric('smartStudyDays',overview.counts.study_day_after_attempt)}${metric('smartContactReturns',overview.counts.contact_study_24h)}${metric('smartStudyUnits',overview.counts.study_unit_24h)}</div>`;
     }
-    const body=smartStatus+boolSelect('noticeEnabled',smart?'smartPermission':'status',template.enabled)+(smart?`<p class="source-note">${esc(t('smartPermissionHint'))}</p>`:'')+smartFacts+`<p class="source-note">${esc(t('noticeDefaultHint'))}</p><p class="source-note">${esc(t('noticePlaceholders'))}: ${template.placeholders.map(esc).join(' ')}</p><div class="form-field"><label for="noticeLanguage">${esc(t('language'))}</label><select class="input" id="noticeLanguage">${['uz','ru','tj'].map(lang=>`<option value="${lang}" ${lang===locale?'selected':''}>${lang.toUpperCase()}</option>`).join('')}</select></div><div class="form-field"><label for="noticeText">${esc(t('noticeText'))}</label><textarea class="input setting-value" id="noticeText" maxlength="${template.text_max}">${esc(template.custom_texts[locale])}</textarea></div><p id="noticeValidation" class="alert" role="alert" hidden></p>`;
+    const body=smartStatus+boolSelect('noticeEnabled',smart?'smartPermission':'status',template.enabled)+(smart?`<p class="source-note">${esc(t('smartPermissionHint'))}</p>`:'')+smartFacts+`<p class="source-note">${esc(t(smart?'smartLibraryHint':'noticeDefaultHint'))}</p><p class="source-note">${esc(t('noticePlaceholders'))}: ${template.placeholders.map(esc).join(' ')}</p><div class="form-field"><label for="noticeLanguage">${esc(t('language'))}</label><select class="input" id="noticeLanguage">${['uz','ru','tj'].map(lang=>`<option value="${lang}" ${lang===locale?'selected':''}>${lang.toUpperCase()}</option>`).join('')}</select></div><div class="form-field"><label for="noticeText">${esc(t('noticeText'))}</label><textarea class="input setting-value" id="noticeText" maxlength="${template.text_max}">${esc(template.custom_texts[locale])}</textarea></div><p id="noticeValidation" class="alert" role="alert" hidden></p>`;
     drawer(noticeLabels[key],`<form id="managementForm">${body}</form>`,btn('saveChanges','managementPrepare','primary'));
-    $('noticeText').placeholder=template.defaults[locale];
+    $('noticeText').placeholder=smart?'':template.defaults[locale];
   }catch(error){if(current===drawerId&&at===epoch&&state.actor)drawer('notices',statePanel(errorKey(error)),btn('close','close')+btn('readCurrent','noticeList'));}
 }
 function updateNoticeLanguage(){
   const draft=managementDraft,next=$('noticeLanguage')?.value;
   if(draft?.type!=='notice'||!['uz','ru','tj'].includes(next))return;
   draft.texts[draft.textLanguage]=$('noticeText').value;draft.textLanguage=next;
-  $('noticeText').value=draft.texts[next];$('noticeText').placeholder=draft.template.defaults[next];updateEditorSaveEnabled();
+  $('noticeText').value=draft.texts[next];$('noticeText').placeholder=draft.noticeKey==='smart_study'?'':draft.template.defaults[next];updateEditorSaveEnabled();
 }
 async function portfolioHistory(before=null){
   closeDrawer();const current=drawerId,at=epoch;drawer('ledger',statePanel('loading'));
@@ -1840,7 +1840,7 @@ function managementFields(value,type){
     const notice=value.notice_texts?`<p class="source-note">${esc(t('messageAttemptHint'))}</p>`+['uz','ru','tj'].map(lang=>`<details class="profile-section notice-languages" ${lang===locale?'open':''}><summary>${lang.toUpperCase()}</summary><p class="notice-preview">${telegramPreview(value.notice_texts[lang])}</p></details>`).join(''):'';
     return notice+profileFields(fields);
   }
-  if(type==='notice')return profileFields([['status',t(value.enabled?'hsk30On':'hsk30Off')]])+['uz','ru','tj'].map(lang=>`<details class="profile-section notice-languages" ${lang===locale?'open':''}><summary>${lang.toUpperCase()}</summary><p class="notice-preview">${esc(value.effective_texts[lang])}</p></details>`).join('');
+  if(type==='notice')return profileFields([['status',t(value.enabled?'hsk30On':'hsk30Off')]])+['uz','ru','tj'].map(lang=>`<details class="profile-section notice-languages" ${lang===locale?'open':''}><summary>${lang.toUpperCase()}</summary><p class="notice-preview">${esc(value.library_languages?.includes(lang)?t('smartLibraryPreview'):value.effective_texts[lang])}</p></details>`).join('');
   if(type==='portfolio')return profileFields([['ledgerType',t(value.transaction_type==='profit'?'ledgerProfit':'ledgerExpense')],['amount',(value.amount_minor/100).toFixed(2)+' '+value.currency],['ledgerUSD',(value.expected_usd||value.amount_usd)+' USD'],['ledgerNote',value.note]]);
   if(type==='channel'){
     if(Object.hasOwn(value,'enabled'))return profileFields([['channelMode',t(value.enabled?'hsk30On':'hsk30Off')]]);

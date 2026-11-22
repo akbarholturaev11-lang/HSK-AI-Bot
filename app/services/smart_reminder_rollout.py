@@ -8,10 +8,14 @@ admission step moves an account from the legacy study senders to Smart:
 2. drain: wait 24 hours so already started legacy work cannot double today;
 3. review: an evidence-bound automatic review enables the existing Smart path.
 
-Admission never creates consent. It admits only accounts whose existing Smart
-preference already allows a channel and whose Android inventory is fenced. A
-bot-only learner without a Smart zone receives a fixed zone derived from the
-legacy reminder offset it already uses. A
+Admission writes no consent. Smart is ON by default (D34): it admits accounts
+whose preference has no explicit OFF for a reachable channel (native Android,
+Telegram, or iPhone PWA Web Push for accounts without Telegram) and whose
+Android inventory is fenced. The default ON reaches accounts active in the
+last 30 days; an account with an earlier ON keeps the original admission. A
+learner without a Smart zone receives a fixed zone derived from the device
+offset the legacy reminder already uses. An Android-only account is held
+first so its app reports the phone's permission. A
 Smart-capable release (1.7.29/60 and newer) asks the server before any local
 post and stops posting for a held account; an active device on an older APK
 can still post its own local reminder, so such accounts stay on the legacy
@@ -34,7 +38,10 @@ from sqlalchemy import and_, func, or_, select, update
 from app.db.models.course_progress import CourseProgress
 from app.db.models.desktop import DesktopDevice, DesktopSession
 from app.db.models.notification_template import NotificationTemplate
-from app.db.models.smart_reminder import SmartReminderPreference, SmartReminderRollout, SmartReminderRouting
+from app.db.models.learner_pwa_push import LearnerPwaPushSubscription
+from app.db.models.smart_reminder import (
+    SmartReminderConsent, SmartReminderPreference, SmartReminderRollout, SmartReminderRouting,
+)
 from app.db.models.user import User
 from app.repositories.bot_setting_repo import BotSettingRepository
 from app.services.notification_template_service import KEY_SMART_STUDY
@@ -57,6 +64,7 @@ EXCEPTION_LIMIT = 3
 EXCEPTION_WINDOW = 3600
 TIMEOUT_LIMIT = 3
 ADMISSION_VERSION = "smart-auto-admission-v1"
+ACTIVE_WINDOW = timedelta(days=30)  # D34: the default ON reaches recently active accounts.
 ERROR_CODES = frozenset({
     "runtime_exception", "tick_timeout", "provider_unknown", "provider_failure",
     "native_unknown", "monitor_stale",
@@ -334,6 +342,33 @@ async def rollout_cohort_open(session, user_id, *, now=None):
     return await SmartReminderRolloutService(None).allowed(session, user_id, now=now)
 
 
+def _recent_or_opted(now, user_id, pref):
+    """D34 bound: activity in the last 30 days, or an ON from before D34.
+
+    Activity is the account's last learner activity or a sign-in refresh on an
+    Android/PWA device. An earlier ON is the old lesson reminder, master ON or
+    an explicit Smart ON; those accounts keep the original admission.
+    """
+    since = now - ACTIVE_WINDOW
+    device = select(DesktopDevice.id).where(DesktopDevice.user_id == user_id,
+        DesktopDevice.platform.in_(("android", "pwa")), DesktopDevice.revoked_at.is_(None),
+        DesktopDevice.last_seen_at >= since).exists()
+    old_on = select(CourseProgress.user_id).where(CourseProgress.user_id == user_id,
+        CourseProgress.reminder_enabled.is_(True)).exists()
+    intent_on = select(SmartReminderConsent.id).where(SmartReminderConsent.user_id == user_id,
+        SmartReminderConsent.source == "user_intent", SmartReminderConsent.state == "on").exists()
+    return or_(User.last_active_at >= since, pref.master_enabled.is_(True), device, old_on, intent_on)
+
+
+def _pwa_subscribed(user_id, now):
+    return select(LearnerPwaPushSubscription.id).join(DesktopDevice,
+        DesktopDevice.id == LearnerPwaPushSubscription.device_id).join(DesktopSession,
+        DesktopSession.device_id == DesktopDevice.id).where(DesktopDevice.user_id == user_id,
+        DesktopDevice.platform == "pwa", DesktopDevice.revoked_at.is_(None),
+        LearnerPwaPushSubscription.revoked_at.is_(None), DesktopSession.revoked_at.is_(None),
+        DesktopSession.expires_at > now).exists()
+
+
 @dataclass(frozen=True)
 class _Facts:
     path: str | None
@@ -349,13 +384,14 @@ class _Facts:
 class SmartReminderAdmissionService:
     """Bounded automatic hold, drain and review for accounts in open cohorts."""
 
-    def __init__(self, sessions, *, clock=None, telegram_ready=False, android_ready=False, batch=16,
-                 cursors=None):
+    def __init__(self, sessions, *, clock=None, telegram_ready=False, android_ready=False, pwa_ready=False,
+                 batch=16, cursors=None):
         if type(batch) is not int or not 1 <= batch <= 128:
             raise ValueError("Bounded admission batch required")
         self.sessions = sessions
         self.clock = clock or (lambda: datetime.now(timezone.utc))
         self.telegram_ready, self.android_ready = telegram_ready, android_ready
+        self.pwa_ready = pwa_ready is True
         self.batch = batch
         # The runtime keeps cursors across ticks so pages rotate over everyone.
         self.cursors = cursors if cursors is not None else {}
@@ -364,7 +400,7 @@ class SmartReminderAdmissionService:
         return _now(self.clock())
 
     async def step(self, stage, status="active"):
-        if stage < 1 or not (self.telegram_ready or self.android_ready):
+        if stage < 1 or not (self.telegram_ready or self.android_ready or self.pwa_ready):
             return ()
         results = []
         for user_id in await self._candidates(stage, status):
@@ -386,18 +422,21 @@ class SmartReminderAdmissionService:
 
     async def _candidates(self, stage, status):
         pref, routing = SmartReminderPreference, SmartReminderRouting
+        now = self._now()
         fresh = (select(pref.user_id).join(User, User.id == pref.user_id).where(
             pref.timezone_name.is_not(None), or_(pref.master_enabled.is_(None), pref.master_enabled.is_(True)),
-            ~select(routing.user_id).where(routing.user_id == pref.user_id).exists()))
+            ~select(routing.user_id).where(routing.user_id == pref.user_id).exists(),
+            _recent_or_opted(now, pref.user_id, pref)))
         routed = select(routing.user_id)
-        # Bot-only learners with the legacy lesson reminder ON have no Smart
-        # zone yet; admission derives it from their saved reminder offset.
+        # Learners reachable by the bot or by PWA Web Push without a Smart
+        # zone yet; admission derives it from the saved device offset.
         legacy = (select(CourseProgress.user_id).join(User, User.id == CourseProgress.user_id)
             .outerjoin(pref, pref.user_id == CourseProgress.user_id).where(
-            CourseProgress.reminder_enabled.is_(True), User.telegram_id > 0, User.bot_blocked_at.is_(None),
+            or_(and_(User.telegram_id > 0, User.bot_blocked_at.is_(None)),
+                _pwa_subscribed(CourseProgress.user_id, now)),
             pref.timezone_name.is_(None), or_(pref.master_enabled.is_(None), pref.master_enabled.is_(True)),
-            ~select(routing.user_id).where(routing.user_id == CourseProgress.user_id).exists()))
-        now = self._now()
+            ~select(routing.user_id).where(routing.user_id == CourseProgress.user_id).exists(),
+            _recent_or_opted(now, CourseProgress.user_id, pref)))
         chosen = []
         async with self.sessions() as session:
             # Android reviews last only as long as the device capability (about
@@ -421,26 +460,32 @@ class SmartReminderAdmissionService:
         async with self.sessions() as session:
             account = (await session.execute(select(User.telegram_id, User.bot_blocked_at).where(
                 User.id == user_id))).mappings().one_or_none()
-            native = (await session.execute(select(DesktopDevice.id, DesktopSession.id.label("session_id")).join(
-                DesktopSession, DesktopSession.device_id == DesktopDevice.id).where(
-                DesktopDevice.user_id == user_id, DesktopDevice.platform == "android",
-                DesktopDevice.revoked_at.is_(None), DesktopSession.revoked_at.is_(None),
-                DesktopSession.expires_at > now).order_by(
-                DesktopSession.expires_at.desc(), DesktopSession.id).limit(1))).mappings().one_or_none()
+            def device(platform):
+                return select(DesktopDevice.id, DesktopSession.id.label("session_id")).join(
+                    DesktopSession, DesktopSession.device_id == DesktopDevice.id).where(
+                    DesktopDevice.user_id == user_id, DesktopDevice.platform == platform,
+                    DesktopDevice.revoked_at.is_(None), DesktopSession.revoked_at.is_(None),
+                    DesktopSession.expires_at > now).order_by(
+                    DesktopSession.expires_at.desc(), DesktopSession.id).limit(1)
+            native = (await session.execute(device("android"))).mappings().one_or_none()
+            browser = (await session.execute(device("pwa"))).mappings().one_or_none()
         telegram = None
         if account and type(account["telegram_id"]) is int and account["telegram_id"] > 0 and account["bot_blocked_at"] is None:
             telegram = SmartReminderActor(user_id, "telegram_bot", telegram_id=account["telegram_id"])
         android = SmartReminderActor(user_id, "android", device_id=native["id"],
             session_id=native["session_id"]) if native else None
-        return telegram, android
+        pwa = SmartReminderActor(user_id, "pwa", device_id=browser["id"],
+            session_id=browser["session_id"]) if browser else None
+        return telegram, android, pwa
 
-    async def _facts(self, user_id, telegram, android):
-        from app.services.smart_reminder_preferences import SmartReminderPreferencesService
+    async def _facts(self, user_id, telegram, android, pwa=None):
+        from app.services.learner_pwa_push import active_subscriptions
+        from app.services.smart_reminder_preferences import SmartReminderPreferencesService, pwa_study_consent
         from app.services.smart_reminder_shadow_queue import JOB
         from app.services.smart_reminder_telegram import ROUTING, _android_inventory
         now = self._now()
         async with self.sessions.begin() as session:
-            pref = await SmartReminderPreferencesService(session).read(android or telegram)
+            pref = await SmartReminderPreferencesService(session).read(android or telegram or pwa)
             row = (await session.execute(select(ROUTING).where(ROUTING.c.user_id == user_id)
                 .with_for_update())).mappings().one_or_none()
             epoch = await session.scalar(select(SmartReminderPreference.grant_epoch).where(
@@ -453,12 +498,22 @@ class SmartReminderAdmissionService:
                 JOB.c.state.in_(("shadow", "pending", "claimed"))).limit(1)) is not None
             offset = await session.scalar(select(CourseProgress.reminder_tz_offset).where(
                 CourseProgress.user_id == user_id))
+            subscribed = (pwa is not None and self.pwa_ready and
+                          bool(await active_subscriptions(session, user_id, now=now, limit=1)))
         window = now + MIN_REVIEW_WINDOW
         locked = pref["channel_mode"] == "manual_locked"
         open_ = pref["master_enabled"] is not False and inventory is not None
         telegram_ok = (open_ and telegram is not None and self.telegram_ready and owner_until is None and
             pref["channels"]["telegram"]["consent"] == "on" and pref["channels"]["telegram"]["transport_available"] and
             (not locked or pref["preferred_channel"] in {"telegram", "pwa"}))
+        # iPhone PWA Web Push owns accounts no Telegram path can serve; the
+        # live subscription from the existing push switch is its signal (D34).
+        pwa_ok = (open_ and subscribed and owner_until is None and not locked and pwa_study_consent(pref))
+        # Android-only: a 1.7.29+ app reports its permission once held, so an
+        # unrouted account is held first; the native review follows (D34).
+        prehold_ok = (open_ and android is not None and self.android_ready and row is None and
+            owner_until is None and pref["channels"]["android"]["this_device_consent"] != "off" and
+            (not locked or pref["preferred_channel"] == "android"))
         path, fence_until, derived = None, None, None
         if open_ and pref["timezone_name"]:
             if (android is not None and self.android_ready and native_until is not None and
@@ -467,24 +522,31 @@ class SmartReminderAdmissionService:
                 path, fence_until = "android", native_until
             elif telegram_ok:
                 path = "telegram"
-        elif telegram_ok and row is None and pref["time_mode"] == "auto":
+            elif pwa_ok:
+                path = "pwa"
+            elif prehold_ok:
+                path = "android_hold"
+        elif (telegram_ok or pwa_ok) and row is None and pref["time_mode"] == "auto":
             derived = legacy_zone(offset)
         return _Facts(path, dict(row) if row else None, pref["revision"], epoch, inventory, fence_until, active,
             derived)
 
     async def admit(self, user_id):
         """Advance one account by at most one admission step."""
-        from app.services.smart_reminder_telegram import SmartReminderRoutingService, _android_binding, _binding
-        telegram, android = await self._actors(user_id)
-        if telegram is None and android is None:
+        from app.services.smart_reminder_telegram import (
+            SmartReminderRoutingService, _android_binding, _binding, _pwa_binding,
+        )
+        telegram, android, pwa = await self._actors(user_id)
+        if telegram is None and android is None and pwa is None:
             return "actor_unavailable"
-        facts = await self._facts(user_id, telegram, android)
+        facts = await self._facts(user_id, telegram, android, pwa)
         if facts.path is None and facts.derived_zone is not None:
-            await self._derive_zone(telegram, facts.revision, facts.derived_zone)
-            facts = await self._facts(user_id, telegram, android)
+            await self._derive_zone(telegram or pwa, facts.revision, facts.derived_zone)
+            facts = await self._facts(user_id, telegram, android, pwa)
         if facts.path is None:
             return "not_eligible"
-        actor = android if facts.path == "android" else telegram
+        path = facts.path
+        actor = {"android": android, "android_hold": android, "telegram": telegram, "pwa": pwa}[path]
         routing = SmartReminderRoutingService(self.sessions, clock=self.clock)
         row = facts.routing
         if row is None:
@@ -498,8 +560,8 @@ class SmartReminderAdmissionService:
             await self._quiesced(user_id)
         if now - quiesced < LEGACY_DRAIN:
             return "draining"
-        binding = _android_binding(actor) if facts.path == "android" else _binding(actor)
-        target = "held" if facts.path == "android" else "telegram"
+        binding = {"android": _android_binding, "telegram": _binding, "pwa": _pwa_binding}[path](actor)
+        target = {"android": "held", "telegram": "telegram", "pwa": "pwa"}[path]
         verified = row["verified_at"] is not None
         owner = row["state"] == target and row["telegram_binding"] == binding
         generation = row["generation"]
@@ -527,14 +589,16 @@ class SmartReminderAdmissionService:
             row["inventory_sha256"] == facts.inventory)
         if not reusable:
             generation = await routing.hold(actor, expected_generation=generation)
-            facts = await self._facts(user_id, telegram, android)
-            if facts.path != ("android" if actor.kind == "android" else "telegram"):
+            facts = await self._facts(user_id, telegram, android, pwa)
+            if facts.path != path:
                 return "admission_changed"
         review = self._review(user_id, generation, facts, quiesced)
         if review is None:
             return "fence_too_short"
-        if facts.path == "android":
+        if path == "android":
             await routing.review_android(actor, review)
+        elif path == "pwa":
+            await routing.activate_pwa(actor, review)
         else:
             await routing.activate(actor, review)
         return "reviewed" if verified else "admitted"
@@ -559,12 +623,12 @@ class SmartReminderAdmissionService:
             evidence_sha256=evidence, legacy_quiesced=True, legacy_outcomes_reconciled=True,
             other_study_fenced=True)
 
-    async def _derive_zone(self, telegram, revision, zone):
+    async def _derive_zone(self, actor, revision, zone):
         """Timezone only, through the journaled preference writer; no consent."""
         from uuid import uuid4
         from app.services.smart_reminder_preferences import SmartReminderPatch, SmartReminderPreferencesService
         async with self.sessions.begin() as session:
-            await SmartReminderPreferencesService(session).patch(telegram, SmartReminderPatch(
+            await SmartReminderPreferencesService(session).patch(actor, SmartReminderPatch(
                 request_id=str(uuid4()), expected_revision=revision, timezone_name=zone))
 
     async def _quiesced(self, user_id):

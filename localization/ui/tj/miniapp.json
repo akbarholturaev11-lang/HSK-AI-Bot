@@ -1290,6 +1290,8 @@
     "ui.admin_pwa.smartRolloutErrorMonitorStale": "Назорат қатъ шуд",
     "ui.admin_pwa.smartResults": "Натиҷаҳо",
     "ui.admin_pwa.smartObservationOff": "Мушоҳида хомӯш",
+    "ui.admin_pwa.smartLibraryHint": "Агар майдон холӣ бошад, паёмҳои гуногун мувофиқи вазъи хонанда навбат ба навбат фиристода мешаванд. Агар матн нависед, бо ин забон танҳо ҳамон матн фиристода мешавад.",
+    "ui.admin_pwa.smartLibraryPreview": "Паёмҳои гуногун (мувофиқи вазъият, навбат ба навбат)",
     "ui.admin_pwa.smartRolloutHint": "Ҳангоми хато худ қатъ мешавад, фаъолсозии дубора аз марҳилаи 1 оғоз мекунад. Ҳар марҳила 48 соат; ҳисобҳо бо барномаи кӯҳнаи Android то навсозӣ ёдраскуниҳои пешинаро мегиранд.",
     "ui.subscription.lava.cardQuestion": "Бо корти Visa пардохт мекунед?",
     "ui.subscription.lava.cardYes": "Ҳа",
