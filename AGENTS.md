@@ -107,6 +107,9 @@ Har session boshida:
 1. `AGENTS.md` va `AI_RULES.md`ni o‘qi; `PROJECT_MEMORY.md`, tegishli log va TODO’ni “Memory tizimi” bo‘yicha tekshir.
 2. Vazifaga tegishli project structure va working tree holatini tekshir.
 3. User so‘rovi va joriy holatga qarab asosiy ishni aniqlab ol.
+4. `NEXTATION.md` dagi kelgusi vazifalarni o‘qi. Agar user joriy task bermagan bo‘lsa, mavjud vazifalarni qisqa taklif qil; aniq task bo‘lsa uni bo‘lma. Egasi ruxsatisiz NEXTATION vazifasini boshlama.
+
+`NEXTATION.md` — faqat egasi tasdiqlagan kelgusi ishlarning qaydi. Egasi yangi g‘oyani saqlashni so‘rasa, maqsad, scope va risklarni ixcham yozib qo‘y. Agentga topshirish bilan o‘chirma: `PLANNED` → `IN_PROGRESS` → `VERIFY`; tekshiruv va egasi tasdig‘idan keyingina faol ro‘yxatdan olib tashla. Faqat shu hujjatning o‘zi avtomatik eslatma yoki yashirin ishga tushirishni bildirmaydi.
 
 Har taskdan keyin:
 
