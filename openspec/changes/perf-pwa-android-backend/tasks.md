@@ -141,6 +141,24 @@ identity.
     confirmation flow instead. Cancel keeps the same question; confirmed exit
     follows existing save rules (no false resume promise). Other screens retain
     their swipe behavior. Cover this in iPhone WebKit regression tests.
+    - **Lesson:** the existing "Darsdan chiqasizmi?" sheet. Verify that the
+      promised resume holds on both paths (`saveLessonResume()` and
+      `Foundation.pause()`).
+    - **Test exam and Mistakes review (owner choice a):**
+      - a confirmation sheet in each page's own style, with the draft copy in
+        design.md, approved by the owner in this pull request;
+      - their ✕, the swipe and browser back all open it;
+      - PWA only (`html.hsk-pwa-practice`); Telegram is unchanged.
+    - **Tests** (WebKit and Chromium) for the lesson, the test exam and the
+      Mistakes review:
+      - during the gesture the session screen's transform stays 0;
+      - after release the sheet is open and the question index is unchanged;
+      - cancel returns to the same question with the same answers so far;
+      - a confirmed exit leaves through the existing path (`confirmExitFlow`,
+        `exitExam`, `closeReview`), with one history step;
+      - outside a session (the hub, a list), the swipe still drags as today;
+      - Telegram: `test_miniapp_smoke.py` passes, and the test page's ✕
+        still exits at once there.
 
   Outside those active sessions, each layer must close in one step by edge
   swipe, browser back and Telegram BackButton, with no blank frame and the
@@ -345,13 +363,17 @@ identity.
   step with no white flash. Dragging back from a root tab shows the
   destination underneath and lands without a jump. A fast lesson or practice
   start opens with no panda, and a slow one shows the panda. The Test and
-  Mistakes centres open with skeletons. Inbox shows rows, then the feed, or an
+  Mistakes centres open with skeletons. During a lesson, a test or a Mistakes
+  review, a swipe does not drag and asks for confirmation first. Inbox shows
+  rows, then the feed, or an
   error with a working retry. The Android dictionary returns to the same row.
   Record the result in the contract doc.
 - [x] 5.2 Record the owner's decisions in design.md before 2.5 starts:
   - root-tab drag (a);
   - panda only at a session start, with skeletons for the hubs;
-  - the panda only when preparation takes over about 300 ms.
+  - the panda only when preparation takes over about 300 ms;
+  - in an active session, a swipe does not drag and asks for confirmation;
+  - the Test exam and the Mistakes review also get a confirmation (a).
 
   Verify: the decisions are recorded in design.md.
 

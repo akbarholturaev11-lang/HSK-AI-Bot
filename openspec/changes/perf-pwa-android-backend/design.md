@@ -485,24 +485,43 @@ The draft was challenged item by item:
   - **Lesson:** the confirmation already exists (`App.requestExitFlow`,
     "Darsdan chiqasizmi?"). The resume it promises is kept by
     `saveLessonResume()` or `Foundation.pause()`. 2.6 verifies both paths.
-  - **Test exam and Mistakes review:** Back exits at once today
-    (`exitExam()` to the hub, `closeReview()`). There is no confirmation and
-    no reviewed exit copy. See the open question.
+  - **Test exam and Mistakes review: owner chose (a), a confirmation as in
+    the lesson.**
+    - Today their ✕, the swipe and browser back all exit at once
+      (`exitExam()` to the hub, `closeReview()`).
+    - After 2.6, all three exits go through one confirmation sheet while a
+      session is active, the same as the lesson, where every exit goes
+      through `NavBack.goBack()` → `App.requestExitFlow()`.
+    - It is PWA only (`html.hsk-pwa-practice`). Telegram keeps today's
+      immediate exit (non-goals).
+    - **What is really kept, checked in code (2026-11-22):**
+      - Test: answers live only in memory (`eans`) until
+        `/api/v3/exams/complete`.
+      - Mistakes: each answer is only an analytics event
+        (`mistake_review_answered`). Mistake progress is written by
+        `complete_review`.
+      - Neither session can be resumed.
+
+      So the copy must promise no resume and must say the attempt is not
+      saved.
+    - **Draft copy** (the owner approves or corrects it in the 2.6 pull
+      request):
+
+      | | UZ | RU | TJ |
+      |---|---|---|---|
+      | Test, title | Testdan chiqasizmi? | Выйти из теста? | Аз тест мебароед? |
+      | Test, body | Javoblaringiz saqlanmaydi. | Ваши ответы не сохранятся. | Ҷавобҳои шумо нигоҳ дошта намешаванд. |
+      | Test, keep | Testni davom ettirish | Продолжить тест | Идома додани тест |
+      | Review, title | Xatolar ustida ishlashni to‘xtatasizmi? | Прервать работу над ошибками? | Кор бар хатоҳоро қатъ мекунед? |
+      | Review, body | Bu urinish natijasi saqlanmaydi. | Результат этой попытки не сохранится. | Натиҷаи ин кӯшиш нигоҳ дошта намешавад. |
+      | Review, keep | Davom ettirish | Продолжить | Идома додан |
+      | Exit button (both) | existing `common.action.exit` | | |
+
+      The new keys go into the canonical i18n catalog with all three
+      languages, and the i18n baseline guard passes.
 
 ## Open questions
 
-1. **Exit confirmation for the Test exam and the Mistakes review.** Today
-   there is no confirmation for these two, so the owner chooses:
-   - (a) Add a confirmation sheet with the lesson sheet's look. It needs new
-     UZ/RU/TJ copy that says truthfully what is kept, checked per page in 2.6
-     (an unsubmitted exam is not saved today). It promises no resume, and the
-     owner approves the copy.
-   - (b) Confirm only the lesson. In the test and the review, the swipe does
-     not drag, and a completed gesture runs the existing exit at once.
-
-   Task 2.6 cannot finish those two cases until this is answered. Everything
-   else in 2.6 can proceed.
-
-Gates that can send work back to the owner are named in their tasks: the
-root-tab peek performance gate (2.5), the baseline profile (3.2), and the
-edge or CDN evidence (4.4).
+None. Gates that can send work back to the owner are named in their tasks:
+the root-tab peek performance gate (2.5), the baseline profile (3.2), the
+edge or CDN evidence (4.4), and approval of the 2.6 exit copy.

@@ -62,7 +62,9 @@ Authoritative sources, not restated here:
    panda shows on every practice open and lesson entry, with a 720 ms
    minimum.
 7. A back and scroll audit of the remaining layers, then the §7 condition
-   matrix.
+   matrix. During an active lesson, test exam or Mistakes review, the swipe
+   does not drag and opens an exit confirmation (owner decision). The test
+   and the review get new UZ/RU/TJ copy that promises no resume.
 
 **To do, Android (same initiative, same regression matrix):**
 - Startup baseline and `reportFullyDrawn`, with memory and network bytes,
