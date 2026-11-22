@@ -665,7 +665,8 @@ Known = real text available before any request. Async = pending data.
         trusted sources), and today it commits each answer before it
         reveals the feedback. With the key on the device, a technically
         skilled user could read the answers from the network, as is already
-        possible in lessons. This is an owner decision (open question 1).
+        possible in lessons. The owner chose (a) on 2026-11-23: the
+        Mistakes review is graded on the device too, like lessons.
     - **Server waits that stay, with the reason:**
       - Pronunciation scoring (lesson speaking cards, the Pronunciation
         practice): speech is scored on the server. It keeps its checking
@@ -929,15 +930,16 @@ The draft was challenged item by item:
     similar section, which is the Mistakes review (decision 15).
   - The Pro, trial and limit windows open as fast and smoothly as possible
     (decision 16).
+  - **Mistakes review integrity: option (a), 2026-11-23.** The review is
+    graded on the device like lessons. The owner accepts that a technically
+    skilled user could read the answers from the network, as in lessons.
+    The server still re-grades every answer and awards XP only by its own
+    verdict.
 
 ## Open questions
 
-1. **Mistakes review integrity (decision 15).** With the key on the device,
-   the review's feedback is instant, but a technically skilled user could
-   read the answers from the network and earn its XP, as in lessons today.
-   - (a) Recommended: grade on the device, like lessons.
-   - (b) Keep the server commit for the Mistakes review: it keeps waiting
-     per answer, and only the in-lesson personal review becomes instant.
+None. The Mistakes review integrity question was answered with (a) on
+2026-11-23 (owner decisions above).
 
 Gates that can send work back to the owner are named in their tasks:
 the root-tab peek performance gate (2.5), the baseline profile (3.2), the

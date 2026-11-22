@@ -84,8 +84,8 @@ Authoritative sources, not restated here:
 10. Answers in a session (owner): the in-lesson personal review and the
     Mistakes review wait for the server on every answer today. They are
     graded on the device and recorded in the background, as lessons are.
-    The server still re-grades every answer. The Mistakes review's XP
-    integrity is an owner decision.
+    The server still re-grades every answer. The owner chose this for the
+    Mistakes review too (a), accepting the same exposure as lessons.
 11. Pro, trial and limit windows (owner): no loading text, one request
     instead of two, instant repeat opens, a skeleton cover for the checkout
     and trial layers, and no height jump.

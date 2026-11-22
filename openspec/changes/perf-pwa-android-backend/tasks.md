@@ -306,8 +306,8 @@ identity.
     within the 1.3 baseline;
   - the i18n guard passes.
 - [ ] 2.11 Answers graded on the device in the in-lesson personal review and
-  the Mistakes review (design decision 15). Ships after the owner answers
-  open question 1; with (b), only the personal review changes.
+  the Mistakes review (design decision 15; owner choice (a) on 2026-11-23
+  covers both).
   - **Server:** when the request declares local grading, the adaptive plan
     and the review start responses carry each question's key. Older
     clients get today's shape. Recording, re-grading, "first answer is
@@ -561,7 +561,8 @@ identity.
   - a fast launch, with the skeleton when it is slow;
   - pull-to-refresh with a spinning ring, region skeletons and one exact
     threshold;
-  - answers in a learning session graded on the device and recorded later;
+  - answers in a learning session graded on the device and recorded later,
+    including the Mistakes review (a);
   - fast, smooth Pro, trial and limit windows.
 
   Verify: the decisions are recorded in design.md.
