@@ -249,9 +249,18 @@ The draft was challenged item by item:
 - Android ships only with a release cut per `ANDROID_RELEASE_CHECKLIST.md`.
 - Backend reverts are a normal main revert.
 
-## Open Questions
+## Owner decisions (2026-11-22)
 
-- Which root-tab drag behaviour the owner prefers, (a) or (b). The task and
-  its test exist either way.
-- Whether the owner wants the practice boot overlay changed if the baseline
-  shows it is visible for more than 1 s warm. Until then it is measured only.
+- **Root-tab drag:** option (a), a live Course peek under Practice, Rating and
+  Profile while dragging back.
+- **Panda preparing screen vs skeleton:**
+  - The panda preparing screen shows only when a real session starts: a course
+    lesson, a test, a pronunciation exercise, hieroglyph recognition, a
+    mistakes review, and (by the same rule) a memorize session. It gives the
+    "your lesson is being prepared" feeling.
+  - Hub and list screens use layout-faithful skeletons: Dictionary, Ready
+    Phrases, the Test centre and the Mistakes centre.
+  - Today `iphone-pwa-practice-boot.js` shows the panda on every practice page
+    open, including the hubs, so the hubs change.
+  - The panda stays only while preparation is really running. There is no
+    artificial delay, and an error shows a retry.

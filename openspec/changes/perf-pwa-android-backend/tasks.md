@@ -80,8 +80,7 @@ identity.
   skeleton first. Verify: lab before/after for Phrases and the practice pages,
   and `test_pwa_swipe_back.py` still passes. If the threshold is not crossed,
   record "not needed" with the numbers.
-- [ ] 2.5 Root-tab drag behaviour, per the owner's choice: (a) live Course
-  peek, or (b) no drag on root tabs. Verify: `test_pwa_swipe_back.py` gains a
+- [ ] 2.5 Root-tab drag: the owner chose (a), a live Course peek underneath. Verify: `test_pwa_swipe_back.py` gains a
   root-tab case asserting no empty frame and one step back, plus an iOS
   Simulator recording at 390 px.
 - [ ] 2.6 Back and scroll audit, one layer at a time:
@@ -97,6 +96,19 @@ identity.
   grading, progress and payment code are not changed. Verify: lab before/after,
   and the existing lesson e2e and unit suites pass. Otherwise record "meets
   target".
+
+- [ ] 2.8 Panda vs skeleton split, per the owner's decision in design.md.
+  - Map each practice page's hub view and session start.
+  - Hubs (Test centre, Mistakes centre, and the Dictionary and Phrases
+    layers) get layout-faithful skeletons.
+  - The panda preparing screen shows only at a real session start, with no
+    artificial delay and an error retry.
+
+  Verify:
+  - Chromium/WebKit tests show the hub opens with a skeleton and no panda, and
+    a session start shows the panda until the session is ready;
+  - the hubs pass the 320/390/430 geometry check (≤8 px);
+  - lab before/after from 1.1.
 
 ## 3. Native Android (same initiative, after group 2)
 
@@ -174,7 +186,7 @@ identity.
   step with no white flash. Inbox shows rows, then the feed, or an error with
   a working retry. The Android dictionary returns to the same row. Record the
   result in the contract doc.
-- [ ] 5.2 Record the owner's decisions: root-tab drag (a or b); whether the
+- [x] 5.2 Record the owner's decisions: root-tab drag (a or b); whether the
   practice boot overlay changes. Verify: decisions are recorded in design.md
   before 2.5 starts.
 
