@@ -1290,6 +1290,8 @@
     "ui.admin_pwa.smartRolloutErrorMonitorStale": "Мониторинг прервался",
     "ui.admin_pwa.smartResults": "Результаты",
     "ui.admin_pwa.smartObservationOff": "Наблюдение выкл.",
+    "ui.admin_pwa.smartLibraryHint": "Если поле пустое, отправляются разные сообщения по ситуации ученика, по очереди. Если ввести текст, на этом языке будет отправляться только он.",
+    "ui.admin_pwa.smartLibraryPreview": "Разные сообщения (по ситуации, по очереди)",
     "ui.admin_pwa.smartRolloutHint": "При ошибке запуск останавливается сам, повторное включение начинает с 1-го этапа. Каждый этап — 48 часов; аккаунты со старым Android-приложением до обновления получают прежние напоминания.",
     "ui.subscription.lava.cardQuestion": "Будете оплачивать картой Visa?",
     "ui.subscription.lava.cardYes": "Да",

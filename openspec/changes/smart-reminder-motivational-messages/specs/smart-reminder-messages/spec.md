@@ -77,8 +77,12 @@ After the account's personal study gap, ordinary Smart reminders SHALL continue 
 - **THEN** no further Smart study reminder is sent on that channel or account as today
 
 ### Requirement: Measurable variants without exposing learners
-Each sent Smart reminder SHALL record its situation and variant key with the job. The Admin readout SHALL show only anonymous monthly counts per situation of sent reminders and verified returns within 24 hours.
+Each Smart reminder rendered from the library SHALL record its variant key (which names its situation) with the job, and never the message text. The Admin readout SHALL keep using only anonymous monthly aggregates.
 
-#### Scenario: Owner reviews results
-- **WHEN** the owner opens the Smart study readout
-- **THEN** each situation shows sent and 24-hour return counts without account identifiers, message bodies or per-learner detail
+#### Scenario: Reminder sent from the library
+- **WHEN** a library variant is sent on any channel
+- **THEN** the job stores only its key, such as `comeback.v3`, and the Admin readout shows no account identifier, message body or per-learner detail
+
+#### Scenario: Owner edits the Smart text
+- **WHEN** the owner leaves a language empty in the Smart editor and confirms
+- **THEN** the hint and the confirmation call that language the rotating message library rather than showing the old default text

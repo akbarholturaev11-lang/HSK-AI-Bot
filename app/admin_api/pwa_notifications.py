@@ -176,8 +176,12 @@ async def prepare_notice(db,*,session_cookie,request,settings_obj):
         await _authenticate(db,session_cookie,settings_obj)
         row=await _row(db,request.key);current=_preview(request.key,row);_check_length(current,request)
         command=NoticeCommand(**request.model_dump(),expected_hash=_revision(row))
+    proposed={'key':command.key,'enabled':command.enabled,'effective_texts':command.effective()}
+    if command.key==KEY_SMART_STUDY:
+        # An empty Smart field sends the rotating message library (D33).
+        proposed['library_languages']=[lang for lang in _LANGS if not getattr(command,'text_'+lang).strip()]
     return {'operation':command.operation(),'execute_payload':command.model_dump(),'current':current,
-            'proposed':{'key':command.key,'enabled':command.enabled,'effective_texts':command.effective()}}
+            'proposed':proposed}
 
 
 async def execute_notice(db,*,session_cookie,request,settings_obj):

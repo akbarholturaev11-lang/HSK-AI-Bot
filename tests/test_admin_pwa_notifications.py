@@ -139,6 +139,12 @@ class NotificationTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
         with self.assertRaises(ValidationError):
             api.PrepareNotice(key=KEY_SMART_STUDY, enabled=True,
                 text_uz="{minutes}", text_ru="", text_tj="")
+        # Empty Smart languages are confirmed as the rotating library (D33).
+        async with self.sessions() as db:
+            prepared = await api.prepare_notice(db, session_cookie=fixtures.COOKIE, request=api.PrepareNotice(
+                key=KEY_SMART_STUDY, enabled=True, text_uz="", text_ru="Урок {lesson}", text_tj=" "),
+                settings_obj=self.settings)
+        self.assertEqual(prepared['proposed']['library_languages'], ['uz', 'tj'])
 
     async def prepare(self, **overrides):
         values = dict(key='daily_goal', enabled=True, text_uz='PRIVATE {minutes}',

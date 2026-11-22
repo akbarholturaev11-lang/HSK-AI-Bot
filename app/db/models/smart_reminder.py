@@ -175,6 +175,8 @@ class SmartReminderJob(Base):
     reason_code: Mapped[str | None] = mapped_column(String(64))
     course_key: Mapped[str | None] = mapped_column(String(32))
     lesson_order: Mapped[int | None] = mapped_column(Integer)
+    # Catalog variant of the day's message, e.g. "comeback.v3" (D33).
+    content_key: Mapped[str | None] = mapped_column(String(48))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 

@@ -36,6 +36,14 @@ TELEGRAM_VERSION = "smart-telegram-v1"
 MAX_ROUTING_ROWS = 128  # Technical read bound, not retention or fleet proof.
 
 
+def _inbox_params(content):
+    """Inbox re-render params; the variant key keeps language switches stable."""
+    params = {"template_service": KEY_SMART_STUDY, "lesson": content.lesson_order}
+    if content.content_key:
+        params |= {"content_key": content.content_key, "streak": content.streak}
+    return params
+
+
 def _telegram(actor):
     if (actor.kind not in {"telegram", "telegram_bot"} or
             type(actor.telegram_id) is not int or actor.telegram_id <= 0):
@@ -540,7 +548,7 @@ class SmartReminderTelegramService:
             if refused := await self._fresh(session, actor, row, cohort, history_since): return refused
             try:
                 open_proof = SmartReminderOpenService(self.settings).proof(actor, row["id"], attempts[0]["id"])
-                content = await render_telegram_content(session, actor, row,
+                content = await render_telegram_content(session, actor, row, now=self._now(),
                     **({"open_proof": open_proof} if open_proof is not None else {}))
             except SmartReminderError as exc:
                 return await self._cancel(session, row, exc.code)
@@ -602,5 +610,5 @@ class SmartReminderTelegramService:
                         key=KEY_SMART_STUDY, lang=content.language, text=content.text,
                         action="course", source="smart_telegram", level=job["course_key"],
                         lesson_order=job["lesson_order"], dedupe_key="job:"+job_id,
-                        params={"template_service": KEY_SMART_STUDY, "lesson": content.lesson_order})
+                        params=_inbox_params(content))
             return TelegramResult("telegram_"+state, job_id, state)

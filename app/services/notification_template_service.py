@@ -241,7 +241,8 @@ class NotificationTemplateService:
             media_type = row.media_type or "none"
             media_path = row.media_path
         text = custom.strip() or default_text(key, lang)
-        return {"text": text, "media_type": media_type, "media_path": media_path}
+        return {"text": text, "media_type": media_type, "media_path": media_path,
+                "custom": bool(custom.strip())}
 
     async def update_text(
         self,
