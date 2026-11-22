@@ -163,8 +163,8 @@ identity.
       promised resume holds on both paths (`saveLessonResume()` and
       `Foundation.pause()`).
     - **Test exam and Mistakes review (owner choice a):**
-      - a confirmation sheet in each page's own style, with the draft copy in
-        design.md, approved by the owner in this pull request;
+      - a confirmation sheet in each page's own style, with the copy in
+        design.md (approved by the owner on 2026-11-22);
       - their ✕, the swipe and browser back all open it;
       - PWA only (`html.hsk-pwa-practice`); Telegram is unchanged.
     - **Tests** (WebKit and Chromium) for the lesson, the test exam and the

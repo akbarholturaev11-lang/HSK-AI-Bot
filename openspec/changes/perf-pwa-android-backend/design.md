@@ -585,8 +585,7 @@ The draft was challenged item by item:
 
       So the copy must promise no resume and must say the attempt is not
       saved.
-    - **Draft copy** (the owner approves or corrects it in the 2.6 pull
-      request):
+    - **Copy, approved by the owner on 2026-11-22:**
 
       | | UZ | RU | TJ |
       |---|---|---|---|
@@ -605,4 +604,5 @@ The draft was challenged item by item:
 
 None. Gates that can send work back to the owner are named in their tasks:
 the root-tab peek performance gate (2.5), the baseline profile (3.2), the
-edge or CDN evidence (4.4), and approval of the 2.6 exit copy.
+edge or CDN evidence (4.4), and any owner-approved exception to a target
+(decision 12).
