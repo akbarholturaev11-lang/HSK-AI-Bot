@@ -78,7 +78,8 @@ async function main() {
   first.events.get("unhandledrejection")({ reason: { name: "constructor", message: "a private answer" } });
   for (const status of [401, 403, 409, 429, 503]) assert.equal(first.diag.report("lessons", "load_failed", "course_v3", status), false);
   assert.equal(first.diag.report("lessons", "load_failed", "lesson_open", new SyntaxError("private response")), true);
-  assert.equal(first.queue().events.length, 3);
+  // NXT-011: a different exception on the same page is not coalesced away.
+  assert.equal(first.queue().events.length, 4);
   first.diag.flush();
   assert.equal(first.calls(), 0);
   const state = first.queue();
@@ -92,14 +93,33 @@ async function main() {
   const { header, wire } = first.posts[0];
   assert.equal(header, "csrf-1");
   assert.equal(wire.schema, "diag.v1");
-  assert.deepEqual(wire.events.map((e) => e.category), ["type", "other", undefined]);
+  assert.deepEqual(wire.events.map((e) => e.category), ["type", "reference", "other", undefined]);
   assert.equal(wire.events[0].event_id, state.events[0].event.event_id);
   assert.deepEqual(Object.keys(wire.events[0]).sort(),
     ["app_version", "build", "category", "client_time", "error_name", "event_id", "failure_code", "feature_code", "outcome", "site_code"]);
   assert.equal(wire.events[0].error_name, "TypeError");
-  assert.equal(wire.events[1].error_name, undefined, "an unlisted exception name is never sent");
+  assert.equal(wire.events[1].error_name, "ReferenceError");
+  assert.equal(wire.events[2].error_name, undefined, "an unlisted exception name is never sent");
   assert.ok(!JSON.stringify(wire).includes("private") && !JSON.stringify(wire).includes("secret"));
   assert.equal(first.queue().events.length, 0);
+
+  // NXT-011: coalescing follows the server's exception identity (name,
+  // reason, primary asset), never the line or column.
+  const grouped = browser({ online: false });
+  grouped.diag.owner(1);
+  const ads = "https://hsk.test/course_v3_data/ads.js";
+  const nullRead = { name: "TypeError", message: "Cannot read properties of undefined (reading 'x')" };
+  grouped.events.get("error")({ error: nullRead, filename: ads, lineno: 10, colno: 2 });
+  grouped.events.get("error")({ error: nullRead, filename: ads, lineno: 99, colno: 7 });
+  assert.equal(grouped.queue().events.length, 1, "one error on another line is the same incident");
+  grouped.events.get("error")({ error: { name: "TypeError", message: "x is not a function" }, filename: ads, lineno: 10 });
+  grouped.events.get("error")({ error: nullRead, filename: "https://hsk.test/course_v3_data/memo.js", lineno: 10 });
+  grouped.events.get("error")({ error: nullRead });
+  assert.deepEqual(grouped.queue().events.map((e) => [e.event.reason_code, e.event.location && e.event.location.asset_id]),
+    [["null_access", "ads"], ["not_callable", "ads"], ["null_access", "memo"], ["null_access", undefined]]);
+  grouped.clock(11 * 60 * 1000);
+  grouped.events.get("error")({ error: nullRead, filename: ads, lineno: 10 });
+  assert.equal(grouped.queue().events.length, 5, "a recurrence after the window is sent again");
 
   const original = browser({ online: false });
   original.diag.owner(1);

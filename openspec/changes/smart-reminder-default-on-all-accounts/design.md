@@ -37,3 +37,9 @@
 ## Migration Plan
 
 Deploy server code with migration `0160` (constraint-only, SQLite batch and PostgreSQL). Rollback: revert code; delete routing rows in state `pwa` (they own no consent and only veto legacy senders), then downgrade `0160`, which refuses while such rows exist. The Admin PWA Smart template switch remains the immediate stop.
+
+## D35: default send time
+
+- `_personal_time` falls back in this order: manual time, learned habit, saved legacy time, then `PolicyContext.default_time`, with time source `default`. Only `SmartReminderPolicyContextService.load` sets `default_time` (21:00), so every dispatch path (reservation, claim, Android due, Telegram, PWA) and the widget see the same time, while pure simulations and the offline evaluator stay unchanged.
+- The widget wire contract allows only `manual/saved/habit/unknown`, and installed Android apps reject other values. The widget therefore reports the default as `saved` with its real time.
+

@@ -138,7 +138,7 @@ Bu yozuvlar **takror implementatsiya qilish buyrug‘i emas**. Boshlashdan avval
 
 
 ### NXT-011 — PWA JavaScript incident'larini aniqroq guruhlash (monitoring collision)
-- Status: PLANNED
+- Status: VERIFY
 - Added: 2026-11-21
 - Priority: high (diagnostika ishonchliligi; joriy release'ni shoshilinch o‘zgartirish uchun ruxsat emas)
 - Goal: Bir xil `/iphone-pwa/course` sahifasidagi **turli** `js_uncaught` / `js_rejection` xatolarini bitta incident sifatida noto‘g‘ri birlashtirmaslik; aynan bir xato qaytarilganda esa dedup va occurrence hisobini saqlash.
@@ -146,7 +146,7 @@ Bu yozuvlar **takror implementatsiya qilish buyrug‘i emas**. Boshlashdan avval
 - Scope: Avval haqiqiy `DiagnosticReceipt` sample/retention va JS reporter→intake→Admin zanjirini audit qiling, optional source `error_name`, `reason_code`, allowlisted `asset_id`/line yo‘qolish sababini isbotlang. Keyin minimal, server-owned va privacy-safe incident identity strategiyasini tanlang: mavjud qat'iy allowlist bilan tasdiqlangan exception/source dalili bo‘lsa turli xatolar ajralsin; yetarli dalil bo‘lmasa bu holat `unknown/aggregated` sifatida aniq ko‘rsatilsin, soxta aniqlik qo‘shilmasin. `asset_version`/build o‘zgarganda bir xil xatoni keraksiz bo‘lib yubormaslik, eski incident/receipt, reopen/resolve, dedup, rate-limit, Push va Analytics kontraktlarini saqlash shart. PWA ustuvor; Android va Telegram monitoring regressiyasi ham tekshirilsin.
 - Risks / open questions: Raw exception message, raw stack, URL, user content, token yoki PII'ni fingerprint, DB, Admin yoki loglarga qo‘shmang. Client yuborgan arbitrary fingerprint'ga ishonmang. Bir xil location'dagi turli runtime sabablar, source-map yo‘qligi va iOS/WebKit inline/cross-origin xatolari uchun aniq fallback siyosatini hujjatlashtiring. Diagnostika sample'ining yo‘qligi production rollout/migration yoki allowlist sababmi — tekshirishsiz taxmin qilmang.
 - Acceptance: (1) Bitta PWA route'dagi ikki alohida, allowlist orqali ishonchli ajratiladigan JS exception ikkita incident hosil qiladi; (2) bir xil xato qayta kelganda bitta incident va to‘g‘ri occurrence count; (3) metadata yetishmaganda xavfsiz va ochiq `unknown` holat; (4) resolved/reopened, old-version compatibility, retry/dedup, Admin detail va Apple Push spam cheklovlari buzilmaydi; (5) WebKit/Chromium + backend integration/CI testlari, production'ga chiqishdan oldin staging/device acceptance.
-- Implementation: Hozircha faqat navbatga yozildi; kod o‘zgartirilmagan, CI/deploy o'tkazilmagan. Tegishli manbalar: [monitoring talablari](docs/monitoring/REQUIREMENTS.md), [context](docs/monitoring/MONITORING_CONTEXT.md), [PR #317](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/317).
+- Implementation: 2026-11-22 — server fingerprint'iga JS xatolari uchun allowlist'dagi `error_name` + `reason_code` + asosiy `asset_id` qo‘shildi (line/version yo‘q), reporter coalescing kaliti ham shunga moslandi, Admin qatorida xato nomi/fayl yoki «Номаълум» ko‘rinadi; migratsiya yo‘q. Tafsilot: [MONITORING_CONTEXT](docs/monitoring/MONITORING_CONTEXT.md) «Incident identity». Qolgani: staging va real iPhone/Telegram qurilmada tekshiruv, production receipt'larini ko‘rish, egasining yopish tasdig‘i.
 
 
 

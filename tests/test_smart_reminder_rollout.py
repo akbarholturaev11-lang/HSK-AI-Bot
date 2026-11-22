@@ -19,7 +19,9 @@ from app.db.base import Base
 
 from app.db.models.desktop import DesktopDevice, DesktopSession
 from app.db.models.learner_pwa_push import LearnerPwaPushSubscription
+from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.course_progress import CourseProgress
+from app.db.models.course_xp_event import CourseXpEvent
 from app.db.models.course_miniapp_profile import CourseMiniAppProfile
 from app.db.models.smart_reminder import (
     SmartReminderCapability, SmartReminderConsent, SmartReminderMutation, SmartReminderPreference,
@@ -520,6 +522,40 @@ class AdmissionChecks(FixtureChecks):
         attempt, = await self.q.rows(ATTEMPT)
         self.assertEqual((attempt["channel"], attempt["device_id"], attempt["state"]),
                          ("pwa", "iphone-pwa", "provider_accepted"))
+
+    async def test_pwa_only_account_without_any_known_time_is_served_at_the_d35_default(self):
+        await self.pwa_only()
+        async with self.q.sessions.begin() as s:
+            await s.execute(update(SmartReminderPreference).values(legacy_time_local=None))
+            await s.execute(update(CourseProgress).values(reminder_time=None))
+            # A new learner: no study history, so no habit at the fixture's 14:00.
+            await s.execute(delete(CourseXpEvent))
+            await s.execute(delete(CourseMiniAppEvent))
+        self.assertEqual(await self.admission(pwa_ready=True).step(4), ("held",))
+        async with self.q.sessions.begin() as s:
+            await s.execute(update(ROUTING).values(held_at=self.q.tick - LEGACY_DRAIN,
+                quiesced_at=self.q.tick - LEGACY_DRAIN))
+        self.assertEqual(await self.admission(pwa_ready=True).step(4), ("admitted",))
+        await open_rollout(self.q.sessions, self.q.tick)
+        config = ("private-key-test", "mailto:test@example.com", self.fernet)
+        pushes = AsyncMock(return_value=201)
+        def runtime():
+            return SmartReminderRuntime(self.q.settings, self.q.sessions, enabled=True, calibration=QA,
+                history_window=timedelta(days=30), coverage_reader=self.q.service.coverage_reader,
+                telegram_send=self.q.send, clock=lambda: self.q.tick, admission=True)
+        with patch("app.services.learner_pwa_push.sender_config", return_value=config), \
+                patch("app.services.smart_reminder_pwa.sender_config", return_value=config), \
+                patch("app.services.smart_reminder_pwa.send_webpush", pushes):
+            await runtime().tick()
+            self.q.tick = self.q.tick.replace(hour=14, minute=1)
+            await runtime().tick()
+            pushes.assert_not_awaited()  # 14:00 is no longer anyone's time here.
+            self.q.tick = self.q.tick.replace(hour=21, minute=1)
+            await runtime().tick()
+            await runtime().tick()
+        pushes.assert_awaited_once()
+        job, = await self.q.rows(JOB)
+        self.assertEqual(_utc(job["scheduled_at"]), self.q.tick.replace(minute=0))
 
     async def test_pwa_only_zone_comes_from_the_device_offset_and_old_apk_or_switch_off_blocks(self):
         await self.pwa_only(zone=None)

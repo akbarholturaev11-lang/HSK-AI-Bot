@@ -2846,6 +2846,17 @@ function diagnosticTitle(row){
   return t(/^diagFailure[A-Za-z0-9]+$/.test(key)?key:'diagFailureUnknown');
 }
 function diagnosticFeature(row){return t('diagFeature_'+row.feature_code);}
+// NXT-011: which exception a learner-web JS incident groups. A page-level
+// incident collects failures reported without an exception identity.
+function diagnosticIdentity(row){
+  if(row.grouping==='page')return t('diagUnknown');
+  if(row.grouping!=='exception')return '';
+  const sample=row.sample&&typeof row.sample==='object'?row.sample:null;
+  const name=sample&&typeof sample.error_name==='string'&&/^[A-Za-z]{1,32}$/.test(sample.error_name)?sample.error_name:'';
+  const first=sample&&Array.isArray(sample.locations)?sample.locations[0]:null;
+  const file=first&&typeof first.path==='string'&&/^app\/static\/[A-Za-z0-9_.\/-]+\.js$/.test(first.path)?first.path.split('/').pop():'';
+  return [name,file].filter(Boolean).join(' · ');
+}
 function diagnosticReopened(row){
   return row.reopened_at&&row.triage_status!=='resolved'
     ?[t('diagReopened'),date(row.reopened_at),row.reopened_version].filter(Boolean).join(' · '):'';
@@ -2883,7 +2894,8 @@ function inboxEntry(row){
   const kindIcon=icon(row.source==='android'?'device':row.source==='payment'?'credit':diagnostic||row.source==='technical'?'settings':'send');
   const reopened=diagnostic?diagnosticReopened(row):'';
   const summary=diagnostic?'<span class="inbox-row-meta"><span>'+esc(platform)+'</span><span>'+esc(diagnosticFeature(row))+
-    '</span><span>×'+esc(number(row.occurrences))+'</span></span>'+
+    '</span>'+(diagnosticIdentity(row)?'<span>'+esc(diagnosticIdentity(row))+'</span>':'')+
+    '<span>×'+esc(number(row.occurrences))+'</span></span>'+
     (reopened?'<span class="inbox-row-preview">'+esc(reopened)+'</span>':''):
     '<span class="inbox-row-preview">'+esc(inboxPreview(row))+'</span>'+
     '<span class="inbox-row-meta"><span>'+esc(platform||t('unavailable'))+'</span>'+
