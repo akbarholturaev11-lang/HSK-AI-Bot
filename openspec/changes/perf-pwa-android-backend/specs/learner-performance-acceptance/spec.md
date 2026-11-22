@@ -148,6 +148,10 @@ Nor may it cache private data across accounts.
 - **WHEN** the paywall, level-up or an ad overlay is open
 - **THEN** a back gesture does not dismiss it
 
+#### Scenario: An answer graded on the device
+- **WHEN** a personal review or Mistakes review answer graded on the device reaches the server
+- **THEN** the server grades it again against its own stored question, keeps the first answer per question, and changes learning state and XP only by its own verdict
+
 #### Scenario: Another account signs in on the same Android install
 - **WHEN** a learner signs out on Android and another account signs in without restarting the app
 - **THEN** no course, profile or rating data cached for the first account is shown to the second

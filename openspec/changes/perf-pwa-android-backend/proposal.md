@@ -81,6 +81,14 @@ Authoritative sources, not restated here:
    until the data settles, and the refreshed regions show their skeletons in
    place instead of a full page reload. A changed HTML still reloads once,
    so new versions keep arriving.
+10. Answers in a session (owner): the in-lesson personal review and the
+    Mistakes review wait for the server on every answer today. They are
+    graded on the device and recorded in the background, as lessons are.
+    The server still re-grades every answer. The Mistakes review's XP
+    integrity is an owner decision.
+11. Pro, trial and limit windows (owner): no loading text, one request
+    instead of two, instant repeat opens, a skeleton cover for the checkout
+    and trial layers, and no height jump.
 
 **To do, Android (same initiative, same regression matrix):**
 - Startup baseline and `reportFullyDrawn`, with memory and network bytes,
@@ -138,6 +146,8 @@ only by the evidence named in design.md.
     `app/static/hsk-gaplar.html`;
   - `app/static/course_v3_data/iphone-pwa-notices.js` (Inbox);
   - `app/static/course_v3_data/iphone-pwa-refresh.js` (pull-to-refresh);
+  - `app/static/course_v3_data/iphone-pwa-inline-pro.js` and its bridge
+    (limit and Pro sheet), `app/static/iphone-pwa-sw.js` (warm-up list);
   - the practice pages under `/iphone-pwa/practice/*`, especially
     `course_v3_test.html` and `course_v3_mistakes.html`;
   - `app/static/course_v3_data/iphone-pwa-practice-boot.js`;
@@ -151,6 +161,9 @@ only by the evidence named in design.md.
 - **Backend:**
   - `/api/v3/lesson/complete`, `/api/v3/lesson/start`, `/api/v3/pwa/profile`;
   - `app/services/ai_provider.py` (fallback timeout);
+  - `app/services/course_adaptive_lesson_service.py` and the Mistakes
+    review start in `app/services/course_mistake_service.py` (answer keys
+    for clients that grade locally);
   - `/api/v3/clientlog` (read only for real-user samples).
 
 **Current evidence:** measured on 2026-11-22 against main `50231bee`; details

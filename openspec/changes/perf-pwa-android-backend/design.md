@@ -134,6 +134,8 @@ requirements. The audit was run on main `50231bee` on 2026-11-22.
 | Inbox loading and error states | To do | `iphone-pwa-notices.js`: text-only loading, error without retry |
 | Embedded-layer cover (Dictionary, Phrases) | To do | The cover stays until the full iframe `load` and hides the child's own skeleton; it has no Back and no error/retry, so a page that never loads leaves "Yuklanmoqda…" forever. Owner rule: no loading text, a matching skeleton instead (decision 5) |
 | Launch path to the first frame | Measure, then to do | The first paint is already the shell skeleton, but four character scripts, the Telegram SDK and ten stylesheets block it on a cold launch (decision 13) |
+| In-lesson personal review and Mistakes review wait for the server on every answer | To do | `adaptiveSubmit` waits up to 8 s; review `pickOption` waits and blocks on failure; server p50 ≈37–51 ms, so the wait is the network (decision 15) |
+| Pro, trial and limit windows | To do | Sheet: "Tariflar yuklanmoqda…" text and two sequential requests; checkout and trial layers: empty until the child paints (decision 16) |
 | Pull-to-refresh (Course, Rating, Profile) | To do | `iphone-pwa-refresh.js` reloads the whole page; no armed state at the threshold, no spinning ring, no region skeletons (decision 14) |
 | Telegram SDK in the PWA head | Measure | `telegram-web-app.js` (19 KB gzip, 120 KB raw) is parser-blocking in `<head>` on every PWA launch; 1.3 records its main-thread time before FCP |
 | Remaining layer back/scroll audit; root-tab drag peek | To do | Contract open item; owner report |
@@ -176,6 +178,9 @@ Known = real text available before any request. Async = pending data.
 | PWA Dictionary | Virtual rows | Header, search | Word list (bundled) | Parent text cover until full `load`, then an empty list; no Back/retry ✘ (2.4) |
 | PWA Phrases | Rows | Header, search, tabs | Categories | Parent text cover until full `load`, then own skeleton; no Back/retry ✘ (2.4) |
 | PWA pull-to-refresh | Root tabs | Header, nav | The tab's data | Full page reload, ring vanishes ✘ (2.10) |
+| PWA in-lesson personal review, Mistakes review | Exercise | Question, options | Verdict | Waits for the server on every answer ✘ (2.11) |
+| PWA limit and Pro sheet | Sheet | Header, benefits, buttons | Plans, prices | Skeleton plus loading text; two round trips ✘ (2.12) |
+| PWA checkout and trial layers | Full screen | Child header | Child page | Empty until the child paints ✘ (2.12) |
 | PWA Test centre hub | Card list | Header, title | Exams, results | Empty `#ex-list` behind the panda ✘ |
 | PWA Mistakes centre hub | Rows | Header, title, tabs | Mistake targets (paged) | Empty, then spinner + text, behind the panda ✘ |
 | PWA session start: Recognition, Pronunciation, Memorize (on open), Test exam, Mistakes review | Exercise | Frame | Session items | Panda at once, even when fast (owner: only if slow) |
@@ -475,7 +480,8 @@ Known = real text available before any request. Async = pending data.
     - **An action outside its bound** has the bound as its target. The
       task that owns the action fixes it: 2.4 or 2.8 for layers and
       sessions, 2.7 for the lesson, 2.3 for Inbox, 2.9 for launch, 2.10
-      for pull-to-refresh.
+      for pull-to-refresh, 2.11 for answers in a session, 2.12 for the
+      Pro, trial and limit windows.
     - **Exception:** if the bound cannot be reached because the cause is
       outside the app (network or provider), it is recorded with the
       evidence and approved by the owner, as for the 8 px geometry rule.
@@ -604,6 +610,137 @@ Known = real text available before any request. Async = pending data.
       - A new refresh component: the existing script and the tabs' own
         loaders are enough.
 
+15. **Answers in a learning session are graded on the device and recorded
+    later, as in lessons (owner, 2026-11-23).**
+    - **Today, in code:**
+      - **In-lesson personal review (UIUX-007, `course-v3.html`
+        `adaptiveSubmit`; Android `LessonAdaptiveReview`):** the plan
+        arrives without answer keys (`public_question`). Every tap waits
+        for `POST adaptive/answer`, up to 8 s, before right or wrong shows.
+        On a failure the learner sees "saved offline" and no feedback.
+      - **Mistakes review (`course_v3_mistakes.html` `pickOption` and
+        `submitBuilder`; Android review screens):** every answer waits for
+        `POST mistakes/review/answer`. On a failure the options unlock and
+        a system `alert` (a toast in the Telegram copy) asks the learner to
+        try again; the session cannot go on.
+      - **The server is not the slow part.** Production, 7 days:
+        `adaptive/answer` p50 ≈51 ms, p95 ≈121–153 ms;
+        `mistakes/review/answer` p50 ≈37 ms, p95 ≈313 ms. The wait is the
+        network round trip, 1.2–2.5 s from one measured network.
+      - Lessons, the Test exam, Recognition and Memorize already grade on
+        the device and record at the end.
+    - **Change (the lesson format):**
+      - When the client declares local grading (a new request field;
+        older clients get today's shape), the plan response and the review
+        start response carry each question's key: `answer_index` or
+        `answer_tokens`, plus `correct_answer` and `explanation`.
+      - The client grades with the server's exact rule: the option index
+        must equal `answer_index`; tokens must equal `answer_tokens` in
+        order, after the same whitespace normalisation. Feedback shows at
+        once.
+      - **Recording, in the background:**
+        - Personal review: the answer is posted at once; a failure goes
+          into the existing outbox (10 answers, 36 h). The outbox is
+          flushed at the next plan load, as today, and also once
+          `lesson/complete` has settled.
+        - Mistakes review: answers are posted in order in the background.
+          `review/complete` is already the end-of-session wait, like
+          `lesson/complete`. It first waits until the queued answers are
+          committed. If one cannot be committed, completion shows its
+          existing error with retry, and the session stays on the device
+          until it succeeds or the learner leaves.
+      - **The server stays the judge:**
+        - it re-grades every recorded answer against its own snapshot;
+        - the first answer per item stays final;
+        - it never trusts a verdict sent by the client.
+      - **Parity:** a test grades every question format that
+        `mistake_drill_factory` produces on both sides and requires the
+        same verdict. A mismatch in production is logged as a server
+        diagnostic. The server's verdict counts for learning state, and the
+        feedback already shown is not changed afterwards.
+    - **Integrity trade-off:**
+      - The personal review gives no XP (`adaptive` is not a trusted
+        reward source). A key on the device changes nothing there.
+      - The Mistakes review awards XP (base 5 per session for targets from
+        trusted sources), and today it commits each answer before it
+        reveals the feedback. With the key on the device, a technically
+        skilled user could read the answers from the network, as is already
+        possible in lessons. This is an owner decision (open question 1).
+    - **Server waits that stay, with the reason:**
+      - Pronunciation scoring (lesson speaking cards, the Pronunciation
+        practice): speech is scored on the server. It keeps its checking
+        state and its skip.
+      - AI coach and AI Voice replies: the AI runs on the server.
+      - Session start and finish (`lesson/start`, `lesson/complete`,
+        `exams/complete`, `review/start`, `review/complete`): covered by
+        2.7, 2.8, 4.1 and 4.2.
+    - The plan request at lesson start is already asynchronous (6 s
+      timeout) and never delays the first card. It is unchanged.
+    - **Telegram:** the shared `course-v3.html` keeps server grading for
+      the Mini App in this change (non-goals). It can adopt the same request
+      field later.
+16. **Pro, trial and limit windows open at once and settle without a jump
+    (owner, 2026-11-23).**
+    - **Today, in code:**
+      - **Limit and Pro sheet (`iphone-pwa-inline-pro.js`, opened by
+        `iphone-pwa-inline-pro-bridge.js`):**
+        - The sheet, its header, benefits and two plan skeletons show at
+          once, together with a visible "Tariflar yuklanmoqda…" text.
+        - Its data needs two requests, one after the other:
+          `pwa-auth/session`, then `subscription/overview`. The session
+          request repeats after every return to the app, because
+          `visibilitychange` resets it.
+        - The server is fast (overview p50 ≈163–224 ms, p95 ≈233–335 ms;
+          session p50 ≈16 ms), so the wait is two network round trips.
+        - The skeleton always shows two plans. If the server returns
+          another number, the sheet's height jumps.
+        - Overview writes on every call (`ensure_referral_code`,
+          `sync_referral_discount_progress`, then a commit). It must not be
+          fetched in advance on every launch.
+      - **Full checkout (`/iphone-pwa/checkout?embedded=1`, "Boshqa
+        tariflar") and the trial offer (`/iphone-pwa/onboarding/li?
+        embedded=1&offer=trial`):** iframes created on tap. Until the child
+        paints, the layer is empty paper, or dark for the trial, with no
+        control.
+    - **Change (PWA only; the owner's checkout design, colours, copy and
+      payment logic stay as they are):**
+      - **No visible loading text** in the sheet (the decision-5 rule). The
+        plan skeleton count is the count the server last returned on this
+        device. Only that number is stored; the default is two.
+      - **One request instead of two:** the sheet reuses the course page's
+        verified PWA actor (user ID and CSRF). The owner-switch check stays.
+        If no actor is available, it falls back to its own session request.
+      - **Repeat opens are instant:** the last overview for this actor
+        shows at once from memory and is revalidated quietly, through the
+        existing `load(true)`. The pay button activates only when the fresh
+        answer arrives, and a changed price updates in place. Memory only,
+        cleared when the actor changes, because it holds the email.
+      - **Fetched early only when the opening is certain:** a preview
+        lesson always opens the sheet at its half (`previewHalfAt`). At
+        that lesson's start, the overview is requested in the background
+        with `inline_preview`, which records no analytics. Its writes are
+        the same ones the opening would make.
+      - **Checkout and trial layers** follow decision 5:
+        - until the child paints, the layer shows the child's header, with
+          its close control at the child's position, and bars shaped like
+          its first screen; the trial keeps its dark background;
+        - the child is revealed at its first paint;
+        - after 20 s, the existing error with Retry and close appears.
+      - **Warm-up:** the service worker already warms the checkout page's
+        assets. The trial page (`/iphone-pwa/onboarding/li?embedded=1&
+        offer=trial`) joins `WARM_PAGES`.
+      - **Smooth:** the sheet keeps its existing entrance (`hip-page-in`)
+        and gets no new animation. The plan area keeps its reserved height
+        and the button row stays fixed, so the swap from skeleton to plans
+        moves anchors by at most 8 px. Nothing synchronous runs between the
+        tap and the sheet's first frame.
+    - **Targets (decision 12):** tap to the sheet's first frame is an
+      interaction (≤200 ms). Tap to plans with an active pay button is an
+      opening (≤1000 ms warm). The checkout and trial layers are openings
+      measured to the child's first paint.
+    - **Android** gets the same rules for its native Pro, trial and limit
+      screens in 3.7.
+
 ### Condition matrix (§7)
 
 Each condition maps to an existing test, or to the task that adds the missing
@@ -698,6 +835,14 @@ The draft was challenged item by item:
   e2e test changes the fixture's HTML date and expects the reload.
 - [A refresh failure wipes good content] → Failure restores the previous
   verified content; a held-then-failed request test covers each tab.
+- [The device and the server grade one answer differently] → The 2.11 parity
+  test covers every factory format; the server's verdict counts, and a
+  mismatch is logged.
+- [A Mistakes review answer is never committed, so completion fails] →
+  Completion waits for the queue and keeps its existing error with retry;
+  the session stays on the device until it succeeds.
+- [A cached overview shows an old price] → The pay button activates only
+  after the fresh answer, and changed prices update in place.
 
 ## Migration Plan
 
@@ -778,10 +923,23 @@ The draft was challenged item by item:
     feels it loading (decision 13).
   - Pull-to-refresh: a spinning 🔄 ring, the refreshed regions as
     skeletons, and one exact distance that arms the refresh (decision 14).
+- **Two more requirements (2026-11-23):**
+  - Answers in the in-lesson personal review do not wait for the server:
+    graded on the device, recorded later like a lesson. The same for any
+    similar section, which is the Mistakes review (decision 15).
+  - The Pro, trial and limit windows open as fast and smoothly as possible
+    (decision 16).
 
 ## Open questions
 
-None. Gates that can send work back to the owner are named in their tasks:
+1. **Mistakes review integrity (decision 15).** With the key on the device,
+   the review's feedback is instant, but a technically skilled user could
+   read the answers from the network and earn its XP, as in lessons today.
+   - (a) Recommended: grade on the device, like lessons.
+   - (b) Keep the server commit for the Mistakes review: it keeps waiting
+     per answer, and only the in-lesson personal review becomes instant.
+
+Gates that can send work back to the owner are named in their tasks:
 the root-tab peek performance gate (2.5), the baseline profile (3.2), the
 edge or CDN evidence (4.4), and any owner-approved exception to a target
 (decision 12).

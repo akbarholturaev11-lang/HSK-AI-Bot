@@ -157,6 +157,38 @@ localized retry.
 - **WHEN** a PWA practice page has not become ready after its fallback timeout
 - **THEN** it shows the existing localized error with Retry and Back, and Retry loads the page again
 
+### Requirement: Answers in a learning session do not wait for the server
+In the PWA and Android, the in-lesson personal review and the Mistakes review
+MUST show right or wrong for an answer without waiting for a network
+response, using the same rule the server grades with. The answer is recorded
+in the background. A failed recording MUST NOT stop the session.
+
+#### Scenario: Personal review answer on a slow network
+- **WHEN** the learner answers a personal review question in a PWA lesson and the answer request has not returned
+- **THEN** right or wrong shows within 200 ms, and the lesson continues
+
+#### Scenario: Recording fails during the lesson
+- **WHEN** the background recording of a personal review answer fails
+- **THEN** the lesson continues, and the answer is sent again on the next flush
+
+#### Scenario: Mistakes review finishes with answers still queued
+- **WHEN** the learner finishes a Mistakes review while answers are still being recorded
+- **THEN** completion waits for them, and a failure shows the existing error with retry
+
+### Requirement: Pro, trial and limit windows open at once
+In the PWA, the limit and Pro sheet MUST show its structure in the first
+frame after the tap, with plan skeletons and no loading text. The checkout
+and trial layers MUST show a skeleton of their page until it paints. Swapping
+placeholders for data moves anchors by at most 8 px.
+
+#### Scenario: Limit reached on a slow network
+- **WHEN** a learner reaches a limit and the plans request has not returned
+- **THEN** the sheet's header, benefits, plan skeletons and buttons are visible, no loading text appears, and the pay button stays disabled
+
+#### Scenario: Second opening in one launch
+- **WHEN** the sheet opens again in the same launch for the same account
+- **THEN** the remembered plans show at once, and the pay button activates when the fresh prices arrive
+
 ### Requirement: Loading states use existing copy and design
 Loading, error and retry states MUST:
 - reuse the surface's existing localized labels for UZ, RU and TJ, and its

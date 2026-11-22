@@ -54,6 +54,11 @@ identity.
   - Today's pull-to-refresh on Course, Rating and Profile: release to the
     first new frame, and release to settled content (the before numbers for
     2.10).
+  - Answer tap to feedback in the in-lesson personal review and in the
+    Mistakes review, with the server held (the before numbers for 2.11).
+  - The limit and Pro sheet, first and repeat open: tap to its first frame,
+    and tap to plans with an active pay button. The checkout and trial
+    layers: tap to the child's first paint (the before numbers for 2.12).
   - Login and onboarding first paint.
   - Tab switches.
   - First open of each layer: Dictionary, Phrases, five practice pages, the
@@ -300,13 +305,64 @@ identity.
   - release to first skeleton frame ≤200 ms, and release to settled content
     within the 1.3 baseline;
   - the i18n guard passes.
-- [ ] 2.11 PWA condition matrix (design.md, §7). It runs last in group 2.
+- [ ] 2.11 Answers graded on the device in the in-lesson personal review and
+  the Mistakes review (design decision 15). Ships after the owner answers
+  open question 1; with (b), only the personal review changes.
+  - **Server:** when the request declares local grading, the adaptive plan
+    and the review start responses carry each question's key. Older
+    clients get today's shape. Recording, re-grading, "first answer is
+    final" and all learning-state and XP rules stay unchanged.
+  - **PWA (`course-v3.html` overlay, `course_v3_mistakes.html`):**
+    - grade with the server's exact rule and show feedback at once;
+    - post the answer in the background;
+    - personal review: a failure goes into the existing outbox, flushed at
+      the next plan load and after `lesson/complete` settles;
+    - Mistakes review: answers are queued in order, and `review/complete`
+      waits for them, keeping its existing error with retry.
+  - Telegram keeps server grading.
+
+  Verify:
+  - a parity test grades every `mistake_drill_factory` format on the
+    server and on the client and gets the same verdict;
+  - on Chromium and WebKit with the answer request held, feedback appears
+    within one frame (≤200 ms) and the lesson or review continues;
+  - with the request failing, the personal review continues and the answer
+    reaches the server on the next flush, and the review completes once the
+    queue is committed;
+  - real-Postgres tests show unchanged mistake-target, box, XP and
+    duplicate-answer results;
+  - an old client request without the field gets no key;
+  - the analytics and monitoring checker and the Mini App smoke tests pass.
+- [ ] 2.12 Pro, trial and limit windows (design decision 16; PWA only).
+  - Sheet: no loading text; as many skeleton plans as the server last
+    returned; the course page's actor is reused; a repeat open shows the
+    remembered overview at once, and the pay button waits for the fresh
+    one.
+  - At the start of a preview lesson, the overview is fetched in the
+    background with `inline_preview`.
+  - Checkout and trial layers: the decision-5 skeleton cover, reveal at the
+    child's first paint, a 20 s error with Retry and close.
+  - The trial page joins the service worker's `WARM_PAGES`.
+
+  Verify, on Chromium and WebKit:
+  - no frame of the sheet shows a loading text;
+  - the first open makes one request, not two, and an owner switch still
+    closes the sheet;
+  - a repeat open shows the plans within one frame, the pay button is
+    disabled until the fresh answer, and a changed price updates in place;
+  - the skeleton-to-plans swap and the layer handoff move anchors ≤8 px at
+    320, 390 and 430 px;
+  - a preview-lesson prefetch records no analytics entry;
+  - payment start, return, polling and the exit offer behave as before (the
+    existing checkout tests pass), and the i18n guard passes;
+  - the lab before/after from 1.3 is recorded.
+- [ ] 2.13 PWA condition matrix (design.md, §7). It runs last in group 2.
   - For every PWA cell marked ✔, run the named test once on this branch and
     record it.
   - For every PWA cell pointing at a task, confirm that task's verification
     covers it.
-  - No new test is added outside 2.3, 2.4, 2.5, 2.6, 2.8, 2.9
-    and 2.10.
+  - No new test is added outside 2.3, 2.4, 2.5, 2.6, 2.8, 2.9,
+    2.10, 2.11 and 2.12.
 
   Verify: the matrix in the contract doc shows each PWA cell with a test
   name or the task that owns it.
@@ -396,6 +452,17 @@ identity.
 
   Verify: the tests pass on the direct flavour, `testPlayDebugUnitTest`
   passes, and the mapping is recorded in `ANDROID_CONTEXT.md`.
+- [ ] 3.7 Android: the same rules as 2.11 and 2.12 (design decisions 15
+  and 16).
+  - `LessonAdaptiveReview` and the Mistakes review screens grade with the
+    key and record in the background, using the existing in-memory outbox.
+  - The native Pro, trial and limit screens show their structure at once,
+    with no loading text, and no blank screen while data loads.
+
+  Verify: unit tests for the grading parity and the background recording,
+  an instrumentation test with a held answer request (feedback without
+  waiting), and the 1.3-style before/after on Pixel_8 and the low-end
+  profile.
 
 ## 4. Backend (after group 3)
 
@@ -479,7 +546,9 @@ identity.
   error with a working retry. Dictionary and Phrases never show a loading
   text, only their skeleton. A launch on a slow network shows the skeleton
   until the course is ready. Pull-to-refresh arms at a clear point, the ring
-  spins and the regions show skeletons until the new content lands. The
+  spins and the regions show skeletons until the new content lands. On a
+  slow network, personal review and Mistakes review answers show right or
+  wrong at once, and the Pro, trial and limit windows open at once. The
   Android dictionary returns to the same row.
   Record the result in the contract doc.
 - [x] 5.2 Record the owner's decisions in design.md before 2.5 starts:
@@ -491,7 +560,9 @@ identity.
   - no loading text on Dictionary and Phrases, a skeleton instead;
   - a fast launch, with the skeleton when it is slow;
   - pull-to-refresh with a spinning ring, region skeletons and one exact
-    threshold.
+    threshold;
+  - answers in a learning session graded on the device and recorded later;
+  - fast, smooth Pro, trial and limit windows.
 
   Verify: the decisions are recorded in design.md.
 
