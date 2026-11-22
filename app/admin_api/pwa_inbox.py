@@ -19,6 +19,7 @@ from app.db.models.payment import Payment
 from app.db.models.release_feedback import ReleaseFeedbackResponse
 from app.db.models.user import User
 from app.services.monitoring import catalog, source
+from app.services.monitoring.intake import fingerprint
 
 Source = Literal["bot", "release", "android", "payment", "technical", "diagnostic"]
 RowId = Annotated[int, Field(strict=True, ge=1, le=2_147_483_647)]
@@ -585,6 +586,19 @@ async def _diagnostic_samples(db, page, now):
     ).select_from(incident).join(receipt, receipt.id == chosen).where(incident.id.in_(items)))).all()
     for item in items.values():
         item["sample"] = None
+        item["grouping"] = None
+    # NXT-011: a learner-web JS incident is either one allowlisted exception
+    # identity or the page-level group of failures reported without one.
+    script = [source_id for source_id, item in items.items() if item["failure_code"] in catalog.DEBUG_FAILURES]
+    if script:
+        for row in (await db.execute(select(
+            incident.id, incident.fingerprint, incident.platform, incident.feature_code,
+            incident.failure_code, incident.site_code,
+        ).where(incident.id.in_(script)))).all():
+            if row.platform in catalog.DEBUG_PLATFORMS:
+                page_level = row.fingerprint == fingerprint(
+                    row.platform, row.feature_code, row.failure_code, row.site_code)
+                items[row.id]["grouping"] = "page" if page_level else "exception"
     for row in rows:
         items[row.id]["sample"] = {
             "received_at": _iso(row.received_at), "app_version": row.app_version,

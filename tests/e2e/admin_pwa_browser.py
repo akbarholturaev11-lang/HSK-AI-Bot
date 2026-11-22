@@ -1695,6 +1695,7 @@ async def diagnostic_precision_chain(output, sessions):
             'tj': ('Намунаи охирини фиристода', 'Номи истисно', 'Хатои навъ',
                    'Муроҷиат ба хосияти null ё undefined', 'Ҷой дар код', 'Сабт нашудааст', 'Хатои истинод'),
         }
+        unknown = {'uz': 'Номаълум', 'ru': 'Неизвестно', 'tj': 'Номаълум'}
         for lang, (sample, name, category, reason, where, missing, old_category) in copy.items():
             await page.goto(ORIGIN + '/admin/?inbox=diagnostic')
             await authenticate_fresh_launch(page)
@@ -1703,6 +1704,14 @@ async def diagnostic_precision_chain(output, sessions):
             await authenticate_fresh_launch(page)
             rows = page.locator('[data-inbox-open^="diagnostic:"]')
             await expect(rows).to_have_count(2)
+            # NXT-011: the row names the exception identity it groups; a
+            # failure reported without one is the page-level "unknown" group.
+            exact = page.locator(f'[data-inbox-open="diagnostic:{first.incident_id}"] .inbox-row-meta')
+            await expect(exact).to_contain_text('TypeError · li-onboarding-install.js')
+            await expect(exact).not_to_contain_text(str(failing_line))
+            await expect(page.locator(f'[data-inbox-open="diagnostic:{second.incident_id}"] .inbox-row-meta')
+                         ).to_contain_text(unknown[lang])
+            await page.screenshot(path=str(output / f'diagnostic-precision-list-{lang}.png'))
             await page.locator(f'[data-inbox-open="diagnostic:{first.incident_id}"]').click()
             details = page.locator('.inbox-details')
             await expect(details).to_be_visible()

@@ -1,0 +1,48 @@
+/* HSK AI Pro panda + Pro effects. Pair with /assets/brand/hsk-pro-theme.css.
+ * Size the panda by sizing its container: .hpp fills it (square works best).
+ * Effects: a soft gold halo behind the panda, a one-time spark burst, and a
+ * one-time gold light sweep (.hpp-glint) for any Pro card or badge.
+ */
+.hpp{position:relative;display:block;width:100%;height:100%;isolation:isolate}
+.hpp-halo{position:absolute;inset:6% 4% 2%;border-radius:50%;z-index:-1;
+  background:radial-gradient(circle at 50% 52%,var(--hsk-pro-halo,rgba(233,169,22,.30)) 0,rgba(233,169,22,.10) 42%,transparent 68%);
+  animation:hpp-halo 3.2s ease-in-out infinite alternate}
+.hpp-figure{position:absolute;inset:0;display:block}
+.hpp-figure svg{display:block;width:100%;height:100%}
+.hpp-core{transform-box:fill-box;transform-origin:50% 96%}
+.hpp-breathe{animation:hpp-breathe 2.6s ease-in-out infinite}
+/* A celebrating panda bounces a few times and then settles (not an endless loop). */
+.hpp-bounce{animation:hpp-bounce .8s ease-in-out 3}
+.hpp-blink{animation:hpp-blink 4.2s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.hpp-twinkle{animation:hpp-twinkle 1.4s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.hpp-ground{transform-box:fill-box;transform-origin:center;animation:hpp-ground 2.6s ease-in-out infinite}
+
+/* One-time spark burst: 8 small gold diamonds fly out from the panda's chest. */
+.hpp-sparks{position:absolute;inset:0;pointer-events:none}
+.hpp-sparks i{position:absolute;left:50%;top:56%;width:8px;height:8px;margin:-4px;
+  background:var(--hsk-pro-gold,#E9A916);clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);
+  opacity:0;transform:rotate(var(--a)) translateY(0) scale(.4)}
+.hpp-sparks.is-on i{animation:hpp-spark .8s cubic-bezier(.2,.8,.3,1) forwards}
+
+/* One-time gold sweep for a Pro card/badge. The element only needs to be a box. */
+.hpp-glint{position:relative;overflow:hidden}
+.hpp-glint::after{content:"";position:absolute;inset:-20% auto -20% -60%;width:45%;pointer-events:none;
+  background:linear-gradient(100deg,transparent 0,var(--hsk-pro-glint,rgba(255,242,196,.85)) 50%,transparent 100%);
+  transform:skewX(-18deg);animation:hpp-glint 1s cubic-bezier(.3,.7,.3,1) forwards}
+
+@keyframes hpp-halo{from{opacity:.75;transform:scale(.96)}to{opacity:1;transform:scale(1.04)}}
+@keyframes hpp-breathe{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.02) translateY(-1px)}}
+@keyframes hpp-bounce{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-5px) scale(1.02)}}
+@keyframes hpp-blink{0%,90%,100%{transform:scaleY(0)}94%{transform:scaleY(1)}}
+@keyframes hpp-twinkle{0%,100%{opacity:.3;transform:scale(.75)}50%{opacity:1;transform:scale(1.1)}}
+@keyframes hpp-ground{0%,100%{transform:scaleX(1)}50%{transform:scaleX(.86)}}
+@keyframes hpp-spark{0%{opacity:0;transform:rotate(var(--a)) translateY(0) scale(.4)}
+  25%{opacity:1}100%{opacity:0;transform:rotate(var(--a)) translateY(calc(var(--d) * -1)) scale(1)}}
+@keyframes hpp-glint{to{left:120%}}
+
+@media(prefers-reduced-motion:reduce){
+  .hpp *,.hpp-halo,.hpp-glint::after{animation:none!important}
+  .hpp-blink{transform:scaleY(0)}
+  .hpp-twinkle{opacity:1}
+  .hpp-glint::after{display:none}
+}

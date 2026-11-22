@@ -19,6 +19,7 @@ import com.pomp.hskai.R
 import com.pomp.hskai.core.navigation.AppDestination
 import com.pomp.hskai.core.navigation.DeepLinkRouter
 import com.pomp.hskai.core.i18n.AppLocale
+import com.pomp.hskai.data.api.SmartStudyMessage
 import com.pomp.hskai.widget.WidgetIntents
 
 /**
@@ -120,7 +121,8 @@ object StudyNotifications {
         postReminderOutcome(context, reminder, variant) == StudyPostOutcome.POSTED_UNVERIFIED
 
     fun postReminderOutcome(context: Context, reminder: Reminder, variant: Int = 0,
-                            openHint: SmartStudyOpenHint? = null): StudyPostOutcome {
+                            openHint: SmartStudyOpenHint? = null,
+                            message: SmartStudyMessage? = null): StudyPostOutcome {
         if (reminder == Reminder.NONE) return StudyPostOutcome.DECLINED_BEFORE_POST
         // Repeated inline rather than delegated: this is the guard that keeps
         // the notify() call below legal, and it has to be visible right here.
@@ -148,6 +150,12 @@ object StudyNotifications {
         val choices = bodies(reminder)
         if (choices.isEmpty()) return StudyPostOutcome.DECLINED_BEFORE_POST
         val bodyRes = choices[variant.mod(choices.size)]
+        // The server's situation-aware copy (D33) when present; otherwise the
+        // app's own rotating text, exactly as before.
+        val server = message?.takeIf { it.usable() }
+        val title = server?.title ?: localized.getString(titleRes)
+        val body = server?.body ?: localized.getString(bodyRes)
+        val art = if (server?.worried() == true) Reminder.STREAK_AT_RISK else reminder
 
         // Tapping opens the lesson the server says is next. Resolving the link
         // is not authorisation: the app still checks entitlement before the
@@ -169,10 +177,10 @@ object StudyNotifications {
 
         val notification = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_notification)
-            .setLargeIcon(panda(localized, reminder))
-            .setContentTitle(localized.getString(titleRes))
-            .setContentText(localized.getString(bodyRes))
-            .setStyle(NotificationCompat.BigTextStyle().bigText(localized.getString(bodyRes)))
+            .setLargeIcon(panda(localized, art))
+            .setContentTitle(title)
+            .setContentText(body)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(body))
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setCategory(NotificationCompat.CATEGORY_REMINDER)

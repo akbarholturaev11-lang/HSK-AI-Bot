@@ -36,6 +36,14 @@ TELEGRAM_VERSION = "smart-telegram-v1"
 MAX_ROUTING_ROWS = 128  # Technical read bound, not retention or fleet proof.
 
 
+def _inbox_params(content):
+    """Inbox re-render params; the variant key keeps language switches stable."""
+    params = {"template_service": KEY_SMART_STUDY, "lesson": content.lesson_order}
+    if content.content_key:
+        params |= {"content_key": content.content_key, "streak": content.streak}
+    return params
+
+
 def _telegram(actor):
     if (actor.kind not in {"telegram", "telegram_bot"} or
             type(actor.telegram_id) is not int or actor.telegram_id <= 0):
@@ -49,6 +57,26 @@ def _binding(actor):
 def _android_binding(actor):
     # Account-wide native review, distinct from any Telegram transport binding.
     return hashlib.sha256(json.dumps(['smart-native-review-v1', actor.user_id]).encode()).hexdigest()
+
+
+def _pwa_binding(actor):
+    # Account-wide iPhone PWA Web Push review for accounts without a Telegram
+    # owner (D34); distinct from the Telegram and native bindings.
+    return hashlib.sha256(json.dumps(['smart-pwa-review-v1', actor.user_id]).encode()).hexdigest()
+
+
+def _owner_binding(actor):
+    if actor.kind == 'android': return _android_binding(actor)
+    if actor.kind == 'pwa': return _pwa_binding(actor)
+    return _binding(actor)
+
+
+async def pwa_owner_ready(session, user_id, pref, now):
+    """PWA ownership needs no explicit OFF and a live push subscription."""
+    from app.services.learner_pwa_push import active_subscriptions
+    from app.services.smart_reminder_preferences import pwa_study_consent
+    return (pwa_study_consent(pref) and pref['channel_mode'] != 'manual_locked' and
+            bool(await active_subscriptions(session, user_id, now=now, limit=1)))
 
 
 @dataclass(frozen=True)
@@ -127,9 +155,11 @@ def _with_learning(snapshot, evidence, actor, since, observed, calibration):
             observed_activity_at=evidence.latest_activity_at)
 
 
-async def _read_routing(session, actor, *, android=False):
+async def _read_routing(session, actor, *, android=False, pwa=False):
     if android:
         if actor.kind != 'android': raise SmartReminderError('android_device_required', 403)
+    elif pwa:
+        if actor.kind != 'pwa': raise SmartReminderError('pwa_device_required', 403)
     else:
         _telegram(actor)
     pref = await SmartReminderPreferencesService(session).read(actor)  # User first.
@@ -236,14 +266,14 @@ class SmartReminderRoutingService:
             raise SmartReminderError("routing_generation_invalid")
         async with self.sessions.begin() as session:
             native = actor.kind == 'android'
-            pref, epoch, row = await _read_routing(session, actor, android=native)
+            pref, epoch, row = await _read_routing(session, actor, android=native, pwa=actor.kind == 'pwa')
             if (row["generation"] if row else 0) != expected_generation:
                 raise SmartReminderError("routing_generation_conflict", 409)
             now = _aware_utc(self.clock())
             inventory, _ = await _android_inventory(session, actor.user_id, now)
             values = dict(state="held", generation=expected_generation+1,
                 preference_revision=pref["revision"], grant_epoch=epoch,
-                telegram_binding=_android_binding(actor) if native else _binding(actor),
+                telegram_binding=_owner_binding(actor),
                 inventory_sha256=inventory, held_at=_aware_utc(self.clock()),
                 verified_at=None, verified_until=None, evidence_sha256=None)
             if row is None:
@@ -289,14 +319,14 @@ class SmartReminderRoutingService:
         checks as the original review; a device that could post locally fails.
         """
         if not isinstance(review, RoutingReview): raise SmartReminderError('routing_review_invalid')
-        native = actor.kind == 'android'
+        native, pwa = actor.kind == 'android', actor.kind == 'pwa'
         async with self.sessions.begin() as session:
-            pref, epoch, row = await _read_routing(session, actor, android=native)
+            pref, epoch, row = await _read_routing(session, actor, android=native, pwa=pwa)
             now = _aware_utc(self.clock())
             inventory, until = await _android_inventory(session, actor.user_id, now, native=native)
-            binding = _android_binding(actor) if native else _binding(actor)
+            binding = _owner_binding(actor)
             if (row is None or row['verified_at'] is None or row['telegram_binding'] != binding or
-                    row['state'] != ('held' if native else 'telegram') or review.user_id != actor.user_id or
+                    row['state'] != ('held' if native else 'pwa' if pwa else 'telegram') or review.user_id != actor.user_id or
                     review.generation != row['generation'] or inventory is None or
                     (until is None if native else False) or
                     until is not None and _aware_utc(review.verified_until) > until or
@@ -306,6 +336,9 @@ class SmartReminderRoutingService:
                 if (pref['master_enabled'] is False or pref['channels']['android']['this_device_consent'] != 'on' or
                         pref['channel_mode'] == 'manual_locked' and pref['preferred_channel'] != 'android'):
                     raise SmartReminderError('android_study_unavailable', 409)
+            elif pwa:
+                if not await pwa_owner_ready(session, actor.user_id, pref, now):
+                    raise SmartReminderError('pwa_study_unavailable', 409)
             elif (pref['master_enabled'] is False or pref['channels']['telegram']['consent'] != 'on' or
                     not pref['channels']['telegram']['transport_available']):
                 raise SmartReminderError('telegram_study_unavailable', 409)
@@ -333,6 +366,31 @@ class SmartReminderRoutingService:
                 raise SmartReminderError("telegram_study_unavailable", 409)
             await session.execute(update(ROUTING).where(ROUTING.c.user_id == actor.user_id).values(
                 state="telegram", verified_at=review.verified_at, verified_until=review.verified_until,
+                evidence_sha256=review.evidence_sha256))
+            return review.generation
+
+    async def activate_pwa(self, actor, review: RoutingReview):
+        """Automatic review of a held account for iPhone PWA Web Push (D34).
+
+        Same evidence binding and ownership fence as Telegram activation; the
+        account needs no explicit OFF and a live push subscription.
+        """
+        if not isinstance(review, RoutingReview): raise SmartReminderError('routing_review_invalid')
+        async with self.sessions.begin() as session:
+            pref, epoch, row = await _read_routing(session, actor, pwa=True)
+            now = _aware_utc(self.clock())
+            inventory, fence_until = await _android_inventory(session, actor.user_id, now, native=False)
+            if (row is None or row["state"] != "held" or review.user_id != actor.user_id or
+                    review.generation != row["generation"] or row["telegram_binding"] != _pwa_binding(actor) or
+                    row["preference_revision"] != pref["revision"] or row["grant_epoch"] != epoch or
+                    inventory is None or inventory != row["inventory_sha256"] or
+                    fence_until is not None and _aware_utc(review.verified_until) > fence_until or
+                    not _utc(row["held_at"]) <= _aware_utc(review.verified_at) <= now < _aware_utc(review.verified_until)):
+                raise SmartReminderError("routing_review_stale", 409)
+            if not await pwa_owner_ready(session, actor.user_id, pref, now):
+                raise SmartReminderError("pwa_study_unavailable", 409)
+            await session.execute(update(ROUTING).where(ROUTING.c.user_id == actor.user_id).values(
+                state="pwa", verified_at=review.verified_at, verified_until=review.verified_until,
                 evidence_sha256=review.evidence_sha256))
             return review.generation
 
@@ -540,7 +598,7 @@ class SmartReminderTelegramService:
             if refused := await self._fresh(session, actor, row, cohort, history_since): return refused
             try:
                 open_proof = SmartReminderOpenService(self.settings).proof(actor, row["id"], attempts[0]["id"])
-                content = await render_telegram_content(session, actor, row,
+                content = await render_telegram_content(session, actor, row, now=self._now(),
                     **({"open_proof": open_proof} if open_proof is not None else {}))
             except SmartReminderError as exc:
                 return await self._cancel(session, row, exc.code)
@@ -602,5 +660,5 @@ class SmartReminderTelegramService:
                         key=KEY_SMART_STUDY, lang=content.language, text=content.text,
                         action="course", source="smart_telegram", level=job["course_key"],
                         lesson_order=job["lesson_order"], dedupe_key="job:"+job_id,
-                        params={"template_service": KEY_SMART_STUDY, "lesson": content.lesson_order})
+                        params=_inbox_params(content))
             return TelegramResult("telegram_"+state, job_id, state)

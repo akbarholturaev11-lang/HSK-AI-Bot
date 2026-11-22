@@ -48,6 +48,10 @@ class HabitCalibration:
 # it grants no consent, cadence, notification or provider authority.
 APPROVED_HABIT_CALIBRATION = HabitCalibration("smart-habit-interval-v1", 3)
 
+# D35 owner-approved: the local study time used while no manual time, learned
+# habit or saved legacy reminder time is known. The habit replaces it once found.
+DEFAULT_STUDY_TIME = time(21, 0)
+
 
 
 @dataclass(frozen=True)
@@ -73,6 +77,9 @@ class PolicyContext:
     time_mode: str = "auto"
     manual_time: time | None = None
     saved_time: time | None = None
+    # D35 server default after the saved time; only the account context loader
+    # supplies it, so pure simulations stay unchanged.
+    default_time: time | None = None
     channel_mode: str = "auto"
     preferred_channel: str | None = None
     quiet_start: time | None = None
@@ -190,7 +197,8 @@ def _personal_time(context, studies, zone, calibration):
         return context.manual_time, "manual", "manual_lock"
     if context.time_mode != "auto":
         return None, "unknown", "time_mode_unknown"
-    fallback = (context.saved_time, "saved" if context.saved_time else "unknown")
+    fallback = ((context.saved_time, "saved") if context.saved_time else
+                (context.default_time, "default") if context.default_time else (None, "unknown"))
     if calibration is None:
         return *fallback, "habit_threshold_unconfigured"
     if context.coverage_limits:

@@ -20,7 +20,9 @@ from app.services.smart_reminder_coordination import read_d1_scope
 from app.services.smart_reminder_policy import APPROVED_HABIT_CALIBRATION, _aware_utc, evaluate
 from app.services.smart_reminder_preferences import SmartReminderActor, SmartReminderPreferencesService, _utc, pwa_study_consent
 from app.services.smart_reminder_shadow_queue import ATTEMPT, JOB, QUEUE_VERSION, SmartReminderShadowQueue
-from app.services.smart_reminder_telegram import SmartReminderTelegramService, _android_inventory, _binding
+from app.services.smart_reminder_telegram import (
+    SmartReminderTelegramService, _android_inventory, _binding, _pwa_binding, pwa_owner_ready,
+)
 
 @dataclass(frozen=True)
 class PlanningResult:
@@ -72,7 +74,7 @@ class SmartReminderPlanner:
             SmartReminderRouting.user_id==actor.user_id).with_for_update())).mappings().one_or_none()
         epoch = await session.scalar(select(SmartReminderPreference.grant_epoch).where(
             SmartReminderPreference.user_id==actor.user_id))
-        if (row is None or row['state'] not in {'held','telegram'} or
+        if (row is None or row['state'] not in {'held','telegram','pwa'} or
                 row['preference_revision']!=pref['revision'] or row['grant_epoch']!=(epoch or 0) or
                 row['verified_at'] is None or row['verified_until'] is None or
                 not re.fullmatch(r'[0-9a-f]{64}',row['evidence_sha256'] or '')):
@@ -83,7 +85,14 @@ class SmartReminderPlanner:
                 not _utc(row['held_at'])<=_utc(row['verified_at'])<=now<_utc(row['verified_until']) or
                 until is not None and now>=until or row['state']=='held' and until is None):
             return 'planner_review_unavailable'
-        if row['state']=='telegram':
+        if row['state']=='pwa':
+            from app.services.learner_pwa_push import sender_config
+            # A PWA-only owner (D34) serves Web Push only.
+            if (selected_channel not in {None,'pwa'} or row['telegram_binding']!=_pwa_binding(actor) or
+                    sender_config(self.settings) is None or
+                    not await pwa_owner_ready(session,actor.user_id,pref,now)):
+                return 'planner_review_unavailable'
+        elif row['state']=='telegram':
             pwa_review = selected_channel == "pwa" or (
                 selected_channel is None and await self._pwa_review_ready(session, actor.user_id, pref))
             if pwa_review:
@@ -124,6 +133,9 @@ class SmartReminderPlanner:
                 telegram_ready=self.telegram._gate() is None)
             choice = await selector.select(actor,job_id=row['id'],history_since=history_since)
             if choice.channel is None: return PlanningResult(choice.reason,row['id'])
+            if choice.channel!='pwa' and await session.scalar(select(SmartReminderRouting.state).where(
+                    SmartReminderRouting.user_id==actor.user_id))=='pwa':
+                return PlanningResult('planner_review_unavailable',row['id'])
             if choice.channel=='android':
                 if refused := android._gate(): return PlanningResult(refused['reason'],row['id'])
                 native_session = await session.scalar(select(DesktopSession.id).join(DesktopDevice,

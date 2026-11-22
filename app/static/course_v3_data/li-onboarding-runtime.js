@@ -23,7 +23,7 @@ if(hostPwa){
   [["apple-mobile-web-app-capable","yes"],
    ["apple-mobile-web-app-status-bar-style","default"],
    ["apple-mobile-web-app-title","HSK AI"],
-   ["theme-color",offerMode?"#211D17":"#FDF9F0"]].forEach(function(pair){
+   ["theme-color","#FDF9F0"]].forEach(function(pair){
      if(head.querySelector('meta[name="'+pair[0]+'"]'))return;
      var meta=document.createElement("meta");
      meta.name=pair[0];meta.content=pair[1];head.appendChild(meta);

@@ -1,0 +1,25 @@
+/* HSK AI Pro / Trial colour set — one palette for every Pro and Trial window.
+ *
+ * Owner decision 2026-11-22: Pro and Trial share the light paper surface with a
+ * gold accent (the existing inline Pro sheet look). Every value aliases the
+ * canonical design tokens (course_v3_data/design-tokens.css), so the active
+ * theme still wins; the fallbacks are the light-theme values.
+ *
+ * Android mirror: android/.../core/design/ProColors.kt (same roles, same names).
+ * Visual only: nothing here decides price, Pro, Trial or access.
+ */
+:root{
+  --hsk-pro-paper:var(--hsk-paper,#FDF9F0);
+  --hsk-pro-surface:var(--hsk-paper-raised,#FFFFFF);
+  --hsk-pro-ink:var(--hsk-ink,#211D17);
+  --hsk-pro-muted:var(--hsk-ink-secondary,#665D50);
+  --hsk-pro-line:var(--hsk-divider,#EAE0CC);
+  --hsk-pro-gold:var(--hsk-gold,#E9A916);
+  --hsk-pro-gold-ink:var(--hsk-gold-ink,#725000);
+  --hsk-pro-gold-soft:var(--hsk-gold-soft,#FAF0D3);
+  --hsk-pro-cta:var(--hsk-cinnabar,#E04A40);
+  --hsk-pro-cta-deep:var(--hsk-cinnabar-ink,#B23530);
+  --hsk-pro-on-cta:var(--hsk-on-cinnabar,#160C09);
+  --hsk-pro-halo:rgba(233,169,22,.30);
+  --hsk-pro-glint:rgba(255,242,196,.85);
+}

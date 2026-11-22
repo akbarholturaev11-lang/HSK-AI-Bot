@@ -1290,6 +1290,8 @@
     "ui.admin_pwa.smartRolloutErrorMonitorStale": "Kuzatuv to‘xtab qoldi",
     "ui.admin_pwa.smartResults": "Natijalar",
     "ui.admin_pwa.smartObservationOff": "Kuzatuv o‘chiq",
+    "ui.admin_pwa.smartLibraryHint": "Maydon bo‘sh qolsa, o‘quvchining holatiga mos turli xabarlar navbat bilan yuboriladi. Matn yozsangiz, shu tilda faqat shu matn yuboriladi.",
+    "ui.admin_pwa.smartLibraryPreview": "Turli xabarlar (vaziyatga qarab, navbat bilan)",
     "ui.admin_pwa.smartRolloutHint": "Xato bo‘lsa o‘zi to‘xtaydi, qayta yoqish 1-bosqichdan boshlaydi. Har bosqich 48 soat; eski Android ilovali hisoblar yangilanguncha avvalgi eslatmalarda qoladi.",
     "ui.subscription.lava.cardQuestion": "Visa karta orqali to'laysizmi?",
     "ui.subscription.lava.cardYes": "Ha",

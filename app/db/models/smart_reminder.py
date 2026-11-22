@@ -115,12 +115,12 @@ class SmartReminderRouting(Base):
 
     __tablename__ = "smart_reminder_routing"
     __table_args__ = (
-        CheckConstraint("state IN ('held', 'telegram')", name="state"),
+        CheckConstraint("state IN ('held', 'telegram', 'pwa')", name="state"),
         CheckConstraint("generation >= 1 AND preference_revision >= 0 AND grant_epoch >= 0", name="versions"),
         CheckConstraint("length(telegram_binding) = 64", name="transport_binding"),
         CheckConstraint("inventory_sha256 IS NULL OR length(inventory_sha256) = 64", name="inventory_binding"),
         CheckConstraint("(verified_at IS NULL AND verified_until IS NULL AND evidence_sha256 IS NULL) OR (verified_at IS NOT NULL AND verified_until IS NOT NULL AND evidence_sha256 IS NOT NULL AND length(evidence_sha256) = 64 AND held_at <= verified_at AND verified_at < verified_until)", name="review_window"),
-        CheckConstraint("state != 'telegram' OR (verified_at IS NOT NULL AND inventory_sha256 IS NOT NULL)", name="review_required"),
+        CheckConstraint("state = 'held' OR (verified_at IS NOT NULL AND inventory_sha256 IS NOT NULL)", name="review_required"),
     )
 
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
@@ -175,6 +175,8 @@ class SmartReminderJob(Base):
     reason_code: Mapped[str | None] = mapped_column(String(64))
     course_key: Mapped[str | None] = mapped_column(String(32))
     lesson_order: Mapped[int | None] = mapped_column(Integer)
+    # Catalog variant of the day's message, e.g. "comeback.v3" (D33).
+    content_key: Mapped[str | None] = mapped_column(String(48))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 

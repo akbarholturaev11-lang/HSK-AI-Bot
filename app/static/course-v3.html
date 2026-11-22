@@ -60,7 +60,7 @@ html.hsk-pwa-browser #hsk-launch-splash.is-playing .hsk-launch-brandline,
 html.hsk-pwa-browser #hsk-launch-splash.is-playing .hsk-launch-book{animation-duration:300ms;animation-delay:390ms}
 html.hsk-pwa-browser #hsk-launch-splash.is-playing .hsk-launch-title{animation-duration:360ms;animation-delay:520ms}
 #pwa-checkout-layer{position:fixed;inset:0;z-index:9700;background:var(--paper);padding:var(--safe-t) 0 var(--safe-b);display:flex;flex-direction:column;overscroll-behavior:contain}
-html.hsk-pwa-browser #pwa-checkout-layer{padding-bottom:0}#pwa-checkout-layer.pwa-checkout-trial,html.hsk-pwa-browser:has(.pwa-checkout-trial),html.hsk-pwa-browser:has(.pwa-checkout-trial) body{background:#211D17}#pwa-checkout-layer iframe{flex:1;min-height:0;width:100%;border:0}
+html.hsk-pwa-browser #pwa-checkout-layer{padding-bottom:0}#pwa-checkout-layer.pwa-checkout-trial,html.hsk-pwa-browser:has(.pwa-checkout-trial),html.hsk-pwa-browser:has(.pwa-checkout-trial) body{background:var(--paper)}#pwa-checkout-layer iframe{flex:1;min-height:0;width:100%;border:0}
 html.hsk-pwa-browser:has(#pwa-checkout-layer){overflow:hidden}
 .hsk-launch-stage{position:relative;display:flex;flex-direction:column;align-items:center}
 .hsk-launch-halo{position:absolute;top:48px;left:50%;width:132px;height:132px;border-radius:50%;background:radial-gradient(circle,rgba(224,74,64,.24),rgba(224,74,64,0));opacity:.1;transform:translate(-50%,-50%) scale(.84);animation:hsk-launch-halo-breathe 1.45s ease-in-out infinite alternate}
@@ -1680,7 +1680,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 <link href="/course_v3_data/profile-carousel.css?v=20261121-ae83ad0561d3" rel="stylesheet">
 <link href="/course_v3_data/rating-podium.css?v=20261105-1" rel="stylesheet">
 <link rel="stylesheet" href="/assets/characters/hsk-scene-background.css?v=20261009-preparing-compact-1">
-  <script defer src="/course_v3_data/hsk-diagnostics.js?v=20261115-5408a5e8b789"></script><script defer src="/course_v3_data/iphone-pwa-progress.js?v=20261121-d3b4d28c5e31"></script><script>if(location.pathname==="/iphone-pwa/course"){var progressStyle=document.createElement("link");progressStyle.rel="stylesheet";progressStyle.href="/course_v3_data/iphone-pwa-progress.css?v=20261121-eca6c2678e92";document.head.appendChild(progressStyle)}</script>
+  <script defer src="/course_v3_data/hsk-diagnostics.js?v=20261122-34865dd3f1cf"></script><script defer src="/course_v3_data/iphone-pwa-progress.js?v=20261121-d3b4d28c5e31"></script><script>if(location.pathname==="/iphone-pwa/course"){var progressStyle=document.createElement("link");progressStyle.rel="stylesheet";progressStyle.href="/course_v3_data/iphone-pwa-progress.css?v=20261121-eca6c2678e92";document.head.appendChild(progressStyle)}</script>
 </head>
 <body class="hsk-scene-page">
 <div id="hsk-launch-splash" class="is-playing" role="img" aria-label="HSK AI">
@@ -2843,7 +2843,7 @@ var App={
     var layer=document.createElement("section"),frame=document.createElement("iframe");
     layer.id="pwa-checkout-layer";layer.setAttribute("role","dialog");layer.setAttribute("aria-modal","true");
     layer.setAttribute("aria-label","HSK AI Pro");
-    if(query.get("offer")==="trial"){layer.classList.add("pwa-checkout-trial");var theme=document.querySelector('meta[name="theme-color"]');if(theme){PWA_CHECKOUT_THEME=theme.getAttribute("content");theme.setAttribute("content","#211D17")} }frame.title="HSK AI Pro";query.set("embedded","1");if(query.get("offer")==="trial")frame.src="/iphone-pwa/onboarding/li?"+query.toString();else frame.src="/iphone-pwa/checkout?"+query.toString();
+    if(query.get("offer")==="trial"){layer.classList.add("pwa-checkout-trial");var theme=document.querySelector('meta[name="theme-color"]');if(theme){PWA_CHECKOUT_THEME=theme.getAttribute("content");theme.setAttribute("content","#FDF9F0")} }frame.title="HSK AI Pro";query.set("embedded","1");if(query.get("offer")==="trial")frame.src="/iphone-pwa/onboarding/li?"+query.toString();else frame.src="/iphone-pwa/checkout?"+query.toString();
     PWA_CHECKOUT_FRAME=frame;PWA_CHECKOUT_RETURN_FOCUS=document.activeElement;
     layer.append(frame);document.body.appendChild(layer);$(".wrap").inert=true;
     try{frame.focus({preventScroll:true})}catch(e){}

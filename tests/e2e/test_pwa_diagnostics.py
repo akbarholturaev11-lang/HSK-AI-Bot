@@ -67,6 +67,28 @@ def test_js_signals_and_offline_delivery(diagnostic_page):
     assert "another-private-message" not in str(posts)
 
 
+def test_distinct_errors_on_one_page_are_each_reported(diagnostic_page):
+    """NXT-011: a second, different exception within the coalescing window is
+    still sent; a repeat of the same exception is coalesced."""
+    page, context, _, posts, _ = diagnostic_page
+    page.evaluate("HskDiag.owner(1)")
+    context.set_offline(True)
+    page.wait_for_function("!navigator.onLine")
+    page.evaluate("""() => {
+        setTimeout(() => { null.first; }, 0);
+        setTimeout(() => { null.again; }, 0);
+        setTimeout(() => { notDefinedFixtureName(); }, 0);
+    }""")
+    page.wait_for_function("JSON.parse(localStorage.getItem('hsk-diag-v1')).events.length >= 2")
+    page.wait_for_timeout(100)
+    with page.expect_response("**/api/v3/pwa/diagnostics"):
+        context.set_offline(False)
+    events = posts[0][1]["events"]
+    assert [(e["failure_code"], e.get("error_name"), e.get("reason_code")) for e in events] == [
+        ("js_uncaught", "TypeError", "null_access"), ("js_uncaught", "ReferenceError", "not_defined")]
+    assert "notDefinedFixtureName" not in str(posts)
+
+
 def test_switch_and_unauthorized_response_drop_only_that_owner(diagnostic_page):
     page, context, actor, posts, decision = diagnostic_page
     second = context.new_page()

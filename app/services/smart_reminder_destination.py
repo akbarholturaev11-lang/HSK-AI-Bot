@@ -7,6 +7,7 @@ from sqlalchemy import func, select
 
 from app.db.models.android_push import AndroidPushToken
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
+from app.db.models.course_miniapp_profile import CourseMiniAppProfile
 from app.db.models.course_progress import CourseProgress
 from app.db.models.course_xp_event import CourseXpEvent
 from app.db.models.desktop import DesktopDevice, DesktopSession
@@ -14,7 +15,9 @@ from app.db.models.learner_pwa_push import LearnerPwaPushSubscription
 from app.db.models.smart_reminder import SmartReminderCapability, SmartReminderConsent, SmartReminderPreference
 from app.services.smart_reminder_policy import _aware_utc
 from app.services.smart_reminder_policy_context import MAX_POLICY_ROWS, _LESSON_REF, verified_studies
-from app.services.smart_reminder_preferences import SmartReminderError, SmartReminderPreferencesService, _state, _utc, pwa_study_consent
+from app.services.smart_reminder_preferences import (
+    SmartReminderError, SmartReminderPreferencesService, _utc, android_phone_consent, pwa_study_consent,
+)
 from app.services.smart_reminder_shadow_queue import ATTEMPT, JOB, QUEUE_VERSION
 
 MAX_DESTINATIONS = 128  # Work bound only, not a learning/confidence threshold.
@@ -257,9 +260,11 @@ class SmartReminderDestinationService:
             telegram = pref["channels"]["telegram"]
             if telegram["consent"] == "on" and telegram["transport_available"] and self.telegram_ready:
                 destinations.append(Destination(actor.user_id, "telegram", valid_until=until))
+            switch_off = await self.session.scalar(select(CourseMiniAppProfile.notifications_enabled).where(
+                CourseMiniAppProfile.user_id == actor.user_id)) is False
             for device in devices:
-                if _state([r for r in consents if r["channel"] == "android" and r["device_id"] == device["id"]],
-                          "intent:android:" + device["id"]) != "on":
+                # Every listed phone reported notifications allowed (D34 default).
+                if android_phone_consent(consents, device["id"], allowed=True, switch_off=switch_off) != "on":
                     continue
                 active = [_utc(v) for v in (device["last_seen_at"], device["observed_at"]) if v is not None and _utc(v) <= now]
                 destinations.append(Destination(actor.user_id, "android", device["id"],

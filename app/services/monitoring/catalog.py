@@ -62,8 +62,10 @@ CATEGORIES = frozenset({
 })
 
 # Diagnostic precision (tasks 6.1-6.4): optional, content-free debug evidence
-# on a learner-web JS failure. Stored on the receipt only; never part of the
-# fingerprint, deduplication, severity, triage or alert decision.
+# on a learner-web JS failure, stored on the receipt. Severity, triage and
+# alert decisions never read it. Since NXT-011 the exception name, reason and
+# primary asset ID (never line, column or version) also separate incidents
+# on one page; see `intake.js_identity`.
 DEBUG_PLATFORMS = frozenset({"iphone_pwa", "telegram"})
 DEBUG_FAILURES = frozenset({"js_uncaught", "js_rejection"})
 # Reported exception name -> the category the reporter derives from it.

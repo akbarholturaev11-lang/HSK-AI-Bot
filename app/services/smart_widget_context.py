@@ -186,7 +186,10 @@ def project_widget(context, *, request, binding, valid_until, calibration=None):
         goal_state=decision.goal_state if valid_course and valid_day else "unknown",
         plan_completed=context.plan_completed if valid_course and valid_day else None,
         time_local=clock.strftime("%H:%M") if clock else None,
-        time_source=decision.time_source if clock else "unknown", time_reason=decision.time_reason,
+        # The widget wire contract has four sources; installed apps reject
+        # others, so the D35 server default is shown as a server-saved time.
+        time_source=("saved" if decision.time_source == "default" else decision.time_source) if clock else "unknown",
+        time_reason=decision.time_reason,
         phase="neutral", reason="personal_time_unknown", action="course", lesson_order=None,
         coverage_limits=context.coverage_limits, calibration_version=decision.calibration_version,
     )

@@ -73,6 +73,33 @@ before the merge; no production setting was read or changed.
   only for a verified asset version and a known deployment commit.
 - **6.4** Tests below. Physical-device acceptance is still open.
 
+### Incident identity for learner-web JS failures (NXT-011, 2026-11-22)
+
+- **Problem.** The fingerprint was `platform|feature|failure|site`, and the
+  reporter coalesced on the same codes for 10 minutes. Different exceptions on
+  `/iphone-pwa/course` therefore became one incident, and a second distinct
+  error within 10 minutes was not sent at all.
+- **Identity.** `intake.js_identity` appends `e=<error_name>|r=<reason_code>|
+  a=<primary asset_id>` (each allowlisted, `-` when missing) for `js_uncaught`
+  and `js_rejection` on `iphone_pwa` and `telegram`. Line, column, asset
+  version and build are excluded so a deploy never splits one error. Android,
+  backend and all other failure codes keep their fingerprints.
+- **Unknown group.** An event with no exception name and no first-party
+  location keeps the original page-level fingerprint, so existing incidents
+  continue. `_diagnostic_samples` returns `grouping` (`exception` or `page`);
+  the Inbox row shows the name and script file, or the existing "unknown"
+  string for the page-level group. No new copy or control.
+- **Compatibility.** No migration. Old clients and old receipts stay on the
+  page-level incident. A previously resolved page-level incident is not
+  reopened by an identified error; that error opens its own incident.
+- **Limits.** Inline `course-v3.html` code has no location, so two inline
+  errors with the same name and reason still share an incident. An
+  authenticated client can open at most the finite set of allowlisted
+  identities, inside the existing hourly cap; on checkout pages a new
+  identity is critical and pushes once under the existing cooldown and cap.
+- **Not verified.** Production receipts were not read; staging and physical
+  device acceptance remain open.
+
 ### Decisions within D12
 
 - **Asset version.** Each location may carry the 12-hex content token of its

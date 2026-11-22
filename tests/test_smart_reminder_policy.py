@@ -72,6 +72,22 @@ class PurePolicyTests(unittest.TestCase):
     def test_no_saved_time_does_not_invent_default(self):
         self.check("personal_time_unknown", saved_time=None)
 
+    def test_d35_default_time_comes_after_manual_habit_and_saved_time(self):
+        d = self.check("shadow_candidate", saved_time=None, default_time=time(21))
+        self.assertEqual((d.time_local, d.time_source, d.scheduled_at),
+                         (time(21), "default", datetime(2026, 10, 28, 21, tzinfo=UTC)))
+        self.assertEqual(evaluate(context(default_time=time(21))).time_source, "saved")
+        habit = evaluate(context(saved_time=None, default_time=time(21), studies=samples()), calibration=SIMULATION)
+        self.assertEqual((habit.time_local, habit.time_source), (time(2), "habit"))
+        scattered = evaluate(context(saved_time=None, default_time=time(21), studies=samples()[:1] + tuple(
+            replace(s, accepted_at=s.accepted_at.replace(hour=h)) for s, h in zip(samples()[1:], (8, 15)))),
+            calibration=SIMULATION)
+        self.assertEqual((scattered.time_local, scattered.time_source, scattered.time_reason),
+                         (time(21), "default", "sparse_matching_days"))
+        manual = evaluate(context(time_mode="manual_locked", manual_time=time(9), default_time=time(21)))
+        self.assertEqual((manual.time_local, manual.time_source), (time(9), "manual"))
+        self.check("personal_quiet", saved_time=None, default_time=time(21), quiet_start=time(20), quiet_end=time(23))
+
     def test_offset_cannot_invent_zone(self):
         d = self.check("timezone_unknown", timezone_name=None)
         self.assertEqual(d.time_local, time(14))
@@ -244,6 +260,15 @@ class PolicyContextChecks:
         self.assertTrue(evaluate(view).candidate)
         self.assertIsNone(view.plan_completed)
         self.assertFalse(any(q.lstrip().upper().startswith(("INSERT", "UPDATE", "DELETE")) for q in statements))
+
+    async def test_d35_account_context_supplies_the_default_time_when_none_is_saved(self):
+        async with self.sessions.begin() as s:
+            await s.execute(update(SmartReminderPreference).where(SmartReminderPreference.user_id == 1).values(
+                legacy_time_local=None))
+        view = await self.load()
+        self.assertEqual(view.default_time, time(21))
+        d = evaluate(view)
+        self.assertEqual((d.reason, d.time_local, d.time_source), ("shadow_candidate", time(21), "default"))
 
     async def test_personal_history_extends_for_habit_without_changing_cadence_window(self):
         from app.services.smart_reminder_policy import APPROVED_HABIT_CALIBRATION

@@ -1,6 +1,7 @@
 """Native widget events use real bearer auth, strict fields and durable dedupe."""
 
 import unittest
+from unittest.mock import AsyncMock, patch
 from uuid import uuid4
 
 from fastapi import FastAPI
@@ -12,6 +13,7 @@ from sqlalchemy.pool import StaticPool
 from app.api.android_events import create_android_events_router
 from app.db.base import Base
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
+from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
 from app.services.desktop_auth_service import DesktopAuthService
 from tests.test_android_course_api import _settings, _user
 
@@ -74,7 +76,7 @@ class AndroidEventsApiTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_each_supported_event_and_revoked_token(self):
         token = await self.token()
-        for name in ("android_widget_onboarding_viewed", "android_widget_pin_requested", "android_widget_pinned", "android_widget_opened", "android_notification_opened"):
+        for name in ("android_widget_onboarding_viewed", "android_widget_pin_requested", "android_widget_pinned", "android_widget_opened", "android_widget_daily_prompt_viewed", "android_notification_opened"):
             response = await self.post(token, {"event_name": name, "event_id": str(uuid4())})
             self.assertEqual(200, response.status_code, response.text)
         async with self.sessions() as session:
@@ -85,3 +87,30 @@ class AndroidEventsApiTests(unittest.IsolatedAsyncioTestCase):
     async def test_oversized_body_rejected(self):
         response = await self.post(await self.token(), {"event_name": "x" * 10000, "event_id": str(uuid4())})
         self.assertEqual(413, response.status_code)
+
+    async def test_daily_prompt_view_is_recorded_once_and_stays_passive(self):
+        # NXT-013: the Android app sends this when it opens the daily widget
+        # offer by itself. It must be accepted (it was a permanent 422 that
+        # blocked the queue) but must not count as learner activity.
+        token = await self.token()
+        payload = {"event_name": "android_widget_daily_prompt_viewed", "event_id": str(uuid4())}
+        with patch.object(CourseMiniAppAnalyticsService, "_touch_user_active", new=AsyncMock()) as touch:
+            first = await self.post(token, payload)
+            second = await self.post(token, payload)
+        self.assertEqual(200, first.status_code, first.text)
+        self.assertTrue(first.json()["recorded"])
+        self.assertTrue(second.json()["duplicate"])
+        touch.assert_not_awaited()
+        async with self.sessions() as session:
+            events = list((await session.scalars(select(CourseMiniAppEvent).where(
+                CourseMiniAppEvent.event_name == payload["event_name"]))).all())
+            self.assertEqual(1, len(events))
+            self.assertEqual(1, events[0].user_id)
+            self.assertEqual("android_native", events[0].source)
+
+    async def test_unknown_widget_event_is_still_rejected(self):
+        token = await self.token()
+        for name in ("android_widget_daily_prompt_clicked", "android_widget_daily_prompt_viewed "):
+            response = await self.post(token, {"event_name": name, "event_id": str(uuid4())})
+            self.assertEqual(422, response.status_code, response.text)
+            self.assertEqual("desktop_request_invalid", response.json()["error"])
