@@ -178,6 +178,16 @@ Bu yozuvlar **takror implementatsiya qilish buyrug‘i emas**. Boshlashdan avval
 - Acceptance: (1) `daily_prompt_viewed` qat'iy auth/owner-bound API orqali **200** va DB'da to‘g‘ri event yozadi; (2) unauthorized/forged/unknown event va ortiqcha field'lar rad etilishda davom etadi; (3) valid qayta yuborish bitta yozuv sifatida dedupe bo‘ladi; (4) oldingi invalid item boshqa valid event'ni abadiy bloklamaydi, navbat tiklanadi va transient xatolar yo‘qotilmaydi; (5) backend `tests/test_android_events_api.py`, Android widget queue/coordinator unit testlari, analitika contract va Android CI + production release kuzatuvlari bilan tasdiqlansin. 4xx/422 trendi oldin/keyin bir xil oynada solishtirilsin.
 - Implementation: Faqat NEXTATION navbatiga yozildi; kod, database, production va CI o‘zgartirilmagan. Egasining keyingi aniq ruxsati talab qilinadi.
 
+### NXT-014 — Ochilish effekti va Pro panda komponentlarini mavjud joylarga ulash
+- Status: PLANNED (komponentlar tayyor, PR #348; ulash egasining alohida ruxsati bilan)
+- Added: 2026-11-23
+- Priority: normal
+- Goal: Tayyor, hozircha ulanmagan vizual komponentlarni haqiqiy ekranlarga joylash: "Knot Thread" ochilish effekti (`app/static/assets/brand/hsk-launch-mark.{js,css}`, Android `core/design/components/HskLaunchMark.kt`), Pro panda + halo + uchqunlar + oltin nur (`app/static/assets/characters/hsk-pro-panda.{js,css}`, Android `feature/limit/ProPanda.kt`, `Modifier.hskProGlint()`), umumiy Pro/Trial ranglari (`assets/brand/hsk-pro-theme.css`, `core/design/ProColors.kt`).
+- Scope: (1) PWA inline Pro oynasidagi `pandaSvg()` ni `HSKProPanda.render()` ga almashtirish va CSS'ni `_PWA_INLINE_PRO_HTML` ga qo‘shish; (2) Android `SectionLimitOverlay.kt` va Trial intro (`LiOnboardingChoices.kt`) ga `ProPanda` va `ProColors` ni qo‘yish, literal hex ranglarni tokenlarga almashtirish; (3) Pro faollashgan (server tasdiqlagan) lahzada `celebrate` + uchqunlar, Pro kartochkada bir martalik oltin nur; (4) ochilish effektini Golden Logo o‘rniga qo‘yish — alohida qaror: ovoz/vibratsiya vaqti va `tests/test_launch_feedback_contract.py` ikkala platformada birga yangilanadi, Mini App'ga tegilmaydi (faqat `html.hsk-pwa-browser` + Android). Narx, trial berish, access, matn o‘zgarmaydi.
+- Risks / open questions: Golden Logo ovoz/haptic sinxroni; splash birinchi ekranni kechiktirmasligi (`docs/PERFORMANCE_PWA_PROGRESSIVE_LOADING.md`); `course-v3.html` Mini App bilan umumiy; content-addressed `?v=` va i18n reviewed blob qayta anchorlanadi; reduced-motion; Android kodi CI'da kompilyatsiya qilinadi.
+- Acceptance: PWA (Chromium + WebKit) va Android'da real ekran screenshotlari, reduced-motion holati, `tests/test_launch_mark_pro_panda_contract.py` "not wired" tekshiruvi ulangan holatga moslab yangilanadi, Pro/Trial e2e va Android CI o‘tadi; `Analytics Impact` / `Monitoring Impact` bahosi.
+- Implementation: Komponentlar va ulash yo‘riqnomasi — `docs/design/LAUNCH_MARK_AND_PRO_PANDA.md`, PR #348.
+
 <!-- Yozuv namunasi (vazifa emas):
 
 ### NXT-XXX — Qisqa nom
