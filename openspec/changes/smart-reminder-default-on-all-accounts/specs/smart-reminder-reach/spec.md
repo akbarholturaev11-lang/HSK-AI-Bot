@@ -61,3 +61,15 @@ The default ON SHALL admit an account only when it was active in the last 30 day
 #### Scenario: Old lesson reminder user
 - **WHEN** an account has the old Telegram lesson reminder ON but was last active 60 days ago
 - **THEN** it is admitted as before this change
+
+### Requirement: A default send time while no personal time is known
+When the account has no manual Smart time, no learned study habit and no saved legacy reminder time, Smart SHALL use 21:00 in the learner's local zone (D35). A manual time, a learned habit and a saved time MUST keep winning in that order, and the learned habit MUST replace the default as soon as it is found. Quiet hours, pause, daily goal, one-per-day and weekly limits still apply. The installed Android widget contract MUST NOT change.
+
+#### Scenario: New learner without a habit
+- **WHEN** an admitted learner has studied on fewer than three days, or at scattered times, and never saved a reminder time
+- **THEN** the Smart reminder is planned for 21:00 local time on a day the learner has not studied yet
+
+#### Scenario: Habit found later
+- **WHEN** the same learner later studies on three days within one hour of 19:30
+- **THEN** reminders move to about 19:30 and 21:00 is no longer used
+
