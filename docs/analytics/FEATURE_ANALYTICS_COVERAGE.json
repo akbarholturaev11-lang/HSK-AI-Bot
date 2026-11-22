@@ -2060,6 +2060,10 @@
       "reason": "UIUX-008 only attaches the same optional lesson_plan to a lesson the learner can complete (flag off by default, never raises). Lesson start recording, completion, XP and every analytics event are unchanged. Android requests the optional first-part display block on the existing complete call. Lesson start, progress, event rate, stored replay payload and attribution are unchanged. Android completion and the PostgreSQL platform course chain verify this boundary."
     },
     {
+      "path": "app/services/course_miniapp_analytics_service.py",
+      "reason": "NXT-013 only adds android_widget_daily_prompt_viewed to PASSIVE_SERVER_EVENT_NAMES, so the automatically opened daily widget offer never refreshes last_active_at. The event itself is declared in the notifications flow. Every other event's activity touch, dedupe, storage and payload handling are unchanged; tests/test_android_events_api.py verifies the passive path."
+    },
+    {
       "path": "app/services/voice_practice_service.py",
       "reason": "UIUX-008 returns an unclear result for an empty or noisy pronunciation transcript before scoring, so such a try writes no word mastery or mistake. Scored attempts, quota accounting and the voice_started/voice_completed session events are unchanged; no analytics event writer sits on the changed path."
     }
