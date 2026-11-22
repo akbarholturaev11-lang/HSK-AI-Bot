@@ -93,11 +93,17 @@ identity.
 - [ ] 2.6 Back and scroll audit, one layer at a time:
   - Settings, Friends, Inbox and checkout;
   - lesson dialogs, the writer overlay and the five practice pages.
+  - During an active lesson, test or Mistakes review, edge swipe must **not
+    drag the screen**; a completed back gesture opens the existing exit
+    confirmation flow instead. Cancel keeps the same question; confirmed exit
+    follows existing save rules (no false resume promise). Other screens retain
+    their swipe behavior. Cover this in iPhone WebKit regression tests.
 
-  Each layer must close in one step by edge swipe, browser back and Telegram
-  BackButton, with no blank frame and the previous scroll kept. Fix only the
-  defects found, adding each layer to `test_pwa_swipe_back.py`. Verify:
-  Chromium and WebKit pass, and the swipe test's checker entry is unchanged.
+  Outside those active sessions, each layer must close in one step by edge
+  swipe, browser back and Telegram BackButton, with no blank frame and the
+  previous scroll kept. Fix only the defects found, adding each layer to
+  `test_pwa_swipe_back.py`. Verify: Chromium and WebKit pass, and the swipe
+  test's checker entry is unchanged.
 - [ ] 2.7 Lesson open and exercise advance: if 1.3 shows either misses its
   target, trace it in Chromium and WebKit and fix only the top cause. Lesson
   grading, progress and payment code are not changed. Verify: lab before/after,
