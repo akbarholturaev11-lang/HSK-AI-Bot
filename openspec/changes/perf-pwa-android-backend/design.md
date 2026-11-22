@@ -113,6 +113,32 @@ requirements. The audit was run on main `50231bee` on 2026-11-22.
   and re-fetched warm launches in a new page. All widths are in
   `docs/PERFORMANCE_PWA_PROGRESSIVE_LOADING.md`.
 
+### Re-check after syncing with main and PR #352 (2026-11-23)
+
+This branch now contains main `caaae35c` (PRs #348–#351) and PR #352
+(NXT-011, Smart Reminder D35). The plan was re-read against that code:
+
+- **Launch path: unchanged.** The only change on the course launch path is
+  the deferred `hsk-diagnostics.js` token. The 1.1 baselines stay
+  representative; 1.3 re-measures on the current head anyway.
+- **"Knot Thread" launch mark and the Pro panda (#348):** shipped as
+  components and not wired (`docs/design/LAUNCH_MARK_AND_PRO_PANDA.md`). They
+  change nothing today. If the owner later wires them, decisions 13 and 16
+  apply to them (below).
+- **Trial colours (#348):** the trial layer and its page moved from ink
+  `#211D17` to the paper and gold palette (`--hsk-pro-*`, theme colour
+  `#FDF9F0`). Decision 16 follows that.
+- **Monitoring (NXT-011, #352):** learner JS incidents are now grouped by
+  exception name, reason and first-party asset (`catalog.DEBUG_ASSETS`). The
+  four character scripts and `iphone-pwa-refresh.js` are on that list, so
+  2.9 and 2.10 keep their paths.
+- **Smart reminders (#349):** the Inbox feed now resolves the template once
+  per Smart row (one `notification_templates` query per row, up to 20 per
+  page) instead of once per key. This is new evidence for the Inbox and is
+  measured in 4.6.
+- Nothing else in the merged changes touches a screen, route or rule in
+  this plan.
+
 ### Audit inventory: already solved / to do / unnecessary
 
 | Area | Status | Evidence |
@@ -152,6 +178,7 @@ requirements. The audit was run on main `50231bee` on 2026-11-22.
 | Android startup, first-drawn report | To do | No `reportFullyDrawn`; no measurement |
 | Android full-screen loaders (first Course open, Ready Phrases) | To do | `CourseScreen.kt` `HskBrandLoader()` when `map == null`; `ReadyPhrasesScreen.kt` centred spinner |
 | Android back/scroll audit, jank and ANR | To do | No data yet |
+| Inbox feed: one template query per Smart row since #349 | Measure | `resolve_for_feed` calls `NotificationTemplateService.resolve` per row, up to 20 per page (4.6) |
 | `lesson/complete` double full-league leaderboard | To do | Code above; p95 ≈490–670 ms |
 | `lesson/start` p90 tail; `pwa/profile` p99 spike | Investigate | Production metrics |
 | Per-language i18n split | Unnecessary now | Cold-only 97 KB gzip, cached afterwards; four i18n guards and 13 pages depend on the shared files |
@@ -530,6 +557,10 @@ Known = real text available before any request. Async = pending data.
       - WebKit (2178 ms) must reach 1500 ms, or carry an owner-approved
         exception with the evidence.
       - A warm launch keeps its baseline.
+    - **Launch mark (#348, not wired):** if the owner replaces the Golden
+      Logo with the "Knot Thread" mark, the PWA route keeps removing the
+      splash at once, so the mark never delays the shell. Its own design
+      note sets the same rule.
     - **Not in this change:** serving the course HTML from the service
       worker on a slow network.
       - It would let the shell appear before the server answers.
@@ -701,8 +732,8 @@ Known = real text available before any request. Async = pending data.
       - **Full checkout (`/iphone-pwa/checkout?embedded=1`, "Boshqa
         tariflar") and the trial offer (`/iphone-pwa/onboarding/li?
         embedded=1&offer=trial`):** iframes created on tap. Until the child
-        paints, the layer is empty paper, or dark for the trial, with no
-        control.
+        paints, the layer is empty paper, with no control. Since #348 the
+        trial layer also uses the paper and gold palette.
     - **Change (PWA only; the owner's checkout design, colours, copy and
       payment logic stay as they are):**
       - **No visible loading text** in the sheet (the decision-5 rule). The
@@ -724,7 +755,7 @@ Known = real text available before any request. Async = pending data.
       - **Checkout and trial layers** follow decision 5:
         - until the child paints, the layer shows the child's header, with
           its close control at the child's position, and bars shaped like
-          its first screen; the trial keeps its dark background;
+          its first screen, on the paper background both layers now use;
         - the child is revealed at its first paint;
         - after 20 s, the existing error with Retry and close appears.
       - **Warm-up:** the service worker already warms the checkout page's
@@ -739,8 +770,12 @@ Known = real text available before any request. Async = pending data.
       interaction (≤200 ms). Tap to plans with an active pay button is an
       opening (≤1000 ms warm). The checkout and trial layers are openings
       measured to the child's first paint.
+    - **The Pro panda module (#348, not wired):** if the owner wires
+      `HSKProPanda` into the sheet, its CSS and script load with the
+      sheet's existing assets (`_PWA_INLINE_PRO_HTML`), and its one-time
+      effect must not delay the sheet's first frame.
     - **Android** gets the same rules for its native Pro, trial and limit
-      screens in 3.7.
+      screens (`SectionLimitOverlay.kt`, `LiOnboardingChoices`) in 3.7.
 
 ### Condition matrix (§7)
 
@@ -808,7 +843,8 @@ The draft was challenged item by item:
   passes on real Postgres.
 - [Android skeletons shift layout when the data lands] → An instrumentation
   bounds check on the header and first row, as in the loading spec.
-- [HTML edits trip the i18n line anchors and `reviewed_sha1`] → Re-anchor
+- [HTML edits trip the i18n line anchors, `reviewed_sha1` and, since NXT-011,
+  the monitoring token-only exemption] → Re-anchor
   once per package, by exact line identity (memory:
   `learner-page-token-change-needs-reanchor`).
 - [Shared API changes break the Mini App or Android] → Each Backend task runs

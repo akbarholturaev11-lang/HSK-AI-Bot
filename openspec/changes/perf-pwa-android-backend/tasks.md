@@ -258,7 +258,8 @@ identity.
     shows cost at least 100 ms of the cold first frame and the shell does
     not need. The character scripts are the first candidates.
   - Before a move, show that none of the resource's call sites run before
-    it arrives.
+    it arrives. Keep each file's path, so its NXT-011 monitoring identity
+    (`catalog.DEBUG_ASSETS`) stays the same.
   - On the PWA route the resource loads after the first paint. Telegram
     keeps today's order.
   - If 1.3 shows no such resource, record that and close the task without a
@@ -456,8 +457,9 @@ identity.
   and 16).
   - `LessonAdaptiveReview` and the Mistakes review screens grade with the
     key and record in the background, using the existing in-memory outbox.
-  - The native Pro, trial and limit screens show their structure at once,
-    with no loading text, and no blank screen while data loads.
+  - The native Pro, trial and limit screens (`SectionLimitOverlay.kt`,
+    `LiOnboardingChoices`) show their structure at once, with no loading
+    text, and no blank screen while data loads.
 
   Verify: unit tests for the grading parity and the background recording,
   an instrumentation test with a held answer request (feedback without
@@ -532,6 +534,17 @@ identity.
   - the unit test;
   - the existing AI service tests pass;
   - the numbers are recorded in the contract doc.
+- [ ] 4.6 Inbox feed after Smart reminders (#349). Each Smart row now
+  resolves its template with its own `notification_templates` query, up to
+  20 per page.
+  - Record the feed route's production p50/p95 and SQL statement count for
+    a page with 20 Smart rows, before and after.
+  - Only if the page is more than 10% slower than one with no Smart rows,
+    resolve the template once per request. The per-language text library
+    (D33) stays as it is.
+
+  Verify: a real-Postgres test counts statements for a 20-row Smart page
+  and shows the same texts in UZ, RU and TJ.
 
 ## 5. Owner acceptance
 

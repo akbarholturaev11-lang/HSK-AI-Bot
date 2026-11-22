@@ -110,6 +110,9 @@ Authoritative sources, not restated here:
 - The network gap and launch payload sizes.
 - The OpenAI fallback client has no timeout (SDK default 600 s). AI time to
   first useful response is unmeasured.
+- The Inbox feed: since Smart reminders (#349), each Smart row reads its
+  template with its own query. It is measured first and fixed only if it
+  is slower.
 
 **Unnecessary now, with evidence:**
 - Redis, new queues, OpenTelemetry, CDN migration, SSR.
@@ -167,7 +170,9 @@ only by the evidence named in design.md.
   - `/api/v3/clientlog` (read only for real-user samples).
 
 **Current evidence:** measured on 2026-11-22 against main `50231bee`; details
-in design.md.
+in design.md. On 2026-11-23 the plan was re-checked after syncing with main
+`caaae35c` and PR #352. The launch path did not change; the trial colours,
+NXT-011 monitoring and the Smart Inbox feed are reflected.
 - Production server-side 7-day latency:
   - session p95 ≈43 ms;
   - course HTML p95 ≈93 ms;
