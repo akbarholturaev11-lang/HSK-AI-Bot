@@ -23,6 +23,10 @@ The owner approved D34 on 2026-11-22 (default ON for every sign-in method, Teleg
 - [x] 4.1 Run the Smart reminder suites on SQLite and the storage/migration suites on PostgreSQL; record counts in the checkpoint with Analytics Impact and Monitoring Impact.
 - [x] 4.2 Confirm no Android, Mini App or PWA client file and no localized string changed.
 
+## 5. Default send time (D35)
+
+- [x] 5.1 `smart_reminder_policy.py` and `smart_reminder_policy_context.py`: 21:00 local default after manual, habit and saved time; widget keeps its four-value source contract; verify with policy, context, widget and an end-to-end PWA-only test (no send at the fixture's old 14:00, one Web Push at 21:00).
+
 ## Workflow follow-up
 
 - Production readout after deploy (Admin PWA review count and rollout health) needs the owner's go-ahead for read-only observation.
