@@ -116,6 +116,7 @@ COURSE_MINIAPP_EVENT_NAMES = (
     "android_widget_pin_requested",
     "android_widget_pinned",
     "android_widget_opened",
+    "android_widget_daily_prompt_viewed",
     "android_notification_opened",
     "android_checkout_opened",
     "android_play_purchase_verified",

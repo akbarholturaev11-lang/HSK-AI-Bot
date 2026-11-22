@@ -151,7 +151,7 @@ Bu yozuvlar **takror implementatsiya qilish buyrug‘i emas**. Boshlashdan avval
 
 
 ### NXT-013 — Android Widget Events: takrorlanuvchi HTTP 422 va telemetriya navbati bloklanishi
-- Status: PLANNED (faqat keyingi fix uchun; egasining alohida ruxsatisiz implementatsiya EMAS)
+- Status: VERIFY (kod PR #351 da; production 4xx/422 trendini deploydan keyin solishtirish qoldi)
 - Added: 2026-11-22
 - Priority: high (Android widget/notification telemetriyasining ishonchliligi; asosiy dars/to‘lov serveri nosozligi deb talqin qilinmasin)
 - Goal: Android'dan `POST /api/v3/android/events` ga yuboriladigan haqiqiy event'lar qat'iy backend allowlist'iga mos kelsin; noto‘g‘ri eski event boshqa to‘g‘ri event'larni navbatda bloklamasin.
@@ -160,7 +160,7 @@ Bu yozuvlar **takror implementatsiya qilish buyrug‘i emas**. Boshlashdan avval
 - Scope / fix gate: Avval current `main` va real deployed Android versiyalari, endpoint 422 response validation details (PII/token saqlamasdan), event ishlab chiqaruvchilar, queue retry tartibi va analytics consumer'larini qayta tekshiring. Minimal fix sifatida tasdiqlangan `android_widget_daily_prompt_viewed` ni backend schema va canonical analytics registry'da mos ravishda ro‘yxatga oling; agar nom va ma'no kontrakti boshqacha ekanligi aniqlansa, avval manbani tuzating. Android queue'da **faqat tasdiqlangan permanent invalid** event boshqalarni bloklamasligi uchun xavfsiz drop/quarantine/ack siyosatini o‘rnating; transient 5xx/network, 401/403 auth, rate-limit va owner/device isolation'ni ko‘r-ko‘rona discard qilmang. Eski ilovalardan allaqachon saqlangan event'lar va yangi server bilan backward compatibility'ni hisobga oling.
 - Risks / open questions: User/account spoofing, server-side allowlist, dedupe (`device+event_id`), event UUID, queue max 32, navbatdagi tartib, user activity/DAU metrikalarini sun'iy oshirmaslik, widget onboarding/notification, Android Play/Direct versiyalari va privacy-safe logging saqlansin. Kundalik prompt view'ni passiv observation sifatida hisoblash kerakmi, degan savolni analytics semantikasi bilan tasdiqlang; bu avtomatik `last_active_at` yangilash degani emas.
 - Acceptance: (1) `daily_prompt_viewed` qat'iy auth/owner-bound API orqali **200** va DB'da to‘g‘ri event yozadi; (2) unauthorized/forged/unknown event va ortiqcha field'lar rad etilishda davom etadi; (3) valid qayta yuborish bitta yozuv sifatida dedupe bo‘ladi; (4) oldingi invalid item boshqa valid event'ni abadiy bloklamaydi, navbat tiklanadi va transient xatolar yo‘qotilmaydi; (5) backend `tests/test_android_events_api.py`, Android widget queue/coordinator unit testlari, analitika contract va Android CI + production release kuzatuvlari bilan tasdiqlansin. 4xx/422 trendi oldin/keyin bir xil oynada solishtirilsin.
-- Implementation: Faqat NEXTATION navbatiga yozildi; kod, database, production va CI o‘zgartirilmagan. Egasining keyingi aniq ruxsati talab qilinadi.
+- Implementation: PR #351 (egasi 2026-11-22 da ruxsat berdi). Backend nomni allowlist, `COURSE_MINIAPP_EVENT_NAMES` va coverage registry'ga qo‘shdi; event passiv (`last_active_at` yangilanmaydi). Android `flushEvents()` faqat `desktop_request_invalid`/`desktop_request_too_large` javobini olgan event'ni navbatdan olib tashlaydi, qolgan xatolar qayta yuboriladi. Qolgan tekshiruv: deploydan keyin `/api/v3/android/events` 4xx ulushini oldingi 24 soat bilan solishtirish.
 
 ### NXT-014 — Ochilish effekti va Pro panda komponentlarini mavjud joylarga ulash
 - Status: PLANNED (komponentlar tayyor, PR #348; ulash egasining alohida ruxsati bilan)
