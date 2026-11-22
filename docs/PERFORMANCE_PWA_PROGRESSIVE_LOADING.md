@@ -88,8 +88,12 @@ task 1.1):
 .venv/bin/python scripts/measure_pwa_lab.py --out lab.json
 ```
 
-- **Fixture:** the existing e2e `ScreenPage` (UZ, onboarded, Free), served over
-  real local HTTP.
+- **Fixture:** `flow_fixture`, the existing e2e `ScreenPage` (UZ, onboarded,
+  Free) extended for task 1.2, served over real local HTTP.
+  - The course, practice and Voice HTML are built by production's own
+    builders in `app/api/pwa_auth.py`; the exam by the exam service.
+  - `--parts launch,flows,entry` (the default) selects the launch, the
+    learner actions at `--flow-widths` (390), and the entry pages.
   - No production account or secret is used.
   - The only outside request is one fetch per run of the cdnjs icon
     stylesheet. It is then served like every other file.
@@ -152,6 +156,63 @@ runs). Times in ms, sizes in KB.
 - **Still to do:** per-action baselines (tab switch, layers, search,
   swipe-back, lesson open, exercise advance), which are OpenSpec task 1.3.
   The "filmstrip and LCP/CLS" checkpoint above stays open until then.
+
+**Action readings, 2026-11-23 (task 1.2).** Measured at `ff244e04` with
+`--parts flows,entry`, at 390 px, as the median of 3 runs per engine. These
+are the first readings. Task 1.3 adds a second run and the targets.
+
+How the actions are timed:
+- **Ready:** from the tap (pointerdown) to the ready state, plus one frame,
+  so the change is painted.
+- **Parent only:** how long the practice entry was the only thing visible,
+  before the page frame was revealed.
+- **Panda:** how long the lesson-entry or study-preparing panda was
+  visible. Every run that waits showed it.
+
+Times in ms; Chromium has the 4× CPU slowdown.
+
+| Action | Chromium ready | Chromium parent only | Chromium panda | WebKit ready | WebKit parent only | WebKit panda |
+|---|---|---|---|---|---|---|
+| Lesson open → first card | 828 | — | 804 | 826 | — | 812 |
+| Exercise advance | 27 | — | 0 | 26 | — | 0 |
+| Lesson finish → result | 385 | — | 0 | 228 | — | 0 |
+| Recognition, first / repeat | 1733 / 947 | 1731 / 933 | 1718 / 920 | 1934 / 950 | 1913 / 933 | 1898 / 918 |
+| Pronunciation, first / repeat | 1004 / 831 | 990 / 819 | 975 / 806 | 1047 / 834 | 1031 / 817 | 1015 / 802 |
+| Memorize, first / repeat | 1115 / 716 | 1112 / 708 | 1105 / 691 | 3053 / 747 | 3020 / 730 | 3017 / 719 |
+| Test centre, first / repeat | 285 / 203 | 271 / 190 | 257 / 176 | 283 / 201 | 268 / 189 | 252 / 174 |
+| Test exam start | 241 | — | 222 | 279 | — | 250 |
+| Mistakes, first / repeat | 604 / 522 | 596 / 507 | 581 / 493 | 612 / 556 | 597 / 538 | 581 / 522 |
+| Mistakes review start | 190 | — | 170 | 196 | — | 165 |
+| Voice → opening line, first / repeat | 1818 / 906 | 804 / 300 | 793 / 286 | 1763 / 879 | 790 / 338 | 775 / 323 |
+
+First paint of pages opened directly. Ready means:
+- **Login:** the provider buttons are shown.
+- **Li onboarding:** the first scene and its button are shown.
+- **Course onboarding:** the start button is shown.
+
+| Page | Chromium FCP / ready, cold | Chromium warm | WebKit FCP / ready, cold | WebKit warm |
+|---|---|---|---|---|
+| Login | 432 / 819 | 396 / 751 | 476 / 864 | 378 / 749 |
+| Li onboarding | 528 / 770 | 264 / 483 | 771 / 796 | 288 / 500 |
+| Course onboarding | 744 / 1021 | 220 / 260 | 1049 / 1049 | 279 / 278 |
+
+What the readings show, as input for 1.3 and group 2:
+- **Practice pages reveal only when ready.** The parent-only time is almost
+  the whole wait, and the panda shows for all of it. That includes the Test
+  centre (≈0.25 s) and both session starts (0.17–0.25 s), which are under
+  the 300 ms panda bar (task 2.5).
+- **Lesson open:** the panda shows for ≈0.8 s, which includes the 720 ms
+  minimum.
+- **Slowest first opens:**
+  - Recognition: 1.7–1.9 s.
+  - Memorize on WebKit: 3.1 s, against 1.1 s on Chromium. It has no PWA
+    tile today.
+  - Voice: 1.8 s to the opening line. The frame is revealed at 0.8 s; the
+    rest is the microphone and the session start.
+- **Not modelled:**
+  - first-time TTS synthesis (a cached phrase is served);
+  - CSP on the three entry pages;
+  - the live voice relay (fake microphone, `live_available: false`).
 
 ## Backend course-map template cache
 

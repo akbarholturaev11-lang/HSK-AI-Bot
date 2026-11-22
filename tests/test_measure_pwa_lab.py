@@ -7,6 +7,8 @@ that production never shows. These checks pin the delivery rules of
 run them without browser or backend dependencies.
 """
 import gzip
+import json
+import re
 import threading
 import time
 import unittest
@@ -32,6 +34,10 @@ class _Fixture:
             route.fulfill(content_type="application/javascript", body="x=1")
         elif path == "assets/logo.png":
             route.fulfill(content_type="image/png", body=BIG_TEXT)
+        elif path == "built":
+            # A production page builder's own policy, with Starlette's lower-case keys.
+            route.fulfill(content_type="text/html; charset=utf-8", body=BIG_TEXT,
+                          headers={"cache-control": "no-store"})
         elif path == "api/v3/pwa/map":
             route.fulfill(json={"ok": True, "pad": BIG_TEXT})
         else:
@@ -82,6 +88,14 @@ class LabDeliveryTest(unittest.TestCase):
         self.assertNotIn("Content-Encoding", headers)
         self.assertEqual(body, b"x=1")
 
+    def test_a_production_built_page_keeps_its_own_cache_policy(self):
+        status, headers, body = fetch(self.origin + "/built")
+        self.assertEqual(status, 200)
+        self.assertEqual(headers["cache-control"], "no-store")
+        self.assertNotIn("ETag", headers)
+        self.assertNotIn("Cache-Control", [k for k in headers if k != "cache-control"])
+        self.assertEqual(gzip.decompress(body).decode(), BIG_TEXT)
+
     def test_api_answers_are_not_cached(self):
         _, headers, _ = fetch(self.origin + "/api/v3/pwa/map")
         self.assertEqual(headers["Cache-Control"], "no-store")
@@ -115,6 +129,74 @@ class LinkTest(unittest.TestCase):
             thread.join()
         # 40 KB at 200 KB/s: two parallel sends cannot finish faster than 0.2 s.
         self.assertGreaterEqual(time.monotonic() - started, 0.19)
+
+
+class FlowFixtureTest(unittest.TestCase):
+    """The task 1.2 actions drive the pages production serves, and say when they could not."""
+
+    def test_lab_serves_the_files_the_production_routes_serve(self):
+        source = (lab.ROOT / "app/api/pwa_auth.py").read_text(encoding="utf-8")
+
+        def served_file(route):
+            match = re.search(r'@router\.get\("' + re.escape(route) + r'"\)(.*?)(?=@router\.)', source, re.S)
+            self.assertIsNotNone(match, route)
+            return set(re.findall(r'"app/static/([A-Za-z0-9_.-]+\.html)"', match.group(1)))
+
+        for kind, page in lab.PRACTICE_PAGES.items():
+            self.assertEqual(served_file("/iphone-pwa/practice/" + kind), {page}, kind)
+        for route, page in lab.ENTRY_FILES.items():
+            self.assertIn(page, served_file(route), route)
+
+    def test_every_practice_page_and_voice_has_a_ready_state(self):
+        self.assertEqual(set(lab.PRACTICE_READY), set(lab.PRACTICE_PAGES))
+        self.assertEqual(set(lab.PRACTICE_TILES), set(lab.PRACTICE_PAGES) - {"voice"})
+        self.assertEqual({name for name, _, _ in lab.SESSION_STARTS.values()}, {"exam_start", "review_start"})
+        self.assertEqual(set(lab.ENTRY_PAGES), {"login", "li_onboarding", "onboarding"})
+        for path, _, _ in lab.ENTRY_PAGES.values():
+            self.assertIn(path.split("?")[0], lab.ENTRY_FILES)
+
+    def test_child_expressions_are_quoted_once(self):
+        expr = "document.querySelector('button[onclick=\"go()\"]')"
+        self.assertEqual(lab.child(expr), "lab.child(" + json.dumps(expr) + ")")
+
+    def test_a_failed_action_is_unmeasured_not_passing(self):
+        results = {}
+        lab.measured(results, "ok", lambda: {"ready_ms": 5})
+
+        def broken():
+            raise TimeoutError("Timeout 30000ms exceeded.\nCall log: ...")
+
+        lab.measured(results, "broken", broken)
+        self.assertEqual(results["ok"], {"ready_ms": 5})
+        self.assertEqual(results["broken"], {"unmeasured": "Timeout 30000ms exceeded."})
+
+    def test_action_summary_uses_measured_runs_and_counts_the_rest(self):
+        runs = [
+            {"open": {"ready_ms": 900, "parent_only_ms": 880, "panda_ms": 870, "timed_out": False}},
+            {"open": {"ready_ms": 700, "parent_only_ms": 690, "panda_ms": 0, "timed_out": False}},
+            {"open": {"ready_ms": None, "parent_only_ms": 400, "panda_ms": 390, "timed_out": True}},
+            {"open": {"unmeasured": "frame missing"}},
+        ]
+        summary = lab.summarise_actions(runs)["open"]
+        self.assertEqual(summary["measured_runs"], 2)
+        self.assertEqual(summary["of"], 4)
+        self.assertEqual(summary["ready_ms"], 800)
+        self.assertEqual(summary["parent_only_ms"], 785)
+        self.assertEqual(summary["panda_seen_runs"], 1)
+        self.assertEqual(summary["unmeasured"], ["frame missing", "timed out"])
+
+    def test_an_action_that_never_ran_is_reported(self):
+        summary = lab.summarise_actions([{"a": {"ready_ms": 10}}, {}])
+        self.assertEqual(summary["a"]["unmeasured"], ["not run"])
+
+    def test_session_starts_have_no_parent_only_interval(self):
+        self.assertEqual(lab.drop_parent_only({"ready_ms": 3, "parent_only_ms": 0}), {"ready_ms": 3})
+
+    def test_the_page_probe_times_actions_in_the_page(self):
+        for name in ("lab.arm=", "lab.begin=", "lab.result=", "lab.child=", "lab.pandaShown="):
+            self.assertIn(name, lab.PAGE_PROBE)
+        # Ready is stamped one frame after the state, so the change is painted.
+        self.assertIn("if(w.seen){w.ready=t-w.start", lab.PAGE_PROBE)
 
 
 class HeaderCheckTest(unittest.TestCase):

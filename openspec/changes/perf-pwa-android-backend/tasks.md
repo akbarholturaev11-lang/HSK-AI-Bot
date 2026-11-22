@@ -27,7 +27,7 @@ identity.
       network;
     - WebKit runs without a CPU slowdown, which Playwright cannot apply to it;
     - `tests/test_measure_pwa_lab.py` runs in the CI guard.
-- [ ] 1.2 Extend the harness fixture, reusing the lesson and practice
+- [x] 1.2 Extend the harness fixture, reusing the lesson and practice
   fixtures already in `tests/e2e/`, to drive:
   - a real lesson open, one exercise advance, and lesson finish → result;
   - the five real practice pages and the Voice live page, plus a Test exam
@@ -40,6 +40,25 @@ identity.
   - each practice page's first useful frame;
   - how long the parent entry is the only thing visible;
   - whether and how long the panda was visible.
+  - Result (2026-11-23):
+    - `flow_fixture` extends `ScreenPage`. The course, the five practice
+      pages and Voice come from `app/api/pwa_auth.py`'s own builders. The
+      exam comes from the exam service's material helpers. A unit test
+      checks that each lab route serves the file its production route
+      serves.
+    - Each action is timed inside the page, from the tap to its ready state
+      plus one frame. Failed actions are reported as unmeasured.
+    - Full run: 23 actions × 3 runs on both engines, all measured, with no
+      page errors. The readings are in the contract doc.
+    - The 1.1 launch numbers held within 3%. Warm launch transfer is now
+      14 KB instead of 4.4 KB, because the fixture now serves real lesson
+      content: the course prefetches lessons 1 and 2, as in production.
+    - Not modelled:
+      - first-time TTS synthesis (a cached phrase is served);
+      - CSP on the three entry pages;
+      - the live voice relay (Voice runs on a fake microphone).
+      - Memorize has no PWA tile, so it opens through the same call a
+        tile would make.
 - [ ] 1.3 Record the before baselines with 1.1 on both engines, and set a
   target per action from them. Record them in the contract doc, which closes
   its open items "every screen at 320/390/430", "filmstrip LCP/CLS/INP" and the
