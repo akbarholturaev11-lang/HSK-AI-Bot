@@ -8392,9 +8392,10 @@ var RESOURCE=(function(){
       gesture={x:t.clientX,y:t.clientY,
         sx:Number.isFinite(t.screenX)?t.screenX:t.clientX,
         sy:Number.isFinite(t.screenY)?t.screenY:t.clientY};
-      NavBack.start({touches:[{clientX:t.clientX,clientY:t.clientY}]});
+      NavBack.start({touches:[{clientX:t.clientX,clientY:t.clientY}],edgeTarget:target,
+        cancelable:ev.cancelable,preventDefault:function(){ev.preventDefault()}});
       if(!NavBack._s)gesture=null;
-    },{passive:true});
+    },{passive:false});
     childDoc.addEventListener("touchmove",function(ev){
       if(!gesture)return;
       if(ev.touches.length!==1){gesture=null;NavBack.cancel();return}
@@ -10321,6 +10322,7 @@ function flushPendingCenterAd(){
 var NavBack={
   EDGE:24,   /* Telegram Mini App keeps its existing left-edge gesture zone. */
   MIN:88,    /* The browser PWA uses a shorter, position-aware horizontal threshold. */
+  SYS_EDGE:16, /* Browser PWA: left strip where iOS/Android start their own history swipe. */
   /* Qatlamlar ustkisidan boshlab tekshiriladi. */
   LAYERS:[{id:"pwa-shake",target:function(){return PWA_COURSE_HOST&&window.HskPwaShake&&HskPwaShake.backTarget()},close:function(){HskPwaShake.close()}},
     {id:"pwa-checkout-layer",target:function(){return $("#pwa-checkout-layer")},close:pwaCheckoutBack},
@@ -10406,6 +10408,15 @@ var NavBack={
   },
   onPop:function(){
     NavBack._guarded=false;
+    /* A left-edge swipe can also start the browser's own history swipe
+       (iPhone Safari/Home Screen, Android browsers). Its popstate is the
+       same gesture as the drag below: go back once, never twice. */
+    var swipe=NavBack._swipeBack;
+    if(swipe&&Date.now()<swipe.until){
+      NavBack._swipeBack=null;
+      if(swipe.handled){NavBack.sync();return}
+      swipe.handled=true;
+    }
     if(NavBack.goBack()){
       try{history.pushState({hskNavBack:1},"");NavBack._guarded=true}catch(e){}
       NavBack.sync();
@@ -10444,6 +10455,9 @@ var NavBack={
     if(NavBack._s||ev.touches.length!==1)return;
     var t=ev.touches[0];
     if(!PWA_COURSE_HOST&&t.clientX>NavBack.EDGE)return;
+    /* The previous swipe is still closing its layer: a new drag would grab
+       that same layer before it hides. */
+    if(NavBack._swipeBack&&!NavBack._swipeBack.handled)return;
     /* Horizontal widgets (profile promo carousel, rating cups, scrollers) own
        their swipes; they must never drag the whole screen back. */
     if(PWA_COURSE_HOST&&NavBack.ownsHorizontalSwipe(ev.target))return;
@@ -10452,6 +10466,14 @@ var NavBack={
     var width=window.innerWidth||360;
     NavBack._s={x:t.clientX,y:t.clientY,el:el,live:false,dead:false,w:width,
       min:PWA_COURSE_HOST?Math.min(56,Math.max(32,width-t.clientX-8)):NavBack.MIN};
+    /* This drag owns the back step. Claim a touch that starts in the
+       browser's own left-edge history-swipe strip, otherwise iPhone shows its
+       blank page snapshot and the popstate goes back one screen more. Taps on
+       controls there keep their click; onPop still dedupes that case. */
+    if(PWA_COURSE_HOST&&t.clientX<=NavBack.SYS_EDGE&&ev.cancelable&&ev.preventDefault){
+      var hit=ev.edgeTarget||ev.target;
+      if(!(hit&&hit.closest&&hit.closest("button,a,input,textarea,select,label,[role=button],[contenteditable]")))ev.preventDefault();
+    }
   },
   move:function(ev){
     var s=NavBack._s;if(!s||s.dead)return;
@@ -10488,10 +10510,14 @@ var NavBack={
     el.style.transform=done?"translateX("+s.w+"px)":"";
     if(scrim)scrim.style.opacity="0";
     NavBack._s=null;
+    var swipe=done?{handled:false,until:Date.now()+800}:null;
+    if(swipe)NavBack._swipeBack=swipe;
     setTimeout(function(){
-      el.classList.remove("nb-snap");el.style.transform="";
       if(scrim&&scrim.parentNode)scrim.parentNode.removeChild(scrim);
-      if(done&&(!PWA_COURSE_HOST||NavBack.target()===el)){NavBack.goBack();NavBack.sync()}
+      /* Close first, then drop the off-screen transform: the layer must not
+         flash back at x=0 for a frame before it hides. */
+      if(swipe&&!swipe.handled&&(!PWA_COURSE_HOST||NavBack.target()===el)){swipe.handled=true;NavBack.goBack();NavBack.sync()}
+      el.classList.remove("nb-snap");el.style.transform="";
       RESOURCE.swipePreview(false,el);
     },done?200:220);
     if(done)haptic("light");
@@ -10514,7 +10540,8 @@ var NavBack={
       }
     }catch(e){}
     window.addEventListener("popstate",NavBack.onPop);
-    document.addEventListener("touchstart",NavBack.start,{passive:true});
+    /* Not passive: start() may claim a left-edge touch (see SYS_EDGE). */
+    document.addEventListener("touchstart",NavBack.start,{passive:false});
     document.addEventListener("touchmove",NavBack.move,{passive:false});
     document.addEventListener("touchend",NavBack.end,{passive:true});
     document.addEventListener("touchcancel",NavBack.cancel,{passive:true});

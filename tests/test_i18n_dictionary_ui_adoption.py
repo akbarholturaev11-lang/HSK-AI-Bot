@@ -85,7 +85,8 @@ class DictionaryUIAdoptionTests(unittest.TestCase):
         self.assertIn('if(typeof value==="string"&&value)labels[key]=value', html)
         self.assertIn('if(typeof value==="string"&&value)messages[lang][key]=value', html)
         # 2026-11-05: non-blocking strokes/examples loader (+6 lines).
-        self.assertEqual(len(html.split("\n")), 1936)
+        # 2026-11-22: opaque dragged word page for swipe-back (+11 CSS lines).
+        self.assertEqual(len(html.split("\n")), 1947)
         for marker in (
             "function initFastWriter(fastParams){",
             "function normalizeLevel(value){",

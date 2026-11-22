@@ -3,7 +3,7 @@
   "status": "SOURCE_CLASSIFIED_ALL_EXPLICIT_LANG_EQUALS_BRANCH_LINES_NOT_RUNTIME_VALIDATION",
   "source": "app/static/course-v3.html",
   "source_revision": "bef0d41a02ce5f2ba893c5f6216ddac3ea6814f2",
-  "counting_note": "61 unique physical source lines cover all 128 current LANG ==/=== literal-locale predicates in course-v3.html after main integration and the reviewed PWA browser bridge. Multiple predicates per line remain one classification; source review only, not runtime UI verification. Reviewed PWA browser and shake line shifts against the exact current source blob; the reviewed locale predicate inventory remains unchanged.; 2026-11-04 iPhone PWA-only immediate practice loader adds 20 non-locale lines before the last reviewed access predicate; that predicate now resides at source line 8277.; 2026-11-09 performance audit: re-anchored all 62 reviewed LANG branches using exact, unchanged source lines after progressive loading additions; 130 predicates unchanged.; 2026-11-09 PWA profile memory reuse re-reviewed: identical 62 locale predicate source lines, 130 branches unchanged.; 2026-11-09 PWA Voice quota local failure/retry: retained 62 reviewed literal-locale source lines and 130 predicates, re-anchored exact lines after scoped status UX edit. 2026-11-16: lesson sheet header no longer renders the fixed 你好 greeting line (owner request), so its lesson_example_translation classification and two predicates were removed; remaining 61 lines/128 predicates re-anchored by exact unchanged source identity after the next-part sheet handoff. 2026-11-17 UIUX-007 adaptive review overlay: added the server-planned personal review module (no LANG literal-locale predicates) and one-line hooks; all 61 classified source lines and 128 predicates re-anchored by exact unchanged source identity. 2026-11-20: PWA confirmed first-part result uses the local course catalog; each previously classified predicate line is unchanged and re-anchored.",
+  "counting_note": "61 unique physical source lines cover all 128 current LANG ==/=== literal-locale predicates in course-v3.html after main integration and the reviewed PWA browser bridge. Multiple predicates per line remain one classification; source review only, not runtime UI verification. Reviewed PWA browser and shake line shifts against the exact current source blob; the reviewed locale predicate inventory remains unchanged.; 2026-11-04 iPhone PWA-only immediate practice loader adds 20 non-locale lines before the last reviewed access predicate; that predicate now resides at source line 8277.; 2026-11-09 performance audit: re-anchored all 62 reviewed LANG branches using exact, unchanged source lines after progressive loading additions; 130 predicates unchanged.; 2026-11-09 PWA profile memory reuse re-reviewed: identical 62 locale predicate source lines, 130 branches unchanged.; 2026-11-09 PWA Voice quota local failure/retry: retained 62 reviewed literal-locale source lines and 130 predicates, re-anchored exact lines after scoped status UX edit. 2026-11-16: lesson sheet header no longer renders the fixed 你好 greeting line (owner request), so its lesson_example_translation classification and two predicates were removed; remaining 61 lines/128 predicates re-anchored by exact unchanged source identity after the next-part sheet handoff. 2026-11-17 UIUX-007 adaptive review overlay: added the server-planned personal review module (no LANG literal-locale predicates) and one-line hooks; all 61 classified source lines and 128 predicates re-anchored by exact unchanged source identity. 2026-11-20: PWA confirmed first-part result uses the local course catalog; each previously classified predicate line is unchanged and re-anchored. 2026-11-22: PWA edge swipe-back fix (one gesture = one back step) added non-locale NavBack/RESOURCE lines; every classified line is byte-identical and re-anchored, 61 lines/128 predicates unchanged.",
   "coverage_note": "Current PWA implementation source only: all LANG ==/=== 'uz'|'ru'|'tj' predicates are classified; added PWA unavailable-practice error fallback is canonical; lesson/grade/Pro/auth unaffected. All other localized source expressions, dynamic content and rendered UI require separate QA.",
   "classifications": [
     {
@@ -471,7 +471,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 8458,
+      "line": 8459,
       "anchor": "LANG===\"ru\"",
       "category": "loading_copy",
       "reason": "Resource iframe loading placeholder Local catalog lookup with the exact RU/TJ/UZ inline fallback; existing runtime branch, completion, formatting and physical source line preserved.",
@@ -479,7 +479,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 8585,
+      "line": 8586,
       "anchor": "courseLoadError.title",
       "category": "error_recovery_copy",
       "reason": "PWA-only blocked unported practice route displays the existing canonical course loading error, preserving exact UZ/RU/TJ fallback. Does not open an unsigned Telegram page; source classification only, not runtime QA.",
@@ -487,7 +487,7 @@
       "predicate_occurrences": 2
     },
     {
-      "line": 9300,
+      "line": 9301,
       "anchor": "LANG===\"ru\"",
       "category": "access_copy",
       "reason": "Test entitlement/limit progress label",
