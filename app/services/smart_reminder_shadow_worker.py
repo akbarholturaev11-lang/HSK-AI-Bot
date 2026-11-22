@@ -49,6 +49,16 @@ class SmartReminderShadowWorker:
                 return SmartReminderActor(user_id, "android", device_id=row["id"], session_id=row["session_id"])
             if account["telegram_id"] and account["telegram_id"] > 0 and account["bot_blocked_at"] is None:
                 return SmartReminderActor(user_id, "telegram_bot", telegram_id=account["telegram_id"])
+            # A PWA-only account (Google/Apple, no Telegram) is served by Web
+            # Push (D34); its live browser session is the trusted server actor.
+            row = (await session.execute(select(DesktopDevice.id, DesktopSession.id.label("session_id")).join(
+                DesktopSession, DesktopSession.device_id == DesktopDevice.id).where(
+                    DesktopDevice.user_id == user_id, DesktopDevice.platform == "pwa",
+                    DesktopDevice.revoked_at.is_(None), DesktopSession.revoked_at.is_(None),
+                    DesktopSession.expires_at > self.clock(),
+                ).order_by(DesktopSession.expires_at.desc(), DesktopSession.id).limit(1))).mappings().one_or_none()
+            if row is not None:
+                return SmartReminderActor(user_id, "pwa", device_id=row["id"], session_id=row["session_id"])
             raise SmartReminderError("shadow_actor_unavailable", 401)
 
     async def tick(self):

@@ -15,6 +15,8 @@ from app.db.models.course_user_notification import CourseUserNotification
 from app.db.models.desktop import DesktopDevice, DesktopSession
 from app.db.models.learner_pwa_push import LearnerPwaPushOutbox, LearnerPwaPushSubscription
 from app.db.models.smart_reminder import SmartReminderAttempt, SmartReminderConsent, SmartReminderJob, SmartReminderPreference
+from app.services.learner_pwa_push_copy import push_copy
+from app.services.smart_reminder_messages import is_key, library_text
 from app.services.smart_reminder_pwa import SmartReminderPwaService
 from app.services.smart_reminder_preferences import SmartReminderActor
 from app.services.smart_reminder_shadow_queue import ATTEMPT, JOB
@@ -93,7 +95,6 @@ class SmartReminderPwaDeliveryTests(unittest.IsolatedAsyncioTestCase):
         payload = json.loads(args[1])
         self.assertEqual(payload["url"], "/iphone-pwa/course?notice=1")
         self.assertNotIn("HSK AI", payload["title"] + payload["body"])
-        self.assertIn("📖", payload["title"])
         async with self.case.sessions() as session:
             attempt = (await session.scalars(select(SmartReminderAttempt).where(
                 SmartReminderAttempt.job_id == self.job_id))).one()
@@ -105,7 +106,12 @@ class SmartReminderPwaDeliveryTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual((attempt.channel, attempt.device_id, attempt.state),
             ("pwa", self.device_id, "provider_accepted"))
         self.assertEqual((job.state, job.selected_channel), ("provider_accepted", "pwa"))
-        self.assertIn(str(job.lesson_order), payload["title"])
+        # The day's library variant (D33), stored on the job and the inbox row.
+        self.assertTrue(is_key(job.content_key))
+        self.assertEqual((payload["title"], payload["body"]), push_copy(library_text(
+            job.content_key, payload["lang"], streak=notices[0].params["streak"]).format(lesson=job.lesson_order),
+            title="", body=""))
+        self.assertEqual(notices[0].params["content_key"], job.content_key)
         self.assertEqual((notices[0].title, notices[0].body), (payload["title"], payload["body"]))
         self.assertEqual([notice.source for notice in notices], ["smart_pwa"])
         self.assertEqual(outbox, [])
@@ -165,8 +171,8 @@ class SmartReminderPwaDeliveryTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_off_unknown_and_manual_lock_are_rechecked_before_provider(self):
         sender = AsyncMock(return_value=201)
-        # No explicit Smart choice is refused only without existing study
-        # consent; with Telegram study consent the PWA may carry the reminder.
+        # No explicit Smart choice is refused only after an explicit study OFF
+        # (D34: a legacy snapshot OFF is no OFF); otherwise the PWA may carry it.
         preferences = (
             ({"master_enabled": False, "channel_mode": "auto", "preferred_channel": None}, "on"),
             ({"master_enabled": None, "channel_mode": "auto", "preferred_channel": None}, "off"),
@@ -177,7 +183,8 @@ class SmartReminderPwaDeliveryTests(unittest.IsolatedAsyncioTestCase):
                 await session.execute(update(SmartReminderPreference).where(
                     SmartReminderPreference.user_id == 1).values(**values))
                 await session.execute(update(SmartReminderConsent).where(
-                    SmartReminderConsent.user_id == 1, SmartReminderConsent.channel == "telegram").values(state=telegram))
+                    SmartReminderConsent.user_id == 1, SmartReminderConsent.channel == "telegram").values(
+                        state=telegram, source="user_intent", source_key="intent:telegram"))
                 await session.execute(update(JOB).where(JOB.c.id == self.job_id).values(
                     state="pending", reason_code=None, lease_token=None, lease_expires_at=None,
                     selected_channel="pwa", selected_device_id=self.device_id))

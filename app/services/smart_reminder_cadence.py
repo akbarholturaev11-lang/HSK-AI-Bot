@@ -53,9 +53,12 @@ class ObservedCadenceCalibration(CadenceCalibration):
         return True
 
 
-# D18/D19/D20/D25. No unapproved abnormal-inactivity threshold is supplied.
-# A distinct version changes only this explicit profile's transport digest.
-OBSERVED_RULES = ObservedCadenceCalibration('smart-rules-observed-v1', 3, None, Fraction(1), 2, 5, 3)
+# D18/D25/D31/D32. No unapproved abnormal-inactivity threshold is supplied.
+# Observed mode never proves a shown, unanswered reminder, so the back-off and
+# stop above stay unused: after the personal gap every day without study is
+# eligible, up to 7 per rolling week (still one per local day). The version is
+# not persisted; it labels in-memory decisions only.
+OBSERVED_RULES = ObservedCadenceCalibration('smart-rules-observed-v2', 3, None, Fraction(1), 2, 5, 7)
 
 
 @dataclass(frozen=True)

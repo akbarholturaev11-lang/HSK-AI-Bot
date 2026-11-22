@@ -147,7 +147,27 @@ interface AndroidSmartReminderApi {
     @SerialName("course_key") val courseKey: String? = null,
     @SerialName("lesson_order") val lessonOrder: Int? = null,
     @SerialName("open_proof") val openProof: String? = null,
+    /** Server-rendered copy (D33); older backends omit it. */
+    val message: SmartStudyMessage? = null,
 )
+@Serializable data class SmartStudyMessage(
+    val situation: String? = null,
+    @SerialName("content_key") val contentKey: String? = null,
+    val title: String = "",
+    val body: String = "",
+) {
+    /** Blank or oversized copy keeps the app's own reminder text. */
+    fun usable(): Boolean = title.isNotBlank() && body.isNotBlank() &&
+        title.length <= MAX_TITLE && body.length <= MAX_BODY
+
+    /** The worried panda while a streak or a break is at stake. */
+    fun worried(): Boolean = situation in setOf("streak", "comeback", "long_break")
+
+    private companion object {
+        const val MAX_TITLE = 120
+        const val MAX_BODY = 1000
+    }
+}
 @Serializable data class SmartStudyReceipt(
     @EncodeDefault val version: Int = 1,
     @SerialName("grant_id") val grantId: String,

@@ -20,6 +20,7 @@ from app.db.base import Base
 from app.db.models.desktop import DesktopDevice, DesktopSession
 from app.db.models.learner_pwa_push import LearnerPwaPushSubscription
 from app.db.models.course_progress import CourseProgress
+from app.db.models.course_miniapp_profile import CourseMiniAppProfile
 from app.db.models.smart_reminder import (
     SmartReminderCapability, SmartReminderConsent, SmartReminderMutation, SmartReminderPreference,
     SmartReminderRollout, SmartReminderRouting,
@@ -30,10 +31,12 @@ from app.services.smart_reminder_lifecycle import SmartReminderLifecycleService
 from app.services.smart_reminder_android import SmartReminderAndroidService, read_android_admission
 from app.services.smart_reminder_policy import day_window
 from app.services.smart_reminder_preferences import (
-    SmartReminderActor, SmartReminderError, automatic_timezone_initialization_allowed, pwa_study_consent,
+    SmartReminderActor, SmartReminderError, SmartReminderPatch, SmartReminderPreferencesService,
+    android_phone_consent, automatic_timezone_initialization_allowed, pwa_study_consent,
 )
+from app.services.smart_reminder_telegram import _pwa_binding
 from app.services.smart_reminder_rollout import (
-    COHORT_COUNT, LEGACY_DRAIN, REVIEW_TTL, STAGE_DURATION, SmartReminderAdmissionService,
+    ACTIVE_WINDOW, COHORT_COUNT, LEGACY_DRAIN, REVIEW_TTL, STAGE_DURATION, SmartReminderAdmissionService,
     SmartReminderRolloutService, _utc, cohort_for_user, cohort_open,
 )
 from app.services.smart_reminder_runtime import SmartReminderRuntime
@@ -92,6 +95,23 @@ class PwaStudyConsentTests(unittest.TestCase):
         self.assertFalse(pwa_study_consent(pref(None, "unknown"))) # A subscription alone is not consent.
         self.assertFalse(pwa_study_consent(pref(None, "off")))
         self.assertFalse(pwa_study_consent(pref(False, "on")))     # Smart OFF wins.
+
+
+class DefaultConsentRuleTests(unittest.TestCase):
+    """D34: explicit intent wins; legacy snapshots no longer decide."""
+
+    def test_phone_counts_on_only_after_permission_and_explicit_choice_wins(self):
+        def row(state, source="user_intent"):
+            key = "intent:android:p" if source == "user_intent" else "legacy_android:p"
+            return {"channel": "android", "device_id": "p", "source_key": key, "source": source, "state": state}
+        self.assertEqual(android_phone_consent([], "p", allowed=True, switch_off=False), "on")
+        self.assertEqual(android_phone_consent([], "p", allowed=None, switch_off=False), "unknown")
+        self.assertEqual(android_phone_consent([], "p", allowed=False, switch_off=False), "unknown")
+        self.assertEqual(android_phone_consent([], "p", allowed=True, switch_off=True), "off")
+        self.assertEqual(android_phone_consent([row("off")], "p", allowed=True, switch_off=False), "off")
+        self.assertEqual(android_phone_consent([row("on")], "p", allowed=False, switch_off=True), "on")
+        legacy = row("unknown", "legacy_android_mirror_off")
+        self.assertEqual(android_phone_consent([legacy], "p", allowed=True, switch_off=False), "on")
 
 
 class FixtureChecks:
@@ -451,6 +471,133 @@ class AdmissionChecks(FixtureChecks):
         await runtime().tick()
         self.assertEqual(self.q.bot.send_message.await_count, 1)
 
+    async def pwa_only(self, *, zone="Etc/UTC"):
+        """A Google/Apple iPhone PWA account: no Telegram, only the push switch."""
+        async with self.q.sessions.begin() as s:
+            await s.execute(update(User).where(User.id == 1).values(telegram_id=None))
+            await s.execute(update(SmartReminderPreference).values(master_enabled=None, timezone_name=zone))
+            s.add(DesktopDevice(id="iphone-pwa", user_id=1, platform="pwa", app_version="pwa",
+                installation_key_hash="iphone-pwa-fixture", last_seen_at=self.q.tick))
+            await s.flush()
+            s.add(DesktopSession(id="iphone-pwa-session", device_id="iphone-pwa",
+                refresh_token_hash="iphone-pwa-refresh", expires_at=self.q.tick + timedelta(days=30)))
+            sealed, endpoint_hash = self.sealed_subscription()
+            s.add(LearnerPwaPushSubscription(id=str(uuid4()), device_id="iphone-pwa", endpoint_hash=endpoint_hash,
+                encrypted_payload=sealed, created_at=self.q.tick, updated_at=self.q.tick))
+
+    async def test_pwa_only_account_is_admitted_and_served_once_by_web_push(self):
+        """D34: no Telegram link, the live push subscription is the signal."""
+        await self.pwa_only()
+        self.assertEqual(await self.admission().step(4), ("not_eligible",))  # Web Push sender off.
+        self.assertEqual(await self.admission(pwa_ready=True).step(4), ("held",))
+        self.assertEqual((await self.routing())["telegram_binding"],
+                         _pwa_binding(SmartReminderActor(1, "pwa", device_id="iphone-pwa")))
+        self.assertTrue(await self.veto())
+        async with self.q.sessions.begin() as s:
+            await s.execute(update(ROUTING).values(held_at=self.q.tick - LEGACY_DRAIN,
+                quiesced_at=self.q.tick - LEGACY_DRAIN))
+        self.assertEqual(await self.admission(pwa_ready=True).step(4), ("admitted",))
+        row = await self.routing()
+        self.assertEqual((row["state"], _utc(row["verified_until"])), ("pwa", self.q.tick + REVIEW_TTL))
+        self.assertEqual(await self.admission(pwa_ready=True).step(4), ("current",))
+        await open_rollout(self.q.sessions, self.q.tick)
+        config = ("private-key-test", "mailto:test@example.com", self.fernet)
+        pushes = AsyncMock(return_value=201)
+        def runtime():
+            return SmartReminderRuntime(self.q.settings, self.q.sessions, enabled=True, calibration=QA,
+                history_window=timedelta(days=30), coverage_reader=self.q.service.coverage_reader,
+                telegram_send=self.q.send, clock=lambda: self.q.tick, admission=True)
+        with patch("app.services.learner_pwa_push.sender_config", return_value=config), \
+                patch("app.services.smart_reminder_pwa.sender_config", return_value=config), \
+                patch("app.services.smart_reminder_pwa.send_webpush", pushes):
+            await runtime().tick()
+            self.q.tick = self.q.tick.replace(hour=14, minute=1)
+            results = await runtime().tick()
+            await runtime().tick()
+        self.assertIn("pwa_provider_accepted", [getattr(r, "reason", None) for r in results])
+        pushes.assert_awaited_once()
+        self.q.bot.send_message.assert_not_awaited()
+        attempt, = await self.q.rows(ATTEMPT)
+        self.assertEqual((attempt["channel"], attempt["device_id"], attempt["state"]),
+                         ("pwa", "iphone-pwa", "provider_accepted"))
+
+    async def test_pwa_only_zone_comes_from_the_device_offset_and_old_apk_or_switch_off_blocks(self):
+        await self.pwa_only(zone=None)
+        async with self.q.sessions.begin() as s:
+            await s.execute(update(CourseProgress).where(CourseProgress.user_id == 1).values(
+                reminder_enabled=False, reminder_tz_offset=3))
+        self.assertEqual(await self.admission(pwa_ready=True).step(4), ("held",))
+        pref = (await self.q.rows(SmartReminderPreference.__table__))[0]
+        self.assertEqual(pref["timezone_name"], "Etc/GMT-3")
+        mutation = (await self.q.rows(SmartReminderMutation.__table__))[-1]
+        self.assertEqual(mutation["actor_key"], "pwa:iphone-pwa")
+        async with self.q.sessions.begin() as s:
+            await s.execute(delete(ROUTING))
+            s.add(DesktopDevice(id="old-apk", user_id=1, platform="android", app_version="1.7.21",
+                installation_key_hash="old-apk-fixture", last_seen_at=self.q.tick))
+        self.assertEqual(await self.admission(pwa_ready=True).step(4), ("not_eligible",))
+        async with self.q.sessions.begin() as s:
+            await s.execute(delete(DesktopDevice).where(DesktopDevice.id == "old-apk"))
+            await s.execute(update(CourseMiniAppProfile).where(CourseMiniAppProfile.user_id == 1).values(
+                notifications_enabled=False))
+        self.assertEqual(await self.admission(pwa_ready=True).step(4), ("not_eligible",))
+        self.assertIsNone(await self.routing())
+
+    async def test_pwa_actor_reads_and_sets_zone_only_on_its_own_live_browser(self):
+        await self.pwa_only()
+        actor = SmartReminderActor(1, "pwa", device_id="iphone-pwa", session_id="iphone-pwa-session")
+        async with self.q.sessions.begin() as s:
+            pref = await SmartReminderPreferencesService(s).read(actor)
+            self.assertEqual(pref["channels"]["telegram"]["consent"], "on")
+            self.assertTrue(pwa_study_consent(pref))
+            with self.assertRaisesRegex(SmartReminderError, "smart_channel_unsupported"):
+                await SmartReminderPreferencesService(s).patch(actor, SmartReminderPatch(
+                    request_id=str(uuid4()), expected_revision=pref["revision"], study_enabled=False))
+        async with self.q.sessions.begin() as s:
+            await s.execute(update(DesktopSession).where(DesktopSession.id == "iphone-pwa-session").values(
+                expires_at=self.q.tick - timedelta(seconds=1)))
+        async with self.q.sessions.begin() as s:
+            with self.assertRaisesRegex(SmartReminderError, "smart_session_revoked"):
+                await SmartReminderPreferencesService(s).read(actor)
+        android = SmartReminderActor(1, "pwa", device_id="iphone-pwa", session_id="iphone-pwa-session")
+        async with self.q.sessions.begin() as s:
+            await s.execute(update(DesktopDevice).where(DesktopDevice.id == "iphone-pwa").values(platform="android"))
+            await s.execute(update(DesktopSession).values(expires_at=self.q.tick + timedelta(days=1)))
+        async with self.q.sessions.begin() as s:
+            with self.assertRaisesRegex(SmartReminderError, "pwa_device_required"):
+                await SmartReminderPreferencesService(s).read(android)
+
+    async def test_pwa_routing_state_migration_roundtrip_and_refusal(self):
+        import importlib.util as loader
+        spec = loader.spec_from_file_location("routing_pwa_0160",
+            Path(__file__).resolve().parents[1] / "alembic/versions/0160_smart_routing_pwa_state.py")
+        migration = loader.module_from_spec(spec)
+        spec.loader.exec_module(migration)
+        def migrate(sync, direction):
+            context = MigrationContext.configure(sync, opts={"target_metadata": Base.metadata})
+            with Operations.context(context):
+                getattr(migration, direction)()
+        row = dict(user_id=1, state="pwa", generation=1, preference_revision=2, grant_epoch=1,
+            telegram_binding="b" * 64, inventory_sha256="c" * 64, held_at=self.q.tick - timedelta(days=2),
+            verified_at=self.q.tick - timedelta(days=1), verified_until=self.q.tick + timedelta(days=1),
+            evidence_sha256="d" * 64)
+        async with self.q.engine.begin() as c:
+            await c.run_sync(migrate, "downgrade")
+        with self.assertRaises(Exception):
+            async with self.q.sessions.begin() as s:
+                await s.execute(insert(ROUTING).values(**row))
+        async with self.q.engine.begin() as c:
+            await c.run_sync(migrate, "upgrade")
+        async with self.q.sessions.begin() as s:
+            await s.execute(insert(ROUTING).values(**row))
+        with self.assertRaises(Exception):  # A PWA owner always carries its review.
+            async with self.q.sessions.begin() as s:
+                await s.execute(update(ROUTING).values(verified_at=None, verified_until=None, evidence_sha256=None))
+        with self.assertRaisesRegex(RuntimeError, "Remove PWA-owned"):
+            async with self.q.engine.begin() as c:
+                await c.run_sync(migrate, "downgrade")
+        self.assertEqual((await self.routing())["state"], "pwa")
+
     async def bot_only(self, *, enabled=True, offset=5):
         async with self.q.sessions.begin() as s:
             await s.execute(update(SmartReminderPreference).values(timezone_name=None))
@@ -468,14 +615,19 @@ class AdmissionChecks(FixtureChecks):
         self.assertEqual((await self.routing())["preference_revision"], 3)
         self.assertTrue(await self.veto())
 
-    async def test_no_legacy_reminder_or_an_invalid_offset_gets_no_derived_zone(self):
-        # A manual time lock always carries a zone (storage constraint).
+    async def test_old_reminder_off_is_no_off_but_an_invalid_offset_gets_no_derived_zone(self):
+        # D34: the old lesson reminder being off no longer blocks Smart, so a
+        # recently active bot-only learner gets the offset zone and a hold.
         await self.bot_only(enabled=False)
-        self.assertEqual(await self.admission().step(4), ())
-        await self.bot_only(offset=15)  # Out-of-range legacy value: no guess.
+        self.assertEqual(await self.admission().step(4), ("held",))
+        self.assertEqual((await self.q.rows(SmartReminderPreference.__table__))[0]["timezone_name"], "Etc/GMT-5")
+        async with self.q.sessions.begin() as s:
+            await s.execute(delete(ROUTING))
+        # A manual time lock always carries a zone (storage constraint).
+        await self.bot_only(enabled=False, offset=15)  # Out-of-range legacy value: no guess.
         self.assertEqual(await self.admission().step(4), ("not_eligible",))
         pref = (await self.q.rows(SmartReminderPreference.__table__))[0]
-        self.assertEqual((pref["timezone_name"], pref["revision"]), (None, 2))
+        self.assertEqual(pref["timezone_name"], None)
         self.assertIsNone(await self.routing())
 
     async def old_phone(self, seen_days_ago):
@@ -499,22 +651,40 @@ class AdmissionChecks(FixtureChecks):
                 await self.q.service._cohort(s, self.q.actor)
         self.assertEqual(await self.admission().step(4), ("not_eligible",))
 
-    async def test_missing_zone_consent_off_or_blocked_bot_is_never_held(self):
-        # No Smart zone and no legacy reminder to derive one from.
-        await self.bot_only(enabled=False)
-        self.assertEqual(await self.admission().step(4), ())
+    async def test_explicit_off_study_switch_off_or_blocked_bot_is_never_held(self):
+        # D34 keeps an explicit Smart OFF, the Mini App/PWA study switch OFF
+        # and a blocked bot; only the old lesson reminder no longer counts.
         async with self.q.sessions.begin() as s:
-            await s.execute(update(CourseProgress).values(reminder_enabled=True))
-        async with self.q.sessions.begin() as s:
-            await s.execute(update(SmartReminderPreference).values(timezone_name="Etc/UTC"))
             await s.execute(update(SmartReminderConsent).where(SmartReminderConsent.channel == "telegram")
-                .values(state="off"))
+                .values(state="off", source="user_intent", source_key="intent:telegram"))
         self.assertEqual(await self.admission().step(4), ("not_eligible",))
         async with self.q.sessions.begin() as s:
             await s.execute(update(SmartReminderConsent).values(state="on"))
+            await s.execute(update(CourseMiniAppProfile).where(CourseMiniAppProfile.user_id == 1).values(
+                notifications_enabled=False))
+        self.assertEqual(await self.admission().step(4), ("not_eligible",))
+        async with self.q.sessions.begin() as s:
+            await s.execute(update(CourseMiniAppProfile).values(notifications_enabled=True))
             await s.execute(update(User).where(User.id == 1).values(bot_blocked_at=self.q.tick))
         self.assertEqual(await self.admission().step(4), ("actor_unavailable",))
         self.assertIsNone(await self.routing())
+
+    async def test_default_on_reaches_only_recent_accounts_but_an_earlier_on_keeps_admission(self):
+        await self.bot_only(enabled=False)
+        async with self.q.sessions.begin() as s:
+            # No earlier ON: no master choice, the old reminder off, no explicit Smart ON.
+            await s.execute(update(SmartReminderPreference).values(master_enabled=None))
+            await s.execute(update(User).where(User.id == 1).values(
+                last_active_at=self.q.tick - ACTIVE_WINDOW - timedelta(days=1)))
+        self.assertEqual(await self.admission().step(4), ())  # Dormant, default only: no candidate.
+        async with self.q.sessions.begin() as s:
+            await s.execute(update(CourseProgress).where(CourseProgress.user_id == 1).values(reminder_enabled=True))
+        self.assertEqual(await self.admission().step(4), ("held",))  # Old reminder ON: as before D34.
+        async with self.q.sessions.begin() as s:
+            await s.execute(delete(ROUTING))
+            await s.execute(update(CourseProgress).where(CourseProgress.user_id == 1).values(reminder_enabled=False))
+            await s.execute(update(User).where(User.id == 1).values(last_active_at=self.q.tick - timedelta(days=29)))
+        self.assertEqual(await self.admission().step(4), ("held",))  # Active again: default ON joins.
 
     async def pending_job(self):
         day = self.q.tick.replace(hour=0, minute=0, second=0, microsecond=0)
@@ -564,7 +734,7 @@ class AdmissionChecks(FixtureChecks):
         await self.admitted()
         async with self.q.sessions.begin() as s:
             await s.execute(update(SmartReminderConsent).where(SmartReminderConsent.channel == "telegram")
-                .values(state="off"))
+                .values(state="off", source="user_intent", source_key="intent:telegram"))
         self.q.tick += REVIEW_TTL - timedelta(days=1)
         self.assertEqual(await self.admission().step(4), ("not_eligible",))
         self.assertEqual((await self.routing())["generation"], 1)
@@ -708,6 +878,52 @@ class AndroidAdmissionChecks:
         self.assertEqual((await self.q.rows(JOB))[0]["state"], "pending")
         self.assertIsNotNone(await self.native_admission(job_id))
         self.assertEqual(await self.admission().step(4), ("current",))
+
+    async def test_android_only_account_is_held_then_reviewed_once_the_phone_allows_notifications(self):
+        """D34: Google/Apple on Android; the phone's permission is the signal."""
+        async with self.q.sessions.begin() as s:
+            await s.execute(update(User).where(User.id == 1).values(telegram_id=None))
+            await s.execute(update(DesktopDevice).where(DesktopDevice.id == "device-1").values(app_version="1.7.29"))
+            await s.execute(delete(SmartReminderConsent).where(SmartReminderConsent.channel == "android"))
+            await s.execute(delete(SmartReminderCapability))  # The app has not reported yet.
+        phone = SmartReminderActor(1, "android", device_id="device-1", session_id="session-1",
+            access_expires_at=self.q.tick + timedelta(minutes=15))
+        async def read():
+            async with self.q.sessions.begin() as s:
+                return await SmartReminderPreferencesService(s).read(phone)
+        self.assertEqual((await read())["channels"]["android"]["this_device_consent"], "unknown")
+        self.assertEqual(await self.admission().step(4), ("held",))  # Pre-hold: no capability yet.
+        async with self.q.sessions() as s:
+            self.assertTrue((await SmartReminderAndroidService(s, clock=lambda: self.q.tick).mode(phone))[
+                "server_claim_required"])  # The app now reports and stops local posting.
+        self.assertEqual(await self.admission().step(4), ("not_eligible",))
+        async with self.q.sessions.begin() as s:
+            s.add(SmartReminderCapability(user_id=1, device_id="device-1", generation=1, protocol_version=1,
+                autonomous_study_disabled=True, study_notifications_allowed=False,
+                observed_at=self.q.tick - timedelta(seconds=1), expires_at=self.q.tick + timedelta(minutes=15)))
+            await s.execute(update(ROUTING).values(held_at=self.q.tick - LEGACY_DRAIN,
+                quiesced_at=self.q.tick - LEGACY_DRAIN))
+        self.assertEqual((await read())["channels"]["android"]["this_device_consent"], "unknown")
+        self.assertEqual(await self.admission().step(4), ("not_eligible",))  # Permission denied.
+        async with self.q.sessions.begin() as s:
+            await s.execute(update(SmartReminderCapability).values(study_notifications_allowed=True))
+        self.assertEqual((await read())["channels"]["android"]["this_device_consent"], "on")
+        self.assertEqual(await self.admission().step(4), ("admitted",))
+        row = dict((await self.q.rows(ROUTING))[0])
+        self.assertEqual((row["state"], row["generation"]), ("held", 2))
+        self.assertIsNotNone(row["verified_at"])
+        self.assertEqual([r for r in await self.q.rows(SmartReminderConsent.__table__)
+                          if r["channel"] == "android"], [])  # The default is read, never written.
+
+    async def test_explicit_phone_off_is_never_pre_held(self):
+        async with self.q.sessions.begin() as s:
+            await s.execute(update(User).where(User.id == 1).values(telegram_id=None))
+            await s.execute(update(DesktopDevice).where(DesktopDevice.id == "device-1").values(app_version="1.7.29"))
+            await s.execute(update(SmartReminderConsent).where(SmartReminderConsent.channel == "android").values(
+                state="off"))
+            await s.execute(delete(SmartReminderCapability))
+        self.assertEqual(await self.admission().step(4), ("not_eligible",))
+        self.assertEqual(await self.q.rows(ROUTING), [])
 
     async def test_second_device_without_the_smart_capability_excludes_the_account(self):
         async with self.q.sessions.begin() as s:

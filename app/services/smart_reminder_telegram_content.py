@@ -1,5 +1,6 @@
 """Dormant Smart content adapter; transport is injected only after authorization."""
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from pathlib import Path
 from string import Formatter
 from urllib.parse import parse_qs, urlencode, urlsplit
@@ -11,9 +12,8 @@ from sqlalchemy import select
 from app.bot.utils.course_miniapp import course_study_miniapp_url
 from app.db.models.user import User
 from app.services.notification_i18n import notification_message
-from app.services.notification_template_service import (
-    CAPTION_MAX, TEXT_MAX, KEY_SMART_STUDY, NotificationTemplateService,
-)
+from app.services.notification_template_service import CAPTION_MAX, TEXT_MAX, KEY_SMART_STUDY
+from app.services.smart_reminder_messages import smart_study_content
 from app.services.smart_reminder_preferences import SmartReminderError
 
 
@@ -28,9 +28,11 @@ class TelegramContent:
     markup: InlineKeyboardMarkup
     media_type: str = "none"
     media_path: str | None = None
+    content_key: str | None = None
+    streak: int = 0
 
 
-async def render_telegram_content(session, actor, job, *, open_proof=None):
+async def render_telegram_content(session, actor, job, *, open_proof=None, now=None):
     """Called after current target/access policy under the canonical User lock."""
     user = (await session.execute(select(User.language).where(
         User.id == actor.user_id, User.telegram_id == actor.telegram_id))).one_or_none()
@@ -40,18 +42,19 @@ async def render_telegram_content(session, actor, job, *, open_proof=None):
     lesson = job["lesson_order"]
     if type(lesson) is not int or lesson < 1:
         raise SmartReminderError("telegram_content_target_invalid", 409)
-    resolved = await NotificationTemplateService(session).resolve(KEY_SMART_STUDY, lang)
+    resolved = await smart_study_content(session, actor.user_id, job, lang,
+                                         now=now or datetime.now(timezone.utc))
     if resolved is None:
         raise SmartReminderError("telegram_template_disabled", 409)
     try:
-        for _, field, spec, conversion in Formatter().parse(resolved["text"]):
+        for _, field, spec, conversion in Formatter().parse(resolved.text):
             if field is not None and (field != "lesson" or spec or conversion):
                 raise ValueError("Unsafe template field")
-        text = resolved["text"].format(lesson=lesson)
+        text = resolved.text.format(lesson=lesson)
     except (KeyError, IndexError, ValueError):
         raise SmartReminderError("telegram_template_invalid", 409) from None
-    media_type = resolved.get("media_type") or "none"
-    media_path = resolved.get("media_path")
+    media_type = resolved.media_type
+    media_path = resolved.media_path
     if media_type not in {"none", "photo", "video"}:
         raise SmartReminderError("telegram_template_invalid", 409)
     if media_type != "none" and media_path:
@@ -78,7 +81,8 @@ async def render_telegram_content(session, actor, job, *, open_proof=None):
     markup = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(
         text=notification_message("reminder.continueLessonNumber", lang, lesson=lesson),
         web_app=WebAppInfo(url=url))]])
-    return TelegramContent(lang, text, lesson, markup, media_type, media_path)
+    return TelegramContent(lang, text, lesson, markup, media_type, media_path,
+                           resolved.content_key, resolved.streak)
 
 
 async def send_telegram_content(bot, envelope):

@@ -1,6 +1,7 @@
 """D25 ordinary rules with real persisted learning/readers; no live providers."""
 from dataclasses import asdict, replace
 from datetime import timedelta
+from fractions import Fraction
 from types import SimpleNamespace
 import unittest
 from unittest.mock import Mock, patch
@@ -42,7 +43,25 @@ class ProfileTests(unittest.TestCase):
             calibration=cadence.QA).reason, 'learning_coverage_unknown')
         self.assertEqual(set(asdict(OBSERVED_RULES)), set(asdict(cadence.QA)))
         self.assertEqual((OBSERVED_RULES.minimum_learning_days, OBSERVED_RULES.weekly_maximum,
-            OBSERVED_RULES.maximum_unsuccessful, OBSERVED_RULES.backoff_factor), (3, 3, 5, 2))
+            OBSERVED_RULES.maximum_unsuccessful, OBSERVED_RULES.backoff_factor), (3, 7, 5, 2))
+
+    def test_break_gets_a_reminder_every_day_without_automatic_stop(self):
+        # D32: a daily learner away for a month is invited back on every day.
+        studies = cadence.history((31, 32, 33, 34, 35))
+        for sent_days in range(30):
+            with self.subTest(sent_days=sent_days):
+                intents = tuple(cadence.intent(n, external=True, state='provider_accepted')
+                                for n in range(1, sent_days + 1))
+                d = evaluate_cadence(cadence.context(
+                    complete=False, observed_sources=True, studies=studies, intents=intents,
+                    history_since=cadence.NOW-timedelta(days=40)), calibration=OBSERVED_RULES)
+                self.assertEqual((d.reason, d.weekly_intents), ('shadow_candidate', min(sent_days, 6)))
+                self.assertIsNone(d.unsuccessful_count)
+
+    def test_break_reminders_wait_for_the_personal_gap(self):
+        twice_weekly = cadence.history((1, 4, 8, 11, 15))
+        d = self.decision(studies=twice_weekly)
+        self.assertEqual((d.reason, d.observed_gap_days), ('personal_cadence_cooldown', Fraction(7, 2)))
 
     def test_no_negative_history_or_failure_inference(self):
         d = self.decision(intents=(cadence.intent(3, external=True, state='unknown'),))
@@ -78,8 +97,10 @@ class ProfileTests(unittest.TestCase):
 
     def test_day_week_quiet_off_and_goal_guards_remain(self):
         self.assertEqual(self.decision(intents=(cadence.intent(0),)).reason, 'account_day_already_owned')
-        self.assertEqual(self.decision(intents=tuple(cadence.intent(n, external=True, state='unknown')
-            for n in (1,2,3))).reason, 'weekly_study_budget')
+        week = tuple(cadence.intent(n, external=True, state='unknown') for n in range(1, 7))
+        self.assertEqual(self.decision(intents=week).reason, 'shadow_candidate')  # D31: up to 7/week
+        self.assertEqual(evaluate_cadence(cadence.context(complete=False, observed_sources=True, intents=week),
+            calibration=replace(OBSERVED_RULES, weekly_maximum=6)).reason, 'weekly_study_budget')
         for changes, reason in (({'master_enabled':False}, 'master_off'),
                 ({'plan_completed':True}, 'plan_completed')):
             c = replace(cadence.context(complete=False, observed_sources=True),

@@ -60,7 +60,7 @@ The policy SHALL use verified study behavior to adapt reminder time and frequenc
 - **THEN** that open alone is neither a completed goal nor conclusive evidence that the reminder improved learning
 
 ### Requirement: Personal reactivation
-Reactivation SHALL reflect the account's normal study rhythm and offer a real accessible lightweight learning action. Without useful study return, successive reactivation attempts MUST become less frequent and ultimately stop; no universal 3/7/14-day sequence or invented lesson duration is allowed (D08).
+Reactivation SHALL reflect the account's normal study rhythm and offer a real accessible lightweight learning action. In native complete-coverage mode, attempts without useful study return MUST become less frequent and ultimately stop. Ordinary mode instead reminds daily during a break per D32 in `smart-reminder-messages`. No invented lesson duration is allowed (D08).
 
 #### Scenario: Different normal rhythms
 - **WHEN** a daily learner and a twice-weekly learner both have a three-day gap
@@ -154,7 +154,7 @@ V1 SHALL support Telegram bot delivery for the Mini App learner and compatible A
 - **THEN** it is not advertised as a deliverable V1 endpoint and does not block an otherwise valid Telegram/Android release
 
 ### Requirement: Safe localized content and experiment controls
-Study content and actions SHALL use canonical UZ/RU/TJ text, validated parameters and existing lesson/access routes. Experiment control accounts MUST receive no treatment study reminder, and the existing D1 recovery holdout MUST retain its assignment and suppression semantics (D01/D10).
+Study content and actions SHALL use canonical UZ/RU/TJ text (variants per `smart-reminder-messages`), validated parameters and existing lesson/access routes. Experiment control accounts MUST receive no treatment study reminder, and the existing D1 recovery holdout MUST retain its assignment and suppression semantics (D01/D10).
 
 #### Scenario: Language changes after inbox storage
 - **WHEN** a learner switches UZ/RU/TJ after an authorized reminder is stored
