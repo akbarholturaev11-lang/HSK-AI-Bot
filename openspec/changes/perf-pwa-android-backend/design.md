@@ -132,7 +132,9 @@ requirements. The audit was run on main `50231bee` on 2026-11-22.
 | Real-user timing | To do | No RUM in repo; requirement §7 |
 | Key action baselines: lesson open, exercise advance, search, swipe-back | To do | Not measured (above) |
 | Inbox loading and error states | To do | `iphone-pwa-notices.js`: text-only loading, error without retry |
-| Embedded-layer cover (Dictionary, Phrases) | To do | The cover stays until the full iframe `load` and hides the child's own skeleton; it has no Back and no error/retry, so a page that never loads leaves "Yuklanmoqda…" forever (decision 5) |
+| Embedded-layer cover (Dictionary, Phrases) | To do | The cover stays until the full iframe `load` and hides the child's own skeleton; it has no Back and no error/retry, so a page that never loads leaves "Yuklanmoqda…" forever. Owner rule: no loading text, a matching skeleton instead (decision 5) |
+| Launch path to the first frame | Measure, then to do | The first paint is already the shell skeleton, but four character scripts, the Telegram SDK and ten stylesheets block it on a cold launch (decision 13) |
+| Pull-to-refresh (Course, Rating, Profile) | To do | `iphone-pwa-refresh.js` reloads the whole page; no armed state at the threshold, no spinning ring, no region skeletons (decision 14) |
 | Telegram SDK in the PWA head | Measure | `telegram-web-app.js` (19 KB gzip, 120 KB raw) is parser-blocking in `<head>` on every PWA launch; 1.3 records its main-thread time before FCP |
 | Remaining layer back/scroll audit; root-tab drag peek | To do | Contract open item; owner report |
 | Panda vs skeleton (hubs show the panda; lesson entry has a 720 ms minimum) | To do | Owner decision below; code above |
@@ -171,8 +173,9 @@ Known = real text available before any request. Async = pending data.
 | PWA Profile | Mixed | Labels, settings | Rings, calendar, achievements | Per-region ✔ |
 | PWA Settings | Form | All labels | Push status | Pending/error/retry ✔ |
 | PWA Inbox | Rows | Header, close | Notices | Text only ✘, no retry ✘ |
-| PWA Dictionary | Virtual rows | Header, search | Word list (bundled) | Parent text cover until full `load`, no Back/retry ✘ (2.4) |
+| PWA Dictionary | Virtual rows | Header, search | Word list (bundled) | Parent text cover until full `load`, then an empty list; no Back/retry ✘ (2.4) |
 | PWA Phrases | Rows | Header, search, tabs | Categories | Parent text cover until full `load`, then own skeleton; no Back/retry ✘ (2.4) |
+| PWA pull-to-refresh | Root tabs | Header, nav | The tab's data | Full page reload, ring vanishes ✘ (2.10) |
 | PWA Test centre hub | Card list | Header, title | Exams, results | Empty `#ex-list` behind the panda ✘ |
 | PWA Mistakes centre hub | Rows | Header, title, tabs | Mistake targets (paged) | Empty, then spinner + text, behind the panda ✘ |
 | PWA session start: Recognition, Pronunciation, Memorize (on open), Test exam, Mistakes review | Exercise | Frame | Session items | Panda at once, even when fast (owner: only if slow) |
@@ -242,39 +245,68 @@ Known = real text available before any request. Async = pending data.
      retry labelled with the reviewed `courseLoadError.btn` (UZ/RU/TJ). No
      new copy.
    - Owner-switch checks stay as they are.
-5. **Embedded layers reveal at the child's first paint, with Back and
-   Retry.**
+5. **Embedded layers: a matching skeleton, never a loading text, with Back
+   and Retry (owner rule, 2026-11-22).**
    - **Defect, found in code:** `RESOURCE.ensure` covers Dictionary and
      Phrases with an opaque "Yuklanmoqda…" status until the iframe's `load`
      event. That event waits for every subresource, so the child's own header
      and skeleton paint underneath and stay hidden. The status has no Back
      button and no error state. If the page never loads, the text stays
      forever and only an edge swipe leaves.
+   - **Owner rule:** these layers show no "Yuklanmoqda…" or any other
+     loading text. The skeleton itself tells the learner the page is
+     loading.
    - **Fix (PWA path, `PWA_COURSE_HOST`):**
-     - The child page signals its first paint through the existing
+     - **Before the child paints,** the parent's cover is a skeleton of that
+       layer:
+       - the real localized title (`resourceLabel(k)`) and a working Back
+         icon, at the positions of the child's own header controls;
+       - bars shaped like the child's first viewport: search field and rows
+         for Dictionary, tabs and rows for Phrases, exam cards for the Test
+         centre, target rows for the Mistakes centre;
+       - no other visible text. The screen-reader status keeps the existing
+         `state.loading` label, which is not visible.
+     - The title, Back and paper background are there at once. The bars
+       appear after a 150 ms anti-flash window, so a fast open never flashes
+       them. The 1.3 warm-open filmstrip confirms that window.
+     - **The child's first paint is the same skeleton,** so the handoff is
+       invisible:
+       - `hsk-lugat.html` gains static row placeholders in `#list`, under
+         `html.hsk-pwa-browser` only. Today the list is empty until the data
+         renders.
+       - Phrases already has `.phrase-skeleton`.
+       - The Test and Mistakes hubs get theirs in 2.8.
+     - **One geometry source:** each parent skeleton is drawn from a small
+       table of the child's own measurements (header height, field, row
+       height and gap), not from a free copy of its markup.
+       - A Chromium/WebKit test at 320, 390 and 430 px compares the parent
+         skeleton with the child's skeleton. The header and the first three
+         rows must agree within 2 px.
+       - If a child's layout changes, that test fails until the table
+         follows.
+       - This replaces the earlier rejection of a duplicated skeleton. The
+         owner rule needs a skeleton before the child exists, and the test
+         removes the drift risk.
+     - **Reveal:** the child signals its first paint through the existing
        same-origin parent call pattern, as the practice boot does with
-       `revealPracticeFrame`. The parent removes the cover then; `load`
+       `revealPracticeFrame`. The parent removes its skeleton then; `load`
        stays as the fallback.
-     - The status text appears only after 300 ms without that signal
-       (anti-flash).
-     - The status gains a Back button, with the same `action.back` control
-       as the practice entry.
-     - After 20 s without the signal, it shows `courseLoadError.body` with
-       Retry (`courseLoadError.btn`, which reloads the frame) and Back. The
-       timeout is the same as the practice boot's. No new copy.
-   - **First useful frame:** for an embedded layer this is the child's
-     first paint. Before it, the parent shows paper and a working Back
-     control (loading-states spec).
-   - The same rule covers the Test and Mistakes hubs once they stop using the
-     panda (decision 9).
+     - **Error:** after 20 s without the signal, the skeleton gives way to
+       `courseLoadError.body` with Retry (`courseLoadError.btn`, which
+       reloads the frame) and Back.
+       - This is the only text the cover can show, and it reports an error,
+         not loading.
+       - The timeout is the same as the practice boot's. No new copy.
+   - **First useful frame (for targets, decision 12):** still the child's
+     first paint. The parent skeleton covers the wait but does not count as
+     the layer being open.
+   - The same rule covers the Test and Mistakes hubs (decision 9).
    - Telegram keeps its pre-warm and its current cover (non-goals).
-   - **Rejected for now:**
-     - Pre-warming the iframe in the PWA. It costs memory and bytes on every
-       launch. Reopen only if 1.3 shows that the child's first paint on
-       warm WebKit opens commonly exceeds 300 ms. Then measure the memory
-       cost and bring it to the owner.
-     - Duplicating the child's skeleton in the parent. Two copies of the
-       geometry drift apart.
+   - **Rejected for now:** pre-warming the iframe in the PWA.
+     - It costs memory and bytes on every launch.
+     - Reopen only if 1.3 shows that the child's first paint on warm WebKit
+       opens commonly exceeds 300 ms. Then measure the memory cost and bring
+       it to the owner.
 6. **Root-tab drag: a live peek of the back destination (owner choice a).**
    - The peek shows the screen that back will open: the top of
      `SCREEN_HISTORY`, or Course when it is empty. Showing Course and then
@@ -430,20 +462,147 @@ Known = real text available before any request. Async = pending data.
     - **Openings** (first open of a layer, lesson open, session start,
       lesson finish → result): action to first useful frame ≤1000 ms on a
       warm open.
-    - **Launch:** a warm launch keeps its baseline. A cold launch is judged
-      by real users, not by the harsher lab: if the 1.4 p75 LCP exceeds
-      2.5 s, the cold-path items marked "Unnecessary now" are reopened with
-      that evidence.
+    - **Launch:** a warm launch keeps its baseline. A cold launch reaches
+      the shell skeleton within 1500 ms on both lab engines (decision 13).
+      Real users judge the rest: if the 1.4 p75 LCP exceeds 2.5 s, the
+      cold-path items marked "Unnecessary now" are reopened with that
+      evidence.
+    - **Pull-to-refresh:** release to the first skeleton frame is an
+      interaction (≤200 ms). Release to settled content keeps the 1.3
+      baseline of today's full reload, or improves on it.
     - **An action already inside its bound** has the target "no regression
       beyond 10%".
     - **An action outside its bound** has the bound as its target. The
       task that owns the action fixes it: 2.4 or 2.8 for layers and
-      sessions, 2.7 for the lesson, 2.3 for Inbox.
+      sessions, 2.7 for the lesson, 2.3 for Inbox, 2.9 for launch, 2.10
+      for pull-to-refresh.
     - **Exception:** if the bound cannot be reached because the cause is
       outside the app (network or provider), it is recorded with the
       evidence and approved by the owner, as for the 8 px geometry rule.
     - **Every PWA package** must also add no new console or page error in
       the lab run for the actions it touches (§7, route and browser errors).
+
+13. **Launch: the first frame is the skeleton, and the path to it is short
+    (owner, 2026-11-22).**
+    - **Today, in code:**
+      - On the PWA route the first page paint is already the
+        layout-faithful shell: `.pwa-initial-shell` in each root tab, the
+        real nav labels and the pulsing path skeleton. The shell starts about
+        37 KB (gzip) into the 244 KB document. The Telegram launch splash is
+        removed at once on this route, and `#s-course>.loading` ("…") is
+        hidden.
+      - Before that paint, iOS shows its launch image (logo on paper,
+        `/assets/startup/`) and Android shows the manifest splash.
+      - Parser-blocking in `<head>` before the shell:
+        - `telegram-web-app.js`;
+        - four character scripts: `hsk-character-pack.js`,
+          `hsk-character-motion.js`, `hsk-study-preparing.js`,
+          `hsk-lesson-presentation.js`;
+        - ten stylesheets.
+
+        Warm launches read them from the service-worker cache; cold
+        launches fetch them.
+      - Lab (1.1): warm FCP ≈0.3 s and course ready ≈0.7 s. Cold FCP
+        1.24 s (Chromium) and 2.18 s (WebKit), course ready ≈3.6 s.
+    - **Rule:** from the first page paint until the course is ready, the
+      learner sees the shell skeleton pulsing (static under reduced motion).
+      Never a blank page, "…" or a spinner. A failed map keeps the existing
+      `courseLoadError` with retry. A test with a held map request locks this
+      on both engines.
+    - **Faster first frame:**
+      - 1.3 measures what each parser-blocking resource costs the cold first
+        frame.
+      - A resource the shell does not need, costing at least 100 ms on
+        either engine, moves off the PWA first-frame path in 2.9. On the PWA
+        route it loads after the first paint; Telegram keeps today's order.
+      - The character scripts are needed only at session starts, so they
+        are the first candidates. Before a move, every call site must be
+        shown not to run before the script arrives.
+    - **Target (decision 12):** cold time to the shell ≤1500 ms on both lab
+      engines.
+      - Chromium (1238 ms) is already inside: no regression beyond 10%.
+      - WebKit (2178 ms) must reach 1500 ms, or carry an owner-approved
+        exception with the evidence.
+      - A warm launch keeps its baseline.
+    - **Not in this change:** serving the course HTML from the service
+      worker on a slow network.
+      - It would let the shell appear before the server answers.
+      - But it reverses the documented rule that HTML always goes to the
+        network, and it could open an old version.
+      - Reopened only if 1.4 shows a real-user p75 response start above
+        1000 ms. The owner then decides with that data.
+14. **Pull-to-refresh: a spinning ring, skeleton regions and one exact
+    threshold (owner, 2026-11-22).**
+    - **Today, in code (`iphone-pwa-refresh.js`, PWA course route only):**
+      - It covers the Course, Rating and Profile tabs.
+      - A pull starts only at the top of the page, with no scrolled
+        ancestor. It is blocked while a flow, sheet, paywall, layer or the
+        splash is open.
+      - A 34 px circle with the `ti-refresh` icon follows the finger at 0.6×
+        (at most 120 px) and turns with it. Nothing marks the threshold,
+        which is 84 px of circle travel, or 140 px of finger travel.
+      - Released past the threshold, the whole page reloads
+        (`location.replace`). The ring vanishes at unload and the page is
+        rebuilt from its first frame.
+      - That reload is also how a learner whose PWA stays in memory picks
+        up a newly deployed version.
+    - **Exact threshold:** one constant, 140 px of finger travel (today's
+      value; it can be tuned once in the 5.1 device QA).
+      - While pulling, an arc around the icon fills in proportion to the
+        distance.
+      - At exactly the threshold the arc closes and the ring takes the
+        accent colour: "release to refresh". No extra animation.
+      - Pulling back short of the threshold un-arms it. Releasing un-armed
+        springs back with no request.
+    - **Released armed:** the ring stays where it armed and spins (one turn
+      per 0.8 s) until every refreshed region has settled, then fades out.
+      - Minimum visible time is 600 ms, so even a fast refresh reads as a
+        refresh.
+      - The maximum is the regions' own deadlines (10 s for the map).
+    - **Regions become skeletons in place.** Regions whose data is
+      re-requested switch to their existing placeholders. The header, tab
+      title, bell, settings and nav stay real and usable.
+      - **Course:** `refreshCourseProgress()`. The course body below the
+        header shows the `.pwa-initial-shell` body, taken once at boot from
+        the page's own initial shell. There is no second copy of it.
+      - **Rating:** the active sub-tab's request, shown with
+        `ratingLoadingHtml()` (`PWA_RATING_SKELETON_BODY` or
+        `PWA_FRIENDS_SKELETON_BODY`).
+      - **Profile:** the course map, and `loadProfileDetail()` forced past
+        its 30 s guard. The accuracy rings and the map-driven sections show
+        their existing placeholders. The name and avatar stay real, because
+        they are known locally.
+    - **Settle:**
+      - Success replaces each region's skeleton with the new content.
+      - The tab stays at the top, where the pull started. `renderCourse()`
+        does not scroll; only `App.show` scrolls Course to the current
+        lesson, and a refresh does not call it.
+      - Failure or timeout puts back the previous verified content
+        unchanged, with one toast: `courseLoadError.body` (reviewed
+        UZ/RU/TJ). No new copy.
+    - **A new version still arrives:**
+      - In parallel, the page revalidates its own HTML (`cache:
+        "no-cache"`, the URL the reload would use). It compares the
+        response's `Last-Modified` with `document.lastModified`.
+      - If the server copy is newer, the page reloads as today, and the ring
+        keeps spinning until the page leaves.
+      - If it is equal, or the check fails, nothing more happens. It is one
+        conditional request, normally a 304.
+    - **Dedupe and scope:**
+      - Another pull while refreshing is ignored.
+      - Leaving the tab hides the ring; its regions still settle.
+      - PWA only. The Telegram Mini App has no pull-to-refresh and is
+        unchanged.
+      - Reduced motion: no spin, a static full ring and static skeletons.
+    - **Disclosed exception:** the 600 ms minimum is the one place a fast
+      response shows placeholders. The refresh is the learner's own
+      request, so the anti-flash rule does not apply to it (loading-states
+      spec).
+    - **Rejected:**
+      - Keeping the full reload: it rebuilds the whole page and the ring
+        vanishes at unload.
+      - A new refresh component: the existing script and the tabs' own
+        loaders are enough.
 
 ### Condition matrix (§7)
 
@@ -527,6 +686,18 @@ The draft was challenged item by item:
   lab (1.2) records how often the panda appears before and after.
 - [A hub skeleton changes Telegram] → It is gated by
   `html.hsk-pwa-practice`, and the Mini App smoke tests run.
+- [The parent layer skeleton drifts from the child's skeleton, so rows jump
+  at the handoff] → The 2.4 geometry test (2 px at 320, 390 and 430 px) fails
+  until the measurement table follows the child.
+- [Moving a character script off the first-frame path breaks a session start
+  or Telegram] → 2.9 moves a script only after its call sites are shown not
+  to run earlier. It is PWA-only, and the lesson, practice and Mini App smoke
+  tests run on both engines.
+- [In-place refresh stops new versions from reaching learners whose PWA stays
+  in memory] → The `Last-Modified` check reloads when the HTML is newer. An
+  e2e test changes the fixture's HTML date and expects the reload.
+- [A refresh failure wipes good content] → Failure restores the previous
+  verified content; a held-then-failed request test covers each tab.
 
 ## Migration Plan
 
@@ -599,6 +770,14 @@ The draft was challenged item by item:
 
       The new keys go into the canonical i18n catalog with all three
       languages, and the i18n baseline guard passes.
+
+- **Three requirements added by the owner after the copy was accepted:**
+  - Dictionary and Phrases (and the hubs) show no loading text at all: a
+    skeleton instead (decision 5).
+  - The PWA opens fast, and a slow open shows the skeleton so the learner
+    feels it loading (decision 13).
+  - Pull-to-refresh: a spinning 🔄 ring, the refreshed regions as
+    skeletons, and one exact distance that arms the refresh (decision 14).
 
 ## Open questions
 

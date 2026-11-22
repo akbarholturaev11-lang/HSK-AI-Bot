@@ -59,8 +59,10 @@ Authoritative sources, not restated here:
    - **Today:** the parent's "Yuklanmoqda…" cover hides the child's own
      skeleton until the full iframe load. The cover has no Back and no
      error, so a page that never loads stays on that text.
-   - **Fix:** reveal at the child's first paint, delay the text 300 ms, and
-     add Back and, after 20 s, Retry using existing reviewed copy.
+   - **Fix (owner rule: no loading text):** until the child paints, the
+     parent shows the layer's title, Back and a skeleton matching the
+     child's own skeleton. The child is revealed at its first paint. After
+     20 s, an error with Retry uses existing reviewed copy.
 5. Root-tab drag: a live peek of the back destination (owner choice a),
    behind a performance gate.
 6. Panda only when a session start is slow (over 300 ms). The Test and
@@ -71,6 +73,14 @@ Authoritative sources, not restated here:
    matrix. During an active lesson, test exam or Mistakes review, the swipe
    does not drag and opens an exit confirmation (owner decision). The test
    and the review get new UZ/RU/TJ copy that promises no resume.
+8. Launch (owner): the first frame stays the course skeleton until the
+   course is ready. Parser-blocking resources the skeleton does not need,
+   measured in 1.3, move off the PWA first-frame path. Cold launch target:
+   ≤1500 ms to the skeleton on both lab engines.
+9. Pull-to-refresh (owner): one exact distance arms it, a 🔄 ring spins
+   until the data settles, and the refreshed regions show their skeletons in
+   place instead of a full page reload. A changed HTML still reloads once,
+   so new versions keep arriving.
 
 **To do, Android (same initiative, same regression matrix):**
 - Startup baseline and `reportFullyDrawn`, with memory and network bytes,
@@ -127,6 +137,7 @@ only by the evidence named in design.md.
   - `app/static/course-v3.html`, `app/static/hsk-lugat.html`,
     `app/static/hsk-gaplar.html`;
   - `app/static/course_v3_data/iphone-pwa-notices.js` (Inbox);
+  - `app/static/course_v3_data/iphone-pwa-refresh.js` (pull-to-refresh);
   - the practice pages under `/iphone-pwa/practice/*`, especially
     `course_v3_test.html` and `course_v3_mistakes.html`;
   - `app/static/course_v3_data/iphone-pwa-practice-boot.js`;

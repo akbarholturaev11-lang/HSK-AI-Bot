@@ -56,11 +56,13 @@ measured as already fast are left unchanged.
 ### Requirement: Key learner actions have measured baselines and targets
 Each of these actions MUST have a recorded lab baseline and a target, measured
 as action-to-first-useful-response on the fixed lab profile:
+- launch to the course shell;
 - screen navigation;
 - opening a lesson;
 - advancing an exercise;
 - dictionary search;
-- swipe-back.
+- swipe-back;
+- pull-to-refresh.
 
 Each target derives from its own baseline, not one global threshold. A change
 that touches an action reports that action's before and after numbers.
@@ -78,13 +80,18 @@ An action inside its type bound MUST NOT regress by more than 10%. An action
 outside it MUST reach the bound, or carry a documented, evidence-backed
 exception approved by the owner:
 - ≤200 ms to next paint for interactions;
-- ≤1000 ms to first useful frame for warm openings.
+- ≤1000 ms to first useful frame for warm openings;
+- ≤1500 ms to the course shell for a cold launch on the lab profile.
 
 A change MUST add no new console or page error for the actions it touches.
 
 #### Scenario: A fast action stays fast
 - **WHEN** a change touches a tab switch whose baseline is 150 ms
 - **THEN** its after number is at most 165 ms
+
+#### Scenario: A cold launch on WebKit
+- **WHEN** a change targets the cold launch, whose WebKit lab time to the shell is about 2.2 s
+- **THEN** it is accepted only when that time reaches 1500 ms or less, or when an owner-approved exception records the cause
 
 #### Scenario: A slow opening must reach its bound
 - **WHEN** a layer's warm first open measures 1400 ms before a change that targets it

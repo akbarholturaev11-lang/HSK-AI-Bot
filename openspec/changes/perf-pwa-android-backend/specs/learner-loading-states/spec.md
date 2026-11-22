@@ -31,24 +31,73 @@ is not an acceptable loading state on either platform.
 A response that arrives before a placeholder would be noticeable MUST replace
 its slot directly, without a visible placeholder flash. Reserved geometry is
 still present from the first frame. Any anti-flash delay applies only to the
-look of pending-data bars, never to the shell or reserved slots.
+look of pending-data bars, never to the shell or reserved slots. A refresh the
+learner asks for is exempt (pull-to-refresh).
 
 #### Scenario: Cached layer opens instantly
 - **WHEN** an embedded layer's page and data are already cached and paint within the anti-flash window
 - **THEN** no loading text or placeholder bar is visible before the real content
 
-### Requirement: An embedded layer shows at its own first paint
-A PWA layer embedded as its own page MUST become visible at that page's first
-paint. Until then the host shows its background and a working Back control,
-and a localized status only after the anti-flash window.
+### Requirement: An embedded layer shows a matching skeleton, never a loading text
+Until a PWA layer embedded as its own page paints, the host MUST show that
+layer's real title, a working Back control and bars shaped like the layer's
+first viewport. It MUST NOT show a loading text. The layer becomes visible at
+its own first paint, which is the same skeleton. This covers Dictionary,
+Ready Phrases and the Test and Mistakes centres.
 
-#### Scenario: Embedded layer is revealed at its first paint
-- **WHEN** the Dictionary or Ready Phrases page in the PWA paints its header and skeleton before all of its resources have loaded
-- **THEN** that painted page is visible at once, not hidden behind the host's loading text
+#### Scenario: Embedded layer is slow to paint
+- **WHEN** the learner opens Dictionary in the PWA and its page has not painted yet
+- **THEN** the title, Back and row-shaped bars are visible, no "Yuklanmoqda…" or other loading text appears, and Back closes the layer
+
+#### Scenario: Handoff from host to layer
+- **WHEN** the embedded page paints its own skeleton
+- **THEN** it replaces the host's skeleton at once, and the header and first three rows move by at most 2 px at 320, 390 and 430 px
 
 #### Scenario: Embedded layer never loads
 - **WHEN** an embedded layer's page has not painted after its timeout
 - **THEN** the host shows the existing localized connection error with Retry and Back, and Retry loads the page again
+
+### Requirement: Launch shows the course skeleton from its first frame
+On a PWA launch, the first page paint MUST be the layout-faithful course
+shell: real navigation and the path skeleton. It stays until the course is
+ready. A blank page, "…" or a spinner MUST NOT appear between them. A failed
+course map shows the existing error with retry.
+
+#### Scenario: Course map is slow at launch
+- **WHEN** the learner launches the PWA and the course map request is held
+- **THEN** every frame from the first paint until the course is ready shows the nav and the pulsing path skeleton
+
+### Requirement: Pull-to-refresh arms at one exact distance
+On the PWA Course, Rating and Profile tabs, a pull from the top MUST arm the
+refresh at exactly one finger distance, shown by the ring closing and taking
+the accent colour. A release short of it MUST NOT send a request. No pull
+starts while a flow, sheet, paywall or layer is open.
+
+#### Scenario: Release before the threshold
+- **WHEN** the learner pulls down 139 px from the top of the Course tab and releases
+- **THEN** the ring springs back and no request is sent
+
+#### Scenario: Release at the threshold
+- **WHEN** the learner pulls down 140 px and releases
+- **THEN** the ring shows the armed state before release, and the refresh starts on release
+
+### Requirement: Pull-to-refresh shows a spinning ring and skeleton regions
+After an armed release, the ring MUST spin until every refreshed region has
+settled, for at least 600 ms. Each refreshed region shows its existing
+placeholders in place; header and nav stay real. Success shows the new data.
+Failure restores the previous content with an existing localized notice.
+
+#### Scenario: Refresh on the Rating tab
+- **WHEN** the learner releases an armed pull on Rating and the request is held
+- **THEN** the ring spins, the leaderboard shows its skeleton, and the header and nav stay real and usable
+
+#### Scenario: Refresh fails
+- **WHEN** the refresh request fails or times out
+- **THEN** the previous content returns unchanged and one localized connection notice appears
+
+#### Scenario: A new version was deployed
+- **WHEN** the course HTML on the server is newer than the open page during a refresh
+- **THEN** the page reloads once, keeping the ring spinning until it leaves
 
 ### Requirement: Loading, empty, error and retry are distinct and local
 Each independently loaded region MUST have separate loading, empty, error and

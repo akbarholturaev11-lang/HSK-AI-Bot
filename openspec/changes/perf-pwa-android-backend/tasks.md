@@ -46,6 +46,14 @@ identity.
   Rating filmstrip.
   - Cold and warm launch, with the LCP element named per engine and the time
     until the Tabler icons are visible.
+  - For the cold launch, what each parser-blocking `<head>` resource costs
+    the first frame: the Telegram SDK, the four character scripts and the
+    stylesheets (design decision 13). With a held map request, the
+    filmstrip from the first paint to course ready must show the shell
+    skeleton, never a blank or "…" frame.
+  - Today's pull-to-refresh on Course, Rating and Profile: release to the
+    first new frame, and release to settled content (the before numbers for
+    2.10).
   - Login and onboarding first paint.
   - Tab switches.
   - First open of each layer: Dictionary, Phrases, five practice pages, the
@@ -61,7 +69,8 @@ identity.
   - Swipe-back, from a layer and from a root tab.
   - Lesson open, exercise advance, and lesson finish → result.
   - Session starts: Test exam and Mistakes review.
-  - For Dictionary and Phrases: when the child first paints, and when the
+  - For Dictionary and Phrases: when the child first paints, whether that
+    first paint shows content, a skeleton or an empty list, and when the
     parent cover is removed.
   - The main-thread time of `telegram-web-app.js` before FCP, cold and warm.
     If it exceeds 50 ms on Chromium 4×, that is evidence for a follow-up to
@@ -113,22 +122,33 @@ identity.
   - a Chromium/WebKit geometry check at 320, 390 and 430 px shows ≤8 px;
   - the i18n guard passes;
   - lab Inbox open before/after from 1.1.
-- [ ] 2.4 Embedded layers (Dictionary, Phrases) reveal at the child's first
-  paint, with Back and Retry (design decision 5; PWA path only).
+- [ ] 2.4 Embedded layers (Dictionary, Phrases): a matching skeleton, never a
+  loading text, with Back and Retry (design decision 5, owner rule; PWA path
+  only).
+  - Before the child paints, the parent cover shows the real title, a working
+    Back icon and, after 150 ms, bars shaped like the child's first viewport.
+    It shows no "Yuklanmoqda…" or other loading text.
+  - Each parent skeleton is drawn from a small table of the child's own
+    measurements.
+  - `hsk-lugat.html` gains static row placeholders in `#list` under
+    `html.hsk-pwa-browser`, so its first paint is the same skeleton.
+    Phrases keeps its `.phrase-skeleton`.
   - `hsk-lugat.html` and `hsk-gaplar.html` signal their first paint to the
-    parent. The parent removes the cover then, with `load` as the fallback.
-  - The "Yuklanmoqda…" text appears only after 300 ms without the signal.
-  - The cover gains a Back button (`action.back`).
-  - After 20 s it shows `courseLoadError.body` with Retry and Back. Retry
-    reloads the frame.
-  - The Test and Mistakes hubs use the same reveal through the practice boot
+    parent. The parent removes its skeleton then, with `load` as the
+    fallback.
+  - After 20 s without the signal, the skeleton gives way to
+    `courseLoadError.body` with Retry and Back. Retry reloads the frame.
+  - The Test and Mistakes hubs use the same cover through the practice boot
     (2.8).
 
   Verify, on Chromium and WebKit:
-  - a fast child page paints with no "Yuklanmoqda…" frame;
-  - a held child page shows the text after 300 ms with a working Back;
+  - no frame of any open shows a loading text, fast, held or failing;
+  - a held child page shows the title, Back and the skeleton bars, and Back
+    works;
+  - the parent and child skeletons agree within 2 px for the header and the
+    first three rows at 320, 390 and 430 px;
+  - a fast child page shows no skeleton-bar flash;
   - a never-loading page shows the error after 20 s, and Retry recovers;
-  - the child's header and first row are visible as soon as it paints;
   - `test_pwa_swipe_back.py` still passes, the i18n guard passes, and the
     lab before/after from 1.3 is recorded;
   - Telegram is unchanged (`test_miniapp_smoke.py`).
@@ -209,6 +229,8 @@ identity.
       layout-faithful skeletons in the child page, under
       `html.hsk-pwa-practice` only.
     - The boot reveals the frame at the child's first paint.
+    - Until then, the parent entry is the decision-5 skeleton (title, Back,
+      exam-card or target-row bars), with no loading text and no panda.
     - The Mistakes spinner and text become row placeholders on first load and
       on category change.
   - **Errors:** the 20 s boot fallback gains Retry, using
@@ -226,12 +248,65 @@ identity.
     lesson entry still shows the panda;
   - the i18n guard passes, and the lab before/after from 1.2 is recorded.
 
-- [ ] 2.9 PWA condition matrix (design.md, §7).
+- [ ] 2.9 Launch: a shorter path to the first frame (design decision 13).
+  - Move off the PWA first-frame path only the `<head>` resources that 1.3
+    shows cost at least 100 ms of the cold first frame and the shell does
+    not need. The character scripts are the first candidates.
+  - Before a move, show that none of the resource's call sites run before
+    it arrives.
+  - On the PWA route the resource loads after the first paint. Telegram
+    keeps today's order.
+  - If 1.3 shows no such resource, record that and close the task without a
+    code change.
+
+  Verify, on Chromium and WebKit:
+  - a held map request shows the shell skeleton from the first paint until
+    course ready, with no blank or "…" frame;
+  - cold time to the shell ≤1500 ms on both engines, or the owner-approved
+    exception is recorded; a warm launch is within 10% of its baseline;
+  - the lesson entry and the five practice starts still work (the 1.2
+    flows);
+  - Telegram is unchanged (`test_miniapp_smoke.py`), and the lab
+    before/after is recorded.
+- [ ] 2.10 Pull-to-refresh: a spinning ring, region skeletons and one exact
+  threshold (design decision 14), in `iphone-pwa-refresh.js` and the tabs'
+  existing loaders.
+  - The threshold is one constant: 140 px of finger travel. The arc fills
+    with the distance, closes and takes the accent colour at exactly the
+    threshold, and un-arms if pulled back short of it.
+  - A release short of the threshold springs back with no request.
+  - A release past it keeps the ring spinning until every refreshed region
+    settles, for at least 600 ms.
+  - Refreshed regions show their existing placeholders in place:
+    - Course: the initial shell body;
+    - Rating: the active sub-tab's skeleton;
+    - Profile: the rings and the map-driven sections.
+
+    The header, bell, settings and nav stay real.
+  - Failure or timeout restores the previous content, with one
+    `courseLoadError.body` toast.
+  - The `Last-Modified` check reloads the page when the HTML is newer.
+  - Another pull while busy is ignored. Reduced motion: no spin.
+
+  Verify, on Chromium and WebKit, with held and failing requests:
+  - a pull to 139 px does nothing, and a pull to 140 px arms;
+  - after release, the ring spins and each tab's regions show skeletons
+    within one frame, then settle with anchors moving ≤8 px;
+  - a failure puts the old content back and shows the toast;
+  - the tab stays at the top after the refresh;
+  - a newer fixture HTML date causes exactly one reload, and an equal one
+    none;
+  - no refresh starts over a flow, sheet, paywall or layer;
+  - release to first skeleton frame ≤200 ms, and release to settled content
+    within the 1.3 baseline;
+  - the i18n guard passes.
+- [ ] 2.11 PWA condition matrix (design.md, §7). It runs last in group 2.
   - For every PWA cell marked ✔, run the named test once on this branch and
     record it.
   - For every PWA cell pointing at a task, confirm that task's verification
     covers it.
-  - No new test is added outside 2.3, 2.4, 2.5, 2.6 and 2.8.
+  - No new test is added outside 2.3, 2.4, 2.5, 2.6, 2.8, 2.9
+    and 2.10.
 
   Verify: the matrix in the contract doc shows each PWA cell with a test
   name or the task that owns it.
@@ -401,14 +476,22 @@ identity.
   Mistakes centres open with skeletons. During a lesson, a test or a Mistakes
   review, a swipe does not drag and asks for confirmation first. Inbox shows
   rows, then the feed, or an
-  error with a working retry. The Android dictionary returns to the same row.
+  error with a working retry. Dictionary and Phrases never show a loading
+  text, only their skeleton. A launch on a slow network shows the skeleton
+  until the course is ready. Pull-to-refresh arms at a clear point, the ring
+  spins and the regions show skeletons until the new content lands. The
+  Android dictionary returns to the same row.
   Record the result in the contract doc.
 - [x] 5.2 Record the owner's decisions in design.md before 2.5 starts:
   - root-tab drag (a);
   - panda only at a session start, with skeletons for the hubs;
   - the panda only when preparation takes over about 300 ms;
   - in an active session, a swipe does not drag and asks for confirmation;
-  - the Test exam and the Mistakes review also get a confirmation (a).
+  - the Test exam and the Mistakes review also get a confirmation (a);
+  - no loading text on Dictionary and Phrases, a skeleton instead;
+  - a fast launch, with the skeleton when it is slow;
+  - pull-to-refresh with a spinning ring, region skeletons and one exact
+    threshold.
 
   Verify: the decisions are recorded in design.md.
 
