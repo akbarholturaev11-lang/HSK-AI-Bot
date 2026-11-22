@@ -10,7 +10,7 @@ identity.
 
 ## 1. PWA measurement baseline (no product code)
 
-- [ ] 1.1 Add `scripts/measure_pwa_lab.py`, built on the existing `ScreenPage`
+- [x] 1.1 Add `scripts/measure_pwa_lab.py`, built on the existing `ScreenPage`
   e2e fixture.
   - It serves the fixture over HTTP with production-like gzip, ETag and
     immutable headers, and fails if the first response lacks them.
@@ -20,6 +20,13 @@ identity.
     `docs/PERFORMANCE_PWA_PROGRESSIVE_LOADING.md`.
   - Verify: the documented command runs as written, and two consecutive runs
     agree within 15% on FCP and course-ready.
+  - Result (2026-11-22):
+    - two full runs agreed within 7.5%;
+    - the launch baseline is in the contract doc;
+    - the network is shaped on the server, so both engines see the same
+      network;
+    - WebKit runs without a CPU slowdown, which Playwright cannot apply to it;
+    - `tests/test_measure_pwa_lab.py` runs in the CI guard.
 - [ ] 1.2 Extend the harness fixture to drive a real lesson open, one exercise
   advance and the real practice pages, reusing the lesson fixtures already in
   `tests/e2e/`. Verify: the harness reports time to the first usable exercise,

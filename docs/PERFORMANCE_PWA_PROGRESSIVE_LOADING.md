@@ -78,6 +78,81 @@ This requirement is **retroactive**: every currently implemented learner PWA scr
 - [ ] Audit and convert genuinely offscreen images to responsive WebP/AVIF without regressing visible mascot/brand.
 - [ ] All affected iPhone Safari flows with live-like latency, including auth replacement and Pro/lesson updates.
 
+## Repeatable lab profile (learner PWA)
+
+One command measures the learner PWA under the same conditions every time.
+Use it for every before/after claim (OpenSpec `perf-pwa-android-backend`,
+task 1.1):
+
+```bash
+.venv/bin/python scripts/measure_pwa_lab.py --out lab.json
+```
+
+- **Fixture:** the existing e2e `ScreenPage` (UZ, onboarded, Free), served over
+  real local HTTP.
+  - No production account or secret is used.
+  - The only outside request is one fetch per run of the cdnjs icon
+    stylesheet. It is then served like every other file.
+- **Network:**
+  - One shared link, shaped on the server: 150 ms to the first byte of each
+    response, 1.6 Mbps down. Chromium and WebKit see the same network.
+  - TLS setup is not modelled. Real-user launch timing (task 1.4) covers it.
+- **Delivery mirrors production** (`app/main.py`, `app/api/pwa_auth.py`):
+  - gzip for every body of 1 KB or more;
+  - HTML: `private, no-cache` plus ETag/304;
+  - `immutable` for versioned files, `/assets/` and the offline word-audio
+    scripts;
+  - `no-store` for API answers;
+  - the real service worker.
+
+  The run stops if the browser does not receive these headers.
+  `tests/test_measure_pwa_lab.py` pins the rules in the CI guard. On
+  2026-11-22, all 38 static URLs of a cold launch matched production's
+  `Cache-Control` and `Content-Encoding`.
+- **Browsers:**
+  - Chromium with a 4× CPU slowdown. Playwright cannot slow WebKit's CPU,
+    so WebKit runs at full speed.
+  - 320, 390 and 430 × 844 px, DPR 2, touch.
+- **Cold and warm:**
+  - Cold is a new browser context.
+  - Warm re-navigates the same page, so the HTTP cache and the service
+    worker apply. Playwright's WebKit keeps its HTTP cache only within one
+    page.
+- **Metrics:**
+  - Recorded inside the page from navigation start: FCP, LCP, CLS
+    (`unsupported` where the engine has no entry type), course-ready
+    (`MAP.authenticated`) and response end.
+  - Recorded at the server: network KB and requests.
+  - Each figure is the median of three cold/warm pairs.
+- **Not covered:** a real iPhone, a weak Android phone and production
+  latency. Real-user timing and owner device QA cover those.
+
+**Launch baseline, 2026-11-22.** Measured at `fbbdfde9` (main `50231bee`
+plus plan docs only). Each figure is the median of 6 launches (two full
+runs). Times in ms, sizes in KB.
+
+| Engine | Width | Cold FCP | Cold LCP | Cold course-ready | Cold KB | Warm FCP | Warm course-ready | Warm KB |
+|---|---|---|---|---|---|---|---|---|
+| Chromium 153 (4× CPU) | 320 | 1282 | 3682 | 3432 | 608–646 | 288 | 665 | 4.4 |
+| Chromium 153 (4× CPU) | 390 | 1238 | 3790 | 3578 | 608–646 | 296 | 686 | 4.4 |
+| Chromium 153 (4× CPU) | 430 | 1242 | 3844 | 3618 | 646 | 302 | 702 | 4.4 |
+| WebKit 26.6 | 320 | 2190 | 2470 | 3697 | 647 | 266 | 682 | 4.4 |
+| WebKit 26.6 | 390 | 2178 | 3683 | 3658 | 647 | 260 | 682 | 4.4 |
+| WebKit 26.6 | 430 | 2156 | 3712 | 3682 | 647 | 256 | 665 | 4.4 |
+
+- **Repeatability:** the two runs agree within 7.5% on FCP and course-ready.
+- **CLS:**
+  - Chromium: ≤0.011 in all 36 launches.
+  - WebKit: has no layout-shift entries, so the WebKit geometry regressions
+    remain its stability check.
+- **Warm launch:** the HTML answers 304, and every asset comes from cache.
+- **Chromium's cold size varies by 38.5 KB.** The icon stylesheet is a
+  non-blocking `media=print` load with low priority, and it sometimes
+  finishes after the measurement window.
+- **Still to do:** per-action baselines (tab switch, layers, search,
+  swipe-back, lesson open, exercise advance), which are OpenSpec task 1.3.
+  The "filmstrip and LCP/CLS" checkpoint above stays open until then.
+
 ## Backend course-map template cache
 
 - Cache only seven public, static level templates in bounded process memory. Key on file metadata so changed files invalidate automatically.
