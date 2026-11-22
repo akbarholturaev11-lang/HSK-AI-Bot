@@ -43,6 +43,10 @@ off-screen; it never flashes back to its open position first.
 - **WHEN** the drag passes the completion threshold and is released
 - **THEN** the word page closes before its transform is reset, with no frame showing it at x=0
 
+#### Scenario: Dragging back from a root tab
+- **WHEN** the learner drags back from Practice, Rating or Profile in the PWA
+- **THEN** either the painted Course screen shows underneath, or the tab does not follow the finger and the swipe still goes back one step; empty paper is never shown
+
 ### Requirement: Returning keeps the previous position
 Returning from a detail to its list MUST restore the list's scroll position, search
 text and filters on PWA and Android. The course map's centring on the current

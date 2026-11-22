@@ -1,57 +1,195 @@
 # Tasks
 
-## 1. Learner PWA navigation and screen stability
+Order: PWA → Android → Backend, as the owner asked. Android stays in the same
+initiative and regression matrix.
 
-- [x] 1.1 One edge swipe = one back step: claim the left 16 px strip in the browser PWA, keep a one-gesture token, and close before resetting the transform (`app/static/course-v3.html`). Verify:
-  - `tests/e2e/test_pwa_swipe_back.py` passes on Chromium and WebKit, and fails on the pre-fix code;
-  - in the iOS Simulator, three Safari edge swipes go word → list → Practice → Course;
-  - the `goBack()` call-site count is unchanged.
-- [x] 1.2 The dragged dictionary word page is opaque, with its scene art, and the list keeps its scroll (`app/static/hsk-lugat.html`). Verify: `test_dragged_word_page_is_opaque_and_closes_before_it_snaps_back`, plus a Chromium mid-drag screenshot.
-- [ ] 1.3 Root-tab swipe peek: dragging Practice/Rating/Profile back to Course shows empty paper. The owner picks (a) a live peek of the previous tab or (b) no drag on root tabs (an edge swipe still goes back, without a peek). Then implement it and extend `test_pwa_swipe_back.py`. Verify with an iOS Simulator recording at 390 px.
-- [ ] 1.4 Layer audit, one layer at a time: Settings, Friends, Inbox/notifications, Pro checkout, lesson dialogs, mistakes and practice iframes.
-  - Each must close in one step by edge swipe, browser back and Telegram BackButton, with no blank frame and the previous scroll kept.
-  - Add each layer to `test_pwa_swipe_back.py`, and fix only the defects found.
-  - This merges contract lines "every screen at 320/390/430" and "audit embedded resources/Settings/Friends…" for back and scroll; loading geometry stays under 4.1.
-- [ ] 1.5 Rating first load: use layout-faithful podium and leaderboard placeholders (contract open item "Current Rating example"). Verify with a `tests/pwa_layout_geometry.py` anchor check (≤8 px) on Chromium and WebKit.
+Each package is its own pull request with its own tests. Every completion note
+carries an "Analytics Impact:" and a "Monitoring Impact:" line. Every PWA HTML
+edit re-anchors the i18n line counts and `reviewed_sha1` once, by exact line
+identity.
 
-## 2. Native Android
+## 1. PWA measurement baseline (no product code)
 
-- [x] 2.1 The dictionary list keeps its scroll when returning from a word (`DictionaryScreen.kt`: `LazyListState` hoisted above the list/detail branch). Verify:
-  - `DictionaryScrollRestoreTest` passes on Pixel_8, direct flavour, and fails on the pre-fix code;
-  - `testPlayDebugUnitTest` passes (700 tests);
-  - the 9 Android static checks pass.
-- [ ] 2.2 Startup baseline:
-  - Measure cold and warm start for the `play` and `direct` release builds on Pixel_8 and one weak real device (`adb shell am start -W`, 10 runs, median).
-  - Add `reportFullyDrawn()` after the first useful Course frame.
-  - Add a Baseline Profile (`profileinstaller`) only if the cold-start median exceeds the warm median by more than about 40% and a trace shows JIT/class loading dominating.
-  - Record before/after numbers here.
-- [ ] 2.3 Back and scroll audit of the other detail screens: Practice → Mistakes and Word drill, Rating → user, Profile pages and settings, lesson exit. Expect one `BackHandler` step with state retained. Add an instrumentation test for each defect found. The Course map re-centring on the current lesson is intended behaviour, not a defect.
-- [ ] 2.4 Jank and ANR: owner exports Play Console vitals and the existing crash/monitoring data for the top screens. Fix only the top offenders, each with a regression test.
+- [ ] 1.1 Add `scripts/measure_pwa_lab.py`, built on the existing `ScreenPage`
+  e2e fixture.
+  - It serves the fixture over HTTP with production-like gzip, ETag and
+    immutable headers, and fails if the first response lacks them.
+  - It runs cold and warm, at 320, 390 and 430 px, on Chromium and WebKit,
+    with slow 4G and 4× CPU, and prints JSON.
+  - Document the command and the profile in
+    `docs/PERFORMANCE_PWA_PROGRESSIVE_LOADING.md`.
+  - Verify: the documented command runs as written, and two consecutive runs
+    agree within 15% on FCP and course-ready.
+- [ ] 1.2 Extend the harness fixture to drive a real lesson open, one exercise
+  advance and the real practice pages, reusing the lesson fixtures already in
+  `tests/e2e/`. Verify: the harness reports time to the first usable exercise,
+  time to the next exercise, and each practice page's first useful frame.
+- [ ] 1.3 Record the before baselines with 1.1 on both engines, and set a
+  target per action from them. Record them in the contract doc, which closes
+  its open items "every screen at 320/390/430", "filmstrip LCP/CLS/INP" and the
+  Rating filmstrip.
+  - Cold and warm launch.
+  - Tab switches.
+  - First open of each layer: Dictionary, Phrases, five practice pages, Inbox,
+    Settings.
+  - Dictionary search with hanzi, pinyin and a translation query.
+  - Swipe-back.
+  - Lesson open and exercise advance.
 
-## 3. Backend learner paths (production 7-day evidence)
+  Verify: the table lists both engines, and every action has a number or is
+  marked "unmeasured" with the reason.
+- [ ] 1.4 Real-user launch timing (PWA only) through the existing `clog()`
+  beacon to `/api/v3/clientlog`.
+  - One beacon per launch after the course is ready.
+  - Fields: navigation timing, FCP, LCP, CLS, the slowest event duration,
+    course-ready time, cold/warm, 200/304, viewport class, standalone or
+    browser.
+  - No account, text or token. No retry.
 
-- [ ] 3.1 `POST /api/v3/lesson/complete` (p50 ≈215 ms, p95 ≈490–670 ms, p99 ≈1.0–1.5 s):
-  - In a real-Postgres test, record the SQL statement count and the time of each synchronous side effect (XP, streak, reminders, analytics).
-  - Move only proven non-critical work after commit, using the existing worker pattern; keep progress and XP atomic.
-  - Verify with the query-count test before and after, plus production p50/p95 after deploy.
-- [ ] 3.2 `POST /api/v3/lesson/start` (p50 ≈62 ms, p90 ≈400 ms): find the slow mode (content or cache miss); use the existing course content/template cache only if proven. Verify with a cold/warm timing test and production p90.
-- [ ] 3.3 `GET /api/v3/pwa/profile` (p99 spike 3.4 s): find the slow call in `railway logs --http` and fix it, or record that the cause is external. Verify with the existing profile tests.
-- [ ] 3.4 Keep fast paths unchanged: session p95 ≈43 ms, course HTML p95 ≈93 ms, `/api/v3/map` p95 ≈310–370 ms. The existing `tests.test_course_map_template_cache` and `tests.test_course_today_service` remain the guard; no new work.
+  Verify:
+  - an e2e test asserts exactly one beacon per launch, with only the allowed
+    keys, and none when the course fails;
+  - the analytics and monitoring checker passes;
+  - after deploy, 7 days of beacons are read with `railway logs` and their
+    p50/p75 recorded in the contract doc.
 
-## 4. Measurement and owner acceptance
+## 2. PWA fixes (each its own pull request, after 1.3)
 
-- [ ] 4.1 PWA field-like measurements before and after:
-  - slow-4G filmstrip plus LCP, CLS and INP at 390 px for Course, Practice, Dictionary and Profile, on Chromium trace and WebKit;
-  - record them in `docs/PERFORMANCE_PWA_PROGRESSIVE_LOADING.md` (closes the open "filmstrip / LCP/CLS/INP" items).
-- [ ] 4.2 Owner device QA on a real iPhone Home Screen PWA and a real Android phone: edge swipe from word, list, Practice and Settings goes back one step with no white flash. Android dictionary returns to the same row.
+- [x] 2.1 One edge swipe = one back step: claim the left 16 px strip, keep a
+  one-gesture token, and close before resetting the transform
+  (`course-v3.html`). Verified on Chromium and WebKit
+  (`tests/e2e/test_pwa_swipe_back.py`, which fails on the old code) and with
+  iOS Simulator Safari. Merged in PR #346.
+- [x] 2.2 The dragged dictionary word page is opaque, with its scene art
+  (`hsk-lugat.html`). Verified by
+  `test_dragged_word_page_is_opaque_and_closes_before_it_snaps_back`. Merged in
+  PR #346.
+- [ ] 2.3 Inbox loading and error states (`iphone-pwa-notices.js`, the Inbox
+  layer in `course-v3.html`). Show notice-shaped placeholder rows while the
+  feed is pending. On an error, show the error with an in-place retry using an
+  existing reviewed UZ/RU/TJ retry string. Owner-switch checks stay unchanged.
+  Verify:
+  - a held-request test in `tests/test_pwa_notices_ui.js` covers
+    pending → rows, fail → error → retry → ready, and an owner switch;
+  - a Chromium/WebKit geometry check at 320, 390 and 430 px shows ≤8 px;
+  - the i18n guard passes;
+  - lab Inbox open before/after from 1.1.
+- [ ] 2.4 Embedded-layer text status: only if 1.3 shows the parent
+  "Yuklanmoqda…" for more than 300 ms when the layer is warm-opened on WebKit.
+  Delay the text with an anti-flash window so a fast frame paints its own
+  skeleton first. Verify: lab before/after for Phrases and the practice pages,
+  and `test_pwa_swipe_back.py` still passes. If the threshold is not crossed,
+  record "not needed" with the numbers.
+- [ ] 2.5 Root-tab drag behaviour, per the owner's choice: (a) live Course
+  peek, or (b) no drag on root tabs. Verify: `test_pwa_swipe_back.py` gains a
+  root-tab case asserting no empty frame and one step back, plus an iOS
+  Simulator recording at 390 px.
+- [ ] 2.6 Back and scroll audit, one layer at a time:
+  - Settings, Friends, Inbox and checkout;
+  - lesson dialogs, the writer overlay and the five practice pages.
 
-## 5. Permanent workflow
+  Each layer must close in one step by edge swipe, browser back and Telegram
+  BackButton, with no blank frame and the previous scroll kept. Fix only the
+  defects found, adding each layer to `test_pwa_swipe_back.py`. Verify:
+  Chromium and WebKit pass, and the swipe test's checker entry is unchanged.
+- [ ] 2.7 Lesson open and exercise advance: if 1.3 shows either misses its
+  target, trace it in Chromium and WebKit and fix only the top cause. Lesson
+  grading, progress and payment code are not changed. Verify: lab before/after,
+  and the existing lesson e2e and unit suites pass. Otherwise record "meets
+  target".
 
-- [x] 5.1 Extend the existing guard rather than adding a new system. Verify that `tests.test_backend_pwa_performance_contract` passes and that the checker passes on this branch with `--enforce-change-tests`. The extension:
-  - `check_backend_pwa_performance_contract.py` requires an Android `*Test.kt` co-change and the swipe-back regression;
-  - the workflow runs the regression on Chromium and WebKit;
-  - `AGENTS.md` and the contract doc gain the Android and navigation rules.
+## 3. Native Android (same initiative, after group 2)
+
+- [x] 3.1 The dictionary list keeps its scroll when returning from a word
+  (`DictionaryScreen.kt`). Verified by `DictionaryScrollRestoreTest` (Pixel_8,
+  direct flavour; it fails on the old code) and by `testPlayDebugUnitTest`.
+  Merged in PR #346.
+- [ ] 3.2 Startup baseline and first-drawn report.
+  - Call `reportFullyDrawn()` once when the first useful Course frame (cached
+    map or skeleton) is shown.
+  - Measure cold and warm start for the play and direct release builds on
+    Pixel_8 and on the owner's weak device: `adb shell am start -W`, 10 runs,
+    median `TotalTime` and fully-drawn time.
+  - Add a baseline profile only if the cold median exceeds warm by more than
+    40% and a trace shows JIT or class loading dominating.
+
+  Verify: a test asserts the report fires once; the before/after numbers are
+  recorded in `ANDROID_CONTEXT.md`.
+- [ ] 3.3 Replace the two full-screen loaders with `HskSkeleton` compositions
+  shaped like the ready screens: first-ever Course open (`CourseScreen.kt`,
+  `map == null`) and Ready Phrases (`ReadyPhrasesScreen.kt`). Verify:
+  instrumentation tests on the direct flavour show the header plus
+  placeholders with no centred spinner, and the header and first row move by
+  ≤8 dp when data lands. `testPlayDebugUnitTest` passes.
+- [ ] 3.4 Back and scroll audit:
+  - Practice → Mistakes and Word drill;
+  - Rating → user;
+  - the Profile pages and settings;
+  - lesson exit.
+
+  Expect one back step with state retained. Add an instrumentation test for
+  each defect found. Course re-centring on the current lesson is intended
+  behaviour. Verify: the new tests pass on the direct flavour.
+- [ ] 3.5 Jank and ANR.
+  - Record frame stats (`adb shell dumpsys gfxinfo`) for Course and Dictionary
+    scrolling on Pixel_8.
+  - Read the owner's Play Console vitals export.
+  - Fix only the top offenders, each with a regression test.
+
+  Verify: before/after frame stats are recorded in `ANDROID_CONTEXT.md`.
+
+## 4. Backend (after group 3)
+
+- [ ] 4.1 `POST /api/v3/lesson/complete`.
+  - In a real-Postgres test, record the statement count and the time of each
+    step: rank before, award, rank after, analytics, mistakes.
+  - If the leaderboard dominates, replace both calls with one bounded query
+    that returns the user's rank and the neighbour rows. A snapshot test
+    asserts identical rank, rank-up flag and neighbour rows for leagues of 1,
+    5 and 500 users with ties.
+  - Progress, XP and streak stay in one transaction.
+
+  Verify:
+  - the query-count test before and after;
+  - `tests.test_course_map_template_cache`, `tests.test_course_today_service`
+    and the Mini App and Android lesson contract tests pass;
+  - production p50/p95 after deploy.
+- [ ] 4.2 `POST /api/v3/lesson/start` p90 ≈400 ms against p50 ≈62 ms. Find the
+  slow mode (content load, cache miss or lock) from `railway logs --http` and a
+  cold/warm timing test. Fix only if the cause is in the app. Verify:
+  production p90 after deploy, or a recorded external cause.
+- [ ] 4.3 `GET /api/v3/pwa/profile` p99 spike of 3.4 s. Find the slow call in
+  the HTTP logs. Fix it, or record that the cause is external. Verify: the
+  existing profile tests pass, and production p99 after deploy.
+- [ ] 4.4 Network gap. With 7 days of 1.4 beacons, compare client TTFB p75 to
+  server p95 per platform. Record the result in the contract doc. If the gap
+  exceeds 500 ms for most launches, write the evidence for an edge or CDN
+  decision for the owner. There is no infrastructure change in this change.
+  Verify: the recorded numbers.
+
+## 5. Owner acceptance
+
+- [ ] 5.1 Owner device QA on a real iPhone Home Screen PWA and a real Android
+  phone. An edge swipe from word, list, Practice and Settings goes back one
+  step with no white flash. Inbox shows rows, then the feed, or an error with
+  a working retry. The Android dictionary returns to the same row. Record the
+  result in the contract doc.
+- [ ] 5.2 Record the owner's decisions: root-tab drag (a or b); whether the
+  practice boot overlay changes. Verify: decisions are recorded in design.md
+  before 2.5 starts.
+
+## 6. Permanent workflow
+
+- [x] 6.1 The existing guard now covers Android and navigation:
+  - `check_backend_pwa_performance_contract.py` requires an Android `*Test.kt`
+    co-change and the swipe-back regression;
+  - the workflow runs that regression on Chromium and WebKit;
+  - `AGENTS.md` and the contract doc carry the rules.
+
+  Verified by `tests.test_backend_pwa_performance_contract` and the checker
+  with `--enforce-change-tests`. Merged in PR #346.
 
 ## Workflow follow-up
 
-- Archive this change once groups 1–4 are complete and owner QA (4.2) is recorded.
+- Archive this change once groups 1–5 are complete and owner QA (5.1) is
+  recorded.

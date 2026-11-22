@@ -51,7 +51,64 @@ measured as already fast are left unchanged.
 
 #### Scenario: Optimising a measured slow route
 - **WHEN** a change targets lesson completion, whose production p95 is about 490–670 ms
-- **THEN** it records SQL statement counts and timings before and after, preserves atomic progress and XP updates, and reports production p50/p95 after deploy
+- **THEN** it records SQL statement counts and timings before and after, preserves atomic progress and XP updates, returns the same rank and rank-up rows as before, and reports production p50/p95 after deploy
+
+### Requirement: Key learner actions have measured baselines and targets
+Each of these actions MUST have a recorded lab baseline and a target, measured
+as action-to-first-useful-response on the fixed lab profile:
+- screen navigation;
+- opening a lesson;
+- advancing an exercise;
+- dictionary search;
+- swipe-back.
+
+Each target derives from its own baseline, not one global threshold. A change
+that touches an action reports that action's before and after numbers.
+
+#### Scenario: Change to the lesson flow
+- **WHEN** a pull request changes the lesson open or exercise advance path
+- **THEN** it reports the lab before/after time to the first usable exercise, and the result stays within that action's target
+
+#### Scenario: Action not yet measurable
+- **WHEN** the lab fixture cannot drive an action
+- **THEN** the action is reported as unmeasured, not as passing
+
+### Requirement: The lab profile is fixed and repeatable
+PWA lab measurements MUST all use one documented profile, so before/after
+numbers compare:
+- 390 px mobile viewport;
+- slow 4G (150 ms latency, 1.6 Mbps down);
+- 4× CPU slowdown;
+- production-like gzip, ETag and immutable cache headers;
+- cold and warm runs, on Chromium and WebKit.
+
+The profile is run by one documented command on the existing e2e fixtures.
+
+#### Scenario: Measuring without compression
+- **WHEN** a lab run serves assets without the production compression and cache headers
+- **THEN** its numbers are not used as a baseline
+
+### Requirement: Real-user timing is sampled and privacy-safe
+The learner PWA MUST report launch timing through the existing client
+diagnostics endpoint, at most once per launch:
+- server response start and end;
+- first contentful paint;
+- largest contentful paint;
+- layout shift;
+- slowest interaction;
+- course-ready time;
+- warm or cold start.
+
+The report carries no account ID, content, query text or token. It never
+delays or blocks a learner action.
+
+#### Scenario: A learner launches the PWA
+- **WHEN** the course becomes ready after launch
+- **THEN** at most one timing beacon is sent, containing only timings, launch type, viewport class and platform, with no account or content data
+
+#### Scenario: Diagnostics endpoint unavailable
+- **WHEN** the beacon cannot be sent
+- **THEN** nothing is retried and the learner sees no error
 
 ### Requirement: Contracts and data stay intact
 Performance and navigation work MUST NOT change any of the following:
