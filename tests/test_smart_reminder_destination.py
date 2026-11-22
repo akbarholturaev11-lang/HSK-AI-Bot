@@ -10,6 +10,7 @@ from sqlalchemy import delete, event, insert, select, update
 
 from app.db.models.android_push import AndroidPushToken
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
+from app.db.models.course_miniapp_profile import CourseMiniAppProfile
 from app.db.models.course_progress import CourseProgress
 from app.db.models.course_xp_event import CourseXpEvent
 from app.db.models.desktop import DesktopDevice, DesktopSession
@@ -127,7 +128,9 @@ class DestinationSourceChecks:
         async with self.case.sessions.begin() as session:
             await session.execute(update(fixture.JOB).values(state="shadow", policy_version=QUEUE_VERSION,
                 selected_channel=None, selected_device_id=None))
-            await session.execute(update(SmartReminderConsent).where(SmartReminderConsent.channel == "telegram").values(state="off"))
+            # An explicit Telegram OFF: since D34 a legacy snapshot OFF is no OFF.
+            await session.execute(update(SmartReminderConsent).where(SmartReminderConsent.channel == "telegram").values(
+                state="off", source="user_intent", source_key="intent:telegram"))
 
     async def asyncTearDown(self):
         if hasattr(self, "case") and hasattr(self.case, "engine"):
@@ -157,7 +160,9 @@ class DestinationSourceChecks:
                 pwa_push_ready=True).select(self.actor, job_id=self.case.job_id,
                     history_since=self.tick-timedelta(days=30))
 
-    async def test_current_push_subscription_needs_existing_smart_master_opt_in(self):
+    async def test_push_subscription_counts_unless_account_study_is_explicitly_off(self):
+        # D34: without a master choice the live subscription is the PWA signal;
+        # an explicit account study OFF or the Mini App/PWA switch OFF stops it.
         await self.add_pwa_install()
         async with self.case.sessions.begin() as session:
             await session.execute(update(SmartReminderPreference).where(
@@ -165,6 +170,15 @@ class DestinationSourceChecks:
         choice = await self.choose_with_pwa()
         self.assertIsNone(choice.channel)
         self.assertIn(choice.reason, {"no_eligible_destination", "manual_channel_unavailable"})
+        async with self.case.sessions.begin() as session:
+            await session.execute(update(SmartReminderConsent).where(SmartReminderConsent.channel == "telegram").values(
+                source="legacy_course_snapshot", source_key="legacy:telegram"))
+            await session.execute(update(User).where(User.id == 1).values(bot_blocked_at=self.tick))
+        self.assertEqual((await self.choose_with_pwa()).channel, "pwa")
+        async with self.case.sessions.begin() as session:
+            await session.execute(update(CourseMiniAppProfile).where(CourseMiniAppProfile.user_id == 1).values(
+                notifications_enabled=False))
+        self.assertIsNone((await self.choose_with_pwa()).channel)
 
     async def test_current_pwa_endpoint_can_be_selected_when_smart_is_on_and_other_channels_are_off(self):
         await self.add_pwa_install()

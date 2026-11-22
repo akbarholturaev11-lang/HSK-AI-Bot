@@ -105,7 +105,8 @@ class SmartReminderRuntime:
         routing = SmartReminderRouting
         query = select(routing.user_id).where(routing.verified_at <= now, routing.verified_until > now,
             or_(and_(routing.state == 'held', callable(self.android_admission_reader)),
-                and_(routing.state == 'telegram', or_(self.telegram_ready, self.pwa_ready)))).order_by(
+                and_(routing.state == 'telegram', or_(self.telegram_ready, self.pwa_ready)),
+                and_(routing.state == 'pwa', self.pwa_ready))).order_by(
                     routing.user_id).limit(self.batch * COHORT_COUNT)
         async with self.sessions() as session:
             rows = (await session.scalars(query.where(routing.user_id > self._cursor))).all()
@@ -195,7 +196,8 @@ class SmartReminderRuntime:
             try:
                 await SmartReminderAdmissionService(self.sessions, clock=self.clock,
                     telegram_ready=self.telegram_ready,
-                    android_ready=callable(self.android_admission_reader), batch=ADMISSION_BATCH,
+                    android_ready=callable(self.android_admission_reader), pwa_ready=self.pwa_ready,
+                    batch=ADMISSION_BATCH,
                     cursors=self._admission_cursors).step(stage)
             except Exception:
                 logger.warning('Smart runtime admission unavailable')
@@ -246,10 +248,10 @@ def registered_runtime(app, settings, sessions):
 def build_rules_runtime(settings, sessions, bot):
     """D25 profile and actual readers with automatic staged admission.
 
-    A single shared startup switch selects the runtime. Admission creates no
+    A single shared startup switch selects the runtime. Admission writes no
     consent; it holds, drains and reviews accounts of the open rollout cohorts
-    whose existing preference and Android inventory allow it. The separate
-    Telegram transport switch remains required for Telegram sends.
+    whose preference (ON by default, D34) and Android inventory allow it. The
+    separate Telegram and Web Push transport switches remain required.
     """
     if getattr(settings, 'SMART_REMINDER_ENABLED', False) is not True:
         return None

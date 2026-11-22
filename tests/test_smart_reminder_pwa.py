@@ -171,8 +171,8 @@ class SmartReminderPwaDeliveryTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_off_unknown_and_manual_lock_are_rechecked_before_provider(self):
         sender = AsyncMock(return_value=201)
-        # No explicit Smart choice is refused only without existing study
-        # consent; with Telegram study consent the PWA may carry the reminder.
+        # No explicit Smart choice is refused only after an explicit study OFF
+        # (D34: a legacy snapshot OFF is no OFF); otherwise the PWA may carry it.
         preferences = (
             ({"master_enabled": False, "channel_mode": "auto", "preferred_channel": None}, "on"),
             ({"master_enabled": None, "channel_mode": "auto", "preferred_channel": None}, "off"),
@@ -183,7 +183,8 @@ class SmartReminderPwaDeliveryTests(unittest.IsolatedAsyncioTestCase):
                 await session.execute(update(SmartReminderPreference).where(
                     SmartReminderPreference.user_id == 1).values(**values))
                 await session.execute(update(SmartReminderConsent).where(
-                    SmartReminderConsent.user_id == 1, SmartReminderConsent.channel == "telegram").values(state=telegram))
+                    SmartReminderConsent.user_id == 1, SmartReminderConsent.channel == "telegram").values(
+                        state=telegram, source="user_intent", source_key="intent:telegram"))
                 await session.execute(update(JOB).where(JOB.c.id == self.job_id).values(
                     state="pending", reason_code=None, lease_token=None, lease_expires_at=None,
                     selected_channel="pwa", selected_device_id=self.device_id))
