@@ -1,11 +1,11 @@
 # Tasks
 
-Implementation starts only after the owner approves D31–D33 and gives the go-ahead (`AGENTS.md`). Evidence goes into the Master Plan checkpoint, not into this file.
+The owner approved D31–D33 and implementation on 2026-11-22. Evidence goes into the Master Plan checkpoint, not into this file.
 
 ## 1. Owner decisions and documents
 
-- [ ] 1.1 Turn the PROPOSED D31–D33 rows in Master Plan §13 into DECISION rows with the owner's actual answers (adjust D31's number and the D32 days if the owner changes them, and the spec/design text with them); update the current-checkpoint line in `docs/smart-reminders/NEXT_CHAT_CONTEXT.md` to §17.101 and this change; verify each row keeps the D08/D19/D20 text it supersedes for ordinary mode and no second progress list is created.
-- [ ] 1.2 Reconcile "Adaptive time and cadence", "Personal reactivation" and "Safe localized content" in `openspec/changes/smart-reminder-account-orchestrator/specs/smart-reminder-orchestration/spec.md` with D31–D33 by reference to this change; verify `openspec validate smart-reminder-account-orchestrator --strict` still passes.
+- [x] 1.1 Turn the PROPOSED D31–D33 rows in Master Plan §13 into DECISION rows with the owner's actual answers (adjust D31's number and the D32 days if the owner changes them, and the spec/design text with them); update the current-checkpoint line in `docs/smart-reminders/NEXT_CHAT_CONTEXT.md` to §17.101 and this change; verify each row keeps the D08/D19/D20 text it supersedes for ordinary mode and no second progress list is created.
+- [x] 1.2 Reconcile "Adaptive time and cadence", "Personal reactivation" and "Safe localized content" in `openspec/changes/smart-reminder-account-orchestrator/specs/smart-reminder-orchestration/spec.md` with D31–D33 by reference to this change; verify `openspec validate smart-reminder-account-orchestrator --strict` still passes.
 
 ## 2. Copy library (UZ/RU/TJ)
 
