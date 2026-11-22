@@ -165,11 +165,48 @@ class ContractTests(unittest.TestCase):
         uncategorised = client_event("lessons", "js_uncaught", "course_v3", "iphone_pwa", **debug)
         self.assertEqual(parse(uncategorised), ([], 1))
 
-    def test_debug_evidence_never_changes_grouping_or_severity(self):
+    def test_exception_identity_groups_without_line_column_or_version(self):
+        """NXT-011: name, reason and primary asset separate incidents on one page."""
+        page = fingerprint("iphone_pwa", "distribution_handoff", "js_uncaught", "pwa_handoff")
         plain, = parse(js_event())[0]
+        self.assertEqual(plain.fingerprint, page, "no evidence keeps the original page-level incident")
         rich, = parse(js_event(error_name="TypeError", reason_code="not_callable", location=place(line=999)))[0]
-        self.assertEqual(plain.fingerprint, rich.fingerprint)
-        self.assertEqual(rich.fingerprint, fingerprint("iphone_pwa", "distribution_handoff", "js_uncaught", "pwa_handoff"))
+        moved, = parse(js_event(error_name="TypeError", reason_code="not_callable",
+                                location=place(line=3, column=1, asset_version="0123456789ab"),
+                                app_version="20261120-abcdef123456", build=20261120,
+                                frames=[place("hsk_diagnostics", 5)]))[0]
+        self.assertEqual(rich.fingerprint, moved.fingerprint, "a redeploy or another frame never splits one error")
+        self.assertEqual(rich.fingerprint, fingerprint("iphone_pwa", "distribution_handoff", "js_uncaught",
+                                                       "pwa_handoff", "e=TypeError|r=not_callable|a=" + HANDOFF))
+        others = [
+            js_event(error_name="TypeError", reason_code="null_access", location=place()),
+            js_event(error_name="TypeError", reason_code="not_callable", location=place("hsk_diagnostics")),
+            js_event(error_name="TypeError", reason_code="not_callable"),
+            js_event(error_name="TypeError"),
+            js_event(location=place()),
+            js_event(error_name="RangeError", category="range", location=place()),
+        ]
+        prints = {rich.fingerprint, page} | {parse(event)[0][0].fingerprint for event in others}
+        self.assertEqual(len(prints), len(others) + 2, "each distinct identity is its own incident")
+        self.assertEqual(rich.identity, "e=TypeError|r=not_callable|a=" + HANDOFF)
+        self.assertIsNone(plain.identity)
+
+    def test_exception_identity_is_limited_to_web_js_failures(self):
+        android = client_event("lessons", "crash_uncaught", "exc_null", "android", category="type")
+        event, = parse(android, platform="android")[0]
+        self.assertIsNone(event.identity)
+        self.assertEqual(event.fingerprint, fingerprint("android", "lessons", "crash_uncaught", "exc_null"))
+        telegram, = parse(js_event("telegram", error_name="TypeError", location=place()), platform="telegram")[0]
+        self.assertEqual(telegram.identity, "e=TypeError|r=-|a=" + HANDOFF)
+        rejection, = parse(js_event(failure="js_rejection", error_name="TypeError"))[0]
+        self.assertEqual(rejection.fingerprint, fingerprint("iphone_pwa", "distribution_handoff", "js_rejection",
+                                                            "pwa_handoff", "e=TypeError|r=-|a=-"))
+
+    def test_severity_is_unchanged_by_debug_evidence(self):
+        plain, = parse(js_event())[0]
+        rich, = parse(js_event(error_name="TypeError", reason_code="not_callable", location=place()))[0]
+        self.assertEqual(catalog.severity_for(plain.feature_code, plain.failure_code),
+                         catalog.severity_for(rich.feature_code, rich.failure_code))
 
     def test_reporter_allowlists_mirror_the_server_catalog(self):
         script = REPORTER.read_text(encoding="utf-8")
@@ -429,14 +466,19 @@ class PostgresPrecisionTests(unittest.IsolatedAsyncioTestCase):
                                       settings_obj=self.settings)
                 return result.touched[0][0].id
 
-        incident = await record(60 * 24 * (catalog.RECEIPT_RETENTION_DAYS + 1), error_name="TypeError",
+        same = dict(error_name="TypeError", reason_code="null_access")
+        incident = await record(60 * 24 * (catalog.RECEIPT_RETENTION_DAYS + 1), **same,
                                 location=place(line=1))  # outside retention: never a sample
-        await record(50, error_name="TypeError", reason_code="not_callable", location=place(line=10),
-                     version="20261101-abcdef123456")
-        await record(40, owner=3, error_name="TypeError", reason_code="null_access", location=place(line=20),
-                     frames=[place(line=21)], version="20261110-abcdef123456")
-        await record(30, error_name="RangeError", category="range", version="20261112-abcdef123456")
-        self.assertEqual(await record(20), incident, "every sample groups into the same incident")
+        await record(50, **same, location=place(line=10), version="20261101-abcdef123456")
+        await record(40, owner=3, **same, location=place(line=20), frames=[place(line=21)],
+                     version="20261110-abcdef123456")
+        await record(30, **same, location=place(line=30), version="20261112-abcdef123456")
+        self.assertEqual(await record(20, **same, location=place(line=40)), incident,
+                         "one exception identity groups across lines and versions")
+        async with self.sessions() as db, db.begin():
+            # The two newest receipts keep only their category, as pre-precision ones do.
+            await db.execute(text("UPDATE diagnostic_receipts SET locations = NULL WHERE received_at > :cut"),
+                             {"cut": now - timedelta(minutes=35)})
         row, = (await self.listing()).json()["items"]
         self.assertEqual((row["occurrences"], row["affected_accounts"], row["last_version"]),
                          (5, 2, "20261114-abcdef123456"))
@@ -452,7 +494,7 @@ class PostgresPrecisionTests(unittest.IsolatedAsyncioTestCase):
         sample = (await self.listing()).json()["items"][0]["sample"]
         # No location anywhere: the newest receipt with a category, nothing invented.
         self.assertEqual((sample["received_at"], sample["category"], sample["error_name"], sample["locations"]),
-                         ((now - timedelta(minutes=20)).isoformat(), "type", None, []))
+                         ((now - timedelta(minutes=20)).isoformat(), "type", "TypeError", []))
         async with self.sessions() as db, db.begin():
             await db.execute(text("UPDATE diagnostic_receipts SET category = NULL"))
         row, = (await self.listing()).json()["items"]
@@ -469,6 +511,35 @@ class PostgresPrecisionTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual((await self.post(handled)).json()["accepted"], 1)
         rows = {row["failure_code"]: row for row in (await self.listing()).json()["items"]}
         self.assertIsNone(rows["load_failed"]["sample"])
+
+    async def test_distinct_js_errors_on_one_page_are_separate_incidents(self):
+        """NXT-011 acceptance: split by identity, dedupe repeats, explicit page-level group."""
+        null_access = dict(error_name="TypeError", reason_code="null_access")
+        first = js_event(**null_access, location=place(line=10))
+        reply = await self.post(first, js_event(error_name="ReferenceError", category="reference",
+                                                reason_code="not_defined", location=place(line=80)))
+        self.assertEqual(reply.json()["accepted"], 2, reply.text)
+        # A retry is idempotent; the same error again (another line, version, account) counts once more.
+        self.assertEqual((await self.post(first)).json()["duplicates"], 1)
+        again = js_event(**null_access, location=place(line=12), app_version="20261121-abcdef123456",
+                         build=20261121)
+        self.assertEqual((await self.post(again, owner=3)).json()["accepted"], 1)
+        self.assertEqual((await self.post(js_event())).json()["accepted"], 1)
+        rows = (await self.listing()).json()["items"]
+        by_name = {(row["grouping"], (row["sample"] or {}).get("error_name")): row for row in rows}
+        self.assertEqual(set(by_name), {("exception", "TypeError"), ("exception", "ReferenceError"), ("page", None)})
+        self.assertEqual((by_name[("exception", "TypeError")]["occurrences"],
+                          by_name[("exception", "TypeError")]["affected_accounts"]), (2, 2))
+        self.assertEqual(by_name[("exception", "ReferenceError")]["occurrences"], 1)
+        self.assertEqual(by_name[("page", None)]["occurrences"], 1)
+        async with self.sessions() as db:
+            stored = (await db.scalars(select(DiagnosticIncident.fingerprint))).all()
+        self.assertIn(fingerprint("iphone_pwa", "distribution_handoff", "js_uncaught", "pwa_handoff"), stored,
+                      "failures without evidence keep the existing page-level incident")
+        handled = client_event("lessons", "load_failed", "lesson_open", "iphone_pwa")
+        self.assertEqual((await self.post(handled)).json()["accepted"], 1)
+        rows = {row["failure_code"]: row for row in (await self.listing()).json()["items"]}
+        self.assertIsNone(rows["load_failed"]["grouping"], "only web JS failures carry a grouping")
 
     async def test_fixed_reopen_alert_and_push_payload_are_unchanged_by_debug_evidence(self):
         from app.db.models.admin_pwa_push import AdminPwaPushSubscription
