@@ -37,6 +37,19 @@ look of pending-data bars, never to the shell or reserved slots.
 - **WHEN** an embedded layer's page and data are already cached and paint within the anti-flash window
 - **THEN** no loading text or placeholder bar is visible before the real content
 
+### Requirement: An embedded layer shows at its own first paint
+A PWA layer embedded as its own page MUST become visible at that page's first
+paint. Until then the host shows its background and a working Back control,
+and a localized status only after the anti-flash window.
+
+#### Scenario: Embedded layer is revealed at its first paint
+- **WHEN** the Dictionary or Ready Phrases page in the PWA paints its header and skeleton before all of its resources have loaded
+- **THEN** that painted page is visible at once, not hidden behind the host's loading text
+
+#### Scenario: Embedded layer never loads
+- **WHEN** an embedded layer's page has not painted after its timeout
+- **THEN** the host shows the existing localized connection error with Retry and Back, and Retry loads the page again
+
 ### Requirement: Loading, empty, error and retry are distinct and local
 Each independently loaded region MUST have separate loading, empty, error and
 retry states:

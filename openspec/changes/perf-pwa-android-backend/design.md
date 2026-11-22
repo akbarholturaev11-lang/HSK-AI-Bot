@@ -62,8 +62,9 @@ requirements. The audit was run on main `50231bee` on 2026-11-22.
   - Reliability flows already tested: `OfflineModeTest`, `DeepLinkRouterTest`,
     `AuthRepositoryOauthTest`, `ExternalAuthLaunchTest`,
     `MandatoryUpdateStatesTest`, `PlayUpdateMigrationTest`, and logout cache
-    clearing in `CourseRepositoryTest`. No test covers process death and
-    restore, or switching accounts without a restart.
+    clearing in `CourseRepositoryTest`. No test covers real process death
+    and restore, switching accounts without a restart, or the automatic
+    reconnect (`OfflineModeTest` covers only the tap retry).
 - **Backend external calls.**
   - Gemini (primary AI) uses `AI_PRIMARY_TIMEOUT_SECONDS`. The OpenAI fallback
     client is built with no timeout, so the SDK default applies (600 s, 2
@@ -131,7 +132,8 @@ requirements. The audit was run on main `50231bee` on 2026-11-22.
 | Real-user timing | To do | No RUM in repo; requirement §7 |
 | Key action baselines: lesson open, exercise advance, search, swipe-back | To do | Not measured (above) |
 | Inbox loading and error states | To do | `iphone-pwa-notices.js`: text-only loading, error without retry |
-| Embedded-layer parent text status | To do if measured | Visible ≈150–400 ms warm; cold unknown on WebKit |
+| Embedded-layer cover (Dictionary, Phrases) | To do | The cover stays until the full iframe `load` and hides the child's own skeleton; it has no Back and no error/retry, so a page that never loads leaves "Yuklanmoqda…" forever (decision 5) |
+| Telegram SDK in the PWA head | Measure | `telegram-web-app.js` (19 KB gzip, 120 KB raw) is parser-blocking in `<head>` on every PWA launch; 1.3 records its main-thread time before FCP |
 | Remaining layer back/scroll audit; root-tab drag peek | To do | Contract open item; owner report |
 | Panda vs skeleton (hubs show the panda; lesson entry has a 720 ms minimum) | To do | Owner decision below; code above |
 | Root-tab drag shows the empty paper under the tab | To do | Owner report; `goBack` comment above |
@@ -169,8 +171,8 @@ Known = real text available before any request. Async = pending data.
 | PWA Profile | Mixed | Labels, settings | Rings, calendar, achievements | Per-region ✔ |
 | PWA Settings | Form | All labels | Push status | Pending/error/retry ✔ |
 | PWA Inbox | Rows | Header, close | Notices | Text only ✘, no retry ✘ |
-| PWA Dictionary | Virtual rows | Header, search | Word list (bundled) | Parent text before frame paint |
-| PWA Phrases | Rows | Header, search, tabs | Categories | Parent text, then own skeleton |
+| PWA Dictionary | Virtual rows | Header, search | Word list (bundled) | Parent text cover until full `load`, no Back/retry ✘ (2.4) |
+| PWA Phrases | Rows | Header, search, tabs | Categories | Parent text cover until full `load`, then own skeleton; no Back/retry ✘ (2.4) |
 | PWA Test centre hub | Card list | Header, title | Exams, results | Empty `#ex-list` behind the panda ✘ |
 | PWA Mistakes centre hub | Rows | Header, title, tabs | Mistake targets (paged) | Empty, then spinner + text, behind the panda ✘ |
 | PWA session start: Recognition, Pronunciation, Memorize (on open), Test exam, Mistakes review | Exercise | Frame | Session items | Panda at once, even when fast (owner: only if slow) |
@@ -236,19 +238,43 @@ Known = real text available before any request. Async = pending data.
    - Monitoring impact: log volume of at most one line per launch.
 4. **Inbox: reuse the existing row geometry and retry label.**
    - Placeholder rows are shaped like notice rows.
-   - The error state gets an in-place retry using an existing reviewed UZ/RU/TJ
-     retry string.
+   - The error state keeps its existing error text and gains an in-place
+     retry labelled with the reviewed `courseLoadError.btn` (UZ/RU/TJ). No
+     new copy.
    - Owner-switch checks stay as they are.
-5. **Embedded-layer text status is gated by a threshold, not rewritten.**
-   - If WebKit warm opening shows the parent text for more than 300 ms, the
-     preferred fix is to give that text an anti-flash delay, so a fast frame
-     paints its own skeleton first.
-   - Pre-warming the iframe in the PWA is rejected: it costs memory and bytes
-     on every launch.
-   - Duplicating the child's skeleton in the parent is rejected: it duplicates
-     copy.
+5. **Embedded layers reveal at the child's first paint, with Back and
+   Retry.**
+   - **Defect, found in code:** `RESOURCE.ensure` covers Dictionary and
+     Phrases with an opaque "Yuklanmoqda…" status until the iframe's `load`
+     event. That event waits for every subresource, so the child's own header
+     and skeleton paint underneath and stay hidden. The status has no Back
+     button and no error state. If the page never loads, the text stays
+     forever and only an edge swipe leaves.
+   - **Fix (PWA path, `PWA_COURSE_HOST`):**
+     - The child page signals its first paint through the existing
+       same-origin parent call pattern, as the practice boot does with
+       `revealPracticeFrame`. The parent removes the cover then; `load`
+       stays as the fallback.
+     - The status text appears only after 300 ms without that signal
+       (anti-flash).
+     - The status gains a Back button, with the same `action.back` control
+       as the practice entry.
+     - After 20 s without the signal, it shows `courseLoadError.body` with
+       Retry (`courseLoadError.btn`, which reloads the frame) and Back. The
+       timeout is the same as the practice boot's. No new copy.
+   - **First useful frame:** for an embedded layer this is the child's
+     first paint. Before it, the parent shows paper and a working Back
+     control (loading-states spec).
    - The same rule covers the Test and Mistakes hubs once they stop using the
      panda (decision 9).
+   - Telegram keeps its pre-warm and its current cover (non-goals).
+   - **Rejected for now:**
+     - Pre-warming the iframe in the PWA. It costs memory and bytes on every
+       launch. Reopen only if 1.3 shows that the child's first paint on
+       warm WebKit opens commonly exceeds 300 ms. Then measure the memory
+       cost and bring it to the owner.
+     - Duplicating the child's skeleton in the parent. Two copies of the
+       geometry drift apart.
 6. **Root-tab drag: a live peek of the back destination (owner choice a).**
    - The peek shows the screen that back will open: the top of
      `SCREEN_HISTORY`, or Course when it is empty. Showing Course and then
@@ -353,17 +379,71 @@ Known = real text available before any request. Async = pending data.
       matching the primary client's settings. This happens only after the
       task 4.5 log read shows what fallback calls take today.
     - A test asserts the client's configured timeout.
+    - **Learner AI endpoints measured in 4.5:**
+      - `/api/v3/pwa/voice/message` and `/api/v3/android/voice/message`;
+      - `/api/v3/pwa/voice/pronounce` and `/api/v3/android/voice/pronounce`;
+      - `/api/v3/android/assistant/conversations/{id}/messages`;
+      - the connect time of the live sockets `/api/v3/pwa/voice/live` and
+        `/api/v3/android/voice/live`.
+    - **No DB lock across external IO (§5.3):** 4.5 checks that no learner
+      path holds a row lock (`with_for_update`) or an open transaction while
+      it waits on AI or TTS. A violation found is fixed with a test.
     - Streaming is decided only from the 4.5 measurement (§5.6). It is not
       built speculatively.
 11. **Android reliability matrix.**
     - The flows §4 calls reliability-critical are mapped to the tests that
       already exist (listed above).
-    - New tests are added only for the two uncovered flows:
-      - process death and restore on Course and in a lesson;
-      - switching accounts without a restart, with no leak of the previous
-        account's cached course or profile.
+    - New tests are added only for the three uncovered flows:
+      - **Real process death and restore,** on Course and in a lesson. The
+        app is sent to the background with `UiDevice.pressHome()`, killed
+        with `am kill`, and relaunched. `ActivityScenario.recreate()` is not
+        enough: it keeps the process and its in-memory state.
+      - **Switching accounts without a restart,** with no leak of the
+        previous account's cached course, profile or rating.
+      - **Automatic reconnect:** when the network returns, the
+        `OfflineMode` network callback clears the offline state without a
+        tap. Today `OfflineModeTest` covers only the tap retry.
+    - Rotation is not applicable as a reliability flow. `MainActivity`
+      declares `configChanges` for orientation and size, so it is not
+      recreated. The 3.4 audit checks the layout only.
     - Memory (`dumpsys meminfo`) and network bytes per Course open are
       recorded with the 3.2 startup runs, on the same devices.
+    - **Weak device (§4):**
+      - **Mandatory:** a low-end profile on the installed API 36 emulator
+        image: 2 GB RAM, 2 cores, the slow-network profile.
+      - **Also used:** the owner's real low-end phone when the owner
+        provides one.
+      - **Owner approval needed:** downloading an older OS image (API
+        26–29), because it is a large download.
+    - **ANR and crash data:**
+      - the owner's Play Console vitals export when provided;
+      - otherwise the app's own exit-reason diagnostics
+        (`reportExitReasons()`, API 30+) from production logs. These are
+        already reported for both flavours.
+
+12. **Target rule for every measured action (§7, no universal 400 ms).**
+    Targets are set from each action's own lab baseline (Chromium 4× and
+    WebKit, warm and cold), by action type:
+    - **Interactions** (tab switch, search keystroke, exercise advance,
+      swipe-back start): action to next paint ≤200 ms, the Web Vitals
+      "good" INP bound.
+    - **Openings** (first open of a layer, lesson open, session start,
+      lesson finish → result): action to first useful frame ≤1000 ms on a
+      warm open.
+    - **Launch:** a warm launch keeps its baseline. A cold launch is judged
+      by real users, not by the harsher lab: if the 1.4 p75 LCP exceeds
+      2.5 s, the cold-path items marked "Unnecessary now" are reopened with
+      that evidence.
+    - **An action already inside its bound** has the target "no regression
+      beyond 10%".
+    - **An action outside its bound** has the bound as its target. The
+      task that owns the action fixes it: 2.4 or 2.8 for layers and
+      sessions, 2.7 for the lesson, 2.3 for Inbox.
+    - **Exception:** if the bound cannot be reached because the cause is
+      outside the app (network or provider), it is recorded with the
+      evidence and approved by the owner, as for the 8 px geometry rule.
+    - **Every PWA package** must also add no new console or page error in
+      the lab run for the actions it touches (§7, route and browser errors).
 
 ### Condition matrix (§7)
 
@@ -374,13 +454,14 @@ check. "Existing" means the test is in the repository today.
 |---|---|---|---|
 | Cold / warm start | Lab 1.1 ✔ | 3.2 | — |
 | Slow network | Lab profile 1.1 ✔ | 3.2 (emulator network profile) | — |
-| Intermittent network, timeout | Existing held-request tests (Settings push, Friends retry); Inbox in 2.3 | `OfflineModeTest` ✔; reconnect in 3.6 | Client timeouts in 4.5 |
-| Request failure → retry | Practice, Friends, Settings ✔; Inbox 2.3; practice boot 2.8 | 3.3, 3.4 | — |
+| Background, process death, resume | — (the browser owns the page lifecycle) | Real process-death test in 3.6 | — |
+| Intermittent network, timeout | Existing held-request tests (Settings push, Friends retry); Inbox in 2.3; embedded-layer 20 s timeout in 2.4 | `OfflineModeTest` ✔ (tap retry); automatic reconnect in 3.6 | Client timeouts in 4.5 |
+| Request failure → retry | Practice, Friends, Settings ✔; Inbox 2.3; Dictionary/Phrases 2.4; practice boot 2.8 | 3.3, 3.4 | — |
 | Offline recovery | Course cached shell (contract) ✔ | `OfflineModeTest` ✔ | — |
 | Large lists | Dictionary virtual list guard ✔; Mistakes paging ✔ | Dictionary list ✔ (`DictionaryScrollRestoreTest`) | 4.1 league of 500 |
 | Session / account change | Practice actor check, Inbox owner switch ✔ (kept in 2.3) | Logout clears cache ✔; switch without restart 3.6 | Existing owner tests run in 4.x |
 | Reduced motion | Root-tab peek 2.5; panda rule 2.8 | System animator scale off in 3.3 tests | — |
-| Weak device | 4× CPU lab ✔ | Owner's weak device in 3.2 and 3.5 | — |
+| Weak device | 4× CPU lab ✔ | Low-end emulator profile (mandatory) plus the owner's phone if provided, in 3.2 and 3.5 | — |
 
 ### Second-pass scope reduction (§8.5)
 
@@ -390,7 +471,7 @@ The draft was challenged item by item:
   - The contract's open items "every screen at 320/390/430", "filmstrip
     LCP/CLS/INP", "record before/after" and "Rating filmstrip" become one lab
     baseline task (1.3).
-  - Inbox loading and Inbox retry become one task (2.1).
+  - Inbox loading and Inbox retry become one task (2.3).
   - Android jank and ANR become one vitals-driven task.
 - **Dropped with evidence:**
   - The dictionary "blank first open" (a no-gzip artifact).

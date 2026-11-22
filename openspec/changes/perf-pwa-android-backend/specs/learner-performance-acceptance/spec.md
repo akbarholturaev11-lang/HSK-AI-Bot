@@ -73,6 +73,23 @@ that touches an action reports that action's before and after numbers.
 - **WHEN** the lab fixture cannot drive an action
 - **THEN** the action is reported as unmeasured, not as passing
 
+### Requirement: Targets follow one rule by action type
+An action inside its type bound MUST NOT regress by more than 10%. An action
+outside it MUST reach the bound, or carry a documented, evidence-backed
+exception approved by the owner:
+- ≤200 ms to next paint for interactions;
+- ≤1000 ms to first useful frame for warm openings.
+
+A change MUST add no new console or page error for the actions it touches.
+
+#### Scenario: A fast action stays fast
+- **WHEN** a change touches a tab switch whose baseline is 150 ms
+- **THEN** its after number is at most 165 ms
+
+#### Scenario: A slow opening must reach its bound
+- **WHEN** a layer's warm first open measures 1400 ms before a change that targets it
+- **THEN** the change is accepted only when that open reaches 1000 ms or less, or when a documented, owner-approved exception names the external cause
+
 ### Requirement: The lab profile is fixed and repeatable
 PWA lab measurements MUST all use one documented profile, so before/after
 numbers compare:

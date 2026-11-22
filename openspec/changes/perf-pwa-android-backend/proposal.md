@@ -44,7 +44,9 @@ Authoritative sources, not restated here:
 **To do, PWA first:**
 1. Privacy-safe real-user timing through the existing `/api/v3/clientlog`
    diagnostics. No new telemetry stack.
-2. Baselines and targets for the key learner actions:
+2. Baselines and targets (one rule by action type, design decision 12) for
+   the key learner actions, plus the parser-blocking Telegram SDK's cost on
+   PWA launch:
    - navigation;
    - login and onboarding;
    - lesson open, exercise advance and lesson finish;
@@ -53,8 +55,12 @@ Authoritative sources, not restated here:
    - swipe-back.
 3. Inbox: a layout-faithful loading state and an in-place retry. Today the
    loading state is text only and an error has no retry.
-4. Embedded layers: no text-only blank frame before the layer paints. Fixed
-   only if a measured threshold is crossed.
+4. Embedded layers (Dictionary, Phrases):
+   - **Today:** the parent's "Yuklanmoqda…" cover hides the child's own
+     skeleton until the full iframe load. The cover has no Back and no
+     error, so a page that never loads stays on that text.
+   - **Fix:** reveal at the child's first paint, delay the text 300 ms, and
+     add Back and, after 20 s, Retry using existing reviewed copy.
 5. Root-tab drag: a live peek of the back destination (owner choice a),
    behind a performance gate.
 6. Panda only when a session start is slow (over 300 ms). The Test and
@@ -68,13 +74,15 @@ Authoritative sources, not restated here:
 
 **To do, Android (same initiative, same regression matrix):**
 - Startup baseline and `reportFullyDrawn`, with memory and network bytes,
-  for both flavours on Pixel_8 and the owner's weak device.
+  for both flavours on Pixel_8 and the low-end emulator profile.
 - Layout-matched loading for the two full-screen loaders: first-ever Course
   open and Ready Phrases.
 - A back, scroll and action-state audit.
 - Jank, ANR and duplicate requests from frame stats and vitals data.
-- Tests for the two uncovered reliability flows: process death and an
-  account switch without a restart.
+- Tests for the three uncovered reliability flows: real process death, an
+  account switch without a restart, and automatic reconnect.
+- A mandatory low-end emulator profile, plus the owner's phone when
+  provided.
 
 **To do, Backend:**
 - `lesson/complete`: the full-league leaderboard is computed twice inside the

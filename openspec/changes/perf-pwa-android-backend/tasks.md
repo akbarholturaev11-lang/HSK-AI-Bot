@@ -61,12 +61,19 @@ identity.
   - Swipe-back, from a layer and from a root tab.
   - Lesson open, exercise advance, and lesson finish → result.
   - Session starts: Test exam and Mistakes review.
+  - For Dictionary and Phrases: when the child first paints, and when the
+    parent cover is removed.
+  - The main-thread time of `telegram-web-app.js` before FCP, cold and warm.
+    If it exceeds 50 ms on Chromium 4×, that is evidence for a follow-up to
+    defer it on the PWA path; nothing is changed in 1.3.
+  - The console and page errors per action.
 
   Verify:
   - the table lists both engines;
   - every action has a number or is marked "unmeasured" with the reason;
-  - every action has a target derived from its baseline (§7; no universal
-    400 ms).
+  - every action has a target set by the rule in design decision 12;
+  - the error count per action is recorded as the baseline for "no new
+    error".
 - [ ] 1.4 Real-user launch timing (PWA only) through the existing `clog()`
   beacon to `/api/v3/clientlog`.
   - One beacon per launch after the course is ready.
@@ -74,6 +81,8 @@ identity.
     course-ready time, cold/warm, 200/304, viewport class, standalone or
     browser.
   - No account, text or token. No retry.
+  - It fits the endpoint's limits: at most 14 context keys, each value at
+    most 220 characters. The keys are named in the contract doc.
 
   Verify:
   - an e2e test asserts exactly one beacon per launch, with only the allowed
@@ -95,25 +104,34 @@ identity.
   PR #346.
 - [ ] 2.3 Inbox loading and error states (`iphone-pwa-notices.js`, the Inbox
   layer in `course-v3.html`). Show notice-shaped placeholder rows while the
-  feed is pending. On an error, show the error with an in-place retry using an
-  existing reviewed UZ/RU/TJ retry string. Owner-switch checks stay unchanged.
+  feed is pending. On an error, keep the existing error text and add an
+  in-place retry labelled `courseLoadError.btn` (reviewed UZ/RU/TJ; no new
+  copy). Owner-switch checks stay unchanged.
   Verify:
   - a held-request test in `tests/test_pwa_notices_ui.js` covers
     pending → rows, fail → error → retry → ready, and an owner switch;
   - a Chromium/WebKit geometry check at 320, 390 and 430 px shows ≤8 px;
   - the i18n guard passes;
   - lab Inbox open before/after from 1.1.
-- [ ] 2.4 Embedded-layer text status, only if 1.3 shows the parent
-  "Yuklanmoqda…" for more than 300 ms when the layer is warm-opened on WebKit.
-  - It covers Dictionary, Phrases, and the Test and Mistakes hubs after 2.8.
-  - Delay the text with an anti-flash window, so a fast frame paints its own
-    skeleton first.
+- [ ] 2.4 Embedded layers (Dictionary, Phrases) reveal at the child's first
+  paint, with Back and Retry (design decision 5; PWA path only).
+  - `hsk-lugat.html` and `hsk-gaplar.html` signal their first paint to the
+    parent. The parent removes the cover then, with `load` as the fallback.
+  - The "Yuklanmoqda…" text appears only after 300 ms without the signal.
+  - The cover gains a Back button (`action.back`).
+  - After 20 s it shows `courseLoadError.body` with Retry and Back. Retry
+    reloads the frame.
+  - The Test and Mistakes hubs use the same reveal through the practice boot
+    (2.8).
 
-  Verify:
-  - lab before/after for Phrases and the hubs;
-  - `test_pwa_swipe_back.py` still passes.
-
-  If the threshold is not crossed, record "not needed" with the numbers.
+  Verify, on Chromium and WebKit:
+  - a fast child page paints with no "Yuklanmoqda…" frame;
+  - a held child page shows the text after 300 ms with a working Back;
+  - a never-loading page shows the error after 20 s, and Retry recovers;
+  - the child's header and first row are visible as soon as it paints;
+  - `test_pwa_swipe_back.py` still passes, the i18n guard passes, and the
+    lab before/after from 1.3 is recorded;
+  - Telegram is unchanged (`test_miniapp_smoke.py`).
 - [ ] 2.5 Root-tab live peek, per design decision 6 (owner choice a).
   - At drag start, the back destination is shown as a fixed, inert underlay
     at its `App.show` scroll position.
@@ -213,7 +231,7 @@ identity.
     record it.
   - For every PWA cell pointing at a task, confirm that task's verification
     covers it.
-  - No new test is added outside 2.3, 2.5 and 2.8.
+  - No new test is added outside 2.3, 2.4, 2.5, 2.6 and 2.8.
 
   Verify: the matrix in the contract doc shows each PWA cell with a test
   name or the task that owns it.
@@ -227,9 +245,13 @@ identity.
 - [ ] 3.2 Startup baseline and first-drawn report.
   - Call `reportFullyDrawn()` once when the first useful Course frame (cached
     map or skeleton) is shown.
-  - Measure cold and warm start for the play and direct release builds on
-    Pixel_8 and on the owner's weak device: `adb shell am start -W`, 10 runs,
-    median `TotalTime` and fully-drawn time.
+  - Measure cold and warm start for the play and direct release builds with
+    `adb shell am start -W`: 10 runs, median `TotalTime` and fully-drawn
+    time. Run on:
+    - Pixel_8;
+    - the mandatory low-end emulator profile (design decision 11: API 36
+      image, 2 GB RAM, 2 cores);
+    - the owner's real low-end phone, if the owner provides one.
   - In the same runs, record:
     - memory after Course is drawn (`dumpsys meminfo`, PSS);
     - network bytes and request count for one Course open, from the OkHttp
@@ -243,8 +265,9 @@ identity.
     40% and a trace shows JIT or class loading dominating.
 
   Verify: a test asserts the report fires once; the before/after numbers are
-  recorded in `ANDROID_CONTEXT.md`. If the owner's weak device is not
-  available, its rows are marked "unmeasured".
+  recorded in `ANDROID_CONTEXT.md` for Pixel_8 and the low-end profile. The
+  owner's phone rows are filled in if one was provided; otherwise they are
+  marked "not provided".
 - [ ] 3.3 Replace the two full-screen loaders with `HskSkeleton` compositions
   shaped like the ready screens: first-ever Course open (`CourseScreen.kt`,
   `map == null`) and Ready Phrases (`ReadyPhrasesScreen.kt`). Verify:
@@ -271,20 +294,29 @@ identity.
   Verify: the new tests pass on the direct flavour.
 - [ ] 3.5 Jank, ANR and duplicate requests.
   - Record frame stats (`adb shell dumpsys gfxinfo`) for Course and Dictionary
-    scrolling on Pixel_8 and the owner's weak device.
-  - Read the owner's Play Console vitals export.
+    scrolling on Pixel_8 and the low-end profile.
+  - Read ANR and crash data:
+    - from the owner's Play Console vitals export when provided;
+    - otherwise from the app's own exit-reason diagnostics in production
+      logs (`reportExitReasons()`, API 30+).
   - Fix only the top offenders and any duplicate request found in 3.2, each
     with a regression test.
 
   Verify: before/after frame stats are recorded in `ANDROID_CONTEXT.md`.
 - [ ] 3.6 Reliability flows (design decision 11).
   - Record the mapping from each §4 flow to its existing test.
-  - Add two tests:
-    - **Process death:** `ActivityScenario.recreate()` on Course and in a
-      lesson keeps the screen and the lesson position.
+  - Add three tests:
+    - **Real process death:** on Course and in a lesson, do Home, then
+      `am kill`, then relaunch (UiAutomator). The app restores the screen and
+      the lesson position, or returns to Course with progress intact. It
+      never shows a blank screen or crashes.
     - **Account switch without a restart:** signing out and signing in as
       another account never shows the first account's cached course,
       profile or rating.
+    - **Automatic reconnect:** with the network off, then on, the offline
+      state clears without a tap.
+  - Rotation is recorded as not applicable (`configChanges`; design
+    decision 11).
   - Fix only what those tests find.
 
   Verify: the tests pass on the direct flavour, `testPlayDebugUnitTest`
@@ -334,14 +366,17 @@ identity.
     map and profile.
   - A response over 20% of the cold launch bytes becomes a follow-up with
     evidence.
-  - If the network gap exceeds 500 ms for most launches, write the evidence
-    for an edge or CDN decision for the owner.
+  - If the p50 gap between client TTFB and server time exceeds 500 ms,
+    write the evidence for an edge or CDN decision for the owner.
   - There is no infrastructure change in this change.
 
   Verify: the numbers are recorded in the contract doc.
 - [ ] 4.5 External calls and AI responsiveness (design decision 10).
   - From `railway logs --http`, record p50/p95 for the learner AI endpoints
-    and the fallback-path share.
+    named in design decision 10 (voice message, pronounce, Android
+    assistant messages, live-socket connect), and the fallback-path share.
+  - Check that no learner path holds a row lock or an open transaction
+    while it waits on AI or TTS. Fix any violation with a test.
   - Give the OpenAI fallback client an explicit timeout and retry count, set
     from the primary client's settings, with a unit test on the configured
     values.
