@@ -51,6 +51,10 @@ off-screen; it never flashes back to its open position first.
 - **WHEN** the learner releases a root-tab drag past the back threshold
 - **THEN** the destination opens in one history step, and its anchor (the current lesson on Course) is within 8 px of where the peek showed it
 
+#### Scenario: Back gesture during an active lesson
+- **WHEN** the learner swipes back from the edge during an active lesson in the PWA
+- **THEN** the lesson screen does not follow the finger, a completed gesture opens the existing exit confirmation, cancel keeps the learner on the same question, and a confirmed exit follows the existing save rules
+
 #### Scenario: Cancelling a root-tab drag
 - **WHEN** the learner releases a root-tab drag before the back threshold
 - **THEN** the tab returns to place, the peek is removed, and the current screen and history are unchanged

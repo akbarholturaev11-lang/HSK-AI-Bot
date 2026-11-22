@@ -477,9 +477,32 @@ The draft was challenged item by item:
   session. The implementation rule is in decision 9, including the 300 ms
   minimum once shown that keeps it from flashing.
 
+- **Back gesture during an active session (owner commit `10f496fd`, task
+  2.6):** during an active lesson, test or Mistakes review, an edge swipe
+  must not drag the screen. A completed gesture opens the exit confirmation
+  instead. Cancel keeps the same question, and a confirmed exit follows the
+  existing save rules, with no false resume promise.
+  - **Lesson:** the confirmation already exists (`App.requestExitFlow`,
+    "Darsdan chiqasizmi?"). The resume it promises is kept by
+    `saveLessonResume()` or `Foundation.pause()`. 2.6 verifies both paths.
+  - **Test exam and Mistakes review:** Back exits at once today
+    (`exitExam()` to the hub, `closeReview()`). There is no confirmation and
+    no reviewed exit copy. See the open question.
+
 ## Open questions
 
-None. Every choice the plan depends on is recorded above. Gates that can
-send work back to the owner are named in their tasks: the root-tab peek
-performance gate (2.5), the baseline profile (3.2), and the edge or CDN
-evidence (4.4).
+1. **Exit confirmation for the Test exam and the Mistakes review.** Today
+   there is no confirmation for these two, so the owner chooses:
+   - (a) Add a confirmation sheet with the lesson sheet's look. It needs new
+     UZ/RU/TJ copy that says truthfully what is kept, checked per page in 2.6
+     (an unsubmitted exam is not saved today). It promises no resume, and the
+     owner approves the copy.
+   - (b) Confirm only the lesson. In the test and the review, the swipe does
+     not drag, and a completed gesture runs the existing exit at once.
+
+   Task 2.6 cannot finish those two cases until this is answered. Everything
+   else in 2.6 can proceed.
+
+Gates that can send work back to the owner are named in their tasks: the
+root-tab peek performance gate (2.5), the baseline profile (3.2), and the
+edge or CDN evidence (4.4).
