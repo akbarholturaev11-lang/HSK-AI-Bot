@@ -170,7 +170,7 @@ identity.
   (`hsk-lugat.html`). Verified by
   `test_dragged_word_page_is_opaque_and_closes_before_it_snaps_back`. Merged in
   PR #346.
-- [ ] 2.3 Inbox loading and error states (`iphone-pwa-notices.js`, the Inbox
+- [x] 2.3 Inbox loading and error states (`iphone-pwa-notices.js`, the Inbox
   layer in `course-v3.html`). Show notice-shaped placeholder rows while the
   feed is pending. On an error, keep the existing error text and add an
   in-place retry labelled `courseLoadError.btn` (reviewed UZ/RU/TJ; no new
@@ -181,6 +181,19 @@ identity.
   - a Chromium/WebKit geometry check at 320, 390 and 430 px shows ≤8 px;
   - the i18n guard passes;
   - lab Inbox open before/after from 1.1.
+
+  Status (2026-11-23): done. The behaviour, geometry and lab numbers are in
+  the contract doc ("Inbox loading and error states").
+  - `tests/test_pwa_notices_ui.js`: pending, one feed settled, both settled,
+    both failed, retry, partial failure and retry, and an owner switch on a
+    retry and on a late answer.
+  - `tests/e2e/test_pwa_inbox_states.py` (Chromium and WebKit): title, Back,
+    list and first row move 0 px at 320, 390 and 430 px; error → retry →
+    rows; the fade, and none under reduced motion.
+  - The i18n guard passes. Only the two asset tokens change in
+    `course-v3.html` and `subscription.html`.
+  - Lab, 390 px: the timing is unchanged within noise and inside the
+    targets on both engines.
 - [ ] 2.4 Embedded layers (Dictionary, Phrases): a matching skeleton, never a
   loading text, with Back and Retry (design decision 5, owner rule; PWA path
   only).

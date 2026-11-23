@@ -481,7 +481,9 @@ full run):
     so the cover's bars would show for at most 60 ms before the child's
     matching skeleton.
 - **Inbox** shows its loading text for 320–328 ms on the first open and
-  again on the repeat open. It is ready at 346–356 ms (2.3).
+  again on the repeat open. It is ready at 346–356 ms (2.3). Since 2.3 the
+  wait shows notice-shaped placeholder rows instead (section "Inbox loading
+  and error states").
 
 **Skeletons on a fast open** (how long placeholders stay visible, and whether
 their pulse is one synchronized wave):
@@ -686,6 +688,44 @@ Report p50 and p75 of `fcp`, `lcp`, `ready` and `ttfb`.
     the Telegram Mini App.
 - **The lab:** `scripts/measure_pwa_lab.py` keeps `/api/v3/clientlog` out of
   its network log, so the beacon never adds a request to a measured window.
+
+## Inbox loading and error states (task 2.3)
+
+`iphone-pwa-notices.js` and `iphone-pwa-glass.css`; no new copy.
+- **Pending:** the list is `aria-busy="true"` and shows three placeholder rows
+  in the notice row slot: a title line and two body lines of the shared
+  `pwa-layout-ink`, pulsing with `hsk-pwa-layout-pulse`, hidden from
+  assistive technology. The old loading text ("Hisoblanmoqda...") is gone.
+- **Ready:** the list waits for both feeds, then draws the merged,
+  date-sorted list once (no re-sort in view). The rows fade from 0.82 to
+  full opacity over 200 ms; at once under reduced motion.
+- **Error:** the existing `subscriptionPage.error` text stays, with a retry
+  button below it labelled `courseLoadError.btn` (reviewed UZ/RU/TJ). If one
+  feed loaded, its rows stay and the error sits below them.
+- **Retry:** reads only the failed feeds again, in place. Rows already shown
+  stay; the retried feed gets one placeholder row below them (three if
+  nothing is shown). It never opens the payment dialog. Closing the inbox
+  still drops late answers, and every owner check in `fetchFeed` is
+  unchanged: a changed owner closes the inbox and goes to sign-in.
+
+**Geometry** (`tests/e2e/test_pwa_inbox_states.py`, Chromium and WebKit, 320,
+390 and 430 px): title, Back and list move 0 px from placeholder to content.
+The first row keeps its slot (top, left edge, width: 0 px). A placeholder row
+is 86 px, the height of a notice with a two-line body. A notice with a
+one-line body is 68 px, so the rows below the first move up 18 px per row.
+This is content-sized height below the first row (the "unknown list lengths"
+rule); the test allows it on the first row's height only (≤24 px).
+
+**Lab, Inbox open at 390 px** (`measure_pwa_lab.py` profile, 6 runs per
+engine, median ms; before → after):
+
+| Open | Placeholder first shown, Chromium | WebKit | Ready, Chromium | WebKit | Target |
+|---|---|---|---|---|---|
+| First | 13.5 → 13.0 | 13.0 → 13.5 | 346 → 361 | 364 → 364.5 | 381 / 389 |
+| Repeat | 14.0 → 13.5 | 13.5 → 14.0 | 348 → 347.5 | 362 → 364 | 391 / 392 |
+
+The timing is unchanged within run-to-run noise, and both engines stay inside
+the targets. What changed is what the learner sees during the ~320 ms wait.
 
 ## Backend course-map template cache
 

@@ -304,6 +304,12 @@ class BaselineReadingsTest(unittest.TestCase):
         self.assertEqual(summary["a"]["state"], ["empty", "skeleton"])
         self.assertEqual(summary["a"]["ready_ms"], 2)
 
+    def test_inbox_skeleton_rows_are_a_placeholder_not_ready(self):
+        _, _, _, ready, placeholder, *_ = lab.LAYERS["inbox"]
+        self.assertIn(".hsk-pwa-notice-row:not(.is-skeleton)", ready)
+        self.assertIn(".hsk-pwa-notice-row.is-skeleton", placeholder)
+        self.assertIn(".hsk-pwa-notice-empty", placeholder)
+
     def test_layer_pages_are_the_files_production_serves(self):
         source = (lab.ROOT / "app/api/pwa_auth.py").read_text(encoding="utf-8")
         for route, page in lab.LAYER_FILES.items():

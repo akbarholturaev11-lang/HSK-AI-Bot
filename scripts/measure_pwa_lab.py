@@ -1087,10 +1087,12 @@ LAYERS = {
                 child_of(PHRASES_FRAME, "document.querySelectorAll('#list .phrase:not(.phrase-skeleton)').length>0"),
                 visible_any("#resource-phrases .resource-status"),
                 "RESOURCE.close()", "!document.getElementById('resourceov').classList.contains('on')", PHRASES_FRAME),
+    # Ready means a real notice row; the placeholder is the loading text (before 2.3) or the
+    # notice-shaped skeleton rows (2.3), which carry the row class too.
     "inbox": ("profile", "#s-profile .pwa-notices-button",
               "lab.visible(document.getElementById('hsk-pwa-notice-root'))",
-              "document.querySelectorAll('#hsk-pwa-notice-list .hsk-pwa-notice-row').length>0",
-              visible_any("#hsk-pwa-notice-list .hsk-pwa-notice-empty"),
+              "document.querySelectorAll('#hsk-pwa-notice-list .hsk-pwa-notice-row:not(.is-skeleton)').length>0",
+              visible_any("#hsk-pwa-notice-list .hsk-pwa-notice-empty,#hsk-pwa-notice-list .hsk-pwa-notice-row.is-skeleton"),
               "HskPwaInbox.close()", "document.getElementById('hsk-pwa-notice-root').hidden", None),
     "settings": ("profile", "#s-profile .profile-settings", tab_shown("settings"),
                  "SCREEN==='settings'&&document.querySelectorAll('#s-settings .srow').length>2&&!"
