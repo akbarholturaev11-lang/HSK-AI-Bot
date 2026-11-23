@@ -59,17 +59,17 @@ identity.
       - the live voice relay (Voice runs on a fake microphone).
       - Memorize has no PWA tile, so it opens through the same call a
         tile would make.
-- [ ] 1.3 Record the before baselines with 1.1 on both engines, and set a
+- [x] 1.3 Record the before baselines with 1.1 on both engines, and set a
   target per action from them. Record them in the contract doc, which closes
   its open items "every screen at 320/390/430", "filmstrip LCP/CLS/INP" and the
   Rating filmstrip.
   - Cold and warm launch, with the LCP element named per engine and the time
     until the Tabler icons are visible.
   - For the cold launch, what each parser-blocking `<head>` resource costs
-    the first frame: the Telegram SDK, the four character scripts and the
-    stylesheets (design decision 13). With a held map request, the
-    filmstrip from the first paint to course ready must show the shell
-    skeleton, never a blank or "…" frame.
+    the first frame: the four character scripts and the stylesheets (design
+    decision 13; the Telegram SDK is not on the PWA course route). With a
+    held map request, the filmstrip from the first paint to course ready
+    must show the shell skeleton, never a blank or "…" frame.
   - Today's pull-to-refresh on Course, Rating and Profile: release to the
     first new frame, and release to settled content (the before numbers for
     2.10).
@@ -96,9 +96,10 @@ identity.
   - For Dictionary and Phrases: when the child first paints, whether that
     first paint shows content, a skeleton or an empty list, and when the
     parent cover is removed.
-  - The main-thread time of `telegram-web-app.js` before FCP, cold and warm.
-    If it exceeds 50 ms on Chromium 4×, that is evidence for a follow-up to
-    defer it on the PWA path; nothing is changed in 1.3.
+  - The main-thread time of `telegram-web-app.js` before FCP, cold and warm,
+    in the PWA child pages that still carry it (Dictionary, Phrases). If it
+    exceeds 50 ms on Chromium 4×, that is evidence for a follow-up to defer
+    it on the PWA path; nothing is changed in 1.3.
   - The console and page errors per action.
 
   Verify:
@@ -107,6 +108,29 @@ identity.
   - every action has a target set by the rule in design decision 12;
   - the error count per action is recorded as the baseline for "no new
     error".
+  - Result (2026-11-23):
+    - Two full runs (`--parts all`) and two runs of `--parts refresh,pro`, on
+      both engines. Every action has 6 measured runs on each engine, with no
+      console or page error. The baselines, the decision 12 targets and
+      their owners are in the contract doc, "Baselines and targets".
+    - The harness now models the service worker:
+      - an action part starts after the cold launch's icon font has arrived,
+        and its context holds back the warm-up, so a first open means files
+        not cached yet;
+      - the warm launch is measured after the warm-up and the worker's
+        takeover, and both are reported;
+      - Dictionary, Phrases, checkout and trial are also opened as a
+        returning learner, and pull-to-refresh is measured only that way;
+      - a unit test checks the warm-up model.
+    - Corrected: the Telegram SDK is not on the PWA course route (design
+      decision 13). Its main-thread time in Dictionary and Phrases is 11 ms,
+      under the 50 ms rule, so there is no follow-up.
+    - No single head resource costs 100 ms. The four character scripts
+      together cost 198 ms on Chromium, which is the evidence for 2.9.
+    - The contract doc lists 8 findings that no task owns yet, for the owner.
+      They include the icon font on a first launch, the 2.5 frame gate below
+      today's baseline, and WebKit's cold shell, which head moves cannot bring
+      to 1500 ms.
 - [ ] 1.4 Real-user launch timing (PWA only) through the existing `clog()`
   beacon to `/api/v3/clientlog`.
   - One beacon per launch after the course is ready.

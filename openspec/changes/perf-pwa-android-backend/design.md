@@ -144,7 +144,7 @@ This branch now contains main `caaae35c` (PRs #348–#351) and PR #352
 | Area | Status | Evidence |
 |---|---|---|
 | PWA course first paint: real shell, nav, path skeleton | Solved | Contract checkpoints; 1.1 harness FCP 1.2–2.2 s cold, ≈0.3 s warm |
-| PWA Practice, Voice, Rating, Friends, Profile layout-faithful loading and independent retry | Solved, filmstrip pending | Contract retrofit items with 320/390/430 geometry tests; lab CLS ≈0 |
+| PWA Practice, Voice, Rating, Friends, Profile layout-faithful loading and independent retry | Solved; Rating and Profile filmstrip recorded (1.3) | Contract retrofit items with 320/390/430 geometry tests; lab CLS ≈0 |
 | PWA Settings push status pending/error/retry | Solved | Contract items; Node held-request tests |
 | In-flight dedupe, bounded Voice request, deferred offscreen Practice/Profile work | Solved | Contract checkpoints with Chromium/WebKit tests |
 | HTML ETag/304, immutable assets, SW cache-first, gzip | Solved | Production headers checked on 2026-11-22 |
@@ -156,20 +156,20 @@ This branch now contains main `caaae35c` (PRs #348–#351) and PR #352
 | CI guard covers Android and navigation | Solved | `check_backend_pwa_performance_contract.py` |
 | Repeatable lab profile | Solved (1.1) | `scripts/measure_pwa_lab.py`, `tests/test_measure_pwa_lab.py` in CI |
 | Real-user timing | To do | No RUM in repo; requirement §7 |
-| Key action baselines: lesson open, exercise advance, search, swipe-back | To do | Not measured (above) |
+| Key action baselines: lesson open, exercise advance, search, swipe-back | Measured (1.3) | Contract doc, "Baselines and targets": every action on both engines, with its decision 12 target |
 | Inbox loading and error states | To do | `iphone-pwa-notices.js`: text-only loading, error without retry |
 | Embedded-layer cover (Dictionary, Phrases) | To do | The cover stays until the full iframe `load` and hides the child's own skeleton; it has no Back and no error/retry, so a page that never loads leaves "Yuklanmoqda…" forever. Owner rule: no loading text, a matching skeleton instead (decision 5) |
-| Launch path to the first frame | Measure, then to do | The first paint is already the shell skeleton, but four character scripts, the Telegram SDK and ten stylesheets block it on a cold launch (decision 13) |
+| Launch path to the first frame | Measure, then to do | The first paint is already the shell skeleton, but four character scripts and ten stylesheets block it on a cold launch; the Telegram SDK is already removed on this route (decision 13) |
 | In-lesson personal review and Mistakes review wait for the server on every answer | To do | `adaptiveSubmit` waits up to 8 s; review `pickOption` waits and blocks on failure; server p50 ≈37–51 ms, so the wait is the network (decision 15) |
 | Pro, trial and limit windows | To do | Sheet: "Tariflar yuklanmoqda…" text and two sequential requests; checkout and trial layers: empty until the child paints (decision 16) |
 | Pull-to-refresh (Course, Rating, Profile) | To do | `iphone-pwa-refresh.js` reloads the whole page; no armed state at the threshold, no spinning ring, no region skeletons (decision 14) |
-| Telegram SDK in the PWA head | Measure | `telegram-web-app.js` (19 KB gzip, 120 KB raw) is parser-blocking in `<head>` on every PWA launch; 1.3 records its main-thread time before FCP |
+| Telegram SDK in the PWA child pages | Measured (1.3) | Corrected in 1.3: `_pwa_inline_html` removes `telegram-web-app.js` (19 KB gzip, 120 KB raw) from the PWA course response, so it is not on the launch path. It is still parser-blocking in the Dictionary, Phrases, practice, checkout and onboarding pages; 1.3 records its main-thread time there |
 | Remaining layer back/scroll audit; root-tab drag peek | To do | Contract open item; owner report |
 | Panda vs skeleton (hubs show the panda; lesson entry has a 720 ms minimum) | To do | Owner decision below; code above |
 | Root-tab drag shows the empty paper under the tab | To do | Owner report; `goBack` comment above |
-| Lesson finish → result: CTA hidden, no feedback while `lesson/complete` runs | Measure | `flowDone()`; server p95 ≈490–670 ms |
+| Lesson finish → result: CTA hidden, no feedback while `lesson/complete` runs | Measured (1.3) | Lab: 337 ms (Chromium) and 231 ms (WebKit), with the fixture answering at once; production's server p95 ≈490–670 ms is not modelled (`flowDone()`) |
 | Text fonts | Not applicable | System font stacks only (`design-tokens.css`); no text `@font-face` on learner pages |
-| Icon font (Tabler 3.30.0 from cdnjs) | Measure | Non-blocking in the PWA (`media=print` swap); time to visible icons recorded in 1.3 |
+| Icon font (Tabler 3.30.0 from cdnjs) | Measured (1.3); no owning task | Non-blocking in the PWA (`media=print` swap). On a first launch the icons appear at 8.2–8.7 s, 4.6–5.1 s after the course is ready: one 870 KB woff2 for about 74 icons, with no `font-display`, so the slots are empty, then "□". Warm: 0.24–0.29 s. Owner finding in the contract doc |
 | Debounced search, optimistic rollback, pagination | Solved | Dictionary filters bundled data locally and debounces only the history save; daily goal restores `previous` on save failure; Mistakes pages by `limit=30&offset` |
 | OpenAI fallback client without a timeout | To do | `ai_provider.py` (above) |
 | AI time to first useful response | Unmeasured | No learner AI endpoint timing recorded |
@@ -197,7 +197,7 @@ Known = real text available before any request. Async = pending data.
 | PWA Course | Path/mixed | Header, nav, level frame | Lessons, XP, streak | Path skeleton ✔ |
 | PWA Practice | Card list | Six card titles | Counts and locks | Six geometry placeholders ✔ |
 | PWA Voice | Mixed | Title, panda, description | Quota | Reserved quota slot ✔ |
-| PWA Rating | Podium + rows | Headings, labels | Users, scores | Podium/rows ✔ (filmstrip open) |
+| PWA Rating | Podium + rows | Headings, labels | Users, scores | Podium/rows ✔ (filmstrip ✔ 1.3; repeat open flashes the placeholders) |
 | PWA Friends | Rows | Invite text | Friends, summary | Rows with retry ✔ |
 | PWA Profile | Mixed | Labels, settings | Rings, calendar, achievements | Per-region ✔ |
 | PWA Settings | Form | All labels | Push status | Pending/error/retry ✔ |
@@ -300,7 +300,9 @@ Known = real text available before any request. Async = pending data.
          `state.loading` label, which is not visible.
      - The title, Back and paper background are there at once. The bars
        appear after a 150 ms anti-flash window, so a fast open never flashes
-       them. The 1.3 warm-open filmstrip confirms that window.
+       them. The 1.3 warm-open filmstrip confirms that window: repeat opens
+       are ready in ≤54 ms, and a returning learner's first open hands over
+       to the child at 180–210 ms.
      - **The child's first paint is the same skeleton,** so the handoff is
        invisible:
        - `hsk-lugat.html` gains static row placeholders in `#list`, under
@@ -527,7 +529,6 @@ Known = real text available before any request. Async = pending data.
       - Before that paint, iOS shows its launch image (logo on paper,
         `/assets/startup/`) and Android shows the manifest splash.
       - Parser-blocking in `<head>` before the shell:
-        - `telegram-web-app.js`;
         - four character scripts: `hsk-character-pack.js`,
           `hsk-character-motion.js`, `hsk-study-preparing.js`,
           `hsk-lesson-presentation.js`;
@@ -535,8 +536,23 @@ Known = real text available before any request. Async = pending data.
 
         Warm launches read them from the service-worker cache; cold
         launches fetch them.
+      - `telegram-web-app.js` is not on this path (corrected in 1.3; the
+        plan first listed it here). `_pwa_inline_html` removes its tag from
+        the PWA course response only; the shared HTML keeps it for
+        Telegram. The other PWA pages are served with it, still
+        parser-blocking: Dictionary, Phrases, the practice pages, checkout
+        and the two onboarding pages. 1.3 measures its main-thread time
+        there.
       - Lab (1.1): warm FCP ≈0.3 s and course ready ≈0.7 s. Cold FCP
         1.24 s (Chromium) and 2.18 s (WebKit), course ready ≈3.6 s.
+      - Lab (1.3, in the contract doc):
+        - No single head resource costs 100 ms of the cold first paint.
+        - The four character scripts together cost 198 ms on Chromium and
+          79 ms on WebKit. That is the evidence for 2.9 to move them as one
+          group.
+        - WebKit's cold first paint (2.15 s) is still 1.69 s with every
+          stylesheet removed. 2.9 must find what holds it, or record an
+          owner-approved exception.
     - **Rule:** from the first page paint until the course is ready, the
       learner sees the shell skeleton pulsing (static under reduced motion).
       Never a blank page, "…" or a spinner. A failed map keeps the existing

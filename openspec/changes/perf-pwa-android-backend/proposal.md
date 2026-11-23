@@ -45,8 +45,9 @@ Authoritative sources, not restated here:
 1. Privacy-safe real-user timing through the existing `/api/v3/clientlog`
    diagnostics. No new telemetry stack.
 2. Baselines and targets (one rule by action type, design decision 12) for
-   the key learner actions, plus the parser-blocking Telegram SDK's cost on
-   PWA launch:
+   the key learner actions, plus what each parser-blocking `<head>` resource
+   costs the PWA launch and the Telegram SDK's cost in the PWA child pages
+   (it is already removed from the PWA course route):
    - navigation;
    - login and onboarding;
    - lesson open, exercise advance and lesson finish;

@@ -199,6 +199,149 @@ class FlowFixtureTest(unittest.TestCase):
         self.assertIn("if(w.seen){w.ready=t-w.start", lab.PAGE_PROBE)
 
 
+class BaselineReadingsTest(unittest.TestCase):
+    """Task 1.3: the cost, filmstrip, trace and target helpers read what they claim to."""
+
+    HEAD = ('<head><script src="/assets/telegram-web-app.js?v=1"></script>'
+            '<script defer src="/a.js?v=1"></script><script async src="/b.js?v=1"></script>'
+            '<link rel="stylesheet" href="/x.css?v=2"><link rel="preload" href="/f.woff2">'
+            '<link rel="stylesheet" media="print" href="/print.css"><script>inline()</script>'
+            '<script src="/c.js?v=3"></script></head><body><script src="/late.js"></script></body>')
+
+    def test_only_parser_blocking_head_resources_are_listed(self):
+        self.assertEqual(lab.head_blocking_resources(self.HEAD),
+                         ["/assets/telegram-web-app.js?v=1", "/x.css?v=2", "/c.js?v=3"])
+
+    def test_stripping_removes_only_the_named_head_tags(self):
+        out = lab.strip_resources(self.HEAD, ["/x.css?v=2", "/c.js?v=3"])
+        self.assertNotIn("/x.css?v=2", out)
+        self.assertNotIn("/c.js?v=3", out)
+        self.assertIn("/assets/telegram-web-app.js?v=1", out)
+        self.assertIn('<script src="/late.js"></script>', out)  # the body is never touched
+        self.assertEqual(lab.head_blocking_resources(out), ["/assets/telegram-web-app.js?v=1"])
+
+    def test_cost_variants_cover_each_resource_and_the_groups(self):
+        variants = lab.blocking_variants(["/s/a.js?v=1", "/s/b.css?v=1"])
+        self.assertEqual(variants["none"], ())
+        self.assertEqual(variants["a.js"], ("/s/a.js?v=1",))
+        self.assertEqual(variants["all_scripts"], ("/s/a.js?v=1",))
+        self.assertEqual(variants["all_stylesheets"], ("/s/b.css?v=1",))
+        self.assertEqual(variants["all_blocking"], ("/s/a.js?v=1", "/s/b.css?v=1"))
+
+    def test_the_filmstrip_counts_blank_and_dots_frames_before_content(self):
+        origin = 1000.0
+        states = [[1300, "blank"], [1400, "dots"], [1450, "shell"], [2000, "content"]]
+        film = lab.film_summary(states, origin)
+        self.assertEqual(film["first_state"], "blank")
+        self.assertEqual(film["first_frame_ms"], 300)
+        self.assertEqual(film["shell_ms"], 450)
+        self.assertEqual(film["content_ms"], 1000)
+        self.assertEqual(film["bad_frames_ms"], 150)
+        self.assertEqual(film["bad_states"], "blank,dots")
+        clean = lab.film_summary([[1200, "shell"], [1900, "content"]], origin)
+        self.assertEqual((clean["bad_frames_ms"], clean["bad_states"]), (0, "none"))
+        # Before the first contentful paint the previous screen is still shown: not a bad frame.
+        held = lab.film_summary(states, origin, fcp=420)
+        self.assertEqual((held["bad_frames_ms"], held["bad_states"]), (30, "dots"))
+
+    def test_trace_time_is_the_scripts_own_evaluation(self):
+        sdk = {"data": {"url": "http://x/assets/telegram-web-app.js?v=1"}}
+        events = [
+            {"ph": "X", "name": "EvaluateScript", "ts": 100, "dur": 30000, "args": sdk},
+            {"ph": "X", "name": "v8.compile", "ts": 200, "dur": 5000, "args": sdk},      # inside: counted once
+            {"ph": "X", "name": "v8.compile", "ts": 90, "dur": 2000, "args": {"fileName": sdk["data"]["url"]}},
+            {"ph": "X", "name": "EvaluateScript", "ts": 0, "dur": 9000, "args": {"data": {"url": "/other.js"}}},
+        ]
+        # The outside compile starts before the evaluation span, so it is added.
+        self.assertEqual(lab.script_main_thread_ms(events, "telegram-web-app.js"),
+                         {"evaluate_ms": 30.0, "compile_outside_ms": 2.0})
+
+    def test_decision_12_targets(self):
+        self.assertEqual(lab.decision_12_target("interaction", 120), {"target_ms": 132, "status": "within"})
+        self.assertEqual(lab.decision_12_target("interaction", 195), {"target_ms": 200, "status": "within"})
+        self.assertEqual(lab.decision_12_target("opening", 1733), {"target_ms": 1000, "status": "over"})
+        self.assertEqual(lab.decision_12_target("cold_shell", 2154), {"target_ms": 1500, "status": "over"})
+        self.assertEqual(lab.decision_12_target("keep", 3557), {"target_ms": 3913, "status": "keep"})
+        self.assertEqual(lab.decision_12_target("opening", None)["status"], "unmeasured")
+
+    def test_every_timed_action_gets_a_target_rule(self):
+        names = ["lesson_open", "exercise_next", "lesson_finish", "memorize_open_first", "voice_open_repeat",
+                 "exam_start", "review_start", "tab_rating_first", "dict_open_first", "phrases_open_repeat",
+                 "inbox_open_first", "settings_open_repeat", "search_pinyin", "swipe_layer", "swipe_root_tab",
+                 "pull_course", "adaptive_answer_now", "review_answer_held_1s", "pro_sheet_repeat",
+                 "checkout_open", "trial_open", "login_cold", "li_onboarding_warm", "onboarding_cold"]
+        summary = lab.with_targets({name: {"ready_ms": 10} for name in names})
+        self.assertEqual([name for name in names if "target" not in summary[name]], [])
+        self.assertEqual(summary["exercise_next"]["target"]["kind"], "interaction")
+        self.assertEqual(summary["memorize_open_first"]["target"]["owner"], "2.8")
+
+    def test_errors_are_kept_per_action(self):
+        page = object()
+        log = lab.page_errors(page)
+        results = {}
+
+        def noisy():
+            log.append("console: boom @ /x.js")
+            return {"ready_ms": 1}
+
+        lab.measured(results, "a", noisy, page)
+        lab.measured(results, "b", lambda: {"ready_ms": 2}, page)
+        self.assertEqual(results["a"]["errors"], ["console: boom @ /x.js"])
+        self.assertEqual(results["b"]["errors"], [])
+        summary = lab.summarise_actions([results, {"a": {"ready_ms": 3, "errors": []}, "b": dict(results["b"])}])
+        self.assertEqual((summary["a"]["error_runs"], summary["a"]["errors"]), (1, ["console: boom @ /x.js"]))
+        self.assertEqual(summary["b"]["error_runs"], 0)
+
+    def test_text_readings_list_the_values_seen(self):
+        summary = lab.summarise_actions([{"a": {"ready_ms": 1, "state": "skeleton"}},
+                                         {"a": {"ready_ms": 3, "state": "empty"}}])
+        self.assertEqual(summary["a"]["state"], ["empty", "skeleton"])
+        self.assertEqual(summary["a"]["ready_ms"], 2)
+
+    def test_layer_pages_are_the_files_production_serves(self):
+        source = (lab.ROOT / "app/api/pwa_auth.py").read_text(encoding="utf-8")
+        for route, page in lab.LAYER_FILES.items():
+            match = re.search(r'@router\.get\("' + re.escape(route) + r'"\)(.*?)(?=@router\.)', source, re.S)
+            self.assertIsNotNone(match, route)
+            self.assertIn('"app/static/' + page + '"', match.group(1), route)
+
+    def test_the_probe_carries_the_1_3_readings(self):
+        for name in ("lab.shimmer=", "lab.filmStart=", "lab.swipe=", "lab.fcpAt=", "lab.icons=",
+                     "lab.lcpEl=", "lab.slowestEvent", "lab.childOf="):
+            self.assertIn(name, lab.PAGE_PROBE)
+        # Icon time reads the font faces: document.fonts.check() is true when no face matches.
+        self.assertNotIn("fonts.check", lab.PAGE_PROBE)
+        self.assertEqual(set(lab.ALL_PARTS) >= {"tabs", "layers", "search", "swipe", "answers", "pro",
+                                                "refresh", "blocking", "film", "sdk"}, True)
+
+    def test_the_lab_models_the_service_worker_warm_up(self):
+        class Page:
+            def __init__(self, answers):
+                self.answers = list(answers)
+
+            def evaluate(self, _expr):
+                return self.answers.pop(0)
+
+            def wait_for_timeout(self, _ms):
+                pass
+
+        class Server:
+            def take_log(self):
+                return [{"bytes": 1024 * 1024}, {"bytes": 512}]
+
+        # Action contexts drop the message the course posts; settle() waits for the stamp the worker writes.
+        course = (lab.ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
+        worker = (lab.ROOT / "app/static/iphone-pwa-sw.js").read_text(encoding="utf-8")
+        self.assertIn('postMessage({type:"hsk-pwa-warm"})', course)
+        self.assertIn("m.type==='hsk-pwa-warm'&&!window.__labAllowWarm", lab.NO_WARM_UP)
+        self.assertIn("type: 'hsk-pwa-warm'", lab.START_WARM_UP_JS)
+        self.assertIn("/__hsk-pwa-warm-stamp", worker)
+        self.assertIn("'/__hsk-pwa-warm-stamp'", lab.WARM_STAMP_JS)
+        self.assertEqual(lab.settle(Page([None, None, 22959]), Server()), {"link_kb": 1024.5, "warm_up_ms": 22959})
+        self.assertEqual(lab.settle(Page([-1]), Server())["warm_up_ms"], "unsupported")
+        self.assertIn("unmeasured", lab.settle(Page([None] * 10), Server(), timeout_s=0))
+
+
 class HeaderCheckTest(unittest.TestCase):
     class _Response:
         def __init__(self, headers):
