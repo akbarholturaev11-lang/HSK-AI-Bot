@@ -135,8 +135,10 @@ identity.
   beacon to `/api/v3/clientlog`.
   - One beacon per launch after the course is ready.
   - Fields: navigation timing, FCP, LCP, CLS, the slowest event duration,
-    course-ready time, cold/warm, 200/304, viewport class, standalone or
-    browser.
+    course-ready time, cold/warm, 200/304, whether the service worker
+    controls the page, viewport class, standalone or browser. The worker
+    field shows whether Safari pays the WebKit takeover seen in 1.3 (owner,
+    2026-11-23).
   - No account, text or token. No retry.
   - It fits the endpoint's limits: at most 14 context keys, each value at
     most 220 characters. The keys are named in the contract doc.
@@ -188,9 +190,15 @@ identity.
     `courseLoadError.body` with Retry and Back. Retry reloads the frame.
   - The Test and Mistakes hubs use the same cover through the practice boot
     (2.8).
+  - On the PWA path, Dictionary and Phrases no longer load
+    `telegram-web-app.js` (owner, 2026-11-23; 1.3 measured 0.08–0.58 s of
+    cold first paint). First show that no code on those pages calls
+    `Telegram.WebApp` on the PWA path unguarded. Telegram keeps the script.
 
   Verify, on Chromium and WebKit:
   - no frame of any open shows a loading text, fast, held or failing;
+  - the PWA Dictionary and Phrases responses carry no `telegram-web-app.js`,
+    and Telegram's still do;
   - a held child page shows the title, Back and the skeleton bars, and Back
     works;
   - the parent and child skeletons agree within 2 px for the header and the
@@ -216,7 +224,8 @@ identity.
     - cancel leaves `SCREEN` and history unchanged;
     - under reduced motion there is no underlay, and it is one step back.
   - The performance gate on Chromium with 4× CPU: no long task over 50 ms
-    at drag start, and drag frames at p95 ≤ 16.7 ms. If it fails, stop and
+    at drag start, and drag frames at p95 ≤19.8 ms: today's root-tab drag
+    (18 ms in 1.3) + 10%, set by the owner on 2026-11-23. If it fails, stop and
     report to the owner (decision 6).
   - An iOS Simulator recording at 390 px.
 - [ ] 2.6 Back and scroll audit, one layer at a time:
@@ -305,14 +314,16 @@ identity.
     (`catalog.DEBUG_ASSETS`) stays the same.
   - On the PWA route the resource loads after the first paint. Telegram
     keeps today's order.
-  - If 1.3 shows no such resource, record that and close the task without a
-    code change.
+  - 1.3 result: no single resource reaches 100 ms. The four character
+    scripts together cost 198 ms on Chromium (79 ms on WebKit), so they move
+    as one group (owner, 2026-11-23).
 
   Verify, on Chromium and WebKit:
   - a held map request shows the shell skeleton from the first paint until
     course ready, with no blank or "…" frame;
-  - cold time to the shell ≤1500 ms on both engines, or the owner-approved
-    exception is recorded; a warm launch is within 10% of its baseline;
+  - cold time to the shell is within its 1.3 target on Chromium. WebKit's
+    target is decided with 1.4's data (design decision 13). A warm launch is
+    within 10% of its baseline;
   - the lesson entry and the five practice starts still work (the 1.2
     flows);
   - Telegram is unchanged (`test_miniapp_smoke.py`), and the lab
@@ -400,16 +411,60 @@ identity.
   - payment start, return, polling and the exit offer behave as before (the
     existing checkout tests pass), and the i18n guard passes;
   - the lab before/after from 1.3 is recorded.
-- [ ] 2.13 PWA condition matrix (design.md, §7). It runs last in group 2.
+- [ ] 2.13 PWA condition matrix (design.md, §7). It runs last in group 2,
+  after 2.14–2.16.
   - For every PWA cell marked ✔, run the named test once on this branch and
     record it.
   - For every PWA cell pointing at a task, confirm that task's verification
     covers it.
   - No new test is added outside 2.3, 2.4, 2.5, 2.6, 2.8, 2.9,
-    2.10, 2.11 and 2.12.
+    2.10, 2.11, 2.12, 2.14, 2.15 and 2.16.
 
   Verify: the matrix in the contract doc shows each PWA cell with a test
   name or the task that owns it.
+- [ ] 2.14 Icons on a first launch (owner, 2026-11-23; 1.3 finding 1).
+  - On the PWA path, replace the cdnjs Tabler stylesheet and its 870 KB font
+    with a subset that holds only the icons the learner pages use. Serve it
+    from the app as a versioned, immutable asset, with a short
+    `font-display` block, so no icon shows as "□".
+  - A script builds the subset from the `ti-` names in the learner pages. A
+    CI check fails when a page uses an icon the subset lacks.
+  - The icons look the same: same glyphs, size and colour.
+  - Telegram keeps today's stylesheet.
+
+  Verify:
+  - lab before/after on both engines: on a cold launch the icons are visible
+    by course ready;
+  - every `ti-` icon used on the learner pages renders from the subset;
+  - the i18n and asset-version guards pass, and Telegram is unchanged
+    (`test_miniapp_smoke.py`).
+- [ ] 2.15 The worker's warm-up waits for the first launch (owner,
+  2026-11-23; 1.3 finding 2).
+  - The course posts `hsk-pwa-warm` only after the launch has finished:
+    course ready, the icons visible, and the page idle. Today it posts 3 s
+    after `load`.
+  - The warm-up's list, its 12 h stamp and its cache stay as they are.
+
+  Verify:
+  - lab before/after: a cold launch with the warm-up allowed reaches course
+    ready and visible icons within 10% of the 1.3 quiet-link baseline;
+  - the warm-up still writes its stamp, and a returning learner's first
+    Dictionary open stays within its 1.3 target;
+  - the existing service worker tests pass.
+- [ ] 2.16 Rating repeat open shows the list it already has (owner,
+  2026-11-23; 1.3 finding 4).
+  - A repeat open of Rating shows the verified leaderboard already in memory
+    at once, and refreshes it in place, as Profile does.
+  - It reuses only the current verified session's in-memory state, never
+    persisted data (contract, "Safe cached data"). An owner change drops it.
+  - The placeholders show only on the first open, or after an error.
+
+  Verify, on Chromium and WebKit:
+  - lab before/after: a repeat open shows no placeholder frame, and the
+    first open is unchanged;
+  - the Rating geometry regressions pass at 320, 390 and 430 px;
+  - an account switch never shows the previous account's list;
+  - Telegram is unchanged (`test_miniapp_smoke.py`).
 
 ## 3. Native Android (same initiative, after group 2)
 

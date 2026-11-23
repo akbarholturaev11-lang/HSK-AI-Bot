@@ -264,8 +264,9 @@ Known = real text available before any request. Async = pending data.
 3. **Real-user timing through `clog()` → `/api/v3/clientlog`.**
    - One `sendBeacon` per launch, after the course is ready.
    - Contents: navigation timing, FCP, LCP, CLS, the slowest event duration,
-     course-ready time, cold/warm and 304/200 from `transferSize`, viewport
-     class, standalone or browser.
+     course-ready time, cold/warm and 304/200 from `transferSize`, whether
+     the service worker controls the page, viewport class, standalone or
+     browser.
    - No account, text or token.
    - Read with `railway logs` (memory: `railway-logs-debugging`).
    - Rejected alternatives: a new analytics event, which touches funnel
@@ -364,8 +365,10 @@ Known = real text available before any request. Async = pending data.
    - **Reduced motion:** no follow and no peek. A completed edge swipe still
      goes back one step. Spec: "or no follow with one step back".
    - **Performance gate:** on Chromium with 4× CPU, showing the underlay must
-     not create a long task over 50 ms, and drag frames must stay at p95 ≤
-     16.7 ms. If Course is too heavy to lay out at drag start, the underlay
+     not create a long task over 50 ms, and drag frames must stay at p95 no
+     more than 10% above today's root-tab drag: 18 ms in the 1.3 baseline, so
+     ≤19.8 ms. (Owner, 2026-11-23: the first gate, p95 ≤16.7 ms, was below
+     what today's drag already runs at in this lab.) If Course is too heavy to lay out at drag start, the underlay
      is prepared at `touchstart` inside the edge strip, before the move
      threshold. If the gate still fails, the peek is not shipped. The numbers
      go to the owner, and the fallback is option (b) (no follow, one step
@@ -514,6 +517,9 @@ Known = real text available before any request. Async = pending data.
     - **Exception:** if the bound cannot be reached because the cause is
       outside the app (network or provider), it is recorded with the
       evidence and approved by the owner, as for the 8 px geometry rule.
+    - **Approved exception (owner, 2026-11-23):** Course onboarding, cold
+      (1.01–1.06 s in 1.3). Each learner sees it once, so it keeps its 1.3
+      reading + 10% as its target instead of the 1000 ms bound.
     - **Every PWA package** must also add no new console or page error in
       the lab run for the actions it touches (§7, route and browser errors).
 
@@ -572,6 +578,13 @@ Known = real text available before any request. Async = pending data.
       - Chromium (1238 ms) is already inside: no regression beyond 10%.
       - WebKit (2178 ms) must reach 1500 ms, or carry an owner-approved
         exception with the evidence.
+      - **Owner, 2026-11-23:** 1.3 shows that head moves cannot bring WebKit
+        to 1500 ms (2.15 s; 1.69 s even with every stylesheet removed). 2.9
+        still moves the four character scripts as one group. The WebKit
+        target is then decided with 1.4's data: after 7 days of beacons, the
+        owner gets the iPhone p75 first paint. Within 1500 ms, the lab gap is
+        recorded as an approved exception. Above it, a follow-up traces what
+        holds WebKit's first paint.
       - A warm launch keeps its baseline.
     - **Launch mark (#348, not wired):** if the owner replaces the Golden
       Logo with the "Knot Thread" mark, the PWA route keeps removing the
@@ -987,6 +1000,29 @@ The draft was challenged item by item:
     skilled user could read the answers from the network, as in lessons.
     The server still re-grades every answer and awards XP only by its own
     verdict.
+
+- **Decisions on the 1.3 findings (owner, 2026-11-23).** The findings are in
+  the contract doc's 1.3 section. The owner accepted every recommendation:
+  1. **Icon font on a first launch:** serve only the icons the learner pages
+     use, from the app itself, so they arrive with the course and never show
+     as "□" (new task 2.14).
+  2. **The warm-up shares the first session's link:** it starts only after
+     the first launch has finished, the icons included (new task 2.15).
+  3. **WebKit worker takeover:** no fix now. 1.4's beacon records whether
+     the worker controls the launch, and the iPhone readings show whether
+     Safari pays it.
+  4. **Rating repeat open shows the placeholders again:** a repeat open
+     shows the verified list it already has, at once, and refreshes it in
+     place, as Profile does (new task 2.16).
+  5. **Course onboarding, cold, over 1000 ms:** an approved exception
+     (decision 12).
+  6. **The 2.5 frame gate:** no worse than today's root-tab drag
+     (decision 6). The owner still checks the peek on a real phone (5.1).
+  7. **WebKit's cold shell:** 2.9 moves the four character scripts. The
+     WebKit target is then decided with real-user data (decision 13).
+  8. **The Telegram SDK in Dictionary and Phrases:** removed on the PWA path
+     only, after showing that no PWA code there calls it. Telegram keeps it
+     (inside 2.4).
 
 ## Open questions
 

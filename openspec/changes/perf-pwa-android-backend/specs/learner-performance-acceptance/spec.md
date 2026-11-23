@@ -121,7 +121,7 @@ diagnostics endpoint, at most once per launch:
 - layout shift;
 - slowest interaction;
 - course-ready time;
-- warm or cold start.
+- warm or cold start, and whether the service worker controls the page.
 
 The report carries no account ID, content, query text or token. It never
 delays or blocks a learner action.

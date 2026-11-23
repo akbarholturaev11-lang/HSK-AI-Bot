@@ -582,6 +582,21 @@ and with it removed in the lab):
    and Phrases by 0.08–0.58 s. Its script time is under the 50 ms rule, so
    1.3 opens no follow-up. The owner can open one on the download cost.
 
+**Owner decisions on these findings (2026-11-23),** recorded in the OpenSpec
+design ("Decisions on the 1.3 findings"):
+1. Icon font: a subset served by the app (task 2.14).
+2. Warm-up: it starts after the first launch has finished (2.15).
+3. WebKit takeover: no fix now; 1.4 records whether the worker controls
+   the launch.
+4. Rating repeat open: shows the list it has and refreshes in place (2.16).
+5. Course onboarding, cold: an approved exception; its target is the
+   reading + 10%.
+6. 2.5 frame gate: p95 ≤19.8 ms, today's root-tab drag + 10%.
+7. WebKit cold shell: 2.9 moves the four character scripts; the WebKit
+   target is decided with 1.4's data.
+8. Telegram SDK: removed from Dictionary and Phrases on the PWA path only
+   (2.4).
+
 **Still open after 1.3:**
 - Real Safari on an iPhone (5.1) and real-user timing (1.4).
 - Reduced motion, failed requests and account switch per screen: the
