@@ -1,6 +1,6 @@
 """Automatic four-stage rollout and admission over the real Smart SQL paths."""
 import asyncio
-from datetime import timedelta
+from datetime import datetime, timedelta, timezone
 import json
 from types import SimpleNamespace
 import unittest
@@ -589,9 +589,11 @@ class AdmissionChecks(FixtureChecks):
             with self.assertRaisesRegex(SmartReminderError, "smart_channel_unsupported"):
                 await SmartReminderPreferencesService(s).patch(actor, SmartReminderPatch(
                     request_id=str(uuid4()), expected_revision=pref["revision"], study_enabled=False))
+        # The session check reads the real clock, while q.tick is today at 12:00 UTC:
+        # expire the login before both, or the test fails every morning (UTC).
         async with self.q.sessions.begin() as s:
             await s.execute(update(DesktopSession).where(DesktopSession.id == "iphone-pwa-session").values(
-                expires_at=self.q.tick - timedelta(seconds=1)))
+                expires_at=min(self.q.tick, datetime.now(timezone.utc)) - timedelta(seconds=1)))
         async with self.q.sessions.begin() as s:
             with self.assertRaisesRegex(SmartReminderError, "smart_session_revoked"):
                 await SmartReminderPreferencesService(s).read(actor)
