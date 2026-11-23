@@ -48,6 +48,10 @@
   var urgentPending = null;
   var interruptRetries = 0;
   var checkGeneration = 0;
+  // Inbox list state for this open: whether settled content has been shown,
+  // and whether the last paint was the pending (placeholder) state.
+  var inboxShown = false;
+  var inboxBusy = false;
   var lastResumeCheck = 0;
   var displayedPaymentId = null;
   var pushState = null;
@@ -66,8 +70,8 @@
       title: commonLabel("desktopA11y.notifications"),
       back: commonLabel("action.back"),
       close: courseLabel("subscriptionPage.close") || commonLabel("action.close"),
-      loading: courseLabel("subscriptionPage.loading"),
       error: courseLabel("subscriptionPage.error"),
+      retryLoad: courseLabel("courseLoadError.btn"),
       empty: courseLabel("pwaInbox.empty"),
       rejected: courseLabel("subscriptionPage.proRejectedTitle"),
       hsk30Rejected: courseLabel("subscriptionPage.paymentRejectedTitle"),
@@ -288,20 +292,68 @@
         payment:activePayment, body:paymentBody(activePayment), meta:paymentMeta(activePayment), cta:t.retry,
         paymentStatus:"rejected", created_at:activePayment.reviewed_at});
     }
-    rows.sort(function (a, b) {
-      return (Date.parse(b.created_at) || 0) - (Date.parse(a.created_at) || 0);
-    }).forEach(function (row) {
-      putMessage(row.title, row.body, row.action, row.paymentStatus, row.payment, row.meta, row.cta);
-    });
-    if (!list.children.length) {
-      var empty = document.createElement("p");
-      empty.className = "hsk-pwa-notice-empty";
-      empty.setAttribute("role", "status");
-      empty.textContent = latestData.course === undefined || latestData.account === undefined
-        ? t.loading : (latestData.course === null || latestData.account === null ? t.error : t.empty);
-      list.appendChild(empty);
+    var pending = latestData.course === undefined || latestData.account === undefined;
+    // First paint of an open: notice-shaped rows until both feeds settle, so
+    // the merged, date-sorted list is drawn once and never re-sorts in view.
+    if (pending && !inboxShown) {
+      putPlaceholders(3);
+    } else {
+      rows.sort(function (a, b) {
+        return (Date.parse(b.created_at) || 0) - (Date.parse(a.created_at) || 0);
+      }).forEach(function (row) {
+        putMessage(row.title, row.body, row.action, row.paymentStatus, row.payment, row.meta, row.cta);
+      });
+      if (pending) {
+        // A retry keeps what is already shown; the retried feed gets a row below.
+        putPlaceholders(list.children.length ? 1 : 3);
+      } else if (latestData.course === null || latestData.account === null) {
+        putFeedError(t);
+      } else if (!list.children.length) {
+        var empty = document.createElement("p");
+        empty.className = "hsk-pwa-notice-empty";
+        empty.setAttribute("role", "status");
+        empty.textContent = t.empty;
+        list.appendChild(empty);
+      }
     }
+    if (!pending) {
+      if (inboxBusy) {
+        Array.prototype.forEach.call(list.children, function (node) { node.className += " is-fresh"; });
+      }
+      inboxShown = true;
+    }
+    inboxBusy = pending;
+    list.setAttribute("aria-busy", String(pending));
     list.scrollTop = scrollTop || 0;
+  }
+  function putPlaceholders(count) {
+    for (var i = 0; i < count; i++) {
+      var row = document.createElement("div");
+      row.className = "hsk-pwa-notice-row is-skeleton";
+      row.setAttribute("aria-hidden", "true");
+      for (var line = 0; line < 3; line++) {
+        var ink = document.createElement("span");
+        ink.className = "pwa-layout-ink";
+        row.appendChild(ink);
+      }
+      list.appendChild(row);
+    }
+  }
+  function putFeedError(t) {
+    var box = document.createElement("div");
+    box.className = "hsk-pwa-notice-error";
+    var text = document.createElement("p");
+    text.className = "hsk-pwa-notice-empty";
+    text.setAttribute("role", "status");
+    text.textContent = t.error;
+    box.appendChild(text);
+    var retry = document.createElement("button");
+    retry.type = "button";
+    retry.className = "hsk-pwa-notice-secondary hsk-pwa-notice-retry";
+    retry.setAttribute("data-pwa-feed-retry", "");
+    retry.textContent = t.retryLoad;
+    box.appendChild(retry);
+    list.appendChild(box);
   }
   function fetchFeed(kind) {
     if (fetchInFlight[kind]) return fetchInFlight[kind];
@@ -538,9 +590,14 @@
     clearAppBadge();
     var check = ++checkGeneration;
     latestData = {};
+    inboxShown = false;
+    inboxBusy = false;
     openMode("inbox");
     render();
-    await Promise.all(["course", "account"].map(async function (kind) {
+    await loadFeeds(["course", "account"], check, fromPush);
+  }
+  function loadFeeds(kinds, check, fromPush) {
+    return Promise.all(kinds.map(async function (kind) {
       var result = await fetchFeed(kind).catch(function () { return null; });
       if (check !== checkGeneration) return;
       latestData[kind] = result;
@@ -549,6 +606,22 @@
       if (fromPush && activeMode === "inbox" && action && action.status === "rejected" &&
           owner && !wasDismissed(action.payment_id)) openMode("urgent");
     }));
+  }
+  // In-place retry of the feeds that failed in this open. It keeps the open's
+  // check, so closing the inbox still drops late results; fetchFeed keeps
+  // every owner check. A retry is browsing, so it never raises the payment dialog.
+  function retryFeeds() {
+    if (activeMode !== "inbox" || !latestData) return Promise.resolve();
+    var kinds = ["course", "account"].filter(function (kind) { return latestData[kind] === null; });
+    if (!kinds.length) return Promise.resolve();
+    kinds.forEach(function (kind) { latestData[kind] = undefined; });
+    var focused = document.activeElement;
+    var refocus = !!(focused && typeof focused.hasAttribute === "function" &&
+      focused.hasAttribute("data-pwa-feed-retry"));
+    render();
+    // The retry button is replaced; keep keyboard focus inside the inbox.
+    if (refocus) list.focus({preventScroll:true});
+    return loadFeeds(kinds, checkGeneration, false);
   }
   function canInterrupt() {
     if (document.visibilityState === "hidden" || !overlay.hidden) return false;
@@ -624,6 +697,7 @@
     if (ev.target.closest("[data-pwa-retry]")) {
       openCheckout(latestData && latestData.account && latestData.account.payment_action);
     }
+    if (ev.target.closest("[data-pwa-feed-retry]")) retryFeeds();
   });
   document.addEventListener("keydown", function (ev) {
     if (overlay.hidden) return;
