@@ -106,6 +106,12 @@ class LabDeliveryTest(unittest.TestCase):
         self.assertEqual(headers["Cache-Control"], lab.IMMUTABLE)
         self.assertEqual(gzip.decompress(body), lab.ALIASED_ASSETS["/audio/words/client.js"].read_bytes())
 
+    def test_diagnostics_beacons_stay_out_of_the_network_log(self):
+        self.server.take_log()
+        fetch(self.origin + "/api/v3/clientlog")
+        fetch(self.origin + "/tiny.js?v=3")
+        self.assertEqual([row["path"] for row in self.server.take_log()], ["/tiny.js?v"])
+
     def test_every_response_waits_for_the_profile_latency(self):
         started = time.monotonic()
         fetch(self.origin + "/tiny.js?v=2")

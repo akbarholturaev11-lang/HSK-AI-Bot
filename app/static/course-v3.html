@@ -2348,6 +2348,60 @@ if(PWA_COURSE_HOST){
     },{once:true});
   })();
 }
+// Real-user launch timing (perf task 1.4), PWA only. One clientlog beacon per
+// page load: 10 s after the course is ready, or earlier when the page is
+// hidden. Timings, launch type, viewport class and display mode only: no
+// account, text or token, no retry. A launch hidden before the course is
+// ready sends nothing. Keys: docs/PERFORMANCE_PWA_PROGRESSIVE_LOADING.md.
+var pwaLaunchTiming=PWA_COURSE_HOST?(function(){
+  var swAtStart=!!(navigator.serviceWorker&&navigator.serviceWorker.controller),
+      hiddenEarly=document.visibilityState==="hidden",readyAt=null,sent=false,
+      lcp=null,cls=null,slowest=null,
+      types=(window.PerformanceObserver&&PerformanceObserver.supportedEntryTypes)||[];
+  function watch(type,fn,threshold){
+    if(types.indexOf(type)<0)return false;
+    try{var o={type:type,buffered:true};if(threshold)o.durationThreshold=threshold;
+      new PerformanceObserver(function(list){list.getEntries().forEach(fn)}).observe(o);return true}catch(e){return false}
+  }
+  watch("largest-contentful-paint",function(e){lcp=e.startTime});
+  if(watch("layout-shift",function(e){if(!e.hadRecentInput)cls=(cls||0)+e.value}))cls=cls||0;
+  if(watch("event",function(e){slowest=Math.max(slowest||0,e.duration)},16))slowest=slowest||0;
+  function ms(v){return typeof v==="number"&&isFinite(v)&&v>=0?String(Math.round(v)):""}
+  function send(){
+    if(sent||readyAt===null)return;sent=true;
+    try{
+      var nav=performance.getEntriesByType("navigation")[0]||{},
+          fcp=performance.getEntriesByName("first-contentful-paint")[0],
+          known=typeof nav.transferSize==="number",bytes=known?nav.transferSize:0,versioned=0,fetched=0;
+      performance.getEntriesByType("resource").forEach(function(r){
+        var u;try{u=new URL(r.name)}catch(e){return}
+        if(u.origin!==location.origin)return;
+        bytes+=r.transferSize||0;
+        if(/\.(?:js|css)$/.test(u.pathname)&&u.searchParams.has("v")){versioned++;if(r.transferSize>0)fetched++}
+      });
+      var html=!known?"na":nav.transferSize===0?"cache":nav.transferSize<nav.encodedBodySize?"304":"200",
+          launch=!known||!versioned?"na":fetched*2>versioned?"cold":"warm",
+          w=window.innerWidth||0,standalone=navigator.standalone===true;
+      try{standalone=standalone||matchMedia("(display-mode: standalone)").matches}catch(e){}
+      clog("pwa_launch",launch+" "+html,{
+        plat:standalone?"standalone":"browser",
+        ttfb:ms(nav.responseStart),html_end:ms(nav.responseEnd),fcp:ms(fcp&&fcp.startTime),lcp:ms(lcp),
+        cls:cls===null?"":cls.toFixed(3),slowest_event:ms(slowest),ready:ms(readyAt),
+        sw:swAtStart?"1":"0",kb:known?String(Math.round(bytes/1024)):"",
+        vp:w<375?"320":w<414?"390":w<600?"430":w<1024?"tablet":"desktop"});
+    }catch(e){}
+  }
+  document.addEventListener("visibilitychange",function(){
+    if(document.visibilityState!=="hidden")return;
+    if(readyAt===null)hiddenEarly=true;else send();
+  });
+  window.addEventListener("pagehide",send);
+  return {ready:function(){
+    if(readyAt!==null||sent)return;
+    if(hiddenEarly){sent=true;return}
+    readyAt=performance.now();setTimeout(send,10000);
+  }};
+})():null;
 // Smart reminder open observation: optional, authenticated and independent of navigation.
 (function observeSmartReminderOpen(){
   try{
@@ -10231,6 +10285,7 @@ var finishHskLaunchSplash=(function(){
     var sp=bootParams;
     var tab=PWA_COURSE_HOST&&PWA_PREBOOT_TAB||sp.get("tab")||"course";PWA_PREBOOT_TAB=null;App.show(tab);
     finishHskLaunchSplash();
+    if(pwaLaunchTiming)pwaLaunchTiming.ready();
     var initialLesson=Number(sp.get("lesson")||0);
     // resume=1: aniq lesson berilmagan bo'lsa, server progresidan JORIY qismni
     // (status==="current") topib darhol ochamiz — botdagi "Davom" / profil

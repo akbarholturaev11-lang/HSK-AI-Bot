@@ -605,6 +605,88 @@ design ("Decisions on the 1.3 findings"):
 - "After" readings: each group 2 task records its own, with this harness and
   these targets.
 
+## Real-user launch beacon (task 1.4)
+
+The PWA course (`/iphone-pwa/course` only, never the Telegram Mini App) sends
+one `clog()` beacon per page load to `POST /api/v3/clientlog`. The server
+writes it as one line:
+`CLIENTLOG event=pwa_launch msg=<launch> <html> ctx={...}`.
+
+**When.** The beacon goes 10 s after the course is ready, or earlier when the
+page is first hidden or left. Course ready is the moment the verified map has
+rendered and the start tab is shown. Nothing is sent in these cases:
+- the course map fails, or the session sends the learner back to sign-in;
+- onboarding redirects;
+- the page was hidden before the course was ready, because background
+  timers distort its timings.
+
+There is no retry. A page restored from the back-forward cache sends nothing
+new.
+
+**`msg`** is two words:
+1. Launch: `cold` when more than half of the page's versioned (`?v=`)
+   scripts and styles came over the network (`transferSize > 0`); otherwise
+   `warm`.
+2. HTML: `200` (the body was downloaded), `304` (revalidated: the headers
+   only), or `cache` (`transferSize` is 0).
+
+Either word is `na` when the browser does not report `transferSize`.
+
+**`ctx`** holds 14 keys, the endpoint's limit. Times are milliseconds from the
+start of the navigation, as whole numbers. An empty value means the browser
+does not report that entry type.
+
+| Key | Value |
+|---|---|
+| `ua` | User agent (from `clog()`) |
+| `plat` | `standalone` (Home Screen app) or `browser` |
+| `tgver` | Empty on the PWA (from `clog()`) |
+| `page` | `/iphone-pwa/course` (from `clog()`) |
+| `ttfb` | Navigation `responseStart` |
+| `html_end` | Navigation `responseEnd` |
+| `fcp` | First contentful paint |
+| `lcp` | Largest contentful paint up to the beacon |
+| `cls` | Layout shift up to the beacon, 3 decimals |
+| `slowest_event` | Longest Event Timing duration up to the beacon (≥16 ms; `0` if none) |
+| `ready` | Course ready |
+| `sw` | `1` if the service worker controlled the page when it started, else `0` |
+| `kb` | Same-origin KB reported by the page up to the beacon: HTML, scripts, styles, API answers, images. The icon font from cdnjs is not counted |
+| `vp` | Viewport width class: `320` (<375 px), `390` (375–413), `430` (414–599), `tablet` (600–1023), `desktop` |
+
+The beacon carries no account ID, name, text, query or token.
+
+**Engine notes, from the lab cross-check (2026-11-23, 390 px).** The beacon
+and the lab harness were read on the same launches.
+- **Chromium:** `fcp`, `lcp`, `ready` and `html_end` match the lab within
+  1 ms on cold, takeover and warm launches. `msg` was `cold 200`, then
+  `warm 304`, then `warm 304`.
+- **WebKit:** `fcp`, `lcp` and `html_end` match the lab within 1 ms. `ready`
+  is 26–58 ms earlier than the lab's, because the lab polls for the rendered
+  course. `msg` was `cold 200`, then `warm cache` (takeover), then
+  `warm cache`.
+  - When the worker answers the page, WebKit reports `ttfb` as 0.
+  - WebKit also counts worker-served responses in `kb`.
+  - So, for the 4.4 TTFB comparison, use only launches with HTML `200` or
+    `304`.
+  - A takeover shows as `sw=1` with a slower `fcp` than other `sw=1`
+    launches.
+- **Lab only:** the lab serves the icon font from its own origin, so its
+  WebKit `kb` includes it. Production serves it from cdnjs, which `kb` leaves
+  out.
+
+**Reading.** Use `railway logs` filtered on `CLIENTLOG event=pwa_launch`
+(memory: `railway-logs-debugging`). Group by `plat`, `sw`, `vp` and `msg`.
+Report p50 and p75 of `fcp`, `lcp`, `ready` and `ttfb`.
+- **The 7-day readings:** pending; they need a deploy and are added here
+  afterwards.
+- **Tests:** `tests/e2e/test_pwa_launch_timing.py` (Chromium and WebKit).
+  - One beacon after ready, with only these keys and no account data.
+  - It is sent at once when the page is hidden, and never twice.
+  - None when the map fails, when the page was hidden before ready, or in
+    the Telegram Mini App.
+- **The lab:** `scripts/measure_pwa_lab.py` keeps `/api/v3/clientlog` out of
+  its network log, so the beacon never adds a request to a measured window.
+
 ## Backend course-map template cache
 
 - Cache only seven public, static level templates in bounded process memory. Key on file metadata so changed files invalidate automatically.

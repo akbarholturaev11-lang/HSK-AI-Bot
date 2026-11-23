@@ -435,6 +435,10 @@ class LabServer:
             return sorted(url for url, value in self.external.items() if value is None)
 
     def note(self, url: str, status: int, size: int) -> None:
+        # Diagnostics beacons (clientlog, including the 1.4 launch beacon) are not part of the
+        # learner's path, and would add a request to whichever window they happen to land in.
+        if urlsplit(url).path == "/api/v3/clientlog":
+            return
         with self.log_lock:
             self.log.append({"path": urlsplit(url).path + ("?v" if "?v=" in url else ""),
                              "status": status, "bytes": size})

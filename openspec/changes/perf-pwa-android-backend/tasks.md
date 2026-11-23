@@ -150,6 +150,15 @@ identity.
   - after deploy, 7 days of beacons are read with `railway logs` and their
     p50/p75 recorded in the contract doc.
 
+  Status (2026-11-23):
+  - The beacon and its tests are done. They are
+    `tests/e2e/test_pwa_launch_timing.py` (Chromium and WebKit) and a lab
+    cross-check. In it, FCP, LCP and the HTML end match the lab within 1 ms.
+    Course ready matches within 1 ms on Chromium and is 26–58 ms earlier on
+    WebKit. The keys and engine notes are in the contract doc ("Real-user
+    launch beacon").
+  - Open: the 7-day reading after deploy.
+
 ## 2. PWA fixes (each its own pull request, after 1.3)
 
 - [x] 2.1 One edge swipe = one back step: claim the left 16 px strip, keep a
