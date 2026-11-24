@@ -1,7 +1,6 @@
-"""PWA Pro card checkout: one tap opens the verified payment page in the same
-window (no intermediate "page ready" step, no about:blank popup) and the
-provider return brings the learner back into the app, where only the server
-status decides the outcome."""
+"""PWA Pro checkout requests the verified payment page externally, keeps the
+app available and offers a user-gesture link to the same invoice if a popup
+is blocked. Only server status decides the payment outcome."""
 import json
 import mimetypes
 import os
@@ -75,38 +74,65 @@ def _server(url, captured, status):
     return serve
 
 
-@pytest.mark.parametrize("url,expected", [
-    ("https://app.lava.top/pay/demo", True),
-    ("https://payments.attacker.invalid/pay/demo", False),
+@pytest.mark.parametrize("url,expected,throws", [
+    ("https://app.lava.top/pay/demo", True, False),
+    ("https://app.lava.top/pay/demo", True, True),
+    ("https://payments.attacker.invalid/pay/demo", False, False),
 ])
-def test_pro_button_opens_verified_payment_page_directly(url, expected):
+def test_pro_button_opens_verified_payment_page_directly(url, expected, throws):
     captured = []
+    status = {"value": "pending"}
     with playwright.sync_playwright() as pw:
         browser = getattr(pw, os.getenv("PWA_E2E_ENGINE", "chromium")).launch()
         context = browser.new_context(**pw.devices["iPhone 13"])
         page = context.new_page()
-        context.route("**/*", _server(url, captured, {"value": "pending"}))
-        errors = []; popups = []
+        context.route("**/*", _server(url, captured, status))
+        errors = []
         page.on("pageerror", lambda exc: errors.append(str(exc)))
-        page.on("popup", lambda popup: popups.append(popup))
         page.goto(ORIGIN + "/iphone-pwa/course")
+        # Model a browser that refuses the asynchronous popup, including the
+        # case where window.open throws. The fallback must be a real link.
+        page.evaluate("""throws => {
+            window.paymentOpens = [];
+            window.open = (...args) => {
+                window.paymentOpens.push(args);
+                if (throws) throw new Error("popup unavailable");
+                return null;
+            };
+        }""", throws)
         page.evaluate("HSKPwaInlinePro.open({source:'v3_locked_lesson',lang:'uz'})")
         cta = page.get_by_role("button", name="Pro ⭐️ olish")
         cta.wait_for()
         assert "lava" not in page.locator("#hsk-inline-pro").inner_text().lower()
+        cta.click()
         if expected:
-            with page.expect_navigation(url=url):
-                cta.click()
-            # Straight to the provider in the same window: no "page ready"
-            # step, no popup and no blank tab.
-            assert page.url == url
-            assert "Provider checkout ready" in page.locator("body").inner_text()
+            link = page.get_by_role("link", name="To‘lovga o‘tish")
+            link.wait_for()
+            assert page.evaluate("window.paymentOpens") == [[url, "_blank", "noopener"]]
+            assert link.get_attribute("href") == url
+            assert link.get_attribute("target") == "_blank"
+            assert link.get_attribute("rel") == "noopener noreferrer"
+            assert page.url == ORIGIN + "/iphone-pwa/course"
+            # The fallback click actually opens a separate browser page; it
+            # neither navigates the learner away nor creates another invoice.
+            with context.expect_page() as external:
+                link.click()
+            provider = external.value
+            provider.wait_for_url(url)
+            assert "Provider checkout ready" in provider.locator("body").inner_text()
+            provider.close()
+            assert page.url == ORIGIN + "/iphone-pwa/course"
+            assert link.is_visible()
+            assert page.get_by_role("heading", name="Pro faollashtirildi").count() == 0
+            status["value"] = "paid"
+            page.bring_to_front()
+            page.evaluate("document.dispatchEvent(new Event('visibilitychange'))")
+            page.get_by_role("heading", name="Pro faollashtirildi").wait_for()
         else:
-            cta.click()
             page.locator("#hsk-inline-pro .hip-error").wait_for(state="visible")
             assert page.url == ORIGIN + "/iphone-pwa/course"
             assert page.get_by_role("link", name="To‘lovga o‘tish").count() == 0
-        assert len(popups) == 0, "No popup / about:blank tab may be opened"
+            assert page.evaluate("window.paymentOpens") == []
         assert len([c for c in captured if c[0] == "start"]) == 1
         assert not errors, errors
         browser.close()
