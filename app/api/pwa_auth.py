@@ -95,7 +95,7 @@ def _pwa_html(request: Request, path: str, headers: dict[str, str]) -> Response:
 # The reviewed shared HTML bytes MUST remain unchanged for source/translation
 # audit anchors. Inject PWA-only assets only after an authenticated route check.
 # The injected HTML is separately ETagged by its FULL bytes, not by file SHA.
-_PWA_INLINE_PRO_HTML = "\n<link rel=\"stylesheet\" href=\"/course_v3_data/iphone-pwa-inline-pro.css?v=20261108-e8010ea28fdc\">\n<script src=\"/course_v3_data/iphone-pwa-inline-pro.js?v=20261122-ee1be4b51a7b\"></script>\n<script src=\"/course_v3_data/iphone-pwa-inline-pro-bridge.js?v=20261122-d383ec432e10\"></script>\n".encode("utf-8")
+_PWA_INLINE_PRO_HTML = "\n<link rel=\"stylesheet\" href=\"/course_v3_data/iphone-pwa-inline-pro.css?v=20261108-e8010ea28fdc\">\n<script src=\"/course_v3_data/iphone-pwa-inline-pro.js?v=20261124-9bc2918e9979\"></script>\n<script src=\"/course_v3_data/iphone-pwa-inline-pro-bridge.js?v=20261122-d383ec432e10\"></script>\n".encode("utf-8")
 
 # Scope only to the verified browser PWA. The native first-paint skeleton
 # stays in course-v3.html; these are ONLY independent secondary section states.
