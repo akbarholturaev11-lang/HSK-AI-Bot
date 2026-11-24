@@ -83,6 +83,8 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 .value-copy:empty,#payText:empty{display:none}
 #payText:empty+.quote-card{margin-top:0}
 .plans{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.plan-region{display:block;width:100%;min-height:44px;margin-top:10px;padding:8px 12px;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);font:inherit}
+.plan-region[hidden]{display:none}
 .plan{position:relative;min-height:130px;text-align:left;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg);padding:14px;display:flex;flex-direction:column;justify-content:space-between;transition:.18s}
 .plan.selected,.choice.selected{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent);background:var(--accent-soft)}
 .plan.wide{grid-column:1/-1;min-height:auto}
@@ -320,6 +322,7 @@ html.hsk-pwa-browser .app{padding-bottom:calc(104px + env(safe-area-inset-bottom
       </div>
       <p class="value-copy" id="valueText"></p>
       <div class="plans" id="plans"></div>
+      <select id="planRegion" class="plan-region" hidden></select>
       <div class="renewal-summary" id="renewalSummary" style="display:none">
         <strong id="renewalCurrent"></strong>
         <span id="renewalNext"></span>
@@ -594,17 +597,44 @@ const CARD_BANK_NAMES={dc_city:"Dushanbe City",alif:"Alif"};
 /* Tanlangan region shu qurilmada, Telegram akkaunti bo'yicha eslab qolinadi:
    keyingi safar obuna to'g'ridan-to'g'ri tarif ekranidan ochiladi. Regionni
    «Orqaga» orqali o'zgartirish mumkin — yangi tanlov ham shu yerga yoziladi. */
-const REGION_STORAGE_KEY="hsk_sub_region_v1:"+String(tg?.initDataUnsafe?.user?.id||"guest");
+function regionStorageKey(){
+  const owner=PWA_CHECKOUT_HOST?Number(PWA_CHECKOUT_ACTOR?.user_id):Number(INIT_DATA&&tg?.initDataUnsafe?.user?.id);
+  if(!Number.isSafeInteger(owner)||owner<=0)return "";
+  return "hsk_sub_region_v1:"+(PWA_CHECKOUT_HOST?"pwa:":"")+owner;
+}
 function savedRegion(){
-  if(PWA_CHECKOUT_HOST)return "";
+  const key=regionStorageKey();
+  if(!key)return "";
   try{
-    const region=localStorage.getItem(REGION_STORAGE_KEY)||"";
+    const region=localStorage.getItem(key)||"";
     return REGION_ORDER.includes(region)?region:"";
   }catch(e){return ""}
 }
 function saveRegion(region){
-  if(PWA_CHECKOUT_HOST)return;
-  try{if(REGION_ORDER.includes(region))localStorage.setItem(REGION_STORAGE_KEY,region)}catch(e){}
+  const key=regionStorageKey();
+  if(!key)return;
+  try{if(REGION_ORDER.includes(region))localStorage.setItem(key,region)}catch(e){}
+}
+/* Local hints only: no IP, location permission or request. A conflicting
+   device locale/time zone must not be presented as a verified payment country. */
+function inferPaymentRegion(zone,locale,language){
+  const tz=String(zone||"");
+  let zoneRegion="";
+  if(tz==="Asia/Dushanbe")zoneRegion="tj";
+  else if(["Asia/Tashkent","Asia/Samarkand"].includes(tz))zoneRegion="uz";
+  else if(["Asia/Shanghai","Asia/Urumqi","Asia/Chongqing","Asia/Harbin","Asia/Kashgar","PRC"].includes(tz))zoneRegion="cn";
+  else if(["Europe/Moscow","Europe/Kaliningrad","Europe/Samara","Europe/Volgograd","Europe/Kirov","Europe/Astrakhan","Europe/Saratov","Europe/Ulyanovsk","Asia/Yekaterinburg","Asia/Omsk","Asia/Novosibirsk","Asia/Barnaul","Asia/Tomsk","Asia/Novokuznetsk","Asia/Krasnoyarsk","Asia/Irkutsk","Asia/Chita","Asia/Yakutsk","Asia/Khandyga","Asia/Vladivostok","Asia/Ust-Nera","Asia/Magadan","Asia/Sakhalin","Asia/Srednekolymsk","Asia/Kamchatka","Asia/Anadyr","W-SU"].includes(tz))zoneRegion="ru";
+  else if(tz.includes("/")&&!tz.startsWith("Etc/"))zoneRegion="other";
+  const match=String(locale||"").match(/^[a-z]{2,3}(?:-[a-z]{4})?-([a-z]{2})(?:-|$)/i);
+  const code=match?match[1].toLowerCase():"";
+  const localeRegion=code?(["tj","uz","ru","cn"].includes(code)?code:"other"):"";
+  if(zoneRegion&&localeRegion&&zoneRegion!==localeRegion)return "other";
+  return zoneRegion||localeRegion||(["tj","uz","ru"].includes(language)?language:"other");
+}
+function localPaymentRegion(language){
+  let zone="";
+  try{zone=Intl.DateTimeFormat().resolvedOptions().timeZone||""}catch(e){}
+  return inferPaymentRegion(zone,typeof navigator==="undefined"?"":navigator.language,language);
 }
 /* Havola Xitoy usulini so'rasa (method=alipay/wechat) — havola ustun. */
 const REMEMBERED_REGION=CHINA_METHODS.includes(PARAMS.get("method"))?"":savedRegion();
@@ -1132,6 +1162,7 @@ const state={
   loadError:false,
   overviewLoading:false,
   path:"",
+  regionalPlans:false,
   lavaPlan:"",
   lavaEmail:"",
   lavaCheckout:null,
@@ -1251,7 +1282,8 @@ function contextPayload(){
 function hasCurrentPrice(){return Boolean(priceInfo(state.method,state.plan))}
 function isHsk30Unlock(){return state.mode==="hsk30_unlock"||state.plan==="hsk30_unlock"}
 function manualFlow(){
-  return hasMethodStep()?["country","plans","method","pay"]:["country","plans","pay"];
+  const steps=hasMethodStep()?["plans","method","pay"]:["plans","pay"];
+  return state.regionalPlans?steps:["country",...steps];
 }
 function flow(){
   if(state.done||state.pending||state.paymentDecision)return ["done"];
@@ -1659,7 +1691,23 @@ function applyOverview(data){
   /* Chatdagi eski chegirma tugmasi: taklif tugagan bo'lsa server oddiy
      narxlarni beradi, tepada esa «taklif tugagan» yozuvi turadi. */
   state.offerExpired=Boolean(data?.offer_expired);
+  // This first slice changes ordinary manual-only checkout, not special links,
+  // provider sales, pending receipts or the permanent course product.
+  const wasRegional=state.regionalPlans;
+  state.regionalPlans=false;
+  const ordinary=state.mode==="subscription"&&(!PARAMS.get("mode")||PARAMS.get("mode")==="subscription")&&!PARAMS.get("method")&&!PARAMS.get("campaign_id")&&!PARAMS.get("feedback_id")&&!PWA_RESUME_RECEIPT&&!state.preview&&!state.pending&&!state.lavaStatus;
+  if(ordinary&&lavaMode()==="manual_only"&&!lavaInfo()?.blocked_reason){
+    const regions=availableRegions();
+    const preferred=state.region||savedRegion()||localPaymentRegion(normalizeLang(data?.language||state.lang));
+    if(regions.includes(preferred)){
+      state.region=preferred;
+      state.regionalPlans=true;
+      if(!wasRegional)state.step=0;
+    }
+  }
   ensureSelection();
+  if(!state.region)state.regionalPlans=false;
+  if(wasRegional&&!state.regionalPlans)state.step=0;
   /* Eslab qolingan region bu safar mavjud bo'lmasa (masalan chegirma faqat
      kartaga) — region qayta so'raladi. */
   if(!state.region)state.step=0;
@@ -1857,6 +1905,14 @@ function renderPlans(text){
       </span>
     </button>`;
   }).join("") || (overviewReady()?`<div class="detail-empty">${text.offerExpired}</div>`:"");
+  const regionSelect=$("#planRegion");
+  regionSelect.hidden=!state.regionalPlans;
+  if(state.regionalPlans){
+    regionSelect.setAttribute("aria-label",text.countryTitle);
+    regionSelect.disabled=state.busy;
+    regionSelect.innerHTML=availableRegions().map(region=>`<option value="${region}">${REGION_FLAGS[region]} ${escapeHtml(text.countries[region][0])}</option>`).join("");
+    regionSelect.value=state.region;
+  }
   const dates=renewalDates();
   const summary=$("#renewalSummary");
   summary.style.display=dates?"grid":"none";
@@ -2419,6 +2475,21 @@ document.addEventListener("click",event=>{
     return;
   }
 });
+$("#planRegion").addEventListener("change",event=>{
+  const region=event.target.value;
+  if(!state.regionalPlans||state.busy||currentScreen()!=="plans"||!availableRegions().includes(region)||region===state.region)return;
+  state.region=region;
+  state.method=region==="cn"?(CHINA_METHODS.includes(state.method)?state.method:CHINA_METHODS[0]):"visa";
+  ensureSelection();
+  clearQuote();
+  state.quoteError="";
+  state.screenshotDataUrl="";
+  state.screenshotName="";
+  state.screenshotNote="";
+  state.renewalOpen=false;
+  saveRegion(state.region);
+  render();
+});
 function clearQuote(){
   state.quote=null;
   state.qrActionsOpen=false;
@@ -2437,7 +2508,7 @@ $("#nextBtn").addEventListener("click",()=>{
     render();
     return;
   }
-  if(screen==="country")saveRegion(state.region);
+  if(screen==="country"&&!PWA_CHECKOUT_HOST)saveRegion(state.region);
   setStep(state.step+1);
 });
 $("#backBtn").addEventListener("click",()=>setStep(state.step-1));

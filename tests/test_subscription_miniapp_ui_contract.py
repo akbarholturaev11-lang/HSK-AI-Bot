@@ -49,7 +49,9 @@ def test_subscription_checkout_routes_banks_and_permanent_unlock_separately():
         + 'state.mode="referral_discount";results.discount_lava=flow();'
         + 'state.mode="subscription";state.lavaStatus="waiting";results.waiting=flow();state.lavaStatus="";'
         + 'state.overview=null;state.path="";'
-        + '\nstate.pending=true;results.pending=flow();console.log(JSON.stringify(results));'
+        + '\nstate.regionalPlans=true;state.region="tj";results.regional_tj=flow();'
+        + 'state.region="uz";results.regional_uz=flow();'
+        + 'state.pending=true;results.pending=flow();console.log(JSON.stringify(results));'
     )
     results = json.loads(subprocess.check_output(["node", "-e", script], text=True))
     assert results["both"] == ["card", "country", "plans", "pay"]
@@ -69,6 +71,8 @@ def test_subscription_checkout_routes_banks_and_permanent_unlock_separately():
     for region in ("uz", "ru", "other"):
         assert results[region] == ["country", "plans", "pay"]
         assert results[region + "_unlock"] == ["country", "pay"]
+    assert results["regional_tj"] == ["plans", "method", "pay"]
+    assert results["regional_uz"] == ["plans", "pay"]
     assert results["pending"] == ["done"]
     assert "Dushanbe City" in html
     assert "«На карту»" in html
@@ -183,3 +187,46 @@ def test_server_reports_failed_checkout_event_write_as_503():
     event_route = event_route.split('@app.post("/api/subscription-miniapp/submit")', 1)[0]
     assert 'status_code=200 if recorded else 503' in event_route
     assert 'content={"ok": bool(recorded)}' in event_route
+
+
+def test_local_payment_region_hints_and_account_scoped_storage():
+    html = _html()
+    start = html.index("function regionStorageKey(){")
+    end = html.index("/* Havola Xitoy", start)
+    script = """
+let PWA_CHECKOUT_HOST=true, PWA_CHECKOUT_ACTOR=null, INIT_DATA="";
+let tg=null;
+const REGION_ORDER=["tj","uz","ru","cn","other"];
+const values={};
+const localStorage={getItem:key=>values[key]||null,setItem:(key,value)=>{values[key]=value}};
+""" + html[start:end] + """
+const result={};
+result.hints=[
+  inferPaymentRegion("Asia/Dushanbe","tg-TJ","ru"),
+  inferPaymentRegion("Asia/Shanghai","zh-Hans-CN","uz"),
+  inferPaymentRegion("Europe/Moscow","ru-RU","uz"),
+  inferPaymentRegion("Asia/Tashkent","uz-UZ","ru"),
+  inferPaymentRegion("Asia/Tashkent","ru-RU","uz"),
+  inferPaymentRegion("Europe/Warsaw","pl-PL","ru"),
+  inferPaymentRegion("UTC","ru","ru"),
+];
+saveRegion("cn");
+result.unbound=savedRegion();
+PWA_CHECKOUT_ACTOR={user_id:11};saveRegion("cn");
+result.first=savedRegion();
+PWA_CHECKOUT_ACTOR={user_id:12};
+result.second=savedRegion();
+PWA_CHECKOUT_HOST=false;INIT_DATA="signed";tg={initDataUnsafe:{user:{id:11}}};
+result.telegram=savedRegion();saveRegion("tj");
+PWA_CHECKOUT_HOST=true;PWA_CHECKOUT_ACTOR={user_id:11};
+result.firstAgain=savedRegion();
+result.keys=Object.keys(values).sort();
+console.log(JSON.stringify(result));
+"""
+    result = json.loads(subprocess.check_output(["node", "-e", script], text=True))
+    assert result == {
+        "hints": ["tj", "cn", "ru", "uz", "other", "other", "ru"],
+        "unbound": "", "first": "cn", "second": "", "telegram": "",
+        "firstAgain": "cn",
+        "keys": ["hsk_sub_region_v1:11", "hsk_sub_region_v1:pwa:11"],
+    }
