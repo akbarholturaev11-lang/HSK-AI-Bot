@@ -377,20 +377,20 @@
       return;
     }
     if (view==="waiting") {
-      // Shown only while the provider page is being opened in this window,
-      // or if the learner comes back without a provider redirect (e.g. the
-      // iOS in-app browser was closed). Access is still server-verified.
+      // Keep the installed PWA available while the external checkout is open.
+      // The server, not browser navigation, decides whether payment succeeded.
       var waitPlan=selectedPlan();
-      header("read",state.redirecting?txt("opening"):txt("paying"),
+      header("read",txt("paying"),
         waitPlan?txt(NAMES[waitPlan.plan_type])+" · "+money(waitPlan.amount,waitPlan.currency):"");
       var checking=el("p","hip-checking");
       checking.setAttribute("aria-hidden","true");
       body.appendChild(checking);
-      if (state.redirecting) return;
       if (state.paymentUrl) {
+        // Real user-gesture fallback if WebKit blocks the async popup.
+        // Reopen the already-created invoice; never call the start API again.
         var link=el("a","hip-primary",txt("reopen"));
-        link.href=state.paymentUrl;link.rel="noopener noreferrer";
-        link.addEventListener("click",function(){rememberCheckout();if(state)state.redirecting=true;render()});
+        link.href=state.paymentUrl;link.target="_blank";link.rel="noopener noreferrer";
+        link.addEventListener("click",rememberCheckout);
         actions.appendChild(link);
       }
       actions.appendChild(btn(txt("return"),"hip-secondary",close));
@@ -518,7 +518,7 @@
   function close() {
     if (!root||root.hidden) return;
     clearInterval(tick);tick=null;run++;root.hidden=true;
-    if (state) clearTimeout(state.redirectTimer);body.replaceChildren();actions.replaceChildren();
+    body.replaceChildren();actions.replaceChildren();
     panda.dataset.pose="";panda.replaceChildren();
     document.documentElement.style.overflow=state&&state.previousOverflow||"";
     if (lastFocus&&lastFocus.isConnected) lastFocus.focus({preventScroll:true});
@@ -574,7 +574,7 @@
   }
   function startPayment() {
     var plan=selectedPlan();
-    if (!plan||!state||state.paying) return;
+    if (!plan||!state||state.paying||state.checkoutId) return;
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((state.email||"").trim())) {
       if (state.screen!=="email") state.emailFrom=state.screen;
       state.screen="email";state.error=txt("missingEmail");render();return;
@@ -591,18 +591,13 @@
       if (url.protocol!=="https:" || !(url.hostname==="lava.top"||url.hostname.endsWith(".lava.top")))
         throw Error("invalid_payment_url");
       state.checkoutId=data.checkout_id;state.paymentUrl=url.href;
-      // Open the provider directly in this window. An async window.open is
-      // blocked on iPhone; a top-level navigation is not. The invoice return
-      // URL brings the learner back to /iphone-pwa/course with this id.
-      state.redirecting=true;state.screen="waiting";render();
-      rememberCheckout();beginPolling();
-      clearTimeout(state.redirectTimer);
-      state.redirectTimer=setTimeout(function(){
-        // Still here (in-app browser overlay or blocked navigation): offer
-        // the same link and keep checking the server.
-        if (state&&state.redirecting){state.redirecting=false;render()}
-      },4000);
-      location.assign(state.paymentUrl);
+      // Match the Profile PWA checkout: open the verified URL externally.
+      // Never pre-open about:blank or replace the app document. If iOS blocks
+      // the async open, the visible link above provides a fresh user gesture.
+      state.screen="waiting";render();
+      rememberCheckout();
+      try { window.open(state.paymentUrl,"_blank","noopener"); } catch (_) {}
+      beginPolling();
     }).catch(function(err){
       if(!state||current!==run)return;
       state.paying=false;
@@ -630,9 +625,9 @@
       if (!state||current!==run)return;
       if (result.status==="paid") {
         clearInterval(tick);tick=null;forgetCheckout();
-        state.paid=true;state.redirecting=false;state.screen="success";state.checkoutId=null;render();
+        state.paid=true;state.screen="success";state.checkoutId=null;render();
       } else if (result.status==="failed") {
-        clearInterval(tick);tick=null;forgetCheckout();state.checkoutId=null;state.redirecting=false;
+        clearInterval(tick);tick=null;forgetCheckout();state.checkoutId=null;
         emit("pwa_pro_checkout_failed");state.pendingError=txt("error");load();
       }
     }).catch(function(){}).finally(function(){if(state&&current===run)state.polling=false});
@@ -647,7 +642,7 @@
     if(!WORDS[lang])lang="ru";
     state={lang:lang,source:String(opts.source||"v3_paywall").slice(0,80),
       mode:"subscription",screen:"loading",plan:"1_month",email:"",attempt:"inline-"+Date.now()+"-"+Math.floor(Math.random()*1000000),eventSeq:0,
-      data:null,error:"",pendingError:"",polling:false,paying:false,redirecting:false,emailFrom:"main",onClose:opts.onClose,
+      data:null,error:"",pendingError:"",polling:false,paying:false,emailFrom:"main",onClose:opts.onClose,
       previousOverflow:document.documentElement.style.overflow};
     root.hidden=false;
     document.documentElement.style.overflow="hidden";
@@ -681,8 +676,7 @@
     if (ev.key==="Escape"){ev.stopPropagation();ev.preventDefault();goBack()}
   });
   function cameBack() {
-    if (state&&state.redirecting) {state.redirecting=false;render();}
-    if (state&&state.checkoutId) checkStatus();
+     if (state&&state.checkoutId) checkStatus();
   }
   document.addEventListener("visibilitychange",function(){
     if(document.visibilityState==="visible"){actorPromise=null;cameBack();}
