@@ -3814,7 +3814,12 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('PWA_CHECKOUT_HOST=location.pathname==="/iphone-pwa/checkout"', html)
         self.assertIn('preview:!INIT_DATA&&!PWA_CHECKOUT_HOST', html)
         self.assertIn('if(!INIT_DATA&&!PWA_CHECKOUT_HOST){', html)
-        self.assertIn('if(PWA_CHECKOUT_HOST)return "";', html)
+        # Region is non-authoritative local UI state, accessible only after
+        # the same verified PWA session supplies a positive owner ID.
+        self.assertIn('PWA_CHECKOUT_HOST?Number(PWA_CHECKOUT_ACTOR?.user_id)', html)
+        self.assertIn('if(!Number.isSafeInteger(owner)||owner<=0)return "";', html)
+        self.assertIn('(PWA_CHECKOUT_HOST?"pwa:":"")+owner', html)
+        self.assertIn('if(!key)return "";', html)
         self.assertIn('"/api/v3/pwa/subscription/submit"', html)
         self.assertIn('"/api/v3/pwa/subscription/payment-status"', html)
         self.assertIn('"X-HSK-PWA-CSRF":actor.csrf', html)

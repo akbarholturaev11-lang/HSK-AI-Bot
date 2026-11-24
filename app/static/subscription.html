@@ -594,9 +594,9 @@ const REGION_FLAGS={tj:"🇹🇯",uz:"🇺🇿",ru:"🇷🇺",cn:"🇨🇳",othe
    doim Alif (Visa) rekvizitiga to'laydi. Rekvizitlar admin panelda alohida. */
 const CARD_BANKS=["dc_city","alif"];
 const CARD_BANK_NAMES={dc_city:"Dushanbe City",alif:"Alif"};
-/* Tanlangan region shu qurilmada, Telegram akkaunti bo'yicha eslab qolinadi:
-   keyingi safar obuna to'g'ridan-to'g'ri tarif ekranidan ochiladi. Regionni
-   «Orqaga» orqali o'zgartirish mumkin — yangi tanlov ham shu yerga yoziladi. */
+/* Explicit payment-region choice is device-local and isolated by checkout
+   host/account. PWA storage remains inaccessible until checkoutPwaActor verifies
+   the session. Guest/preview selections are not persisted. */
 function regionStorageKey(){
   const owner=PWA_CHECKOUT_HOST?Number(PWA_CHECKOUT_ACTOR?.user_id):Number(INIT_DATA&&tg?.initDataUnsafe?.user?.id);
   if(!Number.isSafeInteger(owner)||owner<=0)return "";
@@ -1232,6 +1232,17 @@ function availableRegions(){
   const methods=availableMethods();
   return REGION_ORDER.filter(region=>regionMethods(region).some(method=>methods.includes(method)));
 }
+// A regional plan screen may only advertise countries with real display prices.
+function availableRegionalRegions(){
+  const plans=availablePlans("visa");
+  return availableRegions().filter(region=>{
+    if(region==="tj"||region==="cn")return true;
+    return plans.length>0&&plans.every(plan=>{
+      const price=cardPrices()?.[region]?.[plan];
+      return Boolean(price?.currency&&price.final_amount!=null&&Number(price.final_amount)>0);
+    });
+  });
+}
 /* To'lov turi faqat Tojikistonda (bank) va Xitoyda (Alipay/WeChat) so'raladi. */
 function hasMethodStep(){return state.region==="tj"||state.region==="cn"}
 function cardBank(){return state.country==="tj"?state.bank:"alif"}
@@ -1697,10 +1708,10 @@ function applyOverview(data){
   state.regionalPlans=false;
   const ordinary=state.mode==="subscription"&&(!PARAMS.get("mode")||PARAMS.get("mode")==="subscription")&&!PARAMS.get("method")&&!PARAMS.get("campaign_id")&&!PARAMS.get("feedback_id")&&!PWA_RESUME_RECEIPT&&!state.preview&&!state.pending&&!state.lavaStatus;
   if(ordinary&&lavaMode()==="manual_only"&&!lavaInfo()?.blocked_reason){
-    const regions=availableRegions();
+    const regions=availableRegionalRegions();
     const preferred=state.region||savedRegion()||localPaymentRegion(normalizeLang(data?.language||state.lang));
-    if(regions.includes(preferred)){
-      state.region=preferred;
+    if(regions.length){
+      state.region=regions.includes(preferred)?preferred:regions[0];
       state.regionalPlans=true;
       if(!wasRegional)state.step=0;
     }
@@ -1910,7 +1921,7 @@ function renderPlans(text){
   if(state.regionalPlans){
     regionSelect.setAttribute("aria-label",text.countryTitle);
     regionSelect.disabled=state.busy;
-    regionSelect.innerHTML=availableRegions().map(region=>`<option value="${region}">${REGION_FLAGS[region]} ${escapeHtml(text.countries[region][0])}</option>`).join("");
+    regionSelect.innerHTML=availableRegionalRegions().map(region=>`<option value="${region}">${REGION_FLAGS[region]} ${escapeHtml(text.countries[region][0])}</option>`).join("");
     regionSelect.value=state.region;
   }
   const dates=renewalDates();
@@ -2477,7 +2488,7 @@ document.addEventListener("click",event=>{
 });
 $("#planRegion").addEventListener("change",event=>{
   const region=event.target.value;
-  if(!state.regionalPlans||state.busy||currentScreen()!=="plans"||!availableRegions().includes(region)||region===state.region)return;
+  if(!state.regionalPlans||state.busy||currentScreen()!=="plans"||!availableRegionalRegions().includes(region)||region===state.region)return;
   state.region=region;
   state.method=region==="cn"?(CHINA_METHODS.includes(state.method)?state.method:CHINA_METHODS[0]):"visa";
   ensureSelection();

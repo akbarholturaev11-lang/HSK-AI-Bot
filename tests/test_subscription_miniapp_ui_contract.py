@@ -230,3 +230,21 @@ console.log(JSON.stringify(result));
         "firstAgain": "cn",
         "keys": ["hsk_sub_region_v1:11", "hsk_sub_region_v1:pwa:11"],
     }
+
+
+def test_regional_prices_require_server_display_amounts():
+    html = _html()
+    start = html.index("function availableRegionalRegions(){")
+    end = html.index("/* To'lov turi", start)
+    script = """
+function availablePlans(){return ["1_month","3_months"]}
+function availableRegions(){return ["tj","uz","ru","cn","other"]}
+function cardPrices(){return {
+  ru:{"1_month":{currency:"RUB",final_amount:"10"},"3_months":{currency:"RUB",final_amount:"20"}},
+  uz:{"1_month":{currency:"UZS",final_amount:"100"}},
+  other:{"1_month":{currency:"USD",final_amount:"1"},"3_months":{currency:"USD",final_amount:null}},
+}}
+""" + html[start:end] + """
+console.log(JSON.stringify(availableRegionalRegions()));
+"""
+    assert json.loads(subprocess.check_output(["node", "-e", script], text=True)) == ["tj", "ru", "cn"]
