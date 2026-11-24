@@ -627,7 +627,9 @@
         clearInterval(tick);tick=null;forgetCheckout();
         state.paid=true;state.screen="success";state.checkoutId=null;render();
       } else if (result.status==="failed") {
-        clearInterval(tick);tick=null;forgetCheckout();state.checkoutId=null;
+        clearInterval(tick);tick=null;forgetCheckout();state.checkoutId=null;state.paymentUrl=null;
+        // load() advances run, so the old request's finally cannot reset this flag.
+        state.polling=false;
         emit("pwa_pro_checkout_failed");state.pendingError=txt("error");load();
       }
     }).catch(function(){}).finally(function(){if(state&&current===run)state.polling=false});
