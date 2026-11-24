@@ -47,7 +47,8 @@ def _server(url, captured, status):
             assert payload["plan_type"] == "1_month"
             assert payload["email"] == "buyer@example.com"
             captured.append(("start", payload))
-            route.fulfill(status=200, json={"ok": True, "checkout_id": 4242, "payment_url": url})
+            checkout_id = 4241 + sum(c[0] == "start" for c in captured)
+            route.fulfill(status=200, json={"ok": True, "checkout_id": checkout_id, "payment_url": url})
             return
         if path == "/api/v3/pwa/subscription/lava/status":
             payload = json.loads(route.request.post_data)
@@ -178,3 +179,33 @@ def test_provider_return_resumes_in_app_and_only_server_status_decides():
         assert "pro_checkout" not in page.url
         assert not errors, errors
         browser.close()
+
+def test_retry_after_server_confirmed_failure_polls_new_invoice():
+    captured = []
+    status = {"value": "failed"}
+    with playwright.sync_playwright() as pw:
+        browser = getattr(pw, os.getenv("PWA_E2E_ENGINE", "chromium")).launch()
+        context = browser.new_context(**pw.devices["iPhone 13"])
+        page = context.new_page()
+        context.route("**/*", _server("https://app.lava.top/pay/demo", captured, status))
+        errors = []
+        page.on("pageerror", lambda exc: errors.append(str(exc)))
+        page.goto(ORIGIN + "/iphone-pwa/course")
+        page.evaluate("window.open = () => null")
+        page.evaluate("HSKPwaInlinePro.open({source:'v3_locked_lesson',lang:'uz'})")
+        cta = page.get_by_role("button", name="Pro ⭐️ olish")
+        cta.click()
+        page.locator("#hsk-inline-pro .hip-error").wait_for(state="visible")
+        assert ("status", 4242) in captured
+        assert page.get_by_role("link", name="To‘lovga o‘tish").count() == 0
+
+        # A new checkout is intentional only after the server reports failure.
+        # The previous polling lock must not suppress its status request.
+        status["value"] = "paid"
+        cta.click()
+        page.get_by_role("heading", name="Pro faollashtirildi").wait_for()
+        assert ("status", 4243) in captured
+        assert len([c for c in captured if c[0] == "start"]) == 2
+        assert not errors, errors
+        browser.close()
+
