@@ -2575,6 +2575,7 @@ async def course_v3_data_file(filename: str):
         "hsk-diagnostics.js": "application/javascript",
         "hsk-miniapp-i18n.js": "application/javascript",
         "hsk-course-i18n.js": "application/javascript",
+        "hsk-subscription-presentation.js": "application/javascript",
         "li-onboarding-runtime.js": "application/javascript",
         "li-onboarding-install.js": "application/javascript",
         "li-onboarding-install.css": "text/css",

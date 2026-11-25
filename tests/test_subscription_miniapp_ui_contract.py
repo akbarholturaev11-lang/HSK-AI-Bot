@@ -197,7 +197,7 @@ def test_local_payment_region_hints_and_account_scoped_storage():
     html = _html()
     start = html.index("function regionStorageKey(){")
     end = html.index("/* Havola Xitoy", start)
-    script = """
+    script = Path("app/static/course_v3_data/hsk-subscription-presentation.js").read_text(encoding="utf-8") + """
 let PWA_CHECKOUT_HOST=true, PWA_CHECKOUT_ACTOR=null, INIT_DATA="";
 let tg=null;
 const REGION_ORDER=["tj","uz","ru","cn","other"];
@@ -258,7 +258,7 @@ def test_regional_routing_obeys_admin_modes_and_verified_currency():
     html = _html()
     start = html.index("function regionalProviderPlans(")
     end = html.index("function regionalCurrencies(", start)
-    script = html[start:end] + """
+    script = Path("app/static/course_v3_data/hsk-subscription-presentation.js").read_text(encoding="utf-8") + "\n" + html[start:end] + """
 const regions=["tj","uz","ru","cn","other"];
 const result={};
 for(const mode of ["manual_only","both","lava_only"]){
@@ -283,3 +283,20 @@ console.log(JSON.stringify(result));
     assert result["alternate"] == usd
     assert result["noManual"] == usd
     assert result["filtered"] == [{"plan_type": "1_month", "amount": "900", "currency": "RUB"}]
+
+
+def test_reference_price_is_display_only_and_labeled():
+    source = Path("app/static/course_v3_data/hsk-subscription-presentation.js").read_text(encoding="utf-8")
+    script = source + """
+const p=globalThis.HSKSubscriptionPresentation;
+console.log(JSON.stringify([p.relativePrice(100),p.relativePrice(0),p.relativePrice(null),p.comparisonLabel("uz"),p.comparisonLabel("ru"),p.comparisonLabel("tj")]));
+"""
+    result = json.loads(subprocess.check_output(["node", "-e", script], text=True))
+    assert result[:3] == ["129.99", None, None]
+    assert "oldingi narx emas" in result[3]
+    assert "не предыдущая цена" in result[4]
+    assert "на нархи қаблӣ" in result[5]
+    html = _html()
+    assert html.count("HSKSubscriptionPresentation.relativePrice(") == 2
+    assert 'percent<=0&&state.mode==="subscription"' in html
+    assert '!price.discounted&&state.mode==="subscription"' in html

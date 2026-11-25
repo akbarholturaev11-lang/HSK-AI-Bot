@@ -8,6 +8,7 @@
   <script defer src="/course_v3_data/hsk-diagnostics.js?v=20261122-34865dd3f1cf"></script>
 <script src="/assets/telegram-web-app.js?v=20261019-1"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261113-efe520888dad"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-a0dd8c0b1db1"></script>
 <link rel="stylesheet" href="/course_v3_data/design-tokens.css?v=20261005">
+<script src="/course_v3_data/hsk-subscription-presentation.js?v=20261125-63dee0308c09"></script>
 <title>HSK AI Pro</title>
 <style>
 html.hsk-pwa-browser input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]),
@@ -99,7 +100,8 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 .price.long{font-size:23px}
 .price small{font-size:12px;color:var(--muted);font-weight:850;margin-left:4px}
 .old-price{display:none;margin-top:9px;color:var(--muted);font-size:12px;text-decoration:line-through}
-.discounted .old-price{display:block}
+.discounted .old-price,.reference-priced .old-price{display:block}
+.reference-label{display:block;margin-top:4px;color:var(--muted);font-size:11px;line-height:1.35;font-weight:500}
 .list{display:grid;gap:9px}
 body.hsk-scene-page::before{content:none!important}
 .lava-question{min-height:calc(100dvh - 190px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;justify-content:center;text-align:center;gap:22px}
@@ -620,25 +622,8 @@ function saveRegion(region){
 }
 /* Local hints only: no IP, location permission or request. A conflicting
    device locale/time zone must not be presented as a verified payment country. */
-function inferPaymentRegion(zone,locale,language){
-  const tz=String(zone||"");
-  let zoneRegion="";
-  if(tz==="Asia/Dushanbe")zoneRegion="tj";
-  else if(["Asia/Tashkent","Asia/Samarkand"].includes(tz))zoneRegion="uz";
-  else if(["Asia/Shanghai","Asia/Urumqi","Asia/Chongqing","Asia/Harbin","Asia/Kashgar","PRC"].includes(tz))zoneRegion="cn";
-  else if(["Europe/Moscow","Europe/Kaliningrad","Europe/Samara","Europe/Volgograd","Europe/Kirov","Europe/Astrakhan","Europe/Saratov","Europe/Ulyanovsk","Asia/Yekaterinburg","Asia/Omsk","Asia/Novosibirsk","Asia/Barnaul","Asia/Tomsk","Asia/Novokuznetsk","Asia/Krasnoyarsk","Asia/Irkutsk","Asia/Chita","Asia/Yakutsk","Asia/Khandyga","Asia/Vladivostok","Asia/Ust-Nera","Asia/Magadan","Asia/Sakhalin","Asia/Srednekolymsk","Asia/Kamchatka","Asia/Anadyr","W-SU"].includes(tz))zoneRegion="ru";
-  else if(tz.includes("/")&&!tz.startsWith("Etc/"))zoneRegion="other";
-  const match=String(locale||"").match(/^[a-z]{2,3}(?:-[a-z]{4})?-([a-z]{2})(?:-|$)/i);
-  const code=match?match[1].toLowerCase():"";
-  const localeRegion=code?(["tj","uz","ru","cn"].includes(code)?code:"other"):"";
-  if(zoneRegion&&localeRegion&&zoneRegion!==localeRegion)return "other";
-  return zoneRegion||localeRegion||(["tj","uz","ru"].includes(language)?language:"other");
-}
-function localPaymentRegion(language){
-  let zone="";
-  try{zone=Intl.DateTimeFormat().resolvedOptions().timeZone||""}catch(e){}
-  return inferPaymentRegion(zone,typeof navigator==="undefined"?"":navigator.language,language);
-}
+function inferPaymentRegion(zone,locale,language){return HSKSubscriptionPresentation.inferPaymentRegion(zone,locale,language)}
+function localPaymentRegion(language){return HSKSubscriptionPresentation.localPaymentRegion(language)}
 /* Havola Xitoy usulini so'rasa (method=alipay/wechat) — havola ustun. */
 const REMEMBERED_REGION=CHINA_METHODS.includes(PARAMS.get("method"))?"":savedRegion();
 /* PWA Inbox "resend receipt": reopen the rejected receipt's method/country and
@@ -1327,21 +1312,8 @@ function lavaMode(){
   if(!Array.isArray(info.plans)||!info.plans.length)return "manual_only";
   return info.mode==="lava_only"||info.mode==="both"?info.mode:"manual_only";
 }
-function regionalProviderPlans(info,currency){
-  const rows=info?.plans_by_currency?.[currency]||(info?.currency===currency?info.plans:[]);
-  return (Array.isArray(rows)?rows:[]).filter(plan=>plan&&plan.plan_type&&plan.currency===currency&&plan.amount!=null&&Number(plan.amount)>0);
-}
-function regionalRoute(region,mode,manualAvailable,currencies,defaultCurrency,forcedPath){
-  const desired=region==="ru"?"RUB":"USD";
-  const exact=currencies.includes(desired);
-  const alternate=exact?desired:(currencies.includes(defaultCurrency)?defaultCurrency:(currencies[0]||""));
-  if(mode==="manual_only")return {path:"manual",currency:""};
-  if(mode==="lava_only")return {path:"lava",currency:alternate};
-  if(forcedPath==="manual"&&manualAvailable)return {path:"manual",currency:""};
-  if(forcedPath==="lava"&&alternate)return {path:"lava",currency:alternate};
-  if(manualAvailable&&(["tj","cn"].includes(region)||!exact))return {path:"manual",currency:""};
-  return {path:"lava",currency:alternate};
-}
+function regionalProviderPlans(info,currency){return HSKSubscriptionPresentation.regionalProviderPlans(info,currency)}
+function regionalRoute(region,mode,manualAvailable,currencies,defaultCurrency,forcedPath){return HSKSubscriptionPresentation.regionalRoute(region,mode,manualAvailable,currencies,defaultCurrency,forcedPath)}
 function regionalCurrencies(){
   const info=lavaInfo();
   return ["USD","RUB"].filter(code=>regionalProviderPlans(info,code).length);
@@ -1490,8 +1462,9 @@ function renderLava(text,screen){
     const amount=plan.amount==null?"":lavaMoney(plan.amount);
     const percent=Number(plan.discount_percent)||0;
     const badge=percent>0?`<span class="badge">−${percent}%</span>`:"";
-    const old=percent>0&&plan.base_amount!=null?`<span class="old-price">${escapeHtml(lavaMoney(plan.base_amount))} ${escapeHtml(plan.currency||"")}</span>`:"";
-    return `<button class="plan ${selected?"selected":""} ${percent>0?"discounted":""}" type="button" data-lava-plan="${escapeHtml(plan.plan_type)}" aria-pressed="${selected}">
+    const reference=percent<=0&&state.mode==="subscription"&&!state.preview?HSKSubscriptionPresentation.relativePrice(plan.amount):null;
+    const old=percent>0&&plan.base_amount!=null?`<span class="old-price">${escapeHtml(lavaMoney(plan.base_amount))} ${escapeHtml(plan.currency||"")}</span>`:reference?`<span class="old-price">${escapeHtml(reference)} ${escapeHtml(plan.currency||"")}</span><span class="reference-label">${escapeHtml(HSKSubscriptionPresentation.comparisonLabel(state.lang))}</span>`:"";
+    return `<button class="plan ${selected?"selected":""} ${percent>0?"discounted":reference?"reference-priced":""}" type="button" data-lava-plan="${escapeHtml(plan.plan_type)}" aria-pressed="${selected}">
       <span class="plan-top"><span class="plan-name">${escapeHtml(lavaPlanName(plan.plan_type))}</span>${badge}</span>
       <span><span class="price ${amount.length>5?"long":""}">${escapeHtml(amount)}<small>${escapeHtml(plan.currency||"")}</small></span>${old}</span>
     </button>`;
@@ -1939,7 +1912,8 @@ function renderPlans(text){
     const price=planPrice(plan);
     if(!price)return "";
     const selected=state.plan===plan?"selected":"";
-    const discounted=price.discounted?"discounted":"";
+    const reference=!price.discounted&&state.mode==="subscription"&&!state.preview&&!isHsk30Unlock()?HSKSubscriptionPresentation.relativePrice(price.final):null;
+    const discounted=price.discounted?"discounted":reference?"reference-priced":"";
     const wide=plan==="3_months"?"wide":"";
     const name=planName(text,plan);
     const badge=planBadge(text,plan);
@@ -1951,7 +1925,8 @@ function renderPlans(text){
       <span class="plan-top"><span class="plan-name">${name}</span><span class="badge">${badge}</span></span>
       <span>
         <span class="price ${long}">${amount}<small>${price.currency}</small></span>
-        <span class="old-price">${money(price.base)} ${price.currency}</span>
+        <span class="old-price">${reference?escapeHtml(reference):money(price.base)} ${price.currency}</span>
+        ${reference?`<span class="reference-label">${escapeHtml(HSKSubscriptionPresentation.comparisonLabel(state.lang))}</span>`:""}
         ${note}
       </span>
     </button>`;
