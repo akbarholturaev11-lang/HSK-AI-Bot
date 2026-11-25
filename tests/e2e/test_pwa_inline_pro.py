@@ -39,6 +39,7 @@ def test_inline_pro_two_primary_plans_other_terms_and_real_exit_discount():
                 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
                 <link rel="stylesheet" href="/course_v3_data/iphone-pwa-inline-pro.css?v=qa">
                 </head><body><button id="starter">open</button>
+                <script src="/course_v3_data/hsk-subscription-presentation.js?v=qa"></script>
                 <script src="/course_v3_data/iphone-pwa-inline-pro.js?v=qa"></script>
                 </body></html>""")
             return
@@ -110,6 +111,8 @@ def test_inline_pro_two_primary_plans_other_terms_and_real_exit_discount():
         assert "1 месяц" in page.locator("#hsk-inline-pro .hip-body").inner_text()
         assert "1 год" in page.locator("#hsk-inline-pro .hip-body").inner_text()
         assert "12.99" in page.locator("#hsk-inline-pro .hip-body").inner_text()
+        assert page.locator("#hsk-inline-pro .hip-region").is_visible()
+        assert "не предыдущая цена" in page.locator("#hsk-inline-pro .hip-reference-note").inner_text()
         page.get_by_role("button", name="Другие тарифы").click()
         # The title is never covered by the 44px back and close controls.
         no_overlap=page.evaluate("""() => {
@@ -173,7 +176,8 @@ def test_inline_pro_manual_only_and_blocked_states_are_honest(lava, expected):
                 <!DOCTYPE html><html lang="ru"><head><meta charset="utf-8">
                 <meta name="viewport" content="width=device-width,initial-scale=1">
                 <link rel="stylesheet" href="/course_v3_data/iphone-pwa-inline-pro.css?v=qa">
-                </head><body><script src="/course_v3_data/iphone-pwa-inline-pro.js?v=qa"></script>
+                </head><body><script src="/course_v3_data/hsk-subscription-presentation.js?v=qa"></script>
+                <script src="/course_v3_data/iphone-pwa-inline-pro.js?v=qa"></script>
                 </body></html>""")
             return
         if path == "/api/v3/pwa-auth/session":
@@ -245,7 +249,8 @@ def test_inline_pro_learning_benefit_requires_authorized_offer(lang, source, exp
                 <meta name="viewport" content="width=device-width,initial-scale=1">
                 <link rel="stylesheet" href="/course_v3_data/iphone-pwa-inline-pro.css?v=qa">
                 <script src="/course_v3_data/hsk-course-i18n.js?v=qa"></script>
-                </head><body><script src="/course_v3_data/iphone-pwa-inline-pro.js?v=qa"></script>
+                </head><body><script src="/course_v3_data/hsk-subscription-presentation.js?v=qa"></script>
+                <script src="/course_v3_data/iphone-pwa-inline-pro.js?v=qa"></script>
                 </body></html>""")
         elif path == "/api/v3/pwa-auth/session":
             route.fulfill(status=200, json={"ok": True, "user_id": 7, "csrf": "qa-csrf"})
@@ -290,4 +295,72 @@ def test_inline_pro_learning_benefit_requires_authorized_offer(lang, source, exp
         assert len(attempts) == len(offers)
         assert all(a.get("source") == source and a.get("inline_preview") is True for a in attempts)
         assert not errors
+        browser.close()
+
+
+def test_inline_region_changes_use_verified_prices_without_overview_reload():
+    seen = []
+    usd = [{"plan_type": "1_month", "currency": "USD", "amount": "10.00"}]
+    rub = [{"plan_type": "1_month", "currency": "RUB", "amount": "900.00"}]
+    overview = {
+        "ok": True,
+        "prices": {
+            "visa": {"1_month": {"currency": "TJS", "final_amount": 49, "base_amount": 49}},
+            "alipay": {"1_month": {"currency": "CNY", "final_amount": 35, "base_amount": 35}},
+        },
+        "card_prices": {
+            "uz": {"1_month": {"currency": "UZS", "final_amount": 55000, "base_amount": 55000}},
+            "ru": {"1_month": {"currency": "RUB", "final_amount": 500, "base_amount": 500}},
+            "other": {"1_month": {"currency": "USD", "final_amount": 5, "base_amount": 5}},
+        },
+        "lava": {"mode": "both", "currency": "USD", "plans": usd,
+                 "plans_by_currency": {"USD": usd, "RUB": rub}, "email": "test@example.com"},
+    }
+
+    def respond(route):
+        path = urlsplit(route.request.url).path
+        if path == "/iphone-pwa/course":
+            route.fulfill(status=200, content_type="text/html", body="""
+                <!DOCTYPE html><html lang="ru"><body>
+                <script src="/course_v3_data/hsk-subscription-presentation.js?v=qa"></script>
+                <script src="/course_v3_data/iphone-pwa-inline-pro.js?v=qa"></script>
+                </body></html>""")
+        elif path == "/api/v3/pwa-auth/session":
+            route.fulfill(status=200, json={"ok": True, "user_id": 7, "csrf": "qa-csrf"})
+        elif path == "/api/v3/pwa/subscription/overview":
+            seen.append("overview")
+            route.fulfill(status=200, json=overview)
+        elif path == "/iphone-pwa/checkout":
+            seen.append(route.request.url)
+            route.fulfill(status=200, content_type="text/html", body="<html><body>Manual checkout</body></html>")
+        elif path == "/api/v3/pwa/subscription/inline-event":
+            route.fulfill(status=200, json={"ok": True, "recorded": True})
+        else:
+            _serve_static(route, path)
+
+    with playwright.sync_playwright() as pw:
+        browser = getattr(pw, os.getenv("PWA_E2E_ENGINE", "chromium")).launch()
+        page = browser.new_context(**pw.devices["iPhone 13"]).new_page()
+        page.set_default_timeout(8000)
+        page.route("**/*", respond)
+        page.goto(ORIGIN + "/iphone-pwa/course")
+        page.evaluate("localStorage.setItem('hsk_sub_region_v1:pwa:7','tj')")
+        page.evaluate("HSKPwaInlinePro.open({source:'v3_locked_lesson',lang:'ru'})")
+        region = page.locator("#hsk-inline-pro .hip-region")
+        region.wait_for()
+        assert region.input_value() == "tj"
+        assert "49.00 TJS" in page.locator("#hsk-inline-pro .hip-plan").first.inner_text()
+        region.select_option("ru")
+        assert "900.00 RUB" in page.locator("#hsk-inline-pro .hip-plan").first.inner_text()
+        region.select_option("uz")
+        assert "10.00 USD" in page.locator("#hsk-inline-pro .hip-plan").first.inner_text()
+        region.select_option("cn")
+        assert "35.00 CNY" in page.locator("#hsk-inline-pro .hip-plan").first.inner_text()
+        assert seen.count("overview") == 1
+        assert page.evaluate("localStorage.getItem('hsk_sub_region_v1:pwa:7')") == "cn"
+        page.get_by_role("button", name="Получить Pro ⭐️").click()
+        frame = page.locator("#hsk-inline-pro iframe")
+        frame.wait_for()
+        assert "country=cn" in frame.get_attribute("src")
+        assert "plan=1_month" in frame.get_attribute("src")
         browser.close()

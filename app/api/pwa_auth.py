@@ -95,7 +95,7 @@ def _pwa_html(request: Request, path: str, headers: dict[str, str]) -> Response:
 # The reviewed shared HTML bytes MUST remain unchanged for source/translation
 # audit anchors. Inject PWA-only assets only after an authenticated route check.
 # The injected HTML is separately ETagged by its FULL bytes, not by file SHA.
-_PWA_INLINE_PRO_HTML = "\n<link rel=\"stylesheet\" href=\"/course_v3_data/iphone-pwa-inline-pro.css?v=20261108-e8010ea28fdc\">\n<script src=\"/course_v3_data/iphone-pwa-inline-pro.js?v=20261124-ce0562373213\"></script>\n<script src=\"/course_v3_data/iphone-pwa-inline-pro-bridge.js?v=20261122-d383ec432e10\"></script>\n".encode("utf-8")
+_PWA_INLINE_PRO_HTML = "\n<link rel=\"stylesheet\" href=\"/course_v3_data/iphone-pwa-inline-pro.css?v=20261125-ce08c035ac87\">\n<script src=\"/course_v3_data/iphone-pwa-inline-pro.js?v=20261125-325d39e862e3\"></script>\n<script src=\"/course_v3_data/iphone-pwa-inline-pro-bridge.js?v=20261125-6e4c7585b70b\"></script>\n".encode("utf-8")
 
 # Scope only to the verified browser PWA. The native first-paint skeleton
 # stays in course-v3.html; these are ONLY independent secondary section states.
@@ -164,7 +164,8 @@ def _pwa_inline_html(request: Request, path: str, headers: dict[str, str],
             # only for independent Rating/Friends/Profile loading boundaries.
             source = source.replace(b"</head>", _PWA_PROGRESSIVE_SECTIONS_CSS + b"</head>", 1)
             source = source.replace(b"</body>", _pwa_install_guide_html() + b"</body>", 1)
-        document = source.replace(b"</body>", _PWA_INLINE_PRO_HTML + b"</body>", 1)
+        presentation = b'' if b'/hsk-subscription-presentation.js?' in source else b'<script src="/course_v3_data/hsk-subscription-presentation.js?v=20261125-dfdba63ab013"></script>\n'
+        document = source.replace(b"</body>", presentation + _PWA_INLINE_PRO_HTML + b"</body>", 1)
         etag = 'W/"' + hashlib.sha256(document).hexdigest()[:32] + '"'
         cached = document, etag
         if len(_PWA_INLINE_CACHE) >= 12:

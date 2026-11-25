@@ -17,7 +17,8 @@ COURSE = """<!doctype html>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="stylesheet" href="/course_v3_data/iphone-pwa-inline-pro.css?v=e2e">
   </head><body>
-  <script src="/course_v3_data/iphone-pwa-inline-pro.js?v=e2e"></script>
+  <script src="/course_v3_data/hsk-subscription-presentation.js?v=e2e"></script>
+                <script src="/course_v3_data/iphone-pwa-inline-pro.js?v=e2e"></script>
   </body></html>"""
 
 

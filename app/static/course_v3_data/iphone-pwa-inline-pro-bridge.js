@@ -390,30 +390,6 @@
       // so the intermediate Visa question cannot flash during loading.
       try { if (typeof window.render==="function") window.render() } catch (_) {}
     }
-    // Actual manual discount supersedes the comparison. This is display only.
-    var renderPlans = window.renderPlans;
-    if (typeof renderPlans === "function") {
-      window.renderPlans = function () {
-        var result = renderPlans.apply(this, arguments);
-        try {
-          if (typeof state === "undefined") return result;
-          document.querySelectorAll("#plans button.plan").forEach(function (card) {
-            if (card.classList.contains("discounted")) return;
-            var plan = card.getAttribute("data-plan");
-            var p = typeof planPrice === "function" ? planPrice(plan) : null;
-            var price = p && Number(p.final);
-            if (!Number.isFinite(price) || price <= 0) return;
-            var fake = Math.round(price * 1.3 - 0.99) + 0.99;
-            if (fake <= price) fake = Math.ceil(price - 0.99 + 1e-9) + 0.99;
-            var old = card.querySelector(".old-price");
-            if (!old) return;
-            old.textContent = fake.toFixed(2) + " " + (p.currency || "");
-            old.title = "Visual comparison only; not a previous sales price";
-            card.classList.add("pwa-reference-price");
-          });
-        } catch (_) {}
-        return result;
-      };
-    }
+    // Shared checkout renders all comparison labels and real discounts itself.
   }
 })();

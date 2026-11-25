@@ -29,7 +29,8 @@ def _markup(path):
       <link rel="stylesheet" href="/course_v3_data/iphone-pwa-inline-pro.css?v=e2e">
       </head><body><div id="secov"></div><button id="go">Start</button>
       <script>{stub}</script>
-      <script src="/course_v3_data/iphone-pwa-inline-pro.js?v=e2e"></script>
+      <script src="/course_v3_data/hsk-subscription-presentation.js?v=e2e"></script>
+                <script src="/course_v3_data/iphone-pwa-inline-pro.js?v=e2e"></script>
       <script src="/course_v3_data/iphone-pwa-inline-pro-bridge.js?v=e2e"></script>
       </body></html>"""
 

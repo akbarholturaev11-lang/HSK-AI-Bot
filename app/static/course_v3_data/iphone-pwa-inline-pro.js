@@ -14,7 +14,7 @@
   // The learner never sees a payment provider name: one card checkout and
   // one "regular" (bank card / Alipay / WeChat receipt) method.
   var WORDS = {
-    ru: {title:"Лимит исчерпан",subtitle:"Оформите Pro, чтобы продолжить",benefits:["Уроки без ограничений","Разговорная практика с ИИ","Учёба без рекламы"],one:"1 месяц",
+    ru: {title:"Лимит исчерпан",subtitle:"Оформите Pro, чтобы продолжить",benefits:["Уроки без ограничений","Разговорная практика с ИИ","Учёба без рекламы"],one:"1 месяц",ten:"10 дней",region:"Страна оплаты",countries:["Таджикистан","Узбекистан","Россия","Китай","Другая страна"],
       three:"3 месяца",six:"6 месяцев",year:"1 год",perMonth:"/ мес",pay:"Получить Pro ⭐️",
       more:"Другие тарифы",
       manual:"Обычный способ оплаты",manualHint:"Банковская карта, Alipay или WeChat",
@@ -31,7 +31,7 @@
       manualNoExit:"Скидка 20% действует только при онлайн-оплате картой",
       blocked:"Проверьте текущий платёж или действующую подписку",
       missingEmail:"Укажите действительный email",success:"Платёж подтверждён сервером"},
-    uz: {title:"Limit tugadi",subtitle:"Davom etish uchun Pro oling",benefits:["Cheksiz darslar","AI bilan ovozli mashqlar","Reklamasiz o‘rganing"],one:"1 oy",
+    uz: {title:"Limit tugadi",subtitle:"Davom etish uchun Pro oling",benefits:["Cheksiz darslar","AI bilan ovozli mashqlar","Reklamasiz o‘rganing"],one:"1 oy",ten:"10 kun",region:"To‘lov davlati",countries:["Tojikiston","O‘zbekiston","Rossiya","Xitoy","Boshqa davlat"],
       three:"3 oy",six:"6 oy",year:"1 yil",perMonth:"/ oy",pay:"Pro ⭐️ olish",
       more:"Boshqa tariflar",
       manual:"Oddiy to‘lov usuli",manualHint:"Bank kartasi, Alipay yoki WeChat",
@@ -47,7 +47,7 @@
       manualNoExit:"20% chegirma faqat karta orqali onlayn to‘lovga tegishli",
       blocked:"Joriy to‘lov yoki faol obunani tekshiring",
       missingEmail:"To‘g‘ri email kiriting",success:"To‘lov serverda tasdiqlandi"},
-    tj: {title:"Лимит тамом шуд",subtitle:"Барои идома Pro гиред",benefits:["Дарсҳо бе маҳдудият","Машқи овозӣ бо AI","Омӯзиш бе реклама"],one:"1 моҳ",
+    tj: {title:"Лимит тамом шуд",subtitle:"Барои идома Pro гиред",benefits:["Дарсҳо бе маҳдудият","Машқи овозӣ бо AI","Омӯзиш бе реклама"],one:"1 моҳ",ten:"10 рӯз",region:"Давлати пардохт",countries:["Тоҷикистон","Ӯзбекистон","Русия","Чин","Давлати дигар"],
       three:"3 моҳ",six:"6 моҳ",year:"1 сол",perMonth:"/ моҳ",pay:"Гирифтани Pro ⭐️",
       more:"Тарифҳои дигар",
       manual:"Пардохти оддӣ",manualHint:"Корти бонкӣ, Alipay ё WeChat",
@@ -64,7 +64,7 @@
       blocked:"Пардохти ҷорӣ ё обунаи фаъолро санҷед",
       missingEmail:"Email-и дуруст ворид кунед",success:"Пардохт аз тарафи сервер тасдиқ шуд"}
   };
-  var NAMES = { "1_month":"one", "3_months":"three", "6_months":"six", "12_months":"year" };
+  var NAMES = { "10_days":"ten", "1_month":"one", "3_months":"three", "6_months":"six", "12_months":"year" };
   var MONTHS = { "1_month":1, "3_months":3, "6_months":6, "12_months":12 };
   var order = ["1_month","3_months","6_months","12_months"];
   var root, sheet, scroll, body, actions, heading, info, panda, back, closeButton, lastFocus, state, tick = null, actorPromise = null, run = 0;
@@ -194,19 +194,11 @@
     var payload = {
       event:event,source:state.source,attempt_id:state.attempt,
       event_id:state.attempt+":"+(++state.eventSeq),
-      plan_type:plan||state.plan||null,method:method||null
+      plan_type:order.includes(plan||state.plan)?(plan||state.plan):null,method:method||null
     };
     request(API.analytics,payload).catch(function(){});
   }
-  function relativePrice(value) {
-    var n=Number(value);
-    if (!Number.isFinite(n)||n<=0) return null;
-    // UI-only roughly +30% comparison, rounded to the nearest .99.
-    // It is NOT a historical price and NEVER sent to the payment API.
-    var result=Math.round(n*1.3-0.99)+0.99;
-    if(result<=n)result=Math.ceil(n-0.99+1e-9)+0.99;
-    return result.toFixed(2);
-  }
+  function relativePrice(value) { return HSKSubscriptionPresentation.relativePrice(value); }
   function money(value,currency) {
     var n=Number(value);
     if (!Number.isFinite(n)||n<0) return "";
@@ -244,11 +236,59 @@
   }
   function lavaBlock() { return state.data && state.data.lava || null; }
   function manualAllowed() { var lava=lavaBlock(); return !lava || lava.mode!=="lava_only"; }
-  function available() {
+  var regionOrder=["tj","uz","ru","cn","other"], regionFlags=["🇹🇯","🇺🇿","🇷🇺","🇨🇳","🌐"];
+  function regionKey() {
+    return Number.isSafeInteger(state.ownerId)&&state.ownerId>0?"hsk_sub_region_v1:pwa:"+state.ownerId:"";
+  }
+  function manualPlans(region) {
+    return manualAllowed()?HSKSubscriptionPresentation.manualRegionalPlans(state.data,region):[];
+  }
+  function providerPlans() {
     var lava=lavaBlock();
-    return lava && Array.isArray(lava.plans) ? lava.plans.filter(function(p) {
-      return p && order.indexOf(p.plan_type)!==-1 && p.amount!==null && p.amount!==undefined;
-    }).sort(function(a,b){return order.indexOf(a.plan_type)-order.indexOf(b.plan_type)}) : [];
+    if (!lava||lava.mode==="manual_only")return [];
+    var rows=state.mode!=="exit_discount"&&state.lavaCurrency?HSKSubscriptionPresentation.regionalProviderPlans(
+      lava.currency?lava:Object.assign({},lava,{currency:lava.plans?.[0]?.currency}),state.lavaCurrency):lava.plans;
+    return (Array.isArray(rows)?rows:[]).filter(function(p){
+      return p&&order.includes(p.plan_type)&&p.amount!=null&&Number(p.amount)>0;
+    }).sort(function(a,b){return order.indexOf(a.plan_type)-order.indexOf(b.plan_type)});
+  }
+  function configureRegion(region) {
+    var lava=lavaBlock(), api=HSKSubscriptionPresentation;
+    var mode=lava?.mode==="both"||lava?.mode==="lava_only"?lava.mode:"manual_only";
+    var normalized=lava?.currency?lava:Object.assign({},lava,{currency:lava?.plans?.[0]?.currency});
+    var currencies=["USD","RUB"].filter(code=>api.regionalProviderPlans(normalized,code).length);
+    if(mode==="manual_only"&&!manualPlans(region).length){
+      region=regionOrder.find(code=>manualPlans(code).length)||region;
+    }
+    var route=api.regionalRoute(region,mode,manualPlans(region).length>0,currencies,normalized.currency);
+    state.region=region;state.path=route.path;state.lavaCurrency=route.currency;
+    if(!state.lavaCurrency&&currencies.length)state.lavaCurrency=currencies[0];
+  }
+  function displayPath() {
+    if(state.mode==="exit_discount")return "lava";
+    var alternate=state.screen==="more"||(state.screen==="email"&&state.emailFrom==="more");
+    return state.path==="manual"&&alternate&&providerPlans().length?"lava":state.path||"lava";
+  }
+  function available() {
+    return displayPath()==="manual"?manualPlans(state.region):providerPlans();
+  }
+  function regionSelector() {
+    var select=el("select","hip-region");
+    select.setAttribute("aria-label",txt("region"));
+    var choices=providerPlans().length?regionOrder:regionOrder.filter(code=>manualPlans(code).length);
+    if(!choices.length){select.hidden=true;return select;}
+    choices.forEach(function(code){
+      var i=regionOrder.indexOf(code), option=el("option",null,regionFlags[i]+" "+txt("countries")[i]);
+      option.value=code;select.appendChild(option);
+    });
+    select.value=state.region;
+    select.addEventListener("change",function(){
+      if(!choices.includes(select.value)||state.paying||state.checkoutId)return;
+      configureRegion(select.value);
+      try { if(regionKey())localStorage.setItem(regionKey(),state.region); }catch(_){}
+      state.screen="main";state.error="";render();
+    });
+    return select;
   }
   function selectedPlan() {
     return available().find(function(p){return p.plan_type===state.plan}) || null;
@@ -270,12 +310,14 @@
     return window.HSKAI_COURSE_I18N?.[state.lang]?.[key] || "";
   }
   function elementPlans(all) {
-    var plans=available().filter(function(p){return all||p.plan_type==="1_month"||p.plan_type==="12_months"});
+    var rows=available(), path=displayPath();
+    var plans=all?rows:(path==="manual"?rows.slice(0,2):rows.filter(function(p){return p.plan_type==="1_month"||p.plan_type==="12_months"}));
+    if(!plans.length)plans=rows.slice(0,2);
     var grid=el("div","hip-plans");
     plans.forEach(function(plan) {
       var card=btn("","hip-plan",function(){
         if (state.plan===plan.plan_type) return;
-        state.plan=plan.plan_type;emit("pwa_pro_plan_selected",plan.plan_type,"lava");render();
+        state.plan=plan.plan_type;emit("pwa_pro_plan_selected",plan.plan_type,path);render();
       });
       card.setAttribute("aria-pressed",String(state.plan===plan.plan_type));
       var discounted=Number(plan.discount_percent)>0 && plan.base_amount!=null;
@@ -303,11 +345,16 @@
       }
       grid.appendChild(card);
     });
+    if(grid.querySelector(".comparison[title]"))grid.appendChild(el("p","hip-reference-note",HSKSubscriptionPresentation.comparisonLabel(state.lang)));
     return grid;
+  }
+  function openManual(selected) {
+    state.manualFrom=state.screen;state.manualPlan=selected||"";
+    emit("pwa_pro_method_selected",selected||null,"manual");state.screen="manual";state.error="";render();
   }
   function manualRow() {
     var row=btn("","hip-method",function(){
-      emit("pwa_pro_method_selected",null,"manual");state.screen="manual";state.error="";render();
+      openManual("");
     });
     var text=el("span","hip-method-text");
     text.append(el("b",null,txt("manual")),el("small",null,txt("manualHint")));
@@ -318,6 +365,7 @@
   function payButton() {
     return btn(txt("pay"),"hip-primary",function() {
       if (!selectedPlan()) return;
+      if(displayPath()==="manual"){openManual(state.plan);return;}
       if (!state.email) {state.emailFrom=state.screen;state.screen="email";state.error="";render();return}
       startPayment();
     });
@@ -379,7 +427,7 @@
     if (view==="waiting") {
       // Keep the installed PWA available while the external checkout is open.
       // The server, not browser navigation, decides whether payment succeeded.
-      var waitPlan=selectedPlan();
+      var waitPlan=state.invoicePlan||null;
       header("read",txt("paying"),
         waitPlan?txt(NAMES[waitPlan.plan_type])+" · "+money(waitPlan.amount,waitPlan.currency):"");
       var checking=el("p","hip-checking");
@@ -410,6 +458,8 @@
       iframe.title=txt("manual");
       iframe.setAttribute("loading","eager");
       var q=new URLSearchParams({embedded:"1",source:state.source,lang:state.lang,mode:"subscription",return_to:"course",inline_manual:"1"});
+      if(regionOrder.includes(state.region))q.set("country",state.region);
+      if(state.manualPlan)q.set("plan",state.manualPlan);
       iframe.src="/iphone-pwa/checkout?"+q.toString();
       body.appendChild(iframe);
       return;
@@ -436,12 +486,13 @@
       if (plans.length) {
         if (!selectedPlan()) state.plan=plans[0].plan_type;
         body.appendChild(elementPlans(true));
+        if(state.mode==="subscription")body.appendChild(regionSelector());
         if (state.mode==="exit_discount") body.appendChild(el("p","hip-small hip-center",txt("saving")));
         actions.appendChild(payButton());
       } else if (!manualAllowed()) {
         body.appendChild(el("p","hip-small hip-center",txt("unavailable")));
       }
-      if (manualAllowed()) {
+      if (manualAllowed()&&(!plans.length||displayPath()!=="manual")) {
         if (plans.length) body.appendChild(el("div","hip-divider"));
         body.appendChild(manualRow());
         if (state.mode==="exit_discount") body.appendChild(el("p","hip-small",txt("manualNoExit")));
@@ -457,13 +508,15 @@
         return;
       }
       // Card checkout is switched off: the regular method is the only path.
+      if(state.mode==="subscription")body.appendChild(regionSelector());
       actions.appendChild(btn(txt("pay"),"hip-primary",function(){emit("pwa_pro_method_selected",null,"manual");state.screen="manual";render()}));
       return;
     }
-    if (!selectedPlan() || (state.plan!=="1_month" && state.plan!=="12_months")) {
-      state.plan=plans.some(function(p){return p.plan_type==="1_month"})?"1_month":plans[0].plan_type;
-    }
+    var primary=displayPath()==="manual"?plans.slice(0,2):plans.filter(p=>p.plan_type==="1_month"||p.plan_type==="12_months");
+    if(!primary.length)primary=plans.slice(0,2);
+    if(!primary.some(p=>p.plan_type===state.plan))state.plan=primary[0].plan_type;
     body.appendChild(elementPlans(false));
+    if(state.mode==="subscription")body.appendChild(regionSelector());
     if (state.mode==="exit_discount") body.appendChild(el("p","hip-small hip-center",txt("saving")));
     actions.appendChild(payButton());
     actions.appendChild(btn(txt("more"),"hip-secondary",function(){emit("pwa_pro_more_opened");state.screen="more";state.error="";render()}));
@@ -473,10 +526,15 @@
     if (!state) return;
     var current=quiet===true?run:++run;
     if (quiet!==true) {state.screen="loading";state.error="";render();}
-    request(API.overview,{source:state.source,mode:state.mode,plan:state.plan,
-      supports_lava:true,inline_preview:true,attempt_id:state.attempt}).then(function(data) {
+    Promise.all([session(),request(API.overview,{source:state.source,mode:state.mode,plan:state.plan,
+      supports_lava:true,inline_preview:true,attempt_id:state.attempt})]).then(function(values) {
+      var actor=values[0],data=values[1];
       if (!state||current!==run) return;
-      state.data=data;
+      state.data=data;state.ownerId=Number(actor.user_id);
+      if(state.mode==="subscription"){
+        var saved="";try{saved=regionKey()?localStorage.getItem(regionKey()):"";}catch(_){}
+        configureRegion(regionOrder.includes(state.region)?state.region:regionOrder.includes(saved)?saved:HSKSubscriptionPresentation.localPaymentRegion(state.lang));
+      }
       state.email=(data.lava&&data.lava.email)||state.email||"";
       if (quiet!==true) {
         state.screen="main";
@@ -566,7 +624,7 @@
   }
   function goBack() {
     if (!state) return;
-    if (state.screen==="manual")state.screen=available().length?"more":"main";
+    if (state.screen==="manual")state.screen=state.manualFrom||"main";
     else if (state.screen==="email")state.screen=state.emailFrom==="more"?"more":"main";
     else if (state.screen==="more")state.screen="main";
     else {requestDismiss();return}
@@ -574,7 +632,7 @@
   }
   function startPayment() {
     var plan=selectedPlan();
-    if (!plan||!state||state.paying||state.checkoutId) return;
+    if (!plan||!state||state.paying||state.checkoutId||displayPath()!=="lava") return;
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((state.email||"").trim())) {
       if (state.screen!=="email") state.emailFrom=state.screen;
       state.screen="email";state.error=txt("missingEmail");render();return;
@@ -582,9 +640,9 @@
     // Do not pre-open about:blank: iOS standalone PWAs can strand the
     // blank window even after a valid payment URL is returned.
     var current=++run, from=state.screen==="email"?(state.emailFrom||"main"):state.screen;
-    state.paying=true;state.screen="loading";state.error="";render();
+    state.invoicePlan=plan;state.paying=true;state.screen="loading";state.error="";render();
     request(API.start,{plan_type:plan.plan_type,email:state.email.trim(),language:state.lang,
-      mode:state.mode,attempt_id:state.attempt,ui_source:state.source}).then(function(data){
+      mode:state.mode,attempt_id:state.attempt,ui_source:state.source,...(state.mode==="subscription"&&state.lavaCurrency?{currency:plan.currency}:{})}).then(function(data){
       if (!state||current!==run) return;
       state.paying=false;
       var url=new URL(data.payment_url);
@@ -643,7 +701,7 @@
     if(lang==="tg")lang="tj";
     if(!WORDS[lang])lang="ru";
     state={lang:lang,source:String(opts.source||"v3_paywall").slice(0,80),
-      mode:"subscription",screen:"loading",plan:"1_month",email:"",attempt:"inline-"+Date.now()+"-"+Math.floor(Math.random()*1000000),eventSeq:0,
+      mode:"subscription",screen:"loading",plan:"1_month",email:"",region:"",path:"",lavaCurrency:"",ownerId:0,attempt:"inline-"+Date.now()+"-"+Math.floor(Math.random()*1000000),eventSeq:0,
       data:null,error:"",pendingError:"",polling:false,paying:false,emailFrom:"main",onClose:opts.onClose,
       previousOverflow:document.documentElement.style.overflow};
     root.hidden=false;
@@ -671,7 +729,7 @@
     if (!state||state.screen!=="manual"||!body)return false;
     var iframe=body.querySelector("iframe");
     if (!iframe||iframe.contentWindow!==child)return false;
-    state.screen=available().length?"more":"main";render();return true;
+    state.screen=state.manualFrom||"more";render();return true;
   }
   document.addEventListener("keydown",function(ev) {
     if (!root||root.hidden)return;

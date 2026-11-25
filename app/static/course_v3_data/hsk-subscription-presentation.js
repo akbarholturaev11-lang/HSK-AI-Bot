@@ -48,5 +48,21 @@ function regionalRoute(region,mode,manualAvailable,currencies,defaultCurrency,fo
 function comparisonLabel(lang){
   return ({ru:"Ориентировочная цена для сравнения, не предыдущая цена",uz:"Taqqoslash uchun taxminiy narx, oldingi narx emas",tj:"Нархи тахминӣ барои муқоиса, на нархи қаблӣ"})[lang]||"Ориентировочная цена для сравнения, не предыдущая цена";
 }
-root.HSKSubscriptionPresentation=Object.freeze({inferPaymentRegion,localPaymentRegion,regionalProviderPlans,regionalRoute,relativePrice,comparisonLabel});
+/* Only server-supplied local amounts are eligible; never estimate payable amounts. */
+function manualRegionalPlans(data,region){
+  const prices=data?.prices||{};
+  const methods=region==="cn"?["alipay","wechat"]:["visa"];
+  const terms=["1_month","10_days","3_months"];
+  const method=methods.find(m=>terms.some(t=>prices[m]?.[t]));
+  if(!method)return [];
+  const rows=terms.filter(t=>prices[method]?.[t]).map(t=>{
+    const base=prices[method][t];
+    const local=method==="visa"&&region!=="tj"?data?.card_prices?.[region]?.[t]:base;
+    if(!local?.currency||local.final_amount==null||!Number.isFinite(Number(local.final_amount))||Number(local.final_amount)<=0)return null;
+    return {plan_type:t,currency:local.currency,amount:local.final_amount,base_amount:local.base_amount,discount_percent:base.discount_applied?Number(base.discount_percent)||0:0};
+  });
+  return rows.every(Boolean)?rows:[];
+}
+function moreLabel(lang){return ({ru:"Другие тарифы",uz:"Boshqa tariflar",tj:"Тарифҳои дигар"})[lang]||"Другие тарифы"}
+root.HSKSubscriptionPresentation=Object.freeze({manualRegionalPlans,moreLabel,inferPaymentRegion,localPaymentRegion,regionalProviderPlans,regionalRoute,relativePrice,comparisonLabel});
 })(globalThis);

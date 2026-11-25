@@ -8,7 +8,7 @@
   <script defer src="/course_v3_data/hsk-diagnostics.js?v=20261122-34865dd3f1cf"></script>
 <script src="/assets/telegram-web-app.js?v=20261019-1"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261113-efe520888dad"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-a0dd8c0b1db1"></script>
 <link rel="stylesheet" href="/course_v3_data/design-tokens.css?v=20261005">
-<script src="/course_v3_data/hsk-subscription-presentation.js?v=20261125-63dee0308c09"></script>
+<script src="/course_v3_data/hsk-subscription-presentation.js?v=20261125-dfdba63ab013"></script>
 <title>HSK AI Pro</title>
 <style>
 html.hsk-pwa-browser input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]),
@@ -1726,7 +1726,8 @@ function applyOverview(data){
   const inlineManual=PARAMS.get("inline_manual")==="1"&&mode!=="lava_only";
   if(ordinary&&!lavaInfo()?.blocked_reason){
     const regions=inlineManual?availableRegionalRegions():regionalChoices();
-    const preferred=state.region||savedRegion()||localPaymentRegion(normalizeLang(data?.language||state.lang));
+    const hint=inlineManual&&PWA_CHECKOUT_HOST&&REGION_ORDER.includes(PARAMS.get("country"))?PARAMS.get("country"):"";
+    const preferred=state.region||hint||savedRegion()||localPaymentRegion(normalizeLang(data?.language||state.lang));
     if(regions.length&&(mode==="manual_only"||regionalCurrencies().length||inlineManual)){
       state.regionalPlans=true;
       selectRegionalRoute(regions.includes(preferred)?preferred:regions[0],inlineManual?"manual":(wasRegional?previousPath:""));
@@ -1953,7 +1954,7 @@ function renderRegionalControls(select,alternative,text,path){
   const alternativeAvailable=path==="manual"?regionalCurrencies().length>0:availableRegionalRegions().includes(state.region);
   alternative.hidden=select.hidden||inlineManual||lavaMode()!=="both"||!alternativeAvailable;
   alternative.disabled=state.busy;
-  alternative.textContent=text.changePayment;
+  alternative.textContent=HSKSubscriptionPresentation.moreLabel(state.lang);
 }
 function renderMethod(text){
   $("#methodsTitle").textContent=text.methodsTitle;
