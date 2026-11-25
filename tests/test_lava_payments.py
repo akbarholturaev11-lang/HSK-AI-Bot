@@ -138,6 +138,39 @@ class LavaPaymentTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(effective_mode(_config("both", enabled=()), lava_settings(), client_supports_lava=True),
                          "manual_only")
 
+    async def test_regional_currency_uses_verified_snapshot_and_preserves_default(self):
+        config = config_from_dict({
+            "checkout_mode": "both", "currency": "USD",
+            "plans": {
+                "1_month": {"enabled": True, "offer_id": OFFER_ID,
+                            "price": {"amount": "10.00", "currency": "USD"},
+                            "regional_prices": {"RUB": "900.00"}},
+                "3_months": {"enabled": True, "offer_id": OFFER_ID,
+                             "price": {"amount": "27.00", "currency": "USD"}},
+            },
+        })
+        self.fake.rub_prices = {"MONTHLY": "900.00"}
+        async with self.sessions() as session:
+            await LavaConfigService(session).save(config)
+            await session.commit()
+            block = await self.checkout.overview_block(session, await session.get(User, 1), supports_lava=True)
+        self.assertEqual(block["plans_by_currency"]["RUB"][0]["amount"], "900.00")
+        self.assertEqual([p["plan_type"] for p in block["plans_by_currency"]["RUB"]], ["1_month"])
+        self.assertEqual(block["plans"][0]["currency"], "USD")
+        with self.assertRaises(LavaCheckoutError) as ctx:
+            await self.checkout.start(self.sessions, user_id=1, plan_type="3_months",
+                                      email="buyer@example.com", source="miniapp", language="ru", currency="RUB")
+        self.assertEqual(ctx.exception.code, "plan_unavailable")
+        self.assertIsNone(self.fake.last_create_body)
+        rub = await self.checkout.start(self.sessions, user_id=1, plan_type="1_month",
+                                       email="buyer@example.com", source="miniapp", language="ru", currency="RUB")
+        self.assertEqual((rub["currency"], rub["amount"]), ("RUB", "900.00"))
+        async with self.sessions() as session:
+            invoice = await session.get(LavaInvoice, rub["checkout_id"])
+            self.assertEqual((invoice.currency, str(invoice.expected_amount)), ("RUB", "900.00"))
+        usd = await self._start(user_id=2)
+        self.assertEqual((usd["currency"], usd["amount"]), ("USD", "10.00"))
+
     async def test_disabled_term_is_hidden_and_rejected_then_visible_again(self):
         async with self.sessions() as session:
             await LavaConfigService(session).save(_config(enabled=("1_month", "6_months")))

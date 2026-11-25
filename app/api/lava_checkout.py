@@ -40,6 +40,7 @@ class LavaStartBody(BaseModel):
     model_config = ConfigDict(extra="forbid")
     plan_type: str = Field(max_length=16)
     email: str = Field(max_length=254)
+    currency: Literal["USD", "RUB"] | None = None
     language: str | None = Field(default=None, max_length=8)
     # Checkout context; the server re-resolves any discount itself.
     mode: str | None = Field(default=None, max_length=32)
@@ -142,7 +143,7 @@ def create_lava_router(*, runtime_getter, session_factory, settings_obj) -> APIR
             context_mode=data.mode, campaign_id=data.campaign_id, feedback_id=data.feedback_id,
             analytics_attempt_id=data.attempt_id if is_inline else None,
             analytics_source=data.ui_source if is_inline else None,
-            pwa_inline_return=is_inline,
+            pwa_inline_return=is_inline, currency=data.currency,
         )
         if is_inline and result.get("ok"):
             from app.services.conversion_funnel_service import ConversionFunnelService

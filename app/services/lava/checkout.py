@@ -23,7 +23,7 @@ from app.services.discount_service import DiscountService
 from app.services.lava import events, ledger
 from app.services.lava.client import LavaError
 from app.services.lava.config import LavaConfig, LavaConfigService, effective_mode
-from app.services.lava.terms import LAVA_PAYMENT_METHOD, LAVA_SOURCES, LOCAL_CONTRACT_PREFIX, normalize_email
+from app.services.lava.terms import LAVA_CURRENCIES, LAVA_PAYMENT_METHOD, LAVA_SOURCES, LOCAL_CONTRACT_PREFIX, normalize_email
 
 logger = logging.getLogger(__name__)
 
@@ -168,6 +168,7 @@ class LavaCheckoutService:
         discount_flow = (context_mode or "subscription") in DISCOUNT_MODES
         subscription = await self._subscription(session, user) if supports_lava and not discount_flow else None
         plans = []
+        regional_plans = {}
         if mode != "manual_only":
             for term in config.sellable_terms():
                 row = {"plan_type": term.plan_type, "months": term.months, "days": term.days,
@@ -184,6 +185,12 @@ class LavaCheckoutService:
                 elif discount_flow:
                     continue
                 plans.append(row)
+                for code, amount in term.regional_prices.items():
+                    regional_row = {**row, "currency": code, "amount": str(amount)}
+                    if discount is not None:
+                        regional_row["base_amount"] = str(amount)
+                        regional_row["amount"] = str(discounted(amount, discount.percent))
+                    regional_plans.setdefault(code, []).append(regional_row)
             if discount_flow and not plans:
                 return None
         if mode == "manual_only" and subscription is None:
@@ -195,6 +202,7 @@ class LavaCheckoutService:
             "mode": mode,
             "currency": config.currency,
             "plans": plans,
+            **({"plans_by_currency": {config.currency: plans, **regional_plans}} if regional_plans else {}),
             "blocked_reason": await self._blocked_reason(session, user),
             "subscription": subscription,
             "email": last_email,
@@ -206,7 +214,7 @@ class LavaCheckoutService:
                     feedback_id: int | None = None,
                     analytics_attempt_id: str | None = None,
                     analytics_source: str | None = None,
-                    pwa_inline_return: bool = False) -> dict:
+                    pwa_inline_return: bool = False, currency: str | None = None) -> dict:
         if source not in LAVA_SOURCES:
             raise LavaCheckoutError("invalid_source", 400)
         if (context_mode or "") not in CHECKOUT_CONTEXT_MODES:
@@ -228,6 +236,13 @@ class LavaCheckoutService:
                     raise LavaCheckoutError("lava_unavailable")
                 term = config.terms.get(plan_type)
                 if term is None or not term.sellable:
+                    raise LavaCheckoutError("plan_unavailable")
+                # Legacy callers omit currency and keep the old configured default.
+                selected_currency = config.currency if currency is None else currency
+                if selected_currency not in LAVA_CURRENCIES:
+                    raise LavaCheckoutError("plan_unavailable")
+                selected_amount = term.price_amount if currency is None else term.amount_for(selected_currency)
+                if currency is not None and (selected_amount is None or selected_amount <= 0):
                     raise LavaCheckoutError("plan_unavailable")
                 if source == "android" and await session.scalar(select(LavaInvoice.id).where(
                         LavaInvoice.user_id == user.id, LavaInvoice.source == "android",
@@ -255,9 +270,9 @@ class LavaCheckoutService:
                     raise LavaCheckoutError("discount_unavailable")
                 row = LavaInvoice(
                     contract_id=reservation, kind="first", user_id=user.id, plan_type=plan_type,
-                    offer_id=term.offer_id, periodicity=term.periodicity, currency=config.currency,
-                    expected_amount=(discounted(term.price_amount, discount.percent) if discount
-                                     else term.price_amount),
+                    offer_id=term.offer_id, periodicity=term.periodicity, currency=selected_currency,
+                    expected_amount=(discounted(selected_amount, discount.percent) if discount
+                                     else selected_amount),
                     buyer_email=buyer_email, source=source,
                     pwa_inline_attempt_id=(analytics_attempt_id if source == "pwa" else None),
                     pwa_inline_source=(analytics_source if source == "pwa" else None),
@@ -270,7 +285,7 @@ class LavaCheckoutService:
                 session.add(row)
                 await session.flush()
                 reserved_id = row.id
-                offer_id, periodicity, currency = term.offer_id, term.periodicity, config.currency
+                offer_id, periodicity, currency = term.offer_id, term.periodicity, selected_currency
                 promo_code = discount.promo_code if discount else None
         if pwa_inline_return and source == "pwa":
             # The PWA paywall navigates to the provider in the same window, so
