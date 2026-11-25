@@ -46,7 +46,7 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
     if (origin.startsWith("hsk30") || origin.contains("discount")) return NativeLavaRoute(false)
     val context = LocalContext.current
     val app = context.applicationContext as HskAiApplication
-    val repository = remember(app, repositoryOverride) { repositoryOverride ?: LavaCheckoutRepository(app.nativeApi(AndroidLavaApi::class.java),
+    val repository = remember(app, repositoryOverride, origin) { repositoryOverride ?: LavaCheckoutRepository(app.nativeApi(AndroidLavaApi::class.java),
         app.authRepository::accessToken, app.authRepository::invalidateSession, origin) }
     // One provider model per visible host. A reused session model could expose
     // its previous manual fallback before the next provider read starts, mounting
@@ -66,7 +66,7 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
                     regionHint = { if (repositoryOverride == null) localCheckoutRegion(context.resources.configuration.locales[0].language) else "other" }) as T
         })
     val state by model.state.collectAsStateWithLifecycle()
-    var otherPlansOpen by remember { mutableStateOf(false) }
+    var otherPlansOpen by remember(origin) { mutableStateOf(false) }
     var manual by rememberSaveable(origin) { mutableStateOf(false) }
     val block = state.block
     val effectiveRegion = regionOverride ?: state.region

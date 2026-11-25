@@ -138,6 +138,16 @@ fun SubscriptionCheckoutHost(
     viewModelStoreOwner: ViewModelStoreOwner,
     origin: String,
     onClose: () -> Unit,
+) = SubscriptionCheckoutHost(repository, viewModelStoreOwner, origin, null, onClose)
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+internal fun SubscriptionCheckoutHost(
+    repository: FeatureRepository,
+    viewModelStoreOwner: ViewModelStoreOwner,
+    origin: String,
+    providerRepositoryOverride: LavaCheckoutRepository?,
+    onClose: () -> Unit,
 ) {
     val context = LocalContext.current
     val app = context.applicationContext as HskAiApplication
@@ -146,6 +156,7 @@ fun SubscriptionCheckoutHost(
     var providerAvailable by remember(origin) { mutableStateOf(false) }
     var manualLoaded by remember(origin) { mutableStateOf(false) }
     val providerRoute = NativeLavaCheckout(viewModelStoreOwner, origin, onClose,
+        repositoryOverride = providerRepositoryOverride,
         regionOverride = selectedRegion, routeOverride = routeOverride,
         onRegionResolved = { if (selectedRegion == null) selectedRegion = it },
         onRegionSelected = { selectedRegion = it; routeOverride = null },
