@@ -96,6 +96,8 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
         lifecycle.lifecycle.addObserver(observer)
         onDispose { lifecycle.lifecycle.removeObserver(observer) }
     }
+    // Manual receipt recovery is not a new sale. Never hide it behind a blocked provider screen.
+    if (state.hasManualPending()) return false
     val automaticManual = block?.prefersManual(effectiveRegion) == true
     if ((canUseManual && (routeOverride == "manual" ||
             (routeOverride != "lava" && (manual || automaticManual)))) ||

@@ -95,7 +95,7 @@ def _pwa_html(request: Request, path: str, headers: dict[str, str]) -> Response:
 # The reviewed shared HTML bytes MUST remain unchanged for source/translation
 # audit anchors. Inject PWA-only assets only after an authenticated route check.
 # The injected HTML is separately ETagged by its FULL bytes, not by file SHA.
-_PWA_INLINE_PRO_HTML = "\n<link rel=\"stylesheet\" href=\"/course_v3_data/iphone-pwa-inline-pro.css?v=20261125-ce08c035ac87\">\n<script src=\"/course_v3_data/iphone-pwa-inline-pro.js?v=20261125-325d39e862e3\"></script>\n<script src=\"/course_v3_data/iphone-pwa-inline-pro-bridge.js?v=20261125-6e4c7585b70b\"></script>\n".encode("utf-8")
+_PWA_INLINE_PRO_HTML = "\n<link rel=\"stylesheet\" href=\"/course_v3_data/iphone-pwa-inline-pro.css?v=20261125-ce08c035ac87\">\n<script src=\"/course_v3_data/iphone-pwa-inline-pro.js?v=20261125-94b2a7ca6028\"></script>\n<script src=\"/course_v3_data/iphone-pwa-inline-pro-bridge.js?v=20261125-6e4c7585b70b\"></script>\n".encode("utf-8")
 
 # Scope only to the verified browser PWA. The native first-paint skeleton
 # stays in course-v3.html; these are ONLY independent secondary section states.
@@ -360,7 +360,7 @@ class PwaProUiEvent(BaseModel):
     ]
     attempt_id: str = Field(min_length=5, max_length=80, pattern=r"^[A-Za-z0-9:.-]+$")
     event_id: str = Field(min_length=5, max_length=80, pattern=r"^[A-Za-z0-9:.-]+$")
-    plan_type: Literal["1_month", "3_months", "6_months", "12_months"] | None = None
+    plan_type: Literal["10_days", "1_month", "3_months", "6_months", "12_months"] | None = None
     method: Literal["lava", "manual"] | None = None
 
 

@@ -118,6 +118,15 @@ class LavaCheckoutViewModelTest {
         assertEquals("RUB", vm.state.value.currency)
         assertEquals(1, fake.overviewReads)
     }
+    @Test fun manualPendingCanRecoverWithoutOverridingProviderRecovery() {
+        val pending = NativeLavaState(loading = false, block = LavaBlock(mode = "both", blocked_reason = "payment_pending"))
+        assertTrue(pending.hasManualPending())
+        assertTrue(pending.copy(block = pending.block!!.copy(mode = "lava_only")).hasManualPending())
+        assertFalse(pending.copy(checkoutId = 7).hasManualPending())
+        assertFalse(pending.copy(uncertainStart = true).hasManualPending())
+        assertFalse(pending.copy(block = pending.block!!.copy(pending_checkout_id = 7)).hasManualPending())
+        assertFalse(pending.copy(block = pending.block!!.copy(blocked_reason = "chargeback_open")).hasManualPending())
+    }
     @Test fun providerUrlsAreHttpsAndExactHostOnly() {
         assertNotNull(safeLavaPaymentUrl("https://pay.lava.top/123"))
         listOf("http://pay.lava.top/a", "https://pay.lava.top.evil.example/a", "https://evil@pay.lava.top/a",

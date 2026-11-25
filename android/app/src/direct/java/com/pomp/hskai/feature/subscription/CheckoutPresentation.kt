@@ -78,6 +78,10 @@ internal fun LavaBlock.currencyFor(region: String): String {
     return wanted.takeIf { it in currencies } ?: currency.takeIf { it in currencies } ?: currencies.firstOrNull().orEmpty()
 }
 
+internal fun NativeLavaState.hasManualPending(): Boolean =
+    !loading && !busy && !error && mode == "subscription" && checkoutId == 0 &&
+        !uncertainStart && block?.pending_checkout_id == null && block?.blocked_reason == "payment_pending"
+
 internal fun LavaBlock.prefersManual(region: String): Boolean =
     mode == "both" && (region in listOf("tj", "cn") ||
         (if (region == "ru") "RUB" else "USD") !in providerCurrencies())

@@ -194,7 +194,7 @@
     var payload = {
       event:event,source:state.source,attempt_id:state.attempt,
       event_id:state.attempt+":"+(++state.eventSeq),
-      plan_type:order.includes(plan||state.plan)?(plan||state.plan):null,method:method||null
+      plan_type:(order.includes(plan||state.plan)||(plan||state.plan)==="10_days")?(plan||state.plan):null,method:method||null
     };
     request(API.analytics,payload).catch(function(){});
   }
@@ -448,7 +448,7 @@
       header(status==="paid"?"celebrate":"read",txt(status),"");
       actions.appendChild(btn(txt("return"),"hip-primary",close));
       if (status==="pending") {
-        actions.appendChild(btn(txt("manual"),"hip-secondary",function(){emit("pwa_pro_method_selected",null,"manual");state.screen="manual";render()}));
+        actions.appendChild(btn(txt("manual"),"hip-secondary",function(){openManual("")}));
       }
       return;
     }
@@ -504,12 +504,12 @@
       if (state.error || !manualAllowed()) {
         if (!state.error) body.appendChild(el("p","hip-small hip-center",txt("unavailable")));
         actions.appendChild(btn(txt("retry"),"hip-primary",load));
-        if (manualAllowed()) actions.appendChild(btn(txt("manual"),"hip-secondary",function(){emit("pwa_pro_method_selected",null,"manual");state.screen="manual";state.error="";render()}));
+        if (manualAllowed()) actions.appendChild(btn(txt("manual"),"hip-secondary",function(){openManual("")}));
         return;
       }
       // Card checkout is switched off: the regular method is the only path.
       if(state.mode==="subscription")body.appendChild(regionSelector());
-      actions.appendChild(btn(txt("pay"),"hip-primary",function(){emit("pwa_pro_method_selected",null,"manual");state.screen="manual";render()}));
+      actions.appendChild(btn(txt("pay"),"hip-primary",function(){openManual("")}));
       return;
     }
     var primary=displayPath()==="manual"?plans.slice(0,2):plans.filter(p=>p.plan_type==="1_month"||p.plan_type==="12_months");
@@ -729,7 +729,7 @@
     if (!state||state.screen!=="manual"||!body)return false;
     var iframe=body.querySelector("iframe");
     if (!iframe||iframe.contentWindow!==child)return false;
-    state.screen=state.manualFrom||"more";render();return true;
+    state.screen=state.manualFrom||"main";render();return true;
   }
   document.addEventListener("keydown",function(ev) {
     if (!root||root.hidden)return;

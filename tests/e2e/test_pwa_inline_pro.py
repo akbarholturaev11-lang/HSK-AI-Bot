@@ -358,9 +358,12 @@ def test_inline_region_changes_use_verified_prices_without_overview_reload():
         assert "35.00 CNY" in page.locator("#hsk-inline-pro .hip-plan").first.inner_text()
         assert seen.count("overview") == 1
         assert page.evaluate("localStorage.getItem('hsk_sub_region_v1:pwa:7')") == "cn"
-        page.get_by_role("button", name="Получить Pro ⭐️").click()
+        page.get_by_role("button", name="Получить Pro").click()
         frame = page.locator("#hsk-inline-pro iframe")
         frame.wait_for()
         assert "country=cn" in frame.get_attribute("src")
         assert "plan=1_month" in frame.get_attribute("src")
+        page.evaluate("HSKPwaInlinePro.closeEmbeddedCheckout(document.querySelector('#hsk-inline-pro iframe').contentWindow)")
+        assert page.get_by_role("heading", name="Лимит исчерпан").is_visible()
+        assert page.locator("#hsk-inline-pro .hip-region").input_value() == "cn"
         browser.close()

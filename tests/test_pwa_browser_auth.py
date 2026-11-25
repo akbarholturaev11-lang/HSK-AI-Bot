@@ -457,6 +457,17 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         second = await self.client.post(path,json=event,headers=headers)
         self.assertEqual(second.status_code,200,second.text)
         self.assertFalse(second.json()["recorded"])
+        ten_day = {**event, "event": "pwa_pro_plan_selected", "event_id": "inline-qa-123:10",
+                   "plan_type": "10_days", "method": "manual"}
+        result = await self.client.post(path, json=ten_day, headers=headers)
+        self.assertEqual(result.status_code, 200, result.text)
+        self.assertTrue(result.json()["recorded"])
+        async with self.sessions() as db:
+            row = (await db.execute(sa.select(ConversionFunnelEvent).where(
+                ConversionFunnelEvent.event_name == "pwa_pro_plan_selected",
+                ConversionFunnelEvent.user_id == 1,
+            ))).scalar_one()
+            self.assertEqual(json.loads(row.payload_json)["plan_type"], "10_days")
         next_event = {**event,"event_id":"inline-qa-123:2"}
         self.assertTrue((await self.client.post(
             path,json=next_event,headers=headers)).json()["recorded"])
