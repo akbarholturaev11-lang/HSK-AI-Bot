@@ -51,6 +51,17 @@ class CourseUICatalogGuardTests(unittest.TestCase):
             })
         self.assertNotIn("HSK AI Pro открыт", str(result))
 
+    def test_pro_expiry_copy_preserves_restore_or_lose_unlimited_access(self):
+        expected = {
+            "ru": ("Хотите вернуть безлимит?", "ПОТЕРЯТЬ БЕЗЛИМИТ"),
+            "uz": ("Limitsiz rejimni qaytarishni xohlaysizmi?", "LIMITSIZ REJIMNI YO‘QOTISH"),
+            "tj": ("Мехоҳед дастрасии бемаҳдудро баргардонед?", "АЗ ДАСТ ДОДАНИ ДАСТРАСИИ БЕМАҲДУД"),
+        }
+        for locale, (body, limited) in expected.items():
+            source = json.loads((ROOT / "localization/ui" / locale / "course.json").read_text(encoding="utf-8"))["messages"]
+            self.assertEqual(source["proExpiry.body"], body)
+            self.assertEqual(source["proExpiry.limited"], limited)
+
     def test_placeholders_are_multisets_not_just_names(self):
         self.assertEqual(signature("Remaining {n} / {n}"), (("n", 2),))
         with self.assertRaises(ValueError):

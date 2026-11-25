@@ -543,8 +543,8 @@
     <string name="hsk_course_practice_gate_error_body" formatted="false">Ruxsatni tekshirib bo\'lmadi. Internetni tekshirib, qayta urining.</string>
     <string name="hsk_course_practice_gate_error_retry" formatted="false">Qayta urinish</string>
     <string name="hsk_course_premium" formatted="false">HSK AI Pro</string>
-    <string name="hsk_course_pro_expiry_body" formatted="false">Limitsiz foydalanishni qaytarishni xohlaysizmi?</string>
-    <string name="hsk_course_pro_expiry_limited" formatted="false">LIMIT BILAN DAVOM ETISH</string>
+    <string name="hsk_course_pro_expiry_body" formatted="false">Limitsiz rejimni qaytarishni xohlaysizmi?</string>
+    <string name="hsk_course_pro_expiry_limited" formatted="false">LIMITSIZ REJIMNI YO‘QOTISH</string>
     <string name="hsk_course_pro_expiry_restore" formatted="false">PRO\'NI TIKLASH</string>
     <string name="hsk_course_pro_expiry_title" formatted="false">HSK AI Pro obunasi muddati tugadi.</string>
     <string name="hsk_course_profile_answers" formatted="false">baholangan javob</string>

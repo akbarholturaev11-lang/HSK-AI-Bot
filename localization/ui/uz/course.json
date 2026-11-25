@@ -4,9 +4,9 @@
   "locale": "uz",
   "messages": {
     "proExpiry.title": "HSK AI Pro obunasi muddati tugadi.",
-    "proExpiry.body": "Limitsiz foydalanishni qaytarishni xohlaysizmi?",
+    "proExpiry.body": "Limitsiz rejimni qaytarishni xohlaysizmi?",
     "proExpiry.restore": "PRO'NI TIKLASH",
-    "proExpiry.limited": "LIMIT BILAN DAVOM ETISH",
+    "proExpiry.limited": "LIMITSIZ REJIMNI YO‘QOTISH",
     "pwaShake.allow": "Harakat sensoriga ruxsat berish",
     "pwaShake.cancel": "Bekor qilish",
     "pwaShake.captureUnavailable": "Avtomatik ekran tasviri tayyorlanmadi. Xabarni rasmsiz yuborish yoki rasm tanlash mumkin.",

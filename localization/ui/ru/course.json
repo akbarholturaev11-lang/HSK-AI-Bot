@@ -4,9 +4,9 @@
   "locale": "ru",
   "messages": {
     "proExpiry.title": "Срок действия подписки HSK AI Pro истёк.",
-    "proExpiry.body": "Хотите вернуть доступ без лимита?",
+    "proExpiry.body": "Хотите вернуть безлимит?",
     "proExpiry.restore": "ВОССТАНОВИТЬ PRO",
-    "proExpiry.limited": "ПРОДОЛЖИТЬ С ЛИМИТОМ",
+    "proExpiry.limited": "ПОТЕРЯТЬ БЕЗЛИМИТ",
     "pwaShake.allow": "Разрешить датчик движения",
     "pwaShake.cancel": "Отмена",
     "pwaShake.captureUnavailable": "Автоматический снимок экрана не получился. Можно отправить сообщение без снимка или выбрать файл.",
