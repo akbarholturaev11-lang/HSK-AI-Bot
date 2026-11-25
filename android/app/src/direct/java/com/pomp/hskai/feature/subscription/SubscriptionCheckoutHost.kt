@@ -128,7 +128,7 @@ private val C: CheckoutColors
 
 /** Brand names, the same in every language. */
 private val BANK_NAMES = mapOf("dc_city" to "Dushanbe City", "alif" to "Alif")
-private val REGION_FLAGS = mapOf("tj" to "🇹🇯", "uz" to "🇺🇿", "ru" to "🇷🇺", "cn" to "🇨🇳", "other" to "🌐")
+internal val REGION_FLAGS = mapOf("tj" to "🇹🇯", "uz" to "🇺🇿", "ru" to "🇷🇺", "cn" to "🇨🇳", "other" to "🌐")
 
 /** The direct APK uses the same server checkout as the Telegram Mini App. */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -139,9 +139,18 @@ fun SubscriptionCheckoutHost(
     origin: String,
     onClose: () -> Unit,
 ) {
-    if (NativeLavaCheckout(viewModelStoreOwner, origin, onClose)) return
     val context = LocalContext.current
     val app = context.applicationContext as HskAiApplication
+    var selectedRegion by remember(origin) { mutableStateOf<String?>(null) }
+    var routeOverride by remember(origin) { mutableStateOf<String?>(null) }
+    var providerAvailable by remember(origin) { mutableStateOf(false) }
+    var manualLoaded by remember(origin) { mutableStateOf(false) }
+    if (NativeLavaCheckout(viewModelStoreOwner, origin, onClose,
+        regionOverride = selectedRegion, routeOverride = routeOverride,
+        onRegionResolved = { if (selectedRegion == null) selectedRegion = it },
+        onRegionSelected = { selectedRegion = it; routeOverride = null },
+        onRouteSelected = { routeOverride = it },
+        onProviderAvailable = { providerAvailable = it })) return
     val model: SubscriptionCheckoutViewModel = viewModel(
         viewModelStoreOwner = viewModelStoreOwner,
         key = "subscription-checkout:$origin",
@@ -149,7 +158,7 @@ fun SubscriptionCheckoutHost(
             repository,
             origin,
             onPendingPayment = { paymentId -> app.paymentDecisionMonitor.watch(paymentId) },
-            savedRegion = { app.appSettings.paymentRegion() },
+            savedRegion = { selectedRegion ?: app.appSettings.paymentRegion() },
             saveRegion = { region -> app.appSettings.setPaymentRegion(region) },
         ),
     )
@@ -172,7 +181,15 @@ fun SubscriptionCheckoutHost(
     val closeHost by rememberUpdatedState(onClose)
     val stepIndex = state.flow.indexOf(state.step)
 
-    LaunchedEffect(model) { model.load() }
+    LaunchedEffect(model, selectedRegion) {
+        if (!manualLoaded) {
+            manualLoaded = true
+            model.load()
+        } else {
+            selectedRegion?.takeIf { it != model.state.value.region && model.state.value.overview?.mode == "subscription" }
+                ?.let(model::chooseRegion)
+        }
+    }
     LaunchedEffect(model) {
         model.provisionalAccess.collect { closeHost() }
     }
@@ -259,6 +276,7 @@ fun SubscriptionCheckoutHost(
                         onMethod = { methodOpen = true },
                         onRetryCurrency = { model.chooseCurrency(currencyForRegion(state.region)) },
                         onDiscount = { waitingInvite = true; model.startDiscount() },
+                        onOtherPlans = if (providerAvailable && state.overview?.mode == "subscription") ({ routeOverride = "lava" }) else null,
                     )
                     CheckoutStep.METHOD -> Text(
                         copy.getString(R.string.sub_method),
@@ -317,7 +335,7 @@ fun SubscriptionCheckoutHost(
                 val enabled = when (state.step) {
                     CheckoutStep.PAY -> state.quote != null && state.receiptName.isNotBlank()
                     else -> !state.currencySaving && !state.regionDialogOpen &&
-                        state.overview?.preferredCurrency == currencyForRegion(state.region) &&
+                        state.regionalPriceReady() &&
                         state.overview?.prices?.get(state.method)?.get(state.plan) != null
                 }
                 val primaryAction: () -> Unit = when {
@@ -400,7 +418,15 @@ fun SubscriptionCheckoutHost(
                     .background(C.surface, RoundedCornerShape(20.dp))
                     .padding(18.dp).verticalScroll(rememberScrollState()),
             ) {
-                RegionContent(state = state, copy = copy, onRegion = model::chooseRegion)
+                RegionContent(state = state, copy = copy,
+                    allRegions = providerAvailable && state.overview?.mode == "subscription",
+                    onRegion = { region ->
+                        if (providerAvailable && state.overview?.mode == "subscription") {
+                            selectedRegion = region
+                            routeOverride = null
+                        }
+                        model.chooseRegion(region)
+                    })
                 if (!state.regionDialogRequired) {
                     TextButton(onClick = model::dismissRegionSelector,
                         modifier = Modifier.align(Alignment.End)) {
@@ -456,13 +482,13 @@ fun SubscriptionCheckoutHost(
 }
 
 @Composable
-private fun RegionContent(state: SubscriptionCheckoutState, copy: Context, onRegion: (String) -> Unit) {
+private fun RegionContent(state: SubscriptionCheckoutState, copy: Context, allRegions: Boolean = false, onRegion: (String) -> Unit) {
     Text(copy.getString(R.string.sub_route_title), color = C.text, fontSize = 22.sp,
         lineHeight = 26.sp, fontWeight = FontWeight.Black)
     Spacer(Modifier.height(7.dp))
     Text(copy.getString(R.string.sub_route_body), color = C.muted, fontSize = 13.sp, lineHeight = 19.sp)
     Spacer(Modifier.height(16.dp))
-    val regions = availableRegions(state.overview?.prices.orEmpty())
+    val regions = if (allRegions) CHECKOUT_REGIONS else state.overview?.let(::regionalManualRegions).orEmpty()
     ChoiceGroup {
         regions.forEachIndexed { index, region ->
             ChoiceCard(REGION_FLAGS[region], copy.getString(regionTitleId(region)),
@@ -480,23 +506,22 @@ private fun PlansContent(
     onMethod: () -> Unit,
     onRetryCurrency: () -> Unit,
     onDiscount: () -> Unit,
+    onOtherPlans: (() -> Unit)? = null,
 ) {
     Text(copy.getString(R.string.sub_plans_heading), color = C.text, fontSize = 16.sp, fontWeight = FontWeight.Black)
     Spacer(Modifier.height(10.dp))
-    CardCountrySelectorButton(state, copy, onClick = onRoute)
-    if (hasMethodStep(state.region)) {
-        Spacer(Modifier.height(8.dp))
-        PaymentMethodButton(state, copy, onClick = onMethod)
-    }
-    Spacer(Modifier.height(12.dp))
-    // Never display prices under a stale currency while the server refreshes.
-    if (state.currencySaving || state.overview?.preferredCurrency != currencyForRegion(state.region)) {
+    // Ordinary plans use the already returned regional price snapshot.
+    // Special products retain their independent server currency preference.
+    if (state.currencySaving || !state.regionalPriceReady()) {
+        CardCountrySelectorButton(state, copy, onClick = onRoute)
+        Spacer(Modifier.height(12.dp))
         if (state.currencySaving) {
             CircularProgressIndicator(color = C.accent)
         } else {
             MessageCard(copy.getString(state.currencyErrorRes ?: R.string.sub_currency_refresh_failed))
             Spacer(Modifier.height(8.dp))
-            SmallAction(copy.getString(R.string.sub_retry), onClick = onRetryCurrency)
+            if (state.overview?.mode != "subscription") SmallAction(copy.getString(R.string.sub_retry), onClick = onRetryCurrency)
+            onOtherPlans?.let { SmallAction(copy.getString(R.string.lava_other_plans), onClick = it) }
         }
         return
     }
@@ -521,6 +546,13 @@ private fun PlansContent(
                 state.plan == "3_months", copy, onClick = { onPlan("3_months") },
                 modifier = Modifier.fillMaxWidth(), wide = true)
         }
+    }
+    Spacer(Modifier.height(10.dp))
+    CardCountrySelectorButton(state, copy, onClick = onRoute)
+    onOtherPlans?.let { SmallAction(copy.getString(R.string.lava_other_plans), onClick = it) }
+    if (hasMethodStep(state.region)) {
+        Spacer(Modifier.height(8.dp))
+        PaymentMethodButton(state, copy, onClick = onMethod)
     }
     val discount = state.discount
     val offer = state.overview?.offer
@@ -773,7 +805,7 @@ private fun PayContent(
 private class PlanPrice(val amount: String, val base: String, val currency: String)
 
 private fun planPrice(state: SubscriptionCheckoutState, plan: String, price: SubscriptionPriceDto): PlanPrice {
-    if (price.displayFinalAmount.isNotBlank() && price.displayCurrency.isNotBlank()) {
+    if (state.overview?.mode != "subscription" && price.displayFinalAmount.isNotBlank() && price.displayCurrency.isNotBlank()) {
         return PlanPrice(
             price.displayFinalAmount,
             price.displayBaseAmount.ifBlank { price.baseAmount.toString() },
@@ -819,9 +851,9 @@ private fun CardCountrySelectorButton(
     val country = state.region
     val currency = currencyForRegion(country)
     Row(
-        Modifier.fillMaxWidth().heightIn(min = 62.dp)
-            .border(1.dp, C.accentLine, PompShapes.Medium)
-            .background(C.accentSoft, PompShapes.Medium)
+        Modifier.fillMaxWidth().heightIn(min = 44.dp)
+            .border(1.dp, C.line, PompShapes.Medium)
+            .background(C.surface, PompShapes.Medium)
             .clickable(role = Role.Button, onClick = onClick)
             .padding(horizontal = 13.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -897,6 +929,12 @@ private fun PlanCard(plan: String, price: PlanPrice, discounted: Boolean, select
         if (discounted) {
             Text("${price.base} ${price.currency}", color = C.muted, fontSize = 12.sp,
                 textDecoration = TextDecoration.LineThrough)
+        } else if (plan != "hsk30_unlock") {
+            comparisonPrice(price.amount)?.let { reference ->
+                Text("$reference ${price.currency}", color = C.muted, fontSize = 12.sp,
+                    textDecoration = TextDecoration.LineThrough)
+                Text(copy.getString(R.string.lava_reference_price), color = C.muted, fontSize = 10.sp)
+            }
         }
     }
 }
@@ -1081,7 +1119,7 @@ private fun CheckoutSheet(onDismiss: () -> Unit, content: @Composable ColumnScop
     }
 }
 
-private fun regionTitleId(region: String): Int = when (region) {
+internal fun regionTitleId(region: String): Int = when (region) {
     "tj" -> R.string.sub_country_tj
     "uz" -> R.string.sub_country_uz
     "ru" -> R.string.sub_country_ru

@@ -22,10 +22,12 @@ class LavaCheckoutViewModelTest {
         var statusReply = LavaReply(ok = true, checkout_id = 7, status = "pending")
         var offer = ExitReply(true, true, false, 20, "2026-11-12T00:00:00Z")
         var starts = 0
+        var overviewReads = 0
+        var lastStart: LavaStart? = null
         var checks = 0
         var claims = 0
-        override suspend fun providerOverview(auth: String, body: LavaContext) = Response.success(overview)
-        override suspend fun start(auth: String, body: LavaStart): Response<LavaReply> { starts++; return startReply.await() }
+        override suspend fun providerOverview(auth: String, body: LavaContext): Response<LavaOverview> { overviewReads++; return Response.success(overview) }
+        override suspend fun start(auth: String, body: LavaStart): Response<LavaReply> { starts++; lastStart = body; return startReply.await() }
         override suspend fun status(auth: String, body: LavaId): Response<LavaReply> { checks++; return Response.success(statusReply) }
         override suspend fun cancel(auth: String, body: Map<String, String>) = Response.success(LavaReply(ok = true))
         override suspend fun exitOffer(auth: String, body: ExitAction): Response<ExitReply> {
@@ -93,6 +95,28 @@ class LavaCheckoutViewModelTest {
         assertTrue(vm.state.value.error)
         assertNull(vm.state.value.block)
         vm.start(); runCurrent(); assertEquals(0, fake.starts)
+    }
+    @Test fun regionChangeUsesServerPriceWithoutReloadAndPassesInvoiceCurrency() = runTest(dispatcher) {
+        val fake = Fake()
+        val rub = fake.plans.map { it.copy(currency = "RUB", amount = "900.00") }
+        fake.overview = LavaOverview(true, LavaBlock(mode = "both", plans = fake.plans,
+            currency = "USD", plans_by_currency = mapOf("USD" to fake.plans, "RUB" to rub)))
+        val vm = fake.model(); runCurrent()
+        assertEquals("USD", vm.state.value.currency)
+        vm.chooseRegion("ru"); runCurrent()
+        assertEquals("RUB", vm.state.value.currency)
+        assertEquals("900.00", vm.state.value.visiblePlans.first().amount)
+        assertEquals(1, fake.overviewReads)
+        assertTrue(fake.overview.lava!!.prefersManual("tj"))
+        assertTrue(fake.overview.lava!!.prefersManual("cn"))
+        assertFalse(fake.overview.lava!!.prefersManual("ru"))
+        vm.email("a@b.co"); vm.start(); runCurrent()
+        assertEquals("RUB", fake.lastStart?.currency)
+        fake.startReply.complete(Response.success(LavaReply(true, 7, "https://pay.lava.top/verified")))
+        runCurrent()
+        vm.chooseRegion("uz"); runCurrent()
+        assertEquals("RUB", vm.state.value.currency)
+        assertEquals(1, fake.overviewReads)
     }
     @Test fun providerUrlsAreHttpsAndExactHostOnly() {
         assertNotNull(safeLavaPaymentUrl("https://pay.lava.top/123"))
