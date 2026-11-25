@@ -2183,7 +2183,7 @@
         "android": {"status": "not_applicable", "reason": "The inline Lava Pro checkout exists only in the learner PWA."},
         "iphone_pwa": {"status": "covered", "reporter": "app/static/course_v3_data/hsk-diagnostics.js", "client_test": "tests/test_hsk_diagnostics.js", "chain_test": "tests/test_monitoring_pwa_chain.py::PwaMonitoringChainTests::test_pwa_priority_failures_reach_inbox_as_verified_browser_owner"},
         "telegram": {"status": "not_applicable", "reason": "The inline Lava Pro checkout exists only in the learner PWA."},
-        "server": {"status": "partial", "reporter": "app/services/monitoring/backend.py", "reason": "Backend reporter records route 5xx and unhandled errors; Priority failure-to-Inbox chain evidence pending."}
+        "server": {"status": "covered", "reporter": "app/services/monitoring/backend.py", "chain_test": "tests/test_monitoring_server_chain.py::ServerMonitoringChainTests::test_pwa_lava_provider_failure_reaches_inbox"}
       }},
       {"id": "referrals", "platforms": {
         "android": {"status": "not_instrumented", "reason": "Android reporter records crashes by tab only; no tagged calls for this feature yet."},

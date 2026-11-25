@@ -313,6 +313,12 @@ class LavaCheckoutService:
                 row = await session.get(LavaInvoice, reserved_id, with_for_update=True)
                 row.status = "failed"
                 row.review_reason = "create_uncertain" if exc.uncertain else "create_rejected"
+            if source == "pwa":
+                # The generic middleware deliberately ignores 503 responses.
+                # Report actual provider failures only, never local validation
+                # or region selection. Keep the existing ledger alerts below.
+                from app.services.monitoring.backend import report_server_failure
+                report_server_failure("pwa_pro_checkout", "provider_failed", "v3_pwa_subscription_lava_start")
             if exc.uncertain:
                 await self.runtime.notifier.admin_alert("needs_review", invoice_id=reserved_id,
                                                         detail="invoice create uncertain")
