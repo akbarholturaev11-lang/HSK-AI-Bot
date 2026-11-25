@@ -1,4 +1,5 @@
 import base64
+import json
 import unittest
 from datetime import datetime, timedelta, timezone
 from types import SimpleNamespace
@@ -578,8 +579,22 @@ class DesktopSubscriptionApiTests(unittest.IsolatedAsyncioTestCase):
             opened = (await session.execute(select(ConversionFunnelEvent).where(
                 ConversionFunnelEvent.event_name == "checkout_opened",
             ))).scalars().all()
-            self.assertEqual(1, len(opened))
-            self.assertEqual("android_course_limit", opened[0].source)
+            # The established manual funnel stores both the base opening
+            # and the follow-up stage under checkout_opened. Count the base
+            # separately; assert the stage is retained, not silently dropped.
+            self.assertEqual(2, len(opened))
+            payloads = [(row, json.loads(row.payload_json)) for row in opened]
+            self.assertTrue(all(payload["attempt_id"] == attempt for _, payload in payloads))
+            base_rows = [row for row, payload in payloads if "stage" not in payload]
+            stages = [(row, payload) for row, payload in payloads if "stage" in payload]
+            self.assertEqual(1, len(base_rows))
+            self.assertEqual("android_course_limit", base_rows[0].source)
+            self.assertEqual(1, len(stages))
+            stage_row, stage = stages[0]
+            self.assertEqual("android_subscription", stage_row.source)
+            self.assertEqual("payment_instructions_viewed", stage["stage"])
+            self.assertEqual("1_month", stage["plan_type"])
+            self.assertEqual("alipay", stage["payment_method"])
 
         for token, query in (
             (self.token_b, f"origin=course_limit&provider_entry_id={entry_id}"),
