@@ -30,6 +30,9 @@ class _RecordSession:
     def add(self, item):
         self.added.append(item)
 
+    async def flush(self):
+        self.added[-1].id = 42
+
     async def commit(self):
         self.commit_count += 1
 
@@ -61,6 +64,20 @@ class SubscriptionEntryAnalyticsServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(session.added[0].user_id, 7)
         self.assertEqual(session.added[0].telegram_id, 123)
         self.assertEqual(session.added[0].source, "menu_subscription")
+
+    async def test_receipt_is_returned_only_after_successful_commit(self):
+        session = _RecordSession()
+        service = SubscriptionEntryAnalyticsService(session)
+        receipt = await service.record_entry(user=SimpleNamespace(id=7), return_entry_id=True)
+        self.assertIs(type(receipt), int)
+        self.assertEqual(42, receipt)
+        self.assertEqual(1, session.commit_count)
+
+        async def failed_commit():
+            raise RuntimeError("test write failure")
+        session.commit = failed_commit
+        self.assertIs(False, await service.record_entry(user=SimpleNamespace(id=7), return_entry_id=True))
+        self.assertEqual(1, session.rollback_count)
 
     async def test_record_entry_keeps_only_a_known_route_client(self):
         # R3: routes pass their own client; anything else is stored as NULL.

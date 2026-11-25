@@ -29,7 +29,7 @@ class NativeLavaCheckoutTest {
     private fun show(api: Fake) {
         val owner=object:ViewModelStoreOwner { override val viewModelStore=ViewModelStore() }
         val repository=LavaCheckoutRepository(api,{ ApiResult.Success("synthetic") })
-        compose.setContent { PompHskAiTheme { if (!NativeLavaCheckout(owner,"course_limit",{},repository)) Text("Manual fallback") } }
+        compose.setContent { PompHskAiTheme { if (!NativeLavaCheckout(owner,"course_limit",{},repository).ownsSurface) Text("Manual fallback") } }
     }
     @Test fun primaryPlanAndEmailGeometryStayStableWhenServerPricesArrive() {
         val api=Fake(); show(api)

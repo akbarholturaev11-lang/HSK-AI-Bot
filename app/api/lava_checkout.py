@@ -317,15 +317,18 @@ def create_lava_router(*, runtime_getter, session_factory, settings_obj) -> APIR
                 ).limit(1))
                 if block is None and (pending_id or uncertain):
                     block = {"mode": "manual_only", "plans": [], "subscription": None}
+                provider_entry_id = None
                 if block is not None:
                     block["pending_checkout_id"] = pending_id
                     if uncertain:
                         block["blocked_reason"] = "checkout_needs_review"
                     from app.services.subscription_entry_analytics_service import SubscriptionEntryAnalyticsService
-                    await SubscriptionEntryAnalyticsService(db).record_entry(
+                    entry = await SubscriptionEntryAnalyticsService(db).record_entry(
                         user=user, source=ANDROID_CHECKOUT_ORIGIN_SOURCES.get(data.origin, "android_subscription"),
-                        mode=data.mode, payment_method="lava", client="android")
-            return JSONResponse({"ok": True, "lava": block}, headers=_NO_STORE)
+                        mode=data.mode, payment_method="lava", client="android", return_entry_id=True)
+                    if type(entry) is int and entry > 0 and data.mode == "subscription":
+                        provider_entry_id = entry
+            return JSONResponse({"ok": True, "lava": block, "provider_entry_id": provider_entry_id}, headers=_NO_STORE)
         except LavaCheckoutError as exc:
             return _checkout_error(exc)
 

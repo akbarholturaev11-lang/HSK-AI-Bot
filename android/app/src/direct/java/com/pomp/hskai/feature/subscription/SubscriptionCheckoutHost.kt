@@ -145,12 +145,13 @@ fun SubscriptionCheckoutHost(
     var routeOverride by remember(origin) { mutableStateOf<String?>(null) }
     var providerAvailable by remember(origin) { mutableStateOf(false) }
     var manualLoaded by remember(origin) { mutableStateOf(false) }
-    if (NativeLavaCheckout(viewModelStoreOwner, origin, onClose,
+    val providerRoute = NativeLavaCheckout(viewModelStoreOwner, origin, onClose,
         regionOverride = selectedRegion, routeOverride = routeOverride,
         onRegionResolved = { if (selectedRegion == null) selectedRegion = it },
         onRegionSelected = { selectedRegion = it; routeOverride = null },
         onRouteSelected = { routeOverride = it },
-        onProviderAvailable = { providerAvailable = it })) return
+        onProviderAvailable = { providerAvailable = it })
+    if (providerRoute.ownsSurface) return
     val model: SubscriptionCheckoutViewModel = viewModel(
         viewModelStoreOwner = viewModelStoreOwner,
         key = "subscription-checkout:$origin",
@@ -184,7 +185,7 @@ fun SubscriptionCheckoutHost(
     LaunchedEffect(model, selectedRegion) {
         if (!manualLoaded) {
             manualLoaded = true
-            model.load()
+            model.load(providerRoute.providerEntryId)
         } else {
             selectedRegion?.takeIf { it != model.state.value.region && model.state.value.overview?.mode == "subscription" }
                 ?.let(model::chooseRegion)

@@ -33,6 +33,7 @@ import retrofit2.Response
 class SubscriptionCheckoutLifecycleTest {
     private val dispatcher = StandardTestDispatcher()
     private val reads = mutableListOf<Continuation<Any?>>()
+    private val entryReceipts = mutableListOf<Int?>()
     private val statuses = mutableListOf<Continuation<Any?>>()
     private val watched = mutableListOf<Int>()
     private var quoteCalls = 0
@@ -41,12 +42,13 @@ class SubscriptionCheckoutLifecycleTest {
     @After fun tearDown() = Dispatchers.resetMain()
 
     @Suppress("UNCHECKED_CAST")
-    private fun model(): SubscriptionCheckoutViewModel {
+    private fun model(origin: String = "hsk30_content"): SubscriptionCheckoutViewModel {
         val api = Proxy.newProxyInstance(
             AndroidFeatureApi::class.java.classLoader, arrayOf(AndroidFeatureApi::class.java),
         ) { _, method, args ->
             when (method.name) {
                 "checkoutOverview" -> {
+                    entryReceipts += args[2] as Int?
                     reads += args.last() as Continuation<Any?>
                     COROUTINE_SUSPENDED
                 }
@@ -59,7 +61,7 @@ class SubscriptionCheckoutLifecycleTest {
             }
         } as AndroidFeatureApi
         return SubscriptionCheckoutViewModel(
-            FeatureRepository(api, { ApiResult.Success("test-token") }), "hsk30_content",
+            FeatureRepository(api, { ApiResult.Success("test-token") }), origin,
             onPendingPayment = watched::add,
         )
     }
@@ -70,6 +72,17 @@ class SubscriptionCheckoutLifecycleTest {
             baseAmount = 10, finalAmount = 10, currency = "TJS",
         ))),
     )
+
+    @Test fun `provider receipt survives manual retry but is reset on a new host`() = runTest(dispatcher) {
+        val model = model("profile_subscription")
+        model.load(42); runCurrent()
+        reads[0].resume(Response.success(offer().copy(mode = "subscription"))); runCurrent()
+        model.load(); runCurrent()
+        reads[1].resume(Response.success(offer().copy(mode = "subscription"))); runCurrent()
+        model.load(null); runCurrent()
+        reads[2].resume(Response.success(offer().copy(mode = "subscription"))); runCurrent()
+        assertEquals(listOf(42, 42, null), entryReceipts)
+    }
 
     @Test fun `older pending overview cannot replace a newer offer or start its monitor`() = runTest(dispatcher) {
         val model = model()

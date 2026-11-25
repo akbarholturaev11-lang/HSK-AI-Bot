@@ -118,6 +118,17 @@ class LavaCheckoutViewModelTest {
         assertEquals("RUB", vm.state.value.currency)
         assertEquals(1, fake.overviewReads)
     }
+    @Test fun onlyAcknowledgedProviderOpeningCanBePassedToManualCheckout() = runTest(dispatcher) {
+        val fake = Fake()
+        val vm = fake.model(); runCurrent()
+        assertNull(vm.state.value.providerEntryId)
+        fake.overview = fake.overview.copy(provider_entry_id = 42)
+        vm.load(); runCurrent()
+        assertEquals(42, vm.state.value.providerEntryId)
+        vm.chooseRegion("cn"); runCurrent()
+        assertEquals(42, vm.state.value.providerEntryId)
+        assertEquals(2, fake.overviewReads)
+    }
     @Test fun manualPendingCanRecoverWithoutOverridingProviderRecovery() {
         val pending = NativeLavaState(loading = false, block = LavaBlock(mode = "both", blocked_reason = "payment_pending"))
         assertTrue(pending.hasManualPending())

@@ -29,7 +29,9 @@ import com.pomp.hskai.HskAiApplication
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.components.HskSceneSurface
 
-/** Returns true while the provider surface owns this native route. No WebView. */
+internal data class NativeLavaRoute(val ownsSurface: Boolean, val providerEntryId: Int? = null)
+
+/** Returns route ownership plus the committed opening receipt for a manual fallback. No WebView. */
 @Composable
 internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onClose: () -> Unit,
     repositoryOverride: LavaCheckoutRepository? = null,
@@ -39,9 +41,9 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
     onRegionSelected: (String) -> Unit = {},
     onRouteSelected: ((String) -> Unit)? = null,
     onProviderAvailable: (Boolean) -> Unit = {},
-): Boolean {
+): NativeLavaRoute {
     // Keep the separate permanent-course product and existing discount entry routes manual.
-    if (origin.startsWith("hsk30") || origin.contains("discount")) return false
+    if (origin.startsWith("hsk30") || origin.contains("discount")) return NativeLavaRoute(false)
     val context = LocalContext.current
     val app = context.applicationContext as HskAiApplication
     val repository = remember(app, repositoryOverride) { repositoryOverride ?: LavaCheckoutRepository(app.nativeApi(AndroidLavaApi::class.java),
@@ -97,13 +99,13 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
         onDispose { lifecycle.lifecycle.removeObserver(observer) }
     }
     // Manual receipt recovery is not a new sale. Never hide it behind a blocked provider screen.
-    if (state.hasManualPending()) return false
+    if (state.hasManualPending()) return NativeLavaRoute(false, state.providerEntryId)
     val automaticManual = block?.prefersManual(effectiveRegion) == true
     if ((canUseManual && (routeOverride == "manual" ||
             (routeOverride != "lava" && (manual || automaticManual)))) ||
-        (!state.loading && block == null && state.mode == "subscription")) return false
+        (!state.loading && block == null && state.mode == "subscription")) return NativeLavaRoute(false, state.providerEntryId)
     if (block?.mode == "manual_only" && block.subscription == null && state.checkoutId == 0 &&
-        block.blocked_reason == null && !state.error) return false
+        block.blocked_reason == null && !state.error) return NativeLavaRoute(false, state.providerEntryId)
     BackHandler { model.requestProviderClose() }
     HskSceneSurface(Modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize().safeDrawingPadding().padding(20.dp)) {
@@ -220,7 +222,7 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
             confirmButton = { TextButton(onClick = model::claim, enabled = !state.busy) { Text(stringResource(R.string.lava_exit_claim)) } },
             dismissButton = { TextButton(onClick = model::close, enabled = !state.busy) { Text(stringResource(R.string.lava_exit_later)) } })
     }
-    return true
+    return NativeLavaRoute(true)
 }
 
 /** Same two primary plan slots as ready; static bars respect disabled system animations. */

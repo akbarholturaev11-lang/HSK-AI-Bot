@@ -161,6 +161,13 @@ class SubscriptionCheckoutViewModel(
     private var checkoutGeneration = 0
     private var receiptGeneration = 0
     private var submitInFlight = false
+    private var providerEntryId: Int? = null
+
+    // Called once on each visible host, including a fresh opening of a reused model.
+    fun load(providerEntryId: Int?) {
+        this.providerEntryId = providerEntryId?.takeIf { it > 0 && !origin.startsWith("hsk30") }
+        load()
+    }
 
     fun load() {
         val generation = ++checkoutGeneration
@@ -176,7 +183,7 @@ class SubscriptionCheckoutViewModel(
         viewModelScope.launch {
             // A region confirmed earlier opens checkout on the plans, like the Mini App.
             val remembered = runCatching { savedRegion() }.getOrNull()
-            val overviewResult = repository.checkoutOverview(origin)
+            val overviewResult = repository.checkoutOverview(origin, providerEntryId)
             if (generation != checkoutGeneration) return@launch
             when (overviewResult) {
                 is ApiResult.Success -> {

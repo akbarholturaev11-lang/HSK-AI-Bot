@@ -26,6 +26,7 @@ data class NativeLavaState(
     val uncertainStart: Boolean = false,
     val region: String = "",
     val currency: String = "",
+    val providerEntryId: Int? = null,
 ) {
     val visiblePlans: List<LavaPlan> get() = block?.let {
         if (mode == "exit_discount" || currency.isBlank()) it.plans.filter { row -> row.amount != null }
@@ -60,6 +61,7 @@ class LavaCheckoutViewModel(
                     val block = result.value.lava
                     val id = old.checkoutId.takeIf { it > 0 } ?: block?.pending_checkout_id ?: 0
                     val selected = old.copy(loading = false, block = block, region = old.region.ifBlank { region },
+                        providerEntryId = result.value.provider_entry_id?.takeIf { it > 0 && result.value.ok && old.mode == "subscription" },
                         currency = if (old.mode == "exit_discount") "" else block?.currencyFor(old.region.ifBlank { region }).orEmpty())
                     selected.copy(
                         plan = old.plan.takeIf { plan -> selected.visiblePlans.any { it.plan_type == plan } }

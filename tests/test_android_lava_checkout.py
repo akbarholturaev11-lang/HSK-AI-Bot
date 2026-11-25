@@ -54,6 +54,7 @@ class AndroidLavaCheckoutTests(unittest.IsolatedAsyncioTestCase):
             entry = await db.scalar(select(SubscriptionEntryEvent))
             self.assertEqual((1, "android_course_limit", "lava", "android"),
                              (entry.user_id, entry.source, entry.payment_method, entry.client))
+            self.assertEqual(entry.id, overview.json()["provider_entry_id"])
         start = await self.post("start", {"plan_type": "1_month", "email": "native@example.com"})
         self.assertEqual(200, start.status_code)
         value = start.json(); checkout = value["checkout_id"]
@@ -81,6 +82,19 @@ class AndroidLavaCheckoutTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual("cancelled", row.subscription_status)
         self.assertEqual("android", self.funnel.call_args.kwargs["payload"]["transport"])
         self.assertEqual("checkout_opened", self.funnel.call_args.kwargs["event_name"])
+
+    async def test_missing_or_failed_provider_entry_never_claims_an_opening(self):
+        self.runtime.settings.LAVA_ENABLED = False
+        disabled = await self.post("overview", {"origin": "course_limit"})
+        self.assertIsNone(disabled.json()["lava"])
+        self.assertIsNone(disabled.json()["provider_entry_id"])
+        self.runtime.settings.LAVA_ENABLED = True
+        with patch("app.services.subscription_entry_analytics_service.SubscriptionEntryAnalyticsService.record_entry",
+                   new=AsyncMock(return_value=False)):
+            failed = await self.post("overview", {"origin": "course_limit"})
+        self.assertEqual(200, failed.status_code)
+        self.assertIsNotNone(failed.json()["lava"])
+        self.assertIsNone(failed.json()["provider_entry_id"])
 
     async def test_real_android_funnel_storage_and_financial_owner_reach_existing_admin_source_group(self):
         from app.db.models.conversion_funnel_event import ConversionFunnelEvent
