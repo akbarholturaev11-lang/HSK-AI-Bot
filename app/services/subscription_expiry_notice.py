@@ -85,7 +85,7 @@ async def subscription_expiry_notice(session, user, *, now=None):
                 # the last financial event must not be a refund/chargeback.
                 start = UserAccessStateService.as_utc(user.start_date)
                 reviewed = UserAccessStateService.as_utc(latest.reviewed_at) if latest else None
-                if latest and not (reviewed and reviewed < start):
+                if latest and not (reviewed and reviewed < start - timedelta(minutes=1)):
                     if latest.payment_status != "approved":
                         return None
                     if latest.payment_method == "lava":

@@ -374,3 +374,45 @@ def test_inline_region_changes_use_verified_prices_without_overview_reload():
         assert page.get_by_role("heading", name="Лимит исчерпан").is_visible()
         assert page.locator("#hsk-inline-pro .hip-region").input_value() == "cn"
         browser.close()
+
+
+def test_expiry_notice_uses_server_period_and_existing_checkout_once():
+    # Execute the actual course helper with the canonical localized bundle.
+    source = (STATIC / "course-v3.html").read_text(encoding="utf-8")
+    start = source.index("function maybeShowProExpiryNotice(){")
+    end = source.index("\nfunction flushPendingCenterAd()", start)
+    with playwright.sync_playwright() as pw:
+        browser = pw.chromium.launch()
+        page = browser.new_page(viewport={"width": 390, "height": 844})
+        page.route("**/*", lambda route: route.fulfill(status=200, content_type="text/html",
+                                                        body='<div id="sheet"></div>'))
+        page.goto(ORIGIN + "/expiry-test")
+        page.add_script_tag(path=str(STATIC / "course_v3_data/hsk-course-i18n.js"))
+        page.evaluate("""() => {
+            window.MAP={authenticated:true,pro_expiry_notice:null}; window.SCREEN='course';
+            window.PRO_EXPIRY_BOOT_READY=true; window.PRO_EXPIRY_DEFER_UNTIL=0;
+            window.PRO_EXPIRY_SEEN=Object.create(null); window.PWA_CHECKOUT_FRAME=null;
+            window.CHECKOUT_NAVIGATING=false; window.busy=false; window.shown=0;
+            window.centerAdBusy=()=>window.busy; window.foundationBlocksCourse=()=>false;
+            window.studySetupPending=()=>false; window.localUserScope=()=> 'pwa:test';
+            window.courseMessage=(k,f)=>HSKAI_COURSE_I18N.ru[k]||f;
+            window.pandaChar=()=>'<svg></svg>'; window.esc=x=>x;
+            window.$=x=>document.querySelector(x);
+            window.App={openSheet:html=>{document.querySelector('#sheet').innerHTML=html;shown++},
+              closeSheet:()=>{},goPay:s=>{window.checkoutSource=s}};
+        }""")
+        page.add_script_tag(content=source[start:end])
+        assert page.evaluate("maybeShowProExpiryNotice()") is False
+        page.evaluate("MAP.pro_expiry_notice='a'.repeat(64); busy=true")
+        assert page.evaluate("maybeShowProExpiryNotice()") is False
+        page.evaluate("busy=false")
+        assert page.evaluate("maybeShowProExpiryNotice()") is True
+        assert page.get_by_text("Срок действия подписки HSK AI Pro истёк.").is_visible()
+        page.get_by_role("button", name="ВОССТАНОВИТЬ PRO").click()
+        assert page.evaluate("checkoutSource") == "course_expired"
+        page.evaluate("PRO_EXPIRY_SEEN=Object.create(null)")
+        assert page.evaluate("maybeShowProExpiryNotice()") is False
+        page.evaluate("MAP.pro_expiry_notice='b'.repeat(64)")
+        assert page.evaluate("maybeShowProExpiryNotice()") is True
+        assert page.evaluate("shown") == 2
+        browser.close()

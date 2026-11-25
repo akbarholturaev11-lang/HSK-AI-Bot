@@ -91,6 +91,9 @@ class AndroidLavaCheckoutTests(unittest.IsolatedAsyncioTestCase):
         now = datetime.now(timezone.utc)
         started = (await self.post("start", {"plan_type": "1_month", "email": "a@b.co"})).json()
         self.fake.complete(started["payment_url"].rsplit("/", 1)[1])
+        async with self.sessions() as db:
+            (await db.get(LavaInvoice, started["checkout_id"])).last_checked_at = None
+            await db.commit()
         paid = await self.post("status", {"checkout_id": started["checkout_id"]})
         self.assertEqual("paid", paid.json()["status"])
         async with self.sessions() as db:
