@@ -543,6 +543,10 @@
     <string name="hsk_course_practice_gate_error_body" formatted="false">Дастрасӣ санҷида нашуд. Интернетро санҷед ва боз кӯшиш кунед.</string>
     <string name="hsk_course_practice_gate_error_retry" formatted="false">Боз кӯшиш кардан</string>
     <string name="hsk_course_premium" formatted="false">HSK AI Pro</string>
+    <string name="hsk_course_pro_expiry_body" formatted="false">Мехоҳед дастрасии бемаҳдудро баргардонед?</string>
+    <string name="hsk_course_pro_expiry_limited" formatted="false">ИДОМА БО МАҲДУДИЯТ</string>
+    <string name="hsk_course_pro_expiry_restore" formatted="false">БАРҚАРОР КАРДАНИ PRO</string>
+    <string name="hsk_course_pro_expiry_title" formatted="false">Муҳлати обунаи HSK AI Pro ба охир расид.</string>
     <string name="hsk_course_profile_answers" formatted="false">ҷавоби арзёбишуда</string>
     <string name="hsk_course_profile_free" formatted="false">Ройгон</string>
     <string name="hsk_course_profile_note" formatted="false">Танҳо ҷавобҳои санҷидашуда · маълумоти кӯҳна метавонад нопурра бошад</string>

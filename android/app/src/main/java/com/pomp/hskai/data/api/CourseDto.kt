@@ -63,6 +63,7 @@ data class CourseMapDto(
      * one closed here stays closed in the Mini App and on the desktop.
      */
     @SerialName("hints") val hints: List<AndroidHintDto> = emptyList(),
+    @SerialName("pro_expiry_notice") val proExpiryNotice: String? = null,
 )
 
 @Serializable

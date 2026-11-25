@@ -83,6 +83,32 @@ class AndroidLavaCheckoutTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual("android", self.funnel.call_args.kwargs["payload"]["transport"])
         self.assertEqual("checkout_opened", self.funnel.call_args.kwargs["event_name"])
 
+    async def test_expiry_notice_requires_ended_cancelled_contract_and_no_pending_receipt(self):
+        from datetime import datetime, timedelta, timezone
+        from app.db.models.payment import Payment
+        from app.services.subscription_expiry_notice import subscription_expiry_notice
+
+        now = datetime.now(timezone.utc)
+        started = (await self.post("start", {"plan_type": "1_month", "email": "a@b.co"})).json()
+        self.fake.complete(started["payment_url"].rsplit("/", 1)[1])
+        paid = await self.post("status", {"checkout_id": started["checkout_id"]})
+        self.assertEqual("paid", paid.json()["status"])
+        async with self.sessions() as db:
+            user = await db.get(User, 1)
+            invoice = await db.get(LavaInvoice, started["checkout_id"])
+            self.assertIsNone(await subscription_expiry_notice(db, user, now=now))
+            future = user.end_date.replace(tzinfo=timezone.utc) + timedelta(seconds=1)
+            self.assertIsNone(await subscription_expiry_notice(db, user, now=future))
+            invoice.subscription_status = "cancelled"
+            await db.flush()
+            self.assertIsNone(await subscription_expiry_notice(db, user, now=now))
+            token = await subscription_expiry_notice(db, user, now=future)
+            self.assertIsNotNone(token)
+            self.assertEqual(token, await subscription_expiry_notice(db, user, now=future))
+            db.add(Payment(user_id=1, plan_type="1_month", amount=49, payment_status="pending"))
+            await db.flush()
+            self.assertIsNone(await subscription_expiry_notice(db, user, now=future))
+
     async def test_missing_or_failed_provider_entry_never_claims_an_opening(self):
         self.runtime.settings.LAVA_ENABLED = False
         disabled = await self.post("overview", {"origin": "course_limit"})

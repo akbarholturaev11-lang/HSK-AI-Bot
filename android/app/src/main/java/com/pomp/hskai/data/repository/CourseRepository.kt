@@ -51,6 +51,8 @@ data class CourseMapSnapshot(
     val isStale: Boolean,
     val fetchedAtMillis: Long,
     val refreshError: ApiError? = null,
+    /** Live response only: never replay a purchase prompt from disk. */
+    val proExpiryNotice: String? = null,
 )
 
 data class LessonSnapshot(
@@ -136,7 +138,7 @@ class CourseRepository(
                     dao.upsert(
                         CourseMapCacheEntity(
                             level = dto.level,
-                            payloadJson = json.encodeToString(CourseMapDto.serializer(), dto),
+                            payloadJson = json.encodeToString(CourseMapDto.serializer(), dto.copy(proExpiryNotice = null)),
                             fetchedAtMillis = fetchedAt,
                         )
                     )
@@ -145,6 +147,7 @@ class CourseRepository(
                             map = CourseMapper.toDomain(dto),
                             isStale = false,
                             fetchedAtMillis = fetchedAt,
+                            proExpiryNotice = dto.proExpiryNotice?.takeIf { it.matches(Regex("[a-f0-9]{64}")) },
                         )
                     )
                 }

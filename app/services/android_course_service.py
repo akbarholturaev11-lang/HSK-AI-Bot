@@ -113,6 +113,8 @@ class AndroidCourseService(DesktopCourseService):
         context = await self._context(access_token)
         foundation = await self._foundation_status(context.user)
         result["foundation"] = foundation
+        from app.services.subscription_expiry_notice import subscription_expiry_notice
+        result["pro_expiry_notice"] = await subscription_expiry_notice(self.session, context.user)
 
         track_status = await CourseTrackService(self.session).status(context.user)
         hsk30_track = (track_status.get("tracks") or {}).get("hsk30") or {}

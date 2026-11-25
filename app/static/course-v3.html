@@ -246,7 +246,7 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 /* sheet */
 .sheet{position:fixed;inset:0;background:rgba(20,17,13,.5);display:none;align-items:flex-end;z-index:50;max-width:var(--read);margin:0 auto}
 .sheet.on{display:flex}
-.si{background:var(--paper);border-radius:24px 24px 0 0;padding:8px 18px calc(22px + var(--safe-b));width:100%;position:relative;max-height:88vh;overflow-y:auto}
+.si{background:var(--paper);border-radius:24px 24px 0 0;padding:8px 18px calc(22px + var(--safe-b));width:100%;position:relative;max-height:88vh;overflow-y:auto} #sheet.pro-expiry-sheet{align-items:flex-end;padding:0}#sheet.pro-expiry-sheet .si{max-width:480px;max-height:88vh;max-height:88dvh;margin:0 auto;padding:8px 22px calc(24px + var(--safe-b));animation:proExpiryEnter .25s ease-out}#sheet.pro-expiry-sheet .sx{display:none}.pro-expiry-content{text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px}.pro-expiry-panda{width:clamp(116px,40vw,176px);margin:12px auto 2px}.pro-expiry-panda svg{display:block;width:100%;height:auto}.pro-expiry-content h2{font-size:23px;line-height:1.3;margin:0;color:var(--ink)}.pro-expiry-content p{font-size:17px;line-height:1.45;color:var(--ink);margin:0 0 8px}.pro-expiry-content button{width:100%;min-height:48px}.pro-expiry-content .pro-expiry-skip{border:0;background:transparent;color:var(--ink);font-weight:800;font-size:13px;cursor:pointer}@keyframes proExpiryEnter{from{transform:translateY(100%)}to{transform:translateY(0)}}@media(prefers-reduced-motion:reduce){#sheet.pro-expiry-sheet .si{animation:none}}
 #sheet.hsk30-promo-center{align-items:center;padding:calc(14px + var(--safe-t)) 14px calc(14px + var(--safe-b))}
 #sheet.hsk30-promo-center .si{border-radius:24px;padding:20px 18px calc(18px + var(--safe-b));max-height:calc(100vh - 28px - var(--safe-t) - var(--safe-b));max-height:calc(100dvh - 28px - var(--safe-t) - var(--safe-b));box-shadow:0 18px 50px rgba(20,17,13,.25)}
 #sheet.hsk30-promo-center .grip{display:none}
@@ -1785,7 +1785,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 </script>
 <!-- Reklama moduli: dars yakuni bloki uchun (mashq bo'limlari ham shu moduldan foydalanadi) -->
 <script src="/voice-live.js?v=20261114-43a09dcc7b1d"></script>
-<script defer src="/course_v3_data/ads.js?v=20261021-5288c4e06b0c"></script><script src="/course_v3_data/hsk-common-i18n.js?v=20261019-1c672dcfb10d"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261113-efe520888dad"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-a0dd8c0b1db1"></script><script src="/course_v3_data/p3-grammar-reservation.js?v=20261019-p3-2"></script>
+<script defer src="/course_v3_data/ads.js?v=20261021-5288c4e06b0c"></script><script src="/course_v3_data/hsk-common-i18n.js?v=20261019-1c672dcfb10d"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261125-8940a0802334"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-a0dd8c0b1db1"></script><script src="/course_v3_data/p3-grammar-reservation.js?v=20261019-p3-2"></script>
 <script>
 /* ---------- i18n (default RU) ---------- */
 var I18N={
@@ -2834,12 +2834,12 @@ function refreshCourseProgress(afterWrite){
     .then(function(d){
       if(MAP===snapshot&&isHsk30AccessError(d,level)){showCourseMapFailure({hsk30Gate:true,level:d.level||level});return false}
       if(PROGRESS_REFRESH_QUEUED||MAP!==snapshot||!d||d._parseFail||d._status>=400||d.authenticated===false||!d.units||d.level!==level)return false;
-      if(Object.prototype.hasOwnProperty.call(d,"today"))MAP.today=d.today;
+      MAP.pro_expiry_notice=d.pro_expiry_notice||null;if(!MAP.pro_expiry_notice&&$("#sheet").classList.contains("pro-expiry-sheet"))App.closeSheet();if(Object.prototype.hasOwnProperty.call(d,"today"))MAP.today=d.today;
       if(d.progress)MAP.progress=d.progress;
       if(d.foundation){var foundationChanged=foundationIsComplete()!==d.foundation.completed;MAP.foundation=d.foundation;if(foundationChanged)MAP.units=d.units;}
       if(d.study_setup)adoptStudySetup(d);
       ratingLoaded=false;
-      renderCourse();if(!PWA_COURSE_HOST||SCREEN==="profile")renderProfile();
+      renderCourse();if(!PWA_COURSE_HOST||SCREEN==="profile")renderProfile();maybeShowProExpiryNotice();
       return true;
     }).catch(function(){return false}).then(function(updated){
       clearTimeout(timer);PROGRESS_REFRESH=null;
@@ -2975,10 +2975,10 @@ var App={
       if(SIGNIN_STATE.busy&&!SIGNIN_PENDING){SIGNIN_STATE.generation++;SIGNIN_STATE.busy=""}
     }else if(SIGNIN_PENDING&&!signInPollTimer){pollSignInLink(SIGNIN_PENDING,SIGNIN_PENDING.deadline)}
     if(s==="course"&&window._pendingXpFly){var fx=window._pendingXpFly;window._pendingXpFly=0;setTimeout(function(){flyXp(fx)},350)}},
-  openSheet:function(html){var sheet=$("#sheet");if(!sheet.classList.contains("on"))SHEET_RETURN_FOCUS=document.activeElement;sheet.classList.remove("hsk30-promo-center","hsk30-book-card","course-choice-sheet","profile-apps-choice","lesson-exit-confirm","pwa-settings-sheet");sheet.removeAttribute("aria-label");sheet.removeAttribute("aria-labelledby");$("#sheet-body").innerHTML=html;var title=sheet.querySelector("#sheet-body h1,#sheet-body h2,#sheet-body h3,#sheet-body [role='heading'],#sheet-body .shead .tr");if(title){if(!title.id)title.id="hsk-sheet-title";sheet.setAttribute("aria-labelledby",title.id)}else{sheet.setAttribute("aria-label",courseMessage("sheet.dialogLabel",LANG==="ru"?"Диалог HSK AI":LANG==="tj"?"Муколамаи HSK AI":"HSK AI oynasi"))}var close=sheet.querySelector(".sx");if(close)close.setAttribute("aria-label",courseMessage("sheet.closeLabel",LANG==="ru"?"Закрыть":LANG==="tj"?"Пӯшидан":"Yopish"));sheet.setAttribute("role","dialog");sheet.setAttribute("aria-modal","true");sheet.classList.add("on");setSheetBackgroundInert(true);focusSheetStart(sheet);startSheetPromo("#sheet")},
+  openSheet:function(html){var sheet=$("#sheet");if(!sheet.classList.contains("on"))SHEET_RETURN_FOCUS=document.activeElement;sheet.classList.remove("hsk30-promo-center","hsk30-book-card","course-choice-sheet","profile-apps-choice","lesson-exit-confirm","pwa-settings-sheet","pro-expiry-sheet");sheet.removeAttribute("aria-label");sheet.removeAttribute("aria-labelledby");$("#sheet-body").innerHTML=html;var title=sheet.querySelector("#sheet-body h1,#sheet-body h2,#sheet-body h3,#sheet-body [role='heading'],#sheet-body .shead .tr");if(title){if(!title.id)title.id="hsk-sheet-title";sheet.setAttribute("aria-labelledby",title.id)}else{sheet.setAttribute("aria-label",courseMessage("sheet.dialogLabel",LANG==="ru"?"Диалог HSK AI":LANG==="tj"?"Муколамаи HSK AI":"HSK AI oynasi"))}var close=sheet.querySelector(".sx");if(close)close.setAttribute("aria-label",courseMessage("sheet.closeLabel",LANG==="ru"?"Закрыть":LANG==="tj"?"Пӯшидан":"Yopish"));sheet.setAttribute("role","dialog");sheet.setAttribute("aria-modal","true");sheet.classList.add("on");setSheetBackgroundInert(true);focusSheetStart(sheet);startSheetPromo("#sheet")},
   closeSheet:function(){
     SETTINGS_SHEET=PWA_COURSE_HOST&&SCREEN==="settings";
-    var sheet=$("#sheet");sheet.classList.remove("on","hsk30-promo-center","hsk30-book-card","course-choice-sheet","profile-apps-choice","lesson-exit-confirm");sheet.removeAttribute("role");sheet.removeAttribute("aria-modal");sheet.removeAttribute("aria-label");sheet.removeAttribute("aria-labelledby");sheet.removeAttribute("tabindex");stopSheetPromo();setSheetBackgroundInert(false);var returnFocus=SHEET_RETURN_FOCUS;SHEET_RETURN_FOCUS=null;if(returnFocus&&returnFocus.isConnected&&typeof returnFocus.focus==="function")returnFocus.focus({preventScroll:true});
+    var sheet=$("#sheet");sheet.classList.remove("on","hsk30-promo-center","hsk30-book-card","course-choice-sheet","profile-apps-choice","lesson-exit-confirm","pro-expiry-sheet");sheet.removeAttribute("role");sheet.removeAttribute("aria-modal");sheet.removeAttribute("aria-label");sheet.removeAttribute("aria-labelledby");sheet.removeAttribute("tabindex");stopSheetPromo();setSheetBackgroundInert(false);var returnFocus=SHEET_RETURN_FOCUS;SHEET_RETURN_FOCUS=null;if(returnFocus&&returnFocus.isConnected&&typeof returnFocus.focus==="function")returnFocus.focus({preventScroll:true});
     var revealUnlock=!!window._pendingUnlockAfterSheet;window._pendingUnlockAfterSheet=false;
     var afterLessonSheet=window._afterLessonSheetClose;window._afterLessonSheetClose=null;
     if(typeof afterLessonSheet==="function")setTimeout(afterLessonSheet,revealUnlock?260:0);
@@ -10190,7 +10190,7 @@ window.VOICE=VOICE;
 
 function renderAll(){
   document.querySelectorAll("#nav [data-i]").forEach(function(s){s.textContent=courseMessage("nav."+s.dataset.i,T().nav[s.dataset.i])});hydratePwaPracticeShell();
-  if(MAP){renderCourse();if(!PWA_COURSE_HOST||SCREEN==="mashq"||($("#s-mashq").firstElementChild&&!$("#s-mashq").querySelector(".pwa-initial-shell")))renderMashq();if(SCREEN==="rating")renderRating();if(!PWA_COURSE_HOST||SCREEN==="profile")renderProfile();if(SCREEN==="voice")renderVoice()}
+  if(MAP){renderCourse();if(!PWA_COURSE_HOST||SCREEN==="mashq"||($("#s-mashq").firstElementChild&&!$("#s-mashq").querySelector(".pwa-initial-shell")))renderMashq();if(SCREEN==="rating")renderRating();if(!PWA_COURSE_HOST||SCREEN==="profile")renderProfile();if(SCREEN==="voice")renderVoice();maybeShowProExpiryNotice()}
 }
 navInit();
 $("#sheet").onclick=function(){App.closeSheet()};
@@ -10309,7 +10309,7 @@ var finishHskLaunchSplash=(function(){
       },80);
     }
     var challengeId=Number(sp.get("challenge_id")||0);
-    function launchBootIntents(skipAppOpenAd){
+    function launchBootIntents(skipAppOpenAd){PRO_EXPIRY_BOOT_READY=true;if(initialLesson>0||challengeId>0||sp.get("tour")==="1")PRO_EXPIRY_DEFER_UNTIL=Date.now()+800;
       openInitialLesson();
       if(challengeId>0)setTimeout(function(){openChallengeById(challengeId)},180);
       if(sp.get("tour")==="1"){var td=false;try{td=!!localStorage.getItem("hsk_v3_tour")}catch(e){}if(!td)setTimeout(function(){App.runTour()},500)}
@@ -10317,7 +10317,7 @@ var finishHskLaunchSplash=(function(){
       var requestedTab=sp.get("tab"),tourRequested=sp.get("tour")==="1";
       var hasBootIntent=initialLesson>0||challengeId>0||tourRequested||!!(requestedTab&&requestedTab!=="course");
       var setupPending=!!(STUDY_SETUP&&STUDY_SETUP.pending&&studySetupPending());
-      var adContext={lesson:initialLesson,challenge:challengeId,tour:tourRequested};
+      var adContext={lesson:initialLesson,challenge:challengeId,tour:tourRequested};if(!hasBootIntent&&!setupPending&&maybeShowProExpiryNotice())return;
       if(hasBootIntent||setupPending){HSK30_PROMO_PENDING=true;maybeShowAppOpenAd(adContext);return}
       /* Markaziy HSK 3.0 eslatmasi reklama bilan bir vaqtda ochilmasin.
          Eslatma ko'rsatilsa app-open reklama shu ochilishda o'tkaziladi. */
@@ -10354,9 +10354,9 @@ function maybeShowAppOpenAd(ctx){
    reklama) ochiq bo'lsa chiqmaydi va bayroq SARFLANMAYDI: keyingi qulay
    daqiqada qayta uriniladi. Bir sessiyada bir marta (`ads.js` shuni
    ta'minlaydi), kunlik chegara esa serverda. */
-var CENTER_AD_PENDING=false,CENTER_AD_TIMER=null;
-function centerAdBusy(){try{return !!(NavBack.blocked()||NavBack.top())}catch(e){return true}}
-function flushPendingCenterAd(){
+var CENTER_AD_PENDING=false,CENTER_AD_TIMER=null,PRO_EXPIRY_BOOT_READY=false,PRO_EXPIRY_DEFER_UNTIL=0,PRO_EXPIRY_SEEN=Object.create(null);
+function centerAdBusy(){try{return !!(NavBack.blocked()||NavBack.top())}catch(e){return true}} function maybeShowProExpiryNotice(){var token=MAP&&MAP.pro_expiry_notice;if(!PRO_EXPIRY_BOOT_READY||Date.now()<PRO_EXPIRY_DEFER_UNTIL||!MAP||MAP.authenticated===false||typeof token!=="string"||!/^[a-f0-9]{64}$/.test(token)||SCREEN!=="course"||document.visibilityState!=="visible"||centerAdBusy()||foundationBlocksCourse()||studySetupPending()||PWA_CHECKOUT_FRAME||CHECKOUT_NAVIGATING)return false;var owner=localUserScope();if(owner==="preview"||owner==="pwa:unbound")return false;var key="hsk_v3_pro_expiry_seen:v1:"+owner;if(PRO_EXPIRY_SEEN[token])return false;try{if(localStorage.getItem(key)===token)return false}catch(e){}var title=courseMessage("proExpiry.title",""),body=courseMessage("proExpiry.body",""),restore=courseMessage("proExpiry.restore",""),limited=courseMessage("proExpiry.limited","");if(!title||!body||!restore||!limited)return false;PRO_EXPIRY_SEEN[token]=true;App.openSheet('<div class="pro-expiry-content"><div class="pro-expiry-panda" aria-hidden="true">'+pandaChar("happy",{anim:false})+'</div><h2>'+esc(title)+'</h2><p>'+esc(body)+'</p><button type="button" class="scta" onclick="App.closeSheet();App.goPay(\'course_expired\')">'+esc(restore)+'</button><button type="button" class="pro-expiry-skip" onclick="App.closeSheet()">'+esc(limited)+'</button></div>');$("#sheet").classList.add("pro-expiry-sheet");try{localStorage.setItem(key,token)}catch(e){}return true}
+function flushPendingCenterAd(){if(maybeShowProExpiryNotice())return;
   if(CENTER_AD_TIMER||centerAdBusy()||(!CENTER_AD_PENDING&&!HSK30_PROMO_PENDING&&!HSK30_PROMO_READY))return;
   CENTER_AD_TIMER=setTimeout(function(){
     CENTER_AD_TIMER=null;

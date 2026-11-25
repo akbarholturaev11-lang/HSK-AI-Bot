@@ -543,6 +543,10 @@
     <string name="hsk_course_practice_gate_error_body" formatted="false">Не удалось проверить доступ. Проверьте интернет и повторите.</string>
     <string name="hsk_course_practice_gate_error_retry" formatted="false">Повторить</string>
     <string name="hsk_course_premium" formatted="false">HSK AI Pro</string>
+    <string name="hsk_course_pro_expiry_body" formatted="false">Хотите вернуть доступ без лимита?</string>
+    <string name="hsk_course_pro_expiry_limited" formatted="false">ПРОДОЛЖИТЬ С ЛИМИТОМ</string>
+    <string name="hsk_course_pro_expiry_restore" formatted="false">ВОССТАНОВИТЬ PRO</string>
+    <string name="hsk_course_pro_expiry_title" formatted="false">Срок действия подписки HSK AI Pro истёк.</string>
     <string name="hsk_course_profile_answers" formatted="false">проверенных ответов</string>
     <string name="hsk_course_profile_free" formatted="false">Бесплатно</string>
     <string name="hsk_course_profile_note" formatted="false">Только проверенные ответы · история может быть неполной</string>

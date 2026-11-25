@@ -197,6 +197,20 @@ class AppSettings(context: Context) : LessonResumeStore {
      * plans instead of asking again. It belongs to the account, so logout
      * clears it like the other account-local values.
      */
+    /** Atomically claim a server-issued, account-bound expiry period on this install. */
+    suspend fun claimProExpiryNotice(token: String): Boolean {
+        if (!token.matches(Regex("[a-f0-9]{64}"))) return false
+        var claimed = false
+        appContext.settingsDataStore.edit { prefs ->
+            val seen = prefs[PRO_EXPIRY_SEEN_KEY].orEmpty()
+            if (token !in seen) {
+                prefs[PRO_EXPIRY_SEEN_KEY] = seen.take(63).toSet() + token
+                claimed = true
+            }
+        }
+        return claimed
+    }
+
     suspend fun paymentRegion(): String? =
         appContext.settingsDataStore.data.first()[PAYMENT_REGION_KEY]
 
@@ -364,6 +378,7 @@ class AppSettings(context: Context) : LessonResumeStore {
         val VOICE_V8_BACKDROP_KEY = booleanPreferencesKey("hsk_voice_backdrop")
         val NOTIFICATION_PRIMER_SEEN_KEY = booleanPreferencesKey("notification_primer_seen")
         val ADS_UNLOCKED_AFTER_LIMIT_KEY = booleanPreferencesKey("ads_unlocked_after_limit:v1")
+        val PRO_EXPIRY_SEEN_KEY = stringSetPreferencesKey("pro_expiry_seen:v1")
         val PAYMENT_REGION_KEY = stringPreferencesKey("payment_region:v1")
         val SUBSCRIPTION_DISPLAY_CURRENCY_KEY = stringPreferencesKey("subscription_display_currency:v1")
         val DICTIONARY_HISTORY_KEY = stringPreferencesKey("dictionary_history:v1")

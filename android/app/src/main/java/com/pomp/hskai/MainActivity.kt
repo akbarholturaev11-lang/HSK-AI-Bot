@@ -723,6 +723,7 @@ private fun AppRoot(
 
             var checkoutVisible by rememberSaveable { mutableStateOf(false) }
             var checkoutOrigin by rememberSaveable { mutableStateOf("course_limit") }
+            var expirySheetToken by remember(sessionOwner) { mutableStateOf<String?>(null) }
             // Same-package Direct -> Play updates can restore a saved checkout.
             // Play must render the app immediately and clear that obsolete state.
             LaunchedEffect(Unit) {
@@ -804,9 +805,10 @@ private fun AppRoot(
                 courseState.map?.hsk30?.promo?.eligible,
                 courseState.isClaimingHsk30Promo,
                 courseState.hsk30PromoVisible,
+                expirySheetToken,
             ) {
                 if (
-                    !screenCenterAdAsked &&
+                    !screenCenterAdAsked && expirySheetToken == null &&
                     adsUnlockedAfterLimit &&
                     !limitOverlayVisible &&
                     courseState.map?.hsk30?.promo?.eligible != true &&
@@ -817,7 +819,7 @@ private fun AppRoot(
                 ) {
                     screenCenterAdAsked = true
                     delay(SCREEN_CENTER_AD_DELAY_MS)
-                    if (adRequest == null && !limitOverlayVisible &&
+                    if (adRequest == null && !limitOverlayVisible && expirySheetToken == null &&
                         courseState.map?.hsk30?.promo?.eligible != true &&
                         !courseState.isClaimingHsk30Promo && !courseState.hsk30PromoVisible
                     ) {
@@ -1585,6 +1587,27 @@ private fun AppRoot(
                     ) { tab, contentModifier ->
                         when (tab) {
                             MainTab.COURSE -> {
+                                val expiryCandidate = courseState.snapshot?.proExpiryNotice?.takeIf {
+                                    BuildConfig.EXTERNAL_CHECKOUT_ENABLED && !offline && !accessActive &&
+                                        !courseState.isLoading && !courseState.isRefreshing && !courseState.isStale &&
+                                        courseState.error == null && !courseState.isSwitchingTrack &&
+                                        !profileState.isLoading && adRequest == null && !limitOverlayVisible &&
+                                        !widgetSetupOpen && !widgetPlacedNotice && !studySetupState.visible &&
+                                        !languagePickerOpen && !goalPickerOpen && !checkoutVisible &&
+                                        nextPartSheet == null && pendingNextPart == null && skipTestLesson == null &&
+                                        feedbackState.prompt == null && !bugReportOpen && !bugReportIntroVisible &&
+                                        !hsk30PaymentRejectionVisible && !hsk30PromoMustPrecedeWidget
+                                }
+                                LaunchedEffect(expiryCandidate) {
+                                    if (expiryCandidate == null) {
+                                        expirySheetToken = null
+                                    } else if (expirySheetToken != expiryCandidate) {
+                                        expirySheetToken = null
+                                        val claimed = try { app.appSettings.claimProExpiryNotice(expiryCandidate) }
+                                        catch (_: java.io.IOException) { false }
+                                        if (claimed) expirySheetToken = expiryCandidate
+                                    }
+                                }
                                 CourseScreen(
                                     state = courseState,
                                     dailyGoal = dailyGoal,
@@ -1606,11 +1629,21 @@ private fun AppRoot(
                                     hsk30PromoAllowed = adRequest == null && !limitOverlayVisible &&
                                         !widgetSetupOpen && !widgetPlacedNotice && !studySetupState.visible &&
                                         !languagePickerOpen && !goalPickerOpen && !checkoutVisible &&
-                                        nextPartSheet == null,
+                                        nextPartSheet == null && expirySheetToken == null,
                                     onUnlockHsk30 = ::openHsk30ContentGate,
                                     onRetry = courseViewModel::load,
                                     modifier = contentModifier,
                                 )
+                                if (expiryCandidate != null && expirySheetToken == expiryCandidate) {
+                                    com.pomp.hskai.feature.course.ProExpirySheet(
+                                        onRestore = {
+                                            expirySheetToken = null
+                                            checkoutOrigin = "profile_renewal"
+                                            checkoutVisible = true
+                                        },
+                                        onDismiss = { expirySheetToken = null },
+                                    )
+                                }
                                 // One sheet at a time: onboarding/study prompts
                                 // first, then the next part waits on the map.
                                 nextPartSheet?.let { offer ->
