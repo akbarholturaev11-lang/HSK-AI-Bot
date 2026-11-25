@@ -129,6 +129,39 @@ class AuthRepositoryTest {
         assertTrue(backing.savedTokens.isEmpty())
     }
 
+    @Test fun `checkout country lifecycle hooks run on account replacement and revocation`() = runTest {
+        var paymentRegion: String? = "ru"
+        var replacementCalls = 0
+        var clearedCalls = 0
+        val backing = FakeCredentialStore(storedRefresh = "old-account")
+        val store = object : CredentialStore by backing {
+            override suspend fun saveRefreshToken(token: String) {
+                assertNull("Previous account's region must be cleared before credentials are replaced", paymentRegion)
+                backing.saveRefreshToken(token)
+            }
+        }
+        val api = object : FakeAuthApi() {
+            override suspend fun linkStatus(body: LinkStatusRequest): Response<LinkStatusResponse> =
+                Response.success(LinkStatusResponse(ok = true, status = "linked", accessToken = "new-access",
+                    refreshToken = "new-refresh", accessExpiresIn = 900))
+        }
+        val repository = AuthRepository(api, store, "test", now = { clock },
+            onSessionReplacing = { replacementCalls++; paymentRegion = null },
+            onSessionCleared = { clearedCalls++; paymentRegion = null })
+
+        assertEquals(true, repository.pollLink(pendingLink()).success())
+        assertEquals(1, replacementCalls)
+        assertNull(paymentRegion)
+        assertEquals("new-refresh", backing.storedRefresh)
+
+        paymentRegion = "cn"
+        repository.invalidateSession()
+        assertEquals(1, clearedCalls)
+        assertNull(paymentRegion)
+        assertNull(backing.storedRefresh)
+        assertEquals(AuthState.Unauthenticated, repository.state.value)
+    }
+
     @Test fun `an old widget rejection cannot clear a replacement authenticated session`() = runTest {
         val store = FakeCredentialStore(storedRefresh = "refresh-A")
         val api = object : FakeAuthApi() {
