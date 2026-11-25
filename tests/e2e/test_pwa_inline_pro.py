@@ -321,7 +321,10 @@ def test_inline_region_changes_use_verified_prices_without_overview_reload():
         path = urlsplit(route.request.url).path
         if path == "/iphone-pwa/course":
             route.fulfill(status=200, content_type="text/html", body="""
-                <!DOCTYPE html><html lang="ru"><body>
+                <!DOCTYPE html><html lang="ru"><head><meta charset="utf-8">
+                <meta name="viewport" content="width=device-width,initial-scale=1">
+                <link rel="stylesheet" href="/course_v3_data/iphone-pwa-inline-pro.css?v=qa">
+                </head><body>
                 <script src="/course_v3_data/hsk-subscription-presentation.js?v=qa"></script>
                 <script src="/course_v3_data/iphone-pwa-inline-pro.js?v=qa"></script>
                 </body></html>""")
@@ -358,7 +361,11 @@ def test_inline_region_changes_use_verified_prices_without_overview_reload():
         assert "35.00 CNY" in page.locator("#hsk-inline-pro .hip-plan").first.inner_text()
         assert seen.count("overview") == 1
         assert page.evaluate("localStorage.getItem('hsk_sub_region_v1:pwa:7')") == "cn"
-        page.get_by_role("button", name="Получить Pro").click()
+        assert page.evaluate("document.characterSet") == "UTF-8"
+        cta = page.locator("#hsk-inline-pro .hip-actions button.hip-primary")
+        assert cta.count() == 1, page.locator("#hsk-inline-pro").inner_text()
+        assert "Получить Pro" in cta.inner_text(), cta.inner_text()
+        cta.click()
         frame = page.locator("#hsk-inline-pro iframe")
         frame.wait_for()
         assert "country=cn" in frame.get_attribute("src")
