@@ -1574,15 +1574,15 @@
       "platforms": {
         "android": {
           "status": "partial",
-          "reason": "Finance by payments.source android and Funnel by the route-set transport android are scoped (3.2); no route-to-Admin chain proof yet; Play/Direct are combined. Base openings use the checked writer: one retry only while that exact row is absent, so one failed opening write no longer turns the later stages into 409 (2026-11-16)."
+          "reason": "Finance by payments.source android and Funnel by the route-set transport android are scoped (3.2); no route-to-Admin chain proof yet; Play/Direct are combined. Base openings use the checked writer: one retry only while that exact row is absent, so one failed opening write no longer turns the later stages into 409 (2026-11-16). Regional Lava requests accept only configured currency snapshots; source, ownership, invoice creation and successful checkout event timing are unchanged. tests/test_lava_checkout_api.py and tests/test_lava_payments.py cover unconfigured currency rejection before provider IO and explicit/default invoice currency; end-to-end platform projection remains partial."
         },
         "telegram": {
           "status": "partial",
-          "reason": "Finance by payments.source miniapp/telegram_bot and Funnel by the route-set transport telegram are scoped (3.2); earlier openings are Overall-only; no route-to-Admin chain proof yet. Base openings use the checked writer: one retry only while that exact row is absent, so one failed opening write no longer turns the later stages into 409 (2026-11-16)."
+          "reason": "Finance by payments.source miniapp/telegram_bot and Funnel by the route-set transport telegram are scoped (3.2); earlier openings are Overall-only; no route-to-Admin chain proof yet. Base openings use the checked writer: one retry only while that exact row is absent, so one failed opening write no longer turns the later stages into 409 (2026-11-16). Regional Lava requests accept only configured currency snapshots; source, ownership, invoice creation and successful checkout event timing are unchanged. tests/test_lava_checkout_api.py and tests/test_lava_payments.py cover unconfigured currency rejection before provider IO and explicit/default invoice currency; end-to-end platform projection remains partial."
         },
         "iphone_pwa": {
           "status": "partial",
-          "reason": "Finance by payments.source iphone_pwa/pwa and Funnel by the route-set transport iphone_pwa are scoped (3.2); no route-to-Admin chain proof yet. Base openings use the checked writer: one retry only while that exact row is absent, so one failed opening write no longer turns the later stages into 409 (2026-11-16)."
+          "reason": "Finance by payments.source iphone_pwa/pwa and Funnel by the route-set transport iphone_pwa are scoped (3.2); no route-to-Admin chain proof yet. Base openings use the checked writer: one retry only while that exact row is absent, so one failed opening write no longer turns the later stages into 409 (2026-11-16). Regional Lava requests accept only configured currency snapshots; source, ownership, invoice creation and successful checkout event timing are unchanged. tests/test_lava_checkout_api.py and tests/test_lava_payments.py cover unconfigured currency rejection before provider IO and explicit/default invoice currency; end-to-end platform projection remains partial."
         },
         "macos": {
           "status": "partial",
@@ -1627,7 +1627,7 @@
         },
         "iphone_pwa": {
           "status": "partial",
-          "reason": "Opened, plan, invoice start and verified Lava payment reach funnel.pwa_pro_attempt_funnel through the route chain (4.2); more/method/exit/dismiss/failed UI rows are stored but not projected."
+          "reason": "Opened, plan, invoice start and verified Lava payment reach funnel.pwa_pro_attempt_funnel through the route chain (4.2); more/method/exit/dismiss/failed UI rows are stored but not projected. Optional verified invoice currency does not create a new attempt, event type or paid event. No client-supplied amount is accepted."
         },
         "macos": {
           "status": "not_applicable",

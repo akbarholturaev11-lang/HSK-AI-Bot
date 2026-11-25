@@ -51,6 +51,8 @@ def test_subscription_checkout_routes_banks_and_permanent_unlock_separately():
         + 'state.overview=null;state.path="";'
         + '\nstate.regionalPlans=true;state.region="tj";results.regional_tj=flow();'
         + 'state.region="uz";results.regional_uz=flow();'
+        + 'state.overview={lava:{mode:"both",plans:lavaPlans}};state.path="lava";results.regional_lava=flow();'
+        + 'state.path="manual";state.region="cn";results.regional_cn=flow();'
         + 'state.pending=true;results.pending=flow();console.log(JSON.stringify(results));'
     )
     results = json.loads(subprocess.check_output(["node", "-e", script], text=True))
@@ -73,6 +75,8 @@ def test_subscription_checkout_routes_banks_and_permanent_unlock_separately():
         assert results[region + "_unlock"] == ["country", "pay"]
     assert results["regional_tj"] == ["plans", "method", "pay"]
     assert results["regional_uz"] == ["plans", "pay"]
+    assert results["regional_lava"] == ["lavaPlans", "lavaPay"]
+    assert results["regional_cn"] == ["plans", "method", "pay"]
     assert results["pending"] == ["done"]
     assert "Dushanbe City" in html
     assert "«На карту»" in html
@@ -248,3 +252,34 @@ function cardPrices(){return {
 console.log(JSON.stringify(availableRegionalRegions()));
 """
     assert json.loads(subprocess.check_output(["node", "-e", script], text=True)) == ["tj", "ru", "cn"]
+
+
+def test_regional_routing_obeys_admin_modes_and_verified_currency():
+    html = _html()
+    start = html.index("function regionalProviderPlans(")
+    end = html.index("function regionalCurrencies(", start)
+    script = html[start:end] + """
+const regions=["tj","uz","ru","cn","other"];
+const result={};
+for(const mode of ["manual_only","both","lava_only"]){
+  result[mode]=regions.map(region=>regionalRoute(region,mode,true,["USD","RUB"],"USD",""));
+}
+result.missingRub=regionalRoute("ru","both",true,["USD"],"USD","");
+result.lavaOnlyMissing=regionalRoute("ru","lava_only",true,["USD"],"USD","");
+result.alternate=regionalRoute("tj","both",true,["USD","RUB"],"USD","lava");
+result.noManual=regionalRoute("cn","both",false,["USD"],"USD","manual");
+result.filtered=regionalProviderPlans({currency:"USD",plans:[{plan_type:"1_month",amount:"10",currency:"USD"}],plans_by_currency:{RUB:[{plan_type:"1_month",amount:"900",currency:"RUB"},{plan_type:"3_months",amount:null,currency:"RUB"},{plan_type:"6_months",amount:"10",currency:"USD"}]}},"RUB");
+console.log(JSON.stringify(result));
+"""
+    result = json.loads(subprocess.check_output(["node", "-e", script], text=True))
+    manual = {"path": "manual", "currency": ""}
+    usd = {"path": "lava", "currency": "USD"}
+    rub = {"path": "lava", "currency": "RUB"}
+    assert result["manual_only"] == [manual] * 5
+    assert result["both"] == [manual, usd, rub, manual, usd]
+    assert result["lava_only"] == [usd, usd, rub, usd, usd]
+    assert result["missingRub"] == manual
+    assert result["lavaOnlyMissing"] == usd
+    assert result["alternate"] == usd
+    assert result["noManual"] == usd
+    assert result["filtered"] == [{"plan_type": "1_month", "amount": "900", "currency": "RUB"}]

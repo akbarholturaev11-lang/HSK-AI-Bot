@@ -2505,8 +2505,9 @@ function lavaWebhookWarning(status){
 }
 function lavaOfferOptions(catalog,plan,periodicity,currency,selected){
   const rows=(catalog?.offers||[]).map(offer=>{
-    const price=(offer.prices||[]).find(p=>p.currency===currency&&p.periodicity===periodicity);
-    const label=(offer.offer_name||offer.offer_id.slice(0,8))+' · '+(offer.product_title||'')+(price?' — '+price.amount+' '+price.currency:'');
+    const prices=[currency,...["USD","RUB"].filter(code=>code!==currency)].map(code=>
+      (offer.prices||[]).find(p=>p.currency===code&&p.periodicity===periodicity&&p.amount!=null)).filter(Boolean);
+    const label=(offer.offer_name||offer.offer_id.slice(0,8))+' · '+(offer.product_title||'')+(prices.length?' — '+prices.map(price=>price.amount+' '+price.currency).join(' / '):'');
     return '<option value="'+esc(offer.offer_id)+'" '+(offer.offer_id===selected?'selected':'')+'>'+esc(label)+'</option>';
   });
   if(selected&&!(catalog?.offers||[]).some(offer=>offer.offer_id===selected))
@@ -2536,7 +2537,9 @@ async function lavaSettings(){
       const offer=preflight
         ?'<select class="input" id="lavaOffer_'+plan+'" aria-label="'+esc(t('lavaOffer'))+'">'+lavaOfferOptions(preflight,plan,periodicity,config.currency,term.offer_id||'')+'</select>'
         :'<input class="input" id="lavaOffer_'+plan+'" maxlength="36" autocomplete="off" spellcheck="false" aria-label="'+esc(t('lavaOffer'))+'" value="'+esc(term.offer_id||'')+'">';
-      return '<div class="lava-term"><label class="lava-term-toggle"><input type="checkbox" id="lavaOn_'+plan+'" '+(term.enabled?'checked':'')+'> '+esc(t(label))+'</label>'+offer+'</div>';
+      const amounts=[term.price,...Object.entries(term.regional_prices||{}).map(([currency,amount])=>({currency,amount}))].filter(p=>p?.amount!=null);
+      const snapshot=amounts.length?'<p class="source-note">'+esc(amounts.map(p=>p.amount+' '+p.currency).join(' / '))+'</p>':'';
+      return '<div class="lava-term"><label class="lava-term-toggle"><input type="checkbox" id="lavaOn_'+plan+'" '+(term.enabled?'checked':'')+'> '+esc(t(label))+'</label>'+offer+snapshot+'</div>';
     }).join('');
     const promos=config.promo_codes||{};
     const promoInput=(id,value)=>'<input class="input" id="'+id+'" maxlength="36" autocomplete="off" spellcheck="false" autocapitalize="characters" placeholder="'+esc(t('lavaPromoCode'))+'" value="'+esc(value||'')+'">';
