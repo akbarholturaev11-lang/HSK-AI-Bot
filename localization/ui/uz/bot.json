@@ -1,6 +1,7 @@
 {
   "locale": "uz",
   "messages": {
+    "appFeedback.expiryTitle": "30 daqiqalik HSK AI Pro muddati tugadi.",
     "appFeedback.rewardHint": "Javob bering — 30 daqiqa limitsiz Pro oling.",
     "adminPwa.approve": "✅ Tasdiqlash",
     "adminPwa.approved": "✅ Admin PWA kirish so‘rovi tasdiqlandi. Brauzerdagi jarayonni davom ettiring.",

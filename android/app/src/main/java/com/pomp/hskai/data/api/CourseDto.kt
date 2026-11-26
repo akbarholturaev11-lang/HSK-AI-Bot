@@ -64,6 +64,7 @@ data class CourseMapDto(
      */
     @SerialName("hints") val hints: List<AndroidHintDto> = emptyList(),
     @SerialName("pro_expiry_notice") val proExpiryNotice: String? = null,
+    @SerialName("pro_expiry_title") val proExpiryTitle: String? = null,
 )
 
 @Serializable

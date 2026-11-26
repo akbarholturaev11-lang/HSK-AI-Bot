@@ -30,7 +30,7 @@ import com.pomp.hskai.feature.limit.ProPanda
 /** Presentation of a verified ended period. No access or billing changes. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun ProExpirySheet(onRestore: () -> Unit, onDismiss: () -> Unit) {
+internal fun ProExpirySheet(onRestore: () -> Unit, onDismiss: () -> Unit, title: String? = null) {
     AssistantModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
@@ -44,7 +44,7 @@ internal fun ProExpirySheet(onRestore: () -> Unit, onDismiss: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
             ProPanda(Modifier.size(168.dp))
-            Text(stringResource(R.string.hsk_course_pro_expiry_title),
+            Text(title ?: stringResource(R.string.hsk_course_pro_expiry_title),
                 color = PompColors.Ink, fontSize = 23.sp, fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center)
             Text(stringResource(R.string.hsk_course_pro_expiry_body),

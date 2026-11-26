@@ -1,6 +1,7 @@
 {
   "locale": "tj",
   "messages": {
+    "appFeedback.expiryTitle": "Муҳлати 30 дақиқаи HSK AI Pro ба охир расид.",
     "appFeedback.rewardHint": "Ҷавоб диҳед — 30 дақиқа Pro бе лимит гиред.",
     "adminPwa.approve": "✅ Тасдиқ кардан",
     "adminPwa.approved": "✅ Дархости воридшавӣ ба Admin PWA тасдиқ шуд. Дар браузер идома диҳед.",

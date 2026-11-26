@@ -1,6 +1,7 @@
 {
   "locale": "ru",
   "messages": {
+    "appFeedback.expiryTitle": "Срок действия 30-минутного HSK AI Pro истёк.",
     "appFeedback.rewardHint": "Ответьте — получите 30 минут Pro без лимитов.",
     "adminPwa.approve": "✅ Подтвердить",
     "adminPwa.approved": "✅ Запрос входа в Admin PWA подтверждён. Продолжите в браузере.",

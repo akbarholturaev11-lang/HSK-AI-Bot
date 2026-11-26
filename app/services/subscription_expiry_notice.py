@@ -11,6 +11,7 @@ from datetime import datetime, timedelta, timezone
 
 from sqlalchemy import or_, select
 
+from app.bot.generated.bot_i18n import bot_message
 from app.db.models.bot_feedback import BotFeedback
 from app.db.models.lava import LavaInvoice
 from app.db.models.payment import Payment
@@ -43,7 +44,7 @@ def expired_period(user, *, now):
     return max(candidates, key=lambda item: item[1]) if candidates else None
 
 
-async def subscription_expiry_notice(session, user, *, now=None):
+async def _resolve_expiry_notice(session, user, *, now=None):
     now = now or datetime.now(timezone.utc)
     if resolve_state(user, now=now) not in {EntitlementState.FREE, EntitlementState.EXPIRED}:
         return None
@@ -125,7 +126,24 @@ async def subscription_expiry_notice(session, user, *, now=None):
                         if not parent or parent.subscription_status != "cancelled":
                             return None
             # Account-bound period token, not an identity or payment credential.
-            return hashlib.sha256(f"pro-expiry:v1:{user.id}:{kind}:{end.isoformat()}".encode()).hexdigest()
+            return hashlib.sha256(f"pro-expiry:v1:{user.id}:{kind}:{end.isoformat()}".encode()).hexdigest(), kind
     except Exception:
         logger.exception("Subscription expiry notice lookup failed")
         return None
+
+async def subscription_expiry_notice(session, user, *, now=None):
+    """Compatibility accessor for the account-bound notice token."""
+    notice = await _resolve_expiry_notice(session, user, now=now)
+    return notice[0] if notice else None
+
+
+async def subscription_expiry_payload(session, user, *, now=None, language=None):
+    """One read for the existing sheet and its optional feedback-specific title."""
+    notice = await _resolve_expiry_notice(session, user, now=now)
+    payload = {"pro_expiry_notice": notice[0] if notice else None}
+    if notice and notice[1] == "feedback":
+        lang = language or getattr(user, "language", None)
+        payload["pro_expiry_title"] = bot_message(
+            "appFeedback.expiryTitle", lang if lang in {"uz", "ru", "tj"} else "ru"
+        )
+    return payload

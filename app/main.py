@@ -2915,8 +2915,8 @@ async def _course_v3_map_for_user(
         "avatar_key": str(getattr(profile, "avatar_key", None) or "").strip()[:32],
         "foundation": await profile_svc.foundation_status(user),
     }
-    from app.services.subscription_expiry_notice import subscription_expiry_notice
-    data["pro_expiry_notice"] = await subscription_expiry_notice(session, user)
+    from app.services.subscription_expiry_notice import subscription_expiry_payload
+    data.update(await subscription_expiry_payload(session, user, language=resolved_lang))
     # Kunlik reja sozlamalari: XP maqsadi endi serverda saqlanadi (ilgari
     # klientdagi `dailyGoal=50` o'zgaruvchi edi va har ochilganda
     # yo'qolardi). `pending` — kunlik vaqt/fokus savoli hali so'ralmagan.

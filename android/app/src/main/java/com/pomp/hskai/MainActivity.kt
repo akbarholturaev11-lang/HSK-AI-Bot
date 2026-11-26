@@ -1651,6 +1651,7 @@ private fun AppRoot(
                                 )
                                 if (expiryCandidate != null && expirySheetToken == expiryCandidate) {
                                     com.pomp.hskai.feature.course.ProExpirySheet(
+                                        title = courseState.snapshot?.proExpiryTitle,
                                         onRestore = {
                                             expirySheetToken = null
                                             checkoutOrigin = "profile_renewal"
