@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "track": "hsk30",
+  "level": "nhsk4",
+  "source_ref": "dca7937f8c3e88bdf350993b10a6a2f4a8f5885d",
+  "extraction_status": "blocked_pending_pdf_page_access",
+  "source_volumes": [
+    {
+      "volume": "upper",
+      "pdf_path": "HSK 3.0 PDF/新HSK教程4上 hanyu_uz.pdf",
+      "source_sha256": "5c903efa408e5378632c3fbe25b19b5d6d2768a0e1abda1a7df2f44f97781c68",
+      "size_bytes": 89498459,
+      "page_count": null,
+      "toc_pdf_pages": null
+    },
+    {
+      "volume": "lower",
+      "pdf_path": "HSK 3.0 PDF/新HSK教程4下.pdf",
+      "source_sha256": "ca041a0ff1cad6ec64bbceb7eb89dde0c8e9907e1fc5bb05d8b1d574ef0f562f",
+      "size_bytes": 101472153,
+      "page_count": null,
+      "toc_pdf_pages": null
+    }
+  ],
+  "lesson_count": null,
+  "lesson_ranges": [],
+  "normalized_lessons_verified": 0,
+  "notes": [
+    "Source identities and sizes are verified against Git LFS pointers; actual PDF bytes and pages have not been independently inspected.",
+    "Volume labels follow the project owner's clarification.",
+    "Follow scripts/hsk30/normalized/nhsk3 and scripts/hsk30/translations/nhsk3 for the existing lesson contract. Record volume, PDF page provenance, lesson title, objectives, vocabulary, grammar and examples, and dialogue turns. Keep UZ/RU/TJ translations separate. Do not copy exercise pages into runtime or invent missing material.",
+    "Do not enable nhsk4 or change existing runtime until extraction and review are complete."
+  ]
+}
