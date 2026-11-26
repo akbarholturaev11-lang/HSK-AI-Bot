@@ -2824,6 +2824,23 @@ function syncNotify(){if(MAP&&MAP.notify&&typeof MAP.notify.enabled==="boolean")
 /* Refresh server-confirmed daily progress without replacing active lesson/section
    objects. A completion arriving during a refresh queues one newer read. */
 var PROGRESS_REFRESH=null,PROGRESS_REFRESH_QUEUED=false;
+var SHORT_ACCESS_TIMER=null,SHORT_ACCESS_KEY=null;
+function scheduleShortAccessRefresh(user){
+  if(!PWA_COURSE_HOST)return;
+  var owner=localUserScope(),until=user&&Date.parse(user.access_ends_at),remaining=until-Date.now();
+  var valid=user&&owner!=="pwa:unbound"&&(user.state==="TEMP_ACCESS"||user.state==="PRO_ACTIVE")&&Number.isFinite(until)&&remaining>0&&remaining<=1805000;
+  var key=valid?owner+":"+until:null;
+  if(key===SHORT_ACCESS_KEY)return;
+  if(SHORT_ACCESS_TIMER!==null)clearTimeout(SHORT_ACCESS_TIMER);
+  SHORT_ACCESS_TIMER=null;SHORT_ACCESS_KEY=key;
+  if(!key)return;
+  SHORT_ACCESS_TIMER=setTimeout(function(){
+    SHORT_ACCESS_TIMER=null;
+    if(localUserScope()!==owner||document.visibilityState!=="visible"||PWA_CHECKOUT_FRAME||CHECKOUT_NAVIGATING)return;
+    // Read the canonical map once; never grant/revoke access on the device.
+    refreshPwaCheckoutMap().catch(function(){});
+  },remaining+500);
+}
 function refreshCourseProgress(afterWrite){
   if((!INIT_DATA&&!PWA_COURSE_HOST)||!MAP||!Array.isArray(MAP.units))return Promise.resolve(false);
   if(PROGRESS_REFRESH){if(afterWrite)PROGRESS_REFRESH_QUEUED=true;return PROGRESS_REFRESH}
@@ -2834,6 +2851,7 @@ function refreshCourseProgress(afterWrite){
     .then(function(d){
       if(MAP===snapshot&&isHsk30AccessError(d,level)){showCourseMapFailure({hsk30Gate:true,level:d.level||level});return false}
       if(PROGRESS_REFRESH_QUEUED||MAP!==snapshot||!d||d._parseFail||d._status>=400||d.authenticated===false||!d.units||d.level!==level)return false;
+      if(d.user)scheduleShortAccessRefresh(d.user);
       MAP.pro_expiry_notice=d.pro_expiry_notice||null;if(!MAP.pro_expiry_notice&&$("#sheet").classList.contains("pro-expiry-sheet"))App.closeSheet();if(Object.prototype.hasOwnProperty.call(d,"today"))MAP.today=d.today;
       if(d.progress)MAP.progress=d.progress;
       if(d.foundation){var foundationChanged=foundationIsComplete()!==d.foundation.completed;MAP.foundation=d.foundation;if(foundationChanged)MAP.units=d.units;}
@@ -10190,7 +10208,7 @@ window.VOICE=VOICE;
 
 function renderAll(){
   document.querySelectorAll("#nav [data-i]").forEach(function(s){s.textContent=courseMessage("nav."+s.dataset.i,T().nav[s.dataset.i])});hydratePwaPracticeShell();
-  if(MAP){renderCourse();if(!PWA_COURSE_HOST||SCREEN==="mashq"||($("#s-mashq").firstElementChild&&!$("#s-mashq").querySelector(".pwa-initial-shell")))renderMashq();if(SCREEN==="rating")renderRating();if(!PWA_COURSE_HOST||SCREEN==="profile")renderProfile();if(SCREEN==="voice")renderVoice();maybeShowProExpiryNotice()}
+  if(MAP){scheduleShortAccessRefresh(MAP.user);renderCourse();if(!PWA_COURSE_HOST||SCREEN==="mashq"||($("#s-mashq").firstElementChild&&!$("#s-mashq").querySelector(".pwa-initial-shell")))renderMashq();if(SCREEN==="rating")renderRating();if(!PWA_COURSE_HOST||SCREEN==="profile")renderProfile();if(SCREEN==="voice")renderVoice();maybeShowProExpiryNotice()}
 }
 navInit();
 $("#sheet").onclick=function(){App.closeSheet()};
@@ -10623,7 +10641,7 @@ window.addEventListener("pageshow",function(ev){
 <script src="/course_v3_data/iphone-pwa-fx.js?v=20261105-3f4db4191370"></script>
 <script src="/course_v3_data/iphone-pwa-refresh.js?v=20261105-e7852ac39c9d"></script>
 <script src="/course_v3_data/iphone-pwa-notices.js?v=20261123-cf907b06d649"></script>
-<script src="/course_v3_data/iphone-pwa-feedback.js?v=20261126-8e7800503fc6"></script>
+<script src="/course_v3_data/iphone-pwa-feedback.js?v=20261126-15c467f63594"></script>
 <script>if(location.pathname==="/iphone-pwa/course")window.addEventListener("load",function(){setTimeout(function(){
   /* Bot release-feedback campaign (stars) once per campaign, only on a calm course screen. */
   if(!window.HskPwaFeedback||!HskPwaFeedback.openRelease)return;

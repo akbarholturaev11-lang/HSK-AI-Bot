@@ -2039,6 +2039,7 @@
     }
   ],
   "exemptions": [
+    {"path":"app/services/activity_feedback_service.py","reason":"PR #357: the ordinary feedback prepare response adds two localized presentation fields only (reward_hint and dismiss_label); canonical eligibility, reservation, cooldown, prompt attempts, completion, reward, discount, BotFeedback rows and analytics are unchanged. Existing partial platform coverage remains partial. tests/test_android_activity_feedback.py verifies unchanged reward/owner behavior."},
     {
       "path": "app/services/course_adaptive_lesson_service.py",
       "reason": "HSK exam text_choice single-gap mistakes now retain their original grammar-in-context skill instead of being counted as generic meaning errors. Existing adaptive_review plan/answer event names, signed actor, storage, event timing, KPI denominators, and Admin projections are unchanged. The existing skill attribute now reflects the corrected error category; focused adaptive and mistake-target regression tests cover the revised selection and existing event writers."

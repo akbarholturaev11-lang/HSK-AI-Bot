@@ -764,6 +764,21 @@ private fun AppRoot(
             // access. Re-read spent sections when the server confirms it.
             val accessActive = profileState.trial?.active == true ||
                 profileState.profile?.subscription?.isPaid == true
+            // Recheck a short server-owned access period once at its end.
+            // The existing foreground refresh remains the fallback if hidden/offline.
+            val shortAccess = profileState.profile?.subscription
+            LaunchedEffect(shortAccess?.until, shortAccess?.status, offline) {
+                if (offline || shortAccess?.status !in setOf("temporary_trial", "active")) return@LaunchedEffect
+                val until = runCatching { java.time.Instant.parse(shortAccess?.until.orEmpty()).toEpochMilli() }.getOrNull()
+                    ?: return@LaunchedEffect
+                val remaining = until - System.currentTimeMillis()
+                if (remaining !in 1L..1_805_000L) return@LaunchedEffect
+                delay(remaining + 500L)
+                if (widgetLifecycle.currentState.isAtLeast(androidx.lifecycle.Lifecycle.State.STARTED)) {
+                    courseViewModel.load()
+                    profileViewModel.load()
+                }
+            }
             var accessWasActive by remember { mutableStateOf<Boolean?>(null) }
             LaunchedEffect(accessActive) {
                 val previous = accessWasActive

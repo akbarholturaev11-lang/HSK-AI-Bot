@@ -58,7 +58,7 @@ LEGACY_TO_GENERATED = {
 EXPECTED_GENERATED_CALLS = {
     "hsk_common_action_back": 6,
     "hsk_course_dictionary_page_clear_history": 1,
-    "hsk_common_action_close": 23,  # Includes the compact account editor and next-part sheet close buttons.
+    "hsk_common_action_close": 22,  # Ordinary feedback now uses the localized Not now action.
     "hsk_common_action_continue": 19,  # Includes the in-lesson personal review feedback and offline panels (UIUX-007).
     "hsk_common_action_done": 2,
     "hsk_course_lang": 2,

@@ -600,6 +600,7 @@
     var token = generation;
     try {
       var compactSubmission = kind === "context" || guided;
+      var refreshReward = kind === "ordinary" && !selected.paid && isValidLabel(selected.reward_hint);
       await request(path, body, function () { return token === generation && !root.hidden; });
       if (token !== generation || root.hidden) return;
       kind = null;
@@ -611,6 +612,7 @@
       contextCopy.textContent = "";
       setStatus(common("bot.releaseFeedback.thanks"));
       submitButton.hidden = true;
+      if (refreshReward && typeof refreshPwaCheckoutMap === "function") refreshPwaCheckoutMap().catch(function(){});
       if (compactSubmission) setTimeout(function(){if(token === generation)close();},1200);
     } catch (_) {
       if (token !== generation || root.hidden) return;
