@@ -33,6 +33,7 @@ data class CourseLessonLimitDto(
     @SerialName("allowed") val allowed: Boolean = true,
     @SerialName("limit_text") val limitText: String? = null,
     @SerialName("reset_at") val resetAt: String? = null,
+    @SerialName("remaining") val remaining: Int? = null,
 )
 
 @Serializable

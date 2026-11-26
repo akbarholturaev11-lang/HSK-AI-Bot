@@ -524,6 +524,24 @@ class AndroidCourseServiceTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual("course_lesson_not_unlocked", completion.exception.code)
             self.assertEqual(0, await self._completed_count(session))
 
+    async def test_skip_test_refuses_later_parts_without_progress_or_events(self):
+        async with self.sessions() as session:
+            token = await self._token(session)
+            service = AndroidCourseService(session, _settings())
+            for order in (2, 3, 5, 7, 9):
+                with self.subTest(order=order):
+                    with self.assertRaises(DesktopCourseError) as quiz:
+                        await service.skip_test_questions(token, lesson_order=order)
+                    self.assertEqual("course_lesson_not_unlocked", quiz.exception.code)
+                    with self.assertRaises(DesktopCourseError) as unlock:
+                        await service.unlock_lesson(token, lesson_order=order, score=100)
+                    self.assertEqual("course_lesson_not_unlocked", unlock.exception.code)
+            self.assertIsNone(await CourseProgressRepository(session).get_by_user_id(1))
+            events = (await session.execute(select(CourseMiniAppEvent))).scalars().all()
+            self.assertFalse(any(event.event_name in {
+                COURSE_DAILY_EVENT_NAME, "lesson_completed", "test_completed",
+            } for event in events))
+
     async def test_skip_questions_do_not_spend_a_lesson_start(self):
         async with self.sessions() as session:
             token = await self._token(session)
@@ -623,20 +641,20 @@ class AndroidCourseServiceTests(unittest.IsolatedAsyncioTestCase):
             token = await self._token(session)
             service = AndroidCourseService(session, _settings())
 
-            result = await service.unlock_lesson(token, lesson_order=3, score=20)
+            result = await service.unlock_lesson(token, lesson_order=4, score=20)
 
             self.assertTrue(result["ok"])
-            self.assertEqual(2, await self._completed_count(session))
+            self.assertEqual(3, await self._completed_count(session))
 
     async def test_the_skip_test_never_walks_progress_backwards(self):
         async with self.sessions() as session:
             token = await self._token(session)
             service = AndroidCourseService(session, _settings())
-            await service.unlock_lesson(token, lesson_order=5, score=90)
+            await service.unlock_lesson(token, lesson_order=6, score=90)
 
-            await service.unlock_lesson(token, lesson_order=2, score=90)
+            await service.unlock_lesson(token, lesson_order=4, score=90)
 
-            self.assertEqual(4, await self._completed_count(session))
+            self.assertEqual(5, await self._completed_count(session))
 
     async def test_a_spent_allowance_closes_the_skip_test(self):
         """The one way this could have become a paywall bypass.
@@ -1048,10 +1066,10 @@ class AndroidCourseApiTests(unittest.IsolatedAsyncioTestCase):
         # A fresh quiz in that band still obeys the existing weak-score rule.
         allowed = await self.client.post(
             "/api/v3/android/lesson/unlock", headers=headers,
-            json={"lesson_order": 4, "score": 0, "expected_level": "hsk2"},
+            json={"lesson_order": 6, "score": 0, "expected_level": "hsk2"},
         )
         self.assertEqual(200, allowed.status_code)
-        self.assertEqual(3, allowed.json()["completed_lessons_count"])
+        self.assertEqual(5, allowed.json()["completed_lessons_count"])
 
     async def test_the_skip_test_route_rejects_a_level_the_client_invents(self):
         headers = await self._bearer()

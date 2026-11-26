@@ -40,7 +40,7 @@ from app.services.course_miniapp_profile_service import CourseMiniAppProfileServ
 from app.services.course_mistake_service import CourseMistakeService
 from app.services.course_today_service import CourseTodayService
 from app.services.course_track_service import CourseTrackError, CourseTrackService
-from app.services.course_v3_parts import total_parts
+from app.services.course_v3_parts import is_skip_test_part, total_parts
 from app.services.account_identity import owner_clause
 from app.services.course_p3_grammar_localization import apply_native_grammar_locales
 from app.services.desktop_auth_service import DesktopAuthService
@@ -844,6 +844,10 @@ class DesktopCourseService:
         total = total_parts(level)
         if not total or lesson_order > total:
             raise DesktopCourseError("course_no_lesson_found", status_code=404)
+
+        # Desktop is frozen; Android uses the mobile first-part rule.
+        if self.CLIENT_NAMESPACE == "android" and not is_skip_test_part(level, lesson_order):
+            raise DesktopCourseError("course_lesson_not_unlocked", status_code=403)
 
         # Spending the daily allowance closes the skip test too. Without this
         # a locked lesson would be a way around the very limit the next lesson

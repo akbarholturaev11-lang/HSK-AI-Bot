@@ -38,7 +38,7 @@ from app.services.desktop_course_service import (
     course_v3_lesson_card_count,
 )
 from app.services.course_lesson_plan_service import lesson_plan_for, with_lesson_plan
-from app.services.course_v3_parts import total_parts
+from app.services.course_v3_parts import is_skip_test_part, total_parts
 from app.services.entitlements.lesson_access import LessonAccessService
 from app.services.smart_reminder_preferences import SmartReminderActor, SmartReminderPreferencesService
 from app.services.smart_widget_context import WidgetContextRequest
@@ -303,6 +303,8 @@ class AndroidCourseService(DesktopCourseService):
         total = total_parts(level)
         if not total or lesson_order > total:
             raise DesktopCourseError("course_no_lesson_found", status_code=404)
+        if not is_skip_test_part(level, lesson_order):
+            raise DesktopCourseError("course_lesson_not_unlocked", status_code=403)
         access = await LessonAccessService(self.session).status(
             user,
             level=level,

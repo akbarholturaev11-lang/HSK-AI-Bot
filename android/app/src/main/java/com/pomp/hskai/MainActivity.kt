@@ -137,6 +137,7 @@ import com.pomp.hskai.feature.update.MandatoryUpdateGate
 import com.pomp.hskai.feature.update.UpdateInstallMonitor
 import com.pomp.hskai.feature.update.UpdateNoticeScreen
 import com.pomp.hskai.feature.limit.LimitGate
+import com.pomp.hskai.feature.limit.SectionLimitOverlay
 import com.pomp.hskai.data.api.ChallengeDto
 import com.pomp.hskai.data.api.RatingEntryDto
 import com.pomp.hskai.feature.rating.ChallengeRunScreen
@@ -1456,7 +1457,29 @@ private fun AppRoot(
                     skipTestViewModel.beginAttempt()
                     onDispose { skipTestViewModel.endAttempt() }
                 }
-                SkipTestScreen(
+                val skipLimit = skipTestState.error as? ApiError.LimitReached
+                if (skipLimit != null) {
+                    // The allowance may have changed after the map was drawn.
+                    // Use exactly the same channel-aware limit window as Course.
+                    val deniedMap = remember(skipLimit) { courseState.map }
+                    LaunchedEffect(courseState.map) {
+                        val latest = courseState.map
+                        if (latest !== deniedMap && latest?.lessonLimit?.blocksNewLesson == false) {
+                            skipTestLesson = null
+                        }
+                    }
+                    SectionLimitOverlay(
+                        sectionTitle = stringResource(R.string.hsk_common_navigation_course),
+                        sourceKey = "course_limit",
+                        limit = limitGate,
+                        reason = skipLimit.limitText ?: stringResource(R.string.limit_lesson_reason),
+                        resetAt = skipLimit.resetAt,
+                        onClose = {
+                            skipTestLesson = null
+                            courseViewModel.load()
+                        },
+                    )
+                } else SkipTestScreen(
                     state = skipTestState,
                     pinyin = pinyin,
                     onStart = { skipTestViewModel.start(locked.order) },
