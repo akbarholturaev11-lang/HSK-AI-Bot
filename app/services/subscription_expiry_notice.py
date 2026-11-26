@@ -11,9 +11,11 @@ from datetime import datetime, timedelta, timezone
 
 from sqlalchemy import or_, select
 
+from app.db.models.bot_feedback import BotFeedback
 from app.db.models.lava import LavaInvoice
 from app.db.models.payment import Payment
 from app.services.account_identity import owner_clause
+from app.services.bot_feedback_service import FEEDBACK_REWARD_DURATION
 from app.services.entitlements.state import EntitlementState, resolve_state
 from app.services.subscription_service import SUBSCRIPTION_PLAN_DURATIONS
 from app.services.user_access_state_service import UserAccessStateService
@@ -43,12 +45,32 @@ def expired_period(user, *, now):
 
 async def subscription_expiry_notice(session, user, *, now=None):
     now = now or datetime.now(timezone.utc)
-    period = expired_period(user, now=now)
-    if period is None:
+    if resolve_state(user, now=now) not in {EntitlementState.FREE, EntitlementState.EXPIRED}:
         return None
-    kind, end = period
+    period = expired_period(user, now=now)
+    start = UserAccessStateService.as_utc(getattr(user, "start_date", None))
+    access_end = UserAccessStateService.as_utc(getattr(user, "end_date", None))
+    # Feedback extends the temporary access period, not the Pro trial.
+    # A stale approved marker can survive a fresh 30-minute reward.
+    possible_feedback = bool(start and access_end and start < access_end <= now
+        and (getattr(user, "payment_status", None) != "approved"
+             or access_end - start <= FEEDBACK_REWARD_DURATION + timedelta(seconds=5)))
+    if period is None and not possible_feedback:
+        return None
     try:
         async with session.begin_nested():
+            if possible_feedback:
+                reward = await session.scalar(select(BotFeedback.id).where(
+                    BotFeedback.user_id == user.id,
+                    BotFeedback.status == "completed",
+                    BotFeedback.reward_granted_at >= start,
+                    BotFeedback.reward_granted_at <= access_end - FEEDBACK_REWARD_DURATION + timedelta(seconds=5),
+                ).limit(1))
+                if reward is not None and (period is None or access_end >= period[1]):
+                    period = ("feedback", access_end)
+            if period is None:
+                return None
+            kind, end = period
             # A submitted manual receipt or unresolved provider payment wins.
             pending = await session.scalar(select(Payment.id).where(
                 owner_clause(Payment, user), Payment.payment_status == "pending",

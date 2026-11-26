@@ -138,11 +138,11 @@ fun SubscriptionCheckoutHost(
     viewModelStoreOwner: ViewModelStoreOwner,
     origin: String,
     onClose: () -> Unit,
-) = SubscriptionCheckoutHost(repository, viewModelStoreOwner, origin, null, onClose)
+) = DirectSubscriptionCheckoutHost(repository, viewModelStoreOwner, origin, null, onClose)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun SubscriptionCheckoutHost(
+internal fun DirectSubscriptionCheckoutHost(
     repository: FeatureRepository,
     viewModelStoreOwner: ViewModelStoreOwner,
     origin: String,

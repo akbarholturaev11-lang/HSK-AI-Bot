@@ -173,7 +173,7 @@ class SubscriptionCheckoutHostTest {
         compose.setContent {
             PompHskAiTheme {
                 if (visible.value) {
-                    SubscriptionCheckoutHost(
+                    DirectSubscriptionCheckoutHost(
                         repository = repository,
                         viewModelStoreOwner = owner,
                         origin = origin.value,
