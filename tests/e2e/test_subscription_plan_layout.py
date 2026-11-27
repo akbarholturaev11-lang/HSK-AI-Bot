@@ -13,6 +13,19 @@ def settle(page):
         a.effect.getComputedTiming().iterations!==Infinity).map(a=>a.finished.catch(()=>{})))''')
 
 
+def badges_share_the_term_row(page, selector):
+    cards=page.locator(selector)
+    for card in cards.all():
+        name=card.locator('.plan-name').bounding_box()
+        badge=card.locator('.badge').bounding_box()
+        shape=card.bounding_box()
+        assert name and badge and shape
+        assert abs(name['y']+name['height']/2-badge['y']-badge['height']/2)<=1
+        assert badge['x']>=name['x']+name['width']
+        assert badge['x']+badge['width']<=shape['x']+shape['width']-10
+        assert card.locator('.badge').evaluate('(e)=>e.scrollWidth<=e.clientWidth')
+
+
 def overview(lang, count):
     terms = [('1_month', '10.00'), ('3_months', '27.00'), ('12_months', '90.00')][:count]
     def provider(currency):
@@ -49,10 +62,18 @@ def test_plan_cards_keep_all_terms_without_alternatives_and_route_region_changes
         settle(page)
         assert page.locator('#manualAlternative,#lavaAlternative,.reference-label,.plan-note').count()==0
         shapes=page.locator('#lavaPlans .plan').evaluate_all('(els)=>els.map(e=>{const r=e.getBoundingClientRect();return {x:r.x,y:r.y,w:r.width,h:r.height}})')
-        assert abs(shapes[0]['w']-shapes[1]['w'])<=1 and abs(shapes[0]['y']-shapes[1]['y'])<=1
+        assert abs(shapes[0]['w']-page.locator('#lavaPlans').bounding_box()['width'])<=1
         if count==3:
-            width=page.locator('#lavaPlans').bounding_box()['width']
-            assert abs(shapes[2]['w']-width)<=1 and shapes[2]['y']>shapes[0]['y']
+            assert abs(shapes[1]['w']-shapes[2]['w'])<=1 and abs(shapes[1]['y']-shapes[2]['y'])<=1
+            assert shapes[1]['y']>shapes[0]['y']
+        else:
+            assert abs(shapes[0]['w']-shapes[1]['w'])<=1 and shapes[1]['y']>shapes[0]['y']
+        for width in [320,390,430]:
+            page.set_viewport_size(dict(width=width,height=844))
+            settle(page)
+            badges_share_the_term_row(page,'#lavaPlans .plan')
+            assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
+        page.set_viewport_size(dict(width=390,height=844))
         if lang=='ru': page.screenshot(path=f'/tmp/hsk-plan-ui-lava-{count}-{os.getenv("PWA_E2E_ENGINE","chromium")}.png',full_page=True)
         page.locator('#lavaRegion').select_option('cn')
         expect(page.locator('#plans')).to_be_visible()
@@ -78,6 +99,7 @@ def test_plan_cards_keep_all_terms_without_alternatives_and_route_region_changes
             assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
             name=monthly.locator('.plan-name').bounding_box();badge=monthly.locator('.badge').bounding_box()
             assert abs(name['y']+name['height']/2-badge['y']-badge['height']/2)<=1
+            badges_share_the_term_row(page,'#plans .plan')
         page.locator('#planRegion').select_option('other')
         expect(page.locator('#lavaPlans')).to_be_visible()
         expect(page.locator('#lavaPlans .plan')).to_have_count(count)

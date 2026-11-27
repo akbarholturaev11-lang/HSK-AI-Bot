@@ -50,6 +50,16 @@ function regionalLabel(lang,key){
   const id="ui.subscription.regional."+key;
   return messages?.[lang]?.[id]||messages?.ru?.[id]||"";
 }
+function providerBadge(lang,plan,plans){
+  const percent=Number(plan?.discount_percent)||0;
+  if(percent>0)return "−"+percent+"%";
+  const labels=root.HSKAI_COURSE_I18N?.[lang]||root.HSKAI_COURSE_I18N?.ru||{};
+  if(plan?.plan_type==="1_month")return labels["subscriptionNested.planLabels.best"]||"";
+  const months=({"3_months":3,"6_months":6,"12_months":12})[plan?.plan_type];
+  const monthly=(plans||[]).find(row=>row.plan_type==="1_month"&&row.currency===plan?.currency);
+  return months&&monthly&&Number(plan.amount)>0&&Number(plan.amount)<Number(monthly.amount)*months
+    ?labels["subscriptionNested.planLabels.quarterBadge"]||"":"";
+}
 /* Only server-supplied local amounts are eligible; never estimate payable amounts. */
 function manualRegionalPlans(data,region){
   const prices=data?.prices||{};
@@ -65,5 +75,5 @@ function manualRegionalPlans(data,region){
   });
   return rows.every(Boolean)?rows:[];
 }
-root.HSKSubscriptionPresentation=Object.freeze({manualRegionalPlans,regionalLabel,inferPaymentRegion,localPaymentRegion,regionalProviderPlans,regionalRoute,relativePrice});
+root.HSKSubscriptionPresentation=Object.freeze({manualRegionalPlans,regionalLabel,providerBadge,inferPaymentRegion,localPaymentRegion,regionalProviderPlans,regionalRoute,relativePrice});
 })(globalThis);

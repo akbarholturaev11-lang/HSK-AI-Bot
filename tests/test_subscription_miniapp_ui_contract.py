@@ -303,3 +303,25 @@ console.log(JSON.stringify([p.relativePrice(100),p.relativePrice(0),p.relativePr
     assert html.count("HSKSubscriptionPresentation.relativePrice(") == 2
     assert 'percent<=0&&state.mode==="subscription"' in html
     assert '!price.discounted&&state.mode==="subscription"' in html
+
+
+def test_provider_badges_use_canonical_copy_and_only_claim_real_term_value():
+    source=Path('app/static/course_v3_data/hsk-subscription-presentation.js').read_text()
+    catalog=Path('app/static/course_v3_data/hsk-course-i18n.js').read_text()
+    script='globalThis.window=globalThis;\n'+catalog+source+'''
+const plans=[{plan_type:'1_month',amount:'7.90',currency:'USD'},
+ {plan_type:'3_months',amount:'19',currency:'USD'},
+ {plan_type:'6_months',amount:'50',currency:'USD'},
+ {plan_type:'12_months',amount:'64.90',currency:'USD'}];
+const p=HSKSubscriptionPresentation;
+console.log(JSON.stringify(['uz','ru','tj'].map(lang=>({
+ badges:plans.map(plan=>p.providerBadge(lang,plan,plans)),
+ mismatch:p.providerBadge(lang,{...plans[1],currency:'RUB'},plans),
+ discounted:p.providerBadge(lang,{...plans[0],discount_percent:20},plans)}))));
+'''
+    rows=json.loads(subprocess.check_output(['node'],input=script,text=True))
+    for row in rows:
+        assert all(row['badges'][i] for i in [0,1,3])
+        assert row['badges'][2]==''  # 50/6 is dearer than 7.90/month.
+        assert row['mismatch']==''
+        assert row['discounted']=='−20%'
