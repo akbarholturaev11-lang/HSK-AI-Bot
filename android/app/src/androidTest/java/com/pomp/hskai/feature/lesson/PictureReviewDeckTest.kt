@@ -1,7 +1,9 @@
 package com.pomp.hskai.feature.lesson
 
 import android.graphics.Bitmap
+import android.os.SystemClock
 import android.content.res.Configuration
+import android.view.KeyEvent
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalConfiguration
@@ -25,7 +27,6 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.espresso.Espresso.pressBack
 import com.pomp.hskai.R
 import com.pomp.hskai.HskAiApplication
 import com.pomp.hskai.PinyinPicker
@@ -215,7 +216,20 @@ class PictureReviewDeckTest {
                 image.compress(Bitmap.CompressFormat.PNG, 100, it)
             }
         }
-        pressBack()
+        // The sheet owns a separate focused window. Espresso's root picker
+        // waits for the obscured Activity on headless API 35; deliver the real
+        // hardware Back to Android's focused window.
+        val ui = InstrumentationRegistry.getInstrumentation().uiAutomation
+        val downTime = SystemClock.uptimeMillis()
+        assertTrue("Android must accept Back down", ui.injectInputEvent(
+            KeyEvent(downTime, downTime, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK, 0), true))
+        assertTrue("Android must accept Back up", ui.injectInputEvent(
+            KeyEvent(downTime, SystemClock.uptimeMillis(), KeyEvent.ACTION_UP, KeyEvent.KEYCODE_BACK, 0), true))
+        compose.waitUntil(timeoutMillis = 5_000) {
+            compose.onAllNodesWithText(exit).fetchSemanticsNodes().isEmpty()
+        }
+        compose.onNodeWithText(exit).assertDoesNotExist()
+        compose.onNodeWithContentDescription(heading).assertIsDisplayed()
         compose.onNodeWithText(confirm).assertDoesNotExist()
         compose.runOnIdle { assertEquals(0, exits) }
         openSettings()
