@@ -62,6 +62,12 @@ unresolved invoices and active auto-renewals suppress the notice.
 This describes the PR implementation. Live merchant catalog, receipt delivery
 and real-device checkout still require isolated acceptance.
 
+Local checkout refusals log only their typed error code and HTTP status. Provider
+invoice failures separately log provider code/status/uncertainty. Neither log
+contains request bodies, email, credentials, invoice IDs or provider responses.
+A local 400 is not proof that Lava rejected an invoice; preserve the distinction
+when diagnosing Profile versus limit entry paths. POST is never retried automatically.
+
 ## Pul xavfsizligi qoidalari
 
 1. Invoice'ni faqat server yaratadi; foydalanuvchi faqat biz saqlagan
