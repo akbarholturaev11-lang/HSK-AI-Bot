@@ -33,6 +33,7 @@ data class CourseLessonLimitDto(
     @SerialName("allowed") val allowed: Boolean = true,
     @SerialName("limit_text") val limitText: String? = null,
     @SerialName("reset_at") val resetAt: String? = null,
+    @SerialName("remaining") val remaining: Int? = null,
 )
 
 @Serializable
@@ -63,6 +64,8 @@ data class CourseMapDto(
      * one closed here stays closed in the Mini App and on the desktop.
      */
     @SerialName("hints") val hints: List<AndroidHintDto> = emptyList(),
+    @SerialName("pro_expiry_notice") val proExpiryNotice: String? = null,
+    @SerialName("pro_expiry_title") val proExpiryTitle: String? = null,
 )
 
 @Serializable

@@ -374,6 +374,8 @@ ROUTE_MAP = {
     "/api/v3/pwa/lesson/foundation": ("foundation", "v3_pwa_lesson_foundation"),
     "/api/v3/pwa/lesson/foundation/complete": ("foundation", "v3_pwa_lesson_foundation_complete"),
     "/api/v3/pwa/lesson/start": ("lessons", "v3_pwa_lesson_start"),
+    "/api/v3/pwa/lesson/skip-test": ("lessons", "v3_pwa_lesson_skip_test"),
+    "/api/v3/pwa/lesson/unlock": ("lessons", "v3_pwa_lesson_unlock"),
     "/api/v3/pwa/limits/status": ("lessons", "v3_pwa_limits_status"),
     "/api/v3/pwa/map": ("lessons", "v3_pwa_map"),
     "/api/v3/pwa/mistakes": ("mistake_review", "v3_pwa_mistakes"),

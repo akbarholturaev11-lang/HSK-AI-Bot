@@ -95,13 +95,13 @@ class MiniAppReservationBoundaryTests(unittest.TestCase):
         )
 
     def test_reintroducing_skip_test_sequence_rejection_is_detected(self):
-        skip_test = self.api.index("async def v3_course_lesson_skip_test(")
-        gate = "            access = await LessonAccessService(session).status("
+        skip_test = self.api.index("async def _skip_test_for_user(")
+        gate = "        access = await LessonAccessService(session).status("
         self.assertIn(gate, self.api[skip_test:])
         changed = self.api[:skip_test] + self.api[skip_test:].replace(
             gate,
-            "            if lesson_order > completed + 1:\n"
-            "                return _private_content_response({}, status_code=403)\n" + gate,
+            "        if lesson_order > completed + 1:\n"
+            "            return _private_content_response({}, status_code=403)\n" + gate,
             1,
         )
         result = audit_source(changed, self.client)
@@ -111,11 +111,17 @@ class MiniAppReservationBoundaryTests(unittest.TestCase):
         )
 
     def test_skip_test_projection_security_and_side_effect_guards_are_required(self):
-        skip_test = self.api.index("async def v3_course_lesson_skip_test(")
+        skip_test = self.api.index("async def _skip_test_for_user(")
         prefix, handler = self.api[:skip_test], self.api[skip_test:]
         cases = (
             ("await _authenticated(request)", "await _unverified(request)",
              "skip_test_uses_authenticated_identity_helper"),
+            ("return await _skip_test_for_user(session, user, payload)",
+             "return await _unguarded_projection(session, user, payload)",
+             "skip_test_transports_use_shared_gate"),
+            ('request.headers.get("X-HSK-PWA-CSRF"),\n                )\n                user =',
+             'None,\n                )\n                user =',
+             "skip_test_pwa_verifies_owner_and_csrf"),
             ("get_by_telegram_id(telegram_id)", "get_by_id(telegram_id)",
              "skip_test_uses_verified_account_lookup"),
             ("if level != user_level:", "if False:", "skip_test_checks_selected_level"),
@@ -125,16 +131,18 @@ class MiniAppReservationBoundaryTests(unittest.TestCase):
              "skip_test_checks_required_foundation"),
             ("completed=completed, consume=False", "completed=completed, consume=True",
              "skip_test_checks_non_consuming_entitlement"),
+            ("if not is_skip_test_part(level, lesson_order):", "if False:",
+             "skip_test_requires_first_part_before_read"),
             ('if not access.get("allowed"):', "if False:",
              "skip_test_access_denial_precedes_source_read"),
             ('"questions": questions', '"questions": lesson',
              "skip_test_returns_bounded_projection_only"),
-            ("            lesson = _read_course_lesson(level, lesson_order)",
-             "            await session.commit()\n            lesson = _read_course_lesson(level, lesson_order)",
+            ("        lesson = _read_course_lesson(level, lesson_order)",
+             "        await session.commit()\n        lesson = _read_course_lesson(level, lesson_order)",
              "skip_test_does_not_commit_or_unlock_progress"),
-            ("            lesson = _read_course_lesson(level, lesson_order)",
-             "            progress.completed_lessons_count = lesson_order\n"
-             "            lesson = _read_course_lesson(level, lesson_order)",
+            ("        lesson = _read_course_lesson(level, lesson_order)",
+             "        progress.completed_lessons_count = lesson_order\n"
+             "        lesson = _read_course_lesson(level, lesson_order)",
              "skip_test_does_not_commit_or_unlock_progress"),
         )
         for before, after, check in cases:

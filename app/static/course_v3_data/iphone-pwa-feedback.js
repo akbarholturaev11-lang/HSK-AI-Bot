@@ -39,6 +39,18 @@
   var busy = false;
   var draft = {};
   var sessionPrompted = false;
+  var ordinaryRetryAt = 0;
+  var ordinaryRetryMs = 24 * 60 * 60 * 1000;
+  function ordinaryCoolingDown() { return Date.now() < ordinaryRetryAt || (sessionPrompted && !ordinaryRetryAt); }
+  function markOrdinaryShown() { ordinaryRetryAt = Date.now() + ordinaryRetryMs; sessionPrompted = true; }
+  function ordinaryCopy() {
+    var label = selected.dismiss_label || course("pwaPush.later");
+    closeButton.textContent = label;
+    closeButton.setAttribute("aria-label", label);
+    closeButton.setAttribute("style", "width:auto;min-width:44px;flex:0 0 auto;padding:0 10px;font-size:12px;white-space:nowrap;border-radius:12px");
+    contextCopy.setAttribute("style", "font-size:12px;line-height:15px;overflow-wrap:anywhere");
+    contextCopy.textContent = !selected.paid && isValidLabel(selected.reward_hint) ? selected.reward_hint : "";
+  }
   var guided = false;
   var guidedStep = 0;
   var guidedRetry = false;
@@ -389,7 +401,7 @@
   }
 
   async function openContext(context) {
-    if (busy || !root.hidden || sessionPrompted || !context || context.confirmed !== true ||
+    if (busy || !root.hidden || ordinaryCoolingDown() || !context || context.confirmed !== true ||
         !["lesson", "foundation", "practice", "voice"].includes(context.kind) ||
         !/^(hsk[1-4]|nhsk[1-3])$/.test(context.level) || document.visibilityState === "hidden") return;
     var token = ++generation;
@@ -414,15 +426,14 @@
       guidedRetry = false;
       guidedStep = ordinarySteps().findIndex(function (step) { return !draft[step.key]; });
       if (guidedStep < 0) guidedStep = ordinarySteps().length - 1;
-      contextCopy.textContent = "";
+      ordinaryCopy();
       setStatus("");
       submitButton.textContent = course("subscriptionPage.submit");
       submitButton.hidden = false;
-      closeButton.setAttribute("aria-label", course("subscriptionPage.close"));
       renderForm();
       lastFocus = document.activeElement;
       root.hidden = false;
-      sessionPrompted = true;
+      markOrdinaryShown();
       panel.focus({preventScroll:true});
       if (window.NavBack) NavBack.sync();
     } catch (_) { /* Optional feedback must not block returning to study. */ }
@@ -430,7 +441,7 @@
 
   async function open(context) {
     if (context && context.kind) return openContext(context);
-    if (busy || !root.hidden) return;
+    if (busy || !root.hidden || ordinaryCoolingDown()) return;
     var lessonId = Number(context && context.lessonId);
     var level = String(context && context.level || "");
     if (!context || context.confirmed !== true || !Number.isSafeInteger(lessonId) ||
@@ -456,10 +467,11 @@
       if (!showAvailable({ordinary:feedback,release:[]})) return;
       lastFocus = document.activeElement;
       heading.textContent = lessonTitle(level, lessonId);
-      contextCopy.textContent = course("pwaFeedback.body");
+      ordinaryCopy();
+      if (!contextCopy.textContent) contextCopy.textContent = course("pwaFeedback.body");
       submitButton.disabled = false;
-      closeButton.setAttribute("aria-label", course("subscriptionPage.close"));
       root.hidden = false;
+      markOrdinaryShown();
       panel.focus({preventScroll:true});
       if (window.NavBack) NavBack.sync();
     } catch (_) {
@@ -490,6 +502,9 @@
       if (!release.length || !showAvailable({ordinary:null, release:release.slice(0, 1)})) return;
       try { localStorage.setItem(RELEASE_SEEN_PREFIX + release[0].campaign_id, "1"); } catch (_) { return; }
       lastFocus = document.activeElement;
+      contextCopy.setAttribute("style", "");
+      closeButton.setAttribute("style", "");
+      closeButton.textContent = "×";
       contextCopy.textContent = isValidLabel(release[0].message_text) ? release[0].message_text.slice(0, 400) : "";
       submitButton.disabled = false;
       closeButton.setAttribute("aria-label", course("subscriptionPage.close"));
@@ -585,6 +600,7 @@
     var token = generation;
     try {
       var compactSubmission = kind === "context" || guided;
+      var refreshReward = kind === "ordinary" && !selected.paid && isValidLabel(selected.reward_hint);
       await request(path, body, function () { return token === generation && !root.hidden; });
       if (token !== generation || root.hidden) return;
       kind = null;
@@ -593,8 +609,10 @@
       guidedRetry = false;
       form.replaceChildren();
       heading.textContent = "HSK AI";
+      contextCopy.textContent = "";
       setStatus(common("bot.releaseFeedback.thanks"));
       submitButton.hidden = true;
+      if (refreshReward && typeof refreshPwaCheckoutMap === "function") refreshPwaCheckoutMap().catch(function(){});
       if (compactSubmission) setTimeout(function(){if(token === generation)close();},1200);
     } catch (_) {
       if (token !== generation || root.hidden) return;

@@ -24,9 +24,22 @@ data class NativeLavaState(
     val launchUrl: String? = null, val error: Boolean = false,
     val offer: ExitReply? = null, val closeRequested: Boolean = false,
     val uncertainStart: Boolean = false,
-)
+    val region: String = "",
+    val currency: String = "",
+    val providerEntryId: Int? = null,
+) {
+    val visiblePlans: List<LavaPlan> get() = block?.let {
+        if (mode == "exit_discount" || currency.isBlank()) it.plans.filter { row -> row.amount != null }
+        else it.providerPlans(currency)
+    }.orEmpty()
+}
 
-class LavaCheckoutViewModel(private val repository: LavaCheckoutRepository, private val language: String) : ViewModel() {
+class LavaCheckoutViewModel(
+    private val repository: LavaCheckoutRepository, private val language: String,
+    private val savedRegion: suspend () -> String? = { null },
+    private val saveRegion: suspend (String) -> Unit = {},
+    private val regionHint: () -> String = { "other" },
+) : ViewModel() {
     private val _state = MutableStateFlow(NativeLavaState())
     val state = _state.asStateFlow()
     private var generation = 0
@@ -40,14 +53,20 @@ class LavaCheckoutViewModel(private val repository: LavaCheckoutRepository, priv
         val current = ++generation
         _state.update { it.copy(loading = true, error = false) }
         viewModelScope.launch {
+            val region = _state.value.region.ifBlank {
+                runCatching { savedRegion() }.getOrNull()?.takeIf { it in CHECKOUT_REGIONS } ?: regionHint()
+            }
             when (val result = repository.providerOverview(_state.value.mode)) {
                 is ApiResult.Success -> if (current == generation) _state.update { old ->
                     val block = result.value.lava
                     val id = old.checkoutId.takeIf { it > 0 } ?: block?.pending_checkout_id ?: 0
-                    old.copy(loading = false, block = block,
-                        plan = old.plan.takeIf { plan -> block?.plans?.any { it.plan_type == plan } == true }
-                            ?: block?.plans?.firstOrNull { it.amount != null }?.plan_type.orEmpty(),
-                        email = old.email.ifBlank { block?.email.orEmpty() }, checkoutId = id,
+                    val selected = old.copy(loading = false, block = block, region = old.region.ifBlank { region },
+                        providerEntryId = result.value.provider_entry_id?.takeIf { it > 0 && result.value.ok && old.mode == "subscription" },
+                        currency = if (old.mode == "exit_discount") "" else block?.currencyFor(old.region.ifBlank { region }).orEmpty())
+                    selected.copy(
+                        plan = old.plan.takeIf { plan -> selected.visiblePlans.any { it.plan_type == plan } }
+                            ?: selected.visiblePlans.firstOrNull()?.plan_type.orEmpty(),
+                        email = block?.email?.takeIf(String::isNotBlank) ?: old.email, checkoutId = id,
                         status = old.status.ifBlank { if (id > 0) "pending" else "" },
                         uncertainStart = false, error = !result.value.ok || (old.mode == "exit_discount" && block == null))
                 }
@@ -55,18 +74,29 @@ class LavaCheckoutViewModel(private val repository: LavaCheckoutRepository, priv
             }
         }
     }
+    fun chooseRegion(region: String, persist: Boolean = true) {
+        val old = _state.value
+        if (region !in CHECKOUT_REGIONS || old.loading || old.busy || old.checkoutId > 0 ||
+            old.uncertainStart || old.mode != "subscription" || old.block?.subscription != null) return
+        val selected = old.copy(region = region, currency = old.block?.currencyFor(region).orEmpty(), error = false)
+        _state.value = selected.copy(plan = selected.plan.takeIf { plan -> selected.visiblePlans.any { it.plan_type == plan } }
+            ?: selected.visiblePlans.firstOrNull()?.plan_type.orEmpty())
+        if (persist) viewModelScope.launch { runCatching { saveRegion(region) } }
+    }
+
     fun email(value: String) { if (!_state.value.busy) _state.update { it.copy(email = value.take(254)) } }
     fun chooseProviderPlan(value: String) {
-        if (!_state.value.busy && _state.value.block?.plans?.any { it.plan_type == value && it.amount != null } == true)
+        if (!_state.value.busy && _state.value.visiblePlans.any { it.plan_type == value && it.amount != null })
             _state.update { it.copy(plan = value, error = false) }
     }
     fun start() {
         val old = _state.value
         if (old.busy || old.checkoutId > 0 || old.uncertainStart || old.block?.blocked_reason != null ||
-            old.block?.plans?.none { it.plan_type == old.plan && it.amount != null } != false) return
+            old.visiblePlans.none { it.plan_type == old.plan && it.amount != null }) return
         _state.update { it.copy(busy = true, error = false) }
         viewModelScope.launch {
-            when (val reply = repository.start(old.plan, old.email, old.mode, language)) {
+            when (val reply = repository.start(old.plan, old.email, old.mode, language,
+                old.currency.takeIf { old.mode == "subscription" && it.isNotBlank() })) {
                 is ApiResult.Success -> {
                     val value = reply.value
                     val url = safeLavaPaymentUrl(value.payment_url)

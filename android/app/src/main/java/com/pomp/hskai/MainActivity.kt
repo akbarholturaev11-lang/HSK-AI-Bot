@@ -14,6 +14,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -137,6 +139,7 @@ import com.pomp.hskai.feature.update.MandatoryUpdateGate
 import com.pomp.hskai.feature.update.UpdateInstallMonitor
 import com.pomp.hskai.feature.update.UpdateNoticeScreen
 import com.pomp.hskai.feature.limit.LimitGate
+import com.pomp.hskai.feature.limit.SectionLimitOverlay
 import com.pomp.hskai.data.api.ChallengeDto
 import com.pomp.hskai.data.api.RatingEntryDto
 import com.pomp.hskai.feature.rating.ChallengeRunScreen
@@ -723,6 +726,7 @@ private fun AppRoot(
 
             var checkoutVisible by rememberSaveable { mutableStateOf(false) }
             var checkoutOrigin by rememberSaveable { mutableStateOf("course_limit") }
+            var expirySheetToken by remember(sessionOwner) { mutableStateOf<String?>(null) }
             // Same-package Direct -> Play updates can restore a saved checkout.
             // Play must render the app immediately and clear that obsolete state.
             LaunchedEffect(Unit) {
@@ -763,6 +767,21 @@ private fun AppRoot(
             // access. Re-read spent sections when the server confirms it.
             val accessActive = profileState.trial?.active == true ||
                 profileState.profile?.subscription?.isPaid == true
+            // Recheck a short server-owned access period once at its end.
+            // The existing foreground refresh remains the fallback if hidden/offline.
+            val shortAccess = profileState.profile?.subscription
+            LaunchedEffect(shortAccess?.until, shortAccess?.status, offline) {
+                if (offline || shortAccess?.status !in setOf("temporary_trial", "active")) return@LaunchedEffect
+                val until = runCatching { java.time.Instant.parse(shortAccess?.until.orEmpty()).toEpochMilli() }.getOrNull()
+                    ?: return@LaunchedEffect
+                val remaining = until - System.currentTimeMillis()
+                if (remaining !in 1L..1_805_000L) return@LaunchedEffect
+                delay(remaining + 500L)
+                if (widgetLifecycle.currentState.isAtLeast(androidx.lifecycle.Lifecycle.State.STARTED)) {
+                    courseViewModel.load()
+                    profileViewModel.load()
+                }
+            }
             var accessWasActive by remember { mutableStateOf<Boolean?>(null) }
             LaunchedEffect(accessActive) {
                 val previous = accessWasActive
@@ -804,9 +823,10 @@ private fun AppRoot(
                 courseState.map?.hsk30?.promo?.eligible,
                 courseState.isClaimingHsk30Promo,
                 courseState.hsk30PromoVisible,
+                expirySheetToken,
             ) {
                 if (
-                    !screenCenterAdAsked &&
+                    !screenCenterAdAsked && expirySheetToken == null &&
                     adsUnlockedAfterLimit &&
                     !limitOverlayVisible &&
                     courseState.map?.hsk30?.promo?.eligible != true &&
@@ -817,7 +837,7 @@ private fun AppRoot(
                 ) {
                     screenCenterAdAsked = true
                     delay(SCREEN_CENTER_AD_DELAY_MS)
-                    if (adRequest == null && !limitOverlayVisible &&
+                    if (adRequest == null && !limitOverlayVisible && expirySheetToken == null &&
                         courseState.map?.hsk30?.promo?.eligible != true &&
                         !courseState.isClaimingHsk30Promo && !courseState.hsk30PromoVisible
                     ) {
@@ -1439,7 +1459,29 @@ private fun AppRoot(
                     skipTestViewModel.beginAttempt()
                     onDispose { skipTestViewModel.endAttempt() }
                 }
-                SkipTestScreen(
+                val skipLimit = skipTestState.error as? ApiError.LimitReached
+                if (skipLimit != null) {
+                    // The allowance may have changed after the map was drawn.
+                    // Use exactly the same channel-aware limit window as Course.
+                    val deniedMap = remember(skipLimit) { courseState.map }
+                    LaunchedEffect(courseState.map) {
+                        val latest = courseState.map
+                        if (latest !== deniedMap && latest?.lessonLimit?.blocksNewLesson == false) {
+                            skipTestLesson = null
+                        }
+                    }
+                    SectionLimitOverlay(
+                        sectionTitle = stringResource(R.string.hsk_common_navigation_course),
+                        sourceKey = "course_limit",
+                        limit = limitGate,
+                        reason = skipLimit.limitText ?: stringResource(R.string.limit_lesson_reason),
+                        resetAt = skipLimit.resetAt,
+                        onClose = {
+                            skipTestLesson = null
+                            courseViewModel.load()
+                        },
+                    )
+                } else SkipTestScreen(
                     state = skipTestState,
                     pinyin = pinyin,
                     onStart = { skipTestViewModel.start(locked.order) },
@@ -1585,6 +1627,28 @@ private fun AppRoot(
                     ) { tab, contentModifier ->
                         when (tab) {
                             MainTab.COURSE -> {
+                                val expiryCandidate = courseState.snapshot?.proExpiryNotice?.takeIf {
+                                    BuildConfig.EXTERNAL_CHECKOUT_ENABLED && !offline && !accessActive &&
+                                        !courseState.isLoading && !courseState.isRefreshing && !courseState.isStale &&
+                                        courseState.error == null && !courseState.isSwitchingTrack &&
+                                        !profileState.isLoading && adRequest == null && !limitOverlayVisible &&
+                                        !widgetSetupOpen && !widgetPlacedNotice && !studySetupState.visible &&
+                                        !languagePickerOpen && !goalPickerOpen && !checkoutVisible &&
+                                        nextPartSheet == null && pendingNextPart == null && skipTestLesson == null &&
+                                        feedbackState.prompt == null && !bugReportOpen && !bugReportIntroVisible &&
+                                        !hsk30PaymentRejectionVisible && !hsk30PromoMustPrecedeWidget
+                                }
+                                LaunchedEffect(expiryCandidate) {
+                                    if (expiryCandidate == null) {
+                                        expirySheetToken = null
+                                    } else if (expirySheetToken != expiryCandidate) {
+                                        expirySheetToken = null
+                                        val claimed = try { app.appSettings.claimProExpiryNotice(expiryCandidate) }
+                                        catch (_: java.io.IOException) { false }
+                                        if (claimed) expirySheetToken = expiryCandidate
+                                    }
+                                }
+                                val expiryNoticeVisible = expiryCandidate != null && expirySheetToken == expiryCandidate
                                 CourseScreen(
                                     state = courseState,
                                     dailyGoal = dailyGoal,
@@ -1606,11 +1670,23 @@ private fun AppRoot(
                                     hsk30PromoAllowed = adRequest == null && !limitOverlayVisible &&
                                         !widgetSetupOpen && !widgetPlacedNotice && !studySetupState.visible &&
                                         !languagePickerOpen && !goalPickerOpen && !checkoutVisible &&
-                                        nextPartSheet == null,
+                                        nextPartSheet == null && expirySheetToken == null,
+                                    expiryNoticeVisible = expiryNoticeVisible,
                                     onUnlockHsk30 = ::openHsk30ContentGate,
                                     onRetry = courseViewModel::load,
                                     modifier = contentModifier,
                                 )
+                                if (expiryNoticeVisible) {
+                                    com.pomp.hskai.feature.course.ProExpirySheet(
+                                        title = courseState.snapshot?.proExpiryTitle,
+                                        onRestore = {
+                                            expirySheetToken = null
+                                            checkoutOrigin = "course_expired"
+                                            checkoutVisible = true
+                                        },
+                                        onDismiss = { expirySheetToken = null },
+                                    )
+                                }
                                 // One sheet at a time: onboarding/study prompts
                                 // first, then the next part waits on the map.
                                 nextPartSheet?.let { offer ->
@@ -2060,6 +2136,7 @@ private fun LessonHost(
     onExit: (completed: Boolean) -> Unit,
 ) {
     val lesson = launch.lesson
+    val resumeStore = remember(app, viewModelStoreOwner) { app.appSettings.sessionLessonResumeStore() }
     val model: LessonViewModel = viewModel(
         key = "lesson-$level-${lesson.order}",
         viewModelStoreOwner = viewModelStoreOwner,
@@ -2069,7 +2146,7 @@ private fun LessonHost(
             level = level,
             lessonOrder = lesson.order,
             language = language,
-            resumeStore = app.appSettings,
+            resumeStore = resumeStore,
             // Only the rank-up board uses it, and only when the lesson moved
             // the learner up the weekly league.
             featureRepository = app.featureRepository,
@@ -2131,6 +2208,19 @@ private fun LessonHost(
         onCloseWriter = model::closeWriter,
         onAnswerAdaptive = model::answerAdaptive,
         onContinueAdaptive = model::continueAdaptive,
+        settingsSheet = { guardedExit ->
+            if (pinyinSheetOpen) {
+                PinyinPicker(
+                    current = pinyin,
+                    onPick = { value ->
+                        scope.launch { app.appSettings.setPinyinVisibility(value) }
+                        pinyinSheetOpen = false
+                    },
+                    onDismiss = { pinyinSheetOpen = false },
+                    onExit = { pinyinSheetOpen = false; guardedExit() },
+                )
+            }
+        },
         onExit = {
             val completed = lessonState.outcome is LessonOutcome.Completed
             model.endAttempt(launch.attemptKey)
@@ -2139,16 +2229,6 @@ private fun LessonHost(
         onAskAssistant = if (assistant != null && assistantEnabled) assistant.ask else null,
     )
 
-    if (pinyinSheetOpen) {
-        PinyinPicker(
-            current = pinyin,
-            onPick = { value ->
-                scope.launch { app.appSettings.setPinyinVisibility(value) }
-                pinyinSheetOpen = false
-            },
-            onDismiss = { pinyinSheetOpen = false },
-        )
-    }
 }
 
 /**
@@ -2158,46 +2238,66 @@ private fun LessonHost(
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun PinyinPicker(
+internal fun PinyinPicker(
     current: PinyinVisibility,
     onPick: (PinyinVisibility) -> Unit,
     onDismiss: () -> Unit,
+    onExit: (() -> Unit)? = null,
 ) {
-    val sheetState = rememberModalBottomSheetState()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = onExit != null)
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
         containerColor = PompColors.PaperRaised,
     ) {
-        Column(Modifier.padding(horizontal = 20.dp, vertical = 8.dp)) {
+        Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp)) {
             Text(
-                text = stringResource(R.string.hsk_course_pinyin_settings_h),
+                text = stringResource(if (onExit != null) R.string.hsk_course_lesson_settings_title else R.string.hsk_course_pinyin_settings_h),
                 style = androidx.compose.material3.MaterialTheme.typography.titleMedium,
                 color = PompColors.Ink,
             )
             androidx.compose.foundation.layout.Spacer(Modifier.padding(6.dp))
-            PinyinVisibility.entries.forEach { option ->
-                val selected = option == current
-                val labelRes = when (option) {
-                    PinyinVisibility.ALL -> R.string.lesson_pinyin_all
-                    PinyinVisibility.NEW_WORDS_ONLY -> R.string.lesson_pinyin_new
-                    PinyinVisibility.OFF -> R.string.hsk_course_pinyin_settings_off
-                }
-                Surface(
-                    color = if (selected) PompColors.CinnabarSoft else PompColors.PaperRaised,
-                    shape = androidx.compose.foundation.shape.RoundedCornerShape(14.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = 52.dp)
-                        .padding(vertical = 4.dp)
-                        .clickable { onPick(option) },
-                ) {
+            Column(Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState())) {
+                if (onExit != null) {
                     Text(
-                        text = stringResource(labelRes),
-                        style = androidx.compose.material3.MaterialTheme.typography.bodyLarge,
-                        color = if (selected) PompColors.CinnabarDark else PompColors.Ink,
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+                        text = stringResource(R.string.hsk_course_pinyin_settings_h),
+                        style = androidx.compose.material3.MaterialTheme.typography.labelLarge,
+                        color = PompColors.InkSecondary,
+                        modifier = Modifier.padding(vertical = 8.dp),
                     )
+                }
+                PinyinVisibility.entries.forEach { option ->
+                    val selected = option == current
+                    val labelRes = when (option) {
+                        PinyinVisibility.ALL -> R.string.lesson_pinyin_all
+                        PinyinVisibility.NEW_WORDS_ONLY -> R.string.lesson_pinyin_new
+                        PinyinVisibility.OFF -> R.string.hsk_course_pinyin_settings_off
+                    }
+                    Surface(
+                        color = if (selected) PompColors.CinnabarSoft else PompColors.PaperRaised,
+                        shape = androidx.compose.foundation.shape.RoundedCornerShape(14.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = 52.dp)
+                            .padding(vertical = 4.dp)
+                            .clickable { onPick(option) },
+                    ) {
+                        Text(
+                            text = stringResource(labelRes),
+                            style = androidx.compose.material3.MaterialTheme.typography.bodyLarge,
+                            color = if (selected) PompColors.CinnabarDark else PompColors.Ink,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+                        )
+                    }
+                }
+            }
+            if (onExit != null) {
+                androidx.compose.material3.HorizontalDivider(Modifier.padding(top = 8.dp), color = PompColors.Divider)
+                androidx.compose.material3.TextButton(
+                    onClick = onExit,
+                    modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp),
+                ) {
+                    Text(stringResource(R.string.hsk_course_lesson_settings_exit), color = PompColors.InkSecondary)
                 }
             }
             androidx.compose.foundation.layout.Spacer(Modifier.padding(12.dp))

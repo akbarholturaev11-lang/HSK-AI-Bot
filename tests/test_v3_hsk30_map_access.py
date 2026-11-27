@@ -4,7 +4,7 @@ import ast
 import hashlib
 import hmac
 import unittest
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import AsyncMock
@@ -116,11 +116,35 @@ class Hsk30MapAccessTests(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(data["hsk30_access"]["allowed"])
         self.assertEqual("nhsk1", data["level"])
         self.assertNotIn("units", data)
+        self.assertIsNone(data["pro_expiry_notice"])
         async with self.sessions() as session:
             user = await UserRepository(session).get_by_telegram_id(7100)
             material = await LessonAccessService(session).status(user, level="nhsk1", lesson_order=1, consume=True)
         self.assertFalse(material["allowed"])
         self.assertEqual("hsk30_unlock_required", material["error"])
+
+    async def test_expired_trial_on_locked_hsk30_map_keeps_content_denied_and_returns_notice(self):
+        async with self.sessions() as session:
+            user = await session.get(User, 1)
+            now = datetime.now(timezone.utc)
+            user.pro_trial_started_at = now - timedelta(days=8)
+            user.pro_trial_ends_at = now - timedelta(days=1)
+            await session.commit()
+        headers = {"X-Telegram-Init-Data": signed_init_data()}
+        response = await self.client.get("/api/v3/map", headers=headers)
+        self.assertEqual(403, response.status_code, response.text)
+        data = response.json()
+        self.assertEqual("hsk30_unlock_required", data["error"])
+        self.assertFalse(data["hsk30_access"]["allowed"])
+        self.assertNotIn("units", data)
+        self.assertRegex(data["pro_expiry_notice"], r"^[a-f0-9]{64}$")
+        self.assertEqual("uz", data["user"]["language"])
+        again = await self.client.get("/api/v3/map", headers=headers)
+        self.assertEqual(data["pro_expiry_notice"], again.json()["pro_expiry_notice"])
+        async with self.sessions() as session:
+            user = await session.get(User, 1)
+            self.assertIsNone(await CourseProgressRepository(session).get_by_user_id(user.id))
+            self.assertFalse((await CourseTrackService(session).hsk30_access(user)).allowed)
 
     async def test_rejected_receipt_revokes_pending_access_and_returns_track_context(self):
         async with self.sessions() as session:

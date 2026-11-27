@@ -19,6 +19,22 @@ class CourseMapperTest {
      * NotReached vs PremiumLocked: only the second may show a paywall.
      */
     @Test
+    fun onlyFirstLockedPartOffersSkipTestAndZeroRemainingBlocksNewLesson() {
+        val first = com.pomp.hskai.domain.model.CourseLesson(
+            order = 4, sourceLesson = 2, part = 1, partCount = 2, isCheckpoint = false,
+            status = LessonStatus.LOCKED, access = LessonAccess.NotReached,
+            hanziPreview = "", pinyinPreview = "", subtitle = "",
+        )
+        assertTrue(first.canOfferSkipTest)
+        assertFalse(first.copy(part = 2, isCheckpoint = true).canOfferSkipTest)
+        assertFalse(first.copy(status = LessonStatus.CURRENT, access = LessonAccess.Open).canOfferSkipTest)
+        assertFalse(first.copy(access = LessonAccess.PremiumLocked).canOfferSkipTest)
+        assertTrue(com.pomp.hskai.domain.model.CourseLessonLimit(true, null, null, 0).blocksNewLesson)
+        assertFalse(com.pomp.hskai.domain.model.CourseLessonLimit(true, null, null, null).blocksNewLesson)
+        assertFalse(com.pomp.hskai.domain.model.CourseLessonLimit(true, null, null, 1).blocksNewLesson)
+    }
+
+    @Test
     fun `server access flags map to the four domain states`() {
         val open = lesson(order = 1, status = "current", completionAllowed = true)
         val notReached = lesson(

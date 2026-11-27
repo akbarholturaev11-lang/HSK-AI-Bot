@@ -14,7 +14,7 @@ import retrofit2.http.POST
 @Serializable
 data class LavaContext(val mode: String = "subscription", val origin: String = "")
 @Serializable
-data class LavaStart(val plan_type: String, val email: String, val mode: String, val language: String)
+data class LavaStart(val plan_type: String, val email: String, val mode: String, val language: String, val currency: String? = null)
 @Serializable
 data class LavaId(val checkout_id: Int)
 @Serializable
@@ -27,9 +27,10 @@ data class LavaSubscription(val status: String = "", val auto_renew: Boolean = f
 @Serializable
 data class LavaBlock(val mode: String = "manual_only", val plans: List<LavaPlan> = emptyList(),
     val blocked_reason: String? = null, val subscription: LavaSubscription? = null, val email: String? = null,
-    val pending_checkout_id: Int? = null)
+    val pending_checkout_id: Int? = null, val currency: String = "",
+    val plans_by_currency: Map<String, List<LavaPlan>> = emptyMap())
 @Serializable
-data class LavaOverview(val ok: Boolean = false, val lava: LavaBlock? = null)
+data class LavaOverview(val ok: Boolean = false, val lava: LavaBlock? = null, val provider_entry_id: Int? = null)
 @Serializable
 data class LavaReply(val ok: Boolean = false, val checkout_id: Int = 0, val payment_url: String? = null,
     val status: String = "", val pro_until: String? = null, val error: String? = null)
@@ -68,7 +69,8 @@ class LavaCheckoutRepository(private val api: AndroidLavaApi,
         return result
     }
     suspend fun providerOverview(mode: String) = call { api.providerOverview(it, LavaContext(mode, origin)) }
-    suspend fun start(plan: String, email: String, mode: String, language: String) = call { api.start(it, LavaStart(plan, email, mode, language)) }
+    suspend fun start(plan: String, email: String, mode: String, language: String, currency: String? = null) =
+        call { api.start(it, LavaStart(plan, email, mode, language, currency)) }
     suspend fun status(id: Int) = call { api.status(it, LavaId(id)) }
     suspend fun cancel() = call { api.cancel(it, emptyMap()) }
     suspend fun exitOffer(action: String) = call { api.exitOffer(it, ExitAction(action)) }

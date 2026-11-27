@@ -58,7 +58,9 @@ LEGACY_TO_GENERATED = {
 EXPECTED_GENERATED_CALLS = {
     "hsk_common_action_back": 6,
     "hsk_course_dictionary_page_clear_history": 1,
-    "hsk_common_action_close": 23,  # Includes the compact account editor and next-part sheet close buttons.
+    "hsk_common_action_close": 21,  # Lesson header X was replaced by the settings control.
+    "hsk_course_lesson_settings_title": 2,  # Header accessibility label and native sheet title.
+    "hsk_course_lesson_settings_exit": 1,  # Exit belongs at the bottom of that sheet.
     "hsk_common_action_continue": 19,  # Includes the in-lesson personal review feedback and offline panels (UIUX-007).
     "hsk_common_action_done": 2,
     "hsk_course_lang": 2,

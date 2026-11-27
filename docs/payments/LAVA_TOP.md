@@ -21,6 +21,29 @@ qarorlar: `openspec/changes/lava-top-pro-payments/`.
   qo'llamaguncha server ularga `manual_only` beradi. Play'da hech qachon yo'q.
 - HSK 3.0 unlock va chegirmali oqimlar har doim qo'lda yo'lda qoladi.
 
+## Regional checkout on PR #357
+
+Ordinary checkout uses the learner's account-scoped device hint or saved region.
+In `both`, Tajikistan and China prefer manual payment, Russia prefers verified
+RUB, and Uzbekistan and Other prefer verified USD. Alternative enabled methods
+remain available through Other plans. The Admin PWA signs the provider catalog
+snapshots and validates them again on save. Older clients keep the configured
+default currency. Google Play remains consumption-only.
+
+The checkout uses the authenticated account's most recent paid Lava receipt
+email, then its linked, verified Google email. With either address, the learner
+can proceed from the selected plan without entering an email. With neither,
+checkout asks for an email. Email is receipt metadata. The verified canonical
+user ID and contract ID continue to determine payment ownership.
+
+The Pro expiry sheet uses a server-issued period notice. A cancelled Lava
+subscription remains manageable through the paid period. After expiry its
+historical management record no longer prevents a new checkout. Pending reviews,
+unresolved invoices and active auto-renewals suppress the notice.
+
+This describes the PR implementation. Live merchant catalog, receipt delivery
+and real-device checkout still require isolated acceptance.
+
 ## Pul xavfsizligi qoidalari
 
 1. Invoice'ni faqat server yaratadi; foydalanuvchi faqat biz saqlagan

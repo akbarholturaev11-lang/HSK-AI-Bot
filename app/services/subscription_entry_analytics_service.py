@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 import re
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from html import escape
 
 from sqlalchemy import and_, func, select
@@ -33,6 +33,7 @@ class SubscriptionEntryAnalyticsService:
         "subscription_page": "Obuna sahifasi",
         "android_subscription": "Android -> Obuna",
         "android_onboarding_plan": "Android · Onboarding obuna tanlovi",
+        "android_course_expired": "Android · Kurs obunasi tugagan",
         "android_course_limit": "Android · Kurs limiti",
         "android_course_lesson_limit": "Android · Dars ichidagi limit",
         "android_practice_limit": "Android · Mashq limiti",
@@ -159,7 +160,8 @@ class SubscriptionEntryAnalyticsService:
         campaign_id: int | None = None,
         feedback_id: int | None = None,
         client: str | None = None,
-    ) -> bool:
+        return_entry_id: bool = False,
+    ) -> bool | int:
         """`client` is the calling route's own client (R3), never caller text;
         an unknown value is stored as NULL, so the row stays Overall-only."""
         user_id = getattr(user, "id", None)
@@ -183,14 +185,41 @@ class SubscriptionEntryAnalyticsService:
 
         try:
             self.session.add(event)
+            entry_id = None
+            if return_entry_id:
+                await self.session.flush()
+                entry_id = event.id
             await self.session.commit()
-            return True
+            return entry_id if return_entry_id and entry_id is not None else True
         except Exception:
             logger.exception("Failed to record subscription entry event")
             try:
                 await self.session.rollback()
             except Exception:
                 logger.exception("Failed to rollback subscription entry event")
+            return False
+
+    async def confirms_android_provider_entry(
+        self, *, entry_id: int, user_id: int, source: str,
+    ) -> bool:
+        """Verify a committed Android Lava opening for the same owner and source.
+
+        This is advisory analytics, never checkout authorization.
+        """
+        try:
+            async with self.session.begin_nested():
+                found = await self.session.scalar(select(SubscriptionEntryEvent.id).where(
+                    SubscriptionEntryEvent.id == entry_id,
+                    SubscriptionEntryEvent.user_id == user_id,
+                    SubscriptionEntryEvent.source == self.normalize_source(source),
+                    SubscriptionEntryEvent.client == "android",
+                    SubscriptionEntryEvent.mode == "subscription",
+                    SubscriptionEntryEvent.payment_method == "lava",
+                    SubscriptionEntryEvent.created_at >= datetime.now(timezone.utc) - timedelta(hours=24),
+                ))
+            return found is not None
+        except Exception:
+            logger.exception("Failed to verify Android subscription entry")
             return False
 
     async def _counts_by_source(self, *, since: datetime | None = None) -> dict[str, tuple[int, int]]:

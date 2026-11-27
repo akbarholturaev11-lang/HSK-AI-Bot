@@ -11,6 +11,7 @@ import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.core.settings.LessonResumeStore
+import com.pomp.hskai.core.settings.LessonResumePoint
 import com.pomp.hskai.data.api.AdaptiveAnswerResponseDto
 import com.pomp.hskai.data.api.AdaptiveItemDto
 import com.pomp.hskai.data.api.AdaptivePlanDto
@@ -23,6 +24,7 @@ import com.pomp.hskai.data.api.VoicePronounceResponse
 import com.pomp.hskai.data.repository.AdaptiveAnswerOutcome
 import com.pomp.hskai.data.repository.AdaptiveLessonRepository
 import com.pomp.hskai.data.repository.CourseRepository
+import com.pomp.hskai.data.repository.LessonSnapshot
 import com.pomp.hskai.data.repository.MISTAKE_REVIEW_FORMATS
 import com.pomp.hskai.data.repository.FeatureRepository
 import com.pomp.hskai.domain.model.ChoiceCard
@@ -387,6 +389,7 @@ class LessonViewModel(
     /** Planned personal reviews by the card index they stand in front of. */
     private val adaptivePending = sortedMapOf<Int, AdaptiveItemDto>()
     private var adaptivePlanId: Long = 0
+    private var resumeSnapshot: LessonSnapshot? = null
 
     /** The stroke fetch for the character the writing sheet is on. */
     private var writerJob: Job? = null
@@ -409,6 +412,7 @@ class LessonViewModel(
         n1FailedCheckIndices.clear()
         n1CheckHistoryKnown = true
         resetAdaptive()
+        resumeSnapshot = null
         _state.value = LessonUiState()
         load()
     }
@@ -419,6 +423,7 @@ class LessonViewModel(
         activeAttemptKey = null
         loadGeneration++
         resetAdaptive()
+        resumeSnapshot = null
         stopAudio()
         stopPronunciation()
         stopPicture()
@@ -437,7 +442,10 @@ class LessonViewModel(
                     // Come back to the card the learner left on, never past the
                     // end: a saved index equal to the deck length would open on
                     // nothing at all.
-                    val saved = resumeStore?.lessonResumeIndex(level, lessonOrder) ?: 0
+                    val savedPoint = resumeStore?.lessonResumePoint(level, lessonOrder)
+                        ?: LessonResumePoint(0)
+                    val saved = snapshot.resumeIndex(savedPoint)
+                    resumeSnapshot = snapshot
                     val cards = snapshot.lesson.cards.size
                     val exitStart = snapshot.lesson.sections.takeWhile { it.purpose != "learning_exit_check" }
                         .sumOf { it.cards.size }
@@ -821,7 +829,8 @@ class LessonViewModel(
     /** Keeps the resume point in step with the card on screen. */
     private fun rememberPosition(index: Int) {
         val store = resumeStore ?: return
-        viewModelScope.launch { store.setLessonResumeIndex(level, lessonOrder, index) }
+        val point = resumeSnapshot?.resumePoint(index) ?: return
+        viewModelScope.launch { store.setLessonResumePoint(level, lessonOrder, point) }
     }
 
     private fun record(correct: Boolean, explanation: String, chosen: String = "") {

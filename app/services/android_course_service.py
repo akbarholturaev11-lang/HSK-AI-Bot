@@ -38,7 +38,7 @@ from app.services.desktop_course_service import (
     course_v3_lesson_card_count,
 )
 from app.services.course_lesson_plan_service import lesson_plan_for, with_lesson_plan
-from app.services.course_v3_parts import total_parts
+from app.services.course_v3_parts import is_skip_test_part, total_parts
 from app.services.entitlements.lesson_access import LessonAccessService
 from app.services.smart_reminder_preferences import SmartReminderActor, SmartReminderPreferencesService
 from app.services.smart_widget_context import WidgetContextRequest
@@ -113,6 +113,8 @@ class AndroidCourseService(DesktopCourseService):
         context = await self._context(access_token)
         foundation = await self._foundation_status(context.user)
         result["foundation"] = foundation
+        from app.services.subscription_expiry_notice import subscription_expiry_payload
+        result.update(await subscription_expiry_payload(self.session, context.user))
 
         track_status = await CourseTrackService(self.session).status(context.user)
         hsk30_track = (track_status.get("tracks") or {}).get("hsk30") or {}
@@ -313,6 +315,8 @@ class AndroidCourseService(DesktopCourseService):
                 status_code=403,
                 detail=access,
             )
+        if not is_skip_test_part(level, lesson_order):
+            raise DesktopCourseError("course_lesson_not_unlocked", status_code=403)
         lesson = self._read_json(
             COURSE_V3_DATA_ROOT / level / f"lesson_{lesson_order:02d}.json",
             error_code="course_lesson_load_failed",

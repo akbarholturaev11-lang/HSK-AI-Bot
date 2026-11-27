@@ -39,6 +39,9 @@ def test_inline_pro_two_primary_plans_other_terms_and_real_exit_discount():
                 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
                 <link rel="stylesheet" href="/course_v3_data/iphone-pwa-inline-pro.css?v=qa">
                 </head><body><button id="starter">open</button>
+                <script src="/course_v3_data/hsk-miniapp-i18n.js?v=qa"></script>
+                <script src="/course_v3_data/hsk-course-i18n.js?v=qa"></script>
+                <script src="/course_v3_data/hsk-subscription-presentation.js?v=qa"></script>
                 <script src="/course_v3_data/iphone-pwa-inline-pro.js?v=qa"></script>
                 </body></html>""")
             return
@@ -110,6 +113,8 @@ def test_inline_pro_two_primary_plans_other_terms_and_real_exit_discount():
         assert "1 месяц" in page.locator("#hsk-inline-pro .hip-body").inner_text()
         assert "1 год" in page.locator("#hsk-inline-pro .hip-body").inner_text()
         assert "12.99" in page.locator("#hsk-inline-pro .hip-body").inner_text()
+        assert page.locator("#hsk-inline-pro .hip-region").is_visible()
+        assert "не предыдущая цена" in page.locator("#hsk-inline-pro .hip-reference-note").inner_text()
         page.get_by_role("button", name="Другие тарифы").click()
         # The title is never covered by the 44px back and close controls.
         no_overlap=page.evaluate("""() => {
@@ -173,7 +178,8 @@ def test_inline_pro_manual_only_and_blocked_states_are_honest(lava, expected):
                 <!DOCTYPE html><html lang="ru"><head><meta charset="utf-8">
                 <meta name="viewport" content="width=device-width,initial-scale=1">
                 <link rel="stylesheet" href="/course_v3_data/iphone-pwa-inline-pro.css?v=qa">
-                </head><body><script src="/course_v3_data/iphone-pwa-inline-pro.js?v=qa"></script>
+                </head><body><script src="/course_v3_data/hsk-subscription-presentation.js?v=qa"></script>
+                <script src="/course_v3_data/iphone-pwa-inline-pro.js?v=qa"></script>
                 </body></html>""")
             return
         if path == "/api/v3/pwa-auth/session":
@@ -245,7 +251,8 @@ def test_inline_pro_learning_benefit_requires_authorized_offer(lang, source, exp
                 <meta name="viewport" content="width=device-width,initial-scale=1">
                 <link rel="stylesheet" href="/course_v3_data/iphone-pwa-inline-pro.css?v=qa">
                 <script src="/course_v3_data/hsk-course-i18n.js?v=qa"></script>
-                </head><body><script src="/course_v3_data/iphone-pwa-inline-pro.js?v=qa"></script>
+                </head><body><script src="/course_v3_data/hsk-subscription-presentation.js?v=qa"></script>
+                <script src="/course_v3_data/iphone-pwa-inline-pro.js?v=qa"></script>
                 </body></html>""")
         elif path == "/api/v3/pwa-auth/session":
             route.fulfill(status=200, json={"ok": True, "user_id": 7, "csrf": "qa-csrf"})
@@ -290,4 +297,147 @@ def test_inline_pro_learning_benefit_requires_authorized_offer(lang, source, exp
         assert len(attempts) == len(offers)
         assert all(a.get("source") == source and a.get("inline_preview") is True for a in attempts)
         assert not errors
+        browser.close()
+
+
+def test_inline_region_changes_use_verified_prices_without_overview_reload():
+    seen = []
+    owner = 7
+    usd = [{"plan_type": "1_month", "currency": "USD", "amount": "10.00"}]
+    rub = [{"plan_type": "1_month", "currency": "RUB", "amount": "900.00"}]
+    overview = {
+        "ok": True,
+        "prices": {
+            "visa": {"1_month": {"currency": "TJS", "final_amount": 49, "base_amount": 49}},
+            "alipay": {"1_month": {"currency": "CNY", "final_amount": 35, "base_amount": 35}},
+        },
+        "card_prices": {
+            "uz": {"1_month": {"currency": "UZS", "final_amount": 55000, "base_amount": 55000}},
+            "ru": {"1_month": {"currency": "RUB", "final_amount": 500, "base_amount": 500}},
+            "other": {"1_month": {"currency": "USD", "final_amount": 5, "base_amount": 5}},
+        },
+        "lava": {"mode": "both", "currency": "USD", "plans": usd,
+                 "plans_by_currency": {"USD": usd, "RUB": rub}, "email": "test@example.com"},
+    }
+
+    def respond(route):
+        path = urlsplit(route.request.url).path
+        if path == "/iphone-pwa/course":
+            route.fulfill(status=200, content_type="text/html", body="""
+                <!DOCTYPE html><html lang="ru"><head><meta charset="utf-8">
+                <meta name="viewport" content="width=device-width,initial-scale=1">
+                <link rel="stylesheet" href="/course_v3_data/iphone-pwa-inline-pro.css?v=qa">
+                </head><body>
+                <script src="/course_v3_data/hsk-miniapp-i18n.js?v=qa"></script>
+                <script src="/course_v3_data/hsk-course-i18n.js?v=qa"></script>
+                <script src="/course_v3_data/hsk-subscription-presentation.js?v=qa"></script>
+                <script src="/course_v3_data/iphone-pwa-inline-pro.js?v=qa"></script>
+                </body></html>""")
+        elif path == "/api/v3/pwa-auth/session":
+            route.fulfill(status=200, json={"ok": True, "user_id": owner, "csrf": f"qa-csrf-{owner}"})
+        elif path == "/api/v3/pwa/subscription/overview":
+            assert route.request.headers["x-hsk-pwa-csrf"] == f"qa-csrf-{owner}"
+            seen.append("overview")
+            route.fulfill(status=200, json={**overview, "lava": {
+                **overview["lava"], "email": f"learner{owner}@example.com",
+            }})
+        elif path == "/iphone-pwa/checkout":
+            seen.append(route.request.url)
+            route.fulfill(status=200, content_type="text/html", body="<html><body>Manual checkout</body></html>")
+        elif path == "/api/v3/pwa/subscription/inline-event":
+            route.fulfill(status=200, json={"ok": True, "recorded": True})
+        else:
+            _serve_static(route, path)
+
+    with playwright.sync_playwright() as pw:
+        browser = getattr(pw, os.getenv("PWA_E2E_ENGINE", "chromium")).launch()
+        page = browser.new_context(**pw.devices["iPhone 13"]).new_page()
+        page.set_default_timeout(8000)
+        page.route("**/*", respond)
+        page.goto(ORIGIN + "/iphone-pwa/course")
+        page.evaluate("localStorage.setItem('hsk_sub_region_v1:pwa:7','tj')")
+        page.evaluate("HSKPwaInlinePro.open({source:'v3_locked_lesson',lang:'ru'})")
+        region = page.locator("#hsk-inline-pro .hip-region")
+        region.wait_for()
+        assert region.input_value() == "tj"
+        assert "49.00 TJS" in page.locator("#hsk-inline-pro .hip-plan").first.inner_text()
+        region.select_option("ru")
+        assert "900.00 RUB" in page.locator("#hsk-inline-pro .hip-plan").first.inner_text()
+        region.select_option("uz")
+        assert "10.00 USD" in page.locator("#hsk-inline-pro .hip-plan").first.inner_text()
+        region.select_option("cn")
+        assert "35.00 CNY" in page.locator("#hsk-inline-pro .hip-plan").first.inner_text()
+        assert seen.count("overview") == 1
+        assert page.evaluate("localStorage.getItem('hsk_sub_region_v1:pwa:7')") == "cn"
+        assert page.evaluate("document.characterSet") == "UTF-8"
+        cta = page.locator("#hsk-inline-pro .hip-actions button.hip-primary")
+        assert cta.count() == 1, page.locator("#hsk-inline-pro").inner_text()
+        assert "Получить Pro" in cta.inner_text(), cta.inner_text()
+        cta.click()
+        frame = page.locator("#hsk-inline-pro iframe")
+        frame.wait_for()
+        assert "country=cn" in frame.get_attribute("src")
+        assert "plan=1_month" in frame.get_attribute("src")
+        page.evaluate("HSKPwaInlinePro.closeEmbeddedCheckout(document.querySelector('#hsk-inline-pro iframe').contentWindow)")
+        assert page.get_by_role("heading", name="Лимит исчерпан").is_visible()
+        assert page.locator("#hsk-inline-pro .hip-region").input_value() == "cn"
+
+        # Browser cookies can change while the mounted checkout is hidden.
+        # The foreground recheck must discard the old owner's live UI and
+        # must not issue another overview or start a payment on their behalf.
+        page.evaluate("localStorage.setItem('hsk_sub_region_v1:pwa:8','ru')")
+        owner = 8
+        page.evaluate("document.dispatchEvent(new Event('visibilitychange'))")
+        page.locator("#hsk-inline-pro").wait_for(state="hidden")
+        assert seen.count("overview") == 1
+        page.evaluate("HSKPwaInlinePro.open({source:'v3_locked_lesson',lang:'ru'})")
+        region.wait_for()
+        assert region.input_value() == "ru"
+        assert "900.00 RUB" in page.locator("#hsk-inline-pro .hip-plan").first.inner_text()
+        assert page.evaluate("localStorage.getItem('hsk_sub_region_v1:pwa:7')") == "cn"
+        assert seen.count("overview") == 2
+        browser.close()
+
+
+def test_expiry_notice_uses_server_period_and_existing_checkout_once():
+    # Execute the actual course helper with the canonical localized bundle.
+    source = (STATIC / "course-v3.html").read_text(encoding="utf-8")
+    key_start = source.index("function proExpirySeenKey(){")
+    key_end = source.index(" function showBlockedCourseExpiry", key_start)
+    start = source.index("function maybeShowProExpiryNotice(){")
+    end = source.index("\nfunction flushPendingCenterAd()", start)
+    with playwright.sync_playwright() as pw:
+        browser = pw.chromium.launch()
+        page = browser.new_page(viewport={"width": 390, "height": 844})
+        page.route("**/*", lambda route: route.fulfill(status=200, content_type="text/html",
+                                                        body='<div id="sheet"></div>'))
+        page.goto(ORIGIN + "/expiry-test")
+        page.add_script_tag(path=str(STATIC / "course_v3_data/hsk-course-i18n.js"))
+        page.evaluate("""() => {
+            window.MAP={authenticated:true,pro_expiry_notice:null}; window.SCREEN='course';
+            window.PRO_EXPIRY_BOOT_READY=true; window.PRO_EXPIRY_DEFER_UNTIL=0;
+            window.PRO_EXPIRY_SEEN=Object.create(null); window.PWA_CHECKOUT_FRAME=null;
+            window.CHECKOUT_NAVIGATING=false; window.busy=false; window.shown=0;
+            window.centerAdBusy=()=>window.busy; window.foundationBlocksCourse=()=>false;
+            window.studySetupPending=()=>false; window.localUserScope=()=> 'pwa:test';
+            window.courseMessage=(k,f)=>HSKAI_COURSE_I18N.ru[k]||f;
+            window.pandaChar=()=>'<svg></svg>'; window.esc=x=>x;
+            window.$=x=>document.querySelector(x);
+            window.App={openSheet:html=>{document.querySelector('#sheet').innerHTML=html;shown++},
+              closeSheet:()=>{},goPay:s=>{window.checkoutSource=s}};
+        }""")
+        page.add_script_tag(content=source[key_start:key_end] + source[start:end])
+        assert page.evaluate("maybeShowProExpiryNotice()") is False
+        page.evaluate("MAP.pro_expiry_notice='a'.repeat(64); busy=true")
+        assert page.evaluate("maybeShowProExpiryNotice()") is False
+        page.evaluate("busy=false")
+        assert page.evaluate("maybeShowProExpiryNotice()") is True
+        assert page.get_by_text("Срок действия подписки HSK AI Pro истёк.").is_visible()
+        page.get_by_role("button", name="ВОССТАНОВИТЬ PRO").click()
+        assert page.evaluate("checkoutSource") == "course_expired"
+        page.evaluate("PRO_EXPIRY_SEEN=Object.create(null)")
+        assert page.evaluate("maybeShowProExpiryNotice()") is False
+        page.evaluate("MAP.pro_expiry_notice='b'.repeat(64)")
+        assert page.evaluate("maybeShowProExpiryNotice()") is True
+        assert page.evaluate("shown") == 2
         browser.close()

@@ -169,6 +169,21 @@ async def browser_checks(output):
                  course_funnel=[{"key":"promo_shown","label":"Таклиф кўрсатилди","users":4},
                                 {"key":"track_activated","label":"HSK 3.0 курси очилди","users":2}],
                  coverage_note="Synthetic HSK 3.0 funnel"))
+        elif path.endswith("/lava/read"):
+            data.update(lava={"config": {
+                "checkout_mode": "both", "currency": "USD",
+                "plans": {"1_month": {"enabled": True, "offer_id": UUID,
+                                      "price": {"amount": "10.00", "currency": "USD"},
+                                      "regional_prices": {"RUB": "900.00"}}},
+                "promo_codes": {"referral:20": "SYNTH20", "admin_campaign:10": "SYNTH10",
+                                "admin_campaign:15": "SYNTH15", "admin_campaign:25": "SYNTH25",
+                                "admin_campaign:30": "SYNTH30"},
+            }, "status": {}})
+        elif path.endswith("/lava/catalog"):
+            data.update(preflight={"offers": [], "checks": []})
+        elif path.endswith("/lava/prepare"):
+            await route.fulfill(status=409, json={"ok": False, "error": "confirmation_changed"})
+            return
         elif path.endswith("/hsk30/read"):
             data.update(hsk30=dict(enabled=True,unlock_payment_enabled=True,unlock_price_tjs=99,
                                    live_levels=["nhsk1","nhsk2"],available_levels=["nhsk1","nhsk2","nhsk3"]))
@@ -204,6 +219,28 @@ async def browser_checks(output):
                         await page.locator("#drawerLocale").select_option(language)
                     else:
                         await page.locator("#locale").select_option(language)
+                    if width == 1440 and language == "ru":
+                        await page.locator('[data-route="payments"]:visible').first.click()
+                        await page.locator('[data-finance-tab="methods"]').click()
+                        await page.locator('[data-action="lavaSettings"]').click()
+                        save = page.locator('[data-action="lavaPrepare"]')
+                        await expect(save).to_be_disabled()
+                        await expect(page.locator("#drawerContent")).to_contain_text("10.00 USD / 900.00 RUB")
+                        await expect(page.locator('#drawerFoot [data-action="close"]')).to_have_count(0)
+                        await page.locator("#lavaPromoReferral").fill(" SYNTH20 ")
+                        await expect(save).to_be_disabled()
+                        await page.locator("#lavaMode").select_option("manual_only")
+                        await expect(save).to_be_enabled()
+                        await page.locator("#lavaMode").select_option("both")
+                        await expect(save).to_be_disabled()
+                        assert not any(path.endswith("/lava/prepare") for path, _ in requests)
+                        await page.locator("#lavaMode").select_option("manual_only")
+                        async with page.expect_response(lambda response: response.url.endswith("/lava/prepare")):
+                            await save.click()
+                        request = next(body for path, body in requests if path.endswith("/lava/prepare"))
+                        assert request["promo_codes"]["admin_campaign:30"] == "SYNTH30"
+                        assert request["promo_codes"]["referral:20"] == "SYNTH20"
+                        await page.locator(".drawer-close").click()
                     await page.locator('[data-action="feedback"]').click()
                     await expect(page.locator(".inbox-minimal-row")).to_have_count(4)
                     assert not await page.locator("#inboxSource,#inboxPriority,#inboxStatus,#inboxPeriod,#inboxSearchQuery").count()

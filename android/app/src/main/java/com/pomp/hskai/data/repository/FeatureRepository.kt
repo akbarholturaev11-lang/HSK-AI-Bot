@@ -141,8 +141,8 @@ class FeatureRepository(
     suspend fun subscriptionOverview(): ApiResult<AndroidSubscriptionOverviewResponse> =
         authorized(DiagTags.SUBSCRIPTION) { api.subscriptionOverview(it) }
 
-    suspend fun checkoutOverview(origin: String): ApiResult<SubscriptionCheckoutOverviewDto> {
-        val result = authorized(DiagTags.PAYMENT) { api.checkoutOverview(it, origin) }
+    suspend fun checkoutOverview(origin: String, providerEntryId: Int? = null): ApiResult<SubscriptionCheckoutOverviewDto> {
+        val result = authorized(DiagTags.PAYMENT) { api.checkoutOverview(it, origin, providerEntryId) }
         if (result is ApiResult.Success) {
             appSettings?.setSubscriptionDisplayCurrency(result.value.preferredCurrency)
         }

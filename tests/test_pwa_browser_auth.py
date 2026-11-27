@@ -457,6 +457,17 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         second = await self.client.post(path,json=event,headers=headers)
         self.assertEqual(second.status_code,200,second.text)
         self.assertFalse(second.json()["recorded"])
+        ten_day = {**event, "event": "pwa_pro_plan_selected", "event_id": "inline-qa-123:10",
+                   "plan_type": "10_days", "method": "manual"}
+        result = await self.client.post(path, json=ten_day, headers=headers)
+        self.assertEqual(result.status_code, 200, result.text)
+        self.assertTrue(result.json()["recorded"])
+        async with self.sessions() as db:
+            row = (await db.execute(sa.select(ConversionFunnelEvent).where(
+                ConversionFunnelEvent.event_name == "pwa_pro_plan_selected",
+                ConversionFunnelEvent.user_id == 1,
+            ))).scalar_one()
+            self.assertEqual(json.loads(row.payload_json)["plan_type"], "10_days")
         next_event = {**event,"event_id":"inline-qa-123:2"}
         self.assertTrue((await self.client.post(
             path,json=next_event,headers=headers)).json()["recorded"])
@@ -937,6 +948,64 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
                 CourseMiniAppEvent.event_name == "lesson_completed",
             ))).scalar_one()
             self.assertNotIn("learning_result", json.loads(event.payload_json))
+
+    async def test_pwa_skip_test_and_unlock_are_owner_verified_first_part_only(self):
+        from app.config import settings as main_settings
+        from app.db.models.course_miniapp_event import CourseMiniAppEvent
+        with patch.object(main_settings, "BOT_TOKEN", self.settings.BOT_TOKEN):
+            import app.main as main
+        preview_path = "/api/v3/pwa/lesson/skip-test"
+        denied = await self.client.post(preview_path, headers={"Origin": ORIGIN},
+                                        json={"level": "hsk1", "lesson_id": 4})
+        self.assertEqual(401, denied.status_code, denied.text)
+        await self.callback(await self.begin())
+        csrf = (await self.client.get("/api/v3/pwa-auth/session")).json()["csrf"]
+        headers = {"Origin": ORIGIN, "X-HSK-PWA-CSRF": csrf}
+        cookie = self.client.cookies.get(PWA_SESSION_COOKIE)
+        app = FastAPI()
+        unlock_path = "/api/v3/pwa/lesson/unlock"
+        app.add_api_route(unlock_path, main.pwa_v3_course_lesson_unlock, methods=["POST"])
+        with patch.object(main, "async_session_maker", self.sessions), patch.object(
+            main, "settings", self.settings,
+        ):
+            async with AsyncClient(transport=ASGITransport(app=app), base_url=ORIGIN) as client:
+                client.cookies.set(PWA_SESSION_COOKIE, cookie)
+                for transport, path in ((self.client, preview_path), (client, unlock_path)):
+                    bad = await transport.post(path, headers={"Origin": ORIGIN},
+                                               json={"level": "hsk1", "lesson_id": 4})
+                    self.assertEqual(403, bad.status_code, bad.text)
+                    later = await transport.post(path, headers=headers,
+                                                 json={"level": "hsk1", "lesson_id": 5})
+                    self.assertEqual(403, later.status_code, later.text)
+                    self.assertEqual("course_lesson_not_unlocked", later.json()["error"])
+                with patch("app.services.entitlements.lesson_access.LessonAccessService.status",
+                           new_callable=AsyncMock) as status:
+                    status.return_value = {"ok": False, "allowed": False, "error": "free_feature_limit_reached"}
+                    for transport, path in ((self.client, preview_path), (client, unlock_path)):
+                        spent = await transport.post(path, headers=headers,
+                                                     json={"level": "hsk1", "lesson_id": 4})
+                        self.assertEqual(403, spent.status_code, spent.text)
+                        self.assertEqual("free_feature_limit_reached", spent.json()["error"])
+                    async with self.sessions() as db:
+                        self.assertIsNone(await db.scalar(select(CourseProgress).where(CourseProgress.user_id == 1)))
+                    status.return_value = {"ok": True, "allowed": True}
+                    quiz = await self.client.post(preview_path, headers=headers,
+                                                  json={"level": "hsk1", "lesson_id": 4})
+                    self.assertEqual(200, quiz.status_code, quiz.text)
+                    self.assertTrue(quiz.json()["questions"])
+                    self.assertLessEqual(len(quiz.json()["questions"]), 6)
+                    opened = await client.post(unlock_path, headers=headers,
+                                               json={"level": "hsk1", "lesson_id": 4, "score": 80})
+                    self.assertEqual(200, opened.status_code, opened.text)
+                    self.assertEqual(3, opened.json()["completed_lessons_count"])
+                async with self.sessions() as db:
+                    progress = await db.scalar(select(CourseProgress).where(CourseProgress.user_id == 1))
+                    self.assertEqual(3, progress.completed_lessons_count)
+                    events = (await db.execute(select(CourseMiniAppEvent).where(
+                        CourseMiniAppEvent.event_name == "test_completed", CourseMiniAppEvent.user_id == 1,
+                    ))).scalars().all()
+                    self.assertEqual(1, len(events))
+                    self.assertEqual("iphone_pwa", json.loads(events[0].payload_json)["client"])
 
     async def test_pwa_lesson_content_uses_exact_miniapp_policy_without_initdata(self):
         path = "/api/v3/pwa/lesson/content/hsk1/1"
@@ -3814,7 +3883,12 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('PWA_CHECKOUT_HOST=location.pathname==="/iphone-pwa/checkout"', html)
         self.assertIn('preview:!INIT_DATA&&!PWA_CHECKOUT_HOST', html)
         self.assertIn('if(!INIT_DATA&&!PWA_CHECKOUT_HOST){', html)
-        self.assertIn('if(PWA_CHECKOUT_HOST)return "";', html)
+        # Region is non-authoritative local UI state, accessible only after
+        # the same verified PWA session supplies a positive owner ID.
+        self.assertIn('PWA_CHECKOUT_HOST?Number(PWA_CHECKOUT_ACTOR?.user_id)', html)
+        self.assertIn('if(!Number.isSafeInteger(owner)||owner<=0)return "";', html)
+        self.assertIn('(PWA_CHECKOUT_HOST?"pwa:":"")+owner', html)
+        self.assertIn('if(!key)return "";', html)
         self.assertIn('"/api/v3/pwa/subscription/submit"', html)
         self.assertIn('"/api/v3/pwa/subscription/payment-status"', html)
         self.assertIn('"X-HSK-PWA-CSRF":actor.csrf', html)

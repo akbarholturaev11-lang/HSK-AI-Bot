@@ -50,6 +50,61 @@ class ServerMonitoringChainTests(unittest.IsolatedAsyncioTestCase):
                     inbox_route="/api/admin/v1/inbox/list")
             self.assertEqual(incident.severity, "critical")
 
+    async def test_pwa_lava_provider_failure_reaches_inbox(self):
+        from sqlalchemy import select
+        from app.db.models.diagnostic import DiagnosticIncident
+        from app.db.models.lava import LavaInvoice
+        from app.services.lava.checkout import LavaCheckoutError, LavaCheckoutService
+        from app.services.lava.config import LavaConfigService, config_from_dict
+        from tests.lava_fakes import FakeLava, OFFER_ID, make_runtime
+
+        async with pg_sessions(PG_URL) as sessions:
+            reporter = reporter_for(sessions)
+            fake = FakeLava()
+            fake.unavailable = True
+            runtime = make_runtime(sessions, fake)
+            checkout = LavaCheckoutService(runtime)
+            async with sessions() as db, db.begin():
+                await LavaConfigService(db).save(config_from_dict({
+                    "checkout_mode": "both", "currency": "USD",
+                    "plans": {"1_month": {"enabled": True, "offer_id": OFFER_ID,
+                                          "price": {"amount": "10.00", "currency": "USD"},
+                                          "regional_prices": {"RUB": "900.00"}}},
+                }))
+
+            async def start(currency):
+                return await checkout.start(
+                    sessions, user_id=1, plan_type="1_month", email="buyer@example.com",
+                    source="pwa", language="ru", context_mode="subscription",
+                    currency=currency)
+
+            async def provider_failure():
+                with self.assertRaises(LavaCheckoutError) as ctx:
+                    await start("RUB")
+                self.assertEqual((ctx.exception.code, ctx.exception.status),
+                                 ("provider_unavailable", 503))
+                self.assertTrue(any(method == "POST" and path == "/api/v3/invoice"
+                                    for method, path in fake.calls))
+                async with sessions() as db:
+                    invoice = (await db.scalars(select(LavaInvoice))).one()
+                    self.assertEqual((invoice.currency, invoice.status), ("RUB", "failed"))
+
+            with patch.object(backend, "reporter", reporter):
+                with self.assertRaises(LavaCheckoutError) as invalid:
+                    await start("CNY")
+                self.assertEqual(invalid.exception.code, "plan_unavailable")
+                self.assertFalse(fake.calls)
+                await reporter.drain()
+                async with sessions() as db:
+                    self.assertIsNone(await db.scalar(select(DiagnosticIncident.id)))
+                    self.assertIsNone(await db.scalar(select(LavaInvoice.id)))
+
+                incident = await assert_monitoring_chain(
+                    self, platform="server", feature="pwa_pro_checkout", failure="provider_failed",
+                    site="v3_pwa_subscription_lava_start", sessions=sessions, reporter=reporter,
+                    trigger=provider_failure, inbox_route="/api/admin/v1/inbox/list")
+                self.assertEqual(incident.severity, "critical")
+
     async def test_learner_route_5xx_reaches_postgres_through_the_middleware(self):
         async with pg_sessions(PG_URL) as sessions:
             reporter = reporter_for(sessions)

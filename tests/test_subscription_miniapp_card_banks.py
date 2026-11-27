@@ -207,10 +207,11 @@ class AdminNotifyBankLineTests(unittest.TestCase):
 
 
 class RegionFlowCopyTests(unittest.TestCase):
-    def test_region_comes_first_and_only_tj_and_china_ask_for_a_payment_type(self):
+    def test_region_selection_preserves_tj_and_china_payment_type_step(self):
         self.assertIn('const REGION_ORDER=["tj","uz","ru","cn","other"];', SUBSCRIPTION_HTML)
         self.assertIn('function hasMethodStep(){return state.region==="tj"||state.region==="cn"}', SUBSCRIPTION_HTML)
-        self.assertIn('["country","plans","method","pay"]:["country","plans","pay"]', SUBSCRIPTION_HTML)
+        self.assertIn('["plans","method","pay"]:["plans","pay"]', SUBSCRIPTION_HTML)
+        self.assertIn('state.regionalPlans?steps:["country",...steps]', SUBSCRIPTION_HTML)
 
     def test_quote_and_submit_send_the_chosen_bank(self):
         self.assertEqual(
@@ -233,10 +234,11 @@ class RegionFlowCopyTests(unittest.TestCase):
     def test_region_is_remembered_per_telegram_account(self):
         # Bir marta tanlangan region shu qurilmada, akkaunt bo'yicha saqlanadi.
         self.assertIn(
-            'const REGION_STORAGE_KEY="hsk_sub_region_v1:"+String(tg?.initDataUnsafe?.user?.id||"guest");',
+            'Number(INIT_DATA&&tg?.initDataUnsafe?.user?.id)',
             SUBSCRIPTION_HTML,
         )
-        self.assertIn('if(screen==="country")saveRegion(state.region);', SUBSCRIPTION_HTML)
+        self.assertIn('if(!Number.isSafeInteger(owner)||owner<=0)return "";', SUBSCRIPTION_HTML)
+        self.assertIn('if(screen==="country"&&!PWA_CHECKOUT_HOST)saveRegion(state.region);', SUBSCRIPTION_HTML)
         self.assertIn("step:HSK30_UNLOCK_MODE?0:(REMEMBERED_REGION?1:0),", SUBSCRIPTION_HTML)
 
     def test_admin_panel_edits_both_requisites(self):

@@ -3,6 +3,10 @@
   "namespace": "course",
   "locale": "tj",
   "messages": {
+    "proExpiry.title": "Муҳлати обунаи HSK AI Pro ба охир расид.",
+    "proExpiry.body": "Мехоҳед дастрасии бемаҳдудро баргардонед?",
+    "proExpiry.restore": "БАРҚАРОР КАРДАНИ PRO",
+    "proExpiry.limited": "АЗ ДАСТ ДОДАНИ ДАСТРАСИИ БЕМАҲДУД",
     "pwaShake.allow": "Иҷозати сенсори ҳаракат",
     "pwaShake.cancel": "Бекор кардан",
     "pwaShake.captureUnavailable": "Скриншоти худкор гирифта нашуд. Метавонед бе сурат фиристед ё сурат интихоб кунед.",

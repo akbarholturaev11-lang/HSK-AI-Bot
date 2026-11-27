@@ -4,6 +4,7 @@ import com.pomp.hskai.core.audio.TtsCache
 import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
+import com.pomp.hskai.core.settings.LessonResumePoint
 import com.pomp.hskai.core.hanzi.CharacterStrokes
 import com.pomp.hskai.data.local.BundledStrokes
 import com.pomp.hskai.data.local.WordAudioSource
@@ -51,6 +52,9 @@ data class CourseMapSnapshot(
     val isStale: Boolean,
     val fetchedAtMillis: Long,
     val refreshError: ApiError? = null,
+    /** Live response only: never replay a purchase prompt from disk. */
+    val proExpiryNotice: String? = null,
+    val proExpiryTitle: String? = null,
 )
 
 data class LessonSnapshot(
@@ -61,7 +65,35 @@ data class LessonSnapshot(
     val completionError: String?,
     /** Read from disk because the request never reached the server. */
     val isStale: Boolean = false,
-)
+    /** Original served order, before optional cards are trimmed or inserted. */
+    val resumeMaterialRefs: List<String> = lesson.cards.map { it.materialRef },
+) {
+    internal fun resumeIndex(point: LessonResumePoint): Int {
+        val cards = lesson.cards
+        if (point.index <= 0 && point.materialRef == null) return 0
+        val exact = point.materialRef?.let { ref -> cards.indexOfFirst { it.materialRef == ref } } ?: -1
+        if (exact >= 0) return exact
+        // Old APK positions use the original deck. An omitted optional card
+        // resumes at the next retained material, preserving teaching order.
+        for (ref in resumeMaterialRefs.drop(point.index.coerceIn(0, (resumeMaterialRefs.size - 1).coerceAtLeast(0)))) {
+            val index = cards.indexOfFirst { it.materialRef == ref }
+            if (index >= 0) return index
+        }
+        return cards.lastIndex.coerceAtLeast(0)
+    }
+
+    internal fun resumePoint(index: Int): LessonResumePoint {
+        val cards = lesson.cards
+        val card = cards.getOrNull(index) ?: return LessonResumePoint(index)
+        val canonical = resumeMaterialRefs.indexOf(card.materialRef).takeIf { it >= 0 }
+            // A synthetic picture deck has no original position. If it later
+            // disappears, resume at the following original card, still unshown.
+            ?: cards.drop(index + 1).firstNotNullOfOrNull { next ->
+                resumeMaterialRefs.indexOf(next.materialRef).takeIf { it >= 0 }
+            } ?: (resumeMaterialRefs.size - 1).coerceAtLeast(0)
+        return LessonResumePoint(canonical, card.materialRef)
+    }
+}
 
 class CourseRepository(
     private val api: AndroidCourseApi,
@@ -136,7 +168,7 @@ class CourseRepository(
                     dao.upsert(
                         CourseMapCacheEntity(
                             level = dto.level,
-                            payloadJson = json.encodeToString(CourseMapDto.serializer(), dto),
+                            payloadJson = json.encodeToString(CourseMapDto.serializer(), dto.copy(proExpiryNotice = null, proExpiryTitle = null)),
                             fetchedAtMillis = fetchedAt,
                         )
                     )
@@ -145,6 +177,8 @@ class CourseRepository(
                             map = CourseMapper.toDomain(dto),
                             isStale = false,
                             fetchedAtMillis = fetchedAt,
+                            proExpiryNotice = dto.proExpiryNotice?.takeIf { it.matches(Regex("[a-f0-9]{64}")) },
+                            proExpiryTitle = dto.proExpiryTitle?.takeIf { !it.isBlank() && it.length <= 160 },
                         )
                     )
                 }
@@ -417,6 +451,7 @@ class CourseRepository(
             completionAllowed = envelope.completionAllowed,
             completionError = envelope.completionError,
             isStale = isStale,
+            resumeMaterialRefs = parsed.cards.map { it.materialRef },
         )
     }
 

@@ -38,6 +38,7 @@ interface AndroidFeatureApi {
     suspend fun checkoutOverview(
         @Header("Authorization") authorization: String,
         @Query("origin") origin: String,
+        @Query("provider_entry_id") providerEntryId: Int? = null,
     ): Response<SubscriptionCheckoutOverviewDto>
 
     @GET("api/v3/android/subscription/currency-preference")

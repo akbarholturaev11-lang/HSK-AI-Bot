@@ -159,10 +159,12 @@ fun LessonScreen(
     onSpeakPicture: () -> Unit = {},
     onSkipPicture: () -> Unit = {},
     onContinuePicture: () -> Unit = {},
+    /** Settings can leave through the same guard as Android Back. */
+    settingsSheet: @Composable (onExit: () -> Unit) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val outcome = state.outcome
-    // Mid-lesson, the ✕ and the phone's back both ask before leaving; the back
+    // Mid-lesson, Settings → Exit and the phone's Back ask before leaving; Back
     // used to close the whole app from here. Loaders, errors, the limit block
     // and the celebration are not a lesson in progress and just leave.
     val requestExit = rememberExitGuard(
@@ -206,7 +208,6 @@ fun LessonScreen(
                     onContinue = onContinueAdaptive,
                     onPlayAudio = onPlayAudio,
                     onOpenPinyinSettings = onOpenPinyinSettings,
-                    onExit = requestExit,
                 )
                 else -> Box(modifier = Modifier.fillMaxSize()) {
                     // The faded ink landscape sits under the cards only; the
@@ -230,7 +231,6 @@ fun LessonScreen(
                         onOpenWriter = onOpenWriter,
                         onShowWriterCharacter = onShowWriterCharacter,
                         onCloseWriter = onCloseWriter,
-                        onExit = requestExit,
                         onAskAssistant = onAskAssistant,
                     )
                 }
@@ -259,6 +259,7 @@ fun LessonScreen(
             )
         }
     }
+    settingsSheet(requestExit)
 }
 
 /**
@@ -331,7 +332,6 @@ private fun LessonBody(
     onOpenWriter: (WriterTarget) -> Unit,
     onShowWriterCharacter: (Int) -> Unit,
     onCloseWriter: () -> Unit,
-    onExit: () -> Unit,
     onAskAssistant: ((question: String, readyAnswer: String) -> Unit)?,
 ) {
     val haptics = LocalHapticFeedback.current
@@ -392,7 +392,6 @@ private fun LessonBody(
                 hearts = state.hearts,
                 counter = "${(state.cardIndex + 1).coerceAtMost(state.totalCards.coerceAtLeast(1))} / ${state.totalCards.coerceAtLeast(1)}",
                 onOpenPinyinSettings = onOpenPinyinSettings,
-                onExit = onExit,
             )
             // The Mini App's `.fstage`: which part of the lesson this is, centred
             // under the bar. A card that already shows it as its heading skips it.
@@ -705,7 +704,6 @@ internal fun LessonTopBar(
     progress: Float,
     hearts: Int,
     onOpenPinyinSettings: () -> Unit,
-    onExit: () -> Unit,
     /** "3 / 12", shown right before the hearts like the Mini App's `.fcount`. */
     counter: String? = null,
 ) {
@@ -719,24 +717,15 @@ internal fun LessonTopBar(
         horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         HskGlassIconButton(
-            icon = Icons.Filled.Close,
-            contentDescription = stringResource(R.string.hsk_common_action_close),
-            onClick = onExit,
-            size = 40.dp,
+            icon = Icons.Filled.Settings,
+            contentDescription = stringResource(R.string.hsk_course_lesson_settings_title),
+            onClick = onOpenPinyinSettings,
+            size = 48.dp,
             iconSize = 24.dp,
             tint = PompColors.InkSecondary,
         )
 
         HskStageProgress(progress = progress, modifier = Modifier.weight(1f))
-
-        HskGlassIconButton(
-            icon = Icons.Filled.Settings,
-            contentDescription = stringResource(R.string.hsk_course_pinyin_settings_h),
-            onClick = onOpenPinyinSettings,
-            size = 40.dp,
-            iconSize = 22.dp,
-            tint = PompColors.InkDisabled,
-        )
 
         if (counter != null) {
             Text(

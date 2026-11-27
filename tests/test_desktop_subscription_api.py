@@ -1,4 +1,5 @@
 import base64
+import json
 import unittest
 from datetime import datetime, timedelta, timezone
 from types import SimpleNamespace
@@ -547,6 +548,70 @@ class DesktopSubscriptionApiTests(unittest.IsolatedAsyncioTestCase):
             ).scalar_one()
         self.assertEqual(entry.source, "desktop_hsk30_onboarding")
         self.assertEqual(entry.mode, "hsk30_unlock")
+
+    async def test_android_manual_fallback_counts_one_opening_without_losing_funnel(self):
+        from app.services.subscription_entry_analytics_service import SubscriptionEntryAnalyticsService
+        async with self.sessions() as session:
+            entry_id = await SubscriptionEntryAnalyticsService(session).record_entry(
+                user=await session.get(User, 1), source="android_course_limit",
+                mode="subscription", payment_method="lava", client="android",
+                return_entry_id=True,
+            )
+        self.assertIs(type(entry_id), int)
+        base = "/api/v3/android/subscription/checkout"
+        overview = await self.client.get(
+            base + f"/overview?origin=course_limit&provider_entry_id={entry_id}",
+            headers=self._headers(self.token_a),
+        )
+        self.assertEqual(200, overview.status_code, overview.text)
+        self.assertTrue(overview.json()["checkout_allowed"])
+        attempt = overview.json()["attempt_id"]
+        self.assertTrue(attempt)
+        event = await self.client.post(
+            base + "/event", headers=self._headers(self.token_a),
+            json={"attempt_id": attempt, "stage": "payment_instructions_viewed",
+                  "plan_type": "1_month", "payment_method": "alipay"},
+        )
+        self.assertEqual(200, event.status_code, event.text)
+        async with self.sessions() as session:
+            entries = (await session.execute(select(SubscriptionEntryEvent))).scalars().all()
+            self.assertEqual([entry_id], [row.id for row in entries])
+            opened = (await session.execute(select(ConversionFunnelEvent).where(
+                ConversionFunnelEvent.event_name == "checkout_opened",
+            ))).scalars().all()
+            # The established manual funnel stores both the base opening
+            # and the follow-up stage under checkout_opened. Count the base
+            # separately; assert the stage is retained, not silently dropped.
+            self.assertEqual(2, len(opened))
+            payloads = [(row, json.loads(row.payload_json)) for row in opened]
+            self.assertTrue(all(payload["attempt_id"] == attempt for _, payload in payloads))
+            base_rows = [row for row, payload in payloads if "stage" not in payload]
+            stages = [(row, payload) for row, payload in payloads if "stage" in payload]
+            self.assertEqual(1, len(base_rows))
+            self.assertEqual("android_course_limit", base_rows[0].source)
+            self.assertEqual(1, len(stages))
+            stage_row, stage = stages[0]
+            self.assertEqual("android_subscription", stage_row.source)
+            self.assertEqual("payment_instructions_viewed", stage["stage"])
+            self.assertEqual("1_month", stage["plan_type"])
+            self.assertEqual("alipay", stage["payment_method"])
+
+        for token, query in (
+            (self.token_b, f"origin=course_limit&provider_entry_id={entry_id}"),
+            (self.token_a, f"origin=profile_subscription&provider_entry_id={entry_id}"),
+            (self.token_a, "origin=course_limit&provider_entry_id=2147483647"),
+            (self.token_a, "origin=course_limit"),
+        ):
+            response = await self.client.get(base + "/overview?" + query, headers=self._headers(token))
+            self.assertEqual(200, response.status_code, response.text)
+        malformed = await self.client.get(base + "/overview?origin=course_limit&provider_entry_id=-1",
+                                          headers=self._headers(self.token_a))
+        self.assertEqual(422, malformed.status_code)
+        async with self.sessions() as session:
+            entries = (await session.execute(select(SubscriptionEntryEvent))).scalars().all()
+            self.assertEqual(5, len(entries))
+            self.assertEqual(1, sum(row.user_id == 2 for row in entries))
+            self.assertTrue(all(row.client == "android" for row in entries))
 
     async def test_android_receipt_uses_canonical_checkout_and_marks_admin_origin(self):
         base = "/api/v3/android/subscription/checkout"
