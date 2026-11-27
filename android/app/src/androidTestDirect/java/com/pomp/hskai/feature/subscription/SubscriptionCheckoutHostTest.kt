@@ -70,6 +70,7 @@ class SubscriptionCheckoutHostTest {
     private var pending: SubscriptionPendingDto? = null
     private var closeCount = 0
     private var deferSubmit = false
+    private var allManualPlans = false
     private var originalPaymentRegion: String? = null
     @Volatile private var submitContinuation: Continuation<Any?>? = null
 
@@ -120,9 +121,13 @@ class SubscriptionCheckoutHostTest {
                         attemptId = "android-test-attempt-$requestOrigin",
                         checkoutAllowed = pending == null,
                         pendingPayment = pending,
-                        prices = if (pending == null) mapOf("visa" to mapOf(plan to SubscriptionPriceDto(
+                        prices = if (pending == null) mapOf("visa" to (if (allManualPlans && mode == "subscription")
+                            listOf("1_month", "10_days", "3_months").associateWith {
+                                SubscriptionPriceDto(baseAmount = 10, finalAmount = 10, currency = "TJS")
+                            }
+                        else mapOf(plan to SubscriptionPriceDto(
                             baseAmount = 10, finalAmount = 10, currency = "TJS",
-                        ))) else emptyMap(),
+                        )))) else emptyMap(),
                     ))
                 }
                 "checkoutQuote" -> {
@@ -247,6 +252,20 @@ class SubscriptionCheckoutHostTest {
             )))
         }
         compose.waitForIdle()
+    }
+
+    @Test
+    fun manualPlansRemainSelectableWithoutAlternativeOrReferenceCopy() {
+        allManualPlans = true
+        show()
+        expectPlan(R.string.sub_plan_1)
+        expectPlan(R.string.sub_plan_10)
+        expectPlan(R.string.sub_plan_3)
+        compose.onNodeWithText(copy.getString(R.string.lava_other_plans)).assertDoesNotExist()
+        compose.onNodeWithText(copy.getString(R.string.lava_reference_price)).assertDoesNotExist()
+        compose.onNodeWithText(copy.getString(R.string.sub_plan_3)).performClick()
+        advanceToPayment()
+        compose.runOnIdle { assertEquals("3_months", quoteRequests.single().planType) }
     }
 
     @Test

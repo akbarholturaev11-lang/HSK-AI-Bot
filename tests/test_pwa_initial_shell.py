@@ -4,6 +4,7 @@ The authenticated /iphone-pwa/course route owns the cookie gate. This test
 covers the pure HTML renderer; browser-level identity checks live elsewhere.
 """
 import hashlib
+import re
 import tempfile
 import unittest
 from pathlib import Path
@@ -100,6 +101,14 @@ class PwaInitialShellTests(unittest.TestCase):
     def test_inline_response_never_modifies_shared_file(self):
         _pwa_inline_html(request(), "app/static/course-v3.html", {})
         self.assertEqual(Path("app/static/course-v3.html").read_bytes(), self.canonical)
+
+    def test_inline_pro_immutable_urls_match_current_asset_bytes(self):
+        body = _pwa_inline_html(request(), "app/static/course-v3.html", {}).body.decode()
+        for name in ("iphone-pwa-inline-pro.js", "iphone-pwa-inline-pro.css"):
+            with self.subTest(asset=name):
+                raw = Path("app/static/course_v3_data", name).read_bytes()
+                digest = hashlib.sha1(b"blob " + str(len(raw)).encode() + b"\0" + raw).hexdigest()[:12]
+                self.assertRegex(body, re.escape(name) + r"\?v=\d{8}-" + digest)
 
 
 if __name__ == "__main__":

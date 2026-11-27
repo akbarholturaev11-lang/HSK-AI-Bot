@@ -17,6 +17,15 @@ ORIGIN = "https://inline-route-qa.invalid"
 PRACTICES = ("voice", "recognition", "memorize", "pronunciation", "test", "mistakes")
 
 
+def _regional_overview():
+    return {"ok": True, "analytics_user_id": 1,
+            "prices": {"visa": {"1_month": {"base_amount": 10, "final_amount": 10, "currency": "TJS"}}},
+            "lava": {"mode": "both", "currency": "USD", "plans": [
+                {"plan_type": "1_month", "amount": "10.00", "currency": "USD"},
+                {"plan_type": "12_months", "amount": "90.00", "currency": "USD"},
+            ]}}
+
+
 def _markup(path):
     if path == "/iphone-pwa/course":
         stub = "window.oldCalls=0;window.App={openPaywall:function(){oldCalls++},goPay:function(){oldCalls++}};"
@@ -54,10 +63,7 @@ def _serve(route):
     if path == "/api/v3/pwa/subscription/overview":
         request = json.loads(route.request.post_data or "{}")
         assert request.get("inline_preview") is True
-        route.fulfill(status=200, json={"ok":True,"lava":{"mode":"both","plans":[
-            {"plan_type":"1_month","amount":"10.00","currency":"USD"},
-            {"plan_type":"12_months","amount":"90.00","currency":"USD"},
-        ]}})
+        route.fulfill(status=200, json=_regional_overview())
         return
     if path == "/api/v3/pwa/subscription/exit-offer":
         route.fulfill(status=200,json={"ok":True,"available":False})
@@ -159,8 +165,9 @@ def test_manual_flow_stays_in_same_pwa_modal():
         page.route("**/*",_serve)
         page.goto(ORIGIN+"/iphone-pwa/course")
         page.evaluate("App.openPaywall('lockedLesson')")
-        page.get_by_role("button",name="Другие тарифы").click()
-        page.get_by_role("button",name="Обычный способ оплаты").click()
+        page.locator('#hsk-inline-pro .hip-region').select_option('tj')
+        assert page.get_by_role("button",name="Другие тарифы").count() == 0
+        page.locator('#hsk-inline-pro .hip-primary').click()
         frame=page.locator("#hsk-inline-pro iframe")
         frame.wait_for()
         assert frame.get_attribute("src").startswith("/iphone-pwa/checkout?")
@@ -170,7 +177,8 @@ def test_manual_flow_stays_in_same_pwa_modal():
         assert page.locator("#hsk-inline-pro .hip-back").is_hidden()
         assert page.locator("#hsk-inline-pro .hip-close").is_hidden()
         page.evaluate("HSKPwaInlinePro.closeEmbeddedCheckout(document.querySelector('#hsk-inline-pro iframe').contentWindow)")
-        assert page.get_by_role("heading",name="Другие тарифы").is_visible()
+        assert page.get_by_role("heading",name="Лимит исчерпан").is_visible()
+        assert page.locator('#hsk-inline-pro .hip-region').input_value() == 'tj'
         assert page.locator("#hsk-inline-pro iframe").count()==0
         browser.close()
 
@@ -194,10 +202,7 @@ def test_real_manual_checkout_fills_screen_with_header_x_and_bottom_button():
             route.fulfill(status=200, json={"ok": True, "csrf": "testcsrf", "user_id": 1})
             return
         if path == "/api/v3/pwa/subscription/overview":
-            route.fulfill(status=200, json={"ok": True, "lava": {"mode": "both", "plans": [
-                {"plan_type": "1_month", "amount": "10.00", "currency": "USD"},
-                {"plan_type": "12_months", "amount": "90.00", "currency": "USD"},
-            ]}})
+            route.fulfill(status=200, json=_regional_overview())
             return
         if path.startswith("/api/"):
             route.fulfill(status=200, json={"ok": True})
@@ -220,8 +225,9 @@ def test_real_manual_checkout_fills_screen_with_header_x_and_bottom_button():
         # Playwright has no notch: stand in for the measured iPhone insets.
         page.evaluate("HSKPwaInlinePro.safeArea=function(){return {top:47,bottom:34}}")
         page.evaluate("App.openPaywall('lockedLesson')")
-        page.get_by_role("button", name="Другие тарифы").click()
-        page.get_by_role("button", name="Обычный способ оплаты").click()
+        page.locator('#hsk-inline-pro .hip-region').select_option('tj')
+        assert page.get_by_role("button", name="Другие тарифы").count() == 0
+        page.locator('#hsk-inline-pro .hip-primary').click()
         frame_el = page.locator("#hsk-inline-pro iframe")
         frame_el.wait_for()
         frame = page.frame_locator("#hsk-inline-pro iframe")
@@ -247,7 +253,7 @@ def test_real_manual_checkout_fills_screen_with_header_x_and_bottom_button():
         assert metrics["x"] and metrics["label"] == "Закрыть"
         # The header X leaves the regular checkout back to the Pro plans.
         frame.locator("#pwaCheckoutBackBtn").click()
-        page.get_by_role("heading", name="Другие тарифы").wait_for()
+        page.get_by_role("heading", name="Лимит исчерпан").wait_for()
         assert page.locator("#hsk-inline-pro iframe").count() == 0
         assert not errors, errors
         browser.close()
