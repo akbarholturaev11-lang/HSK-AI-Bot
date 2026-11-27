@@ -14,6 +14,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -2206,6 +2208,19 @@ private fun LessonHost(
         onCloseWriter = model::closeWriter,
         onAnswerAdaptive = model::answerAdaptive,
         onContinueAdaptive = model::continueAdaptive,
+        settingsSheet = { guardedExit ->
+            if (pinyinSheetOpen) {
+                PinyinPicker(
+                    current = pinyin,
+                    onPick = { value ->
+                        scope.launch { app.appSettings.setPinyinVisibility(value) }
+                        pinyinSheetOpen = false
+                    },
+                    onDismiss = { pinyinSheetOpen = false },
+                    onExit = { pinyinSheetOpen = false; guardedExit() },
+                )
+            }
+        },
         onExit = {
             val completed = lessonState.outcome is LessonOutcome.Completed
             model.endAttempt(launch.attemptKey)
@@ -2214,16 +2229,6 @@ private fun LessonHost(
         onAskAssistant = if (assistant != null && assistantEnabled) assistant.ask else null,
     )
 
-    if (pinyinSheetOpen) {
-        PinyinPicker(
-            current = pinyin,
-            onPick = { value ->
-                scope.launch { app.appSettings.setPinyinVisibility(value) }
-                pinyinSheetOpen = false
-            },
-            onDismiss = { pinyinSheetOpen = false },
-        )
-    }
 }
 
 /**
@@ -2233,46 +2238,66 @@ private fun LessonHost(
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun PinyinPicker(
+internal fun PinyinPicker(
     current: PinyinVisibility,
     onPick: (PinyinVisibility) -> Unit,
     onDismiss: () -> Unit,
+    onExit: (() -> Unit)? = null,
 ) {
-    val sheetState = rememberModalBottomSheetState()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = onExit != null)
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
         containerColor = PompColors.PaperRaised,
     ) {
-        Column(Modifier.padding(horizontal = 20.dp, vertical = 8.dp)) {
+        Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp)) {
             Text(
-                text = stringResource(R.string.hsk_course_pinyin_settings_h),
+                text = stringResource(if (onExit != null) R.string.hsk_course_lesson_settings_title else R.string.hsk_course_pinyin_settings_h),
                 style = androidx.compose.material3.MaterialTheme.typography.titleMedium,
                 color = PompColors.Ink,
             )
             androidx.compose.foundation.layout.Spacer(Modifier.padding(6.dp))
-            PinyinVisibility.entries.forEach { option ->
-                val selected = option == current
-                val labelRes = when (option) {
-                    PinyinVisibility.ALL -> R.string.lesson_pinyin_all
-                    PinyinVisibility.NEW_WORDS_ONLY -> R.string.lesson_pinyin_new
-                    PinyinVisibility.OFF -> R.string.hsk_course_pinyin_settings_off
-                }
-                Surface(
-                    color = if (selected) PompColors.CinnabarSoft else PompColors.PaperRaised,
-                    shape = androidx.compose.foundation.shape.RoundedCornerShape(14.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = 52.dp)
-                        .padding(vertical = 4.dp)
-                        .clickable { onPick(option) },
-                ) {
+            Column(Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState())) {
+                if (onExit != null) {
                     Text(
-                        text = stringResource(labelRes),
-                        style = androidx.compose.material3.MaterialTheme.typography.bodyLarge,
-                        color = if (selected) PompColors.CinnabarDark else PompColors.Ink,
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+                        text = stringResource(R.string.hsk_course_pinyin_settings_h),
+                        style = androidx.compose.material3.MaterialTheme.typography.labelLarge,
+                        color = PompColors.InkSecondary,
+                        modifier = Modifier.padding(vertical = 8.dp),
                     )
+                }
+                PinyinVisibility.entries.forEach { option ->
+                    val selected = option == current
+                    val labelRes = when (option) {
+                        PinyinVisibility.ALL -> R.string.lesson_pinyin_all
+                        PinyinVisibility.NEW_WORDS_ONLY -> R.string.lesson_pinyin_new
+                        PinyinVisibility.OFF -> R.string.hsk_course_pinyin_settings_off
+                    }
+                    Surface(
+                        color = if (selected) PompColors.CinnabarSoft else PompColors.PaperRaised,
+                        shape = androidx.compose.foundation.shape.RoundedCornerShape(14.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = 52.dp)
+                            .padding(vertical = 4.dp)
+                            .clickable { onPick(option) },
+                    ) {
+                        Text(
+                            text = stringResource(labelRes),
+                            style = androidx.compose.material3.MaterialTheme.typography.bodyLarge,
+                            color = if (selected) PompColors.CinnabarDark else PompColors.Ink,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+                        )
+                    }
+                }
+            }
+            if (onExit != null) {
+                androidx.compose.material3.HorizontalDivider(Modifier.padding(top = 8.dp), color = PompColors.Divider)
+                androidx.compose.material3.TextButton(
+                    onClick = onExit,
+                    modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp),
+                ) {
+                    Text(stringResource(R.string.hsk_course_lesson_settings_exit), color = PompColors.InkSecondary)
                 }
             }
             androidx.compose.foundation.layout.Spacer(Modifier.padding(12.dp))
