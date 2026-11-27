@@ -147,9 +147,9 @@ concurrency:
 jobs:
   targeted-tests:
     runs-on: ubuntu-latest
-    # The sequential browser-auth, course, checkout and migration regressions
-    # exceeded the old budget when the PR workflows ran concurrently.
-    timeout-minutes: 15
+    # The full unchanged test list exceeded 15 minutes twice under concurrent
+    # PR load. Keep a bounded budget for every existing regression to finish.
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
