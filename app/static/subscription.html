@@ -85,23 +85,25 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 #payText:empty+.quote-card{margin-top:0}
 .plans{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .plan-region{display:block;width:100%;min-height:44px;margin-top:10px;padding:8px 12px;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);font:inherit}
-.plan-region[hidden],#lavaAlternative[hidden],#manualAlternative[hidden]{display:none}
+.plan-region[hidden]{display:none}
 .plan{position:relative;min-height:130px;text-align:left;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg);padding:14px;display:flex;flex-direction:column;justify-content:space-between;transition:.18s}
 .plan.selected,.choice.selected{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent);background:var(--accent-soft)}
 .plan.wide{grid-column:1/-1;min-height:auto}
-.plan-note{margin-top:6px;color:var(--muted);font-size:12px;font-weight:800}
+.plans[data-plan-count="1"]{grid-template-columns:1fr}
+#lavaPlans[data-plan-count="3"]>.plan:last-child,#plans[data-plan-count="3"]>.plan[data-plan="1_month"]{grid-column:1/-1}
+.plan[data-plan="1_month"] .plan-top{flex-wrap:nowrap}
+@media(max-width:430px){#plans[data-plan-count="2"]{grid-template-columns:1fr}}
 .renewal-summary{display:grid;gap:5px;margin-top:12px;border:1px solid var(--accent-line);border-radius:var(--radius-sm);background:var(--accent-soft);padding:12px 13px}
 .renewal-summary strong{font-size:13px;line-height:1.35;font-weight:850;color:var(--text)}
 .renewal-summary span{font-size:12px;line-height:1.4;color:var(--muted)}
 .plan-top{display:flex;align-items:center;justify-content:space-between;gap:6px 8px;flex-wrap:wrap}
 .plan-name{font-size:13px;color:var(--muted);font-weight:850;white-space:nowrap}
-.badge{display:inline-flex;align-items:center;justify-content:center;min-height:21px;border-radius:999px;padding:2px 8px;background:var(--gold-soft);color:var(--gold-ink);font-size:10px;line-height:1.12;font-weight:900;border:1px solid var(--gold-line)}
+.badge{display:inline-flex;align-items:center;justify-content:center;min-height:21px;border-radius:999px;padding:2px 8px;background:var(--hsk-jade-soft);color:var(--hsk-ink);font-size:11px;line-height:1.12;font-weight:900;border:1px solid var(--hsk-jade)}
 .price{display:inline-block;font-size:30px;line-height:1;font-weight:950;letter-spacing:-.02em;margin-top:12px;color:var(--text)}
 .price.long{font-size:23px}
 .price small{font-size:12px;color:var(--muted);font-weight:850;margin-left:4px}
 .old-price{display:none;margin-top:9px;color:var(--muted);font-size:12px;text-decoration:line-through}
 .discounted .old-price,.reference-priced .old-price{display:block}
-.reference-label{display:block;margin-top:4px;color:var(--muted);font-size:11px;line-height:1.35;font-weight:500}
 .list{display:grid;gap:9px}
 body.hsk-scene-page::before{content:none!important}
 .lava-question{min-height:calc(100dvh - 190px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;justify-content:center;text-align:center;gap:22px}
@@ -285,7 +287,6 @@ html.hsk-pwa-browser .app{padding-bottom:calc(104px + env(safe-area-inset-bottom
       <p class="value-copy" id="lavaPlansNote"></p>
       <div class="plans" id="lavaPlans"></div>
       <select id="lavaRegion" class="plan-region" hidden></select>
-      <button id="lavaAlternative" class="retry-inline" type="button" hidden></button>
     </section>
   </section>
 
@@ -327,7 +328,6 @@ html.hsk-pwa-browser .app{padding-bottom:calc(104px + env(safe-area-inset-bottom
       <p class="value-copy" id="valueText"></p>
       <div class="plans" id="plans"></div>
       <select id="planRegion" class="plan-region" hidden></select>
-      <button id="manualAlternative" class="retry-inline" type="button" hidden></button>
       <div class="renewal-summary" id="renewalSummary" style="display:none">
         <strong id="renewalCurrent"></strong>
         <span id="renewalNext"></span>
@@ -1460,19 +1460,20 @@ function renderLava(text,screen){
   $("#lavaPlansTitle").textContent=lavaText("plansTitle");
   const blockedActive=info?.blocked_reason==="subscription_active";
   $("#lavaPlansNote").textContent=blockedActive?lavaText("activeTitle"):lavaText("plansNote");
+  $("#lavaPlans").dataset.planCount=String(blockedActive?0:lavaPlans().length);
   $("#lavaPlans").innerHTML=blockedActive?"":lavaPlans().map(plan=>{
     const selected=state.lavaPlan===plan.plan_type;
     const amount=plan.amount==null?"":lavaMoney(plan.amount);
     const percent=Number(plan.discount_percent)||0;
     const badge=percent>0?`<span class="badge">−${percent}%</span>`:"";
     const reference=percent<=0&&state.mode==="subscription"&&!state.preview?HSKSubscriptionPresentation.relativePrice(plan.amount):null;
-    const old=percent>0&&plan.base_amount!=null?`<span class="old-price">${escapeHtml(lavaMoney(plan.base_amount))} ${escapeHtml(plan.currency||"")}</span>`:reference?`<span class="old-price">${escapeHtml(reference)} ${escapeHtml(plan.currency||"")}</span><span class="reference-label">${escapeHtml(HSKSubscriptionPresentation.regionalLabel(state.lang,"comparison"))}</span>`:"";
+    const old=percent>0&&plan.base_amount!=null?`<span class="old-price">${escapeHtml(lavaMoney(plan.base_amount))} ${escapeHtml(plan.currency||"")}</span>`:reference?`<span class="old-price" title="${escapeHtml(HSKSubscriptionPresentation.regionalLabel(state.lang,"comparison"))}">${escapeHtml(reference)} ${escapeHtml(plan.currency||"")}</span>`:"";
     return `<button class="plan ${selected?"selected":""} ${percent>0?"discounted":reference?"reference-priced":""}" type="button" data-lava-plan="${escapeHtml(plan.plan_type)}" aria-pressed="${selected}">
       <span class="plan-top"><span class="plan-name">${escapeHtml(lavaPlanName(plan.plan_type))}</span>${badge}</span>
       <span><span class="price ${amount.length>5?"long":""}">${escapeHtml(amount)}<small>${escapeHtml(plan.currency||"")}</small></span>${old}</span>
     </button>`;
   }).join("");
-  renderRegionalControls($("#lavaRegion"),$("#lavaAlternative"),text,"lava");
+  renderRegionalControls($("#lavaRegion"),text,"lava");
   const chosen=lavaPlanInfo();
   $("#lavaAmountLabel").textContent=text.amountLabel;
   $("#lavaAmountValue").textContent=chosen&&chosen.amount!=null?lavaMoney(chosen.amount):"...";
@@ -1721,19 +1722,19 @@ function applyOverview(data){
      narxlarni beradi, tepada esa «taklif tugagan» yozuvi turadi. */
   state.offerExpired=Boolean(data?.offer_expired);
   // Ordinary regional selection never changes special, pending or receipt flows.
-  const wasRegional=state.regionalPlans, previousPath=state.path;
+  const wasRegional=state.regionalPlans;
   state.regionalPlans=false;
   state.lavaCurrency="";
   const ordinary=state.mode==="subscription"&&(!PARAMS.get("mode")||PARAMS.get("mode")==="subscription")&&!PARAMS.get("method")&&!PARAMS.get("campaign_id")&&!PARAMS.get("feedback_id")&&!PWA_RESUME_RECEIPT&&!state.preview&&!state.pending&&!state.lavaStatus;
   const mode=lavaMode();
   const inlineManual=PARAMS.get("inline_manual")==="1"&&mode!=="lava_only";
   if(ordinary&&!lavaInfo()?.blocked_reason){
-    const regions=inlineManual?availableRegionalRegions():regionalChoices();
+    const regions=regionalChoices();
     const hint=inlineManual&&PWA_CHECKOUT_HOST&&REGION_ORDER.includes(PARAMS.get("country"))?PARAMS.get("country"):"";
     const preferred=state.region||hint||savedRegion()||localPaymentRegion(normalizeLang(data?.language||state.lang));
     if(regions.length&&(mode==="manual_only"||regionalCurrencies().length||inlineManual)){
       state.regionalPlans=true;
-      selectRegionalRoute(regions.includes(preferred)?preferred:regions[0],inlineManual?"manual":(wasRegional?previousPath:""));
+      selectRegionalRoute(regions.includes(preferred)?preferred:regions[0]);
     }
   }
   if(!state.regionalPlans){
@@ -1910,32 +1911,28 @@ function renderPlans(text){
   renderDiscount(text);
   renderInviteSheet(text);
   const plans=availablePlans(state.method);
-  /* "≈ 2 TJS/kun" faqat TJS narxiga to'g'ri keladi. */
-  const tjsPrices=state.method==="visa"&&state.country==="tj";
+  $("#plans").dataset.planCount=String(plans.length);
   $("#plans").innerHTML=(plans.length?plans:[]).map(plan=>{
     const price=planPrice(plan);
     if(!price)return "";
     const selected=state.plan===plan?"selected":"";
     const reference=!price.discounted&&state.mode==="subscription"&&!state.preview&&!isHsk30Unlock()?HSKSubscriptionPresentation.relativePrice(price.final):null;
     const discounted=price.discounted?"discounted":reference?"reference-priced":"";
-    const wide=plan==="3_months"?"wide":"";
+    const wide=plan==="hsk30_unlock"?"wide":"";
     const name=planName(text,plan);
     const badge=planBadge(text,plan);
     const amount=money(price.final);
     /* UZS kabi uzun summa yarim kenglikdagi kartaga sig'sin. */
     const long=amount.length>5?"long":"";
-    const note=(tjsPrices&&plan==="3_months"&&!price.discounted&&text.planLabels.quarterNote)?`<span class="plan-note">${text.planLabels.quarterNote}</span>`:"";
     return `<button class="plan ${selected} ${discounted} ${wide}" type="button" data-plan="${plan}" aria-pressed="${state.plan===plan}">
       <span class="plan-top"><span class="plan-name">${name}</span><span class="badge">${badge}</span></span>
       <span>
         <span class="price ${long}">${amount}<small>${price.currency}</small></span>
-        <span class="old-price">${reference?escapeHtml(reference):money(price.base)} ${price.currency}</span>
-        ${reference?`<span class="reference-label">${escapeHtml(HSKSubscriptionPresentation.regionalLabel(state.lang,"comparison"))}</span>`:""}
-        ${note}
+        <span class="old-price"${reference?` title="${escapeHtml(HSKSubscriptionPresentation.regionalLabel(state.lang,"comparison"))}"`:""}>${reference?escapeHtml(reference):money(price.base)} ${price.currency}</span>
       </span>
     </button>`;
   }).join("") || (overviewReady()?`<div class="detail-empty">${text.offerExpired}</div>`:"");
-  renderRegionalControls($("#planRegion"),$("#manualAlternative"),text,"manual");
+  renderRegionalControls($("#planRegion"),text,"manual");
   const dates=renewalDates();
   const summary=$("#renewalSummary");
   summary.style.display=dates?"grid":"none";
@@ -1944,9 +1941,8 @@ function renderPlans(text){
     $("#renewalNext").textContent=text.renewalNext.replace("{date}",dates.next);
   }
 }
-function renderRegionalControls(select,alternative,text,path){
-  const inlineManual=PARAMS.get("inline_manual")==="1"&&lavaMode()!=="lava_only";
-  const regions=inlineManual?availableRegionalRegions():regionalChoices();
+function renderRegionalControls(select,text,path){
+  const regions=regionalChoices();
   select.hidden=!state.regionalPlans||state.path!==path;
   if(!select.hidden){
     select.setAttribute("aria-label",text.countryTitle);
@@ -1954,10 +1950,7 @@ function renderRegionalControls(select,alternative,text,path){
     select.innerHTML=regions.map(region=>`<option value="${region}">${REGION_FLAGS[region]} ${escapeHtml(text.countries[region][0])}</option>`).join("");
     select.value=state.region;
   }
-  const alternativeAvailable=path==="manual"?regionalCurrencies().length>0:availableRegionalRegions().includes(state.region);
-  alternative.hidden=select.hidden||inlineManual||lavaMode()!=="both"||!alternativeAvailable;
-  alternative.disabled=state.busy;
-  alternative.textContent=HSKSubscriptionPresentation.regionalLabel(state.lang,"more");
+
 }
 function renderMethod(text){
   $("#methodsTitle").textContent=text.methodsTitle;
@@ -2516,9 +2509,7 @@ document.addEventListener("click",event=>{
 function changeRegionalRoute(region,forcedPath,remember){
   const screen=currentScreen();
   if(!state.regionalPlans||state.busy||!["plans","lavaPlans"].includes(screen)||!regionalChoices().includes(region))return;
-  const inlineManual=PARAMS.get("inline_manual")==="1"&&lavaMode()!=="lava_only";
-  if(inlineManual&&!availableRegionalRegions().includes(region))return;
-  selectRegionalRoute(region,inlineManual?"manual":forcedPath);
+  selectRegionalRoute(region,forcedPath);
   clearQuote();
   state.quoteError="";
   state.screenshotDataUrl="";
@@ -2533,8 +2524,6 @@ for(const id of ["#planRegion","#lavaRegion"]){
     if(event.target.value!==state.region)changeRegionalRoute(event.target.value,"",true);
   });
 }
-$("#manualAlternative").addEventListener("click",()=>changeRegionalRoute(state.region,"lava",false));
-$("#lavaAlternative").addEventListener("click",()=>changeRegionalRoute(state.region,"manual",false));
 function clearQuote(){
   state.quote=null;
   state.qrActionsOpen=false;

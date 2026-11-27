@@ -51,7 +51,7 @@ class BackfillChecks:
             self.engine = create_async_engine(url, connect_args={
                 "server_settings": {"search_path": self.schema}})
         else:
-            self.engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+            self.engine = create_async_engine(getattr(self, "sqlite_url", "sqlite+aiosqlite:///:memory:"))
             @event.listens_for(self.engine.sync_engine, "connect")
             def foreign_keys(dbapi, _):
                 dbapi.execute("PRAGMA foreign_keys=ON")

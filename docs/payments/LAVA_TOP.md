@@ -25,10 +25,28 @@ qarorlar: `openspec/changes/lava-top-pro-payments/`.
 
 Ordinary checkout uses the learner's account-scoped device hint or saved region.
 In `both`, Tajikistan and China prefer manual payment, Russia prefers verified
-RUB, and Uzbekistan and Other prefer verified USD. Alternative enabled methods
-remain available through Other plans. The Admin PWA signs the provider catalog
+RUB, and Uzbekistan and Other prefer verified USD. The subscription screen has
+no Other plans button: all enabled terms are visible in its plan grid, and
+changing region recomputes its ordinary route without preserving a manual
+alternative. Admin modes, provider availability, pending receipts and special
+products retain their existing authority and safety rules. The Admin PWA signs the provider catalog
 snapshots and validates them again on save. Older clients keep the configured
 default currency. Google Play remains consumption-only.
+
+The separate limit offer retains Other plans. Once its tariff is selected,
+manual checkout proceeds to method selection when the authenticated overview
+confirms that same sellable plan; it does not repeat the tariff screen. Missing
+or invalid plans keep the canonical selection step. Lava proceeds to email,
+or directly to the existing invoice start when a verified receipt email is known.
+
+RUB is not a separate country toggle and changing the global default currency
+is not required. An enabled term's selected offer must contain a verified RUB
+price for that exact billing period. Admin Save captures both supported
+currencies through the existing signed catalog validation. Older USD-only
+snapshots can be refreshed with the same Save action: it becomes enabled when
+the live catalog has a genuine persisted-price difference, even when the
+editable offer/mode fields are unchanged. Missing provider RUB prices are not
+estimated or converted locally. Existing invoice currencies remain unchanged.
 
 The checkout uses the authenticated account's most recent paid Lava receipt
 email, then its linked, verified Google email. With either address, the learner
@@ -43,6 +61,12 @@ unresolved invoices and active auto-renewals suppress the notice.
 
 This describes the PR implementation. Live merchant catalog, receipt delivery
 and real-device checkout still require isolated acceptance.
+
+Local checkout refusals log only their typed error code and HTTP status. Provider
+invoice failures separately log provider code/status/uncertainty. Neither log
+contains request bodies, email, credentials, invoice IDs or provider responses.
+A local 400 is not proof that Lava rejected an invoice; preserve the distinction
+when diagnosing Profile versus limit entry paths. POST is never retried automatically.
 
 ## Pul xavfsizligi qoidalari
 

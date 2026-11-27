@@ -88,6 +88,9 @@ def _client_ip(request: Request) -> str | None:
 
 
 def _checkout_error(exc: LavaCheckoutError) -> JSONResponse:
+    # Typed local refusals must be distinguishable from provider failures.
+    # Never log the request, email, credentials, identifiers or exception body.
+    logger.info("lava checkout refused: code=%s status=%s", exc.code, exc.status)
     return JSONResponse({"ok": False, "error": exc.code}, status_code=exc.status, headers=_NO_STORE)
 
 

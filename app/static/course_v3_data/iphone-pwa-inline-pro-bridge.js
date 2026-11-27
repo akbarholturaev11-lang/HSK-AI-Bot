@@ -376,11 +376,20 @@
       // chose manual, so strip exactly that question on this PWA iframe.
       try { if (typeof state !== "undefined") state.path = "manual"; } catch (_) {}
       var originalFlow=window.flow;
+      var selectedManualPlan=new URLSearchParams(location.search).get("plan");
       if(typeof originalFlow==="function"){
         window.flow=function(){
           var steps=originalFlow.apply(this,arguments);
-          if (typeof state !== "undefined" && state.path==="manual")
-            return steps.filter(function(step){return step!=="card"});
+          if (typeof state !== "undefined" && state.path==="manual") {
+            // The parent already presented and selected this exact tariff.
+            // Skip its duplicate card only after the authenticated overview
+            // confirms the same still-sellable ordinary manual plan.
+            var selected=["10_days","1_month","3_months"].includes(selectedManualPlan)&&
+              state.mode==="subscription"&&state.overview&&state.overview.checkout_allowed!==false&&
+              !state.pending&&!state.done&&!state.lavaStatus&&!state.offerExpired&&
+              state.plan===selectedManualPlan&&typeof window.hasCurrentPrice==="function"&&window.hasCurrentPrice();
+            return steps.filter(function(step){return step!=="card"&&!(selected&&step==="plans")});
+          }
           return steps;
         };
       }

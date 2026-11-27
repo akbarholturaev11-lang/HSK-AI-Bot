@@ -3,6 +3,7 @@ import ast
 import asyncio
 import contextlib
 import json
+import tempfile
 from pathlib import Path
 from types import SimpleNamespace
 import unittest
@@ -103,6 +104,13 @@ class AndroidObservationChecks:
     async def asyncSetUp(self):
         cls = analysis_fixture.PostgreSQLAnalysisTests if self.postgres else analysis_fixture.SQLiteAnalysisTests
         self.fixture = cls(methodName="test_reserved_fact_replay_counts_once_and_source_is_unchanged")
+        if not self.postgres:
+            # A cancelled optional observation can invalidate the SQLite
+            # connection. Keep this owned fixture beyond a single connection,
+            # as PostgreSQL does, without relaxing observer timeout assertions.
+            storage = tempfile.TemporaryDirectory(prefix="hsk-analysis-observer-")
+            self.addCleanup(storage.cleanup)
+            self.fixture.sqlite_url = f"sqlite+aiosqlite:///{Path(storage.name) / 'observer.sqlite'}"
         await self.fixture.asyncSetUp()
         self.case = self.fixture.case
         self.case.settings.SMART_REMINDER_ANALYSIS_ENABLED = True
@@ -209,6 +217,10 @@ class AndroidObservationChecks:
     async def test_retention_tick_removes_only_expired_analysis(self):
         grant = await self.case.claim()
         await self.case.receipt(grant)
+        # Retention needs confirmed analysis facts. Optional HTTP observations
+        # may hit their unchanged deadline on a busy runner; use the real
+        # idempotent capture service to arrange those facts before aging them.
+        await self.fixture.capture()
         before = [await self.fixture.rows(t) for t in (analysis_fixture.JOB, analysis_fixture.ATTEMPT, analysis_fixture.GRANT)]
         self.fixture.moment += RAW_RETENTION
         self.assertEqual((await self.observer.tick())["removed_raw"], 3)
@@ -246,7 +258,12 @@ class AndroidObservationChecks:
 
 
 class SQLiteAndroidObservationTests(AndroidObservationChecks, unittest.IsolatedAsyncioTestCase):
-    pass
+    async def test_connection_replacement_preserves_owned_fixture_storage(self):
+        before = await self.fixture.rows(analysis_fixture.JOB)
+        self.assertTrue(before)
+        async with self.case.engine.connect() as connection:
+            await connection.invalidate()
+        self.assertEqual(await self.fixture.rows(analysis_fixture.JOB), before)
 
 
 class PostgreSQLAndroidObservationTests(AndroidObservationChecks, unittest.IsolatedAsyncioTestCase):

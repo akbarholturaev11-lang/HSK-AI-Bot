@@ -44,10 +44,37 @@ class NativeLavaCheckoutTest {
         assertTrue(abs(plans.top-readyPlans.top)<2f && abs(plans.height-readyPlans.height)<2f)
         assertTrue(abs(email.top-readyEmail.top)<2f)
         val context=InstrumentationRegistry.getInstrumentation().targetContext
-        compose.onNodeWithText(context.getString(R.string.lava_other_plans)).performClick()
-        compose.onNodeWithText(context.getString(R.string.lava_months,6)+" · 50.00 USD").assertExists()
-        compose.onNodeWithText(context.getString(R.string.lava_manual)).assertExists()
+        compose.onNodeWithText(context.getString(R.string.lava_other_plans)).assertDoesNotExist()
+        compose.onNodeWithText("27.00 USD").assertExists()
+        compose.onNodeWithText("50.00 USD").assertExists()
+        compose.onNodeWithText("90.00 USD").assertExists()
+        compose.onNodeWithText(context.getString(R.string.lava_reference_price)).assertDoesNotExist()
+        compose.onNodeWithText(context.getString(R.string.lava_manual)).assertDoesNotExist()
     }
+    @Test fun twoProviderPlansUseAnEqualRow() = checkCompactGrid(2)
+
+    @Test fun threeProviderPlansFillTheLastRow() = checkCompactGrid(3)
+
+    private fun checkCompactGrid(count: Int) {
+        val api=Fake(); show(api)
+        val plans=listOf(LavaPlan("1_month",1,30,"10.00","USD"),
+            LavaPlan("3_months",3,90,"27.00","USD"), LavaPlan("6_months",6,180,"50.00","USD")).take(count)
+        api.reply.complete(Response.success(LavaOverview(true,LavaBlock(mode="both",email="qa@example.com",plans=plans))))
+        compose.waitUntil(5000) { compose.onAllNodesWithText("10.00 USD").fetchSemanticsNodes().isNotEmpty() }
+        val grid=compose.onNodeWithTag("provider-plans").fetchSemanticsNode().boundsInRoot
+        val first=compose.onNodeWithTag("provider-plan:1_month").fetchSemanticsNode().boundsInRoot
+        val second=compose.onNodeWithTag("provider-plan:3_months").fetchSemanticsNode().boundsInRoot
+        assertTrue(abs(first.width-second.width)<2f && abs(first.top-second.top)<2f)
+        if(count==3) {
+            val last=compose.onNodeWithTag("provider-plan:6_months").fetchSemanticsNode().boundsInRoot
+            assertTrue(abs(last.width-grid.width)<2f && last.top>=first.bottom)
+            compose.onNodeWithTag("provider-plan:6_months").performClick().assertIsSelected()
+        }
+        val context=InstrumentationRegistry.getInstrumentation().targetContext
+        compose.onNodeWithText(context.getString(R.string.lava_other_plans)).assertDoesNotExist()
+        compose.onNodeWithText(context.getString(R.string.lava_reference_price)).assertDoesNotExist()
+    }
+
     @Test fun knownEmailSkipsInputAndEnablesPayment() {
         val api = Fake()
         show(api)
