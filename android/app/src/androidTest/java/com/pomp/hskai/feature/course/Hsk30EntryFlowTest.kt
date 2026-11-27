@@ -104,6 +104,7 @@ class Hsk30EntryFlowTest {
         onUnlock: () -> Unit = {},
         onSwitch: (String, String?) -> Unit = { _, _ -> },
         onRetry: () -> Unit = {},
+        expiryVisible: MutableState<Boolean> = mutableStateOf(false),
     ) {
         val app = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as HskAiApplication
         val binding = AssistantBinding(assistantRegistry, app.assistant, {}, { _, _ -> })
@@ -122,7 +123,14 @@ class Hsk30EntryFlowTest {
                         onSwitchTrack = onSwitch,
                         onUnlockHsk30 = onUnlock,
                         onRetry = onRetry,
+                        expiryNoticeVisible = expiryVisible.value,
                     )
+                    if (expiryVisible.value) {
+                        ProExpirySheet(
+                            onRestore = { expiryVisible.value = false },
+                            onDismiss = { expiryVisible.value = false },
+                        )
+                    }
                 }
             }
         }
@@ -182,6 +190,20 @@ class Hsk30EntryFlowTest {
                 assertEquals(if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) index + 1 else 0, payments)
             }
         }
+    }
+
+    @Test fun expirySheetTemporarilyOwnsTheModalWithoutUnlockingTheBook() {
+        val expiry = mutableStateOf(true)
+        val state = mutableStateOf(courseState())
+        showCourse(state, expiryVisible = expiry)
+        compose.onNodeWithTag("hsk30-book-title").assertDoesNotExist()
+        compose.onNodeWithText(strings.getString(R.string.hsk_course_pro_expiry_restore))
+            .performScrollTo().assertIsDisplayed()
+        compose.onNodeWithText(strings.getString(R.string.hsk_course_pro_expiry_limited))
+            .performScrollTo().performClick()
+        compose.onNodeWithTag("hsk30-book-title").performScrollTo().assertIsDisplayed()
+        compose.onNodeWithText(strings.getString(R.string.hsk_course_pro_expiry_restore)).assertDoesNotExist()
+        compose.runOnIdle { assertEquals(false, state.value.map?.hsk30?.access?.allowed) }
     }
 
     @Test fun paidPermanentAndProvisionalAccessKeepTheCourseOpen() {

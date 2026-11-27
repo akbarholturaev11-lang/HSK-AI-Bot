@@ -10,7 +10,7 @@ from test_miniapp_smoke import (
 )
 
 
-def setup_rejection(page, *, denied=False, level="nhsk1", paid=False, language="uz", boot_level=None):
+def setup_rejection(page, *, denied=False, level="nhsk1", paid=False, language="uz", boot_level=None, expiry=None):
     errors = []
     page.on("pageerror", lambda error: errors.append(str(error)))
     mock_telegram_ready(page)
@@ -40,7 +40,8 @@ def setup_rejection(page, *, denied=False, level="nhsk1", paid=False, language="
                  "progress": {"xp": 0, "streak": 0, "completed": 0}})
     def map_route(route):
         if state["denied"] and not state["paid"] and state["level"].startswith("n"):
-            json_response(route, {"ok": False, "error": "payment_rejected", "level": level, "hsk30_access": access()}, status=403)
+            json_response(route, {"ok": False, "error": "payment_rejected", "level": level, "hsk30_access": access(),
+                                  "pro_expiry_notice": expiry, "user": {"language": language}}, status=403)
         else:
             current = data
             if state["level"] != level:
@@ -91,6 +92,22 @@ def test_rejected_cold_boot_shows_existing_gate_and_nonempty_screens(page):
     assert page.locator("#s-mashq").inner_text().strip()
     page.reload(wait_until="networkidle")
     rejected_sheet(page)
+    assert not errors
+
+
+def test_expiry_sheet_precedes_locked_hsk30_and_restores_regular_pro(page):
+    _, errors = setup_rejection(page, denied=True, language="ru", expiry="a" * 64)
+    expect(page.locator("#sheet.on.pro-expiry-sheet")).to_be_visible()
+    assert page.evaluate("MAP.course_access_locked && MAP.units.length===0")
+    page.evaluate("renderHsk30AccessGate({tracks:{hsk30:{access:{allowed:false,feature_enabled:true}}}})")
+    expect(page.locator("#sheet.on.pro-expiry-sheet")).to_be_visible()
+    page.evaluate("window.__restored=null;App.goPay=(source)=>window.__restored=source")
+    page.locator("#sheet .pro-expiry-content .scta").click()
+    assert page.evaluate("window.__restored") == "course_expired"
+    page.reload(wait_until="networkidle")
+    expect(page.locator("#sheet.on.hsk30-book-card")).to_be_visible()
+    expect(page.locator("#sheet.pro-expiry-sheet")).to_have_count(0)
+    assert page.evaluate("MAP.course_access_locked && MAP.units.length===0")
     assert not errors
 
 

@@ -149,6 +149,7 @@ fun CourseScreen(
     onHsk30PromoShown: () -> Unit = {},
     onDismissHsk30Promo: () -> Unit = {},
     hsk30PromoAllowed: Boolean = true,
+    expiryNoticeVisible: Boolean = false,
     onUnlockHsk30: () -> Unit = {},
     onRetry: () -> Unit,
     modifier: Modifier = Modifier,
@@ -310,7 +311,9 @@ fun CourseScreen(
             hsk30.access.featureEnabled &&
             !hsk30.access.allowed
 
-        if (hsk30Locked && hsk30 != null && !state.isSwitchingTrack) {
+        // Both use separate native windows. Never mount the locked-book
+        // dialog over the ordinary Pro renewal sheet. The map stays locked.
+        if (hsk30Locked && hsk30 != null && !state.isSwitchingTrack && !expiryNoticeVisible) {
             Hsk30LockedEntryDialog(
                 hsk30 = hsk30,
                 onUnlock = onUnlockHsk30,

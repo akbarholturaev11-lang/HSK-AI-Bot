@@ -2803,6 +2803,10 @@ async def _course_v3_map_for_user(
     if target_band.startswith("nhsk"):
         hsk30_access = await CourseTrackService(session).hsk30_access(user)
         if not hsk30_access.allowed:
+            # Keep all lesson material blocked. Natural Pro expiry is an
+            # independent, read-only presentation hint for this verified owner.
+            from app.services.subscription_expiry_notice import subscription_expiry_payload
+            expiry = await subscription_expiry_payload(session, user, language=resolved_lang)
             return JSONResponse(
                 status_code=403,
                 content={
@@ -2810,7 +2814,10 @@ async def _course_v3_map_for_user(
                     "error": hsk30_access.reason,
                     "level": target_band,
                     "hsk30_access": hsk30_access.payload(),
+                    **expiry,
+                    **({"user": {"language": resolved_lang}} if expiry.get("pro_expiry_notice") else {}),
                 },
+                headers={"Cache-Control": "no-store"},
             )
 
     progress_repo = CourseProgressRepository(session)

@@ -2046,7 +2046,7 @@
     },
     {
       "path": "app/main.py",
-      "reason": "The Mini App app_error handler adds a content-free diagnostic path. Existing signed lesson, activity and conversion event writers are unchanged; the Telegram diagnostic chain verifies no course or conversion KPI writes. The authenticated PWA lesson completion includes an optional first-part display block after save. Canonical ownership, course event identity, write order, activation and return denominators are unchanged. Corrections are excluded from telemetry; the PostgreSQL platform course chain verifies existing projections."
+      "reason": "The Mini App app_error handler adds a content-free diagnostic path. Existing signed lesson, activity and conversion event writers are unchanged; the Telegram diagnostic chain verifies no course or conversion KPI writes. The authenticated PWA lesson completion includes an optional first-part display block after save. Canonical ownership, course event identity, write order, activation and return denominators are unchanged. Corrections are excluded from telemetry; the PostgreSQL platform course chain verifies existing projections. HSK30 map denial now includes the existing read-only expiry notice for the authenticated owner; no change to the 403, progress, lesson payload, analytics writers or denominators. Existing map monitoring and owner checks are retained; regression in test_v3_hsk30_map_access.py and test_hsk30_rejection_recovery.py."
     },
     {
       "path": "app/api/pwa_auth.py",

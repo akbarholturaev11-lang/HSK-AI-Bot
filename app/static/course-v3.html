@@ -1937,7 +1937,7 @@ function openHsk30UnlockCheckout(){
 }
 function renderHsk30AccessGate(status){
   var t=trackUi(),access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
-  if(access&&access.allowed===false&&currentCourseTrack()==="hsk30"){
+  if(currentCourseTrack()==="hsk30"&&($("#sheet").classList.contains("pro-expiry-sheet")||CHECKOUT_NAVIGATING||PWA_CHECKOUT_FRAME))return;if(access&&access.allowed===false&&currentCourseTrack()==="hsk30"){
     HSK30_ACCESS_DENIED=true;prepareHsk30AccessBoundary(status);
   }
   var unlock=status&&status.hsk30_unlock||{},price=String(unlock.price_display||""),paymentEnabled=unlock.payment_enabled!==false&&Number(unlock.price_tjs||0)>0&&!!price;
@@ -1958,7 +1958,7 @@ function renderHsk30AccessGate(status){
 function showHsk30AccessGate(){
   if(currentCourseTrack()==="hsk30"&&!MAP)prepareHsk30AccessBoundary();
   courseTrackStatus(true).then(renderHsk30AccessGate).catch(function(){
-    var t=trackUi();
+    if($("#sheet").classList.contains("pro-expiry-sheet")||CHECKOUT_NAVIGATING||PWA_CHECKOUT_FRAME)return;var t=trackUi();
     App.openSheet('<div class="shead"><div class="tr" style="font-size:17px;color:var(--ink)">'+esc(t.hsk30Title)+'</div><div class="tr">'+esc(t.tryAgain)+'</div></div><button class="sec" style="width:100%" onclick="showHsk30AccessGate()">'+esc(t.tryAgain)+'</button>');
   });
 }
@@ -2583,7 +2583,7 @@ try{
     INTERNAL_NAVIGATING_UNTIL=0;EXIT_PINGED=false;clearDeferredCourseUnlock();
 CHECKOUT_NAVIGATING=false; if((!INIT_DATA&&!PWA_COURSE_HOST)||!MAP)return;
     _fetchCourseMap(MAP.level||getSelectedLevel()).then(function(d){
-      if(isHsk30AccessError(d,MAP.level||getSelectedLevel())){showCourseMapFailure({hsk30Gate:true,level:d.level||MAP.level});return}
+      if(isHsk30AccessError(d,MAP.level||getSelectedLevel())){showCourseMapFailure({hsk30Gate:true,level:d.level||MAP.level,deniedMap:d});return}
       if(!d||d._parseFail||d._status>=400||d.authenticated===false||!d.units)return;
       MAP=rememberLimitText(d);if(d.user)PROF=d.user;adoptStudySetup(d);syncNotify();renderAll();
     }).catch(function(){});
@@ -2832,7 +2832,7 @@ function refreshCourseProgress(afterWrite){
   var deadline=new Promise(function(resolve){timer=setTimeout(function(){if(controller)controller.abort();resolve(null)},10000)});
   PROGRESS_REFRESH=Promise.race([_fetchCourseMap(level,controller?controller.signal:undefined),deadline])
     .then(function(d){
-      if(MAP===snapshot&&isHsk30AccessError(d,level)){showCourseMapFailure({hsk30Gate:true,level:d.level||level});return false}
+      if(MAP===snapshot&&isHsk30AccessError(d,level)){showCourseMapFailure({hsk30Gate:true,level:d.level||level,deniedMap:d});return false}
       if(PROGRESS_REFRESH_QUEUED||MAP!==snapshot||!d||d._parseFail||d._status>=400||d.authenticated===false||!d.units||d.level!==level)return false;
       if(d.user)scheduleShortAccessRefresh(d.user);MAP.pro_expiry_notice=d.pro_expiry_notice||null;MAP.pro_expiry_title=d.pro_expiry_title||null;if(!MAP.pro_expiry_notice&&$("#sheet").classList.contains("pro-expiry-sheet"))App.closeSheet();if(Object.prototype.hasOwnProperty.call(d,"today"))MAP.today=d.today;
       if(d.progress)MAP.progress=d.progress;if(d.lesson_limit)MAP.lesson_limit=d.lesson_limit;
@@ -4385,11 +4385,11 @@ function showCourseLoadError(){if(PWA_COURSE_HOST)PWA_COURSE_LOAD_FAILED=true;
   ["s-mashq","s-voice","s-rating","s-profile"].forEach(function(id){var el=document.getElementById(id);if(el)el.innerHTML=""});
   App.show("course");
 }
-function showCourseMapFailure(res){
+function showBlockedCourseExpiry(d){if(!d)return false;var token=d.pro_expiry_notice,sheet=$("#sheet"),owner=localUserScope();if(!token||typeof token!=="string"||!/^[a-f0-9]{64}$/.test(token)||owner==="preview"||owner==="pwa:unbound"){if(MAP){MAP.pro_expiry_notice=null;MAP.pro_expiry_title=null}if(sheet.classList.contains("pro-expiry-sheet"))App.closeSheet();return false}if(MAP&&MAP.pro_expiry_notice===token&&sheet.classList.contains("pro-expiry-sheet")&&sheet.classList.contains("on"))return true;if(PRO_EXPIRY_SEEN[token])return false;try{if(localStorage.getItem("hsk_v3_pro_expiry_seen:v1:"+owner)===token)return false}catch(e){}if(MAP){MAP.pro_expiry_notice=null;MAP.pro_expiry_title=null}adoptServerLang(d);HSK30_ACCESS_DENIED=true;prepareHsk30AccessBoundary({active_level:d.level,tracks:{hsk30:{access:d.hsk30_access}}});MAP.authenticated=true;MAP.pro_expiry_notice=token;MAP.pro_expiry_title=d.pro_expiry_title||null;PRO_EXPIRY_BOOT_READY=true;if(sheet.classList.contains("hsk30-book-card"))App.closeSheet();return sheet.classList.contains("pro-expiry-sheet")||maybeShowProExpiryNotice()} function showCourseMapFailure(res){
   if(res&&res.data)return false;
   if(res&&res.blocked)showBlockedGate(res.support_url);
   else if(res&&res.hsk30Soon)showHsk30LevelSoon(res.level);
-  else if(res&&res.hsk30Gate){setSelectedLevel(res.level||"nhsk1");if(MAP)MAP.level=getSelectedLevel();showHsk30AccessGate()}
+  else if(res&&res.hsk30Gate){setSelectedLevel(res.level||"nhsk1");if(MAP)MAP.level=getSelectedLevel();if(!showBlockedCourseExpiry(res.deniedMap))showHsk30AccessGate()}
   // A browser session has no bot to return to: an expired PWA session goes
   // back to the iPhone sign-in page instead of the Telegram auth gate.
   else if(res&&res.auth===false){if(PWA_COURSE_HOST)location.replace("/iphone-pwa");else showAuthGate()}
@@ -6668,7 +6668,7 @@ function _fetchCourseMap(lv,signal){
       }
     }
     return r.json().then(function(d){
-      if(PWA_COURSE_HOST&&r.status===403&&d&&d.error==="pwa_csrf_invalid"){
+      if(PWA_COURSE_HOST&&r.status===403&&d&&(d.error==="pwa_csrf_invalid"||(d.pro_expiry_notice&&(!PWA_COURSE_USER_ID||r.headers.get("X-HSK-PWA-User-ID")!==String(PWA_COURSE_USER_ID))))){
         // A session cookie replaced in another tab changes its CSRF secret.
         // Never keep rendering the previous learner's local browser state.
         PWA_COURSE_ACTOR_PROMISE=null;
@@ -6685,7 +6685,7 @@ function refreshPwaCheckoutMap(){
   var controller=new AbortController(),timer=setTimeout(function(){controller.abort()},10000);
   return _fetchCourseMap(level,controller.signal).then(function(data){
     if(MAP!==snapshot||PWA_CHECKOUT_FRAME||$("#flow").classList.contains("on"))return false;
-    if(isHsk30AccessError(data,level)){showCourseMapFailure({hsk30Gate:true,level:data.level||level});return false}
+    if(isHsk30AccessError(data,level)){showCourseMapFailure({hsk30Gate:true,level:data.level||level,deniedMap:data});return false}
     if(!data||data._parseFail||data._status>=400||data.authenticated===false||!Array.isArray(data.units)||data.level!==level)return false;
     PWA_COURSE_LOAD_FAILED=false;MAP=rememberLimitText(data);if(data.user)PROF=data.user;
     adoptStudySetup(data);syncNotify();ratingLoaded=false;renderAll();
@@ -6706,7 +6706,7 @@ function retryTransientCourseMap(lv,tries,signal,kind){if(signal&&signal.aborted
   return request.then(function(d){
     if(d&&d._status===403&&d.error==="user_blocked")return {blocked:true,support_url:d.support_url||""};
     if(d&&d._status===403&&(d.error==="hsk30_level_not_live"||d.error==="hsk30_no_live_levels"))return {hsk30Soon:true,error:d.error,level:lv};
-    if(isHsk30AccessError(d,d.level||lv))return {hsk30Gate:true,error:d.error,level:d.level||lv};
+    if(isHsk30AccessError(d,d.level||lv))return {hsk30Gate:true,error:d.error,level:d.level||lv,deniedMap:d};
     if(d&&(d.authenticated===false||d._status===401))return {auth:false};
     if(!d||d._parseFail||(d._status&&d._status>=500)){
       // Only transient read failures retry; all auth and access denials are terminal.

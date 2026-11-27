@@ -1646,6 +1646,7 @@ private fun AppRoot(
                                         if (claimed) expirySheetToken = expiryCandidate
                                     }
                                 }
+                                val expiryNoticeVisible = expiryCandidate != null && expirySheetToken == expiryCandidate
                                 CourseScreen(
                                     state = courseState,
                                     dailyGoal = dailyGoal,
@@ -1668,11 +1669,12 @@ private fun AppRoot(
                                         !widgetSetupOpen && !widgetPlacedNotice && !studySetupState.visible &&
                                         !languagePickerOpen && !goalPickerOpen && !checkoutVisible &&
                                         nextPartSheet == null && expirySheetToken == null,
+                                    expiryNoticeVisible = expiryNoticeVisible,
                                     onUnlockHsk30 = ::openHsk30ContentGate,
                                     onRetry = courseViewModel::load,
                                     modifier = contentModifier,
                                 )
-                                if (expiryCandidate != null && expirySheetToken == expiryCandidate) {
+                                if (expiryNoticeVisible) {
                                     com.pomp.hskai.feature.course.ProExpirySheet(
                                         title = courseState.snapshot?.proExpiryTitle,
                                         onRestore = {
