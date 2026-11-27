@@ -82,6 +82,8 @@ class AnalysisChecks:
             self.skipTest("Owned loopback PostgreSQL required")
         cls = android.PostgreSQLAndroidProtocolTests if self.postgres else android.SQLiteAndroidProtocolTests
         self.case = cls(methodName="test_due_is_non_persisting_and_claim_commits_once_before_response")
+        if hasattr(self, "sqlite_url"):
+            self.case.sqlite_url = self.sqlite_url
         await self.case.asyncSetUp()
         self.engine, self.sessions = self.case.engine, self.case.sessions
         self.moment = self.case.tick
