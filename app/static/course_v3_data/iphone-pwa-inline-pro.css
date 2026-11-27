@@ -291,3 +291,9 @@
 #hsk-inline-pro .hip-region{display:block;width:100%;font:inherit;font-size:16px;color:var(--hip-muted);background:transparent;border:1px solid var(--hip-line);border-radius:12px;padding:9px 12px;margin:0 0 10px;min-height:42px}
 #hsk-inline-pro .hip-region[hidden]{display:none}
 #hsk-inline-pro .hip-reference-note{grid-column:1/-1;margin:0;color:var(--hip-muted);font-size:11px;line-height:1.4}
+
+/* Every enabled term is visible; odd three-card layouts keep a full final row. */
+#hsk-inline-pro .hip-plans[data-plan-count="1"]{grid-template-columns:1fr}
+#hsk-inline-pro .hip-plans[data-plan-count="3"]>.hip-plan:last-child{grid-column:1/-1}
+#hsk-inline-pro .hip-plan .term{display:flex;align-items:center;gap:6px;flex-wrap:nowrap}
+#hsk-inline-pro .hip-plan .badge{margin-left:0;background:var(--hip-jade-soft);color:var(--hip-ink);border:1px solid var(--hip-jade)}

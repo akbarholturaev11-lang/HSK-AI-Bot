@@ -1,0 +1,6 @@
+# Optional observer cancellation must not destroy its test database
+
+- Cause: the Android analysis observer fixture used one in-memory SQLite connection. A real optional-capture timeout invalidated that connection on the busy CI runner; the replacement connection had no smart_reminder_jobs table. The retention case then failed before its assertions. PostgreSQL keeps its database across connections.
+- Fix: only the SQLite Android observer fixture uses an owned temporary file, passed through the existing analysis/backfill setup. Dispose the engine before deleting the directory. Other fixtures keep their defaults. Retention arranges its analysis facts with the actual idempotent capture service before advancing time, so it does not depend on an optional HTTP callback always finishing within the unchanged deadline.
+- Risk: test storage only. Production schema, observer timeouts, cancellation, dispatch, persistence and assertions remain unchanged.
+- Prevention: a deterministic regression invalidates the real fixture connection and requires the original canonical job rows after reconnect. It failed with no such table on the old fixture. Existing retention still requires exactly three expired facts removed and unchanged job/attempt/grant rows; timeout/cancellation cases retain their original budgets.

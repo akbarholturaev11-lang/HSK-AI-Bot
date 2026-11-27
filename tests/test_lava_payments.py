@@ -157,6 +157,32 @@ class LavaPaymentTests(unittest.IsolatedAsyncioTestCase):
         # The return hint itself grants nothing.
         self.assertEqual(self.approved, [])
 
+    async def test_profile_and_limit_keep_the_same_provider_fields_and_owned_attempt(self):
+        async with self.sessions() as session:
+            await LavaConfigService(session).save(config_from_dict({
+                "checkout_mode": "both", "currency": "USD",
+                "plans": {"1_month": {"enabled": True, "offer_id": OFFER_ID,
+                    "price": {"amount": "10.00", "currency": "USD"}}},
+            }))
+            await session.commit()
+        with patch("app.public_site.render.public_origin", return_value="https://hskai.app"):
+            await self.checkout.start(self.sessions, user_id=1, plan_type="1_month",
+                email="buyer@example.com", source="pwa", language="ru", context_mode="subscription", currency="USD")
+            profile = dict(self.fake.last_create_body)
+            limit = await self.checkout.start(self.sessions, user_id=2, plan_type="1_month",
+                email="buyer@example.com", source="pwa", language="ru", context_mode="subscription", currency="USD",
+                analytics_attempt_id="limit-attempt", analytics_source="v3_locked_lesson", pwa_inline_return=True)
+            inline = dict(self.fake.last_create_body)
+        return_fields = {"successful_return_url", "failure_return_url", "cancel_return_url"}
+        self.assertEqual({k: v for k, v in profile.items() if k not in return_fields},
+                         {k: v for k, v in inline.items() if k not in return_fields})
+        self.assertNotEqual(profile["successful_return_url"], inline["successful_return_url"])
+        async with self.sessions() as session:
+            invoice = await session.get(LavaInvoice, limit["checkout_id"])
+            self.assertEqual((invoice.user_id, invoice.pwa_inline_attempt_id, invoice.pwa_inline_source),
+                             (2, "limit-attempt", "v3_locked_lesson"))
+        self.assertEqual(self.approved, [])
+
     async def test_effective_mode_falls_back_to_manual_when_unsafe(self):
         config = _config("lava_only")
         self.assertEqual(effective_mode(config, lava_settings(), client_supports_lava=True), "lava_only")

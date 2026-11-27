@@ -17,6 +17,7 @@ import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTouchInput
@@ -128,12 +129,18 @@ class ProfilePromoCarouselTest {
         // Do not re-query the semantics tree during an active drag. The
         // already-resolved card layout coordinates update when the pager
         // places the same node on the UI thread.
-        compose.mainClock.advanceTimeByFrame()
-        val draggedLeft = compose.runOnIdle {
-            cardNode.layoutInfo.coordinates.positionInRoot().x
+        try {
+            compose.mainClock.advanceTimeByFrame()
+            val draggedLeft = compose.runOnIdle {
+                cardNode.layoutInfo.coordinates.positionInRoot().x
+            }
+            assertTrue("card must slide while the finger is held down", draggedLeft < initialLeft - 25f)
+        } finally {
+            // Pointer state belongs to the owner, across target nodes. Release
+            // through its stable root instead of resolving the changing pager's
+            // semantics during the drag (which can race layout on API 35).
+            compose.onRoot().performTouchInput { up() }
         }
-        assertTrue("card must slide while the finger is held down", draggedLeft < initialLeft - 25f)
-        compose.onNodeWithTag("profile-promo-pager").performTouchInput { up() }
     }
 
     @Test fun aNewlyLinkedFinalCardDisappearsWithoutAnInvalidPage() {

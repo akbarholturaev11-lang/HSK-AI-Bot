@@ -62,7 +62,6 @@
       missingEmail:"Email-и дуруст ворид кунед",success:"Пардохт аз тарафи сервер тасдиқ шуд"}
   };
   var NAMES = { "10_days":"ten", "1_month":"one", "3_months":"three", "6_months":"six", "12_months":"year" };
-  var MONTHS = { "1_month":1, "3_months":3, "6_months":6, "12_months":12 };
   var order = ["1_month","3_months","6_months","12_months"];
   var root, sheet, scroll, body, actions, heading, info, panda, back, closeButton, lastFocus, state, tick = null, actorPromise = null, run = 0;
   function txt(key) {
@@ -282,8 +281,7 @@
   }
   function displayPath() {
     if(state.mode==="exit_discount")return "lava";
-    var alternate=state.screen==="more"||(state.screen==="email"&&state.emailFrom==="more");
-    return state.path==="manual"&&alternate&&providerPlans().length?"lava":state.path||"lava";
+    return state.path||"lava";
   }
   function available() {
     return displayPath()==="manual"?manualPlans(state.region):providerPlans();
@@ -330,12 +328,14 @@
     var plans=all?rows:(path==="manual"?rows.slice(0,2):rows.filter(function(p){return p.plan_type==="1_month"||p.plan_type==="12_months"}));
     if(!plans.length)plans=rows.slice(0,2);
     var grid=el("div","hip-plans");
+    grid.dataset.planCount=String(plans.length);
     plans.forEach(function(plan) {
       var card=btn("","hip-plan",function(){
         if (state.plan===plan.plan_type) return;
         state.plan=plan.plan_type;emit("pwa_pro_plan_selected",plan.plan_type,path);render();
       });
       card.setAttribute("aria-pressed",String(state.plan===plan.plan_type));
+      card.dataset.plan=plan.plan_type;
       var discounted=Number(plan.discount_percent)>0 && plan.base_amount!=null;
       var term=el("span","term",txt(NAMES[plan.plan_type]));
       if (discounted) term.appendChild(el("span","badge","−"+Number(plan.discount_percent)+"%"));
@@ -354,29 +354,13 @@
         }
       }
       card.appendChild(priceLine);
-      // Per-month equivalent of the same server amount (display only).
-      var months=Number(plan.months)||MONTHS[plan.plan_type]||1, amount=Number(plan.amount);
-      if (months>1 && Number.isFinite(amount) && amount>0) {
-        card.appendChild(el("span","per","≈ "+money(amount/months,plan.currency)+" "+txt("perMonth")));
-      }
       grid.appendChild(card);
     });
-    if(grid.querySelector(".comparison[title]"))grid.appendChild(el("p","hip-reference-note",HSKSubscriptionPresentation.regionalLabel(state.lang,"comparison")));
     return grid;
   }
   function openManual(selected) {
     state.manualFrom=state.screen;state.manualPlan=selected||"";
     emit("pwa_pro_method_selected",selected||null,"manual");state.screen="manual";state.error="";render();
-  }
-  function manualRow() {
-    var row=btn("","hip-method",function(){
-      openManual("");
-    });
-    var text=el("span","hip-method-text");
-    text.append(el("b",null,txt("manual")),el("small",null,txt("manualHint")));
-    var chevron=el("span","hip-method-chevron");chevron.innerHTML=icon("<path d=\"M9 5l7 7-7 7\"/>");
-    row.append(text,chevron);
-    return row;
   }
   function payButton() {
     return btn(txt("pay"),"hip-primary",function() {
@@ -420,8 +404,6 @@
       var loadingCta=btn(txt("pay"),"hip-primary",function(){});
       loadingCta.disabled=true;
       actions.appendChild(loadingCta);
-      // Reserve the secondary row so the primary button does not jump when
-      // the real plans arrive.
       var placeholder=btn(txt("more"),"hip-secondary",function(){});
       placeholder.disabled=true;placeholder.style.visibility="hidden";placeholder.setAttribute("aria-hidden","true");
       actions.appendChild(placeholder);
@@ -496,26 +478,17 @@
       return;
     }
     if (view==="more") {
-      // One screen: every sellable term plus the regular payment method.
-      // No provider choice step and no provider names.
       header("",txt("more"),"");
       if (plans.length) {
         if (!selectedPlan()) state.plan=plans[0].plan_type;
         body.appendChild(elementPlans(true));
         if(state.mode==="subscription")body.appendChild(regionSelector());
-        if (state.mode==="exit_discount") body.appendChild(el("p","hip-small hip-center",txt("saving")));
+        if(state.mode==="exit_discount")body.appendChild(el("p","hip-small hip-center",txt("saving")));
         actions.appendChild(payButton());
-      } else if (!manualAllowed()) {
-        body.appendChild(el("p","hip-small hip-center",txt("unavailable")));
-      }
-      if (manualAllowed()&&(!plans.length||displayPath()!=="manual")) {
-        if (plans.length) body.appendChild(el("div","hip-divider"));
-        body.appendChild(manualRow());
-        if (state.mode==="exit_discount") body.appendChild(el("p","hip-small",txt("manualNoExit")));
-      }
+      } else body.appendChild(el("p","hip-small hip-center",txt("unavailable")));
       return;
     }
-    // main
+    // main (limit offer only; the subscription checkout has no More button)
     if (!plans.length) {
       if (state.error || !manualAllowed()) {
         if (!state.error) body.appendChild(el("p","hip-small hip-center",txt("unavailable")));

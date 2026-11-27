@@ -71,6 +71,16 @@ class LavaCheckoutApiTests(unittest.IsolatedAsyncioTestCase):
         status = await self._post("/api/subscription-miniapp/lava/status", {"checkout_id": data["checkout_id"]})
         self.assertEqual(status.json()["status"], "paid")
 
+    def test_checkout_refusal_logs_only_typed_code_and_status(self):
+        error = lava_checkout.LavaCheckoutError("plan_unavailable", 400)
+        error.__cause__ = RuntimeError("private@example.com private-provider-body secret-api-key")
+        with self.assertLogs("app.api.lava_checkout", level="INFO") as logs:
+            response = lava_checkout._checkout_error(error)
+        self.assertEqual(logs.output, ["INFO:app.api.lava_checkout:lava checkout refused: code=plan_unavailable status=400"])
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(json.loads(response.body), {"ok": False, "error": "plan_unavailable"})
+        self.assertEqual(response.headers["cache-control"], "no-store")
+
     async def test_unauthenticated_or_malformed_requests_are_refused(self):
         self.assertEqual((await self._post("/api/subscription-miniapp/lava/start",
                                            {"plan_type": "1_month", "email": "a@b.co"}, init="bad")).status_code, 401)

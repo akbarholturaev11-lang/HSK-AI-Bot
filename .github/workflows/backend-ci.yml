@@ -508,7 +508,7 @@ jobs:
       - name: Verify real browser iPhone PWA glass dialogs at mobile widths
         run: python -m pytest -q tests/e2e/test_iphone_pwa_glass.py
       - name: Verify inline PWA Pro terms, manual choice and 20 percent exit offer
-        run: python -m pytest -q tests/e2e/test_pwa_inline_pro.py tests/e2e/test_pwa_inline_pro_routes.py tests/e2e/test_pwa_lava_link.py
+        run: python -m pytest -q tests/e2e/test_pwa_inline_pro.py tests/e2e/test_pwa_inline_pro_routes.py tests/e2e/test_pwa_lava_link.py tests/e2e/test_subscription_plan_layout.py
       - name: Check canonical Li onboarding catalogs in three languages
         run: python -m unittest tests.test_li_onboarding_catalog
       - name: Verify approved optimized Safari tutorial video if published
@@ -531,7 +531,7 @@ jobs:
       - name: Verify fullscreen PWA Pro and Lava payment on iPhone WebKit
         env:
           PWA_E2E_ENGINE: webkit
-        run: python -m pytest -q tests/e2e/test_pwa_inline_pro.py tests/e2e/test_pwa_inline_pro_routes.py tests/e2e/test_pwa_lava_link.py
+        run: python -m pytest -q tests/e2e/test_pwa_inline_pro.py tests/e2e/test_pwa_inline_pro_routes.py tests/e2e/test_pwa_lava_link.py tests/e2e/test_subscription_plan_layout.py
       - name: Verify progressive PWA shell in Chromium and iPhone WebKit
         run: |
           python -m pytest -q tests/e2e/test_pwa_initial_shell.py

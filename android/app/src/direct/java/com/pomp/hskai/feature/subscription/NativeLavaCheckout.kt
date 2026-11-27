@@ -66,7 +66,6 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
                     regionHint = { if (repositoryOverride == null) localCheckoutRegion(context.resources.configuration.locales[0].language) else "other" }) as T
         })
     val state by model.state.collectAsStateWithLifecycle()
-    var otherPlansOpen by remember(origin) { mutableStateOf(false) }
     var manual by rememberSaveable(origin) { mutableStateOf(false) }
     val block = state.block
     val effectiveRegion = regionOverride ?: state.region
@@ -120,8 +119,6 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
                     state.loading -> {
                         Text(stringResource(R.string.lava_title), style = MaterialTheme.typography.titleLarge)
                         ProviderPlanSkeleton()
-                        Spacer(Modifier.height(40.dp))
-                        Spacer(Modifier.height(48.dp))
                         Spacer(Modifier.height(48.dp))
                         Spacer(Modifier.fillMaxWidth().height(56.dp).testTag("provider-email"))
                         Text(stringResource(R.string.lava_terms), style = MaterialTheme.typography.bodySmall)
@@ -147,50 +144,27 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
                     block != null -> {
                         Text(stringResource(R.string.lava_title), style = MaterialTheme.typography.titleLarge)
                         val plans = state.visiblePlans.filter { it.amount != null && it.months in setOf(1, 3, 6, 12) }
-                        val primary = plans.filter { it.months in setOf(1, 12) }.ifEmpty { plans.take(2) }
-                        Row(Modifier.fillMaxWidth().height(110.dp).testTag("provider-plans"), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            primary.forEach { plan ->
-                                FilterChip(selected = state.plan == plan.plan_type, enabled = !state.busy,
-                                    onClick = { model.chooseProviderPlan(plan.plan_type) }, modifier = Modifier.weight(1f).fillMaxHeight(), label = {
-                                        Column {
-                                            Text(stringResource(R.string.lava_months, plan.months))
-                                            Text(stringResource(R.string.lava_price, plan.amount.orEmpty(), plan.currency))
-                                            ProviderReferencePrice(plan)
-                                        }
-                                    })
+                        Column(Modifier.fillMaxWidth().testTag("provider-plans"), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                            plans.chunked(2).forEach { row ->
+                                Row(Modifier.fillMaxWidth().height(110.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                    row.forEach { plan ->
+                                        FilterChip(selected = state.plan == plan.plan_type, enabled = !state.busy,
+                                            onClick = { model.chooseProviderPlan(plan.plan_type) }, modifier = Modifier.weight(1f).fillMaxHeight().testTag("provider-plan:${plan.plan_type}"), label = {
+                                                Column {
+                                                    Text(stringResource(R.string.lava_months, plan.months))
+                                                    Text(stringResource(R.string.lava_price, plan.amount.orEmpty(), plan.currency))
+                                                    ProviderReferencePrice(plan)
+                                                }
+                                            })
+                                    }
+                                }
                             }
-                        }
-                        val showReference = plans.any { (it.discount_percent ?: 0) <= 0 && comparisonPrice(it.amount.orEmpty()) != null }
-                        Box(Modifier.fillMaxWidth().height(40.dp)) {
-                            if (showReference) Text(stringResource(R.string.lava_reference_price),
-                                style = MaterialTheme.typography.labelSmall)
                         }
                         if (state.mode == "subscription") {
                             ProviderRegionSelector(effectiveRegion, canChooseRoute) {
                                 model.chooseRegion(it)
                                 manual = false
-                                otherPlansOpen = false
                                 onRegionSelected(it)
-                            }
-                        } else Spacer(Modifier.height(48.dp))
-                        val others = plans.filter { it !in primary }
-                        if (others.isNotEmpty() || canUseManual) {
-                            TextButton(onClick = { otherPlansOpen = !otherPlansOpen }, modifier = Modifier.height(48.dp)) {
-                                Text(stringResource(R.string.lava_other_plans))
-                            }
-                            if (otherPlansOpen) others.forEach { plan ->
-                                FilterChip(selected = state.plan == plan.plan_type, enabled = !state.busy,
-                                    onClick = { model.chooseProviderPlan(plan.plan_type) }, label = {
-                                        Column {
-                                            Text(stringResource(R.string.lava_months, plan.months) + " · " + stringResource(R.string.lava_price, plan.amount.orEmpty(), plan.currency))
-                                            ProviderReferencePrice(plan)
-                                        }
-                                    })
-                            }
-                            if (otherPlansOpen && canUseManual) {
-                                TextButton(onClick = {
-                                    if (onRouteSelected != null) onRouteSelected("manual") else manual = true
-                                }) { Text(stringResource(R.string.lava_manual)) }
                             }
                         } else Spacer(Modifier.height(48.dp))
                         if (block.email.isNullOrBlank()) {
@@ -229,12 +203,16 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
 /** Same two primary plan slots as ready; static bars respect disabled system animations. */
 @Composable
 private fun ProviderPlanSkeleton() {
-    Row(Modifier.fillMaxWidth().height(110.dp).testTag("provider-plans"), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column(Modifier.fillMaxWidth().testTag("provider-plans"), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         repeat(2) {
-            Column(Modifier.weight(1f).fillMaxHeight().background(MaterialTheme.colorScheme.surfaceVariant,
-                RoundedCornerShape(12.dp)).padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                Box(Modifier.fillMaxWidth(0.55f).height(18.dp).background(MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(4.dp)))
-                Box(Modifier.fillMaxWidth(0.8f).height(22.dp).background(MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(4.dp)))
+            Row(Modifier.fillMaxWidth().height(110.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                repeat(2) {
+                    Column(Modifier.weight(1f).fillMaxHeight().background(MaterialTheme.colorScheme.surfaceVariant,
+                        RoundedCornerShape(12.dp)).padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        Box(Modifier.fillMaxWidth(0.55f).height(18.dp).background(MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(4.dp)))
+                        Box(Modifier.fillMaxWidth(0.8f).height(22.dp).background(MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(4.dp)))
+                    }
+                }
             }
         }
     }
