@@ -294,7 +294,7 @@ def test_reference_price_is_display_only_and_labeled():
 const p=globalThis.HSKSubscriptionPresentation;
 console.log(JSON.stringify([p.relativePrice(100),p.relativePrice(0),p.relativePrice(null),p.regionalLabel("uz","comparison"),p.regionalLabel("ru","comparison"),p.regionalLabel("tj","comparison")]));
 """
-    result = json.loads(subprocess.check_output(["node", "-e", script], text=True))
+    result = json.loads(subprocess.check_output(["node"], input=script, text=True))
     assert result[:3] == ["129.99", None, None]
     assert "oldingi narx emas" in result[3]
     assert "не предыдущая цена" in result[4]

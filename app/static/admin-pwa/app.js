@@ -1101,6 +1101,7 @@ function updateManagementAction(){
 // All editors share one dirty-state rule; selector-only navigation (pricing
 // method/plan, notice/help-video language) is not a persisted change.
 function editorValue(){
+  if($('lavaMode'))return JSON.stringify(lavaSettingsRequest());
   const d=managementDraft;
   if(d?.type==='campaign'&&d.kind==='discount_state'){
     return JSON.stringify({active:$('campaignActive')?.value===String(d.current?.is_active)?'unchanged':$('campaignActive')?.value});
@@ -2484,7 +2485,11 @@ async function executeHsk30Settings(){
   }finally{if(signing===control)signing=null;}
 }
 
+const LAVA_ADMIN_PROMO_SLOTS=3;
 const LAVA_TERMS=[['1_month','lavaTerm1','MONTHLY'],['3_months','lavaTerm3','PERIOD_90_DAYS'],['6_months','lavaTerm6','PERIOD_180_DAYS'],['12_months','lavaTerm12','PERIOD_YEAR']];
+function lavaAdminPromoEntries(config){
+  return Object.entries(config?.promo_codes||{}).filter(([key])=>key.startsWith('admin_campaign:'));
+}
 function lavaErrorKey(error){
   const key='lavaErr_'+(error?.message||'');
   return window.HSKAI_ADMIN_I18N?.[locale]?.[key]?key:errorKey(error);
@@ -2543,8 +2548,8 @@ async function lavaSettings(){
     }).join('');
     const promos=config.promo_codes||{};
     const promoInput=(id,value)=>'<input class="input" id="'+id+'" maxlength="36" autocomplete="off" spellcheck="false" autocapitalize="characters" placeholder="'+esc(t('lavaPromoCode'))+'" value="'+esc(value||'')+'">';
-    const adminPromos=Object.entries(promos).filter(([key])=>key.startsWith('admin_campaign:'));
-    const adminRows=[0,1,2].map(index=>{
+    const adminPromos=lavaAdminPromoEntries(config);
+    const adminRows=Array.from({length:LAVA_ADMIN_PROMO_SLOTS},(_,index)=>{
       const [key,code]=adminPromos[index]||['',''];
       return '<div class="lava-term"><input class="input" id="lavaPromoPct_'+index+'" type="number" min="1" max="90" step="1" inputmode="numeric" placeholder="'+esc(t('lavaPromoPercent'))+'" value="'+esc(key?key.split(':')[1]:'')+'">'+promoInput('lavaPromoAdmin_'+index,code)+'</div>';
     }).join('');
@@ -2560,20 +2565,32 @@ async function lavaSettings(){
     drawer('lavaSettings',statePanel(lavaErrorKey(error)),btn('close','close')+btn('retry','lavaSettings','primary'));
   }
 }
-async function prepareLavaSettingsCommand(){
-  if(!state.actor||signing)return;
+function lavaSettingsRequest(){
   const plans={};
   for(const [plan] of LAVA_TERMS)plans[plan]={enabled:$('lavaOn_'+plan)?.checked===true,offer_id:String($('lavaOffer_'+plan)?.value||'').trim().toLowerCase()};
-  const promo_codes={};
+  const promo_codes={...lavaBaseline?.promo_codes};
+  // Edit the visible slots without replacing codes configured outside them.
+  for(const [key] of lavaAdminPromoEntries(lavaBaseline).slice(0,LAVA_ADMIN_PROMO_SLOTS))delete promo_codes[key];
   const code=id=>String($(id)?.value||'').trim();
-  if(code('lavaPromoReferral'))promo_codes['referral:20']=code('lavaPromoReferral');
-  if(code('lavaPromoFeedback'))promo_codes['feedback_price_offer:20']=code('lavaPromoFeedback');
-  if(code('lavaPromoExit'))promo_codes['exit_offer:20']=code('lavaPromoExit');
-  for(const index of [0,1,2]){
+  for(const [key,id] of [
+    ['referral:20','lavaPromoReferral'],
+    ['feedback_price_offer:20','lavaPromoFeedback'],
+    ['exit_offer:20','lavaPromoExit'],
+  ]){
+    const value=code(id);
+    if(value)promo_codes[key]=value;
+    else delete promo_codes[key];
+  }
+  for(let index=0;index<LAVA_ADMIN_PROMO_SLOTS;index++){
     const pct=Number($('lavaPromoPct_'+index)?.value),value=code('lavaPromoAdmin_'+index);
     if(value&&Number.isInteger(pct)&&pct>=1&&pct<=90)promo_codes['admin_campaign:'+pct]=value;
   }
-  const request={checkout_mode:$('lavaMode')?.value,currency:$('lavaCurrency')?.value,plans,promo_codes};
+  return {checkout_mode:$('lavaMode')?.value,currency:$('lavaCurrency')?.value,plans,
+    promo_codes:Object.fromEntries(Object.entries(promo_codes).sort(([a],[b])=>a.localeCompare(b)))};
+}
+async function prepareLavaSettingsCommand(){
+  if(!state.actor||signing)return;
+  const request=lavaSettingsRequest();
   const current=drawerId,at=epoch;
   try{
     const response=await api('lava/prepare',request,{timeoutMs:25000});
