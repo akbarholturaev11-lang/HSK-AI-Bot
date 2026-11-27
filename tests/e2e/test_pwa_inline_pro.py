@@ -29,7 +29,7 @@ def _overview(discount=False):
     return {"ok": True, "lava": {"mode": "both", "plans": plans, "email": "buyer@example.com"}}
 
 
-def test_inline_pro_all_enabled_terms_without_alternative_and_real_exit_discount():
+def test_limit_keeps_other_terms_and_real_exit_discount():
     seen = []
     def respond(route):
         path = urlsplit(route.request.url).path
@@ -109,13 +109,13 @@ def test_inline_pro_all_enabled_terms_without_alternative_and_real_exit_discount
             "(node) => getComputedStyle(node).animationName"
         ) != "none"
         page.locator("#hsk-inline-pro button.hip-plan").first.wait_for()
-        assert page.locator("#hsk-inline-pro button.hip-plan").count() == 4
+        assert page.locator("#hsk-inline-pro button.hip-plan").count() == 2
         assert "1 месяц" in page.locator("#hsk-inline-pro .hip-body").inner_text()
         assert "1 год" in page.locator("#hsk-inline-pro .hip-body").inner_text()
         assert "12.99" in page.locator("#hsk-inline-pro .hip-body").inner_text()
         assert page.locator("#hsk-inline-pro .hip-region").is_visible()
         assert page.locator("#hsk-inline-pro .hip-reference-note").count() == 0
-        assert page.get_by_role("button", name="Другие тарифы").count() == 0
+        assert page.get_by_role("button", name="Другие тарифы").is_visible()
         # The title is never covered by the 44px back and close controls.
         no_overlap=page.evaluate("""() => {
             const h=document.querySelector("#hsk-inline-pro .hip-title").getBoundingClientRect();
@@ -124,8 +124,9 @@ def test_inline_pro_all_enabled_terms_without_alternative_and_real_exit_discount
             return h.right <= b.left && h.left >= a.right;
         }""")
         assert no_overlap
-        # Every enabled provider term is on the main screen, without an alternative-method detour.
-        assert page.get_by_role("heading", name="Другие тарифы").count() == 0
+        # The limit retains More, which lists all enabled terms without a provider detour.
+        page.get_by_role("button", name="Другие тарифы").click()
+        assert page.get_by_role("heading", name="Другие тарифы").is_visible()
         assert page.locator("#hsk-inline-pro button.hip-plan").count() == 4
         assert page.locator("#hsk-inline-pro .hip-method").count() == 0
         assert "lava" not in page.locator("#hsk-inline-pro").inner_text().lower()
@@ -137,7 +138,7 @@ def test_inline_pro_all_enabled_terms_without_alternative_and_real_exit_discount
         assert page.locator("#hsk-inline-pro .hip-panda").get_attribute("data-pose") == "gift"
         page.get_by_role("button", name="Забрать скидку").click()
         page.locator("#hsk-inline-pro button.hip-plan").first.wait_for()
-        assert page.locator("#hsk-inline-pro button.hip-plan").count() == 4
+        assert page.locator("#hsk-inline-pro button.hip-plan").count() == 2
         assert "8.00 USD" in page.locator("#hsk-inline-pro .hip-body").inner_text()
         assert page.locator("#hsk-inline-pro button.hip-plan .comparison").first.inner_text() == "10.00"
         assert ("offer", "view") in seen
@@ -145,7 +146,7 @@ def test_inline_pro_all_enabled_terms_without_alternative_and_real_exit_discount
         assert ("overview", "exit_discount") in seen
         page.wait_for_load_state("networkidle")
         assert ("event", "pwa_pro_opened") in seen
-        assert ("event", "pwa_pro_more_opened") not in seen
+        assert ("event", "pwa_pro_more_opened") in seen
         assert ("event", "pwa_pro_plan_selected") in seen
         assert ("event", "pwa_pro_exit_offered") in seen
         assert ("event", "pwa_pro_exit_claimed") in seen

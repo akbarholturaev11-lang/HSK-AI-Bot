@@ -18,11 +18,13 @@ PRACTICES = ("voice", "recognition", "memorize", "pronunciation", "test", "mista
 
 
 def _regional_overview():
-    return {"ok": True, "analytics_user_id": 1,
-            "prices": {"visa": {"1_month": {"base_amount": 10, "final_amount": 10, "currency": "TJS"}}},
+    return {"ok": True, "mode": "subscription", "language": "ru", "analytics_user_id": 1,
+            "prices": {"visa": {plan: {"base_amount": 10, "final_amount": 10, "currency": "TJS"}
+                                for plan in ["1_month", "10_days", "3_months"]}},
             "lava": {"mode": "both", "currency": "USD", "plans": [
                 {"plan_type": "1_month", "amount": "10.00", "currency": "USD"},
                 {"plan_type": "12_months", "amount": "90.00", "currency": "USD"},
+                {"plan_type": "3_months", "amount": "27.00", "currency": "USD"},
             ]}}
 
 
@@ -123,7 +125,7 @@ def test_inline_manual_skips_card_question_without_modifying_shared_checkout():
         # function signature and state names used in subscription.html.
         js=(STATIC/"course_v3_data/iphone-pwa-inline-pro-bridge.js").read_text("utf-8")
         page.evaluate("""() => {
-          history.replaceState({}, '', '/iphone-pwa/checkout?inline_manual=1');
+          history.replaceState({}, '', '/iphone-pwa/checkout?inline_manual=1&plan=1_month');
           window.state={path:'',lavaStatus:null};
           window.flow=function(){return ['card','country','plans','pay']};
           window.renderPlans=function(){return 1};
@@ -131,6 +133,12 @@ def test_inline_manual_skips_card_question_without_modifying_shared_checkout():
         page.evaluate(js)
         assert page.evaluate("flow()") == ["country","plans","pay"]
         assert page.evaluate("state.path") == "manual"
+        page.evaluate("state.mode='subscription';state.plan='1_month';state.overview={checkout_allowed:true};window.hasCurrentPrice=()=>true")
+        assert page.evaluate("flow()") == ["country","pay"]
+        for guard in ["state.pending=true", "state.offerExpired=true", "state.overview.checkout_allowed=false", "state.mode='hsk30_unlock'", "state.plan='3_months'", "window.hasCurrentPrice=()=>false"]:
+            page.evaluate("state.pending=false;state.offerExpired=false;state.overview.checkout_allowed=true;state.mode='subscription';state.plan='1_month';window.hasCurrentPrice=()=>true")
+            page.evaluate(guard)
+            assert page.evaluate("flow()") == ["country","plans","pay"], guard
         page.evaluate("state.path='lava'")
         assert page.evaluate("flow()") == ["card","country","plans","pay"]
         browser.close()
@@ -166,7 +174,7 @@ def test_manual_flow_stays_in_same_pwa_modal():
         page.goto(ORIGIN+"/iphone-pwa/course")
         page.evaluate("App.openPaywall('lockedLesson')")
         page.locator('#hsk-inline-pro .hip-region').select_option('tj')
-        assert page.get_by_role("button",name="Другие тарифы").count() == 0
+        assert page.get_by_role("button",name="Другие тарифы").is_visible()
         page.locator('#hsk-inline-pro .hip-primary').click()
         frame=page.locator("#hsk-inline-pro iframe")
         frame.wait_for()
@@ -183,7 +191,8 @@ def test_manual_flow_stays_in_same_pwa_modal():
         browser.close()
 
 
-def test_real_manual_checkout_fills_screen_with_header_x_and_bottom_button():
+@pytest.mark.parametrize("selected_plan", ["1_month", "3_months"])
+def test_real_manual_checkout_fills_screen_with_header_x_and_bottom_button(selected_plan):
     """Real subscription.html in the PWA iframe, injected like the auth route."""
     inject = "".join(
         '<script src="/course_v3_data/iphone-pwa-inline-pro-bridge.js?v=e2e"></script>'
@@ -226,11 +235,17 @@ def test_real_manual_checkout_fills_screen_with_header_x_and_bottom_button():
         page.evaluate("HSKPwaInlinePro.safeArea=function(){return {top:47,bottom:34}}")
         page.evaluate("App.openPaywall('lockedLesson')")
         page.locator('#hsk-inline-pro .hip-region').select_option('tj')
-        assert page.get_by_role("button", name="Другие тарифы").count() == 0
+        assert page.get_by_role("button", name="Другие тарифы").is_visible()
+        if selected_plan == "3_months":
+            page.get_by_role("button", name="Другие тарифы").click()
+            page.locator('#hsk-inline-pro .hip-plan[data-plan="3_months"]').click()
         page.locator('#hsk-inline-pro .hip-primary').click()
         frame_el = page.locator("#hsk-inline-pro iframe")
         frame_el.wait_for()
         frame = page.frame_locator("#hsk-inline-pro iframe")
+        frame.locator('[data-screen="method"].active').wait_for()
+        assert not frame.locator('[data-screen="plans"]').is_visible()
+        assert page.frames[1].evaluate("state.plan") == selected_plan
         frame.locator("#nextBtn").wait_for()
         box = frame_el.bounding_box()
         vw, vh = page.viewport_size["width"], page.viewport_size["height"]
@@ -253,7 +268,7 @@ def test_real_manual_checkout_fills_screen_with_header_x_and_bottom_button():
         assert metrics["x"] and metrics["label"] == "Закрыть"
         # The header X leaves the regular checkout back to the Pro plans.
         frame.locator("#pwaCheckoutBackBtn").click()
-        page.get_by_role("heading", name="Лимит исчерпан").wait_for()
+        page.get_by_role("heading", name="Другие тарифы" if selected_plan == "3_months" else "Лимит исчерпан").wait_for()
         assert page.locator("#hsk-inline-pro iframe").count() == 0
         assert not errors, errors
         browser.close()
@@ -310,4 +325,54 @@ def test_shared_checkout_only_prompts_when_email_is_missing(pwa, saved_email):
         assert not page.locator("#lavaEmail").is_visible()
         assert [row["email"] for row in starts] == [saved_email or "first@example.com"]
         assert not errors
+        browser.close()
+
+
+@pytest.mark.parametrize('saved_email', [None, 'saved@example.com'])
+@pytest.mark.parametrize('from_more', [False, True])
+def test_limit_selected_lava_plan_goes_to_email_or_invoice_without_reopening_limit(saved_email, from_more):
+    starts = []
+    reads = []
+    def serve(route):
+        path = urlsplit(route.request.url).path
+        if path == '/api/v3/pwa/subscription/overview':
+            reads.append(path)
+            data = _regional_overview()
+            data['lava']['email'] = saved_email
+            route.fulfill(json=data)
+        elif path == '/api/v3/pwa/subscription/lava/start':
+            starts.append(json.loads(route.request.post_data or '{}'))
+            route.fulfill(json={'ok': True, 'checkout_id': 81, 'payment_url': 'https://app.lava.top/fixture-invoice'})
+        elif path == '/api/v3/pwa/subscription/lava/status':
+            route.fulfill(json={'ok': True, 'status': 'pending'})
+        else:
+            _serve(route)
+    with playwright.sync_playwright() as pw:
+        browser = getattr(pw, os.getenv('PWA_E2E_ENGINE', 'chromium')).launch()
+        page = browser.new_context(**pw.devices['iPhone 13']).new_page()
+        errors = []
+        page.on('pageerror', lambda error: errors.append(str(error)))
+        page.route('**/*', serve)
+        page.add_init_script('window.open=()=>null')
+        page.goto(ORIGIN + '/iphone-pwa/course')
+        page.evaluate("App.openPaywall('lockedLesson')")
+        plan = '3_months' if from_more else '1_month'
+        if from_more:
+            page.get_by_role('button', name='Другие тарифы').click()
+        page.locator('#hsk-inline-pro .hip-plan[data-plan="' + plan + '"]').click()
+        page.locator('#hsk-inline-pro .hip-actions .hip-primary').click()
+        if saved_email is None:
+            page.locator('#hsk-inline-pro[data-screen="email"] input[type=email]').wait_for()
+            assert not starts
+            assert page.locator('#hsk-inline-pro .hip-plan').count() == 0
+            page.locator('#hsk-inline-pro input[type=email]').fill('new@example.com')
+            page.locator('#hsk-inline-pro .hip-body .hip-primary').click()
+        page.locator('#hsk-inline-pro[data-screen="waiting"]').wait_for()
+        assert page.locator('#hsk-inline-pro input[type=email],#hsk-inline-pro .hip-plan').count() == 0
+        assert page.locator('#hsk-inline-pro a.hip-primary').get_attribute('href') == 'https://app.lava.top/fixture-invoice'
+        assert len(reads) == 1 and len(starts) == 1
+        assert starts[0]['plan_type'] == plan
+        assert starts[0]['email'] == (saved_email or 'new@example.com')
+        assert starts[0]['attempt_id']
+        assert not errors, errors
         browser.close()

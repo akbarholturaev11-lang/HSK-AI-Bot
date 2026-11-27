@@ -104,7 +104,7 @@ class PwaInitialShellTests(unittest.TestCase):
 
     def test_inline_pro_immutable_urls_match_current_asset_bytes(self):
         body = _pwa_inline_html(request(), "app/static/course-v3.html", {}).body.decode()
-        for name in ("iphone-pwa-inline-pro.js", "iphone-pwa-inline-pro.css"):
+        for name in ("iphone-pwa-inline-pro.js", "iphone-pwa-inline-pro.css", "iphone-pwa-inline-pro-bridge.js"):
             with self.subTest(asset=name):
                 raw = Path("app/static/course_v3_data", name).read_bytes()
                 digest = hashlib.sha1(b"blob " + str(len(raw)).encode() + b"\0" + raw).hexdigest()[:12]

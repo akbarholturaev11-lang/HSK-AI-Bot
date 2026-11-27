@@ -33,6 +33,12 @@ products retain their existing authority and safety rules. The Admin PWA signs t
 snapshots and validates them again on save. Older clients keep the configured
 default currency. Google Play remains consumption-only.
 
+The separate limit offer retains Other plans. Once its tariff is selected,
+manual checkout proceeds to method selection when the authenticated overview
+confirms that same sellable plan; it does not repeat the tariff screen. Missing
+or invalid plans keep the canonical selection step. Lava proceeds to email,
+or directly to the existing invoice start when a verified receipt email is known.
+
 RUB is not a separate country toggle and changing the global default currency
 is not required. An enabled term's selected offer must contain a verified RUB
 price for that exact billing period. Admin Save captures both supported

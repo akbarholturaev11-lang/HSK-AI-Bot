@@ -323,8 +323,10 @@
       state.source==="v3_mistake_review" ? "learningPro.mistakes" : "";
     return window.HSKAI_COURSE_I18N?.[state.lang]?.[key] || "";
   }
-  function elementPlans() {
-    var plans=available(), path=displayPath();
+  function elementPlans(all) {
+    var rows=available(), path=displayPath();
+    var plans=all?rows:(path==="manual"?rows.slice(0,2):rows.filter(function(p){return p.plan_type==="1_month"||p.plan_type==="12_months"}));
+    if(!plans.length)plans=rows.slice(0,2);
     var grid=el("div","hip-plans");
     grid.dataset.planCount=String(plans.length);
     plans.forEach(function(plan) {
@@ -402,6 +404,9 @@
       var loadingCta=btn(txt("pay"),"hip-primary",function(){});
       loadingCta.disabled=true;
       actions.appendChild(loadingCta);
+      var placeholder=btn(txt("more"),"hip-secondary",function(){});
+      placeholder.disabled=true;placeholder.style.visibility="hidden";placeholder.setAttribute("aria-hidden","true");
+      actions.appendChild(placeholder);
       body.appendChild(el("div","hip-loading",txt("loading")));
       return;
     }
@@ -472,7 +477,18 @@
       body.appendChild(el("p","hip-small hip-center",txt("renewal")));
       return;
     }
-    // main
+    if (view==="more") {
+      header("",txt("more"),"");
+      if (plans.length) {
+        if (!selectedPlan()) state.plan=plans[0].plan_type;
+        body.appendChild(elementPlans(true));
+        if(state.mode==="subscription")body.appendChild(regionSelector());
+        if(state.mode==="exit_discount")body.appendChild(el("p","hip-small hip-center",txt("saving")));
+        actions.appendChild(payButton());
+      } else body.appendChild(el("p","hip-small hip-center",txt("unavailable")));
+      return;
+    }
+    // main (limit offer only; the subscription checkout has no More button)
     if (!plans.length) {
       if (state.error || !manualAllowed()) {
         if (!state.error) body.appendChild(el("p","hip-small hip-center",txt("unavailable")));
@@ -485,11 +501,14 @@
       actions.appendChild(btn(txt("pay"),"hip-primary",function(){openManual("")}));
       return;
     }
-    if(!plans.some(p=>p.plan_type===state.plan))state.plan=plans[0].plan_type;
-    body.appendChild(elementPlans());
+    var primary=displayPath()==="manual"?plans.slice(0,2):plans.filter(p=>p.plan_type==="1_month"||p.plan_type==="12_months");
+    if(!primary.length)primary=plans.slice(0,2);
+    if(!primary.some(p=>p.plan_type===state.plan))state.plan=primary[0].plan_type;
+    body.appendChild(elementPlans(false));
     if(state.mode==="subscription")body.appendChild(regionSelector());
     if (state.mode==="exit_discount") body.appendChild(el("p","hip-small hip-center",txt("saving")));
     actions.appendChild(payButton());
+    actions.appendChild(btn(txt("more"),"hip-secondary",function(){emit("pwa_pro_more_opened");state.screen="more";state.error="";render()}));
   }
   // quiet=true refreshes prices behind the current screen (checkout resume).
   function load(quiet) {
@@ -594,7 +613,8 @@
   function goBack() {
     if (!state) return;
     if (state.screen==="manual")state.screen=state.manualFrom||"main";
-    else if (state.screen==="email")state.screen="main";
+    else if (state.screen==="email")state.screen=state.emailFrom==="more"?"more":"main";
+    else if (state.screen==="more")state.screen="main";
     else {requestDismiss();return}
     state.error="";render();
   }
