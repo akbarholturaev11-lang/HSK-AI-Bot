@@ -253,11 +253,13 @@ class HskAiApplication : Application() {
                 webClientId = BuildConfig.GOOGLE_WEB_CLIENT_ID,
             ),
             onSessionCleared = {
+                appSettings.clearLessonResumePositions()
                 appSettings.clearPaymentRegion()
                 runCatching { diagnostics.clearOwner() }
                 clearWidgetSession()
             },
             onSessionReplacing = {
+                appSettings.clearLessonResumePositions()
                 appSettings.clearPaymentRegion()
                 runCatching { diagnostics.clearOwner(keepPreSignIn = true) }
                 clearWidgetProjection()

@@ -2134,6 +2134,7 @@ private fun LessonHost(
     onExit: (completed: Boolean) -> Unit,
 ) {
     val lesson = launch.lesson
+    val resumeStore = remember(app, viewModelStoreOwner) { app.appSettings.sessionLessonResumeStore() }
     val model: LessonViewModel = viewModel(
         key = "lesson-$level-${lesson.order}",
         viewModelStoreOwner = viewModelStoreOwner,
@@ -2143,7 +2144,7 @@ private fun LessonHost(
             level = level,
             lessonOrder = lesson.order,
             language = language,
-            resumeStore = app.appSettings,
+            resumeStore = resumeStore,
             // Only the rank-up board uses it, and only when the lesson moved
             // the learner up the weekly league.
             featureRepository = app.featureRepository,

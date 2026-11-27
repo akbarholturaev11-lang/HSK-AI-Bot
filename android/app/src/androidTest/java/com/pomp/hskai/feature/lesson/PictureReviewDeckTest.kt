@@ -20,15 +20,18 @@ import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.pomp.hskai.R
+import com.pomp.hskai.HskAiApplication
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompHskAiTheme
 import com.pomp.hskai.core.settings.PinyinVisibility
+import com.pomp.hskai.core.settings.LessonResumePoint
 import com.pomp.hskai.domain.model.Lesson
 import com.pomp.hskai.domain.model.LessonSection
 import com.pomp.hskai.domain.model.PictureReviewCard
 import com.pomp.hskai.domain.model.PictureWord
 import java.io.File
 import java.io.FileOutputStream
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -44,6 +47,43 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class PictureReviewDeckTest {
     @get:Rule val compose = createComposeRule()
+
+    @Test fun accountReplacementFencesLateResumeWritesAndCompletionClears() = runBlocking {
+        val app = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as HskAiApplication
+        check(app.packageName.endsWith(".qa"))
+        val settings = app.appSettings
+        val old = settings.sessionLessonResumeStore()
+        val before = LessonResumePoint(3, "lesson:hsk1:1:section:2:card:1")
+        val after = LessonResumePoint(1, "lesson:hsk1:1:section:1:card:2")
+        try {
+            old.setLessonResumePoint("resume_qa", 1, before)
+            settings.clearLessonResumePositions()
+            val current = settings.sessionLessonResumeStore()
+            assertEquals(LessonResumePoint(0), current.lessonResumePoint("resume_qa", 1))
+            current.setLessonResumePoint("resume_qa", 1, after)
+            old.setLessonResumePoint("resume_qa", 1, before)
+            old.clearLessonResume("resume_qa", 1)
+            assertEquals(after, current.lessonResumePoint("resume_qa", 1))
+            assertEquals(LessonResumePoint(0), old.lessonResumePoint("resume_qa", 1))
+        } finally { settings.clearLessonResumePositions() }
+    }
+
+    @Test fun persistedResumeKeepsMaterialAndClearsLegacyReferences() = runBlocking {
+        val app = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as HskAiApplication
+        val store = app.appSettings
+        val point = LessonResumePoint(3, "lesson:hsk1:1:section:2:card:1")
+        try {
+            store.setLessonResumePoint("resume_qa", 1, point)
+            assertEquals(point, store.lessonResumePoint("resume_qa", 1))
+            assertEquals(3, store.lessonResumeIndex("resume_qa", 1))
+            store.setLessonResumeIndex("resume_qa", 1, 2)
+            assertEquals(LessonResumePoint(2), store.lessonResumePoint("resume_qa", 1))
+            store.clearLessonResume("resume_qa", 1)
+            assertEquals(LessonResumePoint(0), store.lessonResumePoint("resume_qa", 1))
+        } finally {
+            store.clearLessonResume("resume_qa", 1)
+        }
+    }
 
     private val card = PictureReviewCard(
         materialRef = "lesson:hsk1:5:picture_review",

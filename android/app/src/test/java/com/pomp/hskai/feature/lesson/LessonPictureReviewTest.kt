@@ -7,10 +7,12 @@ import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.core.settings.LessonResumeStore
+import com.pomp.hskai.core.settings.LessonResumePoint
 import com.pomp.hskai.data.api.CourseLessonResponse
 import com.pomp.hskai.data.api.VoicePronounceResponse
 import com.pomp.hskai.data.repository.CourseRepository
 import com.pomp.hskai.domain.model.PictureReviewCard
+import com.pomp.hskai.domain.model.ChoiceCard
 import com.pomp.hskai.domain.model.PronunciationCard
 import kotlin.collections.ArrayDeque
 import kotlinx.coroutines.Dispatchers
@@ -23,6 +25,8 @@ import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.jsonObject
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -64,6 +68,8 @@ private const val DECK_INDEX = 2
 
 private class PlannedLessonApi(
     private val previewHalf: Boolean = false,
+    private val planned: Boolean = true,
+    private val omitPractice: Boolean = true,
 ) : FakeLessonApi(previewHalf = previewHalf, previewCardLimit = if (previewHalf) 2 else 5) {
     override suspend fun lesson(
         authorization: String,
@@ -72,7 +78,13 @@ private class PlannedLessonApi(
     ): Response<CourseLessonResponse> {
         val base = checkNotNull(super.lesson(authorization, lessonOrder, accessRef).body())
         // total_cards counts the lesson as served, before the plan.
-        return Response.success(base.copy(totalCards = 5, lesson = PLANNED_LESSON))
+        val payload = when {
+            !planned -> JsonObject(PLANNED_LESSON - "lesson_plan")
+            !omitPractice -> JsonObject(PLANNED_LESSON + ("lesson_plan" to JsonObject(
+                PLANNED_LESSON.getValue("lesson_plan").jsonObject + ("omit" to JsonArray(emptyList())))))
+            else -> PLANNED_LESSON
+        }
+        return Response.success(base.copy(totalCards = 5, lesson = payload))
     }
 }
 
@@ -116,8 +128,19 @@ private class ScriptedScorer(vararg replies: ApiResult<VoicePronounceResponse>) 
 
 private class StartAt(private val index: Int) : LessonResumeStore {
     override suspend fun lessonResumeIndex(level: String, order: Int): Int = index
+    override suspend fun lessonResumePoint(level: String, order: Int) = LessonResumePoint(index,
+        "lesson:hsk1:1:picture_review".takeIf { index == DECK_INDEX })
     override suspend fun setLessonResumeIndex(level: String, order: Int, index: Int) = Unit
     override suspend fun clearLessonResume(level: String, order: Int) = Unit
+}
+
+private class MutablePictureResume : LessonResumeStore {
+    var point = LessonResumePoint(0)
+    override suspend fun lessonResumeIndex(level: String, order: Int) = point.index
+    override suspend fun lessonResumePoint(level: String, order: Int) = point
+    override suspend fun setLessonResumeIndex(level: String, order: Int, index: Int) { point = LessonResumePoint(index) }
+    override suspend fun setLessonResumePoint(level: String, order: Int, point: LessonResumePoint) { this.point = point }
+    override suspend fun clearLessonResume(level: String, order: Int) { point = LessonResumePoint(0) }
 }
 
 private fun heard(score: Int) = ApiResult.Success(VoicePronounceResponse(ok = true, score = score))
@@ -145,17 +168,78 @@ class LessonPictureReviewTest {
         scorer: PronunciationScorer,
         recorder: PictureRecorder = PictureRecorder(),
         startAt: Int = DECK_INDEX,
+        api: FakeLessonApi = PlannedLessonApi(),
+        resumeStore: LessonResumeStore = StartAt(startAt),
     ) = LessonViewModel(
-        repository = repository(),
+        repository = repository(api),
         audioPlayer = FakeLessonAudioPlayer(),
         level = "hsk1",
         lessonOrder = 1,
         language = AppLanguage.RUSSIAN,
         eventIdFactory = { "android:0d1f2e3a4b5c6d7e8f90a1b2c3d4e5f6" },
-        resumeStore = StartAt(startAt),
+        resumeStore = resumeStore,
         voiceRecorder = recorder,
         pronunciationScorer = scorer,
     ).also { it.beginAttempt("attempt-1") }
+
+    @Test
+    fun `resume keeps the same material when the picture plan disappears`() = runTest {
+        val store = MutablePictureResume()
+        val first = viewModel(ScriptedScorer(), api = PlannedLessonApi(omitPractice = false), resumeStore = store)
+        advanceUntilIdle()
+        repeat(3) {
+            first.answerChoice(first.state.value.currentCard as ChoiceCard, 0)
+            first.advance()
+            advanceUntilIdle()
+        }
+        assertTrue(first.state.value.currentCard is PictureReviewCard)
+        repeat(3) {
+            first.skipPicture()
+            advanceTimeBy(LessonViewModel.PICTURE_LEAVE_MILLIS + 1)
+            runCurrent()
+        }
+        advanceUntilIdle()
+        val material = first.state.value.currentCard!!.materialRef
+        assertTrue(first.state.value.currentCard is PronunciationCard)
+        first.endAttempt("attempt-1")
+        val reopened = viewModel(ScriptedScorer(), api = PlannedLessonApi(planned = false), resumeStore = store)
+        advanceUntilIdle()
+        assertEquals(material, reopened.state.value.currentCard!!.materialRef)
+    }
+
+    @Test
+    fun `old APK numeric resume maps original material into a planned deck`() = runTest {
+        val store = MutablePictureResume().apply { point = LessonResumePoint(3) }
+        val model = viewModel(ScriptedScorer(), api = PlannedLessonApi(omitPractice = false), resumeStore = store)
+        advanceUntilIdle()
+        assertTrue(model.state.value.currentCard is PronunciationCard)
+        assertEquals(4, model.state.value.cardIndex)
+    }
+
+    @Test
+    fun `a saved optional card omitted by the next plan resumes at the next material`() = runTest {
+        val store = MutablePictureResume().apply { point = LessonResumePoint(1, "lesson:hsk1:1:section:1:card:2") }
+        val model = viewModel(ScriptedScorer(), resumeStore = store)
+        advanceUntilIdle()
+        assertEquals("lesson:hsk1:1:section:1:card:3", model.state.value.currentCard!!.materialRef)
+    }
+
+    @Test
+    fun `the same planned deck resumes on its synthetic picture card`() = runTest {
+        val store = MutablePictureResume()
+        val first = viewModel(ScriptedScorer(), api = PlannedLessonApi(omitPractice = false), resumeStore = store)
+        advanceUntilIdle()
+        repeat(3) {
+            first.answerChoice(first.state.value.currentCard as ChoiceCard, 0)
+            first.advance()
+            advanceUntilIdle()
+        }
+        assertEquals("lesson:hsk1:1:picture_review", store.point.materialRef)
+        first.endAttempt("attempt-1")
+        val reopened = viewModel(ScriptedScorer(), api = PlannedLessonApi(omitPractice = false), resumeStore = store)
+        advanceUntilIdle()
+        assertTrue(reopened.state.value.currentCard is PictureReviewCard)
+    }
 
     /** One full try: record, score, and let the reveal and leave play out. */
     private fun kotlinx.coroutines.test.TestScope.sayFront(model: LessonViewModel) {

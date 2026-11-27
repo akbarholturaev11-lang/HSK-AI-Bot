@@ -101,6 +101,8 @@ HSK AI helps Uzbek-, Russian-, and Tajik-speaking learners study Chinese through
 
 ## Important decisions and operational caveats
 
+- Android lesson resume binds the existing `material_ref` to the saved original-deck index. Personalized picture/trim plans and offline fallback must restore the same material; old numeric-only APK positions map through the original served order. Keep point writes atomic and clear the reference on legacy-index replacement or completion. Auth clear/replacement purges these local positions and invalidates the per-lesson store generation, including late writes and completion clears. This is local presentation state, never course progress, grading or entitlement.
+
 - First Learning Value on the isolated feature branch uses the existing authenticated PWA and Android completion responses. A new first part in the active level may carry a bounded, response-only review example from saved canonical mistake evidence. Keep it out of the event/replay payload and keep existing navigation, Daily Plan identity and access guards. Contextual Pro copy belongs to existing course or review limit surfaces. The Telegram-ID HSK1 checkpoint experiment retains its original cohort. See [Value-First OpenSpec](openspec/changes/value-first-learning-pro/design.md) for the metric and release gates.
 
 
