@@ -14,9 +14,8 @@
   // The learner never sees a payment provider name: one card checkout and
   // one "regular" (bank card / Alipay / WeChat receipt) method.
   var WORDS = {
-    ru: {title:"Лимит исчерпан",subtitle:"Оформите Pro, чтобы продолжить",benefits:["Уроки без ограничений","Разговорная практика с ИИ","Учёба без рекламы"],one:"1 месяц",ten:"10 дней",region:"Страна оплаты",countries:["Таджикистан","Узбекистан","Россия","Китай","Другая страна"],
+    ru: {title:"Лимит исчерпан",subtitle:"Оформите Pro, чтобы продолжить",benefits:["Уроки без ограничений","Разговорная практика с ИИ","Учёба без рекламы"],one:"1 месяц",
       three:"3 месяца",six:"6 месяцев",year:"1 год",perMonth:"/ мес",pay:"Получить Pro ⭐️",
-      more:"Другие тарифы",
       manual:"Обычный способ оплаты",manualHint:"Банковская карта, Alipay или WeChat",
       email:"Email для оплаты",continue:"Продолжить оплату",
       close:"Закрыть",back:"Назад",loading:"Загружаем тарифы…",unavailable:"Тарифы временно недоступны",
@@ -31,9 +30,8 @@
       manualNoExit:"Скидка 20% действует только при онлайн-оплате картой",
       blocked:"Проверьте текущий платёж или действующую подписку",
       missingEmail:"Укажите действительный email",success:"Платёж подтверждён сервером"},
-    uz: {title:"Limit tugadi",subtitle:"Davom etish uchun Pro oling",benefits:["Cheksiz darslar","AI bilan ovozli mashqlar","Reklamasiz o‘rganing"],one:"1 oy",ten:"10 kun",region:"To‘lov davlati",countries:["Tojikiston","O‘zbekiston","Rossiya","Xitoy","Boshqa davlat"],
+    uz: {title:"Limit tugadi",subtitle:"Davom etish uchun Pro oling",benefits:["Cheksiz darslar","AI bilan ovozli mashqlar","Reklamasiz o‘rganing"],one:"1 oy",
       three:"3 oy",six:"6 oy",year:"1 yil",perMonth:"/ oy",pay:"Pro ⭐️ olish",
-      more:"Boshqa tariflar",
       manual:"Oddiy to‘lov usuli",manualHint:"Bank kartasi, Alipay yoki WeChat",
       email:"To‘lov uchun email",continue:"To‘lovni davom ettirish",
       close:"Yopish",back:"Orqaga",loading:"Tariflar yuklanmoqda…",unavailable:"Tariflar hozir mavjud emas",
@@ -47,9 +45,8 @@
       manualNoExit:"20% chegirma faqat karta orqali onlayn to‘lovga tegishli",
       blocked:"Joriy to‘lov yoki faol obunani tekshiring",
       missingEmail:"To‘g‘ri email kiriting",success:"To‘lov serverda tasdiqlandi"},
-    tj: {title:"Лимит тамом шуд",subtitle:"Барои идома Pro гиред",benefits:["Дарсҳо бе маҳдудият","Машқи овозӣ бо AI","Омӯзиш бе реклама"],one:"1 моҳ",ten:"10 рӯз",region:"Давлати пардохт",countries:["Тоҷикистон","Ӯзбекистон","Русия","Чин","Давлати дигар"],
+    tj: {title:"Лимит тамом шуд",subtitle:"Барои идома Pro гиред",benefits:["Дарсҳо бе маҳдудият","Машқи овозӣ бо AI","Омӯзиш бе реклама"],one:"1 моҳ",
       three:"3 моҳ",six:"6 моҳ",year:"1 сол",perMonth:"/ моҳ",pay:"Гирифтани Pro ⭐️",
-      more:"Тарифҳои дигар",
       manual:"Пардохти оддӣ",manualHint:"Корти бонкӣ, Alipay ё WeChat",
       email:"Email барои пардохт",continue:"Идомаи пардохт",
       close:"Пӯшидан",back:"Бозгашт",loading:"Тарифҳо бор шуда истодаанд…",unavailable:"Тарифҳо дастрас нестанд",
@@ -68,7 +65,11 @@
   var MONTHS = { "1_month":1, "3_months":3, "6_months":6, "12_months":12 };
   var order = ["1_month","3_months","6_months","12_months"];
   var root, sheet, scroll, body, actions, heading, info, panda, back, closeButton, lastFocus, state, tick = null, actorPromise = null, run = 0;
-  function txt(key) { return (WORDS[state.lang]||WORDS.ru)[key]; }
+  function txt(key) {
+    if (key==="more") return HSKSubscriptionPresentation.regionalLabel(state.lang,"more");
+    if (key==="ten") return window.HSKAI_COURSE_I18N?.[state.lang]?.["subscriptionNested.planLabels.ten"]||"";
+    return (WORDS[state.lang]||WORDS.ru)[key];
+  }
   function el(tag, cls, value) {
     var node = document.createElement(tag);
     if (cls) node.className = cls;
@@ -167,20 +168,35 @@
       if (!r.ok) throw Error("session_unavailable");
       return r.json();
     }).then(function(data) {
-      if (!data || data.ok !== true || !data.csrf || !Number.isSafeInteger(Number(data.user_id)))
+      if (!data || data.ok !== true || !data.csrf || (!Number.isSafeInteger(Number(data.user_id)) || Number(data.user_id)<=0))
         throw Error("session_invalid");
       return data;
     }).catch(function(e) { actorPromise=null; throw e; });
     return actorPromise;
   }
+  function sessionFor(checkout) {
+    return session().then(function(actor) {
+      if (!checkout||checkout!==state) throw Error("checkout_closed");
+      var owner=Number(actor.user_id);
+      if (checkout.ownerId&&checkout.ownerId!==owner) {
+        forgetCheckout();
+        close();
+        throw Error("checkout_owner_changed");
+      }
+      checkout.ownerId=owner;
+      return actor;
+    });
+  }
   function request(path,payload) {
-    return session().then(function(a) {
+    var checkout=state;
+    return sessionFor(checkout).then(function(a) {
       return fetch(path,{method:"POST",credentials:"same-origin",cache:"no-store",redirect:"error",
         headers:{"Content-Type":"application/json","X-HSK-PWA-CSRF":a.csrf},
         body:JSON.stringify(payload||{})});
     }).then(function(r) {
       return r.json().catch(function(){return {}}).then(function(data) {
         if (!r.ok || !data || data.ok===false) {
+          if (checkout===state&&(r.status===401||data.error==="pwa_csrf_invalid")) recheckOwner();
           var error = Error(data.error||data.code||"request_failed"); error.code=data.error||data.code;
           throw error;
         }
@@ -274,11 +290,11 @@
   }
   function regionSelector() {
     var select=el("select","hip-region");
-    select.setAttribute("aria-label",txt("region"));
+    select.setAttribute("aria-label",HSKSubscriptionPresentation.regionalLabel(state.lang,"country"));
     var choices=providerPlans().length?regionOrder:regionOrder.filter(code=>manualPlans(code).length);
     if(!choices.length){select.hidden=true;return select;}
     choices.forEach(function(code){
-      var i=regionOrder.indexOf(code), option=el("option",null,regionFlags[i]+" "+txt("countries")[i]);
+      var i=regionOrder.indexOf(code), option=el("option",null,regionFlags[i]+" "+HSKSubscriptionPresentation.regionalLabel(state.lang,code));
       option.value=code;select.appendChild(option);
     });
     select.value=state.region;
@@ -345,7 +361,7 @@
       }
       grid.appendChild(card);
     });
-    if(grid.querySelector(".comparison[title]"))grid.appendChild(el("p","hip-reference-note",HSKSubscriptionPresentation.comparisonLabel(state.lang)));
+    if(grid.querySelector(".comparison[title]"))grid.appendChild(el("p","hip-reference-note",HSKSubscriptionPresentation.regionalLabel(state.lang,"comparison")));
     return grid;
   }
   function openManual(selected) {
@@ -526,11 +542,10 @@
     if (!state) return;
     var current=quiet===true?run:++run;
     if (quiet!==true) {state.screen="loading";state.error="";render();}
-    Promise.all([session(),request(API.overview,{source:state.source,mode:state.mode,plan:state.plan,
-      supports_lava:true,inline_preview:true,attempt_id:state.attempt})]).then(function(values) {
-      var actor=values[0],data=values[1];
+    request(API.overview,{source:state.source,mode:state.mode,plan:state.plan,
+      supports_lava:true,inline_preview:true,attempt_id:state.attempt}).then(function(data) {
       if (!state||current!==run) return;
-      state.data=data;state.ownerId=Number(actor.user_id);
+      state.data=data;
       if(state.mode==="subscription"){
         var saved="";try{saved=regionKey()?localStorage.getItem(regionKey()):"";}catch(_){}
         configureRegion(regionOrder.includes(state.region)?state.region:regionOrder.includes(saved)?saved:HSKSubscriptionPresentation.localPaymentRegion(state.lang));
@@ -548,16 +563,16 @@
   }
   var RESUME_KEY="hsk_pwa_pro_checkout_v1";
   function rememberCheckout() {
-    if (!state||!state.checkoutId) return;
+    if (!state||!state.checkoutId||!state.ownerId) return;
     try {
       sessionStorage.setItem(RESUME_KEY,JSON.stringify({id:String(state.checkoutId),
-        source:state.source,plan:state.plan,at:Date.now()}));
+        ownerId:state.ownerId,source:state.source,plan:state.plan,at:Date.now()}));
     } catch (_) {}
   }
   function recalledCheckout(id) {
     try {
       var r=JSON.parse(sessionStorage.getItem(RESUME_KEY)||"null");
-      if (r&&String(r.id)===String(id)&&Date.now()-Number(r.at)<2*3600*1000) return r;
+      if (r&&Number.isSafeInteger(r.ownerId)&&r.ownerId>0&&String(r.id)===String(id)&&Date.now()-Number(r.at)<2*3600*1000) return r;
     } catch (_) {}
     return null;
   }
@@ -700,8 +715,9 @@
     var lang=String(opts.lang||document.documentElement.lang||"ru").toLowerCase();
     if(lang==="tg")lang="tj";
     if(!WORDS[lang])lang="ru";
+    actorPromise=null;
     state={lang:lang,source:String(opts.source||"v3_paywall").slice(0,80),
-      mode:"subscription",screen:"loading",plan:"1_month",email:"",region:"",path:"",lavaCurrency:"",ownerId:0,attempt:"inline-"+Date.now()+"-"+Math.floor(Math.random()*1000000),eventSeq:0,
+      mode:"subscription",screen:"loading",plan:"1_month",email:"",region:"",path:"",lavaCurrency:"",ownerId:opts.resume?.ownerId||0,attempt:"inline-"+Date.now()+"-"+Math.floor(Math.random()*1000000),eventSeq:0,
       data:null,error:"",pendingError:"",polling:false,paying:false,emailFrom:"main",onClose:opts.onClose,
       previousOverflow:document.documentElement.style.overflow};
     root.hidden=false;
@@ -735,13 +751,14 @@
     if (!root||root.hidden)return;
     if (ev.key==="Escape"){ev.stopPropagation();ev.preventDefault();goBack()}
   });
-  function cameBack() {
-     if (state&&state.checkoutId) checkStatus();
+  function recheckOwner(checkInvoice) {
+    actorPromise=null;
+    if (state) sessionFor(state).then(function(){if(checkInvoice)checkStatus();}).catch(function(){});
   }
   document.addEventListener("visibilitychange",function(){
-    if(document.visibilityState==="visible"){actorPromise=null;cameBack();}
+    if(document.visibilityState==="visible")recheckOwner(true);
   });
-  window.addEventListener("pageshow",function(e){if(e.persisted){actorPromise=null;cameBack();}});
+  window.addEventListener("pageshow",function(e){if(e.persisted)recheckOwner(true);});
   window.HSKPwaInlinePro={open:open,close:close,closeEmbeddedCheckout:closeEmbeddedCheckout,safeArea:safeArea,trialPandaSvg:function(){return pandaSvg('pro')}};
   // The provider returns to /iphone-pwa/course?pro_checkout=<id>&pro_return=…
   (function resumeFromProvider() {
@@ -753,7 +770,7 @@
     if (!/^[1-9][0-9]{0,11}$/.test(raw)) return;
     var record=recalledCheckout(raw)||{};
     open({source:record.source||"v3_locked_lesson",lang:q.get("lang")||undefined,
-      resume:{checkoutId:Number(raw),plan:record.plan,
+      resume:{checkoutId:Number(raw),plan:record.plan,ownerId:record.ownerId,
         outcome:outcome==="success"?"success":outcome==="fail"?"fail":"cancel"}});
   })();
 })();

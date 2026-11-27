@@ -108,9 +108,31 @@ class AndroidLavaCheckoutTests(unittest.IsolatedAsyncioTestCase):
             token = await subscription_expiry_notice(db, user, now=future)
             self.assertIsNotNone(token)
             self.assertEqual(token, await subscription_expiry_notice(db, user, now=future))
+            await db.commit()
+
+        with patch("app.services.lava.checkout._now", return_value=now):
+            still_paid = (await self.post("overview")).json()["lava"]
+            self.assertEqual("cancelled", still_paid["subscription"]["status"])
+        with patch("app.services.lava.checkout._now", return_value=future):
+            renewed_view = (await self.post("overview", {"origin": "course_expired"})).json()["lava"]
+            self.assertIsNone(renewed_view["subscription"])
+            self.assertIsNone(renewed_view["blocked_reason"])
+            self.assertTrue(renewed_view["plans"])
+
+        async with self.sessions() as db:
+            user = await db.get(User, 1)
+            entry = await db.scalar(select(SubscriptionEntryEvent).where(
+                SubscriptionEntryEvent.source == "android_course_expired"))
+            self.assertEqual((1, "android"), (entry.user_id, entry.client))
             db.add(Payment(user_id=1, plan_type="1_month", amount=49, payment_status="pending"))
             await db.flush()
             self.assertIsNone(await subscription_expiry_notice(db, user, now=future))
+            await db.rollback()
+
+        with patch("app.services.lava.checkout._now", return_value=future):
+            restored = await self.post("start", {"plan_type": "1_month", "email": "a@b.co"})
+        self.assertEqual(200, restored.status_code)
+        self.assertNotEqual(started["checkout_id"], restored.json()["checkout_id"])
 
     async def test_missing_or_failed_provider_entry_never_claims_an_opening(self):
         self.runtime.settings.LAVA_ENABLED = False

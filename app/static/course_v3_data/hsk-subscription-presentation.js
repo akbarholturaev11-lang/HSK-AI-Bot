@@ -45,8 +45,10 @@ function regionalRoute(region,mode,manualAvailable,currencies,defaultCurrency,fo
     return result.toFixed(2);
   }
 
-function comparisonLabel(lang){
-  return ({ru:"Ориентировочная цена для сравнения, не предыдущая цена",uz:"Taqqoslash uchun taxminiy narx, oldingi narx emas",tj:"Нархи тахминӣ барои муқоиса, на нархи қаблӣ"})[lang]||"Ориентировочная цена для сравнения, не предыдущая цена";
+function regionalLabel(lang,key){
+  const messages=root.HSKAI_MINIAPP_I18N;
+  const id="ui.subscription.regional."+key;
+  return messages?.[lang]?.[id]||messages?.ru?.[id]||"";
 }
 /* Only server-supplied local amounts are eligible; never estimate payable amounts. */
 function manualRegionalPlans(data,region){
@@ -63,6 +65,5 @@ function manualRegionalPlans(data,region){
   });
   return rows.every(Boolean)?rows:[];
 }
-function moreLabel(lang){return ({ru:"Другие тарифы",uz:"Boshqa tariflar",tj:"Тарифҳои дигар"})[lang]||"Другие тарифы"}
-root.HSKSubscriptionPresentation=Object.freeze({manualRegionalPlans,moreLabel,inferPaymentRegion,localPaymentRegion,regionalProviderPlans,regionalRoute,relativePrice,comparisonLabel});
+root.HSKSubscriptionPresentation=Object.freeze({manualRegionalPlans,regionalLabel,inferPaymentRegion,localPaymentRegion,regionalProviderPlans,regionalRoute,relativePrice});
 })(globalThis);

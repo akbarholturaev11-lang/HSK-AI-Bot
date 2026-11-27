@@ -48,6 +48,19 @@ class NativeLavaCheckoutTest {
         compose.onNodeWithText(context.getString(R.string.lava_months,6)+" · 50.00 USD").assertExists()
         compose.onNodeWithText(context.getString(R.string.lava_manual)).assertExists()
     }
+    @Test fun knownEmailSkipsInputAndEnablesPayment() {
+        val api = Fake()
+        show(api)
+        api.reply.complete(Response.success(LavaOverview(true, LavaBlock(
+            mode = "both", email = "learner@example.com",
+            plans = listOf(LavaPlan("1_month", 1, 30, "10.00", "USD")),
+        ))))
+        compose.waitUntil(5000) { compose.onAllNodesWithText("10.00 USD").fetchSemanticsNodes().isNotEmpty() }
+        compose.onNodeWithTag("provider-email").assertDoesNotExist()
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        compose.onNodeWithText(context.getString(R.string.lava_pay)).assertIsEnabled()
+    }
+
     @Test fun disabledProviderKeepsExistingNativeManualCheckout() {
         val api=Fake(); show(api)
         api.reply.complete(Response.success(LavaOverview(ok=true)))

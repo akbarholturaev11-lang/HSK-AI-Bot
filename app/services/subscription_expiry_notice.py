@@ -18,6 +18,7 @@ from app.db.models.payment import Payment
 from app.services.account_identity import owner_clause
 from app.services.bot_feedback_service import FEEDBACK_REWARD_DURATION
 from app.services.entitlements.state import EntitlementState, resolve_state
+from app.services.lava.ledger import GRANTED_STATUSES
 from app.services.subscription_service import SUBSCRIPTION_PLAN_DURATIONS
 from app.services.user_access_state_service import UserAccessStateService
 
@@ -93,7 +94,7 @@ async def _resolve_expiry_notice(session, user, *, now=None):
             active = await session.scalar(select(LavaInvoice.id).where(
                 LavaInvoice.user_id == user.id,
                 LavaInvoice.kind.in_(("first", "external")),
-                LavaInvoice.status == "paid",
+                LavaInvoice.status.in_(GRANTED_STATUSES),
                 or_(LavaInvoice.subscription_status.is_(None), LavaInvoice.subscription_status == "active"),
             ).limit(1))
             if active is not None:
@@ -115,7 +116,7 @@ async def _resolve_expiry_notice(session, user, *, now=None):
                         invoice = (await session.execute(select(LavaInvoice).where(
                             LavaInvoice.user_id == user.id, LavaInvoice.payment_id == latest.id,
                         ).limit(1))).scalar_one_or_none()
-                        if not invoice or invoice.status not in ("paid", "chargeback_won"):
+                        if not invoice or invoice.status not in GRANTED_STATUSES:
                             return None
                         parent = invoice
                         if invoice.kind == "renewal":

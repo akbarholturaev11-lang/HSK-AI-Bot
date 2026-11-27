@@ -123,8 +123,7 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
                         Spacer(Modifier.height(40.dp))
                         Spacer(Modifier.height(48.dp))
                         Spacer(Modifier.height(48.dp))
-                        OutlinedTextField(value = "", onValueChange = {}, enabled = false, singleLine = true,
-                            label = { Text(stringResource(R.string.lava_email)) }, modifier = Modifier.fillMaxWidth().testTag("provider-email"))
+                        Spacer(Modifier.fillMaxWidth().height(56.dp).testTag("provider-email"))
                         Text(stringResource(R.string.lava_terms), style = MaterialTheme.typography.bodySmall)
                         Button(onClick = {}, enabled = false, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.lava_pay)) }
                     }
@@ -194,9 +193,11 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
                                 }) { Text(stringResource(R.string.lava_manual)) }
                             }
                         } else Spacer(Modifier.height(48.dp))
-                        OutlinedTextField(value = state.email, onValueChange = model::email,
-                            enabled = !state.busy, singleLine = true, label = { Text(stringResource(R.string.lava_email)) },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email), modifier = Modifier.fillMaxWidth().testTag("provider-email"))
+                        if (block.email.isNullOrBlank()) {
+                            OutlinedTextField(value = state.email, onValueChange = model::email,
+                                enabled = !state.busy, singleLine = true, label = { Text(stringResource(R.string.lava_email)) },
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email), modifier = Modifier.fillMaxWidth().testTag("provider-email"))
+                        }
                         Text(stringResource(R.string.lava_terms), style = MaterialTheme.typography.bodySmall)
                         if (block.blocked_reason != null) Text(stringResource(R.string.lava_blocked))
                         Button(onClick = model::start, enabled = !state.busy && !state.uncertainStart &&

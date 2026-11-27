@@ -13,6 +13,7 @@ from app.db.models.lava import LavaInvoice, LavaWebhookEvent
 from app.db.models.payment import Payment
 from app.db.models.portfolio import PortfolioTransaction
 from app.db.models.user import User
+from app.db.models.user_identity import UserIdentity
 from app.services.ai_usage_budget_service import AIUsageBudgetService
 from app.services.lava import events, ledger
 from app.services.lava.checkout import LavaCheckoutError, LavaCheckoutService
@@ -94,6 +95,35 @@ class LavaPaymentTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(await self._ingest(payment_webhook("payment.success", contract, amount=amount)),
                          (200, {"ok": True, "result": "applied"}))
         return started["checkout_id"], contract
+
+    async def test_prefills_only_owned_verified_google_or_previous_paid_receipt_email(self):
+        async with self.sessions() as session:
+            session.add_all([
+                UserIdentity(id="google-one", user_id=1, provider="google", subject_hash="1" * 64,
+                             email_display=" Google-One@Example.com ", email_verified=True),
+                UserIdentity(id="google-two", user_id=2, provider="google", subject_hash="2" * 64,
+                             email_display="unverified@example.com", email_verified=False),
+            ])
+            await session.commit()
+            first = await self.checkout.overview_block(session, await session.get(User, 1), supports_lava=True)
+            self.assertEqual("google-one@example.com", first["email"])
+            other = await self.checkout.overview_block(session, await session.get(User, 2), supports_lava=True)
+            self.assertIsNone(other["email"])
+
+        checkout_id, _ = await self._paid_first()
+        await self.checkout.cancel(self.sessions, user_id=1)
+        async with self.sessions() as session:
+            buyer = await session.get(User, 1)
+            previous = await self.checkout.overview_block(session, buyer, supports_lava=True)
+            self.assertEqual("buyer@example.com", previous["email"])
+            self.assertIsNone(await self.checkout.overview_block(session, buyer, supports_lava=False))
+
+        abandoned = await self._start(email="unpaid@example.com")
+        self.assertNotEqual(checkout_id, abandoned["checkout_id"])
+        async with self.sessions() as session:
+            buyer = await session.get(User, 1)
+            previous = await self.checkout.overview_block(session, buyer, supports_lava=True)
+            self.assertEqual("buyer@example.com", previous["email"])
 
     # -- mode and terms ---------------------------------------------------
     async def test_manual_only_mode_keeps_overview_unchanged(self):
@@ -344,6 +374,9 @@ class LavaPaymentTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(user.status, "active")
         self.assertAlmostEqual((_utc(user.end_date) - end).total_seconds(), 0, delta=120)
         self.assertEqual((await self._payments())[0].payment_status, "approved")
+        with self.assertRaises(LavaCheckoutError) as ctx:
+            await self._start()
+        self.assertEqual(ctx.exception.code, "subscription_active")
 
     # -- kill switch / pause / reconciliation -----------------------------
     async def test_sales_disabled_still_processes_existing_invoice(self):

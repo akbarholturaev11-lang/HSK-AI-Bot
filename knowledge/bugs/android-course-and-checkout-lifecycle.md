@@ -19,6 +19,8 @@ Audit: 2026-10-08, based on `codex/local-ai` after the HSK 3.0 checkout repair.
 | Open a lesson while the course map refreshes | Android/Desktop lesson start locked progress before the account, while the map locked the account first; PostgreSQL detected a deadlock and returned `503` | Lock and refresh the canonical account before deriving the lesson level or locking progress, matching map/completion. Keep the PostgreSQL parallel map/lesson regression in `tests/test_native_course_lesson_locking.py`; an APK update cannot repair this server lock inversion. |
 
 | Process stops after replacement credentials persist but before widget relink | The previous account cache can survive beside the new credentials | Clear only the old widget projection before persisting replacement credentials, retain the existing post-token link callback, and hold the auth-generation lock through widget acceptance. `AuthRepositoryTest` injects an interrupted credential write; `WidgetPersonalContextTest` covers late success/401, epoch/revision/time replays and foreground invalidation. |
+| Restore Pro after a cancelled Lava term expires | The old contract hides every buy action in Direct checkout | Preserve the cancellation status while paid access is active. Expose the current plan catalog once that access ends. The Android Lava API regression verifies expiry, restore attribution and a new invoice. |
+| Checkout instrumentation starts the real application | The app can fall through to auth or network setup beyond the fixture | Run the composite emulator suite with the separate QA app identity and an invalid HTTPS API origin. Stub both checkout transports and assert current fake request ownership. Keep the unchanged Direct/Play signature guard. |
 
 ## Rules for future changes
 

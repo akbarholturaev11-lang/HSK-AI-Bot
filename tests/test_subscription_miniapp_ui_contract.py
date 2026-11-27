@@ -27,7 +27,7 @@ def test_subscription_checkout_keeps_backend_contracts():
 def test_subscription_checkout_routes_banks_and_permanent_unlock_separately():
     html = _html()
     functions = []
-    for name in ("hasMethodStep", "isHsk30Unlock", "manualFlow", "lavaInfo", "lavaMode", "flow"):
+    for name in ("hasMethodStep", "isHsk30Unlock", "manualFlow", "lavaInfo", "savedLavaEmail", "lavaMode", "flow"):
         match = re.search(r"function " + name + r"\([^)]*\)\{[\s\S]*?\}", html)
         assert match is not None
         functions.append(match.group(0))
@@ -52,6 +52,7 @@ def test_subscription_checkout_routes_banks_and_permanent_unlock_separately():
         + '\nstate.regionalPlans=true;state.region="tj";results.regional_tj=flow();'
         + 'state.region="uz";results.regional_uz=flow();'
         + 'state.overview={lava:{mode:"both",plans:lavaPlans}};state.path="lava";results.regional_lava=flow();'
+        + 'state.overview.lava.email="receipt@example.com";results.saved_email=flow();'
         + 'state.path="manual";state.region="cn";results.regional_cn=flow();'
         + 'state.pending=true;results.pending=flow();console.log(JSON.stringify(results));'
     )
@@ -60,6 +61,7 @@ def test_subscription_checkout_routes_banks_and_permanent_unlock_separately():
     assert results["both_yes"] == ["card", "lavaPlans", "lavaPay"]
     assert results["both_no"] == ["card", "country", "plans", "pay"]
     assert results["lava_only"] == ["lavaPlans", "lavaPay"]
+    assert results["saved_email"] == ["lavaPlans"]
     assert results["no_terms"] == ["country", "plans", "pay"]
     assert results["chargeback"] == ["country", "plans", "pay"]
     assert results["unlock_lava"] == ["country", "pay"]
@@ -287,9 +289,10 @@ console.log(JSON.stringify(result));
 
 def test_reference_price_is_display_only_and_labeled():
     source = Path("app/static/course_v3_data/hsk-subscription-presentation.js").read_text(encoding="utf-8")
-    script = source + """
+    catalog = Path("app/static/course_v3_data/hsk-miniapp-i18n.js").read_text(encoding="utf-8")
+    script = "globalThis.window=globalThis;\n" + catalog + source + """
 const p=globalThis.HSKSubscriptionPresentation;
-console.log(JSON.stringify([p.relativePrice(100),p.relativePrice(0),p.relativePrice(null),p.comparisonLabel("uz"),p.comparisonLabel("ru"),p.comparisonLabel("tj")]));
+console.log(JSON.stringify([p.relativePrice(100),p.relativePrice(0),p.relativePrice(null),p.regionalLabel("uz","comparison"),p.regionalLabel("ru","comparison"),p.regionalLabel("tj","comparison")]));
 """
     result = json.loads(subprocess.check_output(["node", "-e", script], text=True))
     assert result[:3] == ["129.99", None, None]

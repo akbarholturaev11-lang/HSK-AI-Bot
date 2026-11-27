@@ -39,6 +39,8 @@ def test_inline_pro_two_primary_plans_other_terms_and_real_exit_discount():
                 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
                 <link rel="stylesheet" href="/course_v3_data/iphone-pwa-inline-pro.css?v=qa">
                 </head><body><button id="starter">open</button>
+                <script src="/course_v3_data/hsk-miniapp-i18n.js?v=qa"></script>
+                <script src="/course_v3_data/hsk-course-i18n.js?v=qa"></script>
                 <script src="/course_v3_data/hsk-subscription-presentation.js?v=qa"></script>
                 <script src="/course_v3_data/iphone-pwa-inline-pro.js?v=qa"></script>
                 </body></html>""")
@@ -300,6 +302,7 @@ def test_inline_pro_learning_benefit_requires_authorized_offer(lang, source, exp
 
 def test_inline_region_changes_use_verified_prices_without_overview_reload():
     seen = []
+    owner = 7
     usd = [{"plan_type": "1_month", "currency": "USD", "amount": "10.00"}]
     rub = [{"plan_type": "1_month", "currency": "RUB", "amount": "900.00"}]
     overview = {
@@ -325,14 +328,19 @@ def test_inline_region_changes_use_verified_prices_without_overview_reload():
                 <meta name="viewport" content="width=device-width,initial-scale=1">
                 <link rel="stylesheet" href="/course_v3_data/iphone-pwa-inline-pro.css?v=qa">
                 </head><body>
+                <script src="/course_v3_data/hsk-miniapp-i18n.js?v=qa"></script>
+                <script src="/course_v3_data/hsk-course-i18n.js?v=qa"></script>
                 <script src="/course_v3_data/hsk-subscription-presentation.js?v=qa"></script>
                 <script src="/course_v3_data/iphone-pwa-inline-pro.js?v=qa"></script>
                 </body></html>""")
         elif path == "/api/v3/pwa-auth/session":
-            route.fulfill(status=200, json={"ok": True, "user_id": 7, "csrf": "qa-csrf"})
+            route.fulfill(status=200, json={"ok": True, "user_id": owner, "csrf": f"qa-csrf-{owner}"})
         elif path == "/api/v3/pwa/subscription/overview":
+            assert route.request.headers["x-hsk-pwa-csrf"] == f"qa-csrf-{owner}"
             seen.append("overview")
-            route.fulfill(status=200, json=overview)
+            route.fulfill(status=200, json={**overview, "lava": {
+                **overview["lava"], "email": f"learner{owner}@example.com",
+            }})
         elif path == "/iphone-pwa/checkout":
             seen.append(route.request.url)
             route.fulfill(status=200, content_type="text/html", body="<html><body>Manual checkout</body></html>")
@@ -373,6 +381,21 @@ def test_inline_region_changes_use_verified_prices_without_overview_reload():
         page.evaluate("HSKPwaInlinePro.closeEmbeddedCheckout(document.querySelector('#hsk-inline-pro iframe').contentWindow)")
         assert page.get_by_role("heading", name="Лимит исчерпан").is_visible()
         assert page.locator("#hsk-inline-pro .hip-region").input_value() == "cn"
+
+        # Browser cookies can change while the mounted checkout is hidden.
+        # The foreground recheck must discard the old owner's live UI and
+        # must not issue another overview or start a payment on their behalf.
+        page.evaluate("localStorage.setItem('hsk_sub_region_v1:pwa:8','ru')")
+        owner = 8
+        page.evaluate("document.dispatchEvent(new Event('visibilitychange'))")
+        page.locator("#hsk-inline-pro").wait_for(state="hidden")
+        assert seen.count("overview") == 1
+        page.evaluate("HSKPwaInlinePro.open({source:'v3_locked_lesson',lang:'ru'})")
+        region.wait_for()
+        assert region.input_value() == "ru"
+        assert "900.00 RUB" in page.locator("#hsk-inline-pro .hip-plan").first.inner_text()
+        assert page.evaluate("localStorage.getItem('hsk_sub_region_v1:pwa:7')") == "cn"
+        assert seen.count("overview") == 2
         browser.close()
 
 

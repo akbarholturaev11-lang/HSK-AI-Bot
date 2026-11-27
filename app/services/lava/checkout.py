@@ -17,6 +17,7 @@ from dataclasses import dataclass
 from decimal import ROUND_HALF_UP, Decimal
 
 from app.db.models.lava import LavaInvoice
+from app.db.models.user_identity import UserIdentity
 from app.repositories.payment_repo import PaymentRepository
 from app.repositories.user_repo import UserRepository
 from app.services.discount_service import DiscountService
@@ -24,6 +25,7 @@ from app.services.lava import events, ledger
 from app.services.lava.client import LavaError
 from app.services.lava.config import LavaConfig, LavaConfigService, effective_mode
 from app.services.lava.terms import LAVA_CURRENCIES, LAVA_PAYMENT_METHOD, LAVA_SOURCES, LOCAL_CONTRACT_PREFIX, normalize_email
+from app.services.user_access_state_service import UserAccessStateService
 
 logger = logging.getLogger(__name__)
 
@@ -73,7 +75,7 @@ def discounted(amount: Decimal | None, percent: int) -> Decimal | None:
 def _active_subscription_clause(user_id: int):
     return and_(
         LavaInvoice.user_id == user_id, LavaInvoice.kind.in_(("first", "external")),
-        LavaInvoice.status == "paid",
+        LavaInvoice.status.in_(ledger.GRANTED_STATUSES),
         or_(LavaInvoice.subscription_status.is_(None), LavaInvoice.subscription_status == "active"),
     )
 
@@ -99,16 +101,36 @@ class LavaCheckoutService:
     async def _subscription(self, session, user) -> dict | None:
         row = (await session.execute(select(LavaInvoice).where(
             LavaInvoice.user_id == user.id, LavaInvoice.kind.in_(("first", "external")),
-            LavaInvoice.status.in_(("paid", "chargeback_won")),
+            LavaInvoice.status.in_(ledger.GRANTED_STATUSES),
         ).order_by(LavaInvoice.paid_at.desc()).limit(1))).scalar_one_or_none()
         if row is None:
             return None
+        status = row.subscription_status or "active"
+        # Keep management available for active renewals, but let a learner
+        # buy again once the cancelled subscription's paid access has ended.
+        if status == "cancelled" and not UserAccessStateService.is_paid(user, now=_now()):
+            return None
         return {
             "plan_type": row.plan_type,
-            "status": row.subscription_status or "active",
-            "auto_renew": (row.subscription_status or "active") == "active",
+            "status": status,
+            "auto_renew": status == "active",
             "pro_until": _iso(getattr(user, "end_date", None)),
         }
+
+    async def _buyer_email(self, session, user_id: int) -> str | None:
+        previous = await session.scalar(select(LavaInvoice.buyer_email).where(
+            LavaInvoice.user_id == user_id, LavaInvoice.payment_id.is_not(None),
+            LavaInvoice.buyer_email.is_not(None),
+        ).order_by(LavaInvoice.paid_at.desc().nulls_last(), LavaInvoice.id.desc()).limit(1))
+        if email := normalize_email(previous):
+            return email
+        # The canonical owner is already verified. The linked Google address
+        # supplies receipt delivery only and never identifies a payer.
+        google_email = await session.scalar(select(UserIdentity.email_display).where(
+            UserIdentity.user_id == user_id, UserIdentity.provider == "google",
+            UserIdentity.email_verified.is_(True),
+        ))
+        return normalize_email(google_email)
 
     async def resolve_discount(self, session, user, config: LavaConfig, *, plan_type: str,
                                mode: str | None, campaign_id: int | None = None,
@@ -195,17 +217,16 @@ class LavaCheckoutService:
                 return None
         if mode == "manual_only" and subscription is None:
             return None
-        last_email = await session.scalar(select(LavaInvoice.buyer_email).where(
-            LavaInvoice.user_id == user.id, LavaInvoice.buyer_email.is_not(None),
-        ).order_by(LavaInvoice.id.desc()).limit(1))
+        blocked_reason = await self._blocked_reason(session, user)
+        email = await self._buyer_email(session, user.id) if plans and not blocked_reason else None
         return {
             "mode": mode,
             "currency": config.currency,
             "plans": plans,
             **({"plans_by_currency": {config.currency: plans, **regional_plans}} if regional_plans else {}),
-            "blocked_reason": await self._blocked_reason(session, user),
+            "blocked_reason": blocked_reason,
             "subscription": subscription,
-            "email": last_email,
+            "email": email,
         }
 
     async def start(self, session_factory, *, user_id: int, plan_type: str, email: str,

@@ -66,7 +66,7 @@ class LavaCheckoutViewModel(
                     selected.copy(
                         plan = old.plan.takeIf { plan -> selected.visiblePlans.any { it.plan_type == plan } }
                             ?: selected.visiblePlans.firstOrNull()?.plan_type.orEmpty(),
-                        email = old.email.ifBlank { block?.email.orEmpty() }, checkoutId = id,
+                        email = block?.email?.takeIf(String::isNotBlank) ?: old.email, checkoutId = id,
                         status = old.status.ifBlank { if (id > 0) "pending" else "" },
                         uncertainStart = false, error = !result.value.ok || (old.mode == "exit_discount" && block == null))
                 }

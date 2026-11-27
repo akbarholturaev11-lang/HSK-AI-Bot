@@ -129,6 +129,7 @@ ANDROID_CHECKOUT_ORIGIN_SOURCES = {
     "hsk30_onboarding": "android_hsk30_onboarding",
     "hsk30_content": "android_hsk30_onboarding",
     "hsk30_settings": "android_hsk30_settings",
+    "course_expired": "android_course_expired",
     "course_limit": "android_course_limit",
     "course_lesson_limit": "android_course_lesson_limit",
     "practice_limit": "android_practice_limit",

@@ -29,7 +29,9 @@ def _markup(path):
       <link rel="stylesheet" href="/course_v3_data/iphone-pwa-inline-pro.css?v=e2e">
       </head><body><div id="secov"></div><button id="go">Start</button>
       <script>{stub}</script>
-      <script src="/course_v3_data/hsk-subscription-presentation.js?v=e2e"></script>
+      <script src="/course_v3_data/hsk-miniapp-i18n.js?v=qa"></script>
+                <script src="/course_v3_data/hsk-course-i18n.js?v=qa"></script>
+                <script src="/course_v3_data/hsk-subscription-presentation.js?v=e2e"></script>
                 <script src="/course_v3_data/iphone-pwa-inline-pro.js?v=e2e"></script>
       <script src="/course_v3_data/iphone-pwa-inline-pro-bridge.js?v=e2e"></script>
       </body></html>"""
@@ -248,4 +250,58 @@ def test_real_manual_checkout_fills_screen_with_header_x_and_bottom_button():
         page.get_by_role("heading", name="Другие тарифы").wait_for()
         assert page.locator("#hsk-inline-pro iframe").count() == 0
         assert not errors, errors
+        browser.close()
+
+
+@pytest.mark.parametrize("pwa, saved_email", [
+    (True, "receipt@example.com"),
+    (False, "learner@example.com"),
+    (True, None),
+])
+def test_shared_checkout_only_prompts_when_email_is_missing(pwa, saved_email):
+    starts = []
+    prefix = "/api/v3/pwa/subscription" if pwa else "/api/subscription-miniapp"
+    checkout_path = "/iphone-pwa/checkout" if pwa else "/subscription.html"
+    checkout_file = STATIC / "subscription.html"
+
+    def serve(route):
+        path = urlsplit(route.request.url).path
+        if path == checkout_path:
+            route.fulfill(path=str(checkout_file), content_type="text/html; charset=utf-8")
+        elif path == "/api/v3/pwa-auth/session":
+            route.fulfill(json={"ok": True, "csrf": "synthetic", "user_id": 7})
+        elif path == prefix + "/overview":
+            route.fulfill(json={"ok": True, "language": "ru", "mode": "subscription", "lava": {
+                "mode": "lava_only", "currency": "USD", "email": saved_email,
+                "plans": [{"plan_type": "1_month", "amount": "10.00", "currency": "USD"}],
+            }})
+        elif path == prefix + "/lava/start":
+            starts.append(json.loads(route.request.post_data or "{}"))
+            route.fulfill(json={"ok": True, "checkout_id": 81, "payment_url": "https://app.lava.top/test"})
+        elif path == prefix + "/lava/status":
+            route.fulfill(json={"ok": True, "status": "pending"})
+        elif path.startswith("/api/"):
+            route.fulfill(json={"ok": True})
+        else:
+            _serve(route)
+
+    with playwright.sync_playwright() as pw:
+        browser = getattr(pw, os.getenv("PWA_E2E_ENGINE", "chromium")).launch()
+        page = browser.new_context(**pw.devices["iPhone 13"]).new_page()
+        errors = []
+        page.on("pageerror", lambda exc: errors.append(str(exc)))
+        page.route("**/*", serve)
+        page.add_init_script("window.open=()=>null")
+        suffix = "" if pwa else "#tgWebAppData=synthetic-telegram-init-data"
+        page.goto(ORIGIN + checkout_path + "?lang=ru" + suffix)
+        page.locator("#lavaPlans [data-lava-plan='1_month']").wait_for()
+        page.locator("#nextBtn").click()
+        if saved_email is None:
+            assert not starts
+            page.locator("#lavaEmail").fill("first@example.com")
+            page.locator("#nextBtn").click()
+        page.locator('[data-screen="lavaWait"].active').wait_for()
+        assert not page.locator("#lavaEmail").is_visible()
+        assert [row["email"] for row in starts] == [saved_email or "first@example.com"]
+        assert not errors
         browser.close()

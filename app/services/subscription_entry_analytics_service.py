@@ -33,6 +33,7 @@ class SubscriptionEntryAnalyticsService:
         "subscription_page": "Obuna sahifasi",
         "android_subscription": "Android -> Obuna",
         "android_onboarding_plan": "Android · Onboarding obuna tanlovi",
+        "android_course_expired": "Android · Kurs obunasi tugagan",
         "android_course_limit": "Android · Kurs limiti",
         "android_course_lesson_limit": "Android · Dars ichidagi limit",
         "android_practice_limit": "Android · Mashq limiti",

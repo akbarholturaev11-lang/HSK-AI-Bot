@@ -36,6 +36,18 @@ class LavaCheckoutViewModelTest {
         }
         fun model() = LavaCheckoutViewModel(LavaCheckoutRepository(this, { ApiResult.Success("token") }), "tj")
     }
+    @Test fun startsWithTheServerPrefilledEmailWithoutTyping() = runTest(dispatcher) {
+        val fake = Fake()
+        fake.overview = fake.overview.copy(lava = fake.overview.lava!!.copy(email = "learner@example.com"))
+        fake.startReply.complete(Response.success(LavaReply(true, 7, "https://pay.lava.top/verified")))
+        val vm = fake.model()
+        runCurrent()
+        vm.start()
+        runCurrent()
+        assertEquals("learner@example.com", fake.lastStart?.email)
+        assertEquals(1, fake.starts)
+    }
+
     @Test fun duplicateStartAndBrowserReturnNeverGrantAccess() = runTest(dispatcher) {
         val fake = Fake(); val vm = fake.model(); runCurrent()
         vm.email("a@b.co"); vm.start(); vm.start(); runCurrent()

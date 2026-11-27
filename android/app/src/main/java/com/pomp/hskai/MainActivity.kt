@@ -1677,7 +1677,7 @@ private fun AppRoot(
                                         title = courseState.snapshot?.proExpiryTitle,
                                         onRestore = {
                                             expirySheetToken = null
-                                            checkoutOrigin = "profile_renewal"
+                                            checkoutOrigin = "course_expired"
                                             checkoutVisible = true
                                         },
                                         onDismiss = { expirySheetToken = null },
