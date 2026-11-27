@@ -29,7 +29,7 @@ def _overview(discount=False):
     return {"ok": True, "lava": {"mode": "both", "plans": plans, "email": "buyer@example.com"}}
 
 
-def test_inline_pro_two_primary_plans_other_terms_and_real_exit_discount():
+def test_limit_keeps_other_terms_and_real_exit_discount():
     seen = []
     def respond(route):
         path = urlsplit(route.request.url).path
@@ -114,8 +114,8 @@ def test_inline_pro_two_primary_plans_other_terms_and_real_exit_discount():
         assert "1 год" in page.locator("#hsk-inline-pro .hip-body").inner_text()
         assert "12.99" in page.locator("#hsk-inline-pro .hip-body").inner_text()
         assert page.locator("#hsk-inline-pro .hip-region").is_visible()
-        assert "не предыдущая цена" in page.locator("#hsk-inline-pro .hip-reference-note").inner_text()
-        page.get_by_role("button", name="Другие тарифы").click()
+        assert page.locator("#hsk-inline-pro .hip-reference-note").count() == 0
+        assert page.get_by_role("button", name="Другие тарифы").is_visible()
         # The title is never covered by the 44px back and close controls.
         no_overlap=page.evaluate("""() => {
             const h=document.querySelector("#hsk-inline-pro .hip-title").getBoundingClientRect();
@@ -124,13 +124,13 @@ def test_inline_pro_two_primary_plans_other_terms_and_real_exit_discount():
             return h.right <= b.left && h.left >= a.right;
         }""")
         assert no_overlap
-        # "Other plans" is ONE screen: all four terms plus the regular method.
-        # No provider choice step and no provider names for the learner.
+        # The limit retains More, which lists all enabled terms without a provider detour.
+        page.get_by_role("button", name="Другие тарифы").click()
         assert page.get_by_role("heading", name="Другие тарифы").is_visible()
         assert page.locator("#hsk-inline-pro button.hip-plan").count() == 4
-        assert page.locator("#hsk-inline-pro .hip-method").count() == 1
+        assert page.locator("#hsk-inline-pro .hip-method").count() == 0
         assert "lava" not in page.locator("#hsk-inline-pro").inner_text().lower()
-        assert "≈ 7.50 USD / мес" in page.locator("#hsk-inline-pro .hip-body").inner_text()
+        assert page.locator("#hsk-inline-pro .hip-plan .per").count() == 0
         page.locator("#hsk-inline-pro button.hip-plan").nth(1).click()
         assert page.locator("#hsk-inline-pro button.hip-plan").nth(1).get_attribute("aria-pressed") == "true"
         page.locator("#hsk-inline-pro .hip-close").click()

@@ -58,7 +58,7 @@ let statisticsDownload=null;
 let userFilterOpen=false;
 const USER_SEGMENTS=[['all','userFilterAll'],['active_today','userFilterActiveToday'],['paid','userFilterPaid'],['pending','userFilterPending'],['wants_pay','userFilterWantsPay'],['trial','userFilterTrial'],['free','userFilterFree'],['expired','userFilterExpired'],['blocked','userFilterBlocked'],['bot_blocked','userFilterBotBlocked'],['expiring_pro','analyticsExpiringPro']];
 let managementDraft=null,managementReview=null,managementPreparing=false,preparingEditor=null;
-let coursePolicyRevision=null,hsk30Baseline=null,lavaBaseline=null;
+let coursePolicyRevision=null,hsk30Baseline=null,lavaBaseline=null,lavaPriceRefreshPending=false;
 let courseData=null,courseLimitDraft=null,courseTrialDraft=null,courseLimitPlan='FREE';
 let courseLimitTouched={FREE:false,TRIAL_ACTIVE:false};
 let courseAnalytics=null,courseAnalyticsDays=30,courseAnalyticsLoading=false,courseAnalyticsToken=0;
@@ -1137,7 +1137,7 @@ function editorActionOnly(){
 function updateEditorSaveEnabled(){
   const b=document.querySelector('#drawerFoot [data-action="managementPrepare"],#drawerFoot [data-action="coursePrepare"],#drawerFoot [data-action="hsk30Prepare"],#drawerFoot [data-action="lavaPrepare"]');
   if(!b||!editorBaseline||editorBaseline.panel!==$('overlay'))return;
-  const dirty=editorActionOnly()||editorValue()!==editorBaseline.value;
+  const dirty=editorActionOnly()||editorValue()!==editorBaseline.value||!!($('lavaMode')&&lavaPriceRefreshPending);
   const requiresProof=managementDraft?.type==='payout'&&$('payoutOperation')?.value==='complete'&&!managementDraft.proofLoaded;
   const mediaPending=['campaign_draft','release_create'].includes(managementDraft?.kind)&&Boolean(managementDraft.assetUploading||managementDraft.campaignMediaFile&&!managementDraft.assetId);
   const priceQrPending=managementDraft?.type==='price'&&['alipay','wechat'].includes($('priceMethod')?.value)&&
@@ -2519,7 +2519,23 @@ function lavaOfferOptions(catalog,plan,periodicity,currency,selected){
     rows.unshift('<option value="'+esc(selected)+'" selected>'+esc(selected)+'</option>');
   return '<option value="" '+(selected?'':'selected')+'>'+esc(t('lavaOfferNone'))+'</option>'+rows.join('');
 }
+function lavaCatalogPriceRefreshNeeded(config,catalog){
+  if(!catalog?.offers?.length)return false;
+  return LAVA_TERMS.some(([plan,,periodicity])=>{
+    const term=config.plans?.[plan];
+    if(!term?.enabled)return false;
+    const offer=catalog.offers.find(row=>row.offer_id===term.offer_id);
+    if(!offer)return false;
+    return ["USD","RUB"].some(currency=>{
+      const fresh=(offer.prices||[]).find(row=>row.currency===currency&&row.periodicity===periodicity);
+      if(!fresh||!Number.isFinite(Number(fresh.amount))||Number(fresh.amount)<=0)return false;
+      const saved=term.price?.currency===currency?term.price.amount:term.regional_prices?.[currency];
+      return saved==null||Number(saved)!==Number(fresh.amount);
+    });
+  });
+}
 async function lavaSettings(){
+  lavaPriceRefreshPending=false;
   closeDrawer();const current=drawerId,at=epoch;
   drawer('lavaSettings',statePanel('loading'));
   try{
@@ -2527,6 +2543,7 @@ async function lavaSettings(){
     if(current!==drawerId||at!==epoch||!state.actor)return;
     const lava=data.lava,config=lava.config,preflight=catalog?.preflight||null;
     lavaBaseline=structuredClone(config);
+    lavaPriceRefreshPending=lavaCatalogPriceRefreshNeeded(config,preflight);
     const checks=(preflight?.checks||[]).map(check=>'<li class="'+(check.ok?'ok':'bad')+'">'+(check.ok?'✓ ':'✕ ')+esc(lavaCheckLabel(check.code))+'</li>').join('');
     const status='<section class="lava-status"><h3>'+esc(t('lavaConnection'))+'</h3><ul class="lava-checks">'+(checks||'<li class="bad">✕ '+esc(t('lavaErr_lava_provider_unavailable'))+'</li>')+'</ul>'
       +'<p class="source-note">'+esc(t('lavaLastWebhook'))+': '+esc(lava.status.last_webhook_at?date(lava.status.last_webhook_at):t('lavaNever'))+'</p></section>'

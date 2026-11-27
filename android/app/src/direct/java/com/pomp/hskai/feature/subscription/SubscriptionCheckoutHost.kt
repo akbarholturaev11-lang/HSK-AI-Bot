@@ -288,7 +288,6 @@ internal fun DirectSubscriptionCheckoutHost(
                         onMethod = { methodOpen = true },
                         onRetryCurrency = { model.chooseCurrency(currencyForRegion(state.region)) },
                         onDiscount = { waitingInvite = true; model.startDiscount() },
-                        onOtherPlans = if (providerAvailable && state.overview?.mode == "subscription") ({ routeOverride = "lava" }) else null,
                     )
                     CheckoutStep.METHOD -> Text(
                         copy.getString(R.string.sub_method),
@@ -518,7 +517,6 @@ private fun PlansContent(
     onMethod: () -> Unit,
     onRetryCurrency: () -> Unit,
     onDiscount: () -> Unit,
-    onOtherPlans: (() -> Unit)? = null,
 ) {
     Text(copy.getString(R.string.sub_plans_heading), color = C.text, fontSize = 16.sp, fontWeight = FontWeight.Black)
     Spacer(Modifier.height(10.dp))
@@ -533,7 +531,6 @@ private fun PlansContent(
             MessageCard(copy.getString(state.currencyErrorRes ?: R.string.sub_currency_refresh_failed))
             Spacer(Modifier.height(8.dp))
             if (state.overview?.mode != "subscription") SmallAction(copy.getString(R.string.sub_retry), onClick = onRetryCurrency)
-            onOtherPlans?.let { SmallAction(copy.getString(R.string.lava_other_plans), onClick = it) }
         }
         return
     }
@@ -544,24 +541,23 @@ private fun PlansContent(
                 onClick = { onPlan(state.plan) }, modifier = Modifier.fillMaxWidth(), wide = true)
         }
     } else {
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(9.dp)) {
-            listOf("1_month", "10_days").forEach { plan ->
-                prices[plan]?.let { price ->
-                    PlanCard(plan, planPrice(state, plan, price), price.discountApplied, state.plan == plan, copy,
-                        onClick = { onPlan(plan) }, modifier = Modifier.weight(1f))
+        val available = listOf("1_month", "10_days", "3_months").filter { prices[it] != null }
+        val rows = if ("1_month" in available) listOf(listOf("1_month")) + available.filter { it != "1_month" }.chunked(2)
+            else available.chunked(2)
+        rows.forEachIndexed { index, row ->
+            if (index > 0) Spacer(Modifier.height(9.dp))
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(9.dp)) {
+                row.forEach { plan ->
+                    prices[plan]?.let { price ->
+                        PlanCard(plan, planPrice(state, plan, price), price.discountApplied, state.plan == plan, copy,
+                            onClick = { onPlan(plan) }, modifier = Modifier.weight(1f), wide = row.size == 1)
+                    }
                 }
             }
-        }
-        prices["3_months"]?.let { price ->
-            Spacer(Modifier.height(9.dp))
-            PlanCard("3_months", planPrice(state, "3_months", price), price.discountApplied,
-                state.plan == "3_months", copy, onClick = { onPlan("3_months") },
-                modifier = Modifier.fillMaxWidth(), wide = true)
         }
     }
     Spacer(Modifier.height(10.dp))
     CardCountrySelectorButton(state, copy, onClick = onRoute)
-    onOtherPlans?.let { SmallAction(copy.getString(R.string.lava_other_plans), onClick = it) }
     if (hasMethodStep(state.region)) {
         Spacer(Modifier.height(8.dp))
         PaymentMethodButton(state, copy, onClick = onMethod)
@@ -926,8 +922,8 @@ private fun PlanCard(plan: String, price: PlanPrice, discounted: Boolean, select
                 else -> R.string.sub_plan_best
             }
             badge?.let {
-                Text(copy.getString(it), color = C.goldInk, fontSize = 10.sp, fontWeight = FontWeight.Black,
-                    modifier = Modifier.border(1.dp, C.goldLine, CircleShape).background(C.goldSoft, CircleShape)
+                Text(copy.getString(it), color = PompColors.JadeInk, fontSize = 11.sp, fontWeight = FontWeight.Black,
+                    modifier = Modifier.border(1.dp, PompColors.Jade, CircleShape).background(PompColors.JadeSoft, CircleShape)
                         .padding(horizontal = 7.dp, vertical = 4.dp))
             }
         }
@@ -945,7 +941,6 @@ private fun PlanCard(plan: String, price: PlanPrice, discounted: Boolean, select
             comparisonPrice(price.amount)?.let { reference ->
                 Text("$reference ${price.currency}", color = C.muted, fontSize = 12.sp,
                     textDecoration = TextDecoration.LineThrough)
-                Text(copy.getString(R.string.lava_reference_price), color = C.muted, fontSize = 10.sp)
             }
         }
     }

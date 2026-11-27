@@ -234,3 +234,46 @@ class AdminPwaLavaTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class LavaCatalogRefreshFrontendTests(unittest.TestCase):
+    def test_catalog_delta_enables_only_the_existing_save_with_actual_price_changes(self):
+        import json
+        import re
+        import subprocess
+        from pathlib import Path
+        source = Path('app/static/admin-pwa/app.js').read_text()
+        terms = re.search(r'const LAVA_TERMS=.*?;\n', source).group(0)
+        helper = source[source.index('function lavaCatalogPriceRefreshNeeded('):source.index('async function lavaSettings(){')]
+        save = source[source.index('function updateEditorSaveEnabled(){'):source.index('function showSavedAndDismiss(')]
+        script = terms + helper + save + r'''
+const old={currency:'USD',plans:{'1_month':{enabled:true,offer_id:'offer',price:{amount:'10.00',currency:'USD'}}}};
+const catalog={offers:[{offer_id:'offer',prices:[{currency:'USD',periodicity:'MONTHLY',amount:10},{currency:'RUB',periodicity:'MONTHLY',amount:900}]}]};
+const full=structuredClone(old);full.plans['1_month'].regional_prices={RUB:'900.00'};
+const usdOnly=structuredClone(catalog);usdOnly.offers[0].prices.pop();
+const wrongPeriod=structuredClone(catalog);wrongPeriod.offers[0].prices[1].periodicity='PERIOD_YEAR';
+const disabled=structuredClone(old);disabled.plans['1_month'].enabled=false;
+const changed=structuredClone(catalog);changed.offers[0].prices[1].amount=950;
+const invalid=structuredClone(catalog);invalid.offers[0].prices[1].amount='not-a-price';
+const result={legacy:lavaCatalogPriceRefreshNeeded(old,catalog),saved:lavaCatalogPriceRefreshNeeded(full,catalog),
+  absent:lavaCatalogPriceRefreshNeeded(old,null),usdOnly:lavaCatalogPriceRefreshNeeded(old,usdOnly),
+  wrongPeriod:lavaCatalogPriceRefreshNeeded(old,wrongPeriod),disabled:lavaCatalogPriceRefreshNeeded(disabled,catalog),
+  changed:lavaCatalogPriceRefreshNeeded(full,changed),invalid:lavaCatalogPriceRefreshNeeded(old,invalid)};
+const overlay={},button={disabled:null};let hasLava=true,lavaPriceRefreshPending=false,signing=false;
+const $=id=>id==='overlay'?overlay:id==='lavaMode'&&hasLava?{}:null;
+const document={querySelector:()=>button},editorBaseline={panel:overlay,value:'same'},managementDraft=null,managementPreparing=false;
+function editorActionOnly(){return false}function editorValue(){return 'same'}
+updateEditorSaveEnabled();result.unchangedDisabled=button.disabled;
+lavaPriceRefreshPending=result.legacy;updateEditorSaveEnabled();result.refreshEnabled=!button.disabled;
+signing=true;updateEditorSaveEnabled();result.signingDisabled=button.disabled;
+signing=false;hasLava=false;updateEditorSaveEnabled();result.otherEditorDisabled=button.disabled;
+hasLava=true;lavaPriceRefreshPending=result.saved;updateEditorSaveEnabled();result.savedDisabled=button.disabled;
+console.log(JSON.stringify(result));
+'''
+        result = json.loads(subprocess.check_output(['node', '-e', script], text=True))
+        expected = dict(legacy=True, saved=False, absent=False, usdOnly=False, wrongPeriod=False,
+                        disabled=False, changed=True, invalid=False, unchangedDisabled=True,
+                        refreshEnabled=True, signingDisabled=True, otherEditorDisabled=True, savedDisabled=True)
+        for key, value in expected.items():
+            with self.subTest(case=key):
+                self.assertEqual(result[key], value)
