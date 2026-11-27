@@ -72,7 +72,6 @@ internal fun LessonAdaptiveReview(
     onContinue: () -> Unit,
     onPlayAudio: (String) -> Unit,
     onOpenPinyinSettings: () -> Unit,
-    onExit: () -> Unit,
 ) {
     val question = review.item.question
     val feedback = review.feedback
@@ -104,7 +103,6 @@ internal fun LessonAdaptiveReview(
                 progress = state.progress,
                 hearts = state.hearts,
                 onOpenPinyinSettings = onOpenPinyinSettings,
-                onExit = onExit,
             )
             HskStageHeading(question.prompt)
             BoxWithConstraints(modifier = Modifier.weight(1f).fillMaxWidth()) {

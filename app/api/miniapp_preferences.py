@@ -61,6 +61,8 @@ class CoursePreferencesUpdate(BaseModel):
     # yubormaslik "tegma" degani. Avtoga qaytarish uchun `auto` yuboriladi.
     daily_goal_xp: Optional[Annotated[int, Field(ge=10, le=500)]] = None
     daily_goal_auto: bool = False
+    # Bu maydon mavjud CourseMiniAppProfile CHECK constraintiga mos.
+    streak_target_days: Optional[Literal[7, 14, 30, 50]] = None
 
     @model_validator(mode="after")
     def _at_least_one_change(self):
@@ -70,6 +72,7 @@ class CoursePreferencesUpdate(BaseModel):
             and self.preferred_focus is None
             and self.daily_goal_xp is None
             and not self.daily_goal_auto
+            and self.streak_target_days is None
         ):
             raise ValueError("no preference supplied")
         if self.daily_minutes is not None and self.daily_minutes not in COURSE_DAILY_MINUTES:
@@ -117,6 +120,8 @@ async def apply_course_preferences(service, user_id: int, payload: CoursePrefere
         profile.daily_minutes = int(payload.daily_minutes)
     if payload.preferred_focus is not None:
         profile.preferred_focus = payload.preferred_focus
+    if payload.streak_target_days is not None:
+        profile.streak_target_days = int(payload.streak_target_days)
     if payload.daily_goal_auto:
         await service.set_daily_goal_xp(profile, None)
     elif payload.daily_goal_xp is not None:
@@ -140,6 +145,7 @@ def course_preferences_payload(profile) -> dict:
         "preferred_focus": profile.preferred_focus,
         "daily_goal_xp": CourseMiniAppProfileService.resolve_daily_goal_xp(profile),
         "daily_goal_is_custom": profile.daily_goal_xp is not None,
+        "streak_target_days": getattr(profile, "streak_target_days", None),
         "plan_size": CourseMiniAppProfileService.daily_plan_size(profile.daily_minutes),
     }
 

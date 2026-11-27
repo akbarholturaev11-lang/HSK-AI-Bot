@@ -77,4 +77,20 @@ class AndroidSmartReminderApiTest {
             assertTrue(apiCall { api.mode("Bearer synthetic") } is ApiResult.Failure)
         } finally { server.shutdown() }
     }
+
+    @Test fun `claim message is optional and old shapes still decode`() {
+        val base = """{"ok":true,"version":1,"dispatch_allowed":true,"job_id":"j","lesson_order":5"""
+        assertNull(json.decodeFromString(SmartStudyGrant.serializer(), "$base}").message)
+        val grant = json.decodeFromString(SmartStudyGrant.serializer(),
+            base + ""","message":{"situation":"long_break","content_key":"long_break.v2","title":"T","body":"B","extra":1}}""")
+        val message = grant.message!!
+        assertEquals(SmartStudyMessage("long_break", "long_break.v2", "T", "B"), message)
+        assertTrue(message.usable()); assertTrue(message.worried())
+        assertFalse(message.copy(situation = "daily").worried())
+        assertFalse(message.copy(situation = null).worried())
+        val custom = json.decodeFromString(SmartStudyGrant.serializer(),
+            base + ""","message":{"situation":null,"content_key":null,"title":"T","body":"Admin 5"}}""").message!!
+        assertTrue(custom.usable()); assertFalse(custom.worried())
+        assertFalse(SmartStudyMessage(title = "", body = "B").usable())
+    }
 }

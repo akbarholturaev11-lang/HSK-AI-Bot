@@ -156,6 +156,13 @@
       "expected_identity_scope": true,
       "purpose": "persistent_memorize_user_pref_in_PWA",
       "privacy_review": "Old Telegram global UI-only preference stays compatible. PWA preference uses localUserScope() which derives from the server verified PWA session, not initDataUnsafe; runtime account switch still needs QA."
+    },
+    {
+      "source": "course",
+      "function": "proExpirySeenKey",
+      "expected_identity_scope": true,
+      "purpose": "persistent_per_owner_pro_expiry_notice_acknowledgement",
+      "privacy_review": "Shared key uses localUserScope for ordinary and denied maps; only an opaque server-issued expiry token is stored. Preview and unbound browser actors are excluded by existing callers."
     }
   ],
   "risks": [

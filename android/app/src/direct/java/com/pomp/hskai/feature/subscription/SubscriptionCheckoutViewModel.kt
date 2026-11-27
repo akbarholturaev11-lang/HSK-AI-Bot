@@ -161,6 +161,13 @@ class SubscriptionCheckoutViewModel(
     private var checkoutGeneration = 0
     private var receiptGeneration = 0
     private var submitInFlight = false
+    private var providerEntryId: Int? = null
+
+    // Called once on each visible host, including a fresh opening of a reused model.
+    fun load(providerEntryId: Int?) {
+        this.providerEntryId = providerEntryId?.takeIf { it > 0 && !origin.startsWith("hsk30") }
+        load()
+    }
 
     fun load() {
         val generation = ++checkoutGeneration
@@ -176,19 +183,19 @@ class SubscriptionCheckoutViewModel(
         viewModelScope.launch {
             // A region confirmed earlier opens checkout on the plans, like the Mini App.
             val remembered = runCatching { savedRegion() }.getOrNull()
-            val overviewResult = repository.checkoutOverview(origin)
+            val overviewResult = repository.checkoutOverview(origin, providerEntryId)
             if (generation != checkoutGeneration) return@launch
             when (overviewResult) {
                 is ApiResult.Success -> {
                     val data = overviewResult.value
                     _state.update { current ->
-                        val regions = availableRegions(data.prices)
+                        val regions = regionalManualRegions(data)
                         val confirmedRegion = remembered?.takeIf { it in regions }
                         val region = confirmedRegion
-                            ?: defaultPaymentRegion(data.language).takeIf { it in regions }
+                            ?: (if (data.mode == "subscription") localCheckoutRegion(data.language) else defaultPaymentRegion(data.language)).takeIf { it in regions }
                             ?: regions.firstOrNull().orEmpty()
                         val method = methodFor(region, current.method, data.prices)
-                        val needsRegion = confirmedRegion == null && data.checkoutAllowed &&
+                        val needsRegion = data.mode != "subscription" && confirmedRegion == null && data.checkoutAllowed &&
                             data.pendingPayment == null && regions.isNotEmpty()
                         current.copy(
                             loading = false,
@@ -219,7 +226,7 @@ class SubscriptionCheckoutViewModel(
                     // Returning users are not prompted again; reconcile any older
                     // manually chosen currency with their confirmed card country.
                     val confirmed = remembered?.takeIf { it in availableRegions(data.prices) }
-                    if (confirmed != null && data.checkoutAllowed && data.pendingPayment == null &&
+                    if (data.mode != "subscription" && confirmed != null && data.checkoutAllowed && data.pendingPayment == null &&
                         data.preferredCurrency != currencyForRegion(confirmed)) {
                         chooseCurrency(currencyForRegion(confirmed))
                     }
@@ -235,7 +242,7 @@ class SubscriptionCheckoutViewModel(
         if (submitInFlight) return
         val current = _state.value
         val prices = current.overview?.prices ?: return
-        if (region !in availableRegions(prices) || current.currencySaving) return
+        if (region !in regionalManualRegions(current.overview ?: return) || current.currencySaving) return
         val method = methodFor(region, if (region == "cn") current.method else "visa", prices)
         if (region != current.region) {
             quoteGeneration++
@@ -247,7 +254,7 @@ class SubscriptionCheckoutViewModel(
             regionDialogOpen = false, regionDialogRequired = false,
             quoting = false, quote = null, errorRes = null, receiptNoteRes = null) }
         viewModelScope.launch { runCatching { saveRegion(region) } }
-        chooseCurrency(currencyForRegion(region))
+        if (current.overview?.mode != "subscription") chooseCurrency(currencyForRegion(region))
     }
 
     fun openRegionSelector() {
@@ -369,7 +376,7 @@ class SubscriptionCheckoutViewModel(
         val overview = current.overview ?: return
         if (current.loading || current.quoting || current.currencySaving ||
             current.regionDialogOpen || overview.checkoutAllowed != true ||
-            overview.preferredCurrency != currencyForRegion(current.region)) return
+            !current.regionalPriceReady()) return
         when (current.step) {
             CheckoutStep.PLANS -> {
                 if (overview.prices[current.method]?.get(current.plan) == null) return

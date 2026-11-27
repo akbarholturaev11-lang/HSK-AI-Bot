@@ -524,6 +524,24 @@ class AndroidCourseServiceTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual("course_lesson_not_unlocked", completion.exception.code)
             self.assertEqual(0, await self._completed_count(session))
 
+    async def test_skip_test_refuses_later_parts_without_progress_or_events(self):
+        async with self.sessions() as session:
+            token = await self._token(session)
+            service = AndroidCourseService(session, _settings())
+            for order in (2, 3, 5, 7, 9):
+                with self.subTest(order=order):
+                    with self.assertRaises(DesktopCourseError) as quiz:
+                        await service.skip_test_questions(token, lesson_order=order)
+                    self.assertEqual("course_lesson_not_unlocked", quiz.exception.code)
+                    with self.assertRaises(DesktopCourseError) as unlock:
+                        await service.unlock_lesson(token, lesson_order=order, score=100)
+                    self.assertEqual("course_lesson_not_unlocked", unlock.exception.code)
+            self.assertIsNone(await CourseProgressRepository(session).get_by_user_id(1))
+            events = (await session.execute(select(CourseMiniAppEvent))).scalars().all()
+            self.assertFalse(any(event.event_name in {
+                COURSE_DAILY_EVENT_NAME, "lesson_completed", "test_completed",
+            } for event in events))
+
     async def test_skip_questions_do_not_spend_a_lesson_start(self):
         async with self.sessions() as session:
             token = await self._token(session)
@@ -623,20 +641,20 @@ class AndroidCourseServiceTests(unittest.IsolatedAsyncioTestCase):
             token = await self._token(session)
             service = AndroidCourseService(session, _settings())
 
-            result = await service.unlock_lesson(token, lesson_order=3, score=20)
+            result = await service.unlock_lesson(token, lesson_order=4, score=20)
 
             self.assertTrue(result["ok"])
-            self.assertEqual(2, await self._completed_count(session))
+            self.assertEqual(3, await self._completed_count(session))
 
     async def test_the_skip_test_never_walks_progress_backwards(self):
         async with self.sessions() as session:
             token = await self._token(session)
             service = AndroidCourseService(session, _settings())
-            await service.unlock_lesson(token, lesson_order=5, score=90)
+            await service.unlock_lesson(token, lesson_order=6, score=90)
 
-            await service.unlock_lesson(token, lesson_order=2, score=90)
+            await service.unlock_lesson(token, lesson_order=4, score=90)
 
-            self.assertEqual(4, await self._completed_count(session))
+            self.assertEqual(5, await self._completed_count(session))
 
     async def test_a_spent_allowance_closes_the_skip_test(self):
         """The one way this could have become a paywall bypass.
@@ -747,6 +765,32 @@ class AndroidCourseServiceTests(unittest.IsolatedAsyncioTestCase):
             self.assertIn("section_no", section)
             self.assertIn("section_purpose", section)
             self.assertNotIn("type", section)
+
+
+    async def test_lesson_plan_is_absent_while_the_flag_is_off(self):
+        async with self.sessions() as session:
+            token = await self._token(session)
+            lesson = await AndroidCourseService(session, _settings()).lesson(token, lesson_order=1)
+        self.assertNotIn("lesson_plan", lesson["lesson"])
+
+    async def test_lesson_plan_follows_the_onboarding_length(self):
+        from app.db.models.course_miniapp_profile import CourseMiniAppProfile
+
+        settings = _settings()
+        settings.COURSE_LESSON_PLAN_ENABLED = True
+        settings.COURSE_LESSON_PLAN_ROLLOUT_PERCENT = 100
+        settings.COURSE_LESSON_PLAN_ALLOWLIST = ""
+        async with self.sessions() as session:
+            session.add(CourseMiniAppProfile(user_id=1, goal="travel", daily_minutes=5))
+            await session.commit()
+            token = await self._token(session)
+            lesson = await AndroidCourseService(session, settings).lesson(token, lesson_order=1)
+        plan = lesson["lesson"]["lesson_plan"]
+        self.assertEqual(plan["version"], 1)
+        self.assertEqual(plan["daily_minutes"], 5)
+        self.assertTrue(plan["omit"])
+        # 1-qismda hali o'rganilgan so'z yo'q — rasmli deck ham yo'q.
+        self.assertNotIn("picture_review", plan)
 
 
 class AndroidLessonAdGateTests(unittest.IsolatedAsyncioTestCase):
@@ -1022,10 +1066,10 @@ class AndroidCourseApiTests(unittest.IsolatedAsyncioTestCase):
         # A fresh quiz in that band still obeys the existing weak-score rule.
         allowed = await self.client.post(
             "/api/v3/android/lesson/unlock", headers=headers,
-            json={"lesson_order": 4, "score": 0, "expected_level": "hsk2"},
+            json={"lesson_order": 6, "score": 0, "expected_level": "hsk2"},
         )
         self.assertEqual(200, allowed.status_code)
-        self.assertEqual(3, allowed.json()["completed_lessons_count"])
+        self.assertEqual(5, allowed.json()["completed_lessons_count"])
 
     async def test_the_skip_test_route_rejects_a_level_the_client_invents(self):
         headers = await self._bearer()
@@ -1410,15 +1454,39 @@ class AndroidCourseApiTests(unittest.IsolatedAsyncioTestCase):
         )
         self.assertEqual(422, bad.status_code)
 
+    async def test_first_part_result_has_no_review_for_forged_evidence(self):
+        headers = await self._bearer()
+        path = "/api/v3/android/course/complete"
+        body = {
+            "lesson_order": 1,
+            "event_id": "android:verified-first-part",
+            "mistakes": [
+                {"material_ref": "lesson:hsk1:2:section:1:card:3", "selected_index": 0},
+                {"material_ref": "lesson:hsk1:1:section:1:card:3", "selected_index": 2},
+            ],
+        }
+        first = await self.client.post(path, headers=headers, json=body)
+        self.assertEqual(200, first.status_code, first.text)
+        self.assertEqual({"review": None}, first.json()["learning_result"])
+        async with self.sessions() as session:
+            self.assertIsNone(await session.scalar(select(CourseMistake)))
+
     async def test_duplicate_completion_over_http_returns_the_stored_result(self):
         headers = await self._bearer()
-        body = {"lesson_order": 1, "event_id": "android:" + "b" * 32}
+        body = {
+            "lesson_order": 1,
+            "event_id": "android:" + "b" * 32,
+            "mistakes": [{"material_ref": "lesson:hsk1:1:section:1:card:3", "selected_index": 0}],
+        }
         first = await self.client.post(
             "/api/v3/android/course/complete",
             headers=headers,
             json=body,
         )
-        self.assertEqual(200, first.status_code)
+        self.assertEqual(200, first.status_code, first.text)
+        self.assertEqual(first.json()["learning_result"], {
+            "review": {"prompt": "你 so'zining ma'nosini tanlang:", "correction": "sen (birlik)"},
+        })
         retry = await self.client.post(
             "/api/v3/android/course/complete",
             headers=headers,
@@ -1426,6 +1494,16 @@ class AndroidCourseApiTests(unittest.IsolatedAsyncioTestCase):
         )
         self.assertEqual(200, retry.status_code)
         self.assertTrue(retry.json()["duplicate"])
+        self.assertNotIn("learning_result", retry.json())
+        async with self.sessions() as session:
+            event = (await session.execute(select(CourseMiniAppEvent).where(
+                CourseMiniAppEvent.event_name == "lesson_completed",
+            ))).scalar_one()
+            replay = json.loads(event.payload_json)["result"]
+            self.assertNotIn("learning_result", replay)
+            self.assertNotIn("sen (birlik)", event.payload_json)
+            mistake = (await session.execute(select(CourseMistake))).scalar_one()
+            self.assertEqual(1, mistake.wrong_count)
         self.assertEqual(
             first.json()["completed_lessons_count"],
             retry.json()["completed_lessons_count"],

@@ -44,6 +44,8 @@ data class CourseLesson(
     val subtitle: String,
 ) {
     val isCurrent: Boolean get() = status == LessonStatus.CURRENT
+    val canOfferSkipTest: Boolean
+        get() = status == LessonStatus.LOCKED && access == LessonAccess.NotReached && part == 1
 }
 
 data class CourseMilestone(
@@ -196,7 +198,11 @@ data class CourseLessonLimit(
     val allowed: Boolean,
     val limitText: String?,
     val resetAt: String?,
-)
+    val remaining: Int? = null,
+) {
+    // A reserved current part may still be allowed with zero slots left.
+    val blocksNewLesson: Boolean get() = !allowed || remaining == 0
+}
 
 data class CourseMap(
     val level: String,

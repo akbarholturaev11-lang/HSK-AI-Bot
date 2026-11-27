@@ -27,7 +27,7 @@ def test_subscription_checkout_keeps_backend_contracts():
 def test_subscription_checkout_routes_banks_and_permanent_unlock_separately():
     html = _html()
     functions = []
-    for name in ("hasMethodStep", "isHsk30Unlock", "manualFlow", "lavaInfo", "lavaMode", "flow"):
+    for name in ("hasMethodStep", "isHsk30Unlock", "manualFlow", "lavaInfo", "savedLavaEmail", "lavaMode", "flow"):
         match = re.search(r"function " + name + r"\([^)]*\)\{[\s\S]*?\}", html)
         assert match is not None
         functions.append(match.group(0))
@@ -49,13 +49,19 @@ def test_subscription_checkout_routes_banks_and_permanent_unlock_separately():
         + 'state.mode="referral_discount";results.discount_lava=flow();'
         + 'state.mode="subscription";state.lavaStatus="waiting";results.waiting=flow();state.lavaStatus="";'
         + 'state.overview=null;state.path="";'
-        + '\nstate.pending=true;results.pending=flow();console.log(JSON.stringify(results));'
+        + '\nstate.regionalPlans=true;state.region="tj";results.regional_tj=flow();'
+        + 'state.region="uz";results.regional_uz=flow();'
+        + 'state.overview={lava:{mode:"both",plans:lavaPlans}};state.path="lava";results.regional_lava=flow();'
+        + 'state.overview.lava.email="receipt@example.com";results.saved_email=flow();'
+        + 'state.path="manual";state.region="cn";results.regional_cn=flow();'
+        + 'state.pending=true;results.pending=flow();console.log(JSON.stringify(results));'
     )
     results = json.loads(subprocess.check_output(["node", "-e", script], text=True))
     assert results["both"] == ["card", "country", "plans", "pay"]
     assert results["both_yes"] == ["card", "lavaPlans", "lavaPay"]
     assert results["both_no"] == ["card", "country", "plans", "pay"]
     assert results["lava_only"] == ["lavaPlans", "lavaPay"]
+    assert results["saved_email"] == ["lavaPlans"]
     assert results["no_terms"] == ["country", "plans", "pay"]
     assert results["chargeback"] == ["country", "plans", "pay"]
     assert results["unlock_lava"] == ["country", "pay"]
@@ -69,6 +75,10 @@ def test_subscription_checkout_routes_banks_and_permanent_unlock_separately():
     for region in ("uz", "ru", "other"):
         assert results[region] == ["country", "plans", "pay"]
         assert results[region + "_unlock"] == ["country", "pay"]
+    assert results["regional_tj"] == ["plans", "method", "pay"]
+    assert results["regional_uz"] == ["plans", "pay"]
+    assert results["regional_lava"] == ["lavaPlans", "lavaPay"]
+    assert results["regional_cn"] == ["plans", "method", "pay"]
     assert results["pending"] == ["done"]
     assert "Dushanbe City" in html
     assert "«На карту»" in html
@@ -183,3 +193,113 @@ def test_server_reports_failed_checkout_event_write_as_503():
     event_route = event_route.split('@app.post("/api/subscription-miniapp/submit")', 1)[0]
     assert 'status_code=200 if recorded else 503' in event_route
     assert 'content={"ok": bool(recorded)}' in event_route
+
+
+def test_local_payment_region_hints_and_account_scoped_storage():
+    html = _html()
+    start = html.index("function regionStorageKey(){")
+    end = html.index("/* Havola Xitoy", start)
+    script = Path("app/static/course_v3_data/hsk-subscription-presentation.js").read_text(encoding="utf-8") + """
+let PWA_CHECKOUT_HOST=true, PWA_CHECKOUT_ACTOR=null, INIT_DATA="";
+let tg=null;
+const REGION_ORDER=["tj","uz","ru","cn","other"];
+const values={};
+const localStorage={getItem:key=>values[key]||null,setItem:(key,value)=>{values[key]=value}};
+""" + html[start:end] + """
+const result={};
+result.hints=[
+  inferPaymentRegion("Asia/Dushanbe","tg-TJ","ru"),
+  inferPaymentRegion("Asia/Shanghai","zh-Hans-CN","uz"),
+  inferPaymentRegion("Europe/Moscow","ru-RU","uz"),
+  inferPaymentRegion("Asia/Tashkent","uz-UZ","ru"),
+  inferPaymentRegion("Asia/Tashkent","ru-RU","uz"),
+  inferPaymentRegion("Europe/Warsaw","pl-PL","ru"),
+  inferPaymentRegion("UTC","ru","ru"),
+];
+saveRegion("cn");
+result.unbound=savedRegion();
+PWA_CHECKOUT_ACTOR={user_id:11};saveRegion("cn");
+result.first=savedRegion();
+PWA_CHECKOUT_ACTOR={user_id:12};
+result.second=savedRegion();
+PWA_CHECKOUT_HOST=false;INIT_DATA="signed";tg={initDataUnsafe:{user:{id:11}}};
+result.telegram=savedRegion();saveRegion("tj");
+PWA_CHECKOUT_HOST=true;PWA_CHECKOUT_ACTOR={user_id:11};
+result.firstAgain=savedRegion();
+result.keys=Object.keys(values).sort();
+console.log(JSON.stringify(result));
+"""
+    result = json.loads(subprocess.check_output(["node", "-e", script], text=True))
+    assert result == {
+        "hints": ["tj", "cn", "ru", "uz", "other", "other", "ru"],
+        "unbound": "", "first": "cn", "second": "", "telegram": "",
+        "firstAgain": "cn",
+        "keys": ["hsk_sub_region_v1:11", "hsk_sub_region_v1:pwa:11"],
+    }
+
+
+def test_regional_prices_require_server_display_amounts():
+    html = _html()
+    start = html.index("function availableRegionalRegions(){")
+    end = html.index("/* To'lov turi", start)
+    script = """
+function availablePlans(){return ["1_month","3_months"]}
+function availableRegions(){return ["tj","uz","ru","cn","other"]}
+function cardPrices(){return {
+  ru:{"1_month":{currency:"RUB",final_amount:"10"},"3_months":{currency:"RUB",final_amount:"20"}},
+  uz:{"1_month":{currency:"UZS",final_amount:"100"}},
+  other:{"1_month":{currency:"USD",final_amount:"1"},"3_months":{currency:"USD",final_amount:null}},
+}}
+""" + html[start:end] + """
+console.log(JSON.stringify(availableRegionalRegions()));
+"""
+    assert json.loads(subprocess.check_output(["node", "-e", script], text=True)) == ["tj", "ru", "cn"]
+
+
+def test_regional_routing_obeys_admin_modes_and_verified_currency():
+    html = _html()
+    start = html.index("function regionalProviderPlans(")
+    end = html.index("function regionalCurrencies(", start)
+    script = Path("app/static/course_v3_data/hsk-subscription-presentation.js").read_text(encoding="utf-8") + "\n" + html[start:end] + """
+const regions=["tj","uz","ru","cn","other"];
+const result={};
+for(const mode of ["manual_only","both","lava_only"]){
+  result[mode]=regions.map(region=>regionalRoute(region,mode,true,["USD","RUB"],"USD",""));
+}
+result.missingRub=regionalRoute("ru","both",true,["USD"],"USD","");
+result.lavaOnlyMissing=regionalRoute("ru","lava_only",true,["USD"],"USD","");
+result.alternate=regionalRoute("tj","both",true,["USD","RUB"],"USD","lava");
+result.noManual=regionalRoute("cn","both",false,["USD"],"USD","manual");
+result.filtered=regionalProviderPlans({currency:"USD",plans:[{plan_type:"1_month",amount:"10",currency:"USD"}],plans_by_currency:{RUB:[{plan_type:"1_month",amount:"900",currency:"RUB"},{plan_type:"3_months",amount:null,currency:"RUB"},{plan_type:"6_months",amount:"10",currency:"USD"}]}},"RUB");
+console.log(JSON.stringify(result));
+"""
+    result = json.loads(subprocess.check_output(["node", "-e", script], text=True))
+    manual = {"path": "manual", "currency": ""}
+    usd = {"path": "lava", "currency": "USD"}
+    rub = {"path": "lava", "currency": "RUB"}
+    assert result["manual_only"] == [manual] * 5
+    assert result["both"] == [manual, usd, rub, manual, usd]
+    assert result["lava_only"] == [usd, usd, rub, usd, usd]
+    assert result["missingRub"] == manual
+    assert result["lavaOnlyMissing"] == usd
+    assert result["alternate"] == usd
+    assert result["noManual"] == usd
+    assert result["filtered"] == [{"plan_type": "1_month", "amount": "900", "currency": "RUB"}]
+
+
+def test_reference_price_is_display_only_and_labeled():
+    source = Path("app/static/course_v3_data/hsk-subscription-presentation.js").read_text(encoding="utf-8")
+    catalog = Path("app/static/course_v3_data/hsk-miniapp-i18n.js").read_text(encoding="utf-8")
+    script = "globalThis.window=globalThis;\n" + catalog + source + """
+const p=globalThis.HSKSubscriptionPresentation;
+console.log(JSON.stringify([p.relativePrice(100),p.relativePrice(0),p.relativePrice(null),p.regionalLabel("uz","comparison"),p.regionalLabel("ru","comparison"),p.regionalLabel("tj","comparison")]));
+"""
+    result = json.loads(subprocess.check_output(["node"], input=script, text=True))
+    assert result[:3] == ["129.99", None, None]
+    assert "oldingi narx emas" in result[3]
+    assert "не предыдущая цена" in result[4]
+    assert "на нархи қаблӣ" in result[5]
+    html = _html()
+    assert html.count("HSKSubscriptionPresentation.relativePrice(") == 2
+    assert 'percent<=0&&state.mode==="subscription"' in html
+    assert '!price.discounted&&state.mode==="subscription"' in html

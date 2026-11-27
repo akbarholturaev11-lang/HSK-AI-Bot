@@ -89,7 +89,7 @@ class CourseHotspotTriageTests(unittest.TestCase):
                     catalog = json.loads((ROOT / "localization/ui" / locale /
                                          "course.json").read_text(encoding="utf-8"))["messages"]
                     self.assertEqual(catalog[key], value)
-                    self.assertEqual(len(catalog), 1110)
+                    self.assertEqual(len(catalog), 1158)
         self.assertIn('setSheetBackgroundInert(true)', html)
         self.assertIn('focusSheetStart(sheet)', html)
         self.assertIn('App.requestExitFlow()', html)
@@ -121,7 +121,7 @@ class CourseHotspotTriageTests(unittest.TestCase):
                 self.assertEqual(html.count('courseMessage("' + key + '",' + fallback + ')'), calls)
                 for locale, value in (("uz", uz), ("ru", ru), ("tj", tj)):
                     self.assertEqual(catalogs[locale][key], value)
-                    self.assertEqual(len(catalogs[locale]), 1110)
+                    self.assertEqual(len(catalogs[locale]), 1158)
         self.assertIn("challengeSending=false", html)
         self.assertIn("ratingRetryText()", html)
 
@@ -175,7 +175,7 @@ class CourseHotspotTriageTests(unittest.TestCase):
                     self.assertIn('courseMessage("' + key + '",', html)
                 for locale, value in zip(("uz", "ru", "tj"), values):
                     self.assertEqual(catalogs[locale][key], value)
-                    self.assertEqual(len(catalogs[locale]), 1110)
+                    self.assertEqual(len(catalogs[locale]), 1158)
 
     def test_remaining_shared_lesson_labels_use_local_first_catalog(self):
         """Keep exact inline translations as fallback for the remaining shared labels."""
@@ -197,7 +197,7 @@ class CourseHotspotTriageTests(unittest.TestCase):
             'var cta=$("#f-cta");cta.style.display="flex";cta.innerHTML=\'<i class="ti ti-arrow-right"></i> \'+courseMessage("cont",T().cont);': 1,
             'c.type==="result"?courseMessage("check",T().check):courseMessage("cont",T().cont)': 1,
             'courseMessage("grammar",T().grammar)': 1,
-            'esc(courseMessage("say",T().say))': 2,
+            'esc(courseMessage("say",T().say))': 3,  # + UIUX-008 picture review mic label
             'esc(courseMessage("today.go",todayT().go))': 1,
         }
         for anchor, expected_lines in anchors.items():
@@ -209,7 +209,7 @@ class CourseHotspotTriageTests(unittest.TestCase):
             for lang, value in zip(("uz", "ru", "tj"), values):
                 with self.subTest(key=key, locale=lang):
                     self.assertEqual(catalogs[lang][key], value)
-                    self.assertEqual(len(catalogs[lang]), 1110)
+                    self.assertEqual(len(catalogs[lang]), 1158)
 
     def test_foundation_pronunciation_labels_use_local_first_catalog(self):
         """Centralize the two labels while keeping Chinese and pinyin content intact."""
@@ -230,7 +230,7 @@ class CourseHotspotTriageTests(unittest.TestCase):
                         .read_text(encoding="utf-8")
                     )["messages"]
                     self.assertEqual(catalog[key], value)
-                    self.assertEqual(len(catalog), 1110)
+                    self.assertEqual(len(catalog), 1158)
         self.assertIn('ex.pinyin||"nǐ hǎo"', source_line)
         self.assertIn('c.natural_pinyin||"ní hǎo"', source_line)
 

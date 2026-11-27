@@ -46,7 +46,9 @@ KEYWORDS = {"if", "while", "for", "when", "catch", "return", "fun", "class"}
 # the same short name can make the regex checker think every Compose call is a
 # call to that local function and produce false positives for x/y. The Kotlin
 # compiler owns external API validation, so keep this checker out of that name.
-EXTERNAL_API_CALLS = {"offset"}
+# `ImageVector.Builder.path { }` is the same kind of case: a project-local
+# function called `path` must not stand in for Compose's stroke/fill builder.
+EXTERNAL_API_CALLS = {"offset", "path"}
 
 
 def strip_comments(text: str) -> str:

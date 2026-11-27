@@ -28,6 +28,7 @@ def profile(**kwargs):
         "daily_minutes": 10,
         "preferred_focus": None,
         "daily_goal_xp": None,
+        "streak_target_days": None,
         "daily_plan_key": "v1:hsk1:2026-09-05",
         "daily_plan_json": '[{"t":"continue_lesson"}]',
     }
@@ -239,7 +240,39 @@ class GuardTests(unittest.IsolatedAsyncioTestCase):
         self.assertIsNone(item.daily_plan_key)
 
 
+class StreakTargetTests(unittest.IsolatedAsyncioTestCase):
+    async def test_supported_targets_are_saved_and_returned_without_rebuilding_plan(self):
+        for days in (7, 14, 30, 50):
+            with self.subTest(days=days):
+                item = profile()
+                response, _ = await post(
+                    item, {"streak_target_days": days, "initData": VALID_INIT_DATA}
+                )
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(item.streak_target_days, days)
+                self.assertEqual(response.json()["profile"]["streak_target_days"], days)
+                self.assertEqual(item.daily_plan_key, "v1:hsk1:2026-09-05")
+
+    async def test_unsupported_targets_are_rejected_without_mutation(self):
+        for days in (0, 8, 21, 99, "14"):
+            with self.subTest(days=days):
+                item = profile()
+                response, _ = await post(
+                    item, {"streak_target_days": days, "initData": VALID_INIT_DATA}
+                )
+                self.assertEqual(response.status_code, 422)
+                self.assertIsNone(item.streak_target_days)
+
+
 class StudySetupPendingTests(unittest.TestCase):
+    def test_streak_target_is_restored_with_study_setup(self):
+        item = profile(streak_target_days=30)
+        self.assertEqual(
+            CourseMiniAppProfileService.study_setup(item, completed_parts=12)
+            ["streak_target_days"],
+            30,
+        )
+
     def test_question_waits_until_the_first_part_is_finished(self):
         item = profile()
         self.assertFalse(

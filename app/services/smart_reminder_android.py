@@ -26,6 +26,7 @@ from app.services.course_reminder_service import reminder_tz_offset
 from app.services.notification_template_service import KEY_SMART_STUDY, NotificationTemplateService
 from app.services.smart_reminder_cadence import evaluate_cadence
 from app.services.smart_reminder_coordination import read_d1_scope
+from app.services.smart_reminder_messages import smart_study_content
 from app.services.smart_reminder_policy import APPROVED_HABIT_CALIBRATION, _aware_utc, day_window, evaluate, local_time_instants
 from app.services.smart_reminder_policy_context import SmartReminderPolicyContextService
 from app.services.smart_reminder_preferences import MAX_REVISION, SmartReminderError, SmartReminderPreferencesService, _utc
@@ -375,6 +376,7 @@ class SmartReminderAndroidService:
                 issued_at=now, expires_at=until))
             await self.session.execute(update(JOB).where(JOB.c.id == job_id).values(state="claimed",
                 lease_token=grant_id, lease_expires_at=until, updated_at=now, reason_code="android_grant_issued"))
+            message, _ = await self._message(actor, row, now)
             finished_at = self._now()
             if finished_at >= until:
                 # SQL may have waited. No grant has left this transaction yet;
@@ -389,7 +391,34 @@ class SmartReminderAndroidService:
                 "issued_at": now.isoformat(), "expires_at": until.isoformat(),
                 "preference_revision": row["preference_revision"], "grant_epoch": row["grant_epoch"],
                 "capability_generation": cap["generation"], "local_day": row["local_day"].isoformat(),
-                "timezone_name": row["timezone_name"], "course_key": row["course_key"], "lesson_order": row["lesson_order"]}
+                "timezone_name": row["timezone_name"], "course_key": row["course_key"], "lesson_order": row["lesson_order"],
+                **({"message": message} if message else {})}
+
+    async def _message(self, actor, row, now):
+        """Server-rendered copy for compatible APKs; older APKs ignore it (D33).
+
+        Returns (message or None, inbox params) for the claim and the receipt.
+        """
+        from app.db.models.user import User
+        from app.services.learner_pwa_push_copy import fallback_copy, push_copy
+        language = await self.session.scalar(select(User.language).where(User.id == actor.user_id))
+        language = language if language in {"uz", "ru", "tj"} else "ru"
+        content = await smart_study_content(self.session, actor.user_id, row, language, now=now)
+        params = {"template_service": KEY_SMART_STUDY, "lesson": row["lesson_order"]}
+        if content is None or type(row["lesson_order"]) is not int:
+            return None, params
+        params = content.params(row["lesson_order"])
+        try:
+            text = content.text.format(lesson=row["lesson_order"])
+        except (KeyError, IndexError, ValueError):
+            return None, params
+        fallback_title, fallback_body = fallback_copy(KEY_SMART_STUDY, language)
+        title, body = push_copy(text, title=fallback_title, body=fallback_body)
+        if not title.strip() or not body.strip():
+            return None, params
+        key = content.content_key
+        return {"situation": key.split(".", 1)[0] if key else None, "content_key": key,
+                "title": title, "body": body}, params
 
     async def receipt(self, actor, job_id, body):
         with self.session.no_autoflush:
@@ -437,13 +466,15 @@ class SmartReminderAndroidService:
                             from app.services.learner_pwa_push import active_subscriptions
                             if await active_subscriptions(self.session, actor.user_id):
                                 language = user.language if user.language in {"uz", "ru", "tj"} else "ru"
+                                message, params = await self._message(actor, row, now)
+                                generic = notification_title(KEY_SMART_STUDY, language)
                                 await CourseNotificationService(self.session).record(
                                     user, key=KEY_SMART_STUDY, lang=language,
-                                    title=notification_title(KEY_SMART_STUDY, language),
-                                    body=notification_title(KEY_SMART_STUDY, language),
+                                    title=message["title"] if message else generic,
+                                    body=message["body"] if message else generic,
                                     action="course", source="smart_android", level=row["course_key"],
                                     lesson_order=row["lesson_order"], dedupe_key="job:" + job_id,
-                                    params={"template_service": KEY_SMART_STUDY, "lesson": row["lesson_order"]},
+                                    params=params,
                                 )
                         except Exception:  # noqa: BLE001 - optional PWA Push must not reject an Android receipt
                             logger.warning("Learner PWA Smart push enqueue unavailable")

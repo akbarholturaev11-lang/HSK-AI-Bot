@@ -61,6 +61,19 @@ class ActivityFeedbackViewModelTest {
         assertFalse(api.body!!.containsKey("disliked_detail_text"))
         api.reply.complete(Response.success(FeedbackSubmitReply(true,true))); runCurrent()
     }
+    @Test fun notNowUsesExistingTwentyFourHourRetryAcrossContexts() = runTest(dispatcher) {
+        var now = 1000L
+        val api = Fake(ActivityFeedbackPrompt(8,choices=choices,reward_hint="30 min Pro",dismiss_label="Not now"))
+        val vm = ActivityFeedbackViewModel(ActivityFeedbackRepository(api,{ ApiResult.Success("test") }), { now })
+        vm.prepare("practice","hsk1"); runCurrent()
+        vm.close()
+        now += 24*60*60*1000L - 1
+        vm.prepare("voice","hsk1"); runCurrent()
+        assertEquals(1,api.requests)
+        now++
+        vm.prepare("voice","hsk1"); runCurrent()
+        assertEquals(2,api.requests)
+    }
     @Test fun paidQuestionsDoNotAskTheFreeQuestionnaire() {
         val prompt=ActivityFeedbackPrompt(7,paid=true,choices=choices)
         assertEquals(listOf("paid_code"),feedbackQuestions(prompt,emptyMap()).map { it.key })

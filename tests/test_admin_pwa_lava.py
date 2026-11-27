@@ -91,6 +91,25 @@ class AdminPwaLavaTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
         with self.assertRaises(CommandError):
             await self.save_settings(command, proof)
 
+    async def test_both_currency_snapshots_are_signed_and_revalidated(self):
+        self.fake.rub_prices = {"MONTHLY": "900.00", "PERIOD_90_DAYS": "2400.00"}
+        command = await self.prepare_settings(_settings_input())
+        self.assertEqual(command.prices, {"1_month": "10.00", "3_months": "27.00"})
+        self.assertEqual(command.regional_prices, {"1_month": {"RUB": "900.00"}, "3_months": {"RUB": "2400.00"}})
+        proof = await self.proof(command.operation())
+        self.fake.rub_prices["MONTHLY"] = "950.00"
+        with self.assertRaises(CommandError) as ctx:
+            await self.save_settings(command, proof)
+        self.assertEqual(str(ctx.exception), "confirmation_changed")
+        self.fake.rub_prices["MONTHLY"] = "900.00"
+        result = await self.save_settings(command, proof)
+        self.assertEqual(result["config"]["plans"]["1_month"]["regional_prices"], {"RUB": "900.00"})
+        async with self.sessions() as db:
+            config = await LavaConfigService(db).load()
+            self.assertEqual(config.terms["1_month"].amount_for("USD"), Decimal("10.00"))
+            self.assertEqual(config.terms["1_month"].amount_for("RUB"), Decimal("900.00"))
+            self.assertFalse(config.terms["6_months"].enabled)
+
     async def test_promo_codes_are_signed_saved_and_audited_by_key_only(self):
         request = _settings_input()
         request = LavaSettingsInput(**{**request.model_dump(), "promo_codes": {

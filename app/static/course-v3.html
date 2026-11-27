@@ -40,11 +40,11 @@ html.hsk-pwa-browser textarea,html.hsk-pwa-browser select{font-size:16px!importa
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-family:var(--hsk-font-ui)}
 .han{font-family:var(--hsk-font-cjk);font-weight:600;letter-spacing:1px}
-.wrap{max-width:var(--shell);margin:0 auto;min-height:100vh;position:relative;padding-top:var(--safe-t)}
+.wrap{max-width:var(--shell);margin:0 auto;min-height:100vh;position:relative;padding-top:var(--safe-t)}/* iPhone PWA status-bar inset: opaque scroll shield only; body::before belongs to the scenic background. */html.hsk-pwa-browser .wrap::before{content:"";position:fixed;inset:0 0 auto;height:var(--safe-t);background:var(--paper);z-index:6;pointer-events:none}
 .scr{display:none;padding-bottom:calc(82px + var(--safe-b))}
 .scr.on{display:block}
 #pwa-practice-layer{position:fixed;inset:0;z-index:9600;display:flex;flex-direction:column;overscroll-behavior:contain;background:var(--paper);padding:var(--safe-t) 0 var(--safe-b)}
-#pwa-practice-layer[hidden],#pwa-practice-layer [hidden]{display:none!important}
+#pwa-practice-layer:has(iframe[data-practice-kind="mistakes"]){padding-bottom:0}#pwa-practice-layer[hidden],#pwa-practice-layer [hidden]{display:none!important}
 #pwa-practice-layer iframe{width:100%;flex:1;min-height:0;border:0}#pwa-practice-layer.pwa-practice-dark{background:#000} /* AI Voice is full screen: its page draws under the status bar and home indicator itself, and nothing cream shows around it or under the keyboard. */ #pwa-practice-layer.pwa-practice-dark{padding:0}html.pwa-practice-voice,html.pwa-practice-voice body{background:#000}
 .pwa-practice-entry{position:relative;flex:1;display:grid;place-items:center}
 .pwa-practice-entry .pwa-practice-back{position:absolute;top:5px;left:12px;width:44px;height:44px;border:1px solid var(--line);border-radius:50%;background:var(--card);color:var(--ink);display:grid;place-items:center;font-size:20px}
@@ -60,7 +60,7 @@ html.hsk-pwa-browser #hsk-launch-splash.is-playing .hsk-launch-brandline,
 html.hsk-pwa-browser #hsk-launch-splash.is-playing .hsk-launch-book{animation-duration:300ms;animation-delay:390ms}
 html.hsk-pwa-browser #hsk-launch-splash.is-playing .hsk-launch-title{animation-duration:360ms;animation-delay:520ms}
 #pwa-checkout-layer{position:fixed;inset:0;z-index:9700;background:var(--paper);padding:var(--safe-t) 0 var(--safe-b);display:flex;flex-direction:column;overscroll-behavior:contain}
-html.hsk-pwa-browser #pwa-checkout-layer{padding-bottom:0}#pwa-checkout-layer iframe{flex:1;min-height:0;width:100%;border:0}
+html.hsk-pwa-browser #pwa-checkout-layer{padding-bottom:0}#pwa-checkout-layer.pwa-checkout-trial,html.hsk-pwa-browser:has(.pwa-checkout-trial),html.hsk-pwa-browser:has(.pwa-checkout-trial) body{background:var(--paper)}#pwa-checkout-layer iframe{flex:1;min-height:0;width:100%;border:0}
 html.hsk-pwa-browser:has(#pwa-checkout-layer){overflow:hidden}
 .hsk-launch-stage{position:relative;display:flex;flex-direction:column;align-items:center}
 .hsk-launch-halo{position:absolute;top:48px;left:50%;width:132px;height:132px;border-radius:50%;background:radial-gradient(circle,rgba(224,74,64,.24),rgba(224,74,64,0));opacity:.1;transform:translate(-50%,-50%) scale(.84);animation:hsk-launch-halo-breathe 1.45s ease-in-out infinite alternate}
@@ -120,7 +120,7 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 /* Compact secondary tab headers; keep the native safe area in .wrap. */
 .scr:not(#s-course)>.htop{padding-top:6px}
 .section-title,.profile-title{margin:0;color:var(--ink);font-size:var(--hsk-section-title-size,20px);line-height:var(--hsk-section-title-line-height,1.2);font-weight:700;letter-spacing:-.01em}
-.section-title{flex:0 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.section-title{flex:0 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}/* Comparable PWA root headers share a reserved row, including first paint.Minimum height only: long localized titles may grow with their content. */html.hsk-pwa-browser #s-course .ctop>.htop,html.hsk-pwa-browser :is(#s-mashq,#s-profile,#s-voice)>.htop,html.hsk-pwa-browser :is(#s-mashq,#s-profile,#s-voice)>.pwa-initial-shell>.htop{min-height:calc(var(--hsk-space-12) + var(--hsk-space-4));padding:var(--hsk-space-2) var(--hsk-space-4);gap:var(--hsk-space-2);}html.hsk-pwa-browser :is(#s-course,#s-mashq,#s-profile,#s-voice) .htop>h1{font-size:var(--hsk-section-title-size);line-height:var(--hsk-section-title-line-height);white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere;}html.hsk-pwa-browser #s-profile .profile-head-actions{gap:var(--hsk-space-2)}html.hsk-pwa-browser #s-profile .profile-head-actions :is(.profile-settings,.profile-pro-cta,.pwa-profile-action){width:44px;height:44px;flex:0 0 44px;}/* Known Practice copy wraps with the ready row typography, not font-specific pixel presets. */html.hsk-pwa-browser[lang] #s-mashq .pwa-mashq-shell>.mashq-group:nth-child(n)>.pwa-practice-row:nth-child(n){min-height:68px}html.hsk-pwa-browser #s-mashq .pwa-practice-row .rt b{display:block;font-size:15px;font-weight:500}html.hsk-pwa-browser #s-mashq .pwa-practice-row .rt small{font-size:13px;line-height:1.35;color:var(--ink2)}html.hsk-pwa-browser #s-mashq .pwa-practice-row .ar{width:auto;height:auto;flex-shrink:1;font-size:20px;color:var(--ink3)}
 .profile-settings{width:44px;height:44px;flex:0 0 44px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:50%;background:var(--card);color:var(--ink2);box-shadow:0 2px 8px rgba(33,29,23,.08);cursor:pointer}
 .profile-settings i{font-size:21px}
 .profile-settings:focus-visible{outline:2px solid var(--cin);outline-offset:2px}
@@ -190,7 +190,7 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 .node.current{background:var(--cin);color:var(--cin-ink);box-shadow:0 4px 0 var(--cin2)}
 .node.current .ring{border-color:var(--cin);animation:pl 1.6s ease-out infinite}
 @keyframes pl{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.25);opacity:0}}
-.node.locked{background:var(--line);color:var(--ink3);box-shadow:0 4px 0 #d8d2c4}
+.node.locked{background:var(--line);color:var(--ink3);box-shadow:0 4px 0 #d8d2c4}.node.skip-ready{background:var(--goldbg);color:var(--gold);border:2px solid var(--gold);box-shadow:0 4px 0 #d8c79a}.node:disabled{cursor:default}
 .node.chest{background:var(--goldbg);color:var(--gold);box-shadow:0 4px 0 #d8c79a;border:2px solid var(--gold)}
 .node.boss{background:var(--cinbg);color:var(--cin2);box-shadow:0 4px 0 #e8cfc9;border:2px solid var(--cin)}
 .nlabel{font-size:12px;font-weight:500;color:var(--ink2)}.nlabel.mut{color:var(--ink3)}
@@ -246,7 +246,7 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 /* sheet */
 .sheet{position:fixed;inset:0;background:rgba(20,17,13,.5);display:none;align-items:flex-end;z-index:50;max-width:var(--read);margin:0 auto}
 .sheet.on{display:flex}
-.si{background:var(--paper);border-radius:24px 24px 0 0;padding:8px 18px calc(22px + var(--safe-b));width:100%;position:relative;max-height:88vh;overflow-y:auto}
+.si{background:var(--paper);border-radius:24px 24px 0 0;padding:8px 18px calc(22px + var(--safe-b));width:100%;position:relative;max-height:88vh;overflow-y:auto} #sheet.pro-expiry-sheet{align-items:flex-end;padding:0}#sheet.pro-expiry-sheet .si{max-width:480px;max-height:88vh;max-height:88dvh;margin:0 auto;padding:8px 22px calc(24px + var(--safe-b));animation:proExpiryEnter .25s ease-out}#sheet.pro-expiry-sheet .sx{display:none}.pro-expiry-content{text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px}.pro-expiry-panda{width:clamp(116px,40vw,176px);margin:12px auto 2px}.pro-expiry-panda svg{display:block;width:100%;height:auto}.pro-expiry-content h2{font-size:23px;line-height:1.3;margin:0;color:var(--ink)}.pro-expiry-content p{font-size:17px;line-height:1.45;color:var(--ink);margin:0 0 8px}.pro-expiry-content button{width:100%;min-height:48px}.pro-expiry-content .pro-expiry-skip{border:0;background:transparent;color:var(--ink);font-weight:800;font-size:13px;cursor:pointer}@keyframes proExpiryEnter{from{transform:translateY(100%)}to{transform:translateY(0)}}@media(prefers-reduced-motion:reduce){#sheet.pro-expiry-sheet .si{animation:none}}
 #sheet.hsk30-promo-center{align-items:center;padding:calc(14px + var(--safe-t)) 14px calc(14px + var(--safe-b))}
 #sheet.hsk30-promo-center .si{border-radius:24px;padding:20px 18px calc(18px + var(--safe-b));max-height:calc(100vh - 28px - var(--safe-t) - var(--safe-b));max-height:calc(100dvh - 28px - var(--safe-t) - var(--safe-b));box-shadow:0 18px 50px rgba(20,17,13,.25)}
 #sheet.hsk30-promo-center .grip{display:none}
@@ -344,7 +344,9 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 .fpbar{flex:1;height:9px;background:var(--line);border-radius:6px;overflow:hidden}
 .fpbar>i{display:block;height:100%;width:0;background:var(--cin);border-radius:6px;transition:width .3s}
 .fheart{display:flex;align-items:center;gap:3px;color:var(--cin2);font-size:15px;font-weight:500}
-.fstage{padding:4px 18px 0;font-size:11px;color:var(--cin2);font-weight:600;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.fstage{padding:4px 18px 0;font-size:11px;color:var(--cin2);font-weight:600;text-transform:uppercase;display:flex;align-items:center;justify-content:center;text-align:center;gap:8px}
+.fcount{font-size:12px;font-weight:600;color:var(--cin2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.fcount:empty{display:none}
 .fstage .foundation-step{margin:0;max-width:72%;min-width:0;font-size:11px;line-height:1.25;text-transform:none;letter-spacing:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:1}
 /* Murabbiy qatori: chapda personaj, o'ngda u aytayotgan gap.
    Ilgari personaj o'ng chetda YOLG'IZ turardi, yonida esa uning ISMI
@@ -583,7 +585,7 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 .profile-compact-ach .at .ah small{font-size:11px}
 .profile-compact-ach .abar{margin-top:7px;height:5px}
 @media(max-width:340px){.profile-compact-ach .arow{padding:8px;gap:6px}.profile-compact-ach .aic{width:26px;height:26px;flex-basis:26px}}
-.rating-title{margin:5px 16px 10px;font-size:var(--hsk-section-title-size,20px)}
+.rating-title{margin:5px 16px 10px;font-size:var(--hsk-section-title-size,20px)}/* PWA reports share root chrome; headings grow naturally with localized text. */html.hsk-pwa-browser #s-rating :is(.rating-title,.rating-friends-heading){display:flex;align-items:center;min-height:calc(var(--hsk-space-12) + var(--hsk-space-4));margin:0;padding:var(--hsk-space-2) var(--hsk-space-4);font-size:var(--hsk-section-title-size);line-height:var(--hsk-section-title-line-height);font-weight:700;letter-spacing:-.01em;white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere;position:sticky;top:var(--safe-t);z-index:4;background:var(--paper)}
 /* Profile panels use the same warm paper surface and divider as subscription checkout.
    Keep semantic status, progress and Pro promotion colors unchanged. */
 #s-profile .profile-accuracy,#s-profile .profile-friends-link,#s-profile .profile-compact-ach .arow,#s-profile .ach .arow,#s-profile .card2,#s-profile .profile-quick-links,#s-profile .profile-stats .stat,#s-profile .set,#s-profile .pgoal,#s-profile .social-btn{background:var(--hsk-card-surface,var(--paper));border-color:var(--line);box-shadow:none}
@@ -822,6 +824,15 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 .lu-rw b{display:block;font-size:18px;font-weight:600;color:var(--gold)}.lu-rw small{font-size:11px;color:rgba(255,255,255,.7)}
 .lu-rw.a-jade{border-color:rgba(72,217,154,.45)}.lu-rw.a-jade b{color:#48D99A}
 .lu-result-note{margin-top:14px;color:rgba(255,255,255,.72);font-size:13px;line-height:1.4;text-align:center}
+.lu-stage:has(.lu-learning-topic){min-height:0;overflow-y:auto;justify-content:safe center}
+.lu-stage:has(.lu-learning-topic)>*,.lu-stage:has(.lu-learning-topic)+.lu-cta{flex-shrink:0}
+.lu-learning-topic,.lu-learning-review{width:100%;max-width:320px;overflow-wrap:anywhere}
+.lu-learning-topic{display:grid;gap:4px;margin:0 0 18px;color:rgba(255,255,255,.84);font-size:15px}
+.lu-learning-topic .han{color:#fff;font-size:20px}
+.lu-learning-review{display:grid;gap:5px;margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.2)}
+.lu-learning-review strong{color:var(--gold)}
+.lu-review-prompt{color:rgba(255,255,255,.84)}.lu-review-correction{font-weight:600}
+.lu-learning-review .lu-result-note{margin-top:4px}
 .lu-rw.a-blue{border-color:rgba(126,221,246,.45)}.lu-rw.a-blue b{color:#7EDDF6}
 .lu-cta{margin:0 16px calc(16px + var(--safe-b));padding:16px;background:var(--cin);color:var(--cin-ink);border:none;border-radius:15px;font-family:inherit;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px;z-index:2}
 .lu-conf{position:absolute;top:-14px;width:9px;height:13px;border-radius:2px;opacity:0;z-index:3}
@@ -1411,7 +1422,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 #sheet.lesson-exit-confirm .si{border-radius:24px;max-height:85dvh}
 #sheet.lesson-exit-confirm .grip{display:none}
 .lesson-exit{color:var(--cin2);margin-top:12px}
-.ftop .fx.fgear{border:1px solid var(--line);background:var(--card);color:var(--ink2)}
+.ftop .fx.fgear{border:0;background:none;color:var(--ink2)}
 .fbody.has-lesson-pron{display:flex;flex-direction:column;padding-bottom:0}
 .lesson-pron{display:flex;flex-direction:column;flex:1;min-height:460px}
 .lesson-pron>.qq{text-align:center}
@@ -1422,6 +1433,39 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 .lesson-pron-phrase .au{margin:0 auto 10px}
 .lesson-pron-controls{margin-top:auto;flex-shrink:0}
 .lesson-pron-controls .pron-skip{letter-spacing:normal;font-weight:500;margin:2px 0 0;display:inline-flex}
+/* UIUX-008 rasmli takror: ustma-ust navbat, orqadagilar biroz yuqorida. */
+.pic-stage{flex:1;display:flex;align-items:center;justify-content:center;padding:34px 0 14px}
+.pic-stack{position:relative;width:min(100%,280px);height:clamp(210px,38vh,290px)}
+.pic-card{position:absolute;inset:0;transform-origin:50% 0;transition:transform .32s cubic-bezier(.2,.8,.25,1),opacity .32s ease;perspective:1100px;cursor:default}
+.pic-card.d0{transform:none}
+.pic-card.d1{transform:translateY(-15px) scale(.93)}
+.pic-card.d2{transform:translateY(-28px) scale(.86)}
+.pic-card.dn{transform:translateY(-28px) scale(.86);opacity:0;pointer-events:none}
+.pic-card.pic-gone{display:none}
+.pic-card.d1 .pic-img,.pic-card.d2 .pic-img,.pic-card.dn .pic-img{visibility:hidden}
+.pic-hop{width:100%;height:100%;perspective:1100px}
+.pic-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d}
+.pic-face{position:absolute;inset:0;border-radius:24px;background:var(--card);border:1.5px solid var(--line);box-shadow:0 6px 0 var(--shadow);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:18px;text-align:center;backface-visibility:hidden;-webkit-backface-visibility:hidden;transition:background-color .2s ease,border-color .2s ease}
+.pic-back{transform:rotateY(180deg)}
+.pic-img{font-size:clamp(84px,24vw,112px);line-height:1;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
+.pic-zh{font-size:44px;line-height:1.15;color:var(--ink)}
+.pic-py{font-size:17px;color:var(--cin2);font-weight:600}
+.pic-tr{font-size:15px;color:var(--ink2);line-height:1.35}
+#flow.pyoff .pic-py,#flow.pynew .pic-py{display:none}
+.pic-card.pic-ok .pic-face{background:var(--jadebg);border-color:var(--jade)}
+.pic-card.pic-no .pic-face{background:var(--goldbg);border-color:var(--gold)}
+.pic-card.pic-ok .pic-hop,.pic-card.pic-no .pic-hop{animation:picHop .26s cubic-bezier(.3,1.6,.5,1)}
+.pic-card.pic-flip{cursor:pointer}
+.pic-card.pic-flip .pic-inner{transform:rotateY(180deg);animation:picFlip .5s cubic-bezier(.3,.7,.2,1)}
+.pic-card.pic-out-ok{transform:translateX(118%) rotate(9deg);opacity:0}
+.pic-card.pic-out-skip{transform:translateX(-118%) rotate(-7deg);opacity:0}
+.pic-card.pic-out-back{transform:translateY(46px) scale(.9);opacity:0}
+.pic-stack.pic-deal .pic-hop{animation:picDeal .42s cubic-bezier(.2,.85,.25,1) both}
+.pic-review .pr-mic:disabled{opacity:.45}
+@keyframes picHop{0%{transform:translateY(0)}45%{transform:translateY(-14px)}100%{transform:translateY(0)}}
+@keyframes picFlip{0%{transform:rotateY(0)}72%{transform:rotateY(160deg)}100%{transform:rotateY(180deg)}}
+@keyframes picDeal{0%{transform:translateY(-70px) rotateX(58deg) scale(.92);opacity:0}100%{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.pic-card,.pic-face{transition:none}.pic-card .pic-hop,.pic-card .pic-inner,.pic-stack.pic-deal .pic-hop{animation:none!important}}
 
 /* Inline nav skin: no extra static-asset endpoint or CSS request. */
 /* Telegram Mini App bottom navigation: lightweight Liquid Glass surface.
@@ -1629,14 +1673,14 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 @media (prefers-reduced-transparency: reduce) {
   .nav::before,.nav::after { display:none; }
 }
-/* PWA only: paint a stable shell before the authenticated course-map API.The Telegram Mini App keeps its existing cinematic launch and layout. */html.hsk-pwa-browser #hsk-launch-splash{display:none!important}.pwa-initial-shell{display:none}html.hsk-pwa-browser .pwa-initial-shell{display:block;max-width:var(--read);margin:0 auto;padding:15px 18px 32px}html.hsk-pwa-browser .pwa-initial-shell[aria-busy="true"]{min-height:540px}html.hsk-pwa-browser #s-course>.loading{display:none}.pwa-initial-shell .pwa-skel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;margin-bottom:12px}.pwa-initial-shell .pwa-skel-title{font-weight:750;letter-spacing:-.35px;font-size:23px;line-height:1.25;color:var(--ink)}.pwa-initial-shell .pwa-first-logo{width:48px;height:48px;object-fit:contain;flex:0 0 48px}.pwa-initial-shell .pwa-skel-card{background:var(--card);border:1px solid var(--line);border-radius:20px;min-height:104px;padding:18px;margin:12px 0;box-shadow:0 1px 3px rgba(25,20,10,.025)}.pwa-initial-shell .pwa-skel-card.habit{min-height:128px}.pwa-initial-shell .pwa-skel-line{height:12px;border-radius:8px;margin:12px 0;background:var(--line);width:76%;opacity:.68}.pwa-initial-shell .pwa-skel-line.short{width:43%}.pwa-initial-shell .pwa-skel-line.long{width:93%}.pwa-initial-shell .pwa-skel-path{min-height:196px;padding:18px 12px 6px}.pwa-initial-shell .pwa-skel-node{width:55px;height:55px;border-radius:50%;background:var(--card);border:7px solid var(--line);margin:9px auto}.pwa-initial-shell .pwa-skel-node:nth-child(2){transform:translateX(-42px)}.pwa-initial-shell .pwa-skel-node:nth-child(3){transform:translateX(35px)}html.hsk-pwa-browser .pwa-profile-accuracy-pending{display:flex;justify-content:space-around;min-height:128px;align-items:center;gap:16px}html.hsk-pwa-browser .pwa-profile-accuracy-pending .pwa-skel-line{height:82px;width:82px;flex:0 0 82px;border-radius:50%;margin:0}@media(prefers-reduced-motion:no-preference){.pwa-initial-shell .pwa-skel-line,.pwa-initial-shell .pwa-skel-node{animation:pwa-skeleton-pulse 1.5s ease-in-out infinite alternate}}@keyframes pwa-skeleton-pulse{from{opacity:.52}to{opacity:.9}}html.hsk-pwa-browser #s-mashq>.pwa-initial-shell,html.hsk-pwa-browser #s-voice>.pwa-initial-shell,html.hsk-pwa-browser #s-rating>.pwa-initial-shell,html.hsk-pwa-browser #s-profile>.pwa-initial-shell{padding:0 0 32px;max-width:var(--read)}html.hsk-pwa-browser .pwa-layout-ink{display:block;background:var(--line);border-radius:9px;opacity:.7}html.hsk-pwa-browser .pwa-practice-sub{width:74%;height:14px}html.hsk-pwa-browser .pwa-practice-group-title{width:45%;height:13px}html.hsk-pwa-browser .pwa-practice-row .ti2{width:40px;height:40px;flex-shrink:0}html.hsk-pwa-browser .pwa-practice-row .ar{width:14px;height:14px;flex-shrink:0}html.hsk-pwa-browser .pwa-practice-row .pwa-row-title{width:67%;height:15px;margin-bottom:7px}html.hsk-pwa-browser .pwa-practice-row .pwa-row-sub{width:91%;height:12px}html.hsk-pwa-browser .pwa-voice-shell .voicebox .pwa-layout-ink{background:rgba(255,255,255,.24)}html.hsk-pwa-browser .pwa-voice-panda{width:100%;height:100%;border-radius:50%}html.hsk-pwa-browser .pwa-voice-title{width:60%;height:22px;margin:0 auto 4px}html.hsk-pwa-browser .pwa-voice-description{width:87%;height:13px;margin:0 auto 8px}html.hsk-pwa-browser .pwa-voice-description.short{width:64%}html.hsk-pwa-browser .pwa-voice-quota{height:13px;width:55%;margin:0 auto}html.hsk-pwa-browser .pwa-voice-call{width:100%;max-width:300px;height:48px;margin:0 auto;border-radius:24px;background:#E04A40!important;opacity:.55}html.hsk-pwa-browser .pwa-profile-action{width:42px;height:42px;border-radius:50%}html.hsk-pwa-browser .pwa-profile-shell .pav{width:70px;height:70px;border:0;border-radius:18px}html.hsk-pwa-browser .pwa-profile-name{width:56%;height:18px;margin:0 0 8px}html.hsk-pwa-browser .pwa-profile-badge{width:42%;height:20px;border-radius:999px}html.hsk-pwa-browser .pwa-profile-friends{width:56%;height:16px}html.hsk-pwa-browser .pwa-profile-shell .accuracy-ring{width:83px;height:83px;border:0;background:var(--line)}html.hsk-pwa-browser .pwa-profile-shell .accuracy-ring::before{display:none}html.hsk-pwa-browser .pwa-profile-stat-label{width:64%;height:13px;margin:0 auto}html.hsk-pwa-browser .pwa-profile-section{width:40%;height:13px}html.hsk-pwa-browser .pwa-profile-calendar{height:74px;margin:0 16px;border-radius:16px}html.hsk-pwa-browser .pwa-profile-calendar-content{width:85%;height:40px;margin:16px auto}html.hsk-pwa-browser .pwa-profile-ach-icon{width:30px;height:30px;flex:0 0 30px}html.hsk-pwa-browser .pwa-profile-ach-text{width:70%;height:42px}@media(max-width:340px){html.hsk-pwa-browser .pwa-profile-ach-text{height:49px}}html.hsk-pwa-browser #s-rating .pwa-rating-body.hsk-pwa-section-loading{padding:0;min-height:0}html.hsk-pwa-browser #s-rating .pwa-rating-trophy{width:100%;aspect-ratio:150/160;border-radius:18px 18px 8px 8px;clip-path:polygon(17% 0,83% 0,75% 66%,63% 80%,63% 86%,78% 88%,81% 100%,19% 100%,22% 88%,37% 86%,37% 80%,25% 66%);background:var(--line)}html.hsk-pwa-browser #s-rating .pwa-rating-tier{width:72%;height:14px;max-width:72%}html.hsk-pwa-browser #s-rating .pwa-rating-member{width:68%;height:14px}html.hsk-pwa-browser #s-rating .pwa-rating-topfive{width:54%;height:13px}html.hsk-pwa-browser #s-rating .pwa-rating-row{min-height:61px;cursor:default;pointer-events:none}html.hsk-pwa-browser #s-rating .pwa-rating-rank{width:24px;height:24px;flex:0 0 24px}html.hsk-pwa-browser #s-rating .pwa-rating-avatar{width:38px;height:38px;flex:0 0 38px;border-radius:11px}html.hsk-pwa-browser #s-rating .pwa-rating-name{height:15px;flex:1;min-width:0;max-width:55%}html.hsk-pwa-browser #s-rating .pwa-rating-score{height:14px;width:34px;flex:0 0 34px;margin-left:auto}html.hsk-pwa-browser #s-rating .pwa-rating-body{position:relative}html.hsk-pwa-browser #s-rating .pwa-rating-error{position:absolute;top:30px;left:16px;right:16px;z-index:2;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;text-align:center;box-shadow:0 6px 24px rgba(0,0,0,.1)}html.hsk-pwa-browser #s-rating .pwa-friends-body{min-height:300px}html.hsk-pwa-browser #s-rating .pwa-friends-body .pwa-friends-invite{height:100px;margin:0 16px 10px;border-radius:16px;background:var(--line)}html.hsk-pwa-browser #s-rating .pwa-friends-body .pwa-friends-summary{height:76px;margin:0 16px 10px;border-radius:16px;background:var(--line)}@keyframes hsk-pwa-layout-pulse{from{opacity:.55}to{opacity:.86}}@keyframes hsk-pwa-rating-settle{from{opacity:.82}to{opacity:1}}@media(prefers-reduced-motion:no-preference){html.hsk-pwa-browser .pwa-initial-shell .pwa-layout-ink,html.hsk-pwa-browser .hsk-pwa-section-loading .pwa-layout-ink{animation:hsk-pwa-layout-pulse 1.5s ease-in-out infinite alternate}html.hsk-pwa-browser #s-rating.pwa-rating-settle .rating-podium,html.hsk-pwa-browser #s-rating.pwa-rating-settle .rating-podium-queue,html.hsk-pwa-browser #s-rating.pwa-rating-settle .lr{animation:hsk-pwa-rating-settle 200ms ease-out both}}@media(prefers-reduced-motion:reduce){html.hsk-pwa-browser .pwa-initial-shell .pwa-layout-ink,html.hsk-pwa-browser .hsk-pwa-section-loading .pwa-layout-ink{animation:none!important}html.hsk-pwa-browser #s-rating.pwa-rating-settle .rating-podium,html.hsk-pwa-browser #s-rating.pwa-rating-settle .rating-podium-queue,html.hsk-pwa-browser #s-rating.pwa-rating-settle .lr{animation:none!important}}html.hsk-pwa-browser #s-profile .profile-accuracy.hsk-pwa-profile-accuracy-loading{grid-template-columns:repeat(2,minmax(0,1fr));gap:0;min-height:0;margin:11px 16px 4px}html.hsk-pwa-browser #s-profile .profile-accuracy.hsk-pwa-profile-accuracy-loading>div{min-width:0;padding:10px 5px 12px}html.hsk-pwa-browser #s-profile .profile-accuracy .pwa-profile-ring-placeholder{width:83px;height:83px;margin:0 auto 7px;background:var(--line)}html.hsk-pwa-browser #s-profile .profile-accuracy .pwa-profile-label-placeholder{height:13px;width:56%;margin:0 auto;border-radius:8px;background:var(--line);opacity:.7}html.hsk-pwa-browser #s-profile .profile-accuracy.pwa-profile-accuracy-error{position:relative}html.hsk-pwa-browser #s-profile .profile-accuracy.pwa-profile-accuracy-error .hsk-pwa-profile-stats-error{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:10px;border-radius:17px;background:var(--hsk-card-surface,var(--paper));color:var(--ink2);text-align:center;padding:12px}html.hsk-pwa-browser #s-profile .profile-accuracy.pwa-profile-accuracy-error .hsk-pwa-profile-stats-error p{margin:0}@media(prefers-reduced-motion:no-preference){html.hsk-pwa-browser #s-profile .profile-accuracy.hsk-pwa-profile-accuracy-loading .pwa-profile-label-placeholder{animation:hsk-pwa-layout-pulse 1.5s ease-in-out infinite alternate}}@media(prefers-reduced-motion:reduce){html.hsk-pwa-browser #s-profile .profile-accuracy.hsk-pwa-profile-accuracy-loading .pwa-profile-label-placeholder{animation:none!important}}html.hsk-pwa-browser #s-mashq .pwa-mashq-shell .mashq-group .pwa-practice-row{display:flex;align-items:center;gap:12px;min-height:68px;margin:0;padding:12px;width:100%;border:0;border-top:1px solid var(--line);background:transparent}html.hsk-pwa-browser #s-mashq .pwa-mashq-shell .mashq-group .pwa-practice-row:first-child{border-top:0}html.hsk-pwa-browser #s-mashq .pwa-mashq-shell .pwa-practice-row .rt{flex:1;min-width:0}/* Measured Practice text-wrap reserves; keep same actual card heights at 320/390/430px. */@media(max-width:400px){html.hsk-pwa-browser #s-mashq .pwa-mashq-shell>.mashq-group:nth-child(4)>.pwa-practice-row:nth-child(2){min-height:80px}}@media(max-width:340px){html.hsk-pwa-browser #s-mashq .pwa-mashq-shell>.mashq-group:nth-child(4)>.pwa-practice-row:nth-child(1),html.hsk-pwa-browser #s-mashq .pwa-mashq-shell>.mashq-group:nth-child(4)>.pwa-practice-row:nth-child(2),html.hsk-pwa-browser #s-mashq .pwa-mashq-shell>.mashq-group:nth-child(4)>.pwa-practice-row:nth-child(4){min-height:78px}html.hsk-pwa-browser #s-mashq .pwa-mashq-shell>.mashq-group:nth-child(6)>.pwa-practice-row:nth-child(1){min-height:80px}}html.hsk-pwa-browser #s-voice>.pwa-voice-shell>.htop{padding-top:6px}html.hsk-pwa-browser #s-rating .pwa-rating-empty{box-sizing:border-box;min-height:305px;margin:0 16px;padding:36px 20px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;text-align:center;color:var(--ink2)}html.hsk-pwa-browser #s-rating .pwa-rating-empty p{margin:0;max-width:280px}</style>
-<link rel="stylesheet" href="/course_v3_data/iphone-pwa-glass.css?v=20261105-59648ec92079">
+/* PWA only: paint a stable shell before the authenticated course-map API.The Telegram Mini App keeps its existing cinematic launch and layout. */html.hsk-pwa-browser #hsk-launch-splash{display:none!important}.pwa-initial-shell{display:none}html.hsk-pwa-browser .pwa-initial-shell{display:block;max-width:var(--read);margin:0 auto;padding:15px 18px 32px}html.hsk-pwa-browser .pwa-initial-shell[aria-busy="true"]{min-height:540px}html.hsk-pwa-browser #s-course>.loading{display:none}.pwa-initial-shell .pwa-skel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;margin-bottom:12px}.pwa-initial-shell .pwa-skel-title{font-weight:750;letter-spacing:-.35px;font-size:23px;line-height:1.25;color:var(--ink)}.pwa-initial-shell .pwa-first-logo{width:48px;height:48px;object-fit:contain;flex:0 0 48px}.pwa-initial-shell .pwa-skel-card{background:var(--card);border:1px solid var(--line);border-radius:20px;min-height:104px;padding:18px;margin:12px 0;box-shadow:0 1px 3px rgba(25,20,10,.025)}.pwa-initial-shell .pwa-skel-card.habit{min-height:128px}.pwa-initial-shell .pwa-skel-line{height:12px;border-radius:8px;margin:12px 0;background:var(--line);width:76%;opacity:.68}.pwa-initial-shell .pwa-skel-line.short{width:43%}.pwa-initial-shell .pwa-skel-line.long{width:93%}.pwa-initial-shell .pwa-skel-path{min-height:196px;padding:18px 12px 6px}.pwa-initial-shell .pwa-skel-node{width:55px;height:55px;border-radius:50%;background:var(--card);border:7px solid var(--line);margin:9px auto}.pwa-initial-shell .pwa-skel-node:nth-child(2){transform:translateX(-42px)}.pwa-initial-shell .pwa-skel-node:nth-child(3){transform:translateX(35px)}html.hsk-pwa-browser .pwa-profile-accuracy-pending{display:flex;justify-content:space-around;min-height:128px;align-items:center;gap:16px}html.hsk-pwa-browser .pwa-profile-accuracy-pending .pwa-skel-line{height:82px;width:82px;flex:0 0 82px;border-radius:50%;margin:0}@media(prefers-reduced-motion:no-preference){.pwa-initial-shell .pwa-skel-line,.pwa-initial-shell .pwa-skel-node{animation:pwa-skeleton-pulse 1.5s ease-in-out infinite alternate}}@keyframes pwa-skeleton-pulse{from{opacity:.52}to{opacity:.9}}html.hsk-pwa-browser #s-mashq>.pwa-initial-shell,html.hsk-pwa-browser #s-voice>.pwa-initial-shell,html.hsk-pwa-browser #s-rating>.pwa-initial-shell,html.hsk-pwa-browser #s-profile>.pwa-initial-shell{padding:0 0 32px;max-width:var(--read)}html.hsk-pwa-browser .pwa-layout-ink{display:block;background:var(--line);border-radius:9px;opacity:.7}html.hsk-pwa-browser .pwa-practice-sub{width:74%;height:14px}html.hsk-pwa-browser .pwa-practice-group-title{width:45%;height:13px}html.hsk-pwa-browser .pwa-practice-row .ti2{width:40px;height:40px;flex-shrink:0}html.hsk-pwa-browser .pwa-practice-row .ar{width:14px;height:14px;flex-shrink:0}html.hsk-pwa-browser .pwa-practice-row .pwa-row-title{width:67%;height:15px;margin-bottom:7px}html.hsk-pwa-browser .pwa-practice-row .pwa-row-sub{width:91%;height:12px}html.hsk-pwa-browser .pwa-voice-shell .voicebox .pwa-layout-ink{background:rgba(255,255,255,.24)}html.hsk-pwa-browser .pwa-voice-panda{width:100%;height:100%;border-radius:50%}html.hsk-pwa-browser .pwa-voice-title{width:60%;height:22px;margin:0 auto 4px}html.hsk-pwa-browser .pwa-voice-description{width:87%;height:13px;margin:0 auto 8px}html.hsk-pwa-browser .pwa-voice-description.short{width:64%}html.hsk-pwa-browser .pwa-voice-quota{height:13px;width:55%;margin:0 auto}html.hsk-pwa-browser .pwa-voice-call{width:100%;max-width:300px;height:48px;margin:0 auto;border-radius:24px;background:#E04A40!important;opacity:.55}html.hsk-pwa-browser .pwa-profile-action{width:42px;height:42px;border-radius:50%}html.hsk-pwa-browser .pwa-profile-shell .pav{width:70px;height:70px;border:0;border-radius:18px}html.hsk-pwa-browser .pwa-profile-name{width:56%;height:18px;margin:0 0 8px}html.hsk-pwa-browser .pwa-profile-badge{width:42%;height:20px;border-radius:999px}html.hsk-pwa-browser .pwa-profile-friends{width:56%;height:16px}html.hsk-pwa-browser .pwa-profile-shell .accuracy-ring{width:83px;height:83px;border:0;background:var(--line)}html.hsk-pwa-browser .pwa-profile-shell .accuracy-ring::before{display:none}html.hsk-pwa-browser .pwa-profile-stat-label{width:64%;height:13px;margin:0 auto}html.hsk-pwa-browser .pwa-profile-section{width:40%;height:13px}html.hsk-pwa-browser .pwa-profile-calendar{height:74px;margin:0 16px;border-radius:16px}html.hsk-pwa-browser .pwa-profile-calendar-content{width:85%;height:40px;margin:16px auto}html.hsk-pwa-browser .pwa-profile-ach-icon{width:30px;height:30px;flex:0 0 30px}html.hsk-pwa-browser .pwa-profile-ach-text{width:70%;height:42px}@media(max-width:340px){html.hsk-pwa-browser .pwa-profile-ach-text{height:49px}}html.hsk-pwa-browser #s-rating .pwa-rating-body.hsk-pwa-section-loading{padding:0;min-height:0}html.hsk-pwa-browser #s-rating .pwa-rating-trophy{width:100%;aspect-ratio:150/160;border-radius:18px 18px 8px 8px;clip-path:polygon(17% 0,83% 0,75% 66%,63% 80%,63% 86%,78% 88%,81% 100%,19% 100%,22% 88%,37% 86%,37% 80%,25% 66%);background:var(--line)}html.hsk-pwa-browser #s-rating .pwa-rating-tier{width:72%;height:14px;max-width:72%}html.hsk-pwa-browser #s-rating .pwa-rating-member{width:68%;height:14px}html.hsk-pwa-browser #s-rating .pwa-rating-topfive{width:54%;height:13px}html.hsk-pwa-browser #s-rating .pwa-rating-row{min-height:61px;cursor:default;pointer-events:none}html.hsk-pwa-browser #s-rating .pwa-rating-rank{width:24px;height:24px;flex:0 0 24px}html.hsk-pwa-browser #s-rating .pwa-rating-avatar{width:38px;height:38px;flex:0 0 38px;border-radius:11px}html.hsk-pwa-browser #s-rating .pwa-rating-name{height:15px;flex:1;min-width:0;max-width:55%}html.hsk-pwa-browser #s-rating .pwa-rating-score{height:14px;width:34px;flex:0 0 34px;margin-left:auto}html.hsk-pwa-browser #s-rating .pwa-rating-body{position:relative}html.hsk-pwa-browser #s-rating .pwa-rating-error{position:absolute;top:30px;left:16px;right:16px;z-index:2;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;text-align:center;box-shadow:0 6px 24px rgba(0,0,0,.1)}html.hsk-pwa-browser #s-rating .pwa-friends-body{min-height:300px}html.hsk-pwa-browser #s-rating .pwa-friends-body .pwa-friends-invite{height:100px;margin:0 16px 10px;border-radius:16px;background:var(--line)}html.hsk-pwa-browser #s-rating .pwa-friends-body .pwa-friends-summary{height:76px;margin:0 16px 10px;border-radius:16px;background:var(--line)}@keyframes hsk-pwa-layout-pulse{from{opacity:.55}to{opacity:.86}}@keyframes hsk-pwa-rating-settle{from{opacity:.82}to{opacity:1}}@media(prefers-reduced-motion:no-preference){html.hsk-pwa-browser .pwa-initial-shell .pwa-layout-ink,html.hsk-pwa-browser .hsk-pwa-section-loading .pwa-layout-ink{animation:hsk-pwa-layout-pulse 1.5s ease-in-out infinite alternate}html.hsk-pwa-browser #s-rating.pwa-rating-settle .rating-podium,html.hsk-pwa-browser #s-rating.pwa-rating-settle .rating-podium-queue,html.hsk-pwa-browser #s-rating.pwa-rating-settle .lr{animation:hsk-pwa-rating-settle 200ms ease-out both}}@media(prefers-reduced-motion:reduce){html.hsk-pwa-browser .pwa-initial-shell .pwa-layout-ink,html.hsk-pwa-browser .hsk-pwa-section-loading .pwa-layout-ink{animation:none!important}html.hsk-pwa-browser #s-rating.pwa-rating-settle .rating-podium,html.hsk-pwa-browser #s-rating.pwa-rating-settle .rating-podium-queue,html.hsk-pwa-browser #s-rating.pwa-rating-settle .lr{animation:none!important}}html.hsk-pwa-browser #s-profile .profile-accuracy.hsk-pwa-profile-accuracy-loading{grid-template-columns:repeat(2,minmax(0,1fr));gap:0;min-height:0;margin:11px 16px 4px}html.hsk-pwa-browser #s-profile .profile-accuracy.hsk-pwa-profile-accuracy-loading>div{min-width:0;padding:10px 5px 12px}html.hsk-pwa-browser #s-profile .profile-accuracy .pwa-profile-ring-placeholder{width:83px;height:83px;margin:0 auto 7px;background:var(--line)}html.hsk-pwa-browser #s-profile .profile-accuracy .pwa-profile-label-placeholder{height:13px;width:56%;margin:0 auto;border-radius:8px;background:var(--line);opacity:.7}html.hsk-pwa-browser #s-profile .profile-accuracy.pwa-profile-accuracy-error{position:relative}html.hsk-pwa-browser #s-profile .profile-accuracy.pwa-profile-accuracy-error .hsk-pwa-profile-stats-error{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:10px;border-radius:17px;background:var(--hsk-card-surface,var(--paper));color:var(--ink2);text-align:center;padding:12px}html.hsk-pwa-browser #s-profile .profile-accuracy.pwa-profile-accuracy-error .hsk-pwa-profile-stats-error p{margin:0}@media(prefers-reduced-motion:no-preference){html.hsk-pwa-browser #s-profile .profile-accuracy.hsk-pwa-profile-accuracy-loading .pwa-profile-label-placeholder{animation:hsk-pwa-layout-pulse 1.5s ease-in-out infinite alternate}}@media(prefers-reduced-motion:reduce){html.hsk-pwa-browser #s-profile .profile-accuracy.hsk-pwa-profile-accuracy-loading .pwa-profile-label-placeholder{animation:none!important}}html.hsk-pwa-browser #s-mashq .pwa-mashq-shell .mashq-group .pwa-practice-row{display:flex;align-items:center;gap:12px;min-height:68px;margin:0;padding:12px;width:100%;border:0;border-top:1px solid var(--line);background:transparent}html.hsk-pwa-browser #s-mashq .pwa-mashq-shell .mashq-group .pwa-practice-row:first-child{border-top:0}html.hsk-pwa-browser #s-mashq .pwa-mashq-shell .pwa-practice-row .rt{flex:1;min-width:0}/* Measured Practice text-wrap reserves; keep same actual card heights at 320/390/430px. */@media(max-width:400px){html.hsk-pwa-browser #s-mashq .pwa-mashq-shell>.mashq-group:nth-child(4)>.pwa-practice-row:nth-child(2){min-height:80px}}@media(max-width:340px){html.hsk-pwa-browser #s-mashq .pwa-mashq-shell>.mashq-group:nth-child(4)>.pwa-practice-row:nth-child(1),html.hsk-pwa-browser #s-mashq .pwa-mashq-shell>.mashq-group:nth-child(4)>.pwa-practice-row:nth-child(2),html.hsk-pwa-browser #s-mashq .pwa-mashq-shell>.mashq-group:nth-child(4)>.pwa-practice-row:nth-child(4){min-height:78px}html.hsk-pwa-browser #s-mashq .pwa-mashq-shell>.mashq-group:nth-child(6)>.pwa-practice-row:nth-child(1){min-height:80px}}html.hsk-pwa-browser #s-voice>.pwa-voice-shell>.htop{padding-top:6px}html.hsk-pwa-browser #s-rating .pwa-rating-empty{box-sizing:border-box;min-height:305px;margin:0 16px;padding:36px 20px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;text-align:center;color:var(--ink2)}html.hsk-pwa-browser #s-rating .pwa-rating-empty p{margin:0;max-width:280px}html.hsk-pwa-browser .pwa-profile-shell .p45-profile-streak-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:44px}</style>
+<link rel="stylesheet" href="/course_v3_data/iphone-pwa-glass.css?v=20261123-0c6fb08e069f">
 <link rel="stylesheet" href="/course_v3_data/iphone-pwa-shake-report.css?v=20261105-c97d140b3930">
 <link href="/course_v3_data/desktop-download.css?v=20261110-d3164c95f1bd" rel="stylesheet">
-<link href="/course_v3_data/profile-carousel.css?v=20261017-link-cards-1" rel="stylesheet">
+<link href="/course_v3_data/profile-carousel.css?v=20261121-ae83ad0561d3" rel="stylesheet">
 <link href="/course_v3_data/rating-podium.css?v=20261105-1" rel="stylesheet">
 <link rel="stylesheet" href="/assets/characters/hsk-scene-background.css?v=20261009-preparing-compact-1">
-  <script defer src="/course_v3_data/hsk-diagnostics.js?v=20261115-5408a5e8b789"></script>
+  <script defer src="/course_v3_data/hsk-diagnostics.js?v=20261122-34865dd3f1cf"></script><script defer src="/course_v3_data/iphone-pwa-progress.js?v=20261121-d3b4d28c5e31"></script><script>if(location.pathname==="/iphone-pwa/course"){var progressStyle=document.createElement("link");progressStyle.rel="stylesheet";progressStyle.href="/course_v3_data/iphone-pwa-progress.css?v=20261121-eca6c2678e92";document.head.appendChild(progressStyle)}</script>
 </head>
 <body class="hsk-scene-page">
 <div id="hsk-launch-splash" class="is-playing" role="img" aria-label="HSK AI">
@@ -1679,7 +1723,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
   <div class="scr" id="s-mashq"><div class="pwa-initial-shell pwa-mashq-shell" role="status" aria-busy="true" aria-label="Загрузка"><div class="htop"><h1 class="section-title" data-pwa-shell-label="mashq">Практика</h1></div><div class="phead"><div class="sub"><span class="pwa-layout-ink pwa-practice-sub" aria-hidden="true"></span></div></div><div class="sech"><span class="pwa-layout-ink pwa-practice-group-title" aria-hidden="true"></span></div><div class="mashq-group"><div class="pwa-practice-row" aria-hidden="true"><span class="ti2 pwa-layout-ink"></span><span class="rt"><span class="pwa-layout-ink pwa-row-title" aria-hidden="true"></span><span class="pwa-layout-ink pwa-row-sub" aria-hidden="true"></span></span><span class="ar pwa-layout-ink"></span></div><div class="pwa-practice-row" aria-hidden="true"><span class="ti2 pwa-layout-ink"></span><span class="rt"><span class="pwa-layout-ink pwa-row-title" aria-hidden="true"></span><span class="pwa-layout-ink pwa-row-sub" aria-hidden="true"></span></span><span class="ar pwa-layout-ink"></span></div><div class="pwa-practice-row" aria-hidden="true"><span class="ti2 pwa-layout-ink"></span><span class="rt"><span class="pwa-layout-ink pwa-row-title" aria-hidden="true"></span><span class="pwa-layout-ink pwa-row-sub" aria-hidden="true"></span></span><span class="ar pwa-layout-ink"></span></div><div class="pwa-practice-row" aria-hidden="true"><span class="ti2 pwa-layout-ink"></span><span class="rt"><span class="pwa-layout-ink pwa-row-title" aria-hidden="true"></span><span class="pwa-layout-ink pwa-row-sub" aria-hidden="true"></span></span><span class="ar pwa-layout-ink"></span></div></div><div class="sech"><span class="pwa-layout-ink pwa-practice-group-title" aria-hidden="true"></span></div><div class="mashq-group"><div class="pwa-practice-row" aria-hidden="true"><span class="ti2 pwa-layout-ink"></span><span class="rt"><span class="pwa-layout-ink pwa-row-title" aria-hidden="true"></span><span class="pwa-layout-ink pwa-row-sub" aria-hidden="true"></span></span><span class="ar pwa-layout-ink"></span></div><div class="pwa-practice-row" aria-hidden="true"><span class="ti2 pwa-layout-ink"></span><span class="rt"><span class="pwa-layout-ink pwa-row-title" aria-hidden="true"></span><span class="pwa-layout-ink pwa-row-sub" aria-hidden="true"></span></span><span class="ar pwa-layout-ink"></span></div></div></div></div>
   <div class="scr" id="s-voice"><div class="pwa-initial-shell pwa-voice-shell" role="status" aria-busy="true" aria-label="Загрузка"><div class="htop"><h1 class="section-title" data-pwa-shell-label="voice">AI Voice</h1></div><div class="voicebox" aria-hidden="true"><div class="pd"><span class="pwa-layout-ink pwa-voice-panda" aria-hidden="true"></span></div><h3><span class="pwa-layout-ink pwa-voice-title" aria-hidden="true"></span></h3><p><span class="pwa-layout-ink pwa-voice-description" aria-hidden="true"></span></p><p class="voice-quota"><span class="pwa-layout-ink pwa-voice-quota" aria-hidden="true"></span></p><span class="pwa-layout-ink pwa-voice-call" aria-hidden="true"></span></div></div></div>
   <div class="scr" id="s-rating"><div class="pwa-initial-shell pwa-rating-shell" role="status" aria-busy="true" aria-label="Загрузка"><h1 class="section-title rating-title" data-pwa-shell-label="rating">Рейтинг</h1><div class="pwa-rating-body"><div class="rating-podium" aria-hidden="true"><div class="rating-podium-list"><div class="rating-podium-item"><div class="rating-cup"><span class="pwa-layout-ink pwa-rating-trophy" aria-hidden="true"></span></div><div class="rating-pedestal"><span class="rating-cup-label pwa-layout-ink pwa-rating-tier"></span></div></div><div class="rating-podium-item main"><div class="rating-cup"><span class="pwa-layout-ink pwa-rating-trophy" aria-hidden="true"></span></div><div class="rating-pedestal"><span class="rating-cup-label pwa-layout-ink pwa-rating-tier"></span></div></div><div class="rating-podium-item"><div class="rating-cup"><span class="pwa-layout-ink pwa-rating-trophy" aria-hidden="true"></span></div><div class="rating-pedestal"><span class="rating-cup-label pwa-layout-ink pwa-rating-tier"></span></div></div></div><div class="rating-podium-meta"><span class="pwa-layout-ink pwa-rating-member" aria-hidden="true"></span></div></div><div class="rating-podium-queue" aria-hidden="true"><span class="pwa-layout-ink pwa-rating-topfive" aria-hidden="true"></span></div><div class="lr pwa-rating-row" aria-hidden="true"><span class="med pwa-layout-ink pwa-rating-rank"></span><span class="av pwa-layout-ink pwa-rating-avatar"></span><span class="nm pwa-layout-ink pwa-rating-name"></span><span class="xp pwa-layout-ink pwa-rating-score"></span></div><div class="lr pwa-rating-row" aria-hidden="true"><span class="med pwa-layout-ink pwa-rating-rank"></span><span class="av pwa-layout-ink pwa-rating-avatar"></span><span class="nm pwa-layout-ink pwa-rating-name"></span><span class="xp pwa-layout-ink pwa-rating-score"></span></div><div class="lr pwa-rating-row" aria-hidden="true"><span class="med pwa-layout-ink pwa-rating-rank"></span><span class="av pwa-layout-ink pwa-rating-avatar"></span><span class="nm pwa-layout-ink pwa-rating-name"></span><span class="xp pwa-layout-ink pwa-rating-score"></span></div><div class="lr pwa-rating-row" aria-hidden="true"><span class="rk pwa-layout-ink pwa-rating-rank"></span><span class="av pwa-layout-ink pwa-rating-avatar"></span><span class="nm pwa-layout-ink pwa-rating-name"></span><span class="xp pwa-layout-ink pwa-rating-score"></span></div><div class="lr pwa-rating-row" aria-hidden="true"><span class="rk pwa-layout-ink pwa-rating-rank"></span><span class="av pwa-layout-ink pwa-rating-avatar"></span><span class="nm pwa-layout-ink pwa-rating-name"></span><span class="xp pwa-layout-ink pwa-rating-score"></span></div></div></div></div>
-  <div class="scr" id="s-profile"><div class="pwa-initial-shell pwa-profile-shell" role="status" aria-busy="true" aria-label="Загрузка"><div class="htop profile-head"><h1 class="profile-title" data-pwa-shell-label="profile">Профиль</h1><div class="profile-head-actions"><span class="pwa-layout-ink pwa-profile-action" aria-hidden="true"></span><span class="pwa-layout-ink pwa-profile-action" aria-hidden="true"></span></div></div><div class="phero" aria-hidden="true"><span class="pav pwa-layout-ink"></span><div class="profile-hero-content"><span class="pwa-layout-ink pwa-profile-name" aria-hidden="true"></span><span class="pwa-layout-ink pwa-profile-badge" aria-hidden="true"></span></div></div><div class="profile-friends-link" aria-hidden="true"><span class="pwa-layout-ink pwa-profile-friends" aria-hidden="true"></span></div><div class="profile-accuracy" aria-hidden="true"><div><div class="accuracy-ring pwa-layout-ink"></div><span class="pwa-layout-ink pwa-profile-stat-label" aria-hidden="true"></span></div><div><div class="accuracy-ring pwa-layout-ink"></div><span class="pwa-layout-ink pwa-profile-stat-label" aria-hidden="true"></span></div></div><div class="sech"><span class="pwa-layout-ink pwa-profile-section" aria-hidden="true"></span></div><div class="card2 pwa-profile-calendar" aria-hidden="true"><span class="pwa-layout-ink pwa-profile-calendar-content" aria-hidden="true"></span></div><div class="sech"><span class="pwa-layout-ink pwa-profile-section" aria-hidden="true"></span></div><div class="profile-compact-ach" aria-hidden="true"><div class="arow"><span class="pwa-layout-ink pwa-profile-ach-icon" aria-hidden="true"></span><span class="pwa-layout-ink pwa-profile-ach-text" aria-hidden="true"></span></div><div class="arow"><span class="pwa-layout-ink pwa-profile-ach-icon" aria-hidden="true"></span><span class="pwa-layout-ink pwa-profile-ach-text" aria-hidden="true"></span></div></div></div></div>
+  <div class="scr" id="s-profile"><div class="pwa-initial-shell pwa-profile-shell" role="status" aria-busy="true" aria-label="Загрузка"><div class="htop profile-head"><h1 class="profile-title" data-pwa-shell-label="profile">Профиль</h1><div class="profile-head-actions"><span class="pwa-layout-ink pwa-profile-action" aria-hidden="true"></span><span class="pwa-layout-ink pwa-profile-action" aria-hidden="true"></span></div></div><div class="phero" aria-hidden="true"><span class="pav pwa-layout-ink"></span><div class="profile-hero-content"><span class="pwa-layout-ink pwa-profile-name" aria-hidden="true"></span><span class="pwa-layout-ink pwa-profile-badge" aria-hidden="true"></span></div></div><div class="profile-accuracy" aria-hidden="true"><div><div class="accuracy-ring pwa-layout-ink"></div><span class="pwa-layout-ink pwa-profile-stat-label" aria-hidden="true"></span></div><div><div class="accuracy-ring pwa-layout-ink"></div><span class="pwa-layout-ink pwa-profile-stat-label" aria-hidden="true"></span></div></div><div class="sech p45-profile-streak-heading"><span class="pwa-layout-ink pwa-profile-section" aria-hidden="true"></span><span class="pwa-layout-ink" style="width:44px;height:44px" aria-hidden="true"></span></div><div class="card2 pwa-profile-calendar" aria-hidden="true"><span class="pwa-layout-ink pwa-profile-calendar-content" aria-hidden="true"></span></div><div class="sech"><span class="pwa-layout-ink pwa-profile-section" aria-hidden="true"></span></div><div class="profile-compact-ach" aria-hidden="true"><div class="arow"><span class="pwa-layout-ink pwa-profile-ach-icon" aria-hidden="true"></span><span class="pwa-layout-ink pwa-profile-ach-text" aria-hidden="true"></span></div></div><div class="pwa-profile-promo-slot" aria-hidden="true"><span class="pwa-layout-ink pwa-profile-section"></span><span class="pwa-layout-ink pwa-profile-badge"></span></div><div class="profile-friends-link" aria-hidden="true"><span class="pwa-layout-ink pwa-profile-friends" aria-hidden="true"></span></div></div></div>
   <section class="scr" id="s-settings" aria-labelledby="hsk-pwa-settings-title"></section>
 
   <!-- Bo'lim tanishtiruvi: ekran USTIDA suzadi, layoutdan joy egallamaydi va
@@ -1705,7 +1749,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
   </div>
 
   <div class="flow" id="flow">
-    <div class="ftop"><button class="fx fgear" onclick="App.pinyinSheet()"><i class="ti ti-settings"></i></button><div class="fpbar"><i id="f-prog"></i></div><span class="fheart"><i class="ti ti-heart"></i><span id="f-hp">5</span></span></div>
+    <div class="ftop"><button class="fx fgear" onclick="App.pinyinSheet()"><i class="ti ti-settings"></i></button><div class="fpbar"><i id="f-prog"></i></div><span class="fcount" id="f-count"></span><span class="fheart"><i class="ti ti-heart"></i><span id="f-hp">5</span></span></div>
     <div class="fstage" id="f-stage"></div>
     <div class="fcoach-dock" id="f-coach-dock"><div class="fcoach hsk-character-stage" id="f-coach" aria-hidden="true"></div><div class="fcoach-col"><p class="fcoach-bubble" id="f-coach-bubble"></p><div class="fcoach-slot" id="f-coach-slot"></div></div></div>
     <div class="fbody" id="f-body"></div>
@@ -1741,7 +1785,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 </script>
 <!-- Reklama moduli: dars yakuni bloki uchun (mashq bo'limlari ham shu moduldan foydalanadi) -->
 <script src="/voice-live.js?v=20261114-43a09dcc7b1d"></script>
-<script defer src="/course_v3_data/ads.js?v=20261021-5288c4e06b0c"></script><script src="/course_v3_data/hsk-common-i18n.js?v=20261019-1c672dcfb10d"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261113-61bd77761242"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-a0dd8c0b1db1"></script><script src="/course_v3_data/p3-grammar-reservation.js?v=20261019-p3-2"></script>
+<script defer src="/course_v3_data/ads.js?v=20261021-5288c4e06b0c"></script><script src="/course_v3_data/hsk-common-i18n.js?v=20261019-1c672dcfb10d"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261125-bffb131a155e"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-83c98b0dece1"></script><script src="/course_v3_data/p3-grammar-reservation.js?v=20261019-p3-2"></script>
 <script>
 /* ---------- i18n (default RU) ---------- */
 var I18N={
@@ -1893,7 +1937,7 @@ function openHsk30UnlockCheckout(){
 }
 function renderHsk30AccessGate(status){
   var t=trackUi(),access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
-  if(access&&access.allowed===false&&currentCourseTrack()==="hsk30"){
+  if(currentCourseTrack()==="hsk30"&&($("#sheet").classList.contains("pro-expiry-sheet")||CHECKOUT_NAVIGATING||PWA_CHECKOUT_FRAME))return;if(access&&access.allowed===false&&currentCourseTrack()==="hsk30"){
     HSK30_ACCESS_DENIED=true;prepareHsk30AccessBoundary(status);
   }
   var unlock=status&&status.hsk30_unlock||{},price=String(unlock.price_display||""),paymentEnabled=unlock.payment_enabled!==false&&Number(unlock.price_tjs||0)>0&&!!price;
@@ -1914,7 +1958,7 @@ function renderHsk30AccessGate(status){
 function showHsk30AccessGate(){
   if(currentCourseTrack()==="hsk30"&&!MAP)prepareHsk30AccessBoundary();
   courseTrackStatus(true).then(renderHsk30AccessGate).catch(function(){
-    var t=trackUi();
+    if($("#sheet").classList.contains("pro-expiry-sheet")||CHECKOUT_NAVIGATING||PWA_CHECKOUT_FRAME)return;var t=trackUi();
     App.openSheet('<div class="shead"><div class="tr" style="font-size:17px;color:var(--ink)">'+esc(t.hsk30Title)+'</div><div class="tr">'+esc(t.tryAgain)+'</div></div><button class="sec" style="width:100%" onclick="showHsk30AccessGate()">'+esc(t.tryAgain)+'</button>');
   });
 }
@@ -2304,6 +2348,60 @@ if(PWA_COURSE_HOST){
     },{once:true});
   })();
 }
+// Real-user launch timing (perf task 1.4), PWA only. One clientlog beacon per
+// page load: 10 s after the course is ready, or earlier when the page is
+// hidden. Timings, launch type, viewport class and display mode only: no
+// account, text or token, no retry. A launch hidden before the course is
+// ready sends nothing. Keys: docs/PERFORMANCE_PWA_PROGRESSIVE_LOADING.md.
+var pwaLaunchTiming=PWA_COURSE_HOST?(function(){
+  var swAtStart=!!(navigator.serviceWorker&&navigator.serviceWorker.controller),
+      hiddenEarly=document.visibilityState==="hidden",readyAt=null,sent=false,
+      lcp=null,cls=null,slowest=null,
+      types=(window.PerformanceObserver&&PerformanceObserver.supportedEntryTypes)||[];
+  function watch(type,fn,threshold){
+    if(types.indexOf(type)<0)return false;
+    try{var o={type:type,buffered:true};if(threshold)o.durationThreshold=threshold;
+      new PerformanceObserver(function(list){list.getEntries().forEach(fn)}).observe(o);return true}catch(e){return false}
+  }
+  watch("largest-contentful-paint",function(e){lcp=e.startTime});
+  if(watch("layout-shift",function(e){if(!e.hadRecentInput)cls=(cls||0)+e.value}))cls=cls||0;
+  if(watch("event",function(e){slowest=Math.max(slowest||0,e.duration)},16))slowest=slowest||0;
+  function ms(v){return typeof v==="number"&&isFinite(v)&&v>=0?String(Math.round(v)):""}
+  function send(){
+    if(sent||readyAt===null)return;sent=true;
+    try{
+      var nav=performance.getEntriesByType("navigation")[0]||{},
+          fcp=performance.getEntriesByName("first-contentful-paint")[0],
+          known=typeof nav.transferSize==="number",bytes=known?nav.transferSize:0,versioned=0,fetched=0;
+      performance.getEntriesByType("resource").forEach(function(r){
+        var u;try{u=new URL(r.name)}catch(e){return}
+        if(u.origin!==location.origin)return;
+        bytes+=r.transferSize||0;
+        if(/\.(?:js|css)$/.test(u.pathname)&&u.searchParams.has("v")){versioned++;if(r.transferSize>0)fetched++}
+      });
+      var html=!known?"na":nav.transferSize===0?"cache":nav.transferSize<nav.encodedBodySize?"304":"200",
+          launch=!known||!versioned?"na":fetched*2>versioned?"cold":"warm",
+          w=window.innerWidth||0,standalone=navigator.standalone===true;
+      try{standalone=standalone||matchMedia("(display-mode: standalone)").matches}catch(e){}
+      clog("pwa_launch",launch+" "+html,{
+        plat:standalone?"standalone":"browser",
+        ttfb:ms(nav.responseStart),html_end:ms(nav.responseEnd),fcp:ms(fcp&&fcp.startTime),lcp:ms(lcp),
+        cls:cls===null?"":cls.toFixed(3),slowest_event:ms(slowest),ready:ms(readyAt),
+        sw:swAtStart?"1":"0",kb:known?String(Math.round(bytes/1024)):"",
+        vp:w<375?"320":w<414?"390":w<600?"430":w<1024?"tablet":"desktop"});
+    }catch(e){}
+  }
+  document.addEventListener("visibilitychange",function(){
+    if(document.visibilityState!=="hidden")return;
+    if(readyAt===null)hiddenEarly=true;else send();
+  });
+  window.addEventListener("pagehide",send);
+  return {ready:function(){
+    if(readyAt!==null||sent)return;
+    if(hiddenEarly){sent=true;return}
+    readyAt=performance.now();setTimeout(send,10000);
+  }};
+})():null;
 // Smart reminder open observation: optional, authenticated and independent of navigation.
 (function observeSmartReminderOpen(){
   try{
@@ -2341,7 +2439,7 @@ var SALES_PAYWALL_ACTIVE=false,SALES_PAYWALL_IMPRESSION="";
 var SALES_VALUE_PRIME_PROMISE=null,SALES_VALUE_PRIME_DONE=false;
 function _apiHeaders(){return{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA}}
 var PWA_COURSE_GET_PATHS={
-  "/api/v3/course-tracks":"/api/v3/pwa/course-tracks",
+  "/api/v3/trial/status":"/api/v3/pwa/trial/status","/api/v3/course-tracks":"/api/v3/pwa/course-tracks",
   "/api/v3/ad":"/api/v3/pwa/ad",
   "/api/v3/lesson/foundation":"/api/v3/pwa/lesson/foundation","/api/v3/invite":"/api/v3/pwa/invite",
   "/api/miniapp/mistakes":"/api/v3/pwa/mistakes", "/api/miniapp/profile":"/api/v3/pwa/profile"
@@ -2354,7 +2452,7 @@ var PWA_COURSE_POST_PATHS={
   "/api/v3/course-tracks/promo-shown":"/api/v3/pwa/course-tracks/promo-shown",
   "/api/miniapp/gamification":"/api/v3/pwa/gamification",
   "/api/v3/limits/status":"/api/v3/pwa/limits/status",
-  "/api/v3/lesson/start":"/api/v3/pwa/lesson/start",
+  "/api/v3/lesson/start":"/api/v3/pwa/lesson/start","/api/v3/lesson/skip-test":"/api/v3/pwa/lesson/skip-test","/api/v3/lesson/unlock":"/api/v3/pwa/lesson/unlock",
   "/api/v3/lesson/complete":"/api/v3/pwa/lesson/complete",
   "/api/v3/adaptive/plan":"/api/v3/pwa/adaptive/plan",
   "/api/v3/adaptive/answer":"/api/v3/pwa/adaptive/answer",
@@ -2386,7 +2484,7 @@ function _apiGet(url,opts){
         // Read-only profile/referrals accept a cookie (not CSRF), so a login in
         // another tab could switch the HTTP actor while this PWA tab still
         // holds the prior map. Never combine the two accounts' data.
-        if(mapped==="/api/v3/pwa/profile"||mapped==="/api/v3/pwa/invite"||mapped==="/api/v3/pwa/ad"){
+        if(mapped==="/api/v3/pwa/profile"||mapped==="/api/v3/pwa/invite"||mapped==="/api/v3/pwa/ad"||mapped==="/api/v3/pwa/trial/status"){
           var owner=response.headers.get("X-HSK-PWA-User-ID");
           if(response.status===401||response.ok&&
              (!PWA_COURSE_USER_ID||String(actor.user_id)!==String(PWA_COURSE_USER_ID)||
@@ -2485,7 +2583,7 @@ try{
     INTERNAL_NAVIGATING_UNTIL=0;EXIT_PINGED=false;clearDeferredCourseUnlock();
 CHECKOUT_NAVIGATING=false; if((!INIT_DATA&&!PWA_COURSE_HOST)||!MAP)return;
     _fetchCourseMap(MAP.level||getSelectedLevel()).then(function(d){
-      if(isHsk30AccessError(d,MAP.level||getSelectedLevel())){showCourseMapFailure({hsk30Gate:true,level:d.level||MAP.level});return}
+      if(isHsk30AccessError(d,MAP.level||getSelectedLevel())){showCourseMapFailure({hsk30Gate:true,level:d.level||MAP.level,deniedMap:d});return}
       if(!d||d._parseFail||d._status>=400||d.authenticated===false||!d.units)return;
       MAP=rememberLimitText(d);if(d.user)PROF=d.user;adoptStudySetup(d);syncNotify();renderAll();
     }).catch(function(){});
@@ -2715,9 +2813,9 @@ function adoptStudySetup(d){
   STUDY_SETUP=(d&&d.study_setup)||null;
   if(STUDY_SETUP&&Number(STUDY_SETUP.daily_goal_xp)>0)dailyGoal=Number(STUDY_SETUP.daily_goal_xp);
 }
-function savePreferences(body){
+function savePreferences(body,opts){var preferenceMap=MAP,preferenceOwner=PWA_COURSE_USER_ID;
   if(!INIT_DATA&&!PWA_COURSE_HOST)return Promise.resolve(null);
-  return _apiPost("/api/v3/preferences",body).then(function(r){return r.json()}).then(function(j){
+  return _apiPost("/api/v3/preferences",body,opts).then(function(r){return r.json()}).then(function(j){if(PWA_COURSE_HOST&&(MAP!==preferenceMap||PWA_COURSE_USER_ID!==preferenceOwner))return null;
       if(j&&j.ok&&j.profile){STUDY_SETUP=j.profile;if(Number(j.profile.daily_goal_xp)>0)dailyGoal=Number(j.profile.daily_goal_xp)}
       return j;
     }).catch(function(){return null});
@@ -2725,7 +2823,7 @@ function savePreferences(body){
 function syncNotify(){if(MAP&&MAP.notify&&typeof MAP.notify.enabled==="boolean")notifOn=MAP.notify.enabled}
 /* Refresh server-confirmed daily progress without replacing active lesson/section
    objects. A completion arriving during a refresh queues one newer read. */
-var PROGRESS_REFRESH=null,PROGRESS_REFRESH_QUEUED=false;
+var PROGRESS_REFRESH=null,PROGRESS_REFRESH_QUEUED=false; var SHORT_ACCESS_TIMER=null,SHORT_ACCESS_KEY=null; function scheduleShortAccessRefresh(user){ if(!PWA_COURSE_HOST)return; var owner=localUserScope(),until=user&&Date.parse(user.access_ends_at),remaining=until-Date.now(); var valid=user&&owner!=="pwa:unbound"&&(user.state==="TEMP_ACCESS"||user.state==="PRO_ACTIVE")&&Number.isFinite(until)&&remaining>0&&remaining<=1805000; var key=valid?owner+":"+until:null; if(key===SHORT_ACCESS_KEY)return; if(SHORT_ACCESS_TIMER!==null)clearTimeout(SHORT_ACCESS_TIMER); SHORT_ACCESS_TIMER=null;SHORT_ACCESS_KEY=key; if(!key)return; SHORT_ACCESS_TIMER=setTimeout(function(){ SHORT_ACCESS_TIMER=null; if(localUserScope()!==owner||document.visibilityState!=="visible"||PWA_CHECKOUT_FRAME||CHECKOUT_NAVIGATING)return; refreshPwaCheckoutMap().catch(function(){}); },remaining+500); }
 function refreshCourseProgress(afterWrite){
   if((!INIT_DATA&&!PWA_COURSE_HOST)||!MAP||!Array.isArray(MAP.units))return Promise.resolve(false);
   if(PROGRESS_REFRESH){if(afterWrite)PROGRESS_REFRESH_QUEUED=true;return PROGRESS_REFRESH}
@@ -2734,14 +2832,14 @@ function refreshCourseProgress(afterWrite){
   var deadline=new Promise(function(resolve){timer=setTimeout(function(){if(controller)controller.abort();resolve(null)},10000)});
   PROGRESS_REFRESH=Promise.race([_fetchCourseMap(level,controller?controller.signal:undefined),deadline])
     .then(function(d){
-      if(MAP===snapshot&&isHsk30AccessError(d,level)){showCourseMapFailure({hsk30Gate:true,level:d.level||level});return false}
+      if(MAP===snapshot&&isHsk30AccessError(d,level)){showCourseMapFailure({hsk30Gate:true,level:d.level||level,deniedMap:d});return false}
       if(PROGRESS_REFRESH_QUEUED||MAP!==snapshot||!d||d._parseFail||d._status>=400||d.authenticated===false||!d.units||d.level!==level)return false;
-      if(Object.prototype.hasOwnProperty.call(d,"today"))MAP.today=d.today;
-      if(d.progress)MAP.progress=d.progress;
+      if(d.user)scheduleShortAccessRefresh(d.user);MAP.pro_expiry_notice=d.pro_expiry_notice||null;MAP.pro_expiry_title=d.pro_expiry_title||null;if(!MAP.pro_expiry_notice&&$("#sheet").classList.contains("pro-expiry-sheet"))App.closeSheet();if(Object.prototype.hasOwnProperty.call(d,"today"))MAP.today=d.today;
+      if(d.progress)MAP.progress=d.progress;if(d.lesson_limit)MAP.lesson_limit=d.lesson_limit;
       if(d.foundation){var foundationChanged=foundationIsComplete()!==d.foundation.completed;MAP.foundation=d.foundation;if(foundationChanged)MAP.units=d.units;}
       if(d.study_setup)adoptStudySetup(d);
       ratingLoaded=false;
-      renderCourse();if(!PWA_COURSE_HOST||SCREEN==="profile")renderProfile();
+      renderCourse();if(!PWA_COURSE_HOST||SCREEN==="profile")renderProfile();maybeShowProExpiryNotice();
       return true;
     }).catch(function(){return false}).then(function(updated){
       clearTimeout(timer);PROGRESS_REFRESH=null;
@@ -2782,7 +2880,7 @@ document.addEventListener("keydown",function(event){
   }
 });
 var MASHQ_ACCESS_PENDING=null;
-var PWA_CHECKOUT_FRAME=null,PWA_CHECKOUT_RETURN_FOCUS=null;
+var PWA_CHECKOUT_FRAME=null,PWA_CHECKOUT_RETURN_FOCUS=null,PWA_CHECKOUT_THEME=null;
 function pwaCheckoutBack(){
   if(!PWA_CHECKOUT_FRAME)return false;
   try{
@@ -2799,22 +2897,22 @@ var App={
     var layer=document.createElement("section"),frame=document.createElement("iframe");
     layer.id="pwa-checkout-layer";layer.setAttribute("role","dialog");layer.setAttribute("aria-modal","true");
     layer.setAttribute("aria-label","HSK AI Pro");
-    frame.title="HSK AI Pro";query.set("embedded","1");frame.src="/iphone-pwa/checkout?"+query.toString();
+    if(query.get("offer")==="trial"){layer.classList.add("pwa-checkout-trial");var theme=document.querySelector('meta[name="theme-color"]');if(theme){PWA_CHECKOUT_THEME=theme.getAttribute("content");theme.setAttribute("content","#FDF9F0")} }frame.title="HSK AI Pro";query.set("embedded","1");if(query.get("offer")==="trial")frame.src="/iphone-pwa/onboarding/li?"+query.toString();else frame.src="/iphone-pwa/checkout?"+query.toString();
     PWA_CHECKOUT_FRAME=frame;PWA_CHECKOUT_RETURN_FOCUS=document.activeElement;
     layer.append(frame);document.body.appendChild(layer);$(".wrap").inert=true;
     try{frame.focus({preventScroll:true})}catch(e){}
     NavBack.sync();
   },
-  closePwaCheckout:function(child){
+  closePwaCheckout:function(child,afterRefresh){
     if(!PWA_CHECKOUT_FRAME||PWA_CHECKOUT_FRAME.contentWindow!==child)return false;
     var focus=PWA_CHECKOUT_RETURN_FOCUS;
     PWA_CHECKOUT_FRAME=null;PWA_CHECKOUT_RETURN_FOCUS=null;CHECKOUT_NAVIGATING=false;INTERNAL_NAVIGATING_UNTIL=0;
-    $("#pwa-checkout-layer").remove();$(".wrap").inert=false;
+    $("#pwa-checkout-layer").remove();$(".wrap").inert=false; if(PWA_CHECKOUT_THEME!==null){var theme=document.querySelector('meta[name="theme-color"]');if(theme)theme.setAttribute("content",PWA_CHECKOUT_THEME);PWA_CHECKOUT_THEME=null;}
     if(focus&&focus.isConnected)focus.focus({preventScroll:true});
     NavBack.sync();
     // The current screen is interactive immediately. Refresh server-owned
     // access/plan after closing, never while a lesson/checkout is drawing.
-    pwaCourseActor().then(function(){return refreshPwaCheckoutMap()}).catch(function(){});
+    pwaCourseActor().then(function(){return refreshPwaCheckoutMap()}).catch(function(){}).then(function(updated){if(typeof afterRefresh==="function")afterRefresh(updated===true)});
     return true;
   },
   setLang:function(l){if(!I18N[l])return;LANG=l;syncDocumentLanguage();renderAll()},
@@ -2877,10 +2975,10 @@ var App={
       if(SIGNIN_STATE.busy&&!SIGNIN_PENDING){SIGNIN_STATE.generation++;SIGNIN_STATE.busy=""}
     }else if(SIGNIN_PENDING&&!signInPollTimer){pollSignInLink(SIGNIN_PENDING,SIGNIN_PENDING.deadline)}
     if(s==="course"&&window._pendingXpFly){var fx=window._pendingXpFly;window._pendingXpFly=0;setTimeout(function(){flyXp(fx)},350)}},
-  openSheet:function(html){var sheet=$("#sheet");if(!sheet.classList.contains("on"))SHEET_RETURN_FOCUS=document.activeElement;sheet.classList.remove("hsk30-promo-center","hsk30-book-card","course-choice-sheet","profile-apps-choice","lesson-exit-confirm","pwa-settings-sheet");sheet.removeAttribute("aria-label");sheet.removeAttribute("aria-labelledby");$("#sheet-body").innerHTML=html;var title=sheet.querySelector("#sheet-body h1,#sheet-body h2,#sheet-body h3,#sheet-body [role='heading'],#sheet-body .shead .tr");if(title){if(!title.id)title.id="hsk-sheet-title";sheet.setAttribute("aria-labelledby",title.id)}else{sheet.setAttribute("aria-label",courseMessage("sheet.dialogLabel",LANG==="ru"?"Диалог HSK AI":LANG==="tj"?"Муколамаи HSK AI":"HSK AI oynasi"))}var close=sheet.querySelector(".sx");if(close)close.setAttribute("aria-label",courseMessage("sheet.closeLabel",LANG==="ru"?"Закрыть":LANG==="tj"?"Пӯшидан":"Yopish"));sheet.setAttribute("role","dialog");sheet.setAttribute("aria-modal","true");sheet.classList.add("on");setSheetBackgroundInert(true);focusSheetStart(sheet);startSheetPromo("#sheet")},
+  openSheet:function(html){var sheet=$("#sheet");if(!sheet.classList.contains("on"))SHEET_RETURN_FOCUS=document.activeElement;sheet.classList.remove("hsk30-promo-center","hsk30-book-card","course-choice-sheet","profile-apps-choice","lesson-exit-confirm","pwa-settings-sheet","pro-expiry-sheet");sheet.removeAttribute("aria-label");sheet.removeAttribute("aria-labelledby");$("#sheet-body").innerHTML=html;var title=sheet.querySelector("#sheet-body h1,#sheet-body h2,#sheet-body h3,#sheet-body [role='heading'],#sheet-body .shead .tr");if(title){if(!title.id)title.id="hsk-sheet-title";sheet.setAttribute("aria-labelledby",title.id)}else{sheet.setAttribute("aria-label",courseMessage("sheet.dialogLabel",LANG==="ru"?"Диалог HSK AI":LANG==="tj"?"Муколамаи HSK AI":"HSK AI oynasi"))}var close=sheet.querySelector(".sx");if(close)close.setAttribute("aria-label",courseMessage("sheet.closeLabel",LANG==="ru"?"Закрыть":LANG==="tj"?"Пӯшидан":"Yopish"));sheet.setAttribute("role","dialog");sheet.setAttribute("aria-modal","true");sheet.classList.add("on");setSheetBackgroundInert(true);focusSheetStart(sheet);startSheetPromo("#sheet")},
   closeSheet:function(){
     SETTINGS_SHEET=PWA_COURSE_HOST&&SCREEN==="settings";
-    var sheet=$("#sheet");sheet.classList.remove("on","hsk30-promo-center","hsk30-book-card","course-choice-sheet","profile-apps-choice","lesson-exit-confirm");sheet.removeAttribute("role");sheet.removeAttribute("aria-modal");sheet.removeAttribute("aria-label");sheet.removeAttribute("aria-labelledby");sheet.removeAttribute("tabindex");stopSheetPromo();setSheetBackgroundInert(false);var returnFocus=SHEET_RETURN_FOCUS;SHEET_RETURN_FOCUS=null;if(returnFocus&&returnFocus.isConnected&&typeof returnFocus.focus==="function")returnFocus.focus({preventScroll:true});
+    var sheet=$("#sheet");sheet.classList.remove("on","hsk30-promo-center","hsk30-book-card","course-choice-sheet","profile-apps-choice","lesson-exit-confirm","pro-expiry-sheet");sheet.removeAttribute("role");sheet.removeAttribute("aria-modal");sheet.removeAttribute("aria-label");sheet.removeAttribute("aria-labelledby");sheet.removeAttribute("tabindex");stopSheetPromo();setSheetBackgroundInert(false);var returnFocus=SHEET_RETURN_FOCUS;SHEET_RETURN_FOCUS=null;if(returnFocus&&returnFocus.isConnected&&typeof returnFocus.focus==="function")returnFocus.focus({preventScroll:true});
     var revealUnlock=!!window._pendingUnlockAfterSheet;window._pendingUnlockAfterSheet=false;
     var afterLessonSheet=window._afterLessonSheetClose;window._afterLessonSheetClose=null;
     if(typeof afterLessonSheet==="function")setTimeout(afterLessonSheet,revealUnlock?260:0);
@@ -3014,6 +3112,9 @@ var App={
     if(!$("#lu-rays").innerHTML){var r="";for(var a=0;a<24;a++)r+='<rect x="99" y="0" width="2" height="100" fill="#FFC800" transform="rotate('+(a*15)+' 100 100)"/>';$("#lu-rays").innerHTML=r;}
     var rewards=V.rw&&V.rw.length?'<div class="lu-rewards">'+V.rw.map(function(x){return '<div class="lu-rw '+(x[2]||"")+'"><b>'+esc(x[0])+'</b><small>'+esc(x[1])+'</small></div>'}).join("")+'</div>':"";
     var t0=type||"lesson";
+    var learningLesson=t0==="lesson"&&extra&&extra.learningLesson;
+    var topic=learningLesson?learningResultTopicHtml(learningLesson):"";
+    var review=learningLesson?learningResultReviewHtml(data.learning_result.review):"";
     var finishChar=(t0==="checkpoint"||t0==="level")?"dragon":"panda";
     /* Normal darsda Panda asosiy maskot bo'lib qoladi; checkpoint/level
        marra ekranida energiyali Xitoy ajdari chiqadi. Server flow o'zgarmaydi. */
@@ -3021,12 +3122,15 @@ var App={
       $("#lu-panda").innerHTML=lessonCharacterHtml(finishChar,"celebrate");
       var streak=window._pendingStreak;
       var showStreak=!!(streak&&streak.extended&&Number(streak.now)>0);
-      $("#lu-stage").innerHTML='<div class="lu-emb">'+V.emb+'</div><h2>'+V.h+'</h2><p>'+V.p+'</p>'+rewards;
+      var heading=learningLesson?esc(lu.lessonH):V.h;
+      $("#lu-stage").innerHTML='<div class="lu-emb">'+V.emb+'</div><h2>'+heading+'</h2>'
+        +(learningLesson?topic:'<p>'+V.p+'</p>')+rewards+review;
       /* A completed part whose next part is ready ends on that part's sheet. */
       var toNextPart=!firstCp&&t0!=="level"&&typeof window._pendingCheckpointNextIdx==="number";
       $("#lu-cta").setAttribute("onclick",(showStreak?"event.stopPropagation();":"")+(firstCp?(showStreak?"App.showStreakScreen('checkpoint')":"App.openCheckpointNext()"):toNextPart?(showStreak?"App.showStreakScreen('next')":"App.openCheckpointNext()"):(showStreak?"App.showStreakScreen()":"App.closeLevelUp()")));
       var nextLabel=courseMessage("nextLessonOpen",LANG==="ru"?"Открыть следующий урок":LANG==="tj"?"Кушодани дарси оянда":"Keyingi darsni ochish");
-      $("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+(firstCp&&!showStreak?nextLabel:lu.cont);
+      var continueLabel=learningLesson?esc(courseMessage("learningResult.continue",lu.cont)):lu.cont;
+      $("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+(firstCp&&!showStreak?nextLabel:continueLabel);
       $("#levelup").classList.add("on");
       setTimeout(function(){var e=document.querySelector("#lu-stage .lu-emb");if(e)e.classList.add("in")},60);
       if(!fxOff())luRain();beep([523,659,784,1046]);haptic("ok");
@@ -3150,6 +3254,7 @@ var App={
     if(!dest&&pendingRankUp){App.showRankUp();return}
     var ov=$("#levelup");ov.classList.remove("on");ov.classList.remove("cine");ov.classList.remove("sales-bridge");
     var cine=$("#lu-cine");if(cine)cine.innerHTML="";
+    var stage=$("#lu-stage");if(stage.querySelector(".lu-learning-topic"))stage.replaceChildren();
     App.exitFlow();
     var desktopLesson=Number(window._pendingDesktopLessonPromo)||0;
     window._pendingDesktopLessonPromo=0;
@@ -3584,7 +3689,7 @@ var App={
     /* Keep optimistic local UI, but save through a serialized queue to prevent out-of-order language writes. */
     if(!INIT_DATA&&!PWA_COURSE_HOST)return;if(!App._languagePendingCount)App._languageServerLang=oldLang;App._languagePendingCount=(App._languagePendingCount||0)+1;var tail=App._languageSaveTail||Promise.resolve();App._languageSaveTail=tail.catch(function(){}).then(function(){return _apiPost("/api/v3/language",{language:l}).then(function(r){if(!r.ok)throw Error("language_save_http");return r.json()}).then(function(d){if(!d||d.ok!==true||d.language!==l)throw Error("language_save_rejected");App._languageServerLang=l}).catch(function(){if(LANG===l){App.setLang(App._languageServerLang||oldLang);if(back){if(!PWA_COURSE_HOST)App.openSettings();else if(SCREEN==="settings")renderPwaSettings()}}toast(courseMessage("onboarding.saveError",serverSaveErrorText()),2200)}).then(function(){App._languagePendingCount--})});return App._languageSaveTail}
 };
-function navInit(){document.querySelectorAll("#nav button").forEach(function(b){b.onclick=function(){App.show(b.dataset.s)}})
+function hydratePwaPracticeShell(){if(!PWA_COURSE_HOST)return;var shell=document.querySelector("#s-mashq>.pwa-mashq-shell");if(!shell)return;var t=T(),message=function(key){return courseMessage(key,t[key])},testTitle=message("testCenter"),sections=shell.querySelectorAll(".sech"),entries=[["dict","dictSub"],["readyPhrases","readyPhrasesSub"],["recog","recogSub"],["pron","pronSub"],["testCenter","testSub"],["mistakes","mistakesSub"]];shell.querySelector("h1").textContent=courseMessage("nav.mashq",t.nav.mashq);shell.querySelector(".sub").textContent=message("mashqSub");sections[0].textContent=message("grammar")+" · "+message("pron");sections[1].textContent=testTitle.split(" ")[0];shell.querySelectorAll(".pwa-practice-row").forEach(function(row,index){var entry=entries[index],subtitle=index===4&&isHsk30Level((MAP&&MAP.level)||getSelectedLevel())?trackUi().testSoon:message(entry[1]);row.removeAttribute("aria-hidden");row.querySelector(".ti2").setAttribute("aria-hidden","true");row.querySelector(".rt").innerHTML="<b>"+esc(message(entry[0]))+"</b><small>"+esc(subtitle)+"</small>";var arrow=row.querySelector(".ar");arrow.className="ar";arrow.setAttribute("aria-hidden","true");arrow.innerHTML='<i class="ti ti-chevron-right"></i>'})}function navInit(){document.querySelectorAll("#nav button").forEach(function(b){b.onclick=function(){App.show(b.dataset.s)}});hydratePwaPracticeShell()
   var nav=document.getElementById("nav");
   if(nav)nav.addEventListener("pointerdown",function(e){
     var rect=nav.getBoundingClientRect();
@@ -3744,7 +3849,7 @@ function openLockedLessonSheet(idx){
    ola oladimi" degan qarorni O'ZI qabul qilmaydi. Sabab oddiy: bir Telegram
    akkaunt bir marta trial olishi kerak, va buni faqat server biladi. */
 var TRIAL_STATE=null,TRIAL_PROMISE=null,TRIAL_LOADED=false;
-function trialFetchStatus(){
+function trialFetchStatus(force){if(PWA_COURSE_HOST)return window.HskPwaTrialOffer?HskPwaTrialOffer.get(force):Promise.resolve(null);
   if(TRIAL_LOADED)return Promise.resolve(TRIAL_STATE);
   if(TRIAL_PROMISE)return TRIAL_PROMISE;
   if(!INIT_DATA){TRIAL_LOADED=true;return Promise.resolve(null)}
@@ -3761,7 +3866,7 @@ function trialEligibilityValue(){return TRIAL_LOADED?trialEligible():undefined}
 window.HskTrialState={get:trialFetchStatus,eligibility:trialEligibilityValue};
 /* Trialni boshlaydi. Server rad etsa sababni ko'rsatamiz — jimgina
    "hech narsa bo'lmadi" holati eng yomon variant. */
-function trialStart(source){
+function trialStart(source){if(PWA_COURSE_HOST)return window.HskPwaTrialOffer?HskPwaTrialOffer.open(source):Promise.resolve(false);
   if(!INIT_DATA)return Promise.resolve(false);
   return fetch("/api/v3/trial/start",{method:"POST",
     headers:{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA},
@@ -4127,7 +4232,7 @@ function foundationEntryHtml(){
   })[LANG];m.go=done?m.review:m.start;
   return '<div class="foundation-entry"><span class="fi han">零</span><span class="ft"><b>'+esc(m.h)+(done?' <i class="ti ti-circle-check" style="color:var(--jade)"></i>':'')+'</b><small>'+esc(m.p)+'</small></span><button onclick="startFoundationFromMap(true)">'+esc(m.go)+'</button></div>';
 }
-function renderCourse(){
+function renderCourse(){if(window.HskPwaProgress)HskPwaProgress.refresh();
   if(MAP&&MAP.course_access_locked)return;
   /* Daraja yagona manbadan (botdagi user.level) keladi — mini app ichida daraja
      tanlash ko'rsatilmaydi, shuning uchun bu statik yorliq (tugma emas). */
@@ -4138,8 +4243,8 @@ function renderCourse(){
      reja birga tepada qoladi. Ilgari faqat `.htop` yopishqoq edi va reja
      tasmasi pastga suriganda uning ostiga kirib ko'rinmay ketardi. */
   var h='<div class="cleft"><div class="ctop"><div class="htop"><h1 class="section-title"><button type="button" class="course-heading-button" onclick="App.courseTrackPicker()" aria-label="'+esc(trackUi().courseVersion)+'">'+esc(courseLevelLabel((MAP&&MAP.level)||getSelectedLevel()))+'</button></h1>'
-    +'<span class="chip" style="margin-left:auto;color:var(--cin)"><i class="ti ti-flame"></i> '+(MAP.progress.streak||0)+'</span>'
-    +'<span class="chip" style="color:var(--gold)"><i class="ti ti-diamond"></i> '+(MAP.progress.xp||0).toLocaleString("ru")+'</span>'
+    +(PWA_COURSE_HOST?'<button type="button" class="chip p45-progress-chip" data-progress="streak" style="margin-left:auto;color:var(--cin)" onclick="window.HskPwaProgress&&HskPwaProgress.open(\'streak\')" aria-label="'+esc(courseMessage("pwaProgress.streak","STREAK"))+'"><i class="ti ti-flame" aria-hidden="true"></i> '+(MAP.progress.streak||0)+'</button>':'<span class="chip" style="margin-left:auto;color:var(--cin)"><i class="ti ti-flame"></i> '+(MAP.progress.streak||0)+'</span>')
+    +(PWA_COURSE_HOST?'<button type="button" class="chip p45-progress-chip" data-progress="xp" style="color:var(--gold)" onclick="window.HskPwaProgress&&HskPwaProgress.open(\'xp\')" aria-label="'+esc(courseMessage("pwaProgress.xp","XP"))+'"><i class="ti ti-diamond" aria-hidden="true"></i> '+(MAP.progress.xp||0).toLocaleString("ru")+'</button>':'<span class="chip" style="color:var(--gold)"><i class="ti ti-diamond"></i> '+(MAP.progress.xp||0).toLocaleString("ru")+'</span>')
     +goalRingHtml()+'</div>'
     /* Starter 0 hali MAJBURIY va tugatilmagan bo'lsa reja ko'rsatilmaydi:
        boshlovchida ikkita raqobatchi chaqiriq bo'lmasin. Starter tugagach
@@ -4184,10 +4289,10 @@ function renderCourse(){
         var isCp=!!n.l.checkpoint;
         if(st==="done")inner='<i class="ti ti-check"></i>';
         else if(st==="current"){inner=isCp?'<i class="ti ti-flag-2"></i>':'<span class="han" style="font-size:19px">学</span>';bub='<div class="bubble">'+courseMessage("cont",T().cont).toUpperCase()+'</div>'}
-        else inner=isCp?'<i class="ti ti-flag-2"></i>':'<i class="ti ti-lock"></i>';
+        else if(canOfferSkipTest(n.l)&&!skipQuotaBlocked()){cls="skip-ready";inner='<i class="ti ti-lock-open"></i>'}else inner='<i class="ti ti-lock"></i>';
         /* Qism tugunida yorliq — shu qismning yangi so'zlari (uzun bo'lsa qisqartiriladi) */
         lbl=String(n.l.zh||"");if(lbl.length>10)lbl=lbl.slice(0,9)+"…";
-        clk='onclick="openLessonSheet('+JSON.stringify(allLessons().indexOf(n.l))+')"';
+        clk=st==="locked"&&!canOfferSkipTest(n.l)&&!isPremiumLocked(n.l)?'disabled aria-disabled="true"':'onclick="openLessonSheet('+JSON.stringify(allLessons().indexOf(n.l))+')"';
       }
       h+='<div class="prow">'+mascot+decor+'<div class="nodewrap" style="transform:translateX('+off+'px)">'+bub
         +'<button class="node '+cls+'"'+(n.kind==="lesson"?' data-lesson-order="'+Number(n.l.n||0)+'"':"")+' '+clk+'><span class="ring"></span>'+inner+'</button>'
@@ -4280,11 +4385,11 @@ function showCourseLoadError(){if(PWA_COURSE_HOST)PWA_COURSE_LOAD_FAILED=true;
   ["s-mashq","s-voice","s-rating","s-profile"].forEach(function(id){var el=document.getElementById(id);if(el)el.innerHTML=""});
   App.show("course");
 }
-function showCourseMapFailure(res){
+function proExpirySeenKey(){return "hsk_v3_pro_expiry_seen:v1:"+localUserScope()} function showBlockedCourseExpiry(d){if(!d)return false;var token=d.pro_expiry_notice,sheet=$("#sheet"),owner=localUserScope();if(!token||typeof token!=="string"||!/^[a-f0-9]{64}$/.test(token)||owner==="preview"||owner==="pwa:unbound"){if(MAP){MAP.pro_expiry_notice=null;MAP.pro_expiry_title=null}if(sheet.classList.contains("pro-expiry-sheet"))App.closeSheet();return false}if(MAP&&MAP.pro_expiry_notice===token&&sheet.classList.contains("pro-expiry-sheet")&&sheet.classList.contains("on"))return true;if(PRO_EXPIRY_SEEN[token])return false;try{if(localStorage.getItem(proExpirySeenKey())===token)return false}catch(e){}if(MAP){MAP.pro_expiry_notice=null;MAP.pro_expiry_title=null}adoptServerLang(d);HSK30_ACCESS_DENIED=true;prepareHsk30AccessBoundary({active_level:d.level,tracks:{hsk30:{access:d.hsk30_access}}});MAP.authenticated=true;MAP.pro_expiry_notice=token;MAP.pro_expiry_title=d.pro_expiry_title||null;PRO_EXPIRY_BOOT_READY=true;if(sheet.classList.contains("hsk30-book-card"))App.closeSheet();return sheet.classList.contains("pro-expiry-sheet")||maybeShowProExpiryNotice()} function showCourseMapFailure(res){
   if(res&&res.data)return false;
   if(res&&res.blocked)showBlockedGate(res.support_url);
   else if(res&&res.hsk30Soon)showHsk30LevelSoon(res.level);
-  else if(res&&res.hsk30Gate){setSelectedLevel(res.level||"nhsk1");if(MAP)MAP.level=getSelectedLevel();showHsk30AccessGate()}
+  else if(res&&res.hsk30Gate){setSelectedLevel(res.level||"nhsk1");if(MAP)MAP.level=getSelectedLevel();if(!showBlockedCourseExpiry(res.deniedMap))showHsk30AccessGate()}
   // A browser session has no bot to return to: an expired PWA session goes
   // back to the iPhone sign-in page instead of the Telegram auth gate.
   else if(res&&res.auth===false){if(PWA_COURSE_HOST)location.replace("/iphone-pwa");else showAuthGate()}
@@ -4329,7 +4434,7 @@ function openNextPartSheet(idx,firstCheckpoint,afterClose){
 function openLessonSheet(idx){
   var l=allLessons()[idx];if(!l)return;
   if(isPremiumLocked(l)){openLockedLessonSheet(idx);return}
-  if(l.status==="locked"){return offerSkipTest(idx)}
+  if(l.status==="locked"){if(!canOfferSkipTest(l))return;if(skipQuotaBlocked())return openLockedLessonSheet(idx);return offerSkipTest(idx)}
   var names=partSecs(l),n=names.length;
   var prog=l.status==="done"?n:0;
   var secs=names.map(function(s,k){var cls=k<prog?"done":(k===prog&&l.status==="current"?"cur":"lock");var ic=cls==="done"?'<i class="ti ti-check"></i>':(cls==="cur"?'<i class="ti ti-player-play"></i>':'<i class="ti ti-lock"></i>');return '<div class="sec '+cls+'"><span class="si2">'+ic+'</span><b>'+(k+1)+'. '+s+'</b></div>'}).join("");
@@ -4347,7 +4452,7 @@ function openLessonSheet(idx){
 }
 
 /* ---------- Skip-ahead test (unlock a locked lesson by passing a quick test) ---------- */
-var SKIP_PASS=60;
+var SKIP_PASS=60,SKIP_REQUEST=false,SKIP_ATTEMPT=null;function canOfferSkipTest(l){return !!(l&&l.status==="locked"&&Number(l.part)===1&&!isPremiumLocked(l))}function skipQuotaBlocked(){var q=MAP&&MAP.lesson_limit;if(!q)return false;var reset=Date.parse(q.reset_at||"");return (q.allowed===false||q.remaining===0)&&!(Number.isFinite(reset)&&reset<=Date.now())}function sameSkipTarget(a){return !!(a&&MAP===a.map&&localUserScope()===a.owner&&MAP.level===a.level&&allLessons()[a.idx]===a.lesson)}function skipDenied(e,idx,fallback){var d=e&&e.data;if(d&&(d.error==="free_feature_limit_reached"||d.error==="course_access_blocked"||isHsk30AccessError(d,(MAP&&MAP.level)||getSelectedLevel()))){if(MAP)MAP.lesson_limit=Object.assign({},MAP.lesson_limit||{},d);rememberLimitText(d);renderCourse();openLockedLessonSheet(idx);return}toast(fallback,2500)}
 function skipI18n(){
   var M=(window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.course_v3.M.copy1",{
     uz:{offerTag:"O'tish testi",offerP:"Bu dars hali qulflangan. Uni ochish uchun qisqa test topshiring.",offerBtn:"Testni boshlash",
@@ -4369,7 +4474,7 @@ function skipI18n(){
   return M[LANG]||M.ru;
 }
 function offerSkipTest(idx){
-  var l=allLessons()[idx];if(!l)return;
+  var l=allLessons()[idx];if(!canOfferSkipTest(l))return;if(skipQuotaBlocked())return openLockedLessonSheet(idx);
   var s=skipI18n();var chip=partChip(l);
   App.openSheet(lessonSheetHead(l,chip)+'</div>'
     +'<div class="pmeta" style="justify-content:center"><span><i class="ti ti-bolt"></i> '+esc(s.offerTag)+'</span></div>'
@@ -4390,15 +4495,15 @@ function buildTestQueue(d){
 }
 function startSkipTest(idx){
   if(requireFoundationBefore(function(){startSkipTest(idx)}))return;
-  var l=allLessons()[idx];App.closeSheet();if(!l)return;
-  if(isPremiumLocked(l)){openLockedLessonSheet(idx);return}
-  _apiPost("/api/v3/lesson/skip-test",{level:MAP.level||"hsk1",lesson_id:l.n}).then(function(r){return r.json().then(function(d){if(!r.ok||d.ok!==true)throw new Error(d.error||"skip_test_denied");return d})}).then(function(d){
-    var q=buildTestQueue(d);
+  var l=allLessons()[idx];if(SKIP_REQUEST||!l)return;App.closeSheet();if(isPremiumLocked(l)){openLockedLessonSheet(idx);return}
+  if(!canOfferSkipTest(l))return;if(skipQuotaBlocked())return openLockedLessonSheet(idx);var attempt={map:MAP,owner:localUserScope(),level:MAP.level,idx:idx,lesson:l};SKIP_ATTEMPT=null;SKIP_REQUEST=true;
+  _apiPost("/api/v3/lesson/skip-test",{level:attempt.level||"hsk1",lesson_id:l.n}).then(function(r){return r.json().then(function(d){if(!r.ok||d.ok!==true){var e=new Error(d.error||"skip_test_denied");e.data=d;throw e}return d})}).then(function(d){
+    if(!sameSkipTarget(attempt)||d.level!==attempt.level||Number(d.lesson_order)!==Number(l.n))return;var q=buildTestQueue(d);
     if(!q.length){toast(skipI18n().notReady,2500);return}
-    Flow.queue=q;Flow.i=0;Flow.correct=0;Flow.graded=0;Flow.streak=0;Flow.mistakes=[];Flow.test={idx:idx};Flow.challenge=null;Flow.lessonIdx=null;Flow.ad=null;setLessonFlowControls();HP=5;$("#f-hp").textContent=HP;
+    SKIP_ATTEMPT=attempt;Flow.queue=q;Flow.i=0;Flow.correct=0;Flow.graded=0;Flow.streak=0;Flow.mistakes=[];Flow.test={idx:idx};Flow.challenge=null;Flow.lessonIdx=null;Flow.ad=null;setLessonFlowControls();HP=5;$("#f-hp").textContent=HP;
     trackCourseEvent("test_started",{source:"course_v3_skip_test",lesson_order:l.n,dedupe_key:lessonEventKey("skip_test_started",l.n)});
     $("#flow").classList.add("on");renderFlowCard();
-  }).catch(function(){toast(skipI18n().notReady,2500)});
+  }).catch(function(e){if(sameSkipTarget(attempt))skipDenied(e,idx,skipI18n().notReady)}).finally(function(){SKIP_REQUEST=false});
 }
 function finishSkipTest(){
   $("#flow").classList.remove("on");$("#f-cta").style.display="none";hideBar();setWriteBtn("");
@@ -4430,9 +4535,9 @@ function applyLocalProgress(completed){
 }
 function unlockSkipLesson(idx,pct){
   var l=allLessons()[idx];
-  if(!l)return Promise.reject(new Error("lesson_missing"));
-  if(!INIT_DATA){
-    return Promise.resolve({ok:true,completed_lessons_count:Math.max(Number(MAP&&MAP.progress&&MAP.progress.completed||0),Number(l.n||1)-1)});
+  if(!canOfferSkipTest(l)||!sameSkipTarget(SKIP_ATTEMPT)||SKIP_ATTEMPT.idx!==idx)return Promise.reject(new Error("lesson_missing"));
+  if(!INIT_DATA&&!PWA_COURSE_HOST){
+    return Promise.reject(new Error("authentication_required"));
   }
   return _apiPost("/api/v3/lesson/unlock",{
     level:(MAP&&MAP.level)||"hsk1",
@@ -4440,19 +4545,19 @@ function unlockSkipLesson(idx,pct){
     score:pct,
     source:"skip_test",
     lang:LANG
-  }).then(function(r){return r.json().then(function(d){if(!r.ok||!d.ok)throw new Error(d.error||"unlock_failed");return d})});
+  }).then(function(r){return r.json().then(function(d){if(!r.ok||!d.ok){var e=new Error(d.error||"unlock_failed");e.data=d;throw e}if(Number(d.lesson_order)!==Number(l.n)||Number(d.completed_lessons_count)<Number(l.n)-1)throw new Error("unlock_invalid");return d})});
 }
 function completeSkipUnlock(pct,idx){
-  var target=allLessons()[idx],wasLocked=!!(target&&target.status==="locked");
+  var target=allLessons()[idx],attempt=SKIP_ATTEMPT,wasLocked=!!(target&&target.status==="locked");if(SKIP_REQUEST||!sameSkipTarget(attempt)||attempt.idx!==idx)return;SKIP_REQUEST=true;
   unlockSkipLesson(idx,pct).then(function(d){
-    applyLocalProgress(d.completed_lessons_count);
+    if(!sameSkipTarget(attempt))return;SKIP_ATTEMPT=null;applyLocalProgress(d.completed_lessons_count);
     if(wasLocked&&target&&target.status!=="locked")window._pendingCourseUnlockOrder=Number(target.n)||0;
     renderAll();App.show("course");
     showSkipResult(pct,idx);
-  }).catch(function(){
-    renderAll();App.show("course");
-    toast(skipI18n().saveErr,2800);
-  });
+  }).catch(function(e){
+    if(!sameSkipTarget(attempt))return;renderAll();App.show("course");
+    skipDenied(e,idx,skipI18n().saveErr);
+  }).finally(function(){SKIP_REQUEST=false});
 }
 function showSkipResult(pct,idx){
   var pass=pct>=SKIP_PASS,s=skipI18n();
@@ -4876,7 +4981,7 @@ function startLesson(idx,opts){
     ?HSKLessonPresentation.beginLessonEntry({lang:LANG,character:"panda"}):null;
   var lv=MAP.level||"hsk1";
   reserveLessonStart(l).then(function(){return loadLessonData(lv,l.n)}).then(function(d){d=applyReservedP3Grammar(d,lv,l.n);
-    Flow.queue=buildQueue(d);Flow.exitRequired=((d.exit_ticket&&d.exit_ticket.required_objectives)||[]).slice();Flow.queue=restoreLessonMastery(lv,l.n,Flow.queue);Flow.i=typeof Flow._restoredResumeIndex==="number"?Flow._restoredResumeIndex:loadLessonResume(lv,l.n,Flow.queue.length);Flow.correct=0;Flow.graded=0;Flow.streak=0;Flow.mistakes=[];Flow.test=null;Flow.challenge=null;Flow.lessonIdx=idx;Flow.ad=null;Flow._cheered=false;Flow._wrongPending=false;Flow.startedAt=Date.now();
+    Flow.queue=buildQueue(d,{previewHalf:!!l.preview_half});Flow.exitRequired=((d.exit_ticket&&d.exit_ticket.required_objectives)||[]).slice();Flow.queue=restoreLessonMastery(lv,l.n,Flow.queue);Flow.i=typeof Flow._restoredResumeIndex==="number"?Flow._restoredResumeIndex:loadLessonResume(lv,l.n,Flow.queue.length);Flow.correct=0;Flow.graded=0;Flow.streak=0;Flow.mistakes=[];Flow.test=null;Flow.challenge=null;Flow.lessonIdx=idx;Flow.ad=null;Flow._cheered=false;Flow._wrongPending=false;Flow.startedAt=Date.now();
     Flow.salesOutcome=d.outcome||null;Flow.salesNextOutcome=d.next_outcome_preview||null;rememberSalesValueContent(d);
     setLessonFlowControls();
     /* Eski levelardagi preview_half serverdan kelsa saqlanadi. HSK1 checkpoint
@@ -4922,8 +5027,17 @@ function lessonMaterialRef(d,sectionNo,cardNo){
   var lesson=Number((d&&d.lesson_id)||flowLessonOrder()||0);
   return "lesson:"+level+":"+lesson+":section:"+Number(sectionNo||0)+":card:"+Number(cardNo||0);
 }
-function buildQueue(d){
+function buildQueue(d,opts){
   var q=[];
+  /* UIUX-008: server rejasi. `omit` faqat practice/retention_review dagi
+     qo'shimcha mashqlarni yashiradi — material_ref asl pozitsiyadan
+     hisoblangani uchun server qayta baholashi o'zgarmaydi. */
+  var plan=lessonPlanOf(d,opts),omit={},deck=null;
+  if(plan){
+    (Array.isArray(plan.omit)?plan.omit:[]).forEach(function(o){if(o)omit[Number(o.section_no)+":"+Number(o.card_no)]=1});
+    var pr=plan.picture_review,words=pr&&pictureReviewWords(pr.words);
+    if(pr&&pr.anchor&&words.length)deck={sNo:Number(pr.anchor.section_no),start:pr.anchor.position==="start",words:words};
+  }
   /* Noldan boshlovchi uchun tanishtiruv kartalari (hsk1, 1-qism). `sections`
      dan tashqarida turadi — material_ref pozitsiyalari surilmasin. Javob
      so'ramaydi, shuning uchun _materialRef ham berilmaydi. */
@@ -4936,6 +5050,9 @@ function buildQueue(d){
     cards.forEach(function(c,cardIndex){
       if(c&&typeof c==="object")c._materialRef=lessonMaterialRef(d,sNo,cardIndex+1);
     });
+    if(plan&&(sec.section_purpose==="practice"||sec.section_purpose==="retention_review")){
+      cards=cards.filter(function(c,cardIndex){return !omit[Number(sNo)+":"+(cardIndex+1)]});
+    }
     /* New lessons ship an already-interleaved intro (teach + immediate check)
        and set intro_prebuilt — use their cards as-is. Older lessons lack the
        flag and keep the legacy client-side drill (teach 4 words, 4 formats). */
@@ -4960,7 +5077,10 @@ function buildQueue(d){
     }
     /* Dialog is now fully interactive (audio/cloze/char-gap) — no passive dump. */
     var sTitle=tr(sec.section_title)||(secNames()[(sec.section_no||1)-1]||"");
+    var pictureStep=deck&&deck.sNo===Number(sNo)?{type:"_picture_review",words:deck.words,_sNo:sNo,_sTitle:sTitle,_sPurpose:sec.section_purpose||""}:null;
+    if(pictureStep&&deck.start){q.push(pictureStep);pictureStep=null}
     cards.forEach(function(c){c._sNo=sNo;c._sTitle=sTitle;c._sPurpose=sec.section_purpose||"";q.push(c)});
+    if(pictureStep)q.push(pictureStep);
   });
   /* Versionlangan exit-ticket `sections` tashqarisida: eski material_ref va
      resume indekslari surilmaydi. U faqat checkpoint oxirida enqueue qilinadi. */
@@ -5041,7 +5161,7 @@ function lessonCharacterLabel(id){
 }
 function lessonCardHasEmbeddedCoach(card){
   var t=String(card&&card.type||"");
-  return t==="_basics"||t==="_grammar"||t==="pronunciation";
+  return t==="_basics"||t==="_grammar"||t==="pronunciation"||t==="_picture_review";
 }
 /* Murabbiyning gapi kartaning O'Z ko'rsatmasi (`.qq`). U karta chizilgandan
    keyin ko'chiriladi — `renderLessonCoach` kartadan OLDIN chaqiriladi, ya'ni
@@ -5525,7 +5645,9 @@ function flyXp(xp){
   },1300);
 }
 var writeChar="",writeMeta={};
-function writerA11yLabel(){var fallback={uz:"书写 Yozish",ru:"书写 Письмо",tj:"书写 Навиштан"}[LANG]||"书写 Yozish";return courseMessage("testHub.write",fallback)}function setWriteBtn(ch,meta){writeChar=ch||"";writeMeta=meta||{};var b=$("#writebtn");if(b){b.setAttribute("aria-label",writerA11yLabel());b.style.display=writeChar?"flex":"none"}}
+function writerA11yLabel(){var fallback={uz:"书写 Yozish",ru:"书写 Письмо",tj:"书写 Навиштан"}[LANG]||"书写 Yozish";return courseMessage("testHub.write",fallback)}/* The lesson header: "N / M" sits before the hearts, the label centred under the bar. */
+function setFlowStage(count,labelHtml){var c=$("#f-count");if(c)c.textContent=count||"";var st=$("#f-stage");if(st)st.innerHTML=labelHtml||""}
+function setWriteBtn(ch,meta){writeChar=ch||"";writeMeta=meta||{};var b=$("#writebtn");if(b){b.setAttribute("aria-label",writerA11yLabel());b.style.display=writeChar?"flex":"none"}}
 /* Pinyin ko'rsatish rejimi: all (default) / new (faqat yangi so'z kartasi) / off */
 function pinyinMode(){try{var v=localStorage.getItem("hsk_v3_pinyin");return v==="new"||v==="off"?v:"all"}catch(e){return "all"}}
 function applyPinyinMode(){var f=$("#flow");if(!f)return;var m=pinyinMode();f.classList.toggle("pyoff",m==="off");f.classList.toggle("pynew",m==="new")}
@@ -5554,7 +5676,7 @@ function renderFlowCard(){
     writeTarget=c.source_words[0];writeInfo={pinyin:"",meaning:""};
   }
   setWriteBtn(writeTarget,writeInfo);
-  var stEl=$("#f-stage");if(stEl)stEl.innerHTML=c._sNo?'<span>'+(Flow.i+1)+' / '+Flow.queue.length+'</span><b>'+esc(c._sTitle||"")+'</b>':'';
+  setFlowStage(c._sNo?(Flow.i+1)+" / "+Flow.queue.length:"",c._sNo?'<b>'+esc(c._sTitle||"")+'</b>':"");
   if(c._repairSpacer)return cardRepairSpacer(c);
   if(c._guided)return cardGuidedRepair(c);
   if(t==="active_word")return cardWord(c);
@@ -5569,6 +5691,7 @@ function renderFlowCard(){
   if(t==="reverse_builder")return cardReverse(c);
   if(t==="match_pairs")return cardMatch(c);
   if(t==="pronunciation")return cardPron(c);
+  if(t==="_picture_review")return cardPictureReview(c);
   return cardChoice(c); /* meaning_guess, pinyin_choice, hanzi_choice, translation_choice, quick_quiz, gap_fill, listening_choice, dialog_context */
 }
 function repairAnswerText(c){
@@ -5806,7 +5929,7 @@ Foundation.render=function(){
   $("#f-body").classList.remove("has-lesson-pron");
   var c=Foundation.queue[Foundation.i];if(!c)return Foundation.finish();
   $("#f-prog").style.width=Math.round(Foundation.i/Math.max(Foundation.queue.length,1)*100)+"%";
-  var st=$("#f-stage");if(st)st.innerHTML='<span>'+(Foundation.i+1)+' / '+Foundation.queue.length+'</span><span class="foundation-step"><i class="ti ti-info-circle" aria-hidden="true"></i> '+esc(foundationStepLabel(c))+'</span>';
+  setFlowStage((Foundation.i+1)+" / "+Foundation.queue.length,'<span class="foundation-step"><i class="ti ti-info-circle" aria-hidden="true"></i> '+esc(foundationStepLabel(c))+'</span>');
   var cta=$("#f-cta");cta.style.display="flex";cta.innerHTML='<i class="ti ti-arrow-right"></i> '+(c.type==="result"?courseMessage("check",T().check):courseMessage("cont",T().cont));
   if(c._repairSpacer)return foundationRepairSpacer(c);
   if(c._guided)return foundationGuidedCard(c);
@@ -6014,13 +6137,59 @@ function lessonPronHtml(phrase,pinyin,translation,buttonId,hintId,record,skip){
   $("#f-body").classList.add("has-lesson-pron");
   return '<div class="lesson-pron"><div class="qq">'+esc(title)+'</div><div class="lesson-pron-stage"><div class="lesson-pron-phrase say-bub"><button class="au" onclick="speak(\''+esc(phrase)+'\')"><i class="ti ti-volume"></i></button><div class="z4 han">'+esc(phrase)+'</div><div class="p4">'+esc(pinyin||"")+'</div><div class="t4">'+esc(translation||"")+'</div></div><div class="lesson-pron-character">'+lessonCharacterHtml("panda","talk")+'</div></div><div class="pr-ctrl lesson-pron-controls"><div class="pr-micwrap"><button class="pr-mic" id="'+buttonId+'" aria-label="'+esc(courseMessage("say",T().say))+'" onclick="'+record+'"><i class="ti ti-microphone"></i></button></div><div class="pr-hint" role="status" id="'+hintId+'"></div><button class="pr-skip pron-skip" onclick="'+skip+'">'+esc(skipText)+' <i class="ti ti-player-skip-forward"></i></button></div></div>';
 }
+/* Bitta talaffuz yozuvi: mikrofon -> MediaRecorder (4 s avto-stop) -> server
+   ballari. Dars talaffuz kartasi va rasmli takror (UIUX-008) shu yagona
+   yo'ldan foydalanadi. `st` — bitta urinish holati; `ui` — karta UI'si. */
+function lessonPronRelease(st){try{if(st.stream)st.stream.getTracks().forEach(function(t){t.stop()})}catch(e){}st.stream=null}
+function lessonPronAbort(st){if(!st)return;st.cancelled=true;clearTimeout(st.auto);try{if(st.rec){st.rec.onstop=null;if(st.rec.state!=="inactive")st.rec.stop()}}catch(e){}lessonPronRelease(st)}
+function lessonPronRecord(st,target,pinyin,ui){
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder){clog("mic_nosupport","",{md:!!navigator.mediaDevices,gum:!!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia),mr:!!window.MediaRecorder});ui.hint(_prL().noSupport);return;}
+  if(st.busy)return;st.busy=true;
+  navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
+    if(st.cancelled){stream.getTracks().forEach(function(t){t.stop()});return}
+    st.stream=stream;st.chunks=[];
+    var mimes=["audio/webm;codecs=opus","audio/webm","audio/mp4","audio/ogg;codecs=opus"],mime="";
+    for(var k=0;k<mimes.length;k++){if(window.MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported(mimes[k])){mime=mimes[k];break}}
+    try{st.rec=mime?new MediaRecorder(stream,{mimeType:mime,audioBitsPerSecond:32000}):new MediaRecorder(stream)}catch(_){st.rec=new MediaRecorder(stream)}
+    st.rec.ondataavailable=function(e){if(e.data&&e.data.size>0)st.chunks.push(e.data)};
+    st.rec.onstop=function(){
+      var _mt=(st.rec&&st.rec.mimeType)||"audio/webm";var blob=new Blob(st.chunks,{type:_mt});lessonPronRelease(st);
+      if(st.cancelled)return;
+      if(blob.size<1200){st.busy=false;ui.setBtn(courseMessage("say",T().say));ui.hint(_prL().retry);return;}
+      var _e=(blob.type||_mt).toLowerCase(),_ext=/mp4|m4a|aac/.test(_e)?"mp4":(/ogg/.test(_e)?"ogg":(/mpeg|mp3/.test(_e)?"mp3":(/wav/.test(_e)?"wav":"webm")));
+      var fd=new FormData();fd.append("initData",initData());fd.append("target",target||"");fd.append("target_pinyin",pinyin||"");fd.append("language",LANG);fd.append("level",MAP&&MAP.level||"");fd.append("audio",blob,"voice."+_ext);
+      coursePronounce(fd)
+        .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j}})})
+        .then(function(o){
+          if(st.cancelled)return;st.busy=false;
+          clog("mic_result",(o&&o.j&&o.j.ok===true)?"ok":"fail",{mime:blob.type||_mt,ext:_ext,size:blob.size,heard:((o&&o.j&&o.j.heard)||"").slice(0,24),code:(o&&o.j&&o.j.code)||""});
+          ui.result(o);
+        })
+        .catch(function(){if(st.cancelled)return;st.busy=false;clog("mic_neterr","",{mime:blob.type||_mt,ext:_ext,size:blob.size});ui.setBtn(courseMessage("say",T().say));ui.hint(_prL().netErr)});
+    };
+    st.rec.start(250);try{navigator.vibrate&&navigator.vibrate(20)}catch(e){}
+    ui.setBtn(_prL().listening);ui.hint(_prL().listening);haptic("light");
+    clearTimeout(st.auto);st.auto=setTimeout(ui.stop,4000);
+  }).catch(function(err){lessonPronRelease(st);if(st.cancelled)return;st.busy=false;clog("mic_deny",(err&&err.name)||"",{});ui.hint(_prL().micDeny)});
+}
+/* Server javobining umumiy qismi. true — natija (ball) bor; false — natija
+   yo'q (limit, tarmoq yoki "aniq eshitilmadi"): taxminiy baho berilmaydi. */
+function lessonPronVerdictReady(o,ui,onLimit){
+  if(!o.ok||!o.j||o.j.ok!==true){
+    ui.setBtn(courseMessage("say",T().say));
+    if(o.j&&o.j.code==="PRONOUNCE_LIMIT_EXCEEDED"){onLimit();return false;}
+    ui.hint((o.j&&o.j.code==="INVALID_INIT_DATA")?_prL().needTg:(o.j&&o.j.message)||_prL().netErr);return false;
+  }
+  if(o.j.unclear){ui.setBtn(courseMessage("say",T().say));ui.hint(_prL().retry);return false;}
+  return true;
+}
 function cardPron(c){
   $("#f-cta").style.display="none";
   $("#f-body").innerHTML=lessonPronHtml(c.phrase,c.pinyin,tr(c.translation||""),"pron-btn","pron-hint","window._pron()","window._pronSkip()");
   setWriteBtn("");
   var st={stream:null,rec:null,chunks:[],auto:null,cancelled:false,busy:false};
   var audioTimer=setTimeout(function(){if(!st.cancelled)speak(c.phrase)},350);
-  LESSON_PRON_CANCEL=function(){st.cancelled=true;clearTimeout(audioTimer);clearTimeout(st.auto);try{if(st.rec){st.rec.onstop=null;if(st.rec.state!=="inactive")st.rec.stop()}}catch(e){}release()};
+  LESSON_PRON_CANCEL=function(){clearTimeout(audioTimer);lessonPronAbort(st)};
   window._pronSkip=function(){
     if(Flow.answered||st.cancelled)return;
     cancelLessonPron();
@@ -6028,48 +6197,137 @@ function cardPron(c){
   };
   function setBtn(label){var b=$("#pron-btn");if(b){b.setAttribute("aria-label",label);b.classList.toggle("pr-rec",label===_prL().listening)}}
   function hint(t){var h=$("#pron-hint");if(h)h.textContent=t||""}
-  function release(){try{if(st.stream)st.stream.getTracks().forEach(function(t){t.stop()})}catch(e){}st.stream=null}
   function stop(){clearTimeout(st.auto);if(st.rec&&st.rec.state!=="inactive"){setBtn(_prL().analyzing);hint(_prL().analyzing);st.rec.stop()}}
+  var ui={setBtn:setBtn,hint:hint,stop:stop,result:function(o){
+    if(!lessonPronVerdictReady(o,ui,function(){App.openPaywall("pronLimit")}))return;
+    var sc=Number(o.j.score)||0,pass=sc>=60,heard=o.j.heard?(_prL().heard+" "+esc(o.j.heard)):"";
+    Flow.answered=true;Flow.graded=(Flow.graded||0)+1;if(pass)Flow.correct=(Flow.correct||0)+1;
+    beep(pass?[523,659,784]:[220,180]);haptic(pass?"ok":"no");
+    showBar(pass,(pass?courseMessage("correct",T().correct):courseMessage("wrong",T().wrong))+" "+sc+"%",heard||(pass?"":esc(c.phrase)));
+  }};
   window._pron=function(){
     if(Flow.answered||st.cancelled)return;
     if(st.rec&&st.rec.state!=="inactive"){stop();return;}
-    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder){clog("mic_nosupport","",{md:!!navigator.mediaDevices,gum:!!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia),mr:!!window.MediaRecorder});hint(_prL().noSupport);return;}
-    if(st.busy)return;st.busy=true;
-    navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
-      if(st.cancelled){stream.getTracks().forEach(function(t){t.stop()});return}
-      st.stream=stream;st.chunks=[];
-      var mimes=["audio/webm;codecs=opus","audio/webm","audio/mp4","audio/ogg;codecs=opus"],mime="";
-      for(var k=0;k<mimes.length;k++){if(window.MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported(mimes[k])){mime=mimes[k];break}}
-      try{st.rec=mime?new MediaRecorder(stream,{mimeType:mime,audioBitsPerSecond:32000}):new MediaRecorder(stream)}catch(_){st.rec=new MediaRecorder(stream)}
-      st.rec.ondataavailable=function(e){if(e.data&&e.data.size>0)st.chunks.push(e.data)};
-      st.rec.onstop=function(){
-        var _mt=(st.rec&&st.rec.mimeType)||"audio/webm";var blob=new Blob(st.chunks,{type:_mt});release();
-        if(st.cancelled)return;
-        if(blob.size<1200){st.busy=false;setBtn(courseMessage("say",T().say));hint(_prL().retry);return;}
-        var _e=(blob.type||_mt).toLowerCase(),_ext=/mp4|m4a|aac/.test(_e)?"mp4":(/ogg/.test(_e)?"ogg":(/mpeg|mp3/.test(_e)?"mp3":(/wav/.test(_e)?"wav":"webm")));
-        var fd=new FormData();fd.append("initData",initData());fd.append("target",c.phrase||"");fd.append("target_pinyin",c.pinyin||"");fd.append("language",LANG);fd.append("level",MAP&&MAP.level||"");fd.append("audio",blob,"voice."+_ext);
-        coursePronounce(fd)
-          .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j}})})
-          .then(function(o){
-            if(st.cancelled)return;st.busy=false;
-            clog("mic_result",(o&&o.j&&o.j.ok===true)?"ok":"fail",{mime:blob.type||_mt,ext:_ext,size:blob.size,heard:((o&&o.j&&o.j.heard)||"").slice(0,24),code:(o&&o.j&&o.j.code)||""});
-            if(!o.ok||!o.j||o.j.ok!==true){
-              setBtn(courseMessage("say",T().say));
-              if(o.j&&o.j.code==="PRONOUNCE_LIMIT_EXCEEDED"){App.openPaywall("pronLimit");return;}
-              hint((o.j&&o.j.code==="INVALID_INIT_DATA")?_prL().needTg:(o.j&&o.j.message)||_prL().netErr);return;
-            }
-            var sc=Number(o.j.score)||0,pass=sc>=60,heard=o.j.heard?(_prL().heard+" "+esc(o.j.heard)):"";
-            Flow.answered=true;Flow.graded=(Flow.graded||0)+1;if(pass)Flow.correct=(Flow.correct||0)+1;
-            beep(pass?[523,659,784]:[220,180]);haptic(pass?"ok":"no");
-            showBar(pass,(pass?courseMessage("correct",T().correct):courseMessage("wrong",T().wrong))+" "+sc+"%",heard||(pass?"":esc(c.phrase)));
-          })
-          .catch(function(){if(st.cancelled)return;st.busy=false;clog("mic_neterr","",{mime:blob.type||_mt,ext:_ext,size:blob.size});setBtn(courseMessage("say",T().say));hint(_prL().netErr)});
-      };
-      st.rec.start(250);try{navigator.vibrate&&navigator.vibrate(20)}catch(e){}
-      setBtn(_prL().listening);hint(_prL().listening);haptic("light");
-      clearTimeout(st.auto);st.auto=setTimeout(stop,4000);
-    }).catch(function(err){release();if(st.cancelled)return;st.busy=false;clog("mic_deny",(err&&err.name)||"",{});hint(_prL().micDeny)});
+    lessonPronRecord(st,c.phrase||"",c.pinyin||"",ui);
   };
+}
+/* ---------- Rasmli takror (UIUX-008) ----------
+   Server `lesson_plan.picture_review` da o'quvchi OLDIN o'rgangan va aniq
+   rasmi bor so'zlarni beradi (ko'pi bilan 10). Bu bitta dars qadami: ball,
+   yurak, streak, XP, xatolar ro'yxati va resume indeksi o'zgarmaydi;
+   talaffuz mavjud endpoint va mavjud kunlik limit bilan serverda baholanadi.
+   Javob (iyeroglif/pinyin/tarjima) faqat tekshiruvdan KEYIN chiziladi. */
+var PIC_REVIEW_MAX=10,PIC_REVIEW_MAX_TRIES=3;
+function pictureText(key){
+  var F={title:{uz:"Rasmga qarang va xitoycha ayting",ru:"Посмотрите на картинку и скажите по-китайски",tj:"Ба расм нигоҳ кунед ва ба хитоӣ гӯед"},
+    label:{uz:"Rasmli takror",ru:"Повторение по картинкам",tj:"Такрор бо расм"}};
+  var f=F[key]||{};return courseMessage("pictureReview."+key,f[LANG]||f.uz||"");
+}
+function lessonPlanOf(d,opts){
+  var p=d&&d.lesson_plan;
+  if(!p||typeof p!=="object"||Number(p.version)!==1||(opts&&opts.previewHalf))return null;
+  return p;
+}
+function pictureReviewWords(list){
+  var out=[],seen={};
+  (Array.isArray(list)?list:[]).forEach(function(w){
+    if(!w||typeof w!=="object"||out.length>=PIC_REVIEW_MAX)return;
+    var zh=String(w.zh||"").trim(),img=String(w.image||"").trim();
+    if(!zh||!img||seen[zh])return;
+    seen[zh]=1;out.push({zh:zh,pinyin:String(w.pinyin||""),meaning:(w.meaning&&typeof w.meaning==="object")?w.meaning:{},image:img});
+  });
+  return out;
+}
+/* Navbat qoidasi: to'g'ri yoki o'tkazilgan karta chiqadi; xato karta javobi
+   ko'rsatilgach navbat oxiriga qaytadi (bir so'z ko'pi bilan 3 marta). */
+function pictureDeckAdvance(deck,outcome){
+  var k=deck.order.shift();
+  if(outcome==="wrong"){
+    deck.tries[k]=(deck.tries[k]||0)+1;
+    if(deck.tries[k]<PIC_REVIEW_MAX_TRIES)deck.order.push(k);
+  }
+  return deck;
+}
+function cardPictureReview(c){
+  var words=pictureReviewWords(c.words),body=$("#f-body");
+  $("#f-cta").style.display="none";setWriteBtn("");
+  if(!words.length){Flow.answered=true;Flow.next();return}
+  var skipText=(window.HSKAILocaleMap||function(_,fallback){return fallback})("ui.course_v3.skipText.copy1",{uz:"O‘tkazib yuborish",ru:"Пропустить",tj:"Гузарондан"})[LANG];
+  var motion=!fxOff(),deck={order:words.map(function(_,k){return k}),tries:{},phase:"ask",timer:null},st=null;
+  setFlowStage((Flow.i+1)+" / "+Flow.queue.length,'<b>'+esc(pictureText("label"))+'</b>');
+  body.classList.add("has-lesson-pron");
+  body.innerHTML='<div class="lesson-pron pic-review"><div class="qq">'+esc(pictureText("title"))+'</div><div class="pic-stage"><div class="pic-stack" id="pic-stack"></div></div><div class="pr-ctrl lesson-pron-controls"><div class="pr-micwrap"><button class="pr-mic" id="pic-btn" aria-label="'+esc(courseMessage("say",T().say))+'" onclick="window._picSay()"><i class="ti ti-microphone"></i></button></div><div class="pr-hint" role="status" id="pic-hint"></div><button class="pr-skip pron-skip" onclick="window._picSkip()">'+esc(skipText)+' <i class="ti ti-player-skip-forward"></i></button></div></div>';
+  var stack=$("#pic-stack");
+  var els=words.map(function(w,k){
+    var el=document.createElement("div");el.className="pic-card";
+    el.innerHTML='<div class="pic-hop"><div class="pic-inner"><div class="pic-face pic-front"><span class="pic-img" role="img" aria-label="'+esc(tr(w.meaning))+'">'+esc(w.image)+'</span></div><div class="pic-face pic-back" aria-hidden="true"></div></div></div>';
+    el.onclick=function(){if(deck.phase==="reveal"&&deck.order[0]===k)advance()};
+    stack.appendChild(el);return el;
+  });
+  function layout(){
+    els.forEach(function(el,k){el.classList.remove("d0","d1","d2","dn");if(deck.order.indexOf(k)<0)el.classList.add("pic-gone")});
+    deck.order.forEach(function(k,pos){els[k].classList.add(pos<3?"d"+pos:"dn");els[k].style.zIndex=String(40-pos)});
+  }
+  function setBtn(label){var b=$("#pic-btn");if(b){b.setAttribute("aria-label",label);b.classList.toggle("pr-rec",label===_prL().listening);b.disabled=deck.phase!=="ask"}}
+  function hint(t){var h=$("#pic-hint");if(h)h.textContent=t||""}
+  function stop(){if(!st)return;clearTimeout(st.auto);if(st.rec&&st.rec.state!=="inactive"){setBtn(_prL().analyzing);hint(_prL().analyzing);st.rec.stop()}}
+  function freshAttempt(){lessonPronAbort(st);st={stream:null,rec:null,chunks:[],auto:null,cancelled:false,busy:false}}
+  function later(fn,ms){return setTimeout(fn,motion?ms:0)}
+  function finish(){
+    if(deck.phase==="done")return;
+    deck.phase="done";clearTimeout(deck.timer);lessonPronAbort(st);LESSON_PRON_CANCEL=null;
+    Flow.answered=true;Flow.next();
+  }
+  function settle(el,gone){
+    el.classList.remove("pic-ok","pic-no","pic-flip","pic-out-ok","pic-out-back","pic-out-skip");
+    var back=el.querySelector(".pic-back");back.innerHTML="";back.setAttribute("aria-hidden","true");
+    if(gone)el.classList.add("pic-gone");
+  }
+  function move(outcome,cls){
+    var k=deck.order[0],el=els[k];deck.phase="moving";clearTimeout(deck.timer);freshAttempt();setBtn(courseMessage("say",T().say));
+    el.classList.add(cls);
+    later(function(){
+      if(deck.phase!=="moving")return;
+      pictureDeckAdvance(deck,outcome);settle(el,deck.order.indexOf(k)<0);
+      if(!deck.order.length){finish();return}
+      deck.phase="ask";layout();hint("");setBtn(courseMessage("say",T().say));
+    },340);
+  }
+  function advance(){if(deck.phase!=="reveal")return;var el=els[deck.order[0]];var pass=el.classList.contains("pic-ok");move(pass?"pass":"wrong",pass?"pic-out-ok":"pic-out-back")}
+  function verdict(pass,w,el){
+    deck.phase="reveal";setBtn(courseMessage("say",T().say));
+    var back=el.querySelector(".pic-back");
+    back.innerHTML='<div class="pic-zh han">'+esc(w.zh)+'</div>'+(w.pinyin?'<div class="pic-py">'+esc(w.pinyin)+'</div>':'')+(tr(w.meaning)?'<div class="pic-tr">'+esc(tr(w.meaning))+'</div>':'');
+    back.setAttribute("aria-hidden","false");
+    el.classList.add(pass?"pic-ok":"pic-no");
+    beep(pass?[523,659,784]:[220,180]);haptic(pass?"ok":"no");
+    hint(pass?courseMessage("correct",T().correct):courseMessage("wrong",T().wrong));
+    later(function(){if(deck.phase==="reveal"&&els[deck.order[0]]===el){el.classList.add("pic-flip");if(!pass)speak(w.zh)}},260);
+    deck.timer=setTimeout(advance,pass?1300:2600);
+  }
+  window._picSay=function(){
+    if(deck.phase!=="ask")return;
+    if(st&&st.rec&&st.rec.state!=="inactive"){stop();return}
+    if(!st||st.cancelled)freshAttempt();
+    var k=deck.order[0],w=words[k],el=els[k],attempt=st;
+    lessonPronRecord(attempt,w.zh,w.pinyin,{setBtn:setBtn,hint:hint,stop:stop,result:function(o){
+      if(attempt!==st||deck.phase!=="ask")return;
+      if(!lessonPronVerdictReady(o,{setBtn:setBtn,hint:hint},function(){finish();App.openPaywall("pronLimit")}))return;
+      verdict(Number(o.j.score)>=60,w,el);
+    }});
+  };
+  window._picSkip=function(){
+    if(deck.phase==="reveal"){advance();return}
+    if(deck.phase!=="ask")return;
+    move("skip","pic-out-skip");
+  };
+  LESSON_PRON_CANCEL=function(){deck.phase="done";clearTimeout(deck.timer);lessonPronAbort(st)};
+  freshAttempt();layout();setBtn(courseMessage("say",T().say));
+  if(motion){
+    stack.classList.add("pic-deal");
+    deck.order.slice(0,3).forEach(function(k,pos){els[k].querySelector(".pic-hop").style.animationDelay=(pos*70)+"ms"});
+    setTimeout(function(){stack.classList.remove("pic-deal")},700);
+  }
 }
 /* ---------- Shaxsiy takror (UIUX-007) ----------
    Server tasdiqlangan xatolardan tanlagan 0-3 ta savol oddiy kartalar ORASIDA
@@ -6159,7 +6417,7 @@ function adaptiveShow(){
   var dock=$("#f-coach-dock");if(dock)dock.classList.remove("on");
   saveLessonResume();
   $("#f-cta").style.display="none";
-  var st=$("#f-stage");if(st)st.innerHTML='<span class="foundation-step"><i class="ti ti-history" aria-hidden="true"></i> '+esc(adaptiveText("label"))+'</span>';
+  var fc=$("#f-count");if(fc)fc.textContent="";var st=$("#f-stage");if(st)st.innerHTML='<span class="foundation-step"><i class="ti ti-history" aria-hidden="true"></i> '+esc(adaptiveText("label"))+'</span>';
   var material="";
   if(q.audio_text)material+='<button class="audio" type="button" id="ad-audio" aria-label="'+esc(courseMessage("listen",T().listen||""))+'"><i class="ti ti-volume"></i></button>';
   if(q.sentence){var long=String(q.sentence).length>4;material+='<div class="'+(long?"gap":"qh")+' han"'+(long?' style="margin-top:6px"':'')+'>'+esc(q.sentence).replace("____","<u>?</u>")+'</div>'}
@@ -6410,7 +6668,7 @@ function _fetchCourseMap(lv,signal){
       }
     }
     return r.json().then(function(d){
-      if(PWA_COURSE_HOST&&r.status===403&&d&&d.error==="pwa_csrf_invalid"){
+      if(PWA_COURSE_HOST&&((r.status===403&&d&&d.error==="pwa_csrf_invalid")||(r.status===403&&d&&d.pro_expiry_notice&&(!PWA_COURSE_USER_ID||r.headers.get("X-HSK-PWA-User-ID")!==String(PWA_COURSE_USER_ID))))){
         // A session cookie replaced in another tab changes its CSRF secret.
         // Never keep rendering the previous learner's local browser state.
         PWA_COURSE_ACTOR_PROMISE=null;
@@ -6427,7 +6685,7 @@ function refreshPwaCheckoutMap(){
   var controller=new AbortController(),timer=setTimeout(function(){controller.abort()},10000);
   return _fetchCourseMap(level,controller.signal).then(function(data){
     if(MAP!==snapshot||PWA_CHECKOUT_FRAME||$("#flow").classList.contains("on"))return false;
-    if(isHsk30AccessError(data,level)){showCourseMapFailure({hsk30Gate:true,level:data.level||level});return false}
+    if(isHsk30AccessError(data,level)){showCourseMapFailure({hsk30Gate:true,level:data.level||level,deniedMap:data});return false}
     if(!data||data._parseFail||data._status>=400||data.authenticated===false||!Array.isArray(data.units)||data.level!==level)return false;
     PWA_COURSE_LOAD_FAILED=false;MAP=rememberLimitText(data);if(data.user)PROF=data.user;
     adoptStudySetup(data);syncNotify();ratingLoaded=false;renderAll();
@@ -6448,7 +6706,7 @@ function retryTransientCourseMap(lv,tries,signal,kind){if(signal&&signal.aborted
   return request.then(function(d){
     if(d&&d._status===403&&d.error==="user_blocked")return {blocked:true,support_url:d.support_url||""};
     if(d&&d._status===403&&(d.error==="hsk30_level_not_live"||d.error==="hsk30_no_live_levels"))return {hsk30Soon:true,error:d.error,level:lv};
-    if(isHsk30AccessError(d,d.level||lv))return {hsk30Gate:true,error:d.error,level:d.level||lv};
+    if(isHsk30AccessError(d,d.level||lv))return {hsk30Gate:true,error:d.error,level:d.level||lv,deniedMap:d};
     if(d&&(d.authenticated===false||d._status===401))return {auth:false};
     if(!d||d._parseFail||(d._status&&d._status>=500)){
       // Only transient read failures retry; all auth and access denials are terminal.
@@ -6484,7 +6742,24 @@ var PWA_LEVEL_REQUEST_SEQ=0,PWA_LEVEL_ABORT=null; function loadLevel(lv){if(PWA_
     showCourseLoadError();
   });
 }
-function applyLessonDone(cur,d){
+function learningResultTopicHtml(lesson){
+  return '<div class="lu-learning-topic"><span>'+esc(tr(lesson.tr)||partChip(lesson))+'</span>'
+    +(lesson.zh?'<span class="han" lang="zh">'+esc(lesson.zh)+'</span>':"")
+    +(lesson.py?'<span>'+esc(lesson.py)+'</span>':"")+'</div>';
+}
+function learningResultReviewHtml(review){
+  if(review&&typeof review.prompt==="string"&&review.prompt.trim()&&
+     typeof review.correction==="string"&&review.correction.trim()){
+    return '<div class="lu-learning-review"><strong>'+esc(courseMessage("learningResult.review",""))+'</strong>'
+      +'<span class="lu-review-prompt">'+esc(review.prompt)+'</span>'
+      +'<span class="lu-review-correction">'+esc(review.correction)+'</span>'
+      +'<div class="lu-result-note">'+esc(courseMessage("learningResult.reviewHint",""))+'</div></div>';
+  }
+  var plan=MAP&&MAP.today;
+  return plan&&!plan.complete&&todayPlanNextIdx(plan)>=0
+    ?'<div class="lu-result-note">'+esc(courseMessage("learningResult.nextHint",""))+'</div>':"";
+}
+function applyLessonDone(cur,d,showLearningResult){
   var rankBefore=Number(d&&d.rank_before)||0;
   if(PWA_COURSE_HOST&&d&&d.ok===true&&!d.duplicate){
     window._pendingPwaLessonFeedback={kind:"lesson",confirmed:true,lessonId:Number(cur&&cur.n)||0,
@@ -6547,7 +6822,9 @@ function applyLessonDone(cur,d){
     if(pending){App.showLevelUp("level",d);return;}
   }
   /* Checkpoint (HSK darsining yakuniy qismi) — kattaroq bayram varianti. */
-  App.showLevelUp(cur&&cur.checkpoint?"checkpoint":"lesson",d,{src:cur&&cur.src});
+  App.showLevelUp(cur&&cur.checkpoint?"checkpoint":"lesson",d,{
+    src:cur&&cur.src,learningLesson:showLearningResult?cur:null
+  });
 }
 function flowDone(){
   if(Flow.challenge){return finishChallengeRound()}
@@ -6558,6 +6835,7 @@ function flowDone(){
   if(!cur){App.showLevelUp("lesson");return}
   if(!INIT_DATA&&!PWA_COURSE_HOST){applyLessonDone(cur,null);return}
   var doneIdx=Flow.lessonIdx;
+  var resultOwner=PWA_COURSE_USER_ID,resultLevel=MAP.level;
   _apiPost("/api/v3/lesson/complete",{lesson_id:cur.n,level:MAP.level||"hsk1",lang:LANG,session_id:COURSE_SESSION_ID,completion_proof:LESSON_COMPLETION_PROOF,mistakes:(Flow.mistakes||[]).slice(0,50)})
     .then(function(r){
       if(window.HskDiag)HskDiag.report("lessons","save_unconfirmed","lesson_complete",r.status);
@@ -6578,7 +6856,12 @@ function flowDone(){
         }
         showLessonCompleteRetry(serverSaveErrorText(d.error,d.limit_text));return;
       }
-      applyLessonDone(cur,d);
+      var result=d.learning_result;
+      var showLearningResult=PWA_COURSE_HOST&&resultOwner&&resultOwner===PWA_COURSE_USER_ID&&
+        !PWA_LOGOUT_PENDING&&MAP&&MAP.level===resultLevel&&d._status>=200&&d._status<300&&
+        d.ok===true&&!d.duplicate&&!(d.gamification&&d.gamification.duplicate)&&
+        result&&Object.prototype.hasOwnProperty.call(result,"review");
+      applyLessonDone(cur,d,showLearningResult);
     })
     .catch(function(){showLessonCompleteRetry(serverSaveErrorText())});
 }
@@ -7526,7 +7809,7 @@ function pl(){return (window.HSKAILocaleMap||function(_,fallback){return fallbac
    Nomlar `studySetupT().goals` da — onboarding bilan AYNI manba, shunda
    profildagi maqsad tanlov ekranidagidek yoziladi. */
 function goalLabel(){
-  var code=String((MAP&&MAP.study_setup&&MAP.study_setup.goal)||"");
+  var setup=(MAP&&MAP.study_setup)||{},code=String(setup.goal||"");if(PWA_COURSE_HOST&&setup.goal_chosen!==true)return "";
   if(!code)return "";
   var goals=(studySetupT&&studySetupT().goals)||{};
   return goals[code]||"";
@@ -7956,7 +8239,7 @@ function renderProfile(){
   var trialActive=hasMapState?mapState==="TRIAL_ACTIVE":!!(TRIAL_STATE&&TRIAL_STATE.active);
   var temporaryActive=hasMapState&&mapState==="TEMP_ACCESS";
   var showProLink=!paid&&!trialActive;
-  var nickname=esc((PWA_COURSE_HOST&&PROF.display_name)||PROF.name||courseMessage("you",t.you));
+  var nickname=esc((PWA_COURSE_HOST&&PROF.display_name)||PROF.name||courseMessage("you",t.you));var friendsLink='<button type="button" class="profile-friends-link" onclick="App.openFriends()"><i class="ti ti-users" aria-hidden="true"></i><span>'+esc(courseMessage("friends",t.friends))+'</span><i class="ti ti-chevron-right" aria-hidden="true"></i></button>';
   $("#s-profile").innerHTML='<div class="htop profile-head"><h1 class="profile-title">'+esc(courseMessage("nav.profile",LANG==="ru"?"Профиль":LANG==="tj"?"Профил":"Profil"))+'</h1><div class="profile-head-actions">'
     +(PWA_COURSE_HOST?'<button class="pwa-notices-button" type="button" aria-label="'+esc(commonMessage("desktopA11y.notifications",""))+'" onclick="window.HskPwaInbox&&window.HskPwaInbox.open()"><i class="ti ti-bell" aria-hidden="true"></i></button>':'')
     +'<button class="profile-settings" type="button" aria-label="'+esc(p.settings)+'" onclick="App.openSettings()"><i class="ti ti-settings" aria-hidden="true"></i></button></div></div>'
@@ -7965,15 +8248,15 @@ function renderProfile(){
       :'<div class="pav'+(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han")+'" onclick="App.avatarEdit()">'+esc(PROF.avatar||"阿")+myAvatarImgHtml()+'<span class="ed"><i class="ti ti-pencil"></i></span></div>')
     +'<div class="profile-hero-content"><div class="profile-identity-row"><strong class="profile-display-name">'+nickname+'</strong><span class="profile-access-badge'+(paid||trialActive||temporaryActive?' pro':'')+'">'+(paid?'<i class="ti ti-crown"></i> HSK AI Pro':trialActive?'<i class="ti ti-crown"></i> '+esc(c.trial):temporaryActive?'<i class="ti ti-clock"></i> '+esc(courseMessage("profile.temporaryAccess",({ru:"Временный доступ",tj:"Дастрасии муваққатӣ",uz:"Vaqtinchalik ruxsat"}[LANG]||"Временный доступ"))):esc(c.free))+'</span></div>'
     +(goalLabel()?'<div class="profile-goal-row"><span class="lvb goal"><i class="ti ti-target"></i> '+esc(goalLabel())+'</span></div>':'')+'</div></div>'
-    +'<button type="button" class="profile-friends-link" onclick="App.openFriends()"><i class="ti ti-users" aria-hidden="true"></i><span>'+esc(courseMessage("friends",t.friends))+'</span><i class="ti ti-chevron-right" aria-hidden="true"></i></button>'
+    +(PWA_COURSE_HOST?"":friendsLink)
     +profileAccuracyHtml()
     +'<div id="pomp-desktop-profile-root"></div>'
-    +'<div class="sech" style="display:flex;justify-content:space-between"><span>'+p.calTitle+'</span><span style="color:var(--cin)"><i class="ti ti-flame" style="font-size:12px"></i> '+streak+' '+courseMessage("streak",t.streak)+'</span></div><div class="card2"><div class="cal">'+streakCalHtml()+'</div></div>'
-    +(showProLink?'<button type="button" class="profile-pro-link" onclick="App.goPay(\'profile_after_streak\')"><i class="ti ti-crown" aria-hidden="true"></i><span>'+esc(c.pro)+'</span><i class="ti ti-chevron-right" aria-hidden="true"></i></button>':'')
+    +(PWA_COURSE_HOST?'<div class="sech p45-profile-streak-heading"><span>'+esc(courseMessage("pwaProgress.streak",p.calTitle))+'</span><button type="button" class="p45-profile-streak-link" data-progress="streak" onclick="window.HskPwaProgress&&HskPwaProgress.open(\'streak\')" aria-label="'+esc(courseMessage("pwaProgress.streak",p.calTitle))+'"><i class="ti ti-flame" aria-hidden="true"></i> '+streak+' <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button></div><div class="card2"><div class="cal">'+streakCalHtml()+'</div></div>':'<div class="sech" style="display:flex;justify-content:space-between"><span>'+p.calTitle+'</span><span style="color:var(--cin)"><i class="ti ti-flame" style="font-size:12px"></i> '+streak+' '+courseMessage("streak",t.streak)+'</span></div><div class="card2"><div class="cal">'+streakCalHtml()+'</div></div>')
+    +(!PWA_COURSE_HOST&&showProLink?'<button type="button" class="profile-pro-link" onclick="App.goPay(\'profile_after_streak\')"><i class="ti ti-crown" aria-hidden="true"></i><span>'+esc(c.pro)+'</span><i class="ti ti-chevron-right" aria-hidden="true"></i></button>':'')
     +'<div class="sech">'+p.ach+'</div><div class="profile-compact-ach">'
     +'<div class="arow"><div class="aic c1"><i class="ti ti-book"></i></div><div class="at"><div class="ah"><span>'+p.a2+'</span><small>'+completedLessons+' / 100</small></div><div class="abar"><i style="width:'+lessonAchPct+'%"></i></div></div></div>'
-    +'<div class="arow"><div class="aic c2"><i class="ti ti-flame"></i></div><div class="at"><div class="ah"><span>'+p.a3+'</span><small>'+streak+' / 30</small></div><div class="abar"><i style="width:'+streakAchPct+'%"></i></div></div></div></div>'
-    +'<div id="hsk-profile-promo-root"></div>'
+    +(PWA_COURSE_HOST?"":'<div class="arow"><div class="aic c2"><i class="ti ti-flame"></i></div><div class="at"><div class="ah"><span>'+p.a3+'</span><small>'+streak+' / 30</small></div><div class="abar"><i style="width:'+streakAchPct+'%"></i></div></div></div>')+'</div>'
+    +'<div id="hsk-profile-promo-root">'+(PWA_COURSE_HOST?'<button type="button" class="profile-pro-link" onclick="App.goPay(\'profile_subscription\')"><i class="ti ti-crown" aria-hidden="true"></i><span>'+esc(paid?p.renew:c.pro)+'</span><i class="ti ti-chevron-right" aria-hidden="true"></i></button>':'')+'</div>'+(PWA_COURSE_HOST?friendsLink:"")
     +(SIGNIN_STATE.note?'<p class="hp-promo-note" role="status">'+esc(SIGNIN_STATE.note)+'</p>':"")
     +'<div style="height:14px"></div>';
   if(window.HskProfileCarousel)window.HskProfileCarousel.mount();
@@ -8163,9 +8446,10 @@ var RESOURCE=(function(){
       gesture={x:t.clientX,y:t.clientY,
         sx:Number.isFinite(t.screenX)?t.screenX:t.clientX,
         sy:Number.isFinite(t.screenY)?t.screenY:t.clientY};
-      NavBack.start({touches:[{clientX:t.clientX,clientY:t.clientY}]});
+      NavBack.start({touches:[{clientX:t.clientX,clientY:t.clientY}],edgeTarget:target,
+        cancelable:ev.cancelable,preventDefault:function(){ev.preventDefault()}});
       if(!NavBack._s)gesture=null;
-    },{passive:true});
+    },{passive:false});
     childDoc.addEventListener("touchmove",function(ev){
       if(!gesture)return;
       if(ev.touches.length!==1){gesture=null;NavBack.cancel();return}
@@ -8325,7 +8609,7 @@ var RESOURCE=(function(){
     var background=Array.from(wrap.children).filter(function(node){return !node.inert});
     PRACTICE={layer:layer,entry:entry,frame:frame,background:background,focus:document.activeElement,feature:target.pathname.split("/").pop()};
     background.forEach(function(node){node.inert=true});
-    frame.title=label;frame.hidden=true;
+    frame.title=label;frame.hidden=true;frame.dataset.practiceKind=PRACTICE.feature;
     if(/^\/iphone-pwa\/practice\/(?:pronunciation|voice)$/.test(target.pathname))frame.allow="microphone 'self'";
     frame.addEventListener("load",function(){
       if(!isPracticeFrame(frame.contentWindow)||entry.hidden)return;
@@ -9905,8 +10189,8 @@ return API;
 window.VOICE=VOICE;
 
 function renderAll(){
-  document.querySelectorAll("#nav [data-i]").forEach(function(s){s.textContent=courseMessage("nav."+s.dataset.i,T().nav[s.dataset.i])});
-  if(MAP){renderCourse();if(!PWA_COURSE_HOST||SCREEN==="mashq"||($("#s-mashq").firstElementChild&&!$("#s-mashq").querySelector(".pwa-initial-shell")))renderMashq();if(SCREEN==="rating")renderRating();if(!PWA_COURSE_HOST||SCREEN==="profile")renderProfile();if(SCREEN==="voice")renderVoice()}
+  document.querySelectorAll("#nav [data-i]").forEach(function(s){s.textContent=courseMessage("nav."+s.dataset.i,T().nav[s.dataset.i])});hydratePwaPracticeShell();
+  if(MAP){scheduleShortAccessRefresh(MAP.user);renderCourse();if(!PWA_COURSE_HOST||SCREEN==="mashq"||($("#s-mashq").firstElementChild&&!$("#s-mashq").querySelector(".pwa-initial-shell")))renderMashq();if(SCREEN==="rating")renderRating();if(!PWA_COURSE_HOST||SCREEN==="profile")renderProfile();if(SCREEN==="voice")renderVoice();maybeShowProExpiryNotice()}
 }
 navInit();
 $("#sheet").onclick=function(){App.closeSheet()};
@@ -10001,6 +10285,7 @@ var finishHskLaunchSplash=(function(){
     var sp=bootParams;
     var tab=PWA_COURSE_HOST&&PWA_PREBOOT_TAB||sp.get("tab")||"course";PWA_PREBOOT_TAB=null;App.show(tab);
     finishHskLaunchSplash();
+    if(pwaLaunchTiming)pwaLaunchTiming.ready();
     var initialLesson=Number(sp.get("lesson")||0);
     // resume=1: aniq lesson berilmagan bo'lsa, server progresidan JORIY qismni
     // (status==="current") topib darhol ochamiz — botdagi "Davom" / profil
@@ -10024,7 +10309,7 @@ var finishHskLaunchSplash=(function(){
       },80);
     }
     var challengeId=Number(sp.get("challenge_id")||0);
-    function launchBootIntents(skipAppOpenAd){
+    function launchBootIntents(skipAppOpenAd){PRO_EXPIRY_BOOT_READY=true;if(initialLesson>0||challengeId>0||sp.get("tour")==="1")PRO_EXPIRY_DEFER_UNTIL=Date.now()+800;
       openInitialLesson();
       if(challengeId>0)setTimeout(function(){openChallengeById(challengeId)},180);
       if(sp.get("tour")==="1"){var td=false;try{td=!!localStorage.getItem("hsk_v3_tour")}catch(e){}if(!td)setTimeout(function(){App.runTour()},500)}
@@ -10032,7 +10317,7 @@ var finishHskLaunchSplash=(function(){
       var requestedTab=sp.get("tab"),tourRequested=sp.get("tour")==="1";
       var hasBootIntent=initialLesson>0||challengeId>0||tourRequested||!!(requestedTab&&requestedTab!=="course");
       var setupPending=!!(STUDY_SETUP&&STUDY_SETUP.pending&&studySetupPending());
-      var adContext={lesson:initialLesson,challenge:challengeId,tour:tourRequested};
+      var adContext={lesson:initialLesson,challenge:challengeId,tour:tourRequested};if(!hasBootIntent&&!setupPending&&maybeShowProExpiryNotice())return;
       if(hasBootIntent||setupPending){HSK30_PROMO_PENDING=true;maybeShowAppOpenAd(adContext);return}
       /* Markaziy HSK 3.0 eslatmasi reklama bilan bir vaqtda ochilmasin.
          Eslatma ko'rsatilsa app-open reklama shu ochilishda o'tkaziladi. */
@@ -10043,7 +10328,7 @@ var finishHskLaunchSplash=(function(){
     /* Starter majburiy bo'lsa deep-link, tour va app-open reklama uning ustiga
        chiqmaydi. Foundation tugagach asl intent davom etadi; reklama esa bu
        birinchi natija sessiyasida butunlay o'tkazib yuboriladi. */
-    if(foundationRequired){HSK30_PROMO_PENDING=true;startFoundationFromMap(false,function(){launchBootIntents(true)})}else launchBootIntents(false);
+    function finishBootIntents(){if(foundationRequired){HSK30_PROMO_PENDING=true;startFoundationFromMap(false,function(){launchBootIntents(true)})}else launchBootIntents(false);}function finishBootWithTrial(){if(PWA_COURSE_HOST&&window.HskPwaTrialOffer)HskPwaTrialOffer.afterBoot(finishBootIntents);else finishBootIntents();}if(PWA_COURSE_HOST&&document.readyState==="loading")document.addEventListener("DOMContentLoaded",finishBootWithTrial,{once:true});else finishBootWithTrial();
   });
 })();
 
@@ -10069,9 +10354,9 @@ function maybeShowAppOpenAd(ctx){
    reklama) ochiq bo'lsa chiqmaydi va bayroq SARFLANMAYDI: keyingi qulay
    daqiqada qayta uriniladi. Bir sessiyada bir marta (`ads.js` shuni
    ta'minlaydi), kunlik chegara esa serverda. */
-var CENTER_AD_PENDING=false,CENTER_AD_TIMER=null;
-function centerAdBusy(){try{return !!(NavBack.blocked()||NavBack.top())}catch(e){return true}}
-function flushPendingCenterAd(){
+var CENTER_AD_PENDING=false,CENTER_AD_TIMER=null,PRO_EXPIRY_BOOT_READY=false,PRO_EXPIRY_DEFER_UNTIL=0,PRO_EXPIRY_SEEN=Object.create(null);
+function centerAdBusy(){try{return !!(NavBack.blocked()||NavBack.top())}catch(e){return true}} function maybeShowProExpiryNotice(){var token=MAP&&MAP.pro_expiry_notice;if(!PRO_EXPIRY_BOOT_READY||Date.now()<PRO_EXPIRY_DEFER_UNTIL||!MAP||MAP.authenticated===false||typeof token!=="string"||!/^[a-f0-9]{64}$/.test(token)||SCREEN!=="course"||document.visibilityState!=="visible"||centerAdBusy()||foundationBlocksCourse()||studySetupPending()||PWA_CHECKOUT_FRAME||CHECKOUT_NAVIGATING)return false;var owner=localUserScope();if(owner==="preview"||owner==="pwa:unbound")return false;var key=proExpirySeenKey();if(PRO_EXPIRY_SEEN[token])return false;try{if(localStorage.getItem(key)===token)return false}catch(e){}var title=typeof MAP.pro_expiry_title==="string"&&MAP.pro_expiry_title.length<=160&&MAP.pro_expiry_title.trim()?MAP.pro_expiry_title:courseMessage("proExpiry.title",""),body=courseMessage("proExpiry.body",""),restore=courseMessage("proExpiry.restore",""),limited=courseMessage("proExpiry.limited","");if(!title||!body||!restore||!limited)return false;PRO_EXPIRY_SEEN[token]=true;App.openSheet('<div class="pro-expiry-content"><div class="pro-expiry-panda" aria-hidden="true">'+pandaChar("happy",{anim:false})+'</div><h2>'+esc(title)+'</h2><p>'+esc(body)+'</p><button type="button" class="scta" onclick="App.closeSheet();App.goPay(\'course_expired\')">'+esc(restore)+'</button><button type="button" class="pro-expiry-skip" onclick="App.closeSheet()">'+esc(limited)+'</button></div>');$("#sheet").classList.add("pro-expiry-sheet");try{localStorage.setItem(key,token)}catch(e){}return true}
+function flushPendingCenterAd(){if(maybeShowProExpiryNotice())return;
   if(CENTER_AD_TIMER||centerAdBusy()||(!CENTER_AD_PENDING&&!HSK30_PROMO_PENDING&&!HSK30_PROMO_READY))return;
   CENTER_AD_TIMER=setTimeout(function(){
     CENTER_AD_TIMER=null;
@@ -10092,6 +10377,7 @@ function flushPendingCenterAd(){
 var NavBack={
   EDGE:24,   /* Telegram Mini App keeps its existing left-edge gesture zone. */
   MIN:88,    /* The browser PWA uses a shorter, position-aware horizontal threshold. */
+  SYS_EDGE:16, /* Browser PWA: left strip where iOS/Android start their own history swipe. */
   /* Qatlamlar ustkisidan boshlab tekshiriladi. */
   LAYERS:[{id:"pwa-shake",target:function(){return PWA_COURSE_HOST&&window.HskPwaShake&&HskPwaShake.backTarget()},close:function(){HskPwaShake.close()}},
     {id:"pwa-checkout-layer",target:function(){return $("#pwa-checkout-layer")},close:pwaCheckoutBack},
@@ -10099,7 +10385,7 @@ var NavBack={
     {id:"pwa-inbox",target:function(){return PWA_COURSE_HOST&&window.HskPwaInbox&&HskPwaInbox.backTarget&&HskPwaInbox.backTarget()},close:function(){HskPwaInbox.back()}},
     {id:"pwa-feedback",target:function(){return PWA_COURSE_HOST&&window.HskPwaFeedback&&HskPwaFeedback.backTarget()},close:function(){HskPwaFeedback.back()}},
     {id:"pwa-voice",target:function(){return PWA_COURSE_HOST&&window.VOICE&&VOICE.backTarget&&VOICE.backTarget()},close:function(){VOICE.back()}},
-    {id:"tour",    close:function(){App.tourEnd()}},
+    {id:"p45-progress",target:function(){return PWA_COURSE_HOST&&window.HskPwaProgress&&HskPwaProgress.backTarget()},close:function(){HskPwaProgress.close()}},{id:"tour",    close:function(){App.tourEnd()}},
     {id:"sheet",   close:function(){App.closeSheet()}},
     {id:"upov",    close:function(){closeUserProfile()}},
     {id:"writeov", close:function(){App.closeWriter()}},
@@ -10177,6 +10463,15 @@ var NavBack={
   },
   onPop:function(){
     NavBack._guarded=false;
+    /* A left-edge swipe can also start the browser's own history swipe
+       (iPhone Safari/Home Screen, Android browsers). Its popstate is the
+       same gesture as the drag below: go back once, never twice. */
+    var swipe=NavBack._swipeBack;
+    if(swipe&&Date.now()<swipe.until){
+      NavBack._swipeBack=null;
+      if(swipe.handled){NavBack.sync();return}
+      swipe.handled=true;
+    }
     if(NavBack.goBack()){
       try{history.pushState({hskNavBack:1},"");NavBack._guarded=true}catch(e){}
       NavBack.sync();
@@ -10215,6 +10510,9 @@ var NavBack={
     if(NavBack._s||ev.touches.length!==1)return;
     var t=ev.touches[0];
     if(!PWA_COURSE_HOST&&t.clientX>NavBack.EDGE)return;
+    /* The previous swipe is still closing its layer: a new drag would grab
+       that same layer before it hides. */
+    if(NavBack._swipeBack&&!NavBack._swipeBack.handled)return;
     /* Horizontal widgets (profile promo carousel, rating cups, scrollers) own
        their swipes; they must never drag the whole screen back. */
     if(PWA_COURSE_HOST&&NavBack.ownsHorizontalSwipe(ev.target))return;
@@ -10223,6 +10521,14 @@ var NavBack={
     var width=window.innerWidth||360;
     NavBack._s={x:t.clientX,y:t.clientY,el:el,live:false,dead:false,w:width,
       min:PWA_COURSE_HOST?Math.min(56,Math.max(32,width-t.clientX-8)):NavBack.MIN};
+    /* This drag owns the back step. Claim a touch that starts in the
+       browser's own left-edge history-swipe strip, otherwise iPhone shows its
+       blank page snapshot and the popstate goes back one screen more. Taps on
+       controls there keep their click; onPop still dedupes that case. */
+    if(PWA_COURSE_HOST&&t.clientX<=NavBack.SYS_EDGE&&ev.cancelable&&ev.preventDefault){
+      var hit=ev.edgeTarget||ev.target;
+      if(!(hit&&hit.closest&&hit.closest("button,a,input,textarea,select,label,[role=button],[contenteditable]")))ev.preventDefault();
+    }
   },
   move:function(ev){
     var s=NavBack._s;if(!s||s.dead)return;
@@ -10259,10 +10565,14 @@ var NavBack={
     el.style.transform=done?"translateX("+s.w+"px)":"";
     if(scrim)scrim.style.opacity="0";
     NavBack._s=null;
+    var swipe=done?{handled:false,until:Date.now()+800}:null;
+    if(swipe)NavBack._swipeBack=swipe;
     setTimeout(function(){
-      el.classList.remove("nb-snap");el.style.transform="";
       if(scrim&&scrim.parentNode)scrim.parentNode.removeChild(scrim);
-      if(done&&(!PWA_COURSE_HOST||NavBack.target()===el)){NavBack.goBack();NavBack.sync()}
+      /* Close first, then drop the off-screen transform: the layer must not
+         flash back at x=0 for a frame before it hides. */
+      if(swipe&&!swipe.handled&&(!PWA_COURSE_HOST||NavBack.target()===el)){swipe.handled=true;NavBack.goBack();NavBack.sync()}
+      el.classList.remove("nb-snap");el.style.transform="";
       RESOURCE.swipePreview(false,el);
     },done?200:220);
     if(done)haptic("light");
@@ -10285,7 +10595,8 @@ var NavBack={
       }
     }catch(e){}
     window.addEventListener("popstate",NavBack.onPop);
-    document.addEventListener("touchstart",NavBack.start,{passive:true});
+    /* Not passive: start() may claim a left-edge touch (see SYS_EDGE). */
+    document.addEventListener("touchstart",NavBack.start,{passive:false});
     document.addEventListener("touchmove",NavBack.move,{passive:false});
     document.addEventListener("touchend",NavBack.end,{passive:true});
     document.addEventListener("touchcancel",NavBack.cancel,{passive:true});
@@ -10308,11 +10619,11 @@ window.addEventListener("pageshow",function(ev){
 });
 </script>
 <script src="/course_v3_data/desktop-download.js?v=20261021-b18e06983176"></script>
-<script src="/course_v3_data/profile-carousel.js?v=20261021-bbc40872c23c"></script>
+<script src="/course_v3_data/profile-carousel.js?v=20261121-c91d00c2b368"></script>
 <script src="/course_v3_data/iphone-pwa-fx.js?v=20261105-3f4db4191370"></script>
 <script src="/course_v3_data/iphone-pwa-refresh.js?v=20261105-e7852ac39c9d"></script>
-<script src="/course_v3_data/iphone-pwa-notices.js?v=20261110-e985617de198"></script>
-<script src="/course_v3_data/iphone-pwa-feedback.js?v=20261111-48de7f4d2d8b"></script>
+<script src="/course_v3_data/iphone-pwa-notices.js?v=20261123-cf907b06d649"></script>
+<script src="/course_v3_data/iphone-pwa-feedback.js?v=20261126-15c467f63594"></script>
 <script>if(location.pathname==="/iphone-pwa/course")window.addEventListener("load",function(){setTimeout(function(){
   /* Bot release-feedback campaign (stars) once per campaign, only on a calm course screen. */
   if(!window.HskPwaFeedback||!HskPwaFeedback.openRelease)return;

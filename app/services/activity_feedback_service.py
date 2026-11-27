@@ -11,6 +11,8 @@ from app.bot.keyboards.feedback import (
     feedback_sub_label, feedback_paid_label,
 )
 from app.bot.handlers.feedback import DISLIKE_DETAIL_REQUIRED_CODES
+from app.bot.generated.bot_i18n import bot_message
+from app.bot.generated.course_i18n import COURSE_MESSAGES
 from app.db.models.user import User
 from app.db.models.bot_feedback import BotFeedback
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
@@ -200,7 +202,11 @@ class ActivityFeedbackService:
         elif feedback and not service._is_prompt_due(feedback, now):
             feedback = None
         await db.commit()
+        lang = learner.language if learner.language in {"uz", "ru", "tj"} else "ru"
+        paid = UserAccessStateService.is_paid(learner)
         payload = ({
+            "reward_hint": bot_message("appFeedback.rewardHint", lang) if not paid and not feedback.reward_granted_at else None,
+            "dismiss_label": COURSE_MESSAGES[lang]["pwaPush.later"],
             "feedback_id": feedback.id,
             "compact": data.context.model_dump() if data.context and data.presentation == "compact" else None,
             "presentation": data.presentation,

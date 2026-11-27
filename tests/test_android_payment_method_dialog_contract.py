@@ -26,10 +26,19 @@ class PaymentMethodDialogContractTests(unittest.TestCase):
             self.assertIn("fillMaxWidth(0.92f)", block)
             self.assertIn("RoundedCornerShape(20.dp)", block)
             self.assertNotIn("ModalBottomSheet", block)
-        self.assertIn("onRegion = model::chooseRegion", country)
+        self.assertIn("onRegion = { region ->", country)
+        self.assertIn("model.chooseRegion(region)", country)
+        self.assertIn("selectedRegion = region", country)
         self.assertNotIn("private fun CurrencyPreferenceDialog(", self.host)
         self.assertIn('else -> "USD"', self.model)
         self.assertIn("HskSceneSurface(modifier = Modifier.fillMaxSize())", self.host)
+
+    def test_checkout_country_is_cleared_at_existing_account_boundaries(self):
+        application = (ROOT / "android/app/src/main/java/com/pomp/hskai/HskAiApplication.kt").read_text(encoding="utf-8")
+        for hook, end in (("onSessionCleared = {", "onSessionReplacing = {"),
+                          ("onSessionReplacing = {", "onSessionLinked = {")):
+            block = application.split(hook, 1)[1].split(end, 1)[0]
+            self.assertIn("appSettings.clearPaymentRegion()", block)
 
     def test_method_selection_is_optional_and_quote_follows_plan_continue(self):
         self.assertIn("listOf(CheckoutStep.PLANS, CheckoutStep.PAY)", self.model)

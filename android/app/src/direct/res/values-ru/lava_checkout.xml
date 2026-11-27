@@ -21,4 +21,5 @@
     <string name="lava_exit_later">Не сейчас</string>
     <string name="lava_uncertain">Ответ на запрос оплаты потерян. Проверьте серверный статус перед новой попыткой.</string>
     <string name="lava_other_plans">Другие тарифы</string>
+    <string name="lava_reference_price">Ориентировочная цена для сравнения, не предыдущая цена</string>
 </resources>

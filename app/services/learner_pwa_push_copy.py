@@ -9,7 +9,7 @@ from html.parser import HTMLParser
 
 from app.bot.utils.i18n import t
 from app.services.notification_i18n import notification_message
-from app.services.notification_template_service import NotificationTemplateService
+from app.services.notification_template_service import KEY_SMART_STUDY, NotificationTemplateService
 
 
 class _PlainText(HTMLParser):
@@ -83,7 +83,11 @@ async def course_push_copy(session, row, language: str) -> tuple[str, str]:
     params = row.params if isinstance(row.params, dict) else {}
     text = ""
     if params.get("template_service"):
-        resolved = await NotificationTemplateService(session).resolve(params["template_service"], language)
+        if params["template_service"] == KEY_SMART_STUDY:
+            from app.services.smart_reminder_messages import resolve_for_feed
+            resolved = await resolve_for_feed(session, params, language)
+        else:
+            resolved = await NotificationTemplateService(session).resolve(params["template_service"], language)
         if resolved:
             try:
                 fields = {

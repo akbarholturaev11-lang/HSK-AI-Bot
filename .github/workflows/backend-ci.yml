@@ -147,9 +147,9 @@ concurrency:
 jobs:
   targeted-tests:
     runs-on: ubuntu-latest
-    # The sequential browser-auth, course, checkout and migration regressions
-    # exceeded the old budget when the PR workflows ran concurrently.
-    timeout-minutes: 15
+    # The full unchanged test list exceeded 15 minutes twice under concurrent
+    # PR load. Keep a bounded budget for every existing regression to finish.
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -185,7 +185,7 @@ jobs:
       - name: Verify onboarding save confirmation and recovery
         run: python -m unittest tests.test_miniapp_onboarding_save_confirmation tests.test_course_miniapp_onboarding
       - name: Run HSK 3.0 lesson limit regression
-        run: python -m unittest tests.test_hsk30_lesson_limits tests.test_course_track_service tests.test_hsk30_promo_service tests.test_hsk30_switch_ui_contract tests.test_android_payment_method_dialog_contract
+        run: python -m unittest tests.test_hsk30_lesson_limits tests.test_course_track_service tests.test_hsk30_promo_service tests.test_hsk30_switch_ui_contract tests.test_android_payment_method_dialog_contract tests.test_v3_hsk30_map_access
       - name: Verify synthetic Mini App lesson reservation auth and quota boundary
         run: python -m unittest tests.test_i18n_miniapp_reservation_asgi
       - name: Verify course context, progress idempotence and current browser delivery contracts
@@ -240,7 +240,7 @@ jobs:
         run: python -m unittest tests.test_li_install_video_route
 
       - name: Verify one-time PWA exit offer and real Lava promo activation
-        run: python -m unittest tests.test_pwa_exit_offer tests.test_lava_promo_codes tests.test_android_lava_checkout tests.test_android_activity_feedback tests.test_pwa_learning_parity
+        run: python -m unittest tests.test_pwa_exit_offer tests.test_lava_promo_codes tests.test_android_lava_checkout tests.test_android_activity_feedback tests.test_pwa_learning_parity tests.test_lava_payments tests.test_lava_checkout_api tests.test_admin_pwa_lava tests.test_lava_preflight
       - name: Verify additive Li onboarding goals, streak targets and old-client compatibility
         run: python -m unittest tests.test_li_onboarding_choices
       - name: Rehearse additive Li migration 0154 without legacy data loss
@@ -257,6 +257,7 @@ jobs:
           REDIS_URL: "redis://127.0.0.1:1/0"
         run: |
           python -m unittest tests.test_course_adaptive_lesson_service tests.test_course_adaptive_api
+          python -m unittest tests.test_mistake_target_resolver tests.test_mistake_drill_factory
           node tests/test_course_adaptive_pwa.js
       - name: Test 0108 native audit facts and personal discount account isolation
         run: |
@@ -500,6 +501,8 @@ jobs:
         run: |
           python -m pip install pytest playwright
           python -m playwright install --with-deps chromium
+      - name: Verify Pro expiry priority on a locked HSK 3.0 course
+        run: python -m pytest -q tests/e2e/test_hsk30_rejection_recovery.py -k expiry_sheet_precedes_locked_hsk30
       - name: Verify mobile-only public site navigation and iOS PWA download/referrals
         run: python -m pytest -q tests/e2e/test_desktop_download_page.py
       - name: Verify real browser iPhone PWA glass dialogs at mobile widths
@@ -552,6 +555,7 @@ jobs:
           tests/e2e/test_miniapp_smoke.py::test_practice_tab_is_usable_during_unfinished_background_load
           tests/e2e/test_miniapp_smoke.py::test_desktop_course_modal_covers_full_viewport_and_mobile_keeps_bottom_sheet
           tests/test_miniapp_top_spacing_contract.py
+          tests/test_iphone_pwa_navigation_contract.py
       - name: Verify critical learning and checkout flows with synthetic APIs
         env:
           MINIAPP_E2E_BASE_URL: "http://hsk-ai.local"

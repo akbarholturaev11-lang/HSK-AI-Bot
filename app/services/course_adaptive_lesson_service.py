@@ -100,7 +100,7 @@ SKILL_FORMATS = {
         "hanzi": ("hanzi_choice", "hanzi_from_pinyin"),
         "pinyin": ("pinyin_choice", "listening_pinyin"),
         "listening": ("listening_choice", "listening_pinyin"),
-        "grammar": ("hanzi_choice", "meaning_choice"),
+        "grammar": ("gap_fill", "hanzi_choice", "meaning_choice"),
     },
     "sentence": {
         "meaning": ("sentence_meaning",),
@@ -528,6 +528,11 @@ class CourseAdaptiveLessonService:
             except (TypeError, ValueError):
                 material = {}
             fmt = material.get("format") if isinstance(material, dict) else None
+            if (
+                source == "test" and fmt == "text_choice"
+                and len(re.findall(r"_{2,}", str(material.get("sentence") or ""))) == 1
+            ):
+                fmt = "gap_fill"  # The verified error was choosing a word in context.
             evidence.setdefault(target_id, []).append(
                 {
                     "skill": skill_for(fmt, category),

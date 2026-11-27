@@ -22,7 +22,7 @@ class MiniAppProfilePagodaAssetTests(unittest.TestCase):
         self.assertIn('"app/static/assets/hsk-profile-pagoda.svg",', main)
         self.assertIn('"image/svg+xml",', main)
         self.assertIn('url("/assets/hsk-profile-pagoda.svg?v=20261014-2")', css)
-        self.assertIn('profile-carousel.css?v=20261017-link-cards-1', PROFILE)
+        self.assertRegex(PROFILE, r'profile-carousel\.css\?v=\d{8}-[0-9a-f]{12}')
         self.assertIn("viewBox", svg_path.read_text(encoding="utf-8"))
 
 
@@ -58,7 +58,7 @@ class MiniAppProfileCarouselArtworkTests(unittest.TestCase):
         page_policy = native.split("internal fun profilePromoPages(", 1)[1].split("\n/**", 1)[0]
         self.assertIn("if (checkoutAvailable) add(ProfilePromoPage.PRO)", page_policy)
         self.assertTrue(Path("android/app/src/main/res/drawable/profile_promo_pro.xml").exists())
-        self.assertIn("profile-carousel.css?v=20261017-link-cards-1", PROFILE)
+        self.assertRegex(PROFILE, r'profile-carousel\.css\?v=\d{8}-[0-9a-f]{12}')
 
 class MiniAppCourseVersionNavigationTests(unittest.TestCase):
     def test_settings_uses_original_hsk30_book_dialog(self):
@@ -78,7 +78,7 @@ class MiniAppCourseVersionNavigationTests(unittest.TestCase):
         self.assertNotIn("HskProfileCarousel.confirmHsk30()", carousel)
         from scripts.i18n_baseline_guard import git_blob_sha1
         digest = git_blob_sha1(Path("app/static/course_v3_data/profile-carousel.js").read_bytes())[:12]
-        self.assertIn("profile-carousel.js?v=20261021-" + digest, PROFILE)
+        self.assertIn("profile-carousel.js?v=20261121-" + digest, PROFILE)
 
     def test_course_path_header_still_uses_compact_version_and_level_picker(self):
         course = PROFILE.split("function renderCourse(){", 1)[1].split(
@@ -106,7 +106,8 @@ class MiniAppProfileHierarchyTests(unittest.TestCase):
         self.assertIn("completedLessons=Number(MAP&&MAP.progress&&MAP.progress.completed||0)", body)
         self.assertIn("streak=Number(MAP&&MAP.progress&&MAP.progress.streak||0)", body)
         self.assertIn("profile-compact-ach", body)
-        self.assertLess(body.index("profile-friends-link"), body.index("streakCalHtml()"))
+        self.assertIn('(PWA_COURSE_HOST?"":friendsLink)', body)
+        self.assertIn('(PWA_COURSE_HOST?friendsLink:"")', body)
         self.assertLess(body.index("profile-compact-ach"), body.index("hsk-profile-promo-root"))
         for removed in ('class="pgoal"', 'class="stats profile-stats"', "t.mistakesSub",
                         "p.a1", "socialLinksHtml()"):

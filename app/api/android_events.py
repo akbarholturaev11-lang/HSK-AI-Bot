@@ -27,6 +27,7 @@ class AndroidEventRequest(BaseModel):
         "android_widget_pin_requested",
         "android_widget_pinned",
         "android_widget_opened",
+        "android_widget_daily_prompt_viewed",
         "android_notification_opened",
     ]
     event_id: LinkRequestId

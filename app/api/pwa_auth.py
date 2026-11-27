@@ -95,7 +95,7 @@ def _pwa_html(request: Request, path: str, headers: dict[str, str]) -> Response:
 # The reviewed shared HTML bytes MUST remain unchanged for source/translation
 # audit anchors. Inject PWA-only assets only after an authenticated route check.
 # The injected HTML is separately ETagged by its FULL bytes, not by file SHA.
-_PWA_INLINE_PRO_HTML = "\n<link rel=\"stylesheet\" href=\"/course_v3_data/iphone-pwa-inline-pro.css?v=20261108-e8010ea28fdc\">\n<script src=\"/course_v3_data/iphone-pwa-inline-pro.js?v=20261108-8d96888d601f\"></script>\n<script src=\"/course_v3_data/iphone-pwa-inline-pro-bridge.js?v=20261108-afd4f9d80534\"></script>\n".encode("utf-8")
+_PWA_INLINE_PRO_HTML = "\n<link rel=\"stylesheet\" href=\"/course_v3_data/iphone-pwa-inline-pro.css?v=20261125-ce08c035ac87\">\n<script src=\"/course_v3_data/iphone-pwa-inline-pro.js?v=20261127-b4a5cea5b925\"></script>\n<script src=\"/course_v3_data/iphone-pwa-inline-pro-bridge.js?v=20261125-6e4c7585b70b\"></script>\n".encode("utf-8")
 
 # Scope only to the verified browser PWA. The native first-paint skeleton
 # stays in course-v3.html; these are ONLY independent secondary section states.
@@ -164,7 +164,8 @@ def _pwa_inline_html(request: Request, path: str, headers: dict[str, str],
             # only for independent Rating/Friends/Profile loading boundaries.
             source = source.replace(b"</head>", _PWA_PROGRESSIVE_SECTIONS_CSS + b"</head>", 1)
             source = source.replace(b"</body>", _pwa_install_guide_html() + b"</body>", 1)
-        document = source.replace(b"</body>", _PWA_INLINE_PRO_HTML + b"</body>", 1)
+        presentation = b'' if b'/hsk-subscription-presentation.js?' in source else b'<script src="/course_v3_data/hsk-subscription-presentation.js?v=20261127-86255bff796c"></script>\n'
+        document = source.replace(b"</body>", presentation + _PWA_INLINE_PRO_HTML + b"</body>", 1)
         etag = 'W/"' + hashlib.sha256(document).hexdigest()[:32] + '"'
         cached = document, etag
         if len(_PWA_INLINE_CACHE) >= 12:
@@ -359,7 +360,7 @@ class PwaProUiEvent(BaseModel):
     ]
     attempt_id: str = Field(min_length=5, max_length=80, pattern=r"^[A-Za-z0-9:.-]+$")
     event_id: str = Field(min_length=5, max_length=80, pattern=r"^[A-Za-z0-9:.-]+$")
-    plan_type: Literal["1_month", "3_months", "6_months", "12_months"] | None = None
+    plan_type: Literal["10_days", "1_month", "3_months", "6_months", "12_months"] | None = None
     method: Literal["lava", "manual"] | None = None
 
 
@@ -842,7 +843,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
             payload = await _small_json(request, PwaMistakeStart, max_bytes=4096)
             if (not payload.access_ref or len(payload.access_ref) > 100
                     or (payload.formats is not None and (
-                        len(payload.formats) > 10
+                        len(payload.formats) > 40
                         or any(not isinstance(v, str) or len(v) > 40
                                for v in payload.formats)
                     ))):
@@ -1114,16 +1115,31 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
         """
         try:
             require_pwa_enabled(settings_obj)
+            trial_offer = request.query_params.getlist("offer") == ["trial"]
+            if request.query_params.getlist("offer") and not trial_offer:
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            embedded_trial = False
+            if trial_offer:
+                # Reuse only the saved learner's trial scenes inside the
+                # existing same-origin Pro layer. Public guest onboarding
+                # retains its frame prohibition and all writes need CSRF.
+                async with session_factory() as db:
+                    await PwaAuthService(db, settings_obj).actor(
+                        request.cookies.get(PWA_SESSION_COOKIE)
+                    )
+                embedded_trial = request.query_params.getlist("embedded") == ["1"]
             return FileResponse(
                 "app/static/course_v3_li_onboarding.html",
                 media_type="text/html",
                 headers={
                     **_NO_STORE, "X-Content-Type-Options": "nosniff",
-                    "X-Frame-Options": "DENY",
+                    "X-Frame-Options": "SAMEORIGIN" if embedded_trial else "DENY",
                     "Content-Security-Policy": (
                         "default-src 'self'; script-src 'self' 'unsafe-inline'; "
                         "style-src 'self' 'unsafe-inline'; img-src 'self' data:; "
-                        "connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; "
+                        "connect-src 'self'; "
+                        + ("frame-ancestors 'self'; " if embedded_trial else "frame-ancestors 'none'; ")
+                        + "base-uri 'none'; "
                         "form-action 'none'"
                     ),
                 },
@@ -1212,7 +1228,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                         "start_mode": profile.start_mode,
                     } if completed else None),
                     "foundation_required": foundation_required,
-                }, headers=_NO_STORE)
+                }, headers={**_NO_STORE, "X-HSK-PWA-User-ID": str(user.id)})
         except PwaAuthError as exc:
             return _error(exc)
 
@@ -1298,7 +1314,8 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                 expires = access_expires_at(actor, EntitlementState.TRIAL_ACTIVE) if active else None
                 verdict = {**verdict, "active": active,
                            "ends_at": expires.isoformat() if expires else None}
-            return JSONResponse({"ok": True, "trial": verdict}, headers=_NO_STORE)
+            return JSONResponse({"ok": True, "trial": verdict},
+                                headers={**_NO_STORE, "X-HSK-PWA-User-ID": str(actor.id)})
         except PwaAuthError as exc:
             return _error(exc)
 
@@ -1684,6 +1701,7 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
 
     @router.post("/api/v3/pwa/subscription/overview")
     async def pwa_checkout_overview(request: Request):
+        from app.services.entitlements.state import EntitlementState, resolve_state
         from app.services.subscription_miniapp_service import SubscriptionMiniAppService
         from app.services.subscription_entry_analytics_service import (
             SubscriptionEntryAnalyticsService,
@@ -1709,6 +1727,16 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                     campaign_id=data.campaign_id,
                     feedback_id=data.feedback_id,
                 )
+                if (
+                    data.inline_preview
+                    and data.mode == "subscription"
+                    and data.source in {"v3_locked_lesson", "v3_mistake_review"}
+                    and result.get("ok")
+                ):
+                    result["learning_pro_eligible"] = (
+                        not result.get("pending_payment")
+                        and resolve_state(actor) in {EntitlementState.FREE, EntitlementState.EXPIRED}
+                    )
                 if result.get("ok") and not data.inline_preview:
                     await SubscriptionEntryAnalyticsService(db).record_entry(
                         user=actor, source=data.source or "iphone_pwa",
@@ -2058,6 +2086,11 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
             return _error(PwaAuthError(exc.code, status_code=exc.status_code))
         except ValueError:
             return _error(PwaAuthError("preferences_request_invalid", status_code=422))
+        except Exception:
+            # Exiting the session rolls back an uncommitted preference. The
+            # progress screen must receive a failure, never a saved response.
+            logging.getLogger(__name__).exception("PWA preferences update failed")
+            return _error(PwaAuthError("preferences_unavailable", status_code=503))
 
     @router.post("/api/v3/pwa/language")
     async def pwa_set_language(request: Request):

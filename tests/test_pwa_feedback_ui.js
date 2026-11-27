@@ -36,7 +36,7 @@ class Element {
 function makeHarness({page = "/iphone-pwa/course",ordinary = null,release = [],
                       prepared = null,account = 11} = {}) {
   const requests=[], navigation=[];
-  let root, sessionGate = null, resumeSession = null;
+  let root, sessionGate = null, resumeSession = null, now = 1000;
   const doc={
     body:{appendChild:(node)=>{root=node;}},
     createElement:(tag)=>new Element(tag),
@@ -72,9 +72,9 @@ function makeHarness({page = "/iphone-pwa/course",ordinary = null,release = [],
     document:doc,window,location,fetch,
     pwaCourseActor:async()=>({user_id:account}),
     commonMessage:(key)=>key, courseMessage:(key)=>key,
-    LANG:"uz",App:{},Number,Promise,Array,String,JSON,Set,setTimeout
+    LANG:"uz",App:{},Number,Promise,Array,String,JSON,Set,setTimeout,Date:{now:()=>now}
   },{filename:"iphone-pwa-feedback.js",timeout:1000});
-  return {root:()=>root,window,requests,navigation,
+  return {root:()=>root,window,requests,navigation,advance(ms){now+=ms;},
     respond(path, data){routes[path]=data;},
     pauseSession(){sessionGate=new Promise(resolve=>{resumeSession=resolve;});},
     releaseSession(){if(resumeSession)resumeSession();sessionGate=null;resumeSession=null;},
@@ -208,6 +208,9 @@ async function main(){
   assert.equal(cancellation.requests.filter(r=>r.url.endsWith("/ordinary/submit")).length,0,
     "a closed dialog must not submit after delayed authenticated session");
   await cancellation.window.HskPwaFeedback.open(lessonContext);
+  assert(cancellation.root().hidden,"Not now keeps the 24-hour cooldown in the same session");
+  cancellation.advance(24*60*60*1000);
+  await cancellation.window.HskPwaFeedback.open(lessonContext);
   assert.equal(cancellation.root().querySelector("#hsk-pwa-feedback-submit").disabled,false,
     "reopened dialog must not keep stale busy state");
   cancellation.choose("👍","course");cancellation.choose("👎","price");
@@ -216,7 +219,7 @@ async function main(){
     "reopened dialog should still accept its authorized feedback");
 
   const activity={kind:"practice",level:"hsk1",confirmed:true};
-  const canonical={feedback_id:51,paid:false,presentation:"bot",choices:{
+  const canonical={feedback_id:51,paid:false,presentation:"bot",reward_hint:"30 minutes Pro",dismiss_label:"Not now",choices:{
     liked:choices([["practice","Practice"],["other","Other"]]),
     liked_sub:{practice:choices([["daily","Daily"],["other","Other"]])},
     disliked:choices([["limits","Limits"],["other","Other"]]),
@@ -225,6 +228,8 @@ async function main(){
   const guided=makeHarness({ordinary:canonical});
   await guided.window.HskPwaFeedback.open(activity);
   assert.equal(guided.root().querySelector("#hsk-pwa-feedback-title").textContent,"pwaFeedback.likedQ");
+  assert.equal(guided.root().querySelector("#hsk-pwa-feedback-context").textContent,"30 minutes Pro");
+  assert.equal(guided.root().querySelector(".hsk-pwa-feedback-close").textContent,"Not now");
   assert.equal(guided.form().children[0].children.length,1,"question is in the heading, without a duplicate line");
   assert.equal(guided.selects().length,1,"one bot question at a time");
   assert.deepEqual(JSON.parse(guided.requests.find(r=>r.url.endsWith("/ordinary/prepare")).opt.body),

@@ -13,9 +13,9 @@ class CourseUICatalogGuardTests(unittest.TestCase):
     def test_existing_three_locale_1019_key_contract(self):
         result = review_sources(ROOT)
         self.assertEqual(result["status"], "SOURCE_CONTRACT_VALID_RUNTIME_NOT_TESTED")
-        self.assertEqual(result["message_keys"], 1110)
+        self.assertEqual(result["message_keys"], 1158)
         self.assertEqual(result["locales"], list(LOCALES))
-        self.assertEqual(result["placeholder_keys"], 45)
+        self.assertEqual(result["placeholder_keys"], 46)
         self.assertEqual(len(result["sources"]), 3)
         for locale in LOCALES:
             source = json.loads(
@@ -47,9 +47,20 @@ class CourseUICatalogGuardTests(unittest.TestCase):
                 "dictionaryPage.strokeCount.one", "dictionaryPage.strokeCount.few",
                 "dictionaryPage.strokeCount.many",
                 "track.permanent", "track.promoUnlock", "rating.leagueName",
-                "pwaFeedback.title",
+                "pwaFeedback.title", "pwaProgress.left",
             })
         self.assertNotIn("HSK AI Pro открыт", str(result))
+
+    def test_pro_expiry_copy_preserves_restore_or_lose_unlimited_access(self):
+        expected = {
+            "ru": ("Хотите вернуть безлимит?", "ПОТЕРЯТЬ БЕЗЛИМИТ"),
+            "uz": ("Limitsiz rejimni qaytarishni xohlaysizmi?", "LIMITSIZ REJIMNI YO‘QOTISH"),
+            "tj": ("Мехоҳед дастрасии бемаҳдудро баргардонед?", "АЗ ДАСТ ДОДАНИ ДАСТРАСИИ БЕМАҲДУД"),
+        }
+        for locale, (body, limited) in expected.items():
+            source = json.loads((ROOT / "localization/ui" / locale / "course.json").read_text(encoding="utf-8"))["messages"]
+            self.assertEqual(source["proExpiry.body"], body)
+            self.assertEqual(source["proExpiry.limited"], limited)
 
     def test_placeholders_are_multisets_not_just_names(self):
         self.assertEqual(signature("Remaining {n} / {n}"), (("n", 2),))

@@ -144,7 +144,7 @@ Expected outcomes (limit, paywall, cancel, 401/403/409/429, offline) are deliber
   - unique `(user_id, event_id)` plus a partial unique index on `event_id` for server rows;
   - indexes `(user_id, received_at)`, `(incident_id, received_at)` and `(received_at)`.
 - The same migration adds `diagnostic` to the outbox, triage and audit source CHECKs. Its downgrade refuses while `diagnostic` triage or outbox rows exist, as `0127` does. It is tested on local PostgreSQL: create_all + stamp + upgrade/downgrade.
-- **Fingerprint:** `sha256("v1|platform|feature|failure|site")`, computed on the server. Version is stored, not grouped (finite fingerprints).
+- **Fingerprint:** `sha256("v1|platform|feature|failure|site")`, computed on the server. Version is stored, not grouped (finite fingerprints). Learner-web JS failures append an allowlisted exception identity (D12 amendment, NXT-011).
 - **Platform:** `android`, `iphone_pwa` or `telegram` (Analytics keys). A backend row uses the route's client when the path prefix fixes it, otherwise the monitoring-only key `server`.
 - **Status:** not duplicated. The triage row (`source='diagnostic'`, `source_id=incident.id`) remains the only status.
 - *Alternatives rejected:* reusing the `technical` source ID space (it collides with `messages.id` triage rows); one table with occurrences only (no idempotency).
@@ -382,7 +382,8 @@ Follow-up to D5/D6 (tasks 6.1–6.4, owner decision 2026-11-14). The same tables
 **Server rules.**
 - An unknown key at any level, including inside a location, rejects the whole request, so a message, stack, URL or function name has no key to arrive under.
 - A forged or malformed value (unknown asset, path, URL, out-of-range position, bad token, more than five frames, a name that disagrees with the category, a reason that disagrees with the name) rejects that event alone. Nothing from it is stored.
-- The evidence is stored on the receipt only. It is never part of the fingerprint, deduplication, severity, triage or alert decision, and never reaches a push payload.
+- The evidence is stored on the receipt only. It is never part of the deduplication, severity, triage or alert decision, and never reaches a push payload.
+- *Amended 2026-11-22 (NXT-011, owner-approved):* the exception identity now separates incidents. For `js_uncaught`/`js_rejection` on `iphone_pwa`/`telegram`, a validated `error_name`, its `reason_code` and the primary location's `asset_id` are appended to the fingerprint (`v1|platform|feature|failure|site|e=<name>|r=<reason>|a=<asset>`, `-` for a missing part). Line, column, `asset_version` and build stay out, so a redeploy never splits one error. An event with neither a name nor a first-party location keeps the original page-level fingerprint; the Inbox row labels that group "unknown". The reporter's 10-minute coalescing key uses the same identity. The remaining coordinates stay receipt-only evidence.
 
 **Storage** (migration `0157_diagnostic_precision`, additive). `diagnostic_receipts` gains nullable `error_name`, `reason_code`, `locations` (JSON, at most six entries, SQL NULL when absent) and `source_commit`. Two partial indexes on `(incident_id, received_at, id)` serve the sample read: one where `locations IS NOT NULL`, one where `category IS NOT NULL`. The downgrade refuses while any receipt holds debug evidence. Retention and account deletion are unchanged; the columns leave with the receipt.
 

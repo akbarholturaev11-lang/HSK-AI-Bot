@@ -36,6 +36,7 @@ class FakeLava:
         self.prices = {
             "MONTHLY": "10.00", "PERIOD_90_DAYS": "27.00", "PERIOD_180_DAYS": "50.00", "PERIOD_YEAR": "90.00",
         }
+        self.rub_prices: dict[str, str] = {}
         self.product_type = "SUBSCRIPTION"
         self.promo_codes: dict[str, int] = {}  # code -> percent known to the fake cabinet
         self.last_create_body: dict | None = None
@@ -75,7 +76,8 @@ class FakeLava:
             body = json.loads(request.content)
             self.last_create_body = body
             contract_id = str(uuid.uuid4())
-            amount = self.prices.get(body.get("periodicity"), "10.00")
+            prices = self.rub_prices if body["currency"] == "RUB" and self.rub_prices else self.prices
+            amount = prices.get(body.get("periodicity"), "10.00")
             if body.get("promoCode"):
                 percent = self.promo_codes.get(body["promoCode"])
                 if percent is None:
@@ -106,7 +108,8 @@ class FakeLava:
                 "offers": [{"id": OFFER_ID, "name": "Pro", "prices": [
                     {"amount": float(amount), "currency": "USD", "periodicity": periodicity}
                     for periodicity, amount in self.prices.items()
-                ]}],
+                ] + [{"amount": float(amount), "currency": "RUB", "periodicity": periodicity}
+                     for periodicity, amount in self.rub_prices.items()]}],
             }}], "nextPage": None})
         if request.method == "GET" and path.startswith("/api/v1/subscriptions/"):
             parent_id = path.rsplit("/", 1)[1]

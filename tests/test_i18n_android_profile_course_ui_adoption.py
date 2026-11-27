@@ -60,7 +60,9 @@ FILE_RESOURCES = {
         "lesson_stat_xp", "lesson_stat_accuracy", "lesson_stat_time",
     ),
     "android/app/src/main/java/com/pomp/hskai/feature/lesson/LessonScreen.kt": (
-        "nav_course", "lesson_pinyin_title",
+        # The header now opens lesson settings; the pinyin heading is rendered
+        # inside MainActivity's existing sheet (covered above).
+        "nav_course",
     ),
     "android/app/src/main/java/com/pomp/hskai/feature/practice/PracticeCompletionHero.kt": (
         "exam_result_passed",
@@ -115,6 +117,24 @@ class AndroidProfileCourseCatalogTests(unittest.TestCase):
                 with self.subTest(file=file_name, key=old_key):
                     self.assertRegex(source, rf"R\.string\.{re.escape(generated_key)}(?![A-Za-z0-9_])")
                     self.assertNotRegex(source, rf"R\.string\.{re.escape(old_key)}(?![A-Za-z0-9_])")
+
+    def test_lesson_settings_actions_use_generated_resources_in_every_locale(self):
+        consumers = {
+            "android/app/src/main/java/com/pomp/hskai/feature/lesson/LessonScreen.kt": (
+                "hsk_course_lesson_settings_title",
+            ),
+            "android/app/src/main/java/com/pomp/hskai/MainActivity.kt": (
+                "hsk_course_lesson_settings_title", "hsk_course_lesson_settings_exit",
+            ),
+        }
+        for file_name, keys in consumers.items():
+            source = (ROOT / file_name).read_text(encoding="utf-8")
+            for key in keys:
+                with self.subTest(file=file_name, key=key):
+                    self.assertRegex(source, rf"R\.string\.{re.escape(key)}(?![A-Za-z0-9_])")
+                    for locale, directory in LOCALES.items():
+                        with self.subTest(locale=locale):
+                            self.assertTrue(read_strings(directory, "hsk_course_i18n.xml")[key].strip())
 
 
 if __name__ == "__main__":

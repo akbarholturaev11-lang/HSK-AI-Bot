@@ -57,6 +57,8 @@ jobs:
         run: python -m unittest -v tests.test_backend_pwa_performance_contract
       - name: Verify reusable skeleton geometry assertions catch layout shifts
         run: python -m unittest -v tests.test_pwa_layout_geometry
+      - name: Keep the PWA lab profile production-like
+        run: python -m unittest -v tests.test_measure_pwa_lab
       - name: Detect code paths for behavior regressions
         id: scope
         shell: bash
@@ -108,6 +110,13 @@ jobs:
           tests/e2e/test_pwa_progressive_sections.py
           tests/e2e/test_pwa_learning_parity.py
           tests/e2e/test_pwa_diagnostics.py
+          tests/e2e/test_ready_phrases.py
+          tests/e2e/test_pwa_progress_destinations.py
+          tests/e2e/test_pwa_installed_trial.py
+          tests/e2e/test_pwa_screen_alignment.py
+          tests/e2e/test_pwa_swipe_back.py
+          tests/e2e/test_pwa_launch_timing.py
+          tests/e2e/test_pwa_inbox_states.py
 
   backend-course-cache-regression:
     needs: policy-and-tests

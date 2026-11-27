@@ -31,7 +31,7 @@ from app.services.daily_plan_service import DailyPlanService, TASK_CONTINUE_LESS
 from app.services.entitlements.lesson_access import LessonAccessService
 from app.services.learning_signals import LEARNING_ACTIVITY_TYPES, LearningSignals
 from app.services.smart_reminder_policy import (
-    APPROVED_HABIT_CALIBRATION, PolicyContext, VerifiedStudy, _aware_utc,
+    APPROVED_HABIT_CALIBRATION, DEFAULT_STUDY_TIME, PolicyContext, VerifiedStudy, _aware_utc,
     day_window, habit_history_needs_extension,
 )
 from app.services.smart_reminder_cadence import CadenceContext, StudyIntent
@@ -608,7 +608,8 @@ class SmartReminderPolicyContextService:
                 timezone_name=pref["timezone_name"], course_day=course_day,
                 daily_goal_xp=daily_goal, plan_completed=plan_completed, studies=studies, coverage_limits=coverage,
                 time_mode=pref["time_mode"], manual_time=_clock(pref["manual_time_local"]),
-                saved_time=_clock(pref["legacy_time_local"]), channel_mode=pref["channel_mode"],
+                saved_time=_clock(pref["legacy_time_local"]), default_time=DEFAULT_STUDY_TIME,
+                channel_mode=pref["channel_mode"],
                 preferred_channel=pref["preferred_channel"], quiet_start=_clock(pref["quiet_start"]),
                 quiet_end=_clock(pref["quiet_end"]),
                 pause_until=datetime.fromisoformat(pref["pause_until"]) if pref["pause_until"] else None,

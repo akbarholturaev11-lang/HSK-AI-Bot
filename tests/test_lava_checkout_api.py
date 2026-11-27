@@ -87,6 +87,15 @@ class LavaCheckoutApiTests(unittest.IsolatedAsyncioTestCase):
                                            headers={"X-Api-Key": WEBHOOK_SECRET})
         self.assertEqual(oversized.status_code, 413)
 
+    async def test_explicit_unconfigured_currency_fails_before_provider(self):
+        response = await self._post("/api/subscription-miniapp/lava/start",
+                                    {"plan_type": "1_month", "email": "a@b.co", "currency": "RUB"})
+        self.assertEqual(response.status_code, 409)
+        self.assertIsNone(self.fake.last_create_body)
+        response = await self._post("/api/subscription-miniapp/lava/start",
+                                    {"plan_type": "1_month", "email": "a@b.co", "currency": "CNY"})
+        self.assertEqual(response.status_code, 422)
+
     async def test_webhook_disabled_without_secret(self):
         self.runtime.settings.LAVA_WEBHOOK_SECRET = ""
         hook = await self.client.post("/api/payments/lava/webhook", content=b"{}", headers={"X-Api-Key": ""})

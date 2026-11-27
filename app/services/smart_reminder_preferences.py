@@ -90,7 +90,7 @@ class SmartReminderPatch(BaseModel):
 @dataclass(frozen=True)
 class SmartReminderActor:
     user_id: int
-    kind: Literal["telegram", "telegram_bot", "android"]
+    kind: Literal["telegram", "telegram_bot", "android", "pwa"]
     telegram_id: int | None = None
     device_id: str | None = None
     session_id: str | None = None
@@ -99,7 +99,9 @@ class SmartReminderActor:
 
     @property
     def key(self):
-        return "android:" + self.device_id if self.kind == "android" else self.kind
+        if self.kind in {"android", "pwa"}:
+            return self.kind + ":" + self.device_id
+        return self.kind
 
     @property
     def source_key(self):
@@ -112,11 +114,11 @@ class SmartReminderError(ValueError):
         self.code, self.status, self.revision = code, status, revision
 
 
-def _state(rows, source_key):
-    """A current explicit endpoint intent can resolve its old mirror only.
+def _consent(rows, source_key, default):
+    """D34: an explicit endpoint intent wins; otherwise the default applies.
 
-    Unknown independent sources stay conservative; arbitrary existing OFF is
-    never cleared by master ON or by a legacy snapshot.
+    Legacy snapshots (an old lesson reminder that was off, a phone mirror) no
+    longer decide. Unknown independent sources stay conservative.
     """
     intent = [r for r in rows if r["source_key"] == source_key and r["source"] == "user_intent"]
     other = [r for r in rows if r not in intent and not r["source"].startswith("legacy_")]
@@ -124,19 +126,36 @@ def _state(rows, source_key):
         return "off"
     if other:
         return "unknown"
-    states = [r["state"] for r in intent or rows]
+    if not intent:
+        return default
+    states = [r["state"] for r in intent]
     if "off" in states:
         return "off"
-    return "on" if states and all(x == "on" for x in states) else "unknown"
+    return "on" if all(x == "on" for x in states) else "unknown"
+
+
+def android_phone_consent(rows, device_id, *, allowed, switch_off):
+    """Per-phone Smart study consent (D34).
+
+    An explicit choice on that phone wins. Without one, the Mini App/PWA
+    study switch OFF is an OFF, and the phone counts as ON only after it
+    reported that the system allows its notifications, so the app's own
+    notification screen still asks the system prompt.
+    """
+    default = "off" if switch_off else ("on" if allowed is True else "unknown")
+    return _consent([r for r in rows if r["channel"] == "android" and r["device_id"] == device_id],
+                    "intent:android:" + device_id, default)
 
 
 def pwa_study_consent(pref):
     """Study consent that lets the learner PWA carry a Smart reminder.
 
-    Explicit Smart ON, or no explicit Smart choice while the account already
-    consents to study reminders on Telegram: the PWA is then only another
-    channel for that same reminder. A push subscription alone never counts,
-    and Smart OFF always wins.
+    Explicit Smart ON, or no explicit Smart choice while account study consent
+    (the Telegram-channel value) is ON. Since D34 that value is ON by default
+    unless the learner turned it OFF or turned off the Mini App/PWA study
+    switch, so the live push subscription from the existing push switch,
+    required separately by destination and dispatch, is the PWA's signal.
+    Smart OFF always wins.
     """
     master = pref["master_enabled"]
     return master is True or (master is None and pref["channels"]["telegram"]["consent"] == "on")
@@ -148,7 +167,7 @@ async def automatic_timezone_initialization_allowed(session, user_id, settings):
     Public HTML ships independently of the private APK. Keep automatic writes
     dormant unless the runtime is explicitly enabled and this account is held
     or belongs to a cohort the automatic rollout has opened. The zone alone is
-    not consent; admission still requires an existing channel preference.
+    not consent; admission still applies the D34 consent rule and its fences.
     """
     if getattr(settings, "SMART_REMINDER_ENABLED", False) is not True:
         return False
@@ -166,16 +185,18 @@ class SmartReminderPreferencesService:
         self.session = session
 
     async def _lock(self, actor):
-        if type(actor.user_id) is not int or actor.user_id <= 0 or actor.kind not in {"android", "telegram", "telegram_bot"}:
+        if (type(actor.user_id) is not int or actor.user_id <= 0 or
+                actor.kind not in {"android", "pwa", "telegram", "telegram_bot"}):
             raise SmartReminderError("smart_auth_required", 401)
+        native = actor.kind in {"android", "pwa"}
         query = select(User.id).where(User.id == actor.user_id)
-        if actor.kind != "android":
+        if not native:
             if type(actor.telegram_id) is not int or actor.telegram_id <= 0:
                 raise SmartReminderError("smart_auth_required", 401)
             query = query.where(User.telegram_id == actor.telegram_id)
         if await self.session.scalar(query.with_for_update()) is None:
             raise SmartReminderError("smart_account_not_found", 404)
-        if actor.kind == "android":
+        if native:
             # Fresh projections after the user lock, independent of any cached
             # ORM context. Do not reverse native refresh's session/device locks.
             device = (await self.session.execute(select(
@@ -187,8 +208,8 @@ class SmartReminderPreferencesService:
             if (device is None or login is None or device["revoked_at"] is not None
                     or login["revoked_at"] is not None or _utc(login["expires_at"]) <= datetime.now(timezone.utc)):
                 raise SmartReminderError("smart_session_revoked", 401)
-            if device["platform"] != "android":
-                raise SmartReminderError("android_device_required", 403)
+            if device["platform"] != actor.kind:
+                raise SmartReminderError(actor.kind + "_device_required", 403)
         try:
             return await SmartReminderLegacyEvidenceService(self.session).snapshot(actor.user_id)
         except LegacyEvidenceUnavailable as exc:
@@ -209,14 +230,20 @@ class SmartReminderPreferencesService:
                 CONSENT.c.user_id == actor.user_id).limit(4 * MAX_DEVICE_OBSERVATIONS + 1))).mappings().all()
             if len(rows) > 4 * MAX_DEVICE_OBSERVATIONS:
                 raise SmartReminderError("smart_consent_inventory_over_limit", 503)
-            telegram = _state([r for r in rows if r["channel"] == "telegram" and r["device_id"] is None], "intent:telegram")
-            if row is None:
-                telegram = {"legacy_on": "on", "not_enabled": "off"}.get(evidence.telegram.study_state, "unknown")
+            # D34: ON by default. The Mini App/PWA study switch is the visible
+            # OFF on Telegram and PWA; it also wins over an older Telegram ON,
+            # which the bot's reminder-time picker writes as a side effect.
+            switch_off = evidence.motivation_enabled is False
+            telegram = "off" if switch_off else _consent([r for r in rows if r["channel"] == "telegram" and
+                r["device_id"] is None], "intent:telegram", "on")
+            allowed = {r["device_id"]: r["study_notifications_allowed"] for r in (await self.session.execute(select(
+                SmartReminderCapability.device_id, SmartReminderCapability.study_notifications_allowed).where(
+                SmartReminderCapability.user_id == actor.user_id).limit(MAX_DEVICE_OBSERVATIONS + 1))).mappings()}
             device_states = {}
             for device in evidence.android:
                 if not device.revoked:
-                    device_states[device.device_id] = _state([r for r in rows if
-                        r["channel"] == "android" and r["device_id"] == device.device_id], "intent:android:" + device.device_id)
+                    device_states[device.device_id] = android_phone_consent(rows, device.device_id,
+                        allowed=allowed.get(device.device_id), switch_off=switch_off)
             android = "on" if "on" in device_states.values() else (
                 "off" if device_states and all(v == "off" for v in device_states.values()) else "unknown")
             own = device_states.get(actor.device_id, "unknown")
@@ -263,6 +290,9 @@ class SmartReminderPreferencesService:
             return result
 
     async def _mutate(self, actor, payload, *, bot_time=None):
+        if actor.kind == "pwa" and ("study_enabled" in payload.model_fields_set or bot_time is not None):
+            # The PWA has no Smart study endpoint; its signal is the push switch.
+            raise SmartReminderError("smart_channel_unsupported", 422)
         body = payload.model_dump(mode="json", exclude_unset=True)
         if bot_time is not None:
             body["bot_time"] = bot_time.isoformat()

@@ -132,6 +132,29 @@ data class PronunciationCard(
     val translation: String,
 ) : LessonCard
 
+/** A word the learner has already met, asked for through its picture (UIUX-008). */
+data class PictureWord(
+    val hanzi: String,
+    val pinyin: String,
+    /** In the learner's language. */
+    val meaning: String,
+    /** One emoji that unambiguously means this word. */
+    val image: String,
+)
+
+/**
+ * Picture pronunciation review: one lesson step that holds up to ten words
+ * learned in earlier parts, shown as a stacked deck.
+ *
+ * Never graded, like [PronunciationCard]: hearts, accuracy and mistakes do not
+ * move. Each try is scored by the server's existing pronunciation endpoint.
+ * The answer (hanzi, pinyin, meaning) is drawn only after a scored try.
+ */
+data class PictureReviewCard(
+    override val materialRef: String,
+    val words: List<PictureWord>,
+) : LessonCard
+
 data class MatchPairsCard(
     override val materialRef: String,
     /** Hanzi to meaning, already localized. */

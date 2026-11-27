@@ -1,0 +1,37 @@
+/* HSK AI "Knot Thread" launch mark. Timeline (ms) mirrors HSKLaunchMark.TIMELINE
+ * and Android LaunchMarkTimeline: seal 0-260, strand A 140-560, strand B
+ * 260-680, weave 640-720, glint 760-1060, wordmark 820-1100, done 1150.
+ * Background is the Pro/Trial paper so the hand-off to the app has no flash.
+ */
+.hlm{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;
+  background:var(--hsk-paper,#FDF9F0);transition:opacity .22s ease,visibility .22s ease}
+.hlm.is-done{opacity:0;visibility:hidden;pointer-events:none}
+.hlm-stage{display:flex;flex-direction:column;align-items:center;gap:20px;transform:translateY(-6%)}
+.hlm-seal{display:block;width:96px;height:96px;overflow:visible;
+  filter:drop-shadow(0 10px 22px rgba(158,48,39,.22))}
+.hlm-word{font:800 25px/1 -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,sans-serif;
+  letter-spacing:2.7px;color:var(--hsk-ink,#211D17)}
+.hlm-word b{font-weight:800;color:var(--hsk-gold-ink,#725000)}
+
+/* Playing */
+.hlm.is-playing .hlm-seal{animation:hlm-seal 260ms cubic-bezier(.2,.8,.3,1) both}
+.hlm.is-playing .hlm-a path{stroke-dasharray:100;animation:hlm-draw 420ms cubic-bezier(.45,.05,.3,1) 140ms both}
+.hlm.is-playing .hlm-b path{stroke-dasharray:100;animation:hlm-draw-rev 420ms cubic-bezier(.45,.05,.3,1) 260ms both}
+.hlm.is-playing .hlm-x{animation:hlm-fade 80ms linear 640ms both}
+.hlm.is-playing .hlm-glint{animation:hlm-glint 300ms cubic-bezier(.3,.6,.3,1) 760ms both}
+.hlm.is-playing .hlm-word{animation:hlm-word 280ms cubic-bezier(.2,.8,.3,1) 820ms both}
+/* Static (reduced motion / finished): the complete mark, no glint. */
+.hlm .hlm-glint{opacity:0}
+.hlm.is-playing .hlm-glint{opacity:1}
+
+@keyframes hlm-seal{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+@keyframes hlm-draw{from{stroke-dashoffset:100}to{stroke-dashoffset:0}}
+@keyframes hlm-draw-rev{from{stroke-dashoffset:-100}to{stroke-dashoffset:0}}
+@keyframes hlm-fade{from{opacity:0}to{opacity:1}}
+@keyframes hlm-glint{from{transform:translateX(0)}to{transform:translateX(200px)}}
+@keyframes hlm-word{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+@media(prefers-reduced-motion:reduce){
+  .hlm,.hlm *{animation:none!important;transition:none!important}
+  .hlm .hlm-glint{opacity:0!important}
+}

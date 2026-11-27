@@ -129,6 +129,7 @@ ANDROID_CHECKOUT_ORIGIN_SOURCES = {
     "hsk30_onboarding": "android_hsk30_onboarding",
     "hsk30_content": "android_hsk30_onboarding",
     "hsk30_settings": "android_hsk30_settings",
+    "course_expired": "android_course_expired",
     "course_limit": "android_course_limit",
     "course_lesson_limit": "android_course_lesson_limit",
     "practice_limit": "android_practice_limit",
@@ -1097,18 +1098,27 @@ def create_android_features_router(
     @router.get("/api/v3/android/subscription/checkout/overview")
     async def android_checkout_overview(request: Request):
         try:
-            unknown = set(request.query_params.keys()) - {"origin"}
+            unknown = set(request.query_params.keys()) - {"origin", "provider_entry_id"}
             if unknown:
                 raise AndroidFeatureError("android_request_invalid", status_code=422)
             origin = str(request.query_params.get("origin") or "").strip()
             if origin and origin not in ANDROID_CHECKOUT_ORIGIN_SOURCES:
                 raise AndroidFeatureError("android_request_invalid", status_code=422)
             entry_source = ANDROID_CHECKOUT_ORIGIN_SOURCES.get(origin)
+            raw_entry_id = request.query_params.get("provider_entry_id")
+            provider_entry_id = None
+            if raw_entry_id is not None:
+                if not raw_entry_id.isascii() or not raw_entry_id.isdecimal() or len(raw_entry_id) > 10:
+                    raise AndroidFeatureError("android_request_invalid", status_code=422)
+                provider_entry_id = int(raw_entry_id)
+                if not 0 < provider_entry_id <= 2147483647:
+                    raise AndroidFeatureError("android_request_invalid", status_code=422)
             async with session_factory() as session:
                 user = await _user(session, request)
                 result = await (await _android_checkout(session, request)).overview(
                     _access_token(request),
                     entry_source=entry_source,
+                    **({"provider_entry_id": provider_entry_id} if provider_entry_id is not None else {}),
                 )
                 language = str(result.get("language") or "").strip().lower()
                 default_currency = (

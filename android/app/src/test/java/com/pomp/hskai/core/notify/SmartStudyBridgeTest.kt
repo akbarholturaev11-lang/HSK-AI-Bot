@@ -35,6 +35,7 @@ class SmartStudyBridgeTest {
         var allowed = true
         var posts = 0
         var openHint: SmartStudyOpenHint? = null
+        var message: SmartStudyMessage? = null
         var claims = 0
         var observations = 0
         var required = true
@@ -69,7 +70,7 @@ class SmartStudyBridgeTest {
                 if (claimFails) ApiResult.Failure(ApiError.Offline) else ApiResult.Success(change(grant))
             },
             receipt = { _, _, body -> receipts += body; ApiResult.Success(SmartStudyReceiptAck(ack,1)) },
-            permission = { allowed }, post = { _, hint -> openHint = hint; posts++; onPost() }, clock = { now }, elapsed = { elapsed })
+            permission = { allowed }, post = { _, hint, text -> openHint = hint; message = text; posts++; onPost() }, clock = { now }, elapsed = { elapsed })
     }
 
     @Test fun `open reporting uses current auth outside locks and no posting path`() = runTest {
@@ -105,6 +106,19 @@ class SmartStudyBridgeTest {
         f.bridge().run()
         assertEquals(SmartStudyOpenHint(f.job,"a".repeat(64),f.store.read().epoch),f.openHint)
         assertEquals(1,f.posts)
+    }
+
+    @Test fun `server rendered message reaches the notification only when usable`() = runTest {
+        val copy = SmartStudyMessage("comeback", "comeback.v3", "Title", "Body")
+        val f = Fixture(); f.setup(); f.change = { it.copy(message = copy) }
+        f.bridge().run()
+        assertEquals(1, f.posts); assertEquals(copy, f.message)
+        for (bad in listOf(copy.copy(title = " "), copy.copy(body = ""), copy.copy(body = "b".repeat(1001)))) {
+            val g = Fixture(); g.setup(); g.change = { it.copy(message = bad) }; g.bridge().run()
+            assertEquals(1, g.posts); assertNull(g.message)
+        }
+        val old = Fixture(); old.setup(); old.bridge().run()
+        assertEquals(1, old.posts); assertNull(old.message)
     }
 
     @Test fun `missing or malformed optional metadata does not alter posting`() = runTest {

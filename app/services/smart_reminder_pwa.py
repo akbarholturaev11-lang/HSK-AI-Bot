@@ -20,6 +20,7 @@ from app.services.learner_pwa_push import (
 )
 from app.services.learner_pwa_push_copy import fallback_copy, push_copy
 from app.services.notification_template_service import KEY_SMART_STUDY, NotificationTemplateService
+from app.services.smart_reminder_messages import smart_study_content
 from app.services.smart_reminder_destination import PWA_POLICY_VERSION
 from app.services.smart_reminder_preferences import SmartReminderPreferencesService, _utc, pwa_study_consent
 from app.services.smart_reminder_shadow_queue import ATTEMPT, JOB
@@ -198,14 +199,16 @@ class SmartReminderPwaService:
             ))
             await session.flush()
             language = user.language if user.language in {"uz", "ru", "tj"} else "ru"
-            resolved = await NotificationTemplateService(session).resolve(KEY_SMART_STUDY, language)
+            resolved = await smart_study_content(session, actor.user_id, row, language, now=now)
             title, body = fallback_copy(KEY_SMART_STUDY, language)
             text = ""
             if resolved:
                 try:
-                    text = resolved["text"].format(lesson=row["lesson_order"])
+                    text = resolved.text.format(lesson=row["lesson_order"])
                 except (KeyError, IndexError, ValueError):
                     pass
+            inbox_params = (resolved.params(row["lesson_order"]) if resolved else
+                            {"template_service": KEY_SMART_STUDY, "lesson": row["lesson_order"]})
             title, body = push_copy(text, title=title, body=body)
             public_payload = json.dumps({
                 "title": title, "body": body, "lang": language,
@@ -263,7 +266,7 @@ class SmartReminderPwaService:
                             title=title, body=body,
                             action="course", source="smart_pwa", level=row["course_key"],
                             lesson_order=row["lesson_order"], dedupe_key="job:" + job_id,
-                            params={"template_service": KEY_SMART_STUDY, "lesson": row["lesson_order"]},
+                            params=inbox_params,
                             pwa_push_suppressed=True,
                         )
             except Exception:  # the accepted provider result stays terminal

@@ -191,7 +191,8 @@ class PreferenceChecks:
         self.assertEqual(tg['legacy_time_local'],'14:00:00')
         self.assertFalse(tg['dispatch_allowed'])
         self.assertFalse(native['channels']['telegram']['transport_available'])
-        self.assertFalse(native['effective_master_enabled'])
+        # D34: Smart is ON by default, yet a read still writes no consent.
+        self.assertTrue(native['effective_master_enabled'])
         self.assertEqual(await self._rows(PREF),[])
         self.assertEqual(await self._rows(CONSENT),[])
         self.assertEqual(await self._rows(MUTATION),[])
@@ -230,13 +231,14 @@ class PreferenceChecks:
     async def test_master_on_creates_no_channel_consent_and_endpoint_off_survives(self):
         await self.send(self.body(master_enabled=True))
         current=await self.read()
-        self.assertFalse(current['effective_master_enabled'])
+        # D34 default ON (Telegram channel) without any written consent row.
+        self.assertTrue(current['effective_master_enabled'])
         self.assertEqual(current['channels']['android']['this_device_consent'],'unknown')
         await self.send(self.body(1,study_enabled=False))
         await self.send(self.body(2,master_enabled=True))
         current=await self.read()
-        self.assertFalse(current['effective_master_enabled'])
         self.assertEqual(current['channels']['android']['this_device_consent'],'off')
+        self.assertEqual(current['channels']['android']['consent'],'off')
         self.assertEqual((await self.read(tg=True))['revision'],0)
 
     async def test_current_endpoint_on_resolves_legacy_only_and_never_creates_os_capability(self):

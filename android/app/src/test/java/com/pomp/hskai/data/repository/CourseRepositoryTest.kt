@@ -297,6 +297,18 @@ class CourseRepositoryTest {
     }
 
     @Test
+    fun `expiry notice is present only in live map response`() = runTest {
+        val token = "a".repeat(64)
+        val api = object : FakeCourseApi() {
+            override suspend fun courseMap(authorization: String, timezoneOffsetMinutes: Int): Response<CourseMapDto> =
+                Response.success(sampleMap().copy(proExpiryNotice = token))
+        }
+        val repo = repository(api, FakeCourseMapDao())
+        assertEquals(token, (repo.courseMap() as ApiResult.Success).value.proExpiryNotice)
+        assertNull(repo.cachedCourseMap()?.proExpiryNotice)
+    }
+
+    @Test
     fun `an empty cache asks for nothing and promises nothing`() = runTest {
         val dao = FakeCourseMapDao()
         val api = FakeCourseApi()

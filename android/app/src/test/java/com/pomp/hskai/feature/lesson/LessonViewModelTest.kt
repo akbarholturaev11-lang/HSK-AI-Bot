@@ -10,6 +10,7 @@ import com.pomp.hskai.core.settings.LessonResumeStore
 import com.pomp.hskai.data.api.AndroidCourseApi
 import com.pomp.hskai.data.api.CourseCompleteRequest
 import com.pomp.hskai.data.api.CourseCompleteResponse
+import com.pomp.hskai.data.api.CourseLearningReviewDto
 import com.pomp.hskai.data.api.CourseLessonResponse
 import com.pomp.hskai.data.api.CourseMapDto
 import com.pomp.hskai.data.api.StrokeDataDto
@@ -39,12 +40,14 @@ import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
 import okhttp3.ResponseBody
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -97,7 +100,9 @@ internal open class FakeLessonApi(
     ): Response<LessonUnlockResponse> = throw NotImplementedError()
 
     val completions = mutableListOf<CourseCompleteRequest>()
+    var completeOk = true
     var completeDuplicate = false
+    var completeLearningResult: JsonElement? = null
     var lastTtsAuthorization: String? = null
     var lastTtsText: String? = null
 
@@ -171,10 +176,11 @@ internal open class FakeLessonApi(
         completions += body
         return Response.success(
             CourseCompleteResponse(
-                ok = true,
+                ok = completeOk,
                 completedLesson = body.lessonOrder,
                 completedLessonsCount = body.lessonOrder,
                 duplicate = completeDuplicate,
+                learningResultPayload = completeLearningResult,
             )
         )
     }
@@ -584,6 +590,73 @@ class LessonViewModelTest {
         )
         val outcome = model.state.value.outcome as LessonOutcome.Completed
         assertFalse(outcome.duplicate)
+        assertNull(outcome.learningResult)
+    }
+
+    @Test
+    fun `fresh completion pairs verified review with the opened topic and skips replays`() = runTest {
+        val allowCompletion = CompletableDeferred<Unit>()
+        val api = object : FakeLessonApi() {
+            override suspend fun complete(
+                authorization: String,
+                body: CourseCompleteRequest,
+            ): Response<CourseCompleteResponse> {
+                allowCompletion.await()
+                return super.complete(authorization, body)
+            }
+        }.apply {
+            completeLearningResult = Json.parseToJsonElement(
+                """{"review":{"prompt":"Salom!","correction":"你好！"}}"""
+            )
+        }
+        val model = viewModel(api)
+        advanceUntilIdle()
+        repeat(6) { model.advanceThroughCard() }
+        runCurrent()
+        assertTrue(model.state.value.isSubmitting)
+        assertEquals(LessonOutcome.InProgress, model.state.value.outcome)
+
+        allowCompletion.complete(Unit)
+        advanceUntilIdle()
+
+        val completed = model.state.value.outcome as LessonOutcome.Completed
+        assertEquals(
+            LessonLearningResult("1-dars", "1-qism", CourseLearningReviewDto("Salom!", "你好！")),
+            completed.learningResult,
+        )
+
+        api.completeDuplicate = true
+        model.beginAttempt("duplicate-attempt")
+        advanceUntilIdle()
+        repeat(6) { model.advanceThroughCard() }
+        advanceUntilIdle()
+
+        val duplicate = model.state.value.outcome as LessonOutcome.Completed
+        assertTrue(duplicate.duplicate)
+        assertNull(duplicate.learningResult)
+    }
+
+    @Test
+    fun `an unconfirmed save does not show a learning result and can retry`() = runTest {
+        val api = FakeLessonApi().apply {
+            completeOk = false
+            completeLearningResult = Json.parseToJsonElement("""{"review":null}""")
+        }
+        val model = viewModel(api)
+        advanceUntilIdle()
+        repeat(6) { model.advanceThroughCard() }
+        advanceUntilIdle()
+
+        assertTrue(model.state.value.outcome is LessonOutcome.Failed)
+
+        api.completeOk = true
+        model.retryCompletion()
+        advanceUntilIdle()
+
+        val completed = model.state.value.outcome as LessonOutcome.Completed
+        assertEquals(LessonLearningResult("1-dars", "1-qism", review = null), completed.learningResult)
+        assertEquals(2, api.completions.size)
+        assertEquals(1, api.completions.map { it.eventId }.distinct().size)
     }
 
     @Test

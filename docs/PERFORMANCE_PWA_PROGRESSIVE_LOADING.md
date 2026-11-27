@@ -27,7 +27,7 @@ This is a **release acceptance criterion**, not an optional visual enhancement.
 - **Acceptance with real browsers:** run throttled Chromium and iPhone WebKit loading→partial→ready→error/retry tests. Capture geometry of matching anchors before/after: title, league podium, participant bar, Top 5 heading, first visible rows and fixed nav. As a starting acceptance threshold, strive for ≤8 px displacement at stable anchors and CLS ≤0.1 over the measured interaction; investigate any excess rather than hiding it with animation. Assert there are no duplicate API requests while re-rendering. Test 320/390/430 px mobile widths and reduced motion. Real content with unpredictable size may require justified exceptions documented alongside screenshots/filmstrip.
 - **Every new feature inherits this:** new sections, cards, tables, search results, lists, profiles and image blocks must use their own layout-faithful skeleton from the initial implementation. Add a focused Playwright geometry test for the new screen using `tests/pwa_layout_geometry.py`, not just a check that any grey box is visible.
 
-- [ ] **Current Rating/Reyting example:** replace the sparse first-rating loading blocks with layout-faithful podium/leaderboard placeholders and verify in-place crossfade by Chromium/WebKit filmstrip. This is **not** marked implemented by adding the policy/CI guard.
+- [x] **Current Rating/Reyting example:** replace the sparse first-rating loading blocks with layout-faithful podium/leaderboard placeholders and verify in-place crossfade by Chromium/WebKit filmstrip. This is **not** marked implemented by adding the policy/CI guard. **Filmstrip, task 1.3 (2026-11-23):** on both engines the placeholders show from the tab's first frame, pulse as one wave and settle in place. The podium stays at the same position in every frame, then fades in over 200 ms, and settles at once under reduced motion. Repeat opens show the placeholders again for about 160 ms: a finding for the owner (1.3 section below).
 
 ## Mandatory retrofit: ALL EXISTING learner PWA functions
 
@@ -48,13 +48,16 @@ This requirement is **retroactive**: every currently implemented learner PWA scr
 - [x] Push Settings CI identified JS truthy-object coercion (`pushSupported()` could return the `Notification` object) in a strict Node DOM harness. Normalize capability result to a boolean; browser-disabled/pending guard, session owner verification and permission flow unchanged. Added pending synthetic click no-mutation checks; update content-addressed PWA script version to avoid stale Service Worker assets. Latest CI pending.
 - [x] Short (1–4 person) verified PWA Rating lists preserve the already-reserved Top-5 header before the first real leaderboard row; Telegram Mini App keeps its prior five-user threshold. Added Chromium/WebKit 320/390/430px first-row geometry regression; zero-user empty state still needs independent acceptance, and newest CI is pending.
 - [x] Authenticated PWA Rating at **zero users** now keeps the actual podium/Top-5/empty-result layout with a 305px reserved neutral content region (no fabricated users, no infinite spinner). Telegram Mini App retains its prior empty state. Extended 320/390/430px real browser geometry regression for 0/1/4 users; newest CI pending.
-- [ ] Verify EVERY existing PWA screen at 320/390/430px on Chromium/WebKit, reduced motion, slow/failed requests, partial/ready transitions, account switch and real mobile Safari. Compare actual DOM anchors and CLS; mere presence of placeholder does not close a screen.
+- [x] Verify EVERY existing PWA screen at 320/390/430px on Chromium/WebKit, reduced motion, slow/failed requests, partial/ready transitions, account switch and real mobile Safari. Compare actual DOM anchors and CLS; mere presence of placeholder does not close a screen. **Closed by task 1.3 (2026-11-23), with the rest owned:**
+  - Timed on Chromium and WebKit on the slow-network lab profile: the launch and every root tab at 320/390/430 px; every layer, practice page and session at 390 px (baselines below). The geometry regressions hold the DOM anchors at the three widths.
+  - Reduced motion, failed requests and account switch, per screen: the condition matrix (OpenSpec task 2.13) names each one's test or owning task.
+  - Real mobile Safari: owner device QA (task 5.1).
 - [x] Push status owner revalidation changed `iphone-pwa-notices.js` bytes; the Service Worker cache-first script reference in `course-v3.html` now includes the exact new Git-blob content digest (`?v=20261109-43bdd79d0370`) so installed PWA clients cannot keep stale script bytes. Existing asset-version CI contract retained.
 - [x] Confirmed existing iPhone PWA Push status had a late-response owner-switch gap (unlike Inbox feed). After reading Push status, revalidate current cookie session owner before setting any Push UI; redirect on changed owner. Added deterministic delayed-status account-switch regression to `tests/test_pwa_notices_ui.js`. Latest-head CI pending.
 - [x] Push Settings status GET failure now leaves a localized error in the reserved Push panel, with a working in-place retry CTA that only rechecks owner/Push state (no automatic permission prompts, subscribe or payment write). Held-status/fail-once Node regressions cover pending→error→retry→verified ready; newest-head CI pending.
 - [x] Confirmed Push Settings initially rendered `Off` from an unset/stale local state before authenticated server status arrived. It now shows a localized pending status and disabled, reserved CTA slot until the owner-verified GET settles, without requesting iOS system permissions automatically. Added held-request Node UI regression; checkout/entitlements unchanged. Latest-head CI pending.
 - [ ] Audit the current in-place embedded resources, Settings, Friends, notifications, Pro checkout, lesson dialogs, long lists and dynamically added widgets separately: they are not covered just because parent tab has a skeleton.
-- [ ] Record actual before/after filmstrip, LCP/CLS/INP and API/SQL p50/p95 measurements. Keep unverified product-wide acceptance open.
+- [x] Record actual before/after filmstrip, LCP/CLS/INP and API/SQL p50/p95 measurements. Keep unverified product-wide acceptance open. **Before: task 1.3 (below):** filmstrip, LCP, CLS and the INP proxy. Each group 2 task records its after with the same harness and targets. API p50/p95 is in the backend tasks (4.1–4.4).
 
 ## Implementation / verification checkpoints
 
@@ -63,7 +66,7 @@ This requirement is **retroactive**: every currently implemented learner PWA scr
 - [x] Replace PWA-only course placeholder with layout-sized neutral skeletons and visible brand/nav; don't show account or Pro data before the map verifies owner.
 - [x] PWA-only splash no longer hides the authenticated shell while waiting for the map, and nav remains inert until verified map or terminal auth/error state settles.
 - [x] Unit regression tests check source isolation, ETag revalidation, 304, and non-course screens.
-- [ ] Browser slow-network filmstrip and LCP/CLS measurements (baseline and after).
+- [x] Browser slow-network filmstrip and LCP/CLS measurements (baseline and after). Baseline: task 1.3 (below). After: each group 2 task.
 - [x] Verified Friends API failure discarded reserved invite/summary/row placeholders on PWA; now failed Friends GET and local Retry retain the same independent geometry while preserving Telegram's existing error UI. Added Chromium/WebKit mock-503 → error-anchor → retry → success regression. Latest-head CI pending.
 - [x] Independent Rating and Friends loading boundaries: in-flight deduplication, no premature empty state on locale re-render, per-section skeletons, and separate failure/retry paths.
 - [x] Profile accuracy placeholder while its own API is pending; on successful response replace the placeholder without blocking the profile header, navigation, account controls or Pro gate.
@@ -77,6 +80,652 @@ This requirement is **retroactive**: every currently implemented learner PWA scr
 - [ ] Split **additional optional course-map sub-sections** into independent API boundaries only after access/query dependency and row-lock analysis.
 - [ ] Audit and convert genuinely offscreen images to responsive WebP/AVIF without regressing visible mascot/brand.
 - [ ] All affected iPhone Safari flows with live-like latency, including auth replacement and Pro/lesson updates.
+
+## Repeatable lab profile (learner PWA)
+
+One command measures the learner PWA under the same conditions every time.
+Use it for every before/after claim (OpenSpec `perf-pwa-android-backend`,
+task 1.1):
+
+```bash
+.venv/bin/python scripts/measure_pwa_lab.py --out lab.json
+```
+
+- **Fixture:** `flow_fixture`, the existing e2e `ScreenPage` (UZ, onboarded,
+  Free) extended for task 1.2, served over real local HTTP.
+  - The course, practice and Voice HTML are built by production's own
+    builders in `app/api/pwa_auth.py`; the exam by the exam service.
+  - `--parts` selects what runs; the default `all` takes about 41 minutes.
+    - `launch`, `flows` (the 1.2 learner actions at `--flow-widths`, 390)
+      and `entry` (the entry pages);
+    - the task 1.3 parts: `tabs` (at `--tab-widths`, 320/390/430),
+      `layers`, `search`, `swipe`, `answers`, `pro`, `refresh`, `blocking`
+      (lab-only removal of each `<head>` resource, `--blocking-runs` cold
+      loads each), `film` and `sdk`.
+  - Every action records the console errors and uncaught exceptions it
+    raised.
+  - No production account or secret is used.
+  - The only outside request is one fetch per run of the cdnjs icon
+    stylesheet. It is then served like every other file.
+- **Network:**
+  - One shared link, shaped on the server: 150 ms to the first byte of each
+    response, 1.6 Mbps down. Chromium and WebKit see the same network.
+  - TLS setup is not modelled. Real-user launch timing (task 1.4) covers it.
+- **Delivery mirrors production** (`app/main.py`, `app/api/pwa_auth.py`):
+  - gzip for every body of 1 KB or more;
+  - HTML: `private, no-cache` plus ETag/304;
+  - `immutable` for versioned files, `/assets/` and the offline word-audio
+    scripts;
+  - `no-store` for API answers;
+  - the real service worker.
+
+  The run stops if the browser does not receive these headers.
+  `tests/test_measure_pwa_lab.py` pins the rules in the CI guard. On
+  2026-11-22, all 38 static URLs of a cold launch matched production's
+  `Cache-Control` and `Content-Encoding`.
+- **Browsers:**
+  - Chromium with a 4× CPU slowdown. Playwright cannot slow WebKit's CPU,
+    so WebKit runs at full speed.
+  - 320, 390 and 430 × 844 px, DPR 2, touch.
+- **Cold and warm:**
+  - Cold is a new browser context.
+  - Warm re-navigates the same page, so the HTTP cache and the service
+    worker apply. Playwright's WebKit keeps its HTTP cache only within one
+    page.
+  - The warm launch is measured after the worker's warm-up and after the
+    first launch under the worker's control, which is reported as the
+    takeover.
+  - An action part starts in a first session. The worker's warm-up is held
+    back, so the files it would cache are not cached yet. `layers` and
+    `pro` also open their layers as a returning learner, after the warm-up;
+    `refresh` runs only that way.
+- **Metrics:**
+  - Recorded inside the page from navigation start: FCP, LCP, CLS
+    (`unsupported` where the engine has no entry type), course-ready
+    (`MAP.authenticated`) and response end.
+  - Recorded at the server: network KB and requests.
+  - Each figure is the median of three cold/warm pairs.
+- **Not covered:** a real iPhone, a weak Android phone and production
+  latency. Real-user timing and owner device QA cover those.
+
+**Launch baseline, 2026-11-22.** Measured at `fbbdfde9` (main `50231bee`
+plus plan docs only). Each figure is the median of 6 launches (two full
+runs). Times in ms, sizes in KB.
+
+| Engine | Width | Cold FCP | Cold LCP | Cold course-ready | Cold KB | Warm FCP | Warm course-ready | Warm KB |
+|---|---|---|---|---|---|---|---|---|
+| Chromium 153 (4× CPU) | 320 | 1282 | 3682 | 3432 | 608–646 | 288 | 665 | 4.4 |
+| Chromium 153 (4× CPU) | 390 | 1238 | 3790 | 3578 | 608–646 | 296 | 686 | 4.4 |
+| Chromium 153 (4× CPU) | 430 | 1242 | 3844 | 3618 | 646 | 302 | 702 | 4.4 |
+| WebKit 26.6 | 320 | 2190 | 2470 | 3697 | 647 | 266 | 682 | 4.4 |
+| WebKit 26.6 | 390 | 2178 | 3683 | 3658 | 647 | 260 | 682 | 4.4 |
+| WebKit 26.6 | 430 | 2156 | 3712 | 3682 | 647 | 256 | 665 | 4.4 |
+
+- **Repeatability:** the two runs agree within 7.5% on FCP and course-ready.
+- **CLS:**
+  - Chromium: ≤0.011 in all 36 launches.
+  - WebKit: has no layout-shift entries, so the WebKit geometry regressions
+    remain its stability check.
+- **Warm launch:** the HTML answers 304, and every asset comes from cache.
+- **Chromium's cold size varies by 38.5 KB.** The icon stylesheet is a
+  non-blocking `media=print` load with low priority, and it sometimes
+  finishes after the measurement window.
+- **Per-action baselines** (tab switch, layers, search, swipe-back, lesson
+  open, exercise advance) are recorded in task 1.3, below.
+
+**Action readings, 2026-11-23 (task 1.2).** Measured at `ff244e04` with
+`--parts flows,entry`, at 390 px, as the median of 3 runs per engine. These
+are the first readings. Task 1.3 adds a second run and the targets.
+
+How the actions are timed:
+- **Ready:** from the tap (pointerdown) to the ready state, plus one frame,
+  so the change is painted.
+- **Parent only:** how long the practice entry was the only thing visible,
+  before the page frame was revealed.
+- **Panda:** how long the lesson-entry or study-preparing panda was
+  visible. Every run that waits showed it.
+
+Times in ms; Chromium has the 4× CPU slowdown.
+
+| Action | Chromium ready | Chromium parent only | Chromium panda | WebKit ready | WebKit parent only | WebKit panda |
+|---|---|---|---|---|---|---|
+| Lesson open → first card | 828 | — | 804 | 826 | — | 812 |
+| Exercise advance | 27 | — | 0 | 26 | — | 0 |
+| Lesson finish → result | 385 | — | 0 | 228 | — | 0 |
+| Recognition, first / repeat | 1733 / 947 | 1731 / 933 | 1718 / 920 | 1934 / 950 | 1913 / 933 | 1898 / 918 |
+| Pronunciation, first / repeat | 1004 / 831 | 990 / 819 | 975 / 806 | 1047 / 834 | 1031 / 817 | 1015 / 802 |
+| Memorize, first / repeat | 1115 / 716 | 1112 / 708 | 1105 / 691 | 3053 / 747 | 3020 / 730 | 3017 / 719 |
+| Test centre, first / repeat | 285 / 203 | 271 / 190 | 257 / 176 | 283 / 201 | 268 / 189 | 252 / 174 |
+| Test exam start | 241 | — | 222 | 279 | — | 250 |
+| Mistakes, first / repeat | 604 / 522 | 596 / 507 | 581 / 493 | 612 / 556 | 597 / 538 | 581 / 522 |
+| Mistakes review start | 190 | — | 170 | 196 | — | 165 |
+| Voice → opening line, first / repeat | 1818 / 906 | 804 / 300 | 793 / 286 | 1763 / 879 | 790 / 338 | 775 / 323 |
+
+First paint of pages opened directly. Ready means:
+- **Login:** the provider buttons are shown.
+- **Li onboarding:** the first scene and its button are shown.
+- **Course onboarding:** the start button is shown.
+
+| Page | Chromium FCP / ready, cold | Chromium warm | WebKit FCP / ready, cold | WebKit warm |
+|---|---|---|---|---|
+| Login | 432 / 819 | 396 / 751 | 476 / 864 | 378 / 749 |
+| Li onboarding | 528 / 770 | 264 / 483 | 771 / 796 | 288 / 500 |
+| Course onboarding | 744 / 1021 | 220 / 260 | 1049 / 1049 | 279 / 278 |
+
+What the readings show, as input for 1.3 and group 2:
+- **Practice pages reveal only when ready.** The parent-only time is almost
+  the whole wait, and the panda shows for all of it. That includes the Test
+  centre (≈0.25 s) and both session starts (0.17–0.25 s), which are under
+  the 300 ms panda bar (task 2.5).
+- **Lesson open:** the panda shows for ≈0.8 s, which includes the 720 ms
+  minimum.
+- **Slowest first opens:**
+  - Recognition: 1.7–1.9 s.
+  - Memorize on WebKit: 3.1 s, against 1.1 s on Chromium. It has no PWA
+    tile today.
+  - Voice: 1.8 s to the opening line. The frame is revealed at 0.8 s; the
+    rest is the microphone and the session start.
+- **Not modelled:**
+  - first-time TTS synthesis (a cached phrase is served);
+  - CSP on the three entry pages;
+  - the live voice relay (fake microphone, `live_available: false`).
+
+**Baselines and targets, 2026-11-23 (task 1.3).** Measured on the app code
+of `ad11cc71` with `--parts all` in two full runs, plus two runs of
+`--parts refresh,pro` (below). Each figure is the median of 6 runs (3 per
+run), at 390 px unless stated. The launch and the tabs were also measured at
+320 and 430 px. These readings replace the 1.2 table above as the baseline.
+
+How the runs were set up:
+- **First session:** each action part starts from a cold launch whose icon
+  font has arrived. Its context drops the service worker's background
+  warm-up, so a first open means "files not cached yet" on a quiet link.
+  - In 1.2, the icon font and the warm-up shared the link with the actions.
+    That is why 1.2 shows WebKit Memorize at 3.1 s and Recognition at
+    1.7–1.9 s: on a quiet link they take 1.04 s and 1.43–1.60 s.
+- **Returning learner:** the warm-up is done, and one launch has already run
+  under the worker's control. Dictionary, Phrases, checkout and trial are
+  opened in this state too. Pull-to-refresh is measured only in this state.
+- Times are in ms. Chromium has the 4× CPU slowdown.
+- **Repeatability:** the two full runs agree within 12.6% on every reading of
+  100 ms or more, and most agree within 5%. Readings under 100 ms agree
+  within 10 ms. The two `refresh,pro` runs agree within 4.1%.
+- **Errors:** no console or page error in any action, launch or part, on
+  either engine. This is the "no new error" baseline for every group 2
+  package.
+  - One earlier run, which did not wait for the worker to take control, logged
+    a WebKit error `…/iphone-pwa/sw.js due to access control checks.` A pull
+    had reloaded the page while the worker was registering.
+  - The registration already catches its failure; WebKit still reports the
+    aborted fetch.
+
+How each target is set (design decision 12). The harness computes it for
+every action and engine (`with_targets` in `scripts/measure_pwa_lab.py`):
+- **Bounds:**
+  - an interaction (tap to the first visible response): 200 ms;
+  - an opening (tap to a usable screen): 1000 ms;
+  - a cold launch to the shell: 1500 ms;
+  - a warm launch and refresh-to-settled have no bound: they keep their
+    baseline.
+- **Inside its bound,** a reading may not get more than 10% worse: the target
+  is the baseline + 10%, never above the bound.
+- **Outside its bound,** the target is the bound. The owning task reaches it,
+  or records an owner-approved exception with the evidence. These readings
+  are **bold** below.
+
+**Launch.**
+
+| Engine | Width | Cold shell (FCP) | Cold course ready | Cold icons visible | Warm FCP | Warm course ready | Warm icons | Cold shell target |
+|---|---|---|---|---|---|---|---|---|
+| Chromium | 320 | 1198 | 3564 | 8338 | 256 | 618 | 285 | 1318 |
+| Chromium | 390 | 1194 | 3544 | 8198 | 240 | 602 | 268 | 1313 |
+| Chromium | 430 | 1198 | 3579 | 8175 | 252 | 592 | 272 | 1318 |
+| WebKit | 320 | **2152** | 3679 | 8744 | 212 | 612 | 251 | 1500 |
+| WebKit | 390 | **2157** | 3613 | 8662 | 197 | 591 | 238 | 1500 |
+| WebKit | 430 | **2138** | 3666 | 8740 | 209 | 611 | 252 | 1500 |
+
+- **LCP element:** the Foundation card's description
+  (`.foundation-entry .ft small`), at ≈3.8 s on Chromium and 3.65–3.70 s
+  on WebKit. On WebKit at 320 px it is `body.hsk-scene-page`, at 2.43 s.
+- **Warm launch target:** no bound, so each warm reading's target is that
+  reading + 10%.
+- **CLS:** 0.0001 on Chromium. WebKit has no layout-shift entries.
+- **Size:**
+  - cold: 662 KB in 46–48 requests;
+  - warm: 16.9 KB in 8–9 requests, with the HTML answered 304.
+- **Chromium's cold first paint has two modes:** 0.91–0.96 s or
+  1.18–1.35 s, with a median of 1.19 s. It is fast only when the four
+  character scripts arrive in time (head table below).
+- **Warm-up:** after a first launch, the worker's warm-up downloads
+  1586 KB (Chromium) or 1879 KB (WebKit). It finishes 24.2–24.4 s or
+  30.6–30.7 s after the launch started.
+- **Takeover:** the first launch under the worker's control costs 272–280 ms
+  and 14 KB on Chromium, and 903–914 ms and 133 KB on WebKit. WebKit fetches the
+  course's files again, through the worker. The warm readings above are the
+  launches after it.
+- **Icons on a first launch:**
+  - They appear at 8.2 s (Chromium) and 8.7 s (WebKit), 4.6–5.1 s after the
+    course is ready.
+  - The icon stylesheet does not block, but its font is one 870 KB woff2 for
+    the whole Tabler set. The course uses about 74 of its icons.
+  - The `@font-face` has no `font-display`. Until the font arrives, each icon
+    slot is empty. After the font's 3 s block period, each one shows a "□"
+    box (1.3 screenshots).
+  - On a warm launch the icons are visible at 0.24–0.29 s.
+
+**Launch filmstrip, 390 px.** It records the course screen's state on every
+frame, with the map request answered at once or held 3 s.
+
+| Engine | Launch | Map | First frame | Shell skeleton | Course content | Icons | Blank or "…" frames |
+|---|---|---|---|---|---|---|---|
+| Chromium | cold | at once | 194 | 1184 | 3572 | 8190 | none |
+| Chromium | cold | held 3 s | 194 | 1142 | 6494 | 8186 | none |
+| Chromium | warm | at once | 161 | 234 | 616 | 280 | none |
+| Chromium | warm | held 3 s | 164 | 240 | 3646 | 296 | none |
+| WebKit | cold | at once | 234 | 2470 | 4747 | 11150 | none |
+| WebKit | cold | held 3 s | 240 | 2152 | 6650 | 8648 | none |
+| WebKit | warm | at once | 166 | 219 | 576 | 234 | none |
+| WebKit | warm | held 3 s | 163 | 208 | 3580 | 226 | none |
+
+- Before the first paint, the browser keeps showing the previous screen:
+  blank in Playwright, the launch image on a phone. The filmstrip is judged
+  from the first paint.
+- From the first paint until the course is ready, every frame shows the
+  shell skeleton, on both engines, cold and warm, with the map answered at
+  once or held 3 s.
+
+**Actions and targets, 390 px.** The reading is "ready" unless the row says
+otherwise.
+
+| Action | Chromium | WebKit | Target Chromium / WebKit | Owner |
+|---|---|---|---|---|
+| Lesson open → first card | 828 | 810 | 911 / 891 | 2.7 |
+| Exercise advance | 29 | 26 | 32 / 29 | 2.7 |
+| Lesson finish → result | 337 | 231 | 371 / 254 | 2.7 |
+| Recognition, first | **1432** | **1600** | 1000 / 1000 | 2.8 |
+| Recognition, repeat | 838 | 854 | 922 / 939 | 2.8 |
+| Pronunciation, first | 897 | 918 | 987 / 1000 | 2.8 |
+| Pronunciation, repeat | 842 | 848 | 926 / 933 | 2.8 |
+| Memorize, first | 972 | **1042** | 1000 / 1000 | 2.8 |
+| Memorize, repeat | 678 | 679 | 746 / 747 | 2.8 |
+| Test centre, first | 277 | 282 | 305 / 310 | 2.8 |
+| Test centre, repeat | 202 | 200 | 222 / 220 | 2.8 |
+| Mistakes centre, first | 596 | 614 | 656 / 675 | 2.8 |
+| Mistakes centre, repeat | 521 | 517 | 573 / 569 | 2.8 |
+| Voice → opening line, first | **1750** | **1723** | 1000 / 1000 | 2.8 |
+| Voice → opening line, repeat | 946 | 862 | 1000 / 948 | 2.8 |
+| Test exam start | 240 | 280 | 264 / 308 | 2.8 |
+| Mistakes review start | 190 | 196 | 209 / 216 | 2.8 |
+| Dictionary, first session | **7462** | **8557** | 1000 / 1000 | 2.4 |
+| Dictionary, returning learner | 346 | 264 | 381 / 290 | 2.4 |
+| Dictionary, repeat | 30 | 32 | 33 / 35 | 2.4 |
+| Phrases, first session | 870 | 883 | 957 / 971 | 2.4 |
+| Phrases, returning learner | 648 | 624 | 713 / 686 | 2.4 |
+| Phrases, repeat | 54 | 31 | 59 / 34 | 2.4 |
+| Search 学, slowest keystroke | 88 | 24 | 97 / 26 | 2.4 |
+| Search xue, slowest keystroke | 26 | 30 | 29 / 33 | 2.4 |
+| Search kitob, slowest keystroke | 27 | 30 | 30 / 33 | 2.4 |
+| Inbox, first | 346 | 354 | 381 / 389 | 2.3 |
+| Inbox, repeat | 355 | 356 | 391 / 392 | 2.3 |
+| Settings, first / repeat | 30 | 30 | 33 / 33 | 2.6 |
+| Swipe-back from a layer, drag first frame | 28 | 23 | 31 / 25 | 2.5 |
+| Swipe-back from a root tab, drag first frame | 24 | 54 | 26 / 59 | 2.5 |
+| Pull-to-refresh, Course: first frame | **420** | **466** | 200 / 200 | 2.10 |
+| Pull-to-refresh, Reyting: first frame | **426** | **480** | 200 / 200 | 2.10 |
+| Pull-to-refresh, Profil: first frame | **426** | **480** | 200 / 200 | 2.10 |
+| Pull-to-refresh, Course: settled | 1936 | 1968 | 2130 / 2165 | 2.10 |
+| Pull-to-refresh, Reyting: settled | 2028 | 2132 | 2231 / 2345 | 2.10 |
+| Pull-to-refresh, Profil: settled | 2060 | 2160 | 2266 / 2376 | 2.10 |
+| Personal review answer, server now | 184 | 190 | 200 / 200 | 2.11 |
+| Personal review answer, server held 1 s | **1192** | **1198** | 200 / 200 | 2.11 |
+| Mistakes review answer, server now | 192 | 198 | 200 / 200 | 2.11 |
+| Mistakes review answer, server held 1 s | **1191** | **1196** | 200 / 200 | 2.11 |
+| Limit/Pro sheet, first: plans with an active pay button | 364 | 355 | 400 / 391 | 2.12 |
+| Limit/Pro sheet, repeat | 190 | 195 | 209 / 215 | 2.12 |
+| Checkout, first session: child first paint | 451 | **1310** | 496 / 1000 | 2.12 |
+| Checkout, returning learner: child first paint | 193 | 188 | 212 / 207 | 2.12 |
+| Trial, first session: child first paint | 498 | 818 | 548 / 900 | 2.12 |
+| Trial, returning learner: child first paint | 270 | 513 | 297 / 564 | 2.12 |
+| Login, cold: first paint / ready | 398 / 799 | 434 / 862 | 879 / 948 | new item |
+| Login, warm: first paint / ready | 376 / 726 | 364 / 754 | 799 / 829 | new item |
+| Li onboarding, cold: first paint / ready | 484 / 787 | 758 / 792 | 866 / 871 | new item |
+| Li onboarding, warm: first paint / ready | 270 / 486 | 288 / 514 | 535 / 565 | new item |
+| Course onboarding, cold: first paint / ready | 700 / **1008** | 1056 / **1056** | 1000 / 1000 | new item |
+| Course onboarding, warm: first paint / ready | 216 / 268 | 278 / 277 | 295 / 305 | new item |
+
+- Every action was measured in all 6 runs on both engines; none is
+  unmeasured.
+- The entry pages are opened directly. Their target applies to "ready": the
+  provider buttons (Login), the first scene and its button (Li onboarding),
+  the start button (Course onboarding).
+- No task owns the entry pages: "new item" means a reading outside its bound
+  becomes a new item, as Course onboarding cold does (findings below).
+
+Tab switches at 320, 390 and 430 px (tap to the tab's first frame):
+
+| Tab | Chromium 320 / 390 / 430 | WebKit 320 / 390 / 430 |
+|---|---|---|
+| Course, first | 48 / 48 / 50 | 60 / 58 / 62 |
+| Course, repeat | 46 / 43 / 43 | 48 / 50 / 48 |
+| Mashq, first | 54 / 58 / 55 | 32 / 32 / 28 |
+| Mashq, repeat | 28 / 26 / 26 | 26 / 26 / 27 |
+| AI Voice, first | 29 / 29 / 30 | 31 / 31 / 32 |
+| AI Voice, repeat | 30 / 30 / 30 | 32 / 31 / 32 |
+| Reyting, first | 30 / 29 / 28 | 35 / 36 / 36 |
+| Reyting, repeat | 29 / 30 / 29 | 30 / 31 / 32 |
+| Profil, first | 42 / 40 / 40 | 34 / 32 / 33 |
+| Profil, repeat | 30 / 28 / 29 | 35 / 34 / 32 |
+
+Every tab is inside the 200 ms bound at every width. Its target is the
+reading + 10%, per width (2.5).
+
+**What each parser-blocking `<head>` resource costs the cold first paint**
+(390 px; lab-only removal; the median of 10 cold loads per variant, 5 per
+full run):
+
+| Removed | Chromium FCP | Saves | WebKit FCP | Saves |
+|---|---|---|---|---|
+| Nothing | 1210 | — | 2117 | — |
+| `hsk-character-pack.js` | 1212 | −2 | 2107 | 10 |
+| `hsk-character-motion.js` | 1198 | 12 | 2108 | 9 |
+| `hsk-study-preparing.js` | 1192 | 18 | 2116 | 1 |
+| `hsk-lesson-presentation.js` | 1200 | 10 | 2114 | 3 |
+| Each of the other nine stylesheets | 1148–1240 | −30 to 62 | 2086–2122 | −5 to 31 |
+| `desktop-download.css` | 1062 | 148 (see below) | 2100 | 17 |
+| The four character scripts | 1012 | **198** | 2038 | 79 |
+| The ten stylesheets | 536 | 674 | 1690 | 427 |
+| Everything above | 472 | 738 | 2248 | −131 |
+
+- **No single file costs 100 ms.**
+  - `desktop-download.css` only looks like it does. Chromium's first paint
+    has two modes, and 5 of that variant's 10 loads landed in the fast mode,
+    against 3 of 10 with nothing removed.
+  - Its download ends at 716 ms, long before the character scripts
+    (1160 ms), so it is not what the paint waits for.
+- **The four character scripts, together, cost 198 ms on Chromium:**
+  without them, 24 of 25 cold loads across the five 1.3 runs paint in the
+  fast mode. On WebKit they cost 79 ms. This is the evidence for 2.9: the
+  scripts move as one group, or not at all.
+- **The stylesheets style the shell,** so they stay on the first-frame path.
+- **WebKit's 1500 ms target cannot be reached by moving head resources:**
+  - with every stylesheet removed, it still paints at 1.69 s;
+  - with everything removed, at 2.25 s;
+  - its first paint comes 0.7 s before the HTML finishes (2.9 s), so it is
+    not waiting for the whole document either (findings below).
+
+**Embedded layers, first open** (child = the page in the layer's frame):
+
+| Layer | State | Engine | Child's first paint shows | Child first paint | Child content | Cover removed | Ready |
+|---|---|---|---|---|---|---|---|
+| Dictionary | first session | Chromium | empty list | 604 | 1690 | 7446 | **7462** |
+| Dictionary | first session | WebKit | empty list | 2617 | 2617 | 8552 | **8557** |
+| Dictionary | returning | Chromium | empty list | 210 | 314 | 334 | 346 |
+| Dictionary | returning | WebKit | content | 210 | 210 | 246 | 264 |
+| Phrases | first session | Chromium | skeleton | 407 | 779 | 394 | 870 |
+| Phrases | first session | WebKit | skeleton | 418 | 876 | 418 | 883 |
+| Phrases | returning | Chromium | skeleton | 203 | 586 | 200 | 648 |
+| Phrases | returning | WebKit | skeleton | 181 | 620 | 182 | 624 |
+
+- **Dictionary, first session:** the child shows its words at 1.7 s
+  (Chromium) and 2.6 s (WebKit). The parent's cover hides them until the
+  frame's `load` event at 7.4 s or 8.6 s. That event waits for
+  `hsk-extra.js` (strokes and examples, 1.1 MB gzip), which the page loads
+  `async` so that the list can show first. This is the cover that 2.4
+  replaces.
+- **Dictionary's first child paint is an empty list,** not a skeleton.
+  The row placeholders that 2.4 adds (decision 5) fill it.
+- **Repeat opens** remove the cover in 14–50 ms and are ready in 30–54 ms.
+- **The 150 ms anti-flash window (decision 5) holds:**
+  - repeat opens never reach it;
+  - a returning learner's first open hands over to the child at 180–210 ms,
+    so the cover's bars would show for at most 60 ms before the child's
+    matching skeleton.
+- **Inbox** shows its loading text for 320–328 ms on the first open and
+  again on the repeat open. It is ready at 346–356 ms (2.3). Since 2.3 the
+  wait shows notice-shaped placeholder rows instead (section "Inbox loading
+  and error states").
+
+**Skeletons on a fast open** (how long placeholders stay visible, and whether
+their pulse is one synchronized wave):
+- **Rating:**
+  - The first open shows the placeholders for 152–169 ms, at all three
+    widths on both engines. The content settles at 193–215 ms.
+  - Every repeat open shows them again, for 150–166 ms (findings below).
+  - The 28 placeholders pulse as one wave: one animation
+    (`hsk-pwa-layout-pulse`) with no phase spread.
+  - The content settles in place. In every frame from skeleton to content,
+    the podium stays 64 px from the top. Then it fades from 0.82 to full
+    opacity over 200 ms, on both engines. Under reduced motion it settles at
+    once. (A per-frame probe at 390 px.)
+- **Profile:** the first open shows its 2 placeholders for 163–176 ms, as
+  one wave. The repeat open shows none.
+- **Pro sheet:** its loading state (`.hip-skeleton` or `.hip-loading`) shows for
+  286–324 ms on the first open, and again for 146–162 ms on every repeat open
+  (2.12, decision 16).
+- The Test and Mistakes centres reveal only when they are ready (1.2), so
+  there is nothing to flash yet. Their skeletons come in 2.8.
+
+**Other readings:**
+- **Search:**
+  - the slowest keystroke is ≤30 ms, except the hanzi query on Chromium
+    (88 ms);
+  - the slowest event, the INP proxy, is ≤64 ms on Chromium and 16 ms on
+    WebKit, the smallest duration Event Timing reports;
+  - each query returns its results (5, 5 and 2).
+- **Swipe-back:**
+  - drag frames: p95 18–19 ms on both engines from a layer and on Chromium
+    from a root tab; 28 ms on WebKit from a root tab;
+  - release to settled: 233–234 ms from a layer, 500–517 ms from a root tab;
+  - every release is one history step.
+- **Answers:**
+  - feedback takes 184–198 ms when the server answers at once;
+  - with the server held 1 s it takes 1.19–1.20 s, because the feedback
+    waits for the server (2.11).
+- **Pull-to-refresh** (as a returning learner):
+  - today's pull reloads the whole page: a 238 KB HTML answer with status 200
+    on every pull;
+  - the first new frame comes 420–480 ms after the release, and the content
+    settles at 1.94–2.16 s;
+  - in a first session on WebKit, the first pull is also the worker's
+    takeover, and its first frame takes 2.25 s.
+- **Pro, trial and checkout:**
+  - the sheet's first frame comes 62 ms (Chromium) or 91 ms (WebKit) after
+    the tap, and 26–38 ms on a repeat open;
+  - checkout is one of the warm-up's pages. In a first session WebKit fetches
+    its files again through the worker (as in the takeover): 1.31 s against
+    0.45 s on Chromium. After the warm-up it takes 0.19 s on both;
+  - trial is not a warm-up page: 0.50 s or 0.82 s in a first session, and
+    0.27 s or 0.51 s as a returning learner.
+
+**`telegram-web-app.js` in the child pages** (cold and warm, with the script
+and with it removed in the lab):
+
+| Page | Engine | Cold FCP with / without | Warm FCP with / without | Main-thread time, cold / warm |
+|---|---|---|---|---|
+| Dictionary | Chromium | 1090 / 984 | 216 / 204 | 11 / 4 |
+| Phrases | Chromium | 1030 / 904 | 212 / 196 | 11 / 5 |
+| Dictionary | WebKit | 2862 / 2282 | 203 / 204 | unsupported |
+| Phrases | WebKit | 1002 / 920 | 181 / 184 | unsupported |
+
+- **Main-thread time:** 11 ms cold and 4–5 ms warm on Chromium with 4× CPU,
+  under the 50 ms rule. So there is no follow-up to defer it.
+- **Download:** the cold difference is the extra parser-blocking download on
+  this link, not script time:
+  - 106–126 ms on Chromium;
+  - 82 ms on WebKit Phrases and 580 ms on WebKit Dictionary.
+- **Warm:** the difference is ≤16 ms.
+
+**Findings that no task in this change owns yet (for the owner):**
+1. **Icon font on a first launch.** Icons appear 4.6–5.1 s after the course
+   is ready. Until then their slots are empty, then "□" boxes. The cause is
+   one 870 KB font for about 74 icons, with no `font-display`.
+2. **The worker's warm-up shares the link with the first session** for
+   24–31 s (1.6–1.9 MB). An action in that window waits behind it. For
+   example, a WebKit Recognition repeat took 3.4 s in such a run.
+3. **WebKit worker takeover.** The first launch under the worker's control
+   costs 0.9 s and 133 KB on WebKit, against 0.27 s and 14 KB on Chromium.
+   This may be how Playwright's WebKit keeps its cache. A real iPhone (5.1)
+   shows whether Safari pays it.
+   The same refetch makes a first-session checkout open take 1.31 s on
+   WebKit, against 0.45 s on Chromium.
+4. **Rating repeat open shows the placeholders again** for about 160 ms;
+   Profile's repeat open does not. Evidence: the skeleton readings above.
+5. **Course onboarding, cold:** 1.01 s (Chromium) and 1.06 s (WebKit), over
+   the 1000 ms bound.
+6. **The 2.5 performance gate is below today's baseline.** The gate requires
+   drag frames at p95 ≤16.7 ms on Chromium 4×. Today's layer and root-tab
+   drags already run at 18–19 ms there, and the root-tab peek is not built
+   yet. As written, 2.5 would stop and report on today's code.
+7. **WebKit's cold shell (2.15 s) is not held by the head resources** (head
+   table above). 2.9 can reach 1500 ms on WebKit only by finding what holds
+   that first paint, or by an owner-approved exception. Real-user launch
+   timing (1.4) shows whether real iPhones are affected.
+8. **The Telegram SDK's download** delays the cold first paint of Dictionary
+   and Phrases by 0.08–0.58 s. Its script time is under the 50 ms rule, so
+   1.3 opens no follow-up. The owner can open one on the download cost.
+
+**Owner decisions on these findings (2026-11-23),** recorded in the OpenSpec
+design ("Decisions on the 1.3 findings"):
+1. Icon font: a subset served by the app (task 2.14).
+2. Warm-up: it starts after the first launch has finished (2.15).
+3. WebKit takeover: no fix now; 1.4 records whether the worker controls
+   the launch.
+4. Rating repeat open: shows the list it has and refreshes in place (2.16).
+5. Course onboarding, cold: an approved exception; its target is the
+   reading + 10%.
+6. 2.5 frame gate: p95 ≤19.8 ms, today's root-tab drag + 10%.
+7. WebKit cold shell: 2.9 moves the four character scripts; the WebKit
+   target is decided with 1.4's data.
+8. Telegram SDK: removed from Dictionary and Phrases on the PWA path only
+   (2.4).
+
+**Still open after 1.3:**
+- Real Safari on an iPhone (5.1) and real-user timing (1.4).
+- Reduced motion, failed requests and account switch per screen: the
+  condition matrix (2.13) names each one's test or owning task.
+- Not timed: the Friends sub-tab, and the shimmer inside the Phrases child.
+- "After" readings: each group 2 task records its own, with this harness and
+  these targets.
+
+## Real-user launch beacon (task 1.4)
+
+The PWA course (`/iphone-pwa/course` only, never the Telegram Mini App) sends
+one `clog()` beacon per page load to `POST /api/v3/clientlog`. The server
+writes it as one line:
+`CLIENTLOG event=pwa_launch msg=<launch> <html> ctx={...}`.
+
+**When.** The beacon goes 10 s after the course is ready, or earlier when the
+page is first hidden or left. Course ready is the moment the verified map has
+rendered and the start tab is shown. Nothing is sent in these cases:
+- the course map fails, or the session sends the learner back to sign-in;
+- onboarding redirects;
+- the page was hidden before the course was ready, because background
+  timers distort its timings.
+
+There is no retry. A page restored from the back-forward cache sends nothing
+new.
+
+**`msg`** is two words:
+1. Launch: `cold` when more than half of the page's versioned (`?v=`)
+   scripts and styles came over the network (`transferSize > 0`); otherwise
+   `warm`.
+2. HTML: `200` (the body was downloaded), `304` (revalidated: the headers
+   only), or `cache` (`transferSize` is 0).
+
+Either word is `na` when the browser does not report `transferSize`.
+
+**`ctx`** holds 14 keys, the endpoint's limit. Times are milliseconds from the
+start of the navigation, as whole numbers. An empty value means the browser
+does not report that entry type.
+
+| Key | Value |
+|---|---|
+| `ua` | User agent (from `clog()`) |
+| `plat` | `standalone` (Home Screen app) or `browser` |
+| `tgver` | Empty on the PWA (from `clog()`) |
+| `page` | `/iphone-pwa/course` (from `clog()`) |
+| `ttfb` | Navigation `responseStart` |
+| `html_end` | Navigation `responseEnd` |
+| `fcp` | First contentful paint |
+| `lcp` | Largest contentful paint up to the beacon |
+| `cls` | Layout shift up to the beacon, 3 decimals |
+| `slowest_event` | Longest Event Timing duration up to the beacon (≥16 ms; `0` if none) |
+| `ready` | Course ready |
+| `sw` | `1` if the service worker controlled the page when it started, else `0` |
+| `kb` | Same-origin KB reported by the page up to the beacon: HTML, scripts, styles, API answers, images. The icon font from cdnjs is not counted |
+| `vp` | Viewport width class: `320` (<375 px), `390` (375–413), `430` (414–599), `tablet` (600–1023), `desktop` |
+
+The beacon carries no account ID, name, text, query or token.
+
+**Engine notes, from the lab cross-check (2026-11-23, 390 px).** The beacon
+and the lab harness were read on the same launches.
+- **Chromium:** `fcp`, `lcp`, `ready` and `html_end` match the lab within
+  1 ms on cold, takeover and warm launches. `msg` was `cold 200`, then
+  `warm 304`, then `warm 304`.
+- **WebKit:** `fcp`, `lcp` and `html_end` match the lab within 1 ms. `ready`
+  is 26–58 ms earlier than the lab's, because the lab polls for the rendered
+  course. `msg` was `cold 200`, then `warm cache` (takeover), then
+  `warm cache`.
+  - When the worker answers the page, WebKit reports `ttfb` as 0.
+  - WebKit also counts worker-served responses in `kb`.
+  - So, for the 4.4 TTFB comparison, use only launches with HTML `200` or
+    `304`.
+  - A takeover shows as `sw=1` with a slower `fcp` than other `sw=1`
+    launches.
+- **Lab only:** the lab serves the icon font from its own origin, so its
+  WebKit `kb` includes it. Production serves it from cdnjs, which `kb` leaves
+  out.
+
+**Reading.** Use `railway logs` filtered on `CLIENTLOG event=pwa_launch`
+(memory: `railway-logs-debugging`). Group by `plat`, `sw`, `vp` and `msg`.
+Report p50 and p75 of `fcp`, `lcp`, `ready` and `ttfb`.
+- **The 7-day readings:** pending; they need a deploy and are added here
+  afterwards.
+- **Tests:** `tests/e2e/test_pwa_launch_timing.py` (Chromium and WebKit).
+  - One beacon after ready, with only these keys and no account data.
+  - It is sent at once when the page is hidden, and never twice.
+  - None when the map fails, when the page was hidden before ready, or in
+    the Telegram Mini App.
+- **The lab:** `scripts/measure_pwa_lab.py` keeps `/api/v3/clientlog` out of
+  its network log, so the beacon never adds a request to a measured window.
+
+## Inbox loading and error states (task 2.3)
+
+`iphone-pwa-notices.js` and `iphone-pwa-glass.css`; no new copy.
+- **Pending:** the list is `aria-busy="true"` and shows three placeholder rows
+  in the notice row slot: a title line and two body lines of the shared
+  `pwa-layout-ink`, pulsing with `hsk-pwa-layout-pulse`, hidden from
+  assistive technology. The old loading text ("Hisoblanmoqda...") is gone.
+- **Ready:** the list waits for both feeds, then draws the merged,
+  date-sorted list once (no re-sort in view). The rows fade from 0.82 to
+  full opacity over 200 ms; at once under reduced motion.
+- **Error:** the existing `subscriptionPage.error` text stays, with a retry
+  button below it labelled `courseLoadError.btn` (reviewed UZ/RU/TJ). If one
+  feed loaded, its rows stay and the error sits below them.
+- **Retry:** reads only the failed feeds again, in place. Rows already shown
+  stay; the retried feed gets one placeholder row below them (three if
+  nothing is shown). It never opens the payment dialog. Closing the inbox
+  still drops late answers, and every owner check in `fetchFeed` is
+  unchanged: a changed owner closes the inbox and goes to sign-in.
+
+**Geometry** (`tests/e2e/test_pwa_inbox_states.py`, Chromium and WebKit, 320,
+390 and 430 px): title, Back and list move 0 px from placeholder to content.
+The first row keeps its slot (top, left edge, width: 0 px). A placeholder row
+is 86 px, the height of a notice with a two-line body. A notice with a
+one-line body is 68 px, so the rows below the first move up 18 px per row.
+This is content-sized height below the first row (the "unknown list lengths"
+rule); the test allows it on the first row's height only (≤24 px).
+
+**Lab, Inbox open at 390 px** (`measure_pwa_lab.py` profile, 6 runs per
+engine, median ms; before → after):
+
+| Open | Placeholder first shown, Chromium | WebKit | Ready, Chromium | WebKit | Target |
+|---|---|---|---|---|---|
+| First | 13.5 → 13.0 | 13.0 → 13.5 | 346 → 361 | 364 → 364.5 | 381 / 389 |
+| Repeat | 14.0 → 13.5 | 13.5 → 14.0 | 348 → 347.5 | 362 → 364 | 391 / 392 |
+
+The timing is unchanged within run-to-run noise, and both engines stay inside
+the targets. What changed is what the learner sees during the ~320 ms wait.
 
 ## Backend course-map template cache
 
@@ -142,11 +791,13 @@ The existing **Required: Initial Render & Progressive Loading** section remains 
 4. Every new API must consider bounded response size, correct SQL/query count, transaction/pool behavior, timeout/cancellation, cache ownership and invalidation, and safe parallel work **at implementation time**. If not applicable, document the reason rather than adding a service or technology.
 5. For the **historical Backend/PWA-only implementation phase described in this document**, Android native was not modified. This is **not a prohibition for the current combined PWA + Android + Backend initiative**, which must include Android native work and appropriate client-specific tests. Preserve contracts consumed by Android, Telegram bot and Mini App, and check all shared API changes for compatibility.
 6. Preserve user isolation, CSRF/session checks, course progress, Trial/Free/Pro decisions, purchases, refunds and expiry. No optimistic entitlements and no public caching of private data.
+7. **Native Android** screens follow the same rules with the existing Compose/ViewModel architecture: useful first frame, per-section loading/empty/error/offline states, lifecycle-aware cancellation, no duplicate reads. State that must survive a detail-and-back round trip (list scroll, search, filters) is owned above the branch that leaves composition, so returning lands where the learner left.
+8. **Back navigation is one step per gesture** on every surface: PWA edge swipe, Telegram BackButton, browser/Android history back and the system back all end in one `NavBack.goBack()` (PWA) or one `BackHandler` step (Android). A new PWA layer registers in `NavBack.LAYERS` (or as a nested `RESOURCE` target), is opaque while dragged and closes before its transform resets; extend `tests/e2e/test_pwa_swipe_back.py` when adding one.
 
 ## Performance acceptance for every future change
 
 - In each PR changing Backend/PWA behavior, record the **affected routes/sections**, expected performance effect, cache/auth/privacy implications, and chosen measurements. Distinguish "not applicable" from "not checked".
 - Include a focused regression test for each new feature or meaningful logic change. PWA tests must verify independent shell/skeleton/ready/failure/retry behavior and avoid extra API calls under slow-network, locale re-render and navigation when relevant. Backend tests must verify query count/ownership/timeout where relevant.
-- Run the CI workflow `.github/workflows/backend-pwa-performance-contract.yml`. Its guard requires this document and permanent links in `AGENTS.md` / `AI_RULES.md`, and refuses Backend/PWA implementation changes without accompanying regression tests on pull requests and main integration (intermediate feature-branch pushes check the permanent policy without demanding a test in each small commit). PWA changes also run Chromium and WebKit shell/section regressions; applicable backend changes run targeted course-map tests.
+- Run the CI workflow `.github/workflows/backend-pwa-performance-contract.yml`. Its guard requires this document and permanent links in `AGENTS.md` / `AI_RULES.md`, and refuses Backend/PWA/Android implementation changes without accompanying regression tests on pull requests and main integration (Android: a changed `android/app/src/test` or `androidTest` `*Test.kt`; Android CI runs the JVM suite, instrumentation runs locally on the `direct` flavour) (intermediate feature-branch pushes check the permanent policy without demanding a test in each small commit). PWA changes also run Chromium and WebKit shell/section and swipe-back regressions; applicable backend changes run targeted course-map tests.
 - **CI is a guardrail, not proof of performance:** a test file being modified does not prove it covers every new component. Review the test assertions and use slow-network filmstrips, p50/p95, LCP/CLS/INP and database evidence to sign off the affected behavior.
 - Do not silently turn incomplete measurements or failed checks into green checkboxes; a future feature is not finished merely because it renders or its PR CI passes.

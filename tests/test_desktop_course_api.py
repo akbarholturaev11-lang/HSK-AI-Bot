@@ -718,12 +718,14 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
     async def test_same_course_completion_precondition_preserves_idempotence(self):
         body = {
             "lesson_order": 1, "event_id": "desktop-stale-complete-0002",
-            "expected_level": "hsk1", "mistakes": [],
+            "expected_level": "hsk1",
+            "mistakes": [{"material_ref": "lesson:hsk1:1:section:1:card:3", "selected_index": 0}],
         }
         first = await self.client.post(
             "/api/v3/desktop/course/complete", headers=self.auth_headers, json=body,
         )
         self.assertEqual(first.status_code, 200, first.text)
+        self.assertNotIn("learning_result", first.json())
         before = await self._completion_mutation_state()
         replay = await self.client.post(
             "/api/v3/desktop/course/complete", headers=self.auth_headers, json=body,

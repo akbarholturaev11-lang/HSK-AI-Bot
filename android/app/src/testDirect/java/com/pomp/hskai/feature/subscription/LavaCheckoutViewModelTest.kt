@@ -22,10 +22,12 @@ class LavaCheckoutViewModelTest {
         var statusReply = LavaReply(ok = true, checkout_id = 7, status = "pending")
         var offer = ExitReply(true, true, false, 20, "2026-11-12T00:00:00Z")
         var starts = 0
+        var overviewReads = 0
+        var lastStart: LavaStart? = null
         var checks = 0
         var claims = 0
-        override suspend fun providerOverview(auth: String, body: LavaContext) = Response.success(overview)
-        override suspend fun start(auth: String, body: LavaStart): Response<LavaReply> { starts++; return startReply.await() }
+        override suspend fun providerOverview(auth: String, body: LavaContext): Response<LavaOverview> { overviewReads++; return Response.success(overview) }
+        override suspend fun start(auth: String, body: LavaStart): Response<LavaReply> { starts++; lastStart = body; return startReply.await() }
         override suspend fun status(auth: String, body: LavaId): Response<LavaReply> { checks++; return Response.success(statusReply) }
         override suspend fun cancel(auth: String, body: Map<String, String>) = Response.success(LavaReply(ok = true))
         override suspend fun exitOffer(auth: String, body: ExitAction): Response<ExitReply> {
@@ -34,6 +36,18 @@ class LavaCheckoutViewModelTest {
         }
         fun model() = LavaCheckoutViewModel(LavaCheckoutRepository(this, { ApiResult.Success("token") }), "tj")
     }
+    @Test fun startsWithTheServerPrefilledEmailWithoutTyping() = runTest(dispatcher) {
+        val fake = Fake()
+        fake.overview = fake.overview.copy(lava = fake.overview.lava!!.copy(email = "learner@example.com"))
+        fake.startReply.complete(Response.success(LavaReply(true, 7, "https://pay.lava.top/verified")))
+        val vm = fake.model()
+        runCurrent()
+        vm.start()
+        runCurrent()
+        assertEquals("learner@example.com", fake.lastStart?.email)
+        assertEquals(1, fake.starts)
+    }
+
     @Test fun duplicateStartAndBrowserReturnNeverGrantAccess() = runTest(dispatcher) {
         val fake = Fake(); val vm = fake.model(); runCurrent()
         vm.email("a@b.co"); vm.start(); vm.start(); runCurrent()
@@ -93,6 +107,48 @@ class LavaCheckoutViewModelTest {
         assertTrue(vm.state.value.error)
         assertNull(vm.state.value.block)
         vm.start(); runCurrent(); assertEquals(0, fake.starts)
+    }
+    @Test fun regionChangeUsesServerPriceWithoutReloadAndPassesInvoiceCurrency() = runTest(dispatcher) {
+        val fake = Fake()
+        val rub = fake.plans.map { it.copy(currency = "RUB", amount = "900.00") }
+        fake.overview = LavaOverview(true, LavaBlock(mode = "both", plans = fake.plans,
+            currency = "USD", plans_by_currency = mapOf("USD" to fake.plans, "RUB" to rub)))
+        val vm = fake.model(); runCurrent()
+        assertEquals("USD", vm.state.value.currency)
+        vm.chooseRegion("ru"); runCurrent()
+        assertEquals("RUB", vm.state.value.currency)
+        assertEquals("900.00", vm.state.value.visiblePlans.first().amount)
+        assertEquals(1, fake.overviewReads)
+        assertTrue(fake.overview.lava!!.prefersManual("tj"))
+        assertTrue(fake.overview.lava!!.prefersManual("cn"))
+        assertFalse(fake.overview.lava!!.prefersManual("ru"))
+        vm.email("a@b.co"); vm.start(); runCurrent()
+        assertEquals("RUB", fake.lastStart?.currency)
+        fake.startReply.complete(Response.success(LavaReply(true, 7, "https://pay.lava.top/verified")))
+        runCurrent()
+        vm.chooseRegion("uz"); runCurrent()
+        assertEquals("RUB", vm.state.value.currency)
+        assertEquals(1, fake.overviewReads)
+    }
+    @Test fun onlyAcknowledgedProviderOpeningCanBePassedToManualCheckout() = runTest(dispatcher) {
+        val fake = Fake()
+        val vm = fake.model(); runCurrent()
+        assertNull(vm.state.value.providerEntryId)
+        fake.overview = fake.overview.copy(provider_entry_id = 42)
+        vm.load(); runCurrent()
+        assertEquals(42, vm.state.value.providerEntryId)
+        vm.chooseRegion("cn"); runCurrent()
+        assertEquals(42, vm.state.value.providerEntryId)
+        assertEquals(2, fake.overviewReads)
+    }
+    @Test fun manualPendingCanRecoverWithoutOverridingProviderRecovery() {
+        val pending = NativeLavaState(loading = false, block = LavaBlock(mode = "both", blocked_reason = "payment_pending"))
+        assertTrue(pending.hasManualPending())
+        assertTrue(pending.copy(block = pending.block!!.copy(mode = "lava_only")).hasManualPending())
+        assertFalse(pending.copy(checkoutId = 7).hasManualPending())
+        assertFalse(pending.copy(uncertainStart = true).hasManualPending())
+        assertFalse(pending.copy(block = pending.block!!.copy(pending_checkout_id = 7)).hasManualPending())
+        assertFalse(pending.copy(block = pending.block!!.copy(blocked_reason = "chargeback_open")).hasManualPending())
     }
     @Test fun providerUrlsAreHttpsAndExactHostOnly() {
         assertNotNull(safeLavaPaymentUrl("https://pay.lava.top/123"))

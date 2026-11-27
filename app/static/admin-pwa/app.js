@@ -1101,6 +1101,7 @@ function updateManagementAction(){
 // All editors share one dirty-state rule; selector-only navigation (pricing
 // method/plan, notice/help-video language) is not a persisted change.
 function editorValue(){
+  if($('lavaMode'))return JSON.stringify(lavaSettingsRequest());
   const d=managementDraft;
   if(d?.type==='campaign'&&d.kind==='discount_state'){
     return JSON.stringify({active:$('campaignActive')?.value===String(d.current?.is_active)?'unchanged':$('campaignActive')?.value});
@@ -1464,16 +1465,16 @@ async function noticeEditor(key=null){
         +`<div class="smart-results-head"><span>${esc(t('smartResults'))} · ${esc(overview.month)}</span>${overview.observation_enabled?'':`<span class="pill gray">${esc(t('smartObservationOff'))}</span>`}</div>`
         +`<div class="smart-results">${metric('smartStudyDays',overview.counts.study_day_after_attempt)}${metric('smartContactReturns',overview.counts.contact_study_24h)}${metric('smartStudyUnits',overview.counts.study_unit_24h)}</div>`;
     }
-    const body=smartStatus+boolSelect('noticeEnabled',smart?'smartPermission':'status',template.enabled)+(smart?`<p class="source-note">${esc(t('smartPermissionHint'))}</p>`:'')+smartFacts+`<p class="source-note">${esc(t('noticeDefaultHint'))}</p><p class="source-note">${esc(t('noticePlaceholders'))}: ${template.placeholders.map(esc).join(' ')}</p><div class="form-field"><label for="noticeLanguage">${esc(t('language'))}</label><select class="input" id="noticeLanguage">${['uz','ru','tj'].map(lang=>`<option value="${lang}" ${lang===locale?'selected':''}>${lang.toUpperCase()}</option>`).join('')}</select></div><div class="form-field"><label for="noticeText">${esc(t('noticeText'))}</label><textarea class="input setting-value" id="noticeText" maxlength="${template.text_max}">${esc(template.custom_texts[locale])}</textarea></div><p id="noticeValidation" class="alert" role="alert" hidden></p>`;
+    const body=smartStatus+boolSelect('noticeEnabled',smart?'smartPermission':'status',template.enabled)+(smart?`<p class="source-note">${esc(t('smartPermissionHint'))}</p>`:'')+smartFacts+`<p class="source-note">${esc(t(smart?'smartLibraryHint':'noticeDefaultHint'))}</p><p class="source-note">${esc(t('noticePlaceholders'))}: ${template.placeholders.map(esc).join(' ')}</p><div class="form-field"><label for="noticeLanguage">${esc(t('language'))}</label><select class="input" id="noticeLanguage">${['uz','ru','tj'].map(lang=>`<option value="${lang}" ${lang===locale?'selected':''}>${lang.toUpperCase()}</option>`).join('')}</select></div><div class="form-field"><label for="noticeText">${esc(t('noticeText'))}</label><textarea class="input setting-value" id="noticeText" maxlength="${template.text_max}">${esc(template.custom_texts[locale])}</textarea></div><p id="noticeValidation" class="alert" role="alert" hidden></p>`;
     drawer(noticeLabels[key],`<form id="managementForm">${body}</form>`,btn('saveChanges','managementPrepare','primary'));
-    $('noticeText').placeholder=template.defaults[locale];
+    $('noticeText').placeholder=smart?'':template.defaults[locale];
   }catch(error){if(current===drawerId&&at===epoch&&state.actor)drawer('notices',statePanel(errorKey(error)),btn('close','close')+btn('readCurrent','noticeList'));}
 }
 function updateNoticeLanguage(){
   const draft=managementDraft,next=$('noticeLanguage')?.value;
   if(draft?.type!=='notice'||!['uz','ru','tj'].includes(next))return;
   draft.texts[draft.textLanguage]=$('noticeText').value;draft.textLanguage=next;
-  $('noticeText').value=draft.texts[next];$('noticeText').placeholder=draft.template.defaults[next];updateEditorSaveEnabled();
+  $('noticeText').value=draft.texts[next];$('noticeText').placeholder=draft.noticeKey==='smart_study'?'':draft.template.defaults[next];updateEditorSaveEnabled();
 }
 async function portfolioHistory(before=null){
   closeDrawer();const current=drawerId,at=epoch;drawer('ledger',statePanel('loading'));
@@ -1840,7 +1841,7 @@ function managementFields(value,type){
     const notice=value.notice_texts?`<p class="source-note">${esc(t('messageAttemptHint'))}</p>`+['uz','ru','tj'].map(lang=>`<details class="profile-section notice-languages" ${lang===locale?'open':''}><summary>${lang.toUpperCase()}</summary><p class="notice-preview">${telegramPreview(value.notice_texts[lang])}</p></details>`).join(''):'';
     return notice+profileFields(fields);
   }
-  if(type==='notice')return profileFields([['status',t(value.enabled?'hsk30On':'hsk30Off')]])+['uz','ru','tj'].map(lang=>`<details class="profile-section notice-languages" ${lang===locale?'open':''}><summary>${lang.toUpperCase()}</summary><p class="notice-preview">${esc(value.effective_texts[lang])}</p></details>`).join('');
+  if(type==='notice')return profileFields([['status',t(value.enabled?'hsk30On':'hsk30Off')]])+['uz','ru','tj'].map(lang=>`<details class="profile-section notice-languages" ${lang===locale?'open':''}><summary>${lang.toUpperCase()}</summary><p class="notice-preview">${esc(value.library_languages?.includes(lang)?t('smartLibraryPreview'):value.effective_texts[lang])}</p></details>`).join('');
   if(type==='portfolio')return profileFields([['ledgerType',t(value.transaction_type==='profit'?'ledgerProfit':'ledgerExpense')],['amount',(value.amount_minor/100).toFixed(2)+' '+value.currency],['ledgerUSD',(value.expected_usd||value.amount_usd)+' USD'],['ledgerNote',value.note]]);
   if(type==='channel'){
     if(Object.hasOwn(value,'enabled'))return profileFields([['channelMode',t(value.enabled?'hsk30On':'hsk30Off')]]);
@@ -2484,7 +2485,11 @@ async function executeHsk30Settings(){
   }finally{if(signing===control)signing=null;}
 }
 
+const LAVA_ADMIN_PROMO_SLOTS=3;
 const LAVA_TERMS=[['1_month','lavaTerm1','MONTHLY'],['3_months','lavaTerm3','PERIOD_90_DAYS'],['6_months','lavaTerm6','PERIOD_180_DAYS'],['12_months','lavaTerm12','PERIOD_YEAR']];
+function lavaAdminPromoEntries(config){
+  return Object.entries(config?.promo_codes||{}).filter(([key])=>key.startsWith('admin_campaign:'));
+}
 function lavaErrorKey(error){
   const key='lavaErr_'+(error?.message||'');
   return window.HSKAI_ADMIN_I18N?.[locale]?.[key]?key:errorKey(error);
@@ -2505,8 +2510,9 @@ function lavaWebhookWarning(status){
 }
 function lavaOfferOptions(catalog,plan,periodicity,currency,selected){
   const rows=(catalog?.offers||[]).map(offer=>{
-    const price=(offer.prices||[]).find(p=>p.currency===currency&&p.periodicity===periodicity);
-    const label=(offer.offer_name||offer.offer_id.slice(0,8))+' · '+(offer.product_title||'')+(price?' — '+price.amount+' '+price.currency:'');
+    const prices=[currency,...["USD","RUB"].filter(code=>code!==currency)].map(code=>
+      (offer.prices||[]).find(p=>p.currency===code&&p.periodicity===periodicity&&p.amount!=null)).filter(Boolean);
+    const label=(offer.offer_name||offer.offer_id.slice(0,8))+' · '+(offer.product_title||'')+(prices.length?' — '+prices.map(price=>price.amount+' '+price.currency).join(' / '):'');
     return '<option value="'+esc(offer.offer_id)+'" '+(offer.offer_id===selected?'selected':'')+'>'+esc(label)+'</option>';
   });
   if(selected&&!(catalog?.offers||[]).some(offer=>offer.offer_id===selected))
@@ -2536,12 +2542,14 @@ async function lavaSettings(){
       const offer=preflight
         ?'<select class="input" id="lavaOffer_'+plan+'" aria-label="'+esc(t('lavaOffer'))+'">'+lavaOfferOptions(preflight,plan,periodicity,config.currency,term.offer_id||'')+'</select>'
         :'<input class="input" id="lavaOffer_'+plan+'" maxlength="36" autocomplete="off" spellcheck="false" aria-label="'+esc(t('lavaOffer'))+'" value="'+esc(term.offer_id||'')+'">';
-      return '<div class="lava-term"><label class="lava-term-toggle"><input type="checkbox" id="lavaOn_'+plan+'" '+(term.enabled?'checked':'')+'> '+esc(t(label))+'</label>'+offer+'</div>';
+      const amounts=[term.price,...Object.entries(term.regional_prices||{}).map(([currency,amount])=>({currency,amount}))].filter(p=>p?.amount!=null);
+      const snapshot=amounts.length?'<p class="source-note">'+esc(amounts.map(p=>p.amount+' '+p.currency).join(' / '))+'</p>':'';
+      return '<div class="lava-term"><label class="lava-term-toggle"><input type="checkbox" id="lavaOn_'+plan+'" '+(term.enabled?'checked':'')+'> '+esc(t(label))+'</label>'+offer+snapshot+'</div>';
     }).join('');
     const promos=config.promo_codes||{};
     const promoInput=(id,value)=>'<input class="input" id="'+id+'" maxlength="36" autocomplete="off" spellcheck="false" autocapitalize="characters" placeholder="'+esc(t('lavaPromoCode'))+'" value="'+esc(value||'')+'">';
-    const adminPromos=Object.entries(promos).filter(([key])=>key.startsWith('admin_campaign:'));
-    const adminRows=[0,1,2].map(index=>{
+    const adminPromos=lavaAdminPromoEntries(config);
+    const adminRows=Array.from({length:LAVA_ADMIN_PROMO_SLOTS},(_,index)=>{
       const [key,code]=adminPromos[index]||['',''];
       return '<div class="lava-term"><input class="input" id="lavaPromoPct_'+index+'" type="number" min="1" max="90" step="1" inputmode="numeric" placeholder="'+esc(t('lavaPromoPercent'))+'" value="'+esc(key?key.split(':')[1]:'')+'">'+promoInput('lavaPromoAdmin_'+index,code)+'</div>';
     }).join('');
@@ -2557,20 +2565,32 @@ async function lavaSettings(){
     drawer('lavaSettings',statePanel(lavaErrorKey(error)),btn('close','close')+btn('retry','lavaSettings','primary'));
   }
 }
-async function prepareLavaSettingsCommand(){
-  if(!state.actor||signing)return;
+function lavaSettingsRequest(){
   const plans={};
   for(const [plan] of LAVA_TERMS)plans[plan]={enabled:$('lavaOn_'+plan)?.checked===true,offer_id:String($('lavaOffer_'+plan)?.value||'').trim().toLowerCase()};
-  const promo_codes={};
+  const promo_codes={...lavaBaseline?.promo_codes};
+  // Edit the visible slots without replacing codes configured outside them.
+  for(const [key] of lavaAdminPromoEntries(lavaBaseline).slice(0,LAVA_ADMIN_PROMO_SLOTS))delete promo_codes[key];
   const code=id=>String($(id)?.value||'').trim();
-  if(code('lavaPromoReferral'))promo_codes['referral:20']=code('lavaPromoReferral');
-  if(code('lavaPromoFeedback'))promo_codes['feedback_price_offer:20']=code('lavaPromoFeedback');
-  if(code('lavaPromoExit'))promo_codes['exit_offer:20']=code('lavaPromoExit');
-  for(const index of [0,1,2]){
+  for(const [key,id] of [
+    ['referral:20','lavaPromoReferral'],
+    ['feedback_price_offer:20','lavaPromoFeedback'],
+    ['exit_offer:20','lavaPromoExit'],
+  ]){
+    const value=code(id);
+    if(value)promo_codes[key]=value;
+    else delete promo_codes[key];
+  }
+  for(let index=0;index<LAVA_ADMIN_PROMO_SLOTS;index++){
     const pct=Number($('lavaPromoPct_'+index)?.value),value=code('lavaPromoAdmin_'+index);
     if(value&&Number.isInteger(pct)&&pct>=1&&pct<=90)promo_codes['admin_campaign:'+pct]=value;
   }
-  const request={checkout_mode:$('lavaMode')?.value,currency:$('lavaCurrency')?.value,plans,promo_codes};
+  return {checkout_mode:$('lavaMode')?.value,currency:$('lavaCurrency')?.value,plans,
+    promo_codes:Object.fromEntries(Object.entries(promo_codes).sort(([a],[b])=>a.localeCompare(b)))};
+}
+async function prepareLavaSettingsCommand(){
+  if(!state.actor||signing)return;
+  const request=lavaSettingsRequest();
   const current=drawerId,at=epoch;
   try{
     const response=await api('lava/prepare',request,{timeoutMs:25000});
@@ -2846,6 +2866,17 @@ function diagnosticTitle(row){
   return t(/^diagFailure[A-Za-z0-9]+$/.test(key)?key:'diagFailureUnknown');
 }
 function diagnosticFeature(row){return t('diagFeature_'+row.feature_code);}
+// NXT-011: which exception a learner-web JS incident groups. A page-level
+// incident collects failures reported without an exception identity.
+function diagnosticIdentity(row){
+  if(row.grouping==='page')return t('diagUnknown');
+  if(row.grouping!=='exception')return '';
+  const sample=row.sample&&typeof row.sample==='object'?row.sample:null;
+  const name=sample&&typeof sample.error_name==='string'&&/^[A-Za-z]{1,32}$/.test(sample.error_name)?sample.error_name:'';
+  const first=sample&&Array.isArray(sample.locations)?sample.locations[0]:null;
+  const file=first&&typeof first.path==='string'&&/^app\/static\/[A-Za-z0-9_.\/-]+\.js$/.test(first.path)?first.path.split('/').pop():'';
+  return [name,file].filter(Boolean).join(' · ');
+}
 function diagnosticReopened(row){
   return row.reopened_at&&row.triage_status!=='resolved'
     ?[t('diagReopened'),date(row.reopened_at),row.reopened_version].filter(Boolean).join(' · '):'';
@@ -2883,7 +2914,8 @@ function inboxEntry(row){
   const kindIcon=icon(row.source==='android'?'device':row.source==='payment'?'credit':diagnostic||row.source==='technical'?'settings':'send');
   const reopened=diagnostic?diagnosticReopened(row):'';
   const summary=diagnostic?'<span class="inbox-row-meta"><span>'+esc(platform)+'</span><span>'+esc(diagnosticFeature(row))+
-    '</span><span>×'+esc(number(row.occurrences))+'</span></span>'+
+    '</span>'+(diagnosticIdentity(row)?'<span>'+esc(diagnosticIdentity(row))+'</span>':'')+
+    '<span>×'+esc(number(row.occurrences))+'</span></span>'+
     (reopened?'<span class="inbox-row-preview">'+esc(reopened)+'</span>':''):
     '<span class="inbox-row-preview">'+esc(inboxPreview(row))+'</span>'+
     '<span class="inbox-row-meta"><span>'+esc(platform||t('unavailable'))+'</span>'+

@@ -77,7 +77,19 @@ def _server_checks(source: str) -> dict[str, bool]:
         raise ValueError("Mini App lesson skip-test handler identity changed")
     fn = start_nodes[0]
     content_fn = content_nodes[0]
-    skip_fn = skip_nodes[0]
+    skip_wrapper = skip_nodes[0]
+    shared_skips = [
+        n for n in ast.walk(tree)
+        if isinstance(n, ast.AsyncFunctionDef) and n.name == "_skip_test_for_user"
+    ]
+    pwa_skips = [
+        n for n in ast.walk(tree)
+        if isinstance(n, ast.AsyncFunctionDef) and n.name == "pwa_course_lesson_skip_test"
+    ]
+    if len(shared_skips) != 1 or len(pwa_skips) != 1:
+        raise ValueError("Shared skip-test gate or PWA handler identity changed")
+    skip_fn = shared_skips[0]
+    pwa_skip = pwa_skips[0]
     # The Telegram and cookie/CSRF transports delegate to the same canonical
     # policy helpers. Inspect both the verified wrapper AND its gated helper.
     shared_starts = [n for n in ast.walk(tree)
@@ -105,6 +117,11 @@ def _server_checks(source: str) -> dict[str, bool]:
     skip_denials = [
         n for n in ast.walk(skip_fn) if isinstance(n, ast.If)
         and ast.unparse(n.test) == "not access.get('allowed')"
+        and any("status_code=403" in ast.unparse(stmt) for stmt in n.body)
+    ]
+    skip_part_guards = [
+        n for n in ast.walk(skip_fn) if isinstance(n, ast.If)
+        and ast.unparse(n.test) == "not is_skip_test_part(level, lesson_order)"
         and any("status_code=403" in ast.unparse(stmt) for stmt in n.body)
     ]
     skip_success_projection = any(
@@ -174,9 +191,26 @@ def _server_checks(source: str) -> dict[str, bool]:
         ),
         "content_checks_non_consuming_entitlement": _shared_entitlement(shared_content, consume=False),
         "content_uses_no_store_response": bool(_calls(content_fn, "_private_content_response")),
-        "skip_test_uses_authenticated_identity_helper": bool(_calls(skip_fn, "_authenticated")),
-        "skip_test_rejects_missing_identity_401": _guarded_unauthorized(skip_fn),
-        "skip_test_uses_verified_account_lookup": bool(_calls(skip_fn, "get_by_telegram_id")),
+        "skip_test_uses_authenticated_identity_helper": bool(_calls(skip_wrapper, "_authenticated")),
+        "skip_test_rejects_missing_identity_401": _guarded_unauthorized(skip_wrapper),
+        "skip_test_uses_verified_account_lookup": bool(_calls(skip_wrapper, "get_by_telegram_id")),
+        "skip_test_transports_use_shared_gate": all(
+            len(calls) == 1 and ast.unparse(calls[0]) == "_skip_test_for_user(session, user, payload)"
+            for calls in (_calls(skip_wrapper, "_skip_test_for_user"), _calls(pwa_skip, "_skip_test_for_user"))
+        ) and all(
+            not _calls(wrapper, "_read_course_lesson")
+            for wrapper in (skip_wrapper, pwa_skip)
+        ),
+        "skip_test_pwa_verifies_owner_and_csrf": (
+            "require_same_origin(request, settings_obj)" in ast.unparse(pwa_skip)
+            and "mutation_actor(request.cookies.get(PWA_SESSION_COOKIE), "
+                "request.headers.get('X-HSK-PWA-CSRF'))" in ast.unparse(pwa_skip)
+            and "get_by_user_id(actor.id)" in ast.unparse(pwa_skip)
+        ),
+        "skip_test_requires_first_part_before_read": (
+            len(skip_part_guards) == 1 and len(skip_reads) == 1
+            and skip_part_guards[0].lineno < skip_reads[0].lineno
+        ),
         "skip_test_checks_selected_level": (
             "level != user_level" in skip_pretty
             and "user_level = content_level(getattr(user, 'level', None))" in skip_pretty
@@ -219,10 +253,14 @@ def _server_checks(source: str) -> dict[str, bool]:
             and all(isinstance(node.value, ast.Call)
                     and isinstance(node.value.func, ast.Name)
                     and node.value.func.id == "_private_content_response"
-                    for node in ast.walk(skip_fn) if isinstance(node, ast.Return))
+                    or (isinstance(node.value, ast.Await)
+                        and ast.unparse(node.value.value) == "_skip_test_for_user(session, user, payload)")
+                    for fn in (skip_fn, skip_wrapper, pwa_skip)
+                    for node in ast.walk(fn) if isinstance(node, ast.Return))
         ),
         "skip_test_does_not_commit_or_unlock_progress": not any(
-            _calls(skip_fn, name) for name in ("commit", "unlock_lesson", "set_current_lesson_and_step")
+            _calls(node, name) for node in (skip_fn, skip_wrapper, pwa_skip)
+            for name in ("commit", "unlock_lesson", "set_current_lesson_and_step")
         ) and not any(
             isinstance(target, ast.Attribute) for node in ast.walk(skip_fn)
             if isinstance(node, (ast.Assign, ast.AugAssign, ast.AnnAssign))

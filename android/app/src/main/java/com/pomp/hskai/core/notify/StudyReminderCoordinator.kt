@@ -27,8 +27,8 @@ class StudyReminderCoordinator(private val app: HskAiApplication, private val ap
         claim = { bearer, job, body -> apiCall { api.claim(bearer, job, body) } },
         receipt = { bearer, job, body -> apiCall { api.receipt(bearer, job, body) } },
         permission = { StudyNotifications.canPost(app) },
-        post = { day, hint -> StudyNotifications.postReminderOutcome(app, Reminder.DAILY_GOAL,
-            ReminderDecision.variant(day), hint) },
+        post = { day, hint, message -> StudyNotifications.postReminderOutcome(app, Reminder.DAILY_GOAL,
+            ReminderDecision.variant(day), hint, message) },
         elapsed = SystemClock::elapsedRealtime)
 
     private val openReporter = SmartStudyOpenReporter(app.widgetStore,

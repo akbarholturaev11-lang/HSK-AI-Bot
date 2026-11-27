@@ -74,6 +74,30 @@ class ResolveStateMatchesBaselineTests(unittest.TestCase):
                 self.assertEqual(expected[1], is_billing_paid(state))
 
 
+class ExpiredNoticePeriodTests(unittest.TestCase):
+    def test_natural_trial_expiry_survives_scheduler_marker(self):
+        from app.services.subscription_expiry_notice import expired_period
+        end = NOW - timedelta(hours=1)
+        for revoked in (None, NOW):
+            user = _trial_user(pro_trial_started_at=NOW-timedelta(days=7),
+                               pro_trial_ends_at=end, revoked=revoked)
+            self.assertEqual(("trial", end), expired_period(user, now=NOW))
+        early = _trial_user(pro_trial_started_at=NOW-timedelta(days=7),
+                            pro_trial_ends_at=end, revoked=end-timedelta(hours=1))
+        self.assertIsNone(expired_period(early, now=NOW))
+
+    def test_paid_expiry_and_active_or_never_pro_are_distinct(self):
+        from app.services.subscription_expiry_notice import expired_period
+        end = NOW-timedelta(days=1)
+        user = _trial_user(status="expired", payment_status="approved",
+                           start_date=NOW-timedelta(days=31), end_date=end,
+                           pro_trial_started_at=None, pro_trial_ends_at=None)
+        self.assertEqual(("paid", end), expired_period(user, now=NOW))
+        for changes in ({"status":"blocked"}, {"status":"active", "end_date":NOW+timedelta(days=1)},
+                        {"status":"free", "payment_status":"none"}, {"payment_preview_payment_id":5}):
+            self.assertIsNone(expired_period(SimpleNamespace(**(vars(user)|changes)), now=NOW))
+
+
 class ProTrialStateTests(unittest.TestCase):
     def test_a_user_without_the_columns_is_never_on_trial(self):
         # 4-bosqich migratsiyasidan OLDINGI holat: ustunlar umuman yo'q.

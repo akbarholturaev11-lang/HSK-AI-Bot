@@ -34,6 +34,12 @@ class LavaTermConfig:
     offer_id: str = ""
     price_amount: Decimal | None = None
     price_currency: str | None = None
+    regional_prices: dict[str, Decimal] = field(default_factory=dict)
+
+    def amount_for(self, currency: str) -> Decimal | None:
+        if currency == self.price_currency:
+            return self.price_amount
+        return self.regional_prices.get(currency)
 
     @property
     def periodicity(self) -> str:
@@ -82,6 +88,8 @@ class LavaConfig:
                     "offer_id": term.offer_id,
                     "price": (None if term.price_amount is None else
                               {"amount": str(term.price_amount), "currency": term.price_currency}),
+                    **({"regional_prices": {code: str(amount) for code, amount in sorted(term.regional_prices.items())}}
+                       if term.regional_prices else {}),
                 }
                 for plan, term in self.terms.items()
             },
@@ -158,8 +166,18 @@ def config_from_dict(data) -> LavaConfig:
             price_currency = price.get("currency")
             if amount is None or price_currency not in LAVA_CURRENCIES:
                 raise LavaConfigError("invalid_plans")
+        regional = row.get("regional_prices", {})
+        if not isinstance(regional, dict) or set(regional) - set(LAVA_CURRENCIES):
+            raise LavaConfigError("invalid_plans")
+        regional_prices = {}
+        for code, value in regional.items():
+            parsed = money(value)
+            if code == currency or parsed is None or parsed <= 0 or not enabled:
+                raise LavaConfigError("invalid_plans")
+            regional_prices[code] = parsed
         terms[plan] = LavaTermConfig(plan_type=plan, enabled=enabled, offer_id=offer_id,
-                                     price_amount=amount, price_currency=price_currency)
+                                     price_amount=amount, price_currency=price_currency,
+                                     regional_prices=regional_prices)
     return LavaConfig(checkout_mode=mode, currency=currency, terms=terms,
                       promo_codes=parse_promo_codes(data.get("promo_codes")))
 

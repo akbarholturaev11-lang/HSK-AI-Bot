@@ -53,7 +53,7 @@ assert.equal(countEl.textContent,"1","translation search unchanged");
 searchEl.value="not-a-word";ctx.renderList(searchEl.value);
 assert.equal(countEl.textContent,"0");
 assert(fake.innerHTML.includes("No words"));
-assert.equal(source.split("\n").length,1936,"frozen source line anchors preserved");
+assert.equal(source.split("\n").length,1947,"frozen source line anchors preserved");
 assert(source.includes("overflow-anchor:none"),"scroll anchoring cannot fight viewport replacement");
 assert(source.includes("listEl.scrollTop = scrollPos; renderVisibleWindow(true);"),"detail return repaints original position");
 console.log("Dictionary virtual list: 2400 words, bounded DOM, tail scroll, Chinese/pinyin/translation queries, empty results and back position PASS.");

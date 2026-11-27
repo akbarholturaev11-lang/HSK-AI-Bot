@@ -68,7 +68,8 @@ def contract(sources: dict[str, str]) -> dict:
     android_service = sources["backend_android_service"]
     backend_miniapp = sources["backend_miniapp_content"]
     backend_main = sources["backend_main"]
-    skip_test = _function_source(backend_miniapp, "v3_course_lesson_skip_test")
+    skip_transport = _function_source(backend_miniapp, "v3_course_lesson_skip_test")
+    skip_test = _function_source(backend_miniapp, "_skip_test_for_user")
     skip_questions = _function_source(backend_miniapp, "_skip_test_questions")
 
     checks = {
@@ -120,9 +121,10 @@ def contract(sources: dict[str, str]) -> dict:
                 r'return await _lesson_content_for_user\(\s*session, user, str\(level or ""\)',
             ),
             "skip_test_uses_signed_canonical_account": _has(
-                skip_test,
+                skip_transport,
                 r'await _authenticated\(request\).*?if not telegram_id:.*?status_code=401'
-                r'.*?get_by_telegram_id\(telegram_id\).*?if not user:.*?status_code=403',
+                r'.*?get_by_telegram_id\(telegram_id\).*?if not user:.*?status_code=403'
+                r'.*?return await _skip_test_for_user\(session, user, payload\)',
             ),
             "skip_test_checks_selected_level_and_bounds": (
                 "level not in COURSE_LEVELS or lesson_order < 1" in skip_test
@@ -139,6 +141,8 @@ def contract(sources: dict[str, str]) -> dict:
                 r'lesson_order=lesson_order, completed=completed, consume=False\)'
                 r".*?if not access\.get\('allowed'\):"
                 r'\s*return _private_content_response\(access, status_code=403\)'
+                r'\s*if not is_skip_test_part\(level, lesson_order\):'
+                r'\s*return _private_content_response\(.*?status_code=403\)'
                 r'\s*lesson = _read_course_lesson\(level, lesson_order\)',
             ),
             "skip_test_allows_locked_projection_without_progress_changes": (
