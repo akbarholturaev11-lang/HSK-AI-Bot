@@ -166,7 +166,7 @@ def mock_price_preview(page):
     )
 
 
-def mock_telegram_ready(page, init_data="query_id=smoke"):
+def mock_telegram_ready(page, init_data="query_id=smoke", user_id=None):
     """Telegram WebApp stub'ni bo'sh bo'lmagan initData bilan qaytaradi, shunda
     Mini App auth-gate ko'rsatmasdan map'ni yuklaydi (static rejim)."""
     page.route(
@@ -175,7 +175,8 @@ def mock_telegram_ready(page, init_data="query_id=smoke"):
             status=200,
             content_type="application/javascript",
             body=(
-                "window.Telegram={WebApp:{initData:'" + init_data + "',initDataUnsafe:{},"
+                "window.Telegram={WebApp:{initData:'" + init_data + "',initDataUnsafe:"
+                + json.dumps({"user": {"id": user_id}} if user_id is not None else {}) + ","
                 "ready(){},expand(){},close(){},setHeaderColor(){},setBackgroundColor(){},"
                 "HapticFeedback:{impactOccurred(){},notificationOccurred(){},selectionChanged(){}},"
                 "openTelegramLink(){},openLink(){},showConfirm(){},"

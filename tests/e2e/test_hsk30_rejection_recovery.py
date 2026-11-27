@@ -10,10 +10,18 @@ from test_miniapp_smoke import (
 )
 
 
-def setup_rejection(page, *, denied=False, level="nhsk1", paid=False, language="uz", boot_level=None, expiry=None):
+def setup_rejection(page, *, denied=False, level="nhsk1", paid=False, language="uz", boot_level=None, expiry=None, pwa=False):
     errors = []
     page.on("pageerror", lambda error: errors.append(str(error)))
-    mock_telegram_ready(page)
+    mock_telegram_ready(page, user_id=42 if expiry else None)
+    if pwa:
+        page.route(re.compile(r".*/iphone-pwa/course(?:\?.*)?$"), lambda route: route.fulfill(
+            status=200, content_type="text/html; charset=utf-8",
+            body=(STATIC_ROOT / "course-v3.html").read_text(encoding="utf-8"),
+        ))
+        page.route("**/api/v3/pwa-auth/session", lambda route: json_response(
+            route, {"ok": True, "user_id": 42, "csrf": "synthetic-csrf"},
+        ))
     mock_price_preview(page)
     mock_course_map(page, level=level)
     page.add_init_script("localStorage.setItem('hsk_v3_tour','1');localStorage.setItem('hsk_v3_onboarded','1')")
@@ -33,7 +41,7 @@ def setup_rejection(page, *, denied=False, level="nhsk1", paid=False, language="
     def status_route(route):
         state["status_calls"] += 1
         json_response(route, {"ok": False} if state["offline"] else tracks(), status=503 if state["offline"] else 200)
-    page.route("**/api/v3/course-tracks", status_route)
+    page.route("**/api/v3/" + ("pwa/" if pwa else "") + "course-tracks", status_route)
     data = json.loads((STATIC_ROOT / ("course_v3_data/" + level + ".json")).read_text())
     data.update({"ok": True, "authenticated": True, "level": level,
                  "user": {"language": language, "name": "QA", "onboarding_completed": True, "is_paid": paid},
@@ -41,21 +49,22 @@ def setup_rejection(page, *, denied=False, level="nhsk1", paid=False, language="
     def map_route(route):
         if state["denied"] and not state["paid"] and state["level"].startswith("n"):
             json_response(route, {"ok": False, "error": "payment_rejected", "level": level, "hsk30_access": access(),
-                                  "pro_expiry_notice": expiry, "user": {"language": language}}, status=403)
+                                  "pro_expiry_notice": expiry, "user": {"language": language}}, status=403,
+                          headers={"X-HSK-PWA-User-ID": "42"} if pwa else None)
         else:
             current = data
             if state["level"] != level:
                 current = {**json.loads((STATIC_ROOT / ("course_v3_data/" + state["level"] + ".json")).read_text()),
                            "ok": True, "authenticated": True, "level": state["level"], "user": data["user"]}
             json_response(route, {**current, "lesson_limit": {"allowed": True, "hsk30_access": access()}})
-    page.route(re.compile(r".*/api/v3/map(?:\?.*)?$"), map_route)
+    page.route(re.compile(r".*/api/v3/" + ("pwa/" if pwa else "") + r"map(?:\?.*)?$"), map_route)
     def switch_route(route):
         body = json.loads(route.request.post_data)
         assert body["target_track"] == "hsk20"
         state["level"] = "hsk1"
         json_response(route, tracks())
     page.route("**/api/v3/course-tracks/switch", switch_route)
-    page.goto(app_url("/course-v3.html?lang=" + language + "&level=" + (boot_level or level) + "&onboarded=1"), wait_until="networkidle")
+    page.goto(app_url(("/iphone-pwa/course" if pwa else "/course-v3.html") + "?lang=" + language + "&level=" + (boot_level or level) + "&onboarded=1"), wait_until="networkidle")
     page.wait_for_function("typeof MAP!=='undefined' && MAP!==null")
     return state, errors
 
@@ -95,8 +104,9 @@ def test_rejected_cold_boot_shows_existing_gate_and_nonempty_screens(page):
     assert not errors
 
 
-def test_expiry_sheet_precedes_locked_hsk30_and_restores_regular_pro(page):
-    _, errors = setup_rejection(page, denied=True, language="ru", expiry="a" * 64)
+@pytest.mark.parametrize("pwa", [False, True])
+def test_expiry_sheet_precedes_locked_hsk30_and_restores_regular_pro(page, pwa):
+    _, errors = setup_rejection(page, denied=True, language="ru", expiry="a" * 64, pwa=pwa)
     expect(page.locator("#sheet.on.pro-expiry-sheet")).to_be_visible()
     assert page.evaluate("MAP.course_access_locked && MAP.units.length===0")
     page.evaluate("renderHsk30AccessGate({tracks:{hsk30:{access:{allowed:false,feature_enabled:true}}}})")

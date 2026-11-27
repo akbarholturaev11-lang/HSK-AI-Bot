@@ -193,9 +193,14 @@ class Hsk30EntryFlowTest {
     }
 
     @Test fun expirySheetTemporarilyOwnsTheModalWithoutUnlockingTheBook() {
-        val expiry = mutableStateOf(true)
+        val expiry = mutableStateOf(BuildConfig.EXTERNAL_CHECKOUT_ENABLED)
         val state = mutableStateOf(courseState())
         showCourse(state, expiryVisible = expiry)
+        if (!BuildConfig.EXTERNAL_CHECKOUT_ENABLED) {
+            compose.onNodeWithTag("hsk30-book-title").performScrollTo().assertIsDisplayed()
+            compose.onNodeWithText(strings.getString(R.string.hsk_course_pro_expiry_restore)).assertDoesNotExist()
+            return
+        }
         compose.onNodeWithTag("hsk30-book-title").assertDoesNotExist()
         compose.onNodeWithText(strings.getString(R.string.hsk_course_pro_expiry_restore))
             .performScrollTo().assertIsDisplayed()
