@@ -26,7 +26,7 @@ class MiniAppStorageScopeTests(unittest.TestCase):
         self.assertEqual(set(report["dynamic_cache_key_functions"]), {
             "lessonDataKey", "lessonResumeKey", "lessonMasteryKey",
             "foundationCacheKey", "studySetupTimeKey", "memorizationStateKey",
-            "memoPrefKey",
+            "memoPrefKey", "proExpirySeenKey",
         })
 
     def test_identity_contrasts_are_preserved_and_flagged_for_qa(self):
@@ -70,6 +70,25 @@ class MiniAppStorageScopeTests(unittest.TestCase):
             "pwa_mistake_review_ref_scope_missing",
             {row["kind"] for row in report["regressions"]},
         )
+
+    def test_pro_expiry_acknowledgement_is_owner_scoped_in_both_paths(self):
+        source = dict(self.sources)
+        original = 'function proExpirySeenKey(){return "hsk_v3_pro_expiry_seen:v1:"+localUserScope()}'
+        self.assertIn(original, source["course"])
+        source["course"] = source["course"].replace(
+            original, original.replace("localUserScope()", '"shared"'), 1,
+        )
+        report = audit_source(source, self.registry)
+        self.assertEqual(report["status"], "REGRESSION")
+        self.assertIn("pro_expiry_identity_scope_missing",
+                      {row["kind"] for row in report["regressions"]})
+        source = dict(self.sources)
+        source["course"] = source["course"].replace(
+            "localStorage.getItem(proExpirySeenKey())",
+            'localStorage.getItem("shared_expiry")', 1,
+        )
+        self.assertIn("pro_expiry_identity_scope_missing",
+                      {row["kind"] for row in audit_source(source, self.registry)["regressions"]})
 
     def test_new_storage_key_requires_classification(self):
         source = dict(self.sources)

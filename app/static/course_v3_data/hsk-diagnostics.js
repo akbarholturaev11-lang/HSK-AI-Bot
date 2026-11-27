@@ -408,6 +408,15 @@
     return !plain && batch.some(function (e) { return e.event.error_name || e.event.location; });
   }
 
+  /* The exception identity the server groups a JS incident by (NXT-011):
+     name, generic reason and primary asset, never line or version. Distinct
+     errors on one page are coalesced separately; none gives "". */
+  function identity(debug) {
+    if (!debug || (!debug.error_name && !debug.location)) return "";
+    return "|" + (debug.error_name || "-") + "|" + (debug.error_name && debug.reason_code || "-") + "|" +
+      (debug.location && debug.location.asset_id || "-");
+  }
+
   function enqueue(feature, failure, site, outcome, cat, debug) {
     // Only the product's verified actor may bind a PWA document. The
     // diagnostic transport never adopts anonymous failures for a later login.
@@ -422,12 +431,13 @@
       if (sent >= MAX_PER_PAGE || paused(now)) return false;
       var state = telegram ? pending : load();
       if (pwa && !owns(state)) return false;
-      var fp = feature + "|" + failure + "|" + site + "|" + outcome;
+      var extra = cat && typeof debug === "function" ? debug() : null;
+      var fp = feature + "|" + failure + "|" + site + "|" + outcome + identity(extra);
       if (now - (Number(state.seen[fp]) || 0) < COALESCE_MS) return false;
       state.seen[fp] = now;
       sent++;
       state.events.push({ owner: state.owner, at: now,
-        event: build(feature, failure, site, outcome, cat, now, typeof debug === "function" ? debug() : null) });
+        event: build(feature, failure, site, outcome, cat, now, extra) });
       trim(state, now);
       if (state !== pending) save(state);
       schedule(0);

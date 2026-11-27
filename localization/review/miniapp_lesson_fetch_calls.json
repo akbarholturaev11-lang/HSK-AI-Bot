@@ -2,12 +2,12 @@
   "schema_version": 1,
   "status": "PURPOSE_SPECIFIC_APIS_SOURCE_REVIEWED",
   "source": "app/static/course-v3.html",
-  "source_revision": "1606cf7e9aef633540623953e91b9cf3a9799d50",
-  "scope": "Three direct loadLessonData(...) expressions remain: audio warmup, nearby prefetch, and the post-reservation interactive lesson. Sales preview, Starter 0, and skip-test use separate purpose-specific endpoints. No client caller reads the legacy public lesson JSON route. 2026-11-16: next-part sheet handoff and one-line sheet header re-reviewed; the three direct and three indirect lesson read sites are unchanged and were re-anchored by exact source identity. 2026-11-17: UIUX-007 adaptive review overlay re-reviewed; the three direct and three indirect lesson read sites are unchanged and were re-anchored by exact source identity.",
+  "source_revision": "bef0d41a02ce5f2ba893c5f6216ddac3ea6814f2",
+  "scope": "Three direct loadLessonData(...) expressions remain: audio warmup, nearby prefetch, and the post-reservation interactive lesson. Sales preview, Starter 0, and skip-test use separate purpose-specific endpoints. No client caller reads the legacy public lesson JSON route. 2026-11-16: next-part sheet handoff and one-line sheet header re-reviewed; the three direct and three indirect lesson read sites are unchanged and were re-anchored by exact source identity. 2026-11-17: UIUX-007 adaptive review overlay re-reviewed; the three direct and three indirect lesson read sites are unchanged and were re-anchored by exact source identity. 2026-11-17: UIUX-008 lesson plan trimming and picture review deck re-reviewed; buildQueue only filters the already loaded lesson, so the three direct and three indirect lesson read sites are unchanged and were re-anchored by exact source identity. 2026-11-20: the result reads the already loaded topic and the existing authenticated completion response. All six lesson read sites retain exact source identity and were re-anchored. 2026-11-23: the PWA launch-timing beacon (perf task 1.4) adds 54 lines before the first read; all six lesson read sites keep exact source identity and were re-anchored.",
   "read_calls": [
     {
       "ordinal": 1,
-      "line": 2690,
+      "line": 2788,
       "anchor": "loadLessonData(lv,n)",
       "owner": "warmLessonPreviewAudio",
       "intent": "audio_preload_before_continue",
@@ -17,7 +17,7 @@
     },
     {
       "ordinal": 2,
-      "line": 3720,
+      "line": 3825,
       "anchor": "loadLessonData(lv,l.n)",
       "owner": "prefetchNearbyLessons",
       "intent": "background_nearby_prefetch",
@@ -27,7 +27,7 @@
     },
     {
       "ordinal": 3,
-      "line": 4878,
+      "line": 4983,
       "anchor": "loadLessonData(lv,l.n)",
       "owner": "startLesson",
       "intent": "interactive_lesson_after_reservation",
@@ -38,17 +38,17 @@
   ],
   "additional_indirect_entrypoints": [
     {
-      "line": 4342,
+      "line": 4451,
       "name": "warmLessonPreviewAudio",
       "intent": "preview_on_sheet_open"
     },
     {
-      "line": 6285,
+      "line": 6739,
       "name": "prefetchNearbyLessons",
       "intent": "track_switch_background"
     },
     {
-      "line": 9804,
+      "line": 10284,
       "name": "prefetchNearbyLessons",
       "intent": "initial_course_boot_background"
     }

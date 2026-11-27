@@ -66,6 +66,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.annotation.StringRes
 import androidx.compose.ui.unit.sp
@@ -94,6 +95,7 @@ import com.pomp.hskai.domain.model.GrammarCard
 import com.pomp.hskai.domain.model.LessonCard
 import com.pomp.hskai.domain.model.MatchPairsCard
 import com.pomp.hskai.domain.model.NewWordCard
+import com.pomp.hskai.domain.model.PictureReviewCard
 import com.pomp.hskai.domain.model.PronunciationCard
 import com.pomp.hskai.domain.model.ReverseBuilderCard
 import com.pomp.hskai.domain.model.SentenceBuilderCard
@@ -134,6 +136,7 @@ fun LessonScreen(
     state: LessonUiState,
     limit: LimitGate? = null,
     pinyin: PinyinVisibility,
+    showTodayPlanHint: Boolean = false,
     onAnswerChoice: (ChoiceCard, Int) -> Unit,
     onAnswerBuilder: (LessonCard, List<String>) -> Unit,
     onAnswerPairs: (MatchPairsCard) -> Unit,
@@ -152,10 +155,16 @@ fun LessonScreen(
     /** In-lesson personal review (UIUX-007): its answer and its own Continue. */
     onAnswerAdaptive: (selectedIndex: Int?, selectedTokens: List<String>?) -> Unit = { _, _ -> },
     onContinueAdaptive: () -> Unit = {},
+    /** UIUX-008 picture deck: say the word, skip the card, move a revealed card on. */
+    onSpeakPicture: () -> Unit = {},
+    onSkipPicture: () -> Unit = {},
+    onContinuePicture: () -> Unit = {},
+    /** Settings can leave through the same guard as Android Back. */
+    settingsSheet: @Composable (onExit: () -> Unit) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val outcome = state.outcome
-    // Mid-lesson, the ✕ and the phone's back both ask before leaving; the back
+    // Mid-lesson, Settings → Exit and the phone's Back ask before leaving; Back
     // used to close the whole app from here. Loaders, errors, the limit block
     // and the celebration are not a lesson in progress and just leave.
     val requestExit = rememberExitGuard(
@@ -184,10 +193,11 @@ fun LessonScreen(
                 }
                 outcome is LessonOutcome.PreviewExhausted -> PreviewEndBlock(onExit)
                 outcome is LessonOutcome.Completed ->
-                    CompletedBlock(
+                    LessonCompletionCelebration(
                         outcome = outcome,
                         isCheckpoint = state.lesson?.isCheckpoint == true,
                         rankBoard = state.rankBoard,
+                        showTodayPlanHint = showTodayPlanHint,
                         onExit = onExit,
                     )
                 outcome is LessonOutcome.Failed -> FailedBlock(outcome, onRetryCompletion, onExit)
@@ -198,7 +208,6 @@ fun LessonScreen(
                     onContinue = onContinueAdaptive,
                     onPlayAudio = onPlayAudio,
                     onOpenPinyinSettings = onOpenPinyinSettings,
-                    onExit = requestExit,
                 )
                 else -> Box(modifier = Modifier.fillMaxSize()) {
                     // The faded ink landscape sits under the cards only; the
@@ -215,11 +224,13 @@ fun LessonScreen(
                         onPlayAudio = onPlayAudio,
                         onSpeakPronunciation = onSpeakPronunciation,
                         onSkipPronunciation = onSkipPronunciation,
+                        onSpeakPicture = onSpeakPicture,
+                        onSkipPicture = onSkipPicture,
+                        onContinuePicture = onContinuePicture,
                         onOpenPinyinSettings = onOpenPinyinSettings,
                         onOpenWriter = onOpenWriter,
                         onShowWriterCharacter = onShowWriterCharacter,
                         onCloseWriter = onCloseWriter,
-                        onExit = requestExit,
                         onAskAssistant = onAskAssistant,
                     )
                 }
@@ -248,6 +259,7 @@ fun LessonScreen(
             )
         }
     }
+    settingsSheet(requestExit)
 }
 
 /**
@@ -295,6 +307,7 @@ private fun lessonHeading(card: LessonCard, section: String): String? {
     return when (card) {
         is ChoiceCard -> card.title.ifBlank { if (card.kind == ChoiceKind.LISTENING) listenTitle else section }
         is PronunciationCard -> repeatTitle
+        is PictureReviewCard -> stringResource(R.string.hsk_course_picture_review_title)
         is MatchPairsCard -> pairsTitle
         else -> null
     }
@@ -312,11 +325,13 @@ private fun LessonBody(
     onPlayAudio: (String) -> Unit,
     onSpeakPronunciation: () -> Unit,
     onSkipPronunciation: () -> Unit,
+    onSpeakPicture: () -> Unit,
+    onSkipPicture: () -> Unit,
+    onContinuePicture: () -> Unit,
     onOpenPinyinSettings: () -> Unit,
     onOpenWriter: (WriterTarget) -> Unit,
     onShowWriterCharacter: (Int) -> Unit,
     onCloseWriter: () -> Unit,
-    onExit: () -> Unit,
     onAskAssistant: ((question: String, readyAnswer: String) -> Unit)?,
 ) {
     val haptics = LocalHapticFeedback.current
@@ -375,8 +390,17 @@ private fun LessonBody(
             LessonTopBar(
                 progress = state.progress,
                 hearts = state.hearts,
+                counter = "${(state.cardIndex + 1).coerceAtMost(state.totalCards.coerceAtLeast(1))} / ${state.totalCards.coerceAtLeast(1)}",
                 onOpenPinyinSettings = onOpenPinyinSettings,
-                onExit = onExit,
+            )
+            // The Mini App's `.fstage`: which part of the lesson this is, centred
+            // under the bar. A card that already shows it as its heading skips it.
+            LessonStageLabel(
+                if (card is PictureReviewCard) {
+                    stringResource(R.string.hsk_course_picture_review_label)
+                } else {
+                    state.currentSectionTitle
+                }.takeUnless { it == lessonHeading(card, state.currentSectionTitle) },
             )
             if (state.isStale) StaleBanner()
 
@@ -421,7 +445,8 @@ private fun LessonBody(
 
             // Teaching cards and the builders keep the coach above: there is
             // nothing to stand beside. The pairs keep the whole width for the grid.
-            val coachAbove = card !is ChoiceCard && card !is PronunciationCard && card !is MatchPairsCard
+            val coachAbove = card !is ChoiceCard && card !is PronunciationCard && card !is MatchPairsCard &&
+                card !is PictureReviewCard
             if (coachAbove) {
                 HskStageCoach(
                     character = coachCharacter,
@@ -491,6 +516,7 @@ private fun LessonBody(
                             onPlayAudio = onPlayAudio,
                             onSpeak = onSpeakPronunciation,
                             onSkip = onSkipPronunciation,
+                            isUnclear = state.pronunciationUnclear,
                             coach = {
                                 val stage = Modifier.size(width = 150.dp, height = 165.dp)
                                 if (coachReady) {
@@ -537,6 +563,21 @@ private fun LessonBody(
                     is UnsupportedCard -> {
                         UnsupportedCardView(card, onAcknowledge)
                         LessonCardErrors(state)
+                    }
+                    is PictureReviewCard -> {
+                        val deck = state.pictureDeck
+                        if (deck != null) {
+                            PictureReviewDeckView(
+                                card = card,
+                                deck = deck,
+                                pinyin = pinyin,
+                                onSpeak = onSpeakPicture,
+                                onSkip = onSkipPicture,
+                                onContinue = onContinuePicture,
+                                // Column padding: 14 dp above, 20 dp below.
+                                minHeight = viewport - 34.dp,
+                            )
+                        }
                     }
                 }
               }
@@ -663,7 +704,8 @@ internal fun LessonTopBar(
     progress: Float,
     hearts: Int,
     onOpenPinyinSettings: () -> Unit,
-    onExit: () -> Unit,
+    /** "3 / 12", shown right before the hearts like the Mini App's `.fcount`. */
+    counter: String? = null,
 ) {
     val heartColor = if (PompColors.IsDark) PompColors.Flame else PompColors.Cinnabar
     Row(
@@ -675,30 +717,48 @@ internal fun LessonTopBar(
         horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         HskGlassIconButton(
-            icon = Icons.Filled.Close,
-            contentDescription = stringResource(R.string.hsk_common_action_close),
-            onClick = onExit,
-            size = 40.dp,
+            icon = Icons.Filled.Settings,
+            contentDescription = stringResource(R.string.hsk_course_lesson_settings_title),
+            onClick = onOpenPinyinSettings,
+            size = 48.dp,
             iconSize = 24.dp,
             tint = PompColors.InkSecondary,
         )
 
         HskStageProgress(progress = progress, modifier = Modifier.weight(1f))
 
-        HskGlassIconButton(
-            icon = Icons.Filled.Settings,
-            contentDescription = stringResource(R.string.hsk_course_pinyin_settings_h),
-            onClick = onOpenPinyinSettings,
-            size = 40.dp,
-            iconSize = 22.dp,
-            tint = PompColors.InkDisabled,
-        )
+        if (counter != null) {
+            Text(
+                text = counter,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = PompColors.CinnabarDark,
+                maxLines = 1,
+                softWrap = false,
+            )
+        }
 
         AnimatedHeartCounter(
             hearts = hearts,
             heartColor = heartColor,
         )
     }
+}
+
+/** The part of the lesson this card belongs to: small, bold, centred, upper case. */
+@Composable
+private fun LessonStageLabel(text: String?) {
+    if (text.isNullOrBlank()) return
+    Text(
+        text = text.uppercase(),
+        fontSize = 11.sp,
+        fontWeight = FontWeight.SemiBold,
+        color = PompColors.CinnabarDark,
+        textAlign = TextAlign.Center,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+        modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 2.dp),
+    )
 }
 
 @Composable
@@ -1064,21 +1124,6 @@ private fun PreviewEndBlock(onExit: () -> Unit) {
         Spacer(Modifier.height(24.dp))
         SecondaryAction(stringResource(R.string.hsk_common_action_close), onExit)
     }
-}
-
-@Composable
-private fun CompletedBlock(
-    outcome: LessonOutcome.Completed,
-    isCheckpoint: Boolean,
-    rankBoard: LessonRankBoard?,
-    onExit: () -> Unit,
-) {
-    LessonCompletionCelebration(
-        outcome = outcome,
-        isCheckpoint = isCheckpoint,
-        rankBoard = rankBoard,
-        onExit = onExit,
-    )
 }
 
 @Composable

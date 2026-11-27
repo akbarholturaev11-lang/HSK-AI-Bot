@@ -24,7 +24,8 @@ import retrofit2.http.*
     val paid_sub_negative: List<FeedbackOption> = emptyList(),
 )
 @Serializable data class ActivityFeedbackPrompt(val feedback_id: Int, val paid: Boolean = false,
-    val liked_code: String? = null, val disliked_code: String? = null, val choices: FeedbackChoices = FeedbackChoices())
+    val liked_code: String? = null, val disliked_code: String? = null, val choices: FeedbackChoices = FeedbackChoices(),
+    val reward_hint: String? = null, val dismiss_label: String? = null)
 @Serializable data class FeedbackPrepareReply(val ok: Boolean = false, val ordinary: ActivityFeedbackPrompt? = null)
 @Serializable data class FeedbackSubmitReply(val ok: Boolean = false, val completed: Boolean = false)
 interface AndroidActivityFeedbackApi {
@@ -68,16 +69,21 @@ data class ActivityFeedbackState(val prompt: ActivityFeedbackPrompt? = null, val
     val questions get() = prompt?.let { feedbackQuestions(it,draft) }.orEmpty()
     val question get() = questions.getOrNull(step)
 }
-class ActivityFeedbackViewModel(private val repository: ActivityFeedbackRepository) : ViewModel() {
+class ActivityFeedbackViewModel(private val repository: ActivityFeedbackRepository,
+    private val nowMillis: () -> Long = System::currentTimeMillis) : ViewModel() {
     private val _state = MutableStateFlow(ActivityFeedbackState())
     val state = _state.asStateFlow()
     private var generation = 0
-    private val attempted = mutableSetOf<ActivityFeedbackContext>()
+    private val attempted = mutableMapOf<ActivityFeedbackContext, Long>()
+    private var nextPromptAt = 0L
+    private val retryAfter = 24 * 60 * 60 * 1000L
     private var preparing = false
     fun prepare(kind: String, level: String, lesson: Int? = null) {
         val context = ActivityFeedbackContext(kind, if (level == "beginner") "hsk1" else level, lesson)
-        if (_state.value.prompt != null || preparing || context in attempted) return
-        attempted += context
+        val now = nowMillis()
+        if (_state.value.prompt != null || preparing || now < nextPromptAt || now < (attempted[context] ?: 0L)) return
+        attempted.entries.removeAll { it.value <= now }
+        attempted[context] = now + retryAfter
         preparing = true
         val current = ++generation
         viewModelScope.launch {
@@ -86,6 +92,7 @@ class ActivityFeedbackViewModel(private val repository: ActivityFeedbackReposito
             if (current != generation) return@launch
             if (reply is ApiResult.Success && reply.value.ok && reply.value.ordinary != null) {
                 val prompt = reply.value.ordinary
+                nextPromptAt = nowMillis() + retryAfter
                 val initial = if (prompt.paid) prompt.liked_code?.removePrefix("paid_")?.let { mapOf("paid_code" to it) }
                     else prompt.liked_code?.let { mapOf("liked_code" to it) }
                 _state.value = ActivityFeedbackState(prompt = prompt, draft = initial.orEmpty())

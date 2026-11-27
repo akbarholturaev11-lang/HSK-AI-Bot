@@ -92,7 +92,7 @@ internal class SmartStudyBridge(
     private val claim: suspend (String, String, SmartStudyClaim) -> ApiResult<SmartStudyGrant>,
     private val receipt: suspend (String, String, SmartStudyReceipt) -> ApiResult<SmartStudyReceiptAck>,
     private val permission: () -> Boolean,
-    private val post: (String, SmartStudyOpenHint?) -> StudyPostOutcome,
+    private val post: (String, SmartStudyOpenHint?, SmartStudyMessage?) -> StudyPostOutcome,
     private val clock: () -> ZonedDateTime = ZonedDateTime::now,
     private val elapsed: () -> Long,
 ) {
@@ -180,7 +180,8 @@ internal class SmartStudyBridge(
                         false
                     }
                 }, post = { post(grant.localDay.orEmpty(),
-                    SmartStudyOpenHint.parse(grant.jobId, grant.openProof, grant.localEpoch)) })
+                    SmartStudyOpenHint.parse(grant.jobId, grant.openProof, grant.localEpoch),
+                    grant.message?.takeIf { it.usable() }) })
         }
         // Retry later from the immutable persisted outcome; never repeat notify on ACK failure.
         val saved = store.read().takeIf { it.epoch == local.epoch }?.studyOperations?.find { it.requestId == op.requestId }

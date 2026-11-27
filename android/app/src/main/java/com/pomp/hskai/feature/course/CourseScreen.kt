@@ -149,6 +149,7 @@ fun CourseScreen(
     onHsk30PromoShown: () -> Unit = {},
     onDismissHsk30Promo: () -> Unit = {},
     hsk30PromoAllowed: Boolean = true,
+    expiryNoticeVisible: Boolean = false,
     onUnlockHsk30: () -> Unit = {},
     onRetry: () -> Unit,
     modifier: Modifier = Modifier,
@@ -258,6 +259,7 @@ fun CourseScreen(
                                             chestReady = map.progress.rewardChest?.ready == true,
                                             isOpeningChest = state.isOpeningChest,
                                             isStale = state.isStale,
+                                            skipLimitReached = map.lessonLimit?.blocksNewLesson == true,
                                             unlockedLessonOrder = state.unlockedLessonOrder,
                                             onUnlockAnimationConsumed = onUnlockAnimationConsumed,
                                             onLesson = onLesson,
@@ -309,7 +311,9 @@ fun CourseScreen(
             hsk30.access.featureEnabled &&
             !hsk30.access.allowed
 
-        if (hsk30Locked && hsk30 != null && !state.isSwitchingTrack) {
+        // Both use separate native windows. Never mount the locked-book
+        // dialog over the ordinary Pro renewal sheet. The map stays locked.
+        if (hsk30Locked && hsk30 != null && !state.isSwitchingTrack && !expiryNoticeVisible) {
             Hsk30LockedEntryDialog(
                 hsk30 = hsk30,
                 onUnlock = onUnlockHsk30,
@@ -1077,6 +1081,7 @@ private fun PathRow(
     chestReady: Boolean,
     isOpeningChest: Boolean,
     isStale: Boolean,
+    skipLimitReached: Boolean,
     unlockedLessonOrder: Int?,
     onUnlockAnimationConsumed: () -> Unit,
     onLesson: (CourseLesson) -> Unit,
@@ -1129,11 +1134,12 @@ private fun PathRow(
                         // window, a lesson not reached yet offers the skip
                         // test. A node that silently does nothing reads as a
                         // broken app, which is what it was.
-                        val lessonDescription = lesson.stateLabel()
+                        val canSkip = lesson.canOfferSkipTest && !skipLimitReached
+                        val lessonDescription = if (canSkip) stringResource(R.string.skip_test_tag) else lesson.stateLabel()
                         Box(
                             modifier = Modifier
                                 .size(CURRENT_RING_SIZE)
-                                .clickable {
+                                .clickable(enabled = lesson.access != LessonAccess.NotReached || lesson.canOfferSkipTest) {
                                     when (lesson.access) {
                                         LessonAccess.Open,
                                         LessonAccess.HalfPreview,
@@ -1142,7 +1148,9 @@ private fun PathRow(
                                         // independent: current still pulses,
                                         // while a spent allowance opens this window.
                                         LessonAccess.PremiumLocked -> onLimitedLesson(lesson)
-                                        LessonAccess.NotReached -> onLockedLesson(lesson)
+                                        LessonAccess.NotReached -> if (lesson.canOfferSkipTest) {
+                                            if (skipLimitReached) onLimitedLesson(lesson) else onLockedLesson(lesson)
+                                        } else Unit
                                     }
                                 }
                                 .semantics { contentDescription = lessonDescription },
@@ -1151,6 +1159,7 @@ private fun PathRow(
                             UnlockingLessonNode(
                                 lesson = lesson,
                                 active = unlockedLessonOrder == lesson.order,
+                                canSkip = canSkip,
                                 onFinished = onUnlockAnimationConsumed,
                             )
                         }
@@ -1250,10 +1259,11 @@ private fun PathTrailSlice(row: CourseRow.Path) {
 private fun UnlockingLessonNode(
     lesson: CourseLesson,
     active: Boolean,
+    canSkip: Boolean,
     onFinished: () -> Unit,
 ) {
     if (!active) {
-        LessonNodeFace(lesson)
+        LessonNodeFace(lesson, canSkip)
         return
     }
 
@@ -1366,7 +1376,7 @@ private fun UnlockingLessonNode(
                 scaleY = nodeScale.value
             },
         ) {
-            LessonNodeFace(lesson)
+            LessonNodeFace(lesson, canSkip)
         }
         Surface(
             shape = CircleShape,
@@ -1403,7 +1413,7 @@ private fun UnlockingLessonNode(
 }
 
 @Composable
-private fun LessonNodeFace(lesson: CourseLesson) {
+private fun LessonNodeFace(lesson: CourseLesson, canSkip: Boolean) {
     val current = lesson.isCurrent
     val checkpoint = lesson.isCheckpoint
     val (background, depth, content, contentColor, border) = when {
@@ -1420,6 +1430,13 @@ private fun LessonNodeFace(lesson: CourseLesson) {
             if (checkpoint) NodeContent.Checkpoint else NodeContent.Glyph,
             PompColors.OnCinnabar,
             null,
+        )
+        canSkip -> NodeStyle(
+            PompColors.GoldSoft,
+            PompColors.LockedDepth,
+            NodeContent.SkipTest,
+            PompColors.GoldInk,
+            BorderStroke(2.dp, PompColors.Gold),
         )
         lesson.access.isPremiumLocked || lesson.access == LessonAccess.NotReached -> NodeStyle(
             PompColors.Divider,
@@ -1469,6 +1486,12 @@ private fun LessonNodeFace(lesson: CourseLesson) {
                     NodeContent.Locked -> MiniAppLessonNodeIcon(
                         kind = CourseNodeIconKind.Lock,
                         tint = contentColor,
+                    )
+                    NodeContent.SkipTest -> Icon(
+                        imageVector = Icons.Filled.LockOpen,
+                        contentDescription = null,
+                        tint = contentColor,
+                        modifier = Modifier.size(22.dp),
                     )
                     NodeContent.Checkpoint -> MiniAppLessonNodeIcon(
                         kind = CourseNodeIconKind.Flag,
@@ -1718,7 +1741,7 @@ private data class NodeStyle(
     val border: BorderStroke?,
 )
 
-private enum class NodeContent { Done, Locked, Checkpoint, Glyph }
+private enum class NodeContent { Done, Locked, SkipTest, Checkpoint, Glyph }
 
 private sealed interface PathItem {
     data class Lesson(val lesson: CourseLesson) : PathItem

@@ -254,10 +254,15 @@ class CourseNotificationService:
         for row in pending:
             key = str(row.params.get("template_service") or "")
             try:
-                if key not in cache:
-                    resolved = await templates.resolve(key, lang)
-                    cache[key] = str((resolved or {}).get("text") or "")
-                text = cache[key]
+                if key == KEY_SMART_STUDY:
+                    # Same Smart variant in the reader's language (D33).
+                    from app.services.smart_reminder_messages import resolve_for_feed
+                    text = str((await resolve_for_feed(self.session, row.params, lang) or {}).get("text") or "")
+                else:
+                    if key not in cache:
+                        resolved = await templates.resolve(key, lang)
+                        cache[key] = str((resolved or {}).get("text") or "")
+                    text = cache[key]
                 if not text:
                     continue
                 fields = {

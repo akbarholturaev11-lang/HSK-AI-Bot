@@ -965,7 +965,9 @@ def test_trial_slides_cannot_forge_activation_or_two_day_push_claim():
         page.wait_for_function("window.screen==='trialIntro'")
         assert len(captured["post"]) == 1
         assert captured["trial_start"] == []
-        assert page.locator(".li-pro-welcome h1").inner_text() == "HSK AI PRO"
+        # PWA trial brand is now the persistent top heading, not the welcome-card heading.
+        assert page.locator("#top .li-trial-brand").inner_text() == "HSK AI PRO"
+        assert page.locator(".li-pro-welcome h1").count() == 0
         assert page.locator(".li-pro-welcome-panda").is_visible()
         for expected in ["trial1", "trial2", "trial3"]:
             page.locator("#footer .cta").click()

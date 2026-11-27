@@ -102,8 +102,13 @@ class DiagEvent:
     locations: tuple = ()
 
     @property
+    def identity(self):
+        return js_identity(self.platform, self.failure_code, self.error_name, self.reason_code,
+                           self.locations[0][0] if self.locations else None)
+
+    @property
     def fingerprint(self):
-        return fingerprint(self.platform, self.feature_code, self.failure_code, self.site_code)
+        return fingerprint(self.platform, self.feature_code, self.failure_code, self.site_code, self.identity)
 
 
 @dataclass
@@ -136,8 +141,30 @@ def is_owner_account(settings_obj, telegram_id):
         return False
 
 
-def fingerprint(platform, feature_code, failure_code, site_code):
+def js_identity(platform, failure_code, error_name, reason_code, asset_id):
+    """The allowlisted exception identity that separates learner-web JS
+    incidents on one page (NXT-011), or None for the aggregated incident.
+
+    Only server-validated values take part: the exception name, the generic
+    reason and the primary first-party asset. Line, column, asset version and
+    build are left out so a redeploy does not split one recurring error. An
+    event without a name or a first-party location keeps the original
+    page-level fingerprint, which the Admin Inbox shows as not identified.
+    """
+    if platform not in catalog.DEBUG_PLATFORMS or failure_code not in catalog.DEBUG_FAILURES:
+        return None
+    name = error_name if error_name in catalog.ERROR_NAMES else None
+    reason = reason_code if name and reason_code in catalog.REASONS else None
+    asset = asset_id if asset_id in catalog.DEBUG_ASSETS else None
+    if name is None and asset is None:
+        return None
+    return f"e={name or '-'}|r={reason or '-'}|a={asset or '-'}"
+
+
+def fingerprint(platform, feature_code, failure_code, site_code, identity=None):
     raw = f"{catalog.CATALOG_VERSION}|{platform}|{feature_code}|{failure_code}|{site_code}"
+    if identity:
+        raw += "|" + identity
     return hashlib.sha256(raw.encode("ascii")).hexdigest()
 
 

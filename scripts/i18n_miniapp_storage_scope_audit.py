@@ -22,7 +22,7 @@ STORAGE_CALL = re.compile(
 REQUIRED_KEY_FUNCTIONS = {
     "lessonDataKey", "lessonResumeKey", "lessonMasteryKey",
     "foundationCacheKey", "studySetupTimeKey", "memorizationStateKey",
-    "memoPrefKey",
+    "memoPrefKey", "proExpirySeenKey",
 }
 
 
@@ -94,6 +94,17 @@ def audit_source(sources: dict[str, str], registry: dict) -> dict:
     if ('localStorage.getItem(memorizationStateKey())' not in sources["memorize"]
             or 'localStorage.setItem(memorizationStateKey(),' not in sources["memorize"]):
         regressions.append({"kind": "memorization_dynamic_key_access_changed"})
+
+    # The same owner-scoped expiry key is used for both the denied-map
+    # and ordinary map paths, and for recording the shown notice.
+    if (
+        'function proExpirySeenKey(){return "hsk_v3_pro_expiry_seen:v1:"+localUserScope()}' not in sources["course"]
+        or 'localStorage.getItem(proExpirySeenKey())' not in sources["course"]
+        or 'var key=proExpirySeenKey();' not in sources["course"]
+        or 'localStorage.getItem(key)===token' not in sources["course"]
+        or 'localStorage.setItem(key,token)' not in sources["course"]
+    ):
+        regressions.append({"kind": "pro_expiry_identity_scope_missing"})
 
     # Browser-only identity keying must not make dropped literal calls invisible
     # to this audit. Telegram's original literal fallback is retained.

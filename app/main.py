@@ -2559,6 +2559,8 @@ async def course_v3_data_file(filename: str):
         "iphone-pwa-fx.js": "application/javascript",
         "iphone-pwa-refresh.js": "application/javascript",
         "iphone-pwa-invite.js": "application/javascript",
+        "iphone-pwa-progress.js": "application/javascript",
+        "iphone-pwa-progress.css": "text/css",
         "iphone-pwa-perf.js": "application/javascript",
         "desktop-download.css": "text/css",
         "desktop-download.js": "application/javascript",
@@ -2573,6 +2575,7 @@ async def course_v3_data_file(filename: str):
         "hsk-diagnostics.js": "application/javascript",
         "hsk-miniapp-i18n.js": "application/javascript",
         "hsk-course-i18n.js": "application/javascript",
+        "hsk-subscription-presentation.js": "application/javascript",
         "li-onboarding-runtime.js": "application/javascript",
         "li-onboarding-install.js": "application/javascript",
         "li-onboarding-install.css": "text/css",
@@ -2800,6 +2803,10 @@ async def _course_v3_map_for_user(
     if target_band.startswith("nhsk"):
         hsk30_access = await CourseTrackService(session).hsk30_access(user)
         if not hsk30_access.allowed:
+            # Keep all lesson material blocked. Natural Pro expiry is an
+            # independent, read-only presentation hint for this verified owner.
+            from app.services.subscription_expiry_notice import subscription_expiry_payload
+            expiry = await subscription_expiry_payload(session, user, language=resolved_lang)
             return JSONResponse(
                 status_code=403,
                 content={
@@ -2807,7 +2814,10 @@ async def _course_v3_map_for_user(
                     "error": hsk30_access.reason,
                     "level": target_band,
                     "hsk30_access": hsk30_access.payload(),
+                    **expiry,
+                    **({"user": {"language": resolved_lang}} if expiry.get("pro_expiry_notice") else {}),
                 },
+                headers={"Cache-Control": "no-store"},
             )
 
     progress_repo = CourseProgressRepository(session)
@@ -2912,6 +2922,8 @@ async def _course_v3_map_for_user(
         "avatar_key": str(getattr(profile, "avatar_key", None) or "").strip()[:32],
         "foundation": await profile_svc.foundation_status(user),
     }
+    from app.services.subscription_expiry_notice import subscription_expiry_payload
+    data.update(await subscription_expiry_payload(session, user, language=resolved_lang))
     # Kunlik reja sozlamalari: XP maqsadi endi serverda saqlanadi (ilgari
     # klientdagi `dailyGoal=50` o'zgaruvchi edi va har ochilganda
     # yo'qolardi). `pending` — kunlik vaqt/fokus savoli hali so'ralmagan.
@@ -3289,93 +3301,155 @@ async def v3_course_lesson_unlock(request: Request):
         if not user:
             return JSONResponse(status_code=403, content={"ok": False, "error": "access_start_first"})
 
-        resolved_level = _course_v3_user_level(user)
-        # The client identifies the course it opened; it cannot choose a new
-        # course. Reject late requests after a level/track switch before writes.
-        if payload.get("level") is not None and str(payload["level"]).strip().lower() != resolved_level:
-            return JSONResponse(status_code=409, content={"ok": False, "error": "course_context_changed"},
-                                headers={"Cache-Control": "no-store"})
-        if await _course_v3_foundation_is_blocked(session, user, resolved_level):
-            return JSONResponse(status_code=403, content={"ok": False, "error": "android_foundation_required"},
-                                headers={"Cache-Control": "no-store"})
-        if resolved_level.startswith("nhsk"):
-            hsk30_access = await CourseTrackService(session).hsk30_access(user)
-            if not hsk30_access.allowed:
-                return JSONResponse(
-                    status_code=403,
-                    content={
-                        "ok": False,
-                        "error": hsk30_access.reason,
-                        "hsk30_access": hsk30_access.payload(),
-                    },
-                )
-        total_parts = _course_v3_total_parts(resolved_level)
-        if total_parts and lesson_order > total_parts:
-            return JSONResponse(status_code=404, content={"ok": False, "error": "course_no_lesson_found"})
-        # Legacy course_lessons qatori endi shart emas (qismlar flat raqamlanadi
-        # va jadvaldagi eski tartibdan ko'p) — topilsa bookkeeping uchun olamiz.
-        lesson_repo = CourseLessonRepository(session)
-        lesson = await lesson_repo.get_by_level_and_order(resolved_level, lesson_order)
-
-        limit_status = await LessonAccessService(session).status(
-            user, level=resolved_level, lesson_order=lesson_order,
+        return await _v3_unlock_lesson_for_user(
+            session, user, payload, lesson_order=lesson_order, score=score,
+            telegram_id=telegram_id,
         )
-        if not limit_status["allowed"]:
-            return JSONResponse(status_code=403, content=limit_status)
 
-        progress_repo = CourseProgressRepository(session)
-        progress = await progress_repo.get_by_user_id(user.id, for_update=True)
-        if progress and _course_v3_level(progress.level) != resolved_level:
-            return JSONResponse(status_code=409, content={"ok": False, "error": "course_context_changed"},
-                                headers={"Cache-Control": "no-store"})
-        if not progress:
-            progress = await progress_repo.create(
-                user_id=user.id,
-                level=resolved_level,
-                current_lesson_id=getattr(lesson, "id", None),
-                current_step="intro",
-                waiting_for="none",
+
+@app.post("/api/v3/pwa/lesson/unlock")
+async def pwa_v3_course_lesson_unlock(request: Request):
+    """Verified browser mutation; the same progression and limit gate as Telegram."""
+    from app.services.pwa_auth_service import (
+        PWA_SESSION_COOKIE, PwaAuthError, PwaAuthService, require_same_origin,
+    )
+    from app.services.monitoring.intake import IntakeRejected
+
+    headers = {"Cache-Control": "no-store", "Referrer-Policy": "no-referrer"}
+    try:
+        require_same_origin(request, settings)
+        if request.headers.get("X-Telegram-Init-Data"):
+            raise PwaAuthError("pwa_request_invalid", status_code=422)
+        payload = await read_bounded_json(request, limit=4096)
+        if not isinstance(payload, dict) or set(payload) - {"lesson_id", "level", "score", "source", "lang"}:
+            raise ValueError("invalid fields")
+        order = int(payload.get("lesson_id") or 0)
+        score = int(payload.get("score") or 0)
+        if not 1 <= order <= 500 or not isinstance(payload.get("level"), str) or len(payload["level"]) > 18:
+            raise ValueError("invalid lesson payload")
+        async with async_session_maker() as session:
+            actor, _ = await PwaAuthService(session, settings).mutation_actor(
+                request.cookies.get(PWA_SESSION_COOKIE),
+                request.headers.get("X-HSK-PWA-CSRF"),
             )
-        progress.level = resolved_level
-        progress.completed_lessons_count = max(
-            int(getattr(progress, "completed_lessons_count", 0) or 0),
-            lesson_order - 1,
-        )
-        await progress_repo.set_current_lesson_and_step(
-            progress=progress,
-            lesson_id=getattr(lesson, "id", None),
-            step="intro",
+            user = await UserRepository(session).get_by_user_id(actor.id, lock=True)
+            if not user or str(user.status or "").strip().lower() == "blocked":
+                raise PwaAuthError("pwa_session_required", status_code=401)
+            response = await _v3_unlock_lesson_for_user(
+                session, user, payload, lesson_order=order, score=score,
+                telegram_id=int(user.telegram_id) if user.telegram_id else None,
+                analytics_client="iphone_pwa",
+            )
+            response.headers.update(headers)
+            return response
+    except PwaAuthError as exc:
+        return JSONResponse(status_code=exc.status_code,
+                            content={"ok": False, "error": exc.code}, headers=headers)
+    except IntakeRejected as exc:
+        return JSONResponse(status_code=413 if exc.code == "too_large" else 400,
+                            content={"ok": False, "error": "invalid_lesson_payload"}, headers=headers)
+    except (TypeError, ValueError, UnicodeError):
+        return JSONResponse(status_code=400,
+                            content={"ok": False, "error": "invalid_lesson_payload"}, headers=headers)
+
+
+async def _v3_unlock_lesson_for_user(
+    session, user, payload: dict, *, lesson_order: int, score: int,
+    telegram_id: int | None, analytics_client=None,
+):
+    from app.services.course_v3_parts import is_skip_test_part
+    resolved_level = _course_v3_user_level(user)
+    # The client identifies the course it opened; it cannot choose a new
+    # course. Reject late requests after a level/track switch before writes.
+    if payload.get("level") is not None and str(payload["level"]).strip().lower() != resolved_level:
+        return JSONResponse(status_code=409, content={"ok": False, "error": "course_context_changed"},
+                            headers={"Cache-Control": "no-store"})
+    if await _course_v3_foundation_is_blocked(session, user, resolved_level):
+        return JSONResponse(status_code=403, content={"ok": False, "error": "android_foundation_required"},
+                            headers={"Cache-Control": "no-store"})
+    if resolved_level.startswith("nhsk"):
+        hsk30_access = await CourseTrackService(session).hsk30_access(user)
+        if not hsk30_access.allowed:
+            return JSONResponse(
+                status_code=403,
+                content={
+                    "ok": False,
+                    "error": hsk30_access.reason,
+                    "hsk30_access": hsk30_access.payload(),
+                },
+            )
+    total_parts = _course_v3_total_parts(resolved_level)
+    if total_parts and lesson_order > total_parts:
+        return JSONResponse(status_code=404, content={"ok": False, "error": "course_no_lesson_found"})
+    limit_status = await LessonAccessService(session).status(
+        user, level=resolved_level, lesson_order=lesson_order,
+    )
+    if not limit_status["allowed"]:
+        return JSONResponse(status_code=403, content=limit_status)
+    if not is_skip_test_part(resolved_level, lesson_order):
+        return JSONResponse(status_code=403, content={"ok": False, "error": "course_lesson_not_unlocked"},
+                            headers={"Cache-Control": "no-store"})
+
+    # Legacy course_lessons qatori endi shart emas (qismlar flat raqamlanadi
+    # va jadvaldagi eski tartibdan ko'p) — topilsa bookkeeping uchun olamiz.
+    lesson_repo = CourseLessonRepository(session)
+    lesson = await lesson_repo.get_by_level_and_order(resolved_level, lesson_order)
+
+    progress_repo = CourseProgressRepository(session)
+    progress = await progress_repo.get_by_user_id(user.id, for_update=True)
+    if progress and _course_v3_level(progress.level) != resolved_level:
+        return JSONResponse(status_code=409, content={"ok": False, "error": "course_context_changed"},
+                            headers={"Cache-Control": "no-store"})
+    if not progress:
+        progress = await progress_repo.create(
+            user_id=user.id,
+            level=resolved_level,
+            current_lesson_id=getattr(lesson, "id", None),
+            current_step="intro",
             waiting_for="none",
         )
-        await progress_repo.set_homework_status(progress, "none")
-        await CourseMiniAppAnalyticsService(session).record_server_event(
-            event_name="test_completed",
-            telegram_id=telegram_id,
-            user_id=getattr(user, "id", None),
-            source="course_v3_skip_test",
-            level=resolved_level,
-            lesson_id=getattr(lesson, "id", None),
-            lesson_order=lesson_order,
-            dedupe_key=f"course-v3:skip-test:{resolved_level}:{lesson_order}",
-            payload={
-                "score": max(0, min(100, score)),
-                "unlock_completed_lessons_count": int(progress.completed_lessons_count or 0),
-            },
-        )
-        await session.commit()
-        return JSONResponse(
-            content={
-                "ok": True,
-                "lesson_order": lesson_order,
-                "completed_lessons_count": int(progress.completed_lessons_count or 0),
-            }
-        )
+    progress.level = resolved_level
+    progress.completed_lessons_count = max(
+        int(getattr(progress, "completed_lessons_count", 0) or 0),
+        lesson_order - 1,
+    )
+    await progress_repo.set_current_lesson_and_step(
+        progress=progress,
+        lesson_id=getattr(lesson, "id", None),
+        step="intro",
+        waiting_for="none",
+    )
+    await progress_repo.set_homework_status(progress, "none")
+    await CourseMiniAppAnalyticsService(session).record_server_event(
+        event_name="test_completed",
+        telegram_id=telegram_id,
+        user_id=getattr(user, "id", None),
+        source="course_v3_skip_test",
+        analytics_client=analytics_client,
+        level=resolved_level,
+        lesson_id=getattr(lesson, "id", None),
+        lesson_order=lesson_order,
+        dedupe_key=f"course-v3:skip-test:{resolved_level}:{lesson_order}",
+        payload={
+            "score": max(0, min(100, score)),
+            "unlock_completed_lessons_count": int(progress.completed_lessons_count or 0),
+        },
+    )
+    await session.commit()
+    return JSONResponse(
+        content={
+            "ok": True,
+            "lesson_order": lesson_order,
+            "completed_lessons_count": int(progress.completed_lessons_count or 0),
+        }
+    )
 
 
 async def _v3_complete_lesson_for_canonical_actor(
     session, user, payload: dict, *, lesson_order: int,
     lesson_session_id: str | None, lesson_mistakes: list[dict],
     telegram_id: int | None, analytics_client: str,
+    include_learning_result: bool = False,
 ):
     """Single existing V3 completion, entitlement, proof and XP transaction.
 
@@ -3574,8 +3648,9 @@ async def _v3_complete_lesson_for_canonical_actor(
             # Optional mistake telemetry must never block a valid lesson
             # completion when checked-in material is unavailable/corrupt.
             lesson_mistakes = []
+    recorded_mistakes = 0
     if lesson_mistakes:
-        await CourseMistakeService(session).record_items(
+        recorded_mistakes = await CourseMistakeService(session).record_items(
             user,
             lesson_mistakes,
             source="lesson",
@@ -3584,20 +3659,23 @@ async def _v3_complete_lesson_for_canonical_actor(
             lesson_order=lesson_order,
         )
     await session.commit()
-    return JSONResponse(
-        content={
-            "ok": True,
-            "completed_lesson": lesson_order,
-            "next_lesson": next_order,
-            "next_level": next_level,
-            "next_level_pending": next_level_pending,
-            "completed_lessons_count": int(getattr(progress, "completed_lessons_count", 0) or 0),
-            "gamification": snapshot,
-            "rank_before": rank_before,
-            "rank_after": rank_after,
-            "rank_up_board": rank_up_board,
-        }
-    )
+    result = {
+        "ok": True,
+        "completed_lesson": lesson_order,
+        "next_lesson": next_order,
+        "next_level": next_level,
+        "next_level_pending": next_level_pending,
+        "completed_lessons_count": int(getattr(progress, "completed_lessons_count", 0) or 0),
+        "gamification": snapshot,
+        "rank_before": rank_before,
+        "rank_after": rank_after,
+        "rank_up_board": rank_up_board,
+    }
+    if include_learning_result and lesson_order == 1:
+        result["learning_result"] = CourseLessonMistakeMaterialService.learning_result(
+            lesson_mistakes, recorded=recorded_mistakes,
+        )
+    return JSONResponse(content=result)
 
 
 @app.post("/api/v3/lesson/complete")
@@ -3707,6 +3785,7 @@ async def pwa_v3_course_lesson_complete(request: Request):
                 lesson_mistakes=lesson_mistakes,
                 telegram_id=int(user.telegram_id) if user.telegram_id else None,
                 analytics_client="iphone_pwa",
+                include_learning_result=True,
             )
             response.headers["Cache-Control"] = "no-store"
             response.headers["Referrer-Policy"] = "no-referrer"

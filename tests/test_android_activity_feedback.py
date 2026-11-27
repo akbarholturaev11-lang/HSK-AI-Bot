@@ -70,6 +70,9 @@ class AndroidActivityFeedbackTests(unittest.IsolatedAsyncioTestCase):
         prompt=response.json()['ordinary']; self.assertFalse(prompt['paid'])
         self.assertEqual('bot',prompt['presentation']); self.assertIsNone(prompt['compact'])
         self.assertTrue(prompt['choices']['liked'])
+        self.assertIn('30', prompt['reward_hint']); self.assertIn('Pro', prompt['reward_hint'])
+        self.assertTrue(prompt['dismiss_label'])
+        self.assertIn('other', [option['code'] for option in prompt['choices']['liked']])
         payload={'feedback_id':prompt['feedback_id'],'liked_code':'practice','liked_sub_code':'daily','disliked_code':'limits'}
         self.owner=2
         self.assertEqual(404,(await self.post('submit',payload)).status_code)
@@ -85,12 +88,33 @@ class AndroidActivityFeedbackTests(unittest.IsolatedAsyncioTestCase):
         async with self.sessions() as db:
             self.assertEqual(expiry,(await db.get(User,1)).end_date)
         self.assertIsNone((await self.prepare()).json()['ordinary'])
+    async def test_feedback_reward_reuses_expiry_notice_only_after_access_ends(self):
+        from app.services.subscription_expiry_notice import subscription_expiry_notice, subscription_expiry_payload
+        prompt = (await self.prepare()).json()['ordinary']
+        payload = {'feedback_id':prompt['feedback_id'],'liked_code':'other','liked_other_text':'Useful',
+                   'disliked_code':'other','disliked_detail_text':'More practice'}
+        response = await self.post('submit',payload)
+        self.assertEqual(200,response.status_code,response.text)
+        async with self.sessions() as db:
+            user = await db.get(User,1)
+            now = datetime.now(timezone.utc)
+            self.assertIsNone(await subscription_expiry_notice(db,user,now=now))
+            ended = now + timedelta(minutes=31)
+            token = await subscription_expiry_notice(db,user,now=ended)
+            self.assertIsNotNone(token)
+            self.assertEqual(token,await subscription_expiry_notice(db,user,now=ended+timedelta(seconds=1)))
+            payload = await subscription_expiry_payload(db,user,now=ended,language='ru')
+            self.assertEqual(token,payload['pro_expiry_notice'])
+            self.assertEqual('Срок действия 30-минутного HSK AI Pro истёк.',payload['pro_expiry_title'])
+            self.assertIsNone(await subscription_expiry_notice(db,await db.get(User,2),now=ended))
+
     async def test_paid_reward_does_not_rewrite_paid_term_and_partial_state_survives_mode_change(self):
         async with self.sessions() as db:
             user=await db.get(User,1); user.status='active'; user.payment_status='approved'
             user.end_date=datetime.now(timezone.utc)+timedelta(days=30)
             await db.commit(); expiry=user.end_date.replace(tzinfo=None)
         prompt=(await self.prepare()).json()['ordinary']; self.assertTrue(prompt['paid'])
+        self.assertIsNone(prompt['reward_hint'])
         payload={'feedback_id':prompt['feedback_id'],'paid_code':'useful','paid_sub_code':'lessons'}
         saved=await self.post('submit',payload); self.assertEqual(200,saved.status_code,saved.text)
         async with self.sessions() as db:

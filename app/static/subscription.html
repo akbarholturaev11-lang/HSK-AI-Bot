@@ -5,9 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-  <script defer src="/course_v3_data/hsk-diagnostics.js?v=20261115-5408a5e8b789"></script>
-<script src="/assets/telegram-web-app.js?v=20261019-1"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261113-61bd77761242"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-a0dd8c0b1db1"></script>
+  <script defer src="/course_v3_data/hsk-diagnostics.js?v=20261122-34865dd3f1cf"></script>
+<script src="/assets/telegram-web-app.js?v=20261019-1"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261125-bffb131a155e"></script><script src="/course_v3_data/hsk-miniapp-i18n.js?v=20261021-83c98b0dece1"></script>
 <link rel="stylesheet" href="/course_v3_data/design-tokens.css?v=20261005">
+<script src="/course_v3_data/hsk-subscription-presentation.js?v=20261127-86255bff796c"></script>
 <title>HSK AI Pro</title>
 <style>
 html.hsk-pwa-browser input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]),
@@ -83,6 +84,8 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 .value-copy:empty,#payText:empty{display:none}
 #payText:empty+.quote-card{margin-top:0}
 .plans{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.plan-region{display:block;width:100%;min-height:44px;margin-top:10px;padding:8px 12px;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);font:inherit}
+.plan-region[hidden],#lavaAlternative[hidden],#manualAlternative[hidden]{display:none}
 .plan{position:relative;min-height:130px;text-align:left;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg);padding:14px;display:flex;flex-direction:column;justify-content:space-between;transition:.18s}
 .plan.selected,.choice.selected{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent);background:var(--accent-soft)}
 .plan.wide{grid-column:1/-1;min-height:auto}
@@ -97,7 +100,8 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 .price.long{font-size:23px}
 .price small{font-size:12px;color:var(--muted);font-weight:850;margin-left:4px}
 .old-price{display:none;margin-top:9px;color:var(--muted);font-size:12px;text-decoration:line-through}
-.discounted .old-price{display:block}
+.discounted .old-price,.reference-priced .old-price{display:block}
+.reference-label{display:block;margin-top:4px;color:var(--muted);font-size:11px;line-height:1.35;font-weight:500}
 .list{display:grid;gap:9px}
 body.hsk-scene-page::before{content:none!important}
 .lava-question{min-height:calc(100dvh - 190px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;justify-content:center;text-align:center;gap:22px}
@@ -280,6 +284,8 @@ html.hsk-pwa-browser .app{padding-bottom:calc(104px + env(safe-area-inset-bottom
       </div>
       <p class="value-copy" id="lavaPlansNote"></p>
       <div class="plans" id="lavaPlans"></div>
+      <select id="lavaRegion" class="plan-region" hidden></select>
+      <button id="lavaAlternative" class="retry-inline" type="button" hidden></button>
     </section>
   </section>
 
@@ -320,6 +326,8 @@ html.hsk-pwa-browser .app{padding-bottom:calc(104px + env(safe-area-inset-bottom
       </div>
       <p class="value-copy" id="valueText"></p>
       <div class="plans" id="plans"></div>
+      <select id="planRegion" class="plan-region" hidden></select>
+      <button id="manualAlternative" class="retry-inline" type="button" hidden></button>
       <div class="renewal-summary" id="renewalSummary" style="display:none">
         <strong id="renewalCurrent"></strong>
         <span id="renewalNext"></span>
@@ -451,7 +459,7 @@ if(PWA_CHECKOUT_HOST){
     meta=document.createElement("meta");meta.name="apple-mobile-web-app-status-bar-style";meta.content="default";document.head.appendChild(meta);
     var touch=document.createElement("link");touch.rel="apple-touch-icon";touch.href="/assets/hsk-ai-logo-256.png";document.head.appendChild(touch);
     var manifest=document.createElement("link");manifest.rel="manifest";manifest.href="/iphone-pwa/manifest.webmanifest";document.head.appendChild(manifest);
-    var glass=document.createElement("link");glass.rel="stylesheet";glass.href="/course_v3_data/iphone-pwa-glass.css?v=20261105-59648ec92079";document.head.appendChild(glass);
+    var glass=document.createElement("link");glass.rel="stylesheet";glass.href="/course_v3_data/iphone-pwa-glass.css?v=20261123-0c6fb08e069f";document.head.appendChild(glass);
   })();
 }
 const API=PWA_CHECKOUT_HOST?{
@@ -591,21 +599,31 @@ const REGION_FLAGS={tj:"🇹🇯",uz:"🇺🇿",ru:"🇷🇺",cn:"🇨🇳",othe
    doim Alif (Visa) rekvizitiga to'laydi. Rekvizitlar admin panelda alohida. */
 const CARD_BANKS=["dc_city","alif"];
 const CARD_BANK_NAMES={dc_city:"Dushanbe City",alif:"Alif"};
-/* Tanlangan region shu qurilmada, Telegram akkaunti bo'yicha eslab qolinadi:
-   keyingi safar obuna to'g'ridan-to'g'ri tarif ekranidan ochiladi. Regionni
-   «Orqaga» orqali o'zgartirish mumkin — yangi tanlov ham shu yerga yoziladi. */
-const REGION_STORAGE_KEY="hsk_sub_region_v1:"+String(tg?.initDataUnsafe?.user?.id||"guest");
+/* Explicit payment-region choice is device-local and isolated by checkout
+   host/account. PWA storage remains inaccessible until checkoutPwaActor verifies
+   the session. Guest/preview selections are not persisted. */
+function regionStorageKey(){
+  const owner=PWA_CHECKOUT_HOST?Number(PWA_CHECKOUT_ACTOR?.user_id):Number(INIT_DATA&&tg?.initDataUnsafe?.user?.id);
+  if(!Number.isSafeInteger(owner)||owner<=0)return "";
+  return "hsk_sub_region_v1:"+(PWA_CHECKOUT_HOST?"pwa:":"")+owner;
+}
 function savedRegion(){
-  if(PWA_CHECKOUT_HOST)return "";
+  const key=regionStorageKey();
+  if(!key)return "";
   try{
-    const region=localStorage.getItem(REGION_STORAGE_KEY)||"";
+    const region=localStorage.getItem(key)||"";
     return REGION_ORDER.includes(region)?region:"";
   }catch(e){return ""}
 }
 function saveRegion(region){
-  if(PWA_CHECKOUT_HOST)return;
-  try{if(REGION_ORDER.includes(region))localStorage.setItem(REGION_STORAGE_KEY,region)}catch(e){}
+  const key=regionStorageKey();
+  if(!key)return;
+  try{if(REGION_ORDER.includes(region))localStorage.setItem(key,region)}catch(e){}
 }
+/* Local hints only: no IP, location permission or request. A conflicting
+   device locale/time zone must not be presented as a verified payment country. */
+function inferPaymentRegion(zone,locale,language){return HSKSubscriptionPresentation.inferPaymentRegion(zone,locale,language)}
+function localPaymentRegion(language){return HSKSubscriptionPresentation.localPaymentRegion(language)}
 /* Havola Xitoy usulini so'rasa (method=alipay/wechat) — havola ustun. */
 const REMEMBERED_REGION=CHINA_METHODS.includes(PARAMS.get("method"))?"":savedRegion();
 /* PWA Inbox "resend receipt": reopen the rejected receipt's method/country and
@@ -1132,6 +1150,8 @@ const state={
   loadError:false,
   overviewLoading:false,
   path:"",
+  regionalPlans:false,
+  lavaCurrency:"",
   lavaPlan:"",
   lavaEmail:"",
   lavaCheckout:null,
@@ -1201,6 +1221,17 @@ function availableRegions(){
   const methods=availableMethods();
   return REGION_ORDER.filter(region=>regionMethods(region).some(method=>methods.includes(method)));
 }
+// A regional plan screen may only advertise countries with real display prices.
+function availableRegionalRegions(){
+  const plans=availablePlans("visa");
+  return availableRegions().filter(region=>{
+    if(region==="tj"||region==="cn")return true;
+    return plans.length>0&&plans.every(plan=>{
+      const price=cardPrices()?.[region]?.[plan];
+      return Boolean(price?.currency&&price.final_amount!=null&&Number(price.final_amount)>0);
+    });
+  });
+}
 /* To'lov turi faqat Tojikistonda (bank) va Xitoyda (Alipay/WeChat) so'raladi. */
 function hasMethodStep(){return state.region==="tj"||state.region==="cn"}
 function cardBank(){return state.country==="tj"?state.bank:"alif"}
@@ -1251,15 +1282,17 @@ function contextPayload(){
 function hasCurrentPrice(){return Boolean(priceInfo(state.method,state.plan))}
 function isHsk30Unlock(){return state.mode==="hsk30_unlock"||state.plan==="hsk30_unlock"}
 function manualFlow(){
-  return hasMethodStep()?["country","plans","method","pay"]:["country","plans","pay"];
+  const steps=hasMethodStep()?["plans","method","pay"]:["plans","pay"];
+  return state.regionalPlans?steps:["country",...steps];
 }
 function flow(){
   if(state.done||state.pending||state.paymentDecision)return ["done"];
   if(isHsk30Unlock())return hasMethodStep()?["country","method","pay"]:["country","pay"];
   if(state.lavaStatus)return ["lavaWait"];
   const lava=lavaMode();
-  if(lava==="lava_only")return ["lavaPlans","lavaPay"];
-  if(lava==="both")return state.path==="lava"?["card","lavaPlans","lavaPay"]:["card",...manualFlow()];
+  const provider=savedLavaEmail()?["lavaPlans"]:["lavaPlans","lavaPay"];
+  if(lava==="lava_only")return provider;
+  if(lava==="both")return state.regionalPlans?(state.path==="lava"?provider:manualFlow()):(state.path==="lava"?["card",...provider]:["card",...manualFlow()]);
   return manualFlow();
 }
 function currentScreen(){return flow()[state.step]||"country"}
@@ -1274,13 +1307,37 @@ function lavaInfo(){
   if(isHsk30Unlock())return null;
   return state.overview?.lava||null;
 }
+function savedLavaEmail(){return state.preview?"":lavaInfo()?.email||""}
 function lavaMode(){
   const info=lavaInfo();
   if(!info||info.blocked_reason==="chargeback_open")return "manual_only";
   if(!Array.isArray(info.plans)||!info.plans.length)return "manual_only";
   return info.mode==="lava_only"||info.mode==="both"?info.mode:"manual_only";
 }
-function lavaPlans(){return (lavaInfo()?.plans||[]).filter(plan=>plan&&plan.plan_type)}
+function regionalProviderPlans(info,currency){return HSKSubscriptionPresentation.regionalProviderPlans(info,currency)}
+function regionalRoute(region,mode,manualAvailable,currencies,defaultCurrency,forcedPath){return HSKSubscriptionPresentation.regionalRoute(region,mode,manualAvailable,currencies,defaultCurrency,forcedPath)}
+function regionalCurrencies(){
+  const info=lavaInfo();
+  return ["USD","RUB"].filter(code=>regionalProviderPlans(info,code).length);
+}
+function regionalChoices(){
+  if(lavaMode()!=="manual_only"&&regionalCurrencies().length)return REGION_ORDER;
+  return availableRegionalRegions();
+}
+function selectRegionalRoute(region,forcedPath){
+  const manual=availableRegionalRegions().includes(region);
+  const route=regionalRoute(region,lavaMode(),manual,regionalCurrencies(),lavaInfo()?.currency,forcedPath);
+  state.region=region;state.path=route.path;state.lavaCurrency=route.currency;state.step=0;
+  if(route.path==="manual") {
+    state.method=region==="cn"?(CHINA_METHODS.includes(state.method)?state.method:CHINA_METHODS[0]):"visa";
+    ensureSelection();
+  }
+  ensureLavaPlan();
+}
+function lavaPlans(){
+  if(state.regionalPlans&&state.lavaCurrency)return regionalProviderPlans(lavaInfo(),state.lavaCurrency);
+  return (lavaInfo()?.plans||[]).filter(plan=>plan&&plan.plan_type);
+}
 function lavaPlanInfo(){return lavaPlans().find(plan=>plan.plan_type===state.lavaPlan)||null}
 function ensureLavaPlan(){
   const plans=lavaPlans();
@@ -1317,16 +1374,18 @@ function openLavaPayment(){
   }catch(e){}
   window.open(url,"_blank","noopener");
 }
-async function startLavaPayment(){
+async function startLavaPayment(prefilledEmail){
+  if(state.busy||!lavaPlanInfo()||lavaInfo()?.blocked_reason)return;
   const input=$("#lavaEmail");
-  const email=String(input.value||"").trim();
+  const email=String(prefilledEmail||input.value||"").trim();
   if(email.length>254||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){toast(lavaText("emailInvalid"));input.focus();return}
   state.lavaEmail=email;
   if(state.preview){toast(tr().preview);return}
   setBusy(true);
   try{
     const data=await api(API.lavaStart,{plan_type:state.lavaPlan,email,language:state.lang,
-      mode:state.mode,campaign_id:state.campaignId,feedback_id:state.feedbackId});
+      mode:state.mode,campaign_id:state.campaignId,feedback_id:state.feedbackId,
+      ...(state.regionalPlans&&state.lavaCurrency?{currency:state.lavaCurrency}:{})});
     state.lavaCheckout={id:data.checkout_id,url:data.payment_url};
     state.lavaStatus="waiting";
     state.step=0;
@@ -1406,12 +1465,14 @@ function renderLava(text,screen){
     const amount=plan.amount==null?"":lavaMoney(plan.amount);
     const percent=Number(plan.discount_percent)||0;
     const badge=percent>0?`<span class="badge">−${percent}%</span>`:"";
-    const old=percent>0&&plan.base_amount!=null?`<span class="old-price">${escapeHtml(lavaMoney(plan.base_amount))} ${escapeHtml(plan.currency||"")}</span>`:"";
-    return `<button class="plan ${selected?"selected":""} ${percent>0?"discounted":""}" type="button" data-lava-plan="${escapeHtml(plan.plan_type)}" aria-pressed="${selected}">
+    const reference=percent<=0&&state.mode==="subscription"&&!state.preview?HSKSubscriptionPresentation.relativePrice(plan.amount):null;
+    const old=percent>0&&plan.base_amount!=null?`<span class="old-price">${escapeHtml(lavaMoney(plan.base_amount))} ${escapeHtml(plan.currency||"")}</span>`:reference?`<span class="old-price">${escapeHtml(reference)} ${escapeHtml(plan.currency||"")}</span><span class="reference-label">${escapeHtml(HSKSubscriptionPresentation.regionalLabel(state.lang,"comparison"))}</span>`:"";
+    return `<button class="plan ${selected?"selected":""} ${percent>0?"discounted":reference?"reference-priced":""}" type="button" data-lava-plan="${escapeHtml(plan.plan_type)}" aria-pressed="${selected}">
       <span class="plan-top"><span class="plan-name">${escapeHtml(lavaPlanName(plan.plan_type))}</span>${badge}</span>
       <span><span class="price ${amount.length>5?"long":""}">${escapeHtml(amount)}<small>${escapeHtml(plan.currency||"")}</small></span>${old}</span>
     </button>`;
   }).join("");
+  renderRegionalControls($("#lavaRegion"),$("#lavaAlternative"),text,"lava");
   const chosen=lavaPlanInfo();
   $("#lavaAmountLabel").textContent=text.amountLabel;
   $("#lavaAmountValue").textContent=chosen&&chosen.amount!=null?lavaMoney(chosen.amount):"...";
@@ -1659,16 +1720,31 @@ function applyOverview(data){
   /* Chatdagi eski chegirma tugmasi: taklif tugagan bo'lsa server oddiy
      narxlarni beradi, tepada esa «taklif tugagan» yozuvi turadi. */
   state.offerExpired=Boolean(data?.offer_expired);
-  ensureSelection();
-  /* Eslab qolingan region bu safar mavjud bo'lmasa (masalan chegirma faqat
-     kartaga) — region qayta so'raladi. */
-  if(!state.region)state.step=0;
-  if(!state.pending&&!state.lavaStatus){
-    const lava=lavaMode();
-    if(lava==='lava_only'){state.path='lava';state.step=0}
-    else if(lava==='both'){if(state.path!=='manual')state.path=state.path==='lava'?'lava':'';state.step=0}
-    else state.path='';
-    ensureLavaPlan();
+  // Ordinary regional selection never changes special, pending or receipt flows.
+  const wasRegional=state.regionalPlans, previousPath=state.path;
+  state.regionalPlans=false;
+  state.lavaCurrency="";
+  const ordinary=state.mode==="subscription"&&(!PARAMS.get("mode")||PARAMS.get("mode")==="subscription")&&!PARAMS.get("method")&&!PARAMS.get("campaign_id")&&!PARAMS.get("feedback_id")&&!PWA_RESUME_RECEIPT&&!state.preview&&!state.pending&&!state.lavaStatus;
+  const mode=lavaMode();
+  const inlineManual=PARAMS.get("inline_manual")==="1"&&mode!=="lava_only";
+  if(ordinary&&!lavaInfo()?.blocked_reason){
+    const regions=inlineManual?availableRegionalRegions():regionalChoices();
+    const hint=inlineManual&&PWA_CHECKOUT_HOST&&REGION_ORDER.includes(PARAMS.get("country"))?PARAMS.get("country"):"";
+    const preferred=state.region||hint||savedRegion()||localPaymentRegion(normalizeLang(data?.language||state.lang));
+    if(regions.length&&(mode==="manual_only"||regionalCurrencies().length||inlineManual)){
+      state.regionalPlans=true;
+      selectRegionalRoute(regions.includes(preferred)?preferred:regions[0],inlineManual?"manual":(wasRegional?previousPath:""));
+    }
+  }
+  if(!state.regionalPlans){
+    ensureSelection();
+    if(wasRegional||!state.region)state.step=0;
+    if(!state.pending&&!state.lavaStatus){
+      if(mode==='lava_only'){state.path='lava';state.step=0}
+      else if(mode==='both'){if(state.path!=='manual')state.path=state.path==='lava'?'lava':'';state.step=0}
+      else state.path='';
+      ensureLavaPlan();
+    }
   }
   if(state.pending){
     state.done=false;
@@ -1818,7 +1894,7 @@ function render(){
   $("#nextBtn").disabled=lavaScreen(screen)?(state.busy||(screen==="lavaPlans"&&!lavaPlanInfo())||(!state.preview&&state.loadError)):state.busy||!hasCurrentPrice()||(!state.preview&&state.loadError)||(screen==="country"&&!state.region)||(screen==="pay"&&!state.preview&&!state.quote);
 }
 function nextCtaText(text,screen){
-  if(screen==="lavaPay")return lavaText("payCta")||text.next;
+  if(screen==="lavaPay"||(screen==="lavaPlans"&&savedLavaEmail()))return lavaText("payCta")||text.next;
   if(screen==="lavaPlans")return text.next;
   if(screen==="pay")return text.submit;
   if(screen==="country"||(screen==="plans"&&hasMethodStep()))return text.next;
@@ -1840,7 +1916,8 @@ function renderPlans(text){
     const price=planPrice(plan);
     if(!price)return "";
     const selected=state.plan===plan?"selected":"";
-    const discounted=price.discounted?"discounted":"";
+    const reference=!price.discounted&&state.mode==="subscription"&&!state.preview&&!isHsk30Unlock()?HSKSubscriptionPresentation.relativePrice(price.final):null;
+    const discounted=price.discounted?"discounted":reference?"reference-priced":"";
     const wide=plan==="3_months"?"wide":"";
     const name=planName(text,plan);
     const badge=planBadge(text,plan);
@@ -1852,11 +1929,13 @@ function renderPlans(text){
       <span class="plan-top"><span class="plan-name">${name}</span><span class="badge">${badge}</span></span>
       <span>
         <span class="price ${long}">${amount}<small>${price.currency}</small></span>
-        <span class="old-price">${money(price.base)} ${price.currency}</span>
+        <span class="old-price">${reference?escapeHtml(reference):money(price.base)} ${price.currency}</span>
+        ${reference?`<span class="reference-label">${escapeHtml(HSKSubscriptionPresentation.regionalLabel(state.lang,"comparison"))}</span>`:""}
         ${note}
       </span>
     </button>`;
   }).join("") || (overviewReady()?`<div class="detail-empty">${text.offerExpired}</div>`:"");
+  renderRegionalControls($("#planRegion"),$("#manualAlternative"),text,"manual");
   const dates=renewalDates();
   const summary=$("#renewalSummary");
   summary.style.display=dates?"grid":"none";
@@ -1864,6 +1943,21 @@ function renderPlans(text){
     $("#renewalCurrent").textContent=text.renewalCurrent.replace("{date}",dates.current);
     $("#renewalNext").textContent=text.renewalNext.replace("{date}",dates.next);
   }
+}
+function renderRegionalControls(select,alternative,text,path){
+  const inlineManual=PARAMS.get("inline_manual")==="1"&&lavaMode()!=="lava_only";
+  const regions=inlineManual?availableRegionalRegions():regionalChoices();
+  select.hidden=!state.regionalPlans||state.path!==path;
+  if(!select.hidden){
+    select.setAttribute("aria-label",text.countryTitle);
+    select.disabled=state.busy;
+    select.innerHTML=regions.map(region=>`<option value="${region}">${REGION_FLAGS[region]} ${escapeHtml(text.countries[region][0])}</option>`).join("");
+    select.value=state.region;
+  }
+  const alternativeAvailable=path==="manual"?regionalCurrencies().length>0:availableRegionalRegions().includes(state.region);
+  alternative.hidden=select.hidden||inlineManual||lavaMode()!=="both"||!alternativeAvailable;
+  alternative.disabled=state.busy;
+  alternative.textContent=HSKSubscriptionPresentation.regionalLabel(state.lang,"more");
 }
 function renderMethod(text){
   $("#methodsTitle").textContent=text.methodsTitle;
@@ -2419,6 +2513,28 @@ document.addEventListener("click",event=>{
     return;
   }
 });
+function changeRegionalRoute(region,forcedPath,remember){
+  const screen=currentScreen();
+  if(!state.regionalPlans||state.busy||!["plans","lavaPlans"].includes(screen)||!regionalChoices().includes(region))return;
+  const inlineManual=PARAMS.get("inline_manual")==="1"&&lavaMode()!=="lava_only";
+  if(inlineManual&&!availableRegionalRegions().includes(region))return;
+  selectRegionalRoute(region,inlineManual?"manual":forcedPath);
+  clearQuote();
+  state.quoteError="";
+  state.screenshotDataUrl="";
+  state.screenshotName="";
+  state.screenshotNote="";
+  state.renewalOpen=false;
+  if(remember)saveRegion(state.region);
+  render();
+}
+for(const id of ["#planRegion","#lavaRegion"]){
+  $(id).addEventListener("change",event=>{
+    if(event.target.value!==state.region)changeRegionalRoute(event.target.value,"",true);
+  });
+}
+$("#manualAlternative").addEventListener("click",()=>changeRegionalRoute(state.region,"lava",false));
+$("#lavaAlternative").addEventListener("click",()=>changeRegionalRoute(state.region,"manual",false));
 function clearQuote(){
   state.quote=null;
   state.qrActionsOpen=false;
@@ -2427,7 +2543,13 @@ function clearQuote(){
 }
 $("#nextBtn").addEventListener("click",()=>{
   const screen=currentScreen();
-  if(screen==="lavaPlans"){if(lavaPlanInfo())setStep(state.step+1);return}
+  if(screen==="lavaPlans"){
+    if(!lavaPlanInfo())return;
+    const email=savedLavaEmail();
+    if(email)startLavaPayment(email);
+    else setStep(state.step+1);
+    return;
+  }
   if(screen==="lavaPay"){startLavaPayment();return}
   if(screen==="country"&&!state.region)return;
   if(!hasCurrentPrice()){toast(tr().offerExpired);return}
@@ -2437,7 +2559,7 @@ $("#nextBtn").addEventListener("click",()=>{
     render();
     return;
   }
-  if(screen==="country")saveRegion(state.region);
+  if(screen==="country"&&!PWA_CHECKOUT_HOST)saveRegion(state.region);
   setStep(state.step+1);
 });
 $("#backBtn").addEventListener("click",()=>setStep(state.step-1));
@@ -2508,7 +2630,7 @@ $("#lavaWaitPrimary").addEventListener("click",()=>{
   if(state.lavaStatus==="paid"){returnToCourseFromCheckout();return}
   if(state.lavaStatus==="failed"){
     state.lavaStatus="";state.lavaCheckout=null;
-    setStep(flow().indexOf("lavaPay"));
+    setStep(flow().indexOf(savedLavaEmail()?"lavaPlans":"lavaPay"));
     return;
   }
   openLavaPayment();

@@ -27,9 +27,10 @@ from app.repositories.user_repo import UserRepository
 from app.repositories.course_progress_repo import CourseProgressRepository
 from app.services.entitlements.lesson_access import LessonAccessService
 from app.services.course_lesson_completion_proof import issue_lesson_completion_proof
+from app.services.course_lesson_plan_service import lesson_plan_for, with_lesson_plan
 from app.services.course_lesson_start_grant import remember_authorized_lesson_start
 from app.services.course_p3_grammar_localization import miniapp_reserved_grammar_patch
-from app.services.course_v3_parts import total_parts
+from app.services.course_v3_parts import is_skip_test_part, total_parts
 from app.services.course_levels import content_level
 from app.services.course_access_policy_service import CourseAccessPolicyService
 from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
@@ -41,6 +42,8 @@ from app.services.pro_trial_service import ProTrialService, REASON_NOT_APPLICABL
 from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
 from app.services.trial_risk_service import TrialRiskService
 from app.services.pwa_auth_service import PWA_SESSION_COOKIE, PwaAuthError, PwaAuthService, require_same_origin
+from app.api.monitoring_intake import read_bounded_json
+from app.services.monitoring.intake import IntakeRejected
 
 
 logger = logging.getLogger(__name__)
@@ -400,7 +403,13 @@ def create_miniapp_entitlements_router(
             return _private_content_response(
                 {"ok": False, "error": "course_lesson_not_found"}, status_code=404,
             )
-        return _private_content_response(lesson)
+        # UIUX-008: optional plan after every access decision; any failure
+        # returns the unchanged lesson.
+        plan = await lesson_plan_for(
+            session, settings_obj, user_id=int(user.id), level=normalized_level,
+            lesson_order=lesson_order, lesson=lesson,
+        )
+        return _private_content_response(with_lesson_plan(lesson, plan))
 
     @router.get("/api/v3/lesson/content/{level}/{lesson_order}")
     async def v3_course_lesson_content(request: Request, level: str, lesson_order: int):
@@ -439,13 +448,7 @@ def create_miniapp_entitlements_router(
                 session, user, str(level or "").strip().lower(), lesson_order,
             )
 
-    @router.post("/api/v3/lesson/skip-test")
-    async def v3_course_lesson_skip_test(request: Request):
-        telegram_id, payload = await _authenticated(request)
-        if not telegram_id:
-            return _private_content_response(
-                {"ok": False, "error": "invalid_telegram_init_data"}, status_code=401,
-            )
+    async def _skip_test_for_user(session, user, payload):
         level = str(payload.get("level") or "").strip().lower()
         try:
             lesson_order = int(payload.get("lesson_id") or 0)
@@ -455,53 +458,96 @@ def create_miniapp_entitlements_router(
             return _private_content_response(
                 {"ok": False, "error": "invalid_lesson_payload"}, status_code=400,
             )
+        user_level = content_level(getattr(user, "level", None))
+        if level != user_level:
+            return _private_content_response(
+                {"ok": False, "error": "course_level_not_allowed"}, status_code=403,
+            )
+        total = total_parts(level)
+        if not total or lesson_order > total:
+            return _private_content_response(
+                {"ok": False, "error": "course_lesson_not_found"}, status_code=404,
+            )
+        if await _foundation_is_blocked(session, user, level):
+            return _private_content_response(
+                {"ok": False, "error": "android_foundation_required"}, status_code=403,
+            )
+        progress = await CourseProgressRepository(session).get_by_user_id(user.id)
+        completed = (
+            int(getattr(progress, "completed_lessons_count", 0) or 0)
+            if progress and getattr(progress, "level", None) == level
+            else 0
+        )
+        # A skip test is offered for a LOCKED lesson, unlike a full lesson
+        # read/start. Keep the existing unlock flow available while the
+        # shared gate still rejects blocked accounts, exhausted allowances
+        # and unavailable HSK 3.0 tracks. This projection never unlocks a
+        # lesson, consumes quota or returns the full source payload.
+        access = await LessonAccessService(session).status(
+            user, level=level, lesson_order=lesson_order,
+            completed=completed, consume=False,
+        )
+        if not access.get("allowed"):
+            return _private_content_response(access, status_code=403)
+        if not is_skip_test_part(level, lesson_order):
+            return _private_content_response(
+                {"ok": False, "error": "course_lesson_not_unlocked"}, status_code=403,
+            )
+        lesson = _read_course_lesson(level, lesson_order)
+        questions = _skip_test_questions(lesson) if lesson else []
+        if not questions:
+            return _private_content_response(
+                {"ok": False, "error": "skip_test_unavailable"}, status_code=409,
+            )
+        return _private_content_response({
+            "ok": True, "level": level, "lesson_order": lesson_order,
+            "questions": questions,
+        })
+
+    @router.post("/api/v3/lesson/skip-test")
+    async def v3_course_lesson_skip_test(request: Request):
+        telegram_id, payload = await _authenticated(request)
+        if not telegram_id:
+            return _private_content_response(
+                {"ok": False, "error": "invalid_telegram_init_data"}, status_code=401,
+            )
         async with session_factory() as session:
             user = await UserRepository(session).get_by_telegram_id(telegram_id)
             if not user:
                 return _private_content_response(
                     {"ok": False, "error": "access_start_first"}, status_code=403,
                 )
-            user_level = content_level(getattr(user, "level", None))
-            if level != user_level:
+            return await _skip_test_for_user(session, user, payload)
+
+    @router.post("/api/v3/pwa/lesson/skip-test")
+    async def pwa_course_lesson_skip_test(request: Request):
+        try:
+            require_same_origin(request, settings_obj)
+            if request.headers.get("X-Telegram-Init-Data"):
+                raise PwaAuthError("pwa_request_invalid", status_code=422)
+            payload = await read_bounded_json(request, limit=4096)
+            if not isinstance(payload, dict) or set(payload) - {"level", "lesson_id"}:
                 return _private_content_response(
-                    {"ok": False, "error": "course_level_not_allowed"}, status_code=403,
+                    {"ok": False, "error": "invalid_lesson_payload"}, status_code=400,
                 )
-            total = total_parts(level)
-            if not total or lesson_order > total:
-                return _private_content_response(
-                    {"ok": False, "error": "course_lesson_not_found"}, status_code=404,
+            async with session_factory() as session:
+                actor, _ = await PwaAuthService(session, settings_obj).mutation_actor(
+                    request.cookies.get(PWA_SESSION_COOKIE),
+                    request.headers.get("X-HSK-PWA-CSRF"),
                 )
-            if await _foundation_is_blocked(session, user, level):
-                return _private_content_response(
-                    {"ok": False, "error": "android_foundation_required"}, status_code=403,
-                )
-            progress = await CourseProgressRepository(session).get_by_user_id(user.id)
-            completed = (
-                int(getattr(progress, "completed_lessons_count", 0) or 0)
-                if progress and getattr(progress, "level", None) == level
-                else 0
+                user = await UserRepository(session).get_by_user_id(actor.id)
+                if not user or resolve_state(user) == EntitlementState.BLOCKED:
+                    raise PwaAuthError("pwa_session_required", status_code=401)
+                return await _skip_test_for_user(session, user, payload)
+        except PwaAuthError as exc:
+            return _private_content_response(
+                {"ok": False, "error": exc.code}, status_code=exc.status_code,
             )
-            # A skip test is offered for a LOCKED lesson, unlike a full lesson
-            # read/start. Keep the existing unlock flow available while the
-            # shared gate still rejects blocked accounts, exhausted allowances
-            # and unavailable HSK 3.0 tracks. This projection never unlocks a
-            # lesson, consumes quota or returns the full source payload.
-            access = await LessonAccessService(session).status(
-                user, level=level, lesson_order=lesson_order,
-                completed=completed, consume=False,
+        except IntakeRejected as exc:
+            return _private_content_response(
+                {"ok": False, "error": "invalid_lesson_payload"},
+                status_code=413 if exc.code == "too_large" else 400,
             )
-            if not access.get("allowed"):
-                return _private_content_response(access, status_code=403)
-            lesson = _read_course_lesson(level, lesson_order)
-            questions = _skip_test_questions(lesson) if lesson else []
-            if not questions:
-                return _private_content_response(
-                    {"ok": False, "error": "skip_test_unavailable"}, status_code=409,
-                )
-            return _private_content_response({
-                "ok": True, "level": level, "lesson_order": lesson_order,
-                "questions": questions,
-            })
 
     async def _practice_gate_for_user(session, user, feature: str, ref: str | None, telegram_id: int | None):
         # One shared lifetime-limit policy for signed Telegram and verified

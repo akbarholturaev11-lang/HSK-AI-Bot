@@ -84,6 +84,8 @@ class LavaSettingsCommand(LavaSettingsInput):
     # Exact prices the admin saw; persisted as the buyer-facing snapshot.
     prices: dict[Literal["1_month", "3_months", "6_months", "12_months"],
                  Annotated[str, Field(max_length=16, pattern=r"^[0-9]{1,8}\.[0-9]{2}$")]]
+    regional_prices: dict[Literal["1_month", "3_months", "6_months", "12_months"],
+                          dict[Literal["USD", "RUB"], Annotated[str, Field(max_length=16, pattern=r"^[0-9]{1,8}\.[0-9]{2}$")]]] = Field(default_factory=dict)
     expected_hash: Annotated[str, Field(pattern=r"^[0-9a-f]{64}$")]
 
     def operation(self):
@@ -248,13 +250,15 @@ async def read_lava_catalog(db, *, session_cookie, settings_obj, runtime_getter)
     return {"preflight": report.as_dict()}
 
 
-def _desired_config(request: LavaSettingsInput, prices: dict[str, str]) -> LavaConfig:
+def _desired_config(request: LavaSettingsInput, prices: dict[str, str],
+                    regional_prices: dict[str, dict[str, str]] | None = None) -> LavaConfig:
     try:
         return config_from_dict({
             "checkout_mode": request.checkout_mode, "currency": request.currency,
             "plans": {plan: {
                 "enabled": term.enabled, "offer_id": term.offer_id,
                 "price": ({"amount": prices[plan], "currency": request.currency} if plan in prices else None),
+                "regional_prices": (regional_prices or {}).get(plan, {}),
             } for plan, term in request.plans.items()},
             "promo_codes": dict(request.promo_codes),
         })
@@ -262,12 +266,12 @@ def _desired_config(request: LavaSettingsInput, prices: dict[str, str]) -> LavaC
         raise CommandError(str(exc), 400) from None
 
 
-async def _catalog_prices(runtime, settings_obj, desired: LavaConfig) -> dict[str, str]:
+async def _catalog_prices(runtime, settings_obj, desired: LavaConfig) -> tuple[dict[str, str], dict[str, dict[str, str]]]:
     """Validate enabled terms against the live lava catalog (outside any
     transaction) and return the exact prices. manual_only never needs lava."""
     enabled = [term for term in desired.terms.values() if term.enabled]
     if desired.checkout_mode == "manual_only" and not enabled:
-        return {}
+        return {}, {}
     if desired.checkout_mode != "manual_only":
         if not sales_configured(settings_obj):
             raise CommandError("lava_not_configured", 409)
@@ -275,21 +279,22 @@ async def _catalog_prices(runtime, settings_obj, desired: LavaConfig) -> dict[st
             raise CommandError("lava_no_enabled_term", 409)
     if runtime is None or not getattr(settings_obj, "LAVA_API_KEY", ""):
         if desired.checkout_mode == "manual_only":
-            return {}
+            return {}, {}
         raise CommandError("lava_not_configured", 409)
     try:
         products = await runtime.client().list_products()
     except LavaError:
         if desired.checkout_mode == "manual_only":
-            return {}
+            return {}, {}
         raise CommandError("lava_provider_unavailable", 503) from None
     checks = check_config_against_catalog(desired, products)
     failed = [check for check in checks if not check.ok]
     if failed:
         if desired.checkout_mode == "manual_only":
-            return {}
+            return {}, {}
         raise CommandError("lava_offer_invalid", 409)
     prices = {}
+    regional_prices = {}
     for term in enabled:
         for product in products:
             for offer in product.offers:
@@ -297,7 +302,13 @@ async def _catalog_prices(runtime, settings_obj, desired: LavaConfig) -> dict[st
                     price = offer.price_for(desired.currency, term.periodicity)
                     if price is not None:
                         prices[term.plan_type] = str(price.amount)
-    return prices
+                    for code in LAVA_CURRENCIES:
+                        if code == desired.currency:
+                            continue
+                        alternate = offer.price_for(code, term.periodicity)
+                        if alternate is not None and alternate.amount > 0:
+                            regional_prices.setdefault(term.plan_type, {})[code] = str(alternate.amount)
+    return prices, regional_prices
 
 
 def _normalize_plans(request: LavaSettingsInput) -> LavaSettingsInput:
@@ -314,8 +325,9 @@ async def prepare_lava_settings(db, *, session_cookie, request, settings_obj, ru
         await _actor(db, session_cookie, settings_obj)
         digest, current = await _config_hash(db)
     desired = _desired_config(request, {})
-    prices = await _catalog_prices(runtime_getter(), settings_obj, desired)
-    command = LavaSettingsCommand(**request.model_dump(), prices=prices, expected_hash=digest)
+    prices, regional_prices = await _catalog_prices(runtime_getter(), settings_obj, desired)
+    command = LavaSettingsCommand(**request.model_dump(), prices=prices, regional_prices=regional_prices,
+                                  expected_hash=digest)
     return {"operation": command.operation(), "current": current.to_json()}
 
 
@@ -355,11 +367,11 @@ async def execute_lava_settings(db, *, session_cookie, request, settings_obj, ru
     command = LavaSettingsCommand.model_validate(request.model_dump(exclude={"step_up_id"}))
     _normalize_plans(command)
     operation = command.operation()
-    desired = _desired_config(command, command.prices)
+    desired = _desired_config(command, command.prices, command.regional_prices)
     # Re-validate against the live catalog before the proof transaction; the
     # signed prices must still be exactly what lava sells.
     live = await _catalog_prices(runtime_getter(), settings_obj, _desired_config(command, {}))
-    if desired.checkout_mode != "manual_only" and live != command.prices:
+    if desired.checkout_mode != "manual_only" and live != (command.prices, command.regional_prices):
         raise CommandError("confirmation_changed", 409)
     async with db.begin():
         step, session, actor = await _proof_boundary(db, session_cookie=session_cookie, request=request,

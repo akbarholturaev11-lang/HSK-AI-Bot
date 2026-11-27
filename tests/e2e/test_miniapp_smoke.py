@@ -166,7 +166,7 @@ def mock_price_preview(page):
     )
 
 
-def mock_telegram_ready(page, init_data="query_id=smoke"):
+def mock_telegram_ready(page, init_data="query_id=smoke", user_id=None):
     """Telegram WebApp stub'ni bo'sh bo'lmagan initData bilan qaytaradi, shunda
     Mini App auth-gate ko'rsatmasdan map'ni yuklaydi (static rejim)."""
     page.route(
@@ -175,7 +175,8 @@ def mock_telegram_ready(page, init_data="query_id=smoke"):
             status=200,
             content_type="application/javascript",
             body=(
-                "window.Telegram={WebApp:{initData:'" + init_data + "',initDataUnsafe:{},"
+                "window.Telegram={WebApp:{initData:'" + init_data + "',initDataUnsafe:"
+                + json.dumps({"user": {"id": user_id}} if user_id is not None else {}) + ","
                 "ready(){},expand(){},close(){},setHeaderColor(){},setBackgroundColor(){},"
                 "HapticFeedback:{impactOccurred(){},notificationOccurred(){},selectionChanged(){}},"
                 "openTelegramLink(){},openLink(){},showConfirm(){},"
@@ -1924,7 +1925,7 @@ def test_course_v3_d1_recovery_resumes_saved_lesson_card_once(page):
     )
 
     expect(page.locator("#flow")).to_have_class(re.compile(r"\bon\b"))
-    expect(page.locator("#f-stage")).to_contain_text("4 /")
+    expect(page.locator("#f-count")).to_contain_text("4 /")
     assert page.evaluate("Flow.i") == 3
     assert "autostart" not in page.url
     assert runtime_errors == []
@@ -3872,24 +3873,33 @@ def test_hsk30_pending_payment_stays_on_admin_status_screen(page):
 
 
 def test_subscription_remembers_the_region_until_the_user_changes_it(page):
-    page.route("**/api/subscription-miniapp/**", lambda route: route.abort())
+    # A real checkout account rather than an unbound browser preview.
+    mock_telegram_ready(page)
+    page.route(
+        TELEGRAM_SDK_ROUTE,
+        lambda route: route.fulfill(
+            status=200, content_type="application/javascript",
+            body="window.Telegram={WebApp:{initData:'query_id=smoke',initDataUnsafe:{user:{id:42}},ready(){},expand(){}}};",
+        ),
+    )
+    overview = {
+        "ok": True, "language": "uz", "mode": "subscription",
+        "pending_payment": None,
+        "prices": {"visa": {"1_month": {"base_amount": 89, "final_amount": 89, "currency": "TJS"}}},
+        "card_prices": {"ru": {"1_month": {"base_amount": "683.52", "final_amount": "683.52", "currency": "RUB"}}},
+    }
+    page.route("**/api/subscription-miniapp/overview", lambda route: json_response(route, overview))
     page.goto(app_url("/subscription.html?lang=uz&mode=subscription"), wait_until="networkidle")
-    page.locator("[data-region=ru]").click()
-    page.locator("#nextBtn").click()
-
-    # Qayta ochilganda region so'ralmaydi: to'g'ri tarif ekrani, narx RUB da.
+    page.locator("#planRegion").select_option("ru")
     page.reload(wait_until="networkidle")
     expect(page.locator('[data-screen="plans"]')).to_be_visible()
+    expect(page.locator("#planRegion")).to_have_value("ru")
     expect(page.locator("#plans .plan").first).to_contain_text("RUB")
-
-    # «Orqaga» region ro'yxatini ochadi; yangi tanlov ham eslab qolinadi.
-    page.locator("#backBtn").click()
-    expect(page.locator("[data-region=ru]")).to_have_class(re.compile(r"\bselected\b"))
-    page.locator("[data-region=tj]").click()
-    page.locator("#nextBtn").click()
+    page.locator("#planRegion").select_option("tj")
     page.reload(wait_until="networkidle")
-    expect(page.locator('[data-screen="plans"]')).to_be_visible()
+    expect(page.locator("#planRegion")).to_have_value("tj")
     expect(page.locator("#plans .plan").first).to_contain_text("TJS")
+
 
 
 def test_regular_subscription_shows_the_users_admin_discount(page):
@@ -3932,8 +3942,8 @@ def test_regular_subscription_shows_the_users_admin_discount(page):
     page.route("**/api/subscription-miniapp/event", lambda route: json_response(route, {"ok": True}))
     page.goto(app_url("/subscription.html?mode=subscription"), wait_until="networkidle")
 
-    page.locator("[data-region=tj]").click()
-    page.locator("#nextBtn").click()
+    expect(page.locator('#planRegion')).to_be_visible()
+    page.locator("#planRegion").select_option("tj")
     # Oddiy «Obuna» sahifasi: narx chegirma bilan, eski narx chizilgan.
     expect(page.locator("#plans .plan").first).to_contain_text("62")
     expect(page.locator("#plans .plan .old-price").first).to_contain_text("89")
@@ -3991,6 +4001,9 @@ def test_subscription_checkout_tracks_one_attempt_through_real_stages(page):
         "offer": None,
         "discount": None,
         "payment_details": "CARD: 0000 0000 0000 0000",
+        "card_prices": {
+            "ru": {"1_month": {"final_amount": "683.52", "base_amount": "683.52", "currency": "RUB"}},
+        },
         "prices": {
             "visa": {
                 "1_month": {
@@ -4040,8 +4053,13 @@ def test_subscription_checkout_tracks_one_attempt_through_real_stages(page):
     )
 
     expect(page.locator("html")).to_have_attribute("lang", "uz")
-    page.locator("[data-region=tj]").click()
-    page.locator("#nextBtn").click()
+    expect(page.locator("#planRegion")).to_be_visible()
+    page.locator("#planRegion").select_option("ru")
+    expect(page.locator("#plans .plan").first).to_contain_text("RUB")
+    page.locator("#planRegion").select_option("tj")
+    expect(page.locator("#plans .plan").first).to_contain_text("TJS")
+    # Local region changes must not generate another overview, quote or event.
+    assert [kind for kind, _ in requests] == ["overview"]
     expect(page.locator("#valueText")).to_contain_text("Boshlagan darsingizni davom ettiring")
     page.locator("#nextBtn").click()
     page.locator("[data-bank=dc_city]").click()
@@ -4126,9 +4144,10 @@ def test_subscription_foreign_region_skips_payment_type_and_pays_to_alif(page):
     page.goto(app_url("/subscription.html?mode=subscription"), wait_until="networkidle")
 
     # Xitoy narxi yo'q — region ro'yxatida ham chiqmaydi.
-    expect(page.locator("[data-region=cn]")).to_have_count(0)
-    page.locator("[data-region=ru]").click()
-    page.locator("#nextBtn").click()
+    expect(page.locator("#planRegion")).to_be_visible()
+    expect(page.locator("#planRegion option[value=cn]")).to_have_count(0)
+    expect(page.locator("#planRegion option[value=uz]")).to_have_count(0)
+    page.locator("#planRegion").select_option("ru")
     expect(page.locator("#plans .plan").first).to_contain_text("RUB")
     page.locator("#nextBtn").click()
 
@@ -4192,9 +4211,8 @@ def test_subscription_country_screen_recovers_when_overview_prices_are_empty(pag
 
     expect(page.locator("#countries")).to_contain_text("Цены тарифов сейчас не отображаются.")
     page.locator("[data-retry-overview]").click()
-    expect(page.locator("[data-region=ru]")).to_be_visible()
-    page.locator("[data-region=ru]").click()
-    page.locator("#nextBtn").click()
+    expect(page.locator("#planRegion")).to_be_visible()
+    page.locator("#planRegion").select_option("ru")
     expect(page.locator("#plans .plan").first).to_contain_text("RUB")
 
 

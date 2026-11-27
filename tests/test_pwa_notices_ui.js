@@ -51,9 +51,10 @@ function harness({path = "/iphone-pwa/course", href = null, action = null, accou
                   splashReady = true, sharedStorage = new Map(), standalone = false,
                   vendor = "Apple Computer, Inc.",
                   pushEnabled = true, initiallySubscribed = false, permission = "default",
-                  holdPushStatus = false, failPushStatusOnce = false} = {}) {
+                  holdPushStatus = false, failPushStatusOnce = false,
+                  holdFeeds = false, failFeeds = {}} = {}) {
   let splashDone = splashReady, currentAction = action, activeAccountId = accountId;
-  const heldPushStatus = [];
+  const heldPushStatus = [], heldFeeds = [], feedFailures = Object.assign({}, failFeeds);
   let failuresRemaining = failPushStatusOnce ? 1 : 0;
   const timers = [], callbacks = {}, requests = [], navigation = [], pushCalls = [];
   let root = null, redirects = 0, serverSubscribed = initiallySubscribed, localSubscription = null;
@@ -121,9 +122,18 @@ function harness({path = "/iphone-pwa/course", href = null, action = null, accou
       failuresRemaining--;
       return {ok:false,json:async()=>({ok:false,error:"temporary_unavailable"})};
     }
+    const feed = url.endsWith("/notifications") ? "notifications"
+      : url.endsWith("/account-notices") ? "account-notices" : null;
+    if (feed && feedFailures[feed] > 0) {
+      feedFailures[feed]--;
+      return {ok:false,json:async()=>({ok:false,error:"temporary_unavailable"})};
+    }
     const result = {ok:true,json:async()=>response};
     if (url.endsWith("/push/status") && holdPushStatus) {
       return new Promise(resolve => heldPushStatus.push(() => resolve(result)));
+    }
+    if (feed && holdFeeds) {
+      return new Promise(resolve => heldFeeds.push({feed, release:() => resolve(result)}));
     }
     return result;
   };
@@ -142,6 +152,11 @@ function harness({path = "/iphone-pwa/course", href = null, action = null, accou
     setAction(value){currentAction = value;},
     switchAccount(value){activeAccountId = value;},
     releaseHeldPushStatus(){assert.equal(heldPushStatus.length,1);heldPushStatus.pop()();},
+    releaseFeed(feed){
+      const index = heldFeeds.findIndex((held) => held.feed === feed);
+      assert(index >= 0, "feed " + feed + " is held");
+      heldFeeds.splice(index, 1)[0].release();
+    },
     async flushTimers(){for(const fn of timers.splice(0))await fn();},
     async loadAndTick(){
       assert.equal(typeof callbacks.load, "function");
@@ -437,6 +452,109 @@ async function main(){
   await intentionalInbox.flushTimers();
   assert.equal(intentionalInbox.root().hidden,true,
     "a learner-opened inbox must not queue a payment alert behind it");
+
+  // 2.3: notice-shaped placeholder rows while the feeds are pending; the
+  // merged, date-sorted list is drawn once, when both feeds have settled.
+  const tick = async (count = 12) => {
+    for (let i = 0; i < count; i++) await new Promise((resolve) => setImmediate(resolve));
+  };
+  const feedReads = (h, feed) => h.requests.filter((q) => q.url.endsWith("/" + feed)).length;
+  const retryClick = {target:{closest:(selector)=>selector==="[data-pwa-feed-retry]"?{}:null}};
+  const isSkeleton = (row) => row.className === "hsk-pwa-notice-row is-skeleton";
+
+  const held = harness({holdFeeds:true});
+  const heldOpen = held.window.HskPwaInbox.open();
+  await tick();
+  const heldList = held.root().querySelector("#hsk-pwa-notice-list");
+  assert.equal(heldList.attrs["aria-busy"], "true", "pending feeds mark the list busy");
+  assert.equal(heldList.children.length, 3, "three notice-shaped placeholder rows");
+  assert(heldList.children.every((row) => isSkeleton(row) && row.attrs["aria-hidden"] === "true"),
+    "placeholders reuse the notice row geometry and are hidden from assistive technology");
+  assert(heldList.children.every((row) => row.children.length === 3 &&
+    row.children.every((ink) => ink.className.startsWith("pwa-layout-ink") && !ink.textContent)),
+    "a title line and two body lines of the shared PWA skeleton ink, with no copy");
+  assert(!heldList.children.some((row) => row.className.includes("hsk-pwa-notice-empty")),
+    "no loading text while the feeds are pending");
+  held.releaseFeed("notifications");
+  await tick();
+  assert.equal(heldList.children.length, 3, "one settled feed does not draw a half, re-sorting list");
+  assert(heldList.children.every(isSkeleton));
+  held.releaseFeed("account-notices");
+  await heldOpen;
+  assert.equal(heldList.attrs["aria-busy"], "false");
+  assert.equal(heldList.children.length, 4, "both feeds settle into the one list in place");
+  assert(heldList.children.every((row) => row.className.startsWith("hsk-pwa-notice-row") &&
+    !row.className.includes("is-skeleton") && row.className.endsWith(" is-fresh")),
+    "settled rows replace the placeholders with the short fade");
+  assert.equal(heldList.children[0].children[0].textContent, "Lesson available");
+
+  const failing = harness({failFeeds:{"notifications":1, "account-notices":1}});
+  await failing.window.HskPwaInbox.open();
+  const failList = failing.root().querySelector("#hsk-pwa-notice-list");
+  assert.equal(failList.attrs["aria-busy"], "false");
+  assert.equal(failList.children.length, 1);
+  const failure = failList.children[0];
+  assert.equal(failure.className, "hsk-pwa-notice-error is-fresh");
+  assert.equal(failure.children[0].className, "hsk-pwa-notice-empty");
+  assert.equal(failure.children[0].attrs.role, "status");
+  assert.equal(failure.children[0].textContent, "subscriptionPage.error", "the existing error text stays");
+  assert.equal(failure.children[1].tag, "button");
+  assert.equal(failure.children[1].textContent, "courseLoadError.btn", "reviewed retry label, no new copy");
+  assert.equal(failure.children[1].attrs["data-pwa-feed-retry"], "");
+  assert.equal(feedReads(failing, "notifications") + feedReads(failing, "account-notices"), 2);
+  failing.root().listeners.click(retryClick);
+  assert.equal(failList.attrs["aria-busy"], "true", "retry shows its pending state at once");
+  assert.equal(failList.children.length, 3);
+  assert(failList.children.every(isSkeleton), "retry goes back to placeholder rows in the same slot");
+  await tick();
+  assert.equal(failList.children.length, 4, "retry settles into the notices");
+  assert.equal(feedReads(failing, "notifications"), 2);
+  assert.equal(feedReads(failing, "account-notices"), 2);
+  assert.equal(failing.navigation.length, 0, "retrying the inbox cannot navigate or grant access");
+  failing.root().listeners.click(retryClick);
+  await tick();
+  assert.equal(feedReads(failing, "notifications"), 2, "a settled inbox has nothing to retry");
+
+  const partial = harness({failFeeds:{"account-notices":1}});
+  await partial.window.HskPwaInbox.open();
+  const partList = partial.root().querySelector("#hsk-pwa-notice-list");
+  assert.equal(partList.children.length, 2, "the loaded feed stays, with the error and retry below it");
+  assert.equal(partList.children[0].children[0].textContent, "Lesson available");
+  assert.equal(partList.children[1].className, "hsk-pwa-notice-error is-fresh");
+  partial.root().listeners.click(retryClick);
+  assert.equal(partList.children.length, 2);
+  assert.equal(partList.children[0].children[0].textContent, "Lesson available",
+    "the loaded notices keep their place while the failed feed is retried");
+  assert(isSkeleton(partList.children[1]), "one placeholder row stands in for the retried feed");
+  await tick();
+  assert.equal(partList.children.length, 4);
+  assert.equal(feedReads(partial, "notifications"), 1, "only the failed feed is read again");
+  assert.equal(feedReads(partial, "account-notices"), 2);
+
+  // Owner switch: the existing checks still close and redirect, on a retry
+  // and on a late response for the previous owner.
+  const retryOwner = harness({failFeeds:{"notifications":1, "account-notices":1}});
+  await retryOwner.window.HskPwaInbox.open();
+  retryOwner.switchAccount(8);
+  retryOwner.root().listeners.click(retryClick);
+  await tick();
+  assert(retryOwner.navigation.includes("replace:/iphone-pwa"), "a retry for a changed cookie owner signs out");
+  assert.equal(retryOwner.root().hidden, true);
+  assert(!retryOwner.root().querySelector("#hsk-pwa-notice-list").children
+    .some((row) => row.className.startsWith("hsk-pwa-notice-row") && !isSkeleton(row)),
+    "no notices are drawn for the new owner in the old owner's inbox");
+
+  const lateOwner = harness({holdFeeds:true});
+  const lateOpen = lateOwner.window.HskPwaInbox.open();
+  await tick();
+  lateOwner.switchAccount(8);
+  lateOwner.releaseFeed("notifications");
+  lateOwner.releaseFeed("account-notices");
+  await lateOpen;
+  assert(lateOwner.navigation.includes("replace:/iphone-pwa"));
+  assert.equal(lateOwner.root().hidden, true);
+  assert(lateOwner.root().querySelector("#hsk-pwa-notice-list").children.every(isSkeleton),
+    "a late response for the previous owner is never drawn");
 
   console.log("PWA notice UI behavior, ownership and safety checks passed");
 }

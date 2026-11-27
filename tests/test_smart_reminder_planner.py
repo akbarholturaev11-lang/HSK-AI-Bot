@@ -59,8 +59,10 @@ class NativePlannerChecks:
             await session.execute(delete(JOB).where(JOB.c.id==self.q.job_id))  # Unused owned QA seed only.
             await session.execute(update(SmartReminderCapability).where(SmartReminderCapability.user_id==1)
                 .values(observed_at=self.q.tick-timedelta(seconds=1)))
+            # An explicit Telegram OFF: since D34 a legacy snapshot OFF is no OFF.
             await session.execute(update(SmartReminderConsent).where(SmartReminderConsent.user_id==1,
-                SmartReminderConsent.channel=='telegram').values(state='off'))
+                SmartReminderConsent.channel=='telegram').values(state='off',source='user_intent',
+                source_key='intent:telegram'))
             for row in (await session.scalars(select(CourseXpEvent).where(CourseXpEvent.user_id==1))).all():
                 row.created_at=row.created_at.replace(hour=self.due_clock.hour,minute=self.due_clock.minute,
                     second=0,microsecond=0)

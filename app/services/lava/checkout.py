@@ -17,13 +17,15 @@ from dataclasses import dataclass
 from decimal import ROUND_HALF_UP, Decimal
 
 from app.db.models.lava import LavaInvoice
+from app.db.models.user_identity import UserIdentity
 from app.repositories.payment_repo import PaymentRepository
 from app.repositories.user_repo import UserRepository
 from app.services.discount_service import DiscountService
 from app.services.lava import events, ledger
 from app.services.lava.client import LavaError
 from app.services.lava.config import LavaConfig, LavaConfigService, effective_mode
-from app.services.lava.terms import LAVA_PAYMENT_METHOD, LAVA_SOURCES, LOCAL_CONTRACT_PREFIX, normalize_email
+from app.services.lava.terms import LAVA_CURRENCIES, LAVA_PAYMENT_METHOD, LAVA_SOURCES, LOCAL_CONTRACT_PREFIX, normalize_email
+from app.services.user_access_state_service import UserAccessStateService
 
 logger = logging.getLogger(__name__)
 
@@ -73,7 +75,7 @@ def discounted(amount: Decimal | None, percent: int) -> Decimal | None:
 def _active_subscription_clause(user_id: int):
     return and_(
         LavaInvoice.user_id == user_id, LavaInvoice.kind.in_(("first", "external")),
-        LavaInvoice.status == "paid",
+        LavaInvoice.status.in_(ledger.GRANTED_STATUSES),
         or_(LavaInvoice.subscription_status.is_(None), LavaInvoice.subscription_status == "active"),
     )
 
@@ -99,16 +101,36 @@ class LavaCheckoutService:
     async def _subscription(self, session, user) -> dict | None:
         row = (await session.execute(select(LavaInvoice).where(
             LavaInvoice.user_id == user.id, LavaInvoice.kind.in_(("first", "external")),
-            LavaInvoice.status.in_(("paid", "chargeback_won")),
+            LavaInvoice.status.in_(ledger.GRANTED_STATUSES),
         ).order_by(LavaInvoice.paid_at.desc()).limit(1))).scalar_one_or_none()
         if row is None:
             return None
+        status = row.subscription_status or "active"
+        # Keep management available for active renewals, but let a learner
+        # buy again once the cancelled subscription's paid access has ended.
+        if status == "cancelled" and not UserAccessStateService.is_paid(user, now=_now()):
+            return None
         return {
             "plan_type": row.plan_type,
-            "status": row.subscription_status or "active",
-            "auto_renew": (row.subscription_status or "active") == "active",
+            "status": status,
+            "auto_renew": status == "active",
             "pro_until": _iso(getattr(user, "end_date", None)),
         }
+
+    async def _buyer_email(self, session, user_id: int) -> str | None:
+        previous = await session.scalar(select(LavaInvoice.buyer_email).where(
+            LavaInvoice.user_id == user_id, LavaInvoice.payment_id.is_not(None),
+            LavaInvoice.buyer_email.is_not(None),
+        ).order_by(LavaInvoice.paid_at.desc().nulls_last(), LavaInvoice.id.desc()).limit(1))
+        if email := normalize_email(previous):
+            return email
+        # The canonical owner is already verified. The linked Google address
+        # supplies receipt delivery only and never identifies a payer.
+        google_email = await session.scalar(select(UserIdentity.email_display).where(
+            UserIdentity.user_id == user_id, UserIdentity.provider == "google",
+            UserIdentity.email_verified.is_(True),
+        ))
+        return normalize_email(google_email)
 
     async def resolve_discount(self, session, user, config: LavaConfig, *, plan_type: str,
                                mode: str | None, campaign_id: int | None = None,
@@ -168,6 +190,7 @@ class LavaCheckoutService:
         discount_flow = (context_mode or "subscription") in DISCOUNT_MODES
         subscription = await self._subscription(session, user) if supports_lava and not discount_flow else None
         plans = []
+        regional_plans = {}
         if mode != "manual_only":
             for term in config.sellable_terms():
                 row = {"plan_type": term.plan_type, "months": term.months, "days": term.days,
@@ -184,20 +207,26 @@ class LavaCheckoutService:
                 elif discount_flow:
                     continue
                 plans.append(row)
+                for code, amount in term.regional_prices.items():
+                    regional_row = {**row, "currency": code, "amount": str(amount)}
+                    if discount is not None:
+                        regional_row["base_amount"] = str(amount)
+                        regional_row["amount"] = str(discounted(amount, discount.percent))
+                    regional_plans.setdefault(code, []).append(regional_row)
             if discount_flow and not plans:
                 return None
         if mode == "manual_only" and subscription is None:
             return None
-        last_email = await session.scalar(select(LavaInvoice.buyer_email).where(
-            LavaInvoice.user_id == user.id, LavaInvoice.buyer_email.is_not(None),
-        ).order_by(LavaInvoice.id.desc()).limit(1))
+        blocked_reason = await self._blocked_reason(session, user)
+        email = await self._buyer_email(session, user.id) if plans and not blocked_reason else None
         return {
             "mode": mode,
             "currency": config.currency,
             "plans": plans,
-            "blocked_reason": await self._blocked_reason(session, user),
+            **({"plans_by_currency": {config.currency: plans, **regional_plans}} if regional_plans else {}),
+            "blocked_reason": blocked_reason,
             "subscription": subscription,
-            "email": last_email,
+            "email": email,
         }
 
     async def start(self, session_factory, *, user_id: int, plan_type: str, email: str,
@@ -206,7 +235,7 @@ class LavaCheckoutService:
                     feedback_id: int | None = None,
                     analytics_attempt_id: str | None = None,
                     analytics_source: str | None = None,
-                    pwa_inline_return: bool = False) -> dict:
+                    pwa_inline_return: bool = False, currency: str | None = None) -> dict:
         if source not in LAVA_SOURCES:
             raise LavaCheckoutError("invalid_source", 400)
         if (context_mode or "") not in CHECKOUT_CONTEXT_MODES:
@@ -228,6 +257,13 @@ class LavaCheckoutService:
                     raise LavaCheckoutError("lava_unavailable")
                 term = config.terms.get(plan_type)
                 if term is None or not term.sellable:
+                    raise LavaCheckoutError("plan_unavailable")
+                # Legacy callers omit currency and keep the old configured default.
+                selected_currency = config.currency if currency is None else currency
+                if selected_currency not in LAVA_CURRENCIES:
+                    raise LavaCheckoutError("plan_unavailable")
+                selected_amount = term.price_amount if currency is None else term.amount_for(selected_currency)
+                if currency is not None and (selected_amount is None or selected_amount <= 0):
                     raise LavaCheckoutError("plan_unavailable")
                 if source == "android" and await session.scalar(select(LavaInvoice.id).where(
                         LavaInvoice.user_id == user.id, LavaInvoice.source == "android",
@@ -255,9 +291,9 @@ class LavaCheckoutService:
                     raise LavaCheckoutError("discount_unavailable")
                 row = LavaInvoice(
                     contract_id=reservation, kind="first", user_id=user.id, plan_type=plan_type,
-                    offer_id=term.offer_id, periodicity=term.periodicity, currency=config.currency,
-                    expected_amount=(discounted(term.price_amount, discount.percent) if discount
-                                     else term.price_amount),
+                    offer_id=term.offer_id, periodicity=term.periodicity, currency=selected_currency,
+                    expected_amount=(discounted(selected_amount, discount.percent) if discount
+                                     else selected_amount),
                     buyer_email=buyer_email, source=source,
                     pwa_inline_attempt_id=(analytics_attempt_id if source == "pwa" else None),
                     pwa_inline_source=(analytics_source if source == "pwa" else None),
@@ -270,7 +306,7 @@ class LavaCheckoutService:
                 session.add(row)
                 await session.flush()
                 reserved_id = row.id
-                offer_id, periodicity, currency = term.offer_id, term.periodicity, config.currency
+                offer_id, periodicity, currency = term.offer_id, term.periodicity, selected_currency
                 promo_code = discount.promo_code if discount else None
         if pwa_inline_return and source == "pwa":
             # The PWA paywall navigates to the provider in the same window, so
@@ -298,6 +334,12 @@ class LavaCheckoutService:
                 row = await session.get(LavaInvoice, reserved_id, with_for_update=True)
                 row.status = "failed"
                 row.review_reason = "create_uncertain" if exc.uncertain else "create_rejected"
+            if source == "pwa":
+                # The generic middleware deliberately ignores 503 responses.
+                # Report actual provider failures only, never local validation
+                # or region selection. Keep the existing ledger alerts below.
+                from app.services.monitoring.backend import report_server_failure
+                report_server_failure("pwa_pro_checkout", "provider_failed", "v3_pwa_subscription_lava_start")
             if exc.uncertain:
                 await self.runtime.notifier.admin_alert("needs_review", invoice_id=reserved_id,
                                                         detail="invoice create uncertain")

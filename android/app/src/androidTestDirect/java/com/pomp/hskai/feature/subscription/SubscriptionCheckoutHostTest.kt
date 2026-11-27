@@ -64,6 +64,7 @@ class SubscriptionCheckoutHostTest {
     private val origin = mutableStateOf("profile_subscription")
     private val visible = mutableStateOf(true)
     private val requestedOrigins = mutableListOf<String>()
+    private val providerOrigins = mutableListOf<String>()
     private val quoteRequests = mutableListOf<SubscriptionQuoteRequest>()
     private val submitRequests = mutableListOf<SubscriptionSubmitRequest>()
     private var pending: SubscriptionPendingDto? = null
@@ -153,13 +154,30 @@ class SubscriptionCheckoutHostTest {
 
     private fun show() {
         val repository = repository()
+        // All checkout calls belong to the synthetic authenticated account.
+        // The real app auth has no credential in this fixture and would clear
+        // its saved payment region, causing a spurious HSK30 country prompt.
+        val provider = object : AndroidLavaApi {
+            override suspend fun providerOverview(auth: String, body: LavaContext): Response<LavaOverview> {
+                check(auth == "Bearer test-token")
+                providerOrigins += body.origin
+                return Response.success(LavaOverview(ok = true))
+            }
+            override suspend fun start(auth: String, body: LavaStart): Response<LavaReply> = error("Unexpected Lava start")
+            override suspend fun status(auth: String, body: LavaId): Response<LavaReply> = error("Unexpected Lava status")
+            override suspend fun cancel(auth: String, body: Map<String, String>): Response<LavaReply> = error("Unexpected Lava cancel")
+            override suspend fun exitOffer(auth: String, body: ExitAction): Response<ExitReply> = error("Unexpected Lava offer")
+        }
+        val providerRepository = LavaCheckoutRepository(provider, { ApiResult.Success("test-token") },
+            origin = "profile_subscription")
         compose.setContent {
             PompHskAiTheme {
                 if (visible.value) {
-                    SubscriptionCheckoutHost(
+                    DirectSubscriptionCheckoutHost(
                         repository = repository,
                         viewModelStoreOwner = owner,
                         origin = origin.value,
+                        providerRepositoryOverride = providerRepository,
                         onClose = {
                             closeCount++
                             visible.value = false
@@ -313,6 +331,9 @@ class SubscriptionCheckoutHostTest {
         compose.waitForIdle()
         expectPlan(R.string.sub_plan_hsk30)
         assertEquals(listOf("profile_subscription", "hsk30_content"), requestedOrigins)
+        assertEquals(listOf("profile_subscription"), providerOrigins)
+        val settings = (context.applicationContext as HskAiApplication).appSettings
+        assertEquals("tj", runBlocking { settings.paymentRegion() })
     }
 
     @Test

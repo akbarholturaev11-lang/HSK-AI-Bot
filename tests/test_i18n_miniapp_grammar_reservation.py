@@ -230,7 +230,7 @@ assert.equal(mappings,408);
                         fragment.index('P3_RESERVED_GRAMMAR=d.p3_grammar||null;'))
         self.assertIn("d=applyReservedP3Grammar(d,lv,l.n);", html)
         self.assertLess(html.index("d=applyReservedP3Grammar(d,lv,l.n);"),
-                        html.index("Flow.queue=buildQueue(d);"))
+                        html.index("Flow.queue=buildQueue(d,"))  # UIUX-008 passes the preview flag
 
     @unittest.skipUnless(shutil.which("node"), "Node required for current-lesson grant regression")
     def test_current_reservation_requires_explicit_http_and_body_grant(self):

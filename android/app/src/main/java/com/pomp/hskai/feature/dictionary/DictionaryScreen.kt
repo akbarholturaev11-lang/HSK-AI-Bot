@@ -158,6 +158,9 @@ fun DictionaryScreen(
             else -> actions.onBack()
         }
     }
+    // Owned here, not by the list: an open entry replaces the list in
+    // composition, and returning from it must land on the same scroll position.
+    val listState = rememberLazyListState()
     HskSceneSurface(modifier = modifier.fillMaxSize()) {
         val writing = state.writing
         when {
@@ -176,6 +179,7 @@ fun DictionaryScreen(
             state.selectedWord != null -> DictionaryDetail(state, actions)
             else -> DictionaryList(
                 state = state,
+                listState = listState,
                 onQueryChange = actions.onQueryChange,
                 onVersionFilter = actions.onVersionFilter,
                 onLevelFilter = actions.onLevelFilter,
@@ -192,6 +196,7 @@ fun DictionaryScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 private fun DictionaryList(
     state: DictionaryUiState,
+    listState: LazyListState,
     onQueryChange: (String) -> Unit,
     onVersionFilter: (String) -> Unit,
     onLevelFilter: (String) -> Unit,
@@ -207,7 +212,6 @@ private fun DictionaryList(
     var filtersOpen by remember { mutableStateOf(false) }
     val recent = state.history.filter { dictionaryWordMatches(it, state.versionFilter, state.levelFilter) }
     val showRecent = searchFocused && state.query.isBlank() && recent.isNotEmpty()
-    val listState = rememberLazyListState()
     LaunchedEffect(showRecent) { if (showRecent) listState.scrollToItem(0) }
     // With the search box focused, back leaves the search first.
     BackHandler(enabled = searchFocused) { focusManager.clearFocus() }

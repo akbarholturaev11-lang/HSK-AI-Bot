@@ -11,12 +11,22 @@ package com.pomp.hskai.core.settings
  * It is a seam rather than a direct dependency on [AppSettings] so the lesson
  * can be tested without an Android context.
  */
+data class LessonResumePoint(val index: Int, val materialRef: String? = null)
+
 interface LessonResumeStore {
 
     /** The card index to resume at, or 0 when nothing is remembered. */
     suspend fun lessonResumeIndex(level: String, order: Int): Int
 
     suspend fun setLessonResumeIndex(level: String, order: Int, index: Int)
+
+    /** Stable material identity survives a personalized or offline deck change. */
+    suspend fun lessonResumePoint(level: String, order: Int): LessonResumePoint =
+        LessonResumePoint(lessonResumeIndex(level, order))
+
+    suspend fun setLessonResumePoint(level: String, order: Int, point: LessonResumePoint) {
+        setLessonResumeIndex(level, order, point.index)
+    }
 
     suspend fun clearLessonResume(level: String, order: Int)
 }

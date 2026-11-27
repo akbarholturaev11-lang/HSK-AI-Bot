@@ -548,3 +548,53 @@ class VoiceAdaptivePromptTests(unittest.IsolatedAsyncioTestCase):
         )
         self.assertIn("already used", prompt)
         self.assertIn("医院", prompt)
+
+
+class PronunciationUnclearTests(unittest.IsolatedAsyncioTestCase):
+    """UIUX-008: jimlik yoki shovqin xato talaffuz emas.
+
+    Rasmli kartochka "ishonchsiz bo'lsa taxminiy natija bermaydi" talabini
+    shu javob orqali bajaradi: `unclear` -> klient "yana ayting" deydi, server
+    mastery/xato yozmaydi.
+    """
+
+    async def _score(self, heard):
+        session = SimpleNamespace(commit=AsyncMock())
+        service = VoicePracticeService(session)
+        service._is_paid_telegram_user = AsyncMock(return_value=False)
+        service._pronounce_count_today = AsyncMock(return_value=0)
+        service._record_pronunciation_mastery = AsyncMock()
+        service._record_pronunciation_mistake = AsyncMock()
+        usage = AIUsageResult(content=heard, model="gpt-4o-mini-transcribe",
+                              prompt_tokens=10, completion_tokens=0, total_tokens=10)
+        record = SimpleNamespace(cooldown_started=False, budget_depleted=False,
+                                 message_key="", cooldown_hours=6)
+        with patch("app.services.voice_practice_service.settings.OPENAI_API_KEY", "test-key"), patch(
+            "app.services.voice_practice_service.AIService"
+        ) as ai_cls, patch("app.services.voice_practice_service.AIUsageBudgetService") as budget_cls:
+            ai_cls.return_value.transcribe_voice_with_usage = AsyncMock(return_value=usage)
+            budget_cls.return_value.record_usage = AsyncMock(return_value=record)
+            result = await service.score_pronunciation(
+                123, target="苹果", target_pinyin="píngguǒ", audio_bytes=b"audio",
+                filename="voice.webm", language="uz", level="hsk1",
+            )
+        return service, result
+
+    async def test_empty_transcript_is_unclear_and_writes_nothing(self):
+        for heard in ("", "   ", "...", "。！"):
+            service, result = await self._score(heard)
+            self.assertTrue(result["unclear"], heard)
+            self.assertFalse(result["passed"])
+            service._record_pronunciation_mastery.assert_not_awaited()
+            service._record_pronunciation_mistake.assert_not_awaited()
+
+    async def test_wrong_but_heard_word_is_still_a_verdict(self):
+        service, result = await self._score("香蕉")
+        self.assertNotIn("unclear", result)
+        self.assertFalse(result["passed"])
+        service._record_pronunciation_mastery.assert_awaited_once()
+
+    async def test_right_word_passes(self):
+        service, result = await self._score("苹果")
+        self.assertNotIn("unclear", result)
+        self.assertTrue(result["passed"])

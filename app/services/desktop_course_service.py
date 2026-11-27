@@ -40,7 +40,7 @@ from app.services.course_miniapp_profile_service import CourseMiniAppProfileServ
 from app.services.course_mistake_service import CourseMistakeService
 from app.services.course_today_service import CourseTodayService
 from app.services.course_track_service import CourseTrackError, CourseTrackService
-from app.services.course_v3_parts import total_parts
+from app.services.course_v3_parts import is_skip_test_part, total_parts
 from app.services.account_identity import owner_clause
 from app.services.course_p3_grammar_localization import apply_native_grammar_locales
 from app.services.desktop_auth_service import DesktopAuthService
@@ -133,6 +133,7 @@ class DesktopCourseService:
     # dedupe key with a desktop one and never lands in the desktop funnel.
     # Every other rule — access policy, XP, mistakes, idempotency — is shared.
     CLIENT_NAMESPACE = "desktop"
+    _INCLUDE_LEARNING_RESULT = False
 
     def __init__(self, session, settings_obj, bot=None):
         self.session = session
@@ -761,8 +762,9 @@ class DesktopCourseService:
                 )
             except CourseLessonMistakeMaterialError:
                 canonical_mistakes = []
+        recorded_mistakes = 0
         if canonical_mistakes:
-            await CourseMistakeService(self.session).record_items(
+            recorded_mistakes = await CourseMistakeService(self.session).record_items(
                 user,
                 canonical_mistakes,
                 source="lesson",
@@ -796,6 +798,14 @@ class DesktopCourseService:
                 "desktop_course_save_failed",
                 status_code=503,
             )
+        if self._INCLUDE_LEARNING_RESULT and lesson_order == 1:
+            # This response-only block stays outside analytics and replay data.
+            completion_result = {
+                **completion_result,
+                "learning_result": CourseLessonMistakeMaterialService.learning_result(
+                    canonical_mistakes, recorded=recorded_mistakes,
+                ),
+            }
         return completion_result
 
     async def unlock_lesson(
@@ -850,6 +860,10 @@ class DesktopCourseService:
                 status_code=403,
                 detail=limit_status,
             )
+
+        # Desktop is frozen; Android uses the mobile first-part rule.
+        if self.CLIENT_NAMESPACE == "android" and not is_skip_test_part(level, lesson_order):
+            raise DesktopCourseError("course_lesson_not_unlocked", status_code=403)
 
         legacy_lesson = await CourseLessonRepository(
             self.session

@@ -1,9 +1,5 @@
 package com.pomp.hskai.feature.lesson
 
-import android.Manifest
-import android.content.pm.PackageManager
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -27,7 +23,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.VolumeUp
-import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.CircularProgressIndicator
@@ -49,7 +44,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -60,7 +54,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompShapes
@@ -326,15 +319,10 @@ fun PronunciationCardView(
     onSpeak: () -> Unit,
     onSkip: () -> Unit,
     coach: (@Composable () -> Unit)? = null,
+    /** The last try was not heard clearly; no verdict was given. */
+    isUnclear: Boolean = false,
 ) {
-    val context = LocalContext.current
     var permissionDenied by remember { mutableStateOf(false) }
-    val permission = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission(),
-    ) { granted ->
-        permissionDenied = !granted
-        if (granted) onSpeak()
-    }
     val micEnabled = !isRecording && !isScoring && !isAnswered
     val canListen = !isRecording && !isScoring && !isAudioLoading
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
@@ -383,49 +371,18 @@ fun PronunciationCardView(
             coach()
         }
         Spacer(Modifier.height(18.dp))
-        val micShape = RoundedCornerShape(20.dp)
-        val micColor = if (isRecording) PompColors.CinnabarDark else PompColors.Cinnabar
-        Box(modifier = Modifier.padding(bottom = 6.dp)) {
-            Box(
-                modifier = Modifier
-                    .matchParentSize()
-                    .offset(y = 6.dp)
-                    .clip(micShape)
-                    .background(if (micEnabled) PompColors.CinnabarDark else PompColors.Divider),
-            )
-            Surface(
-                onClick = {
-                    val granted = ContextCompat.checkSelfPermission(
-                        context,
-                        Manifest.permission.RECORD_AUDIO,
-                    ) == PackageManager.PERMISSION_GRANTED
-                    if (granted) {
-                        permissionDenied = false
-                        onSpeak()
-                    } else {
-                        permission.launch(Manifest.permission.RECORD_AUDIO)
-                    }
-                },
-                enabled = micEnabled,
-                shape = micShape,
-                color = micColor,
-                modifier = Modifier.size(width = 208.dp, height = 80.dp),
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        imageVector = Icons.Filled.Mic,
-                        contentDescription = stringResource(R.string.hsk_course_course_voice_inline_a11y_mic),
-                        tint = PompColors.Paper,
-                        modifier = Modifier.size(36.dp),
-                    )
-                }
-            }
-        }
+        LessonMicButton(
+            enabled = micEnabled,
+            isRecording = isRecording,
+            onSpeak = onSpeak,
+            onPermissionResult = { denied -> permissionDenied = denied },
+        )
         Spacer(Modifier.height(9.dp))
         Text(
             text = when {
                 isRecording -> stringResource(R.string.foundation_speak_listening)
                 isScoring -> stringResource(R.string.foundation_speak_checking)
+                isUnclear -> stringResource(R.string.hsk_course_pronunciation_bad)
                 else -> stringResource(R.string.foundation_speak_check)
             },
             style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),

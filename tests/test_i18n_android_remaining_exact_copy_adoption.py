@@ -58,7 +58,9 @@ LEGACY_TO_GENERATED = {
 EXPECTED_GENERATED_CALLS = {
     "hsk_common_action_back": 6,
     "hsk_course_dictionary_page_clear_history": 1,
-    "hsk_common_action_close": 23,  # Includes the compact account editor and next-part sheet close buttons.
+    "hsk_common_action_close": 21,  # Lesson header X was replaced by the settings control.
+    "hsk_course_lesson_settings_title": 2,  # Header accessibility label and native sheet title.
+    "hsk_course_lesson_settings_exit": 1,  # Exit belongs at the bottom of that sheet.
     "hsk_common_action_continue": 19,  # Includes the in-lesson personal review feedback and offline panels (UIUX-007).
     "hsk_common_action_done": 2,
     "hsk_course_lang": 2,
@@ -69,7 +71,7 @@ EXPECTED_GENERATED_CALLS = {
     "hsk_course_dictionary_page_all_versions": 1,
     "hsk_course_dictionary_fast_writer_next": 1,
     "hsk_course_dictionary_fast_writer_previous": 1,
-    "hsk_course_pronunciation_skip": 1,
+    "hsk_course_pronunciation_skip": 2,  # + UIUX-008 picture deck Skip
     "hsk_common_action_exit": 1,
     "hsk_course_streak_display_many": 1,
     "hsk_course_subscription_page_payment_approved_title": 1,

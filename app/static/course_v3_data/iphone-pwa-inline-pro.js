@@ -16,7 +16,6 @@
   var WORDS = {
     ru: {title:"Лимит исчерпан",subtitle:"Оформите Pro, чтобы продолжить",benefits:["Уроки без ограничений","Разговорная практика с ИИ","Учёба без рекламы"],one:"1 месяц",
       three:"3 месяца",six:"6 месяцев",year:"1 год",perMonth:"/ мес",pay:"Получить Pro ⭐️",
-      more:"Другие тарифы",
       manual:"Обычный способ оплаты",manualHint:"Банковская карта, Alipay или WeChat",
       email:"Email для оплаты",continue:"Продолжить оплату",
       close:"Закрыть",back:"Назад",loading:"Загружаем тарифы…",unavailable:"Тарифы временно недоступны",
@@ -33,7 +32,6 @@
       missingEmail:"Укажите действительный email",success:"Платёж подтверждён сервером"},
     uz: {title:"Limit tugadi",subtitle:"Davom etish uchun Pro oling",benefits:["Cheksiz darslar","AI bilan ovozli mashqlar","Reklamasiz o‘rganing"],one:"1 oy",
       three:"3 oy",six:"6 oy",year:"1 yil",perMonth:"/ oy",pay:"Pro ⭐️ olish",
-      more:"Boshqa tariflar",
       manual:"Oddiy to‘lov usuli",manualHint:"Bank kartasi, Alipay yoki WeChat",
       email:"To‘lov uchun email",continue:"To‘lovni davom ettirish",
       close:"Yopish",back:"Orqaga",loading:"Tariflar yuklanmoqda…",unavailable:"Tariflar hozir mavjud emas",
@@ -49,7 +47,6 @@
       missingEmail:"To‘g‘ri email kiriting",success:"To‘lov serverda tasdiqlandi"},
     tj: {title:"Лимит тамом шуд",subtitle:"Барои идома Pro гиред",benefits:["Дарсҳо бе маҳдудият","Машқи овозӣ бо AI","Омӯзиш бе реклама"],one:"1 моҳ",
       three:"3 моҳ",six:"6 моҳ",year:"1 сол",perMonth:"/ моҳ",pay:"Гирифтани Pro ⭐️",
-      more:"Тарифҳои дигар",
       manual:"Пардохти оддӣ",manualHint:"Корти бонкӣ, Alipay ё WeChat",
       email:"Email барои пардохт",continue:"Идомаи пардохт",
       close:"Пӯшидан",back:"Бозгашт",loading:"Тарифҳо бор шуда истодаанд…",unavailable:"Тарифҳо дастрас нестанд",
@@ -64,11 +61,15 @@
       blocked:"Пардохти ҷорӣ ё обунаи фаъолро санҷед",
       missingEmail:"Email-и дуруст ворид кунед",success:"Пардохт аз тарафи сервер тасдиқ шуд"}
   };
-  var NAMES = { "1_month":"one", "3_months":"three", "6_months":"six", "12_months":"year" };
+  var NAMES = { "10_days":"ten", "1_month":"one", "3_months":"three", "6_months":"six", "12_months":"year" };
   var MONTHS = { "1_month":1, "3_months":3, "6_months":6, "12_months":12 };
   var order = ["1_month","3_months","6_months","12_months"];
   var root, sheet, scroll, body, actions, heading, info, panda, back, closeButton, lastFocus, state, tick = null, actorPromise = null, run = 0;
-  function txt(key) { return (WORDS[state.lang]||WORDS.ru)[key]; }
+  function txt(key) {
+    if (key==="more") return HSKSubscriptionPresentation.regionalLabel(state.lang,"more");
+    if (key==="ten") return window.HSKAI_COURSE_I18N?.[state.lang]?.["subscriptionNested.planLabels.ten"]||"";
+    return (WORDS[state.lang]||WORDS.ru)[key];
+  }
   function el(tag, cls, value) {
     var node = document.createElement(tag);
     if (cls) node.className = cls;
@@ -167,20 +168,35 @@
       if (!r.ok) throw Error("session_unavailable");
       return r.json();
     }).then(function(data) {
-      if (!data || data.ok !== true || !data.csrf || !Number.isSafeInteger(Number(data.user_id)))
+      if (!data || data.ok !== true || !data.csrf || (!Number.isSafeInteger(Number(data.user_id)) || Number(data.user_id)<=0))
         throw Error("session_invalid");
       return data;
     }).catch(function(e) { actorPromise=null; throw e; });
     return actorPromise;
   }
+  function sessionFor(checkout) {
+    return session().then(function(actor) {
+      if (!checkout||checkout!==state) throw Error("checkout_closed");
+      var owner=Number(actor.user_id);
+      if (checkout.ownerId&&checkout.ownerId!==owner) {
+        forgetCheckout();
+        close();
+        throw Error("checkout_owner_changed");
+      }
+      checkout.ownerId=owner;
+      return actor;
+    });
+  }
   function request(path,payload) {
-    return session().then(function(a) {
+    var checkout=state;
+    return sessionFor(checkout).then(function(a) {
       return fetch(path,{method:"POST",credentials:"same-origin",cache:"no-store",redirect:"error",
         headers:{"Content-Type":"application/json","X-HSK-PWA-CSRF":a.csrf},
         body:JSON.stringify(payload||{})});
     }).then(function(r) {
       return r.json().catch(function(){return {}}).then(function(data) {
         if (!r.ok || !data || data.ok===false) {
+          if (checkout===state&&(r.status===401||data.error==="pwa_csrf_invalid")) recheckOwner();
           var error = Error(data.error||data.code||"request_failed"); error.code=data.error||data.code;
           throw error;
         }
@@ -194,19 +210,11 @@
     var payload = {
       event:event,source:state.source,attempt_id:state.attempt,
       event_id:state.attempt+":"+(++state.eventSeq),
-      plan_type:plan||state.plan||null,method:method||null
+      plan_type:(order.includes(plan||state.plan)||(plan||state.plan)==="10_days")?(plan||state.plan):null,method:method||null
     };
     request(API.analytics,payload).catch(function(){});
   }
-  function relativePrice(value) {
-    var n=Number(value);
-    if (!Number.isFinite(n)||n<=0) return null;
-    // UI-only roughly +30% comparison, rounded to the nearest .99.
-    // It is NOT a historical price and NEVER sent to the payment API.
-    var result=Math.round(n*1.3-0.99)+0.99;
-    if(result<=n)result=Math.ceil(n-0.99+1e-9)+0.99;
-    return result.toFixed(2);
-  }
+  function relativePrice(value) { return HSKSubscriptionPresentation.relativePrice(value); }
   function money(value,currency) {
     var n=Number(value);
     if (!Number.isFinite(n)||n<0) return "";
@@ -244,11 +252,59 @@
   }
   function lavaBlock() { return state.data && state.data.lava || null; }
   function manualAllowed() { var lava=lavaBlock(); return !lava || lava.mode!=="lava_only"; }
-  function available() {
+  var regionOrder=["tj","uz","ru","cn","other"], regionFlags=["🇹🇯","🇺🇿","🇷🇺","🇨🇳","🌐"];
+  function regionKey() {
+    return Number.isSafeInteger(state.ownerId)&&state.ownerId>0?"hsk_sub_region_v1:pwa:"+state.ownerId:"";
+  }
+  function manualPlans(region) {
+    return manualAllowed()?HSKSubscriptionPresentation.manualRegionalPlans(state.data,region):[];
+  }
+  function providerPlans() {
     var lava=lavaBlock();
-    return lava && Array.isArray(lava.plans) ? lava.plans.filter(function(p) {
-      return p && order.indexOf(p.plan_type)!==-1 && p.amount!==null && p.amount!==undefined;
-    }).sort(function(a,b){return order.indexOf(a.plan_type)-order.indexOf(b.plan_type)}) : [];
+    if (!lava||lava.mode==="manual_only")return [];
+    var rows=state.mode!=="exit_discount"&&state.lavaCurrency?HSKSubscriptionPresentation.regionalProviderPlans(
+      lava.currency?lava:Object.assign({},lava,{currency:lava.plans?.[0]?.currency}),state.lavaCurrency):lava.plans;
+    return (Array.isArray(rows)?rows:[]).filter(function(p){
+      return p&&order.includes(p.plan_type)&&p.amount!=null&&Number(p.amount)>0;
+    }).sort(function(a,b){return order.indexOf(a.plan_type)-order.indexOf(b.plan_type)});
+  }
+  function configureRegion(region) {
+    var lava=lavaBlock(), api=HSKSubscriptionPresentation;
+    var mode=lava?.mode==="both"||lava?.mode==="lava_only"?lava.mode:"manual_only";
+    var normalized=lava?.currency?lava:Object.assign({},lava,{currency:lava?.plans?.[0]?.currency});
+    var currencies=["USD","RUB"].filter(code=>api.regionalProviderPlans(normalized,code).length);
+    if(mode==="manual_only"&&!manualPlans(region).length){
+      region=regionOrder.find(code=>manualPlans(code).length)||region;
+    }
+    var route=api.regionalRoute(region,mode,manualPlans(region).length>0,currencies,normalized.currency);
+    state.region=region;state.path=route.path;state.lavaCurrency=route.currency;
+    if(!state.lavaCurrency&&currencies.length)state.lavaCurrency=currencies[0];
+  }
+  function displayPath() {
+    if(state.mode==="exit_discount")return "lava";
+    var alternate=state.screen==="more"||(state.screen==="email"&&state.emailFrom==="more");
+    return state.path==="manual"&&alternate&&providerPlans().length?"lava":state.path||"lava";
+  }
+  function available() {
+    return displayPath()==="manual"?manualPlans(state.region):providerPlans();
+  }
+  function regionSelector() {
+    var select=el("select","hip-region");
+    select.setAttribute("aria-label",HSKSubscriptionPresentation.regionalLabel(state.lang,"country"));
+    var choices=providerPlans().length?regionOrder:regionOrder.filter(code=>manualPlans(code).length);
+    if(!choices.length){select.hidden=true;return select;}
+    choices.forEach(function(code){
+      var i=regionOrder.indexOf(code), option=el("option",null,regionFlags[i]+" "+HSKSubscriptionPresentation.regionalLabel(state.lang,code));
+      option.value=code;select.appendChild(option);
+    });
+    select.value=state.region;
+    select.addEventListener("change",function(){
+      if(!choices.includes(select.value)||state.paying||state.checkoutId)return;
+      configureRegion(select.value);
+      try { if(regionKey())localStorage.setItem(regionKey(),state.region); }catch(_){}
+      state.screen="main";state.error="";render();
+    });
+    return select;
   }
   function selectedPlan() {
     return available().find(function(p){return p.plan_type===state.plan}) || null;
@@ -261,13 +317,23 @@
     if (d.lava && d.lava.blocked_reason) return "blocked";
     return "";
   }
+  function learningBenefit(plans) {
+    var data=state.data;
+    if (!data || data.learning_pro_eligible!==true || state.error ||
+        (!plans.length && !(manualAllowed() && data.payment_details_configured===true))) return "";
+    var key=state.source==="v3_locked_lesson" ? "learningPro.lesson" :
+      state.source==="v3_mistake_review" ? "learningPro.mistakes" : "";
+    return window.HSKAI_COURSE_I18N?.[state.lang]?.[key] || "";
+  }
   function elementPlans(all) {
-    var plans=available().filter(function(p){return all||p.plan_type==="1_month"||p.plan_type==="12_months"});
+    var rows=available(), path=displayPath();
+    var plans=all?rows:(path==="manual"?rows.slice(0,2):rows.filter(function(p){return p.plan_type==="1_month"||p.plan_type==="12_months"}));
+    if(!plans.length)plans=rows.slice(0,2);
     var grid=el("div","hip-plans");
     plans.forEach(function(plan) {
       var card=btn("","hip-plan",function(){
         if (state.plan===plan.plan_type) return;
-        state.plan=plan.plan_type;emit("pwa_pro_plan_selected",plan.plan_type,"lava");render();
+        state.plan=plan.plan_type;emit("pwa_pro_plan_selected",plan.plan_type,path);render();
       });
       card.setAttribute("aria-pressed",String(state.plan===plan.plan_type));
       var discounted=Number(plan.discount_percent)>0 && plan.base_amount!=null;
@@ -295,11 +361,16 @@
       }
       grid.appendChild(card);
     });
+    if(grid.querySelector(".comparison[title]"))grid.appendChild(el("p","hip-reference-note",HSKSubscriptionPresentation.regionalLabel(state.lang,"comparison")));
     return grid;
+  }
+  function openManual(selected) {
+    state.manualFrom=state.screen;state.manualPlan=selected||"";
+    emit("pwa_pro_method_selected",selected||null,"manual");state.screen="manual";state.error="";render();
   }
   function manualRow() {
     var row=btn("","hip-method",function(){
-      emit("pwa_pro_method_selected",null,"manual");state.screen="manual";state.error="";render();
+      openManual("");
     });
     var text=el("span","hip-method-text");
     text.append(el("b",null,txt("manual")),el("small",null,txt("manualHint")));
@@ -310,6 +381,7 @@
   function payButton() {
     return btn(txt("pay"),"hip-primary",function() {
       if (!selectedPlan()) return;
+      if(displayPath()==="manual"){openManual(state.plan);return;}
       if (!state.email) {state.emailFrom=state.screen;state.screen="email";state.error="";render();return}
       startPayment();
     });
@@ -334,8 +406,9 @@
     if (view==="main"||view==="loading") {
       header("pro",txt("title"),txt("subtitle"));
       var benefits=el("ul","hip-benefits");
-      (txt("benefits")||[]).forEach(function(value){
-        benefits.appendChild(el("li","hip-benefit",value));
+      var learning=view==="main" ? learningBenefit(plans) : "";
+      (txt("benefits")||[]).forEach(function(value,index){
+        benefits.appendChild(el("li","hip-benefit",index===0 && learning ? learning : value));
       });
       body.appendChild(benefits);
     }
@@ -368,20 +441,20 @@
       return;
     }
     if (view==="waiting") {
-      // Shown only while the provider page is being opened in this window,
-      // or if the learner comes back without a provider redirect (e.g. the
-      // iOS in-app browser was closed). Access is still server-verified.
-      var waitPlan=selectedPlan();
-      header("read",state.redirecting?txt("opening"):txt("paying"),
+      // Keep the installed PWA available while the external checkout is open.
+      // The server, not browser navigation, decides whether payment succeeded.
+      var waitPlan=state.invoicePlan||null;
+      header("read",txt("paying"),
         waitPlan?txt(NAMES[waitPlan.plan_type])+" · "+money(waitPlan.amount,waitPlan.currency):"");
       var checking=el("p","hip-checking");
       checking.setAttribute("aria-hidden","true");
       body.appendChild(checking);
-      if (state.redirecting) return;
       if (state.paymentUrl) {
+        // Real user-gesture fallback if WebKit blocks the async popup.
+        // Reopen the already-created invoice; never call the start API again.
         var link=el("a","hip-primary",txt("reopen"));
-        link.href=state.paymentUrl;link.rel="noopener noreferrer";
-        link.addEventListener("click",function(){rememberCheckout();if(state)state.redirecting=true;render()});
+        link.href=state.paymentUrl;link.target="_blank";link.rel="noopener noreferrer";
+        link.addEventListener("click",rememberCheckout);
         actions.appendChild(link);
       }
       actions.appendChild(btn(txt("return"),"hip-secondary",close));
@@ -391,7 +464,7 @@
       header(status==="paid"?"celebrate":"read",txt(status),"");
       actions.appendChild(btn(txt("return"),"hip-primary",close));
       if (status==="pending") {
-        actions.appendChild(btn(txt("manual"),"hip-secondary",function(){emit("pwa_pro_method_selected",null,"manual");state.screen="manual";render()}));
+        actions.appendChild(btn(txt("manual"),"hip-secondary",function(){openManual("")}));
       }
       return;
     }
@@ -401,6 +474,8 @@
       iframe.title=txt("manual");
       iframe.setAttribute("loading","eager");
       var q=new URLSearchParams({embedded:"1",source:state.source,lang:state.lang,mode:"subscription",return_to:"course",inline_manual:"1"});
+      if(regionOrder.includes(state.region))q.set("country",state.region);
+      if(state.manualPlan)q.set("plan",state.manualPlan);
       iframe.src="/iphone-pwa/checkout?"+q.toString();
       body.appendChild(iframe);
       return;
@@ -427,12 +502,13 @@
       if (plans.length) {
         if (!selectedPlan()) state.plan=plans[0].plan_type;
         body.appendChild(elementPlans(true));
+        if(state.mode==="subscription")body.appendChild(regionSelector());
         if (state.mode==="exit_discount") body.appendChild(el("p","hip-small hip-center",txt("saving")));
         actions.appendChild(payButton());
       } else if (!manualAllowed()) {
         body.appendChild(el("p","hip-small hip-center",txt("unavailable")));
       }
-      if (manualAllowed()) {
+      if (manualAllowed()&&(!plans.length||displayPath()!=="manual")) {
         if (plans.length) body.appendChild(el("div","hip-divider"));
         body.appendChild(manualRow());
         if (state.mode==="exit_discount") body.appendChild(el("p","hip-small",txt("manualNoExit")));
@@ -444,17 +520,19 @@
       if (state.error || !manualAllowed()) {
         if (!state.error) body.appendChild(el("p","hip-small hip-center",txt("unavailable")));
         actions.appendChild(btn(txt("retry"),"hip-primary",load));
-        if (manualAllowed()) actions.appendChild(btn(txt("manual"),"hip-secondary",function(){emit("pwa_pro_method_selected",null,"manual");state.screen="manual";state.error="";render()}));
+        if (manualAllowed()) actions.appendChild(btn(txt("manual"),"hip-secondary",function(){openManual("")}));
         return;
       }
       // Card checkout is switched off: the regular method is the only path.
-      actions.appendChild(btn(txt("pay"),"hip-primary",function(){emit("pwa_pro_method_selected",null,"manual");state.screen="manual";render()}));
+      if(state.mode==="subscription")body.appendChild(regionSelector());
+      actions.appendChild(btn(txt("pay"),"hip-primary",function(){openManual("")}));
       return;
     }
-    if (!selectedPlan() || (state.plan!=="1_month" && state.plan!=="12_months")) {
-      state.plan=plans.some(function(p){return p.plan_type==="1_month"})?"1_month":plans[0].plan_type;
-    }
+    var primary=displayPath()==="manual"?plans.slice(0,2):plans.filter(p=>p.plan_type==="1_month"||p.plan_type==="12_months");
+    if(!primary.length)primary=plans.slice(0,2);
+    if(!primary.some(p=>p.plan_type===state.plan))state.plan=primary[0].plan_type;
     body.appendChild(elementPlans(false));
+    if(state.mode==="subscription")body.appendChild(regionSelector());
     if (state.mode==="exit_discount") body.appendChild(el("p","hip-small hip-center",txt("saving")));
     actions.appendChild(payButton());
     actions.appendChild(btn(txt("more"),"hip-secondary",function(){emit("pwa_pro_more_opened");state.screen="more";state.error="";render()}));
@@ -468,6 +546,10 @@
       supports_lava:true,inline_preview:true,attempt_id:state.attempt}).then(function(data) {
       if (!state||current!==run) return;
       state.data=data;
+      if(state.mode==="subscription"){
+        var saved="";try{saved=regionKey()?localStorage.getItem(regionKey()):"";}catch(_){}
+        configureRegion(regionOrder.includes(state.region)?state.region:regionOrder.includes(saved)?saved:HSKSubscriptionPresentation.localPaymentRegion(state.lang));
+      }
       state.email=(data.lava&&data.lava.email)||state.email||"";
       if (quiet!==true) {
         state.screen="main";
@@ -481,16 +563,16 @@
   }
   var RESUME_KEY="hsk_pwa_pro_checkout_v1";
   function rememberCheckout() {
-    if (!state||!state.checkoutId) return;
+    if (!state||!state.checkoutId||!state.ownerId) return;
     try {
       sessionStorage.setItem(RESUME_KEY,JSON.stringify({id:String(state.checkoutId),
-        source:state.source,plan:state.plan,at:Date.now()}));
+        ownerId:state.ownerId,source:state.source,plan:state.plan,at:Date.now()}));
     } catch (_) {}
   }
   function recalledCheckout(id) {
     try {
       var r=JSON.parse(sessionStorage.getItem(RESUME_KEY)||"null");
-      if (r&&String(r.id)===String(id)&&Date.now()-Number(r.at)<2*3600*1000) return r;
+      if (r&&Number.isSafeInteger(r.ownerId)&&r.ownerId>0&&String(r.id)===String(id)&&Date.now()-Number(r.at)<2*3600*1000) return r;
     } catch (_) {}
     return null;
   }
@@ -509,7 +591,7 @@
   function close() {
     if (!root||root.hidden) return;
     clearInterval(tick);tick=null;run++;root.hidden=true;
-    if (state) clearTimeout(state.redirectTimer);body.replaceChildren();actions.replaceChildren();
+    body.replaceChildren();actions.replaceChildren();
     panda.dataset.pose="";panda.replaceChildren();
     document.documentElement.style.overflow=state&&state.previousOverflow||"";
     if (lastFocus&&lastFocus.isConnected) lastFocus.focus({preventScroll:true});
@@ -557,7 +639,7 @@
   }
   function goBack() {
     if (!state) return;
-    if (state.screen==="manual")state.screen=available().length?"more":"main";
+    if (state.screen==="manual")state.screen=state.manualFrom||"main";
     else if (state.screen==="email")state.screen=state.emailFrom==="more"?"more":"main";
     else if (state.screen==="more")state.screen="main";
     else {requestDismiss();return}
@@ -565,7 +647,7 @@
   }
   function startPayment() {
     var plan=selectedPlan();
-    if (!plan||!state||state.paying) return;
+    if (!plan||!state||state.paying||state.checkoutId||displayPath()!=="lava") return;
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((state.email||"").trim())) {
       if (state.screen!=="email") state.emailFrom=state.screen;
       state.screen="email";state.error=txt("missingEmail");render();return;
@@ -573,27 +655,22 @@
     // Do not pre-open about:blank: iOS standalone PWAs can strand the
     // blank window even after a valid payment URL is returned.
     var current=++run, from=state.screen==="email"?(state.emailFrom||"main"):state.screen;
-    state.paying=true;state.screen="loading";state.error="";render();
+    state.invoicePlan=plan;state.paying=true;state.screen="loading";state.error="";render();
     request(API.start,{plan_type:plan.plan_type,email:state.email.trim(),language:state.lang,
-      mode:state.mode,attempt_id:state.attempt,ui_source:state.source}).then(function(data){
+      mode:state.mode,attempt_id:state.attempt,ui_source:state.source,...(state.mode==="subscription"&&state.lavaCurrency?{currency:plan.currency}:{})}).then(function(data){
       if (!state||current!==run) return;
       state.paying=false;
       var url=new URL(data.payment_url);
       if (url.protocol!=="https:" || !(url.hostname==="lava.top"||url.hostname.endsWith(".lava.top")))
         throw Error("invalid_payment_url");
       state.checkoutId=data.checkout_id;state.paymentUrl=url.href;
-      // Open the provider directly in this window. An async window.open is
-      // blocked on iPhone; a top-level navigation is not. The invoice return
-      // URL brings the learner back to /iphone-pwa/course with this id.
-      state.redirecting=true;state.screen="waiting";render();
-      rememberCheckout();beginPolling();
-      clearTimeout(state.redirectTimer);
-      state.redirectTimer=setTimeout(function(){
-        // Still here (in-app browser overlay or blocked navigation): offer
-        // the same link and keep checking the server.
-        if (state&&state.redirecting){state.redirecting=false;render()}
-      },4000);
-      location.assign(state.paymentUrl);
+      // Match the Profile PWA checkout: open the verified URL externally.
+      // Never pre-open about:blank or replace the app document. If iOS blocks
+      // the async open, the visible link above provides a fresh user gesture.
+      state.screen="waiting";render();
+      rememberCheckout();
+      try { window.open(state.paymentUrl,"_blank","noopener"); } catch (_) {}
+      beginPolling();
     }).catch(function(err){
       if(!state||current!==run)return;
       state.paying=false;
@@ -621,9 +698,11 @@
       if (!state||current!==run)return;
       if (result.status==="paid") {
         clearInterval(tick);tick=null;forgetCheckout();
-        state.paid=true;state.redirecting=false;state.screen="success";state.checkoutId=null;render();
+        state.paid=true;state.screen="success";state.checkoutId=null;render();
       } else if (result.status==="failed") {
-        clearInterval(tick);tick=null;forgetCheckout();state.checkoutId=null;state.redirecting=false;
+        clearInterval(tick);tick=null;forgetCheckout();state.checkoutId=null;state.paymentUrl=null;
+        // load() advances run, so the old request's finally cannot reset this flag.
+        state.polling=false;
         emit("pwa_pro_checkout_failed");state.pendingError=txt("error");load();
       }
     }).catch(function(){}).finally(function(){if(state&&current===run)state.polling=false});
@@ -636,9 +715,10 @@
     var lang=String(opts.lang||document.documentElement.lang||"ru").toLowerCase();
     if(lang==="tg")lang="tj";
     if(!WORDS[lang])lang="ru";
+    actorPromise=null;
     state={lang:lang,source:String(opts.source||"v3_paywall").slice(0,80),
-      mode:"subscription",screen:"loading",plan:"1_month",email:"",attempt:"inline-"+Date.now()+"-"+Math.floor(Math.random()*1000000),eventSeq:0,
-      data:null,error:"",pendingError:"",polling:false,paying:false,redirecting:false,emailFrom:"main",onClose:opts.onClose,
+      mode:"subscription",screen:"loading",plan:"1_month",email:"",region:"",path:"",lavaCurrency:"",ownerId:opts.resume?.ownerId||0,attempt:"inline-"+Date.now()+"-"+Math.floor(Math.random()*1000000),eventSeq:0,
+      data:null,error:"",pendingError:"",polling:false,paying:false,emailFrom:"main",onClose:opts.onClose,
       previousOverflow:document.documentElement.style.overflow};
     root.hidden=false;
     document.documentElement.style.overflow="hidden";
@@ -665,21 +745,21 @@
     if (!state||state.screen!=="manual"||!body)return false;
     var iframe=body.querySelector("iframe");
     if (!iframe||iframe.contentWindow!==child)return false;
-    state.screen=available().length?"more":"main";render();return true;
+    state.screen=state.manualFrom||"main";render();return true;
   }
   document.addEventListener("keydown",function(ev) {
     if (!root||root.hidden)return;
     if (ev.key==="Escape"){ev.stopPropagation();ev.preventDefault();goBack()}
   });
-  function cameBack() {
-    if (state&&state.redirecting) {state.redirecting=false;render();}
-    if (state&&state.checkoutId) checkStatus();
+  function recheckOwner(checkInvoice) {
+    actorPromise=null;
+    if (state) sessionFor(state).then(function(){if(checkInvoice)checkStatus();}).catch(function(){});
   }
   document.addEventListener("visibilitychange",function(){
-    if(document.visibilityState==="visible"){actorPromise=null;cameBack();}
+    if(document.visibilityState==="visible")recheckOwner(true);
   });
-  window.addEventListener("pageshow",function(e){if(e.persisted){actorPromise=null;cameBack();}});
-  window.HSKPwaInlinePro={open:open,close:close,closeEmbeddedCheckout:closeEmbeddedCheckout,safeArea:safeArea};
+  window.addEventListener("pageshow",function(e){if(e.persisted)recheckOwner(true);});
+  window.HSKPwaInlinePro={open:open,close:close,closeEmbeddedCheckout:closeEmbeddedCheckout,safeArea:safeArea,trialPandaSvg:function(){return pandaSvg('pro')}};
   // The provider returns to /iphone-pwa/course?pro_checkout=<id>&pro_return=…
   (function resumeFromProvider() {
     if (location.pathname!=="/iphone-pwa/course") return;
@@ -690,7 +770,7 @@
     if (!/^[1-9][0-9]{0,11}$/.test(raw)) return;
     var record=recalledCheckout(raw)||{};
     open({source:record.source||"v3_locked_lesson",lang:q.get("lang")||undefined,
-      resume:{checkoutId:Number(raw),plan:record.plan,
+      resume:{checkoutId:Number(raw),plan:record.plan,ownerId:record.ownerId,
         outcome:outcome==="success"?"success":outcome==="fail"?"fail":"cancel"}});
   })();
 })();

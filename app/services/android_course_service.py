@@ -37,7 +37,8 @@ from app.services.desktop_course_service import (
     DesktopCourseService,
     course_v3_lesson_card_count,
 )
-from app.services.course_v3_parts import total_parts
+from app.services.course_lesson_plan_service import lesson_plan_for, with_lesson_plan
+from app.services.course_v3_parts import is_skip_test_part, total_parts
 from app.services.entitlements.lesson_access import LessonAccessService
 from app.services.smart_reminder_preferences import SmartReminderActor, SmartReminderPreferencesService
 from app.services.smart_widget_context import WidgetContextRequest
@@ -65,6 +66,7 @@ _SKIP_CHOICE_TYPES = frozenset({
 
 class AndroidCourseService(DesktopCourseService):
     CLIENT_NAMESPACE = "android"
+    _INCLUDE_LEARNING_RESULT = True
 
     async def _foundation_status(self, user) -> dict:
         return await CourseMiniAppProfileService(self.session).foundation_status(user)
@@ -111,6 +113,8 @@ class AndroidCourseService(DesktopCourseService):
         context = await self._context(access_token)
         foundation = await self._foundation_status(context.user)
         result["foundation"] = foundation
+        from app.services.subscription_expiry_notice import subscription_expiry_payload
+        result.update(await subscription_expiry_payload(self.session, context.user))
 
         track_status = await CourseTrackService(self.session).status(context.user)
         hsk30_track = (track_status.get("tracks") or {}).get("hsk30") or {}
@@ -237,6 +241,16 @@ class AndroidCourseService(DesktopCourseService):
             access_ref=access_ref,
         )
         await self._record_lesson_start(user_id=user_id, telegram_id=telegram_id, result=result)
+        # UIUX-008: only a lesson the learner can complete gets a plan; the
+        # helper never raises and returns the unchanged lesson on any failure.
+        lesson = result.get("lesson")
+        if result.get("completion_allowed") and isinstance(lesson, dict):
+            plan = await lesson_plan_for(
+                self.session, self.settings, user_id=int(user_id),
+                level=str(result.get("level") or ""),
+                lesson_order=int(result.get("lesson_order") or 0), lesson=lesson,
+            )
+            result["lesson"] = with_lesson_plan(lesson, plan)
         return result
 
     async def _record_lesson_start(self, *, user_id: int, telegram_id: int | None, result: dict) -> None:
@@ -301,6 +315,8 @@ class AndroidCourseService(DesktopCourseService):
                 status_code=403,
                 detail=access,
             )
+        if not is_skip_test_part(level, lesson_order):
+            raise DesktopCourseError("course_lesson_not_unlocked", status_code=403)
         lesson = self._read_json(
             COURSE_V3_DATA_ROOT / level / f"lesson_{lesson_order:02d}.json",
             error_code="course_lesson_load_failed",

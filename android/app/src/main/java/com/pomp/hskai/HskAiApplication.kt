@@ -253,10 +253,14 @@ class HskAiApplication : Application() {
                 webClientId = BuildConfig.GOOGLE_WEB_CLIENT_ID,
             ),
             onSessionCleared = {
+                appSettings.clearLessonResumePositions()
+                appSettings.clearPaymentRegion()
                 runCatching { diagnostics.clearOwner() }
                 clearWidgetSession()
             },
             onSessionReplacing = {
+                appSettings.clearLessonResumePositions()
+                appSettings.clearPaymentRegion()
                 runCatching { diagnostics.clearOwner(keepPreSignIn = true) }
                 clearWidgetProjection()
             },
@@ -305,6 +309,9 @@ class HskAiApplication : Application() {
             ttsCache = ttsCache,
             bundledStrokes = bundledStrokes,
             cdnAudio = cdnWordAudio,
+            // UIUX-008: an emoji the system font cannot draw would be a blank
+            // or tofu card; that word is left out of the picture deck.
+            pictureDrawable = { emoji -> android.graphics.Paint().hasGlyph(emoji) },
         )
     }
 

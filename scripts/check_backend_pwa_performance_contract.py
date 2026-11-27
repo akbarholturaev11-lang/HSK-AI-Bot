@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""CI gate for persistent Backend / PWA performance acceptance.
+"""CI gate for persistent Backend / PWA / native Android performance acceptance.
 
 This guard checks policy links and whether changed implementation is accompanied
 by regression tests. It does NOT claim static checks prove latency, CLS or
@@ -40,6 +40,17 @@ def is_pwa_source(path: str) -> bool:
     )
 
 
+def is_android_source(path: str) -> bool:
+    return path.startswith("android/app/src/main/") and path.endswith(".kt")
+
+
+def is_android_regression_test(path: str) -> bool:
+    # JVM unit tests and Compose/instrumentation tests both count.
+    return path.startswith(("android/app/src/test/", "android/app/src/androidTest/")) and (
+        path.endswith("Test.kt")
+    )
+
+
 def is_regression_test(path: str) -> bool:
     return path.startswith("tests/") and Path(path).name.startswith("test_") and path.endswith(
         (".py", ".js", ".ts")
@@ -61,6 +72,7 @@ def change_issues(paths: list[str]) -> list[str]:
     backend = [p for p in paths if is_backend_source(p)]
     web = [p for p in paths if is_pwa_source(p)]
     tests = [p for p in paths if is_regression_test(p)]
+    android = [p for p in paths if is_android_source(p)]
     issues = []
     if backend and not tests:
         issues.append(
@@ -72,6 +84,12 @@ def change_issues(paths: list[str]) -> list[str]:
             "PWA/shared frontend implementation changed without a changed "
             "browser/PWA/course/UI regression test. Cover first paint, loading, "
             "error/retry or the relevant user flow."
+        )
+    if android and not any(is_android_regression_test(p) for p in paths):
+        issues.append(
+            "Android implementation changed without a changed android/app/src/"
+            "test or androidTest *Test.kt. Cover the affected screen state, "
+            "loading/error/offline path or back/scroll behaviour."
         )
     return issues
 
@@ -94,6 +112,8 @@ def policy_issues(root: Path) -> list[str]:
         "tests/e2e/test_pwa_progressive_sections.py",
         "tests/pwa_layout_geometry.py",
         "tests/test_pwa_layout_geometry.py",
+        # One gesture = one back step; dragged layers stay opaque.
+        "tests/e2e/test_pwa_swipe_back.py",
     ):
         if not (root / test).is_file():
             issues.append(f"Missing behavioral PWA regression: {test}")
@@ -135,7 +155,7 @@ def main() -> int:
         for message in issues:
             print(f"::error::{message}")
         return 1
-    print(f"Backend/PWA policy contract OK; examined {len(changed)} changed files.")
+    print(f"Backend/PWA/Android policy contract OK; examined {len(changed)} changed files.")
     print("NOTE: CI still requires behavioral tests and real-world performance evidence.")
     return 0
 

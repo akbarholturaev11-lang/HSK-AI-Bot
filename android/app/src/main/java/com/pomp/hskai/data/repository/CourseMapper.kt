@@ -161,6 +161,7 @@ object CourseMapper {
             lessonLimit = dto.lessonLimit?.let { limit ->
                 CourseLessonLimit(
                     allowed = limit.allowed,
+                    remaining = limit.remaining,
                     limitText = limit.limitText?.takeIf { it.isNotBlank() },
                     resetAt = limit.resetAt?.takeIf { it.isNotBlank() },
                 )

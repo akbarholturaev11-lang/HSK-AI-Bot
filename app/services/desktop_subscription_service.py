@@ -190,6 +190,7 @@ class DesktopSubscriptionService:
         access_token: str,
         *,
         entry_source: str | None = None,
+        provider_entry_id: int | None = None,
     ) -> dict[str, Any]:
         context = await self._context(access_token)
         mode = self._checkout_mode(entry_source=entry_source)
@@ -231,14 +232,25 @@ class DesktopSubscriptionService:
             }
         )
 
-        await SubscriptionEntryAnalyticsService(self.session).record_entry(
-            telegram_id=context.user.telegram_id,
-            user=context.user,
-            source=entry_source or self.source,
-            mode=mode,
-            # R3: route-owned Android namespace only; Desktop rows stay NULL (freeze).
-            client="android" if self.source == "android_subscription" else None,
+        entries = SubscriptionEntryAnalyticsService(self.session)
+        already_counted = (
+            self.source == "android_subscription"
+            and mode == DESKTOP_SUBSCRIPTION_MODE
+            and provider_entry_id is not None
+            and await entries.confirms_android_provider_entry(
+                entry_id=provider_entry_id, user_id=context.user.id,
+                source=entry_source or self.source,
+            )
         )
+        if not already_counted:
+            await entries.record_entry(
+                telegram_id=context.user.telegram_id,
+                user=context.user,
+                source=entry_source or self.source,
+                mode=mode,
+                # R3: route-owned Android namespace only; Desktop rows stay NULL (freeze).
+                client="android" if self.source == "android_subscription" else None,
+            )
 
         if result["checkout_allowed"]:
             attempt_id = self._attempt_id()

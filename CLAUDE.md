@@ -11,6 +11,7 @@ Read these existing root files before code changes:
 - `AGENTS.md`
 - `AI_RULES.md`
 - `PROJECT_MEMORY.md`
+- `NEXTATION.md` — read the owner-approved future-work queue at session start; only suggest open items when no current task is specified, and never implement one without owner approval.
 
 Read `CLAUDE.md` as Claude-specific guidance, plus the README and other docs
 relevant to the task. The repository's `AGENTS.md` defines the shared session
@@ -46,16 +47,6 @@ report impact, proposed patch, files and risk. For a small visual/copy-only fix
 use a focused source check and relevant screen smoke test instead of a full audit.
 An explicitly requested in-scope change needs no second approval; clarify only
 materially unresolved behavior, business policy or scope.
-
-Avoid awkward UI, unnecessary animation, random badges, confusing buttons, and
-decoration without a clear user benefit.
-
-Mini App changes must be:
-- clean
-- simple
-- modern
-- useful
-- consistent with existing design
 
 If uncertainty would materially change behavior, content, or scope and cannot
 be resolved from the request or existing code, ask. Otherwise proceed using the

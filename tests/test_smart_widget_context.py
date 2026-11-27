@@ -207,6 +207,14 @@ class WidgetSourceChecks:
         self.assertEqual(result["time_reason"],"observed_learning_interval_provisional")
         self.assertEqual(sum("FROM "+CourseXpEvent.__tablename__ in q for q in sql),1)
 
+    async def test_d35_default_time_keeps_the_installed_widget_contract(self):
+        async with self.sessions.begin() as s:
+            await s.execute(update(SmartReminderPreference).where(SmartReminderPreference.user_id == 1).values(
+                legacy_time_local=None))
+        result = await self.load()
+        self.assertEqual((result["time_source"], result["time_local"], result["phase"]),
+                         ("saved", "21:00", "before_study"))
+
     async def test_history_beyond_approved_extension_does_not_set_a_habit(self):
         for order,age in enumerate((91,92,93),1): await self.study(days_ago=age,order=order)
         result=await self.load()

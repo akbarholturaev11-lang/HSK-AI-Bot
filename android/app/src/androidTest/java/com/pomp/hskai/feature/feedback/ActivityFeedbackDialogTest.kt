@@ -22,6 +22,20 @@ class ActivityFeedbackDialogTest {
         assertEquals("useful",answer)
         compose.onNodeWithText(context.getString(R.string.hsk_course_pwa_feedback_liked_q)).assertDoesNotExist()
     }
+    @Test fun rewardIsVisibleAndNotNowReplacesCloseWithoutLosingOther() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        var dismissed = false
+        val prompt = ActivityFeedbackPrompt(9, choices = FeedbackChoices(
+            liked = listOf(FeedbackOption("other","Other"))),
+            reward_hint = "30 minutes Pro", dismiss_label = "Not now")
+        compose.setContent { PompHskAiTheme { ActivityFeedbackDialog(ActivityFeedbackState(prompt=prompt),
+            onAnswer={},onNext={},onBack={},onClose={dismissed=true}) } }
+        compose.onNodeWithText("30 minutes Pro").assertIsDisplayed()
+        compose.onNodeWithText("Other").assertIsDisplayed()
+        compose.onNodeWithContentDescription(context.getString(R.string.hsk_common_action_close)).assertDoesNotExist()
+        compose.onNodeWithText("Not now").performClick()
+        assertEquals(true,dismissed)
+    }
     @Test fun requiredCommentDoesNotRepeatTheHeadingAsFieldLabel() {
         val context=InstrumentationRegistry.getInstrumentation().targetContext
         val prompt=ActivityFeedbackPrompt(8,choices=FeedbackChoices(liked=listOf(FeedbackOption("other","Other"))))

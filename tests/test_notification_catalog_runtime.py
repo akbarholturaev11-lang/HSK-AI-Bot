@@ -1,4 +1,5 @@
 """Local notification adoption preserves custom copy and delivery contracts."""
+import re
 from types import SimpleNamespace
 import unittest
 from unittest.mock import AsyncMock, patch
@@ -44,9 +45,10 @@ class NotificationCanonicalRuntimeTests(unittest.IsolatedAsyncioTestCase):
         with patch.dict(NOTIFICATION_MESSAGES["uz"], {"reminder.default.daily_goal": "QA default"}):
             result = await service.resolve("daily_goal", "uz")
             self.assertEqual(result, {"text": "authored by admin", "media_type": "photo",
-                                      "media_path": "existing-image.png"})
+                                      "media_path": "existing-image.png", "custom": True})
             service._get_row.return_value.text_uz = ""
             self.assertEqual((await service.resolve("daily_goal", "uz"))["text"], "QA default")
+            self.assertFalse((await service.resolve("daily_goal", "uz"))["custom"])
             service._get_row.return_value.enabled = False
             self.assertIsNone(await service.resolve("daily_goal", "uz"))
 
@@ -68,6 +70,33 @@ class NotificationCanonicalRuntimeTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(notification_message("reminder.continueLessonNumber", "uz", lesson=7),
                          "▶️ Davom etish · 7-dars")
         self.assertIn("{lesson}", notification_message("reminder.continueLessonNumber", "uz"))
+
+
+class SmartMessageCatalogTests(unittest.TestCase):
+    def test_smart_library_is_complete_unique_safe_and_fits_every_channel(self):
+        from app.services.smart_reminder_messages import BODY_MAX, POOLS, TITLE_MAX
+        expected = {f"smart.msg.{pool}.v{n}.{part}" for pool, size in POOLS.items()
+                    for n in range(1, size + 1) for part in ("title", "body")}
+        for lang in ("uz", "ru", "tj"):
+            with self.subTest(lang=lang):
+                catalog = NOTIFICATION_MESSAGES[lang]
+                self.assertEqual({k for k in catalog if k.startswith("smart.msg.")}, expected)
+                for part in ("title", "body"):
+                    texts = [catalog[k] for k in expected if k.endswith("." + part)]
+                    self.assertEqual(len(set(texts)), len(texts), "every variant must be unique")
+        for key in sorted(expected):
+            allowed = {"lesson", "streak"} if key.startswith("smart.msg.streak.") else {"lesson"}
+            limit = TITLE_MAX if key.endswith(".title") else BODY_MAX
+            fields = {frozenset(re.findall(r"\{([^{}]*)\}", NOTIFICATION_MESSAGES[lang][key]))
+                      for lang in ("uz", "ru", "tj")}
+            with self.subTest(key=key):
+                self.assertEqual(len(fields), 1, "placeholders differ between languages")
+                self.assertLessEqual(set(next(iter(fields))), allowed)
+                for lang in ("uz", "ru", "tj"):
+                    text = NOTIFICATION_MESSAGES[lang][key]
+                    self.assertTrue(text.strip())
+                    self.assertLessEqual(len(text), limit)
+                    self.assertNotRegex(text, "[<>&]")  # Telegram HTML and push stay plain
 
 
 if __name__ == "__main__":

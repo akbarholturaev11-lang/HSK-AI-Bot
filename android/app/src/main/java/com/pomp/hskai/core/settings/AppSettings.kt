@@ -13,6 +13,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import java.util.concurrent.atomic.AtomicLong
 
 private val Context.settingsDataStore: DataStore<Preferences> by preferencesDataStore(
     name = "pomp_settings",
@@ -103,6 +104,31 @@ object DailyGoal {
 }
 
 class AppSettings(context: Context) : LessonResumeStore {
+    private val lessonResumeGeneration = AtomicLong()
+
+    /** A lesson opened by an old login cannot read, write or clear the next login's position. */
+    fun sessionLessonResumeStore(): LessonResumeStore {
+        val generation = lessonResumeGeneration.get()
+        return object : LessonResumeStore {
+            override suspend fun lessonResumeIndex(level: String, order: Int) = lessonResumePoint(level, order).index
+            override suspend fun lessonResumePoint(level: String, order: Int): LessonResumePoint =
+                this@AppSettings.lessonResumePoint(level, order)
+                    .takeIf { generation == lessonResumeGeneration.get() } ?: LessonResumePoint(0)
+            override suspend fun setLessonResumeIndex(level: String, order: Int, index: Int) =
+                setLessonResumePoint(level, order, LessonResumePoint(index))
+            override suspend fun setLessonResumePoint(level: String, order: Int, point: LessonResumePoint) =
+                writeLessonResumePoint(level, order, point, generation)
+            override suspend fun clearLessonResume(level: String, order: Int) =
+                clearLessonResumePoint(level, order, generation)
+        }
+    }
+
+    suspend fun clearLessonResumePositions() {
+        lessonResumeGeneration.incrementAndGet()
+        appContext.settingsDataStore.edit { prefs ->
+            prefs.asMap().keys.filter { it.name.startsWith("lesson_resume_") }.forEach { prefs.remove(it) }
+        }
+    }
 
     private val appContext = context.applicationContext
 
@@ -197,6 +223,20 @@ class AppSettings(context: Context) : LessonResumeStore {
      * plans instead of asking again. It belongs to the account, so logout
      * clears it like the other account-local values.
      */
+    /** Atomically claim a server-issued, account-bound expiry period on this install. */
+    suspend fun claimProExpiryNotice(token: String): Boolean {
+        if (!token.matches(Regex("[a-f0-9]{64}"))) return false
+        var claimed = false
+        appContext.settingsDataStore.edit { prefs ->
+            val seen = prefs[PRO_EXPIRY_SEEN_KEY].orEmpty()
+            if (token !in seen) {
+                prefs[PRO_EXPIRY_SEEN_KEY] = seen.take(63).toSet() + token
+                claimed = true
+            }
+        }
+        return claimed
+    }
+
     suspend fun paymentRegion(): String? =
         appContext.settingsDataStore.data.first()[PAYMENT_REGION_KEY]
 
@@ -316,23 +356,39 @@ class AppSettings(context: Context) : LessonResumeStore {
      * is the fastest way to lose someone, so the position is kept for a week
      * and then forgotten, exactly as the Mini App forgets it.
      */
-    override suspend fun lessonResumeIndex(level: String, order: Int): Int {
+    override suspend fun lessonResumeIndex(level: String, order: Int): Int = lessonResumePoint(level, order).index
+
+    override suspend fun lessonResumePoint(level: String, order: Int): LessonResumePoint {
         val prefs = appContext.settingsDataStore.data.first()
-        val savedAt = prefs[resumeAtKey(level, order)] ?: return 0
-        if (System.currentTimeMillis() - savedAt > LESSON_RESUME_TTL_MILLIS) return 0
-        return (prefs[resumeIndexKey(level, order)] ?: 0).coerceAtLeast(0)
+        val savedAt = prefs[resumeAtKey(level, order)] ?: return LessonResumePoint(0)
+        if (System.currentTimeMillis() - savedAt > LESSON_RESUME_TTL_MILLIS) return LessonResumePoint(0)
+        return LessonResumePoint((prefs[resumeIndexKey(level, order)] ?: 0).coerceAtLeast(0),
+            prefs[resumeRefKey(level, order)])
     }
 
-    override suspend fun setLessonResumeIndex(level: String, order: Int, index: Int) {
+    override suspend fun setLessonResumeIndex(level: String, order: Int, index: Int) =
+        setLessonResumePoint(level, order, LessonResumePoint(index))
+
+    override suspend fun setLessonResumePoint(level: String, order: Int, point: LessonResumePoint) =
+        writeLessonResumePoint(level, order, point, null)
+
+    private suspend fun writeLessonResumePoint(level: String, order: Int, point: LessonResumePoint, generation: Long?) {
         appContext.settingsDataStore.edit {
-            it[resumeIndexKey(level, order)] = index.coerceAtLeast(0)
+            if (generation != null && generation != lessonResumeGeneration.get()) return@edit
+            it[resumeIndexKey(level, order)] = point.index.coerceAtLeast(0)
+            if (point.materialRef == null) it.remove(resumeRefKey(level, order))
+            else it[resumeRefKey(level, order)] = point.materialRef
             it[resumeAtKey(level, order)] = System.currentTimeMillis()
         }
     }
 
-    override suspend fun clearLessonResume(level: String, order: Int) {
+    override suspend fun clearLessonResume(level: String, order: Int) = clearLessonResumePoint(level, order, null)
+
+    private suspend fun clearLessonResumePoint(level: String, order: Int, generation: Long?) {
         appContext.settingsDataStore.edit {
+            if (generation != null && generation != lessonResumeGeneration.get()) return@edit
             it.remove(resumeIndexKey(level, order))
+            it.remove(resumeRefKey(level, order))
             it.remove(resumeAtKey(level, order))
         }
     }
@@ -349,6 +405,9 @@ class AppSettings(context: Context) : LessonResumeStore {
     private fun resumeAtKey(level: String, order: Int) =
         longPreferencesKey("lesson_resume_at:v2:${level.lowercase()}:$order")
 
+    private fun resumeRefKey(level: String, order: Int) =
+        stringPreferencesKey("lesson_resume_ref:v1:${level.lowercase()}:$order")
+
     private companion object {
         /** The Mini App's `LESSON_RESUME_TTL_MS`. */
         const val LESSON_RESUME_TTL_MILLIS = 7L * 24 * 60 * 60 * 1000
@@ -364,6 +423,7 @@ class AppSettings(context: Context) : LessonResumeStore {
         val VOICE_V8_BACKDROP_KEY = booleanPreferencesKey("hsk_voice_backdrop")
         val NOTIFICATION_PRIMER_SEEN_KEY = booleanPreferencesKey("notification_primer_seen")
         val ADS_UNLOCKED_AFTER_LIMIT_KEY = booleanPreferencesKey("ads_unlocked_after_limit:v1")
+        val PRO_EXPIRY_SEEN_KEY = stringSetPreferencesKey("pro_expiry_seen:v1")
         val PAYMENT_REGION_KEY = stringPreferencesKey("payment_region:v1")
         val SUBSCRIPTION_DISPLAY_CURRENCY_KEY = stringPreferencesKey("subscription_display_currency:v1")
         val DICTIONARY_HISTORY_KEY = stringPreferencesKey("dictionary_history:v1")

@@ -7,6 +7,7 @@ import com.pomp.hskai.data.api.AndroidSubscriptionCurrencyPreferenceRequest
 import com.pomp.hskai.data.api.AndroidSubscriptionCurrencyPreferenceResponse
 import com.pomp.hskai.data.api.SubscriptionCheckoutOverviewDto
 import com.pomp.hskai.data.api.SubscriptionPriceDto
+import com.pomp.hskai.data.api.SubscriptionCardPriceDto
 import com.pomp.hskai.data.repository.FeatureRepository
 import java.lang.reflect.Proxy
 import kotlinx.coroutines.Dispatchers
@@ -30,6 +31,7 @@ class SubscriptionCheckoutCurrencyTest {
     private val dispatcher = StandardTestDispatcher()
     private val origins = mutableListOf<String>()
     private val overviews = ArrayDeque<Response<SubscriptionCheckoutOverviewDto>>()
+    private var currencyWrites = 0
     private val subscriptionPrices = prices("1_month", "RUB")
 
     @Before
@@ -49,6 +51,7 @@ class SubscriptionCheckoutCurrencyTest {
         preferredCurrency = currency,
         displayCurrency = currency,
         prices = prices(if (mode == "hsk30_unlock") mode else "1_month", currency),
+        cardPrices = if (mode == "subscription") mapOf("ru" to mapOf("1_month" to SubscriptionCardPriceDto(finalAmount = "800", baseAmount = "900", currency = "RUB"))) else emptyMap(),
     )
 
     private fun model(origin: String, savedRegion: String? = null): SubscriptionCheckoutViewModel {
@@ -63,6 +66,7 @@ class SubscriptionCheckoutCurrencyTest {
                     overviews.removeFirst()
                 }
                 "updateSubscriptionCurrencyPreference" -> {
+                    currencyWrites++
                     assertEquals("RUB", (args[1] as AndroidSubscriptionCurrencyPreferenceRequest).currency)
                     Response.success(AndroidSubscriptionCurrencyPreferenceResponse(
                         ok = true, currency = "RUB", displayCurrency = "RUB", prices = subscriptionPrices,
@@ -118,7 +122,7 @@ class SubscriptionCheckoutCurrencyTest {
     }
 
     @Test
-    fun `remembered country needs no new prompt and reconciles old currency automatically`() = runTest(dispatcher) {
+    fun `remembered country needs no prompt or currency write`() = runTest(dispatcher) {
         overviews.add(Response.success(overview("subscription", "TJS")))
         val model = model("profile_subscription", savedRegion = "ru")
         model.load()
@@ -128,8 +132,10 @@ class SubscriptionCheckoutCurrencyTest {
         assertFalse(model.state.value.regionDialogOpen)
         assertFalse(model.state.value.currencyDialogOpen)
         assertEquals("ru", model.state.value.region)
-        assertEquals("RUB", model.state.value.overview!!.preferredCurrency)
-        assertEquals("RUB", model.state.value.overview!!.displayCurrency)
+        assertEquals("TJS", model.state.value.overview!!.preferredCurrency)
+        assertTrue(model.state.value.regionalPriceReady())
+        assertEquals(0, currencyWrites)
+        assertEquals(listOf("profile_subscription"), origins)
     }
 
     @Test
@@ -143,8 +149,11 @@ class SubscriptionCheckoutCurrencyTest {
 
         assertEquals(listOf("profile_subscription"), origins)
         assertFalse(model.state.value.isHsk30Unlock)
-        assertEquals(subscriptionPrices, model.state.value.overview!!.prices)
-        assertEquals("RUB", model.state.value.overview!!.preferredCurrency)
+        assertEquals("ru", model.state.value.region)
+        assertEquals("800", model.state.value.overview!!.cardPrices["ru"]?.get("1_month")?.finalAmount)
+        assertTrue(model.state.value.regionalPriceReady())
+        assertEquals(0, currencyWrites)
+        assertEquals("TJS", model.state.value.overview!!.preferredCurrency)
         assertFalse(model.state.value.currencySaving)
     }
 }

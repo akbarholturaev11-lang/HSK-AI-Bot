@@ -40,6 +40,7 @@ class LavaStartBody(BaseModel):
     model_config = ConfigDict(extra="forbid")
     plan_type: str = Field(max_length=16)
     email: str = Field(max_length=254)
+    currency: Literal["USD", "RUB"] | None = None
     language: str | None = Field(default=None, max_length=8)
     # Checkout context; the server re-resolves any discount itself.
     mode: str | None = Field(default=None, max_length=32)
@@ -142,7 +143,7 @@ def create_lava_router(*, runtime_getter, session_factory, settings_obj) -> APIR
             context_mode=data.mode, campaign_id=data.campaign_id, feedback_id=data.feedback_id,
             analytics_attempt_id=data.attempt_id if is_inline else None,
             analytics_source=data.ui_source if is_inline else None,
-            pwa_inline_return=is_inline,
+            pwa_inline_return=is_inline, currency=data.currency,
         )
         if is_inline and result.get("ok"):
             from app.services.conversion_funnel_service import ConversionFunnelService
@@ -316,15 +317,18 @@ def create_lava_router(*, runtime_getter, session_factory, settings_obj) -> APIR
                 ).limit(1))
                 if block is None and (pending_id or uncertain):
                     block = {"mode": "manual_only", "plans": [], "subscription": None}
+                provider_entry_id = None
                 if block is not None:
                     block["pending_checkout_id"] = pending_id
                     if uncertain:
                         block["blocked_reason"] = "checkout_needs_review"
                     from app.services.subscription_entry_analytics_service import SubscriptionEntryAnalyticsService
-                    await SubscriptionEntryAnalyticsService(db).record_entry(
+                    entry = await SubscriptionEntryAnalyticsService(db).record_entry(
                         user=user, source=ANDROID_CHECKOUT_ORIGIN_SOURCES.get(data.origin, "android_subscription"),
-                        mode=data.mode, payment_method="lava", client="android")
-            return JSONResponse({"ok": True, "lava": block}, headers=_NO_STORE)
+                        mode=data.mode, payment_method="lava", client="android", return_entry_id=True)
+                    if type(entry) is int and entry > 0 and data.mode == "subscription":
+                        provider_entry_id = entry
+            return JSONResponse({"ok": True, "lava": block, "provider_entry_id": provider_entry_id}, headers=_NO_STORE)
         except LavaCheckoutError as exc:
             return _checkout_error(exc)
 

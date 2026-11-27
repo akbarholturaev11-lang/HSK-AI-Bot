@@ -2,7 +2,7 @@
 import unittest
 import os
 import tempfile
-from datetime import time, timedelta
+from datetime import date, time, timedelta
 from functools import partial
 from types import SimpleNamespace
 from urllib.parse import parse_qs, urlsplit
@@ -15,11 +15,16 @@ from app.db.models.notification_template import NotificationTemplate
 from app.db.models.user import User
 from app.db.models.smart_reminder import SmartReminderPreference
 from app.services.course_notification_service import CourseNotificationService
-from app.services.notification_template_service import KEY_SMART_STUDY, default_text
+from app.services.notification_i18n import notification_message
+from app.services.notification_template_service import KEY_SMART_STUDY
+from app.services.smart_reminder_messages import is_key, library_text
 from app.services.smart_reminder_preferences import SmartReminderError, SmartReminderPreferencesService
 from app.services.smart_reminder_shadow_queue import ATTEMPT, JOB
 from app.services.smart_reminder_telegram_content import render_telegram_content, send_telegram_content
 from tests.test_smart_reminder_telegram import TelegramChecks
+
+JOB_ROW = {"id": "00000000-0000-4000-8000-000000000001", "local_day": date(2026, 11, 22),
+           "course_key": "hsk1", "lesson_order": 5}
 
 
 class ContentChecks:
@@ -84,7 +89,9 @@ class ContentChecks:
         self.assertEqual(result.state, "provider_accepted")
         sent = self.bot.send_message.call_args.kwargs
         self.assertEqual(sent["chat_id"], 3001)
-        self.assertEqual(sent["text"], default_text(KEY_SMART_STUDY, "tj").format(lesson=5))
+        key = (await self.rows(JOB))[0]["content_key"]
+        self.assertTrue(is_key(key))
+        self.assertEqual(sent["text"], library_text(key, "tj", streak=0).format(lesson=5))
         query = parse_qs(urlsplit(sent["reply_markup"].inline_keyboard[0][0].web_app.url).query)
         self.assertEqual({k: query[k] for k in ("lesson", "level", "lang", "source")},
                          {"lesson": ["5"], "level": ["hsk1"], "lang": ["tj"], "source": [KEY_SMART_STUDY]})
@@ -95,7 +102,9 @@ class ContentChecks:
                 feed = await CourseNotificationService(s).list_for_user(user)
                 self.assertEqual(len(feed), 1)
                 self.assertEqual((feed[0]["action"], feed[0]["level"], feed[0]["lesson_order"]), ("course", "hsk1", 5))
-                self.assertIn("5", feed[0]["body"])
+                # The same variant follows the reader's language switch (D33).
+                self.assertIn(notification_message(f"smart.msg.{key}.body", lang, lesson=5, streak=0),
+                              feed[0]["body"])
                 self.assertNotIn("<b>", feed[0]["body"])
         await self.dispatch(lease)
         self.assertEqual(self.bot.send_message.await_count, 1)
@@ -103,7 +112,8 @@ class ContentChecks:
             rows = (await s.scalars(select(CourseUserNotification))).all()
             self.assertEqual(len(rows), 1)
             self.assertEqual(rows[0].dedupe_key, "job:"+lease.job_id)
-            self.assertEqual(rows[0].params, {"template_service": KEY_SMART_STUDY, "lesson": 5})
+            self.assertEqual(rows[0].params, {"template_service": KEY_SMART_STUDY, "lesson": 5,
+                                              "content_key": key, "streak": 0})
 
     async def test_admin_custom_copy_and_all_canonical_languages_use_real_consumer(self):
         async with self.sessions.begin() as s:
@@ -112,9 +122,13 @@ class ContentChecks:
             async with self.sessions.begin() as s:
                 await SmartReminderPreferencesService(s).read(self.actor)
                 await s.execute(update(User).where(User.id == 1).values(language=lang))
-                result = await render_telegram_content(s, self.actor, {"course_key": "hsk1", "lesson_order": 5})
-                expected = "<b>Админ 5</b>" if lang == "ru" else default_text(KEY_SMART_STUDY, lang).format(lesson=5)
-                self.assertEqual(result.text, expected)
+                result = await render_telegram_content(s, self.actor, JOB_ROW)
+                if lang == "ru":  # Admin custom text wins and names no variant.
+                    self.assertEqual((result.text, result.content_key), ("<b>Админ 5</b>", None))
+                else:
+                    self.assertTrue(is_key(result.content_key))
+                    self.assertEqual(result.text, library_text(result.content_key, lang,
+                                                               streak=result.streak).format(lesson=5))
 
     async def test_disabled_template_after_claim_cancels_prepared_without_transport(self):
         lease = await self.planned()
@@ -137,7 +151,7 @@ class ContentChecks:
                     row.text_ru = text;row.media_type = media_type;row.media_path = media_path
                     await s.execute(update(User).where(User.id == 1).values(language="ru"));await s.flush()
                     with self.assertRaises(SmartReminderError) as error:
-                        await render_telegram_content(s, self.actor, {"course_key": "hsk1", "lesson_order": 5})
+                        await render_telegram_content(s, self.actor, JOB_ROW)
                     self.assertEqual(error.exception.code, "telegram_template_invalid")
         self.bot.send_message.assert_not_called()
 
@@ -148,13 +162,13 @@ class ContentChecks:
             with self.subTest(url=url), patch.object(course_miniapp.settings, "MINI_APP_BASE_URL", url):
                 async with self.sessions.begin() as s:
                     with self.assertRaises(SmartReminderError) as error:
-                        await render_telegram_content(s, self.actor, {"course_key": "hsk1", "lesson_order": 5})
+                        await render_telegram_content(s, self.actor, JOB_ROW)
                     self.assertEqual(error.exception.code, "telegram_content_target_invalid")
 
     async def test_expired_lease_during_render_never_starts_io(self):
         lease = await self.planned()
-        async def late(*args):
-            content = await render_telegram_content(*args)
+        async def late(*args, **kwargs):
+            content = await render_telegram_content(*args, **kwargs)
             self.tick += timedelta(minutes=1)
             return content
         with patch("app.services.smart_reminder_telegram.render_telegram_content", side_effect=late):
@@ -171,8 +185,8 @@ class ContentChecks:
         self.tick = self.tick.replace(hour=14)
         lease = await self.claim(planned.job_id, lease_for=timedelta(minutes=5))
         self.assertEqual(lease.reason, "telegram_claimed")
-        async def late(*args):
-            content = await render_telegram_content(*args)
+        async def late(*args, **kwargs):
+            content = await render_telegram_content(*args, **kwargs)
             self.tick += timedelta(minutes=2)
             return content
         with patch("app.services.smart_reminder_telegram.render_telegram_content", side_effect=late):

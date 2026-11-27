@@ -276,6 +276,12 @@
     <string name="hsk_course_later" formatted="false">Дертар</string>
     <string name="hsk_course_league" formatted="false">Лигаи 朱雀</string>
     <string name="hsk_course_learner" formatted="false">донишҷӯ</string>
+    <string name="hsk_course_learning_pro_lesson" formatted="false">Бо Pro дарсҳои HSK-ро идома диҳед.</string>
+    <string name="hsk_course_learning_pro_mistakes" formatted="false">Бо Pro аз рӯйи хатоҳоятон боз машқ кунед.</string>
+    <string name="hsk_course_learning_result_continue" formatted="false">Идомаи омӯзиш</string>
+    <string name="hsk_course_learning_result_next_hint" formatted="false">Машқи навбатиро дар нақшаи имрӯз ёбед.</string>
+    <string name="hsk_course_learning_result_review" formatted="false">Барои такрор</string>
+    <string name="hsk_course_learning_result_review_hint" formatted="false">Дар бахши «Хатоҳои ман» машқ кунед.</string>
     <string name="hsk_course_lesson_done" formatted="false">Дарс анҷом ёфт!</string>
     <string name="hsk_course_lesson_done_sub" formatted="false">Офарин! Зинаи навбатӣ интизор аст.</string>
     <string name="hsk_course_lesson_flow_choose_hanzi_question" formatted="false">Иероглифро интихоб кунед</string>
@@ -516,6 +522,8 @@
     <string name="hsk_course_part_sections_x" formatted="false">Такрори омехта</string>
     <string name="hsk_course_pay_sub" formatted="false">Тамоми роҳи HSK</string>
     <string name="hsk_course_pay_title" formatted="false">HSK AI Pro</string>
+    <string name="hsk_course_picture_review_label" formatted="false">Такрор бо расм</string>
+    <string name="hsk_course_picture_review_title" formatted="false">Ба расм нигоҳ кунед ва ба хитоӣ гӯед</string>
     <string name="hsk_course_pinyin_settings_all" formatted="false">Дар ҳама ҷо нишон додан</string>
     <string name="hsk_course_pinyin_settings_h" formatted="false">Пиньин (талаффуз)</string>
     <string name="hsk_course_pinyin_settings_nw" formatted="false">Танҳо дар калимаҳои нав</string>
@@ -535,6 +543,10 @@
     <string name="hsk_course_practice_gate_error_body" formatted="false">Дастрасӣ санҷида нашуд. Интернетро санҷед ва боз кӯшиш кунед.</string>
     <string name="hsk_course_practice_gate_error_retry" formatted="false">Боз кӯшиш кардан</string>
     <string name="hsk_course_premium" formatted="false">HSK AI Pro</string>
+    <string name="hsk_course_pro_expiry_body" formatted="false">Мехоҳед дастрасии бемаҳдудро баргардонед?</string>
+    <string name="hsk_course_pro_expiry_limited" formatted="false">АЗ ДАСТ ДОДАНИ ДАСТРАСИИ БЕМАҲДУД</string>
+    <string name="hsk_course_pro_expiry_restore" formatted="false">БАРҚАРОР КАРДАНИ PRO</string>
+    <string name="hsk_course_pro_expiry_title" formatted="false">Муҳлати обунаи HSK AI Pro ба охир расид.</string>
     <string name="hsk_course_profile_answers" formatted="false">ҷавоби арзёбишуда</string>
     <string name="hsk_course_profile_free" formatted="false">Ройгон</string>
     <string name="hsk_course_profile_note" formatted="false">Танҳо ҷавобҳои санҷидашуда · маълумоти кӯҳна метавонад нопурра бошад</string>
@@ -585,6 +597,38 @@
     <string name="hsk_course_pwa_profile_edit" formatted="false">Таҳрири профил</string>
     <string name="hsk_course_pwa_profile_name" formatted="false">Ном</string>
     <string name="hsk_course_pwa_profile_save" formatted="false">Нигоҳ доштан</string>
+    <string name="hsk_course_pwa_progress_back" formatted="false">Бозгашт</string>
+    <string name="hsk_course_pwa_progress_calendar" formatted="false">Фаъолияти моҳ</string>
+    <string name="hsk_course_pwa_progress_change" formatted="false">Тағйири ҳадаф</string>
+    <string name="hsk_course_pwa_progress_choose" formatted="false">Ҳадафро интихоб кунед</string>
+    <string name="hsk_course_pwa_progress_continue" formatted="false">Идома додани омӯзиш</string>
+    <string name="hsk_course_pwa_progress_daily" formatted="false">Ҳадафи ҳаррӯза</string>
+    <string name="hsk_course_pwa_progress_day_few" formatted="false">рӯз</string>
+    <string name="hsk_course_pwa_progress_day_many" formatted="false">рӯз</string>
+    <string name="hsk_course_pwa_progress_day_one" formatted="false">рӯз</string>
+    <string name="hsk_course_pwa_progress_days" formatted="false">рӯз</string>
+    <string name="hsk_course_pwa_progress_earned" formatted="false">XP аз куҷо меояд?</string>
+    <string name="hsk_course_pwa_progress_goal" formatted="false">Ҳадафи шахсӣ</string>
+    <string name="hsk_course_pwa_progress_left" formatted="false">То ҳадаф {count} {unit} мондааст</string>
+    <string name="hsk_course_pwa_progress_legend_future" formatted="false">Рӯзи оянда</string>
+    <string name="hsk_course_pwa_progress_legend_no" formatted="false">Бе машғулият</string>
+    <string name="hsk_course_pwa_progress_legend_other" formatted="false">Маълумот нест</string>
+    <string name="hsk_course_pwa_progress_legend_today" formatted="false">Имрӯз</string>
+    <string name="hsk_course_pwa_progress_legend_yes" formatted="false">Рӯзи фаъол</string>
+    <string name="hsk_course_pwa_progress_lesson" formatted="false">Дарсҳо ва супоришҳои санҷидашуда</string>
+    <string name="hsk_course_pwa_progress_nohistory" formatted="false">Таърихи XP ҳоло дастрас нест</string>
+    <string name="hsk_course_pwa_progress_other" formatted="false">Машқҳо ва санҷишҳо</string>
+    <string name="hsk_course_pwa_progress_record" formatted="false">Рекорд</string>
+    <string name="hsk_course_pwa_progress_retry" formatted="false">Такрор</string>
+    <string name="hsk_course_pwa_progress_save" formatted="false">Захира мешавад…</string>
+    <string name="hsk_course_pwa_progress_save_error" formatted="false">Ҳадаф захира нашуд</string>
+    <string name="hsk_course_pwa_progress_streak" formatted="false">Рӯзҳои пайдарпай</string>
+    <string name="hsk_course_pwa_progress_today" formatted="false">Имрӯз</string>
+    <string name="hsk_course_pwa_progress_total" formatted="false">Ҳамаи XP</string>
+    <string name="hsk_course_pwa_progress_unavailable" formatted="false">Маълумоти омӯзиш ҳанӯз бор нашудааст</string>
+    <string name="hsk_course_pwa_progress_unknown" formatted="false">Маълумоти рӯзҳои дигари моҳ дастрас нест</string>
+    <string name="hsk_course_pwa_progress_week" formatted="false">Ҳафтаи ҷорӣ</string>
+    <string name="hsk_course_pwa_progress_xp" formatted="false">Таҷрибаи XP</string>
     <string name="hsk_course_pwa_settings_account_notices" formatted="false">Пардохт ва ҳисоб</string>
     <string name="hsk_course_pwa_settings_always_on" formatted="false">Ҳамеша фаъол</string>
     <string name="hsk_course_pwa_settings_daily_time" formatted="false">Вақт дар як рӯз</string>
@@ -627,10 +671,13 @@
     <string name="hsk_course_rating_write_title" formatted="false">Навиштан</string>
     <string name="hsk_course_ready_phrases" formatted="false">Ибораҳои омода</string>
     <string name="hsk_course_ready_phrases_all" formatted="false">Ҳама</string>
+    <string name="hsk_course_ready_phrases_collapse" formatted="false">Пӯшидани ибора</string>
     <string name="hsk_course_ready_phrases_copied" formatted="false">Нусха бардошта шуд</string>
     <string name="hsk_course_ready_phrases_copy" formatted="false">Нусха бардоштан</string>
     <string name="hsk_course_ready_phrases_count" formatted="false">{shown} аз {total} ҷумла</string>
     <string name="hsk_course_ready_phrases_empty" formatted="false">Барои ин ҷустуҷӯ ҷумла ёфт нашуд. Калимаи дигарро ҷӯед.</string>
+    <string name="hsk_course_ready_phrases_expand" formatted="false">Кушодани ибора</string>
+    <string name="hsk_course_ready_phrases_listen" formatted="false">Шунидани ибора</string>
     <string name="hsk_course_ready_phrases_load_error" formatted="false">Ибораҳо бор нашуданд. Ба интернет пайваст шуда, боз кӯшиш кунед.</string>
     <string name="hsk_course_ready_phrases_no_saved" formatted="false">Ибораҳои нигоҳдоштаатон дар ин ҷо намоиш мешаванд.</string>
     <string name="hsk_course_ready_phrases_removed" formatted="false">Аз нигоҳдоштаҳо бардошта шуд</string>
@@ -639,6 +686,7 @@
     <string name="hsk_course_ready_phrases_saved" formatted="false">Нигоҳдоштаҳо</string>
     <string name="hsk_course_ready_phrases_saved_one" formatted="false">Нигоҳ дошта шуд</string>
     <string name="hsk_course_ready_phrases_search" formatted="false">Ҷустуҷӯ бо чинӣ, пинйин ё тарҷума</string>
+    <string name="hsk_course_ready_phrases_sound_error" formatted="false">Овоз пахш нашуд. Боз кӯшиш кунед.</string>
     <string name="hsk_course_ready_phrases_storage_error" formatted="false">Захира карда нашуд. Танзимоти телефонро санҷед.</string>
     <string name="hsk_course_ready_phrases_title" formatted="false">Ибораҳои омода</string>
     <string name="hsk_course_ready_phrases_sub" formatted="false">Ҷумлаҳои чинӣ барои ҳар рӯз</string>

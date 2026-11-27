@@ -303,11 +303,11 @@ fun SectionLimitOverlay(
 
 private fun limitOfferCopy(sourceKey: String): Pair<Int, Int> = when {
     sourceKey.contains("voice") -> R.string.limit_sheet_voice_title to R.string.limit_sheet_voice_desc
-    sourceKey.contains("mistake") -> R.string.limit_sheet_mistakes_title to R.string.limit_sheet_mistakes_desc
+    sourceKey.contains("mistake") -> R.string.limit_sheet_mistakes_title to R.string.hsk_course_learning_pro_mistakes
     sourceKey.contains("mock") || sourceKey.contains("test") || sourceKey.contains("placement") ->
         R.string.limit_sheet_test_title to R.string.limit_sheet_test_desc
     sourceKey.contains("course") || sourceKey.contains("lesson") ->
-        R.string.limit_sheet_lesson_title to R.string.limit_sheet_lesson_desc
+        R.string.limit_sheet_lesson_title to R.string.hsk_course_learning_pro_lesson
     sourceKey.contains("pronunc") ->
         R.string.limit_sheet_pron_title to R.string.limit_sheet_pron_desc
     sourceKey.contains("recognition") ->

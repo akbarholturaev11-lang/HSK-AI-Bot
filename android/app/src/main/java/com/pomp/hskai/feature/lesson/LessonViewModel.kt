@@ -11,10 +11,12 @@ import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.core.settings.LessonResumeStore
+import com.pomp.hskai.core.settings.LessonResumePoint
 import com.pomp.hskai.data.api.AdaptiveAnswerResponseDto
 import com.pomp.hskai.data.api.AdaptiveItemDto
 import com.pomp.hskai.data.api.AdaptivePlanDto
 import com.pomp.hskai.data.api.CourseCompleteResponse
+import com.pomp.hskai.data.api.CourseLearningReviewDto
 import com.pomp.hskai.data.api.CourseGamificationDto
 import com.pomp.hskai.data.api.CourseMistakeDto
 import com.pomp.hskai.data.api.RatingResponse
@@ -22,9 +24,11 @@ import com.pomp.hskai.data.api.VoicePronounceResponse
 import com.pomp.hskai.data.repository.AdaptiveAnswerOutcome
 import com.pomp.hskai.data.repository.AdaptiveLessonRepository
 import com.pomp.hskai.data.repository.CourseRepository
+import com.pomp.hskai.data.repository.LessonSnapshot
 import com.pomp.hskai.data.repository.MISTAKE_REVIEW_FORMATS
 import com.pomp.hskai.data.repository.FeatureRepository
 import com.pomp.hskai.domain.model.ChoiceCard
+import com.pomp.hskai.domain.model.PictureReviewCard
 import com.pomp.hskai.domain.model.PronunciationCard
 import com.pomp.hskai.domain.model.NewWordCard
 import com.pomp.hskai.domain.model.ChoiceKind
@@ -156,6 +160,7 @@ sealed interface LessonOutcome {
         val rankAfter: Int = 0,
         /** Wall-clock seconds spent in the deck, measured on device only. */
         val elapsedSeconds: Int = 0,
+        val learningResult: LessonLearningResult? = null,
     ) : LessonOutcome
 
     /** The free half-preview ran out. Completion is not possible. */
@@ -163,6 +168,12 @@ sealed interface LessonOutcome {
 
     data class Failed(val error: ApiError) : LessonOutcome
 }
+
+data class LessonLearningResult(
+    val title: String,
+    val subtitle: String,
+    val review: CourseLearningReviewDto?,
+)
 
 /** One row of the rank-up board: the Mini App shows three, centred on you. */
 data class LessonRankRow(
@@ -207,6 +218,10 @@ data class LessonUiState(
     val isPronunciationScoring: Boolean = false,
     val pronunciationScore: Int? = null,
     val pronunciationError: ApiError? = null,
+    /** The last try was not heard clearly: say it again, no verdict. */
+    val pronunciationUnclear: Boolean = false,
+    /** UIUX-008: the picture deck on screen; null on every other card. */
+    val pictureDeck: PictureDeckState? = null,
     val outcome: LessonOutcome = LessonOutcome.InProgress,
     /**
      * The three leaderboard rows the rank-up celebration shows, fetched once
@@ -368,10 +383,13 @@ class LessonViewModel(
     }
     private var audioJob: Job? = null
     private var pronunciationJob: Job? = null
+    /** The picture deck's reveal/leave timers. */
+    private var pictureJob: Job? = null
 
     /** Planned personal reviews by the card index they stand in front of. */
     private val adaptivePending = sortedMapOf<Int, AdaptiveItemDto>()
     private var adaptivePlanId: Long = 0
+    private var resumeSnapshot: LessonSnapshot? = null
 
     /** The stroke fetch for the character the writing sheet is on. */
     private var writerJob: Job? = null
@@ -387,12 +405,14 @@ class LessonViewModel(
         if (attemptKey.isBlank() || activeAttemptKey == attemptKey) return
         stopAudio()
         stopPronunciation()
+        stopPicture()
         activeAttemptKey = attemptKey
         eventId = eventIdFactory()
         mistakes.clear()
         n1FailedCheckIndices.clear()
         n1CheckHistoryKnown = true
         resetAdaptive()
+        resumeSnapshot = null
         _state.value = LessonUiState()
         load()
     }
@@ -403,8 +423,10 @@ class LessonViewModel(
         activeAttemptKey = null
         loadGeneration++
         resetAdaptive()
+        resumeSnapshot = null
         stopAudio()
         stopPronunciation()
+        stopPicture()
         _state.update { it.copy(isAudioLoading = false, audioError = null) }
     }
 
@@ -420,7 +442,10 @@ class LessonViewModel(
                     // Come back to the card the learner left on, never past the
                     // end: a saved index equal to the deck length would open on
                     // nothing at all.
-                    val saved = resumeStore?.lessonResumeIndex(level, lessonOrder) ?: 0
+                    val savedPoint = resumeStore?.lessonResumePoint(level, lessonOrder)
+                        ?: LessonResumePoint(0)
+                    val saved = snapshot.resumeIndex(savedPoint)
+                    resumeSnapshot = snapshot
                     val cards = snapshot.lesson.cards.size
                     val exitStart = snapshot.lesson.sections.takeWhile { it.purpose != "learning_exit_check" }
                         .sumOf { it.cards.size }
@@ -431,10 +456,12 @@ class LessonViewModel(
                     // skipping the one that was missed.
                     n1CheckHistoryKnown = saved <= exitStart
                     n1FailedCheckIndices.clear()
+                    val startIndex = saved.coerceIn(0, (cards - 1).coerceAtLeast(0))
                     _state.value = LessonUiState(
                         isLoading = false,
                         lesson = snapshot.lesson,
-                        cardIndex = saved.coerceIn(0, (cards - 1).coerceAtLeast(0)),
+                        cardIndex = startIndex,
+                        pictureDeck = deckFor(snapshot.lesson.cards.getOrNull(startIndex)),
                         previewCardLimit = snapshot.previewCardLimit,
                         completionAllowed = snapshot.completionAllowed,
                         completionError = snapshot.completionError,
@@ -528,6 +555,7 @@ class LessonViewModel(
                 isPronunciationRecording = true,
                 pronunciationScore = null,
                 pronunciationError = null,
+                pronunciationUnclear = false,
             )
         }
         val attemptKey = activeAttemptKey ?: run {
@@ -560,7 +588,12 @@ class LessonViewModel(
                     audioDataUrl = recording.dataUrl,
                 )
             ) {
-                is ApiResult.Success -> if (activeAttemptKey == attemptKey && _state.value.cardIndex == cardIndex) {
+                is ApiResult.Success -> if (activeAttemptKey == attemptKey && _state.value.cardIndex == cardIndex && result.value.unclear) {
+                    // Nothing was heard clearly: no verdict, the microphone stays open.
+                    _state.update {
+                        it.copy(isPronunciationScoring = false, pronunciationUnclear = true)
+                    }
+                } else if (activeAttemptKey == attemptKey && _state.value.cardIndex == cardIndex) {
                     val score = result.value.score
                     val passed = result.value.ok && score >= PRONUNCIATION_PASS_SCORE
                     val detail = result.value.heard.ifBlank { result.value.message }
@@ -595,6 +628,145 @@ class LessonViewModel(
         if (_state.value.currentCard !is PronunciationCard) return
         advance()
     }
+
+    // ---------------------------------------------------------------- UIUX-008
+    // Picture deck. The lesson index stays on the deck card until the deck is
+    // empty; hearts, accuracy, streak, mistakes and XP never move here.
+
+    private fun deckFor(card: LessonCard?): PictureDeckState? =
+        (card as? PictureReviewCard)?.takeIf { it.words.isNotEmpty() }
+            ?.let { PictureDeckState(order = it.words.indices.toList()) }
+
+    private inline fun updateDeck(crossinline change: (PictureDeckState) -> PictureDeckState) {
+        _state.update { state -> state.pictureDeck?.let { state.copy(pictureDeck = change(it)) } ?: state }
+    }
+
+    private fun stopPicture() {
+        pictureJob?.cancel()
+        pictureJob = null
+    }
+
+    /** Records the front picture's word and lets the server score it. */
+    fun speakPicture() {
+        val current = _state.value
+        val card = current.currentCard as? PictureReviewCard ?: return
+        val deck = current.pictureDeck ?: return
+        if (deck.phase != PicturePhase.Ask || current.adaptive != null) return
+        val front = deck.front ?: return
+        val word = card.words.getOrNull(front) ?: return
+        val recorder = voiceRecorder
+        if (recorder == null || (pronunciationScorer == null && featureRepository == null)) {
+            updateDeck { it.copy(error = ApiError.Unknown) }
+            return
+        }
+        stopAudio()
+        runCatching { recorder.start() }.onFailure {
+            updateDeck { it.copy(error = ApiError.Unknown) }
+            return
+        }
+        val attemptKey = activeAttemptKey ?: run {
+            recorder.cancel()
+            return
+        }
+        val cardIndex = current.cardIndex
+        val moves = deck.moves
+        fun stillHere(): Boolean {
+            val now = _state.value
+            val nowDeck = now.pictureDeck ?: return false
+            return activeAttemptKey == attemptKey && now.cardIndex == cardIndex &&
+                nowDeck.moves == moves && nowDeck.front == front
+        }
+        updateDeck { it.copy(phase = PicturePhase.Recording, unclear = false, error = null) }
+        pronunciationJob = viewModelScope.launch {
+            delay(PRONUNCIATION_WINDOW_MILLIS)
+            val recording = runCatching { recorder.stop() }.getOrElse {
+                if (stillHere()) updateDeck { it.copy(phase = PicturePhase.Ask, error = ApiError.Unknown) }
+                return@launch
+            }
+            if (!stillHere()) return@launch
+            updateDeck { it.copy(phase = PicturePhase.Scoring) }
+            val result = scorePronunciation(word.hanzi, word.pinyin, recording.dataUrl)
+            if (!stillHere()) return@launch
+            when (result) {
+                is ApiResult.Success -> {
+                    val response = result.value
+                    if (response.unclear) {
+                        updateDeck { it.copy(phase = PicturePhase.Ask, unclear = true) }
+                    } else {
+                        val passed = response.ok && response.score >= PRONUNCIATION_PASS_SCORE
+                        updateDeck { it.copy(phase = PicturePhase.Reveal(passed)) }
+                        stopPicture()
+                        pictureJob = viewModelScope.launch {
+                            delay(if (passed) PICTURE_PASS_HOLD_MILLIS else PICTURE_WRONG_HOLD_MILLIS)
+                            continuePicture()
+                        }
+                    }
+                }
+
+                is ApiResult.Failure -> if (result.error.isPronounceLimit()) {
+                    // The day's allowance is spent: the deck ends and the
+                    // existing limit message stays under the next card.
+                    stopPicture()
+                    advance()
+                    _state.update { it.copy(pronunciationError = result.error) }
+                } else {
+                    updateDeck { it.copy(phase = PicturePhase.Ask, error = result.error) }
+                }
+            }
+        }
+    }
+
+    /** A tap on a revealed card, or the reveal timer: the card moves on. */
+    fun continuePicture() {
+        val phase = _state.value.pictureDeck?.phase as? PicturePhase.Reveal ?: return
+        leavePicture(if (phase.passed) PictureOutcome.PASS else PictureOutcome.WRONG)
+    }
+
+    /** Skips only the front card; it is not counted as right. */
+    fun skipPicture() {
+        val deck = _state.value.pictureDeck ?: return
+        when (deck.phase) {
+            is PicturePhase.Reveal -> continuePicture()
+            PicturePhase.Ask -> leavePicture(PictureOutcome.SKIP)
+            PicturePhase.Recording, PicturePhase.Scoring -> {
+                stopPronunciation()
+                leavePicture(PictureOutcome.SKIP)
+            }
+            is PicturePhase.Leaving -> Unit
+        }
+    }
+
+    private fun leavePicture(outcome: PictureOutcome) {
+        val cardIndex = _state.value.cardIndex
+        stopPicture()
+        updateDeck { it.copy(phase = PicturePhase.Leaving(outcome), unclear = false, error = null) }
+        pictureJob = viewModelScope.launch {
+            delay(PICTURE_LEAVE_MILLIS)
+            if (_state.value.cardIndex != cardIndex) return@launch
+            val deck = _state.value.pictureDeck ?: return@launch
+            val next = deck.after(outcome)
+            if (next.order.isEmpty()) {
+                pictureJob = null
+                advance()
+            } else {
+                _state.update { it.copy(pictureDeck = next) }
+            }
+        }
+    }
+
+    private suspend fun scorePronunciation(
+        target: String,
+        targetPinyin: String,
+        audioDataUrl: String,
+    ): ApiResult<VoicePronounceResponse> =
+        pronunciationScorer?.score(target, targetPinyin, language.backendCode, level, audioDataUrl)
+            ?: featureRepository!!.scorePronunciation(
+                target = target,
+                targetPinyin = targetPinyin,
+                language = language.backendCode,
+                level = level,
+                audioDataUrl = audioDataUrl,
+            )
 
     /**
      * Opens the writing sheet for [target], on its first character.
@@ -657,7 +829,8 @@ class LessonViewModel(
     /** Keeps the resume point in step with the card on screen. */
     private fun rememberPosition(index: Int) {
         val store = resumeStore ?: return
-        viewModelScope.launch { store.setLessonResumeIndex(level, lessonOrder, index) }
+        val point = resumeSnapshot?.resumePoint(index) ?: return
+        viewModelScope.launch { store.setLessonResumePoint(level, lessonOrder, point) }
     }
 
     private fun record(correct: Boolean, explanation: String, chosen: String = "") {
@@ -695,6 +868,7 @@ class LessonViewModel(
         // The review's own Continue clears it; nothing advances behind it.
         if (_state.value.adaptive != null) return
         stopPronunciation()
+        stopPicture()
         val current = _state.value
         val next = nextN1PilotCardIndex(
             current.lesson, current.cardIndex + 1, n1FailedCheckIndices, n1CheckHistoryKnown,
@@ -727,6 +901,8 @@ class LessonViewModel(
                 audioError = null,
                 pronunciationScore = null,
                 pronunciationError = null,
+                pronunciationUnclear = false,
+                pictureDeck = deckFor(current.cards.getOrNull(next)),
                 adaptive = review,
             )
         }
@@ -844,6 +1020,12 @@ class LessonViewModel(
                             rankBefore = result.value.rankBefore,
                             rankAfter = result.value.rankAfter,
                             elapsedSeconds = elapsedSeconds(),
+                            learningResult = result.value.takeIf {
+                                !it.duplicate && !it.gamification.duplicate &&
+                                    it.completedLesson == lesson.order
+                            }?.learningResult?.let {
+                                LessonLearningResult(lesson.title, lesson.subtitle, it.review)
+                            },
                         ),
                     )
 
@@ -941,6 +1123,7 @@ class LessonViewModel(
         loadGeneration++
         stopAudio()
         stopPronunciation()
+        stopPicture()
         super.onCleared()
     }
 
@@ -996,5 +1179,10 @@ class LessonViewModel(
         const val MAX_MISTAKES_PER_COMPLETION = 50
         const val PRONUNCIATION_WINDOW_MILLIS = 2_600L
         const val PRONUNCIATION_PASS_SCORE = 60
+        /** UIUX-008: how long a revealed picture card stays before moving on. */
+        const val PICTURE_PASS_HOLD_MILLIS = 1_300L
+        const val PICTURE_WRONG_HOLD_MILLIS = 2_600L
+        /** The leave animation; the queue moves when it ends. */
+        const val PICTURE_LEAVE_MILLIS = 340L
     }
 }

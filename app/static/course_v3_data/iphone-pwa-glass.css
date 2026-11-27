@@ -166,6 +166,22 @@ html.hsk-pwa-browser #s-settings.on ~ #nav{display:none}
 .hsk-pwa-notice-row.is-rejected strong{color:var(--hsk-cinnabar-ink)}
 .hsk-pwa-notice-row:disabled{cursor:default}
 .hsk-pwa-notice-empty{padding:30px 10px;text-align:center;color:var(--hsk-ink-secondary);font-size:18px}
+/* Loading: notice-shaped rows (title + two body lines) in the notice row slot. */
+.hsk-pwa-notice-row.is-skeleton{pointer-events:none}
+.hsk-pwa-notice-row.is-skeleton .pwa-layout-ink{display:block;height:10px;width:92%;margin:8px 0 0}
+.hsk-pwa-notice-row.is-skeleton .pwa-layout-ink:first-child{height:11px;width:58%;margin-top:4px}
+.hsk-pwa-notice-row.is-skeleton .pwa-layout-ink:nth-child(2){margin-top:12px}
+.hsk-pwa-notice-row.is-skeleton .pwa-layout-ink:last-child{width:70%;margin-bottom:4px}
+/* Error: the existing error text with an in-place retry below it. */
+.hsk-pwa-notice-error{max-width:var(--read,480px);margin:0 auto;padding:0 10px 18px;text-align:center}
+.hsk-pwa-notice-error .hsk-pwa-notice-empty{padding-bottom:14px}
+#hsk-pwa-notice-root .hsk-pwa-notice-error .hsk-pwa-notice-retry{width:auto;min-width:180px;max-width:100%;
+  margin:0 auto;padding:0 22px;border-color:var(--hsk-divider)}
+@keyframes hsk-pwa-notice-in{from{opacity:.82}to{opacity:1}}
+@media(prefers-reduced-motion:no-preference){
+  #hsk-pwa-notice-root .hsk-pwa-notice-row.is-skeleton .pwa-layout-ink{animation:hsk-pwa-layout-pulse 1.5s ease-in-out infinite alternate}
+  #hsk-pwa-notice-root .hsk-pwa-notice-list>.is-fresh{animation:hsk-pwa-notice-in 200ms ease-out both}
+}
 .hsk-pwa-notice-urgent{text-align:center;align-items:center;padding:11px 10px 8px}
 .hsk-pwa-notice-urgent .hsk-pwa-notice-icon{width:64px;height:64px;border-radius:22px;
   display:grid;place-items:center;margin:0 auto 13px;background:var(--hsk-cinnabar-soft);

@@ -10,6 +10,10 @@
 if(!global.T||!global.T[global.LANG]||!global.HSKCharacters||
    typeof global.HSKCharacters.render!=="function")return;
 var hostPwa=location.pathname.indexOf("/iphone-pwa/")===0;
+var offerQuery=new URLSearchParams(location.search);
+var offerMode=hostPwa&&offerQuery.getAll("offer").length===1&&offerQuery.get("offer")==="trial";
+var trialConfirmed=false,trialStartInFlight=false;
+var trialOfferSteps=["trialIntro","trial1","trial2","trial3","trialDone"];
 var tg=global.Telegram&&global.Telegram.WebApp;
 var initData=hostPwa?"":String(tg&&tg.initData||"");
 if(hostPwa){
@@ -121,14 +125,19 @@ function setAuthWaitPhase(phase){
   var saving=phase==="saving";
   var title=authWaitNode.querySelector(".li-auth-wait-title");
   var subtitle=authWaitNode.querySelector(".li-auth-wait-subtitle");
+  if(offerMode){if(title)title.textContent="HSK AI PRO";if(subtitle)subtitle.textContent="";return;}
   if(title)title.textContent=word(saving?"install.authSaveTitle":"install.authWaitTitle");
   if(subtitle)subtitle.textContent=word(saving?"install.authSaveSubtitle":"install.authWaitSubtitle");
 }
 function hideAuthWait(){
+  document.documentElement.classList.remove("li-trial-pending");
   document.documentElement.classList.remove("li-auth-resuming");
   if(authWaitNode){authWaitNode.remove();authWaitNode=null}
   var wrap=document.querySelector(".wrap");
   if(wrap)wrap.inert=false;
+  if(offerMode&&document.activeElement===document.body){
+    var exit=document.querySelector(".li-trial-close");if(exit)exit.focus({preventScroll:true});
+  }
 }
 
 function safeMessage(){return ERR[global.LANG]||ERR.ru}
@@ -158,6 +167,8 @@ function api(path,options){
   // racing fetch alone would leave onboarding stuck at a loading skeleton.
   var completed=fetch(path,options).then(function(response){
     if(!response.ok)throw errorFromResponse(response);
+    if(offerMode&&actor&&(path==="/api/v3/pwa/trial/status"||path==="/api/v3/pwa/onboarding/status")&&
+       response.headers.get("X-HSK-PWA-User-ID")!==String(actor.user_id))throw new Error("pwa_actor_changed");
     return response.json();
   }).then(function(data){
     if(!data||data.ok!==true)throw new Error("server_response_invalid");
@@ -202,7 +213,7 @@ function userKey(){
   return id?"miniapp:"+String(id):"telegram:verified";
 }
 function saveDraft(){
-  if(!identityKey||requestBusy)return;
+  if(offerMode||!identityKey||requestBusy)return;
   var payload={at:Date.now(),lang:global.LANG,track:global.track,
     level:global.level,goals:global.goals.slice(),minutes:global.minutes,
     focus:global.focus,streakGoal:global.streakGoal,step:global.screen};
@@ -532,15 +543,21 @@ function trialStatus(){
   return hostPwa?api("/api/v3/pwa/trial/status"):
     guardedPost("/api/v3/trial/status",{});
 }
-function offerIfEligible(){
+function offerIfEligible(prefetched){
   if(requestBusy)return;
   setBusy(true,"trial-status");
-  trialStatus().then(function(result){
+  // When bootstrap already checked status for this verified actor, reuse that
+  // exact response instead of issuing a third serial same-origin GET.
+  (prefetched?Promise.resolve(prefetched):trialStatus()).then(function(result){
     trialEligibility=result.trial||null;
     requestBusy=false;
+    if(offerMode&&(!trialEligibility||trialEligibility.eligible!==true)){
+      returnFromOffer(!!(trialEligibility&&trialEligibility.active));return;
+    }
     // The old generic Pro offer repeats the first trial slide; enter the
     // panda + HSK AI PRO welcome directly, then goal-matched slides.
     progress(trialEligibility&&trialEligibility.eligible?"trialIntro":"end");
+    if(offerMode){var parentOffer=offerHost();if(parentOffer)parentOffer.presented(global,actor&&actor.user_id);}
   }).catch(function(error){
     console.warn("[li-onboarding] eligibility unavailable",String(error&&error.message||"unknown").slice(0,100));
     trialEligibility=null;
@@ -552,12 +569,15 @@ function offerIfEligible(){
 }
 function beginTrial(){
   if(requestBusy||!trialEligibility||!trialEligibility.eligible){window.go("end");return}
+  trialStartInFlight=true;
   setBusy(true,"trial-start");
   var endpoint=hostPwa?"/api/v3/pwa/trial/start":"/api/v3/trial/start";
   function confirmed(){
+    trialConfirmed=true;trialStartInFlight=false;
     requestBusy=false;global.trail.push(global.screen);global.screen="trialDone";global.render();
   }
   function failed(e){
+    trialStartInFlight=false;
     console.warn("[li-onboarding] trial activation",String(e&&e.message||"trial_denied").slice(0,100));
     // Retry remains available but never claim Pro based on a timeout or
     // client-side state. The real server holds the one-time entitlement.
@@ -579,7 +599,25 @@ function beginTrial(){
     }).catch(function(){failed(e)});
   });
 }
+function offerHost(){
+  try{return global.parent!==global&&global.parent.location.origin===location.origin&&global.parent.HskPwaTrialOffer||null}catch(_){return null}
+}
+function returnFromOffer(activated){
+  if(trialStartInFlight)return false;
+  if(requestBusy){requestBusy=false;++requestGeneration;}
+  var parentOffer=offerHost();
+  if(parentOffer)return parentOffer.close(global,activated===true);
+  if(global.parent!==global)return false;
+  location.replace(pageCourse()+"?lang="+encodeURIComponent(global.LANG)+"&tab=profile");return true;
+}
+function purchaseFromOffer(){
+  if(requestBusy)return;
+  var parentOffer=offerHost();
+  if(parentOffer){parentOffer.purchase(global);return;}
+  if(global.parent===global)location.assign("/iphone-pwa/checkout?mode=subscription&source=profile_subscription&return_to=course&return_tab=profile&lang="+encodeURIComponent(global.LANG));
+}
 function toCourse(){
+  if(offerMode){returnFromOffer(trialConfirmed);return;}
   // No preview may claim the first lesson is ready without a server save.
   if(!launch||!launch.ok){renderError(saveProfile);return}
   var q=new URLSearchParams(location.search);
@@ -817,17 +855,61 @@ global.render=function(animate){
     }[global.screen]||[];
     var selected=preferred.find(function(key){
       return Array.isArray(global.goals)&&global.goals.indexOf(key)>=0;
-    });
+    })||(Array.isArray(global.goals)&&global.goals[0]);
     if(selected){
       var heading=document.querySelector("#stage .trial h2");
       var subtitle=document.querySelector("#stage .trial p");
       if(heading)heading.textContent=word("proGoal."+selected+".title");
-      if(subtitle)subtitle.textContent=word("proGoal."+selected+".subtitle");
+      if(subtitle){
+        var details=word("proGoal."+selected+".subtitle");
+        if(global.screen==="trial2"&&global.minutes)details+=" "+word("trialOffer.daily").replace("{minutes}",global.minutes);
+        if(global.screen==="trial3"&&global.streakGoal)details+=" "+word("trialOffer.streak").replace("{days}",global.streakGoal);
+        subtitle.textContent=details;
+      }
     }
   }
   if(global.screen==="trialDone"){
     var heading=document.querySelector("#stage .trial h2");
-    if(heading)heading.textContent=word("trialOn");
+    if(heading)heading.textContent=hostPwa?word("trialOffer.activated"):word("trialOn");
+    if(hostPwa){
+      document.querySelector("#stage .trial p")?.remove();
+      var begin=document.querySelector("#footer .cta");if(begin)begin.textContent=word("trialOffer.begin");
+    }
+  }
+  if(hostPwa&&trialOfferSteps.indexOf(global.screen)>=0){
+    var welcome=document.querySelector(".li-pro-welcome h1");
+    if(welcome)welcome.remove();
+    var brand=document.createElement("h1");brand.className="li-trial-brand";
+    brand.innerHTML="HSK AI <strong>PRO</strong>";
+    var brandTop=document.getElementById("top");brandTop.hidden=false;brandTop.prepend(brand);
+    if(global.screen==="trialIntro"){
+      var first=document.querySelector("#footer .cta");if(first)first.textContent=word("trialOffer.start");
+      // The limit modal owns the canonical PRO-card panda. Reuse its renderer
+      // only inside the verified same-origin embedded offer; regular Li remains unchanged.
+      if(offerMode){
+        try{var mascot=document.querySelector(".li-pro-welcome-panda");
+          var renderer=global.parent.HSKPwaInlinePro&&global.parent.HSKPwaInlinePro.trialPandaSvg;
+          if(mascot&&typeof renderer==="function")mascot.innerHTML=renderer();
+        }catch(_){} // Keep the existing local panda when opened outside the PWA host.
+      }
+    }
+  }
+  if(offerMode&&trialOfferSteps.indexOf(global.screen)>=0){
+    var top=document.getElementById("top"),exit=document.createElement("button");
+    exit.type="button";exit.className="bk li-trial-close";exit.setAttribute("aria-label",word("close"));
+    exit.innerHTML=global.icon("close");exit.onclick=function(){returnFromOffer(trialConfirmed)};
+    top.hidden=false;top.appendChild(exit);
+    var indicator=top.querySelector(".stepper"),position=trialOfferSteps.indexOf(global.screen);
+    if(indicator){
+      indicator.removeAttribute("aria-hidden");indicator.setAttribute("role","progressbar");
+      indicator.setAttribute("aria-label","HSK AI Pro");indicator.setAttribute("aria-valuemin","0");
+      indicator.setAttribute("aria-valuemax","4");indicator.setAttribute("aria-valuenow",String(position));
+      indicator.setAttribute("aria-valuetext",position+" / 4");
+    }
+    if(global.screen==="trial3"){
+      var startButton=document.querySelector("#footer .cta");if(startButton)startButton.textContent=word("proCta");
+    }
+    if(document.activeElement===document.body)exit.focus({preventScroll:true});
   }
   if(global.screen==="profile"&&identityKey&&(!hostPwa||actor)){
     var button=document.querySelector("#footer .cta");
@@ -877,6 +959,7 @@ global.back=function(){
 };
 global.go=function(next){
   if(requestBusy)return;
+  if(offerMode&&next==="end"){returnFromOffer(trialConfirmed);return;}
   if(next==="login"){
     if(!hostPwa&&identityKey){location.assign(pageCourse());return}
     if(hostPwa&&actor){location.assign(pageCourse());return}
@@ -918,11 +1001,13 @@ global.LiRuntime={authenticate:authenticate,
 });
 async function bootstrap(){
   try{
+    if(offerMode)showAuthWait("waiting");
     if(hostPwa&&(validAuthHandoff()||telegramPendingId()))showAuthWait("waiting");
     if(hostPwa){
       try{await session()}
       catch(error){
         if(error&&error.message==="server_status_401"){
+          if(offerMode){renderError(bootstrap,function(){returnFromOffer(false)});return;}
           // This is a public panda-first UI, not a public user account.
           // All course writes remain inaccessible until verified OAuth.
           actor=null;identityKey="pwa:guest";
@@ -957,8 +1042,28 @@ async function bootstrap(){
       await session();
     }
     clearTelegramPending();
-    var status=await statusApi();
+    if(offerMode){
+      var parentOffer=offerHost();
+      if(parentOffer&&!parentOffer.acceptActor(global,actor&&actor.user_id))throw new Error("pwa_actor_changed");
+    }
+    // The two read-only endpoints are independent after session/CSRF verification.
+    // Parallelize ONLY for the embedded trial; all other onboarding paths stay serial.
+    var status,verifiedTrial=null;
+    if(offerMode){
+      var reads=await Promise.all([statusApi(),trialStatus()]);
+      status=reads[0];verifiedTrial=reads[1];
+    }else status=await statusApi();
     identityKey=userKey();
+    if(offerMode){
+      if(!status.saved||!status.profile){renderError(bootstrap,function(){returnFromOffer(false)});return;}
+      // Read the saved learner choices without posting onboarding again.
+      global.track=String(status.level||"").indexOf("nhsk")===0?"hsk30":"hsk20";
+      global.level=status.level;
+      global.goals=(Array.isArray(status.profile.goals)?status.profile.goals:[status.profile.goal]).filter(function(key){return Array.isArray(global.GOALS)&&global.GOALS.some(function(goal){return goal.k===key})});
+      global.minutes=[5,10,15,20,30].indexOf(status.profile.daily_minutes)>=0?status.profile.daily_minutes:null;
+      global.streakGoal=[7,14,30,50].indexOf(status.profile.streak_target_days)>=0?status.profile.streak_target_days:null;
+      requestBusy=false;offerIfEligible(verifiedTrial);return;
+    }
     if(status.saved){
       // Existing learners should not leave stale anonymous choices that
       // a later account could inadvertently inherit on this device.
@@ -994,8 +1099,27 @@ async function bootstrap(){
     }
   }catch(e){
     console.warn("[li-onboarding] authentication/status",String(e&&e.message||"not_ready").slice(0,100));
-    renderError(bootstrap);
+    renderError(bootstrap,offerMode?function(){returnFromOffer(false)}:undefined);
   }finally{initializing=false}
+}
+if(offerMode){
+  var offerStyle=document.createElement("style");
+  offerStyle.textContent="#top{position:relative;min-height:56px}#top .stepper{margin-right:52px;width:calc(100% - 52px)}#top .li-trial-close{position:absolute;right:0;top:0;width:44px;height:44px}.wrap.dark button:focus-visible{outline-color:var(--hsk-paper)}";
+  document.head.appendChild(offerStyle);
+  global.hskPwaCheckoutBack=function(){returnFromOffer(trialConfirmed)};
+  global.addEventListener("keydown",function(event){
+    if(event.key==="Escape"){
+      event.preventDefault();event.stopPropagation();returnFromOffer(trialConfirmed);return;
+    }
+    if(event.key!=="Tab")return;
+    var controls=Array.from(document.querySelectorAll('button:not([disabled]),a[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]'))
+      .filter(function(node){return node.tabIndex>=0&&node.getClientRects().length>0});
+    if(!controls.length){event.preventDefault();return;}
+    var first=controls[0],last=controls[controls.length-1],active=document.activeElement;
+    if(controls.indexOf(active)<0){event.preventDefault();first.focus();}
+    else if(event.shiftKey&&active===first){event.preventDefault();last.focus();}
+    else if(!event.shiftKey&&active===last){event.preventDefault();first.focus();}
+  });
 }
 global.addEventListener("pageshow",function(ev){
   if(!hostPwa)return;
@@ -1015,6 +1139,6 @@ global.addEventListener("pagehide",stopTelegramPoll);
 // HttpOnly session, server profile ownership and course access before any save.
 if(hostPwa&&(validAuthHandoff()||telegramPendingId()))
   showAuthWait("waiting");
-global.render(false);
+if(!offerMode)global.render(false);
 bootstrap();
 })(window);

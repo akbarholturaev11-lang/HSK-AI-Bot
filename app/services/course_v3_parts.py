@@ -81,6 +81,11 @@ def part_meta(level: str, part_n: int) -> dict:
     return {}
 
 
+def is_skip_test_part(level: str, part_n: int) -> bool:
+    """Only the first part of an actual textbook lesson can be skipped to."""
+    return 0 < part_n <= total_parts(level) and part_meta(level, part_n).get("part") == 1
+
+
 def current_part(level: str, completed_parts: int) -> int:
     """Foydalanuvchining JORIY qismi = tugatilgan qismlar + 1, darajadagi jami
     qismlardan oshmagan holda. Manifest bo'lmasa oddiy completed+1."""

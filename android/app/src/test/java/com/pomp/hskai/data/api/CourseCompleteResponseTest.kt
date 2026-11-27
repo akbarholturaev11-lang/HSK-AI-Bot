@@ -3,6 +3,7 @@ package com.pomp.hskai.data.api
 import kotlinx.serialization.json.Json
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -60,5 +61,41 @@ class CourseCompleteResponseTest {
         assertTrue(response.gamification.rewardChest?.ready == true)
         assertEquals(12, response.rankBefore)
         assertEquals(9, response.rankAfter)
+        assertNull(response.learningResult)
+    }
+
+    @Test
+    fun `completion accepts verified review and explicit no review`() {
+        val confirmed = json.decodeFromString<CourseCompleteResponse>(
+            """{"ok":true,"learning_result":{"review":{"prompt":"你好","correction":"nǐ hǎo"}}}"""
+        )
+        assertEquals(
+            CourseLearningResultDto(CourseLearningReviewDto("你好", "nǐ hǎo")),
+            confirmed.learningResult,
+        )
+
+        val topicOnly = json.decodeFromString<CourseCompleteResponse>(
+            """{"ok":true,"learning_result":{"review":null}}"""
+        )
+        assertEquals(CourseLearningResultDto(review = null), topicOnly.learningResult)
+    }
+
+    @Test
+    fun `malformed optional review never discards the saved completion`() {
+        val malformed = listOf(
+            "[]",
+            "{}",
+            """{"review":[]}""",
+            """{"review":{"prompt":21,"correction":"你好"}}""",
+            """{"review":{"prompt":"你好","correction":" "}}""",
+        )
+        for (projection in malformed) {
+            val response = json.decodeFromString<CourseCompleteResponse>(
+                """{"ok":true,"completed_lesson":1,"learning_result":$projection}"""
+            )
+            assertTrue(response.ok)
+            assertEquals(1, response.completedLesson)
+            assertNull(response.learningResult)
+        }
     }
 }

@@ -221,6 +221,9 @@ class QueueChecks:
         lease=await self.claim(reserved.job_id)
         async with self.sessions.begin() as s:
             await s.execute(update(SmartReminderConsent).where(SmartReminderConsent.user_id==1).values(state="off"))
+            # An explicit current OFF: since D34 a legacy snapshot OFF is no OFF.
+            await s.execute(update(SmartReminderConsent).where(SmartReminderConsent.user_id==1,
+                SmartReminderConsent.channel=="telegram").values(source="user_intent",source_key="intent:telegram"))
         self.assertEqual((await self.finish(lease)).reason,"consent_or_permission_unavailable")
 
     async def test_current_lesson_access_is_rechecked_without_consuming(self):

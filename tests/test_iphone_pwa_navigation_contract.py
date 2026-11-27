@@ -55,6 +55,7 @@ class IphonePwaNavigationContractTests(unittest.TestCase):
         # layer; the embedded checkout asks its parent to close that layer.
         self.assertIn("App.openPwaCheckout(query);return}", COURSE)
         self.assertIn('frame.src="/iphone-pwa/checkout?"+query.toString()', COURSE)
+        self.assertIn('if(query.get("offer")==="trial")frame.src="/iphone-pwa/onboarding/li?"+query.toString();else ', COURSE)
         action = CHECKOUT.split("function returnToCourseFromCheckout()", 1)[1].split(
             "function initTelegramCourseReturn()", 1
         )[0]
@@ -99,7 +100,8 @@ class IphonePwaNavigationContractTests(unittest.TestCase):
         self.assertIn('App.show("settings")', COURSE)
         self.assertIn("#s-settings", css)
         self.assertIn('if(!INIT_DATA&&!PWA_COURSE_HOST)return Promise.resolve(null)', COURSE)
-        self.assertIn('_apiPost("/api/v3/preferences",body)', COURSE)
+        self.assertIn('_apiPost("/api/v3/preferences",body,opts)', COURSE)
+        self.assertIn('MAP!==preferenceMap||PWA_COURSE_USER_ID!==preferenceOwner', COURSE)
         self.assertIn('if(!saved||saved.ok!==true){dailyGoal=previous;', COURSE)
 
     def test_slow_network_cannot_restore_an_older_hsk_level(self):
