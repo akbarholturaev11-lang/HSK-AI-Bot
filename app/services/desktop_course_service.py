@@ -845,10 +845,6 @@ class DesktopCourseService:
         if not total or lesson_order > total:
             raise DesktopCourseError("course_no_lesson_found", status_code=404)
 
-        # Desktop is frozen; Android uses the mobile first-part rule.
-        if self.CLIENT_NAMESPACE == "android" and not is_skip_test_part(level, lesson_order):
-            raise DesktopCourseError("course_lesson_not_unlocked", status_code=403)
-
         # Spending the daily allowance closes the skip test too. Without this
         # a locked lesson would be a way around the very limit the next lesson
         # is already refusing.
@@ -864,6 +860,10 @@ class DesktopCourseService:
                 status_code=403,
                 detail=limit_status,
             )
+
+        # Desktop is frozen; Android uses the mobile first-part rule.
+        if self.CLIENT_NAMESPACE == "android" and not is_skip_test_part(level, lesson_order):
+            raise DesktopCourseError("course_lesson_not_unlocked", status_code=403)
 
         legacy_lesson = await CourseLessonRepository(
             self.session

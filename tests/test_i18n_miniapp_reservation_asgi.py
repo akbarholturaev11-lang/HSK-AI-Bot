@@ -420,7 +420,7 @@ class MiniAppLessonStartASGITests(unittest.IsolatedAsyncioTestCase):
         self.session.commit.assert_not_awaited()
 
     async def test_skip_test_allows_entitled_locked_lessons_without_unlocking_full_content(self):
-        """The map offers skip tests for n > completed + 1, including for Free.
+        """The map offers skip tests for locked first parts, including for Free.
 
         The shared allowance gate decides eligibility, matching lesson/unlock.
         Receiving questions must not itself advance progress or authorize a
@@ -428,7 +428,7 @@ class MiniAppLessonStartASGITests(unittest.IsolatedAsyncioTestCase):
         """
         headers = {"X-Telegram-Init-Data": synthetic_init_data()}
         for status, payment_status in (("free", "none"), ("active", "approved")):
-            for order in (2, 100):
+            for order in (4, 60):
                 with self.subTest(status=status, order=order):
                     self.user.status = status
                     self.user.payment_status = payment_status
@@ -447,8 +447,7 @@ class MiniAppLessonStartASGITests(unittest.IsolatedAsyncioTestCase):
                         ]}],
                         "active_words": [], "grammar": [{"private": True}],
                     }
-                    with patch("app.api.miniapp_entitlements.total_parts", return_value=100), \
-                         patch("app.api.miniapp_entitlements._read_course_lesson",
+                    with patch("app.api.miniapp_entitlements._read_course_lesson",
                                return_value=lesson) as read_lesson:
                         response = await self.client.post(
                             "/api/v3/lesson/skip-test", headers=headers,

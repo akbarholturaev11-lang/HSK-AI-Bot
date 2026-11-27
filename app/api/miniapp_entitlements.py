@@ -468,10 +468,6 @@ def create_miniapp_entitlements_router(
             return _private_content_response(
                 {"ok": False, "error": "course_lesson_not_found"}, status_code=404,
             )
-        if not is_skip_test_part(level, lesson_order):
-            return _private_content_response(
-                {"ok": False, "error": "course_lesson_not_unlocked"}, status_code=403,
-            )
         if await _foundation_is_blocked(session, user, level):
             return _private_content_response(
                 {"ok": False, "error": "android_foundation_required"}, status_code=403,
@@ -493,6 +489,10 @@ def create_miniapp_entitlements_router(
         )
         if not access.get("allowed"):
             return _private_content_response(access, status_code=403)
+        if not is_skip_test_part(level, lesson_order):
+            return _private_content_response(
+                {"ok": False, "error": "course_lesson_not_unlocked"}, status_code=403,
+            )
         lesson = _read_course_lesson(level, lesson_order)
         questions = _skip_test_questions(lesson) if lesson else []
         if not questions:

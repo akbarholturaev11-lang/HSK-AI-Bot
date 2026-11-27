@@ -303,8 +303,6 @@ class AndroidCourseService(DesktopCourseService):
         total = total_parts(level)
         if not total or lesson_order > total:
             raise DesktopCourseError("course_no_lesson_found", status_code=404)
-        if not is_skip_test_part(level, lesson_order):
-            raise DesktopCourseError("course_lesson_not_unlocked", status_code=403)
         access = await LessonAccessService(self.session).status(
             user,
             level=level,
@@ -317,6 +315,8 @@ class AndroidCourseService(DesktopCourseService):
                 status_code=403,
                 detail=access,
             )
+        if not is_skip_test_part(level, lesson_order):
+            raise DesktopCourseError("course_lesson_not_unlocked", status_code=403)
         lesson = self._read_json(
             COURSE_V3_DATA_ROOT / level / f"lesson_{lesson_order:02d}.json",
             error_code="course_lesson_load_failed",

@@ -3374,19 +3374,19 @@ async def _v3_unlock_lesson_for_user(
     total_parts = _course_v3_total_parts(resolved_level)
     if total_parts and lesson_order > total_parts:
         return JSONResponse(status_code=404, content={"ok": False, "error": "course_no_lesson_found"})
-    if not is_skip_test_part(resolved_level, lesson_order):
-        return JSONResponse(status_code=403, content={"ok": False, "error": "course_lesson_not_unlocked"},
-                            headers={"Cache-Control": "no-store"})
-    # Legacy course_lessons qatori endi shart emas (qismlar flat raqamlanadi
-    # va jadvaldagi eski tartibdan ko'p) — topilsa bookkeeping uchun olamiz.
-    lesson_repo = CourseLessonRepository(session)
-    lesson = await lesson_repo.get_by_level_and_order(resolved_level, lesson_order)
-
     limit_status = await LessonAccessService(session).status(
         user, level=resolved_level, lesson_order=lesson_order,
     )
     if not limit_status["allowed"]:
         return JSONResponse(status_code=403, content=limit_status)
+    if not is_skip_test_part(resolved_level, lesson_order):
+        return JSONResponse(status_code=403, content={"ok": False, "error": "course_lesson_not_unlocked"},
+                            headers={"Cache-Control": "no-store"})
+
+    # Legacy course_lessons qatori endi shart emas (qismlar flat raqamlanadi
+    # va jadvaldagi eski tartibdan ko'p) — topilsa bookkeeping uchun olamiz.
+    lesson_repo = CourseLessonRepository(session)
+    lesson = await lesson_repo.get_by_level_and_order(resolved_level, lesson_order)
 
     progress_repo = CourseProgressRepository(session)
     progress = await progress_repo.get_by_user_id(user.id, for_update=True)

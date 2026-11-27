@@ -54,9 +54,9 @@ class ClientLessonTransportTests(unittest.TestCase):
             for key, path in FILES.items()
         }
         backend = sources["backend_miniapp_content"]
-        skip_start = backend.index("async def v3_course_lesson_skip_test(")
+        skip_start = backend.index("async def _skip_test_for_user(")
         prefix, handler = backend[:skip_start], backend[skip_start:]
-        gate = "            access = await LessonAccessService(session).status("
+        gate = "        access = await LessonAccessService(session).status("
         cases = (
             ("await _authenticated(request)", "await _unverified(request)",
              "skip_test_uses_signed_canonical_account"),
@@ -70,15 +70,17 @@ class ClientLessonTransportTests(unittest.TestCase):
              "skip_test_checks_foundation_and_shared_access_before_read"),
             ("completed=completed, consume=False", "completed=completed, consume=True",
              "skip_test_checks_foundation_and_shared_access_before_read"),
+            ("if not is_skip_test_part(level, lesson_order):", "if False:",
+             "skip_test_checks_foundation_and_shared_access_before_read"),
             ('if not access.get("allowed"):', "if False:",
              "skip_test_checks_foundation_and_shared_access_before_read"),
-            (gate, "            if lesson_order > completed + 1:\n"
-             "                return _private_content_response({}, status_code=403)\n" + gate,
+            (gate, "        if lesson_order > completed + 1:\n"
+             "            return _private_content_response({}, status_code=403)\n" + gate,
              "skip_test_allows_locked_projection_without_progress_changes"),
             ('"questions": questions', '"questions": lesson',
              "skip_test_returns_question_projection_only"),
-            ("            lesson = _read_course_lesson(level, lesson_order)",
-             "            await session.commit()\n            lesson = _read_course_lesson(level, lesson_order)",
+            ("        lesson = _read_course_lesson(level, lesson_order)",
+             "        await session.commit()\n        lesson = _read_course_lesson(level, lesson_order)",
              "skip_test_allows_locked_projection_without_progress_changes"),
         )
         for before, after, check in cases:
