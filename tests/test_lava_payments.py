@@ -105,33 +105,89 @@ class LavaPaymentTests(unittest.IsolatedAsyncioTestCase):
                              email_display="unverified@example.com", email_verified=False),
             ])
             await session.commit()
-            first = await self.checkout.overview_block(session, await session.get(User, 1), supports_lava=True)
+            first = await self.checkout.overview_block(self.sessions, await session.get(User, 1), supports_lava=True)
             self.assertEqual("google-one@example.com", first["email"])
-            other = await self.checkout.overview_block(session, await session.get(User, 2), supports_lava=True)
+            other = await self.checkout.overview_block(self.sessions, await session.get(User, 2), supports_lava=True)
             self.assertIsNone(other["email"])
 
         checkout_id, _ = await self._paid_first()
         await self.checkout.cancel(self.sessions, user_id=1)
         async with self.sessions() as session:
             buyer = await session.get(User, 1)
-            previous = await self.checkout.overview_block(session, buyer, supports_lava=True)
+            previous = await self.checkout.overview_block(self.sessions, buyer, supports_lava=True)
             self.assertEqual("buyer@example.com", previous["email"])
-            self.assertIsNone(await self.checkout.overview_block(session, buyer, supports_lava=False))
+            self.assertIsNone(await self.checkout.overview_block(self.sessions, buyer, supports_lava=False))
 
         abandoned = await self._start(email="unpaid@example.com")
         self.assertNotEqual(checkout_id, abandoned["checkout_id"])
         async with self.sessions() as session:
             buyer = await session.get(User, 1)
-            previous = await self.checkout.overview_block(session, buyer, supports_lava=True)
+            previous = await self.checkout.overview_block(self.sessions, buyer, supports_lava=True)
             self.assertEqual("buyer@example.com", previous["email"])
 
     # -- mode and terms ---------------------------------------------------
+    async def test_overview_uses_live_usd_and_rub_without_writing_settings(self):
+        self.fake.prices['MONTHLY']='12.00'
+        self.fake.rub_prices={'MONTHLY':'649.00'}
+        async with self.sessions() as session:
+            before=await LavaConfigService(session).repo.get('lava_top_config_v1')
+        block=await self.checkout.overview_block(self.sessions,await self._user(),supports_lava=True)
+        self.assertEqual(block['plans'][0]['amount'],'12.00')
+        self.assertEqual(block['plans_by_currency']['RUB'][0]['amount'],'649.00')
+        async with self.sessions() as session:
+            self.assertEqual(await LavaConfigService(session).repo.get('lava_top_config_v1'),before)
+
+    async def test_single_currency_policy_filters_quotes_and_refuses_a_disabled_start(self):
+        self.fake.rub_prices={'MONTHLY':'649.00'}
+        config=_config().to_json();config['enabled_currencies']=['USD']
+        async with self.sessions() as session:
+            await LavaConfigService(session).save(config_from_dict(config));await session.commit()
+        block=await self.checkout.overview_block(self.sessions,await self._user(),supports_lava=True)
+        self.assertEqual(set(block['plans_by_currency']),{'USD'})
+        with self.assertRaises(LavaCheckoutError) as caught:
+            await self.checkout.start(self.sessions,user_id=1,plan_type='1_month',email='buyer@example.com',source='pwa',language='ru',currency='RUB')
+        self.assertEqual(caught.exception.code,'plan_unavailable')
+        self.assertIsNone(self.fake.last_create_body)
+        async with self.sessions() as session:
+            self.assertEqual(await session.scalar(select(func.count()).select_from(LavaInvoice)),0)
+
+    async def test_rub_only_policy_keeps_currency_omitting_old_callers_compatible(self):
+        self.fake.rub_prices={'MONTHLY':'649.00'}
+        config=_config(currency='RUB',enabled=('1_month',)).to_json();config['enabled_currencies']=['RUB']
+        async with self.sessions() as session:
+            await LavaConfigService(session).save(config_from_dict(config));await session.commit()
+        block=await self.checkout.overview_block(self.sessions,await self._user(),supports_lava=True)
+        self.assertEqual(set(block['plans_by_currency']),{'RUB'})
+        self.assertEqual((block['currency'],block['plans'][0]['amount']),('RUB','649.00'))
+        created=await self._start()
+        self.assertEqual((created['currency'],created['amount']),('RUB','649.00'))
+
+    async def test_catalog_refresh_changes_new_invoices_but_never_a_historical_amount(self):
+        with patch.object(events,'monotonic',return_value=100):first=await self._start()
+        self.fake.prices['MONTHLY']='12.00'
+        with patch.object(events,'monotonic',return_value=160):second=await self._start(user_id=2)
+        async with self.sessions() as session:
+            old=await session.get(LavaInvoice,first['checkout_id']);new=await session.get(LavaInvoice,second['checkout_id'])
+            self.assertEqual((str(old.expected_amount),str(new.expected_amount)),('10.00','12.00'))
+
+    async def test_unavailable_catalog_cannot_create_an_invoice_from_a_saved_price(self):
+        self.fake.unavailable=True
+        with patch('app.services.monitoring.backend.report_server_failure') as report:
+            with self.assertRaises(LavaCheckoutError) as caught:
+                await self._start(source='pwa')
+        self.assertEqual((caught.exception.code,caught.exception.status),('provider_unavailable',503))
+        report.assert_called_once_with('pwa_pro_checkout','provider_failed','v3_pwa_subscription_lava_start')
+        self.assertIsNone(self.fake.last_create_body)
+        async with self.sessions() as session:
+            row=(await session.execute(select(LavaInvoice))).scalar_one()
+            self.assertEqual((row.status,row.review_reason,row.expected_amount),('failed','catalog_unavailable',None))
+
     async def test_manual_only_mode_keeps_overview_unchanged(self):
         async with self.sessions() as session:
             await LavaConfigService(session).save(_config("manual_only"))
             await session.commit()
             user = await session.get(User, 1)
-            self.assertIsNone(await self.checkout.overview_block(session, user, supports_lava=True))
+            self.assertIsNone(await self.checkout.overview_block(self.sessions, user, supports_lava=True))
         with self.assertRaises(LavaCheckoutError) as ctx:
             await self._start()
         self.assertEqual(ctx.exception.code, "lava_unavailable")
@@ -209,7 +265,7 @@ class LavaPaymentTests(unittest.IsolatedAsyncioTestCase):
         async with self.sessions() as session:
             await LavaConfigService(session).save(config)
             await session.commit()
-            block = await self.checkout.overview_block(session, await session.get(User, 1), supports_lava=True)
+            block = await self.checkout.overview_block(self.sessions, await session.get(User, 1), supports_lava=True)
         self.assertEqual(block["plans_by_currency"]["RUB"][0]["amount"], "900.00")
         self.assertEqual([p["plan_type"] for p in block["plans_by_currency"]["RUB"]], ["1_month"])
         self.assertEqual(block["plans"][0]["currency"], "USD")
@@ -231,7 +287,7 @@ class LavaPaymentTests(unittest.IsolatedAsyncioTestCase):
         async with self.sessions() as session:
             await LavaConfigService(session).save(_config(enabled=("1_month", "6_months")))
             await session.commit()
-            block = await self.checkout.overview_block(session, await session.get(User, 1), supports_lava=True)
+            block = await self.checkout.overview_block(self.sessions, await session.get(User, 1), supports_lava=True)
         self.assertEqual([plan["plan_type"] for plan in block["plans"]], ["1_month", "6_months"])
         self.assertEqual(block["mode"], "both")
         with self.assertRaises(LavaCheckoutError) as ctx:
@@ -240,7 +296,7 @@ class LavaPaymentTests(unittest.IsolatedAsyncioTestCase):
         async with self.sessions() as session:
             await LavaConfigService(session).save(_config())
             await session.commit()
-            block = await self.checkout.overview_block(session, await session.get(User, 1), supports_lava=True)
+            block = await self.checkout.overview_block(self.sessions, await session.get(User, 1), supports_lava=True)
         self.assertIn("3_months", [plan["plan_type"] for plan in block["plans"]])
 
     def test_manual_allowlist_does_not_gain_lava_terms(self):
@@ -498,6 +554,8 @@ class LavaPaymentTests(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn("incorrect-webhook-secret", str(reason))
 
     async def test_provider_outage_on_create_marks_reservation_failed(self):
+        # Exercise invoice POST failure, independently of catalog read outage.
+        await self.runtime.products()
         self.fake.unavailable = True
         with self.assertRaises(LavaCheckoutError) as ctx:
             await self._start()

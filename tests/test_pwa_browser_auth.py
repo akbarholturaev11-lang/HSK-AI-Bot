@@ -135,6 +135,47 @@ class PwaBrowserAuthTests(unittest.IsolatedAsyncioTestCase):
         await self.client.aclose()
         await self.engine.dispose()
 
+    async def test_live_lava_overview_releases_verified_session_sql_before_provider_read(self):
+        import httpx
+        from sqlalchemy import event
+        from app.services.lava.client import LavaClient
+        from app.services.lava.config import LavaConfigService,config_from_dict
+        from app.services.subscription_miniapp_service import SubscriptionMiniAppService
+        from tests.lava_fakes import API_KEY,WEBHOOK_SECRET,OFFER_ID,FakeLava,make_runtime
+        await self.callback(await self.begin())
+        for key,value in {'LAVA_ENABLED':True,'LAVA_API_KEY':API_KEY,'LAVA_WEBHOOK_SECRET':WEBHOOK_SECRET}.items():
+            setattr(self.settings,key,value)
+        async with self.sessions() as db:
+            await LavaConfigService(db).save(config_from_dict({'checkout_mode':'both','currency':'USD',
+                'plans':{'1_month':{'enabled':True,'offer_id':OFFER_ID}}}))
+            await db.commit()
+        fake=FakeLava();fake.prices['MONTHLY']='12.00';fake.rub_prices={'MONTHLY':'649.00'}
+        runtime=make_runtime(self.sessions,fake);runtime.settings=self.settings
+        checked=[0]
+        def out(*args):checked[0]+=1
+        def back(*args):checked[0]-=1
+        def provider(request):
+            self.assertEqual(checked[0],0,request.url.path)
+            return fake.handler(request)
+        runtime.client_factory=lambda:LavaClient(api_key=API_KEY,transport=httpx.MockTransport(provider))
+        app=FastAPI();app.include_router(create_pwa_auth_router(session_factory=self.sessions,
+            settings_obj=self.settings,lava_runtime_getter=lambda:runtime))
+        event.listen(self.engine.sync_engine,'checkout',out);event.listen(self.engine.sync_engine,'checkin',back)
+        try:
+            async with AsyncClient(transport=ASGITransport(app=app),base_url=ORIGIN,cookies=self.client.cookies) as client:
+                csrf=(await client.get('/api/v3/pwa-auth/session')).json()['csrf']
+                with patch.object(SubscriptionMiniAppService,'overview',new=AsyncMock(return_value={'ok':True,'prices':{}})):
+                    response=await client.post('/api/v3/pwa/subscription/overview',
+                        headers={'Origin':ORIGIN,'X-HSK-PWA-CSRF':csrf},
+                        json={'mode':'subscription','source':'v3_locked_lesson','supports_lava':True,'inline_preview':True})
+                self.assertEqual(response.status_code,200,response.text)
+                self.assertEqual(response.headers['cache-control'],'no-store')
+                self.assertEqual(response.json()['lava']['plans'][0]['amount'],'12.00')
+                self.assertEqual(response.json()['lava']['plans_by_currency']['RUB'][0]['amount'],'649.00')
+                self.assertEqual(fake.calls,[('GET','/api/v2/products')])
+        finally:
+            event.remove(self.engine.sync_engine,'checkout',out);event.remove(self.engine.sync_engine,'checkin',back)
+
     async def test_trial_only_li_embed_requires_actor_and_keeps_guest_frame_prohibition(self):
         route = "/iphone-pwa/onboarding/li"
         anonymous = await self.client.get(route + "?offer=trial&embedded=1")

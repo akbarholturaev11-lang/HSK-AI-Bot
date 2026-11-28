@@ -125,6 +125,10 @@ _PWA_INSTALL_GUIDE_ASSETS = (
     "/course_v3_data/hsk-li-onboarding-i18n.js",
     "/course_v3_data/li-onboarding-install.css",
 )
+_PWA_SUBSCRIPTION_CATALOG = "/course_v3_data/hsk-miniapp-i18n.js"
+_PWA_SUBSCRIPTION_CATALOG_TAG = re.compile(
+    rb'<script src="/course_v3_data/hsk-miniapp-i18n\.js(?:\?[^"<>]*)?"></script>'
+)
 
 
 def _static_version(url: str) -> str:
@@ -143,6 +147,8 @@ def _pwa_inline_html(request: Request, path: str, headers: dict[str, str],
                      *, revalidate: bool = True) -> Response:
     stat = os.stat(path)
     key: tuple = (path, stat.st_mtime_ns, stat.st_size)
+    catalog_stat = os.stat("app/static" + _PWA_SUBSCRIPTION_CATALOG)
+    key += (catalog_stat.st_mtime_ns, catalog_stat.st_size)
     if path == _PWA_COURSE_HTML:
         # An edited guide asset must never leave a stale ?v= token cached.
         key += tuple((item.st_mtime_ns, item.st_size) for item in
@@ -164,7 +170,15 @@ def _pwa_inline_html(request: Request, path: str, headers: dict[str, str],
             # only for independent Rating/Friends/Profile loading boundaries.
             source = source.replace(b"</head>", _PWA_PROGRESSIVE_SECTIONS_CSS + b"</head>", 1)
             source = source.replace(b"</body>", _pwa_install_guide_html() + b"</body>", 1)
-        presentation = b'' if b'/hsk-subscription-presentation.js?' in source else b'<script src="/course_v3_data/hsk-subscription-presentation.js?v=20261127-86255bff796c"></script>\n'
+        # Inline checkout uses canonical regional labels. Pin that dependency
+        # with its own content URL even when a shared page has an older tag;
+        # an old cached catalog must not turn More/country labels into blanks.
+        catalog = (f'<script src="{_PWA_SUBSCRIPTION_CATALOG}'
+                   f'?v=pwa-subscription-{_static_version(_PWA_SUBSCRIPTION_CATALOG)}"></script>\n').encode()
+        source, catalog_count = _PWA_SUBSCRIPTION_CATALOG_TAG.subn(catalog.rstrip(), source)
+        presentation = b'' if b'/hsk-subscription-presentation.js?' in source else b'<script src="/course_v3_data/hsk-subscription-presentation.js?v=20261128-fb4f323eb5f7"></script>\n'
+        if not catalog_count:
+            presentation = catalog + presentation
         document = source.replace(b"</body>", presentation + _PWA_INLINE_PRO_HTML + b"</body>", 1)
         etag = 'W/"' + hashlib.sha256(document).hexdigest()[:32] + '"'
         cached = document, etag
@@ -1764,13 +1778,13 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                                 "transport": "iphone_pwa",
                             },
                         )
-                if result.get("ok") and lava_runtime_getter is not None:
-                    from app.api.lava_checkout import attach_lava_block
-                    result = await attach_lava_block(
-                        db, lava_runtime_getter(), actor, result, mode=data.mode,
-                        supports_lava=data.supports_lava is True,
-                        campaign_id=data.campaign_id, feedback_id=data.feedback_id,
-                    )
+            if result.get("ok") and lava_runtime_getter is not None:
+                from app.api.lava_checkout import attach_lava_block
+                result = await attach_lava_block(
+                    session_factory, lava_runtime_getter(), actor, result, mode=data.mode,
+                    supports_lava=data.supports_lava is True,
+                    campaign_id=data.campaign_id, feedback_id=data.feedback_id, source="pwa",
+                )
             return JSONResponse(
                 result, status_code=200 if result.get("ok") else 400,
                 headers=_NO_STORE,

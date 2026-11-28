@@ -68,6 +68,8 @@ class LavaConfig:
     # "<discount source>:<percent>" -> lava promo code (created in the lava
     # cabinet with the same percent). Empty means discounts stay manual-only.
     promo_codes: dict[str, str] = field(default_factory=dict)
+    # Omitted legacy configs already exposed both currencies when priced.
+    enabled_currencies: tuple[str, ...] = LAVA_CURRENCIES
 
     def sellable_terms(self) -> list[LavaTermConfig]:
         return [term for plan in LAVA_PLAN_TYPES if (term := self.terms.get(plan)) and term.sellable]
@@ -82,6 +84,7 @@ class LavaConfig:
             "version": 1,
             "checkout_mode": self.checkout_mode,
             "currency": self.currency,
+            "enabled_currencies": list(self.enabled_currencies),
             "plans": {
                 plan: {
                     "enabled": term.enabled,
@@ -143,6 +146,12 @@ def config_from_dict(data) -> LavaConfig:
     currency = data.get("currency", "USD")
     if currency not in LAVA_CURRENCIES:
         raise LavaConfigError("invalid_currency")
+    enabled_currencies = data.get("enabled_currencies", list(LAVA_CURRENCIES))
+    if (not isinstance(enabled_currencies, list) or not enabled_currencies
+            or any(code not in LAVA_CURRENCIES for code in enabled_currencies)
+            or len(set(enabled_currencies)) != len(enabled_currencies)
+            or currency not in enabled_currencies):
+        raise LavaConfigError("invalid_currency")
     plans = data.get("plans") or {}
     if not isinstance(plans, dict) or set(plans) - set(LAVA_PLAN_TYPES):
         raise LavaConfigError("invalid_plans")
@@ -179,7 +188,8 @@ def config_from_dict(data) -> LavaConfig:
                                      price_amount=amount, price_currency=price_currency,
                                      regional_prices=regional_prices)
     return LavaConfig(checkout_mode=mode, currency=currency, terms=terms,
-                      promo_codes=parse_promo_codes(data.get("promo_codes")))
+                      promo_codes=parse_promo_codes(data.get("promo_codes")),
+                      enabled_currencies=tuple(code for code in LAVA_CURRENCIES if code in enabled_currencies))
 
 
 def sales_configured(settings_obj) -> bool:

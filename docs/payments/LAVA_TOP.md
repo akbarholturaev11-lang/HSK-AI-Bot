@@ -39,14 +39,30 @@ confirms that same sellable plan; it does not repeat the tariff screen. Missing
 or invalid plans keep the canonical selection step. Lava proceeds to email,
 or directly to the existing invoice start when a verified receipt email is known.
 
-RUB is not a separate country toggle and changing the global default currency
-is not required. An enabled term's selected offer must contain a verified RUB
-price for that exact billing period. Admin Save captures both supported
-currencies through the existing signed catalog validation. Older USD-only
-snapshots can be refreshed with the same Save action: it becomes enabled when
-the live catalog has a genuine persisted-price difference, even when the
-editable offer/mode fields are unchanged. Missing provider RUB prices are not
-estimated or converted locally. Existing invoice currencies remain unchanged.
+Admin PWA's existing currency selector supports USD, RUB, or USD + RUB.
+The dual selection preserves the existing regional route: Russia prefers RUB,
+Other prefers USD; it does not change the old default currency for clients
+that omit currency. Legacy configs without `enabled_currencies` keep both.
+A single-currency selection explicitly limits new invoices to that currency.
+
+Prices for enabled offers/periods come from Lava's read-only product catalog,
+not the stored Admin price snapshot. Successful results are cached per runtime
+for 60 seconds; concurrent readers share one lookup with a 3-second whole-fetch
+deadline and a 5-second failed-read backoff. No user/session/discount data is
+cached. On the next checkout read after expiry, merchant price changes become
+visible automatically without Admin Save. The offer selector already displays
+live provider currencies; a price change alone is not an unsaved setting.
+Settings edits retain signed catalog validation, revision checks and the exact
+passkey-bound command.
+
+Overview and invoice preparation close SQL before provider IO. Missing or
+unavailable prices are never estimated, converted locally or replaced with an
+expired snapshot. A catalog failure reports through the existing content-free
+monitoring pipeline; no provider invoice is posted. The selected exact
+subscription offer/period/currency must be priced. Actual created invoice totals
+and verified webhook payments keep their existing authority; historical
+invoice totals and currencies are never rewritten by a catalog refresh.
+Implementation delta: `openspec/changes/lava-live-regional-pricing/`.
 
 The checkout uses the authenticated account's most recent paid Lava receipt
 email, then its linked, verified Google email. With either address, the learner

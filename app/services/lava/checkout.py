@@ -24,7 +24,7 @@ from app.services.discount_service import DiscountService
 from app.services.lava import events, ledger
 from app.services.lava.client import LavaError
 from app.services.lava.config import LavaConfig, LavaConfigService, effective_mode
-from app.services.lava.terms import LAVA_CURRENCIES, LAVA_PAYMENT_METHOD, LAVA_SOURCES, LOCAL_CONTRACT_PREFIX, normalize_email
+from app.services.lava.terms import LAVA_PAYMENT_METHOD, LAVA_SOURCES, LOCAL_CONTRACT_PREFIX, normalize_email
 from app.services.user_access_state_service import UserAccessStateService
 
 logger = logging.getLogger(__name__)
@@ -180,54 +180,84 @@ class LavaCheckoutService:
         return LavaDiscount(source=choice.source, percent=int(choice.percent),
                             campaign_id=choice.campaign_id, promo_code=code)
 
-    async def overview_block(self, session, user, *, supports_lava: bool, context_mode: str | None = None,
-                             campaign_id: int | None = None, feedback_id: int | None = None) -> dict | None:
-        """``None`` keeps the existing overview byte-identical (manual only).
-        Discount flows get a lava block only when a promo code carries the
-        same discount; otherwise they stay on the manual path."""
-        config = await LavaConfigService(session).load()
+    async def overview_block(self, session_factory, user, *, supports_lava: bool, context_mode: str | None = None,
+                             campaign_id: int | None = None, feedback_id: int | None = None,
+                             source: str = "miniapp") -> dict | None:
+        # Own the SQL scope: catalog IO must never retain a caller's transaction.
+        async with session_factory() as session:
+            current = await UserRepository(session).get_by_user_id(user.id)
+            if current is None or current.status == "blocked":
+                return None
+            config = await LavaConfigService(session).load()
+            block = await self._overview_state(session, current, config, supports_lava=supports_lava,
+                context_mode=context_mode, campaign_id=campaign_id, feedback_id=feedback_id)
+        if block is None or block["mode"] == "manual_only":
+            return block
+        if block["blocked_reason"]:
+            return {**block, "plans": []}
+        try:
+            products = await self.runtime.products()
+        except LavaError as exc:
+            logger.warning("lava catalog unavailable: code=%s status=%s", exc.code, exc.http_status)
+            self._report_catalog_failure(source, overview=True)
+            return {**block, "plans": [], "plans_by_currency": {}}
+        from app.services.lava.preflight import find_offer
+        prices = {}
+        for template in block["plans"]:
+            term = config.terms[template["plan_type"]]
+            product, offer = find_offer(products, term.offer_id)
+            if offer is None or product.product_type != "SUBSCRIPTION":
+                continue
+            for currency in config.enabled_currencies:
+                price = offer.price_for(currency, term.periodicity)
+                if price is None or price.amount <= 0:
+                    continue
+                row = {**template, "currency": currency, "amount": str(price.amount)}
+                if template.get("discount_percent"):
+                    row["base_amount"] = row["amount"]
+                    row["amount"] = str(discounted(price.amount, template["discount_percent"]))
+                prices.setdefault(currency, []).append(row)
+        return {**block, "plans": prices.get(config.currency, []), "plans_by_currency": prices}
+
+    async def _overview_state(self, session, user, config: LavaConfig, *, supports_lava: bool,
+                              context_mode: str | None, campaign_id: int | None,
+                              feedback_id: int | None) -> dict | None:
         mode = effective_mode(config, self.settings, client_supports_lava=supports_lava)
         discount_flow = (context_mode or "subscription") in DISCOUNT_MODES
         subscription = await self._subscription(session, user) if supports_lava and not discount_flow else None
         plans = []
-        regional_plans = {}
         if mode != "manual_only":
             for term in config.sellable_terms():
-                row = {"plan_type": term.plan_type, "months": term.months, "days": term.days,
-                       "amount": None if term.price_amount is None else str(term.price_amount),
-                       "currency": term.price_currency or config.currency}
+                row = {"plan_type": term.plan_type, "months": term.months, "days": term.days}
                 discount = await self.resolve_discount(session, user, config, plan_type=term.plan_type,
-                                                       mode=context_mode, campaign_id=campaign_id,
-                                                       feedback_id=feedback_id)
+                    mode=context_mode, campaign_id=campaign_id, feedback_id=feedback_id)
                 if discount is not None:
                     row["discount_percent"] = discount.percent
-                    row["base_amount"] = row["amount"]
-                    estimate = discounted(term.price_amount, discount.percent)
-                    row["amount"] = None if estimate is None else str(estimate)
                 elif discount_flow:
                     continue
                 plans.append(row)
-                for code, amount in term.regional_prices.items():
-                    regional_row = {**row, "currency": code, "amount": str(amount)}
-                    if discount is not None:
-                        regional_row["base_amount"] = str(amount)
-                        regional_row["amount"] = str(discounted(amount, discount.percent))
-                    regional_plans.setdefault(code, []).append(regional_row)
             if discount_flow and not plans:
                 return None
         if mode == "manual_only" and subscription is None:
             return None
         blocked_reason = await self._blocked_reason(session, user)
         email = await self._buyer_email(session, user.id) if plans and not blocked_reason else None
-        return {
-            "mode": mode,
-            "currency": config.currency,
-            "plans": plans,
-            **({"plans_by_currency": {config.currency: plans, **regional_plans}} if regional_plans else {}),
-            "blocked_reason": blocked_reason,
-            "subscription": subscription,
-            "email": email,
+        return {"mode": mode, "currency": config.currency, "plans": plans,
+                "blocked_reason": blocked_reason, "subscription": subscription, "email": email}
+
+    @staticmethod
+    def _report_catalog_failure(source: str, *, overview: bool = False) -> None:
+        from app.services.monitoring.backend import report_server_failure
+        from app.services.monitoring.catalog import ROUTE_MAP
+        routes = {
+            "pwa": "/api/v3/pwa/subscription/overview" if overview else "/api/v3/pwa/subscription/lava/start",
+            "android": "/api/v3/android/subscription/lava/overview" if overview else "/api/v3/android/subscription/lava/start",
+            "miniapp": "/api/subscription-miniapp/overview" if overview else "/api/subscription-miniapp/lava/start",
         }
+        route = routes.get(source)
+        if route in ROUTE_MAP:
+            feature, site = ROUTE_MAP[route]
+            report_server_failure(feature, "provider_failed", site)
 
     async def start(self, session_factory, *, user_id: int, plan_type: str, email: str,
                     source: str, language: str | None, supports_lava: bool = True,
@@ -260,10 +290,7 @@ class LavaCheckoutService:
                     raise LavaCheckoutError("plan_unavailable")
                 # Legacy callers omit currency and keep the old configured default.
                 selected_currency = config.currency if currency is None else currency
-                if selected_currency not in LAVA_CURRENCIES:
-                    raise LavaCheckoutError("plan_unavailable")
-                selected_amount = term.price_amount if currency is None else term.amount_for(selected_currency)
-                if currency is not None and (selected_amount is None or selected_amount <= 0):
+                if selected_currency not in config.enabled_currencies:
                     raise LavaCheckoutError("plan_unavailable")
                 if source == "android" and await session.scalar(select(LavaInvoice.id).where(
                         LavaInvoice.user_id == user.id, LavaInvoice.source == "android",
@@ -292,8 +319,7 @@ class LavaCheckoutService:
                 row = LavaInvoice(
                     contract_id=reservation, kind="first", user_id=user.id, plan_type=plan_type,
                     offer_id=term.offer_id, periodicity=term.periodicity, currency=selected_currency,
-                    expected_amount=(discounted(selected_amount, discount.percent) if discount
-                                     else selected_amount),
+                    expected_amount=None,
                     buyer_email=buyer_email, source=source,
                     pwa_inline_attempt_id=(analytics_attempt_id if source == "pwa" else None),
                     pwa_inline_source=(analytics_source if source == "pwa" else None),
@@ -308,6 +334,32 @@ class LavaCheckoutService:
                 reserved_id = row.id
                 offer_id, periodicity, currency = term.offer_id, term.periodicity, selected_currency
                 promo_code = discount.promo_code if discount else None
+                discount_percent = discount.percent if discount else 0
+        try:
+            from app.services.lava.preflight import find_offer
+            products = await self.runtime.products()
+            product, offer = find_offer(products, offer_id)
+            price = offer.price_for(currency, periodicity) if offer is not None and product.product_type == "SUBSCRIPTION" else None
+            if price is None or price.amount <= 0:
+                raise LavaCheckoutError("plan_unavailable")
+        except (LavaError, LavaCheckoutError) as exc:
+            async with session_factory() as session, session.begin():
+                row = await session.get(LavaInvoice, reserved_id, with_for_update=True)
+                if row is not None:
+                    row.status = "failed"
+                    row.review_reason = "catalog_unavailable" if isinstance(exc, LavaError) else "catalog_price_unavailable"
+            if isinstance(exc, LavaError):
+                logger.warning("lava catalog unavailable: code=%s status=%s", exc.code, exc.http_status)
+                self._report_catalog_failure(source)
+                raise LavaCheckoutError("provider_unavailable", 503) from None
+            raise
+        async with session_factory() as session, session.begin():
+            row = await session.get(LavaInvoice, reserved_id, with_for_update=True)
+            if row is None:
+                raise LavaCheckoutError("user_not_found", 404)
+            if row.status != "created" or row.contract_id != reservation:
+                raise LavaCheckoutError("checkout_in_progress")
+            row.expected_amount = discounted(price.amount, discount_percent) if discount_percent else price.amount
         if pwa_inline_return and source == "pwa":
             # The PWA paywall navigates to the provider in the same window, so
             # the provider must bring the learner back into the app. The

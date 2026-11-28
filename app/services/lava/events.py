@@ -7,6 +7,7 @@ paused or failed processing step is replayed by the reconcile worker.
 """
 from __future__ import annotations
 
+import asyncio
 import hashlib
 import hmac
 import json
@@ -14,6 +15,7 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from decimal import Decimal
+from time import monotonic
 from typing import Awaitable, Callable
 
 from sqlalchemy import select
@@ -23,13 +25,16 @@ from app.db.models.lava import LavaWebhookEvent
 from app.repositories.bot_setting_repo import BotSettingRepository
 from app.repositories.user_repo import UserRepository
 from app.services.lava import ledger
-from app.services.lava.client import LavaClient, LavaError, LavaNotFound
+from app.services.lava.client import LavaClient, LavaError, LavaNotFound, LavaProduct
 from app.services.lava.terms import is_uuid, money, normalize_email
 
 logger = logging.getLogger(__name__)
 
 MAX_WEBHOOK_BYTES = 64 * 1024
 MAX_ATTEMPTS = 30
+CATALOG_TTL_SECONDS = 60
+CATALOG_TIMEOUT_SECONDS = 3
+CATALOG_RETRY_SECONDS = 5
 SUCCESS_EVENTS = {"payment.success", "subscription.recurring.payment.success"}
 PAYMENT_EVENTS = SUCCESS_EVENTS | {
     "payment.failed", "subscription.recurring.payment.failed", "subscription.cancelled",
@@ -55,6 +60,38 @@ class LavaRuntime:
             return self.client_factory()
         return LavaClient(api_key=getattr(self.settings, "LAVA_API_KEY", ""),
                           base_url=getattr(self.settings, "LAVA_API_BASE", "https://gate.lava.top"))
+
+    async def products(self) -> tuple[LavaProduct, ...]:
+        """Merchant-only quotes; never cache accounts, discounts or invoices."""
+        now = monotonic()
+        cached = self._state.get("catalog_products")
+        if cached is not None and now < self._state.get("catalog_until", 0):
+            return cached
+        if now < self._state.get("catalog_retry_at", 0):
+            raise LavaError("provider_unavailable")
+        task = self._state.get("catalog_task")
+        if task is None:
+            task = asyncio.create_task(self._read_products())
+            task.add_done_callback(lambda done: None if done.cancelled() else done.exception())
+            self._state["catalog_task"] = task
+        # Cancelling one learner must not cancel the shared, bounded lookup.
+        return await asyncio.shield(task)
+
+    async def _read_products(self) -> tuple[LavaProduct, ...]:
+        try:
+            async with asyncio.timeout(CATALOG_TIMEOUT_SECONDS):
+                products = tuple(await self.client().list_products())
+            self._state["catalog_products"] = products
+            self._state["catalog_until"] = monotonic() + CATALOG_TTL_SECONDS
+            self._state.pop("catalog_retry_at", None)
+            return products
+        except (LavaError, TimeoutError) as exc:
+            self._state["catalog_retry_at"] = monotonic() + CATALOG_RETRY_SECONDS
+            if isinstance(exc, LavaError):
+                raise
+            raise LavaError("provider_unavailable") from None
+        finally:
+            self._state.pop("catalog_task", None)
 
 
 @dataclass

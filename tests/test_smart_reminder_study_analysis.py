@@ -38,6 +38,8 @@ class StudyChecks:
     async def asyncSetUp(self):
         cls = learning_fixture.PostgreSQLTargetLearningTests if self.postgres else learning_fixture.SQLiteTargetLearningTests
         self.episode = cls(methodName="test_original_target_after_real_native_receipt_is_read_only_and_replay_stable")
+        if hasattr(self,"sqlite_url"):
+            self.episode.sqlite_url=self.sqlite_url
         await self.episode.asyncSetUp()
         self.storage, self.case = self.episode.fixture, self.episode.case
         self.analysis = self.episode.analysis

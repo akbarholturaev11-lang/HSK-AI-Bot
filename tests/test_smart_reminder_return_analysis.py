@@ -1,7 +1,9 @@
 """24 elapsed hours, no click gate, distinct contact/global-unit grains."""
 import asyncio
+import tempfile
 from datetime import datetime, timedelta, timezone
 import unittest
+from pathlib import Path
 from uuid import uuid4
 from zoneinfo import ZoneInfo
 from unittest.mock import patch
@@ -30,16 +32,19 @@ class ReturnChecks:
     async def asyncSetUp(self):
         cls=fixture.PostgreSQLActivityAnalysisTests if self.postgres else fixture.SQLiteActivityAnalysisTests
         self.base=cls(methodName="test_failed_no_xp_manual_return_is_one_study_day_not_completed_unit")
+        if not self.postgres:
+            storage=tempfile.TemporaryDirectory(prefix="hsk-return-analysis-")
+            self.addCleanup(storage.cleanup)
+            self.base.sqlite_url=f"sqlite+aiosqlite:///{Path(storage.name) / 'return.sqlite'}"
         await self.base.asyncSetUp()
+        # unittest does not call asyncTearDown when later setup work fails.
+        self.addAsyncCleanup(self.base.asyncTearDown)
         self.case,self.storage,self.analysis=self.base.case,self.base.storage,self.base.analysis
         await self.base.episode.contact(report=False)
         self.contact_at=datetime(2026,10,29,23,50,tzinfo=UTC)
         await self.rebase(self.contact_at)
         self.at=self.contact_at+timedelta(minutes=20)
         self.storage.moment=self.at+timedelta(minutes=1)
-
-    async def asyncTearDown(self):
-        if hasattr(self,"base"): await self.base.asyncTearDown()
 
     async def rebase(self,at,zone="Etc/UTC"):
         old=_utc((await self.storage.rows(schema.ATTEMPT))[0]["started_at"])
@@ -343,5 +348,28 @@ class ReturnChecks:
         self.assertEqual(sum(r["fact_count"] for r in await self.storage.rows(MONTHLY) if r["stage"]=="study_unit_24h"),1)
 
 
-class SQLiteReturnAnalysisTests(ReturnChecks,unittest.IsolatedAsyncioTestCase): pass
+class SQLiteReturnAnalysisTests(ReturnChecks,unittest.IsolatedAsyncioTestCase):
+    async def test_owned_fixture_survives_optional_observer_connection_invalidation(self):
+        tables=(schema.JOB,schema.ATTEMPT,schema.GRANT)
+        before=[await self.storage.rows(table) for table in tables]
+        async with self.case.engine.connect() as connection:
+            await connection.invalidate()
+        self.assertEqual(before,[await self.storage.rows(table) for table in tables])
 class PostgreSQLReturnAnalysisTests(ReturnChecks,unittest.IsolatedAsyncioTestCase): postgres=True
+
+
+class ReturnFixtureLifecycleTests(unittest.TestCase):
+    def test_failure_after_nested_setup_still_closes_the_owned_client(self):
+        class SetupFailure(SQLiteReturnAnalysisTests):
+            async def rebase(self,*args,**kwargs):
+                raise RuntimeError("synthetic late setup failure")
+        case=SetupFailure('test_owned_fixture_survives_optional_observer_connection_invalidation')
+        result=unittest.TestResult()
+        case.run(result)
+        closed=case.case.client.is_closed
+        # Keep even the regression's old/broken version from leaking a worker.
+        if not closed:
+            asyncio.run(case.base.asyncTearDown())
+        self.assertEqual(len(result.errors),1)
+        self.assertIn('synthetic late setup failure',result.errors[0][1])
+        self.assertTrue(closed)

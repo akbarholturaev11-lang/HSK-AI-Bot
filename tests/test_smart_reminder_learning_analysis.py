@@ -24,6 +24,8 @@ class TargetLearningChecks:
     async def asyncSetUp(self):
         cls = fixture.PostgreSQLAnalysisTests if self.postgres else fixture.SQLiteAnalysisTests
         self.fixture = cls(methodName="test_reserved_fact_replay_counts_once_and_source_is_unchanged")
+        if hasattr(self,"sqlite_url"):
+            self.fixture.sqlite_url=self.sqlite_url
         await self.fixture.asyncSetUp()
         self.case = self.fixture.case
         self.analysis = self.fixture.analysis

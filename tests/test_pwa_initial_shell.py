@@ -98,13 +98,25 @@ class PwaInitialShellTests(unittest.TestCase):
             self.assertNotIn(b"pwa-initial-shell", page.body)
             self.assertNotIn(b"hsk-pwa-progressive-sections", page.body)
 
+    def test_inline_checkout_pins_one_canonical_label_catalog_before_its_module(self):
+        url = "/course_v3_data/hsk-miniapp-i18n.js"
+        expected = (url + "?v=pwa-subscription-" + _version(url)).encode()
+        for existing in ("", '<script src="' + url + '?v=old-cached-catalog"></script>'):
+            with self.subTest(existing=bool(existing)), tempfile.NamedTemporaryFile(suffix=".html") as file:
+                Path(file.name).write_text('<html><body>' + existing + '</body></html>')
+                body = _pwa_inline_html(request(), file.name, {}).body
+                self.assertEqual(body.count(url.encode()), 1)
+                self.assertIn(expected, body)
+                self.assertNotIn(b"old-cached-catalog", body)
+                self.assertLess(body.index(expected), body.index(b"iphone-pwa-inline-pro.js"))
+
     def test_inline_response_never_modifies_shared_file(self):
         _pwa_inline_html(request(), "app/static/course-v3.html", {})
         self.assertEqual(Path("app/static/course-v3.html").read_bytes(), self.canonical)
 
     def test_inline_pro_immutable_urls_match_current_asset_bytes(self):
         body = _pwa_inline_html(request(), "app/static/course-v3.html", {}).body.decode()
-        for name in ("iphone-pwa-inline-pro.js", "iphone-pwa-inline-pro.css", "iphone-pwa-inline-pro-bridge.js"):
+        for name in ("iphone-pwa-inline-pro.js", "iphone-pwa-inline-pro.css", "iphone-pwa-inline-pro-bridge.js", "hsk-subscription-presentation.js"):
             with self.subTest(asset=name):
                 raw = Path("app/static/course_v3_data", name).read_bytes()
                 digest = hashlib.sha1(b"blob " + str(len(raw)).encode() + b"\0" + raw).hexdigest()[:12]

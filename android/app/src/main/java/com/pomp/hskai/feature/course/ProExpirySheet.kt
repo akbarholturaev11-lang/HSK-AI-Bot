@@ -17,6 +17,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -25,7 +26,9 @@ import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.feature.assistant.AssistantModalBottomSheet
-import com.pomp.hskai.feature.limit.ProPanda
+import com.pomp.hskai.core.design.components.HskCharacter
+import com.pomp.hskai.core.design.components.HskCharacterMood
+import com.pomp.hskai.core.design.components.HskCharacterStage
 
 /** Presentation of a verified ended period. No access or billing changes. */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,7 +46,12 @@ internal fun ProExpirySheet(onRestore: () -> Unit, onDismiss: () -> Unit, title:
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
-            ProPanda(Modifier.size(168.dp))
+            // Reuse the cast's concerned face, without its answer-feedback
+            // reaction or the celebratory Pro halo. The period has ended.
+            HskCharacterStage(
+                character = HskCharacter.Panda, mood = HskCharacterMood.Wrong,
+                modifier = Modifier.size(168.dp).testTag("pro-expiry-panda"),
+            )
             Text(title ?: stringResource(R.string.hsk_course_pro_expiry_title),
                 color = PompColors.Ink, fontSize = 23.sp, fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center)
@@ -56,7 +64,7 @@ internal fun ProExpirySheet(onRestore: () -> Unit, onDismiss: () -> Unit, title:
             }
             TextButton(onClick = onDismiss, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
                 Text(stringResource(R.string.hsk_course_pro_expiry_limited),
-                    color = PompColors.Ink, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+                    color = PompColors.InkSecondary, fontWeight = FontWeight.Medium, textAlign = TextAlign.Center)
             }
         }
     }

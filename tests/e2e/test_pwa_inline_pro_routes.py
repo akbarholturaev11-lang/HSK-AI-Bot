@@ -4,6 +4,7 @@ Synthetic pages focus on the runtime bridge contract. Full PWA/Telegram
 HTML remains separately source-guarded; real iOS payments require device QA.
 """
 import json
+import ast
 import mimetypes
 import os
 from pathlib import Path
@@ -79,6 +80,50 @@ def _serve(route):
         route.fulfill(path=str(file), content_type=mime or "application/octet-stream")
         return
     route.fulfill(status=404, body="")
+
+
+@pytest.mark.parametrize('lang',['uz','ru','tj'])
+@pytest.mark.parametrize('pathname,filename',[
+    ('/iphone-pwa/course','course-v3.html'),
+    ('/iphone-pwa/practice/recognition','course_v3_recognition.html'),
+])
+def test_real_learner_documents_keep_named_country_and_visible_other_plans(lang,pathname,filename):
+    # Use the real learner document and exactly the route's inline module tags.
+    # The backend renderer separately proves catalog pinning/old-tag rollover.
+    api_source=(STATIC.parents[1]/'app/api/pwa_auth.py').read_text()
+    tree=ast.parse(api_source)
+    injection=next(ast.literal_eval(node.value.func.value) for node in tree.body
+                   if isinstance(node,ast.Assign) and any(isinstance(target,ast.Name)
+                   and target.id=='_PWA_INLINE_PRO_HTML' for target in node.targets))
+    html=(STATIC/filename).read_text().replace('</body>',
+        '<script src="/course_v3_data/hsk-subscription-presentation.js?v=qa"></script>'
+        +injection+'</body>')
+    messages=json.loads((STATIC.parents[1]/f'localization/ui/{lang}/miniapp.json').read_text())['messages']
+    more=messages['ui.subscription.regional.more']
+    with playwright.sync_playwright() as pw:
+        browser=getattr(pw,os.getenv('PWA_E2E_ENGINE','chromium')).launch()
+        context=browser.new_context(**pw.devices['iPhone 13'])
+        page=context.new_page();errors=[]
+        page.on('pageerror',lambda error:errors.append(str(error)))
+        def serve(route):
+            if urlsplit(route.request.url).path==pathname:
+                route.fulfill(body=html,content_type='text/html; charset=utf-8')
+            else:_serve(route)
+        context.route('**/*',serve)
+        page.goto(ORIGIN+pathname,wait_until='domcontentloaded')
+        page.evaluate('(lang)=>HSKPwaInlinePro.open({source:"v3_locked_lesson",lang})',lang)
+        other=page.get_by_role('button',name=more,exact=True)
+        other.wait_for(state='visible')
+        box=other.bounding_box()
+        assert box and box['y']>=0 and box['y']+box['height']<=page.viewport_size['height']
+        select=page.locator('#hsk-inline-pro .hip-region')
+        for country in ['tj','uz','ru','cn','other']:
+            assert messages['ui.subscription.regional.'+country] in select.locator('option[value="'+country+'"]').inner_text()
+        other.click()
+        page.get_by_role('heading',name=more,exact=True).wait_for()
+        assert page.locator('#hsk-inline-pro .hip-plan').count()==3
+        assert not errors,errors
+        browser.close()
 
 
 @pytest.mark.parametrize("pathname,invoke,original", [
@@ -375,4 +420,41 @@ def test_limit_selected_lava_plan_goes_to_email_or_invoice_without_reopening_lim
         assert starts[0]['email'] == (saved_email or 'new@example.com')
         assert starts[0]['attempt_id']
         assert not errors, errors
+        browser.close()
+
+
+@pytest.mark.parametrize('lang', ['uz', 'ru', 'tj'])
+@pytest.mark.parametrize('width', [320, 390, 430])
+def test_real_expiry_sheet_keeps_concerned_panda_and_reachable_choices(lang, width):
+    from tests.e2e.test_pwa_screen_alignment import ScreenPage
+    with playwright.sync_playwright() as pw:
+        browser = getattr(pw, os.getenv('PWA_E2E_ENGINE', 'chromium')).launch()
+        fixture = ScreenPage(lang, eligible=False)
+        fixture.data['user'].update(plan='free', state='EXPIRED', is_paid=False)
+        fixture.data['pro_expiry_notice'] = 'a' * 64
+        page = fixture.open(browser, width)
+        errors = []
+        page.on('pageerror', lambda error: errors.append(str(error)))
+        sheet = page.locator('#sheet.pro-expiry-sheet.on')
+        sheet.wait_for(state='visible')
+        panda = sheet.locator('.pro-expiry-panda .hsk-character--panda.hsk-mood-wrong')
+        assert panda.is_visible()
+        assert sheet.locator('.hc-spark').count() == 0
+        restore = sheet.locator('.scta')
+        dismiss = sheet.locator('.pro-expiry-skip')
+        for height in (568, 844):
+            page.set_viewport_size({'width': width, 'height': height})
+            for button in (restore, dismiss):
+                button.scroll_into_view_if_needed()
+                box = button.bounding_box()
+                assert button.is_visible() and box['height'] >= 44
+                assert box['y'] >= 0 and box['y'] + box['height'] <= height
+            assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
+        if lang == 'ru':
+            assert sheet.locator('h2').inner_text() == 'Срок действия подписки HSK AI Pro истёк.'
+            assert restore.inner_text() == 'ВОССТАНОВИТЬ PRO'
+            assert dismiss.inner_text() == 'ПОТЕРЯТЬ БЕЗЛИМИТ'
+        dismiss.click()
+        assert not sheet.is_visible()
+        assert not fixture.starts and not fixture.onboarding_writes and not errors
         browser.close()

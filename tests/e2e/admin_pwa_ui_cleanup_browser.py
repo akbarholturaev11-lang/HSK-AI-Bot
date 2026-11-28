@@ -25,7 +25,7 @@ STAMP = "2026-10-25T01:00:00+00:00"
 UUID = "12345678-1234-1234-1234-123456789abc"
 
 
-async def browser_checks(output):
+async def browser_checks(output, *, lava_only=False):
     output.mkdir(parents=True, exist_ok=True)
     app = FastAPI()
     app.include_router(create_admin_pwa_bootstrap_router(settings_obj=SimpleNamespace(
@@ -180,7 +180,9 @@ async def browser_checks(output):
                                 "admin_campaign:30": "SYNTH30"},
             }, "status": {}})
         elif path.endswith("/lava/catalog"):
-            data.update(preflight={"offers": [], "checks": []})
+            data.update(preflight={"offers": [{"offer_id":UUID,"offer_name":"Synthetic Pro","prices":[
+                {"amount":"11.00" if lava_only else "10.00","currency":"USD","periodicity":"MONTHLY"},
+                {"amount":"950.00" if lava_only else "900.00","currency":"RUB","periodicity":"MONTHLY"}]}], "checks": []})
         elif path.endswith("/lava/prepare"):
             await route.fulfill(status=409, json={"ok": False, "error": "confirmation_changed"})
             return
@@ -219,13 +221,26 @@ async def browser_checks(output):
                         await page.locator("#drawerLocale").select_option(language)
                     else:
                         await page.locator("#locale").select_option(language)
-                    if width == 1440 and language == "ru":
+                    if lava_only or (width == 1440 and language == "ru"):
+                        if not await page.locator('[data-route="payments"]:visible').count():
+                            await page.locator('[data-action="more"]').click()
                         await page.locator('[data-route="payments"]:visible').first.click()
                         await page.locator('[data-finance-tab="methods"]').click()
                         await page.locator('[data-action="lavaSettings"]').click()
                         save = page.locator('[data-action="lavaPrepare"]')
                         await expect(save).to_be_disabled()
-                        await expect(page.locator("#drawerContent")).to_contain_text("10.00 USD / 900.00 RUB")
+                        await expect(page.locator('#lavaCurrency option')).to_have_count(3)
+                        await expect(page.locator('#lavaCurrency')).to_have_value('both')
+                        await expect(page.locator('#lavaCurrency option[value="both"]')).to_have_text('USD + RUB')
+                        await expect(page.locator('#lavaOffer_1_month')).to_contain_text(
+                            '11.00 USD / 950.00 RUB' if lava_only else '10.00 USD / 900.00 RUB')
+                        for currency in ['USD','RUB']:
+                            await page.locator('#lavaCurrency').select_option(currency)
+                            await expect(save).to_be_enabled()
+                            await page.locator('#lavaCurrency').select_option('both')
+                            await expect(save).to_be_disabled()
+                        await page.locator('.form-field').filter(has=page.locator('#lavaCurrency')).screenshot(
+                            path=str(output/f'lava-currency-{language}-{width}.png'))
                         await expect(page.locator('#drawerFoot [data-action="close"]')).to_have_count(0)
                         await page.locator("#lavaPromoReferral").fill(" SYNTH20 ")
                         await expect(save).to_be_disabled()
@@ -240,7 +255,12 @@ async def browser_checks(output):
                         request = next(body for path, body in requests if path.endswith("/lava/prepare"))
                         assert request["promo_codes"]["admin_campaign:30"] == "SYNTH30"
                         assert request["promo_codes"]["referral:20"] == "SYNTH20"
+                        assert request['currency']=='USD'
+                        assert request['enabled_currencies']==['USD','RUB']
                         await page.locator(".drawer-close").click()
+                        if lava_only:
+                            requests.clear()
+                            continue
                     await page.locator('[data-action="feedback"]').click()
                     await expect(page.locator(".inbox-minimal-row")).to_have_count(4)
                     assert not await page.locator("#inboxSource,#inboxPriority,#inboxStatus,#inboxPeriod,#inboxSearchQuery").count()
@@ -313,6 +333,11 @@ async def browser_checks(output):
                     await page.screenshot(path=str(output / f"feedback-stats-{language}-{width}.png"))
                     assert await page.evaluate("document.documentElement.scrollWidth <= innerWidth"), language
                     requests.clear()
+            if lava_only:
+                assert not errors,errors
+                assert not await page.evaluate('window.cspFailures'),await page.evaluate('window.cspFailures')
+                print('Lava currency selector: UZ/RU/TJ mobile/desktop, three choices, exact revert and no price-only Save passed')
+                return
             # The simplified UI has no manual triage, menus or importance flags.
             await page.set_viewport_size({"width": 390, "height": 844})
             await page.locator('[data-action="feedback"]').click()
@@ -502,4 +527,6 @@ async def browser_checks(output):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path, default=Path("/tmp/hsk-admin-pwa-ui-cleanup"))
-    asyncio.run(browser_checks(parser.parse_args().output))
+    parser.add_argument('--lava-only', action='store_true')
+    args=parser.parse_args()
+    asyncio.run(browser_checks(args.output,lava_only=args.lava_only))

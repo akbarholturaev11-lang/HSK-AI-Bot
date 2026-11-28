@@ -202,6 +202,13 @@ class Hsk30EntryFlowTest {
             return
         }
         compose.onNodeWithTag("hsk30-book-title").assertDoesNotExist()
+        compose.onNodeWithTag("pro-expiry-panda").performScrollTo().assertIsDisplayed()
+        val instrumentation = InstrumentationRegistry.getInstrumentation()
+        instrumentation.waitForIdleSync()
+        instrumentation.uiAutomation.takeScreenshot()?.let { image ->
+            File(instrumentation.targetContext.getExternalFilesDir(null), "ui-fix-pro-expiry.png")
+                .outputStream().use { image.compress(Bitmap.CompressFormat.PNG, 100, it) }
+        }
         compose.onNodeWithText(strings.getString(R.string.hsk_course_pro_expiry_restore))
             .performScrollTo().assertIsDisplayed()
         compose.onNodeWithText(strings.getString(R.string.hsk_course_pro_expiry_limited))
