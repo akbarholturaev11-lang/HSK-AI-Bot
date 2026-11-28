@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="checkout_heading">HSK AI PRO</string>
+    <string name="checkout_limit_title">Limit tugadi</string>
+    <string name="checkout_limit_subtitle">Davom etish uchun Pro oling</string>
+    <string name="checkout_benefit_lessons">Pro bilan darslarni davom ettiring</string>
+    <string name="checkout_benefit_voice">AI bilan ovozli mashqlar</string>
+    <string name="checkout_benefit_ads">Reklamasiz o‘rganing</string>
+    <string name="checkout_manual">Oddiy to‘lov usuli</string>
+    <string name="checkout_manual_hint">Bank kartasi, Alipay yoki WeChat</string>
+    <string name="checkout_email">To‘lov uchun email</string>
+    <string name="checkout_pending_title">To‘lov tasdiqlanishi kutilmoqda</string>
+    <string name="checkout_paid_title">Pro faollashtirildi</string>
+    <string name="checkout_year">1 yil</string>
+    <string name="checkout_country_country">To‘lov davlati</string>
+    <string name="checkout_country_tj">Tojikiston</string>
+    <string name="checkout_country_uz">O‘zbekiston</string>
+    <string name="checkout_country_ru">Rossiya</string>
+    <string name="checkout_country_cn">Xitoy</string>
+    <string name="checkout_country_other">Boshqa davlat</string>
+</resources>

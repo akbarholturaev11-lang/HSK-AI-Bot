@@ -20,6 +20,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.*
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -41,6 +45,7 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
     onRegionSelected: (String) -> Unit = {},
     onRouteSelected: ((String) -> Unit)? = null,
     onProviderAvailable: (Boolean) -> Unit = {},
+    limitOffer: Boolean = false,
 ): NativeLavaRoute {
     // Keep the separate permanent-course product and existing discount entry routes manual.
     if (origin.startsWith("hsk30") || origin.contains("discount")) return NativeLavaRoute(false)
@@ -92,11 +97,6 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
             model.urlOpened(success)
         }
     }
-    DisposableEffect(lifecycle, model) {
-        val observer = LifecycleEventObserver { _, event -> if (event == Lifecycle.Event.ON_RESUME) model.refresh() }
-        lifecycle.lifecycle.addObserver(observer)
-        onDispose { lifecycle.lifecycle.removeObserver(observer) }
-    }
     // Manual receipt recovery is not a new sale. Never hide it behind a blocked provider screen.
     if (state.hasManualPending()) return NativeLavaRoute(false, state.providerEntryId)
     val automaticManual = block?.prefersManual(effectiveRegion) == true
@@ -105,82 +105,119 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
         (!state.loading && block == null && state.mode == "subscription")) return NativeLavaRoute(false, state.providerEntryId)
     if (block?.mode == "manual_only" && block.subscription == null && state.checkoutId == 0 &&
         block.blocked_reason == null && !state.error) return NativeLavaRoute(false, state.providerEntryId)
-    BackHandler { model.requestProviderClose() }
-    HskSceneSurface(Modifier.fillMaxSize()) {
-        Column(Modifier.fillMaxSize().safeDrawingPadding().padding(20.dp)) {
-            Row(Modifier.fillMaxWidth()) {
-                Text(stringResource(R.string.sub_heading), style = MaterialTheme.typography.headlineMedium, modifier = Modifier.weight(1f))
-                IconButton(onClick = model::requestProviderClose, enabled = !state.busy) {
-                    Icon(Icons.Default.Close, contentDescription = stringResource(R.string.hsk_common_action_close))
+    var allPlans by rememberSaveable(origin) { mutableStateOf(false) }
+    var emailStep by rememberSaveable(origin) { mutableStateOf(false) }
+    var supportOpen by remember { mutableStateOf(false) }
+    val primaryPlans = providerDisplayPlans(state.visiblePlans, limitOffer && !allPlans)
+    LaunchedEffect(primaryPlans.map { it.plan_type }, emailStep, state.loading) {
+        if (!state.loading && !emailStep && primaryPlans.isNotEmpty() && primaryPlans.none { it.plan_type == state.plan })
+            model.chooseProviderPlan(primaryPlans.first().plan_type)
+    }
+    val terminal = state.checkoutId > 0 || block?.subscription != null
+    val firstStep = !terminal && !emailStep && !(limitOffer && allPlans)
+    val focus = androidx.compose.ui.platform.LocalFocusManager.current
+    val keyboard = androidx.compose.ui.platform.LocalSoftwareKeyboardController.current
+    val navigate: () -> Unit = {
+        focus.clearFocus()
+        keyboard?.hide()
+        when {
+            emailStep -> emailStep = false
+            limitOffer && allPlans -> allPlans = false
+            terminal -> model.close()
+            else -> model.requestProviderClose()
+        }
+    }
+    BackHandler(enabled = state.offer == null) { if (!state.busy) navigate() }
+    // A return before the webhook is normal. Keep checking the same invoice,
+    // only in the foreground; backgrounding cancels the timer, never starts a sale.
+    LaunchedEffect(lifecycle, model, state.checkoutId, state.uncertainStart) {
+        lifecycle.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            if (model.state.value.uncertainStart) model.load()
+            if (model.state.value.checkoutId > 0) {
+                repeat(180) {
+                    val current = model.state.value
+                    if (current.status !in setOf("pending", "")) return@repeatOnLifecycle
+                    model.refresh()
+                    kotlinx.coroutines.delay(5_000)
                 }
             }
-            Column(Modifier.weight(1f).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        }
+    }
+    HskSceneSurface(Modifier.fillMaxSize()) {
+        Column(Modifier.fillMaxSize().background(com.pomp.hskai.core.design.ProColors.Paper)
+            .safeDrawingPadding().imePadding().widthIn(max = 520.dp).padding(horizontal = 16.dp)) {
+            CheckoutHeader(firstStep, navigate, { supportOpen = true }, enabled = !state.busy)
+            if (!limitOffer && !terminal) CheckoutProgress(if (emailStep) 1 else 0,
+                if (block?.email.isNullOrBlank()) 2 else 1)
+            Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(vertical = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 when {
                     state.loading -> {
-                        Text(stringResource(R.string.lava_title), style = MaterialTheme.typography.titleLarge)
-                        ProviderPlanSkeleton()
-                        Spacer(Modifier.height(48.dp))
-                        Spacer(Modifier.fillMaxWidth().height(56.dp).testTag("provider-email"))
-                        Text(stringResource(R.string.lava_terms), style = MaterialTheme.typography.bodySmall)
-                        Button(onClick = {}, enabled = false, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.lava_pay)) }
+                        if (limitOffer) LimitOfferHero(origin)
+                        else Text(stringResource(R.string.sub_plans_heading), color = com.pomp.hskai.core.design.ProColors.Ink,
+                            fontSize = 16.sp, fontWeight = FontWeight.ExtraBold)
+                        ProviderPlanSkeleton(limitOffer)
                     }
                     state.checkoutId > 0 -> {
-                        Text(stringResource(when (state.status) {
-                            "paid" -> R.string.sub_pro_approved_body
-                            "pending" -> R.string.lava_pending
-                            else -> R.string.lava_failed
-                        }))
-                        if (state.status != "paid") {
-                            OutlinedButton(onClick = model::refresh, enabled = !state.busy) { Text(stringResource(R.string.lava_check)) }
-                            if (state.paymentUrl != null) TextButton(onClick = model::reopenPayment, enabled = !state.busy) { Text(stringResource(R.string.lava_open)) }
-                        } else Button(onClick = onClose) { Text(stringResource(R.string.sub_return_app)) }
+                        ProviderStatus(state)
                     }
                     block?.subscription != null -> {
-                        Text(stringResource(if (block.subscription.auto_renew) R.string.lava_terms else R.string.lava_cancelled))
+                        CheckoutPanda(Modifier.align(Alignment.CenterHorizontally).size(148.dp))
+                        Text(stringResource(R.string.checkout_heading), fontSize = 28.sp, fontWeight = FontWeight.ExtraBold,
+                            color = com.pomp.hskai.core.design.ProColors.Ink, textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth())
+                        Text(stringResource(if (block.subscription.auto_renew) R.string.lava_terms else R.string.lava_cancelled),
+                            color = com.pomp.hskai.core.design.ProColors.Muted)
+                        block.subscription.pro_until?.let { Text(it.substringBefore('T'), color = com.pomp.hskai.core.design.ProColors.Ink) }
                         if (block.subscription.auto_renew) TextButton(onClick = model::cancelRenewal, enabled = !state.busy) {
-                            Text(stringResource(R.string.lava_cancel))
+                            Text(stringResource(R.string.lava_cancel), color = com.pomp.hskai.core.design.ProColors.CtaDeep)
                         }
                     }
+                    block != null && emailStep -> {
+                        val plan = state.visiblePlans.firstOrNull { it.plan_type == state.plan }
+                        Text(stringResource(R.string.checkout_email), fontSize = 24.sp,
+                            fontWeight = FontWeight.ExtraBold, color = com.pomp.hskai.core.design.ProColors.Ink)
+                        plan?.let { ProviderPlanCard(it, true, {}, Modifier.fillMaxWidth(), enabled = false) }
+                        OutlinedTextField(value = state.email, onValueChange = model::email,
+                            enabled = !state.busy, singleLine = true, label = { Text(stringResource(R.string.lava_email)) },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                            shape = RoundedCornerShape(16.dp), modifier = Modifier.fillMaxWidth().testTag("provider-email"))
+                        Text(stringResource(R.string.lava_terms), color = com.pomp.hskai.core.design.ProColors.Muted,
+                            style = MaterialTheme.typography.bodySmall)
+                    }
                     block != null -> {
-                        Text(stringResource(R.string.lava_title), style = MaterialTheme.typography.titleLarge)
-                        val plans = state.visiblePlans.filter { it.amount != null && it.months in setOf(1, 3, 6, 12) }
-                        Column(Modifier.fillMaxWidth().testTag("provider-plans"), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                            plans.chunked(2).forEach { row ->
-                                Row(Modifier.fillMaxWidth().height(110.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                    row.forEach { plan ->
-                                        FilterChip(selected = state.plan == plan.plan_type, enabled = !state.busy,
-                                            onClick = { model.chooseProviderPlan(plan.plan_type) }, modifier = Modifier.weight(1f).fillMaxHeight().testTag("provider-plan:${plan.plan_type}"), label = {
-                                                Column {
-                                                    Text(stringResource(R.string.lava_months, plan.months))
-                                                    Text(stringResource(R.string.lava_price, plan.amount.orEmpty(), plan.currency))
-                                                    ProviderReferencePrice(plan)
-                                                }
-                                            })
-                                    }
+                        if (limitOffer && !allPlans) LimitOfferHero(origin)
+                        else Text(stringResource(R.string.sub_plans_heading), fontSize = 16.sp,
+                            fontWeight = FontWeight.ExtraBold, color = com.pomp.hskai.core.design.ProColors.Ink)
+                        val plans = providerDisplayPlans(state.visiblePlans, limitOffer && !allPlans)
+                        if (plans.isEmpty()) {
+                            Text(stringResource(R.string.sub_unavailable), color = com.pomp.hskai.core.design.ProColors.Muted)
+                            TextButton(onClick = model::load, enabled = !state.busy) { Text(stringResource(R.string.sub_retry)) }
+                        }
+                        ProviderPlans(plans, state.plan, !state.busy, limitOffer,
+                            model::chooseProviderPlan)
+                        if (state.mode == "subscription") ProviderRegionSelector(effectiveRegion, canChooseRoute) {
+                            model.chooseRegion(it); manual = false; allPlans = false; onRegionSelected(it)
+                        }
+                        if (canUseManual && (!limitOffer || allPlans)) {
+                            OutlinedButton(onClick = { manual = true; onRouteSelected?.invoke("manual") },
+                                enabled = !state.busy, shape = RoundedCornerShape(16.dp),
+                                border = androidx.compose.foundation.BorderStroke(1.dp, com.pomp.hskai.core.design.ProColors.Line),
+                                modifier = Modifier.fillMaxWidth().heightIn(min = 64.dp)) {
+                                Column(Modifier.weight(1f)) {
+                                    Text(stringResource(R.string.checkout_manual), color = com.pomp.hskai.core.design.ProColors.Ink)
+                                    Text(stringResource(R.string.checkout_manual_hint), color = com.pomp.hskai.core.design.ProColors.Muted,
+                                        fontSize = 12.sp)
                                 }
                             }
                         }
-                        if (state.mode == "subscription") {
-                            ProviderRegionSelector(effectiveRegion, canChooseRoute) {
-                                model.chooseRegion(it)
-                                manual = false
-                                onRegionSelected(it)
-                            }
-                        } else Spacer(Modifier.height(48.dp))
-                        if (block.email.isNullOrBlank()) {
-                            OutlinedTextField(value = state.email, onValueChange = model::email,
-                                enabled = !state.busy, singleLine = true, label = { Text(stringResource(R.string.lava_email)) },
-                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email), modifier = Modifier.fillMaxWidth().testTag("provider-email"))
-                        }
-                        Text(stringResource(R.string.lava_terms), style = MaterialTheme.typography.bodySmall)
-                        if (block.blocked_reason != null) Text(stringResource(R.string.lava_blocked))
-                        Button(onClick = model::start, enabled = !state.busy && !state.uncertainStart &&
-                            block.blocked_reason == null && state.region == effectiveRegion &&
-                            state.plan.isNotBlank() && state.email.contains("@"),
-                            modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.lava_pay)) }
+                        if (!limitOffer) Text(stringResource(R.string.lava_terms), color = com.pomp.hskai.core.design.ProColors.Muted,
+                            fontSize = 12.sp, lineHeight = 18.sp)
+                        if (block.blocked_reason != null) Text(stringResource(R.string.lava_blocked),
+                            color = com.pomp.hskai.core.design.ProColors.Muted)
                     }
                 }
-                if (state.uncertainStart) Text(stringResource(R.string.lava_uncertain))
+                if (state.uncertainStart) Text(stringResource(R.string.lava_uncertain), color = com.pomp.hskai.core.design.ProColors.Muted)
                 if (state.error) {
                     Text(stringResource(R.string.lava_error), color = MaterialTheme.colorScheme.error)
                     TextButton(onClick = { if (state.checkoutId > 0) model.refresh() else model.load() }, enabled = !state.busy) {
@@ -188,29 +225,73 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
                     }
                 }
             }
+            Column(Modifier.fillMaxWidth().padding(top = 12.dp, bottom = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                when {
+                    state.checkoutId > 0 -> {
+                        if (state.status == "paid") CheckoutPrimary(stringResource(R.string.sub_return_app), onClick = onClose)
+                        else {
+                            CheckoutPrimary(stringResource(R.string.lava_check), busy = state.busy, onClick = model::refresh)
+                            if (state.paymentUrl != null) TextButton(onClick = model::reopenPayment,
+                                enabled = !state.busy, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.lava_open)) }
+                        }
+                    }
+                    block?.subscription != null -> CheckoutPrimary(stringResource(R.string.sub_return_app), onClick = onClose)
+                    else -> {
+                        CheckoutPrimary(stringResource(if (limitOffer && !emailStep) R.string.limit_sheet_get_pro else R.string.lava_pay),
+                            busy = state.busy, enabled = !state.loading && !state.uncertainStart &&
+                                block?.blocked_reason == null && state.region == effectiveRegion && state.plan.isNotBlank() &&
+                                (!emailStep || validCheckoutEmail(state.email))) {
+                            if (block?.email.isNullOrBlank() && !emailStep) emailStep = true else model.start()
+                        }
+                        if (limitOffer && !allPlans && !emailStep) TextButton(onClick = { allPlans = true },
+                            enabled = !state.loading && !state.busy, modifier = Modifier.fillMaxWidth()) {
+                            Text(stringResource(R.string.lava_other_plans), color = com.pomp.hskai.core.design.ProColors.Muted)
+                        }
+                    }
+                }
+            }
         }
     }
+    if (supportOpen) ProviderSupportSheet(onDismiss = { supportOpen = false })
     state.offer?.let { offer ->
-        AlertDialog(onDismissRequest = model::close,
-            title = { Text(stringResource(R.string.lava_exit_title, offer.percent)) },
+        AlertDialog(onDismissRequest = model::dismissOffer,
+            containerColor = com.pomp.hskai.core.design.ProColors.Surface,
+            title = {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(stringResource(R.string.lava_exit_title, offer.percent), modifier = Modifier.weight(1f))
+                    IconButton(onClick = model::dismissOffer, enabled = !state.busy) {
+                        Icon(Icons.Default.Close, stringResource(R.string.action_close))
+                    }
+                }
+            },
             text = { Text(stringResource(R.string.lava_exit_body, offer.expires_at.orEmpty())) },
-            confirmButton = { TextButton(onClick = model::claim, enabled = !state.busy) { Text(stringResource(R.string.lava_exit_claim)) } },
-            dismissButton = { TextButton(onClick = model::close, enabled = !state.busy) { Text(stringResource(R.string.lava_exit_later)) } })
+            confirmButton = { CheckoutPrimary(stringResource(R.string.lava_exit_claim), busy = state.busy, onClick = model::claim) })
     }
     return NativeLavaRoute(true)
 }
 
-/** Same two primary plan slots as ready; static bars respect disabled system animations. */
+internal fun providerDisplayPlans(plans: List<LavaPlan>, compact: Boolean): List<LavaPlan> {
+    val priced = plans.filter { it.amount != null && it.months in setOf(1, 3, 6, 12) }
+    if (!compact) return priced
+    return priced.filter { it.plan_type in setOf("1_month", "12_months") }.ifEmpty { priced.take(2) }
+}
+
 @Composable
-private fun ProviderPlanSkeleton() {
-    Column(Modifier.fillMaxWidth().testTag("provider-plans"), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        repeat(2) {
-            Row(Modifier.fillMaxWidth().height(110.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                repeat(2) {
-                    Column(Modifier.weight(1f).fillMaxHeight().background(MaterialTheme.colorScheme.surfaceVariant,
-                        RoundedCornerShape(12.dp)).padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        Box(Modifier.fillMaxWidth(0.55f).height(18.dp).background(MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(4.dp)))
-                        Box(Modifier.fillMaxWidth(0.8f).height(22.dp).background(MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(4.dp)))
+private fun ProviderPlans(plans: List<LavaPlan>, selected: String, enabled: Boolean, compact: Boolean, onSelect: (String) -> Unit) {
+    BoxWithConstraints(Modifier.fillMaxWidth().testTag("provider-plans")) {
+        val singleColumn = !compact && maxWidth <= 400.dp && plans.size == 2
+        val rows = when {
+            singleColumn -> plans.map { listOf(it) }
+            !compact && maxWidth <= 400.dp && plans.size == 3 -> listOf(plans.take(1), plans.drop(1))
+            else -> plans.chunked(2)
+        }
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            rows.forEach { row ->
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    row.forEach { plan ->
+                        ProviderPlanCard(plan, selected == plan.plan_type, { onSelect(plan.plan_type) },
+                            Modifier.weight(1f).testTag("provider-plan:${plan.plan_type}"), compact, enabled)
                     }
                 }
             }
@@ -219,26 +300,77 @@ private fun ProviderPlanSkeleton() {
 }
 
 @Composable
-private fun ProviderReferencePrice(plan: LavaPlan) {
-    val reference = if ((plan.discount_percent ?: 0) > 0) plan.base_amount
-        else comparisonPrice(plan.amount.orEmpty())
-    if (reference != null) Text(stringResource(R.string.lava_price, reference, plan.currency),
-        style = MaterialTheme.typography.labelSmall, textDecoration = TextDecoration.LineThrough)
+private fun ProviderPlanCard(plan: LavaPlan, selected: Boolean, onClick: () -> Unit,
+    modifier: Modifier = Modifier, compact: Boolean = false, enabled: Boolean = true) {
+    CheckoutPlanTile(if (plan.months == 12) stringResource(R.string.checkout_year) else stringResource(R.string.lava_months, plan.months), plan.amount.orEmpty(), plan.currency,
+        if ((plan.discount_percent ?: 0) > 0) plan.base_amount else comparisonPrice(plan.amount.orEmpty()),
+        selected, onClick, modifier, compact,
+        badge = plan.discount_percent?.takeIf { it > 0 }?.let { "−$it%" }, enabled = enabled)
+}
+
+@Composable
+private fun ProviderStatus(state: NativeLavaState) {
+    Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        CheckoutPanda(Modifier.size(148.dp), pose = if (state.status == "paid") "celebrate" else "read")
+        Text(stringResource(when (state.status) {
+            "paid" -> R.string.checkout_paid_title
+            "pending", "" -> R.string.checkout_pending_title
+            else -> R.string.sub_pro_rejected_title
+        }), color = com.pomp.hskai.core.design.ProColors.Ink, fontSize = 24.sp,
+            lineHeight = 30.sp, fontWeight = FontWeight.ExtraBold, textAlign = TextAlign.Center)
+        Text(stringResource(when (state.status) {
+            "paid" -> R.string.sub_pro_approved_body
+            "pending", "" -> R.string.lava_pending
+            else -> R.string.lava_failed
+        }),
+            color = com.pomp.hskai.core.design.ProColors.Muted, textAlign = TextAlign.Center)
+        if (state.status == "pending") CircularProgressIndicator(Modifier.size(24.dp),
+            color = com.pomp.hskai.core.design.ProColors.Cta, strokeWidth = 2.dp)
+    }
+}
+
+@Composable
+private fun ProviderPlanSkeleton(compact: Boolean) {
+    Column(Modifier.fillMaxWidth().testTag("provider-plans"), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        repeat(if (compact) 1 else 2) {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                repeat(2) {
+                    com.pomp.hskai.core.design.components.HskContentSkeleton(rows = 2, leadingCircle = false,
+                        modifier = Modifier.weight(1f).height(if (compact) 112.dp else 130.dp))
+                }
+            }
+        }
+    }
 }
 
 @Composable
 private fun ProviderRegionSelector(region: String, enabled: Boolean, onSelect: (String) -> Unit) {
-    var expanded by remember { mutableStateOf(false) }
-    Box(Modifier.fillMaxWidth().height(48.dp)) {
-        TextButton(onClick = { expanded = true }, enabled = enabled && region in CHECKOUT_REGIONS,
-            modifier = Modifier.fillMaxWidth().height(48.dp)) {
-            Text(if (region in CHECKOUT_REGIONS) "${REGION_FLAGS[region].orEmpty()} ${stringResource(regionTitleId(region))}"
-                else stringResource(R.string.sub_route_title))
-        }
-        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            CHECKOUT_REGIONS.forEach { choice ->
-                DropdownMenuItem(text = { Text("${REGION_FLAGS[choice].orEmpty()} ${stringResource(regionTitleId(choice))}") },
-                    onClick = { expanded = false; onSelect(choice) })
+    CheckoutCountrySelector(region, CHECKOUT_REGIONS, onSelect, enabled)
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ProviderSupportSheet(onDismiss: () -> Unit) {
+    val context = LocalContext.current
+    val app = context.applicationContext as HskAiApplication
+    var url by remember { mutableStateOf("") }
+    var loading by remember { mutableStateOf(true) }
+    var attempt by remember { mutableIntStateOf(0) }
+    LaunchedEffect(attempt) {
+        loading = true
+        val result = app.featureRepository.profile()
+        if (result is com.pomp.hskai.core.network.ApiResult.Success) url = result.value.supportUrl
+        loading = false
+    }
+    ModalBottomSheet(onDismissRequest = onDismiss, containerColor = com.pomp.hskai.core.design.ProColors.Surface) {
+        Column(Modifier.fillMaxWidth().padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Text(stringResource(R.string.sub_help_title), fontSize = 22.sp, fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.sub_help_body))
+            CheckoutPrimary(stringResource(if (url.isNotBlank()) R.string.sub_help_button else R.string.sub_retry), busy = loading) {
+                if (url.isNotBlank()) runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url))) }
+                else attempt++
             }
         }
     }

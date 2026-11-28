@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -138,7 +139,7 @@ fun SubscriptionCheckoutHost(
     viewModelStoreOwner: ViewModelStoreOwner,
     origin: String,
     onClose: () -> Unit,
-) = DirectSubscriptionCheckoutHost(repository, viewModelStoreOwner, origin, null, onClose)
+) = DirectSubscriptionCheckoutHost(repository, viewModelStoreOwner, origin, null, onClose = onClose)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -147,6 +148,7 @@ internal fun DirectSubscriptionCheckoutHost(
     viewModelStoreOwner: ViewModelStoreOwner,
     origin: String,
     providerRepositoryOverride: LavaCheckoutRepository?,
+    limitOffer: Boolean = false,
     onClose: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -161,7 +163,7 @@ internal fun DirectSubscriptionCheckoutHost(
         onRegionResolved = { if (selectedRegion == null) selectedRegion = it },
         onRegionSelected = { selectedRegion = it; routeOverride = null },
         onRouteSelected = { routeOverride = it },
-        onProviderAvailable = { providerAvailable = it })
+        onProviderAvailable = { providerAvailable = it }, limitOffer = limitOffer)
     if (providerRoute.ownsSurface) return
     val model: SubscriptionCheckoutViewModel = viewModel(
         viewModelStoreOwner = viewModelStoreOwner,
@@ -188,11 +190,18 @@ internal fun DirectSubscriptionCheckoutHost(
     var waitingInvite by remember(model) { mutableStateOf(false) }
     var qrPreview by remember(model) { mutableStateOf(false) }
     var qrActions by remember(model) { mutableStateOf(false) }
-    var hintExpanded by remember(model) { mutableStateOf(false) }
     var renewalConfirmOpen by remember(model) { mutableStateOf(false) }
     val closeHost by rememberUpdatedState(onClose)
     val stepIndex = state.flow.indexOf(state.step)
+    var allPlans by androidx.compose.runtime.saveable.rememberSaveable(origin) { mutableStateOf(false) }
 
+    LaunchedEffect(limitOffer, allPlans, state.step, state.plan, state.loading) {
+        if (limitOffer && !allPlans && !state.loading && state.step == CheckoutStep.PLANS) {
+            val primary = listOf("1_month", "10_days", "3_months")
+                .filter { state.overview?.prices?.get(state.method)?.containsKey(it) == true }.take(2)
+            if (primary.isNotEmpty() && state.plan !in primary) model.choosePlan(primary.first())
+        }
+    }
     LaunchedEffect(model, selectedRegion) {
         if (!manualLoaded) {
             manualLoaded = true
@@ -211,45 +220,37 @@ internal fun DirectSubscriptionCheckoutHost(
             inviteOpen = true
         }
     }
-    BackHandler {
+    val navigateBack: () -> Unit = {
         when {
             qrPreview -> qrPreview = false
             inviteOpen -> inviteOpen = false
             supportOpen -> supportOpen = false
             methodOpen -> methodOpen = false
-            state.isWaitingForHsk30Review -> Unit
+            state.submitted || state.step == CheckoutStep.DONE || state.overview?.pendingPayment != null -> onClose()
             stepIndex > 0 -> model.back()
+            limitOffer && allPlans -> allPlans = false
+            routeOverride == "manual" && providerAvailable -> routeOverride = "lava"
             else -> onClose()
         }
     }
+    BackHandler { navigateBack() }
 
     HskSceneSurface(modifier = Modifier.fillMaxSize()) {
-        Column(Modifier.fillMaxSize().safeDrawingPadding()) {
+        Column(Modifier.fillMaxSize().background(C.bg).safeDrawingPadding().imePadding()) {
+        Box(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
+            CheckoutHeader(
+                firstStep = stepIndex <= 0 && !state.submitted && state.overview?.pendingPayment == null &&
+                    !(limitOffer && allPlans) && routeOverride != "manual",
+                onNavigate = navigateBack, onSupport = { supportOpen = true },
+                title = copy.getString(if (state.isHsk30Unlock) R.string.sub_hsk30_heading else R.string.checkout_heading),
+                enabled = !state.submitting,
+            )
+
+        }
         Column(
             Modifier.weight(1f).verticalScroll(rememberScrollState())
                 .padding(horizontal = 15.dp).padding(top = 16.dp, bottom = 22.dp),
         ) {
-            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Text(copy.getString(if (state.isHsk30Unlock) R.string.sub_hsk30_heading else R.string.sub_heading), color = C.text, fontSize = 27.sp,
-                    lineHeight = 30.sp, fontWeight = FontWeight.Black, modifier = Modifier.weight(1f))
-                Box(Modifier.size(44.dp).border(1.dp, C.line, CircleShape)
-                    .background(C.surface, CircleShape).clickable { supportOpen = true },
-                    contentAlignment = Alignment.Center) {
-                    Icon(Icons.Filled.HeadsetMic, contentDescription = copy.getString(R.string.sub_help_title),
-                        tint = C.accentInk, modifier = Modifier.size(20.dp))
-                }
-                Spacer(Modifier.width(8.dp))
-                // Always provide an explicit exit, including when an old PRO
-                // payment is pending while opened from the HSK 3.0 course.
-                Box(Modifier.size(44.dp).border(1.dp, C.line, CircleShape)
-                    .background(C.surface, CircleShape).clickable { onClose() },
-                    contentAlignment = Alignment.Center) {
-                    Icon(Icons.Filled.Close, contentDescription = copy.getString(R.string.action_close),
-                        tint = C.accentInk, modifier = Modifier.size(20.dp))
-                }
-            }
-            Spacer(Modifier.height(16.dp))
-
             val pending = state.overview?.pendingPayment != null ||
                 (state.isHsk30Unlock && state.pendingPaymentId > 0 && state.paymentDecision.isBlank())
             val paid = state.overview?.access?.isPaid == true
@@ -270,21 +271,25 @@ internal fun DirectSubscriptionCheckoutHost(
                 Spacer(Modifier.height(12.dp))
                 SmallAction(copy.getString(R.string.sub_retry), onClick = model::load)
             } else {
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(7.dp)) {
-                    state.flow.indices.forEach { slot ->
-                        Box(Modifier.weight(1f).height(5.dp)
-                            .background(if (slot <= stepIndex) C.accent else C.line, CircleShape))
-                    }
-                }
-                Spacer(Modifier.height(16.dp))
+                if (limitOffer && state.step == CheckoutStep.PLANS && !allPlans) LimitOfferHero(origin)
+                else CheckoutProgress(stepIndex, state.flow.size)
                 if (paid) {
                     MessageCard(copy.getString(R.string.sub_renewal_period_note))
                     Spacer(Modifier.height(12.dp))
                 }
                 when (state.step) {
                     CheckoutStep.PLANS -> PlansContent(
-                        state = state, copy = copy, onPlan = model::choosePlan,
+                        state = state, copy = copy, onPlan = model::choosePlan, compact = limitOffer && !allPlans,
                         onRoute = model::openRegionSelector,
+                        countryChoices = if (providerAvailable && state.overview?.mode == "subscription") CHECKOUT_REGIONS
+                            else state.overview?.let(::regionalManualRegions).orEmpty(),
+                        onRegion = { region ->
+                            allPlans = false
+                            if (providerAvailable && state.overview?.mode == "subscription") {
+                                selectedRegion = region; routeOverride = null
+                            }
+                            model.chooseRegion(region)
+                        },
                         onMethod = { methodOpen = true },
                         onRetryCurrency = { model.chooseCurrency(currencyForRegion(state.region)) },
                         onDiscount = { waitingInvite = true; model.startDiscount() },
@@ -297,7 +302,6 @@ internal fun DirectSubscriptionCheckoutHost(
                     )
                     CheckoutStep.PAY -> PayContent(
                         state = state, copy = copy,
-                        hintExpanded = hintExpanded, onToggleHint = { hintExpanded = !hintExpanded },
                         qrActions = qrActions, onToggleQr = { qrActions = !qrActions },
                         onQrPreview = { qrPreview = true },
                         onUpload = {
@@ -326,17 +330,14 @@ internal fun DirectSubscriptionCheckoutHost(
         if (!state.loading && state.overview?.checkoutAllowed == true &&
             state.overview?.pendingPayment == null && !state.submitted &&
             state.step != CheckoutStep.DONE && state.step != CheckoutStep.METHOD) {
-            Row(Modifier.fillMaxWidth().background(C.bg)
-                .border(BorderStroke(1.dp, C.line)).padding(horizontal = 15.dp, vertical = 11.dp),
-                horizontalArrangement = Arrangement.spacedBy(9.dp)) {
-                if (stepIndex > 0) {
-                    CheckoutButton(copy.getString(R.string.action_back), false, true, model::back,
-                        modifier = Modifier.width(96.dp), secondary = true)
-                }
+            Column(Modifier.fillMaxWidth().background(C.bg)
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 val label = copy.getString(when (state.step) {
                     CheckoutStep.PAY -> R.string.sub_submit
                     CheckoutStep.PLANS ->
-                        if (hasMethodStep(state.region)) R.string.action_continue else R.string.sub_continue_country
+                        if (limitOffer && !allPlans) R.string.limit_sheet_get_pro
+                        else if (hasMethodStep(state.region)) R.string.action_continue else R.string.sub_continue_country
                     else -> when (state.method) {
                         "alipay" -> R.string.sub_continue_alipay
                         "wechat" -> R.string.sub_continue_wechat
@@ -351,6 +352,7 @@ internal fun DirectSubscriptionCheckoutHost(
                 }
                 val primaryAction: () -> Unit = when {
                     state.step == CheckoutStep.PAY -> model::submit
+                    limitOffer && !allPlans && state.step == CheckoutStep.PLANS -> { { allPlans = true } }
                     state.step == CheckoutStep.PLANS &&
                         state.overview?.access?.isPaid == true && renewalDates(state) != null -> {
                         { renewalConfirmOpen = true }
@@ -359,7 +361,12 @@ internal fun DirectSubscriptionCheckoutHost(
                 }
                 CheckoutButton(label, state.submitting || state.quoting, enabled,
                     onClick = primaryAction,
-                    modifier = Modifier.weight(1f))
+                    modifier = Modifier.fillMaxWidth())
+                if (limitOffer && state.step == CheckoutStep.PLANS && !allPlans) {
+                    TextButton(onClick = { allPlans = true }, modifier = Modifier.fillMaxWidth()) {
+                        Text(copy.getString(R.string.lava_other_plans), color = C.muted)
+                    }
+                }
             }
         }
         }
@@ -514,16 +521,23 @@ private fun PlansContent(
     state: SubscriptionCheckoutState, copy: Context,
     onPlan: (String) -> Unit,
     onRoute: () -> Unit,
+    countryChoices: List<String>,
+    onRegion: (String) -> Unit,
     onMethod: () -> Unit,
     onRetryCurrency: () -> Unit,
     onDiscount: () -> Unit,
+    compact: Boolean = false,
 ) {
-    Text(copy.getString(R.string.sub_plans_heading), color = C.text, fontSize = 16.sp, fontWeight = FontWeight.Black)
-    Spacer(Modifier.height(10.dp))
+    if (!compact) {
+        Text(copy.getString(R.string.sub_plans_heading), color = C.text, fontSize = 16.sp, fontWeight = FontWeight.Black)
+        Spacer(Modifier.height(10.dp))
+    }
     // Ordinary plans use the already returned regional price snapshot.
     // Special products retain their independent server currency preference.
     if (state.currencySaving || !state.regionalPriceReady()) {
-        CardCountrySelectorButton(state, copy, onClick = onRoute)
+        if (state.overview?.mode == "subscription") CheckoutCountrySelector(state.region, countryChoices, onRegion,
+            enabled = !state.currencySaving)
+        else CardCountrySelectorButton(state, copy, onClick = onRoute)
         Spacer(Modifier.height(12.dp))
         if (state.currencySaving) {
             CircularProgressIndicator(color = C.accent)
@@ -541,8 +555,8 @@ private fun PlansContent(
                 onClick = { onPlan(state.plan) }, modifier = Modifier.fillMaxWidth(), wide = true)
         }
     } else {
-        val available = listOf("1_month", "10_days", "3_months").filter { prices[it] != null }
-        val rows = if ("1_month" in available) listOf(listOf("1_month")) + available.filter { it != "1_month" }.chunked(2)
+        val available = listOf("1_month", "10_days", "3_months").filter { prices[it] != null }.let { if (compact) it.take(2) else it }
+        val rows = if (!compact && "1_month" in available) listOf(listOf("1_month")) + available.filter { it != "1_month" }.chunked(2)
             else available.chunked(2)
         rows.forEachIndexed { index, row ->
             if (index > 0) Spacer(Modifier.height(9.dp))
@@ -550,14 +564,17 @@ private fun PlansContent(
                 row.forEach { plan ->
                     prices[plan]?.let { price ->
                         PlanCard(plan, planPrice(state, plan, price), price.discountApplied, state.plan == plan, copy,
-                            onClick = { onPlan(plan) }, modifier = Modifier.weight(1f), wide = row.size == 1)
+                            onClick = { onPlan(plan) }, modifier = Modifier.weight(1f), wide = row.size == 1, compact = compact)
                     }
                 }
             }
         }
     }
     Spacer(Modifier.height(10.dp))
-    CardCountrySelectorButton(state, copy, onClick = onRoute)
+    if (state.overview?.mode == "subscription") CheckoutCountrySelector(state.region, countryChoices, onRegion,
+            enabled = !state.currencySaving)
+        else CardCountrySelectorButton(state, copy, onClick = onRoute)
+    if (compact) return
     if (hasMethodStep(state.region)) {
         Spacer(Modifier.height(8.dp))
         PaymentMethodButton(state, copy, onClick = onMethod)
@@ -683,7 +700,6 @@ private fun PaymentMethodDialog(
 @Composable
 private fun PayContent(
     state: SubscriptionCheckoutState, copy: Context,
-    hintExpanded: Boolean, onToggleHint: () -> Unit,
     qrActions: Boolean, onToggleQr: () -> Unit, onQrPreview: () -> Unit,
     onUpload: () -> Unit, onCopy: (String) -> Unit,
 ) {
@@ -735,12 +751,8 @@ private fun PayContent(
                 Spacer(Modifier.height(10.dp))
             } else {
                 Text(copy.getString(R.string.sub_details_foreign_hint), color = C.muted, fontSize = 12.sp,
-                    lineHeight = 17.sp, maxLines = if (hintExpanded) Int.MAX_VALUE else 2,
-                    overflow = TextOverflow.Ellipsis, modifier = Modifier.clickable(onClick = onToggleHint))
-                TextButton(onClick = onToggleHint) {
-                    Text(copy.getString(if (hintExpanded) R.string.sub_show_less else R.string.sub_show_more),
-                        color = C.accentInk)
-                }
+                    lineHeight = 18.sp)
+
             }
             if (quote.paymentDetails.isBlank()) {
                 MessageCard(copy.getString(R.string.sub_no_details))
@@ -856,27 +868,8 @@ private fun CardCountrySelectorButton(
     copy: Context,
     onClick: () -> Unit,
 ) {
-    val country = state.region
-    val currency = currencyForRegion(country)
-    Row(
-        Modifier.fillMaxWidth().heightIn(min = 44.dp)
-            .border(1.dp, C.line, PompShapes.Medium)
-            .background(C.surface, PompShapes.Medium)
-            .clickable(role = Role.Button, onClick = onClick)
-            .padding(horizontal = 13.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(REGION_FLAGS[country] ?: "🌐", fontSize = 25.sp)
-        Spacer(Modifier.width(10.dp))
-        Column(Modifier.weight(1f)) {
-            Text(copy.getString(R.string.sub_route_title), color = C.muted, fontSize = 11.sp,
-                fontWeight = FontWeight.Bold)
-            Text("${copy.getString(regionTitleId(country))} · $currency",
-                color = C.text, fontSize = 14.sp, fontWeight = FontWeight.Black)
-        }
-        Text(copy.getString(R.string.sub_change), color = C.accentInk, fontSize = 12.sp,
-            fontWeight = FontWeight.Bold)
-    }
+    CheckoutRegionButton("${REGION_FLAGS[state.region].orEmpty()} ${copy.getString(regionTitleId(state.region))}", onClick)
+
 }
 
 @Composable
@@ -906,44 +899,11 @@ private fun PaymentMethodButton(
 
 @Composable
 private fun PlanCard(plan: String, price: PlanPrice, discounted: Boolean, selected: Boolean,
-    copy: Context, onClick: () -> Unit, modifier: Modifier = Modifier, wide: Boolean = false) {
-    Column(modifier.heightIn(min = if (wide) 95.dp else 130.dp)
-        .border(if (selected) 2.dp else 1.dp, if (selected) C.accent else C.line, PompShapes.Large)
-        .background(if (selected) C.accentSoft else C.surface, PompShapes.Large)
-        .selectable(selected = selected, role = Role.RadioButton, onClick = onClick)
-        .padding(14.dp), verticalArrangement = Arrangement.SpaceBetween) {
-        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Text(copy.getString(planLabelId(plan)), color = C.muted, fontSize = 13.sp, fontWeight = FontWeight.ExtraBold)
-            Spacer(Modifier.weight(1f))
-            val badge = when (plan) {
-                "hsk30_unlock" -> null
-                "10_days" -> R.string.sub_plan_fast
-                "3_months" -> R.string.sub_plan_value
-                else -> R.string.sub_plan_best
-            }
-            badge?.let {
-                Text(copy.getString(it), color = PompColors.JadeInk, fontSize = 11.sp, fontWeight = FontWeight.Black,
-                    modifier = Modifier.border(1.dp, PompColors.Jade, CircleShape).background(PompColors.JadeSoft, CircleShape)
-                        .padding(horizontal = 7.dp, vertical = 4.dp))
-            }
-        }
-        Row(verticalAlignment = Alignment.Bottom) {
-            // A UZS amount such as "116 000" must still fit a half-width card.
-            Text(price.amount, color = C.text, fontSize = if (price.amount.length > 5) 23.sp else 30.sp,
-                fontWeight = FontWeight.Black)
-            Spacer(Modifier.width(3.dp))
-            Text(price.currency, color = C.muted, fontSize = 12.sp, fontWeight = FontWeight.Bold)
-        }
-        if (discounted) {
-            Text("${price.base} ${price.currency}", color = C.muted, fontSize = 12.sp,
-                textDecoration = TextDecoration.LineThrough)
-        } else if (plan != "hsk30_unlock") {
-            comparisonPrice(price.amount)?.let { reference ->
-                Text("$reference ${price.currency}", color = C.muted, fontSize = 12.sp,
-                    textDecoration = TextDecoration.LineThrough)
-            }
-        }
-    }
+    copy: Context, onClick: () -> Unit, modifier: Modifier = Modifier, wide: Boolean = false, compact: Boolean = false) {
+    CheckoutPlanTile(copy.getString(planLabelId(plan)), price.amount, price.currency,
+        if (discounted) price.base else if (plan != "hsk30_unlock") comparisonPrice(price.amount) else null,
+        selected, onClick, modifier, compact)
+
 }
 
 @Composable
@@ -1096,6 +1056,10 @@ private fun MessageCard(message: String) {
 @Composable
 private fun CheckoutButton(label: String, busy: Boolean, enabled: Boolean,
     onClick: () -> Unit, modifier: Modifier = Modifier, secondary: Boolean = false) {
+    if (!secondary) {
+        CheckoutPrimary(label, busy, enabled, modifier, onClick)
+        return
+    }
     Button(onClick = onClick, enabled = enabled && !busy,
         modifier = modifier.fillMaxWidth().heightIn(min = 54.dp),
         shape = PompShapes.Medium,

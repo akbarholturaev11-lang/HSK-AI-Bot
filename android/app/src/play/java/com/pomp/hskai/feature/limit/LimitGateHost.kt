@@ -97,3 +97,8 @@ private fun openExternal(context: Context, url: String): Boolean {
         false
     }
 }
+
+/** Play does not compile a purchase surface or provider transport. */
+@Composable
+fun ChannelLimitCheckout(sourceKey: String, limit: LimitGate, onClose: () -> Unit,
+    modifier: androidx.compose.ui.Modifier): Boolean = false

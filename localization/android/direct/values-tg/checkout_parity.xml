@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="checkout_heading">HSK AI PRO</string>
+    <string name="checkout_limit_title">Лимит тамом шуд</string>
+    <string name="checkout_limit_subtitle">Барои идома Pro гиред</string>
+    <string name="checkout_benefit_lessons">Дарсҳоро бо Pro идома диҳед</string>
+    <string name="checkout_benefit_voice">Машқи овозӣ бо AI</string>
+    <string name="checkout_benefit_ads">Омӯзиш бе реклама</string>
+    <string name="checkout_manual">Пардохти оддӣ</string>
+    <string name="checkout_manual_hint">Корти бонкӣ, Alipay ё WeChat</string>
+    <string name="checkout_email">Email барои пардохт</string>
+    <string name="checkout_pending_title">Пардохт интизори тасдиқ аст</string>
+    <string name="checkout_paid_title">Pro фаъол шуд</string>
+    <string name="checkout_year">1 сол</string>
+    <string name="checkout_country_country">Давлати пардохт</string>
+    <string name="checkout_country_tj">Тоҷикистон</string>
+    <string name="checkout_country_uz">Ӯзбекистон</string>
+    <string name="checkout_country_ru">Русия</string>
+    <string name="checkout_country_cn">Чин</string>
+    <string name="checkout_country_other">Давлати дигар</string>
+</resources>

@@ -19,7 +19,7 @@ class AndroidCanonicalCatalogTests(unittest.TestCase):
 
     def test_all_native_ui_resource_files_have_canonical_owners(self):
         expected = read_sources()
-        self.assertEqual(len(expected), 60)
+        self.assertEqual(len(expected), 63)
         self.assertTrue({
             f"android/app/src/main/res/{locale}/play_limits.xml"
             for locale in ("values", "values-ru", "values-tg")
@@ -35,6 +35,14 @@ class AndroidCanonicalCatalogTests(unittest.TestCase):
         self.assertEqual(actual, set(expected))
         self.assertEqual(generate(check=True), [])
 
+    def test_checkout_country_labels_match_the_existing_pwa_catalog(self):
+        for folder, locale in (("values", "uz"), ("values-ru", "ru"), ("values-tg", "tj")):
+            native = ET.parse(ROOT / SOURCE / "direct" / folder / "checkout_parity.xml").getroot()
+            labels = {node.attrib["name"]: node.text for node in native}
+            messages = json.loads((ROOT / "localization/ui" / locale / "miniapp.json").read_text())["messages"]
+            for country in ("country", "tj", "uz", "ru", "cn", "other"):
+                self.assertEqual(labels["checkout_country_" + country], messages["ui.subscription.regional." + country])
+
     def test_canonical_xml_preserves_every_native_byte(self):
         for relative, raw in read_sources().items():
             with self.subTest(path=relative):
@@ -42,7 +50,7 @@ class AndroidCanonicalCatalogTests(unittest.TestCase):
 
     def test_single_authoring_change_updates_only_its_native_file(self):
         root = self.fixture()
-        self.assertEqual(len(generate(root, check=False)), 60)
+        self.assertEqual(len(generate(root, check=False)), 63)
         self.assertEqual(generate(root, check=True), [])
         path = root / SOURCE / "main/values/strings.xml"
         original = path.read_bytes()

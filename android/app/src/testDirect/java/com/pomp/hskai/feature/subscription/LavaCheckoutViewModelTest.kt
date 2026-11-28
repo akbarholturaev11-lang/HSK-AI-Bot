@@ -155,4 +155,48 @@ class LavaCheckoutViewModelTest {
         listOf("http://pay.lava.top/a", "https://pay.lava.top.evil.example/a", "https://evil@pay.lava.top/a",
             "https://pay.lava.top:8443/a", "javascript:alert(1)", "https://example.com").forEach { assertNull(it, safeLavaPaymentUrl(it)) }
     }
+    @Test fun delayedWebhookRefreshUpdatesSameInvoiceWithoutAnotherStart() = runTest(dispatcher) {
+        val fake = Fake(); val vm = fake.model(); runCurrent()
+        vm.email("a@b.co"); vm.start(); runCurrent()
+        fake.startReply.complete(Response.success(LavaReply(true, 7, "https://pay.lava.top/verified")))
+        runCurrent(); vm.urlOpened(true)
+        repeat(3) { vm.refresh(); runCurrent(); assertEquals("pending", vm.state.value.status) }
+        fake.statusReply = LavaReply(ok = true, checkout_id = 7, status = "paid")
+        vm.refresh(); runCurrent()
+        assertEquals("paid", vm.state.value.status)
+        assertEquals(1, fake.starts)
+        assertEquals(4, fake.checks)
+    }
+    @Test fun unacknowledgedPaidResponseCannotGrantPro() = runTest(dispatcher) {
+        val fake = Fake()
+        fake.overview = fake.overview.copy(lava = fake.overview.lava!!.copy(pending_checkout_id = 7))
+        val vm = fake.model(); runCurrent()
+        fake.statusReply = LavaReply(ok = false, status = "paid")
+        vm.refresh(); runCurrent()
+        assertEquals("pending", vm.state.value.status)
+        assertTrue(vm.state.value.error)
+        assertEquals(0, fake.starts)
+    }
+    @Test fun offerXPreservesCheckoutAndNextXExits() = runTest(dispatcher) {
+        val fake = Fake(); val vm = fake.model(); runCurrent()
+        vm.chooseProviderPlan("12_months"); vm.email("a@b.co")
+        vm.requestProviderClose(); runCurrent(); assertNotNull(vm.state.value.offer)
+        vm.dismissOffer()
+        assertFalse(vm.state.value.closeRequested)
+        assertNull(vm.state.value.offer)
+        assertEquals("12_months", vm.state.value.plan)
+        assertEquals("a@b.co", vm.state.value.email)
+        vm.requestProviderClose(); runCurrent()
+        assertTrue(vm.state.value.closeRequested)
+        assertEquals(0, fake.claims)
+    }
+    @Test fun emailValidationBlocksInvalidInvoiceBeforeSending() = runTest(dispatcher) {
+        val fake = Fake(); val vm = fake.model(); runCurrent()
+        listOf("", "a@", "a b@c.co", "a@b", "a@b.co\nno").forEach {
+            vm.email(it); vm.start(); runCurrent()
+        }
+        assertEquals(0, fake.starts)
+        assertTrue(validCheckoutEmail(" learner@example.com "))
+    }
+
 }

@@ -1,266 +1,106 @@
 package com.pomp.hskai.feature.limit
 
-import android.graphics.Bitmap
 import android.content.res.Configuration
-import java.util.Locale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.foundation.layout.height
-import androidx.compose.runtime.key
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.mutableStateOf
+import android.graphics.Bitmap
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
+import androidx.compose.foundation.layout.height
 import androidx.compose.ui.graphics.asAndroidBitmap
-import androidx.compose.ui.layout.LayoutCoordinates
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.captureToImage
-import androidx.compose.ui.test.hasAnyDescendant
-import androidx.compose.ui.test.hasText
-import androidx.compose.ui.test.isRoot
+import androidx.compose.ui.platform.*
+import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onNodeWithContentDescription
-import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.pomp.hskai.BuildConfig
-import com.pomp.hskai.HskAiApplication
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompHskAiTheme
-import com.pomp.hskai.feature.assistant.AssistantBinding
-import com.pomp.hskai.feature.assistant.AssistantScreen
-import com.pomp.hskai.feature.assistant.LocalAssistant
-import com.pomp.hskai.feature.assistant.ScreenContext
-import com.pomp.hskai.feature.assistant.ScreenRegistry
 import java.io.File
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
+import java.util.Locale
+import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@RunWith(AndroidJUnit4::class)
+/** Shared neutral gate is the only purchase policy allowed in Play. Direct's
+ * server-priced inline offer has fake-transport coverage in androidTestDirect. */
 class SectionLimitOverlayTest {
     @get:Rule val compose = createComposeRule()
+    private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
-    @Test fun learningLimitUsesContextualCopyAndTheInstalledChannelsAction() {
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val app = context.applicationContext as HskAiApplication
-        val cases = listOf(
-            "course_lesson_limit" to R.string.hsk_course_learning_pro_lesson,
-            "practice_mistakes" to R.string.hsk_course_learning_pro_mistakes,
-        )
-        val source = mutableStateOf(cases.first().first)
-        val opened = mutableListOf<String>()
-        var rechecks = 0
+    @Test fun uzbekGateKeepsAccessOnlyAction() = neutralGate("uz")
+    @Test fun russianGateKeepsAccessOnlyAction() = neutralGate("ru")
+    @Test fun tajikGateKeepsAccessOnlyAction() = neutralGate("tg")
+
+    private fun neutralGate(locale: String) {
+        val visible = mutableStateOf(true)
+        var checks = 0
+        var closes = 0
+        var presented = 0
+        var dismissed = 0
+        val copy = context.createConfigurationContext(Configuration(context.resources.configuration).apply {
+            setLocale(Locale.forLanguageTag(locale))
+        })
         compose.setContent {
-            PompHskAiTheme {
-                val limit = rememberLimitGate(
-                    repository = app.featureRepository,
-                    viewModelStoreOwner = checkNotNull(LocalViewModelStoreOwner.current),
-                    supportUrl = "",
-                    isRefreshing = false,
-                    onRefreshAccess = { rechecks++ },
-                    onOpenSubscription = { opened.add(it) },
-                )
-                SectionLimitOverlay(sectionTitle = "Study", sourceKey = source.value, limit = limit, onClose = {})
+            CompositionLocalProvider(LocalContext provides copy, LocalConfiguration provides copy.resources.configuration) {
+                PompHskAiTheme {
+                    if (visible.value) SectionLimitOverlay("Voice", "voice_limit",
+                        LimitGate(actions = LimitGateActions(onRecheck = { checks++ },
+                            onPresented = { presented++ }, onDismissed = { dismissed++ })),
+                        resetAt = "2099-01-01T00:00:00Z", onClose = { closes++; visible.value = false })
+                }
             }
         }
-
-        val checkout = compose.onNodeWithText(context.getString(R.string.limit_sheet_get_pro))
-        val recheck = compose.onNodeWithText(context.getString(R.string.play_limit_check_access))
-        for ((key, description) in cases) {
-            compose.runOnIdle { source.value = key }
-            val offer = compose.onNodeWithText(context.getString(description))
-            if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) {
-                offer.performScrollTo().assertIsDisplayed()
-                recheck.assertDoesNotExist()
-                checkout.performScrollTo().performClick()
-            } else {
-                offer.assertDoesNotExist()
-                checkout.assertDoesNotExist()
-                compose.onNodeWithText(context.getString(R.string.play_limit_description))
-                    .performScrollTo().assertIsDisplayed()
-                recheck.performScrollTo().performClick()
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync()
+        Thread.sleep(300)
+        InstrumentationRegistry.getInstrumentation().uiAutomation.takeScreenshot()?.let { bitmap ->
+            File(context.getExternalFilesDir(null), "neutral-debug-$locale.png").outputStream().use {
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)
             }
         }
-        compose.runOnIdle {
-            if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) {
-                assertEquals(cases.map { it.first }, opened)
-                assertEquals(0, rechecks)
-            } else {
-                assertTrue(opened.isEmpty())
-                assertEquals(cases.size, rechecks)
+        compose.onNodeWithTag("limit-support").assertIsDisplayed()
+        compose.onNodeWithContentDescription(copy.getString(R.string.profile_help)).assertIsDisplayed()
+        compose.onNodeWithText(copy.getString(R.string.play_limit_daily_heading)).assertIsDisplayed()
+        val action = compose.onNodeWithText(copy.getString(R.string.play_limit_check_access))
+        action.assertIsDisplayed().performClick()
+        val root = compose.onNodeWithTag("section-limit-sheet").fetchSemanticsNode().boundsInRoot
+        assertTrue(action.fetchSemanticsNode().boundsInRoot.bottom <= root.bottom)
+        compose.onNodeWithText(copy.getString(R.string.limit_sheet_get_pro)).assertDoesNotExist()
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync()
+        Thread.sleep(300)
+        compose.onNodeWithTag("section-limit-sheet").captureToImage().asAndroidBitmap().let { image ->
+            File(context.getExternalFilesDir(null), "checkout-neutral-$locale.png").outputStream().use {
+                image.compress(Bitmap.CompressFormat.PNG, 100, it)
             }
         }
+        compose.onNodeWithContentDescription(copy.getString(R.string.action_close)).performClick()
+        compose.runOnIdle { assertEquals(1, checks); assertEquals(1, closes); assertEquals(1, presented); assertEquals(1, dismissed) }
     }
 
-    @Test fun compactLargeTextPaywallKeepsItsActionVisibleAndSuppressesTheAssistant() {
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val registry = ScreenRegistry()
-        val binding = AssistantBinding(
-            registry, (context.applicationContext as HskAiApplication).assistant, {}, { _, _ -> },
-        )
-        val visible = mutableStateOf(true)
-        var openedSource = ""
-        var viewportHeight = 0f
+    @Test fun compactLargeTextKeepsThePrimaryActionInsideTheWindow() {
         compose.setContent {
             val density = LocalDensity.current
-            viewportHeight = with(density) { 420.dp.toPx() }
-            CompositionLocalProvider(
-                LocalAssistant provides binding,
-                LocalDensity provides Density(density.density, fontScale = 2f),
-            ) {
+            CompositionLocalProvider(LocalDensity provides Density(density.density, fontScale = 2f)) {
                 PompHskAiTheme {
-                    AssistantScreen(ScreenContext(screen = "voice"))
-                    if (visible.value) SectionLimitOverlay(
-                        sectionTitle = "AI Voice", sourceKey = "ai_voice",
-                        limit = LimitGate(
-                            state = LimitGateState(canSubscribe = true),
-                            actions = LimitGateActions(onUnlock = { openedSource = it }),
-                        ),
-                        reason = "Лимит закончился. ".repeat(25),
-                        onClose = { visible.value = false },
-                        modifier = Modifier.height(420.dp),
-                    )
+                    SectionLimitOverlay("Voice", "voice_limit", LimitGate(), {}, modifier = Modifier.height(420.dp))
                 }
             }
         }
-        val action = compose.onNodeWithText(context.getString(R.string.limit_sheet_get_pro))
-        action.performScrollTo()
+        val action = compose.onNodeWithText(context.getString(R.string.play_limit_check_access))
         action.assertIsDisplayed()
-        val bounds = action.fetchSemanticsNode().boundsInRoot
-        assertTrue("Entire Pro action must stay inside the viewport", bounds.bottom <= viewportHeight + 1f)
-        compose.runOnIdle { assertTrue(registry.current!!.hidesAssistant) }
-        val image = compose.onNode(isRoot() and hasAnyDescendant(hasText(context.getString(R.string.limit_sheet_get_pro))))
-            .captureToImage().asAndroidBitmap()
-        File(context.getExternalFilesDir(null), "ui-fix-limit-large-text.png").outputStream().use {
-            image.compress(Bitmap.CompressFormat.PNG, 100, it)
-        }
-        action.performClick()
-        compose.runOnIdle { assertEquals("ai_voice", openedSource) }
-        compose.onNodeWithContentDescription(context.getString(R.string.action_close)).performClick()
-        compose.runOnIdle { assertTrue(registry.current!!.showsButton) }
+        val root = compose.onNodeWithTag("section-limit-sheet").fetchSemanticsNode().boundsInRoot
+        assertTrue(action.fetchSemanticsNode().boundsInRoot.bottom <= root.bottom)
+        compose.onNodeWithContentDescription(context.getString(R.string.action_close)).assertIsDisplayed()
     }
-
-    @Test fun proActionFollowsTheOfferCardWithoutALargeSpacer() {
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val registry = ScreenRegistry()
-        val binding = AssistantBinding(
-            registry, (context.applicationContext as HskAiApplication).assistant, {}, { _, _ -> },
-        )
-        compose.setContent {
-            CompositionLocalProvider(LocalAssistant provides binding) {
-                PompHskAiTheme {
-                    SectionLimitOverlay(
-                        sectionTitle = "AI Voice", sourceKey = "ai_voice",
-                        limit = LimitGate(state = LimitGateState(canSubscribe = true)),
-                        onClose = {},
-                    )
-                }
-            }
-        }
-
-        val offerDescription = compose.onNodeWithText(context.getString(R.string.limit_sheet_voice_desc))
-        val action = compose.onNodeWithText(context.getString(R.string.limit_sheet_get_pro))
-        offerDescription.assertIsDisplayed()
-        action.assertIsDisplayed()
-        val gap = action.fetchSemanticsNode().boundsInRoot.top - offerDescription.fetchSemanticsNode().boundsInRoot.bottom
-        val maximumGap = 100 * context.resources.displayMetrics.density
-        assertTrue("Pro action should sit directly below the offer card; gap=$gap px", gap in 0f..maximumGap)
-    }
-
-    @Test fun dialogWrapsItsContentOnTallScreens() {
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
-        var coordinates: LayoutCoordinates? = null
+    @Test fun headphonesOpenTheConfiguredSupportContact() {
+        var supportOpens = 0
         compose.setContent {
             PompHskAiTheme {
-                SectionLimitOverlay(
-                    sectionTitle = "AI Voice", sourceKey = "ai_voice",
-                    limit = LimitGate(state = LimitGateState(canSubscribe = true)),
-                    onClose = {},
-                    modifier = Modifier.onGloballyPositioned { coordinates = it },
-                )
+                SectionLimitOverlay("Voice", "voice_limit",
+                    LimitGate(state = LimitGateState(supportUrl = "https://example.invalid/support"),
+                        actions = LimitGateActions(onSupport = { supportOpens++ })), {})
             }
         }
-        compose.onNodeWithText(context.getString(R.string.limit_sheet_get_pro)).assertIsDisplayed()
-        val sheetHeight = compose.onNodeWithTag("section-limit-sheet").fetchSemanticsNode().boundsInRoot.height
-        val displayHeight = context.resources.displayMetrics.heightPixels.toFloat()
-        assertTrue(
-            "The sheet must wrap its content instead of stretching to the full viewport",
-            sheetHeight < displayHeight * 0.82f,
-        )
-        compose.runOnIdle {
-            val layout = requireNotNull(coordinates)
-            val origin = layout.localToScreen(Offset.Zero)
-            assertTrue("Dialog must start inside the display", origin.y >= -1f)
-            assertTrue("Dialog must fit its visible device window", origin.y + layout.size.height <= displayHeight + 1f)
-        }
-        val instrumentation = InstrumentationRegistry.getInstrumentation()
-        // Wait for the native dialog window to reach the display compositor.
-        instrumentation.waitForIdleSync()
-        Thread.sleep(500)
-        val image = requireNotNull(instrumentation.uiAutomation.takeScreenshot())
-        File(context.getExternalFilesDir(null), "ui-fix-limit-content-height.png")
-            .outputStream().use {
-                image.compress(Bitmap.CompressFormat.PNG, 100, it)
-            }
-    }
-    @Test fun playLimitCopyIsLocalizedAndOnlyOffersAnAccessRecheck() {
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val locale = mutableStateOf("uz")
-        val daily = mutableStateOf(true)
-        var checks = 0
-        compose.setContent {
-            val localized = context.createConfigurationContext(
-                Configuration(context.resources.configuration).apply { setLocale(Locale.forLanguageTag(locale.value)) },
-            )
-            CompositionLocalProvider(
-                LocalContext provides localized,
-                LocalConfiguration provides localized.resources.configuration,
-            ) {
-                key(locale.value) { PompHskAiTheme {
-                    SectionLimitOverlay(
-                        sectionTitle = "AI Voice", sourceKey = "voice_limit",
-                        limit = LimitGate(actions = LimitGateActions(onRecheck = { checks++ })),
-                        resetAt = if (daily.value) "2099-01-01T00:00:00Z" else null,
-                        onClose = {},
-                    )
-                } }
-            }
-        }
-        for (language in listOf("uz", "ru", "tg")) {
-            compose.runOnIdle { locale.value = language }
-            val localized = context.createConfigurationContext(
-                Configuration(context.resources.configuration).apply { setLocale(Locale.forLanguageTag(language)) },
-            )
-            compose.onNodeWithText(localized.getString(R.string.play_limit_daily_heading)).assertIsDisplayed()
-            compose.onNodeWithText(localized.getString(R.string.play_limit_required)).performScrollTo().assertIsDisplayed()
-            val action = compose.onNodeWithText(localized.getString(R.string.play_limit_check_access))
-            action.performScrollTo().assertIsDisplayed()
-            action.performClick()
-            compose.onNodeWithText(localized.getString(R.string.limit_sheet_get_pro)).assertDoesNotExist()
-            compose.onNodeWithText(localized.getString(R.string.limit_sheet_voice_desc)).assertDoesNotExist()
-            InstrumentationRegistry.getInstrumentation().waitForIdleSync()
-            val image = requireNotNull(InstrumentationRegistry.getInstrumentation().uiAutomation.takeScreenshot())
-            File(context.getExternalFilesDir(null), "play-limit-$language.png").outputStream().use {
-                image.compress(Bitmap.CompressFormat.PNG, 100, it)
-            }
-        }
-        compose.runOnIdle { assertEquals(3, checks); daily.value = false }
-        val localized = context.createConfigurationContext(
-            Configuration(context.resources.configuration).apply { setLocale(Locale.forLanguageTag("tg")) },
-        )
-        compose.onNodeWithText(localized.getString(R.string.play_limit_heading)).performScrollTo().assertIsDisplayed()
-        compose.onNodeWithText(localized.getString(R.string.play_limit_renewal), substring = true).assertDoesNotExist()
+        compose.onNodeWithTag("limit-support").assertIsDisplayed().performClick()
+        compose.runOnIdle { assertEquals(1, supportOpens) }
     }
 
 }

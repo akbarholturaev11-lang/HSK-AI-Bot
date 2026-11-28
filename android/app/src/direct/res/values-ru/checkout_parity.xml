@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="checkout_heading">HSK AI PRO</string>
+    <string name="checkout_limit_title">Лимит исчерпан</string>
+    <string name="checkout_limit_subtitle">Оформите Pro, чтобы продолжить</string>
+    <string name="checkout_benefit_lessons">Продолжайте уроки с Pro</string>
+    <string name="checkout_benefit_voice">Разговорная практика с ИИ</string>
+    <string name="checkout_benefit_ads">Учёба без рекламы</string>
+    <string name="checkout_manual">Обычный способ оплаты</string>
+    <string name="checkout_manual_hint">Банковская карта, Alipay или WeChat</string>
+    <string name="checkout_email">Email для оплаты</string>
+    <string name="checkout_pending_title">Оплата ожидает подтверждения</string>
+    <string name="checkout_paid_title">Pro активирован</string>
+    <string name="checkout_year">1 год</string>
+    <string name="checkout_country_country">Страна оплаты</string>
+    <string name="checkout_country_tj">Таджикистан</string>
+    <string name="checkout_country_uz">Узбекистан</string>
+    <string name="checkout_country_ru">Россия</string>
+    <string name="checkout_country_cn">Китай</string>
+    <string name="checkout_country_other">Другая страна</string>
+</resources>

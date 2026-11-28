@@ -5,6 +5,9 @@ import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.test.onRoot
+import androidx.compose.ui.test.captureToImage
+import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
@@ -157,7 +160,7 @@ class SubscriptionCheckoutHostTest {
         return FeatureRepository(api, { ApiResult.Success("test-token") })
     }
 
-    private fun show() {
+    private fun show(limitOffer: Boolean = false) {
         val repository = repository()
         // All checkout calls belong to the synthetic authenticated account.
         // The real app auth has no credential in this fixture and would clear
@@ -183,6 +186,7 @@ class SubscriptionCheckoutHostTest {
                         viewModelStoreOwner = owner,
                         origin = origin.value,
                         providerRepositoryOverride = providerRepository,
+                        limitOffer = limitOffer,
                         onClose = {
                             closeCount++
                             visible.value = false
@@ -264,7 +268,17 @@ class SubscriptionCheckoutHostTest {
         compose.onNodeWithText(copy.getString(R.string.lava_other_plans)).assertDoesNotExist()
         compose.onNodeWithText(copy.getString(R.string.lava_reference_price)).assertDoesNotExist()
         compose.onNodeWithText(copy.getString(R.string.sub_plan_3)).performClick()
+        compose.onRoot().captureToImage().asAndroidBitmap().let { image ->
+            File(context.getExternalFilesDir(null), "checkout-manual-plans.png").outputStream().use {
+                image.compress(Bitmap.CompressFormat.PNG, 100, it)
+            }
+        }
         advanceToPayment()
+        compose.onRoot().captureToImage().asAndroidBitmap().let { image ->
+            File(context.getExternalFilesDir(null), "checkout-manual-pay.png").outputStream().use {
+                image.compress(Bitmap.CompressFormat.PNG, 100, it)
+            }
+        }
         compose.runOnIdle { assertEquals("3_months", quoteRequests.single().planType) }
     }
 
@@ -364,7 +378,7 @@ class SubscriptionCheckoutHostTest {
         compose.onNodeWithText(copy.getString(R.string.sub_pending_title)).assertIsDisplayed()
         // Pending payments may be refreshed without losing the way back.
         compose.onNodeWithText(copy.getString(R.string.sub_payment_refresh)).assertIsDisplayed()
-        compose.onNodeWithContentDescription(copy.getString(R.string.action_close)).assertIsDisplayed()
+        compose.onNodeWithContentDescription(copy.getString(R.string.action_back)).assertIsDisplayed()
         compose.onNodeWithText(copy.getString(R.string.sub_return_app)).assertIsDisplayed().performClick()
         compose.runOnIdle { assertEquals(1, closeCount) }
     }
@@ -417,4 +431,26 @@ class SubscriptionCheckoutHostTest {
             receipt.delete()
         }
     }
+    @Test
+    fun manualLimitUsesTheSameOfferAndStepwiseHeader() {
+        allManualPlans = true
+        show(limitOffer = true)
+        compose.onNodeWithText(copy.getString(R.string.checkout_limit_title)).assertIsDisplayed()
+        compose.onNodeWithText(copy.getString(R.string.sub_plan_3)).assertDoesNotExist()
+        compose.onNodeWithText(copy.getString(R.string.lava_other_plans)).performClick()
+        compose.onNodeWithText(copy.getString(R.string.sub_plan_3)).assertIsDisplayed()
+        compose.onNodeWithContentDescription(copy.getString(R.string.action_close)).assertDoesNotExist()
+        compose.onNodeWithContentDescription(copy.getString(R.string.action_back)).performClick()
+        compose.onNodeWithText(copy.getString(R.string.sub_plan_3)).assertDoesNotExist()
+        compose.onNodeWithText(copy.getString(R.string.limit_sheet_get_pro)).performClick()
+        advanceToPayment()
+        compose.onNodeWithContentDescription(copy.getString(R.string.action_back)).assertIsDisplayed()
+        compose.onNodeWithContentDescription(copy.getString(R.string.action_close)).assertDoesNotExist()
+        compose.onNodeWithContentDescription(copy.getString(R.string.action_back)).performClick()
+        compose.onNodeWithText(copy.getString(R.string.sub_plan_3)).assertIsDisplayed()
+        compose.onNodeWithContentDescription(copy.getString(R.string.action_back)).performClick()
+        compose.onNodeWithText(copy.getString(R.string.checkout_limit_title)).assertIsDisplayed()
+        compose.runOnIdle { assertEquals(0, closeCount); assertEquals(1, quoteRequests.size) }
+    }
+
 }

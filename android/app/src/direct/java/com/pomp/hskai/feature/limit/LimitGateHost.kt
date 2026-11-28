@@ -70,3 +70,37 @@ fun rememberLimitGate(
         ),
     )
 }
+
+/** The PWA limit offer and its payment steps share one native full-screen task. */
+@Composable
+fun ChannelLimitCheckout(sourceKey: String, limit: LimitGate, onClose: () -> Unit,
+    modifier: androidx.compose.ui.Modifier): Boolean {
+    if (!limit.state.canSubscribe) return false
+    val parentContext = LocalContext.current
+    val parentConfiguration = androidx.compose.ui.platform.LocalConfiguration.current
+    val parentDensity = androidx.compose.ui.platform.LocalDensity.current
+    val app = parentContext.applicationContext as com.pomp.hskai.HskAiApplication
+    val owner = remember(sourceKey) { object : ViewModelStoreOwner {
+        override val viewModelStore = androidx.lifecycle.ViewModelStore()
+    } }
+    androidx.compose.runtime.DisposableEffect(owner) { onDispose { owner.viewModelStore.clear() } }
+    androidx.compose.ui.window.Dialog(onDismissRequest = onClose,
+        properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false,
+            decorFitsSystemWindows = false, dismissOnBackPress = false)) {
+        androidx.compose.runtime.CompositionLocalProvider(
+            LocalContext provides parentContext,
+            androidx.compose.ui.platform.LocalConfiguration provides parentConfiguration,
+            androidx.compose.ui.platform.LocalDensity provides parentDensity,
+        ) {
+        LimitDialogInsets()
+        androidx.compose.foundation.layout.Box(modifier) {
+            com.pomp.hskai.feature.subscription.DirectSubscriptionCheckoutHost(
+                repository = app.featureRepository, viewModelStoreOwner = owner,
+                origin = sourceKey, providerRepositoryOverride = null, limitOffer = true,
+                onClose = { limit.actions.onRecheck(); onClose() },
+            )
+        }
+        }
+    }
+    return true
+}

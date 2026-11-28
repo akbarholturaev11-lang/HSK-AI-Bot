@@ -17,6 +17,9 @@ internal fun safeLavaPaymentUrl(value: String?): String? = runCatching {
         uri.rawUserInfo == null && (uri.port == -1 || uri.port == 443) }
 }.getOrNull()
 
+internal fun validCheckoutEmail(value: String): Boolean =
+    value.trim().let { it.length <= 254 && Regex("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$").matches(it) }
+
 data class NativeLavaState(
     val loading: Boolean = true, val block: LavaBlock? = null, val busy: Boolean = false,
     val plan: String = "", val email: String = "", val mode: String = "subscription",
@@ -91,11 +94,11 @@ class LavaCheckoutViewModel(
     }
     fun start() {
         val old = _state.value
-        if (old.busy || old.checkoutId > 0 || old.uncertainStart || old.block?.blocked_reason != null ||
+        if (old.loading || old.busy || !validCheckoutEmail(old.email) || old.checkoutId > 0 || old.uncertainStart || old.block?.blocked_reason != null ||
             old.visiblePlans.none { it.plan_type == old.plan && it.amount != null }) return
         _state.update { it.copy(busy = true, error = false) }
         viewModelScope.launch {
-            when (val reply = repository.start(old.plan, old.email, old.mode, language,
+            when (val reply = repository.start(old.plan, old.email.trim(), old.mode, language,
                 old.currency.takeIf { old.mode == "subscription" && it.isNotBlank() })) {
                 is ApiResult.Success -> {
                     val value = reply.value
@@ -118,7 +121,11 @@ class LavaCheckoutViewModel(
         _state.update { it.copy(busy = true, error = false) }
         viewModelScope.launch {
             when (val reply = repository.status(old.checkoutId)) {
-                is ApiResult.Success -> _state.update { it.copy(busy = false, status = reply.value.status, error = !reply.value.ok) }
+                is ApiResult.Success -> _state.update {
+                    // A failed/empty response must not replace a previously verified state.
+                    val verified = reply.value.ok && reply.value.status in setOf("pending", "paid", "failed", "cancelled", "expired")
+                    it.copy(busy = false, status = if (verified) reply.value.status else it.status, error = !verified)
+                }
                 is ApiResult.Failure -> _state.update { it.copy(busy = false, error = true) }
             }
         }
@@ -156,6 +163,9 @@ class LavaCheckoutViewModel(
                 is ApiResult.Failure -> close()
             }
         }
+    }
+    fun dismissOffer() {
+        if (!_state.value.busy) _state.update { it.copy(offer = null) }
     }
     fun close() {
         _state.update { it.copy(busy = false, offer = null, closeRequested = true) }
