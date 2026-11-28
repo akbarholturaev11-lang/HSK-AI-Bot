@@ -29,24 +29,12 @@ Optional selection SHALL use saved goals/time, verified weakness and recent show
 - **THEN** selection rotates them under the frozen policy while necessary objective repetition remains permitted
 - **AND** planned, hidden or failed-to-load items do not count as shown; one-format eligibility records a safe limitation
 
-### Requirement: Preserve existing resume and progressive delivery
-The change MUST retain original client resume/cursor contracts and MUST NOT require synchronized cross-device course attempts. Supplemental receipts SHALL be owner-bound and retry-safe. Optional plan/media failure MUST NOT block the first usable base lesson or mix private account state.
-
+### Requirement: Existing resume and shared performance delivery
+The change SHALL preserve original local resume and use shared performance entry/readiness/Back/cleanup owners without synchronized cross-device course attempts. Owned receipts MUST remain retry-safe; optional plan/media failure MUST NOT block first usable teaching or mix accounts. Per-turn loaders and competing history handlers MUST NOT be introduced.
 #### Scenario: Reload or device switch
 - **WHEN** an account resumes on the same or another client
 - **THEN** its arm remains stable while each client's existing course position behavior remains intact
 - **AND** accepted supplemental results replay idempotently or safely expire to base continuation without skipped teaching, duplicate rewards or a promise of synchronized cursors
-
-### Requirement: Control and treatment configuration is explicit
-Control SHALL retain the pinned existing composition; treatment requires committed server allocation and supported capabilities. Common measurement changes MUST be identified explicitly, with identical bounded policy in both arms, rather than described as an untouched control.
-
-#### Scenario: Measurement is newly added
-- **WHEN** both arms receive a new probe
-- **THEN** the comparison is labelled existing-plus-probes versus bundle-plus-probes
-- **AND** client-supplied arm fields cannot enable treatment and unrelated reminder/paywall/reward policies remain pinned equally
-
-### Requirement: Reuse shared performance entry and navigation
-New scenes and missions SHALL reuse the reconciled performance entry, readiness, cleanup and Back owners. They MUST NOT add per-turn session loaders or competing history handlers. Platform-specific timing and active-session exit/resume contracts SHALL remain intact.
 
 #### Scenario: Fast entry or a scene turn advances
 - **WHEN** PWA preparation finishes within its 300 ms delay or a learner advances an already open scene
@@ -57,3 +45,11 @@ New scenes and missions SHALL reuse the reconciled performance entry, readiness,
 - **WHEN** a learner swipes Back during an active PWA scene or mission
 - **THEN** the existing flow remains stationary and asks once through its existing exit owner
 - **AND** cancel retains the turn/response state, confirmed exit keeps the established resume promise and cleanup stops obsolete audio without duplicate navigation
+
+### Requirement: Control and treatment configuration is explicit
+Control SHALL retain the pinned existing composition; treatment requires committed server allocation and supported capabilities. Common measurement changes MUST be identified explicitly, with identical bounded policy in both arms, rather than described as an untouched control.
+
+#### Scenario: Measurement is newly added
+- **WHEN** both arms receive a new probe
+- **THEN** the comparison is labelled existing-plus-probes versus bundle-plus-probes
+- **AND** client-supplied arm fields cannot enable treatment and unrelated reminder/paywall/reward policies remain pinned equally

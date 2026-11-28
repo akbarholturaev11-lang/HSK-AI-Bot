@@ -13,13 +13,17 @@ Both arms SHALL use the same assessment version, taught-objective eligibility, e
 - **THEN** both arms receive the frozen equivalent probe policy and the analysis states the changed control condition
 - **AND** recognition, independent production and optional formative speech remain distinct; a speech model does not become the common grader
 
-### Requirement: Authoritative first-response and help state
-A neutral exercise receipt SHALL bind account, UUID, purpose, admitted source/grading snapshot, expiry, help state and first accepted result. Common-grading answers MUST remain withheld before response; help/reveal MUST be recorded before serving it. Missing assistance evidence MUST remain unknown rather than unassisted.
-
+### Requirement: Purpose-bound first response and help authority
+A neutral receipt SHALL bind owner, UUID, purpose, source/grading snapshot and expiry, preserving first-result/help order and retry idempotency. Approved formative work MAY use local feedback with server regrade; common unaided probes MUST withhold keys before accepted response or recorded reveal. Local/queued verdicts MUST NOT prove knowledge, reward or primary study; unknown help MUST remain unknown.
 #### Scenario: Assistance or retry occurs
 - **WHEN** the learner requests help, submits a response twice or supplies a caller correctness flag
 - **THEN** the server grades the owned frozen receipt, preserves help-before-answer and returns the original result for exact retries
 - **AND** an assisted result cannot overwrite the independent first result; cross-account/stale mismatches are rejected without blocking the base lesson
+
+#### Scenario: A probe requests formative keys
+- **WHEN** a client requests local-grading keys for a common measurement receipt
+- **THEN** its purpose prevents exposing answer keys in payload, DOM, bundle, prefetch, cache or outbox before an accepted first response or recorded authenticated reveal
+- **AND** immediate neutral acknowledgement may precede the server verdict; a previously key-exposed formative item cannot count as an unseen unaided probe
 
 ### Requirement: Honest delayed recall and missingness
 Delayed assessment SHALL use frozen windows and unseen equivalent items. Reports MUST show mature assigned, eligible, offered, responded and missing counts, all-assigned demonstrated success, responder accuracy and missing-outcome bounds. Nonresponse MUST NOT become verified failure, success or silent exclusion.
@@ -44,11 +48,3 @@ Both arms SHALL retain identical official XP/streak economics, access and comple
 - **WHEN** a completed result reopens or a learner ignores satisfaction
 - **THEN** no duplicate reward or fresh streak is awarded and no rating is fabricated
 - **AND** the learner continues through the existing flow without a mandatory survey or unavailable Voice step
-
-### Requirement: Purpose-bound formative speed and secure assessment
-Authorized formative exercises MAY reuse the opt-in performance local-grading path with immediate feedback and background server regrade. Common unaided-assessment receipts MUST refuse that key projection and retain server-only verdict authority. Local feedback or queued submission SHALL NOT establish verified knowledge, reward or primary study evidence.
-
-#### Scenario: A probe requests formative keys
-- **WHEN** a client requests local-grading keys for a common measurement receipt
-- **THEN** its purpose prevents exposing answer keys in payload, DOM, bundle, prefetch, cache or outbox before an accepted first response or recorded authenticated reveal
-- **AND** immediate neutral acknowledgement may precede the server verdict; a previously key-exposed formative item cannot count as an unseen unaided probe

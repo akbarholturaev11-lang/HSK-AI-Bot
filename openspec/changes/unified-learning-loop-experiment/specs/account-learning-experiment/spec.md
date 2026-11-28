@@ -50,13 +50,17 @@ Baseline mean/variance, eligible traffic, meaningful effect, cost ceiling, power
 - **THEN** activation remains OFF until the missing same-definition evidence and decision thresholds are obtained
 - **AND** historical comparisons remain descriptive; no monotony cause, sample-size adequacy or causal win is asserted
 
-### Requirement: Valid complete aggregate analysis
-The existing authorized Admin report SHALL expose full assigned denominators, effect uncertainty, coverage/loss, safety and sample-ratio checks without private answers, audio or identity. Snapshot/platform overlaps MUST NOT be summed. Frozen interference and stopping rules SHALL govern concurrent feature changes and repeated inspection; telemetry MUST remain nonblocking.
-
+### Requirement: Versioned complete aggregate analysis
+The authorized Admin report SHALL expose complete canonical denominators, uncertainty, coverage and safety without private content/identity. Both arms MUST share pinned performance/recording versions and server-accepted outcome time; material changes need explicit version handling. Overlapping snapshots MUST NOT be summed. Integrity/stopping rules SHALL govern interpretation; telemetry MUST remain nonblocking.
 #### Scenario: Detail cap or integrity failure
 - **WHEN** detail limits, attribution gaps, arm imbalance or prespecified guardrails invalidate interpretation
 - **THEN** the report uses a complete bounded aggregate or marks the metric unavailable, withholds a win and follows the frozen stop/investigation rule
 - **AND** control-plus-probes is explicitly distinguished from an untouched control
+
+#### Scenario: A performance release or delayed submission occurs
+- **WHEN** a shared performance package changes during the experiment or a queued local answer arrives later
+- **THEN** the frozen version/timestamp policy governs analysis without silent pooling or arbitrary client-time backdating
+- **AND** missing/pending delivery is visible; anonymous launch beacons remain separate from authenticated experiment evidence
 
 ### Requirement: Bounded stop and preserved state
 An authorized stop SHALL prevent new online treatment issuance within 60 seconds across workers and connected clients. Treatment requires a monotonic bounded lease; expired/unverifiable leases MUST fall back before another task. OFF MUST preserve accepted results, original resume behavior, assignment and business invariants without adding synchronized course cursors or deleting populated evidence.
@@ -66,11 +70,3 @@ An authorized stop SHALL prevent new online treatment issuance within 60 seconds
 - **THEN** online checks honor the 60-second bound and disconnected clients cannot start another treatment task after lease expiry
 - **AND** already-started offline work follows saved safe settlement/base fallback; no instantaneous remote-offline claim or duplicate XP is made
 - **AND** account deletion still purges owned assignment/receipt state under existing policy
-
-### Requirement: Common performance and recording baseline
-Both arms SHALL use the same pinned reconciled performance and recording policy before activation. Material later changes MUST have explicit version/coverage handling. Accepted server-outcome time SHALL own study buckets; pending local writes and anonymous launch timing MUST NOT create verified study or arm attribution.
-
-#### Scenario: A performance release or delayed submission occurs
-- **WHEN** a shared performance package changes during the experiment or a queued local answer arrives later
-- **THEN** the frozen version/timestamp policy governs analysis without silent pooling or arbitrary client-time backdating
-- **AND** missing/pending delivery is visible; anonymous launch beacons remain separate from authenticated experiment evidence
