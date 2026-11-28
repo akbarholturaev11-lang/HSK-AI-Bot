@@ -66,3 +66,11 @@ An authorized stop SHALL prevent new online treatment issuance within 60 seconds
 - **THEN** online checks honor the 60-second bound and disconnected clients cannot start another treatment task after lease expiry
 - **AND** already-started offline work follows saved safe settlement/base fallback; no instantaneous remote-offline claim or duplicate XP is made
 - **AND** account deletion still purges owned assignment/receipt state under existing policy
+
+### Requirement: Common performance and recording baseline
+Both arms SHALL use the same pinned reconciled performance and recording policy before activation. Material later changes MUST have explicit version/coverage handling. Accepted server-outcome time SHALL own study buckets; pending local writes and anonymous launch timing MUST NOT create verified study or arm attribution.
+
+#### Scenario: A performance release or delayed submission occurs
+- **WHEN** a shared performance package changes during the experiment or a queued local answer arrives later
+- **THEN** the frozen version/timestamp policy governs analysis without silent pooling or arbitrary client-time backdating
+- **AND** missing/pending delivery is visible; anonymous launch beacons remain separate from authenticated experiment evidence

@@ -44,3 +44,16 @@ Control SHALL retain the pinned existing composition; treatment requires committ
 - **WHEN** both arms receive a new probe
 - **THEN** the comparison is labelled existing-plus-probes versus bundle-plus-probes
 - **AND** client-supplied arm fields cannot enable treatment and unrelated reminder/paywall/reward policies remain pinned equally
+
+### Requirement: Reuse shared performance entry and navigation
+New scenes and missions SHALL reuse the reconciled performance entry, readiness, cleanup and Back owners. They MUST NOT add per-turn session loaders or competing history handlers. Platform-specific timing and active-session exit/resume contracts SHALL remain intact.
+
+#### Scenario: Fast entry or a scene turn advances
+- **WHEN** PWA preparation finishes within its 300 ms delay or a learner advances an already open scene
+- **THEN** no new panda/loading interruption is introduced; slow starts reuse the shared 300 ms minimum after showing
+- **AND** Telegram retains its own timing; continuation frames keep verified actor/first-paint/error/retry handling
+
+#### Scenario: Back during a mission
+- **WHEN** a learner swipes Back during an active PWA scene or mission
+- **THEN** the existing flow remains stationary and asks once through its existing exit owner
+- **AND** cancel retains the turn/response state, confirmed exit keeps the established resume promise and cleanup stops obsolete audio without duplicate navigation

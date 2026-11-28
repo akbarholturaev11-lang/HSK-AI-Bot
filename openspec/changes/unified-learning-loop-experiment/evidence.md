@@ -86,3 +86,26 @@ Verification performed against audited runtime source:
 Focused suite command (use the existing configured environment, not a dependency install): `python3 -m unittest tests.test_course_lesson_plan_service tests.test_course_card_contract tests.test_course_retention_review tests.test_course_adaptive_lesson_service -q`. The two skips are real-PostgreSQL row-lock concurrency cases in `test_course_adaptive_lesson_service.py:590–603`; they remain unverified here. JavaScript command: `node tests/test_course_adaptive_pwa.js`.
 
 Primary external evidence for the eventual product decision is the real randomized account outcome plus source-grounded independently scored application/recall. CI/source counts establish engineering correctness only. [Retrieval research](https://doi.org/10.1126/science.1152408) motivates measuring application/recall and reminds us that added tests can themselves change learning; it does not prove these HSK formats work. [Experiment data-quality research](https://www.microsoft.com/en-us/research/publication/diagnosing-sample-ratio-mismatch-in-online-controlled-experiments-a-taxonomy-and-rules-of-thumb-for-practitioners/) motivates allocation/loss checks before interpreting effects.
+
+## 6. Performance branch compatibility snapshot
+
+Owner-requested read-only comparison, 2026-11-28: local `codex/perf-group2-20261123` HEAD `550343d2750700a7202bafee982e2a9202cf02e3`, compared with main `6bc754eaa64ce1599d725f6bc3f16ac7418da950`. The local branch has six unique commits and is 64 commits behind that fetched main. Its extra dirty files were inspected, not modified, staged, tested or merged by this audit. The graph covers committed HEAD only; dirty source was read directly.
+
+| Source status | Evidence / meaning |
+| --- | --- |
+| Committed | Six packages: Dictionary/Phrases cover, slow-start panda/hub skeletons, Rating warm reuse, Pro sheet, checkout/trial first paint and in-place refresh. `550343d2` does not prove eventual merged/device acceptance. |
+| Uncommitted WIP | Active-session Back/exit confirmations and related catalogs/CI/test, including untracked `tests/e2e/test_pwa_session_back.py`. Documentation records local work, but this audit did not independently run it. |
+| Planned | 2.11 opt-in formative local grading; 2.7 remaining lesson/result latency; other open root-tab/startup/Android/backend tasks. No local-grading API/native patch exists in this inspected WIP; current serializers still omit keys. |
+
+Scoped dirty-source identities (Git blob hashes, not a release):
+
+- `app/static/course-v3.html`: `8a4d8e890f800ce628d067d658c9e4d10028e6c2`.
+- `app/static/course_v3_data/iphone-pwa-practice-boot.js`: `4410c08912deea886bc250f0c71dcc323933fd10`.
+- Performance `design.md`: `7fdb2a273d647f2a3f0c9a656b7ff0cd4d20606d`; working `tasks.md`: `5f680be542f2d96a2be7c7b6bdcb4f2513748e29`.
+- Untracked session-Back test: `525cdfa43382d066291b0de3443df115d74615d9`.
+
+Queue/material-ref, plan/picture and resume/mastery extraction blocks were byte-identical across the original `d7e91f42` audit, current main, performance commit and its dirty snapshot (SHA-256 prefixes `7f1e76a1c8b5d3eb`, `adb73d9649cc79aa`, `5104677c38fe506b`). Planner, TTS service, Android LessonPlan, manifest and lesson JSON were unchanged in scope. The 746/109,662 audit therefore remains relevant historical evidence with matching inputs; it is **not** a test of a future merged tree. Re-run the existing programs on the reconciled candidate and pin commit/content/function/audit-program digests before implementation acceptance.
+
+Timing evidence distinction: a committed `pwa_launch` clientlog beacon already exists on main/perf, separate from QA-only `iphone-pwa-perf.js`. It is anonymous/best-effort, skips launches hidden before ready and cannot join account/arm/receipt or establish complete failures/audio latency. No such raw production timing series was read from the private aggregate archive. The existing first-audio wait up to 1.8 s remains in the inspected branch.
+
+The integration map and shared tests are in [design D11](design.md#d11-integrate-with-the-active-performance-work). No new product-runtime tests were run for this documentation-only compatibility update, and no performance improvement or completed merge is claimed.

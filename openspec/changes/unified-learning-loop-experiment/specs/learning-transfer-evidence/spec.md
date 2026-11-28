@@ -44,3 +44,11 @@ Both arms SHALL retain identical official XP/streak economics, access and comple
 - **WHEN** a completed result reopens or a learner ignores satisfaction
 - **THEN** no duplicate reward or fresh streak is awarded and no rating is fabricated
 - **AND** the learner continues through the existing flow without a mandatory survey or unavailable Voice step
+
+### Requirement: Purpose-bound formative speed and secure assessment
+Authorized formative exercises MAY reuse the opt-in performance local-grading path with immediate feedback and background server regrade. Common unaided-assessment receipts MUST refuse that key projection and retain server-only verdict authority. Local feedback or queued submission SHALL NOT establish verified knowledge, reward or primary study evidence.
+
+#### Scenario: A probe requests formative keys
+- **WHEN** a client requests local-grading keys for a common measurement receipt
+- **THEN** its purpose prevents exposing answer keys in payload, DOM, bundle, prefetch, cache or outbox before an accepted first response or recorded authenticated reveal
+- **AND** immediate neutral acknowledgement may precede the server verdict; a previously key-exposed formative item cannot count as an unseen unaided probe
