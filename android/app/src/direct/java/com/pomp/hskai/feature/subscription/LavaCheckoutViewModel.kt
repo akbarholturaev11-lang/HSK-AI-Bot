@@ -30,6 +30,7 @@ data class NativeLavaState(
     val region: String = "",
     val currency: String = "",
     val providerEntryId: Int? = null,
+    val analyticsSupported: Boolean = false,
 ) {
     val visiblePlans: List<LavaPlan> get() = block?.let {
         if (mode == "exit_discount" || currency.isBlank()) it.plans.filter { row -> row.amount != null }
@@ -65,6 +66,7 @@ class LavaCheckoutViewModel(
                     val block = result.value.lava
                     val id = old.checkoutId.takeIf { it > 0 } ?: block?.pending_checkout_id ?: 0
                     val selected = old.copy(loading = false, block = block, region = old.region.ifBlank { region },
+                        analyticsSupported = result.value.ok && result.value.pro_analytics_version == 1,
                         providerEntryId = result.value.provider_entry_id?.takeIf { it > 0 && result.value.ok && old.mode == "subscription" },
                         currency = if (old.mode == "exit_discount") "" else block?.currencyFor(old.region.ifBlank { region }).orEmpty())
                     selected.copy(
@@ -103,7 +105,7 @@ class LavaCheckoutViewModel(
         viewModelScope.launch {
             when (val reply = repository.start(old.plan, old.email.trim(), old.mode, language,
                 old.currency.takeIf { old.mode == "subscription" && it.isNotBlank() },
-                telemetry)) {
+                telemetry.takeIf { old.analyticsSupported })) {
                 is ApiResult.Success -> {
                     val value = reply.value
                     val url = safeLavaPaymentUrl(value.payment_url)
@@ -176,6 +178,11 @@ class LavaCheckoutViewModel(
             if (_state.value.offer != null) telemetry?.record("exit_declined", _state.value.plan, "lava")
             _state.update { it.copy(offer = null) }
         }
+    }
+    fun declineOffer() {
+        if (_state.value.busy) return
+        dismissOffer()
+        close()
     }
     fun close() {
         _state.update { it.copy(busy = false, offer = null, closeRequested = true) }

@@ -31,7 +31,8 @@ data class LavaBlock(val mode: String = "manual_only", val plans: List<LavaPlan>
     val pending_checkout_id: Int? = null, val currency: String = "",
     val plans_by_currency: Map<String, List<LavaPlan>> = emptyMap())
 @Serializable
-data class LavaOverview(val ok: Boolean = false, val lava: LavaBlock? = null, val provider_entry_id: Int? = null)
+data class LavaOverview(val ok: Boolean = false, val lava: LavaBlock? = null, val provider_entry_id: Int? = null,
+    val pro_analytics_version: Int = 0)
 @Serializable
 data class LavaReply(val ok: Boolean = false, val checkout_id: Int = 0, val payment_url: String? = null,
     val status: String = "", val pro_until: String? = null, val error: String? = null)

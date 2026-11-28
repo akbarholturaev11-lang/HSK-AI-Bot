@@ -37,7 +37,7 @@ class LavaCheckoutViewModelTest {
         fun model(telemetry: ProCheckoutTelemetry? = null) = LavaCheckoutViewModel(LavaCheckoutRepository(this, { ApiResult.Success("token") }), "tj", telemetry = telemetry)
     }
     @Test fun uiStagesAndInvoiceAttributionStayOnTheOpeningBearer() = runTest(dispatcher) {
-        for (sameOwner in listOf(true, false)) {
+        for ((sameOwner, supported) in listOf(true to true, false to true, true to false)) {
             val events = mutableListOf<String>()
             val telemetry = object : ProCheckoutTelemetry {
                 override val attemptId = "native-attempt"
@@ -46,13 +46,14 @@ class LavaCheckoutViewModelTest {
                 override fun record(event: String, plan: String?, method: String?) { events += event }
             }
             val fake = Fake()
+            fake.overview = fake.overview.copy(pro_analytics_version = if (supported) 1 else 0)
             fake.startReply.complete(Response.success(LavaReply(true, 7, "https://pay.lava.top/verified")))
             val vm = fake.model(telemetry); runCurrent()
             assertTrue(events.isEmpty()) // loading/default selection is not a user choice
             vm.chooseProviderPlan("12_months"); vm.email("learner@example.com"); vm.start(); runCurrent()
             assertEquals(listOf("plan_selected"), events)
-            assertEquals(if (sameOwner) "native-attempt" else null, fake.lastStart?.attempt_id)
-            assertEquals(if (sameOwner) "course_limit" else null, fake.lastStart?.ui_source)
+            assertEquals(if (sameOwner && supported) "native-attempt" else null, fake.lastStart?.attempt_id)
+            assertEquals(if (sameOwner && supported) "course_limit" else null, fake.lastStart?.ui_source)
             fake.statusReply = LavaReply(ok = true, checkout_id = 7, status = "paid")
             vm.urlOpened(true); vm.refresh(); runCurrent()
             assertFalse(events.any { it in setOf("checkout_started", "checkout_paid") })
@@ -200,7 +201,7 @@ class LavaCheckoutViewModelTest {
         assertTrue(vm.state.value.error)
         assertEquals(0, fake.starts)
     }
-    @Test fun offerXPreservesCheckoutAndNextXExits() = runTest(dispatcher) {
+    @Test fun offerBackPreservesCheckoutAndFirstStepXExits() = runTest(dispatcher) {
         val fake = Fake(); val vm = fake.model(); runCurrent()
         vm.chooseProviderPlan("12_months"); vm.email("a@b.co")
         vm.requestProviderClose(); runCurrent(); assertNotNull(vm.state.value.offer)
@@ -212,6 +213,14 @@ class LavaCheckoutViewModelTest {
         vm.requestProviderClose(); runCurrent()
         assertTrue(vm.state.value.closeRequested)
         assertEquals(0, fake.claims)
+    }
+    @Test fun explicitOfferDeclineClosesWithoutClaimOrPayment() = runTest(dispatcher) {
+        val fake = Fake(); val vm = fake.model(); runCurrent()
+        vm.requestProviderClose(); runCurrent(); vm.declineOffer()
+        assertTrue(vm.state.value.closeRequested)
+        assertNull(vm.state.value.offer)
+        assertEquals(0, fake.claims)
+        assertEquals(0, fake.starts)
     }
     @Test fun emailValidationBlocksInvalidInvoiceBeforeSending() = runTest(dispatcher) {
         val fake = Fake(); val vm = fake.model(); runCurrent()

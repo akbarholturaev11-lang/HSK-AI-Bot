@@ -374,7 +374,8 @@ def create_lava_router(*, runtime_getter, session_factory, settings_obj) -> APIR
                         mode=data.mode, payment_method="lava", client="android", return_entry_id=True)
                     if type(entry) is int and entry > 0 and data.mode == "subscription":
                         provider_entry_id = entry
-            return JSONResponse({"ok": True, "lava": block, "provider_entry_id": provider_entry_id}, headers=_NO_STORE)
+            return JSONResponse({"ok": True, "lava": block, "provider_entry_id": provider_entry_id,
+                                 "pro_analytics_version": 1}, headers=_NO_STORE)
         except LavaCheckoutError as exc:
             return _checkout_error(exc)
 

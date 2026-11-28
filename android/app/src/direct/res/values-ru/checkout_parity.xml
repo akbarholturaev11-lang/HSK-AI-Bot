@@ -18,4 +18,9 @@
     <string name="checkout_country_ru">Россия</string>
     <string name="checkout_country_cn">Китай</string>
     <string name="checkout_country_other">Другая страна</string>
+    <string name="checkout_exit_title" formatted="false">Специальная скидка 20%</string>
+    <string name="checkout_exit_body" formatted="false">Заберите скидку на первый платёж и продолжайте обучение</string>
+    <string name="checkout_exit_accept" formatted="false">Забрать скидку</string>
+    <string name="checkout_exit_decline" formatted="false">Нет, спасибо</string>
+    <string name="checkout_exit_renewal" formatted="false">Продление оплачивается по стандартной цене. Автопродление можно отменить.</string>
 </resources>

@@ -15,7 +15,7 @@ with sync_playwright() as p:
  browser=p.chromium.launch(headless=True)
  page=browser.new_page(viewport={'width':118,'height':122},device_scale_factor=3)
  page.set_content('<style>html,body{margin:0;background:transparent}svg{display:block;width:118px;height:122px}.hip-pd-blink{transform:scaleY(0);transform-origin:center;transform-box:fill-box}</style><div id="art"></div>')
- for pose in ['pro','read','celebrate']:
+ for pose in ['pro','read','celebrate','gift']:
   svg=page.evaluate('pose=>{'+function+';return pandaSvg(pose)}',pose)
   page.locator('#art').evaluate('(el,svg)=>el.innerHTML=svg',svg)
   page.locator('#art').screenshot(path=str(out/f'checkout_panda_{pose}.png'),omit_background=True)

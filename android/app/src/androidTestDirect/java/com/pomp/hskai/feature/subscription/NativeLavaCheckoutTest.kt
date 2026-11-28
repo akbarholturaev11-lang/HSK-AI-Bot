@@ -30,6 +30,7 @@ class NativeLavaCheckoutTest {
         val reply = CompletableDeferred<Response<LavaOverview>>()
         @Volatile var statusValue = "pending"
         @Volatile var checks = 0
+        var offer = ExitReply(ok = true)
         override suspend fun providerOverview(auth: String, body: LavaContext) = reply.await()
         override suspend fun start(auth: String, body: LavaStart): Response<LavaReply> = error("No real purchase in UI tests")
         override suspend fun status(auth: String, body: LavaId): Response<LavaReply> {
@@ -37,7 +38,7 @@ class NativeLavaCheckoutTest {
             return Response.success(LavaReply(ok = true, status = statusValue))
         }
         override suspend fun cancel(auth: String, body: Map<String, String>) = Response.success(LavaReply(ok = true))
-        override suspend fun exitOffer(auth: String, body: ExitAction) = Response.success(ExitReply(ok = true))
+        override suspend fun exitOffer(auth: String, body: ExitAction) = Response.success(offer)
     }
     private val plans = listOf(LavaPlan("1_month", 1, 30, "10.00", "USD"),
         LavaPlan("3_months", 3, 90, "27.00", "USD"), LavaPlan("6_months", 6, 180, "50.00", "USD"),
@@ -186,6 +187,20 @@ class NativeLavaCheckoutTest {
         compose.onNodeWithText(copy.getString(R.string.limit_sheet_get_pro)).assertIsDisplayed()
         screenshot("checkout-limit-$locale")
     }
+    @Test fun exitOfferKeepsSharedHeaderAndBackWithoutAnotherX() {
+        val api = Fake(); api.offer = ExitReply(ok = true, available = true, percent = 20)
+        show(api, limit = true); ready(api)
+        compose.onNodeWithContentDescription(context.getString(R.string.action_close)).performClick()
+        compose.onNodeWithText(context.getString(R.string.checkout_exit_title)).assertIsDisplayed()
+        compose.onNodeWithTag("checkout-support").assertIsDisplayed()
+        compose.onNodeWithContentDescription(context.getString(R.string.action_close)).assertDoesNotExist()
+        compose.onNodeWithText(context.getString(R.string.checkout_exit_accept)).assertIsDisplayed()
+        screenshot("checkout-exit-offer")
+        compose.onNodeWithContentDescription(context.getString(R.string.action_back)).performClick()
+        compose.onNodeWithTag("provider-plan:1_month").assertIsSelected()
+        compose.onNodeWithText(context.getString(R.string.checkout_limit_title)).assertIsDisplayed()
+    }
+
     @Test fun largeTextKeepsLimitActionsAndHeaderReachable() {
         val api = Fake(); show(api, limit = true, fontScale = 2f); ready(api)
         compose.onNodeWithText(context.getString(R.string.limit_sheet_get_pro)).assertIsDisplayed()

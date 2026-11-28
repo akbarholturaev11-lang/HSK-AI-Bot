@@ -153,6 +153,7 @@ internal fun CheckoutPanda(modifier: Modifier = Modifier, pose: String = "pro") 
         androidx.compose.foundation.Image(androidx.compose.ui.res.painterResource(when (pose) {
             "read" -> R.drawable.checkout_panda_read
             "celebrate" -> R.drawable.checkout_panda_celebrate
+            "gift" -> R.drawable.checkout_panda_gift
             else -> R.drawable.checkout_panda_pro
         }), contentDescription = null, modifier = Modifier.size(118.dp, 122.dp)
             .graphicsLayer { scaleY = scale })

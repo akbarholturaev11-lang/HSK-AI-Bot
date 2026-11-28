@@ -71,6 +71,8 @@ class AndroidProFunnelChainTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_native_routes_reach_android_and_overall_only(self):
         headers = await self.native_headers()
+        overview = await self.client.post("/api/v3/android/subscription/lava/overview", headers=headers, json={"origin": "course_limit"})
+        self.assertEqual(overview.json()["pro_analytics_version"], 1)
         self.assertEqual((await self.ui(headers, attempt="native-browse")).status_code, 200)
         # Concurrent replay is one stored UI event under the canonical user lock.
         replies = await asyncio.gather(*(self.ui(headers) for _ in range(4)))

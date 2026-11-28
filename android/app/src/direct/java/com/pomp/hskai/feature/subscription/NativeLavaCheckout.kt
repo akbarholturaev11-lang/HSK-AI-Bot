@@ -8,8 +8,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -120,20 +118,21 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
             model.chooseProviderPlan(primaryPlans.first().plan_type, userAction = false)
     }
     val terminal = state.checkoutId > 0 || block?.subscription != null
-    val firstStep = !terminal && !emailStep && !(limitOffer && allPlans)
+    val firstStep = state.offer == null && !terminal && !emailStep && !(limitOffer && allPlans)
     val focus = androidx.compose.ui.platform.LocalFocusManager.current
     val keyboard = androidx.compose.ui.platform.LocalSoftwareKeyboardController.current
     val navigate: () -> Unit = {
         focus.clearFocus()
         keyboard?.hide()
         when {
+            state.offer != null -> model.dismissOffer()
             emailStep -> emailStep = false
             limitOffer && allPlans -> setAllPlans(false)
             terminal -> model.close()
             else -> model.requestProviderClose()
         }
     }
-    BackHandler(enabled = state.offer == null) { if (!state.busy) navigate() }
+    BackHandler { if (!state.busy) navigate() }
     // A return before the webhook is normal. Keep checking the same invoice,
     // only in the foreground; backgrounding cancels the timer, never starts a sale.
     LaunchedEffect(lifecycle, model, state.checkoutId, state.uncertainStart) {
@@ -153,11 +152,19 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
         Column(Modifier.fillMaxSize().background(com.pomp.hskai.core.design.ProColors.Paper)
             .safeDrawingPadding().imePadding().widthIn(max = 520.dp).padding(horizontal = 16.dp)) {
             CheckoutHeader(firstStep, navigate, { supportOpen = true }, enabled = !state.busy)
-            if (!limitOffer && !terminal) CheckoutProgress(if (emailStep) 1 else 0,
+            if (!limitOffer && !terminal && state.offer == null) CheckoutProgress(if (emailStep) 1 else 0,
                 if (block?.email.isNullOrBlank()) 2 else 1)
             Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(vertical = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 when {
+                    state.offer != null -> {
+                        CheckoutPanda(Modifier.align(Alignment.CenterHorizontally).size(172.dp), pose = "gift")
+                        Text(stringResource(R.string.checkout_exit_title), fontSize = 28.sp,
+                            fontWeight = FontWeight.ExtraBold, textAlign = TextAlign.Center,
+                            color = com.pomp.hskai.core.design.ProColors.Ink, modifier = Modifier.fillMaxWidth())
+                        Text(stringResource(R.string.checkout_exit_body), textAlign = TextAlign.Center,
+                            color = com.pomp.hskai.core.design.ProColors.Muted, modifier = Modifier.fillMaxWidth())
+                    }
                     state.loading -> {
                         if (limitOffer) LimitOfferHero(origin)
                         else Text(stringResource(R.string.sub_plans_heading), color = com.pomp.hskai.core.design.ProColors.Ink,
@@ -234,6 +241,15 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
             Column(Modifier.fillMaxWidth().padding(top = 12.dp, bottom = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 when {
+                    state.offer != null -> {
+                        CheckoutPrimary(stringResource(R.string.checkout_exit_accept), busy = state.busy, onClick = model::claim)
+                        TextButton(onClick = model::declineOffer, enabled = !state.busy, modifier = Modifier.fillMaxWidth()) {
+                            Text(stringResource(R.string.checkout_exit_decline), color = com.pomp.hskai.core.design.ProColors.Muted)
+                        }
+                        Text(stringResource(R.string.checkout_exit_renewal), fontSize = 12.sp,
+                            color = com.pomp.hskai.core.design.ProColors.Muted, textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth())
+                    }
                     state.checkoutId > 0 -> {
                         if (state.status == "paid") CheckoutPrimary(stringResource(R.string.sub_return_app), onClick = onClose)
                         else {
@@ -261,20 +277,6 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
         }
     }
     if (supportOpen) ProviderSupportSheet(onDismiss = { supportOpen = false })
-    state.offer?.let { offer ->
-        AlertDialog(onDismissRequest = model::dismissOffer,
-            containerColor = com.pomp.hskai.core.design.ProColors.Surface,
-            title = {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(stringResource(R.string.lava_exit_title, offer.percent), modifier = Modifier.weight(1f))
-                    IconButton(onClick = model::dismissOffer, enabled = !state.busy) {
-                        Icon(Icons.Default.Close, stringResource(R.string.action_close))
-                    }
-                }
-            },
-            text = { Text(stringResource(R.string.lava_exit_body, offer.expires_at.orEmpty())) },
-            confirmButton = { CheckoutPrimary(stringResource(R.string.lava_exit_claim), busy = state.busy, onClick = model::claim) })
-    }
     return NativeLavaRoute(true)
 }
 

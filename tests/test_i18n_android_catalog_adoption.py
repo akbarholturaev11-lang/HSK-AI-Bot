@@ -1,5 +1,6 @@
 """Native XML remains byte-identical while localization/ owns its authoring."""
 import json
+import re
 from pathlib import Path
 import shutil
 import tempfile
@@ -47,6 +48,17 @@ class AndroidCanonicalCatalogTests(unittest.TestCase):
         for relative, raw in read_sources().items():
             with self.subTest(path=relative):
                 self.assertEqual((ROOT / relative).read_bytes(), raw)
+
+    def test_native_exit_offer_uses_the_existing_pwa_copy(self):
+        source = (ROOT / "app/static/course_v3_data/iphone-pwa-inline-pro.js").read_text()
+        for folder, locale in (("values", "uz"), ("values-ru", "ru"), ("values-tg", "tj")):
+            block = re.search(r"\b" + locale + r": \{(.*?)\}\s*[,\n]", source, re.S).group(1)
+            native = {node.attrib["name"]: node.text for node in ET.parse(
+                ROOT / SOURCE / "direct" / folder / "checkout_parity.xml").getroot()}
+            for suffix, key in (("title", "exitTitle"), ("body", "exitText"), ("accept", "accept"),
+                                ("decline", "decline"), ("renewal", "renewal")):
+                text = re.search(r'\b' + key + r':"([^"]*)"', block).group(1)
+                self.assertEqual(native["checkout_exit_" + suffix], text, (locale, key))
 
     def test_single_authoring_change_updates_only_its_native_file(self):
         root = self.fixture()

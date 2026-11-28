@@ -18,4 +18,9 @@
     <string name="checkout_country_ru">Rossiya</string>
     <string name="checkout_country_cn">Xitoy</string>
     <string name="checkout_country_other">Boshqa davlat</string>
+    <string name="checkout_exit_title" formatted="false">Maxsus 20% chegirma</string>
+    <string name="checkout_exit_body" formatted="false">Birinchi to‘lov uchun 20% chegirma oling</string>
+    <string name="checkout_exit_accept" formatted="false">Chegirmani olish</string>
+    <string name="checkout_exit_decline" formatted="false">Yo‘q, rahmat</string>
+    <string name="checkout_exit_renewal" formatted="false">Keyingi to‘lovlar oddiy narxda. Avtoyangilanishni bekor qilish mumkin.</string>
 </resources>
