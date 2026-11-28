@@ -35,6 +35,8 @@ class ActivityChecks:
     async def asyncSetUp(self):
         cls = fixture.PostgreSQLStudyTests if self.postgres else fixture.SQLiteStudyTests
         self.episode = cls(methodName="test_manual_app_return_and_real_practice_counts_without_tapping_notification")
+        if hasattr(self,"sqlite_url"):
+            self.episode.sqlite_url=self.sqlite_url
         await self.episode.asyncSetUp()
         self.case, self.storage, self.analysis = self.episode.case, self.episode.storage, self.episode.analysis
         self.at = self.episode.learned
