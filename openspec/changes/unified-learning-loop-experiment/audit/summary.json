@@ -1,0 +1,319 @@
+{
+  "runtime_source_main": "d7e91f42851d7823917f62ad04f2faa387a1691c",
+  "audited_head": "3c078f1597b798c845bb8d7b4ae8b8a30e5df6a2",
+  "audit_is": "static enabled-path and explicit OFF queue construction; no learner evidence",
+  "source_parts": 746,
+  "method": {
+    "minutes": [
+      5,
+      10,
+      15,
+      20,
+      30
+    ],
+    "goals": [
+      "hsk_exam",
+      "daily_communication",
+      "travel",
+      "work_china",
+      "study_china"
+    ],
+    "languages": [
+      "uz",
+      "ru",
+      "tj"
+    ],
+    "planner": "actual imported build_lesson_plan + learned_picture_words; flag-enabled synthetic profiles only; no history/mistake evidence invented",
+    "family_mapping": {
+      "active_word": "teaching",
+      "_grammar": "teaching",
+      "_basics": "teaching",
+      "pronunciation": "speaking",
+      "_picture_review": "picture_speaking",
+      "listening_choice": "listening_choice",
+      "sentence_builder": "tile_production",
+      "reverse_builder": "translation_tiles",
+      "match_pairs": "matching",
+      "dialog_cloze": "dialogue_choice",
+      "gap_fill": "gap_choice",
+      "meaning_guess": "word_choice",
+      "hanzi_choice": "word_choice",
+      "pinyin_choice": "pinyin_choice",
+      "translation_choice": "word_choice",
+      "quick_quiz": "quiz_choice"
+    }
+  },
+  "planner_calls": 35808,
+  "queue_checks": 109662,
+  "actual_ui_or_provider_test": false,
+  "five_minute_primary_only_no_focus": {
+    "hsk_exam": {
+      "omitted_cards": 916,
+      "no_ordinary_optional_parts": 0,
+      "protected_overflow_parts": 0,
+      "optional_type_mean_before": 4.941,
+      "optional_type_mean_after": 3.997,
+      "adjacent_nonempty_optional_equal": 37,
+      "adjacent_full_equal": 0
+    },
+    "daily_communication": {
+      "omitted_cards": 2914,
+      "no_ordinary_optional_parts": 257,
+      "protected_overflow_parts": 123,
+      "optional_type_mean_before": 4.941,
+      "optional_type_mean_after": 1.673,
+      "adjacent_nonempty_optional_equal": 75,
+      "adjacent_full_equal": 0
+    },
+    "travel": {
+      "omitted_cards": 3294,
+      "no_ordinary_optional_parts": 344,
+      "protected_overflow_parts": 257,
+      "optional_type_mean_before": 4.941,
+      "optional_type_mean_after": 1.193,
+      "adjacent_nonempty_optional_equal": 66,
+      "adjacent_full_equal": 0
+    },
+    "work_china": {
+      "omitted_cards": 2496,
+      "no_ordinary_optional_parts": 123,
+      "protected_overflow_parts": 0,
+      "optional_type_mean_before": 4.941,
+      "optional_type_mean_after": 2.168,
+      "adjacent_nonempty_optional_equal": 136,
+      "adjacent_full_equal": 0
+    },
+    "study_china": {
+      "omitted_cards": 1540,
+      "no_ordinary_optional_parts": 0,
+      "protected_overflow_parts": 0,
+      "optional_type_mean_before": 4.941,
+      "optional_type_mean_after": 3.375,
+      "adjacent_nonempty_optional_equal": 106,
+      "adjacent_full_equal": 0
+    }
+  },
+  "counterexamples": {
+    "adjacent_pairs": 739,
+    "base_adjacent_full_equal": 0,
+    "base_adjacent_nonempty_optional_equal": 8,
+    "base_interactive_types_mean": 8.307,
+    "all_30_minute_primary_profiles_omit_zero": true,
+    "ten_minute_hsk_exam_omits": 0
+  },
+  "sensitivity_profiles": [
+    {
+      "goal": "hsk_exam",
+      "goals": [
+        "hsk_exam"
+      ],
+      "focus": "speaking",
+      "overflow": 0,
+      "no_optional": 0
+    },
+    {
+      "goal": "hsk_exam",
+      "goals": [
+        "hsk_exam"
+      ],
+      "focus": "listening",
+      "overflow": 0,
+      "no_optional": 0
+    },
+    {
+      "goal": "hsk_exam",
+      "goals": [
+        "hsk_exam"
+      ],
+      "focus": "vocabulary",
+      "overflow": 0,
+      "no_optional": 0
+    },
+    {
+      "goal": "hsk_exam",
+      "goals": [
+        "hsk_exam"
+      ],
+      "focus": "grammar",
+      "overflow": 0,
+      "no_optional": 0
+    },
+    {
+      "goal": "daily_communication",
+      "goals": [
+        "daily_communication"
+      ],
+      "focus": "speaking",
+      "overflow": 123,
+      "no_optional": 258
+    },
+    {
+      "goal": "daily_communication",
+      "goals": [
+        "daily_communication"
+      ],
+      "focus": "listening",
+      "overflow": 123,
+      "no_optional": 257
+    },
+    {
+      "goal": "daily_communication",
+      "goals": [
+        "daily_communication"
+      ],
+      "focus": "vocabulary",
+      "overflow": 123,
+      "no_optional": 257
+    },
+    {
+      "goal": "daily_communication",
+      "goals": [
+        "daily_communication"
+      ],
+      "focus": "grammar",
+      "overflow": 123,
+      "no_optional": 257
+    },
+    {
+      "goal": "travel",
+      "goals": [
+        "travel"
+      ],
+      "focus": "speaking",
+      "overflow": 257,
+      "no_optional": 357
+    },
+    {
+      "goal": "travel",
+      "goals": [
+        "travel"
+      ],
+      "focus": "listening",
+      "overflow": 257,
+      "no_optional": 344
+    },
+    {
+      "goal": "travel",
+      "goals": [
+        "travel"
+      ],
+      "focus": "vocabulary",
+      "overflow": 257,
+      "no_optional": 344
+    },
+    {
+      "goal": "travel",
+      "goals": [
+        "travel"
+      ],
+      "focus": "grammar",
+      "overflow": 257,
+      "no_optional": 344
+    },
+    {
+      "goal": "work_china",
+      "goals": [
+        "work_china"
+      ],
+      "focus": "speaking",
+      "overflow": 0,
+      "no_optional": 124
+    },
+    {
+      "goal": "work_china",
+      "goals": [
+        "work_china"
+      ],
+      "focus": "listening",
+      "overflow": 0,
+      "no_optional": 123
+    },
+    {
+      "goal": "work_china",
+      "goals": [
+        "work_china"
+      ],
+      "focus": "vocabulary",
+      "overflow": 0,
+      "no_optional": 123
+    },
+    {
+      "goal": "work_china",
+      "goals": [
+        "work_china"
+      ],
+      "focus": "grammar",
+      "overflow": 0,
+      "no_optional": 123
+    },
+    {
+      "goal": "study_china",
+      "goals": [
+        "study_china"
+      ],
+      "focus": "speaking",
+      "overflow": 0,
+      "no_optional": 0
+    },
+    {
+      "goal": "study_china",
+      "goals": [
+        "study_china"
+      ],
+      "focus": "listening",
+      "overflow": 0,
+      "no_optional": 0
+    },
+    {
+      "goal": "study_china",
+      "goals": [
+        "study_china"
+      ],
+      "focus": "vocabulary",
+      "overflow": 0,
+      "no_optional": 0
+    },
+    {
+      "goal": "study_china",
+      "goals": [
+        "study_china"
+      ],
+      "focus": "grammar",
+      "overflow": 0,
+      "no_optional": 0
+    },
+    {
+      "goal": "travel",
+      "goals": [
+        "travel",
+        "hsk_exam"
+      ],
+      "focus": null,
+      "overflow": 123,
+      "no_optional": 257
+    },
+    {
+      "goal": "hsk_exam",
+      "goals": [
+        "hsk_exam",
+        "travel"
+      ],
+      "focus": null,
+      "overflow": 0,
+      "no_optional": 123
+    },
+    {
+      "goal": "travel",
+      "goals": [
+        "travel",
+        "hsk_exam",
+        "daily_communication",
+        "work_china",
+        "study_china"
+      ],
+      "focus": null,
+      "overflow": 123,
+      "no_optional": 257
+    }
+  ]
+}
