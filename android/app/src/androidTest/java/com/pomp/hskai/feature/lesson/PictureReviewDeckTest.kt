@@ -1,7 +1,6 @@
 package com.pomp.hskai.feature.lesson
 
 import android.graphics.Bitmap
-import android.os.SystemClock
 import android.content.res.Configuration
 import android.view.KeyEvent
 import androidx.activity.ComponentActivity
@@ -218,13 +217,10 @@ class PictureReviewDeckTest {
         }
         // The sheet owns a separate focused window. Espresso's root picker
         // waits for the obscured Activity on headless API 35; deliver the real
-        // hardware Back to Android's focused window.
-        val ui = InstrumentationRegistry.getInstrumentation().uiAutomation
-        val downTime = SystemClock.uptimeMillis()
-        assertTrue("Android must accept Back down", ui.injectInputEvent(
-            KeyEvent(downTime, downTime, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK, 0), true))
-        assertTrue("Android must accept Back up", ui.injectInputEvent(
-            KeyEvent(downTime, SystemClock.uptimeMillis(), KeyEvent.ACTION_UP, KeyEvent.KEYCODE_BACK, 0), true))
+        // hardware Back to Android's focused window. Instrumentation supplies
+        // the keyboard source and FLAG_FROM_SYSTEM required for system Back;
+        // raw UiAutomation key events do not normalize those fields.
+        InstrumentationRegistry.getInstrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_BACK)
         compose.waitUntil(timeoutMillis = 5_000) {
             compose.onAllNodesWithText(exit).fetchSemanticsNodes().isEmpty()
         }
