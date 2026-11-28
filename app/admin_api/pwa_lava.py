@@ -73,6 +73,7 @@ class LavaTermInput(StrictModel):
 class LavaSettingsInput(StrictModel):
     checkout_mode: Literal["manual_only", "lava_only", "both"]
     currency: Literal["USD", "RUB"]
+    enabled_currencies: list[Literal["USD", "RUB"]] | None = Field(default=None, min_length=1, max_length=2)
     plans: dict[Literal["1_month", "3_months", "6_months", "12_months"], LavaTermInput]
     # "<referral|feedback_price_offer|admin_campaign|exit_offer>:<percent>" -> lava promo
     # code; validated by the shared config parser (lava 3-36 char rule).
@@ -255,6 +256,7 @@ def _desired_config(request: LavaSettingsInput, prices: dict[str, str],
     try:
         return config_from_dict({
             "checkout_mode": request.checkout_mode, "currency": request.currency,
+            **({"enabled_currencies": request.enabled_currencies} if request.enabled_currencies is not None else {}),
             "plans": {plan: {
                 "enabled": term.enabled, "offer_id": term.offer_id,
                 "price": ({"amount": prices[plan], "currency": request.currency} if plan in prices else None),
@@ -302,7 +304,7 @@ async def _catalog_prices(runtime, settings_obj, desired: LavaConfig) -> tuple[d
                     price = offer.price_for(desired.currency, term.periodicity)
                     if price is not None:
                         prices[term.plan_type] = str(price.amount)
-                    for code in LAVA_CURRENCIES:
+                    for code in desired.enabled_currencies:
                         if code == desired.currency:
                             continue
                         alternate = offer.price_for(code, term.periodicity)

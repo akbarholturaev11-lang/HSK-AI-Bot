@@ -1778,13 +1778,13 @@ def create_pwa_auth_router(*, session_factory, settings_obj, bot=None, lava_runt
                                 "transport": "iphone_pwa",
                             },
                         )
-                if result.get("ok") and lava_runtime_getter is not None:
-                    from app.api.lava_checkout import attach_lava_block
-                    result = await attach_lava_block(
-                        db, lava_runtime_getter(), actor, result, mode=data.mode,
-                        supports_lava=data.supports_lava is True,
-                        campaign_id=data.campaign_id, feedback_id=data.feedback_id,
-                    )
+            if result.get("ok") and lava_runtime_getter is not None:
+                from app.api.lava_checkout import attach_lava_block
+                result = await attach_lava_block(
+                    session_factory, lava_runtime_getter(), actor, result, mode=data.mode,
+                    supports_lava=data.supports_lava is True,
+                    campaign_id=data.campaign_id, feedback_id=data.feedback_id, source="pwa",
+                )
             return JSONResponse(
                 result, status_code=200 if result.get("ok") else 400,
                 headers=_NO_STORE,

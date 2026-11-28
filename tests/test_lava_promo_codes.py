@@ -62,7 +62,7 @@ class LavaPromoCodeTests(unittest.IsolatedAsyncioTestCase):
     async def _block(self, mode="subscription"):
         async with self.sessions() as session:
             user = await session.get(User, 1)
-            return await self.service.overview_block(session, user, supports_lava=True, context_mode=mode)
+        return await self.service.overview_block(self.sessions, user, supports_lava=True, context_mode=mode)
 
     def test_promo_code_validation_follows_lava_rules(self):
         self.assertEqual(_config({"admin_campaign:30": "SPRING-30"}).promo_code("admin_campaign", 30), "SPRING-30")

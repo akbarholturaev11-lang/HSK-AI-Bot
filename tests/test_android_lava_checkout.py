@@ -44,6 +44,29 @@ class AndroidLavaCheckoutTests(unittest.IsolatedAsyncioTestCase):
             json=body or {}, headers={"Authorization": "Bearer verified", "X-HSK-Android-Channel": "direct",
                                     "X-HSK-Lava-Capability": "1", **headers})
 
+    async def test_native_catalog_fetch_releases_auth_and_overview_connections(self):
+        import httpx
+        from sqlalchemy import event
+        from app.services.lava.client import LavaClient
+        from tests.lava_fakes import API_KEY
+        checked=[0]
+        def out(*args):checked[0]+=1
+        def back(*args):checked[0]-=1
+        def provider(request):
+            self.assertEqual(checked[0],0,request.url.path)
+            return self.fake.handler(request)
+        self.runtime.client_factory=lambda:LavaClient(api_key=API_KEY,transport=httpx.MockTransport(provider))
+        self.fake.prices['MONTHLY']='12.00';self.fake.rub_prices={'MONTHLY':'649.00'}
+        event.listen(self.engine.sync_engine,'checkout',out);event.listen(self.engine.sync_engine,'checkin',back)
+        try:
+            response=await self.post('overview',{'origin':'course_limit'})
+            self.assertEqual(response.status_code,200,response.text)
+            self.assertEqual(response.json()['lava']['plans'][0]['amount'],'12.00')
+            self.assertEqual(response.json()['lava']['plans_by_currency']['RUB'][0]['amount'],'649.00')
+            self.assertEqual(self.fake.calls,[('GET','/api/v2/products')])
+        finally:
+            event.remove(self.engine.sync_engine,'checkout',out);event.remove(self.engine.sync_engine,'checkin',back)
+
     async def test_direct_round_trip_reconciles_owner_and_records_android_source(self):
         overview = await self.post("overview", {"origin": "course_limit"})
         self.assertEqual(200, overview.status_code)

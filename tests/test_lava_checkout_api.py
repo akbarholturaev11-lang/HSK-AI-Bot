@@ -71,6 +71,33 @@ class LavaCheckoutApiTests(unittest.IsolatedAsyncioTestCase):
         status = await self._post("/api/subscription-miniapp/lava/status", {"checkout_id": data["checkout_id"]})
         self.assertEqual(status.json()["status"], "paid")
 
+    async def test_catalog_and_invoice_provider_io_hold_no_sql_connection(self):
+        import httpx
+        from sqlalchemy import event
+        from app.services.lava.client import LavaClient
+        from app.services.lava.checkout import LavaCheckoutService
+        from tests.lava_fakes import API_KEY
+        checked=[0];seen=[]
+        def checkout(*args):checked[0]+=1
+        def checkin(*args):checked[0]-=1
+        event.listen(self.engine.sync_engine,'checkout',checkout)
+        event.listen(self.engine.sync_engine,'checkin',checkin)
+        def provider(request):
+            self.assertEqual(checked[0],0,request.url.path)
+            seen.append((request.method,request.url.path))
+            return self.fake.handler(request)
+        self.runtime.client_factory=lambda:LavaClient(api_key=API_KEY,transport=httpx.MockTransport(provider))
+        try:
+            async with self.sessions() as session:user=await session.get(User,1)
+            block=await LavaCheckoutService(self.runtime).overview_block(self.sessions,user,supports_lava=True)
+            self.assertEqual(block['plans'][0]['amount'],'10.00')
+            result=await self._post('/api/subscription-miniapp/lava/start',{'plan_type':'1_month','email':'buyer@example.com'})
+            self.assertEqual(result.status_code,200,result.text)
+            self.assertEqual(seen,[('GET','/api/v2/products'),('POST','/api/v3/invoice')])
+        finally:
+            event.remove(self.engine.sync_engine,'checkout',checkout)
+            event.remove(self.engine.sync_engine,'checkin',checkin)
+
     def test_checkout_refusal_logs_only_typed_code_and_status(self):
         error = lava_checkout.LavaCheckoutError("plan_unavailable", 400)
         error.__cause__ = RuntimeError("private@example.com private-provider-body secret-api-key")
@@ -121,14 +148,14 @@ class LavaCheckoutApiTests(unittest.IsolatedAsyncioTestCase):
     async def test_overview_block_only_for_plain_subscription_and_supporting_clients(self):
         async with self.sessions() as session:
             user = await session.get(User, 1)
-            base = {"ok": True, "prices": {"visa": {}}}
-            self.assertNotIn("lava", await attach_lava_block(session, self.runtime, user, dict(base),
-                                                             mode="subscription", supports_lava=False))
-            self.assertNotIn("lava", await attach_lava_block(session, self.runtime, user, dict(base),
-                                                             mode="referral_discount", supports_lava=True))
-            self.assertNotIn("lava", await attach_lava_block(session, self.runtime, user, dict(base),
-                                                             mode="hsk30_unlock", supports_lava=True))
-            result = await attach_lava_block(session, self.runtime, user, dict(base), mode="", supports_lava=True)
+        base = {"ok": True, "prices": {"visa": {}}}
+        self.assertNotIn("lava", await attach_lava_block(self.sessions, self.runtime, user, dict(base),
+                                                         mode="subscription", supports_lava=False))
+        self.assertNotIn("lava", await attach_lava_block(self.sessions, self.runtime, user, dict(base),
+                                                         mode="referral_discount", supports_lava=True))
+        self.assertNotIn("lava", await attach_lava_block(self.sessions, self.runtime, user, dict(base),
+                                                         mode="hsk30_unlock", supports_lava=True))
+        result = await attach_lava_block(self.sessions, self.runtime, user, dict(base), mode="", supports_lava=True)
         self.assertEqual(result["lava"]["mode"], "both")
         self.assertEqual([plan["plan_type"] for plan in result["lava"]["plans"]], ["1_month"])
         self.assertEqual(result["prices"], {"visa": {}})

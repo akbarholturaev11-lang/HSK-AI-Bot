@@ -58,7 +58,7 @@ let statisticsDownload=null;
 let userFilterOpen=false;
 const USER_SEGMENTS=[['all','userFilterAll'],['active_today','userFilterActiveToday'],['paid','userFilterPaid'],['pending','userFilterPending'],['wants_pay','userFilterWantsPay'],['trial','userFilterTrial'],['free','userFilterFree'],['expired','userFilterExpired'],['blocked','userFilterBlocked'],['bot_blocked','userFilterBotBlocked'],['expiring_pro','analyticsExpiringPro']];
 let managementDraft=null,managementReview=null,managementPreparing=false,preparingEditor=null;
-let coursePolicyRevision=null,hsk30Baseline=null,lavaBaseline=null,lavaPriceRefreshPending=false;
+let coursePolicyRevision=null,hsk30Baseline=null,lavaBaseline=null;
 let courseData=null,courseLimitDraft=null,courseTrialDraft=null,courseLimitPlan='FREE';
 let courseLimitTouched={FREE:false,TRIAL_ACTIVE:false};
 let courseAnalytics=null,courseAnalyticsDays=30,courseAnalyticsLoading=false,courseAnalyticsToken=0;
@@ -1137,7 +1137,7 @@ function editorActionOnly(){
 function updateEditorSaveEnabled(){
   const b=document.querySelector('#drawerFoot [data-action="managementPrepare"],#drawerFoot [data-action="coursePrepare"],#drawerFoot [data-action="hsk30Prepare"],#drawerFoot [data-action="lavaPrepare"]');
   if(!b||!editorBaseline||editorBaseline.panel!==$('overlay'))return;
-  const dirty=editorActionOnly()||editorValue()!==editorBaseline.value||!!($('lavaMode')&&lavaPriceRefreshPending);
+  const dirty=editorActionOnly()||editorValue()!==editorBaseline.value;
   const requiresProof=managementDraft?.type==='payout'&&$('payoutOperation')?.value==='complete'&&!managementDraft.proofLoaded;
   const mediaPending=['campaign_draft','release_create'].includes(managementDraft?.kind)&&Boolean(managementDraft.assetUploading||managementDraft.campaignMediaFile&&!managementDraft.assetId);
   const priceQrPending=managementDraft?.type==='price'&&['alipay','wechat'].includes($('priceMethod')?.value)&&
@@ -2519,23 +2519,16 @@ function lavaOfferOptions(catalog,plan,periodicity,currency,selected){
     rows.unshift('<option value="'+esc(selected)+'" selected>'+esc(selected)+'</option>');
   return '<option value="" '+(selected?'':'selected')+'>'+esc(t('lavaOfferNone'))+'</option>'+rows.join('');
 }
-function lavaCatalogPriceRefreshNeeded(config,catalog){
-  if(!catalog?.offers?.length)return false;
-  return LAVA_TERMS.some(([plan,,periodicity])=>{
-    const term=config.plans?.[plan];
-    if(!term?.enabled)return false;
-    const offer=catalog.offers.find(row=>row.offer_id===term.offer_id);
-    if(!offer)return false;
-    return ["USD","RUB"].some(currency=>{
-      const fresh=(offer.prices||[]).find(row=>row.currency===currency&&row.periodicity===periodicity);
-      if(!fresh||!Number.isFinite(Number(fresh.amount))||Number(fresh.amount)<=0)return false;
-      const saved=term.price?.currency===currency?term.price.amount:term.regional_prices?.[currency];
-      return saved==null||Number(saved)!==Number(fresh.amount);
-    });
-  });
+function lavaCurrencySelection(config){
+  const enabled=config.enabled_currencies||['USD','RUB'];
+  return enabled.length===2?'both':enabled[0];
+}
+function lavaCurrencyPolicy(selection,legacyDefault){
+  const enabled_currencies=selection==='both'?['USD','RUB']:[selection];
+  const currency=selection==='both'?(['USD','RUB'].includes(legacyDefault)?legacyDefault:'USD'):selection;
+  return {currency,enabled_currencies};
 }
 async function lavaSettings(){
-  lavaPriceRefreshPending=false;
   closeDrawer();const current=drawerId,at=epoch;
   drawer('lavaSettings',statePanel('loading'));
   try{
@@ -2543,7 +2536,6 @@ async function lavaSettings(){
     if(current!==drawerId||at!==epoch||!state.actor)return;
     const lava=data.lava,config=lava.config,preflight=catalog?.preflight||null;
     lavaBaseline=structuredClone(config);
-    lavaPriceRefreshPending=lavaCatalogPriceRefreshNeeded(config,preflight);
     const checks=(preflight?.checks||[]).map(check=>'<li class="'+(check.ok?'ok':'bad')+'">'+(check.ok?'✓ ':'✕ ')+esc(lavaCheckLabel(check.code))+'</li>').join('');
     const status='<section class="lava-status"><h3>'+esc(t('lavaConnection'))+'</h3><ul class="lava-checks">'+(checks||'<li class="bad">✕ '+esc(t('lavaErr_lava_provider_unavailable'))+'</li>')+'</ul>'
       +'<p class="source-note">'+esc(t('lavaLastWebhook'))+': '+esc(lava.status.last_webhook_at?date(lava.status.last_webhook_at):t('lavaNever'))+'</p></section>'
@@ -2553,15 +2545,13 @@ async function lavaSettings(){
       +option('manual_only','lavaModeManual',config.checkout_mode==='manual_only')+option('both','lavaModeBoth',config.checkout_mode==='both')
       +option('lava_only','lavaModeLava',config.checkout_mode==='lava_only')+'</select></div>';
     const currency='<div class="form-field"><label for="lavaCurrency">'+esc(t('lavaCurrency'))+'</label><select id="lavaCurrency" class="input">'
-      +['USD','RUB'].map(code=>'<option value="'+code+'" '+(config.currency===code?'selected':'')+'>'+code+'</option>').join('')+'</select></div>';
+      +[['USD','USD'],['RUB','RUB'],['both','USD + RUB']].map(([code,label])=>'<option value="'+code+'" '+(lavaCurrencySelection(config)===code?'selected':'')+'>'+label+'</option>').join('')+'</select></div>';
     const terms=LAVA_TERMS.map(([plan,label,periodicity])=>{
       const term=config.plans?.[plan]||{enabled:false,offer_id:''};
       const offer=preflight
         ?'<select class="input" id="lavaOffer_'+plan+'" aria-label="'+esc(t('lavaOffer'))+'">'+lavaOfferOptions(preflight,plan,periodicity,config.currency,term.offer_id||'')+'</select>'
         :'<input class="input" id="lavaOffer_'+plan+'" maxlength="36" autocomplete="off" spellcheck="false" aria-label="'+esc(t('lavaOffer'))+'" value="'+esc(term.offer_id||'')+'">';
-      const amounts=[term.price,...Object.entries(term.regional_prices||{}).map(([currency,amount])=>({currency,amount}))].filter(p=>p?.amount!=null);
-      const snapshot=amounts.length?'<p class="source-note">'+esc(amounts.map(p=>p.amount+' '+p.currency).join(' / '))+'</p>':'';
-      return '<div class="lava-term"><label class="lava-term-toggle"><input type="checkbox" id="lavaOn_'+plan+'" '+(term.enabled?'checked':'')+'> '+esc(t(label))+'</label>'+offer+snapshot+'</div>';
+      return '<div class="lava-term"><label class="lava-term-toggle"><input type="checkbox" id="lavaOn_'+plan+'" '+(term.enabled?'checked':'')+'> '+esc(t(label))+'</label>'+offer+'</div>';
     }).join('');
     const promos=config.promo_codes||{};
     const promoInput=(id,value)=>'<input class="input" id="'+id+'" maxlength="36" autocomplete="off" spellcheck="false" autocapitalize="characters" placeholder="'+esc(t('lavaPromoCode'))+'" value="'+esc(value||'')+'">';
@@ -2602,7 +2592,7 @@ function lavaSettingsRequest(){
     const pct=Number($('lavaPromoPct_'+index)?.value),value=code('lavaPromoAdmin_'+index);
     if(value&&Number.isInteger(pct)&&pct>=1&&pct<=90)promo_codes['admin_campaign:'+pct]=value;
   }
-  return {checkout_mode:$('lavaMode')?.value,currency:$('lavaCurrency')?.value,plans,
+  return {checkout_mode:$('lavaMode')?.value,...lavaCurrencyPolicy($('lavaCurrency')?.value,lavaBaseline?.currency),plans,
     promo_codes:Object.fromEntries(Object.entries(promo_codes).sort(([a],[b])=>a.localeCompare(b)))};
 }
 async function prepareLavaSettingsCommand(){

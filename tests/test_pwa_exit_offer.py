@@ -114,7 +114,7 @@ class PwaExitOfferTests(unittest.IsolatedAsyncioTestCase):
         async with self.sessions() as db:
             user = await db.get(User, 1)
             block = await self.checkout.overview_block(
-                db, user, supports_lava=True, context_mode="exit_discount"
+                self.sessions, user, supports_lava=True, context_mode="exit_discount"
             )
         month = next(p for p in block["plans"] if p["plan_type"] == "1_month")
         self.assertEqual((month["base_amount"], month["amount"], month["discount_percent"]),

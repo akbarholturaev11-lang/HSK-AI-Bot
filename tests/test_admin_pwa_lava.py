@@ -110,6 +110,26 @@ class AdminPwaLavaTests(fixtures.PaymentFixtures, unittest.IsolatedAsyncioTestCa
             self.assertEqual(config.terms["1_month"].amount_for("RUB"), Decimal("900.00"))
             self.assertFalse(config.terms["6_months"].enabled)
 
+    async def test_usd_rub_and_both_policies_use_the_existing_signed_save(self):
+        self.fake.rub_prices={'MONTHLY':'649.00','PERIOD_90_DAYS':'1800.00'}
+        for enabled,default in [(['USD'],'USD'),(['RUB'],'RUB'),(['USD','RUB'],'USD')]:
+            request=LavaSettingsInput(**{**_settings_input().model_dump(),
+                'currency':default,'enabled_currencies':enabled})
+            command=await self.prepare_settings(request)
+            result=await self.save_settings(command,await self.proof(command.operation()))
+            self.assertEqual(result['config']['enabled_currencies'],enabled)
+            self.assertEqual(result['config']['currency'],default)
+            if len(enabled)==1:self.assertEqual(command.regional_prices,{})
+
+    async def test_currency_policy_is_bound_to_the_exact_passkey_operation(self):
+        self.fake.rub_prices={'MONTHLY':'649.00','PERIOD_90_DAYS':'1800.00'}
+        command=await self.prepare_settings(LavaSettingsInput(**{**_settings_input().model_dump(),
+            'enabled_currencies':['USD','RUB']}))
+        proof=await self.proof(command.operation())
+        tampered=LavaSettingsCommand(**{**command.model_dump(),'enabled_currencies':['USD'],'regional_prices':{}})
+        with self.assertRaises(CommandError) as caught:await self.save_settings(tampered,proof)
+        self.assertEqual(caught.exception.status,403)
+
     async def test_promo_codes_are_signed_saved_and_audited_by_key_only(self):
         request = _settings_input()
         request = LavaSettingsInput(**{**request.model_dump(), "promo_codes": {
@@ -236,44 +256,36 @@ if __name__ == "__main__":
     unittest.main()
 
 
-class LavaCatalogRefreshFrontendTests(unittest.TestCase):
-    def test_catalog_delta_enables_only_the_existing_save_with_actual_price_changes(self):
+class LavaCurrencyPolicyFrontendTests(unittest.TestCase):
+    def test_three_choices_preserve_the_legacy_default_and_only_real_edits_enable_save(self):
         import json
-        import re
         import subprocess
         from pathlib import Path
-        source = Path('app/static/admin-pwa/app.js').read_text()
-        terms = re.search(r'const LAVA_TERMS=.*?;\n', source).group(0)
-        helper = source[source.index('function lavaCatalogPriceRefreshNeeded('):source.index('async function lavaSettings(){')]
-        save = source[source.index('function updateEditorSaveEnabled(){'):source.index('function showSavedAndDismiss(')]
-        script = terms + helper + save + r'''
-const old={currency:'USD',plans:{'1_month':{enabled:true,offer_id:'offer',price:{amount:'10.00',currency:'USD'}}}};
-const catalog={offers:[{offer_id:'offer',prices:[{currency:'USD',periodicity:'MONTHLY',amount:10},{currency:'RUB',periodicity:'MONTHLY',amount:900}]}]};
-const full=structuredClone(old);full.plans['1_month'].regional_prices={RUB:'900.00'};
-const usdOnly=structuredClone(catalog);usdOnly.offers[0].prices.pop();
-const wrongPeriod=structuredClone(catalog);wrongPeriod.offers[0].prices[1].periodicity='PERIOD_YEAR';
-const disabled=structuredClone(old);disabled.plans['1_month'].enabled=false;
-const changed=structuredClone(catalog);changed.offers[0].prices[1].amount=950;
-const invalid=structuredClone(catalog);invalid.offers[0].prices[1].amount='not-a-price';
-const result={legacy:lavaCatalogPriceRefreshNeeded(old,catalog),saved:lavaCatalogPriceRefreshNeeded(full,catalog),
-  absent:lavaCatalogPriceRefreshNeeded(old,null),usdOnly:lavaCatalogPriceRefreshNeeded(old,usdOnly),
-  wrongPeriod:lavaCatalogPriceRefreshNeeded(old,wrongPeriod),disabled:lavaCatalogPriceRefreshNeeded(disabled,catalog),
-  changed:lavaCatalogPriceRefreshNeeded(full,changed),invalid:lavaCatalogPriceRefreshNeeded(old,invalid)};
-const overlay={},button={disabled:null};let hasLava=true,lavaPriceRefreshPending=false,signing=false;
-const $=id=>id==='overlay'?overlay:id==='lavaMode'&&hasLava?{}:null;
+        source=Path('app/static/admin-pwa/app.js').read_text()
+        helpers=source[source.index('function lavaCurrencySelection('):source.index('async function lavaSettings(){')]
+        save=source[source.index('function updateEditorSaveEnabled(){'):source.index('function showSavedAndDismiss(')]
+        script=helpers+save+r"""
+const result={legacy:lavaCurrencySelection({currency:'USD'}),
+ usd:lavaCurrencySelection({enabled_currencies:['USD']}),rub:lavaCurrencySelection({enabled_currencies:['RUB']}),
+ both:lavaCurrencySelection({enabled_currencies:['USD','RUB']}),
+ usdPolicy:lavaCurrencyPolicy('USD','RUB'),rubPolicy:lavaCurrencyPolicy('RUB','USD'),
+ bothPolicy:lavaCurrencyPolicy('both','RUB')};
+const overlay={},button={disabled:null};let signing=false,changed=false;
+const $=id=>id==='overlay'?overlay:null;
 const document={querySelector:()=>button},editorBaseline={panel:overlay,value:'same'},managementDraft=null,managementPreparing=false;
-function editorActionOnly(){return false}function editorValue(){return 'same'}
+function editorActionOnly(){return false}function editorValue(){return changed?'changed':'same'}
 updateEditorSaveEnabled();result.unchangedDisabled=button.disabled;
-lavaPriceRefreshPending=result.legacy;updateEditorSaveEnabled();result.refreshEnabled=!button.disabled;
+changed=true;updateEditorSaveEnabled();result.editEnabled=!button.disabled;
 signing=true;updateEditorSaveEnabled();result.signingDisabled=button.disabled;
-signing=false;hasLava=false;updateEditorSaveEnabled();result.otherEditorDisabled=button.disabled;
-hasLava=true;lavaPriceRefreshPending=result.saved;updateEditorSaveEnabled();result.savedDisabled=button.disabled;
+signing=false;changed=false;updateEditorSaveEnabled();result.revertedDisabled=button.disabled;
 console.log(JSON.stringify(result));
-'''
-        result = json.loads(subprocess.check_output(['node', '-e', script], text=True))
-        expected = dict(legacy=True, saved=False, absent=False, usdOnly=False, wrongPeriod=False,
-                        disabled=False, changed=True, invalid=False, unchangedDisabled=True,
-                        refreshEnabled=True, signingDisabled=True, otherEditorDisabled=True, savedDisabled=True)
-        for key, value in expected.items():
-            with self.subTest(case=key):
-                self.assertEqual(result[key], value)
+"""
+        result=json.loads(subprocess.check_output(['node','-e',script],text=True))
+        self.assertEqual({k:result[k] for k in ['legacy','usd','rub','both']},
+                         dict(legacy='both',usd='USD',rub='RUB',both='both'))
+        self.assertEqual(result['usdPolicy'],dict(currency='USD',enabled_currencies=['USD']))
+        self.assertEqual(result['rubPolicy'],dict(currency='RUB',enabled_currencies=['RUB']))
+        self.assertEqual(result['bothPolicy'],dict(currency='RUB',enabled_currencies=['USD','RUB']))
+        for key in ['unchangedDisabled','editEnabled','signingDisabled','revertedDisabled']:
+            self.assertTrue(result[key],key)
+        self.assertNotIn('lavaPriceRefreshPending',source)

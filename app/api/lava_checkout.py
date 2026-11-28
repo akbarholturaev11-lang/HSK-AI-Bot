@@ -94,9 +94,9 @@ def _checkout_error(exc: LavaCheckoutError) -> JSONResponse:
     return JSONResponse({"ok": False, "error": exc.code}, status_code=exc.status, headers=_NO_STORE)
 
 
-async def attach_lava_block(session, runtime, user, result: dict, *, mode: str | None,
+async def attach_lava_block(session_factory, runtime, user, result: dict, *, mode: str | None,
                             supports_lava: bool, campaign_id: int | None = None,
-                            feedback_id: int | None = None) -> dict:
+                            feedback_id: int | None = None, source: str = "miniapp") -> dict:
     """Add the optional ``lava`` key to an existing checkout overview.
 
     Plain Pro subscription qualifies; discount flows qualify only when an
@@ -109,8 +109,8 @@ async def attach_lava_block(session, runtime, user, result: dict, *, mode: str |
         return result
     try:
         block = await LavaCheckoutService(runtime).overview_block(
-            session, user, supports_lava=supports_lava, context_mode=mode or "subscription",
-            campaign_id=campaign_id, feedback_id=feedback_id)
+            session_factory, user, supports_lava=supports_lava, context_mode=mode or "subscription",
+            campaign_id=campaign_id, feedback_id=feedback_id, source=source)
     except Exception:  # noqa: BLE001 - lava trouble must never break manual checkout
         logger.exception("lava.top overview block unavailable")
         return result
@@ -301,9 +301,9 @@ def create_lava_router(*, runtime_getter, session_factory, settings_obj) -> APIR
             from app.api.android_features import ANDROID_CHECKOUT_ORIGIN_SOURCES
             if data.origin and (data.origin not in ANDROID_CHECKOUT_ORIGIN_SOURCES or data.origin.startswith("hsk30")):
                 raise LavaCheckoutError("invalid_request", 422)
+            block = await LavaCheckoutService(runtime_getter()).overview_block(
+                session_factory, user, supports_lava=True, context_mode=data.mode, source="android")
             async with session_factory() as db:
-                block = await LavaCheckoutService(runtime_getter()).overview_block(
-                    db, user, supports_lava=True, context_mode=data.mode)
                 from sqlalchemy import select
                 from datetime import datetime, timedelta, timezone
                 from app.db.models.lava import LavaInvoice

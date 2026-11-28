@@ -61,8 +61,12 @@ class ServerMonitoringChainTests(unittest.IsolatedAsyncioTestCase):
         async with pg_sessions(PG_URL) as sessions:
             reporter = reporter_for(sessions)
             fake = FakeLava()
-            fake.unavailable = True
+            fake.rub_prices = {"MONTHLY": "900.00"}
             runtime = make_runtime(sessions, fake)
+            # Isolate invoice POST failure from the separate catalog failure.
+            await runtime.products()
+            fake.calls.clear()
+            fake.unavailable = True
             checkout = LavaCheckoutService(runtime)
             async with sessions() as db, db.begin():
                 await LavaConfigService(db).save(config_from_dict({
@@ -104,6 +108,43 @@ class ServerMonitoringChainTests(unittest.IsolatedAsyncioTestCase):
                     site="v3_pwa_subscription_lava_start", sessions=sessions, reporter=reporter,
                     trigger=provider_failure, inbox_route="/api/admin/v1/inbox/list")
                 self.assertEqual(incident.severity, "critical")
+
+    async def test_lava_catalog_failure_reaches_subscription_entry_inbox(self):
+        from sqlalchemy import select
+        from app.db.models.lava import LavaInvoice
+        from app.db.models.user import User
+        from app.services.lava.checkout import LavaCheckoutService
+        from app.services.lava.config import LavaConfigService, config_from_dict
+        from tests.lava_fakes import FakeLava, OFFER_ID, make_runtime
+
+        async with pg_sessions(PG_URL) as sessions:
+            reporter = reporter_for(sessions)
+            fake = FakeLava()
+            fake.unavailable = True
+            checkout = LavaCheckoutService(make_runtime(sessions, fake))
+            async with sessions() as db, db.begin():
+                await LavaConfigService(db).save(config_from_dict({
+                    "checkout_mode": "both", "currency": "USD",
+                    "plans": {"1_month": {"enabled": True, "offer_id": OFFER_ID}},
+                }))
+                user = await db.get(User, 1)
+
+            async def catalog_failure():
+                block = await checkout.overview_block(
+                    sessions, user, supports_lava=True, source="pwa")
+                self.assertEqual(block["mode"], "both")
+                self.assertEqual(block["plans"], [])
+                self.assertEqual(block["plans_by_currency"], {})
+                self.assertFalse(any(method == "POST" for method, _ in fake.calls))
+                async with sessions() as db:
+                    self.assertIsNone(await db.scalar(select(LavaInvoice.id)))
+
+            with patch.object(backend, "reporter", reporter):
+                incident = await assert_monitoring_chain(
+                    self, platform="server", feature="subscription_entries", failure="provider_failed",
+                    site="v3_pwa_subscription_overview", sessions=sessions, reporter=reporter,
+                    trigger=catalog_failure, inbox_route="/api/admin/v1/inbox/list")
+                self.assertEqual(incident.severity, "high")
 
     async def test_learner_route_5xx_reaches_postgres_through_the_middleware(self):
         async with pg_sessions(PG_URL) as sessions:
