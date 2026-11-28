@@ -3,6 +3,16 @@ package com.pomp.hskai.feature.subscription
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Bitmap
+import android.util.Base64
+import java.io.ByteArrayOutputStream
+import androidx.activity.compose.LocalActivityResultRegistryOwner
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.onAllNodesWithContentDescription
 import android.net.Uri
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.test.onRoot
@@ -16,6 +26,7 @@ import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.lifecycle.ViewModelProvider
@@ -27,6 +38,8 @@ import com.pomp.hskai.core.design.PompHskAiTheme
 import com.pomp.hskai.core.navigation.SessionViewModelStoreOwner
 import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.data.api.AndroidFeatureApi
+import com.pomp.hskai.data.api.PaymentDecisionStatusResponse
+import com.pomp.hskai.data.api.SubscriptionQrDto
 import com.pomp.hskai.data.api.SubscriptionCheckoutEventResponse
 import com.pomp.hskai.data.api.SubscriptionCheckoutOverviewDto
 import com.pomp.hskai.data.api.SubscriptionPendingDto
@@ -60,8 +73,12 @@ class SubscriptionCheckoutHostTest {
     val compose = createComposeRule()
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val copy: Context = context.createConfigurationContext(
-        Configuration(context.resources.configuration).apply { setLocale(Locale.forLanguageTag("uz")) },
+    private var auditLanguage = "uz"
+    private var auditFontScale = 1f
+    private var auditWallets = false
+    private var decisionStatus = "pending"
+    private val copy: Context get() = context.createConfigurationContext(
+        Configuration(context.resources.configuration).apply { setLocale(Locale.forLanguageTag(auditLanguage)) },
     )
     private val owner = SessionViewModelStoreOwner()
     private val origin = mutableStateOf("profile_subscription")
@@ -117,14 +134,16 @@ class SubscriptionCheckoutHostTest {
                     val plan = if (mode == "hsk30_unlock") mode else "1_month"
                     Response.success(SubscriptionCheckoutOverviewDto(
                         ok = true,
-                        language = "uz",
+                        language = auditLanguage,
                         mode = mode,
                         preferredCurrency = "TJS",
                         displayCurrency = "TJS",
                         attemptId = "android-test-attempt-$requestOrigin",
                         checkoutAllowed = pending == null,
                         pendingPayment = pending,
-                        prices = if (pending == null) mapOf("visa" to (if (allManualPlans && mode == "subscription")
+                        prices = if (auditWallets) listOf("alipay", "wechat").associateWith {
+                            mapOf("1_month" to SubscriptionPriceDto(baseAmount = 10, finalAmount = 10, currency = "CNY"))
+                        } else if (pending == null) mapOf("visa" to (if (allManualPlans && mode == "subscription")
                             listOf("1_month", "10_days", "3_months").associateWith {
                                 SubscriptionPriceDto(baseAmount = 10, finalAmount = 10, currency = "TJS")
                             }
@@ -138,10 +157,13 @@ class SubscriptionCheckoutHostTest {
                     Response.success(SubscriptionQuoteResponse(
                         ok = true,
                         quote = SubscriptionQuoteDto(
-                            payAmount = "10", payCurrency = "TJS", paymentDetails = "TEST RECEIPT CHECKOUT",
+                            payAmount = "10", payCurrency = if (auditWallets) "CNY" else "TJS", paymentDetails = "TEST RECEIPT CHECKOUT",
+                            qr = if (auditWallets) SubscriptionQrDto(available = true, imageDataUrl = fixtureQr()) else null,
                         ),
                     ))
                 }
+                "checkoutPaymentStatus" -> Response.success(PaymentDecisionStatusResponse(ok = true,
+                    paymentId = 71, status = decisionStatus, planType = pending?.planType ?: "1_month"))
                 "checkoutEvent" -> Response.success(SubscriptionCheckoutEventResponse(ok = true))
                 "checkoutSubmit" -> {
                     submitRequests += args[1] as SubscriptionSubmitRequest
@@ -179,6 +201,9 @@ class SubscriptionCheckoutHostTest {
         val providerRepository = LavaCheckoutRepository(provider, { ApiResult.Success("test-token") },
             origin = "profile_subscription")
         compose.setContent {
+            val registryOwner = checkNotNull(LocalActivityResultRegistryOwner.current)
+            CompositionLocalProvider(LocalActivityResultRegistryOwner provides registryOwner, LocalContext provides copy, LocalConfiguration provides copy.resources.configuration,
+                LocalDensity provides Density(LocalDensity.current.density, auditFontScale)) {
             PompHskAiTheme {
                 if (visible.value) {
                     DirectSubscriptionCheckoutHost(
@@ -195,6 +220,7 @@ class SubscriptionCheckoutHostTest {
                     )
                 }
             }
+        }
         }
         compose.waitUntil(10_000) { if (providerBlock != null) providerOrigins.isNotEmpty() else requestedOrigins.isNotEmpty() }
         compose.waitForIdle()
@@ -230,6 +256,89 @@ class SubscriptionCheckoutHostTest {
         compose.waitForIdle()
         assertEquals(listOf("opened", "plan_selected", "method_selected", "dismissed"), events.toList())
         assertEquals(1, closeCount)
+    }
+
+    private fun auditScreenshot(name: String) {
+        compose.waitForIdle()
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync()
+        Thread.sleep(300)
+        val bitmap = requireNotNull(InstrumentationRegistry.getInstrumentation().uiAutomation.takeScreenshot())
+        File(context.getExternalFilesDir(null), "$name.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
+    }
+    private fun fixtureQr(): String {
+        val image = Bitmap.createBitmap(80, 80, Bitmap.Config.ARGB_8888)
+        for (x in 0 until 80) for (y in 0 until 80)
+            image.setPixel(x, y, if ((x / 8 + y / 8) % 2 == 0) android.graphics.Color.BLACK else android.graphics.Color.WHITE)
+        val bytes = ByteArrayOutputStream(); image.compress(Bitmap.CompressFormat.PNG, 100, bytes); image.recycle()
+        return "data:image/png;base64," + Base64.encodeToString(bytes.toByteArray(), Base64.NO_WRAP)
+    }
+    @Test fun auditManualRussianStages() = auditManualStages("ru", 1f)
+    @Test fun auditManualTajikStages() = auditManualStages("tg", 1f)
+    @Test fun auditManualLargeTextStages() = auditManualStages("uz", 2f)
+    private fun auditManualStages(language: String, scale: Float) {
+        auditLanguage = language; auditFontScale = scale; allManualPlans = true
+        show(); expectPlan(R.string.sub_plan_1)
+        auditScreenshot("checkout-manual-plans-$language-$scale")
+        compose.onNodeWithText(copy.getString(R.string.action_continue)).performClick()
+        compose.onNodeWithText(copy.getString(R.string.sub_method)).assertIsDisplayed()
+        auditScreenshot("checkout-manual-bank-$language-$scale")
+        continueMethodIfPresent()
+        compose.onNodeWithText(copy.getString(R.string.sub_submit)).assertIsDisplayed()
+        auditScreenshot("checkout-manual-pay-$language-$scale")
+    }
+    @Test fun auditChinaWalletQrAndPreviewHaveOneBackStep() {
+        auditWallets = true
+        runBlocking { (context.applicationContext as HskAiApplication).appSettings.setPaymentRegion("cn") }
+        show(); expectPlan(R.string.sub_plan_1)
+        compose.onNodeWithText(copy.getString(R.string.action_continue)).performClick()
+        compose.onNodeWithText(copy.getString(R.string.sub_wechat)).performClick()
+        auditScreenshot("checkout-manual-wallet")
+        compose.onNodeWithText(copy.getString(R.string.sub_continue_wechat)).performClick()
+        compose.waitUntil(5_000) { quoteRequests.isNotEmpty() }
+        compose.onNodeWithContentDescription(copy.getString(R.string.sub_qr_title)).performScrollTo().assertIsDisplayed()
+        auditScreenshot("checkout-manual-qr")
+        compose.onNodeWithContentDescription(copy.getString(R.string.sub_qr_title)).performClick()
+        compose.onNodeWithText(copy.getString(R.string.sub_qr_enlarge)).performScrollTo().performClick()
+        compose.onNodeWithText(copy.getString(R.string.sub_submit)).assertDoesNotExist()
+        val enlarged = compose.onNodeWithContentDescription(copy.getString(R.string.sub_qr_title))
+            .fetchSemanticsNode().boundsInRoot
+        val header = compose.onNodeWithTag("checkout-header").fetchSemanticsNode().boundsInRoot
+        assertTrue(enlarged.height > header.width * 0.8f)
+        assertTrue(kotlin.math.abs(enlarged.width - enlarged.height) < 2f)
+        auditScreenshot("checkout-manual-qr-preview")
+        compose.onNodeWithContentDescription(copy.getString(R.string.action_back)).performClick()
+        compose.onNodeWithText(copy.getString(R.string.sub_submit)).assertIsDisplayed()
+        assertEquals("wechat", quoteRequests.single().paymentMethod)
+    }
+    @Test fun auditManualPendingRejectedAndRetry() {
+        pending = SubscriptionPendingDto(id = 71, planType = "1_month")
+        show(); compose.onNodeWithText(copy.getString(R.string.sub_pending_title)).assertIsDisplayed()
+        auditScreenshot("checkout-manual-pending")
+        decisionStatus = "rejected"
+        compose.onNodeWithText(copy.getString(R.string.sub_payment_refresh)).performClick()
+        compose.waitUntil(5_000) { compose.onAllNodesWithText(copy.getString(R.string.sub_pro_rejected_title)).fetchSemanticsNodes().isNotEmpty() }
+        auditScreenshot("checkout-manual-rejected")
+        pending = null
+        compose.onNodeWithText(copy.getString(R.string.sub_hsk30_retry)).performClick()
+        expectPlan(R.string.sub_plan_1)
+    }
+    @Test fun auditSelectedReceiptIsReadyButNeverPaidUntilReview() {
+        show(); readyReceipt()
+        compose.onNodeWithText(copy.getString(R.string.sub_submit)).assertIsEnabled()
+        auditScreenshot("checkout-manual-receipt-ready")
+        assertEquals(0, submitRequests.size)
+    }
+
+    @Test fun supportSheetReturnsToTheSameManualDraft() {
+        show(); expectPlan(R.string.sub_plan_1)
+        compose.onNodeWithTag("checkout-support").performClick()
+        compose.onNodeWithText(copy.getString(R.string.sub_help_title)).assertIsDisplayed()
+        auditScreenshot("checkout-manual-support")
+        androidx.test.espresso.Espresso.pressBack()
+        compose.onNodeWithText(copy.getString(R.string.sub_help_title)).assertDoesNotExist()
+        expectPlan(R.string.sub_plan_1)
+        assertEquals(0, closeCount)
+        assertEquals(0, submitRequests.size)
     }
 
     private fun expectPlan(resource: Int) {

@@ -8,3 +8,5 @@
 - Native dialog localization: Compose Dialog establishes its own View context. Keep the parent account context/configuration/density inside the limit dialog; otherwise scoped locale or font-scale providers can be replaced by the host default. Neutral-gate tests cover UZ/RU/TJ, 200% text and the always-visible Play support action.
 
 - PWA sequence regression prevention: a manual limit CTA must not open a second tariff picker. Reuse the authenticated selected plan, then show TJ bank / China wallet before requisites as PWA does; More and Back state are owned above provider/manual branches. `SubscriptionCheckoutSequenceTest` and the real host instrumentation cover one quote, the selected tariff/bank and returning to the same parent.
+
+- QR preview regression prevention: `Image.fillMaxWidth()` alone retains the bitmap’s intrinsic height, so a small server QR can remain tiny in an enlarged preview. Use a square constrained area with preserved aspect ratio; the real-host UI regression asserts width/height equality, at least 80% of the checkout width, and Back to the same quote.

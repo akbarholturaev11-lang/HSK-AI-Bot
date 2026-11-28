@@ -49,14 +49,16 @@ class AndroidCanonicalCatalogTests(unittest.TestCase):
             with self.subTest(path=relative):
                 self.assertEqual((ROOT / relative).read_bytes(), raw)
 
-    def test_native_exit_offer_uses_the_existing_pwa_copy(self):
+    def test_native_exit_offer_retains_pwa_actions_and_owner_marketing_override(self):
         source = (ROOT / "app/static/course_v3_data/iphone-pwa-inline-pro.js").read_text()
         for folder, locale in (("values", "uz"), ("values-ru", "ru"), ("values-tg", "tj")):
             block = re.search(r"\b" + locale + r": \{(.*?)\}\s*[,\n]", source, re.S).group(1)
             native = {node.attrib["name"]: node.text for node in ET.parse(
                 ROOT / SOURCE / "direct" / folder / "checkout_parity.xml").getroot()}
-            for suffix, key in (("title", "exitTitle"), ("body", "exitText"), ("accept", "accept"),
-                                ("decline", "decline"), ("renewal", "renewal")):
+            self.assertIn("Pro", native["checkout_exit_title"])
+            self.assertIn("20%", native["checkout_exit_body"])
+            self.assertIn({"uz": "birinchi", "ru": "первый", "tj": "аввал"}[locale], native["checkout_exit_body"])
+            for suffix, key in (("accept", "accept"), ("decline", "decline"), ("renewal", "renewal")):
                 text = re.search(r'\b' + key + r':"([^"]*)"', block).group(1)
                 self.assertEqual(native["checkout_exit_" + suffix], text, (locale, key))
 

@@ -16,6 +16,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -246,7 +247,20 @@ internal fun DirectSubscriptionCheckoutHost(
     }
     BackHandler { navigateBack() }
 
-    HskSceneSurface(modifier = Modifier.fillMaxSize()) {
+    if (qrPreview) {
+        val bitmap = remember(state.quote?.qr?.imageDataUrl) { decodeQr(state.quote?.qr?.imageDataUrl) }
+        HskSceneSurface(modifier = Modifier.fillMaxSize()) {
+            Column(Modifier.fillMaxSize().background(C.bg).safeDrawingPadding().padding(horizontal = 16.dp)) {
+                CheckoutHeader(false, { qrPreview = false }, { supportOpen = true })
+                Text(copy.getString(R.string.sub_qr_title), color = C.text, fontSize = 20.sp, fontWeight = FontWeight.Black)
+                Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    if (bitmap != null) Image(bitmap, contentDescription = copy.getString(R.string.sub_qr_title),
+                        modifier = Modifier.fillMaxWidth().aspectRatio(1f)
+                            .background(Color.White, PompShapes.Large).padding(12.dp))
+                }
+            }
+        }
+    } else HskSceneSurface(modifier = Modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize().background(C.bg).safeDrawingPadding().imePadding()) {
         Box(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
             CheckoutHeader(
@@ -492,22 +506,7 @@ internal fun DirectSubscriptionCheckoutHost(
                 onClick = { copyValue(context, link); inviteOpen = false }, secondary = true)
         }
     }
-    if (qrPreview) {
-        val bitmap = remember(state.quote?.qr?.imageDataUrl) { decodeQr(state.quote?.qr?.imageDataUrl) }
-        Dialog(onDismissRequest = { qrPreview = false },
-            properties = DialogProperties(usePlatformDefaultWidth = false)) {
-            Column(Modifier.fillMaxSize().background(C.bg).safeDrawingPadding().padding(16.dp)) {
-                Text(copy.getString(R.string.sub_qr_title), color = C.text,
-                    fontSize = 20.sp, fontWeight = FontWeight.Black)
-                Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    if (bitmap != null) Image(bitmap, contentDescription = copy.getString(R.string.sub_qr_title),
-                        modifier = Modifier.fillMaxWidth().background(Color.White, PompShapes.Large).padding(12.dp))
-                }
-                CheckoutButton(copy.getString(R.string.action_back), false, true,
-                    onClick = { qrPreview = false }, secondary = true)
-            }
-        }
-    }
+
 }
 
 @Composable

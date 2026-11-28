@@ -18,9 +18,14 @@
     <string name="checkout_country_ru">Россия</string>
     <string name="checkout_country_cn">Китай</string>
     <string name="checkout_country_other">Другая страна</string>
-    <string name="checkout_exit_title" formatted="false">Специальная скидка 20%</string>
-    <string name="checkout_exit_body" formatted="false">Заберите скидку на первый платёж и продолжайте обучение</string>
+    <string name="checkout_exit_title" formatted="false">Оформите Pro сейчас</string>
+    <string name="checkout_exit_body" formatted="false">Оформите Pro сейчас и получите скидку 20% на первый платёж.</string>
     <string name="checkout_exit_accept" formatted="false">Забрать скидку</string>
     <string name="checkout_exit_decline" formatted="false">Нет, спасибо</string>
     <string name="checkout_exit_renewal" formatted="false">Продление оплачивается по стандартной цене. Автопродление можно отменить.</string>
+    <string name="checkout_cancel_confirm">Отключить автопродление? Pro продолжит работать до конца оплаченного срока.</string>
+    <string name="checkout_email_invalid">Введите корректный email.</string>
+    <string name="checkout_subscription_active">Автоподписка активна</string>
+    <string name="checkout_subscription_active_body">Pro до %1$s. Следующий платёж — автоматически.</string>
+    <string name="checkout_subscription_cancelled_body">Автопродление отключено. Pro действует до %1$s.</string>
 </resources>

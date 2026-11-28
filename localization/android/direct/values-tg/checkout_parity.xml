@@ -18,9 +18,14 @@
     <string name="checkout_country_ru">Русия</string>
     <string name="checkout_country_cn">Чин</string>
     <string name="checkout_country_other">Давлати дигар</string>
-    <string name="checkout_exit_title" formatted="false">20% тахфифи махсус</string>
-    <string name="checkout_exit_body" formatted="false">Барои пардохти аввал 20% тахфиф гиред</string>
+    <string name="checkout_exit_title" formatted="false">Ҳозир Pro гиред</string>
+    <string name="checkout_exit_body" formatted="false">Агар ҳозир Pro гиред, барои пардохти аввал 20% тахфиф мегиред.</string>
     <string name="checkout_exit_accept" formatted="false">Гирифтани тахфиф</string>
     <string name="checkout_exit_decline" formatted="false">Не, ташаккур</string>
     <string name="checkout_exit_renewal" formatted="false">Пардохти навбатӣ бо нархи муқаррарӣ аст. Тамдиди худкорро бекор кардан мумкин.</string>
+    <string name="checkout_cancel_confirm">Тамдиди худкорро хомӯш мекунед? Pro то охири мӯҳлати пардохтшуда кор мекунад.</string>
+    <string name="checkout_email_invalid">Суроғаи email-ро дуруст ворид кунед.</string>
+    <string name="checkout_subscription_active">Обунаи худкор фаъол аст</string>
+    <string name="checkout_subscription_active_body">Pro то %1$s. Пардохти навбатӣ — худкор.</string>
+    <string name="checkout_subscription_cancelled_body">Тамдиди худкор хомӯш аст. Pro то %1$s амал мекунад.</string>
 </resources>

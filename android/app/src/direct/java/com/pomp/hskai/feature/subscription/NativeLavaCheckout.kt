@@ -14,6 +14,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
@@ -77,6 +82,8 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
     val allPlans = allPlansOverride ?: localAllPlans
     val setAllPlans: (Boolean) -> Unit = { if (allPlansOverride == null) localAllPlans = it; onAllPlansChange?.invoke(it) }
     var emailStep by rememberSaveable(origin) { mutableStateOf(false) }
+    var emailInvalid by rememberSaveable(origin) { mutableStateOf(false) }
+    var emailFocused by remember { mutableStateOf(false) }
     var manual by rememberSaveable(origin) { mutableStateOf(false) }
     val block = state.block
     val effectiveRegion = regionOverride ?: state.region
@@ -112,13 +119,14 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
     if (block?.mode == "manual_only" && block.subscription == null && state.checkoutId == 0 &&
         block.blocked_reason == null && !state.error) return NativeLavaRoute(false, state.providerEntryId)
     var supportOpen by remember { mutableStateOf(false) }
+    var cancelConfirm by remember { mutableStateOf(false) }
     val primaryPlans = providerDisplayPlans(state.visiblePlans, limitOffer && !allPlans)
     LaunchedEffect(primaryPlans.map { it.plan_type }, emailStep, state.loading) {
         if (!state.loading && !emailStep && primaryPlans.isNotEmpty() && primaryPlans.none { it.plan_type == state.plan })
             model.chooseProviderPlan(primaryPlans.first().plan_type, userAction = false)
     }
     val terminal = state.checkoutId > 0 || block?.subscription != null
-    val firstStep = state.offer == null && !terminal && !emailStep && !(limitOffer && allPlans)
+    val firstStep = state.mode == "subscription" && state.offer == null && !terminal && !emailStep && !(limitOffer && allPlans)
     val focus = androidx.compose.ui.platform.LocalFocusManager.current
     val keyboard = androidx.compose.ui.platform.LocalSoftwareKeyboardController.current
     val navigate: () -> Unit = {
@@ -151,7 +159,7 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
     HskSceneSurface(Modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize().background(com.pomp.hskai.core.design.ProColors.Paper)
             .safeDrawingPadding().imePadding().widthIn(max = 520.dp).padding(horizontal = 16.dp)) {
-            CheckoutHeader(firstStep, navigate, { supportOpen = true }, enabled = !state.busy)
+            CheckoutHeader(firstStep, navigate, { focus.clearFocus(); keyboard?.hide(); supportOpen = true }, enabled = !state.busy)
             if (!limitOffer && !terminal && state.offer == null) CheckoutProgress(if (emailStep) 1 else 0,
                 if (block?.email.isNullOrBlank()) 2 else 1)
             Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(vertical = 16.dp),
@@ -176,13 +184,19 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
                     }
                     block?.subscription != null -> {
                         CheckoutPanda(Modifier.align(Alignment.CenterHorizontally).size(148.dp))
-                        Text(stringResource(R.string.checkout_heading), fontSize = 28.sp, fontWeight = FontWeight.ExtraBold,
+                        Text(stringResource(if (block.subscription.auto_renew) R.string.checkout_subscription_active
+                            else R.string.checkout_paid_title), fontSize = 28.sp, fontWeight = FontWeight.ExtraBold,
                             color = com.pomp.hskai.core.design.ProColors.Ink, textAlign = TextAlign.Center,
                             modifier = Modifier.fillMaxWidth())
-                        Text(stringResource(if (block.subscription.auto_renew) R.string.lava_terms else R.string.lava_cancelled),
+                        val endDate = block.subscription.pro_until?.let { value -> runCatching {
+                            java.time.Instant.parse(value).atZone(java.time.ZoneId.systemDefault()).toLocalDate()
+                                .format(java.time.format.DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+                        }.getOrNull() }
+                        Text(if (endDate != null) stringResource(if (block.subscription.auto_renew)
+                            R.string.checkout_subscription_active_body else R.string.checkout_subscription_cancelled_body, endDate)
+                            else stringResource(if (block.subscription.auto_renew) R.string.lava_terms else R.string.lava_cancelled),
                             color = com.pomp.hskai.core.design.ProColors.Muted)
-                        block.subscription.pro_until?.let { Text(it.substringBefore('T'), color = com.pomp.hskai.core.design.ProColors.Ink) }
-                        if (block.subscription.auto_renew) TextButton(onClick = model::cancelRenewal, enabled = !state.busy) {
+                        if (block.subscription.auto_renew) TextButton(onClick = { cancelConfirm = true }, enabled = !state.busy) {
                             Text(stringResource(R.string.lava_cancel), color = com.pomp.hskai.core.design.ProColors.CtaDeep)
                         }
                     }
@@ -190,11 +204,35 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
                         val plan = state.visiblePlans.firstOrNull { it.plan_type == state.plan }
                         Text(stringResource(R.string.checkout_email), fontSize = 24.sp,
                             fontWeight = FontWeight.ExtraBold, color = com.pomp.hskai.core.design.ProColors.Ink)
-                        plan?.let { ProviderPlanCard(it, true, {}, Modifier.fillMaxWidth(), enabled = false) }
+                        plan?.let {
+                            val term = if (it.months == 12) stringResource(R.string.checkout_year)
+                                else stringResource(R.string.lava_months, it.months)
+                            Text("$term · ${it.amount.orEmpty()} ${it.currency}",
+                                color = com.pomp.hskai.core.design.ProColors.Muted,
+                                modifier = Modifier.testTag("provider-email-summary"))
+                        }
+                        val label = stringResource(R.string.lava_email)
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text(label, color = if (emailInvalid && !validCheckoutEmail(state.email)) MaterialTheme.colorScheme.error
+                            else com.pomp.hskai.core.design.ProColors.Ink, fontWeight = FontWeight.Medium)
                         OutlinedTextField(value = state.email, onValueChange = model::email,
-                            enabled = !state.busy, singleLine = true, label = { Text(stringResource(R.string.lava_email)) },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                            shape = RoundedCornerShape(16.dp), modifier = Modifier.fillMaxWidth().testTag("provider-email"))
+                            enabled = !state.busy, singleLine = true,
+                            isError = emailInvalid && !validCheckoutEmail(state.email),
+                            supportingText = if (emailInvalid && !validCheckoutEmail(state.email)) {
+                                { Text(stringResource(R.string.checkout_email_invalid)) }
+                            } else null,
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Done),
+                            keyboardActions = KeyboardActions(onDone = {
+                                emailInvalid = !validCheckoutEmail(state.email)
+                                if (!emailInvalid) model.start()
+                            }),
+                            shape = RoundedCornerShape(16.dp), modifier = Modifier.fillMaxWidth()
+                                .testTag("provider-email").semantics { contentDescription = label }
+                                .onFocusChanged {
+                                    if (emailFocused && !it.isFocused) emailInvalid = !validCheckoutEmail(state.email)
+                                    emailFocused = it.isFocused
+                                })
+                        }
                         Text(stringResource(R.string.lava_terms), color = com.pomp.hskai.core.design.ProColors.Muted,
                             style = MaterialTheme.typography.bodySmall)
                     }
@@ -246,9 +284,6 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
                         TextButton(onClick = model::declineOffer, enabled = !state.busy, modifier = Modifier.fillMaxWidth()) {
                             Text(stringResource(R.string.checkout_exit_decline), color = com.pomp.hskai.core.design.ProColors.Muted)
                         }
-                        Text(stringResource(R.string.checkout_exit_renewal), fontSize = 12.sp,
-                            color = com.pomp.hskai.core.design.ProColors.Muted, textAlign = TextAlign.Center,
-                            modifier = Modifier.fillMaxWidth())
                     }
                     state.checkoutId > 0 -> {
                         if (state.status == "paid") CheckoutPrimary(stringResource(R.string.sub_return_app), onClick = onClose)
@@ -263,9 +298,13 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
                         CheckoutPrimary(stringResource(if (limitOffer && !emailStep) R.string.limit_sheet_get_pro else R.string.lava_pay),
                             busy = state.busy, enabled = !state.loading && !state.uncertainStart &&
                                 block?.blocked_reason == null && state.region == effectiveRegion && state.plan.isNotBlank() &&
-                                (!emailStep || validCheckoutEmail(state.email))) {
+                                (!emailStep || state.email.isNotBlank())) {
                             telemetry?.record("plan_selected", state.plan, "lava")
-                            if (block?.email.isNullOrBlank() && !emailStep) emailStep = true else model.start()
+                            if (block?.email.isNullOrBlank() && !emailStep) emailStep = true
+                            else {
+                                emailInvalid = !validCheckoutEmail(state.email)
+                                if (!emailInvalid) model.start()
+                            }
                         }
                         if (limitOffer && !allPlans && !emailStep) TextButton(onClick = { telemetry?.record("more_opened", state.plan, "lava"); setAllPlans(true) },
                             enabled = !state.loading && !state.busy, modifier = Modifier.fillMaxWidth()) {
@@ -277,6 +316,18 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
         }
     }
     if (supportOpen) ProviderSupportSheet(onDismiss = { supportOpen = false })
+    if (cancelConfirm) AlertDialog(onDismissRequest = { cancelConfirm = false },
+        containerColor = com.pomp.hskai.core.design.ProColors.Surface,
+        titleContentColor = com.pomp.hskai.core.design.ProColors.Ink,
+        textContentColor = com.pomp.hskai.core.design.ProColors.Muted,
+        title = { Text(stringResource(R.string.lava_cancel)) },
+        text = { Text(stringResource(R.string.checkout_cancel_confirm)) },
+        confirmButton = { TextButton(onClick = { cancelConfirm = false; model.cancelRenewal() }) {
+            Text(stringResource(R.string.lava_cancel), color = com.pomp.hskai.core.design.ProColors.CtaDeep)
+        } },
+        dismissButton = { TextButton(onClick = { cancelConfirm = false }) {
+            Text(stringResource(R.string.action_back), color = com.pomp.hskai.core.design.ProColors.Muted)
+        } })
     return NativeLavaRoute(true)
 }
 

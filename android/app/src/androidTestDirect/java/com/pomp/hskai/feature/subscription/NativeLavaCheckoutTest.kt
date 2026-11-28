@@ -31,13 +31,16 @@ class NativeLavaCheckoutTest {
         @Volatile var statusValue = "pending"
         @Volatile var checks = 0
         var offer = ExitReply(ok = true)
-        override suspend fun providerOverview(auth: String, body: LavaContext) = reply.await()
-        override suspend fun start(auth: String, body: LavaStart): Response<LavaReply> = error("No real purchase in UI tests")
+        @Volatile var starts = 0
+        @Volatile var cancels = 0
+        var afterCancel: LavaOverview? = null
+        override suspend fun providerOverview(auth: String, body: LavaContext) = afterCancel?.takeIf { cancels > 0 }?.let { Response.success(it) } ?: reply.await()
+        override suspend fun start(auth: String, body: LavaStart): Response<LavaReply> { starts++; return Response.success(LavaReply(ok = false)) }
         override suspend fun status(auth: String, body: LavaId): Response<LavaReply> {
             checks++
             return Response.success(LavaReply(ok = true, status = statusValue))
         }
-        override suspend fun cancel(auth: String, body: Map<String, String>) = Response.success(LavaReply(ok = true))
+        override suspend fun cancel(auth: String, body: Map<String, String>): Response<LavaReply> { cancels++; return Response.success(LavaReply(ok = true)) }
         override suspend fun exitOffer(auth: String, body: ExitAction) = Response.success(offer)
     }
     private val plans = listOf(LavaPlan("1_month", 1, 30, "10.00", "USD"),
@@ -70,9 +73,10 @@ class NativeLavaCheckoutTest {
             .fetchSemanticsNodes().isNotEmpty() }
     }
     private fun screenshot(name: String) {
+        compose.waitForIdle()
         InstrumentationRegistry.getInstrumentation().waitForIdleSync()
         Thread.sleep(300)
-        compose.onRoot().captureToImage().asAndroidBitmap().let { bitmap ->
+        requireNotNull(InstrumentationRegistry.getInstrumentation().uiAutomation.takeScreenshot()).let { bitmap ->
             File(context.getExternalFilesDir(null), "$name.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
         }
     }
@@ -85,7 +89,10 @@ class NativeLavaCheckoutTest {
         compose.onNodeWithTag("checkout-support").assertIsDisplayed()
         compose.onNodeWithContentDescription(context.getString(R.string.action_close)).assertIsDisplayed()
         compose.onNodeWithText(context.getString(R.string.lava_pay)).performClick()
-        compose.onNodeWithTag("provider-email").assertIsDisplayed().performTextInput("learner@example.com")
+        compose.onNodeWithTag("provider-email").assertIsDisplayed()
+        screenshot("checkout-email")
+        compose.onNodeWithTag("provider-email").performTextInput("learner@example.com")
+        screenshot("checkout-email-filled")
         compose.onNodeWithContentDescription(context.getString(R.string.action_close)).assertDoesNotExist()
         compose.onNodeWithContentDescription(context.getString(R.string.action_back)).performClick()
         compose.onNodeWithTag("provider-plan:1_month").assertIsSelected()
@@ -103,6 +110,7 @@ class NativeLavaCheckoutTest {
         screenshot("checkout-limit-primary")
         compose.onNodeWithText(context.getString(R.string.lava_other_plans)).performClick()
         compose.onNodeWithTag("provider-plan:3_months").assertExists()
+        screenshot("checkout-limit-more")
         compose.onNodeWithContentDescription(context.getString(R.string.action_close)).assertDoesNotExist()
         compose.onNodeWithContentDescription(context.getString(R.string.action_back)).performClick()
         compose.onNodeWithTag("provider-plan:3_months").assertDoesNotExist()
@@ -135,6 +143,48 @@ class NativeLavaCheckoutTest {
         assertTrue(abs(loading.height - loaded.height) < 2f)
     }
 
+    @Test fun invalidEmailShowsASpecificErrorWithoutStartingAnInvoice() {
+        val api = Fake(); show(api); ready(api)
+        compose.onNodeWithText(context.getString(R.string.lava_pay)).performClick()
+        compose.onNodeWithTag("provider-email").performTextInput("broken-email")
+        compose.onNodeWithTag("provider-email").performImeAction()
+        compose.onNodeWithText(context.getString(R.string.checkout_email_invalid)).assertIsDisplayed()
+        assertEquals(0, api.starts)
+        screenshot("checkout-email-error")
+    }
+
+    @Test fun activeRenewalRequiresPwaConfirmationAndRetainsPaidTerm() {
+        val api = Fake(); show(api)
+        val active = LavaBlock(mode = "both", plans = plans,
+            subscription = LavaSubscription("active", true, "2026-12-31T00:00:00Z"))
+        api.reply.complete(Response.success(LavaOverview(true, active)))
+        api.afterCancel = LavaOverview(true, active.copy(subscription = active.subscription!!.copy(auto_renew = false)))
+        compose.waitUntil(5_000) { compose.onAllNodesWithText(context.getString(R.string.lava_cancel)).fetchSemanticsNodes().isNotEmpty() }
+        screenshot("checkout-renewal-active")
+        compose.onNodeWithText(context.getString(R.string.lava_cancel)).performClick()
+        compose.onNodeWithText(context.getString(R.string.checkout_cancel_confirm)).assertIsDisplayed()
+        assertEquals(0, api.cancels)
+        screenshot("checkout-renewal-confirm")
+        compose.onNodeWithText(context.getString(R.string.action_back)).performClick()
+        assertEquals(0, api.cancels)
+        compose.onNodeWithText(context.getString(R.string.lava_cancel)).performClick()
+        compose.onAllNodesWithText(context.getString(R.string.lava_cancel)).onLast().performClick()
+        compose.waitUntil(5_000) { api.cancels == 1 }
+        compose.onNodeWithText(context.getString(R.string.checkout_subscription_cancelled_body, "31.12.2026")).assertIsDisplayed()
+        screenshot("checkout-renewal-cancelled")
+    }
+
+    @Test fun providerFailureStaysRecoverableWithoutInventedSuccess() {
+        val api = Fake(); show(api); ready(api, pending = 7)
+        compose.waitUntil(5_000) { api.checks >= 1 }
+        api.statusValue = "failed"
+        compose.onNodeWithText(context.getString(R.string.lava_check)).performClick()
+        compose.waitUntil(5_000) { compose.onAllNodesWithText(context.getString(R.string.sub_pro_rejected_title)).fetchSemanticsNodes().isNotEmpty() }
+        screenshot("checkout-provider-failed")
+        compose.onNodeWithTag("checkout-support").assertIsDisplayed()
+        compose.onNodeWithContentDescription(context.getString(R.string.action_back)).assertIsDisplayed()
+    }
+
     @Test fun knownEmailSkipsTheEmailStep() {
         val api = Fake(); show(api); ready(api, email = "learner@example.com")
         compose.onNodeWithTag("provider-email").assertDoesNotExist()
@@ -153,6 +203,7 @@ class NativeLavaCheckoutTest {
         compose.waitUntil(5_000) { api.checks >= 1 }
         compose.runOnUiThread { lifecycle.registry.currentState = Lifecycle.State.CREATED }
         val before = api.checks
+        screenshot("checkout-provider-pending")
         Thread.sleep(5_200)
         assertEquals(before, api.checks)
         api.statusValue = "paid"
@@ -187,18 +238,26 @@ class NativeLavaCheckoutTest {
         compose.onNodeWithText(copy.getString(R.string.limit_sheet_get_pro)).assertIsDisplayed()
         screenshot("checkout-limit-$locale")
     }
-    @Test fun exitOfferKeepsSharedHeaderAndBackWithoutAnotherX() {
+    @Test fun exitOfferKeepsSharedHeaderAndBackWithoutAnotherX() = exitOffer("uz", 1f)
+    @Test fun exitOfferRussianMarketingAndActionsRemainReadable() = exitOffer("ru", 1f)
+    @Test fun exitOfferTajikMarketingAndActionsRemainReadable() = exitOffer("tg", 1f)
+    @Test fun exitOfferLargeTextKeepsClaimAndBackReachable() = exitOffer("uz", 2f)
+    private fun exitOffer(language: String, fontScale: Float) {
+        val copy = context.createConfigurationContext(Configuration(context.resources.configuration).apply {
+            setLocale(Locale.forLanguageTag(language))
+        })
         val api = Fake(); api.offer = ExitReply(ok = true, available = true, percent = 20)
-        show(api, limit = true); ready(api)
-        compose.onNodeWithContentDescription(context.getString(R.string.action_close)).performClick()
-        compose.onNodeWithText(context.getString(R.string.checkout_exit_title)).assertIsDisplayed()
+        show(api, limit = true, language = language, fontScale = fontScale); ready(api)
+        compose.onNodeWithContentDescription(copy.getString(R.string.action_close)).performClick()
+        compose.onNodeWithText(copy.getString(R.string.checkout_exit_title)).assertIsDisplayed()
         compose.onNodeWithTag("checkout-support").assertIsDisplayed()
-        compose.onNodeWithContentDescription(context.getString(R.string.action_close)).assertDoesNotExist()
-        compose.onNodeWithText(context.getString(R.string.checkout_exit_accept)).assertIsDisplayed()
-        screenshot("checkout-exit-offer")
-        compose.onNodeWithContentDescription(context.getString(R.string.action_back)).performClick()
+        compose.onNodeWithContentDescription(copy.getString(R.string.action_close)).assertDoesNotExist()
+        compose.onNodeWithText(copy.getString(R.string.checkout_exit_accept)).assertIsDisplayed()
+        compose.onNodeWithText(copy.getString(R.string.checkout_exit_renewal)).assertDoesNotExist()
+        screenshot("checkout-exit-offer-$language-$fontScale")
+        compose.onNodeWithContentDescription(copy.getString(R.string.action_back)).performClick()
         compose.onNodeWithTag("provider-plan:1_month").assertIsSelected()
-        compose.onNodeWithText(context.getString(R.string.checkout_limit_title)).assertIsDisplayed()
+        compose.onNodeWithText(copy.getString(R.string.checkout_limit_title)).assertIsDisplayed()
     }
 
     @Test fun largeTextKeepsLimitActionsAndHeaderReachable() {
@@ -213,6 +272,7 @@ class NativeLavaCheckoutTest {
         val api = Fake(); show(api, limit = true); ready(api)
         compose.onNodeWithText(context.getString(R.string.lava_other_plans)).performClick()
         compose.onNodeWithTag("checkout-country").onChildren().filter(hasClickAction()).onFirst().performClick()
+        screenshot("checkout-country-menu")
         compose.onNodeWithText("🇺🇿 " + context.getString(R.string.checkout_country_uz)).performClick()
         compose.onNodeWithTag("provider-plan:3_months").assertExists()
         compose.onNodeWithContentDescription(context.getString(R.string.action_back)).performClick()
