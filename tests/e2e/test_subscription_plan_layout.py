@@ -26,6 +26,16 @@ def badges_share_the_term_row(page, selector):
         assert card.locator('.badge').evaluate('(e)=>e.scrollWidth<=e.clientWidth')
 
 
+def header_shares_one_row(page):
+    title=page.locator('#title').bounding_box()
+    line=float(page.locator('#title').evaluate('(e)=>parseFloat(getComputedStyle(e).lineHeight)'))
+    assert title and title['height']<=line+1
+    for button in page.locator('.top-actions button:visible').all():
+        box=button.bounding_box()
+        assert abs(title['y']+title['height']/2-box['y']-box['height']/2)<=1
+        assert title['x']+title['width']<=box['x']
+
+
 def overview(lang, count):
     terms = [('1_month', '10.00'), ('3_months', '27.00'), ('12_months', '90.00')][:count]
     def provider(currency):
@@ -72,6 +82,7 @@ def test_plan_cards_keep_all_terms_without_alternatives_and_route_region_changes
             page.set_viewport_size(dict(width=width,height=844))
             settle(page)
             badges_share_the_term_row(page,'#lavaPlans .plan')
+            header_shares_one_row(page)
             assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
         page.set_viewport_size(dict(width=390,height=844))
         if lang=='ru': page.screenshot(path=f'/tmp/hsk-plan-ui-lava-{count}-{os.getenv("PWA_E2E_ENGINE","chromium")}.png',full_page=True)
@@ -106,5 +117,31 @@ def test_plan_cards_keep_all_terms_without_alternatives_and_route_region_changes
         assert page.locator('#lavaPlans').inner_text().count('USD')>=count
         assert requests.count('/api/subscription-miniapp/overview')==1
         assert not any(path.endswith('/submit') or path.endswith('/lava/start') for path in requests)
+        assert not errors,errors
+        browser.close()
+
+
+@pytest.mark.parametrize('lang',['uz','ru','tj'])
+def test_pwa_checkout_header_aligns_title_back_and_support(lang):
+    from pathlib import Path
+    with pw.sync_playwright() as driver:
+        browser=getattr(driver,os.getenv('PWA_E2E_ENGINE','chromium')).launch()
+        page=browser.new_context(viewport=dict(width=390,height=844),is_mobile=True,locale='en-US',timezone_id='UTC').new_page()
+        errors=[];page.on('pageerror',lambda error:errors.append(str(error)))
+        route_static_files(page)
+        page.route('**/iphone-pwa/checkout*',lambda route:route.fulfill(
+            path=str(Path(__file__).resolve().parents[2]/'app/static/subscription.html'),content_type='text/html'))
+        page.route('**/api/v3/pwa-auth/session',lambda route:route.fulfill(json=dict(ok=True,user_id=7,csrf='synthetic-csrf')))
+        page.route('**/api/v3/pwa/subscription/**',lambda route:route.fulfill(
+            json=overview(lang,3) if urlsplit(route.request.url).path.endswith('/overview') else dict(ok=True,recorded=True)))
+        page.goto(app_url('/iphone-pwa/checkout?inline_manual=1&country=ru&lang='+lang),wait_until='networkidle')
+        expect(page.locator('#lavaPlans')).to_be_visible()
+        for width in [320,390,430]:
+            page.set_viewport_size(dict(width=width,height=844));settle(page)
+            expect(page.locator('#pwaCheckoutBackBtn')).to_be_visible()
+            header_shares_one_row(page)
+            if lang=='ru' and width==390:
+                page.locator('.top').screenshot(path=f'/tmp/hsk-subscription-header-pwa-{os.getenv("PWA_E2E_ENGINE","chromium")}.png')
+            assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
         assert not errors,errors
         browser.close()
