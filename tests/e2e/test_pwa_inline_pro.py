@@ -426,7 +426,10 @@ def test_expiry_notice_uses_server_period_and_existing_checkout_once():
             window.App={openSheet:html=>{document.querySelector('#sheet').innerHTML=html;shown++},
               closeSheet:()=>{},goPay:s=>{window.checkoutSource=s}};
         }""")
-        page.add_script_tag(content=source[key_start:key_end] + source[start:end])
+        page.add_script_tag(path=str(STATIC / "assets/characters/hsk-character-pack.js"))
+        character_start = source.index("function lessonCharacterHtml(id,mood){")
+        character_end = source.index("function lessonCharacterLabel(id){", character_start)
+        page.add_script_tag(content=source[character_start:character_end] + source[key_start:key_end] + source[start:end])
         assert page.evaluate("maybeShowProExpiryNotice()") is False
         page.evaluate("MAP.pro_expiry_notice='a'.repeat(64); busy=true")
         assert page.evaluate("maybeShowProExpiryNotice()") is False
