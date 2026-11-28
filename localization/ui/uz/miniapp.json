@@ -1430,7 +1430,9 @@
     "ui.admin_pwa.lavaPromoPercent": "Foiz",
     "ui.admin_pwa.lavaPromoCode": "Promokod",
     "ui.admin_pwa.lavaErr_invalid_promo_code": "Promokod 3–36 belgi: lotin harflari, raqam, - va _",
-    "ui.admin_pwa.lavaErr_invalid_promo_codes": "Promokodlar ro'yxati noto'g'ri"
+    "ui.admin_pwa.lavaErr_invalid_promo_codes": "Promokodlar ro'yxati noto'g'ri",
+    "ui.admin_pwa.analyticsAndroidPro": "Android Pro yo‘li",
+    "ui.admin_pwa.analyticsAndroidProNote": "Android Direct limit oynasi va Lava to‘lovi. Qo‘lda to‘lovlar umumiy to‘lov yo‘lida; eski bog‘lanmagan to‘lovlar alohida."
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

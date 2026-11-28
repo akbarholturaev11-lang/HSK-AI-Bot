@@ -205,6 +205,14 @@ async def browser_checks(output):
                 db.add(ConversionFunnelEvent(user_id=2,telegram_id=2002,event_name=name,source='v3_locked_lesson',
                     payload_json=json.dumps({'event_id':f'{attempt}:{step}','attempt_id':attempt,'plan_type':'1_month',
                                              'payment_method':'lava','transport':'iphone_pwa'})))
+        # Native UI/server stage shapes; actual bearer-to-ledger chain is tested
+        # in test_android_pro_funnel_chain.py, including canonical native owner.
+        for attempt,names in (('qa-native-browse',('android_pro_opened',)),
+                              ('qa-native-buy',('android_pro_opened','android_pro_plan_selected','android_pro_checkout_started'))):
+            for step,name in enumerate(names,1):
+                db.add(ConversionFunnelEvent(user_id=1,event_name=name,source='course_limit',
+                    payload_json=json.dumps({'event_id':f'{attempt}:{step}','attempt_id':attempt,'plan_type':'1_month',
+                                             'payment_method':'lava','transport':'android'})))
         # R1 UI half: an Android lesson open as the bearer lesson route writes it;
         # tests/test_analytics_platform_chain.py proves the route.
         from app.db.models.course_miniapp_event import CourseMiniAppEvent
@@ -553,6 +561,9 @@ async def browser_checks(output):
                         title=await page.evaluate(f"window.HSKAI_ADMIN_I18N.{language}.analyticsPwaPro")
                         pro=page.locator('.analytics-panel',has=page.locator('h2',has_text=title))
                         await expect(pro.locator('.stat-step-label span')).to_have_text(['2','1','1','0'])
+                        native_title=await page.evaluate(f"window.HSKAI_ADMIN_I18N.{language}.analyticsAndroidPro")
+                        native=page.locator('.analytics-panel',has=page.locator('h2',has_text=native_title))
+                        await expect(native.locator('.stat-step-label span')).to_have_text(['2','1','1','0'])
                     await page.screenshot(path=str(output/f'v10-{section}-{language}-{width}.png'),full_page=True)
                     assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
         # Task 3.3: each platform filter renders every tab; an unavailable or
@@ -621,6 +632,10 @@ async def browser_checks(output):
                         await expect(pro).to_have_count(1 if platform=='iphone_pwa' else 0)
                         if platform=='iphone_pwa':
                             await expect(pro.locator('.stat-step-label span')).to_have_text(['2','1','1','0'])
+                        native=page.locator('.analytics-panel',has=page.locator('h2',has_text=labels['analyticsAndroidPro']))
+                        await expect(native).to_have_count(1 if platform=='android' else 0)
+                        if platform=='android':
+                            await expect(native.locator('.stat-step-label span')).to_have_text(['2','1','1','0'])
                     elif section=='sources':
                         # R3: entries and payments of this platform; public-site traffic is Overall-only.
                         panels=page.locator('.stats-category-content .analytics-panel')

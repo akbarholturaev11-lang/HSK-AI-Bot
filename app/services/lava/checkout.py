@@ -323,6 +323,8 @@ class LavaCheckoutService:
                     buyer_email=buyer_email, source=source,
                     pwa_inline_attempt_id=(analytics_attempt_id if source == "pwa" else None),
                     pwa_inline_source=(analytics_source if source == "pwa" else None),
+                    android_inline_attempt_id=(analytics_attempt_id if source == "android" else None),
+                    android_inline_source=(analytics_source if source == "android" else None),
                     promo_code=discount.promo_code if discount else None,
                     discount_source=discount.source if discount else None,
                     discount_percent=discount.percent if discount else None,

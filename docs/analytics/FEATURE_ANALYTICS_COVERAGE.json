@@ -824,6 +824,38 @@
         "macos": {"status": "not_applicable", "reason": "Global record counts and latest timestamps, returned unchanged under every filter; the Report labels the table as all platforms, independent of filter and period. No platform quality breakdown exists yet."},
         "windows": {"status": "not_applicable", "reason": "Global record counts and latest timestamps, returned unchanged under every filter; the Report labels the table as all platforms, independent of filter and period. No platform quality breakdown exists yet."}
       }
+    },
+    {
+      "section": "funnel",
+      "key": "android_pro_attempt_funnel",
+      "kind": "metric",
+      "filters": [
+        "overall",
+        "android"
+      ],
+      "platforms": {
+        "android": {
+          "status": "covered",
+          "reason": "Direct limit offer follows the PWA account+attempt, first-stage cohort and max-stage SQL algorithm. UI rows are bearer-authenticated, invoice/paid rows server-only, refunds/lost chargebacks separate; manual receipts remain in the existing general funnel. Historical/unlinked invoices are explicit, not backfilled.",
+          "chain_test": "tests/test_android_pro_funnel_chain.py::AndroidProFunnelChainTests::test_native_routes_reach_android_and_overall_only"
+        },
+        "telegram": {
+          "status": "not_applicable",
+          "reason": "Native Direct Pro attempts have their own Android namespace; other clients are excluded."
+        },
+        "iphone_pwa": {
+          "status": "not_applicable",
+          "reason": "Native Direct Pro attempts have their own Android namespace; other clients are excluded."
+        },
+        "macos": {
+          "status": "not_applicable",
+          "reason": "Native Direct Pro attempts have their own Android namespace; other clients are excluded."
+        },
+        "windows": {
+          "status": "not_applicable",
+          "reason": "Native Direct Pro attempts have their own Android namespace; other clients are excluded."
+        }
+      }
     }
   ],
   "flows": [
@@ -1569,12 +1601,29 @@
             "hsk30_unlock_rejected"
           ],
           "reason": "Historical admin calls are rejected by the conversion writer allowlist and are absent from its DB CHECK."
+        },
+        {
+          "store": "conversion_funnel_events",
+          "role": "declared",
+          "names": [
+            "android_pro_opened",
+            "android_pro_plan_selected",
+            "android_pro_more_opened",
+            "android_pro_method_selected",
+            "android_pro_exit_offered",
+            "android_pro_exit_claimed",
+            "android_pro_exit_declined",
+            "android_pro_dismissed",
+            "android_pro_checkout_started",
+            "android_pro_checkout_failed",
+            "android_pro_checkout_paid"
+          ]
         }
       ],
       "platforms": {
         "android": {
           "status": "partial",
-          "reason": "Finance by payments.source android and Funnel by the route-set transport android are scoped (3.2); no route-to-Admin chain proof yet; Play/Direct are combined. Base openings use the checked writer: one retry only while that exact row is absent, so one failed opening write no longer turns the later stages into 409 (2026-11-16). Regional Lava requests accept only enabled currencies with verified live provider offer/period prices; source, ownership, invoice creation and successful checkout event timing are unchanged. tests/test_lava_checkout_api.py and tests/test_lava_payments.py cover disabled-currency rejection before provider IO and explicit/default invoice currency; end-to-end platform projection remains partial. 2026-11-28: bounded merchant-only catalog reads grant no access and write no checkout/revenue event; actual invoice start and webhook ledger retain account, source, attempt and deduplication authority. Catalog failure ends a local reservation without a provider POST; old invoice totals are not repriced. Android checkout parity (2026-11-28): provider/manual navigation shares presentation; lifecycle status polling and email validation reuse authenticated APIs. Redirects and unacknowledged status cannot grant paid access or emit paid events. Invoice/start/receipt/ledger amounts, source and deduplication remain authoritative; existing Android route-to-Admin coverage remains partial."
+          "reason": "Finance by payments.source android and Funnel by the route-set transport android are scoped (3.2); no route-to-Admin chain proof yet; Play/Direct are combined. Base openings use the checked writer: one retry only while that exact row is absent, so one failed opening write no longer turns the later stages into 409 (2026-11-16). Regional Lava requests accept only enabled currencies with verified live provider offer/period prices; source, ownership, invoice creation and successful checkout event timing are unchanged. tests/test_lava_checkout_api.py and tests/test_lava_payments.py cover disabled-currency rejection before provider IO and explicit/default invoice currency; end-to-end platform projection remains partial. 2026-11-28: bounded merchant-only catalog reads grant no access and write no checkout/revenue event; actual invoice start and webhook ledger retain account, source, attempt and deduplication authority. Catalog failure ends a local reservation without a provider POST; old invoice totals are not repriced. Android checkout parity (2026-11-28): provider/manual navigation shares presentation; lifecycle status polling and email validation reuse authenticated APIs. Redirects and unacknowledged status cannot grant paid access or emit paid events. Invoice/start/receipt/ledger amounts, source and deduplication remain authoritative; existing Android route-to-Admin coverage remains partial. Native Direct inline attempts now have their own verified funnel.android_pro_attempt_funnel route-to-ledger-to-Admin chain; the broader legacy checkout metric remains partial, and Play has no Direct purchase flow."
         },
         "telegram": {
           "status": "partial",
@@ -2039,6 +2088,18 @@
       "flows": [
         "voice_practice"
       ]
+    },
+    {
+      "path": "app/services/android_pro_analytics.py",
+      "flows": [
+        "checkout_payments"
+      ]
+    },
+    {
+      "path": "android/app/src/direct/java/com/pomp/hskai/feature/subscription/ProCheckoutTelemetry.kt",
+      "flows": [
+        "checkout_payments"
+      ]
     }
   ],
   "exemptions": [
@@ -2260,7 +2321,13 @@
       "app/static/course_v3_data/li-onboarding-runtime.js": ["auth_session:iphone_pwa", "auth_session:telegram", "onboarding_activation:iphone_pwa", "onboarding_activation:telegram"],
       "app/static/iphone-pwa-handoff.js": ["distribution_handoff:iphone_pwa"],
       "app/static/iphone-pwa-login.js": ["auth_session:iphone_pwa"],
-      "app/static/voice-live.js": ["voice_practice:iphone_pwa", "voice_practice:telegram"]
+      "app/static/voice-live.js": ["voice_practice:iphone_pwa", "voice_practice:telegram"],
+      "app/services/android_pro_analytics.py": [
+        "checkout_payments:android"
+      ],
+      "android/app/src/direct/java/com/pomp/hskai/feature/subscription/ProCheckoutTelemetry.kt": [
+        "checkout_payments:android"
+      ]
     },
     "legacy_baseline": [
       "app_shell:android",
@@ -2331,32 +2398,87 @@
       "voice_practice:server"
     ],
     "exemptions": [
-      {"target": "android/app/src/direct/java/com/pomp/hskai/feature/subscription/LavaCheckoutViewModel.kt", "sha256": "ab440a7d013d45ac22ce2f4d49c52afec0717320aed1e80b872a2000b43f0a28", "reason": "Android-only PWA presentation parity reuses the existing authenticated overview, quote, receipt and Lava apiCall(DiagTags.PAYMENT) intake, checkout_payments/payment and subscription_entries/subscription incident mapping and Admin diagnostic consumer. Bounded foreground polling surfaces the same status errors/retry; it adds no failure class, event or sensitive payload. Existing Android Inbox chain coverage remains partial, not certified covered. NativeLavaCheckoutTest and LavaCheckoutViewModelTest verify delayed/failed status and no optimistic access; manual receipt tests retain pending/approved/rejected guards."},
-      {"target": "android/app/src/direct/java/com/pomp/hskai/feature/subscription/SubscriptionCheckoutHost.kt", "sha256": "4b42ad206852c8dd88f786792adadc5d3c07bca1157ad593a2720314d2eae806", "reason": "Android-only PWA presentation parity reuses the existing authenticated overview, quote, receipt and Lava apiCall(DiagTags.PAYMENT) intake, checkout_payments/payment and subscription_entries/subscription incident mapping and Admin diagnostic consumer. Bounded foreground polling surfaces the same status errors/retry; it adds no failure class, event or sensitive payload. Existing Android Inbox chain coverage remains partial, not certified covered. NativeLavaCheckoutTest and LavaCheckoutViewModelTest verify delayed/failed status and no optimistic access; manual receipt tests retain pending/approved/rejected guards."},
-      {"target": "android/app/src/direct/java/com/pomp/hskai/feature/limit/LimitGateHost.kt", "sha256": "3827b491e4c540adb0ad8d01efa004f044e70964477f9b2336830c3f5139bbda", "reason": "Android-only PWA presentation parity reuses the existing authenticated overview, quote, receipt and Lava apiCall(DiagTags.PAYMENT) intake, checkout_payments/payment and subscription_entries/subscription incident mapping and Admin diagnostic consumer. Bounded foreground polling surfaces the same status errors/retry; it adds no failure class, event or sensitive payload. Existing Android Inbox chain coverage remains partial, not certified covered. NativeLavaCheckoutTest and LavaCheckoutViewModelTest verify delayed/failed status and no optimistic access; manual receipt tests retain pending/approved/rejected guards."},
-      {"target": "android/app/src/main/java/com/pomp/hskai/feature/limit/SectionLimitOverlay.kt", "sha256": "3ba70acc25efb727336e4f63736f1def97f293467d6b0f309a9600d9a57fb408", "reason": "Android-only PWA presentation parity reuses the existing authenticated overview, quote, receipt and Lava apiCall(DiagTags.PAYMENT) intake, checkout_payments/payment and subscription_entries/subscription incident mapping and Admin diagnostic consumer. Bounded foreground polling surfaces the same status errors/retry; it adds no failure class, event or sensitive payload. Existing Android Inbox chain coverage remains partial, not certified covered. NativeLavaCheckoutTest and LavaCheckoutViewModelTest verify delayed/failed status and no optimistic access; manual receipt tests retain pending/approved/rejected guards."},
-      {"target": "android/app/src/direct/java/com/pomp/hskai/feature/subscription/NativeLavaCheckout.kt", "sha256": "f8d4c0c31b18dbac3d408e46c8c8676ebf717de650bbf01ff04704322c1faae7", "reason": "Android-only PWA presentation parity reuses the existing authenticated overview, quote, receipt and Lava apiCall(DiagTags.PAYMENT) intake, checkout_payments/payment and subscription_entries/subscription incident mapping and Admin diagnostic consumer. Bounded foreground polling surfaces the same status errors/retry; it adds no failure class, event or sensitive payload. Existing Android Inbox chain coverage remains partial, not certified covered. NativeLavaCheckoutTest and LavaCheckoutViewModelTest verify delayed/failed status and no optimistic access; manual receipt tests retain pending/approved/rejected guards."},
-      {"target": "android/app/src/main/java/com/pomp/hskai/feature/limit", "reason": "Android-only PWA presentation parity reuses the existing authenticated overview, quote, receipt and Lava apiCall(DiagTags.PAYMENT) intake, checkout_payments/payment and subscription_entries/subscription incident mapping and Admin diagnostic consumer. Bounded foreground polling surfaces the same status errors/retry; it adds no failure class, event or sensitive payload. Existing Android Inbox chain coverage remains partial, not certified covered. NativeLavaCheckoutTest and LavaCheckoutViewModelTest verify delayed/failed status and no optimistic access; manual receipt tests retain pending/approved/rejected guards."},
-      {"target": "android/app/src/main/java/com/pomp/hskai/feature/subscription", "reason": "Android-only PWA presentation parity reuses the existing authenticated overview, quote, receipt and Lava apiCall(DiagTags.PAYMENT) intake, checkout_payments/payment and subscription_entries/subscription incident mapping and Admin diagnostic consumer. Bounded foreground polling surfaces the same status errors/retry; it adds no failure class, event or sensitive payload. Existing Android Inbox chain coverage remains partial, not certified covered. NativeLavaCheckoutTest and LavaCheckoutViewModelTest verify delayed/failed status and no optimistic access; manual receipt tests retain pending/approved/rejected guards."},
-      {"target":"android/app/src/main/java/com/pomp/hskai/feature/feedback","reason":"PR #357 renders the two server-localized feedback labels and observes the existing 24-hour retry interval in the same live session. The same authenticated prepare and submit calls, questionnaire, reward rules and error behavior remain. No new feedback monitoring signal; previously uninstrumented coverage is not claimed as covered. Regression: ActivityFeedbackViewModelTest and ActivityFeedbackDialogTest."},
-      {"target": "/api/v3/pwa/trial/status", "reason": "The existing read-only verified-cookie route adds only X-HSK-PWA-User-ID so the trial-only Li frame and Course reject stale-account responses. Actor, response body, risk policy and database queries are unchanged. Existing backend failure reporting remains partial; authenticated header/owner checks and isolated frame CSP tests cover this narrow response change."},
-      {"target": "/api/v3/pwa/onboarding/status", "reason": "The existing read-only verified-cookie route adds only X-HSK-PWA-User-ID so the trial-only Li frame and Course reject stale-account responses. Actor, response body, risk policy and database queries are unchanged. Existing backend failure reporting remains partial; authenticated header/owner checks and isolated frame CSP tests cover this narrow response change."},
-      {"target": "app/static/course_v3_data/iphone-pwa-inline-pro-bridge.js", "sha256": "5c1b3773f05c5f8491ec5cf117c851505bb932f134009b6b35906119d06c84f1", "reason": "The limit offer retains Other plans and existing events while the subscription checkout removes its redundant alternative. Manual handoff skips duplicate plan selection only for the same authenticated, still-sellable ordinary tariff; pending, expired, unknown and changed-price guards keep their canonical flow. Lava uses the existing email/invoice path, foreground-owner fence, attempt identity, failure reporting and Admin Inbox chains. No reporter, route, purchase authority or coverage binding is removed. Subscription-entry monitoring remains partial. Focused Chromium/WebKit direct-next-step, iframe return, owner-switch, email and exit-offer tests verify this navigation delta."},
-      {"target": "/api/v3/pwa/preferences", "reason": "Selective XP/Streak recovery exposes the already-existing 7/14/30/50-day aspiration through the existing verified same-origin/CSRF actor and returns a truthful 503 after an uncommitted write failure. No new route, event writer, scoring or entitlement decision; existing backend app_shell route failure reporting remains partial. Authenticated cookie/CSRF/owner/save/reload/rollback assertions run in SQLite and disposable PostgreSQL; no broader feature-to-Inbox coverage is claimed."},
-      {"target": "/api/v3/preferences", "reason": "The existing signed Telegram preference schema shares the strict existing streak aspiration field and response serializer with PWA; no Telegram navigation, identity, XP or learning-event change. Existing app_shell server monitoring remains partial. Focused validation, plan-preservation and serializer regressions cover the shared delta; a new Telegram failure-to-Inbox chain is outside this scoped UI recovery."},
-      {"target": "app/services/ai_provider.py", "sha256": "911b221ae56f26dad6e2a4fc03f4c64fbf5377d0b2d6951592211279ca1dee4c", "reason": "Reports terminal provider errors before rethrowing them; provider selection, fallback and responses are unchanged. The Chat and Voice server cells remain partial until each has its own failure-to-Inbox proof."},
-      {"target": "app/static/course_v3_data/li-onboarding-runtime.js", "sha256": "ca68b364ee976743a8fb333d360b8afacf925dbc6fa8de2edde188c9dfa20037", "reason": "The new offer=trial branch is restricted to verified iPhone PWA accounts and reuses the existing Li trial scenes, same-origin CSRF start route, bounded reads, explicit final confirmation and server-verified lost-ack recovery. It reads but never resubmits onboarding. Guest framing stays DENY and signed Telegram flows remain unchanged. Existing auth/onboarding diagnostics are retained; Telegram feature-specific monitoring remains uninstrumented. Browser owner-switch, retry, explicit grant and no-onboarding-write regressions pin this isolated branch. Owner-requested trial presentation now hydrates the verified saved goal/minutes/streak, suppresses the account-shell flash, uses canonical PWA-only copy and removes the paid shortcut from the free introduction. Existing trial status/start, explicit confirmation, lost-ack recovery, auth/CSRF and failure reporting remain unchanged; mobile Chromium/WebKit regressions cover the delta.; 2026-11-22 Embedded trial alone renders the canonical existing limit-Pro panda, aligns the child trial theme and parallelizes two read-only, same-owner verified status requests after session validation. No new grant path; existing one-use trial start, CSRF, owner header, failure/retry and onboarding no-write guards remain. 2026-11-22 Pro/Trial palette (owner): the trial offer's theme-color meta uses the light paper colour like the Pro sheet; no request, grant, auth or failure path changes."},
-      {"target": "app/static/course_v3_test.html", "reason": "Diagnostic precision (task 6.2) the adaptive lesson catalog (UIUX-007, 2026-11-17) and the picture review catalog (UIUX-008, 2026-11-17) and learning result catalog (2026-11-20) change only the content tokens of shared scripts on this page. Existing exam submission, grading and access behavior are unchanged; full assessment monitoring remains partial. Ready-phrase recovery (2026-11-21) changes only hsk-course-i18n.js from 20261113-50d161e8ed06 to 20261113-0fcc11745518; no handler, result, grading, quota or access code changes. XP/Streak catalog recovery (2026-11-21) changes only the shared course token to 20261113-efe520888dad; assessment handlers and monitoring coverage are unchanged. Incident identity (NXT-011, 2026-11-22) changes only the hsk-diagnostics.js token from 20261115-5408a5e8b789 to 20261122-34865dd3f1cf; page handlers are unchanged, and js_uncaught/js_rejection reports from this page now group by their allowlisted exception identity through the same authenticated intake. PR #357 (2026-11-25): only the shared hsk-course-i18n.js cache token changes from 20261113-efe520888dad to 20261125-bffb131a155e for the four Pro-expiry labels. No changes to this page's handlers, event writers, grading, access, monitoring or result persistence. Existing partial coverage remains partial; content-addressed cache verification is in test_i18n_build_course_catalogs.py."},
-      {"target": "app/static/course_v3_mistakes.html", "reason": "Diagnostic precision (task 6.2) the adaptive lesson catalog (UIUX-007, 2026-11-17) and the picture review catalog (UIUX-008, 2026-11-17) and learning result catalog (2026-11-20) change only the content tokens of shared scripts on this page. Existing mistake-review behavior is unchanged; full mistake-review monitoring remains partial. Ready-phrase recovery (2026-11-21) changes only hsk-course-i18n.js from 20261113-50d161e8ed06 to 20261113-0fcc11745518; no handler, result, grading, quota or access code changes. XP/Streak catalog recovery (2026-11-21) changes only the shared course token to 20261113-efe520888dad; assessment handlers and monitoring coverage are unchanged. Owner-requested PWA-only list CSS now removes the fixed bottom padding band, matches the 64px root title row and keeps the existing optional helper on one line. Requests, mistake contents, review grading, result persistence, access and error handling are unchanged; no new failure signal is introduced. Mobile Chromium/WebKit regressions exercise actual rows, bottom reachability and return navigation. Incident identity (NXT-011, 2026-11-22) changes only the hsk-diagnostics.js token from 20261115-5408a5e8b789 to 20261122-34865dd3f1cf; page handlers are unchanged, and js_uncaught/js_rejection reports from this page now group by their allowlisted exception identity through the same authenticated intake. PR #357 (2026-11-25): only the shared hsk-course-i18n.js cache token changes from 20261113-efe520888dad to 20261125-bffb131a155e for the four Pro-expiry labels. No changes to this page's handlers, event writers, grading, access, monitoring or result persistence. Existing partial coverage remains partial; content-addressed cache verification is in test_i18n_build_course_catalogs.py."},
-      {"target": "android/app/src/main/java/com/pomp/hskai/feature/assistant", "reason": "UIUX-008 adds one line to the assistant's lesson-context text so the new picture card is described (no answer is included). Chat requests, prompts, quota and events are unchanged; chat monitoring remains not instrumented."},
-      {"target": "app/static/course_v3_data/iphone-pwa-inline-pro.js", "sha256": "f4ec10e1cff4eccd5a48b51884726d63a1ba1b8de85c8a72143ea288c135ca17", "reason": "The limit offer retains Other plans and existing events while the subscription checkout removes its redundant alternative. Manual handoff skips duplicate plan selection only for the same authenticated, still-sellable ordinary tariff; pending, expired, unknown and changed-price guards keep their canonical flow. Lava uses the existing email/invoice path, foreground-owner fence, attempt identity, failure reporting and Admin Inbox chains. No reporter, route, purchase authority or coverage binding is removed. Subscription-entry monitoring remains partial. Focused Chromium/WebKit direct-next-step, iframe return, owner-switch, email and exit-offer tests verify this navigation delta."},
-      {"target": "app/services/android_course_service.py", "sha256": "af5f7b8293c5f192a5d3da760a3ede297771d02caf78ad8f06829d47bdc4994a", "reason": "The existing lesson-plan scope and this response-only first-part learning result preserve foundation, track and onboarding behavior. Lesson completion diagnostics use the existing Android and server chains. The other mapped server coverage remains partial. Pro expiry adds a bounded read-only response field; existing diagnostics and partial coverage are unchanged. PR #357: optional localized feedback reward expiry title shares the same one-read notice; no access, payment, lesson or telemetry change. First-part restriction changes only skip-test admission; existing lesson diagnostics and other mapped feature behavior are unchanged. Existing access errors retain precedence over the read-only skip-target restriction. The HSK 3.0 adapter regression verifies this boundary."},
-      {"target": "/api/miniapp/event", "reason": "The changed branches are diagnostic intake and the optional legacy diagnostic mirror only. They are tested by the signed Telegram chain and excluded from self-reporting; existing learner and KPI event behavior is unchanged."},
-      {"target": "/api/v3/android/subscription/checkout/overview", "reason": "PR #357: the optional committed Android provider entry receipt prevents a duplicate source-opening row after a manual fallback. The same authenticated overview, checkout attempt, transport diagnostics and error handling remain; server subscription-entry Inbox coverage is still partial. The optional receipt is validated against the stored owner/source and does not control payment or access. API regression: test_desktop_subscription_api.py."},
-      {"target": "/api/subscription-miniapp/overview", "reason": "Only the analytics write of the base checkout opening changed: it is checked and retried once while that exact row is absent. The overview response, prices, payment flow and Pro access are unchanged; subscription monitoring remains partial."},
-      {"target": "/api/v3/pwa/mistakes/review/start", "reason": "The existing request now accepts the shipped browser capability list up to the shared 40-item bound. It uses the same authenticated mistake review service and existing load failure reporting. Full server mistake-review Inbox coverage remains partial."},
-      {"target": "/api/v3/pwa/subscription/overview", "reason": "The inline preview now returns one display-only eligibility hint. The existing overview, auth, checkout error reporting and analytics attempt contract remain in use. Subscription-entry server monitoring remains partial."},
-      {"target": "/api/v3/pwa/subscription/event", "reason": "Attempt-id validation moved into one helper shared with the overview, with identical rules (trimmed, 1-80 chars of A-Za-z0-9:.-). Responses and stored stage rows are unchanged; subscription monitoring remains partial."}
+      {
+        "target": "android/app/src/main/java/com/pomp/hskai/feature/feedback",
+        "reason": "PR #357 renders the two server-localized feedback labels and observes the existing 24-hour retry interval in the same live session. The same authenticated prepare and submit calls, questionnaire, reward rules and error behavior remain. No new feedback monitoring signal; previously uninstrumented coverage is not claimed as covered. Regression: ActivityFeedbackViewModelTest and ActivityFeedbackDialogTest."
+      },
+      {
+        "target": "/api/v3/pwa/trial/status",
+        "reason": "The existing read-only verified-cookie route adds only X-HSK-PWA-User-ID so the trial-only Li frame and Course reject stale-account responses. Actor, response body, risk policy and database queries are unchanged. Existing backend failure reporting remains partial; authenticated header/owner checks and isolated frame CSP tests cover this narrow response change."
+      },
+      {
+        "target": "/api/v3/pwa/onboarding/status",
+        "reason": "The existing read-only verified-cookie route adds only X-HSK-PWA-User-ID so the trial-only Li frame and Course reject stale-account responses. Actor, response body, risk policy and database queries are unchanged. Existing backend failure reporting remains partial; authenticated header/owner checks and isolated frame CSP tests cover this narrow response change."
+      },
+      {
+        "target": "app/static/course_v3_data/iphone-pwa-inline-pro-bridge.js",
+        "sha256": "5c1b3773f05c5f8491ec5cf117c851505bb932f134009b6b35906119d06c84f1",
+        "reason": "The limit offer retains Other plans and existing events while the subscription checkout removes its redundant alternative. Manual handoff skips duplicate plan selection only for the same authenticated, still-sellable ordinary tariff; pending, expired, unknown and changed-price guards keep their canonical flow. Lava uses the existing email/invoice path, foreground-owner fence, attempt identity, failure reporting and Admin Inbox chains. No reporter, route, purchase authority or coverage binding is removed. Subscription-entry monitoring remains partial. Focused Chromium/WebKit direct-next-step, iframe return, owner-switch, email and exit-offer tests verify this navigation delta."
+      },
+      {
+        "target": "/api/v3/pwa/preferences",
+        "reason": "Selective XP/Streak recovery exposes the already-existing 7/14/30/50-day aspiration through the existing verified same-origin/CSRF actor and returns a truthful 503 after an uncommitted write failure. No new route, event writer, scoring or entitlement decision; existing backend app_shell route failure reporting remains partial. Authenticated cookie/CSRF/owner/save/reload/rollback assertions run in SQLite and disposable PostgreSQL; no broader feature-to-Inbox coverage is claimed."
+      },
+      {
+        "target": "/api/v3/preferences",
+        "reason": "The existing signed Telegram preference schema shares the strict existing streak aspiration field and response serializer with PWA; no Telegram navigation, identity, XP or learning-event change. Existing app_shell server monitoring remains partial. Focused validation, plan-preservation and serializer regressions cover the shared delta; a new Telegram failure-to-Inbox chain is outside this scoped UI recovery."
+      },
+      {
+        "target": "app/services/ai_provider.py",
+        "sha256": "911b221ae56f26dad6e2a4fc03f4c64fbf5377d0b2d6951592211279ca1dee4c",
+        "reason": "Reports terminal provider errors before rethrowing them; provider selection, fallback and responses are unchanged. The Chat and Voice server cells remain partial until each has its own failure-to-Inbox proof."
+      },
+      {
+        "target": "app/static/course_v3_data/li-onboarding-runtime.js",
+        "sha256": "ca68b364ee976743a8fb333d360b8afacf925dbc6fa8de2edde188c9dfa20037",
+        "reason": "The new offer=trial branch is restricted to verified iPhone PWA accounts and reuses the existing Li trial scenes, same-origin CSRF start route, bounded reads, explicit final confirmation and server-verified lost-ack recovery. It reads but never resubmits onboarding. Guest framing stays DENY and signed Telegram flows remain unchanged. Existing auth/onboarding diagnostics are retained; Telegram feature-specific monitoring remains uninstrumented. Browser owner-switch, retry, explicit grant and no-onboarding-write regressions pin this isolated branch. Owner-requested trial presentation now hydrates the verified saved goal/minutes/streak, suppresses the account-shell flash, uses canonical PWA-only copy and removes the paid shortcut from the free introduction. Existing trial status/start, explicit confirmation, lost-ack recovery, auth/CSRF and failure reporting remain unchanged; mobile Chromium/WebKit regressions cover the delta.; 2026-11-22 Embedded trial alone renders the canonical existing limit-Pro panda, aligns the child trial theme and parallelizes two read-only, same-owner verified status requests after session validation. No new grant path; existing one-use trial start, CSRF, owner header, failure/retry and onboarding no-write guards remain. 2026-11-22 Pro/Trial palette (owner): the trial offer's theme-color meta uses the light paper colour like the Pro sheet; no request, grant, auth or failure path changes."
+      },
+      {
+        "target": "app/static/course_v3_test.html",
+        "reason": "Diagnostic precision (task 6.2) the adaptive lesson catalog (UIUX-007, 2026-11-17) and the picture review catalog (UIUX-008, 2026-11-17) and learning result catalog (2026-11-20) change only the content tokens of shared scripts on this page. Existing exam submission, grading and access behavior are unchanged; full assessment monitoring remains partial. Ready-phrase recovery (2026-11-21) changes only hsk-course-i18n.js from 20261113-50d161e8ed06 to 20261113-0fcc11745518; no handler, result, grading, quota or access code changes. XP/Streak catalog recovery (2026-11-21) changes only the shared course token to 20261113-efe520888dad; assessment handlers and monitoring coverage are unchanged. Incident identity (NXT-011, 2026-11-22) changes only the hsk-diagnostics.js token from 20261115-5408a5e8b789 to 20261122-34865dd3f1cf; page handlers are unchanged, and js_uncaught/js_rejection reports from this page now group by their allowlisted exception identity through the same authenticated intake. PR #357 (2026-11-25): only the shared hsk-course-i18n.js cache token changes from 20261113-efe520888dad to 20261125-bffb131a155e for the four Pro-expiry labels. No changes to this page's handlers, event writers, grading, access, monitoring or result persistence. Existing partial coverage remains partial; content-addressed cache verification is in test_i18n_build_course_catalogs.py."
+      },
+      {
+        "target": "app/static/course_v3_mistakes.html",
+        "reason": "Diagnostic precision (task 6.2) the adaptive lesson catalog (UIUX-007, 2026-11-17) and the picture review catalog (UIUX-008, 2026-11-17) and learning result catalog (2026-11-20) change only the content tokens of shared scripts on this page. Existing mistake-review behavior is unchanged; full mistake-review monitoring remains partial. Ready-phrase recovery (2026-11-21) changes only hsk-course-i18n.js from 20261113-50d161e8ed06 to 20261113-0fcc11745518; no handler, result, grading, quota or access code changes. XP/Streak catalog recovery (2026-11-21) changes only the shared course token to 20261113-efe520888dad; assessment handlers and monitoring coverage are unchanged. Owner-requested PWA-only list CSS now removes the fixed bottom padding band, matches the 64px root title row and keeps the existing optional helper on one line. Requests, mistake contents, review grading, result persistence, access and error handling are unchanged; no new failure signal is introduced. Mobile Chromium/WebKit regressions exercise actual rows, bottom reachability and return navigation. Incident identity (NXT-011, 2026-11-22) changes only the hsk-diagnostics.js token from 20261115-5408a5e8b789 to 20261122-34865dd3f1cf; page handlers are unchanged, and js_uncaught/js_rejection reports from this page now group by their allowlisted exception identity through the same authenticated intake. PR #357 (2026-11-25): only the shared hsk-course-i18n.js cache token changes from 20261113-efe520888dad to 20261125-bffb131a155e for the four Pro-expiry labels. No changes to this page's handlers, event writers, grading, access, monitoring or result persistence. Existing partial coverage remains partial; content-addressed cache verification is in test_i18n_build_course_catalogs.py."
+      },
+      {
+        "target": "android/app/src/main/java/com/pomp/hskai/feature/assistant",
+        "reason": "UIUX-008 adds one line to the assistant's lesson-context text so the new picture card is described (no answer is included). Chat requests, prompts, quota and events are unchanged; chat monitoring remains not instrumented."
+      },
+      {
+        "target": "app/static/course_v3_data/iphone-pwa-inline-pro.js",
+        "sha256": "f4ec10e1cff4eccd5a48b51884726d63a1ba1b8de85c8a72143ea288c135ca17",
+        "reason": "The limit offer retains Other plans and existing events while the subscription checkout removes its redundant alternative. Manual handoff skips duplicate plan selection only for the same authenticated, still-sellable ordinary tariff; pending, expired, unknown and changed-price guards keep their canonical flow. Lava uses the existing email/invoice path, foreground-owner fence, attempt identity, failure reporting and Admin Inbox chains. No reporter, route, purchase authority or coverage binding is removed. Subscription-entry monitoring remains partial. Focused Chromium/WebKit direct-next-step, iframe return, owner-switch, email and exit-offer tests verify this navigation delta."
+      },
+      {
+        "target": "app/services/android_course_service.py",
+        "sha256": "af5f7b8293c5f192a5d3da760a3ede297771d02caf78ad8f06829d47bdc4994a",
+        "reason": "The existing lesson-plan scope and this response-only first-part learning result preserve foundation, track and onboarding behavior. Lesson completion diagnostics use the existing Android and server chains. The other mapped server coverage remains partial. Pro expiry adds a bounded read-only response field; existing diagnostics and partial coverage are unchanged. PR #357: optional localized feedback reward expiry title shares the same one-read notice; no access, payment, lesson or telemetry change. First-part restriction changes only skip-test admission; existing lesson diagnostics and other mapped feature behavior are unchanged. Existing access errors retain precedence over the read-only skip-target restriction. The HSK 3.0 adapter regression verifies this boundary."
+      },
+      {
+        "target": "/api/miniapp/event",
+        "reason": "The changed branches are diagnostic intake and the optional legacy diagnostic mirror only. They are tested by the signed Telegram chain and excluded from self-reporting; existing learner and KPI event behavior is unchanged."
+      },
+      {
+        "target": "/api/v3/android/subscription/checkout/overview",
+        "reason": "PR #357: the optional committed Android provider entry receipt prevents a duplicate source-opening row after a manual fallback. The same authenticated overview, checkout attempt, transport diagnostics and error handling remain; server subscription-entry Inbox coverage is still partial. The optional receipt is validated against the stored owner/source and does not control payment or access. API regression: test_desktop_subscription_api.py."
+      },
+      {
+        "target": "/api/subscription-miniapp/overview",
+        "reason": "Only the analytics write of the base checkout opening changed: it is checked and retried once while that exact row is absent. The overview response, prices, payment flow and Pro access are unchanged; subscription monitoring remains partial."
+      },
+      {
+        "target": "/api/v3/pwa/mistakes/review/start",
+        "reason": "The existing request now accepts the shipped browser capability list up to the shared 40-item bound. It uses the same authenticated mistake review service and existing load failure reporting. Full server mistake-review Inbox coverage remains partial."
+      },
+      {
+        "target": "/api/v3/pwa/subscription/overview",
+        "reason": "The inline preview now returns one display-only eligibility hint. The existing overview, auth, checkout error reporting and analytics attempt contract remain in use. Subscription-entry server monitoring remains partial."
+      },
+      {
+        "target": "/api/v3/pwa/subscription/event",
+        "reason": "Attempt-id validation moved into one helper shared with the overview, with identical rules (trimmed, 1-80 chars of A-Za-z0-9:.-). Responses and stored stage rows are unchanged; subscription monitoring remains partial."
+      }
     ]
   }
 }

@@ -11,6 +11,7 @@ from app.admin_api.pwa_analytics_finance import (
 )
 from app.admin_api.pwa_analytics_platforms import platform_metrics
 from app.admin_api.pwa_analytics_pwa_pro import pwa_pro_attempt_funnel
+from app.admin_api.pwa_analytics_android_pro import android_pro_attempt_funnel
 from app.admin_api.pwa_analytics_freshness import platform_freshness
 from app.admin_api.pwa_analytics_experiments import experiment_metrics
 from app.admin_api.pwa_analytics_states import has_legacy_filter, metric_states
@@ -70,6 +71,8 @@ async def _legacy_projection(db,query,*,section):
         if query.platform in ('overall','iphone_pwa'):
             # F8 is PWA-only; it sits beside the unchanged legacy attempt funnel.
             result['metrics']['pwa_pro_attempt_funnel']=await pwa_pro_attempt_funnel(db,since=since,now=now)
+        if query.platform in ('overall','android'):
+            result['metrics']['android_pro_attempt_funnel']=await android_pro_attempt_funnel(db,since=since,now=now)
     elif section=='money':result['metrics']=await money_metrics(db,since=since,now=now,platform=query.platform)
     elif section=='sources' and query.platform!='overall':
         result['metrics']=await platform_sources_metrics(db,platform=query.platform,since=since,now=now)
@@ -100,7 +103,7 @@ class AdminPwaAnalyticsReader:
         projections=projections if projections is not None else {section:partial(section_projection,section=section) for section in ('home','overview','course','platform','funnel','money','sources','report','experiments')}
         self._mutex=refresh_mutex if refresh_mutex is not None else asyncio.Lock()
         self._readers={section:AdminPwaStatisticsReader(settings_obj=settings_obj,session_factory=session_factory,
-            loader=projection,cache_scope=f"analytics_{section}_v{3 if section == 'report' else 1 if section == 'experiments' else 2}",refresh_mutex=self._mutex,
+            loader=projection,cache_scope=f"analytics_{section}_v{3 if section == 'report' else 1 if section == 'experiments' else 3 if section == 'funnel' else 2}",refresh_mutex=self._mutex,
             **(reader_options or {})) for section,projection in projections.items()}
 
     async def __call__(self,query):

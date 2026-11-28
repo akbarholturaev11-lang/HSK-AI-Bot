@@ -160,7 +160,7 @@ class SubscriptionCheckoutHostTest {
         return FeatureRepository(api, { ApiResult.Success("test-token") })
     }
 
-    private fun show(limitOffer: Boolean = false) {
+    private fun show(limitOffer: Boolean = false, telemetry: ProCheckoutTelemetry? = null, providerBlock: LavaBlock? = null) {
         val repository = repository()
         // All checkout calls belong to the synthetic authenticated account.
         // The real app auth has no credential in this fixture and would clear
@@ -169,7 +169,7 @@ class SubscriptionCheckoutHostTest {
             override suspend fun providerOverview(auth: String, body: LavaContext): Response<LavaOverview> {
                 check(auth == "Bearer test-token")
                 providerOrigins += body.origin
-                return Response.success(LavaOverview(ok = true))
+                return Response.success(LavaOverview(ok = true, lava = providerBlock))
             }
             override suspend fun start(auth: String, body: LavaStart): Response<LavaReply> = error("Unexpected Lava start")
             override suspend fun status(auth: String, body: LavaId): Response<LavaReply> = error("Unexpected Lava status")
@@ -187,6 +187,7 @@ class SubscriptionCheckoutHostTest {
                         origin = origin.value,
                         providerRepositoryOverride = providerRepository,
                         limitOffer = limitOffer,
+                        telemetryOverride = telemetry,
                         onClose = {
                             closeCount++
                             visible.value = false
@@ -195,8 +196,40 @@ class SubscriptionCheckoutHostTest {
                 }
             }
         }
-        compose.waitUntil(10_000) { requestedOrigins.isNotEmpty() }
+        compose.waitUntil(10_000) { if (providerBlock != null) providerOrigins.isNotEmpty() else requestedOrigins.isNotEmpty() }
         compose.waitForIdle()
+    }
+
+    @Test fun manualBackReturnsToTheSameProviderMorePage() {
+        runBlocking { (context.applicationContext as HskAiApplication).appSettings.setPaymentRegion("other") }
+        val plans = listOf(LavaPlan("1_month", 1, 30, "10.00", "USD"),
+            LavaPlan("3_months", 3, 90, "27.00", "USD"), LavaPlan("12_months", 12, 365, "90.00", "USD"))
+        show(limitOffer = true, providerBlock = LavaBlock(mode = "both", plans = plans))
+        compose.onNodeWithText(copy.getString(R.string.lava_other_plans)).performClick()
+        compose.onNodeWithText(copy.getString(R.string.checkout_manual)).performClick()
+        compose.onNodeWithText(copy.getString(R.string.checkout_limit_title)).assertDoesNotExist()
+        compose.onNodeWithContentDescription(copy.getString(R.string.action_back)).performClick()
+        compose.onNodeWithText("27.00 USD").assertIsDisplayed()
+        compose.onNodeWithContentDescription(copy.getString(R.string.action_back)).performClick()
+        compose.onNodeWithText(copy.getString(R.string.checkout_limit_title)).assertIsDisplayed()
+        assertEquals(0, closeCount)
+    }
+
+    @Test fun limitOpeningManualHandoffAndDismissShareOneAttempt() {
+        val events = java.util.Collections.synchronizedList(mutableListOf<String>())
+        val telemetry = object : ProCheckoutTelemetry {
+            override val attemptId = "same-native-attempt"
+            override val source = "course_limit"
+            override fun record(event: String, plan: String?, method: String?) { events += event }
+        }
+        show(limitOffer = true, telemetry = telemetry)
+        assertEquals(listOf("opened"), events.toList())
+        compose.onNodeWithText(copy.getString(R.string.limit_sheet_get_pro)).performClick()
+        compose.onNodeWithContentDescription(copy.getString(R.string.action_back)).performClick()
+        compose.onNodeWithContentDescription(copy.getString(R.string.action_close)).performClick()
+        compose.waitForIdle()
+        assertEquals(listOf("opened", "plan_selected", "method_selected", "dismissed"), events.toList())
+        assertEquals(1, closeCount)
     }
 
     private fun expectPlan(resource: Int) {
@@ -217,14 +250,24 @@ class SubscriptionCheckoutHostTest {
     }
 
     private fun advanceToPayment() {
-        // A saved country uses the two-step flow: plans -> quote/payment.
-        // Bank selection is optional and never needs a second Continue.
         compose.onNodeWithText(copy.getString(R.string.action_continue))
             .assertIsDisplayed().performClick()
+        // Ordinary TJ/China follows the actual PWA bank/wallet step. HSK 3.0
+        // retains its existing route and can already show payment here.
+        continueMethodIfPresent()
+    }
+
+    private fun continueMethodIfPresent() {
         val submit = copy.getString(R.string.sub_submit)
+        val methodAction = copy.getString(R.string.sub_continue_country)
         compose.waitUntil(10_000) {
-            compose.onAllNodesWithText(submit).fetchSemanticsNodes().isNotEmpty()
+            compose.onAllNodesWithText(submit).fetchSemanticsNodes().isNotEmpty() ||
+                compose.onAllNodesWithText(methodAction).fetchSemanticsNodes().isNotEmpty()
         }
+        if (compose.onAllNodesWithText(submit).fetchSemanticsNodes().isEmpty()) {
+            compose.onNodeWithText(methodAction).performClick()
+        }
+        compose.waitUntil(10_000) { compose.onAllNodesWithText(submit).fetchSemanticsNodes().isNotEmpty() }
         compose.waitForIdle()
     }
 
@@ -443,11 +486,14 @@ class SubscriptionCheckoutHostTest {
         compose.onNodeWithContentDescription(copy.getString(R.string.action_back)).performClick()
         compose.onNodeWithText(copy.getString(R.string.sub_plan_3)).assertDoesNotExist()
         compose.onNodeWithText(copy.getString(R.string.limit_sheet_get_pro)).performClick()
-        advanceToPayment()
+        // No repeated plan screen: the already selected plan goes to TJ bank.
+        compose.onNodeWithText(copy.getString(R.string.sub_method)).assertIsDisplayed()
+        compose.onNodeWithText(copy.getString(R.string.sub_plan_3)).assertDoesNotExist()
+        continueMethodIfPresent()
         compose.onNodeWithContentDescription(copy.getString(R.string.action_back)).assertIsDisplayed()
         compose.onNodeWithContentDescription(copy.getString(R.string.action_close)).assertDoesNotExist()
         compose.onNodeWithContentDescription(copy.getString(R.string.action_back)).performClick()
-        compose.onNodeWithText(copy.getString(R.string.sub_plan_3)).assertIsDisplayed()
+        compose.onNodeWithText(copy.getString(R.string.sub_method)).assertIsDisplayed()
         compose.onNodeWithContentDescription(copy.getString(R.string.action_back)).performClick()
         compose.onNodeWithText(copy.getString(R.string.checkout_limit_title)).assertIsDisplayed()
         compose.runOnIdle { assertEquals(0, closeCount); assertEquals(1, quoteRequests.size) }

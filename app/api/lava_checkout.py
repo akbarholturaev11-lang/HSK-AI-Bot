@@ -11,6 +11,7 @@ Authorization stays in each transport; money decisions live in
 from __future__ import annotations
 
 import logging
+import asyncio
 from html import escape
 from typing import Literal
 
@@ -29,11 +30,30 @@ logger = logging.getLogger(__name__)
 
 _NO_STORE = {"Cache-Control": "no-store", "Referrer-Policy": "no-referrer"}
 _LANGS = {"uz", "ru", "tj"}
+_ANDROID_EVENT_WRITE_TIMEOUT = 2.0
 _PWA_INLINE_SOURCES = frozenset({
     "v3_locked_lesson", "v3_pronunciation_limit", "v3_recognition_limit",
     "v3_memorize_limit", "v3_test_limit", "v3_mistake_review",
     "v3_voice_limit", "v3_qa_limit",
 })
+_ANDROID_INLINE_SOURCES = frozenset({
+    "course_expired", "course_limit", "course_lesson_limit", "practice_limit",
+    "practice_placement", "practice_mock", "practice_mistakes",
+    "recognition_limit", "pronunciation_limit", "voice_limit",
+})
+
+
+class AndroidProUiEvent(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    # An authenticated UI cannot assert invoice creation or a paid result.
+    event: Literal["android_pro_opened", "android_pro_plan_selected", "android_pro_more_opened",
+                   "android_pro_method_selected", "android_pro_exit_offered", "android_pro_exit_claimed",
+                   "android_pro_exit_declined", "android_pro_dismissed", "android_pro_checkout_failed"]
+    source: str = Field(min_length=1, max_length=40)
+    attempt_id: str = Field(min_length=5, max_length=60, pattern=r"^[A-Za-z0-9:.-]+$")
+    event_id: str = Field(min_length=5, max_length=80, pattern=r"^[A-Za-z0-9:.-]+$")
+    plan_type: Literal["10_days", "1_month", "3_months", "6_months", "12_months"] | None = None
+    method: Literal["lava", "manual"] | None = None
 
 
 class LavaStartBody(BaseModel):
@@ -46,7 +66,7 @@ class LavaStartBody(BaseModel):
     mode: str | None = Field(default=None, max_length=32)
     campaign_id: int | None = Field(default=None, gt=0)
     feedback_id: int | None = Field(default=None, gt=0)
-    # Optional PWA-only analytics correlation, not a billing entitlement.
+    # Optional transport-validated analytics correlation, not a billing entitlement.
     attempt_id: str | None = Field(default=None, max_length=80, pattern=r"^[A-Za-z0-9:.-]+$")
     ui_source: str | None = Field(default=None, max_length=80, pattern=r"^[a-z0-9_]+$")
 
@@ -138,14 +158,15 @@ def create_lava_router(*, runtime_getter, session_factory, settings_obj) -> APIR
             source == "pwa" and bool(data.attempt_id)
             and data.ui_source in _PWA_INLINE_SOURCES
         )
+        android_inline = source == "android" and bool(data.attempt_id) and data.ui_source in _ANDROID_INLINE_SOURCES
         if data.plan_type not in LAVA_PLAN_TYPES:
             raise LavaCheckoutError("plan_unavailable", 400)
         result = await LavaCheckoutService(runtime_getter()).start(
             session_factory, user_id=user.id, plan_type=data.plan_type, email=data.email,
             source=source, language=data.language or getattr(user, "language", None),
             context_mode=data.mode, campaign_id=data.campaign_id, feedback_id=data.feedback_id,
-            analytics_attempt_id=data.attempt_id if is_inline else None,
-            analytics_source=data.ui_source if is_inline else None,
+            analytics_attempt_id=data.attempt_id if is_inline or android_inline else None,
+            analytics_source=data.ui_source if is_inline or android_inline else None,
             pwa_inline_return=is_inline, currency=data.currency,
         )
         if is_inline and result.get("ok"):
@@ -164,6 +185,14 @@ def create_lava_router(*, runtime_getter, session_factory, settings_obj) -> APIR
                 },
             )
         if source == "android" and result.get("ok"):
+            if android_inline:
+                try:
+                    from app.services.android_pro_analytics import record_started
+                    async with asyncio.timeout(_ANDROID_EVENT_WRITE_TIMEOUT):
+                        async with session_factory() as db:
+                            await record_started(db, user=user, checkout_id=result["checkout_id"])
+                except Exception:  # optional telemetry must not hide a real provider invoice
+                    logger.warning("android pro invoice attribution write failed")
             from app.services.conversion_funnel_service import ConversionFunnelService
             await ConversionFunnelService().record(
                 event_name="checkout_opened", user=user, source="android_subscription",
@@ -293,6 +322,20 @@ def create_lava_router(*, runtime_getter, session_factory, settings_obj) -> APIR
         except DesktopAuthError as exc:
             raise LavaCheckoutError(exc.code, exc.status_code) from None
 
+    @router.post("/api/v3/android/subscription/inline-event")
+    async def android_inline_pro_event(request: Request):
+        try:
+            user = await _android_user(request)
+            data = await _parse(request, AndroidProUiEvent, limit=1024)
+            if data.source not in _ANDROID_INLINE_SOURCES or not data.event_id.startswith(data.attempt_id + ":"):
+                raise LavaCheckoutError("invalid_request", 422)
+            from app.services.android_pro_analytics import record_ui
+            async with session_factory() as db:
+                recorded = await record_ui(db, user=user, data=data)
+            return JSONResponse({"ok": True, "recorded": recorded}, headers=_NO_STORE)
+        except LavaCheckoutError as exc:
+            return _checkout_error(exc)
+
     @router.post("/api/v3/android/subscription/lava/overview")
     async def android_lava_overview(request: Request):
         try:
@@ -340,7 +383,9 @@ def create_lava_router(*, runtime_getter, session_factory, settings_obj) -> APIR
         try:
             user = await _android_user(request)
             data = await _parse(request, LavaStartBody)
-            if data.attempt_id or data.ui_source:
+            if (bool(data.attempt_id) != bool(data.ui_source)
+                    or (data.ui_source and data.ui_source not in _ANDROID_INLINE_SOURCES)
+                    or (data.attempt_id and len(data.attempt_id) > 60)):
                 raise LavaCheckoutError("invalid_request", 422)
             return JSONResponse(await _start(user, data, "android"), headers=_NO_STORE)
         except LavaCheckoutError as exc:

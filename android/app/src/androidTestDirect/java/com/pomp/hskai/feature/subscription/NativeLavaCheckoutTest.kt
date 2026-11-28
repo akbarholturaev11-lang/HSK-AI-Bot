@@ -43,7 +43,7 @@ class NativeLavaCheckoutTest {
         LavaPlan("3_months", 3, 90, "27.00", "USD"), LavaPlan("6_months", 6, 180, "50.00", "USD"),
         LavaPlan("12_months", 12, 365, "90.00", "USD"))
 
-    private fun show(api: Fake, limit: Boolean = false, language: String = "uz", lifecycle: LifecycleOwner? = null, fontScale: Float = 1f) {
+    private fun show(api: Fake, limit: Boolean = false, language: String = "uz", lifecycle: LifecycleOwner? = null, fontScale: Float = 1f, telemetry: ProCheckoutTelemetry? = null) {
         val owner = object : ViewModelStoreOwner { override val viewModelStore = ViewModelStore() }
         val repository = LavaCheckoutRepository(api, { ApiResult.Success("synthetic") })
         compose.setContent {
@@ -55,7 +55,7 @@ class NativeLavaCheckoutTest {
                 val currentLifecycle = lifecycle ?: LocalLifecycleOwner.current
                 CompositionLocalProvider(LocalLifecycleOwner provides currentLifecycle) {
                     PompHskAiTheme {
-                        if (!NativeLavaCheckout(owner, "course_limit", {}, repository, limitOffer = limit).ownsSurface)
+                        if (!NativeLavaCheckout(owner, "course_limit", {}, repository, limitOffer = limit, telemetry = telemetry).ownsSurface)
                             androidx.compose.material3.Text("Manual fallback")
                     }
                 }
@@ -105,6 +105,24 @@ class NativeLavaCheckoutTest {
         compose.onNodeWithContentDescription(context.getString(R.string.action_close)).assertDoesNotExist()
         compose.onNodeWithContentDescription(context.getString(R.string.action_back)).performClick()
         compose.onNodeWithTag("provider-plan:3_months").assertDoesNotExist()
+    }
+
+    @Test fun realPlanMoreAndEmailActionsEmitUiStagesWithoutClaimingPayment() {
+        val events = java.util.Collections.synchronizedList(mutableListOf<String>())
+        val telemetry = object : ProCheckoutTelemetry {
+            override val attemptId = "native-attempt"
+            override val source = "course_limit"
+            override fun record(event: String, plan: String?, method: String?) { events += event }
+        }
+        val api = Fake(); show(api, limit = true, telemetry = telemetry); ready(api)
+        assertTrue(events.isEmpty())
+        compose.onNodeWithTag("provider-plan:12_months").performClick()
+        compose.onNodeWithText(context.getString(R.string.lava_other_plans)).performClick()
+        compose.onNodeWithContentDescription(context.getString(R.string.action_back)).performClick()
+        compose.onNodeWithText(context.getString(R.string.limit_sheet_get_pro)).performClick()
+        compose.onNodeWithTag("provider-email").assertIsDisplayed()
+        assertEquals(listOf("plan_selected", "more_opened", "plan_selected"), events.toList())
+        assertFalse(events.any { it in setOf("checkout_started", "checkout_paid", "dismissed") })
     }
 
     @Test fun limitLoadingKeepsThePrimaryGridAnchor() {
@@ -176,11 +194,13 @@ class NativeLavaCheckoutTest {
         screenshot("checkout-limit-large-text")
     }
 
-    @Test fun countryMatchesPwaLabelsAndReturnsFromMoreToPrimaryOffer() {
+    @Test fun countryMatchesPwaLabelsAndRetainsMoreUntilBack() {
         val api = Fake(); show(api, limit = true); ready(api)
         compose.onNodeWithText(context.getString(R.string.lava_other_plans)).performClick()
         compose.onNodeWithTag("checkout-country").onChildren().filter(hasClickAction()).onFirst().performClick()
         compose.onNodeWithText("🇺🇿 " + context.getString(R.string.checkout_country_uz)).performClick()
+        compose.onNodeWithTag("provider-plan:3_months").assertExists()
+        compose.onNodeWithContentDescription(context.getString(R.string.action_back)).performClick()
         compose.onNodeWithTag("provider-plan:3_months").assertDoesNotExist()
         compose.onNodeWithText(context.getString(R.string.lava_terms)).assertDoesNotExist()
         compose.onNodeWithText("🇺🇿 " + context.getString(R.string.checkout_country_uz)).assertIsDisplayed()

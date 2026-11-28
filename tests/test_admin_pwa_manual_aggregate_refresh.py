@@ -295,7 +295,7 @@ class ForceCacheTests(unittest.IsolatedAsyncioTestCase):
         reader = AdminPwaStatisticsReader(
             settings_obj=self.settings, session_factory=self.sessions,
             loader=scoped, clock=lambda: self.clock, r2_store=self.store,
-            cache_scope="analytics_funnel_v2")
+            cache_scope="analytics_funnel_v3")
         reader._redis_url = ""
         first = await reader.refresh_approved_section(query, section="funnel")
         self.assertEqual(first["section"], "funnel")

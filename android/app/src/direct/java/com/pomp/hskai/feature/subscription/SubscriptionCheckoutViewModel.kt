@@ -60,9 +60,10 @@ internal fun availablePaymentOptions(
     else if (region == "tj" && prices["visa"]?.containsKey(plan) == true) CARD_BANKS
     else emptyList()
 
-/** A country selection is sufficient to continue; bank/wallet can be changed optionally. */
+/** Match ordinary PWA manual checkout: TJ bank / China wallet precedes requisites. */
 internal fun checkoutFlow(region: String): List<CheckoutStep> =
-    listOf(CheckoutStep.PLANS, CheckoutStep.PAY)
+    if (hasMethodStep(region)) listOf(CheckoutStep.PLANS, CheckoutStep.METHOD, CheckoutStep.PAY)
+    else listOf(CheckoutStep.PLANS, CheckoutStep.PAY)
 
 /** Match the checkout's display currency to the selected card country.
  * The server remains authoritative for FX rates, quote and payable amount.
@@ -138,7 +139,8 @@ data class SubscriptionCheckoutState(
             ?: (overview?.mode == "hsk30_unlock")
     val isWaitingForHsk30Review: Boolean
         get() = isHsk30Unlock && pendingPaymentId > 0 && paymentDecision.isBlank() && !provisionalAccess
-    val flow: List<CheckoutStep> get() = checkoutFlow(region)
+    val flow: List<CheckoutStep> get() = if (overview?.mode == "subscription") checkoutFlow(region)
+        else listOf(CheckoutStep.PLANS, CheckoutStep.PAY)
 
     /** `dc_city` or `alif` for a card payment, null for the QR wallets. */
     val cardBank: String? get() = if (method == "visa") cardBankFor(country, bank) else null
@@ -381,7 +383,8 @@ class SubscriptionCheckoutViewModel(
             CheckoutStep.PLANS -> {
                 if (overview.prices[current.method]?.get(current.plan) == null) return
                 viewModelScope.launch { runCatching { saveRegion(current.region) } }
-                loadQuote()
+                if (CheckoutStep.METHOD in current.flow) _state.update { it.copy(step = CheckoutStep.METHOD) }
+                else loadQuote()
             }
             CheckoutStep.METHOD -> if (overview.prices[current.method]?.get(current.plan) != null) loadQuote()
             else -> Unit

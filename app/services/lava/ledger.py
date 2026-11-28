@@ -221,6 +221,23 @@ async def apply_completed(session_factory, info: LavaInvoiceInfo) -> ApplyOutcom
                             "transport": "iphone_pwa",
                         }),
                     ))
+                if row.source == "android" and row.kind != "renewal" and row.android_inline_attempt_id:
+                    # Written in the same verified-grant transaction. No UI
+                    # redirect, screenshot, or pending state can count as paid.
+                    session.add(ConversionFunnelEvent(
+                        user_id=owner_id, telegram_id=user.telegram_id,
+                        event_name="android_pro_checkout_paid",
+                        source=row.android_inline_source or "android",
+                        payment_id=payment.id,
+                        payload_json=json.dumps({
+                            "checkout_id": invoice_id,
+                            "attempt_id": row.android_inline_attempt_id or "",
+                            "plan_type": row.plan_type,
+                            "payment_method": "lava",
+                            "discount_source": row.discount_source or "none",
+                            "transport": "android",
+                        }),
+                    ))
                 # One exit offer per account: consume only after a verified
                 # completed invoice and successful Pro activation.
                 if row.kind != "renewal" and row.discount_source == "exit_offer":

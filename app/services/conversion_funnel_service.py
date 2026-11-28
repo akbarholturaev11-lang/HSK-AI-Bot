@@ -56,6 +56,9 @@ class ConversionFunnelService:
         "pwa_pro_checkout_failed": "PWA checkout xato",
         "pwa_pro_checkout_paid": "PWA tolov tasdiq",
     }
+    # Same existing labels; retain the legacy Bot consumer for native events.
+    EVENT_LABELS.update({name.replace("pwa_pro_", "android_pro_"): label.replace("PWA", "Android")
+                         for name, label in tuple(EVENT_LABELS.items()) if name.startswith("pwa_pro_")})
     RATE_PAIRS = (
         ("CTA → Kurs", "course_started", "course_cta_seen"),
         ("Kurs → Dars", "lesson_started", "course_started"),

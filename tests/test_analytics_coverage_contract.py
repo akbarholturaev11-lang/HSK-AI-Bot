@@ -145,10 +145,10 @@ class AnalyticsCoverageGuardTests(unittest.TestCase):
                 checker.validate_schema(registry, root)
             (root / checker.WORKFLOW).parent.mkdir(parents=True)
             (root / checker.WORKFLOW).write_text("python -m pytest " + original.split("::")[0], encoding="utf-8")
-            # Only this module is listed, so drop the other covered entry first.
+            # Only this module is listed, so drop the other covered entries first.
             for row in registry["metrics"]:
                 for platform in row.get("platforms", {}).values():
-                    if platform.get("chain_test", "").startswith("tests/test_pwa_pro_funnel_chain.py"):
+                    if platform.get("chain_test", "").startswith(("tests/test_pwa_pro_funnel_chain.py", "tests/test_android_pro_funnel_chain.py")):
                         platform.pop("chain_test")
                         platform.update(status="partial", reason="synthetic")
             checker.validate_schema(registry, root)

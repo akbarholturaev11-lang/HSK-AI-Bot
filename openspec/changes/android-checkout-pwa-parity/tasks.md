@@ -13,13 +13,22 @@
 - [x] 3.3 Review scoped diff and record local evidence, real-provider limits and delivery requirements below.
 
 ## Verification evidence
-- Native Android API 36 emulator: Direct 26/26 and Play 5/5 focused UI tests passed. Includes canonical country labels/menu, removal of the limit footnote, retained email-stage terms, Play support icon/contact, UZ/RU/TJ, 200% type, manual/HSK30 receipts and foreground/delayed Lava confirmation.
-- JVM regression: Direct 786 and Play 719 passed; final focused checkout/model rerun and Direct/Play lint passed (existing warnings retained).
-- Both debug variants and instrumentation APKs compile. Canonical localization: 16 tests passed, 85 artifacts current, frozen-source guard has zero blockers; flavor/named-call/reference/translation guards passed.
-- Analytics Impact: existing authenticated opening/plan/receipt/provider/ledger writers and ownership retained; status refresh creates no paid event. Existing route-to-Admin coverage remains partial.
-- Monitoring Impact: existing apiCall(DiagTags.PAYMENT), feature/incident mapping and Admin diagnostic consumer retained. Exact reviewed source hashes record this Android-only UI/lifecycle change without claiming new Inbox chain coverage.
-- No learner PWA, backend, Desktop, database or store policy source changed. Screenshots are local emulator fixture evidence, not a production payment/3DS or published APK claim.
+- Initial presentation candidate: Direct 26/26 and Play 5/5 API 36 emulator checks passed; PWA-derived country labels, limit footnote removal, Play support, UZ/RU/TJ/200% text, manual/HSK30 receipts and delayed foreground Lava confirmation.
+- Analytics extension: actual native Google bearer on an account without Telegram → bounded/idempotent UI route → real fake-provider invoice → verified ledger/refund → cookie-authenticated Admin Android/Overall. PostgreSQL native/PWA/regression tests cover forged financial stages, account separation, replay, paid/reversed/unlinked/cohort/history and additive migration/downgrade refusal. Optional observer timeout preserves the invoice and later verified paid truth.
+- Native JVM: Direct 793 and Play 719 passed. The added manual sequence test confirms TJ bank, China wallet and foreign-card routing with the selected tariff and exact quote fields. Final API 36 emulator checkout run: 24/24 passed, including actual manual tariff→bank→quote, provider More→manual→Back, country/More preservation, locale/large text and telemetry actions.
+- Admin browser: actual SQL and virtual WebAuthn browser suite passed, including UZ/RU/TJ, 390/1440 widths, platform separation and the Android/PWA panels. This is fixture evidence, not physical biometric or provider/3DS acceptance.
+- Localization: 85 generated artifacts current; 17 focused catalog tests and frozen-source guard passed. Strict OpenSpec validation passed. Initial UI candidate's required Analytics CI passed; expanded candidate requires a fresh check before main promotion.
+- Analytics Impact: native Direct limit offers add the PWA-equivalent Android attempt funnel with server-owned invoice/paid stages. Existing manual/HSK30/Finance writers remain authoritative; historical/unlinked and unprojected auxiliary UI events remain explicit rather than fabricated conversions.
+- Monitoring Impact: new learner route is mapped to checkout_payments; native apiCall(DiagTags.PAYMENT), authenticated diagnostics intake and existing incident/Admin Inbox consumer are retained. checkout_payments:android and subscription_entries:android already have real PostgreSQL route-to-Inbox chain coverage, re-exercised here. The earlier UI-only monitoring exemptions are removed. Admin's new read-only aggregation adds no learner interaction or management action.
+- Learner PWA and Desktop sources are unchanged. No real charge, production DB mutation or APK/store publication was performed.
 
 ## Workflow follow-up
 - Promote only the tested candidate after the required Analytics integrity check and verify origin/main. Publish/install acceptance remains separate from a source merge; no real purchase or provider credential change was performed.
 - Existing local/cloud AI refs diverge from main; preserve their work rather than force-resetting them during this UI task.
+
+## 4. PWA-equivalent Android analytics
+- [x] 4.1 Add nullable native invoice correlation and allowed Android Pro events; test migration upgrade and safe downgrade refusal.
+- [x] 4.2 Add authenticated, bounded and idempotent native UI intake plus server-only invoice/ledger stages; test replay, cross-account, forged financial events and Play rejection.
+- [x] 4.3 Wire a session-bound native attempt reporter and actual UI actions; test nonblocking delivery, close/Back/retry and account replacement.
+- [x] 4.4 Add Android/Overall Admin projection and localized read-only consumer using the PWA cohort algorithm; prove platform/refund/unlinked/cohort rules with PostgreSQL route-to-Admin tests.
+- [x] 4.5 Run affected local native/backend/PWA-preservation, localization, migration, analytics and monitoring checks; prepare the reviewed candidate. Required CI and origin/main ref verification remain delivery gates, not claims made by this checkbox.

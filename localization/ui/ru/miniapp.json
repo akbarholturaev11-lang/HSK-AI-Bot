@@ -1430,7 +1430,9 @@
     "ui.admin_pwa.lavaPromoPercent": "Процент",
     "ui.admin_pwa.lavaPromoCode": "Промокод",
     "ui.admin_pwa.lavaErr_invalid_promo_code": "Промокод 3–36 символов: латиница, цифры, - и _",
-    "ui.admin_pwa.lavaErr_invalid_promo_codes": "Неверный список промокодов"
+    "ui.admin_pwa.lavaErr_invalid_promo_codes": "Неверный список промокодов",
+    "ui.admin_pwa.analyticsAndroidPro": "Путь Android Pro",
+    "ui.admin_pwa.analyticsAndroidProNote": "Окно лимита Android Direct и оплата Lava. Ручные оплаты — в общем пути; старые несвязанные платежи — отдельно."
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

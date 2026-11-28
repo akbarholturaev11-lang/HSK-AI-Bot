@@ -19,11 +19,11 @@ class SubscriptionCheckoutFlowTest {
     }
 
     @Test
-    fun `country selection leads directly to payment in every region`() {
+    fun `manual sequence matches PWA bank wallet and other country paths`() {
         val direct = listOf(CheckoutStep.PLANS, CheckoutStep.PAY)
-        listOf("tj", "uz", "ru", "cn", "other").forEach { region ->
-            assertEquals(direct, checkoutFlow(region))
-        }
+        val withMethod = listOf(CheckoutStep.PLANS, CheckoutStep.METHOD, CheckoutStep.PAY)
+        listOf("uz", "ru", "other").forEach { assertEquals(direct, checkoutFlow(it)) }
+        listOf("tj", "cn").forEach { assertEquals(withMethod, checkoutFlow(it)) }
     }
 
     @Test

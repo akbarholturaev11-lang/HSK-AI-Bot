@@ -276,6 +276,7 @@ ROUTE_MAP = {
     "/api/v3/android/subscription/checkout/quote": ("checkout_payments", "v3_android_subscription_checkout_quote"),
     "/api/v3/android/subscription/checkout/submit": ("checkout_payments", "v3_android_subscription_checkout_submit"),
     "/api/v3/android/subscription/currency-preference": ("subscription_entries", "v3_android_subscription_currency_preference"),
+    "/api/v3/android/subscription/inline-event": ("checkout_payments", "v3_android_subscription_inline_event"),
     "/api/v3/android/subscription/lava/cancel": ("checkout_payments", "v3_android_subscription_lava_cancel"),
     "/api/v3/android/subscription/lava/exit-offer": ("checkout_payments", "v3_android_subscription_lava_exit_offer"),
     "/api/v3/android/subscription/lava/overview": ("checkout_payments", "v3_android_subscription_lava_overview"),

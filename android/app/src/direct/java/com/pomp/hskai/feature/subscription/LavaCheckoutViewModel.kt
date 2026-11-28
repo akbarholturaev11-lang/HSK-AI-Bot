@@ -42,6 +42,7 @@ class LavaCheckoutViewModel(
     private val savedRegion: suspend () -> String? = { null },
     private val saveRegion: suspend (String) -> Unit = {},
     private val regionHint: () -> String = { "other" },
+    private val telemetry: ProCheckoutTelemetry? = null,
 ) : ViewModel() {
     private val _state = MutableStateFlow(NativeLavaState())
     val state = _state.asStateFlow()
@@ -88,9 +89,11 @@ class LavaCheckoutViewModel(
     }
 
     fun email(value: String) { if (!_state.value.busy) _state.update { it.copy(email = value.take(254)) } }
-    fun chooseProviderPlan(value: String) {
-        if (!_state.value.busy && _state.value.visiblePlans.any { it.plan_type == value && it.amount != null })
+    fun chooseProviderPlan(value: String, userAction: Boolean = true) {
+        if (!_state.value.busy && _state.value.visiblePlans.any { it.plan_type == value && it.amount != null }) {
             _state.update { it.copy(plan = value, error = false) }
+            if (userAction) telemetry?.record("plan_selected", value, "lava")
+        }
     }
     fun start() {
         val old = _state.value
@@ -99,15 +102,18 @@ class LavaCheckoutViewModel(
         _state.update { it.copy(busy = true, error = false) }
         viewModelScope.launch {
             when (val reply = repository.start(old.plan, old.email.trim(), old.mode, language,
-                old.currency.takeIf { old.mode == "subscription" && it.isNotBlank() })) {
+                old.currency.takeIf { old.mode == "subscription" && it.isNotBlank() },
+                telemetry)) {
                 is ApiResult.Success -> {
                     val value = reply.value
                     val url = safeLavaPaymentUrl(value.payment_url)
+                    if (!value.ok || url == null) telemetry?.record("checkout_failed", old.plan, "lava")
                     _state.update { it.copy(busy = false, checkoutId = value.checkout_id,
                         status = if (value.ok && value.checkout_id > 0) "pending" else "",
                         paymentUrl = url, launchUrl = url, error = !value.ok || url == null) }
                 }
                 is ApiResult.Failure -> {
+                    telemetry?.record("checkout_failed", old.plan, "lava")
                     // A provider invoice may exist even if its HTTP reply was lost.
                     // Re-read canonical pending ID before offering another start.
                     _state.update { it.copy(busy = false, error = true, uncertainStart = true) }
@@ -158,6 +164,7 @@ class LavaCheckoutViewModel(
                 is ApiResult.Success -> {
                     val offer = reply.value.takeIf { it.ok && it.available && it.percent == 20 }
                     _state.update { it.copy(busy = false, offer = offer) }
+                    if (offer != null) telemetry?.record("exit_offered", old.plan, "lava")
                     if (offer == null) close()
                 }
                 is ApiResult.Failure -> close()
@@ -165,7 +172,10 @@ class LavaCheckoutViewModel(
         }
     }
     fun dismissOffer() {
-        if (!_state.value.busy) _state.update { it.copy(offer = null) }
+        if (!_state.value.busy) {
+            if (_state.value.offer != null) telemetry?.record("exit_declined", _state.value.plan, "lava")
+            _state.update { it.copy(offer = null) }
+        }
     }
     fun close() {
         _state.update { it.copy(busy = false, offer = null, closeRequested = true) }
@@ -180,7 +190,7 @@ class LavaCheckoutViewModel(
                     val accepted = reply.value.ok && reply.value.available && reply.value.accepted
                     _state.update { it.copy(busy = false, offer = if (accepted) null else it.offer,
                         mode = if (accepted) "exit_discount" else it.mode, error = !accepted) }
-                    if (accepted) load()
+                    if (accepted) { telemetry?.record("exit_claimed", _state.value.plan, "lava"); load() }
                 }
                 is ApiResult.Failure -> _state.update { it.copy(busy = false, error = true) }
             }

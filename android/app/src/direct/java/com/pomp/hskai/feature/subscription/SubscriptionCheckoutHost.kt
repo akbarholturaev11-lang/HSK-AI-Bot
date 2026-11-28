@@ -149,21 +149,33 @@ internal fun DirectSubscriptionCheckoutHost(
     origin: String,
     providerRepositoryOverride: LavaCheckoutRepository?,
     limitOffer: Boolean = false,
+    telemetryOverride: ProCheckoutTelemetry? = null,
     onClose: () -> Unit,
 ) {
     val context = LocalContext.current
     val app = context.applicationContext as HskAiApplication
+    val attemptId = androidx.compose.runtime.saveable.rememberSaveable(origin) { java.util.UUID.randomUUID().toString() }
+    val reporter = remember(app, origin, attemptId, limitOffer, providerRepositoryOverride, telemetryOverride) {
+        if (limitOffer && providerRepositoryOverride == null && telemetryOverride == null)
+            nativeProReporter(app, attemptId, origin) else null
+    }
+    val telemetry = telemetryOverride ?: reporter
+    androidx.compose.runtime.DisposableEffect(reporter) { onDispose { reporter?.close() } }
+    LaunchedEffect(telemetry) { telemetry?.record("opened") }
+    val closeCheckout: () -> Unit = { telemetry?.record("dismissed"); onClose() }
+    var allPlans by androidx.compose.runtime.saveable.rememberSaveable(origin) { mutableStateOf(false) }
     var selectedRegion by remember(origin) { mutableStateOf<String?>(null) }
     var routeOverride by remember(origin) { mutableStateOf<String?>(null) }
     var providerAvailable by remember(origin) { mutableStateOf(false) }
     var manualLoaded by remember(origin) { mutableStateOf(false) }
-    val providerRoute = NativeLavaCheckout(viewModelStoreOwner, origin, onClose,
+    val providerRoute = NativeLavaCheckout(viewModelStoreOwner, origin, closeCheckout,
         repositoryOverride = providerRepositoryOverride,
         regionOverride = selectedRegion, routeOverride = routeOverride,
         onRegionResolved = { if (selectedRegion == null) selectedRegion = it },
         onRegionSelected = { selectedRegion = it; routeOverride = null },
-        onRouteSelected = { routeOverride = it },
-        onProviderAvailable = { providerAvailable = it }, limitOffer = limitOffer)
+        onRouteSelected = { routeOverride = it; telemetry?.record("method_selected", method = it) },
+        onProviderAvailable = { providerAvailable = it }, limitOffer = limitOffer, telemetry = telemetry,
+        allPlansOverride = allPlans, onAllPlansChange = { allPlans = it })
     if (providerRoute.ownsSurface) return
     val model: SubscriptionCheckoutViewModel = viewModel(
         viewModelStoreOwner = viewModelStoreOwner,
@@ -191,9 +203,8 @@ internal fun DirectSubscriptionCheckoutHost(
     var qrPreview by remember(model) { mutableStateOf(false) }
     var qrActions by remember(model) { mutableStateOf(false) }
     var renewalConfirmOpen by remember(model) { mutableStateOf(false) }
-    val closeHost by rememberUpdatedState(onClose)
+    val closeHost by rememberUpdatedState(closeCheckout)
     val stepIndex = state.flow.indexOf(state.step)
-    var allPlans by androidx.compose.runtime.saveable.rememberSaveable(origin) { mutableStateOf(false) }
 
     LaunchedEffect(limitOffer, allPlans, state.step, state.plan, state.loading) {
         if (limitOffer && !allPlans && !state.loading && state.step == CheckoutStep.PLANS) {
@@ -226,11 +237,11 @@ internal fun DirectSubscriptionCheckoutHost(
             inviteOpen -> inviteOpen = false
             supportOpen -> supportOpen = false
             methodOpen -> methodOpen = false
-            state.submitted || state.step == CheckoutStep.DONE || state.overview?.pendingPayment != null -> onClose()
+            state.submitted || state.step == CheckoutStep.DONE || state.overview?.pendingPayment != null -> closeCheckout()
             stepIndex > 0 -> model.back()
-            limitOffer && allPlans -> allPlans = false
             routeOverride == "manual" && providerAvailable -> routeOverride = "lava"
-            else -> onClose()
+            limitOffer && allPlans -> allPlans = false
+            else -> closeCheckout()
         }
     }
     BackHandler { navigateBack() }
@@ -279,12 +290,11 @@ internal fun DirectSubscriptionCheckoutHost(
                 }
                 when (state.step) {
                     CheckoutStep.PLANS -> PlansContent(
-                        state = state, copy = copy, onPlan = model::choosePlan, compact = limitOffer && !allPlans,
+                        state = state, copy = copy, onPlan = { model.choosePlan(it); telemetry?.record("plan_selected", it, "manual") }, compact = limitOffer && !allPlans,
                         onRoute = model::openRegionSelector,
                         countryChoices = if (providerAvailable && state.overview?.mode == "subscription") CHECKOUT_REGIONS
                             else state.overview?.let(::regionalManualRegions).orEmpty(),
                         onRegion = { region ->
-                            allPlans = false
                             if (providerAvailable && state.overview?.mode == "subscription") {
                                 selectedRegion = region; routeOverride = null
                             }
@@ -294,12 +304,8 @@ internal fun DirectSubscriptionCheckoutHost(
                         onRetryCurrency = { model.chooseCurrency(currencyForRegion(state.region)) },
                         onDiscount = { waitingInvite = true; model.startDiscount() },
                     )
-                    CheckoutStep.METHOD -> Text(
-                        copy.getString(R.string.sub_method),
-                        color = C.text,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                    )
+                    CheckoutStep.METHOD -> PaymentMethodsContent(state, copy,
+                        onBank = model::chooseBank, onMethod = model::chooseMethod)
                     CheckoutStep.PAY -> PayContent(
                         state = state, copy = copy,
                         qrActions = qrActions, onToggleQr = { qrActions = !qrActions },
@@ -329,7 +335,7 @@ internal fun DirectSubscriptionCheckoutHost(
         }
         if (!state.loading && state.overview?.checkoutAllowed == true &&
             state.overview?.pendingPayment == null && !state.submitted &&
-            state.step != CheckoutStep.DONE && state.step != CheckoutStep.METHOD) {
+            state.step != CheckoutStep.DONE) {
             Column(Modifier.fillMaxWidth().background(C.bg)
                 .padding(horizontal = 16.dp, vertical = 12.dp),
                 verticalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -352,7 +358,6 @@ internal fun DirectSubscriptionCheckoutHost(
                 }
                 val primaryAction: () -> Unit = when {
                     state.step == CheckoutStep.PAY -> model::submit
-                    limitOffer && !allPlans && state.step == CheckoutStep.PLANS -> { { allPlans = true } }
                     state.step == CheckoutStep.PLANS &&
                         state.overview?.access?.isPaid == true && renewalDates(state) != null -> {
                         { renewalConfirmOpen = true }
@@ -360,10 +365,16 @@ internal fun DirectSubscriptionCheckoutHost(
                     else -> model::next
                 }
                 CheckoutButton(label, state.submitting || state.quoting, enabled,
-                    onClick = primaryAction,
+                    onClick = {
+                        if (state.step == CheckoutStep.PLANS) {
+                            telemetry?.record("plan_selected", state.plan, "manual")
+                            telemetry?.record("method_selected", state.plan, "manual")
+                        }
+                        primaryAction()
+                    },
                     modifier = Modifier.fillMaxWidth())
                 if (limitOffer && state.step == CheckoutStep.PLANS && !allPlans) {
-                    TextButton(onClick = { allPlans = true }, modifier = Modifier.fillMaxWidth()) {
+                    TextButton(onClick = { telemetry?.record("more_opened", state.plan, "manual"); allPlans = true }, modifier = Modifier.fillMaxWidth()) {
                         Text(copy.getString(R.string.lava_other_plans), color = C.muted)
                     }
                 }
@@ -575,7 +586,7 @@ private fun PlansContent(
             enabled = !state.currencySaving)
         else CardCountrySelectorButton(state, copy, onClick = onRoute)
     if (compact) return
-    if (hasMethodStep(state.region)) {
+    if (hasMethodStep(state.region) && state.overview?.mode != "subscription") {
         Spacer(Modifier.height(8.dp))
         PaymentMethodButton(state, copy, onClick = onMethod)
     }
@@ -655,43 +666,49 @@ private fun PaymentMethodDialog(
                 .padding(18.dp).verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(9.dp),
         ) {
-            Text(
-                copy.getString(R.string.sub_method),
-                color = C.text,
-                fontSize = 20.sp,
-                lineHeight = 24.sp,
-                fontWeight = FontWeight.Black,
-            )
-            ChoiceGroup {
-                if (state.region == "cn") {
-                    val methods = availablePaymentOptions(
-                        state.region, state.plan, state.overview?.prices.orEmpty()
-                    )
-                    methods.forEachIndexed { index, method ->
-                        ChoiceCard(
-                            null,
-                            copy.getString(if (method == "alipay") R.string.sub_alipay else R.string.sub_wechat),
-                            copy.getString(R.string.sub_qr_yuan),
-                            state.method == method,
-                            onClick = { onMethod(method) },
-                        )
-                        if (index < methods.lastIndex) ChoiceDivider()
-                    }
-                } else {
-                    CARD_BANKS.forEachIndexed { index, bank ->
-                        ChoiceCard(
-                            null,
-                            BANK_NAMES.getValue(bank),
-                            copy.getString(if (bank == "alif") R.string.sub_bank_alif_body else R.string.sub_bank_dc_body),
-                            state.bank == bank,
-                            onClick = { onBank(bank) },
-                        )
-                        if (index < CARD_BANKS.lastIndex) ChoiceDivider()
-                    }
-                }
-            }
+            PaymentMethodsContent(state, copy, onBank, onMethod)
             TextButton(onClick = onDismiss, modifier = Modifier.align(Alignment.End)) {
                 Text(copy.getString(R.string.action_back), color = C.accentInk)
+            }
+        }
+    }
+}
+
+@Composable
+private fun PaymentMethodsContent(state: SubscriptionCheckoutState, copy: Context,
+    onBank: (String) -> Unit, onMethod: (String) -> Unit) {
+    Text(
+        copy.getString(R.string.sub_method),
+        color = C.text,
+        fontSize = 20.sp,
+        lineHeight = 24.sp,
+        fontWeight = FontWeight.Black,
+    )
+    ChoiceGroup {
+        if (state.region == "cn") {
+            val methods = availablePaymentOptions(
+                state.region, state.plan, state.overview?.prices.orEmpty()
+            )
+            methods.forEachIndexed { index, method ->
+                ChoiceCard(
+                    null,
+                    copy.getString(if (method == "alipay") R.string.sub_alipay else R.string.sub_wechat),
+                    copy.getString(R.string.sub_qr_yuan),
+                    state.method == method,
+                    onClick = { onMethod(method) },
+                )
+                if (index < methods.lastIndex) ChoiceDivider()
+            }
+        } else {
+            CARD_BANKS.forEachIndexed { index, bank ->
+                ChoiceCard(
+                    null,
+                    BANK_NAMES.getValue(bank),
+                    copy.getString(if (bank == "alif") R.string.sub_bank_alif_body else R.string.sub_bank_dc_body),
+                    state.bank == bank,
+                    onClick = { onBank(bank) },
+                )
+                if (index < CARD_BANKS.lastIndex) ChoiceDivider()
             }
         }
     }

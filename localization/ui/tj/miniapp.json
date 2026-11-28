@@ -1430,7 +1430,9 @@
     "ui.admin_pwa.lavaPromoPercent": "Фоиз",
     "ui.admin_pwa.lavaPromoCode": "Промокод",
     "ui.admin_pwa.lavaErr_invalid_promo_code": "Промокод 3–36 аломат: ҳарфҳои лотинӣ, рақам, - ва _",
-    "ui.admin_pwa.lavaErr_invalid_promo_codes": "Рӯйхати промокодҳо нодуруст"
+    "ui.admin_pwa.lavaErr_invalid_promo_codes": "Рӯйхати промокодҳо нодуруст",
+    "ui.admin_pwa.analyticsAndroidPro": "Роҳи Android Pro",
+    "ui.admin_pwa.analyticsAndroidProNote": "Равзанаи маҳдудияти Android Direct ва пардохти Lava. Пардохтҳои дастӣ дар роҳи умумӣ; пардохтҳои кӯҳнаи пайвастнашуда ҷудоанд."
   },
   "maps": {
     "ui.course_v3.copy.copy1": {

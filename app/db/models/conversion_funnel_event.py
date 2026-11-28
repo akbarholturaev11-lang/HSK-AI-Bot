@@ -39,6 +39,17 @@ CONVERSION_FUNNEL_EVENT_NAMES = (
     "pwa_pro_checkout_started",
     "pwa_pro_checkout_failed",
     "pwa_pro_checkout_paid",
+    "android_pro_opened",
+    "android_pro_plan_selected",
+    "android_pro_more_opened",
+    "android_pro_method_selected",
+    "android_pro_exit_offered",
+    "android_pro_exit_claimed",
+    "android_pro_exit_declined",
+    "android_pro_dismissed",
+    "android_pro_checkout_started",
+    "android_pro_checkout_failed",
+    "android_pro_checkout_paid",
 )
 
 
@@ -77,7 +88,18 @@ class ConversionFunnelEvent(Base):
             "'pwa_pro_dismissed', "
             "'pwa_pro_checkout_started', "
             "'pwa_pro_checkout_failed', "
-            "'pwa_pro_checkout_paid'"
+            "'pwa_pro_checkout_paid', "
+            "'android_pro_opened', "
+            "'android_pro_plan_selected', "
+            "'android_pro_more_opened', "
+            "'android_pro_method_selected', "
+            "'android_pro_exit_offered', "
+            "'android_pro_exit_claimed', "
+            "'android_pro_exit_declined', "
+            "'android_pro_dismissed', "
+            "'android_pro_checkout_started', "
+            "'android_pro_checkout_failed', "
+            "'android_pro_checkout_paid'"
             ")",
             name="ck_conversion_funnel_events_event_name",
         ),

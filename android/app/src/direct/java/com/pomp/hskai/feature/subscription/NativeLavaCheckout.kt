@@ -46,6 +46,9 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
     onRouteSelected: ((String) -> Unit)? = null,
     onProviderAvailable: (Boolean) -> Unit = {},
     limitOffer: Boolean = false,
+    telemetry: ProCheckoutTelemetry? = null,
+    allPlansOverride: Boolean? = null,
+    onAllPlansChange: ((Boolean) -> Unit)? = null,
 ): NativeLavaRoute {
     // Keep the separate permanent-course product and existing discount entry routes manual.
     if (origin.startsWith("hsk30") || origin.contains("discount")) return NativeLavaRoute(false)
@@ -68,9 +71,14 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
                     if (it == "tg") "tj" else if (it in setOf("uz", "ru", "tj")) it else "uz"
                 }, savedRegion = { if (repositoryOverride == null) app.appSettings.paymentRegion() else null },
                     saveRegion = { if (repositoryOverride == null) app.appSettings.setPaymentRegion(it) },
-                    regionHint = { if (repositoryOverride == null) localCheckoutRegion(context.resources.configuration.locales[0].language) else "other" }) as T
+                    regionHint = { if (repositoryOverride == null) localCheckoutRegion(context.resources.configuration.locales[0].language) else "other" },
+                    telemetry = telemetry) as T
         })
     val state by model.state.collectAsStateWithLifecycle()
+    var localAllPlans by rememberSaveable(origin) { mutableStateOf(false) }
+    val allPlans = allPlansOverride ?: localAllPlans
+    val setAllPlans: (Boolean) -> Unit = { if (allPlansOverride == null) localAllPlans = it; onAllPlansChange?.invoke(it) }
+    var emailStep by rememberSaveable(origin) { mutableStateOf(false) }
     var manual by rememberSaveable(origin) { mutableStateOf(false) }
     val block = state.block
     val effectiveRegion = regionOverride ?: state.region
@@ -105,13 +113,11 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
         (!state.loading && block == null && state.mode == "subscription")) return NativeLavaRoute(false, state.providerEntryId)
     if (block?.mode == "manual_only" && block.subscription == null && state.checkoutId == 0 &&
         block.blocked_reason == null && !state.error) return NativeLavaRoute(false, state.providerEntryId)
-    var allPlans by rememberSaveable(origin) { mutableStateOf(false) }
-    var emailStep by rememberSaveable(origin) { mutableStateOf(false) }
     var supportOpen by remember { mutableStateOf(false) }
     val primaryPlans = providerDisplayPlans(state.visiblePlans, limitOffer && !allPlans)
     LaunchedEffect(primaryPlans.map { it.plan_type }, emailStep, state.loading) {
         if (!state.loading && !emailStep && primaryPlans.isNotEmpty() && primaryPlans.none { it.plan_type == state.plan })
-            model.chooseProviderPlan(primaryPlans.first().plan_type)
+            model.chooseProviderPlan(primaryPlans.first().plan_type, userAction = false)
     }
     val terminal = state.checkoutId > 0 || block?.subscription != null
     val firstStep = !terminal && !emailStep && !(limitOffer && allPlans)
@@ -122,7 +128,7 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
         keyboard?.hide()
         when {
             emailStep -> emailStep = false
-            limitOffer && allPlans -> allPlans = false
+            limitOffer && allPlans -> setAllPlans(false)
             terminal -> model.close()
             else -> model.requestProviderClose()
         }
@@ -195,9 +201,9 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
                             TextButton(onClick = model::load, enabled = !state.busy) { Text(stringResource(R.string.sub_retry)) }
                         }
                         ProviderPlans(plans, state.plan, !state.busy, limitOffer,
-                            model::chooseProviderPlan)
+                            { model.chooseProviderPlan(it) })
                         if (state.mode == "subscription") ProviderRegionSelector(effectiveRegion, canChooseRoute) {
-                            model.chooseRegion(it); manual = false; allPlans = false; onRegionSelected(it)
+                            model.chooseRegion(it); manual = false; onRegionSelected(it)
                         }
                         if (canUseManual && (!limitOffer || allPlans)) {
                             OutlinedButton(onClick = { manual = true; onRouteSelected?.invoke("manual") },
@@ -242,9 +248,10 @@ internal fun NativeLavaCheckout(owner: ViewModelStoreOwner, origin: String, onCl
                             busy = state.busy, enabled = !state.loading && !state.uncertainStart &&
                                 block?.blocked_reason == null && state.region == effectiveRegion && state.plan.isNotBlank() &&
                                 (!emailStep || validCheckoutEmail(state.email))) {
+                            telemetry?.record("plan_selected", state.plan, "lava")
                             if (block?.email.isNullOrBlank() && !emailStep) emailStep = true else model.start()
                         }
-                        if (limitOffer && !allPlans && !emailStep) TextButton(onClick = { allPlans = true },
+                        if (limitOffer && !allPlans && !emailStep) TextButton(onClick = { telemetry?.record("more_opened", state.plan, "lava"); setAllPlans(true) },
                             enabled = !state.loading && !state.busy, modifier = Modifier.fillMaxWidth()) {
                             Text(stringResource(R.string.lava_other_plans), color = com.pomp.hskai.core.design.ProColors.Muted)
                         }

@@ -14,7 +14,8 @@ import retrofit2.http.POST
 @Serializable
 data class LavaContext(val mode: String = "subscription", val origin: String = "")
 @Serializable
-data class LavaStart(val plan_type: String, val email: String, val mode: String, val language: String, val currency: String? = null)
+data class LavaStart(val plan_type: String, val email: String, val mode: String, val language: String, val currency: String? = null,
+    val attempt_id: String? = null, val ui_source: String? = null)
 @Serializable
 data class LavaId(val checkout_id: Int)
 @Serializable
@@ -69,8 +70,12 @@ class LavaCheckoutRepository(private val api: AndroidLavaApi,
         return result
     }
     suspend fun providerOverview(mode: String) = call { api.providerOverview(it, LavaContext(mode, origin)) }
-    suspend fun start(plan: String, email: String, mode: String, language: String, currency: String? = null) =
-        call { api.start(it, LavaStart(plan, email, mode, language, currency)) }
+    suspend fun start(plan: String, email: String, mode: String, language: String, currency: String? = null,
+        telemetry: ProCheckoutTelemetry? = null) =
+        call { bearer ->
+            val attribution = telemetry?.takeIf { it.ownsSession(bearer.removePrefix("Bearer ")) }
+            api.start(bearer, LavaStart(plan, email, mode, language, currency, attribution?.attemptId, attribution?.source))
+        }
     suspend fun status(id: Int) = call { api.status(it, LavaId(id)) }
     suspend fun cancel() = call { api.cancel(it, emptyMap()) }
     suspend fun exitOffer(action: String) = call { api.exitOffer(it, ExitAction(action)) }

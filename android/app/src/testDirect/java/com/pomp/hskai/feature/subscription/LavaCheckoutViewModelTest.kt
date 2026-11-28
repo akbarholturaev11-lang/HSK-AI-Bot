@@ -34,8 +34,31 @@ class LavaCheckoutViewModelTest {
             if (body.action == "claim") claims++
             return Response.success(offer)
         }
-        fun model() = LavaCheckoutViewModel(LavaCheckoutRepository(this, { ApiResult.Success("token") }), "tj")
+        fun model(telemetry: ProCheckoutTelemetry? = null) = LavaCheckoutViewModel(LavaCheckoutRepository(this, { ApiResult.Success("token") }), "tj", telemetry = telemetry)
     }
+    @Test fun uiStagesAndInvoiceAttributionStayOnTheOpeningBearer() = runTest(dispatcher) {
+        for (sameOwner in listOf(true, false)) {
+            val events = mutableListOf<String>()
+            val telemetry = object : ProCheckoutTelemetry {
+                override val attemptId = "native-attempt"
+                override val source = "course_limit"
+                override fun ownsSession(token: String) = sameOwner && token == "token"
+                override fun record(event: String, plan: String?, method: String?) { events += event }
+            }
+            val fake = Fake()
+            fake.startReply.complete(Response.success(LavaReply(true, 7, "https://pay.lava.top/verified")))
+            val vm = fake.model(telemetry); runCurrent()
+            assertTrue(events.isEmpty()) // loading/default selection is not a user choice
+            vm.chooseProviderPlan("12_months"); vm.email("learner@example.com"); vm.start(); runCurrent()
+            assertEquals(listOf("plan_selected"), events)
+            assertEquals(if (sameOwner) "native-attempt" else null, fake.lastStart?.attempt_id)
+            assertEquals(if (sameOwner) "course_limit" else null, fake.lastStart?.ui_source)
+            fake.statusReply = LavaReply(ok = true, checkout_id = 7, status = "paid")
+            vm.urlOpened(true); vm.refresh(); runCurrent()
+            assertFalse(events.any { it in setOf("checkout_started", "checkout_paid") })
+        }
+    }
+
     @Test fun startsWithTheServerPrefilledEmailWithoutTyping() = runTest(dispatcher) {
         val fake = Fake()
         fake.overview = fake.overview.copy(lava = fake.overview.lava!!.copy(email = "learner@example.com"))

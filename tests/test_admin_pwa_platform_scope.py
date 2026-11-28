@@ -163,7 +163,7 @@ class FunnelPlatformScopeTests(unittest.IsolatedAsyncioTestCase):
         for platform in PLATFORMS:
             response = self.funnel(platform, "all_time")
             # The PWA view also carries the PWA-only Pro funnel (F8, task 4.1).
-            extra = {"pwa_pro_attempt_funnel"} if platform == "iphone_pwa" else set()
+            extra = {"pwa_pro_attempt_funnel"} if platform == "iphone_pwa" else {"android_pro_attempt_funnel"} if platform == "android" else set()
             self.assertEqual(set(response["metrics"]), {"attempt_funnel", "attributed_since", *extra})
             states = response["metric_states"]
             self.assertEqual(states["attempt_funnel"], {"state": "available", "reason": None})

@@ -47,7 +47,7 @@ SINCE = {"weekly": "2026-11-05T12:00:00+00:00", "monthly": "2026-10-13T12:00:00+
 # Section/filter cells that task 3.2 moved from `attribution_not_audited` to a
 # platform predicate. Every other cell must stay byte-identical to the golden.
 # Keys added beside unchanged legacy series (task 4.1); pinned in their own tests.
-ADDED_METRICS = {"funnel": frozenset({"pwa_pro_attempt_funnel"}), "course": frozenset({"return_retention"}),
+ADDED_METRICS = {"funnel": frozenset({"pwa_pro_attempt_funnel", "android_pro_attempt_funnel"}), "course": frozenset({"return_retention"}),
                  "report": frozenset({"platform_freshness"})}
 # Audit #34 (a main defect): averages divided USD revenue by payments and payers
 # that have no USD price. Only these two keys of the Overall money cell change;
